@@ -29,7 +29,11 @@
 src/flexemu
 src/fsetup
 src/flexplorer
-
+src/test
+src/tools/bin2s19
+src/tools/*flex
+src/tools/send2flx
+src/tools/testdaa
 # Autotools files
 Makefile
 stamp-h1
