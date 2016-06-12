@@ -30,7 +30,6 @@
 #include "fdirent.h"
 #include "bfileptr.h"
 #include "flexerr.h"
-#include "bstring.h"
 
 class FlexContainerInfo;
 class FlexOpenFileInfo;
@@ -44,19 +43,19 @@ const int MAX_OPEN_FILES = 1;
 
 #define CHECK_NO_CONTAINER_OPEN					\
 	if (fp == NULL) {					\
-		FlexException ex;				\
-		ex.setString(FERR_NO_CONTAINER_OPEN);		\
-		throw ex;					\
+		FlexException *pE = getFlexException();		\
+		pE->setString(FERR_NO_CONTAINER_OPEN);		\
+		throw pE;					\
 	}
 
 #define CHECK_CONTAINER_WRITEPROTECTED				\
 	if (IsWriteProtected())					\
 	{							\
                 FlexContainerInfo info;				\
-		FlexException ex;				\
+		FlexException *pE = getFlexException();		\
                 GetInfo(info);					\
-                ex.setString(FERR_CONTAINER_IS_READONLY, info.GetName());\
-                throw ex;					\
+                pE->setString(FERR_CONTAINER_IS_READONLY, info.GetName());\
+                throw pE;					\
 	}
 
 class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
@@ -79,31 +78,31 @@ public:
 	static BString bootSectorFile;
 	static FlexFileContainer *Create(const char *dir, const char *name,
                           int t, int s, int fmt = TYPE_DSK_CONTAINER);
-	int Close(void);
+	int  Close(void);
 	bool CheckFilename(const char *fileName) const;
 	bool IsContainerOpened(void) const;
-	bool	ReadSector(Byte *buffer, int trk, int sec) const;
-	bool	WriteSector(const Byte *buffer, int trk, int sec);
+	bool ReadSector(Byte *buffer, int trk, int sec) const;
+	bool WriteSector(const Byte *buffer, int trk, int sec);
 	bool IsWriteProtected(void) const;
 	bool IsTrackValid(int track) const;
 	bool IsSectorValid(int track, int sector) const;
-	int GetBytesPerSector(void) const;
-	bool	GetInfo(FlexContainerInfo& info) const;
-	int GetContainerType(void) const;
+	int  GetBytesPerSector(void) const;
+	bool GetInfo(FlexContainerInfo& info) const;
+	int  GetContainerType(void) const;
 
 // enhanced interface (to be used within flexdisk)
 public:
 	BString GetPath() const;
 	FileContainerIf *begin() { return this; };
 	FileContainerIf *end()   const { return NULL; };
-	bool	FindFile(const char *fileName, FlexDirEntry& entry);	
-	bool	DeleteFile(const char *fileName);
-	bool	RenameFile(const char *oldName, const char *newName);
-	bool	SetAttributes(const char *fileName, int setMask, int clearMask);
+	bool FindFile(const char *fileName, FlexDirEntry& entry);	
+	bool DeleteFile(const char *fileName);
+	bool RenameFile(const char *oldName, const char *newName);
+	bool SetAttributes(const char *fileName, int setMask, int clearMask);
 	void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
 	bool WriteFromBuffer(const FlexFileBuffer &buffer,
 				const char *fileName = NULL);
-	bool	FileCopy(const char *sourceName, const char *destName,
+	bool FileCopy(const char *sourceName, const char *destName,
 			FileContainerIf& destination);
 
 // internal interface

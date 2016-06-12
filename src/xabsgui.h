@@ -43,7 +43,7 @@ extern Status _XInitImageFuncPtrs(
 	XImage* /* image */
 #endif
 );
-};
+}
 
 #include "absgui.h"
 
@@ -96,7 +96,7 @@ protected:
 	virtual Window	getWindow(tWindowType t = FLX_E2SCREEN);
 	virtual void	initialize(struct sGuiOptions *pOptions);
 	virtual int	popup_help(void);
-	virtual char    *get_title(void);
+	virtual const char *get_title(void);
 	virtual void	toggle_mouse_capture(void);
 	virtual void	release_mouse_capture(void);
 

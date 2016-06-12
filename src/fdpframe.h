@@ -28,12 +28,12 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
-#include <wx/wx.h>
+    // Include your minimal set of headers here, or wx.h
+    #include <wx/wx.h>
 #endif
 
 //#include <wx/mdi.h>
@@ -47,29 +47,32 @@ class FileContainerIf;
 --------------------------------------------------------*/
 class FlexParentFrame: public wxMDIParentFrame, public BObserver
 {
-  public:  
-    FlexParentFrame(wxWindow *parent, const wxWindowID id, const wxString& title,
-		const wxPoint& pos, const wxSize& size, const long style);
+public:
+    FlexParentFrame(wxWindow *parent, const wxWindowID id, const wxString &title,
+                    const wxPoint &pos, const wxSize &size, const long style);
     virtual ~FlexParentFrame(void);
-    void OnSize(wxSizeEvent& event);
-    void OnAbout(wxCommandEvent& event);
-    void OnNewContainer(wxCommandEvent& event);
-    void OnOpenContainer(wxCommandEvent& event);
-    void OnNewDirectory(wxCommandEvent& event);
-    void OnOpenDirectory(wxCommandEvent& event);
-    void OnOptions(wxCommandEvent& event);
-	void OpenChild(const char *title, FileContainerIf *container);
-	bool GetContainerProperties(int *tracks, int *sectors,
-		int *format, wxString &path);
-	bool GetGlobalOptions(bool *autoTextFlag, wxString &viewer,
-		wxString &bootFile);
-    void OnQuit(wxCommandEvent& event);
-	void Update(const void *pObject);
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
+    void OnChildFocus(wxChildFocusEvent &event);
+#endif
+    void OnSize(wxSizeEvent &event);
+    void OnAbout(wxCommandEvent &event);
+    void OnNewContainer(wxCommandEvent &event);
+    void OnOpenContainer(wxCommandEvent &event);
+    void OnNewDirectory(wxCommandEvent &event);
+    void OnOpenDirectory(wxCommandEvent &event);
+    void OnOptions(wxCommandEvent &event);
+    void OpenChild(wxString &title, FileContainerIf *container);
+    bool GetContainerProperties(int *tracks, int *sectors,
+                                int *format, wxString &path);
+    bool GetGlobalOptions(bool *autoTextFlag, wxString &viewer,
+                          wxString &bootFile);
+    void OnQuit(wxCommandEvent &event);
+    void UpdateFrom(const void *pObject);
 
-  private:
-    void InitToolBar(wxToolBar* toolBar);
+private:
+    void InitToolBar(wxToolBar *toolBar);
 
-DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

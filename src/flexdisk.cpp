@@ -25,12 +25,12 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
-#include <wx/wx.h>
+    // Include your minimal set of headers here, or wx.h
+    #include <wx/wx.h>
 #endif
 #include <wx/clipbrd.h>
 
@@ -47,7 +47,13 @@
 #include "bregistr.h"
 #include "brcfile.h"
 #include "benv.h"
+#include "flexerr.h"
 
+// Definition of Factory method to get a new exception object
+FlexException *getFlexException(int /* type = 0 */)
+{
+    return new FlexException();
+}
 
 IMPLEMENT_APP(FLEXplorer)
 
@@ -56,93 +62,121 @@ IMPLEMENT_APP(FLEXplorer)
 --------------------------------------------------------*/
 bool FLEXplorer::OnInit(void)
 {
-	FlexParentFrame *frame;
-	
-	ReadDefaultOptions();
-	SetAppName("FLEXplorer");
-#ifdef wxUSE_DRAG_AND_DROP
-	wxTheClipboard->UsePrimarySelection();
-#endif
-	
-	int width = 820;
+    FlexParentFrame *frame = NULL;
 
-	// Create the main frame window
-	frame = new FlexParentFrame((wxFrame *) NULL, -1,
-		(const char *)GetAppName(), wxPoint(-1, -1), wxSize(width, 700),
-			wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
-	frame->Show(TRUE);
-	SetTopWindow(frame);
-	return TRUE;
+    wxLocale::AddCatalogLookupPathPrefix(wxT("."));
+    wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
+
+    m_locale.Init();
+    m_locale.AddCatalog(wxT("flexemu"));
+
+    ReadDefaultOptions();
+    SetAppName(_("FLEXplorer"));
+#ifdef wxUSE_DRAG_AND_DROP
+    wxTheClipboard->UsePrimarySelection();
+#endif
+
+    int width = 820;
+
+    // Create the main frame window
+    frame = new FlexParentFrame((wxFrame *) NULL, -1, GetAppName(),
+                                wxPoint(-1, -1), wxSize(width, 700),
+                                wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
+    frame->Show(TRUE);
+    SetTopWindow(frame);
+    return TRUE;
 }
 
 int FLEXplorer::OnExit(void)
 {
-	WriteDefaultOptions();
-	return 0;
+    WriteDefaultOptions();
+    return 0;
 }
 
 void FLEXplorer::WriteDefaultOptions(void)
 {
 #ifdef WIN32
-	BRegistry *reg;
+    BRegistry *reg;
 
-	reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
-	reg->SetValue(FLEXPLORERFILEVIEWER, FlexDiskListCtrl::fileViewer);
-	reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-	reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ? 1 : 0);
-	delete reg;
+    reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
+    reg->SetValue(FLEXPLORERFILEVIEWER, FlexDiskListCtrl::fileViewer);
+    reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ? 1 : 0);
+    delete reg;
 #endif
 #ifdef UNIX
-        BRcFile *rcFile;
-        BString rcFileName;
-        BEnvironment env;
+    BRcFile *rcFile;
+    BString rcFileName;
+    BEnvironment env;
 
-        if (!env.GetValue("HOME", rcFileName))
-                rcFileName = ".";
-        rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-	rcFile = new BRcFile(rcFileName);
-	rcFile->Initialize(); // truncate file
-	rcFile->SetValue(FLEXPLORERFILEVIEWER, FlexDiskListCtrl::fileViewer);
-	rcFile->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-	rcFile->SetValue(FLEXPLORERTEXTFLAG,
-		FlexCopyManager::autoTextConversion ? 1 : 0);
-	delete rcFile;
+    if (!env.GetValue("HOME", rcFileName))
+    {
+        rcFileName = ".";
+    }
+
+    rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
+    rcFile = new BRcFile(rcFileName);
+    rcFile->Initialize(); // truncate file
+    rcFile->SetValue(FLEXPLORERFILEVIEWER,
+                     FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
+    rcFile->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    rcFile->SetValue(FLEXPLORERTEXTFLAG,
+                     FlexCopyManager::autoTextConversion ? 1 : 0);
+    delete rcFile;
 #endif
 }
 
 void FLEXplorer::ReadDefaultOptions(void)
 {
-	int	autoTextFlag;
-	BString str;
+    int autoTextFlag;
+    BString str;
 #ifdef WIN32
-	BRegistry *reg;
+    BRegistry *reg;
 
-	reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
-	reg->GetValue(FLEXPLORERFILEVIEWER, str);
-	reg->GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-	reg->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag);
-	if (str.length() == 0)
-		str = "Notepad.exe";
-	FlexDiskListCtrl::fileViewer = (const char *)str;
-	FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
-	delete reg;
+    reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
+    reg->GetValue(FLEXPLORERFILEVIEWER, str);
+    reg->GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    reg->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag);
+
+    if (str.length() == 0)
+    {
+        str = "Notepad.exe";
+    }
+
+    FlexDiskListCtrl::fileViewer = (const char *)str;
+    FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
+    delete reg;
 #endif
 #ifdef UNIX
-        BRcFile *rcFile;
-        BString rcFileName;
-        BEnvironment env;
+    BRcFile *rcFile;
+    BString rcFileName;
+    BEnvironment env;
 
-        if (!env.GetValue("HOME", rcFileName))
-                rcFileName = ".";
-        rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-        rcFile = new BRcFile(rcFileName);
-        if (!rcFile->GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
-		FlexDiskListCtrl::fileViewer = (const char *)str;
-        if (!rcFile->GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
-		FlexFileContainer::bootSectorFile = (const char *)str;
-        if (!rcFile->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))
-		FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
-	delete rcFile;					 
+    if (!env.GetValue("HOME", rcFileName))
+    {
+        rcFileName = ".";
+    }
+
+    rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
+    rcFile = new BRcFile(rcFileName);
+
+    if (!rcFile->GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
+    {
+        wxString fileViewer(str, *wxConvCurrent);
+        FlexDiskListCtrl::fileViewer = fileViewer;
+    }
+
+    if (!rcFile->GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
+    {
+        FlexFileContainer::bootSectorFile = (const char *)str;
+    }
+
+    if (!rcFile->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))
+    {
+        FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
+    }
+
+    delete rcFile;
 #endif
 }
 

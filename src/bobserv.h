@@ -29,9 +29,11 @@
  Only the class implementing the BObserver interface
  knows what to do with pObject
 --------------------------------------------------------*/
-class BObserver {
+class BObserver
+{
 public:
-	virtual void Update(const void *pObject) = 0;
+    virtual void UpdateFrom(const void *pObject) = 0;
+    virtual ~BObserver() { };
 };
 
 #endif // #ifndef __BOBSERV_H__

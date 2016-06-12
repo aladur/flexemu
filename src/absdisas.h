@@ -20,6 +20,7 @@ enum {
 class AbstractDisassembler {
 
 public:
+	virtual		~AbstractDisassembler() { };
 	int		virtual Disassemble(
 				const Byte *pMemory, DWord pc, DWord *pFlags, DWord *pAddr,
 				char **pb1, char **pb2) = 0;

@@ -22,9 +22,9 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include "misc1.h"
 #include "brcfile.h"
 #include "bfileptr.h"
-#include "misc1.h"
 
 BRcFile::BRcFile()
 {
@@ -72,7 +72,7 @@ int BRcFile::SetValue(const char *key, int value)
 
 int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
 {
-	char def[32];
+	char def[256];
 	char strparm[PATH_MAX];
 	BFilePtr fp(fileName, "r");
 

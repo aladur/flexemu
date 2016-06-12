@@ -146,10 +146,11 @@ void Mc146818::writeIo(Word offset, Byte val)
 
 void Mc146818::update_1_second(void)
 {
-	static Byte dse_october = 0;
 
 	// update only if SET bit is 0
 	if (!BTST7(B)) {
+		static Byte dse_october = 0;
+
 		// check for last sunday in april 1:59:59
 		if (BTST0(B) && hour == 1 &&
 			convert_bin(minute) == 59 &&

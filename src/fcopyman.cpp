@@ -37,16 +37,18 @@ bool	FlexCopyManager::FileCopy(const char *srcName, const char *destName,
 	FlexDirEntry de;
 
 	if (&src == &dst) {
-		ex.setString(FERR_COPY_ON_ITSELF, srcName);
-		throw ex;
+		FlexException *pE = getFlexException();
+		pE->setString(FERR_COPY_ON_ITSELF, srcName);
+		throw pE;
 	}
 	if (dst.IsWriteProtected())
 	{
 		FlexContainerInfo info;
 
 		dst.GetInfo(info);
-		ex.setString(FERR_CONTAINER_IS_READONLY, info.GetName());
-		throw ex;
+		FlexException *pE = getFlexException();
+		pE->setString(FERR_CONTAINER_IS_READONLY, info.GetName());
+		throw pE;
 	}
 	src.ReadToBuffer(srcName, fileBuffer);
 	if ((src.GetContainerType() & TYPE_CONTAINER) &&
@@ -62,8 +64,9 @@ bool	FlexCopyManager::FileCopy(const char *srcName, const char *destName,
 	if (!dst.WriteFromBuffer(fileBuffer, destName)) {
 		FlexContainerInfo info;
 		dst.GetInfo(info);
-		ex.setString(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
-		throw ex;
+		FlexException *pE = getFlexException();
+		pE->setString(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
+		throw pE;
 	}
 	return true;
 }

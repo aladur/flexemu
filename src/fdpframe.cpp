@@ -22,32 +22,32 @@
 
 
 #ifdef _MSC_VER
-#include "confignt.h"
+    #include "confignt.h"
 #else
-#include "config.h"
+    #include "config.h"
 #endif
 // define global variable with version string because
 // wx-headers delete predefined VERSION
-static char *_progVersion = VERSION;
+static const char *_progVersion = VERSION;
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
-#include <wx/wx.h>
+    // Include your minimal set of headers here, or wx.h
+    #include <wx/wx.h>
 #endif
 
 #include <misc1.h>
 
 #ifdef WIN32
-#ifdef _MSC_VER
-#include <direct.h>
-#endif
+    #ifdef _MSC_VER
+        #include <direct.h>
+    #endif
 #endif
 
 #include "fdpframe.h"
@@ -64,19 +64,21 @@ static char *_progVersion = VERSION;
 #include "optdlg.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
-#include "bitmaps/flexdisk.xpm"
-#include "bitmaps/new_con.xpm"
-#include "bitmaps/open_con.xpm"
-#include "bitmaps/open_dir.xpm"
+    #include "bitmaps/flexdisk.xpm"
+    #include "bitmaps/new_con.xpm"
+    #include "bitmaps/open_con.xpm"
+    #include "bitmaps/open_dir.xpm"
 #endif
 
 #define MAX_NR_OF_BITMAPS (11)
+
 
 /*------------------------------------------------------
  FlexParentFrame implementation
 --------------------------------------------------------*/
 
 BEGIN_EVENT_TABLE(FlexParentFrame, wxMDIParentFrame)
+    EVT_CHILD_FOCUS(FlexParentFrame::OnChildFocus)
     EVT_MENU(MDI_ABOUT, FlexParentFrame::OnAbout)
     EVT_MENU(MDI_NEW_CONTAINER, FlexParentFrame::OnNewContainer)
     EVT_MENU(MDI_OPEN_CONTAINER, FlexParentFrame::OnOpenContainer)
@@ -88,348 +90,475 @@ BEGIN_EVENT_TABLE(FlexParentFrame, wxMDIParentFrame)
 END_EVENT_TABLE()
 
 FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
-	const wxString& title, const wxPoint& pos, const wxSize& size,
-	const long style) : wxMDIParentFrame(parent, id, title, pos, size, style)
+                                 const wxString &title, const wxPoint &pos, const wxSize &size,
+                                 const long style) : wxMDIParentFrame(parent, id, title, pos, size, style)
 {
-// give it an icon
+    // give it an icon
 #ifdef __WXMSW__
-	SetIcon(wxIcon("AFLEXDISK_ICON"));
+    SetIcon(wxIcon(wxT("AFLEXDISK_ICON")));
 #else
-	SetIcon(wxIcon( flexdisk_xpm ));
+    SetIcon(wxIcon(flexdisk_xpm));
 #endif
-        wxMenuBar  *pMenuBar = new wxMenuBar( wxMB_DOCKABLE );
+    wxMenuBar  *pMenuBar = new wxMenuBar(wxMB_DOCKABLE);
 
-        pMenuBar->Append(FlexMenuFactory::CreateMenu(fFileMenuId),  "&File");
-        pMenuBar->Append(FlexMenuFactory::CreateMenu(fExtrasMenuId),"&Extras");
-        pMenuBar->Append(FlexMenuFactory::CreateMenu(fHelpMenuId),  "&Help");
-	SetMenuBar(pMenuBar);
+    pMenuBar->Append(FlexMenuFactory::CreateMenu(fFileMenuId),  _("&File"));
+    pMenuBar->Append(FlexMenuFactory::CreateMenu(fExtrasMenuId), _("&Extras"));
+    pMenuBar->Append(FlexMenuFactory::CreateMenu(fHelpMenuId),  _("&Help"));
+    SetMenuBar(pMenuBar);
 
     // Accelerators
+    int i = 0;
+    const wxChar *acc = _("NODXACVF");
     wxAcceleratorEntry entries[9];
-    entries[0].Set(wxACCEL_CTRL, (int) 'N', MDI_NEW_CONTAINER);
-    entries[1].Set(wxACCEL_CTRL, (int) 'O', MDI_OPEN_CONTAINER);
-    entries[2].Set(wxACCEL_CTRL, (int) 'D', MDI_NEW_DIRECTORY);
-    entries[3].Set(wxACCEL_CTRL, (int) 'X', MDI_QUIT);
-    entries[4].Set(wxACCEL_CTRL, (int) 'A', MDI_SELECTALL);
-    entries[5].Set(wxACCEL_CTRL, (int) 'C', MDI_COPY);
-    entries[6].Set(wxACCEL_CTRL, (int) 'V', MDI_PASTE);
-    entries[7].Set(wxACCEL_CTRL, (int) 'F', MDI_FIND);
-    entries[8].Set(wxACCEL_NORMAL, WXK_DELETE, MDI_DELETE);
-    wxAcceleratorTable accel(9, entries);
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_NEW_CONTAINER);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_OPEN_CONTAINER);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_NEW_DIRECTORY);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_QUIT);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_SELECTALL);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_COPY);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_PASTE);
+    i++;
+    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_FIND);
+    i++;
+    entries[i].Set(wxACCEL_NORMAL, WXK_DELETE, MDI_DELETE);
+    i++;
+    wxAcceleratorTable accel(i, entries);
     SetAcceleratorTable(accel);
 
-	// create a status bar
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
-	wxStatusBar *statusBar = CreateStatusBar(2);
-	const int fieldWidth[2] = { 120, -1 };
-	statusBar->SetFieldsCount(2, fieldWidth);
+    // create a status bar
+    wxStatusBar *statusBar = CreateStatusBar(3);
+    const int fieldWidth[3] = { 300, -1, -1 };
+    statusBar->SetFieldsCount(3, fieldWidth);
 #endif
-	// create a tool bar
-	CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL);
-	InitToolBar(GetToolBar());
+
+    // create a tool bar
+    CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL);
+    InitToolBar(GetToolBar());
 }
 
 FlexParentFrame::~FlexParentFrame(void)
 {
 }
 
-void FlexParentFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
+void FlexParentFrame::OnQuit(wxCommandEvent &WXUNUSED(event))
 {
-	Close(TRUE);
+    Close(TRUE);
 }
 
-void FlexParentFrame::InitToolBar(wxToolBar* toolBar)
+void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
 {
-    wxBitmap* bitmaps[3];
+    wxBitmap *bitmaps[3];
 
 #ifdef __WXMSW__
-	bitmaps[0] = new wxBitmap("new_con", wxBITMAP_TYPE_RESOURCE);
-	bitmaps[1] = new wxBitmap("open_con", wxBITMAP_TYPE_RESOURCE);
-	bitmaps[2] = new wxBitmap("open_dir", wxBITMAP_TYPE_RESOURCE);
+    bitmaps[0] = new wxBitmap(wxT("new_con"), wxBITMAP_TYPE_RESOURCE);
+    bitmaps[1] = new wxBitmap(wxT("open_con"), wxBITMAP_TYPE_RESOURCE);
+    bitmaps[2] = new wxBitmap(wxT("open_dir"), wxBITMAP_TYPE_RESOURCE);
 #else
-	bitmaps[0] = new wxBitmap( new_con_xpm );
-	bitmaps[1] = new wxBitmap( open_con_xpm );
-	bitmaps[2] = new wxBitmap( open_dir_xpm );
+    bitmaps[0] = new wxBitmap(new_con_xpm);
+    bitmaps[1] = new wxBitmap(open_con_xpm);
+    bitmaps[2] = new wxBitmap(open_dir_xpm);
 #endif
 
 #ifdef __WXMSW__
-	int width = 24;
+    int width = 24;
 #else
-	int width = 16;
+    int width = 16;
 #endif
-	int currentX = 5;
+    int currentX = 5;
 
-	toolBar->AddTool( MDI_NEW_CONTAINER, *bitmaps[0], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, "New File Container");
-	currentX += width + 5;
-	toolBar->AddTool(MDI_OPEN_CONTAINER, *bitmaps[1], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, "Open File Container");
-	currentX += width + 5;
-	toolBar->AddTool(MDI_OPEN_DIRECTORY, *bitmaps[2], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, "Open Directory");
-	currentX += width + 5;
-	toolBar->Realize();
+    toolBar->AddTool(MDI_NEW_CONTAINER, _("New File Container"),
+                     *bitmaps[0], wxNullBitmap);
+    //toolBar->AddTool( MDI_NEW_CONTAINER, *bitmaps[0], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("New File Container"));
+    toolBar->SetToolLongHelp(MDI_NEW_CONTAINER, "Create a new File Container");
+    currentX += width + 5;
+    //toolBar->AddTool(MDI_OPEN_CONTAINER, *bitmaps[1], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("Open File Container"));
+    toolBar->AddTool(MDI_OPEN_CONTAINER, _("Open File Container"),
+                     *bitmaps[1], wxNullBitmap);
+    toolBar->SetToolLongHelp(MDI_OPEN_CONTAINER,
+                             "Open an existing File Container");
+    currentX += width + 5;
+    //toolBar->AddTool(MDI_OPEN_DIRECTORY, *bitmaps[2], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("Open Directory"));
+    toolBar->AddTool(MDI_OPEN_DIRECTORY, _("Open Directory"),
+                     *bitmaps[2], wxNullBitmap);
+    toolBar->SetToolLongHelp(MDI_OPEN_DIRECTORY,
+                             "Open an existing Directory as File Container");
+    toolBar->Realize();
 
-	for (int i = 0; i < 3; i++)
-		delete bitmaps[i];
+    for (int i = 0; i < 3; i++)
+    {
+        delete bitmaps[i];
+    }
 }
 
-void FlexParentFrame::OnAbout(wxCommandEvent& WXUNUSED(event) )
-{
-	char *msgString;
-	char *msgFormat =
-"FLEXplorer V%s\n\
-Copyright (C) W. Schwotzer  1998-2004\n\
-FLEXplorer comes with ABSOLUTELY NO WARRANTY.\n\
-This is free software, and you are welcome\n\
-to redistribute it under certain\n\
-conditions. For more information\n\
-look at file COPYING.\n\n\
-http://www.geocities.com/flexemu/";
-
-	msgString = new char[strlen(msgFormat)+strlen(_progVersion)+1];
-	if (msgString) {
-		sprintf(msgString, msgFormat, _progVersion);
-      		(void)wxMessageBox(msgString, "About FLEXplorer");
-	}
-	delete [] msgString;
-}
-
-void FlexParentFrame::OnOpenContainer(wxCommandEvent& WXUNUSED(event) )
-{
-	FileContainerIf	*container;
-	static wxString	containerPath;
-	static wxString defaultDir;
-	wxArrayString paths;
-	wxString title;
-	unsigned int i = 0;
-
-	wxFileDialog dialog(
-		this,
-		"Select FLEX file containers",
-		defaultDir,
-		"",
-		"DSK Container (*.dsk)|*.dsk|FLX Container (*.flx)|*.flx",
-		wxOPEN | wxMULTIPLE);
-
-	if (dialog.ShowModal() != wxID_OK)
-		return;
-
-	dialog.GetPaths(paths);
-
-	for (i = 0; i < paths.GetCount(); ++i)
-	{
-		containerPath = paths.Item(i);
-		defaultDir = containerPath.BeforeLast(PATHSEPARATOR);
-	
-		try {
-			container = new FlexFileContainer(containerPath, "rb+");
-		} catch (FlexException UNUSED(&e)) {
-	   		try {
-				container = new FlexFileContainer(containerPath, "rb");
-	   		} catch (FlexException &e) {
-				if (wxMessageBox(e.what(), "FLEXplorer Error",
-				wxOK | wxCANCEL | wxCENTRE | wxICON_EXCLAMATION)
-					 == wxCANCEL)
-					return;
-				continue;
-	   		}
-		}
-
-#ifdef WIN32
-		title = containerPath;
-#endif
-#ifdef UNIX
-		title = containerPath.AfterLast(PATHSEPARATOR);
-#endif
-		if (container->IsWriteProtected())
-			title += " [read-only]";
-		OpenChild(title, container);
-	}
-}
-
-void FlexParentFrame::OnNewContainer(wxCommandEvent& WXUNUSED(event) )
-{
-	FileContainerIf	*container;
-	wxString	containerPath, directory, containerName;
-	int		tracks, sectors, format;
-	wxString title;
-
-	containerPath = "";
-	if (GetContainerProperties(&tracks, &sectors, &format, containerPath)) {
-		directory = containerPath.BeforeLast(PATHSEPARATOR);
-		containerName = containerPath.AfterLast(PATHSEPARATOR);
-		try {
-			container = FlexFileContainer::Create(directory,
-                           containerName, tracks, sectors, format);
-		} catch (FlexException &e) {
-			wxMessageBox(e.what(), "FLEXplorer Error", wxOK | wxCENTRE | wxICON_EXCLAMATION);
-			return;
-		}
-#ifdef WIN32
-		title = containerPath;
-#endif
-#ifdef UNIX
-		title = containerPath.AfterLast(PATHSEPARATOR);
-#endif
-		OpenChild(title, container);
-	}
-}
-
-void FlexParentFrame::OnOpenDirectory(wxCommandEvent& WXUNUSED(event) )
-{
-	FileContainerIf	*container;
-	static wxString	containerPath;
-	wxString	title;
-	wxDirDialog	*dialog;
-
-	dialog = new wxDirDialog(this, "Open a FLEX directory container",
-			containerPath);
-	if (dialog->ShowModal() == wxID_OK) {
-		containerPath = dialog->GetPath();
-#ifdef WIN32
-		title = containerPath;
-#endif
-#ifdef UNIX
-		title = containerPath.AfterLast(PATHSEPARATOR);
-#endif
-		container = new DirectoryContainer(containerPath);
-		if (container->IsWriteProtected())
-			title += " [read-only]";
-		OpenChild(title, container);
-	}
-	delete dialog;
-}
-
-bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors, int *format, wxString &path)
-{
-	ContainerPropertiesDialog *dialog;
-	wxPoint pos = GetPosition();
-
-	pos.x += 10;
-	pos.y += 10;
-	
-	dialog = new ContainerPropertiesDialog(this, pos, 80, 40, path);
-	if (dialog->ShowModal() == wxID_OK)
-	{
-		*tracks = dialog->GetTracks();
-		*sectors = dialog->GetSectors();
-		path = dialog->GetPath();
-		switch(dialog->GetFormat())
-		{
-			case 0:  *format = TYPE_DSK_CONTAINER; break;
-			case 1:  *format = TYPE_FLX_CONTAINER; break;
-			default: *format = TYPE_DSK_CONTAINER; break;
-		}
-		delete dialog;
-		return true;
-	}
-	delete dialog;
-	return false;
-}
-
-void FlexParentFrame::OnNewDirectory(wxCommandEvent& WXUNUSED(event) )
-{
-	FileContainerIf	*container;
-	wxString		containerPath, directory, containerName;
-	wxDirDialog		*dialog;
-
-	dialog = new wxDirDialog(this,
-		"Create a new FLEX directory container",
-		"");
-	if (dialog->ShowModal() == wxID_OK) {
-		containerPath = dialog->GetPath();
-		directory = containerPath.BeforeLast(PATHSEPARATOR);
-		containerName = containerPath.AfterLast(PATHSEPARATOR);
-		container = DirectoryContainer::Create(directory,
-                               containerName, 80, 40);
-		OpenChild(containerPath, container);
-	}
-	delete dialog;
-}
-
-void FlexParentFrame::OpenChild(const char *title, FileContainerIf *container)
-{
-	FlexChildFrame *childFrame;
-
-	// create a child frame: the container view
-	try {
-		childFrame = new FlexChildFrame(
-					this, title,
-					wxPoint(-1, -1),
-					wxSize(520, 500),
-					wxDEFAULT_FRAME_STYLE,
-					container);
-	} catch (FlexException e) {
-		wxMessageBox(e.what(), "FLEXplorer Error",
-			wxOK | wxCENTRE | wxICON_EXCLAMATION);
-		return;
-	}
-	childFrame->Attach(&SFlexFileClipboard::Instance());
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
-	// statusbar support with GTK, X11, MOTIF
-	childFrame->GetListControl()->Attach(this);
+void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
+{
+    wxWindow *pWindow = event.GetWindow();
+
+
+    if (pWindow == GetActiveChild())
+    {
+        int id = OBSERVE_STATUS_BAR;
+
+        UpdateFrom(&id);
+    }
+}
 #endif
-	childFrame->Show(TRUE);
+
+void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
+{
+    wxString msgFormat;
+    wxString progVersion(_progVersion, *wxConvCurrent);
+
+    msgFormat =  _("FLEXplorer V");
+    msgFormat += progVersion;
+    msgFormat += wxT("\n");
+    msgFormat += _("Copyright (C) W. Schwotzer  1998-2007\n");
+    msgFormat += _("FLEXplorer comes with ABSOLUTELY NO WARRANTY.\n");
+    msgFormat += _("This is free software, and you are welcome\n");
+    msgFormat += _("to redistribute it under certain\n");
+    msgFormat += _("conditions. For more information\n");
+    msgFormat += _("look at file COPYING.\n");
+    msgFormat += wxT("\n");
+    msgFormat += _("http://www.geocities.com/flexemu/");
+
+    (void)wxMessageBox(msgFormat, _("About FLEXplorer"));
 }
 
-void FlexParentFrame::OnSize(wxSizeEvent& WXUNUSED(event) )
+void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
+{
+    FileContainerIf *container;
+    static wxString containerPath;
+    static wxString defaultDir;
+    wxArrayString paths;
+    wxString title;
+    unsigned int i = 0;
+
+    wxFileDialog dialog(
+        this,
+        _("Select FLEX file containers"),
+        defaultDir,
+        wxT(""),
+        _("DSK Container (*.dsk)|*.dsk|FLX Container (*.flx)|*.flx"),
+        wxFD_OPEN | wxFD_MULTIPLE);
+
+    if (dialog.ShowModal() != wxID_OK)
+    {
+        return;
+    }
+
+    dialog.GetPaths(paths);
+
+    for (i = 0; i < paths.GetCount(); ++i)
+    {
+        containerPath = paths.Item(i);
+        defaultDir = containerPath.BeforeLast(PATHSEPARATOR);
+
+        try
+        {
+            container = new FlexFileContainer(
+                containerPath.mb_str(*wxConvCurrent), "rb+");
+        }
+        catch (FlexException *pE)
+        {
+            delete pE;
+
+            try
+            {
+                container = new FlexFileContainer(
+                    containerPath.mb_str(*wxConvCurrent), "rb");
+            }
+            catch (FlexException *pE)
+            {
+                int r = wxMessageBox(pE->wwhat(),
+                                     _("FLEXplorer Error"), wxOK |
+                                     wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
+                delete pE;
+
+                if (r == wxCANCEL)
+                {
+                    return;
+                }
+
+                continue;
+            }
+        }
+
+#ifdef WIN32
+        title = containerPath;
+#endif
+#ifdef UNIX
+        title = containerPath.AfterLast(PATHSEPARATOR);
+#endif
+
+        if (container->IsWriteProtected())
+        {
+            title += _(" [read-only]");
+        }
+
+        OpenChild(title, container);
+    }
+}
+
+void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
+{
+    wxString    containerPath, directory, containerName;
+    int     tracks, sectors, format;
+    wxString title;
+
+    containerPath = wxT("");
+
+    if (GetContainerProperties(&tracks, &sectors, &format, containerPath))
+    {
+        FileContainerIf *container;
+
+        directory = containerPath.BeforeLast(PATHSEPARATOR);
+        containerName = containerPath.AfterLast(PATHSEPARATOR);
+
+        try
+        {
+            container = FlexFileContainer::Create(
+                            directory.mb_str(*wxConvCurrent),
+                            containerName.mb_str(*wxConvCurrent),
+                            tracks, sectors, format);
+        }
+        catch (FlexException *pE)
+        {
+            wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+                         wxOK | wxCENTRE | wxICON_EXCLAMATION);
+            delete pE;
+            return;
+        }
+
+#ifdef WIN32
+        title = containerPath;
+#endif
+#ifdef UNIX
+        title = containerPath.AfterLast(PATHSEPARATOR);
+#endif
+        OpenChild(title, container);
+    }
+}
+
+void FlexParentFrame::OnOpenDirectory(wxCommandEvent &WXUNUSED(event))
+{
+    static wxString containerPath;
+    wxString    title;
+    wxDirDialog *dialog;
+
+    dialog = new wxDirDialog(this, _("Open a FLEX directory container"),
+                             containerPath);
+
+    if (dialog->ShowModal() == wxID_OK)
+    {
+        FileContainerIf *container;
+
+        containerPath = dialog->GetPath();
+
+        if (containerPath.Right(1) == wxT(PATHSEPARATORSTRING))
+        {
+            containerPath = containerPath.BeforeLast(PATHSEPARATOR);
+        }
+
+#ifdef WIN32
+        title = containerPath;
+#endif
+#ifdef UNIX
+        title = containerPath.AfterLast(PATHSEPARATOR);
+#endif
+        container = new DirectoryContainer(
+            containerPath.mb_str(*wxConvCurrent));
+
+        if (container->IsWriteProtected())
+        {
+            title += _(" [read-only]");
+        }
+
+        OpenChild(title, container);
+    }
+
+    delete dialog;
+}
+
+bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
+        int *format, wxString &path)
+{
+    ContainerPropertiesDialog *dialog;
+    wxPoint pos = GetPosition();
+
+    pos.x += 10;
+    pos.y += 10;
+
+    dialog = new ContainerPropertiesDialog(this, pos, 80, 40, path);
+
+    if (dialog->ShowModal() == wxID_OK)
+    {
+        *tracks = dialog->GetTracks();
+        *sectors = dialog->GetSectors();
+        path = dialog->GetPath();
+
+        switch (dialog->GetFormat())
+        {
+            case 0:
+                *format = TYPE_DSK_CONTAINER;
+                break;
+
+            case 1:
+                *format = TYPE_FLX_CONTAINER;
+                break;
+
+            default:
+                *format = TYPE_DSK_CONTAINER;
+                break;
+        }
+
+        delete dialog;
+        return true;
+    }
+
+    delete dialog;
+    return false;
+}
+
+void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
+{
+    wxString        containerPath, directory, containerName;
+    wxDirDialog     *dialog;
+
+    dialog = new wxDirDialog(this,
+                             _("Create a new FLEX directory container"),
+                             wxT(""));
+
+    if (dialog->ShowModal() == wxID_OK)
+    {
+        FileContainerIf *container;
+
+        containerPath = dialog->GetPath();
+        directory = containerPath.BeforeLast(PATHSEPARATOR);
+        containerName = containerPath.AfterLast(PATHSEPARATOR);
+        container = DirectoryContainer::Create(
+                        directory.mb_str(*wxConvCurrent),
+                        containerName.mb_str(*wxConvCurrent),
+                        80, 40);
+        OpenChild(containerPath, container);
+    }
+
+    delete dialog;
+}
+
+void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
+{
+    FlexChildFrame *childFrame;
+
+    // create a child frame: the container view
+    try
+    {
+        childFrame = new FlexChildFrame(
+            this, title,
+            wxPoint(-1, -1),
+            wxSize(520, 500),
+            wxDEFAULT_FRAME_STYLE,
+            container);
+    }
+    catch (FlexException *pE)
+    {
+        wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+                     wxOK | wxCENTRE | wxICON_EXCLAMATION);
+        delete pE;
+        return;
+    }
+
+    childFrame->Attach(&SFlexFileClipboard::Instance());
+#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
+    // statusbar support with GTK, X11, MOTIF
+    childFrame->GetListControl()->Attach(this);
+#endif
+    childFrame->Show(TRUE);
+}
+
+void FlexParentFrame::OnSize(wxSizeEvent &WXUNUSED(event))
 {
     int w, h;
     GetClientSize(&w, &h);
     GetClientWindow()->SetSize(0, 0, w, h);
 }
 
-void FlexParentFrame::Update(const void *pId)
+void FlexParentFrame::UpdateFrom(const void *pObject)
 {
-	int id = *(int *)pId;
-	const FlexDiskListCtrl	*listCtrl;
-	wxStatusBar				*sBar;
-	if (!GetActiveChild())
-		return;
-	listCtrl = ((FlexChildFrame *)GetActiveChild())->GetListControl();
-	if (listCtrl && id == OBSERVE_STATUS_BAR && (sBar = GetStatusBar())) {
-		char buf[50];
+    const int id = *static_cast<const int *>(pObject);
 
-		sprintf(buf, "%d File(s) selected", listCtrl->GetFileCount());
-		sBar->SetStatusText(buf, 0);
-		sprintf(buf, "%d Byte", listCtrl->GetTotalSize());
-		sBar->SetStatusText(buf, 1);
-	}
+    if (id == OBSERVE_STATUS_BAR)
+    {
+        const FlexDiskListCtrl *listCtrl;
+        wxStatusBar *sBar;
+
+        if (!GetActiveChild())
+        {
+            return;
+        }
+
+        listCtrl = ((FlexChildFrame *)GetActiveChild())->GetListControl();
+
+        if (listCtrl && (sBar = GetStatusBar()))
+        {
+            wxString str;
+
+            str.Printf(_("%d File(s) selected"), listCtrl->GetFileCount());
+            sBar->SetStatusText(str, 1);
+            str.Printf(_("%d Byte"), listCtrl->GetTotalSize());
+            sBar->SetStatusText(str, 2);
+        }
+    }
 }
 
-void FlexParentFrame::OnOptions(wxCommandEvent& WXUNUSED(event) )
+void FlexParentFrame::OnOptions(wxCommandEvent &WXUNUSED(event))
 {
-	wxString viewer;
-	wxString bootFile;
-	bool autoTextFlag;
+    wxString viewer;
+    bool autoTextFlag;
 
-	viewer = FlexDiskListCtrl::fileViewer;
-	bootFile = (const char *)FlexFileContainer::bootSectorFile;
-	autoTextFlag = FlexCopyManager::autoTextConversion;
-	if (GetGlobalOptions(&autoTextFlag, viewer, bootFile)) {
-		FlexCopyManager::autoTextConversion = autoTextFlag;
-		FlexDiskListCtrl::fileViewer = viewer;
-		FlexFileContainer::bootSectorFile = (const char *)bootFile;
-	}
+    viewer = FlexDiskListCtrl::fileViewer;
+    wxString bootFile((const char *)FlexFileContainer::bootSectorFile,
+                      *wxConvCurrent);
+    autoTextFlag = FlexCopyManager::autoTextConversion;
+
+    if (GetGlobalOptions(&autoTextFlag, viewer, bootFile))
+    {
+        FlexCopyManager::autoTextConversion = autoTextFlag;
+        FlexDiskListCtrl::fileViewer = viewer;
+        FlexFileContainer::bootSectorFile =
+            bootFile.mb_str(*wxConvCurrent);
+    }
 }
 
 bool FlexParentFrame::GetGlobalOptions(bool *autoTextFlag,
-	wxString &viewer,
-	wxString &bootFile)
+                                       wxString &viewer,
+                                       wxString &bootFile)
 {
-	GlobalOptionsDialog *dialog;
-	wxPoint pos = GetPosition();
+    GlobalOptionsDialog *dialog;
+    wxPoint pos = GetPosition();
 
-	pos.x += 10;
-	pos.y += 10;
-	dialog = new GlobalOptionsDialog(this, pos,
-		*autoTextFlag, bootFile, viewer);
-	if (dialog->ShowModal() == wxID_OK) {
-		*autoTextFlag = dialog->GetAutoTextFlag();
-		bootFile = dialog->GetBootSectorFile();
-		viewer = dialog->GetViewer();
-		delete dialog;
-		return true;
-	}
-	delete dialog;
-	return false;
+    pos.x += 10;
+    pos.y += 10;
+    dialog = new GlobalOptionsDialog(this, pos,
+                                     *autoTextFlag, bootFile, viewer);
+
+    if (dialog->ShowModal() == wxID_OK)
+    {
+        *autoTextFlag = dialog->GetAutoTextFlag();
+        bootFile = dialog->GetBootSectorFile();
+        viewer = dialog->GetViewer();
+        delete dialog;
+        return true;
+    }
+
+    delete dialog;
+    return false;
 }
 

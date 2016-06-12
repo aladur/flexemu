@@ -41,19 +41,20 @@
 
 #include "optdlg.h"
 
+
 BEGIN_EVENT_TABLE(GlobalOptionsDialog, wxDialog)
 	EVT_BUTTON(IDC_ViewerButton,         GlobalOptionsDialog::OnSelectViewer)
 	EVT_BUTTON(IDC_BootSectorFileButton, GlobalOptionsDialog::OnSelectBootSectorFile)
-	EVT_BUTTON(wxID_OK,                  GlobalOptionsDialog::OnOK)
-	EVT_BUTTON(wxID_CANCEL,              GlobalOptionsDialog::OnCancel)
+//	EVT_BUTTON(wxID_OK,                  GlobalOptionsDialog::OnOK)
+//	EVT_BUTTON(wxID_CANCEL,              GlobalOptionsDialog::OnCancel)
 END_EVENT_TABLE()
 
 GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
 	const wxPoint &pos /* = wxDefaultPosition */,
 	const bool autoTextFlag /* = false */,
-	wxString bootFile /* = "boot" */,
-	wxString viewer /* = "" */) :
-	wxDialog(parent, 111, _T("Global Options"), pos),
+	wxString bootFile /* = wxT("boot") */,
+	wxString viewer /* = wxT("") */) :
+	wxDialog(parent, 111, _("Global Options"), pos),
 	m_viewer(viewer), m_bootSectorFile(bootFile),
 	m_autoTextFlag(autoTextFlag),
 	c_viewer(NULL), c_bootSectorFile(NULL), c_autoTextFlag(NULL)
@@ -68,39 +69,39 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
 	wxBoxSizer *pFile2Sizer  = new wxBoxSizer(wxHORIZONTAL);
 
 	c_autoTextFlag = new wxCheckBox(this, IDC_AutoTextFlag,
-			_T("Automatic Text Conversion"), wxDefaultPosition,
+			_("Automatic Text Conversion"), wxDefaultPosition,
 			wxDefaultSize, 0, wxGenericValidator(&m_autoTextFlag));
 	pWidgetSizer->Add(c_autoTextFlag, 0, wxALL, 5);
 	
-	pStatic = new wxStaticText(this, -1, _T("File Viewer"),
+	pStatic = new wxStaticText(this, -1, _("File Viewer"),
 		wxDefaultPosition, wxSize(100, -1));
 	pFile1Sizer->Add(pStatic, 0, wxALL, 5);
-	c_viewer = new wxTextCtrl(this, IDC_Viewer, "",
+	c_viewer = new wxTextCtrl(this, IDC_Viewer, wxT(""),
 		wxDefaultPosition, wxSize(200, -1), 0,
 		wxTextValidator(wxFILTER_NONE, &m_viewer));
 	pFile1Sizer->Add(c_viewer, 0, wxALL, 5);
-	pButton = new wxButton(this, IDC_ViewerButton, _T("..."),
+	pButton = new wxButton(this, IDC_ViewerButton, _("..."),
 		wxDefaultPosition, wxSize(40, -1));
 	pFile1Sizer->Add(pButton, 0, wxALL, 5);
 	pWidgetSizer->Add(pFile1Sizer);
 
-	pStatic = new wxStaticText(this, -1, _T("Boot Sector file"),
+	pStatic = new wxStaticText(this, -1, _("Boot Sector file"),
 		wxDefaultPosition, wxSize(100, -1));
 	pFile2Sizer->Add(pStatic, 0, wxALL, 5);
-	c_bootSectorFile = new wxTextCtrl(this, IDC_BootSectorFile, "",
+	c_bootSectorFile = new wxTextCtrl(this, IDC_BootSectorFile, wxT(""),
 		wxDefaultPosition, wxSize(200, -1), 0,
 		wxTextValidator(wxFILTER_NONE, &m_bootSectorFile));
 	pFile2Sizer->Add(c_bootSectorFile, 0, wxALL, 5);
-	pButton = new wxButton(this, IDC_BootSectorFileButton, _T("..."),
+	pButton = new wxButton(this, IDC_BootSectorFileButton, _("..."),
 		wxDefaultPosition, wxSize(40, -1));
 	pFile2Sizer->Add(pButton, 0, wxALL, 5);
 	pWidgetSizer->Add(pFile2Sizer);
 
 	pMainSizer->Add(pWidgetSizer);
 
-	pButton = new wxButton(this, wxID_OK, _T("&Ok"));
+	pButton = new wxButton(this, wxID_OK, _("&Ok"));
 	pButtonSizer->Add(pButton, 0, wxALL, 5 );
-	pButton = new wxButton(this, wxID_CANCEL, _T("&Cancel"));
+	pButton = new wxButton(this, wxID_CANCEL, _("&Cancel"));
 	pButtonSizer->Add(pButton, 0, wxALL, 5 );
 
 	pMainSizer->Add(pButtonSizer);
@@ -122,12 +123,12 @@ void GlobalOptionsDialog::OnSelectViewer(wxCommandEvent& WXUNUSED(event) )
 	getcwd((char *)wd, PATH_MAX);
 #endif
 	viewerPath = wxFileSelector(
-		_T("Select a File Viewer to be used"),
-		"",
-		NULL,
-		_T("*.EXE"),
-		"*.*",
-		wxSAVE,
+		_("Select a File Viewer to be used"),
+		wxT(""),
+		wxT(""),
+		_("*.EXE"),
+		_("*.*"),
+		wxFD_SAVE,
 		this);
 #ifdef WIN32
 	chdir((char *)wd);
@@ -148,12 +149,12 @@ void GlobalOptionsDialog::OnSelectBootSectorFile(wxCommandEvent& WXUNUSED(event)
 	getcwd((char *)wd, PATH_MAX);
 #endif
 	bootSectorFile = wxFileSelector(
-		_T("Select a Boot Sector file to be used"),
-		"",
-		NULL,
-		_T("*"),
-		"*",
-		wxSAVE,
+		_("Select a Boot Sector file to be used"),
+		wxT(""),
+		wxT(""),
+		_("*"),
+		_("*"),
+		wxFD_SAVE,
 		this);
 #ifdef WIN32
 	chdir((char *)wd);

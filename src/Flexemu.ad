@@ -1,7 +1,7 @@
 !General
-Flexemu*font:				-*-Helvetica-Medium-R-Normal--*-120-*-*-P-*-*
-Flexemu*cpuText*font:			-*-fixed-Medium-R-Normal--*-130-*-*-*-*-*-1
-Flexemu*Text*font:			-*-fixed-Medium-R-Normal--*-130-*-*-*-*-*-1
+Flexemu*font:				-*-helvetica-medium-r-normal--*-80-*-*-P-*-*
+Flexemu*cpuText*font:			-*-fixed-medium-r-normal--*-130-*-*-*-*-*-1
+Flexemu*Text*font:			-*-fixed-medium-r-normal--*-130-*-*-*-*-*-1
 Flexemu*Text*background:		white
 Flexemu*Text*borderWidth:		0
 Flexemu*borderColor:			black

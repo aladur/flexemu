@@ -1,0 +1,57 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+src/flexemu
+src/fsetup
+src/flexplorer
+
+# Autotools files
+Makefile
+stamp-h1
+config.hin~
+config.h
+config.status
+config.log
+autom4te.cache
+libtool
+.deps
+
+# Visual Studio files
+.vs/
+Win32/
+x64/
+rebuild.bat
+*.sdf
+*.opensdf
+build/windows/lib*/
+build/windows/wxwidgets/
+build/windows/*.tar.gz
+build/windows/*.tgz
+
+# vi swap file
+*.swp

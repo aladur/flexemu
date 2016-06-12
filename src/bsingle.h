@@ -1,8 +1,8 @@
 /*
     bsingle.h
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2004  W. Schwotzer
+    Basic singleton template class definition
+    Copyright (C) 1997-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ T &BSingleton<T>::Instance()
       static BDeleter<T> deleter(instance);
    }
    return *instance;
-};
+}
 
 template <class T>
 BSingleton<T>::~BSingleton()

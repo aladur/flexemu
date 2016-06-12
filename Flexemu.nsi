@@ -97,7 +97,7 @@
 ;--------------------------------------
 
 !define PROGNAME    "Flexemu"
-!define PROGVERSION "2.15"
+!define PROGVERSION "2.20"
 
 SetDateSave on
 SetDatablockOptimize on
@@ -109,7 +109,7 @@ LicenseBkColor /windows
 LicenseData ".\Flexemu\Copying.txt"
 
 VIAddVersionKey ProductName     "$PROGNAME"
-VIAddVersionKey LegalCopyright  "(C) 1997-2004 W. Schwotzer"
+VIAddVersionKey LegalCopyright  "(C) 1997-2016 W. Schwotzer"
 VIAddVersionKey Comment         "an MC6809 emulator running FLEX"
 VIAddVersionKey ProductVersion  "$PROGVERSION"
 VIAddVersionKey FileDescription "an MC6809 emulator running FLEX"

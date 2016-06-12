@@ -35,7 +35,7 @@ public:
 	BUInt(const BUInt &ui) : value(ui.value) {};
 	BUInt(DWord i) : value(i) {};
 	BUInt(Word i) : value(i) {};
-	virtual ~BUInt() {};			// public destructor
+	~BUInt() {};			// public destructor
 	
 	const BUInt& operator = (DWord i);
 	bool operator == (DWord i) const;
@@ -51,15 +51,16 @@ public:
 	const BUInt &operator -= (DWord i);
 }; // class BUInt
 
-inline const BUInt& BUInt::operator = (DWord i) { value = i; return *this; };
-inline bool BUInt::operator == (DWord i) const { return value == i; };
-inline bool BUInt::operator <= (DWord i) const { return value <= i; };
-inline bool BUInt::operator <  (DWord i) const { return value <  i; };
-inline bool BUInt::operator >= (DWord i) const { return value >= i; };
-inline bool BUInt::operator >  (DWord i) const { return value >  i; };
-inline bool BUInt::operator != (DWord i) const { return value != i; };
-inline BUInt::operator DWord () const { return value; };
-inline const BUInt &BUInt::operator += (DWord i) { value += i; return *this; };
-inline const BUInt &BUInt::operator -= (DWord i) { value -= i; return *this; };
+inline const BUInt& BUInt::operator = (DWord i) { value = i; return *this; }
+inline bool BUInt::operator == (DWord i) const { return value == i; }
+inline bool BUInt::operator <= (DWord i) const { return value <= i; }
+inline bool BUInt::operator <  (DWord i) const { return value <  i; }
+inline bool BUInt::operator >= (DWord i) const { return value >= i; }
+inline bool BUInt::operator >  (DWord i) const { return value >  i; }
+inline bool BUInt::operator != (DWord i) const { return value != i; }
+inline BUInt::operator DWord () const { return value; }
+inline const BUInt &BUInt::operator += (DWord i) { value += i; return *this; }
+inline const BUInt &BUInt::operator -= (DWord i) { value -= i; return *this; }
 
 #endif // #ifndef __buint_h__
+

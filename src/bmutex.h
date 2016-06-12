@@ -1,8 +1,8 @@
 /*
     bmutex.h
 
-
-    Basic class for access serialization between multiple threads
+    Basic class to define mutual exclusive sections to be used
+    from multiple threads
     Copyright (C) 2003-2004  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
@@ -39,21 +39,17 @@
 class BMutex {
 public:
    BMutex();
-   virtual ~BMutex();
+   ~BMutex();
 
    void lock();
    void unlock();
-   bool locked();
-   bool tryLock();
-private:
-   bool isLocked;
 
 #ifdef UNIX
 private:
    pthread_mutex_t mutex;
 #endif
 #ifdef WIN32
-   HANDLE mutex;
+   CRITICAL_SECTION criticalSec;
 #endif
 };
 

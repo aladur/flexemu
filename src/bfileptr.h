@@ -30,7 +30,7 @@ public:
    BFilePtr();
    BFilePtr(const char *path, const char *mode);
    BFilePtr(const BFilePtr &);
-   virtual ~BFilePtr();
+   ~BFilePtr();
    BFilePtr &operator= (const BFilePtr &);
    int Close();
    const char *GetPath() const { return pPath; };

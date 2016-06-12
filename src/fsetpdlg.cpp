@@ -34,6 +34,7 @@
 #endif
 #include <wx/combobox.h>
 #include <wx/radiobox.h>
+#include <wx/treebook.h>
 #include <wx/valgen.h>
 #include <wx/valtext.h>
 
@@ -46,10 +47,23 @@
 #include "fsetpdlg.h"
 #include "fsetup.h"
 
-const char *color_table[15] = {
-	"default", "white", "red", "green", "blue", "yellow", "magenta",
-	"cyan", "orange", "pink", "purple", "violet", "orange", "brown",
-	NULL };
+
+static const wxChar *color_table[] =
+{
+	_("default"),
+	_("white"),
+	_("red"),
+	_("green"),
+	_("blue"),
+	_("yellow"),
+	_("magenta"),
+	_("cyan"),
+	_("orange"),
+	_("pink"),
+	_("purple"),
+	_("violet"),
+	_("brown"),
+};
 
 int possible_nColors[4] = { 2, 8, 64, 0 };
 
@@ -60,10 +74,8 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
 	EVT_BUTTON(IDC_Drive3Button,  FlexemuOptionsDialog::OnSelectDrive3)
 	EVT_BUTTON(IDC_DiskDirButton, FlexemuOptionsDialog::OnSelectDiskDir)
 	EVT_BUTTON(IDC_MonitorButton, FlexemuOptionsDialog::OnSelectMonitor)
-	EVT_BUTTON(wxID_OK,           FlexemuOptionsDialog::OnOkCancel)
-	EVT_BUTTON(wxID_CANCEL,       FlexemuOptionsDialog::OnOkCancel)
 	EVT_INIT_DIALOG(              FlexemuOptionsDialog::OnInitDialog)
-	EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
+//	EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
 
 FlexemuOptionsDialog::FlexemuOptionsDialog(
@@ -95,190 +107,323 @@ FlexemuOptionsDialog::~FlexemuOptionsDialog()
 
 bool FlexemuOptionsDialog::TransferDataToWindow(void)
 {
-	BString str;
-	int x, y;
+	wxString str;
+	int x;
 	int n = 0;
 
 	if (c_geometry) {
-	   for (x = 1; x <= MAX_GUIXSIZE; x++)
+	   for (x = 1; x <= MAX_GUIXSIZE; x++) {
+		int y;
+
 		for (y = 1; y <= MAX_GUIYSIZE; y++) {
-			str.printf("%ix%i", WINDOWWIDTH * x, WINDOWHEIGHT * y);
-			if (c_geometry) c_geometry->Append((const char *)str);
+			str.Printf(wxT("%ix%i"), WINDOWWIDTH * x, WINDOWHEIGHT * y);
+			if (c_geometry) c_geometry->Append(str);
 			if (m_guiOptions->guiXSize == x &&
 			   m_guiOptions->guiYSize == y)
 					c_geometry->SetSelection(n);
 			n++;
 		}
+	   }
 	}
 	n = 0;
 	if (c_nColors) {
 		int *pInt = possible_nColors;
 		while (*pInt) {
-			str.printf("%d", *pInt);
-			c_nColors->Append((const char *)str);
+			str.Printf(wxT("%d"), *pInt);
+			c_nColors->Append(str);
 			if (m_guiOptions->nColors == *(pInt++))
 				c_nColors->SetSelection(n);
 			n++;
 		}
 	}
-	n = 0;
 	if (c_color) {
-		const char **p = color_table;
-		while (*p) {
-			c_color->Append(*p);
-			if (!m_guiOptions->color.comparenocase(*(p++)))
-				c_color->SetSelection(n);
-			n++;
+		unsigned int i;
+		wxString colorName;
+		BString bColorName;
+		for (i = 0; i < WXSIZEOF(color_table); i++) {
+			colorName = wxGetTranslation(color_table[i]);
+			c_color->Append(colorName);
+			wxString color(color_table[i], *wxConvCurrent);
+			bColorName = color.mb_str(*wxConvCurrent);
+			if (!m_guiOptions->color.comparenocase(bColorName))
+				c_color->SetSelection(i);
 		}
 	}
 	if (c_finverse)  c_finverse->SetValue(m_guiOptions->inverse != 0);
 	if (c_undocumented)  c_undocumented->SetValue(m_options->use_undocumented);
-	if (c_monitor)  c_monitor->SetValue((const char *)m_options->hex_file);
-	if (c_wwwBrowser)  c_wwwBrowser->SetValue(
-		(const char *)m_guiOptions->www_browser);
-	if (c_diskDir)  c_diskDir->SetValue((const char *)m_options->disk_dir);
+	if (c_monitor) {
+		wxString hex_file(m_options->hex_file, *wxConvCurrent);
+		c_monitor->SetValue(hex_file);
+	}
+	if (c_wwwBrowser) {
+		wxString www_browser(m_guiOptions->www_browser, *wxConvCurrent);
+		c_wwwBrowser->SetValue(www_browser);
+	}
+	if (c_diskDir) {
+		wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+		c_diskDir->SetValue(disk_dir);
+	}
 	for (x=0; x<=3; x++)
-		if (c_drive[x]) c_drive[x]->SetValue(
-			(const char *)m_options->drive[x]);
-	if (c_ramExtension)
+		if (c_drive[x]) {
+			wxString driveName(m_options->drive[x], *wxConvCurrent);
+			c_drive[x]->SetValue(driveName);
+	}
+	if (c_ramExtension) {
 		c_ramExtension->SetSelection(m_options->isHiMem ? 1 : 0);
+	}
 
-	return true;
+	return wxWindow::TransferDataToWindow();
 }
 
-void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
+wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
 {
-	wxButton	*pButton;
-	wxStaticText	*pStatic;
-	int		i;
+	wxPanel       *panel       = new wxPanel(parent);
+	wxStaticText  *pStatic;
+	wxBoxSizer    *pPanelSizer = new wxBoxSizer(wxVERTICAL);
+	wxGridSizer   *pGridSizer  = new wxFlexGridSizer(2, 3, 0, 0);
+	const int	stextWidth = 180;
 	const int	gap = 5;
-	const int	textWidth  = 250;
-	const int	stextWidth = 140;
-	wxWindow	*parent = this;
-	wxString	text;
-	wxString	choices[2];
-	wxBoxSizer	*pBoxSizer;
 
-	wxBoxSizer  *pMainSizer   = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer  *pButtonSizer = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer  *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
-	wxGridSizer *pGrid1Sizer  = new wxFlexGridSizer(2, 3);
-
-	pStatic = new wxStaticText(parent, -1, "Screen geometry",
+	pStatic = new wxStaticText(panel, -1, _("Screen geometry"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pGrid1Sizer->Add(pStatic, 0, wxRIGHT, gap);
-	c_geometry = new wxComboBox(parent, IDC_Geometry, "", wxDefaultPosition,
-		wxDefaultSize, 0, choices, wxCB_READONLY);
-	pGrid1Sizer->Add(c_geometry, 0, wxEXPAND);
+	pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+	c_geometry = new wxComboBox(panel, IDC_Geometry, wxT(""),
+		wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
+	pGridSizer->Add(c_geometry, 0, wxEXPAND);
 
-	pStatic = new wxStaticText(parent, -1, _T("Number of Colors"),
+	pStatic = new wxStaticText(panel, -1, _("Number of Colors"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pGrid1Sizer->Add(pStatic, 0, wxRIGHT, gap);
-	c_nColors = new wxComboBox(parent, IDC_nColors, "", wxDefaultPosition,
-		wxDefaultSize, 0, choices, wxCB_READONLY);
-	pGrid1Sizer->Add(c_nColors, 0, wxEXPAND);
+	pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+	c_nColors = new wxComboBox(panel, IDC_nColors, wxT(""),
+		wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_READONLY);
+	pGridSizer->Add(c_nColors, 0, wxEXPAND);
 
-	pStatic = new wxStaticText(parent, -1, _T("Color"),
+	pStatic = new wxStaticText(panel, -1, _("Color"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pGrid1Sizer->Add(pStatic, 0, wxRIGHT, gap);
-	c_color = new wxComboBox(parent, IDC_Color, "", wxDefaultPosition,
-		wxDefaultSize, 0, choices, wxCB_READONLY);
-	pGrid1Sizer->Add(c_color);
+	pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+	c_color = new wxComboBox(panel, IDC_Color, wxT(""), wxDefaultPosition,
+		wxDefaultSize, 0, NULL, wxCB_READONLY);
+	pGridSizer->Add(c_color);
+	pPanelSizer->Add(pGridSizer, 0, wxTOP | wxLEFT, gap);
 
-	pWidgetSizer->Add(pGrid1Sizer, 0, wxEXPAND);
-
-	c_finverse = new wxCheckBox(parent, IDC_Inverse,
-                        _T("Display inverse"), wxDefaultPosition,
+	c_finverse = new wxCheckBox(panel, IDC_Inverse,
+                        _("Display inverse colors"), wxDefaultPosition,
                         wxDefaultSize, 0);
-	pWidgetSizer->Add(c_finverse, 0, wxEXPAND | wxBOTTOM, gap);
+	pPanelSizer->Add(c_finverse, 0, wxTOP | wxLEFT, gap);
 
-	c_undocumented = new wxCheckBox(parent, IDC_Inverse,
-                        _T("Undocumented MC6809 instructions"),
+	panel->SetSizer(pPanelSizer);
+
+	return panel;
+}
+
+wxPanel *FlexemuOptionsDialog::CreateMc6809OptionsPage(wxBookCtrlBase *parent)
+{
+	wxPanel       *panel       = new wxPanel(parent);
+	wxBoxSizer    *pPanelSizer = new wxBoxSizer(wxVERTICAL);
+	const int     gap = 5;
+
+	c_undocumented = new wxCheckBox(panel, IDC_Inverse,
+                        _("Undocumented MC6809 instructions"),
 			wxDefaultPosition, wxDefaultSize, 0);
-	pWidgetSizer->Add(c_undocumented, 0, wxEXPAND | wxBOTTOM, gap);
+	pPanelSizer->Add(c_undocumented, 0, wxEXPAND | wxTOP | wxLEFT, gap);
 
-	choices[0] = _T("2 x 96 KByte");
-	choices[1] = _T("2 x 288 KByte");
+	panel->SetSizer(pPanelSizer);
 
-	c_ramExtension = new wxRadioBox(parent, IDC_RamExtension,
-	_T("RAM extension"),
-		wxDefaultPosition, wxDefaultSize, 2, choices, 2,
-		wxRA_SPECIFY_COLS);
+	return panel;
+}
 
-	pWidgetSizer->Add(c_ramExtension, 0, wxEXPAND | wxBOTTOM, gap);
+wxPanel *FlexemuOptionsDialog::CreateMemoryOptionsPage(wxBookCtrlBase *parent)
+{
+	wxPanel       *panel       = new wxPanel(parent);
+	wxBoxSizer    *pPanelSizer = new wxBoxSizer(wxVERTICAL);
+	wxString      choices[2];
+	const int     gap = 5;
+
+	choices[0] = _("2 x 96 KByte");
+	choices[1] = _("2 x 288 KByte");
+	c_ramExtension = new wxRadioBox(panel, IDC_RamExtension,
+		_("RAM extension"),
+		wxDefaultPosition, wxDefaultSize, WXSIZEOF(choices), choices,
+		1, wxRA_SPECIFY_COLS);
+	pPanelSizer->Add(c_ramExtension, 0, wxTOP | wxLEFT, gap);
+
+	panel->SetSizer(pPanelSizer);
+
+	return panel;
+}
+
+wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
+{
+	wxPanel       *panel          = new wxPanel(parent);
+	wxBoxSizer    *pPanelSizer    = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer    *pBoxSizer;
+	wxStaticText  *pStatic;
+	wxButton      *pButton;
+	const int     textWidth  = 320;
+	const int     stextWidth = 180;
+	const int     gap = 5;
+	int	      i;
+	wxString      text;
 
 #ifndef WIN32
 	pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-	pStatic = new wxStaticText(parent, -1, _T("HTML Browser"),
+	pStatic = new wxStaticText(panel, -1, _("HTML Docu Browser"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pBoxSizer->Add(pStatic, 0, wxCENTER);
-	c_wwwBrowser = new wxTextCtrl(parent, IDC_WwwBrowser, "", wxDefaultPosition,
-			wxSize(textWidth, -1), 0);
-	pBoxSizer->Add(c_wwwBrowser, 1, wxCENTER | wxRIGHT, gap);
-	pStatic = new wxStaticText(parent, -1, "", wxDefaultPosition,
-		wxSize(40, -1));
+	pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT | wxTOP, gap);
+	c_wwwBrowser = new wxTextCtrl(panel, IDC_WwwBrowser, wxT(""), wxDefaultPosition,
+			wxSize(textWidth, -1));
+	pBoxSizer->Add(c_wwwBrowser, 1, wxCENTER);
+	pStatic = new wxStaticText(panel, -1, wxT(""), wxDefaultPosition,
+		wxSize(40, 25));
 	pBoxSizer->Add(pStatic, 0, wxCENTER); // dummy widget instead of a Button
-	pWidgetSizer->Add(pBoxSizer, 0, wxEXPAND);
+	pPanelSizer->Add(pBoxSizer, 0);
 #endif
 	pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-	pStatic = new wxStaticText(parent, -1, _T("Disk/Monitor directory"),
+	pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pBoxSizer->Add(pStatic, 0, wxCENTER);
-	c_diskDir = new wxTextCtrl(parent, IDC_DiskDir, "", wxDefaultPosition,
-			wxSize(textWidth, -1));
-	pBoxSizer->Add(c_diskDir, 1, wxCENTER | wxRIGHT, gap);
-	pButton = new wxButton(parent, IDC_DiskDirButton, _T("..."),
-		wxDefaultPosition, wxSize(40, -1));
+	pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT, gap);
+	c_diskDir = new wxTextCtrl(panel, IDC_DiskDir, wxT(""),
+			wxDefaultPosition, wxSize(textWidth, -1));
+	pBoxSizer->Add(c_diskDir, 1, wxCENTER);
+	pButton = new wxButton(panel, IDC_DiskDirButton, _("..."),
+		wxDefaultPosition, wxSize(40, 25));
 	pBoxSizer->Add(pButton, 0, wxCENTER);
-	pWidgetSizer->Add(pBoxSizer, 0, wxEXPAND);
+	pPanelSizer->Add(pBoxSizer, 0);
 
 	pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-	pStatic = new wxStaticText(parent, -1, _T("Monitor program"),
+	pStatic = new wxStaticText(panel, -1, _("Monitor program"),
 		wxDefaultPosition, wxSize(stextWidth, -1));
-	pBoxSizer->Add(pStatic, 0, wxCENTER);
-	c_monitor = new wxTextCtrl(parent, IDC_Monitor, "", wxDefaultPosition,
+	pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT, gap);
+	c_monitor = new wxTextCtrl(panel, IDC_Monitor, wxT(""), wxDefaultPosition,
 			wxSize(textWidth, -1));
-	pBoxSizer->Add(c_monitor, 1, wxCENTER | wxRIGHT, gap);
-	pButton = new wxButton(parent, IDC_MonitorButton, _T("..."),
-		wxDefaultPosition, wxSize(40, -1));
+	pBoxSizer->Add(c_monitor, 1, wxCENTER);
+	pButton = new wxButton(panel, IDC_MonitorButton, _("..."),
+		wxDefaultPosition, wxSize(40, 25));
 	pBoxSizer->Add(pButton, 0, wxCENTER);
-	pWidgetSizer->Add(pBoxSizer, 0, wxEXPAND);
+	pPanelSizer->Add(pBoxSizer, 0);
 
 	for (i = 0; i < 4; ++i)
 	{
 		pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-		text.Printf("Disk for Drive %d", i);
-		pStatic = new wxStaticText(parent, -1, text,
+		text.Printf(_("Disk for Drive %d"), i);
+		pStatic = new wxStaticText(panel, -1, text,
 			wxDefaultPosition, wxSize(stextWidth, -1));
-		pBoxSizer->Add(pStatic, 0, wxCENTER);
-		c_drive[i] = new wxTextCtrl(parent, IDC_Drive0+i, "", wxDefaultPosition,
-				wxSize(textWidth, -1));
-		pBoxSizer->Add(c_drive[i], 1, wxCENTER | wxRIGHT, gap);
-		pButton = new wxButton(parent, IDC_Drive0Button+i, _T("..."),
-			wxDefaultPosition, wxSize(40, -1));
+		pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT, gap);
+		c_drive[i] = new wxTextCtrl(panel, IDC_Drive0+i, wxT(""),
+				wxDefaultPosition, wxSize(textWidth, -1));
+		pBoxSizer->Add(c_drive[i], 1, wxCENTER);
+		pButton = new wxButton(panel, IDC_Drive0Button+i, _("..."),
+			wxDefaultPosition, wxSize(40, 25));
 		pBoxSizer->Add(pButton, 0, wxCENTER);
-		pWidgetSizer->Add(pBoxSizer, 0, wxEXPAND);
+		pPanelSizer->Add(pBoxSizer, 0);
 	}
 
-	pMainSizer->Add(pWidgetSizer, 1, wxALL, gap);
+	panel->SetSizer(pPanelSizer);
 
-	pButton = new wxButton(parent, wxID_OK, _T("&Ok"));
+	return panel;
+}
+
+wxPanel *FlexemuOptionsDialog::CreateDocuOptionsPage(wxBookCtrlBase *parent)
+{
+	wxPanel       *panel          = new wxPanel(parent);
+	wxBoxSizer    *pPanelSizer    = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer    *pBoxSizer;
+	wxStaticText  *pStatic;
+	const int     textWidth  = 320;
+	const int     stextWidth = 180;
+	const int     gap = 5;
+
+	pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+	pStatic = new wxStaticText(panel, -1, _("HTML Docu Browser"),
+		wxDefaultPosition, wxSize(stextWidth, -1));
+	pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT | wxTOP, gap);
+	c_wwwBrowser = new wxTextCtrl(panel, IDC_WwwBrowser, wxT(""), wxDefaultPosition,
+			wxSize(textWidth, -1), 0);
+	pBoxSizer->Add(c_wwwBrowser, 1, wxCENTER | wxRIGHT, gap);
+	pStatic = new wxStaticText(panel, -1, wxT(""), wxDefaultPosition,
+		wxSize(40, 25));
+	pBoxSizer->Add(pStatic, 0, wxCENTER); // dummy widget instead of a Button
+	pPanelSizer->Add(pBoxSizer, 0, wxEXPAND);
+
+	panel->SetSizer(pPanelSizer);
+
+	return panel;
+}
+
+wxPanel *FlexemuOptionsDialog::CreateExpertOptionsPage(wxBookCtrlBase *parent)
+{
+	wxPanel       *panel          = new wxPanel(parent);
+	wxBoxSizer    *pPanelSizer    = new wxBoxSizer(wxVERTICAL);
+	wxStaticText  *pStatic;
+	const int     gap = 5;
+
+	pStatic = new wxStaticText(panel, -1,
+           _("Expert options have appropriate default values. They should only be" \
+             "changed by experts."),
+		wxDefaultPosition, wxSize(-1, -1));
+	pPanelSizer->Add(pStatic, 0, wxEXPAND | wxTOP | wxLEFT, gap);
+
+	panel->SetSizer(pPanelSizer);
+
+	return panel;
+}
+
+void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
+{
+	const int	gap = 5;
+	wxWindow	*parent = this;
+	wxTreebook      *notebook;
+	wxPanel         *panel;
+	wxButton        *pButton;
+	size_t		pageId = 0;
+	
+	wxBoxSizer  *pMainSizer     = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer  *pButtonSizer   = new wxBoxSizer(wxVERTICAL);
+
+	notebook = new wxTreebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBK_LEFT);
+
+	pMainSizer->Add(notebook, 1, wxEXPAND | wxALL, gap);
+
+	panel = CreateGuiOptionsPage(notebook);
+	notebook->AddPage( panel, _("User Interface"), true );
+	panel = CreateMemoryOptionsPage(notebook);
+	notebook->AddPage( panel, _("Memory"), false );
+	pageId++;
+	panel = CreatePathOptionsPage(notebook);
+	notebook->AddPage( panel, _("Files and Directories"), false );
+	pageId++;
+#ifndef WIN32
+	panel = CreateDocuOptionsPage(notebook);
+	notebook->AddPage( panel, _("Documentation"), false );
+	pageId++;
+#endif
+	panel = CreateExpertOptionsPage(notebook);
+	notebook->AddPage( panel, _("Expert Options"), false );
+	pageId++;
+	panel = CreateMc6809OptionsPage(notebook);
+	notebook->AddSubPage( panel, _("MC6809"), false );
+
+	pButton = new wxButton(parent, wxID_OK, _("&Ok"));
 	pButtonSizer->Add(pButton, 0, wxCENTER | wxALL, gap);
-	pButton = new wxButton(parent, wxID_CANCEL, _T("&Cancel"));
+	pButton = new wxButton(parent, wxID_CANCEL, _("&Cancel"));
 	pButtonSizer->Add(pButton, 0, wxCENTER | wxALL, gap);
 
 	pMainSizer->Add(pButtonSizer);
+
+	pMainSizer->Layout();
+	notebook->ExpandNode(pageId, true);
 
 	SetAutoLayout(true);
 	SetSizer( pMainSizer );
 	pMainSizer->Fit(this);
 	pMainSizer->SetSizeHints( this );
 	Centre(wxBOTH);
-	//c_geometry->SetFocus();
+	pButton->SetFocus();
 
 	wxDialog::OnInitDialog(event); // must be last command
 }
 
+/*
 void FlexemuOptionsDialog::OnCloseWindow(wxCloseEvent &event)
 {
 	if (!event.CanVeto())
@@ -286,77 +431,88 @@ void FlexemuOptionsDialog::OnCloseWindow(wxCloseEvent &event)
 	else
 		wxDialog::OnCloseWindow(event);
 }
-
-void FlexemuOptionsDialog::OnOkCancel(wxCommandEvent& event )
+*/
+bool FlexemuOptionsDialog::Validate()
 {
-	switch (event.GetId())
+	// doing some verification of the values
+	if (c_monitor != NULL && c_monitor->GetValue().IsEmpty())
 	{
-	case wxID_OK:
-		RestoreValues();
-		// doing some verification of the values
-		if (m_options->hex_file.empty())
-		{
-			wxMessageBox("Monitor program must not be empty",
-			   "FSetup Error", wxOK | wxCENTRE | wxICON_EXCLAMATION);
-		} else
-			wxDialog::OnOK(event);
-		break;
-	case wxID_CANCEL:
-		wxDialog::OnCancel(event);
-		break;
-	default: return;
+		wxMessageBox(_("Monitor program must not be empty"),
+		   _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);
+		return false;
 	}
-
-	wxGetApp().SetReturnCode(GetReturnCode());
-	if (!IsModal())
-		Close(true);
+	return wxWindow::Validate();
 }
 
-void FlexemuOptionsDialog::RestoreValues(void)
+bool FlexemuOptionsDialog::TransferDataFromWindow(void)
 {
 
 	if (c_geometry) {
 		wxString geometry;
-		int x, y;
+		unsigned long x, y;
 
 		geometry = c_geometry->GetValue();
-		if (sscanf(geometry, "%dx%d", &x, &y) == 2) {
+		if (geometry.BeforeFirst(wxT('x')).ToULong(&x) &&
+		   geometry.AfterFirst(wxT('x')).ToULong(&y)) {
 		   m_guiOptions->guiXSize = x / WINDOWWIDTH;
 		   m_guiOptions->guiYSize = y / WINDOWHEIGHT;
 		}
 	}
 	if (c_nColors) {
 		wxString nrOfColors;
-		int n;
+		unsigned long n;
 
 		nrOfColors = c_nColors->GetValue();
-		if (sscanf(nrOfColors, "%d", &n) == 1) {
+		if (nrOfColors.ToULong(&n)) {
 		   m_guiOptions->nColors = n;
 		}
 	}
-	if (c_color) { m_guiOptions->color = c_color->GetValue(); };
+	if (c_color) {
+		m_guiOptions->color =
+			c_color->GetValue().mb_str(*wxConvCurrent);
+		unsigned int i;
+		wxString colorName;
+		for (i = 0; i < WXSIZEOF(color_table); i++) {
+			colorName = wxGetTranslation(color_table[i]);
+			if (!colorName.Cmp(c_color->GetValue()))
+			{
+				wxString color(color_table[i]);
+				m_guiOptions->color =
+					color.mb_str(*wxConvCurrent);
+			}
+		}
+	};
 	if (c_finverse) { m_guiOptions->inverse = c_finverse->GetValue(); };
 	if (c_undocumented) { m_options->use_undocumented = (c_undocumented->GetValue() != 0); };
-	if (c_monitor) { m_options->hex_file = c_monitor->GetValue(); };
+	if (c_monitor) {
+		m_options->hex_file =
+			c_monitor->GetValue().mb_str(*wxConvCurrent);
+	};
 #ifndef WIN32
-	if (c_wwwBrowser) { m_guiOptions->www_browser =
-		c_wwwBrowser->GetValue(); };
+	if (c_wwwBrowser) {
+		m_guiOptions->www_browser =
+			c_wwwBrowser->GetValue().mb_str(*wxConvCurrent);
+	};
 #endif
-	if (c_diskDir) { m_options->disk_dir = c_diskDir->GetValue(); };
+	if (c_diskDir) {
+		m_options->disk_dir =
+			c_diskDir->GetValue().mb_str(*wxConvCurrent); };
 	for (int i=0; i<=3; i++)
 		if (c_drive[i])
-			m_options->drive[i] = c_drive[i]->GetValue();
+			m_options->drive[i] =
+			   c_drive[i]->GetValue().mb_str(*wxConvCurrent);
 	if (c_ramExtension)
 		{ m_options->isHiMem = c_ramExtension->GetSelection() > 0; };
+
+	return wxWindow::TransferDataFromWindow();
 }
 
-BString FlexemuOptionsDialog::OpenFilePrompter(
-	const char *defautPath,
-	const char *caption,
-	const char *filter)
+wxString FlexemuOptionsDialog::OpenFilePrompter(
+	const wxString &defautPath,
+	const wxString &caption,
+	const wxString &filter)
 {
 	wxString drive;
-	BString bdrive;
 
 #ifdef WIN32
 	char                    wd[PATH_MAX];
@@ -364,39 +520,37 @@ BString FlexemuOptionsDialog::OpenFilePrompter(
 	getcwd((char *)wd, PATH_MAX);
 #endif
 	drive = wxFileSelector(
-		"Select a disk",
+		caption,
 		defautPath,
-		NULL,
-		"*.DSK",
-		"*.*",
-		wxSAVE,
+		wxT(""),
+		filter,
+		_("*.*"),
+		wxFD_SAVE,
 		this);
 #ifdef WIN32
 	chdir((char *)wd);
 #endif
-	if (!drive.IsEmpty())
-		bdrive = (const char *)drive;
-	return bdrive;
+	return drive;
 }
 
 void FlexemuOptionsDialog::OnSelectDriveN(int n)
 {
-	BString path;
-	BString diskDir;
+	wxString path;
+	wxString diskDir;
 
 	if (n > 3)
 		return;
 	if (c_diskDir) { diskDir = c_diskDir->GetValue(); };
-	path = OpenFilePrompter(diskDir, "Select a Disk file", "*.DSK");
-	if (diskDir.length() > 0 &&
-			(path.index(diskDir) == 0) &&
-			(path.index(PATHSEPARATOR) >= 0)) {
-		path.at(diskDir.length(), path.length()-diskDir.length(), path);
-		if (path.index(PATHSEPARATOR) == 0)
-			path.at(1, path.length()-1, path);
+	path = OpenFilePrompter(diskDir, _("Select a Disk file"), _("*.DSK"));
+	if (!diskDir.IsEmpty() &&
+			(path.Find(diskDir) == 0) &&
+			(path.Find(PATHSEPARATOR) >= 0)) {
+		path = path.Mid(diskDir.Len(), path.Len()-diskDir.Len());
+		if (path.Find(PATHSEPARATOR) == 0)
+			path = path.Mid(1, path.length()-1);
 	}
-	if (!path.empty())
-		if (c_drive[n]) c_drive[n]->SetValue((const char *)path);
+	if (!path.IsEmpty())
+		if (c_drive[n]) c_drive[n]->SetValue(path);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive0(wxCommandEvent& WXUNUSED(event) )
@@ -423,31 +577,39 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent& WXUNUSED(event) )
 {
     wxDirDialog *dialog;
 
-	if (c_diskDir) { m_options->disk_dir = c_diskDir->GetValue(); };
-    dialog = new wxDirDialog(this, "Select folder with DSK files",
-		(const char *)m_options->disk_dir);
+	if (c_diskDir) {
+		m_options->disk_dir =
+			c_diskDir->GetValue().mb_str(*wxConvCurrent);
+	};
+	wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+	dialog = new wxDirDialog(this, _("Select folder with DSK files"),
+		disk_dir);
 	if (dialog->ShowModal() == wxID_OK) {
-		m_options->disk_dir = dialog->GetPath();
-		if (c_diskDir)
-			c_diskDir->SetValue((const char *)m_options->disk_dir);
+		m_options->disk_dir = dialog->GetPath().mb_str(*wxConvCurrent);
+		if (c_diskDir) {
+			wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+			c_diskDir->SetValue(disk_dir);
+		}
 	}
 	delete dialog;
 }
 
 void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent& WXUNUSED(event))
 {
-	BString path;
-	BString diskDir;
+	wxString path;
+	wxString diskDir;
 
 	if (c_diskDir) { diskDir = c_diskDir->GetValue(); };
-	path = OpenFilePrompter(diskDir, "Select a monitor program", "*.HEX");
-	if (diskDir.length() > 0 &&
-			(path.index(diskDir) == 0) &&
-			(path.index(PATHSEPARATOR) >= 0)) {
-		path.at(diskDir.length(), path.length()-diskDir.length(), path);
-		if (path.index(PATHSEPARATOR) == 0)
-			path.at(1, path.length()-1, path);
+	path = OpenFilePrompter(diskDir, _("Select a monitor program"),
+		_("*.HEX"));
+	if (!diskDir.IsEmpty() &&
+			(path.Find(diskDir) == 0) &&
+			(path.Find(PATHSEPARATOR) >= 0)) {
+		path = path.Mid(diskDir.Len(), path.Len()-diskDir.Len());
+		if (path.Find(PATHSEPARATOR) == 0)
+			path = path.Mid(1, path.Len()-1);
 	}
-	if (!path.empty())
-		if (c_monitor) c_monitor->SetValue((const char *)path);
+	if (!path.IsEmpty())
+		if (c_monitor) c_monitor->SetValue(path);
 }
+

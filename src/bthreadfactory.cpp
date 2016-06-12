@@ -2,8 +2,8 @@
     bthreadfactory.cpp
 
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+    Basic class for platform independent thread creation
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include "bwin32threadimp.h"
 #endif
 
-BThreadFactory *SThreadFactory::instance = NULL;
+template <> BThreadFactory *SThreadFactory::instance = NULL;
 
 BThreadImp *BThreadFactory::CreateBThreadImp()
 {
@@ -42,4 +42,4 @@ BThreadImp *BThreadFactory::CreateBThreadImp()
     return NULL; // Sw: Which other platforms to support ???
   #endif
 #endif
-};
+}

@@ -1,9 +1,9 @@
 /*
-    bstring.h
+    bdir.h
 
 
     Basic class used for directory functions
-    Copyright (C) 1999-2004  W. Schwotzer
+    Copyright (C) 1999-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,9 +23,15 @@
 #ifndef __bdir_h__
 #define __bdir_h__
 
-#include <misc1.h>
+#include "misc1.h"
+#ifdef WIN32
+  #pragma warning (disable: 4786)
+#endif
+#include <vector>
 #include "bstring.h"
 
+
+typedef std::vector<BString> tPathList;
 
 class BDirectory  
 {
@@ -37,10 +43,12 @@ public:
 	static bool Remove(const BString &aPath);
 	static bool Create(const BString &aPath, int mode = 0x0755);
 	static bool RemoveRecursive(const BString &aPath);
+	static tPathList GetSubDirectories(const BString &aPath);
+	static tPathList GetFiles(const BString &aPath);
 
 	BDirectory();
 	BDirectory(BString &path) : m_path(path) { };
-	virtual ~BDirectory();
+	~BDirectory();
 
 	inline void SetPath(BString &path) { m_path = path; };
 	inline const BString &GetPath(void) const { return m_path; };
@@ -48,6 +56,8 @@ public:
 	bool Remove(void) const;
 	bool Create(int mode = 0x0755) const;
 	bool RemoveRecursive(void) const;
+	tPathList GetSubDirectories() const;
+	tPathList GetFiles() const;
 };
 
 #endif // #ifndef __bdir_h__

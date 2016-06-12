@@ -96,7 +96,7 @@ int writeS19(char *srcFileName, int startAddress, int max)
 int main(int argc, char **argv)
 {
 	char    *optstr = "f:s:hn:";
-	int     startAddr, max, result;
+	int     startAddr, max;
 	char *fileName;
 
 	/*optind = 1;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 	startAddr = 0;
 	max = 32;
 	while (1) {
-		result = getopt(argc, argv, optstr);
+		int result = getopt(argc, argv, optstr);
 		if (result == -1)
 			break;
 		switch(result) {

@@ -47,7 +47,7 @@ class CpuStatus
 {
 public:
 	CpuStatus() : freq(0.0), state(0) { };
-	virtual ~CpuStatus() { };
+	~CpuStatus() { };
 
 	float   freq;
 	Byte    state;

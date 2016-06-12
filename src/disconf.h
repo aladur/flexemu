@@ -75,13 +75,13 @@ public:
 	void PrintOn(FILE *fp) const;
 }; // class DisassemblerConfig
 
-inline void DisassemblerConfig::AddEntryPoint(DWord address) { entryPoints.Add(BUInt(address)); };
-inline void DisassemblerConfig::RemoveEntryPoint(DWord address) { entryPoints.Remove(BUInt(address)); };
-inline void DisassemblerConfig::AddLabel(const BIdentifier &i) { labelList.Add(i); };
-inline void DisassemblerConfig::RemoveLabel(const BIdentifier &i) { labelList.Remove(i); };
-inline void DisassemblerConfig::AddEquate(const BIdentifier &i) { equateList.Add(i); };
-inline void DisassemblerConfig::RemoveEquate(const BIdentifier &i) { equateList.Remove(i); };
-inline bool DisassemblerConfig::ContainsLabel(const BIdentifier &i) const { return labelList.Contains(i); };
-inline bool DisassemblerConfig::ContainsEquate(const BIdentifier &i) const { return equateList.Contains(i); };
+inline void DisassemblerConfig::AddEntryPoint(DWord address) { entryPoints.Add(BUInt(address)); }
+inline void DisassemblerConfig::RemoveEntryPoint(DWord address) { entryPoints.Remove(BUInt(address)); }
+inline void DisassemblerConfig::AddLabel(const BIdentifier &i) { labelList.Add(i); }
+inline void DisassemblerConfig::RemoveLabel(const BIdentifier &i) { labelList.Remove(i); }
+inline void DisassemblerConfig::AddEquate(const BIdentifier &i) { equateList.Add(i); }
+inline void DisassemblerConfig::RemoveEquate(const BIdentifier &i) { equateList.Remove(i); }
+inline bool DisassemblerConfig::ContainsLabel(const BIdentifier &i) const { return labelList.Contains(i); }
+inline bool DisassemblerConfig::ContainsEquate(const BIdentifier &i) const { return equateList.Contains(i); }
 
 #endif // #ifndef __disconf_h__

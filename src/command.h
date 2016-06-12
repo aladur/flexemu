@@ -69,13 +69,13 @@ protected:
 	Word		 command_index;
 	Word		 answer_index;
 	char		*answer;
-	char		*err[MAX_ERR];
+	const char	*err[MAX_ERR];
 
 // private interface:
 private:
-	char 		*skip_token(char *);
-	char 		*next_token(char *, int *);
-	char		*modify_command_token(char *p);
+	void 	 	skip_token(char **);
+	const char 	*next_token(char **, int *);
+	const char	*modify_command_token(char *p);
 
 // public interface
 public:

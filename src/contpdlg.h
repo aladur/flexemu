@@ -39,20 +39,20 @@ class ContainerPropertiesDialog : public wxDialog
 public:
 	ContainerPropertiesDialog(wxWindow *parent,
 		const wxPoint &pos, int tracks = 80, int sectors = 40,
-		const char *path = "");
+		const wxString &path = wxT(""));
 	virtual ~ContainerPropertiesDialog();
 	void OnInitDialog(wxInitDialogEvent &event );
 	void OnSelectPath(wxCommandEvent& event );
-	inline int GetTracks(void)  { return atoi(m_tracks.c_str()); };
-	inline int GetSectors(void) { return atoi(m_sectors.c_str()); };
-	inline const char *GetPath(void) { return m_path; };
+	int GetTracks(void);
+	int GetSectors(void);
+	inline const wxString &GetPath(void) { return m_path; };
 	int GetFormat(void) { return m_format; };
 
 private:
 	wxString	m_tracks;
 	wxString	m_sectors;
 	wxString	m_path;
-	int			m_format;
+	int		m_format;
 
 	wxTextCtrl	*c_tracks;
 	wxTextCtrl	*c_sectors;

@@ -36,7 +36,7 @@ public:
 	BInterval(DWord aMinimum, DWord aMaximum);	// public constructor
 	BInterval();					// public constructor
 	BInterval(const BInterval &i);	// public constructor
-	virtual ~BInterval();			// public destructor
+	~BInterval();			// public destructor
 	
 	DWord GetMin() const;
 	DWord GetMax() const;
@@ -61,22 +61,22 @@ public:
 	bool Exclude(const BInterval &i);
 }; // class BInterval
 
-inline BInterval::BInterval(DWord aMinimum, DWord aMaximum) : minimum(aMinimum), maximum(aMaximum) { };
-inline DWord BInterval::GetMin()  const { return minimum; };
-inline DWord BInterval::GetMax() const { return maximum; };
-inline DWord BInterval::GetLength() const { return maximum - minimum + 1; };
-inline void BInterval::SetMin(DWord aMinimum) { minimum = aMinimum; };
-inline void BInterval::SetMax(DWord aMaximum) { maximum = aMaximum; };
-inline void BInterval::SetMinMax(DWord aMinimum, DWord aMaximum) { minimum = aMinimum; maximum = aMaximum; };
-inline void BInterval::SetLength(DWord aLength) { maximum = minimum + aLength - 1; };
-inline BInterval& BInterval::operator = (const BInterval& i) { minimum = i.minimum; maximum = i.maximum; return *this; };
-inline bool BInterval::Contains(DWord i) const { return ( i >= minimum && i <= maximum); };
-inline bool BInterval::Contains(const BInterval& i)     const { return ( i.minimum >= minimum && i.maximum <= maximum); };
-inline bool BInterval::operator == (const BInterval& i) const { return (minimum == i.minimum && maximum == i.maximum); };
-inline bool BInterval::operator != (const BInterval& i) const { return (minimum != i.minimum || maximum != i.maximum); };
+inline BInterval::BInterval(DWord aMinimum, DWord aMaximum) : minimum(aMinimum), maximum(aMaximum) { }
+inline DWord BInterval::GetMin()  const { return minimum; }
+inline DWord BInterval::GetMax() const { return maximum; }
+inline DWord BInterval::GetLength() const { return maximum - minimum + 1; }
+inline void BInterval::SetMin(DWord aMinimum) { minimum = aMinimum; }
+inline void BInterval::SetMax(DWord aMaximum) { maximum = aMaximum; }
+inline void BInterval::SetMinMax(DWord aMinimum, DWord aMaximum) { minimum = aMinimum; maximum = aMaximum; }
+inline void BInterval::SetLength(DWord aLength) { maximum = minimum + aLength - 1; }
+inline BInterval& BInterval::operator = (const BInterval& i) { minimum = i.minimum; maximum = i.maximum; return *this; }
+inline bool BInterval::Contains(DWord i) const { return ( i >= minimum && i <= maximum); }
+inline bool BInterval::Contains(const BInterval& i)     const { return ( i.minimum >= minimum && i.maximum <= maximum); }
+inline bool BInterval::operator == (const BInterval& i) const { return (minimum == i.minimum && maximum == i.maximum); }
+inline bool BInterval::operator != (const BInterval& i) const { return (minimum != i.minimum || maximum != i.maximum); }
 // comparison operators only compare lower bound
-inline bool BInterval::operator <= (const BInterval& i) const { return minimum <= i.minimum; };
-inline bool BInterval::operator <  (const BInterval& i) const { return minimum <  i.minimum; };
-inline bool BInterval::operator >= (const BInterval& i) const { return minimum >= i.minimum; };
-inline bool BInterval::operator >  (const BInterval& i) const { return minimum >  i.minimum; };
+inline bool BInterval::operator <= (const BInterval& i) const { return minimum <= i.minimum; }
+inline bool BInterval::operator <  (const BInterval& i) const { return minimum <  i.minimum; }
+inline bool BInterval::operator >= (const BInterval& i) const { return minimum >= i.minimum; }
+inline bool BInterval::operator >  (const BInterval& i) const { return minimum >  i.minimum; }
 #endif // #ifndef __bintervl_h__

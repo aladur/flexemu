@@ -25,6 +25,11 @@
 #include <stdio.h>
 #include "flexerr.h"
 
+#ifdef _
+#undef _
+#endif
+
+#define _(p) p
 
 FlexException::FlexException() throw()
 {
@@ -37,6 +42,11 @@ FlexException::~FlexException() throw()
 }
 
 const char *FlexException::what() const throw()
+{
+	return errorString;
+}
+
+const char *FlexException::wwhat() const throw()
 {
 	return errorString;
 }
@@ -78,7 +88,7 @@ void FlexException::setWindowsError(int lastError, const char* sp1)
 
 	if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, lastError, 0, (LPTSTR) &lpMsgBuf, 0, NULL))
-		sprintf(errorString, "An unspecified Windows error occured (#%d)", lastError);
+		sprintf(errorString, errString[FERR_UNSPEC_WINDOWS_ERROR], lastError);
 	if (sp1 != NULL)
 		sprintf(errorString, "%s%s", (char *)lpMsgBuf, sp1);
 	else
@@ -88,37 +98,38 @@ void FlexException::setWindowsError(int lastError, const char* sp1)
 #endif
 
 const char *FlexException::errString[] = {
-	"No Error",
-	"Unable to open %s",
-	"%s is no file container",
-	"No container opened",
-	"No file opened",
-	"Unable to format %s",
-	"Invalid container format #%d",
-	"Error reading from %s",
-	"Error writing to %s",
-	"Directory already opened",
-	"No directory opened",
-	"File already opened",
-	"No free file handle available",
-	"File %s already exists",
-	"Invalid file handle #%d",
-	"Invalid open mode \"%s\"",
-	"Directory full",
-	"Error reading trk/sec %02d/%02d in %s",
-	"Error writing trk/sec %02d/%02d in %s",
-	"No file \"%s\" (container %s)",
-	"Record map of %s is full (container %s)",
-	"Container %s full when writing %s",
-	"Unable to create %s",
-	"Unable to rename %s (container %s)",
-	"Unable to remove %s (container %s)",
-	"Error reading disk space (container %s)",
-	"Unable to copy %s on itself",
-	"Wrong parameter",
-	"Error creating process (%s %s)",
-	"Error reading FLEX binary format",
-	"Error creating temporary file %s",
-	"Container %s is read-only"
+	_("No Error"),
+	_("Unable to open %s"),
+	_("%s is no file container"),
+	_("No container opened"),
+	_("No file opened"),
+	_("Unable to format %s"),
+	_("Invalid container format #%d"),
+	_("Error reading from %s"),
+	_("Error writing to %s"),
+	_("Directory already opened"),
+	_("No directory opened"),
+	_("File already opened"),
+	_("No free file handle available"),
+	_("File %s already exists"),
+	_("Invalid file handle #%d"),
+	_("Invalid open mode \"%s\""),
+	_("Directory full"),
+	_("Error reading trk/sec %02d/%02d in %s"),
+	_("Error writing trk/sec %02d/%02d in %s"),
+	_("No file \"%s\" (container %s)"),
+	_("Record map of %s is full (container %s)"),
+	_("Container %s full when writing %s"),
+	_("Unable to create %s"),
+	_("Unable to rename %s (container %s)"),
+	_("Unable to remove %s (container %s)"),
+	_("Error reading disk space (container %s)"),
+	_("Unable to copy %s on itself"),
+	_("Wrong parameter"),
+	_("Error creating process (%s %s)"),
+	_("Error reading FLEX binary format"),
+	_("Error creating temporary file %s"),
+	_("Container %s is read-only"),
+	_("An unspecified Windows error occured (#%d)")
 };
 

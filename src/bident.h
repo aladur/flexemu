@@ -25,8 +25,7 @@
 #define __bident_h__
 
 #include <stdlib.h>
-#include "typedefs.h"
-#include "bstring.h"
+#include "misc1.h"
 
 class BIdentifier {
 
@@ -40,7 +39,7 @@ public:
 	BIdentifier();
 	BIdentifier(DWord value, const char *pName = NULL);
 	BIdentifier(const BIdentifier& id);
-	virtual ~BIdentifier();	// public destructor
+	~BIdentifier();	// public destructor
 
 	DWord	GetValue();
 	DWord	GetKey();	// to be hashable
@@ -54,14 +53,14 @@ public:
 	bool	operator <= (const BIdentifier& d) const;
 }; // class BIdentifier
 
-inline DWord BIdentifier::GetValue() { return value; };
-inline DWord BIdentifier::GetKey() { return value; };
-inline BString BIdentifier::GetName() { return name; };
-inline BIdentifier& BIdentifier::operator =  (const BIdentifier& id) { value = id.value; name = id.name; return *this; };
-inline bool BIdentifier::operator <  (const BIdentifier& id) const { return value <  id.value; };
-inline bool BIdentifier::operator == (const BIdentifier& id) const { return value == id.value; };
-inline bool BIdentifier::operator >  (const BIdentifier& id) const { return value >  id.value; };
-inline bool BIdentifier::operator <= (const BIdentifier& id) const { return value <= id.value; };
-inline bool BIdentifier::operator >= (const BIdentifier& id) const { return value >= id.value; };
-inline void BIdentifier::SetTo(DWord aValue, const char *pName) { value = aValue; name = pName; };
+inline DWord BIdentifier::GetValue() { return value; }
+inline DWord BIdentifier::GetKey() { return value; }
+inline BString BIdentifier::GetName() { return name; }
+inline BIdentifier& BIdentifier::operator =  (const BIdentifier& id) { value = id.value; name = id.name; return *this; }
+inline bool BIdentifier::operator <  (const BIdentifier& id) const { return value <  id.value; }
+inline bool BIdentifier::operator == (const BIdentifier& id) const { return value == id.value; }
+inline bool BIdentifier::operator >  (const BIdentifier& id) const { return value >  id.value; }
+inline bool BIdentifier::operator <= (const BIdentifier& id) const { return value <= id.value; }
+inline bool BIdentifier::operator >= (const BIdentifier& id) const { return value >= id.value; }
+inline void BIdentifier::SetTo(DWord aValue, const char *pName) { value = aValue; name = pName; }
 #endif // #ifndef __bident_h__

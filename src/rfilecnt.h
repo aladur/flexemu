@@ -25,31 +25,31 @@
 
 #include "ffilecnt.h"
 
-class FlexRamFileContainer : public FlexFileContainer {
+class FlexRamFileContainer : public FlexFileContainer
+{
 
 private:
 
-	Byte	*pfb;	// file buffer
+    Byte    *pfb;   // file buffer
 
 public:
-	FlexRamFileContainer(const char *path, const char *mode);
+    FlexRamFileContainer(const char *path, const char *mode);
+    virtual ~FlexRamFileContainer();
 
-protected:
-
-	virtual int	Close();
-	virtual bool	ReadSector(Byte *buffer, int trk, int sec);
-	virtual bool	WriteSector(const Byte *buffer, int trk, int sec);
+    virtual bool ReadSector(Byte *buffer, int trk, int sec) const;
+    virtual bool WriteSector(const Byte *buffer, int trk, int sec);
+    virtual int Close();
 
 private:
-	FlexRamFileContainer();	// should not be used
-	virtual void Initialize_for_flx_format(
-					s_floppy		*pfloppy,
-					s_flex_header	*pheader,
-					bool		wp);
-	virtual void Initialize_for_dsk_format(
-					s_floppy		*pfloppy,
-					s_formats		*pformat,
-					bool		wp);
+    FlexRamFileContainer(); // should not be used
+    virtual void Initialize_for_flx_format(
+        s_floppy        *pfloppy,
+        s_flex_header   *pheader,
+        bool        wp);
+    virtual void Initialize_for_dsk_format(
+        s_floppy        *pfloppy,
+        s_formats       *pformat,
+        bool        wp);
 };
 
 #endif //#ifndef __rfilecnt_h__ 

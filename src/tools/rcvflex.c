@@ -54,12 +54,10 @@ void do_exit(int exit_code)
 int main(int argc, char *argv[])
 {
 	int 		i, j, errcnt, si, se, tr, blk;
-	long 		total;
 	char 		filename[13];
 	unsigned char	buffer[2], blk_buffer[BYTES_P_BLOCK + 4];
 	char		*commit = "YYYY", *err = "NNNN";
 	unsigned short 	chksum;
-	unsigned int	sectorsize;
 	long unsigned int m;
 
 	if (argc > 2 || (argc == 2 &&
@@ -118,11 +116,11 @@ int main(int argc, char *argv[])
 		read(fd, &flh.sides, 1);
 		read(fd, &flh.sectors, 1);
 		read(fd, &flh.tracks, 1);
-		sectorsize = (128 << flh.sizecode);
+		/*sectorsize = (128 << flh.sizecode);
 		total = (flh.sides0 * flh.sectors0 
 			+ flh.sides * flh.sectors *
 				(flh.tracks -1))
-			* sectorsize;
+			* sectorsize;*/
 		chksum = (chksum + flh.write_protect + flh.sizecode +
 			 flh.sides0 + flh.sectors0 +
 			 flh.sides + flh.sectors +

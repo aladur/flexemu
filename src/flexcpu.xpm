@@ -1,5 +1,5 @@
 /* XPM */
-static char *flexcpu[] = {
+static const char *flexcpu[] = {
 /* width height ncolors chars_per_pixel */
 "32 32 3 1",
 /* colors */

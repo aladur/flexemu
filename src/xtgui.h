@@ -70,7 +70,7 @@ extern String fallback_resources[];
 class XtGui : public XAbstractGui {
 
 protected:
-	static char **pixmapname[8];
+	static const char **pixmapname[8];
 	static int radio_data[7];
 // Xtoolkit stuff
 	Widget 		e2toplevel, form, menubar, e2screen;
@@ -121,7 +121,7 @@ protected:
 	virtual Window	 getWindow(tWindowType t = FLX_E2SCREEN);
 
 protected:
-	virtual Widget		create_main_view(int argc, char *argv[],
+	virtual Widget		create_main_view(int argc, char * const argv[],
 					int sync);
 	virtual void		create_message_dialog(Widget parent);
 	virtual void		create_about_dialog(Widget parent);
@@ -130,10 +130,10 @@ protected:
 	virtual void		create_bp_dialog(Widget parent);
 	virtual void		create_logfile_dialog(Widget parent);
 	virtual void		manage_widget(Widget w);
-	virtual String		get_man_page(char *pman_page_name);
+	virtual String		get_man_page(const char *pman_page_name);
 	virtual void		initialize_after_create(Widget w, int inverse,
 				   const char *color);
-	virtual void		initialize_after_open(Widget w, char *title);
+	virtual void		initialize_after_open(Widget w, const char *title);
 	virtual void		initialize(struct sGuiOptions *pOptions);
 	virtual void		initialize_xrad_file();
 	virtual void		update_disk_status(int floppyIndex,
@@ -202,11 +202,15 @@ private:
 		XtPointer client_data, XtPointer call_data);
 	static void 	setCpuStopCallback(Widget w,
 		XtPointer client_data, XtPointer call_data);
-	static void 	setCpuStepCallback(Widget w,
+	static void 	toggleCpuRunCallback(Widget w,
 		XtPointer client_data, XtPointer call_data);
-	static void 	setCpuNextCallback(Widget w,
+	static void 	toggleCpuStopCallback(Widget w,
 		XtPointer client_data, XtPointer call_data);
-	static void 	setCpuResetCallback(Widget w,
+	static void 	toggleCpuStepCallback(Widget w,
+		XtPointer client_data, XtPointer call_data);
+	static void 	toggleCpuNextCallback(Widget w,
+		XtPointer client_data, XtPointer call_data);
+	static void 	toggleCpuResetCallback(Widget w,
 		XtPointer client_data, XtPointer call_data);
 	static void 	setCpuResetRunCallback(Widget w,
 		XtPointer client_data, XtPointer call_data);

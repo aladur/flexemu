@@ -31,7 +31,7 @@ typedef void (*BTimerProc)(void *p);
 class BTimer 
 {
 public:
-	virtual ~BTimer();
+	~BTimer();
 	static BTimer *Instance();
 	bool IsPeriodic() { return periodic; };
 	QWord GetDueTime() { return dueTime; };

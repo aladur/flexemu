@@ -21,7 +21,7 @@
 */
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
@@ -32,41 +32,44 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FlexFileList)
 
-FlexFileClipboard *SFlexFileClipboard::instance = NULL;
+template <> FlexFileClipboard *SFlexFileClipboard::instance = NULL;
 
 FlexFileClipboard::FlexFileClipboard()
-	: m_container(NULL)
+    : m_container(NULL)
 {
 }
 
 FlexFileClipboard::~FlexFileClipboard()
 {
-	SetEmpty();
+    SetEmpty();
 }
 
 void FlexFileClipboard::SetEmpty(void) const
 {
-	m_fileList.DeleteContents(TRUE);
-	m_container = NULL;
+    m_fileList.DeleteContents(TRUE);
+    m_container = NULL;
 }
 
 void FlexFileClipboard::SetFiles(const FlexFileList &newFileList) const
 {
-	FlexFileList::Node *node;
+    FlexFileList::Node *node;
 
-	SetEmpty();
-	for (node = newFileList.GetFirst(); node; node = node->GetNext()) {
-		m_fileList.Append(new wxString(*node->GetData()));
-	}
+    SetEmpty();
+
+    for (node = newFileList.GetFirst(); node; node = node->GetNext())
+    {
+        m_fileList.Append(new wxString(*node->GetData()));
+    }
 }
 
 // if source container is to be deleted
 // clipboard contents gets invalid
 
-void FlexFileClipboard::Update(const void *pObject)
+void FlexFileClipboard::UpdateFrom(const void *pObject)
 {
-	if (m_container == pObject) {
-		SetEmpty();
-	}
+    if (m_container == pObject)
+    {
+        SetEmpty();
+    }
 }
 

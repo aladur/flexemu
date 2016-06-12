@@ -40,11 +40,11 @@ public:
 
 	BDate(int d = 0, int m = 0, int year = 0);	// public constructor
 	BDate(const BDate& d);				// public constructor
-	virtual ~BDate();	// public destructor
+	~BDate();					// public destructor
 
 
 	static const BDate Now(void);
-	static char *monthName[];
+	static const char *monthName[];
 	const char	*GetDateString(int mode = DATE_DEFAULT_FORMAT) const;
 	void	Assign(int day, int month, int year);
 	void	GetDate(int *day, int *month, int *year);
@@ -66,8 +66,8 @@ private:
 	//static int		year2000; // if !0 0 and if year < 70 add 1900 to it
 }; // class BDate
 
-inline void BDate::Assign(int d, int m, int y) { day = d; month = m; year = y; };
-inline BDate& BDate::operator = (const BDate& d) { Assign(d.day, d.month, d.year); return *this; };
+inline void BDate::Assign(int d, int m, int y) { day = d; month = m; year = y; }
+inline BDate& BDate::operator = (const BDate& d) { Assign(d.day, d.month, d.year); return *this; }
 inline int BDate::GetDay(void) const {	return day; }
 inline int BDate::GetMonth(void) const { return month; }
 inline void BDate::GetDate(int *d, int *m, int *y) {	*d = day; *m = month; *y = year; }

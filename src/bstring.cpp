@@ -2,8 +2,8 @@
     bstring.cpp
 
 
-    FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 1998-2004  W. Schwotzer
+    Basic class containing a string implementation
+    Copyright (C) 1998-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <limits.h>
@@ -222,7 +222,6 @@ bool BString::matches(const char *pattern, bool ignorecase /* = false */ ) const
 	const char *p_pat = pattern;
 	const char *p_src = str;
 	char char_pat     = '*'; // prepare for first while loop
-	char char_src;
 	int min = 0;
 	int max = 0;
 	int notmatched =  0;
@@ -232,7 +231,7 @@ bool BString::matches(const char *pattern, bool ignorecase /* = false */ ) const
 
 	while (*p_src != '\0')
 	{
-		char_src = *p_src;
+		char char_src = *p_src;
 		if (ignorecase)
 			char_src = tolower(char_src);
 
@@ -286,8 +285,7 @@ bool BString::multimatches(const char *multipattern,
 			bool ignorecase /* = false */) const
 
 {
-	int begin, pos;
-	BString *pattern;
+	int pos;
 
 	if (multipattern == NULL)
 		return false;
@@ -295,10 +293,10 @@ bool BString::multimatches(const char *multipattern,
 	pos = 0;
 	while (multipattern[pos] != '\0')
 	{
-		begin = pos;
+		int begin = pos;
 		while (multipattern[pos] != '\0' && (multipattern[pos] != delimiter))
 			pos++;
-		pattern = new BString(&multipattern[begin], pos - begin);
+		BString *pattern = new BString(&multipattern[begin], pos - begin);
 		if (matches(*pattern, ignorecase))
 		{
 			delete pattern;

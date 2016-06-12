@@ -28,7 +28,7 @@
 class BEnvironment {
 public:
 	BEnvironment();
-	virtual ~BEnvironment();
+	~BEnvironment();
 
 	bool RemoveKey(const char *key);
 	bool SetValue(const char *key, const char *value);

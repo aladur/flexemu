@@ -154,7 +154,7 @@ private:
 // Public constructor and destructor
 public:
 		Inout(Mc6809 *x_cpu, struct sGuiOptions *poptions);
-		virtual ~Inout();
+		~Inout();
 
 };
 

@@ -2,8 +2,8 @@
     bposixthreadimp.cpp
 
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+    Basic class for a posix thread implementation
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,9 +22,8 @@
 
 #include "bposixthreadimp.h"
 
-#ifdef UNIX
-
-#include "bthread.h"
+#ifdef HAVE_PTHREAD
+#include <bthread.h>
 
 typedef  void *(*tThreadProc)(void *);
 
@@ -47,6 +46,10 @@ bool BPosixThreadImp::Start(BThread *aThreadObject)
   //ret =  pthread_attr_setscope(&attr, PTHREAD_SCOPE_SYSTEM);
   pThreadObj = aThreadObject;
   ret = pthread_create(&thread, &attr, (tThreadProc)BPosixThreadImp::RunImp, this);
+  if (ret == 0)
+    // detach thread to avoid memory leaks
+    pthread_detach(thread);
+
   return (ret == 0);
 }
 

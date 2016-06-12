@@ -103,28 +103,27 @@ bool BEnvironment::GetValue(const char *key, BString &value)
 {
 	char *p;
 	BString upperKey(key);
+	bool ret = false;
 
 	upperKey.upcase();
 #ifdef WIN32
 	int size = GetEnvironmentVariable(upperKey, NULL, 0);
-	if (!size)
-		return false;
-	p = new char[size];
-	if (GetEnvironmentVariable(upperKey, p, size)) {
-		value = p;
-		delete p;
-		return true;
+	if (size) {
+		p = new char[size];
+		if (GetEnvironmentVariable(upperKey, p, size)) {
+			value = p;
+			ret = true;
+		}
+		delete [] p;
 	}
-	delete p;
-	return false;
 #endif
 #ifdef UNIX
 	if ((p = getenv(upperKey))) {
 		value = p;
-		return true;
+		ret = true;
 	}
-	return false;
 #endif
+	return ret;
 }
 
 bool BEnvironment::GetValue(const char *key, int *pValue)

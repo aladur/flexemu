@@ -1,8 +1,8 @@
 /*
     bdelete.h
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2004  W. Schwotzer
+    Basic class for automatic instance destruction
+    Copyright (C) 1997-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ private:
    BDeleter &operator=(const BDeleter &);
 public:
    BDeleter(T *anObject);
-   virtual ~BDeleter();
+   ~BDeleter();
 };
 
 template <class T>

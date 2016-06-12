@@ -33,7 +33,7 @@ public:
   BProcess(const char *executable,
 		const char *directory = NULL,
 		const char *argument  = NULL);
-  virtual ~BProcess();
+  ~BProcess();
   void AddArgument(const char *argument);
   void SetDirectory(const char *directory);
   bool Start();     // Start the Process if not started yet

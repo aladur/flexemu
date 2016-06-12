@@ -25,12 +25,12 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-// Include your minimal set of headers here, or wx.h
-#include <wx/wx.h>
+    // Include your minimal set of headers here, or wx.h
+    #include <wx/wx.h>
 #endif
 
 #include "fdlist.h"
@@ -46,49 +46,52 @@ class wxMDIParentFrame;
 class FlexChildFrame: public wxMDIChildFrame, public BObserver
 {
 public:
-	FlexChildFrame(wxMDIParentFrame *parent, const wxString& title,
-		const wxPoint& pos, const wxSize& size, const long style,
-		FileContainerIf *container);
-	virtual ~FlexChildFrame(void);
-	void Attach(BObserver *clipboardObserver);
-	void Detach(BObserver *clipboardObserver);
-	wxMenu *GetPopupMenu(void);
-	virtual void Update(const void *pObject);
-	void ViewProperties(void);
-	void OnActivate(wxActivateEvent& event);
-	void OnSetFocus(wxFocusEvent& event);
-	const FlexDiskListCtrl *GetListControl(void) { return m_listCtrl;};
+    FlexChildFrame(wxMDIParentFrame *parent, const wxString &title,
+                   const wxPoint &pos, const wxSize &size, const long style,
+                   FileContainerIf *container);
+    virtual ~FlexChildFrame(void);
+    void Attach(BObserver *clipboardObserver);
+    void Detach(BObserver *clipboardObserver);
+    wxMenu *GetPopupMenu(void);
+    virtual void UpdateFrom(const void *pObject);
+    void ViewProperties(void);
+    void OnActivate(wxActivateEvent &event);
+    void OnSetFocus(wxFocusEvent &event);
+    const FlexDiskListCtrl *GetListControl(void)
+    {
+        return m_listCtrl;
+    };
 
-	DECLARE_MENUCOMMAND(OnSelectAll)
-	DECLARE_MENUCOMMAND(OnDeselectAll)
-	DECLARE_MENUCOMMAND(OnFind)
-	DECLARE_MENUCOMMAND(OnCopy)
-	DECLARE_MENUCOMMAND(OnPaste)
-	DECLARE_MENUCOMMAND(OnDelete)
-	DECLARE_MENUCOMMAND(OnRename)
-	DECLARE_MENUCOMMAND(OnView)
-	DECLARE_MENUCOMMAND(OnSetWriteProtect)
-	DECLARE_MENUCOMMAND(OnClearWriteProtect)
-	DECLARE_MENUCOMMAND(OnSetReadProtect)
-	DECLARE_MENUCOMMAND(OnClearReadProtect)
-	DECLARE_MENUCOMMAND(OnSetDeleteProtect)
-	DECLARE_MENUCOMMAND(OnClearDeleteProtect)
-	DECLARE_MENUCOMMAND(OnSetCatalogProtect)
-	DECLARE_MENUCOMMAND(OnClearCatalogProtect)
-	DECLARE_MENUCOMMAND(OnViewProperties)
-	DECLARE_MENUCOMMAND(OnCloseChild)
+    DECLARE_MENUCOMMAND(OnSelectAll)
+    DECLARE_MENUCOMMAND(OnDeselectAll)
+    DECLARE_MENUCOMMAND(OnFind)
+    DECLARE_MENUCOMMAND(OnCopy)
+    DECLARE_MENUCOMMAND(OnPaste)
+    DECLARE_MENUCOMMAND(OnDelete)
+    DECLARE_MENUCOMMAND(OnRename)
+    DECLARE_MENUCOMMAND(OnView)
+    DECLARE_MENUCOMMAND(OnSetWriteProtect)
+    DECLARE_MENUCOMMAND(OnClearWriteProtect)
+    DECLARE_MENUCOMMAND(OnSetReadProtect)
+    DECLARE_MENUCOMMAND(OnClearReadProtect)
+    DECLARE_MENUCOMMAND(OnSetDeleteProtect)
+    DECLARE_MENUCOMMAND(OnClearDeleteProtect)
+    DECLARE_MENUCOMMAND(OnSetCatalogProtect)
+    DECLARE_MENUCOMMAND(OnClearCatalogProtect)
+    DECLARE_MENUCOMMAND(OnViewProperties)
+    DECLARE_MENUCOMMAND(OnCloseChild)
 #ifdef __MSGTK__
-	DECLARE_MENUCOMMAND(OnSortFilename)
-	DECLARE_MENUCOMMAND(OnSortRandom)
-	DECLARE_MENUCOMMAND(OnSortFilesize)
-	DECLARE_MENUCOMMAND(OnSortFiledate)
-	DECLARE_MENUCOMMAND(OnSortFileattr)
-	DECLARE_MENUCOMMAND(OnSortFiledesc)
+    DECLARE_MENUCOMMAND(OnSortFilename)
+    DECLARE_MENUCOMMAND(OnSortRandom)
+    DECLARE_MENUCOMMAND(OnSortFilesize)
+    DECLARE_MENUCOMMAND(OnSortFiledate)
+    DECLARE_MENUCOMMAND(OnSortFileattr)
+    DECLARE_MENUCOMMAND(OnSortFiledesc)
 #endif
 
 private:
-	FlexDiskListCtrl	*m_listCtrl;
-	BObserver			*m_clipboardObserver;
-DECLARE_EVENT_TABLE()
+    FlexDiskListCtrl    *m_listCtrl;
+    BObserver       *m_clipboardObserver;
+    DECLARE_EVENT_TABLE()
 };
 

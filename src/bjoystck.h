@@ -32,7 +32,7 @@ class  BJoystick {
 
 public:
 	BJoystick(int which = 0);
-	virtual ~BJoystick();
+	~BJoystick();
 	short IsOpened();
 	short Actualize();
 	short XAxis();
@@ -46,9 +46,9 @@ private:
 	short	axis[2];
 };
 
-inline short BJoystick::XAxis() { return axis[0]; };
-inline short BJoystick::YAxis() { return axis[1]; };
-inline int   BJoystick::Buttons() { return buttons; };
+inline short BJoystick::XAxis() { return axis[0]; }
+inline short BJoystick::YAxis() { return axis[1]; }
+inline int   BJoystick::Buttons() { return buttons; }
 
 #endif // #ifdef LINUX_JOYSTICK_IS_PRESENT
 #endif // #ifdef _BJOYSTICK_H_

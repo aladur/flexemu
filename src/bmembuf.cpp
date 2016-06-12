@@ -31,6 +31,14 @@ BMemoryBuffer::BMemoryBuffer(DWord aSize /* = 65536 */, DWord aBase /* = 0 */) :
 	pBuffer = new Byte[size];
 }
 
+BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
+{
+	baseAddress = src.baseAddress;
+	size = src.size;
+	pBuffer = new Byte[size];
+	memcpy(pBuffer, src.pBuffer, size);
+}
+
 BMemoryBuffer::~BMemoryBuffer()
 {
 	delete [] pBuffer;

@@ -45,10 +45,9 @@ int Disassembler::DisassembleOneLine(const Byte *pMemory, DWord pc, DWord *pFlag
 void Disassembler::DisassembleWithConfig(DisassemblerConfig &aConfig, BMemoryBuffer *pMemBuf)
 {
 	DWord startAddress, length;
-	const Byte *pMemory;
 
 	while (aConfig.GetFirstEntryPoint(&startAddress)) {
-		pMemory = pMemBuf->GetBuffer(startAddress);
+		const Byte *pMemory = pMemBuf->GetBuffer(startAddress);
 		if (pMemory) {
 			length = DisassembleUptoEnd(aConfig, pMemory, startAddress);
 			if (length)

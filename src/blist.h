@@ -35,7 +35,7 @@ public:
 
 	BList(const BList &i);		// public constructor
 	BList(const Item &i);		// public constructor
-	virtual ~BList();			// public destructor
+	~BList();			// public destructor
 
 	BList *GetFirst();
 	BList *GetLast();
@@ -53,10 +53,10 @@ public:
 	void Unlink();
 }; // class BList
 
-template <class Item>inline BList<Item> *BList<Item>::GetNext() const { return next; };
-template <class Item>inline BList<Item> *BList<Item>::GetPrevious() const { return previous; };
-template <class Item>inline Item &BList<Item>::GetItem() { return item; };
-template <class Item>inline void BList<Item>::SetNext(BList *l) { next = l; };
-template <class Item>inline void BList<Item>::SetPrevious(BList *l) { previous = l; };
+template <class Item>inline BList<Item> *BList<Item>::GetNext() const { return next; }
+template <class Item>inline BList<Item> *BList<Item>::GetPrevious() const { return previous; }
+template <class Item>inline Item &BList<Item>::GetItem() { return item; }
+template <class Item>inline void BList<Item>::SetNext(BList *l) { next = l; }
+template <class Item>inline void BList<Item>::SetPrevious(BList *l) { previous = l; }
 
 #endif // #ifndef __blist_h__

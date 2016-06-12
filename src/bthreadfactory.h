@@ -2,8 +2,8 @@
     bthreadfactory.h
 
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+    Basic class for thread creation
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

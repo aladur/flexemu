@@ -247,6 +247,7 @@ void write_serial(int fd, const unsigned char *buffer, int size)
 {
 	int i;
 	unsigned char checksum;
+
 	checksum = 0;
 	for (i = 0; i < size; i++)
 		checksum += buffer[i];

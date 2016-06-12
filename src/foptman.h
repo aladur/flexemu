@@ -36,7 +36,7 @@ public:
 		struct sGuiOptions *pGuiOptions,
 		struct sOptions *pOptions,
 		int argc,
-		char **argv);
+		char * const argv[]);
 	void GetOptions(
 		struct sGuiOptions *pGuiOptions,
 		struct sOptions *pOptions);
@@ -47,7 +47,7 @@ public:
 		struct sGuiOptions *pGuiOptions,
 		struct sOptions *pOptions,
 		int argc,
-		char **argv);
+		char * const argv[]);
 	void WriteOptions(
 		struct sGuiOptions *pGuiOptions,
 		struct sOptions *pOptions,

@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2004  W. Schwotzer
+    Copyright (C) 1997-2005  W. Schwotzer
 	 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,33 +44,48 @@ IMPLEMENT_APP(FlexemuSetup)
 /*------------------------------------------------------
  flexemuSetup implementation (The Application class)
 --------------------------------------------------------*/
+typedef char * PCHAR;
 bool FlexemuSetup::OnInit(void)
 {
 	dialog = NULL;
+#ifdef _UNICODE
+	char **mb_argv;
+	int i;
 
+	mb_argv = new PCHAR[argc];
+	for (i = 0; i < argc; i++)
+		mb_argv[i] = const_cast<char *>((const char *)wxConvCurrent->cWX2MB(argv[i]));
+	optionMan.InitOptions(&guiOptions, &options, argc, mb_argv);
+#else
 	optionMan.InitOptions(&guiOptions, &options, argc, argv);
+#endif
+	wxLocale::AddCatalogLookupPathPrefix(wxT("."));
+	wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
+
+	m_locale.Init();
+	m_locale.AddCatalog(wxT("flexemu"));
+
 	optionMan.GetOptions(&guiOptions, &options);
 	optionMan.GetEnvironmentOptions(&guiOptions, &options);
-	SetAppName("FlexemuSetup");
+	SetAppName(wxT("FlexemuSetup"));
 	SetExitOnFrameDelete(true);
 
 	dialog = new FlexemuOptionsDialog(&guiOptions, &options,
-		NULL, -1, "Flexemu Options Dialog", wxDefaultPosition,
+		NULL, -1, _("Flexemu Options Dialog"), wxDefaultPosition,
 		wxDefaultSize,
-		wxTHICK_FRAME | wxCAPTION | wxSYSTEM_MENU | wxDIALOG_NO_PARENT |
-		wxRESIZE_BORDER);
+		wxCAPTION | wxSYSTEM_MENU | 
+                wxDIALOG_NO_PARENT | wxRESIZE_BORDER);
 
 	SetTopWindow(dialog);
-	dialog->Show(true);
-
-	return true;
-}
-
-int FlexemuSetup::OnExit(void)
-{
-	if (GetReturnCode() == wxID_OK)
+	if (dialog->ShowModal() == wxID_OK)
+        {
 		optionMan.WriteOptions(&guiOptions, &options);
-
-	return 0;
+        }
+        dialog->Destroy();
+	
+#ifdef _UNICODE
+	delete [] mb_argv;
+#endif
+	return true;
 }
 

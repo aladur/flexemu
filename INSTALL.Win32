@@ -20,8 +20,8 @@ Compile with Cygwin (experimental):
 remarks:
 
 	- To compile flexplorer or fsetup you first have to install
-	  wxWindows for Win32 and compile static or shared libs.
-	  (http://www.wxWindows.org/)
+	  wxWidgets for Win32 and compile static or shared libs.
+	  (http://www.wxWidgets.org/)
 	- The file confignt.h contains some defines to control some
 	  special features
 	- If You don't want the disassembler to substitute some FLEX jump

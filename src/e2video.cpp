@@ -30,27 +30,27 @@
 
 E2video::E2video(Inout *x_io, Memory *x_mem)
 {
-	memory = x_mem;
-	io     = x_io;
-} 
+    memory = x_mem;
+    io     = x_io;
+}
 
 E2video::~E2video()
 {
-	memory = NULL;
-	io     = NULL;
+    memory = NULL;
+    io     = NULL;
 }
 
 
 void E2video::resetIo()
 {
-	vico1            = 0;
-	vico2            = 0;
-	divided_block	 = -1;
+    vico1            = 0;
+    vico2            = 0;
+    divided_block    = -1;
 }
 
-Byte E2video::readIo(Word offset)
+Byte E2video::readIo(Word)
 {
-	return 0xff;	// there is nothing to be read !
+    return 0xff;    // there is nothing to be read !
 }
 
 
@@ -59,16 +59,24 @@ Byte E2video::readIo(Word offset)
 
 void E2video::writeIo(Word offset, Byte val)
 {
-	if (offset == 0) {
-		vico1 = val & 0x03;
-		memory->init_blocks_to_update();
-	} else {
-		vico2 = val;
-		memory->init_blocks_to_update();
-		if (YBLOCKS != 1 && vico2 % BLOCKHEIGHT)
-			divided_block = (Word)(vico2 / BLOCKHEIGHT);
-		else
-			divided_block = -1;  // means: no such block
-	} // else
+    if (offset == 0)
+    {
+        vico1 = val & 0x03;
+        memory->init_blocks_to_update();
+    }
+    else
+    {
+        vico2 = val;
+        memory->init_blocks_to_update();
+
+        if (YBLOCKS != 1 && vico2 % BLOCKHEIGHT)
+        {
+            divided_block = (Word)(vico2 / BLOCKHEIGHT);
+        }
+        else
+        {
+            divided_block = -1;    // means: no such block
+        }
+    } // else
 }
 

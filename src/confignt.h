@@ -129,7 +129,7 @@
 #define SIZEOF_VOID_P 4
 
 /* Define if you have the <dirent.h> header file.  */
-#define HAVE_DIRENT_H 1
+/* #undef HAVE_DIRENT_H */
 
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
@@ -180,7 +180,7 @@
 #define PACKAGE "Flexemu"
 
 /* Version number of package */
-#define VERSION "2.15"
+#define VERSION "2.20"
 
 #endif /* ifdef __config_h__ */
 

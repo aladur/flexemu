@@ -78,25 +78,28 @@ BFilePtr::BFilePtr(const BFilePtr &src) :
 
 BFilePtr &BFilePtr::operator=(const BFilePtr &src)
 {
-  Close();
+  if (&src != this)
+  { 
+    Close();
 
-  fp = src.fp;
+    fp = src.fp;
 
-  if (src.pPath != NULL)
-  {
-    pPath = new char[strlen(src.pPath) + 1];
-    strcpy(pPath, src.pPath);
+    if (src.pPath != NULL)
+    {
+      pPath = new char[strlen(src.pPath) + 1];
+      strcpy(pPath, src.pPath);
+    }
+    if (src.pMode != NULL)
+    {
+      pMode = new char[strlen(src.pMode) + 1];
+      strcpy(pMode, src.pMode);
+    }
+
+    // only take over responsibility for closing file
+    // if source filepointer had it
+    responsible     = src.responsible;
+    src.responsible = false;
   }
-  if (src.pMode != NULL)
-  {
-    pMode = new char[strlen(src.pMode) + 1];
-    strcpy(pMode, src.pMode);
-  }
-
-  // only take over responsibility for closing file
-  // if source filepointer had it
-  responsible     = src.responsible;
-  src.responsible = false;
   return *this;
 }
 

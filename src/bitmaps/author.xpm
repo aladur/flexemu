@@ -1,5 +1,5 @@
 /* XPM */
-static char *author[] = {
+static const char *author[] = {
 /* width height num_colors chars_per_pixel */
 "    94   135       61            1",
 /* colors */

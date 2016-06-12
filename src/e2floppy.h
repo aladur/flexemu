@@ -28,95 +28,90 @@
 
 #ifndef __fromflex__
 
-#include <stdio.h>
-#include <sys/stat.h>
-#include "flexemu.h"
-#include "mc6809.h"
-#include "wd1793.h"
-#include "filecnts.h"
-#include "bstring.h"
+    #include <stdio.h>
+    #include <sys/stat.h>
+    #include "flexemu.h"
+    #include "wd1793.h"
+    #include "filecnts.h"
+    #include "bstring.h"
 
 #else
-#include "typedefs.h"
+    #include "typedefs.h"
 #endif /* #ifndef __fromflex__ */
 
 #ifndef __fromflex__
 
-class Inout;
-class Mc6809;
 class BMutex;
 
-class E2floppy : public Wd1793 {
+class E2floppy : public Wd1793
+{
 
-//
-// internal registers
-//
-//	status			status register (read only)
-//	drisel			drive selection (write only)
-//	selected		selected drive as index into floppy object
+    //
+    // internal registers
+    //
+    //  status          status register (read only)
+    //  drisel          drive selection (write only)
+    //  selected        selected drive as index into floppy object
 
 private:
 
-	Byte			status;
-	Byte			drisel;
-	Byte			selected;
+    Byte            status;
+    Byte            drisel;
+    Byte            selected;
 
-// interface to operating system:
-// a container object for any drive connected
-// drive nr. 4 means no drive selected
-// pfs always points to the selected floppy
+    // interface to operating system:
+    // a container object for any drive connected
+    // drive nr. 4 means no drive selected
+    // pfs always points to the selected floppy
 
 protected:
 
-	FileContainerIfSector	*floppy[5];
-	FileContainerIfSector	*pfs;
-	Byte			track[5];
-	tDiskStatus		driveStatus[5];
-	char			sector_buffer[256];
-	const char		*disk_dir;
-	BMutex			*pStatusMutex;
+    FileContainerIfSector   *floppy[5];
+    FileContainerIfSector   *pfs;
+    Byte            track[5];
+    tDiskStatus     driveStatus[5];
+    char            sector_buffer[256];
+    const char      *disk_dir;
+    BMutex          *pStatusMutex;
 
-// Internals
+    // constructor/destructor
+public:
+    E2floppy();
+    virtual ~E2floppy(void);
+
+    // public interface
+public:
+    virtual void         resetIo(void);
+    virtual Byte         readIo(Word offset);
+    virtual void         writeIo(Word offset, Byte val);
+    virtual const char   *getName(void)
+    {
+        return "e2floppy";
+    };
+
+    virtual void         get_drive_status(tDiskStatus status[4]);
+    virtual void         disk_directory(const char *x_disk_dir);
+    virtual void         mount_all_drives(BString drive[]);
+    virtual bool         update_all_drives(void);
+    virtual bool         umount_all_drives(void);
+    virtual bool         mount_drive(const char *path, Word drive_nr,
+                                     tMountOption option = MOUNT_DEFAULT);
+    virtual bool         format_disk(SWord trk, SWord sec,
+                                     const char *name,
+                                     int type = TYPE_DSK_CONTAINER);
+    virtual bool         update_drive(Word drive_nr);
+    virtual bool         umount_drive(Word drive_nr);
+    virtual BString  drive_info(Word drive_nr);
 
 private:
 
-	Mc6809			*cpu;
-	Inout			*io;
-
-// constructor/destructor
-public:
-	E2floppy(Inout *x_io, Mc6809 *x_cpu);
-	virtual ~E2floppy(void);
-
-// public interface
-public:
-	virtual void		 resetIo(void);
-	virtual Byte		 readIo(Word offset);
-	virtual void		 writeIo(Word offset, Byte val);
-	virtual const char   *getName(void) { return "e2floppy"; };
-	
-	virtual void		 get_drive_status(tDiskStatus status[4]);	
-	virtual void		 disk_directory(const char *x_disk_dir);
-	virtual void		 mount_all_drives(BString drive[]);
-	virtual bool		 update_all_drives(void);
-	virtual bool		 umount_all_drives(void);
-	virtual bool		 mount_drive(const char *path, Word drive_nr,
-					tMountOption option = MOUNT_DEFAULT);
-	virtual bool		 format_disk(SWord trk, SWord sec, char *name,
-					int type = TYPE_DSK_CONTAINER);
-	virtual bool		 update_drive(Word drive_nr);
-	virtual bool		 umount_drive(Word drive_nr);
-	virtual BString	 drive_info(Word drive_nr);
-
-private:
-
-	virtual Byte		 readByte(Word index);
-	virtual void		 writeByte(Word index);
-	virtual Byte		 driveReady(void);
-	virtual Byte		 writeProtect(void);
-	virtual Byte		 recordNotFound(void);
-	virtual Byte		 seekError(Byte new_track);
-	const char 		 *open_mode(char *path);
+    virtual Byte         readByte(Word index);
+    virtual void         writeByte(Word index);
+    virtual Byte         driveReady(void);
+    virtual Byte         writeProtect(void);
+    virtual Byte         recordNotFound(void);
+    virtual Byte         seekError(Byte new_track);
+    const char       *open_mode(char *path);
 };
 
 #endif /* #ifndef __fromflex__ */

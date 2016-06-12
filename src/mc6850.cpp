@@ -38,32 +38,37 @@ Mc6850::~Mc6850()
 
 void Mc6850::resetIo()
 {
-	cr  = 0;	// control register
-	sr  = 0;	// status register
-	tdr = 0;	// transmit data register
-	rdr = 0;	// receive data register
+    cr  = 0;    // control register
+    sr  = 0;    // status register
+    tdr = 0;    // transmit data register
+    rdr = 0;    // receive data register
 }
 
 Byte Mc6850::readIo(Word offset)
 {
-	switch (offset & 0x01) {
-	case 0: sr &= 0x80;		// only receive data register full
-		BSET1(sr);
-		requestInput();		// and interrupt request is set
-					// the other status bits are always 0
-		return sr;		// return status register
-	case 1: rdr = readInput();	// read character
-		BCLR7(cr);		// reset interrupt flag
-		return rdr;		// return receive data register
-	}
-	return 0;		// should never happen
+    switch (offset & 0x01)
+    {
+        case 0:
+            sr &= 0x80;     // only receive data register full
+            BSET1(sr);
+            requestInput();     // and interrupt request is set
+            // the other status bits are always 0
+            return sr;      // return status register
+
+        case 1:
+            rdr = readInput();  // read character
+            BCLR7(cr);      // reset interrupt flag
+            return rdr;     // return receive data register
+    }
+
+    return 0;       // should never happen
 }
 
 // read data from serial line (should be overwritten by subclass)
 
 Byte Mc6850::readInput(void)
 {
-	return rdr;
+    return rdr;
 }
 
 // check if character is ready to read from serial line
@@ -78,20 +83,29 @@ void Mc6850::requestInput(void)
 
 void Mc6850::writeIo(Word offset, Byte val)
 {
-	switch (offset & 0x01) {
-	case 0:	cr = val; break;
-	case 1: tdr = val;
-		BCLR7(cr);		// reset interrupt flag
-		writeOutput(tdr);	// write output to serial line
-		if (cr & 0x60 == 0x20)	// if enabled
-			set_irq();	// set transmitting interrupt
-		break;
-	}
+    switch (offset & 0x01)
+    {
+        case 0:
+            cr = val;
+            break;
+
+        case 1:
+            tdr = val;
+            BCLR7(cr);      // reset interrupt flag
+            writeOutput(tdr);   // write output to serial line
+
+            if ((cr & 0x60) == 0x20)// if enabled
+            {
+                set_irq();    // set transmitting interrupt
+            }
+
+            break;
+    }
 }
 
 // write output to port-Pins (should be overwritten by subclass)
 
-void Mc6850::writeOutput(Byte val)
+void Mc6850::writeOutput(Byte)
 {
 }
 
@@ -99,15 +113,18 @@ void Mc6850::writeOutput(Byte val)
 
 void Mc6850::set_irq(void)
 {
-	BSET7(sr);
+    BSET7(sr);
 }
 
 // actions when a character is ready to be received
 
 void Mc6850::activeTransition(void)
 {
-	BSET0(sr);
-	if (BTST7(cr))
-		set_irq();
+    BSET0(sr);
+
+    if (BTST7(cr))
+    {
+        set_irq();
+    }
 }
 

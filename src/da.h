@@ -49,7 +49,7 @@ protected:
 	int	DisassembleUptoEnd(DisassemblerConfig &aConfig, const Byte *pMemory, DWord pc);
 };
 
-inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d) { da = d; };
+inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d) { da = d; }
 
 #endif // __da_h__
 

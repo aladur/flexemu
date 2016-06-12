@@ -38,7 +38,7 @@ private:
 	BRegistry();
 
 public:
-	virtual ~BRegistry();
+	~BRegistry();
 
 	BRegistry(const BRegistry &regKey, const char *subKey = NULL);
 	BRegistry(HKEY aHKey);

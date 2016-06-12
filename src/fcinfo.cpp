@@ -26,6 +26,12 @@
 #include "fcinfo.h"
 #include "filecntb.h"	// needed for containertypes
 
+#ifdef _
+#undef _
+#endif
+
+#define _(p) p
+
 
 FlexContainerInfo::FlexContainerInfo(void) :
 	sectors(0),
@@ -54,17 +60,18 @@ const BString FlexContainerInfo::GetTypeString(void) const
 
 	if (type & TYPE_CONTAINER) {
 		if (type & TYPE_DSK_CONTAINER)
-			str = "file container, DSK format";
+			str = _("file container, DSK format");
 		else if (type & TYPE_FLX_CONTAINER)
-			str = "file container, FLX format";
+			str = _("file container, FLX format");
 		else
-			str = "file container";
+			str = _("file container");
 	} else if (type & TYPE_DIRECTORY) {
 		if (type & TYPE_NAFS_DIRECTORY)
-			str = "directory, without text file conversion";
+			str = _("directory, without text file conversion");
 		else
-			str = "directory, with text file conversion";
+			str = _("directory, with text file conversion");
 	} else
-		str = "Unknown type";
+		str = _("Unknown type");
 	return str;
 }
+

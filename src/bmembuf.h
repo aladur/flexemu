@@ -30,7 +30,8 @@ class BMemoryBuffer
 {
 public:
 	BMemoryBuffer(DWord aSize = 65536, DWord aBase = 0);
-	virtual ~BMemoryBuffer();
+	BMemoryBuffer(const BMemoryBuffer &src);
+	~BMemoryBuffer();
 
 	void FillWith(const Byte pattern = 0);
 	inline DWord GetSize(void) const { return size; };

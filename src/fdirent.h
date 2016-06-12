@@ -24,6 +24,7 @@
 #define __fdirent_h__
 
 
+#include "misc1.h"
 #include "bstring.h"
 #include "bdate.h"
 //#include <new>
@@ -74,15 +75,14 @@ public:
 	void	GetEndTrkSec(int *t, int *s);
 	void	SetTotalFileName(const char *fileName);
 	const BString& GetTotalFileName(void) const;
-	const char *GetFileName(void) const;
-	const char *GetFileExt(void);
+	BString GetFileName(void) const;
+	BString GetFileExt(void) const;
 	void	SetSize(int size);
 	int		GetSize(void);
 	void	SetAttributes(int attr);
 	void	SetAttributes(int setMask, int clearMask);
 	int		GetAttributes(void);
 	const BString GetAttributesString(void);
-	const BString GetFileDescription(void);
 	int		GetSectorMap(void) const;
 	int		IsRandom(void) const;
 	void	SetSectorMap(int aSectorMap);

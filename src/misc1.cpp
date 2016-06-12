@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include "bfileptr.h"
 
-char *gMemoryAllocationErrorString =
+const char *gMemoryAllocationErrorString =
 			"Bad memory allocation.\n"
 			"Close other applications\n"
 			"and try again.";

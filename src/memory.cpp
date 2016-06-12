@@ -209,13 +209,12 @@ void Memory::reset_io(void)
 
 Word Memory::read_word(Word addr)
 {
-	struct sIoSelect *pIo;
 	Word		  tmp;
 
 	// read from memory mapped I/O
 	if ((addr & GENIO_MASK) == io_base_addr)
 	{
-		pIo = ppIo + (addr & (Word)(~GENIO_MASK));
+		struct sIoSelect *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
 		tmp = (pIo->device)->readIo(pIo->offset) << 8;
 		++pIo;
 		return tmp | (pIo->device)->readIo(pIo->offset);
@@ -296,7 +295,7 @@ void Memory::writeIo(Word addr, Byte val)
 void Memory::switch_mmu(Word offset, Byte val)
 {
 	//if (offset < 12)
-		ppage[offset] = vram_ptrs[(offset << 2) & 0x30 | (val & 0x0f)]; 
+		ppage[offset] = vram_ptrs[((offset << 2) & 0x30) | (val & 0x0f)]; 
 		video_ram_active[offset] = ((val & 0x03) != 0x03);
 } // switch_mmu
 
@@ -405,7 +404,7 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
                                 MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-                        fprintf(stderr, pmsg);
+                        fprintf(stderr, "%s", (const char *)pmsg);
 #endif
                 }
                 return false;
@@ -425,7 +424,7 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
                         MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-                fprintf(stderr, pmsg, filename);
+                fprintf(stderr, "%s", (const char *)pmsg);
 #endif
                 return false;
         }

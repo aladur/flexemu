@@ -35,7 +35,7 @@ class BRcFile {
 public:
 	BRcFile(void);
 	BRcFile(const char *aFileName);
-	virtual ~BRcFile(void);
+	~BRcFile(void);
 
 	void SetFileName(const char *aFileName);
 	int SetValue(const char *key, const char *value);

@@ -70,7 +70,6 @@ void DirectoryContainerIteratorImp::AtEnd()
 bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
         BString         str, fileName;
-        int                     attribs, sectorMap;
         bool                    isValid;
 #ifdef WIN32
         WIN32_FIND_DATA         findData;
@@ -80,7 +79,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         struct dirent           *findData = NULL;
         struct stat             sbuf;
 #endif
-
         dirEntry.SetEmpty();
         // repeat until a valid directory entry found
 #ifdef WIN32
@@ -114,8 +112,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 			!fileName.multimatches(filePattern, ';', true)));
         if (isValid) {
         // ok, found a valid directory entry
-                attribs = 0;
-                sectorMap = 0;
+                int attribs = 0;
+                int sectorMap = 0;
                 dirEntry.SetTotalFileName(fileName);
                 if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
                         sectorMap = 2;
@@ -159,8 +157,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         	struct tm *lt;
 
         // ok, found a valid directory entry
-                attribs = 0;
-                sectorMap = 0;
+                int attribs = 0;
+                int sectorMap = 0;
                 if (base->IsWriteProtected()) {
                         // CDFS-Support: look for file name in file 'random'
                         if (base->IsRandomFile(
@@ -201,15 +199,15 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
         filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
         if (remove(filePath)) {
-		FlexException ex;
+		FlexException *pE = getFlexException();
                 if (errno == ENOENT)
-                    ex.setString(FERR_NO_FILE_IN_CONTAINER,
-						dirEntry.GetTotalFileName(), base->GetPath());
-				else
-					ex.setString(FERR_REMOVE_FILE,
-						dirEntry.GetTotalFileName(), base->GetPath());
+                    pE->setString(FERR_NO_FILE_IN_CONTAINER,
+			dirEntry.GetTotalFileName(), base->GetPath());
+		else
+		    pE->setString(FERR_REMOVE_FILE,
+			dirEntry.GetTotalFileName(), base->GetPath());
 
-				throw ex;
+		throw pE;
         }
 #endif
 #ifdef WIN32
@@ -221,17 +219,17 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
 
 		if (!DeleteFile(filePath))
 		{
-			FlexException ex;
+			FlexException *pE = getFlexException();
 			DWORD lastError = GetLastError();
 
-            if (lastError == ERROR_FILE_NOT_FOUND)
-					ex.setString(FERR_NO_FILE_IN_CONTAINER,
-					dirEntry.GetTotalFileName(), base->GetPath());
+            		if (lastError == ERROR_FILE_NOT_FOUND)
+				pE->setString(FERR_NO_FILE_IN_CONTAINER,
+				dirEntry.GetTotalFileName(), base->GetPath());
 			else
-					ex.setString(FERR_REMOVE_FILE,
-					dirEntry.GetTotalFileName(), base->GetPath());
+				pE->setString(FERR_REMOVE_FILE,
+				dirEntry.GetTotalFileName(), base->GetPath());
 
-            throw ex;
+            		throw pE;
 		}
 #endif
         return true;
@@ -248,15 +246,15 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         BString s(dirEntry.GetTotalFileName());
         BString d(newName);
 	FlexDirEntry de;
-#ifdef UINX
+#ifdef UNIX
         s.downcase();
         d.downcase();
 #endif
         // prevent overwriting of an existing file
         if (base->FindFile(d, de)) {
-		FlexException ex;
-                ex.setString(FERR_FILE_ALREADY_EXISTS, newName);
-                throw ex;
+		FlexException *pE = getFlexException();
+                pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
+                throw pE;
         }
         if (s == d)
                 return true;
@@ -264,17 +262,17 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         s = base->GetPath() + PATHSEPARATORSTRING + s;
         d = base->GetPath() + PATHSEPARATORSTRING + d;
         if (rename(s, d)) {
-		FlexException ex;
+		FlexException *pE = getFlexException();
                 // Unfinished
                 if (errno == EEXIST)
-                        ex.setString(FERR_FILE_ALREADY_EXISTS, newName);
+                        pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
                 if (errno == EACCES)
-                        ex.setString(FERR_RENAME_FILE,
+                        pE->setString(FERR_RENAME_FILE,
 				dirEntry.GetTotalFileName(), base->GetPath());
                 if (errno == ENOENT)
-                        ex.setString(FERR_NO_FILE_IN_CONTAINER,
+                        pE->setString(FERR_NO_FILE_IN_CONTAINER,
 				dirEntry.GetTotalFileName(), base->GetPath());
-                throw ex;
+                throw pE;
         }
         return true;
 }

@@ -40,9 +40,9 @@ class DirectoryContainerIteratorImp;
 
 #define CHECK_NO_DCONTAINER_OPEN			\
 	if (!IsContainerOpened()) {			\
-		FlexException ex;			\
-		ex.setString(FERR_NO_CONTAINER_OPEN);	\
-		throw ex;				\
+		FlexException *pE = getFlexException();	\
+		pE->setString(FERR_NO_CONTAINER_OPEN);	\
+		throw pE;				\
 	}
 
 class DirectoryContainer : public FileContainerIf

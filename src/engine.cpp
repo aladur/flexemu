@@ -206,7 +206,7 @@ void interpr(void)
     case 0x8B: eaddr=ixreg+GETDREG;break;
     case 0x8C: IMMBYTE(eaddr);eaddr=ipcreg+SIGNED(eaddr);break;
     case 0x8D: IMMWORD(eaddr);eaddr+=ipcreg;break;
-    case 0x8E: eaddr=0;break; INVALID_POST /*ILLEGAL*/   
+    case 0x8E: eaddr=0; INVALID_POST break; /*ILLEGAL*/   
     case 0x8F: IMMWORD(eaddr);break;
     case 0x90: eaddr=ixreg;ixreg++;eaddr=GETWORD(eaddr);break;
     case 0x91: eaddr=ixreg;ixreg+=2;eaddr=GETWORD(eaddr);break;

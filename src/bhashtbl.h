@@ -36,7 +36,7 @@ private:
 public:
 
 	BHashTable(int size = 1000);	// public constructor
-	virtual ~BHashTable();		// public destructor
+	~BHashTable();			// public destructor
 
 	Item *Get(Item &i);
 	void Put(Item &i);

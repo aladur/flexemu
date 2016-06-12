@@ -1,5 +1,5 @@
 /* XPM */
-static char *irq2[] = {
+static const char *irq2[] = {
 /* width height ncolors chars_per_pixel */
 "16 16 4 1",
 /* colors */

@@ -42,23 +42,24 @@
 
 #include "contpdlg.h"
 
+
 BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
 	EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
-	EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
-	EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
+//	EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
+//	EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
 
 ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
 	const wxPoint &pos /* = wxDefaultPosition */,
 	int tracks /* = 80 */,
 	int sectors /* = 40 */,
-	const char *path /* = "" */) :
-	wxDialog(parent, 112, _T("Create new File Container"), pos),
+	const wxString &path /* = wxT("") */) :
+	wxDialog(parent, 112, _("Create new File Container"), pos),
 	m_format(0), c_tracks(NULL), c_sectors(NULL),
 	c_path(NULL), c_format(NULL)
 {
-	m_tracks.Printf("%d", tracks);
-	m_sectors.Printf("%d", sectors);
+	m_tracks.Printf(wxT("%d"), tracks);
+	m_sectors.Printf(wxT("%d"), sectors);
 	m_path = path;
 
 	wxButton     *pButton;
@@ -71,34 +72,34 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
         wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
 	
 	wxString choices[2];
-	choices[0] = _T("DSK-File");
-	choices[1] = _T("FLX-File");
+	choices[0] = _("DSK-File");
+	choices[1] = _("FLX-File");
 
-	c_format = new wxRadioBox(this, IDC_FormatCheckBox, _T("Format"),
+	c_format = new wxRadioBox(this, IDC_FormatCheckBox, _("Format"),
 		wxDefaultPosition, wxDefaultSize, 2, choices, 2,
 		wxRA_SPECIFY_COLS, wxGenericValidator(&m_format));
 
 	pWidgetSizer->Add(c_format, 0, wxALL, 10);
 
-        pStatic = new wxStaticText(this, -1, _T("Tracks"));
+        pStatic = new wxStaticText(this, -1, _("Tracks"));
         pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-        c_tracks = new wxTextCtrl(this, IDC_Tracks, "", wxDefaultPosition,
+        c_tracks = new wxTextCtrl(this, IDC_Tracks, wxT(""), wxDefaultPosition,
         wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_tracks));
         pTrkSecSizer->Add(c_tracks, 0, wxALL, 10);
-        pStatic = new wxStaticText(this, -1, _T("Sectors"));
+        pStatic = new wxStaticText(this, -1, _("Sectors"));
         pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-        c_sectors = new wxTextCtrl(this, IDC_Sectors, "", wxDefaultPosition,
+        c_sectors = new wxTextCtrl(this, IDC_Sectors, wxT(""), wxDefaultPosition,
         wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_sectors));
         pTrkSecSizer->Add(c_sectors, 0, wxALL, 10);
 
 	pWidgetSizer->Add(pTrkSecSizer);
 
-        pStatic = new wxStaticText(this, -1, _T("Filename"));
+        pStatic = new wxStaticText(this, -1, _("Filename"));
         pFileSizer->Add(pStatic, 0, wxALL, 10);
-        c_path = new wxTextCtrl(this, IDC_Path, "", wxDefaultPosition,
+        c_path = new wxTextCtrl(this, IDC_Path, wxT(""), wxDefaultPosition,
                 wxSize(200, -1), 0, wxTextValidator(wxFILTER_NONE, &m_path));
         pFileSizer->Add(c_path, 0, wxALL, 10);
-        pButton = new wxButton(this, IDC_PathButton, _T("..."),
+        pButton = new wxButton(this, IDC_PathButton, _("..."),
                 wxDefaultPosition, wxSize(40, -1));
         pFileSizer->Add(pButton, 0, wxALL, 10);
 
@@ -106,9 +107,9 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
 
         pMainSizer->Add(pWidgetSizer);
 
-        pButton = new wxButton(this, wxID_OK, _T("&Ok"));
+        pButton = new wxButton(this, wxID_OK, _("&Ok"));
         pButtonSizer->Add(pButton, 0, wxALL, 5 );
-        pButton = new wxButton(this, wxID_CANCEL, _T("&Cancel"));
+        pButton = new wxButton(this, wxID_CANCEL, _("&Cancel"));
         pButtonSizer->Add(pButton, 0, wxALL, 5 );
 
         pMainSizer->Add(pButtonSizer);
@@ -131,12 +132,12 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent& WXUNUSED(event) )
 	getcwd((char *)wd, PATH_MAX);
 #endif
 	containerPath = wxFileSelector(
-		_T("Input a FLEX file container"),
-		"",
-		NULL,
-		_T("*.DSK"),
-		"*.*",
-		wxSAVE,
+		_("Input a FLEX file container"),
+		wxT(""),
+		wxT(""),
+		_("*.DSK"),
+		_("*.*"),
+		wxFD_SAVE,
 		this);
 #ifdef WIN32
 	chdir((char *)wd);
@@ -146,5 +147,25 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent& WXUNUSED(event) )
 		if (c_path)
 			c_path->SetValue(m_path);
 	}
+}
+
+int ContainerPropertiesDialog::GetTracks(void)
+{
+	long t;
+
+	if (m_tracks.ToLong(&t))
+		return (int)t;
+	else
+		return 0;
+}
+
+int ContainerPropertiesDialog::GetSectors(void)
+{
+	long s;
+
+	if (m_tracks.ToLong(&s))
+		return (int)s;
+	else
+		return 0;
 }
 

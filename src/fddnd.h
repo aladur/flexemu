@@ -44,7 +44,7 @@ class FlexFileBuffer;
  of a list of FLEX files
 --------------------------------------------------------*/
 
-extern const char *FlexFileFormatId;
+extern wxString FlexFileFormatId;
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
 typedef std::list<FlexFileBuffer *> tFlexFileBufferArray;

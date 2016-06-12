@@ -2,7 +2,8 @@
     bmutex.cpp
 
 
-    Basic class for access serialization between multiple threads
+    Basic class to define mutual exclusive sections to be used
+    from multiple threads
     Copyright (C) 2003-2004  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
@@ -23,88 +24,48 @@
 #include "bmutex.h"
 
 #ifdef UNIX
-BMutex::BMutex() : isLocked(false)
+BMutex::BMutex()
 {
    pthread_mutex_init(&mutex, NULL);
 }
 
 BMutex::~BMutex()
 {
-   if (isLocked)
-      unlock();
-   pthread_mutex_destroy(&mutex);
+      // assuming the mutex is not locked any more!
+      pthread_mutex_destroy(&mutex);
 }
 
 void BMutex::lock()
 {
-   // prevent multiple locks
-   if (!isLocked)
       pthread_mutex_lock(&mutex);
-   isLocked = true;
 }
 
 void BMutex::unlock()
 {
-   if (isLocked)
       pthread_mutex_unlock(&mutex);
-   isLocked = false;
-}
-
-bool BMutex::locked()
-{
-   return isLocked;
-}
-
-bool BMutex::tryLock()
-{
-   if (isLocked)
-      return true;
-   isLocked = (pthread_mutex_trylock(&mutex) == 0);
-   return isLocked;
 }
 #endif
 
 #ifdef WIN32
-BMutex::BMutex() : isLocked(false), mutex(NULL)
+BMutex::BMutex() : mutex(NULL)
 {
-	mutex = CreateMutex(NULL, FALSE, NULL);
+   InitializeCriticalSection(&criticalSec);
 }
 
 BMutex::~BMutex()
 {
-	if (mutex != NULL)
-	{
-		unlock();
-		CloseHandle(mutex);
-	}
-	mutex = NULL;
+   DeleteCriticalSection(&criticalSec);
 }
 
 
 void BMutex::lock()
 {
-   WaitForSingleObject(mutex, INFINITE);
-   isLocked = true;
+   EnterCriticalSection(&criticalSec);
 }
 
 void BMutex::unlock()
 {
-	ReleaseMutex(mutex);
-	isLocked = false;
-}
-
-bool BMutex::locked()
-{
-   return isLocked;
-}
-
-bool BMutex::tryLock()
-{
-	// wait for ownership for max. 10 ms
-	if (isLocked)
-		return true;
-	isLocked = (WaitForSingleObject(mutex, 10) == WAIT_OBJECT_0);
-	return isLocked;
+   LeaveCriticalSection(&criticalSec);
 }
 #endif
 

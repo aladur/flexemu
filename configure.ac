@@ -1,9 +1,15 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/mc6809.h)
+AC_INIT([Flexemu],2.20)
+AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(Flexemu, 2.15)
+AC_ARG_PROGRAM dnl Perform program name transformation
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE([disable])
 AM_CONFIG_HEADER(src/config.h:src/config.hin)
+
 
 dnl Checks for programs.
 case $host_os in
@@ -14,13 +20,9 @@ case $host_os in
   *mingw32* ) MINGW32=yes;;
           * ) MINGW32=no;;
 esac
-AC_PROG_AWK
-AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_CC
-AC_PROG_CPP
 AC_PROG_CXX
-AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
@@ -30,11 +32,13 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_HEADER_TIME
+AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(unistd.h inttypes.h stdint.h)
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h termios.h)
 AC_CHECK_HEADERS(sys/statvfs.h sys/mount.h)
 AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32,1,[1 if Windows headers are available]))
 AC_CHECK_HEADER(linux/joystick.h, AC_DEFINE(LINUX_JOYSTICK_IS_PRESENT,1,[1 if Linux joystick headers are available]))
+AC_CHECK_FUNCS(gettid)
 
 dnl Checks for X extension libraries.
 FLX_CHECK_XEXTENSIONS
@@ -44,9 +48,14 @@ dnl Checks for pthread library
 FLX_CHECK_PTHREAD_LIB
 dnl Check for --enable-speed flag
 FLX_ENABLE_SPEED
-
+dnl Check for -Wno-variadic-macros compiler switch
+AX_CXXFLAGS_NO_VARIADIC_MACROS
+dnl Check for -fno-strict-aliasing compiler switch
+AX_CXXFLAGS_NO_STRICT_ALIASING
+dnl Check for -pedantic -Wall compiler switch
+AX_CXXFLAGS_WARN_ALL
 dnl check for wx-config
-WX_PATH_WXCONFIG(2.4.2, WXCONFIG=1)
+WX_PATH_WXCONFIG(2.8.0, WXCONFIG=1)
 
 dnl Checks for typedefs
 AC_C_CONST
@@ -100,6 +109,7 @@ AC_EXEEXT
 AC_OBJEXT
 AC_SYS_LONG_FILE_NAMES
 AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
+ACX_PTHREAD
 
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_PRE_LIBS)
@@ -108,6 +118,7 @@ AC_SUBST(X_EXTRA_LIBS)
 AC_SUBST(WXGTK_LIBS)
 AC_SUBST(PTHREAD_LD)
 AC_SUBST(WIN32_LIBS)
+AC_SUBST(WNO_VARIADIC_MACROS)
 AC_SUBST([FLEX_RC])
 AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([FLEXEMU_CXXADD])
@@ -153,7 +164,7 @@ if test "x$enable_speed" = "xyes"; then
 fi
 AC_SUBST([CXXSPEED])
 
-AC_OUTPUT(
+AC_OUTPUT(m4/Makefile \
 	Makefile \
 	src/Makefile \
 	src/bitmaps/Makefile \
@@ -170,9 +181,9 @@ AC_OUTPUT(
   echo " X_EXTRA_LIBS:               $X_EXTRA_LIBS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
 if test "$WXCONFIG" != 1; then
-  echo " wxWindows version:           not found"
+  echo " wxWidgets version:           not found"
 else
-  echo " wxWindows version:           $WX_VERSION"
+  echo " wxWidgets version:           $WX_VERSION"
 fi
   echo " speed optimized compilation: $enable_speed"
   echo " WX_LIBS:                     $WX_LIBS"
@@ -184,10 +195,10 @@ fi
 if test "$WXCONFIG" != 1; then
     AC_MSG_WARN([
             Please check that wx-config is in path, the directory
-            where wxWindows libraries are installed (returned by
+            where wxWidgets libraries are installed (returned by
             'wx-config --libs' command) is in LD_LIBRARY_PATH or
-            equivalent variable and wxWindows is version 2.4.2 or above.
-            Without wxWindows only flexemu will be build.
+            equivalent variable and wxWidgets is version 2.8.0 or above.
+            Without wxWidgets only flexemu will be build.
     ])
 fi
   echo

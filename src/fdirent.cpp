@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 1998-2004  W. Schwotzer
+    Copyright (C) 1998-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,21 +22,8 @@
 
 #include <misc1.h>
 #include "bdate.h"
-#include "bstring.h"
 #include "fdirent.h"
 #include <stdio.h>
-
-char *FlexDirEntry::fileDescription[] = {
-	"BIN", "Binary file",
-	"TXT", "Text file",
-	"CMD", "Executable file",
-	"BAS", "Basic file",
-	"SYS", "System file",
-	"BAK", "Backup file",
-	"BAC", "Backup file",
-	"DAT", "Data file",
-	NULL
-};
 
 
 FlexDirEntry::FlexDirEntry() :
@@ -66,11 +53,12 @@ void FlexDirEntry::CopyFrom(const FlexDirEntry& de)
 	fileName	= de.fileName;
 	size		= de.size;
 	attributes	= de.attributes;
+	sectorMap	= de.sectorMap;
 	startTrk	= de.startTrk;
 	startSec	= de.startSec;
 	endTrk		= de.endTrk;
 	endSec		= de.endSec;
-	sectorMap	= de.sectorMap;
+	status		= de.status;
 }
 	
 
@@ -96,54 +84,25 @@ void FlexDirEntry::SetTotalFileName(const char *s)
 	fileName.upcase();
 }
 
-const char *FlexDirEntry::GetFileName(void) const
+BString FlexDirEntry::GetFileName(void) const
 {
-	int i;
-	char *p;
-	static char name[FLEX_BASEFILENAME_LENGTH+1];
+	BString name(fileName);
 
-	p = strchr(fileName, '.');
-	if (p == NULL)
-		i = FLEX_BASEFILENAME_LENGTH;
+	if (strchr(fileName, '.') == NULL)
+		return name;
 	else
-		i = p - fileName.chars();
-	strncpy(name, fileName, i);
-	name[i] = '\0';
-	return name;
+		return name.beforeLast('.');
 }
 
-const char *FlexDirEntry::GetFileExt(void)
+BString FlexDirEntry::GetFileExt(void) const
 {
-	static char ext[FLEX_FILEEXT_LENGTH+1];
-	char *p;
+	const char * p;
+	BString ext;
 
-	ext[0] = '\0';
 	p = strchr(fileName, '.');
-	if (p == NULL)
-		return ext;
-	strncpy(ext, p+1, FLEX_FILEEXT_LENGTH);
-	ext[FLEX_FILEEXT_LENGTH] = '\0';
+	if (p != NULL)
+		ext = ++p;
 	return ext;
-}
-
-const BString FlexDirEntry::GetFileDescription(void)
-{
-	BString		description;
-	char		**pExt;
-	const char	*extension;
-
-	pExt = (char **)fileDescription;
-	extension = GetFileExt();
-	while (*pExt != NULL) {
-		if (!strcmp(*pExt, extension)) {
-			description = *(++pExt);
-			return description;
-		}
-		pExt += 2;
-	}
-	description = extension;
-	description += " file";
-	return description;
 }
 
 const BString& FlexDirEntry::GetTotalFileName(void) const

@@ -1,5 +1,5 @@
 /* XPM */
-static char *open_dir_xpm[] = {
+static const char *open_dir_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    15        5            1",
 /* colors */

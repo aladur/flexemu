@@ -33,8 +33,8 @@ private:
 
 public:
 
-	BBinaryTreeItem(const Item &anItem);		// public constructor
-	virtual ~BBinaryTreeItem();			// public destructor
+	BBinaryTreeItem(const Item &anItem);	// public constructor
+	~BBinaryTreeItem();			// public destructor
 
 	const Item &GetItem() const;
 	const BBinaryTreeItem *GetLeftMostItem() const;
@@ -52,14 +52,14 @@ public:
 	bool	operator <= (const BBinaryTreeItem& i) const;
 }; // class BBinaryTreeItem
 
-template <class Item>inline const Item &BBinaryTreeItem<Item>::GetItem() const { return item; };
-template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetLeftItem()  const { return left;  };
-template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetRightItem() const { return right; };
+template <class Item>inline const Item &BBinaryTreeItem<Item>::GetItem() const { return item; }
+template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetLeftItem()  const { return left;  }
+template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetRightItem() const { return right; }
 
-template <class Item>inline bool BBinaryTreeItem<Item>::operator <  (const BBinaryTreeItem<Item>& i) const { return item <  i.item; };
-template <class Item>inline bool BBinaryTreeItem<Item>::operator == (const BBinaryTreeItem<Item>& i) const { return item == i.item; };
-template <class Item>inline bool BBinaryTreeItem<Item>::operator >  (const BBinaryTreeItem<Item>& i) const { return item >  i.item; };
-template <class Item>inline bool BBinaryTreeItem<Item>::operator >= (const BBinaryTreeItem<Item>& i) const { return item >= i.item; };
-template <class Item>inline bool BBinaryTreeItem<Item>::operator <= (const BBinaryTreeItem<Item>& i) const { return item <= i.item; };
+template <class Item>inline bool BBinaryTreeItem<Item>::operator <  (const BBinaryTreeItem<Item>& i) const { return item <  i.item; }
+template <class Item>inline bool BBinaryTreeItem<Item>::operator == (const BBinaryTreeItem<Item>& i) const { return item == i.item; }
+template <class Item>inline bool BBinaryTreeItem<Item>::operator >  (const BBinaryTreeItem<Item>& i) const { return item >  i.item; }
+template <class Item>inline bool BBinaryTreeItem<Item>::operator >= (const BBinaryTreeItem<Item>& i) const { return item >= i.item; }
+template <class Item>inline bool BBinaryTreeItem<Item>::operator <= (const BBinaryTreeItem<Item>& i) const { return item <= i.item; }
 
 #endif // #ifndef __bbintree_h__

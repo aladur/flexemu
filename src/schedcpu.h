@@ -1,7 +1,7 @@
 /*
     schedcpu.h
 
-    
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 2004  W. Schwotzer
 
@@ -31,15 +31,17 @@ class CpuStatus;
 
 typedef unsigned long int t_cycles; // must be unsigned long because of sprintf
 
-enum tIrqType {
-        INT_IRQ = 0,
-        INT_FIRQ,
-        INT_NMI,
-        INT_RESET
+enum tIrqType
+{
+    INT_IRQ = 0,
+    INT_FIRQ,
+    INT_NMI,
+    INT_RESET
 };
 
-struct sInterruptStatus {
-        DWord count[INT_RESET+1];
+struct sInterruptStatus
+{
+    DWord count[INT_RESET + 1];
 };
 
 typedef struct sInterruptStatus tInterruptStatus;
@@ -47,14 +49,15 @@ typedef struct sInterruptStatus tInterruptStatus;
 class ScheduledCpu
 {
 public:
-	virtual ~ScheduledCpu() { };
-	virtual void do_reset() = 0;
-	virtual Byte run(Word mode) = 0;
-	virtual void exit_run() = 0;
-	virtual QWord get_cycles(bool reset = false) = 0;
-	virtual CpuStatus *get_status() = 0;
-	virtual void get_interrupt_status(tInterruptStatus &s) = 0;
-	virtual void set_required_cyclecount(t_cycles required_cyclecount) = 0;
+    virtual ~ScheduledCpu() { };
+    virtual void do_reset() = 0;
+    virtual Byte run(Word mode) = 0;
+    virtual void exit_run() = 0;
+    virtual QWord get_cycles(bool reset = false) = 0;
+    virtual void get_status(CpuStatus *stat) = 0;
+    virtual CpuStatus *create_status_object() = 0;
+    virtual void get_interrupt_status(tInterruptStatus &s) = 0;
+    virtual void set_required_cyclecount(t_cycles required_cyclecount) = 0;
 };
 
 #endif // __schedcpu_h__

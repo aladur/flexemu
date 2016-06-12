@@ -43,12 +43,13 @@ int optind = 1;
 int opterr = 0;
 char *optarg = NULL;
 
-int getopt(int argc, char *argv[], char *optstr)
+int getopt(int argc, char * const argv[], char *optstr)
 {
 	int     i;
-	char    opt;
 
 	while (1) {
+		char    opt;
+
 		optarg = optstr;
 		for (i = 1; i < optind; i++) {
 			if (*(++optarg) == ':')
@@ -121,7 +122,7 @@ void FlexOptionManager::InitOptions(
 			struct sGuiOptions *pGuiOptions,
 			struct sOptions *pOptions,
 			int argc,
-			char **argv)
+			char * const argv[])
 {
 	pOptions->drive[0]         = "system.dsk";
 	pOptions->drive[1]         = "";
@@ -144,7 +145,7 @@ void FlexOptionManager::InitOptions(
 	pGuiOptions->nColors       = 2;
 	pGuiOptions->inverse       = 0;
 #ifdef UNIX
-	pGuiOptions->www_browser   = "mozilla";
+	pGuiOptions->www_browser   = "firefox";
 #endif
 #ifdef UNIX
 	pGuiOptions->doc_dir       = F_DATADIR;
@@ -206,9 +207,8 @@ void FlexOptionManager::GetCommandlineOptions(
 			struct sGuiOptions *pGuiOptions,
 			struct sOptions *pOptions,
 			int argc,
-			char **argv)
+			char * const argv[])
 {
-	int     result;
 	char    optstr[32];
 	int     i;
 	optind = 1;
@@ -229,7 +229,7 @@ void FlexOptionManager::GetCommandlineOptions(
 #endif
 
 	while (1) {
-		result = getopt(argc, argv, optstr);
+		int result = getopt(argc, argv, optstr);
 		if (result == -1)
 			break;
 		switch(result) {
@@ -291,7 +291,7 @@ void FlexOptionManager::WriteOptions(
 	BRegistry *reg = NULL;
 	BString   v;
 
-	reg = new BRegistry(BRegistry::localMachine, FLEXEMUREG);
+	reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);
 	if (ifNotExists && reg->GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
 	{
 		delete reg;

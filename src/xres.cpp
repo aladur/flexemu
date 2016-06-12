@@ -30,22 +30,22 @@
 extern String fallback_resources[];
 
 String fallback_resources[] = {
-"*font:				*-fixed-*-*-*-*-10-*",
-"*screen.accelerators:		#replace <Expose>:popup_no_resources()",
-"*Command*width:		50",
-"*message.title:		Error",
-"*messageButton.fromVert:	messageText",
-"*messageButton.label:		Ok",
-"*messageButton.horizDistance:	75",
-"*messageText.width:		200",
-"*messageText.height:		60",
-"*messageText.displayCaret:	false",
-"*messageText*string:		\
+const_cast<String>("*font:				*-fixed-*-*-*-*-10-*"),
+const_cast<String>("*screen.accelerators:		#replace <Expose>:popup_no_resources()"),
+const_cast<String>("*Command*width:		50"),
+const_cast<String>("*message.title:		Error"),
+const_cast<String>("*messageButton.fromVert:	messageText"),
+const_cast<String>("*messageButton.label:		Ok"),
+const_cast<String>("*messageButton.horizDistance:	75"),
+const_cast<String>("*messageText.width:		200"),
+const_cast<String>("*messageText.height:		60"),
+const_cast<String>("*messageText.displayCaret:	false"),
+const_cast<String>("*messageText*string:		\
 You have no application defaults\\n\
 file installed. Copy the file\\n\
 Flexemu.ad to $HOME/Flexemu and\\n\
 set the environment variable\\n\
-XUSERFILESEARCHPATH to $HOME/%N",
+XUSERFILESEARCHPATH to $HOME/%N"),
 NULL};
 #endif // HAVE_XTK
 

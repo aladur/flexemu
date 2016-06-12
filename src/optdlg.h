@@ -43,8 +43,8 @@ public:
 	GlobalOptionsDialog(wxWindow *pParent,
 		const wxPoint &pos = wxDefaultPosition,
 		const bool autoTextFlag = false,
-		wxString bootFile = "boot",
-		wxString editor = "");
+		wxString bootFile = wxT("boot"),
+		wxString editor = wxT(""));
 	virtual ~GlobalOptionsDialog();
 	void OnSelectViewer(wxCommandEvent& event );
 	void OnSelectBootSectorFile(wxCommandEvent& event );

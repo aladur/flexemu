@@ -41,8 +41,8 @@ private:
 	void BasicAdd(const BInterval &i);
 
 public:
-	BAddressRanges();					// public constructor
-	virtual ~BAddressRanges();			// public destructor
+	BAddressRanges();	// public constructor
+	~BAddressRanges();	// public destructor
 	
 	void Clear();
 	DWord GetMin() const;
@@ -61,7 +61,7 @@ public:
 	void PrintOn(FILE *fp) const;
 }; // class BAddressRanges
 
-inline void BAddressRanges::SetStartAddress(DWord address) { startAddress = address; };
-inline DWord BAddressRanges::GetStartAddress() const { return startAddress; };
+inline void BAddressRanges::SetStartAddress(DWord address) { startAddress = address; }
+inline DWord BAddressRanges::GetStartAddress() const { return startAddress; }
 
 #endif // #ifndef __baddrrng_h__

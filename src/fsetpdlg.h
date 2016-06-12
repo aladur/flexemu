@@ -36,6 +36,8 @@ class wxCheckBox;
 class wxTextCtrl;
 class wxComboBox;
 class wxRadioBox;
+class wxPanel;
+class wxBookCtrlBase;
 
 
 enum {
@@ -52,6 +54,16 @@ enum {
 	IDC_nColors        = 210,
 	IDC_RamExtension   = 211,
 	IDC_Undocumented   = 212,
+	IDC_CoreRadioButton1= 213,
+	IDC_CoreRadioButton2= 214,
+	IDC_GuiCore0       = 215,
+	IDC_GuiCore1       = 216,
+	IDC_GuiCore2       = 217,
+	IDC_GuiCore3       = 218,
+	IDC_Mc6809Core0    = 219,
+	IDC_Mc6809Core1    = 220,
+	IDC_Mc6809Core2    = 221,
+	IDC_Mc6809Core3    = 222,
 
 	IDC_DiskDirButton  = 304,
 	IDC_MonitorButton  = 305,
@@ -73,18 +85,24 @@ public:
 		const wxPoint& pos = wxDefaultPosition,
 		const wxSize& size = wxDefaultSize,
 		long style = wxDEFAULT_DIALOG_STYLE,
-		const wxString& name = "FlexemuOptionsDialog");
+		const wxString& name = wxT("FlexemuOptionsDialog"));
 	virtual ~FlexemuOptionsDialog();
 
 	void    OnInitDialog(wxInitDialogEvent &event);
-	void    OnCloseWindow(wxCloseEvent &event);
-	void    OnOkCancel(wxCommandEvent& event);
+	wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
+	wxPanel *CreateMc6809OptionsPage(wxBookCtrlBase *parent);
+	wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
+	wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
+	wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
+	wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
+	//void    OnCloseWindow(wxCloseEvent &event);
+	bool	TransferDataFromWindow(void);
 	bool	TransferDataToWindow(void);
-	void    RestoreValues(void);
-	BString OpenFilePrompter(
-			const char *defautPath = "",
-			const char *caption = "",
-			const char *filter = "*.*");
+	bool	Validate(void);
+	wxString OpenFilePrompter(
+			const wxString &defautPath = wxT(""),
+			const wxString &caption = wxT(""),
+			const wxString &filter = wxT("*.*"));
 	void    OnSelectDriveN(int n);
 	void    OnSelectDrive0(wxCommandEvent& WXUNUSED(event));
 	void    OnSelectDrive1(wxCommandEvent& WXUNUSED(event));

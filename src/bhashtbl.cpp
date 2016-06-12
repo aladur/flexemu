@@ -20,12 +20,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <string.h>
 #include "bhashtbl.h"
 
 // Each hash table entry can contain multiple entries with the same
 // hash. They are stored in a linear list
 
-template <class Item> BHashTable<Item>::BHashTable<Item>(int size /* = 1000 */) : n(size)
+template <class Item> BHashTable<Item>::BHashTable(int size /* = 1000 */) : n(size)
 {
 	int i;
 
@@ -77,9 +78,10 @@ template <class Item>bool BHashTable<Item>::Contains(Item &i)
 template <class Item>BList<Item> *BHashTable<Item>::GetAsLinearList()
 {
 	BList<Item> *first, *next;
-	BList<Item> *source;
 
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < n; i++) {
+		BList<Item> *source;
+
 		source = hash_table[i];
 		while(source) {
 			// walk through linear list

@@ -30,9 +30,6 @@ class FileContainerIf;
 
 
 class FlexCopyManager {
-private:
-	FlexException ex;
-
 public:
 	bool FileCopy(const char *srcName, const char *destName,
 			FileContainerIf& source, FileContainerIf& dest);

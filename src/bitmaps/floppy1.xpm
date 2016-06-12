@@ -1,5 +1,5 @@
 /* XPM */
-static char *floppy1[] = {
+static const char *floppy1[] = {
 /* width height ncolors chars_per_pixel */
 "16 16 5 1",
 /* colors */

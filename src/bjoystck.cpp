@@ -62,13 +62,14 @@ short BJoystick::IsOpened()
 short BJoystick::Actualize()
 {
 	int	status;
-	int	x, y;
 	struct JS_DATA_TYPE raw_js_data;
 
 	if (js < 0)
 		return 0;
 	status = read(js, &raw_js_data, JS_RETURN);
 	if (status == JS_RETURN) {
+		int x, y;
+
 		x = raw_js_data.x;
 		y = raw_js_data.y;
 		if (x < 0) x = 0;

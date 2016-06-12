@@ -53,92 +53,103 @@ wxMenu *FlexMenuFactory::CreateMenu(tFlxMenuId menuId)
 {
    wxMenu     *pMenu = new wxMenu;
    wxMenuItem *pItem;
-   wxBitmap *bitmaps[5];
-
-#ifdef __WXMSW__
-        bitmaps[0] = new wxBitmap("new_con",  wxBITMAP_TYPE_RESOURCE);
-        bitmaps[1] = new wxBitmap("open_con", wxBITMAP_TYPE_RESOURCE);
-        bitmaps[2] = new wxBitmap("open_dir", wxBITMAP_TYPE_RESOURCE);
-        bitmaps[3] = new wxBitmap("copy",     wxBITMAP_TYPE_RESOURCE);
-        bitmaps[4] = new wxBitmap("paste",    wxBITMAP_TYPE_RESOURCE);
-#else
-        bitmaps[0] = new wxBitmap( new_con_xpm );
-        bitmaps[1] = new wxBitmap( open_con_xpm );
-        bitmaps[2] = new wxBitmap( open_dir_xpm );
-        bitmaps[3] = new wxBitmap( copy_xpm );
-        bitmaps[4] = new wxBitmap( paste_xpm );
-#endif
+   wxBitmap *bitmaps[3];
 
    switch (menuId)
    {
    case fFileMenuId:
+#ifdef __WXMSW__
+        bitmaps[0] = new wxBitmap("new_con",  wxBITMAP_TYPE_RESOURCE);
+        bitmaps[1] = new wxBitmap("open_con", wxBITMAP_TYPE_RESOURCE);
+        bitmaps[2] = new wxBitmap("open_dir", wxBITMAP_TYPE_RESOURCE);
+#else
+        bitmaps[0] = new wxBitmap( new_con_xpm );
+        bitmaps[1] = new wxBitmap( open_con_xpm );
+        bitmaps[2] = new wxBitmap( open_dir_xpm );
+#endif
+
       // Create File menu
       //pMenu->SetTitle("File");
       pItem = new wxMenuItem(pMenu, MDI_NEW_CONTAINER,
-         "&New Container...\tCtrl+N");
+         _("&New Container...\tCtrl+N"));
       pItem->SetBitmap(*bitmaps[0]);
       pMenu->Append(pItem);
       pItem = new wxMenuItem(pMenu, MDI_OPEN_CONTAINER,
-          "&Open Container...\tCtrl+O");
+          _("&Open Container...\tCtrl+O"));
       pItem->SetBitmap(*bitmaps[1]);
       pMenu->Append(pItem);
       pItem = new wxMenuItem(pMenu, MDI_OPEN_DIRECTORY,
-          "Open &Directory...\tCtrl+D");
+          _("Open &Directory...\tCtrl+D"));
       pItem->SetBitmap(*bitmaps[2]);
       pMenu->Append(pItem);
       pMenu->AppendSeparator();
-      pMenu->Append(MDI_QUIT, "E&xit\tCtrl+X");
+      pMenu->Append(MDI_QUIT, _("E&xit\tCtrl+X"));
+      for (int i = 0; i < 3; i++)
+           delete bitmaps[i];
       break;
+
    case fEditMenuId:
+#ifdef __WXMSW__
+        bitmaps[0] = new wxBitmap("copy",     wxBITMAP_TYPE_RESOURCE);
+        bitmaps[1] = new wxBitmap("paste",    wxBITMAP_TYPE_RESOURCE);
+#else
+        bitmaps[0] = new wxBitmap( copy_xpm );
+        bitmaps[1] = new wxBitmap( paste_xpm );
+#endif
 	// Create Edit menu
 	//pMenu->SetTitle("Edit");
-        pMenu->Append(MDI_SELECTALL, "Select &All\tCtrl+A");
-        pMenu->Append(MDI_DESELECTALL, "D&eselect All");
-        pMenu->Append(MDI_FIND, "&Find Files...\tCtrl+F");
+        pMenu->Append(MDI_SELECTALL, _("Select &All\tCtrl+A"));
+        pMenu->Append(MDI_DESELECTALL, _("D&eselect All"));
+        pMenu->Append(MDI_FIND, _("&Find Files...\tCtrl+F"));
         pMenu->AppendSeparator();
-        pItem = new wxMenuItem(pMenu, MDI_COPY, "&Copy\tCtrl+C");
-        pItem->SetBitmap(*bitmaps[3]);
+        pItem = new wxMenuItem(pMenu, MDI_COPY, _("&Copy\tCtrl+C"));
+        pItem->SetBitmap(*bitmaps[0]);
         pMenu->Append(pItem);
-        pItem = new wxMenuItem(pMenu, MDI_PASTE, "&Paste\tCtrl+V");
-        pItem->SetBitmap(*bitmaps[4]);
+        pItem = new wxMenuItem(pMenu, MDI_PASTE, _("&Paste\tCtrl+V"));
+        pItem->SetBitmap(*bitmaps[1]);
         pMenu->Append(pItem);
         pMenu->AppendSeparator();
-        pMenu->Append(MDI_DELETE, "&Delete\tDEL");
-        pMenu->Append(MDI_RENAME, "&Rename");
-        pMenu->Append(MDI_VIEW, "&View");
+        pMenu->Append(MDI_DELETE, _("&Delete\tDEL"));
+        pMenu->Append(MDI_RENAME, _("&Rename"));
+        pMenu->Append(MDI_VIEW, _("&View"));
         pMenu->AppendSeparator();
-        pMenu->Append(MDI_SET_WRITEPROTECT,   "&Set Write Protect");
-        pMenu->Append(MDI_SET_READPROTECT,   "Set Read Protect");
-        pMenu->Append(MDI_SET_DELETEPROTECT,   "Set Delete Protect");
-        pMenu->Append(MDI_SET_CATALOGPROTECT,   "Set Catalog Protect");
+        pMenu->Append(MDI_SET_WRITEPROTECT,   _("&Set Write Protect"));
+        pMenu->Append(MDI_SET_READPROTECT,   _("Set Read Protect"));
+        pMenu->Append(MDI_SET_DELETEPROTECT,   _("Set Delete Protect"));
+        pMenu->Append(MDI_SET_CATALOGPROTECT,   _("Set Catalog Protect"));
         pMenu->AppendSeparator();
-        pMenu->Append(MDI_CLEAR_WRITEPROTECT, "Clear &Write Protect");
-        pMenu->Append(MDI_CLEAR_READPROTECT, "Clear Read Protect");
-        pMenu->Append(MDI_CLEAR_DELETEPROTECT, "Clear Delete Protect");
-        pMenu->Append(MDI_CLEAR_CATALOGPROTECT, "Clear Catalog Protect");
+        pMenu->Append(MDI_CLEAR_WRITEPROTECT, _("Clear &Write Protect"));
+        pMenu->Append(MDI_CLEAR_READPROTECT, _("Clear Read Protect"));
+        pMenu->Append(MDI_CLEAR_DELETEPROTECT, _("Clear Delete Protect"));
+        pMenu->Append(MDI_CLEAR_CATALOGPROTECT, _("Clear Catalog Protect"));
+	delete bitmaps[0];
+	delete bitmaps[1];
+        break;
+
    case fContainerMenuId:
 	// Create Container menu
 	//pMenu->SetTitle("Container");
-	pMenu->Append(MDI_CONTAINER_PROPERTIES, "&Properties...");
+	pMenu->Append(MDI_CONTAINER_PROPERTIES, _("&Properties..."));
         pMenu->AppendSeparator();
-	pMenu->Append(MDI_CONTAINER_CLOSE, "&Close");
+	pMenu->Append(MDI_CONTAINER_CLOSE, _("&Close"));
         break;
+
    case fExtrasMenuId:
 	// Create Extras menu
 	//pMenu->SetTitle("Extras");
-	pMenu->Append(MDI_OPTIONS, "&Options...");
+	pMenu->Append(MDI_OPTIONS, _("&Options..."));
         break;
+
    case fHelpMenuId:
 	// Create Help menu
 	//pMenu->SetTitle("Help");
-	pMenu->Append(MDI_ABOUT, "&About...");
+	pMenu->Append(MDI_ABOUT, _("&About..."));
         break;
+
    default:
         delete pMenu;
         pMenu = NULL;
    }
-   for (int i = 0; i < 5; i++)
-        delete bitmaps[i];
 
    return pMenu;
 }

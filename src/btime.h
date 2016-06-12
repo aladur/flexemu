@@ -1,9 +1,9 @@
 /*
-    bitme.h
+    btime.h
 
-    
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+   
+    Basic class for platform independent high resolution time support 
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class BTime
 {
 public: 
   BTime();
-  virtual ~BTime();
+  ~BTime();
   void     ResetRelativeTime();
   QWord    GetRelativeTimeUsll(bool reset = false);
   double   GetRelativeTimeUsf(bool  reset = false);

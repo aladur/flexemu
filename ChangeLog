@@ -182,7 +182,7 @@ New Features:
 Bug Fixes:
 	o Improved autoconf/automake scripts for autoconf 2.57/automake 1.6.3
 
-V2.15
+V2.15 (20040321)
 New Features:
 	o flexemu: performance improvement in memory access
 	o flexemu design improvemnt: separate class for Memory
@@ -240,3 +240,33 @@ Bug Fixes:
 	o flexemu: After Reset clear up to 2 x 288 K RAM extension
 	o flexemu Win32: Adapt (min)size and pos of CPU window to selected font
 
+V2.16 (not published)
+New Features:
+	o FSetup, FLEXplorer: UNICODE support for gtk2.0 and WIN32
+
+Bug Fixes:
+	o Adapted configure scripts for improved checking for libXaw.so
+	o adapted sources to compile with gcc V3.4.2
+	o fixed compile error in bhashtbl.cpp (size undeclared)
+	o Support wxWindos V2.5.3
+	o FLEXplorer: display modification time for dir. containers
+	o flexemu X11: Set default web browser to "firefox"
+
+V2.20
+New Features:
+
+Bug Fixes:
+	o adapted sources and configure scripts to compile with gcc V4.1.3
+	o adapted sources to compile with gcc V4.2.3 without warnings
+	o adapted sources to compile with gcc V4.3.3 without warnings
+	o Support wxWindos V2.6.x or V2.8.x
+	o flexemu X11: Set default web browser to "firefox"
+	o flexemu X11: Eventhandling for CPU View Run/Stop/Step/Next
+	o flexemu: Avoid wrong error message with command
+	           emu format <diskname> <trk> <sec>
+	o Windows: Write config settings to HKEY_CURRENT_USER
+		   (Instead of HKEY_LOCAL_MACHINE) for Vista compatibility
+	o Multi Core CPUs: Configure Core Affinity to Display and MC6809
+	  thread
+	o flexemu X11: Disable main/cpu window if a modal popup dialog is opened.
+	o fsetup: Use a Treebook widget with multiple pages 

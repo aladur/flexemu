@@ -75,6 +75,8 @@ public:
 	int OnExit(void);
 	void ReadDefaultOptions();
 	void WriteDefaultOptions();
+private:
+	wxLocale m_locale;
 };
 
 #endif

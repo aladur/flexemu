@@ -2,8 +2,8 @@
     bposixthreadimp.h
 
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+    Basic class for a posix thread implementation
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,15 +20,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
-
-#ifdef UNIX
-
 #ifndef BPOSIXTHREADIMP_H
 #define BPOSIXTHREADIMP_H
 
+#include <misc1.h>
+#ifdef HAVE_PTHREAD
 #include <pthread.h>
+#else
+#error libpthread or header file pthread.h is missing
+#endif
 #include "bthreadimp.h"
+
 
 class BThread;
 
@@ -48,6 +50,5 @@ private:
   pthread_t thread;
 };
 
-#endif
 #endif
 

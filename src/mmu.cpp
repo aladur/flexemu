@@ -28,8 +28,8 @@
 
 Mmu::Mmu(Inout *x_io, Memory *x_memory)
 {
-	memory = x_memory;
-	io     = x_io;
+    memory = x_memory;
+    io     = x_io;
 } // constructor
 
 
@@ -43,13 +43,13 @@ void Mmu::resetIo(void)
 
 
 
-Byte Mmu::readIo(Word Offset)
+Byte Mmu::readIo(Word)
 {
-	return 0xff;
+    return 0xff;
 }
 
 void Mmu::writeIo(Word offset, Byte val)
 {
-	memory->switch_mmu(offset, val);
+    memory->switch_mmu(offset, val);
 }
 

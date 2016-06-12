@@ -53,7 +53,7 @@ public:
 		const wxSize& size, long style,
 		FileContainerIf *container,
 		const wxValidator& validator = wxDefaultValidator,
-		const wxString& name = "flexDiskListCtrl");
+		const wxString& name = wxT("flexDiskListCtrl"));
     virtual ~FlexDiskListCtrl(void);
 
 	const wxMenu *GetMenu(void);
@@ -62,6 +62,8 @@ public:
 	inline int GetTotalSize(void) const { return m_totalSize; };
 	inline int GetFileCount(void) const { return GetSelectedItemCount(); };
 	inline FileContainerIf *GetContainer(void) const { return m_container; };
+	static wxString GetFileDescription(const FlexDirEntry *pDe);
+
 #ifdef wxUSE_DRAG_AND_DROP
 	bool PasteFrom(FlexDnDFiles &files);
 #endif
@@ -88,10 +90,8 @@ public:
 	static wxString fileViewer;
 
 private:
-	FlexException ex;
-
 	void Notify();
-	int GetSelections(int **pItems) const;
+	int GetSelections(long **pItems) const;
 	void DeleteSelectedItems(bool askUser = TRUE);
 	void RenameSelectedItems(void);
 	void ViewSelectedItems(void);

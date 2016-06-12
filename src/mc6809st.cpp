@@ -34,7 +34,7 @@ Mc6809CpuStatus::Mc6809CpuStatus() :
 	memset(memory,      0, 48);
 }
 
-const Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus& lhs)
+Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus& lhs)
 {
         freq         = lhs.freq, 
         total_cycles = lhs.total_cycles;

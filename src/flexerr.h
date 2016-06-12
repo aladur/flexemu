@@ -26,8 +26,6 @@
 #define MAX_ERR_STRINGLENGTH 1024
 
 
-class wxString;
-
 #define FERR_NOERROR			(0)
 #define FERR_UNABLE_TO_OPEN		(1)
 #define FERR_IS_NO_FILECONTAINER	(2)
@@ -60,10 +58,16 @@ class wxString;
 #define FERR_WRONG_FLEX_BIN_FORMAT	(29)
 #define FERR_CREATE_TEMP_FILE		(30)
 #define FERR_CONTAINER_IS_READONLY	(31)
+#define FERR_UNSPEC_WINDOWS_ERROR	(32)
+
+class FlexException;
+
+// Declaration of Factory method to get a new exception object
+extern FlexException *getFlexException(int type = 0);
 
 class FlexException
 {
-private:
+protected:
 
 	int	 errorCode;
 	char errorString[MAX_ERR_STRINGLENGTH];
@@ -74,14 +78,18 @@ public:
 	FlexException() throw();
 	virtual ~FlexException() throw();
 
-	virtual const char *what() const throw();
-
+	virtual const char *what()  const throw();
+#ifdef _UNICODE
+	virtual const wchar_t *wwhat() const throw();
+#else
+	virtual const char *wwhat() const throw();
+#endif
 	int	GetErrorCode(void) const { return errorCode; };
-	void	setString(int ec);
-	void	setString(int ec, int ip1);
-	void	setString(int ec, const char *sp1);
-	void	setString(int ec, const char *sp1, const char *sp2);
-	void	setString(int ec, int ip1, int ip2, const char *sp1);
+	virtual void	setString(int ec);
+	virtual void	setString(int ec, int ip1);
+	virtual void	setString(int ec, const char *sp1);
+	virtual void	setString(int ec, const char *sp1, const char *sp2);
+	virtual void	setString(int ec, int ip1, int ip2, const char *sp1);
 #ifdef WIN32
 	void	setWindowsError(int lastError, const char *sp1 = NULL);
 #endif

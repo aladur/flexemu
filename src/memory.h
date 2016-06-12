@@ -117,14 +117,14 @@ public:
 
 inline void Memory::write(Word addr, Byte val)
 {
-        Word offset;  // offset into ram (modulo 0x4000)
-        struct sIoSelect *pIo;
 
         if ((addr & GENIO_MASK) == io_base_addr)
         {
-	        pIo = ppIo + (addr & (Word)(~GENIO_MASK));
+        	struct sIoSelect *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
                 (pIo->device)->writeIo(pIo->offset, val);
         } else {
+                Word offset;  // offset into ram (modulo 0x4000)
+
                 offset = addr & 0x3fff;
                 if (video_ram_active[addr >> 12])
                 {

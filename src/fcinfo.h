@@ -24,6 +24,7 @@
 #define __fcinfo_h__
 
 #include <stdlib.h>
+#include "misc1.h"
 #include "bstring.h"
 #include "bdate.h"
 

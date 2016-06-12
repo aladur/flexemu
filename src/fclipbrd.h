@@ -30,31 +30,39 @@
 #include "filecont.h"
 #include "bsingle.h"
 
-WX_DECLARE_LIST (wxString, FlexFileList);
+WX_DECLARE_LIST(wxString, FlexFileList);
 
 class FlexFileClipboard;
 
 typedef BSingleton<FlexFileClipboard> SFlexFileClipboard;
 
-class FlexFileClipboard : public BObserver 
+class FlexFileClipboard : public BObserver
 {
 
-friend FlexFileClipboard &SFlexFileClipboard::Instance();
+    friend FlexFileClipboard &SFlexFileClipboard::Instance();
 
 public:
-	virtual ~FlexFileClipboard();
-	void SetEmpty(void) const;
-	void SetFiles(const FlexFileList &newFileList) const;
-	const FlexFileList &GetFiles(void) const { return m_fileList; };
-	void SetSourceContainer(FileContainerIf *container) const
-		{ m_container = container; };
-	FileContainerIf *GetSourceContainer(void) const { return m_container; };
-	virtual void Update(const void *pObject);
+    virtual ~FlexFileClipboard();
+    void SetEmpty(void) const;
+    void SetFiles(const FlexFileList &newFileList) const;
+    const FlexFileList &GetFiles(void) const
+    {
+        return m_fileList;
+    };
+    void SetSourceContainer(FileContainerIf *container) const
+    {
+        m_container = container;
+    };
+    FileContainerIf *GetSourceContainer(void) const
+    {
+        return m_container;
+    };
+    virtual void UpdateFrom(const void *pObject);
 
 private:
-	FlexFileClipboard();
-	mutable FlexFileList	m_fileList;
-	mutable FileContainerIf *m_container;
+    FlexFileClipboard();
+    mutable FlexFileList    m_fileList;
+    mutable FileContainerIf *m_container;
 };
 
 #endif // #ifndef __FCLIPBRD_H__

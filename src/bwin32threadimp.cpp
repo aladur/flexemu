@@ -2,8 +2,8 @@
     bwin32threadimp.cpp
 
 
-    flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2001-2004  W. Schwotzer
+    Basic class for a Win32 thread implementation
+    Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 */
 
 #ifdef WIN32
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef _POSIX_
 #undef _POSIX_
@@ -85,12 +85,15 @@ void BWin32ThreadImp::Exit(void *)
 // be called with Start(...)
 unsigned int BWin32ThreadImp::RunImp(BWin32ThreadImp *p)
 {
-  p->finished = false;
-  if (p != NULL && p->pThreadObj != NULL)
-    p->pThreadObj->Run();
-  p->finished = true;
-  if (p->finishedEvent != NULL)
-	  SetEvent(p->finishedEvent);
+  if (p != NULL)
+  {
+    p->finished = false;
+    if (p->pThreadObj != NULL)
+      p->pThreadObj->Run();
+    p->finished = true;
+    if (p->finishedEvent != NULL)
+      SetEvent(p->finishedEvent);
+  }
   return 0;
 }
 

@@ -51,7 +51,7 @@ BDate::~BDate()
 {
 }
 
-char *BDate::monthName[] = {
+const char *BDate::monthName[] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "???"
 };

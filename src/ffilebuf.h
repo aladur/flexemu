@@ -38,7 +38,7 @@ public:
 	FlexFileBuffer(const FlexFileBuffer &f);
 	virtual ~FlexFileBuffer();
 
-	const FlexFileBuffer &operator=(const FlexFileBuffer &lhs);
+	FlexFileBuffer &operator=(const FlexFileBuffer &lhs);
 	int ConvertFromFlex(void);
 	int ConvertToFlex(void);
 	bool WriteToFile(const char *path) const;

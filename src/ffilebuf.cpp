@@ -34,6 +34,7 @@ FlexFileBuffer::FlexFileBuffer(int n /* = 0 */) :
 	pBuffer(NULL), pDate(NULL), size(0), attributes(0), sectorMap(0)
 {
 	Realloc(n);
+	memset(filename, 0, sizeof(filename));
 }
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
@@ -43,18 +44,21 @@ FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
 	copyFrom(src);
 }
 
-const FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
+FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
 {
-	copyFrom(lhs);
-	if (lhs.pBuffer == NULL)
+	if (&lhs != this)
 	{
-		delete [] pBuffer;
-		pBuffer = NULL;
-	}
-	if (lhs.pDate == NULL)
-	{
-		delete pDate;
-		pDate = NULL;
+		copyFrom(lhs);
+		if (lhs.pBuffer == NULL)
+		{
+			delete [] pBuffer;
+			pBuffer = NULL;
+		}
+		if (lhs.pDate == NULL)
+		{
+			delete pDate;
+			pDate = NULL;
+		}
 	}
 	return *this;
 }
@@ -101,7 +105,7 @@ void FlexFileBuffer::Realloc(unsigned int newSize, bool restoreContents /* = fal
 {
 	Byte *newBuffer;
 
-	if (newSize <= 0)
+	if (newSize == 0)
 		return;
 	if (newSize <= size) {
 		// dont allocate memory if buffer size decreases
@@ -144,7 +148,6 @@ unsigned int FlexFileBuffer::SizeOfFlexFile(void)
 
 int FlexFileBuffer::ConvertFromFlex(void)
 {
-	Byte c;
 	Byte *newBuffer;
 	unsigned int newIndex, newSize;
 	unsigned int count;
@@ -156,7 +159,7 @@ int FlexFileBuffer::ConvertFromFlex(void)
 	newBuffer = new Byte[ newSize ];
 	newIndex = 0;
 	for (unsigned int i = 0; i < size; i++) {
-		c = pBuffer[i];
+		Byte c = pBuffer[i];
 		if (c > 0x0d)
 			newBuffer[newIndex++] = c;
 		else
@@ -275,14 +278,13 @@ if (0) {
 
 unsigned int FlexFileBuffer::SizeOfFile(void)
 {
-	Byte			c;
 	unsigned int	count, spaces;
 
 	if (!pBuffer || size == 0)
 		return 0;
 	count = spaces = 0;
 	for (unsigned int i = 0; i < size; i++) {
-		c = pBuffer[i];
+		Byte c = pBuffer[i];
 		if (c == ' ' && (++spaces == 127)) {
 			count += 2;
 			spaces = 0;
@@ -306,10 +308,8 @@ unsigned int FlexFileBuffer::SizeOfFile(void)
 
 bool FlexFileBuffer::IsTextFile(void) const
 {
-	Byte c;
-
 	for (unsigned int i = 0; i < size; i++) {
-		c = pBuffer[i];
+		Byte c = pBuffer[i];
 		if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x09)
 			continue;
 		return false;
@@ -319,10 +319,8 @@ bool FlexFileBuffer::IsTextFile(void) const
 
 bool FlexFileBuffer::IsFlexTextFile(void) const
 {
-	Byte c;
-
 	for (unsigned int i = 0; i < size; i++) {
-		c = pBuffer[i];
+		Byte c = pBuffer[i];
 		if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00)
 			continue;
 		if (c == 0x09 && i < size-1) {
@@ -341,12 +339,11 @@ bool FlexFileBuffer::IsExecutableFile(void) const
 
 bool FlexFileBuffer::WriteToFile(const char *path) const
 {
-	int blocks;
 	BFilePtr fp(path, "wb");
 
 	if (fp != NULL)
 	{
-		blocks = fwrite(pBuffer, GetSize(), 1, fp);
+		int blocks = fwrite(pBuffer, GetSize(), 1, fp);
 		return (blocks == 1);
 	}
 	return false;
@@ -368,18 +365,17 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
 	if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size > 0)
 	{
-		int blocks;
 		BFilePtr fp(path, "rb");
 
 		Realloc(sbuf.st_size);
 		if (fp != NULL)
 		{
-			const char *pf;
-			struct tm *lt;
-
-			blocks = fread(pBuffer, GetSize(), 1, fp);
+			int blocks = fread(pBuffer, GetSize(), 1, fp);
 			if (blocks == 1)
 			{
+				const char *pf;
+				struct tm *lt;
+
 				attributes = 0;
 				sectorMap  = 0;
 				pf = strrchr(path, PATHSEPARATOR);
@@ -403,16 +399,18 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 // conformous to 8.3
 void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
 {
-	char *p, *pe, ext[5];
+	const char *p, *pe;
 
 	memset(filename, '\0', FLEX_FILENAME_LENGTH);
 	pe = strrchr(afileName, '.');
 	strncpy(filename, afileName, 8);
 	p = strrchr(filename, '.');
 	if (p != NULL)
-		*p = '\0';
+		*(const_cast<char *>(p)) = '\0';
 	if (pe != NULL)
 	{
+		char ext[5];
+
 		memset(ext, '\0', 5);
 		strncpy(ext, pe, 4);
 		strcat(filename, ext);
