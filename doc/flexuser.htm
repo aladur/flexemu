@@ -1,0 +1,334 @@
+<html>
+<head>
+<title>FLEX Users Manual</title>
+</head>
+<body>
+<h2>
+flexuser - FLEX Users Manual 
+<hr></h2>
+<a name="commands">
+<h2>FLEX USER COMMANDS</h2>
+<dl>
+<dt><b>GET[,&lt;filespec&gt;[,&lt;filespec&gt;]...]
+</b><dd>
+The
+<b>GET
+</b>command is used to load a binary file into memory. It is a special purpose
+command and is not often used.
+<dt><b>MON
+</b><dd>
+<b>MON
+</b>is used to exit FLEX and return to the system monitor. FLEX can simply
+re-entered after using the MON command, by typing:
+<b>g cd03
+</b>or
+<b>x
+</b>.
+<dt><b>APPEND,&lt;filespec&gt;[,&lt;filespec&gt;]...,&lt;filespec&gt;
+</b><dd>
+The
+<b>APPEND
+</b>command is used to append or concatenate two or more files, 
+creating a new file as the result. Any type of file may be appended but
+it only makes sense to append files of the same type in most cases. If
+appending binary files which have transfer addresses associated with
+them, the transfer address of the last file of the list will be the
+effective transfer address of the resultant file. All of the original
+files will be left intact. The default file extension is .TXT
+<dt><b>ASN[,W=n][,S=m]
+</b><dd>
+The
+<b>ASN
+</b>command can be used to assign the actual system and working drive.
+If specified
+<b>n
+</b>will be assigned as working drive and
+<b>m
+</b>will be assigned as system drive, where
+<b>n
+</b>and
+<b>m
+</b>can be digits between 0 and 3.
+<dt><b>BUILD,&lt;filespec&gt;
+</b><dd>
+The
+<b>BUILD
+</b>command is provided for those desiring to create small text files quickly
+(such as STARTUP files or EXEC files).
+<b>BUILD
+</i>prompts with an equals sign ('='). Text can be entered line by line. Only the
+actual line can be edited by a backspace character. To finish text entry
+type a pound sign ('#') immediately following the prompt. The default file
+extension is .TXT
+<dt><b>CAT[,&lt;drive list&gt;][,&lt;match list&gt;]
+</b><dd>
+The
+<b>CAT
+</b>command is used to display the FLEX disk file names in the directory on each 
+disk. The user may display selected files on one or multiple drives.
+Wildcards are possible f. e.
+<b>CAT A.T
+</b>catalogs all files with a name beginning with A and an extension beginning
+with T.
+<dt><b>COPY,&lt;filespec&gt;,&lt;filespec&gt;
+</b><dd>
+<dt><b>COPY,&lt;filespec&gt;,&lt;drive&gt;
+</b><dd>
+<dt><b>COPY,&lt;drive&gt;,&lt;drive&gt;[,&lt;match list&gt;]
+</b><dd>
+The
+<b>COPY
+</b>command is used for making copies of files on a disk. Individual
+files, groups of name-similar files or entire disks may be copied. &lt;match
+list&gt; is the same as described in the CAT command.
+<dt><b>DATE [,&lt;month&gt;,&lt;day&gt;,&lt;year&gt;]
+</b><dd>
+The
+<b>DATE
+</b>command is used to display or change an internal FLEX date register. Within
+flexemu the date can be changed within FLEX but this will not change the
+date of the host operating system. 
+<dt><b>DELETE,&lt;filespec&gt;[,&lt;filespec&gt;]...
+</b><dd>
+The
+<b>DELETE
+</b>command is used to delete a file from the disk. Its name will be removed from
+the directory and its sector space will be returned to the free space on the
+disk.
+<dt><b>EXEC,&lt;filespec&gt;
+</b><dd>
+The
+<b>EXEC
+</b>command is used to process a text file as a list of commands. The default file
+extension is .TXT
+<dt><b>GET,&lt;filespec&gt;
+</b><dd>
+The
+<b>GET
+</b>command can be used to read a binary file into memory but don't execute it. The
+default file extension is .BIN
+<dt><b>I,&lt;filespec&gt;,&lt;command&gt;
+</b><dd>
+The
+<b>I
+</b>command allows a utility to obtain input characters from a disk file rather
+than the terminal. The default file extension is .TXT
+<dt><b>JUMP,&lt;hex address&gt;
+</b><dd>
+The
+<b>JUMP
+</b>command is provided for convenience. It is used to start execution of a
+program already in memory, f. e. loaded by a GET command.
+<dt><b>LINK,&lt;filespec&gt;
+</b><dd>
+The
+<b>LINK</b> command is used to tell the bootstrap loader where FLEX operating
+system file resides on the disk. This is necessary each time a system disk
+is created. It is NOT necessary if logging in a directory as systemdrive.
+In this case the link will be dynamically generated. The default file
+extension is .SYS
+<dt><b>LIST,&lt;filespec&gt;[,&lt;line range&gt;[,&lt;+options&gt;]
+</b><dd>
+The
+<b>LIST
+</b>command is used to list the contents of text files on the terminal. It is
+possible to list entire files or selected line ranges of the file. Following
+options are possible:
+<p>
+<table border>
+ <tr><th>Option</th><th>Description</th></tr>
+ <tr><td>+N<td>display line numbers</td></tr>
+ <tr><td>+P<td>do page formatting</td></tr>
+</table>
+<p>
+The default file extension is .TXT
+<dt><b>O,&lt;filespec&gt;,&lt;command&gt;
+</b><dd>
+The
+<b>O
+</b>command can be used to route all displayed output from a utility to an
+output file instead of the terminal. The default extension is .OUT
+<dt><b>P,&lt;command&gt;
+</b><dd>
+The
+<b>P
+</b>command can be used to print the output of any command to the Printer.
+Within flexemu no Printer is supported.
+<dt><b>PROT,&lt;filespec&gt;,[,(option list)]
+</b><dd>
+The
+<b>PROT
+</b>command is used to change a protection code associated with each file.
+When a file is first saved, is has no protection associated with it thereby
+allowing the user to write to, rename, or delete the file. Delete or write
+protection can be added to a file by using the 
+<b>PROT
+</b>command. Following options are possible:
+<p>
+<table border>
+  <tr><th>Option</th><th>Description</th></tr>
+  <tr><td>D<td>Delete protect a file</td></tr>
+  <tr><td>W<td>Write protect a file</td></tr>
+  <tr><td>C<td>Catalog protect a file</td></tr>
+  <tr><td>X<td>Remove all protections from file</td></tr>
+</table>
+<p>
+F. e.
+<b>PROT,CAT.CMD,XW
+</b>removes any previous protection on CAT.CMD and write
+protects it.
+<dt><b>QCHECK
+</b><dd>
+The
+<b>QCHECK
+</b>Utility can be used to examine the contents of the print queue and to modify
+it's contents. Within flexemu no printing is supported.
+<dt><b>RENAME,&lt;filespec1&gt;,&lt;filespec2&gt;
+</b><dd>
+The
+<b>RENAME
+</b>command is used to give an existing file a new name in the directory.
+<a name="save">
+<dt><b>SAVE,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
+</b><dd>
+The
+<b>SAVE
+</b>command is used for saving a section of memory on the disk. The address fields
+should be expressed as hex numbers. The default file extension is .BIN
+<a name="save_low">
+<dt><b>SAVE.LOW,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
+</b><dd>
+Same as SAVE but SAVE.LOW itself is located in a lower memory area. With this
+command it is possible to save programs located in the UCS area.
+<a name="startup">
+<dt><b>STARTUP
+</b><dd>
+<b>STARTUP
+</b>is not a utility command but is a feature of FLEX. It is often desirable to have
+the operating system do some special action or actions upon initialization
+of the system (during the bootstrap loading process). As an example, the user
+may always want to use BASIC immediately following the boot process. STARTUP
+will allow for this without the necessity of calling the BASIC interpreter
+each time.
+<p>
+FLEX always checks the disk's directory immediately following the system
+initialization for a file called
+<b>STARTUP.TXT.
+</b>If none is found the systemprompt
+('+++') will be displayed. If a
+<b>STARTUP
+</b>file is present, it is read and interpreted as a single command line.
+Several commands in one line can be separated by a end of line character.
+<a name="ttyset">
+<dt><b>TTYSET[,&lt;parameter list&gt;]
+</b><dd>
+The
+<b>TTYSET
+</b>utility command is provided so the user may control the characteristics of
+the terminal. With this command, the action of the terminal on input and the
+display format on output may be controlled. In the following parameter
+specifications hh stands for one or two hex digits and dd stands for one or two
+decimal digits.
+<p>
+following parameters (each separated by a comma) are supported:
+<p>
+<table border>
+ <tr><th>Parameter</th><th>Description</th></tr>
+ <tr><th>BS=hh</th><td>Backspace character, default: Ctrl-H (hex 08) delete the
+  last character typed from the terminal. Setting BS=0 will disable the
+  backspace feature.</td></tr>
+ <tr><th>BE=hh</th><td>Backspace echo character, default: 0. Defines the
+  character to be sent to the terminal after a 'backspace' character is
+  received.</td></tr>
+ <tr><th>DL=hh</th><td>Delete character, default: Ctrl-X (hex 18) Erase the
+  current input line. Set DL=0 will disable this feature.</td></tr>
+ <tr><th>EL=hh</th><td>End of line character, default: colon (':'). With this
+  character two commands can be separated on one input line. <b>hh</b> must be a
+  printable character. Set EL=0 will disable this feature.
+ <tr><th>DP=dd</th><td>Depth count, default: 0. Specifies the number of lines
+  a page consists of. See also EJ and PS. Set DP=0 will disable this feature.
+ <tr><th>WD=dd</th><td>Width, specifies the number of characters to be
+  displayed on a physical line at the terminal (the number of columns).
+ <tr><th>NL=dd</th><td>Null count, default: 4. Sets the number of non-printing
+  (Null) 'pad' characters to be sent to the terminal at the end of each line.
+ <tr><th>TB=hh</th><td>Tab character. This character is not used by FLEX but
+  by some of the utilities f. e. a text editing system. This character should
+  be set to a printable character.
+ <tr><th>EJ=dd</th><td>Eject count, default: 0. Specifies the number of
+  'eject lines' to be sent to the terminal at the bottom of each page. If
+  EJ=0 no eject line will be sent.
+ <tr><th>PS=Y|N</th><td>Pause control, default: N. Enables or disables the
+  'end-of-page' feature. If Pause is on and DP is set to some nonzero value,
+  the output display is automatically suspended at the end of each page. It
+  may be continued by typing an 'escape' character.
+ <tr><th>ES=hh</th><td>Escape character, default: hex 1B. The escape character
+  is used to stop output from being displayed, and once it is stopped restart
+  it again.
+</table>
+<p>
+<dt><b>VERSION,&lt;filespec&gt;
+</b><dd>
+The
+<b>VERSION
+</b>utility is used to display the version number of a utility command. The
+default extension is .CMD
+<dt><b>VERIFY [,ON|,OFF]
+</b><dd>
+The
+<b>VERIFY
+</b>command is used to set the File Management System's write verification. If 
+<b>VERIFY
+</b>is on, every sector which is written to the disk is read back from the disk
+for verification (to make sure there are no errors in any sectors). With
+<b>VERIFY
+</b>off, no verification is performed.
+<b>VERIFY
+</b>without any parameters displays it's current state. flexemu does NOT support
+any verify operations.
+<dt><b>XOUT[,&lt;drive spec&gt;]
+</b><dd>
+<b>XOUT
+</b>is a special form of the delete command which deletes all files having
+the extension .OUT.
+</dl>
+<a name="system">
+<h2>GENERAL SYSTEM INFORMATION</h2>
+<dl>
+<dt><b>DISK CAPACITY
+</b><dd>
+Each sector of a FLEX disk contains 252 characters or bytes of user data (4
+bytes of each 256 byte sector are used by the system). Thus a single-sided
+mini disk has 340 sectors or 85,680 characters or bytes of user information.
+A single-sided full size disk has 1140 sectors or 287,280 bytes of user data.
+Doulbe-sided disks would contain exactly twice these amounts.
+<dt><b>WRITE PROTECT
+</b><dd>
+Floppy disks can usually be physically write protected to prevent FLEX from
+performing a write operation. Any attempt to write to such a disk will cause
+an error message to be issued. It is good practice to write protect disks
+which have important files on them.
+<dt><b>THE SYSTEM-'RESET'
+</b><dd>
+The System-Reset should NEVER BE PRESSED DURING A DISK OPERATION. There should
+never be a need to 'reset' the machine while in FLEX. If the machine is
+entire disk will become damaged.
+<dt><b>NOTES ON THE P COMMAND
+</b><dd>
+The P command tries to load a printer driver file named PRINT.SYS from the
+same disk which P itself was retrieved. Within flexemu no printing is
+supported yet.
+</dl>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+</body>
+</html>

@@ -1,0 +1,549 @@
+<html>
+<head>
+<title>FLEX Disk Operating System</title>
+</head>
+<body>
+<h2>
+flexdos - FLEX Disk Operating System
+<hr></h2>
+<h2>DESCRIPTION</h2>
+The
+<b>Disk Operating System
+</b>(DOS) forms the communication link between the user and the
+<a href="flexfms.htm">File Management System</a>.
+All commands are accepted through DOS. Functions such as file
+specification parsing, command argument parsing, terminal I/O, and error
+reporting are all handled by DOS. The following section describe the DOS user
+callable subroutines, and give examples of some possible uses. <a href="flexmem.htm">FLEX Memory map</a> gives an overview of memory usage of FLEX.
+<h2>USER-CALLABLE SYSTEM ROUTINES</h2>
+Unless specifically documented otherwise, the contents of all registers shoud
+be presumed destroyed by calls to these routines. All routines, unless
+otherwise indicated, should be called with a JSR instruction. In the 6809
+version of FLEX the Y and U registers are preserved across all the following
+routines. The A, B, and X registers should be considered changed except where
+noted otherwise. Often a value or status is returned in one of these registers.
+<dl>
+<a name="colds">
+<dt><b>Coldstart Entry Point $CD00 (COLDS)
+</b><dd>
+The BOOT program loaded from the disk jumps to this address to initialize the
+FLEX system. Both the Disk Operating System (DOS) portion and the
+<a href="flexfms.htm">File Management System</a> portion (FMS) of FLEX are
+initialized. After initialization,
+the FLEX title line is printed and the
+<a href="flexuser.htm#startup">STARTUP file</a>
+, if one exists, is loaded
+and executed. This entry point is only for use by the BOOT program, not by
+user programs. Indiscriminate use of the Coldstart Entry Point by user programs
+could result in the destruction of the diskette. Documentation of this routine
+is included here only for completeness.
+<a name="warms">
+<dt><b>Warstart Entry Point $CD03 (WARMS)
+</b><dd>
+This is the main re-entry point into DOS from user programs. A JMP instruction
+should be used to enter the Warmstart Entry Point. At this point, the main loop
+DOS is entered. The main loop of DOS checks the Last Terminator location for
+a <a href="flexuser.htm#ttyset">TTYSET</a> end-of-line character. If one is found, it is assumed that there is
+another command on the line, and DOS attempts to process it. If no end-of-line
+is in the Last Terminator location DOS assumes that the current command line is
+finished, and looks for a new line to be input from the keyboard. If, however,
+DOS was called from a user program through the
+<a href="#docmnd">DOCMND</a> entry point, control
+will be returned to the user program when the end of a command line is reached.
+<a name="renter">
+<dt><b>DOS Main Loop Re-entry Point $CD06 (RENTER)
+</b><dd>
+This is a direct entry point into the DOS main loop. None of the Warmstart
+initialization is performed. This entry point must be entered by a JMP
+instruction. Normally, this entry point is used internally by DOS and
+user-written programs should not have need to use it. For example of use, see
+"Printer Driver" section for details.
+<a name="inch">
+<dt><b>Input Character $CD09 (INCH)
+</b><dd>
+<a name="inch2">
+<dt><b>Input Character $CD0C (INCH2)
+</b><dd>
+Each of these routines inputs one character from the keyboard, returning it to
+the calling program in the A-register. The address portion of these entry
+points to a routine in the Custom I/O package. They may be altered by changing
+that package. The
+<a href="#getchr">GETCHR</a> routine normally uses
+<a href="#inch2">INCH</a> but may be instructed to
+use INCH2 by setting the "Input Switch" non-zero (see flexemu(1) Memory Map).
+The Users's program may change the jump vector at the
+INCH address to refer to
+some other input routine such as a routine to get a character from paper tape.
+The INCH2 address should never be altered. The Warmstart Entry Point resets the
+INCH jump vector to the same routine as INCH2 and sets the Input Switch to
+zero.
+<a href="#rstrio">RSTRIO</a> also resets these bytes. User programs should
+use the <a href="#getchr">GETCHR</a>
+routine, rather than calling INCH, because INCH does not check the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+parameters.
+<a name="outch">
+<dt><b>Output Character $CD0F (OUTCH)
+</b><dd>
+<a name="outch2">
+<dt><b>Output Character $CD12 (OUTCH2)
+</b><dd>
+On entry to each of these routines, the A-register should contain the character
+being output. Both of these routines output the character in the A-register to
+an output device. The OUTCH routine usually does the same as OUTCH2; however,
+OUTCH may be changed by programs to refer to some other output routine. For
+example, OUTCH may be changed to drive a line printer. OUTCH2 is never changed,
+and always points to the output routine in the Custom I/O package. This
+address may not be patched to refer to some other output routine. The routine
+<a href="#putchr">PUTCHR</a>
+calls one of these two routines, depending on the content of the
+location <a href="flexmem.htm#out_switch">"Output Switch"</a>.
+The Warmstart Entry
+Point resets the OUTCH jump vector to the same routine as OUTCH2, and sets
+the Output Switch to zero.
+<a href="#rstrio">RSTRIO</a>
+also resets these locations. User routines
+should use
+<a href="#putchr">PUTCHR</a>
+rather than calling OUTCH or OUTCH2 directly since these
+latter two do not check the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+parameters.
+<a name="getchr">
+<dt><b>Get Character $CD15 (GETCHR)
+</b><dd>
+preserved: B, X.<br>
+This routine gets a single character from the keyboard. The character is
+returned to the calling program in the A-register. The Current Line Number
+location is cleared by a call to GETCHR. Because this routine honors the 
+<a href="flexuser.htm#ttyset">TTYSET</a>
+parameters, its use is preferred to that of
+<a href="#inch">INCH</a>
+. If the location
+"Input Switch" is non-zero, the routine
+<a href="#inch2">INCH2</a>
+will be used for input. If zero,
+the byte at "File Input Address" is checked. If it is non-zero, the address
+at this location is used as a File Control Block of a previously opened
+input file and a character is retrieved from the file. If zero, a character
+is retrieved via the
+<a href="#inch">INCH</a>
+routine.
+<a name="putchr">
+<dt><b>Put Character $CD18 (PUTCHR)
+</b><dd>
+preserved: B, X.<br>
+This routine outputs a character to a
+device, honoring all of the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+parameters. On entry, the character should
+be in the A-register. If the
+<a href="flexmem.htm#special_io">"Special I/O Flag"</a>
+is zero, the column count is checked, and a new line is started if the
+current line is full. If an ACIA is being used to control the monitor terminal,
+it is checked for a
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Escape Character having been typed. If so, output
+will pause at the end of the current line. If the location
+is non-zero, the routine
+<a href="flexmem.htm#out_switch">"Output Switch"</a>
+is used to send the character. If zero, the
+location File Output Address is checked. If it is non-zero the contents of
+this location is used as a address of a File Control Block of a previously
+opened for write file, and the character is written to the file. If zero,
+the routine
+<a href="#outch2">OUTCH2</a>
+is called to process the character. Normally,
+<a href="#outch">OUTCH</a>
+sends
+the character to the terminal. The user program may, however, change the
+address portion of the
+<a href="#outch">OUTCH</a>
+entry point to go to another character output
+routine.
+<a name="inbuff">
+<dt><b>Input into Line Buffer $CD1B (INBUFF)
+</b><dd>
+This routine inputs a line from the keyboard into the Line Buffer. The
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Backspace and Delete character are checked and processed if encountered.
+All other control characters except RETURN and LINE FEED, are ignored. The
+RETURN is placed in the buffer at the end of the line. A LINE FEED is entered
+into the buffer as a space character but is echoed back to the terminal as
+a Carriage Return and Line Feed pair for continuation of the text on a new
+line. At most, 128 characters may be entered on the line, including the
+final RETURN. If more are entered, only the first 127 are kept, the RETURN
+being the 128th. On exit, the Line Buffer Pointer is pointing to the first
+character in the Line Buffer. Caution: The command line entered from the
+keyboard is kept in the Line Buffer. Calling
+<a href="#inbuff">INBUFF</a>
+from a user program will
+destroy the command line, including all unprocessed commands on the same line.
+Using
+<a href="#inbuff">INBUFF</a>
+and the Line Buffer for other than DOS commands may result in
+unpredictable side-effects.
+<a name="pstrng">
+<dt><b>Print String $CD1E (PSTRNG)
+</b><dd>
+preserved: B.<br>
+This routine is similar to the PDATA routine in SWTBUG and DISKBUG. On entry,
+the X-register should contain the address of the first character of the string
+to be printed. The string must end with an ASCII EOT character ($04). This
+routine honors all of the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+conventions when printing the string. A
+carriage return and line feed are output before the string.
+<a name="class">
+<dt><b>Classify character $CD21 (CLASS)
+</b><dd>
+preserved: All registers.<br>
+This routine is used for testing if a character is alphanumeric (i. e. a
+letter or a number). On entry, the character should be in the A-register. If
+the character is alphanumeric, the routine returns with the carry flag is set
+and the character is stored in the Last Terminator location.
+<a name="pcrlf">
+<dt><b>Print Carriage Return and Line Feed $CD24 (PCRLF)
+</b><dd>
+preserved: X.<br>
+In addition to printing a carriage return and line feed, this routine checks
+and honors several
+<a href="flexuser.htm#ttyset">TTYSET</a>
+conditions. On entry, this routine checks for a
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Escape Character having been entered while the previous line was being
+printed. If so, the routine waits for another
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Escape Character or a
+RETURN to be typed. If a RETURN was entered, the routine clears the Last
+Terminator location so as to ignore any commands remaining in the command line,
+and then jumps to the address contained in the Escape Return Register location.
+Unless changed by the user's program, this address is that of the Warmstart
+Entry Point. If, instead of a RETURN, another
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Escape Character was
+typed, or it wasn't necessary to wait for one, the Current Line Number is
+checked. If the last line of the page has been printed and the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Pause feature is enabled, the routine waits for a RETURN or a
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Escape Character, as above. Note that all pausing is done before the
+carriage return and line feed are printed. The carriage return and line feed
+are now printed, followed by the number of nulls specified by the
+Null Count. If the end
+of the page was encountered on entry to this routine, an "eject" is
+performed by issuing additional carriage return, line feeds, and nulls until
+the total number of blank lines is that specified in the
+Eject Count.
+<a name="nxtch">
+<dt><b>Get Next Buffer Character $CD27 (NXTCH)
+</b><dd>
+preserved: B, X.<br>
+The character in location Current Character is placed in location Previous
+Character. The character to which the Line Buffer Pointer points is taken
+from the Line Buffer and saved in the Current Character location. Multiple
+spaces are skipped so that a string of spaces looks no different than a single
+space. The line Buffer Pointer is advanced to point to the next character
+unless the character just fetched was a RETURN or
+<a href="flexuser.htm#ttyset">TTYSET</a>
+End-Of-Line character.
+Thus, once an end-of-line character or RETURN is encountered, additional
+calls to NXTCH will continue to return the same
+end-of-line character or RETURN. NXTCH cannot be used to cross into the next
+command in the buffer. NXTCH exits through the routine
+<a href="#class">CLASS</a>
+, automatically classifying the character. On exit, the character is in the
+A-register, the carry is clear if the character is aphanumeric.
+<a name="rstrio">
+<dt><b>Restore I/O Vector $CD2A (RSTRIO)
+</b><dd>
+preserved: A, B.<br>
+This routine forces the <a href="#outch">OUTCH</a> jump vector to point to
+the same routine as does the <a href="#outch2">OUTCH2</a> vector. The Output
+Switch location and the Input Switch location are set to zero. The
+<a href="#inch">INCH</a> jump vector is reset to point to the same address
+as the
+<a href="#inch2">INCH2</a>
+vector is reset to point to the same
+address as the
+<a href="#inch2">INCH2</a>
+vector. Both the File Input Address and the File
+Output Address are set to zero.
+<a name="getfil">
+<dt><b>Get File Specification $CD2D (GETFIL)
+</b><dd>
+preserved: X.<br>
+On entry to this routine, the X-register must contain the address of a
+<a href="flexfcb.htm">File Control Block (FCB)</a>, and the Line Buffer
+Pointer must be pointing to the
+first character of a file specification in the Line Buffer. This routine will
+parse the file specification, storing the various components in the FCB to
+which the X-register points. If a drive number was not specified in the file
+specification, the working drive number will be used. On exit, the carry bit
+will be clear if no error was detected in processing the file specification.
+The carry bit will be set if there was a format error int the file
+specifiation. If no extension was specified in the file specification, none
+is stored. The calling program should set the default extension desired after
+GETFIL has been called by using the
+<a href="#setext">SETEXT</a>
+routine. The Line Buffer Pointer
+is left pointing to the character immediately beyond the separator, unless
+the separator is a carriage return or End of Line character. If an error was
+detected, Error number 21 is stored in the error status byte of the FCB.
+<a name="load">
+<dt><b>File Loader $CD30 (LOAD)
+</b><dd>
+On entry, the system
+<a href="flexfcb.htm">
+File Control Block</a> (at $C840) must contain the name of
+a file which has been opened for binary reading. This routine is used to load
+binary files only, not text files. The file is read from the disk and stored
+in memory, normally at the load addresses specified in the binary file itself.
+It is possible to load a binary file into a different memory area by using
+the Loader Address Offset locations. The 16-bit value in the Loader Address
+Offset locations is added to the addresses read from the binary file. Any
+carry generated out of the most significant bit of the address is lost. The
+transfer address, if any is encountered, is not modified by the Loader Address
+Offset. Note that the setting of a value in the Loader Address Offset does
+not act as a program relocator in that it does not change any addresses in
+the program itslef, merely the location of the program in memory. If the file
+is to be loaded without an offset, be certain to clear the Loader Address
+Offset locations before calling this routine. On exit, the Transfer Address
+Flag is zero if no transfer address was found. This flag is non-zero if a 
+transfer address record was encountered in the binary file, and the Transfer
+Address locations contain the last transfer address encountered. The disk
+file is closed on exit. If a disk error is encountered, an error message is
+issued and control is returned to DOS at the Warmstart Entry Point. 
+<a name="setext">
+<dt><b>Set Extension $CD33 (SETEXT)
+</b><dd>
+preserved: X.<br>
+On entry, the X-register should contain the address of the
+<a href="flexfcb.htm">FCB</a>
+into which the
+default extension is to be stored if there is not an extension already in the
+FCB. The A-register, on entry, should contain a numeric code indicating what
+the default extension is to be. The numeric codes are described below. If
+there is already an extension in the FCB (possibly stored there by a call to
+<a href="#getfil">GETFIL</a>), this routine returns to the calling program
+immediately. If there is
+no extension in the FCB, the extension indicated by the numeric code in the
+A-register is placed in the FCB File Extension area. The legal codes are:
+<p>
+<table border>
+ <tr><th>Code</th><th>Extension</th></tr>
+ <tr><td>0</td><td>BIN</td></tr>
+ <tr><td>1</td><td>TXT</td></tr>
+ <tr><td>2</td><td>CMD</td></tr>
+ <tr><td>3</td><td>BAS</td></tr>
+ <tr><td>4</td><td>SYS</td></tr>
+ <tr><td>5</td><td>BAK</td></tr>
+ <tr><td>6</td><td>SCR</td></tr>
+ <tr><td>7</td><td>DAT</td></tr>
+ <tr><td>8</td><td>BAC</td></tr>
+ <tr><td>9</td><td>DIR</td></tr>
+ <tr><td>10</td><td>PRT</td></tr>
+ <tr><td>11</td><td>OUT</td></tr>
+</table>
+<p>
+Any values other than those above are ignored, the routine returning without
+storing any extensions.
+<a name="addbx">
+<dt><b>Add B-register to X-register $CD36 (ADDBX)
+</b><dd>
+The contents of the B-register is added to the contents of the X-register. This
+routine is here for compatibility with 6800 FLEX.
+<a name="outdec">
+<dt><b>Output Decima Number $CD39 (OUTDEC)
+</b><dd>
+On entry, the X-register contains the address of the most significant byte of a
+16-bit (2 byte), unsigned, binary number. The B-register, on entry, should
+contain a space suppression flag. The number will be printed as a decimal
+number with leading zeroes suppressed. If the B-register was non-zero on entry,
+spaces will be substituted for the leading zeroes. If the B-register is zero
+on entry, printing of the number will start with the first non-zero digit.
+<a name="outhex">
+<dt><b>Output Hexadecimal Number $CD3C (OUTHEX)
+</b><dd>
+preserved: B, X.<br>
+On entry, the X-register contains the address of a single binary byte. The
+byte ot which the X-register points is printed as 2 hexadecimal digits.
+<a name="rpterr">
+<dt><b>Report Error $CD3F (RPTERR)
+</b><dd>
+On entry ot this routine, the X-register contains the address of a File Control
+Block in which the Error Status Byte is non-zero. The error code in the
+<a href="flexfcb.htm">FCB</a>
+is stored by this routine in the Error Type location. A call to the routine
+<a href="#rstrio">RSTRIO</a>
+is made and location Error Vector is checked. If this location is zero, the
+file ERRORS.SYS is opened for random read. If this location is non-zero, it
+is assumed to be an address pointing to an ASCII string (containing any
+necessary null pad characters) of a legal File name plus extension (string
+should be 11 characters long). This user provided file is then opened for
+randoem read. The error number is used in a calculation to determine the
+record number and offset of the appropriate error string message in the file.
+Each error message string is 63 characters in length, thus allowing 4
+messages per sector. If the string is found, it is printed on the terminal.
+If the string is not found (due to too large of error number being encountered)
+or if the error file itself was not located on the disk, the error number is 
+reported to the monitor terminal as part of the message:
+<p>
+&#160;<tt> </tt>&#160;<tt> </tt>DISK ERROR #nnn
+<p>
+Where "nnn" is the error number being reported. A description of the error
+numbers is given in <a href="flexerr.htm">FLEX Error Messages</a>.
+<a name="gethex">
+</b><dt><b>Get Hexadecimal Number $CD42 (GETHEX)
+</b><dd>
+This routine gets a hexadecimal number from the Line Buffer. On entry, the
+Line Buffer Pointer must point to the first character of the number in the
+Line Buffer. On exit, the carry bit is cleared if a valid number was found,
+the B-register is set non-zero, and the X-register contains the value of the
+number. The Line Buffer Pointer is left pointing to the character immediately
+following the separator character, unless that character is a carriage return
+or End of Line. If the first character examined in the Line Buffer is a
+separator character (such as a comma), the carry bit is still cleared, but
+the B-register is set to zero indicating that no actual number was found. In
+this case, the value returned in the X-register is zero. If a non-hexadecimal
+character is found while processing the number, characters in the Line Buffer
+are skipped until a separator character is found, then the routine returns
+to the caller with the carry bit set. The number in the Line Buffer may be of
+any length, but the value is truncated to between 0 and $FFFF inclusive.
+<a name="outadr">
+<dt><b>Output Headecimal Address $CD45 (OUTADR)
+</b><dd>
+On entry, the X-register contains the address of the most significant byte of
+a 2 byte hex value. The bytes to which the X register points are printed as
+4 hexadecimal digits.
+<a name="indec">
+<dt><b>Input Decimal Number $CD48 (INDEC)
+</b><dd>
+This routine gets an unsigned decimal number from the Line Buffer. On entry,
+the Line Buffer Pointer must point to the first character of the number in the
+Line Buffer. On exit, the carry bit is cleared if a valid number was found, the
+B-register is set non-zero, and the X-register contains the binary value of 
+the number, The Line Buffer Pointer is left pointing as described in the
+routine
+<a href="#gethex">GETHEX</a>
+. If the first character examined in the ubffer is a separator
+character (such as a comma), the carry bit is still cleared, but the B-register
+is set to zero inidcating that no actual number was found. In this case, the 
+number returned in X is zero. The number in the Line Buffer may be of any
+length but the result is truncated to 16 bit precision.
+<a name="docmnd">
+<dt><b>Call DOS as a Subroutine $CD4B (DOCMND)
+</b><dd>
+This entry point allows a user-written program to pass a command string to DOS
+for processing, and have DOS return control to the user program on completion
+of the commands. The command string must be placed in the Line Buffer by the
+user program, and the Line Buffer Pointer must be pointing to the first
+character of the parameters and commands in the Line Buffer. The command string
+must terminate with a RETURN character (hex $0D). After the commands have been
+processed, DOS will return control to the user's program with the B-register
+containing any error code received from the File Management System. The
+B-register will be zero if no programs which may destroy the user program in
+memory. An example of a use of this feature of DOS is that of a program
+wanting to save a portion of memory as a binary file on the disk. The program
+could build a
+<a href="flexuser.htm#save">SAVE command</a> in the Line Buffer with the
+desired file name and parameters, and call the
+DOCMND entry point. On return, the memory will have been saved on the disk.
+<a name="stat">
+<dt><b>Check Terminal Input Status $CD4E (STAT)
+</b><dd>
+This routine may be called to check the status of the terminal input device
+(to see if a character has been typed on teh keyboard). If a character has
+been hit, the Z condition code will be cleared on return (a not-equal
+condition). If no character has been hit, the Z condition code will be set (an
+equal condition). No registers, other than the CC-register, are altered.
+</dl>
+<a name="user_commands">
+<h2>USER-WRITTEN COMMANDS</h2>
+The programmer may write his own commands for DOS. These commands may be
+either disk-resident as disk files with a CMD extension, or they may be
+memory-resident in either RAM or ROM.
+<a name="resident_commands">
+<h2>MEMORY-RESIDENT COMMANDS:</h2>
+A memory-resident command is a program, already in memory, to which DOS will
+transfer when the proper command is entered from the keyboard. The command
+which invokes the program, and the entry-point of the program, are stored in
+a User Command Table created by the programmer in memory. Each entry in the
+User Command Table has the following format:
+<p>
+<spacer type=horizontal size=40>
+<table cellspacing=0 border=0>
+ <tr><td>FCC</td><td>'command'</td><td>(Name that will invode the program)</td>
+ <tr><td>FCB</td><td>0</td><td> </td>
+ <tr><td>FDB</td><td>entry address</td><td>(The entry address of the program)</td>
+</table>
+<p>
+The entire table is ended by a zero byte. For example, the following table
+contains the commands DEBUG (entry at $3000) and PUNT (entry at $3200):
+<p>
+<spacer type=horizontal size=40>
+<table cellspacing=0>
+ <tr><td>FCC</td><td colspan=2>'DEBUG'</td></tr>
+ <tr><td>FCB</td><td colspan=2>0</td></tr>
+ <tr><td>FDB</td><td colspan=2>$3000</td></tr>
+ <tr><td>FCC</td><td colspan=2>'PUNT'</td></tr>
+ <tr><td>FCB</td><td colspan=2>0</td></tr>
+ <tr><td>FDB</td><td colspan=2>$3200</td></tr>
+ <tr><td>FCB</td><td>0</td><td>End of Command table</td></tr>
+</table>
+<p>
+The address of the User Command Table is made known to DOS by storing it in the
+User Command Table Address locations (see).
+<p>
+The User Command Table is searched before the disk directory, but after DOS's
+own command table is searched. The DOS command table contains only the GET and
+MON commands. Therfore, the user may not define his own GET and MON commands.
+<p>
+Since the User Command Table is searched before the disk directory, the
+programmer may have commands with the same name as those on the disk. However,
+in this case, the commands on the disk will never be executed while the User
+Command Table is known to DOS. The User Command Table may be deactivated by
+clearing the User Command Table Address locations.
+<a name="disk_command">
+<h2>DISK-RESIDENT COMMANDS:</h2>
+A disk-resident command is an assembled program, with a transfer address, which
+has been saved on the disk with a CMD extension.
+<p>
+Disk commands, when loaded into memory, may reside anywhere in the User RAM
+Area; the address is determined at assembly time by using an ORG statement.
+Most commands may be assembled to run in the 
+<a href="flexmem.htm#map">Utility Command Space</a>.
+Most of the commands supplied with FLEX run in the Utility Command Space.
+For this reason, the
+<a href="flexuser.htm#save">SAVE command</a>
+cannot be used to save information which is
+in the Utility Command Space or System FCB space as this information would be
+destroyed when the
+<a href="flexuser.htm#save">SAVE command</a>
+command is loaded. The
+<a href="flexuser.htm#save_low">SAVE.LOW command</a>
+command is to be used
+in this case. The
+<a href="flexuser.htm#save_low">SAVE.LOW command</a>
+command loads into memory at location $100 and
+allows the saving of programs in the $C100 region.
+<p>
+The System FCB area is used to load all commands from the disk. Commands
+written to run in the Utility Command Space must not overflow into the
+System FCB area. Once loaded, the command itself may use the System FCB
+area for scratch or as an FCB for its own disk I/O. Look for an example in
+<a href="flexfcb.htm">FLEX File Management System</a>.
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+</body>
+</html>

@@ -1,0 +1,6 @@
+#
+# to reassemble the monitor program a MC6809 crossassembler is needed.
+# (I used Frankenstein Cross Assembler as6809 from Mark Zenier)
+#
+as6809 -o neumon54.hex -l neumon54.unx neumon54.asm
+

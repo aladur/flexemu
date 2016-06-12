@@ -1,0 +1,153 @@
+*********************************************************
+** flexemu, a FLEX emulator with full graphics display **
+*********************************************************
+
+This is an emulator for the FLEX operating system based on an MC6809
+microprocessor emulator.
+
+For compiling and installing look at INSTALL.
+For compiling on Windows95/98/WindowsNT look at INSTALL.NT.
+
+*******************************
+* Motivation for this project *
+*******************************
+
+Very long time ago I've got an Eurocom II computer mainly distributed in
+Germany with an MC6809 Processor rated at 1.33 MHz. Also FLEX Operating
+system was supported. It was at the time of Apple II and CP/M computers.
+
+A very nice feature of this computer was it's graphics resolution. It supported
+512 x 256 pixel of up to 6 bit planes. The complete graphics controller
+consisted of standard 74xxx TTL cirquits. Drawing caracters on the display
+was just a special case of drawing graphics. It is handled in the Monitor EPROM.
+So each character was drawn pixel by pixel by the processor.
+
+At this time I've learned a lot about assembler and Basic programming but also
+on understanding the hardware.
+
+I still have all this stuff and thought it would be nice to preserve the taste
+of this computer, it's processor and the Operating system as an example of the
+very beginning of the microcomputer area. It's completely written in ANSI C++
+so having a good chance to keep it up for the next few years.
+
+I've done some researches on the Internet for 6809 emulation and wrote a
+little prototype for simulating the graphics display. I've found a ready-to-use
+processor emulation by Ray Bellis but after the implementation of the prototype
+it's performance on a Linux box with an 486/DX2 66 was very poor. (I updated
+the video display after any change in video RAM which produced a heavy load
+on X11 protocol).
+
+Some times later during testing a Commodore C64 emulator I was inspired on the
+implementation of their graphics display. The processor emulation and the 
+update of the graphics display was strictly synchronized. For example every
+n processor cyles a line of the graphics display was updated. So I made
+another effort improving my prototype with much more success.
+
+The rest of the project was lots of hours of busy work implementing all
+the hardware components, implementing the graphics display with X11 (first
+using XLib and in a second version using XToolkit with Athena widgets),
+improving the performance and fixing some minor bugs of the MC6809 which I've
+got from Ray Bellis, and transfering of programs from the original system to
+a linux box. Now the project has even been ported to Windows95/WindowsNT.
+
+A second Executable, FLEXplorer, is similar to an Explorer and can be used
+to explore DSK-, FLX- and directory FLEX file containers.
+
+For advanced user support a third Executable, FSetup is available. It's
+simply a Dialog for editing the most important options needed for running
+flexemu.
+
+As the result I hope You will have lots of fun with a full functional FLEX
+emulator with lots of nice features like:
+
+*****************
+* Features      *
+*****************
+
+	- 512 x 256 pixel, 1 bit plane graphics display
+	- XLib, XToolkit or Win32 user interface
+	- CPU monitor with start/stop/step/next/reset, two breakpoints
+	- supporting all MC6809 instructions except halt and sync
+	- full interrupt support
+	- stop processor and popup dialog at unimplemented processor
+	  instructions
+	- continuous display of CPU clock rate
+	- mouse pointer support
+	- MC146818 real time clock emulation
+	- WD1793 floppy disc controller support with up to 4 disk drives
+	- support of disk images but also native file system (directory)
+	- compatible to Ben Williams FLEX emulators DSK format
+	- dynamic remount of native file system possible
+	- fileconversion from/to FLEX ASCII file format
+	- HTML-Documentation with full description of FLEX API
+	- a MMU for extension of the 64K address range
+	- 2 x 96 or 2 x 288 KByte RAM extension
+	- ELTEC full screen editor e.cmd included
+	- terminal mode based on an MC6850 serial line
+	- terminal only mode without X interface on Linux
+	- command for exiting emulator
+	- command to dynamically mount/update/umount drives
+	- command to send a irq/firq/nmi to CPU
+	- supported platform: Linux, Window95/98, WindowsNT, Windows 2000
+	- resize window up to 1536 x 1024 pixel
+	- command to format disks with DSK-Format
+	- Explorer for Container files
+	- Joystick support on Linux
+        - Support 2, 8 or 64 colors or grayscales
+
+********************
+* Copyright notice *
+********************
+
+Please notice that this project was developed under the terms of the GNU
+GENERAL PUBLIC LICENCE. for more information read file COPYING.
+
+
+******************
+* Much thanks to *
+******************
+
+R. P. Bellis (Ray.Bellis@psy.ox.ac.uk) on which the mc6809 emulator is based on
+	I used it's latest version usim-0.91 (sorry for sacrificing the
+	original code but I had to do it for performance reasons). If You
+	want to use a well structured and conscientious implemented mc6809
+	emulator better look at usim.  It can be downloaded from:
+	ftp://ftp.mrc-bbc.ox.ac.uk/pub/users/rpb/mc6809/usim-0.91.tar.gz
+
+Lennart Benschop (benschop@ics.ele.tue.nl) on which the second mc6809 emulation
+	is based on. He has written a complete mc6809 emulation in ONE
+	C function. It's a hard work for the compiler to translate it.
+	Excellent work!
+	His emulator is accessible on ftp.eb.ele.tue.nl/pub/users/benschop.
+
+Didier Derny (didier@aida.remcomp.fr) on which the mc6809 disassembler is based
+	on
+
+Alan Dekok (http://www.sandelman.ocunix.on.ca/People/Alan_DeKok/interests/6809.html)
+	for giving lots of informations about mc6809
+
+Ben Williams (bwilliams@blackbelt.com) for it's researches on copyrights of FLEX
+	(He has written a FLEX emulator too. Look at:
+	http://www.blackbelt.com/blackbelt/flexem.html)
+
+Eltec Elektronik (http://www.eltec.de) which has developed the hardware on which
+	the emulator is based on, and gave me the OK for shipping the full
+	screen editor e.cmd
+
+The wxWindows dev. team (http://www.wxWindows.org) developping a platform
+	independent GUI API.
+
+Martin Philp, the author of invaders
+
+Hans-Dirk Gerken, the author of astroide
+
+the unknown author of prokyon
+
+**************
+* eMail      *
+**************
+
+If You have any questions, remarks, problems feel free to eMail me at:
+
+	   Wolfgang.Schwotzer@gmx.net
+

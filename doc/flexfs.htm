@@ -1,0 +1,125 @@
+<html>
+<head>
+<title>File systems supported by flexemu</title>
+</head>
+<body>
+<h2>
+flexfs - File systems supported by flexemu
+<hr></h2>
+<h2>DESCRIPTION</h2>
+Flexemu supports three different file systems:
+<p>
+<ul>
+ <li><a href="#dsk_format">Disk image created by Ben Williams (DSK-format)</a>
+ <li><a href="#ws_format">Disk image created by Wolfgang Schwotzer</a>
+ <li><a href="#nafs_format">Native file system support (all files in a directory)</a>
+</ul>
+<dl>
+<a name="dsk_format">
+<dt><b>Disk image created by Ben Williams (DSK-format)
+</b><p><dd>
+<a href="http://www.blackbelt.com/blackbelt/flexem.html">
+Ben Williams has written a FLEX emulator</a>
+too.
+The complete disk is contained in one file. A wide range of track/sector
+combinations is supported: <b>2 <= tracks <= 255 and 6 <= sectors <= 255</b>.
+Following map shows some typical track/sector combinations:
+<p>
+<table border>
+ <tr><th>filesize [Byte]</th><th>tracks</th><th>sectors</th>
+ <tr><th>89600</th><th>35</th><th>10</th>
+ <tr><th>179000</th><th>35</th><th>20</th>
+ <tr><th>358400</th><th>35</th><th>40</th>
+ <tr><th>102400</th><th>40</th><th>10</th>
+ <tr><th>204800</th><th>40</th><th>20</th>
+ <tr><th>409600</th><th>40</th><th>40</th>
+ <tr><th>(204800</th><th>80</th><th>10)</th>
+ <tr><th>(409600</th><th>80</th><th>20)</th>
+ <tr><th>819200</th><th>80</th><th>40</th>
+</table>
+<p>
+Each sector contains 256 Byte. There is no file header. The size of the file
+can simply be computed with &lt;nr_of_tracks&gt; x &lt;nr_of_sectors&gt; x 256 Byte. If
+the DSK-file is write protected the drive within flexemu is write protected too.
+<p>
+<a name="ws_format">
+<dt><b>Disk image created by Wolfgang Schwotzer (FLX-format)
+</b>
+<p><dd>
+The complete disk is contained in one file. All the information about how
+many tracks and sectors are discribed in a fileheader:
+<p>
+<table border>
+ <tr><th>bytes</th><th>name</th><th>description</th>
+ <tr><align=left><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
+ <tr><align=left><td>1</td><td>write_protect</td><td>flag for write protection</td>
+ <tr><align=left><td>1</td><td>sizecode</td><td>128 * 2 ^ n Bytes/sector</td>
+ <tr><align=left><td>1</td><td>sides0</td><td>nr of sides on track 0</td>
+ <tr><align=left><td>1</td><td>sectors0</td><td>nr of sect. on track 0</td>
+ <tr><align=left><td>1</td><td>sides</td><td>nr of sides on track != 0</td>
+ <tr><align=left><td>1</td><td>sectors</td><td>nr of sect. on track != 0</td>
+ <tr><align=left><td>1</td><td>tracks</td><td>nr of tracks total</td>
+ <tr><align=left><td>5</td><td>dummy1 - dummy 5</td><td>for stuffing</td>
+</table>
+<p>
+The format of the file header can be changed for future improvements. For the
+actual format look at
+<b>struct s_flex_header
+</b>in the header file
+<b>e2floppy.h</b>.
+<a name="nafs_format">
+<p><dt><b>NAtive File System support (nafs)
+</b><p><dd>
+A directory will be made visible as a disk drive from within flexemu.
+So each file in the directory will be visible as a file contained on the disk.
+Random files are identified by the user execute bit (on Unix) or the hidden bit
+(Win32) of the corresponding file set.
+<p>
+The system info sectors and directory sectors are managed by flexemu and
+are not accessible as file. The boot sector (track 0/sector 1) is contained
+in the file
+<b>boot.
+</b>If there is no such file the disk can't be booted. The link
+to flex.sys will be generated dynamically by flexemu. The user does not have
+to input any link command.
+<p>
+<dt>There are some restrictions the user should be aware of:
+<dd>
+</dl>
+<p>
+<ul>
+ <li>A nafs drive always contains 80 tracks and 36 sectors. If the size of
+all files in the directory won't fit some of them are not visible from within
+flexemu.
+ <li>All filenames must conform to FLEX file naming conventions otherwise
+they can't be seen.
+ <li>A nafs drive is only accessible by propper fms calls. Direct
+reading/writing sectors is not supported.
+ <li>New files have a name tmpXX (XX = two digit number) and are
+renamed to their real name after closing them. So if there are any files
+with that name anything goes wrong with the file creation.
+ <li>If the directory of a nafs drive is full it will be extended
+automatically. So no directory extend utility needs to be used.
+<p>
+There is a utility to dynamically
+<a href="flexutil.htm#mount">mount</a>,
+update,
+<a href="flexutil.htm#info">give info</a>
+or
+<a href="flexutil.htm#umount">umount</a>
+a nafs
+drive.
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+</body>
+</html>

@@ -1,0 +1,48 @@
+********************************************
+* Compiling/Install flexemu on Unix/Linux  *
+********************************************
+
+Flexemu supports configure scripts. So there a simply four steps to completely
+install it:
+
+	- ./configure
+	- make
+	- su root (root access needed for installation)
+	- make install
+
+remarks:
+
+	- To compile flexplorer you first have to install GTK.
+	  (http://www.gtk.org/) and wxWindows for GTK and compile
+	  static or shared libs. (http://www.wxWindows.com/)
+	- If You don't want native file system support comment out
+	  NAFS switch in src/config.h
+	- If You don't want the disassembler to substitute some FLEX jump
+	  vectors to print as labels comment out FLEX_LABEL switch in
+	  config.h.
+	- There are two MC6809 processor implementations. One of them is
+	  about 20% slower but a very well structured implementation. Each
+	  instruction is executed in it's own function. So it can easily be
+	  debuged with gdb. The processor cycles are exactly calculated.
+	  The second is faster, the complete processor is emulated in one
+	  inline-function. The processor cycles are only aproximated
+	  (4.8 cycles for each instruction). The faster processor can
+	  be compiled with switch FASTFLEX uncommented in config.h.
+
+***********************
+* help, Documentation *
+***********************
+
+There are some html-pages for flexemu:
+
+flexemu.htm	general description, command line options
+flexuser.htm	the FLEX users manual
+flexutil.htm	some FLEX utilities
+flexdos.htm	description of the FLEX disk operating system
+flexfms.htm	description of the FLEX file management system
+flexfs.htm	'filesystems' supported by flexemu
+flexerr.htm	description of the FLEX error messages
+flexfcb.htm	description of a FLEX file control block
+flexmem.htm	the FLEX memory map
+neumon54.htm	Flexemu monitor program
+

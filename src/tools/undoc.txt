@@ -1,0 +1,778 @@
+*
+*  MC6809 CPU Emulation Validation
+*  of undocumented instructions
+*
+* Tested on an SGS Thomson EF6809P Processor
+*
+*  - Tests the following Instructions:
+*    neg direct
+*    negcom direct
+*    lsr direct
+*    dec direct
+*    nega
+*    lsra
+*    deca
+*    clra
+*    negb
+*    lsrb
+*    decb
+*    clrb
+*    neg indexed
+*    lsr indexed
+*    dec indexed
+*    neg extended
+*    lsr extended
+*    dec extended
+*    TFR
+*    EXG
+*
+* W. Schwotzer                     17.07.2003
+*
+
+
+WARMS  EQU   $CD03
+PCRLF  EQU   $CD24
+PUTCHR EQU   $CD18
+PSTRNG EQU   $CD1E
+OUTDEC EQU   $CD39
+EXTREG EQU   $8000
+DIRPAG EQU   $80
+DPREG  EQU   $00
+EOT    EQU   $4
+
+       ORG   $8100
+
+BEGIN  BRA   START
+VERSIO FCB   1
+
+START  CLR   ERRFLG ; Clear Error flag
+       JSR   Tneg
+       JSR   Tnegcom
+       JSR   Tlsr
+       JSR   Tdec
+       JSR   Tnega
+       JSR   Tlsra
+       JSR   Tdeca
+       JSR   Tclra
+       JSR   Tnegb
+       JSR   Tlsrb
+       JSR   Tdecb
+       JSR   Tclrb
+       JSR   Tnegi
+       JSR   Tlsri
+       JSR   Tdeci
+       JSR   Tnege
+       JSR   Tlsre
+       JSR   Tdece
+       JSR   TTFR
+       JSR   TEXG
+* More tests to be included
+       JSR   OUTSUC
+       JMP  WARMS
+
+**************************************************
+* Test neg direct (Opcode $01)
+**************************************************
+Tneg   LDU   #Lneg
+       LDX   #TBneg
+       LDA   #DIRPAG
+       TFR   A,DP
+Tneg1  LDA   ,X+
+       STA   <DPREG
+       FCB   $01,DPREG ; neg
+       TFR   CC,B
+       LDA   <DPREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0F   ; Only check Bits NZVC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXneg
+       LBNE  Tneg1
+       RTS
+
+Lneg   FCC   'neg',EOT
+
+TBneg  FCB   $00,$00,$04
+       FCB   $80,$80,$0B
+       FCB   $01,$FF,$09
+       FCB   $FF,$01,$01
+       FCB   $7F,$81,$09
+       FCB   $81,$7F,$01
+       FCB   $C0,$40,$01
+       FCB   $40,$C0,$09
+MXneg  EQU   *
+
+**************************************************
+* Test negcom direct (Opcode $02)
+**************************************************
+Tnegcom LDU   #Lnegcom
+        LDX   #TBneg
+        LDA   #DIRPAG
+        TFR   A,DP
+Tngcm1  LDA   ,X+
+        STA   <DPREG
+        ANDCC #$FE ; Clear Carry bit
+        FCB   $02,DPREG  ; negcom (0x02)
+        TFR   CC,B
+        LDA   <DPREG
+        CMPA  ,X+
+        LBNE  OUTERR
+        ANDB  #$0F   ; Only check Bits NZVC
+        CMPB  ,X+
+        LBNE  OUTERR
+        CMPX  #MXneg
+        BNE   Tngcm1
+*
+        LDX   #TBcom
+Tngcm2  LDA   ,X+
+        STA   <DPREG
+        ORCC  #$01  ; Set Carry bit
+        FCB   $02,DPREG ; negcom (0x02)
+        TFR   CC,B
+        LDA   <DPREG
+        CMPA  ,X+
+        LBNE  OUTERR
+        ANDB  #$0F   ; Only check Bits NZVC
+        CMPB  ,X+
+        LBNE  OUTERR
+        CMPX  #MXcom
+        BNE   Tngcm2
+        RTS
+
+Lnegcom FCC   'negcom',EOT
+
+TBcom  FCB   $00,$FF,$09
+       FCB   $FF,$00,$05
+       FCB   $F0,$0F,$01
+       FCB   $0F,$F0,$09
+       FCB   $55,$AA,$09
+       FCB   $AA,$55,$01
+       FCB   $01,$FE,$09
+       FCB   $FE,$01,$01
+       FCB   $80,$7F,$01
+       FCB   $7F,$80,$09
+MXcom  EQU   *
+
+**************************************************
+* Test lsr direct (Opcode $05)
+**************************************************
+Tlsr   LDU   #TXlsr
+       LDX   #TBlsr
+Tlsr1  LDA   ,X+
+       STA   <DPREG
+       FCB   $05,DPREG
+       TFR   CC,B
+       LDA   <DPREG
+       CMPA  ,X+
+       BNE   Flsr
+       ANDB  #$0F   ; Only check Bits NZVC
+       CMPB  ,X+
+       BNE   Flsr
+       CMPX  #MXlsr
+       BNE   Tlsr1
+       RTS
+Flsr   JSR   OUTERR
+       RTS
+
+TXlsr  FCC   'lsr',EOT
+
+TBlsr  FCB   $00,$00,$04
+       FCB   $FF,$7F,$01
+       FCB   $7F,$3F,$01
+       FCB   $3F,$1F,$01
+       FCB   $1F,$0F,$01
+       FCB   $0F,$07,$01
+       FCB   $07,$03,$01
+       FCB   $03,$01,$01
+       FCB   $01,$00,$05
+       FCB   $55,$2A,$01
+       FCB   $AA,$55,$00
+       FCB   $80,$40,$00
+       FCB   $10,$08,$00
+       FCB   $C0,$60,$00
+       FCB   $E0,$70,$00
+       FCB   $F0,$78,$00
+       FCB   $F8,$7C,$00
+       FCB   $FC,$7E,$00
+       FCB   $FE,$7F,$00
+MXlsr  EQU   *
+
+**************************************************
+* Test dec direct (Opcode $0B)
+**************************************************
+Tdec   LDU   #TXdec
+       LDX   #TBdec
+Tdec1  LDA   ,X+
+       STA   <DPREG
+       FCB   $0B,DPREG
+       TFR   CC,B
+       LDA   <DPREG
+       CMPA  ,X+
+       BNE   Fdec
+       ANDB  #$0E   ; Only check Bits NZV
+       CMPB  ,X+
+       BNE   Fdec
+       CMPX  #MXdec
+       BNE   Tdec1
+       RTS
+Fdec   JSR   OUTERR
+       RTS
+
+TXdec  FCC   'dec',EOT
+
+TBdec  FCB   $01,$00,$04
+       FCB   $00,$FF,$08
+       FCB   $FF,$FE,$08
+       FCB   $80,$7F,$02
+       FCB   $7F,$7E,$00
+       FCB   $10,$0F,$00
+       FCB   $0F,$0E,$00
+MXdec  EQU   *
+
+**************************************************
+* Test nega (Opcode $41)
+**************************************************
+Tnega  LDU   #Lnega
+       LDX   #TBneg
+Tnega1 LDA   ,X+
+       FCB   $41 ; nega
+       TFR   CC,B
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0F   ; Only check Bits NZVC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXneg
+       LBNE  Tnega1
+       RTS
+
+Lnega  FCC   'nega',EOT
+
+**************************************************
+* Test lsra (Opcode $45)
+**************************************************
+Tlsra  LDU   #Llsra
+       LDX   #TBlsr
+Tlsra1 LDA   ,X+
+       FCB   $45 ; lsra
+       TFR   CC,B
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0D   ; Only check Bits NZC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXlsr
+       LBNE  Tlsra1
+       RTS
+
+Llsra  FCC   'lsra',EOT
+
+**************************************************
+* Test deca (Opcode $4B)
+**************************************************
+Tdeca  LDU   #TXdeca
+       LDX   #TBdec
+Tdeca1 LDA   ,X+
+       FCB   $4B ; deca
+       TFR   CC,B
+       CMPA  ,X+
+       BNE   Fdeca
+       ANDB  #$0E   ; Only check Bits NZV
+       CMPB  ,X+
+       BNE   Fdeca
+       CMPX  #MXdec
+       BNE   Tdeca1
+       RTS
+Fdeca  JSR   OUTERR
+       RTS
+
+TXdeca FCC   'deca',EOT
+
+**************************************************
+* Test clra (Opcode $4E)
+* CC.Carry is unchanged!
+**************************************************
+Tclra  LDU   #TXclra
+       LDX   #TBclr
+Tclra1 LDA   ,X+
+       ANDCC #$FE
+       FCB   $4E
+       TFR   CC,B
+       CMPA  ,X+
+       BNE   Fclra
+       ANDB  #$0F   ; Only check Bits NZV
+       CMPB  ,X+
+       BNE   Fclra
+       CMPX  #MXclr
+       BNE   Tclra1
+Tclra2 LDA   ,X+
+       ORCC  #$01
+       FCB   $4E ; clra
+       TFR   CC,B
+       CMPA  ,X+
+       BNE   Fclra
+       ANDB  #$0F   ; Only check Bits NZV
+       CMPB  ,X+
+       BNE   Fclra
+       CMPX  #MX1clr
+       BNE   Tclra2
+       RTS
+Fclra  JSR   OUTERR
+       RTS
+
+TXclra FCC   'clra',EOT
+
+TBclr  FCB   $01,$00,$04
+       FCB   $00,$00,$04
+       FCB   $FF,$00,$04
+       FCB   $80,$00,$04
+       FCB   $7F,$00,$04
+       FCB   $10,$00,$04
+       FCB   $0F,$00,$04
+MXclr  FCB   $01,$00,$05
+       FCB   $00,$00,$05
+       FCB   $FF,$00,$05
+       FCB   $80,$00,$05
+       FCB   $7F,$00,$05
+       FCB   $10,$00,$05
+       FCB   $0F,$00,$05
+MX1clr EQU   *
+
+**************************************************
+* Test negb (Opcode $51)
+**************************************************
+Tnegb  LDU   #Lnegb
+       LDX   #TBneg
+Tnegb1 LDB   ,X+
+       FCB   $51 ; negb
+       TFR   CC,A
+       CMPB  ,X+
+       LBNE   OUTERR
+       ANDA  #$0F   ; Only check Bits NZVC
+       CMPA  ,X+
+       LBNE  OUTERR
+       CMPX  #MXneg
+       LBNE  Tnegb1
+       RTS
+
+Lnegb  FCC   'negb',EOT
+
+**************************************************
+* Test lsrb (Opcode $55)
+**************************************************
+Tlsrb  LDU   #Llsrb
+       LDX   #TBlsr
+Tlsrb1 LDB   ,X+
+       FCB   $55 ; lsrb
+       TFR   CC,A
+       CMPB  ,X+
+       LBNE   OUTERR
+       ANDA  #$0D   ; Only check Bits NZC
+       CMPA  ,X+
+       LBNE  OUTERR
+       CMPX  #MXlsr
+       LBNE  Tlsrb1
+       RTS
+
+Llsrb  FCC   'lsrb',EOT
+
+**************************************************
+* Test decb (Opcode $5B)
+**************************************************
+Tdecb  LDU   #Ldecb
+       LDX   #TBdec
+Tdecb1 LDB   ,X+
+       FCB   $5B ; decb
+       TFR   CC,A
+       CMPB  ,X+
+       BNE   Fdecb
+       ANDA  #$0E   ; Only check Bits NZV
+       CMPA  ,X+
+       BNE   Fdecb
+       CMPX  #MXdec
+       BNE   Tdecb1
+       RTS
+Fdecb  JSR   OUTERR
+       RTS
+
+Ldecb  FCC   'decb',EOT
+
+**************************************************
+* Test clrb (Opcode $5E)
+* CC.Carry is unchanged!
+**************************************************
+Tclrb  LDU   #TXclrb
+       LDX   #TBclr
+Tclrb1 LDB   ,X+
+       ANDCC #$FE
+       FCB   $5E
+       TFR   CC,A
+       CMPB  ,X+
+       BNE   Fclrb
+       ANDA  #$0F   ; Only check Bits NZV
+       CMPA  ,X+
+       BNE   Fclrb
+       CMPX  #MXclr
+       BNE   Tclrb1
+Tclrb2 LDB   ,X+
+       ORCC  #$01
+       FCB   $5E
+       TFR   CC,A
+       CMPB  ,X+
+       BNE   Fclrb
+       ANDA  #$0F   ; Only check Bits NZV
+       CMPA  ,X+
+       BNE   Fclrb
+       CMPX  #MX1clr
+       BNE   Tclrb2
+       RTS
+Fclrb  JSR   OUTERR
+       RTS
+
+TXclrb FCC   'clrb',EOT
+
+**************************************************
+* Test neg indexed (Opcode $61)
+**************************************************
+Tnegi  LDU   #Lnegi
+       LDX   #TBneg
+       LDY   #EXTREG
+Tnegi1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $61,$A4 ; neg ,Y
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0F   ; Only check Bits NZVC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXneg
+       LBNE  Tnegi1
+       RTS
+
+Lnegi  FCC   'neg indexed',EOT
+
+**************************************************
+* Test lsr indexed (Opcode $65)
+**************************************************
+Tlsri  LDU   #Llsri
+       LDX   #TBlsr
+       LDY   #EXTREG
+Tlsri1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $65,$A4 ; lsr ,Y
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0D   ; Only check Bits NZC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXlsr
+       LBNE  Tlsri1
+       RTS
+
+Llsri  FCC   'lsr indexed',EOT
+
+**************************************************
+* Test dec indexed (Opcode $6B)
+**************************************************
+Tdeci  LDU   #Ldeci
+       LDX   #TBdec
+       LDY   #EXTREG
+Tdeci1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $6B,$A4 ; dec ,Y
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0E   ; Only check Bits NZV
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXdec
+       LBNE  Tdeci1
+       RTS
+
+Ldeci  FCC   'dec indexed',EOT
+
+**************************************************
+* Test neg extended (Opcode $71)
+**************************************************
+Tnege  LDU   #Lnege
+       LDX   #TBneg
+Tnege1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $71 ; neg EXTREG
+       FDB   EXTREG
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0F   ; Only check Bits NZVC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXneg
+       LBNE  Tnege1
+       RTS
+
+Lnege  FCC   'neg extended',EOT
+
+**************************************************
+* Test lsr extended (Opcode $75)
+**************************************************
+Tlsre  LDU   #Llsre
+       LDX   #TBlsr
+Tlsre1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $75 ; lsr EXTREG
+       FDB   EXTREG
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0D   ; Only check Bits NZC
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXlsr
+       LBNE  Tlsre1
+       RTS
+
+Llsre  FCC   'lsr extended',EOT
+
+**************************************************
+* Test dec extended (Opcode $7B)
+**************************************************
+Tdece  LDU   #Ldece
+       LDX   #TBdec
+Tdece1 LDA   ,X+
+       STA   EXTREG
+       CLRA
+       FCB   $7B ; dec EXTREG
+       FDB   EXTREG
+       TFR   CC,B
+       LDA   EXTREG
+       CMPA  ,X+
+       LBNE   OUTERR
+       ANDB  #$0E   ; Only check Bits NZV
+       CMPB  ,X+
+       LBNE  OUTERR
+       CMPX  #MXdec
+       LBNE  Tdece1
+       RTS
+
+Ldece  FCC   'dec extended',EOT
+
+**************************************************
+* Test TFR (8-/16-Bit/undefined Register)
+**************************************************
+TTFR   LDX   #TBTFR
+TTFR1  PSHS  X
+       JSR   [,X]
+       PULS  X
+       BNE   FTFR
+       LEAX  2,X
+       CMPX  #MXTFR
+       BNE   TTFR1
+       RTS
+FTFR   LDU   #TXTFR
+       JSR   OUTERR
+       RTS
+
+TXTFR  FCC   'TFR',EOT
+
+CLRREG CLRA
+       CLRB
+       LDX   #0
+       LDY   #0
+       LDU   #0
+       TFR   A,DP
+       TFR   A,CC
+       ORCC  #$04
+       RTS
+TBTFR1 LDD   #$5678
+       FCB   $1F,$08   ; From D to A
+       CMPA  #$78  
+       RTS
+TBTFR2 LDX   #$1234
+       FCB   $1F,$19   ; From X to B
+       CMPB  #$34  
+       RTS
+TBTFR3 LDA   #$55
+       FCB   $1F,$82   ; From A to Y
+       CMPY  #$FF55  
+       RTS
+TBTFR4 LDB   #$55
+       FCB   $1F,$92   ; From B to Y
+       CMPY  #$FF55  
+       RTS
+TBTFR5 LDB   #$55
+       TFR   B,DP
+       CLRB
+       FCB   $1F,$b2   ; From DP to Y
+       CMPY  #$5555  
+       RTS
+TBTFR6 LDB   #$AA
+       TFR   B,DP
+       CLRB
+       FCB   $1F,$B3   ; From DP to U
+       CMPU  #$AAAA
+       RTS 5
+TBTFR7 FCB   $1F,$C3   ; From ??? to U
+       CMPU  #$FFFF  
+       RTS
+TBTFR8 LDU   #0
+       FCB   $1F,$D3   ; From ??? to U
+       CMPU  #$FFFF  
+       RTS
+TBTFR9 LDU   #0
+       FCB   $1F,$E3   ; From ??? to U
+       CMPU  #$FFFF  
+       RTS
+TBTFRA LDU   #0
+       FCB   $1F,$F3   ; From ??? to U
+       CMPU  #$FFFF  
+       RTS
+
+TBTFR  FDB   CLRREG,TBTFR1
+       FDB   CLRREG,TBTFR2
+       FDB   CLRREG,TBTFR3
+       FDB   CLRREG,TBTFR4
+       FDB   CLRREG,TBTFR5
+       FDB   CLRREG,TBTFR6
+       FDB   CLRREG,TBTFR7
+       FDB   CLRREG,TBTFR8
+       FDB   CLRREG,TBTFR9
+       FDB   CLRREG,TBTFRA
+MXTFR  EQU   *
+
+**************************************************
+* Test EXG (8-/16-Bit/undefined Register)
+**************************************************
+TEXG   LDX   #TBEXG
+TEXG1  PSHS  X
+       JSR   [,X]
+       PULS  X
+       BNE   FEXG
+       LEAX  2,X
+       CMPX  #MXEXG
+       BNE   TEXG1
+       RTS
+FEXG   LDU   #TXEXG
+       JSR   OUTERR
+       RTS
+
+TXEXG  FCC   'EXG',EOT
+
+TBEXG1 LDD   #$55AA
+       FCB   $1E,$08   ; D with A
+       CMPD  #$FF55
+TBEXGR RTS
+TBEXG2 LDD   #$1234
+       FCB   $1E,$80   ; A with D
+       CMPD  #$3412
+       RTS
+TBEXG3 LDD   #$4567
+       FCB   $1E,$09   ; D with B
+       CMPD  #$FF67
+       RTS
+TBEXG4 LDD   #$4567
+       FCB   $1E,$90   ; B with D
+       CMPD  #$6767
+       RTS
+TBEXG5 LDB   #$22
+       LDX   #$000F
+       FCB   $1E,$19   ; X with B
+       CMPB  #$0F
+       BNE   TBEXGR
+       CMPX  #$FF22  
+       RTS
+TBEXG6 LDA   #$45
+       LDY   #$4859
+       FCB   $1E,$82   ; A with Y
+       CMPY  #$4545
+       BNE   TBEXGR
+       CMPA  #$59  
+       RTS
+TBEXG7 LDB   #$33
+       TFR   B,DP
+       LDU   #$1234
+       CLRB
+       FCB   $1E,$B3   ; DP with U
+       CMPU  #$3333
+       BNE   TBEXGR
+       TFR   DP,A
+       CMPA  #$34
+       RTS  
+TBEXG8 FCB   $1E,$C3   ; ??? with U
+       CMPU  #$FFFF  
+       RTS
+TBEXG9 LDX   #$0
+       FCB   $1E,$D1   ; ??? with X
+       CMPX  #$FFFF  
+       RTS
+TBEXGA FCB   $1E,$E2   ; ??? with Y
+       CMPY  #$FFFF  
+       RTS
+TBEXGB FCB   $1E,$F3   ; ??? with U
+       CMPU  #$FFFF  
+       RTS
+
+TBEXG  
+       FDB   CLRREG,TBEXG1
+       FDB   CLRREG,TBEXG2
+       FDB   CLRREG,TBEXG3
+       FDB   CLRREG,TBEXG4
+       FDB   CLRREG,TBEXG5
+       FDB   CLRREG,TBEXG6
+       FDB   CLRREG,TBEXG7
+       FDB   CLRREG,TBEXG8
+       FDB   CLRREG,TBEXG9
+       FDB   CLRREG,TBEXGA
+       FDB   CLRREG,TBEXGB
+MXEXG  EQU   *
+
+**************************************************
+* Print error message for a failed Test
+* Parameters:
+* U: Pointer to Mnemonic
+**************************************************
+OUTERR LDA   #1
+       STA   ERRFLG
+       LDX   #ERRM1
+       JSR   PSTRNG
+       TFR   U,X
+       JSR   PSTRNG
+       RTS
+
+**************************************************
+* Print a success message if all test have
+* been successfull
+**************************************************
+OUTSUC LDA   ERRFLG
+       BNE   OUTS9
+       LDX   #SUCCES
+       JSR   PSTRNG
+OUTS9  RTS
+
+**************************************************
+* Tables:
+**************************************************
+
+ERRFLG FCB   0
+
+ERRM1  FCC   'Failed Test: ',EOT
+SUCCES FCC   'All Tests succeded',EOT
+
+       IF    *>$C5FF
+       ERR   PROGRAM TOO LONG
+       ENDIF
+
+       END   BEGIN

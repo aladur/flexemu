@@ -1,0 +1,15 @@
+// wwinres.rc
+//
+// resource script for flexemu to be used with mingw32 windres.exe
+
+#ifndef __MINGW32
+#define __MINGW32
+#endif
+
+#include <windows.h>
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
+#endif
+
+#include "winres.rc"
+

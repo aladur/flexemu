@@ -1,0 +1,331 @@
+* tounix.asm
+*
+* transfer FLEX disc image to UNIX over a serial line
+*
+* (C) W. Schwotzer 1996
+*
+
+SIDES0 EQU   2
+SIDES  EQU   2
+SIZCOD EQU   1
+SECT0  EQU   10
+TRACKS EQU   80
+* magic number:
+MNUM1  EQU   $48
+MNUM2  EQU   $5c
+MNUM3  EQU   $9a
+MNUM4  EQU   $33
+
+WARMS  EQU   $cd03
+OUTCH  EQU   $cd0f
+PUTCHR EQU   $cd18
+PSTRNG EQU   $cd1e
+PCRLF  EQU   $cd24
+NXTCH  EQU   $cd27
+RPTERR EQU   $cd3f
+
+TTYEOL EQU   $cc02
+WRKDRV EQU   $cc0c
+
+FMS    EQU   $d406
+
+MC6850 EQU   $fcf4
+
+
+       org   $0000
+
+START  jsr   PCRLF
+* initialize ACIA at 8 Bit, 1 Stop-Bit, no Parity, 19200 Baud
+* (counter divide = 16)
+INIT   ldd   #$0315
+       sta   MC6850
+       stb   MC6850
+
+       ldx   #FCB
+       lda   #1
+       sta   30,x
+       lda   #18
+       sta   SECT
+       lsla
+       sta   31,x
+       lda   WRKDRV
+       sta   3,x
+       lda   #9
+       sta   ,x
+       jsr   FMS
+       BEQ   SYNC
+       lda   #16
+       sta   SECT
+
+SYNC   ldx   #0
+       ldb   #10
+SYNC2  leax  -1,x
+       beq   SYNERR
+       tstb
+       beq   SYNC3
+       lda   #'A
+       cmpb  #1
+       bne   SYNC4
+       lda   #'S
+SYNC4  lbsr  SOUT
+       decb
+SYNC3  lbsr  STST
+       beq   SYNC2
+       lbsr  SIN
+       cmpa  #'T
+       beq   START1
+       bra   SYNC2
+SYNERR ldx   #TSERR
+       lbsr  PSTR
+       jmp   WARMS
+
+* now connection is synchronized
+
+
+START1 clr   CHKSUM
+       lda   #MNUM1
+       lbsr  CSOUT
+       lda   #MNUM2
+       lbsr  CSOUT
+       lda   #MNUM3
+       lbsr  CSOUT
+       lda   #MNUM4
+       lbsr  CSOUT
+       lda   #0
+       lbsr  CSOUT
+       lda   #SIZCOD
+       lbsr  CSOUT
+       lda   #SIDES0
+       lbsr  CSOUT
+       lda   #SECT0
+       lbsr  CSOUT
+       lda   #SIDES
+       lbsr  CSOUT
+       lda   SECT
+       lbsr  CSOUT
+       lda   #TRACKS
+       lbsr  CSOUT
+       lda   CHKSUM
+       lbsr  SOUT
+       lbsr  REPLY
+       bne   START1
+
+PUTNAM ldb   #12
+       clr   CHKSUM
+PUTNA1 jsr   NXTCH
+       cmpa  TTYEOL
+       beq   PUTNA9
+       cmpa  #$d
+       beq   PUTNA9
+       lbsr  CSOUT
+       decb
+       bne   PUTNA1
+PUTNA9 lbsr  OUTNL
+PUTNA8 lda   CHKSUM
+       lbsr  SOUT
+       lbsr  REPLY
+       beq   OUT0
+       clr   CHKSUM
+       ldx   #DEFNAM
+PUTNA2 lda   ,x+
+       lbsr  CSOUT
+       cmpa  #$0d
+       beq   PUTNA8
+       bra   PUTNA2
+
+OUT0   lda   #0
+       ldb   #(SECT0*SIDES0)
+OUT1   bsr   OUTTRK
+       pshs  a
+       lda   SECT
+       ldb   #SIDES
+       mul
+       puls  a
+       inca
+       cmpa  #TRACKS
+       bne   OUT1
+
+       jmp   WARMS
+
+* put a track to serial port
+* track number in A
+* number of sectors (all sides) in B
+OUTTRK pshs  a,b
+       ldx   #FCB
+       sta   30,x
+       lda   #1
+OUTT1  cmpa  1,s
+       bhi   OUTT9
+       bsr   OUTSEC
+       inca
+       bra   OUTT1
+OUTT9  puls  a,b,pc
+* put one sector to serial port
+*sectornumber in A
+OUTSEC pshs  a
+OUTS1  ldx   #FCB
+       sta   31,x
+       lda   WRKDRV
+       sta   3,x
+       tfr   x,y
+       ldx   #PTRK
+       lda   30,y
+       lbsr  OUTHX1
+       ldx   #PSCT
+       lda   31,y
+       lbsr  OUTHX1
+       ldx   #STRACK
+       lbsr  PSTR
+       tfr   y,x
+       lda   #9
+       sta   ,x
+       jsr   FMS
+       beq   SEND
+       jsr   FMS
+       beq   SEND
+       jsr   FMS
+       beq   SEND
+       jsr   RPTERR
+       jsr   PCRLF
+       leay  64,x
+       clrb
+CLR1   clr   ,y+
+       decb
+       bne   CLR1
+
+SEND   leax  192,x
+       ldb   #$80
+       leas -1,s
+SEND3  stb  ,s
+SEND2  ldb  ,s
+       clr  CHKSUM
+SEND0  lda   b,x
+       lbsr  CSOUT
+       incb
+       tfr   b,a
+* send 16 Byte then wait for reply
+       anda  #$0f
+       bne   SEND0
+       lbsr  FLUSH
+       lda   CHKSUM
+       bne   SEND4
+       lda   #$55
+SEND4  lbsr  SOUT
+       bsr   REPLY
+       bne   SEND2
+       cmpb  #$80
+       bne   SEND3
+       leas  1,s
+       puls  a,pc
+
+LOOP   bsr   LOOP1
+LOOP1  bsr   LOOP2
+LOOP2  bsr   LOOP3
+LOOP3  rts
+
+OUTHX  pshs  x
+       ldx   #TEMP
+       bsr   OUTHX1
+       lda   ,x+
+       lbsr  SOUT
+       lda   ,x
+       lbsr  SOUT
+       puls  x,pc
+
+OUTHX1 pshs a,x
+       adda CHKSUM
+       sta CHKSUM
+       lda ,s
+       lsra
+       lsra
+       lsra
+       lsra
+       bsr OUTHX0
+       puls a
+       anda #$f
+       bsr  OUTHX0
+       puls x,pc
+
+OUTHX0 adda  #'0
+       cmpa  #'9
+       bls   OUTHX3
+       adda  #7
+OUTHX3 sta   ,x+
+       rts
+
+OUTNL  pshs  a
+       lda   #$0d
+       bsr   SOUT
+       puls  a,pc
+
+* flush serial input
+FLUSH  pshs  a
+FLUSH1 bsr   STST
+       beq   FLUSH9
+       bsr   SIN
+       bra   FLUSH1
+FLUSH9 puls  a,pc
+
+REPLY  pshs  a,b,x
+       ldb   #1
+       lda   #4
+       pshs  a
+REPLY1 bsr   STST
+       beq   REPLY1
+       bsr   SIN
+       cmpa  #'Y
+       bne   REPLY2
+       incb
+REPLY2 dec   ,s
+       bne   REPLY1
+       leas  1,s
+       cmpb  #4
+       blo   REPLY8
+       clrb
+REPLY8 tstb
+REPLY9 puls  a,b,x,pc
+
+STST   pshs  a
+       lda   MC6850
+       anda  #1
+       puls  a,pc
+
+SIN    bsr   STST
+       beq   SIN
+       lda   MC6850+1
+       rts
+
+CSOUT  pshs  a
+       adda  CHKSUM
+       sta   CHKSUM
+       puls  a
+SOUT   pshs  b
+SOUT1  ldb   MC6850
+       andb  #2
+       beq   SOUT1
+       sta   MC6850+1
+       puls  b,pc
+
+PSTR   pshs  a
+PSTR1  lda   ,x+
+       cmpa  #04
+       beq   PSTR9
+       jsr   OUTCH
+       bra   PSTR1
+PSTR9  puls  a,pc
+
+CHKSUM fdb  1
+TEMP   fdb  2
+TMP    fdb  2
+
+STRACK fcc  $0d,"Track/Sector: "
+PTRK   fdb  2
+PSCT   fdb  2
+       fcc  " ",$04
+TSERR  fcc  "Synchronisation error",$04
+DEFNAM fcc  "a.flx",$0d
+SECT   fdb  1
+
+FCB    fdb  320
+
+       end   START

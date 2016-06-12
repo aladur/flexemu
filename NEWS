@@ -1,0 +1,8 @@
+
+on UNIX compatible platforms compilation and installation get's much easier
+by using configure scripts. It has be sucessfully testet on Linux SuSE
+distribution.
+
+If you are successfull or have problems with other distributions please
+give me feedback.
+

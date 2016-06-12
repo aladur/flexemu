@@ -1,0 +1,242 @@
+Release Notes
+=============
+
+V 0.80 (19970305)
+
+Features:
+
+	o 512 x 256 pixel, 1 bit plane graphics display
+	o XLib and XToolkit interface
+	o CPU monitor with start/stop/step/next/reset, two breakpoints
+	o supporting all MC6809 instructions except cwai and sync
+	o full interrupt support
+	o stop processor and popup dialog at unimplemented processor
+	  instructions
+	o continuous display of CPU clock rate
+	o mouse pointer support
+	o MC146818 real time clock emulation
+	o WD1793 floppy disk controller support with up to 4 disk drives
+	o support of disk images but also native file system
+	o compatible to Ben Williams FLEX emulator disk image format
+	o dynamic remount of native file system possible
+	o fileconversion from/to FLEX ASCII file format
+	o manual pages with full description of FLEX API
+	o a MMU for extension of the 64K address range
+	o 192K RAM extension
+
+V 1.00 (19980507)
+
+Bug Fixes:
+
+	o IRQ does not set F-Bit
+	o carry and overflow bug in help_sbc_i
+	o sometimes (X connections over Network) loosing keyboard inputs
+	o didn't copy random bit with random files
+	o didn't update MC146818 if processor stopped
+	o errormessage 'DRIVE NOT READY' during special FMS-calls on
+	  a nafs-drive
+	o catch pointer buttons even if window doesn't has focus
+
+New Features:
+
+	o ELTEC full screen editor e.cmd included
+	o fast terminal on a Mc6850 serial line emulation
+	o dynamically instanciate memory-mapped I/O-devices
+	o optional terminal only mode without X interface
+	o MC146818 time and date registers read/writable
+	o MC146818 alarm can generate firq
+	o time.cmd for displaying MC146818 actual time and date
+	o timeset.cmd in english
+	o command for exiting emulator
+	o command to mount/update/umount drives
+	o command to send a irq/firq/nmi to CPU
+	o improved processor performance more than 100%
+	o environment variable for default directory containing FLEX disks
+	o processor emulates cwai and sync
+	o two processor emulation sources selectable during compilation
+	o Documentation in HTML-Format
+	o Port to Windows95/WindowsNT !!!
+	o resize window up to 1024 x 768 pixel
+	o command to format disks with DSK-Format
+
+V 1.10
+
+Bug Fixes:
+
+	o on WIN32 files are insensitive for upper/lowercase filenames
+	o on WIN32 Protection fault if directly accessing random files
+	  from a NAFS drive
+
+New Featues:
+
+	o Monitor pgm neumon54.hex: support for insert mode cursor
+	o Explorer for DSK-, FLX- and directory File containers
+
+V 1.20
+
+Bug Fixes:
+New Feature:
+
+	o included driver for Linux Joystick
+	o use configure scripts on UNIX-compatible platforms
+
+V1.22
+Bug Fixes:
+	o FLEXplorer: avoid error when opening an already opened DSK container
+	o FLEXplorer: save path of file selection prompter
+	o FLEXplorer: Make file viewer configurable
+	o FLEXplorer: Global Option "automatic text conversion"
+
+V1.23
+Bug Fixes:
+	o FLEXplorer: y2k, display right year if >= 2000
+New Features:
+	o FLEXplorer: Adapted to new version 2.1.11 of wxWindows
+	o FLEXplorer: display file type (sortable on Windows)
+
+V1.25 (20000324)
+New Features:
+	o permanently store option settings (Registry on Win32, rc-file on unix)
+	o FSetup: Setup dialog for flexemu settings
+Bug Fixes:
+	o advanced configure script (support of installation with share-dir)
+
+V1.26
+New Features:
+	o Adapted sources to be compatible to the
+	  new and stable version of wxWindows V2.2.0
+	o Adapted source to be able to compile with Cygwin (experimental)
+
+Bug Fixes:
+	o Some memory leaks removed
+	o Avoid Error if filename a a new file container is a multiple of 4
+	o Slightly improved layout of dialogs  
+	o FLEXplorer: Prevent to overwrite existing files by copy and rename
+	o FLEXplorer: Create temporary files before viewing them
+	o FLEXplorer: Error message on error to create a temp file to view it
+
+V2.00 (20010212)
+New Features:
+	o Flexemu: support 2, 8 or 64 colors/gray scales
+	o Flexemu: select between 2 x 96K or 2 x 288K RAM extension board
+	o Flexemu: analog joystick support improved
+	o Flexemu: added some applications using color/gray scales
+	o Flexemu: minor improvement for better emulation of PAT09 keyboard
+Bug Fixes:
+	o Flexemu: avoid to propagate pointer button events
+	o Flexemu: avoid segmentation fault when booting from a nafs drive
+        o Flexemu: ReleaseDC after every GetDC
+        o Flexemu: Avoid to create a new font in every update of CPU view
+	o FLEXplorer: use date of source file if copying from a directory
+	o FLEXplorer: copying of random file if copying from a directory
+
+V2.01
+New Features:
+Bug Fixes:
+	o Configure scripts improved
+	o X AppDefaults for flexemu improved
+	o Linux: use mkstemp instead of tempnam (security reason)
+	o Linux: Copy Flexemu.ad to $HOME/Flexemu if not available
+	o wxWindows: Always include <wx/wx.h> for better portability
+	o Support wxWindos V2.2.9/2.4.0
+
+V2.10 (20030725)
+New Features:
+	o MC6809 emulation runs in a separate thread
+	o improved performance of CPU emulation
+	o Set process asleep during CPU STOP (0% host CPU load)
+	o 64 Bit cycle counter
+	o Configurable support undocumented MC6809 instructions
+	o Menu point for enable original CPU Frequency (1.3396 MHz)
+          precise frequency control
+	o < 5% host CPU load if MC6809 runs with original
+          CPU frequency
+	o Full support of CWAI and SYNC instructions with 0% host
+          CPU load
+	o Linux: Signal SIGINT, SIGUSR1, SIGUSR2 to generate NMI,
+          IRQ and FIRQ
+	o One dialog for all breakpoints
+	o Configurable CPU instruction logging by specifying an
+          address range and/or start/stop trigger address
+        o Utility send2flx/rcvfile to send files from Linux to FLEX
+          through serial port
+        o Utility cputest for MC6809 Emulation validation
+Bug Fixes:
+	o Simplified CPU state machine
+	o Configure scripts improved
+	o Several memory and resource leaks
+
+V2.12
+New Features:
+	o Added Baseclass BFilePtr for convenient file access
+	o Added Template class BDeleter for automatic instance deletion
+	o Added Singleton template class
+	o FLEXplorer: Added Iterator Classes to iterate over the files
+          in a file- or Directory container
+	o FLEXplorer: New menu entries: Edit->Deselect All,
+          Edit->Select All
+        o FLEXplorer: Edit->Find Files to select files based on a
+          search pattern (with wildcards * and ?)
+	o FLEXplorer: Check for valid filename before renaming a file
+	o FLEXplorer: Bugfix in textfile conversion into a FLEX file
+Bug Fixes:
+	o Improved autoconf/automake scripts for autoconf 2.57/automake 1.6.3
+
+V2.15
+New Features:
+	o flexemu: performance improvement in memory access
+	o flexemu design improvemnt: separate class for Memory
+	o flexemu x11:   Toggle mouse capture with SHIFT F10
+	o flexemu win32: Toggle mouse capture with CTRL F1
+	o flexemu: new configure option --enable-speed for optimized speed
+	  compilation (depending on target_cpu and host_os)
+	o flexemu gcc: Use inline assembling for increased execution
+                       of some instructions (configure option --enable-speed)
+	o FLEXplorer: Don't use WXR resource files for dialogs
+		(wxWindows installation now is independant of configure
+		option --enable-resources --enable-prologio)
+	o FLEXplorer: Menus partially with icons and accelerators
+	o FLEXplorer: Support multiple select when opening File containers
+	o FLEXplorer: MenuBar and ToolBar are dockable
+	o Compile with options -pedantic
+	o Port to MINGW32
+	o Port to CYGWIN
+	o Port to FreeBSD (tested with FreeBSD 5.1)
+	o Port to Solaris (tested with Solaris 9)
+	o Tested with Knoppix V3.3
+	o Tested with Fedora Core 1
+	o flexemu: Disk activity buttons, Disk info dialog
+	o flexemu: Interrupt activity button, Interrupt status dialog
+	o flexemu: Commit dialog before closing flexemu
+	o flexemu Win32: Using Dialog template for CPU View
+	o flexemu Win32: CPU View is resizable
+	o FLEXplorer: Global Option to select boot sector file for
+                      creating a bootable DSK/FLX container file
+	o Added C-Compiler to distribution
+
+Bug Fixes:
+	o flexemu: avoid digital joystick button press on mouse click on menu
+	o flexemu: Improved emulation of analog joystick
+	o flexemu X11: Avoid killing flexemu when pressing Close button
+                       (Alt-F4) on window menu bar (by implementing
+                       Window Manager WM_DELETE_WINDOW protocol)
+	o flexemu: use -mcpu=ix86 only if target_cpu == ix86
+	o FLEXplorer: avoid crashing flexplorer if a file is viewed
+          and the configured editor can not be opened
+	o FLEXplorer: added Copy/Paste with Clipboard, Drag&Drop on GTK
+	o FLEXplorer: added Copy/Paste with Clipboard, Drag&Drop in multiple
+                      instances of flexplorer on Win32
+	o flexemu: Avoid broken keyboard buffer after fast character input
+	o FLEXplorer: display right date even if year is > 100
+	o if Year >= 2000 set year entry in FLEX directory to Year - 2000
+	o if year entry in FLEX directory is < 75 assume Year = year + 2000
+	o FLEXplorer, Directory Container: Allow to delete files which are
+			read-only
+	o FLEXplorer: avoid error if creating a DSK container without path
+	o FLEXplorer: Error message when file container is full
+	o flexemu X11: center all dialogs
+	o flexemu X11: improved geometry management of dialogs
+	o FLEXplorer X11: Error message if File viewer can not be opened
+	o flexemu: After Reset clear up to 2 x 288 K RAM extension
+	o flexemu Win32: Adapt (min)size and pos of CPU window to selected font
+

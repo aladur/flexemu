@@ -1,0 +1,874 @@
+/*
+    fdlist.cpp
+
+
+    FLEXplorer, An explorer for any FLEX file or disk container
+    Copyright (C) 1998-2004  W. Schwotzer
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+
+// For compilers that support precompilation, includes "wx.h".
+#include <wx/wxprec.h>
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+// Include your minimal set of headers here, or wx.h
+#include <wx/wx.h>
+#endif
+#include <wx/clipbrd.h>
+
+#include <misc1.h>
+
+#include "fdlist.h"
+#include "fdirent.h"
+#include "filecont.h"
+#include "flexerr.h"
+#include "fdcframe.h"
+#include "ffilebuf.h"
+#include "fcinfo.h"
+#include "fclipbrd.h"
+#include "fcopyman.h"
+#include "fmenufac.h"
+#include "baddrrng.h"
+#include "bmembuf.h"
+#include "disconf.h"
+#include "da.h"
+#include "da6809.h"
+#include "ifilecnt.h"
+#include "bprocess.h"
+
+#if defined(__WXGTK__) || defined(__WXX11__)
+    #include "bitmaps/dnd_copy.xpm"
+    #include "bitmaps/dnd_move.xpm"
+    #include "bitmaps/dnd_none.xpm"
+#endif
+
+// define the columns indices for the wxListCtrl
+const int LC_FILENAME	= 0;
+const int LC_FILEDESC	= 1;
+const int LC_RANDOM	= 2;
+const int LC_FILESIZE	= 3;
+const int LC_FILEDATE	= 4;
+const int LC_FILEATTR	= 5;
+
+#ifdef WIN32
+wxString FlexDiskListCtrl::fileViewer = "Notepad.exe";
+#endif
+#ifdef UNIX
+wxString FlexDiskListCtrl::fileViewer = "xedit";
+#endif
+
+int CALLBACK compareFlexListItems(long item1, long item2, long sortData)
+{
+	if (!item1 || !item2)
+		return 0;
+	FlexDirEntry *pObject1 = (FlexDirEntry *)item1;
+	FlexDirEntry *pObject2 = (FlexDirEntry *)item2;
+	switch (sortData) {
+	 case LC_RANDOM:  return (pObject1->IsRandom() && !pObject2->IsRandom())? -1 : 1;
+	 case LC_FILESIZE: return (pObject1->GetSize() < pObject2->GetSize())? -1 : 1;
+	 case LC_FILEDATE: return (pObject1->GetDate() < pObject2->GetDate())? -1 : 1;
+	 case LC_FILEATTR: return (pObject1->GetAttributesString() < pObject2->GetAttributesString())? -1 : 1;
+	 case LC_FILEDESC: return (pObject1->GetFileDescription() < pObject2->GetFileDescription())? -1 : 1;
+	 case LC_FILENAME:
+	 default: return (pObject1->GetTotalFileName() < pObject2->GetTotalFileName()) ? -1 : 1;
+	}
+}
+	// Event table
+BEGIN_EVENT_TABLE(FlexDiskListCtrl, wxListCtrl)
+#ifdef wxUSE_DRAG_AND_DROP
+#ifndef __WXMOTIF__
+	EVT_LIST_BEGIN_DRAG(LIST_CTRL, FlexDiskListCtrl::OnBeginDrag)
+#endif
+#endif
+	EVT_LIST_KEY_DOWN(LIST_CTRL, FlexDiskListCtrl::OnListKeyDown)
+	EVT_LIST_COL_CLICK(LIST_CTRL, FlexDiskListCtrl::OnColClick)
+	EVT_LIST_ITEM_SELECTED(LIST_CTRL, FlexDiskListCtrl::OnSelected)
+	EVT_LIST_ITEM_DESELECTED(LIST_CTRL, FlexDiskListCtrl::OnDeselected)
+	EVT_LIST_ITEM_ACTIVATED(LIST_CTRL, FlexDiskListCtrl::OnActivated)
+	EVT_LIST_INSERT_ITEM(LIST_CTRL, FlexDiskListCtrl::OnInsertItem)
+	EVT_LIST_DELETE_ITEM(LIST_CTRL, FlexDiskListCtrl::OnDeleteItem)
+	EVT_RIGHT_DOWN(FlexDiskListCtrl::OnRightMouseDown)
+	EVT_LEFT_DCLICK(FlexDiskListCtrl::OnLeftMouseDClick)
+	EVT_MENU(MDI_SELECTALL, FlexDiskListCtrl::OnSelectAll)
+	EVT_MENU(MDI_DESELECTALL, FlexDiskListCtrl::OnDeselectAll)
+	EVT_MENU(MDI_FIND, FlexDiskListCtrl::OnFind)
+	EVT_MENU(MDI_COPY, FlexDiskListCtrl::OnCopy)
+	EVT_MENU(MDI_PASTE, FlexDiskListCtrl::OnPaste)
+	EVT_MENU(MDI_DELETE, FlexDiskListCtrl::OnDelete)
+	EVT_MENU(MDI_RENAME, FlexDiskListCtrl::OnRename)
+	EVT_MENU(MDI_VIEW, FlexDiskListCtrl::OnView)
+	EVT_MENU(MDI_SET_WRITEPROTECT, FlexDiskListCtrl::OnSetWriteProtect)
+	EVT_MENU(MDI_CLEAR_WRITEPROTECT, FlexDiskListCtrl::OnClearWriteProtect)
+	EVT_MENU(MDI_SET_READPROTECT, FlexDiskListCtrl::OnSetReadProtect)
+	EVT_MENU(MDI_CLEAR_READPROTECT, FlexDiskListCtrl::OnClearReadProtect)
+	EVT_MENU(MDI_SET_DELETEPROTECT, FlexDiskListCtrl::OnSetDeleteProtect)
+	EVT_MENU(MDI_CLEAR_DELETEPROTECT, FlexDiskListCtrl::OnClearDeleteProtect)
+	EVT_MENU(MDI_SET_CATALOGPROTECT, FlexDiskListCtrl::OnSetCatalogProtect)
+	EVT_MENU(MDI_CLEAR_CATALOGPROTECT, FlexDiskListCtrl::OnClearCatalogProtect)
+END_EVENT_TABLE()
+
+FlexDiskListCtrl::FlexDiskListCtrl(wxWindow* parent, wxWindowID id,
+		const wxPoint& pos, const wxSize& size, long style,
+		FileContainerIf *container,
+		const wxValidator& validator, const wxString& name) :
+	wxListCtrl(parent, id, pos, size, style, validator, name),
+		m_container(container), m_popupMenu(NULL), m_totalSize(0)
+{
+	// create all columns
+	InsertColumn(LC_FILENAME, "Filename",   wxLIST_FORMAT_LEFT, 120);
+	InsertColumn(LC_FILEDESC, "Filetype",   wxLIST_FORMAT_LEFT, 100);
+	InsertColumn(LC_RANDOM,   "Random",     wxLIST_FORMAT_RIGHT, 55);
+	InsertColumn(LC_FILESIZE, "Size",       wxLIST_FORMAT_RIGHT, 65);
+	InsertColumn(LC_FILEDATE, "Date",       wxLIST_FORMAT_RIGHT, 90);
+	InsertColumn(LC_FILEATTR, "Attributes", wxLIST_FORMAT_RIGHT, 60);
+
+	m_popupMenu = FlexMenuFactory::CreateMenu(fEditMenuId);
+
+	UpdateItems();
+
+	if (m_container->IsWriteProtected()) {
+		SetBackgroundColour(*wxLIGHT_GREY);
+	} else {
+		SetBackgroundColour(*wxWHITE);
+#ifdef wxUSE_DRAG_AND_DROP
+#ifndef __WXMOTIF__
+		SetDropTarget(new FlexFileDropTarget(this));
+		//SetDropTarget(new FileDropTarget(this));
+#endif
+#endif
+	}
+}
+
+int FlexDiskListCtrl::UpdateItems(void)
+{
+	int		index = 0;
+	FlexDirEntry	*pDe;
+	wxListItem	anItem;
+	FileContainerIterator it;
+
+	BeforeDeleteAllItems();
+	DeleteAllItems();
+	if (!m_container)
+		return index;
+	
+	// the new FlexDirEntry can be referenced by anItem.m_data !
+	try {
+  		for (it = m_container->begin(); it != m_container->end(); ++it)
+		{
+			pDe = new FlexDirEntry(*it);
+			anItem.m_text   = pDe->GetTotalFileName().chars();
+			anItem.m_itemId = index;
+			anItem.m_col    = 0;
+			anItem.m_data	= (long)pDe;
+			anItem.m_mask   = wxLIST_MASK_TEXT | wxLIST_MASK_DATA;
+			InsertItem(anItem);
+			UpdateItem(index++, *pDe);
+		}
+	} catch (FlexException& e) {
+		wxMessageBox(e.what(), "FLEXplorer Error",
+			wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
+	}
+	return index;
+}
+
+FlexDiskListCtrl::~FlexDiskListCtrl()
+{
+	BeforeDeleteAllItems();
+	DeleteAllItems();
+	delete m_popupMenu;
+	if (m_container != NULL)
+	{
+		m_container->Close();
+		delete m_container;
+		m_container = NULL;
+	}
+}
+
+void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &de)
+{
+	char filesize[20];
+
+	sprintf(filesize, "%d", de.GetSize());
+	SetItem(item, LC_RANDOM,   de.IsRandom() ? "Yes" : "");
+	SetItem(item, LC_FILESIZE, filesize);
+	SetItem(item, LC_FILEDATE, de.GetDate().GetDateString());
+	SetItem(item, LC_FILEATTR, de.GetAttributesString().chars());
+	SetItem(item, LC_FILEDESC, de.GetFileDescription().chars());
+}
+
+const wxMenu *FlexDiskListCtrl::GetMenu(void)
+{
+	return m_popupMenu;
+}
+
+/* get the index of each selected item	*/
+/* the pointer returned MUST BE DELETED */
+/* with delete[]						*/
+int FlexDiskListCtrl::GetSelections(int **pItems) const
+{
+	int item, *items;
+	int i, selectionCount;
+
+	*pItems = NULL;
+	selectionCount = GetSelectedItemCount();
+	if (selectionCount != 0) {
+		*pItems = items = new int[selectionCount];
+		item = -1;
+		for (i = 0; i < selectionCount; i++) {
+			item = GetNextItem(item, wxLIST_NEXT_ALL,
+			   wxLIST_STATE_SELECTED);
+			items[i] = item;
+		} // for
+	} // if
+	return selectionCount;
+}
+
+void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
+{
+	wxString fileName;
+	int item, *pItems;
+	int count = 0;
+	wxMessageDialog *dialog = NULL;
+
+	count = GetSelections(&pItems);
+	if (m_container && count > 0) {
+		dialog = new wxMessageDialog(this, "Delete all selected files",
+			"Delete Files", wxYES_NO | wxICON_QUESTION | wxCENTRE);
+		if (!askUser || (dialog->ShowModal() == wxID_YES)) {
+			for (; count > 0; count--) {
+				item = pItems[count-1];
+				if (item >= 0) {
+					fileName = GetItemText(item);
+					try {
+						m_container->DeleteFile(fileName.c_str());
+					} catch (FlexException& e) {
+						if (wxMessageBox(e.what(), "FLEXplorer Error",
+							wxOK | wxCANCEL | wxCENTRE, this) != wxOK)
+							break;
+						continue; 
+					}
+					DeleteItem(item);
+				}
+			} // for
+		} // if
+		delete dialog;
+	} // if
+	delete [] pItems;
+	m_totalSize = 0;
+	Notify();
+}
+
+void FlexDiskListCtrl::RenameSelectedItems(void)
+{
+	int			item, *pItems;
+	wxString		itemText;
+	wxTextEntryDialog	*dialog = NULL;
+	bool			rename;
+
+	int count = GetSelections(&pItems);
+	if (m_container && count > 0) {
+		wxString fName;
+		wxString dialogText;
+		// edit the last selected item
+		item = pItems[count-1];
+		itemText = GetItemText(item);
+		dialogText = "Please input the new file name";
+		do {
+			dialog = new wxTextEntryDialog(this,
+				 dialogText, "Rename file", itemText);
+			rename = dialog->ShowModal() == wxID_OK;
+			fName  = dialog->GetValue();
+			dialogText = "Wrong file name specified.\n"
+				"Please input the new file name";
+		} while (rename && !m_container->CheckFilename(fName.c_str()));
+		if (rename) {
+			try {
+				FlexDirEntry *pDe;
+				fName.MakeUpper();
+				m_container->RenameFile(itemText, fName);
+				pDe = (FlexDirEntry *)GetItemData(item);
+				pDe->SetTotalFileName(fName);
+				SetItemText(item, fName);
+				UpdateItem(item, *pDe);
+			} catch (FlexException &e) {
+				wxMessageBox(e.what(), "FLEXplorer Error",
+				   wxOK | wxCENTRE | wxICON_EXCLAMATION);
+			}
+		}
+		delete dialog;
+	} // if
+	delete [] pItems;
+}
+
+void FlexDiskListCtrl::ViewSelectedItems(void)
+{
+	FlexFileBuffer	buffer;
+	int		item, *pItems;
+	wxString	fileName;
+	BProcess	process(fileViewer, ".");
+
+	int count = GetSelections(&pItems);
+	if (m_container && count > 0) {
+		// edit the last selected item
+		item = pItems[count-1];
+		fileName = GetItemText(item);
+		try {
+
+			m_container->ReadToBuffer(fileName, buffer);
+			/* unfinished
+			{
+			FlexDirEntry *pDe;
+
+			pDe = (FlexDirEntry *)GetItemData(item);
+			if (!strcmp(pDe->GetFileExt(), "CMD")) {
+				ProcessCmdFile(fileName, &buffer);
+				delete [] pItems;
+				return;
+			}
+			} */
+			if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
+				buffer.IsFlexTextFile()) {
+				buffer.ConvertFromFlex();
+			}
+#ifdef WIN32
+			char path[MAX_PATH], tempPath[MAX_PATH];
+			
+			if (!GetTempPath(MAX_PATH, tempPath)) {
+				ex.setWindowsError(GetLastError(), "In function GetTempPath");
+				throw ex;
+			}
+			if (!GetTempFileName(tempPath, "FLX", 0, path)) { 
+				ex.setWindowsError(GetLastError(), "In function GetTempFileName");
+				throw ex;
+			}
+			if (buffer.WriteToFile(path)) {
+				process.AddArgument(path);
+				if (!process.Start()) {
+					ex.setWindowsError(GetLastError(), fileViewer);
+					throw ex;
+				}
+			} else {
+				ex.setString(FERR_CREATE_TEMP_FILE,	path);
+				throw ex;
+			}
+#else
+			int fd;
+			char cTemplate[PATH_MAX];
+
+			getcwd(cTemplate, PATH_MAX - 10);
+			strcat(cTemplate, "/FLXXXXXXX");	
+			fd = mkstemp(cTemplate);
+			if (fd != -1 && buffer.WriteToFile(fd)) {
+				close(fd);
+				process.AddArgument(cTemplate);
+				if (!process.Start())
+				{
+					ex.setString(FERR_CREATE_PROCESS,
+						fileViewer, cTemplate);
+					throw ex;
+				}
+			} else {
+				ex.setString(FERR_CREATE_TEMP_FILE, cTemplate);
+				throw ex;
+			}
+#endif
+		} catch (FlexException &e) {
+			wxMessageBox(e.what(), "FLEXplorer Error",
+				wxOK | wxCENTRE | wxICON_EXCLAMATION);
+		}
+	} // if
+	delete [] pItems;
+}
+
+void FlexDiskListCtrl::ProcessCmdFile(const char *fileName, FlexFileBuffer *buffer)
+{
+	BAddressRanges ranges;
+	BMemoryBuffer *memory;
+	DisassemblerConfig config;
+	Disassembler da;
+
+	if (!buffer)
+		return;
+	if (!ranges.ReadFrom(buffer)) {
+		ex.setString(FERR_WRONG_FLEX_BIN_FORMAT);
+		throw ex;
+		return;
+	}
+	memory = new BMemoryBuffer(ranges.GetMax()-ranges.GetMin()+1, ranges.GetMin());
+	memory->FillWith(0);
+	buffer->CopyTo(*memory);
+	
+	da.SetLbLDisassembler(new Da6809());
+	config.Add(ranges);
+	config.SetStartAddress(ranges.GetStartAddress(), "BEGIN");
+	da.DisassembleWithConfig(config, memory);
+	//ranges.PrintOn(stdout);
+	return;
+}
+
+#ifdef wxUSE_DRAG_AND_DROP
+#ifndef __WXMOTIF__
+void FlexDiskListCtrl::OnBeginDrag(wxListEvent& event)
+{
+	if ( m_container != NULL )
+	{
+		wxDragResult	result;
+		int		flags = 0;
+		FlexDnDFiles	files;
+		FlexFileDataObject *dragData;
+		FlexFileBuffer *pFileBuffer = NULL;
+		FlexFileList	fileList;
+		FlexFileList::Node *node = NULL;
+		const char	*fileName;
+		int count = 0;
+
+		GetFileList(fileList);
+		for ( node = fileList.GetFirst(); node; node = node->GetNext())
+		{
+			pFileBuffer = new FlexFileBuffer;
+			fileName = node->GetData()->c_str();
+			try {
+				m_container->ReadToBuffer(fileName, *pFileBuffer);
+				files.Add(pFileBuffer);
+			} catch (FlexException &e)
+			{
+				if (wxMessageBox(e.what(), "FlexDisk Error",
+					wxOK | wxCANCEL | wxCENTRE, this) == wxCANCEL)
+				{
+					delete pFileBuffer;
+					return;
+				}
+			}
+			count++;
+		}
+		fileList.DeleteContents(TRUE);
+		dragData = new FlexFileDataObject();
+		dragData->GetDataFrom(files);
+		wxDropSource dragSource(this,
+                            wxDROP_ICON(dnd_copy),
+                            wxDROP_ICON(dnd_move),
+                            wxDROP_ICON(dnd_none));
+		dragSource.SetData(*dragData);
+		flags = wxDrag_CopyOnly;
+#ifdef __WXMSW__
+		// seems to be a bug in wxMSW that
+		// the move flag has to be set otherwise
+		// a Drop (copy or move) is not possible
+		flags |= wxDrag_AllowMove;
+#endif
+		//if (!m_container->IsWriteProtected())
+		//	flags |= wxDrag_AllowMove;
+		// When allowing to move files it must be
+		// save to either copy all of them or
+		// abort the Drag&Drop with an error
+		result = dragSource.DoDragDrop(flags);
+		switch (result)
+		{
+		case wxDragMove:   break;
+			// unfinished file moved, source should be deleted;
+		case wxDragCopy:   break;
+		case wxDragCancel: break;
+		case wxDragError:  break;
+		case wxDragLink:   break;
+		case wxDragNone:   break;
+		}
+
+		delete dragData; // savely delete after DoDragDrop, also deletes pData
+	} else
+		event.Skip();
+}
+#endif
+#endif
+
+void FlexDiskListCtrl::OnSelected(wxListEvent& event)
+{
+	FlexDirEntry	de;
+	wxString		t;
+
+	if (m_container && m_container->FindFile(GetItemText(event.m_itemIndex).c_str(), de))
+		m_totalSize += de.GetSize();
+	Notify();
+}
+
+void FlexDiskListCtrl::OnDeselected(wxListEvent& event)
+{
+	FlexDirEntry	de;
+	wxString		t;
+
+	if (m_container && m_container->FindFile(GetItemText(event.m_itemIndex).c_str(), de))
+		m_totalSize -= de.GetSize();
+	Notify();
+}
+
+void FlexDiskListCtrl::Notify(void)
+{
+	if (m_statusbarObserver) {
+		int id = OBSERVE_STATUS_BAR;
+		m_statusbarObserver->Update(&id);
+	}
+}
+
+void FlexDiskListCtrl::OnActivated(wxListEvent& WXUNUSED(event))
+{
+	Notify();
+}
+
+void FlexDiskListCtrl::OnColClick(wxListEvent& event)
+{
+	SortItems(compareFlexListItems, event.m_col);
+}
+
+
+void FlexDiskListCtrl::OnListKeyDown(wxListEvent& event)
+{
+	int keyCode = event.GetKeyCode();
+	//char s[33];
+	//sprintf((char *)s, "keyCode: %08x\n", keyCode);
+	//printf(s);
+	switch (keyCode) {
+	  // Delete-key: delete all selected files
+	  case WXK_DELETE: DeleteSelectedItems(); break;
+	  case WXK_F5:     UpdateItems();         break;
+	  // unfinished: not supported on Windows yet:
+	  case 'C' - 'A' + 1 :
+		CopyToClipboard();
+		break;
+	  case 'V' - 'A' + 1 :
+		PasteFromClipboard();
+		break;
+	} // switch
+}
+
+void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection, bool isToBeSet)
+{
+	wxString fileName;
+	int item, *pItems;
+	int count = 0;
+	int setMask;
+	int clearMask;
+
+	if (m_container == NULL)
+		return;
+	
+	for (count = GetSelections(&pItems); count > 0; count--) {
+		FlexDirEntry de, *pDe;
+
+		fileName = GetItemText(item = pItems[count-1]);
+		try {
+			setMask = isToBeSet ? protection : 0;
+			clearMask = isToBeSet ? 0 : protection;
+			pDe = (FlexDirEntry *)GetItemData(item);
+			m_container->SetAttributes(fileName.c_str(),
+				setMask, clearMask);
+			// read back properties from container
+			// (because maybe not all properties are
+			// supported)
+			if (m_container->FindFile(fileName.c_str(), de))
+			{
+				setMask = de.GetAttributes();
+				clearMask = ~setMask;
+			}
+			pDe->SetAttributes(setMask, clearMask);
+			UpdateItem(item, *pDe);
+		} catch (FlexException& e) {
+			if (wxMessageBox(e.what(), "FlexDisk Error",
+				wxOK | wxCANCEL | wxCENTRE, this) != wxOK)
+				break;
+		}
+	} // for
+	delete [] pItems;
+}
+
+void FlexDiskListCtrl::OnViewProperties(wxCommandEvent& event)
+{
+	FlexContainerInfo	info;
+	BString		str("", 200), caption;
+	int			t, s;
+
+	if (m_container) {
+		try {
+			m_container->GetInfo(info);
+		} catch (FlexException& e) {
+			wxMessageBox(e.what(), "FlexDisk Error", wxOK | wxCENTRE, this);
+			return;
+		}
+		caption.printf("Container %s", info.GetName());
+		info.GetTrackSector(&t, &s);
+		str += "Path: ";
+		str += info.GetPath();
+		str += "\nType: ";
+		str += info.GetTypeString();
+		str += "\nDate: ";
+		str += info.GetDate().GetDateString();
+		if (t && s) {
+			str += "\nTracks: ";
+			str += t;
+			str += "\nSectors: ";
+			str += s;
+		}
+		str += "\nSize: ";
+		str += info.GetTotalSize();
+		str += " KByte\n";
+		str += "Free: ";
+		str += info.GetFree();
+		str += " KByte\n";
+		if (info.GetAttributes() & FLX_READONLY) {
+			str += "Attributes: read-only\n";
+		}
+		wxMessageBox(str.chars(), caption.chars(), wxOK | wxCENTRE, this);
+
+	}
+}
+
+void FlexDiskListCtrl::OnLeftMouseDClick(wxMouseEvent& WXUNUSED(event))
+{
+	ViewSelectedItems();
+}
+
+void FlexDiskListCtrl::OnRightMouseDown(wxMouseEvent& event)
+{
+	if (m_popupMenu)
+		PopupMenu(m_popupMenu, event.GetX(), event.GetY());
+}
+
+void FlexDiskListCtrl::OnInsertItem(wxListEvent& event)
+{
+}
+
+void FlexDiskListCtrl::OnDeleteItem(wxListEvent& event)
+{
+	// delete the FlexDirEntry * object
+	// stored in m_data
+	FlexDirEntry *pDe = (FlexDirEntry *)event.GetData();
+	delete pDe;
+}
+
+void FlexDiskListCtrl::BeforeDeleteAllItems()
+{
+	// delete the FlexDirEntry * object
+	// stored in m_data
+	int item = -1;
+	FlexDirEntry *pDe;
+
+	while (true)
+	{
+		item = GetNextItem(item);
+		if (item == -1)
+			break;
+		pDe	= (FlexDirEntry *)GetItemData(item);
+		delete pDe;
+		SetItemData(item, 0);
+	}
+}
+
+IMPLEMENT_MODIFY_PROPERTY(OnSetWriteProtect,     WRITE_PROTECT,   TRUE)
+IMPLEMENT_MODIFY_PROPERTY(OnClearWriteProtect,   WRITE_PROTECT,   FALSE)
+IMPLEMENT_MODIFY_PROPERTY(OnSetReadProtect,      READ_PROTECT,    TRUE)
+IMPLEMENT_MODIFY_PROPERTY(OnClearReadProtect,    READ_PROTECT,    FALSE)
+IMPLEMENT_MODIFY_PROPERTY(OnSetDeleteProtect,    DELETE_PROTECT,  TRUE)
+IMPLEMENT_MODIFY_PROPERTY(OnClearDeleteProtect,  DELETE_PROTECT,  FALSE)
+IMPLEMENT_MODIFY_PROPERTY(OnSetCatalogProtect,   CATALOG_PROTECT, TRUE)
+IMPLEMENT_MODIFY_PROPERTY(OnClearCatalogProtect, CATALOG_PROTECT, FALSE)
+
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnSelectAll, SelectAllFiles)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnDeselectAll, DeselectAllFiles)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnFind, FindFiles)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnCopy, CopyToClipboard)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnPaste, PasteFromClipboard)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnDelete, DeleteSelectedItems)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnRename, RenameSelectedItems)
+IMPLEMENT_SIMPLE_MENUCOMMAND(OnView, ViewSelectedItems)
+
+void FlexDiskListCtrl::GetFileList(FlexFileList &fileList)
+{
+	int	count, *pItems;
+	BString	fileName;
+
+	count = GetSelections(&pItems);
+	for (int i = 0; i < count; i++) {
+		fileName = GetItemText(pItems[i]);
+#ifdef UNIX
+		fileName.downcase();
+#endif
+		fileList.Append(new wxString(fileName));
+	}
+	delete [] pItems;
+}
+
+void FlexDiskListCtrl::SelectAllFiles(void)
+{
+	int i;
+
+	for (i = GetItemCount() - 1; i >= 0; i--)
+		SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+}
+
+void FlexDiskListCtrl::DeselectAllFiles(void)
+{
+	int i;
+
+	for (i = GetItemCount() - 1; i >= 0; i--)
+		SetItemState(i, 0, wxLIST_STATE_SELECTED);
+}
+
+void FlexDiskListCtrl::FindFiles(void)
+{
+	wxTextEntryDialog dialog(this,
+	"Enter a pattern for files to look for. Wildcards ? and * are allowed",
+	"Find Files");
+
+	dialog.SetValue("*.*");
+	int result = dialog.ShowModal();
+	if (result == wxID_OK)
+	{
+		BString filePattern(dialog.GetValue().c_str());
+		FileContainerIterator it(filePattern);
+		BString fileName;
+		int i;
+
+		DeselectAllFiles();	
+		for (it = m_container->begin(); it != m_container->end(); ++it)
+		{
+			fileName = (*it).GetTotalFileName();
+			if (fileName.multimatches(filePattern, ';', true) &&
+				(i = FindItem(-1, fileName.chars())) >= 0)
+			{
+				SetItemState(i, wxLIST_STATE_SELECTED,
+					wxLIST_STATE_SELECTED);
+			}
+		}
+	}
+}
+
+void FlexDiskListCtrl::CopyToClipboard(void)
+{
+	FlexFileList fileList;
+	FlexDnDFiles files;
+	FlexFileList::Node *node;
+	int count = 0;
+	const char *fileName;
+	FlexFileBuffer *pFileBuffer;
+	FlexFileDataObject *pClipboardData;
+
+	wxClipboardLocker locker; // implicit open/close wxTheClipboard
+
+	if ( !locker ) {
+        	wxLogError(_T("Can't open clipboard."));
+		wxBell();
+		return;
+	}
+
+	GetFileList(fileList);
+	for ( node = fileList.GetFirst(); node; node = node->GetNext())
+	{
+		pFileBuffer = new FlexFileBuffer;
+		fileName = node->GetData()->c_str();
+		m_container->ReadToBuffer(fileName, *pFileBuffer);
+		files.Add(pFileBuffer);
+		count++;
+	}
+	pClipboardData = new FlexFileDataObject();
+	pClipboardData->GetDataFrom(files);
+	if ( !wxTheClipboard->SetData(pClipboardData) ) {
+		wxLogError(_T("Can't copy data to the clipboard"));
+		wxBell();
+	}
+	fileList.DeleteContents(TRUE);
+}
+
+bool FlexDiskListCtrl::PasteFromClipboard(void)
+{
+    FlexFileDataObject flexFileData;
+
+    if (m_container->IsWriteProtected())
+    {
+        wxLogError(_T("Container is read-only"));
+        return false;
+    }
+
+    wxClipboardLocker locker; // implicit open/close wxTheClipboard
+
+    if ( !locker ) {
+        wxLogError(_T("Can't open clipboard."));
+	wxBell();
+	return false;
+    }
+    if ( !wxTheClipboard->IsSupported(FlexFileFormatId) ) {
+        wxLogWarning(_T("No Flex file data on clipboard"));
+	wxBell();
+        return false;
+    }
+
+    if (!wxTheClipboard->GetData(flexFileData))
+    {
+        wxLogWarning(_T("Unable to paste Flex file data from clipboard"));
+	wxBell();
+        return false;
+    }
+
+    FlexDnDFiles files;
+    bool	 result;
+    
+    flexFileData.SetDataTo(files);
+
+    result = PasteFrom(files);
+
+    return result;
+}
+
+bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
+{
+        const char      *p;
+        int             index;
+        unsigned int    i;
+        FlexDirEntry	*pDe;
+
+        for (i = 0; i < files.GetFileCount(); i++) {
+                try {
+                        p = files.GetBuffer(i).GetFilename();
+                        GetContainer()->WriteFromBuffer(files.GetBuffer(i));
+                        pDe = new FlexDirEntry;
+                        if (GetContainer()->FindFile(p, *pDe)) {
+                                wxListItem anItem;
+
+                                anItem.m_text   = pDe->GetTotalFileName().chars();
+                                anItem.m_itemId = 0;
+                                anItem.m_col    = 0;
+                                anItem.m_data   = (long)pDe;
+                                anItem.m_mask   = wxLIST_MASK_TEXT |
+						  wxLIST_MASK_DATA;
+                                index = InsertItem(anItem);
+                                UpdateItem(index, *pDe);
+                        }
+                } catch (FlexException &e) {
+                        if (e.GetErrorCode() == FERR_DISK_FULL_WRITING) {
+                                wxMessageBox(e.what(), "FLEXplorer Error",
+					wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
+                                return false;
+                        } else {
+                                wxMessageBox(e.what(), "FLEXplorer Error",
+                                        wxOK | wxCENTRE, this);
+                        }
+                }
+        }
+        return true;
+}
+

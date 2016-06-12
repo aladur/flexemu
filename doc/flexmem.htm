@@ -1,0 +1,359 @@
+<html>
+<head>
+<title>FLEX Memory Map</title>
+</head>
+<body>
+<h2>
+flexmem - FLEX Memory Map
+<hr></h2>
+<h2>DESCRIPTION</h2>
+The following is a description of those memory locations within the DOS
+portion of FLEX which contain information of interest to the programmer.
+The user is coutioned against utilization for his own purposes any
+locations documented as being either "reserved" or "system scratch", as
+this action may cause destruction of data.
+<a name="map">
+<h2>FLEX GLOBAL SYSTEM MEMORY MAP</h2>
+<p>
+<table border>
+ <tr><align=left><th>Address Range</th><th>Usage</th></tr>
+ <tr><align=left><td>0000-BFFF</td><td>User RAM</td></tr>
+ <tr><align=left><td>C000-DFFF</td><td>Disk Operating System</td></tr>
+ <tr><align=left><td>C07F</td><td>Sytem Stack</td></tr>
+ <tr><align=left><td>C100-C6FF</td><td>Utility command space (UCS)</td></tr>
+ <tr><align=left><td>CD00</th><td>FLEX cold start entry address</td></tr>
+ <tr><align=left><td>CD03</td><td>FLEX warm start entry address</td></tr>
+</table>
+<a name="fmsmem">
+<h2>FLEX FMS VARIABLE SYSTEM MEMORY MAP</h2>
+<dl>
+<dt><b>$D409-$D40A FCB Base Pointer
+</b><dd>
+These locations contain the address of the
+<a href="flexfcb.htm">FCB</a>
+List Pointer bytes of the first
+FCB in the chain of open files. The address in these locations is managed by
+<a href="flexfms.htm">FMS</a>
+and the programmer should not store any values in these locations. A user
+program may, however, want to chain through the FCBs of the open files for 
+some reason, and the address stored in these locations is the proper starting
+point. Remember that the address is that of the FCB List Pointer locations
+in the FCB, not the first word of the FCB. A value of zero in these locations
+indicates that there are no open files.
+<dt><b>$D40B-$D$0C Current FCB Address
+</b><dd>
+These locations contain the address of the last FCB processed by the File
+Management System. The address is that of the first word of the FCB.
+<dt><b>$D435 Verify Flag
+</b><dd>
+A non-zero value in this location indicates that FMS will check each sector
+written for errors immediately after writing it. A zero value indicates that
+no error checking on writes is to be performed. The default value is
+"non-zero". Flexemu does not support this feature.
+</dl>
+<a name="dosmem">
+<h2>FLEX DOS VARIABLE SYSTEM MEMORY MAP</h2>
+<p>
+<dl>
+<dt><b>Line Buffer $C080-$C0FF
+</b><dd>
+The line buffer is a 128 byte area into which characters typed at the keyboard
+are placed by the routine
+<a href="flexdos.htm#inbuff">INBUF</a>
+. All characters entered from the keyboard are
+placed in this buffer with the exeption of control characters. Characters
+which have been deleted by entering the backspace character do not appear in
+the buffer, nor does the backspace character itself appear. The carriage
+return signaling the end of the keyboard input is, however, put in the buffer.
+This buffer is also used to hold the
+<a href="flexuser.htm#startup">STARTUP</a> file during a coldstart (boot)
+operation. 
+<dt><b>TTYSET Backspace Character $CC00
+</b><dd>
+This is the character which the routine
+<a href="flexdos.htm#inbuff">INBUF</a>
+will interpret as the
+Backspace character. It is user definable through the
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+. Default = $08, a Ctrl H (ASCII BS)
+<dt><b>TTYSET Delete $CC01
+</b><dd>
+This is the character which the routine
+<a href="flexdos.htm#inbuff">INBUF</a>
+will interpret as the line
+cancel or Delete character. It is user definable through the
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+. Default = $18, Ctrl X (ASCII CAN)
+<dt><b>TTYSET End of Line Character $CC02
+</b><dd>
+This is the character DOS recognizes as the multiple command per line
+separator. It is user definable through the
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+. Default=$3A,
+a colon (:).
+<dt><b>TTYSET Depth Count $CC03
+</b><dd>
+This byte determins how many lines DOS will print on a page before Pausing
+or issuing Ejects. It may be set by the user with the
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+command.
+Default=0.
+<dt><b>TTYSET Width Count $CC04
+</b><dd>
+This byte tells DOS how many characters to output on each line. If zero,
+there is no limit to the number output. This count may be set by the user
+using
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+. Default=0.
+<dt><b>TTYSET Null Count $CC05
+</b><dd>
+This byte informs DOS if the number of null or pad characters to be
+output after each carriage return, line feed pair. This count maybe
+set using <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+. Default=4.
+<dt><b>TTYSET Tab Character $CC06
+</b><dd>
+This byte defines a tab character which may be used by other
+programs, such as the Editor. DOS itself does not make use of the
+Tab character. Default=0, no tab character defined.
+<dt><b>TTYSET Backspace Echo Character $CC07
+</b><dd>
+This is the character the routine INBUF will echo upon the receipt
+of a backspace character. If the backspace echo character is set
+to a $08, and the backspace character is also a $08, FLEX will
+output a space ($20) prior to the outputting of the backspace echo
+character. Default=0.
+<dt><b>TTYSET Eject Count $CC08
+</b><dd>
+The Eject Count instructs DOS as to the number of blank lines to be
+output after each page. (A page is a set of lines equal in number
+to the Depth count). If this byte is zero, no Eject lines are
+output. Deault=0.
+<dt><b>TTYSET Pause Control $CC09
+</b><dd>
+The Pause byte instructs DOS what action to take after each page is
+output. A zero value indicates that the pause feature is enabled;
+a non-zero value, pause is disabled. Default=$FF, pause disabled.
+<dt><b>TTYSET Escape Character $CC0A
+</b><dd>
+The Escape character causes DOS to pause after an output line.
+Default=$1B, ASCII ESC.
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
+<dt><b>System Drive Number $CC0B
+</b><dd>
+This is the number of the disk drive from which commands are
+loaded. If this byte is $FF, both drives 0 and 1 will be searched.
+Default= drive #0.
+<dt><b>Working Drive Number $CC0C
+</b><dd>
+This is the number of the default disk drive referenced for
+non-command files. If this byte is $FF, both drives 0 and 1 will
+be searched. Default= drive #0.
+<dt><b>System Scratch $CC0D
+</b><dd>
+<dt><b>System Date Registers $CC0E - $CC10
+</b><dd>
+These three bytes are used to store the system date. It is stored
+in binary form with the month in the firat byte, followed by the
+day, then the year. The year byte contains only the tens and ones
+digits.
+<dt><b>Last Terminator $CC11
+</b><dd>
+This location contains the most recent non-alphanumeric character encountered
+in prcessing the line buffer. See
+<a href="flexdos.htm#nxtch">NXTCH</a>
+and
+<a href="flexdos.htm#class">CLASS</a>
+for details.
+<dt><b>User Command Table Address $CC12-$CC13
+</b><dd>
+The programmer may store into these locations the address of a command table
+of his own construction. See the section called
+<a href="flexdos.htm#user_commands">"User-Written commands"</a> for
+details. Default=0000, no user command table is defined.
+<dt><b>Line Buffer Pointer $CC14-$CC15
+</b><dd>
+These locations contain the address of the next character in the Line Buffer
+to be precessed. See
+<a href="flexdos.htm#inbuff">INBUFF</a>,
+<a href="flexdos.htm#nxtch">NXTCH</a>,
+<a href="flexdos.htm#getfil">GETFIL</a>,
+<a href="flexdos.htm#getchr">GETCHR</a> and
+<a href="flexdos.htm#docmnd">DOCMND</a>
+for instances of its use.
+<dt><b>Escape Return Register $CC16-$CC17
+</b><dd>
+These locations contain the address to which to jump if a RETURN is typed
+while output has been stoppend by an Escape Character. See
+<a href="flexuser.htm#ttyset">TTYSET utility</a>
+for information on Escape processing. See
+<a href="flexdos.htm#pcrlf">PCRLF</a>
+for details.
+<dt><b>Current Character $CC18
+</b><dd>
+This location contains the most recent character taken from the Line Buffer
+by the
+<a href="flexdos.htm#nxtch">NXTCH</a>
+routine. See
+<a href="flexdos.htm#nxtch">NXTCH</a>
+for details.
+<dt><b>Previous Character $CC19
+</b><dd>
+This location contains the previous character taken from the Line Buffer
+by the
+<a href="flexdos.htm#nxtch">NXTCH</a>
+routine. See
+<a href="flexdos.htm#nxtch">NXTCH</a>
+for details.
+<dt><b>Current Line Number $CC1A
+</b><dd>
+This location contains a count of the number of lines currently on the page.
+This value is compared to the Line Count value to determine if a full page 
+has been printed.
+<dt><b>Loader Address Offset $CC1B-$CC1C
+</b><dd>
+These locations contain the 16-bit bias to be added to the load address of a
+routine being loaded from the disk. See
+<a href="flexdos.htm#load">System Routine LOAD</a>
+for details. These locations are also used as scratch by some system
+routines.
+<dt><b>Transfer Flag $CC1D
+</b><dd>
+After a program has been loaded from the disk (see
+<a href="flexdos.htm#load">System Routine LOAD</a>
+), this
+location is non-zero if a transfer address was found during the loading
+process. This location is also used as scratch by some system routines.
+<dt><b>Transfer Address $CC1E-$CC1F
+</b><dd>
+If the Tranfer Flag was set non-zero by a load from the disk (see
+<a href="flexdos.htm#load">System Routine LOAD</a>
+), these locations contain the last transfer address encountered.
+If the Transfer Flag was set zero by the disk load, the content of these
+locations is indeterminate.
+<dt><b>Error Type $CC20
+</b><dd>
+This location contains the error number returned by serveral of the File
+Management System functions. See
+<a href="flexerr.htm">FLEX Error Messages</a>
+for an interpretation of the 
+error numbers.
+<a name="special_io">
+<dt><b>Special I/O Flag $CC21
+</b><dd>
+If this byte is non-zero, the
+<a href="flexdos.htm#putchr">PUTCHR</a>
+routine will ignore the
+<a href="flexuser.htm#ttyset">TTYSET</a>
+Width
+feature and also ignore the Escape Character. The routine
+<a href="flexdos.htm#rstrio">RSTRIO</a>
+clears
+this byte. Default=0.
+<dt><b>Output Switch $CC22
+</b><dd>
+If zero, output performed by the
+<a href="flexdos.htm#putchr">PUTCHR</a>
+routine is through the routine
+<a href="flexdos.htm#outch">OUTCH</a>
+. If non-zero, the routine
+<a href="flexdos.htm#outch2">OUTCH2</a>
+is used. See
+<a href="flexdos.htm#outch">OUTCH</a>
+and
+<a href="flexdos.htm#outch2">OUTCH2</a>
+for details.
+<dt><b>Input Switch $CC23
+</b><dd>
+If zero, input performed by
+is through the routine INCH. If it is
+<a href="flexdos.htm#getchr">GETCHR</a>
+non-zero, the routine
+<a href="flexdos.htm#inch2">INCH2</a>
+is used. See
+<a href="flexdos.htm#inch">INCH</a>
+and
+<a href="flexdos.htm#inch2">INCH2</a>
+for detail.
+<dt><b>File Output Address $CC24-$CC25
+</b><dd>
+These bytes contain the address of the File Control Block being used for
+file output. If the bytes are zero, no file output is performed. See
+<a href="flexdos.htm#putchr">PUTCHR</a>
+for details. These locations are reset by
+<a href="flexdos.htm#rstrio">RSTRIO</a>
+.
+<dt><b>File Input Address $CC26-$CC27
+</b><dd>
+These bytes contain the address of the File Control Block being used for 
+file input. If the bytes are zero, no file input is performed. The routine
+<a href="flexdos.htm#rstrio">RSTRIO</a>
+clears these bytes. See
+<a href="flexdos.htm#getchr">GETCHR</a>
+for details.
+<dt><b>Command Flag $CC28
+</b><dd>
+This location is non-zero if DOS was called from a user program via the
+<a href="flexdos.htm#docmnd">DOCMND</a>
+entry point. See
+<a href="flexdos.htm#docmnd">DOCMND</a>
+for details.
+<dt><b>Current Output Column $CC29
+</b><dd>
+This location contains a count of the number of characters currently in the
+line being output to the terminal. This is compared to the
+<a href="flexuser.htm#ttyset">TTYSET</a> Width Count
+to determine when to start a new line. The output of a control character
+resets this count to zero.
+<dt><b>System Scratch $CC2A
+</b><dd>
+<dt><b>Memory End $CC2B-$CC2C
+</b><dd>
+These two bytes contain the end of user memory. This location is set during
+system boot and may be read by programs requiring this information.
+<dt><b>Error Name Vector $CC2D-$CC2E
+</b><dd>
+If these bytes are zero, the
+<a href="flexdos.htm#rpterr">routine RPTERR</a>
+will use the file ERRORS.SYS as
+the error file. If they are non-zero, they are assumed to be the address of
+an ASCII string of characters (in directory format) of the name of the file
+to be used as the error file. See
+<a href="flexdos.htm#rpterr">RPTERR</a>
+for details.
+<dt><b>File Input Echo Flag $CC2F
+</b><dd>
+If this byte is non-zero (default) and input is being done through a file,
+the character input will be echoed to the output channel. If this byte is
+zero, the character retrieved will not be echoed.
+<dt><b>System Scratch $CC30-CC4D
+</b><dd>
+<dt><b>System Constants $CC4E-CCBF
+</b><dd>
+<dt><b>Printer Initialize $CCC0-$CCD7
+</b><dd>
+This area is reserved for the overlay of the system printer initialization
+subroutines.
+<dt><b>Printer Ready Check $CCD8-$CCE7
+</b><dd>
+This area is reserved for the overlay of the system "check for printer ready"
+subroutine.
+<dt><b>Printer Output $CCE4-$CCF7
+</b><dd>
+This area is reserved for the overlay of the system printer output character
+routine. See Printer Routine descriptions for details.
+</dl>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+</body>
+</html>

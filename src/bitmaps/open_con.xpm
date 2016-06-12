@@ -1,0 +1,27 @@
+/* XPM */
+static char *open_con_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    16    15        5            1",
+/* colors */
+". c #000000",
+"# c #c0c0c0",
+"a c #808080",
+"b c #00ff00",
+"c c #ffffff",
+/* pixels */
+"################",
+"##########...###",
+"#########.###.#.",
+"##############..",
+"##...########...",
+"#.bcb.......####",
+"#.cbcbcbcbc.####",
+"#.bcbcbcbcb.####",
+"#.cbcb..........",
+"#.bcb.babababab.",
+"#.cb.babababab.#",
+"#.b.babababab.##",
+"#..babababab.###",
+"#...........####",
+"################"
+};

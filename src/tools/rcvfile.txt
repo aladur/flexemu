@@ -1,0 +1,249 @@
+* RCVFILE.ASM
+*
+* Receive a file through serial port and save
+* as binary or text file
+*
+* Copyright (C) W. Schwotzer 15.07.2003
+*
+ACIA        EQU $F4
+WDRIVE EQU $CC0C
+WARMS        EQU $CD03
+GETCHR EQU $CD15
+PUTCHR EQU $CD18
+PSTRNG EQU $CD1E
+PCRLF        EQU $CD24
+SETEXT EQU $CD33
+OUTDEC EQU $CD39
+RPTERR EQU $CD3F
+OUTADR EQU $CD45
+FMS        EQU $D406
+EOT        EQU $04
+* Bit masks for FLAGS
+OWRITE EQU $01
+ISTEXT EQU $02
+
+        ORG $C100
+
+BEGIN        BRA START
+VERSIO FCB 1
+* Init serial port
+START        LDA #$FC
+        TFR A,DP
+        LDD #$0315
+        STA <ACIA
+        STB <ACIA
+
+* Start Synchronization
+SYNC0        LBSR GETSCH
+        CMPA #$55
+        BNE SYNC0
+SYNC1        LBSR GETSCH
+        CMPA #$AA
+        BNE SYNC1
+
+* Read Header
+        LDX #HEADER
+        LDY #HEND-HEADER
+        LBSR GETBLK ; Read Header
+        BNE ERROR
+        LBSR GETSCH        ; Read Checksum of Header
+        BNE ERROR
+        CMPA CHKSUM
+        BNE ERRCHK
+
+* Read file contents
+        LDY FSIZE
+        LDX #$0000
+        LBSR GETBLK
+        BNE ERROR
+        LBSR GETSCH
+        BNE ERROR
+        CMPA CHKSUM
+        BNE ERRCHK
+
+* Output file name
+OUTNM        LDX #FNAME
+        LDB #8
+        BSR OUTS0
+        LDA #'.
+        JSR PUTCHR
+        LDX #FEXT
+        LDB #3
+        BSR OUTS0
+        JSR PCRLF
+
+* Output last address
+OUTN1        LDX #TADDR
+        JSR PSTRNG
+        LDX FSIZE
+        LEAX -1,X
+        STX ADDR
+        JSR PCRLF
+        LDX #ADDR
+        JSR OUTADR
+        LBSR SAVE
+        JMP WARMS
+
+* Checksum Error
+ERRCHK LDX #TERRCH
+        BRA ERR1
+
+* Serial transmission Error
+ERROR        BITB #$10
+        BEQ E1
+        LDX #TFRAME
+        BRA ERR1
+E1        BITB #$20
+        BEQ E2
+        LDX #TOVER
+        BRA ERR1
+E2        BITB #$40
+        BEQ E3
+        LDX #TPARITY
+ERR1        JSR PCRLF
+        JSR PSTRNG
+E3        JMP WARMS
+
+* Output a String 
+* String ends either if max. number of characters is
+* reached or string contains $00
+* X: Start address of String
+* B: max. number of characters
+
+OUTS0        LDA ,X+
+        BEQ OUTS9
+        JSR PUTCHR
+        DECB
+        BNE OUTS0
+OUTS9        RTS
+
+* Read on byte from serial port
+* Z is set on success
+* B contains error bits
+GETSCH LDB <ACIA
+        BITB #$01
+        BEQ GETSCH
+        LDA <ACIA+1
+        BITB #$70
+        RTS
+
+* Read block from serial port
+* X: Startaddr to save block
+* Y: No of bytes to read
+GETBLK PSHS X,Y
+        CLR CHKSUM
+GETBL1 BSR GETSCH
+        BNE GETBL9
+        STA ,X+
+        ADDA CHKSUM
+        STA CHKSUM
+        LEAY -1,Y
+        BNE GETBL1
+GETBL9 PULS X,Y,PC
+
+***************
+* Save to file
+***************
+FILSPC PSHS X,Y,D
+        LDX #FCB+4
+        LDY #FNAME
+        LDB #10
+S1        LDA B,Y
+        STA B,X
+        DECB
+        BPL S1
+        LDA WDRIVE
+        STA FCB+3
+        PULS X,Y,D,PC
+*
+SAVE        BSR FILSPC ; Set File Spec
+        LDX #FCB
+        LDA #2
+        STA ,X
+        JSR FMS
+        BEQ S3
+        LDA 1,X
+        CMPA #3
+        BNE FMSERR
+*File already exists
+S2        LDA FLAGS
+        BITA #OWRITE
+        BNE S21
+* Ask user to delete file
+S22        LDX #TOWRIT
+        JSR PSTRNG
+        JSR GETCHR
+        ANDA #$DF ; Lower to Upper case
+        CMPA #'Y
+        BEQ S21
+        CMPA #'N
+        BNE S22
+        RTS
+* Delete existing file
+S21        LDX #FCB
+        LDA #12
+        STA ,X
+        JSR FMS
+        BNE FMSERR
+* Open file for write again
+        BSR FILSPC
+        LDX #FCB
+        LDA #2
+        STA ,X
+        JSR FMS
+        BNE FMSERR
+        LDA FLAGS
+        BITA #ISTEXT
+        BEQ S3
+        LDA #$FF
+        STA 59,X ; If Textfile set Space compression
+ 
+* Write file contents
+S3        LDX #FCB
+        LDY #0
+S31        CMPY FSIZE
+        BEQ S4
+        LDA ,Y+
+        JSR FMS
+        BNE FMSERR
+        BRA S31
+
+* Close file
+S4        LDX #FCB
+        LDA #4
+        STA ,X
+        JSR FMS
+        BNE FMSERR
+        RTS
+*
+FMSERR LDX #FCB
+        JSR RPTERR
+        RTS
+
+TPARIT FCC 'Parity Error',EOT
+TOVER        FCC 'Overrun Error',EOT
+TFRAME FCC 'Framing Error',EOT
+TERRCH FCC 'Checksum Error',EOT
+TADDR        FCC 'Last Address',EOT
+TFMSE        FCC 'FMS Error',EOT
+TOWRIT FCC 'File already exists. Overwrite? ',EOT
+
+CHKSUM RMB 1
+
+HEADER EQU *
+FSIZE        RMB 2
+FNAME        RMB 8
+FEXT        RMB 3
+FLAGS        RMB 1
+HEND        EQU *
+
+ADDR        RMB 2
+
+FCB        RMB 320
+
+        IF *>$C6FF
+        ERR PROGRAM TOO LONG
+        ENDIF
+
+        END BEGIN
+

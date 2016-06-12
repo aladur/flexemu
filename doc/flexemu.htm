@@ -1,0 +1,497 @@
+<html>
+<head>
+<title>flexemu - a FLEX emulator with X11/WIN32 interface</title>
+</head>
+<body>
+<h2>
+flexemu - a FLEX emulator with X11/WIN32 interface
+<hr></h2>
+<h2>SYNOPSIS</h2>
+<h3>On Linux/X11</h3>
+<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-s] [-v] [-u] [-j xFactor] [-k yFactor]</tt>
+<h3>On WIN32</h3>
+<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j xFactor] [-k yFactor]</tt>
+<a name="description">
+<h2>DESCRIPTION</h2>
+<b>flexemu</b> emulates a MC6809 microprocessor system running FLEX Operating
+System.
+Additional hardware modules as for ex. two MC6821 parallel input/output
+ports, a floppy disk controller WD1793, a realtime clock MC146818  and a
+special video interface completely emulate the hardware of an Eurocom II/V7
+computer. It was develloped by
+<a href="http://www.eltec.de/">ELTEC Elektronik</a> and mainly distributed
+in Germany in the 80ies.
+<p>
+<b>flexemu</b> supports the following features:
+<p>
+<ul>
+ <li>running on Linux (X11) and WIN32.
+ <li>XToolkit/Athena Widgets interface
+ <li>supporting all MC6809 instructions incl. CWAI and SYNC
+ <li>CPU monitor with start/stop/step/next/reset, two breakpoints
+ <li>continuous display of CPU frequency and cycle count
+ <li>full interrupt support
+ <li>stop processor and popup dialog at unimplemented processor instructions
+ <li>Optionally support undocumented processor instructions
+ <li>Configurable frequency control for either emulate with maximum possible
+     frequency or with original frequency
+ <li>mouse pointer support
+ <li>512 x 256 pixel, 1, 3 or 6 bit plane video graphics display with 2, 8 or
+     64 colors
+ <li>MC146818 real time clock
+ <li>MMU for extension of the 64K address range
+ <li>192K RAM extension
+ <li>MC6850 serial line used for terminal I/O
+ <li>terminal only mode without graphical user interface (Linux only)
+ <li>WD1793 floppy disk controller support with up to 4 disk drives
+ <li>support of disk images (DSK-files) but also native file system
+ <li>compatible to
+<a href="http://www.blackbelt.com/flexem.html"> Ben Williams FLEX emulators</a> DSK format
+ <li>MC6809 CPU emulation is running in a separate thread
+     for maximum performance
+ <li>0% host CPU load during MC6809 CPU emulation is stopped
+ <li>0% host CPU load during CWAI and SYNC Instruction
+ <li>minimum host CPU load if emulated CPU is running with original frequency
+ <li>On Linux Signal SIGINT, SIGUSR1 and SIGUSR2 generate NMI,
+     IRQ or FIRQ
+ <li>Configurable CPU Instruction logging within address range
+     and/or Start/Stop trigger address
+ <li>dynamic mount/unmount of disks possible
+ <li>fileconversion from/to FLEX ASCII file format
+ <li><a href="http://www.eltec.de/">ELTEC</a> full screen editor e.cmd included
+ <li>command for exiting emulator
+ <li>command to dynamically mount/update/umount drives
+ <li>command to send a reset/irq/firq/nmi to CPU
+ <li>command to display processor frequency/cycle count
+ <li>command to switch between terminal and graphical mode
+ <li>command to format a disk
+ <li>HTML-documents with full description of FLEX API
+</ul>
+<a name="options">
+<h2>OPTIONS</h2>
+In general there are command line options and options editable by <b>fsetup</b>
+available. Commandline options can supersede fsetup-options.
+<a name="options_linux">
+<h3>Commandline options on Linux (X11) and WIN32</h3>
+<dl compact>
+<dt><b><tt>-f &lt;hexfile&gt;</tt>
+</b><dd>
+Specifies the name of a program read during startup, usually a system
+monitor. Both intel Hex and Motorola S-record is supported. The default
+is
+<a href="neumon54.htm"><b>neumon54.hex</b></a>
+The file will be looked for in the working directory or in the directory
+specified as -p option or as Disk/Monitor directory.
+Flexemu can be used with other monitor programs as long as they support the
+special hardware needs of the Eurocom II/V7.<tt> </tt>
+<dt><b><tt>-c &lt;color&gt;</tt>
+</b><dd>
+Specifies the foreground color. The default is
+<b>green
+</b>The background color is always black.<tt> </tt>
+<dt><b><tt>-i</tt>
+</b><dd>
+Inverse video display (foreground and background colors exchanged)
+<dt><b><tt>-p &lt;path&gt;</tt>
+</b><dd>
+Specifies a path in which diskimage files or nafs-directories will be looked
+for. Defaults:<BR>
+  <b>WIN32:</b> &lt;INSTDIR&gt;\data<BR>
+  <b>X11:</b> /usr/local/share/Flexemu
+<dt><b><tt>-0|1|2|3 &lt;path&gt;</tt>
+</b><dd>
+Specifies a diskimage file or a directory path for drive 0, 1, 2 or 3.<tt> </tt>
+The default is
+<b>system.dsk
+</b>for drive 0. The file or directory will be looked for in the actual
+directory.  If nothing is found the directory specified with the
+<b><tt>-p</tt></b>option or as Disk/Monitor directory will be looked for.
+<dt><b><tt>-j &lt;xFactor&gt;</tt>
+</b><dd>
+Specifies a factor to multiply the width of the FLEX display. Default is <b>2</b>.
+Valid values are 1 and 2.
+<dt><b><tt>-u</tt>
+</b><dd>
+Enables the support of undocumented MC6809 Instructions. See Chapter
+<a href="#undocumented_instructions">Undocumented MC6809 Instructions</a>
+for details.
+<dt><b><tt>-k &lt;yFactor&gt;</tt>
+</b><dd>
+Specifies a factor to multiply the height of the FLEX display. Default is <b>2</b>.
+Valid values are 1, 2 and 3.
+</dl>
+<p><dt><h3>Commandline options only on Linux (X11):</h3>
+<p>
+<dl compact>
+<dt><b><tt>-h</tt>
+</b><dd>
+Print a short syntax description.
+<dt><b><tt>-v</tt>
+</b><dd>
+only print version number
+<dt><b><tt>-t</tt>
+</b><dd>
+Terminal only mode. All input/output will be done on the terminal from
+which flexemu is started. All Escape-Sequences of this terminal can be
+accessed. Montior program <b>neumnt54.hex</b> is needed for this<tt> </tt>
+<dt><b><tt>-r &lt;two_hex_digits&gt;</tt>
+</b><dd>
+Define a reset key for terminal mode specified as two hex digits. The
+default is
+<b>1E
+</b>, means <b>Ctrl-^</b>
+</dl>
+<p><dt><h3>Only if X11 present:</h3>
+<p>
+<dl compact>
+<dt><b><tt>-s</tt>
+</b><dd>
+run X11 synchronized
+</dl>
+<a name="fsetup_options">
+<h3>Options editable with fsetup</h3>
+On both X11 and WIN32 there is a program <b>fsetup</b> available to edit
+options
+<p>
+<table border>
+ <tr>
+  <th>Name</th>
+  <th>Description</th>
+  <th>Default</th>
+ </tr>
+ <tr>
+  <td>Screen geometry</td>
+  <td>Pixelsize used for the video display</td>
+  <td>1024x512</td>
+ </tr>
+ <tr>
+  <td>Display Inverse</td>
+  <td>Display video normal or inverse</td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>Color</td>
+  <td>Specifies the foreground color</td>
+  <td>green</td>
+ </tr>
+ <tr>
+  <td><b>X11 only:</b>HTML browser</td>
+  <td>Executable used as HTML browser</td>
+  <td>netscape</td>
+ </tr>
+ <tr>
+  <td>Disk/Monitor directory</td>
+  <td>A Directory Path containing<BR>FLEX disks and monitor program</td>
+  <td><b>WIN32:</b> &lt;INSTDIR&gt;\data<BR>
+  <b>X11:</b> /usr/local/share/Flexemu</td>
+ </tr>
+ <tr>
+  <td>Monitor program</td>
+  <td>A Filename or Directory Path for the monitor program</td>
+  <td><a href="neumon54.htm"><b>neumon54.hex</b></a></td>
+ </tr>
+ <tr>
+  <td>Disk for drive 0</td>
+  <td>A Filename or Directory Path for FLEX disk 0</td>
+  <td>system.dsk</td>
+ </tr>
+ <tr>
+  <td>Disk for drive 1</td>
+  <td>A Filename or Directory Path for FLEX disk 1</td>
+  <td>no default</td>
+ </tr>
+ <tr>
+  <td>Disk for drive 2</td>
+  <td>A Filename or Directory Path for FLEX disk 2</td>
+  <td>no default</td>
+ </tr>
+ <tr>
+  <td>Disk for drive 3</td>
+  <td>A Filename or Directory Path for FLEX disk 3</td>
+  <td>no default</td>
+ </tr>
+</table>
+<a name="breakpoints">
+<h3>Breakpoint support</h3>
+With the menu Processor-&gt;Breakpoints up to two breakpoints
+can be set. They have to be input as a one to four digit hexadecimal
+address. Execution automatically stops when the PC contains one
+of the breakpoint addresses.
+<a name="logging">
+<h3>CPU Instruction Logging</h3>
+With the menu Processor-&gt;Logging the logging of each executed CPU
+instruction can be enabled. The Instruction Logging Dialog contains
+the following entry fields. Addresses have to be input as a one to 
+four digit hexadecimal address:
+<p>
+<table border>
+ <tr>
+  <th>Fieldname</th>
+  <th>Defaultvalue</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>Min Address</td>
+  <td>0000</td>
+  <td>Only log instructions on an address higher or equal to this address</td>
+ </tr>
+ <tr>
+  <td>Max Address</td>
+  <td>FFFF</td>
+  <td>Only log instructions on an address lower or equal to this address</td>
+ </tr>
+ <tr>
+  <td>Start Address</td>
+  <td>&lt;not set&gt;</td>
+  <td>Start Instruction logging when the value of the PC is equal to the
+      Start Address</td>
+ </tr>
+ <tr>
+  <td>Stop Address</td>
+  <td>&lt;not set&gt;</td>
+  <td>Stop Instruction logging when the value of the PC is equal to the
+      Stop Address</td>
+ </tr>
+ <tr>
+  <td>Filename</td>
+  <td>&lt;not set&gt;</td>
+  <td>Filename to be used for the instruction logging.
+      Independant of the Start and Stop Address this file remains open
+      as long as Flexemu keeps running until another Filename is set.
+      An empty filename finishes Instruction logging.</td>
+ </tr>
+</table>
+<a name="frequency_control">
+<h3>CPU Frequency control</h3>
+With the toggle menu item Processor-&gt;Frequency 1.3396 MHz the CPU
+frequency can be switched between the maximum possible frequency 
+(depending on the available host CPU performance) and the original
+CPU frequency which exactly is 1.3396 MHz. With the command <b>emu freq</b>
+other frequencies can be specified. See
+<a href="flexutil.htm">FLEX Utilities</a> for details.
+<a name="undocumented_instructions">
+<h3>Undocumented MC6809 Instructions</h3>
+The support of undocumented MC6809 instructions can be controled either 
+with the command line option <b>-u</b> or with the menu point
+Processor-&gt;Undocumented Instructions. To be able do 
+distinguish them from the supported instructions the disassembler
+displays their mnemonics in lower case. Undocumented MC6809 instructions
+are not available with Fastflex. The following undocumented instructions
+are supported:
+<p>
+<table border>
+ <tr>
+  <th>Mnemonic</th>
+  <th>Opcode</th>
+  <th>Mode</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>01</td>
+  <td>Direct</td>
+  <td>Same as Op 00 (NEG)</td>
+ </tr>
+ <tr>
+  <td>negcom</td>
+  <td>02</td>
+  <td>Direct</td>
+  <td>If cc.c = 0 then NEG else COM</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>05</td>
+  <td>Direct</td>
+  <td>Same as Op 04 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>0B</td>
+  <td>Direct</td>
+  <td>Same as Op 0A (DEC)</td>
+ </tr>
+ <tr>
+  <td>reset</td>
+  <td>3E</td>
+  <td>Inherent</td>
+  <td>Same as CPU Reset</td>
+ </tr>
+ <tr>
+  <td>nega</td>
+  <td>41</td>
+  <td>Inherent</td>
+  <td>Same Op 40 (NEGA)</td>
+ </tr>
+ <tr>
+  <td>coma</td>
+  <td>42</td>
+  <td>Inherent</td>
+  <td>Same Op 43 (COMA)</td>
+ </tr>
+ <tr>
+  <td>lsra</td>
+  <td>45</td>
+  <td>Inherent</td>
+  <td>Same Op 44 (LSRA)</td>
+ </tr>
+ <tr>
+  <td>deca</td>
+  <td>4B</td>
+  <td>Inherent</td>
+  <td>Same Op 4A (DECA)</td>
+ </tr>
+ <tr>
+  <td>clra</td>
+  <td>4E</td>
+  <td>Inherent</td>
+  <td>Same Op 4F (CLRA)</td>
+ </tr>
+ <tr>
+  <td>negb</td>
+  <td>51</td>
+  <td>Inherent</td>
+  <td>Same Op 50 (NEGB)</td>
+ </tr>
+ <tr>
+  <td>comb</td>
+  <td>52</td>
+  <td>Inherent</td>
+  <td>Same Op 53 (COMB)</td>
+ </tr>
+ <tr>
+  <td>lsrb</td>
+  <td>55</td>
+  <td>Inherent</td>
+  <td>Same Op 54 (LSRB)</td>
+ </tr>
+ <tr>
+  <td>decb</td>
+  <td>5B</td>
+  <td>Inherent</td>
+  <td>Same Op 5A (DECB)</td>
+ </tr>
+ <tr>
+  <td>clrb</td>
+  <td>5E</td>
+  <td>Inherent</td>
+  <td>Same Op 5F (CLRB)</td>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>61</td>
+  <td>Indexed</td>
+  <td>Same Op 60 (NEG)</td>
+ </tr>
+ <tr>
+  <td>com</td>
+  <td>62</td>
+  <td>Indexed</td>
+  <td>Same Op 63 (COM)</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>65</td>
+  <td>Indexed</td>
+  <td>Same Op 64 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>6B</td>
+  <td>Indexed</td>
+  <td>Same Op 6A (DEC)</td>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>71</td>
+  <td>Extended</td>
+  <td>Same Op 70 (NEG)</td>
+ </tr>
+ <tr>
+  <td>com</td>
+  <td>72</td>
+  <td>Extended</td>
+  <td>Same Op 73 (COM)</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>75</td>
+  <td>Extended</td>
+  <td>Same Op 74 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>7B</td>
+  <td>Extended</td>
+  <td>Same Op 7A (DEC)</td>
+ </tr>
+ <tr>
+  <td>EXG</td>
+  <td>1E</td>
+  <td>Implied</td>
+  <td>In extension to the normal exchange of Byte and Word registers also
+      exchange of mixed Byte/Word registers is supported. If the target is a 
+      Word the upper Byte is filled with $FF. If the target is a Byte only
+      the lower Byte of the source register is moved.<p>
+      Also supports "invalid" register codes. If the source is such an
+      invalid register $FF or $FFFF is moved to the target register</td>
+ </tr>
+ <tr>
+  <td>TFR</td>
+  <td>1F</td>
+  <td>Implied</td>
+  <td>In extension to the normal transfer of Byte and Word registers also
+      transfer of mixed Byte/Word registers is supported. If the target is a 
+      Word the upper Byte is filled with $FF. If the target is a Byte only
+      the lower Byte of the source register is moved.<p>
+      Also supports "invalid" register codes. If the source is such an
+      invalid register $FF or $FFFF is moved to the target register</td>
+ </tr>
+</table>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+<a name="urls">
+<h2>RELATED URLS</h2>
+<ul>
+ <li><a href="http://home.germany.net/100-180665/flexemu.htm">Flexemu Homepage</a>
+ <li><a href="http://perso.pacwan.fr/ipblythe/fug1.htm">FLEX User Group</a>
+ <li><a href="http://www.blackbelt.com/flexem.html">
+Ben Williams FLEX Emulator</a>
+ <li><a href="ftp://ftp.mrc-bbc.ox.ac.uk/pub/users/rpb/mc6809/">
+Ray Bellis MC6809 Emulator usim</a>
+ <li><A HREF="ftp://ftp.funet.fi/pub/microprocs/6809/">ftp://ftp.funet.fi/pub/microporc/6809</A>
+ <li><A HREF="http://www7.informatik.uni-erlangen.de/~msdoerfe/6809/">gcc for MC6809 and other stuff</A>
+ <li><A HREF="ftp://ftp.funet.fi/pub/microprocs/assemblers/Frankasm/">MC6809 cross assembler Frankasm</A>
+ <li><A HREF="http://www.brouhaha.com:80/~eric/embedded/6809/">MC6809 stuff (C compiler, MC6809 target for gcc, links)</A>
+ <li><A HREF="http://www.striker.ottawa.on.ca/6809/">Alan DeKok's 6809 Page</A>
+ <li><A HREF="http://lspace.nait.ab.ca/cnt250">MC6809 Assembler for MS-DOS, Monitor, real-time multitasking kernel</A>
+ <li><A HREF="http://os9archive.rtsi.com/os9ugfaq.html">OS-9 Users Group WWW Page</A>
+ <li><A HREF="http://zeppelin.tzo.cc/coco/coco.html">TRS-80 and CoCo Homepage</A>
+ <li><A HREF="ftp://nyquist.ee.ualberta.ca/pub/motorola/">Motorola freeware archive</A>
+ <li><A HREF="http://koti.mbnet.fi/~atjs/mc6809/">MC6809 Emulation Page</A>
+ <li><A HREF="http://www.evenson-consulting.com/swtpc/default.htm">Evenson SWTPC 6800/6809 Emulator</A>
+ <li><A HREF="http://members.aol.com/emunews/computer.htm">Overview of Computer/OS/Processor emulations</A>
+ <li><A HREF="http://members.aol.com/chrissalo/">Emulators overview</A>
+ <li><A HREF="http://www.grempc.demon.co.uk/dragon/">Graham's Dragon Page</A>
+ <li><A HREF="http://www.mdfsnet.f9.co.uk/Docs/Comp/6809/OpList">6809 Opcode List incl. undocumented Opcodes</A>
+ <li><A HREF="http://www.6809.org.uk/dragon/illegal-opcodes.shtml">6809 Undocumented Opcodes for TFR/EXG</A>
+
+</ul>
+<h2>BUGS</h2>
+If a drive can not be logged in no error message will be displayed.
+If a directory will be logged in as a drive and it has too much files or its
+filesize all together is too large no error message will be displayed and
+as much files as possible will be managed.
+emu commands (See <a href="flexutil.htm">FLEX Utilities</a> for details)
+only have poor error messages.
+</body>
+</html>

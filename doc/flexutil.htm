@@ -1,0 +1,217 @@
+<html>
+<head>
+<title>Misc FLEX utilities</title>
+</head>
+<body>
+<h2>
+flexutil - Miscellaneous FLEX utilities
+<hr></h2>
+<h2>SYNOPSIS</h2>
+<h3>Utilities within flexemu:</h3>
+<b><br>
+emu irq | firq | nmi
+<br>
+emu mount &lt;path&gt; &lt;drive_nr&gt; 
+<br>
+mount &lt;path&gt; &lt;drive_nr&gt; 
+<br>
+emu info [&lt;drive nr&gt;]
+<br>
+emu update [&lt;drive nr&gt;]
+<br>
+emu umount &lt;drive nr&gt;
+<br>
+umount &lt;drive nr&gt;
+<br>
+emu format &lt;disk_name&gt; &lt;size_in_KByte&gt;
+<br>
+emu terminal | graphic
+<br>
+emu freq [&lt;target_frequency&gt;]
+<br>
+emu cycles
+<br>
+emu exit
+<br>
+exit
+<br>
+timeset
+<br>
+time
+<br>
+rtc on | off | alarm
+<br>
+cls
+<br>
+tounix &lt;disk_image_name&gt;
+<br>
+</b><p>
+<h3>Utilities on Linux/WIN32:</h3>
+<p>
+<b>fromflex
+<br>
+toflex
+<br>
+</b><p>
+<h3>Utilities on Linux:</h3>
+<p>
+<b>rcvflex</b>
+<br>
+</b><h2>DESCRIPTION</h2>
+<a name="emu">
+<b>emu
+</b>is a command to directly communicate with the emulator from within the FLEX
+command shell. There are different operations concerning the cpu, the
+floppy controller or the graphical user interface (gui).
+<dl>
+<dt><b>emu &lt;irq | firq | nmi&gt;
+</b><dd>
+send a corresponding interrupt signal to the cpu. before invoking this
+command, there should already be set an interrupt vector before!
+<a name="mount">
+<dt><b>emu mount &lt;path&gt; &lt;drive_nr&gt;
+</b><dd>
+mounts a disk image (DSK- or FLX-Format) or a NAtive File System
+(nafs)-directory.
+<b>&lt;path&gt;
+</b>as a floppy with
+drive number
+<b>&lt;drive_nr&gt;.
+</b><b>&lt;drive_nr&gt;
+</b>can be one of 0 - 3.
+It is equivalent to the <b>mount</b> command.
+<a name="info">
+<dt><b>emu info [&lt;drive_nr&gt;]
+</b><dd>
+prints some information on drive with number <b>drive_nr</b> or on all drives.
+<b>&lt;drive_nr&gt;.
+</b><b>&lt;drive_nr&gt;
+</b>can be one of 0 - 3.
+<a name="update">
+<dt><b>emu update [&lt;drive_nr&gt;]
+</b><dd>
+Updates the contents of a native file system drive with number <b>drive_nr</b> or all drives. An error message is returned if any file is currently opened on the specified drive.
+<b>&lt;drive_nr&gt;.
+</b><b>&lt;drive_nr&gt;
+</b>can be one of 0 - 3.
+<a name="umount">
+<dt><b>emu umount &lt;drive_nr&gt;
+</b><dd>
+unmounts a previously mounted disk image or nafs-directory.
+<b>&lt;drive_nr&gt;
+</b>can be one of 0 - 3.
+It is equivalent to the <b>umount</b> command.
+<a name="format">
+<dt><b>emu format &lt;disk_name&gt; &lt;size_in_KByte&gt;
+</b><dd>
+formats a disk with name <b>&lt;disk_name&gt;</b> and with total size greater
+or equal to &lt;size_in_KByte&gt;. Disk sizes of up to 800 KByte are available.
+The disk will be formated in DSK-Format. The newly formated disk will
+<b>not</b> be mounted automatically!
+<a name="terminal">
+<a name="graphic">
+<dt><b>emu terminal | graphic
+</b><dd>
+At the time only available on Linux (sorry). If started flexemu in full
+graphics mode (without option
+<b>-t
+</b>) this command can be used to switch between performing I/O on the graphic
+display or on the terminal. A hardware reset or nmi always switches back to
+grapic mode. This commond can only be used with Monitor
+<b>neumon54.hex.
+</b>It supports a parallel I/O on pia1 (MC6821) which will be
+used in the graphic mode, and a serial I/O on acia1 (MC6850) wich will be
+used in the terminal mode. The modes can be switched 'by hand' by changing
+the contents of address 0xef86 (SERPAR):
+<p>
+<table border>
+ <tr><th>SERPAR</th><th>mode</th></tr>
+ <tr><th>== 0</th><th>parallel I/O (graphic mode)</th></tr>
+ <tr><th>!= 0</th><th>seriell I/O (terminal mode)</th></tr>
+</table>
+<p>
+After a reset or nmi SERPAR will be initialized by the contents of address
+0xf07c (INITSP).
+<a name="freq">
+<dt><b>emu freq [&lt;target_frequency&gt;]
+</b><dd>
+Prints the actual frequency on which the virtual CPU is running. An optionaly
+given <b>target_frequency</b> gives a target frequency.
+<a name="cycles">
+<dt><b>emu cycles
+</b><dd>
+Prints the actual number of processor cycles executed.
+<a name="exit">
+<dt><b>emu exit
+</b><dd>
+immediately exits the emulator. It is equivalent to the
+<b>exit
+</b>command.
+<dt><b>timeset
+</b><dd>
+a menudriven command to set the time, date or alarm time of the real time clock
+MC146818. If setting the alarm time a interrupt vector for firq should already
+be installed! Setting the date only updates the date in the real time clock but
+not the date used by FLEX.
+<dt><b>time
+</b><dd>
+Prints the actual date and time of the real time clock MC146818.
+<a name="rtc">
+<dt><b>rtc on | off | alarm
+</b><dd>
+Initializes or removes a continuous display of the actual time on the down
+left corner of the graphic display. The periodic interrupt of the rtc
+MC146818 will be used for this. The optional parameter specifies the action:
+<b>on
+</b>initializes the display to update every second.
+<b>alarm
+</b>initializes the display to update if alarm time reached.
+<b>off
+</b>removes the clock display.
+<a name="cls">
+<dt><b>cls
+</b><dd>
+Clears the graphics display.
+<a name="tounix">
+<dt><b>tounix &lt;disk_image_name&gt;
+</b><dd>
+This utility is useful on a real FLEX system. It transmits the whole
+contents of a FLEX disk in drive 1 over the serial line. tounix is
+available as source file so it can be adapted to any special needs.
+The counterpart on linux is
+<b>rcvflex.
+<a name="fromflex">
+</b><dt><b>fromflex
+</b><dd>
+convert FLEX ASCII format to UNIX/MS-DOS ASCII format. The conversion will
+be done from stdin to stdout.
+<dt><b>toflex
+</b><dd>
+convert a UNIX/MS-DOS ASCII format to FLEX ASCII format. The conversion will
+be done from stdin to stdout.
+<a name="rcvflex">
+<dt><b>rcvflex [-h | &lt;serial_device&gt;]
+</b><dd>
+At the time only available on Linux (sorry). This utility transmits a FLEX
+disk from a real FLEX system to a Linux box. The counterpart on the
+FLEX system is the command
+<b>tounix.cmd.
+</b>The default for
+<b>&lt;serial_device&gt;
+</b>is
+<b>/dev/cua2.
+</b></dl>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+</body>
+</html>

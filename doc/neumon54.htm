@@ -1,0 +1,229 @@
+<html>
+<head>
+<title>Flexemu Monitor program neumon54.hex</title>
+</head>
+<body>
+<h2>
+Flexemu Monitor program neumon54.hex
+<hr></h2>
+<a name="monitor">
+The monitor program provides basic I/O functions to the operating system. It
+is compareable to the BIOS on a PC.
+<BR><BR>
+But in addition it provides a simple user
+interface to display or change memory contents or boot FLEX operating system.
+From within FLEX the monitor program can be entered by entering MON on the
+FLEX prompt.
+The following table gives an overview of the available commands:
+<p>
+<table border>
+ <tr>
+  <th>Command</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>D</td>
+  <td>Switch to german character set</td>
+ </tr>
+ <tr>
+  <td>I</td>
+  <td>Switch to ASCII character set</td>
+ </tr>
+ <tr>
+  <td>G XXXX</td>
+  <td>Start a user program located at address XXXX</td>
+ </tr>
+ <tr>
+  <td>K</td>
+  <td>Boot from disk #0</td>
+ </tr>
+ <tr>
+  <td>M XXXX</td>
+  <td>Display or modify memory beginning from address XXXX. Additional keys
+  can be entered: . redisplay same address (try with address FD00, it
+  displays the actual seconds of the real time clock). CTRL-J or / displays
+  the next memory location. ^ displays the previous memory location. Entering
+  a two digit hex number changes the memory. Pressing Enter leaves the M
+  command.</td>
+ </tr>
+ <tr>
+  <td>P XXXX YYYY ZZ</td>
+  <td>Fill memory locations XXXX up to including YYYY with byte ZZ</td>
+ </tr>
+ <tr>
+  <td>T XXXX YYYY</td>
+  <td>Dump memory from address XXXX up to including YYYY</td>
+ </tr>
+ <tr>
+  <td>V</td>
+  <td>Switch to video terminal mode (not supported on the emulator)</td>
+ </tr>
+ <tr>
+  <td>X</td>
+  <td>Go back to FLEX (Warmstart)</td>
+ </tr>
+ <tr>
+  <td>T XXXX YYYY</td>
+  <td>Dump memory from address XXXX up to including YYYY</td>
+ </tr>
+</table>
+</p>
+ZZ means a two digit hex number, XXXX or YYYY means a four digit hex number
+<br><br>
+Neumon54 also contains a terminal emulator which can be controled with
+the following Control- and Escape-sequences:
+<p>
+<table border>
+ <tr>
+  <th>Input</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>CTRL-E</td>
+  <td>Switch cursor off</td>
+ </tr>
+ <tr>
+  <td>CTRL-G</td>
+  <td>give a short terminal bell</td>
+ </tr>
+ <tr>
+  <td>CTRL-H</td>
+  <td>Backspace</td>
+ </tr>
+ <tr>
+  <td>CTRL-J</td>
+  <td>Linefeed</td>
+ </tr>
+ <tr>
+  <td>CTRL-L</td>
+  <td>Formfeed, clear screen, cursor home</td>
+ </tr>
+ <tr>
+  <td>CTRL-M</td>
+  <td>Carrige return</td>
+ </tr>
+ <tr>
+  <td>CTRL-N</td>
+  <td>Scroll up one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-O</td>
+  <td>Scroll down one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-O</td>
+  <td>Scroll down one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-Q</td>
+  <td>Cursor up one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-R</td>
+  <td>Cursor down one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-S</td>
+  <td>Cursor right one character</td>
+ </tr>
+ <tr>
+  <td>CTRL-T</td>
+  <td>Cursor left one character</td>
+ </tr>
+ <tr>
+  <td>CTRL-U</td>
+  <td>Switch cursor on</td>
+ </tr>
+ <tr>
+  <td>CTRL-S</td>
+  <td>Cursor right one character</td>
+ </tr>
+ <tr>
+  <td>ESC or CTRL-[</td>
+  <td>Start ESCAPE sequence</td>
+ </tr>
+ <tr>
+  <td>CTRL-\</td>
+  <td>Cursor home</td>
+ </tr>
+ <tr>
+  <td>CTRL-]</td>
+  <td>Toggle between soft- and hardscroll</td>
+ </tr>
+</table>
+</p>
+The following Escape sequences are available:
+<p>
+<table border>
+ <tr>
+  <th>Input</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>ESC A XX YY</td>
+  <td>Plot a Dot</td>
+ </tr>
+ <tr>
+  <td>ESC D</td>
+  <td>Switch to german character set</td>
+ </tr>
+ <tr>
+  <td>ESC E YY XX</td>
+  <td>Set Cursor to line YY and Column XX</td>
+ </tr>
+ <tr>
+  <td>ESC F</td>
+  <td>Switch to insert cursor</td>
+ </tr>
+ <tr>
+  <td>ESC G</td>
+  <td>Switch to overwrite cursor</td>
+ </tr>
+ <tr>
+  <td>ESC I</td>
+  <td>Switch to ASCII character set</td>
+ </tr>
+ <tr>
+  <td>ESC I XX YY</td>
+  <td>Set Cursor to line YY and Column XX</td>
+ </tr>
+ <tr>
+  <td>ESC P or ESC p</td>
+  <td>Switch inverse video on</td>
+ </tr>
+ <tr>
+  <td>ESC Q or ESC q</td>
+  <td>Switch inverse video off</td>
+ </tr>
+ <tr>
+  <td>ESC K or ESC L</td>
+  <td>Erase to end of line</td>
+ </tr>
+ <tr>
+  <td>ESC Z or ESC k or ESC S</td>
+  <td>Erase to end of screen</td>
+ </tr>
+</table>
+</p>
+On X11 there is mode to use flexemu in terminal only mode. It needs a special
+version of Monitor program and can be started by:
+<BR><b>flexemu -t -fneumnt54.hex</b>.
+<p>
+Flexemu can also be used with other monitor programs as long as they support
+the special hardware needs of the Eurocom II/V7.
+<p>
+Flexemu ships with complete source code of neumon54.
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+</ul>
+</body>
+</html>
