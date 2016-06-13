@@ -24,24 +24,24 @@
 #include <string.h>
 
 #include "fcinfo.h"
-#include "filecntb.h"	// needed for containertypes
+#include "filecntb.h"   // needed for containertypes
 
 #ifdef _
-#undef _
+    #undef _
 #endif
 
 #define _(p) p
 
 
 FlexContainerInfo::FlexContainerInfo(void) :
-	sectors(0),
-	tracks(0),
-	type(0),
-	free(0),
-	totalSize(0),
-	attributes(0)
+    sectors(0),
+    tracks(0),
+    type(0),
+    free(0),
+    totalSize(0),
+    attributes(0)
 {
-	name[0] = '\0';
+    name[0] = '\0';
 } // FlexContainerInfo
 
 FlexContainerInfo::~FlexContainerInfo(void)
@@ -50,28 +50,45 @@ FlexContainerInfo::~FlexContainerInfo(void)
 
 void FlexContainerInfo::SetName(const char *n)
 {
-	strncpy(name, n, FLEX_DISKNAME_LENGTH-1);
-	name[FLEX_DISKNAME_LENGTH-1] = '\0';
+    strncpy(name, n, FLEX_DISKNAME_LENGTH - 1);
+    name[FLEX_DISKNAME_LENGTH - 1] = '\0';
 }
 
 const BString FlexContainerInfo::GetTypeString(void) const
 {
-	BString str;
+    BString str;
 
-	if (type & TYPE_CONTAINER) {
-		if (type & TYPE_DSK_CONTAINER)
-			str = _("file container, DSK format");
-		else if (type & TYPE_FLX_CONTAINER)
-			str = _("file container, FLX format");
-		else
-			str = _("file container");
-	} else if (type & TYPE_DIRECTORY) {
-		if (type & TYPE_NAFS_DIRECTORY)
-			str = _("directory, without text file conversion");
-		else
-			str = _("directory, with text file conversion");
-	} else
-		str = _("Unknown type");
-	return str;
+    if (type & TYPE_CONTAINER)
+    {
+        if (type & TYPE_DSK_CONTAINER)
+        {
+            str = _("file container, DSK format");
+        }
+        else if (type & TYPE_FLX_CONTAINER)
+        {
+            str = _("file container, FLX format");
+        }
+        else
+        {
+            str = _("file container");
+        }
+    }
+    else if (type & TYPE_DIRECTORY)
+    {
+        if (type & TYPE_NAFS_DIRECTORY)
+        {
+            str = _("directory, without text file conversion");
+        }
+        else
+        {
+            str = _("directory, with text file conversion");
+        }
+    }
+    else
+    {
+        str = _("Unknown type");
+    }
+
+    return str;
 }
 

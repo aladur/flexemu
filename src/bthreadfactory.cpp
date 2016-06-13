@@ -23,10 +23,10 @@
 #include "misc1.h"
 #include "bthreadfactory.h"
 #ifdef UNIX
-#include "bposixthreadimp.h"
+    #include "bposixthreadimp.h"
 #endif
 #ifdef WIN32
-#include "bwin32threadimp.h"
+    #include "bwin32threadimp.h"
 #endif
 
 template <> BThreadFactory *SThreadFactory::instance = NULL;
@@ -34,12 +34,12 @@ template <> BThreadFactory *SThreadFactory::instance = NULL;
 BThreadImp *BThreadFactory::CreateBThreadImp()
 {
 #ifdef WIN32
-  return new BWin32ThreadImp;
+    return new BWin32ThreadImp;
 #else
-  #ifdef UNIX
-  return new BPosixThreadImp();
-  #else
+#ifdef UNIX
+    return new BPosixThreadImp();
+#else
     return NULL; // Sw: Which other platforms to support ???
-  #endif
+#endif
 #endif
 }

@@ -21,58 +21,70 @@
 */
 
 #include <misc1.h>
-#include <string.h>	// needed for NULL
+#include <string.h> // needed for NULL
 #include "bmembuf.h"
 
 
 BMemoryBuffer::BMemoryBuffer(DWord aSize /* = 65536 */, DWord aBase /* = 0 */) :
-	baseAddress(aBase), size(aSize)
+    baseAddress(aBase), size(aSize)
 {
-	pBuffer = new Byte[size];
+    pBuffer = new Byte[size];
 }
 
 BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
 {
-	baseAddress = src.baseAddress;
-	size = src.size;
-	pBuffer = new Byte[size];
-	memcpy(pBuffer, src.pBuffer, size);
+    baseAddress = src.baseAddress;
+    size = src.size;
+    pBuffer = new Byte[size];
+    memcpy(pBuffer, src.pBuffer, size);
 }
 
 BMemoryBuffer::~BMemoryBuffer()
 {
-	delete [] pBuffer;
+    delete [] pBuffer;
 }
 
 void BMemoryBuffer::FillWith(const Byte pattern /* = 0 */)
 {
-	for (DWord i = 0; i < size; i++)
-		pBuffer[i] = pattern;
+    for (DWord i = 0; i < size; i++)
+    {
+        pBuffer[i] = pattern;
+    }
 }
 
-Byte BMemoryBuffer::operator[] (DWord address)
+Byte BMemoryBuffer::operator[](DWord address)
 {
-	// if out of range always return 0!
-	if (address < baseAddress || address > baseAddress + size - 1)
-		return 0;
-	return *(pBuffer + address - baseAddress);
+    // if out of range always return 0!
+    if (address < baseAddress || address > baseAddress + size - 1)
+    {
+        return 0;
+    }
+
+    return *(pBuffer + address - baseAddress);
 }
 
 bool BMemoryBuffer::CopyFrom(const Byte *from, DWord aSize, DWord address)
 {
-	DWord secureSize;
+    DWord secureSize;
 
-	if (address >= baseAddress + size)
-		return false;
-	secureSize = (address + aSize > baseAddress + size) ? size - (address - baseAddress) : aSize;
-	memcpy(pBuffer + address - baseAddress, from, secureSize);
-	return true;
+    if (address >= baseAddress + size)
+    {
+        return false;
+    }
+
+    secureSize = (address + aSize > baseAddress + size) ? size -
+                 (address - baseAddress) : aSize;
+    memcpy(pBuffer + address - baseAddress, from, secureSize);
+    return true;
 }
 
 const Byte *BMemoryBuffer::GetBuffer(DWord address)
 {
-	if (address < baseAddress || address >= baseAddress + size)
-		return NULL;
-	return pBuffer + address - baseAddress;
+    if (address < baseAddress || address >= baseAddress + size)
+    {
+        return NULL;
+    }
+
+    return pBuffer + address - baseAddress;
 }
 

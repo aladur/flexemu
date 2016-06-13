@@ -24,11 +24,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 #include <wx/radiobox.h>
 #include <wx/valgen.h>
@@ -37,135 +37,151 @@
 #include <misc1.h>
 
 #ifdef _MSC_VER
-#include <direct.h>
+    #include <direct.h>
 #endif
 
 #include "contpdlg.h"
 
 
 BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
-	EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
-//	EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
-//	EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
+    EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
+    //  EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
+    //  EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
 
 ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
-	const wxPoint &pos /* = wxDefaultPosition */,
-	int tracks /* = 80 */,
-	int sectors /* = 40 */,
-	const wxString &path /* = wxT("") */) :
-	wxDialog(parent, 112, _("Create new File Container"), pos),
-	m_format(0), c_tracks(NULL), c_sectors(NULL),
-	c_path(NULL), c_format(NULL)
+        const wxPoint &pos /* = wxDefaultPosition */,
+        int tracks /* = 80 */,
+        int sectors /* = 40 */,
+        const wxString &path /* = wxT("") */) :
+    wxDialog(parent, 112, _("Create new File Container"), pos),
+    m_format(0), c_tracks(NULL), c_sectors(NULL),
+    c_path(NULL), c_format(NULL)
 {
-	m_tracks.Printf(wxT("%d"), tracks);
-	m_sectors.Printf(wxT("%d"), sectors);
-	m_path = path;
+    m_tracks.Printf(wxT("%d"), tracks);
+    m_sectors.Printf(wxT("%d"), sectors);
+    m_path = path;
 
-	wxButton     *pButton;
-        wxStaticText *pStatic;
+    wxButton     *pButton;
+    wxStaticText *pStatic;
 
-        wxBoxSizer *pMainSizer   = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
-        wxBoxSizer *pTrkSecSizer = new wxBoxSizer(wxHORIZONTAL);
-        wxBoxSizer *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
-        wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
-	
-	wxString choices[2];
-	choices[0] = _("DSK-File");
-	choices[1] = _("FLX-File");
+    wxBoxSizer *pMainSizer   = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *pTrkSecSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
 
-	c_format = new wxRadioBox(this, IDC_FormatCheckBox, _("Format"),
-		wxDefaultPosition, wxDefaultSize, 2, choices, 2,
-		wxRA_SPECIFY_COLS, wxGenericValidator(&m_format));
+    wxString choices[2];
+    choices[0] = _("DSK-File");
+    choices[1] = _("FLX-File");
 
-	pWidgetSizer->Add(c_format, 0, wxALL, 10);
+    c_format = new wxRadioBox(this, IDC_FormatCheckBox, _("Format"),
+                              wxDefaultPosition, wxDefaultSize, 2, choices, 2,
+                              wxRA_SPECIFY_COLS, wxGenericValidator(&m_format));
 
-        pStatic = new wxStaticText(this, -1, _("Tracks"));
-        pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-        c_tracks = new wxTextCtrl(this, IDC_Tracks, wxT(""), wxDefaultPosition,
-        wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_tracks));
-        pTrkSecSizer->Add(c_tracks, 0, wxALL, 10);
-        pStatic = new wxStaticText(this, -1, _("Sectors"));
-        pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-        c_sectors = new wxTextCtrl(this, IDC_Sectors, wxT(""), wxDefaultPosition,
-        wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_sectors));
-        pTrkSecSizer->Add(c_sectors, 0, wxALL, 10);
+    pWidgetSizer->Add(c_format, 0, wxALL, 10);
 
-	pWidgetSizer->Add(pTrkSecSizer);
+    pStatic = new wxStaticText(this, -1, _("Tracks"));
+    pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
+    c_tracks = new wxTextCtrl(this, IDC_Tracks, wxT(""), wxDefaultPosition,
+                              wxDefaultSize, 0,
+                              wxTextValidator(wxFILTER_NUMERIC, &m_tracks));
+    pTrkSecSizer->Add(c_tracks, 0, wxALL, 10);
+    pStatic = new wxStaticText(this, -1, _("Sectors"));
+    pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
+    c_sectors = new wxTextCtrl(this, IDC_Sectors, wxT(""), wxDefaultPosition,
+                               wxDefaultSize, 0,
+                               wxTextValidator(wxFILTER_NUMERIC, &m_sectors));
+    pTrkSecSizer->Add(c_sectors, 0, wxALL, 10);
 
-        pStatic = new wxStaticText(this, -1, _("Filename"));
-        pFileSizer->Add(pStatic, 0, wxALL, 10);
-        c_path = new wxTextCtrl(this, IDC_Path, wxT(""), wxDefaultPosition,
-                wxSize(200, -1), 0, wxTextValidator(wxFILTER_NONE, &m_path));
-        pFileSizer->Add(c_path, 0, wxALL, 10);
-        pButton = new wxButton(this, IDC_PathButton, _("..."),
-                wxDefaultPosition, wxSize(40, -1));
-        pFileSizer->Add(pButton, 0, wxALL, 10);
+    pWidgetSizer->Add(pTrkSecSizer);
 
-        pWidgetSizer->Add(pFileSizer);
+    pStatic = new wxStaticText(this, -1, _("Filename"));
+    pFileSizer->Add(pStatic, 0, wxALL, 10);
+    c_path = new wxTextCtrl(this, IDC_Path, wxT(""), wxDefaultPosition,
+                            wxSize(200, -1), 0,
+                            wxTextValidator(wxFILTER_NONE, &m_path));
+    pFileSizer->Add(c_path, 0, wxALL, 10);
+    pButton = new wxButton(this, IDC_PathButton, _("..."),
+                           wxDefaultPosition, wxSize(40, -1));
+    pFileSizer->Add(pButton, 0, wxALL, 10);
 
-        pMainSizer->Add(pWidgetSizer);
+    pWidgetSizer->Add(pFileSizer);
 
-        pButton = new wxButton(this, wxID_OK, _("&Ok"));
-        pButtonSizer->Add(pButton, 0, wxALL, 5 );
-        pButton = new wxButton(this, wxID_CANCEL, _("&Cancel"));
-        pButtonSizer->Add(pButton, 0, wxALL, 5 );
+    pMainSizer->Add(pWidgetSizer);
 
-        pMainSizer->Add(pButtonSizer);
+    pButton = new wxButton(this, wxID_OK, _("&Ok"));
+    pButtonSizer->Add(pButton, 0, wxALL, 5);
+    pButton = new wxButton(this, wxID_CANCEL, _("&Cancel"));
+    pButtonSizer->Add(pButton, 0, wxALL, 5);
 
-        SetSizer( pMainSizer );
-        pMainSizer->SetSizeHints(this);
-	c_path->SetFocus();
+    pMainSizer->Add(pButtonSizer);
+
+    SetSizer(pMainSizer);
+    pMainSizer->SetSizeHints(this);
+    c_path->SetFocus();
 }
 
 ContainerPropertiesDialog::~ContainerPropertiesDialog()
 {
 }
 
-void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent& WXUNUSED(event) )
+void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
 {
-	wxString containerPath;
+    wxString containerPath;
 #ifdef WIN32
-	char                    wd[PATH_MAX];
+    char                    wd[PATH_MAX];
 
-	getcwd((char *)wd, PATH_MAX);
+    getcwd((char *)wd, PATH_MAX);
 #endif
-	containerPath = wxFileSelector(
-		_("Input a FLEX file container"),
-		wxT(""),
-		wxT(""),
-		_("*.DSK"),
-		_("*.*"),
-		wxFD_SAVE,
-		this);
+    containerPath = wxFileSelector(
+                        _("Input a FLEX file container"),
+                        wxT(""),
+                        wxT(""),
+                        _("*.DSK"),
+                        _("*.*"),
+                        wxFD_SAVE,
+                        this);
 #ifdef WIN32
-	chdir((char *)wd);
+    chdir((char *)wd);
 #endif
-	if (!containerPath.IsEmpty()) {
-		m_path = containerPath;
-		if (c_path)
-			c_path->SetValue(m_path);
-	}
+
+    if (!containerPath.IsEmpty())
+    {
+        m_path = containerPath;
+
+        if (c_path)
+        {
+            c_path->SetValue(m_path);
+        }
+    }
 }
 
 int ContainerPropertiesDialog::GetTracks(void)
 {
-	long t;
+    long t;
 
-	if (m_tracks.ToLong(&t))
-		return (int)t;
-	else
-		return 0;
+    if (m_tracks.ToLong(&t))
+    {
+        return (int)t;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 int ContainerPropertiesDialog::GetSectors(void)
 {
-	long s;
+    long s;
 
-	if (m_tracks.ToLong(&s))
-		return (int)s;
-	else
-		return 0;
+    if (m_tracks.ToLong(&s))
+    {
+        return (int)s;
+    }
+    else
+    {
+        return 0;
+    }
 }
 

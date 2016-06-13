@@ -25,8 +25,8 @@
 
 BInterval::BInterval(const BInterval &i)
 {
-	minimum = i.minimum;
-	maximum = i.maximum;
+    minimum = i.minimum;
+    maximum = i.maximum;
 }
 
 BInterval::BInterval() : minimum(0), maximum(0)
@@ -39,35 +39,46 @@ BInterval::~BInterval()
 
 bool BInterval::ExtendBy(const BInterval &i)
 {
-	if (maximum+1 < i.minimum || minimum > i.maximum+1)
-		// two separate intervals can't be joined together
-		return false;
-	minimum = minimum <= i.minimum ? minimum : i.minimum;
-	maximum = maximum >= i.maximum ? maximum : i.maximum;
-	return true;
+    if (maximum + 1 < i.minimum || minimum > i.maximum + 1)
+        // two separate intervals can't be joined together
+    {
+        return false;
+    }
+
+    minimum = minimum <= i.minimum ? minimum : i.minimum;
+    maximum = maximum >= i.maximum ? maximum : i.maximum;
+    return true;
 }
 
 bool BInterval::Exclude(const BInterval &i)
 {
-	if (!Overlaps(i) ||
-		(Contains(i) && (minimum != i.minimum || maximum != i.maximum)))
-		// nothing to exclude or exclusion would result in two intervals
-		return false;
-	if (maximum > i.minimum)
-		maximum = i.minimum-1;
-	else if (minimum < i.maximum)
-		minimum = i.maximum+1;
-	return true;
+    if (!Overlaps(i) ||
+        (Contains(i) && (minimum != i.minimum || maximum != i.maximum)))
+        // nothing to exclude or exclusion would result in two intervals
+    {
+        return false;
+    }
+
+    if (maximum > i.minimum)
+    {
+        maximum = i.minimum - 1;
+    }
+    else if (minimum < i.maximum)
+    {
+        minimum = i.maximum + 1;
+    }
+
+    return true;
 }
 
 bool BInterval::Touches(const BInterval &i) const
 {
-	return ((maximum+1 == i.minimum && minimum < i.maximum) ||
-		    (minimum == i.maximum+1 && maximum > i.minimum));
+    return ((maximum + 1 == i.minimum && minimum < i.maximum) ||
+            (minimum == i.maximum + 1 && maximum > i.minimum));
 }
 
 bool BInterval::Overlaps(const BInterval &i) const
 {
-	return ((maximum >= i.minimum && minimum < i.maximum) ||
-		    (minimum <= i.maximum && maximum > i.minimum));
+    return ((maximum >= i.minimum && minimum < i.maximum) ||
+            (minimum <= i.maximum && maximum > i.minimum));
 }

@@ -233,8 +233,9 @@ void XAbstractGui::update_color_block(int block_number)
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
                       img, 0, (e2video->vico2 % YBLOCKS) * guiYSize,
-                      0, 0, BLOCKWIDTH * guiXSize, (BLOCKHEIGHT -
-                                                    (e2video->vico2 % BLOCKHEIGHT)) * guiYSize);
+                      0, 0, BLOCKWIDTH * guiXSize,
+                      (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
+                      guiYSize);
         }
         else
         {
@@ -602,8 +603,9 @@ void XAbstractGui::update_bw_block(int block_number)
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
                       img, 0, (e2video->vico2 % YBLOCKS) * guiYSize,
-                      0, 0, BLOCKWIDTH * guiXSize, (BLOCKHEIGHT -
-                                                    (e2video->vico2 % BLOCKHEIGHT)) * guiYSize);
+                      0, 0, BLOCKWIDTH * guiXSize,
+                      (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
+                      guiYSize);
         }
         else
         {
@@ -1198,9 +1200,9 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
                 else
                 {
                     *vClass = vTemplate.c_class  = GrayScale;
-                    visualList = XGetVisualInfo(dpy,
-                                                VisualScreenMask | VisualClassMask,
-                                                &vTemplate, &nrOfVisuals);
+                    visualList = XGetVisualInfo(dpy, VisualScreenMask |
+                                                VisualClassMask, &vTemplate,
+                                                &nrOfVisuals);
 
                     if (nrOfVisuals > 0)
                     {

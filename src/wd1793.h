@@ -28,62 +28,66 @@
 #include <stdio.h>
 
 #include "iodevice.h"
-#include "filecntb.h"	// needed only for SECTOR_SIZE
+#include "filecntb.h"   // needed only for SECTOR_SIZE
 
 
-class Wd1793 : public IoDevice {
+class Wd1793 : public IoDevice
+{
 
-// Internal registers:
-//
-// dr		data register (r/w)
-// tr		track register (r/w)
-// sr		sector register (r/w)
-// cr		command register (w)
-// str		status register (r)
-// isStepIn	flag indicating that previous step command was STEP IN
-// side		side of floppy to read/write on, changeable by subclass
-// drq		status of drq pin
-// irq		status of irq pin
-// byteCount	byte counter during read/write
-// strRead	count read access to command register, reset by read from dr
+    // Internal registers:
+    //
+    // dr       data register (r/w)
+    // tr       track register (r/w)
+    // sr       sector register (r/w)
+    // cr       command register (w)
+    // str      status register (r)
+    // isStepIn flag indicating that previous step command was STEP IN
+    // side     side of floppy to read/write on, changeable by subclass
+    // drq      status of drq pin
+    // irq      status of irq pin
+    // byteCount    byte counter during read/write
+    // strRead  count read access to command register, reset by read from dr
 
 protected:
 
-	Byte			 	dr, tr, sr, cr, str;
-	Byte				isStepIn, drq, irq, side;
-	unsigned int			byteCount, strRead;
+    Byte                dr, tr, sr, cr, str;
+    Byte                isStepIn, drq, irq, side;
+    unsigned int            byteCount, strRead;
 
-// Internal functions
+    // Internal functions
 private:
 
-	void				 do_seek(Byte new_track);
+    void                 do_seek(Byte new_track);
 
 protected:
 
-	virtual void			 setIrq(void);
-	virtual void			 resetIrq(void);
-	virtual Byte			 driveReady(void);
-	virtual Byte			 seekError(Byte new_track);
-	virtual Byte			 writeProtect(void);
-	virtual Byte			 recordNotFound(void);
-	virtual void			 command(Byte command);
-	virtual Byte			 readByte(Word index);
-	virtual void			 writeByte(Word index);
+    virtual void             setIrq(void);
+    virtual void             resetIrq(void);
+    virtual Byte             driveReady(void);
+    virtual Byte             seekError(Byte new_track);
+    virtual Byte             writeProtect(void);
+    virtual Byte             recordNotFound(void);
+    virtual void             command(Byte command);
+    virtual Byte             readByte(Word index);
+    virtual void             writeByte(Word index);
 
-// Read and write functions
-
-public:
-
-	virtual void			 resetIo(void);
-	virtual Byte			 readIo(Word offset);
-	virtual void			 writeIo(Word offset, Byte val);
-	virtual const char      *getName() { return "wd1793"; };
-// Public constructor and destructor
+    // Read and write functions
 
 public:
 
-					 Wd1793();
-	virtual				~Wd1793();
+    virtual void             resetIo(void);
+    virtual Byte             readIo(Word offset);
+    virtual void             writeIo(Word offset, Byte val);
+    virtual const char      *getName()
+    {
+        return "wd1793";
+    };
+    // Public constructor and destructor
+
+public:
+
+    Wd1793();
+    virtual             ~Wd1793();
 
 };
 

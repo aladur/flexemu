@@ -21,47 +21,54 @@
 
 #include <misc1.h>
 #ifdef WIN32
-  //#define WIN32_LEAN_AND_MEAN
-  #include <windows.h>
+    //#define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
 #endif
 #include "bmutex.h"
 
 typedef void (*BTimerProc)(void *p);
 
-class BTimer 
+class BTimer
 {
 public:
-	~BTimer();
-	static BTimer *Instance();
-	bool IsPeriodic() { return periodic; };
-	QWord GetDueTime() { return dueTime; };
-	bool Start(bool periodic, QWord dueTime);
-	bool Stop(void);
-	void Suspend(void); // suspend thread until timer elapses
-	void SetTimerProc(BTimerProc, void *x_p = NULL); // async func after timer elapses	
+    ~BTimer();
+    static BTimer *Instance();
+    bool IsPeriodic()
+    {
+        return periodic;
+    };
+    QWord GetDueTime()
+    {
+        return dueTime;
+    };
+    bool Start(bool periodic, QWord dueTime);
+    bool Stop(void);
+    void Suspend(void); // suspend thread until timer elapses
+    void SetTimerProc(BTimerProc,
+                      void *x_p = NULL); // async func after timer elapses
 protected:
-	static BTimer *instance;
-	QWord dueTime;
-	bool periodic;
-	BTimerProc timerProc;
-	void *timerParam;
-	void Init(void);
-	void UnInit(void);
-	bool StartTimer();
+    static BTimer *instance;
+    QWord dueTime;
+    bool periodic;
+    BTimerProc timerProc;
+    void *timerParam;
+    void Init(void);
+    void UnInit(void);
+    bool StartTimer();
 
 #ifdef WIN32
-	static unsigned long StartTimerImp(BTimer *p);
-	HANDLE   timerHandle;
-	HANDLE	 startTimerEvent;
-	HANDLE	 timerElapsedEvent;
-	HANDLE   timerThread;
-	bool     doFinish;
+    static unsigned long StartTimerImp(BTimer *p);
+    HANDLE   timerHandle;
+    HANDLE   startTimerEvent;
+    HANDLE   timerElapsedEvent;
+    HANDLE   timerThread;
+    bool     doFinish;
 #endif
 #ifdef UNIX
-	static RETSIGTYPE UnixTimerCallback(int i);
-	void TimerElapsed();
+    static RETSIGTYPE UnixTimerCallback(int i);
+    void TimerElapsed();
 #endif
 
 private:
-	BTimer(); // protect default constructor from being used
+    BTimer(); // protect default constructor from being used
 };

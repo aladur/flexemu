@@ -27,27 +27,27 @@ template <class T>
 class BDeleter
 {
 private:
-   T *object;
+    T *object;
 
-   BDeleter();
-   BDeleter(const BDeleter &);
-   BDeleter &operator=(const BDeleter &);
+    BDeleter();
+    BDeleter(const BDeleter &);
+    BDeleter &operator=(const BDeleter &);
 public:
-   BDeleter(T *anObject);
-   ~BDeleter();
+    BDeleter(T *anObject);
+    ~BDeleter();
 };
 
 template <class T>
 BDeleter<T>::BDeleter(T *anObject) : object(NULL)
 {
-   object = anObject;
+    object = anObject;
 }
 
 template <class T>
 BDeleter<T>::~BDeleter()
 {
-   delete object;
-   object = NULL;
+    delete object;
+    object = NULL;
 }
 #endif
 

@@ -24,7 +24,7 @@
 #include "misc1.h"
 
 #ifdef _POSIX_
-#undef _POSIX_
+    #undef _POSIX_
 #endif
 
 #include <process.h>
@@ -32,69 +32,86 @@
 #include "bthread.h"
 
 #ifndef _TTHREADPROC_DEFINED_
-typedef  unsigned long ( __stdcall *tThreadProc )( void * );
-#define _TTHREADPROC_DEFINED_
+    typedef  unsigned long (__stdcall *tThreadProc)(void *);
+    #define _TTHREADPROC_DEFINED_
 #endif
 
 BWin32ThreadImp::BWin32ThreadImp() : pThreadObj(NULL), finished(false),
-	hThread(NULL), finishedEvent(NULL)
+    hThread(NULL), finishedEvent(NULL)
 {
-	finishedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    finishedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 BWin32ThreadImp::~BWin32ThreadImp()
 {
-	if (finishedEvent != NULL)
-		CloseHandle(finishedEvent);
-	finishedEvent = NULL;
-	if (hThread != NULL)
-		CloseHandle(hThread);
-	hThread = NULL;
+    if (finishedEvent != NULL)
+    {
+        CloseHandle(finishedEvent);
+    }
+
+    finishedEvent = NULL;
+
+    if (hThread != NULL)
+    {
+        CloseHandle(hThread);
+    }
+
+    hThread = NULL;
 }
 
 void BWin32ThreadImp::Join()
 {
-	if (finishedEvent != NULL)
-		WaitForSingleObject(finishedEvent, INFINITE);
+    if (finishedEvent != NULL)
+    {
+        WaitForSingleObject(finishedEvent, INFINITE);
+    }
 }
 
 bool BWin32ThreadImp::Start(BThread *aThreadObject)
 {
-  DWORD threadId; // necessary for Win95/98/ME
+    DWORD threadId; // necessary for Win95/98/ME
 
-  pThreadObj = aThreadObject;
-  hThread = CreateThread(NULL, 0,
-		(tThreadProc)BWin32ThreadImp::RunImp, this, 0, &threadId);
-  // return true if thread successfully has been created
-  return (hThread != NULL);
+    pThreadObj = aThreadObject;
+    hThread = CreateThread(NULL, 0, (tThreadProc)BWin32ThreadImp::RunImp,
+                           this, 0, &threadId);
+    // return true if thread successfully has been created
+    return (hThread != NULL);
 }
 
 bool BWin32ThreadImp::IsFinished()
 {
-  return finished;
+    return finished;
 }
 
 void BWin32ThreadImp::Exit(void *)
 {
-  // Attention: this function call will never return!
-  finished = true;
-  ExitThread(0);
+    // Attention: this function call will never return!
+    finished = true;
+    ExitThread(0);
 }
 
 // this static function is the thread procedure to
 // be called with Start(...)
 unsigned int BWin32ThreadImp::RunImp(BWin32ThreadImp *p)
 {
-  if (p != NULL)
-  {
-    p->finished = false;
-    if (p->pThreadObj != NULL)
-      p->pThreadObj->Run();
-    p->finished = true;
-    if (p->finishedEvent != NULL)
-      SetEvent(p->finishedEvent);
-  }
-  return 0;
+    if (p != NULL)
+    {
+        p->finished = false;
+
+        if (p->pThreadObj != NULL)
+        {
+            p->pThreadObj->Run();
+        }
+
+        p->finished = true;
+
+        if (p->finishedEvent != NULL)
+        {
+            SetEvent(p->finishedEvent);
+        }
+    }
+
+    return 0;
 }
 
 #endif

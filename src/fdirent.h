@@ -29,85 +29,122 @@
 #include "bdate.h"
 //#include <new>
 
-enum flexFileAttributes {
-	FLX_READONLY	= 0x80,
-	FLX_NODELETE	= 0x40,
-	FLX_NOREAD	= 0x20,
-	FLX_NOCAT	= 0x10,
-	FLX_RANDOM	= 0x02
+enum flexFileAttributes
+{
+    FLX_READONLY    = 0x80,
+    FLX_NODELETE    = 0x40,
+    FLX_NOREAD  = 0x20,
+    FLX_NOCAT   = 0x10,
+    FLX_RANDOM  = 0x02
 };
 
-enum flexFileStatus {
-	FLX_EMPTY	= 0x1
+enum flexFileStatus
+{
+    FLX_EMPTY   = 0x1
 };
 
 
-const int	FLEX_BASEFILENAME_LENGTH = 8;
-const int	FLEX_FILEEXT_LENGTH      = 3;
+const int   FLEX_BASEFILENAME_LENGTH = 8;
+const int   FLEX_FILEEXT_LENGTH      = 3;
 
 
-class FlexDirEntry {
+class FlexDirEntry
+{
 
 private:
 
-	int		size;
-	int		attributes;
-	int		sectorMap;
-	int		startTrk, startSec;
-	int		endTrk, endSec;
-	int		status;
-	BDate	date;
-	BString	fileName;
-	static char *fileDescription[];
+    int     size;
+    int     attributes;
+    int     sectorMap;
+    int     startTrk, startSec;
+    int     endTrk, endSec;
+    int     status;
+    BDate   date;
+    BString fileName;
+    static char *fileDescription[];
 
 public:
-	FlexDirEntry();			// public constructor
-	virtual ~FlexDirEntry();	// public destructor
-	FlexDirEntry(const FlexDirEntry& de);
+    FlexDirEntry();         // public constructor
+    virtual ~FlexDirEntry();    // public destructor
+    FlexDirEntry(const FlexDirEntry &de);
 
-	void	CopyFrom(const FlexDirEntry& de);
-	const BDate& GetDate(void) const;
-	void	SetDate(const BDate& date);
-	void	SetDate(int d, int m, int y);
-	void	SetStartTrkSec(int t, int s);
-	void	GetStartTrkSec(int *t, int *s);
-	void	SetEndTrkSec(int t, int s);
-	void	GetEndTrkSec(int *t, int *s);
-	void	SetTotalFileName(const char *fileName);
-	const BString& GetTotalFileName(void) const;
-	BString GetFileName(void) const;
-	BString GetFileExt(void) const;
-	void	SetSize(int size);
-	int		GetSize(void);
-	void	SetAttributes(int attr);
-	void	SetAttributes(int setMask, int clearMask);
-	int		GetAttributes(void);
-	const BString GetAttributesString(void);
-	int		GetSectorMap(void) const;
-	int		IsRandom(void) const;
-	void	SetSectorMap(int aSectorMap);
-	int		IsEmpty(void);
-	void	SetEmpty(void);
-	void	ClearEmpty(void);
-	FlexDirEntry& operator = (const FlexDirEntry& de);
-	
+    void    CopyFrom(const FlexDirEntry &de);
+    const BDate &GetDate(void) const;
+    void    SetDate(const BDate &date);
+    void    SetDate(int d, int m, int y);
+    void    SetStartTrkSec(int t, int s);
+    void    GetStartTrkSec(int *t, int *s);
+    void    SetEndTrkSec(int t, int s);
+    void    GetEndTrkSec(int *t, int *s);
+    void    SetTotalFileName(const char *fileName);
+    const BString &GetTotalFileName(void) const;
+    BString GetFileName(void) const;
+    BString GetFileExt(void) const;
+    void    SetSize(int size);
+    int     GetSize(void);
+    void    SetAttributes(int attr);
+    void    SetAttributes(int setMask, int clearMask);
+    int     GetAttributes(void);
+    const BString GetAttributesString(void);
+    int     GetSectorMap(void) const;
+    int     IsRandom(void) const;
+    void    SetSectorMap(int aSectorMap);
+    int     IsEmpty(void);
+    void    SetEmpty(void);
+    void    ClearEmpty(void);
+    FlexDirEntry &operator = (const FlexDirEntry &de);
+
 };  // class FlexDirEntry
 
-inline void FlexDirEntry::SetSize(int s) { size = s; }
-inline int FlexDirEntry::GetSize(void) { return size; }
+inline void FlexDirEntry::SetSize(int s)
+{
+    size = s;
+}
+inline int FlexDirEntry::GetSize(void)
+{
+    return size;
+}
 
-inline void FlexDirEntry::SetAttributes(int a) { attributes = a; }
-inline int FlexDirEntry::GetAttributes(void) { return attributes; }
+inline void FlexDirEntry::SetAttributes(int a)
+{
+    attributes = a;
+}
+inline int FlexDirEntry::GetAttributes(void)
+{
+    return attributes;
+}
 
-inline void FlexDirEntry::SetEmpty(void) { status |= FLX_EMPTY; }
-inline void FlexDirEntry::ClearEmpty(void) { status &= ~FLX_EMPTY; }
-inline int FlexDirEntry::IsEmpty(void) { return status & FLX_EMPTY; }
+inline void FlexDirEntry::SetEmpty(void)
+{
+    status |= FLX_EMPTY;
+}
+inline void FlexDirEntry::ClearEmpty(void)
+{
+    status &= ~FLX_EMPTY;
+}
+inline int FlexDirEntry::IsEmpty(void)
+{
+    return status & FLX_EMPTY;
+}
 
-inline int FlexDirEntry::IsRandom(void) const { return (sectorMap != 0); }
-inline void FlexDirEntry::SetSectorMap(int aSectorMap) { sectorMap = aSectorMap; }
-inline int FlexDirEntry::GetSectorMap(void) const { return sectorMap; }
+inline int FlexDirEntry::IsRandom(void) const
+{
+    return (sectorMap != 0);
+}
+inline void FlexDirEntry::SetSectorMap(int aSectorMap)
+{
+    sectorMap = aSectorMap;
+}
+inline int FlexDirEntry::GetSectorMap(void) const
+{
+    return sectorMap;
+}
 
-inline FlexDirEntry& FlexDirEntry::operator = (const FlexDirEntry& de) { CopyFrom(de); return *this; }
+inline FlexDirEntry &FlexDirEntry::operator = (const FlexDirEntry &de)
+{
+    CopyFrom(de);
+    return *this;
+}
 
 #endif // __fdirent_h__
 

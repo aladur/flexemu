@@ -25,102 +25,136 @@
 #include "bintervl.h"
 
 
-template <class Item>BList<Item>::BList(const BList &i) : next(NULL), previous(NULL), item(i.item)
+template <class Item>BList<Item>::BList(const BList &i) : next(NULL),
+    previous(NULL), item(i.item)
 {
 }
 
-template <class Item> BList<Item>::BList(const Item &i) : next(NULL), previous(NULL), item(i)
+template <class Item> BList<Item>::BList(const Item &i) : next(NULL),
+    previous(NULL), item(i)
 {
 }
 
 template <class Item>BList<Item>::~BList()
 {
-	delete next;
+    delete next;
 }
 
 template <class Item>BList<Item>const *BList<Item>::Find(const Item &i) const
 {
-	const BList<Item> *l;
+    const BList<Item> *l;
 
-	l = this;
-	do {
-		if (l->item == i)
-			return l;
-		l = l->next;
-	} while (l);
-	return NULL;
+    l = this;
+
+    do
+    {
+        if (l->item == i)
+        {
+            return l;
+        }
+
+        l = l->next;
+    }
+    while (l);
+
+    return NULL;
 }
 
-template <class Item>BList<Item>const *BList<Item>::ReverseFind(const Item &i) const
+template <class Item>BList<Item>const *BList<Item>::ReverseFind(
+    const Item &i) const
 {
-	if (item == i)
-		return this;
-	if (previous)
-		return previous->Find(i);
-	return NULL;
+    if (item == i)
+    {
+        return this;
+    }
+
+    if (previous)
+    {
+        return previous->Find(i);
+    }
+
+    return NULL;
 }
 
 template <class Item>bool BList<Item>::Contains(const Item &i) const
 {
-	return Find(i) != NULL;
+    return Find(i) != NULL;
 }
 
 template <class Item>bool BList<Item>::ReverseContains(const Item &i) const
 {
-	return ReverseFind(i) != NULL;
+    return ReverseFind(i) != NULL;
 }
 
 template <class Item>void BList<Item>::Unlink()
 {
-	if (previous)
-		previous->next = next;
-	if (next)
-		next->previous = previous;
-	previous = NULL;
-	next = NULL;
+    if (previous)
+    {
+        previous->next = next;
+    }
+
+    if (next)
+    {
+        next->previous = previous;
+    }
+
+    previous = NULL;
+    next = NULL;
 }
 
 // insert a new linked item before *this
 template <class Item>void BList<Item>::Insert(const Item &i)
 {
-	BList *newLink;
+    BList *newLink;
 
-	newLink = new BList<Item>(i);
-	if (previous)
-		previous->next = newLink;
-	newLink->previous = previous;
-	newLink->next = this;
-	previous = newLink;
+    newLink = new BList<Item>(i);
+
+    if (previous)
+    {
+        previous->next = newLink;
+    }
+
+    newLink->previous = previous;
+    newLink->next = this;
+    previous = newLink;
 }
 
 // append a new linked item after the last link in the list
 template <class Item>void BList<Item>::Append(const Item &i)
 {
-	BList<Item> *link;
+    BList<Item> *link;
 
-	link = GetLast();
-	link->next = new BList<Item>(i);
-	link->next->previous = link;
+    link = GetLast();
+    link->next = new BList<Item>(i);
+    link->next->previous = link;
 }
 
 template <class Item>BList<Item> *BList<Item>::GetFirst()
 {
-	BList<Item> *link;
+    BList<Item> *link;
 
-	link = this;
-	while (link->previous)
-		link = link->previous;
-	return link;
+    link = this;
+
+    while (link->previous)
+    {
+        link = link->previous;
+    }
+
+    return link;
 }
 
 template <class Item>BList<Item> *BList<Item>::GetLast()
 {
-	BList<Item> *link;
+    BList<Item> *link;
 
-	link = this;
-	while (link->next)
-		link = link->next;
-	return link;
+    link = this;
+
+    while (link->next)
+    {
+        link = link->next;
+    }
+
+    return link;
 }
 
 // explicit instanciation of complete template class:

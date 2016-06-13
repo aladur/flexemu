@@ -23,40 +23,56 @@
 #define __blist_h__
 
 
-template <class Item> class BList {
+template <class Item> class BList
+{
 
 private:
 
-	BList *next;
-	BList *previous;
-	Item  item;
+    BList *next;
+    BList *previous;
+    Item  item;
 
 public:
 
-	BList(const BList &i);		// public constructor
-	BList(const Item &i);		// public constructor
-	~BList();			// public destructor
+    BList(const BList &i);      // public constructor
+    BList(const Item &i);       // public constructor
+    ~BList();           // public destructor
 
-	BList *GetFirst();
-	BList *GetLast();
-	BList *GetNext() const;
-	void SetNext(BList *next);
-	void SetPrevious(BList *previous);
-	BList *GetPrevious() const;
-	Item &GetItem();
-	const BList *Find(const Item &i) const;
-	const BList *ReverseFind(const Item &i) const;
-	bool Contains(const Item &i) const;
-	bool ReverseContains(const Item &i) const;
-	void Insert(const Item &i);// Insert a new item before the current item
-	void Append(const Item &i);	// Add a new item at the end of the lin. list
-	void Unlink();
+    BList *GetFirst();
+    BList *GetLast();
+    BList *GetNext() const;
+    void SetNext(BList *next);
+    void SetPrevious(BList *previous);
+    BList *GetPrevious() const;
+    Item &GetItem();
+    const BList *Find(const Item &i) const;
+    const BList *ReverseFind(const Item &i) const;
+    bool Contains(const Item &i) const;
+    bool ReverseContains(const Item &i) const;
+    void Insert(const Item &i);// Insert a new item before the current item
+    void Append(const Item &i); // Add a new item at the end of the lin. list
+    void Unlink();
 }; // class BList
 
-template <class Item>inline BList<Item> *BList<Item>::GetNext() const { return next; }
-template <class Item>inline BList<Item> *BList<Item>::GetPrevious() const { return previous; }
-template <class Item>inline Item &BList<Item>::GetItem() { return item; }
-template <class Item>inline void BList<Item>::SetNext(BList *l) { next = l; }
-template <class Item>inline void BList<Item>::SetPrevious(BList *l) { previous = l; }
+template <class Item>inline BList<Item> *BList<Item>::GetNext() const
+{
+    return next;
+}
+template <class Item>inline BList<Item> *BList<Item>::GetPrevious() const
+{
+    return previous;
+}
+template <class Item>inline Item &BList<Item>::GetItem()
+{
+    return item;
+}
+template <class Item>inline void BList<Item>::SetNext(BList *l)
+{
+    next = l;
+}
+template <class Item>inline void BList<Item>::SetPrevious(BList *l)
+{
+    previous = l;
+}
 
 #endif // #ifndef __blist_h__

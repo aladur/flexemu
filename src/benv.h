@@ -25,17 +25,18 @@
 
 #include "bstring.h"
 
-class BEnvironment {
+class BEnvironment
+{
 public:
-	BEnvironment();
-	~BEnvironment();
+    BEnvironment();
+    ~BEnvironment();
 
-	bool RemoveKey(const char *key);
-	bool SetValue(const char *key, const char *value);
-	bool SetValue(const char *key, int value);
-//	bool GetValue(const char *key, char **pValue);
-	bool GetValue(const char *key, BString &value);
-	bool GetValue(const char *key, int *pValue);
+    bool RemoveKey(const char *key);
+    bool SetValue(const char *key, const char *value);
+    bool SetValue(const char *key, int value);
+    //  bool GetValue(const char *key, char **pValue);
+    bool GetValue(const char *key, BString &value);
+    bool GetValue(const char *key, int *pValue);
 };
 
 #endif

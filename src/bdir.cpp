@@ -21,29 +21,29 @@
 */
 
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
 #endif
 #include "misc1.h"
 #include <stdio.h>
 #include <sys/stat.h>
 #ifdef HAVE_UNISTD_H
-  #include <sys/types.h>
-  #include <unistd.h>
+    #include <sys/types.h>
+    #include <unistd.h>
 #endif
 #ifdef HAVE_DIRENT_H
-  #include <sys/types.h>
-  #include <dirent.h>
-  #define NAMLEN(dirent) strlen((dirent)->d_name)
+    #include <sys/types.h>
+    #include <dirent.h>
+    #define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-  #define dirent direct
-  #define NAMLEN(dirent) (dirent)->d_namlen
+    #define dirent direct
+    #define NAMLEN(dirent) (dirent)->d_namlen
 #endif
 
 #ifdef WIN32
-# ifdef _MSC_VER
-#  include <direct.h>
-# endif
+    #ifdef _MSC_VER
+        #include <direct.h>
+    #endif
 #endif
 
 #include "bdir.h"
@@ -66,206 +66,277 @@ BDirectory::~BDirectory()
 
 bool BDirectory::Exists(const BString &aPath)
 {
-	struct stat sbuf;
+    struct stat sbuf;
 
-	return !stat(aPath, &sbuf) && (S_ISDIR(sbuf.st_mode));
+    return !stat(aPath, &sbuf) && (S_ISDIR(sbuf.st_mode));
 }
 
 bool BDirectory::Remove(const BString &aPath)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
-	return _rmdir(aPath) >= 0;
+    return _rmdir(aPath) >= 0;
 #endif
 #if defined(UNIX) || defined(__CYGWIN32)
-	return rmdir(aPath) >= 0;
+    return rmdir(aPath) >= 0;
 #endif
 }
 
 bool BDirectory::Create(const BString &aPath, int mode /* = 0x0755 */)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
-        return _mkdir(aPath) >= 0;
+    return _mkdir(aPath) >= 0;
 #endif
 #if defined(UNIX) || defined(__CYGWIN32)
-        return mkdir(aPath, mode) >= 0;
+    return mkdir(aPath, mode) >= 0;
 #endif
 }
 
 #ifdef WIN32
 bool BDirectory::RemoveRecursive(const BString &aPath)
 {
-	BString         basePath;
-	BString         dirEntry;
-	HANDLE          hdl;
-	WIN32_FIND_DATA pentry;
+    BString         basePath;
+    BString         dirEntry;
+    HANDLE          hdl;
+    WIN32_FIND_DATA pentry;
 
-	basePath = aPath;
-	if (basePath.lastchar() != PATHSEPARATOR) {
-		basePath += PATHSEPARATOR;
-	}
-	if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) != INVALID_HANDLE_VALUE) {
-		do {
-			dirEntry = basePath + pentry.cFileName;
-			if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-				if (pentry.cFileName[0] != '.')
-					RemoveRecursive(dirEntry);
-			} else
-				remove(dirEntry);
-		} while (FindNextFile(hdl, &pentry) != 0);
-		FindClose(hdl);
-	}
-	BDirectory::Remove(basePath);
-	return true;
+    basePath = aPath;
+
+    if (basePath.lastchar() != PATHSEPARATOR)
+    {
+        basePath += PATHSEPARATOR;
+    }
+
+    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
+        INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            dirEntry = basePath + pentry.cFileName;
+
+            if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+            {
+                if (pentry.cFileName[0] != '.')
+                {
+                    RemoveRecursive(dirEntry);
+                }
+            }
+            else
+            {
+                remove(dirEntry);
+            }
+        }
+        while (FindNextFile(hdl, &pentry) != 0);
+
+        FindClose(hdl);
+    }
+
+    BDirectory::Remove(basePath);
+    return true;
 }
 #else
 bool BDirectory::RemoveRecursive(const BString &aPath)
 {
-	BString         basePath;
-	BString         dirEntry;
-	DIR             *pd;
-	struct stat     sbuf;
+    BString         basePath;
+    BString         dirEntry;
+    DIR             *pd;
+    struct stat     sbuf;
 
-	basePath = aPath;
-	if (basePath.lastchar() == PATHSEPARATOR)
-		basePath.at(0, basePath.length() - 1, basePath);
-	if ((pd = opendir(basePath)) != NULL) {
-	        struct dirent   *pentry;
+    basePath = aPath;
 
-		while ((pentry = readdir(pd)) != NULL) {
-			dirEntry = basePath + PATHSEPARATORSTRING +
-				pentry->d_name;
-			if (!stat(dirEntry, &sbuf) && (S_ISREG(sbuf.st_mode))) {
-				remove(dirEntry);
-			} else
-			if (S_ISDIR(sbuf.st_mode) && pentry->d_name[0] != '.') {
-				RemoveRecursive(dirEntry);
-			}
-		} // while
-		closedir(pd);
-	}
-	BDirectory::Remove(basePath);
-	return true;
+    if (basePath.lastchar() == PATHSEPARATOR)
+    {
+        basePath.at(0, basePath.length() - 1, basePath);
+    }
+
+    if ((pd = opendir(basePath)) != NULL)
+    {
+        struct dirent   *pentry;
+
+        while ((pentry = readdir(pd)) != NULL)
+        {
+            dirEntry = basePath + PATHSEPARATORSTRING +
+                       pentry->d_name;
+
+            if (!stat(dirEntry, &sbuf) && (S_ISREG(sbuf.st_mode)))
+            {
+                remove(dirEntry);
+            }
+            else if (S_ISDIR(sbuf.st_mode) && pentry->d_name[0] != '.')
+            {
+                RemoveRecursive(dirEntry);
+            }
+        } // while
+
+        closedir(pd);
+    }
+
+    BDirectory::Remove(basePath);
+    return true;
 }
 #endif
 
 tPathList BDirectory::GetSubDirectories(const BString &aPath)
 {
-	std::vector<BString> subDirList;
+    std::vector<BString> subDirList;
 
-	BString         basePath;
+    BString         basePath;
 #ifdef WIN32
-	HANDLE          hdl;
-	WIN32_FIND_DATA pentry;
+    HANDLE          hdl;
+    WIN32_FIND_DATA pentry;
 
-	basePath = aPath;
-	if (basePath.lastchar() != PATHSEPARATOR) {
-		basePath += PATHSEPARATOR;
-	}
-	if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) != INVALID_HANDLE_VALUE) {
-		do {
-			if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
+    basePath = aPath;
+
+    if (basePath.lastchar() != PATHSEPARATOR)
+    {
+        basePath += PATHSEPARATOR;
+    }
+
+    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
+        INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
                 pentry.cFileName[0] != '.')
-        subDirList.push_back(pentry.cFileName);
-    } while (FindNextFile(hdl, &pentry) != 0);
-		FindClose(hdl);
-	}
+            {
+                subDirList.push_back(pentry.cFileName);
+            }
+        }
+        while (FindNextFile(hdl, &pentry) != 0);
+
+        FindClose(hdl);
+    }
+
 #else
-	BString         dirEntry;
-	DIR             *pd;
-	struct stat     sbuf;
+    BString         dirEntry;
+    DIR             *pd;
+    struct stat     sbuf;
 
-	basePath = aPath;
-	if (basePath.lastchar() == PATHSEPARATOR)
-		basePath.at(0, basePath.length() - 1, basePath);
-	if ((pd = opendir(basePath)) != NULL) {
-	        struct dirent   *pentry;
+    basePath = aPath;
 
-		while ((pentry = readdir(pd)) != NULL) {
-			dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
-			if (stat(dirEntry, &sbuf) == 0	&&
-          		    S_ISDIR(sbuf.st_mode)	&&
-          		    pentry->d_name[0] != '.')
-        		   subDirList.push_back(pentry->d_name);
-		} // while
-		closedir(pd);
-	}
+    if (basePath.lastchar() == PATHSEPARATOR)
+    {
+        basePath.at(0, basePath.length() - 1, basePath);
+    }
+
+    if ((pd = opendir(basePath)) != NULL)
+    {
+        struct dirent   *pentry;
+
+        while ((pentry = readdir(pd)) != NULL)
+        {
+            dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
+
+            if (stat(dirEntry, &sbuf) == 0  &&
+                S_ISDIR(sbuf.st_mode)   &&
+                pentry->d_name[0] != '.')
+            {
+                subDirList.push_back(pentry->d_name);
+            }
+        } // while
+
+        closedir(pd);
+    }
+
 #endif
-  return subDirList;
+    return subDirList;
 }
 
 tPathList BDirectory::GetFiles(const BString &aPath)
 {
-	std::vector<BString> fileList;
+    std::vector<BString> fileList;
 
-	BString         basePath;
+    BString         basePath;
 #ifdef WIN32
-	HANDLE          hdl;
-	WIN32_FIND_DATA pentry;
+    HANDLE          hdl;
+    WIN32_FIND_DATA pentry;
 
-	basePath = aPath;
-	if (basePath.lastchar() != PATHSEPARATOR) {
-		basePath += PATHSEPARATOR;
-	}
-	if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) != INVALID_HANDLE_VALUE) {
-		do {
-			if ((pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 &&
-				(pentry.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE  ) == 0 && 
-				(pentry.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM   ) == 0)
-        fileList.push_back(pentry.cFileName);
-    } while (FindNextFile(hdl, &pentry) != 0);
-		FindClose(hdl);
-	}
+    basePath = aPath;
+
+    if (basePath.lastchar() != PATHSEPARATOR)
+    {
+        basePath += PATHSEPARATOR;
+    }
+
+    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
+        INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if ((pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 &&
+                (pentry.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) == 0 &&
+                (pentry.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0)
+            {
+                fileList.push_back(pentry.cFileName);
+            }
+        }
+        while (FindNextFile(hdl, &pentry) != 0);
+
+        FindClose(hdl);
+    }
+
 #else
-	BString         dirEntry;
-	DIR             *pd;
-	struct stat     sbuf;
+    BString         dirEntry;
+    DIR             *pd;
+    struct stat     sbuf;
 
-	basePath = aPath;
-	if (basePath.lastchar() == PATHSEPARATOR)
-		basePath.at(0, basePath.length() - 1, basePath);
-	if ((pd = opendir(basePath)) != NULL) {
-		struct dirent *pentry;
+    basePath = aPath;
 
-		while ((pentry = readdir(pd)) != NULL) {
-			dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
-			if (stat(dirEntry, &sbuf) == 0 && S_ISREG(sbuf.st_mode))
-        			fileList.push_back(pentry->d_name);
-		} // while
-		closedir(pd);
-	}
+    if (basePath.lastchar() == PATHSEPARATOR)
+    {
+        basePath.at(0, basePath.length() - 1, basePath);
+    }
+
+    if ((pd = opendir(basePath)) != NULL)
+    {
+        struct dirent *pentry;
+
+        while ((pentry = readdir(pd)) != NULL)
+        {
+            dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
+
+            if (stat(dirEntry, &sbuf) == 0 && S_ISREG(sbuf.st_mode))
+            {
+                fileList.push_back(pentry->d_name);
+            }
+        } // while
+
+        closedir(pd);
+    }
+
 #endif
-  return fileList;
-}  
+    return fileList;
+}
 /********************************************
  member functions
 ********************************************/
 
 bool BDirectory::Exists(void) const
 {
-	return Exists(m_path);
+    return Exists(m_path);
 }
 
 bool BDirectory::Remove(void) const
 {
-	return Remove(m_path);
+    return Remove(m_path);
 }
 
 bool BDirectory::RemoveRecursive(void) const
 {
-	return RemoveRecursive(m_path);
+    return RemoveRecursive(m_path);
 }
 
 bool BDirectory::Create(int mode /* = 0x0755 */) const
 {
-	return Create(m_path, mode);
+    return Create(m_path, mode);
 }
 
 tPathList BDirectory::GetSubDirectories() const
 {
-  return GetSubDirectories(m_path);
+    return GetSubDirectories(m_path);
 }
 
 tPathList BDirectory::GetFiles() const
 {
-  return GetFiles(m_path);
+    return GetFiles(m_path);
 }

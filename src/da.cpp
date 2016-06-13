@@ -32,58 +32,89 @@ Disassembler::Disassembler() : da(NULL)
 
 Disassembler::~Disassembler()
 {
-	delete da;
+    delete da;
 }
 
-int Disassembler::DisassembleOneLine(const Byte *pMemory, DWord pc, DWord *pFlags, DWord *pAddr, char **pb1, char **pb2)
+int Disassembler::DisassembleOneLine(const Byte *pMemory, DWord pc,
+                                     DWord *pFlags, DWord *pAddr, char **pb1,
+                                     char **pb2)
 {
-	if (!da)
-		return 0;
-	return da->Disassemble(pMemory, pc, pFlags, pAddr, pb1, pb2);
+    if (!da)
+    {
+        return 0;
+    }
+
+    return da->Disassemble(pMemory, pc, pFlags, pAddr, pb1, pb2);
 }
 
-void Disassembler::DisassembleWithConfig(DisassemblerConfig &aConfig, BMemoryBuffer *pMemBuf)
+void Disassembler::DisassembleWithConfig(DisassemblerConfig &aConfig,
+        BMemoryBuffer *pMemBuf)
 {
-	DWord startAddress, length;
+    DWord startAddress, length;
 
-	while (aConfig.GetFirstEntryPoint(&startAddress)) {
-		const Byte *pMemory = pMemBuf->GetBuffer(startAddress);
-		if (pMemory) {
-			length = DisassembleUptoEnd(aConfig, pMemory, startAddress);
-			if (length)
-				aConfig.Add(BInterval(startAddress, startAddress+length-1),
-				DisassemblerConfig::DISCONF_CODE);
-		}
-		aConfig.RemoveEntryPoint(startAddress);
-		if (aConfig.GetFirstEntryPoint(&startAddress)) {
-			do {
-				if (aConfig.Contains(startAddress, DisassemblerConfig::DISCONF_CODE))
-					aConfig.RemoveEntryPoint(startAddress);
-			} while (aConfig.GetNextEntryPoint(&startAddress));
-		}
-	}
+    while (aConfig.GetFirstEntryPoint(&startAddress))
+    {
+        const Byte *pMemory = pMemBuf->GetBuffer(startAddress);
+
+        if (pMemory)
+        {
+            length = DisassembleUptoEnd(aConfig, pMemory, startAddress);
+
+            if (length)
+                aConfig.Add(BInterval(startAddress, startAddress + length - 1),
+                            DisassemblerConfig::DISCONF_CODE);
+        }
+
+        aConfig.RemoveEntryPoint(startAddress);
+
+        if (aConfig.GetFirstEntryPoint(&startAddress))
+        {
+            do
+            {
+                if (aConfig.Contains(startAddress,
+                                     DisassemblerConfig::DISCONF_CODE))
+                {
+                    aConfig.RemoveEntryPoint(startAddress);
+                }
+            }
+            while (aConfig.GetNextEntryPoint(&startAddress));
+        }
+    }
 }
 
-int	Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig, const Byte *pMemory, DWord pc)
+int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
+                                     const Byte *pMemory, DWord pc)
 {
-	DWord flags;
-	DWord length = 0;
-	DWord addr;
-	BString label;
-	BIdentifier identifier;
-	char *p1, *p2;
+    DWord flags;
+    DWord length = 0;
+    DWord addr;
+    BString label;
+    BIdentifier identifier;
+    char *p1, *p2;
 
-	if (!da || !pMemory)
-		return length;
-	do {
-		length += da->Disassemble(pMemory+length, pc+length, &flags, &addr, &p1, &p2);
-		if (flags | DA_LABEL_ADDR) {
-			label.printf("L%0.4X", addr);
-			identifier.SetTo(addr, (const char *)label);
-			aConfig.AddLabel(identifier);
-		}
-		if (flags | DA_JUMP_ADDR)
-			aConfig.AddEntryPoint(addr);
-	} while (!((flags | DA_JUMP) || (flags | DA_ILLEGAL)));
-	return length;
+    if (!da || !pMemory)
+    {
+        return length;
+    }
+
+    do
+    {
+        length += da->Disassemble(pMemory + length, pc + length, &flags, &addr,
+                                  &p1, &p2);
+
+        if (flags | DA_LABEL_ADDR)
+        {
+            label.printf("L%0.4X", addr);
+            identifier.SetTo(addr, (const char *)label);
+            aConfig.AddLabel(identifier);
+        }
+
+        if (flags | DA_JUMP_ADDR)
+        {
+            aConfig.AddEntryPoint(addr);
+        }
+    }
+    while (!((flags | DA_JUMP) || (flags | DA_ILLEGAL)));
+
+    return length;
 }

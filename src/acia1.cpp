@@ -28,8 +28,8 @@
 
 Acia1::Acia1(Inout *x_io, Mc6809 *x_cpu)
 {
-	cpu = x_cpu;
-	io  = x_io;
+    cpu = x_cpu;
+    io  = x_io;
 }
 
 Acia1::~Acia1()
@@ -38,37 +38,41 @@ Acia1::~Acia1()
 
 void Acia1::resetIo(void)
 {
-	Mc6850::resetIo();
-	io->reset_serial();
+    Mc6850::resetIo();
+    io->reset_serial();
 }
 
 void Acia1::requestInput(void)
 {
-	if (io->poll_serial()) {
-		activeTransition();
-	}
+    if (io->poll_serial())
+    {
+        activeTransition();
+    }
 }
 
 Byte Acia1::readInput(void)
 {
-	Byte temp;
+    Byte temp;
 
-	temp = 0;
-	if (io->poll_serial()) {
-		temp = io->read_ch_serial();
-	}
-	return temp;
+    temp = 0;
+
+    if (io->poll_serial())
+    {
+        temp = io->read_ch_serial();
+    }
+
+    return temp;
 }
 
 void Acia1::writeOutput(Byte val)
 {
-	io->write_ch_serial(val);
+    io->write_ch_serial(val);
 }
 
 
 void Acia1::set_irq(void)
 {
-	Mc6850::set_irq();
-	cpu->set_irq();
+    Mc6850::set_irq();
+    cpu->set_irq();
 }
 

@@ -1,7 +1,7 @@
 /*
     debug.h
 
-    
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 1997-2004  W. Schwotzer
 
@@ -28,19 +28,19 @@
 #include <stdio.h>
 
 #define LOG_TEMPLATE(print_line)\
-	{\
-		FILE *logfp;\
-		logfp = fopen(DEBUG_FILE, "a");\
-		if (logfp != NULL) {\
-			print_line;\
-			fclose(logfp);\
-		}\
-	}
+    {\
+        FILE *logfp;\
+        logfp = fopen(DEBUG_FILE, "a");\
+        if (logfp != NULL) {\
+            print_line;\
+            fclose(logfp);\
+        }\
+    }
 
-#define LOG(format)			LOG_TEMPLATE(fprintf(logfp, format))
-#define LOG_X(format, a)		LOG_TEMPLATE(fprintf(logfp, format, a))
-#define LOG_XX(format, a, b)		LOG_TEMPLATE(fprintf(logfp, format, a, b))
-#define LOG_XXX(format, a, b, c)	LOG_TEMPLATE(fprintf(logfp, format, a, b, c))
+#define LOG(format)              LOG_TEMPLATE(fprintf(logfp, format))
+#define LOG_X(format, a)         LOG_TEMPLATE(fprintf(logfp, format, a))
+#define LOG_XX(format, a, b)     LOG_TEMPLATE(fprintf(logfp, format, a, b))
+#define LOG_XXX(format, a, b, c) LOG_TEMPLATE(fprintf(logfp, format, a, b, c))
 
 
 #endif // __debug_h__

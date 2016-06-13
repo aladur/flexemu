@@ -90,8 +90,9 @@ BEGIN_EVENT_TABLE(FlexParentFrame, wxMDIParentFrame)
 END_EVENT_TABLE()
 
 FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
-                                 const wxString &title, const wxPoint &pos, const wxSize &size,
-                                 const long style) : wxMDIParentFrame(parent, id, title, pos, size, style)
+                                 const wxString &title, const wxPoint &pos,
+                                 const wxSize &size, const long style)
+    : wxMDIParentFrame(parent, id, title, pos, size, style)
 {
     // give it an icon
 #ifdef __WXMSW__
@@ -175,16 +176,19 @@ void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
 
     toolBar->AddTool(MDI_NEW_CONTAINER, _("New File Container"),
                      *bitmaps[0], wxNullBitmap);
-    //toolBar->AddTool( MDI_NEW_CONTAINER, *bitmaps[0], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("New File Container"));
+    //toolBar->AddTool( MDI_NEW_CONTAINER, *bitmaps[0], wxNullBitmap, FALSE,
+    //                currentX, -1, (wxObject *) NULL, _("New File Container"));
     toolBar->SetToolLongHelp(MDI_NEW_CONTAINER, "Create a new File Container");
     currentX += width + 5;
-    //toolBar->AddTool(MDI_OPEN_CONTAINER, *bitmaps[1], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("Open File Container"));
+    //toolBar->AddTool(MDI_OPEN_CONTAINER, *bitmaps[1], wxNullBitmap, FALSE,
+    //               currentX, -1, (wxObject *) NULL, _("Open File Container"));
     toolBar->AddTool(MDI_OPEN_CONTAINER, _("Open File Container"),
                      *bitmaps[1], wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_OPEN_CONTAINER,
                              "Open an existing File Container");
     currentX += width + 5;
-    //toolBar->AddTool(MDI_OPEN_DIRECTORY, *bitmaps[2], wxNullBitmap, FALSE, currentX, -1, (wxObject *) NULL, _("Open Directory"));
+    //toolBar->AddTool(MDI_OPEN_DIRECTORY, *bitmaps[2], wxNullBitmap, FALSE,
+    //                 currentX, -1, (wxObject *) NULL, _("Open Directory"));
     toolBar->AddTool(MDI_OPEN_DIRECTORY, _("Open Directory"),
                      *bitmaps[2], wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_OPEN_DIRECTORY,

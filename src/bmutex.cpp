@@ -26,46 +26,46 @@
 #ifdef UNIX
 BMutex::BMutex()
 {
-   pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&mutex, NULL);
 }
 
 BMutex::~BMutex()
 {
-      // assuming the mutex is not locked any more!
-      pthread_mutex_destroy(&mutex);
+    // assuming the mutex is not locked any more!
+    pthread_mutex_destroy(&mutex);
 }
 
 void BMutex::lock()
 {
-      pthread_mutex_lock(&mutex);
+    pthread_mutex_lock(&mutex);
 }
 
 void BMutex::unlock()
 {
-      pthread_mutex_unlock(&mutex);
+    pthread_mutex_unlock(&mutex);
 }
 #endif
 
 #ifdef WIN32
 BMutex::BMutex() : mutex(NULL)
 {
-   InitializeCriticalSection(&criticalSec);
+    InitializeCriticalSection(&criticalSec);
 }
 
 BMutex::~BMutex()
 {
-   DeleteCriticalSection(&criticalSec);
+    DeleteCriticalSection(&criticalSec);
 }
 
 
 void BMutex::lock()
 {
-   EnterCriticalSection(&criticalSec);
+    EnterCriticalSection(&criticalSec);
 }
 
 void BMutex::unlock()
 {
-   LeaveCriticalSection(&criticalSec);
+    LeaveCriticalSection(&criticalSec);
 }
 #endif
 

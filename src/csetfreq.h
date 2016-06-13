@@ -30,13 +30,13 @@ class Scheduler;
 class CSetFrequency : public BCommand
 {
 
-public: 
-  CSetFrequency(Scheduler &x_sched, float x_frequency);
-  virtual void Execute();
+public:
+    CSetFrequency(Scheduler &x_sched, float x_frequency);
+    virtual void Execute();
 
 protected:
-  Scheduler &scheduler;
-  float frequency;
+    Scheduler &scheduler;
+    float frequency;
 };
 
 #endif

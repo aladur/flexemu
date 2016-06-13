@@ -387,7 +387,8 @@ AbstractGui *Inout::create_gui(int
 #ifdef WIN32
 
                 case GUI_WINDOWS:
-                    gui = new Win32Gui(cpu, memory, schedy, this, video, options);
+                    gui = new Win32Gui(cpu, memory, schedy, this, video,
+                                       options);
                     break;
 #endif
             } // switch

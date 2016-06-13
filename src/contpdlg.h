@@ -25,39 +25,46 @@
 
 #include <wx/dialog.h>
 
-#define IDC_Tracks	101
-#define IDC_Sectors	102
-#define IDC_Path	103
-#define IDC_PathButton	108
+#define IDC_Tracks  101
+#define IDC_Sectors 102
+#define IDC_Path    103
+#define IDC_PathButton  108
 #define IDC_FormatCheckBox 109
 
 class wxTextCtrl;
 class wxRadioBox;
 
-class ContainerPropertiesDialog : public wxDialog  
+class ContainerPropertiesDialog : public wxDialog
 {
 public:
-	ContainerPropertiesDialog(wxWindow *parent,
-		const wxPoint &pos, int tracks = 80, int sectors = 40,
-		const wxString &path = wxT(""));
-	virtual ~ContainerPropertiesDialog();
-	void OnInitDialog(wxInitDialogEvent &event );
-	void OnSelectPath(wxCommandEvent& event );
-	int GetTracks(void);
-	int GetSectors(void);
-	inline const wxString &GetPath(void) { return m_path; };
-	int GetFormat(void) { return m_format; };
+    ContainerPropertiesDialog(wxWindow *parent,
+                              const wxPoint &pos, int tracks = 80,
+                              int sectors = 40,
+                              const wxString &path = wxT(""));
+    virtual ~ContainerPropertiesDialog();
+    void OnInitDialog(wxInitDialogEvent &event);
+    void OnSelectPath(wxCommandEvent &event);
+    int GetTracks(void);
+    int GetSectors(void);
+    inline const wxString &GetPath(void)
+    {
+        return m_path;
+    };
+    int GetFormat(void)
+    {
+        return m_format;
+    };
 
 private:
-	wxString	m_tracks;
-	wxString	m_sectors;
-	wxString	m_path;
-	int		m_format;
+    wxString    m_tracks;
+    wxString    m_sectors;
+    wxString    m_path;
+    int     m_format;
 
-	wxTextCtrl	*c_tracks;
-	wxTextCtrl	*c_sectors;
-	wxTextCtrl	*c_path;
-	wxRadioBox	*c_format;
+    wxTextCtrl  *c_tracks;
+    wxTextCtrl  *c_sectors;
+    wxTextCtrl  *c_path;
+    wxRadioBox  *c_format;
 private:
     DECLARE_EVENT_TABLE()
 };

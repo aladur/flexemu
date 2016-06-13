@@ -1,7 +1,7 @@
 /*
     mc6850.h
 
-    
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 1997-2004  W. Schwotzer
 
@@ -30,44 +30,48 @@
 
 #include "iodevice.h"
 
-class Mc6850 : public IoDevice {
+class Mc6850 : public IoDevice
+{
 
-// Internal registers:
-//
-// cr		control register (write only)
-// sr		status register  (read only)
-// rdr, tdr	receive/transmit data register (read only/write only)
+    // Internal registers:
+    //
+    // cr       control register (write only)
+    // sr       status register  (read only)
+    // rdr, tdr receive/transmit data register (read only/write only)
 
 protected:
 
-	Byte				 cr, sr, rdr, tdr;
+    Byte                 cr, sr, rdr, tdr;
 
 public:
 
-	virtual Byte			 readIo(Word offset);
-	virtual void			 writeIo(Word offset, Byte val);
-	virtual void			 resetIo(void);
-	virtual const char      *getName(void) { return "mc6850"; };
+    virtual Byte             readIo(Word offset);
+    virtual void             writeIo(Word offset, Byte val);
+    virtual void             resetIo(void);
+    virtual const char      *getName(void)
+    {
+        return "mc6850";
+    };
 
-	// actions to be done when a character is ready to be received
-	virtual void			activeTransition(void);
+    // actions to be done when a character is ready to be received
+    virtual void            activeTransition(void);
 
 protected:
-// read data from serial line
-	virtual Byte			readInput(void);
-// write data to serial line
-	virtual void			writeOutput(Byte val);
-// set an interrupt
-	virtual void			set_irq(void);
-// request if character is ready to be read, update status register
-	virtual void			requestInput(void);
+    // read data from serial line
+    virtual Byte            readInput(void);
+    // write data to serial line
+    virtual void            writeOutput(Byte val);
+    // set an interrupt
+    virtual void            set_irq(void);
+    // request if character is ready to be read, update status register
+    virtual void            requestInput(void);
 
-// Public constructor and destructor
+    // Public constructor and destructor
 
 public:
 
-					 Mc6850();
-	virtual				~Mc6850();
+    Mc6850();
+    virtual             ~Mc6850();
 
 };
 

@@ -31,25 +31,28 @@ class FlexFileContainer;
 class FlexFileContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-	FlexFileContainerIteratorImp(FlexFileContainer *);
-	virtual ~FlexFileContainerIteratorImp();
-	bool operator==(const FileContainerIf *aBase) const;
-	void AtEnd();
-	FlexDirEntry &GetDirEntry() { return dirEntry; };
-	bool NextDirEntry(const char *filePattern);
+    FlexFileContainerIteratorImp(FlexFileContainer *);
+    virtual ~FlexFileContainerIteratorImp();
+    bool operator==(const FileContainerIf *aBase) const;
+    void AtEnd();
+    FlexDirEntry &GetDirEntry()
+    {
+        return dirEntry;
+    };
+    bool NextDirEntry(const char *filePattern);
 private:
-        bool DeleteCurrent();
-        bool RenameCurrent(const char *);
-        bool SetDateCurrent(const BDate& date);
-        bool SetAttributesCurrent(int attributes);
+    bool DeleteCurrent();
+    bool RenameCurrent(const char *);
+    bool SetDateCurrent(const BDate &date);
+    bool SetAttributesCurrent(int attributes);
 
-	FlexFileContainerIteratorImp();
-	FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp&);
+    FlexFileContainerIteratorImp();
+    FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &);
 
-	FlexFileContainer *base;
-	int dirIndex, dirSectorTrk, dirSectorSec;
-	struct s_dir_sector dirSector;
-	FlexDirEntry dirEntry;
+    FlexFileContainer *base;
+    int dirIndex, dirSectorTrk, dirSectorSec;
+    struct s_dir_sector dirSector;
+    FlexDirEntry dirEntry;
 };
 
 #endif // __iffilcnt_h__

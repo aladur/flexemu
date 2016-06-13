@@ -31,33 +31,37 @@ class Memory;
 class Inout;
 
 
-class E2video : public IoDevice {
+class E2video : public IoDevice
+{
 
-// Internal registers
+    // Internal registers
 protected:
-	Memory		*memory;
-	Inout		*io;
+    Memory      *memory;
+    Inout       *io;
 
 public:
-	Byte		vico1, vico2;
-	SWord		divided_block;
+    Byte        vico1, vico2;
+    SWord       divided_block;
 
 public:
 
-	void	resetIo(void);
+    void    resetIo(void);
 
-// public interface
+    // public interface
 public:
 
-	Byte	    readIo(Word offset);
-	void	    writeIo(Word offset, Byte val);
-	const char *getName(void) { return "e2video"; };
+    Byte        readIo(Word offset);
+    void        writeIo(Word offset, Byte val);
+    const char *getName(void)
+    {
+        return "e2video";
+    };
 
 
-// Public constructor and destructor
+    // Public constructor and destructor
 public:
-		E2video(Inout *x_io, Memory *x_mem);
-		virtual ~E2video();
+    E2video(Inout *x_io, Memory *x_mem);
+    virtual ~E2video();
 
 };
 

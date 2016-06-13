@@ -315,9 +315,14 @@ struct sOptions
 #define EXTEND8(x) (Word)(SWord)(SByte)(x)
 
 #define DECLARE_MENUCOMMAND(function)   void function(wxCommandEvent& event);
-#define FORWARD_MENUCOMMAND_TO(cls, destination, function)      \
-    void cls::function(wxCommandEvent& event)                                       \
-    {       if (destination)        destination->function(event); }
+#define FORWARD_MENUCOMMAND_TO(cls, destination, function) \
+    void cls::function(wxCommandEvent& event)              \
+    {                                                      \
+        if (destination)                                   \
+        {                                                  \
+            destination->function(event);                  \
+        }                                                  \
+    }
 
 
 #ifdef __cplusplus

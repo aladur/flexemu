@@ -25,42 +25,82 @@
 #include "misc1.h"
 
 
-class BUInt {
+class BUInt
+{
 
 private:
-	DWord value;
+    DWord value;
 
 public:
-	BUInt() : value(0) {};					// public constructor
-	BUInt(const BUInt &ui) : value(ui.value) {};
-	BUInt(DWord i) : value(i) {};
-	BUInt(Word i) : value(i) {};
-	~BUInt() {};			// public destructor
-	
-	const BUInt& operator = (DWord i);
-	bool operator == (DWord i) const;
-	bool operator <= (DWord i) const;
-	bool operator <  (DWord i) const;
-	bool operator >= (DWord i) const;
-	bool operator >  (DWord i) const;
-	bool operator != (DWord i) const;
-	operator DWord () const ;
-	const BUInt operator + (DWord i) const { return BUInt(value + i); };
-	const BUInt operator - (DWord i) const { return BUInt(value - i); };
-	const BUInt &operator += (DWord i);
-	const BUInt &operator -= (DWord i);
+    BUInt() : value(0) {};                  // public constructor
+    BUInt(const BUInt &ui) : value(ui.value) {};
+    BUInt(DWord i) : value(i) {};
+    BUInt(Word i) : value(i) {};
+    ~BUInt() {};            // public destructor
+
+    const BUInt &operator = (DWord i);
+    bool operator == (DWord i) const;
+    bool operator <= (DWord i) const;
+    bool operator < (DWord i) const;
+    bool operator >= (DWord i) const;
+    bool operator > (DWord i) const;
+    bool operator != (DWord i) const;
+    operator DWord() const ;
+    const BUInt operator + (DWord i) const
+    {
+        return BUInt(value + i);
+    };
+    const BUInt operator - (DWord i) const
+    {
+        return BUInt(value - i);
+    };
+    const BUInt &operator += (DWord i);
+    const BUInt &operator -= (DWord i);
 }; // class BUInt
 
-inline const BUInt& BUInt::operator = (DWord i) { value = i; return *this; }
-inline bool BUInt::operator == (DWord i) const { return value == i; }
-inline bool BUInt::operator <= (DWord i) const { return value <= i; }
-inline bool BUInt::operator <  (DWord i) const { return value <  i; }
-inline bool BUInt::operator >= (DWord i) const { return value >= i; }
-inline bool BUInt::operator >  (DWord i) const { return value >  i; }
-inline bool BUInt::operator != (DWord i) const { return value != i; }
-inline BUInt::operator DWord () const { return value; }
-inline const BUInt &BUInt::operator += (DWord i) { value += i; return *this; }
-inline const BUInt &BUInt::operator -= (DWord i) { value -= i; return *this; }
+inline const BUInt &BUInt::operator = (DWord i)
+{
+    value = i;
+    return *this;
+}
+inline bool BUInt::operator == (DWord i) const
+{
+    return value == i;
+}
+inline bool BUInt::operator <= (DWord i) const
+{
+    return value <= i;
+}
+inline bool BUInt::operator < (DWord i) const
+{
+    return value <  i;
+}
+inline bool BUInt::operator >= (DWord i) const
+{
+    return value >= i;
+}
+inline bool BUInt::operator > (DWord i) const
+{
+    return value >  i;
+}
+inline bool BUInt::operator != (DWord i) const
+{
+    return value != i;
+}
+inline BUInt::operator DWord() const
+{
+    return value;
+}
+inline const BUInt &BUInt::operator += (DWord i)
+{
+    value += i;
+    return *this;
+}
+inline const BUInt &BUInt::operator -= (DWord i)
+{
+    value -= i;
+    return *this;
+}
 
 #endif // #ifndef __buint_h__
 

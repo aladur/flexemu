@@ -33,28 +33,32 @@ class Memory;
 class Inout;
 
 
-class Mmu : public IoDevice {
+class Mmu : public IoDevice
+{
 
-// Internal registers
+    // Internal registers
 
 protected:
 
-	Memory		*memory;
-	Inout		*io;
+    Memory      *memory;
+    Inout       *io;
 
 
-// public interface
+    // public interface
 public:
 
-	void		        resetIo(void);
-	virtual Byte	    readIo(Word addr);
-	virtual void	    writeIo(Word addr, Byte val);
-	virtual const char *getName(void) { return "mmu"; };
+    void                resetIo(void);
+    virtual Byte        readIo(Word addr);
+    virtual void        writeIo(Word addr, Byte val);
+    virtual const char *getName(void)
+    {
+        return "mmu";
+    };
 
-// Public constructor and destructor
+    // Public constructor and destructor
 public:
-		 Mmu(Inout *x_io, Memory *x_memory);
-	virtual	~Mmu();
+    Mmu(Inout *x_io, Memory *x_memory);
+    virtual ~Mmu();
 };
 
 #endif // __mmu_h__

@@ -30,40 +30,49 @@
 
 bool FlexCopyManager::autoTextConversion = false;
 
-bool	FlexCopyManager::FileCopy(const char *srcName, const char *destName,
-				FileContainerIf& src, FileContainerIf& dst)
+bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
+                                  FileContainerIf &src, FileContainerIf &dst)
 {
-	FlexFileBuffer fileBuffer;
-	FlexDirEntry de;
+    FlexFileBuffer fileBuffer;
+    FlexDirEntry de;
 
-	if (&src == &dst)
-        {
-            throw FlexException(FERR_COPY_ON_ITSELF, srcName);
-	}
-	if (dst.IsWriteProtected())
-	{
-		FlexContainerInfo info;
+    if (&src == &dst)
+    {
+        throw FlexException(FERR_COPY_ON_ITSELF, srcName);
+    }
 
-		dst.GetInfo(info);
-		throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetName());
-	}
-	src.ReadToBuffer(srcName, fileBuffer);
-	if ((src.GetContainerType() & TYPE_CONTAINER) &&
-		(dst.GetContainerType() & TYPE_DIRECTORY) &&
-		fileBuffer.IsFlexTextFile() && autoTextConversion) {
-		fileBuffer.ConvertFromFlex();
-	}
-	if ((src.GetContainerType() & TYPE_DIRECTORY) &&
-		(dst.GetContainerType() & TYPE_CONTAINER) &&
-		fileBuffer.IsTextFile() && autoTextConversion) {
-		fileBuffer.ConvertToFlex();
-	}
-	if (!dst.WriteFromBuffer(fileBuffer, destName)) {
-		FlexContainerInfo info;
+    if (dst.IsWriteProtected())
+    {
+        FlexContainerInfo info;
 
-		dst.GetInfo(info);
-		throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(),
-                                    destName);
-	}
-	return true;
+        dst.GetInfo(info);
+        throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetName());
+    }
+
+    src.ReadToBuffer(srcName, fileBuffer);
+
+    if ((src.GetContainerType() & TYPE_CONTAINER) &&
+        (dst.GetContainerType() & TYPE_DIRECTORY) &&
+        fileBuffer.IsFlexTextFile() && autoTextConversion)
+    {
+        fileBuffer.ConvertFromFlex();
+    }
+
+    if ((src.GetContainerType() & TYPE_DIRECTORY) &&
+        (dst.GetContainerType() & TYPE_CONTAINER) &&
+        fileBuffer.IsTextFile() && autoTextConversion)
+    {
+        fileBuffer.ConvertToFlex();
+    }
+
+    if (!dst.WriteFromBuffer(fileBuffer, destName))
+    {
+        FlexContainerInfo info;
+
+        dst.GetInfo(info);
+        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(),
+                            destName);
+    }
+
+    return true;
 }

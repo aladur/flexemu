@@ -28,40 +28,50 @@
 #include "bstring.h"
 
 
-class BRegistry {
+class BRegistry
+{
 
 private:
 
-	LONG	lastError;
-	HKEY	hKey;
+    LONG    lastError;
+    HKEY    hKey;
 
-	BRegistry();
+    BRegistry();
 
 public:
-	~BRegistry();
+    ~BRegistry();
 
-	BRegistry(const BRegistry &regKey, const char *subKey = NULL);
-	BRegistry(HKEY aHKey);
-	bool isOpened() const;
-	LONG GetLastError() const;
-	LONG Delete();
-	LONG SetValue(const char *name, const char *value);
-	LONG SetValue(const char *name, const int value);
-	LONG SetValue(const char *name, const BYTE *value, int size);
-	LONG GetValue(const char *name, BString &value);
-	LONG GetValue(const char *name, int *value);
-	// implicit type conversions !
-	operator HKEY() const ;
+    BRegistry(const BRegistry &regKey, const char *subKey = NULL);
+    BRegistry(HKEY aHKey);
+    bool isOpened() const;
+    LONG GetLastError() const;
+    LONG Delete();
+    LONG SetValue(const char *name, const char *value);
+    LONG SetValue(const char *name, const int value);
+    LONG SetValue(const char *name, const BYTE *value, int size);
+    LONG GetValue(const char *name, BString &value);
+    LONG GetValue(const char *name, int *value);
+    // implicit type conversions !
+    operator HKEY() const ;
 
-	static BRegistry classesRoot;
-	static BRegistry currentUser;
-	static BRegistry localMachine;
-	static BRegistry users;
+    static BRegistry classesRoot;
+    static BRegistry currentUser;
+    static BRegistry localMachine;
+    static BRegistry users;
 };
 
-inline bool BRegistry::isOpened() const { return hKey != NULL; };
-inline LONG BRegistry::GetLastError() const { return lastError; };
-inline BRegistry::operator HKEY() const { return hKey; };
+inline bool BRegistry::isOpened() const
+{
+    return hKey != NULL;
+};
+inline LONG BRegistry::GetLastError() const
+{
+    return lastError;
+};
+inline BRegistry::operator HKEY() const
+{
+    return hKey;
+};
 
 #endif // #ifdef WIN32
 #endif // #ifndef __bregistr_h__

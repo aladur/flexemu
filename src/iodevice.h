@@ -1,7 +1,7 @@
 /*
     iodevice.h
 
-    
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 1997-2004  W. Schwotzer
 
@@ -27,16 +27,17 @@
 
 #include <misc1.h>
 
-class IoDevice {
+class IoDevice
+{
 
 public:
 
-	virtual Byte		 readIo(Word offset) = 0;
-	virtual void		 writeIo(Word offset, Byte val) = 0;
-	virtual void		 resetIo(void) = 0;
-	virtual const char      *getName(void) = 0;
-	virtual ~IoDevice()	{ }; // necessary otherwise the destructor
-				// of subclasses is not called!
+    virtual Byte         readIo(Word offset) = 0;
+    virtual void         writeIo(Word offset, Byte val) = 0;
+    virtual void         resetIo(void) = 0;
+    virtual const char      *getName(void) = 0;
+    virtual ~IoDevice() { }; // necessary otherwise the destructor
+    // of subclasses is not called!
 };
 
 #endif // __iodevice_h__

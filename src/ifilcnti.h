@@ -32,18 +32,18 @@ class FlexDirEntry;
 
 class FileContainerIteratorImp
 {
-	friend class FileContainerIterator;
+    friend class FileContainerIterator;
 public:
-	virtual ~FileContainerIteratorImp() { };
-	virtual bool operator==(const FileContainerIf *aBase) const = 0;
-	virtual bool NextDirEntry(const char *filePattern) = 0;
-	virtual void AtEnd() = 0;
-	virtual FlexDirEntry &GetDirEntry() = 0;
+    virtual ~FileContainerIteratorImp() { };
+    virtual bool operator==(const FileContainerIf *aBase) const = 0;
+    virtual bool NextDirEntry(const char *filePattern) = 0;
+    virtual void AtEnd() = 0;
+    virtual FlexDirEntry &GetDirEntry() = 0;
 private:
-        virtual bool DeleteCurrent() = 0;
-        virtual bool RenameCurrent(const char *) = 0;
-        virtual bool SetDateCurrent(const BDate& date) = 0;
-        virtual bool SetAttributesCurrent(int attributes) = 0;
+    virtual bool DeleteCurrent() = 0;
+    virtual bool RenameCurrent(const char *) = 0;
+    virtual bool SetDateCurrent(const BDate &date) = 0;
+    virtual bool SetAttributesCurrent(int attributes) = 0;
 };
 
 #endif // __ifilcnti_h__

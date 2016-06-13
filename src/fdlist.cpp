@@ -111,8 +111,8 @@ int CALLBACK compareFlexListItems(long item1, long item2, long sortData)
             return (pObject1->GetDate() < pObject2->GetDate()) ? -1 : 1;
 
         case LC_FILEATTR:
-            return (pObject1->GetAttributesString() < pObject2->GetAttributesString()) ?
-                   -1 : 1;
+            return (pObject1->GetAttributesString() <
+                    pObject2->GetAttributesString()) ?  -1 : 1;
 
         case LC_FILEDESC:
             return (FlexDiskListCtrl::GetFileDescription(pObject1) <
@@ -120,7 +120,8 @@ int CALLBACK compareFlexListItems(long item1, long item2, long sortData)
 
         case LC_FILENAME:
         default:
-            return (pObject1->GetTotalFileName() < pObject2->GetTotalFileName()) ? -1 : 1;
+            return (pObject1->GetTotalFileName() <
+                    pObject2->GetTotalFileName()) ? -1 : 1;
     }
 }
 // Event table
@@ -158,9 +159,10 @@ BEGIN_EVENT_TABLE(FlexDiskListCtrl, wxListCtrl)
 END_EVENT_TABLE()
 
 FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
-                                   const wxPoint &pos, const wxSize &size, long style,
-                                   FileContainerIf *container,
-                                   const wxValidator &validator, const wxString &name) :
+                                   const wxPoint &pos, const wxSize &size,
+                                   long style, FileContainerIf *container,
+                                   const wxValidator &validator,
+                                   const wxString &name) :
     wxListCtrl(parent, id, pos, size, style, validator, name),
     m_container(container), m_popupMenu(NULL), m_totalSize(0)
 {
@@ -321,7 +323,8 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
 
                     try
                     {
-                        m_container->DeleteFile(fileName.mb_str(*wxConvCurrent));
+                        m_container->DeleteFile(
+                            fileName.mb_str(*wxConvCurrent));
                     }
                     catch (FlexException &ex)
                     {
@@ -373,8 +376,8 @@ void FlexDiskListCtrl::RenameSelectedItems(void)
         do
         {
 
-            dialog = new wxTextEntryDialog(this,
-                                           dialogText, _("Rename file"), itemText);
+            dialog = new wxTextEntryDialog(this, dialogText, _("Rename file"),
+                                           itemText);
             do_rename = dialog->ShowModal() == wxID_OK;
             fName  = dialog->GetValue();
             dialogText =  _("Wrong file name specified.");
@@ -454,7 +457,7 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
             if (!GetTempPath(MAX_PATH, tempPath))
             {
                 throw FlexException(GetLastError(),
-                      _("In function GetTempPath"));
+                                    _("In function GetTempPath"));
             }
 
             if (!GetTempFileName(tempPath, _("FLX"), 0, path))

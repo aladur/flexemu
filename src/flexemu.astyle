@@ -1,0 +1,24 @@
+# astyle V2.05 is needed
+--indent=spaces=4
+--convert-tabs
+--style=ansi
+--break-blocks
+--pad-oper
+--pad-header
+--unpad-paren
+--indent-switches
+--indent-namespaces
+--indent-preproc-block
+--indent-preproc-define
+--indent-col1-comments
+--min-conditional-indent=0
+--max-instatement-indent=40
+--align-pointer=name
+--break-closing-brackets
+--add-brackets
+--max-code-length=80
+--break-after-logical
+--suffix=none
+--preserve-date
+--lineend=linux
+

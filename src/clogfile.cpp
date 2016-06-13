@@ -25,12 +25,12 @@
 
 
 CSetLogFile::CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file)
-   : cpu(x_cpu), s_log_file(x_log_file)
+    : cpu(x_cpu), s_log_file(x_log_file)
 {
 }
 
 void CSetLogFile::Execute()
 {
-     cpu.set_logfile(s_log_file); 
+    cpu.set_logfile(s_log_file);
 }
 

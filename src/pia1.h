@@ -29,28 +29,32 @@
 #include "mc6809.h"
 #include "mc6821.h"
 
-class Pia1 : public Mc6821 {
+class Pia1 : public Mc6821
+{
 
-// Terminal connected to port A of pia1
-
-protected:
-
-	Inout*				io;
-	Mc6809*				cpu;
-
-// Processor status functions
+    // Terminal connected to port A of pia1
 
 protected:
 
-	virtual void			requestInputA(void);
-	virtual Byte			readInputA(void);
-	virtual void			set_irq_A(void);
-	virtual void			set_irq_B(void);
+    Inout              *io;
+    Mc6809             *cpu;
+
+    // Processor status functions
+
+protected:
+
+    virtual void            requestInputA(void);
+    virtual Byte            readInputA(void);
+    virtual void            set_irq_A(void);
+    virtual void            set_irq_B(void);
 
 public:
-					Pia1(Inout* x_io, Mc6809* x_cpu);
-	virtual void			resetIo(void);
-	virtual const char      *getName(void) { return "pia1"; };
+    Pia1(Inout *x_io, Mc6809 *x_cpu);
+    virtual void            resetIo(void);
+    virtual const char      *getName(void)
+    {
+        return "pia1";
+    };
 };
 
 #endif // __pia1__h

@@ -31,23 +31,24 @@ class FileContainerIteratorImp;
 class FileContainerIterator
 {
 public:
-	FileContainerIterator(const char *aFilePattern = "*.*");
-	virtual               ~FileContainerIterator();
-	FlexDirEntry          &operator*();
-	FlexDirEntry          *operator->();
-	bool                   operator==(const FileContainerIf *) const;
-	bool                   operator!=(const FileContainerIf *) const;
-	FileContainerIterator &operator=(FileContainerIf *);
-	FileContainerIterator &operator++();
-	bool                   DeleteCurrent();
-        bool                   RenameCurrent(const char *);
-        bool                   SetDateCurrent(const BDate& date);
-        bool                   SetAttributesCurrent(int attributes);
+    FileContainerIterator(const char *aFilePattern = "*.*");
+    virtual               ~FileContainerIterator();
+    FlexDirEntry          &operator*();
+    FlexDirEntry          *operator->();
+    bool                   operator==(const FileContainerIf *) const;
+    bool                   operator!=(const FileContainerIf *) const;
+    FileContainerIterator &operator=(FileContainerIf *);
+    FileContainerIterator &operator++();
+    bool                   DeleteCurrent();
+    bool                   RenameCurrent(const char *);
+    bool                   SetDateCurrent(const BDate &date);
+    bool                   SetAttributesCurrent(int attributes);
 private:
-	const char            *filePattern;
-	FileContainerIteratorImp *imp;
-	FileContainerIterator(const FileContainerIterator &); // should not be used
-	FileContainerIterator &operator=(const FileContainerIterator &); // should not be used
+    const char            *filePattern;
+    FileContainerIteratorImp *imp;
+    FileContainerIterator(const FileContainerIterator &); // should not be used
+    FileContainerIterator &operator=(const FileContainerIterator
+                                     &); // should not be used
 };
 
 #endif // __ifilecnt_h__

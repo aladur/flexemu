@@ -41,108 +41,115 @@ class FlexFileContainerIteratorImp;
 const int MAX_OPEN_FILES = 1;
 
 
-#define CHECK_NO_CONTAINER_OPEN					\
-	if (fp == NULL) {					\
-		throw FlexException(FERR_NO_CONTAINER_OPEN);	\
-	}
+#define CHECK_NO_CONTAINER_OPEN                 \
+    if (fp == NULL) {                   \
+        throw FlexException(FERR_NO_CONTAINER_OPEN);    \
+    }
 
-#define CHECK_CONTAINER_WRITEPROTECTED				\
-	if (IsWriteProtected())					\
-	{							\
-                FlexContainerInfo info;				\
-                                                                \
-                GetInfo(info);					\
-		throw FlexException(FERR_CONTAINER_IS_READONLY, \
-                                    info.GetName());            \
-	}
+#define CHECK_CONTAINER_WRITEPROTECTED              \
+    if (IsWriteProtected())                 \
+    {                           \
+        FlexContainerInfo info;             \
+        \
+        GetInfo(info);                  \
+        throw FlexException(FERR_CONTAINER_IS_READONLY, \
+                            info.GetName());            \
+    }
 
 class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
 {
-friend class FlexFileContainerIteratorImp; // corresponding iterator class
+    friend class FlexFileContainerIteratorImp; // corresponding iterator class
 
 protected:
-	BFilePtr	fp;
-	s_floppy	param;
+    BFilePtr    fp;
+    s_floppy    param;
 
 private:
-	int		attributes;
+    int     attributes;
 
 public:
-	FlexFileContainer(const char *path, const char *mode);
-	virtual ~FlexFileContainer();		// public destructor
+    FlexFileContainer(const char *path, const char *mode);
+    virtual ~FlexFileContainer();       // public destructor
 
-// basic interface (to be used within flexemu)
+    // basic interface (to be used within flexemu)
 public:
-	static BString bootSectorFile;
-	static FlexFileContainer *Create(const char *dir, const char *name,
-                          int t, int s, int fmt = TYPE_DSK_CONTAINER);
-	int  Close(void);
-	bool CheckFilename(const char *fileName) const;
-	bool IsContainerOpened(void) const;
-	bool ReadSector(Byte *buffer, int trk, int sec) const;
-	bool WriteSector(const Byte *buffer, int trk, int sec);
-	bool IsWriteProtected(void) const;
-	bool IsTrackValid(int track) const;
-	bool IsSectorValid(int track, int sector) const;
-	int  GetBytesPerSector(void) const;
-	bool GetInfo(FlexContainerInfo& info) const;
-	int  GetContainerType(void) const;
+    static BString bootSectorFile;
+    static FlexFileContainer *Create(const char *dir, const char *name,
+                                     int t, int s,
+                                     int fmt = TYPE_DSK_CONTAINER);
+    int  Close(void);
+    bool CheckFilename(const char *fileName) const;
+    bool IsContainerOpened(void) const;
+    bool ReadSector(Byte *buffer, int trk, int sec) const;
+    bool WriteSector(const Byte *buffer, int trk, int sec);
+    bool IsWriteProtected(void) const;
+    bool IsTrackValid(int track) const;
+    bool IsSectorValid(int track, int sector) const;
+    int  GetBytesPerSector(void) const;
+    bool GetInfo(FlexContainerInfo &info) const;
+    int  GetContainerType(void) const;
 
-// enhanced interface (to be used within flexdisk)
+    // enhanced interface (to be used within flexdisk)
 public:
-	BString GetPath() const;
-	FileContainerIf *begin() { return this; };
-	FileContainerIf *end()   const { return NULL; };
-	bool FindFile(const char *fileName, FlexDirEntry& entry);	
-	bool DeleteFile(const char *fileName);
-	bool RenameFile(const char *oldName, const char *newName);
-	bool SetAttributes(const char *fileName, int setMask, int clearMask);
-	void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
-	bool WriteFromBuffer(const FlexFileBuffer &buffer,
-				const char *fileName = NULL);
-	bool FileCopy(const char *sourceName, const char *destName,
-			FileContainerIf& destination);
+    BString GetPath() const;
+    FileContainerIf *begin()
+    {
+        return this;
+    };
+    FileContainerIf *end()   const
+    {
+        return NULL;
+    };
+    bool FindFile(const char *fileName, FlexDirEntry &entry);
+    bool DeleteFile(const char *fileName);
+    bool RenameFile(const char *oldName, const char *newName);
+    bool SetAttributes(const char *fileName, int setMask, int clearMask);
+    void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
+    bool WriteFromBuffer(const FlexFileBuffer &buffer,
+                         const char *fileName = NULL);
+    bool FileCopy(const char *sourceName, const char *destName,
+                  FileContainerIf &destination);
 
-// internal interface
+    // internal interface
 protected:
-	int ByteOffset(const int trk, const int sec) const;
-	bool CreateDirEntry(FlexDirEntry& entry);
+    int ByteOffset(const int trk, const int sec) const;
+    bool CreateDirEntry(FlexDirEntry &entry);
 
-	void Initialize_for_flx_format(
-					s_floppy		*pfloppy,
-					s_flex_header	*pheader,
-					bool		wp);
-	void Initialize_for_dsk_format(
-					s_floppy		*pfloppy,
-					s_formats		*pformat,
-					bool		wp);
-	static void		Create_boot_sector(Byte sec_buf[]);
-	static void		Create_sector2(
-					Byte	sec_buf[],
-					struct	s_formats *fmt);
-	static void		Create_sys_info_sector(
-					Byte	sec_buf[],
-					const char	*name,
-					struct	s_formats *fmt);
-	static bool			Write_dir_sectors(
-					FILE *fp,
-					struct	s_formats *fmt);
-	static bool			Write_sectors(
-					FILE *fp,
-					struct	s_formats *fmt);
-	static void		Create_format_table(
-					SWord trk,
-					SWord sec,
-					struct s_formats *pformat);
-	static void	Format_disk(
-					SWord trk,
-					SWord sec,
-					const char *disk_dir,
-					const char *name,
-					int type);
+    void Initialize_for_flx_format(
+        s_floppy        *pfloppy,
+        s_flex_header   *pheader,
+        bool        wp);
+    void Initialize_for_dsk_format(
+        s_floppy        *pfloppy,
+        s_formats       *pformat,
+        bool        wp);
+    static void     Create_boot_sector(Byte sec_buf[]);
+    static void     Create_sector2(
+        Byte    sec_buf[],
+        struct  s_formats *fmt);
+    static void     Create_sys_info_sector(
+        Byte    sec_buf[],
+        const char  *name,
+        struct  s_formats *fmt);
+    static bool         Write_dir_sectors(
+        FILE *fp,
+        struct  s_formats *fmt);
+    static bool         Write_sectors(
+        FILE *fp,
+        struct  s_formats *fmt);
+    static void     Create_format_table(
+        SWord trk,
+        SWord sec,
+        struct s_formats *pformat);
+    static void Format_disk(
+        SWord trk,
+        SWord sec,
+        const char *disk_dir,
+        const char *name,
+        int type);
 private:
-	FlexFileContainer();	// should not be used
-	FileContainerIteratorImp *IteratorFactory();
+    FlexFileContainer();    // should not be used
+    FileContainerIteratorImp *IteratorFactory();
 
 };  // class FlexFileContainer
 

@@ -24,33 +24,34 @@
 #include <stdio.h>
 
 #ifndef UNIX
-extern int optind;
-extern int opterr;
-extern char *optarg;
+    extern int optind;
+    extern int opterr;
+    extern char *optarg;
 #endif
- 
-class FlexOptionManager {
+
+class FlexOptionManager
+{
 public:
-	void PrintHelp(FILE *fp);
-	void InitOptions(
-		struct sGuiOptions *pGuiOptions,
-		struct sOptions *pOptions,
-		int argc,
-		char * const argv[]);
-	void GetOptions(
-		struct sGuiOptions *pGuiOptions,
-		struct sOptions *pOptions);
-	void GetEnvironmentOptions(
-		struct sGuiOptions *pGuiOptions,
-		struct sOptions *pOptions);
-	void GetCommandlineOptions(
-		struct sGuiOptions *pGuiOptions,
-		struct sOptions *pOptions,
-		int argc,
-		char * const argv[]);
-	void WriteOptions(
-		struct sGuiOptions *pGuiOptions,
-		struct sOptions *pOptions,
-		bool   ifNotExists = false);
+    void PrintHelp(FILE *fp);
+    void InitOptions(
+        struct sGuiOptions *pGuiOptions,
+        struct sOptions *pOptions,
+        int argc,
+        char *const argv[]);
+    void GetOptions(
+        struct sGuiOptions *pGuiOptions,
+        struct sOptions *pOptions);
+    void GetEnvironmentOptions(
+        struct sGuiOptions *pGuiOptions,
+        struct sOptions *pOptions);
+    void GetCommandlineOptions(
+        struct sGuiOptions *pGuiOptions,
+        struct sOptions *pOptions,
+        int argc,
+        char *const argv[]);
+    void WriteOptions(
+        struct sGuiOptions *pGuiOptions,
+        struct sOptions *pOptions,
+        bool   ifNotExists = false);
 };
 

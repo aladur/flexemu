@@ -26,72 +26,75 @@
 #define MAX_ERR_STRINGLENGTH 1024
 
 
-#define FERR_NOERROR			(0)
-#define FERR_UNABLE_TO_OPEN		(1)
-#define FERR_IS_NO_FILECONTAINER	(2)
-#define FERR_NO_CONTAINER_OPEN		(3)
-#define FERR_NO_FILE_OPENED		(4)
-#define FERR_UNABLE_TO_FORMAT		(5)
-#define FERR_INVALID_FORMAT		(6)
-#define FERR_READING_FROM		(7)
-#define FERR_WRITING_TO			(8)
-#define FERR_DIRECTORY_ALREADY_OPENED	(9)
-#define FERR_DIRECTORY_NOT_OPENED	(10)
-#define FERR_FILE_ALREADY_OPENED	(11)
-#define FERR_NO_FILEHANDLE_AVAILABLE	(12)
-#define FERR_FILE_ALREADY_EXISTS	(13)
-#define FERR_INVALID_FILEHANDLE		(14)
-#define FERR_INVALID_MODE		(15)
-#define FERR_DIRECTORY_FULL		(16)
-#define FERR_READING_TRKSEC		(17)
-#define FERR_WRITING_TRKSEC		(18)
-#define FERR_NO_FILE_IN_CONTAINER	(19)
-#define FERR_RECORDMAP_FULL		(20)
-#define FERR_DISK_FULL_WRITING		(21)
-#define FERR_UNABLE_TO_CREATE		(22)
-#define FERR_RENAME_FILE		(23)
-#define FERR_REMOVE_FILE		(24)
-#define FERR_READING_DISKSPACE		(25)
-#define FERR_COPY_ON_ITSELF		(26)
-#define FERR_WRONG_PARAMETER		(27)
-#define FERR_CREATE_PROCESS		(28)
-#define FERR_WRONG_FLEX_BIN_FORMAT	(29)
-#define FERR_CREATE_TEMP_FILE		(30)
-#define FERR_CONTAINER_IS_READONLY	(31)
-#define FERR_UNSPEC_WINDOWS_ERROR	(32)
-#define FERR_WINDOWS_ERROR      	(33)
-#define FERR_INVALID_NULL_POINTER	(34)
+#define FERR_NOERROR            (0)
+#define FERR_UNABLE_TO_OPEN     (1)
+#define FERR_IS_NO_FILECONTAINER    (2)
+#define FERR_NO_CONTAINER_OPEN      (3)
+#define FERR_NO_FILE_OPENED     (4)
+#define FERR_UNABLE_TO_FORMAT       (5)
+#define FERR_INVALID_FORMAT     (6)
+#define FERR_READING_FROM       (7)
+#define FERR_WRITING_TO         (8)
+#define FERR_DIRECTORY_ALREADY_OPENED   (9)
+#define FERR_DIRECTORY_NOT_OPENED   (10)
+#define FERR_FILE_ALREADY_OPENED    (11)
+#define FERR_NO_FILEHANDLE_AVAILABLE    (12)
+#define FERR_FILE_ALREADY_EXISTS    (13)
+#define FERR_INVALID_FILEHANDLE     (14)
+#define FERR_INVALID_MODE       (15)
+#define FERR_DIRECTORY_FULL     (16)
+#define FERR_READING_TRKSEC     (17)
+#define FERR_WRITING_TRKSEC     (18)
+#define FERR_NO_FILE_IN_CONTAINER   (19)
+#define FERR_RECORDMAP_FULL     (20)
+#define FERR_DISK_FULL_WRITING      (21)
+#define FERR_UNABLE_TO_CREATE       (22)
+#define FERR_RENAME_FILE        (23)
+#define FERR_REMOVE_FILE        (24)
+#define FERR_READING_DISKSPACE      (25)
+#define FERR_COPY_ON_ITSELF     (26)
+#define FERR_WRONG_PARAMETER        (27)
+#define FERR_CREATE_PROCESS     (28)
+#define FERR_WRONG_FLEX_BIN_FORMAT  (29)
+#define FERR_CREATE_TEMP_FILE       (30)
+#define FERR_CONTAINER_IS_READONLY  (31)
+#define FERR_UNSPEC_WINDOWS_ERROR   (32)
+#define FERR_WINDOWS_ERROR          (33)
+#define FERR_INVALID_NULL_POINTER   (34)
 
 
 class FlexException
 {
 protected:
 
-	int errorCode;
-	char errorString[MAX_ERR_STRINGLENGTH];
-        static const char *errString[];
+    int errorCode;
+    char errorString[MAX_ERR_STRINGLENGTH];
+    static const char *errString[];
 
 public:
 
-	FlexException(int ec) throw();
-	FlexException(int ec, int ip1) throw();
-	FlexException(int ec, const char *sp1) throw();
-	FlexException(int ec, const char *sp1, const char *sp2) throw();
-	FlexException(int ec, int ip1, int ip2, const char *sp1) throw();
+    FlexException(int ec) throw();
+    FlexException(int ec, int ip1) throw();
+    FlexException(int ec, const char *sp1) throw();
+    FlexException(int ec, const char *sp1, const char *sp2) throw();
+    FlexException(int ec, int ip1, int ip2, const char *sp1) throw();
 #ifdef WIN32
-	FlexException(unsigned long lastError, const char *sp1 = NULL) throw();
+    FlexException(unsigned long lastError, const char *sp1 = NULL) throw();
 #endif
 
-        const char *what()  const throw();
+    const char *what()  const throw();
 #ifdef _UNICODE
-	const wchar_t *wwhat() const throw();
+    const wchar_t *wwhat() const throw();
 #else
-	const char *wwhat() const throw();
+    const char *wwhat() const throw();
 #endif
-	int	GetErrorCode(void) const { return errorCode; };
+    int GetErrorCode(void) const
+    {
+        return errorCode;
+    };
 
 private:
-	FlexException() throw();
+    FlexException() throw();
 };
 
 

@@ -37,26 +37,28 @@ class FileContainerIteratorImp;
 
 class FileContainerIf : public FileContainerIfBase
 {
-/* File oriented interface (to be used within flexdisk) */
+    /* File oriented interface (to be used within flexdisk) */
 public:
-	virtual FileContainerIf *begin() = 0;
-	virtual FileContainerIf *end() const = 0;
-	virtual bool  CheckFilename(const char *fileName) const = 0;	
-	virtual bool  FindFile(const char *fileName, FlexDirEntry& entry) = 0;	
-	virtual bool  DeleteFile(const char *fileName) = 0;
-	virtual bool  RenameFile(const char *oldName, const char *newName) = 0;
-	virtual bool  SetAttributes(const char *fileName, int setMask = 0, int clearMask = ~0) = 0;
-	virtual void  ReadToBuffer(const char *fileName, FlexFileBuffer &buffer) = 0;
-	virtual bool  WriteFromBuffer(const FlexFileBuffer &buffer,
-				const char *fileName = NULL) = 0;
-	virtual bool  FileCopy(const char *sourceName, const char *destName,
-			FileContainerIf& destination) = 0;
-	virtual ~FileContainerIf() { };
+    virtual FileContainerIf *begin() = 0;
+    virtual FileContainerIf *end() const = 0;
+    virtual bool  CheckFilename(const char *fileName) const = 0;
+    virtual bool  FindFile(const char *fileName, FlexDirEntry &entry) = 0;
+    virtual bool  DeleteFile(const char *fileName) = 0;
+    virtual bool  RenameFile(const char *oldName, const char *newName) = 0;
+    virtual bool  SetAttributes(const char *fileName, int setMask = 0,
+                                int clearMask = ~0) = 0;
+    virtual void  ReadToBuffer(const char *fileName,
+                               FlexFileBuffer &buffer) = 0;
+    virtual bool  WriteFromBuffer(const FlexFileBuffer &buffer,
+                                  const char *fileName = NULL) = 0;
+    virtual bool  FileCopy(const char *sourceName, const char *destName,
+                           FileContainerIf &destination) = 0;
+    virtual ~FileContainerIf() { };
 
 private:
-	virtual FileContainerIteratorImp *IteratorFactory() = 0;
-	friend class FileContainerIterator;
-	friend class FlexCopyManager;
+    virtual FileContainerIteratorImp *IteratorFactory() = 0;
+    friend class FileContainerIterator;
+    friend class FlexCopyManager;
 };  /* class FileContainerIf */
 
 #endif /* __filecont_h__ */

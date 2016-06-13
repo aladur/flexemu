@@ -29,41 +29,54 @@ class BThreadImp;
 
 BThread::BThread(bool autoStart /* = true */) : imp(NULL)
 {
-  imp = SThreadFactory::Instance().CreateBThreadImp();
-  if (imp != NULL && autoStart)
-    imp->Start(this);
+    imp = SThreadFactory::Instance().CreateBThreadImp();
+
+    if (imp != NULL && autoStart)
+    {
+        imp->Start(this);
+    }
 }
 
 // Attention: It is unsave to delete the thread object when the
 // corresponding thread still is active (IsFinished() returns false)
 BThread::~BThread()
 {
-  delete imp;
+    delete imp;
 }
 
 bool BThread::Start()
 {
-  if (imp == NULL) return false;
-  return imp->Start(this);
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->Start(this);
 }
 
 void BThread::Join()
 {
-  if (imp != NULL)
-  	imp->Join();
+    if (imp != NULL)
+    {
+        imp->Join();
+    }
 }
-  
+
 bool BThread::IsFinished()
 {
-  if (imp == NULL) return false;
-  return imp->IsFinished();
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->IsFinished();
 }
 
 void BThread::Run()
 {
-  // to be implemented by subclass
+    // to be implemented by subclass
 }
-  
+
 // Attention: This will finish the current process.
 // This function does not return
 // because it's thread gets closed
@@ -71,6 +84,10 @@ void BThread::Run()
 // the current thread
 void BThread::Exit(void *retval)
 {
-  if (imp == NULL) return;
-  imp->Exit(retval);
+    if (imp == NULL)
+    {
+        return;
+    }
+
+    imp->Exit(retval);
 }

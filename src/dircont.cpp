@@ -310,8 +310,8 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
 #ifdef WIN32
 
-    if (!GetDiskFreeSpace(rootPath, &sectorsPerCluster,
-                          &bytesPerSector, &numberOfFreeClusters, &totalNumberOfClusters))
+    if (!GetDiskFreeSpace(rootPath, &sectorsPerCluster, &bytesPerSector,
+                          &numberOfFreeClusters, &totalNumberOfClusters))
     {
         throw FlexException(FERR_READING_DISKSPACE, *path);
     }

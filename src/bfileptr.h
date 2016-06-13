@@ -27,21 +27,30 @@
 class BFilePtr
 {
 public:
-   BFilePtr();
-   BFilePtr(const char *path, const char *mode);
-   BFilePtr(const BFilePtr &);
-   ~BFilePtr();
-   BFilePtr &operator= (const BFilePtr &);
-   int Close();
-   const char *GetPath() const { return pPath; };
-   const char *GetMode() const { return pMode; };
-   operator FILE *() const { return fp; };
+    BFilePtr();
+    BFilePtr(const char *path, const char *mode);
+    BFilePtr(const BFilePtr &);
+    ~BFilePtr();
+    BFilePtr &operator= (const BFilePtr &);
+    int Close();
+    const char *GetPath() const
+    {
+        return pPath;
+    };
+    const char *GetMode() const
+    {
+        return pMode;
+    };
+    operator FILE *() const
+    {
+        return fp;
+    };
 
 private:
-   char *pPath;
-   char *pMode;
-   FILE *fp;
-   mutable bool responsible;
+    char *pPath;
+    char *pMode;
+    FILE *fp;
+    mutable bool responsible;
 };
 #endif
 

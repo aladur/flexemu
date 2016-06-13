@@ -29,11 +29,12 @@
 class FileContainerIf;
 
 
-class FlexCopyManager {
+class FlexCopyManager
+{
 public:
-	bool FileCopy(const char *srcName, const char *destName,
-			FileContainerIf& source, FileContainerIf& dest);
-	static bool autoTextConversion;
+    bool FileCopy(const char *srcName, const char *destName,
+                  FileContainerIf &source, FileContainerIf &dest);
+    static bool autoTextConversion;
 };  // class FlexCopyManager
 
 #endif // __fcopyman_h__

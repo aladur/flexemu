@@ -26,22 +26,23 @@
 template <class Item>class BList;
 class BIdentifier;
 
-template <class Item> class BHashTable {
+template <class Item> class BHashTable
+{
 
 private:
 
-	BList<Item> **hash_table;
-	int n;
+    BList<Item> **hash_table;
+    int n;
 
 public:
 
-	BHashTable(int size = 1000);	// public constructor
-	~BHashTable();			// public destructor
+    BHashTable(int size = 1000);    // public constructor
+    ~BHashTable();          // public destructor
 
-	Item *Get(Item &i);
-	void Put(Item &i);
-	bool Contains(Item &i);
-	BList<Item> *GetAsLinearList();
+    Item *Get(Item &i);
+    void Put(Item &i);
+    bool Contains(Item &i);
+    BList<Item> *GetAsLinearList();
 }; // class BHashTable
 
 typedef BHashTable<BIdentifier> BIdentifierHTable;

@@ -26,74 +26,101 @@
 // Each hash table entry can contain multiple entries with the same
 // hash. They are stored in a linear list
 
-template <class Item> BHashTable<Item>::BHashTable(int size /* = 1000 */) : n(size)
+template <class Item> BHashTable<Item>::BHashTable(int size /* = 1000 */) : n(
+        size)
 {
-	int i;
+    int i;
 
-	n = size;
-	hash_table = new BList<Item> *[size];
-	for (i = 0; i < size; i++)
-		hash_table[i] = (BList<Item> *) NULL;
+    n = size;
+    hash_table = new BList<Item> *[size];
+
+    for (i = 0; i < size; i++)
+    {
+        hash_table[i] = (BList<Item> *) NULL;
+    }
 }
 
 template <class Item> BHashTable<Item>::~BHashTable()
 {
-	if (!hash_table)
-		return;
-	for (int i = 0; i < n; i++)
-		delete hash_table[i];
-	delete[] hash_table;
-	hash_table = NULL;
+    if (!hash_table)
+    {
+        return;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        delete hash_table[i];
+    }
+
+    delete[] hash_table;
+    hash_table = NULL;
 }
 
 template <class Item>Item *BHashTable<Item>::Get(Item &i)
 {
-	DWord key;
+    DWord key;
 
-	key = i.GetKey() % n;
-	if (!hash_table[key])
-		return NULL;
-	else
-		return hash_table[key]->Find(i);
+    key = i.GetKey() % n;
+
+    if (!hash_table[key])
+    {
+        return NULL;
+    }
+    else
+    {
+        return hash_table[key]->Find(i);
+    }
 }
 
 template <class Item>void BHashTable<Item>::Put(Item &i)
 {
-	DWord key;
+    DWord key;
 
-	key = i.GetKey() % n;
-	if (!hash_table[key])
-		hash_table[key] = new BList<Item>(i);
-	else
-		hash_table[key]->Add(i);
+    key = i.GetKey() % n;
+
+    if (!hash_table[key])
+    {
+        hash_table[key] = new BList<Item>(i);
+    }
+    else
+    {
+        hash_table[key]->Add(i);
+    }
 }
 
 template <class Item>bool BHashTable<Item>::Contains(Item &i)
 {
-	return Get(i) != NULL;
+    return Get(i) != NULL;
 }
 
 /* the returned linear list is created on the heap and must be freed
    after use */
 template <class Item>BList<Item> *BHashTable<Item>::GetAsLinearList()
 {
-	BList<Item> *first, *next;
+    BList<Item> *first, *next;
 
-	for (int i = 0; i < n; i++) {
-		BList<Item> *source;
+    for (int i = 0; i < n; i++)
+    {
+        BList<Item> *source;
 
-		source = hash_table[i];
-		while(source) {
-			// walk through linear list
-			if (!first) {
-				first = new BList<Item>(source->GetItem());
-				next = first;
-			} else {
-				next->SetNext(new BList<Item>(source->GetItem()));
-				next = next->GetNext();
-			}
+        source = hash_table[i];
 
-		}
-	}
-	return first;
+        while (source)
+        {
+            // walk through linear list
+            if (!first)
+            {
+                first = new BList<Item>(source->GetItem());
+                next = first;
+            }
+            else
+            {
+                next->SetNext(new BList<Item>(source->GetItem()));
+                next = next->GetNext();
+            }
+
+        }
+    }
+
+    return first;
 }

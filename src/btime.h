@@ -1,8 +1,8 @@
 /*
     btime.h
 
-   
-    Basic class for platform independent high resolution time support 
+
+    Basic class for platform independent high resolution time support
     Copyright (C) 2001-2005  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
@@ -28,19 +28,19 @@
 
 class BTime
 {
-public: 
-  BTime();
-  ~BTime();
-  void     ResetRelativeTime();
-  QWord    GetRelativeTimeUsll(bool reset = false);
-  double   GetRelativeTimeUsf(bool  reset = false);
-  unsigned long GetRelativeTimeMsl(bool reset = false);
-  QWord    GetTimeUsll();
-  double   GetTimeUsf();
-  unsigned long GetTimeMsl();
+public:
+    BTime();
+    ~BTime();
+    void     ResetRelativeTime();
+    QWord    GetRelativeTimeUsll(bool reset = false);
+    double   GetRelativeTimeUsf(bool  reset = false);
+    unsigned long GetRelativeTimeMsl(bool reset = false);
+    QWord    GetTimeUsll();
+    double   GetTimeUsf();
+    unsigned long GetTimeMsl();
 
 private:
-  QWord    lapTime;
+    QWord    lapTime;
 };
 
 #endif

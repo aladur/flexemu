@@ -25,9 +25,9 @@
 
 #include <misc1.h>
 #ifdef HAVE_PTHREAD
-#include <pthread.h>
+    #include <pthread.h>
 #else
-#error libpthread or header file pthread.h is missing
+    #error libpthread or header file pthread.h is missing
 #endif
 #include "bthreadimp.h"
 
@@ -37,17 +37,17 @@ class BThread;
 class BPosixThreadImp : public BThreadImp
 {
 public:
-	BPosixThreadImp();
-	virtual ~BPosixThreadImp();
-  bool Start(BThread *pThread);
-  void Join();
-  bool IsFinished();
-  void Exit(void *retval = NULL);
+    BPosixThreadImp();
+    virtual ~BPosixThreadImp();
+    bool Start(BThread *pThread);
+    void Join();
+    bool IsFinished();
+    void Exit(void *retval = NULL);
 private:
-  static void *RunImp(BPosixThreadImp *p);
-  BThread *pThreadObj;
-  bool finished;
-  pthread_t thread;
+    static void *RunImp(BPosixThreadImp *p);
+    BThread *pThreadObj;
+    bool finished;
+    pthread_t thread;
 };
 
 #endif

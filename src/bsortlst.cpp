@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <string.h>	// needed for declaration of NULL
+#include <string.h> // needed for declaration of NULL
 #include "bsortlst.h"
 #include "bbintree.h"
 #include "bintervl.h"
@@ -28,65 +28,82 @@
 #include "buint.h"
 
 
-template <class Item>BSortedList<Item>::BSortedList() : pRoot(NULL), pCurrentItem(NULL)
+template <class Item>BSortedList<Item>::BSortedList() : pRoot(NULL),
+    pCurrentItem(NULL)
 {
 }
 
 template <class Item>BSortedList<Item>::~BSortedList()
 {
-	delete pRoot;
+    delete pRoot;
 }
 
 template <class Item>Item BSortedList<Item>::GetFirst() const
 {
-	if (!pRoot) {
-		pCurrentItem = NULL;
-		return *((Item *)NULL);
-	} else {
-		pCurrentItem = pRoot->GetLeftMostItem();
-		return pCurrentItem->GetItem();
-	}
+    if (!pRoot)
+    {
+        pCurrentItem = NULL;
+        return *((Item *)NULL);
+    }
+    else
+    {
+        pCurrentItem = pRoot->GetLeftMostItem();
+        return pCurrentItem->GetItem();
+    }
 }
 
 template <class Item>Item BSortedList<Item>::GetNext() const
 {
-	// unfinished
-	if (pRoot) {
-	}
-	return pCurrentItem->GetItem();
+    // unfinished
+    if (pRoot)
+    {
+    }
+
+    return pCurrentItem->GetItem();
 }
 
 template <class Item>void BSortedList<Item>::Add(const Item &i)
 {
-	if (!pRoot) {
-		pRoot = new BBinaryTreeItem<Item>(i);
-	} else {
-		pRoot->Add(i);
-	}
+    if (!pRoot)
+    {
+        pRoot = new BBinaryTreeItem<Item>(i);
+    }
+    else
+    {
+        pRoot->Add(i);
+    }
 }
 
 template <class Item>void BSortedList<Item>::Remove(const Item &i)
 {
-	// unfinished
-	if (pRoot) {
-		if (pRoot->GetItem() == i) {
-		} else
-			pRoot->Remove(i);
-	}
+    // unfinished
+    if (pRoot)
+    {
+        if (pRoot->GetItem() == i)
+        {
+        }
+        else
+        {
+            pRoot->Remove(i);
+        }
+    }
 }
 
 template <class Item>void BSortedList<Item>::SetEmpty()
 {
-	delete pRoot;
-	pRoot = NULL;
-	pCurrentItem = NULL;
+    delete pRoot;
+    pRoot = NULL;
+    pCurrentItem = NULL;
 }
 
 template <class Item>bool BSortedList<Item>::Contains(const Item &i) const
 {
-	if (!pRoot)
-		return false;
-	return pRoot->Contains(i);
+    if (!pRoot)
+    {
+        return false;
+    }
+
+    return pRoot->Contains(i);
 }
 
 // explicit instanciation of complete template class:

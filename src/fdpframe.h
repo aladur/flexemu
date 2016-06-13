@@ -48,8 +48,9 @@ class FileContainerIf;
 class FlexParentFrame: public wxMDIParentFrame, public BObserver
 {
 public:
-    FlexParentFrame(wxWindow *parent, const wxWindowID id, const wxString &title,
-                    const wxPoint &pos, const wxSize &size, const long style);
+    FlexParentFrame(wxWindow *parent, const wxWindowID id,
+                    const wxString &title, const wxPoint &pos,
+                    const wxSize &size, const long style);
     virtual ~FlexParentFrame(void);
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     void OnChildFocus(wxChildFocusEvent &event);

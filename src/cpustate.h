@@ -1,7 +1,7 @@
 /*
     cpustate.h
 
-    
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 1997-2004  W. Schwotzer
 
@@ -25,7 +25,7 @@
 #ifndef __cpustate_h__
 #define __cpustate_h__
 
-#define S_MASK			0xF
+#define S_MASK          0xF
 
 #define S_NO_CHANGE             1
 #define S_RUN                   2
@@ -37,20 +37,20 @@
 #define S_RESET_RUN             8
 #define S_INVALID               9
 
-#define EXIT_SUSPEND		0x80
+#define EXIT_SUSPEND        0x80
 
-#define TIME_BASE               10000 
+#define TIME_BASE               10000
 
 #include "typedefs.h"
 
 class CpuStatus
 {
 public:
-	CpuStatus() : freq(0.0), state(0) { };
-	~CpuStatus() { };
+    CpuStatus() : freq(0.0), state(0) { };
+    ~CpuStatus() { };
 
-	float   freq;
-	Byte    state;
+    float   freq;
+    Byte    state;
 };
 #endif // __cpustate_h__
 

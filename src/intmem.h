@@ -30,8 +30,8 @@
 // memory access within the cpu will be done by inline code
 // because of performance reasons
 
-#define READ(x)			memory->read(x)
-#define READ_PI(x)		memory->read(x++)
+#define READ(x)         memory->read(x)
+#define READ_PI(x)      memory->read(x++)
 #define READ_WORD(x)            memory->read_word(x)
 #define WRITE(x, y)             memory->write(x, y)
 #define WRITE_WORD(x, y)        memory->write_word(x, y)

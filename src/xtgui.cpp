@@ -63,7 +63,10 @@ const char **XtGui::pixmapname[8] = { floppy0, floppy1, floppy2,
                                       irq0, irq1, irq2, irq3, irq4
                                     };
 
-int XtGui::radio_data[7] = {S_NO_CHANGE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT};
+int XtGui::radio_data[7] =
+{
+    S_NO_CHANGE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
+};
 
 void expose(Widget, XEvent *pevent, String *, Cardinal *)
 {
@@ -499,8 +502,8 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
         xpmattr.numsymbols   = 1;
         xpmattr.colormap     = DefaultColormapOfScreen(XtScreen(w));
         xpmattr.valuemask    = XpmColormap | XpmColorSymbols;
-        errorStatus = XpmCreatePixmapFromData(XtDisplay(w),
-                                              XtWindow(w), data, &pixmap[i], NULL, &xpmattr);
+        errorStatus = XpmCreatePixmapFromData(XtDisplay(w), XtWindow(w),
+                                              data, &pixmap[i], NULL, &xpmattr);
         XpmFreeAttributes(&xpmattr);
 
         if (errorStatus != XpmSuccess)
@@ -529,8 +532,9 @@ void XtGui::a_expose(Widget w, XEvent *pevent)
         data = const_cast<char **>(author);
         xpmattr.colormap  = DefaultColormapOfScreen(XtScreen(w));
         xpmattr.valuemask = XpmColormap;
-        errorStatus = XpmCreatePixmapFromData(XtDisplay(w),
-                                              XtWindow(w), data, &authorpixmap, NULL, &xpmattr);
+        errorStatus = XpmCreatePixmapFromData(XtDisplay(w), XtWindow(w),
+                                              data, &authorpixmap, NULL,
+                                              &xpmattr);
         XpmFreeAttributes(&xpmattr);
 
         if (errorStatus != XpmSuccess)
@@ -1221,7 +1225,10 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
         {const_cast<String>("enter"), (XtActionProc)enter},
         {const_cast<String>("leave"), (XtActionProc)leave},
         {const_cast<String>("convert"), (XtActionProc)keyPress},
-        {const_cast<String>("popup_no_resources"), (XtActionProc)popup_no_resources},
+        {
+            const_cast<String>("popup_no_resources"),
+            (XtActionProc)popup_no_resources
+        },
         {const_cast<String>("resize"), (XtActionProc)processResize},
         {const_cast<String>("wm_protocols"), (XtActionProc)wm_protocols}
     };
@@ -1230,7 +1237,8 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
 
     // create widget tree:
     mainview = XtVaAppInitialize(&context, "Flexemu",
-                                 opts, 0, &argc, const_cast<char **>(argv), fallback_resources, NULL);
+                                 opts, 0, &argc, const_cast<char **>(argv),
+                                 fallback_resources, NULL);
 
     if (synchronized)
     {
@@ -1253,8 +1261,10 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
     button3 = XtVaCreateManagedWidget("menuButton3", menuButtonWidgetClass,
                                       menubar, NULL);
     e2screen = XtVaCreateManagedWidget("screen", coreWidgetClass, form,
-                                       XtNwidth, (XtArgVal)WINDOWWIDTH * guiXSize,
-                                       XtNheight, (XtArgVal)WINDOWHEIGHT * guiYSize, NULL);
+                                       XtNwidth,
+                                       (XtArgVal)WINDOWWIDTH * guiXSize,
+                                       XtNheight,
+                                       (XtArgVal)WINDOWHEIGHT * guiYSize, NULL);
     statusbuttons = XtVaCreateManagedWidget("statusButtons",
                                             boxWidgetClass, form, NULL);
     menu1 = XtVaCreatePopupShell("menu1", simpleMenuWidgetClass, button1,
@@ -1369,15 +1379,16 @@ void XtGui::create_about_dialog(Widget parent)
     abouttext = XtVaCreateManagedWidget("aboutText", asciiTextWidgetClass,
                                         aboutform,
                                         XtNstring, (XtArgVal)aboutstring,
-                                        XtNlength, (XtArgVal)(strlen(aboutstring) + 1),
+                                        XtNlength,
+                                        (XtArgVal)(strlen(aboutstring) + 1),
                                         NULL);
     aboutbuttons = XtVaCreateManagedWidget("aboutButtons",
                                            boxWidgetClass, aboutform, NULL);
-    aboutbutton = XtVaCreateManagedWidget("aboutButton",
-                                          commandWidgetClass, aboutbuttons, NULL);
+    aboutbutton = XtVaCreateManagedWidget("aboutButton", commandWidgetClass,
+                                          aboutbuttons, NULL);
 #ifdef HAVE_XPM
-    morebutton = XtVaCreateManagedWidget("moreButton",
-                                         commandWidgetClass, aboutbuttons, NULL);
+    morebutton = XtVaCreateManagedWidget("moreButton", commandWidgetClass,
+                                         aboutbuttons, NULL);
 #endif
 
     // define some button callbacks:
@@ -1487,8 +1498,10 @@ void XtGui::create_help_view(Widget parent)
     helptext = XtVaCreateManagedWidget("helpText", asciiTextWidgetClass,
                                        helpform,
                                        XtNstring, (XtArgVal)phelpstring,
-                                       XtNscrollVertical, (XtArgVal)XawtextScrollWhenNeeded,
-                                       XtNscrollHorizontal, (XtArgVal)XawtextScrollWhenNeeded,
+                                       XtNscrollVertical,
+                                       (XtArgVal)XawtextScrollWhenNeeded,
+                                       XtNscrollHorizontal,
+                                       (XtArgVal)XawtextScrollWhenNeeded,
                                        NULL);
     helpokbutton = XtVaCreateManagedWidget("helpButton",
                                            commandWidgetClass, helpform, NULL);
@@ -1496,8 +1509,8 @@ void XtGui::create_help_view(Widget parent)
     for (i = 0; i < NR_OF_HELPBUTTONS; i++)
     {
         sprintf((char *)buttonName, "helpButton%d", i + 1);
-        helpbutton[i] = XtVaCreateManagedWidget(buttonName,
-                                                commandWidgetClass, helpform, NULL);
+        helpbutton[i] = XtVaCreateManagedWidget(buttonName, commandWidgetClass,
+                                                helpform, NULL);
     }
 
     XtFree(phelpstring);
@@ -1535,14 +1548,14 @@ void XtGui::display_man_page(Widget w)
 void XtGui::create_author_dialog(Widget parent)
 {
     authorpixmap = None;
-    authorframe = XtVaCreatePopupShell("author",
-                                       transientShellWidgetClass, parent, NULL);
-    authorform = XtVaCreateManagedWidget("authorForm",
-                                         formWidgetClass, authorframe, NULL);
-    authorwidget = XtVaCreateManagedWidget("authorWidget",
-                                           coreWidgetClass, authorform, NULL);
-    authorbutton = XtVaCreateManagedWidget("authorButton",
-                                           commandWidgetClass, authorform, NULL);
+    authorframe = XtVaCreatePopupShell("author", transientShellWidgetClass,
+                                       parent, NULL);
+    authorform = XtVaCreateManagedWidget("authorForm", formWidgetClass,
+                                         authorframe, NULL);
+    authorwidget = XtVaCreateManagedWidget("authorWidget", coreWidgetClass,
+                                           authorform, NULL);
+    authorbutton = XtVaCreateManagedWidget("authorButton", commandWidgetClass,
+                                           authorform, NULL);
 
     // define some button callbacks:
     XtAddCallback(authorbutton, XtNcallback, popdownAuthorCallback,
@@ -1555,18 +1568,20 @@ void XtGui::create_author_dialog(Widget parent)
 
 void XtGui::create_message_dialog(Widget parent)
 {
-    messageframe = XtVaCreatePopupShell("message",
-                                        transientShellWidgetClass, parent, NULL);
-    messageform = XtVaCreateManagedWidget("messageForm",
-                                          formWidgetClass, messageframe, NULL);
-    messagetext = XtVaCreateManagedWidget("messageText",
-                                          asciiTextWidgetClass, messageform, NULL);
-    messagebuttons = XtVaCreateManagedWidget("messageButtons",
-                     boxWidgetClass, messageform, NULL);
+    messageframe = XtVaCreatePopupShell("message", transientShellWidgetClass,
+                                        parent, NULL);
+    messageform = XtVaCreateManagedWidget("messageForm", formWidgetClass,
+                                          messageframe, NULL);
+    messagetext = XtVaCreateManagedWidget("messageText", asciiTextWidgetClass,
+                                          messageform, NULL);
+    messagebuttons = XtVaCreateManagedWidget("messageButtons", boxWidgetClass,
+                     messageform, NULL);
     messagebutton1 = XtVaCreateManagedWidget("messageButton1",
-                     commandWidgetClass, messagebuttons, NULL);
+                     commandWidgetClass,
+                     messagebuttons, NULL);
     messagebutton2 = XtVaCreateManagedWidget("messageButton2",
-                     commandWidgetClass, messagebuttons, NULL);
+                     commandWidgetClass,
+                     messagebuttons, NULL);
 
     XtVaSetValues(messageframe, XtCTransientFor, parent, NULL);
     XtVaSetValues(messagetext, XtNwrap, XawtextWrapWord, NULL);
@@ -1616,7 +1631,8 @@ void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
 #endif
         mainpixmap = XCreateBitmapFromData(XtDisplay(w),
                                            RootWindowOfScreen(screen),
-                                           (char *)flexmain_bits, flexmain_width, flexmain_height);
+                                           (char *)flexmain_bits,
+                                           flexmain_width, flexmain_height);
 
     if (mainpixmap != None)
     {
@@ -1661,7 +1677,8 @@ void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
         {
             image1[i][j] = XCreateImage(display, visual, 1,
                                         XYBitmap, 0, (char *)copy_block,
-                                        BLOCKWIDTH * (i + 1), BLOCKHEIGHT * (j + 1), 32, 0);
+                                        BLOCKWIDTH * (i + 1),
+                                        BLOCKHEIGHT * (j + 1), 32, 0);
             // use bitmap_unit = 8 to be independant of
             // byte_order
             image1[i][j]->bitmap_unit = 8;
@@ -1670,7 +1687,8 @@ void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
             _XInitImageFuncPtrs(image1[i][j]);
             image6[i][j] = XCreateImage(display, visual, depth,
                                         ZPixmap, 0, (char *)copy_block,
-                                        BLOCKWIDTH * (i + 1), BLOCKHEIGHT * (j + 1), 32, 0);
+                                        BLOCKWIDTH * (i + 1),
+                                        BLOCKHEIGHT * (j + 1), 32, 0);
 
             switch (depth)
             {
@@ -2132,40 +2150,40 @@ void XtGui::clear_log()
 void XtGui::create_cpuview(Widget parent)
 {
     cpu_popped_up = false;
-    cpuframe = XtVaCreatePopupShell("MC6809",
-                                    topLevelShellWidgetClass, parent, NULL);
-    cpuform = XtVaCreateManagedWidget("cpuForm",
-                                      formWidgetClass, cpuframe, NULL);
-    cputext = XtVaCreateManagedWidget("cpuText",
-                                      asciiTextWidgetClass, cpuform, NULL);
-    cpubuttons = XtVaCreateManagedWidget("cpuButtons",
-                                         boxWidgetClass, cpuform, NULL);
-    runbutton = XtVaCreateManagedWidget("runButton",
-                                        toggleWidgetClass, cpubuttons,
-                                        XtNradioData, (XtArgVal)&radio_data[S_RUN],
+    cpuframe = XtVaCreatePopupShell("MC6809", topLevelShellWidgetClass,
+                                    parent, NULL);
+    cpuform = XtVaCreateManagedWidget("cpuForm", formWidgetClass, cpuframe,
+                                      NULL);
+    cputext = XtVaCreateManagedWidget("cpuText", asciiTextWidgetClass, cpuform,
+                                      NULL);
+    cpubuttons = XtVaCreateManagedWidget("cpuButtons", boxWidgetClass, cpuform,
+                                         NULL);
+    runbutton = XtVaCreateManagedWidget("runButton", toggleWidgetClass,
+                                        cpubuttons, XtNradioData,
+                                        (XtArgVal)&radio_data[S_RUN],
                                         XtNstate, (XtArgVal)1, NULL);
-    stopbutton = XtVaCreateManagedWidget("stopButton",
-                                         toggleWidgetClass, cpubuttons,
-                                         XtNradioGroup, (XtArgVal)runbutton,
-                                         XtNradioData, (XtArgVal)&radio_data[S_STOP], NULL);
-    stepbutton = XtVaCreateManagedWidget("stepButton",
-                                         toggleWidgetClass, cpubuttons,
-                                         XtNradioGroup, (XtArgVal)runbutton,
-                                         XtNradioData, (XtArgVal)&radio_data[S_STEP], NULL);
-    nextbutton = XtVaCreateManagedWidget("nextButton",
-                                         toggleWidgetClass, cpubuttons,
-                                         XtNradioGroup, (XtArgVal)runbutton,
-                                         XtNradioData, (XtArgVal)&radio_data[S_NEXT], NULL);
-    resetbutton = XtVaCreateManagedWidget("resetButton",
-                                          toggleWidgetClass, cpubuttons,
-                                          XtNradioGroup, (XtArgVal)runbutton,
-                                          XtNradioData, (XtArgVal)&radio_data[S_RESET], NULL);
-    bpbutton = XtVaCreateManagedWidget("bpButton",
-                                       commandWidgetClass, cpubuttons, NULL);
-    logbutton = XtVaCreateManagedWidget("logButton",
-                                        commandWidgetClass, cpubuttons, NULL);
-    cpubutton = XtVaCreateManagedWidget("cpuButton",
-                                        commandWidgetClass, cpubuttons, NULL);
+    stopbutton = XtVaCreateManagedWidget("stopButton", toggleWidgetClass,
+                                         cpubuttons, XtNradioGroup,
+                                         (XtArgVal)runbutton, XtNradioData,
+                                         (XtArgVal)&radio_data[S_STOP], NULL);
+    stepbutton = XtVaCreateManagedWidget("stepButton", toggleWidgetClass,
+                                         cpubuttons, XtNradioGroup,
+                                         (XtArgVal)runbutton, XtNradioData,
+                                         (XtArgVal)&radio_data[S_STEP], NULL);
+    nextbutton = XtVaCreateManagedWidget("nextButton", toggleWidgetClass,
+                                         cpubuttons, XtNradioGroup,
+                                         (XtArgVal)runbutton, XtNradioData,
+                                         (XtArgVal)&radio_data[S_NEXT], NULL);
+    resetbutton = XtVaCreateManagedWidget("resetButton", toggleWidgetClass,
+                                          cpubuttons, XtNradioGroup,
+                                          (XtArgVal)runbutton, XtNradioData,
+                                          (XtArgVal)&radio_data[S_RESET], NULL);
+    bpbutton = XtVaCreateManagedWidget("bpButton", commandWidgetClass,
+                                       cpubuttons, NULL);
+    logbutton = XtVaCreateManagedWidget("logButton", commandWidgetClass,
+                                        cpubuttons, NULL);
+    cpubutton = XtVaCreateManagedWidget("cpuButton", commandWidgetClass,
+                                        cpubuttons, NULL);
 
     XtAddCallback(runbutton,   XtNcallback, toggleCpuRunCallback,
                   (XtPointer)this);
@@ -2188,9 +2206,9 @@ void XtGui::create_cpuview(Widget parent)
     XSetWMProtocols(getDisplay(), XtWindow(cpuframe), &wm_delete_window, 1);
     cpupixmap = None;
 #ifdef HAVE_XPM
-    XpmAttributes           xpmattr;
-    int                     errorStatus;
-    char            **data;
+    XpmAttributes   xpmattr;
+    int             errorStatus;
+    char          **data;
 
     xpmattr.colormap  = DefaultColormapOfScreen(XtScreen(cpuframe));
     xpmattr.valuemask = XpmColormap;
@@ -2203,8 +2221,10 @@ void XtGui::create_cpuview(Widget parent)
     if (errorStatus != XpmSuccess)
 #endif
         cpupixmap = XCreateBitmapFromData(XtDisplay(cpuframe),
-                                          RootWindowOfScreen(XtScreen(cpuframe)),
-                                          (char *)flexcpu_bits, flexcpu_width, flexcpu_height);
+                                          RootWindowOfScreen(
+                                              XtScreen(cpuframe)),
+                                          (char *)flexcpu_bits, flexcpu_width,
+                                          flexcpu_height);
 
     if (cpupixmap != None)
     {
@@ -2214,26 +2234,25 @@ void XtGui::create_cpuview(Widget parent)
 
 void XtGui::create_bp_dialog(Widget parent)
 {
-    bpframe = XtVaCreatePopupShell("Breakpoints",
-                                   transientShellWidgetClass, parent, NULL);
-    bpform = XtVaCreateManagedWidget("bpForm",
-                                     formWidgetClass, bpframe, NULL);
-    bplabel[0] = XtVaCreateManagedWidget("bpLabel1",
-                                         labelWidgetClass, bpform, NULL);
-    bplabel[1] = XtVaCreateManagedWidget("bpLabel2",
-                                         labelWidgetClass, bpform, NULL);
-    bptext[0] = XtVaCreateManagedWidget("bpText1",
-                                        asciiTextWidgetClass, bpform,
-                                        XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    bptext[1] = XtVaCreateManagedWidget("bpText2",
-                                        asciiTextWidgetClass, bpform,
-                                        XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    bpokbutton = XtVaCreateManagedWidget("bpOkButton",
-                                         commandWidgetClass, bpform, NULL);
+    bpframe = XtVaCreatePopupShell("Breakpoints", transientShellWidgetClass,
+                                   parent, NULL);
+    bpform = XtVaCreateManagedWidget("bpForm", formWidgetClass, bpframe, NULL);
+    bplabel[0] = XtVaCreateManagedWidget("bpLabel1", labelWidgetClass, bpform,
+                                         NULL);
+    bplabel[1] = XtVaCreateManagedWidget("bpLabel2", labelWidgetClass, bpform,
+                                         NULL);
+    bptext[0] = XtVaCreateManagedWidget("bpText1", asciiTextWidgetClass, bpform,
+                                        XtNeditType, (XtArgVal)XawtextEdit,
+                                        NULL);
+    bptext[1] = XtVaCreateManagedWidget("bpText2", asciiTextWidgetClass, bpform,
+                                        XtNeditType, (XtArgVal)XawtextEdit,
+                                        NULL);
+    bpokbutton = XtVaCreateManagedWidget("bpOkButton", commandWidgetClass,
+                                         bpform, NULL);
     bpcancelbutton = XtVaCreateManagedWidget("bpCancelButton",
                      commandWidgetClass, bpform, NULL);
-    bpclearbutton = XtVaCreateManagedWidget("bpClearButton",
-                                            commandWidgetClass, bpform, NULL);
+    bpclearbutton = XtVaCreateManagedWidget("bpClearButton", commandWidgetClass,
+                                            bpform, NULL);
 
     XtAddCallback(bpokbutton, XtNcallback, popdownBpCallback,
                   (XtPointer)this);
@@ -2250,41 +2269,43 @@ void XtGui::create_bp_dialog(Widget parent)
 
 void XtGui::create_logfile_dialog(Widget parent)
 {
-    logframe = XtVaCreatePopupShell("Logging",
-                                    transientShellWidgetClass, parent, NULL);
-    logform = XtVaCreateManagedWidget("logForm",
-                                      formWidgetClass, logframe, NULL);
-    loglabel[0] = XtVaCreateManagedWidget("logLabel1",
-                                          labelWidgetClass, logform, NULL);
-    loglabel[1] = XtVaCreateManagedWidget("logLabel2",
-                                          labelWidgetClass, logform, NULL);
-    loglabel[2] = XtVaCreateManagedWidget("logLabel3",
-                                          labelWidgetClass, logform, NULL);
-    loglabel[3] = XtVaCreateManagedWidget("logLabel4",
-                                          labelWidgetClass, logform, NULL);
-    loglabel[4] = XtVaCreateManagedWidget("logLabel5",
-                                          labelWidgetClass, logform, NULL);
-    logtext[0] = XtVaCreateManagedWidget("logText1",
-                                         asciiTextWidgetClass, logform,
-                                         XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    logtext[1] = XtVaCreateManagedWidget("logText2",
-                                         asciiTextWidgetClass, logform,
-                                         XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    logtext[2] = XtVaCreateManagedWidget("logText3",
-                                         asciiTextWidgetClass, logform,
-                                         XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    logtext[3] = XtVaCreateManagedWidget("logText4",
-                                         asciiTextWidgetClass, logform,
-                                         XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    logfilename = XtVaCreateManagedWidget("logFileName",
-                                          asciiTextWidgetClass, logform,
-                                          XtNeditType, (XtArgVal)XawtextEdit, NULL);
-    logokbutton = XtVaCreateManagedWidget("logOkButton",
-                                          commandWidgetClass, logform, NULL);
+    logframe = XtVaCreatePopupShell("Logging", transientShellWidgetClass,
+                                    parent, NULL);
+    logform = XtVaCreateManagedWidget("logForm", formWidgetClass, logframe,
+                                      NULL);
+    loglabel[0] = XtVaCreateManagedWidget("logLabel1", labelWidgetClass,
+                                          logform, NULL);
+    loglabel[1] = XtVaCreateManagedWidget("logLabel2", labelWidgetClass,
+                                          logform, NULL);
+    loglabel[2] = XtVaCreateManagedWidget("logLabel3", labelWidgetClass,
+                                          logform, NULL);
+    loglabel[3] = XtVaCreateManagedWidget("logLabel4", labelWidgetClass,
+                                          logform, NULL);
+    loglabel[4] = XtVaCreateManagedWidget("logLabel5", labelWidgetClass,
+                                          logform, NULL);
+    logtext[0] = XtVaCreateManagedWidget("logText1", asciiTextWidgetClass,
+                                         logform, XtNeditType,
+                                         (XtArgVal)XawtextEdit, NULL);
+    logtext[1] = XtVaCreateManagedWidget("logText2", asciiTextWidgetClass,
+                                         logform, XtNeditType,
+                                         (XtArgVal)XawtextEdit, NULL);
+    logtext[2] = XtVaCreateManagedWidget("logText3", asciiTextWidgetClass,
+                                         logform, XtNeditType,
+                                         (XtArgVal)XawtextEdit, NULL);
+    logtext[3] = XtVaCreateManagedWidget("logText4", asciiTextWidgetClass,
+                                         logform, XtNeditType,
+                                         (XtArgVal)XawtextEdit, NULL);
+    logfilename = XtVaCreateManagedWidget("logFileName", asciiTextWidgetClass,
+                                          logform, XtNeditType,
+                                          (XtArgVal)XawtextEdit, NULL);
+    logokbutton = XtVaCreateManagedWidget("logOkButton", commandWidgetClass,
+                                          logform, NULL);
     logcancelbutton = XtVaCreateManagedWidget("logCancelButton",
-                      commandWidgetClass, logform, NULL);
+                      commandWidgetClass, logform,
+                      NULL);
     logclearbutton = XtVaCreateManagedWidget("logClearButton",
-                     commandWidgetClass, logform, NULL);
+                     commandWidgetClass, logform,
+                     NULL);
 
     XtAddCallback(logokbutton, XtNcallback, popdownLogCallback,
                   (XtPointer)this);

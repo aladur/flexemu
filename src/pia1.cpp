@@ -26,40 +26,42 @@
 
 Pia1::Pia1(Inout *x_io, Mc6809 *x_cpu)
 {
-	cpu = x_cpu;
-	io  = x_io;
+    cpu = x_cpu;
+    io  = x_io;
 }
 
 
 void Pia1::resetIo(void)
 {
-	Mc6821::resetIo();
-	io->reset_parallel();
+    Mc6821::resetIo();
+    io->reset_parallel();
 }
 
 void Pia1::requestInputA(void)
 {
-//	if (io->poll()) {
-//		activeTransition(CA1);
-//	}
+    //  if (io->poll()) {
+    //      activeTransition(CA1);
+    //  }
 }
 
 Byte Pia1::readInputA(void)
 {
-	if (io->poll()) {
-		ora = io->read_ch();
-	}
-	return ora;
+    if (io->poll())
+    {
+        ora = io->read_ch();
+    }
+
+    return ora;
 }
 
 void Pia1::set_irq_A(void)
 {
-	cpu->set_irq();
+    cpu->set_irq();
 }
 
 
 void Pia1::set_irq_B(void)
 {
-	cpu->set_irq();
+    cpu->set_irq();
 }
 

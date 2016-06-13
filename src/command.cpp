@@ -399,7 +399,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc->format_disk(trk, sec, arg2, TYPE_DSK_CONTAINER))
+                        if (!fdc->format_disk(trk, sec, arg2,
+                                              TYPE_DSK_CONTAINER))
                         {
                             ANSWER_ERR(UNABLE_FORMAT);
                         }

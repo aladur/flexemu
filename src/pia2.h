@@ -31,34 +31,38 @@
 #include "mc6809.h"
 
 #ifdef  LINUX_JOYSTICK_IS_PRESENT
-class BJoystick;
+    class BJoystick;
 #endif
 
-class Pia2 : public Mc6821 {
+class Pia2 : public Mc6821
+{
 
-// Terminal bell and Joystick connected to Port B
+    // Terminal bell and Joystick connected to Port B
 
 private:
 
-	Inout*				io;
-	Mc6809*				cpu;
-	QWord				cycles;
+    Inout              *io;
+    Mc6809             *cpu;
+    QWord               cycles;
 
 #ifdef  LINUX_JOYSTICK_IS_PRESENT
-	BJoystick*			joystick;
+    BJoystick          *joystick;
 #endif
 
-// Processor status functions
+    // Processor status functions
 
 protected:
 
-	virtual void			writeOutputB(Byte val);
-	virtual Byte			readInputB(void);
+    virtual void            writeOutputB(Byte val);
+    virtual Byte            readInputB(void);
 public:
-	virtual void			resetIo(void);
-	virtual const char      *getName(void) { return "pia2"; };
-					Pia2(Inout* x_io, Mc6809* x_cpu);
-	virtual				~Pia2();
+    virtual void            resetIo(void);
+    virtual const char      *getName(void)
+    {
+        return "pia2";
+    };
+    Pia2(Inout *x_io, Mc6809 *x_cpu);
+    virtual             ~Pia2();
 };
 
 #endif // __pia2__h

@@ -96,7 +96,8 @@ void FLEXplorer::WriteDefaultOptions(void)
     reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
     reg->SetValue(FLEXPLORERFILEVIEWER, FlexDiskListCtrl::fileViewer);
     reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ? 1 : 0);
+    reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ?
+                  1 : 0);
     delete reg;
 #endif
 #ifdef UNIX
@@ -114,7 +115,8 @@ void FLEXplorer::WriteDefaultOptions(void)
     rcFile->Initialize(); // truncate file
     rcFile->SetValue(FLEXPLORERFILEVIEWER,
                      FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
-    rcFile->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    rcFile->SetValue(FLEXPLORERBOOTSECTORFILE,
+                     FlexFileContainer::bootSectorFile);
     rcFile->SetValue(FLEXPLORERTEXTFLAG,
                      FlexCopyManager::autoTextConversion ? 1 : 0);
     delete rcFile;

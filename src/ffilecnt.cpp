@@ -149,7 +149,8 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
             {
                 // ok it's a DSK format
                 Initialize_for_dsk_format(&param, &format,
-                                          (attributes & FLX_READONLY) ? true : false);
+                                          (attributes & FLX_READONLY) ?
+                                          true : false);
                 return;
             }
         }
@@ -344,8 +345,8 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetDate(buffer.day, buffer.month, year);
     info.SetTrackSector(buffer.last_trk + 1, buffer.last_sec);
-    info.SetFree((((buffer.free[0] << 8) | buffer.free[1]) * param.byte_p_sector) >>
-                 10);
+    info.SetFree((((buffer.free[0] << 8) | buffer.free[1]) *
+                  param.byte_p_sector) >> 10);
     info.SetTotalSize(((buffer.last_sec * (buffer.last_trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(buffer.disk_name);
@@ -525,7 +526,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                 sectorBuffer[smSector][smIndex + 2]++;
                 nextPTrk = trk;
 
-                if ((nextPSec = sec + 1) > (param.byte_p_track / param.byte_p_sector))
+                if ((nextPSec = sec + 1) > (param.byte_p_track /
+                                            param.byte_p_sector))
                 {
                     nextPTrk++;
                     nextPSec = 1;
@@ -718,8 +720,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         // read next directory sector
         if (!ReadSector((Byte *)&ds, nextTrk, nextSec))
         {
-                throw FlexException(FERR_READING_TRKSEC,
-                                    nextTrk, nextSec, fp.GetPath());
+            throw FlexException(FERR_READING_TRKSEC,
+                                nextTrk, nextSec, fp.GetPath());
         }
 
         for (i = 0; i < 10; i++)
@@ -734,7 +736,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 records = (entry.GetSize() / param.byte_p_sector) +
                           (entry.IsRandom() ? 2 : 0);
                 memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
-                strncpy(pde->filename, entry.GetFileName(), FLEX_BASEFILENAME_LENGTH);
+                strncpy(pde->filename, entry.GetFileName(),
+                        FLEX_BASEFILENAME_LENGTH);
                 memset(pde->file_ext, 0, FLEX_FILEEXT_LENGTH);
                 strncpy(pde->file_ext, entry.GetFileExt(), FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
@@ -1111,7 +1114,8 @@ void FlexFileContainer::Format_disk(
 
         if (type == TYPE_FLX_CONTAINER)
         {
-            hdr.initialize(SECTOR_SIZE, format.tracks, format.sectors, format.sectors, 1);
+            hdr.initialize(SECTOR_SIZE, format.tracks, format.sectors,
+                           format.sectors, 1);
 
             if (fwrite(&hdr, sizeof(hdr), 1, fp) != 1)
             {

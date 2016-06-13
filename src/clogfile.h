@@ -30,13 +30,13 @@
 class CSetLogFile : public BCommand
 {
 
-public: 
-  CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file);
-  virtual void Execute();
+public:
+    CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file);
+    virtual void Execute();
 
 protected:
-  Mc6809 &cpu;
-  const struct s_cpu_logfile *s_log_file;
+    Mc6809 &cpu;
+    const struct s_cpu_logfile *s_log_file;
 };
 
 #endif

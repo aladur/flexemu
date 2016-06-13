@@ -26,14 +26,15 @@
 #define _BCOMMAND_H_
 
 
-class BCommand {
+class BCommand
+{
 
-public: 
-  virtual ~BCommand();
-  virtual void Execute() = 0;
+public:
+    virtual ~BCommand();
+    virtual void Execute() = 0;
 
 protected:
-  BCommand();
+    BCommand();
 };
 
 #endif

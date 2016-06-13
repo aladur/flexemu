@@ -30,21 +30,23 @@ class BIdentifier;
 class BUInt;
 
 
-template <class Item> class BSortedList {
+template <class Item> class BSortedList
+{
 
 public:
-	BSortedList();
-	virtual ~BSortedList();
+    BSortedList();
+    virtual ~BSortedList();
 
-	Item GetFirst() const;
-	Item GetNext() const;
-	void Add(const Item &i);
-	void Remove(const Item &i);
-	void SetEmpty();
-	bool Contains(const Item &i) const;
+    Item GetFirst() const;
+    Item GetNext() const;
+    void Add(const Item &i);
+    void Remove(const Item &i);
+    void SetEmpty();
+    bool Contains(const Item &i) const;
 private:
-	BBinaryTreeItem<Item> *pRoot;
-	mutable const BBinaryTreeItem<Item> *pCurrentItem; // current binary tree item for GetFirst/GetNext
+    BBinaryTreeItem<Item> *pRoot;
+    mutable const BBinaryTreeItem<Item>
+    *pCurrentItem; // current binary tree item for GetFirst/GetNext
 }; // class BSortedList
 
 typedef BSortedList<BIdentifier> BIdentifierSList;

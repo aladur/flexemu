@@ -29,52 +29,56 @@
 #include "iodevice.h"
 
 
-#define RAM_SIZE 50 			// size of internal ram
+#define RAM_SIZE 50             // size of internal ram
 
 class Mc6809;
 class Inout;
 
 
-class Mc146818 : public IoDevice {
+class Mc146818 : public IoDevice
+{
 
-// Internal registers:
-//
+    // Internal registers:
+    //
 
 protected:
-	Mc6809			       *cpu;
-	Inout			       *io;
+    Mc6809                 *cpu;
+    Inout                  *io;
 
-	Byte				second, minute, hour;
-	Byte				al_second, al_minute, al_hour;
-	Byte				weekday, day, month, year; 
-	Byte				A, B, C, D;
-	Byte				ram[RAM_SIZE];
+    Byte                second, minute, hour;
+    Byte                al_second, al_minute, al_hour;
+    Byte                weekday, day, month, year;
+    Byte                A, B, C, D;
+    Byte                ram[RAM_SIZE];
 
 public:
 
-	virtual Byte			 readIo(Word offset);
-	virtual void			 writeIo(Word offset, Byte val);
-	virtual void			 resetIo(void);
-	virtual const char      *getName(void) { return "mc146818"; };
-	virtual void			 update_1_second(void);
+    virtual Byte             readIo(Word offset);
+    virtual void             writeIo(Word offset, Byte val);
+    virtual void             resetIo(void);
+    virtual const char      *getName(void)
+    {
+        return "mc146818";
+    };
+    virtual void             update_1_second(void);
 
 private:
 
-	Byte			 	convert(Byte val);
-	Byte			 	convert_hour(Byte val);
-	Byte			 	convert_bin(Byte val);
-	Byte				increment(Byte *, Byte, Byte);
-	Byte			 	increment_hour(Byte *);
-	Byte			 	increment_day(Byte *, Byte, Byte);
-	const char			*getFileName();
-	char				path[PATH_MAX];
+    Byte                convert(Byte val);
+    Byte                convert_hour(Byte val);
+    Byte                convert_bin(Byte val);
+    Byte                increment(Byte *, Byte, Byte);
+    Byte                increment_hour(Byte *);
+    Byte                increment_day(Byte *, Byte, Byte);
+    const char          *getFileName();
+    char                path[PATH_MAX];
 
-// Public constructor and destructor
+    // Public constructor and destructor
 
 public:
 
-					 Mc146818(Inout *x_io, Mc6809 *x_cpu);
-	virtual				~Mc146818();
+    Mc146818(Inout *x_io, Mc6809 *x_cpu);
+    virtual             ~Mc146818();
 
 };
 

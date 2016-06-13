@@ -28,38 +28,44 @@
 
 /* possible constants for container type */
 
-const int TYPE_CONTAINER	= 0x01; /* type: file container */
-const int TYPE_DIRECTORY	= 0x02; /* type: directory */
-const int TYPE_DSK_CONTAINER	= 0x10; /* subtype: a file container with DSK format */
-const int TYPE_FLX_CONTAINER	= 0x20; /* subtype: a file container with FLX format */
-const int TYPE_NAFS_DIRECTORY	= 0x40; /* subtype: NAFS directory */
-										/* (means: without text conversion) */
-const int TYPE_RAM_CONTAINER	= 0x80; /* subtype: filecontainer loaded in RAM */
+const int TYPE_CONTAINER    = 0x01; /* type: file container */
+const int TYPE_DIRECTORY    = 0x02; /* type: directory */
+const int TYPE_DSK_CONTAINER    =
+    0x10; /* subtype: a file container with DSK format */
+const int TYPE_FLX_CONTAINER    =
+    0x20; /* subtype: a file container with FLX format */
+const int TYPE_NAFS_DIRECTORY   = 0x40; /* subtype: NAFS directory */
+/* (means: without text conversion) */
+const int TYPE_RAM_CONTAINER    =
+    0x80; /* subtype: filecontainer loaded in RAM */
 
 #define RANDOM_FILE_LIST "random"
-const unsigned int SECTOR_SIZE	= 256;
+const unsigned int SECTOR_SIZE  = 256;
 
 class FlexContainerInfo;
 
 /* possible file attributes */
 /* (WRITE_PROTECT also used for container attribute) */
-enum {
-	WRITE_PROTECT   = 0x80,
-	DELETE_PROTECT  = 0x40,
-	READ_PROTECT    = 0x20,
-	CATALOG_PROTECT = 0x10,
-	ALL_PROTECT		= WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT | CATALOG_PROTECT
+enum
+{
+    WRITE_PROTECT   = 0x80,
+    DELETE_PROTECT  = 0x40,
+    READ_PROTECT    = 0x20,
+    CATALOG_PROTECT = 0x10,
+    ALL_PROTECT     = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
+                      CATALOG_PROTECT
 };
 
-class FileContainerIfBase {
+class FileContainerIfBase
+{
 public:
-	virtual int  Close(void) = 0;
-	virtual bool IsContainerOpened(void) const = 0;
-	virtual bool IsWriteProtected(void) const = 0;
-	virtual bool  GetInfo(FlexContainerInfo& info) const = 0;
-        virtual int  GetContainerType(void) const = 0;
-        virtual BString GetPath(void) const = 0;
-		virtual ~FileContainerIfBase() { };
+    virtual int  Close(void) = 0;
+    virtual bool IsContainerOpened(void) const = 0;
+    virtual bool IsWriteProtected(void) const = 0;
+    virtual bool  GetInfo(FlexContainerInfo &info) const = 0;
+    virtual int  GetContainerType(void) const = 0;
+    virtual BString GetPath(void) const = 0;
+    virtual ~FileContainerIfBase() { };
 };  /* class FileContainerIfBase */
 
 #endif /* __filecntb_h__ */

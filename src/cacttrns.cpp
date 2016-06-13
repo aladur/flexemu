@@ -26,12 +26,12 @@
 
 
 CActiveTransition::CActiveTransition(Mc6821 &x_mc6821, Byte x_transition) :
-   mc6821(x_mc6821), transition(x_transition)
+    mc6821(x_mc6821), transition(x_transition)
 {
 }
 
 void CActiveTransition::Execute()
 {
-     mc6821.activeTransition(transition); 
+    mc6821.activeTransition(transition);
 }
 

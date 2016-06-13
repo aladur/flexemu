@@ -38,61 +38,69 @@ class BDate;
 class DirectoryContainerIteratorImp;
 
 
-#define CHECK_NO_DCONTAINER_OPEN			     \
-	if (!IsContainerOpened()) {			     \
-		throw FlexException(FERR_NO_CONTAINER_OPEN); \
-	}
+#define CHECK_NO_DCONTAINER_OPEN                 \
+    if (!IsContainerOpened()) {              \
+        throw FlexException(FERR_NO_CONTAINER_OPEN); \
+    }
 
 class DirectoryContainer : public FileContainerIf
 {
-friend class DirectoryContainerIteratorImp;  // corresponding iterator class
+    friend class DirectoryContainerIteratorImp;  // corresponding iterator class
 
 private:
-	BString		*path;
-	int		attributes;
-	bool		isOpened;
+    BString     *path;
+    int     attributes;
+    bool        isOpened;
 
 public:
-	DirectoryContainer(const char *path);
-	virtual ~DirectoryContainer();		// public destructor
+    DirectoryContainer(const char *path);
+    virtual ~DirectoryContainer();      // public destructor
 
-// basic interface
+    // basic interface
 public:
-	static DirectoryContainer *Create(const char *dir, const char *name,
-                                   int t, int s, int fmt = TYPE_DSK_CONTAINER);
-	int Close(void);
-	bool IsContainerOpened(void) const;
-	bool IsWriteProtected(void) const;
-	bool GetInfo(FlexContainerInfo& info) const;
-        int  GetContainerType(void) const;
-        BString GetPath(void) const;
-	bool CheckFilename(const char *) const;
+    static DirectoryContainer *Create(const char *dir, const char *name,
+                                      int t, int s,
+                                      int fmt = TYPE_DSK_CONTAINER);
+    int Close(void);
+    bool IsContainerOpened(void) const;
+    bool IsWriteProtected(void) const;
+    bool GetInfo(FlexContainerInfo &info) const;
+    int  GetContainerType(void) const;
+    BString GetPath(void) const;
+    bool CheckFilename(const char *) const;
 
-// file oriented interface (to be used within flexdisk)
+    // file oriented interface (to be used within flexdisk)
 public:
-        FileContainerIf *begin() { return this; };
-        FileContainerIf *end() const { return NULL; };
-	FileContainerIteratorImp *IteratorFactory();
-	bool	FindFile(const char *fileName, FlexDirEntry& entry);	
-	bool	DeleteFile(const char *fileName);
-	bool	RenameFile(const char *oldName, const char *newName);
-	bool	SetAttributes(const char *fileName, int setMask, int clearMask = ~0);
-	void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
-	bool WriteFromBuffer(const FlexFileBuffer &buffer,
-		const char *fileName = NULL);
-	bool	FileCopy(const char *sourceName, const char *destName,
-		FileContainerIf& destination);
+    FileContainerIf *begin()
+    {
+        return this;
+    };
+    FileContainerIf *end() const
+    {
+        return NULL;
+    };
+    FileContainerIteratorImp *IteratorFactory();
+    bool    FindFile(const char *fileName, FlexDirEntry &entry);
+    bool    DeleteFile(const char *fileName);
+    bool    RenameFile(const char *oldName, const char *newName);
+    bool    SetAttributes(const char *fileName, int setMask,
+                          int clearMask = ~0);
+    void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
+    bool WriteFromBuffer(const FlexFileBuffer &buffer,
+                         const char *fileName = NULL);
+    bool    FileCopy(const char *sourceName, const char *destName,
+                     FileContainerIf &destination);
 
-// private interface
+    // private interface
 private:
-	DirectoryContainer();	// should not be used
-	bool IsRandomFile(const char *ppath, const char *pfilename) const;
-	bool IsFlexFilename(const char *pfilename,
-				char *pname = NULL,
-				char *pext = NULL) const;
-	bool	SetDate(const char *fileName, const BDate& date);
-	bool	SetRandom(const char *fileName);
-	void Initialize_header(Byte wp);
+    DirectoryContainer();   // should not be used
+    bool IsRandomFile(const char *ppath, const char *pfilename) const;
+    bool IsFlexFilename(const char *pfilename,
+                        char *pname = NULL,
+                        char *pext = NULL) const;
+    bool    SetDate(const char *fileName, const BDate &date);
+    bool    SetRandom(const char *fileName);
+    void Initialize_header(Byte wp);
 
 };  // class DirectoryContainer
 

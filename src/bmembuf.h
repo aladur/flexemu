@@ -29,21 +29,27 @@
 class BMemoryBuffer
 {
 public:
-	BMemoryBuffer(DWord aSize = 65536, DWord aBase = 0);
-	BMemoryBuffer(const BMemoryBuffer &src);
-	~BMemoryBuffer();
+    BMemoryBuffer(DWord aSize = 65536, DWord aBase = 0);
+    BMemoryBuffer(const BMemoryBuffer &src);
+    ~BMemoryBuffer();
 
-	void FillWith(const Byte pattern = 0);
-	inline DWord GetSize(void) const { return size; };
-	inline DWord GetBaseAddress(void) const { return baseAddress; };
-	bool CopyFrom(const Byte *from, DWord aSize, DWord address);
-	const Byte *GetBuffer(DWord address);
-	Byte operator[] (DWord address);
+    void FillWith(const Byte pattern = 0);
+    inline DWord GetSize(void) const
+    {
+        return size;
+    };
+    inline DWord GetBaseAddress(void) const
+    {
+        return baseAddress;
+    };
+    bool CopyFrom(const Byte *from, DWord aSize, DWord address);
+    const Byte *GetBuffer(DWord address);
+    Byte operator[](DWord address);
 
 private:
-	DWord	baseAddress;
-	DWord	size;
-	Byte	*pBuffer;
+    DWord   baseAddress;
+    DWord   size;
+    Byte    *pBuffer;
 };
 
 #endif // #ifdef __bmembuf_h__

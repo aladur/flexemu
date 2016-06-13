@@ -30,26 +30,33 @@
 class DisassemblerConfig;
 class BMemoryBuffer;
 
-class Disassembler {
+class Disassembler
+{
 
 protected:
 
-	AbstractDisassembler *da;
+    AbstractDisassembler *da;
 
 public:
-	Disassembler();	// public constructor
-	virtual ~Disassembler();		// public destructor
+    Disassembler(); // public constructor
+    virtual ~Disassembler();        // public destructor
 
-	void SetLbLDisassembler(AbstractDisassembler *d);
-	int	DisassembleOneLine(const Byte *pMemory, DWord pc, DWord *pFlags, DWord *pAddr,
-			char **pb1, char **pb2);
-	void DisassembleWithConfig(DisassemblerConfig &aConfig, BMemoryBuffer *pMemBuf);
+    void SetLbLDisassembler(AbstractDisassembler *d);
+    int DisassembleOneLine(const Byte *pMemory, DWord pc, DWord *pFlags,
+                           DWord *pAddr,
+                           char **pb1, char **pb2);
+    void DisassembleWithConfig(DisassemblerConfig &aConfig,
+                               BMemoryBuffer *pMemBuf);
 
 protected:
-	int	DisassembleUptoEnd(DisassemblerConfig &aConfig, const Byte *pMemory, DWord pc);
+    int DisassembleUptoEnd(DisassemblerConfig &aConfig, const Byte *pMemory,
+                           DWord pc);
 };
 
-inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d) { da = d; }
+inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d)
+{
+    da = d;
+}
 
 #endif // __da_h__
 

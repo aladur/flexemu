@@ -25,7 +25,7 @@
 
 #include "misc1.h"
 #ifdef WIN32
-  #pragma warning (disable: 4786)
+    #pragma warning (disable: 4786)
 #endif
 #include <vector>
 #include "bstring.h"
@@ -33,31 +33,37 @@
 
 typedef std::vector<BString> tPathList;
 
-class BDirectory  
+class BDirectory
 {
 private:
-	BString m_path;
+    BString m_path;
 
 public:
-	static bool Exists(const BString &aPath);
-	static bool Remove(const BString &aPath);
-	static bool Create(const BString &aPath, int mode = 0x0755);
-	static bool RemoveRecursive(const BString &aPath);
-	static tPathList GetSubDirectories(const BString &aPath);
-	static tPathList GetFiles(const BString &aPath);
+    static bool Exists(const BString &aPath);
+    static bool Remove(const BString &aPath);
+    static bool Create(const BString &aPath, int mode = 0x0755);
+    static bool RemoveRecursive(const BString &aPath);
+    static tPathList GetSubDirectories(const BString &aPath);
+    static tPathList GetFiles(const BString &aPath);
 
-	BDirectory();
-	BDirectory(BString &path) : m_path(path) { };
-	~BDirectory();
+    BDirectory();
+    BDirectory(BString &path) : m_path(path) { };
+    ~BDirectory();
 
-	inline void SetPath(BString &path) { m_path = path; };
-	inline const BString &GetPath(void) const { return m_path; };
-	bool Exists(void) const;
-	bool Remove(void) const;
-	bool Create(int mode = 0x0755) const;
-	bool RemoveRecursive(void) const;
-	tPathList GetSubDirectories() const;
-	tPathList GetFiles() const;
+    inline void SetPath(BString &path)
+    {
+        m_path = path;
+    };
+    inline const BString &GetPath(void) const
+    {
+        return m_path;
+    };
+    bool Exists(void) const;
+    bool Remove(void) const;
+    bool Create(int mode = 0x0755) const;
+    bool RemoveRecursive(void) const;
+    tPathList GetSubDirectories() const;
+    tPathList GetFiles() const;
 };
 
 #endif // #ifndef __bdir_h__

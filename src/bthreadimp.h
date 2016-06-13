@@ -32,12 +32,12 @@
 class BThreadImp
 {
 public:
-	BThreadImp();
-	virtual ~BThreadImp();
-  virtual bool Start(BThread *pThread) = 0;
-  virtual void Join() = 0;
-  virtual bool IsFinished() = 0;
-  virtual void Exit(void *retval = NULL) = 0;
+    BThreadImp();
+    virtual ~BThreadImp();
+    virtual bool Start(BThread *pThread) = 0;
+    virtual void Join() = 0;
+    virtual bool IsFinished() = 0;
+    virtual void Exit(void *retval = NULL) = 0;
 };
 
 #endif

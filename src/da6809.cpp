@@ -450,7 +450,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
         {
             case 0x00 : // ,R+
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s ,%s+", mnemo, IndexedRegister(postbyte >> 5));
+                sprintf(mnem_buf, "%s ,%s+", mnemo,
+                        IndexedRegister(postbyte >> 5));
                 break;
 
             case 0x11 : // [,R++]
@@ -465,7 +466,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
 
             case 0x02 : // ,-R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s ,-%s", mnemo, IndexedRegister(postbyte >> 5));
+                sprintf(mnem_buf, "%s ,-%s", mnemo,
+                        IndexedRegister(postbyte >> 5));
                 break;
 
             case 0x13 : // [,R--]
@@ -565,7 +567,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 s = "<";
                 sprintf(code_buf, "%04X: %02X %02X %02X", pc, code, postbyte,
                         *(pMemory + 2));
-                sprintf(mnem_buf, "%s %s%s$%02X,PCR%s", mnemo, br1, s, offset, br2);
+                sprintf(mnem_buf, "%s %s%s$%02X,PCR%s", mnemo, br1, s, offset,
+                        br2);
                 extrabytes = 1;
                 break;
 
@@ -574,11 +577,13 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 br2 = "]";
 
             case 0x0d :  // ,PC + 16 Bit Offset
-                offset = (((*(pMemory + 2) << 8) | *(pMemory + 3)) + pc + 4) & 0xFFFF;
+                offset = (((*(pMemory + 2) << 8) | *(pMemory + 3)) + pc + 4) &
+                         0xFFFF;
                 s = ">";
                 sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
                         postbyte, *(pMemory + 2), *(pMemory + 3));
-                sprintf(mnem_buf, "%s %s%s$%04X,PCR%s", mnemo, br1, s, offset, br2);
+                sprintf(mnem_buf, "%s %s%s$%04X,PCR%s", mnemo, br1, s, offset,
+                        br2);
                 extrabytes = 2;
                 break;
 

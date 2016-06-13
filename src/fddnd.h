@@ -49,30 +49,34 @@ extern wxString FlexFileFormatId;
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
 typedef std::list<FlexFileBuffer *> tFlexFileBufferArray;
 
-class FlexDnDFiles {
-	struct tFlexDnDFile
-	{
-		DWord size;
-		Word  attributes;
-		Word  sectorMap;
-		Word  day;
-		Word  month;
-		Word  year;
-		FlexFileName fileName;
-		char  data;
-	};
+class FlexDnDFiles
+{
+    struct tFlexDnDFile
+    {
+        DWord size;
+        Word  attributes;
+        Word  sectorMap;
+        Word  day;
+        Word  month;
+        Word  year;
+        FlexFileName fileName;
+        char  data;
+    };
 public:
-	FlexDnDFiles();
-	virtual ~FlexDnDFiles(void);
+    FlexDnDFiles();
+    virtual ~FlexDnDFiles(void);
 
-	void ReadData(const Byte *p);
-	size_t GetDataSize() const;
-	void GetDataHere(Byte *buf) const;
-	unsigned int GetFileCount(void) const { return fileList.size(); };
-	void Add(FlexFileBuffer *pFileBuffer);
-	FlexFileBuffer &GetBuffer(unsigned int);
+    void ReadData(const Byte *p);
+    size_t GetDataSize() const;
+    void GetDataHere(Byte *buf) const;
+    unsigned int GetFileCount(void) const
+    {
+        return fileList.size();
+    };
+    void Add(FlexFileBuffer *pFileBuffer);
+    FlexFileBuffer &GetBuffer(unsigned int);
 private:
-	tFlexFileBufferArray fileList;
+    tFlexFileBufferArray fileList;
 };
 
 /*------------------------------------------------------
@@ -82,9 +86,9 @@ private:
 class FlexFileDataObject : public wxCustomDataObject
 {
 public:
-	FlexFileDataObject();
-	void GetDataFrom(FlexDnDFiles &f);
-	void SetDataTo(FlexDnDFiles &f);
+    FlexFileDataObject();
+    void GetDataFrom(FlexDnDFiles &f);
+    void SetDataTo(FlexDnDFiles &f);
 };
 
 #ifndef __WXMOTIF__
@@ -96,14 +100,14 @@ public:
 class FlexFileDropTarget : public wxDropTarget
 {
 public:
-	FlexFileDropTarget(FlexDiskListCtrl *pOwner) :
-		wxDropTarget(new FlexFileDataObject), m_pOwner(pOwner) { };
-	wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
+    FlexFileDropTarget(FlexDiskListCtrl *pOwner) :
+        wxDropTarget(new FlexFileDataObject), m_pOwner(pOwner) { };
+    wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult def);
 
 private:
-	bool OnDropFiles(wxCoord x, wxCoord y, FlexDnDFiles &);
-	FlexFileDropTarget(); // default constructor should not be used
-	FlexDiskListCtrl *m_pOwner;
+    bool OnDropFiles(wxCoord x, wxCoord y, FlexDnDFiles &);
+    FlexFileDropTarget(); // default constructor should not be used
+    FlexDiskListCtrl *m_pOwner;
 };
 
 /*------------------------------------------------------
@@ -114,12 +118,12 @@ private:
 class FileDropTarget : public wxFileDropTarget
 {
 public:
-	FileDropTarget(FlexDiskListCtrl *pOwner) :
-		m_pOwner(pOwner) { };
+    FileDropTarget(FlexDiskListCtrl *pOwner) :
+        m_pOwner(pOwner) { };
 private:
-	bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &);
-	FileDropTarget(); // default constructor should not be used
-	FlexDiskListCtrl *m_pOwner;
+    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &);
+    FileDropTarget(); // default constructor should not be used
+    FlexDiskListCtrl *m_pOwner;
 };
 #endif
 

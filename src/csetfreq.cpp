@@ -26,12 +26,12 @@
 
 
 CSetFrequency::CSetFrequency(Scheduler &x_sched, float x_frequency) :
-   scheduler(x_sched), frequency(x_frequency)
+    scheduler(x_sched), frequency(x_frequency)
 {
 }
 
 void CSetFrequency::Execute()
 {
-     scheduler.set_frequency(frequency); 
+    scheduler.set_frequency(frequency);
 }
 

@@ -28,30 +28,40 @@
 
 // This class describes a platform independant Process interface
 
-class BProcess {
-public: 
-  BProcess(const char *executable,
-		const char *directory = NULL,
-		const char *argument  = NULL);
-  ~BProcess();
-  void AddArgument(const char *argument);
-  void SetDirectory(const char *directory);
-  bool Start();     // Start the Process if not started yet
-  bool IsRunning(); // Check if Process is running
-  const char *GetArguments()  const { return arguments;  };
-  const char *GetDirectory()  const { return directory;  };
-  const char *GetExecutable() const { return executable; };
+class BProcess
+{
+public:
+    BProcess(const char *executable,
+             const char *directory = NULL,
+             const char *argument  = NULL);
+    ~BProcess();
+    void AddArgument(const char *argument);
+    void SetDirectory(const char *directory);
+    bool Start();     // Start the Process if not started yet
+    bool IsRunning(); // Check if Process is running
+    const char *GetArguments()  const
+    {
+        return arguments;
+    };
+    const char *GetDirectory()  const
+    {
+        return directory;
+    };
+    const char *GetExecutable() const
+    {
+        return executable;
+    };
 
 protected:
-  BString executable;
-  BString arguments;
-  BString directory;
+    BString executable;
+    BString arguments;
+    BString directory;
 
 #ifdef WIN32
-	HANDLE hProcess;
+    HANDLE hProcess;
 #endif
 #ifdef UNIX
-pid_t   pid;
+    pid_t   pid;
 #endif
 };
 

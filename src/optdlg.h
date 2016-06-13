@@ -25,41 +25,51 @@
 
 #include <wx/dialog.h>
 
-enum {
-	IDC_AutoTextFlag         = 202,
-	IDC_Viewer               = 203,
-	IDC_ViewerButton         = 204,
-	IDC_BootSectorFile       = 205,
-	IDC_BootSectorFileButton = 206
+enum
+{
+    IDC_AutoTextFlag         = 202,
+    IDC_Viewer               = 203,
+    IDC_ViewerButton         = 204,
+    IDC_BootSectorFile       = 205,
+    IDC_BootSectorFileButton = 206
 };
 
 
 class wxTextCtrl;
 class wxCheckBox;
 
-class GlobalOptionsDialog : public wxDialog  
+class GlobalOptionsDialog : public wxDialog
 {
 public:
-	GlobalOptionsDialog(wxWindow *pParent,
-		const wxPoint &pos = wxDefaultPosition,
-		const bool autoTextFlag = false,
-		wxString bootFile = wxT("boot"),
-		wxString editor = wxT(""));
-	virtual ~GlobalOptionsDialog();
-	void OnSelectViewer(wxCommandEvent& event );
-	void OnSelectBootSectorFile(wxCommandEvent& event );
-	inline bool GetAutoTextFlag(void)  { return m_autoTextFlag; };
-	inline wxString GetViewer(void) { return m_viewer; };
-	inline wxString GetBootSectorFile(void) { return m_bootSectorFile; };
+    GlobalOptionsDialog(wxWindow *pParent,
+                        const wxPoint &pos = wxDefaultPosition,
+                        const bool autoTextFlag = false,
+                        wxString bootFile = wxT("boot"),
+                        wxString editor = wxT(""));
+    virtual ~GlobalOptionsDialog();
+    void OnSelectViewer(wxCommandEvent &event);
+    void OnSelectBootSectorFile(wxCommandEvent &event);
+    inline bool GetAutoTextFlag(void)
+    {
+        return m_autoTextFlag;
+    };
+    inline wxString GetViewer(void)
+    {
+        return m_viewer;
+    };
+    inline wxString GetBootSectorFile(void)
+    {
+        return m_bootSectorFile;
+    };
 
 private:
-	wxString	m_viewer;
-	wxString	m_bootSectorFile;
-	bool		m_autoTextFlag;
+    wxString    m_viewer;
+    wxString    m_bootSectorFile;
+    bool        m_autoTextFlag;
 
-	wxTextCtrl		*c_viewer;
-	wxTextCtrl		*c_bootSectorFile;
-	wxCheckBox		*c_autoTextFlag;
+    wxTextCtrl      *c_viewer;
+    wxTextCtrl      *c_bootSectorFile;
+    wxCheckBox      *c_autoTextFlag;
 private:
     DECLARE_EVENT_TABLE()
 };

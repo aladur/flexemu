@@ -26,11 +26,12 @@ BIdentifier::BIdentifier() : value(0), name("")
 {
 }
 
-BIdentifier::BIdentifier(DWord aValue, const char *pName /* = NULL */) : value(aValue), name(pName)
+BIdentifier::BIdentifier(DWord aValue, const char *pName /* = NULL */)
+    : value(aValue), name(pName)
 {
 }
 
-BIdentifier::BIdentifier(const BIdentifier& id) : value(id.value), name(id.name)
+BIdentifier::BIdentifier(const BIdentifier &id) : value(id.value), name(id.name)
 {
 }
 

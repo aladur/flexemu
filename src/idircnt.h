@@ -26,10 +26,10 @@
 #include "filecont.h"
 
 #ifdef WIN32
-typedef HANDLE DIRHANDLE;
+    typedef HANDLE DIRHANDLE;
 #endif
 #ifdef UNIX
-typedef DIR * DIRHANDLE;
+    typedef DIR *DIRHANDLE;
 #endif
 
 class DirectoryContainer;
@@ -37,24 +37,27 @@ class DirectoryContainer;
 class DirectoryContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-        DirectoryContainerIteratorImp(DirectoryContainer *);
-        virtual ~DirectoryContainerIteratorImp();
-	bool operator==(const FileContainerIf *aBase) const;
-        void AtEnd();
-        FlexDirEntry &GetDirEntry() { return dirEntry; };
-        bool NextDirEntry(const char *filePattern);
+    DirectoryContainerIteratorImp(DirectoryContainer *);
+    virtual ~DirectoryContainerIteratorImp();
+    bool operator==(const FileContainerIf *aBase) const;
+    void AtEnd();
+    FlexDirEntry &GetDirEntry()
+    {
+        return dirEntry;
+    };
+    bool NextDirEntry(const char *filePattern);
 private:
-        bool DeleteCurrent();
-        bool RenameCurrent(const char *);
-        bool SetDateCurrent(const BDate& date);
-        bool SetAttributesCurrent(int attributes);
+    bool DeleteCurrent();
+    bool RenameCurrent(const char *);
+    bool SetDateCurrent(const BDate &date);
+    bool SetAttributesCurrent(int attributes);
 
-	DirectoryContainerIteratorImp();
-	DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp&);
+    DirectoryContainerIteratorImp();
+    DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &);
 
-	DirectoryContainer *base;
-	FlexDirEntry dirEntry;
-	DIRHANDLE dirHdl;
+    DirectoryContainer *base;
+    FlexDirEntry dirEntry;
+    DIRHANDLE dirHdl;
 };
 
 #endif // __idircnt_h__

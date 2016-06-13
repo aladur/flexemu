@@ -28,28 +28,29 @@
 
 #include <misc1.h>
 #ifdef UNIX
-#include <pthread.h>
+    #include <pthread.h>
 #endif
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
 #endif
 
 
-class BMutex {
+class BMutex
+{
 public:
-   BMutex();
-   ~BMutex();
+    BMutex();
+    ~BMutex();
 
-   void lock();
-   void unlock();
+    void lock();
+    void unlock();
 
 #ifdef UNIX
 private:
-   pthread_mutex_t mutex;
+    pthread_mutex_t mutex;
 #endif
 #ifdef WIN32
-   CRITICAL_SECTION criticalSec;
+    CRITICAL_SECTION criticalSec;
 #endif
 };
 

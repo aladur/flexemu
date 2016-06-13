@@ -30,19 +30,21 @@
 
 class BThreadImp;
 
-class BThread {
+class BThread
+{
 
-public: 
-	BThread(bool autoStart = true);
-	virtual ~BThread();
-  bool Start();     // Explicitly start the thread if not started yet
-  void Join();      // Wait from another thread until this thread has terminated
-  bool IsFinished(); // Check if thread has finished
-  virtual void Run();  // entry point when starting the thread. To be reimplemented
+public:
+    BThread(bool autoStart = true);
+    virtual ~BThread();
+    bool Start();     // Explicitly start the thread if not started yet
+    void Join();      // Wait from another thread until this thread has termin.
+    bool IsFinished();// Check if thread has finished
+    virtual void
+    Run();  // entry point when starting the thread. To be reimplemented
 
 protected:
-  void Exit(void *retval = NULL);
-  BThreadImp *imp;
+    void Exit(void *retval = NULL);
+    BThreadImp *imp;
 };
 
 #endif

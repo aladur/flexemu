@@ -25,27 +25,29 @@
 
 #include "bstring.h"
 
-enum {
-	BRC_NO_ERROR = 0,
-	BRC_NOT_FOUND = 99,
-	BRC_NO_INTEGER = 100
+enum
+{
+    BRC_NO_ERROR = 0,
+    BRC_NOT_FOUND = 99,
+    BRC_NO_INTEGER = 100
 };
 
-class BRcFile {
+class BRcFile
+{
 public:
-	BRcFile(void);
-	BRcFile(const char *aFileName);
-	~BRcFile(void);
+    BRcFile(void);
+    BRcFile(const char *aFileName);
+    ~BRcFile(void);
 
-	void SetFileName(const char *aFileName);
-	int SetValue(const char *key, const char *value);
-	int SetValue(const char *key, int value);
-	int GetValue(const char *key, BString &value, int *isInteger = NULL);
-	int GetValue(const char *key, int *value);
-	int Initialize(void);
+    void SetFileName(const char *aFileName);
+    int SetValue(const char *key, const char *value);
+    int SetValue(const char *key, int value);
+    int GetValue(const char *key, BString &value, int *isInteger = NULL);
+    int GetValue(const char *key, int *value);
+    int Initialize(void);
 
 private:
-	BString fileName;
+    BString fileName;
 };
 
 #endif

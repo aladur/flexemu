@@ -31,37 +31,44 @@ typedef BList<BInterval> BIntervalItem;
 class FlexFileBuffer;
 
 
-class BAddressRanges {
+class BAddressRanges
+{
 
 private:
-	DWord startAddress;
-	BIntervalItem *root;
-	mutable BIntervalItem *current;
-	void Reduce();
-	void BasicAdd(const BInterval &i);
+    DWord startAddress;
+    BIntervalItem *root;
+    mutable BIntervalItem *current;
+    void Reduce();
+    void BasicAdd(const BInterval &i);
 
 public:
-	BAddressRanges();	// public constructor
-	~BAddressRanges();	// public destructor
-	
-	void Clear();
-	DWord GetMin() const;
-	DWord GetMax() const;
-	void SetStartAddress(DWord address);
-	DWord GetStartAddress() const;
-	void Add(const BInterval &i);
-	void Add(const BAddressRanges &r);
-	void Remove(const BInterval &i);
-	const BInterval *GetFirst() const;
-	const BInterval *GetNext() const;
-	bool Contains(DWord address) const;
-	bool Contains(const BInterval &i) const;
-	bool Overlaps(const BInterval &i) const;
-	bool ReadFrom(FlexFileBuffer *buffer);
-	void PrintOn(FILE *fp) const;
+    BAddressRanges();   // public constructor
+    ~BAddressRanges();  // public destructor
+
+    void Clear();
+    DWord GetMin() const;
+    DWord GetMax() const;
+    void SetStartAddress(DWord address);
+    DWord GetStartAddress() const;
+    void Add(const BInterval &i);
+    void Add(const BAddressRanges &r);
+    void Remove(const BInterval &i);
+    const BInterval *GetFirst() const;
+    const BInterval *GetNext() const;
+    bool Contains(DWord address) const;
+    bool Contains(const BInterval &i) const;
+    bool Overlaps(const BInterval &i) const;
+    bool ReadFrom(FlexFileBuffer *buffer);
+    void PrintOn(FILE *fp) const;
 }; // class BAddressRanges
 
-inline void BAddressRanges::SetStartAddress(DWord address) { startAddress = address; }
-inline DWord BAddressRanges::GetStartAddress() const { return startAddress; }
+inline void BAddressRanges::SetStartAddress(DWord address)
+{
+    startAddress = address;
+}
+inline DWord BAddressRanges::GetStartAddress() const
+{
+    return startAddress;
+}
 
 #endif // #ifndef __baddrrng_h__

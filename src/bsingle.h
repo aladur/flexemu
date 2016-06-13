@@ -27,34 +27,35 @@
 template <class T>
 class BSingleton
 {
-   //friend T; // allow BSingleton to create an instance of T
+    //friend T; // allow BSingleton to create an instance of T
 private:
-   static T *instance;
+    static T *instance;
 
-   BSingleton();
-   BSingleton(const BSingleton &);
-   BSingleton &operator=(const BSingleton &);
+    BSingleton();
+    BSingleton(const BSingleton &);
+    BSingleton &operator=(const BSingleton &);
 public:
-   static T &Instance();
-   virtual ~BSingleton();
+    static T &Instance();
+    virtual ~BSingleton();
 };
 
 template <class T>
 T &BSingleton<T>::Instance()
 {
-   if (instance == NULL)
-   {
-      instance = new T;
-      static BDeleter<T> deleter(instance);
-   }
-   return *instance;
+    if (instance == NULL)
+    {
+        instance = new T;
+        static BDeleter<T> deleter(instance);
+    }
+
+    return *instance;
 }
 
 template <class T>
 BSingleton<T>::~BSingleton()
 {
-   delete instance;
-   instance = NULL;
+    delete instance;
+    instance = NULL;
 }
 #endif
 

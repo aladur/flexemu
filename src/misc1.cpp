@@ -27,111 +27,136 @@
 #include "bfileptr.h"
 
 const char *gMemoryAllocationErrorString =
-			"Bad memory allocation.\n"
-			"Close other applications\n"
-			"and try again.";
+    "Bad memory allocation.\n"
+    "Close other applications\n"
+    "and try again.";
 
 int copyFile(const char *srcPath, const char *destPath)
 {
-	BFilePtr sFp(srcPath,  "rb");
-	BFilePtr dFp(destPath, "wb");
-	int c;
+    BFilePtr sFp(srcPath,  "rb");
+    BFilePtr dFp(destPath, "wb");
+    int c;
 
-	if (sFp == NULL || dFp == NULL)
-		return 0;
-	while ((c = fgetc(sFp)) != EOF)
-		fputc(c, dFp);
-	return 1;       
+    if (sFp == NULL || dFp == NULL)
+    {
+        return 0;
+    }
+
+    while ((c = fgetc(sFp)) != EOF)
+    {
+        fputc(c, dFp);
+    }
+
+    return 1;
 }
 
 void strupper(char *pstr)
 {
-	while (*pstr)
-	{
-		*pstr = toupper(*pstr);
-		pstr++;
-	}
+    while (*pstr)
+    {
+        *pstr = toupper(*pstr);
+        pstr++;
+    }
 } // strupper
 
 
 void strlower(char *pstr)
 {
-	while (*pstr)
-	{
-		*pstr = tolower(*pstr);
-		pstr++;
-	}
+    while (*pstr)
+    {
+        *pstr = tolower(*pstr);
+        pstr++;
+    }
 } // strlower
 
 // Base 2 and Base 16 conversion functions
 char *binstr(Byte x)
 {
-	static char             tmp[9] = "        ";
+    static char             tmp[9] = "        ";
 
-	for (SWord i = 7; i >= 0; --i) {
-		tmp[i] = (x & 1) + '0';
-		x >>= 1;
-	}
+    for (SWord i = 7; i >= 0; --i)
+    {
+        tmp[i] = (x & 1) + '0';
+        x >>= 1;
+    }
 
-	return tmp;
+    return tmp;
 }
 
 static char hex_digit(Byte x)
 {
-	x &= 0x0f;
-	if (x <= 9) {
-		return '0' + x;
-	} else {
-		return 'a' + x - 10;
-	}
+    x &= 0x0f;
+
+    if (x <= 9)
+    {
+        return '0' + x;
+    }
+    else
+    {
+        return 'a' + x - 10;
+    }
 }
 
 char *hexstr(Byte x)
 {
-	static char             tmp[3] = "  ";
+    static char             tmp[3] = "  ";
 
-	tmp[1] = hex_digit(x);  x >>= 4;
-	tmp[0] = hex_digit(x);
+    tmp[1] = hex_digit(x);
+    x >>= 4;
+    tmp[0] = hex_digit(x);
 
-	return tmp;
+    return tmp;
 }
 
 char *hexstr(Word x)
 {
-	static char             tmp[5] = "    ";
+    static char             tmp[5] = "    ";
 
-	tmp[3] = hex_digit((Byte)x);    x >>= 4;
-	tmp[2] = hex_digit((Byte)x);    x >>= 4;
-	tmp[1] = hex_digit((Byte)x);    x >>= 4;
-	tmp[0] = hex_digit((Byte)x);
+    tmp[3] = hex_digit((Byte)x);
+    x >>= 4;
+    tmp[2] = hex_digit((Byte)x);
+    x >>= 4;
+    tmp[1] = hex_digit((Byte)x);
+    x >>= 4;
+    tmp[0] = hex_digit((Byte)x);
 
-	return tmp;
+    return tmp;
 }
 
 char *ascchr(Byte x)
 {
-	static char             tmp[2] = " ";
+    static char             tmp[2] = " ";
 
-	x &= 0x7f;
-	tmp[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
+    x &= 0x7f;
+    tmp[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
 
-	return tmp;
+    return tmp;
 }
 
 #if defined(__GNUC__) && !(defined(__MINGW32) || defined (__CYGWIN32) )
 int stricmp(const char *string1, const char *string2)
 {
-	unsigned int i;
+    unsigned int i;
 
-	for (i = 0; i < strlen(string1); i++) {
-		if (tolower(*(string1 + i)) < tolower(*(string2 + i)))
-			return -1;
-		if (tolower(*(string1 + i)) > tolower(*(string2 + i)))
-			return 1;
-		if (!*string1)
-			return 0;
-	}
-	return 0;
+    for (i = 0; i < strlen(string1); i++)
+    {
+        if (tolower(*(string1 + i)) < tolower(*(string2 + i)))
+        {
+            return -1;
+        }
+
+        if (tolower(*(string1 + i)) > tolower(*(string2 + i)))
+        {
+            return 1;
+        }
+
+        if (!*string1)
+        {
+            return 0;
+        }
+    }
+
+    return 0;
 } // stricmp
 #endif
 

@@ -33,15 +33,16 @@ class BThreadFactory;
 
 typedef BSingleton<BThreadFactory> SThreadFactory;
 
-class BThreadFactory {
+class BThreadFactory
+{
 
-friend BThreadFactory &SThreadFactory::Instance();
+    friend BThreadFactory &SThreadFactory::Instance();
 
 public:
-   BThreadImp *CreateBThreadImp();
-   virtual ~BThreadFactory() { };
+    BThreadImp *CreateBThreadImp();
+    virtual ~BThreadFactory() { };
 private:
-   BThreadFactory() { };
+    BThreadFactory() { };
 
 };
 

@@ -48,99 +48,130 @@
    }
 */
 
-FileContainerIterator::FileContainerIterator(const char *aFilePattern/* = "*.*" */) :
-		filePattern(aFilePattern), imp(NULL)
+FileContainerIterator::FileContainerIterator(const char
+        *aFilePattern/* = "*.*" */) :
+    filePattern(aFilePattern), imp(NULL)
 {
 }
 
 FileContainerIterator::~FileContainerIterator()
 {
-	delete imp;
-	imp = NULL;
+    delete imp;
+    imp = NULL;
 }
 
 FlexDirEntry &FileContainerIterator::operator*()
 {
-	if (imp != NULL)
-        	return imp->GetDirEntry();
+    if (imp != NULL)
+    {
+        return imp->GetDirEntry();
+    }
 
-	// maybe you used the iterator in the wrong way ?
-	return *(FlexDirEntry *)NULL;
+    // maybe you used the iterator in the wrong way ?
+    return *(FlexDirEntry *)NULL;
 }
 
 FlexDirEntry *FileContainerIterator::operator->()
 {
-	if (imp != NULL)
-        	return &imp->GetDirEntry();
+    if (imp != NULL)
+    {
+        return &imp->GetDirEntry();
+    }
 
-	// maybe you used the iterator in the wrong way ?
-        return (FlexDirEntry *)NULL;
+    // maybe you used the iterator in the wrong way ?
+    return (FlexDirEntry *)NULL;
 
 }
 
 bool FileContainerIterator::operator==(const FileContainerIf *aBase) const
 {
-	if (imp == NULL)
-		return aBase == NULL;
-        return imp->operator==(aBase);
+    if (imp == NULL)
+    {
+        return aBase == NULL;
+    }
+
+    return imp->operator==(aBase);
 }
 
 bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
 {
-	if (imp == NULL)
-		return aBase != NULL;
-        return !(imp->operator==(aBase));
+    if (imp == NULL)
+    {
+        return aBase != NULL;
+    }
+
+    return !(imp->operator==(aBase));
 }
 
 FileContainerIterator &FileContainerIterator::operator++()
 {
-	if (imp != NULL)
-        	if (!imp->NextDirEntry(filePattern))
-			imp->AtEnd();
-        return *this;
+    if (imp != NULL)
+        if (!imp->NextDirEntry(filePattern))
+        {
+            imp->AtEnd();
+        }
+
+    return *this;
 }
 
 FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 {
-	if (aBase != NULL)
-	{
-		delete imp;
-		imp = aBase->IteratorFactory();
-        	if (!imp->NextDirEntry(filePattern))
-			imp->AtEnd();
-	} else
-	{
-		imp->AtEnd();
-	}
-        return *this;
+    if (aBase != NULL)
+    {
+        delete imp;
+        imp = aBase->IteratorFactory();
+
+        if (!imp->NextDirEntry(filePattern))
+        {
+            imp->AtEnd();
+        }
+    }
+    else
+    {
+        imp->AtEnd();
+    }
+
+    return *this;
 }
 
 bool FileContainerIterator::DeleteCurrent()
 {
-	if (imp == NULL)
-		return false;
-	return imp->DeleteCurrent();
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->DeleteCurrent();
 }
 
 bool FileContainerIterator::RenameCurrent(const char *newName)
 {
-	if (imp == NULL)
-		return false;
-	return imp->RenameCurrent(newName);
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->RenameCurrent(newName);
 }
 
-bool FileContainerIterator::SetDateCurrent(const BDate& date)
+bool FileContainerIterator::SetDateCurrent(const BDate &date)
 {
-	if (imp == NULL)
-		return false;
-	return imp->SetDateCurrent(date);
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->SetDateCurrent(date);
 }
 
 bool FileContainerIterator::SetAttributesCurrent(int attributes)
 {
-	if (imp == NULL)
-		return false;
-	return imp->SetAttributesCurrent(attributes);
+    if (imp == NULL)
+    {
+        return false;
+    }
+
+    return imp->SetAttributesCurrent(attributes);
 }
 
 

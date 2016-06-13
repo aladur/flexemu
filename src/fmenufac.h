@@ -23,12 +23,13 @@
 #ifndef __fmenufac_h__
 #define __fmenufac_h__
 
-enum tFlxMenuId {
-	fFileMenuId,
-	fEditMenuId,
-	fExtrasMenuId,
-	fContainerMenuId,
-	fHelpMenuId
+enum tFlxMenuId
+{
+    fFileMenuId,
+    fEditMenuId,
+    fExtrasMenuId,
+    fContainerMenuId,
+    fHelpMenuId
 };
 
 /*---------------------------------------------------------
@@ -38,7 +39,7 @@ enum tFlxMenuId {
 class FlexMenuFactory
 {
 public:
-	static wxMenu *CreateMenu(enum tFlxMenuId id);
+    static wxMenu *CreateMenu(enum tFlxMenuId id);
 };
 #endif
 

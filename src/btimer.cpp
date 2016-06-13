@@ -250,8 +250,8 @@ void BTimer::Init()
         DEBUGPRINT1("BTimer: CreateEvent failed (%lu)\n",
                     GetLastError());
 
-    timerThread = CreateThread(NULL, 0,
-                               (tThreadProc)BTimer::StartTimerImp, this, 0, &threadId);
+    timerThread = CreateThread(NULL, 0, (tThreadProc)BTimer::StartTimerImp,
+                               this, 0, &threadId);
 
     if (timerThread == NULL)
         DEBUGPRINT1("BTimer: CreateThread failed (%lu)\n",
@@ -372,7 +372,8 @@ unsigned long BTimer::StartTimerImp(BTimer *p)
 
             if (ret == WAIT_FAILED)
             {
-                DEBUGPRINT1("BTimer: WaitForSingleObject failed (%lu)\n", GetLastError());
+                DEBUGPRINT1("BTimer: WaitForSingleObject failed (%lu)\n",
+                            GetLastError());
             }
 
             if (ret == WAIT_OBJECT_0 && p->timerProc != NULL)

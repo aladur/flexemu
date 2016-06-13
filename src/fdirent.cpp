@@ -27,14 +27,14 @@
 
 
 FlexDirEntry::FlexDirEntry() :
-	size(0),
-	attributes(0),
-	sectorMap(0),
-	startTrk(-1),
-	startSec(0),
-	endTrk(0),
-	endSec(0),
-	status(0)
+    size(0),
+    attributes(0),
+    sectorMap(0),
+    startTrk(-1),
+    startSec(0),
+    endTrk(0),
+    endSec(0),
+    status(0)
 {
 } // FlexDirEntry
 
@@ -42,106 +42,134 @@ FlexDirEntry::~FlexDirEntry(void)
 {
 }
 
-FlexDirEntry::FlexDirEntry(const FlexDirEntry& de)
+FlexDirEntry::FlexDirEntry(const FlexDirEntry &de)
 {
-	CopyFrom(de);
+    CopyFrom(de);
 }
 
-void FlexDirEntry::CopyFrom(const FlexDirEntry& de)
+void FlexDirEntry::CopyFrom(const FlexDirEntry &de)
 {
-	date		= de.date;
-	fileName	= de.fileName;
-	size		= de.size;
-	attributes	= de.attributes;
-	sectorMap	= de.sectorMap;
-	startTrk	= de.startTrk;
-	startSec	= de.startSec;
-	endTrk		= de.endTrk;
-	endSec		= de.endSec;
-	status		= de.status;
-}
-	
-
-const BDate& FlexDirEntry::GetDate(void) const
-{
-	return date;
+    date        = de.date;
+    fileName    = de.fileName;
+    size        = de.size;
+    attributes  = de.attributes;
+    sectorMap   = de.sectorMap;
+    startTrk    = de.startTrk;
+    startSec    = de.startSec;
+    endTrk      = de.endTrk;
+    endSec      = de.endSec;
+    status      = de.status;
 }
 
-void FlexDirEntry::SetDate(const BDate& d)
+
+const BDate &FlexDirEntry::GetDate(void) const
 {
-	date = d;
+    return date;
+}
+
+void FlexDirEntry::SetDate(const BDate &d)
+{
+    date = d;
 }
 
 void FlexDirEntry::SetDate(int d, int m, int y)
 {
-	date.SetDate(d, m, y);
+    date.SetDate(d, m, y);
 }
 
 
 void FlexDirEntry::SetTotalFileName(const char *s)
 {
-	fileName = s;
-	fileName.upcase();
+    fileName = s;
+    fileName.upcase();
 }
 
 BString FlexDirEntry::GetFileName(void) const
 {
-	BString name(fileName);
+    BString name(fileName);
 
-	if (strchr(fileName, '.') == NULL)
-		return name;
-	else
-		return name.beforeLast('.');
+    if (strchr(fileName, '.') == NULL)
+    {
+        return name;
+    }
+    else
+    {
+        return name.beforeLast('.');
+    }
 }
 
 BString FlexDirEntry::GetFileExt(void) const
 {
-	const char * p;
-	BString ext;
+    const char *p;
+    BString ext;
 
-	p = strchr(fileName, '.');
-	if (p != NULL)
-		ext = ++p;
-	return ext;
+    p = strchr(fileName, '.');
+
+    if (p != NULL)
+    {
+        ext = ++p;
+    }
+
+    return ext;
 }
 
-const BString& FlexDirEntry::GetTotalFileName(void) const
+const BString &FlexDirEntry::GetTotalFileName(void) const
 {
-	return fileName;
+    return fileName;
 }
 
-void FlexDirEntry::SetStartTrkSec(int t, int s) {
-	startTrk = t;
-	startSec = s;
+void FlexDirEntry::SetStartTrkSec(int t, int s)
+{
+    startTrk = t;
+    startSec = s;
 }
 
-void FlexDirEntry::GetStartTrkSec(int *t, int *s) {
-	*t = startTrk;
-	*s = startSec;
+void FlexDirEntry::GetStartTrkSec(int *t, int *s)
+{
+    *t = startTrk;
+    *s = startSec;
 }
 
-void FlexDirEntry::SetEndTrkSec(int t, int s) {
-	endTrk = t;
-	endSec = s;
+void FlexDirEntry::SetEndTrkSec(int t, int s)
+{
+    endTrk = t;
+    endSec = s;
 }
 
-void FlexDirEntry::GetEndTrkSec(int *t, int *s) {
-	*t = endTrk;
-	*s = endSec;
+void FlexDirEntry::GetEndTrkSec(int *t, int *s)
+{
+    *t = endTrk;
+    *s = endSec;
 }
 
 const BString FlexDirEntry::GetAttributesString(void)
 {
-	BString str;
+    BString str;
 
-	if (attributes & FLX_READONLY)	str += "W";
-	if (attributes & FLX_NODELETE)	str += "D";
-	if (attributes & FLX_NOREAD)	str += "R";
-	if (attributes & FLX_NOCAT)		str += "C";
-	return str;
+    if (attributes & FLX_READONLY)
+    {
+        str += "W";
+    }
+
+    if (attributes & FLX_NODELETE)
+    {
+        str += "D";
+    }
+
+    if (attributes & FLX_NOREAD)
+    {
+        str += "R";
+    }
+
+    if (attributes & FLX_NOCAT)
+    {
+        str += "C";
+    }
+
+    return str;
 }
 
 void FlexDirEntry::SetAttributes(int setMask, int clearMask)
 {
-	attributes = (attributes & ~clearMask) | setMask;
+    attributes = (attributes & ~clearMask) | setMask;
 }

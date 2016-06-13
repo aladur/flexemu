@@ -23,43 +23,75 @@
 #define __bbintree_h__
 
 
-template <class Item> class BBinaryTreeItem {
+template <class Item> class BBinaryTreeItem
+{
 
 private:
 
-	Item			item;
-	BBinaryTreeItem	*left;
-	BBinaryTreeItem	*right;
+    Item            item;
+    BBinaryTreeItem *left;
+    BBinaryTreeItem *right;
 
 public:
 
-	BBinaryTreeItem(const Item &anItem);	// public constructor
-	~BBinaryTreeItem();			// public destructor
+    BBinaryTreeItem(const Item &anItem);    // public constructor
+    ~BBinaryTreeItem();         // public destructor
 
-	const Item &GetItem() const;
-	const BBinaryTreeItem *GetLeftMostItem() const;
-	const BBinaryTreeItem *GetLeftItem() const;
-	const BBinaryTreeItem *GetRightItem() const;
-	void RemoveLeftItem();
-	void RemoveRightItem();
-	void Add(const Item &i);
-	bool Remove(const Item &i);
-	bool Contains(const Item &i) const;
-	bool	operator <  (const BBinaryTreeItem& i) const;
-	bool	operator == (const BBinaryTreeItem& i) const;
-	bool	operator >  (const BBinaryTreeItem& i) const;
-	bool	operator >= (const BBinaryTreeItem& i) const;
-	bool	operator <= (const BBinaryTreeItem& i) const;
+    const Item &GetItem() const;
+    const BBinaryTreeItem *GetLeftMostItem() const;
+    const BBinaryTreeItem *GetLeftItem() const;
+    const BBinaryTreeItem *GetRightItem() const;
+    void RemoveLeftItem();
+    void RemoveRightItem();
+    void Add(const Item &i);
+    bool Remove(const Item &i);
+    bool Contains(const Item &i) const;
+    bool    operator < (const BBinaryTreeItem &i) const;
+    bool    operator == (const BBinaryTreeItem &i) const;
+    bool    operator > (const BBinaryTreeItem &i) const;
+    bool    operator >= (const BBinaryTreeItem &i) const;
+    bool    operator <= (const BBinaryTreeItem &i) const;
 }; // class BBinaryTreeItem
 
-template <class Item>inline const Item &BBinaryTreeItem<Item>::GetItem() const { return item; }
-template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetLeftItem()  const { return left;  }
-template <class Item>inline const BBinaryTreeItem<Item> *BBinaryTreeItem<Item>::GetRightItem() const { return right; }
+template <class Item>inline const Item &BBinaryTreeItem<Item>::GetItem() const
+{
+    return item;
+}
+template <class Item>inline const BBinaryTreeItem<Item>
+*BBinaryTreeItem<Item>::GetLeftItem()  const
+{
+    return left;
+}
+template <class Item>inline const BBinaryTreeItem<Item>
+*BBinaryTreeItem<Item>::GetRightItem() const
+{
+    return right;
+}
 
-template <class Item>inline bool BBinaryTreeItem<Item>::operator <  (const BBinaryTreeItem<Item>& i) const { return item <  i.item; }
-template <class Item>inline bool BBinaryTreeItem<Item>::operator == (const BBinaryTreeItem<Item>& i) const { return item == i.item; }
-template <class Item>inline bool BBinaryTreeItem<Item>::operator >  (const BBinaryTreeItem<Item>& i) const { return item >  i.item; }
-template <class Item>inline bool BBinaryTreeItem<Item>::operator >= (const BBinaryTreeItem<Item>& i) const { return item >= i.item; }
-template <class Item>inline bool BBinaryTreeItem<Item>::operator <= (const BBinaryTreeItem<Item>& i) const { return item <= i.item; }
+template <class Item>inline bool BBinaryTreeItem<Item>::operator <
+(const BBinaryTreeItem<Item> &i) const
+{
+    return item <  i.item;
+}
+template <class Item>inline bool BBinaryTreeItem<Item>::operator ==
+(const BBinaryTreeItem<Item> &i) const
+{
+    return item == i.item;
+}
+template <class Item>inline bool BBinaryTreeItem<Item>::operator >
+(const BBinaryTreeItem<Item> &i) const
+{
+    return item >  i.item;
+}
+template <class Item>inline bool BBinaryTreeItem<Item>::operator >=
+(const BBinaryTreeItem<Item> &i) const
+{
+    return item >= i.item;
+}
+template <class Item>inline bool BBinaryTreeItem<Item>::operator <=
+(const BBinaryTreeItem<Item> &i) const
+{
+    return item <= i.item;
+}
 
 #endif // #ifndef __bbintree_h__

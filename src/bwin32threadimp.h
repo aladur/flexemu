@@ -35,18 +35,18 @@ class BThread;
 class BWin32ThreadImp : public BThreadImp
 {
 public:
-	BWin32ThreadImp();
-	virtual ~BWin32ThreadImp();
-  bool Start(BThread *pThread);
-  void Join();
-  bool IsFinished();
-  void Exit(void *retval = NULL);
+    BWin32ThreadImp();
+    virtual ~BWin32ThreadImp();
+    bool Start(BThread *pThread);
+    void Join();
+    bool IsFinished();
+    void Exit(void *retval = NULL);
 private:
-  static unsigned int RunImp(BWin32ThreadImp *p);
-  BThread *pThreadObj;
-  bool finished;
-  HANDLE hThread;
-  HANDLE finishedEvent;
+    static unsigned int RunImp(BWin32ThreadImp *p);
+    BThread *pThreadObj;
+    bool finished;
+    HANDLE hThread;
+    HANDLE finishedEvent;
 };
 
 #endif

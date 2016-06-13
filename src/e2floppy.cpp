@@ -290,8 +290,8 @@ BString E2floppy::drive_info(Word drive_nr)
                 "path:       %s\n"
                 "tracks:     %d\n"
                 "sectors:    %d\n"
-                "write-prot: %s\n", drive_nr, info.GetTypeString().chars(), info.GetName(),
-                info.GetPath().chars(), trk, sec,
+                "write-prot: %s\n", drive_nr, info.GetTypeString().chars(),
+                info.GetName(), info.GetPath().chars(), trk, sec,
                 pfl->IsWriteProtected() ? "yes" : "no");
 
         }

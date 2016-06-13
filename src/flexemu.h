@@ -39,16 +39,18 @@ enum
     FLEX_FILENAME_LENGTH = 13
 };
 
-enum tDiskStatus {
-        DISK_STAT_EMPTY,
-        DISK_STAT_INACTIVE,
-        DISK_STAT_ACTIVE
+enum tDiskStatus
+{
+    DISK_STAT_EMPTY,
+    DISK_STAT_INACTIVE,
+    DISK_STAT_ACTIVE
 };
 
-enum tGuiType {
-	GUI_X11         = 1,
-	GUI_XTOOLKIT    = 2, 
-	GUI_WINDOWS     = 3
+enum tGuiType
+{
+    GUI_X11         = 1,
+    GUI_XTOOLKIT    = 2,
+    GUI_WINDOWS     = 3
 };
 #endif
 
