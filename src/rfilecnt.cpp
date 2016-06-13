@@ -35,17 +35,13 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
 
     if (fseek(fp, 0, SEEK_SET))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_FROM, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_READING_FROM, fp.GetPath());
     }
 
     // read total disk into memory
     if (fread(&pfb[0], param.byte_p_sector, sectors, fp) != sectors)
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_FROM, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_READING_FROM, fp.GetPath());
     }
 }
 
@@ -65,7 +61,7 @@ FlexRamFileContainer::~FlexRamFileContainer(void)
 
 int FlexRamFileContainer::Close(void)
 {
-    FlexException *pE = NULL;
+    bool throwException = false;
 
     if (fp != NULL && (pfb != NULL))
     {
@@ -75,20 +71,12 @@ int FlexRamFileContainer::Close(void)
 
         if (fseek(fp, 0, SEEK_SET))
         {
-            if (pE == NULL)
-            {
-                pE = getFlexException();
-                pE->setString(FERR_WRITING_TO, fp.GetPath());
-            }
+            throwException = true;
         }
 
         if (fwrite(&pfb[0], param.byte_p_sector, sectors, fp) != sectors)
         {
-            if (pE == NULL)
-            {
-                pE = getFlexException();
-                pE->setString(FERR_WRITING_TO, fp.GetPath());
-            }
+            throwException = true;
         }
 
         fp.Close();
@@ -97,9 +85,9 @@ int FlexRamFileContainer::Close(void)
     delete [] pfb;
     pfb = NULL;
 
-    if (pE != NULL)
+    if (throwException)
     {
-        throw pE;
+        throw FlexException(FERR_WRITING_TO, fp.GetPath());
     }
 
     return 1;

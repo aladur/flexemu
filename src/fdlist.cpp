@@ -223,11 +223,10 @@ int FlexDiskListCtrl::UpdateItems(void)
             UpdateItem(index++, *pDe);
         }
     }
-    catch (FlexException *pE)
+    catch (FlexException &ex)
     {
-        wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+        wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                      wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
-        delete pE;
     }
 
     return index;
@@ -324,13 +323,12 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
                     {
                         m_container->DeleteFile(fileName.mb_str(*wxConvCurrent));
                     }
-                    catch (FlexException *pE)
+                    catch (FlexException &ex)
                     {
-                        int r = wxMessageBox(pE->wwhat(),
+                        int r = wxMessageBox(ex.wwhat(),
                                              _("FLEXplorer Error"),
                                              wxOK | wxCANCEL | wxCENTRE,
                                              this);
-                        delete pE;
 
                         if (r != wxOK)
                         {
@@ -400,11 +398,10 @@ void FlexDiskListCtrl::RenameSelectedItems(void)
                 SetItemText(item, fName);
                 UpdateItem(item, *pDe);
             }
-            catch (FlexException *pE)
+            catch (FlexException &ex)
             {
-                wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE | wxICON_EXCLAMATION);
-                delete pE;
             }
         }
 
@@ -456,17 +453,14 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
 
             if (!GetTempPath(MAX_PATH, tempPath))
             {
-                FlexException *pE = getFlexException();
-                pE->setWindowsError(GetLastError(), _("In function GetTempPath"));
-                throw pE;
+                throw FlexException(GetLastError(),
+                      _("In function GetTempPath"));
             }
 
             if (!GetTempFileName(tempPath, _("FLX"), 0, path))
             {
-                FlexException *pE = getFlexException();
-                pE->setWindowsError(GetLastError(),
+                throw FlexException(GetLastError(),
                                     _("In function GetTempFileName"));
-                throw pE;
             }
 
             if (buffer.WriteToFile(path))
@@ -475,16 +469,12 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
 
                 if (!process.Start())
                 {
-                    FlexException *pE = getFlexException();
-                    pE->setWindowsError(GetLastError(), fileViewer);
-                    throw pE;
+                    throw FlexException(GetLastError(), fileViewer);
                 }
             }
             else
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_CREATE_TEMP_FILE,    path);
-                throw pE;
+                throw FlexException(FERR_CREATE_TEMP_FILE, path);
             }
 
 #else
@@ -502,28 +492,23 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
 
                 if (!process.Start())
                 {
-                    FlexException *pE = getFlexException();
-                    pE->setString(
+                    throw FlexException(
                         FERR_CREATE_PROCESS,
                         fileViewer.mb_str(*wxConvCurrent),
                         cTemplate);
-                    throw pE;
                 }
             }
             else
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_CREATE_TEMP_FILE, cTemplate);
-                throw pE;
+                throw FlexException(FERR_CREATE_TEMP_FILE, cTemplate);
             }
 
 #endif
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
-            delete pE;
         }
     } // if
 
@@ -544,9 +529,7 @@ void FlexDiskListCtrl::ProcessCmdFile(const char *, FlexFileBuffer *buffer)
 
     if (!ranges.ReadFrom(buffer))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_WRONG_FLEX_BIN_FORMAT);
-        throw pE;
+        throw FlexException(FERR_WRONG_FLEX_BIN_FORMAT);
     }
 
     memory = new BMemoryBuffer(ranges.GetMax() - ranges.GetMin() + 1,
@@ -588,12 +571,11 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
                 m_container->ReadToBuffer(fileName, *pFileBuffer);
                 files.Add(pFileBuffer);
             }
-            catch (FlexException *pE)
+            catch (FlexException &ex)
             {
-                int r = wxMessageBox(pE->wwhat(),
+                int r = wxMessageBox(ex.wwhat(),
                                      _("FLEXPlorer Error"),
                                      wxOK | wxCANCEL | wxCENTRE, this);
-                delete pE;
 
                 if (r == wxCANCEL)
                 {
@@ -779,11 +761,10 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
             pDe->SetAttributes(setMask, clearMask);
             UpdateItem(item, *pDe);
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            int r = wxMessageBox(pE->wwhat(), _("FLEXPlorer Error"),
+            int r = wxMessageBox(ex.wwhat(), _("FLEXPlorer Error"),
                                  wxOK | wxCANCEL | wxCENTRE, this);
-            delete pE;
 
             if (r != wxOK)
             {
@@ -807,11 +788,10 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         {
             m_container->GetInfo(info);
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            wxMessageBox(pE->wwhat(), _("FLEXPlorer Error"),
+            wxMessageBox(ex.wwhat(), _("FLEXPlorer Error"),
                          wxOK | wxCENTRE, this);
-            delete pE;
             return;
         }
 
@@ -1034,11 +1014,10 @@ void FlexDiskListCtrl::CopyToClipboard(void)
             files.Add(pFileBuffer);
             count++;
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
-            delete pE;
         }
     }
 
@@ -1128,20 +1107,18 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
                 UpdateItem(index, *pDe);
             }
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            if (pE->GetErrorCode() == FERR_DISK_FULL_WRITING)
+            if (ex.GetErrorCode() == FERR_DISK_FULL_WRITING)
             {
-                wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
-                delete pE;
                 return false;
             }
             else
             {
-                wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE, this);
-                delete pE;
             }
         }
     }

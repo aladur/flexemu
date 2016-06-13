@@ -31,15 +31,6 @@
 
 #define _(p) p
 
-FlexException::FlexException() throw()
-{
-	errorCode = 0;
-	strcpy(errorString, errString[errorCode]);
-}
-
-FlexException::~FlexException() throw()
-{
-}
 
 const char *FlexException::what() const throw()
 {
@@ -51,48 +42,57 @@ const char *FlexException::wwhat() const throw()
 	return errorString;
 }
 
-void FlexException::setString(int ec)
+FlexException::FlexException(int ec) throw() : errorCode(ec)
 {
-	errorCode = ec;
 	strcpy(errorString, errString[ec]);
 }
 
-void FlexException::setString(int ec, int ip1)
+FlexException::FlexException(int ec, int ip1) throw() : errorCode(ec)
 {
-	errorCode = ec;
 	sprintf(errorString, errString[ec], ip1);
 }
 
-void FlexException::setString(int ec, const char *sp1)
+FlexException::FlexException(int ec, const char *sp1) throw() : errorCode(ec)
 {
-	errorCode = ec;
 	sprintf(errorString, errString[ec], sp1);
 }
 
-void FlexException::setString(int ec, const char *sp1, const char *sp2)
+FlexException::FlexException(int ec, const char *sp1, const char *sp2) throw()
+      : errorCode(ec)
 {
-	errorCode = ec;
 	sprintf(errorString, errString[ec], sp1, sp2);
 }
 
-void FlexException::setString(int ec, int ip1, int ip2, const char *sp1)
+FlexException::FlexException(int ec, int ip1, int ip2, const char *sp1) throw()
+      : errorCode(ec)
 {
-	errorCode = ec;
 	sprintf(errorString, errString[ec], ip1, ip2, sp1);
 }
 
 #ifdef WIN32
-void FlexException::setWindowsError(int lastError, const char* sp1)
+FlexException::FlexException(unsigned long lastError, const char* sp1)
 {
 	LPVOID lpMsgBuf;
 
-	if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+	if (!FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		NULL, lastError, 0, (LPTSTR) &lpMsgBuf, 0, NULL))
-		sprintf(errorString, errString[FERR_UNSPEC_WINDOWS_ERROR], lastError);
+        {
+                errorCode = FERR_UNSPEC_WINDOWS_ERROR;
+		sprintf(errorString, errString[errorCode], lastError);
+                return;
+        }
+
+        errorCode = FERR_WINDOWS_ERROR;
 	if (sp1 != NULL)
+        {
 		sprintf(errorString, "%s%s", (char *)lpMsgBuf, sp1);
+        }
 	else
+        {
 		sprintf(errorString, "%s", (char *)lpMsgBuf);
+        }
+
 	LocalFree(lpMsgBuf);
 }
 #endif
@@ -130,6 +130,8 @@ const char *FlexException::errString[] = {
 	_("Error reading FLEX binary format"),
 	_("Error creating temporary file %s"),
 	_("Container %s is read-only"),
-	_("An unspecified Windows error occured (#%d)")
+	_("An unspecified Windows error occured (#%d)"),
+	_(""),
+	_("%s is an invalid NULL pointer")
 };
 

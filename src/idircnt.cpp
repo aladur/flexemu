@@ -199,15 +199,12 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
         filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
         if (remove(filePath)) {
-		FlexException *pE = getFlexException();
                 if (errno == ENOENT)
-                    pE->setString(FERR_NO_FILE_IN_CONTAINER,
+                    throw FlexException(FERR_NO_FILE_IN_CONTAINER,
 			dirEntry.GetTotalFileName(), base->GetPath());
 		else
-		    pE->setString(FERR_REMOVE_FILE,
+		    throw FlexException(FERR_REMOVE_FILE,
 			dirEntry.GetTotalFileName(), base->GetPath());
-
-		throw pE;
         }
 #endif
 #ifdef WIN32
@@ -219,17 +216,14 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
 
 		if (!DeleteFile(filePath))
 		{
-			FlexException *pE = getFlexException();
 			DWORD lastError = GetLastError();
 
             		if (lastError == ERROR_FILE_NOT_FOUND)
-				pE->setString(FERR_NO_FILE_IN_CONTAINER,
+				throw FlexException(FERR_NO_FILE_IN_CONTAINER,
 				dirEntry.GetTotalFileName(), base->GetPath());
 			else
-				pE->setString(FERR_REMOVE_FILE,
+				throw FlexException(FERR_REMOVE_FILE,
 				dirEntry.GetTotalFileName(), base->GetPath());
-
-            		throw pE;
 		}
 #endif
         return true;
@@ -252,9 +246,7 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
 #endif
         // prevent overwriting of an existing file
         if (base->FindFile(d, de)) {
-		FlexException *pE = getFlexException();
-                pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
-                throw pE;
+		throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
         }
         if (s == d)
                 return true;
@@ -262,17 +254,15 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         s = base->GetPath() + PATHSEPARATORSTRING + s;
         d = base->GetPath() + PATHSEPARATORSTRING + d;
         if (rename(s, d)) {
-		FlexException *pE = getFlexException();
                 // Unfinished
                 if (errno == EEXIST)
-                        pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
-                if (errno == EACCES)
-                        pE->setString(FERR_RENAME_FILE,
+                        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
+                else if (errno == EACCES)
+                        throw FlexException(FERR_RENAME_FILE,
 				dirEntry.GetTotalFileName(), base->GetPath());
-                if (errno == ENOENT)
-                        pE->setString(FERR_NO_FILE_IN_CONTAINER,
+                else if (errno == ENOENT)
+                        throw FlexException(FERR_NO_FILE_IN_CONTAINER,
 				dirEntry.GetTotalFileName(), base->GetPath());
-                throw pE;
         }
         return true;
 }

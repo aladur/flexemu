@@ -43,19 +43,17 @@ const int MAX_OPEN_FILES = 1;
 
 #define CHECK_NO_CONTAINER_OPEN					\
 	if (fp == NULL) {					\
-		FlexException *pE = getFlexException();		\
-		pE->setString(FERR_NO_CONTAINER_OPEN);		\
-		throw pE;					\
+		throw FlexException(FERR_NO_CONTAINER_OPEN);	\
 	}
 
 #define CHECK_CONTAINER_WRITEPROTECTED				\
 	if (IsWriteProtected())					\
 	{							\
                 FlexContainerInfo info;				\
-		FlexException *pE = getFlexException();		\
+                                                                \
                 GetInfo(info);					\
-                pE->setString(FERR_CONTAINER_IS_READONLY, info.GetName());\
-                throw pE;					\
+		throw FlexException(FERR_CONTAINER_IS_READONLY, \
+                                    info.GetName());            \
 	}
 
 class FlexFileContainer : public FileContainerIfSector, public FileContainerIf

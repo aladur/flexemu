@@ -49,11 +49,6 @@
 #include "benv.h"
 #include "flexerr.h"
 
-// Definition of Factory method to get a new exception object
-FlexException *getFlexException(int /* type = 0 */)
-{
-    return new FlexException();
-}
 
 IMPLEMENT_APP(FLEXplorer)
 

@@ -266,21 +266,18 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
             container = new FlexFileContainer(
                 containerPath.mb_str(*wxConvCurrent), "rb+");
         }
-        catch (FlexException *pE)
+        catch (FlexException &)
         {
-            delete pE;
-
             try
             {
                 container = new FlexFileContainer(
                     containerPath.mb_str(*wxConvCurrent), "rb");
             }
-            catch (FlexException *pE)
+            catch (FlexException &ex)
             {
-                int r = wxMessageBox(pE->wwhat(),
+                int r = wxMessageBox(ex.wwhat(),
                                      _("FLEXplorer Error"), wxOK |
                                      wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
-                delete pE;
 
                 if (r == wxCANCEL)
                 {
@@ -329,11 +326,10 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
                             containerName.mb_str(*wxConvCurrent),
                             tracks, sectors, format);
         }
-        catch (FlexException *pE)
+        catch (FlexException &ex)
         {
-            wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
-            delete pE;
             return;
         }
 
@@ -467,11 +463,10 @@ void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
             wxDEFAULT_FRAME_STYLE,
             container);
     }
-    catch (FlexException *pE)
+    catch (FlexException &ex)
     {
-        wxMessageBox(pE->wwhat(), _("FLEXplorer Error"),
+        wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
                      wxOK | wxCENTRE | wxICON_EXCLAMATION);
-        delete pE;
         return;
     }
 

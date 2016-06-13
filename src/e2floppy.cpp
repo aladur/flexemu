@@ -97,10 +97,9 @@ bool E2floppy::umount_drive(Word drive_nr)
         floppy[drive_nr] = NULL;
         driveStatus[drive_nr] = DISK_STAT_EMPTY;
     }
-    catch (FlexException *pE)
+    catch (FlexException &)
     {
         // ignore errors
-        delete pE;
     }
 
     pStatusMutex->unlock();
@@ -144,10 +143,9 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             {
                 pfloppy = new NafsDirectoryContainer(containerPath);
             }
-            catch (FlexException *pE)
+            catch (FlexException &)
             {
                 // just ignore
-                delete pE;
             }
         }
         else
@@ -158,18 +156,15 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 {
                     pfloppy = new FlexRamFileContainer(containerPath, "rb+");
                 }
-                catch (FlexException *pE)
+                catch (FlexException &)
                 {
-                    delete pE;
-
                     try
                     {
                         pfloppy = new FlexRamFileContainer(containerPath, "rb");
                     }
-                    catch (FlexException *pE)
+                    catch (FlexException &)
                     {
                         // just ignore
-                        delete pE;
                     }
                 }
             }
@@ -179,18 +174,15 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 {
                     pfloppy = new FlexFileContainer(containerPath, "rb+");
                 }
-                catch (FlexException *pE)
+                catch (FlexException &)
                 {
-                    delete pE;
-
                     try
                     {
                         pfloppy = new FlexFileContainer(containerPath, "rb");
                     }
-                    catch (FlexException *pE)
+                    catch (FlexException &)
                     {
                         // just ignore
-                        delete pE;
                     }
                 }
             }
@@ -283,11 +275,10 @@ BString E2floppy::drive_info(Word drive_nr)
             {
                 pfl->GetInfo(info);
             }
-            catch (FlexException *pE)
+            catch (FlexException &ex)
             {
-                str.printf("%s\n", pE->what());
+                str.printf("%s\n", ex.what());
                 pStatusMutex->unlock();
-                delete pE;
                 return str;
             }
 
@@ -569,10 +560,9 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
                 break;
         }
     }
-    catch (FlexException *pE)
+    catch (FlexException &)
     {
         printf("FlexException disk_dir=%s\n", disk_dir);
-        delete pE;
         return false;
     }
 

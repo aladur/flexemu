@@ -38,11 +38,9 @@ class BDate;
 class DirectoryContainerIteratorImp;
 
 
-#define CHECK_NO_DCONTAINER_OPEN			\
-	if (!IsContainerOpened()) {			\
-		FlexException *pE = getFlexException();	\
-		pE->setString(FERR_NO_CONTAINER_OPEN);	\
-		throw pE;				\
+#define CHECK_NO_DCONTAINER_OPEN			     \
+	if (!IsContainerOpened()) {			     \
+		throw FlexException(FERR_NO_CONTAINER_OPEN); \
 	}
 
 class DirectoryContainer : public FileContainerIf

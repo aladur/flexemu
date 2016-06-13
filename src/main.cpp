@@ -50,11 +50,6 @@
 #include "schedule.h"
 #include "flexerr.h"
 
-// Definition of Factory method to get a new exception object
-FlexException *getFlexException(int /* type = 0 */)
-{
-    return new FlexException();
-}
 
 // class memory is now included in cpu:
 #define MEMORY memory
@@ -222,10 +217,14 @@ int main(int argc, char *argv[])
             exit_code = 1;
         }
     }
-    catch (std::exception &e)
+    catch (std::exception &ex)
     {
-        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n",
-                e.what());
+        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n", ex.what());
+        exit_code = 1;
+    }
+    catch (FlexException &ex)
+    {
+        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n", ex.what());
         exit_code = 1;
     }
 

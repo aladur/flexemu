@@ -65,9 +65,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 
     if (!stat(aPath, &sbuf) && !S_ISDIR(sbuf.st_mode))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_OPEN, aPath);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
     }
 
     if (access(aPath, W_OK))
@@ -142,9 +140,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
         // directory does not exist
         if (!BDirectory::Create(aPath, 0755))
         {
-            FlexException *pE = getFlexException();
-            pE->setString(FERR_UNABLE_TO_CREATE, aPath);
-            throw pE;
+            throw FlexException(FERR_UNABLE_TO_CREATE, aPath);
         }
     }
 
@@ -262,9 +258,7 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
     // prevent conflict with an existing file
     if (FindFile(newName, de))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
-        throw pE;
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
     FileContainerIterator it(oldName);
@@ -273,10 +267,7 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 
     if (it == this->end())
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_NO_FILE_IN_CONTAINER,
-                      oldName, GetPath());
-        throw pE;
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, GetPath());
     }
     else
     {
@@ -322,9 +313,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     if (!GetDiskFreeSpace(rootPath, &sectorsPerCluster,
                           &bytesPerSector, &numberOfFreeClusters, &totalNumberOfClusters))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_DISKSPACE, *path);
-        throw pE;
+        throw FlexException(FERR_READING_DISKSPACE, *path);
     }
 
     // free size in KByte
@@ -343,9 +332,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     if (statvfs(*path, &fsbuf))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_DISKSPACE, *path);
-        throw pE;
+        throw FlexException(FERR_READING_DISKSPACE, *path);
     }
 
     info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree / 1024);
@@ -449,9 +436,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
 
     if (!buffer.ReadFromFile(filePath))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_FROM, fileName);
-        throw pE;
+        throw FlexException(FERR_READING_FROM, fileName);
     }
 
     buffer.SetFilename(fileName);
@@ -530,16 +515,12 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     // prevent to overwrite an existing file
     if (!stat(filePath, &sbuf) && S_ISREG(sbuf.st_mode))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_FILE_ALREADY_EXISTS, lowerFileName);
-        throw pE;
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
 
     if (!buffer.WriteToFile(filePath))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_WRITING_TO, fileName);
-        throw pE;
+        throw FlexException(FERR_WRITING_TO, fileName);
     }
 
     SetDate(lowerFileName, buffer.GetDate());

@@ -63,9 +63,7 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
 
     if (path == NULL || stat(path, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_OPEN, path);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
     dir = new BString(path);
@@ -106,9 +104,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
 
     if (pdir == NULL || stat(pdir, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_CREATE, name);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
     totalPath = pdir;
@@ -117,9 +113,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
 
     if (!BDirectory::Create(totalPath, 0755))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_CREATE, name);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
     return new NafsDirectoryContainer(totalPath);
@@ -164,9 +158,7 @@ bool     NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     if (!ReadSector((Byte *)&buffer, 0, 3))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_TRKSEC, 0, 3, *dir);
-        throw pE;
+        throw FlexException(FERR_READING_TRKSEC, 0, 3, *dir);
     }
 
     info.SetDate(buffer.day, buffer.month, buffer.year);

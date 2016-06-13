@@ -59,40 +59,39 @@
 #define FERR_CREATE_TEMP_FILE		(30)
 #define FERR_CONTAINER_IS_READONLY	(31)
 #define FERR_UNSPEC_WINDOWS_ERROR	(32)
+#define FERR_WINDOWS_ERROR      	(33)
+#define FERR_INVALID_NULL_POINTER	(34)
 
-class FlexException;
-
-// Declaration of Factory method to get a new exception object
-extern FlexException *getFlexException(int type = 0);
 
 class FlexException
 {
 protected:
 
-	int	 errorCode;
+	int errorCode;
 	char errorString[MAX_ERR_STRINGLENGTH];
         static const char *errString[];
 
 public:
 
-	FlexException() throw();
-	virtual ~FlexException() throw();
+	FlexException(int ec) throw();
+	FlexException(int ec, int ip1) throw();
+	FlexException(int ec, const char *sp1) throw();
+	FlexException(int ec, const char *sp1, const char *sp2) throw();
+	FlexException(int ec, int ip1, int ip2, const char *sp1) throw();
+#ifdef WIN32
+	FlexException(unsigned long lastError, const char *sp1 = NULL) throw();
+#endif
 
-	virtual const char *what()  const throw();
+        const char *what()  const throw();
 #ifdef _UNICODE
-	virtual const wchar_t *wwhat() const throw();
+	const wchar_t *wwhat() const throw();
 #else
-	virtual const char *wwhat() const throw();
+	const char *wwhat() const throw();
 #endif
 	int	GetErrorCode(void) const { return errorCode; };
-	virtual void	setString(int ec);
-	virtual void	setString(int ec, int ip1);
-	virtual void	setString(int ec, const char *sp1);
-	virtual void	setString(int ec, const char *sp1, const char *sp2);
-	virtual void	setString(int ec, int ip1, int ip2, const char *sp1);
-#ifdef WIN32
-	void	setWindowsError(int lastError, const char *sp1 = NULL);
-#endif
+
+private:
+	FlexException() throw();
 };
 
 

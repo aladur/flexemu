@@ -102,18 +102,12 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
 
     if (fp == NULL)
     {
-        FlexException *pE = getFlexException();
-
-        pE->setString(FERR_UNABLE_TO_OPEN, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
     if (fseek(fp, 0, SEEK_SET))
     {
-        FlexException *pE = getFlexException();
-
-        pE->setString(FERR_UNABLE_TO_OPEN, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
     if (strchr(fp.GetMode(), '+') == NULL)
@@ -140,9 +134,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         // read system info sector
         if (fseek(fp, 2 * SECTOR_SIZE, SEEK_SET))
         {
-            FlexException *pE = getFlexException();
-            pE->setString(FERR_UNABLE_TO_OPEN, fp.GetPath());
-            throw pE;
+            throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
         }
 
         if (fread(&buffer, sizeof(buffer), 1, fp) == 1)
@@ -163,9 +155,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         }
     }
 
-    FlexException *pE = getFlexException();
-    pE->setString(FERR_IS_NO_FILECONTAINER, fp.GetPath());
-    throw pE;
+    throw FlexException(FERR_IS_NO_FILECONTAINER, fp.GetPath());
 }
 
 /****************************************/
@@ -242,9 +232,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
 
     if (fmt != TYPE_DSK_CONTAINER && fmt != TYPE_FLX_CONTAINER)
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_INVALID_FORMAT, fmt);
-        throw pE;
+        throw FlexException(FERR_INVALID_FORMAT, fmt);
     }
 
     Format_disk(t, s, dir, name, fmt);
@@ -305,9 +293,7 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
     // prevent overwriting of an existing file
     if (FindFile(newName, de))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_FILE_ALREADY_EXISTS, newName);
-        throw pE;
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
     FileContainerIterator it(oldName);
@@ -316,10 +302,7 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 
     if (it == this->end())
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_NO_FILE_IN_CONTAINER,
-                      oldName, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, fp.GetPath());
     }
     else
     {
@@ -347,9 +330,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 
     if (!ReadSector((Byte *)&buffer, 0, 3))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
     }
 
     if (buffer.year < 75)
@@ -453,17 +434,13 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (FindFile(pFileName, de))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_FILE_ALREADY_EXISTS, pFileName);
-        throw pE;
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, pFileName);
     }
 
     // read sys info sector
     if (!ReadSector((Byte *)&sysInfo, 0, 3))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
     } // get start trk/sec of free chain
 
     startTrk = nextTrk = sysInfo.fc_start_trk;
@@ -493,18 +470,14 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                 if (trk == 0 && sec == 0)
                 {
                     // disk full
-                    FlexException *pE = getFlexException();
-                    pE->setString(FERR_DISK_FULL_WRITING,
-                                  fp.GetPath(), pFileName);
-                    throw pE;
+                    throw FlexException(FERR_DISK_FULL_WRITING,
+                                        fp.GetPath(), pFileName);
                 }
 
                 if (!ReadSector(&sectorBuffer[i][0], trk, sec))
                 {
-                    FlexException *pE = getFlexException();
-                    pE->setString(FERR_READING_TRKSEC,
-                                  trk, sec, fp.GetPath());
-                    throw pE;
+                    throw FlexException(FERR_READING_TRKSEC,
+                                        trk, sec, fp.GetPath());
                 }
                 else if (i)
                 {
@@ -518,10 +491,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
             if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
                                recordNr * (SECTOR_SIZE - 4), 0x00))
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_WRITING_TRKSEC,
-                              trk, sec, fp.GetPath());
-                throw pE;
+                throw FlexException(FERR_WRITING_TRKSEC,
+                                    trk, sec, fp.GetPath());
             }
 
             recordNr++;
@@ -540,11 +511,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
                         if (smSector == 0)
                         {
-                            FlexException *pE =
-                                getFlexException();
-                            pE->setString(FERR_RECORDMAP_FULL,
-                                          pFileName, fp.GetPath());
-                            throw pE;
+                            throw FlexException(FERR_RECORDMAP_FULL,
+                                                pFileName, fp.GetPath());
                         }
 
                         smIndex = 4;
@@ -575,10 +543,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
             if (!WriteSector(&sectorBuffer[0][0], trk, sec))
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_WRITING_TRKSEC,
-                              trk, sec, fp.GetPath());
-                throw pE;
+                throw FlexException(FERR_WRITING_TRKSEC,
+                                    trk, sec, fp.GetPath());
             }
 
             repeat = 0;
@@ -605,10 +571,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         {
             if (!WriteSector(&sectorBuffer[i][0], nextTrk, nextSec))
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_WRITING_TRKSEC,
-                              nextTrk, nextSec, fp.GetPath());
-                throw pE;
+                throw FlexException(FERR_WRITING_TRKSEC,
+                                    nextTrk, nextSec, fp.GetPath());
             }
 
             nextTrk = sectorBuffer[i][0];
@@ -624,9 +588,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (!WriteSector((Byte *)&sysInfo, 0, 3))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_WRITING_TRKSEC, 0, 3, fp.GetPath());
-        throw pE;
+        throw FlexException(FERR_WRITING_TRKSEC, 0, 3, fp.GetPath());
     }
 
     // make new directory entry
@@ -654,9 +616,7 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
 
     if (!FindFile(fileName, de))
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_OPEN, fileName);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
     }
 
     buffer.SetAttributes(de.GetAttributes());
@@ -672,9 +632,7 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
 
     if (size <= 0)
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_WRONG_PARAMETER);
-        throw pE;
+        throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     size = size * 252 / 256;
@@ -700,10 +658,8 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
 
             if (!ReadSector(&sectorBuffer[0], trk, sec))
             {
-                FlexException *pE = getFlexException();
-                pE->setString(FERR_READING_TRKSEC,
-                              trk, sec, fileName);
-                throw pE;
+                throw FlexException(FERR_READING_TRKSEC,
+                                    trk, sec, fileName);
             }
 
             trk = sectorBuffer[0];
@@ -713,9 +669,7 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
         if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
                              recordNr * (SECTOR_SIZE - 4)))
         {
-            FlexException *pE = getFlexException();
-            pE->setString(FERR_READING_TRKSEC, trk, sec, fileName);
-            throw pE;
+            throw FlexException(FERR_READING_TRKSEC, trk, sec, fileName);
         }
 
         recordNr++;
@@ -764,10 +718,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         // read next directory sector
         if (!ReadSector((Byte *)&ds, nextTrk, nextSec))
         {
-            FlexException *pE = getFlexException();
-            pE->setString(FERR_READING_TRKSEC,
-                          nextTrk, nextSec, fp.GetPath());
-            throw pE;
+                throw FlexException(FERR_READING_TRKSEC,
+                                    nextTrk, nextSec, fp.GetPath());
         }
 
         for (i = 0; i < 10; i++)
@@ -804,10 +756,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 
                 if (!WriteSector((Byte *)&ds, nextTrk, nextSec))
                 {
-                    FlexException *pE = getFlexException();
-                    pE->setString(FERR_WRITING_TRKSEC,
-                                  nextTrk, nextSec, fp.GetPath());
-                    throw pE;
+                    throw FlexException(FERR_WRITING_TRKSEC,
+                                        nextTrk, nextSec, fp.GetPath());
                 }
 
                 return true;
@@ -818,9 +768,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         nextSec = ds.next_sec;
     }
 
-    FlexException *pE = getFlexException();
-    pE->setString(FERR_DIRECTORY_FULL);
-    throw pE;
+    throw FlexException(FERR_DIRECTORY_FULL);
     return true; // satisfy compiler
 }
 
@@ -1139,9 +1087,7 @@ void FlexFileContainer::Format_disk(
         name == NULL || strlen(name) == 0 ||
         trk < 2 || sec < 6)
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_WRONG_PARAMETER);
-        throw pE;
+        throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     Create_format_table(trk, sec, &format);
@@ -1216,9 +1162,7 @@ void FlexFileContainer::Format_disk(
 
     if (err)
     {
-        FlexException *pE = getFlexException();
-        pE->setString(FERR_UNABLE_TO_FORMAT, name);
-        throw pE;
+        throw FlexException(FERR_UNABLE_TO_FORMAT, name);
     }
 } // format_disk
 
