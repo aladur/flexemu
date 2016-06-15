@@ -186,8 +186,8 @@ void XtGui::initialize_xrad_file()
     {
         BString defaultAdFileName;
 
-        adFileName += PATHSEPARATORSTRING PACKAGE;
-        defaultAdFileName = F_DATADIR PATHSEPARATORSTRING PACKAGE ".ad";
+        adFileName += PATHSEPARATORSTRING PROGRAMNAME;
+        defaultAdFileName = F_DATADIR PATHSEPARATORSTRING PROGRAMNAME ".ad";
 
         if (access(adFileName, F_OK) == -1)
         {
@@ -196,11 +196,11 @@ void XtGui::initialize_xrad_file()
 
             if ((ifp != NULL) && (ofp != NULL))
             {
-                char buf[128];
+                int character;
 
-                while (fgets(buf, 128, ifp))
+                while ((character = fgetc(ifp)) != EOF)
                 {
-                    fputs(buf, ofp);
+                    fputc(character, ofp);
                 }
             }
         }

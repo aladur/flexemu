@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([flexemu],2.20)
+AC_INIT([Flexemu],2.20)
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR(m4)

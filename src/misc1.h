@@ -52,7 +52,10 @@
 
 /* #define FASTFLEX */
 
-#define PROGRAMNAME     PACKAGE
+// Don't use PACKAGE. It has been changed by automake to be all lowercase.
+// For compatibility the program name should begin with a capital F.
+// Use PACKAGE_NAME instead.
+#define PROGRAMNAME     PACKAGE_NAME
 #define PROGRAM_VERSION VERSION
 
 #ifndef X_DISPLAY_MISSING
@@ -210,32 +213,33 @@ extern const char *gMemoryAllocationErrorString;
 #endif
 
 #if defined(WIN32) && !defined(NO_DEBUGPRINT)
-#define DEBUGPRINT(fmt)   OutputDebugString((LPCTSTR)("[" PACKAGE "] " fmt))
+#define DEBUGPRINT(fmt)   OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " fmt))
 #define DEBUGPRINT1(fmt,p1)                        \
     {                                                \
         char str[255];                                 \
-        sprintf((char *)str, "[" PACKAGE "] " fmt,p1); \
+        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1); \
         OutputDebugString((LPCTSTR)str);                        \
     }
 #define DEBUGPRINT2(fmt,p1,p2)                        \
     {                                                   \
         char str[255];                                    \
-        sprintf((char *)str, "[" PACKAGE "] " fmt,p1,p2); \
+        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1,p2); \
         OutputDebugString((LPCTSTR)str);                           \
     }
 #define DEBUGPRINT3(fmt,p1,p2,p3)                        \
     {                                                      \
         char str[255];                                       \
-        sprintf((char *)str, "[" PACKAGE "] " fmt,p1,p2,p3); \
+        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1,p2,p3); \
         OutputDebugString((LPCTSTR)str);                              \
     }
 #endif
 
 #if defined(UNIX) && !defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(fmt)           ::printf("[" PACKAGE "] " fmt)
-    #define DEBUGPRINT1(fmt,p1)       ::printf("[" PACKAGE "] " fmt,p1)
-    #define DEBUGPRINT2(fmt,p1,p2)    ::printf("[" PACKAGE "] " fmt,p1,p2)
-    #define DEBUGPRINT3(fmt,p1,p2,p3) ::printf("[" PACKAGE "] " fmt,p1,p2,p3)
+    #define DEBUGPRINT(fmt)           ::printf("[" PROGRAMNAME "] " fmt)
+    #define DEBUGPRINT1(fmt,p1)       ::printf("[" PROGRAMNAME "] " fmt,p1)
+    #define DEBUGPRINT2(fmt,p1,p2)    ::printf("[" PROGRAMNAME "] " fmt,p1,p2)
+    #define DEBUGPRINT3(fmt,p1,p2,p3) ::printf("[" PROGRAMNAME "] " \
+                fmt,p1,p2,p3)
 #endif
 
 #if defined(NO_DEBUGPRINT)

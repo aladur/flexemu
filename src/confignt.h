@@ -177,7 +177,10 @@
 /* #undef HAVE_LIBWX_GTK */
 
 /* Name of package */
-#define PACKAGE "Flexemu"
+#define PACKAGE "flexemu"
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME "Flexemu"
 
 /* Version number of package */
 #define VERSION "2.20"
