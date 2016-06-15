@@ -59,3 +59,8 @@ build/windows/*.tgz
 
 # vi swap file
 *.swp
+
+# eclipse project files
+.cproject
+.project
+.settings/

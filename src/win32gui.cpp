@@ -1755,7 +1755,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
         InsertMenuItem(menu2, count++, TRUE, &menuItem);
 
         count = 1;
-        menuItem.dwTypeData = "&Introduction";
+        menuItem.dwTypeData = "&Documentation";
         menuItem.wID = IDM_INTRODUCTION;
         InsertMenuItem(menu3, count++, TRUE, &menuItem);
         menuItem.dwTypeData = "&About " PROGRAMNAME;

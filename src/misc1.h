@@ -278,7 +278,7 @@ struct sOptions
 #define FLEXINVERSE     "DisplayInverse"
 #define FLEXHIMEM   "HighMemory"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
-#define FLEXWWWBROWSER  "WwwBrowser"
+#define FLEXHTMLVIEWER  "HTMLViewer"
 #define FLEXDOCDIR      "DocDirectory"
 #define FLEXMONITOR     "MonitorPath"
 #define FLEXVERSION     "Version"

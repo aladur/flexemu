@@ -86,8 +86,6 @@ protected:
     Widget      statusbuttons, floppybutton[4], interruptbutton;
     Widget      messageframe, messageform, messagetext;
     Widget      messagebuttons, messagebutton1, messagebutton2;
-    Widget      helpframe, helpform, helptext, helpokbutton;
-    Widget      helpbutton[NR_OF_HELPBUTTONS];
     Widget      aboutframe, aboutform, abouttext, aboutbutton;
     Widget      aboutbuttons;
     Widget      cpuframe, cpuform, cpubuttons, cputext;
@@ -127,12 +125,10 @@ protected:
                                          int sync);
     virtual void        create_message_dialog(Widget parent);
     virtual void        create_about_dialog(Widget parent);
-    virtual void        create_help_view(Widget parent);
     virtual void        create_cpuview(Widget parent);
     virtual void        create_bp_dialog(Widget parent);
     virtual void        create_logfile_dialog(Widget parent);
     virtual void        manage_widget(Widget w);
-    virtual String      get_man_page(const char *pman_page_name);
     virtual void        initialize_after_create(Widget w, int inverse,
             const char *color);
     virtual void        initialize_after_open(Widget w, const char *title);
@@ -167,13 +163,11 @@ public:
 
     virtual void    center_dialog(Widget w);
     virtual void    popup_about(void);
-    virtual int     popup_help(void);
     virtual void    popup_cpu(void);
     virtual void    popup_bp(void);
     virtual void    popup_log(void);
     virtual void    popdown_message(Widget w);
     virtual void    popdown_about(void);
-    virtual void    popdown_help(void);
     virtual void    popdown_cpu(void);
     virtual void    popdown_bp(Widget w);
     virtual void    popdown_log(Widget w);
@@ -184,7 +178,6 @@ public:
     virtual void    toggle_cpu(void);
     virtual void    toggle_frequency(void);
     virtual void    toggle_undocumented(void);
-    virtual void    display_man_page(Widget w);
     virtual void    main_loop(void);
     virtual void    mouse_update(void);
     virtual void    mouse_warp(int dx, int dy);
@@ -226,10 +219,6 @@ private:
                                        XtPointer call_data);
     static void     popupHelpCallback(Widget w, XtPointer client_data,
                                       XtPointer call_data);
-    static void     displayManPageCallback(Widget w, XtPointer client_data,
-                                           XtPointer call_data);
-    static void     popdownHelpCallback(Widget w, XtPointer client_data,
-                                        XtPointer call_data);
     static void     popupAboutCallback(Widget w, XtPointer client_data,
                                        XtPointer call_data);
     static void     popdownAboutCallback(Widget w, XtPointer client_data,

@@ -1084,7 +1084,6 @@ void XAbstractGui::set_bell(int percent)
 // return: -1 = failure
 int XAbstractGui::popup_help(void)
 {
-#ifdef WITH_HELP
     pid_t child_pid;
     int status;
     int success;
@@ -1092,19 +1091,12 @@ int XAbstractGui::popup_help(void)
     const char *args[3];
 
     // if no environment variable for browser return with error
-    if (strlen(pOptions->www_browser) == 0)
+    if (strlen(pOptions->html_viewer) == 0)
     {
         return -1;
     }
 
-    if (strlen(pOptions->doc_dir) != 0)
-    {
-        strcpy(helpfile, pOptions->doc_dir);
-    }
-    else
-    {
-        strcpy(helpfile, "/usr/local/doc/flexemu");
-    }
+    strcpy(helpfile, pOptions->doc_dir);
 
     if (helpfile[strlen(helpfile) - 1] != '/')
     {
@@ -1112,13 +1104,13 @@ int XAbstractGui::popup_help(void)
     }
 
     strcat(helpfile, "flexemu.htm");
-    args[0] = pOptions->www_browser;
+    args[0] = pOptions->html_viewer;
     args[1] = helpfile;
     args[2] = NULL;
 
     if ((child_pid = fork()) == 0)
     {
-        // try to start WWW Browser
+        // try to start HTML viewer
         success = execvp(args[0], const_cast<char **>(args));
         // if it fails exit with errorcode
         exit(255);
@@ -1137,7 +1129,6 @@ int XAbstractGui::popup_help(void)
         }
     } // else
 
-#endif
     return 0;
 } // popup_help
 

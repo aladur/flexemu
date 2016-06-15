@@ -60,7 +60,7 @@ struct sGuiOptions
     int     argc;
     char *const    *argv;
     BString     color;
-    BString     www_browser;
+    BString     html_viewer;
     BString     doc_dir;
     int     nColors;
     int     inverse;

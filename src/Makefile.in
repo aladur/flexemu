@@ -128,7 +128,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-schedule.$(OBJEXT) flexemu-btimer.$(OBJEXT) \
 	flexemu-clogfile.$(OBJEXT) flexemu-bfileptr.$(OBJEXT) \
 	flexemu-ifilecnt.$(OBJEXT) flexemu-iffilcnt.$(OBJEXT) \
-	flexemu-bwin32threadimp.$(OBJEXT) flexemu-mc6809st.$(OBJEXT)
+	flexemu-bwin32threadimp.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
+	flexemu-buint.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -463,13 +464,11 @@ pkgdata_DATA = Flexemu.ad boot flexemu.xpm  \
 
 SUFFIXES = .rc .o
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             absdisas.h buint.h buint.cpp optdlg.h \
              Flexemu.ad boot flexemu.xpm \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
-	     flexemu.dsp flexdisk.dsp fsetup.dsp \
-	     remove.bat
+	     flexemu.dsp flexdisk.dsp fsetup.dsp
 
 SUBDIRS = bitmaps tools
 flexemu_CXXFLAGS = -g -Wno-long-long \
@@ -507,7 +506,7 @@ xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
-bwin32threadimp.cpp mc6809st.cpp\
+bwin32threadimp.cpp mc6809st.cpp buint.cpp \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h bstring.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
@@ -518,7 +517,7 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h flexemu.h mc6809in.h
+schedcpu.h absdisas.h buint.h flexemu.h mc6809in.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
@@ -536,7 +535,7 @@ fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
 bintervl.h blist.h baddrrng.h bhashtbl.h bident.h bsortlst.h bmembuf.h\
 bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h bregistr.h bprocess.h flexemu.h
+filecntb.h filecont.h optdlg.h bregistr.h bprocess.h flexemu.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bstring.cpp bdate.cpp colors.cpp \
@@ -696,6 +695,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bthreadimp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-btime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-btimer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-buint.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bwin32threadimp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-cacttrns.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-clogfile.Po@am__quote@
@@ -1637,6 +1637,20 @@ flexemu-mc6809st.obj: mc6809st.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809st.cpp' object='flexemu-mc6809st.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mc6809st.obj `if test -f 'mc6809st.cpp'; then $(CYGPATH_W) 'mc6809st.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809st.cpp'; fi`
+
+flexemu-buint.o: buint.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-buint.o -MD -MP -MF $(DEPDIR)/flexemu-buint.Tpo -c -o flexemu-buint.o `test -f 'buint.cpp' || echo '$(srcdir)/'`buint.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-buint.Tpo $(DEPDIR)/flexemu-buint.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='buint.cpp' object='flexemu-buint.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-buint.o `test -f 'buint.cpp' || echo '$(srcdir)/'`buint.cpp
+
+flexemu-buint.obj: buint.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-buint.obj -MD -MP -MF $(DEPDIR)/flexemu-buint.Tpo -c -o flexemu-buint.obj `if test -f 'buint.cpp'; then $(CYGPATH_W) 'buint.cpp'; else $(CYGPATH_W) '$(srcdir)/buint.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-buint.Tpo $(DEPDIR)/flexemu-buint.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='buint.cpp' object='flexemu-buint.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-buint.obj `if test -f 'buint.cpp'; then $(CYGPATH_W) 'buint.cpp'; else $(CYGPATH_W) '$(srcdir)/buint.cpp'; fi`
 
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp

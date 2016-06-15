@@ -330,7 +330,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = INSTALL.Win32 Makefile.am flexemu.dsw Flexemu.nsi 
+EXTRA_DIST = NEWS AUTHORS COPYING ChangeLog INSTALL LICENSE README README.md \
+             INSTALL.Win32 flexemu.dsw Flexemu.nsi 
+
 SUBDIRS = src disks doc monitor
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 all: all-recursive

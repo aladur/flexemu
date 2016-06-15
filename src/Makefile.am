@@ -6,7 +6,7 @@ SUFFIXES = .rc .o
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             Flexemu.ad boot flexemu.xpm \
+             Flexemu.ad boot flexemu.astyle flexemu.xpm \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \

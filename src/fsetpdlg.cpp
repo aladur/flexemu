@@ -92,7 +92,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     m_guiOptions(pGuiOptions), m_options(pOptions),
     c_color(NULL), c_finverse(NULL), c_undocumented(NULL),
     c_geometry(NULL), c_nColors(NULL), c_monitor(NULL),
-    c_wwwBrowser(NULL), c_diskDir(NULL),
+    c_htmlViewer(NULL), c_diskDir(NULL),
     c_ramExtension(NULL)
 {
     int i;
@@ -195,10 +195,10 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
         c_monitor->SetValue(hex_file);
     }
 
-    if (c_wwwBrowser)
+    if (c_htmlViewer)
     {
-        wxString www_browser(m_guiOptions->www_browser, *wxConvCurrent);
-        c_wwwBrowser->SetValue(www_browser);
+        wxString html_viewer(m_guiOptions->html_viewer, *wxConvCurrent);
+        c_htmlViewer->SetValue(html_viewer);
     }
 
     if (c_diskDir)
@@ -311,26 +311,13 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     const int     textWidth  = 320;
     const int     stextWidth = 180;
     const int     gap = 5;
-    int       i;
+    int           i;
     wxString      text;
 
-#ifndef WIN32
-    pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    pStatic = new wxStaticText(panel, -1, _("HTML Docu Browser"),
-                               wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT | wxTOP, gap);
-    c_wwwBrowser = new wxTextCtrl(panel, IDC_WwwBrowser, wxT(""),
-                                  wxDefaultPosition, wxSize(textWidth, -1));
-    pBoxSizer->Add(c_wwwBrowser, 1, wxCENTER);
-    pStatic = new wxStaticText(panel, -1, wxT(""), wxDefaultPosition,
-                               wxSize(40, 25));
-    pBoxSizer->Add(pStatic, 0, wxCENTER); // dummy widget instead of a Button
-    pPanelSizer->Add(pBoxSizer, 0);
-#endif
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT, gap);
+    pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT | wxTOP, gap);
     c_diskDir = new wxTextCtrl(panel, IDC_DiskDir, wxT(""),
                                wxDefaultPosition, wxSize(textWidth, -1));
     pBoxSizer->Add(c_diskDir, 1, wxCENTER);
@@ -383,12 +370,12 @@ wxPanel *FlexemuOptionsDialog::CreateDocuOptionsPage(wxBookCtrlBase *parent)
     const int     gap = 5;
 
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    pStatic = new wxStaticText(panel, -1, _("HTML Docu Browser"),
+    pStatic = new wxStaticText(panel, -1, _("HTML Viewer"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pBoxSizer->Add(pStatic, 0, wxCENTER | wxLEFT | wxTOP, gap);
-    c_wwwBrowser = new wxTextCtrl(panel, IDC_WwwBrowser, wxT(""),
+    c_htmlViewer = new wxTextCtrl(panel, IDC_HTMLViewer, wxT(""),
                                   wxDefaultPosition, wxSize(textWidth, -1), 0);
-    pBoxSizer->Add(c_wwwBrowser, 1, wxCENTER | wxRIGHT, gap);
+    pBoxSizer->Add(c_htmlViewer, 1, wxCENTER | wxRIGHT, gap);
     pStatic = new wxStaticText(panel, -1, wxT(""), wxDefaultPosition,
                                wxSize(40, 25));
     pBoxSizer->Add(pStatic, 0, wxCENTER); // dummy widget instead of a Button
@@ -564,10 +551,10 @@ bool FlexemuOptionsDialog::TransferDataFromWindow(void)
     };
 
 #ifndef WIN32
-    if (c_wwwBrowser)
+    if (c_htmlViewer)
     {
-        m_guiOptions->www_browser =
-            c_wwwBrowser->GetValue().mb_str(*wxConvCurrent);
+        m_guiOptions->html_viewer =
+            c_htmlViewer->GetValue().mb_str(*wxConvCurrent);
     };
 
 #endif

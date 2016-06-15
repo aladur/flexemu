@@ -332,24 +332,6 @@ void XtGui::popupHelpCallback(Widget,
     }
 }
 
-void XtGui::popdownHelpCallback(Widget,
-                                XtPointer client_data, XtPointer)
-{
-    if (client_data != NULL)
-    {
-        ((XtGui *)client_data)->popdown_help();
-    }
-}
-
-void XtGui::displayManPageCallback(Widget w,
-                                   XtPointer client_data, XtPointer)
-{
-    if (client_data != NULL)
-    {
-        ((XtGui *)client_data)->display_man_page(w);
-    }
-}
-
 void XtGui::popupAboutCallback(Widget,
                                XtPointer client_data, XtPointer)
 {
@@ -580,23 +562,6 @@ void XtGui::popdown_about(void)
     XtPopdown(aboutframe);
     XtSetSensitive(e2toplevel, True);
     XtSetSensitive(cpuframe, True);
-}
-
-// return 0 on success
-int XtGui::popup_help(void)
-{
-    if (XAbstractGui::popup_help() == -1)
-    {
-        // unfinished
-        ; //XtPopup(helpframe, XtGrabNone);
-    }
-
-    return 0;
-}
-
-void XtGui::popdown_help(void)
-{
-    XtPopdown(helpframe);
 }
 
 void XtGui::center_dialog(Widget shell)
@@ -1192,7 +1157,6 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
                          pOptions->synchronized);
     create_message_dialog(w);
     create_about_dialog(w);
-    //create_help_view(w); // man viewer not supported any more
 #ifdef HAVE_XPM
     create_author_dialog(w);
 #endif
@@ -1402,147 +1366,6 @@ void XtGui::create_about_dialog(Widget parent)
     XtRealizeWidget(aboutframe);
     XSetWMProtocols(getDisplay(), XtWindow(aboutframe), &wm_delete_window, 1);
 } // create_about_dialog
-
-// the returned string must be released with XtFree()!!
-
-String XtGui::get_man_page(const char *pman_page_name)
-{
-    String   phelpstring, ptmp;
-    char    *p, ch1, ch2;
-    const char *perr = "can't find man page ";
-    FILE    *fp;
-    char     buffer[32];
-    int  count, error;
-
-    error = 0;
-    count = 0;
-    ch1 = '\0';
-    phelpstring = XtMalloc(8192);
-    sprintf((char *)buffer, "man %s 2>&1", pman_page_name);
-
-    if ((fp = popen(buffer , "r")) != NULL)
-    {
-        p = phelpstring;
-
-        if (!feof(fp))
-        {
-            ch1 = fgetc(fp);
-        }
-
-        while (!feof(fp))
-        {
-            ch2 = fgetc(fp);
-
-            if (ch2 != 8 && ch1 != 8)   // 8 means ^H
-            {
-                *(p++) = ch1;
-                count++;
-            }
-
-            ch1 = ch2;
-
-            if ((count & 0x1fff) == 0x1ffe)
-            {
-                if ((ptmp = XtMalloc(count + 8192)) != NULL)
-                {
-                    memcpy(ptmp, phelpstring, count);
-                    p = ptmp + count;
-                    XtFree(phelpstring);
-                    phelpstring = ptmp;
-                }
-                else
-                {
-                    error = 1;
-                }
-            } // if
-        } // while
-
-        // there are at least two bytes free in the stringbuffer
-        if (ch1 >= ' ')
-        {
-            *(p++) = ch1;
-        }
-
-        *p = '\0';
-
-        if (pclose(fp) < 0)
-        {
-            error = 2;
-        }
-    }
-    else
-    {
-        error = 3;
-    }
-
-    if (error || strlen(phelpstring) == 0)
-    {
-        strcpy(phelpstring, perr);
-        strcat(phelpstring, pman_page_name);
-    }  // if
-
-    return phelpstring;
-} // get_man_page
-
-void XtGui::create_help_view(Widget parent)
-{
-    String phelpstring;
-    char   buttonName[20];
-    int    i;
-
-    phelpstring = get_man_page("flexemu");
-    helpframe = XtVaCreatePopupShell("help",
-                                     transientShellWidgetClass, parent, NULL);
-    helpform = XtVaCreateManagedWidget("helpForm",
-                                       formWidgetClass, helpframe, NULL);
-    helptext = XtVaCreateManagedWidget("helpText", asciiTextWidgetClass,
-                                       helpform,
-                                       XtNstring, (XtArgVal)phelpstring,
-                                       XtNscrollVertical,
-                                       (XtArgVal)XawtextScrollWhenNeeded,
-                                       XtNscrollHorizontal,
-                                       (XtArgVal)XawtextScrollWhenNeeded,
-                                       NULL);
-    helpokbutton = XtVaCreateManagedWidget("helpButton",
-                                           commandWidgetClass, helpform, NULL);
-
-    for (i = 0; i < NR_OF_HELPBUTTONS; i++)
-    {
-        sprintf((char *)buttonName, "helpButton%d", i + 1);
-        helpbutton[i] = XtVaCreateManagedWidget(buttonName, commandWidgetClass,
-                                                helpform, NULL);
-    }
-
-    XtFree(phelpstring);
-
-    // define some button callbacks:
-    XtAddCallback(helpokbutton,  XtNcallback, popdownHelpCallback,
-                  (XtPointer)this);
-
-    for (i = 0; i < NR_OF_HELPBUTTONS; i++)
-        XtAddCallback(helpbutton[i], XtNcallback,
-                      displayManPageCallback, (XtPointer)this);
-
-    XtRealizeWidget(helpframe);
-    XSetWMProtocols(getDisplay(), XtWindow(helpframe), &wm_delete_window, 1);
-} // create_help_view
-
-void XtGui::display_man_page(Widget w)
-{
-    String plabel, phelpstring;
-    char label[16];
-
-    // the label of the button is the name of the man-page
-    // so it can simply be changed by editing the resource file
-
-    XtVaGetValues(w, XtNlabel, &plabel, NULL);
-    strcpy((char *)&label, plabel);
-    label[0] = tolower(label[0]); // lower first character
-    phelpstring = get_man_page(label);
-    XtVaSetValues(helptext, XtNstring, (XtArgVal)phelpstring, NULL);
-    XtFree(phelpstring);
-} // display_man_page
-
 
 #ifdef HAVE_XPM
 void XtGui::create_author_dialog(Widget parent)

@@ -154,28 +154,6 @@ Flexemu*aboutButton.label:		Ok
 Flexemu*aboutButton.resize:		false
 Flexemu*moreButton.label:		Author
 Flexemu*moreButton.resize:		false
-! Help Dialog
-Flexemu*helpForm*Command*fromHoriz:	helpText
-Flexemu*helpText.width:			415
-Flexemu*helpText.height:		300
-Flexemu*helpButton1.fromVert:		helpButton
-Flexemu*helpButton2.fromVert:		helpButton1
-Flexemu*helpButton3.fromVert:		helpButton2
-Flexemu*helpButton4.fromVert:		helpButton3
-Flexemu*helpButton5.fromVert:		helpButton4
-Flexemu*helpButton6.fromVert:		helpButton5
-Flexemu*helpButton7.fromVert:		helpButton6
-Flexemu*helpButton8.fromVert:		helpButton7
-Flexemu*helpButton9.fromVert:		helpButton8
-Flexemu*helpButton1.label:		Flexemu
-Flexemu*helpButton2.label:		Flexdos
-Flexemu*helpButton3.label:		Flexfms
-Flexemu*helpButton4.label:		Flexfcb
-Flexemu*helpButton5.label:		Flexuser
-Flexemu*helpButton6.label:		Flexmem
-Flexemu*helpButton7.label:		Flexerr
-Flexemu*helpButton8.label:		Flexutil
-Flexemu*helpButton9.label:		Flexfs
 ! Message Dialog
 Flexemu*message.title:			Warning
 Flexemu*messageText*displayCaret:	false

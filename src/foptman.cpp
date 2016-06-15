@@ -170,7 +170,7 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->nColors       = 2;
     pGuiOptions->inverse       = 0;
 #ifdef UNIX
-    pGuiOptions->www_browser   = "firefox";
+    pGuiOptions->html_viewer   = "firefox";
 #endif
 #ifdef UNIX
     pGuiOptions->doc_dir       = F_DATADIR;
@@ -214,9 +214,9 @@ void FlexOptionManager::GetEnvironmentOptions(
         pOptions->use_undocumented = (value != 0);
     }
 
-    if (env.GetValue((const char *)"FLEX" FLEXWWWBROWSER, str))
+    if (env.GetValue((const char *)"FLEX" FLEXHTMLVIEWER, str))
     {
-        pGuiOptions->www_browser = str;
+        pGuiOptions->html_viewer = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDOCDIR, str))
@@ -475,7 +475,7 @@ void FlexOptionManager::WriteOptions(
     rcFile->SetValue(FLEXSCREENWIDTH, pGuiOptions->guiXSize);
     rcFile->SetValue(FLEXSCREENHEIGHT, pGuiOptions->guiYSize);
     rcFile->SetValue(FLEXMONITOR, pOptions->hex_file);
-    rcFile->SetValue(FLEXWWWBROWSER, pGuiOptions->www_browser);
+    rcFile->SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
     rcFile->SetValue(FLEXDISKDIR, pOptions->disk_dir);
     rcFile->SetValue(FLEXDISK0, pOptions->drive[0]);
     rcFile->SetValue(FLEXDISK1, pOptions->drive[1]);
@@ -577,7 +577,7 @@ void FlexOptionManager::GetOptions(
     rcFile->GetValue(FLEXDISK1, pOptions->drive[1]);
     rcFile->GetValue(FLEXDISK2, pOptions->drive[2]);
     rcFile->GetValue(FLEXDISK3, pOptions->drive[3]);
-    rcFile->GetValue(FLEXWWWBROWSER, pGuiOptions->www_browser);
+    rcFile->GetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
     rcFile->GetValue(FLEXMONITOR, pOptions->hex_file);
     rcFile->GetValue(FLEXCOLOR, pGuiOptions->color);
     rcFile->GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
