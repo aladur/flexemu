@@ -983,14 +983,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
             lt = localtime(&(sbuf.st_mtime));
             name[0] = '\0';
             ext[0]  = '\0';
-            pName = dir->chars() + strlen(*dir) - 1;
+            pName = dir->c_str() + strlen(*dir) - 1;
 
             if (*pName == PATHSEPARATOR)
             {
                 pName--;
             }
 
-            while (pName != dir->chars() && *pName != PATHSEPARATOR)
+            while (pName != dir->c_str() && *pName != PATHSEPARATOR)
             {
                 pName--;
             }

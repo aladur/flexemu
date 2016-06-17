@@ -96,7 +96,7 @@ BString::BString(const char *s, int maxlen) : str(NULL), sz(0)
 
 BString::BString(const BString &s, int maxlen) : str(NULL), sz(0)
 {
-    init(s.chars(), maxlen);
+    init(s.c_str(), maxlen);
 }
 
 BString::~BString(void)
@@ -156,7 +156,7 @@ int BString::index(const char *s, int startpos) const
     int i1, i2, l1, l2;
     const char *p1, *p2;
 
-    p1 = chars();
+    p1 = c_str();
     p2 = s;
     l1 = strlen(p1);
     l2 = strlen(p2);

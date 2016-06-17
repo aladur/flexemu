@@ -90,49 +90,49 @@ int main(int argc, char **argv)
         delete s1;
         p = cs;
         p = s3;
-        p = s3.chars();
-        p = s4.chars();
+        p = s3.c_str();
+        p = s4.c_str();
         s = new BString();
-        p = s->chars();
+        p = s->c_str();
         delete s;
         s1 = new BString('a');
         i = s1->length();
         i = s1->allocation();
         i = s1->firstchar();
         i = s1->lastchar();
-        p = s1->chars();
+        p = s1->c_str();
         delete s1;
         s2 = new BString("1234567890abcde");
         i = s2->length();
         i = s2->allocation();
         i = s2->firstchar();
         i = s2->lastchar();
-        p = s2->chars();
+        p = s2->c_str();
         s2->reverse();
-        p = s2->chars();
+        p = s2->c_str();
         s2->upcase();
-        p = s2->chars();
+        p = s2->c_str();
         s2->downcase();
-        p = s2->chars();
+        p = s2->c_str();
         delete s2;
         s4 = "xxx";
-        p = s4.chars();
+        p = s4.c_str();
         s3 = s4;
-        p = s3.chars();
+        p = s3.c_str();
         s3 += "abc";
-        p = s3.chars();
+        p = s3.c_str();
         s3 += "cde";
-        p = s3.chars();
+        p = s3.c_str();
         i = s3.allocation();
-        p = s3.chars();
+        p = s3.c_str();
         s3.at(3, 5, s4);
-        p = s4.chars();
+        p = s4.c_str();
         s3.at(9, 5, s4);
-        p = s4.chars();
+        p = s4.c_str();
         s3.at(8, 2, s4);
-        p = s4.chars();
+        p = s4.c_str();
         cat("aber", " nicht doch", s4);
-        p = s4.chars();
+        p = s4.c_str();
         de = FlexDirEntry();
         de.setTotalFileName("file.ext");
         s4 = BString("abc");
@@ -358,9 +358,9 @@ void flexContainerTest(const BString &testPath,
 
                 if (fp != NULL)
                     fprintf(fp, "%12.12s %6d %.12s %.4s\n",
-                            de.getTotalFileName().chars(), de.getSize(),
+                            de.getTotalFileName().c_str(), de.getSize(),
                             de.getDate().getDateString(),
-                            de.getAttributesString().chars());
+                            de.getAttributesString().c_str());
 
                 ;
             }
@@ -417,7 +417,7 @@ void flexContainerTest(const BString &testPath,
 
             while (l[i] != NULL)
             {
-                // fprintf(stderr, "%s\n", l[i]->getTotalFileName().chars());
+                // fprintf(stderr, "%s\n", l[i]->getTotalFileName().c_str());
                 srcDsk->FileCopy(l[i]->getTotalFileName(),
                                  l[i]->getTotalFileName(), *destDsk);
                 delete l[i];

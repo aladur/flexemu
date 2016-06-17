@@ -48,7 +48,7 @@ public:
 
     unsigned int length(void) const;
     bool          empty(void) const;
-    const char   *chars(void) const;
+    const char   *c_str(void) const;
     int          allocation(void) const;
 
     void cat(const char *s1, const char *s2, BString &s3);
@@ -134,10 +134,12 @@ inline bool BString::empty(void) const
 {
     return str[0] == '\0';
 }
-inline const char *BString::chars(void) const
+
+inline const char *BString::c_str(void) const
 {
     return &str[0];
 }
+
 inline int BString::allocation(void) const
 {
     return sz;
@@ -145,15 +147,15 @@ inline int BString::allocation(void) const
 
 inline void cat(BString &s1, BString &s2, BString &s3)
 {
-    FScat(s1.chars(), s2.chars(), s3);
+    FScat(s1.c_str(), s2.c_str(), s3);
 }
 inline void cat(const char *s1, BString &s2, BString &s3)
 {
-    FScat(s1, s2.chars(), s3);
+    FScat(s1, s2.c_str(), s3);
 }
 inline void cat(BString &s1, const char *s2, BString &s3)
 {
-    FScat(s1.chars(), s2, s3);
+    FScat(s1.c_str(), s2, s3);
 }
 inline void cat(const char *s1, const char *s2, BString &s3)
 {
@@ -162,7 +164,7 @@ inline void cat(const char *s1, const char *s2, BString &s3)
 
 inline BString &BString::operator = (const BString &s)
 {
-    alloc(s.chars());
+    alloc(s.c_str());
     return *this;
 }
 inline BString &BString::operator = (const char *_s)
@@ -181,7 +183,7 @@ inline BString &BString::operator = (const char c)
 
 inline BString &BString::operator += (const BString &s)
 {
-    FSadd(s.chars());
+    FSadd(s.c_str());
     return *this;
 }
 inline BString &BString::operator += (const char *s)
@@ -200,13 +202,13 @@ inline BString &BString::operator += (const char c)
 
 inline BString BString::operator + (const BString &s) const
 {
-    BString r(this->chars());
-    r.FSadd(s.chars());
+    BString r(this->c_str());
+    r.FSadd(s.c_str());
     return r;
 }
 inline BString BString::operator + (const char *s) const
 {
-    BString r(this->chars());
+    BString r(this->c_str());
     r.FSadd(s);
     return r;
 }
@@ -215,14 +217,14 @@ inline BString BString::operator + (const char c) const
     char s[2];
     s[0] = c;
     s[1] = '\0';
-    BString r(this->chars());
+    BString r(this->c_str());
     r.FSadd(s);
     return r;
 }
 
 inline int BString::index(const BString &_s, int startpos) const
 {
-    return index(_s.chars(), startpos);
+    return index(_s.c_str(), startpos);
 }
 inline int BString::index(const char c, int startpos) const
 {
@@ -234,7 +236,7 @@ inline int BString::index(const char c, int startpos) const
 
 inline bool BString::contains(const BString &_s) const
 {
-    return index(_s.chars()) >= 0;
+    return index(_s.c_str()) >= 0;
 }
 inline bool BString::contains(const char *_s) const
 {
@@ -250,7 +252,7 @@ inline bool BString::contains(const char c) const
 
 inline BString::operator const char *() const
 {
-    return chars();
+    return c_str();
 }
 
 #endif // #ifndef __bstring_h__

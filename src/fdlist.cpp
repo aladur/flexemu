@@ -214,7 +214,7 @@ int FlexDiskListCtrl::UpdateItems(void)
         for (it = m_container->begin(); it != m_container->end(); ++it)
         {
             FlexDirEntry *pDe = new FlexDirEntry(*it);
-            wxString m_text(pDe->GetTotalFileName().chars(),
+            wxString m_text(pDe->GetTotalFileName().c_str(),
                             *wxConvCurrent);
             anItem.m_text   = m_text;
             anItem.m_itemId = index;
@@ -257,7 +257,7 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &de)
     SetItem(item, LC_FILESIZE, filesize);
     wxString date(de.GetDate().GetDateString(), *wxConvCurrent);
     SetItem(item, LC_FILEDATE, date);
-    wxString attributes(de.GetAttributesString().chars(), *wxConvCurrent);
+    wxString attributes(de.GetAttributesString().c_str(), *wxConvCurrent);
     SetItem(item, LC_FILEATTR, attributes);
     SetItem(item, LC_FILEDESC, GetFileDescription(&de));
 }
