@@ -120,7 +120,7 @@ bool startup(
     PMEMORY->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
     (*io)->set_pia2((Mc6821 *)device);
     E2floppy *fdc     = new E2floppy();
-    fdc->disk_directory(pOptions->disk_dir);
+    fdc->disk_directory(pOptions->disk_dir.c_str());
     fdc->mount_all_drives(pOptions->drive);
     PMEMORY->add_io_device(fdc, FDCA_BASE, FDCA_MASK,
                            FDCB_BASE, FDCB_MASK);
@@ -144,7 +144,7 @@ bool startup(
     PMEMORY->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
     (*io)->set_rtc((Mc146818 *)device);
 
-    if (!PMEMORY->load_hexfile(pOptions->hex_file, true))   // &&
+    if (!PMEMORY->load_hexfile(pOptions->hex_file.c_str(), true))   // &&
     {
         //pOptions->hex_file.index(PATHSEPARATOR) < 0) {
         BString hexFilePath;
@@ -152,7 +152,7 @@ bool startup(
         hexFilePath = pOptions->disk_dir + PATHSEPARATORSTRING +
                       pOptions->hex_file;
 
-        if (!PMEMORY->load_hexfile(hexFilePath))
+        if (!PMEMORY->load_hexfile(hexFilePath.c_str()))
         {
             return false;
         }

@@ -189,10 +189,10 @@ void XtGui::initialize_xrad_file()
         adFileName += PATHSEPARATORSTRING PROGRAMNAME;
         defaultAdFileName = F_DATADIR PATHSEPARATORSTRING PROGRAMNAME ".ad";
 
-        if (access(adFileName, F_OK) == -1)
+        if (access(adFileName.c_str(), F_OK) == -1)
         {
-            BFilePtr ifp(defaultAdFileName, "r");
-            BFilePtr ofp(adFileName, "w");
+            BFilePtr ifp(defaultAdFileName.c_str(), "r");
+            BFilePtr ofp(adFileName.c_str(), "w");
 
             if ((ifp != NULL) && (ofp != NULL))
             {
@@ -666,7 +666,7 @@ void XtGui::popup_disk_info(Widget w)
         if (w == floppybutton[i])
         {
             message = io->get_drive_info(i);
-            popup_message(message, PROGRAMNAME " Disc status",
+            popup_message(message.c_str(), PROGRAMNAME " Disc status",
                           480, 160);
             return;
         }
@@ -691,7 +691,7 @@ void XtGui::popup_interrupt_info(Widget)
     message += line;
     line.printf("RESET: %u\n", s.count[INT_RESET]);
     message += line;
-    popup_message(message, PROGRAMNAME " Interrupt status", 480, 160);
+    popup_message(message.c_str(), PROGRAMNAME " Interrupt status", 480, 160);
 }
 
 void XtGui::toggle_frequency(void)
@@ -1163,7 +1163,7 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     create_cpuview(w);
     create_bp_dialog(w);
     create_logfile_dialog(w);
-    initialize_after_create(w, pOptions->inverse, pOptions->color);
+    initialize_after_create(w, pOptions->inverse, pOptions->color.c_str());
     manage_widget(w);
     initialize_after_open(w, get_title());
     e2toplevel = w;

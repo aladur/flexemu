@@ -246,7 +246,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
     }
 
     path += name;
-    return new FlexFileContainer(path, "rb+");
+    return new FlexFileContainer(path.c_str(), "rb+");
 }
 
 // return true if file found
@@ -736,10 +736,11 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 records = (entry.GetSize() / param.byte_p_sector) +
                           (entry.IsRandom() ? 2 : 0);
                 memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
-                strncpy(pde->filename, entry.GetFileName(),
+                strncpy(pde->filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
                 memset(pde->file_ext, 0, FLEX_FILEEXT_LENGTH);
-                strncpy(pde->file_ext, entry.GetFileExt(), FLEX_FILEEXT_LENGTH);
+                strncpy(pde->file_ext, entry.GetFileExt().c_str(),
+                        FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
                 pde->reserved1 = 0;
                 entry.GetStartTrkSec(&tmp1, &tmp2);
@@ -910,7 +911,7 @@ void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
         sec_buf[i] = 0;
     }
 
-    BFilePtr boot(bootSectorFile, "rb");
+    BFilePtr boot(bootSectorFile.c_str(), "rb");
 
     if (boot != NULL)
     {

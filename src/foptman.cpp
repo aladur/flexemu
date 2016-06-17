@@ -186,7 +186,8 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->guiYSize      = 2;
     pGuiOptions->synchronized  = 0;
     // automatic SERPAR switch only if Eurocom II Monitorprogram loaded
-    pGuiOptions->switch_sp = !strcmp(pOptions->hex_file, "neumon54.hex");
+    pGuiOptions->switch_sp = !strcmp(pOptions->hex_file.c_str(),
+                                     "neumon54.hex");
 } // InitOptions
 
 void FlexOptionManager::GetEnvironmentOptions(
@@ -461,26 +462,26 @@ void FlexOptionManager::WriteOptions(
 
     rcFileName += PATHSEPARATORSTRING FLEXEMURC;
 
-    if (ifNotExists && access(rcFileName, F_OK) == 0)
+    if (ifNotExists && access(rcFileName.c_str(), F_OK) == 0)
     {
         return;
     }
 
-    rcFile = new BRcFile(rcFileName);
+    rcFile = new BRcFile(rcFileName.c_str());
     rcFile->Initialize(); // truncate file
     rcFile->SetValue(FLEXINVERSE, pGuiOptions->inverse ? 1 : 0);
-    rcFile->SetValue(FLEXCOLOR, pGuiOptions->color);
+    rcFile->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     rcFile->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    rcFile->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
+    rcFile->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
     rcFile->SetValue(FLEXSCREENWIDTH, pGuiOptions->guiXSize);
     rcFile->SetValue(FLEXSCREENHEIGHT, pGuiOptions->guiYSize);
-    rcFile->SetValue(FLEXMONITOR, pOptions->hex_file);
-    rcFile->SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
-    rcFile->SetValue(FLEXDISKDIR, pOptions->disk_dir);
-    rcFile->SetValue(FLEXDISK0, pOptions->drive[0]);
-    rcFile->SetValue(FLEXDISK1, pOptions->drive[1]);
-    rcFile->SetValue(FLEXDISK2, pOptions->drive[2]);
-    rcFile->SetValue(FLEXDISK3, pOptions->drive[3]);
+    rcFile->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
+    rcFile->SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer.c_str());
+    rcFile->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
+    rcFile->SetValue(FLEXDISK0, pOptions->drive[0].c_str());
+    rcFile->SetValue(FLEXDISK1, pOptions->drive[1].c_str());
+    rcFile->SetValue(FLEXDISK2, pOptions->drive[2].c_str());
+    rcFile->SetValue(FLEXDISK3, pOptions->drive[3].c_str());
     rcFile->SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     rcFile->SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     delete rcFile;
@@ -571,7 +572,7 @@ void FlexOptionManager::GetOptions(
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXEMURC;
-    rcFile = new BRcFile(rcFileName);
+    rcFile = new BRcFile(rcFileName.c_str());
     rcFile->GetValue(FLEXDISKDIR, pOptions->disk_dir);
     rcFile->GetValue(FLEXDISK0, pOptions->drive[0]);
     rcFile->GetValue(FLEXDISK1, pOptions->drive[1]);

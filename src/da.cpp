@@ -105,7 +105,7 @@ int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
         if (flags | DA_LABEL_ADDR)
         {
             label.printf("L%0.4X", addr);
-            identifier.SetTo(addr, (const char *)label);
+            identifier.SetTo(addr, label.c_str());
             aConfig.AddLabel(identifier);
         }
 

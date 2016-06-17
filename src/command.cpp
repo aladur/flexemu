@@ -280,7 +280,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         }
 
                         answer = new char[str.length() + 1];
-                        strcpy(answer, str);
+                        strcpy(answer, str.c_str());
                         answer_index = 0;
                         return;
                     }
@@ -333,7 +333,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                         str = fdc->drive_info(number);
                         answer = new char[str.length() + 1];
-                        strcpy(answer, str);
+                        strcpy(answer, str.c_str());
                         answer_index = 0;
                         return;
                     }

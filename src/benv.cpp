@@ -39,11 +39,11 @@ bool BEnvironment::RemoveKey(const char *key)
 
     upperKey.upcase();
 #ifdef WIN32
-    SetEnvironmentVariable((const char *)upperKey, NULL);
+    SetEnvironmentVariable(upperKey.c_str(), NULL);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_UNSETENV==1)
-    unsetenv(upperKey);
+    unsetenv(upperKey.c_str());
 #endif
 #endif
     return true;
@@ -59,7 +59,7 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(upperKey, value, 1) == 0);
+    return (setenv(upperKey.c_str(), value, 1) == 0);
 #else
     return false;
 #endif
@@ -78,7 +78,7 @@ bool BEnvironment::SetValue(const char *key, int value)
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(upperKey, str, 1) == 0);
+    return (setenv(upperKey.c_str(), str, 1) == 0);
 #else
     return false;
 #endif
@@ -125,7 +125,7 @@ bool BEnvironment::GetValue(const char *key, BString &value)
 #endif
 #ifdef UNIX
 
-    if ((p = getenv(upperKey)))
+    if ((p = getenv(upperKey.c_str())))
     {
         value = p;
         ret = true;
@@ -142,11 +142,11 @@ bool BEnvironment::GetValue(const char *key, int *pValue)
 
     upperKey.upcase();
 
-    if (!GetValue(upperKey, str))
+    if (!GetValue(upperKey.c_str(), str))
     {
         return false;
     }
 
-    return (sscanf(str, "%i", pValue) == 1);
+    return (sscanf(str.c_str(), "%i", pValue) == 1);
 }
 

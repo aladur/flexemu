@@ -141,7 +141,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         {
             try
             {
-                pfloppy = new NafsDirectoryContainer(containerPath);
+                pfloppy = new NafsDirectoryContainer(containerPath.c_str());
             }
             catch (FlexException &)
             {
@@ -154,13 +154,15 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             {
                 try
                 {
-                    pfloppy = new FlexRamFileContainer(containerPath, "rb+");
+                    pfloppy = new FlexRamFileContainer(containerPath.c_str(),
+                                                       "rb+");
                 }
                 catch (FlexException &)
                 {
                     try
                     {
-                        pfloppy = new FlexRamFileContainer(containerPath, "rb");
+                        pfloppy = new FlexRamFileContainer(
+                                                   containerPath.c_str(), "rb");
                     }
                     catch (FlexException &)
                     {
@@ -172,13 +174,15 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             {
                 try
                 {
-                    pfloppy = new FlexFileContainer(containerPath, "rb+");
+                    pfloppy = new FlexFileContainer(containerPath.c_str(),
+                                                    "rb+");
                 }
                 catch (FlexException &)
                 {
                     try
                     {
-                        pfloppy = new FlexFileContainer(containerPath, "rb");
+                        pfloppy = new FlexFileContainer(containerPath.c_str(),
+                                                        "rb");
                     }
                     catch (FlexException &)
                     {
@@ -224,7 +228,7 @@ void E2floppy::mount_all_drives(BString drive[])
 
     for (i = 0; i < 4; i++)
     {
-        mount_drive(drive[i], i);
+        mount_drive(drive[i].c_str(), i);
     }
 
     selected = 4;           // deselect all drives

@@ -88,7 +88,7 @@ BString FlexDirEntry::GetFileName(void) const
 {
     BString name(fileName);
 
-    if (strchr(fileName, '.') == NULL)
+    if (strchr(fileName.c_str(), '.') == NULL)
     {
         return name;
     }
@@ -103,7 +103,7 @@ BString FlexDirEntry::GetFileExt(void) const
     const char *p;
     BString ext;
 
-    p = strchr(fileName, '.');
+    p = strchr(fileName.c_str(), '.');
 
     if (p != NULL)
     {

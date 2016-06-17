@@ -191,26 +191,26 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
 
     if (c_monitor)
     {
-        wxString hex_file(m_options->hex_file, *wxConvCurrent);
+        wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
         c_monitor->SetValue(hex_file);
     }
 
     if (c_htmlViewer)
     {
-        wxString html_viewer(m_guiOptions->html_viewer, *wxConvCurrent);
+        wxString html_viewer(m_guiOptions->html_viewer.c_str(), *wxConvCurrent);
         c_htmlViewer->SetValue(html_viewer);
     }
 
     if (c_diskDir)
     {
-        wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+        wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
         c_diskDir->SetValue(disk_dir);
     }
 
     for (x = 0; x <= 3; x++)
         if (c_drive[x])
         {
-            wxString driveName(m_options->drive[x], *wxConvCurrent);
+            wxString driveName(m_options->drive[x].c_str(), *wxConvCurrent);
             c_drive[x]->SetValue(driveName);
         }
 
@@ -669,7 +669,7 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
             c_diskDir->GetValue().mb_str(*wxConvCurrent);
     };
 
-    wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+    wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
 
     dialog = new wxDirDialog(this, _("Select folder with DSK files"),
                              disk_dir);
@@ -680,7 +680,7 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 
         if (c_diskDir)
         {
-            wxString disk_dir(m_options->disk_dir, *wxConvCurrent);
+            wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
             c_diskDir->SetValue(disk_dir);
         }
     }

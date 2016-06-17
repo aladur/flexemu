@@ -571,7 +571,7 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
 
             try
             {
-                m_container->ReadToBuffer(fileName, *pFileBuffer);
+                m_container->ReadToBuffer(fileName.c_str(), *pFileBuffer);
                 files.Add(pFileBuffer);
             }
             catch (FlexException &ex)
@@ -801,11 +801,11 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         caption.Printf(_("Container %s"), info.GetName());
         info.GetTrackSector(&t, &s);
         str.Append(_("Path: "));
-        wxString path(info.GetPath(), *wxConvCurrent);
+        wxString path(info.GetPath().c_str(), *wxConvCurrent);
         str += path;
         str += wxT("\n");
         str.Append(_("Type: "));
-        wxString type(info.GetTypeString(), *wxConvCurrent);
+        wxString type(info.GetTypeString().c_str(), *wxConvCurrent);
         type = wxGetTranslation(type);
         str += type;
         str += wxT("\n");
@@ -965,7 +965,7 @@ void FlexDiskListCtrl::FindFiles(void)
     {
         value = dialog.GetValue();
         BString filePattern(value.mb_str(*wxConvCurrent));
-        FileContainerIterator it(filePattern);
+        FileContainerIterator it(filePattern.c_str());
         BString bFileName;
 
         DeselectAllFiles();
@@ -975,9 +975,9 @@ void FlexDiskListCtrl::FindFiles(void)
             int i;
 
             bFileName = (*it).GetTotalFileName();
-            wxString fileName(bFileName, *wxConvCurrent);
+            wxString fileName(bFileName.c_str(), *wxConvCurrent);
 
-            if (bFileName.multimatches(filePattern, ';', true) &&
+            if (bFileName.multimatches(filePattern.c_str(), ';', true) &&
                 (i = FindItem(-1, fileName)) >= 0)
             {
                 SetItemState(i, wxLIST_STATE_SELECTED,
@@ -1013,7 +1013,7 @@ void FlexDiskListCtrl::CopyToClipboard(void)
 
         try
         {
-            m_container->ReadToBuffer(fileName, *pFileBuffer);
+            m_container->ReadToBuffer(fileName.c_str(), *pFileBuffer);
             files.Add(pFileBuffer);
             count++;
         }
@@ -1098,7 +1098,7 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
             {
                 wxListItem anItem;
 
-                wxString m_text(pDe->GetTotalFileName(),
+                wxString m_text(pDe->GetTotalFileName().c_str(),
                                 *wxConvCurrent);
                 anItem.m_text   = m_text;
                 anItem.m_itemId = 0;
@@ -1135,7 +1135,7 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry *pDe)
     wxChar          **pFDesc;
 
     pFDesc = (wxChar **)fileDescription;
-    wxString extension(pDe->GetFileExt(), *wxConvCurrent);
+    wxString extension(pDe->GetFileExt().c_str(), *wxConvCurrent);
 
     while (*pFDesc != NULL)
     {

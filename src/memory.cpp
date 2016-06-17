@@ -510,12 +510,12 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
 
             pmsg.printf("Unable to locate or read \"%s\"\n", filename);
 #ifdef WIN32
-            MessageBox(NULL, (const char *)pmsg,
+            MessageBox(NULL, pmsg.c_str(),
                        PROGRAMNAME " error",
                        MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-            fprintf(stderr, "%s", (const char *)pmsg);
+            fprintf(stderr, "%s", pmsg.c_str());
 #endif
         }
 
@@ -539,11 +539,11 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
 
         pmsg.printf("File \"%s\" has unknown fileformat\n", filename);
 #ifdef WIN32
-        MessageBox(NULL, (const char *)pmsg, PROGRAMNAME " error",
+        MessageBox(NULL, pmsg.c_str(), PROGRAMNAME " error",
                    MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-        fprintf(stderr, "%s", (const char *)pmsg);
+        fprintf(stderr, "%s", pmsg.c_str());
 #endif
         return false;
     }

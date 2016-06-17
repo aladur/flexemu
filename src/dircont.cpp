@@ -129,22 +129,22 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
 
     aPath += name;
 
-    if (!stat(aPath, &sbuf) && S_ISREG(sbuf.st_mode))
+    if (!stat(aPath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
     {
         // if a file exists with this name delete it
-        remove(aPath);
+        remove(aPath.c_str());
     }
 
-    if (stat(aPath, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(aPath.c_str(), &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
         // directory does not exist
         if (!BDirectory::Create(aPath, 0755))
         {
-            throw FlexException(FERR_UNABLE_TO_CREATE, aPath);
+            throw FlexException(FERR_UNABLE_TO_CREATE, aPath.c_str());
         }
     }
 
-    return new DirectoryContainer(aPath);
+    return new DirectoryContainer(aPath.c_str());
 }
 
 BString DirectoryContainer::GetPath() const
@@ -267,7 +267,8 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 
     if (it == this->end())
     {
-        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, GetPath());
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName,
+                            GetPath().c_str());
     }
     else
     {
@@ -330,16 +331,16 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     struct statvfs fsbuf;
 #endif
 
-    if (statvfs(*path, &fsbuf))
+    if (statvfs(path->c_str(), &fsbuf))
     {
-        throw FlexException(FERR_READING_DISKSPACE, *path);
+        throw FlexException(FERR_READING_DISKSPACE, path->c_str());
     }
 
     info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree / 1024);
     info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks / 1024);
 #endif
 
-    if (stat(*path, &sbuf) >= 0)
+    if (stat(path->c_str(), &sbuf) >= 0)
     {
         struct tm *timeStruct = localtime(&sbuf.st_mtime);
         info.SetDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
@@ -352,16 +353,16 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetTrackSector(0, 0);
 
-    if ((p = strrchr(*path, PATHSEPARATOR)) != NULL)
+    if ((p = strrchr(path->c_str(), PATHSEPARATOR)) != NULL)
     {
         info.SetName(p + 1);
     }
     else
     {
-        info.SetName(*path);
+        info.SetName(path->c_str());
     }
 
-    info.SetPath(*path);
+    info.SetPath(path->c_str());
     //info.SetType(param.type);
     info.SetType(TYPE_DIRECTORY);
     info.SetAttributes(attributes);
@@ -434,7 +435,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     filePath.downcase();
     filePath = *path + PATHSEPARATORSTRING + filePath;
 
-    if (!buffer.ReadFromFile(filePath))
+    if (!buffer.ReadFromFile(filePath.c_str()))
     {
         throw FlexException(FERR_READING_FROM, fileName);
     }
@@ -445,7 +446,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     if (attributes & FLX_READONLY)
     {
         // CDFS-Support: look for file name in file 'random'
-        if (IsRandomFile(*path, fileName))
+        if (IsRandomFile(path->c_str(), fileName))
         {
             sectorMap = 2;
         }
@@ -475,7 +476,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     buffer.SetSectorMap(sectorMap);
 
     // get date of file
-    if (stat(filePath, &sbuf) >= 0)
+    if (stat(filePath.c_str(), &sbuf) >= 0)
     {
         struct tm   *timeStruct;
 
@@ -485,7 +486,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     }
 
     // set attributes
-    int wp = access(filePath, W_OK);
+    int wp = access(filePath.c_str(), W_OK);
 
     if (wp)
     {
@@ -513,22 +514,22 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
     // prevent to overwrite an existing file
-    if (!stat(filePath, &sbuf) && S_ISREG(sbuf.st_mode))
+    if (!stat(filePath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
     {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName.c_str());
     }
 
-    if (!buffer.WriteToFile(filePath))
+    if (!buffer.WriteToFile(filePath.c_str()))
     {
         throw FlexException(FERR_WRITING_TO, fileName);
     }
 
-    SetDate(lowerFileName, buffer.GetDate());
-    SetAttributes(lowerFileName, buffer.GetAttributes());
+    SetDate(lowerFileName.c_str(), buffer.GetDate());
+    SetAttributes(lowerFileName.c_str(), buffer.GetAttributes());
 
     if (buffer.IsRandom())
     {
-        SetRandom(lowerFileName);
+        SetRandom(lowerFileName.c_str());
     }
 
     return true;
@@ -566,7 +567,7 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
     lowerFileName.downcase();
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
-    if (stat(filePath, &sbuf) >= 0)
+    if (stat(filePath.c_str(), &sbuf) >= 0)
     {
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec   = 0;
@@ -578,7 +579,7 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
         file_time.tm_isdst = 0;
         timebuf.modtime    = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(filePath, &timebuf) >= 0)
+        if (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0)
         {
             return true;
         }
@@ -623,16 +624,16 @@ bool    DirectoryContainer::SetAttributes(const char *fileName, int setMask,
         lowerFileName.downcase();
         filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
-        if (!stat(filePath, &sbuf))
+        if (!stat(filePath.c_str(), &sbuf))
         {
             if (clearMask & WRITE_PROTECT)
             {
-                chmod(filePath, sbuf.st_mode | S_IWUSR);
+                chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
             }
 
             if (setMask & WRITE_PROTECT)
             {
-                chmod(filePath, sbuf.st_mode & ~S_IWUSR);
+                chmod(filePath.c_str(), sbuf.st_mode & ~S_IWUSR);
             }
         }
 
@@ -661,9 +662,9 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
     lowerFileName.downcase();
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
-    if (!stat(filePath, &sbuf))
+    if (!stat(filePath.c_str(), &sbuf))
     {
-        chmod(filePath, sbuf.st_mode | S_IXUSR);
+        chmod(filePath.c_str(), sbuf.st_mode | S_IXUSR);
     }
 
 #endif

@@ -128,8 +128,8 @@ bool BProcess::Start()
     const char *args[3];
     struct sigaction default_action;
 
-    args[0] = executable;
-    args[1] = arguments;
+    args[0] = executable.c_str();
+    args[1] = arguments.c_str();
     args[2] = NULL;
     default_action.sa_handler = SIG_DFL;
     default_action.sa_flags   = 0;
@@ -141,7 +141,7 @@ bool BProcess::Start()
 
         if (!directory.empty())
         {
-            chdir(directory);
+            chdir(directory.c_str());
         }
 
         execvp(args[0], (char *const *)args);

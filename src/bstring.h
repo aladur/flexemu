@@ -250,10 +250,10 @@ inline bool BString::contains(const char c) const
     return index(_s) >= 0;
 }
 
-inline BString::operator const char *() const
+/*inline BString::operator const char *() const
 {
     return c_str();
-}
+}*/
 
 #endif // #ifndef __bstring_h__
 

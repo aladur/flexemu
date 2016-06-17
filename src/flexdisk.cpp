@@ -111,12 +111,12 @@ void FLEXplorer::WriteDefaultOptions(void)
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-    rcFile = new BRcFile(rcFileName);
+    rcFile = new BRcFile(rcFileName.c_str());
     rcFile->Initialize(); // truncate file
     rcFile->SetValue(FLEXPLORERFILEVIEWER,
                      FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
     rcFile->SetValue(FLEXPLORERBOOTSECTORFILE,
-                     FlexFileContainer::bootSectorFile);
+                     FlexFileContainer::bootSectorFile.c_str());
     rcFile->SetValue(FLEXPLORERTEXTFLAG,
                      FlexCopyManager::autoTextConversion ? 1 : 0);
     delete rcFile;
@@ -155,17 +155,17 @@ void FLEXplorer::ReadDefaultOptions(void)
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-    rcFile = new BRcFile(rcFileName);
+    rcFile = new BRcFile(rcFileName.c_str());
 
     if (!rcFile->GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
     {
-        wxString fileViewer(str, *wxConvCurrent);
+        wxString fileViewer(str.c_str(), *wxConvCurrent);
         FlexDiskListCtrl::fileViewer = fileViewer;
     }
 
     if (!rcFile->GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
     {
-        FlexFileContainer::bootSectorFile = (const char *)str;
+        FlexFileContainer::bootSectorFile = str;
     }
 
     if (!rcFile->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))

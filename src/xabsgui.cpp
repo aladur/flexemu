@@ -1091,12 +1091,12 @@ int XAbstractGui::popup_help(void)
     const char *args[3];
 
     // if no environment variable for browser return with error
-    if (strlen(pOptions->html_viewer) == 0)
+    if (pOptions->html_viewer.empty())
     {
         return -1;
     }
 
-    strcpy(helpfile, pOptions->doc_dir);
+    strcpy(helpfile, pOptions->doc_dir.c_str());
 
     if (helpfile[strlen(helpfile) - 1] != '/')
     {
@@ -1104,7 +1104,7 @@ int XAbstractGui::popup_help(void)
     }
 
     strcat(helpfile, "flexemu.htm");
-    args[0] = pOptions->html_viewer;
+    args[0] = pOptions->html_viewer.c_str();
     args[1] = helpfile;
     args[2] = NULL;
 
@@ -1272,7 +1272,8 @@ int XAbstractGui::SetColors(Display *dpy)
         }
     }
 
-    if (!XcmsLookupColor(dpy, cmap, color, &xcolor, &exact, XcmsRGBiFormat))
+    if (!XcmsLookupColor(dpy, cmap, color.c_str(), &xcolor, &exact,
+                         XcmsRGBiFormat))
     {
         exact.spec.RGBi.blue  = 1.0;
         exact.spec.RGBi.red   = 1.0;

@@ -523,7 +523,7 @@ void FlexParentFrame::OnOptions(wxCommandEvent &WXUNUSED(event))
     bool autoTextFlag;
 
     viewer = FlexDiskListCtrl::fileViewer;
-    wxString bootFile((const char *)FlexFileContainer::bootSectorFile,
+    wxString bootFile(FlexFileContainer::bootSectorFile.c_str(),
                       *wxConvCurrent);
     autoTextFlag = FlexCopyManager::autoTextConversion;
 

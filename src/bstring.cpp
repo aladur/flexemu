@@ -393,7 +393,7 @@ bool BString::multimatches(const char *multipattern,
 
         BString *pattern = new BString(&multipattern[begin], pos - begin);
 
-        if (matches(*pattern, ignorecase))
+        if (matches(pattern->c_str(), ignorecase))
         {
             delete pattern;
             return true;

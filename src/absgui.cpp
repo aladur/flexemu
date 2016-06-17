@@ -82,7 +82,7 @@ void AbstractGui::initialize(struct sGuiOptions *pOptions)
         guiXSize    = pOptions->guiXSize;
         guiYSize    = pOptions->guiYSize;
         nColors     = pOptions->nColors;
-        use_colors  = !stricmp(pOptions->color, "default");
+        use_colors  = !stricmp(pOptions->color.c_str(), "default");
         color       = pOptions->color;
     }
 

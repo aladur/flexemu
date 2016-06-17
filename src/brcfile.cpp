@@ -46,7 +46,7 @@ void BRcFile::SetFileName(const char *aFileName)
 int BRcFile::SetValue(const char *key, const char *value)
 {
     size_t res;
-    BFilePtr fp(fileName, "a");
+    BFilePtr fp(fileName.c_str(), "a");
 
     if (fp == NULL)
     {
@@ -67,7 +67,7 @@ int BRcFile::SetValue(const char *key, int value)
 {
     size_t res;
     BString str;
-    BFilePtr fp(fileName, "a");
+    BFilePtr fp(fileName.c_str(), "a");
 
     if (fp == NULL)
     {
@@ -88,7 +88,7 @@ int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
 {
     char def[256];
     char strparm[PATH_MAX];
-    BFilePtr fp(fileName, "r");
+    BFilePtr fp(fileName.c_str(), "r");
 
     if (isInteger)
     {
@@ -139,7 +139,7 @@ int BRcFile::GetValue(const char *key, int *pValue)
         return BRC_NO_INTEGER;
     }
 
-    if (sscanf(str, "%i", pValue) != 1)
+    if (sscanf(str.c_str(), "%i", pValue) != 1)
     {
         return BRC_NO_INTEGER;    // returned value is no integer
     }
@@ -149,7 +149,7 @@ int BRcFile::GetValue(const char *key, int *pValue)
 
 int BRcFile::Initialize(void)
 {
-    BFilePtr fp(fileName, "w");
+    BFilePtr fp(fileName.c_str(), "w");
 
     if (fp == NULL)
     {

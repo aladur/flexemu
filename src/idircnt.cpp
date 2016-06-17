@@ -175,7 +175,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (dirHdl == NULL)
         {
-            if ((dirHdl = opendir(str)) != NULL)
+            if ((dirHdl = opendir(str.c_str())) != NULL)
             {
                 isValid = true;
             }
@@ -188,7 +188,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
     }
     while (isValid &&
-           (stat(str + PATHSEPARATORSTRING + findData->d_name, &sbuf) ||
+           (stat((str + PATHSEPARATORSTRING + findData->d_name).c_str(),
+                 &sbuf) ||
             !base->IsFlexFilename(findData->d_name) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size <= 0 ||
@@ -206,7 +207,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         {
             // CDFS-Support: look for file name in file 'random'
             if (base->IsRandomFile(
-                    base->GetPath(), findData->d_name))
+                    base->GetPath().c_str(), findData->d_name))
             {
                 sectorMap = 2;
             }
@@ -256,14 +257,16 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
     filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
 
-    if (remove(filePath))
+    if (remove(filePath.c_str()))
     {
         if (errno == ENOENT)
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                                dirEntry.GetTotalFileName(), base->GetPath());
+                                dirEntry.GetTotalFileName().c_str(),
+                                base->GetPath().c_str());
         else
             throw FlexException(FERR_REMOVE_FILE,
-                                dirEntry.GetTotalFileName(), base->GetPath());
+                                dirEntry.GetTotalFileName().c_str(),
+                                base->GetPath().c_str());
     }
 
 #endif
@@ -312,7 +315,7 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
 #endif
 
     // prevent overwriting of an existing file
-    if (base->FindFile(d, de))
+    if (base->FindFile(d.c_str(), de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
@@ -325,7 +328,7 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
     s = base->GetPath() + PATHSEPARATORSTRING + s;
     d = base->GetPath() + PATHSEPARATORSTRING + d;
 
-    if (rename(s, d))
+    if (rename(s.c_str(), d.c_str()))
     {
         // Unfinished
         if (errno == EEXIST)
@@ -334,10 +337,12 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         }
         else if (errno == EACCES)
             throw FlexException(FERR_RENAME_FILE,
-                                dirEntry.GetTotalFileName(), base->GetPath());
+                                dirEntry.GetTotalFileName().c_str(),
+                                base->GetPath().c_str());
         else if (errno == ENOENT)
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                                dirEntry.GetTotalFileName(), base->GetPath());
+                                dirEntry.GetTotalFileName().c_str(),
+                                base->GetPath().c_str());
     }
 
     return true;
@@ -362,7 +367,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
     filePath.downcase();
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
-    if (stat(filePath, &sbuf) >= 0)
+    if (stat(filePath.c_str(), &sbuf) >= 0)
     {
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec   = 0;
@@ -374,7 +379,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
         file_time.tm_isdst = 0;
         timebuf.modtime    = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(filePath, &timebuf) >= 0)
+        if (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0)
         {
             return true;
         }
@@ -422,15 +427,15 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
     filePath.downcase();
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
-    if (!stat(filePath, &sbuf))
+    if (!stat(filePath.c_str(), &sbuf))
     {
         if (attributes & WRITE_PROTECT)
         {
-            chmod(filePath, sbuf.st_mode | S_IWUSR);
+            chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
         }
         else
         {
-            chmod(filePath, sbuf.st_mode & ~S_IWUSR);
+            chmod(filePath.c_str(), sbuf.st_mode & ~S_IWUSR);
         }
     }
 
