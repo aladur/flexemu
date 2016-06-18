@@ -35,6 +35,7 @@
 #endif
 #include "typedefs.h"
 #include "bstring.h"
+#include <string>
 
 /* Uncomment the following if You want native file system support */
 
@@ -345,4 +346,10 @@ struct sOptions
     #endif
 #endif /* ifdef __cplusplus */
 
+extern bool matches(const char *text, const char *pattern,
+             bool ignorecase /* = false */);
+extern bool multimatches(const char *text, const char *multipattern,
+                  const char delimiter /* = ';'*/,
+                  bool ignorecase /* = false */);
+extern bool comparenocase(const std::string &str1, const std::string &str2);
 #endif /* __misc1.h__ */

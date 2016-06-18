@@ -49,7 +49,7 @@ public:
     unsigned int length(void) const;
     bool          empty(void) const;
     const char   *c_str(void) const;
-    int          allocation(void) const;
+    int          capacity(void) const;
 
     void cat(const char *s1, const char *s2, BString &s3);
     void cat(BString &s1, BString &s2, BString &s3);
@@ -63,8 +63,6 @@ public:
     BString &operator = (const char *s);
     BString &operator = (const char c);
 
-    BString &operator += (const int i);
-    BString &operator += (const unsigned int ui);
     BString &operator += (const BString &s);
     BString &operator += (const char *s);
     BString &operator += (const char c);
@@ -73,21 +71,9 @@ public:
     BString operator + (const char *s) const;
     BString operator + (const char c) const;
 
-    bool contains(const BString &s) const;
-    bool contains(const char *s) const;
-    bool contains(const char c) const;
-
-    int index(const BString &s, int startpos = 0) const;
-    int index(const char *s, int startpos = 0) const;
-    int index(const char c, int startpos = 0) const;
-
-    BString beforeLast(const char c) const;
-    BString afterLast(const char c) const;
+    char const &operator [] (unsigned int pos) const;
 
     void at(unsigned int pos, int len, BString &s);
-
-    int comparenocase(const BString &s);
-    void replaceall(const char oldC, const char newC);
 
     bool operator < (const BString &s) const;
     bool operator <= (const BString &s) const;
@@ -99,23 +85,8 @@ public:
     bool operator == (const char *s)    const;
     bool operator != (const char *s)    const;
 
-    void reverse(void);
     void upcase(void);
     void downcase(void);
-
-    bool matches(const char *pattern, bool ignorecase = false) const;
-    bool multimatches(const char *multipattern,
-                      const char delimiter = ';',
-                      bool ignorecase = false) const;
-
-    char firstchar(void) const;
-    char lastchar(void) const;
-
-    // implicit type conversions !
-    operator const char *() const ;
-
-    int printf(const char *format, ...);
-    int vsprintf(const char *format, va_list arg_ptr);
 
     void FSadd(const char *s1);
 
@@ -140,7 +111,7 @@ inline const char *BString::c_str(void) const
     return &str[0];
 }
 
-inline int BString::allocation(void) const
+inline int BString::capacity(void) const
 {
     return sz;
 }
@@ -222,38 +193,10 @@ inline BString BString::operator + (const char c) const
     return r;
 }
 
-inline int BString::index(const BString &_s, int startpos) const
+inline char const &BString::operator [] (unsigned int pos) const
 {
-    return index(_s.c_str(), startpos);
+    return str[pos];
 }
-inline int BString::index(const char c, int startpos) const
-{
-    char s[2];
-    s[0] = c;
-    s[1] = '\0';
-    return this->index(s, startpos);
-}
-
-inline bool BString::contains(const BString &_s) const
-{
-    return index(_s.c_str()) >= 0;
-}
-inline bool BString::contains(const char *_s) const
-{
-    return index(_s) >= 0;
-}
-inline bool BString::contains(const char c) const
-{
-    char _s[2];
-    _s[0] = c;
-    _s[1] = '\0';
-    return index(_s) >= 0;
-}
-
-/*inline BString::operator const char *() const
-{
-    return c_str();
-}*/
 
 #endif // #ifndef __bstring_h__
 

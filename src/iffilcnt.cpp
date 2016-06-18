@@ -24,6 +24,9 @@
 
 #include "iffilcnt.h"
 #include "ffilecnt.h"
+#include <string>
+#include <algorithm>
+#include <iterator>
 
 FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     FlexFileContainer *aBase)
@@ -93,7 +96,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             fileName += ".";
             fileName += BString(pd->file_ext, FLEX_FILEEXT_LENGTH);
 
-            if (fileName.multimatches(filePattern, ';', true))
+            if (multimatches(fileName.c_str(), filePattern, ';', true))
             {
                 dirEntry.SetDate(pd->day, pd->month, pd->year);
                 dirEntry.SetTotalFileName(fileName.c_str());
@@ -228,7 +231,6 @@ bool FlexFileContainerIteratorImp::DeleteCurrent(void)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
 {
-    int i;
     s_dir_entry     *pd;
     BString totalName, name, ext;
 
@@ -247,12 +249,37 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     pd = &dirSector.dir_entry[dirIndex % 10];
     totalName = newName;
     totalName.upcase();
-    i = totalName.index('.');
 
-    if (i >= 0)
+    std::string stotalName(totalName.c_str());
+
+    std::string::iterator it =
+        std::find(stotalName.begin(), stotalName.end(), '.');
+
+    if (it != stotalName.end())
     {
-        totalName.at(0, i, name);
-        totalName.at(i + 1, FLEX_FILEEXT_LENGTH, ext);
+        std::string temp;
+
+        // copy the file name only
+        std::copy(stotalName.begin(), it, std::back_inserter(temp));
+        name = BString(temp.c_str());
+
+        // copy the file extension
+        temp.clear();
+        it++;
+        if (it != stotalName.end())
+        {
+            std::string::iterator itend = it;
+            int size = FLEX_FILEEXT_LENGTH;
+
+            while (itend != stotalName.end() && (size >= 0))
+            {
+                ++itend;
+                --size;
+            }
+
+            std::copy(it, itend, std::back_inserter(temp));
+        }
+        ext = BString(temp.c_str());
     }
     else
     {

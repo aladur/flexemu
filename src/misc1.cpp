@@ -160,3 +160,155 @@ int stricmp(const char *string1, const char *string2)
 } // stricmp
 #endif
 
+bool matches(const char *text, const char *pattern,
+             bool ignorecase /* = false */)
+{
+    const char *p_pat = pattern;
+    const char *p_src = text;
+    char char_pat     = '*'; // prepare for first while loop
+    int min = 0;
+    int max = 0;
+    int notmatched =  0;
+
+    if (pattern == NULL)
+    {
+        return false;
+    }
+
+    while (*p_src != '\0')
+    {
+        char char_src = *p_src;
+
+        if (ignorecase)
+        {
+            char_src = tolower(char_src);
+        }
+
+        while (notmatched == 0 && char_pat != '\0')
+        {
+            char_pat = *p_pat;
+            p_pat++;
+
+            if (char_pat == '*')
+            {
+                // wildchard for any char
+                max = INT_MAX;
+                continue;
+            }
+            else if (char_pat == '?')
+            {
+                // wildchard for exactly one char
+                min++;
+
+                if (max < INT_MAX)
+                {
+                    max++;
+                }
+
+                continue;
+            }
+            else if (char_pat != '\0')
+            {
+                // any other character
+                if (ignorecase)
+                {
+                    char_pat = tolower(char_pat);
+                }
+
+                break;
+            }
+        }
+
+        if (char_src == char_pat)
+        {
+            if (notmatched < min || notmatched > max)
+            {
+                return false;
+            }
+
+            notmatched = 0;
+            min = max = 0;
+        }
+        else
+        {
+            notmatched++;
+
+            if (notmatched > max)
+            {
+                return false;
+            }
+        }
+
+        p_src++;
+    }
+
+    if (notmatched < min || notmatched > max)
+    {
+        return false;
+    }
+
+    return (char_pat == '\0' && notmatched > 0) || //pattern ends with ? or *
+           (*p_pat == '\0' && notmatched == 0); // pattern end with any char
+}
+
+bool multimatches(const char *text, const char *multipattern,
+                  const char delimiter /* = ';'*/,
+                  bool ignorecase /* = false */)
+
+{
+    int pos;
+
+    if (multipattern == NULL)
+    {
+        return false;
+    }
+
+    pos = 0;
+
+    while (multipattern[pos] != '\0')
+    {
+        int begin = pos;
+
+        while (multipattern[pos] != '\0' && (multipattern[pos] != delimiter))
+        {
+            pos++;
+        }
+
+        BString *pattern = new BString(&multipattern[begin], pos - begin);
+
+        if (matches(text, pattern->c_str(), ignorecase))
+        {
+            delete pattern;
+            return true;
+        }
+
+        delete pattern;
+
+        if (multipattern[pos] == delimiter)
+        {
+            pos++;
+        }
+    }
+
+    return false;
+}
+
+bool comparenocase(const std::string &str1, const std::string &str2)
+{
+    unsigned int size = str1.length();
+
+    if (str2.length() != size)
+    {
+        return false;
+    }
+
+    for (unsigned int i = 0; i < size; ++i)
+    {
+        if (tolower(str1[i]) != tolower(str2[i]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}

@@ -107,7 +107,7 @@ int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
         {
             value = strparm;
 
-            if (value.firstchar() == '"')
+            if (value[0] == '"')
             {
                 if (isInteger)
                 {

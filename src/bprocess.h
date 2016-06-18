@@ -41,15 +41,15 @@ public:
     bool IsRunning(); // Check if Process is running
     const char *GetArguments()  const
     {
-        return arguments;
+        return arguments.c_str();
     };
     const char *GetDirectory()  const
     {
-        return directory;
+        return directory.c_str();
     };
     const char *GetExecutable() const
     {
-        return executable;
+        return executable.c_str();
     };
 
 protected:

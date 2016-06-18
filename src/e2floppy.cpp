@@ -21,7 +21,9 @@
 
 
 #include <misc1.h>
-
+#include <string>
+#include <sstream>
+#include <iterator>
 #include "e2floppy.h"
 #include "ffilecnt.h"
 #include "rfilecnt.h"
@@ -124,20 +126,30 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
     track[drive_nr] = 1;    // position to a track != 0  !!!
 
-    BString containerPath;
+    std::string containerPath(path);
 
     // first try with given path
-    containerPath = path;
 #ifdef WIN32
-    containerPath.replaceall('|', ':');
-    containerPath.replaceall('/', '\\');
+    std::string::iterator it;
+
+    for (it = containerPath.begin(); it != containerPath.end(); ++it)
+    {
+        if (*it == '|')
+        {
+            *it = ':';
+        }
+        if (*it == '/')
+        {
+            *it = '\\';
+        }
+    }
 #endif
 
     for (i = 0; i < 2; i++)
     {
 #ifdef NAFS
 
-        if (BDirectory::Exists(containerPath))
+        if (BDirectory::Exists(BString(containerPath.c_str())))
         {
             try
             {
@@ -206,7 +218,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         // second try with path within disk_dir directory
         containerPath = disk_dir;
 
-        if (containerPath.lastchar() != PATHSEPARATOR)
+        if (containerPath[containerPath.length()-1] != PATHSEPARATOR)
         {
             containerPath += PATHSEPARATORSTRING;
         }
@@ -258,7 +270,7 @@ bool E2floppy::umount_all_drives(void)
 
 BString E2floppy::drive_info(Word drive_nr)
 {
-    BString str;
+    std::stringstream str;
 
     if (drive_nr <= 3)
     {
@@ -268,7 +280,7 @@ BString E2floppy::drive_info(Word drive_nr)
 
         if ((pfl = floppy[drive_nr]) == NULL)
         {
-            str.printf("drive #%u not ready\n", drive_nr);
+            str << "drive #" << drive_nr << " not ready" << std::endl;
         }
         else
         {
@@ -281,29 +293,27 @@ BString E2floppy::drive_info(Word drive_nr)
             }
             catch (FlexException &ex)
             {
-                str.printf("%s\n", ex.what());
+                str << ex.what() << std::endl;
                 pStatusMutex->unlock();
-                return str;
+                return str.str().c_str();
             }
 
             info.GetTrackSector(&trk, &sec);
-            str.printf(
-                "drive       #%u\n"
-                "type:       %s\n"
-                "name:       %s\n"
-                "path:       %s\n"
-                "tracks:     %d\n"
-                "sectors:    %d\n"
-                "write-prot: %s\n", drive_nr, info.GetTypeString().c_str(),
-                info.GetName(), info.GetPath().c_str(), trk, sec,
-                pfl->IsWriteProtected() ? "yes" : "no");
+            str << "drive       #" << drive_nr << std::endl
+                << "type:       " << info.GetTypeString().c_str() << std::endl
+                << "name:       " << info.GetName() << std::endl
+                << "path:       " << info.GetPath().c_str() << std::endl
+                << "tracks:     " << trk << std::endl
+                << "sectors:    " << sec << std::endl
+                << "write-prot: " << (pfl->IsWriteProtected() ? "yes" : "no")
+                << std::endl;
 
         }
 
         pStatusMutex->unlock();
     }
 
-    return str;
+    return str.str().c_str();
 } // drive_info
 
 const char *E2floppy::open_mode(char *path)

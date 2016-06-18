@@ -101,7 +101,7 @@ bool BDirectory::RemoveRecursive(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() != PATHSEPARATOR)
+    if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
         basePath += PATHSEPARATOR;
     }
@@ -143,7 +143,7 @@ bool BDirectory::RemoveRecursive(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() == PATHSEPARATOR)
+    if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
         basePath.at(0, basePath.length() - 1, basePath);
     }
@@ -186,7 +186,7 @@ tPathList BDirectory::GetSubDirectories(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() != PATHSEPARATOR)
+    if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
         basePath += PATHSEPARATOR;
     }
@@ -214,7 +214,7 @@ tPathList BDirectory::GetSubDirectories(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() == PATHSEPARATOR)
+    if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
         basePath.at(0, basePath.length() - 1, basePath);
     }
@@ -253,7 +253,7 @@ tPathList BDirectory::GetFiles(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() != PATHSEPARATOR)
+    if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
         basePath += PATHSEPARATOR;
     }
@@ -282,7 +282,7 @@ tPathList BDirectory::GetFiles(const BString &aPath)
 
     basePath = aPath;
 
-    if (basePath.lastchar() == PATHSEPARATOR)
+    if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
         basePath.at(0, basePath.length() - 1, basePath);
     }

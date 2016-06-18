@@ -21,6 +21,7 @@
 */
 
 
+#include <sstream>
 #include <stdio.h>
 #include <ctype.h>
 #include "memory.h"
@@ -506,16 +507,17 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
     {
         if (!ignore_errors)
         {
-            BString pmsg;
+            std::stringstream pmsg;
 
-            pmsg.printf("Unable to locate or read \"%s\"\n", filename);
+            pmsg << "Unable to locate or read \"" << filename
+                 << "\"" << std::endl;
 #ifdef WIN32
-            MessageBox(NULL, pmsg.c_str(),
+            MessageBox(NULL, pmsg.str().c_str(),
                        PROGRAMNAME " error",
                        MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-            fprintf(stderr, "%s", pmsg.c_str());
+            fprintf(stderr, "%s", pmsg.str().c_str());
 #endif
         }
 
@@ -535,15 +537,16 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
     }
     else
     {
-        BString pmsg;
+        std::stringstream pmsg;
 
-        pmsg.printf("File \"%s\" has unknown fileformat\n", filename);
+        pmsg << "File \"" << filename << "\" has unknown fileformat"
+             << std::endl;
 #ifdef WIN32
-        MessageBox(NULL, pmsg.c_str(), PROGRAMNAME " error",
+        MessageBox(NULL, pmsg.msg().c_str(), PROGRAMNAME " error",
                    MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-        fprintf(stderr, "%s", pmsg.c_str());
+        fprintf(stderr, "%s", pmsg.str().c_str());
 #endif
         return false;
     }

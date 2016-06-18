@@ -24,6 +24,7 @@
 
 #ifdef HAVE_XTK
 
+#include <sstream>
 #include <stdio.h>
 #include <ctype.h>
 #include "xtgui.h"
@@ -679,19 +680,16 @@ void XtGui::popup_interrupt_info(Widget)
         return;
     }
 
-    BString message, line;
+    std::stringstream message;
     tInterruptStatus s;
 
     schedy->get_interrupt_status(s);
-    line.printf("IRQ:   %u\n", s.count[INT_IRQ]);
-    message += line;
-    line.printf("FIRQ:  %u\n", s.count[INT_FIRQ]);
-    message += line;
-    line.printf("NMI:   %u\n", s.count[INT_NMI]);
-    message += line;
-    line.printf("RESET: %u\n", s.count[INT_RESET]);
-    message += line;
-    popup_message(message.c_str(), PROGRAMNAME " Interrupt status", 480, 160);
+    message << "IRQ:   " << s.count[INT_IRQ] << std::endl
+            << "FIRQ:  " << s.count[INT_FIRQ] << std::endl
+            << "NMI:   " << s.count[INT_NMI] << std::endl
+            << "RESET: " << s.count[INT_RESET] << std::endl;
+    popup_message(message.str().c_str(),
+                  PROGRAMNAME " Interrupt status", 480, 160);
 }
 
 void XtGui::toggle_frequency(void)

@@ -240,7 +240,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
 
     path = dir;
 
-    if (!path.empty() && path.lastchar() != PATHSEPARATOR)
+    if (!path.empty() && path[path.length()-1] != PATHSEPARATOR)
     {
         path += PATHSEPARATORSTRING;
     }

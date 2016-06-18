@@ -122,7 +122,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
 
     aPath = dir;
 
-    if (aPath.lastchar() != PATHSEPARATOR)
+    if (aPath[aPath.length()-1] != PATHSEPARATOR)
     {
         aPath += PATHSEPARATORSTRING;
     }

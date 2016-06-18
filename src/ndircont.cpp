@@ -24,6 +24,8 @@
 #include <misc1.h>
 
 #ifdef NAFS
+#include <sstream>
+#include <iomanip>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <new>          // needed for (nothrow)
@@ -362,10 +364,11 @@ BString NafsDirectoryContainer::unix_filename(SWord file_id) const
 {
     if (file_id < 0)
     {
-        BString filename;
+        std::stringstream filename;
 
-        filename.printf("tmp%02d",  NEW_FILE1 - file_id);
-        return filename;
+        filename << "tmp" << std::setw(2) << std::setfill('0')
+                 << NEW_FILE1 - file_id;
+        return filename.str().c_str();
     }
     else
     {

@@ -170,9 +170,9 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
             colorName = wxGetTranslation(color_table[i]);
             c_color->Append(colorName);
             wxString color(color_table[i], *wxConvCurrent);
-            bColorName = color.mb_str(*wxConvCurrent);
+            std::string sColorName(color.mb_str(*wxConvCurrent));
 
-            if (!m_guiOptions->color.comparenocase(bColorName))
+            if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
             {
                 c_color->SetSelection(i);
             }

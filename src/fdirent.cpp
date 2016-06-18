@@ -21,6 +21,9 @@
 */
 
 #include <misc1.h>
+#include <string>
+#include <algorithm>
+#include <iterator>
 #include "bdate.h"
 #include "fdirent.h"
 #include <stdio.h>
@@ -87,14 +90,28 @@ void FlexDirEntry::SetTotalFileName(const char *s)
 BString FlexDirEntry::GetFileName(void) const
 {
     BString name(fileName);
+    std::string sname(name.c_str());
 
-    if (strchr(fileName.c_str(), '.') == NULL)
+    // return substring until but not including last occurence of '.'
+    std::string::reverse_iterator it =
+        std::find(sname.rbegin(), sname.rend(), '.');
+
+    if (it == sname.rend())
     {
+        // If '.' not found return whole string
         return name;
     }
     else
     {
-        return name.beforeLast('.');
+        std::string result;
+
+        it++;
+        if (it != sname.rend())
+        {
+            std::copy(sname.begin(), it.base(), std::back_inserter(result));
+        }
+
+        return BString(result.c_str());
     }
 }
 

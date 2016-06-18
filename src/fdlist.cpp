@@ -977,7 +977,8 @@ void FlexDiskListCtrl::FindFiles(void)
             bFileName = (*it).GetTotalFileName();
             wxString fileName(bFileName.c_str(), *wxConvCurrent);
 
-            if (bFileName.multimatches(filePattern.c_str(), ';', true) &&
+            if (multimatches(bFileName.c_str(), filePattern.c_str(),
+                             ';', true) &&
                 (i = FindItem(-1, fileName)) >= 0)
             {
                 SetItemState(i, wxLIST_STATE_SELECTED,

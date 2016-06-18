@@ -21,6 +21,8 @@
 */
 
 
+#include <sstream>
+#include <iomanip>
 #include "da.h"
 #include "disconf.h"
 #include "bident.h"
@@ -88,7 +90,7 @@ int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
     DWord flags;
     DWord length = 0;
     DWord addr;
-    BString label;
+    std::stringstream label;
     BIdentifier identifier;
     char *p1, *p2;
 
@@ -104,8 +106,8 @@ int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
 
         if (flags | DA_LABEL_ADDR)
         {
-            label.printf("L%0.4X", addr);
-            identifier.SetTo(addr, label.c_str());
+            label << "L" << std::setw(4) << std::setfill('0') << addr << "X";
+            identifier.SetTo(addr, label.str().c_str());
             aConfig.AddLabel(identifier);
         }
 

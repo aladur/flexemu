@@ -1106,19 +1106,15 @@ void Win32Gui::popup_interrupt_info(HWND hwnd)
         return;
     }
 
-    BString message, line;
+    std::stringstream message;
     tInterruptStatus s;
 
     schedy->get_interrupt_status(s);
-    line.printf("IRQ:   %u\n", s.count[INT_IRQ]);
-    message += line;
-    line.printf("FIRQ:  %u\n", s.count[INT_FIRQ]);
-    message += line;
-    line.printf("NMI:   %u\n", s.count[INT_NMI]);
-    message += line;
-    line.printf("RESET: %u\n", s.count[INT_RESET]);
-    message += line;
-    MessageBox(e2screen, message,
+    message << "IRQ:   " << s.count[INT_IRQ] << std::endl
+            << "FIRQ:  " << s.count[INT_FIRQ] << std::endl
+            << "NMI:   " << s.count[INT_NMI] << std::endl
+            << "RESET: " << s.count[INT_RESET] << std::endl;
+    MessageBox(e2screen, message.str().c_str(),
                PROGRAMNAME " Interrupt status",
                MB_OK | MB_ICONINFORMATION);
 }
