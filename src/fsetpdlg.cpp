@@ -163,7 +163,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
     {
         unsigned int i;
         wxString colorName;
-        BString bColorName;
+        std::string bColorName;
 
         for (i = 0; i < WXSIZEOF(color_table); i++)
         {

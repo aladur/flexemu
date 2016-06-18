@@ -64,14 +64,14 @@ BDirectory::~BDirectory()
  static functions
 ********************************************/
 
-bool BDirectory::Exists(const BString &aPath)
+bool BDirectory::Exists(const std::string &aPath)
 {
     struct stat sbuf;
 
     return !stat(aPath.c_str(), &sbuf) && (S_ISDIR(sbuf.st_mode));
 }
 
-bool BDirectory::Remove(const BString &aPath)
+bool BDirectory::Remove(const std::string &aPath)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
     return _rmdir(aPath.c_str()) >= 0;
@@ -81,7 +81,7 @@ bool BDirectory::Remove(const BString &aPath)
 #endif
 }
 
-bool BDirectory::Create(const BString &aPath, int mode /* = 0x0755 */)
+bool BDirectory::Create(const std::string &aPath, int mode /* = 0x0755 */)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
     return _mkdir(aPath.c_str()) >= 0;
@@ -92,10 +92,10 @@ bool BDirectory::Create(const BString &aPath, int mode /* = 0x0755 */)
 }
 
 #ifdef WIN32
-bool BDirectory::RemoveRecursive(const BString &aPath)
+bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
-    BString         basePath;
-    BString         dirEntry;
+    std::string     basePath;
+    std::string     dirEntry;
     HANDLE          hdl;
     WIN32_FIND_DATA pentry;
 
@@ -134,18 +134,20 @@ bool BDirectory::RemoveRecursive(const BString &aPath)
     return true;
 }
 #else
-bool BDirectory::RemoveRecursive(const BString &aPath)
+bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
-    BString         basePath;
-    BString         dirEntry;
-    DIR             *pd;
-    struct stat     sbuf;
+    std::string basePath;
+    std::string dirEntry;
+    DIR         *pd;
+    struct stat sbuf;
 
     basePath = aPath;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
-        basePath.at(0, basePath.length() - 1, basePath);
+        std::string temp = basePath.substr(0, basePath.length() - 1);
+
+        basePath = temp;
     }
 
     if ((pd = opendir(basePath.c_str())) != NULL)
@@ -175,16 +177,13 @@ bool BDirectory::RemoveRecursive(const BString &aPath)
 }
 #endif
 
-tPathList BDirectory::GetSubDirectories(const BString &aPath)
+tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 {
-    std::vector<BString> subDirList;
-
-    BString         basePath;
+    std::vector<std::string> subDirList;
+    std::string     basePath(aPath);
 #ifdef WIN32
     HANDLE          hdl;
     WIN32_FIND_DATA pentry;
-
-    basePath = aPath;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
@@ -208,15 +207,15 @@ tPathList BDirectory::GetSubDirectories(const BString &aPath)
     }
 
 #else
-    BString         dirEntry;
+    std::string     dirEntry;
     DIR             *pd;
     struct stat     sbuf;
 
-    basePath = aPath;
-
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
-        basePath.at(0, basePath.length() - 1, basePath);
+        std::string temp = basePath.substr(0, basePath.length() - 1);
+
+        basePath = temp;
     }
 
     if ((pd = opendir(basePath.c_str())) != NULL)
@@ -242,16 +241,13 @@ tPathList BDirectory::GetSubDirectories(const BString &aPath)
     return subDirList;
 }
 
-tPathList BDirectory::GetFiles(const BString &aPath)
+tPathList BDirectory::GetFiles(const std::string &aPath)
 {
-    std::vector<BString> fileList;
-
-    BString         basePath;
+    std::vector<std::string> fileList;
+    std::string     basePath(aPath);
 #ifdef WIN32
     HANDLE          hdl;
     WIN32_FIND_DATA pentry;
-
-    basePath = aPath;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
@@ -276,15 +272,15 @@ tPathList BDirectory::GetFiles(const BString &aPath)
     }
 
 #else
-    BString         dirEntry;
+    std::string     dirEntry;
     DIR             *pd;
     struct stat     sbuf;
 
-    basePath = aPath;
-
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
-        basePath.at(0, basePath.length() - 1, basePath);
+        std::string temp = basePath.substr(0, basePath.length() - 1);
+
+        basePath = temp;
     }
 
     if ((pd = opendir(basePath.c_str())) != NULL)

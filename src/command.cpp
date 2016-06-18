@@ -269,7 +269,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0 && fdc != NULL)
                     {
-                        BString str;
+                        std::string str;
 
                         count =  0;
                         str = "";
@@ -329,7 +329,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0 && fdc != NULL)
                     {
-                        BString str;
+                        std::string str;
 
                         str = fdc->drive_info(number);
                         answer = new char[str.length() + 1];

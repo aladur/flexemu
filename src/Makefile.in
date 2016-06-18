@@ -102,85 +102,81 @@ am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
-	flexemu-bjoystck.$(OBJEXT) flexemu-bstring.$(OBJEXT) \
-	flexemu-colors.$(OBJEXT) flexemu-command.$(OBJEXT) \
-	flexemu-da6809.$(OBJEXT) flexemu-e2floppy.$(OBJEXT) \
-	flexemu-e2video.$(OBJEXT) flexemu-fcinfo.$(OBJEXT) \
-	flexemu-fcopyman.$(OBJEXT) flexemu-fdirent.$(OBJEXT) \
-	flexemu-ffilebuf.$(OBJEXT) flexemu-ffilecnt.$(OBJEXT) \
-	flexemu-flexerr.$(OBJEXT) flexemu-inout.$(OBJEXT) \
-	flexemu-memory.$(OBJEXT) flexemu-main.$(OBJEXT) \
-	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
-	flexemu-mc6809in.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
-	flexemu-mc6850.$(OBJEXT) flexemu-misc1.$(OBJEXT) \
-	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
-	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
-	flexemu-rfilecnt.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-win32gui.$(OBJEXT) flexemu-xabsgui.$(OBJEXT) \
-	flexemu-xres.$(OBJEXT) flexemu-xtgui.$(OBJEXT) \
-	flexemu-brcfile.$(OBJEXT) flexemu-benv.$(OBJEXT) \
-	flexemu-foptman.$(OBJEXT) flexemu-bmembuf.$(OBJEXT) \
-	flexemu-bregistr.$(OBJEXT) flexemu-bthread.$(OBJEXT) \
-	flexemu-bthreadfactory.$(OBJEXT) flexemu-bthreadimp.$(OBJEXT) \
-	flexemu-bposixthreadimp.$(OBJEXT) flexemu-bmutex.$(OBJEXT) \
-	flexemu-bcommand.$(OBJEXT) flexemu-cacttrns.$(OBJEXT) \
-	flexemu-csetfreq.$(OBJEXT) flexemu-btime.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-btimer.$(OBJEXT) \
-	flexemu-clogfile.$(OBJEXT) flexemu-bfileptr.$(OBJEXT) \
-	flexemu-ifilecnt.$(OBJEXT) flexemu-iffilcnt.$(OBJEXT) \
-	flexemu-bwin32threadimp.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-buint.$(OBJEXT)
+	flexemu-bjoystck.$(OBJEXT) flexemu-colors.$(OBJEXT) \
+	flexemu-command.$(OBJEXT) flexemu-da6809.$(OBJEXT) \
+	flexemu-e2floppy.$(OBJEXT) flexemu-e2video.$(OBJEXT) \
+	flexemu-fcinfo.$(OBJEXT) flexemu-fcopyman.$(OBJEXT) \
+	flexemu-fdirent.$(OBJEXT) flexemu-ffilebuf.$(OBJEXT) \
+	flexemu-ffilecnt.$(OBJEXT) flexemu-flexerr.$(OBJEXT) \
+	flexemu-inout.$(OBJEXT) flexemu-memory.$(OBJEXT) \
+	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
+	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
+	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
+	flexemu-misc1.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-pia2.$(OBJEXT) flexemu-rfilecnt.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-win32gui.$(OBJEXT) \
+	flexemu-xabsgui.$(OBJEXT) flexemu-xres.$(OBJEXT) \
+	flexemu-xtgui.$(OBJEXT) flexemu-brcfile.$(OBJEXT) \
+	flexemu-benv.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
+	flexemu-bmembuf.$(OBJEXT) flexemu-bregistr.$(OBJEXT) \
+	flexemu-bthread.$(OBJEXT) flexemu-bthreadfactory.$(OBJEXT) \
+	flexemu-bthreadimp.$(OBJEXT) flexemu-bposixthreadimp.$(OBJEXT) \
+	flexemu-bmutex.$(OBJEXT) flexemu-bcommand.$(OBJEXT) \
+	flexemu-cacttrns.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
+	flexemu-btime.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
+	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
+	flexemu-iffilcnt.$(OBJEXT) flexemu-bwin32threadimp.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
-	flexplorer-bdir.$(OBJEXT) flexplorer-bstring.$(OBJEXT) \
-	flexplorer-contpdlg.$(OBJEXT) flexplorer-dircont.$(OBJEXT) \
-	flexplorer-fcinfo.$(OBJEXT) flexplorer-fclipbrd.$(OBJEXT) \
-	flexplorer-fcopyman.$(OBJEXT) flexplorer-fdcframe.$(OBJEXT) \
-	flexplorer-fddnd.$(OBJEXT) flexplorer-fdirent.$(OBJEXT) \
-	flexplorer-fdlist.$(OBJEXT) flexplorer-fdpframe.$(OBJEXT) \
-	flexplorer-ffilebuf.$(OBJEXT) flexplorer-ffilecnt.$(OBJEXT) \
-	flexplorer-flexdisk.$(OBJEXT) flexplorer-flexerr.$(OBJEXT) \
-	flexplorer-misc1.$(OBJEXT) flexplorer-rfilecnt.$(OBJEXT) \
-	flexplorer-optdlg.$(OBJEXT) flexplorer-brcfile.$(OBJEXT) \
-	flexplorer-benv.$(OBJEXT) flexplorer-bintervl.$(OBJEXT) \
-	flexplorer-blist.$(OBJEXT) flexplorer-baddrrng.$(OBJEXT) \
-	flexplorer-bhashtbl.$(OBJEXT) flexplorer-bident.$(OBJEXT) \
-	flexplorer-bsortlst.$(OBJEXT) flexplorer-bmembuf.$(OBJEXT) \
-	flexplorer-bbintree.$(OBJEXT) flexplorer-da.$(OBJEXT) \
-	flexplorer-da6809.$(OBJEXT) flexplorer-disconf.$(OBJEXT) \
-	flexplorer-bfileptr.$(OBJEXT) flexplorer-ifilecnt.$(OBJEXT) \
-	flexplorer-idircnt.$(OBJEXT) flexplorer-iffilcnt.$(OBJEXT) \
-	flexplorer-fmenufac.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
-	flexplorer-bprocess.$(OBJEXT)
+	flexplorer-bdir.$(OBJEXT) flexplorer-contpdlg.$(OBJEXT) \
+	flexplorer-dircont.$(OBJEXT) flexplorer-fcinfo.$(OBJEXT) \
+	flexplorer-fclipbrd.$(OBJEXT) flexplorer-fcopyman.$(OBJEXT) \
+	flexplorer-fdcframe.$(OBJEXT) flexplorer-fddnd.$(OBJEXT) \
+	flexplorer-fdirent.$(OBJEXT) flexplorer-fdlist.$(OBJEXT) \
+	flexplorer-fdpframe.$(OBJEXT) flexplorer-ffilebuf.$(OBJEXT) \
+	flexplorer-ffilecnt.$(OBJEXT) flexplorer-flexdisk.$(OBJEXT) \
+	flexplorer-flexerr.$(OBJEXT) flexplorer-misc1.$(OBJEXT) \
+	flexplorer-rfilecnt.$(OBJEXT) flexplorer-optdlg.$(OBJEXT) \
+	flexplorer-brcfile.$(OBJEXT) flexplorer-benv.$(OBJEXT) \
+	flexplorer-bintervl.$(OBJEXT) flexplorer-blist.$(OBJEXT) \
+	flexplorer-baddrrng.$(OBJEXT) flexplorer-bhashtbl.$(OBJEXT) \
+	flexplorer-bident.$(OBJEXT) flexplorer-bsortlst.$(OBJEXT) \
+	flexplorer-bmembuf.$(OBJEXT) flexplorer-bbintree.$(OBJEXT) \
+	flexplorer-da.$(OBJEXT) flexplorer-da6809.$(OBJEXT) \
+	flexplorer-disconf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
+	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
+	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
+	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_fsetup_OBJECTS = fsetup-fsetup.$(OBJEXT) fsetup-fsetpdlg.$(OBJEXT) \
 	fsetup-foptman.$(OBJEXT) fsetup-brcfile.$(OBJEXT) \
-	fsetup-benv.$(OBJEXT) fsetup-bstring.$(OBJEXT) \
-	fsetup-misc1.$(OBJEXT) fsetup-bfileptr.$(OBJEXT) \
-	fsetup-bregistr.$(OBJEXT)
+	fsetup-benv.$(OBJEXT) fsetup-misc1.$(OBJEXT) \
+	fsetup-bfileptr.$(OBJEXT) fsetup-bregistr.$(OBJEXT)
 fsetup_OBJECTS = $(am_fsetup_OBJECTS)
 fsetup_DEPENDENCIES =
 fsetup_LINK = $(CXXLD) $(fsetup_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 am_test_OBJECTS = test-testmain.$(OBJEXT) test-test_gccasm.$(OBJEXT) \
-	test-bstring.$(OBJEXT) test-bdate.$(OBJEXT) \
-	test-colors.$(OBJEXT) test-command.$(OBJEXT) \
-	test-bfileptr.$(OBJEXT) test-da6809.$(OBJEXT) \
-	test-fcinfo.$(OBJEXT) test-flexerr.$(OBJEXT) \
-	test-inout.$(OBJEXT) test-cacttrns.$(OBJEXT) \
-	test-memory.$(OBJEXT) test-mc6809.$(OBJEXT) \
-	test-mc6809in.$(OBJEXT) test-misc1.$(OBJEXT) \
-	test-bthread.$(OBJEXT) test-bthreadfactory.$(OBJEXT) \
-	test-bthreadimp.$(OBJEXT) test-bposixthreadimp.$(OBJEXT) \
-	test-bmutex.$(OBJEXT) test-bcommand.$(OBJEXT) \
-	test-btime.$(OBJEXT) test-schedule.$(OBJEXT) \
-	test-btimer.$(OBJEXT) test-clogfile.$(OBJEXT) \
-	test-mc6809st.$(OBJEXT)
+	test-bdate.$(OBJEXT) test-colors.$(OBJEXT) \
+	test-command.$(OBJEXT) test-bfileptr.$(OBJEXT) \
+	test-da6809.$(OBJEXT) test-fcinfo.$(OBJEXT) \
+	test-flexerr.$(OBJEXT) test-inout.$(OBJEXT) \
+	test-cacttrns.$(OBJEXT) test-memory.$(OBJEXT) \
+	test-mc6809.$(OBJEXT) test-mc6809in.$(OBJEXT) \
+	test-misc1.$(OBJEXT) test-bthread.$(OBJEXT) \
+	test-bthreadfactory.$(OBJEXT) test-bthreadimp.$(OBJEXT) \
+	test-bposixthreadimp.$(OBJEXT) test-bmutex.$(OBJEXT) \
+	test-bcommand.$(OBJEXT) test-btime.$(OBJEXT) \
+	test-schedule.$(OBJEXT) test-btimer.$(OBJEXT) \
+	test-clogfile.$(OBJEXT) test-mc6809st.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_DEPENDENCIES =
 test_LINK = $(CXXLD) $(test_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -490,13 +486,13 @@ flexemu_LDADD = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 fsetup_SOURCES = \
-fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp bstring.cpp misc1.cpp\
+fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp\
-fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h bstring.h misc1.h \
+fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
 bfileptr.h bregistr.h
 
 flexemu_SOURCES = \
-absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp bstring.cpp colors.cpp \
+absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
 command.cpp da6809.cpp e2floppy.cpp e2video.cpp fcinfo.cpp \
 fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
 memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
@@ -507,7 +503,7 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
 bwin32threadimp.cpp mc6809st.cpp buint.cpp \
-absgui.h acia1.h bdate.h bdir.h bjoystck.h bstring.h command.h \
+absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 intmem.h iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
@@ -521,7 +517,7 @@ schedcpu.h absdisas.h buint.h flexemu.h mc6809in.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
-bdate.cpp bdir.cpp bstring.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
+bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
 fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp\
@@ -529,7 +525,7 @@ bintervl.cpp blist.cpp baddrrng.cpp bhashtbl.cpp bident.cpp bsortlst.cpp\
 bmembuf.cpp bbintree.cpp da.cpp da6809.cpp disconf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp \
-bdate.h bdir.h bobserv.h bstring.h contpdlg.h dircont.h fcinfo.h \
+bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
 fclipbrd.h fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
@@ -538,7 +534,7 @@ bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h flexemu.h
 
 test_SOURCES = \
-testmain.cpp test_gccasm.cpp bstring.cpp bdate.cpp colors.cpp \
+testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
 command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
 flexerr.cpp inout.cpp cacttrns.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
@@ -546,7 +542,7 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp\
-test_gccasm.h bdir.h bstring.h bdate.h \
+test_gccasm.h bdir.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
 memory.h mc6809.h misc1.h mc6809in.h \
@@ -689,7 +685,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bposixthreadimp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bregistr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bstring.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bthread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bthreadfactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bthreadimp.Po@am__quote@
@@ -750,7 +745,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bregistr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bsortlst.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bstring.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-contpdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-da.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-da6809.Po@am__quote@
@@ -779,7 +773,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bregistr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bstring.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-foptman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetpdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup.Po@am__quote@
@@ -789,7 +782,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bmutex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bposixthreadimp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bstring.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bthread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bthreadfactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bthreadimp.Po@am__quote@
@@ -895,20 +887,6 @@ flexemu-bjoystck.obj: bjoystck.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bjoystck.cpp' object='flexemu-bjoystck.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bjoystck.obj `if test -f 'bjoystck.cpp'; then $(CYGPATH_W) 'bjoystck.cpp'; else $(CYGPATH_W) '$(srcdir)/bjoystck.cpp'; fi`
-
-flexemu-bstring.o: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bstring.o -MD -MP -MF $(DEPDIR)/flexemu-bstring.Tpo -c -o flexemu-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bstring.Tpo $(DEPDIR)/flexemu-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='flexemu-bstring.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-
-flexemu-bstring.obj: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bstring.obj -MD -MP -MF $(DEPDIR)/flexemu-bstring.Tpo -c -o flexemu-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bstring.Tpo $(DEPDIR)/flexemu-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='flexemu-bstring.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
 
 flexemu-colors.o: colors.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-colors.o -MD -MP -MF $(DEPDIR)/flexemu-colors.Tpo -c -o flexemu-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
@@ -1680,20 +1658,6 @@ flexplorer-bdir.obj: bdir.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
 
-flexplorer-bstring.o: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bstring.o -MD -MP -MF $(DEPDIR)/flexplorer-bstring.Tpo -c -o flexplorer-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bstring.Tpo $(DEPDIR)/flexplorer-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='flexplorer-bstring.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-
-flexplorer-bstring.obj: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bstring.obj -MD -MP -MF $(DEPDIR)/flexplorer-bstring.Tpo -c -o flexplorer-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bstring.Tpo $(DEPDIR)/flexplorer-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='flexplorer-bstring.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-
 flexplorer-contpdlg.o: contpdlg.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-contpdlg.o -MD -MP -MF $(DEPDIR)/flexplorer-contpdlg.Tpo -c -o flexplorer-contpdlg.o `test -f 'contpdlg.cpp' || echo '$(srcdir)/'`contpdlg.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-contpdlg.Tpo $(DEPDIR)/flexplorer-contpdlg.Po
@@ -2282,20 +2246,6 @@ fsetup-benv.obj: benv.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-benv.obj `if test -f 'benv.cpp'; then $(CYGPATH_W) 'benv.cpp'; else $(CYGPATH_W) '$(srcdir)/benv.cpp'; fi`
 
-fsetup-bstring.o: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bstring.o -MD -MP -MF $(DEPDIR)/fsetup-bstring.Tpo -c -o fsetup-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bstring.Tpo $(DEPDIR)/fsetup-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='fsetup-bstring.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-
-fsetup-bstring.obj: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bstring.obj -MD -MP -MF $(DEPDIR)/fsetup-bstring.Tpo -c -o fsetup-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bstring.Tpo $(DEPDIR)/fsetup-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='fsetup-bstring.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-
 fsetup-misc1.o: misc1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-misc1.o -MD -MP -MF $(DEPDIR)/fsetup-misc1.Tpo -c -o fsetup-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-misc1.Tpo $(DEPDIR)/fsetup-misc1.Po
@@ -2365,20 +2315,6 @@ test-test_gccasm.obj: test_gccasm.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_gccasm.cpp' object='test-test_gccasm.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-test_gccasm.obj `if test -f 'test_gccasm.cpp'; then $(CYGPATH_W) 'test_gccasm.cpp'; else $(CYGPATH_W) '$(srcdir)/test_gccasm.cpp'; fi`
-
-test-bstring.o: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bstring.o -MD -MP -MF $(DEPDIR)/test-bstring.Tpo -c -o test-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bstring.Tpo $(DEPDIR)/test-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='test-bstring.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bstring.o `test -f 'bstring.cpp' || echo '$(srcdir)/'`bstring.cpp
-
-test-bstring.obj: bstring.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bstring.obj -MD -MP -MF $(DEPDIR)/test-bstring.Tpo -c -o test-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bstring.Tpo $(DEPDIR)/test-bstring.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bstring.cpp' object='test-bstring.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bstring.obj `if test -f 'bstring.cpp'; then $(CYGPATH_W) 'bstring.cpp'; else $(CYGPATH_W) '$(srcdir)/bstring.cpp'; fi`
 
 test-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bdate.o -MD -MP -MF $(DEPDIR)/test-bdate.Tpo -c -o test-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp

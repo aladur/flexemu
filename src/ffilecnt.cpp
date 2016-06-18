@@ -35,11 +35,11 @@
 #include "iffilcnt.h"
 
 #ifdef UNIX
-    BString FlexFileContainer::bootSectorFile = F_DATADIR PATHSEPARATORSTRING
-    "boot";
+    std::string FlexFileContainer::bootSectorFile =
+        F_DATADIR PATHSEPARATORSTRING "boot";
 #endif
 #ifdef WIN32
-    BString FlexFileContainer::bootSectorFile = "boot";
+    std::string FlexFileContainer::bootSectorFile = "boot";
 #endif
 
 /***********************************************/
@@ -181,7 +181,7 @@ FlexFileContainer::~FlexFileContainer(void)
 /* Public interface                     */
 /****************************************/
 
-BString FlexFileContainer::GetPath() const
+std::string FlexFileContainer::GetPath() const
 {
     return fp.GetPath();
 }
@@ -229,7 +229,7 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
 FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
         int t, int s, int fmt)
 {
-    BString path;
+    std::string path;
 
     if (fmt != TYPE_DSK_CONTAINER && fmt != TYPE_FLX_CONTAINER)
     {

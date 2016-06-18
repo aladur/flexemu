@@ -33,7 +33,7 @@
     #include "flexemu.h"
     #include "wd1793.h"
     #include "filecnts.h"
-    #include "bstring.h"
+    #include <string>
 
 #else
     #include "typedefs.h"
@@ -91,7 +91,7 @@ public:
 
     virtual void         get_drive_status(tDiskStatus status[4]);
     virtual void         disk_directory(const char *x_disk_dir);
-    virtual void         mount_all_drives(BString drive[]);
+    virtual void         mount_all_drives(std::string drive[]);
     virtual bool         update_all_drives(void);
     virtual bool         umount_all_drives(void);
     virtual bool         mount_drive(const char *path, Word drive_nr,
@@ -101,7 +101,7 @@ public:
                                      int type = TYPE_DSK_CONTAINER);
     virtual bool         update_drive(Word drive_nr);
     virtual bool         umount_drive(Word drive_nr);
-    virtual BString  drive_info(Word drive_nr);
+    virtual std::string  drive_info(Word drive_nr);
 
 private:
 

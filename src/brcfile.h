@@ -23,7 +23,7 @@
 #ifndef __brcfile_h__
 #define __brcfile_h__
 
-#include "bstring.h"
+#include <string>
 
 enum
 {
@@ -42,12 +42,12 @@ public:
     void SetFileName(const char *aFileName);
     int SetValue(const char *key, const char *value);
     int SetValue(const char *key, int value);
-    int GetValue(const char *key, BString &value, int *isInteger = NULL);
+    int GetValue(const char *key, std::string &value, int *isInteger = NULL);
     int GetValue(const char *key, int *value);
     int Initialize(void);
 
 private:
-    BString fileName;
+    std::string fileName;
 };
 
 #endif

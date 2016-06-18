@@ -76,7 +76,7 @@ bool BProcess::Start()
 {
     STARTUPINFO             si;
     PROCESS_INFORMATION     pi;
-    BString                 commandline;
+    std::string             commandline;
     DWORD                   result;
 
     commandline = executable + " " + arguments;

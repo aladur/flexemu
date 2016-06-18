@@ -1085,7 +1085,7 @@ void Win32Gui::popup_disk_info(HWND hwnd)
         return;
     }
 
-    BString message;
+    std::string message;
     int i;
 
     for (i = 0; i < 4; ++i)

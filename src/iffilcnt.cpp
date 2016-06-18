@@ -53,7 +53,7 @@ void FlexFileContainerIteratorImp::AtEnd()
 
 bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
-    BString      fileName;
+    std::string fileName;
 
     dirEntry.SetEmpty();
 
@@ -92,9 +92,9 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
         if (pd->filename[0] != -1)
         {
             // ok, found a valid directory entry
-            fileName = BString(pd->filename, FLEX_BASEFILENAME_LENGTH);
+            fileName = std::string(pd->filename, FLEX_BASEFILENAME_LENGTH);
             fileName += ".";
-            fileName += BString(pd->file_ext, FLEX_FILEEXT_LENGTH);
+            fileName += std::string(pd->file_ext, FLEX_FILEEXT_LENGTH);
 
             if (multimatches(fileName.c_str(), filePattern, ';', true))
             {
@@ -128,7 +128,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent(void)
     int records, free;
     Byte buffer[SECTOR_SIZE];
     s_sys_info_sector *psis;
-    s_dir_entry     *pd;
+    s_dir_entry *pd;
 
     if (base == NULL)
     {
@@ -231,8 +231,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent(void)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
 {
-    s_dir_entry     *pd;
-    BString totalName, name, ext;
+    s_dir_entry *pd;
+    std::string name, ext;
 
     if (base == NULL)
     {
@@ -247,39 +247,35 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     }
 
     pd = &dirSector.dir_entry[dirIndex % 10];
-    totalName = newName;
-    totalName.upcase();
 
-    std::string stotalName(totalName.c_str());
+    std::string totalName(newName);
+
+    std::transform(totalName.begin(), totalName.end(), totalName.begin(),
+         ::tolower);
 
     std::string::iterator it =
-        std::find(stotalName.begin(), stotalName.end(), '.');
+        std::find(totalName.begin(), totalName.end(), '.');
 
-    if (it != stotalName.end())
+    if (it != totalName.end())
     {
-        std::string temp;
-
         // copy the file name only
-        std::copy(stotalName.begin(), it, std::back_inserter(temp));
-        name = BString(temp.c_str());
+        std::copy(totalName.begin(), it, std::back_inserter(name));
 
         // copy the file extension
-        temp.clear();
         it++;
-        if (it != stotalName.end())
+        if (it != totalName.end())
         {
             std::string::iterator itend = it;
             int size = FLEX_FILEEXT_LENGTH;
 
-            while (itend != stotalName.end() && (size >= 0))
+            while (itend != totalName.end() && (size >= 0))
             {
                 ++itend;
                 --size;
             }
 
-            std::copy(it, itend, std::back_inserter(temp));
+            std::copy(it, itend, std::back_inserter(ext));
         }
-        ext = BString(temp.c_str());
     }
     else
     {
@@ -307,7 +303,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
 {
-    s_dir_entry     *pd;
+    s_dir_entry *pd;
 
     if (base == NULL)
     {
@@ -341,7 +337,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::SetAttributesCurrent(int attributes)
 {
-    s_dir_entry     *pd;
+    s_dir_entry *pd;
 
     if (base == NULL)
     {

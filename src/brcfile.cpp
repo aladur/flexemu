@@ -66,7 +66,7 @@ int BRcFile::SetValue(const char *key, const char *value)
 int BRcFile::SetValue(const char *key, int value)
 {
     size_t res;
-    BString str;
+    std::string str;
     BFilePtr fp(fileName.c_str(), "a");
 
     if (fp == NULL)
@@ -84,7 +84,7 @@ int BRcFile::SetValue(const char *key, int value)
     return BRC_NO_ERROR;
 }
 
-int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
+int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
 {
     char def[256];
     char strparm[PATH_MAX];
@@ -109,12 +109,13 @@ int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
 
             if (value[0] == '"')
             {
+
                 if (isInteger)
                 {
                     *isInteger = 0;
                 }
 
-                value.at(1, value.length() - 2, value);
+                value = value.substr(1, value.length() - 2);
             }
 
             return BRC_NO_ERROR;
@@ -126,7 +127,7 @@ int BRcFile::GetValue(const char *key, BString &value, int *isInteger)
 
 int BRcFile::GetValue(const char *key, int *pValue)
 {
-    BString str;
+    std::string str;
     int isInt;
 
     if (int res = GetValue(key, str, &isInt))

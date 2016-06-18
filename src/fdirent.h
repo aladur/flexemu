@@ -25,7 +25,7 @@
 
 
 #include "misc1.h"
-#include "bstring.h"
+#include <string>
 #include "bdate.h"
 //#include <new>
 
@@ -60,7 +60,7 @@ private:
     int     endTrk, endSec;
     int     status;
     BDate   date;
-    BString fileName;
+    std::string fileName;
     static char *fileDescription[];
 
 public:
@@ -77,15 +77,15 @@ public:
     void    SetEndTrkSec(int t, int s);
     void    GetEndTrkSec(int *t, int *s);
     void    SetTotalFileName(const char *fileName);
-    const BString &GetTotalFileName(void) const;
-    BString GetFileName(void) const;
-    BString GetFileExt(void) const;
+    const std::string &GetTotalFileName(void) const;
+    std::string GetFileName(void) const;
+    std::string GetFileExt(void) const;
     void    SetSize(int size);
     int     GetSize(void);
     void    SetAttributes(int attr);
     void    SetAttributes(int setMask, int clearMask);
     int     GetAttributes(void);
-    const BString GetAttributesString(void);
+    const std::string GetAttributesString(void);
     int     GetSectorMap(void) const;
     int     IsRandom(void) const;
     void    SetSectorMap(int aSectorMap);

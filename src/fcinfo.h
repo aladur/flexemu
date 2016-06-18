@@ -25,7 +25,7 @@
 
 #include <stdlib.h>
 #include "misc1.h"
-#include "bstring.h"
+#include <string>
 #include "bdate.h"
 
 
@@ -38,7 +38,7 @@ class FlexContainerInfo
 private:
 
     BDate   date;
-    BString path;   // path of container file
+    std::string path;   // path of container file
     int     sectors;    // Number of sectors per track
     int     tracks;     // Number of tracks
     char    name[FLEX_DISKNAME_LENGTH]; // name of disk
@@ -52,7 +52,7 @@ public:
     virtual ~FlexContainerInfo();   // public destructor
 
     void                SetName(const char *n);
-    const BString   GetTypeString(void) const;
+    const std::string   GetTypeString(void) const;
 
     inline void         SetPath(const char *p)
     {
@@ -108,7 +108,7 @@ public:
     {
         return (char *)&name;
     };
-    inline const        BString &GetPath(void) const
+    inline const        std::string &GetPath(void) const
     {
         return path;
     };

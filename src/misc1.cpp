@@ -274,15 +274,12 @@ bool multimatches(const char *text, const char *multipattern,
             pos++;
         }
 
-        BString *pattern = new BString(&multipattern[begin], pos - begin);
+        std::string pattern = std::string(&multipattern[begin], pos - begin);
 
-        if (matches(text, pattern->c_str(), ignorecase))
+        if (matches(text, pattern.c_str(), ignorecase))
         {
-            delete pattern;
             return true;
         }
-
-        delete pattern;
 
         if (multipattern[pos] == delimiter)
         {
@@ -293,22 +290,3 @@ bool multimatches(const char *text, const char *multipattern,
     return false;
 }
 
-bool comparenocase(const std::string &str1, const std::string &str2)
-{
-    unsigned int size = str1.length();
-
-    if (str2.length() != size)
-    {
-        return false;
-    }
-
-    for (unsigned int i = 0; i < size; ++i)
-    {
-        if (tolower(str1[i]) != tolower(str2[i]))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}

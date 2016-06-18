@@ -54,9 +54,9 @@ void FlexContainerInfo::SetName(const char *n)
     name[FLEX_DISKNAME_LENGTH - 1] = '\0';
 }
 
-const BString FlexContainerInfo::GetTypeString(void) const
+const std::string FlexContainerInfo::GetTypeString(void) const
 {
-    BString str;
+    std::string str;
 
     if (type & TYPE_CONTAINER)
     {

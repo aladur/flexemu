@@ -36,13 +36,13 @@ test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
 fsetup_SOURCES = \
-fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp bstring.cpp misc1.cpp\
+fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp\
-fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h bstring.h misc1.h \
+fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
 bfileptr.h bregistr.h
 
 flexemu_SOURCES = \
-absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp bstring.cpp colors.cpp \
+absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
 command.cpp da6809.cpp e2floppy.cpp e2video.cpp fcinfo.cpp \
 fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
 memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
@@ -53,7 +53,7 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
 bwin32threadimp.cpp mc6809st.cpp buint.cpp \
-absgui.h acia1.h bdate.h bdir.h bjoystck.h bstring.h command.h \
+absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 intmem.h iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
@@ -68,7 +68,7 @@ schedcpu.h absdisas.h buint.h flexemu.h mc6809in.h
 EXTRA_flexemu_SOURCES = wwinres.rc
 
 flexplorer_SOURCES = \
-bdate.cpp bdir.cpp bstring.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
+bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
 fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp\
@@ -76,7 +76,7 @@ bintervl.cpp blist.cpp baddrrng.cpp bhashtbl.cpp bident.cpp bsortlst.cpp\
 bmembuf.cpp bbintree.cpp da.cpp da6809.cpp disconf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp \
-bdate.h bdir.h bobserv.h bstring.h contpdlg.h dircont.h fcinfo.h \
+bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
 fclipbrd.h fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
@@ -85,7 +85,7 @@ bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h flexemu.h
 
 test_SOURCES = \
-testmain.cpp test_gccasm.cpp bstring.cpp bdate.cpp colors.cpp \
+testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
 command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
 flexerr.cpp inout.cpp cacttrns.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
@@ -93,7 +93,7 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp\
-test_gccasm.h bdir.h bstring.h bdate.h \
+test_gccasm.h bdir.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
 memory.h mc6809.h misc1.h mc6809in.h \

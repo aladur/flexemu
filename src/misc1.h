@@ -34,7 +34,6 @@
     #include <windows.h>
 #endif
 #include "typedefs.h"
-#include "bstring.h"
 #include <string>
 
 /* Uncomment the following if You want native file system support */
@@ -254,12 +253,12 @@ extern const char *gMemoryAllocationErrorString;
 
 struct sOptions
 {
-    BString   drive[4];
-    BString   hex_file;
-    BString   disk_dir;
-    bool      isHiMem;
-    bool      use_undocumented;
-    bool      term_mode;
+    std::string drive[4];
+    std::string hex_file;
+    std::string disk_dir;
+    bool isHiMem;
+    bool use_undocumented;
+    bool term_mode;
     short int reset_key; // must be short int because of sscanf !!!
 };
 
@@ -351,5 +350,4 @@ extern bool matches(const char *text, const char *pattern,
 extern bool multimatches(const char *text, const char *multipattern,
                   const char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);
-extern bool comparenocase(const std::string &str1, const std::string &str2);
 #endif /* __misc1.h__ */

@@ -115,7 +115,7 @@ void Inout::get_drive_status(tDiskStatus status[4])
     }
 }
 
-BString Inout::get_drive_info(int floppyIndex)
+std::string Inout::get_drive_info(int floppyIndex)
 {
     if (fdc != NULL)
     {

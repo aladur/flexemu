@@ -153,19 +153,19 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
     XAbstractGui::initialize(pOptions);
     initialize_xrad_file();
     lfs.logFileName[0] = '\0';
-    lfs.minAddr   = 0x0000;
-    lfs.maxAddr   = 0xFFFF;
+    lfs.minAddr = 0x0000;
+    lfs.maxAddr = 0xFFFF;
     lfs.startAddr = 0x10000;
-    lfs.stopAddr  = 0x10000;
+    lfs.stopAddr = 0x10000;
     ggui = this;        // global instance pointer needed for callbacks
-    warp_x        = 0;
-    warp_y        = 0;
-    warp_home_x   = 0;
-    warp_home_y   = 0;
-    prev_x        = -1;
-    prev_y        = -1;
-    current_x     = -1;
-    current_y     = -1;
+    warp_x = 0;
+    warp_y = 0;
+    warp_home_x = 0;
+    warp_home_y = 0;
+    prev_x = -1;
+    prev_y = -1;
+    current_x = -1;
+    current_y = -1;
     mouse_button_state = 0;
 #ifdef HAVE_XPM
 
@@ -181,11 +181,11 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
 void XtGui::initialize_xrad_file()
 {
     BEnvironment env;
-    BString      adFileName;
+    std::string      adFileName;
 
     if (env.GetValue("HOME", adFileName))
     {
-        BString defaultAdFileName;
+        std::string defaultAdFileName;
 
         adFileName += PATHSEPARATORSTRING PROGRAMNAME;
         defaultAdFileName = F_DATADIR PATHSEPARATORSTRING PROGRAMNAME ".ad";
@@ -477,14 +477,14 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
 
     for (i = PM_FLOPPY0; i <= PM_IRQ4; ++i)
     {
-        data         = const_cast<char **>(pixmapname[i]);
-        symbol.name  = NULL;
+        data = const_cast<char **>(pixmapname[i]);
+        symbol.name = NULL;
         symbol.value = const_cast<char *>(none);
         symbol.pixel = color;
         xpmattr.colorsymbols = &symbol;
-        xpmattr.numsymbols   = 1;
-        xpmattr.colormap     = DefaultColormapOfScreen(XtScreen(w));
-        xpmattr.valuemask    = XpmColormap | XpmColorSymbols;
+        xpmattr.numsymbols = 1;
+        xpmattr.colormap = DefaultColormapOfScreen(XtScreen(w));
+        xpmattr.valuemask = XpmColormap | XpmColorSymbols;
         errorStatus = XpmCreatePixmapFromData(XtDisplay(w), XtWindow(w),
                                               data, &pixmap[i], NULL, &xpmattr);
         XpmFreeAttributes(&xpmattr);
@@ -567,7 +567,7 @@ void XtGui::popdown_about(void)
 
 void XtGui::center_dialog(Widget shell)
 {
-    Position  x, y;
+    Position x, y;
     Dimension width, height;
 
     XtVaGetValues(e2toplevel, XtNwidth, &width, XtNheight, &height,
@@ -660,7 +660,7 @@ void XtGui::popup_disk_info(Widget w)
         return;
     }
 
-    BString message;
+    std::string message;
     int i;
 
     for (i = 0; i < 4; ++i)
@@ -1419,29 +1419,29 @@ void XtGui::create_message_dialog(Widget parent)
 
 void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
 {
-    unsigned int        i, j;
-    Display            *display;
-    Screen             *screen;
-    Visual             *visual;
-    XGCValues       gcv;
-    XWMHints               *wm_hints;
-    XColor          xcolor, exact_color;
+    unsigned int i, j;
+    Display *display;
+    Screen *screen;
+    Visual *visual;
+    XGCValues gcv;
+    XWMHints *wm_hints;
+    XColor xcolor, exact_color;
 
-    oldX       = 0;
-    oldY       = 0;
+    oldX = 0;
+    oldY = 0;
 
     display = XtDisplay(w);
-    screen  = XtScreen(w);
-    visual  = DefaultVisualOfScreen(screen);
+    screen = XtScreen(w);
+    visual = DefaultVisualOfScreen(screen);
 
     mainpixmap = None;
 #ifdef HAVE_XPM
-    XpmAttributes       xpmattr;
-    int         errorStatus;
-    char            **data;
+    XpmAttributes xpmattr;
+    int errorStatus;
+    char **data;
 
-    data              = const_cast<char **>(flexemu);
-    xpmattr.colormap  = DefaultColormapOfScreen(XtScreen(w));
+    data = const_cast<char **>(flexemu);
+    xpmattr.colormap = DefaultColormapOfScreen(XtScreen(w));
     xpmattr.valuemask = XpmColormap;
     errorStatus = XpmCreatePixmapFromData(XtDisplay(w),
                                           XtWindow(w), data, &mainpixmap,
@@ -1597,17 +1597,16 @@ void XtGui::initialize_after_open(Widget w, const char *title)
 
     if (pxsh != NULL)
     {
-        pxsh->min_width  = WINDOWWIDTH + (width % WINDOWWIDTH);
-        pxsh->max_width  = WINDOWWIDTH * MAX_GUIXSIZE +
+        pxsh->min_width = WINDOWWIDTH + (width % WINDOWWIDTH);
+        pxsh->max_width = WINDOWWIDTH * MAX_GUIXSIZE +
                            (width % WINDOWWIDTH);
         pxsh->min_height = WINDOWHEIGHT + (height % WINDOWHEIGHT);;
         pxsh->max_height = WINDOWHEIGHT * MAX_GUIYSIZE +
                            (height % WINDOWHEIGHT);
-        pxsh->width_inc  = WINDOWWIDTH;
+        pxsh->width_inc = WINDOWWIDTH;
         pxsh->height_inc = WINDOWHEIGHT;
         pxsh->win_gravity = NorthWestGravity;
-        pxsh->flags      = PMaxSize | PMinSize | PResizeInc |
-                           PWinGravity;
+        pxsh->flags = PMaxSize | PMinSize | PResizeInc | PWinGravity;
         XSetStandardProperties(XtDisplay(w), XtWindow(w),
                                title, title, None, NULL, 0, pxsh);
         XFree(pxsh);
@@ -1638,11 +1637,11 @@ int XtGui::gui_type(void)
 }
 
 XtGui::XtGui(
-    Mc6809    *x_cpu,
-    Memory    *x_memory,
+    Mc6809 *x_cpu,
+    Memory *x_memory,
     Scheduler *x_sched,
-    Inout     *x_io,
-    E2video   *x_video,
+    Inout *x_io,
+    E2video *x_video,
     struct sGuiOptions *pOptions) :
     XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, pOptions)
 {
@@ -1716,7 +1715,7 @@ XtGui::~XtGui()
 
 void XtGui::popup_cpu(void)
 {
-    Position  x, y;
+    Position x, y;
     Dimension width, topheight, height;
 #ifndef FASTFLEX
     const char *title = "Mc6809";
@@ -2027,13 +2026,13 @@ void XtGui::create_cpuview(Widget parent)
     XSetWMProtocols(getDisplay(), XtWindow(cpuframe), &wm_delete_window, 1);
     cpupixmap = None;
 #ifdef HAVE_XPM
-    XpmAttributes   xpmattr;
-    int             errorStatus;
-    char          **data;
+    XpmAttributes xpmattr;
+    int errorStatus;
+    char **data;
 
-    xpmattr.colormap  = DefaultColormapOfScreen(XtScreen(cpuframe));
+    xpmattr.colormap = DefaultColormapOfScreen(XtScreen(cpuframe));
     xpmattr.valuemask = XpmColormap;
-    data              = const_cast<char **>(flexcpu);
+    data = const_cast<char **>(flexcpu);
     errorStatus = XpmCreatePixmapFromData(XtDisplay(cpuframe),
                                           XtWindow(cpuframe), data, &cpupixmap,
                                           NULL, &xpmattr);

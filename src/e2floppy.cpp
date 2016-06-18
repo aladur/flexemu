@@ -45,8 +45,8 @@ E2floppy::E2floppy() :
 
     for (i = 0; i <= 4; i++)
     {
-        track[i]      = 1; // position all drives to track != 0  !!!
-        floppy[i]     = NULL;
+        track[i] = 1; // position all drives to track != 0  !!!
+        floppy[i] = NULL;
         driveStatus[i] = DISK_STAT_EMPTY;
     }
 
@@ -149,7 +149,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
     {
 #ifdef NAFS
 
-        if (BDirectory::Exists(BString(containerPath.c_str())))
+        if (BDirectory::Exists(containerPath))
         {
             try
             {
@@ -234,7 +234,7 @@ void E2floppy::disk_directory(const char *x_disk_dir)
     disk_dir = x_disk_dir;
 }
 
-void E2floppy::mount_all_drives(BString drive[])
+void E2floppy::mount_all_drives(std::string drive[])
 {
     int i;
 
@@ -268,7 +268,7 @@ bool E2floppy::umount_all_drives(void)
 // it is dynamically allocated and should be freed
 // by the calling program
 
-BString E2floppy::drive_info(Word drive_nr)
+std::string E2floppy::drive_info(Word drive_nr)
 {
     std::stringstream str;
 
@@ -318,7 +318,7 @@ BString E2floppy::drive_info(Word drive_nr)
 
 const char *E2floppy::open_mode(char *path)
 {
-    int  wp;    // write protect flag
+    int wp;    // write protect flag
     const char *mode;
 
     wp = access(path, W_OK);
@@ -329,8 +329,8 @@ const char *E2floppy::open_mode(char *path)
 
 bool E2floppy::update_all_drives(void)
 {
-    Word            i;
-    bool            result;
+    Word i;
+    bool result;
 
     result = true;
 

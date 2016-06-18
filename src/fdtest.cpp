@@ -37,10 +37,11 @@
 #include "rfilecnt.h"
 #include "dircont.h"
 
-extern void flexContainerTest(const BString &testPath,
-                              FileContainerIf *srcDsk, const BString &srcFName,
+extern void flexContainerTest(const std::string &testPath,
+                              FileContainerIf *srcDsk,
+                              const std::string &srcFName,
                               FileContainerIf *destDsk,
-                              const BString &destFName,
+                              const std::string &destFName,
                               int destType = TYPE_DSK_CONTAINER);
 
 #define TEST_FAILED \
@@ -51,9 +52,9 @@ extern void flexContainerTest(const BString &testPath,
         fprintf(stderr, "%s and %s test case %d failed\n",  \
                 typeid(*srcDsk).name(), typeid(*destDsk).name(), testCase);
 
-BString replaceExt(const char *fileName, const char *newExtension)
+std::string replaceExt(const char *fileName, const char *newExtension)
 {
-    BString newName(fileName);
+    std::string newName(fileName);
     int         i;
 
     i = newName.index('.');
@@ -76,33 +77,33 @@ int main(int argc, char **argv)
 
 
     /*************************************/
-    /* Class BString test             */
+    /* Class std::string test            */
     /*************************************/
     {
-        const BString cs("abc");
-        BString *s, *s1, *s2, s3("aber"), s4;
+        const std::string cs("abc");
+        std::string *s, *s1, *s2, s3("aber"), s4;
         const char *p;
         int i;
         FlexDirEntry de;
 
-        s1 = new BString("cde");
+        s1 = new std::string("cde");
         p = *s1;
         delete s1;
         p = cs;
         p = s3;
         p = s3.c_str();
         p = s4.c_str();
-        s = new BString();
+        s = new std::string();
         p = s->c_str();
         delete s;
-        s1 = new BString('a');
+        s1 = new std::string('a');
         i = s1->length();
         i = s1->capacity();
         i = s1->[0];
         i = s1->[s1->length()-1];
         p = s1->c_str();
         delete s1;
-        s2 = new BString("1234567890abcde");
+        s2 = new std::string("1234567890abcde");
         i = s2->length();
         i = s2->capacity();
         i = s2->[0];
@@ -131,7 +132,7 @@ int main(int argc, char **argv)
         p = s4.c_str();
         de = FlexDirEntry();
         de.setTotalFileName("file.ext");
-        s4 = BString("abc");
+        s4 = std::string("abc");
         i = s4.index("b");
         s4 = de.getFileName();
         s4 = de.getTotalFileName();
@@ -169,7 +170,7 @@ int main(int argc, char **argv)
 
     {
         FileContainerIf *src, *dest;
-        BString testPath, file;
+        std::string testPath, file;
         char        *tempDir;
 
         tempDir = getenv("TMP");
@@ -214,14 +215,14 @@ int main(int argc, char **argv)
 
 
 
-void flexContainerTest(const BString &testPath,
-                       FileContainerIf *srcDsk, const BString &srcFName,
-                       FileContainerIf *destDsk, const BString &destFName,
+void flexContainerTest(const std::string &testPath,
+                       FileContainerIf *srcDsk, const std::string &srcFName,
+                       FileContainerIf *destDsk, const std::string &destFName,
                        int destType)
 
 {
-    BString file;
-    BString errMsg;
+    std::string file;
+    std::string errMsg;
     char        buffer[1024];
     int         testCase;
     int         i;
@@ -333,7 +334,7 @@ void flexContainerTest(const BString &testPath,
     {
         FILE        *fp;
         struct stat status;
-        BString file1;
+        std::string file1;
         FlexDirEntry de, *l[1000];
         FlexContainerInfo info;
 
@@ -389,7 +390,7 @@ void flexContainerTest(const BString &testPath,
     /* Copy some files from source file to destination file */
     /********************************************************/
     {
-        BString file1;
+        std::string file1;
         FlexDirEntry de, *l[1000];
 
         try

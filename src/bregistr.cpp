@@ -88,7 +88,7 @@ LONG BRegistry::SetValue(const char *name, const BYTE *value, int size)
     return lastError;
 }
 
-LONG BRegistry::GetValue(const char *name, BString &value)
+LONG BRegistry::GetValue(const char *name, std::string &value)
 {
     char *str;
     DWORD aSize;

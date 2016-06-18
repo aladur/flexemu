@@ -102,7 +102,7 @@ void FLEXplorer::WriteDefaultOptions(void)
 #endif
 #ifdef UNIX
     BRcFile *rcFile;
-    BString rcFileName;
+    std::string rcFileName;
     BEnvironment env;
 
     if (!env.GetValue("HOME", rcFileName))
@@ -126,7 +126,7 @@ void FLEXplorer::WriteDefaultOptions(void)
 void FLEXplorer::ReadDefaultOptions(void)
 {
     int autoTextFlag;
-    BString str;
+    std::string str;
 #ifdef WIN32
     BRegistry *reg;
 
@@ -146,7 +146,7 @@ void FLEXplorer::ReadDefaultOptions(void)
 #endif
 #ifdef UNIX
     BRcFile *rcFile;
-    BString rcFileName;
+    std::string rcFileName;
     BEnvironment env;
 
     if (!env.GetValue("HOME", rcFileName))

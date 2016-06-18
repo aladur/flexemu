@@ -27,7 +27,7 @@
 #include <wx/dialog.h>
 
 #include "misc1.h"
-#include "bstring.h"
+#include <string>
 #include "absgui.h"
 #include "brcfile.h"
 #include "bregistr.h"

@@ -38,7 +38,7 @@
 
    FileContainerIf *m_container = new FlexFileContainer(...);
    FileContainerIterator it("*.*");
-   BString fileName;
+   std::string fileName;
    int i = 0;
 
    for (it = m_container->begin(); it != m_container->end(); ++it)

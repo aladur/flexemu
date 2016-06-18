@@ -23,7 +23,7 @@
 #define __filecont_h__
 
 #include <misc1.h>
-#include "bstring.h"
+#include <string>
 #include "filecntb.h"
 
 class FlexCopyManager;

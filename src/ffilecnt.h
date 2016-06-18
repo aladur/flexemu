@@ -73,7 +73,7 @@ public:
 
     // basic interface (to be used within flexemu)
 public:
-    static BString bootSectorFile;
+    static std::string bootSectorFile;
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
                                      int fmt = TYPE_DSK_CONTAINER);
@@ -91,7 +91,7 @@ public:
 
     // enhanced interface (to be used within flexdisk)
 public:
-    BString GetPath() const;
+    std::string GetPath() const;
     FileContainerIf *begin()
     {
         return this;

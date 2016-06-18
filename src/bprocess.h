@@ -24,7 +24,7 @@
 #define __bprocess_h__
 
 #include "misc1.h"
-#include "bstring.h"
+#include <string>
 
 // This class describes a platform independant Process interface
 
@@ -53,9 +53,9 @@ public:
     };
 
 protected:
-    BString executable;
-    BString arguments;
-    BString directory;
+    std::string executable;
+    std::string arguments;
+    std::string directory;
 
 #ifdef WIN32
     HANDLE hProcess;

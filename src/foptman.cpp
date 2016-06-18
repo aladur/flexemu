@@ -195,7 +195,7 @@ void FlexOptionManager::GetEnvironmentOptions(
     struct sOptions *pOptions)
 {
 #ifdef UNIX
-    BString str;
+    std::string str;
     int value;
     BEnvironment env;
 
@@ -423,7 +423,7 @@ void FlexOptionManager::WriteOptions(
 {
 #ifdef WIN32
     BRegistry *reg = NULL;
-    BString   v;
+    std::string   v;
 
     reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);
 
@@ -452,7 +452,7 @@ void FlexOptionManager::WriteOptions(
 #endif
 #ifdef UNIX
     BRcFile *rcFile;
-    BString rcFileName;
+    std::string rcFileName;
     BEnvironment env;
 
     if (!env.GetValue("HOME", rcFileName))
@@ -562,7 +562,7 @@ void FlexOptionManager::GetOptions(
     delete reg;
 #endif
 #ifdef UNIX
-    BString rcFileName;
+    std::string rcFileName;
     BEnvironment env;
     BRcFile *rcFile;
 

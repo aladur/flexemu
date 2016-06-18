@@ -22,6 +22,10 @@
 
 
 #include <misc1.h>
+#include <cctype>
+#include <string>
+#include <algorithm>
+#include <locale>
 #ifdef _MSC_VER
     #include <direct.h>
 #endif
@@ -74,7 +78,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
     }
 
     Initialize_header(attributes & FLX_READONLY);
-    path = new BString(aPath);
+    path = new std::string(aPath);
     isOpened = 1;
 }
 
@@ -118,7 +122,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
         const char *name, int, int, int)
 {
     struct stat sbuf;
-    BString aPath;
+    std::string aPath;
 
     aPath = dir;
 
@@ -147,7 +151,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
     return new DirectoryContainer(aPath.c_str());
 }
 
-BString DirectoryContainer::GetPath() const
+std::string DirectoryContainer::GetPath() const
 {
     if (path != NULL)
     {
@@ -298,7 +302,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     DWORD totalNumberOfClusters = 0;
 #endif
     const char  *p;
-    BString rootPath;
+    std::string rootPath;
     struct stat sbuf;
 
 
@@ -306,7 +310,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     if (path->length() > 3)
     {
-        path->at(0, 3, rootPath);
+        rootPath = path->substr(0, 3);
     }
 
 #ifdef WIN32
@@ -427,12 +431,13 @@ bool DirectoryContainer::CheckFilename(const char *fileName) const
 void DirectoryContainer::ReadToBuffer(const char *fileName,
                                       FlexFileBuffer &buffer)
 {
-    BString filePath;
+    std::string filePath(fileName);
     int sectorMap = 0;
     struct stat sbuf;
 
-    filePath = fileName;
-    filePath.downcase();
+    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
+         ::tolower);
+
     filePath = *path + PATHSEPARATORSTRING + filePath;
 
     if (!buffer.ReadFromFile(filePath.c_str()))
@@ -498,7 +503,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
 bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = NULL */)
 {
-    BString lowerFileName, filePath;
+    std::string lowerFileName, filePath;
     struct stat sbuf;
 
     lowerFileName = fileName;
@@ -509,7 +514,8 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
 #ifdef UNIX
-    lowerFileName.downcase();
+    std::transform(lowerFileName.begin(), lowerFileName.end(),
+         lowerFileName.begin(), ::tolower);
 #endif
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
@@ -561,10 +567,11 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
     struct stat    sbuf;
     struct utimbuf timebuf;
     struct tm      file_time;
-    BString filePath, lowerFileName;
+    std::string filePath;
+    std::string lowerFileName(fileName);
 
-    lowerFileName = fileName;
-    lowerFileName.downcase();
+    std::transform(lowerFileName.begin(), lowerFileName.end(),
+         lowerFileName.begin(), ::tolower);
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)
@@ -593,13 +600,13 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
 }
 
 // set the file attributes of a file
-bool    DirectoryContainer::SetAttributes(const char *fileName, int setMask,
-        int clearMask /* = ~0 */)
+bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
+                                       int clearMask /* = ~0 */)
 {
     // only WRITE_PROTECT flag is supported
     if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))
     {
-        BString filePath;
+        std::string filePath;
 #ifdef WIN32
         filePath = *path + PATHSEPARATORSTRING + fileName;
         DWORD attrs = GetFileAttributes(filePath);
@@ -618,10 +625,10 @@ bool    DirectoryContainer::SetAttributes(const char *fileName, int setMask,
 #endif
 #ifdef UNIX
         struct stat sbuf;
-        BString lowerFileName;
+        std::string lowerFileName(fileName);
 
-        lowerFileName = fileName;
-        lowerFileName.downcase();
+        std::transform(lowerFileName.begin(), lowerFileName.end(),
+            lowerFileName.begin(), ::tolower);
         filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
         if (!stat(filePath.c_str(), &sbuf))
@@ -647,7 +654,7 @@ bool    DirectoryContainer::SetAttributes(const char *fileName, int setMask,
 // on UNIX a random file will be represented by a user execute flag
 bool    DirectoryContainer::SetRandom(const char *fileName)
 {
-    BString filePath;
+    std::string filePath;
 
 #ifdef WIN32
     filePath = *path + PATHSEPARATORSTRING + fileName;
@@ -656,10 +663,10 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 #endif
 #ifdef UNIX
     struct stat sbuf;
-    BString lowerFileName;
+    std::string lowerFileName(fileName);
 
-    lowerFileName = fileName;
-    lowerFileName.downcase();
+    std::transform(lowerFileName.begin(), lowerFileName.end(),
+        lowerFileName.begin(), ::tolower);
     filePath = *path + PATHSEPARATORSTRING + lowerFileName;
 
     if (!stat(filePath.c_str(), &sbuf))

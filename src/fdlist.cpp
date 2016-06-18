@@ -567,7 +567,7 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
         for (node = fileList.GetFirst(); node; node = node->GetNext())
         {
             FlexFileBuffer *pFileBuffer = new FlexFileBuffer;
-            BString fileName(node->GetData()->mb_str(*wxConvCurrent));
+            std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
 
             try
             {
@@ -964,9 +964,9 @@ void FlexDiskListCtrl::FindFiles(void)
     if (result == wxID_OK)
     {
         value = dialog.GetValue();
-        BString filePattern(value.mb_str(*wxConvCurrent));
+        std::string filePattern(value.mb_str(*wxConvCurrent));
         FileContainerIterator it(filePattern.c_str());
-        BString bFileName;
+        std::string sFileName;
 
         DeselectAllFiles();
 
@@ -974,10 +974,10 @@ void FlexDiskListCtrl::FindFiles(void)
         {
             int i;
 
-            bFileName = (*it).GetTotalFileName();
-            wxString fileName(bFileName.c_str(), *wxConvCurrent);
+            sFileName = (*it).GetTotalFileName();
+            wxString fileName(sFileName.c_str(), *wxConvCurrent);
 
-            if (multimatches(bFileName.c_str(), filePattern.c_str(),
+            if (multimatches(sFileName.c_str(), filePattern.c_str(),
                              ';', true) &&
                 (i = FindItem(-1, fileName)) >= 0)
             {
@@ -1010,7 +1010,7 @@ void FlexDiskListCtrl::CopyToClipboard(void)
     for (node = fileList.GetFirst(); node; node = node->GetNext())
     {
         FlexFileBuffer *pFileBuffer = new FlexFileBuffer;
-        BString fileName(node->GetData()->mb_str(*wxConvCurrent));
+        std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
 
         try
         {

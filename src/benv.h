@@ -23,7 +23,7 @@
 #ifndef __benv_h__
 #define __benv_h__
 
-#include "bstring.h"
+#include <string>
 
 class BEnvironment
 {
@@ -35,7 +35,7 @@ public:
     bool SetValue(const char *key, const char *value);
     bool SetValue(const char *key, int value);
     //  bool GetValue(const char *key, char **pValue);
-    bool GetValue(const char *key, BString &value);
+    bool GetValue(const char *key, std::string &value);
     bool GetValue(const char *key, int *pValue);
 };
 

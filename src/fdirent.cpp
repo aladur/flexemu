@@ -24,6 +24,7 @@
 #include <string>
 #include <algorithm>
 #include <iterator>
+#include <locale>
 #include "bdate.h"
 #include "fdirent.h"
 #include <stdio.h>
@@ -84,41 +85,39 @@ void FlexDirEntry::SetDate(int d, int m, int y)
 void FlexDirEntry::SetTotalFileName(const char *s)
 {
     fileName = s;
-    fileName.upcase();
+    std::transform(fileName.begin(), fileName.end(), fileName.begin(),
+         ::toupper);
 }
 
-BString FlexDirEntry::GetFileName(void) const
+std::string FlexDirEntry::GetFileName(void) const
 {
-    BString name(fileName);
-    std::string sname(name.c_str());
-
     // return substring until but not including last occurence of '.'
-    std::string::reverse_iterator it =
-        std::find(sname.rbegin(), sname.rend(), '.');
+    std::string::const_reverse_iterator it =
+        std::find(fileName.rbegin(), fileName.rend(), '.');
 
-    if (it == sname.rend())
+    if (it == fileName.rend())
     {
         // If '.' not found return whole string
-        return name;
+        return fileName;
     }
     else
     {
         std::string result;
 
         it++;
-        if (it != sname.rend())
+        if (it != fileName.rend())
         {
-            std::copy(sname.begin(), it.base(), std::back_inserter(result));
+            std::copy(fileName.begin(), it.base(), std::back_inserter(result));
         }
 
-        return BString(result.c_str());
+        return result;
     }
 }
 
-BString FlexDirEntry::GetFileExt(void) const
+std::string FlexDirEntry::GetFileExt(void) const
 {
     const char *p;
-    BString ext;
+    std::string ext;
 
     p = strchr(fileName.c_str(), '.');
 
@@ -130,7 +129,7 @@ BString FlexDirEntry::GetFileExt(void) const
     return ext;
 }
 
-const BString &FlexDirEntry::GetTotalFileName(void) const
+const std::string &FlexDirEntry::GetTotalFileName(void) const
 {
     return fileName;
 }
@@ -159,9 +158,9 @@ void FlexDirEntry::GetEndTrkSec(int *t, int *s)
     *s = endSec;
 }
 
-const BString FlexDirEntry::GetAttributesString(void)
+const std::string FlexDirEntry::GetAttributesString(void)
 {
-    BString str;
+    std::string str;
 
     if (attributes & FLX_READONLY)
     {

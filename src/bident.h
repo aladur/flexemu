@@ -32,8 +32,8 @@ class BIdentifier
 
 private:
 
-    DWord   value;
-    BString name;
+    DWord value;
+    std::string name;
 
 public:
 
@@ -44,7 +44,7 @@ public:
 
     DWord   GetValue();
     DWord   GetKey();   // to be hashable
-    BString GetName();
+    std::string GetName();
     void    SetTo(DWord value, const char *name = NULL);
     BIdentifier &operator = (const BIdentifier &id);
     bool    operator < (const BIdentifier &d) const;
@@ -62,7 +62,7 @@ inline DWord BIdentifier::GetKey()
 {
     return value;
 }
-inline BString BIdentifier::GetName()
+inline std::string BIdentifier::GetName()
 {
     return name;
 }

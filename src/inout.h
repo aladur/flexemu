@@ -31,7 +31,7 @@
     #include <termios.h>
 #endif
 #include "flexemu.h"
-#include "bstring.h"
+#include <string>
 
 #define KEY_BUFFER_SIZE (8)
 #define BELL        (0x07)
@@ -130,7 +130,7 @@ public:
     // Floppy interface
 public:
     void    get_drive_status(tDiskStatus status[4]);
-    BString get_drive_info(int floppyIndex);
+    std::string get_drive_info(int floppyIndex);
 
     // Joystick Interface
 public:

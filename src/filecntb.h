@@ -23,7 +23,7 @@
 #define __filecntb_h__
 
 #include <misc1.h>
-#include "bstring.h"
+#include <string>
 
 
 /* possible constants for container type */
@@ -64,7 +64,7 @@ public:
     virtual bool IsWriteProtected(void) const = 0;
     virtual bool  GetInfo(FlexContainerInfo &info) const = 0;
     virtual int  GetContainerType(void) const = 0;
-    virtual BString GetPath(void) const = 0;
+    virtual std::string GetPath(void) const = 0;
     virtual ~FileContainerIfBase() { };
 };  /* class FileContainerIfBase */
 

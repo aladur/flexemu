@@ -29,7 +29,7 @@
 #include "filecont.h"
 #include "fdirent.h"
 #include "flexerr.h"
-#include "bstring.h"
+#include <string>
 
 
 class FlexContainerInfo;
@@ -48,9 +48,9 @@ class DirectoryContainer : public FileContainerIf
     friend class DirectoryContainerIteratorImp;  // corresponding iterator class
 
 private:
-    BString     *path;
-    int     attributes;
-    bool        isOpened;
+    std::string *path;
+    int attributes;
+    bool isOpened;
 
 public:
     DirectoryContainer(const char *path);
@@ -66,7 +66,7 @@ public:
     bool IsWriteProtected(void) const;
     bool GetInfo(FlexContainerInfo &info) const;
     int  GetContainerType(void) const;
-    BString GetPath(void) const;
+    std::string GetPath(void) const;
     bool CheckFilename(const char *) const;
 
     // file oriented interface (to be used within flexdisk)

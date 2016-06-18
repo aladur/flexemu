@@ -30,7 +30,7 @@
 
 #include "e2.h"
 #include "mc6809.h"
-#include "bstring.h"
+#include <string>
 
 #define MAX_GUIXSIZE    (3)
 #define MAX_GUIYSIZE    (4)
@@ -57,21 +57,21 @@ http://www.geocities.com/flexemu/\n"
 
 struct sGuiOptions
 {
-    int     argc;
-    char *const    *argv;
-    BString     color;
-    BString     html_viewer;
-    BString     doc_dir;
-    int     nColors;
-    int     inverse;
-    int     synchronized;
-    int     switch_sp;
-    int     guiXSize;
-    int     guiYSize;
-    int     guiType;
+    int argc;
+    char *const *argv;
+    std::string color;
+    std::string html_viewer;
+    std::string doc_dir;
+    int nColors;
+    int inverse;
+    int synchronized;
+    int switch_sp;
+    int guiXSize;
+    int guiYSize;
+    int guiType;
 #ifdef WIN32
-    HINSTANCE   hInstance;  // handle to current instance
-    int     nCmdShow;   // show state of window
+    HINSTANCE hInstance;  // handle to current instance
+    int nCmdShow;   // show state of window
 #endif
 };
 
@@ -87,30 +87,30 @@ class AbstractGui
     // private instance variables:
 
 protected:
-    Mc6809     *cpu;    // pointer to cpu to send interrupts
-    Memory     *memory; // pointer to memory (video memory access)
-    Scheduler  *schedy;
-    Inout      *io; // pointer to io-class handling in/output
-    E2video    *e2video;// pointer to video control registers
-    const char  *program_name;
-    unsigned char    unused_block[YBLOCK_SIZE];
-    int      switch_sp;
+    Mc6809 *cpu;    // pointer to cpu to send interrupts
+    Memory *memory; // pointer to memory (video memory access)
+    Scheduler *schedy;
+    Inout *io; // pointer to io-class handling in/output
+    E2video *e2video;// pointer to video control registers
+    const char *program_name;
+    unsigned char unused_block[YBLOCK_SIZE];
+    int switch_sp;
     struct sGuiOptions *pOptions;
-    bool         exit_flag; // exit application:
-    char        cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
-    Byte        bp_input[2];
-    BString     color;
-    int     guiXSize;
-    int     guiYSize;
-    int     nColors;
-    int     use_colors;
-    int     timebase;
-    int     cpu_line_size;
-    const char     *cpu_line_delim;
-    unsigned long   pen[1 << COLOR_PLANES];
-    Word        conv_2byte_tab[256];
-    DWord       conv_3byte_tab[256];
-    DWord       conv_4byte_tab[256];
+    bool exit_flag; // exit application:
+    char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
+    Byte bp_input[2];
+    std::string color;
+    int guiXSize;
+    int guiYSize;
+    int nColors;
+    int use_colors;
+    int timebase;
+    int cpu_line_size;
+    const char *cpu_line_delim;
+    unsigned long pen[1 << COLOR_PLANES];
+    Word conv_2byte_tab[256];
+    DWord conv_3byte_tab[256];
+    DWord conv_4byte_tab[256];
 
     // Initialisation functions
 
@@ -148,12 +148,12 @@ public:
 
 public:
     AbstractGui(
-        Mc6809         *x_cpu,
-        Memory         *x_memory,
-        Scheduler      *x_sched,
-        Inout          *x_io,
-        E2video        *x_video,
-        struct sGuiOptions  *options);
+        Mc6809 *x_cpu,
+        Memory *x_memory,
+        Scheduler *x_sched,
+        Inout *x_io,
+        E2video *x_video,
+        struct sGuiOptions *options);
     virtual ~AbstractGui();
 
 };

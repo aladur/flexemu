@@ -22,6 +22,8 @@
 
 #include <misc1.h>
 #include <stdio.h>
+#include <locale>
+#include <algorithm>
 #include "benv.h"
 
 
@@ -35,9 +37,10 @@ BEnvironment::~BEnvironment(void)
 
 bool BEnvironment::RemoveKey(const char *key)
 {
-    BString upperKey(key);
+    std::string upperKey(key);
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
 #ifdef WIN32
     SetEnvironmentVariable(upperKey.c_str(), NULL);
 #endif
@@ -51,9 +54,10 @@ bool BEnvironment::RemoveKey(const char *key)
 
 bool BEnvironment::SetValue(const char *key, const char *value)
 {
-    BString upperKey(key);
+    std::string upperKey(key);
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
 #ifdef WIN32
     return (SetEnvironmentVariable((const char *)upperKey, value) != 0);
 #endif
@@ -69,9 +73,10 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 bool BEnvironment::SetValue(const char *key, int value)
 {
     char str[32];
-    BString upperKey(key);
+    std::string upperKey(key);
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
     sprintf(str, "%i", value);
 #ifdef WIN32
     return (SetEnvironmentVariable(upperKey, str) != 0);
@@ -88,9 +93,10 @@ bool BEnvironment::SetValue(const char *key, int value)
 /*
 bool BEnvironment::GetValue(const char *key, char **pValue)
 {
-    BString upperKey(key);
+    std::string upperKey(key);
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
 #ifdef WIN32
     return (SetEnvironmentVariable(upperKey, str) != 0);
 #endif
@@ -99,13 +105,14 @@ bool BEnvironment::GetValue(const char *key, char **pValue)
 }
 */
 
-bool BEnvironment::GetValue(const char *key, BString &value)
+bool BEnvironment::GetValue(const char *key, std::string &value)
 {
     char *p;
-    BString upperKey(key);
+    std::string upperKey(key);
     bool ret = false;
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
 #ifdef WIN32
     int size = GetEnvironmentVariable(upperKey, NULL, 0);
 
@@ -137,10 +144,11 @@ bool BEnvironment::GetValue(const char *key, BString &value)
 
 bool BEnvironment::GetValue(const char *key, int *pValue)
 {
-    BString str;
-    BString upperKey(key);
+    std::string str;
+    std::string upperKey(key);
 
-    upperKey.upcase();
+    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
+         ::toupper);
 
     if (!GetValue(upperKey.c_str(), str))
     {

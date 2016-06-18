@@ -147,7 +147,7 @@ bool startup(
     if (!PMEMORY->load_hexfile(pOptions->hex_file.c_str(), true))   // &&
     {
         //pOptions->hex_file.index(PATHSEPARATOR) < 0) {
-        BString hexFilePath;
+        std::string hexFilePath;
 
         hexFilePath = pOptions->disk_dir + PATHSEPARATORSTRING +
                       pOptions->hex_file;

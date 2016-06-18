@@ -23,6 +23,7 @@
 #define __idircnt_cpp__
 
 #include <misc1.h>
+#include <algorithm>
 #ifdef _MSC_VER
     #include <io.h>         // needed for access
     #include <direct.h>
@@ -71,15 +72,15 @@ void DirectoryContainerIteratorImp::AtEnd()
 
 bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
-    BString         str, fileName;
-    bool                    isValid;
+    std::string str, fileName;
+    bool isValid;
 #ifdef WIN32
-    WIN32_FIND_DATA         findData;
-    SYSTEMTIME              systemTime;
+    WIN32_FIND_DATA findData;
+    SYSTEMTIME systemTime;
 #endif
 #ifdef UNIX
-    struct dirent           *findData = NULL;
-    struct stat             sbuf;
+    struct dirent *findData = NULL;
+    struct stat sbuf;
 #endif
     dirEntry.SetEmpty();
     // repeat until a valid directory entry found
@@ -245,7 +246,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 // Only valid if the iterator has a valid directory entry
 bool DirectoryContainerIteratorImp::DeleteCurrent(void)
 {
-    BString filePath;
+    std::string filePath;
 
     if (dirEntry.IsEmpty())
     {
@@ -253,7 +254,8 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
     }
 
     filePath = dirEntry.GetTotalFileName();
-    filePath.downcase();
+    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
+         ::tolower);
     filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
 
@@ -306,29 +308,29 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         return false;
     }
 
-    BString s(dirEntry.GetTotalFileName());
-    BString d(newName);
+    std::string src(dirEntry.GetTotalFileName());
+    std::string dst(newName);
     FlexDirEntry de;
 #ifdef UNIX
-    s.downcase();
-    d.downcase();
+    std::transform(src.begin(), src.end(), src.begin(), ::tolower);
+    std::transform(dst.begin(), dst.end(), dst.begin(), ::tolower);
 #endif
 
     // prevent overwriting of an existing file
-    if (base->FindFile(d.c_str(), de))
+    if (base->FindFile(dst.c_str(), de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
-    if (s == d)
+    if (src == dst)
     {
         return true;
     }
 
-    s = base->GetPath() + PATHSEPARATORSTRING + s;
-    d = base->GetPath() + PATHSEPARATORSTRING + d;
+    src = base->GetPath() + PATHSEPARATORSTRING + src;
+    dst = base->GetPath() + PATHSEPARATORSTRING + dst;
 
-    if (rename(s.c_str(), d.c_str()))
+    if (rename(src.c_str(), dst.c_str()))
     {
         // Unfinished
         if (errno == EEXIST)
@@ -353,10 +355,10 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
 // Only valid if the iterator has a valid directory entry
 bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
 {
-    struct stat    sbuf;
+    struct stat sbuf;
     struct utimbuf timebuf;
-    struct tm      file_time;
-    BString        filePath;
+    struct tm file_time;
+    std::string filePath;
 
     if (dirEntry.IsEmpty())
     {
@@ -364,7 +366,8 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     filePath = dirEntry.GetTotalFileName();
-    filePath.downcase();
+    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
+        ::tolower);
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)
@@ -397,7 +400,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
 // Only the WRITE_PROTECT flag is supported
 bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
 {
-    BString filePath;
+    std::string filePath;
 
     if (dirEntry.IsEmpty())
     {
@@ -424,7 +427,8 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
     struct stat sbuf;
 
     filePath = dirEntry.GetTotalFileName();
-    filePath.downcase();
+    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
+         ::tolower);
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (!stat(filePath.c_str(), &sbuf))

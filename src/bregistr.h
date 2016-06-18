@@ -25,7 +25,7 @@
 #ifdef WIN32
 
 #include <windows.h>
-#include "bstring.h"
+#include <string>
 
 
 class BRegistry
@@ -49,7 +49,7 @@ public:
     LONG SetValue(const char *name, const char *value);
     LONG SetValue(const char *name, const int value);
     LONG SetValue(const char *name, const BYTE *value, int size);
-    LONG GetValue(const char *name, BString &value);
+    LONG GetValue(const char *name, std::string &value);
     LONG GetValue(const char *name, int *value);
     // implicit type conversions !
     operator HKEY() const ;
