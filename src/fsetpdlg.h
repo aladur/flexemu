@@ -27,7 +27,6 @@
 #include <wx/dialog.h>
 
 #include "misc1.h"
-#include <string>
 #include "absgui.h"
 #include "brcfile.h"
 #include "bregistr.h"
@@ -42,36 +41,26 @@ class wxBookCtrlBase;
 
 enum
 {
-    IDC_Geometry       = 200,
-    IDC_Color          = 201,
-    IDC_Inverse        = 202,
-    IDC_HTMLViewer     = 203,
-    IDC_DiskDir        = 204,
-    IDC_Monitor        = 205,
-    IDC_Drive0         = 206,
-    IDC_Drive1         = 207,
-    IDC_Drive2         = 208,
-    IDC_Drive3         = 209,
-    IDC_nColors        = 210,
-    IDC_RamExtension   = 211,
-    IDC_Undocumented   = 212,
-    IDC_CoreRadioButton1 = 213,
-    IDC_CoreRadioButton2 = 214,
-    IDC_GuiCore0       = 215,
-    IDC_GuiCore1       = 216,
-    IDC_GuiCore2       = 217,
-    IDC_GuiCore3       = 218,
-    IDC_Mc6809Core0    = 219,
-    IDC_Mc6809Core1    = 220,
-    IDC_Mc6809Core2    = 221,
-    IDC_Mc6809Core3    = 222,
+    IDC_Geometry = 200,
+    IDC_Color = 201,
+    IDC_Inverse = 202,
+    IDC_HTMLViewer = 203,
+    IDC_DiskDir = 204,
+    IDC_Monitor = 205,
+    IDC_Drive0 = 206,
+    IDC_Drive1 = 207,
+    IDC_Drive2 = 208,
+    IDC_Drive3 = 209,
+    IDC_nColors = 210,
+    IDC_RamExtension = 211,
+    IDC_Undocumented = 212,
 
-    IDC_DiskDirButton  = 304,
-    IDC_MonitorButton  = 305,
-    IDC_Drive0Button   = 306,
-    IDC_Drive1Button   = 307,
-    IDC_Drive2Button   = 308,
-    IDC_Drive3Button   = 309
+    IDC_DiskDirButton = 304,
+    IDC_MonitorButton = 305,
+    IDC_Drive0Button = 306,
+    IDC_Drive1Button = 307,
+    IDC_Drive2Button = 308,
+    IDC_Drive3Button = 309
 };
 
 class FlexemuOptionsDialog : public wxDialog
@@ -90,28 +79,28 @@ public:
         const wxString &name = wxT("FlexemuOptionsDialog"));
     virtual ~FlexemuOptionsDialog();
 
-    void    OnInitDialog(wxInitDialogEvent &event);
+    void OnInitDialog(wxInitDialogEvent &event);
     wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMc6809OptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
-    //void    OnCloseWindow(wxCloseEvent &event);
-    bool    TransferDataFromWindow(void);
-    bool    TransferDataToWindow(void);
-    bool    Validate(void);
+    //void OnCloseWindow(wxCloseEvent &event);
+    bool TransferDataFromWindow(void);
+    bool TransferDataToWindow(void);
+    bool Validate(void);
     wxString OpenFilePrompter(
         const wxString &defautPath = wxT(""),
         const wxString &caption = wxT(""),
         const wxString &filter = wxT("*.*"));
-    void    OnSelectDriveN(int n);
-    void    OnSelectDrive0(wxCommandEvent &WXUNUSED(event));
-    void    OnSelectDrive1(wxCommandEvent &WXUNUSED(event));
-    void    OnSelectDrive2(wxCommandEvent &WXUNUSED(event));
-    void    OnSelectDrive3(wxCommandEvent &WXUNUSED(event));
-    void    OnSelectDiskDir(wxCommandEvent &WXUNUSED(event));
-    void    OnSelectMonitor(wxCommandEvent &WXUNUSED(event));
+    void OnSelectDriveN(int n);
+    void OnSelectDrive0(wxCommandEvent &WXUNUSED(event));
+    void OnSelectDrive1(wxCommandEvent &WXUNUSED(event));
+    void OnSelectDrive2(wxCommandEvent &WXUNUSED(event));
+    void OnSelectDrive3(wxCommandEvent &WXUNUSED(event));
+    void OnSelectDiskDir(wxCommandEvent &WXUNUSED(event));
+    void OnSelectMonitor(wxCommandEvent &WXUNUSED(event));
 
 private:
     FlexemuOptionsDialog() { }; // should not be used
@@ -129,6 +118,10 @@ private:
     wxTextCtrl *c_diskDir;
     wxTextCtrl *c_drive[4];
     wxRadioBox *c_ramExtension;
+
+    static const int gap;
+    static const int textWidth;
+    static const int stextWidth;
 
     DECLARE_EVENT_TABLE()
 };
