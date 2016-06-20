@@ -49,12 +49,6 @@ bool BPosixThreadImp::Start(BThread *aThreadObject)
     ret = pthread_create(&thread, &attr, (tThreadProc)BPosixThreadImp::RunImp,
                          this);
 
-    if (ret == 0)
-        // detach thread to avoid memory leaks
-    {
-        pthread_detach(thread);
-    }
-
     return (ret == 0);
 }
 
