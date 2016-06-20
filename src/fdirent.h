@@ -44,8 +44,8 @@ enum flexFileStatus
 };
 
 
-const int   FLEX_BASEFILENAME_LENGTH = 8;
-const int   FLEX_FILEEXT_LENGTH      = 3;
+const unsigned long FLEX_BASEFILENAME_LENGTH = 8;
+const unsigned long FLEX_FILEEXT_LENGTH      = 3;
 
 
 class FlexDirEntry

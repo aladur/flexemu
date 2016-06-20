@@ -32,7 +32,6 @@
 #include "flexerr.h"
 
 class FlexContainerInfo;
-class FlexOpenFileInfo;
 class BDate;
 class FlexCopyManager;
 class FlexFileContainerIteratorImp;

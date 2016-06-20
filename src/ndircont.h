@@ -34,7 +34,6 @@
 
 #define ERR_SIZE    (200)
 
-const int NATIVE_MAX_OPEN_FILES = 10;
 const int MAX_TRACK             = 79;       // max. nr. of tracks - 1
 const int MAX_SECTOR            =
     36;       // nr of sect. per track (side 0 and 1)
@@ -59,8 +58,6 @@ struct s_new_file
     FILE *fp;
 };
 
-class FlexOpenFileInfo;
-
 class NafsDirectoryContainer : public FileContainerIfSector
 {
 
@@ -72,7 +69,6 @@ private:
     NafsDirectoryContainer();
     std::string *dir;
 
-    FlexOpenFileInfo *pof[NATIVE_MAX_OPEN_FILES];
     s_floppy param;
 
     s_link_table *pflex_links;       // pointer to link table

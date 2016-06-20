@@ -351,11 +351,17 @@ std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
 {
     if (*pfn != -1)
     {
-        std::string name(pfn, 8);
-        std::string ext(pfn + 8, 3);
+        std::string::size_type length;
+
+        length = std::min(strlen(pfn), FLEX_BASEFILENAME_LENGTH);
+        std::string name(pfn, length);
+        length = std::min(strlen(pfn + FLEX_BASEFILENAME_LENGTH),
+                          FLEX_FILEEXT_LENGTH);
+        std::string ext(pfn + FLEX_BASEFILENAME_LENGTH, length);
         std::transform(name.begin(), name.end(), name.begin(), ::tolower);
         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-        return std::string(name + '.' + ext);
+        return name + '.' + ext;
+
     } // if
 
     return std::string();
@@ -370,7 +376,7 @@ std::string NafsDirectoryContainer::unix_filename(SWord file_id) const
 
         filename << "tmp" << std::setw(2) << std::setfill('0')
                  << NEW_FILE1 - file_id;
-        return filename.str().c_str();
+        return filename.str();
     }
     else
     {
@@ -1113,14 +1119,18 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     void NafsDirectoryContainer::check_for_rename(SWord dir_index,
             s_dir_sector * pdb) const
     {
-        Word    i;
-        char    old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
-        const char    *pfilename1, *pfilename2;
+        Word i;
+        char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
+        std::string filename1, filename2;
+        const char *pfilename1, *pfilename2;
 
         for (i = 0; i < 10; i++)
         {
-            pfilename1 = unix_filename(dir_index * 10 + i).c_str();
-            pfilename2 = get_unix_filename(pdb->dir_entry[i].filename).c_str();
+            filename1 = unix_filename(dir_index * 10 + i);
+            filename2 = get_unix_filename(pdb->dir_entry[i].filename);
+
+            pfilename1 = filename1.c_str();
+            pfilename2 = filename2.c_str();
 
             if (*pfilename1 && *pfilename2 &&
                 strcmp(pfilename1, pfilename2) != 0)
@@ -1235,10 +1245,11 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     }
 
 #endif
+                    std::string new_name = unix_filename(
+                               (pflex_links + index)->file_id);
                     strcpy((char *)&new_path, dir->c_str());
                     strcat((char *)&new_path, PATHSEPARATORSTRING);
-                    strcat((char *)&new_path, unix_filename(
-                               (pflex_links + index)->file_id).c_str());
+                    strcat((char *)&new_path, new_name.c_str());
                     rename(old_path, new_path);
 #ifdef DEBUG_FILE
                     LOG_XX("     new file %s, was %s\n",
