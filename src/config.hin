@@ -100,6 +100,9 @@
 /* Define to 1 if you have the <X11/Intrinsic.h> header file. */
 #undef HAVE_X11_INTRINSIC_H
 
+/* Define to 1 if you have the <X11/Xaw3dxft/XawInit.h> header file. */
+#undef HAVE_X11_XAW3DXFT_XAWINIT_H
+
 /* Define to 1 if you have the <X11/Xaw/XawInit.h> header file. */
 #undef HAVE_X11_XAW_XAWINIT_H
 
@@ -117,6 +120,9 @@
 
 /* Define if you have the Xaw3d extension */
 #undef HAVE_XAW3D
+
+/* Define if you have the Xaw3d extension */
+#undef HAVE_XAW3DXFT
 
 /* Define if you have the Xmu extension */
 #undef HAVE_XMU

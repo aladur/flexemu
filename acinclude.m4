@@ -57,9 +57,9 @@ then
           $X_LIBS $X_EXTRA_LIBS)
           dnl *** Check for X Athena widget extension
           AC_CHECK_HEADERS(X11/Xaw/XawInit.h,
-            [ 
+            [
               dnl *** If X11/Xaw/XawInit.h exists...
-              dnl *** Check for both libXaw3d and libXaw
+              dnl *** Check for any of libXaw, libXaw3d or libXaw3dxft
               AC_CHECK_LIB(Xaw3d, XawToggleSetCurrent,
               [AC_DEFINE(HAVE_XAW3D, 1, [Define if you have the Xaw3d extension])
                X_P_LIBS="-lXaw3d $X_P_LIBS"],
@@ -69,7 +69,22 @@ then
                  $X_LIBS $X_EXTRA_LIBS)],
               $X_LIBS $X_EXTRA_LIBS)
             ],
-            AC_MSG_ERROR([[Athena Widgets (libXaw.so or libXaw3d.so) not found. Unable to build flexemu]]),
+            [
+	          AC_CHECK_HEADERS(X11/Xaw3dxft/XawInit.h,
+	      	    [ 
+		            AC_CHECK_LIB(Xaw3dxft, XawToggleSetCurrent,
+		            [AC_DEFINE(HAVE_XAW3DXFT, 1, [Define if you have the Xaw3d extension])
+		            X_P_LIBS="-lXaw3dxft $X_P_LIBS"],
+		            $X_LIBS $X_EXTRA_LIBS)
+		          ],
+  		        AC_MSG_ERROR([[Athena Widgets (libXaw.so, libXaw3d.sa or libXaw3dxft.so) not found. Unable to build flexemu]]),
+      		    [
+		            #include <X11/Xlib.h>
+		            #include <X11/Intrinsic.h>
+		          ]
+		        )
+            ],
+	          AC_MSG_ERROR([[Athena Widgets (libXaw.so, libXaw3d.sa or libXaw3dxft.so) not found. Unable to build flexemu]]),
             [
                #include <X11/Xlib.h>
                #include <X11/Intrinsic.h>
