@@ -25,7 +25,7 @@
 #ifndef __mc6850_h__
 #define __mc6850_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 
 #include "iodevice.h"

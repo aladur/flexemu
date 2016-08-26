@@ -23,7 +23,7 @@
 #ifndef __bmembuf_h__
 #define __bmembuf_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 
 class BMemoryBuffer

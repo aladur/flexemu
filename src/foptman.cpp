@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <signal.h>
 #include <new>
 
@@ -37,7 +37,7 @@
 #endif
 
 
-#ifdef WIN32
+#ifdef _WIN32
 // uses its own implementation of getopt
 int optind = 1;
 int opterr = 0;
@@ -134,7 +134,7 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -c <color> define foreground color\n");
     fprintf(fp, "  -i (display inverse video)\n");
     fprintf(fp, "  -n <# of colors>\n");
-#ifdef WIN32
+#ifdef _WIN32
     fprintf(fp, "  -g [win32|x11] (select type of GUI)\n");
 #endif
 #endif
@@ -157,7 +157,7 @@ void FlexOptionManager::InitOptions(
     pOptions->term_mode        = false;
     pOptions->isHiMem          = false;
     pOptions->use_undocumented = false;
-#ifndef WIN32
+#ifndef _WIN32
 #ifndef HAVE_X11
     pOptions->term_mode        = true;
 #endif
@@ -177,7 +177,7 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->guiType       = GUI_XTOOLKIT;
     pOptions->disk_dir         = F_DATADIR;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     pGuiOptions->doc_dir       = "";
     pGuiOptions->guiType       = GUI_WINDOWS;
     pOptions->disk_dir         = "";
@@ -284,7 +284,7 @@ void FlexOptionManager::GetCommandlineOptions(
 #endif
 #ifdef HAVE_X11
     strcat(optstr, "s");            // X11 synchronised
-#ifdef WIN32
+#ifdef _WIN32
     strcat(optstr, "g:");           // Select type of GUI
 #endif
 #endif
@@ -370,7 +370,7 @@ void FlexOptionManager::GetCommandlineOptions(
             case 's':
                 pGuiOptions->synchronized     = 1;
                 break;
-#ifdef WIN32
+#ifdef _WIN32
 
             case 'g':
                 if (stricmp(optarg, "win32") == 0)
@@ -421,7 +421,7 @@ void FlexOptionManager::WriteOptions(
     bool  ifNotExists /* = false */
 )
 {
-#ifdef WIN32
+#ifdef _WIN32
     BRegistry *reg = NULL;
     std::string   v;
 
@@ -436,17 +436,17 @@ void FlexOptionManager::WriteOptions(
     reg->SetValue(FLEXINVERSE, pGuiOptions->inverse ? 1 : 0);
     reg->SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     reg->SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
-    reg->SetValue(FLEXCOLOR, pGuiOptions->color);
+    reg->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     reg->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    reg->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
+    reg->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
     reg->SetValue(FLEXSCREENWIDTH, pGuiOptions->guiXSize);
     reg->SetValue(FLEXSCREENHEIGHT, pGuiOptions->guiYSize);
-    reg->SetValue(FLEXMONITOR, pOptions->hex_file);
-    reg->SetValue(FLEXDISKDIR, pOptions->disk_dir);
-    reg->SetValue(FLEXDISK0, pOptions->drive[0]);
-    reg->SetValue(FLEXDISK1, pOptions->drive[1]);
-    reg->SetValue(FLEXDISK2, pOptions->drive[2]);
-    reg->SetValue(FLEXDISK3, pOptions->drive[3]);
+    reg->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
+    reg->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
+    reg->SetValue(FLEXDISK0, pOptions->drive[0].c_str());
+    reg->SetValue(FLEXDISK1, pOptions->drive[1].c_str());
+    reg->SetValue(FLEXDISK2, pOptions->drive[2].c_str());
+    reg->SetValue(FLEXDISK3, pOptions->drive[3].c_str());
     reg->SetValue(FLEXVERSION, VERSION);
     delete reg;
 #endif
@@ -493,10 +493,10 @@ void FlexOptionManager::GetOptions(
     struct sOptions *pOptions)
 {
     int val;
-#ifdef WIN32
+#ifdef _WIN32
     BRegistry *reg;
 
-    reg = new BRegistry(BRegistry::localMachine, FLEXEMUREG);
+    reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);
     reg->GetValue(FLEXDISKDIR, pOptions->disk_dir);
     reg->GetValue(FLEXDISK0, pOptions->drive[0]);
     reg->GetValue(FLEXDISK1, pOptions->drive[1]);

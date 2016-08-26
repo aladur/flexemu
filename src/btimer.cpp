@@ -19,20 +19,20 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #ifdef UNIX
     #include <signal.h>
     #include <errno.h>
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     #include <process.h>
 #endif
 
 #include "btimer.h"
 #include "bdelete.h"
 
-#ifdef WIN32
+#ifdef _WIN32
     #ifndef _TTHREADPROC_DEFINED_
         typedef  unsigned long (__stdcall *tThreadProc)(void *);
         #define _TTHREADPROC_DEFINED_
@@ -43,7 +43,7 @@ BTimer *BTimer::instance = NULL;
 
 BTimer::BTimer() : dueTime(0), periodic(false),
     timerProc(NULL), timerParam(NULL)
-#ifdef WIN32
+#ifdef _WIN32
     , timerHandle(NULL), startTimerEvent(NULL),
     timerElapsedEvent(NULL),
     timerThread(0), doFinish(false)
@@ -227,7 +227,7 @@ void BTimer::TimerElapsed()
 // BTimer Win32 specific implementation
 ///////////////////////////////////////////////////////////////
 
-#ifdef WIN32
+#ifdef _WIN32
 void BTimer::Init()
 {
     DWORD threadId; // necessary for Win95/98/ME

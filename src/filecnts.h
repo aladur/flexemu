@@ -24,7 +24,7 @@
 
 #ifndef __fromflex__
 
-#include <misc1.h>
+#include "misc1.h"
 #include "filecntb.h"
 
 /* number of Kilo Byte at least available for each directory sector */

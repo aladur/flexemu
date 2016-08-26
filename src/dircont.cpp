@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include <cctype>
 #include <string>
 #include <algorithm>
@@ -53,6 +53,7 @@
 #include "ffilebuf.h"
 #include "ifilecnt.h"
 #include "idircnt.h"
+#include "cvtwchar.h"
 
 /****************************************/
 /* Constructor                          */
@@ -69,7 +70,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 
     if (!stat(aPath, &sbuf) && !S_ISDIR(sbuf.st_mode))
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
+        throw FlexException(FERR_UNABLE_TO_OPEN, std::string(aPath));
     }
 
     if (access(aPath, W_OK))
@@ -144,7 +145,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
         // directory does not exist
         if (!BDirectory::Create(aPath, 0755))
         {
-            throw FlexException(FERR_UNABLE_TO_CREATE, aPath.c_str());
+            throw FlexException(FERR_UNABLE_TO_CREATE, aPath);
         }
     }
 
@@ -262,7 +263,7 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
     // prevent conflict with an existing file
     if (FindFile(newName, de))
     {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, std::string(newName));
     }
 
     FileContainerIterator it(oldName);
@@ -271,8 +272,8 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 
     if (it == this->end())
     {
-        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName,
-                            GetPath().c_str());
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, std::string(oldName),
+                            GetPath());
     }
     else
     {
@@ -315,8 +316,16 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
 #ifdef WIN32
 
-    if (!GetDiskFreeSpace(rootPath, &sectorsPerCluster, &bytesPerSector,
-                          &numberOfFreeClusters, &totalNumberOfClusters))
+#ifdef UNICODE
+    BOOL success = GetDiskFreeSpace(ConvertToUtf16String(rootPath).c_str(),
+        &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
+        &totalNumberOfClusters);
+#else
+    BOOL success = GetDiskFreeSpace(rootPath, &sectorsPerCluster,
+        &bytesPerSector, &numberOfFreeClusters,
+        &totalNumberOfClusters);
+#endif
+    if (!success)
     {
         throw FlexException(FERR_READING_DISKSPACE, *path);
     }
@@ -442,7 +451,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
 
     if (!buffer.ReadFromFile(filePath.c_str()))
     {
-        throw FlexException(FERR_READING_FROM, fileName);
+        throw FlexException(FERR_READING_FROM, std::string(fileName));
     }
 
     buffer.SetFilename(fileName);
@@ -459,7 +468,13 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     else
     {
 #ifdef WIN32
-        DWord fileAttrib = GetFileAttributes(filePath);
+        DWord fileAttrib;
+#ifdef UNICODE
+        fileAttrib = GetFileAttributes(
+            ConvertToUtf16String(filePath).c_str());
+#else
+        fileAttrib = GetFileAttributes(filePath);
+#endif
 
         if (fileAttrib != 0xFFFFFFFF &&
             (fileAttrib & FILE_ATTRIBUTE_HIDDEN))
@@ -506,11 +521,12 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     std::string lowerFileName, filePath;
     struct stat sbuf;
 
-    lowerFileName = fileName;
-
     if (fileName == NULL)
     {
         lowerFileName = buffer.GetFilename();
+    }
+    else {
+        lowerFileName = fileName;
     }
 
 #ifdef UNIX
@@ -522,12 +538,12 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     // prevent to overwrite an existing file
     if (!stat(filePath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
     {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName.c_str());
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
 
     if (!buffer.WriteToFile(filePath.c_str()))
     {
-        throw FlexException(FERR_WRITING_TO, fileName);
+        throw FlexException(FERR_WRITING_TO, std::string(fileName));
     }
 
     SetDate(lowerFileName.c_str(), buffer.GetDate());
@@ -608,8 +624,13 @@ bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
     {
         std::string filePath;
 #ifdef WIN32
+        DWORD attrs;
         filePath = *path + PATHSEPARATORSTRING + fileName;
-        DWORD attrs = GetFileAttributes(filePath);
+#ifdef UNICODE
+        attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
+#else
+        attrs = GetFileAttributes(filePath);
+#endif
 
         if (clearMask & WRITE_PROTECT)
         {
@@ -621,7 +642,11 @@ bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
             attrs |= FILE_ATTRIBUTE_READONLY;
         }
 
+#ifdef UNICODE
+        SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
+#else
         SetFileAttributes(filePath, attrs);
+#endif
 #endif
 #ifdef UNIX
         struct stat sbuf;
@@ -657,9 +682,16 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
     std::string filePath;
 
 #ifdef WIN32
+    DWORD attrs;
     filePath = *path + PATHSEPARATORSTRING + fileName;
-    DWORD attrs = GetFileAttributes(filePath);
+#ifdef UNICODE
+    attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
+    SetFileAttributes(ConvertToUtf16String(filePath).c_str(),
+        attrs | FILE_ATTRIBUTE_HIDDEN);
+#else
+    attrs = GetFileAttributes(filePath);
     SetFileAttributes(filePath, attrs | FILE_ATTRIBUTE_HIDDEN);
+#endif
 #endif
 #ifdef UNIX
     struct stat sbuf;

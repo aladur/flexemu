@@ -20,10 +20,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __flexerr_h__
-#define __flexerr_h__
+#ifndef flexerr_h
+#define flexerr_h
 
-#define MAX_ERR_STRINGLENGTH 1024
+#include <string>
 
 
 #define FERR_NOERROR            (0)
@@ -68,25 +68,26 @@ class FlexException
 protected:
 
     int errorCode;
-    char errorString[MAX_ERR_STRINGLENGTH];
+    std::string errorString;
     static const char *errString[];
 
 public:
 
     FlexException(int ec) throw();
     FlexException(int ec, int ip1) throw();
-    FlexException(int ec, const char *sp1) throw();
-    FlexException(int ec, const char *sp1, const char *sp2) throw();
-    FlexException(int ec, int ip1, int ip2, const char *sp1) throw();
-#ifdef WIN32
-    FlexException(unsigned long lastError, const char *sp1 = NULL) throw();
+    FlexException(int ec, const std::string &sp1) throw();
+    FlexException(int ec, const std::string &sp1,
+        const std::string &sp2) throw();
+    FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw();
+#ifdef _WIN32
+    FlexException(unsigned long lastError, const std::string &sp1) throw();
 #endif
 
-    const char *what()  const throw();
+    const std::string what()  const throw();
 #ifdef _UNICODE
-    const wchar_t *wwhat() const throw();
+    const std::wstring wwhat() const throw();
 #else
-    const char *wwhat() const throw();
+    const std::string wwhat() const throw();
 #endif
     int GetErrorCode(void) const
     {

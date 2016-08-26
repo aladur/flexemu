@@ -20,10 +20,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <exception>
+#include <sstream>
 #include <stdio.h>
 #include "flexerr.h"
+#include "cvtwchar.h"
+#include "sprinter.h"
+
 
 #ifdef _
     #undef _
@@ -32,45 +36,53 @@
 #define _(p) p
 
 
-const char *FlexException::what() const throw()
+const std::string FlexException::what() const throw()
 {
     return errorString;
 }
 
-const char *FlexException::wwhat() const throw()
+#ifdef UNICODE
+const std::wstring FlexException::wwhat() const throw()
+{
+    return ConvertToUtf16String(errorString);
+}
+#else
+const std::string FlexException::wwhat() const throw()
 {
     return errorString;
 }
+#endif
 
 FlexException::FlexException(int ec) throw() : errorCode(ec)
 {
-    strcpy(errorString, errString[ec]);
+    errorString = errString[ec];
 }
 
 FlexException::FlexException(int ec, int ip1) throw() : errorCode(ec)
 {
-    sprintf(errorString, errString[ec], ip1);
+    errorString = sprinter::print(errString[ec], ip1);
 }
 
-FlexException::FlexException(int ec, const char *sp1) throw() : errorCode(ec)
-{
-    sprintf(errorString, errString[ec], sp1);
-}
-
-FlexException::FlexException(int ec, const char *sp1, const char *sp2) throw()
+FlexException::FlexException(int ec, const std::string &sp1) throw()
     : errorCode(ec)
 {
-    sprintf(errorString, errString[ec], sp1, sp2);
+    errorString = sprinter::print(errString[ec], sp1);
 }
 
-FlexException::FlexException(int ec, int ip1, int ip2, const char *sp1) throw()
+FlexException::FlexException(int ec, const std::string &sp1, const std::string &sp2) throw()
     : errorCode(ec)
 {
-    sprintf(errorString, errString[ec], ip1, ip2, sp1);
+    errorString = sprinter::print(errString[ec], sp1, sp2);
 }
 
-#ifdef WIN32
-FlexException::FlexException(unsigned long lastError, const char *sp1)
+FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw()
+    : errorCode(ec)
+{
+    errorString = sprinter::print(errString[ec], ip1, ip2, sp1);
+}
+
+#ifdef _WIN32
+FlexException::FlexException(unsigned long lastError, const std::string &sp1) throw()
 {
     LPVOID lpMsgBuf;
 
@@ -79,20 +91,14 @@ FlexException::FlexException(unsigned long lastError, const char *sp1)
             NULL, lastError, 0, (LPTSTR) &lpMsgBuf, 0, NULL))
     {
         errorCode = FERR_UNSPEC_WINDOWS_ERROR;
-        sprintf(errorString, errString[errorCode], lastError);
+        errorString = sprinter::print(errString[errorCode], sp1);
         return;
     }
 
     errorCode = FERR_WINDOWS_ERROR;
 
-    if (sp1 != NULL)
-    {
-        sprintf(errorString, "%s%s", (char *)lpMsgBuf, sp1);
-    }
-    else
-    {
-        sprintf(errorString, "%s", (char *)lpMsgBuf);
-    }
+    errorString = (char *)lpMsgBuf;
+    errorString += sp1;
 
     LocalFree(lpMsgBuf);
 }
@@ -101,39 +107,39 @@ FlexException::FlexException(unsigned long lastError, const char *sp1)
 const char *FlexException::errString[] =
 {
     _("No Error"),
-    _("Unable to open %s"),
-    _("%s is no file container"),
+    _("Unable to open {0}"),
+    _("{0} is no file container"),
     _("No container opened"),
     _("No file opened"),
-    _("Unable to format %s"),
-    _("Invalid container format #%d"),
-    _("Error reading from %s"),
-    _("Error writing to %s"),
+    _("Unable to format {0}"),
+    _("Invalid container format #{0}"),
+    _("Error reading from {0}"),
+    _("Error writing to {0}"),
     _("Directory already opened"),
     _("No directory opened"),
     _("File already opened"),
     _("No free file handle available"),
-    _("File %s already exists"),
-    _("Invalid file handle #%d"),
-    _("Invalid open mode \"%s\""),
+    _("File {0} already exists"),
+    _("Invalid file handle #{0}"),
+    _("Invalid open mode \"{0}\""),
     _("Directory full"),
-    _("Error reading trk/sec %02d/%02d in %s"),
-    _("Error writing trk/sec %02d/%02d in %s"),
-    _("No file \"%s\" (container %s)"),
-    _("Record map of %s is full (container %s)"),
-    _("Container %s full when writing %s"),
-    _("Unable to create %s"),
-    _("Unable to rename %s (container %s)"),
-    _("Unable to remove %s (container %s)"),
-    _("Error reading disk space (container %s)"),
-    _("Unable to copy %s on itself"),
+    _("Error reading trk/sec {0}/{1} in {2}"),
+    _("Error writing trk/sec {0}/{1} in {2}"),
+    _("No file \"{0}\" (container {1})"),
+    _("Record map of {0} is full (container {1})"),
+    _("Container {0} full when writing {1}"),
+    _("Unable to create {0}"),
+    _("Unable to rename {0} (container {1})"),
+    _("Unable to remove {0} (container {1})"),
+    _("Error reading disk space (container {0})"),
+    _("Unable to copy {0} on itself"),
     _("Wrong parameter"),
-    _("Error creating process (%s %s)"),
+    _("Error creating process ({0} {1})"),
     _("Error reading FLEX binary format"),
-    _("Error creating temporary file %s"),
-    _("Container %s is read-only"),
-    _("An unspecified Windows error occured (#%d)"),
+    _("Error creating temporary file {0}"),
+    _("Container {0} is read-only"),
+    _("An unspecified Windows error occured (#{1})"),
     _(""),
-    _("%s is an invalid NULL pointer")
+    _("{0} is an invalid NULL pointer")
 };
 

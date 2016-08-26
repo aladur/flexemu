@@ -22,7 +22,7 @@
 #ifndef __idircnt_cpp__
 #define __idircnt_cpp__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <algorithm>
 #ifdef _MSC_VER
     #include <io.h>         // needed for access
@@ -35,6 +35,7 @@
 #include "filecont.h"
 #include "dircont.h"
 #include "idircnt.h"
+#include "cvtwchar.h"
 
 
 DirectoryContainerIteratorImp::DirectoryContainerIteratorImp(
@@ -95,8 +96,11 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (dirHdl == NULL)
         {
-            dirHdl = FindFirstFile(str, &findData);
-
+#ifdef UNICODE
+            dirHdl = FindFirstFile(ConvertToUtf16String(str).c_str(), &findData);
+#else
+            dirHdl = FindFirstFile(str.c_str(), &findData);
+#endif
             if (dirHdl != INVALID_HANDLE_VALUE)
             {
                 isValid = true;
@@ -112,13 +116,18 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             {
                 isValid = true;
 
-                if (strlen(findData.cFileName) > 12)
+#ifdef UNICODE
+                fileName = ConvertToUtf8String(findData.cFileName);
+#else
+                fileName = findData.cFileName;
+#endif
+                if (fileName.size() > 12)
                 {
+#ifdef UNICODE
+                    fileName = ConvertToUtf8String(findData.cAlternateFileName);
+#else
                     fileName = findData.cAlternateFileName;
-                }
-                else
-                {
-                    fileName = findData.cFileName;
+#endif
                 }
             }
         }
@@ -127,7 +136,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
            ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
-            !stricmp(fileName, RANDOM_FILE_LIST) ||
+            !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
             findData.nFileSizeHigh != 0 ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
 
@@ -136,7 +145,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         // ok, found a valid directory entry
         int attribs = 0;
         int sectorMap = 0;
-        dirEntry.SetTotalFileName(fileName);
+        dirEntry.SetTotalFileName(fileName.c_str());
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
         {
@@ -144,7 +153,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
 
         // CDFS support:
-        if (base->IsRandomFile(base->GetPath(), fileName))
+        if (base->IsRandomFile(base->GetPath().c_str(), fileName.c_str()))
         {
             sectorMap = 2;
         }
@@ -275,23 +284,40 @@ bool DirectoryContainerIteratorImp::DeleteCurrent(void)
 #ifdef WIN32
     // evtl. remove read-only attribute
     // to be able to delete it
-    DWORD attributes = GetFileAttributes(filePath);
+#ifdef UNICODE
+    DWORD attributes = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
+#else
+    DWORD attributes = GetFileAttributes(filePath.c_str());
+#endif
 
     if (attributes & FILE_ATTRIBUTE_READONLY)
     {
-        SetFileAttributes(filePath, attributes & ~FILE_ATTRIBUTE_READONLY);
+#ifdef UNICODE
+        SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
+#else
+        SetFileAttributes(filePath.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
+#endif
     }
 
-    if (!DeleteFile(filePath))
+#ifdef UNICODE
+    BOOL success = DeleteFile(ConvertToUtf16String(filePath).c_str());
+#else
+    BOOL success = DeleteFile(filePath.c_str());
+#endif
+
+    if (!success)
     {
         DWORD lastError = GetLastError();
 
         if (lastError == ERROR_FILE_NOT_FOUND)
+        {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                                dirEntry.GetTotalFileName(), base->GetPath());
-        else
+                dirEntry.GetTotalFileName(), base->GetPath());
+        }
+        else {
             throw FlexException(FERR_REMOVE_FILE,
-                                dirEntry.GetTotalFileName(), base->GetPath());
+                dirEntry.GetTotalFileName(), base->GetPath());
+        }
     }
 
 #endif
@@ -410,7 +436,11 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
 #ifdef WIN32
     filePath = base->GetPath() + PATHSEPARATORSTRING +
                dirEntry.GetTotalFileName();
-    DWORD attrs = GetFileAttributes(filePath);
+#ifdef UNICODE
+    DWORD attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
+#else
+    DWORD attrs = GetFileAttributes(filePath.c_str());
+#endif
 
     if (attributes & WRITE_PROTECT)
     {
@@ -421,7 +451,11 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
         attrs &= ~FILE_ATTRIBUTE_READONLY;
     }
 
+#ifdef UNICODE
+    SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
+#else
     SetFileAttributes(filePath, attrs);
+#endif
 #endif
 #ifdef UNIX
     struct stat sbuf;

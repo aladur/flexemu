@@ -94,10 +94,10 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             // ok, found a valid directory entry
             std::string::size_type length;
 
-            length = std::min(strlen(pd->filename), FLEX_BASEFILENAME_LENGTH);
+            length = std::min<size_t>(strlen(pd->filename), FLEX_BASEFILENAME_LENGTH);
             fileName = std::string(pd->filename, length);
             fileName += ".";
-            length = std::min(strlen(pd->file_ext), FLEX_FILEEXT_LENGTH);
+            length = std::min<size_t>(strlen(pd->file_ext), FLEX_FILEEXT_LENGTH);
             fileName += std::string(pd->file_ext, length);
 
             if (multimatches(fileName.c_str(), filePattern, ';', true))

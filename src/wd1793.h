@@ -24,7 +24,7 @@
 #ifndef __wd1793_h__
 #define __wd1793_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 
 #include "iodevice.h"

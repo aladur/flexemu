@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include "pia1.h"
 
 Pia1::Pia1(Inout *x_io, Mc6809 *x_cpu)

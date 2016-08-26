@@ -35,7 +35,7 @@
 #include <wx/clipbrd.h>
 #include <wx/strconv.h>
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "fdlist.h"
 #include "fdirent.h"
@@ -54,6 +54,7 @@
 #include "da6809.h"
 #include "ifilecnt.h"
 #include "bprocess.h"
+#include "cvtwchar.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__)
     #include "bitmaps/dnd_copy.xpm"
@@ -89,7 +90,7 @@ static const wxChar *fileDescription[] =
     NULL
 };
 
-int CALLBACK compareFlexListItems(long item1, long item2, long sortData)
+int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
 {
     if (!item1 || !item2)
     {
@@ -219,7 +220,7 @@ int FlexDiskListCtrl::UpdateItems(void)
             anItem.m_text   = m_text;
             anItem.m_itemId = index;
             anItem.m_col    = 0;
-            anItem.m_data   = (long)pDe;
+            anItem.m_data   = reinterpret_cast<wxUIntPtr>(pDe);
             anItem.m_mask   = wxLIST_MASK_TEXT | wxLIST_MASK_DATA;
             InsertItem(anItem);
             UpdateItem(index++, *pDe);
@@ -419,7 +420,7 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
     FlexFileBuffer  buffer;
     long        *pItems;
     wxString    fileName;
-    BProcess    process(fileViewer.mb_str(*wxConvCurrent), ".");
+    BProcess    process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
 
     int count = GetSelections(&pItems);
 
@@ -452,27 +453,47 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
             }
 
 #ifdef WIN32
-            char path[MAX_PATH], tempPath[MAX_PATH];
+            std::string path;
+#ifdef UNICODE
+            wchar_t wpath[MAX_PATH], tempPath[MAX_PATH];
 
             if (!GetTempPath(MAX_PATH, tempPath))
             {
                 throw FlexException(GetLastError(),
-                                    _("In function GetTempPath"));
+                    std::string("In function GetTempPath"));
             }
 
-            if (!GetTempFileName(tempPath, _("FLX"), 0, path))
+            if (!GetTempFileName(tempPath, _("FLX"), 0, wpath))
             {
                 throw FlexException(GetLastError(),
-                                    _("In function GetTempFileName"));
+                    std::string("In function GetTempFileName"));
+            }
+            path = ConvertToUtf8String(wpath);
+#else
+            char cpath[MAX_PATH], tempPath[MAX_PATH];
+
+            if (!GetTempPath(MAX_PATH, tempPath))
+            {
+                throw FlexException(GetLastError(),
+                    std::string("In function GetTempPath"));
             }
 
-            if (buffer.WriteToFile(path))
+            if (!GetTempFileName(tempPath, _("FLX"), 0, cpath))
             {
-                process.AddArgument(path);
+                throw FlexException(GetLastError(),
+                    std::string("In function GetTempFileName"));
+            }
+            path = cpath;
+#endif
+
+            if (buffer.WriteToFile(path.c_str()))
+            {
+                process.AddArgument(path.c_str());
 
                 if (!process.Start())
                 {
-                    throw FlexException(GetLastError(), fileViewer);
+                    throw FlexException(GetLastError(),
+                        std::string(fileViewer));
                 }
             }
             else
@@ -1104,7 +1125,7 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
                 anItem.m_text   = m_text;
                 anItem.m_itemId = 0;
                 anItem.m_col    = 0;
-                anItem.m_data   = (long)pDe;
+                anItem.m_data   = reinterpret_cast<wxUIntPtr>(pDe);
                 anItem.m_mask   = wxLIST_MASK_TEXT |
                                   wxLIST_MASK_DATA;
                 index = InsertItem(anItem);

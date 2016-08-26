@@ -23,7 +23,7 @@
 #ifndef __dircont_h__
 #define __dircont_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 
 #include "filecont.h"

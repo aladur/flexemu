@@ -25,7 +25,7 @@
 
 #ifdef NAFS
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "flexerr.h"
 #include "filecnts.h"
@@ -35,8 +35,8 @@
 #define ERR_SIZE    (200)
 
 const int MAX_TRACK             = 79;       // max. nr. of tracks - 1
-const int MAX_SECTOR            =
-    36;       // nr of sect. per track (side 0 and 1)
+const int MAX_SECTOR            = 36;       // nr of sect. per track,
+                                            // side 0 and 1
 const int INIT_DIR_SECTORS      = (20 - 4); // initial nr. of directory sectors
 const int LINK_TABLE_SIZE       = ((MAX_TRACK + 1) * MAX_SECTOR);
 const int INIT_NEW_FILES        = 4;        // initial nr of new files to be

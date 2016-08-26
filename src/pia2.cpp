@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef HAVE_X11
     #include <X11/X.h>

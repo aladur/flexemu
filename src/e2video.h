@@ -24,7 +24,7 @@
 #ifndef __e2video_h__
 #define __e2video_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include "iodevice.h"
 
 class Memory;

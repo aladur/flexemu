@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0D8A2B58-3226-4B7F-A0F5-799A024CF92F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>flexemu</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>temp\flexemu\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>temp\flexemu\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>temp\flexemu\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>temp\flexemu\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="absgui.cpp" />
+    <ClCompile Include="acia1.cpp" />
+    <ClCompile Include="bcommand.cpp" />
+    <ClCompile Include="bdate.cpp" />
+    <ClCompile Include="bdir.cpp" />
+    <ClCompile Include="benv.cpp" />
+    <ClCompile Include="bfileptr.cpp" />
+    <ClCompile Include="bmembuf.cpp" />
+    <ClCompile Include="bmutex.cpp" />
+    <ClCompile Include="brcfile.cpp" />
+    <ClCompile Include="bregistr.cpp" />
+    <ClCompile Include="bthread.cpp" />
+    <ClCompile Include="bthreadfactory.cpp" />
+    <ClCompile Include="bthreadimp.cpp" />
+    <ClCompile Include="btime.cpp" />
+    <ClCompile Include="btimer.cpp" />
+    <ClCompile Include="bwin32threadimp.cpp" />
+    <ClCompile Include="cacttrns.cpp" />
+    <ClCompile Include="clogfile.cpp" />
+    <ClCompile Include="colors.cpp" />
+    <ClCompile Include="command.cpp" />
+    <ClCompile Include="csetfreq.cpp" />
+    <ClCompile Include="cvtwchar.cpp" />
+    <ClCompile Include="da6809.cpp" />
+    <ClCompile Include="e2floppy.cpp" />
+    <ClCompile Include="e2video.cpp" />
+    <ClCompile Include="fcinfo.cpp" />
+    <ClCompile Include="fcopyman.cpp" />
+    <ClCompile Include="fdirent.cpp" />
+    <ClCompile Include="ffilebuf.cpp" />
+    <ClCompile Include="ffilecnt.cpp" />
+    <ClCompile Include="flexerr.cpp" />
+    <ClCompile Include="foptman.cpp" />
+    <ClCompile Include="iffilcnt.cpp" />
+    <ClCompile Include="ifilecnt.cpp" />
+    <ClCompile Include="inout.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mc146818.cpp" />
+    <ClCompile Include="mc6809.cpp" />
+    <ClCompile Include="mc6809in.cpp" />
+    <ClCompile Include="mc6809st.cpp" />
+    <ClCompile Include="mc6821.cpp" />
+    <ClCompile Include="mc6850.cpp" />
+    <ClCompile Include="memory.cpp" />
+    <ClCompile Include="misc1.cpp" />
+    <ClCompile Include="mmu.cpp" />
+    <ClCompile Include="ndircont.cpp" />
+    <ClCompile Include="pia1.cpp" />
+    <ClCompile Include="pia2.cpp" />
+    <ClCompile Include="rfilecnt.cpp" />
+    <ClCompile Include="schedule.cpp" />
+    <ClCompile Include="wd1793.cpp" />
+    <ClCompile Include="win32gui.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="wwinres.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bitmaps\flexcpu.ico" />
+    <Image Include="bitmaps\flexemu.ico" />
+    <Image Include="bitmaps\flexemu1.ico" />
+    <Image Include="bitmaps\flexemu2.ico" />
+    <Image Include="bitmaps\flexemu3.ico" />
+    <Image Include="bitmaps\flexmain.ico" />
+    <Image Include="bitmaps\floppy0.ico" />
+    <Image Include="bitmaps\floppy1.ico" />
+    <Image Include="bitmaps\floppy2.ico" />
+    <Image Include="bitmaps\irq0.ico" />
+    <Image Include="bitmaps\irq1.ico" />
+    <Image Include="bitmaps\irq2.ico" />
+    <Image Include="bitmaps\irq3.ico" />
+    <Image Include="bitmaps\irq4.ico" />
+    <Image Include="bitmaps\resize.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="absdisas.h" />
+    <ClInclude Include="absgui.h" />
+    <ClInclude Include="acia1.h" />
+    <ClInclude Include="bcommand.h" />
+    <ClInclude Include="bdate.h" />
+    <ClInclude Include="bdelete.h" />
+    <ClInclude Include="bdir.h" />
+    <ClInclude Include="benv.h" />
+    <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="bjoystck.h" />
+    <ClInclude Include="bmembuf.h" />
+    <ClInclude Include="bmutex.h" />
+    <ClInclude Include="brcfile.h" />
+    <ClInclude Include="bregistr.h" />
+    <ClInclude Include="bsingle.h" />
+    <ClInclude Include="bthread.h" />
+    <ClInclude Include="bthreadfactory.h" />
+    <ClInclude Include="bthreadimp.h" />
+    <ClInclude Include="btime.h" />
+    <ClInclude Include="btimer.h" />
+    <ClInclude Include="bwin32threadimp.h" />
+    <ClInclude Include="cacttrns.h" />
+    <ClInclude Include="clogfile.h" />
+    <ClInclude Include="command.h" />
+    <ClInclude Include="confignt.h" />
+    <ClInclude Include="cpustate.h" />
+    <ClInclude Include="csetfreq.h" />
+    <ClInclude Include="cvtwchar.h" />
+    <ClInclude Include="da6809.h" />
+    <ClInclude Include="debug.h" />
+    <ClInclude Include="e2.h" />
+    <ClInclude Include="e2floppy.h" />
+    <ClInclude Include="e2video.h" />
+    <ClInclude Include="fcinfo.h" />
+    <ClInclude Include="fcopyman.h" />
+    <ClInclude Include="fdirent.h" />
+    <ClInclude Include="ffilebuf.h" />
+    <ClInclude Include="ffilecnt.h" />
+    <ClInclude Include="filecntb.h" />
+    <ClInclude Include="filecnts.h" />
+    <ClInclude Include="filecont.h" />
+    <ClInclude Include="flexemu.h" />
+    <ClInclude Include="flexerr.h" />
+    <ClInclude Include="foptman.h" />
+    <ClInclude Include="idircnt.h" />
+    <ClInclude Include="iffilcnt.h" />
+    <ClInclude Include="ifilcnti.h" />
+    <ClInclude Include="inout.h" />
+    <ClInclude Include="intmem.h" />
+    <ClInclude Include="iodevice.h" />
+    <ClInclude Include="mc146818.h" />
+    <ClInclude Include="mc6809.h" />
+    <ClInclude Include="mc6809st.h" />
+    <ClInclude Include="mc6821.h" />
+    <ClInclude Include="mc6850.h" />
+    <ClInclude Include="memory.h" />
+    <ClInclude Include="misc1.h" />
+    <ClInclude Include="mmu.h" />
+    <ClInclude Include="ndircont.h" />
+    <ClInclude Include="pia1.h" />
+    <ClInclude Include="pia2.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="rfilecnt.h" />
+    <ClInclude Include="schedcpu.h" />
+    <ClInclude Include="schedule.h" />
+    <ClInclude Include="typedefs.h" />
+    <ClInclude Include="wd1793.h" />
+    <ClInclude Include="win32gui.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

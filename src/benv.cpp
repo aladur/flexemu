@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include <locale>
 #include <algorithm>
@@ -41,7 +41,7 @@ bool BEnvironment::RemoveKey(const char *key)
 
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
-#ifdef WIN32
+#ifdef _WIN32
     SetEnvironmentVariable(upperKey.c_str(), NULL);
 #endif
 #ifdef UNIX
@@ -58,8 +58,8 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
-#ifdef WIN32
-    return (SetEnvironmentVariable((const char *)upperKey, value) != 0);
+#ifdef _WIN32
+    return (SetEnvironmentVariable(upperKey.c_str(), value) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
@@ -78,8 +78,8 @@ bool BEnvironment::SetValue(const char *key, int value)
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
     sprintf(str, "%i", value);
-#ifdef WIN32
-    return (SetEnvironmentVariable(upperKey, str) != 0);
+#ifdef _WIN32
+    return (SetEnvironmentVariable(upperKey.c_str(), str) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
@@ -97,7 +97,7 @@ bool BEnvironment::GetValue(const char *key, char **pValue)
 
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
-#ifdef WIN32
+#ifdef _WIN32
     return (SetEnvironmentVariable(upperKey, str) != 0);
 #endif
 #ifdef UNIX
@@ -113,14 +113,14 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
 
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
-#ifdef WIN32
-    int size = GetEnvironmentVariable(upperKey, NULL, 0);
+#ifdef _WIN32
+    int size = GetEnvironmentVariable(upperKey.c_str(), NULL, 0);
 
     if (size)
     {
         p = new char[size];
 
-        if (GetEnvironmentVariable(upperKey, p, size))
+        if (GetEnvironmentVariable(upperKey.c_str(), p, size))
         {
             value = p;
             ret = true;

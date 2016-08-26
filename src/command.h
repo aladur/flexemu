@@ -24,7 +24,7 @@
 #ifndef __command_h__
 #define __command_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "iodevice.h"
 

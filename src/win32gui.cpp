@@ -21,12 +21,13 @@
 */
 
 
-#ifdef WIN32
-#include <misc1.h>
+#ifdef _WIN32
+#include "misc1.h"
 #include <ctype.h>
 #include <new>
 #include <math.h>
 #include <richedit.h>
+#include <sstream>
 #ifdef _MSC_VER
     #include <crtdbg.h>
 #endif
@@ -57,7 +58,7 @@ int Win32Gui::radio_data[] =
     S_NO_CHANGE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
 };
 
-extern BOOL CALLBACK cpuWindowWndProc(
+extern INT_PTR CALLBACK cpuWindowWndProc(
     HWND hwnd,
     UINT message,
     WPARAM wParam,
@@ -97,7 +98,7 @@ LRESULT CALLBACK e2windowWndProc(
 
         case WM_KEYDOWN:
             ggui->onKeyDown(hwnd,
-                            wParam, (int)LOWORD(lParam));
+                            (SWord)wParam, (int)LOWORD(lParam));
             break;
 
         case WM_TIMER:
@@ -136,7 +137,8 @@ LRESULT CALLBACK e2windowWndProc(
             break;
 
         case WM_MOUSEMOVE:
-            ggui->onMouseMove(hwnd, LOWORD(lParam), HIWORD(lParam), wParam);
+            ggui->onMouseMove(hwnd, static_cast<Word>(LOWORD(lParam)),
+                HIWORD(lParam), static_cast<Word>(wParam));
             break;
 
         default:
@@ -1054,7 +1056,7 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
     ggui        = this;
     palette     = NULL; // needed for color display
     e2screen    = NULL;
-    use_colors  = !stricmp(pOptions->color, "default");
+    use_colors  = !stricmp(pOptions->color.c_str(), "default");
     nColors     = pOptions->nColors;
     bp_input[0] = 0;
     bp_input[1] = 0;
@@ -1092,7 +1094,7 @@ void Win32Gui::popup_disk_info(HWND hwnd)
         if (hwnd == hButtonFloppy[i])
         {
             message = io->get_drive_info(i);
-            MessageBox(e2screen, message,
+            MessageBox(e2screen, message.c_str(),
                        PROGRAMNAME " Disc status",
                        MB_OK | MB_ICONINFORMATION);
             return;
@@ -1124,13 +1126,13 @@ int Win32Gui::popup_help(HWND hwnd)
 {
     char helpfile[PATH_MAX];
     char curdir[PATH_MAX];
-    int res;
+    HINSTANCE res;
 
     GetCurrentDirectory(PATH_MAX, curdir);
 
-    if (strlen(pOptions->doc_dir) != 0)
+    if (strlen(pOptions->doc_dir.c_str()) != 0)
     {
-        strcpy(helpfile, pOptions->doc_dir);
+        strcpy(helpfile, pOptions->doc_dir.c_str());
     }
     else
     {
@@ -1145,14 +1147,15 @@ int Win32Gui::popup_help(HWND hwnd)
 
     strcat(helpfile, "flexemu.htm");
 
-    if ((res = (int)ShellExecute(
-                   hwnd,           // handle of parent window
-                   "open",         // open file
-                   helpfile,       // file to open
-                   NULL,           // parameters
-                   curdir,         // directory
-                   SW_SHOWNORMAL   // openmode for new window
-               )) > 32)
+    res = ShellExecute(
+        hwnd,           // handle of parent window
+        "open",         // open file
+        helpfile,       // file to open
+        NULL,           // parameters
+        curdir,         // directory
+        SW_SHOWNORMAL   // openmode for new window
+    );
+    if ((INT_PTR)res > 32)
     {
         return 0;    // success
     }
@@ -1705,11 +1708,11 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
     if (menubar != NULL)
     {
         menu1 = CreateMenu();
-        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT)menu1, "&File");
+        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT_PTR)menu1, "&File");
         menu2 = CreateMenu();
-        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT)menu2, "&Processor");
+        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT_PTR)menu2, "&Processor");
         menu3 = CreateMenu();
-        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT)menu3, "&Help");
+        AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT_PTR)menu3, "&Help");
 
         menuItem.dwTypeData = "&Exit";
         menuItem.wID = IDM_EXIT;
@@ -1826,10 +1829,11 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
     for (count = 0; count < 4; count++)
     {
         sprintf(label, "BFLOPPY%d", count);
+        UINT_PTR id = IDP_FLOPPY0 + count;
         hButtonFloppy[count] = CreateWindow("BUTTON", label, style,
                                             rect.left, rect.top, width, height,
                                             hwndStatus,
-                                            (HMENU)(IDP_FLOPPY0 + count),
+                                            reinterpret_cast<HMENU>(id),
                                             hInstance, NULL);
         rect.left += SBAR_ICON_WIDTH + 2;
     }
@@ -1842,7 +1846,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
 }  // create_main_view
 
 
-BOOL CALLBACK aboutDialogProc(HWND hwnd, UINT message, WPARAM wParam,
+INT_PTR CALLBACK aboutDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                               LPARAM lParam)
 {
     if (ggui == NULL)
@@ -1879,7 +1883,7 @@ void Win32Gui::toggle_freqency()
     float frequency;
 
     frequency_control_on = !frequency_control_on;
-    uint is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
+    UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
     frequency = frequency_control_on ? 1.3396f : 0.0f;
     schedy->sync_exec(new CSetFrequency(*schedy, frequency));
     CheckMenuItem(menu2, IDM_FREQUENCY0, MF_BYCOMMAND | is_checked);
@@ -1888,7 +1892,7 @@ void Win32Gui::toggle_freqency()
 void Win32Gui::popup_about(HWND hwnd)
 {
     DialogBox(hInstance, MAKEINTRESOURCE(IDD_AB_DIALOG), hwnd,
-              CALLBACKCAST aboutDialogProc);
+              static_cast<DLGPROC>(aboutDialogProc));
 } // popup_about
 
 void Win32Gui::popdown_about(HWND hwnd)
@@ -1979,14 +1983,15 @@ void Win32Gui::popup_copyright(HWND hwnd)
 
     GetCurrentDirectory(PATH_MAX, str);
 
-    if ((int)ShellExecute(
+    HINSTANCE res = ShellExecute(
             hwnd,           // handle of parent window
             "open",         // open file
             copyrightFile,  // file to open
             NULL,           // parameters
             str,            // directory
             SW_SHOWNORMAL   // openmode for new window
-        ) <= 32)
+    );
+    if ((INT_PTR)res <= 32)
     {
         sprintf(str, "Unable to display file %s", copyrightFile);
         MessageBox(e2screen, str, PROGRAMNAME " error",
@@ -2055,7 +2060,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
 
     while (pc->colorName != NULL)
     {
-        if (strcmp(pOptions->color, pc->colorName) == 0)
+        if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -2143,7 +2148,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
 
     while (pc->colorName != NULL)
     {
-        if (strcmp(pOptions->color, pc->colorName) == 0)
+        if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -2439,8 +2444,9 @@ void Win32Gui::create_cpuview(HWND parent, struct sGuiOptions *pOptions)
 #ifdef _MSC_VER
     _ASSERT(cpuform != NULL);
 #endif
-    SetClassLong(cpuform, GCL_HICON, (LONG)LoadIcon(hInstance,
-                 MAKEINTRESOURCE(IDI_FLEXCPU)));
+    LONG_PTR hIcon = reinterpret_cast<LONG_PTR>(
+        LoadIcon(hInstance, MAKEINTRESOURCE(IDI_FLEXCPU)));
+    SetClassLongPtr(cpuform, GCLP_HICON, hIcon);
 }
 
 BOOL Win32Gui::onCpuInit(HWND hwnd)
@@ -2506,7 +2512,7 @@ BOOL Win32Gui::onCpuClose(HWND hwnd)
     return TRUE;
 }
 
-BOOL CALLBACK cpuWindowWndProc(
+INT_PTR CALLBACK cpuWindowWndProc(
     HWND hwnd,
     UINT message,
     WPARAM wParam,
@@ -2724,7 +2730,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
     return FALSE;
 }
 
-BOOL CALLBACK bpDialogProc(HWND hwnd, UINT message, WPARAM wParam,
+INT_PTR CALLBACK bpDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                            LPARAM lParam)
 {
     if (ggui == NULL)
@@ -2749,10 +2755,10 @@ BOOL CALLBACK bpDialogProc(HWND hwnd, UINT message, WPARAM wParam,
 
 void Win32Gui::popup_bp(HWND hwnd)
 {
-    int  res;
+    UINT_PTR res;
 
     res = DialogBox(hInstance, MAKEINTRESOURCE(IDD_BP_DIALOG), hwnd,
-                    CALLBACKCAST bpDialogProc);
+        static_cast<DLGPROC>(bpDialogProc));
 }
 
 void Win32Gui::popdown_bp(int cmd, HWND hwnd)
@@ -2874,7 +2880,7 @@ BOOL Win32Gui::onLogClose(HWND hwnd)
     return TRUE;
 }
 
-BOOL CALLBACK logDialogProc(HWND hwnd, UINT message, WPARAM wParam,
+INT_PTR CALLBACK logDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                             LPARAM lParam)
 {
     if (ggui == NULL)
@@ -2899,16 +2905,16 @@ BOOL CALLBACK logDialogProc(HWND hwnd, UINT message, WPARAM wParam,
 
 void Win32Gui::popup_log(HWND hwnd)
 {
-    int  res;
+    UINT_PTR res;
 
     res = DialogBox(hInstance, MAKEINTRESOURCE(IDD_LOG_DIALOG), hwnd,
-                    CALLBACKCAST logDialogProc);
+              static_cast<DLGPROC>(logDialogProc));
 }
 
 void Win32Gui::popdown_log(int cmd, HWND hwnd)
 {
-    char        tmpstring[PATH_MAX];
-    unsigned int    addr;
+    char tmpstring[PATH_MAX];
+    unsigned int addr;
 
     if (cmd == IDC_LOG_OK)
     {
@@ -2990,5 +2996,5 @@ void Win32Gui::prompt_logfile(HWND hwnd)
         SetDlgItemText(hwnd, IDC_LOG_FILENAME, of.lpstrFile);
     }
 }
-#endif // WIN32
+#endif // _WIN32
 

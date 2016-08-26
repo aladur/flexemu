@@ -23,7 +23,7 @@
 #ifndef __fdpframe_h__
 #define __fdpframe_h__
 
-#include <misc1.h>
+#include "misc1.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -52,9 +52,7 @@ public:
                     const wxString &title, const wxPoint &pos,
                     const wxSize &size, const long style);
     virtual ~FlexParentFrame(void);
-#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     void OnChildFocus(wxChildFocusEvent &event);
-#endif
     void OnSize(wxSizeEvent &event);
     void OnAbout(wxCommandEvent &event);
     void OnNewContainer(wxCommandEvent &event);

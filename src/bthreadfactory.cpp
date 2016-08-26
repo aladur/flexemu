@@ -25,7 +25,7 @@
 #ifdef UNIX
     #include "bposixthreadimp.h"
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     #include "bwin32threadimp.h"
 #endif
 
@@ -33,7 +33,7 @@ template <> BThreadFactory *SThreadFactory::instance = NULL;
 
 BThreadImp *BThreadFactory::CreateBThreadImp()
 {
-#ifdef WIN32
+#ifdef _WIN32
     return new BWin32ThreadImp;
 #else
 #ifdef UNIX

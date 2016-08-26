@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "e2.h"
 #include "e2video.h"

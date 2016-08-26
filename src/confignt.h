@@ -125,9 +125,6 @@
 /* The number of bytes in a long.  */
 #define SIZEOF_LONG_LONG 8
 
-/* The size of a 'void *' as computed by sizeof  */
-#define SIZEOF_VOID_P 4
-
 /* Define if you have the <dirent.h> header file.  */
 /* #undef HAVE_DIRENT_H */
 

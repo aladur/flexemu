@@ -22,9 +22,9 @@
 #ifndef __registr_h__
 #define __registr_h__
 
-#ifdef WIN32
+#ifdef _WIN32
 
-#include <windows.h>
+#include "misc1.h"
 #include <string>
 
 
@@ -41,16 +41,16 @@ private:
 public:
     ~BRegistry();
 
-    BRegistry(const BRegistry &regKey, const char *subKey = NULL);
+    BRegistry(const BRegistry &regKey, const std::string &subKey);
     BRegistry(HKEY aHKey);
     bool isOpened() const;
     LONG GetLastError() const;
     LONG Delete();
-    LONG SetValue(const char *name, const char *value);
-    LONG SetValue(const char *name, const int value);
-    LONG SetValue(const char *name, const BYTE *value, int size);
-    LONG GetValue(const char *name, std::string &value);
-    LONG GetValue(const char *name, int *value);
+    LONG SetValue(const std::string &name, const std::string &value);
+    LONG SetValue(const std::string &name, const int value);
+    LONG SetValue(const std::string &name, const BYTE *value, int size);
+    LONG GetValue(const std::string &name, std::string &value);
+    LONG GetValue(const std::string &name, int *value);
     // implicit type conversions !
     operator HKEY() const ;
 
@@ -73,5 +73,5 @@ inline BRegistry::operator HKEY() const
     return hKey;
 };
 
-#endif // #ifdef WIN32
+#endif // #ifdef _WIN32
 #endif // #ifndef __bregistr_h__

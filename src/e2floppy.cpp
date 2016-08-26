@@ -20,7 +20,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include <string>
 #include <sstream>
 #include <iterator>
@@ -129,7 +129,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
     std::string containerPath(path);
 
     // first try with given path
-#ifdef WIN32
+#ifdef _WIN32
     std::string::iterator it;
 
     for (it = containerPath.begin(); it != containerPath.end(); ++it)
@@ -218,7 +218,8 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         // second try with path within disk_dir directory
         containerPath = disk_dir;
 
-        if (containerPath[containerPath.length()-1] != PATHSEPARATOR)
+        if (containerPath.length() > 0 &&
+            containerPath[containerPath.length()-1] != PATHSEPARATOR)
         {
             containerPath += PATHSEPARATORSTRING;
         }

@@ -17,7 +17,7 @@
 ****************************************************************************/
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include "da6809.h"
 
@@ -720,7 +720,8 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
     Byte code, postbyte;
-    Byte i, index, comma;
+    Byte i, comma;
+    size_t index;
 
     code      = *pMemory;
     postbyte  = *(pMemory + 1);
@@ -749,7 +750,8 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
     Byte code, postbyte;
-    Byte i, index, comma;
+    Byte i, comma;
+    size_t index;
 
     code      = *pMemory;
     postbyte  = *(pMemory + 1);

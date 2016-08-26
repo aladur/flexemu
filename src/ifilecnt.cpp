@@ -22,7 +22,7 @@
 #ifndef __ifilecnt_cpp__
 #define __ifilecnt_cpp__
 
-#include <misc1.h>  // needed for NULL
+#include "misc1.h"  // needed for NULL
 #include "filecont.h"
 #include "ifilecnt.h"
 #include "ifilcnti.h"

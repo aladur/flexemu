@@ -23,7 +23,7 @@
 #ifndef __ffilebuf_h__
 #define __ffilebuf_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include "bmembuf.h"
 #include "flexemu.h"
 

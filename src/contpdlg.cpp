@@ -34,7 +34,7 @@
 #include <wx/valgen.h>
 #include <wx/valtext.h>
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef _MSC_VER
     #include <direct.h>

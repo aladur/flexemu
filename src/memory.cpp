@@ -191,7 +191,7 @@ void Memory::initialize_io_page(Word base_addr)
     for (i = 0; i < range; i++)
     {
         (ppIo + i)->device  = (IoDevice *)this;
-        (ppIo + i)->offset  = io_base_addr + i;
+        (ppIo + i)->offset  = static_cast<Word>(io_base_addr + i);
     }
 
     io_initialized = 1;
@@ -511,7 +511,7 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
 
             pmsg << "Unable to locate or read \"" << filename
                  << "\"" << std::endl;
-#ifdef WIN32
+#ifdef _WIN32
             MessageBox(NULL, pmsg.str().c_str(),
                        PROGRAMNAME " error",
                        MB_OK | MB_ICONERROR);
@@ -541,8 +541,8 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
 
         pmsg << "File \"" << filename << "\" has unknown fileformat"
              << std::endl;
-#ifdef WIN32
-        MessageBox(NULL, pmsg.msg().c_str(), PROGRAMNAME " error",
+#ifdef _WIN32
+        MessageBox(NULL, pmsg.str().c_str(), PROGRAMNAME " error",
                    MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX

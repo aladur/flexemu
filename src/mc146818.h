@@ -25,7 +25,7 @@
 #ifndef __mc146818_h__
 #define __mc146818_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include "iodevice.h"
 
 

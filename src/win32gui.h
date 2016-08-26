@@ -21,8 +21,8 @@
 */
 
 
-#ifdef WIN32
-#include <misc1.h>
+#ifdef _WIN32
+#include "misc1.h"
 #ifdef _MSC_VER
     #include <commctrl.h>
 #endif
@@ -229,7 +229,7 @@ protected:
     bool            cpu_popped_up;
     int             oldX, oldY;
     Word            mouseMoved;
-    UINT            idTimer;
+    UINT_PTR        idTimer;
     bool            frequency_control_on;
     bool            is_use_undocumented;
     struct s_cpu_logfile lfs;
@@ -262,5 +262,5 @@ public:
 
 };
 
-#endif // WIN32
+#endif // _WIN32
 

@@ -25,7 +25,7 @@
 #ifndef __pia2__h
 #define __pia2__h
 
-#include <misc1.h>
+#include "misc1.h"
 #include "inout.h"
 #include "mc6821.h"
 #include "mc6809.h"

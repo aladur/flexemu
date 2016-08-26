@@ -20,17 +20,18 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <new>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
-#ifndef WIN32
+#ifndef _WIN32
     #include <sched.h>
 #endif
 #include <sys/types.h>
-#include <unistd.h>
-#include <pthread.h>
+#ifndef _MSC_VER
+    #include <unistd.h>
+#endif
 
 #include "e2.h"
 #include "mc6809.h"
@@ -158,7 +159,6 @@ bool startup(
         }
     }
 
-    (*schedy)->gui_present((*io)->gui != NULL);
     PMEMORY->reset_io();
     (*cpu)->reset();
     return true;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 }
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv)
 {
     *argc = 1;
@@ -276,10 +276,10 @@ int WINAPI WinMain(
 {
     struct           sOptions    *pOptions = NULL;
     struct           sGuiOptions *pGuiOptions = NULL;
-    Mc6809          *cpu;
-    Scheduler       *schedy;
-    Inout           *io;
-    Da6809          *disassembler;
+    Mc6809          *cpu = NULL;
+    Scheduler       *schedy = NULL;
+    Inout           *io = NULL;
+    Da6809          *disassembler = NULL;
     int             argc;
     char            *argv[50];
     FlexOptionManager optionMan;
@@ -318,10 +318,7 @@ int WINAPI WinMain(
             }
             else
             {
-                if (io->gui != NULL)
-                {
-                    io->gui->main_loop();
-                }
+                io->main_loop();
 
                 // wait until CPU thread has terminated
                 schedy->Join();
@@ -339,7 +336,7 @@ int WINAPI WinMain(
         exit_code = EXIT_FAILURE;
     }
 
-    delete io->gui;
+    delete io;
     delete schedy;
     delete cpu;
     delete pOptions;
@@ -348,5 +345,5 @@ int WINAPI WinMain(
     return exit_code; // satisfy compiler
 } // WinMain
 
-#endif // #ifdef WIN32
+#endif // #ifdef _WIN32
 

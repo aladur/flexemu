@@ -23,7 +23,7 @@
 #ifndef __ffilecnt_h__
 #define __ffilecnt_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include "filecont.h"
 #include "filecnts.h"

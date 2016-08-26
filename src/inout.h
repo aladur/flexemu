@@ -25,7 +25,7 @@
 #ifndef __inout_h__
 #define __inout_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #ifdef HAVE_TERMIOS_H
     #include <termios.h>
@@ -71,9 +71,9 @@ private:
 #endif
 
 public:
-    AbstractGui    *gui;
     static Inout   *instance;
 protected:
+    AbstractGui    *gui;
     E2floppy       *fdc;
     Memory         *memory;
     Mc146818       *rtc;
@@ -104,6 +104,8 @@ public:
 public:
     Word    output_to_terminal(void);
     Word    output_to_graphic(void);
+    bool    is_gui_present(void);
+    void    main_loop(void);
 
     // parallel I/O
 public:

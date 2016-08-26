@@ -20,13 +20,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #ifndef _BWIN32THREADIMP_H_
 #define _BWIN32THREADIMP_H_
 
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include "misc1.h"
 #include "bthreadimp.h"
 
 

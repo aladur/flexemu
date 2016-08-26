@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "acia1.h"
 #include "inout.h"

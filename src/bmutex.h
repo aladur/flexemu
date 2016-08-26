@@ -26,13 +26,9 @@
 // This class could also be realized as a envelope/letter pattern
 // but this is still the most efficient C++ implementation
 
-#include <misc1.h>
+#include "misc1.h"
 #ifdef UNIX
     #include <pthread.h>
-#endif
-#ifdef WIN32
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
 #endif
 
 
@@ -49,7 +45,7 @@ public:
 private:
     pthread_mutex_t mutex;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     CRITICAL_SECTION criticalSec;
 #endif
 };

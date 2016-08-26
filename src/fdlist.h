@@ -23,7 +23,7 @@
 #ifndef __fdlist_h__
 #define __fdlist_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>

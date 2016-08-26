@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #ifdef ultrix
     #include <strings.h>
 #endif

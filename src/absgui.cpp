@@ -22,7 +22,7 @@
 
 #include <sstream>
 #include <iomanip>
-#include <misc1.h>
+#include "misc1.h"
 #include "pia1.h"
 #include "absgui.h"
 #include "e2video.h"
@@ -857,7 +857,8 @@ void AbstractGui::text(int x, int y, const char *str, int)
 
 void AbstractGui::clear_cpuview(void)
 {
-    int i, size;
+    int i;
+    size_t size;
 
     for (i = 0; i <= CPU_LINES * cpu_line_size - 1; i++)
     {
@@ -875,12 +876,12 @@ void AbstractGui::clear_cpuview(void)
 
 void AbstractGui::set_line_delim(const char *delim)
 {
-    int size = strlen(delim);
+    size_t size = strlen(delim);
 
     if (size <= 2)
     {
         cpu_line_delim = delim;
-        cpu_line_size = CPU_LINE_SIZE + size - 1;
+        cpu_line_size = static_cast<int>(CPU_LINE_SIZE + size - 1);
     }
 }
 

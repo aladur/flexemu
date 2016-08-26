@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "inout.h"
 #include "e2floppy.h"
@@ -36,7 +36,7 @@
     #include "xtgui.h"
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
     #include "win32gui.h"
 #endif
 
@@ -75,6 +75,7 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
 
 Inout::~Inout(void)
 {
+    delete gui;
     delete jmutex;
     delete pmutex;
 }
@@ -365,7 +366,7 @@ AbstractGui *Inout::create_gui(int
 #ifdef HAVE_XTK
                 type == GUI_XTOOLKIT ||
 #endif
-#ifdef WIN32
+#ifdef _WIN32
                 type == GUI_WINDOWS ||
 #endif
                 type == -9999))   // dummy
@@ -384,7 +385,7 @@ AbstractGui *Inout::create_gui(int
                     gui = new XtGui(cpu, memory, schedy, this, video, options);
                     break;
 #endif
-#ifdef WIN32
+#ifdef _WIN32
 
                 case GUI_WINDOWS:
                     gui = new Win32Gui(cpu, memory, schedy, this, video,
@@ -670,7 +671,7 @@ void Inout::write_ch_serial(Byte val)
 
 void Inout::set_bell(Word /*x_percent*/)
 {
-#ifdef WIN32
+#ifdef _WIN32
     Beep(400, 100);
 #endif
 #ifdef UNIX
@@ -687,6 +688,11 @@ bool Inout::is_terminal_supported(void)
 #else
     return 0;
 #endif
+}
+
+bool Inout::is_gui_present(void)
+{
+    return gui != NULL;
 }
 
 Word Inout::output_to_terminal(void)
@@ -715,3 +721,10 @@ Word Inout::output_to_graphic(void)
     return 0;
 }
 
+void Inout::main_loop(void)
+{
+    if (is_gui_present())
+    {
+        gui->main_loop();
+    }
+}

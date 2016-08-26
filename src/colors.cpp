@@ -3,8 +3,8 @@
 */
 
 
-#ifdef WIN32
-#include <misc1.h>
+#ifdef _WIN32
+#include "misc1.h"
 #include <stdlib.h>
 #include "win32gui.h"
 
@@ -689,5 +689,5 @@ yellowgreen", 154 205 50
 }
 #endif /* __cplusplus */
 
-#endif /* WIN32 */
+#endif /* _WIN32 */
 

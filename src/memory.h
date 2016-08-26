@@ -25,7 +25,7 @@
 #ifndef __memory_h__
 #define __memory_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include "iodevice.h"
 #include "e2.h"

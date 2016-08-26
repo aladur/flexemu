@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include <sys/stat.h>
 
 #include "fcinfo.h"
@@ -38,7 +38,7 @@
     std::string FlexFileContainer::bootSectorFile =
         F_DATADIR PATHSEPARATORSTRING "boot";
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     std::string FlexFileContainer::bootSectorFile = "boot";
 #endif
 

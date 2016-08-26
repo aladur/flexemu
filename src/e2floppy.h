@@ -24,7 +24,7 @@
 #ifndef __e2floppy_h__
 #define __e2floppy_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifndef __fromflex__
 

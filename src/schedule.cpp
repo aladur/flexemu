@@ -22,7 +22,7 @@
 
 
 #include <limits.h>
-#ifndef WIN32
+#ifndef _WIN32
     #include <sched.h>
 #endif
 #include "misc1.h"
@@ -39,7 +39,7 @@ Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
     commandMutex(NULL), statusMutex(NULL), irqStatMutex(NULL),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
     time0sec(0), cpu(NULL), io(NULL), systemTime(NULL),
-    b_gui_present(false), pCurrent_status(NULL),
+    pCurrent_status(NULL),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
     int i;
@@ -86,7 +86,6 @@ Scheduler::~Scheduler()
     pCurrent_status = NULL;
     statusMutex->unlock();
 
-    delete io;
     delete systemTime;
     delete irqStatMutex;
     delete statusMutex;
@@ -143,7 +142,7 @@ void Scheduler::process_events(void)
         {
             statusMutex->lock();
 
-            if (b_gui_present && pCurrent_status == NULL)
+            if (io->is_gui_present() && pCurrent_status == NULL)
             {
                 events &= ~DO_SET_STATUS;
                 pCurrent_status = cpu->create_status_object();
@@ -265,7 +264,7 @@ Byte Scheduler::statemachine(Byte initial_state)
                 break;
         } // switch
 
-        if (b_gui_present)
+        if (io->is_gui_present())
         {
             events |= DO_SET_STATUS;
         }
@@ -303,7 +302,7 @@ void Scheduler::Run()
 {
     bool periodic = true;
 
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE hThread = (HANDLE)GetCurrentThread();
     // Decrease Thread priority of CPU thread so that
     // the User Interface thread always has best response time

@@ -27,10 +27,11 @@
     #include <sys/wait.h>
 #endif
 #include "bprocess.h"
+#include "cvtwchar.h"
 
-BProcess::BProcess(const char *x_exec,
-                   const char *x_dir /* = NULL */,
-                   const char *x_arg /* NULL */) :
+BProcess::BProcess(const std::string &x_exec,
+                   const std::string &x_dir /* = "" */,
+                   const std::string &x_arg /* = "" */) :
     executable(x_exec), arguments(x_arg), directory(x_dir)
 #ifdef WIN32
     , hProcess(NULL)
@@ -41,25 +42,19 @@ BProcess::BProcess(const char *x_exec,
 {
 }
 
-void BProcess::AddArgument(const char *x_arg)
+void BProcess::AddArgument(const std::string &x_arg)
 {
-    if (x_arg != NULL)
+    if (!arguments.empty())
     {
-        if (!arguments.empty())
-        {
-            arguments += " ";
-        }
-
-        arguments += x_arg;
+        arguments += " ";
     }
+
+    arguments += x_arg;
 }
 
-void BProcess::SetDirectory(const char *x_dir)
+void BProcess::SetDirectory(const std::string &x_dir)
 {
-    if (x_dir != NULL)
-    {
-        directory = x_dir;
-    }
+    directory = x_dir;
 }
 
 //***********************************************
@@ -82,9 +77,36 @@ bool BProcess::Start()
     commandline = executable + " " + arguments;
     memset((void *)&si, 0, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
+#ifdef UNICODE
+    const wchar_t *pDirectory = NULL;
+    wchar_t *pCommandLine = NULL;
+    std::wstring directoryw;
+
+    if (!directory.empty())
+    {
+        directoryw = ConvertToUtf16String(directory).c_str();
+        pDirectory = directoryw.c_str();
+    }
+
+    // For CreateProcessW parameter lpCommandLine must not be const
+    std::wstring commandlinew = ConvertToUtf16String(commandline);
+    pCommandLine = new wchar_t[commandlinew.size()+1];
+    wcscpy(pCommandLine, commandlinew.c_str());
+    result = CreateProcess(NULL, pCommandLine,
+        NULL, NULL, 0, 0, NULL, pDirectory, &si, &pi);
+    delete pCommandLine;
+#else
+    const char *pDirectory = NULL;
+
+    if (!directory.empty())
+    {
+        pDirectory = directory.c_str();
+    }
+
     result = CreateProcess(NULL,
-                           const_cast<char *>((const char *)commandline),
-                           NULL, NULL, 0, 0, NULL, directory, &si, &pi);
+        const_cast<char *>(commandline.c_str()),
+        NULL, NULL, 0, 0, NULL, pDirectory, &si, &pi);
+#endif
 
     if (result != 0)
     {

@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 #include <ctype.h>
 #include <stdio.h>
 #include "bfileptr.h"

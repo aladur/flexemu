@@ -10,6 +10,7 @@
 
 
 #include <limits.h>
+#include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "da6809.h"

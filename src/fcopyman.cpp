@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include "filecont.h"
 #include "fcopyman.h"
 #include "fdirent.h"
@@ -38,7 +38,7 @@ bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
 
     if (&src == &dst)
     {
-        throw FlexException(FERR_COPY_ON_ITSELF, srcName);
+        throw FlexException(FERR_COPY_ON_ITSELF, std::string(srcName));
     }
 
     if (dst.IsWriteProtected())

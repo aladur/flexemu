@@ -30,8 +30,17 @@
 #else
     #include "config.h"
 #endif
-#ifdef WIN32
-    #include <windows.h>
+#ifdef _WIN32
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif
+    #ifndef _CRT_SECURE_NO_WARNINGS
+        #define _CRT_SECURE_NO_WARNINGS 1
+    #endif
+    #ifndef _CRT_NONSTDC_NO_DEPRECATE
+        #define _CRT_NONSTDC_NO_DEPRECATE 1
+    #endif
+#include <windows.h>
 #endif
 #include "typedefs.h"
 #include <string>
@@ -144,7 +153,7 @@ extern const char *gMemoryAllocationErrorString;
 #endif
 
 /* utime */
-#ifdef WIN32
+#ifdef _WIN32
     #include <sys/utime.h>
 #endif
 #ifdef UNIX
@@ -154,7 +163,12 @@ extern const char *gMemoryAllocationErrorString;
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
-    #define vsnprintf       _vsnprintf
+    #define vsnprintf _vsnprintf
+    #define stricmp _stricmp
+    #define access _access
+    #define unlink _unlink
+    #define getcwd _getcwd
+    #define chdir _chdir
     #include <io.h>
 #endif
 
@@ -173,12 +187,12 @@ extern const char *gMemoryAllocationErrorString;
     #define UNUSED(param) param
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
     #define CALLBACK
 #endif
 
 #ifndef PATH_MAX
-    #ifdef WIN32
+    #ifdef _WIN32
         #ifdef _MSC_VER
             #define PATH_MAX _MAX_PATH
         #endif
@@ -196,7 +210,7 @@ extern const char *gMemoryAllocationErrorString;
 
 /* PATHSEPARATORSTRING shoud be a define to do */
 /* implicit concatenation by the compiler!     */
-#ifdef WIN32
+#ifdef _WIN32
     const char PATHSEPARATOR = '\\';
     #define PATHSEPARATORSTRING  "\\"
 #endif
@@ -264,7 +278,7 @@ struct sOptions
 
 /* Names of Environment or Registry variables */
 
-#ifdef WIN32
+#ifdef _WIN32
     #define FLEXEMUREG       "Software\\Gnu\\Flexemu"
     #define FLEXPLOREREG     "Software\\Gnu\\FLEXplorer"
 #endif
@@ -293,17 +307,17 @@ struct sOptions
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"
 
-#define BTST0(x)  ((x) &    0x01)
-#define BTST1(x)  ((x) &    0x02)
-#define BTST2(x)  ((x) &    0x04)
-#define BTST3(x)  ((x) &    0x08)
-#define BTST4(x)  ((x) &    0x10)
-#define BTST5(x)  ((x) &    0x20)
-#define BTST6(x)  ((x) &    0x40)
-#define BTST7(x)  ((x) &    0x80)
-#define BTST8(x)  ((x) &   0x100)
-#define BTST15(x) ((x) &  0x8000)
-#define BTST16(x) ((x) & 0x10000)
+#define BTST0(x)  (((x) & 0x01) != 0)
+#define BTST1(x)  (((x) & 0x02) != 0)
+#define BTST2(x)  (((x) & 0x04) != 0)
+#define BTST3(x)  (((x) & 0x08) != 0)
+#define BTST4(x)  (((x) & 0x10) != 0)
+#define BTST5(x)  (((x) & 0x20) != 0)
+#define BTST6(x)  (((x) & 0x40) != 0)
+#define BTST7(x)  (((x) & 0x80) != 0)
+#define BTST8(x)  (((x) & 0x100) != 0)
+#define BTST15(x) (((x) & 0x8000) != 0)
+#define BTST16(x) (((x) & 0x10000) != 0)
 
 #define BSET7(x) (x |= 0x80)
 #define BSET6(x) (x |= 0x40)
@@ -337,7 +351,7 @@ struct sOptions
     extern char     *hexstr(Byte x);
     extern char     *hexstr(Word x);
     extern char     *ascchr(Byte x);
-    #ifdef WIN32
+    #ifdef _WIN32
         extern int getopt(int argc, char *const argv[], char *optstr);
         extern int  optind;
         extern int  opterr;

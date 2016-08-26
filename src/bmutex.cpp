@@ -46,8 +46,8 @@ void BMutex::unlock()
 }
 #endif
 
-#ifdef WIN32
-BMutex::BMutex() : mutex(NULL)
+#ifdef _WIN32
+BMutex::BMutex()
 {
     InitializeCriticalSection(&criticalSec);
 }

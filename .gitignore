@@ -52,10 +52,15 @@ x64/
 rebuild.bat
 *.sdf
 *.opensdf
+*.VC.db
+*.VC.opendb
 build/windows/lib*/
 build/windows/wxwidgets/
+build/windows/wxwidgets-*
 build/windows/*.tar.gz
 build/windows/*.tgz
+src/Debug/
+src/Release/
 
 # vi swap file
 *.swp

@@ -21,7 +21,7 @@
 */
 
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef NAFS
 #include <sstream>
@@ -40,6 +40,7 @@
 #include "fdirent.h"
 #include "fcinfo.h"
 #include "flexerr.h"
+#include "cvtwchar.h"
 
 // detailed debug messegas can be written to a debug file:
 //#define DEBUG_FILE "debug.txt"
@@ -245,14 +246,20 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
         pflex_unused == NULL || pflex_directory == NULL ||
         pnew_file == NULL)
     {
-        const char *pmsg = "Not enough memory, can't continue\n";
+        std::string msg("Not enough memory, can't continue\n");
 
-#ifdef WIN32
-        MessageBox(NULL, pmsg, PROGRAMNAME " error",
-                   MB_OK | MB_ICONERROR);
+#ifdef _WIN32
+        std::string title(PROGRAMNAME " error");
+#ifdef UNICODE
+        MessageBox(NULL, ConvertToUtf16String(msg).c_str(),
+            ConvertToUtf16String(title).c_str(),
+            MB_OK | MB_ICONERROR);
+#else
+        MessageBox(NULL, msg.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+#endif
 #endif
 #ifdef UNIX
-        fprintf(stderr, "%s", pmsg);
+        fprintf(stderr, "%s", msg.c_str());
 #endif
         exit(EXIT_FAILURE);
     } // if
@@ -353,9 +360,9 @@ std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
     {
         std::string::size_type length;
 
-        length = std::min(strlen(pfn), FLEX_BASEFILENAME_LENGTH);
+        length = std::min<size_t>(strlen(pfn), FLEX_BASEFILENAME_LENGTH);
         std::string name(pfn, length);
-        length = std::min(strlen(pfn + FLEX_BASEFILENAME_LENGTH),
+        length = std::min<size_t>(strlen(pfn + FLEX_BASEFILENAME_LENGTH),
                           FLEX_FILEEXT_LENGTH);
         std::string ext(pfn + FLEX_BASEFILENAME_LENGTH, length);
         std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -657,9 +664,7 @@ void NafsDirectoryContainer::close_new_files()
 {
     Word i;
     Byte first = 1;
-    char msg[ERR_SIZE];
-
-    msg[0] = '\0';
+    std::string msg;
 
     for (i = 0; i < new_files; i++)
     {
@@ -667,31 +672,36 @@ void NafsDirectoryContainer::close_new_files()
         {
             if (first)
             {
-                strcpy(msg, "There are still open files\n"
-                       "temporarily stored as:\n");
+                msg = "There are still open files\n"
+                       "temporarily stored as:\n";
                 first = 0;
             }
 
             fclose((pnew_file + i)->fp);
 
-            if (strlen(msg) < (ERR_SIZE - 18))
-            {
-                strcat(msg, "   ");
-                strcat(msg, (pnew_file + i)->filename);
-                strcat(msg, "\n");
-            } // if
+            msg += "   ";
+            msg += (pnew_file + i)->filename;
+            msg += "\n";
         } // if
     } // for
 
-    if (strlen(msg) > 0)
-#ifdef WIN32
-        MessageBox(NULL, msg, PROGRAMNAME " warning",
-                   MB_OK | MB_ICONEXCLAMATION);
+    if (!msg.empty())
+    {
+#ifdef _WIN32
+    std::string title(PROGRAMNAME " warning");
+#ifdef UNICODE
+    MessageBox(NULL, ConvertToUtf16String(msg).c_str(),
+        ConvertToUtf16String(title).c_str(),
+        MB_OK | MB_ICONEXCLAMATION);
+#else
+    MessageBox(NULL, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);
+#endif
 
 #endif
 #ifdef UNIX
     fprintf(stderr, "%s", msg);
 #endif
+    }
 } // close_new_files
 
 
@@ -712,14 +722,14 @@ Byte NafsDirectoryContainer::add_to_link_table(
     t_st *pbegin,
     t_st *pend)
 {
-    Word i, free, begin, records;
+    off_t i, free, begin, records;
     struct s_link_table *plink;
     struct s_sys_info_sector *psis;
 
     psis = pflex_sys_info;
     free = (psis->free[0] << 8) + psis->free[1];
 
-    if (size > (off_t)(free * 252L))
+    if (size > static_cast<off_t>(free * 252L))
     {
         return 0;
     }
@@ -740,25 +750,25 @@ Byte NafsDirectoryContainer::add_to_link_table(
 
         if (random)
         {
-            plink->record_nr[0] = i > 2 ? (i - 2) >> 8 : 0;
+            plink->record_nr[0] = static_cast<Byte>(i > 2 ? (i - 2) >> 8 : 0);
             plink->record_nr[1] = i > 2 ? (i - 2) & 0xff : 0;
         }
         else
         {
-            plink->record_nr[0] = i >> 8;
+            plink->record_nr[0] = static_cast<Byte>(i >> 8);
             plink->record_nr[1] = i & 0xff;
         }
 
-        plink->f_record = i - 1;
+        plink->f_record = static_cast<Word>(i - 1);
         plink->file_id = dir_index;
     } // for
 
     pend->st.sec = ((i + begin - 2) % MAX_SECTOR) + 1;
-    pend->st.trk = (i + begin - 2) / MAX_SECTOR;
+    pend->st.trk = static_cast<Byte>((i + begin - 2) / MAX_SECTOR);
     // update sys info sector
     psis->fc_start_sec = ((i + begin - 1) % MAX_SECTOR) + 1;
-    psis->fc_start_trk = (i + begin - 1) / MAX_SECTOR;
-    psis->free[0] = (free - records) >> 8;
+    psis->fc_start_trk = static_cast<Byte>((i + begin - 1) / MAX_SECTOR);
+    psis->free[0] = static_cast<Byte>((free - records) >> 8);
     psis->free[1] = (free - records) & 0xff;
     return 1;
 } // add_to_link_table
@@ -779,7 +789,7 @@ void NafsDirectoryContainer::add_to_directory(
     SWord records;
 
     lt = localtime(&(pstat->st_mtime));
-    records = (pstat->st_size + 251L) / 252;
+    records = static_cast<SWord>((pstat->st_size + 251L) / 252);
     pd = &((pflex_directory + (dir_index / 10))->dir_entry[dir_index % 10]);
     memset(pd->filename, 0, FLEX_BASEFILENAME_LENGTH);
     strncpy(pd->filename, name, FLEX_BASEFILENAME_LENGTH);
@@ -880,7 +890,7 @@ void NafsDirectoryContainer::modify_random_file(char *path, struct stat *pstat,
 
 void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 {
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE hdl;
     WIN32_FIND_DATA pentry;
 #endif
@@ -888,7 +898,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     DIR *pd;
     struct dirent *pentry;
 #endif
-    char name[9], ext[4], path[PATH_MAX + 1], *pfilename;
+    char name[9], ext[4], path[PATH_MAX + 1];
+    std::string filename;
     SWord dir_index = 0;
     Word random;
     t_st begin, end;
@@ -896,12 +907,17 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
     initialize_flex_directory();
     initialize_flex_link_table();
-#ifdef WIN32
-    strcpy(path, *dir);
+#ifdef _WIN32
+    strcpy(path, dir->c_str());
     strcat(path, PATHSEPARATORSTRING "*.*");
 
-    if ((hdl = FindFirstFile(path, &pentry)) != INVALID_HANDLE_VALUE)
-    {
+#ifdef UNICODE
+    hdl = FindFirstFile(ConvertToUtf16String(path).c_str(), &pentry);
+#else
+    hdl = FindFirstFile(path, &pentry);
+#endif
+    if (hdl != INVALID_HANDLE_VALUE)
+        {
         do
         {
 #endif
@@ -912,27 +928,32 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 while ((pentry = readdir(pd)) != NULL)
                 {
 #endif
-#ifdef WIN32
-                    pfilename = pentry.cFileName;
-                    strlower(pfilename);
+#ifdef _WIN32
+#ifdef UNICODE
+                    filename = ConvertToUtf8String(pentry.cFileName);
+#else
+                    filename = pentry.cFileName;
+#endif
+                    std::transform(filename.begin(), filename.end(),
+                        filename.begin(), ::tolower);
 #endif
 #ifdef UNIX
-                    pfilename = (char *)&pentry->d_name;
+                    filename = (char *)&pentry->d_name;
 #endif
                     random = 0;
                     strcpy((char *)&path, dir->c_str());
                     strcat((char *)&path, PATHSEPARATORSTRING);
-                    strcat((char *)&path, pfilename);
+                    strcat((char *)&path, filename.c_str());
 
-                    if (IsFlexFilename(pfilename, (char *)&name,
+                    if (IsFlexFilename(filename.c_str(), (char *)&name,
                                        (char *)&ext) &&
                         !stat(path, &sbuf) && (S_ISREG(sbuf.st_mode)) &&
-                        // exclude file "random:"
-                        strcmp(pfilename, RANDOM_FILE_LIST) &&
+                        // exclude file "random":
+                        strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
                         sbuf.st_size > 0 &&
                         (dir_index = next_free_dir_entry()) >= 0)
                     {
-#ifdef WIN32
+#ifdef _WIN32
                         random = (pentry.dwFileAttributes &
                                   FILE_ATTRIBUTE_HIDDEN) ? 1 : 0;
 #endif
@@ -943,7 +964,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         // CDFS-Support: look for file name in file 'random'
                         if (dwp)
                         {
-                            random = is_in_file_random(dir->c_str(), pfilename);
+                            random = is_in_file_random(dir->c_str(), filename.c_str());
                         }
 
                         if (add_to_link_table(dir_index, sbuf.st_size,
@@ -961,7 +982,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         }
                     }
 
-#ifdef WIN32
+#ifdef _WIN32
                 }
 
                 while (FindNextFile(hdl, &pentry) != 0);
@@ -1233,8 +1254,13 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                     // check for random file, if true set user execute bit
                     if (pd->dir_entry[i].sector_map & 0x02)
-#ifdef WIN32
-                        SetFileAttributes(old_path, FILE_ATTRIBUTE_HIDDEN);
+#ifdef _WIN32
+#ifdef UNICODE
+                    SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
+                        FILE_ATTRIBUTE_HIDDEN);
+#else
+                    SetFileAttributes(old_path, FILE_ATTRIBUTE_HIDDEN);
+#endif
 
 #endif
 #ifdef UNIX
@@ -1305,7 +1331,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
         char *p, path[PATH_MAX + 1];
         const char *mode;
         Word i, di;
-        size_t bytes;
+        Word bytes;
         FILE *fp;
         t_st *link;
         struct s_link_table *pfl;
@@ -1351,7 +1377,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                     if ((fp = fopen(path, mode)) != NULL)
                     {
-                        bytes = fread(buffer, 1, SECTOR_SIZE, fp);
+                        bytes = static_cast<Word>(
+                            fread(buffer, 1, SECTOR_SIZE, fp));
                         fclose(fp);
                     }
 
@@ -1413,7 +1440,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         !fseek(fp, (long)(pfl->f_record * 252L),
                                SEEK_SET))
                     {
-                        bytes = fread(&buffer[4], 1, 252, fp);
+                        bytes = static_cast<Word>(
+                            fread(&buffer[4], 1, 252, fp));
                         fclose(fp);
 
                         // stuff last sector of file with 0
@@ -1434,7 +1462,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                     if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
                     {
-                        bytes = fread(&buffer[4], 1, 252, fp);
+                        bytes = static_cast<Word>(
+                            fread(&buffer[4], 1, 252, fp));
 
                         // stuff last sector of file with 0
                         for (i = 4 + bytes; i < SECTOR_SIZE; i++)

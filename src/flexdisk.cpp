@@ -34,7 +34,7 @@
 #endif
 #include <wx/clipbrd.h>
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "flexdisk.h"
 #include "fdpframe.h"
@@ -94,7 +94,8 @@ void FLEXplorer::WriteDefaultOptions(void)
     BRegistry *reg;
 
     reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
-    reg->SetValue(FLEXPLORERFILEVIEWER, FlexDiskListCtrl::fileViewer);
+    reg->SetValue(FLEXPLORERFILEVIEWER,
+        std::string(FlexDiskListCtrl::fileViewer));
     reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
     reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ?
                   1 : 0);
@@ -140,7 +141,7 @@ void FLEXplorer::ReadDefaultOptions(void)
         str = "Notepad.exe";
     }
 
-    FlexDiskListCtrl::fileViewer = (const char *)str;
+    FlexDiskListCtrl::fileViewer = str.c_str();
     FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
     delete reg;
 #endif

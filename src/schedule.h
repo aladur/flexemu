@@ -25,7 +25,7 @@
 #ifndef __schedule_h__
 #define __schedule_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <signal.h>
 #include "bthread.h"
 #include "cpustate.h"
@@ -101,14 +101,9 @@ public:
     void        get_interrupt_status(tInterruptStatus &s);
     bool        status_available(void);
     CpuStatus  *get_status();
-    void        gui_present(bool bval)
-    {
-        b_gui_present = bval;
-    };
 protected:
     tInterruptStatus interrupt_status;
     void        do_reset();
-    bool        b_gui_present;
     CpuStatus   *pCurrent_status;
 
     // CPU frequency

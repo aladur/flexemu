@@ -854,7 +854,7 @@ inline void Mc6809::neg(Byte &reg)
 {
     // Sw: fixed carry bug
     cc.bit.v = (reg == 0x80);
-    cc.bit.c = reg;
+    cc.bit.c = (reg != 0);
     reg = (~reg) + 1;
     cc.bit.n = BTST7(reg);
     cc.bit.z = !reg;

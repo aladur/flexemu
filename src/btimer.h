@@ -19,11 +19,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
-#ifdef WIN32
-    //#define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-#endif
+#include "misc1.h"
 #include "bmutex.h"
 
 typedef void (*BTimerProc)(void *p);
@@ -56,7 +52,7 @@ protected:
     void UnInit(void);
     bool StartTimer();
 
-#ifdef WIN32
+#ifdef _WIN32
     static unsigned long StartTimerImp(BTimer *p);
     HANDLE   timerHandle;
     HANDLE   startTimerEvent;

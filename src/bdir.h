@@ -24,7 +24,7 @@
 #define __bdir_h__
 
 #include "misc1.h"
-#ifdef WIN32
+#ifdef _WIN32
     #pragma warning (disable: 4786)
 #endif
 #include <vector>

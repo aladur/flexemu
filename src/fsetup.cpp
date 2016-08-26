@@ -33,7 +33,7 @@
     #include <wx/wx.h>
 #endif
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "fsetpdlg.h"
 #include "fsetup.h"

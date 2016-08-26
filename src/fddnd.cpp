@@ -32,7 +32,7 @@
     #include <wx/wx.h>
 #endif
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef wxUSE_DRAG_AND_DROP
 

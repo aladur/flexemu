@@ -25,7 +25,7 @@
 #ifndef __mmu_h__
 #define __mmu_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 #include "iodevice.h"
 

@@ -41,7 +41,7 @@ private:
     std::string path;   // path of container file
     int     sectors;    // Number of sectors per track
     int     tracks;     // Number of tracks
-    char    name[FLEX_DISKNAME_LENGTH]; // name of disk
+    std::string name;   // name of disk
     int     type;       // container type
     int     free;       // Number of bytes free
     int     totalSize;  // Number of total bytes writable
@@ -51,10 +51,13 @@ public:
     FlexContainerInfo();        // public constructor
     virtual ~FlexContainerInfo();   // public destructor
 
-    void                SetName(const char *n);
+    void                SetName(const std::string &n)
+    {
+        name = n;
+    }
     const std::string   GetTypeString(void) const;
 
-    inline void         SetPath(const char *p)
+    inline void         SetPath(const std::string &p)
     {
         path = p;
     };
@@ -104,11 +107,11 @@ public:
         *t = tracks;
         *s = sectors;
     };
-    inline const char   *GetName(void) const
+    inline const std::string GetName(void) const
     {
-        return (char *)&name;
+        return name;
     };
-    inline const        std::string &GetPath(void) const
+    inline const std::string GetPath(void) const
     {
         return path;
     };

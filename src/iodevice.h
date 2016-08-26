@@ -25,7 +25,7 @@
 #ifndef __iodevice_h__
 #define __iodevice_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 class IoDevice
 {

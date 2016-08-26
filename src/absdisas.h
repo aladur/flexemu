@@ -5,7 +5,7 @@
 #ifndef __absdisas_h__
 #define __absdisas_h__
 
-#include <misc1.h>
+#include "misc1.h"
 
 enum
 {

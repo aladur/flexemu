@@ -20,10 +20,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef WIN32
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-#endif
 #include "misc1.h"
 #include <stdio.h>
 #include <sys/stat.h>
@@ -40,13 +36,15 @@
     #define NAMLEN(dirent) (dirent)->d_namlen
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
     #ifdef _MSC_VER
         #include <direct.h>
     #endif
 #endif
 
 #include "bdir.h"
+#include "cvtwchar.h"
+
 
 /********************************************
  ctor / dtor
@@ -91,7 +89,7 @@ bool BDirectory::Create(const std::string &aPath, int mode /* = 0x0755 */)
 #endif
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
     std::string     basePath;
@@ -106,12 +104,21 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
         basePath += PATHSEPARATOR;
     }
 
-    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
-        INVALID_HANDLE_VALUE)
+    std::string filePattern = basePath + "*.*";
+#ifdef UNICODE
+    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
+#else
+    hdl = FindFirstFile(filePattern.c_str(), &pentry);
+#endif
+    if (hdl != INVALID_HANDLE_VALUE)
     {
         do
         {
+#ifdef UNICODE
+            dirEntry = basePath + ConvertToUtf8String(pentry.cFileName);
+#else
             dirEntry = basePath + pentry.cFileName;
+#endif
 
             if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
@@ -122,7 +129,7 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
             }
             else
             {
-                remove(dirEntry);
+                remove(dirEntry.c_str());
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);
@@ -181,7 +188,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 {
     std::vector<std::string> subDirList;
     std::string     basePath(aPath);
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE          hdl;
     WIN32_FIND_DATA pentry;
 
@@ -190,15 +197,24 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
         basePath += PATHSEPARATOR;
     }
 
-    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
-        INVALID_HANDLE_VALUE)
+    std::string filePattern = basePath + "*.*";
+#ifdef UNICODE
+    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
+#else
+    hdl = FindFirstFile(filePattern.c_str(), &pentry);
+#endif
+    if (hdl != INVALID_HANDLE_VALUE)
     {
         do
         {
             if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
                 pentry.cFileName[0] != '.')
             {
+#ifdef UNICODE
+                subDirList.push_back(ConvertToUtf8String(pentry.cFileName));
+#else
                 subDirList.push_back(pentry.cFileName);
+#endif
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);
@@ -245,7 +261,7 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
 {
     std::vector<std::string> fileList;
     std::string     basePath(aPath);
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE          hdl;
     WIN32_FIND_DATA pentry;
 
@@ -254,8 +270,13 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
         basePath += PATHSEPARATOR;
     }
 
-    if ((hdl = FindFirstFile(basePath + "*.*", &pentry)) !=
-        INVALID_HANDLE_VALUE)
+    std::string filePattern = basePath + "*.*";
+#ifdef UNICODE
+    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
+#else
+    hdl = FindFirstFile(filePattern.c_str(), &pentry);
+#endif
+    if (hdl != INVALID_HANDLE_VALUE)
     {
         do
         {
@@ -263,7 +284,11 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
                 (pentry.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) == 0 &&
                 (pentry.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0)
             {
+#ifdef UNICODE
+                fileList.push_back(ConvertToUtf8String(pentry.cFileName));
+#else
                 fileList.push_back(pentry.cFileName);
+#endif
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);

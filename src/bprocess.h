@@ -31,12 +31,12 @@
 class BProcess
 {
 public:
-    BProcess(const char *executable,
-             const char *directory = NULL,
-             const char *argument  = NULL);
+    BProcess(const std::string &executable,
+             const std::string &directory = "",
+             const std::string &argument  = "");
     ~BProcess();
-    void AddArgument(const char *argument);
-    void SetDirectory(const char *directory);
+    void AddArgument(const std::string &argument);
+    void SetDirectory(const std::string &directory);
     bool Start();     // Start the Process if not started yet
     bool IsRunning(); // Check if Process is running
     const char *GetArguments()  const

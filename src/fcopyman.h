@@ -23,7 +23,7 @@
 #ifndef __fcopyman_h__
 #define __fcopyman_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include "flexerr.h"
 
 class FileContainerIf;

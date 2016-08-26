@@ -42,7 +42,7 @@ static const char *_progVersion = VERSION;
     #include <wx/wx.h>
 #endif
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef WIN32
     #ifdef _MSC_VER
@@ -201,7 +201,6 @@ void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
     }
 }
 
-#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
 void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
 {
     wxWindow *pWindow = event.GetWindow();
@@ -214,7 +213,6 @@ void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
         UpdateFrom(&id);
     }
 }
-#endif
 
 void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 {

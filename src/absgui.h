@@ -24,7 +24,7 @@
 #ifndef __absgui_h__
 #define __absgui_h__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -35,7 +35,7 @@
 #define MAX_GUIXSIZE    (3)
 #define MAX_GUIYSIZE    (4)
 
-#ifdef WIN32
+#ifdef _WIN32
     #define COPYTEXT "press Licence button"
 #else
     #define COPYTEXT "look at file COPYING"
@@ -69,7 +69,7 @@ struct sGuiOptions
     int guiXSize;
     int guiYSize;
     int guiType;
-#ifdef WIN32
+#ifdef _WIN32
     HINSTANCE hInstance;  // handle to current instance
     int nCmdShow;   // show state of window
 #endif

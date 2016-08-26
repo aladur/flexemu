@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <misc1.h>
+#include "misc1.h"
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -151,7 +151,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile(void)
         switch (pBuffer[i])
         {
             case 0x0d:
-#ifndef WIN32
+#ifndef _WIN32
                 count += 1;
 #else
                 count += 2;
@@ -208,7 +208,7 @@ int FlexFileBuffer::ConvertFromFlex(void)
         }
         else if (c == 0x0d)
         {
-#ifndef WIN32
+#ifndef _WIN32
             newBuffer[newIndex++] = 0x0a;
 #else
             newBuffer[newIndex++] = 0x0d;
@@ -468,7 +468,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 
     if (fp != NULL)
     {
-        int blocks = fwrite(pBuffer, GetSize(), 1, fp);
+        size_t blocks = fwrite(pBuffer, GetSize(), 1, fp);
         return (blocks == 1);
     }
 
@@ -497,7 +497,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
         if (fp != NULL)
         {
-            int blocks = fread(pBuffer, GetSize(), 1, fp);
+            size_t blocks = fread(pBuffer, GetSize(), 1, fp);
 
             if (blocks == 1)
             {

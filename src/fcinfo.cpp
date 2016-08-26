@@ -48,12 +48,6 @@ FlexContainerInfo::~FlexContainerInfo(void)
 {
 }
 
-void FlexContainerInfo::SetName(const char *n)
-{
-    strncpy(name, n, FLEX_DISKNAME_LENGTH - 1);
-    name[FLEX_DISKNAME_LENGTH - 1] = '\0';
-}
-
 const std::string FlexContainerInfo::GetTypeString(void) const
 {
     std::string str;

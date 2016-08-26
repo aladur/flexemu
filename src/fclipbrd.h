@@ -24,7 +24,7 @@
 #ifndef __FCLIPBRD_H__
 #define __FCLIPBRD_H__
 
-#include <misc1.h>
+#include "misc1.h"
 #include <wx/list.h>
 #include "bobserv.h"
 #include "filecont.h"
