@@ -699,7 +699,7 @@ void NafsDirectoryContainer::close_new_files()
 
 #endif
 #ifdef UNIX
-    fprintf(stderr, "%s", msg);
+    fprintf(stderr, "%s", msg.c_str());
 #endif
     }
 } // close_new_files

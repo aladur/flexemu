@@ -66,7 +66,7 @@ private:
     template<typename T>
     static std::string fprint(int idx, const std::string &format, T& p1)
     {
-        std::string formatItem = "{" + std::to_string(idx) + "}";
+        std::string formatItem = "{" + toString<int>(idx) + "}";
 
         return replaceStringByT(format, formatItem, p1);
     }
@@ -76,7 +76,7 @@ private:
     template<typename T1, typename T2>
     static std::string fprint(int idx, const std::string &format, T1 &p1, T2 &p2)
     {
-        std::string formatItem = "{" + std::to_string(idx) + "}";
+        std::string formatItem = "{" + toString<int>(idx) + "}";
         std::string result = replaceStringByT(format, formatItem, p1);
 
         return fprint(idx + 1, result, p2);
@@ -87,10 +87,20 @@ private:
     template<typename T1, typename T2, typename T3>
     static std::string fprint(int idx, const std::string &format, T1 &p1, T2 &p2, T3 &p3)
     {
-        std::string formatItem = "{" + std::to_string(idx) + "}";
+        std::string formatItem = "{" + toString<int>(idx) + "}";
         std::string result = replaceStringByT(format, formatItem, p1);
 
         return fprint(idx + 1, result, p2, p3);
+    }
+
+    template<typename T>
+    static std::string toString(const T &p1)
+    {
+        std::stringstream result;
+
+        result << p1;
+
+        return result.str();
     }
 
 public:
@@ -125,19 +135,17 @@ public:
     // too much code bloat.
     static inline bool isformatstring(const std::string &text)
     {
-        auto it = text.cbegin();
+        std::string::const_iterator it = text.begin();
 
         // Parse opening curly brackets
-        while ((it = std::find(it, text.cend(), '{')) != text.cend())
+        while ((it = std::find(it, text.end(), '{')) != text.end())
         {
             // Parse one or multiple digits
-            auto it2 = std::find_if(++it, text.cend(),
-                         [](const std::string::value_type &ch){
-                             return !std::isdigit(ch);
-                         });
+            std::string::const_iterator it2;
+            it2 = std::find_if(++it, text.end(), ::isdigit);
 
             // If at least one digit parse closing curly brackets
-            if ((it != it2) && (it2 != text.cend()) && (*it2 == '}'))
+            if ((it != it2) && (it2 != text.end()) && (*it2 == '}'))
             {
                 return true;
             }

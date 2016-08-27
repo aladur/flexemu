@@ -1055,7 +1055,6 @@ void XtGui::c_buttonPress(XEvent *pevent)
     // just catch event to prevent to get cached by the
     // window manager
     XButtonEvent *button_event = (XButtonEvent *)pevent;
-
     current_x = button_event->x;
     current_y = button_event->y;
     mouse_button_state = button_event->state;

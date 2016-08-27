@@ -203,10 +203,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                if (io->gui != NULL)
-                {
-                    io->gui->main_loop();
-                }
+                io->main_loop();
 
                 schedy->Join();  // wait for termination of CPU thread
             }
@@ -224,11 +221,12 @@ int main(int argc, char *argv[])
     }
     catch (FlexException &ex)
     {
-        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n", ex.what());
+        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n",
+            ex.what().c_str());
         exit_code = 1;
     }
 
-    delete io->gui;
+    delete io;
     delete schedy;
     delete cpu;
     delete pOptions;

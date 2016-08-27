@@ -505,7 +505,7 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
             int fd;
             char cTemplate[PATH_MAX];
 
-            getcwd(cTemplate, PATH_MAX - 10);
+            strcpy(cTemplate, "/tmp");
             strcat(cTemplate, "/FLXXXXXXX");
             fd = mkstemp(cTemplate);
 
@@ -518,7 +518,7 @@ void FlexDiskListCtrl::ViewSelectedItems(void)
                 {
                     throw FlexException(
                         FERR_CREATE_PROCESS,
-                        fileViewer.mb_str(*wxConvCurrent),
+                        fileViewer.mb_str(*wxConvCurrent).data(),
                         cTemplate);
                 }
             }
