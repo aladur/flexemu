@@ -1,5 +1,5 @@
 !General
-Flexemu*font:				-*-helvetica-medium-r-normal--*-80-*-*-P-*-*
+Flexemu*font:				-*-terminus-medium-r-normal-*-*-*-*-*-*-*-*
 Flexemu*cpuText*font:			-*-fixed-medium-r-normal--*-130-*-*-*-*-*-1
 Flexemu*Text*font:			-*-fixed-medium-r-normal--*-130-*-*-*-*-*-1
 Flexemu*Text*background:		white
@@ -206,7 +206,7 @@ Flexemu*cpuText.right:			ChainRight
 Flexemu*cpuText.top:			ChainTop
 Flexemu*cpuText.bottom:			ChainBottom
 Flexemu*cpuText.width:			275
-Flexemu*cpuText.height:			202
+Flexemu*cpuText.height:			215
 Flexemu*cpuText.displayCaret:		false
 Flexemu*runButton.label:		Run
 Flexemu*stopButton.label:		Stop
