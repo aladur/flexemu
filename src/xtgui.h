@@ -37,7 +37,6 @@
 
 // include Athena Widget headers AFTER xabsgui.h
 
-#if defined (HAVE_XAW) || defined(HAVE_XAW3D)
 #include <X11/Xaw/Simple.h>
 #include <X11/Xaw/SimpleMenu.h>
 #include <X11/Xaw/MenuButton.h>
@@ -48,26 +47,9 @@
 #include <X11/Xaw/SmeLine.h>
 #include <X11/Xaw/AsciiText.h>
 #include <X11/Xaw/Toggle.h>
-#else
-#ifdef HAVE_XAW3DXFT
-#include <X11/Xaw3dxft/Simple.h>
-#include <X11/Xaw3dxft/SimpleMenu.h>
-#include <X11/Xaw3dxft/MenuButton.h>
-#include <X11/Xaw3dxft/Form.h>
-#include <X11/Xaw3dxft/Paned.h>
-#include <X11/Xaw3dxft/Box.h>
-#include <X11/Xaw3dxft/SmeBSB.h>
-#include <X11/Xaw3dxft/SmeLine.h>
-#include <X11/Xaw3dxft/AsciiText.h>
-#include <X11/Xaw3dxft/Toggle.h>
-#endif
-#endif
-#ifdef HAVE_XMU
-#include <X11/Xmu/Converters.h>
-#endif
 #include <X11/RectObj.h>
+#include <X11/Xmu/Converters.h>
 #include <X11/Shell.h>
-
 
 enum
 {

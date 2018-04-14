@@ -735,7 +735,6 @@ infodir
 docdir
 oldincludedir
 includedir
-runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -818,7 +817,6 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
-runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1071,15 +1069,6 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
-  -runstatedir | --runstatedir | --runstatedi | --runstated \
-  | --runstate | --runstat | --runsta | --runst | --runs \
-  | --run | --ru | --r)
-    ac_prev=runstatedir ;;
-  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
-  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
-  | --run=* | --ru=* | --r=*)
-    runstatedir=$ac_optarg ;;
-
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1217,7 +1206,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir runstatedir
+		libdir localedir mandir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1370,7 +1359,6 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
-  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -2696,7 +2684,7 @@ test "$program_suffix" != NONE &&
 # By default was `s,x,x', remove it if useless.
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
- am__api_version='1.15'
+ am__api_version='1.14'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2878,7 +2866,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh+set}" != xset; then
+if test x"${install_sh}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -3206,8 +3194,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target (and possibly the TAP driver).  The
-# system "awk" is bad on some platforms.
+# We need awk for the "check" target.  The system "awk" is bad on
+# some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -6233,7 +6221,11 @@ fi
 
                     for ac_header in X11/Xaw/XawInit.h
 do :
-  ac_fn_c_check_header_compile "$LINENO" "X11/Xaw/XawInit.h" "ac_cv_header_X11_Xaw_XawInit_h" "as_fn_error $? \"Athena Widgets (libXaw.so, libXaw3d.sa or libXaw3dxft.so) not found. Unable to build flexemu\" \"$LINENO\" 5
+  ac_fn_c_check_header_compile "$LINENO" "X11/Xaw/XawInit.h" "ac_cv_header_X11_Xaw_XawInit_h" "
+               #include <X11/Xlib.h>
+               #include <X11/Intrinsic.h>
+
+
 "
 if test "x$ac_cv_header_X11_Xaw_XawInit_h" = xyes; then :
   cat >>confdefs.h <<_ACEOF
@@ -6329,73 +6321,7 @@ fi
 
 
 else
-
-	          for ac_header in X11/Xaw3dxft/XawInit.h
-do :
-  ac_fn_c_check_header_compile "$LINENO" "X11/Xaw3dxft/XawInit.h" "ac_cv_header_X11_Xaw3dxft_XawInit_h" "
-		            #include <X11/Xlib.h>
-		            #include <X11/Intrinsic.h>
-
-
-"
-if test "x$ac_cv_header_X11_Xaw3dxft_XawInit_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_X11_XAW3DXFT_XAWINIT_H 1
-_ACEOF
-
-		            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XawToggleSetCurrent in -lXaw3dxft" >&5
-$as_echo_n "checking for XawToggleSetCurrent in -lXaw3dxft... " >&6; }
-if ${ac_cv_lib_Xaw3dxft_XawToggleSetCurrent+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lXaw3dxft  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char XawToggleSetCurrent ();
-int
-main ()
-{
-return XawToggleSetCurrent ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_Xaw3dxft_XawToggleSetCurrent=yes
-else
-  ac_cv_lib_Xaw3dxft_XawToggleSetCurrent=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xaw3dxft_XawToggleSetCurrent" >&5
-$as_echo "$ac_cv_lib_Xaw3dxft_XawToggleSetCurrent" >&6; }
-if test "x$ac_cv_lib_Xaw3dxft_XawToggleSetCurrent" = xyes; then :
-
-$as_echo "#define HAVE_XAW3DXFT 1" >>confdefs.h
-
-		            X_P_LIBS="-lXaw3dxft $X_P_LIBS"
-else
-  $X_LIBS $X_EXTRA_LIBS
-fi
-
-
-else
-  as_fn_error $? "Athena Widgets (libXaw.so, libXaw3d.sa or libXaw3dxft.so) not found. Unable to build flexemu" "$LINENO" 5
-fi
-
-done
-
-
+  as_fn_error $? "Athena Widgets (libXaw.so or libXaw3d.so) not found. Unable to build flexemu" "$LINENO" 5
 fi
 
 done
