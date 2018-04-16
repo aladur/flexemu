@@ -119,6 +119,20 @@ Flexemu*menuEntry27.label:		Frequency 1.3396 MHz
 Flexemu*menuEntry28.label:		Undocumented Instructions
 Flexemu*menuEntry31.label:		Introduction
 Flexemu*menuEntry32.label:		About
+Flexemu.translations: #override \
+             <Key>Escape: closeMenuMode()\n\
+             <FocusOut>: closeMenuMode()
+Flexemu.form.translations: #override \
+             <BtnDown>: closeMenuMode()\n\
+             <BtnUp>: closeMenuMode()\n\
+             <Key>Escape: closeMenuMode()
+Flexemu*MenuButton.SimpleMenu.translations: #override \
+             <Key>Escape: closeMenuMode()\n\
+             <Enter>: highlightChild()\n\
+             <Leave>: unhighlight()\n\
+             <Motion>: highlightChild()\n\
+             <Btn1Down>: highlightChild()\n\
+             <Btn1Up>: notify() unhighlight() closeMenuMode()
 ! Screen
 Flexemu*screen.fromVert:		menuBar
 Flexemu*screen.accelerators:		#replace <KeyPress>:keyPress()\n\
