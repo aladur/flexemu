@@ -76,8 +76,9 @@ protected:
     static int radio_data[7];
     // Xtoolkit stuff
     Widget      e2toplevel, form, menubar, e2screen;
-    Widget      button1, button2, button3;
-    Widget      menu1, menu2, menu3, menu4;
+    Widget      button[3];
+    Widget      menu[3];
+    Widget      menu_popped_up;
     Widget      entry12;
     Widget      entry21, entry22, entry23, entry24, entry25;
     Widget      entry26, entry27, entry28;
@@ -116,6 +117,7 @@ protected:
     Pixmap       pixmap[8];
     GC       authorgc;
 #endif
+    bool        is_menu_mode;
 
     virtual Display  *getDisplay(void);
     virtual Window   getWindow(tWindowType t = FLX_E2SCREEN);
@@ -142,6 +144,8 @@ protected:
     virtual void        create_pixmaps(Widget parent, Pixel bg_color);
     virtual void        create_author_dialog(Widget parent);
 #endif
+    virtual void        add_menu_handler(Widget button, Widget menu);
+    virtual void        close_menu_mode();
 
     // Internal registers
 
@@ -245,6 +249,8 @@ private:
                                         XtPointer call_data);
     static void     popupInterruptCallback(Widget w, XtPointer client_data,
                                            XtPointer call_data);
+    static void     menuHandlerCallback(Widget button, XtPointer client_data,
+                                XEvent *event, Boolean *flag);
     void    updateNafs(void);
     static void     timerCallbackProc(XtPointer client_data, XtIntervalId *pId);
 
@@ -261,6 +267,8 @@ public:
     virtual void    c_focusOut(XEvent *pevent);
     virtual void    c_wm_protocols(XEvent *pevent);
     virtual void    c_process_resize(XEvent *pevent);
+    virtual void    c_close_menu_mode(XEvent *pevent);
+    virtual void    c_highlight_child(Widget w, XEvent *pevent, String *params);
 
 public:
     virtual void    redraw_cpuview_impl(const Mc6809CpuStatus &sstat);
@@ -271,7 +279,8 @@ public:
                                        const char *ptitle = NULL,
                                        int width = 270, int height = 120);
     virtual int     gui_type(void);
-    void        timerCallback(XtIntervalId pId);
+    void            timerCallback(XtIntervalId pId);
+    virtual void    menuHandler(Widget button, XEvent *event, Boolean *flag);
 
     // Public constructor and destructor
 public:

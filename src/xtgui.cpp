@@ -137,6 +137,16 @@ void wm_protocols(Widget, XEvent *pevent, String *, Cardinal *)
     ggui->c_wm_protocols(pevent);
 }
 
+void closeMenuMode(Widget, XEvent *pevent, String *, Cardinal *)
+{
+    ggui->c_close_menu_mode(pevent);
+}
+
+void highlightChild(Widget w, XEvent *pevent, String *params, Cardinal *)
+{
+    ggui->c_highlight_child(w, pevent, params);
+}
+
 void XtGui::timerCallbackProc(XtPointer p, XtIntervalId *pId)
 {
     if (p != NULL)
@@ -660,6 +670,12 @@ void XtGui::popup_disk_info(Widget w)
         return;
     }
 
+    if (is_menu_mode)
+    {
+        close_menu_mode();
+        return;
+    }
+
     std::string message;
     int i;
 
@@ -677,6 +693,12 @@ void XtGui::popup_interrupt_info(Widget)
 {
     if (schedy == NULL)
     {
+        return;
+    }
+
+    if (is_menu_mode)
+    {
+        close_menu_mode();
         return;
     }
 
@@ -1018,6 +1040,20 @@ void XtGui::c_keyPress(XEvent *pevent)
 {
     SWord key;
 
+    if (is_menu_mode)
+    {
+        char buffer[16];
+        KeySym keysym;
+
+        XLookupString((XKeyEvent *)pevent, buffer, sizeof(buffer) - 1, &keysym,
+                      NULL);
+        if (keysym == XK_Escape)
+        {
+            close_menu_mode();
+        }
+        return;
+    }
+
     if ((key = translate_to_ascii(&pevent->xkey)) >= 0)
     {
         io->put_ch(key);
@@ -1052,6 +1088,12 @@ void XtGui::c_leave(XEvent *pevent)
 
 void XtGui::c_buttonPress(XEvent *pevent)
 {
+    if (is_menu_mode)
+    {
+        close_menu_mode();
+        return;
+    }
+
     // just catch event to prevent to get cached by the
     // window manager
     XButtonEvent *button_event = (XButtonEvent *)pevent;
@@ -1085,6 +1127,12 @@ void XtGui::c_buttonPress(XEvent *pevent)
 
 void XtGui::c_buttonRelease(XEvent *pevent)
 {
+    if (is_menu_mode)
+    {
+        close_menu_mode();
+        return;
+    }
+
     XButtonEvent *button_event = (XButtonEvent *)pevent;
 
     current_x = button_event->x;
@@ -1143,12 +1191,42 @@ void XtGui::c_wm_protocols(XEvent *pevent)
     }
 } // c_wm_protocols
 
+void XtGui::c_close_menu_mode(XEvent *pevent)
+{
+    close_menu_mode();
+} // c_close_menu_mode
+
+void XtGui::c_highlight_child(Widget w, XEvent *pevent, String *params)
+{
+    Position x, y;
+    Dimension wi, he;
+
+    x = y = 0;
+    XtVaGetValues(w, XtNx, &x, XtNy, &y, XtNwidth, &wi, XtNheight, &he, NULL);
+    x = pevent->xbutton.x_root - x;
+    y = pevent->xbutton.y_root - y;
+
+    if (pevent->type == ButtonPress || pevent->type == MotionNotify)
+    {
+        if (x >= 0 && x <= wi && y >= 0 && y <= he)
+        {
+            XtCallActionProc(w, "highlight", pevent, params, 0);
+        }
+        else
+        {
+            XtCallActionProc(w, "unhighlight", pevent, params, 0);
+        }
+    }
+} // c_highlight_child
+
 void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
 {
     Widget w;
 
     frequency_control_on = false;
     is_use_undocumented  = false;
+    is_menu_mode = false;
+    menu_popped_up = None;
     initialize_conv_tables();
     w = create_main_view(pOptions->argc, pOptions->argv,
                          pOptions->synchronized);
@@ -1165,6 +1243,17 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     initialize_after_open(w, get_title());
     e2toplevel = w;
 } // initialize_e2window
+
+// The menus are kept open when releasing the mouse button.
+// This is realized by adding a menu handler.
+void XtGui::add_menu_handler(Widget button, Widget menu)
+{
+    XtAddEventHandler(button,
+                      ButtonPressMask | KeyPressMask | KeyReleaseMask |
+                      EnterWindowMask | LeaveWindowMask,
+                      False, (XtEventHandler)menuHandlerCallback,
+                      (XtPointer)this);
+}
 
 Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
 {
@@ -1191,7 +1280,9 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
             (XtActionProc)popup_no_resources
         },
         {const_cast<String>("resize"), (XtActionProc)processResize},
-        {const_cast<String>("wm_protocols"), (XtActionProc)wm_protocols}
+        {const_cast<String>("wm_protocols"), (XtActionProc)wm_protocols},
+        {const_cast<String>("highlightChild"), (XtActionProc)highlightChild},
+        {const_cast<String>("closeMenuMode"), (XtActionProc)closeMenuMode},
     };
 
     XtSetLanguageProc(NULL, NULL, NULL); // set to default language
@@ -1215,11 +1306,11 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
                                    NULL);
     menubar = XtVaCreateManagedWidget("menuBar", boxWidgetClass, form,
                                       NULL);
-    button1 = XtVaCreateManagedWidget("menuButton1", menuButtonWidgetClass,
+    button[0] = XtVaCreateManagedWidget("menuButton1", menuButtonWidgetClass,
                                       menubar, NULL);
-    button2 = XtVaCreateManagedWidget("menuButton2", menuButtonWidgetClass,
+    button[1] = XtVaCreateManagedWidget("menuButton2", menuButtonWidgetClass,
                                       menubar, NULL);
-    button3 = XtVaCreateManagedWidget("menuButton3", menuButtonWidgetClass,
+    button[2] = XtVaCreateManagedWidget("menuButton3", menuButtonWidgetClass,
                                       menubar, NULL);
     e2screen = XtVaCreateManagedWidget("screen", coreWidgetClass, form,
                                        XtNwidth,
@@ -1228,38 +1319,41 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
                                        (XtArgVal)WINDOWHEIGHT * guiYSize, NULL);
     statusbuttons = XtVaCreateManagedWidget("statusButtons",
                                             boxWidgetClass, form, NULL);
-    menu1 = XtVaCreatePopupShell("menu1", simpleMenuWidgetClass, button1,
+    menu[0] = XtVaCreatePopupShell("menu1", simpleMenuWidgetClass, button[0],
                                  NULL);
-    menu2 = XtVaCreatePopupShell("menu2", simpleMenuWidgetClass, button2,
+    add_menu_handler(button[0], menu[0]);
+    menu[1] = XtVaCreatePopupShell("menu2", simpleMenuWidgetClass, button[1],
                                  NULL);
-    menu3 = XtVaCreatePopupShell("menu3", simpleMenuWidgetClass, button3,
+    add_menu_handler(button[1], menu[1]);
+    menu[2] = XtVaCreatePopupShell("menu3", simpleMenuWidgetClass, button[2],
                                  NULL);
+    add_menu_handler(button[2], menu[2]);
     entry12 = XtVaCreateManagedWidget("menuEntry12", smeBSBObjectClass,
-                                      menu1, NULL);
+                                      menu[0], NULL);
     entry21 = XtVaCreateManagedWidget("menuEntry21", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry22 = XtVaCreateManagedWidget("menuEntry22", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry23 = XtVaCreateManagedWidget("menuEntry23", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     line21  = XtVaCreateManagedWidget("line21", smeLineObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry24 = XtVaCreateManagedWidget("menuEntry24", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry25 = XtVaCreateManagedWidget("menuEntry25", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry26 = XtVaCreateManagedWidget("menuEntry26", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     line22 = XtVaCreateManagedWidget("line22", smeLineObjectClass,
-                                     menu2, NULL);
+                                     menu[1], NULL);
     entry27 = XtVaCreateManagedWidget("menuEntry27", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry28 = XtVaCreateManagedWidget("menuEntry28", smeBSBObjectClass,
-                                      menu2, NULL);
+                                      menu[1], NULL);
     entry31 = XtVaCreateManagedWidget("menuEntry31", smeBSBObjectClass,
-                                      menu3, NULL);
+                                      menu[2], NULL);
     entry32 = XtVaCreateManagedWidget("menuEntry32", smeBSBObjectClass,
-                                      menu3, NULL);
+                                      menu[2], NULL);
     floppybutton[0] = XtVaCreateManagedWidget("floppyButton0",
                       commandWidgetClass, statusbuttons, NULL);
     floppybutton[1] = XtVaCreateManagedWidget("floppyButton1",
@@ -2179,6 +2273,112 @@ void XtGui::redraw_cpuview_impl(const Mc6809CpuStatus &stat)
         XtVaSetValues(stepbutton, XtNsensitive, 1, NULL);
         XtVaSetValues(nextbutton, XtNsensitive, 1, NULL);
         XtVaSetValues(resetbutton, XtNsensitive, 1, NULL);
+    }
+}
+
+void XtGui::menuHandlerCallback(Widget button, XtPointer client_data,
+                 XEvent *event, Boolean *flag)
+{
+    if (client_data != NULL)
+    {
+        ((XtGui *)client_data)->menuHandler(button, event, flag);
+    }
+}
+
+void XtGui::close_menu_mode()
+{
+    if (menu_popped_up != None)
+    {
+        if (XtIsRealized(menu_popped_up))
+        {
+            XtPopdown(menu_popped_up);
+        }
+        menu_popped_up = None;
+    }
+    is_menu_mode = false;
+}
+
+void XtGui::menuHandler(Widget pbutton, XEvent *event, Boolean *flag)
+{
+    size_t i;
+    Widget pmenu = None;
+    int x, y, width, height;
+    char buffer[16];
+    KeySym keysym;
+
+    if (!pbutton || !XtIsRealized(pbutton))
+    {
+        return;
+    }
+
+    for (i = 0; i < sizeof(button)/sizeof(Widget); ++i)
+    {
+        if (button[i] == pbutton)
+        {
+            pmenu = menu[i];
+        }
+    }
+
+    if (pmenu == None)
+    {
+        return;
+    }
+
+    XtVaGetValues(pbutton, XtNx, &x, XtNy, &y,
+                  XtNwidth, &width, XtNheight, &height, NULL);
+
+    switch(event->type)
+    {
+    case KeyPress:
+    case KeyRelease:
+        XLookupString((XKeyEvent *)event, buffer, sizeof(buffer) - 1, &keysym,
+                      NULL);
+        if (keysym == XK_Escape)
+        {
+            close_menu_mode();
+        }
+        break;
+
+    case ButtonPress:
+        if (menu_popped_up != None && (pmenu != menu_popped_up))
+        {
+            XtPopdown(menu_popped_up);
+        }
+
+        XtPopup(pmenu, XtGrabNone);
+        menu_popped_up = pmenu;
+        is_menu_mode = true;
+        break;
+
+    case EnterNotify:
+        if (is_menu_mode)
+        {
+            if (menu_popped_up != None && (pmenu != menu_popped_up))
+            {
+                XtPopdown(menu_popped_up);
+            }
+
+            // Before popping up the menu it evtl. has to be moved
+            // just beyond the menu button.
+            XtMoveWidget(pmenu, event->xcrossing.x_root - event->xcrossing.x,
+                         event->xcrossing.y_root - event->xcrossing.y + height);
+            XtPopup(pmenu, XtGrabNone);
+            menu_popped_up = pmenu;
+            return;
+        }
+        break;
+
+    case LeaveNotify:
+        if (event->xcrossing.x < 0 || event->xcrossing.x >= width ||
+         event->xcrossing.y < 0)
+        {
+            if (menu_popped_up != None && XtIsRealized(menu_popped_up))
+            {
+                XtPopdown(menu_popped_up);
+                menu_popped_up = None;
+            }
+        }
+        break;
     }
 }
 #endif // #ifdef HAVE_XTK
