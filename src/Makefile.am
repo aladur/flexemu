@@ -10,7 +10,7 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
-	     flexemu.dsp flexdisk.dsp fsetup.dsp
+	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj
 
 SUBDIRS = bitmaps tools
 
@@ -52,7 +52,7 @@ xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
-bwin32threadimp.cpp mc6809st.cpp buint.cpp \
+bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
@@ -63,7 +63,7 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h buint.h flexemu.h mc6809in.h
+schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 
@@ -71,7 +71,7 @@ flexplorer_SOURCES = \
 bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
 fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
-rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp\
+rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bintervl.cpp blist.cpp baddrrng.cpp bhashtbl.cpp bident.cpp bsortlst.cpp\
 bmembuf.cpp bbintree.cpp da.cpp da6809.cpp disconf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
@@ -82,7 +82,8 @@ fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
 bintervl.h blist.h baddrrng.h bhashtbl.h bident.h bsortlst.h bmembuf.h\
 bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h optdlg.h bregistr.h bprocess.h flexemu.h
+filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
+sprinter.h flexemu.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -93,24 +94,24 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp\
-test_gccasm.h bdir.h bdate.h \
+test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
-memory.h mc6809.h misc1.h mc6809in.h \
+memory.h mc6809.h misc1.h \
 typedefs.h \
 da.h \
 bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
-schedcpu.h
+schedcpu.h sprinter.h
 
 ################################################################################
 @no_appsdir@install \
 @no_appsdir@install-app \
 @no_appsdir@install-full :
 @no_appsdir@	@echo installing $(APPSDIR)/Flexemu
-@no_appsdir@	@$(INSTALL_DATA) Flexemu.ad $(APPSDIR)/Flexemu
+@no_appsdir@	@$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu
 @no_appsdir@	@echo "... installed app-defaults"
 
 @no_appsdir@uninstall \

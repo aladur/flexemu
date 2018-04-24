@@ -1,5 +1,5 @@
 /*
-cvtwchar.cpp
+cvtwchar.h
 
 
 FLEXplorer, An explorer for any FLEX file or disk container

@@ -139,7 +139,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
 	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
 	flexemu-iffilcnt.$(OBJEXT) flexemu-bwin32threadimp.$(OBJEXT) \
-	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT)
+	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT) \
+	flexemu-cvtwchar.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -154,15 +155,16 @@ am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
 	flexplorer-flexerr.$(OBJEXT) flexplorer-misc1.$(OBJEXT) \
 	flexplorer-rfilecnt.$(OBJEXT) flexplorer-optdlg.$(OBJEXT) \
 	flexplorer-brcfile.$(OBJEXT) flexplorer-benv.$(OBJEXT) \
-	flexplorer-bintervl.$(OBJEXT) flexplorer-blist.$(OBJEXT) \
-	flexplorer-baddrrng.$(OBJEXT) flexplorer-bhashtbl.$(OBJEXT) \
-	flexplorer-bident.$(OBJEXT) flexplorer-bsortlst.$(OBJEXT) \
-	flexplorer-bmembuf.$(OBJEXT) flexplorer-bbintree.$(OBJEXT) \
-	flexplorer-da.$(OBJEXT) flexplorer-da6809.$(OBJEXT) \
-	flexplorer-disconf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
-	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
-	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
-	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT)
+	flexplorer-cvtwchar.$(OBJEXT) flexplorer-bintervl.$(OBJEXT) \
+	flexplorer-blist.$(OBJEXT) flexplorer-baddrrng.$(OBJEXT) \
+	flexplorer-bhashtbl.$(OBJEXT) flexplorer-bident.$(OBJEXT) \
+	flexplorer-bsortlst.$(OBJEXT) flexplorer-bmembuf.$(OBJEXT) \
+	flexplorer-bbintree.$(OBJEXT) flexplorer-da.$(OBJEXT) \
+	flexplorer-da6809.$(OBJEXT) flexplorer-disconf.$(OBJEXT) \
+	flexplorer-bfileptr.$(OBJEXT) flexplorer-ifilecnt.$(OBJEXT) \
+	flexplorer-idircnt.$(OBJEXT) flexplorer-iffilcnt.$(OBJEXT) \
+	flexplorer-fmenufac.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
+	flexplorer-bprocess.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
@@ -480,7 +482,7 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
-	     flexemu.dsp flexdisk.dsp fsetup.dsp
+	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj
 
 SUBDIRS = bitmaps tools
 flexemu_CXXFLAGS = -g -Wno-long-long \
@@ -518,7 +520,7 @@ xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
-bwin32threadimp.cpp mc6809st.cpp buint.cpp \
+bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
@@ -529,14 +531,14 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h buint.h flexemu.h mc6809in.h
+schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
 bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
 fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
-rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp\
+rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bintervl.cpp blist.cpp baddrrng.cpp bhashtbl.cpp bident.cpp bsortlst.cpp\
 bmembuf.cpp bbintree.cpp da.cpp da6809.cpp disconf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
@@ -547,7 +549,8 @@ fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
 bintervl.h blist.h baddrrng.h bhashtbl.h bident.h bsortlst.h bmembuf.h\
 bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h optdlg.h bregistr.h bprocess.h flexemu.h
+filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
+sprinter.h flexemu.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -558,17 +561,17 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp\
-test_gccasm.h bdir.h bdate.h \
+test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
-memory.h mc6809.h misc1.h mc6809in.h \
+memory.h mc6809.h misc1.h \
 typedefs.h \
 da.h \
 bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
-schedcpu.h
+schedcpu.h sprinter.h
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -712,6 +715,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-colors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-csetfreq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-cvtwchar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-da6809.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-e2floppy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-e2video.Po@am__quote@
@@ -761,6 +765,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bregistr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bsortlst.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-contpdlg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-cvtwchar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-da.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-da6809.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-dircont.Po@am__quote@
@@ -1645,6 +1650,20 @@ flexemu-buint.obj: buint.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-buint.obj `if test -f 'buint.cpp'; then $(CYGPATH_W) 'buint.cpp'; else $(CYGPATH_W) '$(srcdir)/buint.cpp'; fi`
 
+flexemu-cvtwchar.o: cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-cvtwchar.o -MD -MP -MF $(DEPDIR)/flexemu-cvtwchar.Tpo -c -o flexemu-cvtwchar.o `test -f 'cvtwchar.cpp' || echo '$(srcdir)/'`cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-cvtwchar.Tpo $(DEPDIR)/flexemu-cvtwchar.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cvtwchar.cpp' object='flexemu-cvtwchar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-cvtwchar.o `test -f 'cvtwchar.cpp' || echo '$(srcdir)/'`cvtwchar.cpp
+
+flexemu-cvtwchar.obj: cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-cvtwchar.obj -MD -MP -MF $(DEPDIR)/flexemu-cvtwchar.Tpo -c -o flexemu-cvtwchar.obj `if test -f 'cvtwchar.cpp'; then $(CYGPATH_W) 'cvtwchar.cpp'; else $(CYGPATH_W) '$(srcdir)/cvtwchar.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-cvtwchar.Tpo $(DEPDIR)/flexemu-cvtwchar.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cvtwchar.cpp' object='flexemu-cvtwchar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-cvtwchar.obj `if test -f 'cvtwchar.cpp'; then $(CYGPATH_W) 'cvtwchar.cpp'; else $(CYGPATH_W) '$(srcdir)/cvtwchar.cpp'; fi`
+
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bdate.Tpo $(DEPDIR)/flexplorer-bdate.Po
@@ -1938,6 +1957,20 @@ flexplorer-benv.obj: benv.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='benv.cpp' object='flexplorer-benv.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-benv.obj `if test -f 'benv.cpp'; then $(CYGPATH_W) 'benv.cpp'; else $(CYGPATH_W) '$(srcdir)/benv.cpp'; fi`
+
+flexplorer-cvtwchar.o: cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-cvtwchar.o -MD -MP -MF $(DEPDIR)/flexplorer-cvtwchar.Tpo -c -o flexplorer-cvtwchar.o `test -f 'cvtwchar.cpp' || echo '$(srcdir)/'`cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-cvtwchar.Tpo $(DEPDIR)/flexplorer-cvtwchar.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cvtwchar.cpp' object='flexplorer-cvtwchar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-cvtwchar.o `test -f 'cvtwchar.cpp' || echo '$(srcdir)/'`cvtwchar.cpp
+
+flexplorer-cvtwchar.obj: cvtwchar.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-cvtwchar.obj -MD -MP -MF $(DEPDIR)/flexplorer-cvtwchar.Tpo -c -o flexplorer-cvtwchar.obj `if test -f 'cvtwchar.cpp'; then $(CYGPATH_W) 'cvtwchar.cpp'; else $(CYGPATH_W) '$(srcdir)/cvtwchar.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-cvtwchar.Tpo $(DEPDIR)/flexplorer-cvtwchar.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='cvtwchar.cpp' object='flexplorer-cvtwchar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-cvtwchar.obj `if test -f 'cvtwchar.cpp'; then $(CYGPATH_W) 'cvtwchar.cpp'; else $(CYGPATH_W) '$(srcdir)/cvtwchar.cpp'; fi`
 
 flexplorer-bintervl.o: bintervl.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bintervl.o -MD -MP -MF $(DEPDIR)/flexplorer-bintervl.Tpo -c -o flexplorer-bintervl.o `test -f 'bintervl.cpp' || echo '$(srcdir)/'`bintervl.cpp
@@ -2978,7 +3011,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA
 @no_appsdir@install-app \
 @no_appsdir@install-full :
 @no_appsdir@	@echo installing $(APPSDIR)/Flexemu
-@no_appsdir@	@$(INSTALL_DATA) Flexemu.ad $(APPSDIR)/Flexemu
+@no_appsdir@	@$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu
 @no_appsdir@	@echo "... installed app-defaults"
 
 @no_appsdir@uninstall \
