@@ -48,6 +48,8 @@ file installed. Copy the file\\n\
 Flexemu.ad to $HOME/Flexemu and\\n\
 set the environment variable\\n\
 XUSERFILESEARCHPATH to $HOME/%N"),
+    const_cast<String>("*authorWidget.width:		200"),
+    const_cast<String>("*authorWidget.height:		60"),
     NULL
 };
 #endif // HAVE_XTK

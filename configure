@@ -639,6 +639,8 @@ PTHREAD_LIBS
 PTHREAD_CC
 acx_pthread_config
 WINDRES_EXE
+no_appsdir
+APPSDIR
 WX_LIBS
 WX_CFLAGS
 WX_CONFIG
@@ -735,6 +737,7 @@ infodir
 docdir
 oldincludedir
 includedir
+runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -765,6 +768,7 @@ enable_speed
 with_wx_prefix
 with_wx_exec_prefix
 enable_wx_shared
+with_app_defaults
 '
       ac_precious_vars='build_alias
 host_alias
@@ -817,6 +821,7 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
+runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1069,6 +1074,15 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
+  -runstatedir | --runstatedir | --runstatedi | --runstated \
+  | --runstate | --runstat | --runsta | --runst | --runs \
+  | --run | --ru | --r)
+    ac_prev=runstatedir ;;
+  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
+  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
+  | --run=* | --ru=* | --r=*)
+    runstatedir=$ac_optarg ;;
+
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1206,7 +1220,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir
+		libdir localedir mandir runstatedir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1359,6 +1373,7 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
+  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -1420,6 +1435,7 @@ Optional Packages:
   --with-x                use the X Window System
   --with-wx-prefix=PREFIX   Prefix where wxWidgets is installed (optional)
   --with-wx-exec-prefix=PREFIX Exec prefix where wxWidgets is installed (optional)
+  --with-app-defaults=DIR directory in which to install resource files (EPREFIX/lib/X11/app-defaults)
 
 Some influential environment variables:
   CC          C compiler command
@@ -2684,7 +2700,7 @@ test "$program_suffix" != NONE &&
 # By default was `s,x,x', remove it if useless.
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
- am__api_version='1.14'
+ am__api_version='1.15'
 
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
@@ -2866,7 +2882,7 @@ else
 $as_echo "$as_me: WARNING: 'missing' script is too old or missing" >&2;}
 fi
 
-if test x"${install_sh}" != xset; then
+if test x"${install_sh+set}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -3194,8 +3210,8 @@ MAKEINFO=${MAKEINFO-"${am_missing_run}makeinfo"}
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 mkdir_p='$(MKDIR_P)'
 
-# We need awk for the "check" target.  The system "awk" is bad on
-# some platforms.
+# We need awk for the "check" target (and possibly the TAP driver).  The
+# system "awk" is bad on some platforms.
 # Always define AMTAR for backward compatibility.  Yes, it's still used
 # in the wild :-(  We should find a proper way to deprecate it ...
 AMTAR='$${TAR-tar}'
@@ -6841,6 +6857,91 @@ $as_echo "no" >&6; }
      :
   fi
 
+
+
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for directory to install resource files" >&5
+$as_echo_n "checking for directory to install resource files... " >&6; }
+
+# Check whether --with-app-defaults was given.
+if test "${with_app_defaults+set}" = set; then :
+  withval=$with_app_defaults; APPSDIR=$withval
+else
+  APPSDIR='${exec_prefix}/lib/X11/app-defaults'
+fi
+
+
+if test "x$APPSDIR" = xauto
+then
+	APPSDIR='${exec_prefix}/lib/X11/app-defaults'
+	for cf_path in \
+		/opt/local/share/X11/app-defaults \
+		/opt/X11/share/X11/app-defaults \
+		/usr/share/X11/app-defaults \
+		/usr/X11/share/X11/app-defaults \
+		/usr/X11/lib/X11/app-defaults \
+		/usr/lib/X11/app-defaults \
+		/etc/X11/app-defaults \
+		/usr/pkg/lib/X11/app-defaults \
+		/usr/X11R7/lib/X11/app-defaults \
+		/usr/X11R6/lib/X11/app-defaults \
+		/usr/X11R5/lib/X11/app-defaults \
+		/usr/X11R4/lib/X11/app-defaults \
+		/usr/local/lib/X11/app-defaults \
+		/usr/local/share/X11/app-defaults \
+		/usr/lib64/X11/app-defaults
+	do
+		if test -d "$cf_path" ; then
+			APPSDIR="$cf_path"
+			break
+		fi
+	done
+else
+	cf_path=$APPSDIR
+
+if test "x$prefix" != xNONE; then
+	cf_path_syntax="$prefix"
+else
+	cf_path_syntax="$ac_default_prefix"
+fi
+
+case ".$cf_path" in
+(.\$\(*\)*|.\'*\'*)
+	;;
+(..|./*|.\\*)
+	;;
+(.[a-zA-Z]:[\\/]*) # OS/2 EMX
+	;;
+(.\${*prefix}*|.\${*dir}*)
+	eval cf_path="$cf_path"
+	case ".$cf_path" in
+	(.NONE/*)
+		cf_path=`echo $cf_path | sed -e s%NONE%$cf_path_syntax%`
+		;;
+	esac
+	;;
+(.no|.NONE/*)
+	cf_path=`echo $cf_path | sed -e s%NONE%$cf_path_syntax%`
+	;;
+(*)
+	as_fn_error $? "expected a pathname, not \"$cf_path\"" "$LINENO" 5
+	;;
+esac
+
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $APPSDIR" >&5
+$as_echo "$APPSDIR" >&6; }
+
+
+no_appsdir=
+if test "$APPSDIR" = no
+then
+	no_appsdir="#"
+else
+	EXTRA_INSTALL_DIRS="$EXTRA_INSTALL_DIRS \$(APPSDIR)"
+fi
 
 
 

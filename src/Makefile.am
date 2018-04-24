@@ -1,4 +1,4 @@
-pkgdata_DATA = Flexemu.ad boot flexemu.xpm  \
+pkgdata_DATA = boot flexemu.xpm  \
 		flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm
 
 SUFFIXES = .rc .o
@@ -104,3 +104,18 @@ csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
 schedcpu.h
+
+################################################################################
+@no_appsdir@install \
+@no_appsdir@install-app \
+@no_appsdir@install-full :
+@no_appsdir@	@echo installing $(APPSDIR)/Flexemu
+@no_appsdir@	@$(INSTALL_DATA) Flexemu.ad $(APPSDIR)/Flexemu
+@no_appsdir@	@echo "... installed app-defaults"
+
+@no_appsdir@uninstall \
+@no_appsdir@uninstall-app \
+@no_appsdir@uninstall-full :
+@no_appsdir@	-$(RM) $(APPSDIR)/Flexemu
+################################################################################
+

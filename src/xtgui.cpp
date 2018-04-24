@@ -161,7 +161,6 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
     int i;
 
     XAbstractGui::initialize(pOptions);
-    initialize_xrad_file();
     lfs.logFileName[0] = '\0';
     lfs.minAddr = 0x0000;
     lfs.maxAddr = 0xFFFF;
@@ -187,36 +186,6 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
 #endif
     initialize_e2window(pOptions);
 } // initialize
-
-void XtGui::initialize_xrad_file()
-{
-    BEnvironment env;
-    std::string      adFileName;
-
-    if (env.GetValue("HOME", adFileName))
-    {
-        std::string defaultAdFileName;
-
-        adFileName += PATHSEPARATORSTRING PROGRAMNAME;
-        defaultAdFileName = F_DATADIR PATHSEPARATORSTRING PROGRAMNAME ".ad";
-
-        if (access(adFileName.c_str(), F_OK) == -1)
-        {
-            BFilePtr ifp(defaultAdFileName.c_str(), "r");
-            BFilePtr ofp(adFileName.c_str(), "w");
-
-            if ((ifp != NULL) && (ofp != NULL))
-            {
-                int character;
-
-                while ((character = fgetc(ifp)) != EOF)
-                {
-                    fputc(character, ofp);
-                }
-            }
-        }
-    }
-} // initialize_xrad_file
 
 void XtGui::setCpuExitCallback(Widget,
                                XtPointer client_data, XtPointer)

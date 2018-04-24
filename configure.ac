@@ -57,6 +57,9 @@ AX_CXXFLAGS_WARN_ALL
 dnl check for wx-config
 WX_PATH_WXCONFIG(2.8.0, WXCONFIG=1)
 
+dnl check for optional parameters
+CF_WITH_APP_DEFAULTS
+
 dnl Checks for typedefs
 AC_C_CONST
 AC_C_INLINE

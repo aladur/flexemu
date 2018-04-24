@@ -2,17 +2,20 @@
 * Compiling/Install flexemu on Unix/Linux  *
 ********************************************
 
-Flexemu supports configure scripts. So there a simply four steps to completely
-install it:
+Flexemu supports configure scripts. So there are three steps to install it:
 
-	- ./configure
+	- ./configure --with-app-defaults=auto
 	- make
-	- su root (root access needed for installation)
-	- make install
+	- sudo make install
 
 remarks:
 
-	- To compile flexplorer you first have to install GTK.
+	- --with-app-defaults=auto parameter makes the best guess
+          for installing the X11 application defaults file.
+          If this parameter is not present the default path 
+          EPREFIX/lib/X11/app-defaults is used (which usually does not
+          fit).
+          To compile flexplorer you first have to install GTK.
 	  (http://www.gtk.org/) and wxWindows for GTK and compile
 	  static or shared libs. (http://www.wxWindows.com/)
 	- If You don't want native file system support comment out

@@ -135,7 +135,6 @@ protected:
             const char *color);
     virtual void        initialize_after_open(Widget w, const char *title);
     virtual void        initialize(struct sGuiOptions *pOptions);
-    virtual void        initialize_xrad_file();
     virtual void        update_disk_status(int floppyIndex,
                                            tDiskStatus status);
     virtual void        update_interrupt_status(tIrqType t,
