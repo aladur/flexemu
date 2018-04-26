@@ -33,7 +33,7 @@
 #include <stdio.h>
 #include "../typedefs.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
 	SWord c, spaces = 0;
 
@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, " write to stdout\n");
 		exit(1);
 	}
+        (void)argv; /* satisfy compiler */
 	while ((c = getchar()) != EOF) {
 		if (c != ' ' && c != '\t' && spaces) {
 			if (spaces > 1) {

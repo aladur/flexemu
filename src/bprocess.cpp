@@ -163,7 +163,10 @@ bool BProcess::Start()
 
         if (!directory.empty())
         {
-            chdir(directory.c_str());
+            if (chdir(directory.c_str()) < 0)
+                {
+                    // What to do here?
+                }
         }
 
         execvp(args[0], (char *const *)args);

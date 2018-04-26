@@ -45,7 +45,10 @@ Mc146818::Mc146818(Inout *x_io, Mc6809 *x_cpu) :
 
     if (fp != NULL)
     {
-        fread(ram, RAM_SIZE, 1, fp);
+        if (fread(ram, sizeof(ram), 1, fp) != sizeof(ram))
+        {
+            memset(ram, 0, sizeof(ram));
+        }
     }
 
     A = 0;
@@ -90,7 +93,7 @@ Mc146818::~Mc146818()
 
     if (fp != NULL)
     {
-        fwrite(ram, RAM_SIZE, 1, fp);
+        fwrite(ram, sizeof(ram), 1, fp);
     }
 }
 

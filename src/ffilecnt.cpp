@@ -901,23 +901,16 @@ void FlexFileContainer::Initialize_for_dsk_format(
 
 void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
 {
-    unsigned int    i;
-
-    // first write boot sector if present as file "boot"
-    sec_buf[0] = 0x39;  // means RTS
-
-    for (i = 1; i < SECTOR_SIZE; i++)
-    {
-        sec_buf[i] = 0;
-    }
-
+    // first read boot sector if present as file "boot"
     BFilePtr boot(bootSectorFile.c_str(), "rb");
 
-    if (boot != NULL)
+    if (boot == NULL || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)
     {
-        fread(sec_buf, SECTOR_SIZE, 1, boot);
+        // No boot sector or read error
+        memset(sec_buf, 0, SECTOR_SIZE);
+        sec_buf[0] = 0x39;  // means RTS
     }
-} // create_boot_sector
+} // Create_boot_sector
 
 void FlexFileContainer::Create_sector2(Byte sec_buf[], struct s_formats *)
 {

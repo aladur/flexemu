@@ -646,6 +646,7 @@ Byte Inout::read_queued_ch_serial(void)
 
 void Inout::write_ch_serial(Byte val)
 {
+    ssize_t count = 0;
 #ifdef HAVE_TERMIOS_H
     used_serial_io = true;
 #ifdef VERASE
@@ -654,15 +655,16 @@ void Inout::write_ch_serial(Byte val)
     {
         const char *str = "\b \b";
 
-        write(fileno(stdout), str, strlen(str));
+        count = write(fileno(stdout), str, strlen(str));
         //      putc('\b', stdout);
         //      putc(' ', stdout);
         //      putc('\b', stdout);
     }
     else
 #endif
-        write(fileno(stdout), &val, 1);
+        count = write(fileno(stdout), &val, 1);
 
+    (void)count; // satisfy compiler
     //      putc(val, stdout);
     //  if (val < ' ' || val > 0x7e)
     //      fflush(stdout);
@@ -677,7 +679,8 @@ void Inout::set_bell(Word /*x_percent*/)
 #ifdef UNIX
     static char bell = BELL;
 
-    write(fileno(stdout), &bell, 1);
+    ssize_t count = write(fileno(stdout), &bell, 1);
+    (void)count; // satisfy compiler
 #endif
 }
 

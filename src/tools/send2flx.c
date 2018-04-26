@@ -111,6 +111,7 @@ void do_exit(FILE *fp, int fd, struct termios *pOldtty, int exit_code)
 	void sigint(int param)
 #endif
 {
+        (void)param; /* satisfy compiler */
 	do_exit(fp, fd, &oldtty, 2);
 } /* sigint */
 
@@ -171,7 +172,8 @@ void read_file(FILE *fp, unsigned char *buffer, eFileType *filetype, int *filesi
 	if (*filetype == FT_GUESS)
 	{
 		int i, controlchars = 0;
-		fread(buffer, 1, *filesize, fp);
+		size_t count = fread(buffer, 1, *filesize, fp);
+                (void)count; /* satisfy compiler */
 		for (i = 0; i < *filesize; i++)
 			if (buffer[i] < ' ' || buffer[i] > 0x7F)
 				controlchars++;
@@ -251,8 +253,9 @@ void write_serial(int fd, const unsigned char *buffer, int size)
 	checksum = 0;
 	for (i = 0; i < size; i++)
 		checksum += buffer[i];
-	write(fd, buffer, size);
-	write(fd, &checksum, 1);
+	ssize_t count = write(fd, buffer, size);
+	count = write(fd, &checksum, 1);
+        (void)count; /* satisfy compiler */
 }
 
 void print_help(const char *device)
@@ -333,7 +336,8 @@ int main(int argc, char *argv[])
 		printf("filesize: %d\n", filesize);
 	}
 	/* tcflush(fd, TCIOFLUSH); flush input/output */
-     	write(fd, sync, 4);
+        ssize_t count = write(fd, sync, 4);
+        (void)count; /* satisfy compiler */
 	init_header(&header, filename, filesize, filetype, overwrite);
 	write_serial(fd, (unsigned char *)&header, sizeof(struct f_header)); 
 	sleep(1);

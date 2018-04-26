@@ -47,6 +47,7 @@ void do_exit(int exit_code)
 	void sigint(int param)
 #endif
 {
+        (void)param; /* satisfy compiler */
 	do_exit(0);
 } /* sigint */
 
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
 	char		*commit = "YYYY", *err = "NNNN";
 	unsigned short 	chksum;
 	long unsigned int m;
+        ssize_t         count = 0;
 
 	if (argc > 2 || (argc == 2 &&
 		*argv[1] == '-' && tolower(*(argv[1]+1) == 'h'))) {
@@ -94,28 +96,28 @@ int main(int argc, char *argv[])
 	tcflush(fd, TCIOFLUSH); /* flush input/output */
 	/* syncronize */
 	do {	
-		read(fd, &buffer, 1);
+		count = read(fd, &buffer, 1);
 		if (buffer[0] != 'S')
-			write(fd, "A", 1); /* reply with 'A' */
+			count = write(fd, "A", 1); /* reply with 'A' */
 	} while(buffer[0] != 'S');
-	write(fd, "T", 1); /* send one time 'T' */
+	count = write(fd, "T", 1); /* send one time 'T' */
 
  	/* read fileheader */
  	chksum = 0;
 	do {
 		flh.magic_number = 0;
 		for (i = 1; i <= 4; i++) {
-			read(fd, &buffer, 1);
+			count = read(fd, &buffer, 1);
 			chksum = (chksum + buffer[0]) % 256;
 			flh.magic_number = (flh.magic_number << 8) | buffer[0]; 
 		}
-		read(fd, &flh.write_protect, 1);
-		read(fd, &flh.sizecode, 1);
-		read(fd, &flh.sides0, 1);
-		read(fd, &flh.sectors0, 1);
-		read(fd, &flh.sides, 1);
-		read(fd, &flh.sectors, 1);
-		read(fd, &flh.tracks, 1);
+		count = read(fd, &flh.write_protect, 1);
+		count = read(fd, &flh.sizecode, 1);
+		count = read(fd, &flh.sides0, 1);
+		count = read(fd, &flh.sectors0, 1);
+		count = read(fd, &flh.sides, 1);
+		count = read(fd, &flh.sectors, 1);
+		count = read(fd, &flh.tracks, 1);
 		/*sectorsize = (128 << flh.sizecode);
 		total = (flh.sides0 * flh.sectors0 
 			+ flh.sides * flh.sectors *
@@ -125,8 +127,9 @@ int main(int argc, char *argv[])
 			 flh.sides0 + flh.sectors0 +
 			 flh.sides + flh.sectors +
 			 flh.tracks) % 256;
-		read(fd, &buffer, 1); 
-		write (fd, chksum == buffer[0] ? commit : err, strlen(commit));
+		count = read(fd, &buffer, 1);
+		count = write (fd, chksum == buffer[0] ? commit : err,
+                               strlen(commit));
 	} while (chksum != buffer[0]);
 
 	/* read filename */
@@ -135,7 +138,7 @@ int main(int argc, char *argv[])
 		chksum = 0;
 		buffer[0] = ' ' ;
 		while (i < 12 && buffer[0] >= ' ') {
-			read(fd, &buffer[0], 1);
+			count = read(fd, &buffer[0], 1);
 			if (buffer[0] >= ' ') {
 				chksum = (chksum + buffer[0]) % 256;
 				if (i < 12)
@@ -143,9 +146,9 @@ int main(int argc, char *argv[])
 			}
 		}
 		filename[i] = '\0';
-		read(fd, &buffer, 1); 
+		count = read(fd, &buffer, 1); 
 		if (chksum != buffer[0])
-			write (fd, err, strlen(err));
+			count = write (fd, err, strlen(err));
 	} while (chksum != buffer[0]);
 	if (strlen(filename) == 0)
 		strcpy((char *)filename, "default.flx");
@@ -171,7 +174,7 @@ int main(int argc, char *argv[])
 	fprintf(stdout, "sides: %d\n", flh.sides);
 	fprintf(stdout, "sectors: %d\n", flh.sectors);
 	fprintf(stdout, "tracks: %d\n", flh.tracks);
-	write (fd, commit, strlen(commit));	/* now commit */
+	count = write(fd, commit, strlen(commit)); /* now commit */
 
 	/* read track 0 */
 	tr = 0;
@@ -196,9 +199,9 @@ int main(int argc, char *argv[])
 					if (!chksum)
 						chksum = 0x55;
 					if (j <= 0 || chksum != blk_buffer[BYTES_P_BLOCK])
-						write (fd, err, strlen(err));
+						count = write(fd, err, strlen(err));
 					else
-						write (fd, commit, strlen(commit));
+						count = write(fd, commit, strlen(commit));
 					if (errcnt >= 10) {
 						fprintf(stderr, "communication break down\n");
 						do_exit(1);
@@ -232,9 +235,9 @@ int main(int argc, char *argv[])
 						if (!chksum)
 							chksum = 0x55;
 						if (j <= 0 || chksum != blk_buffer[BYTES_P_BLOCK])
-							write (fd, err, strlen(err));
+							count = write(fd, err, strlen(err));
 						else
-							write (fd, commit, strlen(commit));
+							count = write(fd, commit, strlen(commit));
 						if (errcnt >= 10) {
 							fprintf(stderr, "communication break down\n");
 							do_exit(1);
@@ -246,6 +249,7 @@ int main(int argc, char *argv[])
 		} /* for si */
 	} /* for tr */
 	fprintf(stdout, "finished\n");		
+        (void)count; /* satisfy compiler */
 	do_exit(0);
 	return 0;
 

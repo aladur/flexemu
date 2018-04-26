@@ -191,10 +191,8 @@ bool DirectoryContainer::IsRandomFile(
 
     if (fp != NULL)
     {
-        while (!feof((FILE *)fp))
+        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != NULL)
         {
-            fgets(str, PATH_MAX, fp);
-
             if (strchr(str, '\n'))
             {
                 *strchr(str, '\n') = '\0';

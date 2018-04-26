@@ -29,7 +29,7 @@ int  daa(Byte a, Byte *status)
         return r;
 }
 
-int main(int argc, char **argv)
+int main()
 {
    Byte r;
    int count = 0;

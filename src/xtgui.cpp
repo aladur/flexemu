@@ -1160,7 +1160,7 @@ void XtGui::c_wm_protocols(XEvent *pevent)
     }
 } // c_wm_protocols
 
-void XtGui::c_close_menu_mode(XEvent *pevent)
+void XtGui::c_close_menu_mode(XEvent *)
 {
     close_menu_mode();
 } // c_close_menu_mode
@@ -1215,7 +1215,7 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
 
 // The menus are kept open when releasing the mouse button.
 // This is realized by adding a menu handler.
-void XtGui::add_menu_handler(Widget button, Widget menu)
+void XtGui::add_menu_handler(Widget button, Widget /*menu*/)
 {
     XtAddEventHandler(button,
                       ButtonPressMask | KeyPressMask | KeyReleaseMask |
@@ -2267,7 +2267,7 @@ void XtGui::close_menu_mode()
     is_menu_mode = false;
 }
 
-void XtGui::menuHandler(Widget pbutton, XEvent *event, Boolean *flag)
+void XtGui::menuHandler(Widget pbutton, XEvent *event, Boolean * /*flag*/)
 {
     size_t i;
     Widget pmenu = None;

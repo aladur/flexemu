@@ -29,11 +29,8 @@
 #include "iodevice.h"
 
 
-#define RAM_SIZE 50             // size of internal ram
-
 class Mc6809;
 class Inout;
-
 
 class Mc146818 : public IoDevice
 {
@@ -49,7 +46,7 @@ protected:
     Byte                al_second, al_minute, al_hour;
     Byte                weekday, day, month, year;
     Byte                A, B, C, D;
-    Byte                ram[RAM_SIZE];
+    Byte                ram[50]; // 50 bytes of internal RAM
 
 public:
 

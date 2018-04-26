@@ -820,10 +820,8 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 
     if (fp != NULL)
     {
-        while (!feof((FILE *)fp))
+        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != NULL)
         {
-            fgets(str, PATH_MAX, fp);
-
             if (strchr(str, '\n'))
             {
                 *strchr(str, '\n') = '\0';
