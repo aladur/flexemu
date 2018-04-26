@@ -1,8 +1,8 @@
-EXTRA_DIST = daa.txt  conv.c tounix.txt cputest.txt rcvfile.txt undoc.txt
+EXTRA_DIST = daa.txt conv.c tounix.txt cputest.txt rcvfile.txt undoc.txt
 
 bin_PROGRAMS = bin2s19 fromflex rcvflex toflex send2flx testdaa
 
-AM_CFLAGS = @OS_TYPE@ -g -O2 -Wall -Wno-long-long -pedantic
+AM_CFLAGS = @OS_TYPE@ -g -O2 -Wall -Wextra -Wpedantic -Wno-long-long
 
 bin2s19_LINK  = $(CCLD) -o $@
 fromflex_LINK = $(CCLD) -o $@
