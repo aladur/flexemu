@@ -968,10 +968,10 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
 // on success return true
 bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 {
-    Byte        sec_buf[SECTOR_SIZE];
+    Byte    sec_buf[SECTOR_SIZE];
     int     i;
 
-    memset(sec_buf, 0, SECTOR_SIZE);
+    memset(sec_buf, 0, sizeof(sec_buf));
 
     for (i = 0; i < fmt->dir_sectors; i++)
     {
@@ -984,7 +984,7 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
             sec_buf[1] = ((i + 5) % fmt->sectors) + 1;
         }
 
-        if (fwrite(sec_buf, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
         {
             return false;
         }
@@ -996,10 +996,10 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 // on success return true
 bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
 {
-    Byte        sec_buf[SECTOR_SIZE];
+    Byte    sec_buf[SECTOR_SIZE];
     int     i;
 
-    memset(sec_buf, 0, SECTOR_SIZE);
+    memset(sec_buf, 0, sizeof(sec_buf));
 
     for (i = fmt->dir_sectors + 5;
          i <= fmt->sectors * fmt->tracks; i++)
@@ -1016,7 +1016,7 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
             sec_buf[0] = sec_buf[1] = 0;
         }
 
-        if (fwrite(sec_buf, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
         {
             return false;
         }
@@ -1119,26 +1119,26 @@ void FlexFileContainer::Format_disk(
 
         Create_boot_sector(sector_buffer);
 
-        if (fwrite(sector_buffer, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
             err = 1;
         }
 
         Create_sector2(sector_buffer, &format);
 
-        if (fwrite(sector_buffer, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
             err = 1;
         }
 
         Create_sys_info_sector(sector_buffer, name, &format);
 
-        if (fwrite(sector_buffer, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
             err = 1;
         }
 
-        if (fwrite(sector_buffer, SECTOR_SIZE, 1, fp) != 1)
+        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
             err = 1;
         }
