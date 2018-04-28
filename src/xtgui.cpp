@@ -434,12 +434,12 @@ void XtGui::popupInterruptCallback(Widget w,
 
 void XtGui::c_process_resize(XEvent *pevent)
 {
-    guiXSize = (pevent->xconfigure.width + 10) / WINDOWWIDTH;
-    guiXSize = guiXSize < 1 ? 1 : guiXSize;
-    guiYSize = (pevent->xconfigure.height + 10) / WINDOWHEIGHT;
-    guiYSize = guiYSize < 1 ? 1 : guiYSize;
-    warp_home_x = (guiXSize * WINDOWWIDTH)  >> 1;
-    warp_home_y = (guiYSize * WINDOWHEIGHT) >> 1;
+    pixelSizeX = (pevent->xconfigure.width + 10) / WINDOWWIDTH;
+    pixelSizeX = pixelSizeX < 1 ? 1 : pixelSizeX;
+    pixelSizeY = (pevent->xconfigure.height + 10) / WINDOWHEIGHT;
+    pixelSizeY = pixelSizeY < 1 ? 1 : pixelSizeY;
+    warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
+    warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
     memory->init_blocks_to_update();
 }
 
@@ -1198,7 +1198,7 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     menu_popped_up = None;
     initialize_conv_tables();
     w = create_main_view(pOptions->argc, pOptions->argv,
-                         pOptions->synchronized);
+                         pOptions->isSynchronized);
     create_message_dialog(w);
     create_about_dialog(w);
 #ifdef HAVE_XPM
@@ -1207,7 +1207,7 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     create_cpuview(w);
     create_bp_dialog(w);
     create_logfile_dialog(w);
-    initialize_after_create(w, pOptions->inverse, pOptions->color.c_str());
+    initialize_after_create(w, pOptions->isInverse, pOptions->color.c_str());
     manage_widget(w);
     initialize_after_open(w, get_title());
     e2toplevel = w;
@@ -1224,7 +1224,8 @@ void XtGui::add_menu_handler(Widget button, Widget /*menu*/)
                       (XtPointer)this);
 }
 
-Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
+Widget XtGui::create_main_view(int argc, char *const argv[],
+                               bool isSynchronized)
 {
     int i;
     Widget mainview;
@@ -1261,7 +1262,7 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
                                  opts, 0, &argc, const_cast<char **>(argv),
                                  fallback_resources, NULL);
 
-    if (synchronized)
+    if (isSynchronized)
     {
         XSynchronize(XtDisplay(mainview), True);
     }
@@ -1283,9 +1284,9 @@ Widget XtGui::create_main_view(int argc, char *const argv[], int synchronized)
                                       menubar, NULL);
     e2screen = XtVaCreateManagedWidget("screen", coreWidgetClass, form,
                                        XtNwidth,
-                                       (XtArgVal)WINDOWWIDTH * guiXSize,
+                                       (XtArgVal)WINDOWWIDTH * pixelSizeX,
                                        XtNheight,
-                                       (XtArgVal)WINDOWHEIGHT * guiYSize, NULL);
+                                       (XtArgVal)WINDOWHEIGHT * pixelSizeY, NULL);
     statusbuttons = XtVaCreateManagedWidget("statusButtons",
                                             boxWidgetClass, form, NULL);
     menu[0] = XtVaCreatePopupShell("menu1", simpleMenuWidgetClass, button[0],
@@ -1479,7 +1480,7 @@ void XtGui::create_message_dialog(Widget parent)
     XSetWMProtocols(getDisplay(), XtWindow(messageframe), &wm_delete_window, 1);
 } // create_message_dialog
 
-void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
+void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
 {
     unsigned int i, j;
     Display *display;
@@ -1533,15 +1534,15 @@ void XtGui::initialize_after_create(Widget w, int inverse, const char *color)
         xcolor.pixel = WhitePixelOfScreen(screen);
     }
 
-    if (!inverse)
-    {
-        gcv.foreground = xcolor.pixel;
-        gcv.background = BlackPixelOfScreen(screen);
-    }
-    else
+    if (isInverse)
     {
         gcv.foreground = BlackPixelOfScreen(screen);
         gcv.background = xcolor.pixel;
+    }
+    else
+    {
+        gcv.foreground = xcolor.pixel;
+        gcv.background = BlackPixelOfScreen(screen);
     }
 
 #ifdef HAVE_XPM
@@ -1632,8 +1633,8 @@ void XtGui::initialize_after_open(Widget w, const char *title)
     Dimension   width, height;
     XSizeHints  *pxsh;
 
-    warp_home_x = (guiXSize * WINDOWWIDTH)  >> 1;
-    warp_home_y = (guiYSize * WINDOWHEIGHT) >> 1;
+    warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
+    warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
 #ifdef HAVE_XPM
     Pixel bg_color;
 

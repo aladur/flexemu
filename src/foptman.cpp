@@ -168,7 +168,7 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->argv          = argv;
     pGuiOptions->color         = "green";
     pGuiOptions->nColors       = 2;
-    pGuiOptions->inverse       = 0;
+    pGuiOptions->isInverse     = false;
 #ifdef UNIX
     pGuiOptions->html_viewer   = "firefox";
 #endif
@@ -182,9 +182,9 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->guiType       = GUI_WINDOWS;
     pOptions->disk_dir         = "";
 #endif
-    pGuiOptions->guiXSize      = 2;
-    pGuiOptions->guiYSize      = 2;
-    pGuiOptions->synchronized  = 0;
+    pGuiOptions->pixelSizeX      = 2;
+    pGuiOptions->pixelSizeY      = 2;
+    pGuiOptions->isSynchronized  = false;
     // automatic SERPAR switch only if Eurocom II Monitorprogram loaded
     pGuiOptions->switch_sp = !strcmp(pOptions->hex_file.c_str(),
                                      "neumon54.hex");
@@ -202,7 +202,7 @@ void FlexOptionManager::GetEnvironmentOptions(
     // first look for environment variables
     if (env.GetValue((const char *)"FLEX" FLEXINVERSE, &value))
     {
-        pGuiOptions->inverse = value;
+        pGuiOptions->isInverse = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXHIMEM, &value))
@@ -341,7 +341,7 @@ void FlexOptionManager::GetCommandlineOptions(
 
                 if (i > 0 && i <= MAX_GUIXSIZE)
                 {
-                    pGuiOptions->guiXSize = i;
+                    pGuiOptions->pixelSizeX = i;
                 }
 
                 break;
@@ -351,7 +351,7 @@ void FlexOptionManager::GetCommandlineOptions(
 
                 if (i > 0 && i <= MAX_GUIYSIZE)
                 {
-                    pGuiOptions->guiYSize = i;
+                    pGuiOptions->pixelSizeY = i;
                 }
 
                 break;
@@ -368,7 +368,7 @@ void FlexOptionManager::GetCommandlineOptions(
 #ifdef HAVE_X11
 
             case 's':
-                pGuiOptions->synchronized     = 1;
+                pGuiOptions->isSynchronized     = true;
                 break;
 #ifdef _WIN32
 
@@ -398,7 +398,7 @@ void FlexOptionManager::GetCommandlineOptions(
                 break;
 
             case 'i':
-                pGuiOptions->inverse          = 1;
+                pGuiOptions->isInverse        = true;
                 break;
 
             case 'v':
@@ -433,14 +433,14 @@ void FlexOptionManager::WriteOptions(
         return;
     }
 
-    reg->SetValue(FLEXINVERSE, pGuiOptions->inverse ? 1 : 0);
+    reg->SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
     reg->SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     reg->SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     reg->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     reg->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
     reg->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
-    reg->SetValue(FLEXSCREENWIDTH, pGuiOptions->guiXSize);
-    reg->SetValue(FLEXSCREENHEIGHT, pGuiOptions->guiYSize);
+    reg->SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
+    reg->SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
     reg->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
     reg->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
     reg->SetValue(FLEXDISK0, pOptions->drive[0].c_str());
@@ -469,12 +469,12 @@ void FlexOptionManager::WriteOptions(
 
     rcFile = new BRcFile(rcFileName.c_str());
     rcFile->Initialize(); // truncate file
-    rcFile->SetValue(FLEXINVERSE, pGuiOptions->inverse ? 1 : 0);
+    rcFile->SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
     rcFile->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     rcFile->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
     rcFile->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
-    rcFile->SetValue(FLEXSCREENWIDTH, pGuiOptions->guiXSize);
-    rcFile->SetValue(FLEXSCREENHEIGHT, pGuiOptions->guiYSize);
+    rcFile->SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
+    rcFile->SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
     rcFile->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
     rcFile->SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer.c_str());
     rcFile->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
@@ -526,7 +526,7 @@ void FlexOptionManager::GetOptions(
             val = MAX_GUIXSIZE;
         }
 
-        pGuiOptions->guiXSize = val;
+        pGuiOptions->pixelSizeX = val;
     }
 
     if (!reg->GetValue(FLEXSCREENHEIGHT, &val))
@@ -541,12 +541,12 @@ void FlexOptionManager::GetOptions(
             val = MAX_GUIYSIZE;
         }
 
-        pGuiOptions->guiYSize = val;
+        pGuiOptions->pixelSizeY = val;
     }
 
     if (!reg->GetValue(FLEXINVERSE, &val))
     {
-        pGuiOptions->inverse = val;
+        pGuiOptions->isInverse = (val != 0);
     }
 
     if (!reg->GetValue(FLEXHIMEM, &val))
@@ -603,7 +603,7 @@ void FlexOptionManager::GetOptions(
             val = MAX_GUIXSIZE;
         }
 
-        pGuiOptions->guiXSize = val;
+        pGuiOptions->pixelSizeX = val;
     }
 
     if (!rcFile->GetValue(FLEXSCREENHEIGHT, &val))
@@ -618,12 +618,12 @@ void FlexOptionManager::GetOptions(
             val = MAX_GUIYSIZE;
         }
 
-        pGuiOptions->guiYSize = val;
+        pGuiOptions->pixelSizeY = val;
     }
 
     if (!rcFile->GetValue(FLEXINVERSE, &val))
     {
-        pGuiOptions->inverse = val;
+        pGuiOptions->isInverse = (val != 0);
     }
 
     if (!rcFile->GetValue(FLEXHIMEM, &val))

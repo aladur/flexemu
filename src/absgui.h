@@ -62,12 +62,12 @@ struct sGuiOptions
     std::string color;
     std::string html_viewer;
     std::string doc_dir;
-    int nColors;
-    int inverse;
-    int synchronized;
+    int nColors; // Number of colors or gray scale values { 2, 8, 64 }
+    bool isInverse; // Display inverse colors or gray scale values
+    bool isSynchronized; // Use X11 in synchronized mode
     int switch_sp;
-    int guiXSize;
-    int guiYSize;
+    int pixelSizeX; // x-size of one pixel on the screen
+    int pixelSizeY; // y-size of one pixel on the screen
     int guiType;
 #ifdef _WIN32
     HINSTANCE hInstance;  // handle to current instance
@@ -100,10 +100,11 @@ protected:
     char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
     Byte bp_input[2];
     std::string color;
-    int guiXSize;
-    int guiYSize;
-    int nColors;
-    int use_colors;
+    int pixelSizeX; // x-size of one pixel on the screen
+    int pixelSizeY; // y-size of one pixel on the screen
+    int nColors; // Number of colors or gray scale values { 2, 8, 64 }
+    bool withColorScale; // true: use color scale
+                     // false: use one color in different shades
     int timebase;
     int cpu_line_size;
     const char *cpu_line_delim;

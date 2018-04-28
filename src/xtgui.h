@@ -118,20 +118,21 @@ protected:
     GC       authorgc;
 #endif
     bool        is_menu_mode;
+    bool        isSynchronized;
 
     virtual Display  *getDisplay(void);
     virtual Window   getWindow(tWindowType t = FLX_E2SCREEN);
 
 protected:
     virtual Widget      create_main_view(int argc, char *const argv[],
-                                         int sync);
+                                         bool isSynchronized);
     virtual void        create_message_dialog(Widget parent);
     virtual void        create_about_dialog(Widget parent);
     virtual void        create_cpuview(Widget parent);
     virtual void        create_bp_dialog(Widget parent);
     virtual void        create_logfile_dialog(Widget parent);
     virtual void        manage_widget(Widget w);
-    virtual void        initialize_after_create(Widget w, int inverse,
+    virtual void        initialize_after_create(Widget w, bool isInverse,
             const char *color);
     virtual void        initialize_after_open(Widget w, const char *title);
     virtual void        initialize(struct sGuiOptions *pOptions);

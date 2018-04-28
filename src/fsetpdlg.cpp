@@ -95,7 +95,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     const wxString &name) :
     wxDialog(parent, id, title, pos, size, style, name),
     m_guiOptions(pGuiOptions), m_options(pOptions),
-    c_color(NULL), c_finverse(NULL), c_undocumented(NULL),
+    c_color(NULL), c_isInverse(NULL), c_undocumented(NULL),
     c_geometry(NULL), c_nColors(NULL), c_monitor(NULL),
     c_htmlViewer(NULL), c_diskDir(NULL),
     c_ramExtension(NULL)
@@ -133,8 +133,8 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
                     c_geometry->Append(str);
                 }
 
-                if (m_guiOptions->guiXSize == x &&
-                    m_guiOptions->guiYSize == y)
+                if (m_guiOptions->pixelSizeX == x &&
+                    m_guiOptions->pixelSizeY == y)
                 {
                     c_geometry->SetSelection(n);
                 }
@@ -184,9 +184,9 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
         }
     }
 
-    if (c_finverse)
+    if (c_isInverse)
     {
-        c_finverse->SetValue(m_guiOptions->inverse != 0);
+        c_isInverse->SetValue(m_guiOptions->isInverse != 0);
     }
 
     if (c_undocumented)
@@ -258,10 +258,10 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     pGridSizer->Add(c_color);
     pPanelSizer->Add(pGridSizer, 0, wxTOP, gap);
 
-    c_finverse = new wxCheckBox(panel, IDC_Inverse,
+    c_isInverse = new wxCheckBox(panel, IDC_Inverse,
                                 _("Display inverse colors"), wxDefaultPosition,
                                 wxDefaultSize, 0);
-    pPanelSizer->Add(c_finverse, 0, wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_isInverse, 0, wxTOP | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -489,8 +489,8 @@ bool FlexemuOptionsDialog::TransferDataFromWindow(void)
         if (geometry.BeforeFirst(wxT('x')).ToULong(&x) &&
             geometry.AfterFirst(wxT('x')).ToULong(&y))
         {
-            m_guiOptions->guiXSize = x / WINDOWWIDTH;
-            m_guiOptions->guiYSize = y / WINDOWHEIGHT;
+            m_guiOptions->pixelSizeX = x / WINDOWWIDTH;
+            m_guiOptions->pixelSizeY = y / WINDOWHEIGHT;
         }
     }
 
@@ -527,9 +527,9 @@ bool FlexemuOptionsDialog::TransferDataFromWindow(void)
         }
     };
 
-    if (c_finverse)
+    if (c_isInverse)
     {
-        m_guiOptions->inverse = c_finverse->GetValue();
+        m_guiOptions->isInverse = c_isInverse->GetValue();
     };
 
     if (c_undocumented)

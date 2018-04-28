@@ -109,7 +109,7 @@ private:
     struct sOptions *m_options;
 
     wxComboBox *c_color;
-    wxCheckBox *c_finverse;
+    wxCheckBox *c_isInverse;
     wxCheckBox *c_undocumented;
     wxComboBox *c_geometry;
     wxComboBox *c_nColors;

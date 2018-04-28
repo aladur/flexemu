@@ -676,13 +676,13 @@ int Win32Gui::onSize(HWND hwnd, int sizeType, int width, int height)
     {
         if (width % WINDOWWIDTH != 0 || height % WINDOWHEIGHT != 0)
         {
-            guiXSize = (width + (WINDOWWIDTH / 2)) /  WINDOWWIDTH;
-            guiYSize = (height + (WINDOWHEIGHT / 2)) /  WINDOWHEIGHT;
+            pixelSizeX = (width + (WINDOWWIDTH / 2)) /  WINDOWWIDTH;
+            pixelSizeY = (height + (WINDOWHEIGHT / 2)) /  WINDOWHEIGHT;
             GetWindowRect(e2screen, &oldRect);
             rect.left       = (long)0;
             rect.top        = (long)0;
-            rect.right      = (long)WINDOWWIDTH * guiXSize;
-            rect.bottom     = (long)WINDOWHEIGHT * guiYSize + STATUSBAR_HEIGHT;
+            rect.right      = (long)WINDOWWIDTH * pixelSizeX;
+            rect.bottom     = (long)WINDOWHEIGHT * pixelSizeY + STATUSBAR_HEIGHT;
 
             if (AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, TRUE, 0))
             {
@@ -693,13 +693,13 @@ int Win32Gui::onSize(HWND hwnd, int sizeType, int width, int height)
             MoveWindow(e2screen, oldRect.left, oldRect.top,
                        width, height, TRUE);
 
-            MoveWindow(hwndStatus, 0, WINDOWHEIGHT * guiYSize,
-                       WINDOWWIDTH * guiXSize, STATUSBAR_HEIGHT, TRUE);
+            MoveWindow(hwndStatus, 0, WINDOWHEIGHT * pixelSizeY,
+                       WINDOWWIDTH * pixelSizeX, STATUSBAR_HEIGHT, TRUE);
 
             for (i = 0; i < 4; ++i)
             {
                 MoveWindow(hButtonFloppy[i],
-                           WINDOWWIDTH * guiXSize - ((6 - i) * SBAR_ICON_WIDTH),
+                           WINDOWWIDTH * pixelSizeX - ((6 - i) * SBAR_ICON_WIDTH),
                            4,
                            SBAR_ICON_WIDTH,
                            SBAR_ICON_HEIGHT,
@@ -707,13 +707,13 @@ int Win32Gui::onSize(HWND hwnd, int sizeType, int width, int height)
             }
 
             MoveWindow(hButtonIrq,
-                       WINDOWWIDTH * guiXSize - (2 * SBAR_ICON_WIDTH),
+                       WINDOWWIDTH * pixelSizeX - (2 * SBAR_ICON_WIDTH),
                        4,
                        SBAR_ICON_WIDTH,
                        SBAR_ICON_HEIGHT,
                        TRUE);
-            warp_home_x = (guiXSize * WINDOWWIDTH)  >> 1;
-            warp_home_y = (guiYSize * WINDOWHEIGHT) >> 1;
+            warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
+            warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
         }
 
         return 1;
@@ -1056,7 +1056,7 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
     ggui        = this;
     palette     = NULL; // needed for color display
     e2screen    = NULL;
-    use_colors  = !stricmp(pOptions->color.c_str(), "default");
+    withColorScale  = !stricmp(pOptions->color.c_str(), "default");
     nColors     = pOptions->nColors;
     bp_input[0] = 0;
     bp_input[1] = 0;
@@ -1238,9 +1238,9 @@ void Win32Gui::update_bw_block(int block_number, HDC hdc)
         }
 
         block = copy_block;
-        img = image1[guiXSize - 1][guiYSize - 1];
+        img = image1[pixelSizeX - 1][pixelSizeY - 1];
 
-        switch ((guiXSize << 4) | guiYSize)
+        switch ((pixelSizeX << 4) | pixelSizeY)
         {
                 int     j;
 
@@ -1262,7 +1262,7 @@ void Win32Gui::update_bw_block(int block_number, HDC hdc)
 
                 for (i = 0; i < BLOCKHEIGHT; i++)
                 {
-                    for (j = 0; j < guiYSize; j++)
+                    for (j = 0; j < pixelSizeY; j++)
                     {
                         memcpy(btrg, src, RASTERLINE_SIZE);
                         btrg += RASTERLINE_SIZE;
@@ -1468,34 +1468,34 @@ void Win32Gui::update_bw_block(int block_number, HDC hdc)
 
         SetDIBits(
             hdc, img,
-            0, BLOCKHEIGHT * guiYSize,
-            block, bmi1[guiXSize - 1][guiYSize - 1], DIB_RGB_COLORS);
+            0, BLOCKHEIGHT * pixelSizeY,
+            block, bmi1[pixelSizeX - 1][pixelSizeY - 1], DIB_RGB_COLORS);
 
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         startLine = ((WINDOWHEIGHT - e2video->vico2 +
-                      block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * guiYSize;
+                      block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
         if (block_number == e2video->divided_block)
         {
             firstpartHeight = e2video->vico2 % BLOCKHEIGHT;
             // first half display on the bottom of the window
             BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * guiXSize,
-                   firstpartHeight * guiYSize,
+                   BLOCKWIDTH * pixelSizeX,
+                   firstpartHeight * pixelSizeY,
                    hMemoryDC, 0, 0,
                    SRCCOPY);
             // second half display on the top of window
             BitBlt(hdc, 0, 0,
-                   BLOCKWIDTH * guiXSize,
-                   (BLOCKHEIGHT - firstpartHeight) * guiYSize,
-                   hMemoryDC, 0, firstpartHeight * guiYSize,
+                   BLOCKWIDTH * pixelSizeX,
+                   (BLOCKHEIGHT - firstpartHeight) * pixelSizeY,
+                   hMemoryDC, 0, firstpartHeight * pixelSizeY,
                    SRCCOPY);
             // first half display on the bottom of the window
         }
         else
         {
             BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize,
+                   BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY,
                    hMemoryDC, 0, 0, SRCCOPY);
         } // else
 
@@ -1504,22 +1504,22 @@ void Win32Gui::update_bw_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        for (i = 0; i < RASTERLINE_SIZE * guiXSize * BLOCKHEIGHT * guiYSize;
+        for (i = 0; i < RASTERLINE_SIZE * pixelSizeX * BLOCKHEIGHT * pixelSizeY;
              i++)
         {
             copy_block[i] = 0xff;
         }
 
         SetDIBits(
-            hdc, image1[guiXSize - 1][guiYSize - 1],
-            0, BLOCKHEIGHT * guiYSize,
-            copy_block, bmi1[guiXSize - 1][guiYSize - 1], DIB_RGB_COLORS);
+            hdc, image1[pixelSizeX - 1][pixelSizeY - 1],
+            0, BLOCKHEIGHT * pixelSizeY,
+            copy_block, bmi1[pixelSizeX - 1][pixelSizeY - 1], DIB_RGB_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC,
-                                   image1[guiXSize - 1][guiYSize - 1]);
+                                   image1[pixelSizeX - 1][pixelSizeY - 1]);
         BitBlt(hdc, 0,
-               (block_number * BLOCKHEIGHT) * guiYSize,
-               BLOCKWIDTH * guiXSize,
-               BLOCKHEIGHT * guiYSize,
+               (block_number * BLOCKHEIGHT) * pixelSizeY,
+               BLOCKWIDTH * pixelSizeX,
+               BLOCKHEIGHT * pixelSizeY,
                hMemoryDC, 0, 0, SRCCOPY);
         SelectBitmap(hMemoryDC, hBitmapOrig);
     } // else
@@ -1555,38 +1555,38 @@ void Win32Gui::update_color_block(int block_number, HDC hdc)
         }
 
         block = copy_block;
-        img = image6[guiXSize - 1][guiYSize - 1];
+        img = image6[pixelSizeX - 1][pixelSizeY - 1];
         CopyToZPixmap(block_number, copy_block, src, 8, (unsigned long *)pen);
 
         SetDIBits(
             hdc, img,
-            0, BLOCKHEIGHT * guiYSize,
-            block, bmi6[guiXSize - 1][guiYSize - 1], DIB_PAL_COLORS);
+            0, BLOCKHEIGHT * pixelSizeY,
+            block, bmi6[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         startLine = ((WINDOWHEIGHT - e2video->vico2 +
-                      block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * guiYSize;
+                      block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
         if (block_number == e2video->divided_block)
         {
             firstpartHeight = e2video->vico2 % BLOCKHEIGHT;
             // first half display on the bottom of the window
             BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * guiXSize,
-                   firstpartHeight * guiYSize,
+                   BLOCKWIDTH * pixelSizeX,
+                   firstpartHeight * pixelSizeY,
                    hMemoryDC, 0, 0,
                    SRCCOPY);
             // second half display on the top of window
             BitBlt(hdc, 0, 0,
-                   BLOCKWIDTH * guiXSize,
-                   (BLOCKHEIGHT - firstpartHeight) * guiYSize,
-                   hMemoryDC, 0, firstpartHeight * guiYSize,
+                   BLOCKWIDTH * pixelSizeX,
+                   (BLOCKHEIGHT - firstpartHeight) * pixelSizeY,
+                   hMemoryDC, 0, firstpartHeight * pixelSizeY,
                    SRCCOPY);
             // first half display on the bottom of the window
         }
         else
         {
             BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize,
+                   BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY,
                    hMemoryDC, 0, 0, SRCCOPY);
         } // else
 
@@ -1595,22 +1595,22 @@ void Win32Gui::update_color_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        for (i = 0; i < RASTERLINE_SIZE * guiXSize * BLOCKHEIGHT * guiYSize;
+        for (i = 0; i < RASTERLINE_SIZE * pixelSizeX * BLOCKHEIGHT * pixelSizeY;
              i++)
         {
             copy_block[i] = 0xff;
         }
 
         SetDIBits(
-            hdc, image6[guiXSize - 1][guiYSize - 1],
-            0, BLOCKHEIGHT * guiYSize,
-            copy_block, bmi6[guiXSize - 1][guiYSize - 1], DIB_PAL_COLORS);
+            hdc, image6[pixelSizeX - 1][pixelSizeY - 1],
+            0, BLOCKHEIGHT * pixelSizeY,
+            copy_block, bmi6[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC,
-                                   image6[guiXSize - 1][guiYSize - 1]);
+                                   image6[pixelSizeX - 1][pixelSizeY - 1]);
         BitBlt(hdc, 0,
-               (block_number * BLOCKHEIGHT) * guiYSize,
-               BLOCKWIDTH * guiXSize,
-               BLOCKHEIGHT * guiYSize,
+               (block_number * BLOCKHEIGHT) * pixelSizeY,
+               BLOCKWIDTH * pixelSizeX,
+               BLOCKHEIGHT * pixelSizeY,
                hMemoryDC, 0, 0, SRCCOPY);
         SelectBitmap(hMemoryDC, hBitmapOrig);
     } // else
@@ -1766,9 +1766,9 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
     }
 
     rect.left    = (long)0;
-    rect.right   = (long)WINDOWWIDTH * guiXSize;
+    rect.right   = (long)WINDOWWIDTH * pixelSizeX;
     rect.top     = (long)0;
-    rect.bottom  = (long)WINDOWHEIGHT * guiYSize + STATUSBAR_HEIGHT;
+    rect.bottom  = (long)WINDOWHEIGHT * pixelSizeY + STATUSBAR_HEIGHT;
 
     if (AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, TRUE, 0))
     {
@@ -1803,7 +1803,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
         return NULL ;
     }
 
-    width  = WINDOWWIDTH * guiXSize;
+    width  = WINDOWWIDTH * pixelSizeX;
     height = STATUSBAR_HEIGHT;
     style  = WS_CHILD | WS_VISIBLE;
 
@@ -1812,7 +1812,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                      PROGRAMNAME,        // Address of window name
                      style,              // Window style
                      0,                  // Horizontal position of window
-                     WINDOWHEIGHT * guiYSize,// Vertical position of window
+                     WINDOWHEIGHT * pixelSizeY,// Vertical position of window
                      width,              // Window width
                      height,             // Window height
                      hwnd,               // Handle of parent or owner window
@@ -2085,14 +2085,14 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
     {
         idx = i;
 
-        if (pOptions->inverse)
+        if (pOptions->isInverse)
         {
             idx = (1 << COLOR_PLANES) - idx - 1;
         }
 
         pLog->palPalEntry[idx].peFlags = PC_NOCOLLAPSE;
 
-        if (use_colors)
+        if (withColorScale)
         {
             // DEPENDANCIES:
             // the color plane masks used here depend on
@@ -2163,7 +2163,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
         blue  = pc->blue;
     }
 
-    if (!pOptions->inverse)
+    if (!pOptions->isInverse)
     {
         foregroundIdx = 1;
         backgroundIdx = 0;
@@ -2237,7 +2237,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     } // for
 
     // initialize Bitmap with all ones
-    PatBlt(hdc, 0, 0, BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize, WHITENESS);
+    PatBlt(hdc, 0, 0, BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY, WHITENESS);
     ReleaseDC(w, hdc);
     // Periodic 20 ms Timer for 50 Hz display update
     idTimer = SetTimer(w, GUI_TIMER_ID, TIMER_UPDATE, NULL);
@@ -2254,8 +2254,8 @@ void Win32Gui::initialize_after_open(HWND w, struct sGuiOptions *pOptions)
     const char *title = get_title();
 
     SetWindowText(w, title);
-    warp_home_x = (guiXSize * WINDOWWIDTH)  >> 1;
-    warp_home_y = (guiYSize * WINDOWHEIGHT) >> 1;
+    warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
+    warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
     release_mouse_capture(w);
 }
 

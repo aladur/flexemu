@@ -79,10 +79,10 @@ void AbstractGui::initialize(struct sGuiOptions *pOptions)
     {
         program_name    = pOptions->argv[0];
         switch_sp   = pOptions->switch_sp;
-        guiXSize    = pOptions->guiXSize;
-        guiYSize    = pOptions->guiYSize;
+        pixelSizeX    = pOptions->pixelSizeX;
+        pixelSizeY    = pOptions->pixelSizeY;
         nColors     = pOptions->nColors;
-        use_colors  = !stricmp(pOptions->color.c_str(), "default");
+        withColorScale  = !stricmp(pOptions->color.c_str(), "default");
         color       = pOptions->color;
     }
 
@@ -220,7 +220,7 @@ void AbstractGui::CopyToZPixmap(int,
             q = pen[srcPixel];
 
             if (depth == 16)
-                switch (guiXSize << 4 | guiYSize)
+                switch (pixelSizeX << 4 | pixelSizeY)
                 {
                     case 0x11:
                         *(dest16++) = (Word)q;
@@ -391,13 +391,13 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
                 }
             else if (depth == 8)
-                switch (guiXSize << 4 | guiYSize)
+                switch (pixelSizeX << 4 | pixelSizeY)
                 {
-                    case 0x11:
+                    case 0x11: // single width, single height
                         *(dest8++) = (Byte)q;
                         break;
 
-                    case 0x12:
+                    case 0x12: // single width, double height
                         *(dest8) = (Byte)q;
                         *(dest8 + WINDOWWIDTH) = (Byte)q;
                         dest8++;
@@ -410,7 +410,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x13:
+                    case 0x13: // single width, tripple height
                         *(dest8) = (Byte)q;
                         *(dest8 + WINDOWWIDTH) = (Byte)q;
                         *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
@@ -424,7 +424,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x14:
+                    case 0x14: // single width, quadrupple height
                         *(dest8) = (Byte)q;
                         *(dest8 + WINDOWWIDTH) = (Byte)q;
                         *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
@@ -439,12 +439,12 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x21:
+                    case 0x21: // double width, single heigth
                         *(dest8++) = (Byte)q;
                         *(dest8++) = (Byte)q;
                         break;
 
-                    case 0x22:
+                    case 0x22: // double width, double height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
@@ -459,7 +459,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x23:
+                    case 0x23: // double width, tripple height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
@@ -476,7 +476,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x24:
+                    case 0x24: // double width, quadrupple height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
@@ -495,14 +495,14 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x31:
+                    case 0x31: // triple width, single height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2) = (Byte)q;
                         dest8 += 3;
                         break;
 
-                    case 0x32:
+                    case 0x32: // triple width, double height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2) = (Byte)q;
@@ -519,7 +519,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x33:
+                    case 0x33: // triple width, triple height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2) = (Byte)q;
@@ -539,7 +539,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x34:
+                    case 0x34: // triple width, quadruple height
                         *(dest8) = (Byte)q;
                         *(dest8 + 1) = (Byte)q;
                         *(dest8 + 2) = (Byte)q;
@@ -565,13 +565,13 @@ void AbstractGui::CopyToZPixmap(int,
             // assuming depth of 24 or 32
             else
             {
-                switch (guiXSize << 4 | guiYSize)
+                switch (pixelSizeX << 4 | pixelSizeY)
                 {
-                    case 0x11:
+                    case 0x11: // single width, single height
                         *(dest32++) = q;
                         break;
 
-                    case 0x12:
+                    case 0x12: // single width, double height
                         *(dest32) = q;
                         *(dest32 + WINDOWWIDTH) = q;
                         dest32++;
@@ -584,7 +584,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x13:
+                    case 0x13: // single width, tripple height
                         *(dest32) = q;
                         *(dest32 + WINDOWWIDTH) = q;
                         *(dest32 + 2 * WINDOWWIDTH) = q;
@@ -598,7 +598,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x14:
+                    case 0x14: // single width, quadrupple height
                         *(dest32) = q;
                         *(dest32 + WINDOWWIDTH) = q;
                         *(dest32 + 2 * WINDOWWIDTH) = q;
@@ -613,12 +613,12 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x21:
+                    case 0x21: // double width, single heigth
                         *(dest32++) = q;
                         *(dest32++) = q;
                         break;
 
-                    case 0x22:
+                    case 0x22: // double width, double height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2 * WINDOWWIDTH) = q;
@@ -633,7 +633,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x23:
+                    case 0x23: // double width, tripple height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2 * WINDOWWIDTH) = q;
@@ -650,7 +650,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x24:
+                    case 0x24: // double width, quadrupple height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2 * WINDOWWIDTH) = q;
@@ -669,13 +669,13 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x31:
+                    case 0x31: // triple width, single height
                         *(dest32++) = q;
                         *(dest32++) = q;
                         *(dest32++) = q;
                         break;
 
-                    case 0x32:
+                    case 0x32: // triple width, double height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2) = q;
@@ -692,7 +692,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x33:
+                    case 0x33: // triple width, triple height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2) = q;
@@ -712,7 +712,7 @@ void AbstractGui::CopyToZPixmap(int,
 
                         break;
 
-                    case 0x34:
+                    case 0x34: // triple width, quadruple height
                         *(dest32) = q;
                         *(dest32 + 1) = q;
                         *(dest32 + 2) = q;

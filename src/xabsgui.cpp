@@ -216,7 +216,7 @@ void XAbstractGui::update_color_block(int block_number)
         src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
     }
 
-    img = image6[guiXSize - 1][guiYSize - 1];
+    img = image6[pixelSizeX - 1][pixelSizeY - 1];
     CopyToZPixmap(block_number, (Byte *)img->data, src, depth,
                   (unsigned long *)pen);
 
@@ -227,37 +227,37 @@ void XAbstractGui::update_color_block(int block_number)
             // first half display on the bottom of the window
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0, (WINDOWHEIGHT -
-                                     (e2video->vico2 % BLOCKHEIGHT)) * guiYSize,
-                      BLOCKWIDTH * guiXSize,
-                      (e2video->vico2 % BLOCKHEIGHT) * guiYSize);
+                                     (e2video->vico2 % BLOCKHEIGHT)) * pixelSizeY,
+                      BLOCKWIDTH * pixelSizeX,
+                      (e2video->vico2 % BLOCKHEIGHT) * pixelSizeY);
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
-                      img, 0, (e2video->vico2 % YBLOCKS) * guiYSize,
-                      0, 0, BLOCKWIDTH * guiXSize,
+                      img, 0, (e2video->vico2 % YBLOCKS) * pixelSizeY,
+                      0, 0, BLOCKWIDTH * pixelSizeX,
                       (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
-                      guiYSize);
+                      pixelSizeY);
         }
         else
         {
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0,
                       ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
-                        e2video->vico2) % WINDOWHEIGHT) * guiYSize,
-                      BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize);
+                        e2video->vico2) % WINDOWHEIGHT) * pixelSizeY,
+                      BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
         } // else
     }
     else
     {
-        for (i = 0; i < YBLOCK_SIZE * guiXSize * guiYSize; i++)
+        for (i = 0; i < YBLOCK_SIZE * pixelSizeX * pixelSizeY; i++)
         {
-            copy_block[i] = pOptions->inverse ? 0x00 : 0xff;
+            copy_block[i] = pOptions->isInverse ? 0x00 : 0xff;
         }
 
         // allways display an empty screen
         XPutImage(dpy, win, e2gc,
-                  image1[guiXSize - 1][guiYSize - 1], 0, 0, 0,
-                  block_number * BLOCKHEIGHT * guiXSize,
-                  BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize);
+                  image1[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
+                  block_number * BLOCKHEIGHT * pixelSizeX,
+                  BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
     } // else
 }
 
@@ -281,9 +281,9 @@ void XAbstractGui::update_bw_block(int block_number)
         src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
     }
 
-    img = image1[guiXSize - 1][guiYSize - 1];
+    img = image1[pixelSizeX - 1][pixelSizeY - 1];
 
-    switch ((guiXSize << 4) | guiYSize)
+    switch ((pixelSizeX << 4) | pixelSizeY)
     {
             int j;
 
@@ -597,37 +597,37 @@ void XAbstractGui::update_bw_block(int block_number)
             // first half display on the bottom of the window
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0, (WINDOWHEIGHT -
-                                     (e2video->vico2 % BLOCKHEIGHT)) * guiYSize,
-                      BLOCKWIDTH * guiXSize,
-                      (e2video->vico2 % BLOCKHEIGHT) * guiYSize);
+                                     (e2video->vico2 % BLOCKHEIGHT)) * pixelSizeY,
+                      BLOCKWIDTH * pixelSizeX,
+                      (e2video->vico2 % BLOCKHEIGHT) * pixelSizeY);
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
-                      img, 0, (e2video->vico2 % YBLOCKS) * guiYSize,
-                      0, 0, BLOCKWIDTH * guiXSize,
+                      img, 0, (e2video->vico2 % YBLOCKS) * pixelSizeY,
+                      0, 0, BLOCKWIDTH * pixelSizeX,
                       (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
-                      guiYSize);
+                      pixelSizeY);
         }
         else
         {
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0,
                       ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
-                        e2video->vico2) % WINDOWHEIGHT) * guiYSize,
-                      BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize);
+                        e2video->vico2) % WINDOWHEIGHT) * pixelSizeY,
+                      BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
         } // else
     }
     else
     {
-        for (i = 0; i < YBLOCK_SIZE * guiXSize * guiYSize; i++)
+        for (i = 0; i < YBLOCK_SIZE * pixelSizeX * pixelSizeY; i++)
         {
-            copy_block[i] = pOptions->inverse ? 0x00 : 0xff;
+            copy_block[i] = pOptions->isInverse ? 0x00 : 0xff;
         }
 
         // allways display an empty screen
         XPutImage(dpy, win, e2gc,
-                  image1[guiXSize - 1][guiYSize - 1], 0, 0, 0,
-                  block_number * BLOCKHEIGHT * guiXSize,
-                  BLOCKWIDTH * guiXSize, BLOCKHEIGHT * guiYSize);
+                  image1[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
+                  block_number * BLOCKHEIGHT * pixelSizeX,
+                  BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
     } // else
 } // update_bw_block
 
@@ -1284,7 +1284,7 @@ int XAbstractGui::SetColors(Display *dpy)
 
     for (i = 0; i < (1 << COLOR_PLANES); i++)
     {
-        if (use_colors)
+        if (withColorScale)
         {
             // DEPENDANCIES:
             // the color plane masks used here depend on

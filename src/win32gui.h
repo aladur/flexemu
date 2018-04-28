@@ -116,9 +116,9 @@ protected:
     static int radio_data[7];
     HINSTANCE   hInstance;
     HWND        e2screen; // handle to E2 graphic display
-    HWND            hwndStatus; // handle to status bar
-    HWND            hButtonFloppy[4];
-    HWND            hButtonIrq;
+    HWND        hwndStatus; // handle to status bar
+    HWND        hButtonFloppy[4];
+    HWND        hButtonIrq;
     HMENU       menubar;  // menu bar of Main Window
     // bitmap info for following bitmaps
     BITMAPINFO  *bmi1[MAX_GUIXSIZE][MAX_GUIYSIZE];
@@ -126,13 +126,11 @@ protected:
     // default bitmap for graphic display
     HBITMAP     image1[MAX_GUIXSIZE][MAX_GUIYSIZE];
     HBITMAP     image6[MAX_GUIXSIZE][MAX_GUIYSIZE];
-    HPALETTE        palette;
-    Word            use_colors;
-    Word            nColors;
+    HPALETTE    palette;
     HMENU       menu1, menu2, menu3; // menu handles
 
     HWND        cpuform;  // CPU Window
-    HFONT           hFontFixed; // Fixed font for CPU Window
+    HFONT       hFontFixed; // Fixed font for CPU Window
     // memory block for calculating bitmaps for display
     Byte        *copy_block;
     int     minCpuWidth, minCpuHeight;
