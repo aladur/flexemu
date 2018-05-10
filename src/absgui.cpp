@@ -140,10 +140,11 @@ void AbstractGui::CopyToZPixmap(int,
 {
     int count;              /* Byte counter into video RAM          */
     const Byte *videoRam;   /* Pointer into video RAM               */
-    Byte pixels[6];         /* One byte of video RAM for each plane */
+    Byte pixels[6]; /* One byte of video RAM for each plane */
+
+    memset(pixels, 0, sizeof(pixels));
 
     videoRam = src;
-    memset(pixels, 0, sizeof(pixels));
 
     for (count = 0; count < YBLOCK_SIZE; ++count)
     {
@@ -154,72 +155,84 @@ void AbstractGui::CopyToZPixmap(int,
         {
             isEndOfRasterLine = true;
         }
-        pixels[0] = videoRam[0];
-        pixels[2] = videoRam[VIDEORAM_SIZE];
-        pixels[4] = videoRam[VIDEORAM_SIZE * 2];
 
-        if (nColors > 8)
+        if (src != NULL)
         {
-            pixels[1] = videoRam[VIDEORAM_SIZE * 3];
-            pixels[3] = videoRam[VIDEORAM_SIZE * 4];
-            pixels[5] = videoRam[VIDEORAM_SIZE * 5];
-        }
 
-        videoRam++;
+            pixels[0] = videoRam[0];
+
+            if (nColors > 2)
+            {
+                pixels[2] = videoRam[VIDEORAM_SIZE];
+                pixels[4] = videoRam[VIDEORAM_SIZE * 2];
+
+                if (nColors > 8)
+                {
+                    pixels[1] = videoRam[VIDEORAM_SIZE * 3];
+                    pixels[3] = videoRam[VIDEORAM_SIZE * 4];
+                    pixels[5] = videoRam[VIDEORAM_SIZE * 5];
+                }
+            }
+
+            videoRam++;
+        }
 
         /* Use MSBit first */
         for (pixelBitMask = 128; pixelBitMask; pixelBitMask >>= 1)
         {
             unsigned int penIndex = 0; /* calculated pen index */
 
-            if (nColors > 8)
+            if (src != NULL)
             {
                 if (pixels[0] & pixelBitMask)
                 {
                     penIndex |= 32;    // 0x0C, green high
                 }
 
-                if (pixels[2] & pixelBitMask)
+                if (nColors > 8)
                 {
-                    penIndex |= 16;    // 0x0D, red high
-                }
+                    if (pixels[2] & pixelBitMask)
+                    {
+                        penIndex |= 16;    // 0x0D, red high
+                    }
 
-                if (pixels[4] & pixelBitMask)
-                {
-                    penIndex |= 8;    // 0x0E, blue high
-                }
+                    if (pixels[4] & pixelBitMask)
+                    {
+                        penIndex |= 8;    // 0x0E, blue high
+                    }
 
-                if (pixels[1] & pixelBitMask)
-                {
-                    penIndex |= 4;    // 0x04, green low
-                }
+                    if (pixels[1] & pixelBitMask)
+                    {
+                        penIndex |= 4;    // 0x04, green low
+                    }
 
-                if (pixels[3] & pixelBitMask)
-                {
-                    penIndex |= 2;    // 0x05, red low
-                }
+                    if (pixels[3] & pixelBitMask)
+                    {
+                        penIndex |= 2;    // 0x05, red low
+                    }
 
-                if (pixels[5] & pixelBitMask)
+                    if (pixels[5] & pixelBitMask)
+                    {
+                        penIndex |= 1;    // 0x06, blue low
+                    }
+                }
+                else
                 {
-                    penIndex |= 1;    // 0x06, blue low
+                    if (pixels[2] & pixelBitMask)
+                    {
+                        penIndex |= 8;    // 0x0D, red high
+                    }
+
+                    if (pixels[4] & pixelBitMask)
+                    {
+                        penIndex |= 2;    // 0x0E, blue high
+                    }
                 }
             }
             else
             {
-                if (pixels[0] & pixelBitMask)
-                {
-                    penIndex |= 32;    // 0x0C, green high
-                }
-
-                if (pixels[2] & pixelBitMask)
-                {
-                    penIndex |= 8;    // 0x0D, red high
-                }
-
-                if (pixels[4] & pixelBitMask)
-                {
-                    penIndex |= 2;    // 0x0E, blue high
-                }
+                // If no source is available use highest available color
+                penIndex = pOptions->isInverse ? 0 : 63;
             }
 
             if (depth == 32 || depth == 24)

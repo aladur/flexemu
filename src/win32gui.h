@@ -121,11 +121,9 @@ protected:
     HWND        hButtonIrq;
     HMENU       menubar;  // menu bar of Main Window
     // bitmap info for following bitmaps
-    BITMAPINFO  *bmi1[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
-    BITMAPINFO  *bmi6[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
+    BITMAPINFO  *bmi[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     // default bitmap for graphic display
-    HBITMAP     image1[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
-    HBITMAP     image6[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
+    HBITMAP     image[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     HPALETTE    palette;
     HMENU       menu1, menu2, menu3; // menu handles
 
@@ -178,8 +176,6 @@ protected:
     void    update_interrupt_status(tIrqType irqType, bool status);
     void    update_irq_status(Word irq_status);
     void    update_block(int block_number, HDC hdc);
-    void    update_bw_block(int block_number, HDC hdc);
-    void    update_color_block(int block_number, HDC hdc);
     SWord   translate_to_ascii(SWord key);
     SWord   translate_to_ascii1(SWord key);
     void    SetColors(struct sGuiOptions *pOptions);

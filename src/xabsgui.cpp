@@ -170,23 +170,6 @@ void XAbstractGui::release_mouse_capture()
     toggle_mouse_capture();
 }
 
-void XAbstractGui::update_block(int block_number)
-{
-    if (memory->changed[block_number])
-    {
-        memory->changed[block_number] = false;
-
-        if (nColors > 2)
-        {
-            update_color_block(block_number);
-        }
-        else
-        {
-            update_bw_block(block_number);
-        }
-    }
-}
-
 void XAbstractGui::c_focusIn(XEvent *)
 {
 }
@@ -196,13 +179,18 @@ void XAbstractGui::c_focusOut(XEvent *)
     release_mouse_capture();
 }
 
-void XAbstractGui::update_color_block(int block_number)
+void XAbstractGui::update_block(int block_number)
 {
     Display     *dpy;
     Window       win;
-    int      i;
     XImage      *img;
     Byte        *src;
+
+    if (!memory->changed[block_number])
+    {
+        return;
+    }
+    memory->changed[block_number] = false;
 
     dpy = getDisplay();
     win = getWindow();
@@ -216,12 +204,13 @@ void XAbstractGui::update_color_block(int block_number)
         src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
     }
 
-    img = image6[pixelSizeX - 1][pixelSizeY - 1];
-    CopyToZPixmap(block_number, (Byte *)img->data, src, depth,
-                  (unsigned long *)pen);
+    img = image[pixelSizeX - 1][pixelSizeY - 1];
 
     if (!(e2video->vico1 & 0x02))
     {
+        CopyToZPixmap(block_number, (Byte *)img->data, src, depth,
+                      (unsigned long *)pen);
+
         if (block_number == e2video->divided_block)
         {
             // first half display on the bottom of the window
@@ -244,393 +233,20 @@ void XAbstractGui::update_color_block(int block_number)
                       ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
                         e2video->vico2) % WINDOWHEIGHT) * pixelSizeY,
                       BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
-        } // else
+        }
     }
     else
     {
-        for (i = 0; i < YBLOCK_SIZE * pixelSizeX * pixelSizeY; i++)
-        {
-            copy_block[i] = pOptions->isInverse ? 0x00 : 0xff;
-        }
-
         // allways display an empty screen
+        CopyToZPixmap(block_number, (Byte *)img->data, NULL, depth,
+                      (unsigned long *)pen);
+
         XPutImage(dpy, win, e2gc,
-                  image1[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
+                  image[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
                   block_number * BLOCKHEIGHT * pixelSizeX,
                   BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
-    } // else
+    }
 }
-
-void XAbstractGui::update_bw_block(int block_number)
-{
-    Display     *dpy;
-    Window       win;
-    int      i;
-    XImage      *img;
-    Byte        *src;
-
-    dpy = getDisplay();
-    win = getWindow();
-
-    if (e2video->vico1 & 0x01)
-    {
-        src = memory->vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
-    }
-    else
-    {
-        src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
-    }
-
-    img = image1[pixelSizeX - 1][pixelSizeY - 1];
-
-    switch ((pixelSizeX << 4) | pixelSizeY)
-    {
-            int j;
-
-        case 0x11:  // single width, single height
-        {
-            Byte *btrg = copy_block;
-            memcpy(btrg, src, RASTERLINE_SIZE * BLOCKHEIGHT);
-            break;
-        }
-
-        case 0x21:  // double width, single height
-        {
-            Word *wtrg = (Word *)copy_block;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(wtrg++) = conv_2byte_tab[*(src++)];
-                }
-            }
-
-            break;
-        }
-
-        case 0x22:  // double width, double height
-        {
-            Word *wtrg = (Word *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(wtrg++) = conv_2byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)wtrg;
-                memcpy(btrg, btrg - 2 * RASTERLINE_SIZE, 2 * RASTERLINE_SIZE);
-                wtrg += RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x23:   // double width, tripple height
-        {
-            Word *wtrg = (Word *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(wtrg++) = conv_2byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)wtrg;
-                memcpy(btrg, btrg - 2 * RASTERLINE_SIZE, 2 * RASTERLINE_SIZE);
-                memcpy(btrg + 2 * RASTERLINE_SIZE, btrg, 2 * RASTERLINE_SIZE);
-                wtrg += 2 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x24:   // double width, quadruple height
-        {
-            Word *wtrg = (Word *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(wtrg++) = conv_2byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)wtrg;
-                memcpy(btrg, btrg - 2 * RASTERLINE_SIZE, 2 * RASTERLINE_SIZE);
-                memcpy(btrg + 2 * RASTERLINE_SIZE, btrg, 2 * RASTERLINE_SIZE);
-                memcpy(btrg + 4 * RASTERLINE_SIZE, btrg, 2 * RASTERLINE_SIZE);
-                wtrg += 3 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x12:   // single width, double height
-        {
-            Byte *btrg = copy_block;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                memcpy(btrg,                 src, RASTERLINE_SIZE);
-                memcpy(btrg + RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                btrg += 2 * RASTERLINE_SIZE;
-                src  += RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x13:   // single width, tripple height
-        {
-            Byte *btrg = copy_block;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                memcpy(btrg,                  src, RASTERLINE_SIZE);
-                memcpy(btrg +  RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                memcpy(btrg + 2 * RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                btrg += 3 * RASTERLINE_SIZE;
-                src  += RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x14:   // single width, quadruple height
-        {
-            Byte *btrg = copy_block;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                memcpy(btrg,                  src, RASTERLINE_SIZE);
-                memcpy(btrg +  RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                memcpy(btrg + 2 * RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                memcpy(btrg + 3 * RASTERLINE_SIZE, src, RASTERLINE_SIZE);
-                btrg += 4 * RASTERLINE_SIZE;
-                src  += RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x31:   // triple width, single height
-        {
-            Byte *btrg = copy_block;
-            DWord pattern;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    pattern = conv_3byte_tab[*(src++)];
-                    *(btrg++) = pattern >> 16;
-                    *(btrg++) = pattern >> 8;
-                    *(btrg++) = pattern;
-                }
-            }
-
-            break;
-        }
-
-        case 0x32:   // triple width, double height
-        {
-            Byte *btrg = copy_block;
-            DWord pattern;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    pattern = conv_3byte_tab[*(src++)];
-                    *(btrg++) = pattern >> 16;
-                    *(btrg++) = pattern >> 8;
-                    *(btrg++) = pattern;
-                }
-
-                memcpy(btrg, btrg - 3 * RASTERLINE_SIZE, 3 * RASTERLINE_SIZE);
-                btrg += 3 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x33:   // triple width, triple height
-        {
-            Byte *btrg = copy_block;
-            DWord pattern;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    pattern = conv_3byte_tab[*(src++)];
-                    *(btrg++) = pattern >> 16;
-                    *(btrg++) = pattern >> 8;
-                    *(btrg++) = pattern;
-                }
-
-                memcpy(btrg, btrg - 3 * RASTERLINE_SIZE, 3 * RASTERLINE_SIZE);
-                memcpy(btrg + 3 * RASTERLINE_SIZE, btrg, 3 * RASTERLINE_SIZE);
-                btrg += 6 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x34:   // triple width, quadruple height
-        {
-            Byte *btrg = copy_block;
-            DWord pattern;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    pattern = conv_3byte_tab[*(src++)];
-                    *(btrg++) = pattern >> 16;
-                    *(btrg++) = pattern >> 8;
-                    *(btrg++) = pattern;
-                }
-
-                memcpy(btrg, btrg - 3 * RASTERLINE_SIZE, 3 * RASTERLINE_SIZE);
-                memcpy(btrg + 3 * RASTERLINE_SIZE, btrg, 3 * RASTERLINE_SIZE);
-                memcpy(btrg + 6 * RASTERLINE_SIZE, btrg, 3 * RASTERLINE_SIZE);
-                btrg += 9 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x41:   // quadruple width, single height
-        {
-            DWord *dwtrg = (DWord *)copy_block;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(dwtrg++) = conv_4byte_tab[*(src++)];
-                }
-            }
-
-            break;
-        }
-
-        case 0x42:   // quadruple width, double height
-        {
-            DWord *dwtrg = (DWord *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(dwtrg++) = conv_4byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)dwtrg;
-                memcpy(btrg, btrg - 4 * RASTERLINE_SIZE, 4 * RASTERLINE_SIZE);
-                dwtrg += RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x43:   // quadruple width, triple height
-        {
-            DWord *dwtrg = (DWord *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(dwtrg++) = conv_4byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)dwtrg;
-                memcpy(btrg, btrg - 4 * RASTERLINE_SIZE, 4 * RASTERLINE_SIZE);
-                memcpy(btrg + 4 * RASTERLINE_SIZE, btrg, 4 * RASTERLINE_SIZE);
-                dwtrg += 2 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        case 0x44:   // quadruple width, quadruple height
-        {
-            DWord *dwtrg = (DWord *)copy_block;
-            Byte *btrg;
-
-            for (i = 0; i < BLOCKHEIGHT; i++)
-            {
-                for (j = 0; j < RASTERLINE_SIZE; j++)
-                {
-                    *(dwtrg++) = conv_4byte_tab[*(src++)];
-                }
-
-                btrg = (Byte *)dwtrg;
-                memcpy(btrg, btrg - 4 * RASTERLINE_SIZE, 4 * RASTERLINE_SIZE);
-                memcpy(btrg + 4 * RASTERLINE_SIZE, btrg, 4 * RASTERLINE_SIZE);
-                memcpy(btrg + 8 * RASTERLINE_SIZE, btrg, 4 * RASTERLINE_SIZE);
-                dwtrg += 3 * RASTERLINE_SIZE;
-            }
-
-            break;
-        }
-
-        default:
-            img = image1[0][0];
-    } // switch
-
-    if (!(e2video->vico1 & 0x02))
-    {
-        if (block_number == e2video->divided_block)
-        {
-            // first half display on the bottom of the window
-            XPutImage(dpy, win, e2gc,
-                      img, 0, 0, 0, (WINDOWHEIGHT -
-                                     (e2video->vico2 % BLOCKHEIGHT)) * pixelSizeY,
-                      BLOCKWIDTH * pixelSizeX,
-                      (e2video->vico2 % BLOCKHEIGHT) * pixelSizeY);
-            // second half display on the top of window
-            XPutImage(dpy, win, e2gc,
-                      img, 0, (e2video->vico2 % YBLOCKS) * pixelSizeY,
-                      0, 0, BLOCKWIDTH * pixelSizeX,
-                      (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
-                      pixelSizeY);
-        }
-        else
-        {
-            XPutImage(dpy, win, e2gc,
-                      img, 0, 0, 0,
-                      ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
-                        e2video->vico2) % WINDOWHEIGHT) * pixelSizeY,
-                      BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
-        } // else
-    }
-    else
-    {
-        for (i = 0; i < YBLOCK_SIZE * pixelSizeX * pixelSizeY; i++)
-        {
-            copy_block[i] = pOptions->isInverse ? 0x00 : 0xff;
-        }
-
-        // allways display an empty screen
-        XPutImage(dpy, win, e2gc,
-                  image1[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
-                  block_number * BLOCKHEIGHT * pixelSizeX,
-                  BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
-    } // else
-} // update_bw_block
-
 
 SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
 {

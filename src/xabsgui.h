@@ -72,10 +72,7 @@ protected:
     };
     Window       e2window;
     GC       e2gc;
-    // images for display with one plane (depth = 1)
-    XImage      *image1[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
-    // images for display with six planes (depth >= 8)
-    XImage      *image6[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
+    XImage      *image[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     int     oldX, oldY; // old pointer position
     Byte        *copy_block;
     Visual      *visual;
@@ -92,8 +89,6 @@ protected:
     virtual void    create_message_dialog(Widget parent);
     virtual void    set_cursor(int type = FLX_DEFAULT_CURSOR);
     virtual void    update_block(int block_number);
-    virtual void    update_color_block(int block_number);
-    virtual void    update_bw_block(int block_number);
     virtual int     convert_buttonmask(int);
     virtual SWord   translate_to_ascii(XKeyEvent *pevent);
     virtual Display *getDisplay(void);

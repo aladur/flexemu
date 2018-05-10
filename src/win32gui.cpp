@@ -1198,349 +1198,25 @@ void Win32Gui::set_bell(int percent)
 
 void Win32Gui::update_block(int block_number, HDC hdc)
 {
-    if (memory->changed[block_number])
-    {
-        memory->changed[block_number] = false;
-
-        if (nColors > 2)
-        {
-            update_color_block(block_number, hdc);
-        }
-        else
-        {
-            update_bw_block(block_number, hdc);
-        }
-    }
-}
-
-void Win32Gui::update_bw_block(int block_number, HDC hdc)
-{
     HDC   hMemoryDC;
     HBITMAP hBitmapOrig;
     int     firstpartHeight; // Height of first part of divided block
     int     startLine;       // start scanline of block
     int     i;
-    Byte    *src, *block;
-    HBITMAP img;
-
-    hMemoryDC = CreateCompatibleDC(NULL);
-
-    if (!(e2video->vico1 & 0x02))
-    {
-        // copy block from video ram into device independant bitmap
-        if (e2video->vico1 & 0x01)
-        {
-            src = memory->vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
-        }
-        else
-        {
-            src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
-        }
-
-        block = copy_block;
-        img = image1[pixelSizeX - 1][pixelSizeY - 1];
-
-        switch ((pixelSizeX << 4) | pixelSizeY)
-        {
-                int     j;
-
-            case 0x11:  // single width, single height
-            {
-                // if standard gui Size directly copy from video_ram:
-                Byte *btrg = copy_block;
-                memcpy(btrg, src, RASTERLINE_SIZE * BLOCKHEIGHT);
-                break;
-            }
-
-            // if not standard gui Size first calculate contents of
-            // block to display:
-            case 0x12: // single width, double height
-            case 0x13: // single width, tripple height
-            case 0x14:  // single width, quadrupple height
-            {
-                Byte *btrg = copy_block;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < pixelSizeY; j++)
-                    {
-                        memcpy(btrg, src, RASTERLINE_SIZE);
-                        btrg += RASTERLINE_SIZE;
-                    }
-
-                    src += RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x21:  // double width, single heigth
-            {
-                Word    *wtrg;
-                wtrg = (Word *)copy_block;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        *(wtrg++) = conv_2byte_tab[*(src++)];
-                    }
-                }
-
-                break;
-            }
-
-            case 0x22:  // double width, double height
-            {
-                Word    *wtrg;
-                wtrg = (Word *)copy_block;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        *wtrg = *(wtrg + RASTERLINE_SIZE) =
-                                    conv_2byte_tab[*(src++)];
-                        wtrg++;
-                    }
-
-                    wtrg += RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x23:   // double width, tripple height
-            {
-                Word    *wtrg;
-                wtrg = (Word *)copy_block;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        *wtrg = *(wtrg + RASTERLINE_SIZE) =
-                                    *(wtrg + (2 * RASTERLINE_SIZE)) =
-                                        conv_2byte_tab[*(src++)];
-                        wtrg++;
-                    }
-
-                    wtrg += 2 * RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x24:   // double width, quadrupple height
-            {
-                Word    *wtrg;
-                wtrg = (Word *)copy_block;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        *wtrg = *(wtrg + RASTERLINE_SIZE) =
-                                    *(wtrg + (2 * RASTERLINE_SIZE)) =
-                                        *(wtrg + (3 * RASTERLINE_SIZE)) =
-                                            conv_2byte_tab[*(src++)];
-                        wtrg++;
-                    }
-
-                    wtrg += 3 * RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x31:   // triple width, single height
-            {
-                Byte *btrg = copy_block;
-                DWord pattern;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        pattern = conv_3byte_tab[*(src++)];
-                        *(btrg++) = (pattern & 0xFF0000) >> 16;
-                        *(btrg++) = (pattern & 0xFF00) >> 8;
-                        *(btrg++) = (pattern & 0xFF);
-                    }
-                }
-
-                break;
-            }
-
-            case 0x32:   // triple width, double height
-            {
-                Byte *btrg = copy_block;
-                DWord pattern;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        pattern = conv_3byte_tab[*(src++)];
-                        *btrg = *(btrg + 3 * RASTERLINE_SIZE)
-                                = (pattern & 0xFF0000) >> 16;
-                        *(btrg + 1) = *(btrg + 3 * RASTERLINE_SIZE + 1)
-                                      = (pattern & 0xFF00) >> 8;
-                        *(btrg + 2) = *(btrg + 3 * RASTERLINE_SIZE + 2)
-                                      = (pattern & 0xFF);
-                        btrg += 3;
-                    }
-
-                    btrg += 3 * RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x33:   // triple width, triple height
-            {
-                Byte *btrg = copy_block;
-                DWord pattern;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        pattern = conv_3byte_tab[*(src++)];
-                        *btrg =
-                            *(btrg + 3 * RASTERLINE_SIZE) =
-                                *(btrg + 6 * RASTERLINE_SIZE) =
-                                    (pattern & 0xFF0000) >> 16;
-                        *(btrg + 1) =
-                            *(btrg + 3 * RASTERLINE_SIZE + 1) =
-                                *(btrg + 6 * RASTERLINE_SIZE + 1) =
-                                    (pattern & 0xFF00) >> 8;
-                        *(btrg + 2) =
-                            *(btrg + 3 * RASTERLINE_SIZE + 2) =
-                                *(btrg + 6 * RASTERLINE_SIZE + 2) =
-                                    (pattern & 0xFF);
-                        btrg += 3;
-                    }
-
-                    btrg += 6 * RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            case 0x34:   // triple width, quadruple height
-            {
-                Byte *btrg = copy_block;
-                DWord pattern;
-
-                for (i = 0; i < BLOCKHEIGHT; i++)
-                {
-                    for (j = 0; j < RASTERLINE_SIZE; j++)
-                    {
-                        pattern = conv_3byte_tab[*(src++)];
-                        *btrg =
-                            *(btrg + 3 * RASTERLINE_SIZE) =
-                                *(btrg + 6 * RASTERLINE_SIZE) =
-                                    *(btrg + 9 * RASTERLINE_SIZE) =
-                                        (pattern & 0xFF0000) >> 16;
-                        *(btrg + 1) =
-                            *(btrg + 3 * RASTERLINE_SIZE + 1) =
-                                *(btrg + 6 * RASTERLINE_SIZE + 1) =
-                                    *(btrg + 9 * RASTERLINE_SIZE + 1) =
-                                        (pattern & 0xFF00) >> 8;
-                        *(btrg + 2) =
-                            *(btrg + 3 * RASTERLINE_SIZE + 2) =
-                                *(btrg + 6 * RASTERLINE_SIZE + 2) =
-                                    *(btrg + 9 * RASTERLINE_SIZE + 2) =
-                                        (pattern & 0xFF);
-                        btrg += 3;
-                    }
-
-                    btrg += 9 * RASTERLINE_SIZE;
-                }
-
-                break;
-            }
-
-            default:
-                img = image1[0][0];
-        } // switch
-
-        SetDIBits(
-            hdc, img,
-            0, BLOCKHEIGHT * pixelSizeY,
-            block, bmi1[pixelSizeX - 1][pixelSizeY - 1], DIB_RGB_COLORS);
-
-        hBitmapOrig = SelectBitmap(hMemoryDC, img);
-        startLine = ((WINDOWHEIGHT - e2video->vico2 +
-                      block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
-
-        if (block_number == e2video->divided_block)
-        {
-            firstpartHeight = e2video->vico2 % BLOCKHEIGHT;
-            // first half display on the bottom of the window
-            BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * pixelSizeX,
-                   firstpartHeight * pixelSizeY,
-                   hMemoryDC, 0, 0,
-                   SRCCOPY);
-            // second half display on the top of window
-            BitBlt(hdc, 0, 0,
-                   BLOCKWIDTH * pixelSizeX,
-                   (BLOCKHEIGHT - firstpartHeight) * pixelSizeY,
-                   hMemoryDC, 0, firstpartHeight * pixelSizeY,
-                   SRCCOPY);
-            // first half display on the bottom of the window
-        }
-        else
-        {
-            BitBlt(hdc, 0, startLine,
-                   BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY,
-                   hMemoryDC, 0, 0, SRCCOPY);
-        } // else
-
-        SelectBitmap(hMemoryDC, hBitmapOrig);
-    }
-    else
-    {
-        // display an "empty" screen:
-        for (i = 0; i < RASTERLINE_SIZE * pixelSizeX * BLOCKHEIGHT * pixelSizeY;
-             i++)
-        {
-            copy_block[i] = 0xff;
-        }
-
-        SetDIBits(
-            hdc, image1[pixelSizeX - 1][pixelSizeY - 1],
-            0, BLOCKHEIGHT * pixelSizeY,
-            copy_block, bmi1[pixelSizeX - 1][pixelSizeY - 1], DIB_RGB_COLORS);
-        hBitmapOrig = SelectBitmap(hMemoryDC,
-                                   image1[pixelSizeX - 1][pixelSizeY - 1]);
-        BitBlt(hdc, 0,
-               (block_number * BLOCKHEIGHT) * pixelSizeY,
-               BLOCKWIDTH * pixelSizeX,
-               BLOCKHEIGHT * pixelSizeY,
-               hMemoryDC, 0, 0, SRCCOPY);
-        SelectBitmap(hMemoryDC, hBitmapOrig);
-    } // else
-
-    DeleteDC(hMemoryDC);
-} // update_bw_block
-
-void Win32Gui::update_color_block(int block_number, HDC hdc)
-{
-    HDC   hMemoryDC;
-    HBITMAP hBitmapOrig;
-    int     firstpartHeight; // Height of first part of divided block
-    int     startLine;       // start scanline of block
-    int     i;
-    Byte    *src, *block;
+    Byte    *src;
     HBITMAP img;
     HPALETTE oldPalette;
 
+    if (!memory->changed[block_number])
+    {
+        return;
+    }
+
+    memory->changed[block_number] = false;
     hMemoryDC = CreateCompatibleDC(NULL);
     oldPalette = SelectPalette(hdc, palette, TRUE);
     RealizePalette(hdc);
+    img = image[pixelSizeX - 1][pixelSizeY - 1];
 
     if (!(e2video->vico1 & 0x02))
     {
@@ -1554,14 +1230,12 @@ void Win32Gui::update_color_block(int block_number, HDC hdc)
             src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
         }
 
-        block = copy_block;
-        img = image6[pixelSizeX - 1][pixelSizeY - 1];
         CopyToZPixmap(block_number, copy_block, src, 8, (unsigned long *)pen);
 
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            block, bmi6[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+            copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         startLine = ((WINDOWHEIGHT - e2video->vico2 +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
@@ -1595,18 +1269,12 @@ void Win32Gui::update_color_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        for (i = 0; i < RASTERLINE_SIZE * pixelSizeX * BLOCKHEIGHT * pixelSizeY;
-             i++)
-        {
-            copy_block[i] = 0xff;
-        }
-
+        CopyToZPixmap(block_number, copy_block, NULL, 8, (unsigned long *)pen);
         SetDIBits(
-            hdc, image6[pixelSizeX - 1][pixelSizeY - 1],
+            hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            copy_block, bmi6[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
-        hBitmapOrig = SelectBitmap(hMemoryDC,
-                                   image6[pixelSizeX - 1][pixelSizeY - 1]);
+            copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+        hBitmapOrig = SelectBitmap(hMemoryDC, img);
         BitBlt(hdc, 0,
                (block_number * BLOCKHEIGHT) * pixelSizeY,
                BLOCKWIDTH * pixelSizeX,
@@ -1617,7 +1285,7 @@ void Win32Gui::update_color_block(int block_number, HDC hdc)
 
     SelectPalette(hdc, oldPalette, FALSE);
     DeleteDC(hMemoryDC);
-} // update_color_block
+} // update_block
 
 void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
 {
@@ -2139,7 +1807,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     int     foregroundIdx;
     int     backgroundIdx;
     int     i, j, idx;
-    BITMAPINFO *pbmi1, *pbmi6;
+    BITMAPINFO *pbmi;
 
     copy_block = new Byte[WINDOWWIDTH * BLOCKHEIGHT *
                           MAX_PIXELSIZEX * MAX_PIXELSIZEY
@@ -2182,57 +1850,32 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     {
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
-            pbmi1 = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
-                                           2 * sizeof(RGBQUAD)];
-            pbmi6 = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
+            pbmi = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
                                            (1 << COLOR_PLANES) * sizeof(Word)];
 
-            pbmi1->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
-            pbmi1->bmiHeader.biPlanes         = 1;
-            pbmi1->bmiHeader.biWidth          = BLOCKWIDTH * (i + 1);
-            pbmi1->bmiHeader.biHeight         = -BLOCKHEIGHT * (j + 1);
-            pbmi1->bmiHeader.biBitCount       = 1;
-            pbmi1->bmiHeader.biCompression    = BI_RGB;
-            pbmi1->bmiHeader.biSizeImage      = 0;
-            pbmi1->bmiHeader.biXPelsPerMeter  = 0;
-            pbmi1->bmiHeader.biYPelsPerMeter  = 0;
-            pbmi1->bmiHeader.biClrUsed        = 2;
-            pbmi1->bmiHeader.biClrImportant   = 2;
-            pbmi1->bmiColors[backgroundIdx].rgbBlue   = 0;
-            pbmi1->bmiColors[backgroundIdx].rgbGreen  = 0;
-            pbmi1->bmiColors[backgroundIdx].rgbRed    = 0;
-            pbmi1->bmiColors[backgroundIdx].rgbReserved = 0;
-            pbmi1->bmiColors[foregroundIdx].rgbBlue   = (BYTE)blue;
-            pbmi1->bmiColors[foregroundIdx].rgbGreen  = (BYTE)green;
-            pbmi1->bmiColors[foregroundIdx].rgbRed    = (BYTE)red;
-            pbmi1->bmiColors[foregroundIdx].rgbReserved = 0;
-
             bpp = COLOR_PLANES; // specify bits per pixel
-            pbmi6->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
-            pbmi6->bmiHeader.biPlanes         = 1;
-            pbmi6->bmiHeader.biWidth          = BLOCKWIDTH * (i + 1);
-            pbmi6->bmiHeader.biHeight         = -BLOCKHEIGHT * (j + 1);
-            pbmi6->bmiHeader.biBitCount       = 8;
-            pbmi6->bmiHeader.biCompression    = BI_RGB;
-            pbmi6->bmiHeader.biSizeImage      = 0;
-            pbmi6->bmiHeader.biXPelsPerMeter  = 0;
-            pbmi6->bmiHeader.biYPelsPerMeter  = 0;
-            pbmi6->bmiHeader.biClrUsed        = 1 << bpp;
-            pbmi6->bmiHeader.biClrImportant   = 0;
+            pbmi->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
+            pbmi->bmiHeader.biPlanes         = 1;
+            pbmi->bmiHeader.biWidth          = BLOCKWIDTH * (i + 1);
+            pbmi->bmiHeader.biHeight         = -BLOCKHEIGHT * (j + 1);
+            pbmi->bmiHeader.biBitCount       = 8;
+            pbmi->bmiHeader.biCompression    = BI_RGB;
+            pbmi->bmiHeader.biSizeImage      = 0;
+            pbmi->bmiHeader.biXPelsPerMeter  = 0;
+            pbmi->bmiHeader.biYPelsPerMeter  = 0;
+            pbmi->bmiHeader.biClrUsed        = 1 << bpp;
+            pbmi->bmiHeader.biClrImportant   = 0;
 
-            Word *wp = (Word *)((Byte *)pbmi6 + sizeof(BITMAPINFOHEADER));
+            Word *wp = (Word *)((Byte *)pbmi + sizeof(BITMAPINFOHEADER));
 
             for (idx = 0; idx < (1 << bpp); idx++)
             {
                 *(wp++) = idx;
             }
 
-            image1[i][j]  = CreateDIBitmap(hdc, &pbmi1->bmiHeader, 0, NULL,
-                                           pbmi1, DIB_RGB_COLORS);
-            image6[i][j]  = CreateDIBitmap(hdc, &pbmi6->bmiHeader, 0, NULL,
-                                           pbmi6, DIB_PAL_COLORS);
-            bmi1[i][j] = pbmi1;
-            bmi6[i][j] = pbmi6;
+            image[i][j]  = CreateDIBitmap(hdc, &pbmi->bmiHeader, 0, NULL,
+                                           pbmi, DIB_PAL_COLORS);
+            bmi[i][j] = pbmi;
         } // for
     } // for
 
@@ -2287,10 +1930,8 @@ Win32Gui::~Win32Gui()
     {
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
-            DeleteObject(image1[i][j]);
-            DeleteObject(image6[i][j]);
-            delete [] bmi1[i][j];
-            delete [] bmi6[i][j];
+            DeleteObject(image[i][j]);
+            delete [] bmi[i][j];
         } // for
     } // for
 

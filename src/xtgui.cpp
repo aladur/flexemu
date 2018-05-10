@@ -1559,46 +1559,36 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     {
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
-            image1[i][j] = XCreateImage(display, visual, 1,
-                                        XYBitmap, 0, (char *)copy_block,
-                                        BLOCKWIDTH * (i + 1),
-                                        BLOCKHEIGHT * (j + 1), 32, 0);
-            // use bitmap_unit = 8 to be independant of
-            // byte_order
-            image1[i][j]->bitmap_unit = 8;
-            // Bit order on Eurocom II: always Bit 7 first
-            image1[i][j]->bitmap_bit_order = MSBFirst;
-            _XInitImageFuncPtrs(image1[i][j]);
-            image6[i][j] = XCreateImage(display, visual, depth,
-                                        ZPixmap, 0, (char *)copy_block,
-                                        BLOCKWIDTH * (i + 1),
-                                        BLOCKHEIGHT * (j + 1), 32, 0);
+            image[i][j] = XCreateImage(display, visual, depth,
+                                       ZPixmap, 0, (char *)copy_block,
+                                       BLOCKWIDTH * (i + 1),
+                                       BLOCKHEIGHT * (j + 1), 32, 0);
 
             switch (depth)
             {
                 case  1:
                 case  8:
-                    image6[i][j]->bitmap_unit = 8;
+                    image[i][j]->bitmap_unit = 8;
                     break;
 
                 case 15:
                 case 16:
-                    image6[i][j]->bitmap_unit = 16;
+                    image[i][j]->bitmap_unit = 16;
                     break;
 
                 case 24:
                 case 32:
-                    image6[i][j]->bitmap_unit = 32;
+                    image[i][j]->bitmap_unit = 32;
                     break;
             }
 
-            image6[i][j]->bitmap_bit_order = MSBFirst;
+            image[i][j]->bitmap_bit_order = MSBFirst;
 #ifdef WORDS_BIGENDIAN
-            image6[i][j]->byte_order = MSBFirst;
+            image[i][j]->byte_order = MSBFirst;
 #else
-            image6[i][j]->byte_order = LSBFirst;
+            image[i][j]->byte_order = LSBFirst;
 #endif
-            _XInitImageFuncPtrs(image6[i][j]);
+            _XInitImageFuncPtrs(image[i][j]);
         } // for
     } // for
 
@@ -1735,10 +1725,8 @@ XtGui::~XtGui()
     {
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
-            image1[i][j]->data = NULL;
-            XDestroyImage(image1[i][j]);
-            image6[i][j]->data = NULL;
-            XDestroyImage(image6[i][j]);
+            image[i][j]->data = NULL;
+            XDestroyImage(image[i][j]);
         } // for
     } // for
 
