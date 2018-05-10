@@ -1551,13 +1551,13 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     e2gc = XtGetGC(e2screen, GCForeground | GCBackground, &gcv);
     XtVaSetValues(e2screen, XtNbackground, gcv.background, NULL);
     copy_block = new Byte[WINDOWWIDTH * BLOCKHEIGHT *
-                          MAX_GUIXSIZE * MAX_GUIYSIZE *
+                          MAX_PIXELSIZEX * MAX_PIXELSIZEY *
                           32 / 8]; // max. screen depth
 
     // initialize different images used for different window sizes:
-    for (i = 0; i < MAX_GUIXSIZE; i++)
+    for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
-        for (j = 0; j < MAX_GUIYSIZE; j++)
+        for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             image1[i][j] = XCreateImage(display, visual, 1,
                                         XYBitmap, 0, (char *)copy_block,
@@ -1661,10 +1661,10 @@ void XtGui::initialize_after_open(Widget w, const char *title)
     if (pxsh != NULL)
     {
         pxsh->min_width = WINDOWWIDTH + (width % WINDOWWIDTH);
-        pxsh->max_width = WINDOWWIDTH * MAX_GUIXSIZE +
+        pxsh->max_width = WINDOWWIDTH * MAX_PIXELSIZEX +
                            (width % WINDOWWIDTH);
         pxsh->min_height = WINDOWHEIGHT + (height % WINDOWHEIGHT);;
-        pxsh->max_height = WINDOWHEIGHT * MAX_GUIYSIZE +
+        pxsh->max_height = WINDOWHEIGHT * MAX_PIXELSIZEY +
                            (height % WINDOWHEIGHT);
         pxsh->width_inc = WINDOWWIDTH;
         pxsh->height_inc = WINDOWHEIGHT;
@@ -1731,9 +1731,9 @@ XtGui::~XtGui()
     }
 
     // remove data pointer otherwise it would be freed
-    for (i = 0; i < MAX_GUIXSIZE; i++)
+    for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
-        for (j = 0; j < MAX_GUIYSIZE; j++)
+        for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             image1[i][j]->data = NULL;
             XDestroyImage(image1[i][j]);

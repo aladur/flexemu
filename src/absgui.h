@@ -32,8 +32,8 @@
 #include "mc6809.h"
 #include <string>
 
-#define MAX_GUIXSIZE    (3)
-#define MAX_GUIYSIZE    (4)
+#define MAX_PIXELSIZEX    (3)
+#define MAX_PIXELSIZEY    (4)
 
 #ifdef _WIN32
     #define COPYTEXT "press Licence button"

@@ -73,9 +73,9 @@ protected:
     Window       e2window;
     GC       e2gc;
     // images for display with one plane (depth = 1)
-    XImage      *image1[MAX_GUIXSIZE][MAX_GUIYSIZE];
+    XImage      *image1[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     // images for display with six planes (depth >= 8)
-    XImage      *image6[MAX_GUIXSIZE][MAX_GUIYSIZE];
+    XImage      *image6[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     int     oldX, oldY; // old pointer position
     Byte        *copy_block;
     Visual      *visual;

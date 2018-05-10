@@ -120,11 +120,11 @@ bool FlexemuOptionsDialog::TransferDataToWindow(void)
 
     if (c_geometry)
     {
-        for (x = 1; x <= MAX_GUIXSIZE; x++)
+        for (x = 1; x <= MAX_PIXELSIZEX; x++)
         {
             int y;
 
-            for (y = 1; y <= MAX_GUIYSIZE; y++)
+            for (y = 1; y <= MAX_PIXELSIZEY; y++)
             {
                 str.Printf(wxT("%ix%i"), WINDOWWIDTH * x, WINDOWHEIGHT * y);
 

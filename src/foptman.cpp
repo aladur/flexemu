@@ -339,7 +339,7 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'j':
                 sscanf(optarg, "%d", &i);
 
-                if (i > 0 && i <= MAX_GUIXSIZE)
+                if (i > 0 && i <= MAX_PIXELSIZEX)
                 {
                     pGuiOptions->pixelSizeX = i;
                 }
@@ -349,7 +349,7 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'k':
                 sscanf(optarg, "%d", &i);
 
-                if (i > 0 && i <= MAX_GUIYSIZE)
+                if (i > 0 && i <= MAX_PIXELSIZEY)
                 {
                     pGuiOptions->pixelSizeY = i;
                 }
@@ -521,9 +521,9 @@ void FlexOptionManager::GetOptions(
             val = 1;
         }
 
-        if (val > MAX_GUIXSIZE)
+        if (val > MAX_PIXELSIZEX)
         {
-            val = MAX_GUIXSIZE;
+            val = MAX_PIXELSIZEX;
         }
 
         pGuiOptions->pixelSizeX = val;
@@ -536,9 +536,9 @@ void FlexOptionManager::GetOptions(
             val = 1;
         }
 
-        if (val > MAX_GUIYSIZE)
+        if (val > MAX_PIXELSIZEY)
         {
-            val = MAX_GUIYSIZE;
+            val = MAX_PIXELSIZEY;
         }
 
         pGuiOptions->pixelSizeY = val;
@@ -598,9 +598,9 @@ void FlexOptionManager::GetOptions(
             val = 1;
         }
 
-        if (val > MAX_GUIXSIZE)
+        if (val > MAX_PIXELSIZEX)
         {
-            val = MAX_GUIXSIZE;
+            val = MAX_PIXELSIZEX;
         }
 
         pGuiOptions->pixelSizeX = val;
@@ -613,9 +613,9 @@ void FlexOptionManager::GetOptions(
             val = 1;
         }
 
-        if (val > MAX_GUIYSIZE)
+        if (val > MAX_PIXELSIZEY)
         {
-            val = MAX_GUIYSIZE;
+            val = MAX_PIXELSIZEY;
         }
 
         pGuiOptions->pixelSizeY = val;

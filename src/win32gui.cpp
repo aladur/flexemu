@@ -787,9 +787,9 @@ int Win32Gui::onMinMaxInfo(MINMAXINFO *lpmmi)
         lpmmi->ptMinTrackSize.y = rect.bottom - rect.top;
     };
 
-    rect.right      = (long)WINDOWWIDTH * MAX_GUIXSIZE;
+    rect.right      = (long)WINDOWWIDTH * MAX_PIXELSIZEX;
 
-    rect.bottom     = (long)WINDOWHEIGHT * MAX_GUIYSIZE + STATUSBAR_HEIGHT;
+    rect.bottom     = (long)WINDOWHEIGHT * MAX_PIXELSIZEY + STATUSBAR_HEIGHT;
 
     if (AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, TRUE, 0))
     {
@@ -2142,7 +2142,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     BITMAPINFO *pbmi1, *pbmi6;
 
     copy_block = new Byte[WINDOWWIDTH * BLOCKHEIGHT *
-                          MAX_GUIXSIZE * MAX_GUIYSIZE
+                          MAX_PIXELSIZEX * MAX_PIXELSIZEY
                           /* * 32 / 8*/ ]; // screen depth on Win32 is 8
     pc = (struct sRGBDef *)&colors;
 
@@ -2178,9 +2178,9 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     CheckDeviceSupport(hdc, 1, &nColors);
     SetColors(pOptions);
 
-    for (i = 0; i < MAX_GUIXSIZE; i++)
+    for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
-        for (j = 0; j < MAX_GUIYSIZE; j++)
+        for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             pbmi1 = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
                                            2 * sizeof(RGBQUAD)];
@@ -2283,9 +2283,9 @@ Win32Gui::~Win32Gui()
 
 
     // release all bitmaps
-    for (i = 0; i < MAX_GUIXSIZE; i++)
+    for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
-        for (j = 0; j < MAX_GUIYSIZE; j++)
+        for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             DeleteObject(image1[i][j]);
             DeleteObject(image6[i][j]);
