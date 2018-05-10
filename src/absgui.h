@@ -121,7 +121,7 @@ protected:
     virtual void    initialize(struct sGuiOptions *pOptions);
     virtual void    initialize_conv_tables();
     void    CopyToZPixmap(int block_number,
-                          void *dest, const Byte *src,
+                          Byte *dest, const Byte *src,
                           int depth, const unsigned long *pen);
     virtual void    clear_cpuview();
     virtual void    redraw_cpuview(const Mc6809CpuStatus &stat);

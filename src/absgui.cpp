@@ -126,113 +126,287 @@ void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
     redraw_cpuview(stat);
 }
 
+/*
+ * CopyToZPixmap
+ * Copy part of the video RAM into a Z-pixel-map.
+ * dest    Pointer into result Z-pixel-map
+ * src     Pointer into part of video RAM
+ * depth   Color depth of Z-pixel-map, supported values: { 8, 16, 24, 32 }
+ * pens    Pointer into color table (64 values)
+ */
 void AbstractGui::CopyToZPixmap(int,
-                                void *dest, const Byte *src,
-                                int depth, const unsigned long *pen)
+                                Byte *dest, const Byte *src,
+                                int depth, const unsigned long *pens)
 {
-    register int j;         /* plane counter                 */
-    register Word srcPixel; /* calculated pixel in video ram */
-    register int i;         /* index into video ram          */
-    register Byte b1 = 0, b3 = 0, b5 = 0; /* byte buffers for each plane */
-    const Byte *vram;       /* pointer into video ram        */
-    Byte     *dest8;        /* destination pointer in image  */
-    Word     *dest16;       /* destination pointer in image  */
-    DWord    *dest32;
-    unsigned long q;
+    int count;              /* Byte counter into video RAM          */
+    const Byte *videoRam;   /* Pointer into video RAM               */
+    Byte pixels[6];         /* One byte of video RAM for each plane */
 
-    vram = src;
-    dest8  = (Byte *)dest;
-    dest16 = (Word *)dest;
-    dest32 = (DWord *)dest;
+    videoRam = src;
+    memset(pixels, 0, sizeof(pixels));
 
-    for (i = 0; i < YBLOCK_SIZE; i++)
+    for (count = 0; count < YBLOCK_SIZE; ++count)
     {
-        register Byte b0, b2, b4;       /* byte buffers for each plane */
-
-        b0 = vram[0];
-        b2 = vram[VIDEORAM_SIZE];
-        b4 = vram[VIDEORAM_SIZE * 2];
+        Byte pixelBitMask;
+        bool isEndOfRasterLine = false;
+        if ((count % RASTERLINE_SIZE) == (RASTERLINE_SIZE - 1) &&
+            pixelSizeY > 1)
+        {
+            isEndOfRasterLine = true;
+        }
+        pixels[0] = videoRam[0];
+        pixels[2] = videoRam[VIDEORAM_SIZE];
+        pixels[4] = videoRam[VIDEORAM_SIZE * 2];
 
         if (nColors > 8)
         {
-            b1 = vram[VIDEORAM_SIZE * 3];
-            b3 = vram[VIDEORAM_SIZE * 4];
-            b5 = vram[VIDEORAM_SIZE * 5];
+            pixels[1] = videoRam[VIDEORAM_SIZE * 3];
+            pixels[3] = videoRam[VIDEORAM_SIZE * 4];
+            pixels[5] = videoRam[VIDEORAM_SIZE * 5];
         }
 
-        vram++;
+        videoRam++;
 
         /* Use MSBit first */
-        for (j = 128; j; j >>= 1)
+        for (pixelBitMask = 128; pixelBitMask; pixelBitMask >>= 1)
         {
-            srcPixel = 0;
+            unsigned int penIndex = 0; /* calculated pen index */
 
             if (nColors > 8)
             {
-                if (b0 & j)
+                if (pixels[0] & pixelBitMask)
                 {
-                    srcPixel |= 32;    // 0x0C, green high
+                    penIndex |= 32;    // 0x0C, green high
                 }
 
-                if (b2 & j)
+                if (pixels[2] & pixelBitMask)
                 {
-                    srcPixel |= 16;    // 0x0D, red high
+                    penIndex |= 16;    // 0x0D, red high
                 }
 
-                if (b4 & j)
+                if (pixels[4] & pixelBitMask)
                 {
-                    srcPixel |= 8;    // 0x0E, blue high
+                    penIndex |= 8;    // 0x0E, blue high
                 }
 
-                if (b1 & j)
+                if (pixels[1] & pixelBitMask)
                 {
-                    srcPixel |= 4;    // 0x04, green low
+                    penIndex |= 4;    // 0x04, green low
                 }
 
-                if (b3 & j)
+                if (pixels[3] & pixelBitMask)
                 {
-                    srcPixel |= 2;    // 0x05, red low
+                    penIndex |= 2;    // 0x05, red low
                 }
 
-                if (b5 & j)
+                if (pixels[5] & pixelBitMask)
                 {
-                    srcPixel |= 1;    // 0x06, blue low
+                    penIndex |= 1;    // 0x06, blue low
                 }
             }
             else
             {
-                if (b0 & j)
+                if (pixels[0] & pixelBitMask)
                 {
-                    srcPixel |= 32;    // 0x0C, green high
+                    penIndex |= 32;    // 0x0C, green high
                 }
 
-                if (b2 & j)
+                if (pixels[2] & pixelBitMask)
                 {
-                    srcPixel |= 8;    // 0x0D, red high
+                    penIndex |= 8;    // 0x0D, red high
                 }
 
-                if (b4 & j)
+                if (pixels[4] & pixelBitMask)
                 {
-                    srcPixel |= 2;    // 0x0E, blue high
+                    penIndex |= 2;    // 0x0E, blue high
                 }
             }
 
-            q = pen[srcPixel];
+            if (depth == 32 || depth == 24)
+            {
+                DWord *dest32 = (DWord *)dest;
+                DWord pen = (DWord)pens[penIndex];
 
-            if (depth == 16)
                 switch (pixelSizeX << 4 | pixelSizeY)
                 {
                     case 0x11:
-                        *(dest16++) = (Word)q;
+                        *(dest32++) = pen;
                         break;
 
                     case 0x12:
-                        *(dest16) = (Word)q;
-                        *(dest16 + WINDOWWIDTH) = (Word)q;
+                        *(dest32) = pen;
+                        *(dest32 + WINDOWWIDTH) = pen;
+                        dest32++;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x13:
+                        *(dest32) = pen;
+                        *(dest32 + WINDOWWIDTH) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH) = pen;
+                        dest32++;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 2 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x14:
+                        *(dest32) = pen;
+                        *(dest32 + WINDOWWIDTH) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH) = pen;
+                        dest32++;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 3 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x21:
+                        *(dest32++) = pen;
+                        *(dest32++) = pen;
+                        break;
+
+                    case 0x22:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH + 1) = pen;
+                        dest32 += 2;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 2 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x23:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 4 * WINDOWWIDTH) = pen;
+                        *(dest32 + 4 * WINDOWWIDTH + 1) = pen;
+                        dest32 += 2;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 4 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x24:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH) = pen;
+                        *(dest32 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 4 * WINDOWWIDTH) = pen;
+                        *(dest32 + 4 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH + 1) = pen;
+                        dest32 += 2;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 6 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x31:
+                        *(dest32++) = pen;
+                        *(dest32++) = pen;
+                        *(dest32++) = pen;
+                        break;
+
+                    case 0x32:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 2) = pen;
+                        dest32 += 3;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 3 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x33:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH + 2) = pen;
+                        dest32 += 3;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 6 * WINDOWWIDTH;
+                        }
+
+                        break;
+
+                    case 0x34:
+                        *(dest32) = pen;
+                        *(dest32 + 1) = pen;
+                        *(dest32 + 2) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 6 * WINDOWWIDTH + 2) = pen;
+                        *(dest32 + 9 * WINDOWWIDTH) = pen;
+                        *(dest32 + 9 * WINDOWWIDTH + 1) = pen;
+                        *(dest32 + 9 * WINDOWWIDTH + 2) = pen;
+                        dest32 += 3;
+
+                        if (isEndOfRasterLine && pixelBitMask== 1)
+                        {
+                            dest32 += 9 * WINDOWWIDTH;
+                        }
+
+                        break;
+                }
+                dest = (Byte *)dest32;
+            }
+            else if (depth == 16 || depth == 15)
+            {
+                Word *dest16 = (Word *)dest;
+                Word pen = (Word)pens[penIndex];
+
+                switch (pixelSizeX << 4 | pixelSizeY)
+                {
+                    case 0x11:
+                        *(dest16++) = pen;
+                        break;
+
+                    case 0x12:
+                        *(dest16) = pen;
+                        *(dest16 + WINDOWWIDTH) = pen;
                         dest16++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += WINDOWWIDTH;
                         }
@@ -240,13 +414,12 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x13:
-                        *(dest16) = (Word)q;
-                        *(dest16 + WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + WINDOWWIDTH) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH) = pen;
                         dest16++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 2 * WINDOWWIDTH;
                         }
@@ -254,14 +427,13 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x14:
-                        *(dest16) = (Word)q;
-                        *(dest16 + WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + WINDOWWIDTH) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH) = pen;
                         dest16++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 3 * WINDOWWIDTH;
                         }
@@ -269,19 +441,18 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x21:
-                        *(dest16++) = (Word)q;
-                        *(dest16++) = (Word)q;
+                        *(dest16++) = pen;
+                        *(dest16++) = pen;
                         break;
 
                     case 0x22:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH + 1) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH + 1) = pen;
                         dest16 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 2 * WINDOWWIDTH;
                         }
@@ -289,16 +460,15 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x23:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 4 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 4 * WINDOWWIDTH + 1) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 4 * WINDOWWIDTH) = pen;
+                        *(dest16 + 4 * WINDOWWIDTH + 1) = pen;
                         dest16 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 4 * WINDOWWIDTH;
                         }
@@ -306,18 +476,17 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x24:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 2 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 4 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 4 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH + 1) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH) = pen;
+                        *(dest16 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 4 * WINDOWWIDTH) = pen;
+                        *(dest16 + 4 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH + 1) = pen;
                         dest16 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 6 * WINDOWWIDTH;
                         }
@@ -325,22 +494,21 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x31:
-                        *(dest16++) = (Word)q;
-                        *(dest16++) = (Word)q;
-                        *(dest16++) = (Word)q;
+                        *(dest16++) = pen;
+                        *(dest16++) = pen;
+                        *(dest16++) = pen;
                         break;
 
                     case 0x32:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 2) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 2) = pen;
                         dest16 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 3 * WINDOWWIDTH;
                         }
@@ -348,19 +516,18 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x33:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 2) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH + 2) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH + 2) = pen;
                         dest16 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 6 * WINDOWWIDTH;
                         }
@@ -368,373 +535,201 @@ void AbstractGui::CopyToZPixmap(int,
                         break;
 
                     case 0x34:
-                        *(dest16) = (Word)q;
-                        *(dest16 + 1) = (Word)q;
-                        *(dest16 + 2) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 3 * WINDOWWIDTH + 2) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 6 * WINDOWWIDTH + 2) = (Word)q;
-                        *(dest16 + 9 * WINDOWWIDTH) = (Word)q;
-                        *(dest16 + 9 * WINDOWWIDTH + 1) = (Word)q;
-                        *(dest16 + 9 * WINDOWWIDTH + 2) = (Word)q;
+                        *(dest16) = pen;
+                        *(dest16 + 1) = pen;
+                        *(dest16 + 2) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 6 * WINDOWWIDTH + 2) = pen;
+                        *(dest16 + 9 * WINDOWWIDTH) = pen;
+                        *(dest16 + 9 * WINDOWWIDTH + 1) = pen;
+                        *(dest16 + 9 * WINDOWWIDTH + 2) = pen;
                         dest16 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest16 += 9 * WINDOWWIDTH;
                         }
 
                         break;
                 }
-            else if (depth == 8)
+                dest = (Byte *)dest16;
+            }
+            else if (depth == 8 || depth == 1)
+            {
+                Byte *dest8 = (Byte *)dest;
+                Byte pen = (Byte)pens[penIndex];
+
                 switch (pixelSizeX << 4 | pixelSizeY)
                 {
-                    case 0x11: // single width, single height
-                        *(dest8++) = (Byte)q;
+                    case 0x11:
+                        *(dest8++) = pen;
                         break;
 
-                    case 0x12: // single width, double height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + WINDOWWIDTH) = (Byte)q;
+                    case 0x12:
+                        *(dest8) = pen;
+                        *(dest8 + WINDOWWIDTH) = pen;
                         dest8++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x13: // single width, tripple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
+                    case 0x13:
+                        *(dest8) = pen;
+                        *(dest8 + WINDOWWIDTH) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH) = pen;
                         dest8++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 2 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x14: // single width, quadrupple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH) = (Byte)q;
+                    case 0x14:
+                        *(dest8) = pen;
+                        *(dest8 + WINDOWWIDTH) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH) = pen;
                         dest8++;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 3 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x21: // double width, single heigth
-                        *(dest8++) = (Byte)q;
-                        *(dest8++) = (Byte)q;
+                    case 0x21:
+                        *(dest8++) = pen;
+                        *(dest8++) = pen;
                         break;
 
-                    case 0x22: // double width, double height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH + 1) = (Byte)q;
+                    case 0x22:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH + 1) = pen;
                         dest8 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 2 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x23: // double width, tripple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 4 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 4 * WINDOWWIDTH + 1) = (Byte)q;
+                    case 0x23:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 4 * WINDOWWIDTH) = pen;
+                        *(dest8 + 4 * WINDOWWIDTH + 1) = pen;
                         dest8 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 4 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x24: // double width, quadrupple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 2 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 4 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 4 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH + 1) = (Byte)q;
+                    case 0x24:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH) = pen;
+                        *(dest8 + 2 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 4 * WINDOWWIDTH) = pen;
+                        *(dest8 + 4 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH + 1) = pen;
                         dest8 += 2;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 6 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x31: // triple width, single height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2) = (Byte)q;
+                    case 0x31:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2) = pen;
                         dest8 += 3;
                         break;
 
-                    case 0x32: // triple width, double height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 2) = (Byte)q;
+                    case 0x32:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 2) = pen;
                         dest8 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 3 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x33: // triple width, triple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 2) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH + 2) = (Byte)q;
+                    case 0x33:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH + 2) = pen;
                         dest8 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 6 * WINDOWWIDTH;
                         }
 
                         break;
 
-                    case 0x34: // triple width, quadruple height
-                        *(dest8) = (Byte)q;
-                        *(dest8 + 1) = (Byte)q;
-                        *(dest8 + 2) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 3 * WINDOWWIDTH + 2) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 6 * WINDOWWIDTH + 2) = (Byte)q;
-                        *(dest8 + 9 * WINDOWWIDTH) = (Byte)q;
-                        *(dest8 + 9 * WINDOWWIDTH + 1) = (Byte)q;
-                        *(dest8 + 9 * WINDOWWIDTH + 2) = (Byte)q;
+                    case 0x34:
+                        *(dest8) = pen;
+                        *(dest8 + 1) = pen;
+                        *(dest8 + 2) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 3 * WINDOWWIDTH + 2) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 6 * WINDOWWIDTH + 2) = pen;
+                        *(dest8 + 9 * WINDOWWIDTH) = pen;
+                        *(dest8 + 9 * WINDOWWIDTH + 1) = pen;
+                        *(dest8 + 9 * WINDOWWIDTH + 2) = pen;
                         dest8 += 3;
 
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
+                        if (isEndOfRasterLine && pixelBitMask== 1)
                         {
                             dest8 += 9 * WINDOWWIDTH;
                         }
 
                         break;
                 }
-            // assuming depth of 24 or 32
+                dest = (Byte *)dest8;
+            }
             else
             {
-                switch (pixelSizeX << 4 | pixelSizeY)
-                {
-                    case 0x11: // single width, single height
-                        *(dest32++) = q;
-                        break;
-
-                    case 0x12: // single width, double height
-                        *(dest32) = q;
-                        *(dest32 + WINDOWWIDTH) = q;
-                        dest32++;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x13: // single width, tripple height
-                        *(dest32) = q;
-                        *(dest32 + WINDOWWIDTH) = q;
-                        *(dest32 + 2 * WINDOWWIDTH) = q;
-                        dest32++;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 2 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x14: // single width, quadrupple height
-                        *(dest32) = q;
-                        *(dest32 + WINDOWWIDTH) = q;
-                        *(dest32 + 2 * WINDOWWIDTH) = q;
-                        *(dest32 + 3 * WINDOWWIDTH) = q;
-                        dest32++;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 3 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x21: // double width, single heigth
-                        *(dest32++) = q;
-                        *(dest32++) = q;
-                        break;
-
-                    case 0x22: // double width, double height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2 * WINDOWWIDTH) = q;
-                        *(dest32 + 2 * WINDOWWIDTH + 1) = q;
-                        dest32 += 2;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 2 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x23: // double width, tripple height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2 * WINDOWWIDTH) = q;
-                        *(dest32 + 2 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 4 * WINDOWWIDTH) = q;
-                        *(dest32 + 4 * WINDOWWIDTH + 1) = q;
-                        dest32 += 2;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 4 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x24: // double width, quadrupple height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2 * WINDOWWIDTH) = q;
-                        *(dest32 + 2 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 4 * WINDOWWIDTH) = q;
-                        *(dest32 + 4 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 6 * WINDOWWIDTH) = q;
-                        *(dest32 + 6 * WINDOWWIDTH + 1) = q;
-                        dest32 += 2;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 6 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x31: // triple width, single height
-                        *(dest32++) = q;
-                        *(dest32++) = q;
-                        *(dest32++) = q;
-                        break;
-
-                    case 0x32: // triple width, double height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2) = q;
-                        *(dest32 + 3 * WINDOWWIDTH) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 2) = q;
-                        dest32 += 3;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 3 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x33: // triple width, triple height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2) = q;
-                        *(dest32 + 3 * WINDOWWIDTH) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 2) = q;
-                        *(dest32 + 6 * WINDOWWIDTH) = q;
-                        *(dest32 + 6 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 6 * WINDOWWIDTH + 2) = q;
-                        dest32 += 3;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 6 * WINDOWWIDTH;
-                        }
-
-                        break;
-
-                    case 0x34: // triple width, quadruple height
-                        *(dest32) = q;
-                        *(dest32 + 1) = q;
-                        *(dest32 + 2) = q;
-                        *(dest32 + 3 * WINDOWWIDTH) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 3 * WINDOWWIDTH + 2) = q;
-                        *(dest32 + 6 * WINDOWWIDTH) = q;
-                        *(dest32 + 6 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 6 * WINDOWWIDTH + 2) = q;
-                        *(dest32 + 9 * WINDOWWIDTH) = q;
-                        *(dest32 + 9 * WINDOWWIDTH + 1) = q;
-                        *(dest32 + 9 * WINDOWWIDTH + 2) = q;
-                        dest32 += 3;
-
-                        if ((i % RASTERLINE_SIZE) ==
-                            (RASTERLINE_SIZE - 1) && j == 1)
-                        {
-                            dest32 += 9 * WINDOWWIDTH;
-                        }
-
-                        break;
-                }
+                printf("Color depth=%d is not supported\n", depth);
             }
         }
     }
