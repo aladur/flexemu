@@ -179,7 +179,7 @@ protected:
     SWord   translate_to_ascii(SWord key);
     SWord   translate_to_ascii1(SWord key);
     void    SetColors(struct sGuiOptions *pOptions);
-    bool    CheckDeviceSupport(HDC aHdc, Word modifyOptions,
+    bool    CheckDeviceSupport(HDC aHdc, bool isModifyValue,
                                int *nrOfColors);
     void    mouse_update(HWND w);
     void    mouse_warp(HWND w, int dx, int dy);

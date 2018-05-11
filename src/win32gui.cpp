@@ -1666,7 +1666,7 @@ void Win32Gui::popup_copyright(HWND hwnd)
     }
 } // popup_copyright
 
-bool Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, int *nrOfColors)
+bool Win32Gui::CheckDeviceSupport(HDC aHdc, bool isModifyValue, int *nrOfColors)
 {
     int cNumColors, rasterCaps;
 
@@ -1674,7 +1674,7 @@ bool Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, int *nrOfColors)
 
     if (!(rasterCaps & RC_BITBLT) || !(rasterCaps & RC_DI_BITMAP))
     {
-        if (!modifyOptions)
+        if (!isModifyValue)
         {
             return false;    // fatal error, no BitBlt or SetDIBits available
         }
@@ -1693,7 +1693,7 @@ bool Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, int *nrOfColors)
 
     if (cNumColors < *nrOfColors)
     {
-        if (!modifyOptions)
+        if (!isModifyValue)
         {
             return false;    // not enough colors
         }
