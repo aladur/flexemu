@@ -179,8 +179,8 @@ protected:
     SWord   translate_to_ascii(SWord key);
     SWord   translate_to_ascii1(SWord key);
     void    SetColors(struct sGuiOptions *pOptions);
-    int     CheckDeviceSupport(HDC aHdc, Word modifyOptions,
-                               Word *nrOfColors);
+    bool    CheckDeviceSupport(HDC aHdc, Word modifyOptions,
+                               int *nrOfColors);
     void    mouse_update(HWND w);
     void    mouse_warp(HWND w, int dx, int dy);
     void    set_cursor(int type = FLX_DEFAULT_CURSOR);

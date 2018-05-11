@@ -1202,7 +1202,6 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     HBITMAP hBitmapOrig;
     int     firstpartHeight; // Height of first part of divided block
     int     startLine;       // start scanline of block
-    int     i;
     Byte    *src;
     HBITMAP img;
     HPALETTE oldPalette;
@@ -1667,7 +1666,7 @@ void Win32Gui::popup_copyright(HWND hwnd)
     }
 } // popup_copyright
 
-int Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, Word *nrOfColors)
+bool Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, int *nrOfColors)
 {
     int cNumColors, rasterCaps;
 
@@ -1677,7 +1676,7 @@ int Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, Word *nrOfColors)
     {
         if (!modifyOptions)
         {
-            return 0;    // fatal error, no BitBlt or SetDIBits available
+            return false;    // fatal error, no BitBlt or SetDIBits available
         }
 
         popup_message("Device capabilities insufficient to start this "
@@ -1689,14 +1688,14 @@ int Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, Word *nrOfColors)
 
     if (cNumColors < 0)
     {
-        return 1;    // success: more than 256 colors
+        return true;    // success: more than 256 colors
     }
 
     if (cNumColors < *nrOfColors)
     {
         if (!modifyOptions)
         {
-            return 0;    // not enough colors
+            return false;    // not enough colors
         }
 
         if (cNumColors >= 8)
@@ -1708,10 +1707,10 @@ int Win32Gui::CheckDeviceSupport(HDC aHdc, Word modifyOptions, Word *nrOfColors)
             *nrOfColors = 2;
         }
 
-        return 1;   // success by reducing nr of colors
+        return true;   // success by reducing nr of colors
     }
 
-    return 1;
+    return true;
 }
 
 void Win32Gui::SetColors(struct sGuiOptions *pOptions)

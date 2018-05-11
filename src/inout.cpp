@@ -646,7 +646,7 @@ Byte Inout::read_queued_ch_serial(void)
 
 void Inout::write_ch_serial(Byte val)
 {
-    ssize_t count = 0;
+    size_t count = 0;
 #ifdef HAVE_TERMIOS_H
     used_serial_io = true;
 #ifdef VERASE
