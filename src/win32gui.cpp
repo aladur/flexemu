@@ -1686,9 +1686,9 @@ bool Win32Gui::CheckDeviceSupport(HDC aHdc, bool isModifyValue, int *nrOfColors)
 
     cNumColors = GetDeviceCaps(aHdc, NUMCOLORS);
 
-    if (cNumColors < 0)
+    if (cNumColors == -1)
     {
-        return true;    // success: more than 256 colors
+        return true;    // success: The device has a color depth of more than 8 bit per pixel
     }
 
     if (cNumColors < *nrOfColors)
