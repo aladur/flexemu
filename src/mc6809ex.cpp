@@ -4,7 +4,7 @@
     execution of one processor instruction
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2004  W. Schwotzer
+    Copyright (C) 1997-2018  W. Schwotzer
 
     This file is based on usim-0.91 which is
     Copyright (C) 1994 by R. B. Bellis

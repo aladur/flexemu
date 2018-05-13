@@ -3,7 +3,7 @@
 
 
     Basic class defining a platform independent thread interface
-    Copyright (C) 2001-2005  W. Schwotzer
+    Copyright (C) 2001-2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

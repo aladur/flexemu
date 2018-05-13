@@ -2,7 +2,7 @@
     bbintree.h
 
     Basic template class for a binary tree item
-    Copyright (C) 1999-2004  W. Schwotzer
+    Copyright (C) 1999-2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

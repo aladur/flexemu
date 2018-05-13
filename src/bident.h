@@ -4,7 +4,7 @@
     Basic class containing an identifier. An integer value with an optional
     string representation.
 
-    Copyright (C) 2003-2004  W. Schwotzer
+    Copyright (C) 2003-2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

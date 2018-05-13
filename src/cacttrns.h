@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2003-2004  W. Schwotzer
+    Copyright (C) 2003-2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
