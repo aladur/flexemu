@@ -279,8 +279,8 @@ struct sOptions
 /* Names of Environment or Registry variables */
 
 #ifdef _WIN32
-    #define FLEXEMUREG       "Software\\Gnu\\Flexemu"
-    #define FLEXPLOREREG     "Software\\Gnu\\FLEXplorer"
+    #define FLEXEMUREG       "SOFTWARE\\Gnu\\Flexemu"
+    #define FLEXPLOREREG     "SOFTWARE\\Gnu\\FLEXplorer"
 #endif
 
 #define FLEXEMURC   ".flexemurc"
@@ -364,4 +364,8 @@ extern bool matches(const char *text, const char *pattern,
 extern bool multimatches(const char *text, const char *multipattern,
                   const char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);
+#ifdef _WIN32
+extern std::string getExecutablePath();
+#endif
+
 #endif /* __misc1.h__ */

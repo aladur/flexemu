@@ -93,7 +93,7 @@ void FLEXplorer::WriteDefaultOptions(void)
 #ifdef WIN32
     BRegistry *reg;
 
-    reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
+    reg = new BRegistry(BRegistry::currentUser, FLEXPLOREREG);
     reg->SetValue(FLEXPLORERFILEVIEWER,
         std::string(FlexDiskListCtrl::fileViewer));
     reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);

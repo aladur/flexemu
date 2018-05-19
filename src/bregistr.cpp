@@ -49,7 +49,7 @@ BRegistry::BRegistry(const BRegistry &regKey, const std::string &subKey)
     lastError = RegCreateKeyEx(regKey, ConvertToUtf16String(subKey).c_str(), 0,
         L"", 0, KEY_ALL_ACCESS, NULL, &hKey, &flags);
 #else
-    lastError = RegCreateKeyEx(regKey, subKey.c_str(), 0, "", 0, KEY_ALL_ACCESS, NULL,
+    lastError = RegCreateKeyEx(regKey.hKey, subKey.c_str(), 0, "", 0, KEY_ALL_ACCESS, NULL,
         &hKey, &flags);
 #endif
 

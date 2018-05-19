@@ -290,3 +290,31 @@ bool multimatches(const char *text, const char *multipattern,
     return false;
 }
 
+#ifdef _WIN32
+std::string getExecutablePath()
+{
+    CHAR path[MAX_PATH];
+    HMODULE hModule = GetModuleHandle(NULL);
+    std::string retval;
+    size_t index;
+
+    if (hModule != NULL)
+    {
+        GetModuleFileName(hModule, path, MAX_PATH);
+        index = strlen(path);
+        while (index > 0)
+        {
+            if (path[index - 1] == PATHSEPARATOR)
+            {
+                path[index - 1] = '\0';
+                break;
+            }
+            --index;
+        }
+        retval = path;
+    }
+
+    return retval;
+}
+#endif
+

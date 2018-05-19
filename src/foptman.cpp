@@ -178,9 +178,9 @@ void FlexOptionManager::InitOptions(
     pOptions->disk_dir         = F_DATADIR;
 #endif
 #ifdef _WIN32
-    pGuiOptions->doc_dir       = "";
+    pGuiOptions->doc_dir       = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
     pGuiOptions->guiType       = GUI_WINDOWS;
-    pOptions->disk_dir         = "";
+    pOptions->disk_dir         = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     pGuiOptions->pixelSizeX      = 2;
     pGuiOptions->pixelSizeY      = 2;
