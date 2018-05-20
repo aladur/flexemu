@@ -50,7 +50,7 @@ This is free software, and you are welcome\n\
     to redistribute it under certain\n\
     conditions. For more information\n\
         " COPYTEXT ".\n\n\
-http://www.geocities.com/flexemu/\n"
+https://aladur.neocities.org/flexemu\n"
 
 #define CPU_LINES   (15)
 #define CPU_LINE_SIZE   (39)

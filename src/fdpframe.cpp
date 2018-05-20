@@ -229,7 +229,7 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
     msgFormat += _("conditions. For more information\n");
     msgFormat += _("look at file COPYING.\n");
     msgFormat += wxT("\n");
-    msgFormat += _("http://www.geocities.com/flexemu/");
+    msgFormat += _("https://aladur.neocities.org/flexemu");
 
     (void)wxMessageBox(msgFormat, _("About FLEXplorer"));
 }
