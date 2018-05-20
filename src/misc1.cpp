@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "bfileptr.h"
+#include "cvtwchar.h"
 
 const char *gMemoryAllocationErrorString =
     "Bad memory allocation.\n"
@@ -293,15 +294,25 @@ bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 std::string getExecutablePath()
 {
+#ifdef UNICODE
+    WCHAR path[MAX_PATH];
+#else
     CHAR path[MAX_PATH];
+#endif
+
     HMODULE hModule = GetModuleHandle(NULL);
     std::string retval;
-    size_t index;
 
     if (hModule != NULL)
     {
+        size_t index;
+
         GetModuleFileName(hModule, path, MAX_PATH);
+#ifdef UNICODE
+        index = wcslen(path);
+#else
         index = strlen(path);
+#endif
         while (index > 0)
         {
             if (path[index - 1] == PATHSEPARATOR)
@@ -311,7 +322,11 @@ std::string getExecutablePath()
             }
             --index;
         }
+#ifdef UNICODE
+        retval = ConvertToUtf8String(path);
+#else
         retval = path;
+#endif
     }
 
     return retval;
