@@ -308,6 +308,7 @@
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="win32gui.h" />
+    <ClInclude Include="ioaccess.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

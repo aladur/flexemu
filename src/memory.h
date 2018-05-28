@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include <stdio.h>
 #include "iodevice.h"
+#include "ioaccess.h"
 #include "e2.h"
 
 // maximum number of I/O devices which can be handled
@@ -37,12 +38,6 @@
 
 class XAbstractGui;
 class Win32Gui;
-
-struct sIoSelect
-{
-    IoDevice        *device;
-    Word            offset;
-};
 
 class Memory : public IoDevice
 {
@@ -64,7 +59,7 @@ private:
     int              io_base_addr;
     int              io_initialized;
     IoDevice        *ioDevices[MAX_IO_DEVICES];
-    struct sIoSelect *ppIo;
+    class IoAccess *ppIo;
 
 private:
     // interface to video display
@@ -102,9 +97,9 @@ public:
 public:
     void            write_rom(Word addr, Byte val);
     inline void     write(Word addr, Byte val);
-    void            write_word(Word addr, Word val);
+    inline void     write_word(Word addr, Word val);
     inline Byte     read(Word addr);
-    Word            read_word(Word addr);
+    inline Word     read_word(Word addr);
 
     // interface for io device protocol
     // The memory also implements the io device protocol
@@ -124,8 +119,8 @@ inline void Memory::write(Word addr, Byte val)
 
     if ((addr & GENIO_MASK) == io_base_addr)
     {
-        struct sIoSelect *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        (pIo->device)->writeIo(pIo->offset, val);
+        class IoAccess *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
+        pIo->write(val);
     }
     else
     {
@@ -153,14 +148,30 @@ inline Byte Memory::read(Word addr)
     // read from memory mapped I/O
     if ((addr & GENIO_MASK) == io_base_addr)
     {
-        struct sIoSelect *pIo;
+        class IoAccess *pIo;
 
         pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        return (pIo->device)->readIo(pIo->offset);
+        return pIo->read();
     }
 
     // otherwise read from memory
     return (Byte) * (ppage[addr >> 12] + (addr & 0x3fff));
 } // read
+
+inline void Memory::write_word(Word addr, Word value)
+{
+    write(addr, (Byte)(value >> 8));
+    write(addr + 1, (Byte)value);
+}
+
+inline Word Memory::read_word(Word addr)
+{
+    Word value;
+
+    value = (Word)read(addr) << 8;
+    value |= (Word)read(addr + 1);
+
+    return value;
+}
 #endif // __memory_h__
 

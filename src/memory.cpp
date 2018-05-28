@@ -186,12 +186,12 @@ void Memory::initialize_io_page(Word base_addr)
 
     io_base_addr   = base_addr & GENIO_MASK;
     range = (Word)(~GENIO_MASK) + 1;
-    ppIo  = new struct sIoSelect[range];
+    ppIo  = new class IoAccess[range];
 
     for (i = 0; i < range; i++)
     {
-        (ppIo + i)->device  = (IoDevice *)this;
-        (ppIo + i)->offset  = static_cast<Word>(io_base_addr + i);
+        (ppIo + i)->device = (IoDevice *)this;
+        (ppIo + i)->addressOffset = static_cast<Word>(io_base_addr + i);
     }
 
     io_initialized = 1;
@@ -243,7 +243,7 @@ Byte Memory::add_io_device(IoDevice *device,
     for (i = 0; i < range1; i++)
     {
         (ppIo + offset + i)->device = device;
-        (ppIo + offset + i)->offset = i;
+        (ppIo + offset + i)->addressOffset = i;
     }
 
     offset = base_addr2 - io_base_addr;
@@ -251,7 +251,7 @@ Byte Memory::add_io_device(IoDevice *device,
     for (i = 0; i < range2; i++)
     {
         (ppIo + offset + i)->device = device;
-        (ppIo + offset + i)->offset = base_addr2 - base_addr1 + i;
+        (ppIo + offset + i)->addressOffset = base_addr2 - base_addr1 + i;
     }
 
     return 1;
@@ -268,73 +268,6 @@ void Memory::reset_io(void)
             ioDevices[i]->resetIo();
         }
 } // reset
-
-Word Memory::read_word(Word addr)
-{
-    Word          tmp;
-
-    // read from memory mapped I/O
-    if ((addr & GENIO_MASK) == io_base_addr)
-    {
-        struct sIoSelect *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        tmp = (pIo->device)->readIo(pIo->offset) << 8;
-        ++pIo;
-        return tmp | (pIo->device)->readIo(pIo->offset);
-    }
-
-    // otherwise read from memory
-    tmp = *(ppage[addr >> 12] + (addr & 0x3fff)) << 8;
-    addr++;
-    return tmp | *(ppage[addr >> 12] + (addr & 0x3fff));
-} // read_word
-
-void Memory::write_word(Word addr, Word val)
-{
-    if ((addr & GENIO_MASK) == io_base_addr)
-    {
-        struct sIoSelect *pIo;
-
-        pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        (pIo->device)->writeIo(pIo->offset, (Byte)(val >> 8));
-        ++pIo;
-        (pIo->device)->writeIo(pIo->offset, (Byte)val);
-    }
-    else
-    {
-        Word offset;  // offset into ram (modulo 0x4000)
-
-        offset = addr & 0x3fff;
-
-        if (video_ram_active[addr >> 12])
-        {
-            changed[offset / YBLOCK_SIZE] = true;
-            *(ppage[addr >> 12] + offset) = (Byte)(val >> 8);
-        }
-        else
-        {
-            if (addr < ROM_BASE)
-            {
-                *(ppage[addr >> 12] + offset) = (Byte)(val >> 8);
-            }
-        }
-
-        ++addr;
-        offset = addr & 0x3fff;
-
-        if (video_ram_active[addr >> 12])
-        {
-            changed[offset / YBLOCK_SIZE] = true;
-            *(ppage[addr >> 12] + offset) = (Byte)val;
-        }
-        else
-        {
-            if (addr < ROM_BASE)
-            {
-                *(ppage[addr >> 12] + offset) = (Byte)val;
-            }
-        }
-    } // else
-} // write_word
 
 // write Byte into ROM
 void Memory::write_rom(Word offset, Byte val)
