@@ -18,16 +18,16 @@ bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@
 EXTRA_PROGRAMS = flexplorer fsetup
 noinst_PROGRAMS = test
 
-flexemu_CXXFLAGS    = -Wall -Wextra -Wpedantic -Wno-long-long \
+flexemu_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 			-DF_DATADIR=\"$(pkgdatadir)\" @CXXSPEED@ \
 			@OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
-flexplorer_CXXFLAGS = -Wall -Wextra -Wpedantic -Wno-long-long \
+flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
-fsetup_CXXFLAGS     = -Wall -Wextra -Wpedantic -Wno-long-long \
+fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
-test_CXXFLAGS       = -Wall -Wextra -Wpedantic -Wno-long-long \
+test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
