@@ -97,7 +97,6 @@ bool startup(
 
     memory            = new Memory(pOptions->isHiMem);
     *cpu              = new Mc6809(memory);
-    PMEMORY->initialize_io_page(GENIO_BASE);
     *disassembler     = new Da6809();
     *io               = new Inout(*cpu, pGuiOptions);
     *schedy           = new Scheduler(pOptions);

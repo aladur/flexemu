@@ -30,16 +30,19 @@
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
 
-Memory::Memory(bool himem) : memory(NULL), video_ram(NULL),
-    ppIo(NULL), isHiMem(himem)
+Memory::Memory(bool himem) :
+    isHiMem(himem),
+    memory_size(0x10000),
+    memory(NULL),
+    video_ram(NULL),
+    video_ram_active_bits(0)
 {
+    memory = (Byte *) new Byte[memory_size];
     video_ram_size = VIDEORAM_SIZE *
                      (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2));
     video_ram = (Byte *)new Byte[video_ram_size];
-    memory_size = 0x10000;
-    memory = (Byte *) new Byte[memory_size];
 
-    init_memory(himem);
+    init_memory(isHiMem);
 }
 
 Memory::~Memory()
@@ -90,9 +93,6 @@ void Memory::init_memory(bool himem)
     {
         ioDevices[i] = NULL;
     }
-
-    io_initialized  = 0;
-    io_base_addr    = 10000L;
 
     // initialize default pointer for mmu configuration
     // following table indices correspond to following RAM ranges
@@ -145,22 +145,19 @@ void Memory::init_memory(bool himem)
     for (i = 0; i < 16; i++)
     {
         ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
-        video_ram_active[i] = false;
     }
+    video_ram_active_bits = 0;
 } // init_memory
 
 void Memory::uninit_memory(void)
 {
     Word i = MAX_IO_DEVICES;
 
-    delete [] ppIo;
-    ppIo = NULL;
-
     do
     {
         --i;
 
-        if (ioDevices[i] != NULL && ioDevices[i] != this)
+        if (ioDevices[i] != NULL)
         {
             delete ioDevices[i];
         }
@@ -180,35 +177,13 @@ void Memory::init_blocks_to_update(void)
     }
 }
 
-void Memory::initialize_io_page(Word base_addr)
-{
-    size_t  i, range;
-
-    io_base_addr   = base_addr & GENIO_MASK;
-    range = (Word)(~GENIO_MASK) + 1;
-    ppIo  = new class IoAccess[range];
-
-    for (i = 0; i < range; i++)
-    {
-        (ppIo + i)->device = (IoDevice *)this;
-        (ppIo + i)->addressOffset = static_cast<Word>(io_base_addr + i);
-    }
-
-    io_initialized = 1;
-}
-
-// return 0 if not successful
-Byte Memory::add_io_device(IoDevice *device,
+// return false if not successful
+bool Memory::add_io_device(IoDevice *device,
                            Word base_addr1, Byte range1,
                            Word base_addr2, Byte range2)
 {
     Word i = 0;
     Word offset;
-
-    if (!io_initialized)
-    {
-        return 0;    // first initialize I/O
-    }
 
     while (i < MAX_IO_DEVICES && ioDevices[i] != NULL)
     {
@@ -217,57 +192,44 @@ Byte Memory::add_io_device(IoDevice *device,
 
     if (i == MAX_IO_DEVICES)
     {
-        return 0;    // all io-devices already in use
+        return false;    // all io-devices already in use
     }
 
-    if (base_addr1 < io_base_addr ||
-        (range2 > 0 && base_addr2 < io_base_addr))
+    if (base_addr1 < GENIO_BASE ||
+            (base_addr2 != 0 && base_addr2 < GENIO_BASE))
     {
-        return 0;    // base addr out of io address space
+        return false;
     }
 
-    if ((base_addr1 + range1 - 1 - io_base_addr) > (Word)(~GENIO_MASK))
+    ioDevices[i] = device;
+
+    for (offset = 0; offset < range1; ++offset)
     {
-        return 0;    // base addr out of io address space
+        ioAccessForAddressMap.emplace(base_addr1 + offset,
+                                    IoAccess(*device, offset));
     }
 
-    if (range2 > 0 &&
-        ((base_addr2 + range2 - 1 - io_base_addr) > (Word)(~GENIO_MASK)))
+    for (offset = 0; offset < range2; ++offset)
     {
-        return 0;    // base addr out of io address space
+        ioAccessForAddressMap.emplace(base_addr2 + offset,
+                         IoAccess(*device, base_addr2 - base_addr1 + offset));
     }
 
-    ioDevices[i]    = device;
-    offset = base_addr1 - io_base_addr;
-
-    for (i = 0; i < range1; i++)
-    {
-        (ppIo + offset + i)->device = device;
-        (ppIo + offset + i)->addressOffset = i;
-    }
-
-    offset = base_addr2 - io_base_addr;
-
-    for (i = 0; i < range2; i++)
-    {
-        (ppIo + offset + i)->device = device;
-        (ppIo + offset + i)->addressOffset = base_addr2 - base_addr1 + i;
-    }
-
-    return 1;
+    return true;
 }
-
 
 void Memory::reset_io(void)
 {
     Word i;
 
     for (i = 0; i < MAX_IO_DEVICES; i++)
+    {
         if (ioDevices[i] != NULL)
         {
             ioDevices[i]->resetIo();
         }
-} // reset
+    }
+} // reset_io
 
 // write Byte into ROM
 void Memory::write_rom(Word offset, Byte val)
@@ -275,39 +237,17 @@ void Memory::write_rom(Word offset, Byte val)
     memory[offset] = val;
 } // write_rom
 
-Byte Memory::readIo(Word addr)
+void Memory::switch_mmu(Word offset, Byte val)
 {
-    // this part is implemented twice for performance reasons
-    return (Byte) * (ppage[addr >> 12] + (addr & 0x3fff));
-} // readIo
-
-void Memory::writeIo(Word addr, Byte val)
-{
-    Word offset;  // offset into video ram (modulo 0x4000)
-
-    // this part is implemented twice for performance reasons
-    offset = addr & 0x3fff;
-
-    if (video_ram_active[addr >> 12])
+    ppage[offset] = vram_ptrs[((offset << 2) & 0x30) | (val & 0x0f)];
+    if ((val & 0x03) != 0x03)
     {
-        changed[offset / YBLOCK_SIZE] = true;
-        *(ppage[addr >> 12] + offset) = val;
+        video_ram_active_bits |= (1 << offset);
     }
     else
     {
-        if (addr < ROM_BASE)
-        {
-            *(ppage[addr >> 12] + offset) = val;
-        }
+        video_ram_active_bits &= ~(1 << offset);
     }
-} // writeIo
-
-
-void Memory::switch_mmu(Word offset, Byte val)
-{
-    //if (offset < 12)
-    ppage[offset] = vram_ptrs[((offset << 2) & 0x30) | (val & 0x0f)];
-    video_ram_active[offset] = ((val & 0x03) != 0x03);
 } // switch_mmu
 
 //----------------------------------------------------------------------------

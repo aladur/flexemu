@@ -25,32 +25,47 @@
 #ifndef __ioaccess_h__
 #define __ioaccess_h__
 
+#include "misc1.h"
 #include "iodevice.h"
 
 
 class IoAccess
 {
 public:
-    IoAccess() : device(NULL), addressOffset(0) { };
-    IoAccess(IoDevice *pdevice, Word paddressOffset) :
-        device(pdevice), addressOffset(paddressOffset) { };
-    inline Byte read();
-    inline void write(Byte value);
+    IoAccess() = delete;
+    IoAccess(const IoAccess &src) :
+        device(src.device),
+        addressOffset(src.addressOffset)
+    {
+    }
+    IoAccess(IoDevice &pdevice, Word paddressOffset) :
+        device(pdevice),
+        addressOffset(paddressOffset)
+    {
+    }
 
-public:
-    IoDevice *device;
+    IoAccess& operator=(const IoAccess &src)
+    {
+        device = src.device;
+        addressOffset = src.addressOffset;
+        return *this;
+    }
+
+    inline Byte read()
+    {
+        return device.readIo(addressOffset);
+    }
+
+    inline void write(Byte value)
+    {
+        device.writeIo(addressOffset, value);
+    }
+
+private:
+    IoDevice &device;
     Word addressOffset;
 };
 
-inline Byte IoAccess::read()
-{
-    return device->readIo(addressOffset);
-}
-
-inline void IoAccess::write(Byte value)
-{
-    device->writeIo(addressOffset, value);
-}
 
 #endif
 

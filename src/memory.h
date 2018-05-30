@@ -27,6 +27,7 @@
 
 #include "misc1.h"
 #include <stdio.h>
+#include <tsl/robin_map.h>
 #include "iodevice.h"
 #include "ioaccess.h"
 #include "e2.h"
@@ -39,45 +40,49 @@
 class XAbstractGui;
 class Win32Gui;
 
-class Memory : public IoDevice
+class Memory
 {
     friend class XAbstractGui;
     friend class Win32Gui;
 
 public:
     Memory(bool himem);
-    virtual ~Memory();
-
-    // Internal registers
-private:
-    Byte            *ppage[16];
-    bool             video_ram_active[16];
-    Byte            *memory;
-    Byte            *video_ram;
-    int              memory_size;
-    int              video_ram_size;
-    int              io_base_addr;
-    int              io_initialized;
-    IoDevice        *ioDevices[MAX_IO_DEVICES];
-    class IoAccess *ppIo;
+    ~Memory();
 
 private:
+    Byte *ppage[16];
+    bool isHiMem;
+    int memory_size;
+    int video_ram_size;
+    Byte *memory;
+    Byte *video_ram;
+
+    // I/O device access
+    IoDevice *ioDevices[MAX_IO_DEVICES];
+    tsl::robin_map<
+        Word,
+        IoAccess,
+        std::hash<Word>,
+        std::equal_to<Word>,
+        std::allocator<std::pair<Word, IoAccess>>,
+        false,
+        tsl::rh::power_of_two_growth_policy<16>> ioAccessForAddressMap;
+
     // interface to video display
-    bool             isHiMem;
-    Byte            *vram_ptrs[MAX_VRAM];
-    bool             changed[YBLOCKS];
+    Byte *vram_ptrs[MAX_VRAM];
+    Word video_ram_active_bits; // 16-bit, one for each video memory page
+    bool changed[YBLOCKS];
 
 private:
-    void    init_memory(bool himem);
-    void    uninit_memory(void);
+    void init_memory(bool himem);
+    void uninit_memory(void);
     static Byte initial_content[8];
 
     // Initialisation functions
 
 public:
 
-    void    initialize_io_page(Word base_addr);
-    Byte    add_io_device(
+    bool add_io_device(
         IoDevice *device,
         Word base_addr1, Byte range1,
         Word base_addr2, Byte range2);
@@ -90,88 +95,83 @@ private:
 
     // memory interface
 public:
-    void    reset_io(void);
-    void    switch_mmu(Word offset, Byte val);
-    void    init_blocks_to_update();
+    void reset_io(void);
+    void switch_mmu(Word offset, Byte val);
+    void init_blocks_to_update();
 
 public:
-    void            write_rom(Word addr, Byte val);
-    inline void     write(Word addr, Byte val);
-    inline void     write_word(Word addr, Word val);
-    inline Byte     read(Word addr);
-    inline Word     read_word(Word addr);
+    void write_rom(Word address, Byte value);
 
-    // interface for io device protocol
-    // The memory also implements the io device protocol
-public:
-
-    virtual Byte    readIo(Word addr);
-    virtual void    writeIo(Word addr, Byte val);
-    virtual void    resetIo() {};
-    virtual const char      *getName(void)
+    // The following memory Byte/Word access methods are
+    // inlined for optimized performance.
+    inline void write(Word address, Byte value)
     {
-        return "memory";
-    };
-};
-
-inline void Memory::write(Word addr, Byte val)
-{
-
-    if ((addr & GENIO_MASK) == io_base_addr)
-    {
-        class IoAccess *pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        pIo->write(val);
-    }
-    else
-    {
-        Word offset;  // offset into ram (modulo 0x4000)
-
-        offset = addr & 0x3fff;
-
-        if (video_ram_active[addr >> 12])
+        if ((address & GENIO_MASK) == GENIO_MASK)
         {
-            changed[offset / YBLOCK_SIZE] = true;
-            *(ppage[addr >> 12] + offset) = val;
+            auto iterator = ioAccessForAddressMap.find(address);
+
+            if (iterator != ioAccessForAddressMap.end())
+            {
+                iterator.value().write(value);
+                return;
+            }
+        }
+
+        if (video_ram_active_bits & (1 << (address >> 12)))
+        {
+            changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
+            *(ppage[address >> 12] + (address & 0x3fff)) = value;
         }
         else
         {
-            if (addr < ROM_BASE)
+            if (address < ROM_BASE)
             {
-                *(ppage[addr >> 12] + offset) = val;
+                *(ppage[address >> 12] + (address & 0x3fff)) = value;
             }
         }
-    } // else
-} // write
-
-inline Byte Memory::read(Word addr)
-{
-    // read from memory mapped I/O
-    if ((addr & GENIO_MASK) == io_base_addr)
-    {
-        class IoAccess *pIo;
-
-        pIo = ppIo + (addr & (Word)(~GENIO_MASK));
-        return pIo->read();
     }
 
-    // otherwise read from memory
-    return (Byte) * (ppage[addr >> 12] + (addr & 0x3fff));
-} // read
+    inline Byte read(Word address)
+    {
+        if ((address & GENIO_MASK) == GENIO_MASK)
+        {
+            auto iterator = ioAccessForAddressMap.find(address);
 
-inline void Memory::write_word(Word addr, Word value)
-{
-    write(addr, (Byte)(value >> 8));
-    write(addr + 1, (Byte)value);
-}
+            if (iterator != ioAccessForAddressMap.end())
+            {
+                // read one Byte from memory mapped I/O device
+                return iterator.value().read();
+            }
+        }
 
-inline Word Memory::read_word(Word addr)
-{
-    Word value;
+        if (video_ram_active_bits != 0)
+        {
+            // If at least one video memory page is active
+            // access memory through video page memory mapping
+            return *(ppage[address >> 12] + (address & 0x3fff));
+        }
+        else
+        {
+            // Otherwise directly access RAM
+            return memory[address];
+        }
+    } // read
 
-    value = (Word)read(addr) << 8;
-    value |= (Word)read(addr + 1);
+    inline void write_word(Word address, Word value)
+    {
+        write(address, static_cast<Byte>(value >> 8));
+        write(address + 1, static_cast<Byte>(value));
+    }
 
-    return value;
-}
+    inline Word read_word(Word address)
+    {
+        Word value;
+
+        value = static_cast<Word>(read(address)) << 8;
+        value |= static_cast<Word>(read(address + 1));
+
+        return value;
+    }
+};
 #endif // __memory_h__
 
