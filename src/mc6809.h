@@ -280,127 +280,641 @@ private:
     void            init_indexed_cycles();
     void            init_psh_pul_cycles();
     void            illegal();
+
 #ifndef FASTFLEX
-    inline Word     fetch_ea_ext();
-    inline Word     fetch_ea_dir();
-    inline Word     fetch_ea_idx(t_cycles *c);
-    inline Byte     fetch_imm_08();
-    inline Byte     fetch_ext_08();
-    inline Byte     fetch_dir_08();
-    inline Byte     fetch_idx_08(t_cycles *c);
-    inline Word     fetch_imm_16();
-    inline Word     fetch_ext_16();
-    inline Word     fetch_dir_16();
-    inline Word     fetch_idx_16(t_cycles *c);
+    //***********************************
+    // Addressing mode fetch Instructions
+    //***********************************
 
-    Word        do_effective_address(Byte);
+    // fetch immediate 16-Bit operand
+    inline Word fetch_imm_16()
+    {
+        Word addr = memory->read_word(pc);
+        pc += 2;
+        return addr;
+    }
 
-    inline void     abx();
-    inline void     and_(Byte &reg, Byte operand);
-    inline void     andcc(Byte operand);
-    inline void        asr(Byte &reg);
-    inline void     asr(Word addr);
-    inline void     bcc();
-    inline t_cycles     lbcc();
-    inline void     bcs();
-    inline t_cycles     lbcs();
-    inline void     beq();
-    inline t_cycles     lbeq();
-    inline void     bge();
-    inline t_cycles     lbge();
-    inline void     bgt();
-    inline t_cycles     lbgt();
-    inline void     bhi();
-    inline t_cycles     lbhi();
-    inline void     ble();
-    inline t_cycles     lble();
-    inline void     bls();
-    inline t_cycles     lbls();
-    inline void     blt();
-    inline t_cycles     lblt();
-    inline void     bmi();
-    inline t_cycles     lbmi();
-    inline void     bne();
-    inline t_cycles     lbne();
-    inline void     bpl();
-    inline t_cycles     lbpl();
-    inline void     bra();
-    inline t_cycles     lbra();
-    inline void     brn();
-    inline t_cycles     lbrn();
-    inline void     bsr();
-    inline t_cycles     lbsr();
-    inline void     bvc();
-    inline t_cycles     lbvc();
-    inline void     bvs();
-    inline t_cycles     lbvs();
-    inline void     bit(Byte reg, Byte operand);
-    inline void        clr(Byte &reg);
-    inline void     clr(Word addr);
-    inline void     cmp(Byte reg, Byte operand);
-    inline void     cmp(Word reg, Word operand);
-    inline void        com(Byte &reg);
-    inline void     com(Word addr);
-    inline void     daa();
-    inline void        dec(Byte &reg);
-    inline void     dec(Word addr);
-    inline void     eor(Byte &reg, Byte operand);
-    inline void     exg();
-    inline void     inc(Word addr);
-    inline void     inc(Byte &reg);
-    inline void     jsr(Word addr);
-    inline void     ld(Byte &reg, Byte operand);
-    inline void     ld(Word &reg, Word operand);
-    inline void     lea(Word &reg, Word addr);
-    inline void     lea_nocc(Word &reg, Word addr);
-    inline void        lsl(Byte &reg);
-    inline void        lsr(Byte &reg);
-    inline void     lsr(Word addr);
-    inline void     lsl(Word addr);
-    inline void     mul();
-    inline void     jmp(Word addr);
-    inline void     neg(Byte &reg);
-    inline void     neg(Word addr);
-    inline void        tst(Byte reg);
-    inline void     tst(Word addr);
-    inline void     nop();
-    inline void     or_(Byte &reg, Byte operand);
-    inline void     orcc(Byte operand);
-    inline t_cycles     psh(Byte what, Word &s, Word &u);
-    inline t_cycles     pul(Byte what, Word &s, Word &u);
-    inline void        rol(Byte &reg);
-    inline void     rol(Word addr);
-    inline void        ror(Byte &reg);
-    inline void     ror(Word addr);
-    inline t_cycles     rti();
-    inline void     rts();
-    inline void     sex();
-    inline void     st(Byte &reg, Word addr);
-    inline void     st(Word &reg, Word addr);
-    inline void     adc(Byte &reg, Byte operand);
-    inline void         add(Byte &reg, Byte operand);
-    inline void         add(Word &reg, Word operand);
-    inline void     sbc(Byte &reg, Byte operand);
-    inline void         sub(Byte &reg, Byte operand);
-    inline void         sub(Word &reg, Word operand);
-    inline void     swi(), swi2(), swi3();
-    inline void     cwai(), sync();
-    inline void     tfr();
+    // fetch extended 16-Bit operand
+    inline Word fetch_ext_16()
+    {
+        Word addr = memory->read_word(pc);
+        pc += 2;
+        return memory->read_word(addr);
+    }
 
-    inline void     do_br(int);
-    inline t_cycles     do_lbr(int);
+    // fetch direct 16-Bit operand
+    inline Word fetch_dir_16()
+    {
+        Word addr = dpreg.dp16 | memory->read_byte(pc++);
+        return memory->read_word(addr);
+    }
+
+    // fetch indexed 16-Bit operand
+    inline Word fetch_idx_16(t_cycles *cycles)
+    {
+        Word addr;
+        Byte post;
+
+        post = memory->read_byte(pc++);
+        addr = do_effective_address(post);
+        *cycles += indexed_cycles[post];
+        return memory->read_word(addr);
+    }
+
+    // fetch immediate 8-Bit operand
+    inline Byte fetch_imm_08()
+    {
+        return memory->read_byte(pc++);
+    }
+
+    // fetch extended 8-Bit operand
+    inline Byte fetch_ext_08()
+    {
+        Word addr = memory->read_word(pc);
+        pc += 2;
+        return memory->read_byte(addr);
+    }
+
+    // fetch direct 8-Bit operand
+    inline Byte fetch_dir_08()
+    {
+        Word addr = dpreg.dp16 | memory->read_byte(pc++);
+        return memory->read_byte(addr);
+    }
+
+    // fetch indexed 8-Bit operand
+    inline Byte fetch_idx_08(t_cycles *cycles)
+    {
+        Word addr;
+        Byte post;
+
+        post = memory->read_byte(pc++);
+        addr = do_effective_address(post);
+        *cycles += indexed_cycles[post];
+        return memory->read_byte(addr);
+    }
+
+    // fetch effective address extended
+    inline Word fetch_ea_ext()
+    {
+        Word addr = memory->read_word(pc);
+        pc += 2;
+        return addr;
+    }
+
+    // fetch effective address direct
+    inline Word fetch_ea_dir()
+    {
+        Word addr = dpreg.dp16 | memory->read_byte(pc++);
+        return addr;
+    }
+
+    // fetch indexed address
+    inline Word fetch_ea_idx(t_cycles *cycles)
+    {
+        Byte post = memory->read_byte(pc++);
+        *cycles += indexed_cycles[post];
+        return do_effective_address(post);
+    }
+
+
+    inline void tst(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        tst(m);
+    }
+
+    inline void bit(Byte reg, Byte operand)
+    {
+        Byte m = reg & operand;
+        tst(m);
+    }
+
+    //**********************************
+    // Arithmetic Instructions
+    //**********************************
+
+    inline void mul()
+    {
+        d = a * b;
+        cc.bit.c = BTST7(b);
+        cc.bit.z = !d;
+    }
+
+    inline void abx()
+    {
+        x += b;
+    }
+
+    inline void sex()
+    {
+        cc.bit.n = BTST7(b);
+        cc.bit.z = !b;
+        a = cc.bit.n ? 255 : 0;
+    }
+
+    inline void dec(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        dec(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void inc(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        inc(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void neg(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        neg(m);
+        memory->write_byte(addr, m);
+    }
+
+    //**********************************
+    // Logical Instructions
+    //**********************************
+
+    inline void and_(Byte &reg, Byte operand)
+    {
+        reg &= operand;
+        tst(reg);
+    }
+
+    inline void or_(Byte &reg, Byte operand)
+    {
+        reg |= operand;
+        tst(reg);
+    }
+
+    inline void eor(Byte &reg, Byte operand)
+    {
+        reg ^= operand;
+        tst(reg);
+    }
+
+    inline void orcc(Byte operand)
+    {
+        cc.all |= operand;
+    }
+
+    inline void andcc(Byte operand)
+    {
+        cc.all &= operand;
+    }
+
+    //**********************************************
+    // (Un)Conditional Jump/Call/Return Instructions
+    //**********************************************
+
+    inline void jmp(Word addr)
+    {
+        pc = addr;
+    }
+
+    inline void jsr(Word addr)
+    {
+        s -= 2;
+        memory->write_word(s, pc);
+        pc = addr;
+    }
+
+    inline void rts()
+    {
+        pc = memory->read_word(s);
+        s += 2;
+    }
+
+    inline void do_br(bool condition)
+    {
+        if (condition)
+        {
+            pc += EXTEND8(memory->read_byte(pc)) + 1;
+        }
+        else
+        {
+            pc++;
+        }
+    }
+
+    inline t_cycles do_lbr(bool condition)
+    {
+        if (condition)
+        {
+            pc += 2 + memory->read_word(pc);
+            return 6;
+        }
+        else
+        {
+            pc += 2;
+            return 5;
+        }
+    }
+
+    inline void bcc()
+    {
+        do_br(!cc.bit.c);
+    }
+
+    inline t_cycles lbcc()
+    {
+        return do_lbr(!cc.bit.c);
+    }
+
+    inline void bcs()
+    {
+        do_br(cc.bit.c);
+    }
+
+    inline t_cycles lbcs()
+    {
+        return do_lbr(cc.bit.c);
+    }
+
+    inline void beq()
+    {
+        do_br(cc.bit.z);
+    }
+
+    inline t_cycles lbeq()
+    {
+        return do_lbr(cc.bit.z);
+    }
+
+    inline void bge()
+    {
+        do_br(!(cc.bit.n ^ cc.bit.v));
+    }
+
+    inline t_cycles lbge()
+    {
+        return do_lbr(!(cc.bit.n ^ cc.bit.v));
+    }
+
+    inline void bgt()
+    {
+        do_br(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
+    }
+
+    inline t_cycles lbgt()
+    {
+        return do_lbr(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
+    }
+
+    inline void bhi()
+    {
+        do_br(!(cc.bit.c | cc.bit.z));
+    }
+
+    inline t_cycles lbhi()
+    {
+        return do_lbr(!(cc.bit.c | cc.bit.z));
+    }
+
+    inline void ble()
+    {
+        do_br(cc.bit.z | (cc.bit.n ^ cc.bit.v));
+    }
+
+    inline t_cycles lble()
+    {
+        return do_lbr(cc.bit.z | (cc.bit.n ^ cc.bit.v));
+    }
+
+    inline void bls()
+    {
+        do_br(cc.bit.c | cc.bit.z);
+    }
+
+    inline t_cycles lbls()
+    {
+        return do_lbr(cc.bit.c | cc.bit.z);
+    }
+
+    inline void blt()
+    {
+        do_br(cc.bit.n ^ cc.bit.v);
+    }
+
+    inline t_cycles lblt()
+    {
+        return do_lbr(cc.bit.n ^ cc.bit.v);
+    }
+
+    inline void bmi()
+    {
+        do_br(cc.bit.n);
+    }
+
+    inline t_cycles lbmi()
+    {
+        return do_lbr(cc.bit.n);
+    }
+
+    inline t_cycles lbne()
+    {
+        return do_lbr(!cc.bit.z);
+    }
+
+    inline t_cycles lbpl()
+    {
+        return do_lbr(!cc.bit.n);
+    }
+
+    inline void bne()
+    {
+        do_br(!cc.bit.z);
+    }
+
+    inline void bpl()
+    {
+        do_br(!cc.bit.n);
+    }
+
+    inline void bra()
+    {
+        pc += EXTEND8(memory->read_byte(pc)) + 1;
+    }
+
+    inline t_cycles lbra()
+    {
+        pc += memory->read_word(pc) + 2;
+        return 0;
+    }
+
+    inline void brn()
+    {
+        pc++;
+    }
+
+    inline t_cycles lbrn()
+    {
+        pc += 2;
+        return 5;
+    }
+
+    inline void bsr()
+    {
+        Byte offset = memory->read_byte(pc++);
+        s -= 2;
+        memory->write_word(s, pc);
+        pc += EXTEND8(offset);
+    }
+
+    inline t_cycles lbsr()
+    {
+        Word offset = memory->read_word(pc);
+        pc += 2;
+        s -= 2;
+        memory->write_word(s, pc);
+        pc += offset;
+        return 0;
+    }
+
+    inline void bvc()
+    {
+        do_br(!cc.bit.v);
+    }
+
+    inline t_cycles lbvc()
+    {
+        return do_lbr(!cc.bit.v);
+    }
+
+    inline void bvs()
+    {
+        do_br(cc.bit.v);
+    }
+
+    inline t_cycles lbvs()
+    {
+        return do_lbr(cc.bit.v);
+    }
+
+    //**********************************
+    // Misc Instructions
+    //**********************************
+
+    inline void clr(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        clr(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void clr(Byte &reg)
+    {
+        cc.bit.c = false;
+        cc.bit.v = false;
+        cc.bit.n = false;
+        cc.bit.z = true;
+        reg = 0;
+    }
+
+    inline void com(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        com(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void com(Byte &reg)
+    {
+        reg = ~reg;
+        cc.bit.c = 0;
+        tst(reg);
+    }
+
+    inline void nop()
+    {
+    }
 
     // additional undocumented instructions
-    inline void            rst();
-    inline void            negcom(Word addr);
-    inline void            clr1(Byte &reg);
+    //
+    // undocumented instruction 0x3d:
+    // force an internal reset
+    inline void rst()
+    {
+        reset();
+    }
 
+    // undocumented instruction 0x01:
+    //   If cc.c = -1 then NEG <$xx (op $00)
+    //   If cc.c = 0 then COM <$xx (op $03)
+    inline void negcom(Word addr)
+    {
+        if (cc.bit.c)
+        {
+            com(addr);
+        }
+        else
+        {
+            neg(addr);
+        }
+    }
+
+    // undocumented instruction 0x4D, 0x5E
+    // same as CLRA,CLRB but CC.Carry is
+    // unchanged
+    inline void clr1(Byte &reg)
+    {
+        cc.bit.v = false;
+        cc.bit.n = false;
+        cc.bit.z = true;
+        reg = -1;
+    }
+
+    //**********************************
+    // Shift Instructions
+    //**********************************
+    inline void lsl(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        lsl(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void asr(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        asr(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void lsr(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        lsr(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void lsr(Byte &reg)
+    {
+        cc.bit.c = BTST0(reg);
+        reg >>= 1;
+        cc.bit.n = 0;
+        cc.bit.z = !reg;
+    }
+
+    inline void rol(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        rol(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void rol(Byte &reg)
+    {
+        bool oc = cc.bit.c;
+        cc.bit.c = BTST7(reg);
+        reg <<= 1;
+
+        if (oc)
+        {
+            BSET0(reg);
+        }
+
+        cc.bit.n = BTST7(reg);
+        cc.bit.v = cc.bit.c ^ cc.bit.n;
+        cc.bit.z = !reg;
+    }
+
+    inline void ror(Word addr)
+    {
+        Byte m = memory->read_byte(addr);
+        ror(m);
+        memory->write_byte(addr, m);
+    }
+
+    inline void ror(Byte &reg)
+    {
+        bool oc = cc.bit.c;
+        cc.bit.c = BTST0(reg);
+        reg = reg >> 1;
+
+        if (oc)
+        {
+            BSET7(reg);
+        }
+
+        cc.bit.n = BTST7(reg);
+        cc.bit.z = !reg;
+    }
+
+    //**********************************
+    // Register Load/Save Instructions
+    //**********************************
+    inline void ld(Byte &reg, Byte operand)
+    {
+        reg = operand;
+        tst(reg);
+    }
+
+    inline void ld(Word &reg, Word operand)
+    {
+        reg = operand;
+        cc.bit.n = BTST15(d);
+        cc.bit.v = 0;
+        cc.bit.z = !reg;
+    }
+
+    inline void st(Byte &reg, Word addr)
+    {
+        memory->write_byte(addr, reg);
+        tst(reg);
+    }
+
+    inline void st(Word &reg, Word addr)
+    {
+        memory->write_word(addr, reg);
+        cc.bit.n = BTST15(reg);
+        cc.bit.v = 0;
+        cc.bit.z = !reg;
+    }
+
+    inline void lea(Word &reg, Word addr)
+    {
+        reg = addr;
+        cc.bit.z = !reg;
+    }
+
+    inline void lea_nocc(Word &reg, Word addr)
+    {
+        reg = addr;
+    }
+
+    inline void     daa();
+    inline void     dec(Byte &reg);
+    inline void     inc(Byte &reg);
+    inline void     lsl(Byte &reg);
+    inline void     neg(Byte &reg);
+    inline void     tst(Byte reg);
+    inline void     cmp(Byte reg, Byte operand);
+    inline void     cmp(Word reg, Word operand);
+    inline void     adc(Byte &reg, Byte operand);
+    inline void     add(Byte &reg, Byte operand);
+    inline void     add(Word &reg, Word operand);
+    inline void     sbc(Byte &reg, Byte operand);
+    inline void     sub(Byte &reg, Byte operand);
+    inline void     sub(Word &reg, Word operand);
+    inline void     swi(), swi2(), swi3();
+    inline void     cwai(), sync();
+    inline t_cycles rti();
+    inline void     asr(Byte &reg);
+    void     tfr();
+    void     exg();
+    t_cycles psh(Byte what, Word &s, Word &u);
+    t_cycles pul(Byte what, Word &s, Word &u);
+    Word     do_effective_address(Byte);
 #endif
-    inline void     nmi(bool save_state);
-    inline void     firq(bool save_state);
-    inline void     irq(bool save_state);
-    void            invalid(const char *pmessage);
-    bool            use_undocumented;
+    void     nmi(bool save_state);
+    void     firq(bool save_state);
+    void     irq(bool save_state);
+    void     invalid(const char *pmessage);
+    bool     use_undocumented;
 public:
     void            set_use_undocumented(bool b);
     bool            is_use_undocumented()
@@ -471,27 +985,6 @@ public:
 //*******************************************************************
 
 #ifndef FASTFLEX
-//**********************************
-// Arithmetic Instructions
-//**********************************
-inline void Mc6809::mul()
-{
-    d = a * b;
-    cc.bit.c = BTST7(b);
-    cc.bit.z = !d;
-}
-
-inline void Mc6809::abx()
-{
-    x += b;
-}
-
-inline void Mc6809::sex()
-{
-    cc.bit.n = BTST7(b);
-    cc.bit.z = !b;
-    a = cc.bit.n ? 255 : 0;
-}
 
 #ifdef USE_GCCASM
 inline void Mc6809::add(Byte &reg, Byte operand)
@@ -741,27 +1234,6 @@ inline void Mc6809::daa()
     cc.bit.z = !a;
 }
 
-inline void Mc6809::dec(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    dec(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::inc(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    inc(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::neg(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    neg(m);
-    memory->write_byte(addr, m);
-}
-
 #ifdef USE_GCCASM
 inline void Mc6809::dec(Byte &reg)
 {
@@ -962,365 +1434,6 @@ inline void Mc6809::tst(Byte reg)
 
 #endif
 
-inline void Mc6809::tst(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    tst(m);
-}
-
-inline void Mc6809::bit(Byte reg, Byte operand)
-{
-    Byte m = reg & operand;
-    tst(m);
-}
-
-//**********************************
-// Logical Instructions
-//**********************************
-inline void Mc6809::and_(Byte &reg, Byte operand)
-{
-    reg &= operand;
-    tst(reg);
-}
-
-inline void Mc6809::or_(Byte &reg, Byte operand)
-{
-    reg |= operand;
-    tst(reg);
-}
-
-inline void Mc6809::eor(Byte &reg, Byte operand)
-{
-    reg ^= operand;
-    tst(reg);
-}
-
-inline void Mc6809::orcc(Byte operand)
-{
-    cc.all |= operand;
-}
-
-inline void Mc6809::andcc(Byte operand)
-{
-    cc.all &= operand;
-}
-
-//**********************************
-// (Un)Conditional Jump Instructions
-//**********************************
-
-inline void Mc6809::jmp(Word addr)
-{
-    pc = addr;
-}
-
-inline void Mc6809::jsr(Word addr)
-{
-    s -= 2;
-    memory->write_word(s, pc);
-    pc = addr;
-}
-
-inline void Mc6809::rts()
-{
-    pc = memory->read_word(s);
-    s += 2;
-}
-
-inline void Mc6809::bra()
-{
-    pc += EXTEND8(memory->read_byte(pc)) + 1;
-}
-
-inline t_cycles  Mc6809::lbra()
-{
-    pc += memory->read_word(pc) + 2;
-    return 0;
-}
-
-inline void Mc6809::brn()
-{
-    pc++;
-}
-
-inline t_cycles Mc6809::lbrn()
-{
-    pc += 2;
-    return 5;
-}
-
-inline void Mc6809::bsr()
-{
-    Byte o = memory->read_byte(pc++);
-    s -= 2;
-    memory->write_word(s, pc);
-    pc += EXTEND8(o);
-}
-
-inline t_cycles Mc6809::lbsr()
-{
-    Word o = memory->read_word(pc);
-    pc += 2;
-    s -= 2;
-    memory->write_word(s, pc);
-    pc += o;
-    return 0;
-}
-
-inline void Mc6809::do_br(int test)
-{
-    if (test)
-    {
-        pc += EXTEND8(memory->read_byte(pc)) + 1;
-    }
-    else
-    {
-        pc++;
-    }
-}
-
-inline t_cycles Mc6809::do_lbr(int test)
-{
-    if (test)
-    {
-        pc += memory->read_word(pc) + 2;
-        return 6;
-    }
-    else
-    {
-        pc += 2;
-        return 5;
-    }
-}
-
-inline void Mc6809::bcc()
-{
-    do_br(!cc.bit.c);
-}
-
-inline t_cycles Mc6809::lbcc()
-{
-    return do_lbr(!cc.bit.c);
-}
-
-inline void Mc6809::bcs()
-{
-    do_br(cc.bit.c);
-}
-
-inline t_cycles Mc6809::lbcs()
-{
-    return do_lbr(cc.bit.c);
-}
-
-inline void Mc6809::beq()
-{
-    do_br(cc.bit.z);
-}
-
-inline t_cycles Mc6809::lbeq()
-{
-    return do_lbr(cc.bit.z);
-}
-
-inline void Mc6809::bge()
-{
-    do_br(!(cc.bit.n ^ cc.bit.v));
-}
-
-inline t_cycles Mc6809::lbge()
-{
-    return do_lbr(!(cc.bit.n ^ cc.bit.v));
-}
-
-inline void Mc6809::bgt()
-{
-    do_br(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
-}
-
-inline t_cycles Mc6809::lbgt()
-{
-    return do_lbr(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
-}
-
-inline void Mc6809::bhi()
-{
-    do_br(!(cc.bit.c | cc.bit.z));
-}
-
-inline t_cycles Mc6809::lbhi()
-{
-    return do_lbr(!(cc.bit.c | cc.bit.z));
-}
-
-inline void Mc6809::ble()
-{
-    do_br(cc.bit.z | (cc.bit.n ^ cc.bit.v));
-}
-
-inline t_cycles Mc6809::lble()
-{
-    return do_lbr(cc.bit.z | (cc.bit.n ^ cc.bit.v));
-}
-
-inline void Mc6809::bls()
-{
-    do_br(cc.bit.c | cc.bit.z);
-}
-
-inline t_cycles Mc6809::lbls()
-{
-    return do_lbr(cc.bit.c | cc.bit.z);
-}
-
-inline void Mc6809::blt()
-{
-    do_br(cc.bit.n ^ cc.bit.v);
-}
-
-inline t_cycles Mc6809::lblt()
-{
-    return do_lbr(cc.bit.n ^ cc.bit.v);
-}
-
-inline void Mc6809::bmi()
-{
-    do_br(cc.bit.n);
-}
-
-inline t_cycles Mc6809::lbmi()
-{
-    return do_lbr(cc.bit.n);
-}
-
-inline void Mc6809::bne()
-{
-    do_br(!cc.bit.z);
-}
-
-inline t_cycles Mc6809::lbne()
-{
-    return do_lbr(!cc.bit.z);
-}
-
-inline void Mc6809::bpl()
-{
-    do_br(!cc.bit.n);
-}
-
-inline t_cycles Mc6809::lbpl()
-{
-    return do_lbr(!cc.bit.n);
-}
-
-inline void Mc6809::bvc()
-{
-    do_br(!cc.bit.v);
-}
-
-inline t_cycles Mc6809::lbvc()
-{
-    return do_lbr(!cc.bit.v);
-}
-
-inline void Mc6809::bvs()
-{
-    do_br(cc.bit.v);
-}
-
-inline t_cycles Mc6809::lbvs()
-{
-    return do_lbr(cc.bit.v);
-}
-
-//**********************************
-// Misc Instructions
-//**********************************
-
-inline void Mc6809::clr(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    clr(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::clr(Byte &reg)
-{
-    cc.bit.c = false;
-    cc.bit.v = false;
-    cc.bit.n = false;
-    cc.bit.z = true;
-    reg = 0;
-}
-
-inline void Mc6809::com(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    com(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::com(Byte &reg)
-{
-    reg = ~reg;
-    cc.bit.c = 1;
-    tst(reg);
-}
-
-inline void Mc6809::nop()
-{
-}
-
-// undocumented instruction 0x3e:
-// force an internal reset
-inline void Mc6809::rst()
-{
-    reset();
-}
-
-// undocumented instruction 0x02:
-//   If cc.c = 0 then NEG <$xx (op $00)
-//   If cc.c = 1 then COM <$xx (op $03)
-inline void Mc6809::negcom(Word addr)
-{
-    if (cc.bit.c)
-    {
-        com(addr);
-    }
-    else
-    {
-        neg(addr);
-    }
-}
-
-// undocumented instruction 0x4E, 0x5E
-// same as CLRA,CLRB but CC.Carry is
-// unchanged
-inline void Mc6809::clr1(Byte &reg)
-{
-    cc.bit.v = false;
-    cc.bit.n = false;
-    cc.bit.z = true;
-    reg = 0;
-}
-
-//**********************************
-// Shift Instructions
-//**********************************
-inline void Mc6809::lsl(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    lsl(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::asr(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    asr(m);
-    memory->write_byte(addr, m);
-}
-
 #ifdef USE_GCCASM
 inline void Mc6809::lsl(Byte &reg)
 {
@@ -1393,789 +1506,6 @@ inline void Mc6809::asr(Byte &reg)
 }
 #endif
 
-inline void Mc6809::lsr(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    lsr(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::lsr(Byte &reg)
-{
-    cc.bit.c = BTST0(reg);
-    reg >>= 1;
-    cc.bit.n = 0;
-    cc.bit.z = !reg;
-}
-
-inline void Mc6809::rol(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    rol(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::rol(Byte &reg)
-{
-    bool oc = cc.bit.c;
-    cc.bit.c = BTST7(reg);
-    reg <<= 1;
-
-    if (oc)
-    {
-        BSET0(reg);
-    }
-
-    cc.bit.n = BTST7(reg);
-    cc.bit.v = cc.bit.c ^ cc.bit.n;
-    cc.bit.z = !reg;
-}
-
-inline void Mc6809::ror(Word addr)
-{
-    Byte m = memory->read_byte(addr);
-    ror(m);
-    memory->write_byte(addr, m);
-}
-
-inline void Mc6809::ror(Byte &reg)
-{
-    bool oc = cc.bit.c;
-    cc.bit.c = BTST0(reg);
-    reg = reg >> 1;
-
-    if (oc)
-    {
-        BSET7(reg);
-    }
-
-    cc.bit.n = BTST7(reg);
-    cc.bit.z = !reg;
-}
-
-//**********************************
-// Register Load/Save Instructions
-//**********************************
-inline void Mc6809::ld(Byte &reg, Byte operand)
-{
-    reg = operand;
-    tst(reg);
-}
-
-inline void Mc6809::ld(Word &reg, Word operand)
-{
-    reg = operand;
-    cc.bit.n = BTST15(d);
-    cc.bit.v = 0;
-    cc.bit.z = !reg;
-}
-
-inline void Mc6809::st(Byte &reg, Word addr)
-{
-    memory->write_byte(addr, reg);
-    tst(reg);
-}
-
-inline void Mc6809::st(Word &reg, Word addr)
-{
-    memory->write_word(addr, reg);
-    cc.bit.n = BTST15(reg);
-    cc.bit.v = 0;
-    cc.bit.z = !reg;
-}
-
-inline void Mc6809::lea(Word &reg, Word addr)
-{
-    reg = addr;
-    cc.bit.z = !reg;
-}
-
-inline void Mc6809::lea_nocc(Word &reg, Word addr)
-{
-    reg = addr;
-}
-
-inline t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
-{
-    switch ((Byte)(what & 0xf0))
-    {
-        case 0xf0:
-            s -= 2;
-            memory->write_word(s, pc);
-
-        case 0x70:
-            s -= 2;
-            memory->write_word(s, u);
-
-        case 0x30:
-            s -= 2;
-            memory->write_word(s, y);
-
-        case 0x10:
-            s -= 2;
-            memory->write_word(s, x);
-
-        case 0x00:
-            break;
-
-        case 0xe0:
-            s -= 2;
-            memory->write_word(s, pc);
-
-        case 0x60:
-            s -= 2;
-            memory->write_word(s, u);
-
-        case 0x20:
-            s -= 2;
-            memory->write_word(s, y);
-            break;
-
-        case 0xd0:
-            s -= 2;
-            memory->write_word(s, pc);
-
-        case 0x50:
-            s -= 2;
-            memory->write_word(s, u);
-            s -= 2;
-            memory->write_word(s, x);
-            break;
-
-        case 0xc0:
-            s -= 2;
-            memory->write_word(s, pc);
-
-        case 0x40:
-            s -= 2;
-            memory->write_word(s, u);
-            break;
-
-        case 0xb0:
-            s -= 2;
-            memory->write_word(s, pc);
-            s -= 2;
-            memory->write_word(s, y);
-            s -= 2;
-            memory->write_word(s, x);
-            break;
-
-        case 0xa0:
-            s -= 2;
-            memory->write_word(s, pc);
-            s -= 2;
-            memory->write_word(s, y);
-            break;
-
-        case 0x90:
-            s -= 2;
-            memory->write_word(s, pc);
-            s -= 2;
-            memory->write_word(s, x);
-            break;
-
-        case 0x80:
-            s -= 2;
-            memory->write_word(s, pc);
-            break;
-    } // switch
-
-    switch ((Byte)(what & 0x0f))
-    {
-        case 0x0f:
-            memory->write_byte(--s, dp);
-
-        case 0x07:
-            memory->write_byte(--s, b);
-
-        case 0x03:
-            memory->write_byte(--s, a);
-
-        case 0x01:
-            memory->write_byte(--s, cc.all);
-
-        case 0x00:
-            break;
-
-        case 0x0e:
-            memory->write_byte(--s, dp);
-
-        case 0x06:
-            memory->write_byte(--s, b);
-
-        case 0x02:
-            memory->write_byte(--s, a);
-            break;
-
-        case 0x0d:
-            memory->write_byte(--s, dp);
-
-        case 0x05:
-            memory->write_byte(--s, b);
-            memory->write_byte(--s, cc.all);
-            break;
-
-        case 0x0c:
-            memory->write_byte(--s, dp);
-
-        case 0x04:
-            memory->write_byte(--s, b);
-            break;
-
-        case 0x0b:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, a);
-            memory->write_byte(--s, cc.all);
-            break;
-
-        case 0x09:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, cc.all);
-            break;
-
-        case 0x0a:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, a);
-            break;
-
-        case 0x08:
-            memory->write_byte(--s, dp);
-            break;
-    } // switch
-
-    return psh_pul_cycles[what];
-}
-
-inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
-{
-    switch ((Byte)(what & 0x0f))
-    {
-        case 0x0f:
-            cc.all = memory->read_byte(s++);
-
-        case 0x0e:
-            a      = memory->read_byte(s++);
-
-        case 0x0c:
-            b      = memory->read_byte(s++);
-
-        case 0x08:
-            dp     = memory->read_byte(s++);
-
-        case 0x00:
-            break;
-
-        case 0x07:
-            cc.all = memory->read_byte(s++);
-
-        case 0x06:
-            a      = memory->read_byte(s++);
-
-        case 0x04:
-            b      = memory->read_byte(s++);
-            break;
-
-        case 0x0b:
-            cc.all = memory->read_byte(s++);
-
-        case 0x0a:
-            a      = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
-            break;
-
-        case 0x03:
-            cc.all = memory->read_byte(s++);
-
-        case 0x02:
-            a      = memory->read_byte(s++);
-            break;
-
-        case 0x0d:
-            cc.all = memory->read_byte(s++);
-            b      = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
-            break;
-
-        case 0x09:
-            cc.all = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
-            break;
-
-        case 0x05:
-            cc.all = memory->read_byte(s++);
-            b      = memory->read_byte(s++);
-            break;
-
-        case 0x01:
-            cc.all = memory->read_byte(s++);
-            break;
-    } // switch
-
-    switch ((Byte)(what & 0xf0))
-    {
-        case 0xf0:
-            x  = memory->read_word(s);
-            s += 2;
-
-        case 0xe0:
-            y  = memory->read_word(s);
-            s += 2;
-
-        case 0xc0:
-            u  = memory->read_word(s);
-            s += 2;
-
-        case 0x80:
-            pc = memory->read_word(s);
-            s += 2;
-
-        case 0x00:
-            break;
-
-        case 0x70:
-            x  = memory->read_word(s);
-            s += 2;
-
-        case 0x60:
-            y  = memory->read_word(s);
-            s += 2;
-
-        case 0x40:
-            u  = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0xb0:
-            x  = memory->read_word(s);
-            s += 2;
-
-        case 0xa0:
-            y  = memory->read_word(s);
-            s += 2;
-            pc = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0x30:
-            x  = memory->read_word(s);
-            s += 2;
-
-        case 0x20:
-            y  = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0xd0:
-            x  = memory->read_word(s);
-            s += 2;
-            u  = memory->read_word(s);
-            s += 2;
-            pc = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0x90:
-            x  = memory->read_word(s);
-            s += 2;
-            pc = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0x50:
-            x  = memory->read_word(s);
-            s += 2;
-            u  = memory->read_word(s);
-            s += 2;
-            break;
-
-        case 0x10:
-            x  = memory->read_word(s);
-            s += 2;
-            break;
-    } // switch
-
-    return psh_pul_cycles[what];
-}
-
-inline void Mc6809::exg()
-{
-    Word    t1, t2;
-    Byte    w = memory->read_byte(pc++);
-    bool    r1_is_byte = false;
-    bool    r2_is_byte = false;
-
-    // decode source
-    switch (w >> 4)
-    {
-        case 0x00:
-            t1 = d;
-            break;
-
-        case 0x01:
-            t1 = x;
-            break;
-
-        case 0x02:
-            t1 = y;
-            break;
-
-        case 0x03:
-            t1 = u;
-            break;
-
-        case 0x04:
-            t1 = s;
-            break;
-
-        case 0x05:
-            t1 = pc;
-            break;
-
-        case 0x08:
-            t1 = a      | (a << 8);
-            r1_is_byte = true;
-            break;
-
-        case 0x09:
-            t1 = b      | (b << 8);
-            r1_is_byte = true;
-            break;
-
-        case 0x0a:
-            t1 = cc.all | (cc.all << 8);
-            r1_is_byte = true;
-            break;
-
-        case 0x0b:
-            t1 = dp     | (dp << 8);
-            r1_is_byte = true;
-            break;
-
-        default:
-            if (!use_undocumented)
-            {
-                pc -= 2;
-                invalid("transfer register");
-                return;
-            }
-
-            t1 = 0xFFFF;
-    }
-
-    switch (w & 0x0F)
-    {
-        case 0x00:
-            t2 = d;
-            break;
-
-        case 0x01:
-            t2 = x;
-            break;
-
-        case 0x02:
-            t2 = y;
-            break;
-
-        case 0x03:
-            t2 = u;
-            break;
-
-        case 0x04:
-            t2 = s;
-            break;
-
-        case 0x05:
-            t2 = pc;
-            break;
-
-        case 0x08:
-            t2 = a      | 0xFF00;
-            r2_is_byte = true;
-            break;
-
-        case 0x09:
-            t2 = b      | 0xFF00;
-            r2_is_byte = true;
-            break;
-
-        case 0x0a:
-            t2 = cc.all | 0xFF00;
-            r2_is_byte = true;
-            break;
-
-        case 0x0b:
-            t2 = dp     | 0xFF00;
-            r2_is_byte = true;
-            break;
-
-        default:
-            if (!use_undocumented)
-            {
-                pc -= 2;
-                invalid("transfer register");
-                return;
-            }
-
-            t2 = 0xFFFF;
-    }
-
-    if (!use_undocumented && (r1_is_byte ^ r2_is_byte))
-    {
-        pc -= 2;
-        invalid("transfer register");
-        return;
-    }
-
-    switch (w >> 4)
-    {
-        case 0x00:
-            d      = t2;
-            break;
-
-        case 0x01:
-            x      = t2;
-            break;
-
-        case 0x02:
-            y      = t2;
-            break;
-
-        case 0x03:
-            u      = t2;
-            break;
-
-        case 0x04:
-            s      = t2;
-            break;
-
-        case 0x05:
-            pc     = t2;
-            break;
-
-        case 0x08:
-            a      = (Byte)t2;
-            break;
-
-        case 0x09:
-            b      = (Byte)t2;
-            break;
-
-        case 0x0a:
-            cc.all = (Byte)t2;
-            break;
-
-        case 0x0b:
-            dp     = (Byte)t2;
-            break;
-    }
-
-    switch (w & 0x0F)
-    {
-        case 0x00:
-            d      = t1;
-            break;
-
-        case 0x01:
-            x      = t1;
-            break;
-
-        case 0x02:
-            y      = t1;
-            break;
-
-        case 0x03:
-            u      = t1;
-            break;
-
-        case 0x04:
-            s      = t1;
-            break;
-
-        case 0x05:
-            pc     = t1;
-            break;
-
-        case 0x08:
-            a      = (Byte)t1;
-            break;
-
-        case 0x09:
-            b      = (Byte)t1;
-            break;
-
-        case 0x0a:
-            cc.all = (Byte)t1;
-            break;
-
-        case 0x0b:
-            dp     = (Byte)t1;
-            break;
-    }
-}
-
-inline void Mc6809::tfr()
-{
-    Word    t;
-    Byte    w = memory->read_byte(pc++);
-    bool    is_byte = false;
-
-    // decode source
-    switch (w >> 4)
-    {
-        case 0x00:
-            t = d;
-            break;
-
-        case 0x01:
-            t = x;
-            break;
-
-        case 0x02:
-            t = y;
-            break;
-
-        case 0x03:
-            t = u;
-            break;
-
-        case 0x04:
-            t = s;
-            break;
-
-        case 0x05:
-            t = pc;
-            break;
-
-        case 0x08:
-            t = a      | 0xFF00;
-            is_byte = true;
-            break;
-
-        case 0x09:
-            t = b      | 0xFF00;
-            is_byte = true;
-            break;
-
-        case 0x0a:
-            t = cc.all | (cc.all << 8);
-            is_byte = true;
-            break;
-
-        case 0x0b:
-            t = dp     | (dp << 8);
-            is_byte = true;
-            break;
-
-        default:
-            if (!use_undocumented)
-            {
-                pc -= 2;
-                invalid("transfer register");
-                return;
-            }
-
-            t = 0xFFFF;
-    }
-
-    // decode destination
-    switch (w & 0x0F)
-    {
-        case 0x00:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            d      = t;
-            return;
-
-        case 0x01:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            x      = t;
-            return;
-
-        case 0x02:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            y      = t;
-            return;
-
-        case 0x03:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            u      = t;
-            return;
-
-        case 0x04:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            s      = t;
-            return;
-
-        case 0x05:
-            if (!use_undocumented && is_byte)
-            {
-                break;
-            }
-
-            pc     = t;
-            return;
-
-        case 0x08:
-            if (!use_undocumented && !is_byte)
-            {
-                break;
-            }
-
-            a      = (Byte)t;
-            return;
-
-        case 0x09:
-            if (!use_undocumented && !is_byte)
-            {
-                break;
-            }
-
-            b      = (Byte)t;
-            return;
-
-        case 0x0a:
-            if (!use_undocumented && !is_byte)
-            {
-                break;
-            }
-
-            cc.all = (Byte)t;
-            return;
-
-        case 0x0b:
-            if (!use_undocumented && !is_byte)
-            {
-                break;
-            }
-
-            dp     = (Byte)t;
-            return;
-    }
-
-    pc -= 2;
-    invalid("transfer register");
-    return;
-}
-
 //**********************************
 // Interrupt related Instructions
 //**********************************
@@ -2231,566 +1561,6 @@ inline void Mc6809::swi3()
     cc.bit.e = 1;
     psh(0xff, s, u);
     pc = memory->read_word(0xfff2);
-}
-
-//**********************************
-// Addressing modes
-//**********************************
-
-// fetch immediate 16-Bit operand
-inline Word Mc6809::fetch_imm_16()
-{
-    Word addr = memory->read_word(pc);
-    pc += 2;
-    return addr;
-}
-
-// fetch extended 16-Bit operand
-inline Word Mc6809::fetch_ext_16()
-{
-    Word addr = memory->read_word(pc);
-    pc += 2;
-    return memory->read_word(addr);
-}
-
-// fetch direct 16-Bit operand
-inline Word Mc6809::fetch_dir_16()
-{
-    Word addr = dpreg.dp16 | memory->read_byte(pc++);
-    return memory->read_word(addr);
-}
-
-// fetch indexed 16-Bit operand
-inline Word Mc6809::fetch_idx_16(t_cycles *c)
-{
-    Word        addr;
-    Byte        post;
-
-    post = memory->read_byte(pc++);
-    addr = do_effective_address(post);
-    *c += indexed_cycles[post];
-    return memory->read_word(addr);
-}
-
-// fetch immediate 8-Bit operand
-inline Byte Mc6809::fetch_imm_08()
-{
-    return memory->read_byte(pc++);
-}
-
-// fetch extended 8-Bit operand
-inline Byte Mc6809::fetch_ext_08()
-{
-    Word addr = memory->read_word(pc);
-    pc += 2;
-    return memory->read_byte(addr);
-}
-
-// fetch direct 8-Bit operand
-inline Byte Mc6809::fetch_dir_08()
-{
-    Word addr = dpreg.dp16 | memory->read_byte(pc++);
-    return memory->read_byte(addr);
-}
-
-// fetch indexed 8-Bit operand
-inline Byte Mc6809::fetch_idx_08(t_cycles *c)
-{
-    Word        addr;
-    Byte        post;
-
-    post = memory->read_byte(pc++);
-    addr = do_effective_address(post);
-    *c += indexed_cycles[post];
-    return memory->read_byte(addr);
-}
-
-// fetch effective address extended
-inline Word Mc6809::fetch_ea_ext()
-{
-    Word addr = memory->read_word(pc);
-    pc += 2;
-    return addr;
-}
-
-// fetch effective address direct
-inline Word Mc6809::fetch_ea_dir()
-{
-    Word addr = dpreg.dp16 | memory->read_byte(pc++);
-    return addr;
-}
-
-// fetch indexed address
-inline Word Mc6809::fetch_ea_idx(t_cycles *c)
-{
-    Byte post = memory->read_byte(pc++);
-    *c += indexed_cycles[post];
-    return do_effective_address(post);
-}
-
-inline Word Mc6809::do_effective_address(Byte post)
-{
-    register Word addr = 0;
-
-    if (!BTST7(post))
-    {
-        register Word offset = post & 0x1f;
-
-        if (offset & 0x10)
-        {
-            offset |= 0xffe0;
-        }
-
-        switch (post & 0x60)
-        {
-            case 0x00 :
-                addr = x + offset;
-                break;
-
-            case 0x20 :
-                addr = y + offset;
-                break;
-
-            case 0x40 :
-                addr = u + offset;
-                break;
-
-            case 0x60 :
-                addr = s + offset;
-                break;
-        }
-    }
-    else
-    {
-        switch (post)
-        {
-            // ,X+ ,X++ ,-X ,--X ,X
-            case 0x80:
-                addr = x++;
-                break;
-
-            case 0x81:
-                addr = x;
-                x += 2;
-                break;
-
-            case 0x91:
-                addr = memory->read_word(x);
-                x += 2;
-                break;
-
-            case 0x82:
-                addr = --x;
-                break;
-
-            case 0x83:
-                x -= 2;
-                addr = x;
-                break;
-
-            case 0x93:
-                x -= 2;
-                addr = memory->read_word(x);
-                break;
-
-            case 0x84:
-                addr = x;
-                break;
-
-            case 0x94:
-                addr = memory->read_word(x);
-                break;
-
-            // ,Y+ ,Y++ ,-Y ,--Y ,Y
-            case 0xa0:
-                addr = y++;
-                break;
-
-            case 0xa1:
-                addr = y;
-                y += 2;
-                break;
-
-            case 0xb1:
-                addr = memory->read_word(y);
-                y += 2;
-                break;
-
-            case 0xa2:
-                addr = --y;
-                break;
-
-            case 0xa3:
-                y -= 2;
-                addr = y;
-                break;
-
-            case 0xb3:
-                y -= 2;
-                addr = memory->read_word(y);
-                break;
-
-            case 0xa4:
-                addr = y;
-                break;
-
-            case 0xb4:
-                addr = memory->read_word(y);
-                break;
-
-            // ,U+ ,U++ ,-U ,--U ,U
-            case 0xc0:
-                addr = u++;
-                break;
-
-            case 0xc1:
-                addr = u;
-                u += 2;
-                break;
-
-            case 0xd1:
-                addr = memory->read_word(u);
-                u += 2;
-                break;
-
-            case 0xc2:
-                addr = --u;
-                break;
-
-            case 0xc3:
-                u -= 2;
-                addr = u;
-                break;
-
-            case 0xd3:
-                u -= 2;
-                addr = memory->read_word(u);
-                break;
-
-            case 0xc4:
-                addr = u;
-                break;
-
-            case 0xd4:
-                addr = memory->read_word(u);
-                break;
-
-            // ,S+ ,S++ ,-S ,--S ,S
-            case 0xe0:
-                addr = s++;
-                break;
-
-            case 0xe1:
-                addr = s;
-                s += 2;
-                break;
-
-            case 0xf1:
-                addr = memory->read_word(s);
-                s += 2;
-                break;
-
-            case 0xe2:
-                addr = --s;
-                break;
-
-            case 0xe3:
-                s -= 2;
-                addr = s;
-                break;
-
-            case 0xf3:
-                s -= 2;
-                addr = memory->read_word(s);
-                break;
-
-            case 0xe4:
-                addr = s;
-                break;
-
-            case 0xf4:
-                addr = memory->read_word(s);
-                break;
-
-            // (+/- B),R
-            case 0x85:
-                addr = EXTEND8(b) + x;
-                break;
-
-            case 0x95:
-                addr = EXTEND8(b) + x;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xa5:
-                addr = EXTEND8(b) + y;
-                break;
-
-            case 0xb5:
-                addr = EXTEND8(b) + y;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xc5:
-                addr = EXTEND8(b) + u;
-                break;
-
-            case 0xd5:
-                addr = EXTEND8(b) + u;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xe5:
-                addr = EXTEND8(b) + s;
-                break;
-
-            case 0xf5:
-                addr = EXTEND8(b) + s;
-                addr = memory->read_word(addr);
-                break;
-
-            // (+/- A),R
-            case 0x86:
-                addr = EXTEND8(a) + x;
-                break;
-
-            case 0x96:
-                addr = EXTEND8(a) + x;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xa6:
-                addr = EXTEND8(a) + y;
-                break;
-
-            case 0xb6:
-                addr = EXTEND8(a) + y;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xc6:
-                addr = EXTEND8(a) + u;
-                break;
-
-            case 0xd6:
-                addr = EXTEND8(a) + u;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xe6:
-                addr = EXTEND8(a) + s;
-                break;
-
-            case 0xf6:
-                addr = EXTEND8(a) + s;
-                addr = memory->read_word(addr);
-                break;
-
-            // (+/- 7 bit offset),R
-            case 0x88:
-                addr = x + EXTEND8(memory->read_byte(pc++));
-                break;
-
-            case 0x98:
-                addr = x + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xa8:
-                addr = y + EXTEND8(memory->read_byte(pc++));
-                break;
-
-            case 0xb8:
-                addr = y + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xc8:
-                addr = u + EXTEND8(memory->read_byte(pc++));
-                break;
-
-            case 0xd8:
-                addr = u + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xe8:
-                addr = s + EXTEND8(memory->read_byte(pc++));
-                break;
-
-            case 0xf8:
-                addr = s + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
-                break;
-
-            // (+/- 15 bit offset),R
-            case 0x89:
-                addr = x + memory->read_word(pc);
-                pc += 2;
-                break;
-
-            case 0x99:
-                addr = x + memory->read_word(pc);
-                pc += 2;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xa9:
-                addr = y + memory->read_word(pc);
-                pc += 2;
-                break;
-
-            case 0xb9:
-                addr = y + memory->read_word(pc);
-                pc += 2;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xc9:
-                addr = u + memory->read_word(pc);
-                pc += 2;
-                break;
-
-            case 0xd9:
-                addr = u + memory->read_word(pc);
-                pc += 2;
-                addr = memory->read_word(addr);
-                break;
-
-            case 0xe9:
-                addr = s + memory->read_word(pc);
-                pc += 2;
-                break;
-
-            case 0xf9:
-                addr = s + memory->read_word(pc);
-                pc += 2;
-                addr = memory->read_word(addr);
-                break;
-
-            // (+/- D),R
-            case 0x8b:
-                addr = d + x;
-                break;
-
-            case 0x9b:
-                addr = memory->read_word(d + x);
-                break;
-
-            case 0xab:
-                addr = d + y;
-                break;
-
-            case 0xbb:
-                addr = memory->read_word(d + y);
-                break;
-
-            case 0xcb:
-                addr = d + u;
-                break;
-
-            case 0xdb:
-                addr = memory->read_word(d + u);
-                break;
-
-            case 0xeb:
-                addr = d + s;
-                break;
-
-            case 0xfb:
-                addr = memory->read_word(d + s);
-                break;
-
-            // (+/- 7 bit offset), PC
-            case 0x8c:
-            case 0xac:
-            case 0xcc:
-            case 0xec:
-                addr = EXTEND8(memory->read_byte(pc++));
-                addr += pc;
-                break;
-
-            case 0x9c:
-            case 0xbc:
-            case 0xdc:
-            case 0xfc:
-                addr = EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr + pc);
-                break;
-
-            // (+/- 15 bit offset), PC
-            case 0x8d:
-            case 0xad:
-            case 0xcd:
-            case 0xed:
-                addr = memory->read_word(pc);
-                pc += 2;
-                addr += pc;
-                break;
-
-            case 0x9d:
-            case 0xbd:
-            case 0xdd:
-            case 0xfd:
-                addr = memory->read_word(pc);
-                pc += 2;
-                addr = memory->read_word(addr + pc);
-                break;
-
-            // [address]
-            case 0x9f:
-                addr = memory->read_word(pc);
-                addr = memory->read_word(addr);
-                pc += 2;
-                break;
-
-            default:
-                --pc;
-                invalid("indirect addressing postbyte");
-                break;
-        }
-    }
-
-    return addr;
-}
-
-//**********************************
-// Interrupt execution
-//**********************************
-inline void Mc6809::nmi(bool save_state)
-{
-    if (save_state)
-    {
-        cc.bit.e = 1;
-        psh(0xff, s, u);
-    }
-
-    cc.bit.f = cc.bit.i = 1;
-    pc = memory->read_word(0xfffc);
-}
-
-inline void Mc6809::firq(bool save_state)
-{
-    if (save_state)
-    {
-        cc.bit.e = 0;
-        psh(0x81, s, u);
-    }
-
-    cc.bit.f = cc.bit.i = 1;
-    pc = memory->read_word(0xfff6);
-}
-
-inline void Mc6809::irq(bool save_state)
-{
-    if (save_state)
-    {
-        cc.bit.e = 1;
-        psh(0xff, s, u);
-    }
-
-    cc.bit.i = 1;           // Sw: don't set flag f !!
-    pc = memory->read_word(0xfff8);
 }
 
 
