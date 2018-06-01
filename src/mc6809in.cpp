@@ -72,7 +72,7 @@ int Mc6809::Disassemble(Word address, DWord *pFlags,
 
     for (int i = 0; i < 6; i++)
     {
-        buffer[i] = memory->read_word(address + i);
+        buffer[i] = memory->read_byte(address + i);
     }
 
     return disassembler->Disassemble((const Byte *)buffer, address,
