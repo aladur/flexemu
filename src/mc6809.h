@@ -1017,8 +1017,8 @@ inline void Mc6809::jmp(Word addr)
 
 inline void Mc6809::jsr(Word addr)
 {
-    WRITE(--s, (Byte)pc);
-    WRITE(--s, pc >> 8);
+    s -= 2;
+    WRITE_WORD(s, pc);
     pc = addr;
 }
 
@@ -1052,9 +1052,9 @@ inline t_cycles Mc6809::lbrn(void)
 
 inline void Mc6809::bsr(void)
 {
-    Byte    o = READ_PI(pc);
-    WRITE(--s, (Byte)pc);
-    WRITE(--s, (Byte)(pc >> 8));
+    Byte o = READ_PI(pc);
+    s -= 2;
+    WRITE_WORD(s, pc);
     pc += EXTEND8(o);
 }
 
@@ -1062,8 +1062,8 @@ inline t_cycles Mc6809::lbsr(void)
 {
     Word o = READ_WORD(pc);
     pc += 2;
-    WRITE(--s, (Byte)pc);
-    WRITE(--s, (Byte)(pc >> 8));
+    s -= 2;
+    WRITE_WORD(s, pc);
     pc += o;
     return 0;
 }
@@ -1501,83 +1501,83 @@ inline t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
     switch ((Byte)(what & 0xf0))
     {
         case 0xf0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
 
         case 0x70:
-            WRITE(--s, (Byte)u);
-            WRITE(--s, (Byte)(u >> 8));
+            s -= 2;
+            WRITE_WORD(s, u);
 
         case 0x30:
-            WRITE(--s, (Byte)y);
-            WRITE(--s, (Byte)(y >> 8));
+            s -= 2;
+            WRITE_WORD(s, y);
 
         case 0x10:
-            WRITE(--s, (Byte)x);
-            WRITE(--s, (Byte)(x >> 8));
+            s -= 2;
+            WRITE_WORD(s, x);
 
         case 0x00:
             break;
 
         case 0xe0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
 
         case 0x60:
-            WRITE(--s, (Byte)u);
-            WRITE(--s, (Byte)(u >> 8));
+            s -= 2;
+            WRITE_WORD(s, u);
 
         case 0x20:
-            WRITE(--s, (Byte)y);
-            WRITE(--s, (Byte)(y >> 8));
+            s -= 2;
+            WRITE_WORD(s, y);
             break;
 
         case 0xd0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
 
         case 0x50:
-            WRITE(--s, (Byte)u);
-            WRITE(--s, (Byte)(u >> 8));
-            WRITE(--s, (Byte)x);
-            WRITE(--s, (Byte)(x >> 8));
+            s -= 2;
+            WRITE_WORD(s, u);
+            s -= 2;
+            WRITE_WORD(s, x);
             break;
 
         case 0xc0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
 
         case 0x40:
-            WRITE(--s, (Byte)u);
-            WRITE(--s, (Byte)(u >> 8));
+            s -= 2;
+            WRITE_WORD(s, u);
             break;
 
         case 0xb0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
-            WRITE(--s, (Byte)y);
-            WRITE(--s, (Byte)(y >> 8));
-            WRITE(--s, (Byte)x);
-            WRITE(--s, (Byte)(x >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
+            s -= 2;
+            WRITE_WORD(s, y);
+            s -= 2;
+            WRITE_WORD(s, x);
             break;
 
         case 0xa0:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
-            WRITE(--s, (Byte)y);
-            WRITE(--s, (Byte)(y >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
+            s -= 2;
+            WRITE_WORD(s, y);
             break;
 
         case 0x90:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
-            WRITE(--s, (Byte)x);
-            WRITE(--s, (Byte)(x >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
+            s -= 2;
+            WRITE_WORD(s, x);
             break;
 
         case 0x80:
-            WRITE(--s, (Byte)pc);
-            WRITE(--s, (Byte)(pc >> 8));
+            s -= 2;
+            WRITE_WORD(s, pc);
             break;
     } // switch
 
