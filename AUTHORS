@@ -3,10 +3,16 @@ Authors
 
 Wolfgang Schwotzer	<Wolfgang.Schwotzer@gmx.net>
 
-Authors from which existing code with Gnu General Public or MIT License
-was available:
+Authors from which existing code was used:
 
-R. P. Bellis		<Ray.Bellis@psy.ox.ac.uk>
-Lennart Benschop	<benschop@ics.ele.tue.nl>
-Didier Derny		<didier@aida.remcomp.fr>
-Tessil                  <tessil@gmx.com>
+An Mc6809 emulator usim:
+Ray Bellis         https://github.com/raybellis/usim
+
+Another Mc6809 emulator sbc09 (GPL V2):
+Lennart Benschop   https://github.com/6809/sbc09
+
+A Mc6809 disassembler, originally posted on comp.sys.m6809:
+Didier Derny       <didier@aida.remcomp.fr>
+
+Fast C++ unordered map implemenation (MIT):
+Tessil             https://github.com/Tessil/robin-map
