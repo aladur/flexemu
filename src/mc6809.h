@@ -20,7 +20,6 @@
 #include "schedcpu.h"
 #include "cpustate.h"
 #include "flexemu.h"
-#include "intmem.h"
 
 #define USE_ASM 1
 
@@ -744,23 +743,23 @@ inline void Mc6809::daa(void)
 
 inline void Mc6809::dec(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     dec(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::inc(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     inc(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::neg(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     neg(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 #ifdef USE_GCCASM
@@ -965,7 +964,7 @@ inline void Mc6809::tst(Byte reg)
 
 inline void Mc6809::tst(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     tst(m);
 }
 
@@ -1018,24 +1017,24 @@ inline void Mc6809::jmp(Word addr)
 inline void Mc6809::jsr(Word addr)
 {
     s -= 2;
-    WRITE_WORD(s, pc);
+    memory->write_word(s, pc);
     pc = addr;
 }
 
 inline void Mc6809::rts(void)
 {
-    pc = READ_WORD(s);
+    pc = memory->read_word(s);
     s += 2;
 }
 
 inline void Mc6809::bra(void)
 {
-    pc += EXTEND8(READ(pc)) + 1;
+    pc += EXTEND8(memory->read(pc)) + 1;
 }
 
 inline t_cycles  Mc6809::lbra(void)
 {
-    pc += READ_WORD(pc) + 2;
+    pc += memory->read_word(pc) + 2;
     return 0;
 }
 
@@ -1052,18 +1051,18 @@ inline t_cycles Mc6809::lbrn(void)
 
 inline void Mc6809::bsr(void)
 {
-    Byte o = READ_PI(pc);
+    Byte o = memory->read(pc++);
     s -= 2;
-    WRITE_WORD(s, pc);
+    memory->write_word(s, pc);
     pc += EXTEND8(o);
 }
 
 inline t_cycles Mc6809::lbsr(void)
 {
-    Word o = READ_WORD(pc);
+    Word o = memory->read_word(pc);
     pc += 2;
     s -= 2;
-    WRITE_WORD(s, pc);
+    memory->write_word(s, pc);
     pc += o;
     return 0;
 }
@@ -1072,7 +1071,7 @@ inline void Mc6809::do_br(int test)
 {
     if (test)
     {
-        pc += EXTEND8(READ(pc)) + 1;
+        pc += EXTEND8(memory->read(pc)) + 1;
     }
     else
     {
@@ -1084,7 +1083,7 @@ inline t_cycles Mc6809::do_lbr(int test)
 {
     if (test)
     {
-        pc += READ_WORD(pc) + 2;
+        pc += memory->read_word(pc) + 2;
         return 6;
     }
     else
@@ -1240,9 +1239,9 @@ inline t_cycles Mc6809::lbvs(void)
 
 inline void Mc6809::clr(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     clr(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::clr(Byte &reg)
@@ -1256,9 +1255,9 @@ inline void Mc6809::clr(Byte &reg)
 
 inline void Mc6809::com(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     com(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::com(Byte &reg)
@@ -1310,16 +1309,16 @@ inline void Mc6809::clr1(Byte &reg)
 //**********************************
 inline void Mc6809::lsl(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     lsl(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::asr(Word addr)
 {
-    Byte    m = READ(addr);
+    Byte m = memory->read(addr);
     asr(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 #ifdef USE_GCCASM
@@ -1396,9 +1395,9 @@ inline void Mc6809::asr(Byte &reg)
 
 inline void Mc6809::lsr(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     lsr(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::lsr(Byte &reg)
@@ -1411,9 +1410,9 @@ inline void Mc6809::lsr(Byte &reg)
 
 inline void Mc6809::rol(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     rol(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::rol(Byte &reg)
@@ -1434,9 +1433,9 @@ inline void Mc6809::rol(Byte &reg)
 
 inline void Mc6809::ror(Word addr)
 {
-    Byte m = READ(addr);
+    Byte m = memory->read(addr);
     ror(m);
-    WRITE(addr, m);
+    memory->write(addr, m);
 }
 
 inline void Mc6809::ror(Byte &reg)
@@ -1473,13 +1472,13 @@ inline void Mc6809::ld(Word &reg, Word operand)
 
 inline void Mc6809::st(Byte &reg, Word addr)
 {
-    WRITE(addr, reg);
+    memory->write(addr, reg);
     tst(reg);
 }
 
 inline void Mc6809::st(Word &reg, Word addr)
 {
-    WRITE_WORD(addr, reg);
+    memory->write_word(addr, reg);
     cc.bit.n = BTST15(reg);
     cc.bit.v = 0;
     cc.bit.z = !reg;
@@ -1502,145 +1501,145 @@ inline t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
     {
         case 0xf0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
 
         case 0x70:
             s -= 2;
-            WRITE_WORD(s, u);
+            memory->write_word(s, u);
 
         case 0x30:
             s -= 2;
-            WRITE_WORD(s, y);
+            memory->write_word(s, y);
 
         case 0x10:
             s -= 2;
-            WRITE_WORD(s, x);
+            memory->write_word(s, x);
 
         case 0x00:
             break;
 
         case 0xe0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
 
         case 0x60:
             s -= 2;
-            WRITE_WORD(s, u);
+            memory->write_word(s, u);
 
         case 0x20:
             s -= 2;
-            WRITE_WORD(s, y);
+            memory->write_word(s, y);
             break;
 
         case 0xd0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
 
         case 0x50:
             s -= 2;
-            WRITE_WORD(s, u);
+            memory->write_word(s, u);
             s -= 2;
-            WRITE_WORD(s, x);
+            memory->write_word(s, x);
             break;
 
         case 0xc0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
 
         case 0x40:
             s -= 2;
-            WRITE_WORD(s, u);
+            memory->write_word(s, u);
             break;
 
         case 0xb0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
             s -= 2;
-            WRITE_WORD(s, y);
+            memory->write_word(s, y);
             s -= 2;
-            WRITE_WORD(s, x);
+            memory->write_word(s, x);
             break;
 
         case 0xa0:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
             s -= 2;
-            WRITE_WORD(s, y);
+            memory->write_word(s, y);
             break;
 
         case 0x90:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
             s -= 2;
-            WRITE_WORD(s, x);
+            memory->write_word(s, x);
             break;
 
         case 0x80:
             s -= 2;
-            WRITE_WORD(s, pc);
+            memory->write_word(s, pc);
             break;
     } // switch
 
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            WRITE(--s, dp);
+            memory->write(--s, dp);
 
         case 0x07:
-            WRITE(--s, b);
+            memory->write(--s, b);
 
         case 0x03:
-            WRITE(--s, a);
+            memory->write(--s, a);
 
         case 0x01:
-            WRITE(--s, cc.all);
+            memory->write(--s, cc.all);
 
         case 0x00:
             break;
 
         case 0x0e:
-            WRITE(--s, dp);
+            memory->write(--s, dp);
 
         case 0x06:
-            WRITE(--s, b);
+            memory->write(--s, b);
 
         case 0x02:
-            WRITE(--s, a);
+            memory->write(--s, a);
             break;
 
         case 0x0d:
-            WRITE(--s, dp);
+            memory->write(--s, dp);
 
         case 0x05:
-            WRITE(--s, b);
-            WRITE(--s, cc.all);
+            memory->write(--s, b);
+            memory->write(--s, cc.all);
             break;
 
         case 0x0c:
-            WRITE(--s, dp);
+            memory->write(--s, dp);
 
         case 0x04:
-            WRITE(--s, b);
+            memory->write(--s, b);
             break;
 
         case 0x0b:
-            WRITE(--s, dp);
-            WRITE(--s, a);
-            WRITE(--s, cc.all);
+            memory->write(--s, dp);
+            memory->write(--s, a);
+            memory->write(--s, cc.all);
             break;
 
         case 0x09:
-            WRITE(--s, dp);
-            WRITE(--s, cc.all);
+            memory->write(--s, dp);
+            memory->write(--s, cc.all);
             break;
 
         case 0x0a:
-            WRITE(--s, dp);
-            WRITE(--s, a);
+            memory->write(--s, dp);
+            memory->write(--s, a);
             break;
 
         case 0x08:
-            WRITE(--s, dp);
+            memory->write(--s, dp);
             break;
     } // switch
 
@@ -1652,145 +1651,145 @@ inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            cc.all = READ_PI(s);
+            cc.all = memory->read(s++);
 
         case 0x0e:
-            a      = READ_PI(s);
+            a      = memory->read(s++);
 
         case 0x0c:
-            b      = READ_PI(s);
+            b      = memory->read(s++);
 
         case 0x08:
-            dp     = READ_PI(s);
+            dp     = memory->read(s++);
 
         case 0x00:
             break;
 
         case 0x07:
-            cc.all = READ_PI(s);
+            cc.all = memory->read(s++);
 
         case 0x06:
-            a      = READ_PI(s);
+            a      = memory->read(s++);
 
         case 0x04:
-            b      = READ_PI(s);
+            b      = memory->read(s++);
             break;
 
         case 0x0b:
-            cc.all = READ_PI(s);
+            cc.all = memory->read(s++);
 
         case 0x0a:
-            a      = READ_PI(s);
-            dp     = READ_PI(s);
+            a      = memory->read(s++);
+            dp     = memory->read(s++);
             break;
 
         case 0x03:
-            cc.all = READ_PI(s);
+            cc.all = memory->read(s++);
 
         case 0x02:
-            a      = READ_PI(s);
+            a      = memory->read(s++);
             break;
 
         case 0x0d:
-            cc.all = READ_PI(s);
-            b      = READ_PI(s);
-            dp     = READ_PI(s);
+            cc.all = memory->read(s++);
+            b      = memory->read(s++);
+            dp     = memory->read(s++);
             break;
 
         case 0x09:
-            cc.all = READ_PI(s);
-            dp     = READ_PI(s);
+            cc.all = memory->read(s++);
+            dp     = memory->read(s++);
             break;
 
         case 0x05:
-            cc.all = READ_PI(s);
-            b      = READ_PI(s);
+            cc.all = memory->read(s++);
+            b      = memory->read(s++);
             break;
 
         case 0x01:
-            cc.all = READ_PI(s);
+            cc.all = memory->read(s++);
             break;
     } // switch
 
     switch ((Byte)(what & 0xf0))
     {
         case 0xf0:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
 
         case 0xe0:
-            y  = READ_WORD(s);
+            y  = memory->read_word(s);
             s += 2;
 
         case 0xc0:
-            u  = READ_WORD(s);
+            u  = memory->read_word(s);
             s += 2;
 
         case 0x80:
-            pc = READ_WORD(s);
+            pc = memory->read_word(s);
             s += 2;
 
         case 0x00:
             break;
 
         case 0x70:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
 
         case 0x60:
-            y  = READ_WORD(s);
+            y  = memory->read_word(s);
             s += 2;
 
         case 0x40:
-            u  = READ_WORD(s);
+            u  = memory->read_word(s);
             s += 2;
             break;
 
         case 0xb0:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
 
         case 0xa0:
-            y  = READ_WORD(s);
+            y  = memory->read_word(s);
             s += 2;
-            pc = READ_WORD(s);
+            pc = memory->read_word(s);
             s += 2;
             break;
 
         case 0x30:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
 
         case 0x20:
-            y  = READ_WORD(s);
+            y  = memory->read_word(s);
             s += 2;
             break;
 
         case 0xd0:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
-            u  = READ_WORD(s);
+            u  = memory->read_word(s);
             s += 2;
-            pc = READ_WORD(s);
+            pc = memory->read_word(s);
             s += 2;
             break;
 
         case 0x90:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
-            pc = READ_WORD(s);
+            pc = memory->read_word(s);
             s += 2;
             break;
 
         case 0x50:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
-            u  = READ_WORD(s);
+            u  = memory->read_word(s);
             s += 2;
             break;
 
         case 0x10:
-            x  = READ_WORD(s);
+            x  = memory->read_word(s);
             s += 2;
             break;
     } // switch
@@ -1801,7 +1800,7 @@ inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
 inline void Mc6809::exg(void)
 {
     Word    t1, t2;
-    Byte    w = READ_PI(pc);
+    Byte    w = memory->read(pc++);
     bool    r1_is_byte = false;
     bool    r2_is_byte = false;
 
@@ -2017,7 +2016,7 @@ inline void Mc6809::exg(void)
 inline void Mc6809::tfr(void)
 {
     Word    t;
-    Byte    w = READ_PI(pc);
+    Byte    w = memory->read(pc++);
     bool    is_byte = false;
 
     // decode source
@@ -2182,7 +2181,7 @@ inline void Mc6809::tfr(void)
 //**********************************
 inline t_cycles Mc6809::rti(void)
 {
-    cc.all = READ_PI(s);
+    cc.all = memory->read(s++);
 
     if (cc.bit.e)
     {
@@ -2191,7 +2190,7 @@ inline t_cycles Mc6809::rti(void)
     }
     else
     {
-        pc = READ_WORD(s);
+        pc = memory->read_word(s);
         s += 2;
         return 6;
     }
@@ -2205,7 +2204,7 @@ inline void Mc6809::sync(void)
 
 inline void Mc6809::cwai(void)
 {
-    cc.all &= READ_PI(pc);
+    cc.all &= memory->read(pc++);
     cc.bit.e = 1;
     psh(0xff, s, u);
     events |= DO_CWAI;
@@ -2217,21 +2216,21 @@ inline void Mc6809::swi(void)
     cc.bit.e = 1;
     psh(0xff, s, u);
     cc.bit.f = cc.bit.i = 1;
-    pc = READ_WORD(0xfffa);
+    pc = memory->read_word(0xfffa);
 }
 
 inline void Mc6809::swi2(void)
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
-    pc = READ_WORD(0xfff4);
+    pc = memory->read_word(0xfff4);
 }
 
 inline void Mc6809::swi3(void)
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
-    pc = READ_WORD(0xfff2);
+    pc = memory->read_word(0xfff2);
 }
 
 //**********************************
@@ -2241,7 +2240,7 @@ inline void Mc6809::swi3(void)
 // fetch immediate 16-Bit operand
 inline Word Mc6809::fetch_imm_16(void)
 {
-    Word addr = READ_WORD(pc);
+    Word addr = memory->read_word(pc);
     pc += 2;
     return addr;
 }
@@ -2249,16 +2248,16 @@ inline Word Mc6809::fetch_imm_16(void)
 // fetch extended 16-Bit operand
 inline Word Mc6809::fetch_ext_16(void)
 {
-    Word addr = READ_WORD(pc);
+    Word addr = memory->read_word(pc);
     pc += 2;
-    return READ_WORD(addr);
+    return memory->read_word(addr);
 }
 
 // fetch direct 16-Bit operand
 inline Word Mc6809::fetch_dir_16(void)
 {
-    Word addr = dpreg.dp16 | READ_PI(pc);
-    return READ_WORD(addr);
+    Word addr = dpreg.dp16 | memory->read(pc++);
+    return memory->read_word(addr);
 }
 
 // fetch indexed 16-Bit operand
@@ -2267,31 +2266,31 @@ inline Word Mc6809::fetch_idx_16(t_cycles *c)
     Word        addr;
     Byte        post;
 
-    post = READ_PI(pc);
+    post = memory->read(pc++);
     addr = do_effective_address(post);
     *c += indexed_cycles[post];
-    return READ_WORD(addr);
+    return memory->read_word(addr);
 }
 
 // fetch immediate 8-Bit operand
 inline Byte Mc6809::fetch_imm_08(void)
 {
-    return READ_PI(pc);
+    return memory->read(pc++);
 }
 
 // fetch extended 8-Bit operand
 inline Byte Mc6809::fetch_ext_08(void)
 {
-    Word addr = READ_WORD(pc);
+    Word addr = memory->read_word(pc);
     pc += 2;
-    return READ(addr);
+    return memory->read(addr);
 }
 
 // fetch direct 8-Bit operand
 inline Byte Mc6809::fetch_dir_08(void)
 {
-    Word addr = dpreg.dp16 | READ_PI(pc);
-    return READ(addr);
+    Word addr = dpreg.dp16 | memory->read(pc++);
+    return memory->read(addr);
 }
 
 // fetch indexed 8-Bit operand
@@ -2300,16 +2299,16 @@ inline Byte Mc6809::fetch_idx_08(t_cycles *c)
     Word        addr;
     Byte        post;
 
-    post = READ_PI(pc);
+    post = memory->read(pc++);
     addr = do_effective_address(post);
     *c += indexed_cycles[post];
-    return READ(addr);
+    return memory->read(addr);
 }
 
 // fetch effective address extended
 inline Word Mc6809::fetch_ea_ext(void)
 {
-    Word addr = READ_WORD(pc);
+    Word addr = memory->read_word(pc);
     pc += 2;
     return addr;
 }
@@ -2317,14 +2316,14 @@ inline Word Mc6809::fetch_ea_ext(void)
 // fetch effective address direct
 inline Word Mc6809::fetch_ea_dir(void)
 {
-    Word addr = dpreg.dp16 | READ_PI(pc);
+    Word addr = dpreg.dp16 | memory->read(pc++);
     return addr;
 }
 
 // fetch indexed address
 inline Word Mc6809::fetch_ea_idx(t_cycles *c)
 {
-    Byte post = READ_PI(pc);
+    Byte post = memory->read(pc++);
     *c += indexed_cycles[post];
     return do_effective_address(post);
 }
@@ -2376,7 +2375,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x91:
-                addr = READ_WORD(x);
+                addr = memory->read_word(x);
                 x += 2;
                 break;
 
@@ -2391,7 +2390,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0x93:
                 x -= 2;
-                addr = READ_WORD(x);
+                addr = memory->read_word(x);
                 break;
 
             case 0x84:
@@ -2399,7 +2398,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x94:
-                addr = READ_WORD(x);
+                addr = memory->read_word(x);
                 break;
 
             // ,Y+ ,Y++ ,-Y ,--Y ,Y
@@ -2413,7 +2412,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xb1:
-                addr = READ_WORD(y);
+                addr = memory->read_word(y);
                 y += 2;
                 break;
 
@@ -2428,7 +2427,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xb3:
                 y -= 2;
-                addr = READ_WORD(y);
+                addr = memory->read_word(y);
                 break;
 
             case 0xa4:
@@ -2436,7 +2435,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xb4:
-                addr = READ_WORD(y);
+                addr = memory->read_word(y);
                 break;
 
             // ,U+ ,U++ ,-U ,--U ,U
@@ -2450,7 +2449,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xd1:
-                addr = READ_WORD(u);
+                addr = memory->read_word(u);
                 u += 2;
                 break;
 
@@ -2465,7 +2464,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xd3:
                 u -= 2;
-                addr = READ_WORD(u);
+                addr = memory->read_word(u);
                 break;
 
             case 0xc4:
@@ -2473,7 +2472,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xd4:
-                addr = READ_WORD(u);
+                addr = memory->read_word(u);
                 break;
 
             // ,S+ ,S++ ,-S ,--S ,S
@@ -2487,7 +2486,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xf1:
-                addr = READ_WORD(s);
+                addr = memory->read_word(s);
                 s += 2;
                 break;
 
@@ -2502,7 +2501,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xf3:
                 s -= 2;
-                addr = READ_WORD(s);
+                addr = memory->read_word(s);
                 break;
 
             case 0xe4:
@@ -2510,7 +2509,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xf4:
-                addr = READ_WORD(s);
+                addr = memory->read_word(s);
                 break;
 
             // (+/- B),R
@@ -2520,7 +2519,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0x95:
                 addr = EXTEND8(b) + x;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xa5:
@@ -2529,7 +2528,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xb5:
                 addr = EXTEND8(b) + y;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xc5:
@@ -2538,7 +2537,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xd5:
                 addr = EXTEND8(b) + u;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xe5:
@@ -2547,7 +2546,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xf5:
                 addr = EXTEND8(b) + s;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             // (+/- A),R
@@ -2557,7 +2556,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0x96:
                 addr = EXTEND8(a) + x;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xa6:
@@ -2566,7 +2565,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xb6:
                 addr = EXTEND8(a) + y;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xc6:
@@ -2575,7 +2574,7 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xd6:
                 addr = EXTEND8(a) + u;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xe6:
@@ -2584,89 +2583,89 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             case 0xf6:
                 addr = EXTEND8(a) + s;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             // (+/- 7 bit offset),R
             case 0x88:
-                addr = x + EXTEND8(READ_PI(pc));
+                addr = x + EXTEND8(memory->read(pc++));
                 break;
 
             case 0x98:
-                addr = x + EXTEND8(READ_PI(pc));
-                addr = READ_WORD(addr);
+                addr = x + EXTEND8(memory->read(pc++));
+                addr = memory->read_word(addr);
                 break;
 
             case 0xa8:
-                addr = y + EXTEND8(READ_PI(pc));
+                addr = y + EXTEND8(memory->read(pc++));
                 break;
 
             case 0xb8:
-                addr = y + EXTEND8(READ_PI(pc));
-                addr = READ_WORD(addr);
+                addr = y + EXTEND8(memory->read(pc++));
+                addr = memory->read_word(addr);
                 break;
 
             case 0xc8:
-                addr = u + EXTEND8(READ_PI(pc));
+                addr = u + EXTEND8(memory->read(pc++));
                 break;
 
             case 0xd8:
-                addr = u + EXTEND8(READ_PI(pc));
-                addr = READ_WORD(addr);
+                addr = u + EXTEND8(memory->read(pc++));
+                addr = memory->read_word(addr);
                 break;
 
             case 0xe8:
-                addr = s + EXTEND8(READ_PI(pc));
+                addr = s + EXTEND8(memory->read(pc++));
                 break;
 
             case 0xf8:
-                addr = s + EXTEND8(READ_PI(pc));
-                addr = READ_WORD(addr);
+                addr = s + EXTEND8(memory->read(pc++));
+                addr = memory->read_word(addr);
                 break;
 
             // (+/- 15 bit offset),R
             case 0x89:
-                addr = x + READ_WORD(pc);
+                addr = x + memory->read_word(pc);
                 pc += 2;
                 break;
 
             case 0x99:
-                addr = x + READ_WORD(pc);
+                addr = x + memory->read_word(pc);
                 pc += 2;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xa9:
-                addr = y + READ_WORD(pc);
+                addr = y + memory->read_word(pc);
                 pc += 2;
                 break;
 
             case 0xb9:
-                addr = y + READ_WORD(pc);
+                addr = y + memory->read_word(pc);
                 pc += 2;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xc9:
-                addr = u + READ_WORD(pc);
+                addr = u + memory->read_word(pc);
                 pc += 2;
                 break;
 
             case 0xd9:
-                addr = u + READ_WORD(pc);
+                addr = u + memory->read_word(pc);
                 pc += 2;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             case 0xe9:
-                addr = s + READ_WORD(pc);
+                addr = s + memory->read_word(pc);
                 pc += 2;
                 break;
 
             case 0xf9:
-                addr = s + READ_WORD(pc);
+                addr = s + memory->read_word(pc);
                 pc += 2;
-                addr = READ_WORD(addr);
+                addr = memory->read_word(addr);
                 break;
 
             // (+/- D),R
@@ -2675,7 +2674,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x9b:
-                addr = READ_WORD(d + x);
+                addr = memory->read_word(d + x);
                 break;
 
             case 0xab:
@@ -2683,7 +2682,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xbb:
-                addr = READ_WORD(d + y);
+                addr = memory->read_word(d + y);
                 break;
 
             case 0xcb:
@@ -2691,7 +2690,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xdb:
-                addr = READ_WORD(d + u);
+                addr = memory->read_word(d + u);
                 break;
 
             case 0xeb:
@@ -2699,7 +2698,7 @@ inline Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xfb:
-                addr = READ_WORD(d + s);
+                addr = memory->read_word(d + s);
                 break;
 
             // (+/- 7 bit offset), PC
@@ -2707,7 +2706,7 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xac:
             case 0xcc:
             case 0xec:
-                addr = EXTEND8(READ_PI(pc));
+                addr = EXTEND8(memory->read(pc++));
                 addr += pc;
                 break;
 
@@ -2715,8 +2714,8 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xbc:
             case 0xdc:
             case 0xfc:
-                addr = EXTEND8(READ_PI(pc));
-                addr = READ_WORD(addr + pc);
+                addr = EXTEND8(memory->read(pc++));
+                addr = memory->read_word(addr + pc);
                 break;
 
             // (+/- 15 bit offset), PC
@@ -2724,7 +2723,7 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xad:
             case 0xcd:
             case 0xed:
-                addr = READ_WORD(pc);
+                addr = memory->read_word(pc);
                 pc += 2;
                 addr += pc;
                 break;
@@ -2733,15 +2732,15 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xbd:
             case 0xdd:
             case 0xfd:
-                addr = READ_WORD(pc);
+                addr = memory->read_word(pc);
                 pc += 2;
-                addr = READ_WORD(addr + pc);
+                addr = memory->read_word(addr + pc);
                 break;
 
             // [address]
             case 0x9f:
-                addr = READ_WORD(pc);
-                addr = READ_WORD(addr);
+                addr = memory->read_word(pc);
+                addr = memory->read_word(addr);
                 pc += 2;
                 break;
 
@@ -2767,7 +2766,7 @@ inline void Mc6809::nmi(bool save_state)
     }
 
     cc.bit.f = cc.bit.i = 1;
-    pc = READ_WORD(0xfffc);
+    pc = memory->read_word(0xfffc);
 }
 
 inline void Mc6809::firq(bool save_state)
@@ -2779,7 +2778,7 @@ inline void Mc6809::firq(bool save_state)
     }
 
     cc.bit.f = cc.bit.i = 1;
-    pc = READ_WORD(0xfff6);
+    pc = memory->read_word(0xfff6);
 }
 
 inline void Mc6809::irq(bool save_state)
@@ -2791,7 +2790,7 @@ inline void Mc6809::irq(bool save_state)
     }
 
     cc.bit.i = 1;           // Sw: don't set flag f !!
-    pc = READ_WORD(0xfff8);
+    pc = memory->read_word(0xfff8);
 }
 
 

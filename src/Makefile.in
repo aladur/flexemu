@@ -526,7 +526,7 @@ bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
-intmem.h iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
+iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h da.h \
 bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \

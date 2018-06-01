@@ -14,7 +14,6 @@
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "da6809.h"
-#include "intmem.h"
 
 
 #ifdef _MSC_VER
@@ -24,7 +23,7 @@
 
 void Mc6809::set_serpar(Byte b)
 {
-    WRITE(SERPAR, b);
+    memory->write(SERPAR, b);
 }
 
 void Mc6809::reset(void)
@@ -43,7 +42,7 @@ void Mc6809::reset(void)
     }
 
 #ifdef FASTFLEX
-    ipcreg          = READ_WORD(0xfffe);
+    ipcreg          = memory->read_word(0xfffe);
     idpreg          = 0x00;         /* Direct page register = 0x00 */
     iccreg          = 0x50;         /* set i and f bit              */
     eaddr           = 0;
@@ -52,7 +51,7 @@ void Mc6809::reset(void)
     tw              = 0;
     k               = 0;
 #else
-    pc              = READ_WORD(0xfffe);
+    pc              = memory->read_word(0xfffe);
     dp              = 0x00;         /* Direct page register = 0x00 */
     cc.all          = 0x00;         /* Clear all flags */
     cc.bit.i        = true;         /* IRQ disabled */
@@ -73,7 +72,7 @@ int Mc6809::Disassemble(Word address, DWord *pFlags,
 
     for (int i = 0; i < 6; i++)
     {
-        buffer[i] = READ(address + i);
+        buffer[i] = memory->read_word(address + i);
     }
 
     return disassembler->Disassemble((const Byte *)buffer, address,
@@ -139,12 +138,12 @@ void Mc6809::get_status(CpuStatus *status)
 
     for (i = 0; i < 4; i++)
     {
-        stat->instruction[i] = READ(stat->pc + i);
+        stat->instruction[i] = memory->read(stat->pc + i);
     }
 
     for (i = 0; i < 48; i++)
     {
-        stat->memory[i] = READ(mem_addr + i);
+        stat->memory[i] = memory->read(mem_addr + i);
     }
 
     if (!Disassemble(stat->pc, &flags, &pbuffer, &pmnem_buf))
