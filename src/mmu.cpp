@@ -37,7 +37,7 @@ Mmu::~Mmu()
 {
 }
 
-void Mmu::resetIo(void)
+void Mmu::resetIo()
 {
 } // reset
 

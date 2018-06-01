@@ -124,7 +124,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
     return new NafsDirectoryContainer(totalPath.c_str());
 }
 
-bool NafsDirectoryContainer::IsContainerOpened(void) const
+bool NafsDirectoryContainer::IsContainerOpened() const
 {
     return (dir != NULL);
 }
@@ -139,7 +139,7 @@ std::string NafsDirectoryContainer::GetPath() const
     return "";
 }
 
-int NafsDirectoryContainer::Close(void)
+int NafsDirectoryContainer::Close()
 {
     if (dir != NULL)
     {
@@ -179,12 +179,12 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
     return true;
 }
 
-int NafsDirectoryContainer::GetBytesPerSector(void) const
+int NafsDirectoryContainer::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
 
-bool NafsDirectoryContainer::IsWriteProtected(void) const
+bool NafsDirectoryContainer::IsWriteProtected() const
 {
     return (param.write_protect) ? true : false;
 }
@@ -206,7 +206,7 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
     }
 }
 
-int NafsDirectoryContainer::GetContainerType(void) const
+int NafsDirectoryContainer::GetContainerType() const
 {
     return param.type;
 }
@@ -498,7 +498,7 @@ Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
 } // extend_directory
 
 
-t_st *NafsDirectoryContainer::link_address(void) const
+t_st *NafsDirectoryContainer::link_address() const
 {
     static t_st link;
     s_dir_entry *pd;

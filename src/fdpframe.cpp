@@ -144,7 +144,7 @@ FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
     InitToolBar(GetToolBar());
 }
 
-FlexParentFrame::~FlexParentFrame(void)
+FlexParentFrame::~FlexParentFrame()
 {
 }
 

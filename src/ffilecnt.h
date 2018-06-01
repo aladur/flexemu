@@ -76,17 +76,17 @@ public:
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
                                      int fmt = TYPE_DSK_CONTAINER);
-    int  Close(void);
+    int  Close();
     bool CheckFilename(const char *fileName) const;
-    bool IsContainerOpened(void) const;
+    bool IsContainerOpened() const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);
-    bool IsWriteProtected(void) const;
+    bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;
-    int  GetBytesPerSector(void) const;
+    int  GetBytesPerSector() const;
     bool GetInfo(FlexContainerInfo &info) const;
-    int  GetContainerType(void) const;
+    int  GetContainerType() const;
 
     // enhanced interface (to be used within flexdisk)
 public:

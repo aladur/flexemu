@@ -26,7 +26,7 @@ void Mc6809::set_serpar(Byte b)
     memory->write_byte(SERPAR, b);
 }
 
-void Mc6809::reset(void)
+void Mc6809::reset()
 {
     ++interrupt_status.count[INT_RESET];
     cycles          = 0;
@@ -411,7 +411,7 @@ Byte Mc6809::runloop()
     return newState;
 } // runloop
 
-void Mc6809::do_reset(void)
+void Mc6809::do_reset()
 {
     reset();
     reset_bp(2);

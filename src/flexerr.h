@@ -89,7 +89,7 @@ public:
 #else
     const std::string wwhat() const throw();
 #endif
-    int GetErrorCode(void) const
+    int GetErrorCode() const
     {
         return errorCode;
     };

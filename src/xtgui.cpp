@@ -475,7 +475,7 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
     }
 }
 
-void XtGui::popup_author(void)
+void XtGui::popup_author()
 {
     center_dialog(authorframe);
     XtPopup(authorframe, XtGrabExclusive);
@@ -513,7 +513,7 @@ color entries)");
                   pevent->xexpose.x,     pevent->xexpose.y);
 }
 
-void XtGui::popdown_author(void)
+void XtGui::popdown_author()
 {
     XtPopdown(authorframe);
 
@@ -528,7 +528,7 @@ void XtGui::popdown_author(void)
 }
 #endif // #ifdef HAVE_XPM
 
-void XtGui::popup_about(void)
+void XtGui::popup_about()
 {
     center_dialog(aboutframe);
     XtPopup(aboutframe, XtGrabExclusive);
@@ -537,7 +537,7 @@ void XtGui::popup_about(void)
     XtSetKeyboardFocus(aboutform, aboutbutton);
 }
 
-void XtGui::popdown_about(void)
+void XtGui::popdown_about()
 {
     XtPopdown(aboutframe);
     XtSetSensitive(e2toplevel, True);
@@ -683,7 +683,7 @@ void XtGui::popup_interrupt_info(Widget)
                   PROGRAMNAME " Interrupt status", 480, 160);
 }
 
-void XtGui::toggle_frequency(void)
+void XtGui::toggle_frequency()
 {
     float frequency;
 
@@ -696,7 +696,7 @@ void XtGui::toggle_frequency(void)
                       frequency_control_on ? okpixmap : None, NULL);
 }
 
-void XtGui::toggle_undocumented(void)
+void XtGui::toggle_undocumented()
 {
     is_use_undocumented = !is_use_undocumented;
     cpu->set_use_undocumented(is_use_undocumented);
@@ -975,7 +975,7 @@ void XtGui::mouse_warp(int dx, int dy)
     }
 }
 
-void XtGui::main_loop(void)
+void XtGui::main_loop()
 {
     //XtAppMainLoop(context);
     // Create own main loop to be able to exit
@@ -1666,7 +1666,7 @@ void XtGui::initialize_after_open(Widget w, const char *title)
     }
 }
 
-Display *XtGui::getDisplay(void)
+Display *XtGui::getDisplay()
 {
     return XtDisplay(e2screen);
 }
@@ -1684,7 +1684,7 @@ Window XtGui::getWindow(tWindowType t /* = FLX_E2SCREEN */)
     }
 }
 
-int XtGui::gui_type(void)
+int XtGui::gui_type()
 {
     return GUI_XTOOLKIT;
 }
@@ -1764,7 +1764,7 @@ XtGui::~XtGui()
 /* CPU-view implementation    */
 /******************************/
 
-void XtGui::popup_cpu(void)
+void XtGui::popup_cpu()
 {
     Position x, y;
     Dimension width, topheight, height;
@@ -1797,14 +1797,14 @@ void XtGui::popup_cpu(void)
     cpu_popped_up = true;
 }
 
-void XtGui::popdown_cpu(void)
+void XtGui::popdown_cpu()
 {
     XtVaSetValues(entry24, XtNleftBitmap, None, NULL);
     XtPopdown(cpuframe);
     cpu_popped_up = false;
 }
 
-void XtGui::toggle_cpu(void)
+void XtGui::toggle_cpu()
 {
     if (cpu_popped_up)
     {

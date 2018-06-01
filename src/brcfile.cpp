@@ -148,7 +148,7 @@ int BRcFile::GetValue(const char *key, int *pValue)
     return BRC_NO_ERROR;
 }
 
-int BRcFile::Initialize(void)
+int BRcFile::Initialize()
 {
     BFilePtr fp(fileName.c_str(), "w");
 

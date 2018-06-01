@@ -35,7 +35,7 @@ BDate::BDate(const BDate &d)  : day(d.GetDay()), month(d.GetMonth()),
 {
 }
 
-const BDate BDate::Now(void)
+const BDate BDate::Now()
 {
     time_t      time_now;
     struct tm   *lt;
@@ -86,7 +86,7 @@ const char *BDate::GetDateString(int mode) const
     return dateString;
 }
 
-int BDate::GetMonthBounded(void) const
+int BDate::GetMonthBounded() const
 {
     if (month < 1)
     {
@@ -106,7 +106,7 @@ void BDate::SetDate(const BDate &date)
     Assign(date.GetDay(), date.GetMonth(), date.GetYear());
 }
 
-int BDate::GetYear(void) const
+int BDate::GetYear() const
 {
     if (year < 100)
         if (year < 75)
@@ -127,7 +127,7 @@ int BDate::GetYear(void) const
     }
 }
 
-int BDate::MakeComparable(void) const
+int BDate::MakeComparable() const
 {
     return GetYear() * 10000 + (GetMonthBounded() * 100) + GetDay();
 }

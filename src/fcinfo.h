@@ -55,7 +55,7 @@ public:
     {
         name = n;
     }
-    const std::string   GetTypeString(void) const;
+    const std::string   GetTypeString() const;
 
     inline void         SetPath(const std::string &p)
     {
@@ -65,7 +65,7 @@ public:
     {
         free = f;
     };
-    inline int          GetFree(void) const
+    inline int          GetFree() const
     {
         return free;
     };
@@ -73,7 +73,7 @@ public:
     {
         totalSize = s;
     };
-    inline int          GetTotalSize(void) const
+    inline int          GetTotalSize() const
     {
         return totalSize;
     };
@@ -81,11 +81,11 @@ public:
     {
         attributes = a;
     };
-    inline int          GetAttributes(void) const
+    inline int          GetAttributes() const
     {
         return attributes;
     };
-    inline const        BDate &GetDate(void) const
+    inline const        BDate &GetDate() const
     {
         return date;
     };
@@ -107,11 +107,11 @@ public:
         *t = tracks;
         *s = sectors;
     };
-    inline const std::string GetName(void) const
+    inline const std::string GetName() const
     {
         return name;
     };
-    inline const std::string GetPath(void) const
+    inline const std::string GetPath() const
     {
         return path;
     };
@@ -119,7 +119,7 @@ public:
     {
         type = t;
     };
-    inline int          GetType(void) const
+    inline int          GetType() const
     {
         return type;
     };

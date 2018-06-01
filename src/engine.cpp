@@ -25,7 +25,7 @@
 
 
 #ifndef FASTFLEX
-void interpr(void)
+void interpr()
 {
     Word ixreg, iyreg, iureg, isreg, ipcreg;
     Byte idpreg, iccreg, iareg, ibreg;

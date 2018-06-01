@@ -49,15 +49,15 @@ public:
     FlexChildFrame(wxMDIParentFrame *parent, const wxString &title,
                    const wxPoint &pos, const wxSize &size, const long style,
                    FileContainerIf *container);
-    virtual ~FlexChildFrame(void);
+    virtual ~FlexChildFrame();
     void Attach(BObserver *clipboardObserver);
     void Detach(BObserver *clipboardObserver);
-    wxMenu *GetPopupMenu(void);
+    wxMenu *GetPopupMenu();
     virtual void UpdateFrom(const void *pObject);
-    void ViewProperties(void);
+    void ViewProperties();
     void OnActivate(wxActivateEvent &event);
     void OnSetFocus(wxFocusEvent &event);
-    const FlexDiskListCtrl *GetListControl(void)
+    const FlexDiskListCtrl *GetListControl()
     {
         return m_listCtrl;
     };

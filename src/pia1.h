@@ -43,15 +43,15 @@ protected:
 
 protected:
 
-    virtual void            requestInputA(void);
-    virtual Byte            readInputA(void);
-    virtual void            set_irq_A(void);
-    virtual void            set_irq_B(void);
+    virtual void            requestInputA();
+    virtual Byte            readInputA();
+    virtual void            set_irq_A();
+    virtual void            set_irq_B();
 
 public:
     Pia1(Inout *x_io, Mc6809 *x_cpu);
-    virtual void            resetIo(void);
-    virtual const char      *getName(void)
+    virtual void            resetIo();
+    virtual const char      *getName()
     {
         return "pia1";
     };

@@ -245,7 +245,7 @@ void Mc146818::writeIo(Word offset, Byte val)
     }
 }
 
-void Mc146818::update_1_second(void)
+void Mc146818::update_1_second()
 {
 
     // update only if SET bit is 0

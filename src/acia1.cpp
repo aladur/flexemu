@@ -36,13 +36,13 @@ Acia1::~Acia1()
 {
 }
 
-void Acia1::resetIo(void)
+void Acia1::resetIo()
 {
     Mc6850::resetIo();
     io->reset_serial();
 }
 
-void Acia1::requestInput(void)
+void Acia1::requestInput()
 {
     if (io->poll_serial())
     {
@@ -50,7 +50,7 @@ void Acia1::requestInput(void)
     }
 }
 
-Byte Acia1::readInput(void)
+Byte Acia1::readInput()
 {
     Byte temp;
 
@@ -70,7 +70,7 @@ void Acia1::writeOutput(Byte val)
 }
 
 
-void Acia1::set_irq(void)
+void Acia1::set_irq()
 {
     Mc6850::set_irq();
     cpu->set_irq();

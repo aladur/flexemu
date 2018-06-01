@@ -157,7 +157,7 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
     }
 }
 
-int ContainerPropertiesDialog::GetTracks(void)
+int ContainerPropertiesDialog::GetTracks()
 {
     long t;
 
@@ -171,7 +171,7 @@ int ContainerPropertiesDialog::GetTracks(void)
     }
 }
 
-int ContainerPropertiesDialog::GetSectors(void)
+int ContainerPropertiesDialog::GetSectors()
 {
     long s;
 

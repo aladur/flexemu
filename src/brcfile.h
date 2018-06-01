@@ -35,16 +35,16 @@ enum
 class BRcFile
 {
 public:
-    BRcFile(void);
+    BRcFile();
     BRcFile(const char *aFileName);
-    ~BRcFile(void);
+    ~BRcFile();
 
     void SetFileName(const char *aFileName);
     int SetValue(const char *key, const char *value);
     int SetValue(const char *key, int value);
     int GetValue(const char *key, std::string &value, int *isInteger = NULL);
     int GetValue(const char *key, int *value);
-    int Initialize(void);
+    int Initialize();
 
 private:
     std::string fileName;

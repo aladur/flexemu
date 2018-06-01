@@ -45,7 +45,7 @@ IMPLEMENT_APP(FlexemuSetup)
  flexemuSetup implementation (The Application class)
 --------------------------------------------------------*/
 typedef char *PCHAR;
-bool FlexemuSetup::OnInit(void)
+bool FlexemuSetup::OnInit()
 {
     dialog = NULL;
 #ifdef _UNICODE

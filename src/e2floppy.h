@@ -77,14 +77,14 @@ protected:
     // constructor/destructor
 public:
     E2floppy();
-    virtual ~E2floppy(void);
+    virtual ~E2floppy();
 
     // public interface
 public:
-    virtual void         resetIo(void);
+    virtual void         resetIo();
     virtual Byte         readIo(Word offset);
     virtual void         writeIo(Word offset, Byte val);
-    virtual const char   *getName(void)
+    virtual const char   *getName()
     {
         return "e2floppy";
     };
@@ -92,8 +92,8 @@ public:
     virtual void         get_drive_status(tDiskStatus status[4]);
     virtual void         disk_directory(const char *x_disk_dir);
     virtual void         mount_all_drives(std::string drive[]);
-    virtual bool         update_all_drives(void);
-    virtual bool         umount_all_drives(void);
+    virtual bool         update_all_drives();
+    virtual bool         umount_all_drives();
     virtual bool         mount_drive(const char *path, Word drive_nr,
                                      tMountOption option = MOUNT_DEFAULT);
     virtual bool         format_disk(SWord trk, SWord sec,
@@ -107,9 +107,9 @@ private:
 
     virtual Byte         readByte(Word index);
     virtual void         writeByte(Word index);
-    virtual Byte         driveReady(void);
-    virtual Byte         writeProtect(void);
-    virtual Byte         recordNotFound(void);
+    virtual Byte         driveReady();
+    virtual Byte         writeProtect();
+    virtual Byte         recordNotFound();
     virtual Byte         seekError(Byte new_track);
     const char       *open_mode(char *path);
 };

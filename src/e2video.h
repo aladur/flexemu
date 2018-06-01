@@ -45,14 +45,14 @@ public:
 
 public:
 
-    void    resetIo(void);
+    void    resetIo();
 
     // public interface
 public:
 
     Byte        readIo(Word offset);
     void        writeIo(Word offset, Byte val);
-    const char *getName(void)
+    const char *getName()
     {
         return "e2video";
     };

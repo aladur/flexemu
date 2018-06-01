@@ -60,7 +60,7 @@ void XAbstractGui::initialize(struct sGuiOptions *pOptions)
     copy_block = NULL;
 }
 
-Display *XAbstractGui::getDisplay(void)
+Display *XAbstractGui::getDisplay()
 {
     return (Display *)NULL;
 }
@@ -111,7 +111,7 @@ void XAbstractGui::set_cursor(int type /* = FLX_DEFAULT_CURSOR */)
     }
 }
 
-const char *XAbstractGui::get_title(void)
+const char *XAbstractGui::get_title()
 {
     if (cursor_type == FLX_DEFAULT_CURSOR)
     {
@@ -698,7 +698,7 @@ void XAbstractGui::set_bell(int percent)
 } // set_bell
 
 // return: -1 = failure
-int XAbstractGui::popup_help(void)
+int XAbstractGui::popup_help()
 {
     pid_t child_pid;
     int status;

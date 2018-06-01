@@ -34,8 +34,8 @@ public:
 
     virtual Byte         readIo(Word offset) = 0;
     virtual void         writeIo(Word offset, Byte val) = 0;
-    virtual void         resetIo(void) = 0;
-    virtual const char      *getName(void) = 0;
+    virtual void         resetIo() = 0;
+    virtual const char      *getName() = 0;
     virtual ~IoDevice() { }; // necessary otherwise the destructor
     // of subclasses is not called!
 };

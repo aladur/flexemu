@@ -44,13 +44,13 @@ public:
     virtual ~ContainerPropertiesDialog();
     void OnInitDialog(wxInitDialogEvent &event);
     void OnSelectPath(wxCommandEvent &event);
-    int GetTracks(void);
-    int GetSectors(void);
-    inline const wxString &GetPath(void)
+    int GetTracks();
+    int GetSectors();
+    inline const wxString &GetPath()
     {
         return m_path;
     };
-    int GetFormat(void)
+    int GetFormat()
     {
         return m_format;
     };

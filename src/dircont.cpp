@@ -87,7 +87,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 /* Destructor                           */
 /****************************************/
 
-DirectoryContainer::~DirectoryContainer(void)
+DirectoryContainer::~DirectoryContainer()
 {
     // final cleanup: close if not already done
     try
@@ -106,7 +106,7 @@ DirectoryContainer::~DirectoryContainer(void)
 /* Public interface                     */
 /****************************************/
 
-bool DirectoryContainer::IsWriteProtected(void) const
+bool DirectoryContainer::IsWriteProtected() const
 {
     if (isOpened)
     {
@@ -167,7 +167,7 @@ std::string DirectoryContainer::GetPath() const
 // this may cause exeptions!
 // usually files should be closed explicitly
 // with closeFile()
-int DirectoryContainer::Close(void)
+int DirectoryContainer::Close()
 {
     isOpened = 0;
     delete path;
@@ -382,13 +382,13 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
 // check if an container is opened
 // If so return true
-bool DirectoryContainer::IsContainerOpened(void) const
+bool DirectoryContainer::IsContainerOpened() const
 {
     return isOpened;
 }
 
 
-int DirectoryContainer::GetContainerType(void) const
+int DirectoryContainer::GetContainerType() const
 {
     return TYPE_DIRECTORY;
 }

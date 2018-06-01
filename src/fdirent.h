@@ -74,7 +74,7 @@ public:
     FlexDirEntry(const FlexDirEntry &de);
 
     void    CopyFrom(const FlexDirEntry &de);
-    const BDate &GetDate(void) const;
+    const BDate &GetDate() const;
     void    SetDate(const BDate &date);
     void    SetDate(int d, int m, int y);
     void    SetStartTrkSec(int t, int s);
@@ -82,21 +82,21 @@ public:
     void    SetEndTrkSec(int t, int s);
     void    GetEndTrkSec(int *t, int *s);
     void    SetTotalFileName(const char *fileName);
-    const std::string &GetTotalFileName(void) const;
-    std::string GetFileName(void) const;
-    std::string GetFileExt(void) const;
+    const std::string &GetTotalFileName() const;
+    std::string GetFileName() const;
+    std::string GetFileExt() const;
     void    SetSize(int size);
-    int     GetSize(void);
+    int     GetSize();
     void    SetAttributes(int attr);
     void    SetAttributes(int setMask, int clearMask);
-    int     GetAttributes(void);
-    const std::string GetAttributesString(void);
-    int     GetSectorMap(void) const;
-    int     IsRandom(void) const;
+    int     GetAttributes();
+    const std::string GetAttributesString();
+    int     GetSectorMap() const;
+    int     IsRandom() const;
     void    SetSectorMap(int aSectorMap);
-    int     IsEmpty(void);
-    void    SetEmpty(void);
-    void    ClearEmpty(void);
+    int     IsEmpty();
+    void    SetEmpty();
+    void    ClearEmpty();
     FlexDirEntry &operator = (const FlexDirEntry &de);
 
 };  // class FlexDirEntry
@@ -105,7 +105,7 @@ inline void FlexDirEntry::SetSize(int s)
 {
     size = s;
 }
-inline int FlexDirEntry::GetSize(void)
+inline int FlexDirEntry::GetSize()
 {
     return size;
 }
@@ -114,25 +114,25 @@ inline void FlexDirEntry::SetAttributes(int a)
 {
     attributes = a;
 }
-inline int FlexDirEntry::GetAttributes(void)
+inline int FlexDirEntry::GetAttributes()
 {
     return attributes;
 }
 
-inline void FlexDirEntry::SetEmpty(void)
+inline void FlexDirEntry::SetEmpty()
 {
     status |= FLX_EMPTY;
 }
-inline void FlexDirEntry::ClearEmpty(void)
+inline void FlexDirEntry::ClearEmpty()
 {
     status &= ~FLX_EMPTY;
 }
-inline int FlexDirEntry::IsEmpty(void)
+inline int FlexDirEntry::IsEmpty()
 {
     return status & FLX_EMPTY;
 }
 
-inline int FlexDirEntry::IsRandom(void) const
+inline int FlexDirEntry::IsRandom() const
 {
     return (sectorMap != 0);
 }
@@ -140,7 +140,7 @@ inline void FlexDirEntry::SetSectorMap(int aSectorMap)
 {
     sectorMap = aSectorMap;
 }
-inline int FlexDirEntry::GetSectorMap(void) const
+inline int FlexDirEntry::GetSectorMap() const
 {
     return sectorMap;
 }

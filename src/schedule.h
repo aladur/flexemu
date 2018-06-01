@@ -58,9 +58,9 @@ public:
         io  = x_io;
     };
     Byte        statemachine(Byte initial_state);
-    bool        is_finished(void);
+    bool        is_finished();
     void        set_new_state(Byte x_user_input);
-    void        process_events(void);
+    void        process_events();
     Byte        idleloop();
     Byte        runloop(Word mode);
 
@@ -68,8 +68,8 @@ public:
 public:
     void        sync_exec(BCommand *newCommand);
 protected:
-    void        Execute(void);
-    virtual void    Run(void);
+    void        Execute();
+    virtual void    Run();
     BMutex          *commandMutex;
     BMutex          *statusMutex;
     BMutex           *irqStatMutex;
@@ -77,14 +77,14 @@ protected:
 
     // Timer interface:
 public:
-    QWord       get_total_cycles(void)
+    QWord       get_total_cycles()
     {
         return total_cycles;
     };
 protected:
     static void timer_elapsed(void *p);
-    void timer_elapsed(void);
-    void set_timer(void);
+    void timer_elapsed();
+    void set_timer();
 
     Byte        state;
     Word        events;
@@ -99,7 +99,7 @@ protected:
     // CPU status
 public:
     void        get_interrupt_status(tInterruptStatus &s);
-    bool        status_available(void);
+    bool        status_available();
     CpuStatus  *get_status();
 protected:
     tInterruptStatus interrupt_status;
@@ -109,12 +109,12 @@ protected:
     // CPU frequency
 public:
     void        set_frequency(float target_freq);
-    float       get_frequency(void)
+    float       get_frequency()
     {
         return frequency;
     };
 protected:
-    void        update_frequency(void);
+    void        update_frequency();
     void        frequency_control(QWord time1);
     float       target_frequency;
     float       frequency;      // current frequency

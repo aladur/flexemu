@@ -64,12 +64,12 @@ class FlexDnDFiles
     };
 public:
     FlexDnDFiles();
-    virtual ~FlexDnDFiles(void);
+    virtual ~FlexDnDFiles();
 
     void ReadData(const Byte *p);
     size_t GetDataSize() const;
     void GetDataHere(Byte *buf) const;
-    unsigned int GetFileCount(void) const
+    unsigned int GetFileCount() const
     {
         return fileList.size();
     };

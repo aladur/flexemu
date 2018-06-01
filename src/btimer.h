@@ -38,8 +38,8 @@ public:
         return dueTime;
     };
     bool Start(bool periodic, QWord dueTime);
-    bool Stop(void);
-    void Suspend(void); // suspend thread until timer elapses
+    bool Stop();
+    void Suspend(); // suspend thread until timer elapses
     void SetTimerProc(BTimerProc,
                       void *x_p = NULL); // async func after timer elapses
 protected:
@@ -48,8 +48,8 @@ protected:
     bool periodic;
     BTimerProc timerProc;
     void *timerParam;
-    void Init(void);
-    void UnInit(void);
+    void Init();
+    void UnInit();
     bool StartTimer();
 
 #ifdef _WIN32

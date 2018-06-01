@@ -66,7 +66,7 @@ Byte Mc6850::readIo(Word offset)
 
 // read data from serial line (should be overwritten by subclass)
 
-Byte Mc6850::readInput(void)
+Byte Mc6850::readInput()
 {
     return rdr;
 }
@@ -74,7 +74,7 @@ Byte Mc6850::readInput(void)
 // check if character is ready to read from serial line
 // (should be overwritten by subclass)
 
-void Mc6850::requestInput(void)
+void Mc6850::requestInput()
 {
 }
 
@@ -111,14 +111,14 @@ void Mc6850::writeOutput(Byte)
 
 // set an receive/transmit interrupt (should be overwritten by subclass)
 
-void Mc6850::set_irq(void)
+void Mc6850::set_irq()
 {
     BSET7(sr);
 }
 
 // actions when a character is ready to be received
 
-void Mc6850::activeTransition(void)
+void Mc6850::activeTransition()
 {
     BSET0(sr);
 

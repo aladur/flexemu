@@ -76,7 +76,7 @@ int std_new_handler(size_t n)
     return 0;
 }
 #else
-void std_new_handler(void)
+void std_new_handler()
 {
     throw std::bad_alloc();
 }

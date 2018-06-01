@@ -87,9 +87,9 @@ public:
     wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
     //void OnCloseWindow(wxCloseEvent &event);
-    bool TransferDataFromWindow(void);
-    bool TransferDataToWindow(void);
-    bool Validate(void);
+    bool TransferDataFromWindow();
+    bool TransferDataToWindow();
+    bool Validate();
     wxString OpenFilePrompter(
         const wxString &defautPath = wxT(""),
         const wxString &caption = wxT(""),

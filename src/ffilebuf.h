@@ -39,16 +39,16 @@ public:
     virtual ~FlexFileBuffer();
 
     FlexFileBuffer &operator=(const FlexFileBuffer &lhs);
-    int ConvertFromFlex(void);
-    int ConvertToFlex(void);
+    int ConvertFromFlex();
+    int ConvertToFlex();
     bool WriteToFile(const char *path) const;
 #ifdef __GNUC__
     bool WriteToFile(int fd) const;
 #endif
     bool ReadFromFile(const char *path);
-    bool IsTextFile(void) const;
-    bool IsFlexTextFile(void) const;
-    bool IsExecutableFile(void) const;
+    bool IsTextFile() const;
+    bool IsFlexTextFile() const;
+    bool IsExecutableFile() const;
     bool CopyFrom(const Byte *from, unsigned int aSize,
                   unsigned int offset = 0);
     bool CopyTo(Byte *to, unsigned int aSize,
@@ -67,11 +67,11 @@ public:
     {
         return filename;
     };
-    inline unsigned int GetSize(void) const
+    inline unsigned int GetSize() const
     {
         return size;
     };
-    inline bool IsEmpty(void) const
+    inline bool IsEmpty() const
     {
         return size == 0;
     };
@@ -79,7 +79,7 @@ public:
     {
         return GetBuffer(0);
     };
-    inline int GetAttributes(void) const
+    inline int GetAttributes() const
     {
         return attributes;
     };
@@ -87,7 +87,7 @@ public:
     {
         attributes = attrs;
     };
-    inline int IsRandom(void) const
+    inline int IsRandom() const
     {
         return (sectorMap != 0);
     }
@@ -95,16 +95,16 @@ public:
     {
         sectorMap = aSectorMap;
     }
-    inline int GetSectorMap(void) const
+    inline int GetSectorMap() const
     {
         return sectorMap;
     }
-    const BDate &GetDate(void) const;
+    const BDate &GetDate() const;
 
 private:
     void copyFrom(const FlexFileBuffer &src);
-    unsigned int SizeOfFlexFile(void);
-    unsigned int SizeOfFile(void);
+    unsigned int SizeOfFlexFile();
+    unsigned int SizeOfFile();
     char filename[FLEX_FILENAME_LENGTH];
 
     Byte    *pBuffer;

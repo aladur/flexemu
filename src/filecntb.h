@@ -59,12 +59,12 @@ enum
 class FileContainerIfBase
 {
 public:
-    virtual int  Close(void) = 0;
-    virtual bool IsContainerOpened(void) const = 0;
-    virtual bool IsWriteProtected(void) const = 0;
+    virtual int  Close() = 0;
+    virtual bool IsContainerOpened() const = 0;
+    virtual bool IsWriteProtected() const = 0;
     virtual bool  GetInfo(FlexContainerInfo &info) const = 0;
-    virtual int  GetContainerType(void) const = 0;
-    virtual std::string GetPath(void) const = 0;
+    virtual int  GetContainerType() const = 0;
+    virtual std::string GetPath() const = 0;
     virtual ~FileContainerIfBase() { };
 };  /* class FileContainerIfBase */
 

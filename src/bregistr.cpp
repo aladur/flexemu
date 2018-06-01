@@ -33,7 +33,7 @@ BRegistry BRegistry::currentUser    = HKEY_CURRENT_USER;
 BRegistry BRegistry::localMachine   = HKEY_LOCAL_MACHINE;
 BRegistry BRegistry::users          = HKEY_USERS;
 
-BRegistry::BRegistry(void) : lastError(0), hKey(NULL)
+BRegistry::BRegistry() : lastError(0), hKey(NULL)
 {
 }
 

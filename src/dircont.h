@@ -61,12 +61,12 @@ public:
     static DirectoryContainer *Create(const char *dir, const char *name,
                                       int t, int s,
                                       int fmt = TYPE_DSK_CONTAINER);
-    int Close(void);
-    bool IsContainerOpened(void) const;
-    bool IsWriteProtected(void) const;
+    int Close();
+    bool IsContainerOpened() const;
+    bool IsWriteProtected() const;
     bool GetInfo(FlexContainerInfo &info) const;
-    int  GetContainerType(void) const;
-    std::string GetPath(void) const;
+    int  GetContainerType() const;
+    std::string GetPath() const;
     bool CheckFilename(const char *) const;
 
     // file oriented interface (to be used within flexdisk)

@@ -33,7 +33,7 @@
 #define _(p) p
 
 
-FlexContainerInfo::FlexContainerInfo(void) :
+FlexContainerInfo::FlexContainerInfo() :
     sectors(0),
     tracks(0),
     type(0),
@@ -44,11 +44,11 @@ FlexContainerInfo::FlexContainerInfo(void) :
     name[0] = '\0';
 } // FlexContainerInfo
 
-FlexContainerInfo::~FlexContainerInfo(void)
+FlexContainerInfo::~FlexContainerInfo()
 {
 }
 
-const std::string FlexContainerInfo::GetTypeString(void) const
+const std::string FlexContainerInfo::GetTypeString() const
 {
     std::string str;
 

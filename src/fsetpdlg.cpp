@@ -112,7 +112,7 @@ FlexemuOptionsDialog::~FlexemuOptionsDialog()
 {
 }
 
-bool FlexemuOptionsDialog::TransferDataToWindow(void)
+bool FlexemuOptionsDialog::TransferDataToWindow()
 {
     wxString str;
     int x;
@@ -476,7 +476,7 @@ bool FlexemuOptionsDialog::Validate()
     return wxWindow::Validate();
 }
 
-bool FlexemuOptionsDialog::TransferDataFromWindow(void)
+bool FlexemuOptionsDialog::TransferDataFromWindow()
 {
 
     if (c_geometry)

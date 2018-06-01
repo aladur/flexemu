@@ -195,7 +195,7 @@ FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
     }
 }
 
-int FlexDiskListCtrl::UpdateItems(void)
+int FlexDiskListCtrl::UpdateItems()
 {
     int     index = 0;
     wxListItem  anItem;
@@ -263,7 +263,7 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &de)
     SetItem(item, LC_FILEDESC, GetFileDescription(&de));
 }
 
-const wxMenu *FlexDiskListCtrl::GetMenu(void)
+const wxMenu *FlexDiskListCtrl::GetMenu()
 {
     return m_popupMenu;
 }
@@ -355,7 +355,7 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
     Notify();
 }
 
-void FlexDiskListCtrl::RenameSelectedItems(void)
+void FlexDiskListCtrl::RenameSelectedItems()
 {
     long            *pItems;
     wxString        itemText;
@@ -415,7 +415,7 @@ void FlexDiskListCtrl::RenameSelectedItems(void)
     delete [] pItems;
 }
 
-void FlexDiskListCtrl::ViewSelectedItems(void)
+void FlexDiskListCtrl::ViewSelectedItems()
 {
     FlexFileBuffer  buffer;
     long        *pItems;
@@ -692,7 +692,7 @@ void FlexDiskListCtrl::OnDeselected(wxListEvent &event)
     Notify();
 }
 
-void FlexDiskListCtrl::Notify(void)
+void FlexDiskListCtrl::Notify()
 {
     if (m_statusbarObserver != NULL)
     {
@@ -950,7 +950,7 @@ void FlexDiskListCtrl::GetFileList(FlexFileList &fileList)
     delete [] pItems;
 }
 
-void FlexDiskListCtrl::SelectAllFiles(void)
+void FlexDiskListCtrl::SelectAllFiles()
 {
     int i;
 
@@ -960,7 +960,7 @@ void FlexDiskListCtrl::SelectAllFiles(void)
     }
 }
 
-void FlexDiskListCtrl::DeselectAllFiles(void)
+void FlexDiskListCtrl::DeselectAllFiles()
 {
     int i;
 
@@ -970,7 +970,7 @@ void FlexDiskListCtrl::DeselectAllFiles(void)
     }
 }
 
-void FlexDiskListCtrl::FindFiles(void)
+void FlexDiskListCtrl::FindFiles()
 {
     static wxString value(_("*.*"));
 
@@ -1009,7 +1009,7 @@ void FlexDiskListCtrl::FindFiles(void)
     }
 }
 
-void FlexDiskListCtrl::CopyToClipboard(void)
+void FlexDiskListCtrl::CopyToClipboard()
 {
     FlexFileList fileList;
     FlexDnDFiles files;
@@ -1058,7 +1058,7 @@ void FlexDiskListCtrl::CopyToClipboard(void)
     fileList.DeleteContents(TRUE);
 }
 
-bool FlexDiskListCtrl::PasteFromClipboard(void)
+bool FlexDiskListCtrl::PasteFromClipboard()
 {
     FlexFileDataObject flexFileData;
 

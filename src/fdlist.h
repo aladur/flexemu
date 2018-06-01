@@ -54,9 +54,9 @@ public:
                      FileContainerIf *container,
                      const wxValidator &validator = wxDefaultValidator,
                      const wxString &name = wxT("flexDiskListCtrl"));
-    virtual ~FlexDiskListCtrl(void);
+    virtual ~FlexDiskListCtrl();
 
-    const wxMenu *GetMenu(void);
+    const wxMenu *GetMenu();
     inline void  Attach(BObserver *anObserver) const
     {
         m_statusbarObserver = anObserver;
@@ -68,15 +68,15 @@ public:
             m_statusbarObserver = NULL;
         }
     };
-    inline int GetTotalSize(void) const
+    inline int GetTotalSize() const
     {
         return m_totalSize;
     };
-    inline int GetFileCount(void) const
+    inline int GetFileCount() const
     {
         return GetSelectedItemCount();
     };
-    inline FileContainerIf *GetContainer(void) const
+    inline FileContainerIf *GetContainer() const
     {
         return m_container;
     };
@@ -85,7 +85,7 @@ public:
 #ifdef wxUSE_DRAG_AND_DROP
     bool PasteFrom(FlexDnDFiles &files);
 #endif
-    int UpdateItems(void);
+    int UpdateItems();
     void UpdateItem(int item, FlexDirEntry &de);
     DECLARE_MENUCOMMAND(OnSelectAll)
     DECLARE_MENUCOMMAND(OnDeselectAll)
@@ -111,16 +111,16 @@ private:
     void Notify();
     int GetSelections(long **pItems) const;
     void DeleteSelectedItems(bool askUser = TRUE);
-    void RenameSelectedItems(void);
-    void ViewSelectedItems(void);
+    void RenameSelectedItems();
+    void ViewSelectedItems();
     void ProcessCmdFile(const char *fileName, FlexFileBuffer *buffer);
     void SetPropertyOnSelectedItems(int protection, bool isToBeSet);
     void GetFileList(FlexFileList &fileList);
-    void CopyToClipboard(void);
-    bool PasteFromClipboard(void);
-    void DeselectAllFiles(void);
-    void SelectAllFiles(void);
-    void FindFiles(void);
+    void CopyToClipboard();
+    bool PasteFromClipboard();
+    void DeselectAllFiles();
+    void SelectAllFiles();
+    void FindFiles();
     void BeforeDeleteAllItems();
     /*
         void OnGetInfo(wxListEvent& event);

@@ -149,7 +149,7 @@ void Memory::init_memory(bool himem)
     video_ram_active_bits = 0;
 } // init_memory
 
-void Memory::uninit_memory(void)
+void Memory::uninit_memory()
 {
     Word i = MAX_IO_DEVICES;
 
@@ -167,7 +167,7 @@ void Memory::uninit_memory(void)
     while (i != 0);
 } // uninit_memory
 
-void Memory::init_blocks_to_update(void)
+void Memory::init_blocks_to_update()
 {
     short display_block;
 
@@ -218,7 +218,7 @@ bool Memory::add_io_device(IoDevice *device,
     return true;
 }
 
-void Memory::reset_io(void)
+void Memory::reset_io()
 {
     Word i;
 

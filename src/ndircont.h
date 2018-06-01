@@ -85,15 +85,15 @@ public:
     static NafsDirectoryContainer *Create(const char *dir,
                                           const char *name, int t, int s,
                                           int fmt = TYPE_DSK_CONTAINER);
-    int Close(void);
-    bool IsContainerOpened(void) const;
+    int Close();
+    bool IsContainerOpened() const;
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);
-    bool IsWriteProtected(void) const;
+    bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;
-    int GetBytesPerSector(void) const;
+    int GetBytesPerSector() const;
     bool GetInfo(FlexContainerInfo &info) const;
     int GetContainerType() const;
     std::string GetPath() const;
@@ -144,7 +144,7 @@ private:
         Byte month,
         Byte day,
         Byte year) const;
-    t_st *link_address(void) const;
+    t_st *link_address() const;
     Byte last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;

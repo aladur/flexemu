@@ -125,7 +125,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 // deletes the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::DeleteCurrent(void)
+bool FlexFileContainerIteratorImp::DeleteCurrent()
 {
     int start_trk, start_sec, end_trk, end_sec;
     int fc_end_trk, fc_end_sec;

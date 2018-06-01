@@ -40,25 +40,25 @@ protected:
 
 public:
     // read data from serial line
-    virtual Byte            readInput(void);
+    virtual Byte            readInput();
 
     // write data to serial line
     virtual void            writeOutput(Byte val);
 
     // set an interrupt
-    virtual void            set_irq(void);
+    virtual void            set_irq();
 
     // request for an input ready to be read
-    virtual void            requestInput(void);
+    virtual void            requestInput();
 
 public:
-    virtual void            resetIo(void);
+    virtual void            resetIo();
 
     // Public constructor and destructor
 
 public:
 
-    virtual const char      *getName(void)
+    virtual const char      *getName()
     {
         return "acia1";
     };

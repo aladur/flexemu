@@ -52,8 +52,8 @@ public:
 
     virtual Byte             readIo(Word offset);
     virtual void             writeIo(Word offset, Byte val);
-    virtual void             resetIo(void);
-    virtual const char      *getName(void)
+    virtual void             resetIo();
+    virtual const char      *getName()
     {
         return "mc6821";
     };
@@ -74,17 +74,17 @@ public:
 
 protected:
 
-    virtual Byte            readInputA(void);
-    virtual Byte            readInputB(void);
-    virtual void            set_irq_A(void);
-    virtual void            set_irq_B(void);
+    virtual Byte            readInputA();
+    virtual Byte            readInputB();
+    virtual void            set_irq_A();
+    virtual void            set_irq_B();
 
     // read strobed data
 
 protected:
 
-    virtual void            requestInputA(void);
-    virtual void            requestInputB(void);
+    virtual void            requestInputA();
+    virtual void            requestInputB();
 
     // write data to port-pins
 

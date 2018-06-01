@@ -34,11 +34,11 @@ public:
     ~BMemoryBuffer();
 
     void FillWith(const Byte pattern = 0);
-    inline DWord GetSize(void) const
+    inline DWord GetSize() const
     {
         return size;
     };
-    inline DWord GetBaseAddress(void) const
+    inline DWord GetBaseAddress() const
     {
         return baseAddress;
     };

@@ -91,13 +91,13 @@ protected:
     virtual void    update_block(int block_number);
     virtual int     convert_buttonmask(int);
     virtual SWord   translate_to_ascii(XKeyEvent *pevent);
-    virtual Display *getDisplay(void);
+    virtual Display *getDisplay();
     virtual Window  getWindow(tWindowType t = FLX_E2SCREEN);
     virtual void    initialize(struct sGuiOptions *pOptions);
-    virtual int popup_help(void);
-    virtual const char *get_title(void);
-    virtual void    toggle_mouse_capture(void);
-    virtual void    release_mouse_capture(void);
+    virtual int popup_help();
+    virtual const char *get_title();
+    virtual void    toggle_mouse_capture();
+    virtual void    release_mouse_capture();
 
 public:
 

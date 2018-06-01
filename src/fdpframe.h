@@ -51,7 +51,7 @@ public:
     FlexParentFrame(wxWindow *parent, const wxWindowID id,
                     const wxString &title, const wxPoint &pos,
                     const wxSize &size, const long style);
-    virtual ~FlexParentFrame(void);
+    virtual ~FlexParentFrame();
     void OnChildFocus(wxChildFocusEvent &event);
     void OnSize(wxSizeEvent &event);
     void OnAbout(wxCommandEvent &event);

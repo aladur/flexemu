@@ -142,7 +142,7 @@ void FlexFileBuffer::Realloc(unsigned int newSize,
     size = newSize;
 }
 
-unsigned int FlexFileBuffer::SizeOfFlexFile(void)
+unsigned int FlexFileBuffer::SizeOfFlexFile()
 {
     unsigned int count = 0;
 
@@ -183,7 +183,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile(void)
     return count;
 }
 
-int FlexFileBuffer::ConvertFromFlex(void)
+int FlexFileBuffer::ConvertFromFlex()
 {
     Byte *newBuffer;
     unsigned int newIndex, newSize;
@@ -244,7 +244,7 @@ int FlexFileBuffer::ConvertFromFlex(void)
     return size;
 }
 
-int FlexFileBuffer::ConvertToFlex(void)
+int FlexFileBuffer::ConvertToFlex()
 {
     Byte            c;
     Byte            *newBuffer;
@@ -370,7 +370,7 @@ int FlexFileBuffer::ConvertToFlex(void)
     return size;
 }
 
-unsigned int FlexFileBuffer::SizeOfFile(void)
+unsigned int FlexFileBuffer::SizeOfFile()
 {
     unsigned int    count, spaces;
 
@@ -417,7 +417,7 @@ unsigned int FlexFileBuffer::SizeOfFile(void)
     return count;
 }
 
-bool FlexFileBuffer::IsTextFile(void) const
+bool FlexFileBuffer::IsTextFile() const
 {
     for (unsigned int i = 0; i < size; i++)
     {
@@ -434,7 +434,7 @@ bool FlexFileBuffer::IsTextFile(void) const
     return true;
 }
 
-bool FlexFileBuffer::IsFlexTextFile(void) const
+bool FlexFileBuffer::IsFlexTextFile() const
 {
     for (unsigned int i = 0; i < size; i++)
     {
@@ -457,7 +457,7 @@ bool FlexFileBuffer::IsFlexTextFile(void) const
     return true;
 }
 
-bool FlexFileBuffer::IsExecutableFile(void) const
+bool FlexFileBuffer::IsExecutableFile() const
 {
     return false;
 }
@@ -610,7 +610,7 @@ void  FlexFileBuffer::SetDate(int d, int m, int y) const
     pDate = new BDate(d, m, y);
 }
 
-const BDate &FlexFileBuffer::GetDate(void) const
+const BDate &FlexFileBuffer::GetDate() const
 {
     if (!pDate)
     {

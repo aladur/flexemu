@@ -359,7 +359,7 @@ void Win32Gui::mouse_warp(HWND w, int dx, int dy)
     }
 }
 
-const char *Win32Gui::get_title(void)
+const char *Win32Gui::get_title()
 {
     if (cursor_type == FLX_DEFAULT_CURSOR)
     {
@@ -1170,7 +1170,7 @@ void Win32Gui::popup_message(char *pmessage)
                    MB_OK | MB_ICONERROR);
 }
 
-void Win32Gui::main_loop(void)
+void Win32Gui::main_loop()
 {
     MSG msg;
     BOOL bRet;
@@ -1536,7 +1536,7 @@ INT_PTR CALLBACK aboutDialogProc(HWND hwnd, UINT message, WPARAM wParam,
     return FALSE;
 } // aboutDialogProc
 
-void Win32Gui::toggle_undocumented(void)
+void Win32Gui::toggle_undocumented()
 {
     is_use_undocumented = !is_use_undocumented;
     UINT is_checked = is_use_undocumented ? MF_CHECKED : MF_UNCHECKED;
@@ -1901,7 +1901,7 @@ void Win32Gui::initialize_after_open(HWND w, struct sGuiOptions *pOptions)
     release_mouse_capture(w);
 }
 
-int Win32Gui::gui_type(void)
+int Win32Gui::gui_type()
 {
     return GUI_WINDOWS;
 }

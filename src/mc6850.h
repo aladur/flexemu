@@ -47,24 +47,24 @@ public:
 
     virtual Byte             readIo(Word offset);
     virtual void             writeIo(Word offset, Byte val);
-    virtual void             resetIo(void);
-    virtual const char      *getName(void)
+    virtual void             resetIo();
+    virtual const char      *getName()
     {
         return "mc6850";
     };
 
     // actions to be done when a character is ready to be received
-    virtual void            activeTransition(void);
+    virtual void            activeTransition();
 
 protected:
     // read data from serial line
-    virtual Byte            readInput(void);
+    virtual Byte            readInput();
     // write data to serial line
     virtual void            writeOutput(Byte val);
     // set an interrupt
-    virtual void            set_irq(void);
+    virtual void            set_irq();
     // request if character is ready to be read, update status register
-    virtual void            requestInput(void);
+    virtual void            requestInput();
 
     // Public constructor and destructor
 

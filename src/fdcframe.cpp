@@ -135,7 +135,7 @@ FlexChildFrame::FlexChildFrame(
 #endif
 }
 
-FlexChildFrame::~FlexChildFrame(void)
+FlexChildFrame::~FlexChildFrame()
 {
     if (m_clipboardObserver && m_listCtrl)
     {

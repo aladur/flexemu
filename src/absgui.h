@@ -135,15 +135,15 @@ public:
     virtual void    update_cpuview(const Mc6809CpuStatus &stat);
     // update cpu view
     virtual void    set_exit(bool b = true);    // set exit flag
-    virtual void    update(void);           // update video and
+    virtual void    update();           // update video and
     // event loop
     virtual void    set_new_state(Byte user_input); // set cpu to new state
     virtual void    set_bell(int x_percent);    // give a short
     // acoustic signal
-    virtual void    output_to_terminal(void);   // set output to terminal
-    virtual void    output_to_graphic(void);    // set output to gui
-    virtual void    main_loop(void);        // enter the msg loop
-    virtual int gui_type(void);         // return type of gui
+    virtual void    output_to_terminal();   // set output to terminal
+    virtual void    output_to_graphic();    // set output to gui
+    virtual void    main_loop();        // enter the msg loop
+    virtual int gui_type();         // return type of gui
 
     // constructor and destructor
 

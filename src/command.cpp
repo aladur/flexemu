@@ -66,7 +66,7 @@ void Command::set_fdc(E2floppy *device)
 }
 
 
-void Command::resetIo(void)
+void Command::resetIo()
 {
     command_index = 0;
     answer_index  = 0;

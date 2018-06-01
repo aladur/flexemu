@@ -98,12 +98,12 @@ Byte Mc6821::readIo(Word offset)
 // read data from port-Pins (should be overwritten by subclass)
 // if non strobed data input should be read
 
-Byte Mc6821::readInputA(void)
+Byte Mc6821::readInputA()
 {
     return ora;
 }
 
-Byte Mc6821::readInputB(void)
+Byte Mc6821::readInputB()
 {
     return orb;
 }
@@ -111,11 +111,11 @@ Byte Mc6821::readInputB(void)
 // request for data from port-Pins (should be implemented by subclass)
 // if strobed data input should be read
 
-void Mc6821::requestInputA(void)
+void Mc6821::requestInputA()
 {
 }
 
-void Mc6821::requestInputB(void)
+void Mc6821::requestInputB()
 {
 }
 
@@ -197,11 +197,11 @@ void Mc6821::writeOutputA(Byte)
 {
 }
 
-void Mc6821::set_irq_A(void)
+void Mc6821::set_irq_A()
 {
 }
 
-void Mc6821::set_irq_B(void)
+void Mc6821::set_irq_B()
 {
 }
 

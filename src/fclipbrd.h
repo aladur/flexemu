@@ -43,9 +43,9 @@ class FlexFileClipboard : public BObserver
 
 public:
     virtual ~FlexFileClipboard();
-    void SetEmpty(void) const;
+    void SetEmpty() const;
     void SetFiles(const FlexFileList &newFileList) const;
-    const FlexFileList &GetFiles(void) const
+    const FlexFileList &GetFiles() const
     {
         return m_fileList;
     };
@@ -53,7 +53,7 @@ public:
     {
         m_container = container;
     };
-    FileContainerIf *GetSourceContainer(void) const
+    FileContainerIf *GetSourceContainer() const
     {
         return m_container;
     };

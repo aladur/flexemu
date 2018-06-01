@@ -253,7 +253,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 // deletes the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool DirectoryContainerIteratorImp::DeleteCurrent(void)
+bool DirectoryContainerIteratorImp::DeleteCurrent()
 {
     std::string filePath;
 

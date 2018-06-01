@@ -74,7 +74,7 @@ void Mc6809::set_use_undocumented(bool b)
     }
 }
 
-void Mc6809::init(void)
+void Mc6809::init()
 {
     int i;
 
@@ -90,7 +90,7 @@ void Mc6809::init(void)
     init_psh_pul_cycles();
 } // init
 
-void Mc6809::init_indexed_cycles(void)
+void Mc6809::init_indexed_cycles()
 {
     Word i;
 
@@ -207,17 +207,17 @@ void Mc6809::init_psh_pul_cycles()
     } // for
 }
 
-void Mc6809::set_nmi(void)
+void Mc6809::set_nmi()
 {
     events |= DO_NMI;
 } // set_nmi
 
-void Mc6809::set_firq(void)
+void Mc6809::set_firq()
 {
     events |= DO_FIRQ;
 } // set_firq
 
-void Mc6809::set_irq(void)
+void Mc6809::set_irq()
 {
     events |= DO_IRQ;
 } // set_irq

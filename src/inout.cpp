@@ -73,7 +73,7 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     memset(key_buffer_ser, 0, sizeof(key_buffer_ser));
 }
 
-Inout::~Inout(void)
+Inout::~Inout()
 {
     delete gui;
     delete jmutex;
@@ -492,18 +492,18 @@ void Inout::put_ch(Byte key)
     pmutex->unlock();
 } // put_ch
 
-bool Inout::key_buffer_full(void)
+bool Inout::key_buffer_full()
 {
     return ((in == out - 1) || (out == 0 && (in == KEY_BUFFER_SIZE - 1)));
 }
 
-bool Inout::poll(void)
+bool Inout::poll()
 {
     return is_parallel_ch_in_queue;
 }
 
 // input should always be polled before read_ch
-Byte Inout::read_ch(void)
+Byte Inout::read_ch()
 {
     Byte result = 0x00;
 
@@ -539,7 +539,7 @@ Byte Inout::read_ch(void)
 }
 
 // read character, but leave it in the queue
-Byte Inout::read_queued_ch(void)
+Byte Inout::read_queued_ch()
 {
     Byte result = 0x00;
 
@@ -581,14 +581,14 @@ void Inout::put_ch_serial(Byte key)
     }  // if
 } // put_ch_serial
 
-Byte Inout::key_buffer_full_serial(void)
+Byte Inout::key_buffer_full_serial()
 {
     return ((in_ser == out_ser - 1) ||
             (out_ser == 0 && (in_ser == KEY_BUFFER_SIZE - 1)));
 }
 
 // poll serial port for input
-bool Inout::poll_serial(void)
+bool Inout::poll_serial()
 {
 #ifdef HAVE_TERMIOS_H
     char    buf[1];
@@ -613,7 +613,7 @@ bool Inout::poll_serial(void)
 
 // read a serial byte from cpu
 // ATTENTION: input should always be polled before read_ch_ser
-Byte Inout::read_ch_serial(void)
+Byte Inout::read_ch_serial()
 {
     Byte temp;
 
@@ -633,7 +633,7 @@ Byte Inout::read_ch_serial(void)
 }
 
 // read character, but leave it in the queue
-Byte Inout::read_queued_ch_serial(void)
+Byte Inout::read_queued_ch_serial()
 {
     while (in_ser == out_ser)    // check for empty buffer
     {
@@ -684,7 +684,7 @@ void Inout::set_bell(Word /*x_percent*/)
 #endif
 }
 
-bool Inout::is_terminal_supported(void)
+bool Inout::is_terminal_supported()
 {
 #ifdef HAVE_TERMIOS_H
     return 1;
@@ -693,12 +693,12 @@ bool Inout::is_terminal_supported(void)
 #endif
 }
 
-bool Inout::is_gui_present(void)
+bool Inout::is_gui_present()
 {
     return gui != NULL;
 }
 
-Word Inout::output_to_terminal(void)
+Word Inout::output_to_terminal()
 {
 #ifdef HAVE_TERMIOS_H
 
@@ -713,7 +713,7 @@ Word Inout::output_to_terminal(void)
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
-Word Inout::output_to_graphic(void)
+Word Inout::output_to_graphic()
 {
     if (gui != NULL)
     {
@@ -724,7 +724,7 @@ Word Inout::output_to_graphic(void)
     return 0;
 }
 
-void Inout::main_loop(void)
+void Inout::main_loop()
 {
     if (is_gui_present())
     {

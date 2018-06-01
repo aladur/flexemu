@@ -48,7 +48,7 @@ Pia2::~Pia2()
 #endif
 }
 
-void Pia2::resetIo(void)
+void Pia2::resetIo()
 {
     Mc6821::resetIo();
     io->reset_joystick();
@@ -64,7 +64,7 @@ void Pia2::writeOutputB(Byte val)
 }
 
 
-Byte Pia2::readInputB(void)
+Byte Pia2::readInputB()
 {
     unsigned int buttonMask;
     int deltaX, deltaY;

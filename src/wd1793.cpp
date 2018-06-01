@@ -372,12 +372,12 @@ void Wd1793::command(Byte command)
 }// command
 
 
-void Wd1793::resetIrq(void)
+void Wd1793::resetIrq()
 {
     irq = 0;
 }
 
-void Wd1793::setIrq(void)
+void Wd1793::setIrq()
 {
     irq = 1;
     // interrupt request to CPU
@@ -393,7 +393,7 @@ void Wd1793::writeByte(Word index)
     (void)index;
 }
 
-Byte Wd1793::driveReady(void)
+Byte Wd1793::driveReady()
 {
     return 1;
 }
@@ -405,13 +405,13 @@ Byte Wd1793::seekError(Byte)
 }
 
 
-Byte Wd1793::recordNotFound(void)
+Byte Wd1793::recordNotFound()
 {
     return 0;
 }
 
 // should be reimplemented by subclass, return 0x40 if wp, otherwise 0
-Byte Wd1793::writeProtect(void)
+Byte Wd1793::writeProtect()
 {
     return 0;
 }

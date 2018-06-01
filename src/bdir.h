@@ -54,14 +54,14 @@ public:
     {
         m_path = path;
     };
-    inline const std::string &GetPath(void) const
+    inline const std::string &GetPath() const
     {
         return m_path;
     };
-    bool Exists(void) const;
-    bool Remove(void) const;
+    bool Exists() const;
+    bool Remove() const;
     bool Create(int mode = 0x0755) const;
-    bool RemoveRecursive(void) const;
+    bool RemoveRecursive() const;
     tPathList GetSubDirectories() const;
     tPathList GetFiles() const;
 };

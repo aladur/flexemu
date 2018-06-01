@@ -44,17 +44,17 @@ public:
     ~BDate();                   // public destructor
 
 
-    static const BDate Now(void);
+    static const BDate Now();
     static const char *monthName[];
     const char  *GetDateString(int mode = DATE_DEFAULT_FORMAT) const;
     void    Assign(int day, int month, int year);
     void    GetDate(int *day, int *month, int *year);
     void    SetDate(int day, int month, int year);
     void    SetDate(const BDate &date);
-    int     GetDay(void) const ;
-    int     GetMonth(void) const ;
-    int     GetMonthBounded(void) const;
-    int     GetYear(void) const;
+    int     GetDay() const ;
+    int     GetMonth() const ;
+    int     GetMonthBounded() const;
+    int     GetYear() const;
     BDate &operator = (const BDate &d);
     bool    operator < (const BDate &d) const;
     bool    operator == (const BDate &d) const;
@@ -62,7 +62,7 @@ public:
     bool    operator >= (const BDate &d) const;
     bool    operator <= (const BDate &d) const;
 private:
-    int     MakeComparable(void) const;
+    int     MakeComparable() const;
 
     //static int        year2000; // if !0 0 and if year < 70 add 1900 to it
 }; // class BDate
@@ -78,11 +78,11 @@ inline BDate &BDate::operator = (const BDate &d)
     Assign(d.day, d.month, d.year);
     return *this;
 }
-inline int BDate::GetDay(void) const
+inline int BDate::GetDay() const
 {
     return day;
 }
-inline int BDate::GetMonth(void) const
+inline int BDate::GetMonth() const
 {
     return month;
 }

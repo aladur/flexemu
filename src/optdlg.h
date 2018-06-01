@@ -49,15 +49,15 @@ public:
     virtual ~GlobalOptionsDialog();
     void OnSelectViewer(wxCommandEvent &event);
     void OnSelectBootSectorFile(wxCommandEvent &event);
-    inline bool GetAutoTextFlag(void)
+    inline bool GetAutoTextFlag()
     {
         return m_autoTextFlag;
     };
-    inline wxString GetViewer(void)
+    inline wxString GetViewer()
     {
         return m_viewer;
     };
-    inline wxString GetBootSectorFile(void)
+    inline wxString GetBootSectorFile()
     {
         return m_bootSectorFile;
     };

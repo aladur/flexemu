@@ -75,7 +75,7 @@ private:
 
 private:
     void init_memory(bool himem);
-    void uninit_memory(void);
+    void uninit_memory();
     static Byte initial_content[8];
 
     // Initialisation functions
@@ -95,7 +95,7 @@ private:
 
     // memory interface
 public:
-    void reset_io(void);
+    void reset_io();
     void switch_mmu(Word offset, Byte val);
     void init_blocks_to_update();
 

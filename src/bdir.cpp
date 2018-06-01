@@ -332,17 +332,17 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
  member functions
 ********************************************/
 
-bool BDirectory::Exists(void) const
+bool BDirectory::Exists() const
 {
     return Exists(m_path);
 }
 
-bool BDirectory::Remove(void) const
+bool BDirectory::Remove() const
 {
     return Remove(m_path);
 }
 
-bool BDirectory::RemoveRecursive(void) const
+bool BDirectory::RemoveRecursive() const
 {
     return RemoveRecursive(m_path);
 }

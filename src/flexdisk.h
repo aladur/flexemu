@@ -71,8 +71,8 @@ DECLARE_APP(FLEXplorer)
 class FLEXplorer: public wxApp
 {
 public:
-    bool OnInit(void);
-    int OnExit(void);
+    bool OnInit();
+    int OnExit();
     void ReadDefaultOptions();
     void WriteDefaultOptions();
 private:

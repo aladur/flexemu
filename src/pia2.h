@@ -54,10 +54,10 @@ private:
 protected:
 
     virtual void            writeOutputB(Byte val);
-    virtual Byte            readInputB(void);
+    virtual Byte            readInputB();
 public:
-    virtual void            resetIo(void);
-    virtual const char      *getName(void)
+    virtual void            resetIo();
+    virtual const char      *getName()
     {
         return "pia2";
     };

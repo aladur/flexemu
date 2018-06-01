@@ -31,7 +31,7 @@ BEnvironment::BEnvironment()
 {
 }
 
-BEnvironment::~BEnvironment(void)
+BEnvironment::~BEnvironment()
 {
 }
 

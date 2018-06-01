@@ -97,7 +97,7 @@ void BTimer::UnInit()
 {
 }
 
-bool BTimer::Stop(void)
+bool BTimer::Stop()
 {
     bool ret = true;
     struct itimerval timerValue;
@@ -137,7 +137,7 @@ bool BTimer::Stop(void)
     return ret;
 }
 
-void BTimer::Suspend(void)
+void BTimer::Suspend()
 {
     sigset_t sigmask, oldmask;
     int sig;
@@ -153,7 +153,7 @@ void BTimer::Suspend(void)
     UnixTimerCallback(0);
 }
 
-bool BTimer::StartTimer(void)
+bool BTimer::StartTimer()
 {
     int ret;
     struct itimerval timerValue;
@@ -277,7 +277,7 @@ void BTimer::UnInit()
     }
 }
 
-bool BTimer::Stop(void)
+bool BTimer::Stop()
 {
     if (instance == NULL)
     {
@@ -302,7 +302,7 @@ bool BTimer::Stop(void)
     return (ret != FALSE);
 }
 
-void BTimer::Suspend(void)
+void BTimer::Suspend()
 {
     DWORD ret;
 

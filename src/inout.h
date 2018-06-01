@@ -95,37 +95,37 @@ public:
     AbstractGui *create_gui(int type);
     static void s_exec_signal(int sig_no);
 
-    void    reset(void);
+    void    reset();
     void    init(Word reset_key);
-    void    update_1_second(void);
+    void    update_1_second();
     void    set_bell(Word x_percent);
 
     // Communication with GUI
 public:
-    Word    output_to_terminal(void);
-    Word    output_to_graphic(void);
-    bool    is_gui_present(void);
-    void    main_loop(void);
+    Word    output_to_terminal();
+    Word    output_to_graphic();
+    bool    is_gui_present();
+    void    main_loop();
 
     // parallel I/O
 public:
-    void    reset_parallel(void);
-    bool    poll(void);
-    Byte    read_ch(void);
-    Byte    read_queued_ch(void);
+    void    reset_parallel();
+    bool    poll();
+    Byte    read_ch();
+    Byte    read_queued_ch();
     void    put_ch(Byte key);
-    bool    is_terminal_supported(void);
+    bool    is_terminal_supported();
 protected:
-    bool    key_buffer_full(void);
+    bool    key_buffer_full();
     BMutex  *pmutex;
     bool    is_parallel_ch_in_queue;
 
     // serial I/O
 public:
-    void    reset_serial(void);
-    bool    poll_serial(void);
-    Byte    read_ch_serial(void);
-    Byte    read_queued_ch_serial(void);
+    void    reset_serial();
+    bool    poll_serial();
+    Byte    read_ch_serial();
+    Byte    read_queued_ch_serial();
     void    write_ch_serial(Byte val);
     void    signal_reset(int sig_no);
 
@@ -136,7 +136,7 @@ public:
 
     // Joystick Interface
 public:
-    void    reset_joystick(void);
+    void    reset_joystick();
     bool    get_joystick(int *deltaX, int *deltaY, unsigned int *buttonMask);
     void    put_joystick(int deltaX, int deltaY);
     void    put_joystick(unsigned int buttonMask);
@@ -151,7 +151,7 @@ private:
     static void resetTerminalIO();
     void    initTerminalIO(Word reset_key);
     void    put_ch_serial(Byte key);
-    Byte    key_buffer_full_serial(void);
+    Byte    key_buffer_full_serial();
     void    exec_signal(int sig_no);
 
     // Public constructor and destructor

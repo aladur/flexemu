@@ -82,10 +82,10 @@ private:
 public:
 
     void    set_fdc(E2floppy *device);
-    void    resetIo(void);
+    void    resetIo();
     Byte    readIo(Word offset);
     void    writeIo(Word offset, Byte val);
-    virtual const char *getName(void)
+    virtual const char *getName()
     {
         return "command";
     };

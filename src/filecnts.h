@@ -153,7 +153,7 @@ public:
     virtual bool WriteSector(const Byte *buffer, int trk, int sec) = 0;
     virtual bool IsTrackValid(int track) const = 0;
     virtual bool IsSectorValid(int track, int sector) const = 0;
-    virtual int  GetBytesPerSector(void) const = 0;
+    virtual int  GetBytesPerSector() const = 0;
     virtual ~FileContainerIfSector() { };
 };  /* class FileContainerIfSector */
 

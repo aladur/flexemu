@@ -276,21 +276,21 @@ protected:
 
 private:
 
-    void            init(void);
-    void            init_indexed_cycles(void);
-    void            init_psh_pul_cycles(void);
+    void            init();
+    void            init_indexed_cycles();
+    void            init_psh_pul_cycles();
     void            illegal();
 #ifndef FASTFLEX
-    inline Word     fetch_ea_ext(void);
-    inline Word     fetch_ea_dir(void);
+    inline Word     fetch_ea_ext();
+    inline Word     fetch_ea_dir();
     inline Word     fetch_ea_idx(t_cycles *c);
-    inline Byte     fetch_imm_08(void);
-    inline Byte     fetch_ext_08(void);
-    inline Byte     fetch_dir_08(void);
+    inline Byte     fetch_imm_08();
+    inline Byte     fetch_ext_08();
+    inline Byte     fetch_dir_08();
     inline Byte     fetch_idx_08(t_cycles *c);
-    inline Word     fetch_imm_16(void);
-    inline Word     fetch_ext_16(void);
-    inline Word     fetch_dir_16(void);
+    inline Word     fetch_imm_16();
+    inline Word     fetch_ext_16();
+    inline Word     fetch_dir_16();
     inline Word     fetch_idx_16(t_cycles *c);
 
     Word        do_effective_address(Byte);
@@ -410,9 +410,9 @@ public:
 
     // Scheduler Interface implemenation
 public:
-    void            do_reset(void);
+    void            do_reset();
     Byte            run(Word mode);
-    void            exit_run(void);
+    void            exit_run();
     QWord           get_cycles(bool reset = false);
     void            get_status(CpuStatus *stat);
     CpuStatus      *create_status_object();
@@ -425,11 +425,11 @@ protected:
 
     // interrupt handling:
 public:
-    void            reset(void);        // CPU reset
+    void            reset();        // CPU reset
     inline t_cycles        exec_irqs(bool save_state = true);
-    void            set_nmi(void);
-    void            set_firq(void);
-    void            set_irq(void);
+    void            set_nmi();
+    void            set_firq();
+    void            set_irq();
 
 protected:
     QWord           total_cycles; // total cycle count with 64 Bit resolution
@@ -474,19 +474,19 @@ public:
 //**********************************
 // Arithmetic Instructions
 //**********************************
-inline void Mc6809::mul(void)
+inline void Mc6809::mul()
 {
     d = a * b;
     cc.bit.c = BTST7(b);
     cc.bit.z = !d;
 }
 
-inline void Mc6809::abx(void)
+inline void Mc6809::abx()
 {
     x += b;
 }
 
-inline void Mc6809::sex(void)
+inline void Mc6809::sex()
 {
     cc.bit.n = BTST7(b);
     cc.bit.z = !b;
@@ -711,7 +711,7 @@ inline void Mc6809::sbc(Byte &reg, Byte operand)
 }
 #endif
 
-inline void Mc6809::daa(void)
+inline void Mc6809::daa()
 {
     Word    t, c = 0;
     Byte    lsn = a & 0x0f;
@@ -1021,35 +1021,35 @@ inline void Mc6809::jsr(Word addr)
     pc = addr;
 }
 
-inline void Mc6809::rts(void)
+inline void Mc6809::rts()
 {
     pc = memory->read_word(s);
     s += 2;
 }
 
-inline void Mc6809::bra(void)
+inline void Mc6809::bra()
 {
     pc += EXTEND8(memory->read_byte(pc)) + 1;
 }
 
-inline t_cycles  Mc6809::lbra(void)
+inline t_cycles  Mc6809::lbra()
 {
     pc += memory->read_word(pc) + 2;
     return 0;
 }
 
-inline void Mc6809::brn(void)
+inline void Mc6809::brn()
 {
     pc++;
 }
 
-inline t_cycles Mc6809::lbrn(void)
+inline t_cycles Mc6809::lbrn()
 {
     pc += 2;
     return 5;
 }
 
-inline void Mc6809::bsr(void)
+inline void Mc6809::bsr()
 {
     Byte o = memory->read_byte(pc++);
     s -= 2;
@@ -1057,7 +1057,7 @@ inline void Mc6809::bsr(void)
     pc += EXTEND8(o);
 }
 
-inline t_cycles Mc6809::lbsr(void)
+inline t_cycles Mc6809::lbsr()
 {
     Word o = memory->read_word(pc);
     pc += 2;
@@ -1093,142 +1093,142 @@ inline t_cycles Mc6809::do_lbr(int test)
     }
 }
 
-inline void Mc6809::bcc(void)
+inline void Mc6809::bcc()
 {
     do_br(!cc.bit.c);
 }
 
-inline t_cycles Mc6809::lbcc(void)
+inline t_cycles Mc6809::lbcc()
 {
     return do_lbr(!cc.bit.c);
 }
 
-inline void Mc6809::bcs(void)
+inline void Mc6809::bcs()
 {
     do_br(cc.bit.c);
 }
 
-inline t_cycles Mc6809::lbcs(void)
+inline t_cycles Mc6809::lbcs()
 {
     return do_lbr(cc.bit.c);
 }
 
-inline void Mc6809::beq(void)
+inline void Mc6809::beq()
 {
     do_br(cc.bit.z);
 }
 
-inline t_cycles Mc6809::lbeq(void)
+inline t_cycles Mc6809::lbeq()
 {
     return do_lbr(cc.bit.z);
 }
 
-inline void Mc6809::bge(void)
+inline void Mc6809::bge()
 {
     do_br(!(cc.bit.n ^ cc.bit.v));
 }
 
-inline t_cycles Mc6809::lbge(void)
+inline t_cycles Mc6809::lbge()
 {
     return do_lbr(!(cc.bit.n ^ cc.bit.v));
 }
 
-inline void Mc6809::bgt(void)
+inline void Mc6809::bgt()
 {
     do_br(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
 }
 
-inline t_cycles Mc6809::lbgt(void)
+inline t_cycles Mc6809::lbgt()
 {
     return do_lbr(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
 }
 
-inline void Mc6809::bhi(void)
+inline void Mc6809::bhi()
 {
     do_br(!(cc.bit.c | cc.bit.z));
 }
 
-inline t_cycles Mc6809::lbhi(void)
+inline t_cycles Mc6809::lbhi()
 {
     return do_lbr(!(cc.bit.c | cc.bit.z));
 }
 
-inline void Mc6809::ble(void)
+inline void Mc6809::ble()
 {
     do_br(cc.bit.z | (cc.bit.n ^ cc.bit.v));
 }
 
-inline t_cycles Mc6809::lble(void)
+inline t_cycles Mc6809::lble()
 {
     return do_lbr(cc.bit.z | (cc.bit.n ^ cc.bit.v));
 }
 
-inline void Mc6809::bls(void)
+inline void Mc6809::bls()
 {
     do_br(cc.bit.c | cc.bit.z);
 }
 
-inline t_cycles Mc6809::lbls(void)
+inline t_cycles Mc6809::lbls()
 {
     return do_lbr(cc.bit.c | cc.bit.z);
 }
 
-inline void Mc6809::blt(void)
+inline void Mc6809::blt()
 {
     do_br(cc.bit.n ^ cc.bit.v);
 }
 
-inline t_cycles Mc6809::lblt(void)
+inline t_cycles Mc6809::lblt()
 {
     return do_lbr(cc.bit.n ^ cc.bit.v);
 }
 
-inline void Mc6809::bmi(void)
+inline void Mc6809::bmi()
 {
     do_br(cc.bit.n);
 }
 
-inline t_cycles Mc6809::lbmi(void)
+inline t_cycles Mc6809::lbmi()
 {
     return do_lbr(cc.bit.n);
 }
 
-inline void Mc6809::bne(void)
+inline void Mc6809::bne()
 {
     do_br(!cc.bit.z);
 }
 
-inline t_cycles Mc6809::lbne(void)
+inline t_cycles Mc6809::lbne()
 {
     return do_lbr(!cc.bit.z);
 }
 
-inline void Mc6809::bpl(void)
+inline void Mc6809::bpl()
 {
     do_br(!cc.bit.n);
 }
 
-inline t_cycles Mc6809::lbpl(void)
+inline t_cycles Mc6809::lbpl()
 {
     return do_lbr(!cc.bit.n);
 }
 
-inline void Mc6809::bvc(void)
+inline void Mc6809::bvc()
 {
     do_br(!cc.bit.v);
 }
 
-inline t_cycles Mc6809::lbvc(void)
+inline t_cycles Mc6809::lbvc()
 {
     return do_lbr(!cc.bit.v);
 }
 
-inline void Mc6809::bvs(void)
+inline void Mc6809::bvs()
 {
     do_br(cc.bit.v);
 }
 
-inline t_cycles Mc6809::lbvs(void)
+inline t_cycles Mc6809::lbvs()
 {
     return do_lbr(cc.bit.v);
 }
@@ -1267,13 +1267,13 @@ inline void Mc6809::com(Byte &reg)
     tst(reg);
 }
 
-inline void Mc6809::nop(void)
+inline void Mc6809::nop()
 {
 }
 
 // undocumented instruction 0x3e:
 // force an internal reset
-inline void Mc6809::rst(void)
+inline void Mc6809::rst()
 {
     reset();
 }
@@ -1797,7 +1797,7 @@ inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
     return psh_pul_cycles[what];
 }
 
-inline void Mc6809::exg(void)
+inline void Mc6809::exg()
 {
     Word    t1, t2;
     Byte    w = memory->read_byte(pc++);
@@ -2013,7 +2013,7 @@ inline void Mc6809::exg(void)
     }
 }
 
-inline void Mc6809::tfr(void)
+inline void Mc6809::tfr()
 {
     Word    t;
     Byte    w = memory->read_byte(pc++);
@@ -2179,7 +2179,7 @@ inline void Mc6809::tfr(void)
 //**********************************
 // Interrupt related Instructions
 //**********************************
-inline t_cycles Mc6809::rti(void)
+inline t_cycles Mc6809::rti()
 {
     cc.all = memory->read_byte(s++);
 
@@ -2196,13 +2196,13 @@ inline t_cycles Mc6809::rti(void)
     }
 }
 
-inline void Mc6809::sync(void)
+inline void Mc6809::sync()
 {
     pc--; // processor loops in sync instruction until interrupt
     events |= DO_SYNC;
 }
 
-inline void Mc6809::cwai(void)
+inline void Mc6809::cwai()
 {
     cc.all &= memory->read_byte(pc++);
     cc.bit.e = 1;
@@ -2211,7 +2211,7 @@ inline void Mc6809::cwai(void)
     pc -= 2; // processor loops in cwai instruction until interrupt
 }
 
-inline void Mc6809::swi(void)
+inline void Mc6809::swi()
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
@@ -2219,14 +2219,14 @@ inline void Mc6809::swi(void)
     pc = memory->read_word(0xfffa);
 }
 
-inline void Mc6809::swi2(void)
+inline void Mc6809::swi2()
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
     pc = memory->read_word(0xfff4);
 }
 
-inline void Mc6809::swi3(void)
+inline void Mc6809::swi3()
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
@@ -2238,7 +2238,7 @@ inline void Mc6809::swi3(void)
 //**********************************
 
 // fetch immediate 16-Bit operand
-inline Word Mc6809::fetch_imm_16(void)
+inline Word Mc6809::fetch_imm_16()
 {
     Word addr = memory->read_word(pc);
     pc += 2;
@@ -2246,7 +2246,7 @@ inline Word Mc6809::fetch_imm_16(void)
 }
 
 // fetch extended 16-Bit operand
-inline Word Mc6809::fetch_ext_16(void)
+inline Word Mc6809::fetch_ext_16()
 {
     Word addr = memory->read_word(pc);
     pc += 2;
@@ -2254,7 +2254,7 @@ inline Word Mc6809::fetch_ext_16(void)
 }
 
 // fetch direct 16-Bit operand
-inline Word Mc6809::fetch_dir_16(void)
+inline Word Mc6809::fetch_dir_16()
 {
     Word addr = dpreg.dp16 | memory->read_byte(pc++);
     return memory->read_word(addr);
@@ -2273,13 +2273,13 @@ inline Word Mc6809::fetch_idx_16(t_cycles *c)
 }
 
 // fetch immediate 8-Bit operand
-inline Byte Mc6809::fetch_imm_08(void)
+inline Byte Mc6809::fetch_imm_08()
 {
     return memory->read_byte(pc++);
 }
 
 // fetch extended 8-Bit operand
-inline Byte Mc6809::fetch_ext_08(void)
+inline Byte Mc6809::fetch_ext_08()
 {
     Word addr = memory->read_word(pc);
     pc += 2;
@@ -2287,7 +2287,7 @@ inline Byte Mc6809::fetch_ext_08(void)
 }
 
 // fetch direct 8-Bit operand
-inline Byte Mc6809::fetch_dir_08(void)
+inline Byte Mc6809::fetch_dir_08()
 {
     Word addr = dpreg.dp16 | memory->read_byte(pc++);
     return memory->read_byte(addr);
@@ -2306,7 +2306,7 @@ inline Byte Mc6809::fetch_idx_08(t_cycles *c)
 }
 
 // fetch effective address extended
-inline Word Mc6809::fetch_ea_ext(void)
+inline Word Mc6809::fetch_ea_ext()
 {
     Word addr = memory->read_word(pc);
     pc += 2;
@@ -2314,7 +2314,7 @@ inline Word Mc6809::fetch_ea_ext(void)
 }
 
 // fetch effective address direct
-inline Word Mc6809::fetch_ea_dir(void)
+inline Word Mc6809::fetch_ea_dir()
 {
     Word addr = dpreg.dp16 | memory->read_byte(pc++);
     return addr;

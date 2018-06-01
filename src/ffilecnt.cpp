@@ -163,7 +163,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
 /* Destructor                           */
 /****************************************/
 
-FlexFileContainer::~FlexFileContainer(void)
+FlexFileContainer::~FlexFileContainer()
 {
     // final cleanup: close if not already done
     try
@@ -186,7 +186,7 @@ std::string FlexFileContainer::GetPath() const
     return fp.GetPath();
 }
 
-int FlexFileContainer::Close(void)
+int FlexFileContainer::Close()
 {
     fp.Close();
     return 1;
@@ -194,17 +194,17 @@ int FlexFileContainer::Close(void)
 
 // check if an container is opened
 // If so return true
-bool FlexFileContainer::IsContainerOpened(void) const
+bool FlexFileContainer::IsContainerOpened() const
 {
     return (fp != NULL);
 }
 
-int FlexFileContainer::GetBytesPerSector(void) const
+int FlexFileContainer::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
 
-bool FlexFileContainer::IsWriteProtected(void) const
+bool FlexFileContainer::IsWriteProtected() const
 {
     return (param.write_protect ? true : false);
 }
@@ -356,7 +356,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     return true;
 }
 
-int FlexFileContainer::GetContainerType(void) const
+int FlexFileContainer::GetContainerType() const
 {
     return param.type;
 }

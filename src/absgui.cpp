@@ -116,7 +116,7 @@ void AbstractGui::initialize_conv_tables()
     }
 } // initialize_conv_tables
 
-void AbstractGui::main_loop(void)
+void AbstractGui::main_loop()
 {
     // to be implemented by subclass
 }
@@ -863,7 +863,7 @@ void AbstractGui::text(int x, int y, const char *str, int)
     strncpy(&cpustring[cpu_line_size * y + x], str, strlen(str));
 }
 
-void AbstractGui::clear_cpuview(void)
+void AbstractGui::clear_cpuview()
 {
     int i;
     size_t size;
@@ -898,7 +898,7 @@ void AbstractGui::set_exit(bool b /* = true */)
     exit_flag = b;
 }
 
-void AbstractGui::update(void)
+void AbstractGui::update()
 {
     static int display_block = 0;
 
@@ -919,7 +919,7 @@ void AbstractGui::set_bell(int)
 {
 }
 
-void AbstractGui::output_to_terminal(void)
+void AbstractGui::output_to_terminal()
 {
     if (io->is_terminal_supported() && switch_sp)
     {
@@ -927,7 +927,7 @@ void AbstractGui::output_to_terminal(void)
     }
 }
 
-void AbstractGui::output_to_graphic(void)
+void AbstractGui::output_to_graphic()
 {
     if (switch_sp)
     {
@@ -935,7 +935,7 @@ void AbstractGui::output_to_graphic(void)
     }
 }
 
-int AbstractGui::gui_type(void)
+int AbstractGui::gui_type()
 {
     return -1;
 }
@@ -957,7 +957,7 @@ AbstractGui::AbstractGui(
     }
 }
 
-AbstractGui::~AbstractGui(void)
+AbstractGui::~AbstractGui()
 {
 }
 

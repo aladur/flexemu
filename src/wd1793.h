@@ -61,12 +61,12 @@ private:
 
 protected:
 
-    virtual void             setIrq(void);
-    virtual void             resetIrq(void);
-    virtual Byte             driveReady(void);
+    virtual void             setIrq();
+    virtual void             resetIrq();
+    virtual Byte             driveReady();
     virtual Byte             seekError(Byte new_track);
-    virtual Byte             writeProtect(void);
-    virtual Byte             recordNotFound(void);
+    virtual Byte             writeProtect();
+    virtual Byte             recordNotFound();
     virtual void             command(Byte command);
     virtual Byte             readByte(Word index);
     virtual void             writeByte(Word index);
@@ -75,7 +75,7 @@ protected:
 
 public:
 
-    virtual void             resetIo(void);
+    virtual void             resetIo();
     virtual Byte             readIo(Word offset);
     virtual void             writeIo(Word offset, Byte val);
     virtual const char      *getName()

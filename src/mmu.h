@@ -47,10 +47,10 @@ protected:
     // public interface
 public:
 
-    void                resetIo(void);
+    void                resetIo();
     virtual Byte        readIo(Word addr);
     virtual void        writeIo(Word addr, Byte val);
-    virtual const char *getName(void)
+    virtual const char *getName()
     {
         return "mmu";
     };

@@ -46,7 +46,7 @@ DECLARE_APP(FlexemuSetup)
 class FlexemuSetup : public wxApp
 {
 public:
-    bool OnInit(void);
+    bool OnInit();
 
 private:
     FlexOptionManager optionMan;

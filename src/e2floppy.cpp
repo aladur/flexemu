@@ -54,7 +54,7 @@ E2floppy::E2floppy() :
 } // E2floppy
 
 
-E2floppy::~E2floppy(void)
+E2floppy::~E2floppy()
 {
     for (int i = 0; i < 4; i++)
     {
@@ -248,7 +248,7 @@ void E2floppy::mount_all_drives(std::string drive[])
     pfs = NULL;
 }  // mount_all_drives
 
-bool E2floppy::umount_all_drives(void)
+bool E2floppy::umount_all_drives()
 {
     Word i;
     bool result;
@@ -328,7 +328,7 @@ const char *E2floppy::open_mode(char *path)
 } // open_mode
 
 
-bool E2floppy::update_all_drives(void)
+bool E2floppy::update_all_drives()
 {
     Word i;
     bool result;
@@ -497,7 +497,7 @@ void E2floppy::writeByte(Word index)
 } // writeByte
 
 
-Byte E2floppy::recordNotFound(void)
+Byte E2floppy::recordNotFound()
 {
     if (pfs == NULL)
     {
@@ -517,12 +517,12 @@ Byte E2floppy::seekError(Byte new_track)
     return !pfs->IsTrackValid(new_track);
 } // seekError
 
-Byte E2floppy::driveReady(void)
+Byte E2floppy::driveReady()
 {
     return pfs != NULL;
 }  // driveReady
 
-Byte E2floppy::writeProtect(void)
+Byte E2floppy::writeProtect()
 {
     if (pfs == NULL)
     {

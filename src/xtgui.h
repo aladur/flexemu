@@ -120,7 +120,7 @@ protected:
     bool        is_menu_mode;
     bool        isSynchronized;
 
-    virtual Display  *getDisplay(void);
+    virtual Display  *getDisplay();
     virtual Window   getWindow(tWindowType t = FLX_E2SCREEN);
 
 protected:
@@ -166,29 +166,29 @@ protected:
 public:
 
     virtual void    center_dialog(Widget w);
-    virtual void    popup_about(void);
-    virtual void    popup_cpu(void);
-    virtual void    popup_bp(void);
-    virtual void    popup_log(void);
+    virtual void    popup_about();
+    virtual void    popup_cpu();
+    virtual void    popup_bp();
+    virtual void    popup_log();
     virtual void    popdown_message(Widget w);
-    virtual void    popdown_about(void);
-    virtual void    popdown_cpu(void);
+    virtual void    popdown_about();
+    virtual void    popdown_cpu();
     virtual void    popdown_bp(Widget w);
     virtual void    popdown_log(Widget w);
     virtual void    popup_disk_info(Widget w);
     virtual void    popup_interrupt_info(Widget w);
-    virtual void    clear_bp(void);
-    virtual void    clear_log(void);
-    virtual void    toggle_cpu(void);
-    virtual void    toggle_frequency(void);
-    virtual void    toggle_undocumented(void);
-    virtual void    main_loop(void);
-    virtual void    mouse_update(void);
+    virtual void    clear_bp();
+    virtual void    clear_log();
+    virtual void    toggle_cpu();
+    virtual void    toggle_frequency();
+    virtual void    toggle_undocumented();
+    virtual void    main_loop();
+    virtual void    mouse_update();
     virtual void    mouse_warp(int dx, int dy);
 #ifdef HAVE_XPM
     virtual void    a_expose(Widget w, XEvent *pevent);
-    virtual void    popup_author(void);
-    virtual void    popdown_author(void);
+    virtual void    popup_author();
+    virtual void    popdown_author();
 #endif
 
     // callbacks:
@@ -251,7 +251,7 @@ private:
                                            XtPointer call_data);
     static void     menuHandlerCallback(Widget button, XtPointer client_data,
                                 XEvent *event, Boolean *flag);
-    void    updateNafs(void);
+    void    updateNafs();
     static void     timerCallbackProc(XtPointer client_data, XtIntervalId *pId);
 
     // accelerators:
@@ -278,7 +278,7 @@ public:
     virtual void    popup_confirmation(const char *pmessage,
                                        const char *ptitle = NULL,
                                        int width = 270, int height = 120);
-    virtual int     gui_type(void);
+    virtual int     gui_type();
     void            timerCallback(XtIntervalId pId);
     virtual void    menuHandler(Widget button, XEvent *event, Boolean *flag);
 

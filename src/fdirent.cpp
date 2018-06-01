@@ -42,7 +42,7 @@ FlexDirEntry::FlexDirEntry() :
 {
 } // FlexDirEntry
 
-FlexDirEntry::~FlexDirEntry(void)
+FlexDirEntry::~FlexDirEntry()
 {
 }
 
@@ -66,7 +66,7 @@ void FlexDirEntry::CopyFrom(const FlexDirEntry &de)
 }
 
 
-const BDate &FlexDirEntry::GetDate(void) const
+const BDate &FlexDirEntry::GetDate() const
 {
     return date;
 }
@@ -89,7 +89,7 @@ void FlexDirEntry::SetTotalFileName(const char *s)
          ::toupper);
 }
 
-std::string FlexDirEntry::GetFileName(void) const
+std::string FlexDirEntry::GetFileName() const
 {
     // return substring until but not including last occurence of '.'
     std::string::const_reverse_iterator it =
@@ -114,7 +114,7 @@ std::string FlexDirEntry::GetFileName(void) const
     }
 }
 
-std::string FlexDirEntry::GetFileExt(void) const
+std::string FlexDirEntry::GetFileExt() const
 {
     const char *p;
     std::string ext;
@@ -129,7 +129,7 @@ std::string FlexDirEntry::GetFileExt(void) const
     return ext;
 }
 
-const std::string &FlexDirEntry::GetTotalFileName(void) const
+const std::string &FlexDirEntry::GetTotalFileName() const
 {
     return fileName;
 }
@@ -158,7 +158,7 @@ void FlexDirEntry::GetEndTrkSec(int *t, int *s)
     *s = endSec;
 }
 
-const std::string FlexDirEntry::GetAttributesString(void)
+const std::string FlexDirEntry::GetAttributesString()
 {
     std::string str;
 

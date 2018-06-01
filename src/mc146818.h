@@ -52,12 +52,12 @@ public:
 
     virtual Byte             readIo(Word offset);
     virtual void             writeIo(Word offset, Byte val);
-    virtual void             resetIo(void);
-    virtual const char      *getName(void)
+    virtual void             resetIo();
+    virtual const char      *getName()
     {
         return "mc146818";
     };
-    virtual void             update_1_second(void);
+    virtual void             update_1_second();
 
 private:
 

@@ -55,7 +55,7 @@ IMPLEMENT_APP(FLEXplorer)
 /*------------------------------------------------------
  FLEXplorer implementation (The Application class)
 --------------------------------------------------------*/
-bool FLEXplorer::OnInit(void)
+bool FLEXplorer::OnInit()
 {
     FlexParentFrame *frame = NULL;
 
@@ -82,13 +82,13 @@ bool FLEXplorer::OnInit(void)
     return TRUE;
 }
 
-int FLEXplorer::OnExit(void)
+int FLEXplorer::OnExit()
 {
     WriteDefaultOptions();
     return 0;
 }
 
-void FLEXplorer::WriteDefaultOptions(void)
+void FLEXplorer::WriteDefaultOptions()
 {
 #ifdef WIN32
     BRegistry *reg;
@@ -124,7 +124,7 @@ void FLEXplorer::WriteDefaultOptions(void)
 #endif
 }
 
-void FLEXplorer::ReadDefaultOptions(void)
+void FLEXplorer::ReadDefaultOptions()
 {
     int autoTextFlag;
     std::string str;

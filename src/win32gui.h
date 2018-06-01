@@ -64,7 +64,7 @@ class Mc6809CpuStatus;
 // casting only needed for MSVC = V5.0
 #ifdef _MSC_VER
     #if (_MSC_VER == 1100) /* MSVC V5.0 */
-        #define CALLBACKCAST (int (CALLBACK *)(void))
+        #define CALLBACKCAST (int (CALLBACK *)())
     #endif
     #if (_MSC_VER == 1200) /* MSVC V6.0 */
         #define CALLBACKCAST
@@ -165,7 +165,7 @@ public:
     BOOL    onLogCommand(HWND hwnd, int cmd);
     BOOL    onLogInit(HWND hwnd);
     BOOL    onLogClose(HWND hwnd);
-    void    resetMouseMoveCoords(void);
+    void    resetMouseMoveCoords();
     bool    CloseApp(HWND hwnd, bool confirm = false);
 
 protected:
@@ -186,7 +186,7 @@ protected:
     void    set_cursor(int type = FLX_DEFAULT_CURSOR);
     void    toggle_mouse_capture(HWND w);
     void    release_mouse_capture(HWND w);
-    const char *get_title(void);
+    const char *get_title();
 
     // Pointer grabbing
     int      cursor_type;
@@ -199,8 +199,8 @@ protected:
     void    create_cpuview(HWND parent,
                            struct sGuiOptions *pOptions);
     void    popup_cpu(HWND hwnd);
-    void    toggle_freqency(void);
-    void    toggle_undocumented(void);
+    void    toggle_freqency();
+    void    toggle_undocumented();
     void    popdown_cpu(HWND hwnd);
     void    toggle_cpu(HWND hwnd);
     void    redraw_cpuview_impl(const Mc6809CpuStatus &stat);
@@ -244,8 +244,8 @@ public:
     void    popdown_log(int cmd, HWND hwnd);
     void    clear_log(HWND hwnd);
     void    prompt_logfile(HWND hwnd);
-    void    main_loop(void);
-    int     gui_type(void);
+    void    main_loop();
+    int     gui_type();
 
     // Public constructor and destructor
 public:

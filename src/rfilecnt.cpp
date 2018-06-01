@@ -45,7 +45,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
     }
 }
 
-FlexRamFileContainer::~FlexRamFileContainer(void)
+FlexRamFileContainer::~FlexRamFileContainer()
 {
     // final cleanup: close if not already done
     try
@@ -59,7 +59,7 @@ FlexRamFileContainer::~FlexRamFileContainer(void)
     }
 }
 
-int FlexRamFileContainer::Close(void)
+int FlexRamFileContainer::Close()
 {
     bool throwException = false;
 

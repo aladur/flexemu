@@ -104,7 +104,7 @@ bool Scheduler::is_finished()
     return state == S_EXIT;
 }
 
-void Scheduler::process_events(void)
+void Scheduler::process_events()
 {
     if (events != 0)
     {
@@ -290,7 +290,7 @@ void Scheduler::timer_elapsed()
 #endif
 }
 
-void Scheduler::do_reset(void)
+void Scheduler::do_reset()
 {
     cpu->do_reset();
     total_cycles = 0;

@@ -44,7 +44,7 @@ FlexFileClipboard::~FlexFileClipboard()
     SetEmpty();
 }
 
-void FlexFileClipboard::SetEmpty(void) const
+void FlexFileClipboard::SetEmpty() const
 {
     m_fileList.DeleteContents(TRUE);
     m_container = NULL;
