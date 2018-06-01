@@ -23,7 +23,7 @@
 
 void Mc6809::set_serpar(Byte b)
 {
-    memory->write(SERPAR, b);
+    memory->write_byte(SERPAR, b);
 }
 
 void Mc6809::reset(void)
@@ -138,12 +138,12 @@ void Mc6809::get_status(CpuStatus *status)
 
     for (i = 0; i < 4; i++)
     {
-        stat->instruction[i] = memory->read(stat->pc + i);
+        stat->instruction[i] = memory->read_byte(stat->pc + i);
     }
 
     for (i = 0; i < 48; i++)
     {
-        stat->memory[i] = memory->read(mem_addr + i);
+        stat->memory[i] = memory->read_byte(mem_addr + i);
     }
 
     if (!Disassemble(stat->pc, &flags, &pbuffer, &pmnem_buf))

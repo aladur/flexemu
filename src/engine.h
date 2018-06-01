@@ -58,10 +58,10 @@ Byte *breg = &aca, *areg = &acb;
 #endif
 
 #ifdef FASTFLEX
-    #define GETBYTE(a) memory->read(a)
-    #define GETBYTE_PI(a) memory->read(a++) // get byte with post increment
+    #define GETBYTE(a) memory->read_byte(a)
+    #define GETBYTE_PI(a) memory->read_byte(a++) // get byte with post increment
     #define GETWORD(a) memory->read_word(a)
-    #define SETBYTE(a,n) memory->write(a, (Byte)n);
+    #define SETBYTE(a,n) memory->write_byte(a, (Byte)n);
     #define SETWORD(a,n) memory->write_word(a, n);
 #else
     #define GETBYTE(a) (mem[a])
@@ -75,7 +75,7 @@ Byte *breg = &aca, *areg = &acb;
 */
 
 #ifdef FASTFLEX
-    #define IMMBYTE(b) b=memory->read(ipcreg++);
+    #define IMMBYTE(b) b=memory->read_byte(ipcreg++);
 #else
     #define IMMBYTE(b) b=mem[ipcreg++];
 #endif
@@ -88,8 +88,8 @@ Byte *breg = &aca, *areg = &acb;
 #define PSHUWORD(w) {iureg-=2;SETWORD(iureg,w)}
 #define PULUWORD(w) {w=GETWORD(iureg);iureg+=2;}
 #ifdef FASTFLEX
-    #define PULLBYTE(b) b=memory->read(isreg++);
-    #define PULUBYTE(b) b=memory->read(iureg++);
+    #define PULLBYTE(b) b=memory->read_byte(isreg++);
+    #define PULUBYTE(b) b=memory->read_byte(iureg++);
 #else
     #define PULLBYTE(b) b=mem[isreg++];
     #define PULUBYTE(b) b=mem[iureg++];

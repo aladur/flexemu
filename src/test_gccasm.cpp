@@ -519,7 +519,7 @@ bool test_gccasm_fctByte(std::string mnemonic,
             status.pc = 0x0000;
             status.cc = regcc;
             cpu->set_status(&status);
-            memory->write(0x0000, opcode);
+            memory->write_byte(0x0000, opcode);
             cpu->run(SINGLESTEP_INTO);
             cpu->get_status(&status);
 
@@ -566,7 +566,7 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
             status.pc = 0x0000;
             status.cc = regcc;
             cpu->set_status(&status);
-            memory->write(0x0000, opcode);
+            memory->write_byte(0x0000, opcode);
             cpu->run(SINGLESTEP_INTO);
             cpu->get_status(&status);
 
@@ -621,8 +621,8 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu->set_status(&status);
-                memory->write(0x0000, opcode);
-                memory->write(0x0001, (Byte)op2); // immediate value
+                memory->write_byte(0x0000, opcode);
+                memory->write_byte(0x0001, (Byte)op2); // immediate value
                 cpu->run(SINGLESTEP_INTO);
                 cpu->get_status(&status);
 
@@ -672,8 +672,8 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu->set_status(&status);
-                memory->write(0x0000, opcode);
-                memory->write(0x0001, (Byte)op2); // immediate value
+                memory->write_byte(0x0000, opcode);
+                memory->write_byte(0x0001, (Byte)op2); // immediate value
                 cpu->run(SINGLESTEP_INTO);
                 cpu->get_status(&status);
 
@@ -734,10 +734,10 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
                 status.pc = addr;
                 status.cc = regcc;
                 cpu->set_status(&status);
-                memory->write(addr++, opcode1);
-                memory->write(addr++, opcode2);
-                memory->write(addr++, (Byte)(op2 >> 8)); // immediate value hi
-                memory->write(addr++, (Byte)(op2)); // immediate value lo
+                memory->write_byte(addr++, opcode1);
+                memory->write_byte(addr++, opcode2);
+                memory->write_byte(addr++, (Byte)(op2 >> 8)); // immediate value hi
+                memory->write_byte(addr++, (Byte)(op2)); // immediate value lo
                 cpu->run(SINGLESTEP_INTO);
                 cpu->get_status(&status);
 
@@ -790,9 +790,9 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu->set_status(&status);
-                memory->write(0x0000, opcode);
-                memory->write(0x0001, (Byte)(op2 >> 8)); // immediate value hi
-                memory->write(0x0002, (Byte)(op2)); // immediate value lo
+                memory->write_byte(0x0000, opcode);
+                memory->write_byte(0x0001, (Byte)(op2 >> 8)); // immediate value hi
+                memory->write_byte(0x0002, (Byte)(op2)); // immediate value lo
                 cpu->run(SINGLESTEP_INTO);
                 cpu->get_status(&status);
                 cpuregd = ((Word)status.a << 8) | status.b;

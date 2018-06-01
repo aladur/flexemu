@@ -743,23 +743,23 @@ inline void Mc6809::daa(void)
 
 inline void Mc6809::dec(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     dec(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::inc(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     inc(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::neg(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     neg(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 #ifdef USE_GCCASM
@@ -964,7 +964,7 @@ inline void Mc6809::tst(Byte reg)
 
 inline void Mc6809::tst(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     tst(m);
 }
 
@@ -1029,7 +1029,7 @@ inline void Mc6809::rts(void)
 
 inline void Mc6809::bra(void)
 {
-    pc += EXTEND8(memory->read(pc)) + 1;
+    pc += EXTEND8(memory->read_byte(pc)) + 1;
 }
 
 inline t_cycles  Mc6809::lbra(void)
@@ -1051,7 +1051,7 @@ inline t_cycles Mc6809::lbrn(void)
 
 inline void Mc6809::bsr(void)
 {
-    Byte o = memory->read(pc++);
+    Byte o = memory->read_byte(pc++);
     s -= 2;
     memory->write_word(s, pc);
     pc += EXTEND8(o);
@@ -1071,7 +1071,7 @@ inline void Mc6809::do_br(int test)
 {
     if (test)
     {
-        pc += EXTEND8(memory->read(pc)) + 1;
+        pc += EXTEND8(memory->read_byte(pc)) + 1;
     }
     else
     {
@@ -1239,9 +1239,9 @@ inline t_cycles Mc6809::lbvs(void)
 
 inline void Mc6809::clr(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     clr(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::clr(Byte &reg)
@@ -1255,9 +1255,9 @@ inline void Mc6809::clr(Byte &reg)
 
 inline void Mc6809::com(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     com(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::com(Byte &reg)
@@ -1309,16 +1309,16 @@ inline void Mc6809::clr1(Byte &reg)
 //**********************************
 inline void Mc6809::lsl(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     lsl(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::asr(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     asr(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 #ifdef USE_GCCASM
@@ -1395,9 +1395,9 @@ inline void Mc6809::asr(Byte &reg)
 
 inline void Mc6809::lsr(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     lsr(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::lsr(Byte &reg)
@@ -1410,9 +1410,9 @@ inline void Mc6809::lsr(Byte &reg)
 
 inline void Mc6809::rol(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     rol(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::rol(Byte &reg)
@@ -1433,9 +1433,9 @@ inline void Mc6809::rol(Byte &reg)
 
 inline void Mc6809::ror(Word addr)
 {
-    Byte m = memory->read(addr);
+    Byte m = memory->read_byte(addr);
     ror(m);
-    memory->write(addr, m);
+    memory->write_byte(addr, m);
 }
 
 inline void Mc6809::ror(Byte &reg)
@@ -1472,7 +1472,7 @@ inline void Mc6809::ld(Word &reg, Word operand)
 
 inline void Mc6809::st(Byte &reg, Word addr)
 {
-    memory->write(addr, reg);
+    memory->write_byte(addr, reg);
     tst(reg);
 }
 
@@ -1583,63 +1583,63 @@ inline t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            memory->write(--s, dp);
+            memory->write_byte(--s, dp);
 
         case 0x07:
-            memory->write(--s, b);
+            memory->write_byte(--s, b);
 
         case 0x03:
-            memory->write(--s, a);
+            memory->write_byte(--s, a);
 
         case 0x01:
-            memory->write(--s, cc.all);
+            memory->write_byte(--s, cc.all);
 
         case 0x00:
             break;
 
         case 0x0e:
-            memory->write(--s, dp);
+            memory->write_byte(--s, dp);
 
         case 0x06:
-            memory->write(--s, b);
+            memory->write_byte(--s, b);
 
         case 0x02:
-            memory->write(--s, a);
+            memory->write_byte(--s, a);
             break;
 
         case 0x0d:
-            memory->write(--s, dp);
+            memory->write_byte(--s, dp);
 
         case 0x05:
-            memory->write(--s, b);
-            memory->write(--s, cc.all);
+            memory->write_byte(--s, b);
+            memory->write_byte(--s, cc.all);
             break;
 
         case 0x0c:
-            memory->write(--s, dp);
+            memory->write_byte(--s, dp);
 
         case 0x04:
-            memory->write(--s, b);
+            memory->write_byte(--s, b);
             break;
 
         case 0x0b:
-            memory->write(--s, dp);
-            memory->write(--s, a);
-            memory->write(--s, cc.all);
+            memory->write_byte(--s, dp);
+            memory->write_byte(--s, a);
+            memory->write_byte(--s, cc.all);
             break;
 
         case 0x09:
-            memory->write(--s, dp);
-            memory->write(--s, cc.all);
+            memory->write_byte(--s, dp);
+            memory->write_byte(--s, cc.all);
             break;
 
         case 0x0a:
-            memory->write(--s, dp);
-            memory->write(--s, a);
+            memory->write_byte(--s, dp);
+            memory->write_byte(--s, a);
             break;
 
         case 0x08:
-            memory->write(--s, dp);
+            memory->write_byte(--s, dp);
             break;
     } // switch
 
@@ -1651,63 +1651,63 @@ inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            cc.all = memory->read(s++);
+            cc.all = memory->read_byte(s++);
 
         case 0x0e:
-            a      = memory->read(s++);
+            a      = memory->read_byte(s++);
 
         case 0x0c:
-            b      = memory->read(s++);
+            b      = memory->read_byte(s++);
 
         case 0x08:
-            dp     = memory->read(s++);
+            dp     = memory->read_byte(s++);
 
         case 0x00:
             break;
 
         case 0x07:
-            cc.all = memory->read(s++);
+            cc.all = memory->read_byte(s++);
 
         case 0x06:
-            a      = memory->read(s++);
+            a      = memory->read_byte(s++);
 
         case 0x04:
-            b      = memory->read(s++);
+            b      = memory->read_byte(s++);
             break;
 
         case 0x0b:
-            cc.all = memory->read(s++);
+            cc.all = memory->read_byte(s++);
 
         case 0x0a:
-            a      = memory->read(s++);
-            dp     = memory->read(s++);
+            a      = memory->read_byte(s++);
+            dp     = memory->read_byte(s++);
             break;
 
         case 0x03:
-            cc.all = memory->read(s++);
+            cc.all = memory->read_byte(s++);
 
         case 0x02:
-            a      = memory->read(s++);
+            a      = memory->read_byte(s++);
             break;
 
         case 0x0d:
-            cc.all = memory->read(s++);
-            b      = memory->read(s++);
-            dp     = memory->read(s++);
+            cc.all = memory->read_byte(s++);
+            b      = memory->read_byte(s++);
+            dp     = memory->read_byte(s++);
             break;
 
         case 0x09:
-            cc.all = memory->read(s++);
-            dp     = memory->read(s++);
+            cc.all = memory->read_byte(s++);
+            dp     = memory->read_byte(s++);
             break;
 
         case 0x05:
-            cc.all = memory->read(s++);
-            b      = memory->read(s++);
+            cc.all = memory->read_byte(s++);
+            b      = memory->read_byte(s++);
             break;
 
         case 0x01:
-            cc.all = memory->read(s++);
+            cc.all = memory->read_byte(s++);
             break;
     } // switch
 
@@ -1800,7 +1800,7 @@ inline t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
 inline void Mc6809::exg(void)
 {
     Word    t1, t2;
-    Byte    w = memory->read(pc++);
+    Byte    w = memory->read_byte(pc++);
     bool    r1_is_byte = false;
     bool    r2_is_byte = false;
 
@@ -2016,7 +2016,7 @@ inline void Mc6809::exg(void)
 inline void Mc6809::tfr(void)
 {
     Word    t;
-    Byte    w = memory->read(pc++);
+    Byte    w = memory->read_byte(pc++);
     bool    is_byte = false;
 
     // decode source
@@ -2181,7 +2181,7 @@ inline void Mc6809::tfr(void)
 //**********************************
 inline t_cycles Mc6809::rti(void)
 {
-    cc.all = memory->read(s++);
+    cc.all = memory->read_byte(s++);
 
     if (cc.bit.e)
     {
@@ -2204,7 +2204,7 @@ inline void Mc6809::sync(void)
 
 inline void Mc6809::cwai(void)
 {
-    cc.all &= memory->read(pc++);
+    cc.all &= memory->read_byte(pc++);
     cc.bit.e = 1;
     psh(0xff, s, u);
     events |= DO_CWAI;
@@ -2256,7 +2256,7 @@ inline Word Mc6809::fetch_ext_16(void)
 // fetch direct 16-Bit operand
 inline Word Mc6809::fetch_dir_16(void)
 {
-    Word addr = dpreg.dp16 | memory->read(pc++);
+    Word addr = dpreg.dp16 | memory->read_byte(pc++);
     return memory->read_word(addr);
 }
 
@@ -2266,7 +2266,7 @@ inline Word Mc6809::fetch_idx_16(t_cycles *c)
     Word        addr;
     Byte        post;
 
-    post = memory->read(pc++);
+    post = memory->read_byte(pc++);
     addr = do_effective_address(post);
     *c += indexed_cycles[post];
     return memory->read_word(addr);
@@ -2275,7 +2275,7 @@ inline Word Mc6809::fetch_idx_16(t_cycles *c)
 // fetch immediate 8-Bit operand
 inline Byte Mc6809::fetch_imm_08(void)
 {
-    return memory->read(pc++);
+    return memory->read_byte(pc++);
 }
 
 // fetch extended 8-Bit operand
@@ -2283,14 +2283,14 @@ inline Byte Mc6809::fetch_ext_08(void)
 {
     Word addr = memory->read_word(pc);
     pc += 2;
-    return memory->read(addr);
+    return memory->read_byte(addr);
 }
 
 // fetch direct 8-Bit operand
 inline Byte Mc6809::fetch_dir_08(void)
 {
-    Word addr = dpreg.dp16 | memory->read(pc++);
-    return memory->read(addr);
+    Word addr = dpreg.dp16 | memory->read_byte(pc++);
+    return memory->read_byte(addr);
 }
 
 // fetch indexed 8-Bit operand
@@ -2299,10 +2299,10 @@ inline Byte Mc6809::fetch_idx_08(t_cycles *c)
     Word        addr;
     Byte        post;
 
-    post = memory->read(pc++);
+    post = memory->read_byte(pc++);
     addr = do_effective_address(post);
     *c += indexed_cycles[post];
-    return memory->read(addr);
+    return memory->read_byte(addr);
 }
 
 // fetch effective address extended
@@ -2316,14 +2316,14 @@ inline Word Mc6809::fetch_ea_ext(void)
 // fetch effective address direct
 inline Word Mc6809::fetch_ea_dir(void)
 {
-    Word addr = dpreg.dp16 | memory->read(pc++);
+    Word addr = dpreg.dp16 | memory->read_byte(pc++);
     return addr;
 }
 
 // fetch indexed address
 inline Word Mc6809::fetch_ea_idx(t_cycles *c)
 {
-    Byte post = memory->read(pc++);
+    Byte post = memory->read_byte(pc++);
     *c += indexed_cycles[post];
     return do_effective_address(post);
 }
@@ -2588,38 +2588,38 @@ inline Word Mc6809::do_effective_address(Byte post)
 
             // (+/- 7 bit offset),R
             case 0x88:
-                addr = x + EXTEND8(memory->read(pc++));
+                addr = x + EXTEND8(memory->read_byte(pc++));
                 break;
 
             case 0x98:
-                addr = x + EXTEND8(memory->read(pc++));
+                addr = x + EXTEND8(memory->read_byte(pc++));
                 addr = memory->read_word(addr);
                 break;
 
             case 0xa8:
-                addr = y + EXTEND8(memory->read(pc++));
+                addr = y + EXTEND8(memory->read_byte(pc++));
                 break;
 
             case 0xb8:
-                addr = y + EXTEND8(memory->read(pc++));
+                addr = y + EXTEND8(memory->read_byte(pc++));
                 addr = memory->read_word(addr);
                 break;
 
             case 0xc8:
-                addr = u + EXTEND8(memory->read(pc++));
+                addr = u + EXTEND8(memory->read_byte(pc++));
                 break;
 
             case 0xd8:
-                addr = u + EXTEND8(memory->read(pc++));
+                addr = u + EXTEND8(memory->read_byte(pc++));
                 addr = memory->read_word(addr);
                 break;
 
             case 0xe8:
-                addr = s + EXTEND8(memory->read(pc++));
+                addr = s + EXTEND8(memory->read_byte(pc++));
                 break;
 
             case 0xf8:
-                addr = s + EXTEND8(memory->read(pc++));
+                addr = s + EXTEND8(memory->read_byte(pc++));
                 addr = memory->read_word(addr);
                 break;
 
@@ -2706,7 +2706,7 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xac:
             case 0xcc:
             case 0xec:
-                addr = EXTEND8(memory->read(pc++));
+                addr = EXTEND8(memory->read_byte(pc++));
                 addr += pc;
                 break;
 
@@ -2714,7 +2714,7 @@ inline Word Mc6809::do_effective_address(Byte post)
             case 0xbc:
             case 0xdc:
             case 0xfc:
-                addr = EXTEND8(memory->read(pc++));
+                addr = EXTEND8(memory->read_byte(pc++));
                 addr = memory->read_word(addr + pc);
                 break;
 

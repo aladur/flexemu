@@ -104,7 +104,7 @@ public:
 
     // The following memory Byte/Word access methods are
     // inlined for optimized performance.
-    inline void write(Word address, Byte value)
+    inline void write_byte(Word address, Byte value)
     {
         if ((address & GENIO_MASK) == GENIO_MASK)
         {
@@ -131,7 +131,7 @@ public:
         }
     }
 
-    inline Byte read(Word address)
+    inline Byte read_byte(Word address)
     {
         if ((address & GENIO_MASK) == GENIO_MASK)
         {
@@ -155,20 +155,20 @@ public:
             // Otherwise directly access RAM
             return memory[address];
         }
-    } // read
+    } // read_byte
 
     inline void write_word(Word address, Word value)
     {
-        write(address, static_cast<Byte>(value >> 8));
-        write(address + 1, static_cast<Byte>(value));
+        write_byte(address, static_cast<Byte>(value >> 8));
+        write_byte(address + 1, static_cast<Byte>(value));
     }
 
     inline Word read_word(Word address)
     {
         Word value;
 
-        value = static_cast<Word>(read(address)) << 8;
-        value |= static_cast<Word>(read(address + 1));
+        value = static_cast<Word>(read_byte(address)) << 8;
+        value |= static_cast<Word>(read_byte(address + 1));
 
         return value;
     }
