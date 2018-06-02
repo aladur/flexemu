@@ -58,17 +58,17 @@
    the possible wrap-around at address $ffff and alignment
 */
 
-#define IMMBYTE(b) b=memory->read_byte(ipcreg++);
+#define IMMBYTE(b) b=memory->read_byte(ipcreg++)
 #define IMMWORD(w) {w=GETWORD(ipcreg);ipcreg+=2;}
 
-#define PUSHBYTE(b) {--isreg;SETBYTE(isreg,b)}
-#define PUSHWORD(w) {isreg-=2;SETWORD(isreg,w)}
+#define PUSHBYTE(b) {--isreg;SETBYTE(isreg,b);}
+#define PUSHWORD(w) {isreg-=2;SETWORD(isreg,w);}
 #define PULLWORD(w) {w=GETWORD(isreg);isreg+=2;}
-#define PSHUBYTE(b) {--iureg;SETBYTE(iureg,b)}
-#define PSHUWORD(w) {iureg-=2;SETWORD(iureg,w)}
+#define PSHUBYTE(b) {--iureg;SETBYTE(iureg,b);}
+#define PSHUWORD(w) {iureg-=2;SETWORD(iureg,w);}
 #define PULUWORD(w) {w=GETWORD(iureg);iureg+=2;}
-#define PULLBYTE(b) b=memory->read_byte(isreg++);
-#define PULUBYTE(b) b=memory->read_byte(iureg++);
+#define PULLBYTE(b) b=memory->read_byte(isreg++)
+#define PULUBYTE(b) b=memory->read_byte(iureg++)
 
 #define SIGNED(b) ((Word)(b&0x80?b|0xff00:b))
 
@@ -76,43 +76,43 @@
 #define SETDREG(n) {iareg=(Byte)((n)>>8);ibreg=(Byte)(n);}
 
 /* Macros for addressing modes (postbytes have their own code) */
-#define DIRECT {IMMBYTE(eaddr) eaddr|=(idpreg<<8);}
+#define DIRECT {IMMBYTE(eaddr); eaddr|=(idpreg<<8);}
 #define IMM8 {eaddr=ipcreg++;}
 #define IMM16 {eaddr=ipcreg;ipcreg+=2;}
-#define EXTENDED {IMMWORD(eaddr)}
+#define EXTENDED {IMMWORD(eaddr);}
 
 /* macros to set status flags */
-#define SEC iccreg|=0x01;
-#define CLC iccreg&=0xfe;
-#define SEZ iccreg|=0x04;
-#define CLZ iccreg&=0xfb;
-#define SEN iccreg|=0x08;
-#define CLN iccreg&=0xf7;
-#define SEV iccreg|=0x02;
-#define CLV iccreg&=0xfd;
-#define SEH iccreg|=0x20;
-#define CLH iccreg&=0xdf;
+#define SEC iccreg|=0x01
+#define CLC iccreg&=0xfe
+#define SEZ iccreg|=0x04
+#define CLZ iccreg&=0xfb
+#define SEN iccreg|=0x08
+#define CLN iccreg&=0xf7
+#define SEV iccreg|=0x02
+#define CLV iccreg&=0xfd
+#define SEH iccreg|=0x20
+#define CLH iccreg&=0xdf
 
 /* handling illegal instructions */
-#define INVALID_INSTR invalid("instruction");
-#define INVALID_POST ipcreg--; invalid("indirect addressing postbyte");
-#define INVALID_EXGTFR ipcreg--; invalid("exchange/transfer register");
+#define INVALID_INSTR invalid("instruction")
+#define INVALID_POST ipcreg--; invalid("indirect addressing postbyte")
+#define INVALID_EXGTFR ipcreg--; invalid("exchange/transfer register")
 
 /* set N and Z flags depending on 8 or 16 bit result */
-#define SETNZ8(b) {if(b)CLZ else SEZ if(b&0x80)SEN else CLN}
-#define SETNZ16(b) {if(b)CLZ else SEZ if(b&0x8000)SEN else CLN}
+#define SETNZ8(b) {if(b)CLZ; else SEZ; if(b&0x80)SEN; else CLN;}
+#define SETNZ16(b) {if(b)CLZ; else SEZ; if(b&0x8000)SEN; else CLN;}
 
-#define SETSTATUS(a,b,res) if((a^b^res)&0x10) SEH else CLH \
-            if((a^b^res^(res>>1))&0x80)SEV else CLV \
-                    if(res&0x100)SEC else CLC SETNZ8((Byte)res)
+#define SETSTATUS(a,b,res) if((a^b^res)&0x10) SEH; else CLH; \
+            if((a^b^res^(res>>1))&0x80)SEV; else CLV; \
+                    if(res&0x100)SEC; else CLC; SETNZ8((Byte)res)
 
-#define SETSTATUSD(a,b,res) {if(res&0x10000) SEC else CLC \
-                if(((res>>1)^a^b^res)&0x8000) SEV else CLV \
-                        SETNZ16((Word)res)}
+#define SETSTATUSD(a,b,res) {if(res&0x10000) SEC; else CLC; \
+                if(((res>>1)^a^b^res)&0x8000) SEV; else CLV; \
+                        SETNZ16((Word)res);}
 
 /* Macros for branch instructions */
-#define BRANCH(f) if(!iflag){IMMBYTE(tb) if(f)ipcreg+=SIGNED(tb);}\
-    else{IMMWORD(tw) if(f)ipcreg+=tw;}
+#define BRANCH(f) if(!iflag){IMMBYTE(tb); if(f)ipcreg+=SIGNED(tb);}\
+    else{IMMWORD(tw); if(f)ipcreg+=tw;}
 #define NXORV  ((iccreg&0x08)^((iccreg&0x02)<<2))
 
 /* MAcros for setting/getting registers in TFR/EXG instructions */
@@ -127,10 +127,10 @@
     case 9: val=(Byte)ibreg;break;\
     case 10: val=(Byte)iccreg;break;\
     case 11: val=(Byte)idpreg;break;\
-    default: val=0; INVALID_EXGTFR break;};
+    default: val=0; INVALID_EXGTFR; break;}
 
 #define SETREG(val,reg) switch(reg) {\
-    case 0: SETDREG(val) break;\
+    case 0: SETDREG(val); break;\
     case 1: ixreg=val;break;\
     case 2: iyreg=val;break;\
     case 3: iureg=val;break;\
@@ -140,45 +140,45 @@
     case 9: ibreg=(Byte)val;break;\
     case 10: iccreg=(Byte)val;break;\
     case 11: idpreg=(Byte)val;break;\
-    default: INVALID_EXGTFR break;};
+    default: INVALID_EXGTFR; break;}
 
 /* Macros for load and store of accumulators. Can be modified to check
    for port addresses */
 
-#define LOADAC(reg) reg=GETBYTE(eaddr);
-#define STOREAC(reg) SETBYTE(eaddr,reg);
+#define LOADAC(reg) reg=GETBYTE(eaddr)
+#define STOREAC(reg) SETBYTE(eaddr,reg)
 
 #define LOADREGS
 #define SAVEREGS
 
-#define PUSH_ENTIRE  PUSHWORD(ipcreg)\
-    PUSHWORD(iureg)\
-    PUSHWORD(iyreg)\
-    PUSHWORD(ixreg)\
-    PUSHBYTE(idpreg)\
-    PUSHBYTE(ibreg)\
-    PUSHBYTE(iareg)\
+#define PUSH_ENTIRE  PUSHWORD(ipcreg);\
+    PUSHWORD(iureg);\
+    PUSHWORD(iyreg);\
+    PUSHWORD(ixreg);\
+    PUSHBYTE(idpreg);\
+    PUSHBYTE(ibreg);\
+    PUSHBYTE(iareg);\
     PUSHBYTE(iccreg)
 
 #define EXEC_IRQ(save_state)    if (save_state) {\
-        PUSH_ENTIRE\
+        PUSH_ENTIRE;\
     }\
     iccreg|=0x90;\
-    ipcreg=GETWORD(0xfff8);
+    ipcreg=GETWORD(0xfff8)
 
 #define EXEC_NMI(save_state)    if (save_state) {\
-        PUSH_ENTIRE\
+        PUSH_ENTIRE;\
     }\
     iccreg|=0xD0;\
-    ipcreg=GETWORD(0xfffc);
+    ipcreg=GETWORD(0xfffc)
 
 #define EXEC_FIRQ(save_state)   if (save_state) {\
-        PUSHWORD(ipcreg)\
-        PUSHBYTE(iccreg)\
+        PUSHWORD(ipcreg);\
+        PUSHBYTE(iccreg);\
         iccreg&=0x7f;\
     }\
     iccreg|=0x50;\
-    ipcreg=GETWORD(0xfff6);
+    ipcreg=GETWORD(0xfff6)
 
 extern unsigned char haspostbyte[256];
 
