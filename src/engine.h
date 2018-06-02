@@ -47,36 +47,18 @@
 
 #define engine
 
-#ifndef FASTFLEX
-    #include "v09.h"
-#endif
 
-#ifndef FASTFLEX
-    static int tracetrick = 0;
-#endif
+#define GETBYTE(a) memory->read_byte(a)
+#define GETBYTE_PI(a) memory->read_byte(a++) // get byte with post increment
+#define GETWORD(a) memory->read_word(a)
+#define SETBYTE(a,n) memory->write_byte(a, (Byte)n);
+#define SETWORD(a,n) memory->write_word(a, n);
 
-#ifdef FASTFLEX
-    #define GETBYTE(a) memory->read_byte(a)
-    #define GETBYTE_PI(a) memory->read_byte(a++) // get byte with post increment
-    #define GETWORD(a) memory->read_word(a)
-    #define SETBYTE(a,n) memory->write_byte(a, (Byte)n);
-    #define SETWORD(a,n) memory->write_word(a, n);
-#else
-    #define GETBYTE(a) (mem[a])
-    #define GETBYTE_PI(a) (mem[a])
-    #define GETWORD(a) (mem[a]<<8|mem[(a)+1])
-    #define SETBYTE(a,n) {if(!(a&0x8000))mem[a]=n;}
-    #define SETWORD(a,n) if(!(a&0x8000)){mem[a]=(n)>>8;mem[(a)+1]=n;}
-#endif
 /* Two bytes of a word are fetched separately because of
    the possible wrap-around at address $ffff and alignment
 */
 
-#ifdef FASTFLEX
-    #define IMMBYTE(b) b=memory->read_byte(ipcreg++);
-#else
-    #define IMMBYTE(b) b=mem[ipcreg++];
-#endif
+#define IMMBYTE(b) b=memory->read_byte(ipcreg++);
 #define IMMWORD(w) {w=GETWORD(ipcreg);ipcreg+=2;}
 
 #define PUSHBYTE(b) {--isreg;SETBYTE(isreg,b)}
@@ -85,13 +67,8 @@
 #define PSHUBYTE(b) {--iureg;SETBYTE(iureg,b)}
 #define PSHUWORD(w) {iureg-=2;SETWORD(iureg,w)}
 #define PULUWORD(w) {w=GETWORD(iureg);iureg+=2;}
-#ifdef FASTFLEX
-    #define PULLBYTE(b) b=memory->read_byte(isreg++);
-    #define PULUBYTE(b) b=memory->read_byte(iureg++);
-#else
-    #define PULLBYTE(b) b=mem[isreg++];
-    #define PULUBYTE(b) b=mem[iureg++];
-#endif
+#define PULLBYTE(b) b=memory->read_byte(isreg++);
+#define PULUBYTE(b) b=memory->read_byte(iureg++);
 
 #define SIGNED(b) ((Word)(b&0x80?b|0xff00:b))
 
@@ -117,15 +94,9 @@
 #define CLH iccreg&=0xdf;
 
 /* handling illegal instructions */
-#ifdef FASTFLEX
-    #define INVALID_INSTR invalid("instruction");
-    #define INVALID_POST ipcreg--; invalid("indirect addressing postbyte");
-    #define INVALID_EXGTFR ipcreg--; invalid("exchange/transfer register");
-#else
-    #define INVALID_INSTR
-    #define INVALID_POST
-    #define INVALID_EXGTFR
-#endif
+#define INVALID_INSTR invalid("instruction");
+#define INVALID_POST ipcreg--; invalid("indirect addressing postbyte");
+#define INVALID_EXGTFR ipcreg--; invalid("exchange/transfer register");
 
 /* set N and Z flags depending on 8 or 16 bit result */
 #define SETNZ8(b) {if(b)CLZ else SEZ if(b&0x80)SEN else CLN}
@@ -174,32 +145,11 @@
 /* Macros for load and store of accumulators. Can be modified to check
    for port addresses */
 
-#ifdef FASTFLEX
 #define LOADAC(reg) reg=GETBYTE(eaddr);
 #define STOREAC(reg) SETBYTE(eaddr,reg);
-#else
-#define LOADAC(reg) if((eaddr&0xff00)!=IOPAGE)reg=mem[eaddr];else\
-        reg=do_input(eaddr&0xff);
-#define STOREAC(reg) if((eaddr&0xff00)!=IOPAGE)SETBYTE(eaddr,reg)else\
-            do_output(eaddr&0xff,reg);
-#endif
 
-#ifdef FASTFLEX
 #define LOADREGS
 #define SAVEREGS
-#else
-#define LOADREGS ixreg=xreg;iyreg=yreg;\
-    iureg=ureg;isreg=sreg;\
-    ipcreg=pcreg;\
-    iareg=*areg;ibreg=*breg;\
-    idpreg=dpreg;iccreg=ccreg;
-
-#define SAVEREGS xreg=ixreg;yreg=iyreg;\
-    ureg=iureg;sreg=isreg;\
-    pcreg=ipcreg;\
-    *areg=iareg;*breg=ibreg;\
-    dpreg=idpreg;ccreg=iccreg;
-#endif
 
 #define PUSH_ENTIRE  PUSHWORD(ipcreg)\
     PUSHWORD(iureg)\
@@ -210,31 +160,18 @@
     PUSHBYTE(iareg)\
     PUSHBYTE(iccreg)
 
-#ifdef FASTFLEX
 #define EXEC_IRQ(save_state)    if (save_state) {\
         PUSH_ENTIRE\
     }\
     iccreg|=0x90;\
     ipcreg=GETWORD(0xfff8);
-#else
-#define EXEC_IRQ    PUSH_ENTIRE\
-    iccreg|=0x90;\
-    ipcreg=GETWORD(0xfff8);
-#endif
 
-#ifdef FASTFLEX
 #define EXEC_NMI(save_state)    if (save_state) {\
         PUSH_ENTIRE\
     }\
     iccreg|=0xD0;\
     ipcreg=GETWORD(0xfffc);
-#else
-#define EXEC_NMI    PUSH_ENTIRE\
-    iccreg|=0xD0;\
-    ipcreg=GETWORD(0xfffc);
-#endif
 
-#ifdef FASTFLEX
 #define EXEC_FIRQ(save_state)   if (save_state) {\
         PUSHWORD(ipcreg)\
         PUSHBYTE(iccreg)\
@@ -242,13 +179,6 @@
     }\
     iccreg|=0x50;\
     ipcreg=GETWORD(0xfff6);
-#else
-#define EXEC_FIRQ    PUSHWORD(ipcreg)\
-    PUSHBYTE(iccreg)\
-    iccreg&=0x7f;\
-    iccreg|=0x50;\
-    ipcreg=GETWORD(0xfff6);
-#endif
 
 extern unsigned char haspostbyte[256];
 

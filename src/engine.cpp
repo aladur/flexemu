@@ -44,62 +44,7 @@ unsigned char haspostbyte[] =
     /*F*/      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-#ifndef FASTFLEX
-void interpr()
-{
-    Word ixreg, iyreg, iureg, isreg, ipcreg;
-    Byte idpreg, iccreg, iareg, ibreg;
-
-    /* Make local variables for the registers. On a real processor (non-Intel)
-        these could be implemented as fast registers. */
-    Word eaddr = 0; /* effective address */
-    Byte ireg; /* instruction register */
-    Byte iflag = 0; /* flag to indicate $10 or $11 prebyte */
-    Byte tb = 0;
-    Word tw = 0;
-    Byte k = 0;   /* woschwot: used for faster memory access */
-
-    LOADREGS
-
-    for (;;)
-    {
-        if (attention)
-        {
-            if (tracing && ipcreg >= tracelo && ipcreg <= tracehi)
-            {
-                SAVEREGS do_trace();
-            }
-
-            if (escape)
-            {
-                SAVEREGS do_escape();
-                LOADREGS
-            }
-
-            if (irq)
-            {
-                if (irq == 1 && !(iccreg & 0x10)) /* standard IRQ */
-                {
-                    DO_IRQ
-                }
-
-                if (irq == 2 && !(iccreg & 0x40)) /* Fast IRQ */
-                {
-                    DO_FIRQ
-                }
-
-                if (!tracing)
-                {
-                    attention = 0;
-                }
-
-                irq = 0;
-            }
-        }
-
-#endif /* ifndef FASTFLEX */
-
-        iflag = 0;
+iflag = 0;
 flaginstr:  /* $10 and $11 instructions return here */
         ireg = GETBYTE_PI(ipcreg);
 
@@ -1394,23 +1339,10 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x12: /* NOP */
                 break;
-#ifdef FASTFLEX
 
             case 0x13: /* SYNC */
                 ipcreg--;
                 events |= DO_SYNC;
-                break;
-#else
-
-            case 0x13: /* SYNC */
-                while (!irq)
-                    ; /* Wait for IRQ */
-
-                if (iccreg & 0x40)
-                {
-                    tracetrick = 1;
-                }
-#endif
                 break;
 
             case 0x14:
@@ -1595,18 +1527,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 if (tb & 0x20) PULLWORD(iyreg)
                 if (tb & 0x40) PULLWORD(iureg)
                 if (tb & 0x80) PULLWORD(ipcreg)
-#ifndef FASTFLEX
-                if (tracetrick && tb == 0xff)
-                {
-                    /* Arrange fake FIRQ after
-                       next insn for hardware
-                       tracing */
-                    tracetrick = 0;
-                    irq = 2;
-                    attention = 1;
-                    goto flaginstr;
-                }
-#endif
                 break;
 
             case 0x36: /* PSHU*/
@@ -1671,31 +1591,8 @@ flaginstr:  /* $10 and $11 instructions return here */
                 PUSHBYTE(iccreg)
                 iccreg |= 0x80;
                 ipcreg--;
-#ifdef FASTFLEX
                 events |= DO_CWAI;
                 ipcreg--;
-#else
-
-                while (!(irq == 1 && !(iccreg & 0x10) || irq == 2 &&
-                         !(iccreg & 0x040)))
-                    ;/* Wait for irq */
-
-                if (irq == 1)
-                {
-                    ipcreg = GETWORD(0xfff8);
-                }
-                else
-                {
-                    ipcreg = GETWORD(0xfff6);
-                }
-
-                irq = 0;
-
-                if (!tracing)
-                {
-                    attention = 0;
-                }
-#endif
                 break;
 
             case 0x3D: /* MUL*/
@@ -3114,14 +3011,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ16(tw)
                 SETWORD(eaddr, tw)
                 break;
-
-#ifdef FASTFLEX
         }
 
         cycles += 48; // return mean value for cycles*10/instruction
-#else
-        }
-    }
-}
-#endif
 
