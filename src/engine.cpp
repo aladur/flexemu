@@ -24,7 +24,7 @@
 #include "engine.h"
 
 
-unsigned char haspostbyte[] =
+static unsigned char haspostbyte[] =
 {
     /*0*/      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     /*1*/      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

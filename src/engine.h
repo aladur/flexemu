@@ -180,7 +180,5 @@
     iccreg|=0x50;\
     ipcreg=GETWORD(0xfff6)
 
-extern unsigned char haspostbyte[256];
-
 #endif
 
