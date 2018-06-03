@@ -52,10 +52,6 @@
 #include "flexerr.h"
 
 
-// class memory is now included in cpu:
-#define MEMORY memory
-#define PMEMORY MEMORY
-
 // define an exception handler when new fails
 
 #ifdef _MSC_VER
@@ -110,26 +106,26 @@ bool startup(
     // instanciate all memory mapped I/O devices
 
     device            = new Mmu(*io, memory);
-    PMEMORY->add_io_device(device, MMU_BASE, MMU_MASK, 0, 0);
+    memory->add_io_device(device, MMU_BASE, MMU_MASK, 0, 0);
     device            = new Acia1(*io, *cpu);
-    PMEMORY->add_io_device(device, ACIA1_BASE, ACIA1_MASK, 0, 0);
+    memory->add_io_device(device, ACIA1_BASE, ACIA1_MASK, 0, 0);
     device            = new Pia1(*io, *cpu);
-    PMEMORY->add_io_device(device, PIA1_BASE, PIA1_MASK, 0, 0);
+    memory->add_io_device(device, PIA1_BASE, PIA1_MASK, 0, 0);
     (*io)->set_pia1((Mc6821 *)device);
     device            = new Pia2(*io, *cpu);
-    PMEMORY->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
+    memory->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
     (*io)->set_pia2((Mc6821 *)device);
     E2floppy *fdc     = new E2floppy();
     fdc->disk_directory(pOptions->disk_dir.c_str());
     fdc->mount_all_drives(pOptions->drive);
-    PMEMORY->add_io_device(fdc, FDCA_BASE, FDCA_MASK,
+    memory->add_io_device(fdc, FDCA_BASE, FDCA_MASK,
                            FDCB_BASE, FDCB_MASK);
     (*io)->set_fdc(fdc);
     comm              = new Command(*io, *cpu, *schedy);
-    PMEMORY->add_io_device(comm, COMM_BASE, COMM_MASK, 0, 0);
+    memory->add_io_device(comm, COMM_BASE, COMM_MASK, 0, 0);
     comm->set_fdc(fdc);
-    video             = new E2video(*io, PMEMORY);
-    PMEMORY->add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
+    video             = new E2video(*io, memory);
+    memory->add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
     (*io)->set_video(video);
 
     (*io)->init(pOptions->reset_key);
@@ -141,10 +137,10 @@ bool startup(
 
     // instanciate real time clock right before initialize alarm
     device   = new Mc146818(*io, *cpu);
-    PMEMORY->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
+    memory->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
     (*io)->set_rtc((Mc146818 *)device);
 
-    if (!PMEMORY->load_hexfile(pOptions->hex_file.c_str(), true))   // &&
+    if (!memory->load_hexfile(pOptions->hex_file.c_str(), true))   // &&
     {
         //pOptions->hex_file.index(PATHSEPARATOR) < 0) {
         std::string hexFilePath;
@@ -152,13 +148,13 @@ bool startup(
         hexFilePath = pOptions->disk_dir + PATHSEPARATORSTRING +
                       pOptions->hex_file;
 
-        if (!PMEMORY->load_hexfile(hexFilePath.c_str()))
+        if (!memory->load_hexfile(hexFilePath.c_str()))
         {
             return false;
         }
     }
 
-    PMEMORY->reset_io();
+    memory->reset_io();
     (*cpu)->reset();
     return true;
 } // startup
