@@ -1223,7 +1223,8 @@ flaginstr:  /* $10 and $11 instructions return here */
         switch (ireg)
         {
             case 0x00: /*NEG direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = -k;
                 SETSTATUS(0, k, tw);
                 SETBYTE(eaddr, tw)
@@ -1238,16 +1239,21 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;/*ILLEGAL*/
 
             case 0x03: /*COM direct*/
-                DIRECT;  tb = ~GETBYTE(eaddr);
+                DIRECT;
+                tb = ~GETBYTE(eaddr);
                 SETNZ8(tb);
-                SEC; CLV;
+                SEC;
+                CLV;
                 SETBYTE(eaddr, tb);
                 break;
 
             case 0x04: /*LSR direct*/
-                DIRECT; tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                DIRECT;
+                tb = GETBYTE(eaddr);
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
@@ -1258,18 +1264,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;/* ILLEGAL*/
 
             case 0x06: /*ROR direct*/
-                DIRECT; tb = (iccreg & 0x01) << 7;
+                DIRECT;
+                tb = (iccreg & 0x01) << 7;
                 k = GETBYTE(eaddr);
-                if (k & 0x01) SEC; else CLC;
+                if (k & 0x01) SEC;
+                else CLC;
                 tw = (k >> 1) + tb;
                 SETNZ8(tw);
                 SETBYTE(eaddr, tw)
                 break;
 
             case 0x07: /*ASR direct*/
-                DIRECT; tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                DIRECT;
+                tb = GETBYTE(eaddr);
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 if (tb & 0x40)
                     tb |= 0x80;
@@ -1279,24 +1290,30 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x08: /*ASL direct*/
                 k = GETBYTE(eaddr);
-                DIRECT; tw = k << 1;
+                DIRECT;
+                tw = k << 1;
                 SETSTATUS(k, k, tw);
                 SETBYTE(eaddr, tw)
                 break;
 
             case 0x09: /*ROL direct*/
-                DIRECT; tb = GETBYTE(eaddr);
+                DIRECT;
+                tb = GETBYTE(eaddr);
                 tw = iccreg & 0x01;
-                if (tb & 0x80) SEC; else CLC;
-                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV; else CLV;
+                if (tb & 0x80) SEC;
+                else CLC;
+                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV;
+                else CLV;
                 tb = (tb << 1) + tw;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x0A: /*DEC direct*/
-                DIRECT; tb = GETBYTE(eaddr) - 1;
-                if (tb == 0x7F) SEV; else CLV;
+                DIRECT;
+                tb = GETBYTE(eaddr) - 1;
+                if (tb == 0x7F) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
@@ -1306,23 +1323,28 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break; /*ILLEGAL*/
 
             case 0x0C: /*INC direct*/
-                DIRECT; tb = GETBYTE(eaddr) + 1;
-                if (tb == 0x80) SEV; else CLV;
+                DIRECT;
+                tb = GETBYTE(eaddr) + 1;
+                if (tb == 0x80) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x0D: /*TST direct*/
-                DIRECT; tb = GETBYTE(eaddr);
+                DIRECT;
+                tb = GETBYTE(eaddr);
                 SETNZ8(tb);
                 break;
 
             case 0x0E: /*JMP direct*/
-                DIRECT; ipcreg = eaddr;
+                DIRECT;
+                ipcreg = eaddr;
                 break;
 
             case 0x0F: /*CLR direct*/
-                DIRECT; SETBYTE(eaddr, 0);
+                DIRECT;
+                SETBYTE(eaddr, 0);
                 CLN;
                 CLV;
                 SEZ;
@@ -1354,11 +1376,14 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break; /*ILLEGAL*/
 
             case 0x16: /*LBRA*/
-                IMMWORD(eaddr) ipcreg += eaddr;
+                IMMWORD(eaddr);
+                ipcreg += eaddr;
                 break;
 
             case 0x17: /*LBSR*/
-                IMMWORD(eaddr) PUSHWORD(ipcreg); ipcreg += eaddr;
+                IMMWORD(eaddr);
+                PUSHWORD(ipcreg);
+                ipcreg += eaddr;
                 break;
 
             case 0x18:
@@ -1367,27 +1392,22 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x19: /* DAA*/
                 tw = iareg;
-
                 if (iccreg & 0x20 || (iareg & 0x0f) > 9)
-                {
                     tw += 6;
-                }
-
                 if (iccreg & 0x01 || (iareg & 0xf0) > 0x90 ||
                     ((iareg & 0xf0) > 0x80 && (iareg & 0x0f) > 0x09))
-                {
                     tw += 0x60;
-                }
-
                 if (tw & 0x100) SEC;
-                if (tw & 0x80) SEN; else CLN;
-
+                if (tw & 0x80) SEN;
+                else CLN;
                 iareg = (Byte)tw;
-                if (iareg) CLZ; else SEZ;
+                if (iareg) CLZ;
+                else SEZ;
                 break;
 
             case 0x1A: /* ORCC*/
-                IMMBYTE(tb); iccreg |= tb;
+                IMMBYTE(tb);
+                iccreg |= tb;
                 break;
 
             case 0x1B:
@@ -1395,7 +1415,8 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break; /*ILLEGAL*/
 
             case 0x1C: /* ANDCC*/
-                IMMBYTE(tb); iccreg &= tb;
+                IMMBYTE(tb);
+                iccreg &= tb;
                 break;
 
             case 0x1D: /* SEX */
@@ -1488,13 +1509,15 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x30: /* LEAX*/
                 ixreg = eaddr;
 
-                if (ixreg) CLZ; else SEZ;
+                if (ixreg) CLZ;
+                else SEZ;
                 break;
 
             case 0x31: /* LEAY*/
                 iyreg = eaddr;
 
-                if (iyreg) CLZ; else SEZ;
+                if (iyreg) CLZ;
+                else SEZ;
                 break;
 
             case 0x32: /* LEAS*/
@@ -1551,7 +1574,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 if (tb & 0x20) PULUWORD(iyreg);
                 if (tb & 0x40) PULUWORD(isreg);
                 if (tb & 0x80) PULUWORD(ipcreg);
-                break; 
+                break;
 
             case 0x39: /* RTS*/
                 PULLWORD(ipcreg);
@@ -1597,8 +1620,10 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x3D: /* MUL*/
                 tw = iareg * ibreg;
-                if (tw) CLZ; else SEZ;
-                if (tw & 0x80) SEC; else CLC;
+                if (tw) CLZ;
+                else SEZ;
+                if (tw & 0x80) SEC;
+                else CLC;
                 SETDREG(tw)
                 break;
 
@@ -1657,14 +1682,17 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x43: /*COMA*/
                 tb = ~iareg;
                 SETNZ8(tb);
-                SEC; CLV;
+                SEC;
+                CLV;
                 iareg = tb;
                 break;
 
             case 0x44: /*LSRA*/
                 tb = iareg;
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 SETNZ8(tb);
                 iareg = tb;
@@ -1676,15 +1704,18 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x46: /*RORA*/
                 tb = (iccreg & 0x01) << 7;
-                if (iareg & 0x01) SEC; else CLC;
+                if (iareg & 0x01) SEC;
+                else CLC;
                 iareg = (iareg >> 1) + tb;
                 SETNZ8(iareg);
                 break;
 
             case 0x47: /*ASRA*/
                 tb = iareg;
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 if (tb & 0x40)
                     tb |= 0x80;
@@ -1701,15 +1732,19 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x49: /*ROLA*/
                 tb = iareg;
                 tw = iccreg & 0x01;
-                if (tb & 0x80) SEC; else CLC;
-                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV; else CLV;
+                if (tb & 0x80) SEC;
+                else CLC;
+                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV;
+                else CLV;
                 tb = (tb << 1) + tw;
-                SETNZ8(tb); iareg = tb;
+                SETNZ8(tb);
+                iareg = tb;
                 break;
 
             case 0x4A: /*DECA*/
                 tb = iareg - 1;
-                if (tb == 0x7F) SEV; else CLV;
+                if (tb == 0x7F) SEV;
+                else CLV;
                 SETNZ8(tb);
                 iareg = tb;
                 break;
@@ -1720,7 +1755,8 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x4C: /*INCA*/
                 tb = iareg + 1;
-                if (tb == 0x80) SEV; else CLV;
+                if (tb == 0x80) SEV;
+                else CLV;
                 SETNZ8(tb);
                 iareg = tb;
                 break;
@@ -1758,14 +1794,17 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x53: /*COMB*/
                 tb = ~ibreg;
                 SETNZ8(tb);
-                SEC; CLV;
+                SEC;
+                CLV;
                 ibreg = tb;
                 break;
 
             case 0x54: /*LSRB*/
                 tb = ibreg;
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 SETNZ8(tb);
                 ibreg = tb;
@@ -1777,15 +1816,18 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x56: /*RORB*/
                 tb = (iccreg & 0x01) << 7;
-                if (ibreg & 0x01) SEC; else CLC;
+                if (ibreg & 0x01) SEC;
+                else CLC;
                 ibreg = (ibreg >> 1) + tb;
                 SETNZ8(ibreg);
                 break;
 
             case 0x57: /*ASRB*/
                 tb = ibreg;
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 if (tb & 0x40)
                     tb |= 0x80;
@@ -1802,8 +1844,10 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x59: /*ROLB*/
                 tb = ibreg;
                 tw = iccreg & 0x01;
-                if (tb & 0x80) SEC; else CLC;
-                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV; else CLV;
+                if (tb & 0x80) SEC;
+                else CLC;
+                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV;
+                else CLV;
                 tb = (tb << 1) + tw;
                 SETNZ8(tb);
                 ibreg = tb;
@@ -1811,7 +1855,8 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x5A: /*DECB*/
                 tb = ibreg - 1;
-                if (tb == 0x7F) SEV; else CLV;
+                if (tb == 0x7F) SEV;
+                else CLV;
                 SETNZ8(tb);
                 ibreg = tb;
                 break;
@@ -1822,7 +1867,8 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x5C: /*INCB*/
                 tb = ibreg + 1;
-                if (tb == 0x80) SEV; else CLV;
+                if (tb == 0x80) SEV;
+                else CLV;
                 SETNZ8(tb);
                 ibreg = tb;
                 break;
@@ -1861,26 +1907,31 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x63: /*COM indexed*/
                 tb = ~GETBYTE(eaddr);
                 SETNZ8(tb);
-                SEC; CLV;
+                SEC;
+                CLV;
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x64: /*LSR indexed*/
                 tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x65:
-                INVALID_INSTR; break;/* ILLEGAL*/
+                INVALID_INSTR;
+                break;/* ILLEGAL*/
 
             case 0x66: /*ROR indexed*/
                 tb = (iccreg & 0x01) << 7;
                 k = GETBYTE(eaddr);
-                if (k & 0x01) SEC; else CLC;
+                if (k & 0x01) SEC;
+                else CLC;
                 tw = (k >> 1) + tb;
                 SETNZ8(tw);
                 SETBYTE(eaddr, tw)
@@ -1888,8 +1939,10 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x67: /*ASR indexed*/
                 tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 if (tb & 0x40)
                     tb |= 0x80;
@@ -1907,8 +1960,10 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x69: /*ROL indexed*/
                 tb = GETBYTE(eaddr);
                 tw = iccreg & 0x01;
-                if (tb & 0x80) SEC; else CLC;
-                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV; else CLV;
+                if (tb & 0x80) SEC;
+                else CLC;
+                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV;
+                else CLV;
                 tb = (tb << 1) + tw;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
@@ -1916,7 +1971,8 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x6A: /*DEC indexed*/
                 tb = GETBYTE(eaddr) - 1;
-                if (tb == 0x7F) SEV; else CLV;
+                if (tb == 0x7F) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
@@ -1927,7 +1983,8 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x6C: /*INC indexed*/
                 tb = GETBYTE(eaddr) + 1;
-                if (tb == 0x80) SEV; else CLV;
+                if (tb == 0x80) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
@@ -1950,7 +2007,8 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x70: /*NEG ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = -k;
                 SETSTATUS(0, k, tw);
                 SETBYTE(eaddr, tw)
@@ -1965,16 +2023,21 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;/*ILLEGAL*/
 
             case 0x73: /*COM ext*/
-                EXTENDED;  tb = ~GETBYTE(eaddr);
+                EXTENDED;
+                tb = ~GETBYTE(eaddr);
                 SETNZ8(tb);
-                SEC; CLV;
+                SEC;
+                CLV;
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x74: /*LSR ext*/
-                EXTENDED; tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                EXTENDED;
+                tb = GETBYTE(eaddr);
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
@@ -1985,18 +2048,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;/* ILLEGAL*/
 
             case 0x76: /*ROR ext*/
-                EXTENDED; tb = (iccreg & 0x01) << 7;
+                EXTENDED;
+                tb = (iccreg & 0x01) << 7;
                 k = GETBYTE(eaddr);
-                if (k & 0x01) SEC; else CLC;
+                if (k & 0x01) SEC;
+                else CLC;
                 tw = (k >> 1) + tb;
                 SETNZ8(tw);
                 SETBYTE(eaddr, tw)
                 break;
 
             case 0x77: /*ASR ext*/
-                EXTENDED; tb = GETBYTE(eaddr);
-                if (tb & 0x01) SEC; else CLC;
-                if (tb & 0x10) SEH; else CLH;
+                EXTENDED;
+                tb = GETBYTE(eaddr);
+                if (tb & 0x01) SEC;
+                else CLC;
+                if (tb & 0x10) SEH;
+                else CLH;
                 tb >>= 1;
                 if (tb & 0x40)
                     tb |= 0x80;
@@ -2005,50 +2073,62 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x78: /*ASL ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = k << 1;
                 SETSTATUS(k, k, tw);
                 SETBYTE(eaddr, tw)
                 break;
 
             case 0x79: /*ROL ext*/
-                EXTENDED; tb = GETBYTE(eaddr);
+                EXTENDED;
+                tb = GETBYTE(eaddr);
                 tw = iccreg & 0x01;
-                if (tb & 0x80) SEC; else CLC;
-                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV; else CLV;
+                if (tb & 0x80) SEC;
+                else CLC;
+                if ((tb & 0x80) ^ ((tb << 1) & 0x80)) SEV;
+                else CLV;
                 tb = (tb << 1) + tw;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x7A: /*DEC ext*/
-                EXTENDED; tb = GETBYTE(eaddr) - 1;
-                if (tb == 0x7F) SEV; else CLV;
+                EXTENDED;
+                tb = GETBYTE(eaddr) - 1;
+                if (tb == 0x7F) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x7B:
-                INVALID_INSTR; break; /*ILLEGAL*/
+                INVALID_INSTR;
+                break; /*ILLEGAL*/
 
             case 0x7C: /*INC ext*/
-                EXTENDED; tb = GETBYTE(eaddr) + 1;
-                if (tb == 0x80) SEV; else CLV;
+                EXTENDED;
+                tb = GETBYTE(eaddr) + 1;
+                if (tb == 0x80) SEV;
+                else CLV;
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
 
             case 0x7D: /*TST ext*/
-                EXTENDED; tb = GETBYTE(eaddr);
+                EXTENDED;
+                tb = GETBYTE(eaddr);
                 SETNZ8(tb);
                 break;
 
             case 0x7E: /*JMP ext*/
-                EXTENDED; ipcreg = eaddr;
+                EXTENDED;
+                ipcreg = eaddr;
                 break;
 
             case 0x7F: /*CLR ext*/
-                EXTENDED; SETBYTE(eaddr, 0)
+                EXTENDED;
+                SETBYTE(eaddr, 0)
                 CLN;
                 CLV;
                 SEZ;
@@ -2056,20 +2136,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x80: /*SUBA immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0x81: /*CMPA immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 break;
 
             case 0x82: /*SBCA immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2085,23 +2168,26 @@ flaginstr:  /* $10 and $11 instructions return here */
                     res = dreg - breg;
                     SETSTATUSD(dreg, breg, res);
                     if (iflag == 0) SETDREG(res)
-                }
+                    }
                 break;
 
             case 0x84: /*ANDA immediate*/
-                IMM8; iareg = iareg & GETBYTE(eaddr);
+                IMM8;
+                iareg = iareg & GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x85: /*BITA immediate*/
-                IMM8; tb = iareg & GETBYTE(eaddr);
+                IMM8;
+                tb = iareg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0x86: /*LDA immediate*/
-                IMM8; LOADAC(iareg);
+                IMM8;
+                LOADAC(iareg);
                 CLV;
                 SETNZ8(iareg);
                 break;
@@ -2114,26 +2200,30 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x88: /*EORA immediate*/
-                IMM8; iareg = iareg ^ GETBYTE(eaddr);
+                IMM8;
+                iareg = iareg ^ GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x89: /*ADCA immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0x8A: /*ORA immediate*/
-                IMM8; iareg = iareg | GETBYTE(eaddr);
+                IMM8;
+                iareg = iareg | GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x8B: /*ADDA immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2157,7 +2247,9 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x8D: /*BSR */
-                IMMBYTE(tb); PUSHWORD(ipcreg); ipcreg += SIGNED(tb);
+                IMMBYTE(tb);
+                PUSHWORD(ipcreg);
+                ipcreg += SIGNED(tb);
                 break;
 
             case 0x8E: /* LDX (LDY) immediate */
@@ -2182,20 +2274,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x90: /*SUBA direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0x91: /*CMPA direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 break;
 
             case 0x92: /*SBCA direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2218,19 +2313,22 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x94: /*ANDA direct*/
-                DIRECT; iareg = iareg & GETBYTE(eaddr);
+                DIRECT;
+                iareg = iareg & GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x95: /*BITA direct*/
-                DIRECT; tb = iareg & GETBYTE(eaddr);
+                DIRECT;
+                tb = iareg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0x96: /*LDA direct*/
-                DIRECT; LOADAC(iareg);
+                DIRECT;
+                LOADAC(iareg);
                 CLV;
                 SETNZ8(iareg);
                 break;
@@ -2243,26 +2341,30 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x98: /*EORA direct*/
-                DIRECT; iareg = iareg ^ GETBYTE(eaddr);
+                DIRECT;
+                iareg = iareg ^ GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x99: /*ADCA direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0x9A: /*ORA direct*/
-                DIRECT; iareg = iareg | GETBYTE(eaddr);
+                DIRECT;
+                iareg = iareg | GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0x9B: /*ADDA direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2286,12 +2388,14 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x9D: /*JSR direct */
-                DIRECT;  PUSHWORD(ipcreg);
+                DIRECT;
+                PUSHWORD(ipcreg);
                 ipcreg = eaddr;
                 break;
 
             case 0x9E: /* LDX (LDY) direct */
-                DIRECT; tw = GETWORD(eaddr);
+                DIRECT;
+                tw = GETWORD(eaddr);
                 CLV;
                 SETNZ16(tw);
                 if (!iflag)
@@ -2428,20 +2532,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xB0: /*SUBA ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0xB1: /*CMPA ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
                 break;
 
             case 0xB2: /*SBCA ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2462,19 +2569,22 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xB4: /*ANDA ext*/
-                EXTENDED; iareg = iareg & GETBYTE(eaddr);
+                EXTENDED;
+                iareg = iareg & GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0xB5: /*BITA ext*/
-                EXTENDED; tb = iareg & GETBYTE(eaddr);
+                EXTENDED;
+                tb = iareg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0xB6: /*LDA ext*/
-                EXTENDED; LOADAC(iareg);
+                EXTENDED;
+                LOADAC(iareg);
                 CLV;
                 SETNZ8(iareg);
                 break;
@@ -2487,26 +2597,30 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xB8: /*EORA ext*/
-                EXTENDED; iareg = iareg ^ GETBYTE(eaddr);
+                EXTENDED;
+                iareg = iareg ^ GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0xB9: /*ADCA ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
                 break;
 
             case 0xBA: /*ORA ext*/
-                EXTENDED; iareg = iareg | GETBYTE(eaddr);
+                EXTENDED;
+                iareg = iareg | GETBYTE(eaddr);
                 SETNZ8(iareg);
                 CLV;
                 break;
 
             case 0xBB: /*ADDA ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
                 iareg = (Byte)tw;
@@ -2530,12 +2644,14 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xBD: /*JSR ext */
-                EXTENDED;  PUSHWORD(ipcreg);
+                EXTENDED;
+                PUSHWORD(ipcreg);
                 ipcreg = eaddr;
                 break;
 
             case 0xBE: /* LDX (LDY) ext */
-                EXTENDED; tw = GETWORD(eaddr);
+                EXTENDED;
+                tw = GETWORD(eaddr);
                 CLV;
                 SETNZ16(tw);
                 if (!iflag)
@@ -2553,20 +2669,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xC0: /*SUBB immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xC1: /*CMPB immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 break;
 
             case 0xC2: /*SBCB immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
@@ -2585,19 +2704,22 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xC4: /*ANDB immediate*/
-                IMM8; ibreg = ibreg & GETBYTE(eaddr);
+                IMM8;
+                ibreg = ibreg & GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xC5: /*BITB immediate*/
-                IMM8; tb = ibreg & GETBYTE(eaddr);
+                IMM8;
+                tb = ibreg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0xC6: /*LDB immediate*/
-                IMM8; LOADAC(ibreg);
+                IMM8;
+                LOADAC(ibreg);
                 CLV;
                 SETNZ8(ibreg);
                 break;
@@ -2610,26 +2732,30 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xC8: /*EORB immediate*/
-                IMM8; ibreg = ibreg ^ GETBYTE(eaddr);
+                IMM8;
+                ibreg = ibreg ^ GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xC9: /*ADCB immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xCA: /*ORB immediate*/
-                IMM8; ibreg = ibreg | GETBYTE(eaddr);
+                IMM8;
+                ibreg = ibreg | GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xCB: /*ADDB immediate*/
-                IMM8; k = GETBYTE(eaddr);
+                IMM8;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
@@ -2669,20 +2795,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xD0: /*SUBB direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xD1: /*CMPB direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 break;
 
             case 0xD2: /*SBCB direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
@@ -2701,19 +2830,22 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xD4: /*ANDB direct*/
-                DIRECT; ibreg = ibreg & GETBYTE(eaddr);
+                DIRECT;
+                ibreg = ibreg & GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xD5: /*BITB direct*/
-                DIRECT; tb = ibreg & GETBYTE(eaddr);
+                DIRECT;
+                tb = ibreg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0xD6: /*LDB direct*/
-                DIRECT; LOADAC(ibreg);
+                DIRECT;
+                LOADAC(ibreg);
                 CLV;
                 SETNZ8(ibreg);
                 break;
@@ -2726,33 +2858,38 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xD8: /*EORB direct*/
-                DIRECT; ibreg = ibreg ^ GETBYTE(eaddr);
+                DIRECT;
+                ibreg = ibreg ^ GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xD9: /*ADCB direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xDA: /*ORB direct*/
-                DIRECT; ibreg = ibreg | GETBYTE(eaddr);
+                DIRECT;
+                ibreg = ibreg | GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xDB: /*ADDB direct*/
-                DIRECT; k = GETBYTE(eaddr);
+                DIRECT;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xDC: /*LDD direct */
-                DIRECT; tw = GETWORD(eaddr);
+                DIRECT;
+                tw = GETWORD(eaddr);
                 SETNZ16(tw);
                 CLV;
                 SETDREG(tw)
@@ -2767,7 +2904,8 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xDE: /* LDU (LDS) direct */
-                DIRECT; tw = GETWORD(eaddr);
+                DIRECT;
+                tw = GETWORD(eaddr);
                 CLV;
                 SETNZ16(tw);
                 if (!iflag)
@@ -2897,20 +3035,23 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xF0: /*SUBB ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xF1: /*CMPB ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
                 break;
 
             case 0xF2: /*SBCB ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
@@ -2929,19 +3070,22 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xF4: /*ANDB ext*/
-                EXTENDED; ibreg = ibreg & GETBYTE(eaddr);
+                EXTENDED;
+                ibreg = ibreg & GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xF5: /*BITB ext*/
-                EXTENDED; tb = ibreg & GETBYTE(eaddr);
+                EXTENDED;
+                tb = ibreg & GETBYTE(eaddr);
                 SETNZ8(tb);
                 CLV;
                 break;
 
             case 0xF6: /*LDB ext*/
-                EXTENDED; LOADAC(ibreg);
+                EXTENDED;
+                LOADAC(ibreg);
                 CLV;
                 SETNZ8(ibreg);
                 break;
@@ -2954,33 +3098,38 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xF8: /*EORB ext*/
-                EXTENDED; ibreg = ibreg ^ GETBYTE(eaddr);
+                EXTENDED;
+                ibreg = ibreg ^ GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xF9: /*ADCB ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xFA: /*ORB ext*/
-                EXTENDED; ibreg = ibreg | GETBYTE(eaddr);
+                EXTENDED;
+                ibreg = ibreg | GETBYTE(eaddr);
                 SETNZ8(ibreg);
                 CLV;
                 break;
 
             case 0xFB: /*ADDB ext*/
-                EXTENDED; k = GETBYTE(eaddr);
+                EXTENDED;
+                k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
                 ibreg = (Byte)tw;
                 break;
 
             case 0xFC: /*LDD ext */
-                EXTENDED; tw = GETWORD(eaddr);
+                EXTENDED;
+                tw = GETWORD(eaddr);
                 SETNZ16(tw);
                 CLV;
                 SETDREG(tw)
@@ -2995,7 +3144,8 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0xFE: /* LDU (LDS) ext */
-                EXTENDED; tw = GETWORD(eaddr);
+                EXTENDED;
+                tw = GETWORD(eaddr);
                 CLV;
                 SETNZ16(tw);
                 if (!iflag)
