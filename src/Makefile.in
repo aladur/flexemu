@@ -509,7 +509,7 @@ fsetup_SOURCES = \
 fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp\
 fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
-bfileptr.h bregistr.h
+bfileptr.h bregistr.h sguiopts.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
@@ -533,7 +533,7 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h
+schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \

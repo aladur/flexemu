@@ -29,8 +29,6 @@
 #include <ctype.h>
 #include "xtgui.h"
 #include <X11/IntrinsicP.h>
-#include "flexemu.h"
-#include "schedcpu.h"
 #include "benv.h"
 #include "bfileptr.h"
 #include "csetfreq.h"

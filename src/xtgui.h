@@ -33,6 +33,9 @@
     #include <X11/xpm.h>
 #endif
 
+#include "flexemu.h"
+#include "schedcpu.h"
+#include "scpulog.h"
 #include "xabsgui.h"
 
 // include Athena Widget headers AFTER xabsgui.h
