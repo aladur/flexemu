@@ -390,17 +390,17 @@ Byte E2floppy::readIo(Word offset)
 
     status = 0xff;  // unused is logical high
 
-    if (!side)
+    if (!getSide())
     {
         status &= 0xfd;
     }
 
-    if (!irq)
+    if (!isIrq())
     {
         status &= 0xbf;
     }
 
-    if (!drq)
+    if (!isDrq())
     {
         status &= 0x7f;
     }
@@ -418,8 +418,8 @@ void E2floppy::writeIo(Word offset, Byte val)
     else
     {
         drisel = val;
-        side = (drisel & 0x10) ? 1 : 0;
-        track[selected] = tr;
+        setSide((drisel & 0x10) ? 1 : 0);
+        track[selected] = getTrack();
 
         switch (drisel & 0x0f)
         {
@@ -445,7 +445,7 @@ void E2floppy::writeIo(Word offset, Byte val)
 
         pfs = floppy[selected];
 
-        tr = track[selected];
+        setTrack(track[selected]);
     }
 } // writeIo
 
@@ -463,11 +463,9 @@ Byte E2floppy::readByte(Word index)
     {
         driveStatus[selected] = DISK_STAT_ACTIVE;
 
-        if (!pfs->ReadSector((Byte *)&sector_buffer, tr, sr))
+        if (!pfs->ReadSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
-            drq = 0;
-            str = 0x10;
-            byteCount = 0;
+            setStatusRecordNotFound();
         }
     } // if
 
@@ -480,16 +478,16 @@ void E2floppy::writeByte(Word index)
 {
     //unsigned int error;
 
-    sector_buffer[SECTOR_SIZE - index] = dr;
+    sector_buffer[SECTOR_SIZE - index] = getDataRegister();
 
     if (index == 1)
     {
         pStatusMutex->lock();
         driveStatus[selected] = DISK_STAT_ACTIVE;
 
-        if (!pfs->WriteSector((Byte *)&sector_buffer, tr, sr))
+        if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
-            // how to react on write error???
+            setStatusRecordNotFound();
         }
 
         pStatusMutex->unlock();
@@ -497,36 +495,36 @@ void E2floppy::writeByte(Word index)
 } // writeByte
 
 
-Byte E2floppy::recordNotFound()
+bool E2floppy::recordNotFound()
 {
     if (pfs == NULL)
     {
-        return 1;
+        return true;
     }
 
-    return !pfs->IsSectorValid(tr, sr);
+    return !pfs->IsSectorValid(getTrack(), getSector());
 } // recordNotFound
 
-Byte E2floppy::seekError(Byte new_track)
+bool E2floppy::seekError(Byte new_track)
 {
     if (pfs == NULL)
     {
-        return 1;
+        return true;
     }
 
     return !pfs->IsTrackValid(new_track);
 } // seekError
 
-Byte E2floppy::driveReady()
+bool E2floppy::driveReady()
 {
     return pfs != NULL;
 }  // driveReady
 
-Byte E2floppy::writeProtect()
+bool E2floppy::writeProtect()
 {
     if (pfs == NULL)
     {
-        return 1;
+        return true;
     }
 
     return pfs->IsWriteProtected();

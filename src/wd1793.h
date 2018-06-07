@@ -33,6 +33,17 @@
 
 class Wd1793 : public IoDevice
 {
+public:
+
+    const Byte STR_NOTREADY{0x80};
+    const Byte STR_PROTECTED{0x40};
+    const Byte STR_HEADLOADED{0x20};
+    const Byte STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
+    const Byte STR_SEEKERROR{0x10}; // for type 1 commands
+    const Byte STR_TRACK0{0x04};
+    const Byte STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
+    const Byte STR_INDEX{0x02}; // for type 1 commands
+    const Byte STR_BUSY{0x01};
 
     // Internal registers:
     //
@@ -43,15 +54,17 @@ class Wd1793 : public IoDevice
     // str      status register (r)
     // isStepIn flag indicating that previous step command was STEP IN
     // side     side of floppy to read/write on, changeable by subclass
-    // drq      status of drq pin
-    // irq      status of irq pin
+    // drq      status of drq pin (= data request)
+    // irq      status of irq pin (= interrupt)
     // byteCount    byte counter during read/write
     // strRead  count read access to command register, reset by read from dr
 
-protected:
+private:
 
     Byte                dr, tr, sr, cr, str;
-    Byte                isStepIn, drq, irq, side;
+    bool                isStepIn;
+    bool                isDataRequest, isInterrupt;
+    Byte                side;
     unsigned int            byteCount, strRead;
 
     // Internal functions
@@ -61,13 +74,70 @@ private:
 
 protected:
 
-    virtual void             setIrq();
-    virtual void             resetIrq();
-    virtual Byte             driveReady();
-    virtual Byte             seekError(Byte new_track);
-    virtual Byte             writeProtect();
-    virtual Byte             recordNotFound();
-    virtual void             command(Byte command);
+    void setIrq()
+    {
+        isInterrupt = true;
+    }
+
+    void resetIrq()
+    {
+        isInterrupt = false;
+        // nterrupt request to CPU
+    }
+
+    bool isIrq() const
+    {
+        return isInterrupt;
+    }
+
+    bool isDrq() const
+    {
+        return isDataRequest;
+    }
+
+    Byte getSide() const
+    {
+        return side;
+    }
+
+    void setSide(Byte newSide)
+    {
+        side = newSide;
+    }
+
+    Byte getTrack() const
+    {
+        return tr;
+    }
+
+    Byte getSector() const
+    {
+        return sr;
+    }
+
+    void setTrack(Byte newTrack)
+    {
+        tr = newTrack;
+    }
+
+    void setSector(Byte newSector)
+    {
+        sr = newSector;
+    }
+
+    Byte getDataRegister() const
+    {
+        return dr;
+    }
+
+    void command(Byte command);
+    void                     setStatusRecordNotFound();
+    bool                     isErrorStatus();
+
+    virtual bool             driveReady();
+    virtual bool             seekError(Byte new_track);
+    virtual bool             writeProtect();
+    virtual bool             recordNotFound();
     virtual Byte             readByte(Word index);
     virtual void             writeByte(Word index);
 

@@ -107,10 +107,10 @@ private:
 
     virtual Byte         readByte(Word index);
     virtual void         writeByte(Word index);
-    virtual Byte         driveReady();
-    virtual Byte         writeProtect();
-    virtual Byte         recordNotFound();
-    virtual Byte         seekError(Byte new_track);
+    virtual bool         driveReady();
+    virtual bool         writeProtect();
+    virtual bool         recordNotFound();
+    virtual bool         seekError(Byte new_track);
     const char       *open_mode(char *path);
 };
 
