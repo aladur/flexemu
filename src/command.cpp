@@ -37,6 +37,7 @@
 #include "e2floppy.h"
 #include "inout.h"
 #include "schedule.h"
+#include "mc6809.h"
 
 
 Command::Command(Inout *x_io, Mc6809 *x_cpu, Scheduler *x_sched) :

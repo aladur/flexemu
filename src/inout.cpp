@@ -25,6 +25,7 @@
 
 #include "inout.h"
 #include "e2floppy.h"
+#include "mc6809.h"
 #include "mc6821.h"
 #include "mc146818.h"
 #include "absgui.h"

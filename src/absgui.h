@@ -29,11 +29,8 @@
 #include <string.h>
 
 #include "e2.h"
-#include "mc6809.h"
+#include "sguiopts.h"
 #include <string>
-
-#define MAX_PIXELSIZEX    (3)
-#define MAX_PIXELSIZEY    (4)
 
 #ifdef _WIN32
     #define COPYTEXT "press Licence button"
@@ -55,26 +52,7 @@ https://aladur.neocities.org/flexemu\n"
 #define CPU_LINES   (15)
 #define CPU_LINE_SIZE   (39)
 
-struct sGuiOptions
-{
-    int argc;
-    char *const *argv;
-    std::string color;
-    std::string html_viewer;
-    std::string doc_dir;
-    int nColors; // Number of colors or gray scale values { 2, 8, 64 }
-    bool isInverse; // Display inverse colors or gray scale values
-    bool isSynchronized; // Use X11 in synchronized mode
-    int switch_sp;
-    int pixelSizeX; // x-size of one pixel on the screen
-    int pixelSizeY; // y-size of one pixel on the screen
-    int guiType;
-#ifdef _WIN32
-    HINSTANCE hInstance;  // handle to current instance
-    int nCmdShow;   // show state of window
-#endif
-};
-
+class Mc6809;
 class Scheduler;
 class Inout;
 class Memory;

@@ -18,6 +18,7 @@
 #include "typedefs.h"
 #include "memory.h"
 #include "schedcpu.h"
+#include "scpulog.h"
 #include "cpustate.h"
 #include "flexemu.h"
 
@@ -212,15 +213,6 @@ union ux86flags
         bool        cf    : 1; // carry flag
 #endif
     } bit;
-};
-
-struct s_cpu_logfile
-{
-    unsigned int minAddr;
-    unsigned int maxAddr;
-    unsigned int startAddr;
-    unsigned int stopAddr;
-    char logFileName[PATH_MAX];
 };
 
 class BTime;

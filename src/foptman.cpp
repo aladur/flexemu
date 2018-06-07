@@ -24,7 +24,8 @@
 #include <signal.h>
 #include <new>
 
-#include "absgui.h"
+#include "flexemu.h"
+#include "sguiopts.h"
 #include "foptman.h"
 #include "bregistr.h"
 #include "brcfile.h"

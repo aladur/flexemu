@@ -23,10 +23,18 @@
 
 #ifdef _WIN32
 #include "misc1.h"
+#include "flexemu.h"
+#include "schedcpu.h"
+#include "scpulog.h"
 #ifdef _MSC_VER
     #include <commctrl.h>
 #endif
 
+class Mc6809;
+class Memory;
+class Scheduler;
+class Inout;
+class E2video;
 class Mc6809CpuStatus;
 
 // maybe someone has forgotten to define this:

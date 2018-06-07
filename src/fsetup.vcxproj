@@ -190,8 +190,8 @@
     <ClInclude Include="foptman.h" />
     <ClInclude Include="fsetpdlg.h" />
     <ClInclude Include="fsetup.h" />
-    <ClInclude Include="iodevice.h" />
     <ClInclude Include="misc1.h" />
+    <ClInclude Include="sguiopts.h" />
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <ItemGroup>
