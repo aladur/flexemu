@@ -63,12 +63,17 @@ Byte Wd1793::readIo(Word offset)
             }
 
             // set index every 16 reads
+            index = (index + 1) % 16;
+            if (!index)
+            {
+                // After max. 16x read from STR drive gets ready
+                str &= ~STR_NOTREADY;
+            }
+
             if ((str & STR_NOTREADY))
             {
                 return str;
             }
-
-            index = (index + 1) % 16;
 
             if (!index && !(cr & 0x80))
             {
