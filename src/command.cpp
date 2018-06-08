@@ -258,16 +258,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer_index = 0;
                         return;
                     }
-                    else if (stricmp(arg1, "xt") == 0)
-                    {
-                        io->create_gui(GUI_XTOOLKIT);
-                        return;
-                    }
-                    else if (stricmp(arg1, "windows") == 0)
-                    {
-                        io->create_gui(GUI_WINDOWS);
-                        return;
-                    }
                     else if (stricmp(arg1, "info") == 0 && fdc != NULL)
                     {
                         std::string str;
