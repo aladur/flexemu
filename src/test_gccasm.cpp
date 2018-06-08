@@ -505,8 +505,8 @@ bool test_gccasm_fctByte(std::string mnemonic,
     Byte rega;
     Byte regcc;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 
@@ -552,8 +552,8 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
     Byte rega;
     Byte regcc;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 
@@ -605,8 +605,8 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 
@@ -656,8 +656,8 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 
@@ -715,8 +715,8 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 
@@ -772,8 +772,8 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_rom(0xfffe, 0x00);
-    memory->write_rom(0xffff, 0x00);
+    memory->write_ram_rom(0xfffe, 0x00);
+    memory->write_ram_rom(0xffff, 0x00);
 
     cpu->reset();
 

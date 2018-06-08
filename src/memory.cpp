@@ -231,11 +231,17 @@ void Memory::reset_io()
     }
 } // reset_io
 
-// write Byte into ROM
-void Memory::write_rom(Word offset, Byte val)
+// Write Byte into RAM or ROM independent of MMU.
+void Memory::write_ram_rom(Word offset, Byte value)
 {
-    memory[offset] = val;
-} // write_rom
+    memory[offset] = value;
+} // write_ram_rom
+
+// Read Byte from RAM or ROM independent of MMU.
+Byte Memory::read_ram_rom(Word offset)
+{
+    return memory[offset];
+} // read_ram_rom
 
 void Memory::switch_mmu(Word offset, Byte val)
 {
@@ -249,6 +255,36 @@ void Memory::switch_mmu(Word offset, Byte val)
         video_ram_active_bits &= ~(1 << offset);
     }
 } // switch_mmu
+
+void Memory::dump_ram_rom(Word min, Word max)
+{
+    Word address = min;
+    Byte value;
+    Byte padding;
+
+    padding = 3 * (address % 16);
+    printf("%04X ", address);
+    if (padding)
+    {
+        printf("%*c", padding, ' ');
+    }
+
+    while (true)
+    {
+        value = read_ram_rom(address);
+        printf(" %02X", value);
+        if (address == max)
+        {
+            printf("\n");
+            return;
+        }
+        if (address % 16 == 15)
+        {
+            printf("\n%04X ", address + 1);
+        }
+        ++address;
+    }
+}
 
 //----------------------------------------------------------------------------
 // Processor loading routines
@@ -295,7 +331,7 @@ void Memory::load_intelhex(FILE *fp)
             while (n--)
             {
                 b = fread_byte(fp);
-                write_rom(addr++, b);
+                write_ram_rom(addr++, b);
             }
         }
         else if (t == 0x01)
@@ -346,7 +382,7 @@ void Memory::load_motorola_srec(FILE *fp)
                 while (n--)
                 {
                     b = fread_byte(fp);
-                    write_rom(addr++, b);
+                    write_ram_rom(addr++, b);
                 };
 
                 break;
@@ -371,10 +407,44 @@ void Memory::load_motorola_srec(FILE *fp)
     }
 }
 
+void Memory::load_flex_binary(FILE *fp)
+{
+    int value;
+    Word address = 0;
+    size_t count = 0;
+
+    while ((value = fgetc(fp)) != EOF)
+    {
+        if (count == 0)
+        {
+            if (value == 0x02)
+            {
+                // Read address and byte count.
+                address = (fgetc(fp) & 0xff) << 8;
+                address |= fgetc(fp) & 0xff;
+                count = fgetc(fp) & 0xff;
+            } else if (value == 0x16)
+            {
+                // Read start address and ignore it.
+                Word temp = fread_word(fp);
+                (void)temp;
+                return;
+            } else
+            {
+                return;
+            }
+            // Read next byte.
+            value = fgetc(fp);
+        }
+        write_ram_rom(address++, (Byte)value);
+        --count;
+    }
+}
+
 bool Memory::load_hexfile(const char *filename, bool ignore_errors)
 {
     Word    ch;
-    BFilePtr fp(filename, "r");
+    BFilePtr fp(filename, "rb");
 
     if (fp == NULL)
     {
@@ -407,6 +477,10 @@ bool Memory::load_hexfile(const char *filename, bool ignore_errors)
     else if (toupper(ch) == 'S')
     {
         load_motorola_srec(fp);
+    }
+    else if (ch == 0x02)
+    {
+        load_flex_binary(fp);
     }
     else
     {

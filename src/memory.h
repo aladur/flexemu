@@ -87,9 +87,11 @@ public:
         Word base_addr1, Byte range1,
         Word base_addr2, Byte range2);
     bool load_hexfile(const char *filename, bool ignore_errors = false);
+
 private:
     void load_intelhex(FILE *fp);
     void load_motorola_srec(FILE *fp);
+    void load_flex_binary(FILE *fp);
     static Byte fread_byte(FILE *fp);
     static Word fread_word(FILE *fp);
 
@@ -100,7 +102,9 @@ public:
     void init_blocks_to_update();
 
 public:
-    void write_rom(Word address, Byte value);
+    void write_ram_rom(Word address, Byte value);
+    Byte read_ram_rom(Word address);
+    void dump_ram_rom(Word min = 0, Word max = 0xffff);
 
     // The following memory Byte/Word access methods are
     // inlined for optimized performance.
