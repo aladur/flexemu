@@ -30,15 +30,14 @@
 
 Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-Mc146818::Mc146818(Inout *x_io, Mc6809 *x_cpu) :
-    cpu(x_cpu), io(x_io), al_second(0), al_minute(0), al_hour(0),
+Mc146818::Mc146818(Mc6809 *x_cpu) :
+    cpu(x_cpu), al_second(0), al_minute(0), al_hour(0),
     A(0), B(0), C(0), D(0)
 {
     struct tm   *lt;
     time_t       time_now;
 
     cpu = x_cpu;
-    io  = x_io;
     path[0] = '\0';
 
     BFilePtr fp(getFileName(), "rb");

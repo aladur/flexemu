@@ -63,7 +63,7 @@ void Inout::s_exec_signal(int sig_no)
 
 Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     cpu(x_cpu), options(x_options), gui(NULL),
-    fdc(NULL), memory(NULL), rtc(NULL), pia1(NULL), pia2(NULL),
+    fdc(NULL), memory(NULL), rtc(NULL), pia1(NULL),
     video(NULL), schedy(NULL), pmutex(NULL), jmutex(NULL)
 {
     reset();
@@ -331,11 +331,6 @@ void Inout::set_rtc(Mc146818 *x_device)
 void Inout::set_pia1(Mc6821 *x_device)
 {
     pia1 = x_device;
-}
-
-void Inout::set_pia2(Mc6821 *x_device)
-{
-    pia2 = x_device;
 }
 
 void Inout::set_video(E2video *x_video)

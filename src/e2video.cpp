@@ -28,16 +28,14 @@
 #include "memory.h"
 
 
-E2video::E2video(Inout *x_io, Memory *x_mem)
+E2video::E2video(Memory *x_mem)
 {
     memory = x_mem;
-    io     = x_io;
 }
 
 E2video::~E2video()
 {
     memory = NULL;
-    io     = NULL;
 }
 
 

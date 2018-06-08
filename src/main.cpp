@@ -117,7 +117,6 @@ bool startup(
     (*io)->set_pia1((Mc6821 *)device);
     device            = new Pia2(*io, *cpu);
     memory->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
-    (*io)->set_pia2((Mc6821 *)device);
     E2floppy *fdc     = new E2floppy();
     fdc->disk_directory(pOptions->disk_dir.c_str());
     fdc->mount_all_drives(pOptions->drive);
@@ -127,7 +126,7 @@ bool startup(
     comm              = new Command(*io, *cpu, *schedy);
     memory->add_io_device(comm, COMM_BASE, COMM_MASK, 0, 0);
     comm->set_fdc(fdc);
-    video             = new E2video(*io, memory);
+    video             = new E2video(memory);
     memory->add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
     (*io)->set_video(video);
 
@@ -139,7 +138,7 @@ bool startup(
     }
 
     // instanciate real time clock right before initialize alarm
-    device   = new Mc146818(*io, *cpu);
+    device   = new Mc146818(*cpu);
     memory->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
     (*io)->set_rtc((Mc146818 *)device);
 

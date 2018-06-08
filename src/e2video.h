@@ -28,7 +28,6 @@
 #include "iodevice.h"
 
 class Memory;
-class Inout;
 
 
 class E2video : public IoDevice
@@ -37,7 +36,6 @@ class E2video : public IoDevice
     // Internal registers
 protected:
     Memory      *memory;
-    Inout       *io;
 
 public:
     Byte        vico1, vico2;
@@ -60,7 +58,7 @@ public:
 
     // Public constructor and destructor
 public:
-    E2video(Inout *x_io, Memory *x_mem);
+    E2video(Memory *x_mem);
     virtual ~E2video();
 
 };

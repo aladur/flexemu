@@ -77,7 +77,7 @@ protected:
     E2floppy       *fdc;
     Memory         *memory;
     Mc146818       *rtc;
-    Mc6821         *pia1, *pia2;
+    Mc6821         *pia1;
     E2video        *video;
     Scheduler      *schedy;
 
@@ -89,7 +89,6 @@ public:
     void    set_rtc(Mc146818  *x_device);
     void    set_memory(Memory  *x_memory);
     void    set_pia1(Mc6821 *x_device);
-    void    set_pia2(Mc6821 *x_device);
     void    set_video(E2video *x_video);
     void    set_scheduler(Scheduler *x_sched);
     AbstractGui *create_gui(int type);

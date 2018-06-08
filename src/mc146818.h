@@ -40,7 +40,6 @@ class Mc146818 : public IoDevice
 
 protected:
     Mc6809                 *cpu;
-    Inout                  *io;
 
     Byte                second, minute, hour;
     Byte                al_second, al_minute, al_hour;
@@ -74,7 +73,7 @@ private:
 
 public:
 
-    Mc146818(Inout *x_io, Mc6809 *x_cpu);
+    Mc146818(Mc6809 *x_cpu);
     virtual             ~Mc146818();
 
 };
