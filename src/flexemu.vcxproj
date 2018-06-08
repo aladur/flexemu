@@ -200,6 +200,7 @@
     <ClCompile Include="fdirent.cpp" />
     <ClCompile Include="ffilebuf.cpp" />
     <ClCompile Include="ffilecnt.cpp" />
+    <ClCompile Include="fileread.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="iffilcnt.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="filecntb.h" />
     <ClInclude Include="filecnts.h" />
     <ClInclude Include="filecont.h" />
+    <ClInclude Include="fileread.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="foptman.h" />
@@ -299,6 +301,7 @@
     <ClInclude Include="mc6821.h" />
     <ClInclude Include="mc6850.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="memtgt.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />

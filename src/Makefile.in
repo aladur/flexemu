@@ -138,9 +138,9 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-btime.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
 	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
 	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
-	flexemu-iffilcnt.$(OBJEXT) flexemu-bwin32threadimp.$(OBJEXT) \
-	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT) \
-	flexemu-cvtwchar.$(OBJEXT)
+	flexemu-iffilcnt.$(OBJEXT) flexemu-fileread.$(OBJEXT) \
+	flexemu-bwin32threadimp.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
+	flexemu-buint.$(OBJEXT) flexemu-cvtwchar.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -521,7 +521,7 @@ pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
 xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
-btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp \
+btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
@@ -533,7 +533,8 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h
+schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
+fileread.h memtgt.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
@@ -726,6 +727,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fdirent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ffilebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ffilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fileread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flexerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-foptman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-iffilcnt.Po@am__quote@
@@ -1609,6 +1611,20 @@ flexemu-iffilcnt.obj: iffilcnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iffilcnt.cpp' object='flexemu-iffilcnt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-iffilcnt.obj `if test -f 'iffilcnt.cpp'; then $(CYGPATH_W) 'iffilcnt.cpp'; else $(CYGPATH_W) '$(srcdir)/iffilcnt.cpp'; fi`
+
+flexemu-fileread.o: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fileread.o -MD -MP -MF $(DEPDIR)/flexemu-fileread.Tpo -c -o flexemu-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fileread.Tpo $(DEPDIR)/flexemu-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='flexemu-fileread.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+
+flexemu-fileread.obj: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fileread.obj -MD -MP -MF $(DEPDIR)/flexemu-fileread.Tpo -c -o flexemu-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fileread.Tpo $(DEPDIR)/flexemu-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='flexemu-fileread.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
 
 flexemu-bwin32threadimp.o: bwin32threadimp.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bwin32threadimp.o -MD -MP -MF $(DEPDIR)/flexemu-bwin32threadimp.Tpo -c -o flexemu-bwin32threadimp.o `test -f 'bwin32threadimp.cpp' || echo '$(srcdir)/'`bwin32threadimp.cpp

@@ -22,6 +22,7 @@
 
 #include "misc1.h"
 #include <new>
+#include <sstream>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
@@ -50,6 +51,7 @@
 #include "absgui.h"
 #include "schedule.h"
 #include "flexerr.h"
+#include "fileread.h"
 
 
 // define an exception handler when new fails
@@ -90,6 +92,7 @@ bool startup(
     IoDevice        *device;
     Command         *comm;
     Memory      *memory;
+    int error;
 
     memory            = new Memory(pOptions->isHiMem);
     *cpu              = new Mc6809(memory);
@@ -140,7 +143,7 @@ bool startup(
     memory->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
     (*io)->set_rtc((Mc146818 *)device);
 
-    if (!memory->load_hexfile(pOptions->hex_file.c_str(), true))   // &&
+    if ((error = load_hexfile(pOptions->hex_file.c_str(), *memory)) < 0)
     {
         //pOptions->hex_file.index(PATHSEPARATOR) < 0) {
         std::string hexFilePath;
@@ -148,8 +151,20 @@ bool startup(
         hexFilePath = pOptions->disk_dir + PATHSEPARATORSTRING +
                       pOptions->hex_file;
 
-        if (!memory->load_hexfile(hexFilePath.c_str()))
+        if ((error = load_hexfile(hexFilePath.c_str(), *memory)) < 0)
         {
+            std::stringstream pmsg;
+
+            pmsg << "File \"" << hexFilePath
+                 << "\" not found or has unknown file format (" << error <<")"
+                 << std::endl;
+#ifdef _WIN32
+            MessageBox(NULL, pmsg.str().c_str(), PROGRAMNAME " error",
+            MB_OK | MB_ICONERROR);
+#endif
+#ifdef UNIX
+            fprintf(stderr, "%s", pmsg.str().c_str());
+#endif
             return false;
         }
     }

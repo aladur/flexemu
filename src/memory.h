@@ -30,6 +30,7 @@
 #include <tsl/robin_map.h>
 #include "iodevice.h"
 #include "ioaccess.h"
+#include "memtgt.h"
 #include "e2.h"
 
 // maximum number of I/O devices which can be handled
@@ -40,14 +41,14 @@
 class XAbstractGui;
 class Win32Gui;
 
-class Memory
+class Memory : public MemoryTarget
 {
     friend class XAbstractGui;
     friend class Win32Gui;
 
 public:
     Memory(bool himem);
-    ~Memory();
+    virtual ~Memory();
 
 private:
     Byte *ppage[16];
@@ -56,6 +57,7 @@ private:
     int video_ram_size;
     Byte *memory;
     Byte *video_ram;
+    Word target_address;
 
     // I/O device access
     IoDevice *ioDevices[MAX_IO_DEVICES];
@@ -86,20 +88,25 @@ public:
         IoDevice *device,
         Word base_addr1, Byte range1,
         Word base_addr2, Byte range2);
-    bool load_hexfile(const char *filename, bool ignore_errors = false);
-
-private:
-    void load_intelhex(FILE *fp);
-    void load_motorola_srec(FILE *fp);
-    void load_flex_binary(FILE *fp);
-    static Byte fread_byte(FILE *fp);
-    static Word fread_word(FILE *fp);
 
     // memory interface
 public:
     void reset_io();
     void switch_mmu(Word offset, Byte val);
     void init_blocks_to_update();
+
+    // memory target interface
+public:
+    MemoryTarget& operator<< (Byte value)
+    {
+        write_ram_rom(target_address++, value);
+        return *this;
+    }
+
+    void set_address(Word newAddress)
+    {
+        target_address = newAddress;
+    }
 
 public:
     void write_ram_rom(Word address, Byte value);
