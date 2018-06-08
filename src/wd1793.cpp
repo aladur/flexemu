@@ -25,7 +25,7 @@
 
 #include "wd1793.h"
 
-Wd1793::Wd1793() : dr(0), tr(0), sr(0), cr(0), str(0), isStepIn(false),
+Wd1793::Wd1793() : dr(0), tr(0), sr(0), cr(0), str(0), stepOffset(1),
     isDataRequest(false), isInterrupt(false), side(0), byteCount(0), strRead(0)
 {
 }
@@ -37,7 +37,7 @@ Wd1793::~Wd1793()
 void Wd1793::resetIo()
 {
     resetIrq();
-    isStepIn  = true;
+    stepOffset  = 1;
     isDataRequest = false;
     side      = 0;
     byteCount = 0;
@@ -56,7 +56,7 @@ Byte Wd1793::readIo(Word offset)
         case 0:
             resetIrq();
 
-            if (((cr & 0xe0) == 0x80) && (++strRead == 32))
+            if (((cr & 0xe0) == CMD_READSECTOR) && (++strRead == 32))
             {
                 isDataRequest = false;
                 str &= ~(STR_DATAREQUEST | STR_BUSY); // read finished
@@ -91,32 +91,32 @@ Byte Wd1793::readIo(Word offset)
             return sr;
 
         case 3:
-            if ((cr & 0xf0) == 0xc0)
+            if ((cr & 0xf0) == CMD_READADDRESS)
             {
                 switch (byteCount)
                 {
                     case 6:
-                        dr = tr;
+                        dr = tr; // track
                         break;
 
                     case 5:
-                        dr = side;
+                        dr = side; // side number
                         break;
 
                     case 4:
-                        dr = 1;
-                        break;  // sector
+                        dr = 1; // sector address
+                        break;
 
                     case 3:
-                        dr = 1;
-                        break;  // sector length
+                        dr = 1; // sector lengsh
+                        break;
 
                     case 2:
-                        dr = 0x55;
+                        dr = 0x55; // CRC1
                         break;
 
                     case 1:
-                        dr = 0x55;
+                        dr = 0x55; // CRC2
                         break;
 
                     default:
@@ -195,7 +195,7 @@ void Wd1793::do_seek(Byte new_track)
 {
     str = STR_HEADLOADED;     // SEEK
 
-    if (seekError(new_track))
+    if (isSeekError(new_track))
     {
         str |= STR_SEEKERROR;
     }
@@ -218,64 +218,56 @@ void Wd1793::command(Byte command)
     bool isType1Command = !(command & 0x80);
     static Byte index = 0; // for simulating INDEX bit
 
-    if (!(str & STR_BUSY) || (command & 0xf0) == 0xd0)
+    if (!(str & STR_BUSY) || (command & 0xf0) == CMD_FORCEIRQ)
     {
         cr = command;
         byteCount = 0;
 
         switch (cr & 0xf0)
         {
-            case 0x00:
-                tr = 0;         // RESTORE
+            case CMD_RESTORE:
+                tr = 0;
                 setIrq();
                 break;
 
-            case 0x10:
-                do_seek(dr);        // SEEK
+            case CMD_SEEK:
+                do_seek(dr);
                 break;
 
-            case 0x30:
-                if (isStepIn)       // STEP with update
-                {
-                    do_seek(tr + 1);
-                }
-                else
-                {
-                    do_seek(tr - 1);
-                }
+            case CMD_STEP_TU:
+                do_seek(tr + stepOffset);
 
-            case 0x20:
-                setIrq();       // STEP
-                break;
-
-            case 0x50:
-                do_seek(tr + 1);    // STEP IN with update
-                isStepIn = true;
-                break;
-
-            case 0x40:
-                isStepIn = true;
+            case CMD_STEP:
                 setIrq();
                 break;
 
-            case 0x70:
-                if (tr)         // STEP OUT with update
-                {
-                    do_seek(tr - 1);
-                }
-
-                isStepIn = false;
+            case CMD_STEPIN_TU:
+                stepOffset = 1;
+                do_seek(tr + stepOffset);
                 break;
 
-            case 0x60:
-                isStepIn = false;       // STEP OUT
+            case CMD_STEPIN:
+                stepOffset = 1;
                 setIrq();
                 break;
 
-            case 0x80:
+            case CMD_STEPOUT_TU:
+                stepOffset = -1;
+                if (tr)
+                {
+                    do_seek(tr + stepOffset);
+                }
+                break;
+
+            case CMD_STEPOUT:
+                stepOffset = -1;
+                setIrq();
+                break;
+
+            case CMD_READSECTOR:
                 strRead = 0;
 
-                if (recordNotFound())   // READ SECTOR
+                if (isRecordNotFound())
                 {
                     str = STR_SEEKERROR;
                 }
@@ -288,21 +280,21 @@ void Wd1793::command(Byte command)
 
                 break;
 
-            case 0xe0:              // READ TRACK
-            case 0x90:
-                byteCount = SECTOR_SIZE * 16; // READ SECTOR mult.
+            case CMD_READTRACK:
+            case CMD_READSECTOR_MULT:
+                byteCount = SECTOR_SIZE * 16;
                 isDataRequest = true;
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
 
-            case 0xa0:
-                if (writeProtect())   // WRITE SECTOR
+            case CMD_WRITESECTOR:
+                if (isWriteProtect())
                 {
                     str = STR_PROTECTED;
                     break;
                 }
 
-                if (recordNotFound())
+                if (isRecordNotFound())
                 {
                     str = STR_SEEKERROR;
                 }
@@ -315,9 +307,9 @@ void Wd1793::command(Byte command)
 
                 break;
 
-            case 0xf0:              // WRITE TRACK
-            case 0xb0:
-                if (writeProtect())   // WRITE SECTOR mult.
+            case CMD_WRITETRACK:
+            case CMD_WRITESECTOR_MULT:
+                if (isWriteProtect())
                 {
                     str = STR_PROTECTED;
                     break;
@@ -328,8 +320,8 @@ void Wd1793::command(Byte command)
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
 
-            case 0xc0:
-                if (recordNotFound())   // READ ADDRESS
+            case CMD_READADDRESS:
+                if (isRecordNotFound())
                 {
                     str = STR_SEEKERROR;
                 }
@@ -342,8 +334,8 @@ void Wd1793::command(Byte command)
 
                 break;
 
-            case 0xd0:
-                isDataRequest = false; // FORCE INTERRUPT
+            case CMD_FORCEIRQ:
+                isDataRequest = false;
                 str &= ~(STR_BUSY | STR_DATAREQUEST);
                 byteCount = 0;
                 setIrq();
@@ -352,12 +344,12 @@ void Wd1793::command(Byte command)
 
         if (isType1Command)
         {
-            if (driveReady())
+            if (isDriveReady())
             {
                 // set index every 16 reads
                 index = (index + 1) % 16;
                 str = (STR_HEADLOADED | STR_TRACK0);
-                if(writeProtect())
+                if(isWriteProtect())
                 {
                     str |= STR_PROTECTED;
                 }
@@ -386,25 +378,25 @@ void Wd1793::writeByte(Word index)
     (void)index;
 }
 
-bool Wd1793::driveReady()
+bool Wd1793::isDriveReady() const
 {
     return true;
 }
 
 
-bool Wd1793::seekError(Byte)
+bool Wd1793::isSeekError(Byte)
 {
     return false;
 }
 
 
-bool Wd1793::recordNotFound()
+bool Wd1793::isRecordNotFound()
 {
     return false;
 }
 
 // should be reimplemented by subclass, return 0x40 if wp, otherwise 0
-bool Wd1793::writeProtect()
+bool Wd1793::isWriteProtect()
 {
     return false;
 }
@@ -416,7 +408,7 @@ void Wd1793::setStatusRecordNotFound()
     byteCount = 0;
 }
 
-bool Wd1793::isErrorStatus()
+bool Wd1793::isErrorStatus() const
 {
     return (str & (STR_RECORDNOTFOUND | STR_SEEKERROR)) != 0;
 }

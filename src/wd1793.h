@@ -35,15 +35,36 @@ class Wd1793 : public IoDevice
 {
 public:
 
-    const Byte STR_NOTREADY{0x80};
-    const Byte STR_PROTECTED{0x40};
-    const Byte STR_HEADLOADED{0x20};
-    const Byte STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
-    const Byte STR_SEEKERROR{0x10}; // for type 1 commands
-    const Byte STR_TRACK0{0x04};
-    const Byte STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
-    const Byte STR_INDEX{0x02}; // for type 1 commands
-    const Byte STR_BUSY{0x01};
+    // Bits of status register
+    static const Byte STR_NOTREADY{0x80};
+    static const Byte STR_PROTECTED{0x40};
+    static const Byte STR_HEADLOADED{0x20};
+    static const Byte STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
+    static const Byte STR_SEEKERROR{0x10}; // for type 1 commands
+    static const Byte STR_TRACK0{0x04};
+    static const Byte STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
+    static const Byte STR_INDEX{0x02}; // for type 1 commands
+    static const Byte STR_BUSY{0x01};
+
+    // Commands in command register (mask 0xf0)
+    // TU:   Track update flag
+    // MULT: Multple record flag
+    static const Byte CMD_RESTORE{0x00};
+    static const Byte CMD_SEEK{0x10};
+    static const Byte CMD_STEP{0x20};
+    static const Byte CMD_STEP_TU{0x30};
+    static const Byte CMD_STEPIN{0x40};
+    static const Byte CMD_STEPIN_TU{0x50};
+    static const Byte CMD_STEPOUT{0x60};
+    static const Byte CMD_STEPOUT_TU{0x70};
+    static const Byte CMD_READSECTOR{0x80};
+    static const Byte CMD_READSECTOR_MULT{0x90};
+    static const Byte CMD_WRITESECTOR{0xa0};
+    static const Byte CMD_WRITESECTOR_MULT{0xb0};
+    static const Byte CMD_READADDRESS{0xc0};
+    static const Byte CMD_FORCEIRQ{0xd0};
+    static const Byte CMD_READTRACK{0xe0};
+    static const Byte CMD_WRITETRACK{0xf0};
 
     // Internal registers:
     //
@@ -52,17 +73,18 @@ public:
     // sr       sector register (r/w)
     // cr       command register (w)
     // str      status register (r)
-    // isStepIn flag indicating that previous step command was STEP IN
+    // stepOffset the step offset of the last STEP_IN/STEP_OUT command
     // side     side of floppy to read/write on, changeable by subclass
     // drq      status of drq pin (= data request)
     // irq      status of irq pin (= interrupt)
     // byteCount    byte counter during read/write
-    // strRead  count read access to command register, reset by read from dr
+    // strRead  count read access to status register during a read command.
+    //          Reset by read from dr.
 
 private:
 
     Byte                dr, tr, sr, cr, str;
-    bool                isStepIn;
+    Byte                stepOffset;
     bool                isDataRequest, isInterrupt;
     Byte                side;
     unsigned int            byteCount, strRead;
@@ -132,14 +154,14 @@ protected:
 
     void command(Byte command);
     void                     setStatusRecordNotFound();
-    bool                     isErrorStatus();
+    bool                     isErrorStatus() const;
 
-    virtual bool             driveReady();
-    virtual bool             seekError(Byte new_track);
-    virtual bool             writeProtect();
-    virtual bool             recordNotFound();
     virtual Byte             readByte(Word index);
     virtual void             writeByte(Word index);
+    virtual bool             isDriveReady() const;
+    virtual bool             isWriteProtect();
+    virtual bool             isRecordNotFound();
+    virtual bool             isSeekError(Byte new_track);
 
     // Read and write functions
 

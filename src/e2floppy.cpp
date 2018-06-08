@@ -495,7 +495,7 @@ void E2floppy::writeByte(Word index)
 } // writeByte
 
 
-bool E2floppy::recordNotFound()
+bool E2floppy::isRecordNotFound()
 {
     if (pfs == NULL)
     {
@@ -503,9 +503,9 @@ bool E2floppy::recordNotFound()
     }
 
     return !pfs->IsSectorValid(getTrack(), getSector());
-} // recordNotFound
+} // isRecordNotFound
 
-bool E2floppy::seekError(Byte new_track)
+bool E2floppy::isSeekError(Byte new_track)
 {
     if (pfs == NULL)
     {
@@ -513,14 +513,14 @@ bool E2floppy::seekError(Byte new_track)
     }
 
     return !pfs->IsTrackValid(new_track);
-} // seekError
+} // isSeekError
 
-bool E2floppy::driveReady()
+bool E2floppy::isDriveReady() const
 {
     return pfs != NULL;
-}  // driveReady
+}  // isDriveReady
 
-bool E2floppy::writeProtect()
+bool E2floppy::isWriteProtect()
 {
     if (pfs == NULL)
     {
@@ -528,7 +528,7 @@ bool E2floppy::writeProtect()
     }
 
     return pfs->IsWriteProtected();
-}  // writeProtect
+}  // isWriteProtect
 
 void E2floppy::get_drive_status(tDiskStatus stat[4])
 {
