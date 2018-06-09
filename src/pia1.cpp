@@ -46,9 +46,9 @@ void Pia1::requestInputA()
 
 Byte Pia1::readInputA()
 {
-    if (io->poll())
+    if (io->has_key_parallel())
     {
-        ora = io->read_ch();
+        ora = io->read_char_parallel();
     }
 
     return ora;

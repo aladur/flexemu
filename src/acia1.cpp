@@ -44,7 +44,7 @@ void Acia1::resetIo()
 
 void Acia1::requestInput()
 {
-    if (io->poll_serial())
+    if (io->has_key_serial())
     {
         activeTransition();
     }
@@ -56,9 +56,9 @@ Byte Acia1::readInput()
 
     temp = 0;
 
-    if (io->poll_serial())
+    if (io->has_key_serial())
     {
-        temp = io->read_ch_serial();
+        temp = io->read_char_serial();
     }
 
     return temp;
@@ -66,7 +66,7 @@ Byte Acia1::readInput()
 
 void Acia1::writeOutput(Byte val)
 {
-    io->write_ch_serial(val);
+    io->write_char_serial(val);
 }
 
 

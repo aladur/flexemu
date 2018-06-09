@@ -1025,7 +1025,7 @@ void XtGui::c_keyPress(XEvent *pevent)
 
     if ((key = translate_to_ascii(&pevent->xkey)) >= 0)
     {
-        io->put_ch(key);
+        io->put_char_parallel(key);
     }
 } // c_keyPress
 

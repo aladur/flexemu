@@ -32,6 +32,7 @@
 #endif
 #include "flexemu.h"
 #include <string>
+#include <deque>
 
 #define KEY_BUFFER_SIZE (8)
 #define BELL        (0x07)
@@ -59,10 +60,8 @@ class Inout
     // Internal registers
 
 private:
-    Byte        key_buffer[KEY_BUFFER_SIZE];
-    Word        in, out;
-    Byte        key_buffer_ser[KEY_BUFFER_SIZE];
-    Word        in_ser, out_ser;
+    std::deque<Byte> key_buffer_parallel;
+    std::deque<Byte> key_buffer_serial;
     Mc6809         *cpu;
     struct sGuiOptions *options;
 #ifdef HAVE_TERMIOS_H
@@ -106,26 +105,24 @@ public:
     bool    is_gui_present();
     void    main_loop();
 
-    // parallel I/O
+    // parallel I/O (e.g. keyboard)
 public:
     void    reset_parallel();
-    bool    poll();
-    Byte    read_ch();
-    Byte    read_queued_ch();
-    void    put_ch(Byte key);
+    bool    has_key_parallel();
+    Byte    read_char_parallel();
+    Byte    peek_char_parallel();
+    void    put_char_parallel(Byte key);
     bool    is_terminal_supported();
 protected:
-    bool    key_buffer_full();
     BMutex  *pmutex;
-    bool    is_parallel_ch_in_queue;
 
-    // serial I/O
+    // serial I/O (e.g. terminal)
 public:
     void    reset_serial();
-    bool    poll_serial();
-    Byte    read_ch_serial();
-    Byte    read_queued_ch_serial();
-    void    write_ch_serial(Byte val);
+    bool    has_key_serial();
+    Byte    read_char_serial();
+    Byte    peek_char_serial();
+    void    write_char_serial(Byte val);
     void    signal_reset(int sig_no);
 
     // Floppy interface
@@ -149,8 +146,7 @@ protected:
 private:
     static void resetTerminalIO();
     void    initTerminalIO(Word reset_key);
-    void    put_ch_serial(Byte key);
-    Byte    key_buffer_full_serial();
+    void    put_char_serial(Byte key);
     void    exec_signal(int sig_no);
 
     // Public constructor and destructor

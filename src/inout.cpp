@@ -66,12 +66,10 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     fdc(nullptr), memory(nullptr), rtc(nullptr), pia1(nullptr),
     video(nullptr), schedy(nullptr), pmutex(nullptr), jmutex(nullptr)
 {
-    reset();
     instance = this;
     pmutex = new BMutex;
     jmutex = new BMutex;
-    memset(key_buffer, 0, sizeof(key_buffer));
-    memset(key_buffer_ser, 0, sizeof(key_buffer_ser));
+    reset();
 }
 
 Inout::~Inout()
@@ -90,15 +88,16 @@ void Inout::reset()
 
 void Inout::reset_parallel()
 {
-    in              = 0;
-    out             = 0;
-    is_parallel_ch_in_queue = false;
+    pmutex->lock();
+    key_buffer_parallel.clear();
+    pmutex->unlock();
 }
 
 void Inout::reset_serial()
 {
-    in_ser      = 0;
-    out_ser     = 0;
+    pmutex->lock();
+    key_buffer_serial.clear();
+    pmutex->unlock();
 }
 
 void Inout::reset_joystick()
@@ -447,95 +446,72 @@ void Inout::exec_signal(int sig_no)
     }
 }
 
-void Inout::put_ch(Byte key)
+void Inout::put_char_parallel(Byte key)
 {
     pmutex->lock();
-
-    if (!key_buffer_full())
+    bool was_empty = key_buffer_parallel.empty();
+    key_buffer_parallel.push_back(key);
+    if (was_empty && pia1 != nullptr)
     {
-        key_buffer[in++] = key;
-        is_parallel_ch_in_queue = true;
+        schedy->sync_exec(new CActiveTransition(*pia1, CA1));
+    }
+    pmutex->unlock();
+}
 
-        if (pia1 != nullptr)
+bool Inout::has_key_parallel()
+{
+    bool result;
+
+    pmutex->lock();
+    result = !key_buffer_parallel.empty();
+    pmutex->unlock();
+
+    return result;
+}
+
+// Read character and remove it from the queue.
+// Input should always be polled before read_char_parallel.
+Byte Inout::read_char_parallel()
+{
+    Byte result = 0x00;
+
+    pmutex->lock();
+    if (!key_buffer_parallel.empty())
+    {
+        result = key_buffer_parallel.front();
+        key_buffer_parallel.pop_front();
+
+        // If there are still characters in the
+        // buffer set CA1 flag again.
+        if (!key_buffer_parallel.empty() && pia1 != nullptr)
         {
             schedy->sync_exec(new CActiveTransition(*pia1, CA1));
         }
-
-        if (in >= KEY_BUFFER_SIZE)
-        {
-            in = 0;
-        }
-    }  // if
-
-    pmutex->unlock();
-} // put_ch
-
-bool Inout::key_buffer_full()
-{
-    return ((in == out - 1) || (out == 0 && (in == KEY_BUFFER_SIZE - 1)));
-}
-
-bool Inout::poll()
-{
-    return is_parallel_ch_in_queue;
-}
-
-// input should always be polled before read_ch
-Byte Inout::read_ch()
-{
-    Byte result = 0x00;
-
-    pmutex->lock();
-
-    // in == out should never happen, return a dummy value
-    if (is_parallel_ch_in_queue) // check for empty buffer
-    {
-        result = key_buffer[out++];
-
-        if (out >= KEY_BUFFER_SIZE)
-        {
-            out = 0;
-        }
-
-        if (in == out)
-        {
-            is_parallel_ch_in_queue = false;
-        }
-        else
-
-            // if there are still characters in the
-            // buffer set CA1 flag again
-            if (pia1 != nullptr)
-            {
-                schedy->sync_exec(new CActiveTransition(*pia1, CA1));
-            }
     }
-
     pmutex->unlock();
 
     return result;
 }
 
-// read character, but leave it in the queue
-Byte Inout::read_queued_ch()
+// Read character, but leave it in the queue.
+// Input should always be polled before read_queued_ch.
+Byte Inout::peek_char_parallel()
 {
     Byte result = 0x00;
 
     pmutex->lock();
-
-    // in == out should never happen, return a dummy value
-    if (is_parallel_ch_in_queue) // check for empty buffer
+    if (!key_buffer_parallel.empty())
     {
-        result = key_buffer[out];
+        result = key_buffer_parallel.front();
     }
-
     pmutex->unlock();
 
     return result;
 }
 
-void Inout::put_ch_serial(Byte key)
+void Inout::put_char_serial(Byte key)
 {
+    pmutex->lock();
     // convert back space character
 #ifdef HAVE_TERMIOS_H
 #ifdef VERASE
@@ -548,25 +524,12 @@ void Inout::put_ch_serial(Byte key)
 #endif
 #endif // #ifdef HAVE_TERMIOS_H
 
-    if (!key_buffer_full_serial())
-    {
-        key_buffer_ser[in_ser++] = key;
-
-        if (in_ser >= KEY_BUFFER_SIZE)
-        {
-            in_ser = 0;
-        }
-    }  // if
-} // put_ch_serial
-
-Byte Inout::key_buffer_full_serial()
-{
-    return ((in_ser == out_ser - 1) ||
-            (out_ser == 0 && (in_ser == KEY_BUFFER_SIZE - 1)));
+    key_buffer_serial.push_back(key);
+    pmutex->unlock();
 }
 
-// poll serial port for input
-bool Inout::poll_serial()
+// poll serial port for input character.
+bool Inout::has_key_serial()
 {
 #ifdef HAVE_TERMIOS_H
     char    buf[1];
@@ -579,57 +542,58 @@ bool Inout::poll_serial()
 
         if (read(fileno(stdin), &buf, 1) > 0)
         {
-            put_ch_serial(buf[0]);
+            put_char_serial(buf[0]);
         }
     }
 
-    return (in_ser != out_ser);
+    return true;
 #else
     return false;
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
-// read a serial byte from cpu
-// ATTENTION: input should always be polled before read_ch_ser
-Byte Inout::read_ch_serial()
+// Read a serial character from cpu.
+// ATTENTION: Input should always be polled before read_char_serial.
+Byte Inout::read_char_serial()
 {
-    Byte temp;
+    Byte result = 0x00;
 
-    while (in_ser == out_ser)    // check for empty buffer
+    pmutex->lock();
+    if (!key_buffer_serial.empty())
     {
-        return 0x00;    // should never happen, return a dummy value
+        result = key_buffer_serial.front();
+        key_buffer_serial.pop_front();
     }
+    pmutex->unlock();
 
-    temp = key_buffer_ser[out_ser++];
-
-    if (out_ser >= KEY_BUFFER_SIZE)
-    {
-        out_ser = 0;
-    }
-
-    return temp;
+    return result;
 }
 
-// read character, but leave it in the queue
-Byte Inout::read_queued_ch_serial()
+// Read character, but leave it in the queue.
+// ATTENTION: Input should always be polled before peek_char_serial.
+Byte Inout::peek_char_serial()
 {
-    while (in_ser == out_ser)    // check for empty buffer
-    {
-        return 0x00;    // should never happen, return a dummy value
-    }
+    Byte result = 0x00;
 
-    return key_buffer_ser[out];
+    pmutex->lock();
+    if (!key_buffer_serial.empty())
+    {
+        result = key_buffer_serial.front();
+    }
+    pmutex->unlock();
+
+    return result;
 }
 
 
-void Inout::write_ch_serial(Byte val)
+void Inout::write_char_serial(Byte value)
 {
     size_t count = 0;
 #ifdef HAVE_TERMIOS_H
     used_serial_io = true;
 #ifdef VERASE
 
-    if (val == BACK_SPACE)
+    if (value == BACK_SPACE)
     {
         const char *str = "\b \b";
 
@@ -640,12 +604,8 @@ void Inout::write_ch_serial(Byte val)
     }
     else
 #endif
-        count = write(fileno(stdout), &val, 1);
-
+    count = write(fileno(stdout), &value, 1);
     (void)count; // satisfy compiler
-    //      putc(val, stdout);
-    //  if (val < ' ' || val > 0x7e)
-    //      fflush(stdout);
 #endif // #ifdef HAVE_TERMIOS_H
 }
 

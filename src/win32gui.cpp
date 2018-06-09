@@ -490,7 +490,7 @@ void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
 
     if ((key = translate_to_ascii(ch)) >= 0)
     {
-        io->put_ch((Byte)key);
+        io->put_char_parallel((Byte)key);
     }
 
 } // onChar
@@ -501,7 +501,7 @@ void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
 
     if ((key = translate_to_ascii1(ch)) >= 0)
     {
-        io->put_ch((Byte)key);
+        io->put_char_parallel((Byte)key);
     }
 
 } // onKeyDown
