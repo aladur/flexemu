@@ -102,10 +102,12 @@ void Inout::reset_serial()
 
 void Inout::reset_joystick()
 {
+    jmutex->lock();
     deltaX           = 0;
     deltaY           = 0;
     buttonMask       = 0;
     newValues        = 0;
+    jmutex->unlock();
 }
 
 void Inout::get_drive_status(tDiskStatus status[4])
@@ -164,7 +166,9 @@ void Inout::put_joystick(int x_deltaX, int x_deltaY)
 
 void Inout::put_joystick(unsigned int x_buttonMask)
 {
+    jmutex->lock();
     buttonMask = x_buttonMask;
+    jmutex->unlock();
 }
 
 void Inout::init(Word reset_key)
