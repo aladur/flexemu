@@ -89,11 +89,6 @@ void Memory::init_memory(bool himem)
         changed[i] = false;
     }
 
-    for (i = 0; i < MAX_IO_DEVICES; i++)
-    {
-        ioDevices[i] = nullptr;
-    }
-
     // initialize default pointer for mmu configuration
     // following table indices correspond to following RAM ranges
     // 0x0C:    green low,  Bank 0
@@ -151,21 +146,13 @@ void Memory::init_memory(bool himem)
 
 void Memory::uninit_memory()
 {
-    Word i = MAX_IO_DEVICES;
-
-    do
+    // delete I/O devices in reverse order.
+    for (auto iter = ioDevices.rbegin(); iter != ioDevices.rend(); ++iter)
     {
-        --i;
-
-        if (ioDevices[i] != nullptr)
-        {
-            delete ioDevices[i];
-        }
-
-        ioDevices[i] = nullptr;
+        delete *iter;
     }
-    while (i != 0);
-} // uninit_memory
+    ioDevices.clear();
+}
 
 void Memory::init_blocks_to_update()
 {
@@ -182,18 +169,7 @@ bool Memory::add_io_device(IoDevice *device,
                            Word base_addr1, Byte range1,
                            Word base_addr2, Byte range2)
 {
-    Word i = 0;
     Word offset;
-
-    while (i < MAX_IO_DEVICES && ioDevices[i] != nullptr)
-    {
-        i++;
-    }
-
-    if (i == MAX_IO_DEVICES)
-    {
-        return false;    // all io-devices already in use
-    }
 
     if (base_addr1 < GENIO_BASE ||
             (base_addr2 != 0 && base_addr2 < GENIO_BASE))
@@ -201,7 +177,7 @@ bool Memory::add_io_device(IoDevice *device,
         return false;
     }
 
-    ioDevices[i] = device;
+    ioDevices.push_back(device);
 
     for (offset = 0; offset < range1; ++offset)
     {
@@ -220,16 +196,11 @@ bool Memory::add_io_device(IoDevice *device,
 
 void Memory::reset_io()
 {
-    Word i;
-
-    for (i = 0; i < MAX_IO_DEVICES; i++)
+    for (auto iter : ioDevices)
     {
-        if (ioDevices[i] != nullptr)
-        {
-            ioDevices[i]->resetIo();
-        }
+        iter->resetIo();
     }
-} // reset_io
+}
 
 // Write Byte into RAM or ROM independent of MMU.
 void Memory::write_ram_rom(Word offset, Byte value)

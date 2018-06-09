@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include <stdio.h>
 #include <tsl/robin_map.h>
+#include <vector>
 #include "iodevice.h"
 #include "ioaccess.h"
 #include "memtgt.h"
@@ -35,7 +36,6 @@
 
 // maximum number of I/O devices which can be handled
 
-#define MAX_IO_DEVICES  (12)
 #define MAX_VRAM        (4 * 16)
 
 class XAbstractGui;
@@ -60,7 +60,7 @@ private:
     Word target_address;
 
     // I/O device access
-    IoDevice *ioDevices[MAX_IO_DEVICES];
+    std::vector<IoDevice *> ioDevices;
     tsl::robin_map<
         Word,
         IoAccess,
