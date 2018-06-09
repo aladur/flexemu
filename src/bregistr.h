@@ -62,7 +62,7 @@ public:
 
 inline bool BRegistry::isOpened() const
 {
-    return hKey != NULL;
+    return hKey != nullptr;
 };
 inline LONG BRegistry::GetLastError() const
 {

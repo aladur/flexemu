@@ -41,7 +41,7 @@ const BDate BDate::Now()
     struct tm   *lt;
     BDate   aTime;
 
-    time_now    = time((time_t *)NULL);
+    time_now    = time((time_t *)nullptr);
     lt      = localtime(&time_now);
 
     aTime =  BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);

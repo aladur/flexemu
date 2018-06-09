@@ -39,7 +39,7 @@ public:
     bool Start(BThread *pThread);
     void Join();
     bool IsFinished();
-    void Exit(void *retval = NULL);
+    void Exit(void *retval = nullptr);
 private:
     static unsigned int RunImp(BWin32ThreadImp *p);
     BThread *pThreadObj;

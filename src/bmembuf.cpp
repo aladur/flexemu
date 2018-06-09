@@ -21,7 +21,7 @@
 */
 
 #include "misc1.h"
-#include <string.h> // needed for NULL
+#include <string.h> // needed for nullptr
 #include "bmembuf.h"
 
 
@@ -82,7 +82,7 @@ const Byte *BMemoryBuffer::GetBuffer(DWord address)
 {
     if (address < baseAddress || address >= baseAddress + size)
     {
-        return NULL;
+        return nullptr;
     }
 
     return pBuffer + address - baseAddress;

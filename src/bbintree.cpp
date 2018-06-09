@@ -27,7 +27,7 @@
 #include "buint.h"
 
 template <class Item> BBinaryTreeItem<Item>::BBinaryTreeItem(
-    const Item &anItem) : item(anItem), left(NULL), right(NULL)
+    const Item &anItem) : item(anItem), left(nullptr), right(nullptr)
 {
 }
 
@@ -85,8 +85,8 @@ template <class Item> void BBinaryTreeItem<Item>::RemoveLeftItem()
         }
     }
 
-    leftItem->left  = NULL;
-    leftItem->right = NULL;
+    leftItem->left  = nullptr;
+    leftItem->right = nullptr;
     delete leftItem;
 }
 
@@ -137,8 +137,8 @@ template <class Item> void BBinaryTreeItem<Item>::RemoveRightItem()
         }
     }
 
-    rightItem->left  = NULL;
-    rightItem->right = NULL;
+    rightItem->left  = nullptr;
+    rightItem->right = nullptr;
     delete rightItem;
 }
 

@@ -36,7 +36,7 @@ template <class Item> BHashTable<Item>::BHashTable(int size /* = 1000 */) : n(
 
     for (i = 0; i < size; i++)
     {
-        hash_table[i] = (BList<Item> *) NULL;
+        hash_table[i] = (BList<Item> *) nullptr;
     }
 }
 
@@ -53,7 +53,7 @@ template <class Item> BHashTable<Item>::~BHashTable()
     }
 
     delete[] hash_table;
-    hash_table = NULL;
+    hash_table = nullptr;
 }
 
 template <class Item>Item *BHashTable<Item>::Get(Item &i)
@@ -64,7 +64,7 @@ template <class Item>Item *BHashTable<Item>::Get(Item &i)
 
     if (!hash_table[key])
     {
-        return NULL;
+        return nullptr;
     }
     else
     {
@@ -90,7 +90,7 @@ template <class Item>void BHashTable<Item>::Put(Item &i)
 
 template <class Item>bool BHashTable<Item>::Contains(Item &i)
 {
-    return Get(i) != NULL;
+    return Get(i) != nullptr;
 }
 
 /* the returned linear list is created on the heap and must be freed

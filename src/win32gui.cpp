@@ -51,7 +51,7 @@
 #define CHECK_LEFT         (4)
 #define CHECK_RIGHT        (8)
 
-static Win32Gui *ggui = NULL;
+static Win32Gui *ggui = nullptr;
 
 int Win32Gui::radio_data[] =
 {
@@ -73,7 +73,7 @@ LRESULT CALLBACK e2windowWndProc(
     WPARAM wParam,
     LPARAM lParam)
 {
-    if (ggui == NULL)
+    if (ggui == nullptr)
     {
         return FALSE;
     }
@@ -160,7 +160,7 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
         unsigned int newButtonMask;
         short display_block;
         HDC hdc;
-        Mc6809CpuStatus *new_cpu_stat = NULL;
+        Mc6809CpuStatus *new_cpu_stat = nullptr;
         static int count = 0;
 
         // check every 100 ms for
@@ -173,7 +173,7 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             new_cpu_stat = (Mc6809CpuStatus *)schedy->get_status();
 
             // Check for disk status update every 200 ms
-            if (io != NULL)
+            if (io != nullptr)
             {
                 static tDiskStatus status[4];
                 tDiskStatus newStatus[4];
@@ -226,7 +226,7 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             }
         }
 
-        if (new_cpu_stat != NULL)
+        if (new_cpu_stat != nullptr)
         {
             delete cpu_stat;
             cpu_stat = new_cpu_stat;
@@ -351,7 +351,7 @@ void Win32Gui::mouse_warp(HWND w, int dx, int dy)
         point.y = warp_dy = dy;
         // unfinished: on NT/2K/XP use SendInput instead
         // Don't know why coordinated have to be divided by 2
-        //mouse_event(MOUSEEVENTF_MOVE, dx >> 1, dy >> 1, 0, NULL);
+        //mouse_event(MOUSEEVENTF_MOVE, dx >> 1, dy >> 1, 0, nullptr);
         point.x = current_x + dx;
         point.y = current_y + dy;
         ClientToScreen(w, &point);
@@ -544,7 +544,7 @@ void Win32Gui::update_disk_status(int floppyIndex, tDiskStatus status)
     hIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(iconIdx),
                              IMAGE_ICON, 16, 16, LR_SHARED);
 
-    if (hIcon != NULL)
+    if (hIcon != nullptr)
     {
         SendMessage(hButtonFloppy[floppyIndex], BM_SETIMAGE, IMAGE_ICON,
                     (LPARAM)hIcon);
@@ -581,7 +581,7 @@ void Win32Gui::update_interrupt_status(tIrqType irqType, bool status)
     hIcon = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(iconIdx),
                              IMAGE_ICON, 16, 16, LR_SHARED);
 
-    if (hIcon != NULL)
+    if (hIcon != nullptr)
     {
         SendMessage(hButtonIrq, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
     }
@@ -620,16 +620,16 @@ void Win32Gui::onPaint(HWND hwnd)
         // Draw sunken border
         hPenNew = (HBRUSH)CreatePen(PS_SOLID, 1, GetSysColor(COLOR_3DSHADOW));
         hPenOld = (HBRUSH)SelectObject(hdc, hPenNew);
-        MoveToEx(hdc, rect.left + i, rect.bottom - i, NULL);
+        MoveToEx(hdc, rect.left + i, rect.bottom - i, nullptr);
         LineTo(hdc, rect.left + i, rect.top + i);
         LineTo(hdc, rect.right - i, rect.top + i);
         SelectObject(hdc, hPenOld);
         DeleteObject(hPenNew);
         hPenNew = (HBRUSH)CreatePen(PS_SOLID, 1, GetSysColor(COLOR_3DHILIGHT));
         hPenOld = (HBRUSH)SelectObject(hdc, hPenNew);
-        MoveToEx(hdc, rect.left + i, rect.bottom - i, NULL);
+        MoveToEx(hdc, rect.left + i, rect.bottom - i, nullptr);
         LineTo(hdc, rect.right - i - 16, rect.bottom - i);
-        MoveToEx(hdc, rect.right - i, rect.bottom - i - 16, NULL);
+        MoveToEx(hdc, rect.right - i, rect.bottom - i - 16, nullptr);
         LineTo(hdc, rect.right - i, rect.top + i);
         SelectObject(hdc, hPenOld);
         DeleteObject(hPenNew);
@@ -641,7 +641,7 @@ void Win32Gui::onPaint(HWND hwnd)
 
         for (count = 0; count < 4; count++)
         {
-            MoveToEx(hdc, rect.right - i, rect.bottom, NULL);
+            MoveToEx(hdc, rect.right - i, rect.bottom, nullptr);
             LineTo(hdc, rect.right, rect.bottom - i);
             i += 4;
         }
@@ -655,7 +655,7 @@ void Win32Gui::onPaint(HWND hwnd)
 
         for (count = 0; count < 4; count++)
         {
-            MoveToEx(hdc, rect.right - i, rect.bottom, NULL);
+            MoveToEx(hdc, rect.right - i, rect.bottom, nullptr);
             LineTo(hdc, rect.right, rect.bottom - i);
             i += 4;
         }
@@ -740,12 +740,12 @@ bool Win32Gui::CloseApp(HWND hwnd, bool confirm /* = false */)
     KillTimer(hwnd, idTimer);
     idTimer = 0;
 
-    if (menubar != NULL)
+    if (menubar != nullptr)
     {
         DestroyMenu(menubar);
     }
 
-    if (hwnd != NULL)
+    if (hwnd != nullptr)
     {
         DestroyWindow(hwnd);
     }
@@ -1054,8 +1054,8 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
 {
     AbstractGui::initialize(pOptions);
     ggui        = this;
-    palette     = NULL; // needed for color display
-    e2screen    = NULL;
+    palette     = nullptr; // needed for color display
+    e2screen    = nullptr;
     withColorScale  = !stricmp(pOptions->color.c_str(), "default");
     nColors     = pOptions->nColors;
     bp_input[0] = 0;
@@ -1065,7 +1065,7 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
     lfs.maxAddr   = 0xFFFF;
     lfs.startAddr = 0x10000;
     lfs.stopAddr  = 0x10000;
-    copy_block  = NULL;
+    copy_block  = nullptr;
     frequency_control_on = false;
     cursor_type   = FLX_DEFAULT_CURSOR;
     warp_dx       = 0;
@@ -1082,7 +1082,7 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
 
 void Win32Gui::popup_disk_info(HWND hwnd)
 {
-    if (io == NULL)
+    if (io == nullptr)
     {
         return;
     }
@@ -1103,7 +1103,7 @@ void Win32Gui::popup_disk_info(HWND hwnd)
 
 void Win32Gui::popup_interrupt_info(HWND hwnd)
 {
-    if (schedy == NULL)
+    if (schedy == nullptr)
     {
         return;
     }
@@ -1151,7 +1151,7 @@ int Win32Gui::popup_help(HWND hwnd)
         hwnd,           // handle of parent window
         "open",         // open file
         helpfile,       // file to open
-        NULL,           // parameters
+        nullptr,           // parameters
         curdir,         // directory
         SW_SHOWNORMAL   // openmode for new window
     );
@@ -1175,7 +1175,7 @@ void Win32Gui::main_loop()
     MSG msg;
     BOOL bRet;
 
-    while ((bRet = GetMessage(&msg, NULL, 0, 0)) != 0)
+    while ((bRet = GetMessage(&msg, nullptr, 0, 0)) != 0)
     {
         if (bRet == -1)
         {
@@ -1212,7 +1212,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     }
 
     memory->changed[block_number] = false;
-    hMemoryDC = CreateCompatibleDC(NULL);
+    hMemoryDC = CreateCompatibleDC(nullptr);
     oldPalette = SelectPalette(hdc, palette, TRUE);
     RealizePalette(hdc);
     img = image[pixelSizeX - 1][pixelSizeY - 1];
@@ -1268,7 +1268,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        CopyToZPixmap(block_number, copy_block, NULL, 8, (unsigned long *)pen);
+        CopyToZPixmap(block_number, copy_block, nullptr, 8, (unsigned long *)pen);
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
@@ -1292,16 +1292,16 @@ void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
 
     if (!registerWindowClasses(pOptions->hInstance, 0))
     {
-        MessageBox(NULL, "RegisterClassEx failed\n" \
+        MessageBox(nullptr, "RegisterClassEx failed\n" \
                    "Unable to create Mainwindow of " PROGRAMNAME,
                    PROGRAMNAME " error",
                    MB_OK | MB_ICONERROR);
         exit(EXIT_FAILURE);
     }
 
-    if ((w = create_main_view(pOptions)) == NULL)
+    if ((w = create_main_view(pOptions)) == nullptr)
     {
-        MessageBox(NULL, "CreateWindow failed\n" \
+        MessageBox(nullptr, "CreateWindow failed\n" \
                    "Unable to create Mainwindow of " PROGRAMNAME,
                    PROGRAMNAME " error",
                    MB_OK | MB_ICONERROR);
@@ -1330,12 +1330,12 @@ BOOL Win32Gui::registerWindowClasses(HINSTANCE hinst, UINT ResPoolID)
     wcex.cbWndExtra    = 0 ;
     wcex.hInstance     = hinst ;
     wcex.hIcon         = LoadIcon(hinst, MAKEINTRESOURCE(IDI_FLEXMAIN)) ;
-    wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
+    wcex.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     // wcex.lpszMenuName  = MAKEINTRESOURCE(IDR_MAINMENU);
-    wcex.lpszMenuName  = NULL;
+    wcex.lpszMenuName  = nullptr;
     wcex.lpszClassName = "Flexemu";
-    wcex.hIconSm       = NULL ;
+    wcex.hIconSm       = nullptr ;
 
     if (!RegisterClassEx(&wcex))
     {
@@ -1361,9 +1361,9 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
         MFT_STRING,                     // menutype (String, Bitmap, Sep. ...)
         MFS_ENABLED,                    // menustate (enabled, checked ...)
         0,                              // ID of menuitem
-        NULL,                           // handle of submenu
-        NULL,                           // bitmap for checked
-        NULL,                           // bitmap for unchecked
+        nullptr,                           // handle of submenu
+        nullptr,                           // bitmap for checked
+        nullptr,                           // bitmap for unchecked
         0,                              // user defined data
         "",                             // item string ...
         0
@@ -1372,7 +1372,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
     hInstance = pOptions->hInstance;
     menubar = CreateMenu();
 
-    if (menubar != NULL)
+    if (menubar != nullptr)
     {
         menu1 = CreateMenu();
         AppendMenu(menubar, MF_POPUP | MF_STRING, (UINT_PTR)menu1, "&File");
@@ -1457,17 +1457,17 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                CW_USEDEFAULT,      // Vertical position of window
                width,              // Window width
                height,             // Window height
-               NULL,               // Handle of parent or owner window
+               nullptr,               // Handle of parent or owner window
                menubar,            // Handle of menu for this window
                pOptions->hInstance,// Handle of application instance
-               NULL) ;             // Address of window-creation data
+               nullptr) ;             // Address of window-creation data
 #ifdef _MSC_VER
-    _ASSERT(NULL != hwnd) ;
+    _ASSERT(nullptr != hwnd) ;
 #endif
 
     if (!hwnd)
     {
-        return NULL ;
+        return nullptr ;
     }
 
     width  = WINDOWWIDTH * pixelSizeX;
@@ -1483,9 +1483,9 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                      width,              // Window width
                      height,             // Window height
                      hwnd,               // Handle of parent or owner window
-                     NULL,               // Handle of menu for this window
+                     nullptr,               // Handle of menu for this window
                      pOptions->hInstance,// Handle of application instance
-                     NULL) ;             // Address of window-creation data
+                     nullptr) ;             // Address of window-creation data
 
     rect.top  = 4;
     rect.left = width - (6 * (SBAR_ICON_WIDTH + 2));
@@ -1501,14 +1501,14 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                                             rect.left, rect.top, width, height,
                                             hwndStatus,
                                             reinterpret_cast<HMENU>(id),
-                                            hInstance, NULL);
+                                            hInstance, nullptr);
         rect.left += SBAR_ICON_WIDTH + 2;
     }
 
     strcpy(label, "BIRQ");
     hButtonIrq = CreateWindow("BUTTON", label, style,
                               rect.left, rect.top, width, height, hwndStatus,
-                              (HMENU)(IDP_IRQ), hInstance, NULL);
+                              (HMENU)(IDP_IRQ), hInstance, nullptr);
     return hwnd ;
 }  // create_main_view
 
@@ -1516,7 +1516,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
 INT_PTR CALLBACK aboutDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                               LPARAM lParam)
 {
-    if (ggui == NULL)
+    if (ggui == nullptr)
     {
         return FALSE;
     }
@@ -1654,7 +1654,7 @@ void Win32Gui::popup_copyright(HWND hwnd)
             hwnd,           // handle of parent window
             "open",         // open file
             copyrightFile,  // file to open
-            NULL,           // parameters
+            nullptr,           // parameters
             str,            // directory
             SW_SHOWNORMAL   // openmode for new window
     );
@@ -1725,7 +1725,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
 
     pc = (struct sRGBDef *)&colors;
 
-    while (pc->colorName != NULL)
+    while (pc->colorName != nullptr)
     {
         if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
         {
@@ -1735,7 +1735,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
         pc++;
     }
 
-    if (pc->colorName != NULL)
+    if (pc->colorName != nullptr)
     {
         red   = pc->red;
         green = pc->green;
@@ -1813,7 +1813,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
                           /* * 32 / 8*/ ]; // screen depth on Win32 is 8
     pc = (struct sRGBDef *)&colors;
 
-    while (pc->colorName != NULL)
+    while (pc->colorName != nullptr)
     {
         if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
         {
@@ -1823,7 +1823,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
         pc++;
     }
 
-    if (pc->colorName != NULL)
+    if (pc->colorName != nullptr)
     {
         red   = pc->red;
         green = pc->green;
@@ -1872,7 +1872,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
                 *(wp++) = idx;
             }
 
-            image[i][j]  = CreateDIBitmap(hdc, &pbmi->bmiHeader, 0, NULL,
+            image[i][j]  = CreateDIBitmap(hdc, &pbmi->bmiHeader, 0, nullptr,
                                            pbmi, DIB_PAL_COLORS);
             bmi[i][j] = pbmi;
         } // for
@@ -1882,7 +1882,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     PatBlt(hdc, 0, 0, BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY, WHITENESS);
     ReleaseDC(w, hdc);
     // Periodic 20 ms Timer for 50 Hz display update
-    idTimer = SetTimer(w, GUI_TIMER_ID, TIMER_UPDATE, NULL);
+    idTimer = SetTimer(w, GUI_TIMER_ID, TIMER_UPDATE, nullptr);
 }
 
 void Win32Gui::manage_widget(HWND w, struct sGuiOptions *pOptions)
@@ -1914,7 +1914,7 @@ Win32Gui::Win32Gui(
     E2video *x_video,
     struct sGuiOptions *pOptions) :
     AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, pOptions),
-    idTimer(0), is_use_undocumented(false), cpu_stat(NULL)
+    idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {
     initialize(pOptions);
 }
@@ -1934,12 +1934,12 @@ Win32Gui::~Win32Gui()
         } // for
     } // for
 
-    if (hFontFixed != NULL)
+    if (hFontFixed != nullptr)
     {
         DeleteObject(hFontFixed);
     }
 
-    if (palette != NULL)
+    if (palette != nullptr)
     {
         DeleteObject(palette);
     }
@@ -1951,8 +1951,8 @@ Win32Gui::~Win32Gui()
 
     delete [] copy_block;
     delete cpu_stat;
-    cpu_stat = NULL;
-    ggui = NULL;
+    cpu_stat = nullptr;
+    ggui = nullptr;
 }
 
 /***************************/
@@ -1979,7 +1979,7 @@ void Win32Gui::popup_cpu(HWND hwnd)
 
         hwndControl = GetDlgItem(cpuform, IDC_CPU_TEXT);
 #ifdef _MSC_VER
-        _ASSERT(hwndControl != NULL);
+        _ASSERT(hwndControl != nullptr);
 #endif
         hdc = GetDC(hwndControl);
         hFontFixed = CreateFontIndirect(getLogFontStruct(hdc, 8));
@@ -1990,7 +1990,7 @@ void Win32Gui::popup_cpu(HWND hwnd)
 
         hwndControl = GetDlgItem(cpuform, IDP_RUN);
 #ifdef _MSC_VER
-        _ASSERT(hwndControl != NULL);
+        _ASSERT(hwndControl != nullptr);
 #endif
         GetWindowRect(hwndControl, &rect);
 
@@ -2082,7 +2082,7 @@ void Win32Gui::create_cpuview(HWND parent, struct sGuiOptions *pOptions)
     cpuform = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_CPU_DIALOG),
                            parent, cpuWindowWndProc);
 #ifdef _MSC_VER
-    _ASSERT(cpuform != NULL);
+    _ASSERT(cpuform != nullptr);
 #endif
     LONG_PTR hIcon = reinterpret_cast<LONG_PTR>(
         LoadIcon(hInstance, MAKEINTRESOURCE(IDI_FLEXCPU)));
@@ -2158,7 +2158,7 @@ INT_PTR CALLBACK cpuWindowWndProc(
     WPARAM wParam,
     LPARAM lParam)
 {
-    if (ggui == NULL)
+    if (ggui == nullptr)
     {
         return FALSE;
     }
@@ -2249,7 +2249,7 @@ BOOL Win32Gui::onBpInit(HWND hwnd)
 
     hEdit = GetDlgItem(hwnd, IDC_BP_ADDR1);
 #ifdef _MSC_VER
-    _ASSERT(hEdit != NULL);
+    _ASSERT(hEdit != nullptr);
 #endif
     // Select contents of edit control
     SendMessage(hEdit, EM_SETSEL, 0, -1);
@@ -2337,7 +2337,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
 
         hwndControl = GetDlgItem(hwnd, IDP_RUN);
 #ifdef _MSC_VER
-        _ASSERT(hwndControl != NULL);
+        _ASSERT(hwndControl != nullptr);
 #endif
         GetClientRect(hwndControl, &rect);
         width_button  = rect.right  - rect.left;
@@ -2345,7 +2345,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
         top_button    = 2;
         hwndControl = GetDlgItem(hwnd, IDC_CPU_TEXT);
 #ifdef _MSC_VER
-        _ASSERT(hwndControl != NULL);
+        _ASSERT(hwndControl != nullptr);
 #endif
         GetClientRect(hwndControl, &rect);
         width_edit = width - width_button - 6;
@@ -2357,7 +2357,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
         {
             hwndControl = GetDlgItem(hwnd, IDP_RUN + i);
 #ifdef _MSC_VER
-            _ASSERT(hwndControl != NULL);
+            _ASSERT(hwndControl != nullptr);
 #endif
             MoveWindow(hwndControl, width_edit + 4, top_button,
                        width_button, height_button, TRUE);
@@ -2373,7 +2373,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
 INT_PTR CALLBACK bpDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                            LPARAM lParam)
 {
-    if (ggui == NULL)
+    if (ggui == nullptr)
     {
         return FALSE;
     }
@@ -2506,7 +2506,7 @@ BOOL Win32Gui::onLogInit(HWND hwnd)
 
     hEdit = GetDlgItem(hwnd, IDC_LOG_MINADDR);
 #ifdef _MSC_VER
-    _ASSERT(hEdit != NULL);
+    _ASSERT(hEdit != nullptr);
 #endif
     // Select contents of edit control
     SendMessage(hEdit, EM_SETSEL, 0, -1);
@@ -2523,7 +2523,7 @@ BOOL Win32Gui::onLogClose(HWND hwnd)
 INT_PTR CALLBACK logDialogProc(HWND hwnd, UINT message, WPARAM wParam,
                             LPARAM lParam)
 {
-    if (ggui == NULL)
+    if (ggui == nullptr)
     {
         return FALSE;
     }

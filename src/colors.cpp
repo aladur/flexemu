@@ -42,7 +42,7 @@ struct sRGBDef colors[] =
     {"darkgrey", 63, 63, 63},
     {"darkred", 127, 0, 0},
     {"lightgreen", 127, 255, 127},
-    {NULL, 0, 0, 0}
+    {nullptr, 0, 0, 0}
 };
 
 /*

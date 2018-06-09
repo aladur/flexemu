@@ -36,10 +36,10 @@
 
 
 Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
-    commandMutex(NULL), statusMutex(NULL), irqStatMutex(NULL),
+    commandMutex(nullptr), statusMutex(nullptr), irqStatMutex(nullptr),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
-    time0sec(0), cpu(NULL), io(NULL), systemTime(NULL),
-    pCurrent_status(NULL),
+    time0sec(0), cpu(nullptr), io(nullptr), systemTime(nullptr),
+    pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
     int i;
@@ -52,14 +52,14 @@ Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
     // before creating any thread
     sigemptyset(&sigmask);
     sigaddset(&sigmask, SIGALRM);
-    sigprocmask(SIG_BLOCK, &sigmask, NULL);
+    sigprocmask(SIG_BLOCK, &sigmask, nullptr);
 #endif
 
     memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 
     for (i = 0; i < MAX_COMMANDS; i++)
     {
-        command[i] = NULL;
+        command[i] = nullptr;
     }
 
     commandMutex       = new BMutex;
@@ -83,7 +83,7 @@ Scheduler::~Scheduler()
     commandMutex->unlock();
     statusMutex->lock();
     delete pCurrent_status;
-    pCurrent_status = NULL;
+    pCurrent_status = nullptr;
     statusMutex->unlock();
 
     delete systemTime;
@@ -127,7 +127,7 @@ void Scheduler::process_events()
                 update_frequency();
                 events |= DO_SET_STATUS;
 
-                if (io != NULL)
+                if (io != nullptr)
                 {
                     io->update_1_second();
                 }
@@ -142,7 +142,7 @@ void Scheduler::process_events()
         {
             statusMutex->lock();
 
-            if (io->is_gui_present() && pCurrent_status == NULL)
+            if (io->is_gui_present() && pCurrent_status == nullptr)
             {
                 events &= ~DO_SET_STATUS;
                 pCurrent_status = cpu->create_status_object();
@@ -275,7 +275,7 @@ Byte Scheduler::statemachine(Byte initial_state)
 
 void Scheduler::timer_elapsed(void *p)
 {
-    if (p != NULL)
+    if (p != nullptr)
     {
         ((Scheduler *)p)->timer_elapsed();
     }
@@ -326,7 +326,7 @@ void Scheduler::sync_exec(BCommand *newCommand)
 
     commandMutex->lock();
 
-    while (command[i] != NULL && i < MAX_COMMANDS - 1)
+    while (command[i] != nullptr && i < MAX_COMMANDS - 1)
     {
         i++;
     }
@@ -349,11 +349,11 @@ void Scheduler::Execute()
     // after execution delete the command from the list
     commandMutex->lock();
 
-    while (command[i] != NULL)
+    while (command[i] != nullptr)
     {
         command[i]->Execute();
         delete command[i];
-        command[i] = NULL;
+        command[i] = nullptr;
         i++;
     }
 
@@ -366,7 +366,7 @@ bool Scheduler::status_available()
     bool result;
 
     statusMutex->lock();
-    result = (pCurrent_status != NULL);
+    result = (pCurrent_status != nullptr);
     statusMutex->unlock();
 
     return result;
@@ -374,14 +374,14 @@ bool Scheduler::status_available()
 
 CpuStatus *Scheduler::get_status()
 {
-    CpuStatus *stat = NULL;
+    CpuStatus *stat = nullptr;
 
     statusMutex->lock();
 
-    if (pCurrent_status != NULL)
+    if (pCurrent_status != nullptr)
     {
         stat = pCurrent_status;
-        pCurrent_status = NULL;
+        pCurrent_status = nullptr;
     }
 
     statusMutex->unlock();
@@ -419,7 +419,7 @@ void Scheduler::frequency_control(QWord time1)
         time0 = time1;
 #ifdef DEBUG_FILE
 
-        if ((fp = fopen(DEBUG_FILE, "a")) != NULL)
+        if ((fp = fopen(DEBUG_FILE, "a")) != nullptr)
         {
             fprintf(fp, "timediff: %llu required_cyclecount: %lu\n",
                     timediff, required_cyclecount);
@@ -455,7 +455,7 @@ void Scheduler::set_frequency(float target_freq)
         time0 = 0;
     }
 
-    if (cpu != NULL)
+    if (cpu != nullptr)
     {
         cpu->set_required_cyclecount(ULONG_MAX);
     }

@@ -59,7 +59,7 @@
 #include "bitmaps/flexcpu.xbm"
 
 // global variables
-static XtGui *ggui = NULL;
+static XtGui *ggui = nullptr;
 const char **XtGui::pixmapname[8] = { floppy0, floppy1, floppy2,
                                       irq0, irq1, irq2, irq3, irq4
                                     };
@@ -149,7 +149,7 @@ void highlightChild(Widget w, XEvent *pevent, String *params, Cardinal *)
 
 void XtGui::timerCallbackProc(XtPointer p, XtIntervalId *pId)
 {
-    if (p != NULL)
+    if (p != nullptr)
     {
         XtGui *pGui = (XtGui *)p;
         pGui->timerCallback(*pId);
@@ -190,7 +190,7 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
 void XtGui::setCpuExitCallback(Widget,
                                XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
         ((XtGui *)client_data)->popup_confirmation(
             "Do you really want to close " PROGRAMNAME);
 }
@@ -198,7 +198,7 @@ void XtGui::setCpuExitCallback(Widget,
 void XtGui::setCpuRunCallback(Widget,
                               XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_RUN);
     }
@@ -207,7 +207,7 @@ void XtGui::setCpuRunCallback(Widget,
 void XtGui::setCpuStopCallback(Widget,
                                XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_STOP);
     }
@@ -216,7 +216,7 @@ void XtGui::setCpuStopCallback(Widget,
 void XtGui::toggleCpuRunCallback(Widget,
                                  XtPointer client_data, XtPointer call_data)
 {
-    if (client_data != NULL && call_data != NULL)
+    if (client_data != nullptr && call_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_RUN);
     }
@@ -225,7 +225,7 @@ void XtGui::toggleCpuRunCallback(Widget,
 void XtGui::toggleCpuStopCallback(Widget,
                                   XtPointer client_data, XtPointer call_data)
 {
-    if (client_data != NULL && call_data != NULL)
+    if (client_data != nullptr && call_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_STOP);
     }
@@ -234,7 +234,7 @@ void XtGui::toggleCpuStopCallback(Widget,
 void XtGui::toggleCpuStepCallback(Widget,
                                   XtPointer client_data, XtPointer call_data)
 {
-    if (client_data != NULL && call_data != NULL)
+    if (client_data != nullptr && call_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_STEP);
     }
@@ -243,7 +243,7 @@ void XtGui::toggleCpuStepCallback(Widget,
 void XtGui::toggleCpuNextCallback(Widget,
                                   XtPointer client_data, XtPointer call_data)
 {
-    if (client_data != NULL && call_data != NULL)
+    if (client_data != nullptr && call_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_NEXT);
     }
@@ -252,7 +252,7 @@ void XtGui::toggleCpuNextCallback(Widget,
 void XtGui::toggleCpuResetCallback(Widget,
                                    XtPointer client_data, XtPointer call_data)
 {
-    if (client_data != NULL && call_data != NULL)
+    if (client_data != nullptr && call_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_RESET);
     }
@@ -261,7 +261,7 @@ void XtGui::toggleCpuResetCallback(Widget,
 void XtGui::setCpuResetRunCallback(Widget,
                                    XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->set_new_state(S_RESET_RUN);
     }
@@ -270,7 +270,7 @@ void XtGui::setCpuResetRunCallback(Widget,
 void XtGui::toggleCpuCallback(Widget,
                               XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->toggle_cpu();
     }
@@ -279,7 +279,7 @@ void XtGui::toggleCpuCallback(Widget,
 void XtGui::toggleUndocumentedCallback(Widget,
                                        XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->toggle_undocumented();
     }
@@ -288,7 +288,7 @@ void XtGui::toggleUndocumentedCallback(Widget,
 void XtGui::toggleFrequencyCallback(Widget,
                                     XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->toggle_frequency();
     }
@@ -297,7 +297,7 @@ void XtGui::toggleFrequencyCallback(Widget,
 void XtGui::popdownCpuCallback(Widget,
                                XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_cpu();
     }
@@ -306,7 +306,7 @@ void XtGui::popdownCpuCallback(Widget,
 void XtGui::popupHelpCallback(Widget,
                               XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_help();
     }
@@ -315,7 +315,7 @@ void XtGui::popupHelpCallback(Widget,
 void XtGui::popupAboutCallback(Widget,
                                XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_about();
     }
@@ -324,7 +324,7 @@ void XtGui::popupAboutCallback(Widget,
 void XtGui::popdownAboutCallback(Widget,
                                  XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_about();
     }
@@ -334,7 +334,7 @@ void XtGui::popdownAboutCallback(Widget,
 void XtGui::popupAuthorCallback(Widget,
                                 XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_about();
         ((XtGui *)client_data)->popup_author();
@@ -344,7 +344,7 @@ void XtGui::popupAuthorCallback(Widget,
 void XtGui::popdownAuthorCallback(Widget,
                                   XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_author();
     }
@@ -354,7 +354,7 @@ void XtGui::popdownAuthorCallback(Widget,
 void XtGui::popupBpCallback(Widget,
                             XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_bp();
     }
@@ -363,7 +363,7 @@ void XtGui::popupBpCallback(Widget,
 void XtGui::popupLogfileCallback(Widget,
                                  XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_log();
     }
@@ -372,7 +372,7 @@ void XtGui::popupLogfileCallback(Widget,
 void XtGui::popdownLogCallback(Widget w,
                                XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_log(w);
     }
@@ -381,7 +381,7 @@ void XtGui::popdownLogCallback(Widget w,
 void XtGui::clearLogCallback(Widget,
                              XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->clear_log();
     }
@@ -390,7 +390,7 @@ void XtGui::clearLogCallback(Widget,
 void XtGui::clearBpCallback(Widget,
                             XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->clear_bp();
     }
@@ -399,7 +399,7 @@ void XtGui::clearBpCallback(Widget,
 void XtGui::popdownBpCallback(Widget w,
                               XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_bp(w);
     }
@@ -408,7 +408,7 @@ void XtGui::popdownBpCallback(Widget w,
 void XtGui::popdownMessageCallback(Widget w,
                                    XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popdown_message(w);
     }
@@ -417,7 +417,7 @@ void XtGui::popdownMessageCallback(Widget w,
 void XtGui::popupFloppyCallback(Widget w,
                                 XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_disk_info(w);
     }
@@ -426,7 +426,7 @@ void XtGui::popupFloppyCallback(Widget w,
 void XtGui::popupInterruptCallback(Widget w,
                                    XtPointer client_data, XtPointer)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->popup_interrupt_info(w);
     }
@@ -457,7 +457,7 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
     for (i = PM_FLOPPY0; i <= PM_IRQ4; ++i)
     {
         data = const_cast<char **>(pixmapname[i]);
-        symbol.name = NULL;
+        symbol.name = nullptr;
         symbol.value = const_cast<char *>(none);
         symbol.pixel = color;
         xpmattr.colorsymbols = &symbol;
@@ -465,7 +465,7 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
         xpmattr.colormap = DefaultColormapOfScreen(XtScreen(w));
         xpmattr.valuemask = XpmColormap | XpmColorSymbols;
         errorStatus = XpmCreatePixmapFromData(XtDisplay(w), XtWindow(w),
-                                              data, &pixmap[i], NULL, &xpmattr);
+                                              data, &pixmap[i], nullptr, &xpmattr);
         XpmFreeAttributes(&xpmattr);
 
         if (errorStatus != XpmSuccess)
@@ -495,7 +495,7 @@ void XtGui::a_expose(Widget w, XEvent *pevent)
         xpmattr.colormap  = DefaultColormapOfScreen(XtScreen(w));
         xpmattr.valuemask = XpmColormap;
         errorStatus = XpmCreatePixmapFromData(XtDisplay(w), XtWindow(w),
-                                              data, &authorpixmap, NULL,
+                                              data, &authorpixmap, nullptr,
                                               &xpmattr);
         XpmFreeAttributes(&xpmattr);
 
@@ -550,10 +550,10 @@ void XtGui::center_dialog(Widget shell)
     Dimension width, height;
 
     XtVaGetValues(e2toplevel, XtNwidth, &width, XtNheight, &height,
-                  XtNx, &x, XtNy, &y, NULL);
+                  XtNx, &x, XtNy, &y, nullptr);
     x += width >> 1;
     y += height >> 1;
-    XtVaGetValues(shell, XtNwidth, &width, XtNheight, &height, NULL);
+    XtVaGetValues(shell, XtNwidth, &width, XtNheight, &height, nullptr);
     x -= width >> 1;
     y -= height >> 1;
     XtMoveWidget(shell, x, y);
@@ -568,18 +568,18 @@ void XtGui::popup_message(const char *pmessage, const char *ptitle,
 
     if (*pmessage)
     {
-        XtVaSetValues(messagetext, XtNstring, pmessage, NULL);
+        XtVaSetValues(messagetext, XtNstring, pmessage, nullptr);
     }
 
-    if (p == NULL)
+    if (p == nullptr)
     {
         p = PROGRAMNAME " Warning";
     }
 
-    XtVaSetValues(messageframe, XtNtitle, p, NULL);
+    XtVaSetValues(messageframe, XtNtitle, p, nullptr);
     XtResizeWidget(messageframe, width, height, 0);
     center_dialog(messageframe);
-    XtVaSetValues(messagebutton1, XtNlabel, "Ok", NULL);
+    XtVaSetValues(messagebutton1, XtNlabel, "Ok", nullptr);
     XtUnmanageChild(messagebutton2);
     XtPopupSpringLoaded(messageframe);
     XtSetSensitive(e2toplevel, False);
@@ -595,20 +595,20 @@ void XtGui::popup_confirmation(const char *pmessage, const char *ptitle,
 
     if (*pmessage)
     {
-        XtVaSetValues(messagetext, XtNstring, pmessage, NULL);
+        XtVaSetValues(messagetext, XtNstring, pmessage, nullptr);
     }
 
-    if (p == NULL)
+    if (p == nullptr)
     {
         p = PROGRAMNAME " Warning";
     }
 
-    XtVaSetValues(messageframe, XtNtitle, p, NULL);
+    XtVaSetValues(messageframe, XtNtitle, p, nullptr);
     XtManageChild(messagebutton2);
     XtResizeWidget(messageframe, width, height, 0);
     center_dialog(messageframe);
-    XtVaSetValues(messagebutton1, XtNlabel, "Yes", NULL);
-    XtVaSetValues(messagebutton2, XtNlabel, "No", NULL);
+    XtVaSetValues(messagebutton1, XtNlabel, "Yes", nullptr);
+    XtVaSetValues(messagebutton2, XtNlabel, "No", nullptr);
     XtPopupSpringLoaded(messageframe);
     XtSetSensitive(e2toplevel, False);
     XtSetSensitive(cpuframe, False);
@@ -634,7 +634,7 @@ void XtGui::popdown_message(Widget w)
 
 void XtGui::popup_disk_info(Widget w)
 {
-    if (io == NULL)
+    if (io == nullptr)
     {
         return;
     }
@@ -660,7 +660,7 @@ void XtGui::popup_disk_info(Widget w)
 
 void XtGui::popup_interrupt_info(Widget)
 {
-    if (schedy == NULL)
+    if (schedy == nullptr)
     {
         return;
     }
@@ -693,7 +693,7 @@ void XtGui::toggle_frequency()
 
     if (okpixmap != None)
         XtVaSetValues(entry27, XtNleftBitmap,
-                      frequency_control_on ? okpixmap : None, NULL);
+                      frequency_control_on ? okpixmap : None, nullptr);
 }
 
 void XtGui::toggle_undocumented()
@@ -703,7 +703,7 @@ void XtGui::toggle_undocumented()
 
     if (okpixmap != None)
         XtVaSetValues(entry28, XtNleftBitmap,
-                      is_use_undocumented ? okpixmap : None, NULL);
+                      is_use_undocumented ? okpixmap : None, nullptr);
 }
 
 void XtGui::update_disk_status(int floppyIndex, tDiskStatus status)
@@ -727,7 +727,7 @@ void XtGui::update_disk_status(int floppyIndex, tDiskStatus status)
     }
 
     XtVaSetValues(floppybutton[floppyIndex], XtNbitmap,
-                  pixmap[iconIdx], NULL);
+                  pixmap[iconIdx], nullptr);
 #else
     char *label = "";
 
@@ -747,7 +747,7 @@ void XtGui::update_disk_status(int floppyIndex, tDiskStatus status)
     }
 
     XtVaSetValues(floppybutton[floppyIndex], XtNlabel,
-                  label, NULL);
+                  label, nullptr);
 #endif
 }
 
@@ -778,7 +778,7 @@ void XtGui::update_interrupt_status(tIrqType irqType, bool status)
         }
     }
 
-    XtVaSetValues(interruptbutton, XtNbitmap, pixmap[iconIdx], NULL);
+    XtVaSetValues(interruptbutton, XtNbitmap, pixmap[iconIdx], nullptr);
 #else
     char *label = " ";
 
@@ -804,7 +804,7 @@ void XtGui::update_interrupt_status(tIrqType irqType, bool status)
         }
     }
 
-    XtVaSetValues(interruptbutton, XtNlabel, label, NULL);
+    XtVaSetValues(interruptbutton, XtNlabel, label, nullptr);
 #endif
 }
 
@@ -828,7 +828,7 @@ void XtGui::timerCallback(XtIntervalId)
     // check if floppy bitmap has to be updated
     count++;
 
-    if (count % (100 / timebase) == 0 && io != NULL)
+    if (count % (100 / timebase) == 0 && io != nullptr)
     {
         static tDiskStatus status[4];
         tDiskStatus newStatus[4];
@@ -885,7 +885,7 @@ void XtGui::timerCallback(XtIntervalId)
     // check if CPU view has to be updated
     pStat = (Mc6809CpuStatus *)schedy->get_status();
 
-    if (pStat != NULL)
+    if (pStat != nullptr)
     {
         update_cpuview(*pStat);
 
@@ -894,9 +894,9 @@ void XtGui::timerCallback(XtIntervalId)
             bool is_running = (pStat->state == S_RUN ||
                                pStat->state == S_NEXT);
             XtVaSetValues(entry21, XtNleftBitmap,
-                          is_running ? okpixmap : None, NULL);
+                          is_running ? okpixmap : None, nullptr);
             XtVaSetValues(entry22, XtNleftBitmap,
-                          !is_running ? okpixmap : None, NULL);
+                          !is_running ? okpixmap : None, nullptr);
         }
 
         if (pStat->state == S_INVALID)
@@ -913,7 +913,7 @@ Processor stopped. To continue press Reset button",
         }
 
         delete pStat;
-        pStat = NULL;
+        pStat = nullptr;
     }
 
     // update graphic display
@@ -1015,7 +1015,7 @@ void XtGui::c_keyPress(XEvent *pevent)
         KeySym keysym;
 
         XLookupString((XKeyEvent *)pevent, buffer, sizeof(buffer) - 1, &keysym,
-                      NULL);
+                      nullptr);
         if (keysym == XK_Escape)
         {
             close_menu_mode();
@@ -1171,7 +1171,7 @@ void XtGui::c_highlight_child(Widget w, XEvent *pevent, String *params)
     Dimension wi, he;
 
     x = y = 0;
-    XtVaGetValues(w, XtNx, &x, XtNy, &y, XtNwidth, &wi, XtNheight, &he, NULL);
+    XtVaGetValues(w, XtNx, &x, XtNy, &y, XtNwidth, &wi, XtNheight, &he, nullptr);
     x = pevent->xbutton.x_root - x;
     y = pevent->xbutton.y_root - y;
 
@@ -1255,12 +1255,12 @@ Widget XtGui::create_main_view(int argc, char *const argv[],
         {const_cast<String>("closeMenuMode"), (XtActionProc)closeMenuMode},
     };
 
-    XtSetLanguageProc(NULL, NULL, NULL); // set to default language
+    XtSetLanguageProc(nullptr, nullptr, nullptr); // set to default language
 
     // create widget tree:
     mainview = XtVaAppInitialize(&context, "Flexemu",
                                  opts, 0, &argc, const_cast<char **>(argv),
-                                 fallback_resources, NULL);
+                                 fallback_resources, nullptr);
 
     if (isSynchronized)
     {
@@ -1268,72 +1268,72 @@ Widget XtGui::create_main_view(int argc, char *const argv[],
     }
 
     XtAppAddConverter(context, XtRString, XtROrientation,
-                      XmuCvtStringToOrientation, NULL, 0);
+                      XmuCvtStringToOrientation, nullptr, 0);
     XtAppAddActions(context, actions, XtNumber(actions));
 
     // use a Paned widget because it doesn't resize the menuBar
     form = XtVaCreateManagedWidget("form", formWidgetClass, mainview,
-                                   NULL);
+                                   nullptr);
     menubar = XtVaCreateManagedWidget("menuBar", boxWidgetClass, form,
-                                      NULL);
+                                      nullptr);
     button[0] = XtVaCreateManagedWidget("menuButton1", menuButtonWidgetClass,
-                                      menubar, NULL);
+                                      menubar, nullptr);
     button[1] = XtVaCreateManagedWidget("menuButton2", menuButtonWidgetClass,
-                                      menubar, NULL);
+                                      menubar, nullptr);
     button[2] = XtVaCreateManagedWidget("menuButton3", menuButtonWidgetClass,
-                                      menubar, NULL);
+                                      menubar, nullptr);
     e2screen = XtVaCreateManagedWidget("screen", coreWidgetClass, form,
                                        XtNwidth,
                                        (XtArgVal)WINDOWWIDTH * pixelSizeX,
                                        XtNheight,
-                                       (XtArgVal)WINDOWHEIGHT * pixelSizeY, NULL);
+                                       (XtArgVal)WINDOWHEIGHT * pixelSizeY, nullptr);
     statusbuttons = XtVaCreateManagedWidget("statusButtons",
-                                            boxWidgetClass, form, NULL);
+                                            boxWidgetClass, form, nullptr);
     menu[0] = XtVaCreatePopupShell("menu1", simpleMenuWidgetClass, button[0],
-                                 NULL);
+                                 nullptr);
     add_menu_handler(button[0], menu[0]);
     menu[1] = XtVaCreatePopupShell("menu2", simpleMenuWidgetClass, button[1],
-                                 NULL);
+                                 nullptr);
     add_menu_handler(button[1], menu[1]);
     menu[2] = XtVaCreatePopupShell("menu3", simpleMenuWidgetClass, button[2],
-                                 NULL);
+                                 nullptr);
     add_menu_handler(button[2], menu[2]);
     entry12 = XtVaCreateManagedWidget("menuEntry12", smeBSBObjectClass,
-                                      menu[0], NULL);
+                                      menu[0], nullptr);
     entry21 = XtVaCreateManagedWidget("menuEntry21", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry22 = XtVaCreateManagedWidget("menuEntry22", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry23 = XtVaCreateManagedWidget("menuEntry23", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     line21  = XtVaCreateManagedWidget("line21", smeLineObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry24 = XtVaCreateManagedWidget("menuEntry24", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry25 = XtVaCreateManagedWidget("menuEntry25", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry26 = XtVaCreateManagedWidget("menuEntry26", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     line22 = XtVaCreateManagedWidget("line22", smeLineObjectClass,
-                                     menu[1], NULL);
+                                     menu[1], nullptr);
     entry27 = XtVaCreateManagedWidget("menuEntry27", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry28 = XtVaCreateManagedWidget("menuEntry28", smeBSBObjectClass,
-                                      menu[1], NULL);
+                                      menu[1], nullptr);
     entry31 = XtVaCreateManagedWidget("menuEntry31", smeBSBObjectClass,
-                                      menu[2], NULL);
+                                      menu[2], nullptr);
     entry32 = XtVaCreateManagedWidget("menuEntry32", smeBSBObjectClass,
-                                      menu[2], NULL);
+                                      menu[2], nullptr);
     floppybutton[0] = XtVaCreateManagedWidget("floppyButton0",
-                      commandWidgetClass, statusbuttons, NULL);
+                      commandWidgetClass, statusbuttons, nullptr);
     floppybutton[1] = XtVaCreateManagedWidget("floppyButton1",
-                      commandWidgetClass, statusbuttons, NULL);
+                      commandWidgetClass, statusbuttons, nullptr);
     floppybutton[2] = XtVaCreateManagedWidget("floppyButton2",
-                      commandWidgetClass, statusbuttons, NULL);
+                      commandWidgetClass, statusbuttons, nullptr);
     floppybutton[3] = XtVaCreateManagedWidget("floppyButton3",
-                      commandWidgetClass, statusbuttons, NULL);
+                      commandWidgetClass, statusbuttons, nullptr);
     interruptbutton = XtVaCreateManagedWidget("interruptButton",
-                      commandWidgetClass, statusbuttons, NULL);
+                      commandWidgetClass, statusbuttons, nullptr);
     // must realize it now
     // to get valid contents of win
     //XtSetMappedWhenManaged(mainview, False);
@@ -1385,7 +1385,7 @@ void XtGui::create_about_dialog(Widget parent)
     allocstring = XtMalloc(sizeof(PROGRAM_VERSION) + 2 + sizeof(HEADER1) +
                            sizeof(HEADER2));
 
-    if (allocstring != NULL)
+    if (allocstring != nullptr)
     {
         strcpy(allocstring, HEADER1);
         strcat(allocstring, "V " PROGRAM_VERSION);
@@ -1398,22 +1398,22 @@ void XtGui::create_about_dialog(Widget parent)
     }
 
     aboutframe = XtVaCreatePopupShell("about",
-                                      transientShellWidgetClass, parent, NULL);
+                                      transientShellWidgetClass, parent, nullptr);
     aboutform = XtVaCreateManagedWidget("aboutForm",
-                                        formWidgetClass, aboutframe, NULL);
+                                        formWidgetClass, aboutframe, nullptr);
     abouttext = XtVaCreateManagedWidget("aboutText", asciiTextWidgetClass,
                                         aboutform,
                                         XtNstring, (XtArgVal)aboutstring,
                                         XtNlength,
                                         (XtArgVal)(strlen(aboutstring) + 1),
-                                        NULL);
+                                        nullptr);
     aboutbuttons = XtVaCreateManagedWidget("aboutButtons",
-                                           boxWidgetClass, aboutform, NULL);
+                                           boxWidgetClass, aboutform, nullptr);
     aboutbutton = XtVaCreateManagedWidget("aboutButton", commandWidgetClass,
-                                          aboutbuttons, NULL);
+                                          aboutbuttons, nullptr);
 #ifdef HAVE_XPM
     morebutton = XtVaCreateManagedWidget("moreButton", commandWidgetClass,
-                                         aboutbuttons, NULL);
+                                         aboutbuttons, nullptr);
 #endif
 
     // define some button callbacks:
@@ -1433,13 +1433,13 @@ void XtGui::create_author_dialog(Widget parent)
 {
     authorpixmap = None;
     authorframe = XtVaCreatePopupShell("author", transientShellWidgetClass,
-                                       parent, NULL);
+                                       parent, nullptr);
     authorform = XtVaCreateManagedWidget("authorForm", formWidgetClass,
-                                         authorframe, NULL);
+                                         authorframe, nullptr);
     authorwidget = XtVaCreateManagedWidget("authorWidget", coreWidgetClass,
-                                           authorform, NULL);
+                                           authorform, nullptr);
     authorbutton = XtVaCreateManagedWidget("authorButton", commandWidgetClass,
-                                           authorform, NULL);
+                                           authorform, nullptr);
 
     // define some button callbacks:
     XtAddCallback(authorbutton, XtNcallback, popdownAuthorCallback,
@@ -1453,22 +1453,22 @@ void XtGui::create_author_dialog(Widget parent)
 void XtGui::create_message_dialog(Widget parent)
 {
     messageframe = XtVaCreatePopupShell("message", transientShellWidgetClass,
-                                        parent, NULL);
+                                        parent, nullptr);
     messageform = XtVaCreateManagedWidget("messageForm", formWidgetClass,
-                                          messageframe, NULL);
+                                          messageframe, nullptr);
     messagetext = XtVaCreateManagedWidget("messageText", asciiTextWidgetClass,
-                                          messageform, NULL);
+                                          messageform, nullptr);
     messagebuttons = XtVaCreateManagedWidget("messageButtons", boxWidgetClass,
-                     messageform, NULL);
+                     messageform, nullptr);
     messagebutton1 = XtVaCreateManagedWidget("messageButton1",
                      commandWidgetClass,
-                     messagebuttons, NULL);
+                     messagebuttons, nullptr);
     messagebutton2 = XtVaCreateManagedWidget("messageButton2",
                      commandWidgetClass,
-                     messagebuttons, NULL);
+                     messagebuttons, nullptr);
 
-    XtVaSetValues(messageframe, XtCTransientFor, parent, NULL);
-    XtVaSetValues(messagetext, XtNwrap, XawtextWrapWord, NULL);
+    XtVaSetValues(messageframe, XtCTransientFor, parent, nullptr);
+    XtVaSetValues(messagetext, XtNwrap, XawtextWrapWord, nullptr);
 
     // define some button callbacks:
     XtAddCallback(messagebutton1, XtNcallback, popdownMessageCallback,
@@ -1508,7 +1508,7 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     xpmattr.valuemask = XpmColormap;
     errorStatus = XpmCreatePixmapFromData(XtDisplay(w),
                                           XtWindow(w), data, &mainpixmap,
-                                          NULL, &xpmattr);
+                                          nullptr, &xpmattr);
     XpmFreeAttributes(&xpmattr);
 
     if (errorStatus != XpmSuccess)
@@ -1520,7 +1520,7 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
 
     if (mainpixmap != None)
     {
-        XtVaSetValues(w, XtNiconPixmap, mainpixmap, NULL);
+        XtVaSetValues(w, XtNiconPixmap, mainpixmap, nullptr);
     }
 
     if (!*color || !stricmp(color, "default"))
@@ -1549,7 +1549,7 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     authorgc = XtGetGC(e2screen, GCForeground | GCBackground, &gcv);
 #endif
     e2gc = XtGetGC(e2screen, GCForeground | GCBackground, &gcv);
-    XtVaSetValues(e2screen, XtNbackground, gcv.background, NULL);
+    XtVaSetValues(e2screen, XtNbackground, gcv.background, nullptr);
     copy_block = new Byte[WINDOWWIDTH * BLOCKHEIGHT *
                           MAX_PIXELSIZEX * MAX_PIXELSIZEY *
                           32 / 8]; // max. screen depth
@@ -1628,13 +1628,13 @@ void XtGui::initialize_after_open(Widget w, const char *title)
 #ifdef HAVE_XPM
     Pixel bg_color;
 
-    XtVaGetValues(interruptbutton, XtNbackground, &bg_color, NULL);
+    XtVaGetValues(interruptbutton, XtNbackground, &bg_color, nullptr);
     create_pixmaps(w, bg_color);
-    XtVaSetValues(floppybutton[0], XtNbitmap, pixmap[PM_FLOPPY0], NULL);
-    XtVaSetValues(floppybutton[1], XtNbitmap, pixmap[PM_FLOPPY0], NULL);
-    XtVaSetValues(floppybutton[2], XtNbitmap, pixmap[PM_FLOPPY0], NULL);
-    XtVaSetValues(floppybutton[3], XtNbitmap, pixmap[PM_FLOPPY0], NULL);
-    XtVaSetValues(interruptbutton, XtNbitmap, pixmap[PM_IRQ0],    NULL);
+    XtVaSetValues(floppybutton[0], XtNbitmap, pixmap[PM_FLOPPY0], nullptr);
+    XtVaSetValues(floppybutton[1], XtNbitmap, pixmap[PM_FLOPPY0], nullptr);
+    XtVaSetValues(floppybutton[2], XtNbitmap, pixmap[PM_FLOPPY0], nullptr);
+    XtVaSetValues(floppybutton[3], XtNbitmap, pixmap[PM_FLOPPY0], nullptr);
+    XtVaSetValues(interruptbutton, XtNbitmap, pixmap[PM_IRQ0],    nullptr);
 #endif
     okpixmap = XCreateBitmapFromData(XtDisplay(w),
                                      RootWindowOfScreen(XtScreen(w)),
@@ -1642,13 +1642,13 @@ void XtGui::initialize_after_open(Widget w, const char *title)
 
     if (okpixmap != None && cpu->is_use_undocumented())
     {
-        XtVaSetValues(entry28, XtNleftBitmap, okpixmap, NULL);
+        XtVaSetValues(entry28, XtNleftBitmap, okpixmap, nullptr);
     }
 
-    XtVaGetValues(w, XtNwidth, &width, XtNheight, &height, NULL);
+    XtVaGetValues(w, XtNwidth, &width, XtNheight, &height, nullptr);
     pxsh = XAllocSizeHints();
 
-    if (pxsh != NULL)
+    if (pxsh != nullptr)
     {
         pxsh->min_width = WINDOWWIDTH + (width % WINDOWWIDTH);
         pxsh->max_width = WINDOWWIDTH * MAX_PIXELSIZEX +
@@ -1661,7 +1661,7 @@ void XtGui::initialize_after_open(Widget w, const char *title)
         pxsh->win_gravity = NorthWestGravity;
         pxsh->flags = PMaxSize | PMinSize | PResizeInc | PWinGravity;
         XSetStandardProperties(XtDisplay(w), XtWindow(w),
-                               title, title, None, NULL, 0, pxsh);
+                               title, title, None, nullptr, 0, pxsh);
         XFree(pxsh);
     }
 }
@@ -1725,7 +1725,7 @@ XtGui::~XtGui()
     {
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
-            image[i][j]->data = NULL;
+            image[i][j]->data = nullptr;
             XDestroyImage(image[i][j]);
         } // for
     } // for
@@ -1755,8 +1755,8 @@ XtGui::~XtGui()
     XtDestroyWidget(e2toplevel); /* Avoid memory leak */
     XtDestroyApplicationContext(context);
     delete [] copy_block;
-    copy_block = NULL;
-    ggui = NULL;
+    copy_block = nullptr;
+    ggui = nullptr;
 }
 
 
@@ -1775,9 +1775,9 @@ void XtGui::popup_cpu()
 #endif
 
     XtVaGetValues(e2toplevel, XtNwidth, &width, XtNheight, &topheight,
-                  XtNx, &x, XtNy, &y, NULL);
+                  XtNx, &x, XtNy, &y, nullptr);
     x += width >> 1;
-    XtVaGetValues(cpuframe, XtNwidth, &width, XtNheight, &height, NULL);
+    XtVaGetValues(cpuframe, XtNwidth, &width, XtNheight, &height, nullptr);
     x -= width >> 1;
     y -= height;
 
@@ -1786,12 +1786,12 @@ void XtGui::popup_cpu()
         y += height + topheight;
     }
 
-    XtVaSetValues(cpuframe, XtNx, x, XtNy, y, XtNtitle, title, NULL);
+    XtVaSetValues(cpuframe, XtNx, x, XtNy, y, XtNtitle, title, nullptr);
     XtPopup(cpuframe, XtGrabNone);
 
     if (okpixmap != None)
     {
-        XtVaSetValues(entry24, XtNleftBitmap, okpixmap, NULL);
+        XtVaSetValues(entry24, XtNleftBitmap, okpixmap, nullptr);
     }
 
     cpu_popped_up = true;
@@ -1799,7 +1799,7 @@ void XtGui::popup_cpu()
 
 void XtGui::popdown_cpu()
 {
-    XtVaSetValues(entry24, XtNleftBitmap, None, NULL);
+    XtVaSetValues(entry24, XtNleftBitmap, None, nullptr);
     XtPopdown(cpuframe);
     cpu_popped_up = false;
 }
@@ -1835,7 +1835,7 @@ void XtGui::popup_bp()
         }
 
         XtVaSetValues(bptext[which], XtNlength, 6,
-                      XtNstring, (XtArgVal)bpstring, NULL);
+                      XtNstring, (XtArgVal)bpstring, nullptr);
     }
 
     center_dialog(bpframe);
@@ -1860,7 +1860,7 @@ void XtGui::popdown_bp(Widget w)
 
     for (which = 0; which <= 1; which++)
     {
-        XtVaGetValues(bptext[which], XtNstring, &bpstring, NULL);
+        XtVaGetValues(bptext[which], XtNstring, &bpstring, nullptr);
 
         if (sscanf(bpstring, "%x", &addr) == 1 && addr <= 0xffff)
         {
@@ -1883,7 +1883,7 @@ void XtGui::clear_bp()
 
     for (which = 0; which <= 1; which++)
     {
-        XtVaSetValues(bptext[which], XtNstring, (XtArgVal)"", NULL);
+        XtVaSetValues(bptext[which], XtNstring, (XtArgVal)"", nullptr);
     }
 }
 
@@ -1901,7 +1901,7 @@ void XtGui::popup_log()
     }
 
     XtVaSetValues(logtext[which++], XtNlength, 6,
-                  XtNstring, (XtArgVal)tmpstring, NULL);
+                  XtNstring, (XtArgVal)tmpstring, nullptr);
     // Max Address
     tmpstring[0] = '\0';
 
@@ -1911,7 +1911,7 @@ void XtGui::popup_log()
     }
 
     XtVaSetValues(logtext[which++], XtNlength, 6,
-                  XtNstring, (XtArgVal)tmpstring, NULL);
+                  XtNstring, (XtArgVal)tmpstring, nullptr);
     // Start Address
     tmpstring[0] = '\0';
 
@@ -1921,7 +1921,7 @@ void XtGui::popup_log()
     }
 
     XtVaSetValues(logtext[which++], XtNlength, 6,
-                  XtNstring, (XtArgVal)tmpstring, NULL);
+                  XtNstring, (XtArgVal)tmpstring, nullptr);
     // Stop Address
     tmpstring[0] = '\0';
 
@@ -1931,11 +1931,11 @@ void XtGui::popup_log()
     }
 
     XtVaSetValues(logtext[which++], XtNlength, 6,
-                  XtNstring, (XtArgVal)tmpstring, NULL);
+                  XtNstring, (XtArgVal)tmpstring, nullptr);
     // Log Filename
     strcpy(tmpstring, lfs.logFileName);
     XtVaSetValues(logfilename, XtNlength, 6,
-                  XtNstring, (XtArgVal)tmpstring, NULL);
+                  XtNstring, (XtArgVal)tmpstring, nullptr);
 
     center_dialog(logframe);
     XtPopup(logframe, XtGrabExclusive);
@@ -1959,7 +1959,7 @@ void XtGui::popdown_log(Widget w)
 
     which = 0;
     // Min Address
-    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, NULL);
+    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, nullptr);
     lfs.minAddr = 0x0000;
 
     if (sscanf(tmpstring, "%x", &addr) == 1 && addr <= 0xffff)
@@ -1968,7 +1968,7 @@ void XtGui::popdown_log(Widget w)
     }
 
     // Max Address
-    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, NULL);
+    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, nullptr);
     lfs.maxAddr = 0xFFFF;
 
     if (sscanf(tmpstring, "%x", &addr) == 1 && addr <= 0xffff)
@@ -1977,7 +1977,7 @@ void XtGui::popdown_log(Widget w)
     }
 
     // Start Address
-    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, NULL);
+    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, nullptr);
     lfs.startAddr = 0x10000;
 
     if (sscanf(tmpstring, "%x", &addr) == 1 && addr <= 0xffff)
@@ -1986,7 +1986,7 @@ void XtGui::popdown_log(Widget w)
     }
 
     // Stop Address
-    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, NULL);
+    XtVaGetValues(logtext[which++], XtNstring, &tmpstring, nullptr);
     lfs.stopAddr = 0x10000;
 
     if (sscanf(tmpstring, "%x", &addr) == 1 && addr <= 0xffff)
@@ -1995,7 +1995,7 @@ void XtGui::popdown_log(Widget w)
     }
 
     // Log Filename
-    XtVaGetValues(logfilename, XtNstring, &tmpstring, NULL);
+    XtVaGetValues(logfilename, XtNstring, &tmpstring, nullptr);
     strncpy(lfs.logFileName, tmpstring, PATH_MAX);
     lfs.logFileName[PATH_MAX - 1] = '\0';
 
@@ -2012,49 +2012,49 @@ void XtGui::clear_log()
 
     for (which = 0; which <= 3; which++)
     {
-        XtVaSetValues(logtext[which], XtNstring, (XtArgVal)"", NULL);
+        XtVaSetValues(logtext[which], XtNstring, (XtArgVal)"", nullptr);
     }
 
-    XtVaSetValues(logfilename, XtNstring, (XtArgVal)"", NULL);
+    XtVaSetValues(logfilename, XtNstring, (XtArgVal)"", nullptr);
 }
 
 void XtGui::create_cpuview(Widget parent)
 {
     cpu_popped_up = false;
     cpuframe = XtVaCreatePopupShell("MC6809", topLevelShellWidgetClass,
-                                    parent, NULL);
+                                    parent, nullptr);
     cpuform = XtVaCreateManagedWidget("cpuForm", formWidgetClass, cpuframe,
-                                      NULL);
+                                      nullptr);
     cputext = XtVaCreateManagedWidget("cpuText", asciiTextWidgetClass, cpuform,
-                                      NULL);
+                                      nullptr);
     cpubuttons = XtVaCreateManagedWidget("cpuButtons", boxWidgetClass, cpuform,
-                                         NULL);
+                                         nullptr);
     runbutton = XtVaCreateManagedWidget("runButton", toggleWidgetClass,
                                         cpubuttons, XtNradioData,
                                         (XtArgVal)&radio_data[S_RUN],
-                                        XtNstate, (XtArgVal)1, NULL);
+                                        XtNstate, (XtArgVal)1, nullptr);
     stopbutton = XtVaCreateManagedWidget("stopButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_STOP], NULL);
+                                         (XtArgVal)&radio_data[S_STOP], nullptr);
     stepbutton = XtVaCreateManagedWidget("stepButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_STEP], NULL);
+                                         (XtArgVal)&radio_data[S_STEP], nullptr);
     nextbutton = XtVaCreateManagedWidget("nextButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_NEXT], NULL);
+                                         (XtArgVal)&radio_data[S_NEXT], nullptr);
     resetbutton = XtVaCreateManagedWidget("resetButton", toggleWidgetClass,
                                           cpubuttons, XtNradioGroup,
                                           (XtArgVal)runbutton, XtNradioData,
-                                          (XtArgVal)&radio_data[S_RESET], NULL);
+                                          (XtArgVal)&radio_data[S_RESET], nullptr);
     bpbutton = XtVaCreateManagedWidget("bpButton", commandWidgetClass,
-                                       cpubuttons, NULL);
+                                       cpubuttons, nullptr);
     logbutton = XtVaCreateManagedWidget("logButton", commandWidgetClass,
-                                        cpubuttons, NULL);
+                                        cpubuttons, nullptr);
     cpubutton = XtVaCreateManagedWidget("cpuButton", commandWidgetClass,
-                                        cpubuttons, NULL);
+                                        cpubuttons, nullptr);
 
     XtAddCallback(runbutton,   XtNcallback, toggleCpuRunCallback,
                   (XtPointer)this);
@@ -2086,7 +2086,7 @@ void XtGui::create_cpuview(Widget parent)
     data = const_cast<char **>(flexcpu);
     errorStatus = XpmCreatePixmapFromData(XtDisplay(cpuframe),
                                           XtWindow(cpuframe), data, &cpupixmap,
-                                          NULL, &xpmattr);
+                                          nullptr, &xpmattr);
     XpmFreeAttributes(&xpmattr);
 
     if (errorStatus != XpmSuccess)
@@ -2099,31 +2099,31 @@ void XtGui::create_cpuview(Widget parent)
 
     if (cpupixmap != None)
     {
-        XtVaSetValues(cpuframe, XtNiconPixmap, cpupixmap, NULL);
+        XtVaSetValues(cpuframe, XtNiconPixmap, cpupixmap, nullptr);
     }
 } // create_cpuview
 
 void XtGui::create_bp_dialog(Widget parent)
 {
     bpframe = XtVaCreatePopupShell("Breakpoints", transientShellWidgetClass,
-                                   parent, NULL);
-    bpform = XtVaCreateManagedWidget("bpForm", formWidgetClass, bpframe, NULL);
+                                   parent, nullptr);
+    bpform = XtVaCreateManagedWidget("bpForm", formWidgetClass, bpframe, nullptr);
     bplabel[0] = XtVaCreateManagedWidget("bpLabel1", labelWidgetClass, bpform,
-                                         NULL);
+                                         nullptr);
     bplabel[1] = XtVaCreateManagedWidget("bpLabel2", labelWidgetClass, bpform,
-                                         NULL);
+                                         nullptr);
     bptext[0] = XtVaCreateManagedWidget("bpText1", asciiTextWidgetClass, bpform,
                                         XtNeditType, (XtArgVal)XawtextEdit,
-                                        NULL);
+                                        nullptr);
     bptext[1] = XtVaCreateManagedWidget("bpText2", asciiTextWidgetClass, bpform,
                                         XtNeditType, (XtArgVal)XawtextEdit,
-                                        NULL);
+                                        nullptr);
     bpokbutton = XtVaCreateManagedWidget("bpOkButton", commandWidgetClass,
-                                         bpform, NULL);
+                                         bpform, nullptr);
     bpcancelbutton = XtVaCreateManagedWidget("bpCancelButton",
-                     commandWidgetClass, bpform, NULL);
+                     commandWidgetClass, bpform, nullptr);
     bpclearbutton = XtVaCreateManagedWidget("bpClearButton", commandWidgetClass,
-                                            bpform, NULL);
+                                            bpform, nullptr);
 
     XtAddCallback(bpokbutton, XtNcallback, popdownBpCallback,
                   (XtPointer)this);
@@ -2141,42 +2141,42 @@ void XtGui::create_bp_dialog(Widget parent)
 void XtGui::create_logfile_dialog(Widget parent)
 {
     logframe = XtVaCreatePopupShell("Logging", transientShellWidgetClass,
-                                    parent, NULL);
+                                    parent, nullptr);
     logform = XtVaCreateManagedWidget("logForm", formWidgetClass, logframe,
-                                      NULL);
+                                      nullptr);
     loglabel[0] = XtVaCreateManagedWidget("logLabel1", labelWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     loglabel[1] = XtVaCreateManagedWidget("logLabel2", labelWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     loglabel[2] = XtVaCreateManagedWidget("logLabel3", labelWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     loglabel[3] = XtVaCreateManagedWidget("logLabel4", labelWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     loglabel[4] = XtVaCreateManagedWidget("logLabel5", labelWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     logtext[0] = XtVaCreateManagedWidget("logText1", asciiTextWidgetClass,
                                          logform, XtNeditType,
-                                         (XtArgVal)XawtextEdit, NULL);
+                                         (XtArgVal)XawtextEdit, nullptr);
     logtext[1] = XtVaCreateManagedWidget("logText2", asciiTextWidgetClass,
                                          logform, XtNeditType,
-                                         (XtArgVal)XawtextEdit, NULL);
+                                         (XtArgVal)XawtextEdit, nullptr);
     logtext[2] = XtVaCreateManagedWidget("logText3", asciiTextWidgetClass,
                                          logform, XtNeditType,
-                                         (XtArgVal)XawtextEdit, NULL);
+                                         (XtArgVal)XawtextEdit, nullptr);
     logtext[3] = XtVaCreateManagedWidget("logText4", asciiTextWidgetClass,
                                          logform, XtNeditType,
-                                         (XtArgVal)XawtextEdit, NULL);
+                                         (XtArgVal)XawtextEdit, nullptr);
     logfilename = XtVaCreateManagedWidget("logFileName", asciiTextWidgetClass,
                                           logform, XtNeditType,
-                                          (XtArgVal)XawtextEdit, NULL);
+                                          (XtArgVal)XawtextEdit, nullptr);
     logokbutton = XtVaCreateManagedWidget("logOkButton", commandWidgetClass,
-                                          logform, NULL);
+                                          logform, nullptr);
     logcancelbutton = XtVaCreateManagedWidget("logCancelButton",
                       commandWidgetClass, logform,
-                      NULL);
+                      nullptr);
     logclearbutton = XtVaCreateManagedWidget("logClearButton",
                      commandWidgetClass, logform,
-                     NULL);
+                     nullptr);
 
     XtAddCallback(logokbutton, XtNcallback, popdownLogCallback,
                   (XtPointer)this);
@@ -2200,7 +2200,7 @@ void XtGui::redraw_cpuview_impl(const Mc6809CpuStatus &stat)
     text(5 + 3 * i, 10, "[");
     text(8 + 3 * i, 10, "]");
     XtVaSetValues(cputext, XtNlength, strlen(cpustring) + 1,
-                  XtNstring, cpustring, NULL);
+                  XtNstring, cpustring, nullptr);
 
     if (stat.state == S_RESET_RUN)
     {
@@ -2222,22 +2222,22 @@ void XtGui::redraw_cpuview_impl(const Mc6809CpuStatus &stat)
 
     if (stat.state == S_RUN)
     {
-        XtVaSetValues(stepbutton, XtNsensitive, 0, NULL);
-        XtVaSetValues(nextbutton, XtNsensitive, 0, NULL);
-        XtVaSetValues(resetbutton, XtNsensitive, 0, NULL);
+        XtVaSetValues(stepbutton, XtNsensitive, 0, nullptr);
+        XtVaSetValues(nextbutton, XtNsensitive, 0, nullptr);
+        XtVaSetValues(resetbutton, XtNsensitive, 0, nullptr);
     }
     else
     {
-        XtVaSetValues(stepbutton, XtNsensitive, 1, NULL);
-        XtVaSetValues(nextbutton, XtNsensitive, 1, NULL);
-        XtVaSetValues(resetbutton, XtNsensitive, 1, NULL);
+        XtVaSetValues(stepbutton, XtNsensitive, 1, nullptr);
+        XtVaSetValues(nextbutton, XtNsensitive, 1, nullptr);
+        XtVaSetValues(resetbutton, XtNsensitive, 1, nullptr);
     }
 }
 
 void XtGui::menuHandlerCallback(Widget button, XtPointer client_data,
                  XEvent *event, Boolean *flag)
 {
-    if (client_data != NULL)
+    if (client_data != nullptr)
     {
         ((XtGui *)client_data)->menuHandler(button, event, flag);
     }
@@ -2283,14 +2283,14 @@ void XtGui::menuHandler(Widget pbutton, XEvent *event, Boolean * /*flag*/)
     }
 
     XtVaGetValues(pbutton, XtNx, &x, XtNy, &y,
-                  XtNwidth, &width, XtNheight, &height, NULL);
+                  XtNwidth, &width, XtNheight, &height, nullptr);
 
     switch(event->type)
     {
     case KeyPress:
     case KeyRelease:
         XLookupString((XKeyEvent *)event, buffer, sizeof(buffer) - 1, &keysym,
-                      NULL);
+                      nullptr);
         if (keysym == XK_Escape)
         {
             close_menu_mode();

@@ -28,22 +28,22 @@
 // closing the file
 
 BFilePtr::BFilePtr() :
-    pPath(NULL), pMode(NULL), fp(NULL), responsible(true)
+    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
 {
 }
 
 BFilePtr::BFilePtr(const char *path, const char *mode) :
-    pPath(NULL), pMode(NULL), fp(NULL), responsible(true)
+    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
 {
     struct stat  sbuf;
 
-    if (path != NULL)
+    if (path != nullptr)
     {
         pPath = new char[strlen(path) + 1];
         strcpy(pPath, path);
     }
 
-    if (mode != NULL)
+    if (mode != nullptr)
     {
         pMode = new char[strlen(mode) + 1];
         strcpy(pMode, mode);
@@ -58,17 +58,17 @@ BFilePtr::BFilePtr(const char *path, const char *mode) :
 }
 
 BFilePtr::BFilePtr(const BFilePtr &src) :
-    pPath(NULL), pMode(NULL), fp(NULL), responsible(true)
+    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
 {
     fp = src.fp;
 
-    if (src.pPath != NULL)
+    if (src.pPath != nullptr)
     {
         pPath = new char[strlen(src.pPath) + 1];
         strcpy(pPath, src.pPath);
     }
 
-    if (src.pMode != NULL)
+    if (src.pMode != nullptr)
     {
         pMode = new char[strlen(src.pMode) + 1];
         strcpy(pMode, src.pMode);
@@ -88,13 +88,13 @@ BFilePtr &BFilePtr::operator=(const BFilePtr &src)
 
         fp = src.fp;
 
-        if (src.pPath != NULL)
+        if (src.pPath != nullptr)
         {
             pPath = new char[strlen(src.pPath) + 1];
             strcpy(pPath, src.pPath);
         }
 
-        if (src.pMode != NULL)
+        if (src.pMode != nullptr)
         {
             pMode = new char[strlen(src.pMode) + 1];
             strcpy(pMode, src.pMode);
@@ -118,19 +118,19 @@ int BFilePtr::Close()
 {
     int result = 0;
 
-    if (responsible && fp != NULL)
+    if (responsible && fp != nullptr)
     {
         result = fclose(fp);
     }
 
     // make file pointer invalid independant
     // of the responsibility
-    fp = NULL;
+    fp = nullptr;
 
     delete [] pPath;
-    pPath = NULL;
+    pPath = nullptr;
     delete [] pMode;
-    pMode = NULL;
+    pMode = nullptr;
 
     return result;
 }

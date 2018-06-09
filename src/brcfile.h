@@ -42,7 +42,7 @@ public:
     void SetFileName(const char *aFileName);
     int SetValue(const char *key, const char *value);
     int SetValue(const char *key, int value);
-    int GetValue(const char *key, std::string &value, int *isInteger = NULL);
+    int GetValue(const char *key, std::string &value, int *isInteger = nullptr);
     int GetValue(const char *key, int *value);
     int Initialize();
 

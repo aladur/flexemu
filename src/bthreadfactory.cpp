@@ -29,7 +29,7 @@
     #include "bwin32threadimp.h"
 #endif
 
-template <> BThreadFactory *SThreadFactory::instance = NULL;
+template <> BThreadFactory *SThreadFactory::instance = nullptr;
 
 BThreadImp *BThreadFactory::CreateBThreadImp()
 {
@@ -39,7 +39,7 @@ BThreadImp *BThreadFactory::CreateBThreadImp()
 #ifdef UNIX
     return new BPosixThreadImp();
 #else
-    return NULL; // Sw: Which other platforms to support ???
+    return nullptr; // Sw: Which other platforms to support ???
 #endif
 #endif
 }

@@ -42,7 +42,7 @@ Mc146818::Mc146818(Mc6809 *x_cpu) :
 
     BFilePtr fp(getFileName(), "rb");
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
         if (fread(ram, sizeof(ram), 1, fp) != sizeof(ram))
         {
@@ -54,7 +54,7 @@ Mc146818::Mc146818(Mc6809 *x_cpu) :
     B = 0x06;
 
     // initialize clock registers with system time
-    time_now = time(NULL);
+    time_now = time(nullptr);
     lt = localtime(&time_now);
     second = convert(lt->tm_sec);
     minute = convert(lt->tm_min);
@@ -72,7 +72,7 @@ const char *Mc146818::getFileName()
 #ifdef UNIX
         char *home = getenv("HOME");
 
-        if (home != NULL)
+        if (home != nullptr)
         {
             strcpy(path, home);
             strcat(path, PATHSEPARATORSTRING);
@@ -90,7 +90,7 @@ Mc146818::~Mc146818()
 
     BFilePtr fp(getFileName(), "wb");
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
         fwrite(ram, sizeof(ram), 1, fp);
     }

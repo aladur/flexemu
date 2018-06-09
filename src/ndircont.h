@@ -131,8 +131,8 @@ private:
     void modify_random_file(char *path, struct stat *pstat, t_st *pbegin);
     bool IsFlexFilename(
         const char *filename,
-        char *name = NULL,
-        char *ext = NULL) const;
+        char *name = nullptr,
+        char *ext = nullptr) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
     void check_for_delete(SWord dir_index, s_dir_sector *buffer) const;
     void check_for_extend(SWord dir_index, s_dir_sector *buffer);

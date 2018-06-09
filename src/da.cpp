@@ -28,7 +28,7 @@
 #include "bident.h"
 #include "bmembuf.h"
 
-Disassembler::Disassembler() : da(NULL)
+Disassembler::Disassembler() : da(nullptr)
 {
 }
 

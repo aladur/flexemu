@@ -88,7 +88,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 
     if (!FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            NULL, lastError, 0, (LPTSTR) &lpMsgBuf, 0, NULL))
+            nullptr, lastError, 0, (LPTSTR) &lpMsgBuf, 0, nullptr))
     {
         errorCode = FERR_UNSPEC_WINDOWS_ERROR;
         errorString = sprinter::print(errString[errorCode], sp1);
@@ -140,6 +140,6 @@ const char *FlexException::errString[] =
     _("Container {0} is read-only"),
     _("An unspecified Windows error occured (#{1})"),
     _(""),
-    _("{0} is an invalid NULL pointer")
+    _("{0} is an invalid nullptr pointer")
 };
 

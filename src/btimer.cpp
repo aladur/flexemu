@@ -39,13 +39,13 @@
     #endif
 #endif
 
-BTimer *BTimer::instance = NULL;
+BTimer *BTimer::instance = nullptr;
 
 BTimer::BTimer() : dueTime(0), periodic(false),
-    timerProc(NULL), timerParam(NULL)
+    timerProc(nullptr), timerParam(nullptr)
 #ifdef _WIN32
-    , timerHandle(NULL), startTimerEvent(NULL),
-    timerElapsedEvent(NULL),
+    , timerHandle(nullptr), startTimerEvent(nullptr),
+    timerElapsedEvent(nullptr),
     timerThread(0), doFinish(false)
 #endif
 {
@@ -57,13 +57,13 @@ BTimer::~BTimer()
 {
     Stop();
     UnInit();
-    instance  = NULL;
-    timerProc = NULL;
+    instance  = nullptr;
+    timerProc = nullptr;
 }
 
 BTimer *BTimer::Instance()
 {
-    if (instance == NULL)
+    if (instance == nullptr)
     {
         instance = new BTimer;
         static BDeleter<BTimer> deleter(instance);
@@ -79,7 +79,7 @@ bool BTimer::Start(bool x_periodic, QWord x_dueTime)
     return StartTimer();
 }
 
-void BTimer::SetTimerProc(BTimerProc x_timerProc, void *x_p /* = NULL*/)
+void BTimer::SetTimerProc(BTimerProc x_timerProc, void *x_p /* = nullptr*/)
 {
     timerParam = x_p;
     timerProc  = x_timerProc;
@@ -107,11 +107,11 @@ bool BTimer::Stop()
     sigemptyset(&sigmask);
 #ifdef SIGALRM
     sigaddset(&sigmask, SIGALRM);
-    sigprocmask(SIG_BLOCK, &sigmask, NULL);
+    sigprocmask(SIG_BLOCK, &sigmask, nullptr);
 
     periodic   = false;
-    timerProc  = NULL;
-    timerParam = NULL;
+    timerProc  = nullptr;
+    timerParam = nullptr;
 
     timerValue.it_value.tv_usec    = 0;
     timerValue.it_value.tv_sec     = 0;
@@ -127,13 +127,13 @@ bool BTimer::Stop()
     act.sa_flags |= SA_INTERRUPT;
 #endif
 
-    if (sigaction(SIGALRM, &act, NULL) == -1)
+    if (sigaction(SIGALRM, &act, nullptr) == -1)
     {
         fprintf(stderr, "error %d in sigaction\n", errno);
     }
 
 #endif
-    ret = (setitimer(ITIMER_REAL, &timerValue, NULL) == 0);
+    ret = (setitimer(ITIMER_REAL, &timerValue, nullptr) == 0);
     return ret;
 }
 
@@ -146,7 +146,7 @@ void BTimer::Suspend()
     sigaddset(&sigmask, SIGALRM);
     sigprocmask(SIG_BLOCK, &sigmask, &oldmask);
     sigwait(&sigmask, &sig);
-    sigprocmask(SIG_SETMASK, &oldmask, NULL);
+    sigprocmask(SIG_SETMASK, &oldmask, nullptr);
     // when catching signal with sigwait
     // the signal handler is not executed
     // automatically so call it here
@@ -163,7 +163,7 @@ bool BTimer::StartTimer()
     sigemptyset(&sigmask);
 #ifdef SIGALRM
     sigaddset(&sigmask, SIGALRM);
-    sigprocmask(SIG_UNBLOCK, &sigmask, NULL);
+    sigprocmask(SIG_UNBLOCK, &sigmask, nullptr);
 
     timerValue.it_value.tv_usec    = dueTime % 1000000;
     timerValue.it_value.tv_sec     = dueTime / 1000000;
@@ -188,12 +188,12 @@ bool BTimer::StartTimer()
     act.sa_flags |= SA_INTERRUPT;
 #endif
 
-    if (sigaction(SIGALRM, &act, NULL) == -1)
+    if (sigaction(SIGALRM, &act, nullptr) == -1)
     {
         fprintf(stderr, "error %d in sigaction\n", errno);
     }
 
-    ret = setitimer(ITIMER_REAL, &timerValue, NULL);
+    ret = setitimer(ITIMER_REAL, &timerValue, nullptr);
 
     if (ret == -1)
     {
@@ -208,7 +208,7 @@ bool BTimer::StartTimer()
 
 RETSIGTYPE BTimer::UnixTimerCallback(int)
 {
-    if (instance != NULL)
+    if (instance != nullptr)
     {
         instance->TimerElapsed();
     }
@@ -216,7 +216,7 @@ RETSIGTYPE BTimer::UnixTimerCallback(int)
 
 void BTimer::TimerElapsed()
 {
-    if (timerProc != NULL)
+    if (timerProc != nullptr)
     {
         (*timerProc)(timerParam);
     }
@@ -232,35 +232,35 @@ void BTimer::Init()
 {
     DWORD threadId; // necessary for Win95/98/ME
 
-    timerHandle = CreateWaitableTimer(NULL, FALSE, NULL);
+    timerHandle = CreateWaitableTimer(nullptr, FALSE, nullptr);
 
-    if (timerHandle == NULL)
+    if (timerHandle == nullptr)
         DEBUGPRINT1("BTimer: CreateWaitableTimer failed (%lu)\n",
                     GetLastError());
 
-    startTimerEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    startTimerEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
-    if (startTimerEvent == NULL)
+    if (startTimerEvent == nullptr)
         DEBUGPRINT1("BTimer: CreateEvent failed (%lu)\n",
                     GetLastError());
 
-    timerElapsedEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    timerElapsedEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
-    if (startTimerEvent == NULL)
+    if (startTimerEvent == nullptr)
         DEBUGPRINT1("BTimer: CreateEvent failed (%lu)\n",
                     GetLastError());
 
-    timerThread = CreateThread(NULL, 0, (tThreadProc)BTimer::StartTimerImp,
+    timerThread = CreateThread(nullptr, 0, (tThreadProc)BTimer::StartTimerImp,
                                this, 0, &threadId);
 
-    if (timerThread == NULL)
+    if (timerThread == nullptr)
         DEBUGPRINT1("BTimer: CreateThread failed (%lu)\n",
                     GetLastError());
 }
 
 void BTimer::UnInit()
 {
-    if (timerHandle != NULL && timerThread != NULL)
+    if (timerHandle != nullptr && timerThread != nullptr)
     {
         DWORD exitCode;
 
@@ -272,14 +272,14 @@ void BTimer::UnInit()
         CloseHandle(startTimerEvent);
         CloseHandle(timerElapsedEvent);
         CloseHandle(timerThread);
-        timerHandle = NULL;
-        timerThread = NULL;
+        timerHandle = nullptr;
+        timerThread = nullptr;
     }
 }
 
 bool BTimer::Stop()
 {
-    if (instance == NULL)
+    if (instance == nullptr)
     {
         return true;
     }
@@ -287,10 +287,10 @@ bool BTimer::Stop()
     BOOL ret = TRUE;
 
     periodic   = false;
-    timerProc  = NULL;
-    timerParam = NULL;
+    timerProc  = nullptr;
+    timerParam = nullptr;
 
-    if (timerHandle != NULL)
+    if (timerHandle != nullptr)
     {
         ret = CancelWaitableTimer(timerHandle);
 
@@ -306,7 +306,7 @@ void BTimer::Suspend()
 {
     DWORD ret;
 
-    if (periodic && timerHandle != NULL)
+    if (periodic && timerHandle != nullptr)
     {
         ret = WaitForSingleObject(timerElapsedEvent, INFINITE);
 
@@ -318,7 +318,7 @@ void BTimer::Suspend()
 
 bool BTimer::StartTimer()
 {
-    if (timerHandle != NULL && timerThread != NULL)
+    if (timerHandle != nullptr && timerThread != nullptr)
     {
         LARGE_INTEGER aDueTime;
         LONG period = 0;
@@ -333,7 +333,7 @@ bool BTimer::StartTimer()
         SetEvent(startTimerEvent);
 
         if (SetWaitableTimer(timerHandle,
-                             &aDueTime, period, NULL, NULL, false) == 0)
+                             &aDueTime, period, nullptr, nullptr, false) == 0)
         {
             DEBUGPRINT1("BTimer: SetWaitableTimer failed (%lu)\n",
                         GetLastError());
@@ -348,7 +348,7 @@ bool BTimer::StartTimer()
 
 unsigned long BTimer::StartTimerImp(BTimer *p)
 {
-    if (p == NULL || p->timerHandle == NULL)
+    if (p == nullptr || p->timerHandle == nullptr)
     {
         return 1;
     }
@@ -376,7 +376,7 @@ unsigned long BTimer::StartTimerImp(BTimer *p)
                             GetLastError());
             }
 
-            if (ret == WAIT_OBJECT_0 && p->timerProc != NULL)
+            if (ret == WAIT_OBJECT_0 && p->timerProc != nullptr)
             {
                 (*p->timerProc)(p->timerParam);
             }

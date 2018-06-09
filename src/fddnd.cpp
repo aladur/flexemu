@@ -59,12 +59,12 @@ void FlexDnDFiles::ReadData(const Byte *buf)
     for (it = fileList.begin(); it != fileList.end(); ++it)
     {
         delete *it;
-        *it = NULL;
+        *it = nullptr;
     }
 
     fileList.clear();
 
-    if (buf == NULL)
+    if (buf == nullptr)
     {
         return;
     }
@@ -92,7 +92,7 @@ FlexFileBuffer &FlexDnDFiles::GetBuffer(unsigned int i)
 {
     if (i >= GetFileCount())
     {
-        return *(FlexFileBuffer *)(NULL);
+        return *(FlexFileBuffer *)(nullptr);
     }
 
     tFlexFileBufferArray::iterator it;
@@ -111,7 +111,7 @@ FlexDnDFiles::~FlexDnDFiles()
     for (it = fileList.begin(); it != fileList.end(); ++it)
     {
         delete *it;
-        *it = NULL;
+        *it = nullptr;
     }
 }
 
@@ -137,7 +137,7 @@ void FlexDnDFiles::GetDataHere(Byte *buf) const
     BDate date;
     Byte *p = buf;
 
-    if (buf == NULL)
+    if (buf == nullptr)
     {
         return;
     }
@@ -169,7 +169,7 @@ void FlexDnDFiles::GetDataHere(Byte *buf) const
 // in the destructor of FlexDnDFiles
 void FlexDnDFiles::Add(FlexFileBuffer *pFileBuffer)
 {
-    if (pFileBuffer != NULL)
+    if (pFileBuffer != nullptr)
     {
         fileList.push_back(pFileBuffer);
     }
@@ -216,7 +216,7 @@ wxDragResult FlexFileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
 
 bool FlexFileDropTarget::OnDropFiles(wxCoord, wxCoord, FlexDnDFiles &files)
 {
-    if (m_pOwner != NULL)
+    if (m_pOwner != nullptr)
     {
         return m_pOwner->PasteFrom(files);
     }
@@ -254,7 +254,7 @@ bool FileDropTarget::OnDropFiles(wxCoord, wxCoord,
         }
     }
 
-    if (m_pOwner != NULL)
+    if (m_pOwner != nullptr)
     {
         return m_pOwner->PasteFrom(files);
     }

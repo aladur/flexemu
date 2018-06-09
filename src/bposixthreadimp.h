@@ -42,7 +42,7 @@ public:
     bool Start(BThread *pThread);
     void Join();
     bool IsFinished();
-    void Exit(void *retval = NULL);
+    void Exit(void *retval = nullptr);
 private:
     static void *RunImp(BPosixThreadImp *p);
     BThread *pThreadObj;

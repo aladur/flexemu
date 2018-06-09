@@ -26,7 +26,7 @@
 
 
 BAddressRanges::BAddressRanges() : startAddress(0),
-    root(NULL), current(NULL)
+    root(nullptr), current(nullptr)
 {
 }
 
@@ -38,8 +38,8 @@ BAddressRanges::~BAddressRanges()
 void BAddressRanges::Clear()
 {
     delete root;
-    root = NULL;
-    current = NULL;
+    root = nullptr;
+    current = nullptr;
     startAddress = 0;
 }
 
@@ -154,7 +154,7 @@ const BInterval *BAddressRanges::GetFirst() const
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -166,7 +166,7 @@ const BInterval *BAddressRanges::GetNext() const
     }
     else
     {
-        return NULL;
+        return nullptr;
     }
 }
 

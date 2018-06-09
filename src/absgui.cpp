@@ -75,7 +75,7 @@ void AbstractGui::initialize(struct sGuiOptions *pOptions)
     program_name = "";
     timebase = 20; // timer event every x milliseconds
 
-    if (pOptions != NULL)
+    if (pOptions != nullptr)
     {
         program_name    = pOptions->argv[0];
         switch_sp   = pOptions->switch_sp;
@@ -156,7 +156,7 @@ void AbstractGui::CopyToZPixmap(int,
             isEndOfRasterLine = true;
         }
 
-        if (src != NULL)
+        if (src != nullptr)
         {
 
             pixels[0] = videoRam[0];
@@ -182,7 +182,7 @@ void AbstractGui::CopyToZPixmap(int,
         {
             unsigned int penIndex = 0; /* calculated pen index */
 
-            if (src != NULL)
+            if (src != nullptr)
             {
                 if (pixels[0] & pixelBitMask)
                 {
@@ -951,7 +951,7 @@ AbstractGui::AbstractGui(
     e2video(x_video), pOptions(x_pOptions), exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {
-    if (e2video != NULL)
+    if (e2video != nullptr)
     {
         e2video->resetIo();
     }

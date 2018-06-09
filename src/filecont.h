@@ -50,7 +50,7 @@ public:
     virtual void  ReadToBuffer(const char *fileName,
                                FlexFileBuffer &buffer) = 0;
     virtual bool  WriteFromBuffer(const FlexFileBuffer &buffer,
-                                  const char *fileName = NULL) = 0;
+                                  const char *fileName = nullptr) = 0;
     virtual bool  FileCopy(const char *sourceName, const char *destName,
                            FileContainerIf &destination) = 0;
     virtual ~FileContainerIf() { };

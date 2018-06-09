@@ -35,7 +35,7 @@ E2video::E2video(Memory *x_mem)
 
 E2video::~E2video()
 {
-    memory = NULL;
+    memory = nullptr;
 }
 
 

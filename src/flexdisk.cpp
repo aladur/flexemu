@@ -57,7 +57,7 @@ IMPLEMENT_APP(FLEXplorer)
 --------------------------------------------------------*/
 bool FLEXplorer::OnInit()
 {
-    FlexParentFrame *frame = NULL;
+    FlexParentFrame *frame = nullptr;
 
     wxLocale::AddCatalogLookupPathPrefix(wxT("."));
     wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
@@ -74,7 +74,7 @@ bool FLEXplorer::OnInit()
     int width = 820;
 
     // Create the main frame window
-    frame = new FlexParentFrame((wxFrame *) NULL, -1, GetAppName(),
+    frame = new FlexParentFrame((wxFrame *) nullptr, -1, GetAppName(),
                                 wxPoint(-1, -1), wxSize(width, 700),
                                 wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
     frame->Show(TRUE);

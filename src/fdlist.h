@@ -65,7 +65,7 @@ public:
     {
         if (m_statusbarObserver == anObserver)
         {
-            m_statusbarObserver = NULL;
+            m_statusbarObserver = nullptr;
         }
     };
     inline int GetTotalSize() const

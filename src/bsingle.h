@@ -42,7 +42,7 @@ public:
 template <class T>
 T &BSingleton<T>::Instance()
 {
-    if (instance == NULL)
+    if (instance == nullptr)
     {
         instance = new T;
         static BDeleter<T> deleter(instance);
@@ -55,7 +55,7 @@ template <class T>
 BSingleton<T>::~BSingleton()
 {
     delete instance;
-    instance = NULL;
+    instance = nullptr;
 }
 #endif
 

@@ -38,7 +38,7 @@ public:
 };
 
 template <class T>
-BDeleter<T>::BDeleter(T *anObject) : object(NULL)
+BDeleter<T>::BDeleter(T *anObject) : object(nullptr)
 {
     object = anObject;
 }
@@ -47,7 +47,7 @@ template <class T>
 BDeleter<T>::~BDeleter()
 {
     delete object;
-    object = NULL;
+    object = nullptr;
 }
 #endif
 

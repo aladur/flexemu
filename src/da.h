@@ -24,7 +24,7 @@
 #define __da_h__
 
 #include "misc1.h"
-#include <string.h>  // Needed for NULL
+#include <string.h>  // Needed for nullptr
 #include "absdisas.h"
 
 class DisassemblerConfig;

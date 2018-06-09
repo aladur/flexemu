@@ -37,7 +37,7 @@ static Byte fread_byte(FILE *fp)
     str[1] = fgetc(fp);
     str[2] = '\0';
 
-    value = strtol(str, NULL, 16);
+    value = strtol(str, nullptr, 16);
     return (Byte)(value & 0xff);
 }
 
@@ -185,7 +185,7 @@ int load_hexfile(const char *filename, MemoryTarget &memtgt)
     Word ch;
     BFilePtr fp(filename, "rb");
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return -1; // File not found
     }

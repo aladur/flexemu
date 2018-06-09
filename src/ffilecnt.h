@@ -41,7 +41,7 @@ const int MAX_OPEN_FILES = 1;
 
 
 #define CHECK_NO_CONTAINER_OPEN                 \
-    if (fp == NULL) {                   \
+    if (fp == nullptr) {                   \
         throw FlexException(FERR_NO_CONTAINER_OPEN);    \
     }
 
@@ -97,7 +97,7 @@ public:
     };
     FileContainerIf *end()   const
     {
-        return NULL;
+        return nullptr;
     };
     bool FindFile(const char *fileName, FlexDirEntry &entry);
     bool DeleteFile(const char *fileName);
@@ -105,7 +105,7 @@ public:
     bool SetAttributes(const char *fileName, int setMask, int clearMask);
     void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
-                         const char *fileName = NULL);
+                         const char *fileName = nullptr);
     bool FileCopy(const char *sourceName, const char *destName,
                   FileContainerIf &destination);
 

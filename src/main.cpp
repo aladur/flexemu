@@ -62,7 +62,7 @@ int std_new_handler(size_t n)
 {
     int result;
 
-    result = MessageBox(NULL, gMemoryAllocationErrorString,
+    result = MessageBox(nullptr, gMemoryAllocationErrorString,
                         PROGRAMNAME " error", MB_RETRYCANCEL | MB_ICONWARNING);
 
     if (result == IDRETRY)
@@ -158,7 +158,7 @@ bool startup(
                  << "\" not found or has unknown file format (" << error <<")"
                  << std::endl;
 #ifdef _WIN32
-            MessageBox(NULL, pmsg.str().c_str(), PROGRAMNAME " error",
+            MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
             MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
@@ -281,12 +281,12 @@ int WINAPI WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    struct           sOptions    *pOptions = NULL;
-    struct           sGuiOptions *pGuiOptions = NULL;
-    Mc6809          *cpu = NULL;
-    Scheduler       *schedy = NULL;
-    Inout           *io = NULL;
-    Da6809          *disassembler = NULL;
+    struct           sOptions    *pOptions = nullptr;
+    struct           sGuiOptions *pGuiOptions = nullptr;
+    Mc6809          *cpu = nullptr;
+    Scheduler       *schedy = nullptr;
+    Inout           *io = nullptr;
+    Da6809          *disassembler = nullptr;
     int             argc;
     char            *argv[50];
     FlexOptionManager optionMan;
@@ -319,7 +319,7 @@ int WINAPI WinMain(
             // start CPU thread
             if (!schedy->Start())
             {
-                MessageBox(NULL, "Unable to start CPU thread",
+                MessageBox(nullptr, "Unable to start CPU thread",
                            PROGRAMNAME " error", MB_OK | MB_ICONERROR);
                 exit_code = EXIT_FAILURE;
             }
@@ -338,7 +338,7 @@ int WINAPI WinMain(
     }
     catch (std::bad_alloc UNUSED(&e))
     {
-        MessageBox(NULL, gMemoryAllocationErrorString,
+        MessageBox(nullptr, gMemoryAllocationErrorString,
                    PROGRAMNAME " error", MB_OK | MB_ICONERROR);
         exit_code = EXIT_FAILURE;
     }

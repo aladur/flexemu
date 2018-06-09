@@ -276,10 +276,10 @@ public:
 public:
     virtual void    redraw_cpuview_impl(const Mc6809CpuStatus &sstat);
     virtual void    popup_message(const char *pmessage,
-                                  const char *ptitle = NULL,
+                                  const char *ptitle = nullptr,
                                   int width = 270, int height = 120);
     virtual void    popup_confirmation(const char *pmessage,
-                                       const char *ptitle = NULL,
+                                       const char *ptitle = nullptr,
                                        int width = 270, int height = 120);
     virtual int     gui_type();
     void            timerCallback(XtIntervalId pId);

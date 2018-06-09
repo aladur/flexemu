@@ -25,12 +25,12 @@
 
 Mc6809::Mc6809(Memory *x_memory) : events(0),
 #ifdef FASTFLEX
-    pMem(NULL),
+    pMem(nullptr),
 #else
     a(acc.byte.a), b(acc.byte.b), d(acc.d), dp(dpreg.byte.h),
 #endif
-    disassembler(NULL), use_undocumented(false),
-    log_fp(NULL), do_logging(false), memory(x_memory)
+    disassembler(nullptr), use_undocumented(false),
+    log_fp(nullptr), do_logging(false), memory(x_memory)
 {
 #ifndef FASTFLEX
     dpreg.byte.l = 0;
@@ -44,21 +44,21 @@ Mc6809::~Mc6809()
 {
     delete disassembler;
     delete memory;
-    disassembler = NULL;
+    disassembler = nullptr;
 
-    if (log_fp != NULL)
+    if (log_fp != nullptr)
     {
         fclose(log_fp);
     }
 
-    log_fp = NULL;
+    log_fp = nullptr;
 }
 
 void Mc6809::set_disassembler(Da6809 *x_disassembler)
 {
     disassembler = x_disassembler;
 
-    if (disassembler != NULL)
+    if (disassembler != nullptr)
     {
         disassembler->set_use_undocumented(use_undocumented);
     }
@@ -68,7 +68,7 @@ void Mc6809::set_use_undocumented(bool b)
 {
     use_undocumented = b;
 
-    if (disassembler != NULL)
+    if (disassembler != nullptr)
     {
         disassembler->set_use_undocumented(use_undocumented);
     }
@@ -1409,16 +1409,16 @@ void Mc6809::reset_bp(int which)
     }
 }
 
-// if lfs is NULL the current log file is closed
+// if lfs is nullptr the current log file is closed
 bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
 {
-    if (log_fp != NULL)
+    if (log_fp != nullptr)
     {
         fclose(log_fp);
-        log_fp = NULL;
+        log_fp = nullptr;
     }
 
-    if (x_lfs == NULL || x_lfs->logFileName[0] == '\0')
+    if (x_lfs == nullptr || x_lfs->logFileName[0] == '\0')
     {
         // Disable logging
         lfs.logFileName[0] = '\0';
@@ -1426,7 +1426,7 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
         return true;
     }
 
-    if ((log_fp = fopen(x_lfs->logFileName, "w")) != NULL)
+    if ((log_fp = fopen(x_lfs->logFileName, "w")) != nullptr)
     {
         // Enable logging
         lfs.minAddr   = x_lfs->minAddr;

@@ -33,7 +33,7 @@ BRegistry BRegistry::currentUser    = HKEY_CURRENT_USER;
 BRegistry BRegistry::localMachine   = HKEY_LOCAL_MACHINE;
 BRegistry BRegistry::users          = HKEY_USERS;
 
-BRegistry::BRegistry() : lastError(0), hKey(NULL)
+BRegistry::BRegistry() : lastError(0), hKey(nullptr)
 {
 }
 
@@ -47,21 +47,21 @@ BRegistry::BRegistry(const BRegistry &regKey, const std::string &subKey)
 
 #ifdef UNICODE
     lastError = RegCreateKeyEx(regKey, ConvertToUtf16String(subKey).c_str(), 0,
-        L"", 0, KEY_ALL_ACCESS, NULL, &hKey, &flags);
+        L"", 0, KEY_ALL_ACCESS, nullptr, &hKey, &flags);
 #else
-    lastError = RegCreateKeyEx(regKey.hKey, subKey.c_str(), 0, "", 0, KEY_ALL_ACCESS, NULL,
+    lastError = RegCreateKeyEx(regKey.hKey, subKey.c_str(), 0, "", 0, KEY_ALL_ACCESS, nullptr,
         &hKey, &flags);
 #endif
 
     if (lastError != ERROR_SUCCESS)
     {
-        hKey = NULL;
+        hKey = nullptr;
     }
 }
 
 BRegistry::~BRegistry()
 {
-    if (hKey != NULL)
+    if (hKey != nullptr)
     {
         lastError = RegCloseKey(hKey);
     }
@@ -70,7 +70,7 @@ BRegistry::~BRegistry()
 LONG BRegistry::Delete()
 {
     lastError = RegCloseKey(hKey);
-    hKey = NULL;
+    hKey = nullptr;
 
     return lastError;
 }
@@ -124,10 +124,10 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
 #ifdef UNICODE
     wchar_t *str;
 
-    if ((lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type, NULL,
+    if ((lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type, nullptr,
                                      &aSize)) == ERROR_SUCCESS)
     {
-        if ((str = new wchar_t [aSize / sizeof(wchar_t)]) != NULL)
+        if ((str = new wchar_t [aSize / sizeof(wchar_t)]) != nullptr)
         {
             lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type, (BYTE *)str,
                                         &aSize);
@@ -143,10 +143,10 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
 #else
     char *str;
 
-    if ((lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, NULL,
+    if ((lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, nullptr,
         &aSize)) == ERROR_SUCCESS)
     {
-        if ((str = new char[aSize]) != NULL)
+        if ((str = new char[aSize]) != nullptr)
         {
             lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, (BYTE *)str,
                 &aSize);

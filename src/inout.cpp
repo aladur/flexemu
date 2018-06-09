@@ -43,7 +43,7 @@
 
 
 // pointer to this instance for signal handling
-Inout *Inout::instance = NULL;
+Inout *Inout::instance = nullptr;
 
 #ifdef HAVE_TERMIOS_H
     struct termios Inout::save_termios;
@@ -54,7 +54,7 @@ Inout *Inout::instance = NULL;
 
 void Inout::s_exec_signal(int sig_no)
 {
-    if (Inout::instance != NULL)
+    if (Inout::instance != nullptr)
     {
         Inout::instance->exec_signal(sig_no);
     }
@@ -62,9 +62,9 @@ void Inout::s_exec_signal(int sig_no)
 
 
 Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
-    cpu(x_cpu), options(x_options), gui(NULL),
-    fdc(NULL), memory(NULL), rtc(NULL), pia1(NULL),
-    video(NULL), schedy(NULL), pmutex(NULL), jmutex(NULL)
+    cpu(x_cpu), options(x_options), gui(nullptr),
+    fdc(nullptr), memory(nullptr), rtc(nullptr), pia1(nullptr),
+    video(nullptr), schedy(nullptr), pmutex(nullptr), jmutex(nullptr)
 {
     reset();
     instance = this;
@@ -111,7 +111,7 @@ void Inout::reset_joystick()
 
 void Inout::get_drive_status(tDiskStatus status[4])
 {
-    if (fdc != NULL)
+    if (fdc != nullptr)
     {
         fdc->get_drive_status(status);
     }
@@ -119,7 +119,7 @@ void Inout::get_drive_status(tDiskStatus status[4])
 
 std::string Inout::get_drive_info(int floppyIndex)
 {
-    if (fdc != NULL)
+    if (fdc != nullptr)
     {
         return fdc->drive_info(floppyIndex);
     }
@@ -134,17 +134,17 @@ bool Inout::get_joystick(int *pDeltaX, int *pDeltaY, unsigned int *pButtonMask)
     jmutex->lock();
     result = newValues;
 
-    if (pDeltaX     != NULL)
+    if (pDeltaX     != nullptr)
     {
         *pDeltaX     = deltaX;
     }
 
-    if (pDeltaY     != NULL)
+    if (pDeltaY     != nullptr)
     {
         *pDeltaY     = deltaY;
     }
 
-    if (pButtonMask != NULL)
+    if (pButtonMask != nullptr)
     {
         *pButtonMask = buttonMask;
     }
@@ -202,7 +202,7 @@ void Inout::initTerminalIO(Word reset_key)
         {
             fprintf(stderr, "unable to initialize terminal\n");
 
-            if (schedy != NULL)
+            if (schedy != nullptr)
             {
                 schedy->set_new_state(S_EXIT);
             }
@@ -295,7 +295,7 @@ void Inout::initTerminalIO(Word reset_key)
             tcsetattr(fileno(stdin), TCSAFLUSH, &save_termios);
             fprintf(stderr, "unable to initialize terminal\n");
 
-            if (schedy != NULL)
+            if (schedy != nullptr)
             {
                 schedy->set_new_state(S_EXIT);
             }
@@ -353,10 +353,10 @@ AbstractGui *Inout::create_gui(int type)
 #ifdef UNIT_TEST
     (void)type;
 #else
-    if (video != NULL)
+    if (video != nullptr)
     {
         // Only allow to open Gui once.
-        if (gui == NULL)
+        if (gui == nullptr)
         {
             switch (type)
             {
@@ -385,7 +385,7 @@ AbstractGui *Inout::create_gui(int type)
 // which need it
 void Inout::update_1_second()
 {
-    if (rtc != NULL)
+    if (rtc != nullptr)
     {
         rtc->update_1_second();
     }
@@ -398,7 +398,7 @@ void Inout::exec_signal(int sig_no)
     switch (sig_no)
     {
         case SIGINT:
-            if (cpu != NULL)
+            if (cpu != nullptr)
             {
                 cpu->set_nmi();
             }
@@ -407,7 +407,7 @@ void Inout::exec_signal(int sig_no)
 #if defined(SIGUSR1)
 
         case SIGUSR1:
-            if (cpu != NULL)
+            if (cpu != nullptr)
             {
                 cpu->set_irq();
             }
@@ -417,7 +417,7 @@ void Inout::exec_signal(int sig_no)
 #if defined(SIGUSR2)
 
         case SIGUSR2:
-            if (cpu != NULL)
+            if (cpu != nullptr)
             {
                 cpu->set_firq();
             }
@@ -427,7 +427,7 @@ void Inout::exec_signal(int sig_no)
 #if defined(SIGQUIT)
 
         case SIGQUIT:
-            if (schedy != NULL)
+            if (schedy != nullptr)
             {
                 schedy->set_new_state(S_EXIT);
             }
@@ -437,7 +437,7 @@ void Inout::exec_signal(int sig_no)
 #if defined(SIGTSTP)
 
         case SIGTSTP:
-            if (schedy != NULL)
+            if (schedy != nullptr)
             {
                 schedy->set_new_state(S_RESET_RUN);
             }
@@ -456,7 +456,7 @@ void Inout::put_ch(Byte key)
         key_buffer[in++] = key;
         is_parallel_ch_in_queue = true;
 
-        if (pia1 != NULL)
+        if (pia1 != nullptr)
         {
             schedy->sync_exec(new CActiveTransition(*pia1, CA1));
         }
@@ -505,7 +505,7 @@ Byte Inout::read_ch()
 
             // if there are still characters in the
             // buffer set CA1 flag again
-            if (pia1 != NULL)
+            if (pia1 != nullptr)
             {
                 schedy->sync_exec(new CActiveTransition(*pia1, CA1));
             }
@@ -673,14 +673,14 @@ bool Inout::is_terminal_supported()
 
 bool Inout::is_gui_present()
 {
-    return gui != NULL;
+    return gui != nullptr;
 }
 
 Word Inout::output_to_terminal()
 {
 #ifdef HAVE_TERMIOS_H
 
-    if (gui != NULL)
+    if (gui != nullptr)
     {
         gui->output_to_terminal();
     }
@@ -693,7 +693,7 @@ Word Inout::output_to_terminal()
 
 Word Inout::output_to_graphic()
 {
-    if (gui != NULL)
+    if (gui != nullptr)
     {
         gui->output_to_graphic();
         return 1;

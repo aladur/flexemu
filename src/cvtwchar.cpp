@@ -30,7 +30,7 @@ std::wstring ConvertToUtf16String(const std::string &value)
 {
     std::wstring result;
 
-    int size = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, NULL, 0);
+    int size = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, nullptr, 0);
     if (size > 0)
     {
         LPWSTR wideString = new wchar_t[size];
@@ -54,14 +54,14 @@ std::string ConvertToUtf8String(const std::wstring &value)
 {
     std::string result;
 
-    int size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, NULL, 0,
-        NULL, NULL);
+    int size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, nullptr, 0,
+        nullptr, nullptr);
     if (size > 0)
     {
         LPSTR multiByteString = new char[size];
 
         size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1,
-            multiByteString, size, NULL, NULL);
+            multiByteString, size, nullptr, nullptr);
         if (size > 0)
         {
             result = multiByteString;

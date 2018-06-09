@@ -20,18 +20,18 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <string.h>  // needed for NULL
+#include <string.h>  // needed for nullptr
 #include "blist.h"
 #include "bintervl.h"
 
 
-template <class Item>BList<Item>::BList(const BList &i) : next(NULL),
-    previous(NULL), item(i.item)
+template <class Item>BList<Item>::BList(const BList &i) : next(nullptr),
+    previous(nullptr), item(i.item)
 {
 }
 
-template <class Item> BList<Item>::BList(const Item &i) : next(NULL),
-    previous(NULL), item(i)
+template <class Item> BList<Item>::BList(const Item &i) : next(nullptr),
+    previous(nullptr), item(i)
 {
 }
 
@@ -57,7 +57,7 @@ template <class Item>BList<Item>const *BList<Item>::Find(const Item &i) const
     }
     while (l);
 
-    return NULL;
+    return nullptr;
 }
 
 template <class Item>BList<Item>const *BList<Item>::ReverseFind(
@@ -73,17 +73,17 @@ template <class Item>BList<Item>const *BList<Item>::ReverseFind(
         return previous->Find(i);
     }
 
-    return NULL;
+    return nullptr;
 }
 
 template <class Item>bool BList<Item>::Contains(const Item &i) const
 {
-    return Find(i) != NULL;
+    return Find(i) != nullptr;
 }
 
 template <class Item>bool BList<Item>::ReverseContains(const Item &i) const
 {
-    return ReverseFind(i) != NULL;
+    return ReverseFind(i) != nullptr;
 }
 
 template <class Item>void BList<Item>::Unlink()
@@ -98,8 +98,8 @@ template <class Item>void BList<Item>::Unlink()
         next->previous = previous;
     }
 
-    previous = NULL;
-    next = NULL;
+    previous = nullptr;
+    next = nullptr;
 }
 
 // insert a new linked item before *this

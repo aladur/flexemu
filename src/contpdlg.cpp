@@ -55,8 +55,8 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
         int sectors /* = 40 */,
         const wxString &path /* = wxT("") */) :
     wxDialog(parent, 112, _("Create new File Container"), pos),
-    m_format(0), c_tracks(NULL), c_sectors(NULL),
-    c_path(NULL), c_format(NULL)
+    m_format(0), c_tracks(nullptr), c_sectors(nullptr),
+    c_path(nullptr), c_format(nullptr)
 {
     m_tracks.Printf(wxT("%d"), tracks);
     m_sectors.Printf(wxT("%d"), sectors);

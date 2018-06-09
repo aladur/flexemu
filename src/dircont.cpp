@@ -60,13 +60,13 @@
 /****************************************/
 
 DirectoryContainer::DirectoryContainer(const char *aPath) :
-    path(NULL),
+    path(nullptr),
     attributes(0),
     isOpened(0)
 {
     struct stat sbuf;
 
-    path = NULL;
+    path = nullptr;
 
     if (!stat(aPath, &sbuf) && !S_ISDIR(sbuf.st_mode))
     {
@@ -154,7 +154,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
 
 std::string DirectoryContainer::GetPath() const
 {
-    if (path != NULL)
+    if (path != nullptr)
     {
         return *path;
     }
@@ -171,7 +171,7 @@ int DirectoryContainer::Close()
 {
     isOpened = 0;
     delete path;
-    path = NULL;
+    path = nullptr;
     return 1;
 }
 
@@ -189,9 +189,9 @@ bool DirectoryContainer::IsRandomFile(
 
     BFilePtr fp(str, "r");
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
-        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != NULL)
+        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
         {
             if (strchr(str, '\n'))
             {
@@ -214,7 +214,7 @@ bool    DirectoryContainer::OpenDirectory(const char *pattern)
     CHECK_NO_DCONTAINER_OPEN;
     CHECK_DDIRECTORY_ALREADY_OPENED;
     filePattern = pattern;
-    dirHdl = NULL;
+    dirHdl = nullptr;
     return true;
 }
 
@@ -364,7 +364,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetTrackSector(0, 0);
 
-    if ((p = strrchr(path->c_str(), PATHSEPARATOR)) != NULL)
+    if ((p = strrchr(path->c_str(), PATHSEPARATOR)) != nullptr)
     {
         info.SetName(p + 1);
     }
@@ -514,12 +514,12 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
 }
 
 bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
-        const char *fileName /* = NULL */)
+        const char *fileName /* = nullptr */)
 {
     std::string lowerFileName, filePath;
     struct stat sbuf;
 
-    if (fileName == NULL)
+    if (fileName == nullptr)
     {
         lowerFileName = buffer.GetFilename();
     }
@@ -711,8 +711,8 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 // check if pfilename contains a valid FLEX filename
 // on Unix only lowercase filenames are allowed
 bool DirectoryContainer::IsFlexFilename(const char *pfilename,
-                                        char *pname /* = NULL */,
-                                        char *pext  /* = NULL */) const
+                                        char *pname /* = nullptr */,
+                                        char *pext  /* = nullptr */) const
 {
     int     result; // result from sscanf should be int
     char    dot;

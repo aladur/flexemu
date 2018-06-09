@@ -32,10 +32,10 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(FlexFileList)
 
-template <> FlexFileClipboard *SFlexFileClipboard::instance = NULL;
+template <> FlexFileClipboard *SFlexFileClipboard::instance = nullptr;
 
 FlexFileClipboard::FlexFileClipboard()
-    : m_container(NULL)
+    : m_container(nullptr)
 {
 }
 
@@ -47,7 +47,7 @@ FlexFileClipboard::~FlexFileClipboard()
 void FlexFileClipboard::SetEmpty() const
 {
     m_fileList.DeleteContents(TRUE);
-    m_container = NULL;
+    m_container = nullptr;
 }
 
 void FlexFileClipboard::SetFiles(const FlexFileList &newFileList) const

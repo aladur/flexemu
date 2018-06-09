@@ -65,7 +65,7 @@ int Mc6809::Disassemble(Word address, DWord *pFlags,
     Byte buffer[6];
     DWord addr;
 
-    if (disassembler == NULL)
+    if (disassembler == nullptr)
     {
         return 0;
     }
@@ -208,12 +208,12 @@ Byte Mc6809::run(Word mode)
             // Only if disassembler available and
             // Next Instruction is a BSR, LBSR or JSR
             // set a breakpoint after this instruction
-            if (disassembler != NULL)
+            if (disassembler != nullptr)
                 bp[2] =
                     PC + Disassemble((unsigned int)PC,
                                      &flags, &pa, &pb);
 
-            if (disassembler == NULL || !(flags & DA_SUB))
+            if (disassembler == nullptr || !(flags & DA_SUB))
             {
                 events |= DO_SINGLESTEP | IGNORE_BP;
                 reset_bp(2);
@@ -357,7 +357,7 @@ Byte Mc6809::runloop()
                     }
                 }
 
-                if (log_fp != NULL && (events & DO_LOG))
+                if (log_fp != nullptr && (events & DO_LOG))
                 {
                     if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
                     {
@@ -369,7 +369,7 @@ Byte Mc6809::runloop()
                         do_logging = false;
                     }
 
-                    if (do_logging && disassembler != NULL &&
+                    if (do_logging && disassembler != nullptr &&
                         PC >= lfs.minAddr && PC <= lfs.maxAddr)
                     {
                         char *pa, *pb;

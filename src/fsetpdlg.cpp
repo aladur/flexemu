@@ -95,16 +95,16 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     const wxString &name) :
     wxDialog(parent, id, title, pos, size, style, name),
     m_guiOptions(pGuiOptions), m_options(pOptions),
-    c_color(NULL), c_isInverse(NULL), c_undocumented(NULL),
-    c_geometry(NULL), c_nColors(NULL), c_monitor(NULL),
-    c_htmlViewer(NULL), c_diskDir(NULL),
-    c_ramExtension(NULL)
+    c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
+    c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
+    c_htmlViewer(nullptr), c_diskDir(nullptr),
+    c_ramExtension(nullptr)
 {
     int i;
 
     for (i = 0; i < 4; ++i)
     {
-        c_drive[i] = NULL;
+        c_drive[i] = nullptr;
     }
 }
 
@@ -238,7 +238,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
     c_geometry = new wxComboBox(panel, IDC_Geometry, wxT(""),
-                                wxDefaultPosition, wxDefaultSize, 0, NULL,
+                                wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                 wxCB_READONLY);
     pGridSizer->Add(c_geometry, 0, wxEXPAND);
 
@@ -246,7 +246,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
     c_nColors = new wxComboBox(panel, IDC_nColors, wxT(""),
-                               wxDefaultPosition, wxDefaultSize, 0, NULL,
+                               wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                wxCB_READONLY);
     pGridSizer->Add(c_nColors, 0, wxEXPAND);
 
@@ -254,7 +254,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
     c_color = new wxComboBox(panel, IDC_Color, wxT(""), wxDefaultPosition,
-                             wxDefaultSize, 0, NULL, wxCB_READONLY);
+                             wxDefaultSize, 0, nullptr, wxCB_READONLY);
     pGridSizer->Add(c_color);
     pPanelSizer->Add(pGridSizer, 0, wxTOP, gap);
 
@@ -466,7 +466,7 @@ void FlexemuOptionsDialog::OnCloseWindow(wxCloseEvent &event)
 bool FlexemuOptionsDialog::Validate()
 {
     // doing some verification of the values
-    if (c_monitor != NULL && c_monitor->GetValue().IsEmpty())
+    if (c_monitor != nullptr && c_monitor->GetValue().IsEmpty())
     {
         wxMessageBox(_("Monitor program must not be empty"),
                      _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);

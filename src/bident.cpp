@@ -26,7 +26,7 @@ BIdentifier::BIdentifier() : value(0), name("")
 {
 }
 
-BIdentifier::BIdentifier(DWord aValue, const char *pName /* = NULL */)
+BIdentifier::BIdentifier(DWord aValue, const char *pName /* = nullptr */)
     : value(aValue), name(pName)
 {
 }

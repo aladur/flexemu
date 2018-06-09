@@ -42,7 +42,7 @@ bool BEnvironment::RemoveKey(const char *key)
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
 #ifdef _WIN32
-    SetEnvironmentVariable(upperKey.c_str(), NULL);
+    SetEnvironmentVariable(upperKey.c_str(), nullptr);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_UNSETENV==1)
@@ -114,7 +114,7 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
     std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
          ::toupper);
 #ifdef _WIN32
-    int size = GetEnvironmentVariable(upperKey.c_str(), NULL, 0);
+    int size = GetEnvironmentVariable(upperKey.c_str(), nullptr, 0);
 
     if (size)
     {

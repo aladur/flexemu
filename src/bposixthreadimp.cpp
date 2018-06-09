@@ -27,7 +27,7 @@
 
 typedef  void *(*tThreadProc)(void *);
 
-BPosixThreadImp::BPosixThreadImp() : pThreadObj(NULL), finished(false),
+BPosixThreadImp::BPosixThreadImp() : pThreadObj(nullptr), finished(false),
     thread(0)
 {
 }
@@ -57,7 +57,7 @@ void BPosixThreadImp::Join()
 {
     if (!finished)
     {
-        pthread_join(thread, NULL);
+        pthread_join(thread, nullptr);
     }
 }
 
@@ -77,11 +77,11 @@ void BPosixThreadImp::Exit(void *retval)
 // be called with Start(...)
 void *BPosixThreadImp::RunImp(BPosixThreadImp *p)
 {
-    void *result = NULL;
+    void *result = nullptr;
 
     p->finished = false;
 
-    if (p != NULL && p->pThreadObj != NULL)
+    if (p != nullptr && p->pThreadObj != nullptr)
     {
         p->pThreadObj->Run();
     }

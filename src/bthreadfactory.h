@@ -23,7 +23,7 @@
 #ifndef BTHREADFACTORY_H
 #define BTHREADFACTORY_H
 
-#include "misc1.h" // needed for NULL
+#include "misc1.h" // needed for nullptr
 #include "bsingle.h"
 
 // Thread factory creating platform dependant Thread classes

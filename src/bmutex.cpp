@@ -26,7 +26,7 @@
 #ifdef UNIX
 BMutex::BMutex()
 {
-    pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&mutex, nullptr);
 }
 
 BMutex::~BMutex()

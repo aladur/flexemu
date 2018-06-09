@@ -22,7 +22,7 @@
 #ifndef __ifilecnt_cpp__
 #define __ifilecnt_cpp__
 
-#include "misc1.h"  // needed for NULL
+#include "misc1.h"  // needed for nullptr
 #include "filecont.h"
 #include "ifilecnt.h"
 #include "ifilcnti.h"
@@ -50,44 +50,44 @@
 
 FileContainerIterator::FileContainerIterator(const char
         *aFilePattern/* = "*.*" */) :
-    filePattern(aFilePattern), imp(NULL)
+    filePattern(aFilePattern), imp(nullptr)
 {
 }
 
 FileContainerIterator::~FileContainerIterator()
 {
     delete imp;
-    imp = NULL;
+    imp = nullptr;
 }
 
 FlexDirEntry &FileContainerIterator::operator*()
 {
-    if (imp != NULL)
+    if (imp != nullptr)
     {
         return imp->GetDirEntry();
     }
 
     // maybe you used the iterator in the wrong way ?
-    return *(FlexDirEntry *)NULL;
+    return *(FlexDirEntry *)nullptr;
 }
 
 FlexDirEntry *FileContainerIterator::operator->()
 {
-    if (imp != NULL)
+    if (imp != nullptr)
     {
         return &imp->GetDirEntry();
     }
 
     // maybe you used the iterator in the wrong way ?
-    return (FlexDirEntry *)NULL;
+    return (FlexDirEntry *)nullptr;
 
 }
 
 bool FileContainerIterator::operator==(const FileContainerIf *aBase) const
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
-        return aBase == NULL;
+        return aBase == nullptr;
     }
 
     return imp->operator==(aBase);
@@ -95,9 +95,9 @@ bool FileContainerIterator::operator==(const FileContainerIf *aBase) const
 
 bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
-        return aBase != NULL;
+        return aBase != nullptr;
     }
 
     return !(imp->operator==(aBase));
@@ -105,7 +105,7 @@ bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
 
 FileContainerIterator &FileContainerIterator::operator++()
 {
-    if (imp != NULL)
+    if (imp != nullptr)
         if (!imp->NextDirEntry(filePattern))
         {
             imp->AtEnd();
@@ -116,7 +116,7 @@ FileContainerIterator &FileContainerIterator::operator++()
 
 FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 {
-    if (aBase != NULL)
+    if (aBase != nullptr)
     {
         delete imp;
         imp = aBase->IteratorFactory();
@@ -136,7 +136,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 
 bool FileContainerIterator::DeleteCurrent()
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }
@@ -146,7 +146,7 @@ bool FileContainerIterator::DeleteCurrent()
 
 bool FileContainerIterator::RenameCurrent(const char *newName)
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }
@@ -156,7 +156,7 @@ bool FileContainerIterator::RenameCurrent(const char *newName)
 
 bool FileContainerIterator::SetDateCurrent(const BDate &date)
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }
@@ -166,7 +166,7 @@ bool FileContainerIterator::SetDateCurrent(const BDate &date)
 
 bool FileContainerIterator::SetAttributesCurrent(int attributes)
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }

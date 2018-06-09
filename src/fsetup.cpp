@@ -47,7 +47,7 @@ IMPLEMENT_APP(FlexemuSetup)
 typedef char *PCHAR;
 bool FlexemuSetup::OnInit()
 {
-    dialog = NULL;
+    dialog = nullptr;
 #ifdef _UNICODE
     char **mb_argv;
     int i;
@@ -76,7 +76,7 @@ bool FlexemuSetup::OnInit()
     SetExitOnFrameDelete(true);
 
     dialog = new FlexemuOptionsDialog(&guiOptions, &options,
-                                      NULL, -1, _("Flexemu Options Dialog"),
+                                      nullptr, -1, _("Flexemu Options Dialog"),
                                       wxDefaultPosition, wxDefaultSize,
                                       wxCAPTION | wxSYSTEM_MENU |
                                       wxDIALOG_NO_PARENT | wxRESIZE_BORDER);

@@ -100,7 +100,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
     struct  stat sbuf;
     struct  s_flex_header header;
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
@@ -110,7 +110,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
-    if (strchr(fp.GetMode(), '+') == NULL)
+    if (strchr(fp.GetMode(), '+') == nullptr)
     {
         attributes |= FLX_READONLY;
     }
@@ -196,7 +196,7 @@ int FlexFileContainer::Close()
 // If so return true
 bool FlexFileContainer::IsContainerOpened() const
 {
-    return (fp != NULL);
+    return (fp != nullptr);
 }
 
 int FlexFileContainer::GetBytesPerSector() const
@@ -414,7 +414,7 @@ FileContainerIteratorImp *FlexFileContainer::IteratorFactory()
 
 // if successfull return true. If error return false
 bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
-                                        const char *fileName /* = NULL */)
+                                        const char *fileName /* = nullptr */)
 {
     int     trk = 0, sec = 0;
     int     startTrk, startSec;
@@ -428,7 +428,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     CHECK_NO_CONTAINER_OPEN;
 
-    if (fileName == NULL)
+    if (fileName == nullptr)
     {
         pFileName = buffer.GetFilename();
     }
@@ -805,7 +805,7 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 {
     int pos;
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return false;
     }
@@ -838,7 +838,7 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 {
     int pos;
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return false;
     }
@@ -904,7 +904,7 @@ void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
     // first read boot sector if present as file "boot"
     BFilePtr boot(bootSectorFile.c_str(), "rb");
 
-    if (boot == NULL || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)
+    if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)
     {
         // No boot sector or read error
         memset(sec_buf, 0, SECTOR_SIZE);
@@ -948,7 +948,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
 
     start           = fmt->dir_sectors + 4;
     free            = (fmt->sectors * fmt->tracks) - start;
-    time_now        = time(NULL);
+    time_now        = time(nullptr);
     lt          = localtime(&time_now);
     sys->disk_number[0] = 0;
     sys->disk_number[1] = 1;
@@ -1080,8 +1080,8 @@ void FlexFileContainer::Format_disk(
     struct s_flex_header hdr;
     int     err = 0;
 
-    if (disk_dir == NULL ||
-        name == NULL || strlen(name) == 0 ||
+    if (disk_dir == nullptr ||
+        name == nullptr || strlen(name) == 0 ||
         trk < 2 || sec < 6)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
@@ -1100,9 +1100,9 @@ void FlexFileContainer::Format_disk(
     strcat(path, name);
     BFilePtr fp(path, "wb");
     delete [] path;
-    path = NULL;
+    path = nullptr;
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
         Byte sector_buffer[SECTOR_SIZE];
 

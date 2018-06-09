@@ -61,12 +61,12 @@ int initializeWithZero(char *ptr, int count)
 }
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
-    dir(NULL), attributes(0)
+    dir(nullptr), attributes(0)
 {
     struct stat             sbuf;
     static Word             number = 0;
 
-    if (path == NULL || stat(path, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (path == nullptr || stat(path, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -107,7 +107,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
     struct stat sbuf;
     std::string totalPath;
 
-    if (pdir == NULL || stat(pdir, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (pdir == nullptr || stat(pdir, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
@@ -126,12 +126,12 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
 
 bool NafsDirectoryContainer::IsContainerOpened() const
 {
-    return (dir != NULL);
+    return (dir != nullptr);
 }
 
 std::string NafsDirectoryContainer::GetPath() const
 {
-    if (dir != NULL)
+    if (dir != nullptr)
     {
         return *dir;
     }
@@ -141,12 +141,12 @@ std::string NafsDirectoryContainer::GetPath() const
 
 int NafsDirectoryContainer::Close()
 {
-    if (dir != NULL)
+    if (dir != nullptr)
     {
         close_new_files();
         free_memory();
         delete dir;
-        dir = NULL;
+        dir = nullptr;
     }
 
     return 1;
@@ -156,7 +156,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
     struct s_sys_info_sector buffer;
 
-    if (dir == NULL)
+    if (dir == nullptr)
     {
         return false;
     }
@@ -242,20 +242,20 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
     new_files        = INIT_NEW_FILES;
     dir_extend.sec_trk = 0;
 
-    if (pflex_links == NULL || pflex_sys_info == NULL ||
-        pflex_unused == NULL || pflex_directory == NULL ||
-        pnew_file == NULL)
+    if (pflex_links == nullptr || pflex_sys_info == nullptr ||
+        pflex_unused == nullptr || pflex_directory == nullptr ||
+        pnew_file == nullptr)
     {
         std::string msg("Not enough memory, can't continue\n");
 
 #ifdef _WIN32
         std::string title(PROGRAMNAME " error");
 #ifdef UNICODE
-        MessageBox(NULL, ConvertToUtf16String(msg).c_str(),
+        MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
             ConvertToUtf16String(title).c_str(),
             MB_OK | MB_ICONERROR);
 #else
-        MessageBox(NULL, msg.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+        MessageBox(nullptr, msg.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
 #endif
 #endif
 #ifdef UNIX
@@ -273,8 +273,8 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
     not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
 */
 bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
-        char *pname /* = NULL */,
-        char *pext  /* = NULL */) const
+        char *pname /* = nullptr */,
+        char *pext  /* = nullptr */) const
 {
     int result; // result from sscanf should be int
     char dot;
@@ -441,7 +441,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
         // new file table is full, increase new file table by 2
         pnf = new(std::nothrow) struct s_new_file[new_files + 2];
 
-        if (pnf == NULL)
+        if (pnf == nullptr)
         {
             return -1;    // can't allocate memory
         }
@@ -461,7 +461,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     strcat((char *)&path, (pnew_file + i)->filename);
     (pnew_file + i)->fp = fopen(path, "wb+");
 
-    if ((pnew_file + i)->fp == NULL)
+    if ((pnew_file + i)->fp == nullptr)
     {
         return -1;
     }
@@ -481,7 +481,7 @@ Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
     // increase flex_directory by one sector
     pfd = new(std::nothrow) struct s_dir_sector[dir_sectors + 1];
 
-    if (pfd == NULL)
+    if (pfd == nullptr)
     {
         return 0xff;    // can't allocate memory
     }
@@ -690,11 +690,11 @@ void NafsDirectoryContainer::close_new_files()
 #ifdef _WIN32
     std::string title(PROGRAMNAME " warning");
 #ifdef UNICODE
-    MessageBox(NULL, ConvertToUtf16String(msg).c_str(),
+    MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
         ConvertToUtf16String(title).c_str(),
         MB_OK | MB_ICONEXCLAMATION);
 #else
-    MessageBox(NULL, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);
+    MessageBox(nullptr, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);
 #endif
 
 #endif
@@ -818,9 +818,9 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 
     BFilePtr fp(str, "r");
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
-        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != NULL)
+        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
         {
             if (strchr(str, '\n'))
             {
@@ -877,7 +877,7 @@ void NafsDirectoryContainer::modify_random_file(char *path, struct stat *pstat,
 
         BFilePtr fp(path, "rb+");
 
-        if (fp != NULL)
+        if (fp != nullptr)
         {
             fwrite(&file_sector_map, 252, 2, fp);
         }
@@ -921,9 +921,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #endif
 #ifdef UNIX
 
-            if ((pd = opendir(dir->c_str())) != NULL)
+            if ((pd = opendir(dir->c_str())) != nullptr)
             {
-                while ((pentry = readdir(pd)) != NULL)
+                while ((pentry = readdir(pd)) != nullptr)
                 {
 #endif
 #ifdef _WIN32
@@ -1349,7 +1349,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                 LOG("systemsector\n");
 #endif
-                p = NULL; // satisfy compiler
+                p = nullptr; // satisfy compiler
 
                 if (sec >= 3)
                 {
@@ -1373,7 +1373,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     strcpy((char *)path, dir->c_str());
                     strcat((char *)path, PATHSEPARATORSTRING "boot");
 
-                    if ((fp = fopen(path, mode)) != NULL)
+                    if ((fp = fopen(path, mode)) != nullptr)
                     {
                         bytes = static_cast<Word>(
                             fread(buffer, 1, SECTOR_SIZE, fp));
@@ -1434,7 +1434,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     strcat((char *)&path, PATHSEPARATORSTRING);
                     strcat((char *)&path, unix_filename(pfl->file_id).c_str());
 
-                    if ((fp = fopen(path, mode)) != NULL &&
+                    if ((fp = fopen(path, mode)) != nullptr &&
                         !fseek(fp, (long)(pfl->f_record * 252L),
                                SEEK_SET))
                     {
@@ -1503,7 +1503,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
         LOG_XX("write: %02X/%02X ", trk, sec);
 #endif
-        fp = NULL;
+        fp = nullptr;
         mode = "rb+";
         result = 1;
         bytes = 0;      // satisfy compiler
@@ -1516,7 +1516,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                 LOG("systemsector\n");
 #endif
-                p = NULL; // satisfy compiler
+                p = nullptr; // satisfy compiler
 
                 if (sec >= 3)
                 {
@@ -1532,7 +1532,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     strcpy((char *)&path, dir->c_str());
                     strcat((char *)&path, PATHSEPARATORSTRING "boot");
 
-                    if ((fp = fopen(path, mode)) != NULL)
+                    if ((fp = fopen(path, mode)) != nullptr)
                     {
                         bytes = fwrite(&buffer, 1, SECTOR_SIZE, fp);
                         fclose(fp);
@@ -1645,7 +1645,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     pfl->record_nr[0] = buffer[2];
                     pfl->record_nr[1] = buffer[3];
 
-                    if ((fp = fopen(path, mode)) == NULL)
+                    if ((fp = fopen(path, mode)) == nullptr)
                     {
                         result = false;
                     }

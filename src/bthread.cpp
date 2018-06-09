@@ -27,11 +27,11 @@
 
 class BThreadImp;
 
-BThread::BThread(bool autoStart /* = true */) : imp(NULL)
+BThread::BThread(bool autoStart /* = true */) : imp(nullptr)
 {
     imp = SThreadFactory::Instance().CreateBThreadImp();
 
-    if (imp != NULL && autoStart)
+    if (imp != nullptr && autoStart)
     {
         imp->Start(this);
     }
@@ -46,7 +46,7 @@ BThread::~BThread()
 
 bool BThread::Start()
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }
@@ -56,7 +56,7 @@ bool BThread::Start()
 
 void BThread::Join()
 {
-    if (imp != NULL)
+    if (imp != nullptr)
     {
         imp->Join();
     }
@@ -64,7 +64,7 @@ void BThread::Join()
 
 bool BThread::IsFinished()
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return false;
     }
@@ -84,7 +84,7 @@ void BThread::Run()
 // the current thread
 void BThread::Exit(void *retval)
 {
-    if (imp == NULL)
+    if (imp == nullptr)
     {
         return;
     }

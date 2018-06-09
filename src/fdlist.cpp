@@ -87,7 +87,7 @@ static const wxChar *fileDescription[] =
     wxT("BAK"), _("Backup file"),
     wxT("BAC"), _("Backup file"),
     wxT("DAT"), _("Data file"),
-    NULL
+    nullptr
 };
 
 int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
@@ -165,7 +165,7 @@ FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
                                    const wxValidator &validator,
                                    const wxString &name) :
     wxListCtrl(parent, id, pos, size, style, validator, name),
-    m_container(container), m_popupMenu(NULL), m_totalSize(0)
+    m_container(container), m_popupMenu(nullptr), m_totalSize(0)
 {
     // create all columns
     InsertColumn(LC_FILENAME, _("Filename"),   wxLIST_FORMAT_LEFT, 120);
@@ -241,11 +241,11 @@ FlexDiskListCtrl::~FlexDiskListCtrl()
     DeleteAllItems();
     delete m_popupMenu;
 
-    if (m_container != NULL)
+    if (m_container != nullptr)
     {
         m_container->Close();
         delete m_container;
-        m_container = NULL;
+        m_container = nullptr;
     }
 }
 
@@ -276,7 +276,7 @@ int FlexDiskListCtrl::GetSelections(long **pItems) const
     long *items;
     int selectionCount;
 
-    *pItems = NULL;
+    *pItems = nullptr;
     selectionCount = GetSelectedItemCount();
 
     if (selectionCount > 0)
@@ -359,7 +359,7 @@ void FlexDiskListCtrl::RenameSelectedItems()
 {
     long            *pItems;
     wxString        itemText;
-    wxTextEntryDialog   *dialog = NULL;
+    wxTextEntryDialog   *dialog = nullptr;
 
     int count = GetSelections(&pItems);
 
@@ -573,14 +573,14 @@ void FlexDiskListCtrl::ProcessCmdFile(const char *, FlexFileBuffer *buffer)
 #ifndef __WXMOTIF__
 void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
 {
-    if (m_container != NULL)
+    if (m_container != nullptr)
     {
         wxDragResult    result;
         int     flags = 0;
         FlexDnDFiles    files;
         FlexFileDataObject *dragData;
         FlexFileList    fileList;
-        FlexFileList::Node *node = NULL;
+        FlexFileList::Node *node = nullptr;
         int count = 0;
 
         GetFileList(fileList);
@@ -694,7 +694,7 @@ void FlexDiskListCtrl::OnDeselected(wxListEvent &event)
 
 void FlexDiskListCtrl::Notify()
 {
-    if (m_statusbarObserver != NULL)
+    if (m_statusbarObserver != nullptr)
     {
         int id = OBSERVE_STATUS_BAR;
 
@@ -751,7 +751,7 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
     int setMask;
     int clearMask;
 
-    if (m_container == NULL)
+    if (m_container == nullptr)
     {
         return;
     }
@@ -1159,7 +1159,7 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry *pDe)
     pFDesc = (wxChar **)fileDescription;
     wxString extension(pDe->GetFileExt().c_str(), *wxConvCurrent);
 
-    while (*pFDesc != NULL)
+    while (*pFDesc != nullptr)
     {
         tmp = *pFDesc;
 

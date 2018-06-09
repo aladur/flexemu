@@ -40,13 +40,13 @@
 
 DirectoryContainerIteratorImp::DirectoryContainerIteratorImp(
     DirectoryContainer *aBase)
-    : base(aBase), dirHdl(NULL)
+    : base(aBase), dirHdl(nullptr)
 {
 }
 
 DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
 {
-    if (dirHdl != NULL)
+    if (dirHdl != nullptr)
     {
 #ifdef WIN32
         FindClose(dirHdl);
@@ -54,21 +54,21 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
 #ifdef UNIX
         closedir(dirHdl);
 #endif
-        dirHdl = NULL;
+        dirHdl = nullptr;
     }
 
-    base = NULL;
+    base = nullptr;
 }
 
 bool DirectoryContainerIteratorImp::operator==(const FileContainerIf *src) const
 {
-    return (base == NULL && src == NULL) ||
-           (((FileContainerIf *)base == src) && (dirHdl == NULL));
+    return (base == nullptr && src == nullptr) ||
+           (((FileContainerIf *)base == src) && (dirHdl == nullptr));
 }
 
 void DirectoryContainerIteratorImp::AtEnd()
 {
-    base = NULL;
+    base = nullptr;
 }
 
 bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
@@ -80,7 +80,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     SYSTEMTIME systemTime;
 #endif
 #ifdef UNIX
-    struct dirent *findData = NULL;
+    struct dirent *findData = nullptr;
     struct stat sbuf;
 #endif
     dirEntry.SetEmpty();
@@ -94,7 +94,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     {
         isValid = false;
 
-        if (dirHdl == NULL)
+        if (dirHdl == nullptr)
         {
 #ifdef UNICODE
             dirHdl = FindFirstFile(ConvertToUtf16String(str).c_str(), &findData);
@@ -107,7 +107,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             }
             else
             {
-                dirHdl = NULL;
+                dirHdl = nullptr;
             }
         }
         else
@@ -183,15 +183,15 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     {
         isValid = false;
 
-        if (dirHdl == NULL)
+        if (dirHdl == nullptr)
         {
-            if ((dirHdl = opendir(str.c_str())) != NULL)
+            if ((dirHdl = opendir(str.c_str())) != nullptr)
             {
                 isValid = true;
             }
         }
 
-        if (dirHdl != NULL && (findData = readdir(dirHdl)) != NULL)
+        if (dirHdl != nullptr && (findData = readdir(dirHdl)) != nullptr)
         {
             isValid = true;
             fileName = findData->d_name;

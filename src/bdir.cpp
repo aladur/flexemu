@@ -157,11 +157,11 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != NULL)
+    if ((pd = opendir(basePath.c_str())) != nullptr)
     {
         struct dirent   *pentry;
 
-        while ((pentry = readdir(pd)) != NULL)
+        while ((pentry = readdir(pd)) != nullptr)
         {
             dirEntry = basePath + PATHSEPARATORSTRING +
                        pentry->d_name;
@@ -234,11 +234,11 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != NULL)
+    if ((pd = opendir(basePath.c_str())) != nullptr)
     {
         struct dirent   *pentry;
 
-        while ((pentry = readdir(pd)) != NULL)
+        while ((pentry = readdir(pd)) != nullptr)
         {
             dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
 
@@ -308,11 +308,11 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != NULL)
+    if ((pd = opendir(basePath.c_str())) != nullptr)
     {
         struct dirent *pentry;
 
-        while ((pentry = readdir(pd)) != NULL)
+        while ((pentry = readdir(pd)) != nullptr)
         {
             dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
 

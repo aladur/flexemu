@@ -34,7 +34,7 @@ BProcess::BProcess(const std::string &x_exec,
                    const std::string &x_arg /* = "" */) :
     executable(x_exec), arguments(x_arg), directory(x_dir)
 #ifdef WIN32
-    , hProcess(NULL)
+    , hProcess(nullptr)
 #endif
 #ifdef UNIX
     , pid(-1)
@@ -64,7 +64,7 @@ void BProcess::SetDirectory(const std::string &x_dir)
 BProcess::~BProcess()
 {
     CloseHandle(hProcess);
-    hProcess = NULL;
+    hProcess = nullptr;
 }
 
 bool BProcess::Start()
@@ -78,8 +78,8 @@ bool BProcess::Start()
     memset((void *)&si, 0, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
 #ifdef UNICODE
-    const wchar_t *pDirectory = NULL;
-    wchar_t *pCommandLine = NULL;
+    const wchar_t *pDirectory = nullptr;
+    wchar_t *pCommandLine = nullptr;
     std::wstring directoryw;
 
     if (!directory.empty())
@@ -92,20 +92,20 @@ bool BProcess::Start()
     std::wstring commandlinew = ConvertToUtf16String(commandline);
     pCommandLine = new wchar_t[commandlinew.size()+1];
     wcscpy(pCommandLine, commandlinew.c_str());
-    result = CreateProcess(NULL, pCommandLine,
-        NULL, NULL, 0, 0, NULL, pDirectory, &si, &pi);
+    result = CreateProcess(nullptr, pCommandLine,
+        nullptr, nullptr, 0, 0, nullptr, pDirectory, &si, &pi);
     delete pCommandLine;
 #else
-    const char *pDirectory = NULL;
+    const char *pDirectory = nullptr;
 
     if (!directory.empty())
     {
         pDirectory = directory.c_str();
     }
 
-    result = CreateProcess(NULL,
+    result = CreateProcess(nullptr,
         const_cast<char *>(commandline.c_str()),
-        NULL, NULL, 0, 0, NULL, pDirectory, &si, &pi);
+        nullptr, nullptr, 0, 0, nullptr, pDirectory, &si, &pi);
 #endif
 
     if (result != 0)
@@ -119,7 +119,7 @@ bool BProcess::Start()
 
 bool BProcess::IsRunning()
 {
-    if (hProcess == NULL)
+    if (hProcess == nullptr)
     {
         return false;
     }
@@ -152,14 +152,14 @@ bool BProcess::Start()
 
     args[0] = executable.c_str();
     args[1] = arguments.c_str();
-    args[2] = NULL;
+    args[2] = nullptr;
     default_action.sa_handler = SIG_DFL;
     default_action.sa_flags   = 0;
     sigemptyset(&default_action.sa_mask);
 
     if ((pid = fork()) == 0)
     {
-        sigaction(SIGPIPE, &default_action, NULL);
+        sigaction(SIGPIPE, &default_action, nullptr);
 
         if (!directory.empty())
         {

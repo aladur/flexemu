@@ -58,7 +58,7 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
     wxDialog(parent, 111, _("Global Options"), pos),
     m_viewer(viewer), m_bootSectorFile(bootFile),
     m_autoTextFlag(autoTextFlag),
-    c_viewer(NULL), c_bootSectorFile(NULL), c_autoTextFlag(NULL)
+    c_viewer(nullptr), c_bootSectorFile(nullptr), c_autoTextFlag(nullptr)
 {
     wxButton     *pButton;
     wxStaticText *pStatic;

@@ -42,13 +42,13 @@ FlexFileContainerIteratorImp::~FlexFileContainerIteratorImp()
 
 bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *src) const
 {
-    return (base == NULL && src == NULL) ||
+    return (base == nullptr && src == nullptr) ||
            (((const FileContainerIf *)base == src) && (dirIndex == -1));
 }
 
 void FlexFileContainerIteratorImp::AtEnd()
 {
-    base = NULL;
+    base = nullptr;
 }
 
 bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
@@ -134,7 +134,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     s_sys_info_sector *psis;
     s_dir_entry *pd;
 
-    if (base == NULL)
+    if (base == nullptr)
     {
         return false;
     }
@@ -238,7 +238,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     s_dir_entry *pd;
     std::string name, ext;
 
-    if (base == NULL)
+    if (base == nullptr)
     {
         return false;
     }
@@ -309,7 +309,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
 {
     s_dir_entry *pd;
 
-    if (base == NULL)
+    if (base == nullptr)
     {
         return false;
     }
@@ -343,7 +343,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(int attributes)
 {
     s_dir_entry *pd;
 
-    if (base == NULL)
+    if (base == nullptr)
     {
         return false;
     }

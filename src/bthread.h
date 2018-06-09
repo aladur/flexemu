@@ -43,7 +43,7 @@ public:
     Run();  // entry point when starting the thread. To be reimplemented
 
 protected:
-    void Exit(void *retval = NULL);
+    void Exit(void *retval = nullptr);
     BThreadImp *imp;
 };
 

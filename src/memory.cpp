@@ -33,8 +33,8 @@ Byte Memory::initial_content[8] =
 Memory::Memory(bool himem) :
     isHiMem(himem),
     memory_size(0x10000),
-    memory(NULL),
-    video_ram(NULL),
+    memory(nullptr),
+    video_ram(nullptr),
     video_ram_active_bits(0)
 {
     memory = (Byte *) new Byte[memory_size];
@@ -50,8 +50,8 @@ Memory::~Memory()
     uninit_memory();
     delete [] memory;
     delete [] video_ram;
-    memory    = NULL;
-    video_ram = NULL;
+    memory    = nullptr;
+    video_ram = nullptr;
 }
 
 // memory must be initialized AFTER all memory mapped I/O is created
@@ -91,7 +91,7 @@ void Memory::init_memory(bool himem)
 
     for (i = 0; i < MAX_IO_DEVICES; i++)
     {
-        ioDevices[i] = NULL;
+        ioDevices[i] = nullptr;
     }
 
     // initialize default pointer for mmu configuration
@@ -157,12 +157,12 @@ void Memory::uninit_memory()
     {
         --i;
 
-        if (ioDevices[i] != NULL)
+        if (ioDevices[i] != nullptr)
         {
             delete ioDevices[i];
         }
 
-        ioDevices[i] = NULL;
+        ioDevices[i] = nullptr;
     }
     while (i != 0);
 } // uninit_memory
@@ -185,7 +185,7 @@ bool Memory::add_io_device(IoDevice *device,
     Word i = 0;
     Word offset;
 
-    while (i < MAX_IO_DEVICES && ioDevices[i] != NULL)
+    while (i < MAX_IO_DEVICES && ioDevices[i] != nullptr)
     {
         i++;
     }
@@ -224,7 +224,7 @@ void Memory::reset_io()
 
     for (i = 0; i < MAX_IO_DEVICES; i++)
     {
-        if (ioDevices[i] != NULL)
+        if (ioDevices[i] != nullptr)
         {
             ioDevices[i]->resetIo();
         }

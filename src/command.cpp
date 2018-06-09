@@ -41,7 +41,7 @@
 
 
 Command::Command(Inout *x_io, Mc6809 *x_cpu, Scheduler *x_sched) :
-    cpu(x_cpu), io(x_io), schedy(x_sched), fdc(NULL), answer(NULL)
+    cpu(x_cpu), io(x_io), schedy(x_sched), fdc(nullptr), answer(nullptr)
 {
     memset(command, 0, sizeof(command));
 
@@ -71,20 +71,20 @@ void Command::resetIo()
 {
     command_index = 0;
     answer_index  = 0;
-    answer        = NULL;
+    answer        = nullptr;
 }
 
 Byte Command::readIo(Word /*offset*/)
 {
 
-    if (answer != NULL)
+    if (answer != nullptr)
     {
         const char *pch = answer + answer_index++;
 
         if (*pch == '\0')
         {
             delete [] answer;
-            answer = NULL;
+            answer = nullptr;
             answer_index = 0;
             return 0x00;
         }
@@ -103,12 +103,12 @@ Byte Command::readIo(Word /*offset*/)
 
 const char *Command::next_token(char **pp, int *pcount)
 {
-    while (*pp != NULL && **pp != '\0' && **pp == ' ')
+    while (*pp != nullptr && **pp != '\0' && **pp == ' ')
     {
         (*pp)++;
     }
 
-    if (*pp != NULL && **pp != '\0')
+    if (*pp != nullptr && **pp != '\0')
     {
         (*pcount)++;
     }
@@ -119,12 +119,12 @@ const char *Command::next_token(char **pp, int *pcount)
 
 void Command::skip_token(char **pp)
 {
-    while (*pp != NULL && **pp != '\0' && **pp != ' ')
+    while (*pp != nullptr && **pp != '\0' && **pp != ' ')
     {
         (*pp)++;
     }
 
-    if (*pp != NULL && **pp == ' ')
+    if (*pp != nullptr && **pp == ' ')
     {
         **pp = '\0';
         (*pp)++;
@@ -138,9 +138,9 @@ const char *Command::modify_command_token(char *p)
     char *p1 = p;
     int i = 0;
 
-    if (p1 == NULL)
+    if (p1 == nullptr)
     {
-        return NULL;
+        return nullptr;
     }
 
     if (*p1 == '\0')
@@ -173,7 +173,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
     try
     {
         delete [] answer;
-        answer = NULL;
+        answer = nullptr;
 
         if (command_index < MAX_COMMAND - 1)
         {
@@ -208,22 +208,22 @@ void Command::writeIo(Word /*offset*/, Byte val)
             switch (count)
             {
                 case 1:
-                    if (stricmp(arg1, "exit") == 0 && schedy != NULL)
+                    if (stricmp(arg1, "exit") == 0 && schedy != nullptr)
                     {
                         schedy->set_new_state(S_EXIT);
                         return;
                     }
-                    else if (stricmp(arg1, "irq")  == 0 && cpu != NULL)
+                    else if (stricmp(arg1, "irq")  == 0 && cpu != nullptr)
                     {
                         cpu->set_irq();
                         return;
                     }
-                    else if (stricmp(arg1, "firq")  == 0 && cpu != NULL)
+                    else if (stricmp(arg1, "firq")  == 0 && cpu != nullptr)
                     {
                         cpu->set_firq();
                         return;
                     }
-                    else if (stricmp(arg1, "nmi")  == 0 && cpu != NULL)
+                    else if (stricmp(arg1, "nmi")  == 0 && cpu != nullptr)
                     {
                         cpu->set_nmi();
                         return;
@@ -258,7 +258,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer_index = 0;
                         return;
                     }
-                    else if (stricmp(arg1, "info") == 0 && fdc != NULL)
+                    else if (stricmp(arg1, "info") == 0 && fdc != nullptr)
                     {
                         std::string str;
 
@@ -276,7 +276,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0 &&
-                             fdc != NULL)
+                             fdc != nullptr)
                     {
                         if (!fdc->update_all_drives())
                         {
@@ -309,7 +309,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
 
-                    if (stricmp(arg1, "umount") == 0 && fdc != NULL)
+                    if (stricmp(arg1, "umount") == 0 && fdc != nullptr)
                     {
                         if (!fdc->umount_drive(number))
                         {
@@ -318,7 +318,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                         return;
                     }
-                    else if (stricmp(arg1, "info") == 0 && fdc != NULL)
+                    else if (stricmp(arg1, "info") == 0 && fdc != nullptr)
                     {
                         std::string str;
 
@@ -329,7 +329,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0 &&
-                             fdc != NULL)
+                             fdc != nullptr)
                     {
                         if (!fdc->update_drive(number))
                         {
@@ -342,7 +342,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     break;
 
                 case 3:
-                    if (stricmp(arg1, "mount") == 0 && fdc != NULL)
+                    if (stricmp(arg1, "mount") == 0 && fdc != nullptr)
                     {
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
@@ -358,7 +358,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                         return;
                     }
-                    else if (stricmp(arg1, "rmount") == 0 && fdc != NULL)
+                    else if (stricmp(arg1, "rmount") == 0 && fdc != nullptr)
                     {
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
@@ -378,7 +378,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     break;
 
                 case 4:
-                    if (stricmp(arg1, "format") == 0 && fdc != NULL)
+                    if (stricmp(arg1, "format") == 0 && fdc != nullptr)
                     {
                         int trk, sec;
 

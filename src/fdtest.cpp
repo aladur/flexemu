@@ -45,7 +45,7 @@ extern void flexContainerTest(const std::string &testPath,
                               int destType = TYPE_DSK_CONTAINER);
 
 #define TEST_FAILED \
-    if (destDsk == NULL)    \
+    if (destDsk == nullptr)    \
         fprintf(stderr, "%s test case %d failed\n",  \
                 typeid(*srcDsk).name(), testCase);  \
     else   \
@@ -340,7 +340,7 @@ void flexContainerTest(const std::string &testPath,
 
         try
         {
-            fp = NULL;
+            fp = nullptr;
             buffer[0] = 0;
             file1 = testPath + replaceExt(srcFName, "TXT");
             fp = fopen(file1, "w");
@@ -353,7 +353,7 @@ void flexContainerTest(const std::string &testPath,
             {
                 l[i++] = new FlexDirEntry(de);
 
-                if (fp != NULL)
+                if (fp != nullptr)
                     fprintf(fp, "%12.12s %6d %.12s %.4s\n",
                             de.getTotalFileName().c_str(), de.getSize(),
                             de.getDate().getDateString(),
@@ -362,12 +362,12 @@ void flexContainerTest(const std::string &testPath,
                 ;
             }
 
-            if (fp != NULL)
+            if (fp != nullptr)
             {
                 fclose(fp);
             }
 
-            l[i] = NULL;
+            l[i] = nullptr;
             srcDsk->closeDirectory();
             srcDsk->getInfo(info);
         }
@@ -407,12 +407,12 @@ void flexContainerTest(const std::string &testPath,
                 l[i++] = new FlexDirEntry(de);
             }
 
-            l[i] = NULL;
+            l[i] = nullptr;
             srcDsk->CloseDirectory();
             destDsk->Create(testPath, destFName, 80, 40, destType);
             i = 0;
 
-            while (l[i] != NULL)
+            while (l[i] != nullptr)
             {
                 // fprintf(stderr, "%s\n", l[i]->getTotalFileName().c_str());
                 srcDsk->FileCopy(l[i]->getTotalFileName(),

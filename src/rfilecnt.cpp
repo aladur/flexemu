@@ -26,7 +26,7 @@
 
 
 FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
-    FlexFileContainer(path, mode), pfb(NULL)
+    FlexFileContainer(path, mode), pfb(nullptr)
 {
     unsigned int sectors;
 
@@ -63,7 +63,7 @@ int FlexRamFileContainer::Close()
 {
     bool throwException = false;
 
-    if (fp != NULL && (pfb != NULL))
+    if (fp != nullptr && (pfb != nullptr))
     {
         unsigned int sectors;
 
@@ -83,7 +83,7 @@ int FlexRamFileContainer::Close()
     }
 
     delete [] pfb;
-    pfb = NULL;
+    pfb = nullptr;
 
     if (throwException)
     {
@@ -97,7 +97,7 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 {
     int pos;
 
-    if (pfb == NULL)
+    if (pfb == nullptr)
     {
         return false;
     }
@@ -117,7 +117,7 @@ bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 {
     int pos;
 
-    if (pfb == NULL)
+    if (pfb == nullptr)
     {
         return false;
     }

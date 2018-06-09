@@ -38,7 +38,7 @@ int copyFile(const char *srcPath, const char *destPath)
     BFilePtr dFp(destPath, "wb");
     int c;
 
-    if (sFp == NULL || dFp == NULL)
+    if (sFp == nullptr || dFp == nullptr)
     {
         return 0;
     }
@@ -171,7 +171,7 @@ bool matches(const char *text, const char *pattern,
     int max = 0;
     int notmatched =  0;
 
-    if (pattern == NULL)
+    if (pattern == nullptr)
     {
         return false;
     }
@@ -259,7 +259,7 @@ bool multimatches(const char *text, const char *multipattern,
 {
     int pos;
 
-    if (multipattern == NULL)
+    if (multipattern == nullptr)
     {
         return false;
     }
@@ -300,10 +300,10 @@ std::string getExecutablePath()
     CHAR path[MAX_PATH];
 #endif
 
-    HMODULE hModule = GetModuleHandle(NULL);
+    HMODULE hModule = GetModuleHandle(nullptr);
     std::string retval;
 
-    if (hModule != NULL)
+    if (hModule != nullptr)
     {
         size_t index;
 

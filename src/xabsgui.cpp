@@ -54,15 +54,15 @@ void XAbstractGui::initialize(struct sGuiOptions *pOptions)
     AbstractGui::initialize(pOptions);
     bp_input[0] = 0;
     bp_input[1] = 0;
-    visual = NULL;
+    visual = nullptr;
     depth = 0;
     own_cmap = 0;
-    copy_block = NULL;
+    copy_block = nullptr;
 }
 
 Display *XAbstractGui::getDisplay()
 {
-    return (Display *)NULL;
+    return (Display *)nullptr;
 }
 
 Window XAbstractGui::getWindow(tWindowType)
@@ -238,7 +238,7 @@ void XAbstractGui::update_block(int block_number)
     else
     {
         // allways display an empty screen
-        CopyToZPixmap(block_number, (Byte *)img->data, NULL, depth,
+        CopyToZPixmap(block_number, (Byte *)img->data, nullptr, depth,
                       (unsigned long *)pen);
 
         XPutImage(dpy, win, e2gc,
@@ -255,7 +255,7 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
     int     count;
 
     // first check for control character
-    count = XLookupString(pevent, charString, 2, &keysym, NULL);
+    count = XLookupString(pevent, charString, 2, &keysym, nullptr);
 
     //  fprintf(stderr, "%X\n", keysym); only needed for debugging
     if (pevent->state & ControlMask)
@@ -722,7 +722,7 @@ int XAbstractGui::popup_help()
     strcat(helpfile, "flexemu.htm");
     args[0] = pOptions->html_viewer.c_str();
     args[1] = helpfile;
-    args[2] = NULL;
+    args[2] = nullptr;
 
     if ((child_pid = fork()) == 0)
     {
@@ -772,8 +772,8 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
 {
     int default_depth;
     XVisualInfo vTemplate;
-    XVisualInfo *visualList = NULL;
-    Visual *visual = NULL;
+    XVisualInfo *visualList = nullptr;
+    Visual *visual = nullptr;
     int nrOfVisuals;
 
     vTemplate.screen = DefaultScreen(dpy);
@@ -869,7 +869,7 @@ int XAbstractGui::SetColors(Display *dpy)
     {
         /* on visuals with read/write color cells
            first allocate them */
-        if (!XAllocColorCells(dpy, cmap, False, NULL, 0, pixels,
+        if (!XAllocColorCells(dpy, cmap, False, nullptr, 0, pixels,
                               1 << COLOR_PLANES))
         {
             /* try again with a own colormap */
@@ -878,7 +878,7 @@ int XAbstractGui::SetColors(Display *dpy)
                                    visual, AllocNone);
             own_cmap = 1;
 
-            if (!XAllocColorCells(dpy, cmap, False, NULL, 0,
+            if (!XAllocColorCells(dpy, cmap, False, nullptr, 0,
                                   pixels, 1 << COLOR_PLANES))
             {
                 fprintf(stderr, "Unable to allocate %d colors\n",

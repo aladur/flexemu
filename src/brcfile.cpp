@@ -48,7 +48,7 @@ int BRcFile::SetValue(const char *key, const char *value)
     size_t res;
     BFilePtr fp(fileName.c_str(), "a");
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return errno;
     }
@@ -69,7 +69,7 @@ int BRcFile::SetValue(const char *key, int value)
     std::string str;
     BFilePtr fp(fileName.c_str(), "a");
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return errno;
     }
@@ -95,7 +95,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
         *isInteger = 1;
     }
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return errno;
     }
@@ -152,7 +152,7 @@ int BRcFile::Initialize()
 {
     BFilePtr fp(fileName.c_str(), "w");
 
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         return errno;
     }

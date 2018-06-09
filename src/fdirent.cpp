@@ -121,7 +121,7 @@ std::string FlexDirEntry::GetFileExt() const
 
     p = strchr(fileName.c_str(), '.');
 
-    if (p != NULL)
+    if (p != nullptr)
     {
         ext = ++p;
     }

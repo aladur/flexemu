@@ -152,7 +152,7 @@ wxMenu *FlexMenuFactory::CreateMenu(tFlxMenuId menuId)
 
         default:
             delete pMenu;
-            pMenu = NULL;
+            pMenu = nullptr;
     }
 
     return pMenu;

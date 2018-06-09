@@ -237,11 +237,11 @@ const char *Da6809::FlexLabel(Word addr)
             return "PRTOUT"; // printer output
 
         default:
-            return NULL;
+            return nullptr;
     }
 
 #endif // #ifdef FLEX_LABEL
-    return NULL;
+    return nullptr;
 }
 
 const char *Da6809::IndexedRegister(Byte which)
@@ -389,7 +389,7 @@ inline Byte Da6809::D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
             *(pMemory + 2));
     label = FlexLabel(offset);
 
-    if (label == NULL)
+    if (label == nullptr)
     {
         sprintf(mnem_buf, "%s #$%04X", mnemo, offset);
     }
@@ -620,7 +620,7 @@ inline Byte Da6809::D_Extended(const char *mnemo, Word pc, Byte bytes,
             *(pMemory + 1), *(pMemory + 2));
     label = FlexLabel(offset);
 
-    if (label == NULL)
+    if (label == nullptr)
     {
         sprintf(mnem_buf, "%s $%04X", mnemo, offset);
     }
@@ -654,7 +654,7 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
     sprintf(code_buf, "%04X: %02X %02X", pc, code, offset);
     label = FlexLabel(disp);
 
-    if (label == NULL)
+    if (label == nullptr)
     {
         sprintf(mnem_buf, "%s $%04X", mnemo, disp);
     }
@@ -689,7 +689,7 @@ inline Byte Da6809::D_RelativeL(
             *(pMemory + 1), *(pMemory + 2));
     label = FlexLabel(*pAddr);
 
-    if (label == NULL)
+    if (label == nullptr)
     {
         sprintf(mnem_buf, "%s $%04X", mnemo, (Word)*pAddr);
     }

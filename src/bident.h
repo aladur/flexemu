@@ -38,14 +38,14 @@ private:
 public:
 
     BIdentifier();
-    BIdentifier(DWord value, const char *pName = NULL);
+    BIdentifier(DWord value, const char *pName = nullptr);
     BIdentifier(const BIdentifier &id);
     ~BIdentifier(); // public destructor
 
     DWord   GetValue();
     DWord   GetKey();   // to be hashable
     std::string GetName();
-    void    SetTo(DWord value, const char *name = NULL);
+    void    SetTo(DWord value, const char *name = nullptr);
     BIdentifier &operator = (const BIdentifier &id);
     bool    operator < (const BIdentifier &d) const;
     bool    operator == (const BIdentifier &d) const;

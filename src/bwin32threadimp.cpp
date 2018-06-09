@@ -36,32 +36,32 @@
     #define _TTHREADPROC_DEFINED_
 #endif
 
-BWin32ThreadImp::BWin32ThreadImp() : pThreadObj(NULL), finished(false),
-    hThread(NULL), finishedEvent(NULL)
+BWin32ThreadImp::BWin32ThreadImp() : pThreadObj(nullptr), finished(false),
+    hThread(nullptr), finishedEvent(nullptr)
 {
-    finishedEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+    finishedEvent = CreateEvent(nullptr, TRUE, FALSE, nullptr);
 }
 
 BWin32ThreadImp::~BWin32ThreadImp()
 {
-    if (finishedEvent != NULL)
+    if (finishedEvent != nullptr)
     {
         CloseHandle(finishedEvent);
     }
 
-    finishedEvent = NULL;
+    finishedEvent = nullptr;
 
-    if (hThread != NULL)
+    if (hThread != nullptr)
     {
         CloseHandle(hThread);
     }
 
-    hThread = NULL;
+    hThread = nullptr;
 }
 
 void BWin32ThreadImp::Join()
 {
-    if (finishedEvent != NULL)
+    if (finishedEvent != nullptr)
     {
         WaitForSingleObject(finishedEvent, INFINITE);
     }
@@ -72,10 +72,10 @@ bool BWin32ThreadImp::Start(BThread *aThreadObject)
     DWORD threadId; // necessary for Win95/98/ME
 
     pThreadObj = aThreadObject;
-    hThread = CreateThread(NULL, 0, (tThreadProc)BWin32ThreadImp::RunImp,
+    hThread = CreateThread(nullptr, 0, (tThreadProc)BWin32ThreadImp::RunImp,
                            this, 0, &threadId);
     // return true if thread successfully has been created
-    return (hThread != NULL);
+    return (hThread != nullptr);
 }
 
 bool BWin32ThreadImp::IsFinished()
@@ -94,18 +94,18 @@ void BWin32ThreadImp::Exit(void *)
 // be called with Start(...)
 unsigned int BWin32ThreadImp::RunImp(BWin32ThreadImp *p)
 {
-    if (p != NULL)
+    if (p != nullptr)
     {
         p->finished = false;
 
-        if (p->pThreadObj != NULL)
+        if (p->pThreadObj != nullptr)
         {
             p->pThreadObj->Run();
         }
 
         p->finished = true;
 
-        if (p->finishedEvent != NULL)
+        if (p->finishedEvent != nullptr)
         {
             SetEvent(p->finishedEvent);
         }

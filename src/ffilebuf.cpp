@@ -31,14 +31,14 @@
 
 
 FlexFileBuffer::FlexFileBuffer(int n /* = 0 */) :
-    pBuffer(NULL), pDate(NULL), size(0), attributes(0), sectorMap(0)
+    pBuffer(nullptr), pDate(nullptr), size(0), attributes(0), sectorMap(0)
 {
     Realloc(n);
     memset(filename, 0, sizeof(filename));
 }
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
-    pBuffer(NULL), pDate(NULL), size(0), attributes(0), sectorMap(0)
+    pBuffer(nullptr), pDate(nullptr), size(0), attributes(0), sectorMap(0)
 
 {
     copyFrom(src);
@@ -50,16 +50,16 @@ FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
     {
         copyFrom(lhs);
 
-        if (lhs.pBuffer == NULL)
+        if (lhs.pBuffer == nullptr)
         {
             delete [] pBuffer;
-            pBuffer = NULL;
+            pBuffer = nullptr;
         }
 
-        if (lhs.pDate == NULL)
+        if (lhs.pDate == nullptr)
         {
             delete pDate;
-            pDate = NULL;
+            pDate = nullptr;
         }
     }
 
@@ -68,7 +68,7 @@ FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
 
 void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
 {
-    if (src.pBuffer != NULL)
+    if (src.pBuffer != nullptr)
     {
         Byte *newBuffer = new Byte[src.size];
         memcpy(newBuffer, src.pBuffer, src.size);
@@ -77,7 +77,7 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
         size       = src.size;
     }
 
-    if (src.pDate != NULL)
+    if (src.pDate != nullptr)
     {
         pDate = new BDate(*src.pDate);
     }
@@ -98,7 +98,7 @@ const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
 {
     if (offset + bytes > size)
     {
-        return NULL;
+        return nullptr;
     }
 
     return pBuffer + offset;
@@ -466,7 +466,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 {
     BFilePtr fp(path, "wb");
 
-    if (fp != NULL)
+    if (fp != nullptr)
     {
         size_t blocks = fwrite(pBuffer, GetSize(), 1, fp);
         return (blocks == 1);
@@ -495,7 +495,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
         Realloc(sbuf.st_size);
 
-        if (fp != NULL)
+        if (fp != nullptr)
         {
             size_t blocks = fread(pBuffer, GetSize(), 1, fp);
 
@@ -508,7 +508,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
                 sectorMap  = 0;
                 pf = strrchr(path, PATHSEPARATOR);
 
-                if (pf == NULL)
+                if (pf == nullptr)
                 {
                     pf = path;
                 }
@@ -541,12 +541,12 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
     strncpy(filename, afileName, 8);
     p = strrchr(filename, '.');
 
-    if (p != NULL)
+    if (p != nullptr)
     {
         *(const_cast<char *>(p)) = '\0';
     }
 
-    if (pe != NULL)
+    if (pe != nullptr)
     {
         char ext[5];
 

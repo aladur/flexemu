@@ -77,7 +77,7 @@ public:
     };
     FileContainerIf *end() const
     {
-        return NULL;
+        return nullptr;
     };
     FileContainerIteratorImp *IteratorFactory();
     bool    FindFile(const char *fileName, FlexDirEntry &entry);
@@ -87,7 +87,7 @@ public:
                           int clearMask = ~0);
     void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
-                         const char *fileName = NULL);
+                         const char *fileName = nullptr);
     bool    FileCopy(const char *sourceName, const char *destName,
                      FileContainerIf &destination);
 
@@ -96,8 +96,8 @@ private:
     DirectoryContainer();   // should not be used
     bool IsRandomFile(const char *ppath, const char *pfilename) const;
     bool IsFlexFilename(const char *pfilename,
-                        char *pname = NULL,
-                        char *pext = NULL) const;
+                        char *pname = nullptr,
+                        char *pext = nullptr) const;
     bool    SetDate(const char *fileName, const BDate &date);
     bool    SetRandom(const char *fileName);
     void Initialize_header(Byte wp);

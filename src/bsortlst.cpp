@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <string.h> // needed for declaration of NULL
+#include <string.h> // needed for declaration of nullptr
 #include "bsortlst.h"
 #include "bbintree.h"
 #include "bintervl.h"
@@ -28,8 +28,8 @@
 #include "buint.h"
 
 
-template <class Item>BSortedList<Item>::BSortedList() : pRoot(NULL),
-    pCurrentItem(NULL)
+template <class Item>BSortedList<Item>::BSortedList() : pRoot(nullptr),
+    pCurrentItem(nullptr)
 {
 }
 
@@ -42,8 +42,8 @@ template <class Item>Item BSortedList<Item>::GetFirst() const
 {
     if (!pRoot)
     {
-        pCurrentItem = NULL;
-        return *((Item *)NULL);
+        pCurrentItem = nullptr;
+        return *((Item *)nullptr);
     }
     else
     {
@@ -92,8 +92,8 @@ template <class Item>void BSortedList<Item>::Remove(const Item &i)
 template <class Item>void BSortedList<Item>::SetEmpty()
 {
     delete pRoot;
-    pRoot = NULL;
-    pCurrentItem = NULL;
+    pRoot = nullptr;
+    pCurrentItem = nullptr;
 }
 
 template <class Item>bool BSortedList<Item>::Contains(const Item &i) const

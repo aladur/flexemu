@@ -41,7 +41,7 @@ public:
     bool Stop();
     void Suspend(); // suspend thread until timer elapses
     void SetTimerProc(BTimerProc,
-                      void *x_p = NULL); // async func after timer elapses
+                      void *x_p = nullptr); // async func after timer elapses
 protected:
     static BTimer *instance;
     QWord dueTime;

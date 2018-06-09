@@ -42,7 +42,7 @@
 // uses its own implementation of getopt
 int optind = 1;
 int opterr = 0;
-char *optarg = NULL;
+char *optarg = nullptr;
 
 int getopt(int argc, char *const argv[], char *optstr)
 {
@@ -423,7 +423,7 @@ void FlexOptionManager::WriteOptions(
 )
 {
 #ifdef _WIN32
-    BRegistry *reg = NULL;
+    BRegistry *reg = nullptr;
     std::string   v;
 
     reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);

@@ -35,8 +35,8 @@
 
 
 E2floppy::E2floppy() :
-    status(0), drisel(0), selected(4), pfs(NULL),
-    pStatusMutex(NULL)
+    status(0), drisel(0), selected(4), pfs(nullptr),
+    pStatusMutex(nullptr)
 {
     Word i;
 
@@ -46,7 +46,7 @@ E2floppy::E2floppy() :
     for (i = 0; i <= 4; i++)
     {
         track[i] = 1; // position all drives to track != 0  !!!
-        floppy[i] = NULL;
+        floppy[i] = nullptr;
         driveStatus[i] = DISK_STAT_EMPTY;
     }
 
@@ -60,13 +60,13 @@ E2floppy::~E2floppy()
     {
         pStatusMutex->lock();
 
-        if (floppy[i] != NULL)
+        if (floppy[i] != nullptr)
         {
             try
             {
                 floppy[i]->Close();
                 delete floppy[i];
-                floppy[i] = NULL;
+                floppy[i] = nullptr;
             }
             catch (...)
             {
@@ -78,14 +78,14 @@ E2floppy::~E2floppy()
     }
 
     delete pStatusMutex;
-    pStatusMutex = NULL;
+    pStatusMutex = nullptr;
 } // ~E2floppy
 
 bool E2floppy::umount_drive(Word drive_nr)
 {
     FileContainerIfSector *pfloppy;
 
-    if (drive_nr > 3 || (pfloppy = floppy[drive_nr]) == NULL)
+    if (drive_nr > 3 || (pfloppy = floppy[drive_nr]) == nullptr)
     {
         return 0;
     }
@@ -96,7 +96,7 @@ bool E2floppy::umount_drive(Word drive_nr)
     {
         pfloppy->Close();
         delete pfloppy;
-        floppy[drive_nr] = NULL;
+        floppy[drive_nr] = nullptr;
         driveStatus[drive_nr] = DISK_STAT_EMPTY;
     }
     catch (FlexException &)
@@ -111,15 +111,15 @@ bool E2floppy::umount_drive(Word drive_nr)
 bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 {
     int i = 0;
-    FileContainerIfSector   *pfloppy = NULL;
+    FileContainerIfSector   *pfloppy = nullptr;
 
-    if (drive_nr > 3 || path == NULL || strlen(path) == 0)
+    if (drive_nr > 3 || path == nullptr || strlen(path) == 0)
     {
         return false;
     }
 
     // check if already mounted
-    if (floppy[drive_nr] != NULL)
+    if (floppy[drive_nr] != nullptr)
     {
         return false;
     }
@@ -206,7 +206,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         pStatusMutex->lock();
         floppy[drive_nr] = pfloppy;
 
-        if (pfloppy != NULL)
+        if (pfloppy != nullptr)
         {
             driveStatus[drive_nr] = DISK_STAT_ACTIVE;
             pStatusMutex->unlock();
@@ -227,7 +227,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         containerPath += path;
     } // for
 
-    return (pfloppy != NULL);
+    return (pfloppy != nullptr);
 } // mount_drive
 
 void E2floppy::disk_directory(const char *x_disk_dir)
@@ -245,7 +245,7 @@ void E2floppy::mount_all_drives(std::string drive[])
     }
 
     selected = 4;           // deselect all drives
-    pfs = NULL;
+    pfs = nullptr;
 }  // mount_all_drives
 
 bool E2floppy::umount_all_drives()
@@ -264,7 +264,7 @@ bool E2floppy::umount_all_drives()
     return result;
 }  // umount_all_drives
 
-// get info for corresponding drive or NULL
+// get info for corresponding drive or nullptr
 // the info string should not exceed 512 Bytes
 // it is dynamically allocated and should be freed
 // by the calling program
@@ -279,7 +279,7 @@ std::string E2floppy::drive_info(Word drive_nr)
 
         pStatusMutex->lock();
 
-        if ((pfl = floppy[drive_nr]) == NULL)
+        if ((pfl = floppy[drive_nr]) == nullptr)
         {
             str << "drive #" << drive_nr << " not ready" << std::endl;
         }
@@ -339,7 +339,7 @@ bool E2floppy::update_all_drives()
     {
         FileContainerIfSector *pfloppy = floppy[i];
 
-        if (pfloppy == NULL)
+        if (pfloppy == nullptr)
             // no error if drive not ready
         {
             continue;
@@ -365,7 +365,7 @@ bool E2floppy::update_drive(Word drive_nr)
 
     pfloppy = floppy[drive_nr];
 
-    if (pfloppy == NULL)
+    if (pfloppy == nullptr)
         // error if drive not ready
     {
         return false;
@@ -452,7 +452,7 @@ void E2floppy::writeIo(Word offset, Byte val)
 
 Byte E2floppy::readByte(Word index)
 {
-    if (pfs == NULL)
+    if (pfs == nullptr)
     {
         return 0;
     }
@@ -497,7 +497,7 @@ void E2floppy::writeByte(Word index)
 
 bool E2floppy::isRecordNotFound()
 {
-    if (pfs == NULL)
+    if (pfs == nullptr)
     {
         return true;
     }
@@ -507,7 +507,7 @@ bool E2floppy::isRecordNotFound()
 
 bool E2floppy::isSeekError(Byte new_track)
 {
-    if (pfs == NULL)
+    if (pfs == nullptr)
     {
         return true;
     }
@@ -517,12 +517,12 @@ bool E2floppy::isSeekError(Byte new_track)
 
 bool E2floppy::isDriveReady() const
 {
-    return pfs != NULL;
+    return pfs != nullptr;
 }  // isDriveReady
 
 bool E2floppy::isWriteProtect()
 {
-    if (pfs == NULL)
+    if (pfs == nullptr)
     {
         return true;
     }
@@ -552,7 +552,7 @@ void E2floppy::get_drive_status(tDiskStatus stat[4])
 bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
                            int type /* = TYPE_DSK_CONTAINER */)
 {
-    FileContainerIfSector *pfloppy = NULL;
+    FileContainerIfSector *pfloppy = nullptr;
 
     try
     {

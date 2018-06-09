@@ -31,7 +31,7 @@
     {\
         FILE *logfp;\
         logfp = fopen(DEBUG_FILE, "a");\
-        if (logfp != NULL) {\
+        if (logfp != nullptr) {\
             print_line;\
             fclose(logfp);\
         }\
