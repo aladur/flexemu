@@ -93,7 +93,6 @@ public:
     AbstractGui *create_gui(int type);
     static void s_exec_signal(int sig_no);
 
-    void    reset();
     void    init(Word reset_key);
     void    update_1_second();
     void    set_bell(Word x_percent);

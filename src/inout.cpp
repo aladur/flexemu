@@ -66,19 +66,14 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     video(nullptr), schedy(nullptr)
 {
     instance = this;
-    reset();
+    reset_parallel();
+    reset_serial();
+    reset_joystick();
 }
 
 Inout::~Inout()
 {
     delete gui;
-}
-
-void Inout::reset()
-{
-    reset_parallel();
-    reset_serial();
-    reset_joystick();
 }
 
 void Inout::reset_parallel()
