@@ -205,6 +205,7 @@
     <ClCompile Include="iffilcnt.cpp" />
     <ClCompile Include="ifilecnt.cpp" />
     <ClCompile Include="inout.cpp" />
+    <ClCompile Include="joystick.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mc146818.cpp" />
     <ClCompile Include="mc6809.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="btimer.h" />
     <ClInclude Include="bwin32threadimp.h" />
     <ClInclude Include="cacttrns.h" />
+    <ClInclude Include="classdef.h" />
     <ClInclude Include="clogfile.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="confignt.h" />
@@ -293,6 +295,7 @@
     <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="inout.h" />
     <ClInclude Include="iodevice.h" />
+    <ClCompile Include="joystick.h" />
     <ClInclude Include="mc146818.h" />
     <ClInclude Include="mc6809.h" />
     <ClInclude Include="mc6809st.h" />

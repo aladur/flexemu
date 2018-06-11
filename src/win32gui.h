@@ -258,7 +258,7 @@ public:
     // Public constructor and destructor
 public:
     Win32Gui(
-        Mc6809 *, Memory *, Scheduler *, Inout *, E2video *,
+        Mc6809 *, Memory *, Scheduler *, Inout *, E2video *, JoystickIOPtr,
         struct sGuiOptions *);
     virtual ~Win32Gui();
 

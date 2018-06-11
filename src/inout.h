@@ -34,6 +34,8 @@
 #include <string>
 #include <deque>
 #include <mutex>
+#include <memory>
+#include "classdef.h"
 
 #define KEY_BUFFER_SIZE (8)
 #define BELL        (0x07)
@@ -90,7 +92,7 @@ public:
     void    set_pia1(Mc6821 *x_device);
     void    set_video(E2video *x_video);
     void    set_scheduler(Scheduler *x_sched);
-    AbstractGui *create_gui(int type);
+    AbstractGui *create_gui(int type, JoystickIOPtr joystickIO);
     static void s_exec_signal(int sig_no);
 
     void    init(Word reset_key);

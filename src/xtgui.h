@@ -293,6 +293,7 @@ public:
         Scheduler *x_sched,
         Inout *x_io,
         E2video *x_video,
+        JoystickIOPtr x_joystickIO,
         struct sGuiOptions *options);
     virtual ~XtGui();
 };

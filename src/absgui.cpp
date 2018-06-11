@@ -31,6 +31,7 @@
 #include "inout.h"
 #include "schedule.h"
 #include "mc6809st.h"
+#include "joystick.h"
 
 Word internal_c2bt[8] =
 {
@@ -946,9 +947,11 @@ AbstractGui::AbstractGui(
     Scheduler *x_sched,
     Inout     *x_io,
     E2video   *x_video,
+    JoystickIOPtr x_joystickIO,
     struct sGuiOptions *x_pOptions) :
     cpu(x_cpu), memory(x_memory), schedy(x_sched), io(x_io),
-    e2video(x_video), pOptions(x_pOptions), exit_flag(false),
+    e2video(x_video), joystickIO(std::move(x_joystickIO)), pOptions(x_pOptions),
+    exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {
     if (e2video != nullptr)

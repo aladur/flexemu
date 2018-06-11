@@ -30,7 +30,9 @@
 
 #include "e2.h"
 #include "sguiopts.h"
+#include "classdef.h"
 #include <string>
+#include <memory>
 
 #ifdef _WIN32
     #define COPYTEXT "press Licence button"
@@ -70,6 +72,7 @@ protected:
     Scheduler *schedy;
     Inout *io; // pointer to io-class handling in/output
     E2video *e2video;// pointer to video control registers
+    JoystickIOPtr joystickIO; // pointer to joystick ctrl.
     const char *program_name;
     unsigned char unused_block[YBLOCK_SIZE];
     int switch_sp;
@@ -132,6 +135,7 @@ public:
         Scheduler *x_sched,
         Inout *x_io,
         E2video *x_video,
+        JoystickIOPtr x_joystickIO,
         struct sGuiOptions *options);
     virtual ~AbstractGui();
 

@@ -41,6 +41,7 @@
 #include "clogfile.h"
 #include "mc6809.h"
 #include "mc6809st.h"
+#include "joystick.h"
 
 #define  TIMER_UPDATE       (20)  // update rate in ms
 #define STATUSBAR_HEIGHT    (28)
@@ -1912,8 +1913,10 @@ Win32Gui::Win32Gui(
     Scheduler *x_sched,
     Inout  *x_io,
     E2video *x_video,
+    JoystickIOPtr x_joystickIO,
     struct sGuiOptions *pOptions) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, pOptions),
+    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystick),
+                pOptions),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {
     initialize(pOptions);

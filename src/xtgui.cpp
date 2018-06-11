@@ -39,6 +39,7 @@
 #include "inout.h"
 #include "schedule.h"
 #include "mc6809st.h"
+#include "joystick.h"
 
 #include "bitmaps/ok.xbm"
 #include "bitmaps/flexmain.xbm"
@@ -1695,8 +1696,10 @@ XtGui::XtGui(
     Scheduler *x_sched,
     Inout *x_io,
     E2video *x_video,
+    JoystickIOPtr x_joystickIO,
     struct sGuiOptions *pOptions) :
-    XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, pOptions)
+    XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystickIO),
+                 pOptions)
 {
     initialize(pOptions);
 }

@@ -48,6 +48,7 @@
 #include "mc6809.h"
 #include "inout.h"
 #include "schedule.h"
+#include "joystick.h"
 
 void XAbstractGui::initialize(struct sGuiOptions *pOptions)
 {
@@ -758,8 +759,10 @@ XAbstractGui::XAbstractGui(
     Scheduler *x_sched,
     Inout     *x_io,
     E2video   *x_video,
+    JoystickIOPtr x_joystickIO,
     struct sGuiOptions *pOptions) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, pOptions),
+    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystickIO),
+                pOptions),
     cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
 {
 }

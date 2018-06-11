@@ -52,6 +52,7 @@
 #include "schedule.h"
 #include "flexerr.h"
 #include "fileread.h"
+#include "joystick.h"
 
 
 // define an exception handler when new fails
@@ -94,6 +95,7 @@ bool startup(
     Memory      *memory;
     int error;
 
+    auto joystickIO = std::make_shared<JoystickIO>();
     memory            = new Memory(pOptions->isHiMem);
     *cpu              = new Mc6809(memory);
     *disassembler     = new Da6809();
@@ -115,7 +117,7 @@ bool startup(
     device            = new Pia1(*io, *cpu);
     memory->add_io_device(device, PIA1_BASE, PIA1_MASK, 0, 0);
     (*io)->set_pia1((Mc6821 *)device);
-    device            = new Pia2(*io, *cpu);
+    device            = new Pia2(*io, *cpu, joystickIO);
     memory->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
     E2floppy *fdc     = new E2floppy();
     fdc->disk_directory(pOptions->disk_dir.c_str());
@@ -134,7 +136,7 @@ bool startup(
 
     if (!(pOptions->term_mode && (*io)->is_terminal_supported()))
     {
-        (*io)->create_gui(pGuiOptions->guiType);
+        (*io)->create_gui(pGuiOptions->guiType, joystickIO);
     }
 
     // instanciate real time clock right before initialize alarm

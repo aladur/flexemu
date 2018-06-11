@@ -31,6 +31,7 @@
 #include "absgui.h"
 #include "cacttrns.h"
 #include "schedule.h"
+#include "joystick.h"
 
 #ifdef HAVE_XTK
     #include "xtgui.h"
@@ -335,10 +336,11 @@ void Inout::set_scheduler(Scheduler *x_sched)
     schedy = x_sched;
 }
 
-AbstractGui *Inout::create_gui(int type)
+AbstractGui *Inout::create_gui(int type, JoystickIOPtr joystickIO)
 {
 #ifdef UNIT_TEST
     (void)type;
+    (void)joystickIO;
 #else
     if (video != nullptr)
     {
@@ -350,14 +352,15 @@ AbstractGui *Inout::create_gui(int type)
 #ifdef HAVE_XTK
 
                 case GUI_XTOOLKIT:
-                    gui = new XtGui(cpu, memory, schedy, this, video, options);
+                    gui = new XtGui(cpu, memory, schedy, this, video,
+                                    std::move(joystickIO), options);
                     break;
 #endif
 #ifdef _WIN32
 
                 case GUI_WINDOWS:
                     gui = new Win32Gui(cpu, memory, schedy, this, video,
-                                       options);
+                                       std::move(joystickIO), options);
                     break;
 #endif
             }
