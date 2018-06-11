@@ -21,7 +21,6 @@
 */
 
 
-//#include "misc1.h"
 #include "joystick.h"
 
 
@@ -79,4 +78,3 @@ void JoystickIO::put_joystick(unsigned int x_buttonMask)
     std::lock_guard<std::mutex> guard(joystick_mutex);
     buttonMask = x_buttonMask;
 }
-

@@ -295,7 +295,7 @@
     <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="inout.h" />
     <ClInclude Include="iodevice.h" />
-    <ClCompile Include="joystick.h" />
+    <ClInclude Include="joystick.h" />
     <ClInclude Include="mc146818.h" />
     <ClInclude Include="mc6809.h" />
     <ClInclude Include="mc6809st.h" />

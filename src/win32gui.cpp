@@ -1915,7 +1915,7 @@ Win32Gui::Win32Gui(
     E2video *x_video,
     JoystickIOPtr x_joystickIO,
     struct sGuiOptions *pOptions) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystick),
+    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystickIO),
                 pOptions),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {
