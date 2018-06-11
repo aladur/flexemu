@@ -34,6 +34,7 @@
     #include "wd1793.h"
     #include "filecnts.h"
     #include <string>
+    #include <mutex>
 
 #else
     #include "typedefs.h"
@@ -41,7 +42,6 @@
 
 #ifndef __fromflex__
 
-class BMutex;
 
 class E2floppy : public Wd1793
 {
@@ -72,7 +72,7 @@ protected:
     tDiskStatus     driveStatus[5];
     char            sector_buffer[256];
     const char      *disk_dir;
-    BMutex          *pStatusMutex;
+    std::mutex      status_mutex;
 
     // constructor/destructor
 public:

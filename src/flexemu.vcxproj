@@ -177,7 +177,6 @@
     <ClCompile Include="benv.cpp" />
     <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="bmembuf.cpp" />
-    <ClCompile Include="bmutex.cpp" />
     <ClCompile Include="brcfile.cpp" />
     <ClCompile Include="bregistr.cpp" />
     <ClCompile Include="bthread.cpp" />
@@ -256,7 +255,6 @@
     <ClInclude Include="bfileptr.h" />
     <ClInclude Include="bjoystck.h" />
     <ClInclude Include="bmembuf.h" />
-    <ClInclude Include="bmutex.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="bsingle.h" />

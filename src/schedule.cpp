@@ -31,12 +31,10 @@
 #include "inout.h"
 #include "btime.h"
 #include "btimer.h"
-#include "bmutex.h"
 #include "bcommand.h"
 
 
 Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
-    commandMutex(nullptr), statusMutex(nullptr), irqStatMutex(nullptr),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
     time0sec(0), cpu(nullptr), io(nullptr), systemTime(nullptr),
     pCurrent_status(nullptr),
@@ -62,9 +60,6 @@ Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
         command[i] = nullptr;
     }
 
-    commandMutex       = new BMutex;
-    statusMutex    = new BMutex;
-    irqStatMutex  = new BMutex;
     systemTime = new BTime;
 }
 
@@ -73,23 +68,20 @@ Scheduler::~Scheduler()
     int i;
 
     BTimer::Instance()->Stop();
-    commandMutex->lock();
 
+    command_mutex.lock();
     for (i = 0; i < MAX_COMMANDS; i++)
     {
         delete command[i];
     }
+    command_mutex.unlock();
 
-    commandMutex->unlock();
-    statusMutex->lock();
+    status_mutex.lock();
     delete pCurrent_status;
     pCurrent_status = nullptr;
-    statusMutex->unlock();
+    status_mutex.unlock();
 
     delete systemTime;
-    delete irqStatMutex;
-    delete statusMutex;
-    delete commandMutex;
 }
 
 void Scheduler::set_new_state(Byte x_user_input)
@@ -110,9 +102,9 @@ void Scheduler::process_events()
     {
         if (events & DO_TIMER)
         {
-            irqStatMutex->lock();
+            irq_status_mutex.lock();
             cpu->get_interrupt_status(interrupt_status);
-            irqStatMutex->unlock();
+            irq_status_mutex.unlock();
             QWord time1sec = systemTime->GetTimeUsll();
             total_cycles = cpu->get_cycles(true);
 
@@ -140,7 +132,7 @@ void Scheduler::process_events()
 
         if (events & DO_SET_STATUS)
         {
-            statusMutex->lock();
+            std::lock_guard<std::mutex> guard(status_mutex);
 
             if (io->is_gui_present() && pCurrent_status == nullptr)
             {
@@ -150,8 +142,6 @@ void Scheduler::process_events()
                 pCurrent_status->freq   = frequency;
                 pCurrent_status->state  = state;
             }
-
-            statusMutex->unlock();
         }
 
         if (events & DO_SYNCEXEC)
@@ -324,7 +314,7 @@ void Scheduler::sync_exec(BCommand *newCommand)
 {
     int i = 0;
 
-    commandMutex->lock();
+    std::lock_guard<std::mutex> guard(command_mutex);
 
     while (command[i] != nullptr && i < MAX_COMMANDS - 1)
     {
@@ -337,8 +327,6 @@ void Scheduler::sync_exec(BCommand *newCommand)
         events |= DO_SYNCEXEC;
         cpu->exit_run();
     }
-
-    commandMutex->unlock();
 }
 
 void Scheduler::Execute()
@@ -347,7 +335,7 @@ void Scheduler::Execute()
 
     // use a static list for performance reasons
     // after execution delete the command from the list
-    commandMutex->lock();
+    std::lock_guard<std::mutex> guard(command_mutex);
 
     while (command[i] != nullptr)
     {
@@ -358,16 +346,14 @@ void Scheduler::Execute()
     }
 
     events &= ~DO_SYNCEXEC;
-    commandMutex->unlock();
 }
 
 bool Scheduler::status_available()
 {
     bool result;
 
-    statusMutex->lock();
+    std::lock_guard<std::mutex> guard(status_mutex);
     result = (pCurrent_status != nullptr);
-    statusMutex->unlock();
 
     return result;
 }
@@ -376,7 +362,7 @@ CpuStatus *Scheduler::get_status()
 {
     CpuStatus *stat = nullptr;
 
-    statusMutex->lock();
+    std::lock_guard<std::mutex> guard(status_mutex);
 
     if (pCurrent_status != nullptr)
     {
@@ -384,15 +370,13 @@ CpuStatus *Scheduler::get_status()
         pCurrent_status = nullptr;
     }
 
-    statusMutex->unlock();
     return stat;
 }
 
 void Scheduler::get_interrupt_status(tInterruptStatus &stat)
 {
-    irqStatMutex->lock();
+    std::lock_guard<std::mutex> guard(irq_status_mutex);
     memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
-    irqStatMutex->unlock();
 }
 
 //#define DEBUG_FILE "time.txt"

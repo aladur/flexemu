@@ -30,17 +30,14 @@
 #include "ndircont.h"
 #include "fcinfo.h"
 #include "flexerr.h"
-#include "bmutex.h"
 #include "bdir.h"
 
 
 E2floppy::E2floppy() :
-    status(0), drisel(0), selected(4), pfs(nullptr),
-    pStatusMutex(nullptr)
+    status(0), drisel(0), selected(4), pfs(nullptr)
 {
     Word i;
 
-    pStatusMutex = new BMutex();
     disk_dir = "";
 
     for (i = 0; i <= 4; i++)
@@ -56,10 +53,10 @@ E2floppy::E2floppy() :
 
 E2floppy::~E2floppy()
 {
+    std::lock_guard<std::mutex> guard(status_mutex);
+
     for (int i = 0; i < 4; i++)
     {
-        pStatusMutex->lock();
-
         if (floppy[i] != nullptr)
         {
             try
@@ -67,18 +64,14 @@ E2floppy::~E2floppy()
                 floppy[i]->Close();
                 delete floppy[i];
                 floppy[i] = nullptr;
+                driveStatus[i] = DISK_STAT_EMPTY;
             }
             catch (...)
             {
                 // ignore errors
             }
         }
-
-        pStatusMutex->unlock();
     }
-
-    delete pStatusMutex;
-    pStatusMutex = nullptr;
 } // ~E2floppy
 
 bool E2floppy::umount_drive(Word drive_nr)
@@ -90,7 +83,7 @@ bool E2floppy::umount_drive(Word drive_nr)
         return 0;
     }
 
-    pStatusMutex->lock();
+    std::lock_guard<std::mutex> guard(status_mutex);
 
     try
     {
@@ -104,7 +97,6 @@ bool E2floppy::umount_drive(Word drive_nr)
         // ignore errors
     }
 
-    pStatusMutex->unlock();
     return 1;
 } // umount_drive
 
@@ -203,17 +195,14 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 }
             }
 
-        pStatusMutex->lock();
+        std::lock_guard<std::mutex> guard(status_mutex);
         floppy[drive_nr] = pfloppy;
 
         if (pfloppy != nullptr)
         {
             driveStatus[drive_nr] = DISK_STAT_ACTIVE;
-            pStatusMutex->unlock();
             return true;
         }
-
-        pStatusMutex->unlock();
 
         // second try with path within disk_dir directory
         containerPath = disk_dir;
@@ -275,9 +264,8 @@ std::string E2floppy::drive_info(Word drive_nr)
 
     if (drive_nr <= 3)
     {
+        std::lock_guard<std::mutex> guard(status_mutex);
         FileContainerIfSector *pfl;
-
-        pStatusMutex->lock();
 
         if ((pfl = floppy[drive_nr]) == nullptr)
         {
@@ -295,7 +283,6 @@ std::string E2floppy::drive_info(Word drive_nr)
             catch (FlexException &ex)
             {
                 str << ex.what() << std::endl;
-                pStatusMutex->unlock();
                 return str.str().c_str();
             }
 
@@ -308,14 +295,11 @@ std::string E2floppy::drive_info(Word drive_nr)
                 << "sectors:    " << sec << std::endl
                 << "write-prot: " << (pfl->IsWriteProtected() ? "yes" : "no")
                 << std::endl;
-
         }
-
-        pStatusMutex->unlock();
     }
 
     return str.str().c_str();
-} // drive_info
+}
 
 const char *E2floppy::open_mode(char *path)
 {
@@ -457,7 +441,7 @@ Byte E2floppy::readByte(Word index)
         return 0;
     }
 
-    pStatusMutex->lock();
+    std::lock_guard<std::mutex> guard(status_mutex);
 
     if (index == pfs->GetBytesPerSector())
     {
@@ -467,32 +451,28 @@ Byte E2floppy::readByte(Word index)
         {
             setStatusRecordNotFound();
         }
-    } // if
+    }
 
-    pStatusMutex->unlock();
     return sector_buffer[SECTOR_SIZE - index];
-} // readByte
+}
 
 
 void E2floppy::writeByte(Word index)
 {
-    //unsigned int error;
+    std::lock_guard<std::mutex> guard(status_mutex);
 
     sector_buffer[SECTOR_SIZE - index] = getDataRegister();
 
     if (index == 1)
     {
-        pStatusMutex->lock();
         driveStatus[selected] = DISK_STAT_ACTIVE;
 
         if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
             setStatusRecordNotFound();
         }
-
-        pStatusMutex->unlock();
-    } // if
-} // writeByte
+    }
+}
 
 
 bool E2floppy::isRecordNotFound()
@@ -534,7 +514,7 @@ void E2floppy::get_drive_status(tDiskStatus stat[4])
 {
     Word i;
 
-    pStatusMutex->lock();
+    std::lock_guard<std::mutex> guard(status_mutex);
 
     for (i = 0; i < 4; ++i)
     {
@@ -545,8 +525,6 @@ void E2floppy::get_drive_status(tDiskStatus stat[4])
             driveStatus[i] = DISK_STAT_INACTIVE;
         }
     }
-
-    pStatusMutex->unlock();
 }
 
 bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,

@@ -29,7 +29,6 @@
 #include "mc6821.h"
 #include "mc146818.h"
 #include "absgui.h"
-#include "bmutex.h"
 #include "cacttrns.h"
 #include "schedule.h"
 
@@ -64,19 +63,15 @@ void Inout::s_exec_signal(int sig_no)
 Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     cpu(x_cpu), options(x_options), gui(nullptr),
     fdc(nullptr), memory(nullptr), rtc(nullptr), pia1(nullptr),
-    video(nullptr), schedy(nullptr), pmutex(nullptr), jmutex(nullptr)
+    video(nullptr), schedy(nullptr)
 {
     instance = this;
-    pmutex = new BMutex;
-    jmutex = new BMutex;
     reset();
 }
 
 Inout::~Inout()
 {
     delete gui;
-    delete jmutex;
-    delete pmutex;
 }
 
 void Inout::reset()
@@ -88,26 +83,23 @@ void Inout::reset()
 
 void Inout::reset_parallel()
 {
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(parallel_mutex);
     key_buffer_parallel.clear();
-    pmutex->unlock();
 }
 
 void Inout::reset_serial()
 {
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(serial_mutex);
     key_buffer_serial.clear();
-    pmutex->unlock();
 }
 
 void Inout::reset_joystick()
 {
-    jmutex->lock();
+    std::lock_guard<std::mutex> guard(joystick_mutex);
     deltaX           = 0;
     deltaY           = 0;
     buttonMask       = 0;
     newValues        = 0;
-    jmutex->unlock();
 }
 
 void Inout::get_drive_status(tDiskStatus status[4])
@@ -132,7 +124,7 @@ bool Inout::get_joystick(int *pDeltaX, int *pDeltaY, unsigned int *pButtonMask)
 {
     bool result;
 
-    jmutex->lock();
+    std::lock_guard<std::mutex> guard(joystick_mutex);
     result = newValues;
 
     if (pDeltaX     != nullptr)
@@ -151,24 +143,21 @@ bool Inout::get_joystick(int *pDeltaX, int *pDeltaY, unsigned int *pButtonMask)
     }
 
     newValues  = false;
-    jmutex->unlock();
     return result;
 }
 
 void Inout::put_joystick(int x_deltaX, int x_deltaY)
 {
-    jmutex->lock();
+    std::lock_guard<std::mutex> guard(joystick_mutex);
     deltaX     = x_deltaX;
     deltaY     = x_deltaY;
     newValues  = true;
-    jmutex->unlock();
 }
 
 void Inout::put_joystick(unsigned int x_buttonMask)
 {
-    jmutex->lock();
+    std::lock_guard<std::mutex> guard(joystick_mutex);
     buttonMask = x_buttonMask;
-    jmutex->unlock();
 }
 
 void Inout::init(Word reset_key)
@@ -452,23 +441,21 @@ void Inout::exec_signal(int sig_no)
 
 void Inout::put_char_parallel(Byte key)
 {
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(parallel_mutex);
     bool was_empty = key_buffer_parallel.empty();
     key_buffer_parallel.push_back(key);
     if (was_empty && pia1 != nullptr)
     {
         schedy->sync_exec(new CActiveTransition(*pia1, CA1));
     }
-    pmutex->unlock();
 }
 
 bool Inout::has_key_parallel()
 {
     bool result;
 
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(parallel_mutex);
     result = !key_buffer_parallel.empty();
-    pmutex->unlock();
 
     return result;
 }
@@ -479,7 +466,7 @@ Byte Inout::read_char_parallel()
 {
     Byte result = 0x00;
 
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(parallel_mutex);
     if (!key_buffer_parallel.empty())
     {
         result = key_buffer_parallel.front();
@@ -492,7 +479,6 @@ Byte Inout::read_char_parallel()
             schedy->sync_exec(new CActiveTransition(*pia1, CA1));
         }
     }
-    pmutex->unlock();
 
     return result;
 }
@@ -503,19 +489,18 @@ Byte Inout::peek_char_parallel()
 {
     Byte result = 0x00;
 
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(parallel_mutex);
     if (!key_buffer_parallel.empty())
     {
         result = key_buffer_parallel.front();
     }
-    pmutex->unlock();
 
     return result;
 }
 
 void Inout::put_char_serial(Byte key)
 {
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(serial_mutex);
     // convert back space character
 #ifdef HAVE_TERMIOS_H
 #ifdef VERASE
@@ -529,7 +514,6 @@ void Inout::put_char_serial(Byte key)
 #endif // #ifdef HAVE_TERMIOS_H
 
     key_buffer_serial.push_back(key);
-    pmutex->unlock();
 }
 
 // poll serial port for input character.
@@ -562,13 +546,12 @@ Byte Inout::read_char_serial()
 {
     Byte result = 0x00;
 
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(serial_mutex);
     if (!key_buffer_serial.empty())
     {
         result = key_buffer_serial.front();
         key_buffer_serial.pop_front();
     }
-    pmutex->unlock();
 
     return result;
 }
@@ -579,12 +562,11 @@ Byte Inout::peek_char_serial()
 {
     Byte result = 0x00;
 
-    pmutex->lock();
+    std::lock_guard<std::mutex> guard(serial_mutex);
     if (!key_buffer_serial.empty())
     {
         result = key_buffer_serial.front();
     }
-    pmutex->unlock();
 
     return result;
 }

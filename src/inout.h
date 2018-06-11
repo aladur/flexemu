@@ -33,6 +33,7 @@
 #include "flexemu.h"
 #include <string>
 #include <deque>
+#include <mutex>
 
 #define KEY_BUFFER_SIZE (8)
 #define BELL        (0x07)
@@ -44,7 +45,6 @@
 #define SHIFT_KEY   (8)
 #define CONTROL_KEY (16)
 
-class BMutex;
 class E2floppy;
 class Mc6809;
 class Memory;
@@ -114,7 +114,8 @@ public:
     void    put_char_parallel(Byte key);
     bool    is_terminal_supported();
 protected:
-    BMutex  *pmutex;
+    std::mutex parallel_mutex;
+    std::mutex serial_mutex;
 
     // serial I/O (e.g. terminal)
 public:
@@ -140,7 +141,7 @@ protected:
     int deltaX, deltaY;
     unsigned int buttonMask;
     bool    newValues;
-    BMutex  *jmutex;
+    std::mutex joystick_mutex;
 
     // Private Interfaces
 private:

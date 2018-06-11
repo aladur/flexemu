@@ -20,7 +20,6 @@
 */
 
 #include "misc1.h"
-#include "bmutex.h"
 
 typedef void (*BTimerProc)(void *p);
 

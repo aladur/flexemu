@@ -39,9 +39,6 @@
     <ClCompile Include="bmembuf.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="bmutex.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="brcfile.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -259,9 +256,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bmembuf.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bmutex.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="brcfile.h">

@@ -27,6 +27,7 @@
 
 #include "misc1.h"
 #include <signal.h>
+#include <mutex>
 #include "bthread.h"
 #include "cpustate.h"
 #include "schedcpu.h"
@@ -38,7 +39,6 @@
 #define MAX_COMMANDS            10
 
 
-class BMutex;
 class BCommand;
 class BTime;
 class BTimer;
@@ -70,9 +70,9 @@ public:
 protected:
     void        Execute();
     virtual void    Run();
-    BMutex          *commandMutex;
-    BMutex          *statusMutex;
-    BMutex           *irqStatMutex;
+    std::mutex      command_mutex;
+    std::mutex      status_mutex;
+    std::mutex      irq_status_mutex;
     BCommand        *command[MAX_COMMANDS];
 
     // Timer interface:

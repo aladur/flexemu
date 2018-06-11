@@ -133,14 +133,14 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bmembuf.$(OBJEXT) flexemu-bregistr.$(OBJEXT) \
 	flexemu-bthread.$(OBJEXT) flexemu-bthreadfactory.$(OBJEXT) \
 	flexemu-bthreadimp.$(OBJEXT) flexemu-bposixthreadimp.$(OBJEXT) \
-	flexemu-bmutex.$(OBJEXT) flexemu-bcommand.$(OBJEXT) \
-	flexemu-cacttrns.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
-	flexemu-btime.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
-	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
-	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
-	flexemu-iffilcnt.$(OBJEXT) flexemu-fileread.$(OBJEXT) \
-	flexemu-bwin32threadimp.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-buint.$(OBJEXT) flexemu-cvtwchar.$(OBJEXT)
+	flexemu-bcommand.$(OBJEXT) flexemu-cacttrns.$(OBJEXT) \
+	flexemu-csetfreq.$(OBJEXT) flexemu-btime.$(OBJEXT) \
+	flexemu-schedule.$(OBJEXT) flexemu-btimer.$(OBJEXT) \
+	flexemu-clogfile.$(OBJEXT) flexemu-bfileptr.$(OBJEXT) \
+	flexemu-ifilecnt.$(OBJEXT) flexemu-iffilcnt.$(OBJEXT) \
+	flexemu-fileread.$(OBJEXT) flexemu-bwin32threadimp.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT) \
+	flexemu-cvtwchar.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -186,10 +186,10 @@ am_test_OBJECTS = test-testmain.$(OBJEXT) test-test_gccasm.$(OBJEXT) \
 	test-mc6809.$(OBJEXT) test-mc6809in.$(OBJEXT) \
 	test-misc1.$(OBJEXT) test-bthread.$(OBJEXT) \
 	test-bthreadfactory.$(OBJEXT) test-bthreadimp.$(OBJEXT) \
-	test-bposixthreadimp.$(OBJEXT) test-bmutex.$(OBJEXT) \
-	test-bcommand.$(OBJEXT) test-btime.$(OBJEXT) \
-	test-schedule.$(OBJEXT) test-btimer.$(OBJEXT) \
-	test-clogfile.$(OBJEXT) test-mc6809st.$(OBJEXT)
+	test-bposixthreadimp.$(OBJEXT) test-bcommand.$(OBJEXT) \
+	test-btime.$(OBJEXT) test-schedule.$(OBJEXT) \
+	test-btimer.$(OBJEXT) test-clogfile.$(OBJEXT) \
+	test-mc6809st.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_DEPENDENCIES =
 test_LINK = $(CXXLD) $(test_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -520,7 +520,7 @@ mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
 pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
 xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
-bmutex.cpp bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
+bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
@@ -529,7 +529,7 @@ fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h da.h \
-bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
+bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
@@ -561,7 +561,7 @@ command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
 flexerr.cpp inout.cpp cacttrns.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
-bmutex.cpp bcommand.cpp btime.cpp schedule.cpp \
+bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp\
 test_gccasm.h bdate.h \
@@ -570,7 +570,7 @@ flexerr.h inout.h \
 memory.h mc6809.h misc1.h \
 typedefs.h \
 da.h \
-bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h bmutex.h \
+bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
@@ -702,7 +702,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bjoystck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bmembuf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bmutex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bposixthreadimp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bregistr.Po@am__quote@
@@ -804,7 +803,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bcommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bdate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bfileptr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bmutex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bposixthreadimp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bthread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bthreadfactory.Po@am__quote@
@@ -1457,20 +1455,6 @@ flexemu-bposixthreadimp.obj: bposixthreadimp.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bposixthreadimp.cpp' object='flexemu-bposixthreadimp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bposixthreadimp.obj `if test -f 'bposixthreadimp.cpp'; then $(CYGPATH_W) 'bposixthreadimp.cpp'; else $(CYGPATH_W) '$(srcdir)/bposixthreadimp.cpp'; fi`
-
-flexemu-bmutex.o: bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bmutex.o -MD -MP -MF $(DEPDIR)/flexemu-bmutex.Tpo -c -o flexemu-bmutex.o `test -f 'bmutex.cpp' || echo '$(srcdir)/'`bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bmutex.Tpo $(DEPDIR)/flexemu-bmutex.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmutex.cpp' object='flexemu-bmutex.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bmutex.o `test -f 'bmutex.cpp' || echo '$(srcdir)/'`bmutex.cpp
-
-flexemu-bmutex.obj: bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bmutex.obj -MD -MP -MF $(DEPDIR)/flexemu-bmutex.Tpo -c -o flexemu-bmutex.obj `if test -f 'bmutex.cpp'; then $(CYGPATH_W) 'bmutex.cpp'; else $(CYGPATH_W) '$(srcdir)/bmutex.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bmutex.Tpo $(DEPDIR)/flexemu-bmutex.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmutex.cpp' object='flexemu-bmutex.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bmutex.obj `if test -f 'bmutex.cpp'; then $(CYGPATH_W) 'bmutex.cpp'; else $(CYGPATH_W) '$(srcdir)/bmutex.cpp'; fi`
 
 flexemu-bcommand.o: bcommand.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bcommand.o -MD -MP -MF $(DEPDIR)/flexemu-bcommand.Tpo -c -o flexemu-bcommand.o `test -f 'bcommand.cpp' || echo '$(srcdir)/'`bcommand.cpp
@@ -2619,20 +2603,6 @@ test-bposixthreadimp.obj: bposixthreadimp.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bposixthreadimp.cpp' object='test-bposixthreadimp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bposixthreadimp.obj `if test -f 'bposixthreadimp.cpp'; then $(CYGPATH_W) 'bposixthreadimp.cpp'; else $(CYGPATH_W) '$(srcdir)/bposixthreadimp.cpp'; fi`
-
-test-bmutex.o: bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bmutex.o -MD -MP -MF $(DEPDIR)/test-bmutex.Tpo -c -o test-bmutex.o `test -f 'bmutex.cpp' || echo '$(srcdir)/'`bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bmutex.Tpo $(DEPDIR)/test-bmutex.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmutex.cpp' object='test-bmutex.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bmutex.o `test -f 'bmutex.cpp' || echo '$(srcdir)/'`bmutex.cpp
-
-test-bmutex.obj: bmutex.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bmutex.obj -MD -MP -MF $(DEPDIR)/test-bmutex.Tpo -c -o test-bmutex.obj `if test -f 'bmutex.cpp'; then $(CYGPATH_W) 'bmutex.cpp'; else $(CYGPATH_W) '$(srcdir)/bmutex.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bmutex.Tpo $(DEPDIR)/test-bmutex.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmutex.cpp' object='test-bmutex.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bmutex.obj `if test -f 'bmutex.cpp'; then $(CYGPATH_W) 'bmutex.cpp'; else $(CYGPATH_W) '$(srcdir)/bmutex.cpp'; fi`
 
 test-bcommand.o: bcommand.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bcommand.o -MD -MP -MF $(DEPDIR)/test-bcommand.Tpo -c -o test-bcommand.o `test -f 'bcommand.cpp' || echo '$(srcdir)/'`bcommand.cpp
