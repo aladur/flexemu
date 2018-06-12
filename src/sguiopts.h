@@ -47,10 +47,6 @@ struct sGuiOptions
     int pixelSizeX; // x-size of one pixel on the screen
     int pixelSizeY; // y-size of one pixel on the screen
     int guiType;
-#ifdef _WIN32
-    HINSTANCE hInstance;  // handle to current instance
-    int nCmdShow;   // show state of window
-#endif
 };
 
 #endif

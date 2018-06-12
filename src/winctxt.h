@@ -26,9 +26,9 @@
 
 struct WinApiContext
 {
-    HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    int nCmdShow
+    HINSTANCE hInstance;  // handle to current instance
+    HINSTANCE hPrevInstance;  // handle to previous instance
+    int nCmdShow;   // show state of window
 };
 
 extern WinApiContext winApiContext;

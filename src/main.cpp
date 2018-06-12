@@ -136,7 +136,7 @@ void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv, size_t max_count)
     *argc = 1;
     *(argv + 0) = "flexemu";
 
-    while (*lpCmdLine && *argc < max_count)
+    while (*lpCmdLine && *argc < (int)max_count)
     {
         *(argv + *argc) = lpCmdLine;
 

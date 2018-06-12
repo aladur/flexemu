@@ -42,6 +42,8 @@
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "joystick.h"
+#include "winctxt.h"
+
 
 #define  TIMER_UPDATE       (20)  // update rate in ms
 #define STATUSBAR_HEIGHT    (28)
@@ -1291,7 +1293,7 @@ void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
 {
     HWND w;
 
-    if (!registerWindowClasses(pOptions->hInstance, 0))
+    if (!registerWindowClasses(winApiContext.hInstance, 0))
     {
         MessageBox(nullptr, "RegisterClassEx failed\n" \
                    "Unable to create Mainwindow of " PROGRAMNAME,
@@ -1300,7 +1302,7 @@ void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
         exit(EXIT_FAILURE);
     }
 
-    if ((w = create_main_view(pOptions)) == nullptr)
+    if ((w = create_main_view()) == nullptr)
     {
         MessageBox(nullptr, "CreateWindow failed\n" \
                    "Unable to create Mainwindow of " PROGRAMNAME,
@@ -1309,10 +1311,10 @@ void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
         exit(EXIT_FAILURE);
     }
 
-    create_cpuview(w, pOptions);
+    create_cpuview(w);
     initialize_after_create(w, pOptions);
-    manage_widget(w, pOptions);
-    initialize_after_open(w, pOptions);
+    manage_widget(w);
+    initialize_after_open(w);
     e2screen = w;
 } // initialize_e2window
 
@@ -1346,7 +1348,7 @@ BOOL Win32Gui::registerWindowClasses(HINSTANCE hinst, UINT ResPoolID)
     return TRUE;
 }
 
-HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
+HWND Win32Gui::create_main_view()
 {
     HWND hwnd;
     RECT rect;
@@ -1370,7 +1372,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
         0
     };                             // stringlength if returned
 
-    hInstance = pOptions->hInstance;
+    hInstance = winApiContext.hInstance;
     menubar = CreateMenu();
 
     if (menubar != nullptr)
@@ -1460,7 +1462,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                height,             // Window height
                nullptr,               // Handle of parent or owner window
                menubar,            // Handle of menu for this window
-               pOptions->hInstance,// Handle of application instance
+               winApiContext.hInstance,// Handle of application instance
                nullptr) ;             // Address of window-creation data
 #ifdef _MSC_VER
     _ASSERT(nullptr != hwnd) ;
@@ -1485,7 +1487,7 @@ HWND Win32Gui::create_main_view(struct sGuiOptions *pOptions)
                      height,             // Window height
                      hwnd,               // Handle of parent or owner window
                      nullptr,               // Handle of menu for this window
-                     pOptions->hInstance,// Handle of application instance
+                     winApiContext.hInstance,// Handle of application instance
                      nullptr) ;             // Address of window-creation data
 
     rect.top  = 4;
@@ -1886,13 +1888,13 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
     idTimer = SetTimer(w, GUI_TIMER_ID, TIMER_UPDATE, nullptr);
 }
 
-void Win32Gui::manage_widget(HWND w, struct sGuiOptions *pOptions)
+void Win32Gui::manage_widget(HWND w)
 {
-    ShowWindow(w, pOptions->nCmdShow);
+    ShowWindow(w, winApiContext.nCmdShow);
 }  // manage widget
 
 
-void Win32Gui::initialize_after_open(HWND w, struct sGuiOptions *pOptions)
+void Win32Gui::initialize_after_open(HWND w)
 {
     const char *title = get_title();
 
@@ -2078,7 +2080,7 @@ LOGFONT *Win32Gui::getLogFontStruct(HDC hdc, int pointSize)
     return &lf;
 } // getLogFontStruct
 
-void Win32Gui::create_cpuview(HWND parent, struct sGuiOptions *pOptions)
+void Win32Gui::create_cpuview(HWND parent)
 {
     cpu_popped_up = false;
     set_line_delim("\r\n");

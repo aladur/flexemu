@@ -178,7 +178,7 @@ public:
 
 protected:
     BOOL    registerWindowClasses(HINSTANCE hinst, UINT ResPoolID);
-    HWND    create_main_view(struct sGuiOptions *pOptions);
+    HWND    create_main_view();
     void    set_bell(int percent);
     void    update_disk_status(int floppyIndex, tDiskStatus status);
     void    update_interrupt_status(tIrqType irqType, bool status);
@@ -204,8 +204,7 @@ protected:
     int      warp_y, warp_home_y, warp_dy;
 
     // CPU View
-    void    create_cpuview(HWND parent,
-                           struct sGuiOptions *pOptions);
+    void    create_cpuview(HWND parent);
     void    popup_cpu(HWND hwnd);
     void    toggle_freqency();
     void    toggle_undocumented();
@@ -215,11 +214,10 @@ protected:
     LOGFONT *getLogFontStruct(HDC hdc, int pointSize);
 
     void            popup_copyright(HWND hwnd);
-    void    manage_widget(HWND w, struct sGuiOptions *pOptions);
+    void    manage_widget(HWND w);
     void    initialize_after_create(HWND w,
                                     struct sGuiOptions *pOptions);
-    void    initialize_after_open(HWND w,
-                                  struct sGuiOptions *pOptions);
+    void    initialize_after_open(HWND w);
     void    initialize(struct sGuiOptions *pOptions);
     void    initialize_e2window(struct sGuiOptions *pOptions);
     void    stripBlanks(char *str);
