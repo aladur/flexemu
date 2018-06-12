@@ -171,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="absgui.cpp" />
     <ClCompile Include="acia1.cpp" />
+    <ClCompile Include="apprun.cpp" />
     <ClCompile Include="bcommand.cpp" />
     <ClCompile Include="bdate.cpp" />
     <ClCompile Include="bdir.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="absdisas.h" />
     <ClInclude Include="absgui.h" />
     <ClInclude Include="acia1.h" />
+    <ClInclude Include="apprun.h" />
     <ClInclude Include="bcommand.h" />
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdelete.h" />
@@ -317,6 +319,7 @@
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="win32gui.h" />
+    <ClInclude Include="winctxt.h" />
     <ClInclude Include="ioaccess.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

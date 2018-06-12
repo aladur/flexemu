@@ -42,10 +42,6 @@ Mc6809::Mc6809(Memory *x_memory) : events(0),
 
 Mc6809::~Mc6809()
 {
-    delete disassembler;
-    delete memory;
-    disassembler = nullptr;
-
     if (log_fp != nullptr)
     {
         fclose(log_fp);

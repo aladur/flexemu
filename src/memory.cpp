@@ -146,11 +146,6 @@ void Memory::init_memory(bool himem)
 
 void Memory::uninit_memory()
 {
-    // delete I/O devices in reverse order.
-    for (auto iter = ioDevices.rbegin(); iter != ioDevices.rend(); ++iter)
-    {
-        delete *iter;
-    }
     ioDevices.clear();
 }
 

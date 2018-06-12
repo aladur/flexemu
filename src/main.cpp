@@ -26,34 +26,17 @@
 #ifdef _MSC_VER
     #include <new.h>
 #endif
-#ifndef _WIN32
-    #include <sched.h>
-#endif
-#include <sys/types.h>
-#ifndef _MSC_VER
-    #include <unistd.h>
-#endif
 
-#include "e2.h"
-#include "mc6809.h"
-#include "inout.h"
-#include "e2video.h"
-#include "pia2.h"
-#include "da6809.h"
-#include "acia1.h"
-#include "mc146818.h"
-#include "e2floppy.h"
-#include "command.h"
-#include "mmu.h"
-#include "pia1.h"
-#include "win32gui.h"
 #include "foptman.h"
-#include "absgui.h"
-#include "schedule.h"
 #include "flexerr.h"
-#include "fileread.h"
-#include "joystick.h"
+#include "apprun.h"
+#include "sguiopts.h"
+#include "winctxt.h"
 
+
+#ifdef _WIN32
+WinApiContext winApiContext;
+#endif
 
 // define an exception handler when new fails
 
@@ -81,180 +64,79 @@ void std_new_handler()
 }
 #endif
 
-bool startup(
-    Mc6809             **cpu,
-    Scheduler      **schedy,
-    Inout              **io,
-    Da6809             **disassembler,
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions    *pOptions)
-{
-    E2video         *video;
-    IoDevice        *device;
-    Command         *comm;
-    Memory      *memory;
-    int error;
-
-    auto joystickIO = std::make_shared<JoystickIO>();
-    memory            = new Memory(pOptions->isHiMem);
-    *cpu              = new Mc6809(memory);
-    *disassembler     = new Da6809();
-    *io               = new Inout(*cpu, pGuiOptions);
-    *schedy           = new Scheduler(pOptions);
-    (*schedy)->set_cpu(*cpu);
-    (*schedy)->set_inout(*io);
-    (*io)->set_scheduler(*schedy);
-    (*io)->set_memory(memory);
-    (*cpu)->set_disassembler(*disassembler);
-    (*cpu)->set_use_undocumented(pOptions->use_undocumented);
-
-    // instanciate all memory mapped I/O devices
-
-    device            = new Mmu(*io, memory);
-    memory->add_io_device(device, MMU_BASE, MMU_MASK, 0, 0);
-    device            = new Acia1(*io, *cpu);
-    memory->add_io_device(device, ACIA1_BASE, ACIA1_MASK, 0, 0);
-    device            = new Pia1(*io, *cpu);
-    memory->add_io_device(device, PIA1_BASE, PIA1_MASK, 0, 0);
-    (*io)->set_pia1((Mc6821 *)device);
-    device            = new Pia2(*io, *cpu, joystickIO);
-    memory->add_io_device(device, PIA2_BASE, PIA2_MASK, 0, 0);
-    E2floppy *fdc     = new E2floppy();
-    fdc->disk_directory(pOptions->disk_dir.c_str());
-    fdc->mount_all_drives(pOptions->drive);
-    memory->add_io_device(fdc, FDCA_BASE, FDCA_MASK,
-                           FDCB_BASE, FDCB_MASK);
-    (*io)->set_fdc(fdc);
-    comm              = new Command(*io, *cpu, *schedy);
-    memory->add_io_device(comm, COMM_BASE, COMM_MASK, 0, 0);
-    comm->set_fdc(fdc);
-    video             = new E2video(memory);
-    memory->add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
-    (*io)->set_video(video);
-
-    (*io)->init(pOptions->reset_key);
-
-    if (!(pOptions->term_mode && (*io)->is_terminal_supported()))
-    {
-        (*io)->create_gui(pGuiOptions->guiType, joystickIO);
-    }
-
-    // instanciate real time clock right before initialize alarm
-    device   = new Mc146818(*cpu);
-    memory->add_io_device(device, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
-    (*io)->set_rtc((Mc146818 *)device);
-
-    if ((error = load_hexfile(pOptions->hex_file.c_str(), *memory)) < 0)
-    {
-        //pOptions->hex_file.index(PATHSEPARATOR) < 0) {
-        std::string hexFilePath;
-
-        hexFilePath = pOptions->disk_dir + PATHSEPARATORSTRING +
-                      pOptions->hex_file;
-
-        if ((error = load_hexfile(hexFilePath.c_str(), *memory)) < 0)
-        {
-            std::stringstream pmsg;
-
-            pmsg << "File \"" << hexFilePath
-                 << "\" not found or has unknown file format (" << error <<")"
-                 << std::endl;
-#ifdef _WIN32
-            MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
-            MB_OK | MB_ICONERROR);
-#endif
-#ifdef UNIX
-            fprintf(stderr, "%s", pmsg.str().c_str());
-#endif
-            return false;
-        }
-    }
-
-    memory->reset_io();
-    (*cpu)->reset();
-    return true;
-} // startup
-
-#ifdef UNIX
 int main(int argc, char *argv[])
 {
-    struct           sOptions    *pOptions;
-    struct           sGuiOptions *pGuiOptions;
-    Mc6809          *cpu;
-    Scheduler   *schedy;
-    Inout           *io;
-    Da6809          *disassembler;
+    struct sOptions options;
+    struct sGuiOptions guiOptions;
     FlexOptionManager optionMan;
-    int         exit_code = 0;
+    int return_code = 0;
 
+#ifdef _MSC_VER
+    _PNH oldHandler = set_new_handler(std_new_handler);
+#else
     std::set_new_handler(std_new_handler);
-
-    pOptions    = new sOptions;
-    pGuiOptions = new sGuiOptions;
+#endif
 
     try
     {
-        optionMan.InitOptions(pGuiOptions, pOptions,
-                              argc, argv);
-        optionMan.GetOptions(pGuiOptions, pOptions);
-        optionMan.GetEnvironmentOptions(pGuiOptions, pOptions);
-        optionMan.GetCommandlineOptions(pGuiOptions, pOptions,
-                                        argc, argv);
+        optionMan.InitOptions(&guiOptions, &options, argc, argv);
+        optionMan.GetOptions(&guiOptions, &options);
+        optionMan.GetEnvironmentOptions(&guiOptions, &options);
+        optionMan.GetCommandlineOptions(&guiOptions, &options, argc, argv);
         // write options but only if options file not already exists
-        optionMan.WriteOptions(pGuiOptions, pOptions, true);
+        optionMan.WriteOptions(&guiOptions, &options, true);
 
-        if (startup(&cpu, &schedy, &io, &disassembler,
-                    pGuiOptions, pOptions))
-        {
-            // start CPU thread
-            if (!schedy->Start())
-            {
-                fprintf(stderr, "Unable to start CPU thread\n");
-                exit_code = 1;
-            }
-            else
-            {
-                io->main_loop();
+        ApplicationRunner runner(guiOptions, options);
 
-                schedy->Join();  // wait for termination of CPU thread
-            }
-        }
-        else
-        {
-            // there was an error during startup
-            exit_code = 1;
-        }
+        return_code = runner.run();
     }
+#ifdef _WIN32
+    catch (std::bad_alloc UNUSED(&e))
+    {
+        MessageBox(nullptr, gMemoryAllocationErrorString,
+                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+        return_code = 1;
+    }
+#endif
     catch (std::exception &ex)
     {
-        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n", ex.what());
-        exit_code = 1;
+        std::stringstream msg;
+
+        msg << PROGRAMNAME << ": An error has occured: " << ex.what();
+
+#ifdef _WIN32
+        MessageBox(nullptr, msg.str().c_str(),
+                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+#else
+        fprintf(stderr, "%s", msg.str().c_str());
+#endif
+        return_code = 1;
     }
     catch (FlexException &ex)
     {
-        fprintf(stderr, PROGRAMNAME ": An error has occured: %s\n",
-            ex.what().c_str());
-        exit_code = 1;
-    }
+        std::stringstream msg;
 
-    delete io;
-    delete schedy;
-    delete cpu;
-    delete pOptions;
-    delete pGuiOptions;
-
-    exit(exit_code);
-    return 0; // satisfy compiler
-}
-#endif
+        msg << PROGRAMNAME << ": An error has occured: " << ex.what().c_str();
 
 #ifdef _WIN32
-void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv)
+        MessageBox(nullptr, msg.str().c_str(),
+                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+#else
+        fprintf(stderr, "%s", msg.str().c_str());
+#endif
+        return_code = 1;
+    }
+
+    return return_code;
+}
+
+#ifdef _WIN32
+void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv, size_t max_count)
 {
     *argc = 1;
     *(argv + 0) = "flexemu";
 
-    while (*lpCmdLine)
+    while (*lpCmdLine && *argc < max_count)
     {
         *(argv + *argc) = lpCmdLine;
 
@@ -275,7 +157,7 @@ void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv)
 
         (*argc)++;
     }
-} // scanCmdLine
+}
 
 int WINAPI WinMain(
     HINSTANCE hInstance,
@@ -283,76 +165,17 @@ int WINAPI WinMain(
     LPSTR lpCmdLine,
     int nCmdShow)
 {
-    struct           sOptions    *pOptions = nullptr;
-    struct           sGuiOptions *pGuiOptions = nullptr;
-    Mc6809          *cpu = nullptr;
-    Scheduler       *schedy = nullptr;
-    Inout           *io = nullptr;
-    Da6809          *disassembler = nullptr;
-    int             argc;
-    char            *argv[50];
-    FlexOptionManager optionMan;
-    int             exit_code = EXIT_SUCCESS;
+    int argc;
+    char *argv[50];
 
-    pOptions    = new sOptions;
-    pGuiOptions = new sGuiOptions;
+    winApiContext.hPrevInstance = hPrevInstance;
+    winApiContext.hInstance = hInstance;
+    winApiContext.nCmdShow = nCmdShow;
 
-    pGuiOptions->hInstance = hInstance;
-    pGuiOptions->nCmdShow  = nCmdShow;
+    scanCmdLine(lpCmdLine, &argc, (char **)argv, sizeof(argv)/sizeof(argv[0]));
 
-#ifdef _MSC_VER
-    _PNH oldHandler = set_new_handler(std_new_handler);
-#endif
-
-    try
-    {
-        scanCmdLine(lpCmdLine, &argc, (char **)argv);
-        optionMan.InitOptions(pGuiOptions, pOptions, argc, argv);
-        optionMan.GetOptions(pGuiOptions, pOptions);
-        optionMan.GetEnvironmentOptions(pGuiOptions, pOptions);
-        optionMan.GetCommandlineOptions(pGuiOptions, pOptions,
-                                        argc, argv);
-        // write options but only if options file not already exists
-        optionMan.WriteOptions(pGuiOptions, pOptions, true);
-
-        if (startup(&cpu, &schedy, &io, &disassembler,
-                    pGuiOptions, pOptions))
-        {
-            // start CPU thread
-            if (!schedy->Start())
-            {
-                MessageBox(nullptr, "Unable to start CPU thread",
-                           PROGRAMNAME " error", MB_OK | MB_ICONERROR);
-                exit_code = EXIT_FAILURE;
-            }
-            else
-            {
-                io->main_loop();
-
-                // wait until CPU thread has terminated
-                schedy->Join();
-            }
-        }
-        else
-        {
-            exit_code = EXIT_FAILURE;
-        }
-    }
-    catch (std::bad_alloc UNUSED(&e))
-    {
-        MessageBox(nullptr, gMemoryAllocationErrorString,
-                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
-        exit_code = EXIT_FAILURE;
-    }
-
-    delete io;
-    delete schedy;
-    delete cpu;
-    delete pOptions;
-    delete pGuiOptions;
-
-    return exit_code; // satisfy compiler
-} // WinMain
+    return main(argc, argv);
+}
 
 #endif // #ifdef _WIN32
 
