@@ -71,22 +71,19 @@ void AbstractGui::update_block(int)
 {
 }
 
-void AbstractGui::initialize(struct sGuiOptions *pOptions)
+void AbstractGui::initialize(struct sGuiOptions &options)
 {
     switch_sp = 0;
     program_name = "";
     timebase = 20; // timer event every x milliseconds
 
-    if (pOptions != nullptr)
-    {
-        program_name    = pOptions->argv[0];
-        switch_sp   = pOptions->switch_sp;
-        pixelSizeX    = pOptions->pixelSizeX;
-        pixelSizeY    = pOptions->pixelSizeY;
-        nColors     = pOptions->nColors;
-        withColorScale  = !stricmp(pOptions->color.c_str(), "default");
-        color       = pOptions->color;
-    }
+    program_name    = options.argv[0];
+    switch_sp   = options.switch_sp;
+    pixelSizeX    = options.pixelSizeX;
+    pixelSizeY    = options.pixelSizeY;
+    nColors     = options.nColors;
+    withColorScale  = !stricmp(options.color.c_str(), "default");
+    color       = options.color;
 
 }
 
@@ -234,7 +231,7 @@ void AbstractGui::CopyToZPixmap(int,
             else
             {
                 // If no source is available use highest available color
-                penIndex = pOptions->isInverse ? 0 : 63;
+                penIndex = options.isInverse ? 0 : 63;
             }
 
             if (depth == 32 || depth == 24)
@@ -950,10 +947,10 @@ AbstractGui::AbstractGui(
     E2video   *x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
-    struct sGuiOptions *x_pOptions) :
+    struct sGuiOptions &x_options) :
     cpu(x_cpu), memory(x_memory), schedy(x_sched), io(x_io),
     e2video(x_video), joystickIO(x_joystickIO), keyboardIO(x_keyboardIO),
-    pOptions(x_pOptions),
+    options(x_options),
     exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {

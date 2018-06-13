@@ -50,7 +50,7 @@ ApplicationRunner::ApplicationRunner(
     options(x_options),
     memory(options.isHiMem),
     cpu(memory),
-    io(&cpu, &guiOptions),
+    io(cpu, guiOptions),
     scheduler(&options),
     mmu(&io, &memory),
     acia1(&io, &cpu),

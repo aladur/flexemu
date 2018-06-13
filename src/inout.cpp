@@ -60,7 +60,7 @@ void Inout::s_exec_signal(int sig_no)
 }
 
 
-Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
+Inout::Inout(Mc6809 &x_cpu, struct sGuiOptions &x_options) :
     cpu(x_cpu), options(x_options), gui(nullptr),
     fdc(nullptr), memory(nullptr), rtc(nullptr), pia1(nullptr),
     video(nullptr), schedy(nullptr)
@@ -297,14 +297,14 @@ AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
 #ifdef HAVE_XTK
 
                 case GUI_XTOOLKIT:
-                    gui = new XtGui(cpu, memory, schedy, this, video,
+                    gui = new XtGui(&cpu, memory, schedy, this, video,
                                     joystickIO, keyboardIO, pia1, options);
                     break;
 #endif
 #ifdef _WIN32
 
                 case GUI_WINDOWS:
-                    gui = new Win32Gui(cpu, memory, schedy, this, video,
+                    gui = new Win32Gui(&cpu, memory, schedy, this, video,
                                        joystickIO, keyboardIO, pia1, options);
                     break;
 #endif
@@ -333,29 +333,20 @@ void Inout::exec_signal(int sig_no)
     switch (sig_no)
     {
         case SIGINT:
-            if (cpu != nullptr)
-            {
-                cpu->set_nmi();
-            }
+            cpu.set_nmi();
 
             break;
 #if defined(SIGUSR1)
 
         case SIGUSR1:
-            if (cpu != nullptr)
-            {
-                cpu->set_irq();
-            }
+            cpu.set_irq();
 
             break;
 #endif
 #if defined(SIGUSR2)
 
         case SIGUSR2:
-            if (cpu != nullptr)
-            {
-                cpu->set_firq();
-            }
+            cpu.set_firq();
 
             break;
 #endif

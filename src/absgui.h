@@ -78,7 +78,7 @@ protected:
     const char *program_name;
     unsigned char unused_block[YBLOCK_SIZE];
     int switch_sp;
-    struct sGuiOptions *pOptions;
+    struct sGuiOptions &options;
     bool exit_flag; // exit application:
     char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
     Byte bp_input[2];
@@ -101,7 +101,7 @@ protected:
 protected:
 
     virtual void    update_block(int block_number); // update one video blk
-    virtual void    initialize(struct sGuiOptions *pOptions);
+    virtual void    initialize(struct sGuiOptions &options);
     virtual void    initialize_conv_tables();
     void    CopyToZPixmap(int block_number,
                           Byte *dest, const Byte *src,
@@ -139,7 +139,7 @@ public:
         E2video *x_video,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
-        struct sGuiOptions *options);
+        struct sGuiOptions &options);
     virtual ~AbstractGui();
 
 };

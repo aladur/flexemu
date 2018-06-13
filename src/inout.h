@@ -58,8 +58,8 @@ class Inout
 
 private:
     std::deque<Byte> key_buffer_serial;
-    Mc6809         *cpu;
-    struct sGuiOptions *options;
+    Mc6809 &cpu;
+    struct sGuiOptions &options;
 #ifdef HAVE_TERMIOS_H
     static      bool   used_serial_io;
     static      struct termios save_termios;
@@ -134,7 +134,7 @@ private:
 
     // Public constructor and destructor
 public:
-    Inout(Mc6809 *x_cpu, struct sGuiOptions *poptions);
+    Inout(Mc6809 &x_cpu, struct sGuiOptions &x_options);
     ~Inout();
 
 };

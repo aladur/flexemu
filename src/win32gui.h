@@ -188,7 +188,7 @@ protected:
     void    update_block(int block_number, HDC hdc);
     SWord   translate_to_ascii(SWord key);
     SWord   translate_to_ascii1(SWord key);
-    void    SetColors(struct sGuiOptions *pOptions);
+    void    SetColors(struct sGuiOptions &options);
     bool    CheckDeviceSupport(HDC aHdc, bool isModifyValue,
                                int *nrOfColors);
     void    mouse_update(HWND w);
@@ -218,10 +218,10 @@ protected:
     void            popup_copyright(HWND hwnd);
     void    manage_widget(HWND w);
     void    initialize_after_create(HWND w,
-                                    struct sGuiOptions *pOptions);
+                                    struct sGuiOptions &options);
     void    initialize_after_open(HWND w);
-    void    initialize(struct sGuiOptions *pOptions);
-    void    initialize_e2window(struct sGuiOptions *pOptions);
+    void    initialize(struct sGuiOptions &options);
+    void    initialize_e2window(struct sGuiOptions &options);
     void    stripBlanks(char *str);
 
     // Internal registers

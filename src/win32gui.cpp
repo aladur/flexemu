@@ -1068,14 +1068,14 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
     return -1;
 }
 
-void Win32Gui::initialize(struct sGuiOptions *pOptions)
+void Win32Gui::initialize(struct sGuiOptions &options)
 {
-    AbstractGui::initialize(pOptions);
+    AbstractGui::initialize(options);
     ggui        = this;
     palette     = nullptr; // needed for color display
     e2screen    = nullptr;
-    withColorScale  = !stricmp(pOptions->color.c_str(), "default");
-    nColors     = pOptions->nColors;
+    withColorScale  = !stricmp(options.color.c_str(), "default");
+    nColors     = options.nColors;
     bp_input[0] = 0;
     bp_input[1] = 0;
     lfs.logFileName[0] = '\0';
@@ -1095,7 +1095,7 @@ void Win32Gui::initialize(struct sGuiOptions *pOptions)
     current_x     = -1;
     current_y     = -1;
     initialize_conv_tables();
-    initialize_e2window(pOptions);
+    initialize_e2window(options);
 } // initialize
 
 void Win32Gui::popup_disk_info(HWND hwnd)
@@ -1148,9 +1148,9 @@ int Win32Gui::popup_help(HWND hwnd)
 
     GetCurrentDirectory(PATH_MAX, curdir);
 
-    if (strlen(pOptions->doc_dir.c_str()) != 0)
+    if (strlen(options.doc_dir.c_str()) != 0)
     {
-        strcpy(helpfile, pOptions->doc_dir.c_str());
+        strcpy(helpfile, options.doc_dir.c_str());
     }
     else
     {
@@ -1304,7 +1304,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     DeleteDC(hMemoryDC);
 } // update_block
 
-void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
+void Win32Gui::initialize_e2window(struct sGuiOptions &options)
 {
     HWND w;
 
@@ -1327,7 +1327,7 @@ void Win32Gui::initialize_e2window(struct sGuiOptions *pOptions)
     }
 
     create_cpuview(w);
-    initialize_after_create(w, pOptions);
+    initialize_after_create(w, options);
     manage_widget(w);
     initialize_after_open(w);
     e2screen = w;
@@ -1731,7 +1731,7 @@ bool Win32Gui::CheckDeviceSupport(HDC aHdc, bool isModifyValue, int *nrOfColors)
     return true;
 }
 
-void Win32Gui::SetColors(struct sGuiOptions *pOptions)
+void Win32Gui::SetColors(struct sGuiOptions &options)
 {
     LOGPALETTE *pLog;
     int scale;
@@ -1745,7 +1745,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
 
     while (pc->colorName != nullptr)
     {
-        if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
+        if (strcmp(options.color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -1770,7 +1770,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
     {
         idx = i;
 
-        if (pOptions->isInverse)
+        if (options.isInverse)
         {
             idx = (1 << COLOR_PLANES) - idx - 1;
         }
@@ -1810,7 +1810,7 @@ void Win32Gui::SetColors(struct sGuiOptions *pOptions)
     delete [] pLog;
 }
 
-void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
+void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
 {
     HDC             hdc;
     int             bpp;
@@ -1833,7 +1833,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
 
     while (pc->colorName != nullptr)
     {
-        if (strcmp(pOptions->color.c_str(), pc->colorName) == 0)
+        if (strcmp(options.color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -1848,7 +1848,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
         blue  = pc->blue;
     }
 
-    if (!pOptions->isInverse)
+    if (!Options.isInverse)
     {
         foregroundIdx = 1;
         backgroundIdx = 0;
@@ -1861,7 +1861,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions *pOptions)
 
     hdc = GetDC(w);
     CheckDeviceSupport(hdc, 1, &nColors);
-    SetColors(pOptions);
+    SetColors(options);
 
     for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
@@ -1933,13 +1933,13 @@ Win32Gui::Win32Gui(
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
-    struct sGuiOptions *pOptions) :
+    struct sGuiOptions &x_options) :
     AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
-                x_keyboardIO, pOptions),
+                x_keyboardIO, x_options),
     pia1(x_pia1), cpu_popped_up(false), oldX(0), oldY(0),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {
-    initialize(pOptions);
+    initialize(options);
 }
 
 Win32Gui::~Win32Gui()

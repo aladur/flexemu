@@ -94,7 +94,7 @@ protected:
     virtual SWord   translate_to_ascii(XKeyEvent *pevent);
     virtual Display *getDisplay();
     virtual Window  getWindow(tWindowType t = FLX_E2SCREEN);
-    virtual void    initialize(struct sGuiOptions *pOptions);
+    virtual void    initialize(struct sGuiOptions &options);
     virtual int popup_help();
     virtual const char *get_title();
     virtual void    toggle_mouse_capture();
@@ -108,7 +108,7 @@ public:
 public:
 
     XAbstractGui(Mc6809 *, Memory *, Scheduler *, Inout *, E2video *,
-                 JoystickIO &, KeyboardIO &, struct sGuiOptions *);
+                 JoystickIO &, KeyboardIO &, struct sGuiOptions &);
     virtual ~XAbstractGui();
 };
 

@@ -51,9 +51,9 @@
 #include "joystick.h"
 #include "keyboard.h"
 
-void XAbstractGui::initialize(struct sGuiOptions *pOptions)
+void XAbstractGui::initialize(struct sGuiOptions &options)
 {
-    AbstractGui::initialize(pOptions);
+    AbstractGui::initialize(options);
     bp_input[0] = 0;
     bp_input[1] = 0;
     visual = nullptr;
@@ -729,12 +729,12 @@ int XAbstractGui::popup_help()
     const char *args[3];
 
     // if no environment variable for browser return with error
-    if (pOptions->html_viewer.empty())
+    if (options.html_viewer.empty())
     {
         return -1;
     }
 
-    strcpy(helpfile, pOptions->doc_dir.c_str());
+    strcpy(helpfile, options.doc_dir.c_str());
 
     if (helpfile[strlen(helpfile) - 1] != '/')
     {
@@ -742,7 +742,7 @@ int XAbstractGui::popup_help()
     }
 
     strcat(helpfile, "flexemu.htm");
-    args[0] = pOptions->html_viewer.c_str();
+    args[0] = options.html_viewer.c_str();
     args[1] = helpfile;
     args[2] = nullptr;
 
@@ -782,9 +782,9 @@ XAbstractGui::XAbstractGui(
     E2video   *x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
-    struct sGuiOptions *pOptions) :
+    struct sGuiOptions &x_options) :
     AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
-                x_keyboardIO, pOptions),
+                x_keyboardIO, x_options),
     cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
 {
 }

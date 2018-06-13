@@ -141,7 +141,7 @@ protected:
     virtual void        initialize_after_create(Widget w, bool isInverse,
             const char *color);
     virtual void        initialize_after_open(Widget w, const char *title);
-    virtual void        initialize(struct sGuiOptions *pOptions);
+    virtual void        initialize(struct sGuiOptions &options);
     virtual void        update_disk_status(int floppyIndex,
                                            tDiskStatus status);
     virtual void        update_interrupt_status(tIrqType t,
@@ -166,7 +166,7 @@ protected:
 
 protected:
 
-    virtual void    initialize_e2window(struct sGuiOptions *pOptions);
+    virtual void    initialize_e2window(struct sGuiOptions &options);
 
     // public interface
 public:
@@ -299,7 +299,7 @@ public:
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
         Pia1 &x_pia1,
-        struct sGuiOptions *options);
+        struct sGuiOptions &options);
     virtual ~XtGui();
 };
 

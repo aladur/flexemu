@@ -160,11 +160,11 @@ void XtGui::timerCallbackProc(XtPointer p, XtIntervalId *pId)
     }
 }
 
-void XtGui::initialize(struct sGuiOptions *pOptions)
+void XtGui::initialize(struct sGuiOptions &options)
 {
     int i;
 
-    XAbstractGui::initialize(pOptions);
+    XAbstractGui::initialize(options);
     lfs.logFileName[0] = '\0';
     lfs.minAddr = 0x0000;
     lfs.maxAddr = 0xFFFF;
@@ -188,7 +188,7 @@ void XtGui::initialize(struct sGuiOptions *pOptions)
     }
 
 #endif
-    initialize_e2window(pOptions);
+    initialize_e2window(options);
 } // initialize
 
 void XtGui::setCpuExitCallback(Widget,
@@ -1199,7 +1199,7 @@ void XtGui::c_highlight_child(Widget w, XEvent *pevent, String *params)
     }
 } // c_highlight_child
 
-void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
+void XtGui::initialize_e2window(struct sGuiOptions &options)
 {
     Widget w;
 
@@ -1208,8 +1208,8 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     is_menu_mode = false;
     menu_popped_up = None;
     initialize_conv_tables();
-    w = create_main_view(pOptions->argc, pOptions->argv,
-                         pOptions->isSynchronized);
+    w = create_main_view(options.argc, options.argv,
+                         options.isSynchronized);
     create_message_dialog(w);
     create_about_dialog(w);
 #ifdef HAVE_XPM
@@ -1218,7 +1218,7 @@ void XtGui::initialize_e2window(struct sGuiOptions *pOptions)
     create_cpuview(w);
     create_bp_dialog(w);
     create_logfile_dialog(w);
-    initialize_after_create(w, pOptions->isInverse, pOptions->color.c_str());
+    initialize_after_create(w, options.isInverse, options.color.c_str());
     manage_widget(w);
     initialize_after_open(w, get_title());
     e2toplevel = w;
@@ -1709,11 +1709,11 @@ XtGui::XtGui(
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
-    struct sGuiOptions *pOptions) :
+    struct sGuiOptions &x_options) :
     XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
-                 x_keyboardIO, pOptions), pia1(x_pia1)
+                 x_keyboardIO, x_options), pia1(x_pia1)
 {
-    initialize(pOptions);
+    initialize(options);
 }
 
 XtGui::~XtGui()
