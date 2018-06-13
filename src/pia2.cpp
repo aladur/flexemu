@@ -34,17 +34,14 @@
 
 Pia2::Pia2(Mc6809 *x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
     cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO), cycles(0)
-{
 #ifdef LINUX_JOYSTICK_IS_PRESENT
-    joystick = new BJoystick(0);
+    , joystick(0)
 #endif
+{
 }
 
 Pia2::~Pia2()
 {
-#ifdef LINUX_JOYSTICK_IS_PRESENT
-    delete joystick;
-#endif
 }
 
 void Pia2::resetIo()
@@ -122,31 +119,31 @@ Byte Pia2::readInputB()
     // or with a real joystick (only linux support at the moment):
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 
-    if (joystick->IsOpened())
+    if (joystick.IsOpened())
     {
-        joystick->Actualize();
+        joystick.Actualize();
 
-        if (joystick->XAxis() < -8)
+        if (joystick.XAxis() < -8)
         {
             orb |= 0x02;    // joystick to left side
         }
 
-        if (joystick->XAxis() > 8)
+        if (joystick.XAxis() > 8)
         {
             orb |= 0x04;    // joystick to left side
         }
 
-        if (joystick->YAxis() < -8)
+        if (joystick.YAxis() < -8)
         {
             orb |= 0x10;    // joystick up
         }
 
-        if (joystick->YAxis() > 8)
+        if (joystick.YAxis() > 8)
         {
             orb |= 0x08;    // joystick down
         }
 
-        if (joystick->IsButtonSet(0))
+        if (joystick.IsButtonSet(0))
         {
             orb |= 0x20;    // joystick "shoot"
         }

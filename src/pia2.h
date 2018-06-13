@@ -27,11 +27,9 @@
 
 #include "misc1.h"
 #include "mc6821.h"
+#include "bjoystck.h"
 #include <memory>
 
-#ifdef  LINUX_JOYSTICK_IS_PRESENT
-    class BJoystick;
-#endif
 
 class Mc6809;
 class JoystickIO;
@@ -50,7 +48,7 @@ private:
     QWord               cycles;
 
 #ifdef  LINUX_JOYSTICK_IS_PRESENT
-    BJoystick          *joystick;
+    BJoystick joystick;
 #endif
 
     // Processor status functions
