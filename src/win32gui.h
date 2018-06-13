@@ -38,6 +38,7 @@ class E2video;
 class Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
+class Pia1;
 
 // maybe someone has forgotten to define this:
 
@@ -260,7 +261,7 @@ public:
 public:
     Win32Gui(
         Mc6809 *, Memory *, Scheduler *, Inout *, E2video *, JoystickIO &,
-        KeyboardIO &, struct sGuiOptions *);
+        KeyboardIO &, Pia1 &, struct sGuiOptions *);
     virtual ~Win32Gui();
 
 };

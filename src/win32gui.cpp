@@ -45,6 +45,7 @@
 #include "keyboard.h"
 #include "pia1.h"
 #include "winctxt.h"
+#include "cacttrns.h"
 
 
 #define  TIMER_UPDATE       (20)  // update rate in ms
