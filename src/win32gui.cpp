@@ -153,7 +153,7 @@ LRESULT CALLBACK e2windowWndProc(
 
 void Win32Gui::resetMouseMoveCoords()
 {
-    io->put_joystick(0, 0);
+    joystickIO.put_values(0, 0);
 }
 
 void Win32Gui::onTimer(HWND hwnd, UINT id)
@@ -298,7 +298,7 @@ continue press Reset button",
                 newButtonMask |= SHIFT_KEY;
             }
 
-            io->put_joystick(newButtonMask);
+            joystickIO.put_value(newButtonMask);
             mouse_update(e2screen);
         }
 
@@ -326,7 +326,7 @@ void Win32Gui::mouse_update(HWND w)
                        warp_home_y - current_y);
         }
 
-        io->put_joystick(dx, dy);
+        joystickIO.put_values(dx, dy);
         prev_x = current_x;
         prev_y = current_y;
     }
@@ -341,7 +341,7 @@ void Win32Gui::mouse_update(HWND w)
         prev_y = current_y = -1;
     }
 
-    //io->put_joystick(convert_buttonmask(mouse_button_state));
+    //joystickIO.put_value(convert_buttonmask(mouse_button_state));
 }
 
 void Win32Gui::mouse_warp(HWND w, int dx, int dy)

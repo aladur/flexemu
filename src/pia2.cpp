@@ -50,7 +50,7 @@ Pia2::~Pia2()
 void Pia2::resetIo()
 {
     Mc6821::resetIo();
-    joystickIO.reset_joystick();
+    joystickIO.reset();
     cycles = 0;
 }
 
@@ -69,7 +69,7 @@ Byte Pia2::readInputB()
     int deltaX, deltaY;
     bool newValues;
 
-    newValues = joystickIO.get_joystick(&deltaX, &deltaY, &buttonMask);
+    newValues = joystickIO.get_values(&deltaX, &deltaY, &buttonMask);
 
     orb &= 0xc1;
 

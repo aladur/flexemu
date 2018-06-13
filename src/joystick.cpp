@@ -26,10 +26,10 @@
 
 JoystickIO::JoystickIO()
 {
-    reset_joystick();
+    reset();
 }
 
-void JoystickIO::reset_joystick()
+void JoystickIO::reset()
 {
     std::lock_guard<std::mutex> guard(joystick_mutex);
     deltaX           = 0;
@@ -38,8 +38,8 @@ void JoystickIO::reset_joystick()
     newValues        = 0;
 }
 
-bool JoystickIO::get_joystick(int *pDeltaX, int *pDeltaY,
-                              unsigned int *pButtonMask)
+bool JoystickIO::get_values(int *pDeltaX, int *pDeltaY,
+                            unsigned int *pButtonMask)
 {
     bool result;
 
@@ -65,7 +65,7 @@ bool JoystickIO::get_joystick(int *pDeltaX, int *pDeltaY,
     return result;
 }
 
-void JoystickIO::put_joystick(int x_deltaX, int x_deltaY)
+void JoystickIO::put_values(int x_deltaX, int x_deltaY)
 {
     std::lock_guard<std::mutex> guard(joystick_mutex);
     deltaX     = x_deltaX;
@@ -73,7 +73,7 @@ void JoystickIO::put_joystick(int x_deltaX, int x_deltaY)
     newValues  = true;
 }
 
-void JoystickIO::put_joystick(unsigned int x_buttonMask)
+void JoystickIO::put_value(unsigned int x_buttonMask)
 {
     std::lock_guard<std::mutex> guard(joystick_mutex);
     buttonMask = x_buttonMask;
