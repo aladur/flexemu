@@ -185,7 +185,6 @@ protected:
     void    set_bell(int percent);
     void    update_disk_status(int floppyIndex, tDiskStatus status);
     void    update_interrupt_status(tIrqType irqType, bool status);
-    void    update_irq_status(Word irq_status);
     void    update_block(int block_number, HDC hdc);
     SWord   translate_to_ascii(SWord key);
     SWord   translate_to_ascii1(SWord key);
