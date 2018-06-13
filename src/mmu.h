@@ -30,7 +30,6 @@
 #include "iodevice.h"
 
 class Memory;
-class Inout;
 
 
 class Mmu : public IoDevice
@@ -40,11 +39,9 @@ class Mmu : public IoDevice
 
 protected:
 
-    Memory      *memory;
-    Inout       *io;
+    Memory &memory;
 
 
-    // public interface
 public:
 
     void                resetIo();
@@ -55,9 +52,8 @@ public:
         return "mmu";
     };
 
-    // Public constructor and destructor
 public:
-    Mmu(Inout *x_io, Memory *x_memory);
+    Mmu(Memory &x_memory);
     virtual ~Mmu();
 };
 

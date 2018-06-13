@@ -24,13 +24,11 @@
 #include "misc1.h"
 
 #include "mmu.h"
-#include "mc6809.h"
+#include "memory.h"
 
-Mmu::Mmu(Inout *x_io, Memory *x_memory)
+Mmu::Mmu(Memory &x_memory) : memory(x_memory)
 {
-    memory = x_memory;
-    io     = x_io;
-} // constructor
+}
 
 
 Mmu::~Mmu()
@@ -39,7 +37,7 @@ Mmu::~Mmu()
 
 void Mmu::resetIo()
 {
-} // reset
+}
 
 
 
@@ -48,8 +46,8 @@ Byte Mmu::readIo(Word)
     return 0xff;
 }
 
-void Mmu::writeIo(Word offset, Byte val)
+void Mmu::writeIo(Word offset, Byte value)
 {
-    memory->switch_mmu(offset, val);
+    memory.switch_mmu(offset, value);
 }
 
