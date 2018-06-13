@@ -1848,7 +1848,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
         blue  = pc->blue;
     }
 
-    if (!Options.isInverse)
+    if (!options.isInverse)
     {
         foregroundIdx = 1;
         backgroundIdx = 0;

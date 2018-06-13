@@ -260,7 +260,7 @@ public:
 public:
     Win32Gui(
         Mc6809 *, Memory *, Scheduler *, Inout *, E2video *, JoystickIO &,
-        KeyboardIO &, Pia1 &, struct sGuiOptions *);
+        KeyboardIO &, Pia1 &, struct sGuiOptions &);
     virtual ~Win32Gui();
 
 };
