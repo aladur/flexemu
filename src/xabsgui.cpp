@@ -49,6 +49,7 @@
 #include "inout.h"
 #include "schedule.h"
 #include "joystick.h"
+#include "keyboard.h"
 
 void XAbstractGui::initialize(struct sGuiOptions *pOptions)
 {
@@ -693,6 +694,26 @@ int XAbstractGui::convert_buttonmask(int newButtonMask)
     return mask;
 }
 
+int XAbstractGui::convert_keymask(int newButtonMask)
+{
+    int mask;
+
+    mask = 0;
+
+    // convert to platform independant flags
+    if (newButtonMask & ShiftMask)
+    {
+        mask |= SHIFT_KEY;
+    }
+
+    if (newButtonMask & ControlMask)
+    {
+        mask |= CONTROL_KEY;
+    }
+
+    return mask;
+}
+
 void XAbstractGui::set_bell(int percent)
 {
     XBell(getDisplay(), percent);
@@ -760,9 +781,10 @@ XAbstractGui::XAbstractGui(
     Inout     *x_io,
     E2video   *x_video,
     JoystickIO &x_joystickIO,
+    KeyboardIO &x_keyboardIO,
     struct sGuiOptions *pOptions) :
     AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
-                pOptions),
+                x_keyboardIO, pOptions),
     cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
 {
 }

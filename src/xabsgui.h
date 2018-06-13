@@ -90,6 +90,7 @@ protected:
     virtual void    set_cursor(int type = FLX_DEFAULT_CURSOR);
     virtual void    update_block(int block_number);
     virtual int     convert_buttonmask(int);
+    virtual int     convert_keymask(int);
     virtual SWord   translate_to_ascii(XKeyEvent *pevent);
     virtual Display *getDisplay();
     virtual Window  getWindow(tWindowType t = FLX_E2SCREEN);
@@ -107,7 +108,7 @@ public:
 public:
 
     XAbstractGui(Mc6809 *, Memory *, Scheduler *, Inout *, E2video *,
-                 JoystickIO &, struct sGuiOptions *);
+                 JoystickIO &, KeyboardIO &, struct sGuiOptions *);
     virtual ~XAbstractGui();
 };
 

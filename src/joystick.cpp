@@ -24,7 +24,7 @@
 #include "joystick.h"
 
 
-JoystickIO::JoystickIO()
+JoystickIO::JoystickIO() : deltaX(0), deltaY(0), buttonMask(0), newValues(false)
 {
     reset();
 }
@@ -35,7 +35,7 @@ void JoystickIO::reset()
     deltaX           = 0;
     deltaY           = 0;
     buttonMask       = 0;
-    newValues        = 0;
+    newValues        = false;
 }
 
 bool JoystickIO::get_values(int *pDeltaX, int *pDeltaY,

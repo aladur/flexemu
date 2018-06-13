@@ -25,15 +25,15 @@
 #ifdef HAVE_X11
     #include <X11/X.h>
 #endif
-#include "inout.h"
 #include "pia2.h"
 #include "mc6809.h"
 #include "bjoystck.h"
 #include "joystick.h"
+#include "keyboard.h"
 
 
-Pia2::Pia2(Inout *x_io, Mc6809 *x_cpu, JoystickIO &x_joystickIO) :
-    io(x_io), cpu(x_cpu), joystickIO(x_joystickIO), cycles(0)
+Pia2::Pia2(Mc6809 *x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
+    cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO), cycles(0)
 {
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     joystick = new BJoystick(0);
@@ -50,6 +50,7 @@ Pia2::~Pia2()
 void Pia2::resetIo()
 {
     Mc6821::resetIo();
+    keyboardIO.reset_parallel();
     joystickIO.reset();
     cycles = 0;
 }
@@ -58,24 +59,25 @@ void Pia2::writeOutputB(Byte val)
 {
     if (val & 0x40)
     {
-        io->set_bell(0);
+        keyboardIO.set_bell(0);
     }
 }
-
 
 Byte Pia2::readInputB()
 {
     unsigned int buttonMask;
+    unsigned int keyMask;
     int deltaX, deltaY;
     bool newValues;
 
     newValues = joystickIO.get_values(&deltaX, &deltaY, &buttonMask);
+    keyboardIO.get_value(&keyMask);
 
     orb &= 0xc1;
 
     if (buttonMask & L_MB)
     {
-        if (buttonMask & SHIFT_KEY)   // shift L_MB to emulate M_MB
+        if (keyMask & SHIFT_KEY)   // shift L_MB to emulate M_MB
         {
             orb |= 0x20;
         }
@@ -87,13 +89,13 @@ Byte Pia2::readInputB()
 
     if (buttonMask & M_MB)
     {
-        if (buttonMask & SHIFT_KEY)
+        if (keyMask & SHIFT_KEY)
         {
             orb |= 0x08;
         }
         else
         {
-            if (buttonMask & CONTROL_KEY)
+            if (keyMask & CONTROL_KEY)
             {
                 orb |= 0x10;
             }
@@ -106,7 +108,7 @@ Byte Pia2::readInputB()
 
     if (buttonMask & R_MB)
     {
-        if (buttonMask & SHIFT_KEY)   // shift R_MB to emulate M_MB
+        if (keyMask & SHIFT_KEY)   // shift R_MB to emulate M_MB
         {
             orb |= 0x20;
         }

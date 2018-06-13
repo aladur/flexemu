@@ -36,15 +36,8 @@
 #include <mutex>
 #include <memory>
 
-#define KEY_BUFFER_SIZE (8)
-#define BELL        (0x07)
 #define BACK_SPACE  (0x08)
 
-#define L_MB        (4)
-#define M_MB        (2)
-#define R_MB        (1)
-#define SHIFT_KEY   (8)
-#define CONTROL_KEY (16)
 
 class E2floppy;
 class Mc6809;
@@ -55,6 +48,8 @@ class E2video;
 class AbstractGui;
 class Scheduler;
 class JoystickIO;
+class KeyboardIO;
+class Pia1;
 
 class Inout
 {
@@ -62,7 +57,6 @@ class Inout
     // Internal registers
 
 private:
-    std::deque<Byte> key_buffer_parallel;
     std::deque<Byte> key_buffer_serial;
     Mc6809         *cpu;
     struct sGuiOptions *options;
@@ -92,12 +86,12 @@ public:
     void    set_pia1(Mc6821 *x_device);
     void    set_video(E2video *x_video);
     void    set_scheduler(Scheduler *x_sched);
-    AbstractGui *create_gui(int type, JoystickIO &joystickIO);
+    AbstractGui *create_gui(int type, JoystickIO &joystickIO,
+                            KeyboardIO &keyboardIO, Pia1 &pia1);
     static void s_exec_signal(int sig_no);
 
     void    init(Word reset_key);
     void    update_1_second();
-    void    set_bell(Word x_percent);
 
     // Communication with GUI
 public:
@@ -106,14 +100,6 @@ public:
     bool    is_gui_present();
     void    main_loop();
 
-    // parallel I/O (e.g. keyboard)
-public:
-    void    reset_parallel();
-    bool    has_key_parallel();
-    Byte    read_char_parallel();
-    Byte    peek_char_parallel();
-    void    put_char_parallel(Byte key);
-    bool    is_terminal_supported();
 protected:
     std::mutex parallel_mutex;
     std::mutex serial_mutex;
@@ -125,6 +111,7 @@ public:
     Byte    read_char_serial();
     Byte    peek_char_serial();
     void    write_char_serial(Byte val);
+    bool    is_terminal_supported();
     void    signal_reset(int sig_no);
 
     // Floppy interface

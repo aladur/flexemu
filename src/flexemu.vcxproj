@@ -207,6 +207,7 @@
     <ClCompile Include="ifilecnt.cpp" />
     <ClCompile Include="inout.cpp" />
     <ClCompile Include="joystick.cpp" />
+    <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mc146818.cpp" />
     <ClCompile Include="mc6809.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="inout.h" />
     <ClInclude Include="iodevice.h" />
     <ClInclude Include="joystick.h" />
+    <ClInclude Include="keyboard.h" />
     <ClInclude Include="mc146818.h" />
     <ClInclude Include="mc6809.h" />
     <ClInclude Include="mc6809st.h" />

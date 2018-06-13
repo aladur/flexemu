@@ -1,5 +1,5 @@
 /*
-    joystick.h
+    keyboard.h
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -22,33 +22,42 @@
 
 
 
-#ifndef __joystick_h__
-#define __joystick_h__
+#ifndef __keyboard_h__
+#define __keyboard_h__
 
-
+#include "misc1.h"
+#include <stdio.h>
+#include "flexemu.h"
+#include <string>
+#include <deque>
 #include <mutex>
+#include <memory>
 
-// Button mask for left, middle and right button
-#define L_MB        (4)
-#define M_MB        (2)
-#define R_MB        (1)
+#define BELL        (0x07)
 
-class JoystickIO
+// key mask for shift, control key
+#define SHIFT_KEY   (8)
+#define CONTROL_KEY (16)
+
+
+class KeyboardIO
 {
+    std::mutex parallel_mutex;
+    std::deque<Byte> key_buffer_parallel;
+    unsigned int keyMask;
+
 public:
-    JoystickIO();
+    void set_bell(Word x_percent);
+    void reset_parallel();
+    bool has_key_parallel();
+    Byte read_char_parallel(bool &do_notify);
+    Byte peek_char_parallel();
+    void put_char_parallel(Byte key, bool &do_notify);
+    void put_value(unsigned int keyMask);
+    void get_value(unsigned int *keyMask);
 
-    void    reset();
-    bool    get_values(int *deltaX, int *deltaY, unsigned int *buttonMask);
-    void    put_values(int deltaX, int deltaY);
-    void    put_value(unsigned int buttonMask);
-
-private:
-    int deltaX, deltaY;
-    unsigned int buttonMask;
-    bool    newValues;
-    std::mutex joystick_mutex;
+    KeyboardIO();
 };
 
-#endif
+#endif // __keyboard_h__
 

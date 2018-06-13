@@ -25,9 +25,11 @@
 #define __pia1__h
 
 #include "misc1.h"
-#include "inout.h"
-#include "mc6809.h"
 #include "mc6821.h"
+
+class Mc6809;
+class KeyboardIO;
+class Scheduler;
 
 class Pia1 : public Mc6821
 {
@@ -36,10 +38,9 @@ class Pia1 : public Mc6821
 
 protected:
 
-    Inout              *io;
     Mc6809             *cpu;
-
-    // Processor status functions
+    Scheduler &scheduler;
+    KeyboardIO &keyboardIO;
 
 protected:
 
@@ -49,7 +50,7 @@ protected:
     virtual void            set_irq_B();
 
 public:
-    Pia1(Inout *x_io, Mc6809 *x_cpu);
+    Pia1(Mc6809 *x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO);
     virtual void            resetIo();
     virtual const char      *getName()
     {

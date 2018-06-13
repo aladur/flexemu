@@ -60,6 +60,7 @@ class Memory;
 class E2video;
 class Mc6809CpuStatus;
 class JoystickIO;
+class KeyboardIO;
 
 class AbstractGui
 {
@@ -72,7 +73,8 @@ protected:
     Scheduler *schedy;
     Inout *io; // pointer to io-class handling in/output
     E2video *e2video;// pointer to video control registers
-    JoystickIO &joystickIO; // to joystick data provider.
+    JoystickIO &joystickIO; // joystick data provider.
+    KeyboardIO &keyboardIO; // keyboard data provider.
     const char *program_name;
     unsigned char unused_block[YBLOCK_SIZE];
     int switch_sp;
@@ -136,6 +138,7 @@ public:
         Inout *x_io,
         E2video *x_video,
         JoystickIO &x_joystickIO,
+        KeyboardIO &x_keyboardIO,
         struct sGuiOptions *options);
     virtual ~AbstractGui();
 

@@ -26,15 +26,16 @@
 #define __pia2__h
 
 #include "misc1.h"
-#include "inout.h"
 #include "mc6821.h"
-#include "mc6809.h"
 #include <memory>
 
 #ifdef  LINUX_JOYSTICK_IS_PRESENT
     class BJoystick;
 #endif
+
+class Mc6809;
 class JoystickIO;
+class KeyboardIO;
 
 class Pia2 : public Mc6821
 {
@@ -43,8 +44,8 @@ class Pia2 : public Mc6821
 
 private:
 
-    Inout              *io;
-    Mc6809             *cpu;
+    Mc6809 *cpu;
+    KeyboardIO &keyboardIO;
     JoystickIO &joystickIO;
     QWord               cycles;
 
@@ -64,7 +65,7 @@ public:
     {
         return "pia2";
     };
-    Pia2(Inout *x_io, Mc6809 *x_cpu, JoystickIO &x_joystick);
+    Pia2(Mc6809 *x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystick);
     virtual             ~Pia2();
 };
 

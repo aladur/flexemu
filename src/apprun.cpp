@@ -54,8 +54,8 @@ ApplicationRunner::ApplicationRunner(
     scheduler(&options),
     mmu(&io, &memory),
     acia1(&io, &cpu),
-    pia1(&io, &cpu),
-    pia2(&io, &cpu, joystickIO),
+    pia1(&cpu, scheduler, keyboardIO),
+    pia2(&cpu, keyboardIO, joystickIO),
     command(&io, &cpu, &scheduler),
     video(&memory),
     rtc(&cpu)
@@ -91,7 +91,7 @@ int ApplicationRunner::run()
 
     if (!(options.term_mode && io.is_terminal_supported()))
     {
-        io.create_gui(guiOptions.guiType, joystickIO);
+        io.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1);
     }
 
     // instanciate real time clock right before initialize alarm

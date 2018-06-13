@@ -40,6 +40,9 @@
 #include "schedule.h"
 #include "mc6809st.h"
 #include "joystick.h"
+#include "keyboard.h"
+#include "pia1.h"
+#include "cacttrns.h"
 
 #include "bitmaps/ok.xbm"
 #include "bitmaps/flexmain.xbm"
@@ -964,6 +967,7 @@ void XtGui::mouse_update()
     }
 
     joystickIO.put_value(convert_buttonmask(mouse_button_state));
+    keyboardIO.put_value(convert_keymask(mouse_button_state));
 }
 
 void XtGui::mouse_warp(int dx, int dy)
@@ -1026,7 +1030,13 @@ void XtGui::c_keyPress(XEvent *pevent)
 
     if ((key = translate_to_ascii(&pevent->xkey)) >= 0)
     {
-        io->put_char_parallel(key);
+        bool do_notify = false;
+
+        keyboardIO.put_char_parallel(key, do_notify);
+        if (do_notify)
+        {
+            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+        }
     }
 } // c_keyPress
 
@@ -1697,9 +1707,11 @@ XtGui::XtGui(
     Inout *x_io,
     E2video *x_video,
     JoystickIO &x_joystickIO,
+    KeyboardIO &x_keyboardIO,
+    Pia1 &x_pia1,
     struct sGuiOptions *pOptions) :
     XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
-                 pOptions)
+                 x_keyboardIO, pOptions), pia1(x_pia1)
 {
     initialize(pOptions);
 }

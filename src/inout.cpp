@@ -29,7 +29,6 @@
 #include "mc6821.h"
 #include "mc146818.h"
 #include "absgui.h"
-#include "cacttrns.h"
 #include "schedule.h"
 #include "joystick.h"
 
@@ -67,19 +66,12 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     video(nullptr), schedy(nullptr)
 {
     instance = this;
-    reset_parallel();
     reset_serial();
 }
 
 Inout::~Inout()
 {
     delete gui;
-}
-
-void Inout::reset_parallel()
-{
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    key_buffer_parallel.clear();
 }
 
 void Inout::reset_serial()
@@ -286,11 +278,14 @@ void Inout::set_scheduler(Scheduler *x_sched)
     schedy = x_sched;
 }
 
-AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO)
+AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
+                               KeyboardIO &keyboardIO, Pia1 &pia1)
 {
 #ifdef UNIT_TEST
     (void)type;
     (void)joystickIO;
+    (void)keyboardIO;
+    (void)pia1;
 #else
     if (video != nullptr)
     {
@@ -303,14 +298,14 @@ AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO)
 
                 case GUI_XTOOLKIT:
                     gui = new XtGui(cpu, memory, schedy, this, video,
-                                    joystickIO, options);
+                                    joystickIO, keyboardIO, pia1, options);
                     break;
 #endif
 #ifdef _WIN32
 
                 case GUI_WINDOWS:
                     gui = new Win32Gui(cpu, memory, schedy, this, video,
-                                       joystickIO, options);
+                                       joystickIO, keyboardIO, pia1, options);
                     break;
 #endif
             }
@@ -385,65 +380,6 @@ void Inout::exec_signal(int sig_no)
             break;
 #endif
     }
-}
-
-void Inout::put_char_parallel(Byte key)
-{
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    bool was_empty = key_buffer_parallel.empty();
-    key_buffer_parallel.push_back(key);
-    if (was_empty && pia1 != nullptr)
-    {
-        schedy->sync_exec(new CActiveTransition(*pia1, CA1));
-    }
-}
-
-bool Inout::has_key_parallel()
-{
-    bool result;
-
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    result = !key_buffer_parallel.empty();
-
-    return result;
-}
-
-// Read character and remove it from the queue.
-// Input should always be polled before read_char_parallel.
-Byte Inout::read_char_parallel()
-{
-    Byte result = 0x00;
-
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    if (!key_buffer_parallel.empty())
-    {
-        result = key_buffer_parallel.front();
-        key_buffer_parallel.pop_front();
-
-        // If there are still characters in the
-        // buffer set CA1 flag again.
-        if (!key_buffer_parallel.empty() && pia1 != nullptr)
-        {
-            schedy->sync_exec(new CActiveTransition(*pia1, CA1));
-        }
-    }
-
-    return result;
-}
-
-// Read character, but leave it in the queue.
-// Input should always be polled before read_queued_ch.
-Byte Inout::peek_char_parallel()
-{
-    Byte result = 0x00;
-
-    std::lock_guard<std::mutex> guard(parallel_mutex);
-    if (!key_buffer_parallel.empty())
-    {
-        result = key_buffer_parallel.front();
-    }
-
-    return result;
 }
 
 void Inout::put_char_serial(Byte key)
@@ -541,19 +477,6 @@ void Inout::write_char_serial(Byte value)
     count = write(fileno(stdout), &value, 1);
     (void)count; // satisfy compiler
 #endif // #ifdef HAVE_TERMIOS_H
-}
-
-void Inout::set_bell(Word /*x_percent*/)
-{
-#ifdef _WIN32
-    Beep(400, 100);
-#endif
-#ifdef UNIX
-    static char bell = BELL;
-
-    ssize_t count = write(fileno(stdout), &bell, 1);
-    (void)count; // satisfy compiler
-#endif
 }
 
 bool Inout::is_terminal_supported()

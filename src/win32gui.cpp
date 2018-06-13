@@ -42,6 +42,8 @@
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "joystick.h"
+#include "keyboard.h"
+#include "pia1.h"
 #include "winctxt.h"
 
 
@@ -493,7 +495,13 @@ void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
 
     if ((key = translate_to_ascii(ch)) >= 0)
     {
-        io->put_char_parallel((Byte)key);
+        bool do_notify = false;
+
+        keyboardIO.put_char_parallel((Byte)key, do_notify);
+        if (do_notify)
+        {
+            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+        }
     }
 
 } // onChar
@@ -504,7 +512,13 @@ void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
 
     if ((key = translate_to_ascii1(ch)) >= 0)
     {
-        io->put_char_parallel((Byte)key);
+        bool do_notify = false;
+
+        keyboardIO.put_char_parallel((Byte)key, do_notify);
+        if (do_notify)
+        {
+            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+        }
     }
 
 } // onKeyDown
@@ -1916,9 +1930,12 @@ Win32Gui::Win32Gui(
     Inout  *x_io,
     E2video *x_video,
     JoystickIO &x_joystickIO,
+    KeyboardIO &x_keyboardIO,
+    Pia1 &x_pia1,
     struct sGuiOptions *pOptions) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO),
-                pOptions),
+    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
+                x_keyboardIO, pOptions),
+    pia1(x_pia1), cpu_popped_up(false), oldX(0), oldY(0),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {
     initialize(pOptions);

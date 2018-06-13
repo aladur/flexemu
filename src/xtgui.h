@@ -70,11 +70,14 @@ enum
 
 extern String fallback_resources[];
 
+class Pia1;
 
 class XtGui : public XAbstractGui
 {
 
 protected:
+    Pia1 &pia1;
+
     static const char **pixmapname[8];
     static int radio_data[7];
     // Xtoolkit stuff
@@ -294,6 +297,8 @@ public:
         Inout *x_io,
         E2video *x_video,
         JoystickIO &x_joystickIO,
+        KeyboardIO &x_keyboardIO,
+        Pia1 &x_pia1,
         struct sGuiOptions *options);
     virtual ~XtGui();
 };

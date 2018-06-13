@@ -54,7 +54,7 @@ bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
-apprun.cpp \
+apprun.cpp keyboard.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
@@ -67,7 +67,7 @@ bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
-fileread.h memtgt.h joystick.h apprun.h winctxt.h
+fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 
@@ -97,7 +97,7 @@ memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
-mc6809st.cpp joystick.cpp \
+mc6809st.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
@@ -108,7 +108,7 @@ bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
-schedcpu.h sprinter.h joystick.h
+schedcpu.h sprinter.h
 
 ################################################################################
 @no_appsdir@install \

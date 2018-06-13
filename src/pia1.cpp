@@ -23,32 +23,40 @@
 
 #include "misc1.h"
 #include "pia1.h"
+#include "mc6809.h"
+#include "schedule.h"
+#include "keyboard.h"
+#include "cacttrns.h"
 
-Pia1::Pia1(Inout *x_io, Mc6809 *x_cpu)
+
+Pia1::Pia1(Mc6809 *x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO) :
+    cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO)
 {
-    cpu = x_cpu;
-    io  = x_io;
 }
-
 
 void Pia1::resetIo()
 {
     Mc6821::resetIo();
-    io->reset_parallel();
+    keyboardIO.reset_parallel();
 }
 
 void Pia1::requestInputA()
 {
-    //  if (io->poll()) {
+    //  if (keyboardIO.has_key_parallel()) {
     //      activeTransition(CA1);
     //  }
 }
 
 Byte Pia1::readInputA()
 {
-    if (io->has_key_parallel())
+    if (keyboardIO.has_key_parallel())
     {
-        ora = io->read_char_parallel();
+        bool do_notify = false;
+        ora = keyboardIO.read_char_parallel(do_notify);
+        if (do_notify)
+        {
+            scheduler.sync_exec(new CActiveTransition(*this, CA1));
+        }
     }
 
     return ora;

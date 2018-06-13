@@ -32,6 +32,7 @@
 #include "inout.h"
 #include "schedule.h"
 #include "joystick.h"
+#include "keyboard.h"
 #include "mmu.h"
 #include "acia1.h"
 #include "pia1.h"
@@ -64,6 +65,7 @@ private:
     Inout io;
     Scheduler scheduler;
     JoystickIO joystickIO;
+    KeyboardIO keyboardIO;
     Mmu mmu;
     Acia1 acia1;
     Pia1 pia1;

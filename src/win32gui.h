@@ -36,6 +36,8 @@ class Scheduler;
 class Inout;
 class E2video;
 class Mc6809CpuStatus;
+class JoystickIO;
+class KeyboardIO;
 
 // maybe someone has forgotten to define this:
 
@@ -226,6 +228,7 @@ protected:
 
 protected:
 
+    Pia1 &pia1;
     bool            cpu_popped_up;
     int             oldX, oldY;
     Word            mouseMoved;
@@ -257,7 +260,7 @@ public:
 public:
     Win32Gui(
         Mc6809 *, Memory *, Scheduler *, Inout *, E2video *, JoystickIO &,
-        struct sGuiOptions *);
+        KeyboardIO &, struct sGuiOptions *);
     virtual ~Win32Gui();
 
 };
