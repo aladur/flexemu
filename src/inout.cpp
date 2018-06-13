@@ -336,7 +336,7 @@ void Inout::set_scheduler(Scheduler *x_sched)
     schedy = x_sched;
 }
 
-AbstractGui *Inout::create_gui(int type, JoystickIOPtr joystickIO)
+AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO)
 {
 #ifdef UNIT_TEST
     (void)type;
@@ -353,14 +353,14 @@ AbstractGui *Inout::create_gui(int type, JoystickIOPtr joystickIO)
 
                 case GUI_XTOOLKIT:
                     gui = new XtGui(cpu, memory, schedy, this, video,
-                                    std::move(joystickIO), options);
+                                    joystickIO, options);
                     break;
 #endif
 #ifdef _WIN32
 
                 case GUI_WINDOWS:
                     gui = new Win32Gui(cpu, memory, schedy, this, video,
-                                       std::move(joystickIO), options);
+                                       joystickIO, options);
                     break;
 #endif
             }

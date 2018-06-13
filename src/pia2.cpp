@@ -32,9 +32,8 @@
 #include "joystick.h"
 
 
-Pia2::Pia2(Inout *x_io, Mc6809 *x_cpu,
-           JoystickIOPtr x_joystickIO) :
-    io(x_io), cpu(x_cpu), joystickIO(std::move(x_joystickIO)), cycles(0)
+Pia2::Pia2(Inout *x_io, Mc6809 *x_cpu, JoystickIO &x_joystickIO) :
+    io(x_io), cpu(x_cpu), joystickIO(x_joystickIO), cycles(0)
 {
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     joystick = new BJoystick(0);
@@ -51,7 +50,7 @@ Pia2::~Pia2()
 void Pia2::resetIo()
 {
     Mc6821::resetIo();
-    joystickIO->reset_joystick();
+    joystickIO.reset_joystick();
     cycles = 0;
 }
 
@@ -70,7 +69,7 @@ Byte Pia2::readInputB()
     int deltaX, deltaY;
     bool newValues;
 
-    newValues = joystickIO->get_joystick(&deltaX, &deltaY, &buttonMask);
+    newValues = joystickIO.get_joystick(&deltaX, &deltaY, &buttonMask);
 
     orb &= 0xc1;
 

@@ -63,7 +63,7 @@ private:
     Da6809 disassembler;
     Inout io;
     Scheduler scheduler;
-    JoystickIOPtr joystickIO;
+    JoystickIO joystickIO;
     Mmu mmu;
     Acia1 acia1;
     Pia1 pia1;

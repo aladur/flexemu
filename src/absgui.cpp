@@ -947,10 +947,10 @@ AbstractGui::AbstractGui(
     Scheduler *x_sched,
     Inout     *x_io,
     E2video   *x_video,
-    JoystickIOPtr x_joystickIO,
+    JoystickIO &x_joystickIO,
     struct sGuiOptions *x_pOptions) :
     cpu(x_cpu), memory(x_memory), schedy(x_sched), io(x_io),
-    e2video(x_video), joystickIO(std::move(x_joystickIO)), pOptions(x_pOptions),
+    e2video(x_video), joystickIO(x_joystickIO), pOptions(x_pOptions),
     exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {

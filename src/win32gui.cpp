@@ -1915,9 +1915,9 @@ Win32Gui::Win32Gui(
     Scheduler *x_sched,
     Inout  *x_io,
     E2video *x_video,
-    JoystickIOPtr x_joystickIO,
+    JoystickIO &x_joystickIO,
     struct sGuiOptions *pOptions) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystickIO),
+    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO),
                 pOptions),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {

@@ -35,7 +35,6 @@
 #include <deque>
 #include <mutex>
 #include <memory>
-#include "classdef.h"
 
 #define KEY_BUFFER_SIZE (8)
 #define BELL        (0x07)
@@ -55,6 +54,7 @@ class Mc146818;
 class E2video;
 class AbstractGui;
 class Scheduler;
+class JoystickIO;
 
 class Inout
 {
@@ -92,7 +92,7 @@ public:
     void    set_pia1(Mc6821 *x_device);
     void    set_video(E2video *x_video);
     void    set_scheduler(Scheduler *x_sched);
-    AbstractGui *create_gui(int type, JoystickIOPtr joystickIO);
+    AbstractGui *create_gui(int type, JoystickIO &joystickIO);
     static void s_exec_signal(int sig_no);
 
     void    init(Word reset_key);

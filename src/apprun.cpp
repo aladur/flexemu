@@ -52,7 +52,6 @@ ApplicationRunner::ApplicationRunner(
     cpu(&memory),
     io(&cpu, &guiOptions),
     scheduler(&options),
-    joystickIO(std::make_shared<JoystickIO>()),
     mmu(&io, &memory),
     acia1(&io, &cpu),
     pia1(&io, &cpu),

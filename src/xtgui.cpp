@@ -1696,9 +1696,9 @@ XtGui::XtGui(
     Scheduler *x_sched,
     Inout *x_io,
     E2video *x_video,
-    JoystickIOPtr x_joystickIO,
+    JoystickIO &x_joystickIO,
     struct sGuiOptions *pOptions) :
-    XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, std::move(x_joystickIO),
+    XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
                  pOptions)
 {
     initialize(pOptions);

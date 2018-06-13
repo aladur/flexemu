@@ -268,7 +268,6 @@
     <ClInclude Include="btimer.h" />
     <ClInclude Include="bwin32threadimp.h" />
     <ClInclude Include="cacttrns.h" />
-    <ClInclude Include="classdef.h" />
     <ClInclude Include="clogfile.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="confignt.h" />
