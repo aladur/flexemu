@@ -23,7 +23,7 @@
 
 void Mc6809::set_serpar(Byte b)
 {
-    memory->write_byte(SERPAR, b);
+    memory.write_byte(SERPAR, b);
 }
 
 void Mc6809::reset()
@@ -42,7 +42,7 @@ void Mc6809::reset()
     }
 
 #ifdef FASTFLEX
-    ipcreg          = memory->read_word(0xfffe);
+    ipcreg          = memory.read_word(0xfffe);
     idpreg          = 0x00;         /* Direct page register = 0x00 */
     iccreg          = 0x50;         /* set i and f bit              */
     eaddr           = 0;
@@ -51,7 +51,7 @@ void Mc6809::reset()
     tw              = 0;
     k               = 0;
 #else
-    pc              = memory->read_word(0xfffe);
+    pc              = memory.read_word(0xfffe);
     dp              = 0x00;         /* Direct page register = 0x00 */
     cc.all          = 0x00;         /* Clear all flags */
     cc.bit.i        = true;         /* IRQ disabled */
@@ -72,7 +72,7 @@ int Mc6809::Disassemble(Word address, DWord *pFlags,
 
     for (int i = 0; i < 6; i++)
     {
-        buffer[i] = memory->read_byte(address + i);
+        buffer[i] = memory.read_byte(address + i);
     }
 
     return disassembler->Disassemble((const Byte *)buffer, address,
@@ -138,12 +138,12 @@ void Mc6809::get_status(CpuStatus *status)
 
     for (i = 0; i < 4; i++)
     {
-        stat->instruction[i] = memory->read_byte(stat->pc + i);
+        stat->instruction[i] = memory.read_byte(stat->pc + i);
     }
 
     for (i = 0; i < 48; i++)
     {
-        stat->memory[i] = memory->read_byte(mem_addr + i);
+        stat->memory[i] = memory.read_byte(mem_addr + i);
     }
 
     if (!Disassemble(stat->pc, &flags, &pbuffer, &pmnem_buf))
@@ -415,7 +415,7 @@ void Mc6809::do_reset()
 {
     reset();
     reset_bp(2);
-    memory->reset_io();
+    memory.reset_io();
 }
 
 // request to the CPU to exit run loop (thread save)

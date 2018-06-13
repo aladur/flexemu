@@ -48,17 +48,17 @@
 #define engine
 
 
-#define GETBYTE(a) memory->read_byte(a)
-#define GETBYTE_PI(a) memory->read_byte(a++) // get byte with post increment
-#define GETWORD(a) memory->read_word(a)
-#define SETBYTE(a,n) memory->write_byte(a, (Byte)n);
-#define SETWORD(a,n) memory->write_word(a, n);
+#define GETBYTE(a) memory.read_byte(a)
+#define GETBYTE_PI(a) memory.read_byte(a++) // get byte with post increment
+#define GETWORD(a) memory.read_word(a)
+#define SETBYTE(a,n) memory.write_byte(a, (Byte)n);
+#define SETWORD(a,n) memory.write_word(a, n);
 
 /* Two bytes of a word are fetched separately because of
    the possible wrap-around at address $ffff and alignment
 */
 
-#define IMMBYTE(b) b=memory->read_byte(ipcreg++)
+#define IMMBYTE(b) b=memory.read_byte(ipcreg++)
 #define IMMWORD(w) {w=GETWORD(ipcreg);ipcreg+=2;}
 
 #define PUSHBYTE(b) {--isreg;SETBYTE(isreg,b);}
@@ -67,8 +67,8 @@
 #define PSHUBYTE(b) {--iureg;SETBYTE(iureg,b);}
 #define PSHUWORD(w) {iureg-=2;SETWORD(iureg,w);}
 #define PULUWORD(w) {w=GETWORD(iureg);iureg+=2;}
-#define PULLBYTE(b) b=memory->read_byte(isreg++)
-#define PULUBYTE(b) b=memory->read_byte(iureg++)
+#define PULLBYTE(b) b=memory.read_byte(isreg++)
+#define PULUBYTE(b) b=memory.read_byte(iureg++)
 
 #define SIGNED(b) ((Word)(b&0x80?b|0xff00:b))
 

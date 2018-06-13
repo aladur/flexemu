@@ -497,31 +497,31 @@ bool test_gccasm_fctByte(std::string mnemonic,
                          tFctByte test_function,
                          Byte opcode)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
     Word op;
     Byte rega;
     Byte regcc;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
         for (op = 0; op < 256; ++op)
         {
-            cpu->get_status(&status);
+            cpu.get_status(&status);
             status.a = (Byte)op;
             status.pc = 0x0000;
             status.cc = regcc;
-            cpu->set_status(&status);
-            memory->write_byte(0x0000, opcode);
-            cpu->run(SINGLESTEP_INTO);
-            cpu->get_status(&status);
+            cpu.set_status(&status);
+            memory.write_byte(0x0000, opcode);
+            cpu.run(SINGLESTEP_INTO);
+            cpu.get_status(&status);
 
             rega = (Byte)op;
             cc.all = regcc;
@@ -535,8 +535,6 @@ bool test_gccasm_fctByte(std::string mnemonic,
         }
     }
 
-    delete cpu;
-
     return success;
 }
 
@@ -544,31 +542,31 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
                             tFctRefByte test_function,
                             Byte opcode)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
     Word op;
     Byte rega;
     Byte regcc;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
         for (op = 0; op < 256; ++op)
         {
-            cpu->get_status(&status);
+            cpu.get_status(&status);
             status.a = (Byte)op;
             status.pc = 0x0000;
             status.cc = regcc;
-            cpu->set_status(&status);
-            memory->write_byte(0x0000, opcode);
-            cpu->run(SINGLESTEP_INTO);
-            cpu->get_status(&status);
+            cpu.set_status(&status);
+            memory.write_byte(0x0000, opcode);
+            cpu.run(SINGLESTEP_INTO);
+            cpu.get_status(&status);
 
             rega = (Byte)op;
             cc.all = regcc;
@@ -588,8 +586,6 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
         }
     }
 
-    delete cpu;
-
     return success;
 }
 
@@ -597,18 +593,18 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
                              tFctByteByte test_function,
                              Byte opcode)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1, op2;
     Byte rega;
     Byte regcc;
     bool success = true;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
@@ -616,15 +612,15 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
         {
             for (op2 = 0; op2 < 256; ++op2)
             {
-                cpu->get_status(&status);
+                cpu.get_status(&status);
                 status.a = (Byte)op1;
                 status.pc = 0x0000;
                 status.cc = regcc;
-                cpu->set_status(&status);
-                memory->write_byte(0x0000, opcode);
-                memory->write_byte(0x0001, (Byte)op2); // immediate value
-                cpu->run(SINGLESTEP_INTO);
-                cpu->get_status(&status);
+                cpu.set_status(&status);
+                memory.write_byte(0x0000, opcode);
+                memory.write_byte(0x0001, (Byte)op2); // immediate value
+                cpu.run(SINGLESTEP_INTO);
+                cpu.get_status(&status);
 
                 rega = (Byte)op1;
                 cc.all = regcc;
@@ -639,8 +635,6 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
         }
     }
 
-    delete cpu;
-
     return success;
 }
 
@@ -648,18 +642,18 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
                                 tFctRefByteByte test_function,
                                 Byte opcode)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1, op2;
     Byte rega;
     Byte regcc;
     bool success = true;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
@@ -667,15 +661,15 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
         {
             for (op2 = 0; op2 < 256; ++op2)
             {
-                cpu->get_status(&status);
+                cpu.get_status(&status);
                 status.a = (Byte)op1;
                 status.pc = 0x0000;
                 status.cc = regcc;
-                cpu->set_status(&status);
-                memory->write_byte(0x0000, opcode);
-                memory->write_byte(0x0001, (Byte)op2); // immediate value
-                cpu->run(SINGLESTEP_INTO);
-                cpu->get_status(&status);
+                cpu.set_status(&status);
+                memory.write_byte(0x0000, opcode);
+                memory.write_byte(0x0001, (Byte)op2); // immediate value
+                cpu.run(SINGLESTEP_INTO);
+                cpu.get_status(&status);
 
                 rega = (Byte)op1;
                 cc.all = regcc;
@@ -696,8 +690,6 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
         }
     }
 
-    delete cpu;
-
     return success;
 }
 
@@ -706,8 +698,8 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
                              Byte opcode1,
                              Byte opcode2)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1, op2;
     Word regd;
@@ -715,10 +707,10 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
@@ -727,19 +719,19 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
         {
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
-                cpu->get_status(&status);
+                cpu.get_status(&status);
                 status.a = (Byte)(op1 >> 8);
                 status.b = (Byte)(op1);
                 addr = 0x0000;
                 status.pc = addr;
                 status.cc = regcc;
-                cpu->set_status(&status);
-                memory->write_byte(addr++, opcode1);
-                memory->write_byte(addr++, opcode2);
-                memory->write_byte(addr++, (Byte)(op2 >> 8)); // immediate value hi
-                memory->write_byte(addr++, (Byte)(op2)); // immediate value lo
-                cpu->run(SINGLESTEP_INTO);
-                cpu->get_status(&status);
+                cpu.set_status(&status);
+                memory.write_byte(addr++, opcode1);
+                memory.write_byte(addr++, opcode2);
+                memory.write_byte(addr++, (Byte)(op2 >> 8)); // immediate value hi
+                memory.write_byte(addr++, (Byte)(op2)); // immediate value lo
+                cpu.run(SINGLESTEP_INTO);
+                cpu.get_status(&status);
 
                 regd = (Word)op1;
                 cc.all = regcc;
@@ -754,8 +746,6 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
         }
     }
 
-    delete cpu;
-
     return success;
 }
 
@@ -763,8 +753,8 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
                                 tFctRefWordWord test_function,
                                 Byte opcode)
 {
-    Memory *memory = new Memory(false);
-    Mc6809 *cpu = new Mc6809(memory);
+    Memory memory(false);
+    Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1, op2;
     Word regd;
@@ -772,10 +762,10 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
     Byte regcc;
     bool success = true;
 
-    memory->write_ram_rom(0xfffe, 0x00);
-    memory->write_ram_rom(0xffff, 0x00);
+    memory.write_ram_rom(0xfffe, 0x00);
+    memory.write_ram_rom(0xffff, 0x00);
 
-    cpu->reset();
+    cpu.reset();
 
     for (regcc = 0; regcc != 254; --regcc)
     {
@@ -784,17 +774,17 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
         {
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
-                cpu->get_status(&status);
+                cpu.get_status(&status);
                 status.a = (Byte)(op1 >> 8);
                 status.b = (Byte)(op1);
                 status.pc = 0x0000;
                 status.cc = regcc;
-                cpu->set_status(&status);
-                memory->write_byte(0x0000, opcode);
-                memory->write_byte(0x0001, (Byte)(op2 >> 8)); // immediate value hi
-                memory->write_byte(0x0002, (Byte)(op2)); // immediate value lo
-                cpu->run(SINGLESTEP_INTO);
-                cpu->get_status(&status);
+                cpu.set_status(&status);
+                memory.write_byte(0x0000, opcode);
+                memory.write_byte(0x0001, (Byte)(op2 >> 8)); // immediate value hi
+                memory.write_byte(0x0002, (Byte)(op2)); // immediate value lo
+                cpu.run(SINGLESTEP_INTO);
+                cpu.get_status(&status);
                 cpuregd = ((Word)status.a << 8) | status.b;
 
                 regd = (Word)op1;
@@ -815,8 +805,6 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
             }
         }
     }
-
-    delete cpu;
 
     return success;
 }

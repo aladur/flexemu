@@ -23,7 +23,7 @@
     #define PC pc
 #endif
 
-Mc6809::Mc6809(Memory *x_memory) : events(0),
+Mc6809::Mc6809(Memory &x_memory) : events(0),
 #ifdef FASTFLEX
     pMem(nullptr),
 #else
@@ -225,145 +225,145 @@ t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
     {
         case 0xf0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
 
         case 0x70:
             s -= 2;
-            memory->write_word(s, u);
+            memory.write_word(s, u);
 
         case 0x30:
             s -= 2;
-            memory->write_word(s, y);
+            memory.write_word(s, y);
 
         case 0x10:
             s -= 2;
-            memory->write_word(s, x);
+            memory.write_word(s, x);
 
         case 0x00:
             break;
 
         case 0xe0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
 
         case 0x60:
             s -= 2;
-            memory->write_word(s, u);
+            memory.write_word(s, u);
 
         case 0x20:
             s -= 2;
-            memory->write_word(s, y);
+            memory.write_word(s, y);
             break;
 
         case 0xd0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
 
         case 0x50:
             s -= 2;
-            memory->write_word(s, u);
+            memory.write_word(s, u);
             s -= 2;
-            memory->write_word(s, x);
+            memory.write_word(s, x);
             break;
 
         case 0xc0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
 
         case 0x40:
             s -= 2;
-            memory->write_word(s, u);
+            memory.write_word(s, u);
             break;
 
         case 0xb0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
             s -= 2;
-            memory->write_word(s, y);
+            memory.write_word(s, y);
             s -= 2;
-            memory->write_word(s, x);
+            memory.write_word(s, x);
             break;
 
         case 0xa0:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
             s -= 2;
-            memory->write_word(s, y);
+            memory.write_word(s, y);
             break;
 
         case 0x90:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
             s -= 2;
-            memory->write_word(s, x);
+            memory.write_word(s, x);
             break;
 
         case 0x80:
             s -= 2;
-            memory->write_word(s, pc);
+            memory.write_word(s, pc);
             break;
     } // switch
 
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            memory->write_byte(--s, dp);
+            memory.write_byte(--s, dp);
 
         case 0x07:
-            memory->write_byte(--s, b);
+            memory.write_byte(--s, b);
 
         case 0x03:
-            memory->write_byte(--s, a);
+            memory.write_byte(--s, a);
 
         case 0x01:
-            memory->write_byte(--s, cc.all);
+            memory.write_byte(--s, cc.all);
 
         case 0x00:
             break;
 
         case 0x0e:
-            memory->write_byte(--s, dp);
+            memory.write_byte(--s, dp);
 
         case 0x06:
-            memory->write_byte(--s, b);
+            memory.write_byte(--s, b);
 
         case 0x02:
-            memory->write_byte(--s, a);
+            memory.write_byte(--s, a);
             break;
 
         case 0x0d:
-            memory->write_byte(--s, dp);
+            memory.write_byte(--s, dp);
 
         case 0x05:
-            memory->write_byte(--s, b);
-            memory->write_byte(--s, cc.all);
+            memory.write_byte(--s, b);
+            memory.write_byte(--s, cc.all);
             break;
 
         case 0x0c:
-            memory->write_byte(--s, dp);
+            memory.write_byte(--s, dp);
 
         case 0x04:
-            memory->write_byte(--s, b);
+            memory.write_byte(--s, b);
             break;
 
         case 0x0b:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, a);
-            memory->write_byte(--s, cc.all);
+            memory.write_byte(--s, dp);
+            memory.write_byte(--s, a);
+            memory.write_byte(--s, cc.all);
             break;
 
         case 0x09:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, cc.all);
+            memory.write_byte(--s, dp);
+            memory.write_byte(--s, cc.all);
             break;
 
         case 0x0a:
-            memory->write_byte(--s, dp);
-            memory->write_byte(--s, a);
+            memory.write_byte(--s, dp);
+            memory.write_byte(--s, a);
             break;
 
         case 0x08:
-            memory->write_byte(--s, dp);
+            memory.write_byte(--s, dp);
             break;
     } // switch
 
@@ -375,145 +375,145 @@ t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            cc.all = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
 
         case 0x0e:
-            a      = memory->read_byte(s++);
+            a      = memory.read_byte(s++);
 
         case 0x0c:
-            b      = memory->read_byte(s++);
+            b      = memory.read_byte(s++);
 
         case 0x08:
-            dp     = memory->read_byte(s++);
+            dp     = memory.read_byte(s++);
 
         case 0x00:
             break;
 
         case 0x07:
-            cc.all = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
 
         case 0x06:
-            a      = memory->read_byte(s++);
+            a      = memory.read_byte(s++);
 
         case 0x04:
-            b      = memory->read_byte(s++);
+            b      = memory.read_byte(s++);
             break;
 
         case 0x0b:
-            cc.all = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
 
         case 0x0a:
-            a      = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
+            a      = memory.read_byte(s++);
+            dp     = memory.read_byte(s++);
             break;
 
         case 0x03:
-            cc.all = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
 
         case 0x02:
-            a      = memory->read_byte(s++);
+            a      = memory.read_byte(s++);
             break;
 
         case 0x0d:
-            cc.all = memory->read_byte(s++);
-            b      = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
+            b      = memory.read_byte(s++);
+            dp     = memory.read_byte(s++);
             break;
 
         case 0x09:
-            cc.all = memory->read_byte(s++);
-            dp     = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
+            dp     = memory.read_byte(s++);
             break;
 
         case 0x05:
-            cc.all = memory->read_byte(s++);
-            b      = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
+            b      = memory.read_byte(s++);
             break;
 
         case 0x01:
-            cc.all = memory->read_byte(s++);
+            cc.all = memory.read_byte(s++);
             break;
     } // switch
 
     switch ((Byte)(what & 0xf0))
     {
         case 0xf0:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
 
         case 0xe0:
-            y  = memory->read_word(s);
+            y  = memory.read_word(s);
             s += 2;
 
         case 0xc0:
-            u  = memory->read_word(s);
+            u  = memory.read_word(s);
             s += 2;
 
         case 0x80:
-            pc = memory->read_word(s);
+            pc = memory.read_word(s);
             s += 2;
 
         case 0x00:
             break;
 
         case 0x70:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
 
         case 0x60:
-            y  = memory->read_word(s);
+            y  = memory.read_word(s);
             s += 2;
 
         case 0x40:
-            u  = memory->read_word(s);
+            u  = memory.read_word(s);
             s += 2;
             break;
 
         case 0xb0:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
 
         case 0xa0:
-            y  = memory->read_word(s);
+            y  = memory.read_word(s);
             s += 2;
-            pc = memory->read_word(s);
+            pc = memory.read_word(s);
             s += 2;
             break;
 
         case 0x30:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
 
         case 0x20:
-            y  = memory->read_word(s);
+            y  = memory.read_word(s);
             s += 2;
             break;
 
         case 0xd0:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
-            u  = memory->read_word(s);
+            u  = memory.read_word(s);
             s += 2;
-            pc = memory->read_word(s);
+            pc = memory.read_word(s);
             s += 2;
             break;
 
         case 0x90:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
-            pc = memory->read_word(s);
+            pc = memory.read_word(s);
             s += 2;
             break;
 
         case 0x50:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
-            u  = memory->read_word(s);
+            u  = memory.read_word(s);
             s += 2;
             break;
 
         case 0x10:
-            x  = memory->read_word(s);
+            x  = memory.read_word(s);
             s += 2;
             break;
     } // switch
@@ -524,7 +524,7 @@ t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
 void Mc6809::exg()
 {
     Word    t1, t2;
-    Byte    w = memory->read_byte(pc++);
+    Byte    w = memory.read_byte(pc++);
     bool    r1_is_byte = false;
     bool    r2_is_byte = false;
 
@@ -740,7 +740,7 @@ void Mc6809::exg()
 void Mc6809::tfr()
 {
     Word    t;
-    Byte    w = memory->read_byte(pc++);
+    Byte    w = memory.read_byte(pc++);
     bool    is_byte = false;
 
     // decode source
@@ -954,7 +954,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x91:
-                addr = memory->read_word(x);
+                addr = memory.read_word(x);
                 x += 2;
                 break;
 
@@ -969,7 +969,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0x93:
                 x -= 2;
-                addr = memory->read_word(x);
+                addr = memory.read_word(x);
                 break;
 
             case 0x84:
@@ -977,7 +977,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x94:
-                addr = memory->read_word(x);
+                addr = memory.read_word(x);
                 break;
 
             // ,Y+ ,Y++ ,-Y ,--Y ,Y
@@ -991,7 +991,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xb1:
-                addr = memory->read_word(y);
+                addr = memory.read_word(y);
                 y += 2;
                 break;
 
@@ -1006,7 +1006,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xb3:
                 y -= 2;
-                addr = memory->read_word(y);
+                addr = memory.read_word(y);
                 break;
 
             case 0xa4:
@@ -1014,7 +1014,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xb4:
-                addr = memory->read_word(y);
+                addr = memory.read_word(y);
                 break;
 
             // ,U+ ,U++ ,-U ,--U ,U
@@ -1028,7 +1028,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xd1:
-                addr = memory->read_word(u);
+                addr = memory.read_word(u);
                 u += 2;
                 break;
 
@@ -1043,7 +1043,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xd3:
                 u -= 2;
-                addr = memory->read_word(u);
+                addr = memory.read_word(u);
                 break;
 
             case 0xc4:
@@ -1051,7 +1051,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xd4:
-                addr = memory->read_word(u);
+                addr = memory.read_word(u);
                 break;
 
             // ,S+ ,S++ ,-S ,--S ,S
@@ -1065,7 +1065,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xf1:
-                addr = memory->read_word(s);
+                addr = memory.read_word(s);
                 s += 2;
                 break;
 
@@ -1080,7 +1080,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xf3:
                 s -= 2;
-                addr = memory->read_word(s);
+                addr = memory.read_word(s);
                 break;
 
             case 0xe4:
@@ -1088,7 +1088,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xf4:
-                addr = memory->read_word(s);
+                addr = memory.read_word(s);
                 break;
 
             // (+/- B),R
@@ -1098,7 +1098,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0x95:
                 addr = EXTEND8(b) + x;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xa5:
@@ -1107,7 +1107,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xb5:
                 addr = EXTEND8(b) + y;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xc5:
@@ -1116,7 +1116,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xd5:
                 addr = EXTEND8(b) + u;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xe5:
@@ -1125,7 +1125,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xf5:
                 addr = EXTEND8(b) + s;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             // (+/- A),R
@@ -1135,7 +1135,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0x96:
                 addr = EXTEND8(a) + x;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xa6:
@@ -1144,7 +1144,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xb6:
                 addr = EXTEND8(a) + y;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xc6:
@@ -1153,7 +1153,7 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xd6:
                 addr = EXTEND8(a) + u;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xe6:
@@ -1162,89 +1162,89 @@ Word Mc6809::do_effective_address(Byte post)
 
             case 0xf6:
                 addr = EXTEND8(a) + s;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             // (+/- 7 bit offset),R
             case 0x88:
-                addr = x + EXTEND8(memory->read_byte(pc++));
+                addr = x + EXTEND8(memory.read_byte(pc++));
                 break;
 
             case 0x98:
-                addr = x + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
+                addr = x + EXTEND8(memory.read_byte(pc++));
+                addr = memory.read_word(addr);
                 break;
 
             case 0xa8:
-                addr = y + EXTEND8(memory->read_byte(pc++));
+                addr = y + EXTEND8(memory.read_byte(pc++));
                 break;
 
             case 0xb8:
-                addr = y + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
+                addr = y + EXTEND8(memory.read_byte(pc++));
+                addr = memory.read_word(addr);
                 break;
 
             case 0xc8:
-                addr = u + EXTEND8(memory->read_byte(pc++));
+                addr = u + EXTEND8(memory.read_byte(pc++));
                 break;
 
             case 0xd8:
-                addr = u + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
+                addr = u + EXTEND8(memory.read_byte(pc++));
+                addr = memory.read_word(addr);
                 break;
 
             case 0xe8:
-                addr = s + EXTEND8(memory->read_byte(pc++));
+                addr = s + EXTEND8(memory.read_byte(pc++));
                 break;
 
             case 0xf8:
-                addr = s + EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr);
+                addr = s + EXTEND8(memory.read_byte(pc++));
+                addr = memory.read_word(addr);
                 break;
 
             // (+/- 15 bit offset),R
             case 0x89:
-                addr = x + memory->read_word(pc);
+                addr = x + memory.read_word(pc);
                 pc += 2;
                 break;
 
             case 0x99:
-                addr = x + memory->read_word(pc);
+                addr = x + memory.read_word(pc);
                 pc += 2;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xa9:
-                addr = y + memory->read_word(pc);
+                addr = y + memory.read_word(pc);
                 pc += 2;
                 break;
 
             case 0xb9:
-                addr = y + memory->read_word(pc);
+                addr = y + memory.read_word(pc);
                 pc += 2;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xc9:
-                addr = u + memory->read_word(pc);
+                addr = u + memory.read_word(pc);
                 pc += 2;
                 break;
 
             case 0xd9:
-                addr = u + memory->read_word(pc);
+                addr = u + memory.read_word(pc);
                 pc += 2;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             case 0xe9:
-                addr = s + memory->read_word(pc);
+                addr = s + memory.read_word(pc);
                 pc += 2;
                 break;
 
             case 0xf9:
-                addr = s + memory->read_word(pc);
+                addr = s + memory.read_word(pc);
                 pc += 2;
-                addr = memory->read_word(addr);
+                addr = memory.read_word(addr);
                 break;
 
             // (+/- D),R
@@ -1253,7 +1253,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0x9b:
-                addr = memory->read_word(d + x);
+                addr = memory.read_word(d + x);
                 break;
 
             case 0xab:
@@ -1261,7 +1261,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xbb:
-                addr = memory->read_word(d + y);
+                addr = memory.read_word(d + y);
                 break;
 
             case 0xcb:
@@ -1269,7 +1269,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xdb:
-                addr = memory->read_word(d + u);
+                addr = memory.read_word(d + u);
                 break;
 
             case 0xeb:
@@ -1277,7 +1277,7 @@ Word Mc6809::do_effective_address(Byte post)
                 break;
 
             case 0xfb:
-                addr = memory->read_word(d + s);
+                addr = memory.read_word(d + s);
                 break;
 
             // (+/- 7 bit offset), PC
@@ -1285,7 +1285,7 @@ Word Mc6809::do_effective_address(Byte post)
             case 0xac:
             case 0xcc:
             case 0xec:
-                addr = EXTEND8(memory->read_byte(pc++));
+                addr = EXTEND8(memory.read_byte(pc++));
                 addr += pc;
                 break;
 
@@ -1293,8 +1293,8 @@ Word Mc6809::do_effective_address(Byte post)
             case 0xbc:
             case 0xdc:
             case 0xfc:
-                addr = EXTEND8(memory->read_byte(pc++));
-                addr = memory->read_word(addr + pc);
+                addr = EXTEND8(memory.read_byte(pc++));
+                addr = memory.read_word(addr + pc);
                 break;
 
             // (+/- 15 bit offset), PC
@@ -1302,7 +1302,7 @@ Word Mc6809::do_effective_address(Byte post)
             case 0xad:
             case 0xcd:
             case 0xed:
-                addr = memory->read_word(pc);
+                addr = memory.read_word(pc);
                 pc += 2;
                 addr += pc;
                 break;
@@ -1311,15 +1311,15 @@ Word Mc6809::do_effective_address(Byte post)
             case 0xbd:
             case 0xdd:
             case 0xfd:
-                addr = memory->read_word(pc);
+                addr = memory.read_word(pc);
                 pc += 2;
-                addr = memory->read_word(addr + pc);
+                addr = memory.read_word(addr + pc);
                 break;
 
             // [address]
             case 0x9f:
-                addr = memory->read_word(pc);
-                addr = memory->read_word(addr);
+                addr = memory.read_word(pc);
+                addr = memory.read_word(addr);
                 pc += 2;
                 break;
 
@@ -1345,7 +1345,7 @@ void Mc6809::nmi(bool save_state)
     }
 
     cc.bit.f = cc.bit.i = 1;
-    pc = memory->read_word(0xfffc);
+    pc = memory.read_word(0xfffc);
 }
 
 void Mc6809::firq(bool save_state)
@@ -1357,7 +1357,7 @@ void Mc6809::firq(bool save_state)
     }
 
     cc.bit.f = cc.bit.i = 1;
-    pc = memory->read_word(0xfff6);
+    pc = memory.read_word(0xfff6);
 }
 
 void Mc6809::irq(bool save_state)
@@ -1369,7 +1369,7 @@ void Mc6809::irq(bool save_state)
     }
 
     cc.bit.i = 1;           // Sw: don't set flag f !!
-    pc = memory->read_word(0xfff8);
+    pc = memory.read_word(0xfff8);
 }
 #endif
 

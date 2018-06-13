@@ -49,7 +49,7 @@ ApplicationRunner::ApplicationRunner(
     guiOptions(x_guiOptions),
     options(x_options),
     memory(options.isHiMem),
-    cpu(&memory),
+    cpu(memory),
     io(&cpu, &guiOptions),
     scheduler(&options),
     mmu(&io, &memory),

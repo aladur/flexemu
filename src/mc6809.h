@@ -281,7 +281,7 @@ private:
     // fetch immediate 16-Bit operand
     inline Word fetch_imm_16()
     {
-        Word addr = memory->read_word(pc);
+        Word addr = memory.read_word(pc);
         pc += 2;
         return addr;
     }
@@ -289,16 +289,16 @@ private:
     // fetch extended 16-Bit operand
     inline Word fetch_ext_16()
     {
-        Word addr = memory->read_word(pc);
+        Word addr = memory.read_word(pc);
         pc += 2;
-        return memory->read_word(addr);
+        return memory.read_word(addr);
     }
 
     // fetch direct 16-Bit operand
     inline Word fetch_dir_16()
     {
-        Word addr = dpreg.dp16 | memory->read_byte(pc++);
-        return memory->read_word(addr);
+        Word addr = dpreg.dp16 | memory.read_byte(pc++);
+        return memory.read_word(addr);
     }
 
     // fetch indexed 16-Bit operand
@@ -307,31 +307,31 @@ private:
         Word addr;
         Byte post;
 
-        post = memory->read_byte(pc++);
+        post = memory.read_byte(pc++);
         addr = do_effective_address(post);
         *cycles += indexed_cycles[post];
-        return memory->read_word(addr);
+        return memory.read_word(addr);
     }
 
     // fetch immediate 8-Bit operand
     inline Byte fetch_imm_08()
     {
-        return memory->read_byte(pc++);
+        return memory.read_byte(pc++);
     }
 
     // fetch extended 8-Bit operand
     inline Byte fetch_ext_08()
     {
-        Word addr = memory->read_word(pc);
+        Word addr = memory.read_word(pc);
         pc += 2;
-        return memory->read_byte(addr);
+        return memory.read_byte(addr);
     }
 
     // fetch direct 8-Bit operand
     inline Byte fetch_dir_08()
     {
-        Word addr = dpreg.dp16 | memory->read_byte(pc++);
-        return memory->read_byte(addr);
+        Word addr = dpreg.dp16 | memory.read_byte(pc++);
+        return memory.read_byte(addr);
     }
 
     // fetch indexed 8-Bit operand
@@ -340,16 +340,16 @@ private:
         Word addr;
         Byte post;
 
-        post = memory->read_byte(pc++);
+        post = memory.read_byte(pc++);
         addr = do_effective_address(post);
         *cycles += indexed_cycles[post];
-        return memory->read_byte(addr);
+        return memory.read_byte(addr);
     }
 
     // fetch effective address extended
     inline Word fetch_ea_ext()
     {
-        Word addr = memory->read_word(pc);
+        Word addr = memory.read_word(pc);
         pc += 2;
         return addr;
     }
@@ -357,14 +357,14 @@ private:
     // fetch effective address direct
     inline Word fetch_ea_dir()
     {
-        Word addr = dpreg.dp16 | memory->read_byte(pc++);
+        Word addr = dpreg.dp16 | memory.read_byte(pc++);
         return addr;
     }
 
     // fetch indexed address
     inline Word fetch_ea_idx(t_cycles *cycles)
     {
-        Byte post = memory->read_byte(pc++);
+        Byte post = memory.read_byte(pc++);
         *cycles += indexed_cycles[post];
         return do_effective_address(post);
     }
@@ -372,7 +372,7 @@ private:
 
     inline void tst(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         tst(m);
     }
 
@@ -407,23 +407,23 @@ private:
 
     inline void dec(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         dec(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void inc(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         inc(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void neg(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         neg(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     //**********************************
@@ -470,13 +470,13 @@ private:
     inline void jsr(Word addr)
     {
         s -= 2;
-        memory->write_word(s, pc);
+        memory.write_word(s, pc);
         pc = addr;
     }
 
     inline void rts()
     {
-        pc = memory->read_word(s);
+        pc = memory.read_word(s);
         s += 2;
     }
 
@@ -484,7 +484,7 @@ private:
     {
         if (condition)
         {
-            pc += EXTEND8(memory->read_byte(pc)) + 1;
+            pc += EXTEND8(memory.read_byte(pc)) + 1;
         }
         else
         {
@@ -496,7 +496,7 @@ private:
     {
         if (condition)
         {
-            pc += 2 + memory->read_word(pc);
+            pc += 2 + memory.read_word(pc);
             return 6;
         }
         else
@@ -628,12 +628,12 @@ private:
 
     inline void bra()
     {
-        pc += EXTEND8(memory->read_byte(pc)) + 1;
+        pc += EXTEND8(memory.read_byte(pc)) + 1;
     }
 
     inline t_cycles lbra()
     {
-        pc += memory->read_word(pc) + 2;
+        pc += memory.read_word(pc) + 2;
         return 0;
     }
 
@@ -650,18 +650,18 @@ private:
 
     inline void bsr()
     {
-        Byte offset = memory->read_byte(pc++);
+        Byte offset = memory.read_byte(pc++);
         s -= 2;
-        memory->write_word(s, pc);
+        memory.write_word(s, pc);
         pc += EXTEND8(offset);
     }
 
     inline t_cycles lbsr()
     {
-        Word offset = memory->read_word(pc);
+        Word offset = memory.read_word(pc);
         pc += 2;
         s -= 2;
-        memory->write_word(s, pc);
+        memory.write_word(s, pc);
         pc += offset;
         return 0;
     }
@@ -692,9 +692,9 @@ private:
 
     inline void clr(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         clr(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void clr(Byte &reg)
@@ -708,9 +708,9 @@ private:
 
     inline void com(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         com(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void com(Byte &reg)
@@ -764,23 +764,23 @@ private:
     //**********************************
     inline void lsl(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         lsl(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void asr(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         asr(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void lsr(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         lsr(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void lsr(Byte &reg)
@@ -793,9 +793,9 @@ private:
 
     inline void rol(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         rol(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void rol(Byte &reg)
@@ -816,9 +816,9 @@ private:
 
     inline void ror(Word addr)
     {
-        Byte m = memory->read_byte(addr);
+        Byte m = memory.read_byte(addr);
         ror(m);
-        memory->write_byte(addr, m);
+        memory.write_byte(addr, m);
     }
 
     inline void ror(Byte &reg)
@@ -855,13 +855,13 @@ private:
 
     inline void st(Byte &reg, Word addr)
     {
-        memory->write_byte(addr, reg);
+        memory.write_byte(addr, reg);
         tst(reg);
     }
 
     inline void st(Word &reg, Word addr)
     {
-        memory->write_word(addr, reg);
+        memory.write_word(addr, reg);
         cc.bit.n = BTST15(reg);
         cc.bit.v = 0;
         cc.bit.z = !reg;
@@ -964,11 +964,11 @@ protected:
     bool        do_logging;
     struct s_cpu_logfile lfs;
 
-    Memory      *memory;
+    Memory &memory;
 
     // Public constructor and destructor
 public:
-    Mc6809(Memory *x_memory);
+    Mc6809(Memory &x_memory);
     virtual ~Mc6809();
 };
 
@@ -1503,7 +1503,7 @@ inline void Mc6809::asr(Byte &reg)
 //**********************************
 inline t_cycles Mc6809::rti()
 {
-    cc.all = memory->read_byte(s++);
+    cc.all = memory.read_byte(s++);
 
     if (cc.bit.e)
     {
@@ -1512,7 +1512,7 @@ inline t_cycles Mc6809::rti()
     }
     else
     {
-        pc = memory->read_word(s);
+        pc = memory.read_word(s);
         s += 2;
         return 6;
     }
@@ -1526,7 +1526,7 @@ inline void Mc6809::sync()
 
 inline void Mc6809::cwai()
 {
-    cc.all &= memory->read_byte(pc++);
+    cc.all &= memory.read_byte(pc++);
     cc.bit.e = 1;
     psh(0xff, s, u);
     events |= DO_CWAI;
@@ -1538,21 +1538,21 @@ inline void Mc6809::swi()
     cc.bit.e = 1;
     psh(0xff, s, u);
     cc.bit.f = cc.bit.i = 1;
-    pc = memory->read_word(0xfffa);
+    pc = memory.read_word(0xfffa);
 }
 
 inline void Mc6809::swi2()
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
-    pc = memory->read_word(0xfff4);
+    pc = memory.read_word(0xfff4);
 }
 
 inline void Mc6809::swi3()
 {
     cc.bit.e = 1;
     psh(0xff, s, u);
-    pc = memory->read_word(0xfff2);
+    pc = memory.read_word(0xfff2);
 }
 
 
