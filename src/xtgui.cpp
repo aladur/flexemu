@@ -948,7 +948,7 @@ void XtGui::mouse_update()
                        warp_home_y - current_y);
         }
 
-        io->put_joystick(dx, dy);
+        joystickIO.put_joystick(dx, dy);
         prev_x = current_x;
         prev_y = current_y;
     }
@@ -963,7 +963,7 @@ void XtGui::mouse_update()
         prev_y = current_y = -1;
     }
 
-    io->put_joystick(convert_buttonmask(mouse_button_state));
+    joystickIO.put_joystick(convert_buttonmask(mouse_button_state));
 }
 
 void XtGui::mouse_warp(int dx, int dy)

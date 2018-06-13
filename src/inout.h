@@ -132,12 +132,6 @@ public:
     void    get_drive_status(tDiskStatus status[4]);
     std::string get_drive_info(int floppyIndex);
 
-    // Joystick Interface
-public:
-    void    reset_joystick();
-    bool    get_joystick(int *deltaX, int *deltaY, unsigned int *buttonMask);
-    void    put_joystick(int deltaX, int deltaY);
-    void    put_joystick(unsigned int buttonMask);
 protected:
     int deltaX, deltaY;
     unsigned int buttonMask;

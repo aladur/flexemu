@@ -69,7 +69,6 @@ Inout::Inout(Mc6809 *x_cpu, struct sGuiOptions *x_options) :
     instance = this;
     reset_parallel();
     reset_serial();
-    reset_joystick();
 }
 
 Inout::~Inout()
@@ -89,15 +88,6 @@ void Inout::reset_serial()
     key_buffer_serial.clear();
 }
 
-void Inout::reset_joystick()
-{
-    std::lock_guard<std::mutex> guard(joystick_mutex);
-    deltaX           = 0;
-    deltaY           = 0;
-    buttonMask       = 0;
-    newValues        = 0;
-}
-
 void Inout::get_drive_status(tDiskStatus status[4])
 {
     if (fdc != nullptr)
@@ -114,46 +104,6 @@ std::string Inout::get_drive_info(int floppyIndex)
     }
 
     return "";
-}
-
-bool Inout::get_joystick(int *pDeltaX, int *pDeltaY, unsigned int *pButtonMask)
-{
-    bool result;
-
-    std::lock_guard<std::mutex> guard(joystick_mutex);
-    result = newValues;
-
-    if (pDeltaX     != nullptr)
-    {
-        *pDeltaX     = deltaX;
-    }
-
-    if (pDeltaY     != nullptr)
-    {
-        *pDeltaY     = deltaY;
-    }
-
-    if (pButtonMask != nullptr)
-    {
-        *pButtonMask = buttonMask;
-    }
-
-    newValues  = false;
-    return result;
-}
-
-void Inout::put_joystick(int x_deltaX, int x_deltaY)
-{
-    std::lock_guard<std::mutex> guard(joystick_mutex);
-    deltaX     = x_deltaX;
-    deltaY     = x_deltaY;
-    newValues  = true;
-}
-
-void Inout::put_joystick(unsigned int x_buttonMask)
-{
-    std::lock_guard<std::mutex> guard(joystick_mutex);
-    buttonMask = x_buttonMask;
 }
 
 void Inout::init(Word reset_key)
