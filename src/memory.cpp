@@ -160,7 +160,7 @@ void Memory::init_blocks_to_update()
 }
 
 // return false if not successful
-bool Memory::add_io_device(IoDevice *device,
+bool Memory::add_io_device(IoDevice &device,
                            Word base_addr1, Byte range1,
                            Word base_addr2, Byte range2)
 {
@@ -172,18 +172,18 @@ bool Memory::add_io_device(IoDevice *device,
         return false;
     }
 
-    ioDevices.push_back(device);
+    ioDevices.push_back(std::ref(device));
 
     for (offset = 0; offset < range1; ++offset)
     {
         ioAccessForAddressMap.emplace(base_addr1 + offset,
-                                    IoAccess(*device, offset));
+                                    IoAccess(device, offset));
     }
 
     for (offset = 0; offset < range2; ++offset)
     {
         ioAccessForAddressMap.emplace(base_addr2 + offset,
-                         IoAccess(*device, base_addr2 - base_addr1 + offset));
+                         IoAccess(device, base_addr2 - base_addr1 + offset));
     }
 
     return true;
@@ -191,9 +191,9 @@ bool Memory::add_io_device(IoDevice *device,
 
 void Memory::reset_io()
 {
-    for (auto iter : ioDevices)
+    for (auto &iter : ioDevices)
     {
-        iter->resetIo();
+        iter.get().resetIo();
     }
 }
 

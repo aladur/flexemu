@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <tsl/robin_map.h>
 #include <vector>
+#include <functional>
 #include "iodevice.h"
 #include "ioaccess.h"
 #include "memtgt.h"
@@ -60,7 +61,7 @@ private:
     Word target_address;
 
     // I/O device access
-    std::vector<IoDevice *> ioDevices;
+    std::vector<std::reference_wrapper<IoDevice> > ioDevices;
     tsl::robin_map<
         Word,
         IoAccess,
@@ -85,7 +86,7 @@ private:
 public:
 
     bool add_io_device(
-        IoDevice *device,
+        IoDevice &device,
         Word base_addr1, Byte range1,
         Word base_addr2, Byte range2);
 
