@@ -40,7 +40,6 @@ Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
-    int i;
 #ifdef UNIX
     sigset_t sigmask;
 
@@ -55,25 +54,19 @@ Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
 
     memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 
-    for (i = 0; i < MAX_COMMANDS; i++)
-    {
-        command[i] = nullptr;
-    }
-
     systemTime = new BTime;
 }
 
 Scheduler::~Scheduler()
 {
-    int i;
-
     BTimer::Instance()->Stop();
 
     command_mutex.lock();
-    for (i = 0; i < MAX_COMMANDS; i++)
+    for (auto *command : commands)
     {
-        delete command[i];
+        delete command;
     }
+    commands.clear();
     command_mutex.unlock();
 
     status_mutex.lock();
@@ -312,38 +305,23 @@ void Scheduler::Run()
 
 void Scheduler::sync_exec(BCommand *newCommand)
 {
-    int i = 0;
-
     std::lock_guard<std::mutex> guard(command_mutex);
 
-    while (command[i] != nullptr && i < MAX_COMMANDS - 1)
-    {
-        i++;
-    }
-
-    if (i < MAX_COMMANDS - 1)
-    {
-        command[i] = newCommand;
-        events |= DO_SYNCEXEC;
-        cpu->exit_run();
-    }
+    commands.push_back(newCommand);
+    events |= DO_SYNCEXEC;
+    cpu->exit_run();
 }
 
 void Scheduler::Execute()
 {
-    int i = 0;
-
-    // use a static list for performance reasons
-    // after execution delete the command from the list
     std::lock_guard<std::mutex> guard(command_mutex);
 
-    while (command[i] != nullptr)
+    for (auto *command : commands)
     {
-        command[i]->Execute();
-        delete command[i];
-        command[i] = nullptr;
-        i++;
+        command->Execute();
+        delete command;
     }
+    commands.clear();
 
     events &= ~DO_SYNCEXEC;
 }

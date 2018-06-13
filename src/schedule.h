@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include <signal.h>
 #include <mutex>
+#include <vector>
 #include "bthread.h"
 #include "cpustate.h"
 #include "schedcpu.h"
@@ -35,8 +36,6 @@
 #define DO_SYNCEXEC     0x80
 #define DO_TIMER        0x100
 #define DO_SET_STATUS       0x200
-
-#define MAX_COMMANDS            10
 
 
 class BCommand;
@@ -73,7 +72,7 @@ protected:
     std::mutex      command_mutex;
     std::mutex      status_mutex;
     std::mutex      irq_status_mutex;
-    BCommand        *command[MAX_COMMANDS];
+    std::vector<BCommand *> commands;
 
     // Timer interface:
 public:
