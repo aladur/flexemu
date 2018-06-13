@@ -51,7 +51,6 @@ ApplicationRunner::ApplicationRunner(
     memory(options.isHiMem),
     cpu(memory),
     io(cpu, guiOptions),
-    scheduler(&options),
     mmu(&io, &memory),
     acia1(&io, &cpu),
     pia1(&cpu, scheduler, keyboardIO),

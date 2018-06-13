@@ -34,7 +34,7 @@
 #include "bcommand.h"
 
 
-Scheduler::Scheduler(sOptions * /*pOptions*/) : BThread(false),
+Scheduler::Scheduler() : BThread(false),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
     time0sec(0), cpu(nullptr), io(nullptr), systemTime(nullptr),
     pCurrent_status(nullptr),

@@ -46,7 +46,7 @@ class Inout;
 class Scheduler : public BThread
 {
 public:
-    Scheduler(sOptions *pOptions);
+    Scheduler();
     virtual     ~Scheduler();
     void        set_cpu(ScheduledCpu *x_cpu)
     {
