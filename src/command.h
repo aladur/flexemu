@@ -62,9 +62,9 @@ class Command : public IoDevice
     // Internal registers
 protected:
 
-    Mc6809      *cpu;
-    Inout       *io;
-    Scheduler   *schedy;
+    Mc6809      &cpu;
+    Inout       &io;
+    Scheduler   &scheduler;
     E2floppy    *fdc;
     char         command[MAX_COMMAND];
     Word         command_index;
@@ -92,7 +92,7 @@ public:
 
     // Public constructor and destructor
 public:
-    Command(Inout *x_io, Mc6809 *x_cpu, Scheduler *x_sched);
+    Command(Inout &x_io, Mc6809 &x_cpu, Scheduler &x_scheduler);
     virtual ~Command();
 
 };

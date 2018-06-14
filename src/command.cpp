@@ -40,8 +40,8 @@
 #include "mc6809.h"
 
 
-Command::Command(Inout *x_io, Mc6809 *x_cpu, Scheduler *x_sched) :
-    cpu(x_cpu), io(x_io), schedy(x_sched), fdc(nullptr), answer(nullptr)
+Command::Command(Inout &x_io, Mc6809 &x_cpu, Scheduler &x_scheduler) :
+    cpu(x_cpu), io(x_io), scheduler(x_scheduler), fdc(nullptr), answer(nullptr)
 {
     memset(command, 0, sizeof(command));
 
@@ -208,34 +208,34 @@ void Command::writeIo(Word /*offset*/, Byte val)
             switch (count)
             {
                 case 1:
-                    if (stricmp(arg1, "exit") == 0 && schedy != nullptr)
+                    if (stricmp(arg1, "exit") == 0)
                     {
-                        schedy->set_new_state(S_EXIT);
+                        scheduler.set_new_state(S_EXIT);
                         return;
                     }
-                    else if (stricmp(arg1, "irq")  == 0 && cpu != nullptr)
+                    else if (stricmp(arg1, "irq")  == 0)
                     {
-                        cpu->set_irq();
+                        cpu.set_irq();
                         return;
                     }
-                    else if (stricmp(arg1, "firq")  == 0 && cpu != nullptr)
+                    else if (stricmp(arg1, "firq")  == 0)
                     {
-                        cpu->set_firq();
+                        cpu.set_firq();
                         return;
                     }
-                    else if (stricmp(arg1, "nmi")  == 0 && cpu != nullptr)
+                    else if (stricmp(arg1, "nmi")  == 0)
                     {
-                        cpu->set_nmi();
+                        cpu.set_nmi();
                         return;
                     }
                     else if (stricmp(arg1, "terminal") == 0)
                     {
-                        io->output_to_terminal();
+                        io.output_to_terminal();
                         return;
                     }
                     else if (stricmp(arg1, "graphic") == 0)
                     {
-                        if (!io->output_to_graphic())
+                        if (!io.output_to_graphic())
                         {
                             ANSWER_ERR(CANT_CHANGE_GRAPHIC);
                         }
@@ -245,8 +245,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     else if (stricmp(arg1, "freq") == 0)
                     {
                         answer = new char[16];
-                        sprintf(answer, "%.2f MHz",
-                                schedy->get_frequency());
+                        sprintf(answer, "%.2f MHz", scheduler.get_frequency());
                         answer_index = 0;
                         return;
                     }
@@ -254,7 +253,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         answer = new char[24];
                         sprintf(answer, PRlu64 " cycles",
-                                schedy->get_total_cycles());
+                                scheduler.get_total_cycles());
                         answer_index = 0;
                         return;
                     }
@@ -296,7 +295,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         if ((sscanf(arg2, "%f", &freq) == 1) &&
                             freq >= 0.0)
                         {
-                            schedy->set_frequency(freq);
+                            scheduler.set_frequency(freq);
                         }
 
                         return;
