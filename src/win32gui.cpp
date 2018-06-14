@@ -2603,7 +2603,7 @@ void Win32Gui::popdown_log(int cmd, HWND hwnd)
         strncpy(lfs.logFileName, tmpstring, PATH_MAX);
         lfs.logFileName[PATH_MAX - 1] = '\0';
 
-        scheduler.sync_exec(new CSetLogFile(*cpu, &lfs));
+        scheduler.sync_exec(new CSetLogFile(cpu, &lfs));
     }
 
     EndDialog(hwnd, 0);
