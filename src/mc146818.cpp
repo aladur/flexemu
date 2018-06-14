@@ -30,14 +30,13 @@
 
 Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-Mc146818::Mc146818(Mc6809 *x_cpu) :
+Mc146818::Mc146818(Mc6809 &x_cpu) :
     cpu(x_cpu), al_second(0), al_minute(0), al_hour(0),
     A(0), B(0), C(0), D(0)
 {
     struct tm   *lt;
     time_t       time_now;
 
-    cpu = x_cpu;
     path[0] = '\0';
 
     BFilePtr fp(getFileName(), "rb");
@@ -300,7 +299,7 @@ void Mc146818::update_1_second()
         if (BTST4(B))
         {
             BSET7(C);
-            cpu->set_firq();
+            cpu.set_firq();
         }
 
         // now check for an alarm
@@ -313,7 +312,7 @@ void Mc146818::update_1_second()
             if (BTST5(B))
             {
                 BSET7(C);
-                cpu->set_firq();
+                cpu.set_firq();
             }
         }
     }

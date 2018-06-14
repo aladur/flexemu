@@ -57,7 +57,7 @@ ApplicationRunner::ApplicationRunner(
     pia2(cpu, keyboardIO, joystickIO),
     command(io, cpu, scheduler),
     video(memory),
-    rtc(&cpu)
+    rtc(cpu)
 {
 }
 
