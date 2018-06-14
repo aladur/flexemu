@@ -60,10 +60,8 @@ void Inout::s_exec_signal(int sig_no)
 }
 
 
-Inout::Inout(Mc6809 &x_cpu, struct sGuiOptions &x_options) :
-    cpu(x_cpu), options(x_options), gui(nullptr),
-    fdc(nullptr), memory(nullptr), rtc(nullptr), pia1(nullptr),
-    video(nullptr), schedy(nullptr)
+Inout::Inout(Mc6809 &x_cpu) :
+    cpu(x_cpu), gui(nullptr), fdc(nullptr), rtc(nullptr), schedy(nullptr)
 {
     instance = this;
     reset_serial();
@@ -244,11 +242,6 @@ void Inout::initTerminalIO(Word reset_key)
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
-void Inout::set_gui(AbstractGui *x_gui)
-{
-    gui = x_gui;
-}
-
 void Inout::set_fdc(E2floppy *x_device)
 {
     fdc = x_device;
@@ -259,57 +252,44 @@ void Inout::set_rtc(Mc146818 *x_device)
     rtc = x_device;
 }
 
-void Inout::set_pia1(Mc6821 *x_device)
-{
-    pia1 = x_device;
-}
-
-void Inout::set_video(E2video *x_video)
-{
-    video = x_video;
-}
-
-void Inout::set_memory(Memory *x_memory)
-{
-    memory = x_memory;
-}
-
 void Inout::set_scheduler(Scheduler *x_sched)
 {
     schedy = x_sched;
 }
 
 AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
-                               KeyboardIO &keyboardIO, Pia1 &pia1)
+                               KeyboardIO &keyboardIO, Pia1 &pia1,
+                               Memory &memory, E2video &video,
+                               struct sGuiOptions &options)
 {
 #ifdef UNIT_TEST
     (void)type;
     (void)joystickIO;
     (void)keyboardIO;
     (void)pia1;
+    (void)memory;
+    (void)video;
+    (void)options;
 #else
-    if (video != nullptr)
+    // Only allow to open Gui once.
+    if (gui == nullptr)
     {
-        // Only allow to open Gui once.
-        if (gui == nullptr)
+        switch (type)
         {
-            switch (type)
-            {
 #ifdef HAVE_XTK
 
-                case GUI_XTOOLKIT:
-                    gui = new XtGui(&cpu, memory, schedy, this, video,
-                                    joystickIO, keyboardIO, pia1, options);
-                    break;
+            case GUI_XTOOLKIT:
+                gui = new XtGui(&cpu, &memory, schedy, this, &video,
+                                joystickIO, keyboardIO, pia1, options);
+                break;
 #endif
 #ifdef _WIN32
 
-                case GUI_WINDOWS:
-                    gui = new Win32Gui(&cpu, memory, schedy, this, video,
-                                       joystickIO, keyboardIO, pia1, options);
-                    break;
+            case GUI_WINDOWS:
+                gui = new Win32Gui(&cpu, &memory, schedy, this, &video,
+                                   joystickIO, keyboardIO, pia1, options);
+                break;
 #endif
-            }
         }
     }
 #endif // UNIT_TEST

@@ -50,7 +50,7 @@ ApplicationRunner::ApplicationRunner(
     options(x_options),
     memory(options.isHiMem),
     cpu(memory),
-    io(cpu, guiOptions),
+    io(cpu),
     mmu(memory),
     acia1(io, cpu),
     pia1(cpu, scheduler, keyboardIO),
@@ -66,22 +66,20 @@ int ApplicationRunner::run()
     scheduler.set_cpu(&cpu);
     scheduler.set_inout(&io);
     io.set_scheduler(&scheduler);
-    io.set_memory(&memory);
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
-    io.set_pia1((Mc6821 *)&pia1);
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
     io.set_fdc(&fdc);
     command.set_fdc(&fdc);
-    io.set_video(&video);
 
     io.init(options.reset_key);
 
     if (!(options.term_mode && io.is_terminal_supported()))
     {
-        io.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1);
+        io.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1,
+                      memory, video, guiOptions);
     }
 
     // Add all memory mapped I/O devices to memory.
