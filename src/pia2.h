@@ -42,7 +42,7 @@ class Pia2 : public Mc6821
 
 private:
 
-    Mc6809 *cpu;
+    Mc6809 &cpu;
     KeyboardIO &keyboardIO;
     JoystickIO &joystickIO;
     QWord               cycles;
@@ -63,7 +63,7 @@ public:
     {
         return "pia2";
     };
-    Pia2(Mc6809 *x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystick);
+    Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystick);
     virtual             ~Pia2();
 };
 

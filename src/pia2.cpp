@@ -32,7 +32,7 @@
 #include "keyboard.h"
 
 
-Pia2::Pia2(Mc6809 *x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
+Pia2::Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
     cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO), cycles(0)
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     , joystick(0)
@@ -212,7 +212,7 @@ Byte Pia2::readInputB()
     }
 
     prev_cycles = cycles;
-    cycles      = cpu->get_cycles();
+    cycles      = cpu.get_cycles();
     cyclediff   = static_cast<t_cycles>(cycles - prev_cycles);
 
     if (cyclediff & (1L << ((sizeof(cyclediff) << 3) - 1)))
