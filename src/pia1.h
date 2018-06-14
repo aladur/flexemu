@@ -38,7 +38,7 @@ class Pia1 : public Mc6821
 
 protected:
 
-    Mc6809             *cpu;
+    Mc6809 &cpu;
     Scheduler &scheduler;
     KeyboardIO &keyboardIO;
 
@@ -50,7 +50,7 @@ protected:
     virtual void            set_irq_B();
 
 public:
-    Pia1(Mc6809 *x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO);
+    Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO);
     virtual void            resetIo();
     virtual const char      *getName()
     {

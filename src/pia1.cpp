@@ -29,7 +29,7 @@
 #include "cacttrns.h"
 
 
-Pia1::Pia1(Mc6809 *x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO) :
+Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO) :
     cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO)
 {
 }
@@ -64,12 +64,12 @@ Byte Pia1::readInputA()
 
 void Pia1::set_irq_A()
 {
-    cpu->set_irq();
+    cpu.set_irq();
 }
 
 
 void Pia1::set_irq_B()
 {
-    cpu->set_irq();
+    cpu.set_irq();
 }
 

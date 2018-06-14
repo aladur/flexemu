@@ -53,7 +53,7 @@ ApplicationRunner::ApplicationRunner(
     io(cpu, guiOptions),
     mmu(memory),
     acia1(io, cpu),
-    pia1(&cpu, scheduler, keyboardIO),
+    pia1(cpu, scheduler, keyboardIO),
     pia2(&cpu, keyboardIO, joystickIO),
     command(&io, &cpu, &scheduler),
     video(&memory),
