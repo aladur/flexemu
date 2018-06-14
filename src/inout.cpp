@@ -71,6 +71,7 @@ Inout::Inout(Mc6809 &x_cpu, struct sGuiOptions &x_options) :
 
 Inout::~Inout()
 {
+    instance = nullptr;
     delete gui;
 }
 
