@@ -176,60 +176,57 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
         if (++count % (100 / TIMER_UPDATE) == 0)
         {
             count = 0;
-            new_cpu_stat = (Mc6809CpuStatus *)schedy->get_status();
+            new_cpu_stat = (Mc6809CpuStatus *)scheduler.get_status();
 
             // Check for disk status update every 200 ms
-            if (io != nullptr)
+            static tDiskStatus status[4];
+            tDiskStatus newStatus[4];
+            static tInterruptStatus irqStat;
+            tInterruptStatus newIrqStat;
+            static bool firstTime = true;
+            static bool lastState[INT_RESET + 1];
+            bool bState;
+            Word t;
+
+            inout.get_drive_status(newStatus);
+
+            for (t = 0; t < 4; ++t)
             {
-                static tDiskStatus status[4];
-                tDiskStatus newStatus[4];
-                static tInterruptStatus irqStat;
-                tInterruptStatus newIrqStat;
-                static bool firstTime = true;
-                static bool lastState[INT_RESET + 1];
-                bool bState;
-                Word t;
-
-                io->get_drive_status(newStatus);
-
-                for (t = 0; t < 4; ++t)
+                if ((newStatus[t] != status[t]) || firstTime)
                 {
-                    if ((newStatus[t] != status[t]) || firstTime)
-                    {
-                        update_disk_status(t, newStatus[t]);
-                        status[t] = newStatus[t];
-                    }
+                    update_disk_status(t, newStatus[t]);
+                    status[t] = newStatus[t];
                 }
-
-                schedy->get_interrupt_status(newIrqStat);
-
-                if (firstTime)
-                {
-                    for (t = INT_IRQ; t <= INT_RESET; ++t)
-                    {
-                        lastState[t] = false;
-                        irqStat.count[t] = 0;
-                        update_interrupt_status((tIrqType)t, false);
-                    }
-
-                    firstTime = false;
-                }
-                else
-                {
-                    for (t = INT_IRQ; t <= INT_RESET; ++t)
-                    {
-                        bState = (newIrqStat.count[t] != irqStat.count[t]);
-
-                        if (bState != lastState[t])
-                        {
-                            update_interrupt_status((tIrqType)t, bState);
-                            lastState[t] = bState;
-                        }
-                    }
-                }
-
-                memcpy(&irqStat, &newIrqStat, sizeof(tInterruptStatus));
             }
+
+            scheduler.get_interrupt_status(newIrqStat);
+
+            if (firstTime)
+            {
+                for (t = INT_IRQ; t <= INT_RESET; ++t)
+                {
+                    lastState[t] = false;
+                    irqStat.count[t] = 0;
+                    update_interrupt_status((tIrqType)t, false);
+                }
+
+                firstTime = false;
+            }
+            else
+            {
+                for (t = INT_IRQ; t <= INT_RESET; ++t)
+                {
+                    bState = (newIrqStat.count[t] != irqStat.count[t]);
+
+                    if (bState != lastState[t])
+                    {
+                        update_interrupt_status((tIrqType)t, bState);
+                        lastState[t] = bState;
+                    }
+                }
+            }
+
+            memcpy(&irqStat, &newIrqStat, sizeof(tInterruptStatus));
         }
 
         if (new_cpu_stat != nullptr)
@@ -265,7 +262,7 @@ continue press Reset button",
         hdc = GetDC(hwnd);
 
         for (display_block = 0; display_block < YBLOCKS; display_block++)
-            if (memory->changed[display_block])
+            if (memory.changed[display_block])
             {
                 update_block(display_block, hdc);
             }
@@ -306,7 +303,7 @@ continue press Reset button",
         }
 
         // check if program can be savely shut down
-        if (schedy->is_finished())
+        if (scheduler.is_finished())
         {
             CloseApp(hwnd);
         }
@@ -501,7 +498,7 @@ void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
         keyboardIO.put_char_parallel((Byte)key, do_notify);
         if (do_notify)
         {
-            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+            scheduler.sync_exec(new CActiveTransition(pia1, CA1));
         }
     }
 
@@ -518,7 +515,7 @@ void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
         keyboardIO.put_char_parallel((Byte)key, do_notify);
         if (do_notify)
         {
-            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+            scheduler.sync_exec(new CActiveTransition(pia1, CA1));
         }
     }
 
@@ -618,7 +615,7 @@ void Win32Gui::onPaint(HWND hwnd)
     {
         int display_block;
 
-        memory->init_blocks_to_update();
+        memory.init_blocks_to_update();
 
         for (display_block = 0; display_block < YBLOCKS; display_block++)
         {
@@ -781,7 +778,7 @@ void Win32Gui::onActivate(HWND hwnd, WORD what, HWND hwnd1)
 {
     if (what == WA_ACTIVE || what == WA_CLICKACTIVE)
     {
-        memory->init_blocks_to_update();
+        memory.init_blocks_to_update();
     }
 }
 
@@ -872,10 +869,7 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
         {
             case VK_PAUSE:
             case VK_CANCEL:
-                if (cpu)
-                {
-                    cpu->set_nmi();
-                }
+                cpu.set_nmi();
 
                 return -1;
 
@@ -958,10 +952,7 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
 
             case VK_PAUSE:
             case VK_CANCEL:
-                if (cpu)
-                {
-                    cpu->set_nmi();
-                }
+                cpu.set_nmi();
 
                 return -1;
 
@@ -1100,18 +1091,13 @@ void Win32Gui::initialize(struct sGuiOptions &options)
 
 void Win32Gui::popup_disk_info(HWND hwnd)
 {
-    if (io == nullptr)
-    {
-        return;
-    }
-
     std::string message;
     int i;
 
     for (i = 0; i < 4; ++i)
         if (hwnd == hButtonFloppy[i])
         {
-            message = io->get_drive_info(i);
+            message = inout.get_drive_info(i);
             MessageBox(e2screen, message.c_str(),
                        PROGRAMNAME " Disc status",
                        MB_OK | MB_ICONINFORMATION);
@@ -1121,15 +1107,10 @@ void Win32Gui::popup_disk_info(HWND hwnd)
 
 void Win32Gui::popup_interrupt_info(HWND hwnd)
 {
-    if (schedy == nullptr)
-    {
-        return;
-    }
-
     std::stringstream message;
     tInterruptStatus s;
 
-    schedy->get_interrupt_status(s);
+    scheduler.get_interrupt_status(s);
     message << "IRQ:   " << s.count[INT_IRQ] << std::endl
             << "FIRQ:  " << s.count[INT_FIRQ] << std::endl
             << "NMI:   " << s.count[INT_NMI] << std::endl
@@ -1224,27 +1205,27 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     HBITMAP img;
     HPALETTE oldPalette;
 
-    if (!memory->changed[block_number])
+    if (!memory.changed[block_number])
     {
         return;
     }
 
-    memory->changed[block_number] = false;
+    memory.changed[block_number] = false;
     hMemoryDC = CreateCompatibleDC(nullptr);
     oldPalette = SelectPalette(hdc, palette, TRUE);
     RealizePalette(hdc);
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 
-    if (!(e2video->vico1 & 0x02))
+    if (!(e2video.vico1 & 0x02))
     {
         // copy block from video ram into device independant bitmap
-        if (e2video->vico1 & 0x01)
+        if (e2video.vico1 & 0x01)
         {
-            src = memory->vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
+            src = memory.vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
         }
         else
         {
-            src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
+            src = memory.vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
         }
 
         CopyToZPixmap(block_number, copy_block, src, 8, (unsigned long *)pen);
@@ -1254,12 +1235,12 @@ void Win32Gui::update_block(int block_number, HDC hdc)
             0, BLOCKHEIGHT * pixelSizeY,
             copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
-        startLine = ((WINDOWHEIGHT - e2video->vico2 +
+        startLine = ((WINDOWHEIGHT - e2video.vico2 +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
-        if (block_number == e2video->divided_block)
+        if (block_number == e2video.divided_block)
         {
-            firstpartHeight = e2video->vico2 % BLOCKHEIGHT;
+            firstpartHeight = e2video.vico2 % BLOCKHEIGHT;
             // first half display on the bottom of the window
             BitBlt(hdc, 0, startLine,
                    BLOCKWIDTH * pixelSizeX,
@@ -1559,7 +1540,7 @@ void Win32Gui::toggle_undocumented()
     is_use_undocumented = !is_use_undocumented;
     UINT is_checked = is_use_undocumented ? MF_CHECKED : MF_UNCHECKED;
 
-    cpu->set_use_undocumented(is_use_undocumented);
+    cpu.set_use_undocumented(is_use_undocumented);
     CheckMenuItem(menu2, IDM_UNDOCUMENTED, MF_BYCOMMAND | is_checked);
 }
 
@@ -1570,7 +1551,7 @@ void Win32Gui::toggle_freqency()
     frequency_control_on = !frequency_control_on;
     UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
     frequency = frequency_control_on ? 1.3396f : 0.0f;
-    schedy->sync_exec(new CSetFrequency(*schedy, frequency));
+    scheduler.sync_exec(new CSetFrequency(scheduler, frequency));
     CheckMenuItem(menu2, IDM_FREQUENCY0, MF_BYCOMMAND | is_checked);
 }
 
@@ -1925,16 +1906,16 @@ int Win32Gui::gui_type()
 }
 
 Win32Gui::Win32Gui(
-    Mc6809 *x_cpu,
-    Memory *x_memory,
-    Scheduler *x_sched,
-    Inout  *x_io,
-    E2video *x_video,
+    Mc6809 &x_cpu,
+    Memory &x_memory,
+    Scheduler &x_scheduler,
+    Inout  &x_inout,
+    E2video &x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
     struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
+    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
                 x_keyboardIO, x_options),
     pia1(x_pia1), cpu_popped_up(false), oldX(0), oldY(0),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
@@ -2262,9 +2243,9 @@ BOOL Win32Gui::onBpInit(HWND hwnd)
     {
         strcpy(bpstring, "");
 
-        if (cpu->is_bp_set(which))
+        if (cpu.is_bp_set(which))
         {
-            sprintf(bpstring, "%04x", cpu->get_bp(which));
+            sprintf(bpstring, "%04x", cpu.get_bp(which));
         }
 
         SetDlgItemText(hwnd, IDC_BP_ADDR1 + which, bpstring);
@@ -2436,11 +2417,11 @@ void Win32Gui::popdown_bp(int cmd, HWND hwnd)
 
             if (sscanf(bpstring, "%x", &addr) == 1 && addr <= 0xffff)
             {
-                cpu->set_bp(which, (Word)addr);
+                cpu.set_bp(which, (Word)addr);
             }
             else if (strlen(bpstring) == 0)
             {
-                cpu->reset_bp(which);
+                cpu.reset_bp(which);
             }
         }
 
@@ -2622,7 +2603,7 @@ void Win32Gui::popdown_log(int cmd, HWND hwnd)
         strncpy(lfs.logFileName, tmpstring, PATH_MAX);
         lfs.logFileName[PATH_MAX - 1] = '\0';
 
-        schedy->sync_exec(new CSetLogFile(*cpu, &lfs));
+        scheduler.sync_exec(new CSetLogFile(*cpu, &lfs));
     }
 
     EndDialog(hwnd, 0);

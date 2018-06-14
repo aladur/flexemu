@@ -291,11 +291,11 @@ public:
     // Public constructor and destructor
 public:
     XtGui(
-        Mc6809 *x_cpu,
-        Memory *x_memory,
-        Scheduler *x_sched,
-        Inout *x_io,
-        E2video *x_video,
+        Mc6809 &x_cpu,
+        Memory &x_memory,
+        Scheduler &x_scheduler,
+        Inout &x_inout,
+        E2video &x_video,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
         Pia1 &x_pia1,

@@ -444,7 +444,7 @@ void XtGui::c_process_resize(XEvent *pevent)
     pixelSizeY = pixelSizeY < 1 ? 1 : pixelSizeY;
     warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
     warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
-    memory->init_blocks_to_update();
+    memory.init_blocks_to_update();
 }
 
 #ifdef HAVE_XPM
@@ -638,11 +638,6 @@ void XtGui::popdown_message(Widget w)
 
 void XtGui::popup_disk_info(Widget w)
 {
-    if (io == nullptr)
-    {
-        return;
-    }
-
     if (is_menu_mode)
     {
         close_menu_mode();
@@ -655,7 +650,7 @@ void XtGui::popup_disk_info(Widget w)
     for (i = 0; i < 4; ++i)
         if (w == floppybutton[i])
         {
-            message = io->get_drive_info(i);
+            message = inout.get_drive_info(i);
             popup_message(message.c_str(), PROGRAMNAME " Disc status",
                           480, 160);
             return;
@@ -664,11 +659,6 @@ void XtGui::popup_disk_info(Widget w)
 
 void XtGui::popup_interrupt_info(Widget)
 {
-    if (schedy == nullptr)
-    {
-        return;
-    }
-
     if (is_menu_mode)
     {
         close_menu_mode();
@@ -678,7 +668,7 @@ void XtGui::popup_interrupt_info(Widget)
     std::stringstream message;
     tInterruptStatus s;
 
-    schedy->get_interrupt_status(s);
+    scheduler.get_interrupt_status(s);
     message << "IRQ:   " << s.count[INT_IRQ] << std::endl
             << "FIRQ:  " << s.count[INT_FIRQ] << std::endl
             << "NMI:   " << s.count[INT_NMI] << std::endl
@@ -693,7 +683,7 @@ void XtGui::toggle_frequency()
 
     frequency_control_on = !frequency_control_on;
     frequency = frequency_control_on ? 1.3396 : 0.0;
-    schedy->sync_exec(new CSetFrequency(*schedy, frequency));
+    scheduler.sync_exec(new CSetFrequency(scheduler, frequency));
 
     if (okpixmap != None)
         XtVaSetValues(entry27, XtNleftBitmap,
@@ -703,7 +693,7 @@ void XtGui::toggle_frequency()
 void XtGui::toggle_undocumented()
 {
     is_use_undocumented = !is_use_undocumented;
-    cpu->set_use_undocumented(is_use_undocumented);
+    cpu.set_use_undocumented(is_use_undocumented);
 
     if (okpixmap != None)
         XtVaSetValues(entry28, XtNleftBitmap,
@@ -819,7 +809,7 @@ void XtGui::timerCallback(XtIntervalId)
     // check if program can be savely shut down
     // Just send a dummy event here to let the
     // main_loop getting closed
-    if (schedy->is_finished())
+    if (scheduler.is_finished())
     {
         XEvent event;
 
@@ -832,7 +822,7 @@ void XtGui::timerCallback(XtIntervalId)
     // check if floppy bitmap has to be updated
     count++;
 
-    if (count % (100 / timebase) == 0 && io != nullptr)
+    if (count % (100 / timebase) == 0)
     {
         static tDiskStatus status[4];
         tDiskStatus newStatus[4];
@@ -844,7 +834,7 @@ void XtGui::timerCallback(XtIntervalId)
         Word t;
 
         count = 0;
-        io->get_drive_status(newStatus);
+        inout.get_drive_status(newStatus);
 
         for (t = 0; t < 4; ++t)
         {
@@ -855,7 +845,7 @@ void XtGui::timerCallback(XtIntervalId)
             }
         }
 
-        schedy->get_interrupt_status(newIrqStat);
+        scheduler.get_interrupt_status(newIrqStat);
 
         if (firstTime)
         {
@@ -887,7 +877,7 @@ void XtGui::timerCallback(XtIntervalId)
     }
 
     // check if CPU view has to be updated
-    pStat = (Mc6809CpuStatus *)schedy->get_status();
+    pStat = (Mc6809CpuStatus *)scheduler.get_status();
 
     if (pStat != nullptr)
     {
@@ -987,7 +977,7 @@ void XtGui::main_loop()
     // this function
     XEvent event;
 
-    while (!schedy->is_finished())
+    while (!scheduler.is_finished())
     {
         XtAppNextEvent(context, &event);
         XtDispatchEvent(&event);
@@ -1006,7 +996,7 @@ void XtGui::c_expose(XEvent *pevent)
 
     if (pevent->xexpose.count == 0 && XtIsRealized(e2screen))
     {
-        memory->init_blocks_to_update();
+        memory.init_blocks_to_update();
     }
 } // c_expose
 
@@ -1035,7 +1025,7 @@ void XtGui::c_keyPress(XEvent *pevent)
         keyboardIO.put_char_parallel(key, do_notify);
         if (do_notify)
         {
-            schedy->sync_exec(new CActiveTransition(pia1, CA1));
+            scheduler.sync_exec(new CActiveTransition(pia1, CA1));
         }
     }
 } // c_keyPress
@@ -1624,7 +1614,7 @@ void XtGui::manage_widget(Widget w)
     Mc6809CpuStatus stat;
     stat.mnemonic[0] = '\0';
     XtMapWidget(w);
-    memory->init_blocks_to_update();    // update main view
+    memory.init_blocks_to_update();    // update main view
     update_cpuview(stat);
 }  // manage widget
 
@@ -1651,7 +1641,7 @@ void XtGui::initialize_after_open(Widget w, const char *title)
                                      RootWindowOfScreen(XtScreen(w)),
                                      (char *)ok_bits, ok_width, ok_height);
 
-    if (okpixmap != None && cpu->is_use_undocumented())
+    if (okpixmap != None && cpu.is_use_undocumented())
     {
         XtVaSetValues(entry28, XtNleftBitmap, okpixmap, nullptr);
     }
@@ -1701,16 +1691,16 @@ int XtGui::gui_type()
 }
 
 XtGui::XtGui(
-    Mc6809 *x_cpu,
-    Memory *x_memory,
-    Scheduler *x_sched,
-    Inout *x_io,
-    E2video *x_video,
+    Mc6809 &x_cpu,
+    Memory &x_memory,
+    Scheduler &x_scheduler,
+    Inout &x_inout,
+    E2video &x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
     struct sGuiOptions &x_options) :
-    XAbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
+    XAbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
                  x_keyboardIO, x_options), pia1(x_pia1)
 {
     initialize(options);
@@ -1840,13 +1830,13 @@ void XtGui::popup_bp()
 
     for (which = 0; which <= 1; which++)
     {
-        if (!cpu->is_bp_set(which))
+        if (!cpu.is_bp_set(which))
         {
             strcpy(bpstring, "");
         }
         else
         {
-            sprintf(bpstring, "%04x", cpu->get_bp(which));
+            sprintf(bpstring, "%04x", cpu.get_bp(which));
         }
 
         XtVaSetValues(bptext[which], XtNlength, 6,
@@ -1879,11 +1869,11 @@ void XtGui::popdown_bp(Widget w)
 
         if (sscanf(bpstring, "%x", &addr) == 1 && addr <= 0xffff)
         {
-            cpu->set_bp(which, (Word)addr);
+            cpu.set_bp(which, (Word)addr);
         }
         else if (strlen(bpstring) == 0)
         {
-            cpu->reset_bp(which);
+            cpu.reset_bp(which);
         }
     }
 
@@ -2014,7 +2004,7 @@ void XtGui::popdown_log(Widget w)
     strncpy(lfs.logFileName, tmpstring, PATH_MAX);
     lfs.logFileName[PATH_MAX - 1] = '\0';
 
-    schedy->sync_exec(new CSetLogFile(*cpu, &lfs));
+    scheduler.sync_exec(new CSetLogFile(cpu, &lfs));
 
     XtPopdown(logframe);
     XtSetSensitive(e2toplevel, True);

@@ -813,13 +813,13 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 
     for (i = 0; i < 2; i++)
     {
-        if (!cpu->is_bp_set(i))
+        if (!cpu.is_bp_set(i))
         {
             text(25, 5 + i, "    ", bp_input[i]);
         }
         else
             text(25, 5 + i,
-                 hexstr((Word)cpu->get_bp(i)),
+                 hexstr((Word)cpu.get_bp(i)),
                  bp_input[i]);
     }  // for
 
@@ -910,7 +910,7 @@ void AbstractGui::set_new_state(Byte user_input)
 {
     if (user_input != S_NO_CHANGE)
     {
-        schedy->set_new_state(user_input);
+        scheduler.set_new_state(user_input);
     }
 }
 
@@ -920,9 +920,9 @@ void AbstractGui::set_bell(int)
 
 void AbstractGui::output_to_terminal()
 {
-    if (io->is_terminal_supported() && switch_sp)
+    if (inout.is_terminal_supported() && switch_sp)
     {
-        cpu->set_serpar(0xff);
+        cpu.set_serpar(0xff);
     }
 }
 
@@ -930,7 +930,7 @@ void AbstractGui::output_to_graphic()
 {
     if (switch_sp)
     {
-        cpu->set_serpar(0);
+        cpu.set_serpar(0);
     }
 }
 
@@ -940,24 +940,21 @@ int AbstractGui::gui_type()
 }
 
 AbstractGui::AbstractGui(
-    Mc6809    *x_cpu,
-    Memory    *x_memory,
-    Scheduler *x_sched,
-    Inout     *x_io,
-    E2video   *x_video,
+    Mc6809 &x_cpu,
+    Memory &x_memory,
+    Scheduler &x_scheduler,
+    Inout &x_inout,
+    E2video &x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     struct sGuiOptions &x_options) :
-    cpu(x_cpu), memory(x_memory), schedy(x_sched), io(x_io),
+    cpu(x_cpu), memory(x_memory), scheduler(x_scheduler), inout(x_inout),
     e2video(x_video), joystickIO(x_joystickIO), keyboardIO(x_keyboardIO),
     options(x_options),
     exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {
-    if (e2video != nullptr)
-    {
-        e2video->resetIo();
-    }
+    e2video.resetIo();
 }
 
 AbstractGui::~AbstractGui()

@@ -107,7 +107,7 @@ public:
     virtual void    c_focusOut(XEvent *pevent);
 public:
 
-    XAbstractGui(Mc6809 *, Memory *, Scheduler *, Inout *, E2video *,
+    XAbstractGui(Mc6809 &, Memory &, Scheduler &, Inout &, E2video &,
                  JoystickIO &, KeyboardIO &, struct sGuiOptions &);
     virtual ~XAbstractGui();
 };

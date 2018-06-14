@@ -279,14 +279,14 @@ AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
 #ifdef HAVE_XTK
 
             case GUI_XTOOLKIT:
-                gui = new XtGui(&cpu, &memory, schedy, this, &video,
+                gui = new XtGui(cpu, memory, *schedy, *this, video,
                                 joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
 #ifdef _WIN32
 
             case GUI_WINDOWS:
-                gui = new Win32Gui(&cpu, &memory, schedy, this, &video,
+                gui = new Win32Gui(cpu, memory, *schedy, *this, video,
                                    joystickIO, keyboardIO, pia1, options);
                 break;
 #endif

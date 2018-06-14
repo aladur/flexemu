@@ -188,44 +188,44 @@ void XAbstractGui::update_block(int block_number)
     XImage      *img;
     Byte        *src;
 
-    if (!memory->changed[block_number])
+    if (!memory.changed[block_number])
     {
         return;
     }
-    memory->changed[block_number] = false;
+    memory.changed[block_number] = false;
 
     dpy = getDisplay();
     win = getWindow();
 
-    if (e2video->vico1 & 0x01)
+    if (e2video.vico1 & 0x01)
     {
-        src = memory->vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
+        src = memory.vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
     }
     else
     {
-        src = memory->vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
+        src = memory.vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
     }
 
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 
-    if (!(e2video->vico1 & 0x02))
+    if (!(e2video.vico1 & 0x02))
     {
         CopyToZPixmap(block_number, (Byte *)img->data, src, depth,
                       (unsigned long *)pen);
 
-        if (block_number == e2video->divided_block)
+        if (block_number == e2video.divided_block)
         {
             // first half display on the bottom of the window
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0, (WINDOWHEIGHT -
-                                     (e2video->vico2 % BLOCKHEIGHT)) * pixelSizeY,
+                                     (e2video.vico2 % BLOCKHEIGHT)) * pixelSizeY,
                       BLOCKWIDTH * pixelSizeX,
-                      (e2video->vico2 % BLOCKHEIGHT) * pixelSizeY);
+                      (e2video.vico2 % BLOCKHEIGHT) * pixelSizeY);
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
-                      img, 0, (e2video->vico2 % YBLOCKS) * pixelSizeY,
+                      img, 0, (e2video.vico2 % YBLOCKS) * pixelSizeY,
                       0, 0, BLOCKWIDTH * pixelSizeX,
-                      (BLOCKHEIGHT - (e2video->vico2 % BLOCKHEIGHT)) *
+                      (BLOCKHEIGHT - (e2video.vico2 % BLOCKHEIGHT)) *
                       pixelSizeY);
         }
         else
@@ -233,7 +233,7 @@ void XAbstractGui::update_block(int block_number)
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0,
                       ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
-                        e2video->vico2) % WINDOWHEIGHT) * pixelSizeY,
+                        e2video.vico2) % WINDOWHEIGHT) * pixelSizeY,
                       BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
         }
     }
@@ -372,10 +372,7 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
 
             case XK_Break:
             case XK_Pause:
-                if (cpu)
-                {
-                    cpu->set_nmi();
-                }
+                cpu.set_nmi();
 
                 return -1;
 
@@ -468,10 +465,7 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
 
             case XK_Break:
             case XK_Pause:
-                if (cpu)
-                {
-                    cpu->set_nmi();
-                }
+                cpu.set_nmi();
 
                 return -1;
 
@@ -775,15 +769,15 @@ void XAbstractGui::create_message_dialog(Widget)
 } // create_message_dialog
 
 XAbstractGui::XAbstractGui(
-    Mc6809    *x_cpu,
-    Memory    *x_memory,
-    Scheduler *x_sched,
-    Inout     *x_io,
-    E2video   *x_video,
+    Mc6809 &x_cpu,
+    Memory &x_memory,
+    Scheduler &x_scheduler,
+    Inout &x_inout,
+    E2video &x_video,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_sched, x_io, x_video, x_joystickIO,
+    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
                 x_keyboardIO, x_options),
     cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
 {

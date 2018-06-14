@@ -68,11 +68,11 @@ class AbstractGui
     // private instance variables:
 
 protected:
-    Mc6809 *cpu;    // pointer to cpu to send interrupts
-    Memory *memory; // pointer to memory (video memory access)
-    Scheduler *schedy;
-    Inout *io; // pointer to io-class handling in/output
-    E2video *e2video;// pointer to video control registers
+    Mc6809 &cpu;    // pointer to cpu to send interrupts
+    Memory &memory; // pointer to memory (video memory access)
+    Scheduler &scheduler;
+    Inout &inout; // pointer to IO-class handling input/output
+    E2video &e2video;// pointer to video control registers
     JoystickIO &joystickIO; // joystick data provider.
     KeyboardIO &keyboardIO; // keyboard data provider.
     const char *program_name;
@@ -132,16 +132,15 @@ public:
 
 public:
     AbstractGui(
-        Mc6809 *x_cpu,
-        Memory *x_memory,
-        Scheduler *x_sched,
-        Inout *x_io,
-        E2video *x_video,
+        Mc6809 &x_cpu,
+        Memory &x_memory,
+        Scheduler &x_scheduler,
+        Inout &x_inout,
+        E2video &x_video,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
         struct sGuiOptions &options);
     virtual ~AbstractGui();
-
 };
 
 #endif // __absgui_h__
