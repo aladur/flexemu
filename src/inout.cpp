@@ -60,8 +60,8 @@ void Inout::s_exec_signal(int sig_no)
 }
 
 
-Inout::Inout(Mc6809 &x_cpu) :
-    cpu(x_cpu), gui(nullptr), fdc(nullptr), rtc(nullptr), schedy(nullptr)
+Inout::Inout(Mc6809 &x_cpu, Scheduler &x_scheduler) :
+    cpu(x_cpu), scheduler(x_scheduler), gui(nullptr), fdc(nullptr), rtc(nullptr)
 {
     instance = this;
     reset_serial();
@@ -131,10 +131,7 @@ void Inout::initTerminalIO(Word reset_key)
         {
             fprintf(stderr, "unable to initialize terminal\n");
 
-            if (schedy != nullptr)
-            {
-                schedy->set_new_state(S_EXIT);
-            }
+            scheduler.set_new_state(S_EXIT);
         }
         else
         {
@@ -224,10 +221,7 @@ void Inout::initTerminalIO(Word reset_key)
             tcsetattr(fileno(stdin), TCSAFLUSH, &save_termios);
             fprintf(stderr, "unable to initialize terminal\n");
 
-            if (schedy != nullptr)
-            {
-                schedy->set_new_state(S_EXIT);
-            }
+            scheduler.set_new_state(S_EXIT);
 
             return;
         }
@@ -252,11 +246,6 @@ void Inout::set_rtc(Mc146818 *x_device)
     rtc = x_device;
 }
 
-void Inout::set_scheduler(Scheduler *x_sched)
-{
-    schedy = x_sched;
-}
-
 AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
                                KeyboardIO &keyboardIO, Pia1 &pia1,
                                Memory &memory, E2video &video,
@@ -279,14 +268,14 @@ AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
 #ifdef HAVE_XTK
 
             case GUI_XTOOLKIT:
-                gui = new XtGui(cpu, memory, *schedy, *this, video,
+                gui = new XtGui(cpu, memory, scheduler, *this, video,
                                 joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
 #ifdef _WIN32
 
             case GUI_WINDOWS:
-                gui = new Win32Gui(cpu, memory, *schedy, *this, video,
+                gui = new Win32Gui(cpu, memory, scheduler, *this, video,
                                    joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
@@ -334,20 +323,14 @@ void Inout::exec_signal(int sig_no)
 #if defined(SIGQUIT)
 
         case SIGQUIT:
-            if (schedy != nullptr)
-            {
-                schedy->set_new_state(S_EXIT);
-            }
+            scheduler.set_new_state(S_EXIT);
 
             break;
 #endif
 #if defined(SIGTSTP)
 
         case SIGTSTP:
-            if (schedy != nullptr)
-            {
-                schedy->set_new_state(S_RESET_RUN);
-            }
+            scheduler.set_new_state(S_RESET_RUN);
 
             break;
 #endif

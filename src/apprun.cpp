@@ -50,12 +50,12 @@ ApplicationRunner::ApplicationRunner(
     options(x_options),
     memory(options.isHiMem),
     cpu(memory),
-    io(cpu),
+    inout(cpu, scheduler),
     mmu(memory),
-    acia1(io, cpu),
+    acia1(inout, cpu),
     pia1(cpu, scheduler, keyboardIO),
     pia2(cpu, keyboardIO, joystickIO),
-    command(io, cpu, scheduler),
+    command(inout, cpu, scheduler),
     video(memory),
     rtc(cpu)
 {
@@ -64,21 +64,20 @@ ApplicationRunner::ApplicationRunner(
 int ApplicationRunner::run()
 {
     scheduler.set_cpu(&cpu);
-    scheduler.set_inout(&io);
-    io.set_scheduler(&scheduler);
+    scheduler.set_inout(&inout);
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
-    io.set_fdc(&fdc);
+    inout.set_fdc(&fdc);
     command.set_fdc(&fdc);
 
-    io.init(options.reset_key);
+    inout.init(options.reset_key);
 
-    if (!(options.term_mode && io.is_terminal_supported()))
+    if (!(options.term_mode && inout.is_terminal_supported()))
     {
-        io.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1,
+        inout.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1,
                       memory, video, guiOptions);
     }
 
@@ -91,7 +90,7 @@ int ApplicationRunner::run()
     memory.add_io_device(command, COMM_BASE, COMM_MASK, 0, 0);
     memory.add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
     memory.add_io_device(rtc, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
-    io.set_rtc(&rtc);
+    inout.set_rtc(&rtc);
 
     // Load monitor program into ROM.
     int error;
@@ -131,7 +130,7 @@ int ApplicationRunner::run()
     }
     else
     {
-        io.main_loop();
+        inout.main_loop();
         scheduler.Join();  // wait for termination of CPU thread
     }
 

@@ -62,7 +62,7 @@ private:
     Memory memory;
     Mc6809 cpu;
     Da6809 disassembler;
-    Inout io;
+    Inout inout;
     Scheduler scheduler;
     JoystickIO joystickIO;
     KeyboardIO keyboardIO;

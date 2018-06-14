@@ -59,6 +59,7 @@ class Inout
 private:
     std::deque<Byte> key_buffer_serial;
     Mc6809 &cpu;
+    Scheduler &scheduler;
 #ifdef HAVE_TERMIOS_H
     static      bool   used_serial_io;
     static      struct termios save_termios;
@@ -70,14 +71,12 @@ protected:
     AbstractGui    *gui;
     E2floppy       *fdc;
     Mc146818       *rtc;
-    Scheduler      *schedy;
 
     // public interface
 
 public:
     void    set_fdc(E2floppy  *x_device);
     void    set_rtc(Mc146818  *x_device);
-    void    set_scheduler(Scheduler *x_sched);
     AbstractGui *create_gui(int type, JoystickIO &joystickIO,
                             KeyboardIO &keyboardIO, Pia1 &pia1,
                             Memory &memory, E2video &video,
@@ -128,7 +127,7 @@ private:
 
     // Public constructor and destructor
 public:
-    Inout(Mc6809 &x_cpu);
+    Inout(Mc6809 &x_cpu, Scheduler &x_scheduler);
     ~Inout();
 
 };
