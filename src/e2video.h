@@ -35,7 +35,7 @@ class E2video : public IoDevice
 
     // Internal registers
 protected:
-    Memory      *memory;
+    Memory &memory;
 
 public:
     Byte        vico1, vico2;
@@ -58,7 +58,7 @@ public:
 
     // Public constructor and destructor
 public:
-    E2video(Memory *x_mem);
+    E2video(Memory &x_memory);
     virtual ~E2video();
 
 };

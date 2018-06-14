@@ -22,22 +22,18 @@
 
 
 #include "misc1.h"
-
 #include "e2.h"
 #include "e2video.h"
 #include "memory.h"
 
 
-E2video::E2video(Memory *x_mem)
+E2video::E2video(Memory &x_memory) : memory(x_memory)
 {
-    memory = x_mem;
 }
 
 E2video::~E2video()
 {
-    memory = nullptr;
 }
-
 
 void E2video::resetIo()
 {
@@ -51,7 +47,6 @@ Byte E2video::readIo(Word)
     return 0xff;    // there is nothing to be read !
 }
 
-
 // if bit 1 of vico1 is set, no video ram is selected and all one's is
 // displayed on the window like on the real Eurocom II
 
@@ -60,12 +55,12 @@ void E2video::writeIo(Word offset, Byte val)
     if (offset == 0)
     {
         vico1 = val & 0x03;
-        memory->init_blocks_to_update();
+        memory.init_blocks_to_update();
     }
     else
     {
         vico2 = val;
-        memory->init_blocks_to_update();
+        memory.init_blocks_to_update();
 
         if (YBLOCKS != 1 && vico2 % BLOCKHEIGHT)
         {
@@ -75,6 +70,6 @@ void E2video::writeIo(Word offset, Byte val)
         {
             divided_block = -1;    // means: no such block
         }
-    } // else
+    }
 }
 
