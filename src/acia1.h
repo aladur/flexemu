@@ -26,17 +26,18 @@
 #define __acia1_h__
 
 #include <stdio.h>
-#include "inout.h"
-#include "mc6809.h"
 #include "mc6850.h"
+
+class Inout;
+class Mc6809;
 
 class Acia1 : public Mc6850
 {
 
 protected:
 
-    Mc6809          *cpu;
-    Inout           *io;
+    Mc6809 &cpu;
+    Inout &io;
 
 public:
     // read data from serial line
@@ -51,18 +52,17 @@ public:
     // request for an input ready to be read
     virtual void            requestInput();
 
-public:
     virtual void            resetIo();
-
-    // Public constructor and destructor
-
-public:
 
     virtual const char      *getName()
     {
         return "acia1";
     };
-    Acia1(Inout *x_io, Mc6809 *x_cpu);
+
+    // Public constructor and destructor
+public:
+
+    Acia1(Inout &x_io, Mc6809 &x_cpu);
     virtual             ~Acia1();
 
 };
