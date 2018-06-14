@@ -70,15 +70,6 @@ int ApplicationRunner::run()
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
-    // Add all memory mapped I/O devices to memory.
-    memory.add_io_device(mmu, MMU_BASE, MMU_MASK, 0, 0);
-    memory.add_io_device(acia1, ACIA1_BASE, ACIA1_MASK, 0, 0);
-    memory.add_io_device(pia1, PIA1_BASE, PIA1_MASK, 0, 0);
-    memory.add_io_device(pia2, PIA2_BASE, PIA2_MASK, 0, 0);
-    memory.add_io_device(fdc, FDCA_BASE, FDCA_MASK, FDCB_BASE, FDCB_MASK);
-    memory.add_io_device(command, COMM_BASE, COMM_MASK, 0, 0);
-    memory.add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
-
     io.set_pia1((Mc6821 *)&pia1);
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
@@ -93,7 +84,14 @@ int ApplicationRunner::run()
         io.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1);
     }
 
-    // instanciate real time clock right before initialize alarm
+    // Add all memory mapped I/O devices to memory.
+    memory.add_io_device(mmu, MMU_BASE, MMU_MASK, 0, 0);
+    memory.add_io_device(acia1, ACIA1_BASE, ACIA1_MASK, 0, 0);
+    memory.add_io_device(pia1, PIA1_BASE, PIA1_MASK, 0, 0);
+    memory.add_io_device(pia2, PIA2_BASE, PIA2_MASK, 0, 0);
+    memory.add_io_device(fdc, FDCA_BASE, FDCA_MASK, FDCB_BASE, FDCB_MASK);
+    memory.add_io_device(command, COMM_BASE, COMM_MASK, 0, 0);
+    memory.add_io_device(video, VICO_BASE, VICO_MASK, 0, 0);
     memory.add_io_device(rtc, RTC_LOW, RTC_HIGH - RTC_LOW + 1, 0, 0);
     io.set_rtc(&rtc);
 
