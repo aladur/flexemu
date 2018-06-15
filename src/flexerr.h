@@ -24,6 +24,7 @@
 #define flexerr_h
 
 #include <string>
+#include <exception>
 
 
 #define FERR_NOERROR            (0)
@@ -61,9 +62,10 @@
 #define FERR_UNSPEC_WINDOWS_ERROR   (32)
 #define FERR_WINDOWS_ERROR          (33)
 #define FERR_INVALID_NULL_POINTER   (34)
+#define FERR_FLEX_EXCEPTION         (35)
 
 
-class FlexException
+class FlexException : public std::exception
 {
 protected:
 
@@ -72,6 +74,10 @@ protected:
     static const char *errString[];
 
 public:
+
+    FlexException() noexcept;
+    FlexException(const FlexException &src);
+    FlexException& operator= (const FlexException &rhs) noexcept;
 
     FlexException(int ec) throw();
     FlexException(int ec, int ip1) throw();
@@ -82,20 +88,18 @@ public:
 #ifdef _WIN32
     FlexException(unsigned long lastError, const std::string &sp1) throw();
 #endif
+    virtual ~FlexException();
 
-    const std::string what()  const throw();
+    virtual const char *what() const noexcept;
 #ifdef _UNICODE
     const std::wstring wwhat() const throw();
 #else
-    const std::string wwhat() const throw();
+    const std::string wwhat() const noexcept;
 #endif
     int GetErrorCode() const
     {
         return errorCode;
     };
-
-private:
-    FlexException() throw();
 };
 
 

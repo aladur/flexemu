@@ -112,20 +112,6 @@ int main(int argc, char *argv[])
 #endif
         return_code = 1;
     }
-    catch (FlexException &ex)
-    {
-        std::stringstream msg;
-
-        msg << PROGRAMNAME << ": An error has occured: " << ex.what().c_str();
-
-#ifdef _WIN32
-        MessageBox(nullptr, msg.str().c_str(),
-                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
-#else
-        fprintf(stderr, "%s", msg.str().c_str());
-#endif
-        return_code = 1;
-    }
 
     return return_code;
 }

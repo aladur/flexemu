@@ -36,9 +36,9 @@
 #define _(p) p
 
 
-const std::string FlexException::what() const throw()
+const char *FlexException::what() const noexcept
 {
-    return errorString;
+    return errorString.c_str();
 }
 
 #ifdef UNICODE
@@ -52,6 +52,23 @@ const std::string FlexException::wwhat() const throw()
     return errorString;
 }
 #endif
+
+FlexException::FlexException(const FlexException &src) :
+    errorCode(src.errorCode), errorString(src.errorString)
+{
+}
+
+FlexException &FlexException::operator= (const FlexException &src) noexcept
+{
+    errorCode = src.errorCode;
+    errorString = src.errorString;
+
+    return *this;
+}
+
+FlexException::FlexException() noexcept : errorCode(FERR_FLEX_EXCEPTION)
+{
+}
 
 FlexException::FlexException(int ec) throw() : errorCode(ec)
 {
@@ -104,6 +121,10 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 }
 #endif
 
+FlexException::~FlexException()
+{
+}
+
 const char *FlexException::errString[] =
 {
     _("No Error"),
@@ -140,6 +161,7 @@ const char *FlexException::errString[] =
     _("Container {0} is read-only"),
     _("An unspecified Windows error occured (#{1})"),
     _(""),
-    _("{0} is an invalid nullptr pointer")
+    _("{0} is an invalid NULL pointer")
+    _("")
 };
 
