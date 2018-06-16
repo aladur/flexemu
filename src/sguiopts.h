@@ -26,6 +26,7 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #define __sguiopts_h__
 
 #include "misc1.h"
+#include "flexemu.h"
 #include <string>
 
 // Maximum x-size of one emulated pixel on screen
@@ -46,7 +47,7 @@ struct sGuiOptions
     int switch_sp;
     int pixelSizeX; // x-size of one pixel on the screen
     int pixelSizeY; // y-size of one pixel on the screen
-    int guiType;
+    GuiType guiType;
 };
 
 #endif

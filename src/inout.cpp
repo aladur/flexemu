@@ -246,13 +246,12 @@ void Inout::set_rtc(Mc146818 *x_device)
     rtc = x_device;
 }
 
-AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
+AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
                                KeyboardIO &keyboardIO, Pia1 &pia1,
                                Memory &memory, E2video &video,
                                struct sGuiOptions &options)
 {
 #ifdef UNIT_TEST
-    (void)type;
     (void)joystickIO;
     (void)keyboardIO;
     (void)pia1;
@@ -263,22 +262,26 @@ AbstractGui *Inout::create_gui(int type, JoystickIO &joystickIO,
     // Only allow to open Gui once.
     if (gui == nullptr)
     {
-        switch (type)
+        switch (static_cast<GuiType>(options.guiType))
         {
 #ifdef HAVE_XTK
 
-            case GUI_XTOOLKIT:
+            case GuiType::XTOOLKIT:
                 gui = new XtGui(cpu, memory, scheduler, *this, video,
                                 joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
 #ifdef _WIN32
 
-            case GUI_WINDOWS:
+            case GuiType::WINDOWS:
                 gui = new Win32Gui(cpu, memory, scheduler, *this, video,
                                    joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
+            default:
+                throw FlexException(FERR_UNSUPPORTED_GUI_TYPE,
+                        static_cast<int>(options.guiType));
+                break;
         }
     }
 #endif // UNIT_TEST

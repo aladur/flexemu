@@ -934,9 +934,9 @@ void AbstractGui::output_to_graphic()
     }
 }
 
-int AbstractGui::gui_type()
+GuiType AbstractGui::gui_type()
 {
-    return -1;
+    return GuiType::NONE;
 }
 
 AbstractGui::AbstractGui(

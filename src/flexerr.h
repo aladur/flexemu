@@ -63,6 +63,7 @@
 #define FERR_WINDOWS_ERROR          (33)
 #define FERR_INVALID_NULL_POINTER   (34)
 #define FERR_FLEX_EXCEPTION         (35)
+#define FERR_UNSUPPORTED_GUI_TYPE   (36)
 
 
 class FlexException : public std::exception

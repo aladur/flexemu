@@ -31,6 +31,7 @@
     #include <termios.h>
 #endif
 #include "flexemu.h"
+#include "flexerr.h"
 #include <string>
 #include <deque>
 #include <mutex>
@@ -77,7 +78,7 @@ protected:
 public:
     void    set_fdc(E2floppy  *x_device);
     void    set_rtc(Mc146818  *x_device);
-    AbstractGui *create_gui(int type, JoystickIO &joystickIO,
+    AbstractGui *create_gui(JoystickIO &joystickIO,
                             KeyboardIO &keyboardIO, Pia1 &pia1,
                             Memory &memory, E2video &video,
                             struct sGuiOptions &options);

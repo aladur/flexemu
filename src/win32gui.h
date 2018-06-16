@@ -254,7 +254,7 @@ public:
     void    clear_log(HWND hwnd);
     void    prompt_logfile(HWND hwnd);
     void    main_loop();
-    int     gui_type();
+    GuiType gui_type();
 
     // Public constructor and destructor
 public:

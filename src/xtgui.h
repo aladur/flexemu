@@ -284,7 +284,7 @@ public:
     virtual void    popup_confirmation(const char *pmessage,
                                        const char *ptitle = nullptr,
                                        int width = 270, int height = 120);
-    virtual int     gui_type();
+    virtual GuiType gui_type();
     void            timerCallback(XtIntervalId pId);
     virtual void    menuHandler(Widget button, XEvent *event, Boolean *flag);
 

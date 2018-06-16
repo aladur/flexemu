@@ -1900,9 +1900,9 @@ void Win32Gui::initialize_after_open(HWND w)
     release_mouse_capture(w);
 }
 
-int Win32Gui::gui_type()
+GuiType Win32Gui::gui_type()
 {
-    return GUI_WINDOWS;
+    return GuiType::WINDOWS;
 }
 
 Win32Gui::Win32Gui(

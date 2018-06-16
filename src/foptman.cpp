@@ -175,12 +175,12 @@ void FlexOptionManager::InitOptions(
 #endif
 #ifdef UNIX
     pGuiOptions->doc_dir       = F_DATADIR;
-    pGuiOptions->guiType       = GUI_XTOOLKIT;
+    pGuiOptions->guiType       = GuiType::XTOOLKIT;
     pOptions->disk_dir         = F_DATADIR;
 #endif
 #ifdef _WIN32
     pGuiOptions->doc_dir       = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
-    pGuiOptions->guiType       = GUI_WINDOWS;
+    pGuiOptions->guiType       = GuiType::WINDOWS;
     pOptions->disk_dir         = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     pGuiOptions->pixelSizeX      = 2;
@@ -376,12 +376,12 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'g':
                 if (stricmp(optarg, "win32") == 0)
                 {
-                    pGuiOptions->guiType = GUI_WINDOWS;
+                    pGuiOptions->guiType = GuiType::WINDOWS;
                 }
 
                 if (stricmp(optarg, "x11") == 0)
                 {
-                    pGuiOptions->guiType = GUI_XTOOLKIT;
+                    pGuiOptions->guiType = GuiType::XTOOLKIT;
                 }
 
                 break;

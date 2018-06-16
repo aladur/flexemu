@@ -78,7 +78,7 @@ int ApplicationRunner::run()
 
     if (!(options.term_mode && inout.is_terminal_supported()))
     {
-        inout.create_gui(guiOptions.guiType, joystickIO, keyboardIO, pia1,
+        inout.create_gui(joystickIO, keyboardIO, pia1,
                       memory, video, guiOptions);
     }
 

@@ -29,6 +29,7 @@
 #include <string.h>
 
 #include "e2.h"
+#include "flexemu.h"
 #include "sguiopts.h"
 #include <string>
 #include <memory>
@@ -126,7 +127,7 @@ public:
     virtual void    output_to_terminal();   // set output to terminal
     virtual void    output_to_graphic();    // set output to gui
     virtual void    main_loop();        // enter the msg loop
-    virtual int gui_type();         // return type of gui
+    virtual GuiType gui_type();         // return type of graphical user interf.
 
     // constructor and destructor
 

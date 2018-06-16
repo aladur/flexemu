@@ -46,11 +46,11 @@ enum class DiskStatus
     ACTIVE
 };
 
-enum tGuiType
+enum class GuiType
 {
-    GUI_X11         = 1,
-    GUI_XTOOLKIT    = 2,
-    GUI_WINDOWS     = 3
+    NONE = 0,
+    XTOOLKIT = 2,
+    WINDOWS = 3,
 };
 #endif
 

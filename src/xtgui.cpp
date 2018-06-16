@@ -1685,9 +1685,9 @@ Window XtGui::getWindow(tWindowType t /* = FLX_E2SCREEN */)
     }
 }
 
-int XtGui::gui_type()
+GuiType XtGui::gui_type()
 {
-    return GUI_XTOOLKIT;
+    return GuiType::XTOOLKIT;
 }
 
 XtGui::XtGui(
