@@ -51,6 +51,7 @@ ApplicationRunner::ApplicationRunner(
     memory(options.isHiMem),
     cpu(memory),
     inout(cpu, scheduler),
+    scheduler(cpu, inout),
     mmu(memory),
     acia1(inout, cpu),
     pia1(cpu, scheduler, keyboardIO),
@@ -64,8 +65,6 @@ ApplicationRunner::ApplicationRunner(
 
 int ApplicationRunner::run()
 {
-    scheduler.set_cpu(&cpu);
-    scheduler.set_inout(&inout);
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 

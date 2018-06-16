@@ -33,6 +33,7 @@
 #include "cpustate.h"
 #include "schedcpu.h"
 
+
 #define DO_SYNCEXEC     0x80
 #define DO_TIMER        0x100
 #define DO_SET_STATUS       0x200
@@ -42,20 +43,15 @@ class BCommand;
 class BTime;
 class BTimer;
 class Inout;
+class ScheduledCpu;
 
 class Scheduler : public BThread
 {
 public:
-    Scheduler();
+    Scheduler() = delete;
+    Scheduler(ScheduledCpu &x_cpu, Inout &x_inout);
     virtual     ~Scheduler();
-    void        set_cpu(ScheduledCpu *x_cpu)
-    {
-        cpu = x_cpu;
-    };
-    void        set_inout(Inout *x_inout)
-    {
-        inout  = x_inout;
-    };
+
     Byte        statemachine(Byte initial_state);
     bool        is_finished();
     void        set_new_state(Byte x_user_input);
@@ -85,13 +81,13 @@ protected:
     void timer_elapsed();
     void set_timer();
 
+    ScheduledCpu &cpu;
+    Inout &inout;
     Byte        state;
     Word        events;
     Byte        user_input;
     QWord       total_cycles;
     QWord       time0sec;
-    ScheduledCpu    *cpu;
-    Inout       *inout;
     BTime       *systemTime;
     static Scheduler *instance;
 

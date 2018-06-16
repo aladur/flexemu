@@ -34,9 +34,11 @@
 #include "bcommand.h"
 
 
-Scheduler::Scheduler() : BThread(false),
+Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
+    BThread(false),
+    cpu(x_cpu), inout(x_inout),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
-    time0sec(0), cpu(nullptr), inout(nullptr), systemTime(nullptr),
+    time0sec(0), systemTime(nullptr),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
@@ -80,7 +82,7 @@ Scheduler::~Scheduler()
 void Scheduler::set_new_state(Byte x_user_input)
 {
     user_input = x_user_input;
-    cpu->exit_run();
+    cpu.exit_run();
 }
 
 bool Scheduler::is_finished()
@@ -96,10 +98,10 @@ void Scheduler::process_events()
         if (events & DO_TIMER)
         {
             irq_status_mutex.lock();
-            cpu->get_interrupt_status(interrupt_status);
+            cpu.get_interrupt_status(interrupt_status);
             irq_status_mutex.unlock();
             QWord time1sec = systemTime->GetTimeUsll();
-            total_cycles = cpu->get_cycles(true);
+            total_cycles = cpu.get_cycles(true);
 
             if (target_frequency > 0.0)
             {
@@ -112,10 +114,7 @@ void Scheduler::process_events()
                 update_frequency();
                 events |= DO_SET_STATUS;
 
-                if (inout != nullptr)
-                {
-                    inout->update_1_second();
-                }
+                inout.update_1_second();
 
                 time0sec += 1000000;
             }
@@ -127,11 +126,11 @@ void Scheduler::process_events()
         {
             std::lock_guard<std::mutex> guard(status_mutex);
 
-            if (inout->is_gui_present() && pCurrent_status == nullptr)
+            if (inout.is_gui_present() && pCurrent_status == nullptr)
             {
                 events &= ~DO_SET_STATUS;
-                pCurrent_status = cpu->create_status_object();
-                cpu->get_status(pCurrent_status);
+                pCurrent_status = cpu.create_status_object();
+                cpu.get_status(pCurrent_status);
                 pCurrent_status->freq   = frequency;
                 pCurrent_status->state  = state;
             }
@@ -169,7 +168,7 @@ Byte Scheduler::runloop(Word mode)
 
     do
     {
-        new_state = cpu->run(mode);
+        new_state = cpu.run(mode);
 
         if (new_state & EXIT_SUSPEND)
             // suspend thread until next timer tick
@@ -247,7 +246,7 @@ Byte Scheduler::statemachine(Byte initial_state)
                 break;
         } // switch
 
-        if (inout->is_gui_present())
+        if (inout.is_gui_present())
         {
             events |= DO_SET_STATUS;
         }
@@ -267,7 +266,7 @@ void Scheduler::timer_elapsed(void *p)
 void Scheduler::timer_elapsed()
 {
     events |= DO_TIMER;
-    cpu->exit_run();
+    cpu.exit_run();
 #ifdef __BSD
     BTimer::Instance()->Start(false, TIME_BASE);
 #endif
@@ -275,7 +274,7 @@ void Scheduler::timer_elapsed()
 
 void Scheduler::do_reset()
 {
-    cpu->do_reset();
+    cpu.do_reset();
     total_cycles = 0;
     cycles0      = 0;
 }
@@ -309,7 +308,7 @@ void Scheduler::sync_exec(BCommand *newCommand)
 
     commands.push_back(newCommand);
     events |= DO_SYNCEXEC;
-    cpu->exit_run();
+    cpu.exit_run();
 }
 
 void Scheduler::Execute()
@@ -370,14 +369,14 @@ void Scheduler::frequency_control(QWord time1)
         time0 = time1;
         required_cyclecount = static_cast<t_cycles>
                               (TIME_BASE * target_frequency);
-        cpu->set_required_cyclecount(required_cyclecount);
+        cpu.set_required_cyclecount(required_cyclecount);
     }
     else
     {
         SQWord timediff = time1 - time0;
         required_cyclecount = static_cast<t_cycles>
                               (timediff * target_frequency);
-        cpu->set_required_cyclecount(required_cyclecount);
+        cpu.set_required_cyclecount(required_cyclecount);
         time0 = time1;
 #ifdef DEBUG_FILE
 
@@ -398,7 +397,7 @@ void Scheduler::update_frequency()
     t_cycles cyclecount;
     QWord cycles1;
 
-    cycles1 = cpu->get_cycles();
+    cycles1 = cpu.get_cycles();
     cyclecount = static_cast<t_cycles>(cycles1 - cycles0);
     frequency = (float)(cyclecount / 1000000.0);
     cycles0 = cycles1;
@@ -417,9 +416,6 @@ void Scheduler::set_frequency(float target_freq)
         time0 = 0;
     }
 
-    if (cpu != nullptr)
-    {
-        cpu->set_required_cyclecount(ULONG_MAX);
-    }
+    cpu.set_required_cyclecount(ULONG_MAX);
 } // set_frequency
 
