@@ -58,7 +58,7 @@ private:
     //  floppy          Pointers to all file containers (drive 4 deselects fdc)
     //  pfs             Pointer to currently selected file container
     //  track           Track number of all drives
-    //  driveStatus     Status of all drives
+    //  drive_status    Status of all drives
     //  sector_buffer   Current sector to read from or write to
     //  disk_dir        Disk directory
     // Drive nr. 4 means no drive selected
@@ -66,7 +66,7 @@ private:
     FileContainerIfSector   *floppy[5];
     FileContainerIfSector   *pfs;
     Byte            track[5];
-    tDiskStatus     driveStatus[5];
+    tDiskStatus     drive_status[5];
     char            sector_buffer[256];
     const char      *disk_dir;
     std::mutex      status_mutex;

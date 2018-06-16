@@ -43,7 +43,7 @@ E2floppy::E2floppy() : selected(4), pfs(nullptr)
     {
         track[i] = 1; // position all drives to track != 0  !!!
         floppy[i] = nullptr;
-        driveStatus[i] = DISK_STAT_EMPTY;
+        drive_status[i] = DISK_STAT_EMPTY;
     }
 
     memset(sector_buffer, 0, sizeof(sector_buffer));
@@ -63,7 +63,7 @@ E2floppy::~E2floppy()
                 floppy[i]->Close();
                 delete floppy[i];
                 floppy[i] = nullptr;
-                driveStatus[i] = DISK_STAT_EMPTY;
+                drive_status[i] = DISK_STAT_EMPTY;
             }
             catch (...)
             {
@@ -89,7 +89,7 @@ bool E2floppy::umount_drive(Word drive_nr)
         pfloppy->Close();
         delete pfloppy;
         floppy[drive_nr] = nullptr;
-        driveStatus[drive_nr] = DISK_STAT_EMPTY;
+        drive_status[drive_nr] = DISK_STAT_EMPTY;
     }
     catch (FlexException &)
     {
@@ -199,7 +199,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
         if (pfloppy != nullptr)
         {
-            driveStatus[drive_nr] = DISK_STAT_ACTIVE;
+            drive_status[drive_nr] = DISK_STAT_ACTIVE;
             return true;
         }
 
@@ -389,7 +389,7 @@ Byte E2floppy::readByte(Word index)
 
     if (index == pfs->GetBytesPerSector())
     {
-        driveStatus[selected] = DISK_STAT_ACTIVE;
+        drive_status[selected] = DISK_STAT_ACTIVE;
 
         if (!pfs->ReadSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
@@ -409,7 +409,7 @@ void E2floppy::writeByte(Word index)
 
     if (index == 1)
     {
-        driveStatus[selected] = DISK_STAT_ACTIVE;
+        drive_status[selected] = DISK_STAT_ACTIVE;
 
         if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
@@ -462,11 +462,11 @@ void E2floppy::get_drive_status(tDiskStatus stat[4])
 
     for (i = 0; i < 4; ++i)
     {
-        stat[i] = driveStatus[i];
+        stat[i] = drive_status[i];
 
-        if (driveStatus[i] != DISK_STAT_EMPTY)
+        if (drive_status[i] != DISK_STAT_EMPTY)
         {
-            driveStatus[i] = DISK_STAT_INACTIVE;
+            drive_status[i] = DISK_STAT_INACTIVE;
         }
     }
 }
