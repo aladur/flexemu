@@ -86,13 +86,50 @@ private:
     Byte                dr, tr, sr, cr, str;
     Byte                stepOffset;
     bool                isDataRequest, isInterrupt;
-    Byte                side;
+    bool                side;
     unsigned int            byteCount, strRead;
 
     // Internal functions
 private:
 
     void                 do_seek(Byte new_track);
+
+public:
+
+    bool isIrq() const
+    {
+        return isInterrupt;
+    }
+
+    bool isDrq() const
+    {
+        return isDataRequest;
+    }
+
+    bool getSide() const
+    {
+        return side;
+    }
+
+    Byte getTrack() const
+    {
+        return tr;
+    }
+
+    Byte getSector() const
+    {
+        return sr;
+    }
+
+    Byte getDataRegister() const
+    {
+        return dr;
+    }
+
+    void setSide(bool newSide)
+    {
+        side = newSide;
+    }
 
 protected:
 
@@ -107,36 +144,6 @@ protected:
         // nterrupt request to CPU
     }
 
-    bool isIrq() const
-    {
-        return isInterrupt;
-    }
-
-    bool isDrq() const
-    {
-        return isDataRequest;
-    }
-
-    Byte getSide() const
-    {
-        return side;
-    }
-
-    void setSide(Byte newSide)
-    {
-        side = newSide;
-    }
-
-    Byte getTrack() const
-    {
-        return tr;
-    }
-
-    Byte getSector() const
-    {
-        return sr;
-    }
-
     void setTrack(Byte newTrack)
     {
         tr = newTrack;
@@ -145,11 +152,6 @@ protected:
     void setSector(Byte newSector)
     {
         sr = newSector;
-    }
-
-    Byte getDataRegister() const
-    {
-        return dr;
     }
 
     void command(Byte command);

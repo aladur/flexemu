@@ -78,10 +78,10 @@
 #define PIA1_BASE   0xfcf0
 #define PIA2_MASK   FOUR_BYTE /* parallel I/O, Joystick, beep */
 #define PIA2_BASE   0xfcf8
-#define FDCA_MASK   FOUR_BYTE /* Floppy disk controller WD1793 */
-#define FDCA_BASE   0xfd30
-#define FDCB_MASK   FOUR_BYTE /* Floppy disk controller drive select */
-#define FDCB_BASE   0xfd38
+#define FDC_MASK   FOUR_BYTE /* Floppy disk controller WD1793 */
+#define FDC_BASE   0xfd30
+#define DRISEL_MASK   ONE_BYTE /* Floppy disk controller drive select */
+#define DRISEL_BASE   0xfd38
 #define COMM_MASK   ONE_BYTE /* command device, only for emulation */
 #define COMM_BASE   0xfd3c
 #define MMU_MASK    SIXTEEN_BYTE /* Memory management unit */

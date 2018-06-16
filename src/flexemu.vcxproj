@@ -186,6 +186,7 @@
     <ClCompile Include="btime.cpp" />
     <ClCompile Include="btimer.cpp" />
     <ClCompile Include="bwin32threadimp.cpp" />
+    <ClCompile Include="bytereg.cpp" />
     <ClCompile Include="cacttrns.cpp" />
     <ClCompile Include="clogfile.cpp" />
     <ClCompile Include="colors.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="csetfreq.cpp" />
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="da6809.cpp" />
+    <ClCompile Include="drisel.cpp" />
     <ClCompile Include="e2floppy.cpp" />
     <ClCompile Include="e2video.cpp" />
     <ClCompile Include="fcinfo.cpp" />
@@ -268,6 +270,7 @@
     <ClInclude Include="btime.h" />
     <ClInclude Include="btimer.h" />
     <ClInclude Include="bwin32threadimp.h" />
+    <ClInclude Include="bytereg.h" />
     <ClInclude Include="cacttrns.h" />
     <ClInclude Include="clogfile.h" />
     <ClInclude Include="command.h" />
@@ -277,6 +280,7 @@
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="da6809.h" />
     <ClInclude Include="debug.h" />
+    <ClInclude Include="drisel.h" />
     <ClInclude Include="e2.h" />
     <ClInclude Include="e2floppy.h" />
     <ClInclude Include="e2video.h" />

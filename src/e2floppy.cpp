@@ -33,8 +33,7 @@
 #include "bdir.h"
 
 
-E2floppy::E2floppy() :
-    status(0), drisel(0), selected(4), pfs(nullptr)
+E2floppy::E2floppy() : selected(4), pfs(nullptr)
 {
     Word i;
 
@@ -360,79 +359,24 @@ bool E2floppy::update_drive(Word drive_nr)
 
 void E2floppy::resetIo()
 {
-    drisel = 0;
     Wd1793::resetIo();
 }
 
-
-Byte E2floppy::readIo(Word offset)
+void E2floppy::select_drive(Byte new_selected)
 {
-    if (offset <= 3)
+    if (new_selected > 4)
     {
-        return Wd1793::readIo(offset);
+        new_selected = 4;
     }
 
-    status = 0xff;  // unused is logical high
-
-    if (!getSide())
+    if (new_selected != selected)
     {
-        status &= 0xfd;
-    }
-
-    if (!isIrq())
-    {
-        status &= 0xbf;
-    }
-
-    if (!isDrq())
-    {
-        status &= 0x7f;
-    }
-
-    return status;
-} // readIo
-
-
-void E2floppy::writeIo(Word offset, Byte val)
-{
-    if (offset <= 3)
-    {
-        Wd1793::writeIo(offset, val);
-    }
-    else
-    {
-        drisel = val;
-        setSide((drisel & 0x10) ? 1 : 0);
         track[selected] = getTrack();
-
-        switch (drisel & 0x0f)
-        {
-            case 0x01 :
-                selected = 0;
-                break;
-
-            case 0x02 :
-                selected = 1;
-                break;
-
-            case 0x04 :
-                selected = 2;
-                break;
-
-            case 0x08 :
-                selected = 3;
-                break;
-
-            default   :
-                selected = 4;
-        };
-
+        selected = new_selected;
         pfs = floppy[selected];
-
         setTrack(track[selected]);
     }
-} // writeIo
-
+}
 
 Byte E2floppy::readByte(Word index)
 {

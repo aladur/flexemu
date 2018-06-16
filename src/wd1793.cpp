@@ -26,7 +26,8 @@
 #include "wd1793.h"
 
 Wd1793::Wd1793() : dr(0), tr(0), sr(0), cr(0), str(0), stepOffset(1),
-    isDataRequest(false), isInterrupt(false), side(0), byteCount(0), strRead(0)
+    isDataRequest(false), isInterrupt(false), side(false), byteCount(0),
+    strRead(0)
 {
 }
 
@@ -39,7 +40,7 @@ void Wd1793::resetIo()
     resetIrq();
     stepOffset  = 1;
     isDataRequest = false;
-    side      = 0;
+    side      = false;
     byteCount = 0;
     strRead   = 0;
     str       = 0;
@@ -100,7 +101,7 @@ Byte Wd1793::readIo(Word offset)
                         break;
 
                     case 5:
-                        dr = side; // side number
+                        dr = side ? 1 : 0; // side number
                         break;
 
                     case 4:

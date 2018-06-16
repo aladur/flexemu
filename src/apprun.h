@@ -41,6 +41,7 @@
 #include "command.h"
 #include "e2video.h"
 #include "mc146818.h"
+#include "drisel.h"
 
 struct sGuiOptions;
 struct sOptions;
@@ -71,6 +72,7 @@ private:
     Pia1 pia1;
     Pia2 pia2;
     E2floppy fdc;
+    DriveSelect drisel;
     Command command;
     E2video video;
     Mc146818 rtc;

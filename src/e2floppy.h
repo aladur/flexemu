@@ -45,26 +45,23 @@
 
 class E2floppy : public Wd1793
 {
-
-    //
-    // internal registers
-    //
-    //  status          status register (read only)
-    //  drisel          drive selection (write only)
-    //  selected        selected drive as index into floppy object
-
 private:
 
-    Byte            status;
-    Byte            drisel;
-    Byte            selected;
+    // Internal registers:
+    //
+    //  selected        Selected drive as index into floppy array
 
-    // interface to operating system:
-    // a container object for any drive connected
-    // drive nr. 4 means no drive selected
-    // pfs always points to the selected floppy
+    Byte selected;
 
-protected:
+    // Interface to operating system:
+    //
+    //  floppy          Pointers to all file containers (drive 4 deselects fdc)
+    //  pfs             Pointer to currently selected file container
+    //  track           Track number of all drives
+    //  driveStatus     Status of all drives
+    //  sector_buffer   Current sector to read from or write to
+    //  disk_dir        Disk directory
+    // Drive nr. 4 means no drive selected
 
     FileContainerIfSector   *floppy[5];
     FileContainerIfSector   *pfs;
@@ -74,7 +71,6 @@ protected:
     const char      *disk_dir;
     std::mutex      status_mutex;
 
-    // constructor/destructor
 public:
     E2floppy();
     virtual ~E2floppy();
@@ -82,8 +78,6 @@ public:
     // public interface
 public:
     virtual void         resetIo();
-    virtual Byte         readIo(Word offset);
-    virtual void         writeIo(Word offset, Byte val);
     virtual const char   *getName()
     {
         return "e2floppy";
@@ -102,6 +96,7 @@ public:
     virtual bool         update_drive(Word drive_nr);
     virtual bool         umount_drive(Word drive_nr);
     virtual std::string  drive_info(Word drive_nr);
+    virtual void         select_drive(Byte new_selected);
 
 private:
 
