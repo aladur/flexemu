@@ -32,6 +32,7 @@
 #include "bthread.h"
 #include "cpustate.h"
 #include "schedcpu.h"
+#include "btime.h"
 
 
 #define DO_SYNCEXEC     0x80
@@ -88,7 +89,7 @@ protected:
     Byte        user_input;
     QWord       total_cycles;
     QWord       time0sec;
-    BTime       *systemTime;
+    BTime       systemTime;
     static Scheduler *instance;
 
     // CPU status

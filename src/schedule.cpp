@@ -38,7 +38,7 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     BThread(false),
     cpu(x_cpu), inout(x_inout),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
-    time0sec(0), systemTime(nullptr),
+    time0sec(0),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
@@ -55,8 +55,6 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
 #endif
 
     memset(&interrupt_status, 0, sizeof(tInterruptStatus));
-
-    systemTime = new BTime;
 }
 
 Scheduler::~Scheduler()
@@ -75,8 +73,6 @@ Scheduler::~Scheduler()
     delete pCurrent_status;
     pCurrent_status = nullptr;
     status_mutex.unlock();
-
-    delete systemTime;
 }
 
 void Scheduler::set_new_state(Byte x_user_input)
@@ -100,7 +96,7 @@ void Scheduler::process_events()
             irq_status_mutex.lock();
             cpu.get_interrupt_status(interrupt_status);
             irq_status_mutex.unlock();
-            QWord time1sec = systemTime->GetTimeUsll();
+            QWord time1sec = systemTime.GetTimeUsll();
             total_cycles = cpu.get_cycles(true);
 
             if (target_frequency > 0.0)
@@ -298,7 +294,7 @@ void Scheduler::Run()
     periodic = false;
 #endif
     BTimer::Instance()->Start(periodic, TIME_BASE);
-    time0sec = systemTime->GetTimeUsll();
+    time0sec = systemTime.GetTimeUsll();
     statemachine(S_RUN);
 }
 
