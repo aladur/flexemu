@@ -63,7 +63,7 @@ class Command : public IoDevice
 protected:
 
     Mc6809      &cpu;
-    Inout       &io;
+    Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    *fdc;
     char         command[MAX_COMMAND];
@@ -92,7 +92,7 @@ public:
 
     // Public constructor and destructor
 public:
-    Command(Inout &x_io, Mc6809 &x_cpu, Scheduler &x_scheduler);
+    Command(Inout &x_inout, Mc6809 &x_cpu, Scheduler &x_scheduler);
     virtual ~Command();
 
 };

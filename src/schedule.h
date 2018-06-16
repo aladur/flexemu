@@ -52,9 +52,9 @@ public:
     {
         cpu = x_cpu;
     };
-    void        set_inout(Inout *x_io)
+    void        set_inout(Inout *x_inout)
     {
-        io  = x_io;
+        inout  = x_inout;
     };
     Byte        statemachine(Byte initial_state);
     bool        is_finished();
@@ -91,7 +91,7 @@ protected:
     QWord       total_cycles;
     QWord       time0sec;
     ScheduledCpu    *cpu;
-    Inout       *io;
+    Inout       *inout;
     BTime       *systemTime;
     static Scheduler *instance;
 

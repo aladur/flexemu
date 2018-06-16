@@ -36,7 +36,7 @@
 
 Scheduler::Scheduler() : BThread(false),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
-    time0sec(0), cpu(nullptr), io(nullptr), systemTime(nullptr),
+    time0sec(0), cpu(nullptr), inout(nullptr), systemTime(nullptr),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
@@ -112,9 +112,9 @@ void Scheduler::process_events()
                 update_frequency();
                 events |= DO_SET_STATUS;
 
-                if (io != nullptr)
+                if (inout != nullptr)
                 {
-                    io->update_1_second();
+                    inout->update_1_second();
                 }
 
                 time0sec += 1000000;
@@ -127,7 +127,7 @@ void Scheduler::process_events()
         {
             std::lock_guard<std::mutex> guard(status_mutex);
 
-            if (io->is_gui_present() && pCurrent_status == nullptr)
+            if (inout->is_gui_present() && pCurrent_status == nullptr)
             {
                 events &= ~DO_SET_STATUS;
                 pCurrent_status = cpu->create_status_object();
@@ -247,7 +247,7 @@ Byte Scheduler::statemachine(Byte initial_state)
                 break;
         } // switch
 
-        if (io->is_gui_present())
+        if (inout->is_gui_present())
         {
             events |= DO_SET_STATUS;
         }

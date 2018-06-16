@@ -37,7 +37,7 @@ class Acia1 : public Mc6850
 protected:
 
     Mc6809 &cpu;
-    Inout &io;
+    Inout &inout;
 
 public:
     // read data from serial line

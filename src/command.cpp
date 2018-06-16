@@ -40,8 +40,9 @@
 #include "mc6809.h"
 
 
-Command::Command(Inout &x_io, Mc6809 &x_cpu, Scheduler &x_scheduler) :
-    cpu(x_cpu), io(x_io), scheduler(x_scheduler), fdc(nullptr), answer(nullptr)
+Command::Command(Inout &x_inout, Mc6809 &x_cpu, Scheduler &x_scheduler) :
+    cpu(x_cpu), inout(x_inout), scheduler(x_scheduler), fdc(nullptr),
+    answer(nullptr)
 {
     memset(command, 0, sizeof(command));
 
@@ -230,12 +231,12 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "terminal") == 0)
                     {
-                        io.output_to_terminal();
+                        inout.output_to_terminal();
                         return;
                     }
                     else if (stricmp(arg1, "graphic") == 0)
                     {
-                        if (!io.output_to_graphic())
+                        if (!inout.output_to_graphic())
                         {
                             ANSWER_ERR(CANT_CHANGE_GRAPHIC);
                         }
