@@ -85,10 +85,7 @@ private:
 
 public:
 
-    bool add_io_device(
-        IoDevice &device,
-        Word base_addr1, Byte range1,
-        Word base_addr2, Byte range2);
+    bool add_io_device(IoDevice &device, Word base_address, Byte size);
 
     // memory interface
 public:
