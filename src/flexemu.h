@@ -39,11 +39,11 @@ enum
     FLEX_FILENAME_LENGTH = 13
 };
 
-enum tDiskStatus
+enum class DiskStatus
 {
-    DISK_STAT_EMPTY,
-    DISK_STAT_INACTIVE,
-    DISK_STAT_ACTIVE
+    EMPTY,
+    INACTIVE,
+    ACTIVE
 };
 
 enum tGuiType

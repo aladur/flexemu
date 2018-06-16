@@ -43,7 +43,7 @@ E2floppy::E2floppy() : selected(4), pfs(nullptr)
     {
         track[i] = 1; // position all drives to track != 0  !!!
         floppy[i] = nullptr;
-        drive_status[i] = DISK_STAT_EMPTY;
+        drive_status[i] = DiskStatus::EMPTY;
     }
 
     memset(sector_buffer, 0, sizeof(sector_buffer));
@@ -63,7 +63,7 @@ E2floppy::~E2floppy()
                 floppy[i]->Close();
                 delete floppy[i];
                 floppy[i] = nullptr;
-                drive_status[i] = DISK_STAT_EMPTY;
+                drive_status[i] = DiskStatus::EMPTY;
             }
             catch (...)
             {
@@ -89,7 +89,7 @@ bool E2floppy::umount_drive(Word drive_nr)
         pfloppy->Close();
         delete pfloppy;
         floppy[drive_nr] = nullptr;
-        drive_status[drive_nr] = DISK_STAT_EMPTY;
+        drive_status[drive_nr] = DiskStatus::EMPTY;
     }
     catch (FlexException &)
     {
@@ -199,7 +199,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
         if (pfloppy != nullptr)
         {
-            drive_status[drive_nr] = DISK_STAT_ACTIVE;
+            drive_status[drive_nr] = DiskStatus::ACTIVE;
             return true;
         }
 
@@ -389,7 +389,7 @@ Byte E2floppy::readByte(Word index)
 
     if (index == pfs->GetBytesPerSector())
     {
-        drive_status[selected] = DISK_STAT_ACTIVE;
+        drive_status[selected] = DiskStatus::ACTIVE;
 
         if (!pfs->ReadSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
@@ -409,7 +409,7 @@ void E2floppy::writeByte(Word index)
 
     if (index == 1)
     {
-        drive_status[selected] = DISK_STAT_ACTIVE;
+        drive_status[selected] = DiskStatus::ACTIVE;
 
         if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
@@ -454,7 +454,7 @@ bool E2floppy::isWriteProtect()
     return pfs->IsWriteProtected();
 }  // isWriteProtect
 
-void E2floppy::get_drive_status(tDiskStatus stat[4])
+void E2floppy::get_drive_status(DiskStatus stat[4])
 {
     Word i;
 
@@ -464,9 +464,9 @@ void E2floppy::get_drive_status(tDiskStatus stat[4])
     {
         stat[i] = drive_status[i];
 
-        if (drive_status[i] != DISK_STAT_EMPTY)
+        if (drive_status[i] != DiskStatus::EMPTY)
         {
-            drive_status[i] = DISK_STAT_INACTIVE;
+            drive_status[i] = DiskStatus::INACTIVE;
         }
     }
 }

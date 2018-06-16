@@ -179,8 +179,8 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             new_cpu_stat = (Mc6809CpuStatus *)scheduler.get_status();
 
             // Check for disk status update every 200 ms
-            static tDiskStatus status[4];
-            tDiskStatus newStatus[4];
+            static DiskStatus status[4];
+            DiskStatus newStatus[4];
             static tInterruptStatus irqStat;
             tInterruptStatus newIrqStat;
             static bool firstTime = true;
@@ -536,22 +536,22 @@ void Win32Gui::onMouseMove(HWND hwnd, Word newX, Word newY, Word fwKeys)
     current_y = newY;
 }
 
-void Win32Gui::update_disk_status(int floppyIndex, tDiskStatus status)
+void Win32Gui::update_disk_status(int floppyIndex, DiskStatus status)
 {
     int     iconIdx = IDI_FLOPPY0;
     HICON       hIcon;
 
     switch (status)
     {
-        case DISK_STAT_EMPTY:
+        case DiskStatus::EMPTY:
             iconIdx += 0;
             break;
 
-        case DISK_STAT_INACTIVE:
+        case DiskStatus::INACTIVE:
             iconIdx += 1;
             break;
 
-        case DISK_STAT_ACTIVE:
+        case DiskStatus::ACTIVE:
             iconIdx += 2;
             break;
     }

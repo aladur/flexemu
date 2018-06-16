@@ -79,7 +79,7 @@ void Inout::reset_serial()
     key_buffer_serial.clear();
 }
 
-void Inout::get_drive_status(tDiskStatus status[4])
+void Inout::get_drive_status(DiskStatus status[4])
 {
     if (fdc != nullptr)
     {

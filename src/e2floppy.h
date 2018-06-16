@@ -66,7 +66,7 @@ private:
     FileContainerIfSector   *floppy[5];
     FileContainerIfSector   *pfs;
     Byte            track[5];
-    tDiskStatus     drive_status[5];
+    DiskStatus      drive_status[5];
     char            sector_buffer[256];
     const char      *disk_dir;
     std::mutex      status_mutex;
@@ -83,7 +83,7 @@ public:
         return "e2floppy";
     };
 
-    virtual void         get_drive_status(tDiskStatus status[4]);
+    virtual void         get_drive_status(DiskStatus status[4]);
     virtual void         disk_directory(const char *x_disk_dir);
     virtual void         mount_all_drives(std::string drive[]);
     virtual bool         update_all_drives();

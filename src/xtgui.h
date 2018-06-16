@@ -143,7 +143,7 @@ protected:
     virtual void        initialize_after_open(Widget w, const char *title);
     virtual void        initialize(struct sGuiOptions &options);
     virtual void        update_disk_status(int floppyIndex,
-                                           tDiskStatus status);
+                                           DiskStatus status);
     virtual void        update_interrupt_status(tIrqType t,
             bool status);
 #ifdef HAVE_XPM

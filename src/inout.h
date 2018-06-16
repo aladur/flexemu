@@ -109,7 +109,7 @@ public:
 
     // Floppy interface
 public:
-    void    get_drive_status(tDiskStatus status[4]);
+    void    get_drive_status(DiskStatus status[4]);
     std::string get_drive_info(int floppyIndex);
 
 protected:

@@ -183,7 +183,7 @@ protected:
     BOOL    registerWindowClasses(HINSTANCE hinst, UINT ResPoolID);
     HWND    create_main_view();
     void    set_bell(int percent);
-    void    update_disk_status(int floppyIndex, tDiskStatus status);
+    void    update_disk_status(int floppyIndex, DiskStatus status);
     void    update_interrupt_status(tIrqType irqType, bool status);
     void    update_block(int block_number, HDC hdc);
     SWord   translate_to_ascii(SWord key);

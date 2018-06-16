@@ -700,22 +700,22 @@ void XtGui::toggle_undocumented()
                       is_use_undocumented ? okpixmap : None, nullptr);
 }
 
-void XtGui::update_disk_status(int floppyIndex, tDiskStatus status)
+void XtGui::update_disk_status(int floppyIndex, DiskStatus status)
 {
 #ifdef HAVE_XPM
     int iconIdx = PM_FLOPPY0;
 
     switch (status)
     {
-        case DISK_STAT_EMPTY:
+        case DiskStatus::EMPTY:
             iconIdx += 0;
             break;
 
-        case DISK_STAT_INACTIVE:
+        case DiskStatus::INACTIVE:
             iconIdx += 1;
             break;
 
-        case DISK_STAT_ACTIVE:
+        case DiskStatus::ACTIVE:
             iconIdx += 2;
             break;
     }
@@ -727,15 +727,15 @@ void XtGui::update_disk_status(int floppyIndex, tDiskStatus status)
 
     switch (status)
     {
-        case DISK_STAT_EMPTY:
+        case DiskStatus::EMPTY:
             label = " ";
             break;
 
-        case DISK_STAT_INACTIVE:
+        case DiskStatus::INACTIVE:
             label = "O";
             break;
 
-        case DISK_STAT_ACTIVE:
+        case DiskStatus::ACTIVE:
             label = "X";
             break;
     }
@@ -824,8 +824,8 @@ void XtGui::timerCallback(XtIntervalId)
 
     if (count % (100 / timebase) == 0)
     {
-        static tDiskStatus status[4];
-        tDiskStatus newStatus[4];
+        static DiskStatus status[4];
+        DiskStatus newStatus[4];
         static tInterruptStatus irqStat;
         tInterruptStatus newIrqStat;
         static bool firstTime = true;
