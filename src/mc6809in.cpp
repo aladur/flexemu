@@ -287,7 +287,7 @@ Byte Mc6809::runloop()
                     } // if
                 }
 
-                events &= ~IGNORE_BP;
+                events &= (Word)~IGNORE_BP;
 
                 if (events & DO_SINGLESTEPFINISHED)
                 {

@@ -14,6 +14,7 @@
 #define __mc6809_h__
 
 #include <stdio.h>
+#include <atomic>
 #include "misc1.h"
 #include "typedefs.h"
 #include "memory.h"
@@ -232,7 +233,7 @@ protected:
     // and pull-instr.
     Byte            nmi_armed;      // for handling
     // interrupts
-    Word            events;         // event status flags
+    std::atomic<Word> events; // event status flags (atomic access)
     tInterruptStatus    interrupt_status;
 #ifdef FASTFLEX
     Word            ipcreg, iureg, isreg, ixreg, iyreg;
