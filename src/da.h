@@ -24,7 +24,6 @@
 #define __da_h__
 
 #include "misc1.h"
-#include <string.h>  // Needed for nullptr
 #include "absdisas.h"
 
 class DisassemblerConfig;
@@ -38,13 +37,17 @@ protected:
     AbstractDisassembler *da;
 
 public:
-    Disassembler(); // public constructor
-    virtual ~Disassembler();        // public destructor
+    Disassembler();
+    virtual ~Disassembler();
 
     void SetLbLDisassembler(AbstractDisassembler *d);
-    int DisassembleOneLine(const Byte *pMemory, DWord pc, DWord *pFlags,
-                           DWord *pAddr,
-                           char **pb1, char **pb2);
+    int DisassembleOneLine(
+            const Byte *pMemory,
+            DWord pc,
+            DWord *pFlags,
+            DWord *pJumpAddr,
+            char **pCode,
+            char **pMnemonic);
     void DisassembleWithConfig(DisassemblerConfig &aConfig,
                                BMemoryBuffer *pMemBuf);
 

@@ -60,10 +60,10 @@ void Mc6809::reset()
 }
 
 int Mc6809::Disassemble(Word address, DWord *pFlags,
-                        char **pb1, char **pb2)
+                        char **pCode, char **pMnemonic)
 {
     Byte buffer[6];
-    DWord addr;
+    DWord jumpAddress = 0;
 
     if (disassembler == nullptr)
     {
@@ -75,8 +75,8 @@ int Mc6809::Disassemble(Word address, DWord *pFlags,
         buffer[i] = memory.read_byte(address + i);
     }
 
-    return disassembler->Disassemble((const Byte *)buffer, address,
-                                     pFlags, &addr, pb1, pb2);
+    return disassembler->Disassemble((const Byte * const)buffer, address,
+                                      pFlags, &jumpAddress, pCode, pMnemonic);
 }
 
 //*******************************************************************
@@ -202,7 +202,7 @@ Byte Mc6809::run(Word mode)
 
         case SINGLESTEP_OVER:
         {
-            char *pa, *pb;
+            char *pCode, *pMnemonic;
             DWord flags = 0;
 
             // Only if disassembler available and
@@ -211,7 +211,7 @@ Byte Mc6809::run(Word mode)
             if (disassembler != nullptr)
                 bp[2] =
                     PC + Disassemble((unsigned int)PC,
-                                     &flags, &pa, &pb);
+                                     &flags, &pCode, &pMnemonic);
 
             if (disassembler == nullptr || !(flags & DA_SUB))
             {
@@ -372,11 +372,11 @@ Byte Mc6809::runloop()
                     if (do_logging && disassembler != nullptr &&
                         PC >= lfs.minAddr && PC <= lfs.maxAddr)
                     {
-                        char *pa, *pb;
+                        char *pCode, *pMnemonic;
                         DWord flags = 0;
 
-                        Disassemble(PC, &flags, &pa, &pb);
-                        fprintf(log_fp, "%04X %s\n", PC, pb);
+                        Disassemble(PC, &flags, &pCode, &pMnemonic);
+                        fprintf(log_fp, "%04X %s\n", PC, pMnemonic);
                     }
                 }
             }

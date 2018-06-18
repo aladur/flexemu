@@ -32,9 +32,9 @@ Da6809::~Da6809()
 {
 }
 
-void Da6809::set_use_undocumented(bool b)
+void Da6809::set_use_undocumented(bool value)
 {
-    use_undocumented = b;
+    use_undocumented = value;
 }
 
 const char *Da6809::FlexLabel(Word addr)
@@ -978,13 +978,18 @@ inline Byte Da6809::D_Page11(DWord *pFlags, Word pc, const Byte *pMemory,
 } // D_Page11
 
 
-int Da6809::Disassemble(const Byte *pMemory, DWord pc, DWord *pFlags,
-                        DWord *pAddr, char **pb1, char **pb2)
+int Da6809::Disassemble(
+        const Byte * const pMemory,
+        DWord pc,
+        DWord *pFlags,
+        DWord *pAddr,
+        char **pCode,
+        char **pMnemonic)
 {
     Byte code;
 
-    *pb1 = code_buf;
-    *pb2 = mnem_buf;
+    *pCode = code_buf;
+    *pMnemonic = mnem_buf;
     *pFlags = 0;
     code = *pMemory;
 

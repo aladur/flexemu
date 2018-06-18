@@ -959,8 +959,8 @@ public:
     void        set_serpar(Byte b);
     bool        set_logfile(const struct s_cpu_logfile *lf);
 protected:
-    int     Disassemble(Word address, DWord *pFlags,
-                        char **pb1, char **pb2);
+    int Disassemble(Word address, DWord *pFlags,
+                    char **pCode, char **pMnemonic);
     FILE        *log_fp;
     bool        do_logging;
     struct s_cpu_logfile lfs;

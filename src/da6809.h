@@ -19,12 +19,17 @@ protected:
     bool        use_undocumented;
 
 public:
-    Da6809();   // public constructor
-    virtual ~Da6809();      // public destructor
+    Da6809();
+    virtual ~Da6809() override;
 
-    int     Disassemble(const Byte *pMemory, DWord pc, DWord *pFlags,
-                        DWord *pAddr, char **pb1, char **pb2);
-    void        set_use_undocumented(bool b);
+    int Disassemble(
+            const Byte * const pMemory,
+            DWord pc,
+            DWord *pFlags,
+            DWord *pAddr,
+            char **pCode,
+            char **pMnemonic) override;
+    void set_use_undocumented(bool value) override;
 
 private:
 

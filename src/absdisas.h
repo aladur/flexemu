@@ -22,11 +22,15 @@ class AbstractDisassembler
 {
 
 public:
-    virtual     ~AbstractDisassembler() { };
-    int     virtual Disassemble(
-        const Byte *pMemory, DWord pc, DWord *pFlags, DWord *pAddr,
-        char **pb1, char **pb2) = 0;
-    void        virtual set_use_undocumented(bool b) = 0;
+    virtual ~AbstractDisassembler() { };
+    virtual int Disassemble(
+                  const Byte * const pMemory,
+                  DWord pc,
+                  DWord *pFlags,
+                  DWord *pJumpAddr,
+                  char **pCode,
+                  char **pMnemonic) = 0;
+    virtual void set_use_undocumented(bool value) = 0;
 };  // class AbstractDisassembler
 
 #endif // __absdisas_h__

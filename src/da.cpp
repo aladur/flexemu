@@ -37,16 +37,20 @@ Disassembler::~Disassembler()
     delete da;
 }
 
-int Disassembler::DisassembleOneLine(const Byte *pMemory, DWord pc,
-                                     DWord *pFlags, DWord *pAddr, char **pb1,
-                                     char **pb2)
+int Disassembler::DisassembleOneLine(
+        const Byte * const pMemory,
+        DWord pc,
+        DWord *pFlags,
+        DWord *pJumpAddr,
+        char **pCode,
+        char **pMnemonic)
 {
     if (!da)
     {
         return 0;
     }
 
-    return da->Disassemble(pMemory, pc, pFlags, pAddr, pb1, pb2);
+    return da->Disassemble(pMemory, pc, pFlags, pJumpAddr, pCode, pMnemonic);
 }
 
 void Disassembler::DisassembleWithConfig(DisassemblerConfig &aConfig,
@@ -88,11 +92,11 @@ int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
                                      const Byte *pMemory, DWord pc)
 {
     DWord flags;
-    DWord length = 0;
+    int length = 0;
     DWord addr;
     std::stringstream label;
     BIdentifier identifier;
-    char *p1, *p2;
+    char *pCode, *pMnemonic;
 
     if (!da || !pMemory)
     {
@@ -102,7 +106,7 @@ int Disassembler::DisassembleUptoEnd(DisassemblerConfig &aConfig,
     do
     {
         length += da->Disassemble(pMemory + length, pc + length, &flags, &addr,
-                                  &p1, &p2);
+                                  &pCode, &pMnemonic);
 
         if (flags | DA_LABEL_ADDR)
         {
