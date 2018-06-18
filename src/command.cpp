@@ -40,8 +40,12 @@
 #include "mc6809.h"
 
 
-Command::Command(Inout &x_inout, Mc6809 &x_cpu, Scheduler &x_scheduler) :
-    cpu(x_cpu), inout(x_inout), scheduler(x_scheduler), fdc(nullptr),
+Command::Command(
+        Inout &x_inout,
+        Mc6809 &x_cpu,
+        Scheduler &x_scheduler,
+        E2floppy &x_fdc) :
+    cpu(x_cpu), inout(x_inout), scheduler(x_scheduler), fdc(x_fdc),
     answer(nullptr)
 {
     memset(command, 0, sizeof(command));
@@ -61,12 +65,6 @@ Command::~Command()
 {
     delete [] answer;
 }
-
-void Command::set_fdc(E2floppy *device)
-{
-    fdc = device;
-}
-
 
 void Command::resetIo()
 {
@@ -258,7 +256,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer_index = 0;
                         return;
                     }
-                    else if (stricmp(arg1, "info") == 0 && fdc != nullptr)
+                    else if (stricmp(arg1, "info") == 0)
                     {
                         std::string str;
 
@@ -267,7 +265,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                         for (number = 0; number <= 3; number++)
                         {
-                            str += fdc->drive_info(number);
+                            str += fdc.drive_info(number);
                         }
 
                         answer = new char[str.length() + 1];
@@ -275,10 +273,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer_index = 0;
                         return;
                     }
-                    else if (stricmp(arg1, "update") == 0 &&
-                             fdc != nullptr)
+                    else if (stricmp(arg1, "update") == 0)
                     {
-                        if (!fdc->update_all_drives())
+                        if (!fdc.update_all_drives())
                         {
                             ANSWER_ERR(UNABLE_UPDATE);
                         }
@@ -309,29 +306,28 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
 
-                    if (stricmp(arg1, "umount") == 0 && fdc != nullptr)
+                    if (stricmp(arg1, "umount") == 0)
                     {
-                        if (!fdc->umount_drive(number))
+                        if (!fdc.umount_drive(number))
                         {
                             ANSWER_ERR(UNABLE_UMOUNT);
                         }
 
                         return;
                     }
-                    else if (stricmp(arg1, "info") == 0 && fdc != nullptr)
+                    else if (stricmp(arg1, "info") == 0)
                     {
                         std::string str;
 
-                        str = fdc->drive_info(number);
+                        str = fdc.drive_info(number);
                         answer = new char[str.length() + 1];
                         strcpy(answer, str.c_str());
                         answer_index = 0;
                         return;
                     }
-                    else if (stricmp(arg1, "update") == 0 &&
-                             fdc != nullptr)
+                    else if (stricmp(arg1, "update") == 0)
                     {
-                        if (!fdc->update_drive(number))
+                        if (!fdc.update_drive(number))
                         {
                             ANSWER_ERR(UNABLE_UPDATE);
                         }
@@ -342,7 +338,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     break;
 
                 case 3:
-                    if (stricmp(arg1, "mount") == 0 && fdc != nullptr)
+                    if (stricmp(arg1, "mount") == 0)
                     {
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
@@ -351,14 +347,14 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc->mount_drive(arg2, number))
+                        if (!fdc.mount_drive(arg2, number))
                         {
                             ANSWER_ERR(UNABLE_MOUNT);
                         }
 
                         return;
                     }
-                    else if (stricmp(arg1, "rmount") == 0 && fdc != nullptr)
+                    else if (stricmp(arg1, "rmount") == 0)
                     {
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
@@ -367,7 +363,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc->mount_drive(arg2, number, MOUNT_RAM))
+                        if (!fdc.mount_drive(arg2, number, MOUNT_RAM))
                         {
                             ANSWER_ERR(UNABLE_MOUNT);
                         }
@@ -378,7 +374,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     break;
 
                 case 4:
-                    if (stricmp(arg1, "format") == 0 && fdc != nullptr)
+                    if (stricmp(arg1, "format") == 0)
                     {
                         int trk, sec;
 
@@ -390,8 +386,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc->format_disk(trk, sec, arg2,
-                                              TYPE_DSK_CONTAINER))
+                        if (!fdc.format_disk(trk, sec, arg2,
+                                             TYPE_DSK_CONTAINER))
                         {
                             ANSWER_ERR(UNABLE_FORMAT);
                         }

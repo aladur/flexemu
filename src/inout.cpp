@@ -60,8 +60,12 @@ void Inout::s_exec_signal(int sig_no)
 }
 
 
-Inout::Inout(Mc6809 &x_cpu, Scheduler &x_scheduler) :
-    cpu(x_cpu), scheduler(x_scheduler), gui(nullptr), fdc(nullptr), rtc(nullptr)
+Inout::Inout(
+        Mc6809 &x_cpu,
+        Scheduler &x_scheduler,
+        E2floppy &x_fdc,
+        Mc146818 &x_rtc) :
+    cpu(x_cpu), scheduler(x_scheduler), fdc(x_fdc), rtc(x_rtc), gui(nullptr)
 {
     instance = this;
     reset_serial();
@@ -81,20 +85,12 @@ void Inout::reset_serial()
 
 void Inout::get_drive_status(DiskStatus status[4])
 {
-    if (fdc != nullptr)
-    {
-        fdc->get_drive_status(status);
-    }
+    fdc.get_drive_status(status);
 }
 
 std::string Inout::get_drive_info(int floppyIndex)
 {
-    if (fdc != nullptr)
-    {
-        return fdc->drive_info(floppyIndex);
-    }
-
-    return "";
+    return fdc.drive_info(floppyIndex);
 }
 
 void Inout::init(Word reset_key)
@@ -236,16 +232,6 @@ void Inout::initTerminalIO(Word reset_key)
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
-void Inout::set_fdc(E2floppy *x_device)
-{
-    fdc = x_device;
-}
-
-void Inout::set_rtc(Mc146818 *x_device)
-{
-    rtc = x_device;
-}
-
 AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
                                KeyboardIO &keyboardIO, Pia1 &pia1,
                                Memory &memory, E2video &video,
@@ -293,10 +279,7 @@ AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
 // which need it
 void Inout::update_1_second()
 {
-    if (rtc != nullptr)
-    {
-        rtc->update_1_second();
-    }
+    rtc.update_1_second();
 }
 
 void Inout::exec_signal(int sig_no)

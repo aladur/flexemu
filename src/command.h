@@ -65,7 +65,7 @@ protected:
     Mc6809      &cpu;
     Inout       &inout;
     Scheduler   &scheduler;
-    E2floppy    *fdc;
+    E2floppy    &fdc;
     char         command[MAX_COMMAND];
     Word         command_index;
     Word         answer_index;
@@ -81,7 +81,6 @@ private:
     // public interface
 public:
 
-    void    set_fdc(E2floppy *device);
     void    resetIo();
     Byte    readIo(Word offset);
     void    writeIo(Word offset, Byte val);
@@ -94,11 +93,13 @@ public:
         return 1;
     }
 
-    // Public constructor and destructor
 public:
-    Command(Inout &x_inout, Mc6809 &x_cpu, Scheduler &x_scheduler);
+    Command(
+            Inout &x_inout,
+            Mc6809 &x_cpu,
+            Scheduler &x_scheduler,
+            E2floppy &x_fdc);
     virtual ~Command();
-
 };
 
 #endif // __command_h__

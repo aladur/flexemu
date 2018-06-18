@@ -63,6 +63,8 @@ private:
     Memory memory;
     Mc6809 cpu;
     Da6809 disassembler;
+    Mc146818 rtc;
+    E2floppy fdc;
     Inout inout;
     Scheduler scheduler;
     JoystickIO joystickIO;
@@ -71,11 +73,9 @@ private:
     Acia1 acia1;
     Pia1 pia1;
     Pia2 pia2;
-    E2floppy fdc;
     DriveSelect drisel;
     Command command;
     E2video video;
-    Mc146818 rtc;
 };
 
 #endif

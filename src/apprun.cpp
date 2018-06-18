@@ -50,16 +50,16 @@ ApplicationRunner::ApplicationRunner(
     options(x_options),
     memory(options.isHiMem),
     cpu(memory),
-    inout(cpu, scheduler),
+    rtc(cpu),
+    inout(cpu, scheduler, fdc, rtc),
     scheduler(cpu, inout),
     mmu(memory),
     acia1(inout, cpu),
     pia1(cpu, scheduler, keyboardIO),
     pia2(cpu, keyboardIO, joystickIO),
     drisel(fdc),
-    command(inout, cpu, scheduler),
-    video(memory),
-    rtc(cpu)
+    command(inout, cpu, scheduler, fdc),
+    video(memory)
 {
 }
 
@@ -70,8 +70,6 @@ int ApplicationRunner::run()
 
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
-    inout.set_fdc(&fdc);
-    command.set_fdc(&fdc);
 
     inout.init(options.reset_key);
 
@@ -96,7 +94,6 @@ int ApplicationRunner::run()
     memory.add_io_device(video, VICO_BASE);
     // MC146818: Only part of the device is mapped into memory space.
     memory.add_io_device(rtc, RTC_BASE, RTC_HIGH - RTC_BASE + 1);
-    inout.set_rtc(&rtc);
 
     // Load monitor program into ROM.
     int error;
