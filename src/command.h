@@ -89,6 +89,10 @@ public:
     {
         return "command";
     };
+    virtual int sizeOfIo()
+    {
+        return 1;
+    }
 
     // Public constructor and destructor
 public:

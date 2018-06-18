@@ -36,8 +36,8 @@ public:
     virtual void         writeIo(Word offset, Byte val) = 0;
     virtual void         resetIo() = 0;
     virtual const char      *getName() = 0;
-    virtual ~IoDevice() { }; // necessary otherwise the destructor
-    // of subclasses is not called!
+    virtual                 int sizeOfIo() = 0;
+    virtual ~IoDevice() { };
 };
 
 #endif // __iodevice_h__

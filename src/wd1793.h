@@ -176,7 +176,10 @@ public:
     {
         return "wd1793";
     };
-    // Public constructor and destructor
+    virtual int sizeOfIo()
+    {
+       return 4;
+    };
 
 public:
 

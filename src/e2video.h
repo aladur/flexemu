@@ -54,7 +54,10 @@ public:
     {
         return "e2video";
     };
-
+    int sizeOfIo()
+    {
+        return 2;
+    }
 
     // Public constructor and destructor
 public:

@@ -82,19 +82,20 @@ int ApplicationRunner::run()
     }
 
     // Add all memory mapped I/O devices to memory.
-    memory.add_io_device(mmu, MMU_BASE, MMU_MASK);
-    memory.add_io_device(acia1, ACIA1_BASE, ACIA1_MASK);
-    memory.add_io_device(pia1, PIA1_BASE, PIA1_MASK);
-    memory.add_io_device(pia2, PIA2_BASE, PIA2_MASK);
-    memory.add_io_device(fdc, FDC_BASE, FDC_MASK);
+    memory.add_io_device(mmu, MMU_BASE);
+    memory.add_io_device(acia1, ACIA1_BASE);
+    memory.add_io_device(pia1, PIA1_BASE);
+    memory.add_io_device(pia2, PIA2_BASE);
+    memory.add_io_device(fdc, FDC_BASE);
     // drisel: Same register is mirrored 4 times in address space.
-    memory.add_io_device(drisel, DRISEL_BASE, DRISEL_MASK);
-    memory.add_io_device(drisel, DRISEL_BASE+1, DRISEL_MASK);
-    memory.add_io_device(drisel, DRISEL_BASE+2, DRISEL_MASK);
-    memory.add_io_device(drisel, DRISEL_BASE+3, DRISEL_MASK);
-    memory.add_io_device(command, COMM_BASE, COMM_MASK);
-    memory.add_io_device(video, VICO_BASE, VICO_MASK);
-    memory.add_io_device(rtc, RTC_LOW, RTC_HIGH - RTC_LOW + 1);
+    memory.add_io_device(drisel, DRISEL_BASE);
+    memory.add_io_device(drisel, DRISEL_BASE+1);
+    memory.add_io_device(drisel, DRISEL_BASE+2);
+    memory.add_io_device(drisel, DRISEL_BASE+3);
+    memory.add_io_device(command, COMM_BASE);
+    memory.add_io_device(video, VICO_BASE);
+    // MC146818: Only part of the device is mapped into memory space.
+    memory.add_io_device(rtc, RTC_BASE, RTC_HIGH - RTC_BASE + 1);
     inout.set_rtc(&rtc);
 
     // Load monitor program into ROM.

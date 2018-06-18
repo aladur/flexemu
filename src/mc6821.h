@@ -57,6 +57,10 @@ public:
     {
         return "mc6821";
     };
+    virtual int sizeOfIo()
+    {
+        return 4;
+    };
 
     // generate an active transition on CA1, CA2, CB1 or CB2
 

@@ -52,6 +52,10 @@ public:
     {
         return "mc6850";
     };
+    virtual int sizeOfIo()
+    {
+        return 2;
+    }
 
     // actions to be done when a character is ready to be received
     virtual void            activeTransition();

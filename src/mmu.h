@@ -51,6 +51,10 @@ public:
     {
         return "mmu";
     };
+    virtual int sizeOfIo()
+    {
+        return 16;
+    };
 
 public:
     Mmu(Memory &x_memory);

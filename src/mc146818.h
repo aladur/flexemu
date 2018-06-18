@@ -53,6 +53,10 @@ public:
     {
         return "mc146818";
     };
+    virtual int sizeOfIo()
+    {
+        return 64;
+    };
     virtual void             update_1_second();
 
 private:

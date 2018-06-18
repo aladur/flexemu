@@ -67,28 +67,19 @@
 /* the range is: $fc00 - ffff                                  */
 #define GENIO_MASK  0xfc00   /* general mask for I/O (One 1K Block) */
 #define GENIO_BASE  0xfc00
-#define ACIA1_MASK  TWO_BYTE /* uart */
 #define ACIA1_BASE  0xfcf4
 #define VICO_BASE   0xfcf6
-#define VICO_MASK   TWO_BYTE /* Video control registers */
-#define ACIA1_MASK  TWO_BYTE /* serial I/O, terminal driver */
 #define ACIA1_BASE  0xfcf4
 #define VICO_BASE   0xfcf6
-#define PIA1_MASK   FOUR_BYTE /* parallel I/O, keyboard driver */
 #define PIA1_BASE   0xfcf0
-#define PIA2_MASK   FOUR_BYTE /* parallel I/O, Joystick, beep */
 #define PIA2_BASE   0xfcf8
-#define FDC_MASK   FOUR_BYTE /* Floppy disk controller WD1793 */
 #define FDC_BASE   0xfd30
-#define DRISEL_MASK   ONE_BYTE /* Floppy disk controller drive select */
 #define DRISEL_BASE   0xfd38
-#define COMM_MASK   ONE_BYTE /* command device, only for emulation */
 #define COMM_BASE   0xfd3c
-#define MMU_MASK    SIXTEEN_BYTE /* Memory management unit */
 #define MMU_BASE    0xffe0
-#define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
-#define RTC_LOW     0xfd00   /* start addr. of realtime clock */
+#define RTC_BASE    0xfd00   /* start addr. of realtime clock */
 #define RTC_HIGH    0xfd2f   /* last addr. of realtime clock */
+#define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
 
 /******************************************************
 *  Flag for configuring Monitor I/O to parallel or    *

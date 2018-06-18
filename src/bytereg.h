@@ -55,6 +55,10 @@ public:
     {
         return "bytereg";
     };
+    virtual int sizeOfIo()
+    {
+        return 1;
+    };
 
 public:
 
