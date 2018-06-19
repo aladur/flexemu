@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bmembuf_h__
-#define __bmembuf_h__
+#ifndef BMEMBUF_INCLUDED
+#define BMEMBUF_INCLUDED
 
 #include "misc1.h"
 
@@ -52,4 +52,4 @@ private:
     Byte    *pBuffer;
 };
 
-#endif // #ifdef __bmembuf_h__
+#endif // BMEMBUF_INCLUDED

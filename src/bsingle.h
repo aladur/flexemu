@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BSINGLE_H_
-#define _BSINGLE_H_
+#ifndef BSINGLE_INCLUDED
+#define BSINGLE_INCLUDED
 
 #include "bdelete.h"
 

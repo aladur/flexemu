@@ -2,8 +2,8 @@
 //  absdisas.h
 //
 
-#ifndef __absdisas_h__
-#define __absdisas_h__
+#ifndef ABSDISAS_INCLUDED
+#define ABSDISAS_INCLUDED
 
 #include "misc1.h"
 
@@ -33,5 +33,5 @@ public:
     virtual void set_use_undocumented(bool value) = 0;
 };  // class AbstractDisassembler
 
-#endif // __absdisas_h__
+#endif // ABSDISAS_INCLUDED
 

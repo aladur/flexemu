@@ -22,8 +22,8 @@
 
 
 
-#ifndef __mc6821_h__
-#define __mc6821_h__
+#ifndef MC6821_INCLUDED
+#define MC6821_INCLUDED
 
 #include <stdio.h>
 #include "iodevice.h"
@@ -107,4 +107,4 @@ public:
 
 };
 
-#endif // __mc6821_h__
+#endif // MC6821_INCLUDED

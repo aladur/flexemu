@@ -22,8 +22,8 @@
 
 
 
-#ifndef __misc1_h__
-#define __misc1_h__
+#ifndef MISC1_INCLUDED
+#define MISC1_INCLUDED
 
 #ifdef _MSC_VER
     #include "confignt.h"

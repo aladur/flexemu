@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __baddrrng_h__
-#define __baddrrng_h__
+#ifndef BADDRRNG_INCLUDED
+#define BADDRRNG_INCLUDED
 
 #include <stdio.h>
 #include "blist.h"
@@ -71,4 +71,4 @@ inline DWord BAddressRanges::GetStartAddress() const
     return startAddress;
 }
 
-#endif // #ifndef __baddrrng_h__
+#endif // BADDRRNG_INCLUDED

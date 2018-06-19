@@ -21,8 +21,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bident_h__
-#define __bident_h__
+#ifndef BIDENT_INCLUDED
+#define BIDENT_INCLUDED
 
 #include <stdlib.h>
 #include "misc1.h"
@@ -97,4 +97,4 @@ inline void BIdentifier::SetTo(DWord aValue, const char *pName)
     value = aValue;
     name = pName;
 }
-#endif // #ifndef __bident_h__
+#endif // BIDENT_INCLUDED

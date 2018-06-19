@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __filecont_h__
-#define __filecont_h__
+#ifndef FILECONT_INCLUDED
+#define FILECONT_INCLUDED
 
 #include "misc1.h"
 #include <string>
@@ -61,4 +61,4 @@ private:
     friend class FlexCopyManager;
 };  /* class FileContainerIf */
 
-#endif /* __filecont_h__ */
+#endif /* FILECONT_INCLUDED */

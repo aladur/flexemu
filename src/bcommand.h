@@ -22,8 +22,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BCOMMAND_H_
-#define _BCOMMAND_H_
+#ifndef BCOMMAND_INCLUDED
+#define BCOMMAND_INCLUDED
 
 
 class BCommand

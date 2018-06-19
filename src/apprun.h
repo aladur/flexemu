@@ -22,8 +22,8 @@
 
 
 
-#ifndef __apprun_h__
-#define __apprun_h__
+#ifndef APPRUN_INCLUDED
+#define APPRUN_INCLUDED
 
 //#include "misc1.h"
 #include "memory.h"

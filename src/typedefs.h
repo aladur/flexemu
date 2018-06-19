@@ -10,8 +10,8 @@
 */
 
 
-#ifndef __typedefs_h__
-#define __typedefs_h__
+#ifndef TYPEDEFS_INCLUDED
+#define TYPEDEFS_INCLUDED
 
 #ifdef _MSC_VER
     #include "confignt.h"
@@ -90,5 +90,5 @@
     #endif /* #ifdef _MSC_VER */
 #endif
 
-#endif /* __typedefs_h__ */
+#endif /* TYPEDEFS_INCLUDED */
 

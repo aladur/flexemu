@@ -22,8 +22,8 @@
 
 
 
-#ifndef __xtgui_h__
-#define __xtgui_h__
+#ifndef XTGUI_INCLUDED
+#define XTGUI_INCLUDED
 
 #include <misc1.h>
 
@@ -299,5 +299,5 @@ public:
 };
 
 #endif // ifdef HAVE_XTK
-#endif // __xtgui_h__
+#endif // XTGUI_INCLUDED
 

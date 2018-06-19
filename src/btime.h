@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef BTIME_H
-#define BTIME_H
+#ifndef BTIME_INCLUDED
+#define BTIME_INCLUDED
 
 #include "misc1.h"
 
@@ -43,4 +43,4 @@ private:
     QWord    lapTime;
 };
 
-#endif
+#endif // BTIME_INCLUDED

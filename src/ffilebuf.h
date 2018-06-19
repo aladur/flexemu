@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ffilebuf_h__
-#define __ffilebuf_h__
+#ifndef FFILEBUF_INCLUDED
+#define FFILEBUF_INCLUDED
 
 #include "misc1.h"
 #include "bmembuf.h"

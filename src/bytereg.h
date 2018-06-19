@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __bytereg_h__
-#define __bytereg_h__
+#ifndef BYTEREG_INCLUDED
+#define BYTEREG_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>

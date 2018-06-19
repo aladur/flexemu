@@ -22,8 +22,8 @@
 
 
 
-#ifndef __iodevice_h__
-#define __iodevice_h__
+#ifndef IODEVICE_INCLUDED
+#define IODEVICE_INCLUDED
 
 #include "misc1.h"
 
@@ -39,5 +39,5 @@ public:
     virtual ~IoDevice() { };
 };
 
-#endif // __iodevice_h__
+#endif // IODEVICE_INCLUDED
 

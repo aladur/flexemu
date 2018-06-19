@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __BOBSERV_H__
-#define __BOBSERV_H__
+#ifndef _BOBSERV_INCLUDED_
+#define _BOBSERV_INCLUDED_
 
 /*------------------------------------------------------
  BObserver
@@ -36,5 +36,5 @@ public:
     virtual ~BObserver() { };
 };
 
-#endif // #ifndef __BOBSERV_H__
+#endif // #ifndef _BOBSERV_INCLUDED_
 

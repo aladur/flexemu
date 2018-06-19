@@ -20,6 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef WIN32GUI_INCLUDED
+#define WIN32GUI_INCLUDED
 
 #ifdef _WIN32
 #include "misc1.h"
@@ -266,4 +268,4 @@ public:
 };
 
 #endif // _WIN32
-
+#endif // WIN32GUI_INCLUDED

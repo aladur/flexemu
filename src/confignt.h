@@ -21,8 +21,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __config_h__
-#define __config_h__
+#ifndef CONFIG_INCLUDED
+#define CONFIG_INCLUDED
 
 /* Uncomment the following if You want native file system support */
 
@@ -182,5 +182,5 @@
 /* Version number of package */
 #define VERSION "2.20"
 
-#endif /* ifdef __config_h__ */
+#endif /* CONFIG_INCLUDED */
 

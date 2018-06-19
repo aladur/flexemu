@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __buint_h__
-#define __buint_h__
+#ifndef BUINT_INCLUDED
+#define BUINT_INCLUDED
 
 #include "misc1.h"
 
@@ -102,5 +102,5 @@ inline const BUInt &BUInt::operator -= (DWord i)
     return *this;
 }
 
-#endif // #ifndef __buint_h__
+#endif // BUINT_INCLUDED
 

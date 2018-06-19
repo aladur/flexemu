@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __filecnts_h__
-#define __filecnts_h__
+#ifndef FILECNTS_INCLUDED
+#define FILECNTS_INCLUDED
 
 #ifndef __fromflex__
 
@@ -178,5 +178,5 @@ struct s_flex_header
 #endif /* #ifndef __fromflex__ */
 };
 
-#endif /* __filecnts_h__ */
+#endif /* FILECNTS_INCLUDED */
 

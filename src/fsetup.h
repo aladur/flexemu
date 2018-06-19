@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fsetup_h__
-#define __fsetup_h__
+#ifndef FSETUP_INCLUDED
+#define FSETUP_INCLUDED
 
 #include <wx/defs.h>
 #include <wx/app.h>

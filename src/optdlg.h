@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __optdlg_h__
-#define __optdlg_h__
+#ifndef OPTDLG_INCLUDED
+#define OPTDLG_INCLUDED
 
 #include <wx/dialog.h>
 

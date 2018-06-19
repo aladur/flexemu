@@ -19,6 +19,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef BTIMER_INCLUDED
+#define BTIMER_INCLUDED
+
 #include "misc1.h"
 
 typedef void (*BTimerProc)(void *p);
@@ -67,3 +70,6 @@ protected:
 private:
     BTimer(); // protect default constructor from being used
 };
+
+#endif // BTIMER_INCLUDED
+

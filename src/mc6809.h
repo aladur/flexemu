@@ -10,8 +10,8 @@
 
 
 
-#ifndef __mc6809_h__
-#define __mc6809_h__
+#ifndef MC6809_INCLUDED
+#define MC6809_INCLUDED
 
 #include <stdio.h>
 #include <atomic>
@@ -1586,4 +1586,4 @@ inline t_cycles Mc6809::exec_irqs(bool save_state)
     return 5; // rounded
 }  // exec_irqs
 
-#endif // __mc6809_h__
+#endif // MC6809_INCLUDED

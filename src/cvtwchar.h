@@ -20,16 +20,16 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
+#ifndef CVTWCHAR_INCLUDED
+#define CVTWCHAR_INCLUDED
+
 #ifdef _WIN32
 
-#ifndef cvtwchar_h
-#define cvtwchar_h
-
 #include <string>
-
 
 std::wstring ConvertToUtf16String(const std::string &value);
 std::string ConvertToUtf8String(const std::wstring &value);
 
 #endif
-#endif
+#endif // CVTWCHAR_INCLUDED

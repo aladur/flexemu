@@ -22,8 +22,8 @@
 
 
 
-#ifndef __pia2__h
-#define __pia2__h
+#ifndef PIA2_INCLUDED
+#define PIA2_INCLUDED
 
 #include "misc1.h"
 #include "mc6821.h"
@@ -68,5 +68,6 @@ public:
     virtual             ~Pia2();
 };
 
-#endif // __pia2__h
+#endif // PIA2_INCLUDED
+
 

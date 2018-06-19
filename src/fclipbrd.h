@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __FCLIPBRD_H__
-#define __FCLIPBRD_H__
+#ifndef _FCLIPBRD_INCLUDED_
+#define _FCLIPBRD_INCLUDED_
 
 #include "misc1.h"
 #include <wx/list.h>
@@ -65,5 +65,5 @@ private:
     mutable FileContainerIf *m_container;
 };
 
-#endif // #ifndef __FCLIPBRD_H__
+#endif // #ifndef _FCLIPBRD_INCLUDED_
 

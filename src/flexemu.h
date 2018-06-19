@@ -29,8 +29,8 @@
  the other values depend on them
 */
 
-#ifndef __flexemu_h__
-#define __flexemu_h__
+#ifndef FLEXEMU_INCLUDED
+#define FLEXEMU_INCLUDED
 
 #include "typedefs.h"
 

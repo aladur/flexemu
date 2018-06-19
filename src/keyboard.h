@@ -22,8 +22,8 @@
 
 
 
-#ifndef __keyboard_h__
-#define __keyboard_h__
+#ifndef KEYBOARD_INCLUDED
+#define KEYBOARD_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -59,5 +59,5 @@ public:
     KeyboardIO();
 };
 
-#endif // __keyboard_h__
+#endif // KEYBOARD_INCLUDED
 

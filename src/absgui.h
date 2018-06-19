@@ -21,8 +21,8 @@
 
 
 
-#ifndef __absgui_h__
-#define __absgui_h__
+#ifndef ABSGUI_INCLUDED
+#define ABSGUI_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -141,5 +141,5 @@ public:
     virtual ~AbstractGui();
 };
 
-#endif // __absgui_h__
+#endif // ABSGUI_INCLUDED
 

@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __filecntb_h__
-#define __filecntb_h__
+#ifndef FILECNTB_INCLUDED
+#define FILECNTB_INCLUDED
 
 #include "misc1.h"
 #include <string>
@@ -68,5 +68,5 @@ public:
     virtual ~FileContainerIfBase() { };
 };  /* class FileContainerIfBase */
 
-#endif /* __filecntb_h__ */
+#endif /* FILECNTB_INCLUDED */
 

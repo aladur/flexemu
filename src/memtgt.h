@@ -22,8 +22,8 @@
 
 
 
-#ifndef __memtgt_h__
-#define __memtgt_h__
+#ifndef MEMTGT_INCLUDED
+#define MEMTGT_INCLUDED
 
 #include "typedefs.h"
 

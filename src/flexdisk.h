@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __flexdisk_h__
-#define __flexdisk_h__
+#ifndef FLEXDISK_INCLUDED
+#define FLEXDISK_INCLUDED
 
 #include <wx/defs.h>
 #include <wx/app.h>

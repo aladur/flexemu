@@ -22,8 +22,8 @@
 
 
 
-#ifndef __mmu_h__
-#define __mmu_h__
+#ifndef MMU_INCLUDED
+#define MMU_INCLUDED
 
 #include "misc1.h"
 
@@ -61,5 +61,5 @@ public:
     virtual ~Mmu();
 };
 
-#endif // __mmu_h__
+#endif // MMU_INCLUDED
 

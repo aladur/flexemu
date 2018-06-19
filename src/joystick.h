@@ -22,8 +22,8 @@
 
 
 
-#ifndef __joystick_h__
-#define __joystick_h__
+#ifndef JOYSTICK_INCLUDED
+#define JOYSTICK_INCLUDED
 
 
 #include <mutex>

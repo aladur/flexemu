@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ndircont_h__
-#define __ndircont_h__
+#ifndef NDIRCONT_INCLUDED
+#define NDIRCONT_INCLUDED
 
 #ifdef NAFS
 
@@ -156,5 +156,5 @@ private:
 };  // class NafsDirectoryContainer
 
 #endif // NAFS
-#endif // __ndircont_h__
+#endif // NDIRCONT_INCLUDED
 

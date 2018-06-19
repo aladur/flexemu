@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __blist_h__
-#define __blist_h__
+#ifndef BLIST_INCLUDED
+#define BLIST_INCLUDED
 
 
 template <class Item> class BList
@@ -75,4 +75,4 @@ template <class Item>inline void BList<Item>::SetPrevious(BList *l)
     previous = l;
 }
 
-#endif // #ifndef __blist_h__
+#endif // BLIST_INCLUDED

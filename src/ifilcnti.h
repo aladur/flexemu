@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ifilcnti_h__
-#define __ifilcnti_h__
+#ifndef IFILCNTI_INCLUDED
+#define IFILCNTI_INCLUDED
 
 #include "fdirent.h"
 
@@ -46,5 +46,5 @@ private:
     virtual bool SetAttributesCurrent(int attributes) = 0;
 };
 
-#endif // __ifilcnti_h__
+#endif // IFILCNTI_INCLUDED
 

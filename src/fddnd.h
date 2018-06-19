@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fddnd_h__
-#define __fddnd_h__
+#ifndef FDDND_INCLUDED
+#define FDDND_INCLUDED
 
 #include <wx/defs.h>
 #include <wx/dataobj.h>

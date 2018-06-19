@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fdirent_h__
-#define __fdirent_h__
+#ifndef FDIRENT_INCLUDED
+#define FDIRENT_INCLUDED
 
 
 #include "misc1.h"
@@ -151,5 +151,5 @@ inline FlexDirEntry &FlexDirEntry::operator = (const FlexDirEntry &de)
     return *this;
 }
 
-#endif // __fdirent_h__
+#endif // FDIRENT_INCLUDED
 

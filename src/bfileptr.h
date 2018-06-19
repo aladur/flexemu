@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BFILEPTR_H_
-#define _BFILEPTR_H_
+#ifndef BFILEPTR_INCLUDED
+#define BFILEPTR_INCLUDED
 
 #include <stdio.h>
 

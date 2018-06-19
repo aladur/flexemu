@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bdate_h__
-#define __bdate_h__
+#ifndef BDATE_INCLUDED
+#define BDATE_INCLUDED
 
 // possible format modes for getDateString:
 
@@ -97,4 +97,4 @@ inline void BDate::SetDate(int d, int m, int y)
     Assign(d, m, y);
 }
 
-#endif // #ifndef __bdate_h__
+#endif // BDATE_INCLUDED

@@ -20,6 +20,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef FDCFRAME_INCLUDED
+#define FDCFRAME_INCLUDED
+
 #include "misc1.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -94,4 +97,6 @@ private:
     BObserver       *m_clipboardObserver;
     DECLARE_EVENT_TABLE()
 };
+
+#endif // FDCFRAME_INCLUDED
 

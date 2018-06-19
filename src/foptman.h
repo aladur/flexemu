@@ -20,6 +20,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef FOPTMAN_INCLUDED
+#define FOPTMAN_INCLUDED
+
 #include "misc1.h"
 #include <stdio.h>
 
@@ -54,4 +57,6 @@ public:
         struct sOptions *pOptions,
         bool   ifNotExists = false);
 };
+
+#endif // FOPTMAN_INCLUDED
 

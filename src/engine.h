@@ -42,8 +42,8 @@
    Note: BIG_ENDIAN option is no longer needed.
 */
 
-#ifndef __ENGINE_H__
-#define __ENGINE_H__
+#ifndef _ENGINE_INCLUDED_
+#define _ENGINE_INCLUDED_
 
 #define engine
 

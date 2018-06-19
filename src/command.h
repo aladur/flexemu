@@ -21,8 +21,8 @@
 
 
 
-#ifndef __command_h__
-#define __command_h__
+#ifndef COMMAND_INCLUDED
+#define COMMAND_INCLUDED
 
 #include "misc1.h"
 
@@ -102,5 +102,5 @@ public:
     virtual ~Command();
 };
 
-#endif // __command_h__
+#endif // COMMAND_INCLUDED
 

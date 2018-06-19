@@ -21,6 +21,9 @@
 */
 
 
+#ifndef WINCTXT_INCLUDED
+#define WINCTXT_INCLUDED
+
 #ifdef _WIN32
 #include "misc1.h"
 
@@ -34,4 +37,5 @@ struct WinApiContext
 extern WinApiContext winApiContext;
 
 #endif
+#endif // WINCTXT_INCLUDED
 

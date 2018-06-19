@@ -22,8 +22,8 @@
 
 
 
-#ifndef __debug_h__
-#define __debug_h__
+#ifndef DEBUG_INCLUDED
+#define DEBUG_INCLUDED
 
 #include <stdio.h>
 
@@ -43,5 +43,5 @@
 #define LOG_XXX(format, a, b, c) LOG_TEMPLATE(fprintf(logfp, format, a, b, c))
 
 
-#endif // __debug_h__
+#endif // DEBUG_INCLUDED
 

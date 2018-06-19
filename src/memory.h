@@ -22,8 +22,8 @@
 
 
 
-#ifndef __memory_h__
-#define __memory_h__
+#ifndef MEMORY_INCLUDED
+#define MEMORY_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -182,5 +182,5 @@ public:
         return value;
     }
 };
-#endif // __memory_h__
+#endif // MEMORY_INCLUDED
 

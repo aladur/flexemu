@@ -22,8 +22,8 @@
 
 
 
-#ifndef __mc6809st_h__
-#define __mc6809st_h__
+#ifndef MC6809ST_INCLUDED
+#define MC6809ST_INCLUDED
 
 #include "cpustate.h"
 
@@ -40,5 +40,5 @@ public:
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
 };
 
-#endif // __mc6809st_h__
+#endif // MC6809ST_INCLUDED
 

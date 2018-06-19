@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __dircont_h__
-#define __dircont_h__
+#ifndef DIRCONT_INCLUDED
+#define DIRCONT_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -104,4 +104,4 @@ private:
 
 };  // class DirectoryContainer
 
-#endif // __dircont_h__
+#endif // DIRCONT_INCLUDED

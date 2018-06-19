@@ -20,8 +20,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __scpulog_h__
-#define __scpulog_h__
+#ifndef SCPULOG_INCLUDED
+#define SCPULOG_INCLUDED
 
 #include "misc1.h"
 

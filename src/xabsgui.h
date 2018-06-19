@@ -22,8 +22,8 @@
 
 
 
-#ifndef __xabsgui_h__
-#define __xabsgui_h__
+#ifndef XABSGUI_INCLUDED
+#define XABSGUI_INCLUDED
 
 #include <misc1.h>
 
@@ -116,5 +116,5 @@ public:
 };
 
 #endif // HAVE_X11
-#endif // __xabsgui_h__
+#endif // XABSGUI_INCLUDED
 

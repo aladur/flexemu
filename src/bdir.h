@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bdir_h__
-#define __bdir_h__
+#ifndef BDIR_INCLUDED
+#define BDIR_INCLUDED
 
 #include "misc1.h"
 #ifdef _WIN32
@@ -66,4 +66,4 @@ public:
     tPathList GetFiles() const;
 };
 
-#endif // #ifndef __bdir_h__
+#endif // BDIR_INCLUDED

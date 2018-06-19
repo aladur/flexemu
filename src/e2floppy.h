@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __e2floppy_h__
-#define __e2floppy_h__
+#ifndef E2FLOPPY_INCLUDED
+#define E2FLOPPY_INCLUDED
 
 #include "misc1.h"
 
@@ -110,5 +110,5 @@ private:
 };
 
 #endif /* #ifndef __fromflex__ */
-#endif /* __e2floppy_h__ */
+#endif /* E2FLOPPY_INCLUDED */
 

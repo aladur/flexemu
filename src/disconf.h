@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __disconf_h__
-#define __disconf_h__
+#ifndef DISCONF_INCLUDED
+#define DISCONF_INCLUDED
 
 //#include <stdio.h>
 #include "bsortlst.h"
@@ -112,4 +112,4 @@ inline bool DisassemblerConfig::ContainsEquate(const BIdentifier &i) const
     return equateList.Contains(i);
 }
 
-#endif // #ifndef __disconf_h__
+#endif // DISCONF_INCLUDED

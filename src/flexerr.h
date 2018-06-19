@@ -104,4 +104,4 @@ public:
 };
 
 
-#endif  // #ifndef __flexerr_h__
+#endif // FLEXERR_INCLUDED

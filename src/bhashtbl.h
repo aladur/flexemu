@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bhashtbl_h__
-#define __bhashtbl_h__
+#ifndef BHASHTBL_INCLUDED
+#define BHASHTBL_INCLUDED
 
 #include "typedefs.h"
 template <class Item>class BList;
@@ -47,4 +47,4 @@ public:
 
 typedef BHashTable<BIdentifier> BIdentifierHTable;
 
-#endif // #ifndef __bhashtbl_h__
+#endif // BHASHTBL_INCLUDED

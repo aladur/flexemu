@@ -20,9 +20,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef FILEREAD_INCLUDED
+#define FILEREAD_INCLUDED
+
 
 #include <stdio.h>
 #include "memtgt.h"
 
 extern int load_hexfile(const char *filename, MemoryTarget &memtgt);
+
+#endif // FILREAD_INCLUDED
 

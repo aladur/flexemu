@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __drisel_h__
-#define __drisel_h__
+#ifndef DRISEL_INCLUDED
+#define DRISEL_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>

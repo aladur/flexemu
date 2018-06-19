@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __contpdlg_h__
-#define __contpdlg_h__
+#ifndef CONTPDLG_INCLUDED
+#define CONTPDLG_INCLUDED
 
 #include <wx/dialog.h>
 

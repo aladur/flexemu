@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fdlist_h__
-#define __fdlist_h__
+#ifndef FDLIST_INCLUDED
+#define FDLIST_INCLUDED
 
 #include "misc1.h"
 

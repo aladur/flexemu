@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BJOYSTICK_H_
-#define _BJOYSTICK_H_
+#ifndef BJOYSTICK_INCLUDED
+#define BJOYSTICK_INCLUDED
 
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 
@@ -61,5 +61,5 @@ inline int   BJoystick::Buttons()
 }
 
 #endif // #ifdef LINUX_JOYSTICK_IS_PRESENT
-#endif // #ifdef _BJOYSTICK_H_
+#endif // #ifdef BJOYSTICK_INCLUDED
 

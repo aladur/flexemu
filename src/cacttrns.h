@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _CACTTRNS_H_
-#define _CACTTRNS_H_
+#ifndef CACTTRNS_INCLUDED
+#define CACTTRNS_INCLUDED
 
 #include "misc1.h"
 #include "bcommand.h"

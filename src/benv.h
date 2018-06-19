@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __benv_h__
-#define __benv_h__
+#ifndef BENV_INCLUDED
+#define BENV_INCLUDED
 
 #include <string>
 

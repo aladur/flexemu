@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _CLOGFILE_H_
-#define _CLOGFILE_H_
+#ifndef CLOGFILE_INCLUDED
+#define CLOGFILE_INCLUDED
 
 #include "misc1.h"
 #include "mc6809.h"

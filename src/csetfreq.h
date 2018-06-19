@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _CSETFREQ_H_
-#define _CSETFREQ_H_
+#ifndef CSETFREQ_INCLUDED
+#define CSETFREQ_INCLUDED
 
 #include "bcommand.h"
 

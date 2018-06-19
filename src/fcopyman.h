@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fcopyman_h__
-#define __fcopyman_h__
+#ifndef FCOPYMAN_INCLUDED
+#define FCOPYMAN_INCLUDED
 
 #include "misc1.h"
 #include "flexerr.h"
@@ -37,5 +37,5 @@ public:
     static bool autoTextConversion;
 };  // class FlexCopyManager
 
-#endif // __fcopyman_h__
+#endif // FCOPYMAN_INCLUDED
 

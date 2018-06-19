@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bprocess_h__
-#define __bprocess_h__
+#ifndef BPROCESS_INCLUDED
+#define BPROCESS_INCLUDED
 
 #include "misc1.h"
 #include <string>

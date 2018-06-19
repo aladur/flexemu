@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BDELETE_H_
-#define _BDELETE_H_
+#ifndef BDELETE_INCLUDED
+#define BDELETE_INCLUDED
 
 
 template <class T>
@@ -49,5 +49,5 @@ BDeleter<T>::~BDeleter()
     delete object;
     object = nullptr;
 }
-#endif
+#endif // BDELETE_INCLUDED
 

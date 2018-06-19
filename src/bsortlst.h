@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bsortlst_h__
-#define __bsortlst_h__
+#ifndef BSORTLST_INCLUDED
+#define BSORTLST_INCLUDED
 
 #include "typedefs.h"
 
@@ -52,4 +52,4 @@ private:
 typedef BSortedList<BIdentifier> BIdentifierSList;
 typedef BSortedList<BUInt> BUIntSList;
 
-#endif // #ifndef __bsortlst_h__
+#endif // BSORTLST_INCLUDED

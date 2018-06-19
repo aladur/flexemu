@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __fsetpdlg_h__
-#define __fsetpdlg_h__
+#ifndef FSETPDLG_INCLUDED
+#define FSETPDLG_INCLUDED
 
 #include <wx/dialog.h>
 

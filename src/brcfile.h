@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __brcfile_h__
-#define __brcfile_h__
+#ifndef BRCFILE_INCLUDED
+#define BRCFILE_INCLUDED
 
 #include <string>
 

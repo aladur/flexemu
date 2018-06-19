@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __registr_h__
-#define __registr_h__
+#ifndef REGISTR_INCLUDED
+#define REGISTR_INCLUDED
 
 #ifdef _WIN32
 
@@ -74,4 +74,4 @@ inline BRegistry::operator HKEY() const
 };
 
 #endif // #ifdef _WIN32
-#endif // #ifndef __bregistr_h__
+#endif // BREGISTR_INCLUDED

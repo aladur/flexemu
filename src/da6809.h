@@ -2,8 +2,8 @@
 //  da6809.h
 //
 
-#ifndef __da6809_h__
-#define __da6809_h__
+#ifndef DA6809_INCLUDED
+#define DA6809_INCLUDED
 
 #include "misc1.h"
 #include "absdisas.h"
@@ -58,4 +58,4 @@ private:
     const char  *FlexLabel(Word);
 };  // class Da6809
 
-#endif // __da6809_h__
+#endif // DA6809_INCLUDED

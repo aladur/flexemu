@@ -21,8 +21,8 @@
 
 
 
-#ifndef __pia1__h
-#define __pia1__h
+#ifndef PIA1_INCLUDED
+#define PIA1_INCLUDED
 
 #include "misc1.h"
 #include "mc6821.h"
@@ -58,5 +58,5 @@ public:
     };
 };
 
-#endif // __pia1__h
+#endif // PIA1_INCLUDED
 

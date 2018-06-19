@@ -22,8 +22,8 @@
 
 
 
-#ifndef __cpustate_h__
-#define __cpustate_h__
+#ifndef CPUSTATE_INCLUDED
+#define CPUSTATE_INCLUDED
 
 #define S_MASK          0xF
 
@@ -52,5 +52,5 @@ public:
     float   freq;
     Byte    state;
 };
-#endif // __cpustate_h__
+#endif // CPUSTATE_INCLUDED
 

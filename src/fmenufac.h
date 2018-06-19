@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fmenufac_h__
-#define __fmenufac_h__
+#ifndef FMENUFAC_INCLUDED
+#define FMENUFAC_INCLUDED
 
 enum tFlxMenuId
 {

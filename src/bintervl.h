@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bintervl_h__
-#define __bintervl_h__
+#ifndef BINTERVL_INCLUDED
+#define BINTERVL_INCLUDED
 
 #include "typedefs.h"
 
@@ -132,4 +132,4 @@ inline bool BInterval::operator > (const BInterval &i) const
 {
     return minimum >  i.minimum;
 }
-#endif // #ifndef __bintervl_h__
+#endif // BINTERVL_INCLUDED

@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __bbintree_h__
-#define __bbintree_h__
+#ifndef BBINTREE_INCLUDED
+#define BBINTREE_INCLUDED
 
 
 template <class Item> class BBinaryTreeItem
@@ -94,4 +94,4 @@ template <class Item>inline bool BBinaryTreeItem<Item>::operator <=
     return item <= i.item;
 }
 
-#endif // #ifndef __bbintree_h__
+#endif // BBINTREE_INCLUDED

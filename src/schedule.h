@@ -22,8 +22,8 @@
 
 
 
-#ifndef __schedule_h__
-#define __schedule_h__
+#ifndef SCHEDULE_INCLUDED
+#define SCHEDULE_INCLUDED
 
 #include "misc1.h"
 #include <signal.h>
@@ -116,4 +116,4 @@ protected:
     QWord       cycles0;        // cycle count for freq calc
 };
 
-#endif // __schedule_h__
+#endif // SCHEDULE_INCLUDED

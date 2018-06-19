@@ -22,8 +22,8 @@
 
 
 
-#ifndef __ioaccess_h__
-#define __ioaccess_h__
+#ifndef IOACCESS_INCLUDED
+#define IOACCESS_INCLUDED
 
 #include "misc1.h"
 #include "iodevice.h"

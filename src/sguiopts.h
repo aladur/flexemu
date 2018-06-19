@@ -22,8 +22,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 
-#ifndef __sguiopts_h__
-#define __sguiopts_h__
+#ifndef SGUIOPTS_INCLUDED
+#define SGUIOPTS_INCLUDED
 
 #include "misc1.h"
 #include "flexemu.h"

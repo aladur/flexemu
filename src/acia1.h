@@ -22,8 +22,8 @@
 
 
 
-#ifndef __acia1_h__
-#define __acia1_h__
+#ifndef ACIA1_INCLUDED
+#define ACIA1_INCLUDED
 
 #include <stdio.h>
 #include "mc6850.h"
@@ -67,4 +67,4 @@ public:
 
 };
 
-#endif // __acia1_h__
+#endif // ACIA1_INCLUDED

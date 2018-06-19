@@ -22,8 +22,8 @@
 
 
 
-#ifndef __inout_h__
-#define __inout_h__
+#ifndef INOUT_INCLUDED
+#define INOUT_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -134,5 +134,5 @@ public:
 
 };
 
-#endif // __inout_h__
+#endif // INOUT_INCLUDED
 

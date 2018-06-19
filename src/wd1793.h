@@ -21,8 +21,8 @@
 */
 
 
-#ifndef __wd1793_h__
-#define __wd1793_h__
+#ifndef WD1793_INCLUDED
+#define WD1793_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -187,5 +187,5 @@ public:
 
 };
 
-#endif // __wd1793_h__
+#endif // WD1793_INCLUDED
 

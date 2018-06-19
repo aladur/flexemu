@@ -29,8 +29,8 @@
  the other values depend on them
 */
 
-#ifndef __e2_h__
-#define __e2_h__
+#ifndef E2_INCLUDED
+#define E2_INCLUDED
 
 #define VIDEORAM_SIZE   0x4000
 #define RASTERLINE_SIZE 64

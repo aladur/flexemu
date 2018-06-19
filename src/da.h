@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __da_h__
-#define __da_h__
+#ifndef DA_INCLUDED
+#define DA_INCLUDED
 
 #include "misc1.h"
 #include "absdisas.h"
@@ -61,5 +61,5 @@ inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d)
     da = d;
 }
 
-#endif // __da_h__
+#endif // DA_INCLUDED
 

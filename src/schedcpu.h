@@ -22,8 +22,8 @@
 
 
 
-#ifndef __schedcpu_h__
-#define __schedcpu_h__
+#ifndef SCHEDCPU_INCLUDED
+#define SCHEDCPU_INCLUDED
 
 #include "typedefs.h"
 
@@ -60,5 +60,5 @@ public:
     virtual void set_required_cyclecount(t_cycles required_cyclecount) = 0;
 };
 
-#endif // __schedcpu_h__
+#endif // SCHEDCPU_INCLUDED
 

@@ -1,3 +1,6 @@
+#ifndef TEST_GCCASM_INCLUDED
+#define TEST_GCCASM_INCLUDED
+
 #include "misc1.h"
 
 
@@ -20,4 +23,6 @@ extern bool test_gccasm_lsr();
 extern bool test_gccasm_asr();
 extern bool test_gccasm_ror();
 extern bool test_gccasm_rol();
+
+#endif
 

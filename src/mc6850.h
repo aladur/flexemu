@@ -22,8 +22,8 @@
 
 
 
-#ifndef __mc6850_h__
-#define __mc6850_h__
+#ifndef MC6850_INCLUDED
+#define MC6850_INCLUDED
 
 #include "misc1.h"
 #include <stdio.h>
@@ -79,4 +79,4 @@ public:
 
 };
 
-#endif // __mc6850_h__
+#endif // MC6850_INCLUDED

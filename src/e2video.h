@@ -21,8 +21,8 @@
 
 
 
-#ifndef __e2video_h__
-#define __e2video_h__
+#ifndef E2VIDEO_INCLUDED
+#define E2VIDEO_INCLUDED
 
 #include "misc1.h"
 #include "iodevice.h"
@@ -61,5 +61,5 @@ public:
 
 };
 
-#endif // __e2video_h__
+#endif // E2VIDEO_INCLUDED
 

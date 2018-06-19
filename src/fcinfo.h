@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fcinfo_h__
-#define __fcinfo_h__
+#ifndef FCINFO_INCLUDED
+#define FCINFO_INCLUDED
 
 #include <stdlib.h>
 #include "misc1.h"
@@ -126,5 +126,5 @@ public:
 
 };  // class FlexContainerInfo
 
-#endif // __fcinfo_h__
+#endif // FCINFO_INCLUDED
 

@@ -22,8 +22,8 @@
 
 
 
-#ifndef __mc146818_h__
-#define __mc146818_h__
+#ifndef MC146818_INCLUDED
+#define MC146818_INCLUDED
 
 #include "misc1.h"
 #include "iodevice.h"
@@ -79,5 +79,5 @@ public:
 
 };
 
-#endif // __mc146818_h__
+#endif // MC146818_INCLUDED
 

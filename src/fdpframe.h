@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __fdpframe_h__
-#define __fdpframe_h__
+#ifndef FDPFRAME_INCLUDED
+#define FDPFRAME_INCLUDED
 
 #include "misc1.h"
 // For compilers that support precompilation, includes "wx.h".
