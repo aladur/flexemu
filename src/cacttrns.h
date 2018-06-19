@@ -33,7 +33,7 @@ class CActiveTransition : public BCommand
 
 public:
     CActiveTransition(Mc6821 &x_mc6821, Byte transition);
-    virtual void Execute();
+    void Execute() override;
 
 protected:
     Mc6821 &mc6821;

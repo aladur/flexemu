@@ -32,7 +32,7 @@ class CSetFrequency : public BCommand
 
 public:
     CSetFrequency(Scheduler &x_sched, float x_frequency);
-    virtual void Execute();
+    void Execute() override;
 
 protected:
     Scheduler &scheduler;

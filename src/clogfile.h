@@ -32,7 +32,7 @@ class CSetLogFile : public BCommand
 
 public:
     CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file);
-    virtual void Execute();
+    void Execute() override;
 
 protected:
     Mc6809 &cpu;
