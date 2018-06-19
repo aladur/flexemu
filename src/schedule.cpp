@@ -35,7 +35,6 @@
 
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
-    BThread(false),
     cpu(x_cpu), inout(x_inout),
     state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
     time0sec(0),
@@ -134,7 +133,7 @@ void Scheduler::process_events()
 
         if (events & DO_SYNCEXEC)
         {
-            Execute();
+            execute();
         }
     }
 }
@@ -276,7 +275,7 @@ void Scheduler::do_reset()
 }
 
 // thread support: Start Running CPU Thread
-void Scheduler::Run()
+void Scheduler::run()
 {
     bool periodic = true;
 
@@ -307,7 +306,7 @@ void Scheduler::sync_exec(BCommand *newCommand)
     cpu.exit_run();
 }
 
-void Scheduler::Execute()
+void Scheduler::execute()
 {
     std::lock_guard<std::mutex> guard(command_mutex);
 

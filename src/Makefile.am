@@ -50,10 +50,9 @@ memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
 mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
 pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
 xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
-bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
-bwin32threadimp.cpp mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
+mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
@@ -62,10 +61,9 @@ fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h da.h \
-bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
-memory.h bwin32threadimp.h resource.h filecntb.h filecnts.h mc6809st.h \
+memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h \
 bytereg.h drisel.h
@@ -95,7 +93,6 @@ testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
 command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
 flexerr.cpp inout.cpp cacttrns.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
-bthread.cpp bthreadfactory.cpp bthreadimp.cpp bposixthreadimp.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
 mc6809st.cpp \
@@ -105,7 +102,6 @@ flexerr.h inout.h \
 memory.h mc6809.h misc1.h \
 typedefs.h \
 da.h \
-bthread.h bthreadfactory.h bthreadimp.h bposixthreadimp.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \

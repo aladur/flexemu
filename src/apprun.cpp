@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include <new>
 #include <sstream>
+#include <thread>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
@@ -126,16 +127,11 @@ int ApplicationRunner::run()
     cpu.reset();
 
     // start CPU thread
-    if (!scheduler.Start())
-    {
-        fprintf(stderr, "Unable to start CPU thread\n");
-        return 1;
-    }
-    else
-    {
-        inout.main_loop();
-        scheduler.Join();  // wait for termination of CPU thread
-    }
+    std::thread cpu_thread(&Scheduler::run, &scheduler);
+
+    inout.main_loop();
+
+    cpu_thread.join();  // wait for termination of CPU thread
 
     return 0;
 }

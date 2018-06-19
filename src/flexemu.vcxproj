@@ -180,12 +180,8 @@
     <ClCompile Include="bmembuf.cpp" />
     <ClCompile Include="brcfile.cpp" />
     <ClCompile Include="bregistr.cpp" />
-    <ClCompile Include="bthread.cpp" />
-    <ClCompile Include="bthreadfactory.cpp" />
-    <ClCompile Include="bthreadimp.cpp" />
     <ClCompile Include="btime.cpp" />
     <ClCompile Include="btimer.cpp" />
-    <ClCompile Include="bwin32threadimp.cpp" />
     <ClCompile Include="bytereg.cpp" />
     <ClCompile Include="cacttrns.cpp" />
     <ClCompile Include="clogfile.cpp" />
@@ -264,12 +260,8 @@
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="bsingle.h" />
-    <ClInclude Include="bthread.h" />
-    <ClInclude Include="bthreadfactory.h" />
-    <ClInclude Include="bthreadimp.h" />
     <ClInclude Include="btime.h" />
     <ClInclude Include="btimer.h" />
-    <ClInclude Include="bwin32threadimp.h" />
     <ClInclude Include="bytereg.h" />
     <ClInclude Include="cacttrns.h" />
     <ClInclude Include="clogfile.h" />

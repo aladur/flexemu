@@ -29,7 +29,6 @@
 #include <signal.h>
 #include <mutex>
 #include <vector>
-#include "bthread.h"
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "btime.h"
@@ -46,12 +45,12 @@ class BTimer;
 class Inout;
 class ScheduledCpu;
 
-class Scheduler : public BThread
+class Scheduler
 {
 public:
     Scheduler() = delete;
     Scheduler(ScheduledCpu &x_cpu, Inout &x_inout);
-    virtual     ~Scheduler();
+    ~Scheduler();
 
     Byte        statemachine(Byte initial_state);
     bool        is_finished();
@@ -63,9 +62,9 @@ public:
     // Thread support
 public:
     void        sync_exec(BCommand *newCommand);
+    void    run();
 protected:
-    void        Execute();
-    virtual void    Run();
+    void        execute();
     std::mutex      command_mutex;
     std::mutex      status_mutex;
     std::mutex      irq_status_mutex;
