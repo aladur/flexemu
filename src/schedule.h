@@ -95,7 +95,6 @@ protected:
     // CPU status
 public:
     void        get_interrupt_status(tInterruptStatus &s);
-    bool        status_available();
     CpuStatus  *get_status();
 protected:
     tInterruptStatus interrupt_status;

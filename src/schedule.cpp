@@ -321,16 +321,6 @@ void Scheduler::Execute()
     events &= ~DO_SYNCEXEC;
 }
 
-bool Scheduler::status_available()
-{
-    bool result;
-
-    std::lock_guard<std::mutex> guard(status_mutex);
-    result = (pCurrent_status != nullptr);
-
-    return result;
-}
-
 CpuStatus *Scheduler::get_status()
 {
     CpuStatus *stat = nullptr;
