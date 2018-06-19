@@ -158,14 +158,13 @@ protected:
     void                     setStatusRecordNotFound();
     bool                     isErrorStatus() const;
 
-    virtual Byte             readByte(Word index);
-    virtual void             writeByte(Word index);
-    virtual bool             isDriveReady() const;
-    virtual bool             isWriteProtect();
-    virtual bool             isRecordNotFound();
-    virtual bool             isSeekError(Byte new_track);
-
     // Read and write functions
+    virtual Byte readByte(Word index);
+    virtual void writeByte(Word index);
+    virtual bool isDriveReady() const;
+    virtual bool isWriteProtect();
+    virtual bool isRecordNotFound();
+    virtual bool isSeekError(Byte new_track);
 
 public:
 

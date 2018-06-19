@@ -100,12 +100,12 @@ public:
 
 private:
 
-    virtual Byte         readByte(Word index);
-    virtual void         writeByte(Word index);
-    virtual bool         isDriveReady() const;
-    virtual bool         isWriteProtect();
-    virtual bool         isRecordNotFound();
-    virtual bool         isSeekError(Byte new_track);
+    Byte readByte(Word index) override;
+    void writeByte(Word index) override;
+    bool isDriveReady() const override;
+    bool isWriteProtect() override;
+    bool isRecordNotFound() override;
+    bool isSeekError(Byte new_track) override;
     const char       *open_mode(char *path);
 };
 
