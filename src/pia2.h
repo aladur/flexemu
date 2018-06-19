@@ -55,8 +55,9 @@ private:
 
 protected:
 
-    virtual void            writeOutputB(Byte val);
-    virtual Byte            readInputB();
+    void writeOutputB(Byte value) override;
+    Byte readInputB() override;
+
 public:
     void resetIo() override;
     const char *getName() override
