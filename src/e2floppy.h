@@ -77,8 +77,8 @@ public:
 
     // public interface
 public:
-    virtual void         resetIo();
-    virtual const char   *getName()
+    void resetIo() override;
+    const char *getName() override
     {
         return "e2floppy";
     };

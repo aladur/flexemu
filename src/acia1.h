@@ -52,9 +52,9 @@ public:
     // request for an input ready to be read
     virtual void            requestInput();
 
-    virtual void            resetIo();
+    void resetIo() override;
 
-    virtual const char      *getName()
+    const char *getName() override
     {
         return "acia1";
     };

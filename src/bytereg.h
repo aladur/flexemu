@@ -44,18 +44,14 @@ protected:
 public:
     // IoDevice member functions
 
-    virtual void resetIo();
-    virtual Byte readIo(Word offset);
-    virtual void writeIo(Word offset, Byte value);
-    virtual Word sizeIo() const
-    {
-        return 1;
-    }
-    virtual const char *getName()
+    void resetIo() override;
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte value) override;
+    const char *getName() override
     {
         return "bytereg";
     };
-    virtual int sizeOfIo()
+    int sizeOfIo() override
     {
         return 1;
     };

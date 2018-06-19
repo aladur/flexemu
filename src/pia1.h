@@ -51,8 +51,8 @@ protected:
 
 public:
     Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO);
-    virtual void            resetIo();
-    virtual const char      *getName()
+    void resetIo() override;
+    const char *getName() override
     {
         return "pia1";
     };

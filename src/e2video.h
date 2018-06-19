@@ -43,23 +43,18 @@ public:
 
 public:
 
-    void    resetIo();
-
-    // public interface
-public:
-
-    Byte        readIo(Word offset);
-    void        writeIo(Word offset, Byte val);
-    const char *getName()
+    void resetIo() override;
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte val) override;
+    const char *getName() override
     {
         return "e2video";
     };
-    int sizeOfIo()
+    int sizeOfIo() override
     {
         return 2;
     }
 
-    // Public constructor and destructor
 public:
     E2video(Memory &x_memory);
     virtual ~E2video();

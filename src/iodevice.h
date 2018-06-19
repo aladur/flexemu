@@ -29,14 +29,13 @@
 
 class IoDevice
 {
-
 public:
 
-    virtual Byte         readIo(Word offset) = 0;
-    virtual void         writeIo(Word offset, Byte val) = 0;
-    virtual void         resetIo() = 0;
-    virtual const char      *getName() = 0;
-    virtual                 int sizeOfIo() = 0;
+    virtual Byte readIo(Word offset) = 0;
+    virtual void writeIo(Word offset, Byte value) = 0;
+    virtual void resetIo() = 0;
+    virtual const char *getName() = 0;
+    virtual int sizeOfIo() = 0;
     virtual ~IoDevice() { };
 };
 

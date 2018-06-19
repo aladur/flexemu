@@ -44,14 +44,14 @@ protected:
 
 public:
 
-    void                resetIo();
-    virtual Byte        readIo(Word addr);
-    virtual void        writeIo(Word addr, Byte val);
-    virtual const char *getName()
+    void resetIo() override;
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte value) override;
+    const char *getName() override
     {
         return "mmu";
     };
-    virtual int sizeOfIo()
+    int sizeOfIo() override
     {
         return 16;
     };

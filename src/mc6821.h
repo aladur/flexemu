@@ -50,14 +50,14 @@ protected:
 
 public:
 
-    virtual Byte             readIo(Word offset);
-    virtual void             writeIo(Word offset, Byte val);
-    virtual void             resetIo();
-    virtual const char      *getName()
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte value) override;
+    void resetIo() override;
+    const char *getName() override
     {
         return "mc6821";
     };
-    virtual int sizeOfIo()
+    int sizeOfIo() override
     {
         return 4;
     };

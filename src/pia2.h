@@ -58,8 +58,8 @@ protected:
     virtual void            writeOutputB(Byte val);
     virtual Byte            readInputB();
 public:
-    virtual void            resetIo();
-    virtual const char      *getName()
+    void resetIo() override;
+    const char *getName() override
     {
         return "pia2";
     };

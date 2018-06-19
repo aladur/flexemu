@@ -169,14 +169,14 @@ protected:
 
 public:
 
-    virtual void             resetIo();
-    virtual Byte             readIo(Word offset);
-    virtual void             writeIo(Word offset, Byte val);
-    virtual const char      *getName()
+    void resetIo() override;
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte value) override;
+    const char *getName() override
     {
         return "wd1793";
     };
-    virtual int sizeOfIo()
+    int sizeOfIo() override
     {
        return 4;
     };

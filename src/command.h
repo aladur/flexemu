@@ -81,14 +81,14 @@ private:
     // public interface
 public:
 
-    void    resetIo();
-    Byte    readIo(Word offset);
-    void    writeIo(Word offset, Byte val);
-    virtual const char *getName()
+    void resetIo() override;
+    Byte readIo(Word offset) override;
+    void writeIo(Word offset, Byte val) override;
+    const char *getName() override
     {
         return "command";
     };
-    virtual int sizeOfIo()
+    int sizeOfIo() override
     {
         return 1;
     }
