@@ -917,13 +917,14 @@ public:
 
     // Scheduler Interface implemenation
 public:
-    void            do_reset();
-    Byte            run(Word mode);
-    void            exit_run();
-    QWord           get_cycles(bool reset = false);
-    void            get_status(CpuStatus *stat);
-    CpuStatus      *create_status_object();
-    void            set_required_cyclecount(t_cycles x_cycles);
+    void do_reset() override;
+    Byte run(Word mode) override;
+    void exit_run() override;
+    QWord get_cycles(bool reset = false) override;
+    void get_status(CpuStatus *stat) override;
+    CpuStatus *create_status_object() override;
+    void get_interrupt_status(tInterruptStatus &s) override;
+    void set_required_cyclecount(t_cycles x_cycles) override;
 
     // test support
     void            set_status(CpuStatus *stat);
@@ -954,7 +955,6 @@ public:
 
     // interface to other classes
 public:
-    void        get_interrupt_status(tInterruptStatus &s);
     void        set_disassembler(Da6809 *x_da);
     void        set_serpar(Byte b);
     bool        set_logfile(const struct s_cpu_logfile *lf);
