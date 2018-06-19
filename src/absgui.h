@@ -101,35 +101,32 @@ protected:
 
 protected:
 
-    virtual void    update_block(int block_number); // update one video blk
-    virtual void    initialize(struct sGuiOptions &options);
-    virtual void    initialize_conv_tables();
-    void    CopyToZPixmap(int block_number,
-                          Byte *dest, const Byte *src,
-                          int depth, const unsigned long *pen);
-    virtual void    clear_cpuview();
-    virtual void    redraw_cpuview(const Mc6809CpuStatus &stat);
-    virtual void    redraw_cpuview_contents(const Mc6809CpuStatus &stat);
-    virtual void    redraw_cpuview_impl(const Mc6809CpuStatus &stat);
-    virtual void    text(int x, int y, const char *str, int rev = 0);
-    virtual void   set_line_delim(const char *delim);
+    virtual void update_block(int block_number); // update one video blk
+    virtual void initialize(struct sGuiOptions &options);
+    virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);
+
+    void initialize_conv_tables();
+    void CopyToZPixmap(int block_number,
+                       Byte *dest, const Byte *src,
+                       int depth, const unsigned long *pen);
+    void clear_cpuview();
+    void redraw_cpuview(const Mc6809CpuStatus &stat);
+    void redraw_cpuview_contents(const Mc6809CpuStatus &stat);
+    void text(int x, int y, const char *str, int rev = 0);
+    void set_line_delim(const char *delim);
     // public interface
 
 public:
-    virtual void    update_cpuview(const Mc6809CpuStatus &stat);
-    // update cpu view
-    virtual void    set_exit(bool b = true);    // set exit flag
-    virtual void    update();           // update video and
-    // event loop
-    virtual void    set_new_state(Byte user_input); // set cpu to new state
-    virtual void    set_bell(int x_percent);    // give a short
-    // acoustic signal
-    virtual void    output_to_terminal();   // set output to terminal
-    virtual void    output_to_graphic();    // set output to gui
-    virtual void    main_loop();        // enter the msg loop
-    virtual GuiType gui_type();         // return type of graphical user interf.
+    virtual void update_cpuview(const Mc6809CpuStatus &stat);
+    virtual void set_bell(int x_percent); // give a short
+    virtual void main_loop(); // enter the message loop
+    virtual void output_to_terminal(); // set output to terminal
+    virtual void output_to_graphic(); // set output to GUI
+    virtual GuiType gui_type(); // return type of graphical user interf.
 
-    // constructor and destructor
+    void set_exit(bool value = true); // set exit flag
+    void update(); // update video and execute event loop
+    void set_new_state(Byte user_input); // set cpu to new state
 
 public:
     AbstractGui(

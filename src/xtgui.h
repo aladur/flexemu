@@ -126,32 +126,30 @@ protected:
     bool        is_menu_mode;
     bool        isSynchronized;
 
-    virtual Display  *getDisplay();
-    virtual Window   getWindow(tWindowType t = FLX_E2SCREEN);
+    virtual Display *getDisplay();
+    virtual Window getWindow(tWindowType windowType = FLX_E2SCREEN);
 
 protected:
-    virtual Widget      create_main_view(int argc, char *const argv[],
-                                         bool isSynchronized);
-    virtual void        create_message_dialog(Widget parent);
-    virtual void        create_about_dialog(Widget parent);
-    virtual void        create_cpuview(Widget parent);
-    virtual void        create_bp_dialog(Widget parent);
-    virtual void        create_logfile_dialog(Widget parent);
-    virtual void        manage_widget(Widget w);
-    virtual void        initialize_after_create(Widget w, bool isInverse,
-            const char *color);
-    virtual void        initialize_after_open(Widget w, const char *title);
-    virtual void        initialize(struct sGuiOptions &options);
-    virtual void        update_disk_status(int floppyIndex,
-                                           DiskStatus status);
-    virtual void        update_interrupt_status(tIrqType t,
-            bool status);
+    void initialize(struct sGuiOptions &options) override;
+
+    Widget create_main_view(int argc, char *const argv[], bool isSynchronized);
+    void create_message_dialog(Widget parent) override;
+    void create_about_dialog(Widget parent);
+    void create_cpuview(Widget parent);
+    void create_bp_dialog(Widget parent);
+    void create_logfile_dialog(Widget parent);
+    void manage_widget(Widget w);
+    void initialize_e2window(struct sGuiOptions &options);
+    void initialize_after_create(Widget w, bool isInverse, const char *color);
+    void initialize_after_open(Widget w, const char *title);
+    void update_disk_status(int floppyIndex, DiskStatus status);
+    void update_interrupt_status(tIrqType irqType, bool status);
 #ifdef HAVE_XPM
-    virtual void        create_pixmaps(Widget parent, Pixel bg_color);
-    virtual void        create_author_dialog(Widget parent);
+    void create_pixmaps(Widget parent, Pixel bg_color);
+    void create_author_dialog(Widget parent);
 #endif
-    virtual void        add_menu_handler(Widget button, Widget menu);
-    virtual void        close_menu_mode();
+    void add_menu_handler(Widget button, Widget menu);
+    void close_menu_mode();
 
     // Internal registers
 
@@ -162,39 +160,34 @@ protected:
     bool        is_use_undocumented;
     struct s_cpu_logfile lfs;
 
-    // Initialisation functions
-
-protected:
-
-    virtual void    initialize_e2window(struct sGuiOptions &options);
-
     // public interface
 public:
 
-    virtual void    center_dialog(Widget w);
-    virtual void    popup_about();
-    virtual void    popup_cpu();
-    virtual void    popup_bp();
-    virtual void    popup_log();
-    virtual void    popdown_message(Widget w);
-    virtual void    popdown_about();
-    virtual void    popdown_cpu();
-    virtual void    popdown_bp(Widget w);
-    virtual void    popdown_log(Widget w);
-    virtual void    popup_disk_info(Widget w);
-    virtual void    popup_interrupt_info(Widget w);
-    virtual void    clear_bp();
-    virtual void    clear_log();
-    virtual void    toggle_cpu();
-    virtual void    toggle_frequency();
-    virtual void    toggle_undocumented();
-    virtual void    main_loop();
-    virtual void    mouse_update();
-    virtual void    mouse_warp(int dx, int dy);
+    void main_loop() override;
+
+    void center_dialog(Widget w);
+    void popup_about();
+    void popup_cpu();
+    void popup_bp();
+    void popup_log();
+    void popdown_message(Widget w);
+    void popdown_about();
+    void popdown_cpu();
+    void popdown_bp(Widget w);
+    void popdown_log(Widget w);
+    void popup_disk_info(Widget w);
+    void popup_interrupt_info(Widget w);
+    void clear_bp();
+    void clear_log();
+    void toggle_cpu();
+    void toggle_frequency();
+    void toggle_undocumented();
+    void mouse_update();
+    void mouse_warp(int dx, int dy);
 #ifdef HAVE_XPM
-    virtual void    a_expose(Widget w, XEvent *pevent);
-    virtual void    popup_author();
-    virtual void    popdown_author();
+    void a_expose(Widget w, XEvent *pevent);
+    void popup_author();
+    void popdown_author();
 #endif
 
     // callbacks:
@@ -262,31 +255,33 @@ private:
 
     // accelerators:
 public:
-    virtual void    c_expose(XEvent *pevent);
-    virtual void    c_keyPress(XEvent *pevent);
-    virtual void    c_buttonPress(XEvent *pevent);
-    virtual void    c_buttonRelease(XEvent *pevent);
-    virtual void    c_motion(XEvent *pevent);
-    virtual void    c_enter(XEvent *pevent);
-    virtual void    c_leave(XEvent *pevent);
-    virtual void    c_focusIn(XEvent *pevent);
-    virtual void    c_focusOut(XEvent *pevent);
-    virtual void    c_wm_protocols(XEvent *pevent);
-    virtual void    c_process_resize(XEvent *pevent);
-    virtual void    c_close_menu_mode(XEvent *pevent);
-    virtual void    c_highlight_child(Widget w, XEvent *pevent, String *params);
+    void c_focusIn(XEvent *pevent) override;
+    void c_focusOut(XEvent *pevent) override;
+
+    void c_expose(XEvent *pevent);
+    void c_keyPress(XEvent *pevent);
+    void c_buttonPress(XEvent *pevent);
+    void c_buttonRelease(XEvent *pevent);
+    void c_motion(XEvent *pevent);
+    void c_enter(XEvent *pevent);
+    void c_leave(XEvent *pevent);
+    void c_wm_protocols(XEvent *pevent);
+    void c_process_resize(XEvent *pevent);
+    void c_close_menu_mode(XEvent *pevent);
+    void c_highlight_child(Widget w, XEvent *pevent, String *params);
 
 public:
-    virtual void    redraw_cpuview_impl(const Mc6809CpuStatus &sstat);
-    virtual void    popup_message(const char *pmessage,
+    GuiType gui_type() override;
+
+    void redraw_cpuview_impl(const Mc6809CpuStatus &sstat) override;
+    void popup_message(const char *pmessage,
                                   const char *ptitle = nullptr,
                                   int width = 270, int height = 120);
-    virtual void    popup_confirmation(const char *pmessage,
+    void popup_confirmation(const char *pmessage,
                                        const char *ptitle = nullptr,
                                        int width = 270, int height = 120);
-    virtual GuiType gui_type();
     void            timerCallback(XtIntervalId pId);
-    virtual void    menuHandler(Widget button, XEvent *event, Boolean *flag);
+    void menuHandler(Widget button, XEvent *event, Boolean *flag);
 
     // Public constructor and destructor
 public:
@@ -302,7 +297,6 @@ public:
         struct sGuiOptions &options);
     virtual ~XtGui();
 };
-
 
 #endif // ifdef HAVE_XTK
 #endif // __xtgui_h__

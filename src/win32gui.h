@@ -182,7 +182,7 @@ public:
 protected:
     BOOL    registerWindowClasses(HINSTANCE hinst, UINT ResPoolID);
     HWND    create_main_view();
-    void    set_bell(int percent);
+    void set_bell(int percent) override;
     void    update_disk_status(int floppyIndex, DiskStatus status);
     void    update_interrupt_status(tIrqType irqType, bool status);
     void    update_block(int block_number, HDC hdc);
@@ -212,7 +212,7 @@ protected:
     void    toggle_undocumented();
     void    popdown_cpu(HWND hwnd);
     void    toggle_cpu(HWND hwnd);
-    void    redraw_cpuview_impl(const Mc6809CpuStatus &stat);
+    void redraw_cpuview_impl(const Mc6809CpuStatus &stat) override;
     LOGFONT *getLogFontStruct(HDC hdc, int pointSize);
 
     void            popup_copyright(HWND hwnd);
@@ -220,7 +220,7 @@ protected:
     void    initialize_after_create(HWND w,
                                     struct sGuiOptions &options);
     void    initialize_after_open(HWND w);
-    void    initialize(struct sGuiOptions &options);
+    void initialize(struct sGuiOptions &options) override;
     void    initialize_e2window(struct sGuiOptions &options);
     void    stripBlanks(char *str);
 
@@ -239,7 +239,7 @@ protected:
     Mc6809CpuStatus *cpu_stat;
 
 public:
-    void    update_cpuview(const Mc6809CpuStatus &stat);
+    void    update_cpuview(const Mc6809CpuStatus &stat) override;
     void    popup_message(char *pmessage);
     void    popup_disk_info(HWND hwnd);
     void    popup_interrupt_info(HWND hwnd);

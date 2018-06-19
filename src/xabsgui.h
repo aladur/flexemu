@@ -84,27 +84,30 @@ protected:
 
 protected:
 
-    virtual int     SetColors(Display *dpy);
-    virtual Visual *GetBestVisual(Display *dpy, int *vClass, int *depth);
-    virtual void    create_message_dialog(Widget parent);
-    virtual void    set_cursor(int type = FLX_DEFAULT_CURSOR);
-    virtual void    update_block(int block_number);
-    virtual int     convert_buttonmask(int);
-    virtual int     convert_keymask(int);
-    virtual SWord   translate_to_ascii(XKeyEvent *pevent);
+    void update_block(int block_number) override;
+    void initialize(struct sGuiOptions &options) override;
+
+    virtual void create_message_dialog(Widget parent);
     virtual Display *getDisplay();
-    virtual Window  getWindow(tWindowType t = FLX_E2SCREEN);
-    virtual void    initialize(struct sGuiOptions &options);
-    virtual int popup_help();
-    virtual const char *get_title();
-    virtual void    toggle_mouse_capture();
-    virtual void    release_mouse_capture();
+    virtual Window getWindow(tWindowType t = FLX_E2SCREEN);
+
+    int SetColors(Display *dpy);
+    Visual *GetBestVisual(Display *dpy, int *vClass, int *depth);
+    void set_cursor(int type = FLX_DEFAULT_CURSOR);
+    int convert_buttonmask(int);
+    int convert_keymask(int);
+    SWord translate_to_ascii(XKeyEvent *pevent);
+    int popup_help();
+    const char *get_title();
+    void toggle_mouse_capture();
+    void release_mouse_capture();
 
 public:
 
-    virtual void    set_bell(int percent);
-    virtual void    c_focusIn(XEvent *pevent);
-    virtual void    c_focusOut(XEvent *pevent);
+    void set_bell(int percent) override;
+    virtual void c_focusIn(XEvent *pevent);
+    virtual void c_focusOut(XEvent *pevent);
+
 public:
 
     XAbstractGui(Mc6809 &, Memory &, Scheduler &, Inout &, E2video &,
