@@ -61,8 +61,8 @@ private:
 
     E2floppy &fdc;
 
-    virtual Byte requestReadValue();
-    virtual void requestWriteValue(Byte value);
+    Byte requestReadValue() override;
+    void requestWriteValue(Byte value) override;
 
 public:
 
