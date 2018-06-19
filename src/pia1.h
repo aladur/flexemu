@@ -44,10 +44,10 @@ protected:
 
 protected:
 
-    virtual void            requestInputA();
-    virtual Byte            readInputA();
-    virtual void            set_irq_A();
-    virtual void            set_irq_B();
+    void requestInputA() override;
+    Byte readInputA() override;
+    void set_irq_A() override;
+    void set_irq_B() override;
 
 public:
     Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO);

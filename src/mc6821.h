@@ -72,30 +72,30 @@ public:
 
 public:
 
-    virtual Byte            testControlLine(Byte control_line);
+    virtual Byte testControlLine(Byte control_line);
 
     // read non strobed data
 
 protected:
 
-    virtual Byte            readInputA();
-    virtual Byte            readInputB();
-    virtual void            set_irq_A();
-    virtual void            set_irq_B();
+    virtual Byte readInputA();
+    virtual Byte readInputB();
+    virtual void set_irq_A();
+    virtual void set_irq_B();
 
     // read strobed data
 
 protected:
 
-    virtual void            requestInputA();
-    virtual void            requestInputB();
+    virtual void requestInputA();
+    virtual void requestInputB();
 
     // write data to port-pins
 
 protected:
 
-    virtual void            writeOutputA(Byte val);
-    virtual void            writeOutputB(Byte val);
+    virtual void writeOutputA(Byte val);
+    virtual void writeOutputB(Byte val);
 
 
     // Public constructor and destructor
