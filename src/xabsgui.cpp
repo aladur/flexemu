@@ -203,7 +203,7 @@ void XAbstractGui::update_block(int block_number)
 
     if (!(e2video.vico1 & 0x02))
     {
-        CopyToZPixmap((Byte *)img->data, src, depth, (unsigned long *)pen);
+        CopyToZPixmap((Byte *)img->data, src, depth);
 
         if (block_number == e2video.divided_block)
         {
@@ -232,7 +232,7 @@ void XAbstractGui::update_block(int block_number)
     else
     {
         // allways display an empty screen
-        CopyToZPixmap((Byte *)img->data, nullptr, depth, (unsigned long *)pen);
+        CopyToZPixmap((Byte *)img->data, nullptr, depth);
 
         XPutImage(dpy, win, e2gc,
                   image[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
@@ -956,7 +956,7 @@ int XAbstractGui::SetColors(Display *dpy)
             }
         }
 
-        pen[i] = xcolor.pixel;
+        pens[i] = xcolor.pixel;
     }
 
     //gcVal.plane_mask = 0xFFFFFFFF;

@@ -1221,7 +1221,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
         Byte const *src =
             memory.get_video_ram((e2video.vico1 & 0x01) != 0, block_number);
 
-        CopyToZPixmap(copy_block, src, 8, (unsigned long *)pen);
+        CopyToZPixmap(copy_block, src, 8);
 
         SetDIBits(
             hdc, img,
@@ -1260,7 +1260,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        CopyToZPixmap(copy_block, nullptr, 8, (unsigned long *)pen);
+        CopyToZPixmap(copy_block, nullptr, 8);
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,

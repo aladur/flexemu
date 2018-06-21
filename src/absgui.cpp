@@ -111,7 +111,7 @@ void AbstractGui::initialize_conv_tables()
     // the default color table
     for (i = 0; i < (1 << COLOR_PLANES); i++)
     {
-        pen[i] = i;
+        pens[i] = i;
     }
 } // initialize_conv_tables
 
@@ -131,10 +131,9 @@ void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
  * dest    read-write Pointer into result Z-pixel-map.
  * video_ram read-only Pointer into part of video RAM.
  * depth   Color depth of Z-pixel-map, supported values: { 8, 16, 24, 32 }
- * pens    Pointer into color table (64 values)
  */
 void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *video_ram,
-                                int depth, const unsigned long *pens)
+                                int depth)
 {
     int count;              /* Byte counter into video RAM          */
     Byte pixels[6]; /* One byte of video RAM for each plane */

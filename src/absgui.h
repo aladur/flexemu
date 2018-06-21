@@ -92,7 +92,7 @@ protected:
     int timebase;
     int cpu_line_size;
     const char *cpu_line_delim;
-    unsigned long pen[1 << COLOR_PLANES];
+    unsigned long pens[1 << COLOR_PLANES];
     Word conv_2byte_tab[256];
     DWord conv_3byte_tab[256];
     DWord conv_4byte_tab[256];
@@ -106,8 +106,7 @@ protected:
     virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);
 
     void initialize_conv_tables();
-    void CopyToZPixmap(const Byte *dest, Byte const *src,
-                       int depth, const unsigned long *pen);
+    void CopyToZPixmap(const Byte *dest, Byte const *src, int depth);
     void clear_cpuview();
     void redraw_cpuview(const Mc6809CpuStatus &stat);
     void redraw_cpuview_contents(const Mc6809CpuStatus &stat);
