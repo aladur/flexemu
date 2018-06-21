@@ -262,7 +262,7 @@ continue press Reset button",
         hdc = GetDC(hwnd);
 
         for (display_block = 0; display_block < YBLOCKS; display_block++)
-            if (memory.changed[display_block])
+            if (memory.has_changed(display_block))
             {
                 update_block(display_block, hdc);
             }
@@ -1201,16 +1201,15 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     HBITMAP hBitmapOrig;
     int     firstpartHeight; // Height of first part of divided block
     int     startLine;       // start scanline of block
-    Byte    *src;
     HBITMAP img;
     HPALETTE oldPalette;
 
-    if (!memory.changed[block_number])
+    if (!memory.has_changed(block_number))
     {
         return;
     }
 
-    memory.changed[block_number] = false;
+    memory.reset_changed(block_number);
     hMemoryDC = CreateCompatibleDC(nullptr);
     oldPalette = SelectPalette(hdc, palette, TRUE);
     RealizePalette(hdc);
@@ -1219,14 +1218,8 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     if (!(e2video.vico1 & 0x02))
     {
         // copy block from video ram into device independant bitmap
-        if (e2video.vico1 & 0x01)
-        {
-            src = memory.vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
-        }
-        else
-        {
-            src = memory.vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
-        }
+        Byte const *src =
+            memory.get_video_ram((e2video.vico1 & 0x01) != 0, block_number);
 
         CopyToZPixmap(block_number, copy_block, src, 8, (unsigned long *)pen);
 

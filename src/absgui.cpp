@@ -128,13 +128,13 @@ void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
 /*
  * CopyToZPixmap
  * Copy part of the video RAM into a Z-pixel-map.
- * dest    Pointer into result Z-pixel-map
- * src     Pointer into part of video RAM
+ * dest    read-write Pointer into result Z-pixel-map.
+ * src     read-only Pointer into part of video RAM.
  * depth   Color depth of Z-pixel-map, supported values: { 8, 16, 24, 32 }
  * pens    Pointer into color table (64 values)
  */
 void AbstractGui::CopyToZPixmap(int,
-                                Byte *dest, const Byte *src,
+                                const Byte *dest, Byte const *src,
                                 int depth, const unsigned long *pens)
 {
     int count;              /* Byte counter into video RAM          */

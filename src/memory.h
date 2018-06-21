@@ -39,14 +39,9 @@
 
 #define MAX_VRAM        (4 * 16)
 
-class XAbstractGui;
-class Win32Gui;
 
 class Memory : public MemoryTarget
 {
-    friend class XAbstractGui;
-    friend class Win32Gui;
-
 public:
     Memory(bool himem);
     virtual ~Memory();
@@ -180,6 +175,30 @@ public:
         value |= static_cast<Word>(read_byte(address + 1));
 
         return value;
+    }
+
+    inline bool has_changed(int block_number) const
+    {
+        return changed[block_number];
+    }
+
+    inline void reset_changed(int block_number)
+    {
+        changed[block_number] = false;
+    }
+
+    // Get read-only access to video RAM.
+    // This can be used by the GUI to update the video display.
+    inline Byte const *get_video_ram(bool isBank1, int block_number) const
+    {
+        if (isBank1)
+        {
+            return vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
+        }
+        else
+        {
+            return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
+        }
     }
 };
 #endif // MEMORY_INCLUDED

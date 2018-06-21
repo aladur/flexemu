@@ -186,25 +186,18 @@ void XAbstractGui::update_block(int block_number)
     Display     *dpy;
     Window       win;
     XImage      *img;
-    Byte        *src;
 
-    if (!memory.changed[block_number])
+    if (!memory.has_changed(block_number))
     {
         return;
     }
-    memory.changed[block_number] = false;
+    memory.reset_changed(block_number);
 
     dpy = getDisplay();
     win = getWindow();
 
-    if (e2video.vico1 & 0x01)
-    {
-        src = memory.vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
-    }
-    else
-    {
-        src = memory.vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
-    }
+    Byte const *src =
+        memory.get_video_ram((e2video.vico1 & 0x01) != 0, block_number);
 
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 

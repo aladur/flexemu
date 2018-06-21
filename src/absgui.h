@@ -107,7 +107,7 @@ protected:
 
     void initialize_conv_tables();
     void CopyToZPixmap(int block_number,
-                       Byte *dest, const Byte *src,
+                       const Byte *dest, Byte const *src,
                        int depth, const unsigned long *pen);
     void clear_cpuview();
     void redraw_cpuview(const Mc6809CpuStatus &stat);
