@@ -203,8 +203,7 @@ void XAbstractGui::update_block(int block_number)
 
     if (!(e2video.vico1 & 0x02))
     {
-        CopyToZPixmap(block_number, (Byte *)img->data, src, depth,
-                      (unsigned long *)pen);
+        CopyToZPixmap((Byte *)img->data, src, depth, (unsigned long *)pen);
 
         if (block_number == e2video.divided_block)
         {
@@ -233,8 +232,7 @@ void XAbstractGui::update_block(int block_number)
     else
     {
         // allways display an empty screen
-        CopyToZPixmap(block_number, (Byte *)img->data, nullptr, depth,
-                      (unsigned long *)pen);
+        CopyToZPixmap((Byte *)img->data, nullptr, depth, (unsigned long *)pen);
 
         XPutImage(dpy, win, e2gc,
                   image[pixelSizeX - 1][pixelSizeY - 1], 0, 0, 0,
