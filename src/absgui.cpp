@@ -129,20 +129,17 @@ void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
  * CopyToZPixmap
  * Copy part of the video RAM into a Z-pixel-map.
  * dest    read-write Pointer into result Z-pixel-map.
- * src     read-only Pointer into part of video RAM.
+ * video_ram read-only Pointer into part of video RAM.
  * depth   Color depth of Z-pixel-map, supported values: { 8, 16, 24, 32 }
  * pens    Pointer into color table (64 values)
  */
-void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *src,
+void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *video_ram,
                                 int depth, const unsigned long *pens)
 {
     int count;              /* Byte counter into video RAM          */
-    const Byte *videoRam;   /* Pointer into video RAM               */
     Byte pixels[6]; /* One byte of video RAM for each plane */
 
     memset(pixels, 0, sizeof(pixels));
-
-    videoRam = src;
 
     for (count = 0; count < YBLOCK_SIZE; ++count)
     {
@@ -154,25 +151,25 @@ void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *src,
             isEndOfRasterLine = true;
         }
 
-        if (src != nullptr)
+        if (video_ram != nullptr)
         {
 
-            pixels[0] = videoRam[0];
+            pixels[0] = video_ram[0];
 
             if (nColors > 2)
             {
-                pixels[2] = videoRam[VIDEORAM_SIZE];
-                pixels[4] = videoRam[VIDEORAM_SIZE * 2];
+                pixels[2] = video_ram[VIDEORAM_SIZE];
+                pixels[4] = video_ram[VIDEORAM_SIZE * 2];
 
                 if (nColors > 8)
                 {
-                    pixels[1] = videoRam[VIDEORAM_SIZE * 3];
-                    pixels[3] = videoRam[VIDEORAM_SIZE * 4];
-                    pixels[5] = videoRam[VIDEORAM_SIZE * 5];
+                    pixels[1] = video_ram[VIDEORAM_SIZE * 3];
+                    pixels[3] = video_ram[VIDEORAM_SIZE * 4];
+                    pixels[5] = video_ram[VIDEORAM_SIZE * 5];
                 }
             }
 
-            videoRam++;
+            video_ram++;
         }
 
         /* Use MSBit first */
@@ -180,7 +177,7 @@ void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *src,
         {
             unsigned int penIndex = 0; /* calculated pen index */
 
-            if (src != nullptr)
+            if (video_ram != nullptr)
             {
                 if (pixels[0] & pixelBitMask)
                 {
