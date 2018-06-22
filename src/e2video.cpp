@@ -39,7 +39,6 @@ void E2video::resetIo()
 {
     vico1            = 0;
     vico2            = 0;
-    divided_block    = -1;
 }
 
 Byte E2video::readIo(Word)
@@ -61,15 +60,6 @@ void E2video::writeIo(Word offset, Byte val)
     {
         vico2 = val;
         memory.init_blocks_to_update();
-
-        if (YBLOCKS != 1 && vico2 % BLOCKHEIGHT)
-        {
-            divided_block = (Word)(vico2 / BLOCKHEIGHT);
-        }
-        else
-        {
-            divided_block = -1;    // means: no such block
-        }
     }
 }
 

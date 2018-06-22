@@ -934,6 +934,19 @@ GuiType AbstractGui::gui_type()
     return GuiType::NONE;
 }
 
+Word AbstractGui::get_divided_block() const
+{
+    if ((e2video.vico2 % BLOCKHEIGHT) == 0)
+    {
+        // With the current scrolling status there is no divided block
+        return -1;
+    }
+    else
+    {
+        return (Word)e2video.vico2 / BLOCKHEIGHT;
+    }
+}
+
 AbstractGui::AbstractGui(
     Mc6809 &x_cpu,
     Memory &x_memory,

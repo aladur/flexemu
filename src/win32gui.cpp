@@ -1231,7 +1231,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
         startLine = ((WINDOWHEIGHT - e2video.vico2 +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
-        if (block_number == e2video.divided_block)
+        if (block_number == get_divided_block())
         {
             firstpartHeight = e2video.vico2 % BLOCKHEIGHT;
             // first half display on the bottom of the window

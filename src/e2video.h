@@ -39,7 +39,6 @@ protected:
 
 public:
     Byte        vico1, vico2;
-    SWord       divided_block;
 
 public:
 

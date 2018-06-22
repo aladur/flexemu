@@ -112,7 +112,7 @@ protected:
     void redraw_cpuview_contents(const Mc6809CpuStatus &stat);
     void text(int x, int y, const char *str, int rev = 0);
     void set_line_delim(const char *delim);
-    // public interface
+    Word get_divided_block() const;
 
 public:
     virtual void update_cpuview(const Mc6809CpuStatus &stat);
