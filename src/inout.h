@@ -28,8 +28,6 @@
 #include "misc1.h"
 #include "flexemu.h"
 #include <string>
-#include <deque>
-#include <mutex>
 
 
 class E2floppy;
@@ -49,7 +47,6 @@ class Pia1;
 class Inout
 {
 private:
-    std::deque<Byte> key_buffer_serial;
     E2floppy &fdc;
     Mc146818 &rtc;
     AbstractGui *gui;
@@ -76,19 +73,10 @@ public:
     bool    is_gui_present();
     void    main_loop();
 
-protected:
-    std::mutex parallel_mutex;
-
     // Floppy interface
 public:
     void    get_drive_status(DiskStatus status[4]);
     std::string get_drive_info(int floppyIndex);
-
-protected:
-    int deltaX, deltaY;
-    unsigned int buttonMask;
-    bool    newValues;
-    std::mutex joystick_mutex;
 
 public:
     Inout() = delete;
