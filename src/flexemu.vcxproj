@@ -192,7 +192,6 @@
     <ClCompile Include="da6809.cpp" />
     <ClCompile Include="drisel.cpp" />
     <ClCompile Include="e2floppy.cpp" />
-    <ClCompile Include="e2video.cpp" />
     <ClCompile Include="fcinfo.cpp" />
     <ClCompile Include="fcopyman.cpp" />
     <ClCompile Include="fdirent.cpp" />
@@ -221,6 +220,8 @@
     <ClCompile Include="pia2.cpp" />
     <ClCompile Include="rfilecnt.cpp" />
     <ClCompile Include="schedule.cpp" />
+    <ClCompile Include="vico1.cpp" />
+    <ClCompile Include="vico2.cpp" />
     <ClCompile Include="wd1793.cpp" />
     <ClCompile Include="win32gui.cpp" />
   </ItemGroup>
@@ -275,7 +276,6 @@
     <ClInclude Include="drisel.h" />
     <ClInclude Include="e2.h" />
     <ClInclude Include="e2floppy.h" />
-    <ClInclude Include="e2video.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdirent.h" />
@@ -314,6 +314,8 @@
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sguiopts.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="vico1.h" />
+    <ClInclude Include="vico2.h" />
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="win32gui.h" />
     <ClInclude Include="winctxt.h" />

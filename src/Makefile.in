@@ -115,32 +115,32 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
 	flexemu-bjoystck.$(OBJEXT) flexemu-colors.$(OBJEXT) \
 	flexemu-command.$(OBJEXT) flexemu-da6809.$(OBJEXT) \
-	flexemu-e2floppy.$(OBJEXT) flexemu-e2video.$(OBJEXT) \
-	flexemu-fcinfo.$(OBJEXT) flexemu-fcopyman.$(OBJEXT) \
-	flexemu-fdirent.$(OBJEXT) flexemu-ffilebuf.$(OBJEXT) \
-	flexemu-ffilecnt.$(OBJEXT) flexemu-flexerr.$(OBJEXT) \
-	flexemu-inout.$(OBJEXT) flexemu-memory.$(OBJEXT) \
-	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
-	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-misc1.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
-	flexemu-ndircont.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
-	flexemu-pia2.$(OBJEXT) flexemu-rfilecnt.$(OBJEXT) \
-	flexemu-wd1793.$(OBJEXT) flexemu-win32gui.$(OBJEXT) \
-	flexemu-xabsgui.$(OBJEXT) flexemu-xres.$(OBJEXT) \
-	flexemu-xtgui.$(OBJEXT) flexemu-brcfile.$(OBJEXT) \
-	flexemu-benv.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
-	flexemu-bmembuf.$(OBJEXT) flexemu-bregistr.$(OBJEXT) \
-	flexemu-bcommand.$(OBJEXT) flexemu-cacttrns.$(OBJEXT) \
-	flexemu-csetfreq.$(OBJEXT) flexemu-btime.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-btimer.$(OBJEXT) \
-	flexemu-clogfile.$(OBJEXT) flexemu-bfileptr.$(OBJEXT) \
-	flexemu-ifilecnt.$(OBJEXT) flexemu-iffilcnt.$(OBJEXT) \
-	flexemu-fileread.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-buint.$(OBJEXT) flexemu-cvtwchar.$(OBJEXT) \
-	flexemu-joystick.$(OBJEXT) flexemu-apprun.$(OBJEXT) \
-	flexemu-keyboard.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
-	flexemu-drisel.$(OBJEXT)
+	flexemu-e2floppy.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
+	flexemu-vico2.$(OBJEXT) flexemu-fcinfo.$(OBJEXT) \
+	flexemu-fcopyman.$(OBJEXT) flexemu-fdirent.$(OBJEXT) \
+	flexemu-ffilebuf.$(OBJEXT) flexemu-ffilecnt.$(OBJEXT) \
+	flexemu-flexerr.$(OBJEXT) flexemu-inout.$(OBJEXT) \
+	flexemu-memory.$(OBJEXT) flexemu-main.$(OBJEXT) \
+	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
+	flexemu-mc6809in.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-misc1.$(OBJEXT) \
+	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
+	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
+	flexemu-rfilecnt.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
+	flexemu-win32gui.$(OBJEXT) flexemu-xabsgui.$(OBJEXT) \
+	flexemu-xres.$(OBJEXT) flexemu-xtgui.$(OBJEXT) \
+	flexemu-brcfile.$(OBJEXT) flexemu-benv.$(OBJEXT) \
+	flexemu-foptman.$(OBJEXT) flexemu-bmembuf.$(OBJEXT) \
+	flexemu-bregistr.$(OBJEXT) flexemu-bcommand.$(OBJEXT) \
+	flexemu-cacttrns.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
+	flexemu-btime.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
+	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
+	flexemu-iffilcnt.$(OBJEXT) flexemu-fileread.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT) \
+	flexemu-cvtwchar.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
+	flexemu-apprun.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
+	flexemu-bytereg.$(OBJEXT) flexemu-drisel.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -511,7 +511,7 @@ bfileptr.h bregistr.h sguiopts.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
-command.cpp da6809.cpp e2floppy.cpp e2video.cpp fcinfo.cpp \
+command.cpp da6809.cpp e2floppy.cpp vico1.cpp vico2.cpp fcinfo.cpp \
 fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
 memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
 mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
@@ -523,7 +523,7 @@ mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
-da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
+da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
@@ -715,7 +715,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-da6809.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-drisel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-e2floppy.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-e2video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fcinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fcopyman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fdirent.Po@am__quote@
@@ -744,6 +743,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-rfilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-wd1793.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-win32gui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-xabsgui.Po@am__quote@
@@ -959,19 +960,33 @@ flexemu-e2floppy.obj: e2floppy.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-e2floppy.obj `if test -f 'e2floppy.cpp'; then $(CYGPATH_W) 'e2floppy.cpp'; else $(CYGPATH_W) '$(srcdir)/e2floppy.cpp'; fi`
 
-flexemu-e2video.o: e2video.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-e2video.o -MD -MP -MF $(DEPDIR)/flexemu-e2video.Tpo -c -o flexemu-e2video.o `test -f 'e2video.cpp' || echo '$(srcdir)/'`e2video.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-e2video.Tpo $(DEPDIR)/flexemu-e2video.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='e2video.cpp' object='flexemu-e2video.o' libtool=no @AMDEPBACKSLASH@
+flexemu-vico1.o: vico1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-vico1.o -MD -MP -MF $(DEPDIR)/flexemu-vico1.Tpo -c -o flexemu-vico1.o `test -f 'vico1.cpp' || echo '$(srcdir)/'`vico1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-vico1.Tpo $(DEPDIR)/flexemu-vico1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='vico1.cpp' object='flexemu-vico1.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-e2video.o `test -f 'e2video.cpp' || echo '$(srcdir)/'`e2video.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-vico1.o `test -f 'vico1.cpp' || echo '$(srcdir)/'`vico1.cpp
 
-flexemu-e2video.obj: e2video.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-e2video.obj -MD -MP -MF $(DEPDIR)/flexemu-e2video.Tpo -c -o flexemu-e2video.obj `if test -f 'e2video.cpp'; then $(CYGPATH_W) 'e2video.cpp'; else $(CYGPATH_W) '$(srcdir)/e2video.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-e2video.Tpo $(DEPDIR)/flexemu-e2video.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='e2video.cpp' object='flexemu-e2video.obj' libtool=no @AMDEPBACKSLASH@
+flexemu-vico1.obj: vico1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-vico1.obj -MD -MP -MF $(DEPDIR)/flexemu-vico1.Tpo -c -o flexemu-vico1.obj `if test -f 'vico1.cpp'; then $(CYGPATH_W) 'vico1.cpp'; else $(CYGPATH_W) '$(srcdir)/vico1.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-vico1.Tpo $(DEPDIR)/flexemu-vico1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='vico1.cpp' object='flexemu-vico1.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-e2video.obj `if test -f 'e2video.cpp'; then $(CYGPATH_W) 'e2video.cpp'; else $(CYGPATH_W) '$(srcdir)/e2video.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-vico1.obj `if test -f 'vico1.cpp'; then $(CYGPATH_W) 'vico1.cpp'; else $(CYGPATH_W) '$(srcdir)/vico1.cpp'; fi`
+
+flexemu-vico2.o: vico2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-vico2.o -MD -MP -MF $(DEPDIR)/flexemu-vico2.Tpo -c -o flexemu-vico2.o `test -f 'vico2.cpp' || echo '$(srcdir)/'`vico2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-vico2.Tpo $(DEPDIR)/flexemu-vico2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='vico2.cpp' object='flexemu-vico2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-vico2.o `test -f 'vico2.cpp' || echo '$(srcdir)/'`vico2.cpp
+
+flexemu-vico2.obj: vico2.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-vico2.obj -MD -MP -MF $(DEPDIR)/flexemu-vico2.Tpo -c -o flexemu-vico2.obj `if test -f 'vico2.cpp'; then $(CYGPATH_W) 'vico2.cpp'; else $(CYGPATH_W) '$(srcdir)/vico2.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-vico2.Tpo $(DEPDIR)/flexemu-vico2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='vico2.cpp' object='flexemu-vico2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-vico2.obj `if test -f 'vico2.cpp'; then $(CYGPATH_W) 'vico2.cpp'; else $(CYGPATH_W) '$(srcdir)/vico2.cpp'; fi`
 
 flexemu-fcinfo.o: fcinfo.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fcinfo.o -MD -MP -MF $(DEPDIR)/flexemu-fcinfo.Tpo -c -o flexemu-fcinfo.o `test -f 'fcinfo.cpp' || echo '$(srcdir)/'`fcinfo.cpp

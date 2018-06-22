@@ -45,7 +45,8 @@ class Mc6809;
 class Memory;
 class Mc6821;
 class Mc146818;
-class E2video;
+class VideoControl1;
+class VideoControl2;
 class AbstractGui;
 class Scheduler;
 class JoystickIO;
@@ -77,7 +78,8 @@ public:
 public:
     AbstractGui *create_gui(JoystickIO &joystickIO,
                             KeyboardIO &keyboardIO, Pia1 &pia1,
-                            Memory &memory, E2video &video,
+                            Memory &memory,
+                            VideoControl1 &vico1, VideoControl2 &vico2,
                             struct sGuiOptions &options);
     static void s_exec_signal(int sig_no);
 

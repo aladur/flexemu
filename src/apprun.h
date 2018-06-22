@@ -39,7 +39,8 @@
 #include "pia2.h"
 #include "e2floppy.h"
 #include "command.h"
-#include "e2video.h"
+#include "vico1.h"
+#include "vico2.h"
 #include "mc146818.h"
 #include "drisel.h"
 
@@ -75,7 +76,8 @@ private:
     Pia2 pia2;
     DriveSelect drisel;
     Command command;
-    E2video video;
+    VideoControl1 vico1;
+    VideoControl2 vico2;
 };
 
 #endif

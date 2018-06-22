@@ -68,7 +68,8 @@
 #define GENIO_MASK  0xfc00   /* general mask for I/O (One 1K Block) */
 #define GENIO_BASE  0xfc00
 #define ACIA1_BASE  0xfcf4
-#define VICO_BASE   0xfcf6
+#define VICO1_BASE  0xfcf6
+#define VICO2_BASE  0xfcf7
 #define ACIA1_BASE  0xfcf4
 #define VICO_BASE   0xfcf6
 #define PIA1_BASE   0xfcf0

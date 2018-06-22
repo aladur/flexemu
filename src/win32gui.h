@@ -36,7 +36,8 @@ class Mc6809;
 class Memory;
 class Scheduler;
 class Inout;
-class E2video;
+class VideoControl1;
+class VideoControl2;
 class Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
@@ -261,7 +262,8 @@ public:
     // Public constructor and destructor
 public:
     Win32Gui(
-        Mc6809 &, Memory &, Scheduler &, Inout &, E2video &, JoystickIO &,
+        Mc6809 &, Memory &, Scheduler &, Inout &,
+        VideoControl1 &, VideoControl2 &, JoystickIO &,
         KeyboardIO &, Pia1 &, struct sGuiOptions &);
     virtual ~Win32Gui();
 

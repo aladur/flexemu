@@ -149,6 +149,12 @@ void Memory::uninit_memory()
     ioDevices.clear();
 }
 
+// init_blocks_to_update
+//
+// Mark all display block as dirty. This refreshes the whole
+// video display.
+// This may happen if e.g. vico1 or vico2 has been changed.
+
 void Memory::init_blocks_to_update()
 {
     short display_block;

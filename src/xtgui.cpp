@@ -33,7 +33,8 @@
 #include "bfileptr.h"
 #include "csetfreq.h"
 #include "clogfile.h"
-#include "e2video.h"
+#include "vico1.h"
+#include "vico2.h"
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "inout.h"
@@ -1695,13 +1696,14 @@ XtGui::XtGui(
     Memory &x_memory,
     Scheduler &x_scheduler,
     Inout &x_inout,
-    E2video &x_video,
+    VideoControl1 &x_vico1,
+    VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
     struct sGuiOptions &x_options) :
-    XAbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
-                 x_keyboardIO, x_options), pia1(x_pia1)
+    XAbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
+                 x_joystickIO, x_keyboardIO, x_options), pia1(x_pia1)
 {
     initialize(options);
 }

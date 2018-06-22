@@ -25,7 +25,8 @@
 #include "misc1.h"
 #include "pia1.h"
 #include "absgui.h"
-#include "e2video.h"
+#include "vico1.h"
+#include "vico2.h"
 #include "mc6809.h"
 #include "memory.h"
 #include "inout.h"
@@ -936,14 +937,14 @@ GuiType AbstractGui::gui_type()
 
 Word AbstractGui::get_divided_block() const
 {
-    if ((e2video.vico2 % BLOCKHEIGHT) == 0)
+    if ((vico2.get_value() % BLOCKHEIGHT) == 0)
     {
         // With the current scrolling status there is no divided block
         return -1;
     }
     else
     {
-        return (Word)e2video.vico2 / BLOCKHEIGHT;
+        return (Word)vico2.get_value() / BLOCKHEIGHT;
     }
 }
 
@@ -952,17 +953,17 @@ AbstractGui::AbstractGui(
     Memory &x_memory,
     Scheduler &x_scheduler,
     Inout &x_inout,
-    E2video &x_video,
+    VideoControl1 &x_vico1,
+    VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     struct sGuiOptions &x_options) :
     cpu(x_cpu), memory(x_memory), scheduler(x_scheduler), inout(x_inout),
-    e2video(x_video), joystickIO(x_joystickIO), keyboardIO(x_keyboardIO),
-    options(x_options),
+    vico1(x_vico1), vico2(x_vico2), joystickIO(x_joystickIO),
+    keyboardIO(x_keyboardIO), options(x_options),
     exit_flag(false),
     cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
 {
-    e2video.resetIo();
 }
 
 AbstractGui::~AbstractGui()

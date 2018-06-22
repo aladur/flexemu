@@ -44,7 +44,8 @@
 
 #ifdef HAVE_X11
 
-#include "e2video.h"
+#include "vico1.h"
+#include "vico2.h"
 #include "mc6809.h"
 #include "inout.h"
 #include "schedule.h"
@@ -197,11 +198,11 @@ void XAbstractGui::update_block(int block_number)
     win = getWindow();
 
     Byte const *src =
-        memory.get_video_ram((e2video.vico1 & 0x01) != 0, block_number);
+        memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
 
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 
-    if (!(e2video.vico1 & 0x02))
+    if (!(vico1.get_value() & 0x02))
     {
         CopyToZPixmap((Byte *)img->data, src, depth);
 
@@ -210,14 +211,14 @@ void XAbstractGui::update_block(int block_number)
             // first half display on the bottom of the window
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0, (WINDOWHEIGHT -
-                                     (e2video.vico2 % BLOCKHEIGHT)) * pixelSizeY,
+                                (vico2.get_value() % BLOCKHEIGHT)) * pixelSizeY,
                       BLOCKWIDTH * pixelSizeX,
-                      (e2video.vico2 % BLOCKHEIGHT) * pixelSizeY);
+                      (vico2.get_value() % BLOCKHEIGHT) * pixelSizeY);
             // second half display on the top of window
             XPutImage(dpy, win, e2gc,
-                      img, 0, (e2video.vico2 % YBLOCKS) * pixelSizeY,
+                      img, 0, (vico2.get_value() % YBLOCKS) * pixelSizeY,
                       0, 0, BLOCKWIDTH * pixelSizeX,
-                      (BLOCKHEIGHT - (e2video.vico2 % BLOCKHEIGHT)) *
+                      (BLOCKHEIGHT - (vico2.get_value() % BLOCKHEIGHT)) *
                       pixelSizeY);
         }
         else
@@ -225,7 +226,7 @@ void XAbstractGui::update_block(int block_number)
             XPutImage(dpy, win, e2gc,
                       img, 0, 0, 0,
                       ((block_number * BLOCKHEIGHT + WINDOWHEIGHT -
-                        e2video.vico2) % WINDOWHEIGHT) * pixelSizeY,
+                        vico2.get_value()) % WINDOWHEIGHT) * pixelSizeY,
                       BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY);
         }
     }
@@ -764,12 +765,13 @@ XAbstractGui::XAbstractGui(
     Memory &x_memory,
     Scheduler &x_scheduler,
     Inout &x_inout,
-    E2video &x_video,
+    VideoControl1 &x_vico1,
+    VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
-                x_keyboardIO, x_options),
+    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
+                x_joystickIO, x_keyboardIO, x_options),
     cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
 {
 }

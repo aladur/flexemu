@@ -35,7 +35,8 @@
 #include "resource.h"
 #include "win32gui.h"
 #include "inout.h"
-#include "e2video.h"
+#include "vico1.h"
+#include "vico2.h"
 #include "schedule.h"
 #include "csetfreq.h"
 #include "clogfile.h"
@@ -1215,11 +1216,11 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     RealizePalette(hdc);
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 
-    if (!(e2video.vico1 & 0x02))
+    if (!(vico1.get_value() & 0x02))
     {
         // copy block from video ram into device independant bitmap
         Byte const *src =
-            memory.get_video_ram((e2video.vico1 & 0x01) != 0, block_number);
+            memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
 
         CopyToZPixmap(copy_block, src, 8);
 
@@ -1228,12 +1229,12 @@ void Win32Gui::update_block(int block_number, HDC hdc)
             0, BLOCKHEIGHT * pixelSizeY,
             copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
-        startLine = ((WINDOWHEIGHT - e2video.vico2 +
+        startLine = ((WINDOWHEIGHT - vico2.get_value() +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
         if (block_number == get_divided_block())
         {
-            firstpartHeight = e2video.vico2 % BLOCKHEIGHT;
+            firstpartHeight = vico2.get_value() % BLOCKHEIGHT;
             // first half display on the bottom of the window
             BitBlt(hdc, 0, startLine,
                    BLOCKWIDTH * pixelSizeX,
@@ -1903,13 +1904,14 @@ Win32Gui::Win32Gui(
     Memory &x_memory,
     Scheduler &x_scheduler,
     Inout  &x_inout,
-    E2video &x_video,
+    VideoControl1 &x_vico1,
+    VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
     Pia1 &x_pia1,
     struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_video, x_joystickIO,
-                x_keyboardIO, x_options),
+    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
+                x_joystickIO, x_keyboardIO, x_options),
     pia1(x_pia1), cpu_popped_up(false), oldX(0), oldY(0),
     idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
 {

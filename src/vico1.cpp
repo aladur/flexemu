@@ -1,8 +1,9 @@
 /*
-    e2video.h
+    vico1.cpp
+
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2018  W. Schwotzer
+    Copyright (C) 2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,45 +21,23 @@
 */
 
 
-
-#ifndef E2VIDEO_INCLUDED
-#define E2VIDEO_INCLUDED
-
 #include "misc1.h"
-#include "iodevice.h"
+#include "vico1.h"
+#include "memory.h"
 
-class Memory;
 
-
-class E2video : public IoDevice
+VideoControl1::VideoControl1(Memory &x_memory) : memory(x_memory), value(0)
 {
+}
 
-    // Internal registers
-protected:
-    Memory &memory;
+VideoControl1::~VideoControl1()
+{
+}
 
-public:
-    Byte        vico1, vico2;
+void VideoControl1::requestWriteValue(Byte new_value)
+{
+    value = new_value;
 
-public:
-
-    void resetIo() override;
-    Byte readIo(Word offset) override;
-    void writeIo(Word offset, Byte val) override;
-    const char *getName() override
-    {
-        return "e2video";
-    };
-    int sizeOfIo() override
-    {
-        return 2;
-    }
-
-public:
-    E2video(Memory &x_memory);
-    virtual ~E2video();
-
-};
-
-#endif // E2VIDEO_INCLUDED
+    memory.init_blocks_to_update();
+}
 

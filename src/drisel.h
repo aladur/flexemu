@@ -69,6 +69,8 @@ public:
     DriveSelect() = delete;
     DriveSelect(E2floppy &fdc);
     virtual ~DriveSelect();
+
+    void resetIo() override;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /*
-    bytereg.cpp
+    vico2.cpp
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -22,49 +22,22 @@
 
 
 #include "misc1.h"
-#include "bytereg.h"
+#include "vico2.h"
+#include "memory.h"
 
-ByteRegister::ByteRegister()
+
+VideoControl2::VideoControl2(Memory &x_memory) : memory(x_memory), value(0)
 {
 }
 
-ByteRegister::~ByteRegister()
+VideoControl2::~VideoControl2()
 {
 }
 
-Byte ByteRegister::requestReadValue()
+void VideoControl2::requestWriteValue(Byte new_value)
 {
-    // If data bus for read is not addressed typically
-    // 0xff is returned due to pull-up resistors.
-    return 0xff;
-}
+    value = new_value;
 
-void ByteRegister::requestWriteValue(Byte)
-{
-}
-
-void ByteRegister::resetIo()
-{
-    // default: Ignore.
-    // Register not necessarily has to be connected with /RESET
-}
-
-Byte ByteRegister::readIo(Word offset)
-{
-    if (offset == 0)
-    {
-        return requestReadValue();
-    }
-
-    return 0;   // default, should never be used!
-}
-
-
-void ByteRegister::writeIo(Word offset, Byte value)
-{
-    if (offset == 0)
-    {
-        requestWriteValue(value);
-    }
+    memory.init_blocks_to_update();
 }
 

@@ -234,7 +234,8 @@ void Inout::initTerminalIO(Word reset_key)
 
 AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
                                KeyboardIO &keyboardIO, Pia1 &pia1,
-                               Memory &memory, E2video &video,
+                               Memory &memory,
+                               VideoControl1 &vico1, VideoControl2 &vico2,
                                struct sGuiOptions &options)
 {
 #ifdef UNIT_TEST
@@ -242,7 +243,8 @@ AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
     (void)keyboardIO;
     (void)pia1;
     (void)memory;
-    (void)video;
+    (void)vico1;
+    (void)vico2;
     (void)options;
 #else
     // Only allow to open Gui once.
@@ -253,14 +255,14 @@ AbstractGui *Inout::create_gui(JoystickIO &joystickIO,
 #ifdef HAVE_XTK
 
             case GuiType::XTOOLKIT:
-                gui = new XtGui(cpu, memory, scheduler, *this, video,
+                gui = new XtGui(cpu, memory, scheduler, *this, vico1, vico2,
                                 joystickIO, keyboardIO, pia1, options);
                 break;
 #endif
 #ifdef _WIN32
 
             case GuiType::WINDOWS:
-                gui = new Win32Gui(cpu, memory, scheduler, *this, video,
+                gui = new Win32Gui(cpu, memory, scheduler, *this, vico1, vico2,
                                    joystickIO, keyboardIO, pia1, options);
                 break;
 #endif

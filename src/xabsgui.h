@@ -110,8 +110,16 @@ public:
 
 public:
 
-    XAbstractGui(Mc6809 &, Memory &, Scheduler &, Inout &, E2video &,
-                 JoystickIO &, KeyboardIO &, struct sGuiOptions &);
+    XAbstractGui(
+            Mc6809 &,
+            Memory &,
+            Scheduler &,
+            Inout &,
+            VideoControl1 &,
+            VideoControl2 &,
+            JoystickIO &,
+            KeyboardIO &,
+            struct sGuiOptions &);
     virtual ~XAbstractGui();
 };
 

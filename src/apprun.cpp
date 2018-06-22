@@ -60,7 +60,8 @@ ApplicationRunner::ApplicationRunner(
     pia2(cpu, keyboardIO, joystickIO),
     drisel(fdc),
     command(inout, cpu, scheduler, fdc),
-    video(memory)
+    vico1(memory),
+    vico2(memory)
 {
 }
 
@@ -77,7 +78,7 @@ int ApplicationRunner::run()
     if (!(options.term_mode && inout.is_terminal_supported()))
     {
         inout.create_gui(joystickIO, keyboardIO, pia1,
-                      memory, video, guiOptions);
+                      memory, vico1, vico2, guiOptions);
     }
 
     // Add all memory mapped I/O devices to memory.
@@ -92,7 +93,8 @@ int ApplicationRunner::run()
     memory.add_io_device(drisel, DRISEL_BASE+2);
     memory.add_io_device(drisel, DRISEL_BASE+3);
     memory.add_io_device(command, COMM_BASE);
-    memory.add_io_device(video, VICO_BASE);
+    memory.add_io_device(vico1, VICO1_BASE);
+    memory.add_io_device(vico2, VICO2_BASE);
     // MC146818: Only part of the device is mapped into memory space.
     memory.add_io_device(rtc, RTC_BASE, RTC_HIGH - RTC_BASE + 1);
 

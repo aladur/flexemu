@@ -84,3 +84,8 @@ void DriveSelect::requestWriteValue(Byte value)
     fdc.select_drive(selected);
 }
 
+void DriveSelect::resetIo()
+{
+    requestWriteValue(0);
+}
+

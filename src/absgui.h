@@ -58,7 +58,8 @@ class Mc6809;
 class Scheduler;
 class Inout;
 class Memory;
-class E2video;
+class VideoControl1;
+class VideoControl2;
 class Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
@@ -73,7 +74,8 @@ protected:
     Memory &memory; // Reference to memory (incl. video memory access)
     Scheduler &scheduler; // Reference to scheduler
     Inout &inout; // Reference to IO-class handling input/output
-    E2video &e2video;// Reference to video control registers
+    VideoControl1 &vico1; // Reference to video control register 1
+    VideoControl2 &vico2; // Reference to video control register 2
     JoystickIO &joystickIO; // Reference to joystick data provider.
     KeyboardIO &keyboardIO; // Reference to keyboard data provider.
     const char *program_name;
@@ -132,7 +134,8 @@ public:
         Memory &x_memory,
         Scheduler &x_scheduler,
         Inout &x_inout,
-        E2video &x_video,
+        VideoControl1 &x_vico1,
+        VideoControl2 &x_vico2,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
         struct sGuiOptions &options);

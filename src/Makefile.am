@@ -44,7 +44,7 @@ bfileptr.h bregistr.h sguiopts.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
-command.cpp da6809.cpp e2floppy.cpp e2video.cpp fcinfo.cpp \
+command.cpp da6809.cpp e2floppy.cpp vico1.cpp vico2.cpp fcinfo.cpp \
 fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
 memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
 mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
@@ -56,7 +56,7 @@ mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
-da6809.h debug.h e2.h e2floppy.h e2video.h engine.h fcinfo.h \
+da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \

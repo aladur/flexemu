@@ -1,9 +1,9 @@
 /*
-    e2video.cpp
+    vico2.h
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2018  W. Schwotzer
+    Copyright (C) 2018  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,45 +21,45 @@
 */
 
 
+#ifndef VICO2_INCLUDED
+#define VICO2_INCLUDED
+
 #include "misc1.h"
-#include "e2.h"
-#include "e2video.h"
-#include "memory.h"
+#include "bytereg.h"
 
+class Memory;
 
-E2video::E2video(Memory &x_memory) : memory(x_memory)
+// VideoControl2 emulates the Eurocom II VICO2 register,
+// a single byte write-only register (Octal D Flop-Flop
+// SN74LS377). It defines which video raster line is displayed
+// first on the video display. All 8 bits are used for 256 
+// raster lines.
+
+class VideoControl2 : public ByteRegister
 {
-}
+private:
 
-E2video::~E2video()
-{
-}
+    Memory &memory;
+    Byte value;
 
-void E2video::resetIo()
-{
-    vico1            = 0;
-    vico2            = 0;
-}
+    void requestWriteValue(Byte value) override;
 
-Byte E2video::readIo(Word)
-{
-    return 0xff;    // there is nothing to be read !
-}
+public:
 
-// if bit 1 of vico1 is set, no video ram is selected and all one's is
-// displayed on the window like on the real Eurocom II
+    VideoControl2() = delete;
+    VideoControl2(Memory &memory);
+    virtual ~VideoControl2();
 
-void E2video::writeIo(Word offset, Byte val)
-{
-    if (offset == 0)
+    const char *getName() override
     {
-        vico1 = val & 0x03;
-        memory.init_blocks_to_update();
+        return "vico2";
     }
-    else
+
+    Byte get_value() const
     {
-        vico2 = val;
-        memory.init_blocks_to_update();
+        return value;
     }
-}
+};
+
+#endif
 
