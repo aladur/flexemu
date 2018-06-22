@@ -34,6 +34,7 @@
 #include "mc6809st.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include "terminal.h"
 
 Word internal_c2bt[8] =
 {
@@ -916,7 +917,7 @@ void AbstractGui::set_bell(int)
 
 void AbstractGui::output_to_terminal()
 {
-    if (inout.is_terminal_supported() && switch_sp)
+    if (terminalIO.is_terminal_supported() && switch_sp)
     {
         cpu.set_serpar(0xff);
     }
@@ -957,12 +958,21 @@ AbstractGui::AbstractGui(
     VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
-    struct sGuiOptions &x_options) :
-    cpu(x_cpu), memory(x_memory), scheduler(x_scheduler), inout(x_inout),
-    vico1(x_vico1), vico2(x_vico2), joystickIO(x_joystickIO),
-    keyboardIO(x_keyboardIO), options(x_options),
-    exit_flag(false),
-    cpu_line_size(CPU_LINE_SIZE), cpu_line_delim("\n")
+    TerminalIO &x_terminalIO,
+    struct sGuiOptions &x_options)
+        : cpu(x_cpu)
+        , memory(x_memory)
+        , scheduler(x_scheduler)
+        , inout(x_inout)
+        , vico1(x_vico1)
+        , vico2(x_vico2)
+        , joystickIO(x_joystickIO)
+        , keyboardIO(x_keyboardIO)
+        , terminalIO(x_terminalIO)
+        , options(x_options)
+        , exit_flag(false)
+        , cpu_line_size(CPU_LINE_SIZE)
+        , cpu_line_delim("\n")
 {
 }
 

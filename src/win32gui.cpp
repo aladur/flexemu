@@ -44,6 +44,7 @@
 #include "mc6809st.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include "terminal.h"
 #include "pia1.h"
 #include "winctxt.h"
 #include "cacttrns.h"
@@ -1908,12 +1909,27 @@ Win32Gui::Win32Gui(
     VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
+    TerminalIO &x_terminalIO,
     Pia1 &x_pia1,
-    struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
-                x_joystickIO, x_keyboardIO, x_options),
-    pia1(x_pia1), cpu_popped_up(false), oldX(0), oldY(0),
-    idTimer(0), is_use_undocumented(false), cpu_stat(nullptr)
+    struct sGuiOptions &x_options)
+        : AbstractGui(
+               x_cpu
+             , x_memory
+             , x_scheduler
+             , x_inout
+             , x_vico1
+             , x_vico2
+             , x_joystickIO
+             , x_keyboardIO
+             , x_terminalIO
+             , x_options)
+        , pia1(x_pia1)
+        , cpu_popped_up(false)
+        , oldX(0)
+        , oldY(0)
+        , idTimer(0)
+        , is_use_undocumented(false)
+        , cpu_stat(nullptr)
 {
     initialize(options);
 }

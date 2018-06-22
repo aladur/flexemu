@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include "mc6850.h"
 
-class Inout;
+class TerminalIO;
 class Mc6809;
 
 class Acia1 : public Mc6850
@@ -37,7 +37,7 @@ class Acia1 : public Mc6850
 protected:
 
     Mc6809 &cpu;
-    Inout &inout;
+    TerminalIO &terminalIO;
 
 public:
     // read data from serial line
@@ -62,7 +62,8 @@ public:
     // Public constructor and destructor
 public:
 
-    Acia1(Inout &x_io, Mc6809 &x_cpu);
+    Acia1() = delete;
+    Acia1(TerminalIO &x_terminalIO, Mc6809 &x_cpu);
     virtual             ~Acia1();
 
 };

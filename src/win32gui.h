@@ -41,6 +41,7 @@ class VideoControl2;
 class Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
+class TerminalIO;
 class Pia1;
 
 // maybe someone has forgotten to define this:
@@ -259,14 +260,20 @@ public:
     void    main_loop();
     GuiType gui_type();
 
-    // Public constructor and destructor
 public:
     Win32Gui(
-        Mc6809 &, Memory &, Scheduler &, Inout &,
-        VideoControl1 &, VideoControl2 &, JoystickIO &,
-        KeyboardIO &, Pia1 &, struct sGuiOptions &);
+        Mc6809 &,
+        Memory &,
+        Scheduler &,
+        Inout &,
+        VideoControl1 &,
+        VideoControl2 &,
+        JoystickIO &,
+        KeyboardIO &,
+        TerminalIO &,
+        Pia1 &,
+        struct sGuiOptions &);
     virtual ~Win32Gui();
-
 };
 
 #endif // _WIN32

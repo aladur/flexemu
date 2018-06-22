@@ -119,6 +119,7 @@ public:
             VideoControl2 &,
             JoystickIO &,
             KeyboardIO &,
+            TerminalIO &,
             struct sGuiOptions &);
     virtual ~XAbstractGui();
 };

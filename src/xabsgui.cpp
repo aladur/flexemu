@@ -769,10 +769,21 @@ XAbstractGui::XAbstractGui(
     VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
-    struct sGuiOptions &x_options) :
-    AbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
-                x_joystickIO, x_keyboardIO, x_options),
-    cursor(None), cursor_type(FLX_DEFAULT_CURSOR)
+    TerminalIO &x_terminalIO,
+    struct sGuiOptions &x_options)
+        : AbstractGui(
+                  x_cpu
+                , x_memory
+                , x_scheduler
+                , x_inout
+                , x_vico1
+                , x_vico2
+                , x_joystickIO
+                , x_keyboardIO
+                , x_terminalIO
+                , x_options)
+        , cursor(None)
+        , cursor_type(FLX_DEFAULT_CURSOR)
 {
 }
 

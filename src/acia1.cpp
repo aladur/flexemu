@@ -24,10 +24,11 @@
 #include "misc1.h"
 
 #include "acia1.h"
-#include "inout.h"
+#include "terminal.h"
 #include "mc6809.h"
 
-Acia1::Acia1(Inout &x_inout, Mc6809 &x_cpu) : cpu(x_cpu), inout(x_inout)
+Acia1::Acia1(TerminalIO &x_terminalIO, Mc6809 &x_cpu) :
+             cpu(x_cpu), terminalIO(x_terminalIO)
 {
 }
 
@@ -38,12 +39,12 @@ Acia1::~Acia1()
 void Acia1::resetIo()
 {
     Mc6850::resetIo();
-    inout.reset_serial();
+    terminalIO.reset_serial();
 }
 
 void Acia1::requestInput()
 {
-    if (inout.has_key_serial())
+    if (terminalIO.has_key_serial())
     {
         activeTransition();
     }
@@ -55,9 +56,9 @@ Byte Acia1::readInput()
 
     temp = 0;
 
-    if (inout.has_key_serial())
+    if (terminalIO.has_key_serial())
     {
-        temp = inout.read_char_serial();
+        temp = terminalIO.read_char_serial();
     }
 
     return temp;
@@ -65,7 +66,7 @@ Byte Acia1::readInput()
 
 void Acia1::writeOutput(Byte val)
 {
-    inout.write_char_serial(val);
+    terminalIO.write_char_serial(val);
 }
 
 

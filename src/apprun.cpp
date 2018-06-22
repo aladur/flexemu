@@ -52,10 +52,11 @@ ApplicationRunner::ApplicationRunner(
     memory(options.isHiMem),
     cpu(memory),
     rtc(cpu),
-    inout(cpu, scheduler, fdc, rtc),
+    inout(fdc, rtc),
     scheduler(cpu, inout),
+    terminalIO(cpu, scheduler),
     mmu(memory),
-    acia1(inout, cpu),
+    acia1(terminalIO, cpu),
     pia1(cpu, scheduler, keyboardIO),
     pia2(cpu, keyboardIO, joystickIO),
     drisel(fdc),
@@ -73,12 +74,21 @@ int ApplicationRunner::run()
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
 
-    inout.init(options.reset_key);
+    terminalIO.init(options.reset_key);
 
-    if (!(options.term_mode && inout.is_terminal_supported()))
+    if (!(options.term_mode && terminalIO.is_terminal_supported()))
     {
-        inout.create_gui(joystickIO, keyboardIO, pia1,
-                      memory, vico1, vico2, guiOptions);
+        inout.create_gui(
+                joystickIO,
+                keyboardIO,
+                terminalIO,
+                pia1,
+                memory,
+                scheduler,
+                cpu,
+                vico1,
+                vico2,
+                guiOptions);
     }
 
     // Add all memory mapped I/O devices to memory.

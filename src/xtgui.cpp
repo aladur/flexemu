@@ -1700,10 +1700,21 @@ XtGui::XtGui(
     VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,
     KeyboardIO &x_keyboardIO,
+    TerminalIO &x_terminalIO,
     Pia1 &x_pia1,
-    struct sGuiOptions &x_options) :
-    XAbstractGui(x_cpu, x_memory, x_scheduler, x_inout, x_vico1, x_vico2,
-                 x_joystickIO, x_keyboardIO, x_options), pia1(x_pia1)
+    struct sGuiOptions &x_options)
+        : XAbstractGui(
+                x_cpu
+              , x_memory
+              , x_scheduler
+              , x_inout
+              , x_vico1
+              , x_vico2
+              , x_joystickIO
+              , x_keyboardIO
+              , x_terminalIO
+              , x_options)
+        , pia1(x_pia1)
 {
     initialize(options);
 }

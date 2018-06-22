@@ -220,6 +220,7 @@
     <ClCompile Include="pia2.cpp" />
     <ClCompile Include="rfilecnt.cpp" />
     <ClCompile Include="schedule.cpp" />
+    <ClCompile Include="terminal.cpp" />
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />
     <ClCompile Include="wd1793.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="schedule.h" />
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sguiopts.h" />
+    <ClInclude Include="terminal.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="vico1.h" />
     <ClInclude Include="vico2.h" />

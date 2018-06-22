@@ -294,6 +294,7 @@ public:
         VideoControl2 &x_vico2,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
+        TerminalIO &x_terminalIO,
         Pia1 &x_pia1,
         struct sGuiOptions &options);
     virtual ~XtGui();

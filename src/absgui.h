@@ -63,6 +63,7 @@ class VideoControl2;
 class Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
+class TerminalIO;
 
 class AbstractGui
 {
@@ -78,6 +79,7 @@ protected:
     VideoControl2 &vico2; // Reference to video control register 2
     JoystickIO &joystickIO; // Reference to joystick data provider.
     KeyboardIO &keyboardIO; // Reference to keyboard data provider.
+    TerminalIO &terminalIO; // Reference to terminal data provider.
     const char *program_name;
     unsigned char unused_block[YBLOCK_SIZE];
     int switch_sp;
@@ -138,6 +140,7 @@ public:
         VideoControl2 &x_vico2,
         JoystickIO &x_joystickIO,
         KeyboardIO &x_keyboardIO,
+        TerminalIO &x_terminalIO,
         struct sGuiOptions &options);
     virtual ~AbstractGui();
 };

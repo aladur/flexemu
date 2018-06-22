@@ -140,7 +140,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-mc6809st.$(OBJEXT) flexemu-buint.$(OBJEXT) \
 	flexemu-cvtwchar.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
 	flexemu-apprun.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
-	flexemu-bytereg.$(OBJEXT) flexemu-drisel.$(OBJEXT)
+	flexemu-bytereg.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -520,7 +521,7 @@ xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
-apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp \
+apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -532,7 +533,7 @@ bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
-fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h \
+fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
@@ -743,6 +744,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-rfilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-wd1793.Po@am__quote@
@@ -1673,6 +1675,20 @@ flexemu-drisel.obj: drisel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='drisel.cpp' object='flexemu-drisel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-drisel.obj `if test -f 'drisel.cpp'; then $(CYGPATH_W) 'drisel.cpp'; else $(CYGPATH_W) '$(srcdir)/drisel.cpp'; fi`
+
+flexemu-terminal.o: terminal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-terminal.o -MD -MP -MF $(DEPDIR)/flexemu-terminal.Tpo -c -o flexemu-terminal.o `test -f 'terminal.cpp' || echo '$(srcdir)/'`terminal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-terminal.Tpo $(DEPDIR)/flexemu-terminal.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='terminal.cpp' object='flexemu-terminal.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-terminal.o `test -f 'terminal.cpp' || echo '$(srcdir)/'`terminal.cpp
+
+flexemu-terminal.obj: terminal.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-terminal.obj -MD -MP -MF $(DEPDIR)/flexemu-terminal.Tpo -c -o flexemu-terminal.obj `if test -f 'terminal.cpp'; then $(CYGPATH_W) 'terminal.cpp'; else $(CYGPATH_W) '$(srcdir)/terminal.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-terminal.Tpo $(DEPDIR)/flexemu-terminal.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='terminal.cpp' object='flexemu-terminal.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-terminal.obj `if test -f 'terminal.cpp'; then $(CYGPATH_W) 'terminal.cpp'; else $(CYGPATH_W) '$(srcdir)/terminal.cpp'; fi`
 
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp

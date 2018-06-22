@@ -33,6 +33,7 @@
 #include "schedule.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include "terminal.h"
 #include "mmu.h"
 #include "acia1.h"
 #include "pia1.h"
@@ -70,6 +71,7 @@ private:
     Scheduler scheduler;
     JoystickIO joystickIO;
     KeyboardIO keyboardIO;
+    TerminalIO terminalIO;
     Mmu mmu;
     Acia1 acia1;
     Pia1 pia1;

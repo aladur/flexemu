@@ -26,18 +26,10 @@
 #define INOUT_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
-#ifdef HAVE_TERMIOS_H
-    #include <termios.h>
-#endif
 #include "flexemu.h"
-#include "flexerr.h"
 #include <string>
 #include <deque>
 #include <mutex>
-#include <memory>
-
-#define BACK_SPACE  (0x08)
 
 
 class E2floppy;
@@ -51,39 +43,30 @@ class AbstractGui;
 class Scheduler;
 class JoystickIO;
 class KeyboardIO;
+class TerminalIO;
 class Pia1;
 
 class Inout
 {
-
-    // Internal registers
-
 private:
     std::deque<Byte> key_buffer_serial;
-    Mc6809 &cpu;
-    Scheduler &scheduler;
     E2floppy &fdc;
     Mc146818 &rtc;
     AbstractGui *gui;
-#ifdef HAVE_TERMIOS_H
-    static      bool   used_serial_io;
-    static      struct termios save_termios;
-#endif
 
 public:
-    static Inout   *instance;
+    AbstractGui *create_gui(
+                     JoystickIO &joystickIO
+                   , KeyboardIO &keyboardIO
+                   , TerminalIO &terminalIO
+                   , Pia1 &pia1
+                   , Memory &memory
+                   , Scheduler &scheduler
+                   , Mc6809 &cpu
+                   , VideoControl1 &vico1
+                   , VideoControl2 &vico2
+                   , struct sGuiOptions &options);
 
-    // public interface
-
-public:
-    AbstractGui *create_gui(JoystickIO &joystickIO,
-                            KeyboardIO &keyboardIO, Pia1 &pia1,
-                            Memory &memory,
-                            VideoControl1 &vico1, VideoControl2 &vico2,
-                            struct sGuiOptions &options);
-    static void s_exec_signal(int sig_no);
-
-    void    init(Word reset_key);
     void    update_1_second();
 
     // Communication with GUI
@@ -95,17 +78,6 @@ public:
 
 protected:
     std::mutex parallel_mutex;
-    std::mutex serial_mutex;
-
-    // serial I/O (e.g. terminal)
-public:
-    void    reset_serial();
-    bool    has_key_serial();
-    Byte    read_char_serial();
-    Byte    peek_char_serial();
-    void    write_char_serial(Byte val);
-    bool    is_terminal_supported();
-    void    signal_reset(int sig_no);
 
     // Floppy interface
 public:
@@ -118,22 +90,12 @@ protected:
     bool    newValues;
     std::mutex joystick_mutex;
 
-    // Private Interfaces
-private:
-    static void resetTerminalIO();
-    void    initTerminalIO(Word reset_key);
-    void    put_char_serial(Byte key);
-    void    exec_signal(int sig_no);
-
-    // Public constructor and destructor
 public:
+    Inout() = delete;
     Inout(
-            Mc6809 &x_cpu,
-            Scheduler &x_scheduler,
-            E2floppy &x_fdc,
-            Mc146818 &x_rtc);
+        E2floppy &x_fdc,
+        Mc146818 &x_rtc);
     ~Inout();
-
 };
 
 #endif // INOUT_INCLUDED
