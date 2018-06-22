@@ -69,13 +69,13 @@ class AbstractGui
     // private instance variables:
 
 protected:
-    Mc6809 &cpu;    // pointer to cpu to send interrupts
-    Memory &memory; // pointer to memory (video memory access)
-    Scheduler &scheduler;
-    Inout &inout; // pointer to IO-class handling input/output
-    E2video &e2video;// pointer to video control registers
-    JoystickIO &joystickIO; // joystick data provider.
-    KeyboardIO &keyboardIO; // keyboard data provider.
+    Mc6809 &cpu;    // Reference to cpu to send interrupts
+    Memory &memory; // Reference to memory (incl. video memory access)
+    Scheduler &scheduler; // Reference to scheduler
+    Inout &inout; // Reference to IO-class handling input/output
+    E2video &e2video;// Reference to video control registers
+    JoystickIO &joystickIO; // Reference to joystick data provider.
+    KeyboardIO &keyboardIO; // Reference to keyboard data provider.
     const char *program_name;
     unsigned char unused_block[YBLOCK_SIZE];
     int switch_sp;
