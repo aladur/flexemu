@@ -30,8 +30,8 @@
 class Memory;
 
 // VideoControl1 emulates the Eurocom II VICO1 register,
-// a single byte write-only register (Octal D Flop-Flop
-// SN74LS377). It defines which RAM bank is used for
+// a single byte write-only register (SN74LS377, Octal
+// D Flip-Flop). It defines which RAM bank is used for
 // video display. Only Bit 0 and 1 are used.
 //
 // 1. Without RAM extension:

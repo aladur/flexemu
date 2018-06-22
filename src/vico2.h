@@ -30,8 +30,8 @@
 class Memory;
 
 // VideoControl2 emulates the Eurocom II VICO2 register,
-// a single byte write-only register (Octal D Flop-Flop
-// SN74LS377). It defines which video raster line is displayed
+// a single byte write-only register (SN74LS377, Octal
+// D Flip-Flop). It defines which video raster line is displayed
 // first on the video display. All 8 bits are used for 256 
 // raster lines.
 
