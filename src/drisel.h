@@ -71,6 +71,10 @@ public:
     virtual ~DriveSelect();
 
     void resetIo() override;
+    const char *getName() override
+    {
+        return "drisel";
+    }
 };
 
 #endif
