@@ -106,6 +106,9 @@ public:
         return isDataRequest;
     }
 
+    // Get current side:
+    //    false: Side 1
+    //    true:  Side 2
     bool getSide() const
     {
         return side;
@@ -126,6 +129,9 @@ public:
         return dr;
     }
 
+    // Set current side:
+    //    false: Side 1
+    //    true:  Side 2
     void setSide(bool newSide)
     {
         side = newSide;

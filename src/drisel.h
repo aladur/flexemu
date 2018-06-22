@@ -32,7 +32,9 @@
 class E2floppy;
 
 // DriveSelect emulates the Eurocom II drive select register,
-// a single byte read/write register:
+// a single byte read/write register (SN74LS273, Octal
+// D Flip-Flop with clear). Clear is connected with /RESET.
+//
 // Read:
 //   Bit 1: Get current side
 //   Bit 6: IRQ flag
@@ -42,7 +44,7 @@ class E2floppy;
 //   Bit 1: Drive 1 selected
 //   Bit 2: Drive 2 selected
 //   Bit 3: Drive 3 selected
-//   Bit 4: Set current side
+//   Bit 4: Side 2 selected (Side 1 if low)
 //
 class DriveSelect : public ByteRegister
 {
