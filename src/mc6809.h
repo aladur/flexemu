@@ -216,7 +216,6 @@ union ux86flags
     } bit;
 };
 
-class BTime;
 class Da6809;
 class Mc6809CpuStatus;
 
