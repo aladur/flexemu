@@ -91,7 +91,7 @@ sprinter.h flexemu.h
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
 command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
-flexerr.cpp inout.cpp cacttrns.cpp \
+flexerr.cpp inout.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \

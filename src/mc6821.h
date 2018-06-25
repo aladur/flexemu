@@ -25,18 +25,24 @@
 #ifndef MC6821_INCLUDED
 #define MC6821_INCLUDED
 
-#include <stdio.h>
+#include <cstdint>
+#include <type_traits>
 #include "iodevice.h"
 
-// PIA control lines
-
-#define CB1 0
-#define CB2 1
-#define CA2 2
-#define CA1 3
 
 class Mc6821 : public IoDevice
 {
+public:
+    enum class ControlLine : Byte
+    {
+        NONE = 0,
+        CA1 = 1,
+        CA2 = 2,
+        CB1 = 4,
+        CB2 = 8,
+    };
+
+protected:
 
     // Internal registers:
     //
@@ -44,67 +50,88 @@ class Mc6821 : public IoDevice
     // ddra, ddrb   data direction register A, B
     // ora, orb output register A, B
 
-protected:
-
-    Byte                 cra, ora, ddra, crb, orb, ddrb, cls;
+    Byte cra, ora, ddra;
+    Byte crb, orb, ddrb;
+    Mc6821::ControlLine cls;
 
 public:
 
+    // IoDevice interface
     Byte readIo(Word offset) override;
     void writeIo(Word offset, Byte value) override;
     void resetIo() override;
     const char *getName() override
     {
         return "mc6821";
-    };
+    }
     int sizeOfIo() override
     {
         return 4;
-    };
+    }
+
+
+public:
 
     // generate an active transition on CA1, CA2, CB1 or CB2
+    void activeTransition(Mc6821::ControlLine control_line);
 
-public:
+    // test contol line
+    bool testControlLine(Mc6821::ControlLine control_line);
 
-    virtual void            activeTransition(Byte control_line);
-
-    // test contol lines CB1 or CB2
-
-public:
-
-    virtual Byte testControlLine(Byte control_line);
-
-    // read non strobed data
 
 protected:
 
+    // read non strobed data
     virtual Byte readInputA();
     virtual Byte readInputB();
     virtual void set_irq_A();
     virtual void set_irq_B();
 
     // read strobed data
-
-protected:
-
     virtual void requestInputA();
     virtual void requestInputB();
 
     // write data to port-pins
-
-protected:
-
     virtual void writeOutputA(Byte val);
     virtual void writeOutputB(Byte val);
-
-
-    // Public constructor and destructor
 
 public:
 
     Mc6821();
-    virtual             ~Mc6821();
-
+    virtual ~Mc6821();
 };
+
+using T = std::underlying_type<Mc6821::ControlLine>::type;
+
+inline Mc6821::ControlLine operator| (Mc6821::ControlLine &lhs,
+                                      Mc6821::ControlLine &rhs)
+{
+    return static_cast<Mc6821::ControlLine>(static_cast<T>(lhs) |
+                                            static_cast<T>(rhs));
+}
+
+inline Mc6821::ControlLine operator& (Mc6821::ControlLine lhs,
+                                      Mc6821::ControlLine rhs)
+{
+    return static_cast<Mc6821::ControlLine>(static_cast<T>(lhs) &
+                                            static_cast<T>(rhs));
+}
+
+inline Mc6821::ControlLine operator|= (Mc6821::ControlLine lhs,
+                                       Mc6821::ControlLine rhs)
+{
+    return lhs = lhs | rhs;
+}
+
+inline Mc6821::ControlLine operator&= (Mc6821::ControlLine &lhs,
+                                       Mc6821::ControlLine rhs)
+{
+    return lhs = lhs & rhs;
+}
+
+inline Mc6821::ControlLine operator~ (const Mc6821::ControlLine &lhs)
+{
+    return static_cast<Mc6821::ControlLine>(~static_cast<T>(lhs));
+}
 
 #endif // MC6821_INCLUDED

@@ -24,20 +24,20 @@
 #define CACTTRNS_INCLUDED
 
 #include "misc1.h"
+#include "mc6821.h"
 #include "bcommand.h"
 
-class Mc6821;
 
 class CActiveTransition : public BCommand
 {
 
 public:
-    CActiveTransition(Mc6821 &x_mc6821, Byte transition);
+    CActiveTransition(Mc6821 &x_mc6821, Mc6821::ControlLine control_line);
     void Execute() override;
 
 protected:
     Mc6821 &mc6821;
-    Byte transition;
+    Mc6821::ControlLine control_line;
 };
 
 #endif

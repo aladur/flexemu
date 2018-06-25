@@ -55,7 +55,8 @@ Byte Pia1::readInputA()
         ora = keyboardIO.read_char_parallel(do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(new CActiveTransition(*this, CA1));
+            scheduler.sync_exec(
+                    new CActiveTransition(*this, Mc6821::ControlLine::CA1));
         }
     }
 

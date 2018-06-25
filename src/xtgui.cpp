@@ -1026,7 +1026,8 @@ void XtGui::c_keyPress(XEvent *pevent)
         keyboardIO.put_char_parallel(key, do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(new CActiveTransition(pia1, CA1));
+            scheduler.sync_exec(
+                    new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
         }
     }
 } // c_keyPress

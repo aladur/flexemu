@@ -26,7 +26,8 @@
 
 #include "mc6821.h"
 
-Mc6821::Mc6821()
+Mc6821::Mc6821() : cra(0), ora(0), ddra(0), crb(0), orb(0), ddrb(0),
+                   cls(ControlLine::NONE)
 {
 }
 
@@ -43,7 +44,7 @@ void Mc6821::resetIo()
     orb = 0;    // output register B
     ddrb = 0;   // data direction register B
 
-    cls = 0;    // control lines CA1, CA2, CB1, CB2
+    cls = ControlLine::NONE; // control lines CA1, CA2, CB1, CB2
 
 }
 
@@ -60,7 +61,7 @@ Byte Mc6821::readIo(Word offset)
 
                 if ((cra & 0x38) == 0x20)
                 {
-                    cls &= ~CA2;
+                    cls &= ~ControlLine::CA2;
                 }
 
                 return ora; // read output register A
@@ -144,11 +145,11 @@ void Mc6821::writeIo(Word offset, Byte val)
             {
                 if (BTST3(cra))
                 {
-                    cls |= CA2;
+                    cls |= ControlLine::CA2;
                 }
                 else
                 {
-                    cls &= ~CA2;
+                    cls &= ~ControlLine::CA2;
                 }
             }
 
@@ -162,7 +163,7 @@ void Mc6821::writeIo(Word offset, Byte val)
 
                 if ((crb & 0x38) == 0x20)
                 {
-                    cls &= CB2;
+                    cls &= ~ControlLine::CB2;
                 }
             }
             else
@@ -179,11 +180,11 @@ void Mc6821::writeIo(Word offset, Byte val)
             {
                 if (BTST3(crb))
                 {
-                    cls |= CB2;
+                    cls |= ControlLine::CB2;
                 }
                 else
                 {
-                    cls &= ~CB2;
+                    cls &= ~ControlLine::CB2;
                 }
             }
 
@@ -212,11 +213,11 @@ void Mc6821::writeOutputB(Byte)
 
 // generate an active transition on CA1, CA2, CB1 or CB2
 
-void Mc6821::activeTransition(Byte control_line)
+void Mc6821::activeTransition(Mc6821::ControlLine control_line)
 {
     switch (control_line)
     {
-        case CA1:
+        case ControlLine::CA1:
             BSET7(cra);     // set IRQA1 flag
 
             if (BTST0(cra))
@@ -226,12 +227,11 @@ void Mc6821::activeTransition(Byte control_line)
 
             if ((cra & 0x38) == 0x20)
             {
-                cls |= CA2;
+                cls |= ControlLine::CA2;
             }
-
             break;
 
-        case CA2:
+        case ControlLine::CA2:
             if (BTST5(cra))
             {
                 BSET6(cra); // set IRQA2 flag
@@ -241,10 +241,9 @@ void Mc6821::activeTransition(Byte control_line)
                     // send an interrupt to CPU
                 }
             }
-
             break;
 
-        case CB1:
+        case ControlLine::CB1:
             BSET7(crb);     // set IRQB1 flag
 
             if (BTST0(crb))
@@ -254,12 +253,11 @@ void Mc6821::activeTransition(Byte control_line)
 
             if ((crb & 0x38) == 0x20)
             {
-                cls |= CB2;
+                cls |= ControlLine::CB2;
             }
-
             break;
 
-        case CB2:
+        case ControlLine::CB2:
             if (BTST5(crb))
             {
                 BSET6(crb); // set IRQB2 flag
@@ -269,7 +267,10 @@ void Mc6821::activeTransition(Byte control_line)
                     // send an interrupt to CPU
                 }
             }
+            break;
 
+        case ControlLine::NONE:
+        default:
             break;
     }
 }
@@ -278,7 +279,8 @@ void Mc6821::activeTransition(Byte control_line)
 // test contol lines CB1 or CB2
 // contents of control lines only valid, if used as outputs
 
-Byte Mc6821::testControlLine(Byte control_line)
+bool Mc6821::testControlLine(Mc6821::ControlLine control_line)
 {
-    return (cls & control_line);
+    return (cls & control_line) != ControlLine::NONE;
 }
+

@@ -25,13 +25,14 @@
 #include "mc6821.h"
 
 
-CActiveTransition::CActiveTransition(Mc6821 &x_mc6821, Byte x_transition) :
-    mc6821(x_mc6821), transition(x_transition)
+CActiveTransition::CActiveTransition(Mc6821 &x_mc6821,
+                                     Mc6821::ControlLine x_control_line) :
+    mc6821(x_mc6821), control_line(x_control_line)
 {
 }
 
 void CActiveTransition::Execute()
 {
-    mc6821.activeTransition(transition);
+    mc6821.activeTransition(control_line);
 }
 

@@ -55,7 +55,7 @@ public:
     const char *getName() override
     {
         return "pia1";
-    };
+    }
 };
 
 #endif // PIA1_INCLUDED
