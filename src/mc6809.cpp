@@ -23,7 +23,7 @@
     #define PC pc
 #endif
 
-Mc6809::Mc6809(Memory &x_memory) : events(0),
+Mc6809::Mc6809(Memory &x_memory) : events(Event::NONE),
 #ifdef FASTFLEX
     pMem(nullptr),
 #else
@@ -74,7 +74,7 @@ void Mc6809::init()
 {
     int i;
 
-    events = 0;
+    events = Event::NONE;
 
     // all breakpoints are reset
     for (i = 0; i < 3; i++)
@@ -205,17 +205,17 @@ void Mc6809::init_psh_pul_cycles()
 
 void Mc6809::set_nmi()
 {
-    events |= DO_NMI;
+    events |= Event::Nmi;
 } // set_nmi
 
 void Mc6809::set_firq()
 {
-    events |= DO_FIRQ;
+    events |= Event::Firq;
 } // set_firq
 
 void Mc6809::set_irq()
 {
-    events |= DO_IRQ;
+    events |= Event::Irq;
 } // set_irq
 
 #ifndef FASTFLEX
@@ -903,7 +903,7 @@ void Mc6809::tfr()
 
 void Mc6809::invalid(const char * /*msg*/)
 {
-    events |= DO_INVALID;
+    events |= Event::Invalid;
 }
 
 #ifndef FASTFLEX
@@ -1376,7 +1376,7 @@ void Mc6809::irq(bool save_state)
 void Mc6809::set_bp(int which, Word address)
 {
     bp[which] = address;
-    events |= DO_BREAKPOINT;
+    events |= Event::BreakPoint;
 }
 
 unsigned int Mc6809::get_bp(int which)
@@ -1395,13 +1395,13 @@ void Mc6809::reset_bp(int which)
 
     if (bp[0] >  0xffff && bp[1] >  0xffff && bp[2] >  0xffff)
     {
-        events &= ~DO_BREAKPOINT;
+        events &= ~Event::BreakPoint;
     }
 
     // if a bp has been set in another thread check again
     if (bp[0] <= 0xffff || (bp[1] <= 0xffff && bp[2] <= 0xffff))
     {
-        events |= DO_BREAKPOINT;
+        events |= Event::BreakPoint;
     }
 }
 
@@ -1418,7 +1418,7 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
     {
         // Disable logging
         lfs.logFileName[0] = '\0';
-        events &= ~DO_LOG;
+        events &= ~Event::Log;
         return true;
     }
 
@@ -1430,13 +1430,13 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
         lfs.startAddr = x_lfs->startAddr;
         lfs.stopAddr  = x_lfs->stopAddr;
         strcpy(lfs.logFileName, x_lfs->logFileName);
-        events |= DO_LOG;
+        events |= Event::Log;
         return true;
     }
     else
     {
         lfs.logFileName[0] = '\0';
-        events &= ~DO_LOG;
+        events &= ~Event::Log;
         return false;
     }
 }

@@ -1364,7 +1364,7 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case 0x13: /* SYNC */
                 ipcreg--;
-                events |= DO_SYNC;
+                events |= Event::Sync;
                 break;
 
             case 0x14:
@@ -1614,7 +1614,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 PUSHBYTE(iccreg);
                 iccreg |= 0x80;
                 ipcreg--;
-                events |= DO_CWAI;
+                events |= Event::Cwai;
                 ipcreg--;
                 break;
 

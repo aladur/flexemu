@@ -20,6 +20,10 @@
     #pragma warning (disable: 4800)
 #endif
 
+static const Mc6809::Event AnyInterrupt =
+                 Mc6809::Event::Irq |
+                 Mc6809::Event::Firq |
+                 Mc6809::Event::Nmi;
 
 void Mc6809::set_serpar(Byte b)
 {
@@ -33,12 +37,12 @@ void Mc6809::reset()
     total_cycles    = 0;
     nmi_armed       = 0;
     /* no interrupts yet */
-    events          = 0;
+    events = Event::NONE;
     reset_bp(2);    // remove next-breakpoint
 
     if (bp[0] > 0xffff && bp[1] > 0xffff && bp[2] > 0xffff)
     {
-        events &= ~DO_BREAKPOINT;
+        events &= ~Event::BreakPoint;
     }
 
 #ifdef FASTFLEX
@@ -196,8 +200,8 @@ Byte Mc6809::run(Word mode)
     switch (mode)
     {
         case SINGLESTEP_INTO:
-            events |= DO_SINGLESTEP | IGNORE_BP;
-            events &= ~DO_GO_BACK;
+            events |= Event::SingleStep | Event::IgnoreBP;
+            events &= ~Event::GoBack;
             break;
 
         case SINGLESTEP_OVER:
@@ -215,27 +219,27 @@ Byte Mc6809::run(Word mode)
 
             if (disassembler == nullptr || !(flags & DA_SUB))
             {
-                events |= DO_SINGLESTEP | IGNORE_BP;
+                events |= Event::SingleStep | Event::IgnoreBP;
                 reset_bp(2);
             }
             else
             {
-                events |= DO_BREAKPOINT | IGNORE_BP;
+                events |= Event::BreakPoint | Event::IgnoreBP;
             }
         }
 
-        events &= ~DO_GO_BACK;
+        events &= ~Event::GoBack;
         break;
 
         case START_RUNNING:
             reset_bp(2);
 
-            if (events & DO_BREAKPOINT)
+            if ((events & Event::BreakPoint) != Event::NONE)
             {
-                events |= IGNORE_BP;
+                events |= Event::IgnoreBP;
             }
 
-            events &= ~DO_GO_BACK;
+            events &= ~Event::GoBack;
 
         case CONTINUE_RUNNING:
             break;
@@ -257,22 +261,24 @@ Byte Mc6809::runloop()
 
     while (1)
     {
-        if (events)
+        if (events != Event::NONE)
         {
-            if (events & (DO_BREAKPOINT | DO_INVALID | DO_SINGLESTEP |
-                          DO_SINGLESTEPFINISHED | DO_FREQ_CONTROL | DO_LOG |
-                          DO_CWAI | DO_SYNC))
+            if ((events & (Event::BreakPoint | Event::Invalid |
+                           Event::SingleStep | Event::SingleStepFinished |
+                           Event::FrequencyControl | Event::Log |
+                           Event::Cwai | Event::Sync)) != Event::NONE)
             {
                 // All non time critical events
-                if (events & DO_INVALID)
+                if ((events & Event::Invalid) != Event::NONE)
                 {
                     // An invalid instr. occured
-                    events &= ~DO_INVALID;
+                    events &= ~Event::Invalid;
                     newState = S_INVALID; // invalid instruction encountered
                     break;
                 }
 
-                if ((events & DO_BREAKPOINT) && !(events & IGNORE_BP))
+                if (((events & Event::BreakPoint) != Event::NONE) &&
+                    ((events & Event::IgnoreBP) == Event::NONE))
                 {
                     if (PC == bp[0] || PC == bp[1] || PC == bp[2])
                     {
@@ -287,24 +293,23 @@ Byte Mc6809::runloop()
                     } // if
                 }
 
-                events &= (Word)~IGNORE_BP;
+                events &= ~Event::IgnoreBP;
 
-                if (events & DO_SINGLESTEPFINISHED)
+                if ((events & Event::SingleStepFinished) != Event::NONE)
                 {
                     // one single step has been executed
-                    events = events & ~DO_SINGLESTEPFINISHED &
-                             ~DO_SINGLESTEP;
+                    events &= (~Event::SingleStepFinished & ~Event::SingleStep);
                     newState = S_STOP;
                     break;
                 }
 
-                if (events & DO_SINGLESTEP)
+                if ((events & Event::SingleStep) != Event::NONE)
                 {
-                    events &= ~DO_SINGLESTEP;
+                    events &= ~Event::SingleStep;
 
-                    if (!(events & (DO_CWAI | DO_SYNC)))
+                    if (!(events & (Event::Cwai | Event::Sync)))
                     {
-                        events |= DO_SINGLESTEPFINISHED;
+                        events |= Event::SingleStepFinished;
                     }
                     else
                     {
@@ -313,13 +318,13 @@ Byte Mc6809::runloop()
                     }
                 }
 
-                if (events & DO_CWAI)
+                if ((events & Event::Cwai) != Event::NONE)
                 {
-                    if (((events & DO_IRQ)  && !CC_BITI) ||
-                        ((events & DO_FIRQ) && !CC_BITF) ||
-                        ((events & DO_NMI)  && !nmi_armed))
+                    if ((((events & Event::Irq) != Event::NONE) && !CC_BITI) ||
+                        (((events & Event::Firq) != Event::NONE) && !CC_BITF) ||
+                        (((events & Event::Nmi) != Event::NONE) && !nmi_armed))
                     {
-                        events &= ~DO_CWAI;
+                        events &= ~Event::Cwai;
                         PC += 2;
                         cycles += exec_irqs(false);
                     }
@@ -331,11 +336,11 @@ Byte Mc6809::runloop()
                     }
                 }
 
-                if (events & DO_SYNC)
+                if ((events & Event::Sync) != Event::NONE)
                 {
-                    if (events & (DO_IRQ | DO_FIRQ | DO_NMI))
+                    if ((events & AnyInterrupt) != Event::NONE)
                     {
-                        events &= ~DO_SYNC;
+                        events &= ~Event::Sync;
                         PC++;
                         cycles += exec_irqs();
                     }
@@ -347,7 +352,7 @@ Byte Mc6809::runloop()
                     }
                 }
 
-                if (events & DO_FREQ_CONTROL)
+                if ((events & Event::FrequencyControl) != Event::NONE)
                 {
                     if (cycles >= required_cyclecount)
                     {
@@ -357,7 +362,7 @@ Byte Mc6809::runloop()
                     }
                 }
 
-                if (log_fp != nullptr && (events & DO_LOG))
+                if (log_fp != nullptr && ((events & Event::Log) != Event::NONE))
                 {
                     if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
                     {
@@ -381,18 +386,19 @@ Byte Mc6809::runloop()
                 }
             }
 
-            if (events & (DO_IRQ | DO_FIRQ | DO_NMI))
+            if ((events & AnyInterrupt) != Event::NONE)
             {
                 cycles += exec_irqs();
             }
 
-            if ((events & DO_GO_BACK) &&
+            if (((events & Event::GoBack) != Event::NONE) &&
                 !first_time &&
-                !(events & (DO_SINGLESTEP | DO_SINGLESTEPFINISHED)))
+                !((events & (Event::SingleStep | Event::SingleStepFinished))
+                    != Event::NONE))
             {
                 // request from scheduler to return runloop
                 // with state S_NO_CHANGE
-                events &= ~DO_GO_BACK;
+                events &= ~Event::GoBack;
                 newState = S_NO_CHANGE;
                 break;
             }
@@ -421,7 +427,7 @@ void Mc6809::do_reset()
 // request to the CPU to exit run loop (thread save)
 void Mc6809::exit_run()
 {
-    events |= DO_GO_BACK;
+    events |= Event::GoBack;
 }
 
 // Optionally a frequency control can be added
@@ -440,11 +446,41 @@ void Mc6809::set_required_cyclecount(t_cycles x_cycles)
 
     if (x_cycles == ULONG_MAX)
     {
-        events &= ~DO_FREQ_CONTROL;
+        events &= ~Event::FrequencyControl;
     }
     else
     {
-        events |= DO_FREQ_CONTROL;
+        events |= Event::FrequencyControl;
     }
+}
+
+t_cycles Mc6809::exec_irqs(bool save_state)
+{
+    if ((events & AnyInterrupt) != Event::NONE)
+    {
+        if (((events & Event::Nmi) != Event::NONE) && !nmi_armed)
+        {
+            ++interrupt_status.count[INT_NMI];
+            EXEC_NMI(save_state);
+            events &= ~Event::Nmi;
+            return save_state ? 17 : 5;
+        }
+        else if (((events & Event::Firq) != Event::NONE) && !CC_BITF)
+        {
+            ++interrupt_status.count[INT_FIRQ];
+            EXEC_FIRQ(save_state);
+            events &= ~Event::Firq;
+            return save_state ? 8 : 5;
+        }
+        else if (((events & Event::Irq) != Event::NONE) && !CC_BITI)
+        {
+            ++interrupt_status.count[INT_IRQ];
+            EXEC_IRQ(save_state);
+            events &= ~Event::Irq;
+            return save_state ? 17 : 5;
+        }
+    }
+
+    return 0;
 }
 

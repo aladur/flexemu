@@ -36,23 +36,6 @@
     #define USE_GCCASM
 #endif
 
-#define DO_NMI          0x01
-#define DO_FIRQ         0x02
-#define DO_IRQ          0x04
-#define DO_INVALID      0x08
-#define DO_BREAKPOINT       0x10
-#define DO_SINGLESTEP       0x20
-#define DO_SINGLESTEPFINISHED   0x40
-#define DO_SYNCEXEC     0x80
-#define DO_TIMER        0x100
-#define DO_SET_STATUS       0x200
-#define DO_FREQ_CONTROL     0x400
-#define DO_GO_BACK      0x800
-#define DO_LOG          0x1000
-#define DO_CWAI         0x2000
-#define DO_SYNC         0x4000
-#define IGNORE_BP               0x8000
-
 #define SINGLESTEP_OVER     0x54
 #define SINGLESTEP_INTO     0x55
 #define START_RUNNING       0x56
@@ -222,6 +205,68 @@ class Mc6809CpuStatus;
 
 class Mc6809 : public ScheduledCpu
 {
+public:
+    enum class Event : Word
+    {
+        NONE = 0,
+        Nmi = (1 << 0),
+        Firq = (1 << 1),
+        Irq = (1 << 2),
+        Invalid = (1 << 3),
+        BreakPoint = (1 << 4),
+        SingleStep = (1 << 5),
+        SingleStepFinished = (1 << 6),
+        SyncExec = (1 << 7),
+        Timer = (1 << 8),
+        SetStatus = (1 << 9),
+        FrequencyControl = (1 << 10),
+        GoBack = (1 << 11),
+        Log = (1 << 12),
+        Cwai = (1 << 13),
+        Sync = (1 << 14),
+        IgnoreBP = (1 << 15),
+    };
+
+protected:
+    class atomic_event
+    {
+        using T = std::underlying_type<Mc6809::Event>::type;
+        std::atomic<T> event;
+
+        public:
+            atomic_event() = delete;
+            atomic_event(Event x_event)
+            {
+                event = static_cast<T>(x_event);
+            }
+            ~atomic_event() = default;
+            atomic_event(const atomic_event&) = delete;
+            atomic_event& operator= (const atomic_event&) = delete;
+            Event operator= (Event x_event)
+            {
+                event = static_cast<T>(x_event);
+                return static_cast<Event>(static_cast<T>(event));
+            }
+            Event operator& (Event x_event)
+            {
+                return static_cast<Event>(static_cast<T>(event) &
+                                          static_cast<T>(x_event));
+            }
+            Event operator|= (Event x_event)
+            {
+                event |= static_cast<T>(x_event);
+                return static_cast<Event>(static_cast<T>(event));
+            }
+            Event operator&= (Event x_event)
+            {
+                event &= static_cast<T>(x_event);
+                return static_cast<Event>(static_cast<T>(event));
+            }
+            bool operator!= (Event x_event)
+            {
+                return static_cast<T>(event) != static_cast<T>(x_event);
+            }
+    };
 
     // Processor registers
 protected:
@@ -232,7 +277,7 @@ protected:
     // and pull-instr.
     Byte            nmi_armed;      // for handling
     // interrupts
-    std::atomic<Word> events; // event status flags (atomic access)
+    atomic_event events; // event status flags (atomic access)
     tInterruptStatus    interrupt_status;
 #ifdef FASTFLEX
     Word            ipcreg, iureg, isreg, ixreg, iyreg;
@@ -1521,7 +1566,7 @@ inline t_cycles Mc6809::rti()
 inline void Mc6809::sync()
 {
     pc--; // processor loops in sync instruction until interrupt
-    events |= DO_SYNC;
+    events |= Event::Sync;
 }
 
 inline void Mc6809::cwai()
@@ -1529,7 +1574,7 @@ inline void Mc6809::cwai()
     cc.all &= memory.read_byte(pc++);
     cc.bit.e = 1;
     psh(0xff, s, u);
-    events |= DO_CWAI;
+    events |= Event::Cwai;
     pc -= 2; // processor loops in cwai instruction until interrupt
 }
 
@@ -1558,31 +1603,45 @@ inline void Mc6809::swi3()
 
 #endif // ifndef FASTFLEX
 
-inline t_cycles Mc6809::exec_irqs(bool save_state)
+inline Mc6809::Event operator| (Mc6809::Event lhs, Mc6809::Event rhs)
 {
-    if (events & (DO_IRQ | DO_FIRQ | DO_NMI))
-    {
-        if ((events & DO_NMI) && !nmi_armed)
-        {
-            ++interrupt_status.count[INT_NMI];
-            EXEC_NMI(save_state);
-            events &= ~DO_NMI;
-        }
-        else if ((events & DO_FIRQ) && !CC_BITF)
-        {
-            ++interrupt_status.count[INT_FIRQ];
-            EXEC_FIRQ(save_state);
-            events &= ~DO_FIRQ;
-        }
-        else if ((events & DO_IRQ) && !CC_BITI)
-        {
-            ++interrupt_status.count[INT_IRQ];
-            EXEC_IRQ(save_state);
-            events &= ~DO_IRQ;
-        } // else
-    }  // if
+    using T = std::underlying_type<Mc6809::Event>::type;
 
-    return 5; // rounded
-}  // exec_irqs
+    return static_cast<Mc6809::Event>(static_cast<T>(lhs) |
+                                      static_cast<T>(rhs));
+}
+
+inline Mc6809::Event operator& (Mc6809::Event lhs, Mc6809::Event rhs)
+{
+    using T = std::underlying_type<Mc6809::Event>::type;
+
+    return static_cast<Mc6809::Event>(static_cast<T>(lhs) &
+                                      static_cast<T>(rhs));
+}
+
+/*
+inline Mc6809::Event operator|= (Mc6809::Event lhs, Mc6809::Event rhs)
+{
+    return lhs = lhs | rhs;
+}
+
+inline Mc6809::Event operator&= (Mc6809::Event lhs, Mc6809::Event rhs)
+{
+    return lhs = lhs & rhs;
+}
+*/
+inline Mc6809::Event operator~ (Mc6809::Event rhs)
+{
+    using T = std::underlying_type<Mc6809::Event>::type;
+
+    return static_cast<Mc6809::Event>(~static_cast<T>(rhs));
+}
+
+inline bool operator! (Mc6809::Event rhs)
+{
+    using T = std::underlying_type<Mc6809::Event>::type;
+
+    return static_cast<T>(rhs) == 0;
+}
 
 #endif // MC6809_INCLUDED
