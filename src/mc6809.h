@@ -42,9 +42,6 @@
 #define CONTINUE_RUNNING    0x57
 
 
-#define SYNC_INSTR      1
-#define CWAI_INSTR      2
-
 #ifdef BITFIELDS_LSB_FIRST
     #define CC_BIT_C      0x01
     #define CC_BIT_V      0x02
