@@ -233,39 +233,39 @@ protected:
         using T = std::underlying_type<Mc6809::Event>::type;
         std::atomic<T> event;
 
-        public:
-            atomic_event() = delete;
-            atomic_event(Event x_event)
-            {
-                event = static_cast<T>(x_event);
-            }
-            ~atomic_event() = default;
-            atomic_event(const atomic_event&) = delete;
-            atomic_event& operator= (const atomic_event&) = delete;
-            Event operator= (Event x_event)
-            {
-                event = static_cast<T>(x_event);
-                return static_cast<Event>(static_cast<T>(event));
-            }
-            Event operator& (Event x_event)
-            {
-                return static_cast<Event>(static_cast<T>(event) &
-                                          static_cast<T>(x_event));
-            }
-            Event operator|= (Event x_event)
-            {
-                event |= static_cast<T>(x_event);
-                return static_cast<Event>(static_cast<T>(event));
-            }
-            Event operator&= (Event x_event)
-            {
-                event &= static_cast<T>(x_event);
-                return static_cast<Event>(static_cast<T>(event));
-            }
-            bool operator!= (Event x_event)
-            {
-                return static_cast<T>(event) != static_cast<T>(x_event);
-            }
+    public:
+        atomic_event() = delete;
+        atomic_event(Event x_event)
+        {
+            event = static_cast<T>(x_event);
+        }
+        ~atomic_event() = default;
+        atomic_event(const atomic_event&) = delete;
+        atomic_event& operator= (const atomic_event&) = delete;
+        Event operator= (Event x_event)
+        {
+            event = static_cast<T>(x_event);
+            return static_cast<Event>(static_cast<T>(event));
+        }
+        Event operator& (Event x_event)
+        {
+            return static_cast<Event>(static_cast<T>(event) &
+                                      static_cast<T>(x_event));
+        }
+        Event operator|= (Event x_event)
+        {
+            event |= static_cast<T>(x_event);
+            return static_cast<Event>(static_cast<T>(event));
+        }
+        Event operator&= (Event x_event)
+        {
+            event &= static_cast<T>(x_event);
+            return static_cast<Event>(static_cast<T>(event));
+        }
+        bool operator!= (Event x_event)
+        {
+            return static_cast<T>(event) != static_cast<T>(x_event);
+        }
     };
 
     // Processor registers
