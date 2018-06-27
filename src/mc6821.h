@@ -103,8 +103,8 @@ public:
 
 using T = std::underlying_type<Mc6821::ControlLine>::type;
 
-inline Mc6821::ControlLine operator| (Mc6821::ControlLine &lhs,
-                                      Mc6821::ControlLine &rhs)
+inline Mc6821::ControlLine operator| (Mc6821::ControlLine lhs,
+                                      Mc6821::ControlLine rhs)
 {
     return static_cast<Mc6821::ControlLine>(static_cast<T>(lhs) |
                                             static_cast<T>(rhs));
@@ -123,13 +123,13 @@ inline Mc6821::ControlLine operator|= (Mc6821::ControlLine lhs,
     return lhs = lhs | rhs;
 }
 
-inline Mc6821::ControlLine operator&= (Mc6821::ControlLine &lhs,
+inline Mc6821::ControlLine operator&= (Mc6821::ControlLine lhs,
                                        Mc6821::ControlLine rhs)
 {
     return lhs = lhs & rhs;
 }
 
-inline Mc6821::ControlLine operator~ (const Mc6821::ControlLine &lhs)
+inline Mc6821::ControlLine operator~ (const Mc6821::ControlLine lhs)
 {
     return static_cast<Mc6821::ControlLine>(~static_cast<T>(lhs));
 }
