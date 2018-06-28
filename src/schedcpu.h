@@ -39,6 +39,14 @@ enum tIrqType
     INT_RESET
 };
 
+enum class RunMode : Byte
+{
+    SingleStepOver,
+    SingleStepInto,
+    RunningStart,
+    RunningContinue,
+};
+
 struct sInterruptStatus
 {
     DWord count[INT_RESET + 1];
@@ -51,7 +59,7 @@ class ScheduledCpu
 public:
     virtual ~ScheduledCpu() { };
     virtual void do_reset() = 0;
-    virtual Byte run(Word mode) = 0;
+    virtual Byte run(RunMode mode) = 0;
     virtual void exit_run() = 0;
     virtual QWord get_cycles(bool reset = false) = 0;
     virtual void get_status(CpuStatus *stat) = 0;

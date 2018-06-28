@@ -520,7 +520,7 @@ bool test_gccasm_fctByte(std::string mnemonic,
             status.cc = regcc;
             cpu.set_status(&status);
             memory.write_byte(0x0000, opcode);
-            cpu.run(SINGLESTEP_INTO);
+            cpu.run(RunMode::SingleStepInto);
             cpu.get_status(&status);
 
             rega = (Byte)op;
@@ -565,7 +565,7 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
             status.cc = regcc;
             cpu.set_status(&status);
             memory.write_byte(0x0000, opcode);
-            cpu.run(SINGLESTEP_INTO);
+            cpu.run(RunMode::SingleStepInto);
             cpu.get_status(&status);
 
             rega = (Byte)op;
@@ -619,7 +619,7 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
                 memory.write_byte(0x0001, (Byte)op2); // immediate value
-                cpu.run(SINGLESTEP_INTO);
+                cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
                 rega = (Byte)op1;
@@ -668,7 +668,7 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
                 memory.write_byte(0x0001, (Byte)op2); // immediate value
-                cpu.run(SINGLESTEP_INTO);
+                cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
                 rega = (Byte)op1;
@@ -730,7 +730,7 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
                 memory.write_byte(addr++, opcode2);
                 memory.write_byte(addr++, (Byte)(op2 >> 8)); // immediate value hi
                 memory.write_byte(addr++, (Byte)(op2)); // immediate value lo
-                cpu.run(SINGLESTEP_INTO);
+                cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
                 regd = (Word)op1;
@@ -783,7 +783,7 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
                 memory.write_byte(0x0000, opcode);
                 memory.write_byte(0x0001, (Byte)(op2 >> 8)); // immediate value hi
                 memory.write_byte(0x0002, (Byte)(op2)); // immediate value lo
-                cpu.run(SINGLESTEP_INTO);
+                cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
                 cpuregd = ((Word)status.a << 8) | status.b;
 

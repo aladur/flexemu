@@ -36,12 +36,6 @@
     #define USE_GCCASM
 #endif
 
-#define SINGLESTEP_OVER     0x54
-#define SINGLESTEP_INTO     0x55
-#define START_RUNNING       0x56
-#define CONTINUE_RUNNING    0x57
-
-
 #ifdef BITFIELDS_LSB_FIRST
     #define CC_BIT_C      0x01
     #define CC_BIT_V      0x02
@@ -959,7 +953,7 @@ public:
     // Scheduler Interface implemenation
 public:
     void do_reset() override;
-    Byte run(Word mode) override;
+    Byte run(RunMode mode) override;
     void exit_run() override;
     QWord get_cycles(bool reset = false) override;
     void get_status(CpuStatus *stat) override;

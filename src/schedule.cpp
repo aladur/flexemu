@@ -157,7 +157,7 @@ Byte Scheduler::idleloop()
     return user_input;
 }
 
-Byte Scheduler::runloop(Word mode)
+Byte Scheduler::runloop(RunMode mode)
 {
     Byte new_state;
 
@@ -178,7 +178,7 @@ Byte Scheduler::runloop(Word mode)
             return user_input;
         }
 
-        mode = CONTINUE_RUNNING;
+        mode = RunMode::RunningContinue;
     }
     while ((new_state & S_MASK) == S_NO_CHANGE);
 
@@ -199,15 +199,15 @@ Byte Scheduler::statemachine(Byte initial_state)
         {
             case S_RUN:
                 prev_state = state;
-                state = runloop(START_RUNNING);
+                state = runloop(RunMode::RunningStart);
                 break;
 
             case S_NEXT:
-                state = runloop(SINGLESTEP_OVER);
+                state = runloop(RunMode::SingleStepOver);
                 break;
 
             case S_STEP:
-                state = runloop(SINGLESTEP_INTO);
+                state = runloop(RunMode::SingleStepInto);
                 break;
 
             case S_STOP:

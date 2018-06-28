@@ -57,7 +57,7 @@ public:
     void        set_new_state(Byte x_user_input);
     void        process_events();
     Byte        idleloop();
-    Byte        runloop(Word mode);
+    Byte        runloop(RunMode mode);
 
     // Thread support
 public:

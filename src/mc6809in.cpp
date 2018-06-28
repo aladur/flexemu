@@ -195,16 +195,16 @@ CpuStatus *Mc6809::create_status_object()
     return new Mc6809CpuStatus;
 }
 
-Byte Mc6809::run(Word mode)
+Byte Mc6809::run(RunMode mode)
 {
     switch (mode)
     {
-        case SINGLESTEP_INTO:
+        case RunMode::SingleStepInto:
             events |= Event::SingleStep | Event::IgnoreBP;
             events &= ~Event::GoBack;
             break;
 
-        case SINGLESTEP_OVER:
+        case RunMode::SingleStepOver:
         {
             char *pCode, *pMnemonic;
             DWord flags = 0;
@@ -231,7 +231,7 @@ Byte Mc6809::run(Word mode)
         events &= ~Event::GoBack;
         break;
 
-        case START_RUNNING:
+        case RunMode::RunningStart:
             reset_bp(2);
 
             if ((events & Event::BreakPoint) != Event::NONE)
@@ -241,7 +241,8 @@ Byte Mc6809::run(Word mode)
 
             events &= ~Event::GoBack;
 
-        case CONTINUE_RUNNING:
+        case RunMode::RunningContinue:
+        default:
             break;
     }
 
