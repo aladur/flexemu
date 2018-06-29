@@ -257,7 +257,7 @@ Byte Mc6809::run(RunMode mode)
 #endif
 Byte Mc6809::runloop()
 {
-    Byte newState = 0;
+    Byte new_state = 0;
     bool first_time = true;
 
     while (1)
@@ -274,7 +274,7 @@ Byte Mc6809::runloop()
                 {
                     // An invalid instr. occured
                     events &= ~Event::Invalid;
-                    newState = S_INVALID; // invalid instruction encountered
+                    new_state = S_INVALID; // invalid instruction encountered
                     break;
                 }
 
@@ -289,7 +289,7 @@ Byte Mc6809::runloop()
                             reset_bp(2);
                         }
 
-                        newState = S_STOP;
+                        new_state = S_STOP;
                         break;
                     } // if
                 }
@@ -300,7 +300,7 @@ Byte Mc6809::runloop()
                 {
                     // one single step has been executed
                     events &= (~Event::SingleStepFinished & ~Event::SingleStep);
-                    newState = S_STOP;
+                    new_state = S_STOP;
                     break;
                 }
 
@@ -314,7 +314,7 @@ Byte Mc6809::runloop()
                     }
                     else
                     {
-                        newState = S_STOP;
+                        new_state = S_STOP;
                         break;
                     }
                 }
@@ -332,7 +332,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_SUSPEND;
+                        new_state = S_SUSPEND;
                         break;
                     }
                 }
@@ -348,7 +348,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_SUSPEND;
+                        new_state = S_SUSPEND;
                         break;
                     }
                 }
@@ -358,7 +358,7 @@ Byte Mc6809::runloop()
                     if (cycles >= required_cyclecount)
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_SUSPEND;
+                        new_state = S_SUSPEND;
                         break;
                     }
                 }
@@ -400,7 +400,7 @@ Byte Mc6809::runloop()
                 // Request from scheduler to return runloop
                 // with state S_SCHEDULE.
                 events &= ~Event::DoSchedule;
-                newState = S_SCHEDULE;
+                new_state = S_SCHEDULE;
                 break;
             }
         } // if
@@ -415,7 +415,7 @@ Byte Mc6809::runloop()
         first_time = false;
     } // while
 
-    return newState;
+    return new_state;
 } // runloop
 
 void Mc6809::do_reset()
