@@ -26,8 +26,8 @@
 #define SCHEDCPU_INCLUDED
 
 #include "typedefs.h"
+#include "cpustate.h"
 
-class CpuStatus;
 
 typedef unsigned long int t_cycles; // must be unsigned long because of sprintf
 
@@ -59,7 +59,7 @@ class ScheduledCpu
 public:
     virtual ~ScheduledCpu() { };
     virtual void do_reset() = 0;
-    virtual Byte run(RunMode mode) = 0;
+    virtual CpuState run(RunMode mode) = 0;
     virtual void exit_run() = 0;
     virtual QWord get_cycles(bool reset = false) = 0;
     virtual void get_status(CpuStatus *stat) = 0;

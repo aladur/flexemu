@@ -903,9 +903,9 @@ void AbstractGui::update()
     display_block %= YBLOCKS;
 }
 
-void AbstractGui::request_new_state(Byte user_input)
+void AbstractGui::request_new_state(CpuState user_input)
 {
-    if (user_input != S_NONE)
+    if (user_input != CpuState::NONE)
     {
         scheduler.request_new_state(user_input);
     }

@@ -128,7 +128,6 @@ protected:
         FLX_INVISIBLE_CURSOR = 10,
         FLX_DEFAULT_CURSOR   = 11
     };
-    static int radio_data[7];
     HINSTANCE   hInstance;
     HWND        e2screen; // handle to E2 graphic display
     HWND        hwndStatus; // handle to status bar

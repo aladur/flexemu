@@ -69,9 +69,8 @@ const char **XtGui::pixmapname[8] = { floppy0, floppy1, floppy2,
                                       irq0, irq1, irq2, irq3, irq4
                                     };
 
-int XtGui::radio_data[7] =
+int XtGui::radio_data[static_cast<Byte>(CpuState::_count)] =
 {
-    S_NONE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
 };
 
 void expose(Widget, XEvent *pevent, String *, Cardinal *)
@@ -205,7 +204,7 @@ void XtGui::setCpuRunCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_RUN);
+        ((XtGui *)client_data)->request_new_state(CpuState::Run);
     }
 }
 
@@ -214,7 +213,7 @@ void XtGui::setCpuStopCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_STOP);
+        ((XtGui *)client_data)->request_new_state(CpuState::Stop);
     }
 }
 
@@ -223,7 +222,7 @@ void XtGui::toggleCpuRunCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_RUN);
+        ((XtGui *)client_data)->request_new_state(CpuState::Run);
     }
 }
 
@@ -232,7 +231,7 @@ void XtGui::toggleCpuStopCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_STOP);
+        ((XtGui *)client_data)->request_new_state(CpuState::Stop);
     }
 }
 
@@ -241,7 +240,7 @@ void XtGui::toggleCpuStepCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_STEP);
+        ((XtGui *)client_data)->request_new_state(CpuState::Step);
     }
 }
 
@@ -250,7 +249,7 @@ void XtGui::toggleCpuNextCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_NEXT);
+        ((XtGui *)client_data)->request_new_state(CpuState::Next);
     }
 }
 
@@ -259,7 +258,7 @@ void XtGui::toggleCpuResetCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_RESET);
+        ((XtGui *)client_data)->request_new_state(CpuState::Reset);
     }
 }
 
@@ -268,7 +267,7 @@ void XtGui::setCpuResetRunCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->request_new_state(S_RESET_RUN);
+        ((XtGui *)client_data)->request_new_state(CpuState::ResetRun);
     }
 }
 
@@ -633,7 +632,7 @@ void XtGui::popdown_message(Widget w)
 
     if (exit_flag)
     {
-        request_new_state(S_EXIT);
+        request_new_state(CpuState::Exit);
     }
 }
 
@@ -886,15 +885,15 @@ void XtGui::timerCallback(XtIntervalId)
 
         if (okpixmap != None)
         {
-            bool is_running = (pStat->state == S_RUN ||
-                               pStat->state == S_NEXT);
+            bool is_running = (pStat->state == CpuState::Run ||
+                               pStat->state == CpuState::Next);
             XtVaSetValues(entry21, XtNleftBitmap,
                           is_running ? okpixmap : None, nullptr);
             XtVaSetValues(entry22, XtNleftBitmap,
                           !is_running ? okpixmap : None, nullptr);
         }
 
-        if (pStat->state == S_INVALID)
+        if (pStat->state == CpuState::Invalid)
         {
             char err_msg[128];
 
@@ -2039,6 +2038,8 @@ void XtGui::clear_log()
 
 void XtGui::create_cpuview(Widget parent)
 {
+    XtArgVal argVal;
+
     cpu_popped_up = false;
     cpuframe = XtVaCreatePopupShell("MC6809", topLevelShellWidgetClass,
                                     parent, nullptr);
@@ -2048,26 +2049,35 @@ void XtGui::create_cpuview(Widget parent)
                                       nullptr);
     cpubuttons = XtVaCreateManagedWidget("cpuButtons", boxWidgetClass, cpuform,
                                          nullptr);
+    argVal = (XtArgVal)&radio_data[static_cast<Byte>(CpuState::Run)];
     runbutton = XtVaCreateManagedWidget("runButton", toggleWidgetClass,
                                         cpubuttons, XtNradioData,
-                                        (XtArgVal)&radio_data[S_RUN],
+                                        argVal,
                                         XtNstate, (XtArgVal)1, nullptr);
+    argVal = (XtArgVal)&radio_data[static_cast<Byte>(CpuState::Stop)];
     stopbutton = XtVaCreateManagedWidget("stopButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_STOP], nullptr);
+                                         argVal,
+                                         nullptr);
+    argVal = (XtArgVal)&radio_data[static_cast<Byte>(CpuState::Step)];
     stepbutton = XtVaCreateManagedWidget("stepButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_STEP], nullptr);
+                                         argVal,
+                                         nullptr);
+    argVal = (XtArgVal)&radio_data[static_cast<Byte>(CpuState::Next)];
     nextbutton = XtVaCreateManagedWidget("nextButton", toggleWidgetClass,
                                          cpubuttons, XtNradioGroup,
                                          (XtArgVal)runbutton, XtNradioData,
-                                         (XtArgVal)&radio_data[S_NEXT], nullptr);
+                                         argVal,
+                                         nullptr);
+    argVal = (XtArgVal)&radio_data[static_cast<Byte>(CpuState::Reset)];
     resetbutton = XtVaCreateManagedWidget("resetButton", toggleWidgetClass,
                                           cpubuttons, XtNradioGroup,
                                           (XtArgVal)runbutton, XtNradioData,
-                                          (XtArgVal)&radio_data[S_RESET], nullptr);
+                                          argVal,
+                                          nullptr);
     bpbutton = XtVaCreateManagedWidget("bpButton", commandWidgetClass,
                                        cpubuttons, nullptr);
     logbutton = XtVaCreateManagedWidget("logButton", commandWidgetClass,
@@ -2213,7 +2223,7 @@ void XtGui::create_logfile_dialog(Widget parent)
 void XtGui::redraw_cpuview_impl(const Mc6809CpuStatus &stat)
 {
     int i;
-    int current_state;
+    CpuState current_state;
 
     i = stat.s & 7;
     text(5 + 3 * i, 10, "[");
@@ -2221,25 +2231,27 @@ void XtGui::redraw_cpuview_impl(const Mc6809CpuStatus &stat)
     XtVaSetValues(cputext, XtNlength, strlen(cpustring) + 1,
                   XtNstring, cpustring, nullptr);
 
-    if (stat.state == S_RESET_RUN)
+    if (stat.state == CpuState::ResetRun)
     {
-        current_state = S_RESET;
+        current_state = CpuState::Reset;
     }
-    else if (stat.state == S_INVALID)
+    else if (stat.state == CpuState::Invalid)
     {
-        current_state = S_STOP;
+        current_state = CpuState::Stop;
     }
     else
     {
         current_state = stat.state;
     }
 
-    if (XawToggleGetCurrent(runbutton) != (XtPointer)&radio_data[current_state])
+    if (XawToggleGetCurrent(runbutton) !=
+        (XtPointer)&radio_data[static_cast<Byte>(current_state)])
     {
-        XawToggleSetCurrent(runbutton, (XtPointer)&radio_data[stat.state]);
+        XtPointer ptr = &radio_data[static_cast<Byte>(stat.state)];
+        XawToggleSetCurrent(runbutton, ptr);
     }
 
-    if (stat.state == S_RUN)
+    if (stat.state == CpuState::Run)
     {
         XtVaSetValues(stepbutton, XtNsensitive, 0, nullptr);
         XtVaSetValues(nextbutton, XtNsensitive, 0, nullptr);

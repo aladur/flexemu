@@ -209,7 +209,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 case 1:
                     if (stricmp(arg1, "exit") == 0)
                     {
-                        scheduler.request_new_state(S_EXIT);
+                        scheduler.request_new_state(CpuState::Exit);
                         return;
                     }
                     else if (stricmp(arg1, "irq")  == 0)

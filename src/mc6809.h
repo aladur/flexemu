@@ -953,7 +953,7 @@ public:
     // Scheduler Interface implemenation
 public:
     void do_reset() override;
-    Byte run(RunMode mode) override;
+    CpuState run(RunMode mode) override;
     void exit_run() override;
     QWord get_cycles(bool reset = false) override;
     void get_status(CpuStatus *stat) override;
@@ -964,7 +964,7 @@ public:
     // test support
     void            set_status(CpuStatus *stat);
 protected:
-    Byte            runloop();
+    CpuState runloop();
 
     // interrupt handling:
 public:

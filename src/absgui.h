@@ -31,6 +31,7 @@
 #include "e2.h"
 #include "flexemu.h"
 #include "sguiopts.h"
+#include "cpustate.h"
 #include <string>
 #include <memory>
 
@@ -128,7 +129,7 @@ public:
 
     void set_exit(bool value = true); // set exit flag
     void update(); // update video and execute event loop
-    void request_new_state(Byte user_input); // Request for a new cpu state
+    void request_new_state(CpuState user_input); // Request for a new cpu state
 
 public:
     AbstractGui(

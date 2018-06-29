@@ -61,11 +61,6 @@
 
 static Win32Gui *ggui = nullptr;
 
-int Win32Gui::radio_data[] =
-{
-    S_NONE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
-};
-
 extern INT_PTR CALLBACK cpuWindowWndProc(
     HWND hwnd,
     UINT message,
@@ -235,8 +230,8 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
         {
             delete cpu_stat;
             cpu_stat = new_cpu_stat;
-            bool is_running = (cpu_stat->state == S_RUN ||
-                               cpu_stat->state == S_NEXT);
+            bool is_running = (cpu_stat->state == CpuState::Run ||
+                               cpu_stat->state == CpuState::Next);
             UINT run_checked = is_running ? MF_CHECKED : MF_UNCHECKED;
             UINT stop_checked = !is_running ? MF_CHECKED : MF_UNCHECKED;
 
@@ -244,7 +239,7 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             CheckMenuItem(menu2, IDM_STOP, MF_BYCOMMAND | stop_checked);
             update_cpuview(*cpu_stat);
 
-            if (cpu_stat->state == S_INVALID)
+            if (cpu_stat->state == CpuState::Invalid)
             {
                 char err_msg[128];
 
@@ -431,15 +426,15 @@ void Win32Gui::onCommand(HWND hwndWindow, int cmd, HWND hwndControl)
             break;
 
         case IDM_RUN:
-            request_new_state(S_RUN);
+            request_new_state(CpuState::Run);
             break;
 
         case IDM_STOP:
-            request_new_state(S_STOP);
+            request_new_state(CpuState::Stop);
             break;
 
         case IDM_RESET:
-            request_new_state(S_RESET_RUN);
+            request_new_state(CpuState::ResetRun);
             break;
 
         case IDM_VIEW:
@@ -755,7 +750,7 @@ bool Win32Gui::CloseApp(HWND hwnd, bool confirm /* = false */)
     }
 
     release_mouse_capture(hwnd);
-    request_new_state(S_EXIT);
+    request_new_state(CpuState::Exit);
     KillTimer(hwnd, idTimer);
     idTimer = 0;
 
@@ -2125,23 +2120,23 @@ BOOL Win32Gui::onCpuCommand(HWND hwnd, int cmd)
     {
         // cpuview button controls
         case IDP_NEXT:
-            request_new_state(S_NEXT);
+            request_new_state(CpuState::Next);
             break;
 
         case IDP_STEP:
-            request_new_state(S_STEP);
+            request_new_state(CpuState::Step);
             break;
 
         case IDP_STOP:
-            request_new_state(S_STOP);
+            request_new_state(CpuState::Stop);
             break;
 
         case IDP_RUN:
-            request_new_state(S_RUN);
+            request_new_state(CpuState::Run);
             break;
 
         case IDP_RESET:
-            request_new_state(S_RESET);
+            request_new_state(CpuState::Reset);
             break;
 
         case IDP_BP:

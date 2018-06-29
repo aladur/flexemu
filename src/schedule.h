@@ -51,12 +51,12 @@ public:
     Scheduler(ScheduledCpu &x_cpu, Inout &x_inout);
     ~Scheduler();
 
-    Byte        statemachine(Byte initial_state);
+    CpuState statemachine(CpuState initial_state);
     bool        is_finished();
-    void        request_new_state(Byte x_user_input);
+    void        request_new_state(CpuState x_user_input);
     void        process_events();
-    Byte        idleloop();
-    Byte        runloop(RunMode mode);
+    CpuState idleloop();
+    CpuState runloop(RunMode mode);
 
     // Thread support
 public:
@@ -82,9 +82,9 @@ protected:
 
     ScheduledCpu &cpu;
     Inout &inout;
-    Byte        state;
+    CpuState state;
     Word        events;
-    Byte        user_input;
+    CpuState user_input;
     QWord       total_cycles;
     QWord       time0sec;
     BTime       systemTime;

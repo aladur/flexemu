@@ -88,7 +88,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
         {
             fprintf(stderr, "unable to initialize terminal\n");
 
-            scheduler.request_new_state(S_EXIT);
+            scheduler.request_new_state(CpuState::Exit);
         }
         else
         {
@@ -187,7 +187,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
             tcsetattr(fileno(stdin), TCSAFLUSH, &save_termios);
             fprintf(stderr, "unable to initialize terminal\n");
 
-            scheduler.request_new_state(S_EXIT);
+            scheduler.request_new_state(CpuState::Exit);
 
             return;
         }
@@ -338,18 +338,18 @@ void TerminalIO::exec_signal(int sig_no)
 
 #if defined(SIGQUIT)
         case SIGQUIT:
-            scheduler.request_new_state(S_EXIT);
+            scheduler.request_new_state(CpuState::Exit);
             break;
 #endif
 #if defined(SIGTERM)
         case SIGTERM:
-            scheduler.request_new_state(S_EXIT);
+            scheduler.request_new_state(CpuState::Exit);
             break;
 #endif
 
 #if defined(SIGTSTP)
         case SIGTSTP:
-            scheduler.request_new_state(S_RESET_RUN);
+            scheduler.request_new_state(CpuState::ResetRun);
             break;
 #endif
     }

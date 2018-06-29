@@ -195,7 +195,7 @@ CpuStatus *Mc6809::create_status_object()
     return new Mc6809CpuStatus;
 }
 
-Byte Mc6809::run(RunMode mode)
+CpuState Mc6809::run(RunMode mode)
 {
     switch (mode)
     {
@@ -249,15 +249,16 @@ Byte Mc6809::run(RunMode mode)
     return runloop();
 }
 
-// Enter runloop with state S_RUN, S_STEP or S_NEXT
-// Exit  runloop if new state is S_STOP, S_EXIT, S_RESET or S_RESET_RUN
-// The performance of the emulated CPU depends very much on this loop
+// Enter runloop with state CpuState::Run, CpuState::Step or CpuState::Next.
+// Exit runloop if new state is CpuState::Stop, CpuState::Exit, CpuState::Reset
+// or CpuState::ResetRun.
+// The performance of the emulated CPU depends very much on this loop.
 #ifdef _MSC_VER
     #pragma inline_depth(255)
 #endif
-Byte Mc6809::runloop()
+CpuState Mc6809::runloop()
 {
-    Byte new_state = 0;
+    CpuState new_state = CpuState::NONE;
     bool first_time = true;
 
     while (1)
@@ -274,7 +275,7 @@ Byte Mc6809::runloop()
                 {
                     // An invalid instr. occured
                     events &= ~Event::Invalid;
-                    new_state = S_INVALID; // invalid instruction encountered
+                    new_state = CpuState::Invalid; // invalid instruction encountered
                     break;
                 }
 
@@ -289,7 +290,7 @@ Byte Mc6809::runloop()
                             reset_bp(2);
                         }
 
-                        new_state = S_STOP;
+                        new_state = CpuState::Stop;
                         break;
                     } // if
                 }
@@ -300,7 +301,7 @@ Byte Mc6809::runloop()
                 {
                     // one single step has been executed
                     events &= (~Event::SingleStepFinished & ~Event::SingleStep);
-                    new_state = S_STOP;
+                    new_state = CpuState::Stop;
                     break;
                 }
 
@@ -314,7 +315,7 @@ Byte Mc6809::runloop()
                     }
                     else
                     {
-                        new_state = S_STOP;
+                        new_state = CpuState::Stop;
                         break;
                     }
                 }
@@ -332,7 +333,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        new_state = S_SUSPEND;
+                        new_state = CpuState::Suspend;
                         break;
                     }
                 }
@@ -348,7 +349,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        new_state = S_SUSPEND;
+                        new_state = CpuState::Suspend;
                         break;
                     }
                 }
@@ -358,7 +359,7 @@ Byte Mc6809::runloop()
                     if (cycles >= required_cyclecount)
                     {
                         // set CPU thread asleep until next timer tick
-                        new_state = S_SUSPEND;
+                        new_state = CpuState::Suspend;
                         break;
                     }
                 }
@@ -398,9 +399,9 @@ Byte Mc6809::runloop()
                     != Event::NONE))
             {
                 // Request from scheduler to return runloop
-                // with state S_SCHEDULE.
+                // with state CpuState::Schedule.
                 events &= ~Event::DoSchedule;
-                new_state = S_SCHEDULE;
+                new_state = CpuState::Schedule;
                 break;
             }
         } // if
@@ -436,7 +437,7 @@ void Mc6809::exit_run()
 // which cyclically resets the cycle count and sets a
 // required cycle count. When the cycle count is
 // reached the runloop exits automatically with
-// the state S_SUSPEND.
+// the state CpuState::Suspend.
 
 void Mc6809::set_required_cyclecount(t_cycles x_cycles)
 {

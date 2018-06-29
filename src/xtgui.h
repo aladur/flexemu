@@ -79,7 +79,7 @@ protected:
     Pia1 &pia1;
 
     static const char **pixmapname[8];
-    static int radio_data[7];
+    static int radio_data[];
     // Xtoolkit stuff
     Widget      e2toplevel, form, menubar, e2screen;
     Widget      button[3];

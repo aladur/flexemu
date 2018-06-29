@@ -37,8 +37,8 @@
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
-    state(S_RUN), events(0), user_input(S_NONE), total_cycles(0),
-    time0sec(0),
+    state(CpuState::Run), events(0), user_input(CpuState::NONE),
+    total_cycles(0), time0sec(0),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
@@ -75,7 +75,7 @@ Scheduler::~Scheduler()
     status_mutex.unlock();
 }
 
-void Scheduler::request_new_state(Byte x_user_input)
+void Scheduler::request_new_state(CpuState x_user_input)
 {
     user_input = x_user_input;
     cpu.exit_run();
@@ -84,7 +84,7 @@ void Scheduler::request_new_state(Byte x_user_input)
 bool Scheduler::is_finished()
 {
     // this is the final state. program can savely be shutdown
-    return state == S_EXIT;
+    return state == CpuState::Exit;
 }
 
 void Scheduler::process_events()
@@ -139,108 +139,112 @@ void Scheduler::process_events()
     }
 }
 
-// enter with state S_INVALID or S_STOP
-// return with any other state
-Byte Scheduler::idleloop()
+// Enter with state CpuState::Invalid or CpuState::Stop.
+// Return with any other state.
+CpuState Scheduler::idleloop()
 {
-    while (user_input == S_NONE || user_input == S_STOP)
+    while (user_input == CpuState::NONE || user_input == CpuState::Stop)
     {
         process_events();
         BTimer::Instance()->Suspend();
 
-        // S_INVALID only temp. state to update CPU view
-        if (state == S_INVALID)
+        // CpuState::Invalid is only a temporary state to update CPU view.
+        if (state == CpuState::Invalid)
         {
-            return S_STOP;
+            return CpuState::Stop;
         }
     }
 
     return user_input;
 }
 
-Byte Scheduler::runloop(RunMode mode)
+CpuState Scheduler::runloop(RunMode mode)
 {
-    Byte new_state;
+    CpuState new_state;
 
     do
     {
         new_state = cpu.run(mode);
 
-        if (new_state == S_SUSPEND)
+        if (new_state == CpuState::Suspend)
         {
             // suspend thread until next timer tick
             BTimer::Instance()->Suspend();
-            new_state = S_SCHEDULE;
+            new_state = CpuState::Schedule;
         }
 
         process_events();
 
-        if (user_input != S_NONE)
+        if (user_input != CpuState::NONE)
         {
             return user_input;
         }
 
         mode = RunMode::RunningContinue;
     }
-    while (new_state == S_SCHEDULE);
+    while (new_state == CpuState::Schedule);
 
     return new_state;
 }
 
-Byte Scheduler::statemachine(Byte initial_state)
+CpuState Scheduler::statemachine(CpuState initial_state)
 {
-    Byte prev_state = initial_state;
+    CpuState prev_state = initial_state;
 
     state = initial_state;
 
-    while (state != S_EXIT)
+    while (state != CpuState::Exit)
     {
-        user_input = S_NONE;
+        user_input = CpuState::NONE;
 
         switch (state)
         {
-            case S_RUN:
+            case CpuState::Run:
                 prev_state = state;
                 state = runloop(RunMode::RunningStart);
                 break;
 
-            case S_NEXT:
+            case CpuState::Next:
                 state = runloop(RunMode::SingleStepOver);
                 break;
 
-            case S_STEP:
+            case CpuState::Step:
                 state = runloop(RunMode::SingleStepInto);
                 break;
 
-            case S_STOP:
+            case CpuState::Stop:
                 prev_state = state;
                 state = idleloop();
                 break;
 
-            case S_RESET:
+            case CpuState::Reset:
                 do_reset();
                 state = prev_state;
                 break;
 
-            case S_RESET_RUN:
+            case CpuState::ResetRun:
                 do_reset();
-                state = S_RUN;
+                state = CpuState::Run;
                 break;
 
-            case S_INVALID:
-                prev_state = S_RUN;
+            case CpuState::Invalid:
+                prev_state = CpuState::Run;
                 state = idleloop();
                 break;
 
-            case S_EXIT:
+            case CpuState::Exit:
                 break;
 
-            case S_SCHEDULE:
+            case CpuState::NONE:
+            case CpuState::Suspend:
+            case CpuState::Schedule:
+            case CpuState::_count:
                 // This case should never happen
-                // Set the state to S_RUN to avoid an endless loop
-                DEBUGPRINT("Error in Statemachine: Set state to S_RUN\n");
-                state = S_RUN;
+                // Set the state to CpuState::Run to avoid an endless loop
+                DEBUGPRINT("Error in Statemachine: Set state to CpuState::Run\n");
+                state = CpuState::Run;
                 break;
+
         } // switch
 
         if (inout.is_gui_present())
@@ -296,7 +300,7 @@ void Scheduler::run()
 #endif
     BTimer::Instance()->Start(periodic, TIME_BASE);
     time0sec = systemTime.GetTimeUsll();
-    statemachine(S_RUN);
+    statemachine(CpuState::Run);
 }
 
 void Scheduler::sync_exec(BCommand *newCommand)

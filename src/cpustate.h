@@ -25,30 +25,35 @@
 #ifndef CPUSTATE_INCLUDED
 #define CPUSTATE_INCLUDED
 
-#define S_NONE                  1
-#define S_RUN                   2
-#define S_STOP                  3
-#define S_STEP                  4
-#define S_EXIT                  5
-#define S_RESET                 6
-#define S_NEXT                  7
-#define S_RESET_RUN             8
-#define S_INVALID               9
-#define S_SUSPEND              10
-#define S_SCHEDULE             11
+#include "typedefs.h"
+
+enum class CpuState : Byte
+{
+    NONE,
+    Run,
+    Stop,
+    Step,
+    Exit,
+    Reset,
+    Next,
+    ResetRun,
+    Invalid,
+    Suspend,
+    Schedule,
+    _count
+};
 
 #define TIME_BASE               10000
 
-#include "typedefs.h"
 
 class CpuStatus
 {
 public:
-    CpuStatus() : freq(0.0), state(0) { };
+    CpuStatus() : freq(0.0), state(CpuState::NONE) { };
     ~CpuStatus() { };
 
-    float   freq;
-    Byte    state;
+    float freq;
+    CpuState state;
 };
 #endif // CPUSTATE_INCLUDED
 
