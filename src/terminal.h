@@ -29,6 +29,7 @@
 #ifdef HAVE_TERMIOS_H
     #include <termios.h>
 #endif
+#include <signal.h>
 #include "flexemu.h"
 #include "flexerr.h"
 #include <deque>
@@ -55,7 +56,7 @@ private:
 public:
     static TerminalIO *instance;
 
-    static void s_exec_signal(int sig_no);
+    static void s_exec_signal(int sig_no, siginfo_t *, void *);
     void init(Word reset_key);
 
     void reset_serial();

@@ -77,6 +77,10 @@ void TerminalIO::init_terminal_io(Word reset_key)
 #ifdef HAVE_TERMIOS_H
     struct termios  buf;
     tcflag_t    mask;
+    struct sigaction sig_action;
+    struct sigaction old_action;
+
+    memset(&sig_action, 0, sizeof(sig_action));
 
     if (isatty(fileno(stdin)))
     {
@@ -141,23 +145,28 @@ void TerminalIO::init_terminal_io(Word reset_key)
                 disable = reset_key;
             }
 
+            // Add some signal handlers
+            sig_action.sa_sigaction = s_exec_signal;
+            sig_action.sa_flags = SA_RESTART | SA_SIGINFO;
+            sigemptyset(&sig_action.sa_mask);
+
 #if defined(SIGUSR1)
-            signal(SIGUSR1, s_exec_signal);
+            sigaction(SIGUSR1, &sig_action, &old_action);
 #endif
 #if defined(SIGUSR2)
-            signal(SIGUSR2, s_exec_signal);
+            sigaction(SIGUSR2, &sig_action, &old_action);
 #endif
 #if defined(VINTR) && defined(SIGINT)
             buf.c_cc[VINTR] = reset_key;
-            signal(SIGINT, s_exec_signal);
+            sigaction(SIGINT, &sig_action, &old_action);
 #endif
 #if defined(VQUIT) && defined(SIGQUIT)
             buf.c_cc[VQUIT] = disable;
-            signal(SIGQUIT, s_exec_signal);
+            sigaction(SIGQUIT, &sig_action, &old_action);
 #endif
 #if defined(VQUIT) && defined(SIGTERM)
             buf.c_cc[VQUIT] = disable;
-            signal(SIGTERM, s_exec_signal);
+            sigaction(SIGTERM, &sig_action, &old_action);
 #endif
 #ifdef VSUSP
             buf.c_cc[VSUSP] = disable;
@@ -167,7 +176,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
 #ifdef VDSUSP
             buf.c_cc[VDSUSP] = disable;
 #endif
-            signal(SIGTSTP, s_exec_signal);
+            sigaction(SIGTSTP, &sig_action, &old_action);
 #endif
         }
 
@@ -299,7 +308,7 @@ bool TerminalIO::is_terminal_supported()
 #endif
 }
 
-void TerminalIO::s_exec_signal(int sig_no)
+void TerminalIO::s_exec_signal(int sig_no, siginfo_t *, void *)
 {
     if (TerminalIO::instance != nullptr)
     {
@@ -309,8 +318,6 @@ void TerminalIO::s_exec_signal(int sig_no)
 
 void TerminalIO::exec_signal(int sig_no)
 {
-    signal(sig_no, s_exec_signal); // set handler again
-
     switch (sig_no)
     {
         case SIGINT:
