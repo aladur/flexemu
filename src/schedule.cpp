@@ -75,7 +75,7 @@ Scheduler::~Scheduler()
     status_mutex.unlock();
 }
 
-void Scheduler::set_new_state(Byte x_user_input)
+void Scheduler::request_new_state(Byte x_user_input)
 {
     user_input = x_user_input;
     cpu.exit_run();

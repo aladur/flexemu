@@ -53,7 +53,7 @@ public:
 
     Byte        statemachine(Byte initial_state);
     bool        is_finished();
-    void        set_new_state(Byte x_user_input);
+    void        request_new_state(Byte x_user_input);
     void        process_events();
     Byte        idleloop();
     Byte        runloop(RunMode mode);

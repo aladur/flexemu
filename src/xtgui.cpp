@@ -205,7 +205,7 @@ void XtGui::setCpuRunCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_RUN);
+        ((XtGui *)client_data)->request_new_state(S_RUN);
     }
 }
 
@@ -214,7 +214,7 @@ void XtGui::setCpuStopCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_STOP);
+        ((XtGui *)client_data)->request_new_state(S_STOP);
     }
 }
 
@@ -223,7 +223,7 @@ void XtGui::toggleCpuRunCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_RUN);
+        ((XtGui *)client_data)->request_new_state(S_RUN);
     }
 }
 
@@ -232,7 +232,7 @@ void XtGui::toggleCpuStopCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_STOP);
+        ((XtGui *)client_data)->request_new_state(S_STOP);
     }
 }
 
@@ -241,7 +241,7 @@ void XtGui::toggleCpuStepCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_STEP);
+        ((XtGui *)client_data)->request_new_state(S_STEP);
     }
 }
 
@@ -250,7 +250,7 @@ void XtGui::toggleCpuNextCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_NEXT);
+        ((XtGui *)client_data)->request_new_state(S_NEXT);
     }
 }
 
@@ -259,7 +259,7 @@ void XtGui::toggleCpuResetCallback(Widget,
 {
     if (client_data != nullptr && call_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_RESET);
+        ((XtGui *)client_data)->request_new_state(S_RESET);
     }
 }
 
@@ -268,7 +268,7 @@ void XtGui::setCpuResetRunCallback(Widget,
 {
     if (client_data != nullptr)
     {
-        ((XtGui *)client_data)->set_new_state(S_RESET_RUN);
+        ((XtGui *)client_data)->request_new_state(S_RESET_RUN);
     }
 }
 
@@ -633,7 +633,7 @@ void XtGui::popdown_message(Widget w)
 
     if (exit_flag)
     {
-        set_new_state(S_EXIT);
+        request_new_state(S_EXIT);
     }
 }
 

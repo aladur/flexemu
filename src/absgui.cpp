@@ -903,11 +903,11 @@ void AbstractGui::update()
     display_block %= YBLOCKS;
 }
 
-void AbstractGui::set_new_state(Byte user_input)
+void AbstractGui::request_new_state(Byte user_input)
 {
     if (user_input != S_NONE)
     {
-        scheduler.set_new_state(user_input);
+        scheduler.request_new_state(user_input);
     }
 }
 

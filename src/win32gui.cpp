@@ -431,15 +431,15 @@ void Win32Gui::onCommand(HWND hwndWindow, int cmd, HWND hwndControl)
             break;
 
         case IDM_RUN:
-            set_new_state(S_RUN);
+            request_new_state(S_RUN);
             break;
 
         case IDM_STOP:
-            set_new_state(S_STOP);
+            request_new_state(S_STOP);
             break;
 
         case IDM_RESET:
-            set_new_state(S_RESET_RUN);
+            request_new_state(S_RESET_RUN);
             break;
 
         case IDM_VIEW:
@@ -755,7 +755,7 @@ bool Win32Gui::CloseApp(HWND hwnd, bool confirm /* = false */)
     }
 
     release_mouse_capture(hwnd);
-    set_new_state(S_EXIT);
+    request_new_state(S_EXIT);
     KillTimer(hwnd, idTimer);
     idTimer = 0;
 
@@ -2125,23 +2125,23 @@ BOOL Win32Gui::onCpuCommand(HWND hwnd, int cmd)
     {
         // cpuview button controls
         case IDP_NEXT:
-            set_new_state(S_NEXT);
+            request_new_state(S_NEXT);
             break;
 
         case IDP_STEP:
-            set_new_state(S_STEP);
+            request_new_state(S_STEP);
             break;
 
         case IDP_STOP:
-            set_new_state(S_STOP);
+            request_new_state(S_STOP);
             break;
 
         case IDP_RUN:
-            set_new_state(S_RUN);
+            request_new_state(S_RUN);
             break;
 
         case IDP_RESET:
-            set_new_state(S_RESET);
+            request_new_state(S_RESET);
             break;
 
         case IDP_BP:

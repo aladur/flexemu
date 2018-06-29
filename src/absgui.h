@@ -128,7 +128,7 @@ public:
 
     void set_exit(bool value = true); // set exit flag
     void update(); // update video and execute event loop
-    void set_new_state(Byte user_input); // set cpu to new state
+    void request_new_state(Byte user_input); // Request for a new cpu state
 
 public:
     AbstractGui(
