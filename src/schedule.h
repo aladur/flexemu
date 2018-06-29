@@ -26,7 +26,6 @@
 #define SCHEDULE_INCLUDED
 
 #include "misc1.h"
-#include <signal.h>
 #include <mutex>
 #include <vector>
 #include "cpustate.h"
