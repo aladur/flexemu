@@ -63,7 +63,7 @@ static Win32Gui *ggui = nullptr;
 
 int Win32Gui::radio_data[] =
 {
-    S_NO_CHANGE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
+    S_NONE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
 };
 
 extern INT_PTR CALLBACK cpuWindowWndProc(

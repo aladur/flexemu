@@ -25,9 +25,7 @@
 #ifndef CPUSTATE_INCLUDED
 #define CPUSTATE_INCLUDED
 
-#define S_MASK          0xF
-
-#define S_NO_CHANGE             1
+#define S_NONE                  1
 #define S_RUN                   2
 #define S_STOP                  3
 #define S_STEP                  4
@@ -36,8 +34,8 @@
 #define S_NEXT                  7
 #define S_RESET_RUN             8
 #define S_INVALID               9
-
-#define EXIT_SUSPEND        0x80
+#define S_SUSPEND              10
+#define S_SCHEDULE             11
 
 #define TIME_BASE               10000
 

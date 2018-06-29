@@ -71,7 +71,7 @@ const char **XtGui::pixmapname[8] = { floppy0, floppy1, floppy2,
 
 int XtGui::radio_data[7] =
 {
-    S_NO_CHANGE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
+    S_NONE, S_RUN, S_STOP, S_STEP, S_EXIT, S_RESET, S_NEXT
 };
 
 void expose(Widget, XEvent *pevent, String *, Cardinal *)

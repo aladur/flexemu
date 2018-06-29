@@ -201,7 +201,7 @@ Byte Mc6809::run(RunMode mode)
     {
         case RunMode::SingleStepInto:
             events |= Event::SingleStep | Event::IgnoreBP;
-            events &= ~Event::GoBack;
+            events &= ~Event::DoSchedule;
             break;
 
         case RunMode::SingleStepOver:
@@ -228,7 +228,7 @@ Byte Mc6809::run(RunMode mode)
             }
         }
 
-        events &= ~Event::GoBack;
+        events &= ~Event::DoSchedule;
         break;
 
         case RunMode::RunningStart:
@@ -239,7 +239,7 @@ Byte Mc6809::run(RunMode mode)
                 events |= Event::IgnoreBP;
             }
 
-            events &= ~Event::GoBack;
+            events &= ~Event::DoSchedule;
 
         case RunMode::RunningContinue:
         default:
@@ -332,7 +332,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_NO_CHANGE | EXIT_SUSPEND;
+                        newState = S_SUSPEND;
                         break;
                     }
                 }
@@ -348,7 +348,7 @@ Byte Mc6809::runloop()
                     else
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_NO_CHANGE | EXIT_SUSPEND;
+                        newState = S_SUSPEND;
                         break;
                     }
                 }
@@ -358,7 +358,7 @@ Byte Mc6809::runloop()
                     if (cycles >= required_cyclecount)
                     {
                         // set CPU thread asleep until next timer tick
-                        newState = S_NO_CHANGE | EXIT_SUSPEND;
+                        newState = S_SUSPEND;
                         break;
                     }
                 }
@@ -392,15 +392,15 @@ Byte Mc6809::runloop()
                 cycles += exec_irqs();
             }
 
-            if (((events & Event::GoBack) != Event::NONE) &&
+            if (((events & Event::DoSchedule) != Event::NONE) &&
                 !first_time &&
                 !((events & (Event::SingleStep | Event::SingleStepFinished))
                     != Event::NONE))
             {
-                // request from scheduler to return runloop
-                // with state S_NO_CHANGE
-                events &= ~Event::GoBack;
-                newState = S_NO_CHANGE;
+                // Request from scheduler to return runloop
+                // with state S_SCHEDULE.
+                events &= ~Event::DoSchedule;
+                newState = S_SCHEDULE;
                 break;
             }
         } // if
@@ -425,17 +425,18 @@ void Mc6809::do_reset()
     memory.reset_io();
 }
 
-// request to the CPU to exit run loop (thread save)
+// Request to the CPU to exit runloop (thread save)
+// giving control back to scheduler.
 void Mc6809::exit_run()
 {
-    events |= Event::GoBack;
+    events |= Event::DoSchedule;
 }
 
 // Optionally a frequency control can be added
 // which cyclically resets the cycle count and sets a
 // required cycle count. When the cycle count is
 // reached the runloop exits automatically with
-// the Pseudo state (EXIT_SUSPEND | S_NO_CHANGE)
+// the state S_SUSPEND.
 
 void Mc6809::set_required_cyclecount(t_cycles x_cycles)
 {

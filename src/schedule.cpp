@@ -37,7 +37,7 @@
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
-    state(S_RUN), events(0), user_input(S_NO_CHANGE), total_cycles(0),
+    state(S_RUN), events(0), user_input(S_NONE), total_cycles(0),
     time0sec(0),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
@@ -143,7 +143,7 @@ void Scheduler::process_events()
 // return with any other state
 Byte Scheduler::idleloop()
 {
-    while (user_input == S_NO_CHANGE || user_input == S_STOP)
+    while (user_input == S_NONE || user_input == S_STOP)
     {
         process_events();
         BTimer::Instance()->Suspend();
@@ -166,24 +166,25 @@ Byte Scheduler::runloop(RunMode mode)
     {
         new_state = cpu.run(mode);
 
-        if (new_state & EXIT_SUSPEND)
-            // suspend thread until next timer tick
+        if (new_state == S_SUSPEND)
         {
+            // suspend thread until next timer tick
             BTimer::Instance()->Suspend();
+            new_state = S_SCHEDULE;
         }
 
         process_events();
 
-        if (user_input != S_NO_CHANGE)
+        if (user_input != S_NONE)
         {
             return user_input;
         }
 
         mode = RunMode::RunningContinue;
     }
-    while ((new_state & S_MASK) == S_NO_CHANGE);
+    while (new_state == S_SCHEDULE);
 
-    return new_state & S_MASK;
+    return new_state;
 }
 
 Byte Scheduler::statemachine(Byte initial_state)
@@ -194,7 +195,7 @@ Byte Scheduler::statemachine(Byte initial_state)
 
     while (state != S_EXIT)
     {
-        user_input = S_NO_CHANGE;
+        user_input = S_NONE;
 
         switch (state)
         {
@@ -234,7 +235,7 @@ Byte Scheduler::statemachine(Byte initial_state)
             case S_EXIT:
                 break;
 
-            case S_NO_CHANGE:
+            case S_SCHEDULE:
                 // This case should never happen
                 // Set the state to S_RUN to avoid an endless loop
                 DEBUGPRINT("Error in Statemachine: Set state to S_RUN\n");

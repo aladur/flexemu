@@ -905,7 +905,7 @@ void AbstractGui::update()
 
 void AbstractGui::set_new_state(Byte user_input)
 {
-    if (user_input != S_NO_CHANGE)
+    if (user_input != S_NONE)
     {
         scheduler.set_new_state(user_input);
     }
