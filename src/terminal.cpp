@@ -36,6 +36,7 @@ TerminalIO *TerminalIO::instance = nullptr;
 TerminalIO::TerminalIO(Mc6809 &x_cpu, Scheduler &x_scheduler) :
                         cpu(x_cpu), scheduler(x_scheduler)
 {
+    instance = this;
     reset_serial();
 }
 
@@ -153,6 +154,10 @@ void TerminalIO::init_terminal_io(Word reset_key)
 #if defined(VQUIT) && defined(SIGQUIT)
             buf.c_cc[VQUIT] = disable;
             signal(SIGQUIT, s_exec_signal);
+#endif
+#if defined(VQUIT) && defined(SIGTERM)
+            buf.c_cc[VQUIT] = disable;
+            signal(SIGTERM, s_exec_signal);
 #endif
 #ifdef VSUSP
             buf.c_cc[VSUSP] = disable;
@@ -326,6 +331,11 @@ void TerminalIO::exec_signal(int sig_no)
 
 #if defined(SIGQUIT)
         case SIGQUIT:
+            scheduler.set_new_state(S_EXIT);
+            break;
+#endif
+#if defined(SIGTERM)
+        case SIGTERM:
             scheduler.set_new_state(S_EXIT);
             break;
 #endif
