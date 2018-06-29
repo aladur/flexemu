@@ -903,11 +903,11 @@ void AbstractGui::update()
     display_block %= YBLOCKS;
 }
 
-void AbstractGui::request_new_state(CpuState user_input)
+void AbstractGui::request_new_state(CpuState user_state)
 {
-    if (user_input != CpuState::NONE)
+    if (user_state != CpuState::NONE)
     {
-        scheduler.request_new_state(user_input);
+        scheduler.request_new_state(user_state);
     }
 }
 

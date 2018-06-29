@@ -53,7 +53,7 @@ public:
 
     CpuState statemachine(CpuState initial_state);
     bool        is_finished();
-    void        request_new_state(CpuState x_user_input);
+    void        request_new_state(CpuState x_user_state);
     void        process_events();
     CpuState idleloop();
     CpuState runloop(RunMode mode);
@@ -84,7 +84,7 @@ protected:
     Inout &inout;
     CpuState state;
     Word        events;
-    CpuState user_input;
+    CpuState user_state;
     QWord       total_cycles;
     QWord       time0sec;
     BTime       systemTime;

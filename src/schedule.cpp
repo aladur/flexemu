@@ -37,7 +37,7 @@
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
-    state(CpuState::Run), events(0), user_input(CpuState::NONE),
+    state(CpuState::Run), events(0), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
     pCurrent_status(nullptr),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
@@ -75,9 +75,9 @@ Scheduler::~Scheduler()
     status_mutex.unlock();
 }
 
-void Scheduler::request_new_state(CpuState x_user_input)
+void Scheduler::request_new_state(CpuState x_user_state)
 {
-    user_input = x_user_input;
+    user_state = x_user_state;
     cpu.exit_run();
 }
 
@@ -143,7 +143,7 @@ void Scheduler::process_events()
 // Return with any other state.
 CpuState Scheduler::idleloop()
 {
-    while (user_input == CpuState::NONE || user_input == CpuState::Stop)
+    while (user_state == CpuState::NONE || user_state == CpuState::Stop)
     {
         process_events();
         BTimer::Instance()->Suspend();
@@ -155,7 +155,7 @@ CpuState Scheduler::idleloop()
         }
     }
 
-    return user_input;
+    return user_state;
 }
 
 CpuState Scheduler::runloop(RunMode mode)
@@ -175,9 +175,9 @@ CpuState Scheduler::runloop(RunMode mode)
 
         process_events();
 
-        if (user_input != CpuState::NONE)
+        if (user_state != CpuState::NONE)
         {
-            return user_input;
+            return user_state;
         }
 
         mode = RunMode::RunningContinue;
@@ -195,7 +195,7 @@ CpuState Scheduler::statemachine(CpuState initial_state)
 
     while (state != CpuState::Exit)
     {
-        user_input = CpuState::NONE;
+        user_state = CpuState::NONE;
 
         switch (state)
         {
