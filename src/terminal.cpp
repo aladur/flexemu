@@ -200,6 +200,10 @@ void TerminalIO::init_terminal_io(Word reset_key)
     }
 
 #endif // #ifdef HAVE_TERMIOS_H
+
+#if defined(_WIN32) && defined(SIGTERM)
+    signal(SIGTERM, s_exec_signal);
+#endif
 }
 
 void TerminalIO::put_char_serial(Byte key)
@@ -308,6 +312,15 @@ bool TerminalIO::is_terminal_supported()
 #endif
 }
 
+#ifdef _WIN32
+void TerminalIO::s_exec_signal(int sig_no)
+{
+    if (TerminalIO::instance != nullptr)
+    {
+        TerminalIO::instance->exec_signal(sig_no);
+    }
+}
+#else
 void TerminalIO::s_exec_signal(int sig_no, siginfo_t *, void *)
 {
     if (TerminalIO::instance != nullptr)
@@ -315,6 +328,7 @@ void TerminalIO::s_exec_signal(int sig_no, siginfo_t *, void *)
         TerminalIO::instance->exec_signal(sig_no);
     }
 }
+#endif
 
 void TerminalIO::exec_signal(int sig_no)
 {

@@ -56,7 +56,11 @@ private:
 public:
     static TerminalIO *instance;
 
+#ifdef _WIN32
+    static void s_exec_signal(int sig_no);
+#else
     static void s_exec_signal(int sig_no, siginfo_t *, void *);
+#endif
     void init(Word reset_key);
 
     void reset_serial();
