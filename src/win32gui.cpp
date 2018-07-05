@@ -1068,11 +1068,7 @@ void Win32Gui::initialize(struct sGuiOptions &options)
     nColors     = options.nColors;
     bp_input[0] = 0;
     bp_input[1] = 0;
-    lfs.logFileName[0] = '\0';
-    lfs.minAddr   = 0x0000;
-    lfs.maxAddr   = 0xFFFF;
-    lfs.startAddr = 0x10000;
-    lfs.stopAddr  = 0x10000;
+    lfs.reset();
     copy_block  = nullptr;
     frequency_control_on = false;
     cursor_type   = FLX_DEFAULT_CURSOR;
@@ -2514,7 +2510,7 @@ BOOL Win32Gui::onLogInit(HWND hwnd)
     }
 
     SetDlgItemText(hwnd, IDC_LOG_STOPADDR, tmpstring);
-    SetDlgItemText(hwnd, IDC_LOG_FILENAME, lfs.logFileName);
+    SetDlgItemText(hwnd, IDC_LOG_FILENAME, lfs.logFileName.c_str());
 
     hEdit = GetDlgItem(hwnd, IDC_LOG_MINADDR);
 #ifdef _MSC_VER
@@ -2608,10 +2604,9 @@ void Win32Gui::popdown_log(int cmd, HWND hwnd)
 
         // Log Filename
         GetDlgItemText(hwnd, IDC_LOG_FILENAME, tmpstring, PATH_MAX);
-        strncpy(lfs.logFileName, tmpstring, PATH_MAX);
-        lfs.logFileName[PATH_MAX - 1] = '\0';
+        lfs.logFileName = tmpstring;
 
-        scheduler.sync_exec(new CSetLogFile(cpu, &lfs));
+        scheduler.sync_exec(new CSetLogFile(cpu, lfs));
     }
 
     EndDialog(hwnd, 0);

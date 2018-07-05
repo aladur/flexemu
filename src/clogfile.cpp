@@ -24,7 +24,7 @@
 #include "clogfile.h"
 
 
-CSetLogFile::CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file)
+CSetLogFile::CSetLogFile(Mc6809 &x_cpu, const s_cpu_logfile &x_log_file)
     : cpu(x_cpu), s_log_file(x_log_file)
 {
 }

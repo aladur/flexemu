@@ -158,7 +158,7 @@ protected:
     bool        cpu_popped_up;
     bool        frequency_control_on;
     bool        is_use_undocumented;
-    struct s_cpu_logfile lfs;
+    s_cpu_logfile lfs;
 
     // public interface
 public:

@@ -165,11 +165,7 @@ void XtGui::initialize(struct sGuiOptions &options)
     int i;
 
     XAbstractGui::initialize(options);
-    lfs.logFileName[0] = '\0';
-    lfs.minAddr = 0x0000;
-    lfs.maxAddr = 0xFFFF;
-    lfs.startAddr = 0x10000;
-    lfs.stopAddr = 0x10000;
+    lfs.reset();
     ggui = this;        // global instance pointer needed for callbacks
     warp_x = 0;
     warp_y = 0;
@@ -1951,7 +1947,7 @@ void XtGui::popup_log()
     XtVaSetValues(logtext[which++], XtNlength, 6,
                   XtNstring, (XtArgVal)tmpstring, nullptr);
     // Log Filename
-    strcpy(tmpstring, lfs.logFileName);
+    strcpy(tmpstring, lfs.logFileName.c_str());
     XtVaSetValues(logfilename, XtNlength, 6,
                   XtNstring, (XtArgVal)tmpstring, nullptr);
 
@@ -2014,10 +2010,9 @@ void XtGui::popdown_log(Widget w)
 
     // Log Filename
     XtVaGetValues(logfilename, XtNstring, &tmpstring, nullptr);
-    strncpy(lfs.logFileName, tmpstring, PATH_MAX);
-    lfs.logFileName[PATH_MAX - 1] = '\0';
+    lfs.logFileName = tmpstring;
 
-    scheduler.sync_exec(new CSetLogFile(cpu, &lfs));
+    scheduler.sync_exec(new CSetLogFile(cpu, lfs));
 
     XtPopdown(logframe);
     XtSetSensitive(e2toplevel, True);

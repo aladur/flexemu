@@ -16,7 +16,6 @@
 #include "inout.h"
 #include "btime.h"
 
-
 #ifdef FASTFLEX
     #define PC ipcreg
 #else
@@ -35,7 +34,6 @@ Mc6809::Mc6809(Memory &x_memory) : events(Event::NONE),
 #ifndef FASTFLEX
     dpreg.byte.l = 0;
 #endif
-    memset(&lfs, 0, sizeof(lfs));
     memset(&interrupt_status, 0, sizeof(interrupt_status));
     init();
 }
@@ -1405,8 +1403,8 @@ void Mc6809::reset_bp(int which)
     }
 }
 
-// if lfs is nullptr the current log file is closed
-bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
+// If logFileName is empty the current log file is closed.
+bool Mc6809::set_logfile(const struct s_cpu_logfile &x_lfs)
 {
     if (log_fp != nullptr)
     {
@@ -1414,31 +1412,28 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile *x_lfs)
         log_fp = nullptr;
     }
 
-    if (x_lfs == nullptr || x_lfs->logFileName[0] == '\0')
+    lfs = x_lfs;
+
+    if (!lfs.logFileName.empty())
     {
-        // Disable logging
-        lfs.logFileName[0] = '\0';
-        events &= ~Event::Log;
-        return true;
+        if ((log_fp = fopen(x_lfs.logFileName.c_str(), "w")) != nullptr)
+        {
+            // Enable logging
+            events |= Event::Log;
+        }
+        else
+        {
+            // Error when trying to open log file.
+            lfs.logFileName.clear();
+            events &= ~Event::Log;
+        }
+
+        return log_fp != nullptr;
     }
 
-    if ((log_fp = fopen(x_lfs->logFileName, "w")) != nullptr)
-    {
-        // Enable logging
-        lfs.minAddr   = x_lfs->minAddr;
-        lfs.maxAddr   = x_lfs->maxAddr;
-        lfs.startAddr = x_lfs->startAddr;
-        lfs.stopAddr  = x_lfs->stopAddr;
-        strcpy(lfs.logFileName, x_lfs->logFileName);
-        events |= Event::Log;
-        return true;
-    }
-    else
-    {
-        lfs.logFileName[0] = '\0';
-        events &= ~Event::Log;
-        return false;
-    }
+    // Disable logging
+    events &= ~Event::Log;
+    return true;
 }
 
 void Mc6809::get_interrupt_status(tInterruptStatus &stat)

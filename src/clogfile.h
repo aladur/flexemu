@@ -26,17 +26,22 @@
 #include "misc1.h"
 #include "mc6809.h"
 #include "bcommand.h"
+#include "scpulog.h"
 
 class CSetLogFile : public BCommand
 {
 
 public:
-    CSetLogFile(Mc6809 &x_cpu, const struct s_cpu_logfile *x_log_file);
+    CSetLogFile() = delete;
+    CSetLogFile(Mc6809 &x_cpu, const s_cpu_logfile &x_log_file);
+    CSetLogFile(const CSetLogFile &src) = delete;
+    CSetLogFile &operator=(const CSetLogFile &src) = delete;
+
     void Execute() override;
 
 protected:
     Mc6809 &cpu;
-    const struct s_cpu_logfile *s_log_file;
+    s_cpu_logfile s_log_file;
 };
 
 #endif

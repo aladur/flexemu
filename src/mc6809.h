@@ -992,13 +992,13 @@ public:
 public:
     void        set_disassembler(Da6809 *x_da);
     void        set_serpar(Byte b);
-    bool        set_logfile(const struct s_cpu_logfile *lf);
+    bool        set_logfile(const struct s_cpu_logfile &x_lfs);
 protected:
     int Disassemble(Word address, DWord *pFlags,
                     char **pCode, char **pMnemonic);
     FILE        *log_fp;
+    s_cpu_logfile lfs;
     bool        do_logging;
-    struct s_cpu_logfile lfs;
 
     Memory &memory;
 

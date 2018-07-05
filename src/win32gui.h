@@ -238,7 +238,7 @@ protected:
     UINT_PTR        idTimer;
     bool            frequency_control_on;
     bool            is_use_undocumented;
-    struct s_cpu_logfile lfs;
+    s_cpu_logfile lfs;
     Mc6809CpuStatus *cpu_stat;
 
 public:
