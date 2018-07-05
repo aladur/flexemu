@@ -41,16 +41,16 @@ protected:
 
 public:
     // read data from serial line
-    virtual Byte            readInput();
+    Byte readInput() override;
 
     // write data to serial line
-    virtual void            writeOutput(Byte val);
+    void writeOutput(Byte val) override;
 
     // set an interrupt
-    virtual void            set_irq();
+    void set_irq() override;
 
     // request for an input ready to be read
-    virtual void            requestInput();
+    void requestInput() override;
 
     void resetIo() override;
 

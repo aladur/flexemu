@@ -126,8 +126,8 @@ protected:
     bool        is_menu_mode;
     bool        isSynchronized;
 
-    virtual Display *getDisplay();
-    virtual Window getWindow(tWindowType windowType = FLX_E2SCREEN);
+    Display *getDisplay() override;
+    Window getWindow(tWindowType windowType = FLX_E2SCREEN) override;
 
 protected:
     void initialize(struct sGuiOptions &options) override;
