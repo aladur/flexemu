@@ -973,6 +973,8 @@ void XtGui::main_loop()
     // this function
     XEvent event;
 
+    memset(&event, 0, sizeof(XEvent));
+
     while (!scheduler.is_finished())
     {
         XtAppNextEvent(context, &event);
