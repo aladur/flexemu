@@ -907,11 +907,11 @@ void Mc6809::invalid(const char * /*msg*/)
 #ifndef FASTFLEX
 Word Mc6809::do_effective_address(Byte post)
 {
-    register Word addr = 0;
+    Word addr = 0;
 
     if (!BTST7(post))
     {
-        register Word offset = post & 0x1f;
+        Word offset = post & 0x1f;
 
         if (offset & 0x10)
         {
