@@ -776,7 +776,7 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
 } // D_Register2
 
 
-inline Byte Da6809::D_Page10(DWord *pFlags, Word pc, const Byte *pMemory,
+inline Byte Da6809::D_Page10(InstFlg *pFlags, Word pc, const Byte *pMemory,
                              DWord *pAddr)
 {
     Byte code;
@@ -786,79 +786,79 @@ inline Byte Da6809::D_Page10(DWord *pFlags, Word pc, const Byte *pMemory,
     switch (code)
     {
         case 0x21:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBRN ", pc, 4, pMemory + 1, pAddr);
 
         case 0x22:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBHI ", pc, 4, pMemory + 1, pAddr);
 
         case 0x23:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBLS ", pc, 4, pMemory + 1, pAddr);
 
         case 0x24:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBCC ", pc, 4, pMemory + 1, pAddr);
 
         case 0x25:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBCS ", pc, 4, pMemory + 1, pAddr);
 
         case 0x26:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBNE ", pc, 4, pMemory + 1, pAddr);
 
         case 0x27:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBEQ ", pc, 4, pMemory + 1, pAddr);
 
         case 0x28:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBVC ", pc, 4, pMemory + 1, pAddr);
 
         case 0x29:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBVS ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2a:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBPL ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2b:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBMI ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2c:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBGE ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2d:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBLT ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2e:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBGT ", pc, 4, pMemory + 1, pAddr);
 
         case 0x2f:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_RelativeL("LBLE ", pc, 4, pMemory + 1, pAddr);
 
         case 0x3f:
-            *pFlags |= DA_SUB;
+            *pFlags |= InstFlg::Sub;
             return D_Inherent("SWI2 ", pc, 2, pMemory + 1);
 
         case 0x83:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("CMPD ", pc, 4, pMemory + 1, pAddr);
 
         case 0x8c:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("CMPY ", pc, 4, pMemory + 1, pAddr);
 
         case 0x8e:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("LDY  ", pc, 4, pMemory + 1, pAddr);
 
         case 0x93:
@@ -886,23 +886,23 @@ inline Byte Da6809::D_Page10(DWord *pFlags, Word pc, const Byte *pMemory,
             return D_Indexed("STY  ", pc, 3, pMemory + 1);
 
         case 0xb3:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CMPD ", pc, 4, pMemory + 1, pAddr);
 
         case 0xbc:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CMPY ", pc, 4, pMemory + 1, pAddr);
 
         case 0xbe:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDY  ", pc, 4, pMemory + 1, pAddr);
 
         case 0xbf:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STY  ", pc, 4, pMemory + 1, pAddr);
 
         case 0xce:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("LDS  ", pc, 4, pMemory + 1, pAddr);
 
         case 0xde:
@@ -918,21 +918,21 @@ inline Byte Da6809::D_Page10(DWord *pFlags, Word pc, const Byte *pMemory,
             return D_Indexed("STS  ", pc, 3, pMemory + 1);
 
         case 0xfe:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDS  ", pc, 4, pMemory + 1, pAddr);
 
         case 0xff:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STS  ", pc, 4, pMemory + 1, pAddr);
 
         default:
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory + 1);
     } // switch
 } // D_Page10
 
 
-inline Byte Da6809::D_Page11(DWord *pFlags, Word pc, const Byte *pMemory,
+inline Byte Da6809::D_Page11(InstFlg *pFlags, Word pc, const Byte *pMemory,
                              DWord *pAddr)
 {
     Byte code;
@@ -942,15 +942,15 @@ inline Byte Da6809::D_Page11(DWord *pFlags, Word pc, const Byte *pMemory,
     switch (code)
     {
         case 0x3f:
-            *pFlags |= DA_SUB;
+            *pFlags |= InstFlg::Sub;
             return D_Inherent("SWI3 ", pc, 2, pMemory + 1);
 
         case 0x83:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("CMPU ", pc, 4, pMemory + 1, pAddr);
 
         case 0x8c:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("CMPS ", pc, 4, pMemory + 1, pAddr);
 
         case 0x93:
@@ -972,7 +972,7 @@ inline Byte Da6809::D_Page11(DWord *pFlags, Word pc, const Byte *pMemory,
             return D_Indexed("CMPS ", pc, 4, pMemory + 1);
 
         default:
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory + 1);
     }  // switch
 } // D_Page11
@@ -981,7 +981,7 @@ inline Byte Da6809::D_Page11(DWord *pFlags, Word pc, const Byte *pMemory,
 int Da6809::Disassemble(
         const Byte * const pMemory,
         DWord pc,
-        DWord *pFlags,
+        InstFlg *pFlags,
         DWord *pAddr,
         char **pCode,
         char **pMnemonic)
@@ -990,7 +990,7 @@ int Da6809::Disassemble(
 
     *pCode = code_buf;
     *pMnemonic = mnem_buf;
-    *pFlags = 0;
+    *pFlags = InstFlg::NONE;
     code = *pMemory;
 
     switch (code)
@@ -1001,7 +1001,7 @@ int Da6809::Disassemble(
                 return D_Direct("neg", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x00:
@@ -1013,7 +1013,7 @@ int Da6809::Disassemble(
                 return D_Direct("negcom", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x03:
@@ -1028,7 +1028,7 @@ int Da6809::Disassemble(
                 return D_Direct("lsr  ", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x06:
@@ -1052,7 +1052,7 @@ int Da6809::Disassemble(
                 return D_Direct("dec  ", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x0c:
@@ -1062,7 +1062,7 @@ int Da6809::Disassemble(
             return D_Direct("TST  ", pc, 2, pMemory);
 
         case 0x0e:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Direct("JMP  ", pc, 2, pMemory);
 
         case 0x0f:
@@ -1075,20 +1075,20 @@ int Da6809::Disassemble(
             return D_Page11(pFlags, pc, pMemory, pAddr);
 
         case 0x12:
-            *pFlags |= DA_NOOP;
+            *pFlags |= InstFlg::Noop;
             return D_Inherent("NOP  ", pc, 1, pMemory);
 
         case 0x13:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Inherent("SYNC ", pc, 1, pMemory);
 
         // 0x14, 0x15 is illegal
         case 0x16:
-            *pFlags |= DA_JUMP | DA_JUMP_ADDR;
+            *pFlags |= InstFlg::Jump | InstFlg::JumpAddr;
             return D_RelativeL("LBRA ", pc, 3, pMemory, pAddr);
 
         case 0x17:
-            *pFlags |= DA_SUB | DA_LABEL_ADDR;
+            *pFlags |= InstFlg::Sub | InstFlg::LabelAddr;
             return D_RelativeL("LBSR ", pc, 3, pMemory, pAddr);
 
         // 0x18 is illegal
@@ -1112,67 +1112,67 @@ int Da6809::Disassemble(
             return D_Register0("TFR  ", pc, 2, pMemory);
 
         case 0x20:
-            *pFlags |= DA_JUMP | DA_JUMP_ADDR;
+            *pFlags |= InstFlg::Jump | InstFlg::JumpAddr;
             return D_Relative("BRA  ", pc, 2, pMemory, pAddr);
 
         case 0x21:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BRN  ", pc, 2, pMemory, pAddr);
 
         case 0x22:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BHI  ", pc, 2, pMemory, pAddr);
 
         case 0x23:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BLS  ", pc, 2, pMemory, pAddr);
 
         case 0x24:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BCC  ", pc, 2, pMemory, pAddr);
 
         case 0x25:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BCS  ", pc, 2, pMemory, pAddr);
 
         case 0x26:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BNE  ", pc, 2, pMemory, pAddr);
 
         case 0x27:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BEQ  ", pc, 2, pMemory, pAddr);
 
         case 0x28:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BVC  ", pc, 2, pMemory, pAddr);
 
         case 0x29:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BVS  ", pc, 2, pMemory, pAddr);
 
         case 0x2a:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BPL  ", pc, 2, pMemory, pAddr);
 
         case 0x2b:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BMI  ", pc, 2, pMemory, pAddr);
 
         case 0x2c:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BGE  ", pc, 2, pMemory, pAddr);
 
         case 0x2d:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BLT  ", pc, 2, pMemory, pAddr);
 
         case 0x2e:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BGT  ", pc, 2, pMemory, pAddr);
 
         case 0x2f:
-            *pFlags |= DA_JUMP_ADDR;
+            *pFlags |= InstFlg::JumpAddr;
             return D_Relative("BLE  ", pc, 2, pMemory, pAddr);
 
         case 0x30:
@@ -1201,18 +1201,18 @@ int Da6809::Disassemble(
 
         // 0x38 is illegal
         case 0x39:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Inherent("RTS  ", pc, 1, pMemory);
 
         case 0x3a:
             return D_Inherent("ABX  ", pc, 1, pMemory);
 
         case 0x3b:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Inherent("RTI  ", pc, 1, pMemory);
 
         case 0x3c:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Immediat("CWAI ", pc, 2, pMemory);
 
         case 0x3d:
@@ -1224,11 +1224,11 @@ int Da6809::Disassemble(
                 return D_Direct("reset", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x3f:
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("SWI  ", pc, 1, pMemory);
 
         case 0x40:
@@ -1240,7 +1240,7 @@ int Da6809::Disassemble(
                 return D_Direct("nega ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x43:
@@ -1255,7 +1255,7 @@ int Da6809::Disassemble(
                 return D_Direct("lsra ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x46:
@@ -1279,7 +1279,7 @@ int Da6809::Disassemble(
                 return D_Direct("deca ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x4c:
@@ -1294,7 +1294,7 @@ int Da6809::Disassemble(
                 return D_Direct("clra ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x4f:
@@ -1309,7 +1309,7 @@ int Da6809::Disassemble(
                 return D_Direct("negb ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x53:
@@ -1324,7 +1324,7 @@ int Da6809::Disassemble(
                 return D_Direct("lsrb ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x56:
@@ -1348,7 +1348,7 @@ int Da6809::Disassemble(
                 return D_Direct("decb ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x5c:
@@ -1363,7 +1363,7 @@ int Da6809::Disassemble(
                 return D_Direct("clrb ", pc, 1, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x5f:
@@ -1378,7 +1378,7 @@ int Da6809::Disassemble(
                 return D_Indexed("neg  ", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x63:
@@ -1393,7 +1393,7 @@ int Da6809::Disassemble(
                 return D_Indexed("lsr  ", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x66:
@@ -1417,7 +1417,7 @@ int Da6809::Disassemble(
                 return D_Indexed("dec  ", pc, 2, pMemory);
             }
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x6c:
@@ -1427,91 +1427,91 @@ int Da6809::Disassemble(
             return D_Indexed("TST  ", pc, 2, pMemory);
 
         case 0x6e:
-            *pFlags |= DA_JUMP | DA_COMPUTED_GOTO;
+            *pFlags |= InstFlg::Jump | InstFlg::ComputedGoto;
             return D_Indexed("JMP  ", pc, 2, pMemory);
 
         case 0x6f:
             return D_Indexed("CLR  ", pc, 2, pMemory);
 
         case 0x70:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("NEG  ", pc, 3, pMemory, pAddr);
 
         case 0x71:
             if (use_undocumented)
             {
-                *pFlags |= DA_LABEL_ADDR;
+                *pFlags |= InstFlg::LabelAddr;
                 return D_Extended("neg  ", pc, 3, pMemory, pAddr);
             };
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
 
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x73:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("COM  ", pc, 3, pMemory, pAddr);
 
         case 0x74:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LSR  ", pc, 3, pMemory, pAddr);
 
         case 0x75:
             if (use_undocumented)
             {
-                *pFlags |= DA_LABEL_ADDR;
+                *pFlags |= InstFlg::LabelAddr;
                 return D_Extended("lsr  ", pc, 3, pMemory, pAddr);
             };
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
 
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x76:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ROR  ", pc, 3, pMemory, pAddr);
 
         case 0x77:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ASR  ", pc, 3, pMemory, pAddr);
 
         case 0x78:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LSL  ", pc, 3, pMemory, pAddr);
 
         case 0x79:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ROL  ", pc, 3, pMemory, pAddr);
 
         case 0x7a:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("DEC  ", pc, 3, pMemory, pAddr);
 
         case 0x7b:
             if (use_undocumented)
             {
-                *pFlags |= DA_LABEL_ADDR;
+                *pFlags |= InstFlg::LabelAddr;
                 return D_Extended("dec  ", pc, 3, pMemory, pAddr);
             };
 
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
 
             return D_Illegal("", pc, 1, pMemory);
 
         case 0x7c:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("INC  ", pc, 3, pMemory, pAddr);
 
         case 0x7d:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("TST  ", pc, 3, pMemory, pAddr);
 
         case 0x7e:
-            *pFlags |= DA_JUMP;
+            *pFlags |= InstFlg::Jump;
             return D_Extended("JMP  ", pc, 3, pMemory, pAddr);
 
         case 0x7f:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CLR  ", pc, 3, pMemory, pAddr);
 
         case 0x80:
@@ -1552,7 +1552,7 @@ int Da6809::Disassemble(
             return D_ImmediatL("CMPX ", pc, 3, pMemory, pAddr);
 
         case 0x8d:
-            *pFlags |= DA_SUB;
+            *pFlags |= InstFlg::Sub;
             return D_Relative("BSR  ", pc, 2, pMemory, pAddr);
 
         case 0x8e:
@@ -1600,7 +1600,7 @@ int Da6809::Disassemble(
             return D_Direct("CMPX ", pc, 2, pMemory);
 
         case 0x9d:
-            *pFlags |= DA_SUB;
+            *pFlags |= InstFlg::Sub;
             return D_Direct("JSR  ", pc, 2, pMemory);
 
         case 0x9e:
@@ -1649,7 +1649,7 @@ int Da6809::Disassemble(
             return D_Indexed("CMPX ", pc, 2, pMemory);
 
         case 0xad:
-            *pFlags |= DA_SUB | DA_COMPUTED_GOTO;
+            *pFlags |= InstFlg::Sub | InstFlg::ComputedGoto;
             return D_Indexed("JSR  ", pc, 2, pMemory);
 
         case 0xae:
@@ -1659,67 +1659,67 @@ int Da6809::Disassemble(
             return D_Indexed("STX  ", pc, 2, pMemory);
 
         case 0xb0:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("SUBA ", pc, 3, pMemory, pAddr);
 
         case 0xb1:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CMPA ", pc, 3, pMemory, pAddr);
 
         case 0xb2:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("SBCA ", pc, 3, pMemory, pAddr);
 
         case 0xb3:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("SUBD ", pc, 3, pMemory, pAddr);
 
         case 0xb4:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ANDA ", pc, 3, pMemory, pAddr);
 
         case 0xb5:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("BITA ", pc, 3, pMemory, pAddr);
 
         case 0xb6:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDA  ", pc, 3, pMemory, pAddr);
 
         case 0xb7:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STA  ", pc, 3, pMemory, pAddr);
 
         case 0xb8:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("EORA ", pc, 3, pMemory, pAddr);
 
         case 0xb9:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ADCA ", pc, 3, pMemory, pAddr);
 
         case 0xba:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ORA  ", pc, 3, pMemory, pAddr);
 
         case 0xbb:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ADDA ", pc, 3, pMemory, pAddr);
 
         case 0xbc:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CMPX ", pc, 3, pMemory, pAddr);
 
         case 0xbd:
-            *pFlags |= DA_SUB | DA_JUMP_ADDR;
+            *pFlags |= InstFlg::Sub | InstFlg::JumpAddr;
             return D_Extended("JSR  ", pc, 3, pMemory, pAddr);
 
         case 0xbe:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDX  ", pc, 3, pMemory, pAddr);
 
         case 0xbf:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STX  ", pc, 3, pMemory, pAddr);
 
         case 0xc0:
@@ -1732,7 +1732,7 @@ int Da6809::Disassemble(
             return D_Immediat("SBCB ", pc, 2, pMemory);
 
         case 0xc3:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("ADDD ", pc, 3, pMemory, pAddr);
 
         case 0xc4:
@@ -1758,12 +1758,12 @@ int Da6809::Disassemble(
             return D_Immediat("ADDB ", pc, 2, pMemory);
 
         case 0xcc:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("LDD  ", pc, 3, pMemory, pAddr);
 
         // 0xcd is illegal
         case 0xce:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_ImmediatL("LDU  ", pc, 3, pMemory, pAddr);
 
         // 0xcf is illegal
@@ -1865,71 +1865,71 @@ int Da6809::Disassemble(
             return D_Indexed("STU  ", pc, 2, pMemory);
 
         case 0xf0:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("SUBB ", pc, 3, pMemory, pAddr);
 
         case 0xf1:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("CMPB ", pc, 3, pMemory, pAddr);
 
         case 0xf2:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("SBCA ", pc, 3, pMemory, pAddr);
 
         case 0xf3:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ADDD ", pc, 3, pMemory, pAddr);
 
         case 0xf4:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ANDB ", pc, 3, pMemory, pAddr);
 
         case 0xf5:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("BITB ", pc, 3, pMemory, pAddr);
 
         case 0xf6:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDB  ", pc, 3, pMemory, pAddr);
 
         case 0xf7:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STB  ", pc, 3, pMemory, pAddr);
 
         case 0xf8:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("EORB ", pc, 3, pMemory, pAddr);
 
         case 0xf9:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ADCB ", pc, 3, pMemory, pAddr);
 
         case 0xfa:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ORB  ", pc, 3, pMemory, pAddr);
 
         case 0xfb:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("ADDB ", pc, 3, pMemory, pAddr);
 
         case 0xfc:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDD  ", pc, 3, pMemory, pAddr);
 
         case 0xfd:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STD  ", pc, 3, pMemory, pAddr);
 
         case 0xfe:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("LDU  ", pc, 3, pMemory, pAddr);
 
         case 0xff:
-            *pFlags |= DA_LABEL_ADDR;
+            *pFlags |= InstFlg::LabelAddr;
             return D_Extended("STU  ", pc, 3, pMemory, pAddr);
 
         default:
-            *pFlags |= DA_ILLEGAL;
+            *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory);
     }  // switch
 } // disassemble

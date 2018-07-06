@@ -63,7 +63,7 @@ void Mc6809::reset()
 #endif
 }
 
-int Mc6809::Disassemble(Word address, DWord *pFlags,
+int Mc6809::Disassemble(Word address, InstFlg *pFlags,
                         char **pCode, char **pMnemonic)
 {
     Byte buffer[6];
@@ -112,7 +112,7 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
 void Mc6809::get_status(CpuStatus *status)
 {
 
-    DWord flags;
+    InstFlg flags = InstFlg::NONE;
     char *pmnem_buf, *pbuffer;
     Word i, mem_addr;
     Mc6809CpuStatus *stat = (Mc6809CpuStatus *)status;
@@ -207,23 +207,28 @@ CpuState Mc6809::run(RunMode mode)
         case RunMode::SingleStepOver:
         {
             char *pCode, *pMnemonic;
-            DWord flags = 0;
+            InstFlg flags = InstFlg::NONE;
 
             // Only if disassembler available and
             // Next Instruction is a BSR, LBSR or JSR
             // set a breakpoint after this instruction
             if (disassembler != nullptr)
+            {
                 bp[2] =
                     PC + Disassemble((unsigned int)PC,
                                      &flags, &pCode, &pMnemonic);
+            }
 
-            if (disassembler == nullptr || !(flags & DA_SUB))
+            if (disassembler == nullptr ||
+                    (flags & InstFlg::Sub) == InstFlg::NONE)
             {
+                // Single step into subroutine call.
                 events |= Event::SingleStep | Event::IgnoreBP;
                 reset_bp(2);
             }
             else
             {
+                // Step over subroutine call. Break at next instruction.
                 events |= Event::BreakPoint | Event::IgnoreBP;
             }
         }
@@ -380,7 +385,7 @@ CpuState Mc6809::runloop()
                         PC >= lfs.minAddr && PC <= lfs.maxAddr)
                     {
                         char *pCode, *pMnemonic;
-                        DWord flags = 0;
+                        InstFlg flags = InstFlg::NONE;
 
                         Disassemble(PC, &flags, &pCode, &pMnemonic);
                         fprintf(log_fp, "%04X %s\n", PC, pMnemonic);

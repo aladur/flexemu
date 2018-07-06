@@ -35,7 +35,7 @@ Disassembler::~Disassembler()
 int Disassembler::DisassembleOneLine(
         const Byte * const pMemory,
         DWord pc,
-        DWord *pFlags,
+        InstFlg *pFlags,
         DWord *pJumpAddr,
         char **pCode,
         char **pMnemonic)

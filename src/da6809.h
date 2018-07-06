@@ -25,7 +25,7 @@ public:
     int Disassemble(
             const Byte * const pMemory,
             DWord pc,
-            DWord *pFlags,
+            InstFlg *pFlags,
             DWord *pAddr,
             char **pCode,
             char **pMnemonic) override;
@@ -33,8 +33,8 @@ public:
 
 private:
 
-    inline Byte D_Page10(DWord *, Word, const Byte *pMemory, DWord *pAddr);
-    inline Byte     D_Page11(DWord *, Word, const Byte *pMemory, DWord *pAddr);
+    inline Byte D_Page10(InstFlg *, Word, const Byte *pMemory, DWord *pAddr);
+    inline Byte     D_Page11(InstFlg *, Word, const Byte *pMemory, DWord *pAddr);
     inline Byte     D_Illegal(const char *, Word, Byte, const Byte *);
     inline Byte     D_Direct(const char *, Word, Byte, const Byte *);
     inline Byte     D_Immediat(const char *, Word, Byte, const Byte *);

@@ -45,7 +45,7 @@ public:
     int DisassembleOneLine(
             const Byte *pMemory,
             DWord pc,
-            DWord *pFlags,
+            InstFlg *pFlags,
             DWord *pJumpAddr,
             char **pCode,
             char **pMnemonic);

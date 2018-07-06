@@ -22,6 +22,7 @@
 #include "scpulog.h"
 #include "cpustate.h"
 #include "flexemu.h"
+#include "absdisas.h"
 
 #define USE_ASM 1
 
@@ -994,7 +995,7 @@ public:
     void        set_serpar(Byte b);
     bool        set_logfile(const struct s_cpu_logfile &x_lfs);
 protected:
-    int Disassemble(Word address, DWord *pFlags,
+    int Disassemble(Word address, InstFlg *pFlags,
                     char **pCode, char **pMnemonic);
     FILE        *log_fp;
     s_cpu_logfile lfs;

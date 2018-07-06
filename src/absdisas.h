@@ -6,16 +6,20 @@
 #define ABSDISAS_INCLUDED
 
 #include "misc1.h"
+#include <type_traits>
 
-enum
+
+// Instruction flags as scoped enum.
+enum class InstFlg : Byte
 {
-    DA_JUMP = 1,        // next instruction will not be processed
-    DA_SUB = 2,         // jump into a subroutine
-    DA_COMPUTED_GOTO = 4, // an instruction containing a computed goto
-    DA_ILLEGAL = 8,     // illegal instruction
-    DA_NOOP = 16,       // no operation
-    DA_JUMP_ADDR = 32,  // return a jump target address
-    DA_LABEL_ADDR = 64  // return a label address
+    NONE = 0,
+    Jump = (1 << 0),         // next instruction will not be processed
+    Sub = (1 << 1),          // jump into a subroutine
+    ComputedGoto = (1 << 2), // an instruction containing a computed goto
+    Illegal = (1 << 3),      // illegal instruction
+    Noop = (1 << 4),         // no operation
+    JumpAddr = (1 << 5),     // return a jump target address
+    LabelAddr = (1 << 6),    // return a label address
 };
 
 class AbstractDisassembler
@@ -26,12 +30,53 @@ public:
     virtual int Disassemble(
                   const Byte * const pMemory,
                   DWord pc,
-                  DWord *pFlags,
+                  InstFlg *pFlags,
                   DWord *pJumpAddr,
                   char **pCode,
                   char **pMnemonic) = 0;
     virtual void set_use_undocumented(bool value) = 0;
 };  // class AbstractDisassembler
+
+inline InstFlg operator| (InstFlg lhs, InstFlg rhs)
+{
+    using T = std::underlying_type<InstFlg>::type;
+
+    return static_cast<InstFlg>(static_cast<T>(lhs) | static_cast<T>(rhs));
+}
+
+inline InstFlg operator& (InstFlg lhs, InstFlg rhs)
+{
+    using T = std::underlying_type<InstFlg>::type;
+
+    return static_cast<InstFlg>(static_cast<T>(lhs) & static_cast<T>(rhs));
+}
+
+
+inline InstFlg operator|= (InstFlg &lhs, InstFlg rhs)
+{
+    lhs = lhs | rhs;
+    return lhs;
+}
+
+inline InstFlg operator&= (InstFlg &lhs, InstFlg rhs)
+{
+    lhs = lhs & rhs;
+    return lhs;
+}
+
+inline InstFlg operator~ (InstFlg rhs)
+{
+    using T = std::underlying_type<InstFlg>::type;
+
+    return static_cast<InstFlg>(~static_cast<T>(rhs));
+}
+
+inline bool operator! (InstFlg rhs)
+{
+    using T = std::underlying_type<InstFlg>::type;
+
+    return static_cast<T>(rhs) == 0;
+}
 
 #endif // ABSDISAS_INCLUDED
 
