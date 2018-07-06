@@ -98,6 +98,7 @@ protected:
     tInterruptStatus interrupt_status;
     void        do_reset();
     CpuStatus   *pCurrent_status;
+    bool        is_status_valid;
 
     // CPU frequency
 public:

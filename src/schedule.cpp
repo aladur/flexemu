@@ -39,7 +39,7 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
     state(CpuState::Run), events(0), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
-    pCurrent_status(nullptr),
+    pCurrent_status(nullptr), is_status_valid(false),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
 #ifdef UNIX
@@ -122,13 +122,18 @@ void Scheduler::process_events()
         {
             std::lock_guard<std::mutex> guard(status_mutex);
 
-            if (inout.is_gui_present() && pCurrent_status == nullptr)
+            if (pCurrent_status == nullptr)
+            {
+                pCurrent_status = cpu.create_status_object();
+            }
+
+            if (inout.is_gui_present())
             {
                 events &= ~DO_SET_STATUS;
-                pCurrent_status = cpu.create_status_object();
                 cpu.get_status(pCurrent_status);
-                pCurrent_status->freq   = frequency;
-                pCurrent_status->state  = state;
+                pCurrent_status->freq = frequency;
+                pCurrent_status->state = state;
+                is_status_valid = true;
             }
         }
 
@@ -328,17 +333,17 @@ void Scheduler::execute()
 
 CpuStatus *Scheduler::get_status()
 {
-    CpuStatus *stat = nullptr;
+    CpuStatus *status = nullptr;
 
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    if (pCurrent_status != nullptr)
+    if (is_status_valid)
     {
-        stat = pCurrent_status;
-        pCurrent_status = nullptr;
+        status = pCurrent_status;
+        is_status_valid = false;
     }
 
-    return stat;
+    return status;
 }
 
 void Scheduler::get_interrupt_status(tInterruptStatus &stat)

@@ -163,7 +163,6 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
         unsigned int newButtonMask;
         short display_block;
         HDC hdc;
-        Mc6809CpuStatus *new_cpu_stat = nullptr;
         static int count = 0;
 
         // check every 100 ms for
@@ -173,7 +172,6 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
         if (++count % (100 / TIMER_UPDATE) == 0)
         {
             count = 0;
-            new_cpu_stat = (Mc6809CpuStatus *)scheduler.get_status();
 
             // Check for disk status update every 200 ms
             static DiskStatus status[4];
@@ -226,20 +224,20 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             memcpy(&irqStat, &newIrqStat, sizeof(tInterruptStatus));
         }
 
-        if (new_cpu_stat != nullptr)
+        // check if CPU view has to be updated
+        Mc6809CpuStatus *status = (Mc6809CpuStatus *)scheduler.get_status();
+        if (status != nullptr)
         {
-            delete cpu_stat;
-            cpu_stat = new_cpu_stat;
-            bool is_running = (cpu_stat->state == CpuState::Run ||
-                               cpu_stat->state == CpuState::Next);
+            bool is_running = (status->state == CpuState::Run ||
+                               status->state == CpuState::Next);
             UINT run_checked = is_running ? MF_CHECKED : MF_UNCHECKED;
             UINT stop_checked = !is_running ? MF_CHECKED : MF_UNCHECKED;
 
             CheckMenuItem(menu2, IDM_RUN, MF_BYCOMMAND | run_checked);
             CheckMenuItem(menu2, IDM_STOP, MF_BYCOMMAND | stop_checked);
-            update_cpuview(*cpu_stat);
+            update_cpuview(*status);
 
-            if (cpu_stat->state == CpuState::Invalid)
+            if (status->state == CpuState::Invalid)
             {
                 char err_msg[128];
 
@@ -248,9 +246,11 @@ Got invalid instruction\n\
 pc=%04x instr=%02x %02x %02x %02x\n\
 Processor stopped. To\n\
 continue press Reset button",
-                        cpu_stat->pc,
-                        cpu_stat->instruction[0], cpu_stat->instruction[1],
-                        cpu_stat->instruction[2], cpu_stat->instruction[3]);
+                        status->pc,
+                        status->instruction[0],
+                        status->instruction[1],
+                        status->instruction[2],
+                        status->instruction[3]);
                 popup_message(err_msg);
             }
         }
@@ -259,10 +259,12 @@ continue press Reset button",
         hdc = GetDC(hwnd);
 
         for (display_block = 0; display_block < YBLOCKS; display_block++)
+        {
             if (memory.has_changed(display_block))
             {
                 update_block(display_block, hdc);
             }
+        }
 
         ReleaseDC(hwnd, hdc);
 

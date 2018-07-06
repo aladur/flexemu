@@ -801,8 +801,6 @@ void XtGui::update_interrupt_status(tIrqType irqType, bool status)
 
 void XtGui::timerCallback(XtIntervalId)
 {
-    Mc6809CpuStatus *pStat;
-
     // check if program can be savely shut down
     // Just send a dummy event here to let the
     // main_loop getting closed
@@ -874,37 +872,36 @@ void XtGui::timerCallback(XtIntervalId)
     }
 
     // check if CPU view has to be updated
-    pStat = (Mc6809CpuStatus *)scheduler.get_status();
+    Mc6809CpuStatus *status = (Mc6809CpuStatus *)scheduler.get_status();
 
-    if (pStat != nullptr)
+    if (status != nullptr)
     {
-        update_cpuview(*pStat);
+        update_cpuview(*status);
 
         if (okpixmap != None)
         {
-            bool is_running = (pStat->state == CpuState::Run ||
-                               pStat->state == CpuState::Next);
+            bool is_running = (status->state == CpuState::Run ||
+                               status->state == CpuState::Next);
             XtVaSetValues(entry21, XtNleftBitmap,
                           is_running ? okpixmap : None, nullptr);
             XtVaSetValues(entry22, XtNleftBitmap,
                           !is_running ? okpixmap : None, nullptr);
         }
 
-        if (pStat->state == CpuState::Invalid)
+        if (status->state == CpuState::Invalid)
         {
             char err_msg[128];
 
             sprintf((char *)&err_msg, "\
 Got invalid instruction pc=%04x instr=%02x %02x %02x %02x \
 Processor stopped. To continue press Reset button",
-                    pStat->pc, pStat->instruction[0],
-                    pStat->instruction[1], pStat->instruction[2],
-                    pStat->instruction[3]);
+                    status->pc,
+                    status->instruction[0],
+                    status->instruction[1],
+                    status->instruction[2],
+                    status->instruction[3]);
             popup_message(err_msg);
         }
-
-        delete pStat;
-        pStat = nullptr;
     }
 
     // update graphic display
