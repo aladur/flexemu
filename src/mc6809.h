@@ -1611,17 +1611,6 @@ inline Mc6809::Event operator& (Mc6809::Event lhs, Mc6809::Event rhs)
                                       static_cast<T>(rhs));
 }
 
-/*
-inline Mc6809::Event operator|= (Mc6809::Event lhs, Mc6809::Event rhs)
-{
-    return lhs = lhs | rhs;
-}
-
-inline Mc6809::Event operator&= (Mc6809::Event lhs, Mc6809::Event rhs)
-{
-    return lhs = lhs & rhs;
-}
-*/
 inline Mc6809::Event operator~ (Mc6809::Event rhs)
 {
     using T = std::underlying_type<Mc6809::Event>::type;
