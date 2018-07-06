@@ -47,11 +47,6 @@
 #include "fclipbrd.h"
 #include "fcopyman.h"
 #include "fmenufac.h"
-#include "baddrrng.h"
-#include "bmembuf.h"
-#include "disconf.h"
-#include "da.h"
-#include "da6809.h"
 #include "ifilecnt.h"
 #include "bprocess.h"
 #include "cvtwchar.h"
@@ -435,17 +430,6 @@ void FlexDiskListCtrl::ViewSelectedItems()
 
             m_container->ReadToBuffer(fileName.mb_str(*wxConvCurrent), buffer);
 
-            /* unfinished
-            {
-            FlexDirEntry *pDe;
-
-            pDe = (FlexDirEntry *)GetItemData(item);
-            if (!strcmp(pDe->GetFileExt(), "CMD")) {
-                ProcessCmdFile(fileName, &buffer);
-                delete [] pItems;
-                return;
-            }
-            } */
             if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
                 buffer.IsFlexTextFile())
             {
@@ -537,36 +521,6 @@ void FlexDiskListCtrl::ViewSelectedItems()
     } // if
 
     delete [] pItems;
-}
-
-void FlexDiskListCtrl::ProcessCmdFile(const char *, FlexFileBuffer *buffer)
-{
-    BAddressRanges ranges;
-    BMemoryBuffer *memory;
-    DisassemblerConfig config;
-    Disassembler da;
-
-    if (!buffer)
-    {
-        return;
-    }
-
-    if (!ranges.ReadFrom(buffer))
-    {
-        throw FlexException(FERR_WRONG_FLEX_BIN_FORMAT);
-    }
-
-    memory = new BMemoryBuffer(ranges.GetMax() - ranges.GetMin() + 1,
-                               ranges.GetMin());
-    memory->FillWith(0);
-    buffer->CopyTo(*memory);
-
-    da.SetLbLDisassembler(new Da6809());
-    config.Add(ranges);
-    config.SetStartAddress(ranges.GetStartAddress(), "BEGIN");
-    da.DisassembleWithConfig(config, memory);
-    //ranges.PrintOn(stdout);
-    return;
 }
 
 #ifdef wxUSE_DRAG_AND_DROP

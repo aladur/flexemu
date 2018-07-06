@@ -113,7 +113,6 @@ private:
     void DeleteSelectedItems(bool askUser = TRUE);
     void RenameSelectedItems();
     void ViewSelectedItems();
-    void ProcessCmdFile(const char *fileName, FlexFileBuffer *buffer);
     void SetPropertyOnSelectedItems(int protection, bool isToBeSet);
     void GetFileList(FlexFileList &fileList);
     void CopyToClipboard();

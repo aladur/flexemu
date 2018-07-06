@@ -180,26 +180,15 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="baddrrng.cpp" />
-    <ClCompile Include="bbintree.cpp" />
     <ClCompile Include="bdate.cpp" />
     <ClCompile Include="bdir.cpp" />
     <ClCompile Include="bfileptr.cpp" />
-    <ClCompile Include="bhashtbl.cpp" />
-    <ClCompile Include="bident.cpp" />
-    <ClCompile Include="bintervl.cpp" />
-    <ClCompile Include="blist.cpp" />
     <ClCompile Include="bmembuf.cpp" />
     <ClCompile Include="bprocess.cpp" />
     <ClCompile Include="bregistr.cpp" />
-    <ClCompile Include="bsortlst.cpp" />
-    <ClCompile Include="buint.cpp" />
     <ClCompile Include="contpdlg.cpp" />
     <ClCompile Include="cvtwchar.cpp" />
-    <ClCompile Include="da.cpp" />
-    <ClCompile Include="da6809.cpp" />
     <ClCompile Include="dircont.cpp" />
-    <ClCompile Include="disconf.cpp" />
     <ClCompile Include="fcinfo.cpp" />
     <ClCompile Include="fclipbrd.cpp" />
     <ClCompile Include="fcopyman.cpp" />
@@ -242,26 +231,15 @@
     <ResourceCompile Include="flexdisk.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="baddrrng.h" />
-    <ClInclude Include="bbintree.h" />
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
     <ClInclude Include="bfileptr.h" />
-    <ClInclude Include="bhashtbl.h" />
-    <ClInclude Include="bident.h" />
-    <ClInclude Include="bintervl.h" />
-    <ClInclude Include="blist.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="bregistr.h" />
-    <ClInclude Include="bsortlst.h" />
-    <ClInclude Include="buint.h" />
     <ClInclude Include="contpdlg.h" />
     <ClInclude Include="cvtwchar.h" />
-    <ClInclude Include="da.h" />
-    <ClInclude Include="da6809.h" />
     <ClInclude Include="dircont.h" />
-    <ClInclude Include="disconf.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fclipbrd.h" />
     <ClInclude Include="fcopyman.h" />

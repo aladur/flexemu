@@ -26,9 +26,6 @@
 #include "misc1.h"
 #include "absdisas.h"
 
-class DisassemblerConfig;
-class BMemoryBuffer;
-
 class Disassembler
 {
 
@@ -40,7 +37,11 @@ public:
     Disassembler();
     virtual ~Disassembler();
 
-    void SetLbLDisassembler(AbstractDisassembler *d);
+    void SetLbLDisassembler(AbstractDisassembler *x_da)
+    {
+        da = x_da;
+    }
+
     int DisassembleOneLine(
             const Byte *pMemory,
             DWord pc,
@@ -48,18 +49,7 @@ public:
             DWord *pJumpAddr,
             char **pCode,
             char **pMnemonic);
-    void DisassembleWithConfig(DisassemblerConfig &aConfig,
-                               BMemoryBuffer *pMemBuf);
-
-protected:
-    int DisassembleUptoEnd(DisassemblerConfig &aConfig, const Byte *pMemory,
-                           DWord pc);
 };
-
-inline void Disassembler::SetLbLDisassembler(AbstractDisassembler *d)
-{
-    da = d;
-}
 
 #endif // DA_INCLUDED
 

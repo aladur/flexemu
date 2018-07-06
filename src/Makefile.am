@@ -52,7 +52,7 @@ pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
 xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
-mc6809st.cpp buint.cpp cvtwchar.cpp joystick.cpp \
+mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
@@ -64,7 +64,7 @@ xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h da.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h buint.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
+schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h
 
@@ -75,16 +75,15 @@ bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
 fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
-bintervl.cpp blist.cpp baddrrng.cpp bhashtbl.cpp bident.cpp bsortlst.cpp\
-bmembuf.cpp bbintree.cpp da.cpp da6809.cpp disconf.cpp bfileptr.cpp \
+bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp \
 bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
 fclipbrd.h fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
-bintervl.h blist.h baddrrng.h bhashtbl.h bident.h bsortlst.h bmembuf.h\
-bbintree.h disconf.h bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
+bmembuf.h \
+bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
 sprinter.h flexemu.h
 
