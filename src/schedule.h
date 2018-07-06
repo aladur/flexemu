@@ -33,10 +33,6 @@
 #include "btime.h"
 
 
-#define DO_SYNCEXEC     0x80
-#define DO_TIMER        0x100
-#define DO_SET_STATUS       0x200
-
 
 class BCommand;
 class BTime;
@@ -47,6 +43,15 @@ class ScheduledCpu;
 class Scheduler
 {
 public:
+
+    enum class Event
+    {
+        NONE = 0,
+        SyncExec = (1 << 0),  // synchronous execute commands
+        Timer = (1 << 1),     // execute timer events
+        SetStatus = (1 << 2), // set cpu status
+    };
+
     Scheduler() = delete;
     Scheduler(ScheduledCpu &x_cpu, Inout &x_inout);
     ~Scheduler();
@@ -63,7 +68,7 @@ public:
     void        sync_exec(BCommand *newCommand);
     void    run();
 protected:
-    void        execute();
+    void        execute_commands();
     std::mutex      command_mutex;
     std::mutex      status_mutex;
     std::mutex      irq_status_mutex;
@@ -74,7 +79,7 @@ public:
     QWord       get_total_cycles()
     {
         return total_cycles;
-    };
+    }
 protected:
     static void timer_elapsed(void *p);
     void timer_elapsed();
@@ -83,7 +88,7 @@ protected:
     ScheduledCpu &cpu;
     Inout &inout;
     CpuState state;
-    Word        events;
+    Event       events;
     CpuState user_state;
     QWord       total_cycles;
     QWord       time0sec;
@@ -106,7 +111,7 @@ public:
     float       get_frequency()
     {
         return frequency;
-    };
+    }
 protected:
     void        update_frequency();
     void        frequency_control(QWord time1);
@@ -115,5 +120,45 @@ protected:
     QWord       time0;          // time for freq control
     QWord       cycles0;        // cycle count for freq calc
 };
+
+inline Scheduler::Event operator| (Scheduler::Event lhs, Scheduler::Event rhs)
+{
+    using T = std::underlying_type<Scheduler::Event>::type;
+
+    return static_cast<Scheduler::Event>(static_cast<T>(lhs) |
+                                         static_cast<T>(rhs));
+}
+
+inline Scheduler::Event operator& (Scheduler::Event lhs, Scheduler::Event rhs)
+{
+    using T = std::underlying_type<Scheduler::Event>::type;
+
+    return static_cast<Scheduler::Event>(static_cast<T>(lhs) &
+                                         static_cast<T>(rhs));
+}
+
+inline Scheduler::Event operator|= (Scheduler::Event &lhs, Scheduler::Event rhs)
+{
+    return lhs = lhs | rhs;
+}
+
+inline Scheduler::Event operator&= (Scheduler::Event &lhs, Scheduler::Event rhs)
+{
+    return lhs = lhs & rhs;
+}
+
+inline Scheduler::Event operator~ (Scheduler::Event rhs)
+{
+    using T = std::underlying_type<Scheduler::Event>::type;
+
+    return static_cast<Scheduler::Event>(~static_cast<T>(rhs));
+}
+
+inline bool operator! (Scheduler::Event rhs)
+{
+    using T = std::underlying_type<Scheduler::Event>::type;
+
+    return static_cast<T>(rhs) == 0;
+}
 
 #endif // SCHEDULE_INCLUDED

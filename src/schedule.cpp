@@ -37,7 +37,7 @@
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
-    state(CpuState::Run), events(0), user_state(CpuState::NONE),
+    state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
     pCurrent_status(nullptr), is_status_valid(false),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
@@ -89,9 +89,9 @@ bool Scheduler::is_finished()
 
 void Scheduler::process_events()
 {
-    if (events != 0)
+    if (events != Event::NONE)
     {
-        if (events & DO_TIMER)
+        if ((events & Event::Timer) != Event::NONE)
         {
             irq_status_mutex.lock();
             cpu.get_interrupt_status(interrupt_status);
@@ -108,17 +108,17 @@ void Scheduler::process_events()
             {
                 // Do 1 second update
                 update_frequency();
-                events |= DO_SET_STATUS;
+                events |= Event::SetStatus;
 
                 inout.update_1_second();
 
                 time0sec += 1000000;
             }
 
-            events &= ~DO_TIMER;
+            events &= ~Event::Timer;
         }
 
-        if (events & DO_SET_STATUS)
+        if ((events & Event::SetStatus) != Event::NONE)
         {
             std::lock_guard<std::mutex> guard(status_mutex);
 
@@ -129,17 +129,20 @@ void Scheduler::process_events()
 
             if (inout.is_gui_present())
             {
-                events &= ~DO_SET_STATUS;
                 cpu.get_status(pCurrent_status);
                 pCurrent_status->freq = frequency;
                 pCurrent_status->state = state;
                 is_status_valid = true;
             }
+
+            events &= ~Event::SetStatus;
         }
 
-        if (events & DO_SYNCEXEC)
+        if ((events & Event::SyncExec) != Event::NONE)
         {
-            execute();
+            execute_commands();
+
+            events &= ~Event::SyncExec;
         }
     }
 }
@@ -254,7 +257,7 @@ CpuState Scheduler::statemachine(CpuState initial_state)
 
         if (inout.is_gui_present())
         {
-            events |= DO_SET_STATUS;
+            events |= Event::SetStatus;
         }
     } // while
 
@@ -271,7 +274,7 @@ void Scheduler::timer_elapsed(void *p)
 
 void Scheduler::timer_elapsed()
 {
-    events |= DO_TIMER;
+    events |= Event::Timer;
     cpu.exit_run();
 #ifdef __BSD
     BTimer::Instance()->Start(false, TIME_BASE);
@@ -313,11 +316,11 @@ void Scheduler::sync_exec(BCommand *newCommand)
     std::lock_guard<std::mutex> guard(command_mutex);
 
     commands.push_back(newCommand);
-    events |= DO_SYNCEXEC;
+    events |= Event::SyncExec;
     cpu.exit_run();
 }
 
-void Scheduler::execute()
+void Scheduler::execute_commands()
 {
     std::lock_guard<std::mutex> guard(command_mutex);
 
@@ -327,8 +330,6 @@ void Scheduler::execute()
         delete command;
     }
     commands.clear();
-
-    events &= ~DO_SYNCEXEC;
 }
 
 CpuStatus *Scheduler::get_status()
