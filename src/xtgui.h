@@ -125,6 +125,7 @@ protected:
 #endif
     bool        is_menu_mode;
     bool        isSynchronized;
+    Byte *image_data;
 
     Display *getDisplay() override;
     Window getWindow(tWindowType windowType = FLX_E2SCREEN) override;

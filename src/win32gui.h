@@ -144,7 +144,7 @@ protected:
     HWND        cpuform;  // CPU Window
     HFONT       hFontFixed; // Fixed font for CPU Window
     // memory block for calculating bitmaps for display
-    Byte        *copy_block;
+    Byte        *image_data;
     int     minCpuWidth, minCpuHeight;
 
 public:

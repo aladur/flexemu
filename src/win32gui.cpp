@@ -1069,7 +1069,7 @@ void Win32Gui::initialize(struct sGuiOptions &options)
     bp_input[0] = 0;
     bp_input[1] = 0;
     lfs.reset();
-    copy_block  = nullptr;
+    image_data = nullptr;
     frequency_control_on = false;
     cursor_type   = FLX_DEFAULT_CURSOR;
     warp_dx       = 0;
@@ -1216,12 +1216,12 @@ void Win32Gui::update_block(int block_number, HDC hdc)
         Byte const *src =
             memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
 
-        CopyToZPixmap(copy_block, src, 8);
+        CopyToZPixmap(image_data, src, 8);
 
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+            image_data, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         startLine = ((WINDOWHEIGHT - vico2.get_value() +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
@@ -1255,11 +1255,11 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        CopyToZPixmap(copy_block, nullptr, 8);
+        CopyToZPixmap(image_data, nullptr, 8);
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            copy_block, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+            image_data, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         BitBlt(hdc, 0,
                (block_number * BLOCKHEIGHT) * pixelSizeY,
@@ -1795,9 +1795,12 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
     int     i, j, idx;
     BITMAPINFO *pbmi;
 
-    copy_block = new Byte[WINDOWWIDTH * BLOCKHEIGHT *
-                          MAX_PIXELSIZEX * MAX_PIXELSIZEY
-                          /* * 32 / 8*/ ]; // screen depth on Win32 is 8
+                        // screen depth on Win32 is 8
+    const size_t size = WINDOWWIDTH * BLOCKHEIGHT *
+                        MAX_PIXELSIZEX * MAX_PIXELSIZEY;
+    image_data = new Byte[size];
+    memset(image_data, 0, size);
+
     pc = (struct sRGBDef *)&colors;
 
     while (pc->colorName != nullptr)
@@ -1957,7 +1960,7 @@ Win32Gui::~Win32Gui()
         DestroyMenu(menubar);
     }
 
-    delete [] copy_block;
+    delete [] image_data;
     delete cpu_stat;
     cpu_stat = nullptr;
     ggui = nullptr;

@@ -60,7 +60,6 @@ void XAbstractGui::initialize(struct sGuiOptions &options)
     visual = nullptr;
     depth = 0;
     own_cmap = 0;
-    copy_block = nullptr;
 }
 
 Display *XAbstractGui::getDisplay()

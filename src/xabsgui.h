@@ -74,7 +74,6 @@ protected:
     GC       e2gc;
     XImage      *image[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     int     oldX, oldY; // old pointer position
-    Byte        *copy_block;
     Visual      *visual;
     Colormap    cmap;
     int     own_cmap;
