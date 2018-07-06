@@ -244,6 +244,7 @@ Flexemu*bpText1.fromHoriz:		bpLabel1
 Flexemu*bpText2.fromHoriz:		bpLabel2
 Flexemu*bpText2.fromVert:		bpText1
 Flexemu*bpLabel2.fromVert:		bpLabel1
+Flexemu*bpLabel2.vertDistance:		10
 Flexemu*bpOkButton.fromVert:		bpText2
 Flexemu*bpCancelButton.fromVert:	bpText2
 Flexemu*bpClearButton.fromVert:		bpText2
@@ -258,11 +259,11 @@ Flexemu*logLabel2.label:		Max Address
 Flexemu*logLabel3.label:		Start Address
 Flexemu*logLabel4.label:		Stop Address
 Flexemu*logLabel5.label:		Log Filename
-Flexemu*logLabel1.width:		80
-Flexemu*logLabel2.width:		80
-Flexemu*logLabel3.width:		80
-Flexemu*logLabel4.width:		80
-Flexemu*logLabel5.width:		80
+Flexemu*logLabel1.width:		85
+Flexemu*logLabel2.width:		85
+Flexemu*logLabel3.width:		85
+Flexemu*logLabel4.width:		85
+Flexemu*logLabel5.width:		85
 Flexemu*logText1.width:			80
 Flexemu*logText2.width:			80
 Flexemu*logText3.width:			80
@@ -274,9 +275,13 @@ Flexemu*logText3.fromHoriz:		logLabel3
 Flexemu*logText4.fromHoriz:		logLabel4
 Flexemu*logFileName.fromHoriz:		logLabel5
 Flexemu*logLabel2.fromVert:		logLabel1
+Flexemu*logLabel2.vertDistance:		10
 Flexemu*logLabel3.fromVert:		logLabel2
+Flexemu*logLabel3.vertDistance:		10
 Flexemu*logLabel4.fromVert:		logLabel3
+Flexemu*logLabel4.vertDistance:		10
 Flexemu*logLabel5.fromVert:		logLabel4
+Flexemu*logLabel5.vertDistance:		10
 Flexemu*logText2.fromVert:		logText1
 Flexemu*logText3.fromVert:		logText2
 Flexemu*logText4.fromVert:		logText3
