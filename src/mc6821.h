@@ -117,13 +117,13 @@ inline Mc6821::ControlLine operator& (Mc6821::ControlLine lhs,
                                             static_cast<T>(rhs));
 }
 
-inline Mc6821::ControlLine operator|= (Mc6821::ControlLine lhs,
+inline Mc6821::ControlLine operator|= (Mc6821::ControlLine &lhs,
                                        Mc6821::ControlLine rhs)
 {
     return lhs = lhs | rhs;
 }
 
-inline Mc6821::ControlLine operator&= (Mc6821::ControlLine lhs,
+inline Mc6821::ControlLine operator&= (Mc6821::ControlLine &lhs,
                                        Mc6821::ControlLine rhs)
 {
     return lhs = lhs & rhs;
