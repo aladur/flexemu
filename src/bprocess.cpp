@@ -93,7 +93,7 @@ bool BProcess::Start()
     auto pCommandLine =
         std::unique_ptr<wchar_t[]>(new wchar_t[commandlinew.size()+1]);
     wcscpy(pCommandLine.get(), commandlinew.c_str());
-    result = CreateProcess(nullptr, pCommandLine,
+    result = CreateProcess(nullptr, pCommandLine.get(),
         nullptr, nullptr, 0, 0, nullptr, pDirectoryw, &si, &pi);
 #else
     const char *pDirectory = nullptr;

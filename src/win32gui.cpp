@@ -516,8 +516,9 @@ void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
         keyboardIO.put_char_parallel((Byte)key, do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(
-                    new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
+            auto command = BCommandPtr(
+                new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
+            scheduler.sync_exec(std::move(command));
         }
     }
 
