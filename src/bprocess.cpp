@@ -28,6 +28,7 @@
 #endif
 #include "bprocess.h"
 #include "cvtwchar.h"
+#include <memory>
 
 BProcess::BProcess(const std::string &x_exec,
                    const std::string &x_dir /* = "" */,
@@ -78,23 +79,22 @@ bool BProcess::Start()
     memset((void *)&si, 0, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
 #ifdef UNICODE
-    const wchar_t *pDirectory = nullptr;
-    wchar_t *pCommandLine = nullptr;
+    const wchar_t *pDirectoryw = nullptr;
     std::wstring directoryw;
 
     if (!directory.empty())
     {
         directoryw = ConvertToUtf16String(directory).c_str();
-        pDirectory = directoryw.c_str();
+        pDirectoryw = directoryw.c_str();
     }
 
     // For CreateProcessW parameter lpCommandLine must not be const
     std::wstring commandlinew = ConvertToUtf16String(commandline);
-    pCommandLine = new wchar_t[commandlinew.size()+1];
-    wcscpy(pCommandLine, commandlinew.c_str());
+    auto pCommandLine =
+        std::unique_ptr<wchar_t[]>(new wchar_t[commandlinew.size()+1]);
+    wcscpy(pCommandLine.get(), commandlinew.c_str());
     result = CreateProcess(nullptr, pCommandLine,
-        nullptr, nullptr, 0, 0, nullptr, pDirectory, &si, &pi);
-    delete pCommandLine;
+        nullptr, nullptr, 0, 0, nullptr, pDirectoryw, &si, &pi);
 #else
     const char *pDirectory = nullptr;
 
