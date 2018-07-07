@@ -25,6 +25,7 @@
 #ifndef CPUSTATE_INCLUDED
 #define CPUSTATE_INCLUDED
 
+#include <memory>
 #include "typedefs.h"
 
 enum class CpuState : Byte
@@ -55,5 +56,8 @@ public:
     float freq;
     CpuState state;
 };
+
+using CpuStatusPtr = std::unique_ptr<CpuStatus>;
+
 #endif // CPUSTATE_INCLUDED
 

@@ -109,13 +109,13 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
     }
 }
 
-void Mc6809::get_status(CpuStatus *status)
+void Mc6809::get_status(CpuStatus *cpu_status)
 {
 
     InstFlg flags = InstFlg::NONE;
     char *pmnem_buf, *pbuffer;
     Word i, mem_addr;
-    Mc6809CpuStatus *stat = (Mc6809CpuStatus *)status;
+    Mc6809CpuStatus *stat = static_cast<Mc6809CpuStatus *>(cpu_status);
 
 #ifdef FASTFLEX
     stat->a        = iareg;
@@ -162,9 +162,9 @@ void Mc6809::get_status(CpuStatus *status)
     stat->total_cycles = get_cycles();
 }  // get_status
 
-void Mc6809::set_status(CpuStatus *status)
+void Mc6809::set_status(CpuStatus *cpu_status)
 {
-    Mc6809CpuStatus *stat = (Mc6809CpuStatus *)status;
+    Mc6809CpuStatus *stat = static_cast<Mc6809CpuStatus *>(cpu_status);
 
 #ifdef FASTFLEX
     iareg = stat->a;
@@ -189,10 +189,9 @@ void Mc6809::set_status(CpuStatus *status)
 #endif
 }  // set_status
 
-// The caller is responsible for deleting the object
-CpuStatus *Mc6809::create_status_object()
+CpuStatusPtr Mc6809::create_status_object()
 {
-    return new Mc6809CpuStatus;
+    return CpuStatusPtr(new Mc6809CpuStatus);
 }
 
 CpuState Mc6809::run(RunMode mode)

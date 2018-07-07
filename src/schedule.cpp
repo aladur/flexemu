@@ -39,7 +39,7 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
     state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
-    pCurrent_status(nullptr), is_status_valid(false),
+    is_status_valid(false),
     target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
 {
 #ifdef UNIX
@@ -67,12 +67,6 @@ Scheduler::~Scheduler()
         delete command;
     }
     commands.clear();
-    command_mutex.unlock();
-
-    status_mutex.lock();
-    delete pCurrent_status;
-    pCurrent_status = nullptr;
-    status_mutex.unlock();
 }
 
 void Scheduler::request_new_state(CpuState x_user_state)
@@ -122,16 +116,16 @@ void Scheduler::process_events()
         {
             std::lock_guard<std::mutex> guard(status_mutex);
 
-            if (pCurrent_status == nullptr)
+            if (cpu_status == nullptr)
             {
-                pCurrent_status = cpu.create_status_object();
+                cpu_status = cpu.create_status_object();
             }
 
             if (inout.is_gui_present())
             {
-                cpu.get_status(pCurrent_status);
-                pCurrent_status->freq = frequency;
-                pCurrent_status->state = state;
+                cpu.get_status(cpu_status.get());
+                cpu_status->freq = frequency;
+                cpu_status->state = state;
                 is_status_valid = true;
             }
 
@@ -340,7 +334,7 @@ CpuStatus *Scheduler::get_status()
 
     if (is_status_valid)
     {
-        status = pCurrent_status;
+        status = cpu_status.get();
         is_status_valid = false;
     }
 

@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include <mutex>
 #include <vector>
+#include <memory>
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "btime.h"
@@ -102,7 +103,7 @@ public:
 protected:
     tInterruptStatus interrupt_status;
     void        do_reset();
-    CpuStatus   *pCurrent_status;
+    CpuStatusPtr cpu_status;
     bool        is_status_valid;
 
     // CPU frequency

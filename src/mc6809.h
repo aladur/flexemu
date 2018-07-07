@@ -957,13 +957,13 @@ public:
     CpuState run(RunMode mode) override;
     void exit_run() override;
     QWord get_cycles(bool reset = false) override;
-    void get_status(CpuStatus *stat) override;
-    CpuStatus *create_status_object() override;
+    void get_status(CpuStatus *x_cpu_status) override;
+    CpuStatusPtr create_status_object() override;
     void get_interrupt_status(tInterruptStatus &s) override;
     void set_required_cyclecount(t_cycles x_cycles) override;
 
     // test support
-    void            set_status(CpuStatus *stat);
+    void set_status(CpuStatus *x_cpu_status);
 protected:
     CpuState runloop();
 
