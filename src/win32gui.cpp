@@ -497,8 +497,9 @@ void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
         keyboardIO.put_char_parallel((Byte)key, do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(
+            auto command = BCommandPtr(
                     new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
+            scheduler.sync_exec(std::move(command));
         }
     }
 
@@ -1541,7 +1542,7 @@ void Win32Gui::toggle_freqency()
     frequency_control_on = !frequency_control_on;
     UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
     frequency = frequency_control_on ? 1.3396f : 0.0f;
-    scheduler.sync_exec(new CSetFrequency(scheduler, frequency));
+    scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
     CheckMenuItem(menu2, IDM_FREQUENCY0, MF_BYCOMMAND | is_checked);
 }
 
@@ -2611,7 +2612,7 @@ void Win32Gui::popdown_log(int cmd, HWND hwnd)
         GetDlgItemText(hwnd, IDC_LOG_FILENAME, tmpstring, PATH_MAX);
         lfs.logFileName = tmpstring;
 
-        scheduler.sync_exec(new CSetLogFile(cpu, lfs));
+        scheduler.sync_exec(BCommandPtr(new CSetLogFile(cpu, lfs)));
     }
 
     EndDialog(hwnd, 0);
