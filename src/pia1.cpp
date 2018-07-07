@@ -55,8 +55,10 @@ Byte Pia1::readInputA()
         ora = keyboardIO.read_char_parallel(do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(
+            auto command = BCommandPtr(
                     new CActiveTransition(*this, Mc6821::ControlLine::CA1));
+
+            scheduler.sync_exec(std::move(command));
         }
     }
 

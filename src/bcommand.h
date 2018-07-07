@@ -25,6 +25,7 @@
 #ifndef BCOMMAND_INCLUDED
 #define BCOMMAND_INCLUDED
 
+#include <memory>
 
 class BCommand
 {
@@ -36,5 +37,7 @@ public:
 protected:
     BCommand();
 };
+
+using BCommandPtr = std::unique_ptr<BCommand>;
 
 #endif

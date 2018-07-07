@@ -680,7 +680,7 @@ void XtGui::toggle_frequency()
 
     frequency_control_on = !frequency_control_on;
     frequency = frequency_control_on ? 1.3396 : 0.0;
-    scheduler.sync_exec(new CSetFrequency(scheduler, frequency));
+    scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
 
     if (okpixmap != None)
         XtVaSetValues(entry27, XtNleftBitmap,
@@ -1021,8 +1021,9 @@ void XtGui::c_keyPress(XEvent *pevent)
         keyboardIO.put_char_parallel(key, do_notify);
         if (do_notify)
         {
-            scheduler.sync_exec(
+            auto command = BCommandPtr(
                     new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
+            scheduler.sync_exec(std::move(command));
         }
     }
 } // c_keyPress
@@ -2015,7 +2016,7 @@ void XtGui::popdown_log(Widget w)
     XtVaGetValues(logfilename, XtNstring, &tmpstring, nullptr);
     lfs.logFileName = tmpstring;
 
-    scheduler.sync_exec(new CSetLogFile(cpu, lfs));
+    scheduler.sync_exec(BCommandPtr(new CSetLogFile(cpu, lfs)));
 
     XtPopdown(logframe);
     XtSetSensitive(e2toplevel, True);

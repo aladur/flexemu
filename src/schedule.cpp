@@ -60,12 +60,6 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
 Scheduler::~Scheduler()
 {
     BTimer::Instance()->Stop();
-
-    command_mutex.lock();
-    for (auto *command : commands)
-    {
-        delete command;
-    }
     commands.clear();
 }
 
@@ -305,11 +299,11 @@ void Scheduler::run()
     statemachine(CpuState::Run);
 }
 
-void Scheduler::sync_exec(BCommand *newCommand)
+void Scheduler::sync_exec(BCommandPtr new_command)
 {
     std::lock_guard<std::mutex> guard(command_mutex);
 
-    commands.push_back(newCommand);
+    commands.push_back(std::move(new_command));
     events |= Event::SyncExec;
     cpu.exit_run();
 }
@@ -318,10 +312,9 @@ void Scheduler::execute_commands()
 {
     std::lock_guard<std::mutex> guard(command_mutex);
 
-    for (auto *command : commands)
+    for (auto &command : commands)
     {
         command->Execute();
-        delete command;
     }
     commands.clear();
 }

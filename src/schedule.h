@@ -32,10 +32,10 @@
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "btime.h"
+#include "bcommand.h"
 
 
 
-class BCommand;
 class BTime;
 class BTimer;
 class Inout;
@@ -66,14 +66,14 @@ public:
 
     // Thread support
 public:
-    void        sync_exec(BCommand *newCommand);
+    void        sync_exec(BCommandPtr new_command);
     void    run();
 protected:
     void        execute_commands();
     std::mutex      command_mutex;
     std::mutex      status_mutex;
     std::mutex      irq_status_mutex;
-    std::vector<BCommand *> commands;
+    std::vector<BCommandPtr> commands;
 
     // Timer interface:
 public:
