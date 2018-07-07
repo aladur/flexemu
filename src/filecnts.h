@@ -26,6 +26,7 @@
 
 #include "misc1.h"
 #include "filecntb.h"
+#include <memory>
 
 /* number of Kilo Byte at least available for each directory sector */
 const int DIRSECTOR_PER_KB  = 12800;
@@ -156,6 +157,8 @@ public:
     virtual int  GetBytesPerSector() const = 0;
     virtual ~FileContainerIfSector() { };
 };  /* class FileContainerIfSector */
+
+using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
 
 #endif /* #ifndef __fromflex__ */
 

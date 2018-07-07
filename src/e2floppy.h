@@ -63,8 +63,8 @@ private:
     //  disk_dir        Disk directory
     // Drive nr. 4 means no drive selected
 
-    FileContainerIfSector   *floppy[5];
-    FileContainerIfSector   *pfs;
+    FileContainerIfSectorPtr floppy[5];
+    FileContainerIfSector *pfs;
     Byte            track[5];
     DiskStatus      drive_status[5];
     char            sector_buffer[256];
