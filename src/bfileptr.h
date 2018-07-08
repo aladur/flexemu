@@ -23,34 +23,39 @@
 #define BFILEPTR_INCLUDED
 
 #include <stdio.h>
+#include <string>
 
 class BFilePtr
 {
 public:
     BFilePtr();
-    BFilePtr(const char *path, const char *mode);
-    BFilePtr(const BFilePtr &);
+    BFilePtr(const char *path, const char *mode = nullptr);
+    BFilePtr(const BFilePtr &) = delete;
+    BFilePtr(BFilePtr &&);
     ~BFilePtr();
-    BFilePtr &operator= (const BFilePtr &);
+    BFilePtr &operator= (const BFilePtr &) = delete;
+    BFilePtr &operator= (BFilePtr &&);
+
     int Close();
     const char *GetPath() const
     {
-        return pPath;
-    };
+        return path.c_str();
+    }
+
     const char *GetMode() const
     {
-        return pMode;
-    };
+        return mode.c_str();
+    }
+
     operator FILE *() const
     {
         return fp;
-    };
+    }
 
 private:
-    char *pPath;
-    char *pMode;
+    std::string path;
+    std::string mode;
     FILE *fp;
-    mutable bool responsible;
 };
 #endif
 

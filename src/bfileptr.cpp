@@ -27,83 +27,61 @@
 // The developper does not have to be concerned about
 // closing the file
 
-BFilePtr::BFilePtr() :
-    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
+BFilePtr::BFilePtr() : fp(nullptr)
 {
 }
 
-BFilePtr::BFilePtr(const char *path, const char *mode) :
-    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
+BFilePtr::BFilePtr(const char *x_path, const char *x_mode /* = nullptr */) :
+    mode("r"), fp(nullptr)
 {
-    struct stat  sbuf;
+    struct stat sbuf;
 
-    if (path != nullptr)
+    if (x_path != nullptr)
     {
-        pPath = new char[strlen(path) + 1];
-        strcpy(pPath, path);
+        path = x_path;
     }
-
-    if (mode != nullptr)
-    {
-        pMode = new char[strlen(mode) + 1];
-        strcpy(pMode, mode);
-    }
-
-    if (!stat(path, &sbuf) && !S_ISREG(sbuf.st_mode))
+    else
     {
         return;
     }
 
-    fp = fopen(path, mode);
+    if (x_mode != nullptr)
+    {
+        mode = x_mode;
+    }
+
+    if (!stat(path.c_str(), &sbuf) && !S_ISREG(sbuf.st_mode))
+    {
+        return;
+    }
+
+    fp = fopen(path.c_str(), mode.c_str());
 }
 
-BFilePtr::BFilePtr(const BFilePtr &src) :
-    pPath(nullptr), pMode(nullptr), fp(nullptr), responsible(true)
+BFilePtr::BFilePtr(BFilePtr &&src) : fp(nullptr)
 {
     fp = src.fp;
+    path = src.path;
+    mode = src.mode;
 
-    if (src.pPath != nullptr)
-    {
-        pPath = new char[strlen(src.pPath) + 1];
-        strcpy(pPath, src.pPath);
-    }
-
-    if (src.pMode != nullptr)
-    {
-        pMode = new char[strlen(src.pMode) + 1];
-        strcpy(pMode, src.pMode);
-    }
-
-    // only take over responsibility for closing file
-    // if source filepointer had it
-    responsible     = src.responsible;
-    src.responsible = false;
+    src.fp = nullptr;
+    src.path.clear();
+    src.mode.clear();
 }
 
-BFilePtr &BFilePtr::operator=(const BFilePtr &src)
+BFilePtr &BFilePtr::operator=(BFilePtr &&src)
 {
     if (&src != this)
     {
         Close();
 
         fp = src.fp;
+        path = src.path;
+        mode = src.mode;
 
-        if (src.pPath != nullptr)
-        {
-            pPath = new char[strlen(src.pPath) + 1];
-            strcpy(pPath, src.pPath);
-        }
-
-        if (src.pMode != nullptr)
-        {
-            pMode = new char[strlen(src.pMode) + 1];
-            strcpy(pMode, src.pMode);
-        }
-
-        // only take over responsibility for closing file
-        // if source filepointer had it
-        responsible     = src.responsible;
-        src.responsible = false;
+        src.fp = nullptr;
+        src.path.clear();
+        src.mode.clear();
     }
 
     return *this;
@@ -118,19 +96,14 @@ int BFilePtr::Close()
 {
     int result = 0;
 
-    if (responsible && fp != nullptr)
+    if (fp != nullptr)
     {
         result = fclose(fp);
     }
 
-    // make file pointer invalid independant
-    // of the responsibility
     fp = nullptr;
-
-    delete [] pPath;
-    pPath = nullptr;
-    delete [] pMode;
-    pMode = nullptr;
+    path.clear();
+    mode.clear();
 
     return result;
 }
