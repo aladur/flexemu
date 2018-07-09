@@ -176,7 +176,6 @@ void XtGui::initialize(struct sGuiOptions &options)
     current_x = -1;
     current_y = -1;
     mouse_button_state = 0;
-    image_data = nullptr;
 #ifdef HAVE_XPM
 
     for (i = PM_FLOPPY0; i <= PM_IRQ4; ++i)
@@ -1553,8 +1552,8 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     const size_t size = WINDOWWIDTH * BLOCKHEIGHT *
                         MAX_PIXELSIZEX * MAX_PIXELSIZEY *
                         32 / 8; // max. screen depth
-    image_data = new Byte[size];
-    memset(image_data, 0, size);
+    image_data = std::unique_ptr<Byte[]>(new Byte[size]);
+    memset(image_data.get(), 0, size);
 
     // initialize different images used for different window sizes:
     for (i = 0; i < MAX_PIXELSIZEX; i++)
@@ -1562,7 +1561,7 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             image[i][j] = XCreateImage(display, visual, depth,
-                                       ZPixmap, 0, (char *)image_data,
+                                       ZPixmap, 0, (char *)image_data.get(),
                                        BLOCKWIDTH * (i + 1),
                                        BLOCKHEIGHT * (j + 1), 32, 0);
 
@@ -1772,8 +1771,6 @@ XtGui::~XtGui()
 
     XtDestroyWidget(e2toplevel); /* Avoid memory leak */
     XtDestroyApplicationContext(context);
-    delete [] image_data;
-    image_data = nullptr;
     ggui = nullptr;
 }
 

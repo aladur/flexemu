@@ -37,6 +37,7 @@
 #include "schedcpu.h"
 #include "scpulog.h"
 #include "xabsgui.h"
+#include <memory>
 
 // include Athena Widget headers AFTER xabsgui.h
 
@@ -125,7 +126,7 @@ protected:
 #endif
     bool        is_menu_mode;
     bool        isSynchronized;
-    Byte *image_data;
+    std::unique_ptr<Byte[]> image_data;
 
     Display *getDisplay() override;
     Window getWindow(tWindowType windowType = FLX_E2SCREEN) override;
