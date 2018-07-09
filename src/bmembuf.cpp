@@ -21,38 +21,65 @@
 */
 
 #include "misc1.h"
-#include <string.h> // needed for nullptr
 #include "bmembuf.h"
 
 
-BMemoryBuffer::BMemoryBuffer(DWord aSize /* = 65536 */, DWord aBase /* = 0 */) :
+BMemoryBuffer::BMemoryBuffer(size_t aSize, size_t aBase /* = 0 */) :
     baseAddress(aBase), size(aSize)
 {
-    pBuffer = new Byte[size];
+    buffer = std::unique_ptr<Byte[]>(new Byte[size]);
 }
 
 BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
 {
     baseAddress = src.baseAddress;
     size = src.size;
-    pBuffer = new Byte[size];
-    memcpy(pBuffer, src.pBuffer, size);
+    buffer = std::unique_ptr<Byte[]>(new Byte[size]);
+    memcpy(buffer.get(), src.buffer.get(), size);
+}
+
+BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src)
+{
+    baseAddress = src.baseAddress;
+    size = src.size;
+    buffer = std::move(src.buffer);
 }
 
 BMemoryBuffer::~BMemoryBuffer()
 {
-    delete [] pBuffer;
+}
+
+BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
+{
+    if (this != &src)
+    {
+        baseAddress = src.baseAddress;
+        size = src.size;
+        buffer = std::unique_ptr<Byte[]>(new Byte[size]);
+        memcpy(buffer.get(), src.buffer.get(), size);
+    }
+
+    return *this;
+}
+
+BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src)
+{
+    baseAddress = src.baseAddress;
+    size = src.size;
+    buffer = std::move(src.buffer);
+
+    return *this;
 }
 
 void BMemoryBuffer::FillWith(const Byte pattern /* = 0 */)
 {
-    for (DWord i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        pBuffer[i] = pattern;
+        buffer[i] = pattern;
     }
 }
 
-Byte BMemoryBuffer::operator[](DWord address)
+Byte BMemoryBuffer::operator[](size_t address) const
 {
     // if out of range always return 0!
     if (address < baseAddress || address > baseAddress + size - 1)
@@ -60,12 +87,12 @@ Byte BMemoryBuffer::operator[](DWord address)
         return 0;
     }
 
-    return *(pBuffer + address - baseAddress);
+    return buffer[address - baseAddress];
 }
 
-bool BMemoryBuffer::CopyFrom(const Byte *from, DWord aSize, DWord address)
+bool BMemoryBuffer::CopyFrom(const Byte *from, size_t aSize, size_t address)
 {
-    DWord secureSize;
+    size_t secureSize;
 
     if (address >= baseAddress + size)
     {
@@ -74,17 +101,17 @@ bool BMemoryBuffer::CopyFrom(const Byte *from, DWord aSize, DWord address)
 
     secureSize = (address + aSize > baseAddress + size) ? size -
                  (address - baseAddress) : aSize;
-    memcpy(pBuffer + address - baseAddress, from, secureSize);
+    memcpy(buffer.get() + address - baseAddress, from, secureSize);
     return true;
 }
 
-const Byte *BMemoryBuffer::GetBuffer(DWord address)
+const Byte *BMemoryBuffer::GetBuffer(size_t address) const
 {
     if (address < baseAddress || address >= baseAddress + size)
     {
         return nullptr;
     }
 
-    return pBuffer + address - baseAddress;
+    return buffer.get() + address - baseAddress;
 }
 

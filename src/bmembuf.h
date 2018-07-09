@@ -24,32 +24,38 @@
 #define BMEMBUF_INCLUDED
 
 #include "misc1.h"
+#include <memory>
 
 
 class BMemoryBuffer
 {
 public:
-    BMemoryBuffer(DWord aSize = 65536, DWord aBase = 0);
+    BMemoryBuffer() = delete;
+    BMemoryBuffer(size_t aSize, size_t aBase = 0);
     BMemoryBuffer(const BMemoryBuffer &src);
+    BMemoryBuffer(BMemoryBuffer &&src);
     ~BMemoryBuffer();
 
+    BMemoryBuffer &operator=(const BMemoryBuffer &src);
+    BMemoryBuffer &operator=(BMemoryBuffer &&src);
+
     void FillWith(const Byte pattern = 0);
-    inline DWord GetSize() const
+    inline size_t GetSize() const
     {
         return size;
     };
-    inline DWord GetBaseAddress() const
+    inline size_t GetBaseAddress() const
     {
         return baseAddress;
     };
-    bool CopyFrom(const Byte *from, DWord aSize, DWord address);
-    const Byte *GetBuffer(DWord address);
-    Byte operator[](DWord address);
+    bool CopyFrom(const Byte *from, size_t aSize, size_t address);
+    const Byte *GetBuffer(size_t address) const;
+    Byte operator[](size_t address) const;
 
 private:
-    DWord   baseAddress;
-    DWord   size;
-    Byte    *pBuffer;
+    size_t baseAddress;
+    size_t size;
+    std::unique_ptr<Byte[]> buffer;
 };
 
 #endif // BMEMBUF_INCLUDED
