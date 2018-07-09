@@ -40,6 +40,7 @@
 
 #include "misc1.h"
 #include <string>
+#include <memory>
 
 #ifdef _MSC_VER
     #include <direct.h>
@@ -654,7 +655,7 @@ void FlexemuOptionsDialog::OnSelectDrive3(wxCommandEvent &WXUNUSED(event))
 
 void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 {
-    wxDirDialog *dialog;
+    std::unique_ptr<wxDirDialog> dialog;
 
     if (c_diskDir)
     {
@@ -664,8 +665,8 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 
     wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
 
-    dialog = new wxDirDialog(this, _("Select folder with DSK files"),
-                             disk_dir);
+    dialog = std::unique_ptr<wxDirDialog>(
+            new wxDirDialog(this, _("Select folder with DSK files"), disk_dir));
 
     if (dialog->ShowModal() == wxID_OK)
     {
@@ -677,8 +678,6 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
             c_diskDir->SetValue(disk_dir);
         }
     }
-
-    delete dialog;
 }
 
 void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
