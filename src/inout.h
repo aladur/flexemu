@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include "flexemu.h"
 #include <string>
+#include <memory>
 
 
 class E2floppy;
@@ -49,20 +50,20 @@ class Inout
 private:
     E2floppy &fdc;
     Mc146818 &rtc;
-    AbstractGui *gui;
+    std::unique_ptr<AbstractGui> gui;
 
 public:
-    AbstractGui *create_gui(
-                     JoystickIO &joystickIO
-                   , KeyboardIO &keyboardIO
-                   , TerminalIO &terminalIO
-                   , Pia1 &pia1
-                   , Memory &memory
-                   , Scheduler &scheduler
-                   , Mc6809 &cpu
-                   , VideoControl1 &vico1
-                   , VideoControl2 &vico2
-                   , struct sGuiOptions &options);
+    void create_gui(
+             JoystickIO &joystickIO
+           , KeyboardIO &keyboardIO
+           , TerminalIO &terminalIO
+           , Pia1 &pia1
+           , Memory &memory
+           , Scheduler &scheduler
+           , Mc6809 &cpu
+           , VideoControl1 &vico1
+           , VideoControl2 &vico2
+           , struct sGuiOptions &options);
 
     void    update_1_second();
 
