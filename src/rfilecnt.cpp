@@ -26,12 +26,13 @@
 
 
 FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
-    FlexFileContainer(path, mode), pfb(nullptr)
+    FlexFileContainer(path, mode)
 {
     unsigned int sectors;
 
     sectors = ByteOffset(param.max_track + 1, 1) / param.byte_p_sector ;
-    pfb = new Byte[sectors * param.byte_p_sector];
+    file_buffer =
+        std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);
 
     if (fseek(fp, 0, SEEK_SET))
     {
@@ -39,7 +40,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
     }
 
     // read total disk into memory
-    if (fread(&pfb[0], param.byte_p_sector, sectors, fp) != sectors)
+    if (fread(file_buffer.get(), param.byte_p_sector, sectors, fp) != sectors)
     {
         throw FlexException(FERR_READING_FROM, fp.GetPath());
     }
@@ -59,11 +60,27 @@ FlexRamFileContainer::~FlexRamFileContainer()
     }
 }
 
+FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) :
+    FlexFileContainer(std::move(src)), file_buffer(std::move(src.file_buffer))
+{
+}
+
+FlexRamFileContainer &FlexRamFileContainer::operator=
+                                         (FlexRamFileContainer &&src)
+{
+    FlexRamFileContainer::operator=(std::move(src));
+
+    file_buffer = std::move(src.file_buffer);
+
+    return *this;
+}
+
 int FlexRamFileContainer::Close()
 {
     bool throwException = false;
+    std::string path = fp.GetPath();
 
-    if (fp != nullptr && (pfb != nullptr))
+    if (fp != nullptr && (file_buffer.get() != nullptr))
     {
         unsigned int sectors;
 
@@ -74,7 +91,8 @@ int FlexRamFileContainer::Close()
             throwException = true;
         }
 
-        if (fwrite(&pfb[0], param.byte_p_sector, sectors, fp) != sectors)
+        if (fwrite(file_buffer.get(), param.byte_p_sector, sectors, fp)
+                != sectors)
         {
             throwException = true;
         }
@@ -82,12 +100,11 @@ int FlexRamFileContainer::Close()
         fp.Close();
     }
 
-    delete [] pfb;
-    pfb = nullptr;
+    file_buffer.reset(nullptr);
 
     if (throwException)
     {
-        throw FlexException(FERR_WRITING_TO, fp.GetPath());
+        throw FlexException(FERR_WRITING_TO, path.c_str());
     }
 
     return 1;
@@ -95,41 +112,38 @@ int FlexRamFileContainer::Close()
 
 bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 {
-    int pos;
-
-    if (pfb == nullptr)
+    if (file_buffer.get() == nullptr)
     {
         return false;
     }
 
-    pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec);
 
     if (pos < 0)
     {
         return false;
     }
 
-    memcpy(pbuffer, pfb + pos, param.byte_p_sector);
+    memcpy(pbuffer, &file_buffer[pos], param.byte_p_sector);
     return true;
 }
 
 bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 {
-    int pos;
-
-    if (pfb == nullptr)
+    if (file_buffer.get() == nullptr)
     {
         return false;
     }
 
-    pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec);
 
     if (pos < 0)
     {
         return false;
     }
 
-    memcpy(pfb + pos, pbuffer, param.byte_p_sector);
+    memcpy(&file_buffer[pos], pbuffer, param.byte_p_sector);
+
     return true;
 }
 

@@ -177,6 +177,20 @@ FlexFileContainer::~FlexFileContainer()
     }
 }
 
+FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
+    fp(std::move(src.fp)), param(src.param), attributes(src.attributes)
+{
+}
+
+FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
+{
+    fp = std::move(src.fp);
+    param = src.param;
+    attributes = src.attributes;
+
+    return *this;
+}
+
 /****************************************/
 /* Public interface                     */
 /****************************************/

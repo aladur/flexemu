@@ -67,8 +67,14 @@ private:
     int     attributes;
 
 public:
+    FlexFileContainer() = delete;
+    FlexFileContainer(const FlexFileContainer &) = delete;
+    FlexFileContainer(FlexFileContainer &&);
     FlexFileContainer(const char *path, const char *mode);
     virtual ~FlexFileContainer();       // public destructor
+
+    FlexFileContainer &operator= (const FlexFileContainer &) = delete;
+    FlexFileContainer &operator= (FlexFileContainer &&);
 
     // basic interface (to be used within flexemu)
 public:
@@ -147,7 +153,6 @@ protected:
         const char *name,
         int type);
 private:
-    FlexFileContainer();    // should not be used
     FileContainerIteratorImp *IteratorFactory();
 
 };  // class FlexFileContainer

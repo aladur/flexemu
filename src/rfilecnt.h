@@ -24,24 +24,31 @@
 #define RFILECNT_INCLUDED
 
 #include "ffilecnt.h"
+#include <memory>
 
 class FlexRamFileContainer : public FlexFileContainer
 {
 
 private:
 
-    Byte    *pfb;   // file buffer
+    std::unique_ptr<Byte[]> file_buffer;
 
 public:
+
+    FlexRamFileContainer() = delete;
+    FlexRamFileContainer(const FlexRamFileContainer &) = delete;
+    FlexRamFileContainer(FlexRamFileContainer &&);
     FlexRamFileContainer(const char *path, const char *mode);
     virtual ~FlexRamFileContainer();
+
+    FlexRamFileContainer &operator= (const FlexRamFileContainer &) = delete;
+    FlexRamFileContainer &operator= (FlexRamFileContainer &&);
 
     virtual bool ReadSector(Byte *buffer, int trk, int sec) const;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec);
     virtual int Close();
 
 private:
-    FlexRamFileContainer(); // should not be used
     virtual void Initialize_for_flx_format(
         s_floppy        *pfloppy,
         s_flex_header   *pheader,
