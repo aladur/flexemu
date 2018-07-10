@@ -57,8 +57,6 @@ IMPLEMENT_APP(FLEXplorer)
 --------------------------------------------------------*/
 bool FLEXplorer::OnInit()
 {
-    FlexParentFrame *frame = nullptr;
-
     wxLocale::AddCatalogLookupPathPrefix(wxT("."));
     wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
 
@@ -74,12 +72,13 @@ bool FLEXplorer::OnInit()
     int width = 820;
 
     // Create the main frame window
-    frame = new FlexParentFrame((wxFrame *) nullptr, -1, GetAppName(),
-                                wxPoint(-1, -1), wxSize(width, 700),
-                                wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
-    frame->Show(TRUE);
+    FlexParentFrame *frame =
+        new FlexParentFrame((wxFrame *)nullptr, -1, GetAppName(),
+                            wxPoint(-1, -1), wxSize(width, 700),
+                            wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
+    frame->Show(true);
     SetTopWindow(frame);
-    return TRUE;
+    return true;
 }
 
 int FLEXplorer::OnExit()
@@ -91,18 +90,14 @@ int FLEXplorer::OnExit()
 void FLEXplorer::WriteDefaultOptions()
 {
 #ifdef WIN32
-    BRegistry *reg;
-
-    reg = new BRegistry(BRegistry::currentUser, FLEXPLOREREG);
-    reg->SetValue(FLEXPLORERFILEVIEWER,
+    BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
+    reg.SetValue(FLEXPLORERFILEVIEWER,
         std::string(FlexDiskListCtrl::fileViewer));
-    reg->SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg->SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ?
+    reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    reg.SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ?
                   1 : 0);
-    delete reg;
 #endif
 #ifdef UNIX
-    BRcFile *rcFile;
     std::string rcFileName;
     BEnvironment env;
 
@@ -112,15 +107,14 @@ void FLEXplorer::WriteDefaultOptions()
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-    rcFile = new BRcFile(rcFileName.c_str());
-    rcFile->Initialize(); // truncate file
-    rcFile->SetValue(FLEXPLORERFILEVIEWER,
-                     FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
-    rcFile->SetValue(FLEXPLORERBOOTSECTORFILE,
-                     FlexFileContainer::bootSectorFile.c_str());
-    rcFile->SetValue(FLEXPLORERTEXTFLAG,
-                     FlexCopyManager::autoTextConversion ? 1 : 0);
-    delete rcFile;
+    BRcFile rcFile(rcFileName.c_str());
+    rcFile.Initialize(); // truncate file
+    rcFile.SetValue(FLEXPLORERFILEVIEWER,
+                    FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
+    rcFile.SetValue(FLEXPLORERBOOTSECTORFILE,
+                    FlexFileContainer::bootSectorFile.c_str());
+    rcFile.SetValue(FLEXPLORERTEXTFLAG,
+                    FlexCopyManager::autoTextConversion ? 1 : 0);
 #endif
 }
 
@@ -129,12 +123,10 @@ void FLEXplorer::ReadDefaultOptions()
     int autoTextFlag;
     std::string str;
 #ifdef WIN32
-    BRegistry *reg;
-
-    reg = new BRegistry(BRegistry::localMachine, FLEXPLOREREG);
-    reg->GetValue(FLEXPLORERFILEVIEWER, str);
-    reg->GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag);
+    BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
+    reg.GetValue(FLEXPLORERFILEVIEWER, str);
+    reg.GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    reg.GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag);
 
     if (str.length() == 0)
     {
@@ -143,10 +135,8 @@ void FLEXplorer::ReadDefaultOptions()
 
     FlexDiskListCtrl::fileViewer = str.c_str();
     FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
-    delete reg;
 #endif
 #ifdef UNIX
-    BRcFile *rcFile;
     std::string rcFileName;
     BEnvironment env;
 
@@ -156,25 +146,23 @@ void FLEXplorer::ReadDefaultOptions()
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
-    rcFile = new BRcFile(rcFileName.c_str());
+    BRcFile rcFile(rcFileName.c_str());
 
-    if (!rcFile->GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
+    if (!rcFile.GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
     {
         wxString fileViewer(str.c_str(), *wxConvCurrent);
         FlexDiskListCtrl::fileViewer = fileViewer;
     }
 
-    if (!rcFile->GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
+    if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
     {
         FlexFileContainer::bootSectorFile = str;
     }
 
-    if (!rcFile->GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))
+    if (!rcFile.GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))
     {
         FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
     }
-
-    delete rcFile;
 #endif
 }
 
