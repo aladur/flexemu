@@ -31,14 +31,14 @@
 
 
 FlexFileBuffer::FlexFileBuffer(int n /* = 0 */) :
-    pBuffer(nullptr), pDate(nullptr), size(0), attributes(0), sectorMap(0)
+    size(0), attributes(0), sectorMap(0)
 {
     Realloc(n);
     memset(filename, 0, sizeof(filename));
 }
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
-    pBuffer(nullptr), pDate(nullptr), size(0), attributes(0), sectorMap(0)
+    size(0), attributes(0), sectorMap(0)
 
 {
     copyFrom(src);
@@ -49,18 +49,6 @@ FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
     if (&lhs != this)
     {
         copyFrom(lhs);
-
-        if (lhs.pBuffer == nullptr)
-        {
-            delete [] pBuffer;
-            pBuffer = nullptr;
-        }
-
-        if (lhs.pDate == nullptr)
-        {
-            delete pDate;
-            pDate = nullptr;
-        }
     }
 
     return *this;
@@ -68,29 +56,28 @@ FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
 
 void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
 {
-    if (src.pBuffer != nullptr)
+    if (src.buffer != nullptr)
     {
-        Byte *newBuffer = new Byte[src.size];
-        memcpy(newBuffer, src.pBuffer, src.size);
-        delete [] pBuffer;
-        pBuffer    = newBuffer;
-        size       = src.size;
+        Byte *new_buffer = new Byte[src.size];
+        memcpy(new_buffer, src.buffer.get(), src.size);
+        buffer.reset(new_buffer);
+        size = src.size;
+    }
+    else
+    {
+        buffer.reset(nullptr);
+        size = 0;
     }
 
-    if (src.pDate != nullptr)
-    {
-        pDate = new BDate(*src.pDate);
-    }
+    date = src.date;
 
-    strncpy(filename, src.filename, FLEX_FILENAME_LENGTH);
+    strncpy(filename, src.filename, sizeof(filename));
     attributes = src.attributes;
     sectorMap  = src.sectorMap;
 }
 
 FlexFileBuffer::~FlexFileBuffer()
 {
-    delete [] pBuffer;
-    delete pDate;
 }
 
 const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
@@ -101,7 +88,7 @@ const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
         return nullptr;
     }
 
-    return pBuffer + offset;
+    return buffer.get() + offset;
 }
 
 void FlexFileBuffer::SetFilename(const char *name)
@@ -112,34 +99,33 @@ void FlexFileBuffer::SetFilename(const char *name)
 // reallocate the buffer with diffrent size
 // buffer will be initialized to zero or
 // optionally with a copy of the contents of the old buffer
-void FlexFileBuffer::Realloc(unsigned int newSize,
+void FlexFileBuffer::Realloc(unsigned int new_size,
                              bool restoreContents /* = false*/)
 {
-    Byte *newBuffer;
+    Byte *new_buffer;
 
-    if (newSize == 0)
+    if (new_size == 0)
     {
         return;
     }
 
-    if (newSize <= size)
+    if (new_size <= size)
     {
         // dont allocate memory if buffer size decreases
-        size = newSize;
+        size = new_size;
         return;
     }
 
-    newBuffer = new Byte[newSize];
-    memset(newBuffer, 0, newSize);
+    new_buffer = new Byte[new_size];
+    memset(new_buffer, 0, new_size);
 
-    if (pBuffer && restoreContents)
+    if (buffer != nullptr && restoreContents)
     {
-        memcpy(newBuffer, pBuffer, size);
+        memcpy(new_buffer, buffer.get(), size);
     }
 
-    delete [] pBuffer;
-    pBuffer = newBuffer;
-    size = newSize;
+    buffer.reset(new_buffer);
+    size = new_size;
 }
 
 unsigned int FlexFileBuffer::SizeOfFlexFile()
@@ -148,7 +134,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
 
     for (unsigned int i = 0; i < size; i++)
     {
-        switch (pBuffer[i])
+        switch (buffer[i])
         {
             case 0x0d:
 #ifndef _WIN32
@@ -161,7 +147,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
             case 0x09:
                 if (i < size - 1)
                 {
-                    count += pBuffer[++i];
+                    count += buffer[++i];
                 }
                 else
                 {
@@ -185,34 +171,34 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
 
 int FlexFileBuffer::ConvertFromFlex()
 {
-    Byte *newBuffer;
-    unsigned int newIndex, newSize;
+    Byte *new_buffer;
+    unsigned int new_index, new_size;
     unsigned int count;
 
-    if (!pBuffer || size == 0)
+    if (!buffer || size == 0)
     {
         return 0;
     }
 
-    newSize = SizeOfFlexFile();
-    newBuffer = new Byte[ newSize ];
-    newIndex = 0;
+    new_size = SizeOfFlexFile();
+    new_buffer = new Byte[new_size];
+    new_index = 0;
 
     for (unsigned int i = 0; i < size; i++)
     {
-        Byte c = pBuffer[i];
+        Byte c = buffer[i];
 
         if (c > 0x0d)
         {
-            newBuffer[newIndex++] = c;
+            new_buffer[new_index++] = c;
         }
         else if (c == 0x0d)
         {
 #ifndef _WIN32
-            newBuffer[newIndex++] = 0x0a;
+            new_buffer[new_index++] = 0x0a;
 #else
-            newBuffer[newIndex++] = 0x0d;
-            newBuffer[newIndex++] = 0x0a;
+            new_buffer[new_index++] = 0x0d;
+            new_buffer[new_index++] = 0x0a;
 #endif
         }
         else if (c == 0x09)
@@ -220,7 +206,7 @@ int FlexFileBuffer::ConvertFromFlex()
             /* expand space compression */
             if (i < size - 1)
             {
-                count = pBuffer[++i];
+                count = buffer[++i];
             }
             else
             {
@@ -229,47 +215,47 @@ int FlexFileBuffer::ConvertFromFlex()
 
             while (count--)
             {
-                newBuffer[newIndex++] = ' ';
+                new_buffer[new_index++] = ' ';
             }
         }
         else if (c != 0x00 && c != 0x0a)
         {
-            newBuffer[newIndex++] = c;
+            new_buffer[new_index++] = c;
         }
     } // for
 
-    delete [] pBuffer;
-    pBuffer = newBuffer;
-    size = newSize;
+    buffer.reset(new_buffer);
+    size = new_size;
+
     return size;
 }
 
 int FlexFileBuffer::ConvertToFlex()
 {
     Byte            c;
-    Byte            *newBuffer;
-    int             newIndex, newSize;
+    Byte            *new_buffer;
+    int             new_index, new_size;
     unsigned int    i, spaces;
 
-    if (!pBuffer || size == 0)
+    if (!buffer || size == 0)
     {
         return 0;
     }
 
-    newSize = SizeOfFile();
-    newBuffer = new Byte[ newSize ];
-    newIndex = 0;
+    new_size = SizeOfFile();
+    new_buffer = new Byte[new_size];
+    new_index = 0;
     spaces = 0;
 
     if (0)
     {
         for (i = 0; i < size; i++)
         {
-            c = pBuffer[i];
+            c = buffer[i];
 
             if (c > ' ')
             {
-                newBuffer[newIndex++] = c;
+                new_buffer[new_index++] = c;
             }
             else
             {
@@ -277,12 +263,12 @@ int FlexFileBuffer::ConvertToFlex()
                 {
                     if (spaces > 1)
                     {
-                        newBuffer[newIndex++] = 0x09;
-                        newBuffer[newIndex++] = spaces;
+                        new_buffer[new_index++] = 0x09;
+                        new_buffer[new_index++] = spaces;
                     }
                     else
                     {
-                        newBuffer[newIndex++] = ' ';
+                        new_buffer[new_index++] = ' ';
                     }
 
                     spaces = 0;
@@ -293,8 +279,8 @@ int FlexFileBuffer::ConvertToFlex()
                     // do space compression
                     if (++spaces == 127)
                     {
-                        newBuffer[newIndex++] = 0x09;
-                        newBuffer[newIndex++] = spaces;
+                        new_buffer[new_index++] = 0x09;
+                        new_buffer[new_index++] = spaces;
                         spaces = 0;
                     }
                 }
@@ -303,8 +289,8 @@ int FlexFileBuffer::ConvertToFlex()
                     // tab will be converted to 8 spaces
                     if (spaces >= 127 - 8)
                     {
-                        newBuffer[newIndex++] = 0x09;
-                        newBuffer[newIndex++] = spaces;
+                        new_buffer[new_index++] = 0x09;
+                        new_buffer[new_index++] = spaces;
                         spaces -= 127 - 8;
                     }
                     else
@@ -314,11 +300,11 @@ int FlexFileBuffer::ConvertToFlex()
                 }
                 else if (c == 0x0a)
                 {
-                    newBuffer[newIndex++] = 0x0d;
+                    new_buffer[new_index++] = 0x0d;
                 }
                 else if (c != 0x0d)
                 {
-                    newBuffer[newIndex++] = c;
+                    new_buffer[new_index++] = c;
                 }
             }
         } // while
@@ -327,36 +313,36 @@ int FlexFileBuffer::ConvertToFlex()
     {
         for (unsigned int i = 0; i < size; i++)
         {
-            c = pBuffer[i];
+            c = buffer[i];
 
             if (c == ' ' && (++spaces == 127))
             {
                 /* do space compression */
-                newBuffer[newIndex++] = 0x09;
-                newBuffer[newIndex++] = spaces;
+                new_buffer[new_index++] = 0x09;
+                new_buffer[new_index++] = spaces;
                 spaces = 0;
             }
             else
             {
                 if (spaces)
                 {
-                    newBuffer[newIndex++] = 0x09;
-                    newBuffer[newIndex++] = spaces;
+                    new_buffer[new_index++] = 0x09;
+                    new_buffer[new_index++] = spaces;
                     spaces = 0;
                 }
 
                 if (c > ' ')
                 {
-                    newBuffer[newIndex++] = c;
+                    new_buffer[new_index++] = c;
                 }
                 else if (c == 0x0a)
                 {
-                    newBuffer[newIndex++] = 0x0d;
+                    new_buffer[new_index++] = 0x0d;
                 }
                 else if (c == 0x09)
                 {
-                    newBuffer[newIndex++] = 0x09;
-                    newBuffer[newIndex++] = 8;
+                    new_buffer[new_index++] = 0x09;
+                    new_buffer[new_index++] = 8;
                 }
 
                 /* other control chars than 0x09 and 0x0d will be ignored */
@@ -364,17 +350,17 @@ int FlexFileBuffer::ConvertToFlex()
         } /* for */
     }
 
-    delete [] pBuffer;
-    pBuffer = newBuffer;
-    size = newSize;
+    buffer.reset(new_buffer);
+    size = new_size;
+
     return size;
 }
 
 unsigned int FlexFileBuffer::SizeOfFile()
 {
-    unsigned int    count, spaces;
+    unsigned int count, spaces;
 
-    if (!pBuffer || size == 0)
+    if (!buffer || size == 0)
     {
         return 0;
     }
@@ -383,7 +369,7 @@ unsigned int FlexFileBuffer::SizeOfFile()
 
     for (unsigned int i = 0; i < size; i++)
     {
-        Byte c = pBuffer[i];
+        Byte c = buffer[i];
 
         if (c == ' ' && (++spaces == 127))
         {
@@ -421,7 +407,7 @@ bool FlexFileBuffer::IsTextFile() const
 {
     for (unsigned int i = 0; i < size; i++)
     {
-        Byte c = pBuffer[i];
+        Byte c = buffer[i];
 
         if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x09)
         {
@@ -438,7 +424,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
 {
     for (unsigned int i = 0; i < size; i++)
     {
-        Byte c = pBuffer[i];
+        Byte c = buffer[i];
 
         if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00)
         {
@@ -468,7 +454,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 
     if (fp != nullptr)
     {
-        size_t blocks = fwrite(pBuffer, GetSize(), 1, fp);
+        size_t blocks = fwrite(buffer.get(), GetSize(), 1, fp);
         return (blocks == 1);
     }
 
@@ -480,7 +466,7 @@ bool FlexFileBuffer::WriteToFile(int fd) const
 {
     ssize_t bytes;
 
-    bytes = write(fd, pBuffer, GetSize());
+    bytes = write(fd, buffer.get(), GetSize());
     return (bytes == -1 ? false : true);
 }
 #endif
@@ -497,7 +483,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
         if (fp != nullptr)
         {
-            size_t blocks = fread(pBuffer, GetSize(), 1, fp);
+            size_t blocks = fread(buffer.get(), GetSize(), 1, fp);
 
             if (blocks == 1)
             {
@@ -518,10 +504,8 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
                 }
 
                 SetAdjustedFilename(pf);
-                delete pDate;
                 lt = localtime(&(sbuf.st_mtime));
-                pDate = new BDate(lt->tm_mday,
-                                  lt->tm_mon + 1, lt->tm_year + 1900);
+                date.Assign(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
                 return true;
             }
         }
@@ -564,7 +548,7 @@ bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,
         return false;
     }
 
-    memcpy(pBuffer + offset, from, aSize);
+    memcpy(&buffer[offset], from, aSize);
     return true;
 }
 
@@ -581,12 +565,12 @@ bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
         else
         {
             memset(to, stuffByte, aSize);
-            memcpy(to, pBuffer + offset, size - offset);
+            memcpy(to, &buffer[offset], size - offset);
             return true;
         }
     }
 
-    memcpy(to, pBuffer + offset, aSize);
+    memcpy(to, &buffer[offset], aSize);
     return true;
 }
 
@@ -594,30 +578,23 @@ void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
 {
     for (unsigned int i = 0; i < GetSize(); i++)
     {
-        pBuffer[i] = pattern;
+        buffer[i] = pattern;
     }
 }
 
-void  FlexFileBuffer::SetDate(const BDate &date) const
+void  FlexFileBuffer::SetDate(const BDate &new_date) const
 {
-    delete pDate;
-    pDate = new BDate(date);
+    date = new_date;
 }
 
 void  FlexFileBuffer::SetDate(int d, int m, int y) const
 {
-    delete pDate;
-    pDate = new BDate(d, m, y);
+    date.Assign(d, m, y);
 }
 
 const BDate &FlexFileBuffer::GetDate() const
 {
-    if (!pDate)
-    {
-        pDate = new BDate(BDate::Now());
-    }
-
-    return *pDate;
+    return date;
 }
 
 bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
@@ -626,14 +603,14 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
     DWord address;
     DWord length;
 
-    p = pBuffer;
+    p = buffer.get();
 
-    while ((size - (p - pBuffer)) >= 3)
+    while ((size - (p - buffer.get())) >= 3)
     {
         switch (*(p++))
         {
             case 0x02: // memory contents
-                if (size - (p - pBuffer) < 3)
+                if (size - (p - buffer.get()) < 3)
                 {
                     return false;
                 }
@@ -642,7 +619,7 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
                 p += 2;
                 length = *(p++);
 
-                if (size - (p - pBuffer) < length)
+                if (size - (p - buffer.get()) < length)
                 {
                     return false;
                 }
@@ -656,7 +633,7 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
                 break;
 
             case 0x00: // continue with next sector
-                length = 252 - ((p - pBuffer) % 252);
+                length = 252 - ((p - buffer.get()) % 252);
                 p += length;
                 break;
 

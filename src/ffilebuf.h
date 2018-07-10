@@ -26,10 +26,8 @@
 #include "misc1.h"
 #include "bmembuf.h"
 #include "flexemu.h"
+#include <memory>
 
-
-class BDate;
-class BAddressRanges;
 
 class FlexFileBuffer
 {
@@ -107,11 +105,11 @@ private:
     unsigned int SizeOfFile();
     char filename[FLEX_FILENAME_LENGTH];
 
-    Byte    *pBuffer;
-    mutable BDate *pDate;
-    unsigned int    size;
+    std::unique_ptr<Byte[]> buffer;
+    mutable BDate date;
+    unsigned int size;
     int attributes;
-    Word    sectorMap;
+    Word sectorMap;
 };
 
 #endif
