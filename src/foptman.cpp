@@ -423,36 +423,32 @@ void FlexOptionManager::WriteOptions(
 )
 {
 #ifdef _WIN32
-    BRegistry *reg = nullptr;
     std::string   v;
 
-    reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);
+    BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
-    if (ifNotExists && reg->GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
+    if (ifNotExists && reg.GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
     {
-        delete reg;
         return;
     }
 
-    reg->SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
-    reg->SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    reg->SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
-    reg->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
-    reg->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    reg->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
-    reg->SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
-    reg->SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
-    reg->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
-    reg->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
-    reg->SetValue(FLEXDISK0, pOptions->drive[0].c_str());
-    reg->SetValue(FLEXDISK1, pOptions->drive[1].c_str());
-    reg->SetValue(FLEXDISK2, pOptions->drive[2].c_str());
-    reg->SetValue(FLEXDISK3, pOptions->drive[3].c_str());
-    reg->SetValue(FLEXVERSION, VERSION);
-    delete reg;
+    reg.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
+    reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
+    reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
+    reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
+    reg.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
+    reg.SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
+    reg.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
+    reg.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
+    reg.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
+    reg.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
+    reg.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
+    reg.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
+    reg.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
+    reg.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
+    reg.SetValue(FLEXVERSION, VERSION);
 #endif
 #ifdef UNIX
-    BRcFile *rcFile;
     std::string rcFileName;
     BEnvironment env;
 
@@ -468,24 +464,23 @@ void FlexOptionManager::WriteOptions(
         return;
     }
 
-    rcFile = new BRcFile(rcFileName.c_str());
-    rcFile->Initialize(); // truncate file
-    rcFile->SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
-    rcFile->SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
-    rcFile->SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    rcFile->SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
-    rcFile->SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
-    rcFile->SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
-    rcFile->SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
-    rcFile->SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer.c_str());
-    rcFile->SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
-    rcFile->SetValue(FLEXDISK0, pOptions->drive[0].c_str());
-    rcFile->SetValue(FLEXDISK1, pOptions->drive[1].c_str());
-    rcFile->SetValue(FLEXDISK2, pOptions->drive[2].c_str());
-    rcFile->SetValue(FLEXDISK3, pOptions->drive[3].c_str());
-    rcFile->SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    rcFile->SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
-    delete rcFile;
+    BRcFile rcFile(rcFileName.c_str());
+    rcFile.Initialize(); // truncate file
+    rcFile.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
+    rcFile.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
+    rcFile.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
+    rcFile.SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
+    rcFile.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
+    rcFile.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
+    rcFile.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
+    rcFile.SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer.c_str());
+    rcFile.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
+    rcFile.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
+    rcFile.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
+    rcFile.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
+    rcFile.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
+    rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
+    rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
 #endif
 } /* WriteOptions */
 
@@ -495,19 +490,18 @@ void FlexOptionManager::GetOptions(
 {
     int val;
 #ifdef _WIN32
-    BRegistry *reg;
+    BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
-    reg = new BRegistry(BRegistry::currentUser, FLEXEMUREG);
-    reg->GetValue(FLEXDISKDIR, pOptions->disk_dir);
-    reg->GetValue(FLEXDISK0, pOptions->drive[0]);
-    reg->GetValue(FLEXDISK1, pOptions->drive[1]);
-    reg->GetValue(FLEXDISK2, pOptions->drive[2]);
-    reg->GetValue(FLEXDISK3, pOptions->drive[3]);
-    reg->GetValue(FLEXMONITOR, pOptions->hex_file);
-    reg->GetValue(FLEXCOLOR, pGuiOptions->color);
+    reg.GetValue(FLEXDISKDIR, pOptions->disk_dir);
+    reg.GetValue(FLEXDISK0, pOptions->drive[0]);
+    reg.GetValue(FLEXDISK1, pOptions->drive[1]);
+    reg.GetValue(FLEXDISK2, pOptions->drive[2]);
+    reg.GetValue(FLEXDISK3, pOptions->drive[3]);
+    reg.GetValue(FLEXMONITOR, pOptions->hex_file);
+    reg.GetValue(FLEXCOLOR, pGuiOptions->color);
 
-    if (!reg->GetValue(FLEXDOCDIR, pGuiOptions->doc_dir))
-        if (!reg->GetValue(FLEXNCOLORS, &val))
+    if (!reg.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir))
+        if (!reg.GetValue(FLEXNCOLORS, &val))
         {
             if (val == 2 || val == 8 || val == 64)
             {
@@ -515,7 +509,7 @@ void FlexOptionManager::GetOptions(
             }
         }
 
-    if (!reg->GetValue(FLEXSCREENWIDTH, &val))
+    if (!reg.GetValue(FLEXSCREENWIDTH, &val))
     {
         if (val < 1)
         {
@@ -530,7 +524,7 @@ void FlexOptionManager::GetOptions(
         pGuiOptions->pixelSizeX = val;
     }
 
-    if (!reg->GetValue(FLEXSCREENHEIGHT, &val))
+    if (!reg.GetValue(FLEXSCREENHEIGHT, &val))
     {
         if (val < 1)
         {
@@ -545,27 +539,24 @@ void FlexOptionManager::GetOptions(
         pGuiOptions->pixelSizeY = val;
     }
 
-    if (!reg->GetValue(FLEXINVERSE, &val))
+    if (!reg.GetValue(FLEXINVERSE, &val))
     {
         pGuiOptions->isInverse = (val != 0);
     }
 
-    if (!reg->GetValue(FLEXHIMEM, &val))
+    if (!reg.GetValue(FLEXHIMEM, &val))
     {
         pOptions->isHiMem = (val != 0);
     }
 
-    if (!reg->GetValue(FLEXUNDOCUMENTED, &val))
+    if (!reg.GetValue(FLEXUNDOCUMENTED, &val))
     {
         pOptions->use_undocumented = (val != 0);
     }
-
-    delete reg;
 #endif
 #ifdef UNIX
     std::string rcFileName;
     BEnvironment env;
-    BRcFile *rcFile;
 
     if (!env.GetValue("HOME", rcFileName))
     {
@@ -573,18 +564,18 @@ void FlexOptionManager::GetOptions(
     }
 
     rcFileName += PATHSEPARATORSTRING FLEXEMURC;
-    rcFile = new BRcFile(rcFileName.c_str());
-    rcFile->GetValue(FLEXDISKDIR, pOptions->disk_dir);
-    rcFile->GetValue(FLEXDISK0, pOptions->drive[0]);
-    rcFile->GetValue(FLEXDISK1, pOptions->drive[1]);
-    rcFile->GetValue(FLEXDISK2, pOptions->drive[2]);
-    rcFile->GetValue(FLEXDISK3, pOptions->drive[3]);
-    rcFile->GetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
-    rcFile->GetValue(FLEXMONITOR, pOptions->hex_file);
-    rcFile->GetValue(FLEXCOLOR, pGuiOptions->color);
-    rcFile->GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
+    BRcFile rcFile(rcFileName.c_str());
+    rcFile.GetValue(FLEXDISKDIR, pOptions->disk_dir);
+    rcFile.GetValue(FLEXDISK0, pOptions->drive[0]);
+    rcFile.GetValue(FLEXDISK1, pOptions->drive[1]);
+    rcFile.GetValue(FLEXDISK2, pOptions->drive[2]);
+    rcFile.GetValue(FLEXDISK3, pOptions->drive[3]);
+    rcFile.GetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
+    rcFile.GetValue(FLEXMONITOR, pOptions->hex_file);
+    rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);
+    rcFile.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
 
-    if (!rcFile->GetValue(FLEXNCOLORS, &val))
+    if (!rcFile.GetValue(FLEXNCOLORS, &val))
     {
         if (val == 2 || val == 8 || val == 64)
         {
@@ -592,7 +583,7 @@ void FlexOptionManager::GetOptions(
         }
     }
 
-    if (!rcFile->GetValue(FLEXSCREENWIDTH, &val))
+    if (!rcFile.GetValue(FLEXSCREENWIDTH, &val))
     {
         if (val < 1)
         {
@@ -607,7 +598,7 @@ void FlexOptionManager::GetOptions(
         pGuiOptions->pixelSizeX = val;
     }
 
-    if (!rcFile->GetValue(FLEXSCREENHEIGHT, &val))
+    if (!rcFile.GetValue(FLEXSCREENHEIGHT, &val))
     {
         if (val < 1)
         {
@@ -622,22 +613,20 @@ void FlexOptionManager::GetOptions(
         pGuiOptions->pixelSizeY = val;
     }
 
-    if (!rcFile->GetValue(FLEXINVERSE, &val))
+    if (!rcFile.GetValue(FLEXINVERSE, &val))
     {
         pGuiOptions->isInverse = (val != 0);
     }
 
-    if (!rcFile->GetValue(FLEXHIMEM, &val))
+    if (!rcFile.GetValue(FLEXHIMEM, &val))
     {
         pOptions->isHiMem = (val != 0);
     }
 
-    if (!rcFile->GetValue(FLEXUNDOCUMENTED, &val))
+    if (!rcFile.GetValue(FLEXUNDOCUMENTED, &val))
     {
         pOptions->use_undocumented = (val != 0);
     }
-
-    delete rcFile;
 #endif
 } // GetOptions
 
