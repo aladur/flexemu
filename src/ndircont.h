@@ -31,6 +31,7 @@
 #include "filecnts.h"
 #include "flexemu.h"
 #include <string>
+#include <memory>
 
 #define ERR_SIZE    (200)
 
@@ -67,15 +68,17 @@ public:
 
 private:
     NafsDirectoryContainer();
-    std::string *dir;
+    std::string dir;
+    bool isOpen;
 
     s_floppy param;
 
-    s_link_table *pflex_links;       // pointer to link table
-    s_sys_info_sector *pflex_sys_info;    // pointer to flex info sectors
-    s_unused_sector *pflex_unused;      // pointer to flex unused sector (2)
-    s_dir_sector *pflex_directory;   // pointer to flex directory
-    s_new_file *pnew_file;         // pointer to new file table
+    // Some structures needed for a FLEX file system
+    std::unique_ptr<s_link_table[]> pflex_links;         // link table
+    std::unique_ptr<s_sys_info_sector[]> pflex_sys_info; // system info sectors
+    std::unique_ptr<s_unused_sector> pflex_unused;       // unused sector
+    std::unique_ptr<s_dir_sector[]> pflex_directory;     // directory entries
+    std::unique_ptr<s_new_file[]> pnew_file;             // new file table
     Word dir_sectors;        // nr. of dir sectors in flex_dir.
     Word new_files;          // nr. of new file entries
     t_st dir_extend;         // track/sector of dir. ext. sect.
