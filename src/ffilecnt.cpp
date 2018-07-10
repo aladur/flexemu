@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include <sys/stat.h>
+#include <string>
 
 #include "fcinfo.h"
 #include "flexerr.h"
@@ -1089,7 +1090,7 @@ void FlexFileContainer::Format_disk(
     const char *name,
     int  type /* = TYPE_DSK_CONTAINER */)
 {
-    char        *path;
+    std::string path;
     struct s_formats format;
     struct s_flex_header hdr;
     int     err = 0;
@@ -1102,19 +1103,17 @@ void FlexFileContainer::Format_disk(
     }
 
     Create_format_table(trk, sec, &format);
-    path = new char[strlen(disk_dir) + strlen(name) + strlen(
-                        PATHSEPARATORSTRING) + 1];
-    strcpy(path, disk_dir);
 
-    if (strlen(path) > 0 && path[strlen(path) - 1] != PATHSEPARATOR)
+    path = disk_dir;
+
+    if (path.size() > 0 && path[path.size() - 1] != PATHSEPARATOR)
     {
-        strcat(path, PATHSEPARATORSTRING);
+        path +=PATHSEPARATORSTRING;
     }
 
-    strcat(path, name);
-    BFilePtr fp(path, "wb");
-    delete [] path;
-    path = nullptr;
+    path += name;
+
+    BFilePtr fp(path.c_str(), "wb");
 
     if (fp != nullptr)
     {
