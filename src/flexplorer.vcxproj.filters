@@ -57,9 +57,6 @@
     <ClCompile Include="contpdlg.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="da.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="da6809.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -241,9 +238,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="cvtwchar.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="da.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="da6809.h">

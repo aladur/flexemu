@@ -521,7 +521,7 @@ da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
-xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h da.h \
+xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
@@ -560,7 +560,6 @@ command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
 memory.h mc6809.h misc1.h \
 typedefs.h \
-da.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bdelete.h bsingle.h \
 mc6809st.h \
