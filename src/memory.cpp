@@ -33,25 +33,19 @@ Byte Memory::initial_content[8] =
 Memory::Memory(bool himem) :
     isHiMem(himem),
     memory_size(0x10000),
-    memory(nullptr),
-    video_ram(nullptr),
     video_ram_active_bits(0)
 {
-    memory = (Byte *) new Byte[memory_size];
+    memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
     video_ram_size = VIDEORAM_SIZE *
                      (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2));
-    video_ram = (Byte *)new Byte[video_ram_size];
+    video_ram = std::unique_ptr<Byte[]>(new Byte[video_ram_size]);
 
     init_memory(isHiMem);
 }
 
 Memory::~Memory()
 {
-    uninit_memory();
-    delete [] memory;
-    delete [] video_ram;
-    memory    = nullptr;
-    video_ram = nullptr;
+    ioDevices.clear();
 }
 
 // memory must be initialized AFTER all memory mapped I/O is created
@@ -143,11 +137,6 @@ void Memory::init_memory(bool himem)
     }
     video_ram_active_bits = 0;
 } // init_memory
-
-void Memory::uninit_memory()
-{
-    ioDevices.clear();
-}
 
 // init_blocks_to_update
 //

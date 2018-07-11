@@ -30,6 +30,7 @@
 #include <tsl/robin_map.h>
 #include <vector>
 #include <functional>
+#include <memory>
 #include "iodevice.h"
 #include "ioaccess.h"
 #include "memtgt.h"
@@ -51,8 +52,8 @@ private:
     bool isHiMem;
     int memory_size;
     int video_ram_size;
-    Byte *memory;
-    Byte *video_ram;
+    std::unique_ptr<Byte[]> memory;
+    std::unique_ptr<Byte[]> video_ram;
     Word target_address;
 
     // I/O device access
@@ -73,7 +74,6 @@ private:
 
 private:
     void init_memory(bool himem);
-    void uninit_memory();
     static Byte initial_content[8];
 
     // Initialisation functions
