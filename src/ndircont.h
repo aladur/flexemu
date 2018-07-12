@@ -63,12 +63,18 @@ class NafsDirectoryContainer : public FileContainerIfSector
 {
 
 public:
+    NafsDirectoryContainer() = delete;
+    NafsDirectoryContainer(const NafsDirectoryContainer &) = delete;
+    NafsDirectoryContainer(NafsDirectoryContainer &&) = delete;
     NafsDirectoryContainer(const char *path);
     virtual ~NafsDirectoryContainer();
 
+    NafsDirectoryContainer &operator=(const NafsDirectoryContainer &) = delete;
+    NafsDirectoryContainer &operator=(NafsDirectoryContainer &&) = delete;
+
 private:
-    NafsDirectoryContainer();
-    std::string dir;
+    std::string directory;
+    int attributes;
     bool isOpen;
 
     s_floppy param;
@@ -82,7 +88,6 @@ private:
     Word dir_sectors;        // nr. of dir sectors in flex_dir.
     Word new_files;          // nr. of new file entries
     t_st dir_extend;         // track/sector of dir. ext. sect.
-    int attributes;         // container attributes
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,
