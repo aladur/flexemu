@@ -905,7 +905,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     initialize_flex_directory();
     initialize_flex_link_table();
 #ifdef _WIN32
-    strcpy(path, dir.c_str());
+    strcpy(path, directory.c_str());
     strcat(path, PATHSEPARATORSTRING "*.*");
 
 #ifdef UNICODE
