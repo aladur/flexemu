@@ -60,13 +60,10 @@
 /****************************************/
 
 DirectoryContainer::DirectoryContainer(const char *aPath) :
-    path(nullptr),
     attributes(0),
-    isOpened(0)
+    isOpen(false)
 {
     struct stat sbuf;
-
-    path = nullptr;
 
     if (!stat(aPath, &sbuf) && !S_ISDIR(sbuf.st_mode))
     {
@@ -79,8 +76,8 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
     }
 
     Initialize_header(attributes & FLX_READONLY);
-    path = new std::string(aPath);
-    isOpened = 1;
+    directory = aPath;
+    isOpen = true;
 }
 
 /****************************************/
@@ -108,7 +105,7 @@ DirectoryContainer::~DirectoryContainer()
 
 bool DirectoryContainer::IsWriteProtected() const
 {
-    if (isOpened)
+    if (isOpen)
     {
         return (attributes & FLX_READONLY) ? true : false;
     }
@@ -154,12 +151,12 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
 
 std::string DirectoryContainer::GetPath() const
 {
-    if (path != nullptr)
+    if (isOpen)
     {
-        return *path;
+        return directory;
     }
 
-    return "";
+    return std::string();
 }
 
 // return != 0 on success
@@ -169,9 +166,8 @@ std::string DirectoryContainer::GetPath() const
 // with closeFile()
 int DirectoryContainer::Close()
 {
-    isOpened = 0;
-    delete path;
-    path = nullptr;
+    isOpen = false;
+
     return 1;
 }
 
@@ -307,9 +303,9 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     CHECK_NO_DCONTAINER_OPEN;
 
-    if (path->length() > 3)
+    if (directory.length() > 3)
     {
-        rootPath = path->substr(0, 3);
+        rootPath = directory.substr(0, 3);
     }
 
 #ifdef WIN32
@@ -325,7 +321,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 #endif
     if (!success)
     {
-        throw FlexException(FERR_READING_DISKSPACE, *path);
+        throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
     // free size in KByte
@@ -342,16 +338,16 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     struct statvfs fsbuf;
 #endif
 
-    if (statvfs(path->c_str(), &fsbuf))
+    if (statvfs(directory.c_str(), &fsbuf))
     {
-        throw FlexException(FERR_READING_DISKSPACE, path->c_str());
+        throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
     info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree / 1024);
     info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks / 1024);
 #endif
 
-    if (stat(path->c_str(), &sbuf) >= 0)
+    if (stat(directory.c_str(), &sbuf) >= 0)
     {
         struct tm *timeStruct = localtime(&sbuf.st_mtime);
         info.SetDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
@@ -364,16 +360,16 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetTrackSector(0, 0);
 
-    if ((p = strrchr(path->c_str(), PATHSEPARATOR)) != nullptr)
+    if ((p = strrchr(directory.c_str(), PATHSEPARATOR)) != nullptr)
     {
         info.SetName(p + 1);
     }
     else
     {
-        info.SetName(path->c_str());
+        info.SetName(directory.c_str());
     }
 
-    info.SetPath(path->c_str());
+    info.SetPath(directory.c_str());
     //info.SetType(param.type);
     info.SetType(TYPE_DIRECTORY);
     info.SetAttributes(attributes);
@@ -384,7 +380,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 // If so return true
 bool DirectoryContainer::IsContainerOpened() const
 {
-    return isOpened;
+    return isOpen;
 }
 
 
@@ -445,7 +441,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     std::transform(filePath.begin(), filePath.end(), filePath.begin(),
          ::tolower);
 
-    filePath = *path + PATHSEPARATORSTRING + filePath;
+    filePath = directory + PATHSEPARATORSTRING + filePath;
 
     if (!buffer.ReadFromFile(filePath.c_str()))
     {
@@ -458,7 +454,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
     if (attributes & FLX_READONLY)
     {
         // CDFS-Support: look for file name in file 'random'
-        if (IsRandomFile(path->c_str(), fileName))
+        if (IsRandomFile(directory.c_str(), fileName))
         {
             sectorMap = 2;
         }
@@ -531,7 +527,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     std::transform(lowerFileName.begin(), lowerFileName.end(),
          lowerFileName.begin(), ::tolower);
 #endif
-    filePath = *path + PATHSEPARATORSTRING + lowerFileName;
+    filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     // prevent to overwrite an existing file
     if (!stat(filePath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
@@ -586,7 +582,7 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
 
     std::transform(lowerFileName.begin(), lowerFileName.end(),
          lowerFileName.begin(), ::tolower);
-    filePath = *path + PATHSEPARATORSTRING + lowerFileName;
+    filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)
     {
@@ -623,7 +619,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
         std::string filePath;
 #ifdef WIN32
         DWORD attrs;
-        filePath = *path + PATHSEPARATORSTRING + fileName;
+        filePath = directory + PATHSEPARATORSTRING + fileName;
 #ifdef UNICODE
         attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
 #else
@@ -652,7 +648,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
 
         std::transform(lowerFileName.begin(), lowerFileName.end(),
             lowerFileName.begin(), ::tolower);
-        filePath = *path + PATHSEPARATORSTRING + lowerFileName;
+        filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
         if (!stat(filePath.c_str(), &sbuf))
         {
@@ -681,7 +677,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 
 #ifdef WIN32
     DWORD attrs;
-    filePath = *path + PATHSEPARATORSTRING + fileName;
+    filePath = directory + PATHSEPARATORSTRING + fileName;
 #ifdef UNICODE
     attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
     SetFileAttributes(ConvertToUtf16String(filePath).c_str(),
@@ -697,7 +693,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 
     std::transform(lowerFileName.begin(), lowerFileName.end(),
         lowerFileName.begin(), ::tolower);
-    filePath = *path + PATHSEPARATORSTRING + lowerFileName;
+    filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     if (!stat(filePath.c_str(), &sbuf))
     {

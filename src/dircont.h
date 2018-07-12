@@ -48,9 +48,9 @@ class DirectoryContainer : public FileContainerIf
     friend class DirectoryContainerIteratorImp;  // corresponding iterator class
 
 private:
-    std::string *path;
+    std::string directory;
     int attributes;
-    bool isOpened;
+    bool isOpen;
 
 public:
     DirectoryContainer(const char *path);
