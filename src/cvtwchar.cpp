@@ -25,20 +25,18 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "misc1.h"
 #include "cvtwchar.h"
 #include "flexerr.h"
+#include <memory>
+
 
 std::wstring ConvertToUtf16String(const std::string &value)
 {
-    std::wstring result;
-
     int size = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, nullptr, 0);
     if (size > 0)
     {
-        LPWSTR wideString = new wchar_t[size];
+        auto wideString = std::unique_ptr<wchar_t[]>(new wchar_t[size]);
 
-        MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideString, size);
-        result = wideString;
-
-        delete[] wideString;
+        MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideString.get(), size);
+        return std::wstring(wideString.get());
     }
 
     if (size == 0)
@@ -47,7 +45,7 @@ std::wstring ConvertToUtf16String(const std::string &value)
         throw FlexException(lastError, "Conversion to UTF16 string failed.");
     }
 
-    return result;
+    return std::wstring();
 }
 
 std::string ConvertToUtf8String(const std::wstring &value)
@@ -58,16 +56,14 @@ std::string ConvertToUtf8String(const std::wstring &value)
         nullptr, nullptr);
     if (size > 0)
     {
-        LPSTR multiByteString = new char[size];
+        auto multiByteString = std::unique_ptr<char[]>(new char[size]);
 
         size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1,
-            multiByteString, size, nullptr, nullptr);
+                               multiByteString.get(), size, nullptr, nullptr);
         if (size > 0)
         {
-            result = multiByteString;
+            return std::string(multiByteString.get());
         }
- 
-       delete [] multiByteString;
     }
 
     if (size == 0)
@@ -76,6 +72,6 @@ std::string ConvertToUtf8String(const std::wstring &value)
         throw FlexException(lastError, "Conversion to UTF8 string failed.");
     }
 
-    return result;
+    return std::string();
 }
 #endif
