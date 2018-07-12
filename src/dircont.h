@@ -53,8 +53,14 @@ private:
     bool isOpen;
 
 public:
+    DirectoryContainer() = delete;
+    DirectoryContainer(const DirectoryContainer &) = delete;
+    DirectoryContainer(DirectoryContainer &&) = delete;
     DirectoryContainer(const char *path);
     virtual ~DirectoryContainer();      // public destructor
+
+    DirectoryContainer &operator= (const DirectoryContainer &) = delete;
+    DirectoryContainer &operator= (DirectoryContainer &&) = delete;
 
     // basic interface
 public:
@@ -93,7 +99,6 @@ public:
 
     // private interface
 private:
-    DirectoryContainer();   // should not be used
     bool IsRandomFile(const char *ppath, const char *pfilename) const;
     bool IsFlexFilename(const char *pfilename,
                         char *pname = nullptr,
