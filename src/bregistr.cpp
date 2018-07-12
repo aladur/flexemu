@@ -27,6 +27,8 @@
 #ifdef UNICODE
 #include "cvtwchar.h"
 #endif
+#include <memory>
+
 
 BRegistry BRegistry::classesRoot    = HKEY_CLASSES_ROOT;
 BRegistry BRegistry::currentUser    = HKEY_CURRENT_USER;
@@ -122,41 +124,32 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
     DWORD type;
 
 #ifdef UNICODE
-    wchar_t *str;
-
-    if ((lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type, nullptr,
-                                     &aSize)) == ERROR_SUCCESS)
+    if ((lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(),
+                                     0, &type, nullptr, &aSize))
+                     == ERROR_SUCCESS)
     {
-        if ((str = new wchar_t [aSize / sizeof(wchar_t)]) != nullptr)
+        auto buffer = std::unique_ptr<wchar_t>(new wchar_t[aSize / sizeof(wchar_t)]);
+
+        lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type,
+                                    (BYTE *)buffer.get(), &aSize);
+
+        if (lastError == ERROR_SUCCESS)
         {
-            lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0, &type, (BYTE *)str,
-                                        &aSize);
-
-            if (lastError == ERROR_SUCCESS)
-            {
-                value = ConvertToUtf8String(std::wstring(str).c_str());
-            }
-
-            delete[] str;
+            value = ConvertToUtf8String(buffer.get());
         }
     }
 #else
-    char *str;
-
     if ((lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, nullptr,
         &aSize)) == ERROR_SUCCESS)
     {
-        if ((str = new char[aSize]) != nullptr)
+        auto buffer = std::unique_ptr<char[]>(new char[aSize]);
+
+        lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type,
+            (BYTE *)buffer.get(), &aSize);
+
+        if (lastError == ERROR_SUCCESS)
         {
-            lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, (BYTE *)str,
-                &aSize);
-
-            if (lastError == ERROR_SUCCESS)
-            {
-                value = str;
-            }
-
-            delete[] str;
+            value = buffer.get();
         }
     }
 #endif
