@@ -31,6 +31,8 @@
 #include "flexdisk.h"
 #include "fddnd.h"
 #include "flexerr.h"
+#include <vector>
+#include <memory>
 
 #define LIST_CTRL   1000
 #define OBSERVE_STATUS_BAR      (545)
@@ -78,7 +80,7 @@ public:
     };
     inline FileContainerIf *GetContainer() const
     {
-        return m_container;
+        return m_container.get();
     };
     static wxString GetFileDescription(const FlexDirEntry *pDe);
 
@@ -109,7 +111,7 @@ public:
 
 private:
     void Notify();
-    int GetSelections(long **pItems) const;
+    int GetSelections(std::vector<long> &items) const;
     void DeleteSelectedItems(bool askUser = TRUE);
     void RenameSelectedItems();
     void ViewSelectedItems();
@@ -139,8 +141,8 @@ private:
     void OnInsertItem(wxListEvent &event);
     void OnDeleteItem(wxListEvent &event);
 
-    FileContainerIf *m_container;
-    wxMenu      *m_popupMenu;
+    std::unique_ptr<FileContainerIf> m_container;
+    std::unique_ptr<wxMenu> m_popupMenu;
     int     m_totalSize;
     mutable BObserver *m_statusbarObserver;
 

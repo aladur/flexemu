@@ -50,6 +50,7 @@
 #include "ifilecnt.h"
 #include "bprocess.h"
 #include "cvtwchar.h"
+#include <memory>
 
 #if defined(__WXGTK__) || defined(__WXX11__)
     #include "bitmaps/dnd_copy.xpm"
@@ -170,7 +171,7 @@ FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
     InsertColumn(LC_FILEDATE, _("Date"),       wxLIST_FORMAT_RIGHT, 90);
     InsertColumn(LC_FILEATTR, _("Attributes"), wxLIST_FORMAT_RIGHT, 60);
 
-    m_popupMenu = FlexMenuFactory::CreateMenu(fEditMenuId);
+    m_popupMenu.reset(FlexMenuFactory::CreateMenu(fEditMenuId));
 
     UpdateItems();
 
@@ -234,13 +235,10 @@ FlexDiskListCtrl::~FlexDiskListCtrl()
 {
     BeforeDeleteAllItems();
     DeleteAllItems();
-    delete m_popupMenu;
 
     if (m_container != nullptr)
     {
         m_container->Close();
-        delete m_container;
-        m_container = nullptr;
     }
 }
 
@@ -260,32 +258,29 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &de)
 
 const wxMenu *FlexDiskListCtrl::GetMenu()
 {
-    return m_popupMenu;
+    return m_popupMenu.get();
 }
 
 /* get the index of each selected item  */
 /* the pointer returned MUST BE DELETED */
 /* with delete[]                        */
-int FlexDiskListCtrl::GetSelections(long **pItems) const
+int FlexDiskListCtrl::GetSelections(std::vector<long> &items) const
 {
-    long *items;
-    int selectionCount;
-
-    *pItems = nullptr;
-    selectionCount = GetSelectedItemCount();
+    int selectionCount = GetSelectedItemCount();
+    items.clear();
 
     if (selectionCount > 0)
     {
         int i;
         long item = -1;
 
-        *pItems = items = new long[selectionCount];
+        items.reserve(selectionCount);
 
         for (i = 0; i < selectionCount; i++)
         {
             item = GetNextItem(item, wxLIST_NEXT_ALL,
                                wxLIST_STATE_SELECTED);
-            items[i] = item;
+            items.push_back(item);
         } // for
     } // if
 
@@ -295,23 +290,23 @@ int FlexDiskListCtrl::GetSelections(long **pItems) const
 void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
 {
     wxString fileName;
-    long *pItems;
+    std::vector<long> items;
     int count = 0;
 
-    count = GetSelections(&pItems);
+    count = GetSelections(items);
 
     if (m_container && count > 0)
     {
-        wxMessageDialog *dialog = new wxMessageDialog(
+        auto dialog = std::unique_ptr<wxMessageDialog>(new wxMessageDialog(
             this, _("Delete all selected files"),
             _("Delete Files"),
-            wxYES_NO | wxICON_QUESTION | wxCENTRE);
+            wxYES_NO | wxICON_QUESTION | wxCENTRE));
 
         if (!askUser || (dialog->ShowModal() == wxID_YES))
         {
             for (; count > 0; count--)
             {
-                long item = pItems[count - 1];
+                long item = items[count - 1];
 
                 if (item >= 0)
                 {
@@ -341,22 +336,19 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
                 }
             } // for
         } // if
-
-        delete dialog;
     } // if
 
-    delete [] pItems;
     m_totalSize = 0;
     Notify();
 }
 
 void FlexDiskListCtrl::RenameSelectedItems()
 {
-    long            *pItems;
+    std::vector<long> items;
     wxString        itemText;
-    wxTextEntryDialog   *dialog = nullptr;
+    std::unique_ptr<wxTextEntryDialog> dialog;
 
-    int count = GetSelections(&pItems);
+    int count = GetSelections(items);
 
     if (m_container && count > 0)
     {
@@ -365,15 +357,16 @@ void FlexDiskListCtrl::RenameSelectedItems()
         bool do_rename = false;
 
         // edit the last selected item
-        long item = pItems[count - 1];
+        long item = items[count - 1];
         itemText = GetItemText(item);
         dialogText = _("Please input the new file name");
 
         do
         {
 
-            dialog = new wxTextEntryDialog(this, dialogText, _("Rename file"),
-                                           itemText);
+            dialog = std::unique_ptr<wxTextEntryDialog>(
+                    new wxTextEntryDialog(this, dialogText, _("Rename file"),
+                                          itemText));
             do_rename = dialog->ShowModal() == wxID_OK;
             fName  = dialog->GetValue();
             dialogText =  _("Wrong file name specified.");
@@ -403,26 +396,22 @@ void FlexDiskListCtrl::RenameSelectedItems()
                              wxOK | wxCENTRE | wxICON_EXCLAMATION);
             }
         }
-
-        delete dialog;
     } // if
-
-    delete [] pItems;
 }
 
 void FlexDiskListCtrl::ViewSelectedItems()
 {
     FlexFileBuffer  buffer;
-    long        *pItems;
+    std::vector<long> items;
     wxString    fileName;
     BProcess    process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
 
-    int count = GetSelections(&pItems);
+    int count = GetSelections(items);
 
     if (m_container && count > 0)
     {
         // edit the last selected item
-        long item = pItems[count - 1];
+        long item = items[count - 1];
         fileName = GetItemText(item);
 
         try
@@ -519,8 +508,6 @@ void FlexDiskListCtrl::ViewSelectedItems()
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
         }
     } // if
-
-    delete [] pItems;
 }
 
 #ifdef wxUSE_DRAG_AND_DROP
@@ -700,7 +687,7 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
         bool isToBeSet)
 {
     wxString fileName;
-    long *pItems;
+    std::vector<long> items;
     int count = 0;
     int setMask;
     int clearMask;
@@ -710,12 +697,12 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
         return;
     }
 
-    for (count = GetSelections(&pItems); count > 0; count--)
+    for (count = GetSelections(items); count > 0; count--)
     {
         FlexDirEntry de, *pDe;
         long item;
 
-        fileName = GetItemText(item = pItems[count - 1]);
+        fileName = GetItemText(item = items[count - 1]);
 
         try
         {
@@ -750,8 +737,6 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
             }
         }
     } // for
-
-    delete [] pItems;
 }
 
 void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
@@ -828,7 +813,7 @@ void FlexDiskListCtrl::OnRightMouseDown(wxMouseEvent &event)
 {
     if (m_popupMenu)
     {
-        PopupMenu(m_popupMenu, event.GetX(), event.GetY());
+        PopupMenu(m_popupMenu.get(), event.GetX(), event.GetY());
     }
 }
 
@@ -887,21 +872,19 @@ IMPLEMENT_SIMPLE_MENUCOMMAND(OnView, ViewSelectedItems)
 void FlexDiskListCtrl::GetFileList(FlexFileList &fileList)
 {
     int     count;
-    long        *pItems;
+    std::vector<long> items;
 
     fileList.DeleteContents(TRUE);
-    count = GetSelections(&pItems);
+    count = GetSelections(items);
 
     for (int i = 0; i < count; i++)
     {
-        wxString *pFileName = new wxString(GetItemText(pItems[i]));
+        wxString *pFileName = new wxString(GetItemText(items[i]));
 #ifdef UNIX
         pFileName->MakeLower();
 #endif
         fileList.Append(pFileName);
     }
-
-    delete [] pItems;
 }
 
 void FlexDiskListCtrl::SelectAllFiles()
