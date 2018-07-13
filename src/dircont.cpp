@@ -761,8 +761,8 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
 Iterator implemenation
 *****************************************************************/
 
-FileContainerIteratorImp *DirectoryContainer::IteratorFactory()
+FileContainerIteratorImpPtr DirectoryContainer::IteratorFactory()
 {
-    return new DirectoryContainerIteratorImp(this);
+    return FileContainerIteratorImpPtr(new DirectoryContainerIteratorImp(this));
 }
 

@@ -33,6 +33,7 @@
 #include "fcopyman.h"
 #include "ffilebuf.h"
 #include "ifilecnt.h"
+#include "ifilcnti.h"
 #include "iffilcnt.h"
 
 #ifdef UNIX
@@ -422,9 +423,9 @@ bool FlexFileContainer::CheckFilename(const char *fileName) const
 /* Nonpublic interface        */
 /******************************/
 
-FileContainerIteratorImp *FlexFileContainer::IteratorFactory()
+FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
 {
-    return new FlexFileContainerIteratorImp(this);
+    return FileContainerIteratorImpPtr(new FlexFileContainerIteratorImp(this));
 }
 
 // if successfull return true. If error return false

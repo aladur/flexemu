@@ -25,12 +25,13 @@
 #include "misc1.h"
 #include <string>
 #include "filecntb.h"
+#include "ifilcnti.h"
+
 
 class FlexCopyManager;
 class FlexDirEntry;
 class FlexContainerInfo;
 class FlexFileBuffer;
-class FileContainerIteratorImp;
 
 //typedef int FileHdl;
 
@@ -56,7 +57,7 @@ public:
     virtual ~FileContainerIf() { };
 
 private:
-    virtual FileContainerIteratorImp *IteratorFactory() = 0;
+    virtual FileContainerIteratorImpPtr IteratorFactory() = 0;
     friend class FileContainerIterator;
     friend class FlexCopyManager;
 };  /* class FileContainerIf */

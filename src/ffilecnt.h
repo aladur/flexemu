@@ -153,7 +153,7 @@ protected:
         const char *name,
         int type);
 private:
-    FileContainerIteratorImp *IteratorFactory();
+    FileContainerIteratorImpPtr IteratorFactory();
 
 };  // class FlexFileContainer
 

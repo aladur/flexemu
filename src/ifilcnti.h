@@ -23,6 +23,7 @@
 #define IFILCNTI_INCLUDED
 
 #include "fdirent.h"
+#include <memory>
 
 
 class FileContainerIterator;
@@ -45,6 +46,8 @@ private:
     virtual bool SetDateCurrent(const BDate &date) = 0;
     virtual bool SetAttributesCurrent(int attributes) = 0;
 };
+
+using FileContainerIteratorImpPtr = std::unique_ptr<FileContainerIteratorImp>;
 
 #endif // IFILCNTI_INCLUDED
 

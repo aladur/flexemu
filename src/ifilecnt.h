@@ -45,7 +45,7 @@ public:
     bool                   SetAttributesCurrent(int attributes);
 private:
     const char            *filePattern;
-    FileContainerIteratorImp *imp;
+    FileContainerIteratorImpPtr imp;
     FileContainerIterator(const FileContainerIterator &); // should not be used
     FileContainerIterator &operator=(const FileContainerIterator
                                      &); // should not be used

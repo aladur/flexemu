@@ -85,7 +85,7 @@ public:
     {
         return nullptr;
     };
-    FileContainerIteratorImp *IteratorFactory();
+    FileContainerIteratorImpPtr IteratorFactory();
     bool    FindFile(const char *fileName, FlexDirEntry &entry);
     bool    DeleteFile(const char *fileName);
     bool    RenameFile(const char *oldName, const char *newName);

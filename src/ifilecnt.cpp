@@ -50,14 +50,12 @@
 
 FileContainerIterator::FileContainerIterator(const char
         *aFilePattern/* = "*.*" */) :
-    filePattern(aFilePattern), imp(nullptr)
+    filePattern(aFilePattern)
 {
 }
 
 FileContainerIterator::~FileContainerIterator()
 {
-    delete imp;
-    imp = nullptr;
 }
 
 FlexDirEntry &FileContainerIterator::operator*()
@@ -118,8 +116,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 {
     if (aBase != nullptr)
     {
-        delete imp;
-        imp = aBase->IteratorFactory();
+        imp = std::move(aBase->IteratorFactory());
 
         if (!imp->NextDirEntry(filePattern))
         {
@@ -128,7 +125,10 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
     }
     else
     {
-        imp->AtEnd();
+        if (imp != nullptr)
+        {
+            imp->AtEnd();
+        }
     }
 
     return *this;
