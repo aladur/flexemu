@@ -31,6 +31,8 @@
 #ifdef _MSC_VER
     #include <commctrl.h>
 #endif
+#include <vector>
+#include <memory>
 
 class Mc6809;
 class Memory;
@@ -135,7 +137,7 @@ protected:
     HWND        hButtonIrq;
     HMENU       menubar;  // menu bar of Main Window
     // bitmap info for following bitmaps
-    BITMAPINFO  *bmi[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
+    std::vector<std::unique_ptr<Byte[]> > bmis;
     // default bitmap for graphic display
     HBITMAP     image[MAX_PIXELSIZEX][MAX_PIXELSIZEY];
     HPALETTE    palette;
@@ -144,7 +146,7 @@ protected:
     HWND        cpuform;  // CPU Window
     HFONT       hFontFixed; // Fixed font for CPU Window
     // memory block for calculating bitmaps for display
-    Byte        *image_data;
+    std::unique_ptr<Byte[]> image_data;
     int     minCpuWidth, minCpuHeight;
 
 public:

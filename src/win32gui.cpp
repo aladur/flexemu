@@ -1202,6 +1202,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     int     startLine;       // start scanline of block
     HBITMAP img;
     HPALETTE oldPalette;
+    size_t bmi_index;
 
     if (!memory.has_changed(block_number))
     {
@@ -1213,6 +1214,7 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     oldPalette = SelectPalette(hdc, palette, TRUE);
     RealizePalette(hdc);
     img = image[pixelSizeX - 1][pixelSizeY - 1];
+    bmi_index = (pixelSizeX - 1) * MAX_PIXELSIZEY + (pixelSizeY - 1);
 
     if (!(vico1.get_value() & 0x02))
     {
@@ -1220,12 +1222,14 @@ void Win32Gui::update_block(int block_number, HDC hdc)
         Byte const *src =
             memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
 
-        CopyToZPixmap(image_data, src, 8);
+        CopyToZPixmap(image_data.get(), src, 8);
 
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            image_data, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+            image_data.get(),
+            (const BITMAPINFO *)bmis[bmi_index].get(),
+            DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         startLine = ((WINDOWHEIGHT - vico2.get_value() +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
@@ -1259,11 +1263,13 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     else
     {
         // display an "empty" screen:
-        CopyToZPixmap(image_data, nullptr, 8);
+        CopyToZPixmap(image_data.get(), nullptr, 8);
         SetDIBits(
             hdc, img,
             0, BLOCKHEIGHT * pixelSizeY,
-            image_data, bmi[pixelSizeX - 1][pixelSizeY - 1], DIB_PAL_COLORS);
+            image_data.get(),
+            (const BITMAPINFO *)bmis[bmi_index].get(),
+            DIB_PAL_COLORS);
         hBitmapOrig = SelectBitmap(hMemoryDC, img);
         BitBlt(hdc, 0,
                (block_number * BLOCKHEIGHT) * pixelSizeY,
@@ -1786,7 +1792,6 @@ void Win32Gui::SetColors(struct sGuiOptions &options)
 void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
 {
     HDC             hdc;
-    int             bpp;
     struct sRGBDef  *pc;
 
     oldX          = 0;
@@ -1802,8 +1807,9 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
                         // screen depth on Win32 is 8
     const size_t size = WINDOWWIDTH * BLOCKHEIGHT *
                         MAX_PIXELSIZEX * MAX_PIXELSIZEY;
-    image_data = new Byte[size];
-    memset(image_data, 0, size);
+    image_data = std::unique_ptr<Byte[]>(new Byte[size]);
+    memset(image_data.get(), 0, size);
+    bmis.clear();
 
     pc = (struct sRGBDef *)&colors;
 
@@ -1846,7 +1852,6 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
             pbmi = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
                                            (1 << COLOR_PLANES) * sizeof(Word)];
 
-            bpp = COLOR_PLANES; // specify bits per pixel
             pbmi->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
             pbmi->bmiHeader.biPlanes         = 1;
             pbmi->bmiHeader.biWidth          = BLOCKWIDTH * (i + 1);
@@ -1856,19 +1861,19 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
             pbmi->bmiHeader.biSizeImage      = 0;
             pbmi->bmiHeader.biXPelsPerMeter  = 0;
             pbmi->bmiHeader.biYPelsPerMeter  = 0;
-            pbmi->bmiHeader.biClrUsed        = 1 << bpp;
+            pbmi->bmiHeader.biClrUsed        = 1 << COLOR_PLANES;
             pbmi->bmiHeader.biClrImportant   = 0;
 
             Word *wp = (Word *)((Byte *)pbmi + sizeof(BITMAPINFOHEADER));
 
-            for (idx = 0; idx < (1 << bpp); idx++)
+            for (idx = 0; idx < (1 << COLOR_PLANES); idx++)
             {
                 *(wp++) = idx;
             }
 
             image[i][j]  = CreateDIBitmap(hdc, &pbmi->bmiHeader, 0, nullptr,
                                            pbmi, DIB_PAL_COLORS);
-            bmi[i][j] = pbmi;
+            bmis.push_back(std::unique_ptr<Byte[]>((Byte *)pbmi));
         } // for
     } // for
 
@@ -1945,7 +1950,6 @@ Win32Gui::~Win32Gui()
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             DeleteObject(image[i][j]);
-            delete [] bmi[i][j];
         } // for
     } // for
 
@@ -1964,7 +1968,6 @@ Win32Gui::~Win32Gui()
         DestroyMenu(menubar);
     }
 
-    delete [] image_data;
     delete cpu_stat;
     cpu_stat = nullptr;
     ggui = nullptr;
