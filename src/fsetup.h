@@ -50,7 +50,6 @@ public:
 
 private:
     FlexOptionManager optionMan;
-    FlexemuOptionsDialog *dialog;
     struct sOptions options;
     struct sGuiOptions guiOptions;
     wxLocale m_locale;

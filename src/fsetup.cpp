@@ -37,6 +37,8 @@
 
 #include "fsetpdlg.h"
 #include "fsetup.h"
+#include <vector>
+#include <memory>
 
 
 IMPLEMENT_APP(FlexemuSetup)
@@ -44,23 +46,25 @@ IMPLEMENT_APP(FlexemuSetup)
 /*------------------------------------------------------
  flexemuSetup implementation (The Application class)
 --------------------------------------------------------*/
-typedef char *PCHAR;
 bool FlexemuSetup::OnInit()
 {
-    dialog = nullptr;
 #ifdef _UNICODE
-    char **mb_argv;
     int i;
 
-    mb_argv = new PCHAR[argc];
+    std::vector<wxCharBuffer> args;
+    auto mb_argv = std::unique_ptr<char *[]>(new char *[argc]);
+    args.reserve(argc);
 
     for (i = 0; i < argc; i++)
     {
-        mb_argv[i] =
-            const_cast<char *>((const char *)wxConvCurrent->cWX2MB(argv[i]));
+        args.push_back(wxConvCurrent->cWX2MB(argv[i]));
+    }
+    for (i = 0; i < argc; i++)
+    {
+        mb_argv[i] = (char *)args[i].data();
     }
 
-    optionMan.InitOptions(&guiOptions, &options, argc, mb_argv);
+    optionMan.InitOptions(&guiOptions, &options, argc, mb_argv.get());
 #else
     optionMan.InitOptions(&guiOptions, &options, argc, argv);
 #endif
@@ -75,7 +79,7 @@ bool FlexemuSetup::OnInit()
     SetAppName(wxT("FlexemuSetup"));
     SetExitOnFrameDelete(true);
 
-    dialog = new FlexemuOptionsDialog(&guiOptions, &options,
+    auto dialog = new FlexemuOptionsDialog(&guiOptions, &options,
                                       nullptr, -1, _("Flexemu Options Dialog"),
                                       wxDefaultPosition, wxDefaultSize,
                                       wxCAPTION | wxSYSTEM_MENU |
@@ -90,9 +94,6 @@ bool FlexemuSetup::OnInit()
 
     dialog->Destroy();
 
-#ifdef _UNICODE
-    delete [] mb_argv;
-#endif
     return true;
 }
 
