@@ -25,8 +25,8 @@
 #define COMMAND_INCLUDED
 
 #include "misc1.h"
-
 #include "iodevice.h"
+#include <string>
 
 #define MAX_COMMAND     (128)
 
@@ -45,10 +45,7 @@
 
 #define CR          (0x0d)
 
-#define ANSWER_ERR(type) {\
-        answer = new char[strlen(err[type]) + 1]; \
-        strcpy(answer, err[type]); \
-    }
+#define ANSWER_ERR(type) answer = err[type]
 
 class Mc6809;
 class Inout;
@@ -69,7 +66,7 @@ protected:
     char         command[MAX_COMMAND];
     Word         command_index;
     Word         answer_index;
-    char        *answer;
+    std::string  answer;
     const char  *err[MAX_ERR];
 
     // private interface:

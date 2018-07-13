@@ -32,12 +32,13 @@
 #include "command.h"
 #include "typedefs.h"
 #include "absgui.h"
-//#include "filecnts.h"
 #include "flexerr.h"
 #include "e2floppy.h"
 #include "inout.h"
 #include "schedule.h"
 #include "mc6809.h"
+#include <sstream>
+#include <iomanip>
 
 
 Command::Command(
@@ -46,7 +47,7 @@ Command::Command(
         Scheduler &x_scheduler,
         E2floppy &x_fdc) :
     cpu(x_cpu), inout(x_inout), scheduler(x_scheduler), fdc(x_fdc),
-    answer(nullptr)
+    command_index(0), answer_index(0)
 {
     memset(command, 0, sizeof(command));
 
@@ -63,37 +64,34 @@ Command::Command(
 
 Command::~Command()
 {
-    delete [] answer;
 }
 
 void Command::resetIo()
 {
     command_index = 0;
     answer_index  = 0;
-    answer        = nullptr;
+    answer.clear();
 }
 
 Byte Command::readIo(Word /*offset*/)
 {
 
-    if (answer != nullptr)
+    if (!answer.empty())
     {
-        const char *pch = answer + answer_index++;
+        const Byte character = answer[answer_index++];
 
-        if (*pch == '\0')
+        if (character == '\0')
         {
-            delete [] answer;
-            answer = nullptr;
+            answer.clear();
             answer_index = 0;
-            return 0x00;
         }
-        else if (*pch == '\n')
+        else if (character == '\n')
         {
             return CR;
         }
         else
         {
-            return *pch;
+            return character;
         }
     }
 
@@ -171,8 +169,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 {
     try
     {
-        delete [] answer;
-        answer = nullptr;
+        answer.clear();
 
         if (command_index < MAX_COMMAND - 1)
         {
@@ -243,34 +240,32 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "freq") == 0)
                     {
-                        answer = new char[16];
-                        sprintf(answer, "%.2f MHz", scheduler.get_frequency());
-                        answer_index = 0;
+                        std::stringstream answer_stream;
+
+                        answer_stream << std::fixed << std::setprecision(2)
+                                      << scheduler.get_frequency() << " MHz";
+                        answer = answer_stream.str();
                         return;
                     }
                     else if (stricmp(arg1, "cycles") == 0)
                     {
-                        answer = new char[24];
-                        sprintf(answer, PRlu64 " cycles",
-                                scheduler.get_total_cycles());
-                        answer_index = 0;
+                        std::stringstream answer_stream;
+
+                        answer_stream << scheduler.get_total_cycles()
+                                      << " cycles";
+                        answer = answer_stream.str();
                         return;
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        std::string str;
-
-                        count =  0;
-                        str = "";
+                        std::stringstream answer_stream;
 
                         for (number = 0; number <= 3; number++)
                         {
-                            str += fdc.drive_info(number);
+                            answer_stream << fdc.drive_info(number);
                         }
 
-                        answer = new char[str.length() + 1];
-                        strcpy(answer, str.c_str());
-                        answer_index = 0;
+                        answer = answer_stream.str();
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0)
@@ -317,12 +312,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        std::string str;
-
-                        str = fdc.drive_info(number);
-                        answer = new char[str.length() + 1];
-                        strcpy(answer, str.c_str());
-                        answer_index = 0;
+                        answer = fdc.drive_info(number);
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0)
@@ -403,9 +393,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
     }
     catch (std::bad_alloc UNUSED(&e))
     {
-        answer = new char [strlen(gMemoryAllocationErrorString) + 1];
-        strcpy(answer, gMemoryAllocationErrorString);
-        answer_index = 0;
+        answer = gMemoryAllocationErrorString;
     }
 }
 
