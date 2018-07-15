@@ -73,7 +73,7 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "FLEX emulator\0"
+            VALUE "FileDescription", "an MC6809 emulator running FLEX\0"
             VALUE "FileVersion", "2, 20, 0, 0\0"
             VALUE "InternalName", "Flexemu.exe\0"
             VALUE "LegalCopyright", "Copyright © 1997-2018 W. Schwotzer\0"
