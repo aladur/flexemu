@@ -20,6 +20,6 @@ Lennart Benschop   https://github.com/6809/sbc09
 A Mc6809 disassembler, originally posted on comp.sys.m6809:
 Didier Derny       <didier@aida.remcomp.fr>
 
-Fast C++ unordered map implemenation (MIT):
+Fast C++ unordered hash map implemenation (MIT):
 Tessil             https://github.com/Tessil/robin-map
 

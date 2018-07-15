@@ -252,21 +252,39 @@ Bug Fixes:
 	o FLEXplorer: display modification time for dir. containers
 	o flexemu X11: Set default web browser to "firefox"
 
-V2.20
+V2.20 (20180715)
 New Features:
+	o Support monitor files in FLEX binary format
+	o flexemu X11: Keep menus open when releasing mouse button
 
 Bug Fixes:
-	o adapted sources and configure scripts to compile with gcc V4.1.3
-	o adapted sources to compile with gcc V4.2.3 without warnings
-	o adapted sources to compile with gcc V4.3.3 without warnings
-	o Support wxWindos V2.6.x or V2.8.x
+	o Support wxWindos V2.8.x
 	o flexemu X11: Set default web browser to "firefox"
 	o flexemu X11: Eventhandling for CPU View Run/Stop/Step/Next
 	o flexemu: Avoid wrong error message with command
 	           emu format <diskname> <trk> <sec>
 	o Windows: Write config settings to HKEY_CURRENT_USER
 		   (Instead of HKEY_LOCAL_MACHINE) for Vista compatibility
-	o Multi Core CPUs: Configure Core Affinity to Display and MC6809
-	  thread
-	o flexemu X11: Disable main/cpu window if a modal popup dialog is opened.
+	o flexemu X11: Disable main/cpu window if a modal popup dialog is
+	  opened
 	o fsetup: Use a Treebook widget with multiple pages 
+	o Support wxWindos V3.0.x
+	o flexemu X11: Install app-defaults file into app-defaults directory
+	o Linux configure: Support distcheck
+	o configure: Added compiler flgs -Wall -Wextra -Wpedantic
+	o adapted sources to compile with gcc V5.4.0 without warnings
+	o adapted sources to compile with VisualStudio 2015
+	o updated NSIS installer script
+	o Documentation: Update internet links
+	o Link new flexemu homepage
+	o Support c++11 standard
+	o Use fast robin_map for I/O-device access
+	o Fix FASTFLEX compilation errors
+	o Wd1793: Fix set drive ready after reading 16x from STR
+	o Update app-defaults to fix geometry issues in Log and Breakpoint
+	  dialog
+	o FSetup and FLEXplorer resources: Correctly define English US version
+	  resource
+	o Correctly display version info on Windows 10
+	o Lots of refactoring and cleanup for better c++11 support
+
