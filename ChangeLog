@@ -287,4 +287,7 @@ Bug Fixes:
 	  resource
 	o Correctly display version info on Windows 10
 	o Lots of refactoring and cleanup for better c++11 support
+V2.21 (not yet published)
+New Features:
+Bug Fixes:
 

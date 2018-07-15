@@ -9,8 +9,8 @@ wxDEFAULT_MDIPARENTFRAME    ICON    "bitmaps/FSETUP.ICO"
 
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,20,0,0
- PRODUCTVERSION 2,20,0,0
+ FILEVERSION 2,21,0,0
+ PRODUCTVERSION 2,21,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -27,12 +27,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "FSetup\0"
-            VALUE "FileVersion", "2, 20, 0, 0\0"
+            VALUE "FileVersion", "2, 21, 0, 0\0"
             VALUE "InternalName", "FSetup.exe\0"
             VALUE "LegalCopyright", "Copyright © 2000-2018 W. Schwotzer\0"
             VALUE "OriginalFilename", "FSetup.exe\0"
             VALUE "ProductName", "FSetup\0"
-            VALUE "ProductVersion", "2, 20, 0, 0\0"
+            VALUE "ProductVersion", "2, 21, 0, 0\0"
         END
     END
     BLOCK "VarFileInfo"
