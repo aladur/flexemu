@@ -68,9 +68,9 @@ FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) :
 FlexRamFileContainer &FlexRamFileContainer::operator=
                                          (FlexRamFileContainer &&src)
 {
-    FlexRamFileContainer::operator=(std::move(src));
-
     file_buffer = std::move(src.file_buffer);
+
+    FlexFileContainer::operator=(std::move(src));
 
     return *this;
 }
