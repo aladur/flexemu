@@ -175,7 +175,7 @@ int ContainerPropertiesDialog::GetSectors()
 {
     long s;
 
-    if (m_tracks.ToLong(&s))
+    if (m_sectors.ToLong(&s))
     {
         return (int)s;
     }
