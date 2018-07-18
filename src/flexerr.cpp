@@ -41,18 +41,6 @@ const char *FlexException::what() const noexcept
     return errorString.c_str();
 }
 
-#ifdef UNICODE
-const std::wstring FlexException::wwhat() const throw()
-{
-    return ConvertToUtf16String(errorString);
-}
-#else
-const std::string FlexException::wwhat() const throw()
-{
-    return errorString;
-}
-#endif
-
 FlexException::FlexException(const FlexException &src) :
     errorCode(src.errorCode), errorString(src.errorString)
 {

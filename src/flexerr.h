@@ -92,11 +92,6 @@ public:
     virtual ~FlexException();
 
     virtual const char *what() const noexcept;
-#ifdef _UNICODE
-    const std::wstring wwhat() const throw();
-#else
-    const std::string wwhat() const noexcept;
-#endif
     int GetErrorCode() const
     {
         return errorCode;

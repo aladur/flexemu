@@ -277,7 +277,7 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
             }
             catch (FlexException &ex)
             {
-                int r = wxMessageBox(ex.wwhat(),
+                int r = wxMessageBox(ex.what(),
                                      _("FLEXplorer Error"), wxOK |
                                      wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
 
@@ -330,7 +330,7 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
         }
         catch (FlexException &ex)
         {
-            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.what(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
             return;
         }
@@ -467,7 +467,7 @@ void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
     }
     catch (FlexException &ex)
     {
-        wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+        wxMessageBox(ex.what(), _("FLEXplorer Error"),
                      wxOK | wxCENTRE | wxICON_EXCLAMATION);
         return;
     }

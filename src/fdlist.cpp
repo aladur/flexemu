@@ -224,7 +224,7 @@ int FlexDiskListCtrl::UpdateItems()
     }
     catch (FlexException &ex)
     {
-        wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+        wxMessageBox(ex.what(), _("FLEXplorer Error"),
                      wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
     }
 
@@ -319,7 +319,7 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = TRUE */)
                     }
                     catch (FlexException &ex)
                     {
-                        int r = wxMessageBox(ex.wwhat(),
+                        int r = wxMessageBox(ex.what(),
                                              _("FLEXplorer Error"),
                                              wxOK | wxCANCEL | wxCENTRE,
                                              this);
@@ -392,7 +392,7 @@ void FlexDiskListCtrl::RenameSelectedItems()
             }
             catch (FlexException &ex)
             {
-                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.what(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE | wxICON_EXCLAMATION);
             }
         }
@@ -504,7 +504,7 @@ void FlexDiskListCtrl::ViewSelectedItems()
         }
         catch (FlexException &ex)
         {
-            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.what(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
         }
     } // if
@@ -538,7 +538,7 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
             }
             catch (FlexException &ex)
             {
-                int r = wxMessageBox(ex.wwhat(),
+                int r = wxMessageBox(ex.what(),
                                      _("FLEXPlorer Error"),
                                      wxOK | wxCANCEL | wxCENTRE, this);
 
@@ -728,7 +728,7 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
         }
         catch (FlexException &ex)
         {
-            int r = wxMessageBox(ex.wwhat(), _("FLEXPlorer Error"),
+            int r = wxMessageBox(ex.what(), _("FLEXPlorer Error"),
                                  wxOK | wxCANCEL | wxCENTRE, this);
 
             if (r != wxOK)
@@ -753,7 +753,7 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         }
         catch (FlexException &ex)
         {
-            wxMessageBox(ex.wwhat(), _("FLEXPlorer Error"),
+            wxMessageBox(ex.what(), _("FLEXPlorer Error"),
                          wxOK | wxCENTRE, this);
             return;
         }
@@ -978,7 +978,7 @@ void FlexDiskListCtrl::CopyToClipboard()
         }
         catch (FlexException &ex)
         {
-            wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+            wxMessageBox(ex.what(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
         }
     }
@@ -1073,13 +1073,13 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
         {
             if (ex.GetErrorCode() == FERR_DISK_FULL_WRITING)
             {
-                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.what(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
                 return false;
             }
             else
             {
-                wxMessageBox(ex.wwhat(), _("FLEXplorer Error"),
+                wxMessageBox(ex.what(), _("FLEXplorer Error"),
                              wxOK | wxCENTRE, this);
             }
         }
