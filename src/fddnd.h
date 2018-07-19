@@ -109,22 +109,6 @@ private:
     FlexFileDropTarget(); // default constructor should not be used
     FlexDiskListCtrl *m_pOwner;
 };
-
-/*------------------------------------------------------
- FileDropTarget
- a class needed for Drag & Drop functionality
- used to drop Text files
---------------------------------------------------------*/
-class FileDropTarget : public wxFileDropTarget
-{
-public:
-    FileDropTarget(FlexDiskListCtrl *pOwner) :
-        m_pOwner(pOwner) { };
-private:
-    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &);
-    FileDropTarget(); // default constructor should not be used
-    FlexDiskListCtrl *m_pOwner;
-};
 #endif
 
 #endif

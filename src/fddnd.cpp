@@ -197,40 +197,6 @@ bool FlexFileDropTarget::OnDropFiles(wxCoord, wxCoord, FlexDnDFiles &files)
 
     return false;
 }
-
-bool FileDropTarget::OnDropFiles(wxCoord, wxCoord,
-                                 const wxArrayString &fileNames)
-{
-    if (!GetData())
-    {
-        return wxDragNone;
-    }
-
-    FlexDnDFiles files;
-    size_t i;
-
-    for (i = 0; i < fileNames.GetCount(); i++)
-    {
-        FlexFileBuffer fileBuffer;
-
-        if (fileBuffer.ReadFromFile(fileNames.Item(i).mb_str()))
-        {
-            if (fileBuffer.IsTextFile())
-            {
-                fileBuffer.ConvertToFlex();
-            }
-
-            files.Add(std::move(fileBuffer));
-        }
-    }
-
-    if (m_pOwner != nullptr)
-    {
-        return m_pOwner->PasteFrom(files);
-    }
-
-    return false;
-}
 #endif
 #endif
 

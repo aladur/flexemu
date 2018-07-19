@@ -185,7 +185,6 @@ FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
 #ifdef wxUSE_DRAG_AND_DROP
 #ifndef __WXMOTIF__
         SetDropTarget(new FlexFileDropTarget(this));
-        //SetDropTarget(new FileDropTarget(this));
 #endif
 #endif
     }
