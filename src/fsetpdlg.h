@@ -93,6 +93,7 @@ public:
     wxString OpenFilePrompter(
         const wxString &defautPath = wxT(""),
         const wxString &caption = wxT(""),
+        const wxString &defaultExtension = wxT("*.*"),
         const wxString &filter = wxT("*.*"));
     void OnSelectDriveN(int n);
     void OnSelectDrive0(wxCommandEvent &WXUNUSED(event));

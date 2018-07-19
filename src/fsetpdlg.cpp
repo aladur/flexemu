@@ -574,6 +574,7 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 wxString FlexemuOptionsDialog::OpenFilePrompter(
     const wxString &defautPath,
     const wxString &caption,
+    const wxString &defaultExtension,
     const wxString &filter)
 {
     wxString drive;
@@ -587,9 +588,9 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
                 caption,
                 defautPath,
                 wxT(""),
+                defaultExtension,
                 filter,
-                _("*.*"),
-                wxFD_SAVE,
+                wxFD_OPEN | wxFD_FILE_MUST_EXIST,
                 this);
 #ifdef WIN32
     chdir((char *)wd);
@@ -612,7 +613,9 @@ void FlexemuOptionsDialog::OnSelectDriveN(int n)
         diskDir = c_diskDir->GetValue();
     };
 
-    path = OpenFilePrompter(diskDir, _("Select a Disk file"), _("*.DSK"));
+    path = OpenFilePrompter(diskDir, wxT("Select a Disk file"), wxT("*.dsk"),
+        wxT("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
+            "All files (*.*)|*.*"));
 
     if (!diskDir.IsEmpty() &&
         (path.Find(diskDir) == 0) &&
@@ -690,8 +693,11 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
         diskDir = c_diskDir->GetValue();
     };
 
-    path = OpenFilePrompter(diskDir, _("Select a monitor program"),
-                            _("*.HEX"));
+    path = OpenFilePrompter(diskDir, _("Select a monitor program"), wxT("*.hex"),
+        wxT("Intel HEX files (*.hex)|*.hex|"
+            "Motorola S-Record files (*.s19;*.srec;*.mot)|*.s19;*.srec;*.mot|"
+            "FLEX binary files (*.cmd;*.bin)|*.cmd;*.bin|"
+            "All files (*.*)|*.*"));
 
     if (!diskDir.IsEmpty() &&
         (path.Find(diskDir) == 0) &&
