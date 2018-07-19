@@ -35,7 +35,7 @@ typedef char FlexFileName[FLEX_FILENAME_LENGTH];
 // This is a POD data structure. It can be used to
 // read or write FLEX files to and from the clipboard.
 // A POD is needed here to simply copy it by memcpy().
-struct tFlexDnDFile
+struct tFlexFileHeader
 {
     DWord size;
     Word  attributes;
@@ -131,7 +131,7 @@ private:
     unsigned int SizeOfFlexFile();
     unsigned int SizeOfFile();
 
-    tFlexDnDFile fileHeader;
+    tFlexFileHeader fileHeader;
     std::unique_ptr<Byte[]> buffer;
 };
 
