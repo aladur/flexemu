@@ -30,16 +30,13 @@
 #include "bfileptr.h"
 
 
-FlexFileBuffer::FlexFileBuffer(int n /* = 0 */) :
-    size(0), attributes(0), sectorMap(0)
+FlexFileBuffer::FlexFileBuffer(int n /* = 0 */)
 {
+    memset(&fileHeader, 0, sizeof(fileHeader));
     Realloc(n);
-    memset(filename, 0, sizeof(filename));
 }
 
-FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
-    size(0), attributes(0), sectorMap(0)
-
+FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
 {
     copyFrom(src);
 }
@@ -49,11 +46,8 @@ FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
     if (&src != this)
     {
         buffer = std::move(src.buffer);
-        size = src.size;
-        date = src.date;
-        strncpy(filename, src.filename, sizeof(filename));
-        attributes = src.attributes;
-        sectorMap  = src.sectorMap;
+        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
+        memset(&src.fileHeader, 0, sizeof(src.fileHeader));
     }
 }
 
@@ -72,11 +66,8 @@ FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src)
     if (&src != this)
     {
         buffer = std::move(src.buffer);
-        size = src.size;
-        date = src.date;
-        strncpy(filename, src.filename, sizeof(filename));
-        attributes = src.attributes;
-        sectorMap  = src.sectorMap;
+        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
+        memset(&src.fileHeader, 0, sizeof(src.fileHeader));
     }
 
     return *this;
@@ -86,22 +77,17 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
 {
     if (src.buffer != nullptr)
     {
-        auto new_buffer = std::unique_ptr<Byte[]>(new Byte[src.size]);
-        memcpy(new_buffer.get(), src.buffer.get(), src.size);
+        auto new_buffer = std::unique_ptr<Byte[]>(
+                              new Byte[src.fileHeader.size]);
+        memcpy(new_buffer.get(), src.buffer.get(), src.fileHeader.size);
         buffer = std::move(new_buffer);
-        size = src.size;
+        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
     }
     else
     {
         buffer.reset(nullptr);
-        size = 0;
+        memset(&fileHeader, 0, sizeof(fileHeader));
     }
-
-    date = src.date;
-
-    strncpy(filename, src.filename, sizeof(filename));
-    attributes = src.attributes;
-    sectorMap  = src.sectorMap;
 }
 
 FlexFileBuffer::~FlexFileBuffer()
@@ -111,7 +97,7 @@ FlexFileBuffer::~FlexFileBuffer()
 const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
                                       unsigned int bytes /* = 1 */) const
 {
-    if (offset + bytes > size)
+    if (offset + bytes > fileHeader.size)
     {
         return nullptr;
     }
@@ -121,10 +107,11 @@ const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
 
 void FlexFileBuffer::SetFilename(const char *name)
 {
-    strncpy(filename, name, FLEX_FILENAME_LENGTH);
+    strncpy(fileHeader.fileName, name, FLEX_FILENAME_LENGTH - 1);
+    fileHeader.fileName[sizeof(fileHeader.fileName) - 1] = '\0';
 }
 
-// reallocate the buffer with diffrent size
+// reallocate the buffer with different size
 // buffer will be initialized to zero or
 // optionally with a copy of the contents of the old buffer
 void FlexFileBuffer::Realloc(unsigned int new_size,
@@ -137,10 +124,10 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
         return;
     }
 
-    if (new_size <= size)
+    if (new_size <= fileHeader.size)
     {
         // dont allocate memory if buffer size decreases
-        size = new_size;
+        fileHeader.size = new_size;
         return;
     }
 
@@ -149,18 +136,23 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
 
     if (buffer != nullptr && restoreContents)
     {
-        memcpy(new_buffer, buffer.get(), size);
+        memcpy(new_buffer, buffer.get(), fileHeader.size);
     }
 
     buffer.reset(new_buffer);
-    size = new_size;
+    fileHeader.size = new_size;
 }
 
 unsigned int FlexFileBuffer::SizeOfFlexFile()
 {
     unsigned int count = 0;
 
-    for (unsigned int i = 0; i < size; i++)
+    if (!buffer || fileHeader.size == 0)
+    {
+        return 0;
+    }
+
+    for (unsigned int i = 0; i < fileHeader.size; i++)
     {
         switch (buffer[i])
         {
@@ -173,7 +165,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
                 break;
 
             case 0x09:
-                if (i < size - 1)
+                if (i < fileHeader.size - 1)
                 {
                     count += buffer[++i];
                 }
@@ -203,7 +195,7 @@ int FlexFileBuffer::ConvertFromFlex()
     unsigned int new_index, new_size;
     unsigned int count;
 
-    if (!buffer || size == 0)
+    if (!buffer || fileHeader.size == 0)
     {
         return 0;
     }
@@ -212,7 +204,7 @@ int FlexFileBuffer::ConvertFromFlex()
     new_buffer = new Byte[new_size];
     new_index = 0;
 
-    for (unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < fileHeader.size; i++)
     {
         Byte c = buffer[i];
 
@@ -232,7 +224,7 @@ int FlexFileBuffer::ConvertFromFlex()
         else if (c == 0x09)
         {
             /* expand space compression */
-            if (i < size - 1)
+            if (i < fileHeader.size - 1)
             {
                 count = buffer[++i];
             }
@@ -253,9 +245,9 @@ int FlexFileBuffer::ConvertFromFlex()
     } // for
 
     buffer.reset(new_buffer);
-    size = new_size;
+    fileHeader.size = new_size;
 
-    return size;
+    return fileHeader.size;
 }
 
 int FlexFileBuffer::ConvertToFlex()
@@ -265,7 +257,7 @@ int FlexFileBuffer::ConvertToFlex()
     int             new_index, new_size;
     unsigned int    i, spaces;
 
-    if (!buffer || size == 0)
+    if (!buffer || fileHeader.size == 0)
     {
         return 0;
     }
@@ -277,7 +269,7 @@ int FlexFileBuffer::ConvertToFlex()
 
     if (0)
     {
-        for (i = 0; i < size; i++)
+        for (i = 0; i < fileHeader.size; i++)
         {
             c = buffer[i];
 
@@ -339,7 +331,7 @@ int FlexFileBuffer::ConvertToFlex()
     }
     else
     {
-        for (unsigned int i = 0; i < size; i++)
+        for (unsigned int i = 0; i < fileHeader.size; i++)
         {
             c = buffer[i];
 
@@ -379,23 +371,23 @@ int FlexFileBuffer::ConvertToFlex()
     }
 
     buffer.reset(new_buffer);
-    size = new_size;
+    fileHeader.size = new_size;
 
-    return size;
+    return fileHeader.size;
 }
 
 unsigned int FlexFileBuffer::SizeOfFile()
 {
     unsigned int count, spaces;
 
-    if (!buffer || size == 0)
+    if (!buffer || fileHeader.size == 0)
     {
         return 0;
     }
 
     count = spaces = 0;
 
-    for (unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < fileHeader.size; i++)
     {
         Byte c = buffer[i];
 
@@ -433,7 +425,7 @@ unsigned int FlexFileBuffer::SizeOfFile()
 
 bool FlexFileBuffer::IsTextFile() const
 {
-    for (unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < fileHeader.size; i++)
     {
         Byte c = buffer[i];
 
@@ -450,7 +442,7 @@ bool FlexFileBuffer::IsTextFile() const
 
 bool FlexFileBuffer::IsFlexTextFile() const
 {
-    for (unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < fileHeader.size; i++)
     {
         Byte c = buffer[i];
 
@@ -459,7 +451,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
             continue;
         }
 
-        if (c == 0x09 && i < size - 1)
+        if (c == 0x09 && i < fileHeader.size - 1)
         {
             i++;
             continue;
@@ -518,8 +510,8 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
                 const char *pf;
                 struct tm *lt;
 
-                attributes = 0;
-                sectorMap  = 0;
+                fileHeader.attributes = 0;
+                fileHeader.sectorMap = 0;
                 pf = strrchr(path, PATHSEPARATOR);
 
                 if (pf == nullptr)
@@ -533,7 +525,9 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
                 SetAdjustedFilename(pf);
                 lt = localtime(&(sbuf.st_mtime));
-                date.Assign(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
+                fileHeader.day = lt->tm_mday;
+                fileHeader.month = lt->tm_mon + 1;
+                fileHeader.year = lt->tm_year + 1900;
                 return true;
             }
         }
@@ -548,10 +542,10 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
 {
     const char *p, *pe;
 
-    memset(filename, '\0', FLEX_FILENAME_LENGTH);
+    memset(fileHeader.fileName, '\0', FLEX_FILENAME_LENGTH);
     pe = strrchr(afileName, '.');
-    strncpy(filename, afileName, 8);
-    p = strrchr(filename, '.');
+    strncpy(fileHeader.fileName, afileName, 8);
+    p = strrchr(fileHeader.fileName, '.');
 
     if (p != nullptr)
     {
@@ -564,14 +558,14 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
 
         memset(ext, '\0', 5);
         strncpy(ext, pe, 4);
-        strcat(filename, ext);
+        strcat(fileHeader.fileName, ext);
     }
 }
 
 bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,
                               unsigned int offset /* = 0 */)
 {
-    if (offset + aSize > size)
+    if (offset + aSize > fileHeader.size)
     {
         return false;
     }
@@ -584,16 +578,16 @@ bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
                             unsigned int offset /* = 0 */,
                             int stuffByte /* = -1 */) const
 {
-    if (offset + aSize > size)
+    if (offset + aSize > fileHeader.size)
     {
-        if (stuffByte < 0 || offset >= size)
+        if (stuffByte < 0 || offset >= fileHeader.size)
         {
             return false;
         }
         else
         {
             memset(to, stuffByte, aSize);
-            memcpy(to, &buffer[offset], size - offset);
+            memcpy(to, &buffer[offset], fileHeader.size - offset);
             return true;
         }
     }
@@ -610,18 +604,29 @@ void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
     }
 }
 
-void  FlexFileBuffer::SetDate(const BDate &new_date) const
+void FlexFileBuffer::SetDate(const BDate &new_date)
 {
-    date = new_date;
+    fileHeader.day = new_date.GetDay();
+    fileHeader.month = new_date.GetMonth();
+    fileHeader.year = new_date.GetYear();
 }
 
-void  FlexFileBuffer::SetDate(int d, int m, int y) const
+void FlexFileBuffer::SetDate(int day, int month, int year)
 {
-    date.Assign(d, m, y);
+    fileHeader.day = day;
+    fileHeader.month = month;
+    fileHeader.year = year;
 }
 
-const BDate &FlexFileBuffer::GetDate() const
+const BDate FlexFileBuffer::GetDate() const
 {
+    BDate date;
+
+    date.Assign(
+            fileHeader.day,
+            fileHeader.month,
+            fileHeader.year);
+
     return date;
 }
 
@@ -633,12 +638,12 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
 
     p = buffer.get();
 
-    while ((size - (p - buffer.get())) >= 3)
+    while ((fileHeader.size - (p - buffer.get())) >= 3)
     {
         switch (*(p++))
         {
             case 0x02: // memory contents
-                if (size - (p - buffer.get()) < 3)
+                if (fileHeader.size - (p - buffer.get()) < 3)
                 {
                     return false;
                 }
@@ -647,7 +652,7 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
                 p += 2;
                 length = *(p++);
 
-                if (size - (p - buffer.get()) < length)
+                if (fileHeader.size - (p - buffer.get()) < length)
                 {
                     return false;
                 }

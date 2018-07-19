@@ -46,21 +46,8 @@ class FlexDiskListCtrl;
 
 extern wxString FlexFileFormatId;
 
-typedef char FlexFileName[FLEX_FILENAME_LENGTH];
-
 class FlexDnDFiles
 {
-    struct tFlexDnDFile
-    {
-        DWord size;
-        Word  attributes;
-        Word  sectorMap;
-        Word  day;
-        Word  month;
-        Word  year;
-        FlexFileName fileName;
-    };
-
 public:
     FlexDnDFiles();
     virtual ~FlexDnDFiles();

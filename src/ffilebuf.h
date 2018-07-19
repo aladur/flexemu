@@ -30,6 +30,22 @@
 #include <memory>
 
 
+typedef char FlexFileName[FLEX_FILENAME_LENGTH];
+
+// This is a POD data structure. It can be used to
+// read or write FLEX files to and from the clipboard.
+// A POD is needed here to simply copy it by memcpy().
+struct tFlexDnDFile
+{
+    DWord size;
+    Word  attributes;
+    Word  sectorMap;
+    Word  day;
+    Word  month;
+    Word  year;
+    FlexFileName fileName;
+};
+
 class FlexFileBuffer
 {
 public:
@@ -61,59 +77,62 @@ public:
                  bool restoreContents = false);  // must NOT be virtual !!
     const Byte *GetBuffer(unsigned int offset = 0,
                           unsigned int bytes = 1) const;
-    void  SetDate(const BDate &date) const;
-    void  SetDate(int d, int m, int y) const;
+    void  SetDate(const BDate &date);
+    void  SetDate(int day, int month, int year);
     void SetFilename(const char *name);
     void SetAdjustedFilename(const char *name);
     inline const char *GetFilename() const
     {
-        return filename;
+        return fileHeader.fileName;
     };
     inline unsigned int GetSize() const
     {
-        return size;
+        return fileHeader.size;
     };
     inline bool IsEmpty() const
     {
-        return size == 0;
+        return !buffer || fileHeader.size == 0;
     };
     inline operator const Byte *() const
     {
-        return GetBuffer(0);
+        if (IsEmpty())
+        {
+            return nullptr;
+        }
+        else
+        {
+            return GetBuffer(0);
+        }
     };
     inline int GetAttributes() const
     {
-        return attributes;
+        return fileHeader.attributes;
     };
     inline void SetAttributes(int attrs)
     {
-        attributes = attrs;
+        fileHeader.attributes = attrs;
     };
     inline int IsRandom() const
     {
-        return (sectorMap != 0);
+        return (fileHeader.sectorMap != 0);
     }
     inline void SetSectorMap(int aSectorMap)
     {
-        sectorMap = aSectorMap;
+        fileHeader.sectorMap = aSectorMap;
     }
     inline int GetSectorMap() const
     {
-        return sectorMap;
+        return fileHeader.sectorMap;
     }
-    const BDate &GetDate() const;
+    const BDate GetDate() const;
 
 private:
     void copyFrom(const FlexFileBuffer &src);
     unsigned int SizeOfFlexFile();
     unsigned int SizeOfFile();
 
-    char filename[FLEX_FILENAME_LENGTH];
+    tFlexDnDFile fileHeader;
     std::unique_ptr<Byte[]> buffer;
-    mutable BDate date;
-    unsigned int size;
-    int attributes;
-    Word sectorMap;
 };
 
 #endif
