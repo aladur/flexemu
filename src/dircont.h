@@ -91,7 +91,7 @@ public:
     bool    RenameFile(const char *oldName, const char *newName);
     bool    SetAttributes(const char *fileName, int setMask,
                           int clearMask = ~0);
-    void ReadToBuffer(const char *fileName, FlexFileBuffer &buffer);
+    FlexFileBuffer ReadToBuffer(const char *fileName);
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr);
     bool    FileCopy(const char *sourceName, const char *destName,

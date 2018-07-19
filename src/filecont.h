@@ -48,8 +48,7 @@ public:
     virtual bool  RenameFile(const char *oldName, const char *newName) = 0;
     virtual bool  SetAttributes(const char *fileName, int setMask = 0,
                                 int clearMask = ~0) = 0;
-    virtual void  ReadToBuffer(const char *fileName,
-                               FlexFileBuffer &buffer) = 0;
+    virtual FlexFileBuffer ReadToBuffer(const char *fileName) = 0;
     virtual bool  WriteFromBuffer(const FlexFileBuffer &buffer,
                                   const char *fileName = nullptr) = 0;
     virtual bool  FileCopy(const char *sourceName, const char *destName,

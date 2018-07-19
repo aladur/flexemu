@@ -29,12 +29,12 @@
 
 #ifdef wxUSE_DRAG_AND_DROP
 
-#include <list>
+#include <vector>
 #include "flexemu.h"
+#include "ffilebuf.h"
 
 class FileContainerIf;
 class FlexDiskListCtrl;
-class FlexFileBuffer;
 
 /*------------------------------------------------------
  FlexDnDFile
@@ -47,7 +47,6 @@ class FlexFileBuffer;
 extern wxString FlexFileFormatId;
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
-typedef std::list<FlexFileBuffer *> tFlexFileBufferArray;
 
 class FlexDnDFiles
 {
@@ -62,21 +61,23 @@ class FlexDnDFiles
         FlexFileName fileName;
         char  data;
     };
+
 public:
     FlexDnDFiles();
     virtual ~FlexDnDFiles();
 
-    void ReadData(const Byte *p);
+    void ReadDataFrom(const Byte *buffer);
+    void WriteDataTo(Byte *buffer) const;
+    void Add(FlexFileBuffer &&fileBuffer);
+    FlexFileBuffer &GetBufferAt(unsigned int);
     size_t GetDataSize() const;
-    void GetDataHere(Byte *buf) const;
     unsigned int GetFileCount() const
     {
-        return fileList.size();
+        return fileBuffers.size();
     };
-    void Add(FlexFileBuffer *pFileBuffer);
-    FlexFileBuffer &GetBuffer(unsigned int);
+
 private:
-    tFlexFileBufferArray fileList;
+    std::vector<FlexFileBuffer> fileBuffers;
 };
 
 /*------------------------------------------------------
@@ -87,8 +88,8 @@ class FlexFileDataObject : public wxCustomDataObject
 {
 public:
     FlexFileDataObject();
-    void GetDataFrom(FlexDnDFiles &f);
-    void SetDataTo(FlexDnDFiles &f);
+    void ReadDataFrom(FlexDnDFiles &f);
+    void WriteDataTo(FlexDnDFiles &f);
 };
 
 #ifndef __WXMOTIF__

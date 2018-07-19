@@ -49,130 +49,105 @@ FlexDnDFiles::FlexDnDFiles()
 {
 }
 
-void FlexDnDFiles::ReadData(const Byte *buf)
+void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
-    const Byte *p;
+    const Byte *ptr = buffer;
     tFlexDnDFile header;
-    DWord count, i;
-    tFlexFileBufferArray::iterator it;
+    DWord count, index;
 
-    for (it = fileList.begin(); it != fileList.end(); ++it)
-    {
-        delete *it;
-        *it = nullptr;
-    }
+    fileBuffers.clear();
 
-    fileList.clear();
-
-    if (buf == nullptr)
+    if (buffer == nullptr)
     {
         return;
     }
 
-    p = buf;
-    memcpy(&count, p, sizeof(count));
-    p += sizeof(count);
+    memcpy(&count, ptr, sizeof(count));
+    ptr += sizeof(count);
 
-    for (i = 0; i < count; i++)
+    for (index = 0; index < count; ++index)
     {
-        memcpy(&header, p, sizeof(tFlexDnDFile) - 1);
-        p += sizeof(tFlexDnDFile) - 1;
-        FlexFileBuffer *pFileBuffer = new FlexFileBuffer(header.size);
-        pFileBuffer->CopyFrom(p, pFileBuffer->GetSize());
-        pFileBuffer->SetAttributes(header.attributes);
-        pFileBuffer->SetSectorMap(header.sectorMap);
-        pFileBuffer->SetFilename(header.fileName);
-        pFileBuffer->SetDate(header.day, header.month, header.year);
-        fileList.push_back(pFileBuffer);
-        p += header.size;
+        memcpy(&header, ptr, sizeof(tFlexDnDFile) - 1);
+        ptr += sizeof(tFlexDnDFile) - 1;
+        FlexFileBuffer fileBuffer(header.size);
+        fileBuffer.CopyFrom(ptr, header.size);
+        fileBuffer.SetAttributes(header.attributes);
+        fileBuffer.SetSectorMap(header.sectorMap);
+        fileBuffer.SetFilename(header.fileName);
+        fileBuffer.SetDate(header.day, header.month, header.year);
+        fileBuffers.push_back(fileBuffer);
+        ptr += header.size;
     }
 }
 
-FlexFileBuffer &FlexDnDFiles::GetBuffer(unsigned int i)
+FlexFileBuffer &FlexDnDFiles::GetBufferAt(unsigned int index)
 {
-    if (i >= GetFileCount())
+    if (index >= fileBuffers.size())
     {
-        return *(FlexFileBuffer *)(nullptr);
+        throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    tFlexFileBufferArray::iterator it;
-    unsigned int count = i;
-
-    for (it = fileList.begin(); count > 0; ++it, count--)
-        ;
-
-    return **it;
+    return fileBuffers[index];
 }
 
 FlexDnDFiles::~FlexDnDFiles()
 {
-    tFlexFileBufferArray::iterator it;
-
-    for (it = fileList.begin(); it != fileList.end(); ++it)
-    {
-        delete *it;
-        *it = nullptr;
-    }
+    fileBuffers.clear();
 }
 
 size_t FlexDnDFiles::GetDataSize() const
 {
-    tFlexFileBufferArray::const_iterator it;
-    size_t dataSize = sizeof(DWord);
+    size_t dataSize = sizeof(DWord); // Contains the file count
 
-    for (it = fileList.begin(); it != fileList.end(); ++it)
+    for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
-        dataSize += (*it)->GetSize();
+        dataSize += iter->GetSize(); // Add size of each file
     }
 
-    dataSize += fileList.size() * (sizeof(tFlexDnDFile) - 1);
+    // Add size of header (minus one for char data) of each file
+    dataSize += fileBuffers.size() * (sizeof(tFlexDnDFile) - 1);
+
     return dataSize;
 }
 
-void FlexDnDFiles::GetDataHere(Byte *buf) const
+void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 {
-    tFlexFileBufferArray::const_iterator it;
+    Byte *ptr = buffer;
     DWord count;
     tFlexDnDFile header;
     BDate date;
-    Byte *p = buf;
 
-    if (buf == nullptr)
+    if (buffer == nullptr)
     {
         return;
     }
 
-    count = fileList.size();
-    memcpy(p, &count, sizeof(count));
-    p += sizeof(count);
+    count = fileBuffers.size();
+    memcpy(ptr, &count, sizeof(count));
+    ptr += sizeof(count);
 
-    for (it = fileList.begin(); it != fileList.end(); ++it)
+    for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
-        date              = (*it)->GetDate();
-        header.day        = date.GetDay();
-        header.month      = date.GetMonth();
-        header.year       = date.GetYear();
-        header.attributes = (*it)->GetAttributes();
-        header.size       = (*it)->GetSize();
-        header.sectorMap  = (*it)->GetSectorMap();
-        memcpy(&header.fileName, (*it)->GetFilename(),
-               FLEX_FILENAME_LENGTH);
-        memcpy(p, &header, sizeof(tFlexDnDFile) - 1);
-        p += sizeof(tFlexDnDFile) - 1;
-        (*it)->CopyTo(p, header.size);
-        p += header.size;
+        date = iter->GetDate();
+        header.day = date.GetDay();
+        header.month = date.GetMonth();
+        header.year = date.GetYear();
+        header.attributes = iter->GetAttributes();
+        header.size = iter->GetSize();
+        header.sectorMap  = iter->GetSectorMap();
+        memcpy(&header.fileName, iter->GetFilename(), FLEX_FILENAME_LENGTH);
+        memcpy(ptr, &header, sizeof(tFlexDnDFile) - 1);
+        ptr += sizeof(tFlexDnDFile) - 1;
+        iter->CopyTo(ptr, header.size);
+        ptr += header.size;
     }
 }
 
-// ATTENTION: pFileBuffer has to be created on the
-// heap and will automatically be deleted
-// in the destructor of FlexDnDFiles
-void FlexDnDFiles::Add(FlexFileBuffer *pFileBuffer)
+// ATTENTION: fileBuffer is an rvalue and moved into
+// the fileBuffers.
+void FlexDnDFiles::Add(FlexFileBuffer &&fileBuffer)
 {
-    if (pFileBuffer != nullptr)
-    {
-        fileList.push_back(pFileBuffer);
-    }
+    fileBuffers.push_back(std::move(fileBuffer));
 }
 
 FlexFileDataObject::FlexFileDataObject()
@@ -183,18 +158,17 @@ FlexFileDataObject::FlexFileDataObject()
     SetFormat(dataFormat);
 }
 
-void FlexFileDataObject::SetDataTo(FlexDnDFiles &files)
+void FlexFileDataObject::WriteDataTo(FlexDnDFiles &files)
 {
-    files.ReadData((const Byte *)GetData());
+    files.ReadDataFrom((const Byte *)GetData());
 }
 
-void FlexFileDataObject::GetDataFrom(FlexDnDFiles &files)
+void FlexFileDataObject::ReadDataFrom(FlexDnDFiles &files)
 {
     size_t size = files.GetDataSize();
-    Byte *pData = new Byte[size];
-    files.GetDataHere(pData);
-    SetData(size, pData);
-    delete [] pData;
+    auto buffer = std::unique_ptr<Byte[]>(new Byte[size]);
+    files.WriteDataTo(buffer.get());
+    SetData(size, buffer.get());
 }
 
 #ifndef __WXMOTIF__
@@ -207,7 +181,7 @@ wxDragResult FlexFileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
 
     FlexDnDFiles files;
 
-    ((FlexFileDataObject *)m_dataObject)->SetDataTo(files);
+    ((FlexFileDataObject *)m_dataObject)->WriteDataTo(files);
 
     OnDropFiles(x, y, files);
 
@@ -237,20 +211,16 @@ bool FileDropTarget::OnDropFiles(wxCoord, wxCoord,
 
     for (i = 0; i < fileNames.GetCount(); i++)
     {
-        FlexFileBuffer *pBuffer = new FlexFileBuffer;
+        FlexFileBuffer fileBuffer;
 
-        if (pBuffer->ReadFromFile(fileNames.Item(i).mb_str()))
+        if (fileBuffer.ReadFromFile(fileNames.Item(i).mb_str()))
         {
-            if (pBuffer->IsTextFile())
+            if (fileBuffer.IsTextFile())
             {
-                pBuffer->ConvertToFlex();
+                fileBuffer.ConvertToFlex();
             }
 
-            files.Add(pBuffer);
-        }
-        else
-        {
-            delete pBuffer;
+            files.Add(std::move(fileBuffer));
         }
     }
 

@@ -401,7 +401,7 @@ void FlexDiskListCtrl::RenameSelectedItems()
 
 void FlexDiskListCtrl::ViewSelectedItems()
 {
-    FlexFileBuffer  buffer;
+    FlexFileBuffer buffer;
     std::vector<long> items;
     wxString    fileName;
     BProcess    process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
@@ -417,7 +417,8 @@ void FlexDiskListCtrl::ViewSelectedItems()
         try
         {
 
-            m_container->ReadToBuffer(fileName.mb_str(*wxConvCurrent), buffer);
+            auto buffer = m_container->ReadToBuffer(
+                              fileName.mb_str(*wxConvCurrent));
 
             if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
                 buffer.IsFlexTextFile())
@@ -519,7 +520,6 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
         wxDragResult    result;
         int     flags = 0;
         FlexDnDFiles    files;
-        FlexFileDataObject *dragData;
         FlexFileList    fileList;
         FlexFileList::Node *node = nullptr;
         int count = 0;
@@ -528,13 +528,11 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
 
         for (node = fileList.GetFirst(); node; node = node->GetNext())
         {
-            FlexFileBuffer *pFileBuffer = new FlexFileBuffer;
             std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
 
             try
             {
-                m_container->ReadToBuffer(fileName.c_str(), *pFileBuffer);
-                files.Add(pFileBuffer);
+                files.Add(m_container->ReadToBuffer(fileName.c_str()));
             }
             catch (FlexException &ex)
             {
@@ -544,7 +542,6 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
 
                 if (r == wxCANCEL)
                 {
-                    delete pFileBuffer;
                     return;
                 }
             }
@@ -553,8 +550,9 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
         }
 
         fileList.DeleteContents(TRUE);
-        dragData = new FlexFileDataObject();
-        dragData->GetDataFrom(files);
+        auto dragData =
+                 std::unique_ptr<FlexFileDataObject>(new FlexFileDataObject);
+        dragData->ReadDataFrom(files);
         wxDropSource dragSource(this,
                                 wxDROP_ICON(dnd_copy),
                                 wxDROP_ICON(dnd_move),
@@ -595,8 +593,6 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
             case wxDragNone:
                 break;
         }
-
-        delete dragData; // savely delete after DoDragDrop, also deletes pData
     }
     else
     {
@@ -967,13 +963,11 @@ void FlexDiskListCtrl::CopyToClipboard()
 
     for (node = fileList.GetFirst(); node; node = node->GetNext())
     {
-        FlexFileBuffer *pFileBuffer = new FlexFileBuffer;
         std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
 
         try
         {
-            m_container->ReadToBuffer(fileName.c_str(), *pFileBuffer);
-            files.Add(pFileBuffer);
+            files.Add(m_container->ReadToBuffer(fileName.c_str()));
             count++;
         }
         catch (FlexException &ex)
@@ -984,7 +978,7 @@ void FlexDiskListCtrl::CopyToClipboard()
     }
 
     pClipboardData = new FlexFileDataObject();
-    pClipboardData->GetDataFrom(files);
+    pClipboardData->ReadDataFrom(files);
 
     if (!wxTheClipboard->SetData(pClipboardData))
     {
@@ -1031,7 +1025,7 @@ bool FlexDiskListCtrl::PasteFromClipboard()
     FlexDnDFiles files;
     bool     result;
 
-    flexFileData.SetDataTo(files);
+    flexFileData.WriteDataTo(files);
 
     result = PasteFrom(files);
 
@@ -1041,16 +1035,15 @@ bool FlexDiskListCtrl::PasteFromClipboard()
 bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
 {
     const char      *p;
-    int             index;
-    unsigned int    i;
+    unsigned int    index;
     FlexDirEntry    *pDe;
 
-    for (i = 0; i < files.GetFileCount(); i++)
+    for (index = 0; index < files.GetFileCount(); ++index)
     {
         try
         {
-            p = files.GetBuffer(i).GetFilename();
-            GetContainer()->WriteFromBuffer(files.GetBuffer(i));
+            p = files.GetBufferAt(index).GetFilename();
+            GetContainer()->WriteFromBuffer(files.GetBufferAt(index));
             pDe = new FlexDirEntry;
 
             if (GetContainer()->FindFile(p, *pDe))
@@ -1065,8 +1058,8 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
                 anItem.m_data   = reinterpret_cast<wxUIntPtr>(pDe);
                 anItem.m_mask   = wxLIST_MASK_TEXT |
                                   wxLIST_MASK_DATA;
-                index = InsertItem(anItem);
-                UpdateItem(index, *pDe);
+                auto itemIndex = InsertItem(anItem);
+                UpdateItem(itemIndex, *pDe);
             }
         }
         catch (FlexException &ex)

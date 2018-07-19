@@ -44,11 +44,39 @@ FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src) :
     copyFrom(src);
 }
 
-FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &lhs)
+FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
 {
-    if (&lhs != this)
+    if (&src != this)
     {
-        copyFrom(lhs);
+        buffer = std::move(src.buffer);
+        size = src.size;
+        date = src.date;
+        strncpy(filename, src.filename, sizeof(filename));
+        attributes = src.attributes;
+        sectorMap  = src.sectorMap;
+    }
+}
+
+FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &src)
+{
+    if (&src != this)
+    {
+        copyFrom(src);
+    }
+
+    return *this;
+}
+
+FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src)
+{
+    if (&src != this)
+    {
+        buffer = std::move(src.buffer);
+        size = src.size;
+        date = src.date;
+        strncpy(filename, src.filename, sizeof(filename));
+        attributes = src.attributes;
+        sectorMap  = src.sectorMap;
     }
 
     return *this;
@@ -58,9 +86,9 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
 {
     if (src.buffer != nullptr)
     {
-        Byte *new_buffer = new Byte[src.size];
-        memcpy(new_buffer, src.buffer.get(), src.size);
-        buffer.reset(new_buffer);
+        auto new_buffer = std::unique_ptr<Byte[]>(new Byte[src.size]);
+        memcpy(new_buffer.get(), src.buffer.get(), src.size);
+        buffer = std::move(new_buffer);
         size = src.size;
     }
     else

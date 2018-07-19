@@ -33,9 +33,6 @@ bool FlexCopyManager::autoTextConversion = false;
 bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
                                   FileContainerIf &src, FileContainerIf &dst)
 {
-    FlexFileBuffer fileBuffer;
-    FlexDirEntry de;
-
     if (&src == &dst)
     {
         throw FlexException(FERR_COPY_ON_ITSELF, std::string(srcName));
@@ -49,7 +46,7 @@ bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
         throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetName());
     }
 
-    src.ReadToBuffer(srcName, fileBuffer);
+    auto fileBuffer = src.ReadToBuffer(srcName);
 
     if ((src.GetContainerType() & TYPE_CONTAINER) &&
         (dst.GetContainerType() & TYPE_DIRECTORY) &&

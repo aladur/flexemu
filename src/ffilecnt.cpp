@@ -621,9 +621,9 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     return true;
 }
 
-void FlexFileContainer::ReadToBuffer(const char *fileName,
-                                     FlexFileBuffer &buffer)
+FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 {
+    FlexFileBuffer  buffer;
     FlexDirEntry    de;
     int             trk, sec;
     int             recordNr, repeat;
@@ -671,7 +671,7 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
         {
             if (trk == 0 && sec == 0)
             {
-                return;
+                return buffer;
             }
 
             if (!ReadSector(&sectorBuffer[0], trk, sec))
@@ -693,6 +693,8 @@ void FlexFileContainer::ReadToBuffer(const char *fileName,
         recordNr++;
         repeat = 1;
     }
+
+    return buffer;
 }
 
 

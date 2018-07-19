@@ -26,6 +26,7 @@
 #include "misc1.h"
 #include "bmembuf.h"
 #include "flexemu.h"
+#include "bdate.h"
 #include <memory>
 
 
@@ -33,10 +34,13 @@ class FlexFileBuffer
 {
 public:
     FlexFileBuffer(int n = 0);
-    FlexFileBuffer(const FlexFileBuffer &f);
+    FlexFileBuffer(const FlexFileBuffer &src);
+    FlexFileBuffer(FlexFileBuffer &&src);
     virtual ~FlexFileBuffer();
 
-    FlexFileBuffer &operator=(const FlexFileBuffer &lhs);
+    FlexFileBuffer &operator=(const FlexFileBuffer &src);
+    FlexFileBuffer &operator=(FlexFileBuffer &&src);
+
     int ConvertFromFlex();
     int ConvertToFlex();
     bool WriteToFile(const char *path) const;
@@ -103,8 +107,8 @@ private:
     void copyFrom(const FlexFileBuffer &src);
     unsigned int SizeOfFlexFile();
     unsigned int SizeOfFile();
-    char filename[FLEX_FILENAME_LENGTH];
 
+    char filename[FLEX_FILENAME_LENGTH];
     std::unique_ptr<Byte[]> buffer;
     mutable BDate date;
     unsigned int size;

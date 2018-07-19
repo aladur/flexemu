@@ -431,9 +431,9 @@ bool DirectoryContainer::CheckFilename(const char *fileName) const
     return true;
 }
 
-void DirectoryContainer::ReadToBuffer(const char *fileName,
-                                      FlexFileBuffer &buffer)
+FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
 {
+    FlexFileBuffer buffer;
     std::string filePath(fileName);
     int sectorMap = 0;
     struct stat sbuf;
@@ -507,6 +507,7 @@ void DirectoryContainer::ReadToBuffer(const char *fileName,
         buffer.SetAttributes(FLX_READONLY);
     }
 
+    return buffer;
 }
 
 bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
