@@ -67,8 +67,8 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 
     for (index = 0; index < count; ++index)
     {
-        memcpy(&header, ptr, sizeof(tFlexDnDFile) - 1);
-        ptr += sizeof(tFlexDnDFile) - 1;
+        memcpy(&header, ptr, sizeof(tFlexDnDFile));
+        ptr += sizeof(tFlexDnDFile);
         FlexFileBuffer fileBuffer(header.size);
         fileBuffer.CopyFrom(ptr, header.size);
         fileBuffer.SetAttributes(header.attributes);
@@ -105,7 +105,7 @@ size_t FlexDnDFiles::GetDataSize() const
     }
 
     // Add size of header (minus one for char data) of each file
-    dataSize += fileBuffers.size() * (sizeof(tFlexDnDFile) - 1);
+    dataSize += fileBuffers.size() * sizeof(tFlexDnDFile);
 
     return dataSize;
 }
@@ -136,8 +136,8 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
         header.size = iter->GetSize();
         header.sectorMap  = iter->GetSectorMap();
         memcpy(&header.fileName, iter->GetFilename(), FLEX_FILENAME_LENGTH);
-        memcpy(ptr, &header, sizeof(tFlexDnDFile) - 1);
-        ptr += sizeof(tFlexDnDFile) - 1;
+        memcpy(ptr, &header, sizeof(tFlexDnDFile));
+        ptr += sizeof(tFlexDnDFile);
         iter->CopyTo(ptr, header.size);
         ptr += header.size;
     }

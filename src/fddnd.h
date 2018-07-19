@@ -59,7 +59,6 @@ class FlexDnDFiles
         Word  month;
         Word  year;
         FlexFileName fileName;
-        char  data;
     };
 
 public:
