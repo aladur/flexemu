@@ -39,7 +39,7 @@ const DWord flexFileHeaderMagicNumber = 0xdeadbeaf;
 struct tFlexFileHeader
 {
     DWord magicNumber;
-    DWord size;
+    DWord fileSize;
     Word  attributes;
     Word  sectorMap;
     Word  day;
@@ -91,13 +91,13 @@ public:
     {
         return fileHeader.fileName;
     };
-    inline unsigned int GetSize() const
+    inline unsigned int GetFileSize() const
     {
-        return fileHeader.size;
+        return fileHeader.fileSize;
     };
     inline bool IsEmpty() const
     {
-        return !buffer || fileHeader.size == 0;
+        return !buffer || fileHeader.fileSize == 0;
     };
     inline operator const Byte *() const
     {

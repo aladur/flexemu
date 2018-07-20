@@ -56,7 +56,7 @@ public:
     void WriteDataTo(Byte *buffer) const;
     void Add(FlexFileBuffer &&fileBuffer);
     FlexFileBuffer &GetBufferAt(unsigned int);
-    size_t GetDataSize() const;
+    size_t GetFileSize() const;
     unsigned int GetFileCount() const
     {
         return fileBuffers.size();

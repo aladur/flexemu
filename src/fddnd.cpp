@@ -78,14 +78,14 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
             throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
         }
         ptr += sizeof(tFlexFileHeader);
-        FlexFileBuffer fileBuffer(header.size);
-        fileBuffer.CopyFrom(ptr, header.size);
+        FlexFileBuffer fileBuffer(header.fileSize);
+        fileBuffer.CopyFrom(ptr, header.fileSize);
         fileBuffer.SetAttributes(header.attributes);
         fileBuffer.SetSectorMap(header.sectorMap);
         fileBuffer.SetFilename(header.fileName);
         fileBuffer.SetDate(header.day, header.month, header.year);
         fileBuffers.push_back(fileBuffer);
-        ptr += header.size;
+        ptr += header.fileSize;
     }
 }
 
@@ -104,19 +104,19 @@ FlexDnDFiles::~FlexDnDFiles()
     fileBuffers.clear();
 }
 
-size_t FlexDnDFiles::GetDataSize() const
+size_t FlexDnDFiles::GetFileSize() const
 {
-    size_t dataSize = sizeof(DWord); // Contains the file count
+    size_t fileSize = sizeof(DWord); // Contains the file byte size
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
-        dataSize += iter->GetSize(); // Add size of each file
+        fileSize += iter->GetFileSize(); // Add byte size of each file
     }
 
-    // Add size of header (minus one for char data) of each file
-    dataSize += fileBuffers.size() * sizeof(tFlexFileHeader);
+    // Add size of header of each file
+    fileSize += fileBuffers.size() * sizeof(tFlexFileHeader);
 
-    return dataSize;
+    return fileSize;
 }
 
 void FlexDnDFiles::WriteDataTo(Byte *buffer) const
@@ -138,8 +138,8 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
     {
         memcpy(ptr, &iter->GetHeader(), sizeof(iter->GetHeader()));
         ptr += sizeof(iter->GetHeader());
-        iter->CopyTo(ptr, iter->GetSize());
-        ptr += iter->GetSize();
+        iter->CopyTo(ptr, iter->GetFileSize());
+        ptr += iter->GetFileSize();
     }
 }
 
@@ -165,7 +165,7 @@ void FlexFileDataObject::WriteDataTo(FlexDnDFiles &files)
 
 void FlexFileDataObject::ReadDataFrom(FlexDnDFiles &files)
 {
-    size_t size = files.GetDataSize();
+    size_t size = files.GetFileSize();
     auto buffer = std::unique_ptr<Byte[]>(new Byte[size]);
     files.WriteDataTo(buffer.get());
     SetData(size, buffer.get());

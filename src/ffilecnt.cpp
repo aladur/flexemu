@@ -554,7 +554,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
             sectorBuffer[0][2] = recordNr >> 8;
             sectorBuffer[0][3] = recordNr & 0xFF;
 
-            if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetSize())
+            if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
             {
                 sectorBuffer[0][0] = sectorBuffer[0][1] = 0;
             }
@@ -567,7 +567,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
             repeat = 0;
         }
-        while (recordNr * (SECTOR_SIZE - 4) < buffer.GetSize());
+        while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
     }
     sysInfo.fc_start_trk = nextTrk;
     sysInfo.fc_start_sec = nextSec;

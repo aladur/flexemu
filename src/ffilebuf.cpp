@@ -79,8 +79,8 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
     if (src.buffer != nullptr)
     {
         auto new_buffer = std::unique_ptr<Byte[]>(
-                              new Byte[src.fileHeader.size]);
-        memcpy(new_buffer.get(), src.buffer.get(), src.fileHeader.size);
+                              new Byte[src.fileHeader.fileSize]);
+        memcpy(new_buffer.get(), src.buffer.get(), src.fileHeader.fileSize);
         buffer = std::move(new_buffer);
         memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
     }
@@ -98,7 +98,7 @@ FlexFileBuffer::~FlexFileBuffer()
 const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
                                       unsigned int bytes /* = 1 */) const
 {
-    if (offset + bytes > fileHeader.size)
+    if (offset + bytes > fileHeader.fileSize)
     {
         return nullptr;
     }
@@ -125,10 +125,10 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
         return;
     }
 
-    if (new_size <= fileHeader.size)
+    if (new_size <= fileHeader.fileSize)
     {
         // dont allocate memory if buffer size decreases
-        fileHeader.size = new_size;
+        fileHeader.fileSize = new_size;
         return;
     }
 
@@ -137,23 +137,23 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
 
     if (buffer != nullptr && restoreContents)
     {
-        memcpy(new_buffer, buffer.get(), fileHeader.size);
+        memcpy(new_buffer, buffer.get(), fileHeader.fileSize);
     }
 
     buffer.reset(new_buffer);
-    fileHeader.size = new_size;
+    fileHeader.fileSize = new_size;
 }
 
 unsigned int FlexFileBuffer::SizeOfFlexFile()
 {
     unsigned int count = 0;
 
-    if (!buffer || fileHeader.size == 0)
+    if (!buffer || fileHeader.fileSize == 0)
     {
         return 0;
     }
 
-    for (unsigned int i = 0; i < fileHeader.size; i++)
+    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         switch (buffer[i])
         {
@@ -166,7 +166,7 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
                 break;
 
             case 0x09:
-                if (i < fileHeader.size - 1)
+                if (i < fileHeader.fileSize - 1)
                 {
                     count += buffer[++i];
                 }
@@ -196,7 +196,7 @@ int FlexFileBuffer::ConvertFromFlex()
     unsigned int new_index, new_size;
     unsigned int count;
 
-    if (!buffer || fileHeader.size == 0)
+    if (!buffer || fileHeader.fileSize == 0)
     {
         return 0;
     }
@@ -205,7 +205,7 @@ int FlexFileBuffer::ConvertFromFlex()
     new_buffer = new Byte[new_size];
     new_index = 0;
 
-    for (unsigned int i = 0; i < fileHeader.size; i++)
+    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -225,7 +225,7 @@ int FlexFileBuffer::ConvertFromFlex()
         else if (c == 0x09)
         {
             /* expand space compression */
-            if (i < fileHeader.size - 1)
+            if (i < fileHeader.fileSize - 1)
             {
                 count = buffer[++i];
             }
@@ -246,9 +246,9 @@ int FlexFileBuffer::ConvertFromFlex()
     } // for
 
     buffer.reset(new_buffer);
-    fileHeader.size = new_size;
+    fileHeader.fileSize = new_size;
 
-    return fileHeader.size;
+    return fileHeader.fileSize;
 }
 
 int FlexFileBuffer::ConvertToFlex()
@@ -258,7 +258,7 @@ int FlexFileBuffer::ConvertToFlex()
     int             new_index, new_size;
     unsigned int    i, spaces;
 
-    if (!buffer || fileHeader.size == 0)
+    if (!buffer || fileHeader.fileSize == 0)
     {
         return 0;
     }
@@ -270,7 +270,7 @@ int FlexFileBuffer::ConvertToFlex()
 
     if (0)
     {
-        for (i = 0; i < fileHeader.size; i++)
+        for (i = 0; i < fileHeader.fileSize; i++)
         {
             c = buffer[i];
 
@@ -332,7 +332,7 @@ int FlexFileBuffer::ConvertToFlex()
     }
     else
     {
-        for (unsigned int i = 0; i < fileHeader.size; i++)
+        for (unsigned int i = 0; i < fileHeader.fileSize; i++)
         {
             c = buffer[i];
 
@@ -372,23 +372,23 @@ int FlexFileBuffer::ConvertToFlex()
     }
 
     buffer.reset(new_buffer);
-    fileHeader.size = new_size;
+    fileHeader.fileSize = new_size;
 
-    return fileHeader.size;
+    return fileHeader.fileSize;
 }
 
 unsigned int FlexFileBuffer::SizeOfFile()
 {
     unsigned int count, spaces;
 
-    if (!buffer || fileHeader.size == 0)
+    if (!buffer || fileHeader.fileSize == 0)
     {
         return 0;
     }
 
     count = spaces = 0;
 
-    for (unsigned int i = 0; i < fileHeader.size; i++)
+    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -426,7 +426,7 @@ unsigned int FlexFileBuffer::SizeOfFile()
 
 bool FlexFileBuffer::IsTextFile() const
 {
-    for (unsigned int i = 0; i < fileHeader.size; i++)
+    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -443,7 +443,7 @@ bool FlexFileBuffer::IsTextFile() const
 
 bool FlexFileBuffer::IsFlexTextFile() const
 {
-    for (unsigned int i = 0; i < fileHeader.size; i++)
+    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -452,7 +452,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
             continue;
         }
 
-        if (c == 0x09 && i < fileHeader.size - 1)
+        if (c == 0x09 && i < fileHeader.fileSize - 1)
         {
             i++;
             continue;
@@ -475,7 +475,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 
     if (fp != nullptr)
     {
-        size_t blocks = fwrite(buffer.get(), GetSize(), 1, fp);
+        size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
         return (blocks == 1);
     }
 
@@ -487,7 +487,7 @@ bool FlexFileBuffer::WriteToFile(int fd) const
 {
     ssize_t bytes;
 
-    bytes = write(fd, buffer.get(), GetSize());
+    bytes = write(fd, buffer.get(), GetFileSize());
     return (bytes == -1 ? false : true);
 }
 #endif
@@ -504,7 +504,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
         if (fp != nullptr)
         {
-            size_t blocks = fread(buffer.get(), GetSize(), 1, fp);
+            size_t blocks = fread(buffer.get(), GetFileSize(), 1, fp);
 
             if (blocks == 1)
             {
@@ -566,7 +566,7 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
 bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,
                               unsigned int offset /* = 0 */)
 {
-    if (offset + aSize > fileHeader.size)
+    if (offset + aSize > fileHeader.fileSize)
     {
         return false;
     }
@@ -579,16 +579,16 @@ bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
                             unsigned int offset /* = 0 */,
                             int stuffByte /* = -1 */) const
 {
-    if (offset + aSize > fileHeader.size)
+    if (offset + aSize > fileHeader.fileSize)
     {
-        if (stuffByte < 0 || offset >= fileHeader.size)
+        if (stuffByte < 0 || offset >= fileHeader.fileSize)
         {
             return false;
         }
         else
         {
             memset(to, stuffByte, aSize);
-            memcpy(to, &buffer[offset], fileHeader.size - offset);
+            memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
             return true;
         }
     }
@@ -599,7 +599,7 @@ bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
 
 void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
 {
-    for (unsigned int i = 0; i < GetSize(); i++)
+    for (unsigned int i = 0; i < GetFileSize(); i++)
     {
         buffer[i] = pattern;
     }
@@ -639,12 +639,12 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
 
     p = buffer.get();
 
-    while ((fileHeader.size - (p - buffer.get())) >= 3)
+    while ((fileHeader.fileSize - (p - buffer.get())) >= 3)
     {
         switch (*(p++))
         {
             case 0x02: // memory contents
-                if (fileHeader.size - (p - buffer.get()) < 3)
+                if (fileHeader.fileSize - (p - buffer.get()) < 3)
                 {
                     return false;
                 }
@@ -653,7 +653,7 @@ bool FlexFileBuffer::CopyTo(BMemoryBuffer &memory)
                 p += 2;
                 length = *(p++);
 
-                if (fileHeader.size - (p - buffer.get()) < length)
+                if (fileHeader.fileSize - (p - buffer.get()) < length)
                 {
                     return false;
                 }
