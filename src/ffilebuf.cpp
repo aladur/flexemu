@@ -28,13 +28,14 @@
 #include "bdate.h"
 #include "ffilebuf.h"
 #include "bfileptr.h"
+#include "flexerr.h"
+#include <sstream>
 
 
-FlexFileBuffer::FlexFileBuffer(int n /* = 0 */)
+FlexFileBuffer::FlexFileBuffer()
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
     fileHeader.magicNumber = flexFileHeaderMagicNumber;
-    Realloc(n);
 }
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
@@ -561,6 +562,27 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
         strncpy(ext, pe, 4);
         strcat(fileHeader.fileName, ext);
     }
+}
+
+void FlexFileBuffer::CopyHeaderFrom(const tFlexFileHeader *src)
+{
+    // Directly copy the file header from a source object.
+    // For consitency check verify the magic number.
+    DWord oldSize = fileHeader.fileSize;
+
+    memcpy(&fileHeader, src, sizeof(tFlexFileHeader));
+
+    if (fileHeader.magicNumber != flexFileHeaderMagicNumber)
+    {
+        std::stringstream stream;
+
+        stream << std::hex << fileHeader.magicNumber;
+        throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
+    }
+
+    DWord newSize = fileHeader.fileSize;
+    fileHeader.fileSize = oldSize;
+    Realloc(newSize);
 }
 
 bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,

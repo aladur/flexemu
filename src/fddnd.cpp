@@ -42,7 +42,6 @@
 #include "fcinfo.h"
 #include "fdlist.h"
 #include "ffilebuf.h"
-#include <sstream>
 
 
 wxString FlexFileFormatId(wxT("FlexFileDataFormat"));
@@ -54,7 +53,6 @@ FlexDnDFiles::FlexDnDFiles()
 void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
     const Byte *ptr = buffer;
-    tFlexFileHeader fileHeader;
     DWord count, index;
 
     fileBuffers.clear();
@@ -69,23 +67,13 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 
     for (index = 0; index < count; ++index)
     {
-        memcpy(&fileHeader, ptr, sizeof(tFlexFileHeader));
-        if (fileHeader.magicNumber != flexFileHeaderMagicNumber)
-        {
-            std::stringstream stream;
+        FlexFileBuffer fileBuffer;
 
-            stream << std::hex << fileHeader.magicNumber;
-            throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
-        }
+        fileBuffer.CopyHeaderFrom((tFlexFileHeader *)ptr);
         ptr += sizeof(tFlexFileHeader);
-        FlexFileBuffer fileBuffer(fileHeader.fileSize);
-        fileBuffer.CopyFrom(ptr, fileHeader.fileSize);
-        fileBuffer.SetAttributes(fileHeader.attributes);
-        fileBuffer.SetSectorMap(fileHeader.sectorMap);
-        fileBuffer.SetFilename(fileHeader.fileName);
-        fileBuffer.SetDate(fileHeader.day, fileHeader.month, fileHeader.year);
+        fileBuffer.CopyFrom(ptr, fileBuffer.GetFileSize());
+        ptr += fileBuffer.GetFileSize();
         fileBuffers.push_back(fileBuffer);
-        ptr += fileHeader.fileSize;
     }
 }
 
@@ -106,7 +94,7 @@ FlexDnDFiles::~FlexDnDFiles()
 
 size_t FlexDnDFiles::GetFileSize() const
 {
-    size_t fileSize = sizeof(DWord); // Contains the file byte size
+    size_t fileSize = sizeof(DWord); // Reserve space for the file count
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {

@@ -51,7 +51,7 @@ struct tFlexFileHeader
 class FlexFileBuffer
 {
 public:
-    FlexFileBuffer(int n = 0);
+    FlexFileBuffer();
     FlexFileBuffer(const FlexFileBuffer &src);
     FlexFileBuffer(FlexFileBuffer &&src);
     virtual ~FlexFileBuffer();
@@ -69,6 +69,7 @@ public:
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
     bool IsExecutableFile() const;
+    void CopyHeaderFrom(const tFlexFileHeader *from);
     bool CopyFrom(const Byte *from, unsigned int aSize,
                   unsigned int offset = 0);
     bool CopyTo(Byte *to, unsigned int aSize,
