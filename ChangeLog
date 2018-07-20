@@ -287,7 +287,18 @@ Bug Fixes:
 	  resource
 	o Correctly display version info on Windows 10
 	o Lots of refactoring and cleanup for better c++11 support
-V2.21 (not yet published)
+
+V2.21 (20180720)
 New Features:
+	o Refactoring Drag and Drop
+	o Improved file selection filters in file selection dialogs:
+	  - For monitor files support Intel HEX, Motorola S-Record, FLEX binary,
+	    All files
+	  - For FLEX containers support FLX, DSK (=WTA), All files
+	  - Make sure file exists
 Bug Fixes:
+	o FLEXplorer on Linux: Avoid unexpected exception when opening a
+	  message box
+	o FlexRamFileContainer: Avoid stack overflow in operator=
+	o ContainerPropertiesDialog: Bugfix to correctly read sector count
 
