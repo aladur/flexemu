@@ -33,6 +33,7 @@
 FlexFileBuffer::FlexFileBuffer(int n /* = 0 */)
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
+    fileHeader.magicNumber = flexFileHeaderMagicNumber;
     Realloc(n);
 }
 

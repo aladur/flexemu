@@ -152,5 +152,6 @@ const char *FlexException::errString[] =
     _("{0} is an invalid NULL pointer")
     _("")
     _("Unsupported GUI type (#{0})"),
+    _("Invalid magic number 0x{0}"),
 };
 

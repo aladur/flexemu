@@ -42,6 +42,8 @@
 #include "fcinfo.h"
 #include "fdlist.h"
 #include "ffilebuf.h"
+#include <sstream>
+
 
 wxString FlexFileFormatId(wxT("FlexFileDataFormat"));
 
@@ -68,6 +70,13 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
     for (index = 0; index < count; ++index)
     {
         memcpy(&header, ptr, sizeof(tFlexFileHeader));
+        if (header.magicNumber != flexFileHeaderMagicNumber)
+        {
+            std::stringstream stream;
+
+            stream << std::hex << header.magicNumber;
+            throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
+        }
         ptr += sizeof(tFlexFileHeader);
         FlexFileBuffer fileBuffer(header.size);
         fileBuffer.CopyFrom(ptr, header.size);
@@ -114,7 +123,6 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 {
     Byte *ptr = buffer;
     DWord count;
-    tFlexFileHeader header;
     BDate date;
 
     if (buffer == nullptr)
@@ -128,18 +136,10 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
-        date = iter->GetDate();
-        header.day = date.GetDay();
-        header.month = date.GetMonth();
-        header.year = date.GetYear();
-        header.attributes = iter->GetAttributes();
-        header.size = iter->GetSize();
-        header.sectorMap  = iter->GetSectorMap();
-        memcpy(&header.fileName, iter->GetFilename(), FLEX_FILENAME_LENGTH);
-        memcpy(ptr, &header, sizeof(tFlexFileHeader));
-        ptr += sizeof(tFlexFileHeader);
-        iter->CopyTo(ptr, header.size);
-        ptr += header.size;
+        memcpy(ptr, &iter->GetHeader(), sizeof(iter->GetHeader()));
+        ptr += sizeof(iter->GetHeader());
+        iter->CopyTo(ptr, iter->GetSize());
+        ptr += iter->GetSize();
     }
 }
 

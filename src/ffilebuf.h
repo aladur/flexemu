@@ -31,12 +31,14 @@
 
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
+const DWord flexFileHeaderMagicNumber = 0xdeadbeaf;
 
 // This is a POD data structure. It can be used to
 // read or write FLEX files to and from the clipboard.
 // A POD is needed here to simply copy it by memcpy().
 struct tFlexFileHeader
 {
+    DWord magicNumber;
     DWord size;
     Word  attributes;
     Word  sectorMap;
@@ -77,6 +79,10 @@ public:
                  bool restoreContents = false);  // must NOT be virtual !!
     const Byte *GetBuffer(unsigned int offset = 0,
                           unsigned int bytes = 1) const;
+    const tFlexFileHeader &GetHeader() const
+    {
+        return fileHeader;
+    }
     void  SetDate(const BDate &date);
     void  SetDate(int day, int month, int year);
     void SetFilename(const char *name);
