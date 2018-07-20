@@ -302,3 +302,7 @@ Bug Fixes:
 	o FlexRamFileContainer: Avoid stack overflow in operator=
 	o ContainerPropertiesDialog: Bugfix to correctly read sector count
 
+V2.22 (not yet published)
+New Features:
+Bug Fixes:
+
