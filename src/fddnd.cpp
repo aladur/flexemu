@@ -54,7 +54,7 @@ FlexDnDFiles::FlexDnDFiles()
 void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
     const Byte *ptr = buffer;
-    tFlexFileHeader header;
+    tFlexFileHeader fileHeader;
     DWord count, index;
 
     fileBuffers.clear();
@@ -69,23 +69,23 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 
     for (index = 0; index < count; ++index)
     {
-        memcpy(&header, ptr, sizeof(tFlexFileHeader));
-        if (header.magicNumber != flexFileHeaderMagicNumber)
+        memcpy(&fileHeader, ptr, sizeof(tFlexFileHeader));
+        if (fileHeader.magicNumber != flexFileHeaderMagicNumber)
         {
             std::stringstream stream;
 
-            stream << std::hex << header.magicNumber;
+            stream << std::hex << fileHeader.magicNumber;
             throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
         }
         ptr += sizeof(tFlexFileHeader);
-        FlexFileBuffer fileBuffer(header.fileSize);
-        fileBuffer.CopyFrom(ptr, header.fileSize);
-        fileBuffer.SetAttributes(header.attributes);
-        fileBuffer.SetSectorMap(header.sectorMap);
-        fileBuffer.SetFilename(header.fileName);
-        fileBuffer.SetDate(header.day, header.month, header.year);
+        FlexFileBuffer fileBuffer(fileHeader.fileSize);
+        fileBuffer.CopyFrom(ptr, fileHeader.fileSize);
+        fileBuffer.SetAttributes(fileHeader.attributes);
+        fileBuffer.SetSectorMap(fileHeader.sectorMap);
+        fileBuffer.SetFilename(fileHeader.fileName);
+        fileBuffer.SetDate(fileHeader.day, fileHeader.month, fileHeader.year);
         fileBuffers.push_back(fileBuffer);
-        ptr += header.fileSize;
+        ptr += fileHeader.fileSize;
     }
 }
 

@@ -38,10 +38,9 @@ class FlexDiskListCtrl;
 
 /*------------------------------------------------------
  FlexDnDFile
- a class containing a list of FlexFileBuffer object
- pointers.
+ a class containing a vector of FlexFileBuffer objects.
  It can be used to do serialization/deserialization
- of a list of FLEX files
+ of a list of FLEX files.
 --------------------------------------------------------*/
 
 extern wxString FlexFileFormatId;
