@@ -111,8 +111,8 @@ public:
 
 private:
     void Notify();
-    int GetSelections(std::vector<long> &items) const;
-    void DeleteSelectedItems(bool askUser = TRUE);
+    std::vector<long> GetSelections() const;
+    void DeleteSelectedItems(bool askUser = true);
     void RenameSelectedItems();
     void ViewSelectedItems();
     void SetPropertyOnSelectedItems(int protection, bool isToBeSet);
