@@ -714,7 +714,7 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
 {
     FlexContainerInfo   info;
     wxString        str, caption;
-    int         t, s;
+    int tracks, sectors;
 
     if (m_container)
     {
@@ -730,7 +730,7 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         }
 
         caption.Printf(_("Container %s"), info.GetName());
-        info.GetTrackSector(&t, &s);
+        info.GetTrackSector(&tracks, &sectors);
         str.Append(_("Path: "));
         wxString path(info.GetPath().c_str(), *wxConvCurrent);
         str += path;
@@ -744,15 +744,12 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         wxString date(info.GetDate().GetDateString(), *wxConvCurrent);
         str += date;
 
-        if (t && s)
-        {
-            str += wxT("\n");
-            str.Append(_("Tracks: "));
-            str << t;
-            str += wxT("\n");
-            str.Append(_("Sectors: "));
-            str << s;
-        }
+        str += wxT("\n");
+        str.Append(_("Tracks: "));
+        str << tracks;
+        str += wxT("\n");
+        str.Append(_("Sectors: "));
+        str << sectors;
 
         str += wxT("\n");
         str.Append(_("Size: "));
