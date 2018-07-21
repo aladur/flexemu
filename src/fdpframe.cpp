@@ -350,10 +350,10 @@ void FlexParentFrame::OnOpenDirectory(wxCommandEvent &WXUNUSED(event))
 {
     static wxString containerPath;
     wxString    title;
-    wxDirDialog *dialog;
 
-    dialog = new wxDirDialog(this, _("Open a FLEX directory container"),
-                             containerPath);
+    auto dialog = std::unique_ptr<wxDirDialog>(
+                 new wxDirDialog(this, _("Open a FLEX directory container"),
+                             containerPath));
 
     if (dialog->ShowModal() == wxID_OK)
     {
@@ -382,20 +382,18 @@ void FlexParentFrame::OnOpenDirectory(wxCommandEvent &WXUNUSED(event))
 
         OpenChild(title, container);
     }
-
-    delete dialog;
 }
 
 bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
         int *format, wxString &path)
 {
-    ContainerPropertiesDialog *dialog;
     wxPoint pos = GetPosition();
 
     pos.x += 10;
     pos.y += 10;
 
-    dialog = new ContainerPropertiesDialog(this, pos, 80, 40, path);
+    auto dialog = std::unique_ptr<ContainerPropertiesDialog>(
+                 new ContainerPropertiesDialog(this, pos, 80, 40, path));
 
     if (dialog->ShowModal() == wxID_OK)
     {
@@ -418,22 +416,19 @@ bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
                 break;
         }
 
-        delete dialog;
         return true;
     }
 
-    delete dialog;
     return false;
 }
 
 void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
 {
     wxString        containerPath, directory, containerName;
-    wxDirDialog     *dialog;
 
-    dialog = new wxDirDialog(this,
+    auto dialog = std::unique_ptr<wxDirDialog>(new wxDirDialog(this,
                              _("Create a new FLEX directory container"),
-                             wxT(""));
+                             wxT("")));
 
     if (dialog->ShowModal() == wxID_OK)
     {
@@ -448,8 +443,6 @@ void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
                         80, 40);
         OpenChild(containerPath, container);
     }
-
-    delete dialog;
 }
 
 void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
@@ -538,24 +531,22 @@ bool FlexParentFrame::GetGlobalOptions(bool *autoTextFlag,
                                        wxString &viewer,
                                        wxString &bootFile)
 {
-    GlobalOptionsDialog *dialog;
     wxPoint pos = GetPosition();
 
     pos.x += 10;
     pos.y += 10;
-    dialog = new GlobalOptionsDialog(this, pos,
-                                     *autoTextFlag, bootFile, viewer);
+    auto dialog = std::unique_ptr<GlobalOptionsDialog>(
+                 new GlobalOptionsDialog(this, pos, *autoTextFlag, bootFile,
+                                         viewer));
 
     if (dialog->ShowModal() == wxID_OK)
     {
         *autoTextFlag = dialog->GetAutoTextFlag();
         bootFile = dialog->GetBootSectorFile();
         viewer = dialog->GetViewer();
-        delete dialog;
         return true;
     }
 
-    delete dialog;
     return false;
 }
 
