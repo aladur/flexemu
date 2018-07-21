@@ -81,7 +81,7 @@ FlexChildFrame::FlexChildFrame(
     const long style,
     FileContainerIf *container) :
     wxMDIChildFrame(parent, -1, title, pos, size, style),
-    m_listCtrl(nullptr), m_clipboardObserver(nullptr)
+    listCtrl(nullptr), m_clipboardObserver(nullptr)
 {
     // Give it an icon
 #ifdef __WXMSW__
@@ -94,17 +94,17 @@ FlexChildFrame::FlexChildFrame(
     // create a list control
     int width, height;
     GetClientSize(&width, &height);
-    m_listCtrl = new FlexDiskListCtrl(
+    listCtrl = std::unique_ptr<FlexDiskListCtrl>(new FlexDiskListCtrl(
         this, LIST_CTRL, wxPoint(0, 0), wxSize(width, height),
         wxLC_REPORT | /*wxLC_EDIT_LABELS |*/ wxSUNKEN_BORDER |
-        wxVSCROLL | wxHSCROLL, container);
+        wxVSCROLL | wxHSCROLL, container));
 
     wxLayoutConstraints *c = new wxLayoutConstraints;
     c->top.SameAs(this, wxTop);
     c->left.SameAs(this, wxLeft);
     c->width.SameAs(this, wxWidth);
     c->height.SameAs(this, wxHeight);
-    m_listCtrl->SetConstraints(c);
+    listCtrl->SetConstraints(c);
 
     wxMenuBar  *pMenuBar = new wxMenuBar(wxMB_DOCKABLE);
 
@@ -130,20 +130,17 @@ FlexChildFrame::FlexChildFrame(
     statusBar->SetFieldsCount(3, fieldWidth);
 
     // Attach itself for statusbar update
-    m_listCtrl->Attach(this);
+    listCtrl->Attach(this);
     UpdateFrom(&id);
 #endif
 }
 
 FlexChildFrame::~FlexChildFrame()
 {
-    if (m_clipboardObserver && m_listCtrl)
+    if (m_clipboardObserver && listCtrl)
     {
-        m_clipboardObserver->UpdateFrom(m_listCtrl->GetContainer());
+        m_clipboardObserver->UpdateFrom(listCtrl->GetContainer());
     }
-
-    delete m_listCtrl;
-    m_listCtrl = nullptr;
 }
 
 void FlexChildFrame::Attach(BObserver *clipboardObserver)
@@ -161,22 +158,22 @@ void FlexChildFrame::Detach(BObserver *clipboardObserver)
 
 void FlexChildFrame::OnActivate(wxActivateEvent &event)
 {
-    if (event.GetActive() && m_listCtrl)
+    if (event.GetActive() && listCtrl)
     {
         int id = OBSERVE_STATUS_BAR;
 
-        m_listCtrl->SetFocus();
+        listCtrl->SetFocus();
         UpdateFrom(&id);
     }
 }
 
 void FlexChildFrame::OnSetFocus(wxFocusEvent &)
 {
-    if (m_listCtrl)
+    if (listCtrl)
     {
         int id = OBSERVE_STATUS_BAR;
 
-        m_listCtrl->SetFocus();
+        listCtrl->SetFocus();
         UpdateFrom(&id);
     }
 }
@@ -194,33 +191,33 @@ void FlexChildFrame::UpdateFrom(const void *pObject)
     {
         wxStatusBar *sBar;
 
-        if (m_listCtrl && (sBar = GetStatusBar()))
+        if (listCtrl && (sBar = GetStatusBar()))
         {
             wxString buf;
 
-            buf.Printf(_("%d File(s) selected"), m_listCtrl->GetFileCount());
+            buf.Printf(_("%d File(s) selected"), listCtrl->GetFileCount());
             sBar->SetStatusText(buf, 1);
-            buf.Printf(_("%d Byte"), m_listCtrl->GetTotalSize());
+            buf.Printf(_("%d Byte"), listCtrl->GetTotalSize());
             sBar->SetStatusText(buf, 2);
         }
     }
 }
 
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnSelectAll)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnDeselectAll)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnFind)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnCopy)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnPaste)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnDelete)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnRename)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnView)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnSetWriteProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnClearWriteProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnSetReadProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnClearReadProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnSetDeleteProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnClearDeleteProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnSetCatalogProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnClearCatalogProtect)
-FORWARD_MENUCOMMAND_TO(FlexChildFrame, m_listCtrl, OnViewProperties)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnSelectAll)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnDeselectAll)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnFind)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnCopy)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnPaste)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnDelete)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnRename)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnView)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnSetWriteProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnClearWriteProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnSetReadProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnClearReadProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnSetDeleteProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnClearDeleteProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnSetCatalogProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnClearCatalogProtect)
+FORWARD_MENUCOMMAND_TO(FlexChildFrame, listCtrl, OnViewProperties)
 

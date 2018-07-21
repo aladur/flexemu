@@ -476,7 +476,7 @@ void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
     childFrame->Attach(&SFlexFileClipboard::Instance());
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     // statusbar support with GTK, X11, MOTIF
-    childFrame->GetListControl()->Attach(this);
+    childFrame->GetListControl().Attach(this);
 #endif
     childFrame->Show(TRUE);
 }
@@ -494,24 +494,23 @@ void FlexParentFrame::UpdateFrom(const void *pObject)
 
     if (id == OBSERVE_STATUS_BAR)
     {
-        const FlexDiskListCtrl *listCtrl;
-        wxStatusBar *sBar;
-
         if (!GetActiveChild())
         {
             return;
         }
 
-        listCtrl = ((FlexChildFrame *)GetActiveChild())->GetListControl();
+        const auto &listCtrl =
+            ((FlexChildFrame *)GetActiveChild())->GetListControl();
 
-        if (listCtrl && (sBar = GetStatusBar()))
+        wxStatusBar *statusBar = GetStatusBar();
+        if (statusBar)
         {
             wxString str;
 
-            str.Printf(_("%d File(s) selected"), listCtrl->GetFileCount());
-            sBar->SetStatusText(str, 1);
-            str.Printf(_("%d Byte"), listCtrl->GetTotalSize());
-            sBar->SetStatusText(str, 2);
+            str.Printf(_("%d File(s) selected"), listCtrl.GetFileCount());
+            statusBar->SetStatusText(str, 1);
+            str.Printf(_("%d Byte"), listCtrl.GetTotalSize());
+            statusBar->SetStatusText(str, 2);
         }
     }
 }

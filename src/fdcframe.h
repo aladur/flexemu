@@ -39,6 +39,8 @@
 #include "fdlist.h"
 #include "fmenufac.h"
 #include "bobserv.h"
+#include <memory>
+
 
 class wxMDIParentFrame;
 
@@ -60,9 +62,9 @@ public:
     void ViewProperties();
     void OnActivate(wxActivateEvent &event);
     void OnSetFocus(wxFocusEvent &event);
-    const FlexDiskListCtrl *GetListControl()
+    const FlexDiskListCtrl &GetListControl()
     {
-        return m_listCtrl;
+        return *listCtrl.get();
     };
 
     DECLARE_MENUCOMMAND(OnSelectAll)
@@ -93,8 +95,8 @@ public:
 #endif
 
 private:
-    FlexDiskListCtrl    *m_listCtrl;
-    BObserver       *m_clipboardObserver;
+    std::unique_ptr<FlexDiskListCtrl> listCtrl;
+    BObserver *m_clipboardObserver;
     DECLARE_EVENT_TABLE()
 };
 
