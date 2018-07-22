@@ -31,6 +31,7 @@ class BTimer
 public:
     ~BTimer();
     static BTimer *Instance();
+    static void Destroy();
     bool IsPeriodic()
     {
         return periodic;

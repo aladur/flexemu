@@ -253,7 +253,6 @@
     <ClInclude Include="apprun.h" />
     <ClInclude Include="bcommand.h" />
     <ClInclude Include="bdate.h" />
-    <ClInclude Include="bdelete.h" />
     <ClInclude Include="bdir.h" />
     <ClInclude Include="benv.h" />
     <ClInclude Include="bfileptr.h" />

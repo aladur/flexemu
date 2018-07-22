@@ -30,7 +30,6 @@
 #endif
 
 #include "btimer.h"
-#include "bdelete.h"
 
 #ifdef _WIN32
     #ifndef _TTHREADPROC_DEFINED_
@@ -61,15 +60,21 @@ BTimer::~BTimer()
     timerProc = nullptr;
 }
 
+// Evtl. creates and gives access to the singleton instance.
 BTimer *BTimer::Instance()
 {
     if (instance == nullptr)
     {
         instance = new BTimer;
-        static BDeleter<BTimer> deleter(instance);
     }
 
     return instance;
+}
+
+// Destroys the singleton instance.
+void BTimer::Destroy()
+{
+    delete instance;
 }
 
 bool BTimer::Start(bool x_periodic, QWord x_dueTime)

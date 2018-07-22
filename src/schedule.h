@@ -36,10 +36,8 @@
 
 
 
-class BTime;
 class BTimer;
 class Inout;
-class ScheduledCpu;
 
 class Scheduler
 {

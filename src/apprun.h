@@ -53,6 +53,7 @@ class ApplicationRunner
 {
 public:
     ApplicationRunner() = delete;
+    ~ApplicationRunner();
     ApplicationRunner(
             struct sGuiOptions &x_guiOptions,
             struct sOptions &x_options);

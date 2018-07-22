@@ -240,9 +240,6 @@
     <ClInclude Include="bdate.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bdelete.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="bdir.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

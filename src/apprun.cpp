@@ -42,6 +42,7 @@
 #include "foptman.h"
 #include "flexerr.h"
 #include "fileread.h"
+#include "btimer.h"
 
 
 ApplicationRunner::ApplicationRunner(
@@ -64,6 +65,11 @@ ApplicationRunner::ApplicationRunner(
     vico1(memory),
     vico2(memory)
 {
+}
+
+ApplicationRunner::~ApplicationRunner()
+{
+    BTimer::Destroy();
 }
 
 int ApplicationRunner::run()
