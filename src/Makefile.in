@@ -147,19 +147,18 @@ flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
 	flexplorer-bdir.$(OBJEXT) flexplorer-contpdlg.$(OBJEXT) \
 	flexplorer-dircont.$(OBJEXT) flexplorer-fcinfo.$(OBJEXT) \
-	flexplorer-fclipbrd.$(OBJEXT) flexplorer-fcopyman.$(OBJEXT) \
-	flexplorer-fdcframe.$(OBJEXT) flexplorer-fddnd.$(OBJEXT) \
-	flexplorer-fdirent.$(OBJEXT) flexplorer-fdlist.$(OBJEXT) \
-	flexplorer-fdpframe.$(OBJEXT) flexplorer-ffilebuf.$(OBJEXT) \
-	flexplorer-ffilecnt.$(OBJEXT) flexplorer-flexdisk.$(OBJEXT) \
-	flexplorer-flexerr.$(OBJEXT) flexplorer-misc1.$(OBJEXT) \
-	flexplorer-rfilecnt.$(OBJEXT) flexplorer-optdlg.$(OBJEXT) \
-	flexplorer-brcfile.$(OBJEXT) flexplorer-benv.$(OBJEXT) \
-	flexplorer-cvtwchar.$(OBJEXT) flexplorer-bmembuf.$(OBJEXT) \
-	flexplorer-bfileptr.$(OBJEXT) flexplorer-ifilecnt.$(OBJEXT) \
-	flexplorer-idircnt.$(OBJEXT) flexplorer-iffilcnt.$(OBJEXT) \
-	flexplorer-fmenufac.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
-	flexplorer-bprocess.$(OBJEXT)
+	flexplorer-fcopyman.$(OBJEXT) flexplorer-fdcframe.$(OBJEXT) \
+	flexplorer-fddnd.$(OBJEXT) flexplorer-fdirent.$(OBJEXT) \
+	flexplorer-fdlist.$(OBJEXT) flexplorer-fdpframe.$(OBJEXT) \
+	flexplorer-ffilebuf.$(OBJEXT) flexplorer-ffilecnt.$(OBJEXT) \
+	flexplorer-flexdisk.$(OBJEXT) flexplorer-flexerr.$(OBJEXT) \
+	flexplorer-misc1.$(OBJEXT) flexplorer-rfilecnt.$(OBJEXT) \
+	flexplorer-optdlg.$(OBJEXT) flexplorer-brcfile.$(OBJEXT) \
+	flexplorer-benv.$(OBJEXT) flexplorer-cvtwchar.$(OBJEXT) \
+	flexplorer-bmembuf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
+	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
+	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
+	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
@@ -523,7 +522,7 @@ iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
-clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
+clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
@@ -532,16 +531,16 @@ bytereg.h drisel.h
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
 bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
-fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
+fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp \
 bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
-fclipbrd.h fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
+fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
-rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
+rfilecnt.h brcfile.h benv.h bdelete.h fmenufac.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
@@ -561,7 +560,7 @@ flexerr.h inout.h \
 memory.h mc6809.h misc1.h \
 typedefs.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
-clogfile.h bdelete.h bsingle.h \
+clogfile.h bdelete.h \
 mc6809st.h \
 schedcpu.h sprinter.h
 
@@ -754,7 +753,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-cvtwchar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-dircont.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fcinfo.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fclipbrd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fcopyman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdcframe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fddnd.Po@am__quote@
@@ -1724,20 +1722,6 @@ flexplorer-fcinfo.obj: fcinfo.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcinfo.cpp' object='flexplorer-fcinfo.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fcinfo.obj `if test -f 'fcinfo.cpp'; then $(CYGPATH_W) 'fcinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/fcinfo.cpp'; fi`
-
-flexplorer-fclipbrd.o: fclipbrd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fclipbrd.o -MD -MP -MF $(DEPDIR)/flexplorer-fclipbrd.Tpo -c -o flexplorer-fclipbrd.o `test -f 'fclipbrd.cpp' || echo '$(srcdir)/'`fclipbrd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fclipbrd.Tpo $(DEPDIR)/flexplorer-fclipbrd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fclipbrd.cpp' object='flexplorer-fclipbrd.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fclipbrd.o `test -f 'fclipbrd.cpp' || echo '$(srcdir)/'`fclipbrd.cpp
-
-flexplorer-fclipbrd.obj: fclipbrd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fclipbrd.obj -MD -MP -MF $(DEPDIR)/flexplorer-fclipbrd.Tpo -c -o flexplorer-fclipbrd.obj `if test -f 'fclipbrd.cpp'; then $(CYGPATH_W) 'fclipbrd.cpp'; else $(CYGPATH_W) '$(srcdir)/fclipbrd.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fclipbrd.Tpo $(DEPDIR)/flexplorer-fclipbrd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fclipbrd.cpp' object='flexplorer-fclipbrd.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fclipbrd.obj `if test -f 'fclipbrd.cpp'; then $(CYGPATH_W) 'fclipbrd.cpp'; else $(CYGPATH_W) '$(srcdir)/fclipbrd.cpp'; fi`
 
 flexplorer-fcopyman.o: fcopyman.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fcopyman.o -MD -MP -MF $(DEPDIR)/flexplorer-fcopyman.Tpo -c -o flexplorer-fcopyman.o `test -f 'fcopyman.cpp' || echo '$(srcdir)/'`fcopyman.cpp

@@ -261,7 +261,6 @@
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
-    <ClInclude Include="bsingle.h" />
     <ClInclude Include="btime.h" />
     <ClInclude Include="btimer.h" />
     <ClInclude Include="bytereg.h" />

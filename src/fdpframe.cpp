@@ -58,7 +58,6 @@ static const char *_progVersion = VERSION;
 #include "fdirent.h"
 #include "fcinfo.h"
 #include "contpdlg.h"
-#include "fclipbrd.h"
 #include "fcopyman.h"
 #include "fmenufac.h"
 #include "optdlg.h"
@@ -466,7 +465,6 @@ void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
         return;
     }
 
-    childFrame->Attach(&SFlexFileClipboard::Instance());
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     // statusbar support with GTK, X11, MOTIF
     childFrame->GetListControl().Attach(this);

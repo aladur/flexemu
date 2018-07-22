@@ -62,7 +62,7 @@ iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
-clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h bsingle.h \
+clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h bdelete.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
@@ -72,16 +72,16 @@ EXTRA_flexemu_SOURCES = wwinres.rc
 
 flexplorer_SOURCES = \
 bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
-fclipbrd.cpp fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
+fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp \
 bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
-fclipbrd.h fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
+fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
-rfilecnt.h brcfile.h benv.h bsingle.h bdelete.h fmenufac.h \
+rfilecnt.h brcfile.h benv.h bdelete.h fmenufac.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
@@ -101,7 +101,7 @@ flexerr.h inout.h \
 memory.h mc6809.h misc1.h \
 typedefs.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
-clogfile.h bdelete.h bsingle.h \
+clogfile.h bdelete.h \
 mc6809st.h \
 schedcpu.h sprinter.h
 

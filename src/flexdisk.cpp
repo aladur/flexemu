@@ -41,7 +41,6 @@
 #include "fdcframe.h"
 #include "ffilecnt.h"
 #include "fdirent.h"
-#include "fclipbrd.h"
 #include "fcopyman.h"
 #include "fdlist.h"
 #include "bregistr.h"

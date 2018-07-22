@@ -81,7 +81,7 @@ FlexChildFrame::FlexChildFrame(
     const long style,
     FileContainerIf *container) :
     wxMDIChildFrame(parent, -1, title, pos, size, style),
-    listCtrl(nullptr), m_clipboardObserver(nullptr)
+    listCtrl(nullptr)
 {
     // Give it an icon
 #ifdef __WXMSW__
@@ -137,23 +137,6 @@ FlexChildFrame::FlexChildFrame(
 
 FlexChildFrame::~FlexChildFrame()
 {
-    if (m_clipboardObserver && listCtrl)
-    {
-        m_clipboardObserver->UpdateFrom(listCtrl->GetContainer());
-    }
-}
-
-void FlexChildFrame::Attach(BObserver *clipboardObserver)
-{
-    m_clipboardObserver = clipboardObserver;
-}
-
-void FlexChildFrame::Detach(BObserver *clipboardObserver)
-{
-    if (m_clipboardObserver == clipboardObserver)
-    {
-        m_clipboardObserver = nullptr;
-    }
 }
 
 void FlexChildFrame::OnActivate(wxActivateEvent &event)

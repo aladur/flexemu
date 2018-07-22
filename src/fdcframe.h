@@ -96,7 +96,6 @@ public:
 
 private:
     std::unique_ptr<FlexDiskListCtrl> listCtrl;
-    BObserver *m_clipboardObserver;
     DECLARE_EVENT_TABLE()
 };
 

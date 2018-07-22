@@ -190,7 +190,6 @@
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="dircont.cpp" />
     <ClCompile Include="fcinfo.cpp" />
-    <ClCompile Include="fclipbrd.cpp" />
     <ClCompile Include="fcopyman.cpp" />
     <ClCompile Include="fdcframe.cpp" />
     <ClCompile Include="fddnd.cpp" />
@@ -241,7 +240,6 @@
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />
     <ClInclude Include="fcinfo.h" />
-    <ClInclude Include="fclipbrd.h" />
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdcframe.h" />
     <ClInclude Include="fddnd.h" />

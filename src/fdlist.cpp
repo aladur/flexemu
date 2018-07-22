@@ -34,6 +34,7 @@
 #endif
 #include <wx/clipbrd.h>
 #include <wx/strconv.h>
+#include <wx/listimpl.cpp>
 
 #include "misc1.h"
 
@@ -44,7 +45,6 @@
 #include "fdcframe.h"
 #include "ffilebuf.h"
 #include "fcinfo.h"
-#include "fclipbrd.h"
 #include "fcopyman.h"
 #include "fmenufac.h"
 #include "ifilecnt.h"
@@ -66,6 +66,8 @@ const int LC_RANDOM = 2;
 const int LC_FILESIZE   = 3;
 const int LC_FILEDATE   = 4;
 const int LC_FILEATTR   = 5;
+
+WX_DECLARE_LIST(wxString, FlexFileList);
 
 #ifdef WIN32
     wxString FlexDiskListCtrl::fileViewer = wxT("Notepad.exe");
@@ -1074,4 +1076,6 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry *pDe)
     extension += _("file");
     return extension;
 }
+
+WX_DEFINE_LIST(FlexFileList)
 
