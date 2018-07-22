@@ -34,7 +34,6 @@
 #endif
 #include <wx/clipbrd.h>
 #include <wx/strconv.h>
-#include <wx/listimpl.cpp>
 
 #include "misc1.h"
 
@@ -66,8 +65,6 @@ const int LC_RANDOM = 2;
 const int LC_FILESIZE   = 3;
 const int LC_FILEDATE   = 4;
 const int LC_FILEATTR   = 5;
-
-WX_DECLARE_LIST(wxString, FlexFileList);
 
 #ifdef WIN32
     wxString FlexDiskListCtrl::fileViewer = wxT("Notepad.exe");
@@ -508,16 +505,10 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
         wxDragResult    result;
         int     flags = 0;
         FlexDnDFiles    files;
-        FlexFileList    fileList;
-        FlexFileList::Node *node = nullptr;
         int count = 0;
 
-        GetFileList(fileList);
-
-        for (node = fileList.GetFirst(); node; node = node->GetNext())
+        for (auto fileName : GetFileList())
         {
-            std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
-
             try
             {
                 files.Add(m_container->ReadToBuffer(fileName.c_str()));
@@ -537,7 +528,6 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
             count++;
         }
 
-        fileList.DeleteContents(TRUE);
         auto dragData =
                  std::unique_ptr<FlexFileDataObject>(new FlexFileDataObject);
         dragData->ReadDataFrom(files);
@@ -839,18 +829,21 @@ IMPLEMENT_SIMPLE_MENUCOMMAND(OnDelete, DeleteSelectedItems)
 IMPLEMENT_SIMPLE_MENUCOMMAND(OnRename, RenameSelectedItems)
 IMPLEMENT_SIMPLE_MENUCOMMAND(OnView, ViewSelectedItems)
 
-void FlexDiskListCtrl::GetFileList(FlexFileList &fileList)
+FlexFileList FlexDiskListCtrl::GetFileList()
 {
-    fileList.DeleteContents(TRUE);
+    FlexFileList fileList;
 
     for (auto item : GetSelections())
     {
-        wxString *pFileName = new wxString(GetItemText(item));
+        std::string fileName(GetItemText(item).mb_str(*wxConvCurrent));
 #ifdef UNIX
-        pFileName->MakeLower();
+        std::transform(fileName.begin(), fileName.end(), fileName.begin(),
+                       ::tolower);
 #endif
-        fileList.Append(pFileName);
+        fileList.push_back(fileName);
     }
+
+    return fileList;
 }
 
 void FlexDiskListCtrl::SelectAllFiles()
@@ -914,9 +907,7 @@ void FlexDiskListCtrl::FindFiles()
 
 void FlexDiskListCtrl::CopyToClipboard()
 {
-    FlexFileList fileList;
     FlexDnDFiles files;
-    FlexFileList::Node *node;
     int count = 0;
     FlexFileDataObject *pClipboardData;
 
@@ -929,12 +920,8 @@ void FlexDiskListCtrl::CopyToClipboard()
         return;
     }
 
-    GetFileList(fileList);
-
-    for (node = fileList.GetFirst(); node; node = node->GetNext())
+    for (auto fileName : GetFileList())
     {
-        std::string fileName(node->GetData()->mb_str(*wxConvCurrent));
-
         try
         {
             files.Add(m_container->ReadToBuffer(fileName.c_str()));
@@ -955,8 +942,6 @@ void FlexDiskListCtrl::CopyToClipboard()
         wxLogError(_("Can't copy data to the clipboard"));
         wxBell();
     }
-
-    fileList.DeleteContents(TRUE);
 }
 
 bool FlexDiskListCtrl::PasteFromClipboard()
@@ -1076,6 +1061,4 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry *pDe)
     extension += _("file");
     return extension;
 }
-
-WX_DEFINE_LIST(FlexFileList)
 
