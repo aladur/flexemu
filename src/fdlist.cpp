@@ -375,10 +375,10 @@ void FlexDiskListCtrl::RenameSelectedItems()
                     itemText.mb_str(*wxConvCurrent),
                     fName.mb_str(*wxConvCurrent));
                 auto dirEntry =
-                    reinterpret_cast<FlexDirEntry &>(GetItemData(item));
-                dirEntry.SetTotalFileName(fName.mb_str(*wxConvCurrent));
+                    reinterpret_cast<FlexDirEntry *>(GetItemData(item));
+                dirEntry->SetTotalFileName(fName.mb_str(*wxConvCurrent));
                 SetItemText(item, fName);
-                UpdateItem(item, dirEntry);
+                UpdateItem(item, *dirEntry);
             }
             catch (FlexException &ex)
             {
