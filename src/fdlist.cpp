@@ -86,39 +86,40 @@ static const wxChar *fileDescription[] =
     nullptr
 };
 
-int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2, wxIntPtr sortData)
+int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2,
+                                  wxIntPtr sortData)
 {
     if (!item1 || !item2)
     {
         return 0;
     }
 
-    FlexDirEntry *pObject1 = (FlexDirEntry *)item1;
-    FlexDirEntry *pObject2 = (FlexDirEntry *)item2;
+    auto dirEntry1 = reinterpret_cast<FlexDirEntry &>(item1);
+    auto dirEntry2 = reinterpret_cast<FlexDirEntry &>(item2);
 
     switch (sortData)
     {
         case LC_RANDOM:
-            return (pObject1->IsRandom() && !pObject2->IsRandom()) ? -1 : 1;
+            return (dirEntry1.IsRandom() && !dirEntry2.IsRandom()) ? -1 : 1;
 
         case LC_FILESIZE:
-            return (pObject1->GetSize() < pObject2->GetSize()) ? -1 : 1;
+            return (dirEntry1.GetSize() < dirEntry2.GetSize()) ? -1 : 1;
 
         case LC_FILEDATE:
-            return (pObject1->GetDate() < pObject2->GetDate()) ? -1 : 1;
+            return (dirEntry1.GetDate() < dirEntry2.GetDate()) ? -1 : 1;
 
         case LC_FILEATTR:
-            return (pObject1->GetAttributesString() <
-                    pObject2->GetAttributesString()) ?  -1 : 1;
+            return (dirEntry1.GetAttributesString() <
+                    dirEntry2.GetAttributesString()) ?  -1 : 1;
 
         case LC_FILEDESC:
-            return (FlexDiskListCtrl::GetFileDescription(pObject1) <
-                    FlexDiskListCtrl::GetFileDescription(pObject2)) ? -1 : 1;
+            return (FlexDiskListCtrl::GetFileDescription(dirEntry1) <
+                    FlexDiskListCtrl::GetFileDescription(dirEntry2)) ? -1 : 1;
 
         case LC_FILENAME:
         default:
-            return (pObject1->GetTotalFileName() <
-                    pObject2->GetTotalFileName()) ? -1 : 1;
+            return (dirEntry1.GetTotalFileName() <
+                    dirEntry2.GetTotalFileName()) ? -1 : 1;
     }
 }
 // Event table
@@ -194,7 +195,7 @@ int FlexDiskListCtrl::UpdateItems()
 {
     int     index = 0;
     wxListItem  anItem;
-    FileContainerIterator it;
+    FileContainerIterator iter;
 
     BeforeDeleteAllItems();
     DeleteAllItems();
@@ -207,18 +208,17 @@ int FlexDiskListCtrl::UpdateItems()
     // the new FlexDirEntry can be referenced by anItem.m_data !
     try
     {
-        for (it = m_container->begin(); it != m_container->end(); ++it)
+        for (iter = m_container->begin(); iter != m_container->end(); ++iter)
         {
-            FlexDirEntry *pDe = new FlexDirEntry(*it);
-            wxString m_text(pDe->GetTotalFileName().c_str(),
-                            *wxConvCurrent);
+            auto dirEntry = new FlexDirEntry(*iter);
+            wxString m_text(iter->GetTotalFileName().c_str(), *wxConvCurrent);
             anItem.m_text   = m_text;
             anItem.m_itemId = index;
             anItem.m_col    = 0;
-            anItem.m_data   = reinterpret_cast<wxUIntPtr>(pDe);
+            anItem.m_data   = reinterpret_cast<wxUIntPtr>(dirEntry);
             anItem.m_mask   = wxLIST_MASK_TEXT | wxLIST_MASK_DATA;
             InsertItem(anItem);
-            UpdateItem(index++, *pDe);
+            UpdateItem(index++, *dirEntry);
         }
     }
     catch (FlexException &ex)
@@ -241,18 +241,18 @@ FlexDiskListCtrl::~FlexDiskListCtrl()
     }
 }
 
-void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &de)
+void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &dirEntry)
 {
     wxString filesize;
 
-    filesize.Printf(wxT("%d"), de.GetSize());
-    SetItem(item, LC_RANDOM,   de.IsRandom() ? _("Yes") : wxT(""));
+    filesize.Printf(wxT("%d"), dirEntry.GetSize());
+    SetItem(item, LC_RANDOM, dirEntry.IsRandom() ? _("Yes") : wxT(""));
     SetItem(item, LC_FILESIZE, filesize);
-    wxString date(de.GetDate().GetDateString(), *wxConvCurrent);
+    wxString date(dirEntry.GetDate().GetDateString(), *wxConvCurrent);
     SetItem(item, LC_FILEDATE, date);
-    wxString attributes(de.GetAttributesString().c_str(), *wxConvCurrent);
+    wxString attributes(dirEntry.GetAttributesString().c_str(), *wxConvCurrent);
     SetItem(item, LC_FILEATTR, attributes);
-    SetItem(item, LC_FILEDESC, GetFileDescription(&de));
+    SetItem(item, LC_FILEDESC, GetFileDescription(dirEntry));
 }
 
 const wxMenu *FlexDiskListCtrl::GetMenu()
@@ -370,15 +370,15 @@ void FlexDiskListCtrl::RenameSelectedItems()
         {
             try
             {
-                FlexDirEntry *pDe;
                 fName.MakeUpper();
                 m_container->RenameFile(
                     itemText.mb_str(*wxConvCurrent),
                     fName.mb_str(*wxConvCurrent));
-                pDe = (FlexDirEntry *)GetItemData(item);
-                pDe->SetTotalFileName(fName.mb_str(*wxConvCurrent));
+                auto dirEntry =
+                    reinterpret_cast<FlexDirEntry &>(GetItemData(item));
+                dirEntry.SetTotalFileName(fName.mb_str(*wxConvCurrent));
                 SetItemText(item, fName);
-                UpdateItem(item, *pDe);
+                UpdateItem(item, dirEntry);
             }
             catch (FlexException &ex)
             {
@@ -582,12 +582,12 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
 
 void FlexDiskListCtrl::OnSelected(wxListEvent &event)
 {
-    FlexDirEntry    de;
+    FlexDirEntry dirEntry;
 
     if (m_container && m_container->FindFile(
-            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), de))
+            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), dirEntry))
     {
-        m_totalSize += de.GetSize();
+        m_totalSize += dirEntry.GetSize();
     }
 
     Notify();
@@ -595,13 +595,12 @@ void FlexDiskListCtrl::OnSelected(wxListEvent &event)
 
 void FlexDiskListCtrl::OnDeselected(wxListEvent &event)
 {
-    FlexDirEntry    de;
-    wxString        t;
+    FlexDirEntry dirEntry;
 
     if (m_container && m_container->FindFile(
-            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), de))
+            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), dirEntry))
     {
-        m_totalSize -= de.GetSize();
+        m_totalSize -= dirEntry.GetSize();
     }
 
     Notify();
@@ -663,7 +662,7 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
 
     for (auto item : GetSelections())
     {
-        FlexDirEntry de, *pDe;
+        FlexDirEntry dirEntry;
 
         auto fileName = GetItemText(item);
 
@@ -671,7 +670,8 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
         {
             auto setMask = isToBeSet ? protection : 0;
             auto clearMask = isToBeSet ? 0 : protection;
-            pDe = (FlexDirEntry *)GetItemData(item);
+            auto pDirEntry =
+                reinterpret_cast<FlexDirEntry *>(GetItemData(item));
             m_container->SetAttributes(
                 fileName.mb_str(*wxConvCurrent),
                 setMask, clearMask);
@@ -680,14 +680,14 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
             // (because maybe not all properties are
             // supported)
             if (m_container->FindFile(
-                    fileName.mb_str(*wxConvCurrent), de))
+                    fileName.mb_str(*wxConvCurrent), dirEntry))
             {
-                setMask = de.GetAttributes();
+                setMask = dirEntry.GetAttributes();
                 clearMask = ~setMask;
             }
 
-            pDe->SetAttributes(setMask, clearMask);
-            UpdateItem(item, *pDe);
+            pDirEntry->SetAttributes(setMask, clearMask);
+            UpdateItem(item, *pDirEntry);
         }
         catch (FlexException &ex)
         {
@@ -785,8 +785,8 @@ void FlexDiskListCtrl::OnDeleteItem(wxListEvent &event)
 {
     // delete the FlexDirEntry * object
     // stored in m_data
-    FlexDirEntry *pDe = (FlexDirEntry *)event.GetData();
-    delete pDe;
+    auto dirEntry = reinterpret_cast<FlexDirEntry *>(event.GetData());
+    delete dirEntry;
 }
 
 void FlexDiskListCtrl::BeforeDeleteAllItems()
@@ -794,21 +794,18 @@ void FlexDiskListCtrl::BeforeDeleteAllItems()
     // delete the FlexDirEntry * object
     // stored in m_data
     int item = -1;
-    FlexDirEntry *pDe;
 
-    while (true)
+    do
     {
         item = GetNextItem(item);
 
-        if (item == -1)
+        if (item >= 0)
         {
-            break;
+            auto dirEntry = reinterpret_cast<FlexDirEntry *>(GetItemData(item));
+            delete dirEntry;
+            SetItemData(item, 0);
         }
-
-        pDe = (FlexDirEntry *)GetItemData(item);
-        delete pDe;
-        SetItemData(item, 0);
-    }
+    } while (item >= 0);
 }
 
 IMPLEMENT_MODIFY_PROPERTY(OnSetWriteProtect,     WRITE_PROTECT,   TRUE)
@@ -989,32 +986,35 @@ bool FlexDiskListCtrl::PasteFromClipboard()
 
 bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
 {
-    const char      *p;
-    unsigned int    index;
-    FlexDirEntry    *pDe;
+    const char *fileName;
+    unsigned int index;
+    FlexDirEntry *dirEntry;
 
     for (index = 0; index < files.GetFileCount(); ++index)
     {
         try
         {
-            p = files.GetBufferAt(index).GetFilename();
+            fileName = files.GetBufferAt(index).GetFilename();
             GetContainer()->WriteFromBuffer(files.GetBufferAt(index));
-            pDe = new FlexDirEntry;
+            dirEntry = new FlexDirEntry;
 
-            if (GetContainer()->FindFile(p, *pDe))
+            if (GetContainer()->FindFile(fileName, *dirEntry))
             {
                 wxListItem anItem;
 
-                wxString m_text(pDe->GetTotalFileName().c_str(),
+                wxString m_text(dirEntry->GetTotalFileName().c_str(),
                                 *wxConvCurrent);
                 anItem.m_text   = m_text;
                 anItem.m_itemId = 0;
                 anItem.m_col    = 0;
-                anItem.m_data   = reinterpret_cast<wxUIntPtr>(pDe);
-                anItem.m_mask   = wxLIST_MASK_TEXT |
-                                  wxLIST_MASK_DATA;
+                anItem.m_data   = reinterpret_cast<wxUIntPtr>(dirEntry);
+                anItem.m_mask   = wxLIST_MASK_TEXT | wxLIST_MASK_DATA;
                 auto itemIndex = InsertItem(anItem);
-                UpdateItem(itemIndex, *pDe);
+                UpdateItem(itemIndex, *dirEntry);
+            }
+            else
+            {
+                delete dirEntry;
             }
         }
         catch (FlexException &ex)
@@ -1036,13 +1036,13 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
     return true;
 }
 
-wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry *pDe)
+wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry &dirEntry)
 {
     wxString        tmp;
     wxChar          **pFDesc;
 
     pFDesc = (wxChar **)fileDescription;
-    wxString extension(pDe->GetFileExt().c_str(), *wxConvCurrent);
+    wxString extension(dirEntry.GetFileExt().c_str(), *wxConvCurrent);
 
     while (*pFDesc != nullptr)
     {

@@ -82,13 +82,13 @@ public:
     {
         return m_container.get();
     };
-    static wxString GetFileDescription(const FlexDirEntry *pDe);
+    static wxString GetFileDescription(const FlexDirEntry &dirEntry);
 
 #ifdef wxUSE_DRAG_AND_DROP
     bool PasteFrom(FlexDnDFiles &files);
 #endif
     int UpdateItems();
-    void UpdateItem(int item, FlexDirEntry &de);
+    void UpdateItem(int item, FlexDirEntry &dirEntry);
     DECLARE_MENUCOMMAND(OnSelectAll)
     DECLARE_MENUCOMMAND(OnDeselectAll)
     DECLARE_MENUCOMMAND(OnFind)
