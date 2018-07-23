@@ -55,9 +55,7 @@ const unsigned long FLEX_FILEEXT_LENGTH = 3;
 
 class FlexDirEntry
 {
-
 private:
-
     int     size;
     int     attributes;
     int     sectorMap;
@@ -66,14 +64,16 @@ private:
     int     status;
     BDate   date;
     std::string fileName;
-    static char *fileDescription[];
 
 public:
-    FlexDirEntry();         // public constructor
-    virtual ~FlexDirEntry();    // public destructor
-    FlexDirEntry(const FlexDirEntry &de);
+    FlexDirEntry();
+    ~FlexDirEntry();
+    FlexDirEntry(const FlexDirEntry &src);
+    FlexDirEntry(FlexDirEntry &&src);
 
-    void    CopyFrom(const FlexDirEntry &de);
+    FlexDirEntry &operator= (const FlexDirEntry &src);
+    FlexDirEntry &operator= (FlexDirEntry &&src);
+
     const BDate &GetDate() const;
     void    SetDate(const BDate &date);
     void    SetDate(int d, int m, int y);
@@ -97,8 +97,9 @@ public:
     int     IsEmpty();
     void    SetEmpty();
     void    ClearEmpty();
-    FlexDirEntry &operator = (const FlexDirEntry &de);
 
+private:
+    void CopyFrom(const FlexDirEntry &src);
 };  // class FlexDirEntry
 
 inline void FlexDirEntry::SetSize(int s)
@@ -143,12 +144,6 @@ inline void FlexDirEntry::SetSectorMap(int aSectorMap)
 inline int FlexDirEntry::GetSectorMap() const
 {
     return sectorMap;
-}
-
-inline FlexDirEntry &FlexDirEntry::operator = (const FlexDirEntry &de)
-{
-    CopyFrom(de);
-    return *this;
 }
 
 #endif // FDIRENT_INCLUDED

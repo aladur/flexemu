@@ -46,25 +46,58 @@ FlexDirEntry::~FlexDirEntry()
 {
 }
 
-FlexDirEntry::FlexDirEntry(const FlexDirEntry &de)
+FlexDirEntry::FlexDirEntry(const FlexDirEntry &src)
 {
-    CopyFrom(de);
+    if (&src != this)
+    {
+        fileName = src.fileName;
+        CopyFrom(src);
+    }
 }
 
-void FlexDirEntry::CopyFrom(const FlexDirEntry &de)
+FlexDirEntry::FlexDirEntry(FlexDirEntry &&src)
 {
-    date        = de.date;
-    fileName    = de.fileName;
-    size        = de.size;
-    attributes  = de.attributes;
-    sectorMap   = de.sectorMap;
-    startTrk    = de.startTrk;
-    startSec    = de.startSec;
-    endTrk      = de.endTrk;
-    endSec      = de.endSec;
-    status      = de.status;
+    if (&src != this)
+    {
+        fileName = std::move(src.fileName);
+        CopyFrom(src);
+    }
 }
 
+FlexDirEntry &FlexDirEntry::operator=(const FlexDirEntry &src)
+{
+    if (&src != this)
+    {
+        fileName = src.fileName;
+        CopyFrom(src);
+    }
+
+    return *this;
+}
+
+FlexDirEntry &FlexDirEntry::operator=(FlexDirEntry &&src)
+{
+    if (&src != this)
+    {
+        fileName = std::move(src.fileName);
+        CopyFrom(src);
+    }
+
+    return *this;
+}
+
+void FlexDirEntry::CopyFrom(const FlexDirEntry &src)
+{
+    date = src.date;
+    size = src.size;
+    attributes = src.attributes;
+    sectorMap = src.sectorMap;
+    startTrk = src.startTrk;
+    startSec = src.startSec;
+    endTrk = src.endTrk;
+    endSec = src.endSec;
+    status = src.status;
+}
 
 const BDate &FlexDirEntry::GetDate() const
 {
