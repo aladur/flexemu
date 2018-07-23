@@ -507,7 +507,7 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
         FlexDnDFiles    files;
         int count = 0;
 
-        for (auto fileName : GetFileList())
+        for (auto fileName : GetSelectedFileNames())
         {
             try
             {
@@ -829,9 +829,9 @@ IMPLEMENT_SIMPLE_MENUCOMMAND(OnDelete, DeleteSelectedItems)
 IMPLEMENT_SIMPLE_MENUCOMMAND(OnRename, RenameSelectedItems)
 IMPLEMENT_SIMPLE_MENUCOMMAND(OnView, ViewSelectedItems)
 
-FlexFileList FlexDiskListCtrl::GetFileList()
+FileNames FlexDiskListCtrl::GetSelectedFileNames()
 {
-    FlexFileList fileList;
+    FileNames fileList;
 
     for (auto item : GetSelections())
     {
@@ -920,7 +920,7 @@ void FlexDiskListCtrl::CopyToClipboard()
         return;
     }
 
-    for (auto fileName : GetFileList())
+    for (auto fileName : GetSelectedFileNames())
     {
         try
         {

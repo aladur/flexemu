@@ -41,7 +41,7 @@ class BObserver;
 class FileContainerIf;
 class FlexDirEntry;
 
-using FlexFileList = std::vector<std::string>;
+using FileNames = std::vector<std::string>;
 
 /*------------------------------------------------------
  FlexDiskListCtrl
@@ -116,7 +116,7 @@ private:
     void RenameSelectedItems();
     void ViewSelectedItems();
     void SetPropertyOnSelectedItems(int protection, bool isToBeSet);
-    FlexFileList GetFileList();
+    FileNames GetSelectedFileNames();
     void CopyToClipboard();
     bool PasteFromClipboard();
     void DeselectAllFiles();
