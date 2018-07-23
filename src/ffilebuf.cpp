@@ -40,7 +40,10 @@ FlexFileBuffer::FlexFileBuffer()
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
 {
-    copyFrom(src);
+    if (&src != this)
+    {
+        copyFrom(src);
+    }
 }
 
 FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
