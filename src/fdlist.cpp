@@ -172,7 +172,7 @@ FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
     InsertColumn(LC_FILEDATE, _("Date"),       wxLIST_FORMAT_RIGHT, 90);
     InsertColumn(LC_FILEATTR, _("Attributes"), wxLIST_FORMAT_RIGHT, 60);
 
-    m_popupMenu.reset(FlexMenuFactory::CreateMenu(fEditMenuId));
+    m_popupMenu.reset(FlexMenuFactory::CreateEditMenu());
 
     UpdateItems();
 

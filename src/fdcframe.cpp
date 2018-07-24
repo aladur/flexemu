@@ -108,16 +108,11 @@ FlexChildFrame::FlexChildFrame(
 
     wxMenuBar  *pMenuBar = new wxMenuBar(wxMB_DOCKABLE);
 
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fFileMenuId),
-                     _("&File"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fEditMenuId),
-                     _("&Edit"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fContainerMenuId),
-                     _("&Container"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fExtrasMenuId),
-                     _("&Extras"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fHelpMenuId),
-                     _("&Help"));
+    pMenuBar->Append(FlexMenuFactory::CreateFileMenu(), _("&File"));
+    pMenuBar->Append(FlexMenuFactory::CreateEditMenu(), _("&Edit"));
+    pMenuBar->Append(FlexMenuFactory::CreateContainerMenu(), _("&Container"));
+    pMenuBar->Append(FlexMenuFactory::CreateExtrasMenu(), _("&Extras"));
+    pMenuBar->Append(FlexMenuFactory::CreateHelpMenu(), _("&Help"));
 
     SetMenuBar(pMenuBar);
 

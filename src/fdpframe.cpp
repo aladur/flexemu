@@ -101,9 +101,9 @@ FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
 #endif
     wxMenuBar  *pMenuBar = new wxMenuBar(wxMB_DOCKABLE);
 
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fFileMenuId),  _("&File"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fExtrasMenuId), _("&Extras"));
-    pMenuBar->Append(FlexMenuFactory::CreateMenu(fHelpMenuId),  _("&Help"));
+    pMenuBar->Append(FlexMenuFactory::CreateFileMenu(),  _("&File"));
+    pMenuBar->Append(FlexMenuFactory::CreateExtrasMenu(), _("&Extras"));
+    pMenuBar->Append(FlexMenuFactory::CreateHelpMenu(),  _("&Help"));
     SetMenuBar(pMenuBar);
 
     // Accelerators
@@ -154,16 +154,14 @@ void FlexParentFrame::OnQuit(wxCommandEvent &WXUNUSED(event))
 
 void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
 {
-    wxBitmap *bitmaps[3];
-
 #ifdef __WXMSW__
-    bitmaps[0] = new wxBitmap(wxT("new_con"), wxBITMAP_TYPE_RESOURCE);
-    bitmaps[1] = new wxBitmap(wxT("open_con"), wxBITMAP_TYPE_RESOURCE);
-    bitmaps[2] = new wxBitmap(wxT("open_dir"), wxBITMAP_TYPE_RESOURCE);
+    auto newContainerBitmap = wxBitmap(wxT("new_con"),wxBITMAP_TYPE_RESOURCE);
+    auto openContainerBitmap = wxBitmap(wxT("open_con"),wxBITMAP_TYPE_RESOURCE);
+    auto openDirectoryBitmap = wxBitmap(wxT("open_dir"),wxBITMAP_TYPE_RESOURCE);
 #else
-    bitmaps[0] = new wxBitmap(new_con_xpm);
-    bitmaps[1] = new wxBitmap(open_con_xpm);
-    bitmaps[2] = new wxBitmap(open_dir_xpm);
+    auto newContainerBitmap = wxBitmap(new_con_xpm);
+    auto openContainerBitmap = wxBitmap(open_con_xpm);
+    auto openDirectoryBitmap = wxBitmap(open_dir_xpm);
 #endif
 
 #ifdef __WXMSW__
@@ -174,30 +172,22 @@ void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
     int currentX = 5;
 
     toolBar->AddTool(MDI_NEW_CONTAINER, _("New File Container"),
-                     *bitmaps[0], wxNullBitmap);
-    //toolBar->AddTool( MDI_NEW_CONTAINER, *bitmaps[0], wxNullBitmap, FALSE,
-    //                currentX, -1, (wxObject *) nullptr, _("New File Container"));
+                     newContainerBitmap, wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_NEW_CONTAINER, "Create a new File Container");
+
     currentX += width + 5;
-    //toolBar->AddTool(MDI_OPEN_CONTAINER, *bitmaps[1], wxNullBitmap, FALSE,
-    //               currentX, -1, (wxObject *) nullptr, _("Open File Container"));
     toolBar->AddTool(MDI_OPEN_CONTAINER, _("Open File Container"),
-                     *bitmaps[1], wxNullBitmap);
+                     openContainerBitmap, wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_OPEN_CONTAINER,
                              "Open an existing File Container");
+
     currentX += width + 5;
-    //toolBar->AddTool(MDI_OPEN_DIRECTORY, *bitmaps[2], wxNullBitmap, FALSE,
-    //                 currentX, -1, (wxObject *) nullptr, _("Open Directory"));
     toolBar->AddTool(MDI_OPEN_DIRECTORY, _("Open Directory"),
-                     *bitmaps[2], wxNullBitmap);
+                     openDirectoryBitmap, wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_OPEN_DIRECTORY,
                              "Open an existing Directory as File Container");
-    toolBar->Realize();
 
-    for (int i = 0; i < 3; i++)
-    {
-        delete bitmaps[i];
-    }
+    toolBar->Realize();
 }
 
 void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)

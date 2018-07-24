@@ -23,15 +23,6 @@
 #ifndef FMENUFAC_INCLUDED
 #define FMENUFAC_INCLUDED
 
-enum tFlxMenuId
-{
-    fFileMenuId,
-    fEditMenuId,
-    fExtrasMenuId,
-    fContainerMenuId,
-    fHelpMenuId
-};
-
 /*---------------------------------------------------------
  FlexMenuFactory
  simple factory class used for creating menus on the heap
@@ -39,7 +30,11 @@ enum tFlxMenuId
 class FlexMenuFactory
 {
 public:
-    static wxMenu *CreateMenu(enum tFlxMenuId id);
+    static wxMenu *CreateFileMenu();
+    static wxMenu *CreateEditMenu();
+    static wxMenu *CreateContainerMenu();
+    static wxMenu *CreateExtrasMenu();
+    static wxMenu *CreateHelpMenu();
 };
 #endif
 
