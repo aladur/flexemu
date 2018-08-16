@@ -25,7 +25,7 @@
 #ifndef APPRUN_INCLUDED
 #define APPRUN_INCLUDED
 
-//#include "misc1.h"
+#include "misc1.h"
 #include "memory.h"
 #include "mc6809.h"
 #include "da6809.h"
@@ -44,10 +44,18 @@
 #include "vico2.h"
 #include "mc146818.h"
 #include "drisel.h"
+#include <string>
+#include <map>
 
 struct sGuiOptions;
 struct sOptions;
 
+struct sIoDeviceMapping
+{
+    std::string name;
+    Word baseAddress;
+    int byteSize;
+};
 
 class ApplicationRunner
 {
@@ -81,6 +89,7 @@ private:
     Command command;
     VideoControl1 vico1;
     VideoControl2 vico2;
+    std::map<std::string, IoDevice &> ioDevices;
 };
 
 #endif

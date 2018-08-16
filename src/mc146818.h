@@ -51,7 +51,7 @@ public:
     void resetIo() override;
     const char *getName() override
     {
-        return "mc146818";
+        return "rtc";
     };
     int sizeOfIo() override
     {

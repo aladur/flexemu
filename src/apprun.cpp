@@ -65,6 +65,16 @@ ApplicationRunner::ApplicationRunner(
     vico1(memory),
     vico2(memory)
 {
+    ioDevices.insert({ mmu.getName(), mmu });
+    ioDevices.insert({ acia1.getName(), acia1 });
+    ioDevices.insert({ pia1.getName(), pia1 });
+    ioDevices.insert({ pia2.getName(), pia2 });
+    ioDevices.insert({ fdc.getName(), fdc });
+    ioDevices.insert({ drisel.getName(), drisel });
+    ioDevices.insert({ command.getName(), command });
+    ioDevices.insert({ vico1.getName(), vico1 });
+    ioDevices.insert({ vico2.getName(), vico2 });
+    ioDevices.insert({ rtc.getName(), rtc });
 }
 
 ApplicationRunner::~ApplicationRunner()
@@ -74,6 +84,21 @@ ApplicationRunner::~ApplicationRunner()
 
 int ApplicationRunner::run()
 {
+    static const auto ioDeviceMappings = std::vector<sIoDeviceMapping>{
+        { "mmu", MMU_BASE, -1 },
+        { "acia1", ACIA1_BASE, -1 },
+        { "pia1", PIA1_BASE, -1 },
+        { "pia2", PIA2_BASE, -1 },
+        { "fdc", FDC_BASE, -1 },
+        // drisel: Same register is mirrored 4 times in address space.
+        { "drisel", DRISEL_BASE, 4 },
+        { "command", COMM_BASE, -1 },
+        { "vico1", VICO1_BASE, -1 },
+        { "vico2", VICO2_BASE, -1 },
+        // MC146818: Only part of the device is mapped into memory space.
+        { "rtc", RTC_BASE, RTC_HIGH - RTC_BASE + 1 },
+    };
+
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
@@ -97,19 +122,18 @@ int ApplicationRunner::run()
                 guiOptions);
     }
 
+
     // Add all memory mapped I/O devices to memory.
-    memory.add_io_device(mmu, MMU_BASE);
-    memory.add_io_device(acia1, ACIA1_BASE);
-    memory.add_io_device(pia1, PIA1_BASE);
-    memory.add_io_device(pia2, PIA2_BASE);
-    memory.add_io_device(fdc, FDC_BASE);
-    // drisel: Same register is mirrored 4 times in address space.
-    memory.add_io_device(drisel, DRISEL_BASE, 4);
-    memory.add_io_device(command, COMM_BASE);
-    memory.add_io_device(vico1, VICO1_BASE);
-    memory.add_io_device(vico2, VICO2_BASE);
-    // MC146818: Only part of the device is mapped into memory space.
-    memory.add_io_device(rtc, RTC_BASE, RTC_HIGH - RTC_BASE + 1);
+    for (auto ioDeviceMapping : ioDeviceMappings)
+    {
+        if (ioDevices.find(ioDeviceMapping.name) != ioDevices.end())
+        {
+            auto &ioDevice = ioDevices.at(ioDeviceMapping.name);
+
+            memory.add_io_device(ioDevice,
+                    ioDeviceMapping.baseAddress, ioDeviceMapping.byteSize);
+        }
+    }
 
     // Load monitor program into ROM.
     int error;

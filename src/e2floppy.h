@@ -80,7 +80,7 @@ public:
     void resetIo() override;
     const char *getName() override
     {
-        return "e2floppy";
+        return "fdc";
     };
 
     virtual void         get_drive_status(DiskStatus status[4]);
