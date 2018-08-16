@@ -104,10 +104,7 @@ int ApplicationRunner::run()
     memory.add_io_device(pia2, PIA2_BASE);
     memory.add_io_device(fdc, FDC_BASE);
     // drisel: Same register is mirrored 4 times in address space.
-    memory.add_io_device(drisel, DRISEL_BASE);
-    memory.add_io_device(drisel, DRISEL_BASE+1);
-    memory.add_io_device(drisel, DRISEL_BASE+2);
-    memory.add_io_device(drisel, DRISEL_BASE+3);
+    memory.add_io_device(drisel, DRISEL_BASE, 4);
     memory.add_io_device(command, COMM_BASE);
     memory.add_io_device(vico1, VICO1_BASE);
     memory.add_io_device(vico2, VICO2_BASE);

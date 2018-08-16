@@ -167,10 +167,11 @@ bool Memory::add_io_device(
         int size /* = -1 */)
 {
     Word offset;
+    Word sizeOfIo = device.sizeOfIo();
 
     if (size < 0)
     {
-        size = device.sizeOfIo();
+        size = sizeOfIo;
     }
 
     if (base_address < GENIO_BASE || ((int)base_address + size > 0xffff))
@@ -183,7 +184,7 @@ bool Memory::add_io_device(
     for (offset = 0; offset < size; ++offset)
     {
         ioAccessForAddressMap.emplace(base_address + offset,
-                                    IoAccess(device, offset));
+                                    IoAccess(device, (offset % sizeOfIo)));
     }
 
     return true;
