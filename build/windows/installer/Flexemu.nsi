@@ -169,6 +169,7 @@ ${Else}
   File /a "${BASEDIR}\bin\Win32\Release\wxmsw31u_core_vc_custom.dll"
 ${EndIf}
   File /a "${BASEDIR}\src\boot"
+  File /a "${BASEDIR}\src\flexemu.conf"
   File /a /oname=Changes.txt "${BASEDIR}\ChangeLog"
   File /a /oname=Copying.txt "${BASEDIR}\COPYING"
   File /a /oname=Readme.txt "${BASEDIR}\README"

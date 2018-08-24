@@ -85,22 +85,6 @@ ApplicationRunner::~ApplicationRunner()
 
 int ApplicationRunner::run()
 {
-#ifdef _WIN32
-    static const auto ioDeviceMappings = std::vector<sIoDeviceMapping>{
-        { "mmu", MMU_BASE, -1 },
-        { "acia1", ACIA1_BASE, -1 },
-        { "pia1", PIA1_BASE, -1 },
-        { "pia2", PIA2_BASE, -1 },
-        { "fdc", FDC_BASE, -1 },
-        // drisel: Same register is mirrored 4 times in address space.
-        { "drisel", DRISEL_BASE, 4 },
-        { "command", COMM_BASE, -1 },
-        { "vico1", VICO1_BASE, -1 },
-        { "vico2", VICO2_BASE, -1 },
-        // MC146818: Only part of the device is mapped into memory space.
-        { "rtc", RTC_BASE, RTC_HIGH - RTC_BASE + 1 },
-    };
-#else
     static const auto validKeys = std::set<std::string>{
         "mmu", "acia1", "pia1", "pia2", "fdc", "drisel", "command", "vico1",
         "vico2", "rtc"
@@ -108,7 +92,6 @@ int ApplicationRunner::run()
 
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     const auto ioDeviceMappings = configFile.ReadIoDevices(validKeys);
-#endif
 
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
