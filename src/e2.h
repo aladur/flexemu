@@ -55,31 +55,11 @@
 *  specifying memory mapped I/O                    *
 ***************************************************/
 
-#define ONE_BYTE    (1)
-#define TWO_BYTE    (2)
-#define FOUR_BYTE   (4)
-#define SIXTEEN_BYTE    (16)
-
-#define VIRAM_MASK  (~(VIDEORAM_SIZE - 1) & 0xffff) /* Video ram */
-#define VIRAM_BASE  0x0000
-/* IOGEN_MASK and IOIGEN_BASE provides a general address range */
+/* GENIO_MASK and GENIO_BASE provides a general address range  */
 /* where memory mapped I/O is placed                           */
 /* the range is: $fc00 - ffff                                  */
 #define GENIO_MASK  0xfc00   /* general mask for I/O (One 1K Block) */
 #define GENIO_BASE  0xfc00
-#define ACIA1_BASE  0xfcf4
-#define VICO1_BASE  0xfcf6
-#define VICO2_BASE  0xfcf7
-#define ACIA1_BASE  0xfcf4
-#define VICO_BASE   0xfcf6
-#define PIA1_BASE   0xfcf0
-#define PIA2_BASE   0xfcf8
-#define FDC_BASE   0xfd30
-#define DRISEL_BASE   0xfd38
-#define COMM_BASE   0xfd3c
-#define MMU_BASE    0xffe0
-#define RTC_BASE    0xfd00   /* start addr. of realtime clock */
-#define RTC_HIGH    0xfd2f   /* last addr. of realtime clock */
 #define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
 
 /******************************************************
@@ -91,10 +71,5 @@
 
 #define SERPAR      (0xef86)
 
-/******************************************************
-* initial value for SERPAR after RESET or NMI         *
-******************************************************/
-
-#define INITSP      (0xf07c)
 #endif
 
