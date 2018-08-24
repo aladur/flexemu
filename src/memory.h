@@ -110,7 +110,7 @@ public:
     // inlined for optimized performance.
     inline void write_byte(Word address, Byte value)
     {
-        if ((address & GENIO_MASK) == GENIO_MASK)
+        if ((address & GENIO_BASE) == GENIO_BASE)
         {
             auto iterator = ioAccessForAddressMap.find(address);
 
@@ -137,7 +137,7 @@ public:
 
     inline Byte read_byte(Word address)
     {
-        if ((address & GENIO_MASK) == GENIO_MASK)
+        if ((address & GENIO_BASE) == GENIO_BASE)
         {
             auto iterator = ioAccessForAddressMap.find(address);
 

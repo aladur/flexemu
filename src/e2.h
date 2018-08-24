@@ -55,10 +55,10 @@
 *  specifying memory mapped I/O                    *
 ***************************************************/
 
-/* GENIO_MASK and GENIO_BASE provides a general address range  */
-/* where memory mapped I/O is placed                           */
-/* the range is: $fc00 - ffff                                  */
-#define GENIO_MASK  0xfc00   /* general mask for I/O (One 1K Block) */
+/* GENIO_BASE provides a general address range  */
+/* where memory mapped I/O is placed            */
+/* the range is: $fc00 - ffff                   */
+/* It has to be a multiple of 1024              */
 #define GENIO_BASE  0xfc00
 #define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
 
