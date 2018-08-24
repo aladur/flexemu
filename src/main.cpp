@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
         MessageBox(nullptr, msg.str().c_str(),
                    PROGRAMNAME " error", MB_OK | MB_ICONERROR);
 #else
-        fprintf(stderr, "%s", msg.str().c_str());
+        fprintf(stderr, "%s\n", msg.str().c_str());
 #endif
         return_code = 1;
     }

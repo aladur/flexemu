@@ -65,6 +65,7 @@
 #define FERR_FLEX_EXCEPTION         (35)
 #define FERR_UNSUPPORTED_GUI_TYPE   (36)
 #define FERR_INVALID_MAGIC_NUMBER   (37)
+#define FERR_INVALID_LINE_IN_FILE   (38)
 
 
 class FlexException : public std::exception
@@ -87,6 +88,8 @@ public:
     FlexException(int ec, const std::string &sp1,
         const std::string &sp2) throw();
     FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw();
+    FlexException(int ec, const std::string &sp1, const std::string &sp2,
+                  const std::string &sp3) throw();
 #ifdef _WIN32
     FlexException(unsigned long lastError, const std::string &sp1) throw();
 #endif

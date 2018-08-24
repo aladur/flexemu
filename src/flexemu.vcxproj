@@ -177,6 +177,7 @@
     <ClCompile Include="bdir.cpp" />
     <ClCompile Include="benv.cpp" />
     <ClCompile Include="bfileptr.cpp" />
+    <ClCompile Include="binifile.cpp" />
     <ClCompile Include="bmembuf.cpp" />
     <ClCompile Include="brcfile.cpp" />
     <ClCompile Include="bregistr.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="drisel.cpp" />
     <ClCompile Include="e2floppy.cpp" />
     <ClCompile Include="fcinfo.cpp" />
+    <ClCompile Include="fcnffile.cpp" />
     <ClCompile Include="fcopyman.cpp" />
     <ClCompile Include="fdirent.cpp" />
     <ClCompile Include="ffilebuf.cpp" />
@@ -256,6 +258,7 @@
     <ClInclude Include="bdir.h" />
     <ClInclude Include="benv.h" />
     <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="binifile.h" />
     <ClInclude Include="bjoystck.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="brcfile.h" />
@@ -276,6 +279,7 @@
     <ClInclude Include="e2.h" />
     <ClInclude Include="e2floppy.h" />
     <ClInclude Include="fcinfo.h" />
+    <ClInclude Include="fcnffile.h" />
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdirent.h" />
     <ClInclude Include="ffilebuf.h" />

@@ -109,7 +109,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)" \
+	"$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
@@ -140,7 +141,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-mc6809st.$(OBJEXT) flexemu-cvtwchar.$(OBJEXT) \
 	flexemu-joystick.$(OBJEXT) flexemu-apprun.$(OBJEXT) \
 	flexemu-keyboard.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
-	flexemu-drisel.$(OBJEXT) flexemu-terminal.$(OBJEXT)
+	flexemu-drisel.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-binifile.$(OBJEXT) flexemu-fcnffile.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -274,7 +276,7 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-DATA = $(pkgdata_DATA)
+DATA = $(pkgdata_DATA) $(sysconf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -467,28 +469,34 @@ top_srcdir = @top_srcdir@
 pkgdata_DATA = boot flexemu.xpm  \
 		flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm
 
+sysconf_DATA = flexemu.conf
 SUFFIXES = .rc .o
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
              Flexemu.ad boot flexemu.astyle flexemu.xpm \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
-	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj
+	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
+	     flexemu.conf
 
 SUBDIRS = bitmaps tools
 flexemu_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-			-DF_DATADIR=\"$(pkgdatadir)\" @CXXSPEED@ \
-			@OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
+			-DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
 
 flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
 
 fsetup_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
 
 test_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
@@ -514,6 +522,7 @@ bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
+binifile.cpp fcnffile.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -526,7 +535,7 @@ clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
-bytereg.h drisel.h
+bytereg.h drisel.h binifile.h fcnffile.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
@@ -689,6 +698,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-benv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bfileptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-binifile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bjoystck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bmembuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brcfile.Po@am__quote@
@@ -706,6 +716,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-drisel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-e2floppy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fcinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fcnffile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fcopyman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fdirent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ffilebuf.Po@am__quote@
@@ -1653,6 +1664,34 @@ flexemu-terminal.obj: terminal.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-terminal.obj `if test -f 'terminal.cpp'; then $(CYGPATH_W) 'terminal.cpp'; else $(CYGPATH_W) '$(srcdir)/terminal.cpp'; fi`
 
+flexemu-binifile.o: binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-binifile.o -MD -MP -MF $(DEPDIR)/flexemu-binifile.Tpo -c -o flexemu-binifile.o `test -f 'binifile.cpp' || echo '$(srcdir)/'`binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-binifile.Tpo $(DEPDIR)/flexemu-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='binifile.cpp' object='flexemu-binifile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-binifile.o `test -f 'binifile.cpp' || echo '$(srcdir)/'`binifile.cpp
+
+flexemu-binifile.obj: binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-binifile.obj -MD -MP -MF $(DEPDIR)/flexemu-binifile.Tpo -c -o flexemu-binifile.obj `if test -f 'binifile.cpp'; then $(CYGPATH_W) 'binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/binifile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-binifile.Tpo $(DEPDIR)/flexemu-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='binifile.cpp' object='flexemu-binifile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-binifile.obj `if test -f 'binifile.cpp'; then $(CYGPATH_W) 'binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/binifile.cpp'; fi`
+
+flexemu-fcnffile.o: fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fcnffile.o -MD -MP -MF $(DEPDIR)/flexemu-fcnffile.Tpo -c -o flexemu-fcnffile.o `test -f 'fcnffile.cpp' || echo '$(srcdir)/'`fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fcnffile.Tpo $(DEPDIR)/flexemu-fcnffile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcnffile.cpp' object='flexemu-fcnffile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fcnffile.o `test -f 'fcnffile.cpp' || echo '$(srcdir)/'`fcnffile.cpp
+
+flexemu-fcnffile.obj: fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fcnffile.obj -MD -MP -MF $(DEPDIR)/flexemu-fcnffile.Tpo -c -o flexemu-fcnffile.obj `if test -f 'fcnffile.cpp'; then $(CYGPATH_W) 'fcnffile.cpp'; else $(CYGPATH_W) '$(srcdir)/fcnffile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fcnffile.Tpo $(DEPDIR)/flexemu-fcnffile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcnffile.cpp' object='flexemu-fcnffile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fcnffile.obj `if test -f 'fcnffile.cpp'; then $(CYGPATH_W) 'fcnffile.cpp'; else $(CYGPATH_W) '$(srcdir)/fcnffile.cpp'; fi`
+
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bdate.Tpo $(DEPDIR)/flexplorer-bdate.Po
@@ -2471,6 +2510,27 @@ uninstall-pkgdataDATA:
 	@list='$(pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(pkgdatadir)'; $(am__uninstall_files_from_dir)
+install-sysconfDATA: $(sysconf_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(sysconf_DATA)'; test -n "$(sysconfdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(sysconfdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(sysconfdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(sysconfdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(sysconfdir)" || exit $$?; \
+	done
+
+uninstall-sysconfDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(sysconf_DATA)'; test -n "$(sysconfdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(sysconfdir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -2631,7 +2691,7 @@ check: check-recursive
 all-am: Makefile $(PROGRAMS) $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -2693,7 +2753,7 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-binPROGRAMS
+install-exec-am: install-binPROGRAMS install-sysconfDATA
 
 install-html: install-html-recursive
 
@@ -2732,7 +2792,8 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA
+uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA \
+	uninstall-sysconfDATA
 
 .MAKE: $(am__recursive_targets) all install-am install-strip
 
@@ -2746,11 +2807,12 @@ uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-man install-pdf install-pdf-am \
 	install-pkgdataDATA install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-pkgdataDATA
+	install-sysconfDATA installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-pkgdataDATA \
+	uninstall-sysconfDATA
 
 .PRECIOUS: Makefile
 

@@ -1,5 +1,6 @@
 pkgdata_DATA = boot flexemu.xpm  \
 		flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm
+sysconf_DATA = flexemu.conf
 
 SUFFIXES = .rc .o
 .rc.o:
@@ -10,7 +11,8 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
-	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj
+	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
+	     flexemu.conf
 
 SUBDIRS = bitmaps tools
 
@@ -19,15 +21,19 @@ EXTRA_PROGRAMS = flexplorer fsetup
 noinst_PROGRAMS = test
 
 flexemu_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-			-DF_DATADIR=\"$(pkgdatadir)\" @CXXSPEED@ \
-			@OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
+			-DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
 flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
 fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
 test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
@@ -54,6 +60,7 @@ bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
+binifile.cpp fcnffile.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -66,7 +73,7 @@ clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
-bytereg.h drisel.h
+bytereg.h drisel.h binifile.h fcnffile.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 

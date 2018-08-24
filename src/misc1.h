@@ -367,5 +367,28 @@ extern bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 extern std::string getExecutablePath();
 #endif
+extern std::string getFlexemuSystemConfigFile();
+
+extern const char* white_space;
+
+// trim from end of string (right)
+inline std::string& rtrim(std::string& str, const char* t = white_space)
+{
+    str.erase(str.find_last_not_of(t) + 1);
+    return str;
+}
+
+// trim from beginning of string (left)
+inline std::string& ltrim(std::string& str, const char* t = white_space)
+{
+    str.erase(0, str.find_first_not_of(t));
+    return str;
+}
+
+// trim from both ends of string (left & right)
+inline std::string& trim(std::string& str, const char* t = white_space)
+{
+    return ltrim(rtrim(str, t), t);
+}
 
 #endif /* __misc1.h__ */

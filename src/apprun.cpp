@@ -43,6 +43,7 @@
 #include "flexerr.h"
 #include "fileread.h"
 #include "btimer.h"
+#include "fcnffile.h"
 
 
 ApplicationRunner::ApplicationRunner(
@@ -84,6 +85,7 @@ ApplicationRunner::~ApplicationRunner()
 
 int ApplicationRunner::run()
 {
+#ifdef _WIN32
     static const auto ioDeviceMappings = std::vector<sIoDeviceMapping>{
         { "mmu", MMU_BASE, -1 },
         { "acia1", ACIA1_BASE, -1 },
@@ -98,6 +100,10 @@ int ApplicationRunner::run()
         // MC146818: Only part of the device is mapped into memory space.
         { "rtc", RTC_BASE, RTC_HIGH - RTC_BASE + 1 },
     };
+#else
+    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    const auto ioDeviceMappings = configFile.ReadIoDevices();
+#endif
 
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);

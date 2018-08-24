@@ -27,6 +27,8 @@
 #include "bfileptr.h"
 #include "cvtwchar.h"
 
+const char* white_space = " \t\n\r\f\v";
+
 const char *gMemoryAllocationErrorString =
     "Bad memory allocation.\n"
     "Close other applications\n"
@@ -332,4 +334,16 @@ std::string getExecutablePath()
     return retval;
 }
 #endif
+
+std::string getFlexemuSystemConfigFile()
+{
+    static const auto flexemuConfigFile = std::string("flexemu.conf");
+
+#ifdef _WIN32
+    return getExecutablePath() + PATHSEPARATORSTRING + flexemuConfigFile;
+#endif
+#ifdef __LINUX
+    return std::string(F_SYSCONFDIR) + PATHSEPARATORSTRING + flexemuConfigFile;
+#endif
+}
 

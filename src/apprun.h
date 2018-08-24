@@ -50,13 +50,6 @@
 struct sGuiOptions;
 struct sOptions;
 
-struct sIoDeviceMapping
-{
-    std::string name;
-    Word baseAddress;
-    int byteSize;
-};
-
 class ApplicationRunner
 {
 public:
