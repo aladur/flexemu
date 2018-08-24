@@ -101,8 +101,13 @@ int ApplicationRunner::run()
         { "rtc", RTC_BASE, RTC_HIGH - RTC_BASE + 1 },
     };
 #else
+    static const auto validKeys = std::set<std::string>{
+        "mmu", "acia1", "pia1", "pia2", "fdc", "drisel", "command", "vico1",
+        "vico2", "rtc"
+    };
+
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    const auto ioDeviceMappings = configFile.ReadIoDevices();
+    const auto ioDeviceMappings = configFile.ReadIoDevices(validKeys);
 #endif
 
     cpu.set_disassembler(&disassembler);

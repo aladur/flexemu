@@ -24,6 +24,7 @@
 #include "binifile.h"
 #include "flexerr.h"
 #include <sstream>
+#include <set>
 
 
 BIniFile::BIniFile(const char *aFileName) :
@@ -116,6 +117,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                                              const std::string &section)
 {
     std::map<std::string, std::string> resultMap;
+    std::set<std::string> foundKeys;
 
     if (IsValid())
     {
@@ -137,7 +139,14 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                 case Type::KeyValue:
                     if (isSectionActive)
                     {
+                        if (foundKeys.find(key) != foundKeys.end())
+                        {
+                            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                    key + "=" + value, fileName);
+                        }
+
                         resultMap.insert({ key, value });;
+                        foundKeys.insert(key);
                     }
                     break;
 

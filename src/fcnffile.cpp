@@ -23,8 +23,8 @@
 #include "misc1.h"
 #include "fcnffile.h"
 #include "flexerr.h"
+#include "e2.h"
 #include <sstream>
-#include <stdio.h>
 
 
 FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
@@ -48,7 +48,8 @@ FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src)
     return *this;
 }
 
-std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
+std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices(
+                                            std::set<std::string> validKeys)
 {
     std::vector<sIoDeviceMapping> deviceMappings;
 
@@ -56,6 +57,13 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 
     for (const auto iter : valueForKey)
     {
+        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        {
+            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                iter.first + "=" + iter.second,
+                                iniFile.GetFileName());
+        }
+
         std::stringstream stream(iter.second);
 
         std::string addressString;
@@ -71,7 +79,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
             mapping.byteSize = -1;
             addressStream << std::hex << addressString;
             addressStream >> baseAddress;
-            if (baseAddress > 0xffff)
+            if (baseAddress < GENIO_BASE || baseAddress > 0xffff)
             {
                 throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                     iter.first + "=" + iter.second,
@@ -83,7 +91,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
                 std::stringstream byteSizeStream;
                 byteSizeStream << std::hex << byteSizeString;
                 byteSizeStream >> mapping.byteSize;
-                if (mapping.byteSize <= 0)
+                if (mapping.byteSize <= 0 || mapping.byteSize > 64)
                 {
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
                                         iter.first + "=" + iter.second,

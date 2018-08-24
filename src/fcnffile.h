@@ -26,6 +26,7 @@
 #include "binifile.h"
 #include <vector>
 #include <string>
+#include <set>
 
 
 struct sIoDeviceMapping
@@ -48,7 +49,8 @@ public:
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile &operator=(FlexemuConfigFile &&);
 
-    std::vector<sIoDeviceMapping> ReadIoDevices();
+    std::vector<sIoDeviceMapping> ReadIoDevices(
+                                      std::set<std::string> validKeys);
 
 private:
     BIniFile iniFile;
