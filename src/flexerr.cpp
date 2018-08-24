@@ -156,8 +156,8 @@ const char *FlexException::errString[] =
     _("Container {0} is read-only"),
     _("An unspecified Windows error occured (#{1})"),
     _(""),
-    _("{0} is an invalid NULL pointer")
-    _("")
+    _("{0} is an invalid NULL pointer"),
+    _(""),
     _("Unsupported GUI type (#{0})"),
     _("Invalid magic number 0x{0}"),
     _("Invalid line '{0}' in file {1}"),
