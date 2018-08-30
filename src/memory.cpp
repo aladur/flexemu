@@ -30,8 +30,9 @@
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
 
-Memory::Memory(bool himem) :
-    isHiMem(himem),
+Memory::Memory(bool isHiMem, bool isMmu6Bit /* = false */) :
+    isHiMem(isHiMem),
+    isMmu6Bit(isMmu6Bit),
     memory_size(0x10000),
     video_ram_active_bits(0)
 {
@@ -212,15 +213,27 @@ Byte Memory::read_ram_rom(Word offset)
 
 void Memory::switch_mmu(Word offset, Byte val)
 {
-    ppage[offset] = vram_ptrs[((offset << 2) & 0x30) | (val & 0x0f)];
+    int ppage_index = 0;
+
     if ((val & 0x03) != 0x03)
     {
+        if (isHiMem && isMmu6Bit)
+        {
+            ppage_index = val & 0x3f;
+        }
+        else
+        {
+            ppage_index = ((offset << 2) & 0x30) | (val & 0x0f);
+        }
         video_ram_active_bits |= (1 << offset);
     }
     else
     {
+        ppage_index = ((offset << 2) & 0x30) | (val & 0x0f);
         video_ram_active_bits &= ~(1 << offset);
     }
+
+    ppage[offset] = vram_ptrs[ppage_index];
 } // switch_mmu
 
 void Memory::dump_ram_rom(Word min, Word max)

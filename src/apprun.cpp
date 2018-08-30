@@ -51,7 +51,7 @@ ApplicationRunner::ApplicationRunner(
                     struct sOptions &x_options) :
     guiOptions(x_guiOptions),
     options(x_options),
-    memory(options.isHiMem),
+    memory(options.isHiMem, options.isMmu6Bit),
     cpu(memory),
     rtc(cpu),
     inout(fdc, rtc),

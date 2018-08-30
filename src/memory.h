@@ -44,12 +44,13 @@
 class Memory : public MemoryTarget
 {
 public:
-    Memory(bool himem);
+    Memory(bool isHiMem, bool isMmu6Bit = false);
     virtual ~Memory();
 
 private:
     Byte *ppage[16];
     bool isHiMem;
+    bool isMmu6Bit;
     int memory_size;
     int video_ram_size;
     std::unique_ptr<Byte[]> memory;
@@ -73,7 +74,7 @@ private:
     bool changed[YBLOCKS];
 
 private:
-    void init_memory(bool himem);
+    void init_memory(bool isHiMem);
     static Byte initial_content[8];
 
     // Initialisation functions

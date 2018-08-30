@@ -271,6 +271,7 @@ struct sOptions
     std::string hex_file;
     std::string disk_dir;
     bool isHiMem;
+    bool isMmu6Bit;
     bool use_undocumented;
     bool term_mode;
     short int reset_key; // must be short int because of sscanf !!!
@@ -295,6 +296,7 @@ struct sOptions
 #define FLEXNCOLORS     "NoOfColors"
 #define FLEXINVERSE     "DisplayInverse"
 #define FLEXHIMEM   "HighMemory"
+#define FLEXMMU6BIT   "Mmu6Bit"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
 #define FLEXHTMLVIEWER  "HTMLViewer"
 #define FLEXDOCDIR      "DocDirectory"
