@@ -81,9 +81,8 @@ protected:
     JoystickIO &joystickIO; // Reference to joystick data provider.
     KeyboardIO &keyboardIO; // Reference to keyboard data provider.
     TerminalIO &terminalIO; // Reference to terminal data provider.
-    const char *program_name;
+    std::string program_name;
     unsigned char unused_block[YBLOCK_SIZE];
-    int switch_sp;
     struct sGuiOptions &options;
     bool exit_flag; // exit application:
     char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];

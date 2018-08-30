@@ -27,6 +27,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <map>
 
 
 struct sIoDeviceMapping
@@ -51,6 +52,7 @@ public:
 
     std::vector<sIoDeviceMapping> ReadIoDevices(
                                       std::set<std::string> validKeys);
+    int GetSerparAddress(const std::string &monitorFilePath);
 
 private:
     BIniFile iniFile;

@@ -186,9 +186,6 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->pixelSizeX      = 2;
     pGuiOptions->pixelSizeY      = 2;
     pGuiOptions->isSynchronized  = false;
-    // automatic SERPAR switch only if Eurocom II Monitorprogram loaded
-    pGuiOptions->switch_sp = !strcmp(pOptions->hex_file.c_str(),
-                                     "neumon54.hex");
 } // InitOptions
 
 void FlexOptionManager::GetEnvironmentOptions(

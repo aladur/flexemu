@@ -62,14 +62,5 @@
 #define GENIO_BASE  0xfc00
 #define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
 
-/******************************************************
-*  Flag for configuring Monitor I/O to parallel or    *
-*  serial Input/Output. Can be used to switch         *
-*  between Graphics View (parallel) and terminal view *
-*  (serial)                                           *
-*******************************************************/
-
-#define SERPAR      (0xef86)
-
 #endif
 

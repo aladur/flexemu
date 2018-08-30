@@ -44,7 +44,6 @@ struct sGuiOptions
     int nColors; // Number of colors or gray scale values { 2, 8, 64 }
     bool isInverse; // Display inverse colors or gray scale values
     bool isSynchronized; // Use X11 in synchronized mode
-    int switch_sp;
     int pixelSizeX; // x-size of one pixel on the screen
     int pixelSizeY; // y-size of one pixel on the screen
     GuiType guiType;

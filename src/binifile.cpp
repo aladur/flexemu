@@ -122,6 +122,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
     if (IsValid())
     {
         bool isSectionActive = false;
+        istream.clear();
         istream.seekg(0);
 
         while(!istream.eof())

@@ -992,7 +992,6 @@ public:
     // interface to other classes
 public:
     void        set_disassembler(Da6809 *x_da);
-    void        set_serpar(Byte b);
     bool        set_logfile(const struct s_cpu_logfile &x_lfs);
 protected:
     int Disassemble(Word address, InstFlg *pFlags,

@@ -1133,12 +1133,6 @@ void XtGui::c_buttonRelease(XEvent *pevent)
 void XtGui::c_focusIn(XEvent *pevent)
 {
     XAbstractGui::c_focusIn(pevent);
-    // set SERPAR-Flag of Monitor to parallel
-    // sorry, it's very dirty but it's implemented for
-    // the most convenience of the user and it's ONLY
-    // enabled if the default monitor file "neumon54.hex"
-    // is used
-    // output_to_graphic();
 } // c_focusIn
 
 void XtGui::c_focusOut(XEvent *pevent)

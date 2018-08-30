@@ -25,6 +25,7 @@
 #include "flexerr.h"
 #include "e2.h"
 #include <sstream>
+#include <algorithm>
 
 
 FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
@@ -112,5 +113,68 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices(
     }
 
     return deviceMappings;
+}
+
+int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
+{
+    std::string fileName;
+
+
+    auto pos = monitorFilePath.find_last_of(PATHSEPARATOR);
+    if (pos != std::string::npos)
+    {
+        fileName = monitorFilePath.substr(pos + 1);
+    }
+    else
+    {
+        fileName = monitorFilePath;
+    }
+
+#ifdef _WIN32
+    std::transform(fileName.begin(), fileName.end(), fileName.begin(),
+                   ::tolower);
+#endif
+
+    auto valueForKey = iniFile.ReadSection("SERPARAddress");
+
+    for (const auto iter : valueForKey)
+    {
+        std::string key = iter.first;
+
+#ifdef _WIN32
+        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+#endif
+        if (fileName == key)
+        {
+            std::stringstream stream(iter.second);
+
+            std::string addressString;
+
+            if (std::getline(stream, addressString))
+            {
+                int address;
+                std::stringstream addressStream;
+
+                addressStream << std::hex << addressString;
+                addressStream >> address;
+                if (address < 0 || address > 0xffff)
+                {
+                    throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                        iter.first + "=" + iter.second,
+                                        iniFile.GetFileName());
+                }
+
+                return address;
+            }
+            else
+            {
+                throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                    iter.first + "=" + iter.second,
+                                    iniFile.GetFileName());
+            }
+        }
+    }
+
+    return -1;
 }
 

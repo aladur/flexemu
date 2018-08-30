@@ -117,12 +117,13 @@ graphics mode (without option
 <b>-t
 </b>) this command can be used to switch between performing I/O on the graphic
 display or on the terminal. A hardware reset or nmi always switches back to
-grapic mode. This commond can only be used with Monitor
-<b>neumon54.hex.
-</b>It supports a parallel I/O on pia1 (MC6821) which will be
+grapic mode. This command is configurable for each Monitor file if it supports
+a SERPAR flag. The configuration is done in the file <b>flexemu.conf</b>.
+By default it is preconfigured for <b>neumon54.hex</b>.
+It supports a parallel I/O on pia1 (MC6821) which will be
 used in the graphic mode, and a serial I/O on acia1 (MC6850) wich will be
-used in the terminal mode. The modes can be switched 'by hand' by changing
-the contents of address 0xef86 (SERPAR):
+used in the terminal mode. for <b>neumon54.hex</b> the modes can be switched
+'by hand' by changing the contents of address 0xEF86 (SERPAR):
 <p>
 <table border>
  <tr><th>SERPAR</th><th>mode</th></tr>

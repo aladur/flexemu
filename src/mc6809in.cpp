@@ -25,11 +25,6 @@ static const Mc6809::Event AnyInterrupt =
                  Mc6809::Event::Firq |
                  Mc6809::Event::Nmi;
 
-void Mc6809::set_serpar(Byte b)
-{
-    memory.write_byte(SERPAR, b);
-}
-
 void Mc6809::reset()
 {
     ++interrupt_status.count[INT_RESET];

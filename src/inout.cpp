@@ -46,6 +46,7 @@ Inout::Inout(
      : fdc(x_fdc)
      , rtc(x_rtc)
      , gui(nullptr)
+     , local_serpar_address(-1)
 {
 }
 
@@ -132,7 +133,7 @@ Word Inout::output_to_terminal()
 {
 #ifdef HAVE_TERMIOS_H
 
-    if (gui != nullptr)
+    if (is_gui_present())
     {
         gui->output_to_terminal();
     }
@@ -145,7 +146,7 @@ Word Inout::output_to_terminal()
 
 Word Inout::output_to_graphic()
 {
-    if (gui != nullptr)
+    if (is_gui_present())
     {
         gui->output_to_graphic();
         return 1;
@@ -160,4 +161,14 @@ void Inout::main_loop()
     {
         gui->main_loop();
     }
+}
+
+int Inout::serpar_address() const
+{
+    return local_serpar_address;
+}
+
+void Inout::serpar_address(int value)
+{
+    local_serpar_address = value;
 }

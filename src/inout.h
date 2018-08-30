@@ -51,6 +51,7 @@ private:
     E2floppy &fdc;
     Mc146818 &rtc;
     std::unique_ptr<AbstractGui> gui;
+    int local_serpar_address;
 
 public:
     void create_gui(
@@ -78,6 +79,11 @@ public:
 public:
     void    get_drive_status(DiskStatus status[4]);
     std::string get_drive_info(int floppyIndex);
+
+    // local interface
+public:
+    int serpar_address() const;
+    void serpar_address(int value);
 
 public:
     Inout() = delete;

@@ -156,6 +156,9 @@ int ApplicationRunner::run()
         }
     }
 
+    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+    inout.serpar_address(address);
+
     memory.reset_io();
     cpu.reset();
 
