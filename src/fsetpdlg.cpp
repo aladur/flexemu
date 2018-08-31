@@ -77,6 +77,7 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
     EVT_BUTTON(IDC_DiskDirButton, FlexemuOptionsDialog::OnSelectDiskDir)
     EVT_BUTTON(IDC_MonitorButton, FlexemuOptionsDialog::OnSelectMonitor)
     EVT_INIT_DIALOG(FlexemuOptionsDialog::OnInitDialog)
+    EVT_RADIOBOX(IDC_RamExtension, FlexemuOptionsDialog::OnRamExtensionChanged)
     //  EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
 
@@ -99,7 +100,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_htmlViewer(nullptr), c_diskDir(nullptr),
-    c_ramExtension(nullptr)
+    c_ramExtension(nullptr), c_mmu6Bit(nullptr)
 {
     int i;
 
@@ -225,6 +226,12 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_ramExtension->SetSelection(m_options->isHiMem ? 1 : 0);
     }
 
+    if (c_mmu6Bit)
+    {
+        c_mmu6Bit->SetValue(m_options->isHiMem && m_options->isMmu6Bit);
+        c_mmu6Bit->Enable(m_options->isHiMem);
+    }
+
     return wxWindow::TransferDataToWindow();
 }
 
@@ -278,6 +285,21 @@ wxPanel *FlexemuOptionsDialog::CreateMc6809OptionsPage(wxBookCtrlBase *parent)
                                     _("Undocumented MC6809 instructions"),
                                     wxDefaultPosition, wxDefaultSize, 0);
     pPanelSizer->Add(c_undocumented, 0, wxEXPAND | wxTOP | wxLEFT, gap);
+
+    panel->SetSizer(pPanelSizer);
+
+    return panel;
+}
+
+wxPanel *FlexemuOptionsDialog::CreateHardwareOptionsPage(wxBookCtrlBase *parent)
+{
+    wxPanel *panel = new wxPanel(parent);
+    wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
+
+    c_mmu6Bit = new wxCheckBox(panel, IDC_Mmu6Bit,
+                                    _("MMU with 6-bit (Hardware modification)"),
+                                    wxDefaultPosition, wxDefaultSize, 0);
+    pPanelSizer->Add(c_mmu6Bit, 0, wxTOP | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -435,6 +457,8 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     pageId++;
     panel = CreateMc6809OptionsPage(notebook);
     notebook->AddSubPage(panel, _("MC6809"), false);
+    panel = CreateHardwareOptionsPage(notebook);
+    notebook->AddSubPage(panel, _("Hardware"), false);
 
     pButton = new wxButton(parent, wxID_OK, _("&Ok"));
     pButtonSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
@@ -566,6 +590,12 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     if (c_ramExtension)
     {
         m_options->isHiMem = c_ramExtension->GetSelection() > 0;
+    };
+
+    if (c_mmu6Bit)
+    {
+        m_options->isMmu6Bit =
+            m_options->isHiMem & (c_mmu6Bit->GetValue() != 0);
     };
 
     return wxWindow::TransferDataFromWindow();
@@ -716,5 +746,11 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
         {
             c_monitor->SetValue(path);
         }
+}
+
+void FlexemuOptionsDialog::OnRamExtensionChanged(
+        wxCommandEvent &WXUNUSED(event))
+{
+    c_mmu6Bit->Enable(c_ramExtension->GetSelection() > 0);
 }
 

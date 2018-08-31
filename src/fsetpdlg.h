@@ -54,6 +54,7 @@ enum
     IDC_nColors = 210,
     IDC_RamExtension = 211,
     IDC_Undocumented = 212,
+    IDC_Mmu6Bit = 213,
 
     IDC_DiskDirButton = 304,
     IDC_MonitorButton = 305,
@@ -82,6 +83,7 @@ public:
     void OnInitDialog(wxInitDialogEvent &event);
     wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMc6809OptionsPage(wxBookCtrlBase *parent);
+    wxPanel *CreateHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
@@ -102,6 +104,7 @@ public:
     void OnSelectDrive3(wxCommandEvent &WXUNUSED(event));
     void OnSelectDiskDir(wxCommandEvent &WXUNUSED(event));
     void OnSelectMonitor(wxCommandEvent &WXUNUSED(event));
+    void OnRamExtensionChanged(wxCommandEvent &WXUNUSED(event));
 
 private:
     FlexemuOptionsDialog() { }; // should not be used
@@ -119,6 +122,7 @@ private:
     wxTextCtrl *c_diskDir;
     wxTextCtrl *c_drive[4];
     wxRadioBox *c_ramExtension;
+    wxCheckBox *c_mmu6Bit;
 
     static const int gap;
     static const int textWidth;
