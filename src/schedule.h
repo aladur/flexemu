@@ -111,6 +111,10 @@ public:
     {
         return frequency;
     }
+    float       get_target_frequency()
+    {
+        return target_frequency;
+    }
 protected:
     void        update_frequency();
     void        frequency_control(QWord time1);

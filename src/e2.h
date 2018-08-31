@@ -51,16 +51,14 @@
 #define WINDOWWIDTH (RASTERLINE_SIZE << 3)
 #define WINDOWHEIGHT    (VIDEORAM_SIZE / RASTERLINE_SIZE)
 
-/***************************************************
-*  specifying memory mapped I/O                    *
-***************************************************/
-
 /* GENIO_BASE provides a general address range  */
 /* where memory mapped I/O is placed            */
 /* the range is: $fc00 - ffff                   */
 /* It has to be a multiple of 1024              */
 #define GENIO_BASE  0xfc00
 #define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
+
+#define ORIGINAL_FREQUENCY 1.3396f
 
 #endif
 

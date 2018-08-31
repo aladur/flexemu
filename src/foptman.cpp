@@ -24,6 +24,7 @@
 #include <signal.h>
 #include <new>
 
+#include "e2.h"
 #include "flexemu.h"
 #include "sguiopts.h"
 #include "foptman.h"
@@ -126,6 +127,8 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -k <factor for screen height>\n");
     fprintf(fp, "  -m (use 2 x 288 K RAM extension)\n");
     fprintf(fp, "  -u (support undocumented MC6809 processor instructions)\n");
+    fprintf(fp, "  -F <frequency> (set CPU frequency in MHz)\n");
+    fprintf(fp, "     0.0 runs CPU with maximum frequency\n");
 #ifdef HAVE_TERMIOS_H
     fprintf(fp, "  -t (terminal only mode)\n");
     fprintf(fp, "  -r <two-hex-digit reset key>\n");
@@ -166,6 +169,7 @@ void FlexOptionManager::InitOptions(
 #endif
 #endif
     pOptions->reset_key        = 0x1e; // is Ctrl-^ for reset or Sig. INT
+    pOptions->frequency        = 0.0; // default = 0.0 run as fast as possible
 
     pGuiOptions->argc          = argc;
     pGuiOptions->argv          = argv;
@@ -286,9 +290,10 @@ void FlexOptionManager::GetCommandlineOptions(
 {
     char    optstr[32];
     int     i;
+    float   f;
     optind = 1;
     opterr = 0;
-    strcpy((char *)optstr, "mup:f:0:1:2:3:j:k:");
+    strcpy((char *)optstr, "mup:f:0:1:2:3:j:k:F:");
 #ifdef HAVE_TERMIOS_H
     strcat((char *)optstr, "tr:");  // terminal mode and reset key
 #endif
@@ -362,6 +367,16 @@ void FlexOptionManager::GetCommandlineOptions(
                 if (i > 0 && i <= MAX_PIXELSIZEY)
                 {
                     pGuiOptions->pixelSizeY = i;
+                }
+
+                break;
+
+            case 'F':
+                sscanf(optarg, "%f", &f);
+
+                if (f >= 0.0)
+                {
+                    pOptions->frequency = f;
                 }
 
                 break;

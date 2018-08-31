@@ -276,6 +276,7 @@ struct sOptions
     bool useRtc;
     bool term_mode;
     short int reset_key; // must be short int because of sscanf !!!
+    float frequency;
 };
 
 /* Names of Environment or Registry variables */

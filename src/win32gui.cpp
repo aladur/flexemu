@@ -1548,7 +1548,7 @@ void Win32Gui::toggle_freqency()
 
     frequency_control_on = !frequency_control_on;
     UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
-    frequency = frequency_control_on ? 1.3396f : 0.0f;
+    frequency = frequency_control_on ? ORIGINAL_FREQUENCY : 0.0f;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
     CheckMenuItem(menu2, IDM_FREQUENCY0, MF_BYCOMMAND | is_checked);
 }
@@ -1898,6 +1898,11 @@ void Win32Gui::initialize_after_open(HWND w)
     warp_home_x = (pixelSizeX * WINDOWWIDTH)  >> 1;
     warp_home_y = (pixelSizeY * WINDOWHEIGHT) >> 1;
     release_mouse_capture(w);
+
+    if (scheduler.get_target_frequency() == ORIGINAL_FREQUENCY)
+    {
+      toggle_frequency();
+    }
 }
 
 GuiType Win32Gui::gui_type()

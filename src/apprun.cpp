@@ -166,6 +166,11 @@ int ApplicationRunner::run()
     auto address = configFile.GetSerparAddress(options.hex_file.c_str());
     inout.serpar_address(address);
 
+    if (options.frequency >= 0.0f)
+    {
+        scheduler.set_frequency(options.frequency);
+    }
+
     memory.reset_io();
     cpu.reset();
 

@@ -678,7 +678,7 @@ void XtGui::toggle_frequency()
     float frequency;
 
     frequency_control_on = !frequency_control_on;
-    frequency = frequency_control_on ? 1.3396 : 0.0;
+    frequency = frequency_control_on ? ORIGINAL_FREQUENCY : 0.0f;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
 
     if (okpixmap != None)
@@ -1658,6 +1658,11 @@ void XtGui::initialize_after_open(Widget w, const char *title)
         XSetStandardProperties(XtDisplay(w), XtWindow(w),
                                title, title, None, nullptr, 0, pxsh);
         XFree(pxsh);
+    }
+
+    if (scheduler.get_target_frequency() == ORIGINAL_FREQUENCY)
+    {
+        toggle_frequency();
     }
 }
 
