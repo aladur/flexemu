@@ -296,7 +296,7 @@ struct sOptions
 #define FLEXNCOLORS     "NoOfColors"
 #define FLEXINVERSE     "DisplayInverse"
 #define FLEXHIMEM   "HighMemory"
-#define FLEXMMU6BIT   "Mmu6Bit"
+#define FLEXMMU6BIT   "UseMMU6Bit"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
 #define FLEXHTMLVIEWER  "HTMLViewer"
 #define FLEXDOCDIR      "DocDirectory"
