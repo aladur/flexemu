@@ -152,6 +152,7 @@ protected:
 #endif
     void add_menu_handler(Widget button, Widget menu);
     void close_menu_mode();
+    void update_frequency_check();
 
     // Internal registers
 

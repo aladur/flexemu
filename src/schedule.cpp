@@ -40,7 +40,7 @@ Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
     is_status_valid(false),
-    target_frequency(0.0), frequency(0.0), time0(0), cycles0(0)
+    target_frequency(ORIGINAL_FREQUENCY), frequency(0.0), time0(0), cycles0(0)
 {
 #ifdef UNIX
     sigset_t sigmask;

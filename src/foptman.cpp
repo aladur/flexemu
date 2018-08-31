@@ -169,7 +169,7 @@ void FlexOptionManager::InitOptions(
 #endif
 #endif
     pOptions->reset_key        = 0x1e; // is Ctrl-^ for reset or Sig. INT
-    pOptions->frequency        = 0.0; // default = 0.0 run as fast as possible
+    pOptions->frequency        = -1.0; // default: ignore
 
     pGuiOptions->argc          = argc;
     pGuiOptions->argv          = argv;

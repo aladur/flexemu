@@ -202,6 +202,7 @@ protected:
     void    toggle_mouse_capture(HWND w);
     void    release_mouse_capture(HWND w);
     const char *get_title();
+    void    update_frequency_check();
 
     // Pointer grabbing
     int      cursor_type;

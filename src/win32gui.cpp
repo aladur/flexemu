@@ -1547,9 +1547,15 @@ void Win32Gui::toggle_freqency()
     float frequency;
 
     frequency_control_on = !frequency_control_on;
-    UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
     frequency = frequency_control_on ? ORIGINAL_FREQUENCY : 0.0f;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
+
+    update_frequency_check();
+}
+
+void Win32Gui::update_frequency_check()
+{
+    UINT is_checked = frequency_control_on ? MF_CHECKED : MF_UNCHECKED;
     CheckMenuItem(menu2, IDM_FREQUENCY0, MF_BYCOMMAND | is_checked);
 }
 
@@ -1901,7 +1907,8 @@ void Win32Gui::initialize_after_open(HWND w)
 
     if (scheduler.get_target_frequency() == ORIGINAL_FREQUENCY)
     {
-      toggle_frequency();
+        frequency_control_on = true;
+        update_frequency_check();
     }
 }
 
