@@ -40,11 +40,9 @@
 #endif
 
 
-Inout::Inout(
-        E2floppy &x_fdc,
-        Mc146818 &x_rtc)
+Inout::Inout(E2floppy &x_fdc)
      : fdc(x_fdc)
-     , rtc(x_rtc)
+     , rtc(nullptr)
      , gui(nullptr)
      , local_serpar_address(-1)
 {
@@ -121,7 +119,10 @@ void Inout::create_gui(JoystickIO &joystickIO,
 // which need it
 void Inout::update_1_second()
 {
-    rtc.update_1_second();
+    if (rtc != nullptr)
+    {
+        rtc->update_1_second();
+    }
 }
 
 bool Inout::is_gui_present()
@@ -171,4 +172,9 @@ int Inout::serpar_address() const
 void Inout::serpar_address(int value)
 {
     local_serpar_address = value;
+}
+
+void Inout::set_rtc(Mc146818 *x_rtc)
+{
+    rtc = x_rtc;
 }

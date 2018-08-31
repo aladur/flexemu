@@ -159,6 +159,7 @@ void FlexOptionManager::InitOptions(
     pOptions->isHiMem          = false;
     pOptions->isMmu6Bit        = false;
     pOptions->use_undocumented = false;
+    pOptions->useRtc           = true;
 #ifndef _WIN32
 #ifndef HAVE_X11
     pOptions->term_mode        = true;
@@ -217,6 +218,11 @@ void FlexOptionManager::GetEnvironmentOptions(
     if (env.GetValue((const char *)"FLEX" FLEXUNDOCUMENTED, &value))
     {
         pOptions->use_undocumented = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXRTC, &value))
+    {
+        pOptions->useRtc = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXHTMLVIEWER, str))
@@ -439,6 +445,7 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     reg.SetValue(FLEXMMU6BIT, pOptions->isMmu6Bit ? 1 : 0);
     reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
+    reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
     reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     reg.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
     reg.SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
@@ -486,6 +493,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     rcFile.SetValue(FLEXMMU6BIT, pOptions->isMmu6Bit ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
+    rcFile.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
 #endif
 } /* WriteOptions */
 
@@ -562,6 +570,11 @@ void FlexOptionManager::GetOptions(
     if (!reg.GetValue(FLEXUNDOCUMENTED, &val))
     {
         pOptions->use_undocumented = (val != 0);
+    }
+
+    if (!reg.GetValue(FLEXRTC, &val))
+    {
+        pOptions->useRtc = (val != 0);
     }
 #endif
 #ifdef UNIX
@@ -641,6 +654,11 @@ void FlexOptionManager::GetOptions(
     if (!rcFile.GetValue(FLEXUNDOCUMENTED, &val))
     {
         pOptions->use_undocumented = (val != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXRTC, &val))
+    {
+        pOptions->useRtc = (val != 0);
     }
 #endif
 } // GetOptions

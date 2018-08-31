@@ -100,7 +100,9 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_htmlViewer(nullptr), c_diskDir(nullptr),
-    c_ramExtension(nullptr), c_mmu6Bit(nullptr)
+    c_ramExtension(nullptr), c_mmu6Bit(nullptr),
+    c_useRtc(nullptr)
+
 {
     int i;
 
@@ -232,6 +234,11 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_mmu6Bit->Enable(m_options->isHiMem);
     }
 
+    if (c_useRtc)
+    {
+        c_useRtc->SetValue(m_options->useRtc);
+    }
+
     return wxWindow::TransferDataToWindow();
 }
 
@@ -300,6 +307,10 @@ wxPanel *FlexemuOptionsDialog::CreateHardwareOptionsPage(wxBookCtrlBase *parent)
                                     _("MMU with 6-bit (Hardware modification)"),
                                     wxDefaultPosition, wxDefaultSize, 0);
     pPanelSizer->Add(c_mmu6Bit, 0, wxTOP | wxLEFT, gap);
+    c_useRtc = new wxCheckBox(panel, IDC_UseRtc,
+                              _("MC146818 Realtime clock (Hardware extension)"),
+                              wxDefaultPosition, wxDefaultSize, 0);
+    pPanelSizer->Add(c_useRtc, 0, wxTOP | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -597,6 +608,11 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         m_options->isMmu6Bit =
             m_options->isHiMem & (c_mmu6Bit->GetValue() != 0);
     };
+
+    if (c_useRtc)
+    {
+        m_options->useRtc = (c_useRtc->GetValue() != 0);
+    }
 
     return wxWindow::TransferDataFromWindow();
 }

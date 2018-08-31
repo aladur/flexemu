@@ -55,6 +55,7 @@ enum
     IDC_RamExtension = 211,
     IDC_Undocumented = 212,
     IDC_Mmu6Bit = 213,
+    IDC_UseRtc = 214,
 
     IDC_DiskDirButton = 304,
     IDC_MonitorButton = 305,
@@ -123,6 +124,7 @@ private:
     wxTextCtrl *c_drive[4];
     wxRadioBox *c_ramExtension;
     wxCheckBox *c_mmu6Bit;
+    wxCheckBox *c_useRtc;
 
     static const int gap;
     static const int textWidth;

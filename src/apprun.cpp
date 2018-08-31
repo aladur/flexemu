@@ -54,7 +54,7 @@ ApplicationRunner::ApplicationRunner(
     memory(options.isHiMem, options.isMmu6Bit),
     cpu(memory),
     rtc(cpu),
-    inout(fdc, rtc),
+    inout(fdc),
     scheduler(cpu, inout),
     terminalIO(cpu, scheduler),
     mmu(memory),
@@ -75,7 +75,11 @@ ApplicationRunner::ApplicationRunner(
     ioDevices.insert({ command.getName(), command });
     ioDevices.insert({ vico1.getName(), vico1 });
     ioDevices.insert({ vico2.getName(), vico2 });
-    ioDevices.insert({ rtc.getName(), rtc });
+    if (options.useRtc)
+    {
+        ioDevices.insert({ rtc.getName(), rtc });
+        inout.set_rtc(&rtc);
+    }
 }
 
 ApplicationRunner::~ApplicationRunner()
@@ -124,8 +128,11 @@ int ApplicationRunner::run()
         {
             auto &ioDevice = ioDevices.at(ioDeviceMapping.name);
 
-            memory.add_io_device(ioDevice,
+            if (strcmp(ioDevice.getName(), "rtc") != 0 || options.useRtc)
+            {
+                memory.add_io_device(ioDevice,
                     ioDeviceMapping.baseAddress, ioDeviceMapping.byteSize);
+            }
         }
     }
 

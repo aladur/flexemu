@@ -273,6 +273,7 @@ struct sOptions
     bool isHiMem;
     bool isMmu6Bit;
     bool use_undocumented;
+    bool useRtc;
     bool term_mode;
     short int reset_key; // must be short int because of sscanf !!!
 };
@@ -298,6 +299,7 @@ struct sOptions
 #define FLEXHIMEM   "HighMemory"
 #define FLEXMMU6BIT   "UseMMU6Bit"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
+#define FLEXRTC         "UseRTC"
 #define FLEXHTMLVIEWER  "HTMLViewer"
 #define FLEXDOCDIR      "DocDirectory"
 #define FLEXMONITOR     "MonitorPath"

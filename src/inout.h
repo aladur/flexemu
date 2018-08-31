@@ -49,7 +49,7 @@ class Inout
 {
 private:
     E2floppy &fdc;
-    Mc146818 &rtc;
+    Mc146818 *rtc; // RTC is an optional device
     std::unique_ptr<AbstractGui> gui;
     int local_serpar_address;
 
@@ -67,6 +67,7 @@ public:
            , struct sGuiOptions &options);
 
     void    update_1_second();
+    void    set_rtc(Mc146818 *x_rtc);
 
     // Communication with GUI
 public:
@@ -87,9 +88,7 @@ public:
 
 public:
     Inout() = delete;
-    Inout(
-        E2floppy &x_fdc,
-        Mc146818 &x_rtc);
+    Inout(E2floppy &x_fdc);
     ~Inout();
 };
 
