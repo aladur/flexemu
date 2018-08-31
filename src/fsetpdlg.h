@@ -82,7 +82,7 @@ public:
 
     void OnInitDialog(wxInitDialogEvent &event);
     wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
-    wxPanel *CreateMc6809OptionsPage(wxBookCtrlBase *parent);
+    wxPanel *CreateCpuOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);

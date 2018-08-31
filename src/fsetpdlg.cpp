@@ -276,7 +276,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     return panel;
 }
 
-wxPanel *FlexemuOptionsDialog::CreateMc6809OptionsPage(wxBookCtrlBase *parent)
+wxPanel *FlexemuOptionsDialog::CreateCpuOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
     wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
@@ -455,8 +455,8 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     panel = CreateExpertOptionsPage(notebook);
     notebook->AddPage(panel, _("Expert Options"), false);
     pageId++;
-    panel = CreateMc6809OptionsPage(notebook);
-    notebook->AddSubPage(panel, _("MC6809"), false);
+    panel = CreateCpuOptionsPage(notebook);
+    notebook->AddSubPage(panel, _("CPU"), false);
     panel = CreateHardwareOptionsPage(notebook);
     notebook->AddSubPage(panel, _("Hardware"), false);
 
