@@ -44,13 +44,13 @@
 class Memory : public MemoryTarget
 {
 public:
-    Memory(bool isHiMem, bool isMmu6Bit = false);
+    Memory(bool isHiMem, bool isFlexibleMmu = false);
     virtual ~Memory();
 
 private:
     Byte *ppage[16];
     bool isHiMem;
-    bool isMmu6Bit;
+    bool isFlexibleMmu;
     int memory_size;
     int video_ram_size;
     std::unique_ptr<Byte[]> memory;

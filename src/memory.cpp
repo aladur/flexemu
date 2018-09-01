@@ -30,9 +30,9 @@
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
 
-Memory::Memory(bool isHiMem, bool isMmu6Bit /* = false */) :
-    isHiMem(isHiMem),
-    isMmu6Bit(isMmu6Bit),
+Memory::Memory(bool x_isHiMem, bool x_isFlexibleMmu /* = false */) :
+    isHiMem(x_isHiMem),
+    isFlexibleMmu(x_isFlexibleMmu),
     memory_size(0x10000),
     video_ram_active_bits(0)
 {
@@ -217,7 +217,7 @@ void Memory::switch_mmu(Word offset, Byte val)
 
     if ((val & 0x03) != 0x03)
     {
-        if (isHiMem && isMmu6Bit)
+        if (isHiMem && isFlexibleMmu)
         {
             ppage_index = val & 0x3f;
         }

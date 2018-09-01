@@ -271,7 +271,7 @@ struct sOptions
     std::string hex_file;
     std::string disk_dir;
     bool isHiMem;
-    bool isMmu6Bit;
+    bool isFlexibleMmu;
     bool use_undocumented;
     bool useRtc;
     bool term_mode;
@@ -298,7 +298,7 @@ struct sOptions
 #define FLEXNCOLORS     "NoOfColors"
 #define FLEXINVERSE     "DisplayInverse"
 #define FLEXHIMEM   "HighMemory"
-#define FLEXMMU6BIT   "UseMMU6Bit"
+#define FLEXFLEXIBLEMMU "UseFlexibleMmu"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
 #define FLEXRTC         "UseRTC"
 #define FLEXHTMLVIEWER  "HTMLViewer"

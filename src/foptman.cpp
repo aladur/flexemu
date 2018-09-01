@@ -160,7 +160,7 @@ void FlexOptionManager::InitOptions(
     pOptions->hex_file         = "neumon54.hex";
     pOptions->term_mode        = false;
     pOptions->isHiMem          = false;
-    pOptions->isMmu6Bit        = false;
+    pOptions->isFlexibleMmu    = false;
     pOptions->use_undocumented = false;
     pOptions->useRtc           = true;
 #ifndef _WIN32
@@ -214,9 +214,9 @@ void FlexOptionManager::GetEnvironmentOptions(
         pOptions->isHiMem = (value != 0);
     }
 
-    if (env.GetValue((const char *)"FLEX" FLEXMMU6BIT, &value))
+    if (env.GetValue((const char *)"FLEX" FLEXFLEXIBLEMMU, &value))
     {
-        pOptions->isMmu6Bit = (value != 0);
+        pOptions->isFlexibleMmu = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXUNDOCUMENTED, &value))
@@ -458,7 +458,7 @@ void FlexOptionManager::WriteOptions(
 
     reg.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
     reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    reg.SetValue(FLEXMMU6BIT, pOptions->isMmu6Bit ? 1 : 0);
+    reg.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
     reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
     reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
@@ -506,7 +506,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
     rcFile.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
     rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    rcFile.SetValue(FLEXMMU6BIT, pOptions->isMmu6Bit ? 1 : 0);
+    rcFile.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
 #endif
@@ -577,9 +577,9 @@ void FlexOptionManager::GetOptions(
         pOptions->isHiMem = (val != 0);
     }
 
-    if (!reg.GetValue(FLEXMMU6BIT, &val))
+    if (!reg.GetValue(FLEXFLEXIBLEMMU, &val))
     {
-        pOptions->isMmu6Bit = (val != 0);
+        pOptions->isFlexibleMmu = (val != 0);
     }
 
     if (!reg.GetValue(FLEXUNDOCUMENTED, &val))
@@ -661,9 +661,9 @@ void FlexOptionManager::GetOptions(
         pOptions->isHiMem = (val != 0);
     }
 
-    if (!rcFile.GetValue(FLEXMMU6BIT, &val))
+    if (!rcFile.GetValue(FLEXFLEXIBLEMMU, &val))
     {
-        pOptions->isMmu6Bit = (val != 0);
+        pOptions->isFlexibleMmu = (val != 0);
     }
 
     if (!rcFile.GetValue(FLEXUNDOCUMENTED, &val))

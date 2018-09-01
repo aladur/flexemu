@@ -100,7 +100,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_htmlViewer(nullptr), c_diskDir(nullptr),
-    c_ramExtension(nullptr), c_mmu6Bit(nullptr),
+    c_ramExtension(nullptr), c_flexibleMmu(nullptr),
     c_useRtc(nullptr)
 
 {
@@ -228,10 +228,10 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_ramExtension->SetSelection(m_options->isHiMem ? 1 : 0);
     }
 
-    if (c_mmu6Bit)
+    if (c_flexibleMmu)
     {
-        c_mmu6Bit->SetValue(m_options->isHiMem && m_options->isMmu6Bit);
-        c_mmu6Bit->Enable(m_options->isHiMem);
+        c_flexibleMmu->SetValue(m_options->isHiMem && m_options->isFlexibleMmu);
+        c_flexibleMmu->Enable(m_options->isHiMem);
     }
 
     if (c_useRtc)
@@ -303,10 +303,10 @@ wxPanel *FlexemuOptionsDialog::CreateHardwareOptionsPage(wxBookCtrlBase *parent)
     wxPanel *panel = new wxPanel(parent);
     wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
 
-    c_mmu6Bit = new wxCheckBox(panel, IDC_Mmu6Bit,
-                                    _("MMU with 6-bit (Hardware modification)"),
+    c_flexibleMmu = new wxCheckBox(panel, IDC_FlexibleMmu,
+                                    _("More flexible MMU (Hardware modification)"),
                                     wxDefaultPosition, wxDefaultSize, 0);
-    pPanelSizer->Add(c_mmu6Bit, 0, wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_flexibleMmu, 0, wxTOP | wxLEFT, gap);
     c_useRtc = new wxCheckBox(panel, IDC_UseRtc,
                               _("MC146818 Realtime clock (Hardware extension)"),
                               wxDefaultPosition, wxDefaultSize, 0);
@@ -603,10 +603,10 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         m_options->isHiMem = c_ramExtension->GetSelection() > 0;
     };
 
-    if (c_mmu6Bit)
+    if (c_flexibleMmu)
     {
-        m_options->isMmu6Bit =
-            m_options->isHiMem & (c_mmu6Bit->GetValue() != 0);
+        m_options->isFlexibleMmu =
+            m_options->isHiMem & (c_flexibleMmu->GetValue() != 0);
     };
 
     if (c_useRtc)
@@ -767,6 +767,6 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
 void FlexemuOptionsDialog::OnRamExtensionChanged(
         wxCommandEvent &WXUNUSED(event))
 {
-    c_mmu6Bit->Enable(c_ramExtension->GetSelection() > 0);
+    c_flexibleMmu->Enable(c_ramExtension->GetSelection() > 0);
 }
 
