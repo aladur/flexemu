@@ -130,7 +130,7 @@ bool Inout::is_gui_present()
     return gui != nullptr;
 }
 
-Word Inout::output_to_terminal()
+bool Inout::output_to_terminal()
 {
 #ifdef HAVE_TERMIOS_H
 
@@ -139,21 +139,21 @@ Word Inout::output_to_terminal()
         gui->output_to_terminal();
     }
 
-    return 1;
+    return true;
 #else
-    return 0;
+    return false;
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
-Word Inout::output_to_graphic()
+bool Inout::output_to_graphic()
 {
     if (is_gui_present())
     {
         gui->output_to_graphic();
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 void Inout::main_loop()

@@ -71,8 +71,8 @@ public:
 
     // Communication with GUI
 public:
-    Word    output_to_terminal();
-    Word    output_to_graphic();
+    bool    output_to_terminal();
+    bool    output_to_graphic();
     bool    is_gui_present();
     void    main_loop();
 
