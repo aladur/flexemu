@@ -182,7 +182,8 @@ am_test_OBJECTS = test-testmain.$(OBJEXT) test-test_gccasm.$(OBJEXT) \
 	test-mc6809in.$(OBJEXT) test-misc1.$(OBJEXT) \
 	test-bcommand.$(OBJEXT) test-btime.$(OBJEXT) \
 	test-schedule.$(OBJEXT) test-btimer.$(OBJEXT) \
-	test-clogfile.$(OBJEXT) test-mc6809st.$(OBJEXT)
+	test-clogfile.$(OBJEXT) test-mc6809st.$(OBJEXT) \
+	test-binifile.$(OBJEXT) test-fcnffile.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_DEPENDENCIES =
 test_LINK = $(CXXLD) $(test_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -562,7 +563,7 @@ flexerr.cpp inout.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
-mc6809st.cpp \
+mc6809st.cpp binifile.cpp fcnffile.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
@@ -792,6 +793,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bcommand.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bdate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bfileptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-binifile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-btime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-btimer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-clogfile.Po@am__quote@
@@ -799,6 +801,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-command.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-da6809.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-fcinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-fcnffile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-flexerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-inout.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-mc6809.Po@am__quote@
@@ -2489,6 +2492,34 @@ test-mc6809st.obj: mc6809st.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809st.cpp' object='test-mc6809st.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809st.obj `if test -f 'mc6809st.cpp'; then $(CYGPATH_W) 'mc6809st.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809st.cpp'; fi`
+
+test-binifile.o: binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-binifile.o -MD -MP -MF $(DEPDIR)/test-binifile.Tpo -c -o test-binifile.o `test -f 'binifile.cpp' || echo '$(srcdir)/'`binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-binifile.Tpo $(DEPDIR)/test-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='binifile.cpp' object='test-binifile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-binifile.o `test -f 'binifile.cpp' || echo '$(srcdir)/'`binifile.cpp
+
+test-binifile.obj: binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-binifile.obj -MD -MP -MF $(DEPDIR)/test-binifile.Tpo -c -o test-binifile.obj `if test -f 'binifile.cpp'; then $(CYGPATH_W) 'binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/binifile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-binifile.Tpo $(DEPDIR)/test-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='binifile.cpp' object='test-binifile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-binifile.obj `if test -f 'binifile.cpp'; then $(CYGPATH_W) 'binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/binifile.cpp'; fi`
+
+test-fcnffile.o: fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-fcnffile.o -MD -MP -MF $(DEPDIR)/test-fcnffile.Tpo -c -o test-fcnffile.o `test -f 'fcnffile.cpp' || echo '$(srcdir)/'`fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-fcnffile.Tpo $(DEPDIR)/test-fcnffile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcnffile.cpp' object='test-fcnffile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-fcnffile.o `test -f 'fcnffile.cpp' || echo '$(srcdir)/'`fcnffile.cpp
+
+test-fcnffile.obj: fcnffile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-fcnffile.obj -MD -MP -MF $(DEPDIR)/test-fcnffile.Tpo -c -o test-fcnffile.obj `if test -f 'fcnffile.cpp'; then $(CYGPATH_W) 'fcnffile.cpp'; else $(CYGPATH_W) '$(srcdir)/fcnffile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-fcnffile.Tpo $(DEPDIR)/test-fcnffile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcnffile.cpp' object='test-fcnffile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-fcnffile.obj `if test -f 'fcnffile.cpp'; then $(CYGPATH_W) 'fcnffile.cpp'; else $(CYGPATH_W) '$(srcdir)/fcnffile.cpp'; fi`
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \

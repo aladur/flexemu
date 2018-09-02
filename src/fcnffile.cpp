@@ -178,3 +178,30 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
     return -1;
 }
 
+std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
+{
+    static const auto validKeys = std::set<std::string>{
+        "presetRAM"
+    };
+
+    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    auto valueForKey = iniFile.ReadSection("Debug");
+
+    for (const auto iter : valueForKey)
+    {
+        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        {
+            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                iter.first + "=" + iter.second,
+                                iniFile.GetFileName());
+        }
+
+        if (iter.first == key)
+        {
+            return iter.second;
+        }
+    }
+
+    return std::string();
+}
+

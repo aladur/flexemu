@@ -75,6 +75,7 @@ private:
 
 private:
     void init_memory(bool isHiMem);
+    void init_vram_ptr(Byte vram_ptr_index, Byte *ram_address);
     static Byte initial_content[8];
 
     // Initialisation functions

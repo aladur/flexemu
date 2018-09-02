@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "memory.h"
 #include "bfileptr.h"
+#include "fcnffile.h"
 
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
@@ -108,22 +109,22 @@ void Memory::init_memory(bool himem)
             i = 0;
         }
 
-        vram_ptrs[j | 0x0c] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x0d] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x0e] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x0f] = &memory[VIDEORAM_SIZE * (j >> 4)];
-        vram_ptrs[j | 0x04] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x05] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x06] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x07] = &memory[VIDEORAM_SIZE * (j >> 4)];
-        vram_ptrs[j | 0x08] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x09] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x0a] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x0b] = &memory[VIDEORAM_SIZE * (j >> 4)];
-        vram_ptrs[j | 0x00] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x01] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x02] = &video_ram[VIDEORAM_SIZE * i++];
-        vram_ptrs[j | 0x03] = &memory[VIDEORAM_SIZE * (j >> 4)];
+        init_vram_ptr(j | 0x0c, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x0d, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x0e, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x0f, &memory[VIDEORAM_SIZE * (j >> 4)]);
+        init_vram_ptr(j | 0x04, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x05, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x06, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x07, &memory[VIDEORAM_SIZE * (j >> 4)]);
+        init_vram_ptr(j | 0x08, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x09, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x0a, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x0b, &memory[VIDEORAM_SIZE * (j >> 4)]);
+        init_vram_ptr(j | 0x00, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x01, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x02, &video_ram[VIDEORAM_SIZE * i++]);
+        init_vram_ptr(j | 0x03, &memory[VIDEORAM_SIZE * (j >> 4)]);
     }
 
     if (i != (himem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2))
@@ -138,6 +139,30 @@ void Memory::init_memory(bool himem)
     }
     video_ram_active_bits = 0;
 } // init_memory
+
+void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
+{
+    static int do_preset_ram = -1;
+
+    vram_ptrs[vram_ptr_index] = ram_ptr;
+
+    // Check for debug option 'presetRAM'. If set preset RAM with value.
+    // This may be helpfull when debugging the memory management unit (MMU).
+    // Please remember that most monitor programs initialize the base and
+    // extended RAM to 0x00.
+    if (do_preset_ram < 0)
+    {
+        FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+        const auto value = configFile.GetDebugOption("presetRAM");
+
+        do_preset_ram = (value == "1") ? 1 : 0;
+    }
+
+    if (do_preset_ram == 1)
+    {
+        memset(ram_ptr, vram_ptr_index, VIDEORAM_SIZE);
+    }
+}
 
 // init_blocks_to_update
 //

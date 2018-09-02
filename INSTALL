@@ -4,7 +4,7 @@
 
 Flexemu supports configure scripts. So there are three steps to install it:
 
-	- ./configure --with-app-defaults=auto
+	- ./configure --with-app-defaults=auto --sysconfdir=/etc
 	- make
 	- sudo make install
 
