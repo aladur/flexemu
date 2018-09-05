@@ -64,6 +64,7 @@ public:
 
 private:
     void AddIoDevicesToMemory();
+    bool LoadMonitorFileIntoRom(const struct sOptions &options);
 
     struct sGuiOptions &guiOptions;
     struct sOptions &options;

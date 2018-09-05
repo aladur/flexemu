@@ -86,6 +86,10 @@ ApplicationRunner::ApplicationRunner(
     {
         scheduler.set_frequency(options.frequency);
     }
+
+    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+    inout.serpar_address(address);
 }
 
 ApplicationRunner::~ApplicationRunner()
@@ -129,6 +133,36 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 }
 
+bool ApplicationRunner::LoadMonitorFileIntoRom(const struct sOptions &options)
+{
+    int error;
+    if ((error = load_hexfile(options.hex_file.c_str(), memory)) < 0)
+    {
+        std::string hexFilePath;
+
+        hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
+                      options.hex_file;
+
+        if ((error = load_hexfile(hexFilePath.c_str(), memory)) < 0)
+        {
+            std::stringstream pmsg;
+
+            pmsg << "File \"" << hexFilePath
+                 << "\" not found or has unknown file format (" << error <<")"
+                 << std::endl;
+#ifdef _WIN32
+            MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
+            MB_OK | MB_ICONERROR);
+#endif
+#ifdef UNIX
+            fprintf(stderr, "%s", pmsg.str().c_str());
+#endif
+            return false;
+        }
+    }
+    return true;
+}
+
 int ApplicationRunner::run()
 {
     cpu.set_disassembler(&disassembler);
@@ -156,36 +190,10 @@ int ApplicationRunner::run()
 
     AddIoDevicesToMemory();
 
-    // Load monitor program into ROM.
-    int error;
-    if ((error = load_hexfile(options.hex_file.c_str(), memory)) < 0)
+    if (!LoadMonitorFileIntoRom(options))
     {
-        std::string hexFilePath;
-
-        hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
-                      options.hex_file;
-
-        if ((error = load_hexfile(hexFilePath.c_str(), memory)) < 0)
-        {
-            std::stringstream pmsg;
-
-            pmsg << "File \"" << hexFilePath
-                 << "\" not found or has unknown file format (" << error <<")"
-                 << std::endl;
-#ifdef _WIN32
-            MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
-            MB_OK | MB_ICONERROR);
-#endif
-#ifdef UNIX
-            fprintf(stderr, "%s", pmsg.str().c_str());
-#endif
-            return 1;
-        }
+        return 1;
     }
-
-    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
-    inout.serpar_address(address);
 
     memory.reset_io();
     cpu.reset();
