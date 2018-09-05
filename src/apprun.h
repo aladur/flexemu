@@ -44,6 +44,7 @@
 #include "vico2.h"
 #include "mc146818.h"
 #include "drisel.h"
+#include "iodevdbg.h"
 #include <string>
 #include <map>
 
@@ -62,6 +63,8 @@ public:
     int run();
 
 private:
+    void AddIoDevicesToMemory();
+
     struct sGuiOptions &guiOptions;
     struct sOptions &options;
     Memory memory;
@@ -83,6 +86,7 @@ private:
     VideoControl1 vico1;
     VideoControl2 vico2;
     std::map<std::string, IoDevice &> ioDevices;
+    std::vector<IoDeviceDebug> debugLogDevices;
 };
 
 #endif

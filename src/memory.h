@@ -28,7 +28,6 @@
 #include "misc1.h"
 #include <stdio.h>
 #include <tsl/robin_map.h>
-#include <vector>
 #include <functional>
 #include <memory>
 #include "iodevice.h"
@@ -36,7 +35,8 @@
 #include "memtgt.h"
 #include "e2.h"
 
-// maximum number of I/O devices which can be handled
+// Maximum number of video RAM pointers supported.
+// Each video RAM page has as size of 16KByte.
 
 #define MAX_VRAM        (4 * 16)
 

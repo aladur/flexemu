@@ -27,45 +27,58 @@
 
 #include "misc1.h"
 #include "iodevice.h"
+#include <functional>
 
 
 class IoAccess
 {
 public:
     IoAccess() = delete;
-    IoAccess(const IoAccess &src) :
-        device(src.device),
+
+    IoAccess(IoAccess &&src) :
+        deviceRef(std::ref(src.deviceRef)),
         addressOffset(src.addressOffset)
     {
     }
-    IoAccess(IoDevice &pdevice, Word paddressOffset) :
-        device(pdevice),
-        addressOffset(paddressOffset)
+
+    IoAccess(const IoAccess &src) :
+        deviceRef(std::ref(src.deviceRef)),
+        addressOffset(src.addressOffset)
     {
     }
 
-    IoAccess& operator=(const IoAccess &src)
+    IoAccess(IoDevice &x_device, Word x_addressOffset) :
+        deviceRef(std::ref(x_device)),
+        addressOffset(x_addressOffset)
     {
-        device = src.device;
+    }
+
+    IoAccess& operator=(const IoAccess &) = delete;
+
+    IoAccess& operator=(IoAccess &&src)
+    {
+        deviceRef = std::ref(src.deviceRef);
         addressOffset = src.addressOffset;
+
         return *this;
     }
 
     inline Byte read()
     {
-        return device.readIo(addressOffset);
+        return deviceRef.get().readIo(addressOffset);
     }
 
     inline void write(Byte value)
     {
-        device.writeIo(addressOffset, value);
+        deviceRef.get().writeIo(addressOffset, value);
     }
 
 private:
-    IoDevice &device;
+    // we need a reference_wrapper here to support the move assignment operator
+    // which reassigns the reference.
+    std::reference_wrapper<IoDevice> deviceRef;
     Word addressOffset;
 };
-
 
 #endif
 

@@ -126,6 +126,16 @@ char *hexstr(Word x)
     return tmp;
 }
 
+std::string tohexstr(Byte x)
+{
+    return std::string(hexstr(x));
+}
+
+std::string tohexstr(Word x)
+{
+    return std::string(hexstr(x));
+}
+
 char *ascchr(Byte x)
 {
     static char             tmp[2] = " ";

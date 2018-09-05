@@ -44,6 +44,7 @@
 #include "fileread.h"
 #include "btimer.h"
 #include "fcnffile.h"
+#include "iodevdbg.h"
 
 
 ApplicationRunner::ApplicationRunner(
@@ -92,16 +93,44 @@ ApplicationRunner::~ApplicationRunner()
     BTimer::Destroy();
 }
 
+void ApplicationRunner::AddIoDevicesToMemory()
+{
+    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    const auto deviceParams = configFile.ReadIoDevices();
+    const auto pairOfParams = configFile.GetDebugIoDevices();
+    const auto logFilePath = std::get<0>(pairOfParams);
+    const auto deviceNames = std::get<1>(pairOfParams);
+
+    // Reserve space for all devices otherwise references get invalidated.
+    debugLogDevices.reserve(deviceParams.size());
+
+    // Add all memory mapped I/O devices to memory.
+    for (auto deviceParam : deviceParams)
+    {
+        std::string name = deviceParam.name;
+
+        if (ioDevices.find(name) != ioDevices.end())
+        {
+            std::reference_wrapper<IoDevice> deviceRef = ioDevices.at(name);
+
+            if (deviceNames.find(name) != deviceNames.end())
+            {
+                // Wrap the I/O-device by the I/O-device logger
+                debugLogDevices.emplace_back(std::ref(deviceRef), logFilePath);
+                auto lastPos = debugLogDevices.size() - 1;
+                deviceRef =
+                      dynamic_cast<IoDevice &>(debugLogDevices.at(lastPos));
+            }
+
+            memory.add_io_device(std::ref(deviceRef),
+                deviceParam.baseAddress, deviceParam.byteSize);
+        }
+    }
+
+}
+
 int ApplicationRunner::run()
 {
-    static const auto validKeys = std::set<std::string>{
-        "mmu", "acia1", "pia1", "pia2", "fdc", "drisel", "command", "vico1",
-        "vico2", "rtc"
-    };
-
-    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    const auto ioDeviceMappings = configFile.ReadIoDevices(validKeys);
-
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
@@ -125,21 +154,7 @@ int ApplicationRunner::run()
                 guiOptions);
     }
 
-
-    // Add all memory mapped I/O devices to memory.
-    for (auto ioDeviceMapping : ioDeviceMappings)
-    {
-        if (ioDevices.find(ioDeviceMapping.name) != ioDevices.end())
-        {
-            auto &ioDevice = ioDevices.at(ioDeviceMapping.name);
-
-            if (strcmp(ioDevice.getName(), "rtc") != 0 || options.useRtc)
-            {
-                memory.add_io_device(ioDevice,
-                    ioDeviceMapping.baseAddress, ioDeviceMapping.byteSize);
-            }
-        }
-    }
+    AddIoDevicesToMemory();
 
     // Load monitor program into ROM.
     int error;
@@ -168,6 +183,7 @@ int ApplicationRunner::run()
         }
     }
 
+    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     auto address = configFile.GetSerparAddress(options.hex_file.c_str());
     inout.serpar_address(address);
 

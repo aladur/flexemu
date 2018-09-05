@@ -356,6 +356,9 @@ struct sOptions
     extern char     *hexstr(Byte x);
     extern char     *hexstr(Word x);
     extern char     *ascchr(Byte x);
+    extern std::string tohexstr(Byte x);
+    extern std::string tohexstr(Word x);
+
     #ifdef _WIN32
         extern int getopt(int argc, char *const argv[], char *optstr);
         extern int  optind;

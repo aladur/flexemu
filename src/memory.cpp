@@ -209,8 +209,10 @@ bool Memory::add_io_device(
 
     for (offset = 0; offset < size; ++offset)
     {
-        ioAccessForAddressMap.emplace(base_address + offset,
-                                    IoAccess(device, (offset % sizeOfIo)));
+        ioAccessForAddressMap.emplace(
+            std::piecewise_construct,
+            std::forward_as_tuple(base_address + offset),
+            std::forward_as_tuple(device, offset % sizeOfIo));
     }
 
     return true;
@@ -218,9 +220,9 @@ bool Memory::add_io_device(
 
 void Memory::reset_io()
 {
-    for (auto &iter : ioDevices)
+    for (auto deviceRef : ioDevices)
     {
-        iter.get().resetIo();
+        deviceRef.get().resetIo();
     }
 }
 

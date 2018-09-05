@@ -28,6 +28,12 @@
 #include <algorithm>
 
 
+const std::set<std::string> FlexemuConfigFile::validDevices =
+    std::set<std::string>{
+        "mmu", "acia1", "pia1", "pia2", "fdc",
+        "drisel", "command", "vico1", "vico2", "rtc"
+    };
+
 FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
      iniFile(aFileName)
 {
@@ -49,8 +55,7 @@ FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src)
     return *this;
 }
 
-std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices(
-                                            std::set<std::string> validKeys)
+std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 {
     std::vector<sIoDeviceMapping> deviceMappings;
 
@@ -58,11 +63,11 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices(
 
     for (const auto iter : valueForKey)
     {
-        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        if (validDevices.find(iter.first) == validDevices.end())
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                iter.first + "=" + iter.second,
-                                iniFile.GetFileName());
+                        iter.first + "=" + iter.second,
+                        iniFile.GetFileName());
         }
 
         std::stringstream stream(iter.second);
@@ -184,7 +189,6 @@ std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
         "presetRAM"
     };
 
-    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     auto valueForKey = iniFile.ReadSection("Debug");
 
     for (const auto iter : valueForKey)
@@ -203,5 +207,80 @@ std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
     }
 
     return std::string();
+}
+
+std::pair<std::string, std::set<std::string> >
+    FlexemuConfigFile::GetDebugIoDevices()
+{
+    static const auto validKeys = std::set<std::string>{
+        "logFilePath", "devices"
+    };
+
+    std::string logFilePath;
+    std::set<std::string> devices;
+    std::pair<std::string, std::set<std::string> > result;
+
+    auto valueForKey = iniFile.ReadSection("DebugIoDevices");
+
+    for (const auto iter : valueForKey)
+    {
+        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        {
+            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                iter.first + "=" + iter.second,
+                                iniFile.GetFileName());
+        }
+
+        if (iter.first == "devices")
+        {
+            std::stringstream stream(iter.second);
+            std::string device;
+
+            while (std::getline(stream, device, ','))
+            {
+                trim(device);
+
+                if (validDevices.find(device) == validDevices.end())
+                {
+                    throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                iter.first + "=" + iter.second,
+                                iniFile.GetFileName());
+                }
+
+                devices.emplace(device);
+            }
+
+        }
+        else if (iter.first == "logFilePath")
+        {
+            logFilePath = iter.second;
+        }
+    }
+
+    if (!devices.empty())
+    {
+        if (logFilePath.empty())
+        {
+            // On POSIX compliant file systems /tmp has to be available
+            std::string tmpPath = "/tmp";
+
+#ifdef _WIN32
+            char cTempPath[MAX_PATH];
+            if (!GetTempPath(MAX_PATH, cTempPath))
+            {
+                throw FlexException(GetLastError(),
+                std::string("In function GetTempPath"));
+            }
+            tmpPath = cTempPath;
+#endif
+            logFilePath = tmpPath + "/flexemu_device.log";
+        }
+
+
+        result.first = logFilePath;
+        result.second = devices;
+    }
+
+    return result;
 }
 
