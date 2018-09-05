@@ -27,7 +27,6 @@
 #include <vector>
 #include <string>
 #include <set>
-#include <map>
 
 
 struct sIoDeviceMapping
@@ -50,10 +49,12 @@ public:
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile &operator=(FlexemuConfigFile &&);
 
-    std::vector<sIoDeviceMapping> ReadIoDevices(
-                                      std::set<std::string> validKeys);
+    std::vector<sIoDeviceMapping> ReadIoDevices();
     std::string GetDebugOption(const std::string &key);
+    std::pair<std::string, std::set<std::string> > GetDebugIoDevices();
     int GetSerparAddress(const std::string &monitorFilePath);
+
+    static const std::set<std::string> validDevices;
 
 private:
     BIniFile iniFile;
