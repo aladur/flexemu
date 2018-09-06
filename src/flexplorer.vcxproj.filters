@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="baddrrng.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bbintree.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="bdate.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -28,15 +22,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="bfileptr.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bhashtbl.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bident.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="blist.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="bmembuf.cpp">
@@ -48,28 +33,16 @@
     <ClCompile Include="bregistr.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="bsortlst.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="buint.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="contpdlg.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="da6809.cpp">
+    <ClCompile Include="cvtwchar.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="dircont.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="disconf.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="fcinfo.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="fclipbrd.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="fcopyman.cpp">
@@ -126,12 +99,6 @@
     <ClCompile Include="rfilecnt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="bintervl.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="cvtwchar.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmaps\chart.ico">
@@ -186,19 +153,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="flexerr.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="sprinter.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="baddrrng.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bbintree.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bdate.h">
+  <ClInclude Include="bdate.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bdir.h">
@@ -207,31 +162,22 @@
     <ClInclude Include="bfileptr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bhashtbl.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bident.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bintervl.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="blist.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="bmembuf.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="bobserv.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bprocess.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="brcfile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="bregistr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bsortlst.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="buint.h">
+    <ClInclude Include="confignt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="contpdlg.h">
@@ -240,19 +186,10 @@
     <ClInclude Include="cvtwchar.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="da6809.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="dircont.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="disconf.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="fcinfo.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="fclipbrd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="fcopyman.h">
@@ -282,6 +219,21 @@
     <ClInclude Include="flexdisk.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="filecntb.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="filecnts.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="filecont.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="flexemu.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="flexerr.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="fmenufac.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -304,6 +256,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="rfilecnt.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="sprinter.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

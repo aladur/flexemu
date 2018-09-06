@@ -45,22 +45,10 @@
     <ClCompile Include="bregistr.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="bthread.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bthreadfactory.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bthreadimp.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="btime.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="btimer.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="bwin32threadimp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="cacttrns.cpp">
@@ -78,13 +66,13 @@
     <ClCompile Include="csetfreq.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="cvtwchar.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="da6809.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="e2floppy.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="e2video.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="fcinfo.cpp">
@@ -168,7 +156,40 @@
     <ClCompile Include="win32gui.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="cvtwchar.cpp">
+    <ClCompile Include="apprun.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="binifile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="bytereg.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="drisel.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="fcnffile.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="fileread.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="iodevdbg.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="joystick.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="terminal.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="vico1.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="vico2.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,6 +255,9 @@
     <ClInclude Include="acia1.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="apprun.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="bcommand.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -249,6 +273,9 @@
     <ClInclude Include="bfileptr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="binifile.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="bjoystck.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -261,25 +288,13 @@
     <ClInclude Include="bregistr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bsingle.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bthread.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bthreadfactory.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="bthreadimp.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="btime.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="btimer.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bwin32threadimp.h">
+    <ClInclude Include="bytereg.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="cacttrns.h">
@@ -300,10 +315,16 @@
     <ClInclude Include="csetfreq.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="cvtwchar.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="da6809.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="drisel.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="e2.h">
@@ -312,10 +333,10 @@
     <ClInclude Include="e2floppy.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="e2video.h">
+    <ClInclude Include="fcinfo.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="fcinfo.h">
+    <ClInclude Include="fcnffile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="fcopyman.h">
@@ -330,10 +351,16 @@
     <ClInclude Include="ffilecnt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="filecntb.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="filecnts.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="filecont.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="fileread.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="flexemu.h">
@@ -357,10 +384,19 @@
     <ClInclude Include="inout.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="intmem.h">
+    <ClInclude Include="ioaccess.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="iodevice.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="iodevdbg.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="joystick.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="mc6809.h">
@@ -379,6 +415,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="memory.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="memtgt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="misc1.h">
@@ -408,7 +447,19 @@
     <ClInclude Include="schedule.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="scpulog.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="terminal.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="typedefs.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="vico1.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="vico2.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="wd1793.h">
@@ -417,10 +468,10 @@
     <ClInclude Include="win32gui.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="filecntb.h">
+    <ClInclude Include="sguiopts.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="cvtwchar.h">
+    <ClInclude Include="winctxt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
