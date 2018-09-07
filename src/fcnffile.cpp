@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include "fcnffile.h"
 #include "flexerr.h"
+#include "binifile.h"
 #include "e2.h"
 #include <sstream>
 #include <algorithm>
@@ -35,8 +36,10 @@ const std::set<std::string> FlexemuConfigFile::validDevices =
     };
 
 FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
-     iniFile(aFileName)
+     iniFileName(aFileName)
 {
+    BIniFile iniFile(iniFileName.c_str());
+
     if (!iniFile.IsValid())
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, aFileName);
@@ -44,13 +47,13 @@ FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
 }
 
 FlexemuConfigFile::FlexemuConfigFile(FlexemuConfigFile &&src) :
-    iniFile(std::move(src.iniFile))
+    iniFileName(std::move(src.iniFileName))
 {
 }
 
 FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src) 
 {
-    iniFile = std::move(src.iniFile);
+    iniFileName = std::move(src.iniFileName);
 
     return *this;
 }
@@ -58,6 +61,7 @@ FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src)
 std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 {
     std::vector<sIoDeviceMapping> deviceMappings;
+    BIniFile iniFile(iniFileName.c_str());
 
     auto valueForKey = iniFile.ReadSection("IoDevices");
 
@@ -140,6 +144,8 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
                    ::tolower);
 #endif
 
+    BIniFile iniFile(iniFileName.c_str());
+
     auto valueForKey = iniFile.ReadSection("SERPARAddress");
 
     for (const auto iter : valueForKey)
@@ -189,6 +195,8 @@ std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
         "presetRAM"
     };
 
+    BIniFile iniFile(iniFileName.c_str());
+
     auto valueForKey = iniFile.ReadSection("Debug");
 
     for (const auto iter : valueForKey)
@@ -219,6 +227,7 @@ std::pair<std::string, std::set<std::string> >
     std::string logFilePath;
     std::set<std::string> devices;
     std::pair<std::string, std::set<std::string> > result;
+    BIniFile iniFile(iniFileName.c_str());
 
     auto valueForKey = iniFile.ReadSection("DebugIoDevices");
 

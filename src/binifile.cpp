@@ -28,21 +28,17 @@
 
 
 BIniFile::BIniFile(const char *aFileName) :
-    fileName(aFileName),
-    istream(aFileName)
+    fileName(aFileName)
 {
 }
 
 BIniFile::BIniFile(BIniFile &&src) :
-    fileName(std::move(src.fileName)),
-    istream(std::move(src.istream))
+    fileName(std::move(src.fileName))
 {
 }
 
 BIniFile &BIniFile::operator=(BIniFile &&src) 
 {
-    istream.close();
-    istream = std::move(src.istream);
     fileName = std::move(src.fileName);
 
     return *this;
@@ -50,12 +46,14 @@ BIniFile &BIniFile::operator=(BIniFile &&src)
 
 BIniFile::~BIniFile()
 {
-    istream.close();
 }
 
-bool BIniFile::IsValid()
+bool BIniFile::IsValid() const
 {
-    return istream.is_open();
+    std::ifstream istream(fileName);
+    bool isValid = istream.good();
+
+    return isValid;
 }
 
 std::string BIniFile::GetFileName() const
@@ -63,9 +61,11 @@ std::string BIniFile::GetFileName() const
     return fileName;
 }
 
-BIniFile::Type BIniFile::ReadLine(std::string &section, std::string &key,
+BIniFile::Type BIniFile::ReadLine(std::istream &istream,
+                                  std::string &section,
+                                  std::string &key,
                                   std::string &value,
-                                  bool isSectionOnly = false)
+                                  bool isSectionOnly = false) const
 {
     std::string line;
 
@@ -114,12 +114,13 @@ BIniFile::Type BIniFile::ReadLine(std::string &section, std::string &key,
 }
 
 std::map<std::string, std::string> BIniFile::ReadSection(
-                                             const std::string &section)
+                                             const std::string &section) const
 {
     std::map<std::string, std::string> resultMap;
     std::set<std::string> foundKeys;
+    std::ifstream istream(fileName);
 
-    if (IsValid())
+    if (istream.good())
     {
         bool isSectionActive = false;
         istream.clear();
@@ -131,7 +132,8 @@ std::map<std::string, std::string> BIniFile::ReadSection(
             std::string key;
             std::string value;
 
-            switch (ReadLine(sectionName, key, value, !isSectionActive))
+            switch (ReadLine(istream, sectionName, key, value,
+                             !isSectionActive))
             {
                 case Type::Section:
                     isSectionActive = (section == sectionName);

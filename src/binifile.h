@@ -40,9 +40,10 @@ public:
     BIniFile &operator=(const BIniFile &) = delete;
     BIniFile &operator=(BIniFile &&);
 
-    bool IsValid();
+    bool IsValid() const;
     std::string GetFileName() const;
-    std::map<std::string, std::string> ReadSection(const std::string &section);
+    std::map<std::string, std::string> ReadSection(const std::string &section)
+                                                                          const;
 
 private:
     enum class Type
@@ -53,11 +54,11 @@ private:
         Unknown,
     };
 
-    Type ReadLine(std::string &section, std::string &key, std::string &value,
-                  bool isSectionOnly);
+    Type ReadLine(std::istream &istream, std::string &section,
+                  std::string &key, std::string &value,
+                  bool isSectionOnly) const;
 
     std::string fileName;
-    std::ifstream istream;
 };
 
 #endif

@@ -23,7 +23,6 @@
 #ifndef FCNFFILE_INCLUDED
 #define FCNFFILE_INCLUDED
 
-#include "binifile.h"
 #include <vector>
 #include <string>
 #include <set>
@@ -57,7 +56,7 @@ public:
     static const std::set<std::string> validDevices;
 
 private:
-    BIniFile iniFile;
+    std::string iniFileName;
 };
 
 #endif
