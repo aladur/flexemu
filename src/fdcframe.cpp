@@ -163,13 +163,17 @@ void FlexChildFrame::OnCloseChild(wxCommandEvent &WXUNUSED(event))
 
 void FlexChildFrame::UpdateFrom(const void *pObject)
 {
-    const int id = *static_cast<const int *>(pObject);
-
-    if (id == OBSERVE_STATUS_BAR)
+    if (!listCtrl)
     {
-        wxStatusBar *sBar;
+        return;
+    }
 
-        if (listCtrl && (sBar = GetStatusBar()))
+    const int id = *static_cast<const int *>(pObject);
+    if (id == OBSERVE_STATUS_BAR)
+    {        
+        wxStatusBar *sBar = GetStatusBar();
+
+        if (sBar != nullptr)
         {
             wxString buf;
 
