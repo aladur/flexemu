@@ -127,9 +127,9 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::DeleteCurrent()
 {
-    int start_trk, start_sec, end_trk, end_sec;
-    int fc_end_trk, fc_end_sec;
-    int records, free;
+    Byte start_trk, start_sec, end_trk, end_sec;
+    Byte fc_end_trk, fc_end_sec;
+    Word records, free;
     Byte buffer[SECTOR_SIZE];
     s_sys_info_sector *psis;
     s_dir_entry *pd;
@@ -155,7 +155,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     psis = (s_sys_info_sector *)buffer;
 
     // deleted file is signed by 0xFF as first byte of filename
-    pd->filename[0] = (char)0xFF;
+    pd->filename[0] = static_cast<Byte>(0xFF);
 
     if (!base->WriteSector((const Byte *)&dirSector, dirSectorTrk,
                            dirSectorSec))
@@ -219,8 +219,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     // and end of free chain trk/sec
     free = psis->free[0] << 8 | psis->free[1];
     free += records;
-    psis->free[0] = free >> 8;
-    psis->free[1] = free & 0xff;
+    psis->free[0] = static_cast<Byte>(free >> 8);
+    psis->free[1] = static_cast<Byte>(free & 0xff);
 
     if (!base->WriteSector(&buffer[0], 0, 3))
     {
@@ -322,9 +322,9 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     pd = &dirSector.dir_entry[dirIndex % 10];
-    pd->day = date.GetDay();
-    pd->month = date.GetMonth();
-    pd->year = date.GetYear() % 100;
+    pd->day = static_cast<Byte>(date.GetDay());
+    pd->month = static_cast<Byte>(date.GetMonth());
+    pd->year = static_cast<Byte>(date.GetYear() % 100);
 
     if (!base->WriteSector((const Byte *)&dirSector,
                            dirSectorTrk, dirSectorSec))
