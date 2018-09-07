@@ -64,7 +64,7 @@ protected:
     s_floppy    param;
 
 private:
-    int     attributes;
+    Byte attributes;
 
 public:
     FlexFileContainer() = delete;
@@ -143,12 +143,12 @@ protected:
         FILE *fp,
         struct  s_formats *fmt);
     static void     Create_format_table(
-        SWord trk,
-        SWord sec,
+        int trk,
+        int sec,
         struct s_formats *pformat);
     static void Format_disk(
-        SWord trk,
-        SWord sec,
+        int trk,
+        int sec,
         const char *disk_dir,
         const char *name,
         int type);

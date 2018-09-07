@@ -51,9 +51,9 @@
 void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
                                int aSides)
 {
-    int i, size, noSides;
+    Byte i, size, noSides;
 
-    noSides = aSides;
+    noSides = static_cast<Byte>(aSides);
 
     if (aSides < 1)
     {
@@ -63,6 +63,21 @@ void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
     if (aSides > 2)
     {
         noSides = 2;
+    }
+
+    if (trk > 255)
+    {
+        trk = 255;
+    }
+
+    if (sec0 > 255)
+    {
+        sec0 = 255;
+    }
+
+    if (sec > 255)
+    {
+        sec = 255;
     }
 
     size = 1; /* default */
@@ -80,10 +95,10 @@ void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
     write_protect   = 0;
     sizecode        = size;
     sides0          = noSides;
-    sectors0        = sec0;
+    sectors0        = static_cast<Byte>(sec0);
     sides           = noSides;
-    sectors         = sec;
-    tracks          = trk;
+    sectors         = static_cast<Byte>(sec);
+    tracks          = static_cast<Byte>(trk);
     dummy1          = 0;
     dummy2          = 0;
     dummy3          = 0;
@@ -432,10 +447,11 @@ FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
 bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                         const char *fileName /* = nullptr */)
 {
-    int     trk = 0, sec = 0;
-    int     startTrk, startSec;
-    int     nextTrk, nextSec;
-    int     i, recordNr;
+    Byte trk = 0, sec = 0;
+    Byte startTrk, startSec;
+    Byte nextTrk, nextSec;
+    Word recordNr;
+    Byte count;
     FlexDirEntry    de;
     s_sys_info_sector sysInfo;
     const char      *pFileName = fileName;
@@ -460,16 +476,16 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
     } // get start trk/sec of free chain
 
-    startTrk = nextTrk = sysInfo.fc_start_trk;
-    startSec = nextSec = sysInfo.fc_start_sec;
+    nextTrk = startTrk = sysInfo.fc_start_trk;
+    nextSec = startSec = sysInfo.fc_start_sec;
     {
         // write each sector to buffer
-        int repeat;
+        Byte repeat = 0;
         unsigned int smIndex,  smSector;
-        int nextPTrk, nextPSec; // contains next physical trk/sec
+        Word nextPTrk, nextPSec; // contains next physical trk/sec
         smIndex = 1;
         smSector = 2;
-        recordNr = repeat = nextPTrk = nextPSec = 0;
+        recordNr = nextPTrk = nextPSec = 0;
 
         // at the begin of a random file reserve two sectors for the sector map
         if (recordNr == 0 && buffer.IsRandom())
@@ -479,7 +495,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
         do
         {
-            for (i = repeat; i >= 0; i--)
+            for (count = repeat; count >= 0; count--)
             {
                 trk = nextTrk;
                 sec = nextSec;
@@ -491,18 +507,18 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                         fp.GetPath(), pFileName);
                 }
 
-                if (!ReadSector(&sectorBuffer[i][0], trk, sec))
+                if (!ReadSector(&sectorBuffer[count][0], trk, sec))
                 {
                     throw FlexException(FERR_READING_TRKSEC,
                                         trk, sec, fp.GetPath());
                 }
-                else if (i)
+                else if (count)
                 {
-                    memset(&sectorBuffer[i][2], 0, SECTOR_SIZE - 2);
+                    memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
                 }
 
-                nextTrk = sectorBuffer[i][0];
-                nextSec = sectorBuffer[i][1];
+                nextTrk = sectorBuffer[count][0];
+                nextSec = sectorBuffer[count][1];
             }
 
             if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
@@ -535,7 +551,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                         smIndex = 4;
                     }
 
-                    sectorBuffer[smSector][smIndex]   = trk;
+                    sectorBuffer[smSector][smIndex] = trk;
                     sectorBuffer[smSector][smIndex + 1] = sec;
                 }
 
@@ -585,24 +601,24 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (buffer.IsRandom())
     {
-        for (i = 2; i >= 1; i--)
+        for (count = 2; count >= 1; count--)
         {
-            if (!WriteSector(&sectorBuffer[i][0], nextTrk, nextSec))
+            if (!WriteSector(&sectorBuffer[count][0], nextTrk, nextSec))
             {
                 throw FlexException(FERR_WRITING_TRKSEC,
                                     nextTrk, nextSec, fp.GetPath());
             }
 
-            nextTrk = sectorBuffer[i][0];
-            nextSec = sectorBuffer[i][1];
+            nextTrk = sectorBuffer[count][0];
+            nextSec = sectorBuffer[count][1];
         }
     }
 
     // update sys info sector
     int free = sysInfo.free[0] << 8 | sysInfo.free[1];
     free -= recordNr;
-    sysInfo.free[0] = free >> 8;
-    sysInfo.free[1] = free & 0xFF;
+    sysInfo.free[0] = static_cast<Byte>(free >> 8);
+    sysInfo.free[1] = static_cast<Byte>(free & 0xFF);
 
     if (!WriteSector((Byte *)&sysInfo, 0, 3))
     {
@@ -711,8 +727,8 @@ bool    FlexFileContainer::SetAttributes(const char *filePattern,
 
     for (it = this->begin(); it != this->end(); ++it)
     {
-        Byte attributes = (it->GetAttributes() & ~clearMask) | setMask;
-        it.SetAttributesCurrent(attributes);
+        Byte x_attributes = (it->GetAttributes() & ~clearMask) | setMask;
+        it.SetAttributesCurrent(x_attributes);
     }
 
     return true;
@@ -762,19 +778,19 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->file_attr = entry.GetAttributes();
                 pde->reserved1 = 0;
                 entry.GetStartTrkSec(&tmp1, &tmp2);
-                pde->start_trk = tmp1;
-                pde->start_sec = tmp2;
+                pde->start_trk = static_cast<Byte>(tmp1);
+                pde->start_sec = static_cast<Byte>(tmp2);
                 entry.GetEndTrkSec(&tmp1, &tmp2);
-                pde->end_trk = tmp1;
-                pde->end_sec = tmp2;
-                pde->records[0] = records >> 8;
-                pde->records[1] = records & 0xFF;
+                pde->end_trk = static_cast<Byte>(tmp1);
+                pde->end_sec = static_cast<Byte>(tmp2);
+                pde->records[0] = static_cast<Byte>(records >> 8);
+                pde->records[1] = static_cast<Byte>(records & 0xFF);
                 pde->sector_map = (entry.IsRandom() ? 0x02 : 0x00);
                 pde->reserved2 = 0;
                 date = entry.GetDate();
-                pde->day = date.GetDay();
-                pde->month = date.GetMonth();
-                pde->year  = date.GetYear() % 100;
+                pde->day = static_cast<Byte>(date.GetDay());
+                pde->month = static_cast<Byte>(date.GetMonth());
+                pde->year = static_cast<Byte>(date.GetYear() % 100);
 
                 if (!WriteSector((Byte *)&ds, nextTrk, nextSec))
                 {
@@ -970,17 +986,17 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     lt          = localtime(&time_now);
     sys->disk_number[0] = 0;
     sys->disk_number[1] = 1;
-    sys->fc_start_trk   = start / fmt->sectors;
-    sys->fc_start_sec   = (start % fmt->sectors) + 1;
-    sys->fc_end_trk     = fmt->tracks - 1;
-    sys->fc_end_sec     = (Byte)fmt->sectors;
-    sys->free[0]        = free >> 8;
-    sys->free[1]        = free & 0xff;
-    sys->month      = lt->tm_mon + 1;
-    sys->day        = lt->tm_mday;
-    sys->year       = lt->tm_year;
-    sys->last_trk       = fmt->tracks - 1;
-    sys->last_sec       = (Byte)fmt->sectors;
+    sys->fc_start_trk = static_cast<Byte>(start / fmt->sectors);
+    sys->fc_start_sec = static_cast<Byte>((start % fmt->sectors) + 1);
+    sys->fc_end_trk = static_cast<Byte>(fmt->tracks - 1);
+    sys->fc_end_sec = static_cast<Byte>(fmt->sectors);
+    sys->free[0] = static_cast<Byte>(free >> 8);
+    sys->free[1] = static_cast<Byte>(free & 0xff);
+    sys->month = static_cast<Byte>(lt->tm_mon + 1);
+    sys->day = static_cast<Byte>(lt->tm_mday);
+    sys->year = static_cast<Byte>(lt->tm_year);
+    sys->last_trk = static_cast<Byte>(fmt->tracks - 1);
+    sys->last_sec = static_cast<Byte>(fmt->sectors);
 } // create_sys_info_sectors
 
 // on success return true
@@ -998,8 +1014,8 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 
         if (i < fmt->dir_sectors - 1)
         {
-            sec_buf[0] = (i + 5) / fmt->sectors;
-            sec_buf[1] = ((i + 5) % fmt->sectors) + 1;
+            sec_buf[0] = static_cast<Byte>((i + 5) / fmt->sectors);
+            sec_buf[1] = static_cast<Byte>(((i + 5) % fmt->sectors) + 1);
         }
 
         if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
@@ -1022,8 +1038,8 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
     for (i = fmt->dir_sectors + 5;
          i <= fmt->sectors * fmt->tracks; i++)
     {
-        sec_buf[0] = i / fmt->sectors;
-        sec_buf[1] = (i % fmt->sectors) + 1;
+        sec_buf[0] = static_cast<Byte>(i / fmt->sectors);
+        sec_buf[1] = static_cast<Byte>((i % fmt->sectors) + 1);
 
         // use for tests to correctly save random files:
         // (the link always jumps over one sector)
@@ -1043,40 +1059,37 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
     return true;
 } // write_sectors
 
-void FlexFileContainer::Create_format_table(SWord trk, SWord sec,
+void FlexFileContainer::Create_format_table(int trk, int sec,
         struct s_formats *pformat)
 {
-    Word tmp;
-
-    pformat->tracks = trk;
+    SDWord tmp;
 
     if (trk < 2)
     {
-        pformat->tracks = 2;
+        trk = 2;
     }
-
-    if (trk > 255)
+    else if (trk > 255)
     {
-        pformat->tracks = 255;
+        trk = 255;
     }
-
-    pformat->sectors = sec;
 
     if (sec < 5)
     {
-        pformat->sectors = 5;
+        sec = 5;
     }
-
-    if (sec > 255)
+    else if (sec > 255)
     {
-        pformat->sectors = 255;
+        sec = 255;
     }
 
-    pformat->size   = pformat->tracks * pformat->sectors * SECTOR_SIZE;
+    pformat->tracks = static_cast<Word>(trk);
+    pformat->sectors = static_cast<Word>(sec);
+
+    pformat->size = pformat->tracks * pformat->sectors * SECTOR_SIZE;
     tmp = pformat->size / DIRSECTOR_PER_KB;
     // calculate number of directory sectors
     // at least track 0 only contains directory sectors
-    pformat->dir_sectors = (tmp < sec - 4) ? sec - 4 : tmp;
+    pformat->dir_sectors = static_cast<Word>((tmp < sec - 4) ? sec - 4 : tmp);
 } // create_format_table
 
 // return != 0 on success
@@ -1087,8 +1100,8 @@ void FlexFileContainer::Create_format_table(SWord trk, SWord sec,
 //  use TYPE_FLX_CONTAINER for FLX format
 
 void FlexFileContainer::Format_disk(
-    SWord trk,
-    SWord sec,
+    int trk,
+    int sec,
     const char *disk_dir,
     const char *name,
     int  type /* = TYPE_DSK_CONTAINER */)
@@ -1100,7 +1113,7 @@ void FlexFileContainer::Format_disk(
 
     if (disk_dir == nullptr ||
         name == nullptr || strlen(name) == 0 ||
-        trk < 2 || sec < 6)
+        trk < 2 || sec < 6 || trk > 255 || sec > 255)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
