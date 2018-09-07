@@ -362,7 +362,8 @@ private:
      * the KeyEqual operation is. An extra comparison may slow things down with a fast KeyEqual.
      */
     static constexpr bool USE_STORED_HASH_ON_LOOKUP = StoreHash;
-
+    static constexpr bool HAS_STORED_HASH_RIGHT_SIZE = STORE_HASH && sizeof(std::size_t) == sizeof(truncated_hash_type);
+    static constexpr bool HAS_STORED_HASH_RIGHT_POLICY = STORE_HASH && is_power_of_two_policy<GrowthPolicy>::value;
     /**
      * We can only use the hash on rehash if the size of the hash type is the same as the stored one or
      * if we use a power of two modulo. In the case of the power of two modulo, we just mask
@@ -371,10 +372,10 @@ private:
      */
     static bool USE_STORED_HASH_ON_REHASH(size_type bucket_count) {
         (void) bucket_count;
-        if(STORE_HASH && sizeof(std::size_t) == sizeof(truncated_hash_type)) {
+        if(HAS_STORED_HASH_RIGHT_SIZE) {
             return true;
         }
-        else if(STORE_HASH && is_power_of_two_policy<GrowthPolicy>::value) {
+        else if(HAS_STORED_HASH_RIGHT_POLICY) {
             tsl_assert(bucket_count > 0);
             return (bucket_count - 1) <= std::numeric_limits<truncated_hash_type>::max();
         }
