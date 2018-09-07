@@ -116,6 +116,7 @@ private:
     void RenameSelectedItems();
     void ViewSelectedItems();
     void SetPropertyOnSelectedItems(Byte protection, bool isToBeSet);
+    FileNames GetSelectedFileNames();
     void CopyToClipboard();
     bool PasteFromClipboard();
     void DeselectAllFiles();
