@@ -518,7 +518,8 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     if (c_geometry)
     {
         wxString geometry;
-        unsigned long x, y;
+        unsigned long x = 0;
+        unsigned long y = 0;
 
         geometry = c_geometry->GetValue();
 
@@ -723,7 +724,7 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 
         if (c_diskDir)
         {
-            wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
+            disk_dir = m_options->disk_dir.c_str(), *wxConvCurrent;
             c_diskDir->SetValue(disk_dir);
         }
     }
