@@ -354,8 +354,10 @@ void NafsDirectoryContainer::initialize_flex_directory()
 
         if (i < dir_sectors - 1)
         {
-            pflex_directory[i].next_trk = (i + 5) / MAX_SECTOR;
-            pflex_directory[i].next_sec = ((i + 5) % MAX_SECTOR) + 1;
+            pflex_directory[i].next_trk =
+                static_cast<Byte>((i + 5) / MAX_SECTOR);
+            pflex_directory[i].next_sec =
+                static_cast<Byte>(((i + 5) % MAX_SECTOR) + 1);
         }
     }
 } // initialize_flex_directory
@@ -550,7 +552,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
         sector_buffer[j] = 0x00;
     }
 
-    sector_buffer[3] = dir_sectors - INIT_DIR_SECTORS + 1;
+    sector_buffer[3] = static_cast<Byte>(dir_sectors - INIT_DIR_SECTORS + 1);
     trk = psis->fc_start_trk;
     sec = psis->fc_start_sec;
     index = trk * MAX_SECTOR + sec - 1;
@@ -607,8 +609,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         }
         else
         {
-            plink->next.st.trk = (i + 1) / MAX_SECTOR;
-            plink->next.st.sec = ((i + 1) % MAX_SECTOR) + 1;
+            plink->next.st.trk = static_cast<Byte>((i + 1) / MAX_SECTOR);
+            plink->next.st.sec = static_cast<Byte>(((i + 1) % MAX_SECTOR) + 1);
         }
 
         plink->record_nr[0] = 0;
@@ -624,8 +626,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     {
         s_sys_info_sector *psis = &pflex_sys_info[i];
 
-        psis->fc_start_trk = fc_start / MAX_SECTOR;
-        psis->fc_start_sec = (fc_start % MAX_SECTOR) + 1;
+        psis->fc_start_trk = static_cast<Byte>(fc_start / MAX_SECTOR);
+        psis->fc_start_sec = static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
         psis->fc_end_trk = MAX_TRACK;
         psis->fc_end_sec = MAX_SECTOR;
         psis->free[0] = free >> 8;
@@ -802,9 +804,9 @@ void NafsDirectoryContainer::add_to_directory(
     pd->records[0]  = records >> 8;
     pd->records[1]  = records & 0xff;
     pd->sector_map  = random ? 0x02 : 0x00;
-    pd->month       = lt->tm_mon + 1;
-    pd->day         = lt->tm_mday;
-    pd->year        = lt->tm_year;
+    pd->month = static_cast<Byte>(lt->tm_mon + 1);
+    pd->day = static_cast<Byte>(lt->tm_mday);
+    pd->year = static_cast<Byte>(lt->tm_year);
 } // add_to_directory
 
 bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
@@ -859,8 +861,9 @@ void NafsDirectoryContainer::modify_random_file(char *path, struct stat *pstat,
 
         for (n = 0; n < (data_size / (252L * 255)) ; n++)
         {
-            file_sector_map[3 * n]   = index / MAX_SECTOR;
-            file_sector_map[3 * n + 1] = (index % MAX_SECTOR) + 1;
+            file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
+            file_sector_map[3 * n + 1] =
+                static_cast<Byte>((index % MAX_SECTOR) + 1);
             file_sector_map[3 * n + 2] = 255;
             index += 255;
         } // for
@@ -869,16 +872,17 @@ void NafsDirectoryContainer::modify_random_file(char *path, struct stat *pstat,
 
         if (i != 0)
         {
-            file_sector_map[3 * n]   = index / MAX_SECTOR;
-            file_sector_map[3 * n + 1] = (index % MAX_SECTOR) + 1;
-            file_sector_map[3 * n + 2] = (i + 251) / 252;
+            file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
+            file_sector_map[3 * n + 1] =
+                static_cast<Byte>((index % MAX_SECTOR) + 1);
+            file_sector_map[3 * n + 2] = static_cast<Byte>((i + 251) / 252);
         } // if
 
         BFilePtr fp(path, "rb+");
 
         if (fp != nullptr)
         {
-            fwrite(&file_sector_map, 252, 2, fp);
+            fwrite(file_sector_map, 252, 2, fp);
         }
     } // if
 } // modify_random_file
@@ -1053,9 +1057,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
             psis->fc_end_sec = 0;
             psis->free[0] = 0;
             psis->free[1] = 0;
-            psis->month = lt->tm_mon + 1;
-            psis->day = lt->tm_mday;
-            psis->year = lt->tm_year;
+            psis->month = static_cast<Byte>(lt->tm_mon + 1);
+            psis->day = static_cast<Byte>(lt->tm_mday);
+            psis->year = static_cast<Byte>(lt->tm_year);
             psis->last_trk = MAX_TRACK;
             psis->last_sec = MAX_SECTOR;
 
@@ -1326,8 +1330,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     {
         char *p, path[PATH_MAX + 1];
         const char *mode;
-        Word i, di;
-        Word bytes;
+        int index;
+        Word di;
+        Word bytes = 0;
         FILE *fp;
         t_st *link;
         bool result;
@@ -1337,8 +1342,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #endif
         mode = "rb";
         result = true;
-        i = trk * MAX_SECTOR + (sec - 1);
-        s_link_table *pfl = &pflex_links[i];
+        index = trk * MAX_SECTOR + (sec - 1);
+        s_link_table *pfl = &pflex_links[index];
 
         switch (pfl->file_id)
         {
@@ -1358,12 +1363,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 }
                 else if (sec == 1)
                 {
-                    bytes = SECTOR_SIZE;
-
-                    for (i = 0; i < SECTOR_SIZE; i++)
-                    {
-                        buffer[i] = 0;
-                    }
+                    memset(buffer, 0, SECTOR_SIZE);
 
                     buffer[0] = 0x39; // means RTS
                     link = link_address();
@@ -1414,10 +1414,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                 // free chain sector reads always
                 // filled with zero
-                for (i = 4; i < SECTOR_SIZE; i++)
-                {
-                    buffer[i] = 0;
-                }
+                memset(buffer + 4, 0, SECTOR_SIZE - 4);
 
                 break;
 
@@ -1436,13 +1433,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                                SEEK_SET))
                     {
                         bytes = static_cast<Word>(
-                            fread(&buffer[4], 1, 252, fp));
+                            fread(buffer + 4, 1, 252, fp));
                         fclose(fp);
 
                         // stuff last sector of file with 0
-                        for (i = 4 + bytes; i < SECTOR_SIZE; i++)
+                        if (bytes < 252)
                         {
-                            buffer[i] = 0;
+                            memset(buffer + 4 + bytes, 0,
+                                   SECTOR_SIZE - 4 - bytes);
                         }
                     }
                     else     // unable to read sector
@@ -1457,13 +1455,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                     if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
                     {
-                        bytes = static_cast<Word>(
-                            fread(&buffer[4], 1, 252, fp));
+                        bytes =
+                            static_cast<Word>(fread(buffer + 4, 1, 252, fp));
 
                         // stuff last sector of file with 0
-                        for (i = 4 + bytes; i < SECTOR_SIZE; i++)
+                        if (bytes < 252)
                         {
-                            buffer[i] = 0;
+                            memset(buffer + 4 + bytes, 0,
+                                   SECTOR_SIZE - 4 - bytes);
                         }
 
                         fseek(fp, 0L, SEEK_END); // position end of file
@@ -1490,12 +1489,15 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     {
         char *p, path[PATH_MAX + 1];
         const char *mode;
-        Word i, di;
+        SWord index;
+        Word di;
         size_t bytes;
         SWord new_file_index;
         FILE *fp;
         s_link_table *pfl;
         bool result;
+        Byte track = static_cast<Byte>(trk);
+        Byte sector = static_cast<Byte>(sec);
 
 #ifdef DEBUG_FILE
         LOG_XX("write: %02X/%02X ", trk, sec);
@@ -1504,8 +1506,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
         mode = "rb+";
         result = 1;
         bytes = 0;      // satisfy compiler
-        i = trk * MAX_SECTOR + (sec - 1);
-        pfl = &pflex_links[i];
+        index = track * MAX_SECTOR + (sector - 1);
+        pfl = &pflex_links[index];
 
         switch (pfl->file_id)
         {
@@ -1515,15 +1517,15 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #endif
                 p = nullptr; // satisfy compiler
 
-                if (sec >= 3)
+                if (sector >= 3)
                 {
-                    p = (char *)(&pflex_sys_info[sec - 3]);
+                    p = (char *)(&pflex_sys_info[sector - 3]);
                 }
-                else if (sec == 2)
+                else if (sector == 2)
                 {
                     p = (char *)pflex_unused.get();
                 }
-                else if (sec == 1)
+                else if (sector == 1)
                 {
                     mode = "wb";
                     strcpy((char *)&path, directory.c_str());
@@ -1531,7 +1533,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                     if ((fp = fopen(path, mode)) != nullptr)
                     {
-                        bytes = fwrite(&buffer, 1, SECTOR_SIZE, fp);
+                        bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
                         fclose(fp);
                     }
 
@@ -1568,16 +1570,16 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 LOG("free chain\n");
 #endif
 
-                if (dir_extend.st.trk == trk && dir_extend.st.sec == sec)
+                if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
                 {
-                    extend_directory(i, (s_dir_sector *)buffer);
+                    extend_directory(index, (s_dir_sector *)buffer);
 #ifdef DEBUG_FILE
                     LOG("      extend directory\n");
 #endif
                     break;
                 } // if
 
-                if (last_of_free_chain(trk, sec) && (buffer[1] || buffer[0]))
+                if (last_of_free_chain(track, sector) && (buffer[1] || buffer[0]))
                 {
                     pfl->next.st.trk  = buffer[0];
                     pfl->next.st.sec  = buffer[1];
@@ -1589,7 +1591,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     break;
                 }
 
-                if ((new_file_index = index_of_new_file(trk, sec)) < 0)
+                if ((new_file_index = index_of_new_file(track, sector)) < 0)
                 {
 #ifdef DEBUG_FILE
                     LOG("   ** error: unable to create new file\n");
@@ -1612,14 +1614,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 pfl->next.st.sec = buffer[1];
                 pfl->record_nr[0] = buffer[2];
                 pfl->record_nr[1] = buffer[3];
-                pfl->f_record = record_nr_of_new_file(new_file_index, i);
+                pfl->f_record = record_nr_of_new_file(new_file_index, index);
 
                 if (ftell(fp) != (pfl->f_record * 252L) &&
                     fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
                 {
                     result = false;
                 }
-                else if ((bytes = fwrite(&buffer[4], 1, 252, fp)) != 252)
+                else if ((bytes = fwrite(buffer + 4, 1, 252, fp)) != 252)
                 {
                     result = false;
                 }
@@ -1653,7 +1655,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         {
                             result = false;
                         }
-                        else if ((bytes = fwrite(&buffer[4], 1, 252,
+                        else if ((bytes = fwrite(buffer + 4, 1, 252,
                                                  fp)) != 252)
                         {
                             result = false;
@@ -1675,7 +1677,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     {
                         result = false;
                     }
-                    else if ((bytes = fwrite(&buffer[4], 1, 252, fp)) != 252)
+                    else if ((bytes = fwrite(buffer + 4, 1, 252, fp)) != 252)
                     {
                         result = false;
                     }
@@ -1693,14 +1695,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
     void NafsDirectoryContainer::mount(Word number)
     {
-        int wp; // should be int because of call 'access'
+        Byte wp_flag;
 
-        wp = access(directory.c_str(), W_OK);
-        initialize_header(wp);
+        wp_flag = static_cast<Byte>(access(directory.c_str(), W_OK));
+        initialize_header(wp_flag);
         initialize_new_file_table();
         initialize_flex_sys_info_sectors(number);
         initialize_flex_unused_sector();
-        fill_flex_directory(wp);
+        fill_flex_directory(wp_flag);
     } // mount
 
 #endif // #ifdef NAFS

@@ -42,7 +42,7 @@ const int INIT_DIR_SECTORS      = (20 - 4); // initial nr. of directory sectors
 const int LINK_TABLE_SIZE       = ((MAX_TRACK + 1) * MAX_SECTOR);
 const int INIT_NEW_FILES        = 4;        // initial nr of new files to be
 // managed at a time
-enum
+enum : SWord
 {
     FREE_CHAIN  = -1,
     DIRECTORY   = -2,
