@@ -451,7 +451,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     Byte startTrk, startSec;
     Byte nextTrk, nextSec;
     Word recordNr;
-    Byte count;
+    int count;
     FlexDirEntry    de;
     s_sys_info_sector sysInfo;
     const char      *pFileName = fileName;
