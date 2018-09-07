@@ -198,7 +198,6 @@ void TerminalIO::init_terminal_io(Word reset_key)
         // X11 protocol error aborts with exit()
         atexit(reset_terminal_io);
     }
-    signal(SIGTERM, s_exec_signal);
 }
 #else
 void TerminalIO::init_terminal_io(Word /* [[maybe_unused]]  Word reset_key */)
