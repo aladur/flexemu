@@ -57,7 +57,7 @@ void strupper(char *pstr)
 {
     while (*pstr)
     {
-        *pstr = toupper(*pstr);
+        *pstr = static_cast<char>(toupper(*pstr));
         pstr++;
     }
 } // strupper
@@ -67,7 +67,7 @@ void strlower(char *pstr)
 {
     while (*pstr)
     {
-        *pstr = tolower(*pstr);
+        *pstr = static_cast<char>(tolower(*pstr));
         pstr++;
     }
 } // strlower
@@ -194,7 +194,7 @@ bool matches(const char *text, const char *pattern,
 
         if (ignorecase)
         {
-            char_src = tolower(char_src);
+            char_src = static_cast<char>(tolower(char_src));
         }
 
         while (notmatched == 0 && char_pat != '\0')
@@ -225,7 +225,7 @@ bool matches(const char *text, const char *pattern,
                 // any other character
                 if (ignorecase)
                 {
-                    char_pat = tolower(char_pat);
+                    char_pat = static_cast<char>(tolower(char_pat));
                 }
 
                 break;

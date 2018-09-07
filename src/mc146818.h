@@ -53,7 +53,7 @@ public:
     {
         return "rtc";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 64;
     };
@@ -64,9 +64,9 @@ private:
     Byte                convert(Byte val);
     Byte                convert_hour(Byte val);
     Byte                convert_bin(Byte val);
-    Byte                increment(Byte *, Byte, Byte);
-    Byte                increment_hour(Byte *);
-    Byte                increment_day(Byte *, Byte, Byte);
+    bool                increment(Byte &, Byte, Byte);
+    bool                increment_hour(Byte &);
+    bool                increment_day(Byte &, Byte, Byte);
     const char          *getFileName();
     char                path[PATH_MAX];
 

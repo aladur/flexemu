@@ -55,13 +55,13 @@ Mc146818::Mc146818(Mc6809 &x_cpu) :
     // initialize clock registers with system time
     time_now = time(nullptr);
     lt = localtime(&time_now);
-    second = convert(lt->tm_sec);
-    minute = convert(lt->tm_min);
-    hour   = convert_hour(lt->tm_hour);
-    weekday = lt->tm_wday + 1;
-    day    = convert(lt->tm_mday);
-    month  = convert(lt->tm_mon + 1);
-    year   = convert(lt->tm_year);
+    second = convert(static_cast<Byte>(lt->tm_sec));
+    minute = convert(static_cast<Byte>(lt->tm_min));
+    hour = convert_hour(static_cast<Byte>(lt->tm_hour));
+    weekday = static_cast<Byte>(lt->tm_wday + 1);
+    day = convert(static_cast<Byte>(lt->tm_mday));
+    month = convert(static_cast<Byte>(lt->tm_mon + 1));
+    year = convert(static_cast<Byte>(lt->tm_year));
 }
 
 const char *Mc146818::getFileName()
@@ -111,68 +111,51 @@ Byte Mc146818::readIo(Word offset)
     {
         case 0x00:
             return second;
-            break;
 
         case 0x01:
             return al_second;
-            break;
 
         case 0x02:
             return minute;
-            break;
 
         case 0x03:
             return al_minute;
-            break;
 
         case 0x04:
             return hour;
-            break;
 
         case 0x05:
             return al_hour;
-            break;
 
         case 0x06:
             return weekday;
-            break;
 
         case 0x07:
             return day;
-            break;
 
         case 0x08:
             return month;
-            break;
 
         case 0x09:
             return year;
-            break;
 
         case 0x0a:
             return A;
-            break;
 
         case 0x0b:
             return B;
-            break;
 
         case 0x0c:
             temp = C;
             C = 0x00;
             return temp;
-            break;
 
         case 0x0d:
             return D;
-            break;
 
         default:
             return ram[offset - 0x0e];
-            break;
     }
-
-    return 0; // this case should NEVER happen
 }
 
 // writing time not supported
@@ -280,16 +263,16 @@ void Mc146818::update_1_second()
         else
         {
             // do a normal update
-            if (increment(&second, 0, 59))
-                if (increment(&minute, 0, 59))
-                    if (increment_hour(&hour))
+            if (increment(second, 0, 59))
+                if (increment(minute, 0, 59))
+                    if (increment_hour(hour))
                     {
-                        increment(&weekday, 1, 7);
+                        increment(weekday, 1, 7);
 
-                        if (increment_day(&day, month, year))
-                            if (increment(&month, 1, 12))
+                        if (increment_day(day, month, year))
+                            if (increment(month, 1, 12))
                             {
-                                increment(&year, 0, 99);
+                                increment(year, 0, 99);
                             }
                     }
         }
@@ -378,130 +361,130 @@ Byte Mc146818::convert_bin(Byte val)
 }
 
 // return 1 on overflow
-Byte Mc146818::increment(Byte *reg, Byte min, Byte max)
+bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 {
     if (B & 0x04)
     {
         // binary calculation
-        (*reg)++;
+        reg++;
 
-        if (*reg > max)
+        if (reg > max)
         {
-            *reg = min;
-            return 1;
+            reg = min;
+            return true;
         }
         else
         {
-            return 0;
+            return false;
         }
     }
     else
     {
         // bcd calculation
-        if ((*reg & 0x0f) == 9)
+        if ((reg & 0x0f) == 9)
         {
-            *reg = (*reg & 0xf0) + 0x10;
+            reg = (reg & 0xf0) + 0x10;
         }
         else
         {
-            (*reg)++;
+            reg++;
         }
 
-        if (*reg > convert(max))
+        if (reg > convert(max))
         {
-            *reg = min;
-            return 1;
+            reg = min;
+            return true;
         }
         else
         {
-            return 0;
+            return false;
         }
     }
 }
 
 
-Byte Mc146818::increment_hour(Byte *reg)
+bool Mc146818::increment_hour(Byte &x_hour)
 {
     switch (B & 0x06)
     {
         case 0x00:      //12 hour, BCD
-            if (*reg == 0x12)
+            if (x_hour == 0x12)
             {
-                *reg = 0x81;
+                x_hour = 0x81;
             }
-            else if (*reg == 0x92)
+            else if (x_hour == 0x92)
             {
-                *reg = 0x01;
-                return 1;
+                x_hour = 0x01;
+                return true;
             }
-            else if ((*reg & 0x0f) == 9)
+            else if ((x_hour & 0x0f) == 9)
             {
-                *reg = (*reg & 0xf0) + 0x10;
+                x_hour = (x_hour & 0xf0) + 0x10;
             }
             else
             {
-                (*reg)++;
+                x_hour++;
             }
 
             break;
 
         case 0x02:      //24 hour, BCD
-            if ((*reg & 0x0f) == 9)
+            if ((x_hour & 0x0f) == 9)
             {
-                *reg = (*reg & 0xf0) + 0x10;
+                x_hour = (x_hour & 0xf0) + 0x10;
             }
-            else if (*reg == 0x23)
+            else if (x_hour == 0x23)
             {
-                *reg = 0x00;
-                return 1;
+                x_hour = 0x00;
+                return true;
             }
             else
             {
-                (*reg)++;
+                x_hour++;
             }
 
             break;
 
         case 0x04:      //12 hour, binary
-            if (*reg == 0x0C)
+            if (x_hour == 0x0C)
             {
-                *reg = 0x81;
+                x_hour = 0x81;
             }
-            else if (*reg == 0x8C)
+            else if (x_hour == 0x8C)
             {
-                *reg = 0x01;
-                return 1;
+                x_hour = 0x01;
+                return true;
             }
             else
             {
-                (*reg)++;
+                x_hour++;
             }
 
             break;
 
         case 0x06:      //24 hour, binary
-            if (*reg == 0x17)
+            if (x_hour == 0x17)
             {
-                *reg = 0x00;
-                return 1;
+                x_hour = 0x00;
+                return true;
             }
             else
             {
-                (*reg)++;
+                x_hour++;
             }
 
             break;
     }  // switch
 
-    return 0;
+    return false;
 }
 
 
-Byte Mc146818::increment_day(Byte *day, Byte month, Byte year)
+bool Mc146818::increment_day(Byte &x_day, Byte x_month, Byte x_year)
 {
     Byte binmonth;
 
-    binmonth = convert_bin(month);
+    binmonth = convert_bin(x_month);
 
     if (binmonth < 1)
     {
@@ -514,39 +497,39 @@ Byte Mc146818::increment_day(Byte *day, Byte month, Byte year)
     }
 
     // if February leap year
-    if (binmonth == 2 && (convert_bin(year) % 4 == 0))
+    if (binmonth == 2 && (convert_bin(x_year) % 4 == 0))
     {
-        if (convert_bin(*day) == 29)
+        if (convert_bin(x_day) == 29)
         {
             // switch to next month on 29. Febr.
-            *day = 1;
-            return 1;
+            x_day = 1;
+            return true;
         }
     }
-    else if (convert_bin(*day) == last_day[binmonth - 1])
+    else if (convert_bin(x_day) == last_day[binmonth - 1])
     {
-        *day = 1;
-        return 1;
+        x_day = 1;
+        return true;
     }
 
     if (B & 0x04)
     {
         // binary calculation
-        (*day)++;
+        x_day++;
     }
     else
     {
         // bcd calculation
-        if ((*day & 0x0f) == 9)
+        if ((x_day & 0x0f) == 9)
         {
-            *day = (*day & 0xf0) + 0x10;
+            x_day = (x_day & 0xf0) + 0x10;
         }
         else
         {
-            (*day)++;
+            x_day++;
         }
     }
 
-    return 0;
+    return false;
 }
 

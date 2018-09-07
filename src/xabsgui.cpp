@@ -205,7 +205,8 @@ void XAbstractGui::update_block(int block_number)
     {
         CopyToZPixmap((Byte *)img->data, src, depth);
 
-        if (block_number == get_divided_block())
+        auto divided_block = get_divided_block();
+        if (divided_block >= 0 && (divided_block == block_number))
         {
             // first half display on the bottom of the window
             XPutImage(dpy, win, e2gc,

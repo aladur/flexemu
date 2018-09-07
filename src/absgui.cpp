@@ -73,14 +73,14 @@ void AbstractGui::update_block(int)
 {
 }
 
-void AbstractGui::initialize(struct sGuiOptions &options)
+void AbstractGui::initialize(struct sGuiOptions &x_guiOptions)
 {
-    program_name    = options.argv[0];
-    pixelSizeX    = options.pixelSizeX;
-    pixelSizeY    = options.pixelSizeY;
-    nColors     = options.nColors;
-    withColorScale  = !stricmp(options.color.c_str(), "default");
-    color       = options.color;
+    program_name = x_guiOptions.argv[0];
+    pixelSizeX = x_guiOptions.pixelSizeX;
+    pixelSizeY = x_guiOptions.pixelSizeY;
+    nColors = x_guiOptions.nColors;
+    withColorScale = !stricmp(x_guiOptions.color.c_str(), "default");
+    color = x_guiOptions.color;
 }
 
 void AbstractGui::initialize_conv_tables()
@@ -911,15 +911,15 @@ void AbstractGui::set_bell(int)
 
 void AbstractGui::output_to_terminal()
 {
-    if (terminalIO.is_terminal_supported() && inout.serpar_address() >= 0)
+    if (terminalIO.is_terminal_supported() && inout.is_serpar_address_valid())
     {
-        memory.write_byte(inout.serpar_address(), 0xff);
+        memory.write_byte(inout.serpar_address(), static_cast<Byte>(0xff));
     }
 }
 
 void AbstractGui::output_to_graphic()
 {
-    if (inout.serpar_address() >= 0)
+    if (inout.is_serpar_address_valid())
     {
         memory.write_byte(inout.serpar_address(), 0);
     }
@@ -930,7 +930,7 @@ GuiType AbstractGui::gui_type()
     return GuiType::NONE;
 }
 
-Word AbstractGui::get_divided_block() const
+int AbstractGui::get_divided_block() const
 {
     if ((vico2.get_value() % BLOCKHEIGHT) == 0)
     {
@@ -939,7 +939,7 @@ Word AbstractGui::get_divided_block() const
     }
     else
     {
-        return (Word)vico2.get_value() / BLOCKHEIGHT;
+        return (int)vico2.get_value() / BLOCKHEIGHT;
     }
 }
 

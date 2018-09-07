@@ -87,7 +87,7 @@ private:
     Byte                stepOffset;
     bool                isDataRequest, isInterrupt;
     bool                side;
-    unsigned int            byteCount, strRead;
+    Word                byteCount, strRead;
 
     // Internal functions
 private:
@@ -181,7 +181,7 @@ public:
     {
         return "wd1793";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
        return 4;
     };

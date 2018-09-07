@@ -52,7 +52,7 @@ public:
     {
         return "mc6850";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 2;
     }

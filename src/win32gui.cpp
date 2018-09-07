@@ -409,11 +409,12 @@ void Win32Gui::release_mouse_capture(HWND w)
     }
 }
 
-void Win32Gui::onSetFocus(HWND hwnd, HWND oldHwnd)
+void Win32Gui::onSetFocus(HWND, HWND
+    /* [[maybe_unused]] HWND hwnd, [[maybe_unused]] HWND oldHwnd */)
 {
 }
 
-void Win32Gui::onKillFocus(HWND hwnd, HWND newHwnd)
+void Win32Gui::onKillFocus(HWND hwnd, HWND /* [[maybe_unused]] HWND newHwnd */)
 {
     release_mouse_capture(hwnd);
 }
@@ -440,7 +441,7 @@ void Win32Gui::onCommand(HWND hwndWindow, int cmd, HWND hwndControl)
             break;
 
         case IDM_VIEW:
-            toggle_cpu(hwndWindow);
+            toggle_cpu();
             break;
 
         case IDM_BREAKPOINTS:
@@ -479,14 +480,16 @@ void Win32Gui::onCommand(HWND hwndWindow, int cmd, HWND hwndControl)
             break;
 
         case IDP_IRQ:
-            popup_interrupt_info(hwndControl);
+            popup_interrupt_info();
             break;
     }
 
     return;
 } // onCommand
 
-void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
+void Win32Gui::onChar(HWND /* [[maybe_unused]] HWND hwnd */,
+    SWord ch,
+    int /* [[maybe_unused]] int repeat */)
 {
     SWord key;
 
@@ -505,7 +508,9 @@ void Win32Gui::onChar(HWND hwnd, SWord ch, int repeat)
 
 } // onChar
 
-void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
+void Win32Gui::onKeyDown(HWND /* [[maybe_unused]] HWND hwnd */,
+    SWord ch,
+    int /* [[maybe_unused]] int repeat */)
 {
     SWord key;
 
@@ -524,7 +529,7 @@ void Win32Gui::onKeyDown(HWND hwnd, SWord ch, int repeat)
 
 } // onKeyDown
 
-void Win32Gui::onPaletteChanged(HWND hwnd)
+void Win32Gui::onPaletteChanged(HWND /* [[maybe_unused]] HWND hwnd */)
 {
     HDC hdc;
 
@@ -533,7 +538,9 @@ void Win32Gui::onPaletteChanged(HWND hwnd)
     ReleaseDC(e2screen, hdc);
 } // onPaletteChanged
 
-void Win32Gui::onMouseMove(HWND hwnd, Word newX, Word newY, Word fwKeys)
+void Win32Gui::onMouseMove(HWND /* [[maybe_unused]] HWND hwnd */,
+    Word newX, Word newY,
+    Word /* [[maybe_unused]] Word fwKeys */)
 {
     current_x = newX;
     current_y = newY;
@@ -777,7 +784,9 @@ void Win32Gui::onClose(HWND hwnd)
     CloseApp(hwnd, true);
 } // onClose
 
-void Win32Gui::onActivate(HWND hwnd, WORD what, HWND hwnd1)
+void Win32Gui::onActivate(HWND /* [[maybe_unused]] HWND hwnd */,
+    WORD what,
+    HWND /* [[maybe_unused]] HWND hwnd1 */)
 {
     if (what == WA_ACTIVE || what == WA_CLICKACTIVE)
     {
@@ -1058,13 +1067,11 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
         default:
             return -1;
     }
-
-    return -1;
 }
 
-void Win32Gui::initialize(struct sGuiOptions &options)
+void Win32Gui::initialize(struct sGuiOptions &guiOptions)
 {
-    AbstractGui::initialize(options);
+    AbstractGui::initialize(guiOptions);
     ggui        = this;
     palette     = nullptr; // needed for color display
     e2screen    = nullptr;
@@ -1085,26 +1092,28 @@ void Win32Gui::initialize(struct sGuiOptions &options)
     current_x     = -1;
     current_y     = -1;
     initialize_conv_tables();
-    initialize_e2window(options);
+    initialize_e2window(guiOptions);
 } // initialize
 
 void Win32Gui::popup_disk_info(HWND hwnd)
 {
     std::string message;
-    int i;
+    Word drive_nr;
 
-    for (i = 0; i < 4; ++i)
-        if (hwnd == hButtonFloppy[i])
+    for (drive_nr = 0; drive_nr < 4; ++drive_nr)
+    {
+        if (hwnd == hButtonFloppy[drive_nr])
         {
-            message = inout.get_drive_info(i);
+            message = inout.get_drive_info(drive_nr);
             MessageBox(e2screen, message.c_str(),
                        PROGRAMNAME " Disc status",
                        MB_OK | MB_ICONINFORMATION);
             return;
         }
+    }
 }
 
-void Win32Gui::popup_interrupt_info(HWND hwnd)
+void Win32Gui::popup_interrupt_info()
 {
     std::stringstream message;
     tInterruptStatus s;
@@ -1188,7 +1197,7 @@ void Win32Gui::main_loop()
     } // while
 }
 
-void Win32Gui::set_bell(int percent)
+void Win32Gui::set_bell(int /* [[maybe_unused]] int percent */)
 {
     // volume in percent is ignored
     Beep(400, 200);
@@ -1234,7 +1243,8 @@ void Win32Gui::update_block(int block_number, HDC hdc)
         startLine = ((WINDOWHEIGHT - vico2.get_value() +
                       block_number * BLOCKHEIGHT) % WINDOWHEIGHT) * pixelSizeY;
 
-        if (block_number == get_divided_block())
+        auto divided_block = get_divided_block();
+        if (divided_block >= 0 && (divided_block == block_number))
         {
             firstpartHeight = vico2.get_value() % BLOCKHEIGHT;
             // first half display on the bottom of the window
@@ -1283,11 +1293,11 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     DeleteDC(hMemoryDC);
 } // update_block
 
-void Win32Gui::initialize_e2window(struct sGuiOptions &options)
+void Win32Gui::initialize_e2window(struct sGuiOptions &guiOptions)
 {
     HWND w;
 
-    if (!registerWindowClasses(winApiContext.hInstance, 0))
+    if (!registerWindowClasses(winApiContext.hInstance))
     {
         MessageBox(nullptr, "RegisterClassEx failed\n" \
                    "Unable to create Mainwindow of " PROGRAMNAME,
@@ -1306,14 +1316,14 @@ void Win32Gui::initialize_e2window(struct sGuiOptions &options)
     }
 
     create_cpuview(w);
-    initialize_after_create(w, options);
+    initialize_after_create(w, guiOptions);
     manage_widget(w);
     initialize_after_open(w);
     e2screen = w;
 } // initialize_e2window
 
 
-BOOL Win32Gui::registerWindowClasses(HINSTANCE hinst, UINT ResPoolID)
+BOOL Win32Gui::registerWindowClasses(HINSTANCE hinst)
 {
     WNDCLASSEX      wcex ;
 
@@ -1511,7 +1521,7 @@ HWND Win32Gui::create_main_view()
 
 
 INT_PTR CALLBACK aboutDialogProc(HWND hwnd, UINT message, WPARAM wParam,
-                              LPARAM lParam)
+                              LPARAM /* [[maybe_unused]] LPARAM lParam */)
 {
     if (ggui == nullptr)
     {
@@ -1716,7 +1726,7 @@ bool Win32Gui::CheckDeviceSupport(HDC aHdc, bool isModifyValue, int *nrOfColors)
     return true;
 }
 
-void Win32Gui::SetColors(struct sGuiOptions &options)
+void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
 {
     LOGPALETTE *pLog;
     int scale;
@@ -1730,7 +1740,7 @@ void Win32Gui::SetColors(struct sGuiOptions &options)
 
     while (pc->colorName != nullptr)
     {
-        if (strcmp(options.color.c_str(), pc->colorName) == 0)
+        if (strcmp(guiOptions.color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -1755,7 +1765,7 @@ void Win32Gui::SetColors(struct sGuiOptions &options)
     {
         idx = i;
 
-        if (options.isInverse)
+        if (guiOptions.isInverse)
         {
             idx = (1 << COLOR_PLANES) - idx - 1;
         }
@@ -1795,7 +1805,7 @@ void Win32Gui::SetColors(struct sGuiOptions &options)
     delete [] pLog;
 }
 
-void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
+void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
 {
     HDC             hdc;
     struct sRGBDef  *pc;
@@ -1807,7 +1817,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
     Word    blue  = 255;
     int     foregroundIdx;
     int     backgroundIdx;
-    int     i, j, idx;
+    int     i, j;
     BITMAPINFO *pbmi;
 
                         // screen depth on Win32 is 8
@@ -1821,7 +1831,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
 
     while (pc->colorName != nullptr)
     {
-        if (strcmp(options.color.c_str(), pc->colorName) == 0)
+        if (strcmp(guiOptions.color.c_str(), pc->colorName) == 0)
         {
             break;
         }
@@ -1836,7 +1846,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
         blue  = pc->blue;
     }
 
-    if (!options.isInverse)
+    if (!guiOptions.isInverse)
     {
         foregroundIdx = 1;
         backgroundIdx = 0;
@@ -1849,7 +1859,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
 
     hdc = GetDC(w);
     CheckDeviceSupport(hdc, 1, &nColors);
-    SetColors(options);
+    SetColors(guiOptions);
 
     for (i = 0; i < MAX_PIXELSIZEX; i++)
     {
@@ -1872,9 +1882,9 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &options)
 
             Word *wp = (Word *)((Byte *)pbmi + sizeof(BITMAPINFOHEADER));
 
-            for (idx = 0; idx < (1 << COLOR_PLANES); idx++)
+            for (Word coloridx = 0; coloridx < (1 << COLOR_PLANES); coloridx++)
             {
-                *(wp++) = idx;
+                *(wp++) = coloridx;
             }
 
             image[i][j]  = CreateDIBitmap(hdc, &pbmi->bmiHeader, 0, nullptr,
@@ -1989,7 +1999,7 @@ Win32Gui::~Win32Gui()
 /* CPU-view implemantation */
 /***************************/
 
-void Win32Gui::popup_cpu(HWND hwnd)
+void Win32Gui::popup_cpu()
 {
     static bool firstTime = true;
 
@@ -2064,22 +2074,22 @@ void Win32Gui::popup_cpu(HWND hwnd)
     cpu_popped_up = true;
 }
 
-void Win32Gui::popdown_cpu(HWND hwnd)
+void Win32Gui::popdown_cpu()
 {
     CheckMenuItem(menu2, IDM_VIEW, MF_BYCOMMAND | MF_UNCHECKED);
     ShowWindow(cpuform, SW_HIDE);
     cpu_popped_up = false;
 }
 
-void Win32Gui::toggle_cpu(HWND hwnd)
+void Win32Gui::toggle_cpu()
 {
     if (cpu_popped_up)
     {
-        popdown_cpu(hwnd);
+        popdown_cpu();
     }
     else
     {
-        popup_cpu(hwnd);
+        popup_cpu();
     }
 }
 
@@ -2166,7 +2176,7 @@ BOOL Win32Gui::onCpuCommand(HWND hwnd, int cmd)
             break;
 
         case IDP_CPU:
-            popdown_cpu(hwnd);
+            popdown_cpu();
             break;
 
         default:
@@ -2176,9 +2186,9 @@ BOOL Win32Gui::onCpuCommand(HWND hwnd, int cmd)
     return TRUE;
 } // onCpuCommand
 
-BOOL Win32Gui::onCpuClose(HWND hwnd)
+BOOL Win32Gui::onCpuClose(HWND /* [[maybe_unused]] HWND hwnd */)
 {
-    popdown_cpu(hwnd);
+    popdown_cpu();
     return TRUE;
 }
 
@@ -2293,9 +2303,10 @@ BOOL Win32Gui::onBpClose(HWND hwnd)
     return TRUE;
 }
 
-BOOL Win32Gui::onCpuSizing(HWND hwnd, int edge, LPRECT pRect)
+BOOL Win32Gui::onCpuSizing(HWND /* [[maybe_unused]] HWND hwnd */,
+    int edge, LPRECT pRect)
 {
-    int what;
+    int what = 0;
 
     switch (edge)
     {
@@ -2401,7 +2412,7 @@ BOOL Win32Gui::onCpuSize(HWND hwnd, int sizeType, int width, int height)
 }
 
 INT_PTR CALLBACK bpDialogProc(HWND hwnd, UINT message, WPARAM wParam,
-                           LPARAM lParam)
+                           LPARAM /* [[maybe_unused]] LPARAM lParam */)
 {
     if (ggui == nullptr)
     {
@@ -2551,7 +2562,7 @@ BOOL Win32Gui::onLogClose(HWND hwnd)
 }
 
 INT_PTR CALLBACK logDialogProc(HWND hwnd, UINT message, WPARAM wParam,
-                            LPARAM lParam)
+                            LPARAM /* [[maybe_unused]] LPARAM lParam */)
 {
     if (ggui == nullptr)
     {

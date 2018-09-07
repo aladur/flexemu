@@ -239,9 +239,9 @@ const char *Da6809::FlexLabel(Word addr)
         default:
             return nullptr;
     }
-
-#endif // #ifdef FLEX_LABEL
+#else
     return nullptr;
+#endif // #ifdef FLEX_LABEL
 }
 
 const char *Da6809::IndexedRegister(Byte which)
@@ -687,7 +687,7 @@ inline Byte Da6809::D_RelativeL(
 
     sprintf(code_buf, "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
-    label = FlexLabel(*pAddr);
+    label = FlexLabel(static_cast<Word>(*pAddr));
 
     if (label == nullptr)
     {
@@ -704,8 +704,7 @@ inline Byte Da6809::D_RelativeL(
 inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code;
-    Word postbyte;
+    Byte code, postbyte;
     code = *pMemory;
     postbyte = *(pMemory + 1);
 
@@ -987,6 +986,7 @@ int Da6809::Disassemble(
         char **pMnemonic)
 {
     Byte code;
+    Word pc16 = static_cast<Word>(pc);
 
     *pCode = code_buf;
     *pMnemonic = mnem_buf;
@@ -998,939 +998,939 @@ int Da6809::Disassemble(
         case 0x01:
             if (use_undocumented)
             {
-                return D_Direct("neg", pc, 2, pMemory);
+                return D_Direct("neg", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x00:
-            return D_Direct("NEG  ", pc, 2, pMemory);
+            return D_Direct("NEG  ", pc16, 2, pMemory);
 
         case 0x02:
             if (use_undocumented)
             {
-                return D_Direct("negcom", pc, 2, pMemory);
+                return D_Direct("negcom", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x03:
-            return D_Direct("COM  ", pc, 2, pMemory);
+            return D_Direct("COM  ", pc16, 2, pMemory);
 
         case 0x04:
-            return D_Direct("LSR  ", pc, 2, pMemory);
+            return D_Direct("LSR  ", pc16, 2, pMemory);
 
         case 0x05:
             if (use_undocumented)
             {
-                return D_Direct("lsr  ", pc, 2, pMemory);
+                return D_Direct("lsr  ", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x06:
-            return D_Direct("ROR  ", pc, 2, pMemory);
+            return D_Direct("ROR  ", pc16, 2, pMemory);
 
         case 0x07:
-            return D_Direct("ASR  ", pc, 2, pMemory);
+            return D_Direct("ASR  ", pc16, 2, pMemory);
 
         case 0x08:
-            return D_Direct("LSR  ", pc, 2, pMemory);
+            return D_Direct("LSR  ", pc16, 2, pMemory);
 
         case 0x09:
-            return D_Direct("ROR  ", pc, 2, pMemory);
+            return D_Direct("ROR  ", pc16, 2, pMemory);
 
         case 0x0a:
-            return D_Direct("DEC  ", pc, 2, pMemory);
+            return D_Direct("DEC  ", pc16, 2, pMemory);
 
         case 0x0b:
             if (use_undocumented)
             {
-                return D_Direct("dec  ", pc, 2, pMemory);
+                return D_Direct("dec  ", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x0c:
-            return D_Direct("INC  ", pc, 2, pMemory);
+            return D_Direct("INC  ", pc16, 2, pMemory);
 
         case 0x0d:
-            return D_Direct("TST  ", pc, 2, pMemory);
+            return D_Direct("TST  ", pc16, 2, pMemory);
 
         case 0x0e:
             *pFlags |= InstFlg::Jump;
-            return D_Direct("JMP  ", pc, 2, pMemory);
+            return D_Direct("JMP  ", pc16, 2, pMemory);
 
         case 0x0f:
-            return D_Direct("CLR  ", pc, 2, pMemory);
+            return D_Direct("CLR  ", pc16, 2, pMemory);
 
         case 0x10:
-            return D_Page10(pFlags, pc, pMemory, pAddr);
+            return D_Page10(pFlags, pc16, pMemory, pAddr);
 
         case 0x11:
-            return D_Page11(pFlags, pc, pMemory, pAddr);
+            return D_Page11(pFlags, pc16, pMemory, pAddr);
 
         case 0x12:
             *pFlags |= InstFlg::Noop;
-            return D_Inherent("NOP  ", pc, 1, pMemory);
+            return D_Inherent("NOP  ", pc16, 1, pMemory);
 
         case 0x13:
             *pFlags |= InstFlg::Jump;
-            return D_Inherent("SYNC ", pc, 1, pMemory);
+            return D_Inherent("SYNC ", pc16, 1, pMemory);
 
         // 0x14, 0x15 is illegal
         case 0x16:
             *pFlags |= InstFlg::Jump | InstFlg::JumpAddr;
-            return D_RelativeL("LBRA ", pc, 3, pMemory, pAddr);
+            return D_RelativeL("LBRA ", pc16, 3, pMemory, pAddr);
 
         case 0x17:
             *pFlags |= InstFlg::Sub | InstFlg::LabelAddr;
-            return D_RelativeL("LBSR ", pc, 3, pMemory, pAddr);
+            return D_RelativeL("LBSR ", pc16, 3, pMemory, pAddr);
 
         // 0x18 is illegal
         case 0x19:
-            return D_Inherent("DAA  ", pc, 1, pMemory);
+            return D_Inherent("DAA  ", pc16, 1, pMemory);
 
         case 0x1a:
-            return D_Immediat("ORCC ", pc, 2, pMemory);
+            return D_Immediat("ORCC ", pc16, 2, pMemory);
 
         // 0x1b is illegal
         case 0x1c:
-            return D_Immediat("ANDCC", pc, 2, pMemory);
+            return D_Immediat("ANDCC", pc16, 2, pMemory);
 
         case 0x1d:
-            return D_Inherent("SEX  ", pc, 1, pMemory);
+            return D_Inherent("SEX  ", pc16, 1, pMemory);
 
         case 0x1e:
-            return D_Register0("EXG  ", pc, 2, pMemory);
+            return D_Register0("EXG  ", pc16, 2, pMemory);
 
         case 0x1f:
-            return D_Register0("TFR  ", pc, 2, pMemory);
+            return D_Register0("TFR  ", pc16, 2, pMemory);
 
         case 0x20:
             *pFlags |= InstFlg::Jump | InstFlg::JumpAddr;
-            return D_Relative("BRA  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BRA  ", pc16, 2, pMemory, pAddr);
 
         case 0x21:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BRN  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BRN  ", pc16, 2, pMemory, pAddr);
 
         case 0x22:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BHI  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BHI  ", pc16, 2, pMemory, pAddr);
 
         case 0x23:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BLS  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BLS  ", pc16, 2, pMemory, pAddr);
 
         case 0x24:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BCC  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BCC  ", pc16, 2, pMemory, pAddr);
 
         case 0x25:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BCS  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BCS  ", pc16, 2, pMemory, pAddr);
 
         case 0x26:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BNE  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BNE  ", pc16, 2, pMemory, pAddr);
 
         case 0x27:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BEQ  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BEQ  ", pc16, 2, pMemory, pAddr);
 
         case 0x28:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BVC  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BVC  ", pc16, 2, pMemory, pAddr);
 
         case 0x29:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BVS  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BVS  ", pc16, 2, pMemory, pAddr);
 
         case 0x2a:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BPL  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BPL  ", pc16, 2, pMemory, pAddr);
 
         case 0x2b:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BMI  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BMI  ", pc16, 2, pMemory, pAddr);
 
         case 0x2c:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BGE  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BGE  ", pc16, 2, pMemory, pAddr);
 
         case 0x2d:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BLT  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BLT  ", pc16, 2, pMemory, pAddr);
 
         case 0x2e:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BGT  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BGT  ", pc16, 2, pMemory, pAddr);
 
         case 0x2f:
             *pFlags |= InstFlg::JumpAddr;
-            return D_Relative("BLE  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BLE  ", pc16, 2, pMemory, pAddr);
 
         case 0x30:
-            return D_Indexed("LEAX ", pc, 2, pMemory);
+            return D_Indexed("LEAX ", pc16, 2, pMemory);
 
         case 0x31:
-            return D_Indexed("LEAY ", pc, 2, pMemory);
+            return D_Indexed("LEAY ", pc16, 2, pMemory);
 
         case 0x32:
-            return D_Indexed("LEAS ", pc, 2, pMemory);
+            return D_Indexed("LEAS ", pc16, 2, pMemory);
 
         case 0x33:
-            return D_Indexed("LEAU ", pc, 2, pMemory);
+            return D_Indexed("LEAU ", pc16, 2, pMemory);
 
         case 0x34:
-            return D_Register1("PSHS ", pc, 2, pMemory);
+            return D_Register1("PSHS ", pc16, 2, pMemory);
 
         case 0x35:
-            return D_Register1("PULS ", pc, 2, pMemory);
+            return D_Register1("PULS ", pc16, 2, pMemory);
 
         case 0x36:
-            return D_Register2("PSHU ", pc, 2, pMemory);
+            return D_Register2("PSHU ", pc16, 2, pMemory);
 
         case 0x37:
-            return D_Register2("PULU ", pc, 2, pMemory);
+            return D_Register2("PULU ", pc16, 2, pMemory);
 
         // 0x38 is illegal
         case 0x39:
             *pFlags |= InstFlg::Jump;
-            return D_Inherent("RTS  ", pc, 1, pMemory);
+            return D_Inherent("RTS  ", pc16, 1, pMemory);
 
         case 0x3a:
-            return D_Inherent("ABX  ", pc, 1, pMemory);
+            return D_Inherent("ABX  ", pc16, 1, pMemory);
 
         case 0x3b:
             *pFlags |= InstFlg::Jump;
-            return D_Inherent("RTI  ", pc, 1, pMemory);
+            return D_Inherent("RTI  ", pc16, 1, pMemory);
 
         case 0x3c:
             *pFlags |= InstFlg::Jump;
-            return D_Immediat("CWAI ", pc, 2, pMemory);
+            return D_Immediat("CWAI ", pc16, 2, pMemory);
 
         case 0x3d:
-            return D_Inherent("MUL  ", pc, 1, pMemory);
+            return D_Inherent("MUL  ", pc16, 1, pMemory);
 
         case 0x3e:
             if (use_undocumented)
             {
-                return D_Direct("reset", pc, 1, pMemory);
+                return D_Direct("reset", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x3f:
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("SWI  ", pc, 1, pMemory);
+            return D_Illegal("SWI  ", pc16, 1, pMemory);
 
         case 0x40:
-            return D_Inherent("NEGA ", pc, 1, pMemory);
+            return D_Inherent("NEGA ", pc16, 1, pMemory);
 
         case 0x41:
             if (use_undocumented)
             {
-                return D_Direct("nega ", pc, 1, pMemory);
+                return D_Direct("nega ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x43:
-            return D_Inherent("COMA ", pc, 1, pMemory);
+            return D_Inherent("COMA ", pc16, 1, pMemory);
 
         case 0x44:
-            return D_Inherent("LSRA ", pc, 1, pMemory);
+            return D_Inherent("LSRA ", pc16, 1, pMemory);
 
         case 0x45:
             if (use_undocumented)
             {
-                return D_Direct("lsra ", pc, 1, pMemory);
+                return D_Direct("lsra ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x46:
-            return D_Inherent("RORA ", pc, 1, pMemory);
+            return D_Inherent("RORA ", pc16, 1, pMemory);
 
         case 0x47:
-            return D_Inherent("ASRA ", pc, 1, pMemory);
+            return D_Inherent("ASRA ", pc16, 1, pMemory);
 
         case 0x48:
-            return D_Inherent("LSLA ", pc, 1, pMemory);
+            return D_Inherent("LSLA ", pc16, 1, pMemory);
 
         case 0x49:
-            return D_Inherent("ROLA ", pc, 1, pMemory);
+            return D_Inherent("ROLA ", pc16, 1, pMemory);
 
         case 0x4a:
-            return D_Inherent("DECA ", pc, 1, pMemory);
+            return D_Inherent("DECA ", pc16, 1, pMemory);
 
         case 0x4b:
             if (use_undocumented)
             {
-                return D_Direct("deca ", pc, 1, pMemory);
+                return D_Direct("deca ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x4c:
-            return D_Inherent("INCA ", pc, 1, pMemory);
+            return D_Inherent("INCA ", pc16, 1, pMemory);
 
         case 0x4d:
-            return D_Inherent("TSTA ", pc, 1, pMemory);
+            return D_Inherent("TSTA ", pc16, 1, pMemory);
 
         case 0x4e:
             if (use_undocumented)
             {
-                return D_Direct("clra ", pc, 1, pMemory);
+                return D_Direct("clra ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x4f:
-            return D_Inherent("CLRA ", pc, 1, pMemory);
+            return D_Inherent("CLRA ", pc16, 1, pMemory);
 
         case 0x50:
-            return D_Inherent("NEGB ", pc, 1, pMemory);
+            return D_Inherent("NEGB ", pc16, 1, pMemory);
 
         case 0x51:
             if (use_undocumented)
             {
-                return D_Direct("negb ", pc, 1, pMemory);
+                return D_Direct("negb ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x53:
-            return D_Inherent("COMB ", pc, 1, pMemory);
+            return D_Inherent("COMB ", pc16, 1, pMemory);
 
         case 0x54:
-            return D_Inherent("LSRB ", pc, 1, pMemory);
+            return D_Inherent("LSRB ", pc16, 1, pMemory);
 
         case 0x55:
             if (use_undocumented)
             {
-                return D_Direct("lsrb ", pc, 1, pMemory);
+                return D_Direct("lsrb ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x56:
-            return D_Inherent("RORB ", pc, 1, pMemory);
+            return D_Inherent("RORB ", pc16, 1, pMemory);
 
         case 0x57:
-            return D_Inherent("ASRB ", pc, 1, pMemory);
+            return D_Inherent("ASRB ", pc16, 1, pMemory);
 
         case 0x58:
-            return D_Inherent("LSLB ", pc, 1, pMemory);
+            return D_Inherent("LSLB ", pc16, 1, pMemory);
 
         case 0x59:
-            return D_Inherent("ROLB ", pc, 1, pMemory);
+            return D_Inherent("ROLB ", pc16, 1, pMemory);
 
         case 0x5a:
-            return D_Inherent("DECB ", pc, 1, pMemory);
+            return D_Inherent("DECB ", pc16, 1, pMemory);
 
         case 0x5b:
             if (use_undocumented)
             {
-                return D_Direct("decb ", pc, 1, pMemory);
+                return D_Direct("decb ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x5c:
-            return D_Inherent("INCB ", pc, 1, pMemory);
+            return D_Inherent("INCB ", pc16, 1, pMemory);
 
         case 0x5d:
-            return D_Inherent("TSTB ", pc, 1, pMemory);
+            return D_Inherent("TSTB ", pc16, 1, pMemory);
 
         case 0x5e:
             if (use_undocumented)
             {
-                return D_Direct("clrb ", pc, 1, pMemory);
+                return D_Direct("clrb ", pc16, 1, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x5f:
-            return D_Inherent("CLRB ", pc, 1, pMemory);
+            return D_Inherent("CLRB ", pc16, 1, pMemory);
 
         case 0x60:
-            return D_Indexed("NEG  ", pc, 2, pMemory);
+            return D_Indexed("NEG  ", pc16, 2, pMemory);
 
         case 0x61:
             if (use_undocumented)
             {
-                return D_Indexed("neg  ", pc, 2, pMemory);
+                return D_Indexed("neg  ", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x63:
-            return D_Indexed("COM  ", pc, 2, pMemory);
+            return D_Indexed("COM  ", pc16, 2, pMemory);
 
         case 0x64:
-            return D_Indexed("LSR  ", pc, 2, pMemory);
+            return D_Indexed("LSR  ", pc16, 2, pMemory);
 
         case 0x65:
             if (use_undocumented)
             {
-                return D_Indexed("lsr  ", pc, 2, pMemory);
+                return D_Indexed("lsr  ", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x66:
-            return D_Indexed("ROR  ", pc, 2, pMemory);
+            return D_Indexed("ROR  ", pc16, 2, pMemory);
 
         case 0x67:
-            return D_Indexed("ASR  ", pc, 2, pMemory);
+            return D_Indexed("ASR  ", pc16, 2, pMemory);
 
         case 0x68:
-            return D_Indexed("LSL  ", pc, 2, pMemory);
+            return D_Indexed("LSL  ", pc16, 2, pMemory);
 
         case 0x69:
-            return D_Indexed("ROL  ", pc, 2, pMemory);
+            return D_Indexed("ROL  ", pc16, 2, pMemory);
 
         case 0x6a:
-            return D_Indexed("DEC  ", pc, 2, pMemory);
+            return D_Indexed("DEC  ", pc16, 2, pMemory);
 
         case 0x6b:
             if (use_undocumented)
             {
-                return D_Indexed("dec  ", pc, 2, pMemory);
+                return D_Indexed("dec  ", pc16, 2, pMemory);
             }
 
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x6c:
-            return D_Indexed("INC  ", pc, 2, pMemory);
+            return D_Indexed("INC  ", pc16, 2, pMemory);
 
         case 0x6d:
-            return D_Indexed("TST  ", pc, 2, pMemory);
+            return D_Indexed("TST  ", pc16, 2, pMemory);
 
         case 0x6e:
             *pFlags |= InstFlg::Jump | InstFlg::ComputedGoto;
-            return D_Indexed("JMP  ", pc, 2, pMemory);
+            return D_Indexed("JMP  ", pc16, 2, pMemory);
 
         case 0x6f:
-            return D_Indexed("CLR  ", pc, 2, pMemory);
+            return D_Indexed("CLR  ", pc16, 2, pMemory);
 
         case 0x70:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("NEG  ", pc, 3, pMemory, pAddr);
+            return D_Extended("NEG  ", pc16, 3, pMemory, pAddr);
 
         case 0x71:
             if (use_undocumented)
             {
                 *pFlags |= InstFlg::LabelAddr;
-                return D_Extended("neg  ", pc, 3, pMemory, pAddr);
+                return D_Extended("neg  ", pc16, 3, pMemory, pAddr);
             };
 
             *pFlags |= InstFlg::Illegal;
 
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x73:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("COM  ", pc, 3, pMemory, pAddr);
+            return D_Extended("COM  ", pc16, 3, pMemory, pAddr);
 
         case 0x74:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LSR  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LSR  ", pc16, 3, pMemory, pAddr);
 
         case 0x75:
             if (use_undocumented)
             {
                 *pFlags |= InstFlg::LabelAddr;
-                return D_Extended("lsr  ", pc, 3, pMemory, pAddr);
+                return D_Extended("lsr  ", pc16, 3, pMemory, pAddr);
             };
 
             *pFlags |= InstFlg::Illegal;
 
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x76:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ROR  ", pc, 3, pMemory, pAddr);
+            return D_Extended("ROR  ", pc16, 3, pMemory, pAddr);
 
         case 0x77:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ASR  ", pc, 3, pMemory, pAddr);
+            return D_Extended("ASR  ", pc16, 3, pMemory, pAddr);
 
         case 0x78:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LSL  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LSL  ", pc16, 3, pMemory, pAddr);
 
         case 0x79:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ROL  ", pc, 3, pMemory, pAddr);
+            return D_Extended("ROL  ", pc16, 3, pMemory, pAddr);
 
         case 0x7a:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("DEC  ", pc, 3, pMemory, pAddr);
+            return D_Extended("DEC  ", pc16, 3, pMemory, pAddr);
 
         case 0x7b:
             if (use_undocumented)
             {
                 *pFlags |= InstFlg::LabelAddr;
-                return D_Extended("dec  ", pc, 3, pMemory, pAddr);
+                return D_Extended("dec  ", pc16, 3, pMemory, pAddr);
             };
 
             *pFlags |= InstFlg::Illegal;
 
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
 
         case 0x7c:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("INC  ", pc, 3, pMemory, pAddr);
+            return D_Extended("INC  ", pc16, 3, pMemory, pAddr);
 
         case 0x7d:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("TST  ", pc, 3, pMemory, pAddr);
+            return D_Extended("TST  ", pc16, 3, pMemory, pAddr);
 
         case 0x7e:
             *pFlags |= InstFlg::Jump;
-            return D_Extended("JMP  ", pc, 3, pMemory, pAddr);
+            return D_Extended("JMP  ", pc16, 3, pMemory, pAddr);
 
         case 0x7f:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("CLR  ", pc, 3, pMemory, pAddr);
+            return D_Extended("CLR  ", pc16, 3, pMemory, pAddr);
 
         case 0x80:
-            return D_Immediat("SUBA ", pc, 2, pMemory);
+            return D_Immediat("SUBA ", pc16, 2, pMemory);
 
         case 0x81:
-            return D_Immediat("CMPA ", pc, 2, pMemory);
+            return D_Immediat("CMPA ", pc16, 2, pMemory);
 
         case 0x82:
-            return D_Immediat("SBCA ", pc, 2, pMemory);
+            return D_Immediat("SBCA ", pc16, 2, pMemory);
 
         case 0x83:
-            return D_ImmediatL("SUBD ", pc, 3, pMemory, pAddr);
+            return D_ImmediatL("SUBD ", pc16, 3, pMemory, pAddr);
 
         case 0x84:
-            return D_Immediat("ANDA ", pc, 2, pMemory);
+            return D_Immediat("ANDA ", pc16, 2, pMemory);
 
         case 0x85:
-            return D_Immediat("BITA ", pc, 2, pMemory);
+            return D_Immediat("BITA ", pc16, 2, pMemory);
 
         case 0x86:
-            return D_Immediat("LDA  ", pc, 2, pMemory);
+            return D_Immediat("LDA  ", pc16, 2, pMemory);
 
         // 0x87 is illegal
         case 0x88:
-            return D_Immediat("EORA ", pc, 2, pMemory);
+            return D_Immediat("EORA ", pc16, 2, pMemory);
 
         case 0x89:
-            return D_Immediat("ADCA ", pc, 2, pMemory);
+            return D_Immediat("ADCA ", pc16, 2, pMemory);
 
         case 0x8a:
-            return D_Immediat("ORA  ", pc, 2, pMemory);
+            return D_Immediat("ORA  ", pc16, 2, pMemory);
 
         case 0x8b:
-            return D_Immediat("ADDA ", pc, 2, pMemory);
+            return D_Immediat("ADDA ", pc16, 2, pMemory);
 
         case 0x8c:
-            return D_ImmediatL("CMPX ", pc, 3, pMemory, pAddr);
+            return D_ImmediatL("CMPX ", pc16, 3, pMemory, pAddr);
 
         case 0x8d:
             *pFlags |= InstFlg::Sub;
-            return D_Relative("BSR  ", pc, 2, pMemory, pAddr);
+            return D_Relative("BSR  ", pc16, 2, pMemory, pAddr);
 
         case 0x8e:
-            return D_ImmediatL("LDX  ", pc, 2, pMemory, pAddr);
+            return D_ImmediatL("LDX  ", pc16, 2, pMemory, pAddr);
 
         // 0x8f is illegal
 
         case 0x90:
-            return D_Direct("SUBA ", pc, 2, pMemory);
+            return D_Direct("SUBA ", pc16, 2, pMemory);
 
         case 0x91:
-            return D_Direct("CMPA ", pc, 2, pMemory);
+            return D_Direct("CMPA ", pc16, 2, pMemory);
 
         case 0x92:
-            return D_Direct("SBCA ", pc, 2, pMemory);
+            return D_Direct("SBCA ", pc16, 2, pMemory);
 
         case 0x93:
-            return D_Direct("SUBD ", pc, 2, pMemory);
+            return D_Direct("SUBD ", pc16, 2, pMemory);
 
         case 0x94:
-            return D_Direct("ANDA ", pc, 2, pMemory);
+            return D_Direct("ANDA ", pc16, 2, pMemory);
 
         case 0x95:
-            return D_Direct("BITA ", pc, 2, pMemory);
+            return D_Direct("BITA ", pc16, 2, pMemory);
 
         case 0x96:
-            return D_Direct("LDA  ", pc, 2, pMemory);
+            return D_Direct("LDA  ", pc16, 2, pMemory);
 
         case 0x97:
-            return D_Direct("STA  ", pc, 2, pMemory);
+            return D_Direct("STA  ", pc16, 2, pMemory);
 
         case 0x98:
-            return D_Direct("EORA ", pc, 2, pMemory);
+            return D_Direct("EORA ", pc16, 2, pMemory);
 
         case 0x99:
-            return D_Direct("ADCA ", pc, 2, pMemory);
+            return D_Direct("ADCA ", pc16, 2, pMemory);
 
         case 0x9a:
-            return D_Direct("ORA  ", pc, 2, pMemory);
+            return D_Direct("ORA  ", pc16, 2, pMemory);
 
         case 0x9b:
-            return D_Direct("ADDA ", pc, 2, pMemory);
+            return D_Direct("ADDA ", pc16, 2, pMemory);
 
         case 0x9c:
-            return D_Direct("CMPX ", pc, 2, pMemory);
+            return D_Direct("CMPX ", pc16, 2, pMemory);
 
         case 0x9d:
             *pFlags |= InstFlg::Sub;
-            return D_Direct("JSR  ", pc, 2, pMemory);
+            return D_Direct("JSR  ", pc16, 2, pMemory);
 
         case 0x9e:
-            return D_Direct("LDX  ", pc, 2, pMemory);
+            return D_Direct("LDX  ", pc16, 2, pMemory);
 
         case 0x9f:
-            return D_Direct("STX  ", pc, 2, pMemory);
+            return D_Direct("STX  ", pc16, 2, pMemory);
 
         case 0xa0:
-            return D_Indexed("SUBA ", pc, 2, pMemory);
+            return D_Indexed("SUBA ", pc16, 2, pMemory);
 
         case 0xa1:
-            return D_Indexed("CMPA ", pc, 2, pMemory);
+            return D_Indexed("CMPA ", pc16, 2, pMemory);
 
         case 0xa2:
-            return D_Indexed("SBCA ", pc, 2, pMemory);
+            return D_Indexed("SBCA ", pc16, 2, pMemory);
 
         case 0xa3:
-            return D_Indexed("SUBD ", pc, 2, pMemory);
+            return D_Indexed("SUBD ", pc16, 2, pMemory);
 
         case 0xa4:
-            return D_Indexed("ANDA ", pc, 2, pMemory);
+            return D_Indexed("ANDA ", pc16, 2, pMemory);
 
         case 0xa5:
-            return D_Indexed("BITA ", pc, 2, pMemory);
+            return D_Indexed("BITA ", pc16, 2, pMemory);
 
         case 0xa6:
-            return D_Indexed("LDA  ", pc, 2, pMemory);
+            return D_Indexed("LDA  ", pc16, 2, pMemory);
 
         case 0xa7:
-            return D_Indexed("STA  ", pc, 2, pMemory);
+            return D_Indexed("STA  ", pc16, 2, pMemory);
 
         case 0xa8:
-            return D_Indexed("EORA ", pc, 2, pMemory);
+            return D_Indexed("EORA ", pc16, 2, pMemory);
 
         case 0xa9:
-            return D_Indexed("ADCA ", pc, 2, pMemory);
+            return D_Indexed("ADCA ", pc16, 2, pMemory);
 
         case 0xaa:
-            return D_Indexed("ORA  ", pc, 2, pMemory);
+            return D_Indexed("ORA  ", pc16, 2, pMemory);
 
         case 0xab:
-            return D_Indexed("ADDA ", pc, 2, pMemory);
+            return D_Indexed("ADDA ", pc16, 2, pMemory);
 
         case 0xac:
-            return D_Indexed("CMPX ", pc, 2, pMemory);
+            return D_Indexed("CMPX ", pc16, 2, pMemory);
 
         case 0xad:
             *pFlags |= InstFlg::Sub | InstFlg::ComputedGoto;
-            return D_Indexed("JSR  ", pc, 2, pMemory);
+            return D_Indexed("JSR  ", pc16, 2, pMemory);
 
         case 0xae:
-            return D_Indexed("LDX  ", pc, 2, pMemory);
+            return D_Indexed("LDX  ", pc16, 2, pMemory);
 
         case 0xaf:
-            return D_Indexed("STX  ", pc, 2, pMemory);
+            return D_Indexed("STX  ", pc16, 2, pMemory);
 
         case 0xb0:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SUBA ", pc, 3, pMemory, pAddr);
+            return D_Extended("SUBA ", pc16, 3, pMemory, pAddr);
 
         case 0xb1:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("CMPA ", pc, 3, pMemory, pAddr);
+            return D_Extended("CMPA ", pc16, 3, pMemory, pAddr);
 
         case 0xb2:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SBCA ", pc, 3, pMemory, pAddr);
+            return D_Extended("SBCA ", pc16, 3, pMemory, pAddr);
 
         case 0xb3:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SUBD ", pc, 3, pMemory, pAddr);
+            return D_Extended("SUBD ", pc16, 3, pMemory, pAddr);
 
         case 0xb4:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ANDA ", pc, 3, pMemory, pAddr);
+            return D_Extended("ANDA ", pc16, 3, pMemory, pAddr);
 
         case 0xb5:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("BITA ", pc, 3, pMemory, pAddr);
+            return D_Extended("BITA ", pc16, 3, pMemory, pAddr);
 
         case 0xb6:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LDA  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LDA  ", pc16, 3, pMemory, pAddr);
 
         case 0xb7:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("STA  ", pc, 3, pMemory, pAddr);
+            return D_Extended("STA  ", pc16, 3, pMemory, pAddr);
 
         case 0xb8:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("EORA ", pc, 3, pMemory, pAddr);
+            return D_Extended("EORA ", pc16, 3, pMemory, pAddr);
 
         case 0xb9:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ADCA ", pc, 3, pMemory, pAddr);
+            return D_Extended("ADCA ", pc16, 3, pMemory, pAddr);
 
         case 0xba:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ORA  ", pc, 3, pMemory, pAddr);
+            return D_Extended("ORA  ", pc16, 3, pMemory, pAddr);
 
         case 0xbb:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ADDA ", pc, 3, pMemory, pAddr);
+            return D_Extended("ADDA ", pc16, 3, pMemory, pAddr);
 
         case 0xbc:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("CMPX ", pc, 3, pMemory, pAddr);
+            return D_Extended("CMPX ", pc16, 3, pMemory, pAddr);
 
         case 0xbd:
             *pFlags |= InstFlg::Sub | InstFlg::JumpAddr;
-            return D_Extended("JSR  ", pc, 3, pMemory, pAddr);
+            return D_Extended("JSR  ", pc16, 3, pMemory, pAddr);
 
         case 0xbe:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LDX  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LDX  ", pc16, 3, pMemory, pAddr);
 
         case 0xbf:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("STX  ", pc, 3, pMemory, pAddr);
+            return D_Extended("STX  ", pc16, 3, pMemory, pAddr);
 
         case 0xc0:
-            return D_Immediat("SUBB ", pc, 2, pMemory);
+            return D_Immediat("SUBB ", pc16, 2, pMemory);
 
         case 0xc1:
-            return D_Immediat("CMPB ", pc, 2, pMemory);
+            return D_Immediat("CMPB ", pc16, 2, pMemory);
 
         case 0xc2:
-            return D_Immediat("SBCB ", pc, 2, pMemory);
+            return D_Immediat("SBCB ", pc16, 2, pMemory);
 
         case 0xc3:
             *pFlags |= InstFlg::LabelAddr;
-            return D_ImmediatL("ADDD ", pc, 3, pMemory, pAddr);
+            return D_ImmediatL("ADDD ", pc16, 3, pMemory, pAddr);
 
         case 0xc4:
-            return D_Immediat("ANDB ", pc, 2, pMemory);
+            return D_Immediat("ANDB ", pc16, 2, pMemory);
 
         case 0xc5:
-            return D_Immediat("BITB ", pc, 2, pMemory);
+            return D_Immediat("BITB ", pc16, 2, pMemory);
 
         case 0xc6:
-            return D_Immediat("LDB  ", pc, 2, pMemory);
+            return D_Immediat("LDB  ", pc16, 2, pMemory);
 
         // 0xc7 is illegal
         case 0xc8:
-            return D_Immediat("EORB ", pc, 2, pMemory);
+            return D_Immediat("EORB ", pc16, 2, pMemory);
 
         case 0xc9:
-            return D_Immediat("ADCB ", pc, 2, pMemory);
+            return D_Immediat("ADCB ", pc16, 2, pMemory);
 
         case 0xca:
-            return D_Immediat("ORB  ", pc, 2, pMemory);
+            return D_Immediat("ORB  ", pc16, 2, pMemory);
 
         case 0xcb:
-            return D_Immediat("ADDB ", pc, 2, pMemory);
+            return D_Immediat("ADDB ", pc16, 2, pMemory);
 
         case 0xcc:
             *pFlags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDD  ", pc, 3, pMemory, pAddr);
+            return D_ImmediatL("LDD  ", pc16, 3, pMemory, pAddr);
 
         // 0xcd is illegal
         case 0xce:
             *pFlags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDU  ", pc, 3, pMemory, pAddr);
+            return D_ImmediatL("LDU  ", pc16, 3, pMemory, pAddr);
 
         // 0xcf is illegal
 
         case 0xd0:
-            return D_Direct("SUBB ", pc, 2, pMemory);
+            return D_Direct("SUBB ", pc16, 2, pMemory);
 
         case 0xd1:
-            return D_Direct("CMPB ", pc, 2, pMemory);
+            return D_Direct("CMPB ", pc16, 2, pMemory);
 
         case 0xd2:
-            return D_Direct("SBCB ", pc, 2, pMemory);
+            return D_Direct("SBCB ", pc16, 2, pMemory);
 
         case 0xd3:
-            return D_Direct("ADDD ", pc, 2, pMemory);
+            return D_Direct("ADDD ", pc16, 2, pMemory);
 
         case 0xd4:
-            return D_Direct("ANDB ", pc, 2, pMemory);
+            return D_Direct("ANDB ", pc16, 2, pMemory);
 
         case 0xd5:
-            return D_Direct("BITB ", pc, 2, pMemory);
+            return D_Direct("BITB ", pc16, 2, pMemory);
 
         case 0xd6:
-            return D_Direct("LDB  ", pc, 2, pMemory);
+            return D_Direct("LDB  ", pc16, 2, pMemory);
 
         case 0xd7:
-            return D_Direct("STB  ", pc, 2, pMemory);
+            return D_Direct("STB  ", pc16, 2, pMemory);
 
         case 0xd8:
-            return D_Direct("EORB ", pc, 2, pMemory);
+            return D_Direct("EORB ", pc16, 2, pMemory);
 
         case 0xd9:
-            return D_Direct("ADCB ", pc, 2, pMemory);
+            return D_Direct("ADCB ", pc16, 2, pMemory);
 
         case 0xda:
-            return D_Direct("ORB  ", pc, 2, pMemory);
+            return D_Direct("ORB  ", pc16, 2, pMemory);
 
         case 0xdb:
-            return D_Direct("ADDB ", pc, 2, pMemory);
+            return D_Direct("ADDB ", pc16, 2, pMemory);
 
         case 0xdc:
-            return D_Direct("LDD  ", pc, 2, pMemory);
+            return D_Direct("LDD  ", pc16, 2, pMemory);
 
         case 0xdd:
-            return D_Direct("STD  ", pc, 2, pMemory);
+            return D_Direct("STD  ", pc16, 2, pMemory);
 
         case 0xde:
-            return D_Direct("LDU  ", pc, 2, pMemory);
+            return D_Direct("LDU  ", pc16, 2, pMemory);
 
         case 0xdf:
-            return D_Direct("STU  ", pc, 2, pMemory);
+            return D_Direct("STU  ", pc16, 2, pMemory);
 
         case 0xe0:
-            return D_Indexed("SUBB ", pc, 2, pMemory);
+            return D_Indexed("SUBB ", pc16, 2, pMemory);
 
         case 0xe1:
-            return D_Indexed("CMPB ", pc, 2, pMemory);
+            return D_Indexed("CMPB ", pc16, 2, pMemory);
 
         case 0xe2:
-            return D_Indexed("SBCB ", pc, 2, pMemory);
+            return D_Indexed("SBCB ", pc16, 2, pMemory);
 
         case 0xe3:
-            return D_Indexed("ADDD ", pc, 2, pMemory);
+            return D_Indexed("ADDD ", pc16, 2, pMemory);
 
         case 0xe4:
-            return D_Indexed("ANDB ", pc, 2, pMemory);
+            return D_Indexed("ANDB ", pc16, 2, pMemory);
 
         case 0xe5:
-            return D_Indexed("BITB ", pc, 2, pMemory);
+            return D_Indexed("BITB ", pc16, 2, pMemory);
 
         case 0xe6:
-            return D_Indexed("LDB  ", pc, 2, pMemory);
+            return D_Indexed("LDB  ", pc16, 2, pMemory);
 
         case 0xe7:
-            return D_Indexed("STB  ", pc, 2, pMemory);
+            return D_Indexed("STB  ", pc16, 2, pMemory);
 
         case 0xe8:
-            return D_Indexed("EORB ", pc, 2, pMemory);
+            return D_Indexed("EORB ", pc16, 2, pMemory);
 
         case 0xe9:
-            return D_Indexed("ADCB ", pc, 2, pMemory);
+            return D_Indexed("ADCB ", pc16, 2, pMemory);
 
         case 0xea:
-            return D_Indexed("ORB  ", pc, 2, pMemory);
+            return D_Indexed("ORB  ", pc16, 2, pMemory);
 
         case 0xeb:
-            return D_Indexed("ADDB ", pc, 2, pMemory);
+            return D_Indexed("ADDB ", pc16, 2, pMemory);
 
         case 0xec:
-            return D_Indexed("LDD  ", pc, 2, pMemory);
+            return D_Indexed("LDD  ", pc16, 2, pMemory);
 
         case 0xed:
-            return D_Indexed("STD  ", pc, 2, pMemory);
+            return D_Indexed("STD  ", pc16, 2, pMemory);
 
         case 0xee:
-            return D_Indexed("LDU  ", pc, 2, pMemory);
+            return D_Indexed("LDU  ", pc16, 2, pMemory);
 
         case 0xef:
-            return D_Indexed("STU  ", pc, 2, pMemory);
+            return D_Indexed("STU  ", pc16, 2, pMemory);
 
         case 0xf0:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SUBB ", pc, 3, pMemory, pAddr);
+            return D_Extended("SUBB ", pc16, 3, pMemory, pAddr);
 
         case 0xf1:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("CMPB ", pc, 3, pMemory, pAddr);
+            return D_Extended("CMPB ", pc16, 3, pMemory, pAddr);
 
         case 0xf2:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SBCA ", pc, 3, pMemory, pAddr);
+            return D_Extended("SBCA ", pc16, 3, pMemory, pAddr);
 
         case 0xf3:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ADDD ", pc, 3, pMemory, pAddr);
+            return D_Extended("ADDD ", pc16, 3, pMemory, pAddr);
 
         case 0xf4:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ANDB ", pc, 3, pMemory, pAddr);
+            return D_Extended("ANDB ", pc16, 3, pMemory, pAddr);
 
         case 0xf5:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("BITB ", pc, 3, pMemory, pAddr);
+            return D_Extended("BITB ", pc16, 3, pMemory, pAddr);
 
         case 0xf6:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LDB  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LDB  ", pc16, 3, pMemory, pAddr);
 
         case 0xf7:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("STB  ", pc, 3, pMemory, pAddr);
+            return D_Extended("STB  ", pc16, 3, pMemory, pAddr);
 
         case 0xf8:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("EORB ", pc, 3, pMemory, pAddr);
+            return D_Extended("EORB ", pc16, 3, pMemory, pAddr);
 
         case 0xf9:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ADCB ", pc, 3, pMemory, pAddr);
+            return D_Extended("ADCB ", pc16, 3, pMemory, pAddr);
 
         case 0xfa:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ORB  ", pc, 3, pMemory, pAddr);
+            return D_Extended("ORB  ", pc16, 3, pMemory, pAddr);
 
         case 0xfb:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("ADDB ", pc, 3, pMemory, pAddr);
+            return D_Extended("ADDB ", pc16, 3, pMemory, pAddr);
 
         case 0xfc:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LDD  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LDD  ", pc16, 3, pMemory, pAddr);
 
         case 0xfd:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("STD  ", pc, 3, pMemory, pAddr);
+            return D_Extended("STD  ", pc16, 3, pMemory, pAddr);
 
         case 0xfe:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("LDU  ", pc, 3, pMemory, pAddr);
+            return D_Extended("LDU  ", pc16, 3, pMemory, pAddr);
 
         case 0xff:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("STU  ", pc, 3, pMemory, pAddr);
+            return D_Extended("STU  ", pc16, 3, pMemory, pAddr);
 
         default:
             *pFlags |= InstFlg::Illegal;
-            return D_Illegal("", pc, 1, pMemory);
+            return D_Illegal("", pc16, 1, pMemory);
     }  // switch
 } // disassemble
 

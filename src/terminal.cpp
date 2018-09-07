@@ -72,9 +72,9 @@ void TerminalIO::reset_terminal_io()
 #endif // #ifdef HAVE_TERMIOS_H
 }
 
+#ifdef HAVE_TERMIOS_H
 void TerminalIO::init_terminal_io(Word reset_key)
 {
-#ifdef HAVE_TERMIOS_H
     struct termios  buf;
     tcflag_t    mask;
     struct sigaction sig_action;
@@ -198,13 +198,16 @@ void TerminalIO::init_terminal_io(Word reset_key)
         // X11 protocol error aborts with exit()
         atexit(reset_terminal_io);
     }
-
-#endif // #ifdef HAVE_TERMIOS_H
-
+    signal(SIGTERM, s_exec_signal);
+}
+#else
+void TerminalIO::init_terminal_io(Word /* [[maybe_unused]]  Word reset_key */)
+{
 #if defined(_WIN32) && defined(SIGTERM)
     signal(SIGTERM, s_exec_signal);
 #endif
 }
+#endif // #ifdef HAVE_TERMIOS_H
 
 void TerminalIO::put_char_serial(Byte key)
 {
@@ -280,10 +283,10 @@ Byte TerminalIO::peek_char_serial()
 }
 
 
+#ifdef HAVE_TERMIOS_H
 void TerminalIO::write_char_serial(Byte value)
 {
     size_t count = 0;
-#ifdef HAVE_TERMIOS_H
     used_serial_io = true;
 #ifdef VERASE
 
@@ -300,8 +303,12 @@ void TerminalIO::write_char_serial(Byte value)
 #endif
     count = write(fileno(stdout), &value, 1);
     (void)count; // satisfy compiler
-#endif // #ifdef HAVE_TERMIOS_H
 }
+#else
+void TerminalIO::write_char_serial(Byte /* [[maybe_unused]] Byte value */)
+{
+}
+#endif // #ifdef HAVE_TERMIOS_H
 
 bool TerminalIO::is_terminal_supported()
 {

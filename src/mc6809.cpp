@@ -58,9 +58,9 @@ void Mc6809::set_disassembler(Da6809 *x_disassembler)
     }
 }
 
-void Mc6809::set_use_undocumented(bool b)
+void Mc6809::set_use_undocumented(bool value)
 {
-    use_undocumented = b;
+    use_undocumented = value;
 
     if (disassembler != nullptr)
     {
@@ -151,53 +151,53 @@ void Mc6809::init_indexed_cycles()
 void Mc6809::init_psh_pul_cycles()
 {
     Word i;
-    Byte cycles;
+    Byte cycle_count;
 
     for (i = 0; i < 256; i++)
     {
-        cycles = 5;
+        cycle_count = 5;
 
         if (i & 0x01)
         {
-            cycles++;
+            cycle_count++;
         }
 
         if (i & 0x02)
         {
-            cycles++;
+            cycle_count++;
         }
 
         if (i & 0x04)
         {
-            cycles++;
+            cycle_count++;
         }
 
         if (i & 0x08)
         {
-            cycles++;
+            cycle_count++;
         }
 
         if (i & 0x10)
         {
-            cycles += 2;
+            cycle_count += 2;
         }
 
         if (i & 0x20)
         {
-            cycles += 2;
+            cycle_count += 2;
         }
 
         if (i & 0x40)
         {
-            cycles += 2;
+            cycle_count += 2;
         }
 
         if (i & 0x80)
         {
-            cycles += 2;
+            cycle_count += 2;
         }
 
-        psh_pul_cycles[i] = cycles;
+        psh_pul_cycles[i] = cycle_count;
     } // for
 }
 
@@ -217,302 +217,302 @@ void Mc6809::set_irq()
 } // set_irq
 
 #ifndef FASTFLEX
-t_cycles Mc6809::psh(Byte what, Word &s, Word &u)
+t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 {
     switch ((Byte)(what & 0xf0))
     {
         case 0xf0:
-            s -= 2;
-            memory.write_word(s, pc);
+            stack -= 2;
+            memory.write_word(stack, pc);
 
         case 0x70:
-            s -= 2;
-            memory.write_word(s, u);
+            stack -= 2;
+            memory.write_word(stack, reg_s_or_u);
 
         case 0x30:
-            s -= 2;
-            memory.write_word(s, y);
+            stack -= 2;
+            memory.write_word(stack, y);
 
         case 0x10:
-            s -= 2;
-            memory.write_word(s, x);
+            stack -= 2;
+            memory.write_word(stack, x);
 
         case 0x00:
             break;
 
         case 0xe0:
-            s -= 2;
-            memory.write_word(s, pc);
+            stack -= 2;
+            memory.write_word(stack, pc);
 
         case 0x60:
-            s -= 2;
-            memory.write_word(s, u);
+            stack -= 2;
+            memory.write_word(stack, reg_s_or_u);
 
         case 0x20:
-            s -= 2;
-            memory.write_word(s, y);
+            stack -= 2;
+            memory.write_word(stack, y);
             break;
 
         case 0xd0:
-            s -= 2;
-            memory.write_word(s, pc);
+            stack -= 2;
+            memory.write_word(stack, pc);
 
         case 0x50:
-            s -= 2;
-            memory.write_word(s, u);
-            s -= 2;
-            memory.write_word(s, x);
+            stack -= 2;
+            memory.write_word(stack, reg_s_or_u);
+            stack -= 2;
+            memory.write_word(stack, x);
             break;
 
         case 0xc0:
-            s -= 2;
-            memory.write_word(s, pc);
+            stack -= 2;
+            memory.write_word(stack, pc);
 
         case 0x40:
-            s -= 2;
-            memory.write_word(s, u);
+            stack -= 2;
+            memory.write_word(stack, reg_s_or_u);
             break;
 
         case 0xb0:
-            s -= 2;
-            memory.write_word(s, pc);
-            s -= 2;
-            memory.write_word(s, y);
-            s -= 2;
-            memory.write_word(s, x);
+            stack -= 2;
+            memory.write_word(stack, pc);
+            stack -= 2;
+            memory.write_word(stack, y);
+            stack -= 2;
+            memory.write_word(stack, x);
             break;
 
         case 0xa0:
-            s -= 2;
-            memory.write_word(s, pc);
-            s -= 2;
-            memory.write_word(s, y);
+            stack -= 2;
+            memory.write_word(stack, pc);
+            stack -= 2;
+            memory.write_word(stack, y);
             break;
 
         case 0x90:
-            s -= 2;
-            memory.write_word(s, pc);
-            s -= 2;
-            memory.write_word(s, x);
+            stack -= 2;
+            memory.write_word(stack, pc);
+            stack -= 2;
+            memory.write_word(stack, x);
             break;
 
         case 0x80:
-            s -= 2;
-            memory.write_word(s, pc);
+            stack -= 2;
+            memory.write_word(stack, pc);
             break;
     } // switch
 
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            memory.write_byte(--s, dp);
+            memory.write_byte(--stack, dp);
 
         case 0x07:
-            memory.write_byte(--s, b);
+            memory.write_byte(--stack, b);
 
         case 0x03:
-            memory.write_byte(--s, a);
+            memory.write_byte(--stack, a);
 
         case 0x01:
-            memory.write_byte(--s, cc.all);
+            memory.write_byte(--stack, cc.all);
 
         case 0x00:
             break;
 
         case 0x0e:
-            memory.write_byte(--s, dp);
+            memory.write_byte(--stack, dp);
 
         case 0x06:
-            memory.write_byte(--s, b);
+            memory.write_byte(--stack, b);
 
         case 0x02:
-            memory.write_byte(--s, a);
+            memory.write_byte(--stack, a);
             break;
 
         case 0x0d:
-            memory.write_byte(--s, dp);
+            memory.write_byte(--stack, dp);
 
         case 0x05:
-            memory.write_byte(--s, b);
-            memory.write_byte(--s, cc.all);
+            memory.write_byte(--stack, b);
+            memory.write_byte(--stack, cc.all);
             break;
 
         case 0x0c:
-            memory.write_byte(--s, dp);
+            memory.write_byte(--stack, dp);
 
         case 0x04:
-            memory.write_byte(--s, b);
+            memory.write_byte(--stack, b);
             break;
 
         case 0x0b:
-            memory.write_byte(--s, dp);
-            memory.write_byte(--s, a);
-            memory.write_byte(--s, cc.all);
+            memory.write_byte(--stack, dp);
+            memory.write_byte(--stack, a);
+            memory.write_byte(--stack, cc.all);
             break;
 
         case 0x09:
-            memory.write_byte(--s, dp);
-            memory.write_byte(--s, cc.all);
+            memory.write_byte(--stack, dp);
+            memory.write_byte(--stack, cc.all);
             break;
 
         case 0x0a:
-            memory.write_byte(--s, dp);
-            memory.write_byte(--s, a);
+            memory.write_byte(--stack, dp);
+            memory.write_byte(--stack, a);
             break;
 
         case 0x08:
-            memory.write_byte(--s, dp);
+            memory.write_byte(--stack, dp);
             break;
     } // switch
 
     return psh_pul_cycles[what];
 }
 
-t_cycles Mc6809::pul(Byte what, Word &s, Word &u)
+t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 {
     switch ((Byte)(what & 0x0f))
     {
         case 0x0f:
-            cc.all = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
 
         case 0x0e:
-            a      = memory.read_byte(s++);
+            a = memory.read_byte(stack++);
 
         case 0x0c:
-            b      = memory.read_byte(s++);
+            b = memory.read_byte(stack++);
 
         case 0x08:
-            dp     = memory.read_byte(s++);
+            dp = memory.read_byte(stack++);
 
         case 0x00:
             break;
 
         case 0x07:
-            cc.all = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
 
         case 0x06:
-            a      = memory.read_byte(s++);
+            a = memory.read_byte(stack++);
 
         case 0x04:
-            b      = memory.read_byte(s++);
+            b = memory.read_byte(stack++);
             break;
 
         case 0x0b:
-            cc.all = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
 
         case 0x0a:
-            a      = memory.read_byte(s++);
-            dp     = memory.read_byte(s++);
+            a = memory.read_byte(stack++);
+            dp = memory.read_byte(stack++);
             break;
 
         case 0x03:
-            cc.all = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
 
         case 0x02:
-            a      = memory.read_byte(s++);
+            a = memory.read_byte(stack++);
             break;
 
         case 0x0d:
-            cc.all = memory.read_byte(s++);
-            b      = memory.read_byte(s++);
-            dp     = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
+            b = memory.read_byte(stack++);
+            dp = memory.read_byte(stack++);
             break;
 
         case 0x09:
-            cc.all = memory.read_byte(s++);
-            dp     = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
+            dp = memory.read_byte(stack++);
             break;
 
         case 0x05:
-            cc.all = memory.read_byte(s++);
-            b      = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
+            b = memory.read_byte(stack++);
             break;
 
         case 0x01:
-            cc.all = memory.read_byte(s++);
+            cc.all = memory.read_byte(stack++);
             break;
     } // switch
 
     switch ((Byte)(what & 0xf0))
     {
         case 0xf0:
-            x  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
 
         case 0xe0:
-            y  = memory.read_word(s);
-            s += 2;
+            y = memory.read_word(stack);
+            stack += 2;
 
         case 0xc0:
-            u  = memory.read_word(s);
-            s += 2;
+            reg_s_or_u = memory.read_word(stack);
+            stack += 2;
 
         case 0x80:
-            pc = memory.read_word(s);
-            s += 2;
+            pc = memory.read_word(stack);
+            stack += 2;
 
         case 0x00:
             break;
 
         case 0x70:
-            x  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
 
         case 0x60:
-            y  = memory.read_word(s);
-            s += 2;
+            y = memory.read_word(stack);
+            stack += 2;
 
         case 0x40:
-            u  = memory.read_word(s);
-            s += 2;
+            reg_s_or_u = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0xb0:
-            x  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
 
         case 0xa0:
-            y  = memory.read_word(s);
-            s += 2;
-            pc = memory.read_word(s);
-            s += 2;
+            y = memory.read_word(stack);
+            stack += 2;
+            pc = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0x30:
-            x  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
 
         case 0x20:
-            y  = memory.read_word(s);
-            s += 2;
+            y = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0xd0:
-            x  = memory.read_word(s);
-            s += 2;
-            u  = memory.read_word(s);
-            s += 2;
-            pc = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
+            reg_s_or_u  = memory.read_word(stack);
+            stack += 2;
+            pc = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0x90:
-            x  = memory.read_word(s);
-            s += 2;
-            pc = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
+            pc = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0x50:
-            x  = memory.read_word(s);
-            s += 2;
-            u  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
+            reg_s_or_u  = memory.read_word(stack);
+            stack += 2;
             break;
 
         case 0x10:
-            x  = memory.read_word(s);
-            s += 2;
+            x = memory.read_word(stack);
+            stack += 2;
             break;
     } // switch
 

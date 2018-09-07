@@ -185,7 +185,7 @@ public:
     bool    CloseApp(HWND hwnd, bool confirm = false);
 
 protected:
-    BOOL    registerWindowClasses(HINSTANCE hinst, UINT ResPoolID);
+    BOOL    registerWindowClasses(HINSTANCE hinst);
     HWND    create_main_view();
     void set_bell(int percent) override;
     void    update_disk_status(int floppyIndex, DiskStatus status);
@@ -213,11 +213,11 @@ protected:
 
     // CPU View
     void    create_cpuview(HWND parent);
-    void    popup_cpu(HWND hwnd);
+    void    popup_cpu();
     void    toggle_freqency();
     void    toggle_undocumented();
-    void    popdown_cpu(HWND hwnd);
-    void    toggle_cpu(HWND hwnd);
+    void    popdown_cpu();
+    void    toggle_cpu();
     void redraw_cpuview_impl(const Mc6809CpuStatus &stat) override;
     LOGFONT *getLogFontStruct(HDC hdc, int pointSize);
 
@@ -248,7 +248,7 @@ public:
     void    update_cpuview(const Mc6809CpuStatus &stat) override;
     void    popup_message(char *pmessage);
     void    popup_disk_info(HWND hwnd);
-    void    popup_interrupt_info(HWND hwnd);
+    void    popup_interrupt_info();
     int     popup_help(HWND hwnd);
     void    popup_about(HWND hwnd);
     void    popdown_about(HWND hwnd);

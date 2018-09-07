@@ -262,7 +262,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                         for (number = 0; number <= 3; number++)
                         {
-                            answer_stream << fdc.drive_info(number);
+                            answer_stream <<
+                                fdc.drive_info(static_cast<Word>(number));
                         }
 
                         answer = answer_stream.str();
@@ -303,7 +304,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     if (stricmp(arg1, "umount") == 0)
                     {
-                        if (!fdc.umount_drive(number))
+                        if (!fdc.umount_drive(static_cast<Word>(number)))
                         {
                             ANSWER_ERR(UNABLE_UMOUNT);
                         }
@@ -312,12 +313,12 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        answer = fdc.drive_info(number);
+                        answer = fdc.drive_info(static_cast<Word>(number));
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0)
                     {
-                        if (!fdc.update_drive(number))
+                        if (!fdc.update_drive(static_cast<Word>(number)))
                         {
                             ANSWER_ERR(UNABLE_UPDATE);
                         }
@@ -337,7 +338,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc.mount_drive(arg2, number))
+                        if (!fdc.mount_drive(arg2, static_cast<Byte>(number)))
                         {
                             ANSWER_ERR(UNABLE_MOUNT);
                         }
@@ -353,7 +354,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc.mount_drive(arg2, number, MOUNT_RAM))
+                        if (!fdc.mount_drive(arg2, static_cast<Byte>(number), MOUNT_RAM))
                         {
                             ANSWER_ERR(UNABLE_MOUNT);
                         }
@@ -376,8 +377,10 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             return;
                         }
 
-                        if (!fdc.format_disk(trk, sec, arg2,
-                                             TYPE_DSK_CONTAINER))
+                        if (!fdc.format_disk(
+                            static_cast<SWord>(trk),
+                            static_cast<SWord>(sec),
+                            arg2, TYPE_DSK_CONTAINER))
                         {
                             ANSWER_ERR(UNABLE_FORMAT);
                         }

@@ -53,7 +53,8 @@ Memory::~Memory()
 // memory must be initialized AFTER all memory mapped I/O is created
 void Memory::init_memory(bool himem)
 {
-    int i, j;
+    int i;
+    Byte j;
     Byte *p;
 
     p = initial_content;

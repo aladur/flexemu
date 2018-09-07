@@ -33,8 +33,8 @@ static Byte fread_byte(FILE *fp)
     char str[3];
     DWord value;
 
-    str[0] = fgetc(fp);
-    str[1] = fgetc(fp);
+    str[0] = static_cast<char>(fgetc(fp));
+    str[1] = static_cast<char>(fgetc(fp));
     str[2] = '\0';
 
     value = strtol(str, nullptr, 16);
@@ -98,7 +98,7 @@ static void load_motorola_srec(FILE *fp, MemoryTarget &memtgt)
     while (!done)
     {
         (void)fgetc(fp); /* read 'S' */
-        type = fgetc(fp);   /* read type of line */
+        type = static_cast<char>(fgetc(fp));   /* read type of line */
         count = fread_byte(fp);
 
         switch (type)
@@ -190,7 +190,7 @@ int load_hexfile(const char *filename, MemoryTarget &memtgt)
         return -1; // File not found
     }
 
-    ch = fgetc(fp);
+    ch = static_cast<Word>(fgetc(fp));
     ungetc(ch, fp);
 
     if (ch == ':')

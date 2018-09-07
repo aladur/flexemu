@@ -51,7 +51,7 @@ public:
     {
         return "mmu";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 16;
     };

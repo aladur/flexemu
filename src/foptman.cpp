@@ -194,11 +194,11 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->isSynchronized  = false;
 } // InitOptions
 
+#ifdef UNIX
 void FlexOptionManager::GetEnvironmentOptions(
     struct sGuiOptions *pGuiOptions,
     struct sOptions *pOptions)
 {
-#ifdef UNIX
     std::string str;
     int value;
     BEnvironment env;
@@ -278,9 +278,14 @@ void FlexOptionManager::GetEnvironmentOptions(
     {
         pOptions->drive[3] = str;
     }
-
-#endif  // ifdef UNIX
 }
+#else
+void FlexOptionManager::GetEnvironmentOptions(
+    struct sGuiOptions * /* [[maybe_unused]] struct sGuiOptions pGuiOptions */,
+    struct sOptions * /* [[maybe_unused]] struct sOptions pOptions */)
+{
+}
+#endif  // ifdef UNIX
 
 void FlexOptionManager::GetCommandlineOptions(
     struct sGuiOptions *pGuiOptions,

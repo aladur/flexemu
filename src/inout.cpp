@@ -57,9 +57,9 @@ void Inout::get_drive_status(DiskStatus status[4])
     fdc.get_drive_status(status);
 }
 
-std::string Inout::get_drive_info(int floppyIndex)
+std::string Inout::get_drive_info(Word drive_nr)
 {
-    return fdc.drive_info(floppyIndex);
+    return fdc.drive_info(drive_nr);
 }
 
 void Inout::create_gui(JoystickIO &joystickIO,
@@ -164,11 +164,17 @@ void Inout::main_loop()
     }
 }
 
-int Inout::serpar_address() const
+Word Inout::serpar_address() const
 {
-    return local_serpar_address;
+    return static_cast<Word>(local_serpar_address);
 }
 
+bool Inout::is_serpar_address_valid() const
+{
+    return local_serpar_address >= 0 && local_serpar_address <= 0xffff;
+}
+
+// Set address of SERPAR label. A value < 0 invalidates the address.
 void Inout::serpar_address(int value)
 {
     local_serpar_address = value;

@@ -79,11 +79,12 @@ public:
     // Floppy interface
 public:
     void    get_drive_status(DiskStatus status[4]);
-    std::string get_drive_info(int floppyIndex);
+    std::string get_drive_info(Word drive_nr);
 
     // local interface
 public:
-    int serpar_address() const;
+    bool is_serpar_address_valid() const;
+    Word serpar_address() const;
     void serpar_address(int value);
 
 public:

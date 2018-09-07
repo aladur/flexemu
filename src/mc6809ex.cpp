@@ -217,22 +217,22 @@ case 0x10:
             break;
 
         case 0xa3:
-            cmp(d, fetch_idx_16(&cycles));
+            cmp(d, fetch_idx_16(cycles));
             cycles += 7;
             break;
 
         case 0xac:
-            cmp(y, fetch_idx_16(&cycles));
+            cmp(y, fetch_idx_16(cycles));
             cycles += 7;
             break;
 
         case 0xae:
-            ld(y, fetch_idx_16(&cycles));
+            ld(y, fetch_idx_16(cycles));
             cycles += 6;
             break;
 
         case 0xaf:
-            st(y, fetch_ea_idx(&cycles));
+            st(y, fetch_ea_idx(cycles));
             cycles += 6;
             break;
 
@@ -272,12 +272,12 @@ case 0x10:
             break;
 
         case 0xee:
-            ld(s, fetch_idx_16(&cycles));
+            ld(s, fetch_idx_16(cycles));
             cycles += 6;
             break;
 
         case 0xef:
-            st(s, fetch_ea_idx(&cycles));
+            st(s, fetch_ea_idx(cycles));
             cycles += 6;
             break;
 
@@ -330,12 +330,12 @@ case 0x11:
             break;
 
         case 0xa3:
-            cmp(u, fetch_idx_16(&cycles));
+            cmp(u, fetch_idx_16(cycles));
             cycles +=  7;
             break;
 
         case 0xac:
-            cmp(s, fetch_idx_16(&cycles));
+            cmp(s, fetch_idx_16(cycles));
             cycles +=  7;
             break;
 
@@ -488,22 +488,22 @@ case 0x2f:
     break;
 
 case 0x30:
-    lea(x, fetch_ea_idx(&cycles));
+    lea(x, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
 case 0x31:
-    lea(y, fetch_ea_idx(&cycles));
+    lea(y, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
 case 0x32:
-    lea_nocc(s, fetch_ea_idx(&cycles));
+    lea_nocc(s, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
 case 0x33:
-    lea_nocc(u, fetch_ea_idx(&cycles));
+    lea_nocc(u, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
@@ -755,12 +755,12 @@ case 0x61:
     }
 
 case 0x60:
-    neg(fetch_ea_idx(&cycles));
+    neg(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x63:
-    com(fetch_ea_idx(&cycles));
+    com(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
@@ -773,27 +773,27 @@ case 0x65:
     }
 
 case 0x64:
-    lsr(fetch_ea_idx(&cycles));
+    lsr(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x66:
-    ror(fetch_ea_idx(&cycles));
+    ror(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x67:
-    asr(fetch_ea_idx(&cycles));
+    asr(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x68:
-    lsl(fetch_ea_idx(&cycles));
+    lsl(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x69:
-    rol(fetch_ea_idx(&cycles));
+    rol(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
@@ -806,27 +806,27 @@ case 0x6b:
     }
 
 case 0x6a:
-    dec(fetch_ea_idx(&cycles));
+    dec(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x6c:
-    inc(fetch_ea_idx(&cycles));
+    inc(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x6d:
-    tst(fetch_ea_idx(&cycles));
+    tst(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
 case 0x6e:
-    jmp(fetch_ea_idx(&cycles));
+    jmp(fetch_ea_idx(cycles));
     cycles +=  3;
     break;
 
 case 0x6f:
-    clr(fetch_ea_idx(&cycles));
+    clr(fetch_ea_idx(cycles));
     cycles +=  6;
     break;
 
@@ -1065,82 +1065,82 @@ case 0x9f:
     break;
 
 case 0xa0:
-    sub(a, fetch_idx_08(&cycles));
+    sub(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa1:
-    cmp(a, fetch_idx_08(&cycles));
+    cmp(a, fetch_idx_08(cycles));
     cycles +=  5;
     break;
 
 case 0xa2:
-    sbc(a, fetch_idx_08(&cycles));
+    sbc(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa3:
-    sub(d, fetch_idx_16(&cycles));
+    sub(d, fetch_idx_16(cycles));
     cycles +=  6;
     break;
 
 case 0xa4:
-    and_(a, fetch_idx_08(&cycles));
+    and_(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa5:
-    bit(a, fetch_idx_08(&cycles));
+    bit(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa6:
-    ld(a, fetch_idx_08(&cycles));
+    ld(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa7:
-    st(a, fetch_ea_idx(&cycles));
+    st(a, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
 case 0xa8:
-    eor(a, fetch_idx_08(&cycles));
+    eor(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xa9:
-    adc(a, fetch_idx_08(&cycles));
+    adc(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xaa:
-    or_(a, fetch_idx_08(&cycles));
+    or_(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xab:
-    add(a, fetch_idx_08(&cycles));
+    add(a, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xac:
-    cmp(x, fetch_idx_16(&cycles));
+    cmp(x, fetch_idx_16(cycles));
     cycles +=  6;
     break;
 
 case 0xad:
-    jsr(fetch_ea_idx(&cycles));
+    jsr(fetch_ea_idx(cycles));
     cycles +=  7;
     break;
 
 case 0xae:
-    ld(x, fetch_idx_16(&cycles));
+    ld(x, fetch_idx_16(cycles));
     cycles +=  5;
     break;
 
 case 0xaf:
-    st(x, fetch_ea_idx(&cycles));
+    st(x, fetch_ea_idx(cycles));
     cycles +=  5;
     break;
 
@@ -1370,82 +1370,82 @@ case 0xdf:
     break;
 
 case 0xe0:
-    sub(b, fetch_idx_08(&cycles));
+    sub(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe1:
-    cmp(b, fetch_idx_08(&cycles));
+    cmp(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe2:
-    sbc(b, fetch_idx_08(&cycles));
+    sbc(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe3:
-    add(d, fetch_idx_16(&cycles));
+    add(d, fetch_idx_16(cycles));
     cycles +=  6;
     break;
 
 case 0xe4:
-    and_(b, fetch_idx_08(&cycles));
+    and_(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe5:
-    bit(b, fetch_idx_08(&cycles));
+    bit(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe6:
-    ld(b, fetch_idx_08(&cycles));
+    ld(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe7:
-    st(b, fetch_ea_idx(&cycles));
+    st(b, fetch_ea_idx(cycles));
     cycles +=  4;
     break;
 
 case 0xe8:
-    eor(b, fetch_idx_08(&cycles));
+    eor(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xe9:
-    adc(b, fetch_idx_08(&cycles));
+    adc(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xea:
-    or_(b, fetch_idx_08(&cycles));
+    or_(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xeb:
-    add(b, fetch_idx_08(&cycles));
+    add(b, fetch_idx_08(cycles));
     cycles +=  4;
     break;
 
 case 0xec:
-    ld(d, fetch_idx_16(&cycles));
+    ld(d, fetch_idx_16(cycles));
     cycles +=  5;
     break;
 
 case 0xed:
-    st(d, fetch_ea_idx(&cycles));
+    st(d, fetch_ea_idx(cycles));
     cycles +=  5;
     break;
 
 case 0xee:
-    ld(u, fetch_idx_16(&cycles));
+    ld(u, fetch_idx_16(cycles));
     cycles +=  5;
     break;
 
 case 0xef:
-    st(u, fetch_ea_idx(&cycles));
+    st(u, fetch_ea_idx(cycles));
     cycles +=  5;
     break;
 

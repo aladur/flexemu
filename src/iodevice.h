@@ -35,7 +35,7 @@ public:
     virtual void writeIo(Word offset, Byte value) = 0;
     virtual void resetIo() = 0;
     virtual const char *getName() = 0;
-    virtual int sizeOfIo() = 0;
+    virtual Word sizeOfIo() = 0;
     virtual ~IoDevice() { };
 };
 

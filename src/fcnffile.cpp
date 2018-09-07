@@ -105,7 +105,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
                 }
             }
 
-            mapping.baseAddress = baseAddress;
+            mapping.baseAddress = static_cast<Word>(baseAddress);
 
             deviceMappings.push_back(mapping);
         }

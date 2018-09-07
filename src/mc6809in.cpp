@@ -69,7 +69,7 @@ int Mc6809::Disassemble(Word address, InstFlg *pFlags,
         return 0;
     }
 
-    for (int i = 0; i < 6; i++)
+    for (Word i = 0; i < 6; i++)
     {
         buffer[i] = memory.read_byte(address + i);
     }

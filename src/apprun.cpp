@@ -133,7 +133,7 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 }
 
-bool ApplicationRunner::LoadMonitorFileIntoRom(const struct sOptions &options)
+bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
     int error;
     if ((error = load_hexfile(options.hex_file.c_str(), memory)) < 0)
@@ -190,7 +190,7 @@ int ApplicationRunner::run()
 
     AddIoDevicesToMemory();
 
-    if (!LoadMonitorFileIntoRom(options))
+    if (!LoadMonitorFileIntoRom())
     {
         return 1;
     }

@@ -641,12 +641,12 @@ void XtGui::popup_disk_info(Widget w)
     }
 
     std::string message;
-    int i;
+    Word drive_nr;
 
-    for (i = 0; i < 4; ++i)
-        if (w == floppybutton[i])
+    for (drive_nr = 0; drive_nr < 4; ++drive_nr)
+        if (w == floppybutton[drive_nr])
         {
-            message = inout.get_drive_info(i);
+            message = inout.get_drive_info(drive_nr);
             popup_message(message.c_str(), PROGRAMNAME " Disc status",
                           480, 160);
             return;

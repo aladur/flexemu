@@ -253,7 +253,7 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_STEPOUT_TU:
-                stepOffset = -1;
+                stepOffset = static_cast<Byte>(-1);
                 if (tr)
                 {
                     do_seek(tr + stepOffset);
@@ -261,7 +261,7 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_STEPOUT:
-                stepOffset = -1;
+                stepOffset = static_cast<Byte>(-1);
                 setIrq();
                 break;
 

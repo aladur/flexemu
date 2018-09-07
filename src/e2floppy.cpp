@@ -53,15 +53,15 @@ E2floppy::~E2floppy()
 {
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    for (int i = 0; i < 4; i++)
+    for (Word drive_nr = 0; drive_nr < 4; drive_nr++)
     {
-        if (floppy[i].get() != nullptr)
+        if (floppy[drive_nr].get() != nullptr)
         {
             try
             {
-                floppy[i]->Close();
-                floppy[i].reset(nullptr);
-                drive_status[i] = DiskStatus::EMPTY;
+                floppy[drive_nr]->Close();
+                floppy[drive_nr].reset(nullptr);
+                drive_status[drive_nr] = DiskStatus::EMPTY;
             }
             catch (...)
             {
@@ -221,11 +221,11 @@ void E2floppy::disk_directory(const char *x_disk_dir)
 
 void E2floppy::mount_all_drives(std::string drive[])
 {
-    int i;
+    Word drive_nr;
 
-    for (i = 0; i < 4; i++)
+    for (drive_nr = 0; drive_nr < 4; drive_nr++)
     {
-        mount_drive(drive[i].c_str(), i);
+        mount_drive(drive[drive_nr].c_str(), drive_nr);
     }
 
     selected = 4;           // deselect all drives
@@ -234,13 +234,13 @@ void E2floppy::mount_all_drives(std::string drive[])
 
 bool E2floppy::umount_all_drives()
 {
-    Word i;
+    Word drive_nr;
     bool result;
 
     result = true;
 
-    for (i = 0; i < 4; i++)
-        if (!umount_drive(i))
+    for (drive_nr = 0; drive_nr < 4; drive_nr++)
+        if (!umount_drive(drive_nr))
         {
             result = false;
         }
@@ -255,7 +255,7 @@ bool E2floppy::umount_all_drives()
 
 std::string E2floppy::drive_info(Word drive_nr)
 {
-    std::stringstream str;
+    std::stringstream stream;
 
     if (drive_nr <= 3)
     {
@@ -263,7 +263,7 @@ std::string E2floppy::drive_info(Word drive_nr)
 
         if (floppy[drive_nr].get() == nullptr)
         {
-            str << "drive #" << drive_nr << " not ready" << std::endl;
+            stream << "drive #" << drive_nr << " not ready" << std::endl;
         }
         else
         {
@@ -278,12 +278,12 @@ std::string E2floppy::drive_info(Word drive_nr)
             }
             catch (FlexException &ex)
             {
-                str << ex.what() << std::endl;
-                return str.str().c_str();
+                stream << ex.what() << std::endl;
+                return stream.str().c_str();
             }
 
             info.GetTrackSector(&trk, &sec);
-            str << "drive       #" << drive_nr << std::endl
+            stream << "drive       #" << drive_nr << std::endl
                 << "type:       " << info.GetTypeString().c_str() << std::endl
                 << "name:       " << info.GetName() << std::endl
                 << "path:       " << info.GetPath().c_str() << std::endl
@@ -294,7 +294,7 @@ std::string E2floppy::drive_info(Word drive_nr)
         }
     }
 
-    return str.str().c_str();
+    return stream.str().c_str();
 }
 
 const char *E2floppy::open_mode(char *path)
@@ -310,18 +310,18 @@ const char *E2floppy::open_mode(char *path)
 
 bool E2floppy::update_all_drives()
 {
-    Word i;
+    Word drive_nr;
     bool result = true;
 
-    for (i = 0; i < 4; i++)
+    for (drive_nr = 0; drive_nr < 4; drive_nr++)
     {
-        if (floppy[i].get() == nullptr)
+        if (floppy[drive_nr].get() == nullptr)
         {
             // no error if drive not ready
             continue;
         }
 
-        if (!update_drive(i))
+        if (!update_drive(drive_nr))
         {
             result = false;
         }

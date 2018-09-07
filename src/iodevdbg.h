@@ -46,7 +46,7 @@ public:
     void writeIo(Word offset, Byte value) override;
     void resetIo() override;
     const char *getName() override;
-    int sizeOfIo() override;
+    Word sizeOfIo() override;
 
 private:
     IoDevice &device;

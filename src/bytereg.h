@@ -51,7 +51,7 @@ public:
     {
         return "bytereg";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 1;
     };

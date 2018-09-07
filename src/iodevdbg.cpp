@@ -106,7 +106,7 @@ const char *IoDeviceDebug::getName()
     return device.getName();
 }
 
-int IoDeviceDebug::sizeOfIo()
+Word IoDeviceDebug::sizeOfIo()
 {
     return device.sizeOfIo();
 }

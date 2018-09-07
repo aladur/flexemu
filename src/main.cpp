@@ -42,7 +42,7 @@ WinApiContext winApiContext;
 
 #ifdef _MSC_VER
 // with MSC it's possible to retry memory allocation
-int std_new_handler(size_t n)
+int std_new_handler(size_t /* [[maybe_unused]] size_t n */)
 {
     int result;
 
@@ -55,7 +55,6 @@ int std_new_handler(size_t n)
     }
 
     throw std::bad_alloc();
-    return 0;
 }
 #else
 void std_new_handler()
@@ -72,7 +71,7 @@ int main(int argc, char *argv[])
     int return_code = 0;
 
 #ifdef _MSC_VER
-    _PNH oldHandler = set_new_handler(std_new_handler);
+    set_new_handler(std_new_handler);
 #else
     std::set_new_handler(std_new_handler);
 #endif

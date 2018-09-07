@@ -64,7 +64,7 @@ public:
     {
         return "mc6821";
     }
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 4;
     }

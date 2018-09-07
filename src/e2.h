@@ -39,7 +39,7 @@
 #define MAXVIDEORAM_BANKS (48)  /* max number of ram banks of size 16K   */
 /* possible values: 12, 48 */
 /* number of yblocks */
-#define YBLOCKS     (1 << YBLOCK_BASE) /* Nr. of blocks verticaly */
+#define YBLOCKS     (1 << YBLOCK_BASE) /* Nr. of blocks vertically */
 /* bytesize of one yblock */
 #define YBLOCK_SIZE (VIDEORAM_SIZE / YBLOCKS)
 

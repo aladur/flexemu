@@ -339,14 +339,14 @@ private:
     }
 
     // fetch indexed 16-Bit operand
-    inline Word fetch_idx_16(t_cycles *cycles)
+    inline Word fetch_idx_16(t_cycles &cycle_count)
     {
         Word addr;
         Byte post;
 
         post = memory.read_byte(pc++);
         addr = do_effective_address(post);
-        *cycles += indexed_cycles[post];
+        cycle_count += indexed_cycles[post];
         return memory.read_word(addr);
     }
 
@@ -372,14 +372,14 @@ private:
     }
 
     // fetch indexed 8-Bit operand
-    inline Byte fetch_idx_08(t_cycles *cycles)
+    inline Byte fetch_idx_08(t_cycles &cycle_count)
     {
         Word addr;
         Byte post;
 
         post = memory.read_byte(pc++);
         addr = do_effective_address(post);
-        *cycles += indexed_cycles[post];
+        cycle_count += indexed_cycles[post];
         return memory.read_byte(addr);
     }
 
@@ -399,13 +399,12 @@ private:
     }
 
     // fetch indexed address
-    inline Word fetch_ea_idx(t_cycles *cycles)
+    inline Word fetch_ea_idx(t_cycles &cycle_count)
     {
         Byte post = memory.read_byte(pc++);
-        *cycles += indexed_cycles[post];
+        cycle_count += indexed_cycles[post];
         return do_effective_address(post);
     }
-
 
     inline void tst(Word addr)
     {
@@ -785,7 +784,7 @@ private:
         }
     }
 
-    // undocumented instruction 0x4D, 0x5E
+    // undocumented instruction 0x4E, 0x5E
     // same as CLRA,CLRB but CC.Carry is
     // unchanged
     inline void clr1(Byte &reg)
@@ -793,7 +792,7 @@ private:
         cc.bit.v = false;
         cc.bit.n = false;
         cc.bit.z = true;
-        reg = -1;
+        reg = 0;
     }
 
     //**********************************
@@ -1596,32 +1595,32 @@ inline void Mc6809::swi3()
 
 inline Mc6809::Event operator| (Mc6809::Event lhs, Mc6809::Event rhs)
 {
-    using T = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type<Mc6809::Event>::type;
 
-    return static_cast<Mc6809::Event>(static_cast<T>(lhs) |
-                                      static_cast<T>(rhs));
+    return static_cast<Mc6809::Event>(static_cast<T1>(lhs) |
+                                      static_cast<T1>(rhs));
 }
 
 inline Mc6809::Event operator& (Mc6809::Event lhs, Mc6809::Event rhs)
 {
-    using T = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type<Mc6809::Event>::type;
 
-    return static_cast<Mc6809::Event>(static_cast<T>(lhs) &
-                                      static_cast<T>(rhs));
+    return static_cast<Mc6809::Event>(static_cast<T1>(lhs) &
+                                      static_cast<T1>(rhs));
 }
 
 inline Mc6809::Event operator~ (Mc6809::Event rhs)
 {
-    using T = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type<Mc6809::Event>::type;
 
-    return static_cast<Mc6809::Event>(~static_cast<T>(rhs));
+    return static_cast<Mc6809::Event>(~static_cast<T1>(rhs));
 }
 
 inline bool operator! (Mc6809::Event rhs)
 {
-    using T = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type<Mc6809::Event>::type;
 
-    return static_cast<T>(rhs) == 0;
+    return static_cast<T1>(rhs) == 0;
 }
 
 #endif // MC6809_INCLUDED

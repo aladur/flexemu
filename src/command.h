@@ -85,7 +85,7 @@ public:
     {
         return "command";
     };
-    int sizeOfIo() override
+    Word sizeOfIo() override
     {
         return 1;
     }
