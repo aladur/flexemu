@@ -45,7 +45,7 @@ private:
     int     type;       // container type
     int     free;       // Number of bytes free
     int     totalSize;  // Number of total bytes writable
-    int     attributes; // Disk attributes
+    Byte attributes; // Disk attributes
 
 public:
     FlexContainerInfo();        // public constructor
@@ -77,11 +77,11 @@ public:
     {
         return totalSize;
     };
-    inline void         SetAttributes(int a)
+    inline void SetAttributes(Byte x_attributes)
     {
-        attributes = a;
+        attributes = x_attributes;
     };
-    inline int          GetAttributes() const
+    inline Byte GetAttributes() const
     {
         return attributes;
     };

@@ -108,7 +108,7 @@ public:
     bool FindFile(const char *fileName, FlexDirEntry &entry);
     bool DeleteFile(const char *fileName);
     bool RenameFile(const char *oldName, const char *newName);
-    bool SetAttributes(const char *fileName, int setMask, int clearMask);
+    bool SetAttributes(const char *fileName, Byte setMask, Byte clearMask);
     FlexFileBuffer ReadToBuffer(const char *fileName);
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr);

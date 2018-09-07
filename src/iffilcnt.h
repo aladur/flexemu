@@ -44,7 +44,7 @@ private:
     bool DeleteCurrent();
     bool RenameCurrent(const char *);
     bool SetDateCurrent(const BDate &date);
-    bool SetAttributesCurrent(int attributes);
+    bool SetAttributesCurrent(Byte attributes);
 
     FlexFileContainerIteratorImp();
     FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &);

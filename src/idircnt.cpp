@@ -143,7 +143,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     if (isValid)
     {
         // ok, found a valid directory entry
-        int attribs = 0;
+        Byte attributes = 0;
         int sectorMap = 0;
         dirEntry.SetTotalFileName(fileName.c_str());
 
@@ -160,14 +160,14 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
         {
-            attribs |= WRITE_PROTECT;
+            attributes |= WRITE_PROTECT;
         }
 
         dirEntry.SetSize(findData.nFileSizeLow);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
         dirEntry.SetDate(systemTime.wDay, systemTime.wMonth,
                          systemTime.wYear);
-        dirEntry.SetAttributes(attribs);
+        dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
@@ -210,7 +210,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         struct tm *lt;
 
         // ok, found a valid directory entry
-        int attribs = 0;
+        Byte attributes = 0;
         int sectorMap = 0;
 
         if (base->IsWriteProtected())
@@ -232,14 +232,14 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (!(sbuf.st_mode & S_IWUSR))
         {
-            attribs |= WRITE_PROTECT;
+            attributes |= WRITE_PROTECT;
         }
 
         dirEntry.SetTotalFileName(findData->d_name);
         dirEntry.SetSize(sbuf.st_size);
         lt = localtime(&(sbuf.st_mtime));
         dirEntry.SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
-        dirEntry.SetAttributes(attribs);
+        dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
@@ -424,7 +424,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
 // set the date in the actual selected directory entry
 // Only valid if the iterator has a valid directory entry
 // Only the WRITE_PROTECT flag is supported
-bool DirectoryContainerIteratorImp::SetAttributesCurrent(int attributes)
+bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 {
     std::string filePath;
 

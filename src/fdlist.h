@@ -115,8 +115,7 @@ private:
     void DeleteSelectedItems(bool askUser = true);
     void RenameSelectedItems();
     void ViewSelectedItems();
-    void SetPropertyOnSelectedItems(int protection, bool isToBeSet);
-    FileNames GetSelectedFileNames();
+    void SetPropertyOnSelectedItems(Byte protection, bool isToBeSet);
     void CopyToClipboard();
     bool PasteFromClipboard();
     void DeselectAllFiles();

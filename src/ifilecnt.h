@@ -42,7 +42,7 @@ public:
     bool                   DeleteCurrent();
     bool                   RenameCurrent(const char *);
     bool                   SetDateCurrent(const BDate &date);
-    bool                   SetAttributesCurrent(int attributes);
+    bool                   SetAttributesCurrent(Byte attributes);
 private:
     const char            *filePattern;
     FileContainerIteratorImpPtr imp;

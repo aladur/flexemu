@@ -700,7 +700,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
 // set the file attributes of one or multiple files
 bool    FlexFileContainer::SetAttributes(const char *filePattern,
-        int setMask, int clearMask)
+        Byte setMask, Byte clearMask)
 {
     FlexDirEntry de;
 
@@ -711,8 +711,8 @@ bool    FlexFileContainer::SetAttributes(const char *filePattern,
 
     for (it = this->begin(); it != this->end(); ++it)
     {
-        int attribs = (it->GetAttributes() & ~clearMask) | setMask;
-        it.SetAttributesCurrent(attribs);
+        Byte attributes = (it->GetAttributes() & ~clearMask) | setMask;
+        it.SetAttributesCurrent(attributes);
     }
 
     return true;

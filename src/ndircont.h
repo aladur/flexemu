@@ -74,7 +74,7 @@ public:
 
 private:
     std::string directory;
-    int attributes;
+    Byte attributes;
     bool isOpen;
 
     s_floppy param;

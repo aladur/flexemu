@@ -339,7 +339,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
 // set the date in the actual selected directory entry
 // should only be used after an successful
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::SetAttributesCurrent(int attributes)
+bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 {
     s_dir_entry *pd;
 

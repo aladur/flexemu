@@ -49,7 +49,7 @@ class DirectoryContainer : public FileContainerIf
 
 private:
     std::string directory;
-    int attributes;
+    Byte attributes;
     bool isOpen;
 
 public:
@@ -89,8 +89,8 @@ public:
     bool    FindFile(const char *fileName, FlexDirEntry &entry);
     bool    DeleteFile(const char *fileName);
     bool    RenameFile(const char *oldName, const char *newName);
-    bool    SetAttributes(const char *fileName, int setMask,
-                          int clearMask = ~0);
+    bool    SetAttributes(const char *fileName, Byte setMask,
+                          Byte clearMask = ~0);
     FlexFileBuffer ReadToBuffer(const char *fileName);
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr);

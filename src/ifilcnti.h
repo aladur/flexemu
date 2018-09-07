@@ -44,7 +44,7 @@ private:
     virtual bool DeleteCurrent() = 0;
     virtual bool RenameCurrent(const char *) = 0;
     virtual bool SetDateCurrent(const BDate &date) = 0;
-    virtual bool SetAttributesCurrent(int attributes) = 0;
+    virtual bool SetAttributesCurrent(Byte attributes) = 0;
 };
 
 using FileContainerIteratorImpPtr = std::unique_ptr<FileContainerIteratorImp>;

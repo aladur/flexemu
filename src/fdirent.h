@@ -27,7 +27,6 @@
 #include "misc1.h"
 #include <string>
 #include "bdate.h"
-//#include <new>
 
 enum flexFileAttributes
 {
@@ -57,7 +56,7 @@ class FlexDirEntry
 {
 private:
     int     size;
-    int     attributes;
+    Byte attributes;
     int     sectorMap;
     int     startTrk, startSec;
     int     endTrk, endSec;
@@ -87,9 +86,9 @@ public:
     std::string GetFileExt() const;
     void    SetSize(int size);
     int     GetSize();
-    void    SetAttributes(int attr);
-    void    SetAttributes(int setMask, int clearMask);
-    int     GetAttributes();
+    void SetAttributes(Byte attributes);
+    void SetAttributes(Byte setMask, Byte clearMask);
+    Byte GetAttributes();
     const std::string GetAttributesString();
     int     GetSectorMap() const;
     int     IsRandom() const;
@@ -111,11 +110,11 @@ inline int FlexDirEntry::GetSize()
     return size;
 }
 
-inline void FlexDirEntry::SetAttributes(int a)
+inline void FlexDirEntry::SetAttributes(Byte x_attributes)
 {
-    attributes = a;
+    attributes = x_attributes;
 }
-inline int FlexDirEntry::GetAttributes()
+inline Byte FlexDirEntry::GetAttributes()
 {
     return attributes;
 }

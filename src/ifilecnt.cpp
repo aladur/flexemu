@@ -164,7 +164,7 @@ bool FileContainerIterator::SetDateCurrent(const BDate &date)
     return imp->SetDateCurrent(date);
 }
 
-bool FileContainerIterator::SetAttributesCurrent(int attributes)
+bool FileContainerIterator::SetAttributesCurrent(Byte attributes)
 {
     if (imp == nullptr)
     {

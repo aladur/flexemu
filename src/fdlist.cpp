@@ -652,7 +652,7 @@ void FlexDiskListCtrl::OnListKeyDown(wxListEvent &event)
     } // switch
 }
 
-void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
+void FlexDiskListCtrl::SetPropertyOnSelectedItems(Byte protection,
         bool isToBeSet)
 {
     if (m_container == nullptr)
@@ -668,8 +668,8 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(int protection,
 
         try
         {
-            auto setMask = isToBeSet ? protection : 0;
-            auto clearMask = isToBeSet ? 0 : protection;
+            Byte setMask = isToBeSet ? protection : 0;
+            Byte clearMask = isToBeSet ? 0 : protection;
             auto pDirEntry =
                 reinterpret_cast<FlexDirEntry *>(GetItemData(item));
             m_container->SetAttributes(

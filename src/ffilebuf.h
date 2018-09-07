@@ -111,13 +111,13 @@ public:
             return GetBuffer(0);
         }
     };
-    inline int GetAttributes() const
+    inline Byte GetAttributes() const
     {
         return fileHeader.attributes;
     };
-    inline void SetAttributes(int attrs)
+    inline void SetAttributes(Byte attributes)
     {
-        fileHeader.attributes = attrs;
+        fileHeader.attributes = attributes;
     };
     inline int IsRandom() const
     {

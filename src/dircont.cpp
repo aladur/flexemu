@@ -611,8 +611,8 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
 }
 
 // set the file attributes of a file
-bool DirectoryContainer::SetAttributes(const char *fileName, int setMask,
-                                       int clearMask /* = ~0 */)
+bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
+                                       Byte clearMask /* = ~0 */)
 {
     // only WRITE_PROTECT flag is supported
     if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))

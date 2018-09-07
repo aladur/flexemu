@@ -218,7 +218,7 @@ const std::string FlexDirEntry::GetAttributesString()
     return str;
 }
 
-void FlexDirEntry::SetAttributes(int setMask, int clearMask)
+void FlexDirEntry::SetAttributes(Byte setMask, Byte clearMask)
 {
     attributes = (attributes & ~clearMask) | setMask;
 }
