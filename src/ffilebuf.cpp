@@ -257,10 +257,12 @@ int FlexFileBuffer::ConvertFromFlex()
 
 int FlexFileBuffer::ConvertToFlex()
 {
-    Byte            c;
-    Byte            *new_buffer;
-    int             new_index, new_size;
-    unsigned int    i, spaces;
+    Byte c;
+    Byte *new_buffer;
+    int new_index = 0;
+    int new_size;
+    DWord i;
+    Word spaces = 0;
 
     if (!buffer || fileHeader.fileSize == 0)
     {
@@ -269,8 +271,6 @@ int FlexFileBuffer::ConvertToFlex()
 
     new_size = SizeOfFile();
     new_buffer = new Byte[new_size];
-    new_index = 0;
-    spaces = 0;
 
     if (0)
     {
@@ -289,7 +289,7 @@ int FlexFileBuffer::ConvertToFlex()
                     if (spaces > 1)
                     {
                         new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = spaces;
+                        new_buffer[new_index++] = static_cast<Byte>(spaces);
                     }
                     else
                     {
@@ -305,7 +305,7 @@ int FlexFileBuffer::ConvertToFlex()
                     if (++spaces == 127)
                     {
                         new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = spaces;
+                        new_buffer[new_index++] = static_cast<Byte>(spaces);
                         spaces = 0;
                     }
                 }
@@ -315,7 +315,7 @@ int FlexFileBuffer::ConvertToFlex()
                     if (spaces >= 127 - 8)
                     {
                         new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = spaces;
+                        new_buffer[new_index++] = static_cast<Byte>(spaces);
                         spaces -= 127 - 8;
                     }
                     else
@@ -336,7 +336,7 @@ int FlexFileBuffer::ConvertToFlex()
     }
     else
     {
-        for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+        for (i = 0; i < fileHeader.fileSize; i++)
         {
             c = buffer[i];
 
@@ -344,7 +344,7 @@ int FlexFileBuffer::ConvertToFlex()
             {
                 /* do space compression */
                 new_buffer[new_index++] = 0x09;
-                new_buffer[new_index++] = spaces;
+                new_buffer[new_index++] = static_cast<Byte>(spaces);
                 spaces = 0;
             }
             else
@@ -352,7 +352,7 @@ int FlexFileBuffer::ConvertToFlex()
                 if (spaces)
                 {
                     new_buffer[new_index++] = 0x09;
-                    new_buffer[new_index++] = spaces;
+                    new_buffer[new_index++] = static_cast<Byte>(spaces);
                     spaces = 0;
                 }
 
@@ -530,9 +530,9 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
                 SetAdjustedFilename(pf);
                 lt = localtime(&(sbuf.st_mtime));
-                fileHeader.day = lt->tm_mday;
-                fileHeader.month = lt->tm_mon + 1;
-                fileHeader.year = lt->tm_year + 1900;
+                fileHeader.day = static_cast<Word>(lt->tm_mday);
+                fileHeader.month = static_cast<Word>(lt->tm_mon + 1);
+                fileHeader.year = static_cast<Word>(lt->tm_year + 1900);
                 return true;
             }
         }
@@ -632,16 +632,16 @@ void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
 
 void FlexFileBuffer::SetDate(const BDate &new_date)
 {
-    fileHeader.day = new_date.GetDay();
-    fileHeader.month = new_date.GetMonth();
-    fileHeader.year = new_date.GetYear();
+    fileHeader.day = static_cast<Word>(new_date.GetDay());
+    fileHeader.month = static_cast<Word>(new_date.GetMonth());
+    fileHeader.year = static_cast<Word>(new_date.GetYear());
 }
 
 void FlexFileBuffer::SetDate(int day, int month, int year)
 {
-    fileHeader.day = day;
-    fileHeader.month = month;
-    fileHeader.year = year;
+    fileHeader.day = static_cast<Word>(day);
+    fileHeader.month = static_cast<Word>(month);
+    fileHeader.year = static_cast<Word>(year);
 }
 
 const BDate FlexFileBuffer::GetDate() const

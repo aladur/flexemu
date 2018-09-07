@@ -113,7 +113,7 @@ public:
     };
     inline Byte GetAttributes() const
     {
-        return fileHeader.attributes;
+        return static_cast<Byte>(fileHeader.attributes);
     };
     inline void SetAttributes(Byte attributes)
     {
@@ -125,7 +125,7 @@ public:
     }
     inline void SetSectorMap(int aSectorMap)
     {
-        fileHeader.sectorMap = aSectorMap;
+        fileHeader.sectorMap = static_cast<Word>(aSectorMap);
     }
     inline int GetSectorMap() const
     {
