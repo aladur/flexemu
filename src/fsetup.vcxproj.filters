@@ -24,9 +24,6 @@
     <ClInclude Include="confignt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="iodevice.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="misc1.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="fsetup.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="sguiopts.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

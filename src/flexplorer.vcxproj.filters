@@ -153,7 +153,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-  <ClInclude Include="bdate.h">
+    <ClInclude Include="bdate.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bdir.h">
@@ -165,19 +165,10 @@
     <ClInclude Include="bmembuf.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="bobserv.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="bprocess.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="brcfile.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="bregistr.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="confignt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="contpdlg.h">
@@ -217,18 +208,6 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="flexdisk.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="filecntb.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="filecnts.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="filecont.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="flexemu.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="flexerr.h">
