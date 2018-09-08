@@ -18,7 +18,7 @@ System.
 Additional hardware modules as for ex. two MC6821 parallel input/output
 ports, a floppy disk controller WD1793, a realtime clock MC146818  and a
 special video interface completely emulate the hardware of an Eurocom II/V7
-computer. It was develloped by
+computer. It was developed by
 <a href="http://www.eltec.de/">ELTEC Elektronik</a> and mainly distributed
 in Germany in the 80ies.
 <p>
@@ -31,7 +31,7 @@ in Germany in the 80ies.
  <li>CPU monitor with start/stop/step/next/reset, two breakpoints
  <li>continuous display of CPU frequency and cycle count
  <li>full interrupt support
- <li>stop processor and popup dialog at unimplemented processor instructions
+ <li>stop processor and pop up dialog at unimplemented processor instructions
  <li>Optionally support undocumented processor instructions
  <li>Configurable frequency control for either emulate with maximum possible
      frequency or with original frequency
@@ -57,7 +57,7 @@ in Germany in the 80ies.
  <li>Configurable CPU Instruction logging within address range
      and/or Start/Stop trigger address
  <li>dynamic mount/unmount of disks possible
- <li>fileconversion from/to FLEX ASCII file format
+ <li>file conversion from/to FLEX ASCII file format
  <li><a href="http://www.eltec.de/">ELTEC</a> full screen editor e.cmd included
  <li>command for exiting emulator
  <li>command to dynamically mount/update/umount drives
@@ -70,15 +70,15 @@ in Germany in the 80ies.
 <a name="options">
 <h2>OPTIONS</h2>
 In general there are command line options and options editable by <b>fsetup</b>
-available. Commandline options can supersede fsetup-options.
+available. Command line options can supersede fsetup options.
 <a name="options_linux">
 <h3>Commandline options on Linux (X11) and WIN32</h3>
 <dl compact>
 <dt><b><tt>-f &lt;hexfile&gt;</tt>
 </b><dd>
 Specifies the name of a program read during startup, usually a system
-monitor. Both intel Hex and Motorola S-record is supported. The default
-is
+monitor. Intel Hex, Motorola S-record and FLEX binary file format is supported.
+The default is
 <a href="neumon54.htm"><b>neumon54.hex</b></a>
 The file will be looked for in the working directory or in the directory
 specified as -p option or as Disk/Monitor directory.
@@ -94,18 +94,18 @@ Specifies the foreground color. The default is
 Inverse video display (foreground and background colors exchanged)
 <dt><b><tt>-p &lt;path&gt;</tt>
 </b><dd>
-Specifies a path in which diskimage files or nafs-directories will be looked
+Specifies a path in which disk image files or nafs-directories will be looked
 for. Defaults:<BR>
   <b>WIN32:</b> &lt;INSTDIR&gt;\data<BR>
   <b>X11:</b> /usr/local/share/Flexemu
 <dt><b><tt>-0|1|2|3 &lt;path&gt;</tt>
 </b><dd>
-Specifies a diskimage file or a directory path for drive 0, 1, 2 or 3.<tt> </tt>
+Specifies a disk image file or a directory path for drive 0, 1, 2 or 3.<tt> </tt>
 The default is
 <b>system.dsk
 </b>for drive 0. The file or directory will be looked for in the actual
 directory.  If nothing is found the directory specified with the
-<b><tt>-p</tt></b>option or as Disk/Monitor directory will be looked for.
+<b><tt>-p</tt></b> option used for Disk/Monitor files will be looked for.
 <dt><b><tt>-j &lt;xFactor&gt;</tt>
 </b><dd>
 Specifies a factor to multiply the width of the FLEX display. Default is <b>2</b>.
@@ -161,7 +161,7 @@ options
  </tr>
  <tr>
   <td>Screen geometry</td>
-  <td>Pixelsize used for the video display</td>
+  <td>Pixel size used for the video display</td>
   <td>1024x512</td>
  </tr>
  <tr>
@@ -177,7 +177,7 @@ options
  <tr>
   <td><b>X11 only:</b>HTML browser</td>
   <td>Executable used as HTML browser</td>
-  <td>netscape</td>
+  <td>firefox</td>
  </tr>
  <tr>
   <td>Disk/Monitor directory</td>
@@ -227,7 +227,7 @@ four digit hexadecimal address:
 <table border>
  <tr>
   <th>Fieldname</th>
-  <th>Defaultvalue</th>
+  <th>Default value</th>
   <th>Description</th>
  </tr>
  <tr>
@@ -271,7 +271,7 @@ other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
 <a name="undocumented_instructions">
 <h3>Undocumented MC6809 Instructions</h3>
-The support of undocumented MC6809 instructions can be controled either 
+The support of undocumented MC6809 instructions can be controlled either
 with the command line option <b>-u</b> or with the menu point
 Processor-&gt;Undocumented Instructions. To be able do 
 distinguish them from the supported instructions the disassembler

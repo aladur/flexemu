@@ -13,7 +13,7 @@ The
 block of RAM, in the user's program area, which is used by programs to
 communicate with FMS. A separate FCB is needed for each open file. After a
 file has been closed, the FCB may be re-used to open another file or to perform
-some other disk functioin such as Delete or Rename. An FCB may be placed
+some other disk function such as Delete or Rename. An FCB may be placed
 anywhere in the user's program area (except page 0) that the programmer wishes.
 The memory reserved for use as an FCB need not be preset or initialized in any
 way. Only the parameters necessary to perform the function need be stored in 
@@ -35,7 +35,7 @@ instruction.
 <dt><b>Byte 2: Activity Status
 </b><dd>
 This byte is set by FMS to a "1" if the file is open for read, or "2" if the
-file is open for writing. This byte is checked by serveral FMS function
+file is open for writing. This byte is checked by several FMS function
 processors to determine if the requested operation is legal. A Status Error
 is returned for illegal operations.
 </dl>
@@ -52,7 +52,7 @@ This is the hardware drive number whose diskette contains the file being
 referenced. It should be binary 0 to 3.
 <dt><b>Bytes 4-11: File Name
 </b><dd>
-This is the name of the file being referenced. The name must start wich a
+This is the name of the file being referenced. The name must start with a
 letter and contain only letters, digits, hyphens and/or underscores. If the
 name is less than 8 characters long, the remaining bytes must be zero. The name
 should be left adjusted in its field.
@@ -101,7 +101,7 @@ for details.
 </b><dd>
 These three bytes contain the binary date of the files creation. The first byte
 is the month, the second is the day, and the third is the year (only the tens
-ond ones digits).
+of ones digits).
 <dt><b>Bytes 28-29 FCB List Pointer
 </b><dd>
 All FCBs which are open for reading or writing are chained together. These two
@@ -122,7 +122,7 @@ FCB buffer.
 <dt><b>Bytes 34: Data Index
 </b><dd>
 This byte contains the address of the next data byte to be fetched from (if
-reading) or stored to (if writing) the sector buffer. This address is realtive
+reading) or stored to (if writing) the sector buffer. This address is relative
 to the beginning of the sector, and is advanced automatically by the Read/Write
 Next Byte function (see
 <a href="flexfms.htm"> FLEX File Management System</a>.

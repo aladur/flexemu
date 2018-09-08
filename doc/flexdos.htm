@@ -38,7 +38,7 @@ user programs. Indiscriminate use of the Coldstart Entry Point by user programs
 could result in the destruction of the diskette. Documentation of this routine
 is included here only for completeness.
 <a name="warms">
-<dt><b>Warstart Entry Point $CD03 (WARMS)
+<dt><b>Warmstart Entry Point $CD03 (WARMS)
 </b><dd>
 This is the main re-entry point into DOS from user programs. A JMP instruction
 should be used to enter the Warmstart Entry Point. At this point, the main loop
@@ -354,7 +354,7 @@ storing any extensions.
 The contents of the B-register is added to the contents of the X-register. This
 routine is here for compatibility with 6800 FLEX.
 <a name="outdec">
-<dt><b>Output Decima Number $CD39 (OUTDEC)
+<dt><b>Output Decimal Number $CD39 (OUTDEC)
 </b><dd>
 On entry, the X-register contains the address of the most significant byte of a
 16-bit (2 byte), unsigned, binary number. The B-register, on entry, should

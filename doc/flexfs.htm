@@ -47,13 +47,13 @@ the DSK-file is write protected the drive within flexemu is write protected too.
 </b>
 <p><dd>
 The complete disk is contained in one file. All the information about how
-many tracks and sectors are discribed in a fileheader:
+many tracks and sectors are described in a file header:
 <p>
 <table border>
  <tr><th>bytes</th><th>name</th><th>description</th>
  <tr><align=left><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
  <tr><align=left><td>1</td><td>write_protect</td><td>flag for write protection</td>
- <tr><align=left><td>1</td><td>sizecode</td><td>128 * 2 ^ n Bytes/sector</td>
+ <tr><align=left><td>1</td><td>size code</td><td>128 * 2 ^ n Bytes/sector</td>
  <tr><align=left><td>1</td><td>sides0</td><td>nr of sides on track 0</td>
  <tr><align=left><td>1</td><td>sectors0</td><td>nr of sect. on track 0</td>
  <tr><align=left><td>1</td><td>sides</td><td>nr of sides on track != 0</td>
@@ -66,7 +66,7 @@ The format of the file header can be changed for future improvements. For the
 actual format look at
 <b>struct s_flex_header
 </b>in the header file
-<b>e2floppy.h</b>.
+<b>filecnts.h</b>.
 <a name="nafs_format">
 <p><dt><b>NAtive File System support (nafs)
 </b><p><dd>
@@ -80,7 +80,7 @@ are not accessible as file. The boot sector (track 0/sector 1) is contained
 in the file
 <b>boot.
 </b>If there is no such file the disk can't be booted. The link
-to flex.sys will be generated dynamically by flexemu. The user does not have
+to FLEX.SYS will be generated dynamically by flexemu. The user does not have
 to input any link command.
 <p>
 <dt>There are some restrictions the user should be aware of:
@@ -93,7 +93,7 @@ all files in the directory won't fit some of them are not visible from within
 flexemu.
  <li>All filenames must conform to FLEX file naming conventions otherwise
 they can't be seen.
- <li>A nafs drive is only accessible by propper fms calls. Direct
+ <li>A nafs drive is only accessible by correct FMS calls. Direct
 reading/writing sectors is not supported.
  <li>New files have a name tmpXX (XX = two digit number) and are
 renamed to their real name after closing them. So if there are any files

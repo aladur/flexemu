@@ -31,7 +31,7 @@ called
 </b>. Each
 <b>Function Code
 </b>tells FMS to perform a specific function such as open a file for read, or
-delete a file. In general, making use of the various funcitons which the FMS
+delete a file. In general, making use of the various functions which the FMS
 offers, is quite simple. The index register is made to point to the
 <b>File Control Block
 </b>which is to be used, the
@@ -61,7 +61,8 @@ number of head seeks necessary while reading the file.<tt> </tt>
 </b><dd>
 This entry point is used by the DOS portion of FLEX to initialize the
 <b>File Management System
-</b>after a coldstart. There should be no need for a user-written program to use
+</b>after a cold start. There should be no need for a user-written program to
+use
 this entry point. Executing an FMS Initialization at the wrong time may result
 in the destruction of data files, necessitating a re-initialization of the
 diskette.<tt> </tt>
@@ -221,7 +222,7 @@ open for update.<tt> </tt>
 </b><dd>
 If the file was opened for reading, a close merely removes the FCB from the
 chain of open files. If the file was opened for writing, any data remaining in
-the buffer is first written to the disk, padding with zeroes if neccessary,
+the buffer is first written to the disk, padding with zeros if necessary,
 to fill out the sector. If a file was opened for writing but never written
 upon, the name of the file is removed from the diskette directory since the
 file contains no data.<tt> </tt>
@@ -268,7 +269,7 @@ number; no file name is required. The directory entries are read by using the
 <b>Get Information Record
 </b>function. The
 <b>Put Information Record
-</b>function is used to write a directory entry. Teh normal
+</b>function is used to write a directory entry. The normal
 <b>Read/Write Next Byte
 </b>function will not function correctly on an FCB which is opened for directory
 access. It is not necessary to close an FCB which has been opened for directory
@@ -428,7 +429,7 @@ Example:
 <dt><b>Function 15: Next Sequential Sector
 </b><dd>
 On entry the file should be open for either reading or writing (not update). If
-the file is open for reading, this function code will cause all of the remaning
+the file is open for reading, this function code will cause all of the remaining
 (yet unread) data bytes in the current sector to be skipped, and the data
 pointer will be positioned at the first data byte of the next sequential sector
 of the file. If the file is opened for write, this operation will cause the
@@ -438,9 +439,9 @@ all calls to this function code will be ignored unless at least one byte of
 data has either been written or read from the current sector.
 <dt><b>Function 16: Open System Information Record
 </b><dd>
-On entry, only the drive number need be specified in the FCB; ther is no file
+On entry, only the drive number need be specified in the FCB; there is no file
 name associated with this function. The FCB must not be open for use by a file.
-This fuction accesses the
+This function accesses the
 <b>System Information Record
 </b>for the diskette whose drive number is in the FCB. There are no separate
 functions for reading or changing this sector. All references to the data
@@ -515,7 +516,7 @@ Example:
 <dt><b>Function 20: Find Next Drive
 </b><dd>
 This function is used to find the next online drive which is in the "ready"
-state. Due to hardware limitations, the minifloppy version of FLEX performs
+state. Due to hardware limitations, the mini floppy version of FLEX performs
 this command differently than the full size floppy version. The functioning
 of the full size floppy version is as follows. If the drive number in the
 FCB is hex FF, the search for drives will start with drive 0. If the drive
@@ -620,7 +621,7 @@ losing its random properties, but it can not be appended to another file.
 <p>
 Within
 <b>flexemu
-</b>if using a direcory as a FLEX drive the user execution bit will be used to
+</b>if using a directory as a FLEX drive the user execution bit will be used to
 distinguish between random and sequential files. Random files have this bit
 set.
 <h2>SEE ALSO</h2>

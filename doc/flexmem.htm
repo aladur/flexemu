@@ -9,7 +9,7 @@ flexmem - FLEX Memory Map
 <h2>DESCRIPTION</h2>
 The following is a description of those memory locations within the DOS
 portion of FLEX which contain information of interest to the programmer.
-The user is coutioned against utilization for his own purposes any
+The user is cautioned against utilization for his own purposes any
 locations documented as being either "reserved" or "system scratch", as
 this action may cause destruction of data.
 <a name="map">
@@ -19,7 +19,7 @@ this action may cause destruction of data.
  <tr><align=left><th>Address Range</th><th>Usage</th></tr>
  <tr><align=left><td>0000-BFFF</td><td>User RAM</td></tr>
  <tr><align=left><td>C000-DFFF</td><td>Disk Operating System</td></tr>
- <tr><align=left><td>C07F</td><td>Sytem Stack</td></tr>
+ <tr><align=left><td>C07F</td><td>System Stack</td></tr>
  <tr><align=left><td>C100-C6FF</td><td>Utility command space (UCS)</td></tr>
  <tr><align=left><td>CD00</th><td>FLEX cold start entry address</td></tr>
  <tr><align=left><td>CD03</td><td>FLEX warm start entry address</td></tr>
@@ -61,12 +61,12 @@ The line buffer is a 128 byte area into which characters typed at the keyboard
 are placed by the routine
 <a href="flexdos.htm#inbuff">INBUF</a>
 . All characters entered from the keyboard are
-placed in this buffer with the exeption of control characters. Characters
+placed in this buffer with the exception of control characters. Characters
 which have been deleted by entering the backspace character do not appear in
 the buffer, nor does the backspace character itself appear. The carriage
 return signaling the end of the keyboard input is, however, put in the buffer.
 This buffer is also used to hold the
-<a href="flexuser.htm#startup">STARTUP</a> file during a coldstart (boot)
+<a href="flexuser.htm#startup">STARTUP</a> file during a cold start (boot)
 operation. 
 <dt><b>TTYSET Backspace Character $CC00
 </b><dd>
@@ -75,7 +75,7 @@ This is the character which the routine
 will interpret as the
 Backspace character. It is user definable through the
 <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default = $08, a Ctrl H (ASCII BS)
+. Default = $08, a Ctrl-H (ASCII BS)
 <dt><b>TTYSET Delete $CC01
 </b><dd>
 This is the character which the routine
@@ -83,7 +83,7 @@ This is the character which the routine
 will interpret as the line
 cancel or Delete character. It is user definable through the
 <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default = $18, Ctrl X (ASCII CAN)
+. Default = $18, Ctrl-X (ASCII CAN)
 <dt><b>TTYSET End of Line Character $CC02
 </b><dd>
 This is the character DOS recognizes as the multiple command per line
@@ -93,7 +93,7 @@ separator. It is user definable through the
 a colon (:).
 <dt><b>TTYSET Depth Count $CC03
 </b><dd>
-This byte determins how many lines DOS will print on a page before Pausing
+This byte determines how many lines DOS will print on a page before Pausing
 or issuing Ejects. It may be set by the user with the
 <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
 command.
@@ -128,7 +128,7 @@ character. Default=0.
 The Eject Count instructs DOS as to the number of blank lines to be
 output after each page. (A page is a set of lines equal in number
 to the Depth count). If this byte is zero, no Eject lines are
-output. Deault=0.
+output. Default=0.
 <dt><b>TTYSET Pause Control $CC09
 </b><dd>
 The Pause byte instructs DOS what action to take after each page is
@@ -154,13 +154,13 @@ be searched. Default= drive #0.
 <dt><b>System Date Registers $CC0E - $CC10
 </b><dd>
 These three bytes are used to store the system date. It is stored
-in binary form with the month in the firat byte, followed by the
+in binary form with the month in the first byte, followed by the
 day, then the year. The year byte contains only the tens and ones
 digits.
 <dt><b>Last Terminator $CC11
 </b><dd>
 This location contains the most recent non-alphanumeric character encountered
-in prcessing the line buffer. See
+in processing the line buffer. See
 <a href="flexdos.htm#nxtch">NXTCH</a>
 and
 <a href="flexdos.htm#class">CLASS</a>
@@ -184,7 +184,7 @@ for instances of its use.
 <dt><b>Escape Return Register $CC16-$CC17
 </b><dd>
 These locations contain the address to which to jump if a RETURN is typed
-while output has been stoppend by an Escape Character. See
+while output has been stopped by an Escape Character. See
 <a href="flexuser.htm#ttyset">TTYSET utility</a>
 for information on Escape processing. See
 <a href="flexdos.htm#pcrlf">PCRLF</a>
@@ -226,14 +226,14 @@ location is non-zero if a transfer address was found during the loading
 process. This location is also used as scratch by some system routines.
 <dt><b>Transfer Address $CC1E-$CC1F
 </b><dd>
-If the Tranfer Flag was set non-zero by a load from the disk (see
+If the Transfer Flag was set non-zero by a load from the disk (see
 <a href="flexdos.htm#load">System Routine LOAD</a>
 ), these locations contain the last transfer address encountered.
 If the Transfer Flag was set zero by the disk load, the content of these
 locations is indeterminate.
 <dt><b>Error Type $CC20
 </b><dd>
-This location contains the error number returned by serveral of the File
+This location contains the error number returned by several of the File
 Management System functions. See
 <a href="flexerr.htm">FLEX Error Messages</a>
 for an interpretation of the 

@@ -117,7 +117,7 @@ graphics mode (without option
 <b>-t
 </b>) this command can be used to switch between performing I/O on the graphic
 display or on the terminal. A hardware reset or nmi always switches back to
-grapic mode. This command is configurable for each Monitor file if it supports
+graphic mode. This command is configurable for each Monitor file if it supports
 a SERPAR flag. The configuration is done in the file <b>flexemu.conf</b>.
 By default it is preconfigured for <b>neumon54.hex</b>.
 It supports a parallel I/O on pia1 (MC6821) which will be
@@ -136,7 +136,7 @@ After a reset or nmi SERPAR will be initialized by the contents of address
 <a name="freq">
 <dt><b>emu freq [&lt;target_frequency&gt;]
 </b><dd>
-Prints the actual frequency on which the virtual CPU is running. An optionaly
+Prints the actual frequency on which the virtual CPU is running. An optionally
 given <b>target_frequency</b> gives a target frequency.
 <a name="cycles">
 <dt><b>emu cycles
@@ -150,7 +150,7 @@ immediately exits the emulator. It is equivalent to the
 </b>command.
 <dt><b>timeset
 </b><dd>
-a menudriven command to set the time, date or alarm time of the real time clock
+a menu driven command to set the time, date or alarm time of the real time clock
 MC146818. If setting the alarm time a interrupt vector for firq should already
 be installed! Setting the date only updates the date in the real time clock but
 not the date used by FLEX.
