@@ -25,6 +25,8 @@
 
 #include <wx/defs.h>
 #include <wx/app.h>
+#include "flexerr.h"
+
 
 // FlexDisk Resource IDs
 #define MDI_QUIT                  1
@@ -71,11 +73,13 @@ DECLARE_APP(FLEXplorer)
 class FLEXplorer: public wxApp
 {
 public:
-    bool OnInit();
-    int OnExit();
+    bool OnInit() override;
+    int OnExit() override;
+
+private:
     void ReadDefaultOptions();
     void WriteDefaultOptions();
-private:
+
     wxLocale m_locale;
 };
 
