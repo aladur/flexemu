@@ -94,8 +94,8 @@ int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2,
         return 0;
     }
 
-    auto dirEntry1 = reinterpret_cast<FlexDirEntry &>(item1);
-    auto dirEntry2 = reinterpret_cast<FlexDirEntry &>(item2);
+    auto dirEntry1 = *reinterpret_cast<FlexDirEntry *>(item1);
+    auto dirEntry2 = *reinterpret_cast<FlexDirEntry *>(item2);
 
     switch (sortData)
     {
@@ -375,10 +375,10 @@ void FlexDiskListCtrl::RenameSelectedItems()
                     itemText.mb_str(*wxConvCurrent),
                     fName.mb_str(*wxConvCurrent));
                 auto dirEntry =
-                    reinterpret_cast<FlexDirEntry *>(GetItemData(item));
-                dirEntry->SetTotalFileName(fName.mb_str(*wxConvCurrent));
+                    *reinterpret_cast<FlexDirEntry *>(GetItemData(item));
+                dirEntry.SetTotalFileName(fName.mb_str(*wxConvCurrent));
                 SetItemText(item, fName);
-                UpdateItem(item, *dirEntry);
+                UpdateItem(item, dirEntry);
             }
             catch (FlexException &ex)
             {
@@ -670,8 +670,8 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(Byte protection,
         {
             Byte setMask = isToBeSet ? protection : 0;
             Byte clearMask = isToBeSet ? 0 : protection;
-            auto pDirEntry =
-                reinterpret_cast<FlexDirEntry *>(GetItemData(item));
+            auto newDirEntry =
+                *reinterpret_cast<FlexDirEntry *>(GetItemData(item));
             m_container->SetAttributes(
                 fileName.mb_str(*wxConvCurrent),
                 setMask, clearMask);
@@ -686,8 +686,8 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(Byte protection,
                 clearMask = ~setMask;
             }
 
-            pDirEntry->SetAttributes(setMask, clearMask);
-            UpdateItem(item, *pDirEntry);
+            newDirEntry.SetAttributes(setMask, clearMask);
+            UpdateItem(item, newDirEntry);
         }
         catch (FlexException &ex)
         {
