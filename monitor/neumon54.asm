@@ -19,10 +19,10 @@
 ; 31.08.98 W. Schwotzer		support for insert mode cursor with CTRL-F
 ;				and CTRL-G
 ; 09.02.2004 W. Schwotzer       After Reset clear up to 2 x 288K RAM extension
-; 17.09.2018 W. Schwotzer       Make it assemble with:
-;                                   A09 V1.37 https://github.com/Arakula/A09
-;                                   asm6809 V2.11 http://www.6809.org.uk/asm
-
+; 16.09.2018 W. Schwotzer       Make it assemble with:
+;                               A09 V1.37 (https://github.com/Arakula/A09)
+;                               asm6809 V2.11 (http://www.6809.org.uk/asm6809/)
+; 17.09.2018 W. Schwotzer       Fully translated to english
 
 ; SYM 6
 ; OPT -G,P,M,E,-C,
@@ -32,6 +32,7 @@
 ; Command line for a09:
 ;    a09 -Xneumon54.hex -Lneumon54.lst neumon54.asm
 ;
+
 
 ; PAG
 VERS   EQU  4      ;for ELTEC compatibility
@@ -87,7 +88,7 @@ BUMPV  RMB  2          ;bump vector
 ;       OPT  NOL
 ORIG   SET  *
        IF   ORIG>=DIRPAG+$58
-       ERR  "Dirpag zu lang vor $58"
+       ERR  "Direct page before $58 too long!"
        ENDIF
 ;       OPT  LIS
 
@@ -247,15 +248,15 @@ ENDHT  EQU  *         ;End of HKS-Table
 ;
        ORG ANFANG+$7C
 INITSP FCB  0		; initial value for SERPAR
-			; (can be set by by flexemu after load)
 MESEUR EQU  *
 THALLO EQU  *
        FCC  "EUROCOM MONITOR "
 LVN    EQU  *
 ;
+;
 ;       OPT  NOL
        IF   LVN>ANFANG+$8D
-       ERR  "too much code for versionnumber"
+       ERR  "Version number too long!"
        ENDIF
 ;       OPT  LIS
 ;
@@ -334,7 +335,7 @@ NORM1  JSR  INITI
        JSR  PCRLF
        LBRA IRQEN1     ;output all registers
 ;
-; RESTART Einsprung
+; RESTART entry point
 ;
 BEGINN LDS  #STACK
        LDU  #MMU+16
@@ -458,7 +459,7 @@ ERRHKS LDA  #'?'
 HKS    LDS  #STACK     ;load stackpointer
        LDA  #DRCTPG
        TFR  A,DP
-       CLR  LODFLG-DIRPAG   ;clear loagflag
+       CLR  LODFLG-DIRPAG   ;clear loadflag
        LDX  #HKSTXT
        JSR  PDATA      ; output input prompt ">"
        JSR  INCH       ; get character from keyboard
@@ -473,279 +474,297 @@ HKS1   JMP  [$01,U]    ; execute command
 ;
 ; MEMORY: output and change contents of memory 
 ;
-MEMORY JSR  IN4HX      ;Adresse von Tastatur
-       STX  MEMADR-DIRPAG    ;konservieren. Richtig?
-       BCS  ERRHKS     ;nein, Eingabe-Fehler
-       JSR  PSPACE     ;Space ausgeben
+MEMORY JSR  IN4HX      ;Input 4-digit hex-address
+       STX  MEMADR-DIRPAG    ;Save it. Is it correct?
+       BCS  ERRHKS     ;no, input-error
+       JSR  PSPACE     ;output a space
 ;
-MEMOR1 JSR  OUT2HX     ;Adress-Inhalt ausgeben
-       LEAX -$01,X     ;Pointer wieder zurueck
+MEMOR1 JSR  OUT2HX     ;Output content of address
+       LEAX -$01,X     ;Restore address
 ;
-MEMOR2 JSR  INCH       ;Eingabe holen
-       JSR  LOWUP      ;Upper case
-       LDU  #MEMTAB    ;Anfang Eingabe-Tabelle
-       JSR  GETTAS     ;Eingabe in Tabelle
-       BCC  HKS1       ;ja, bearbeiten
-       JSR  INHEX1     ;nein, restl. Byte
-       JSR  BYTE0      ;holen, richtig?
-ERRO6  BCS  ERRHKS     ;nein, Eingabe-Fehler
-       STA  ,X         ;ja, Byte abspeichern
-       CMPA ,X         ;Adresse schreibfaehig?
-       BNE  ERRHKS     ;nein, Fehler
-       BRA  MEMOR2     ;naechste Eingabe holen
+MEMOR2 JSR  INCH       ;Get input character
+       JSR  LOWUP      ;To upper case
+       LDU  #MEMTAB    ;Start of memory command table
+       JSR  GETTAS     ;Find character in table?
+       BCC  HKS1       ;yes, execute command
+       JSR  INHEX1     ;no, input 2-hex digits
+       JSR  BYTE0      ;get byte value, is it valid?
+ERRO6  BCS  ERRHKS     ;no, input error
+       STA  ,X         ;yes, store byte value
+       CMPA ,X         ;byte value written correctly?
+       BNE  ERRHKS     ;no, erro
+       BRA  MEMOR2     ;loop to get next input
 ;
-; SLASH: Naechste Speicher-Zelle oeffnen
+; SLASH: Display value of next address
 ;
-SLASH  BSR  INCADR     ;Auf naechste Adresse
-       BRA  MEMOR1     ;Inhalt ausgeben
+SLASH  BSR  INCADR     ;increment address
+       BRA  MEMOR1     ;loop to output addr. content
 ;
-; LINE-FEED: Naechste Speicher-Zelle oeffnen
+; LINE-FEED: Display next address and value in new line
 ;
-LINFED BSR  INCADR     ;Auf naechste Adresse
-       LDA  #$0D       ;CR
-       JSR  OUTA       ;ausgeben
+LINFED BSR  INCADR     ;increment address
+       LDA  #$0D       ;output new line
+       JSR  OUTA
 ;
-LINFE0 LDX  #MEMADR    ;Memory-Adresse
-       JSR  OUT4HX     ;ausgeben
-       LDX  MEMADR-DIRPAG    ;Adress-Inhalt
-       BRA  MEMOR1     ;ausgeben
+LINFE0 LDX  #MEMADR
+       JSR  OUT4HX     ;output new address
+       LDX  MEMADR-DIRPAG ;load new address in X
+       BRA  MEMOR1     ;loop to output addr. content
 ;
-; POINT: Speicherzelle erneut oeffnen
+; POINT: Display value of same address
 ;
-POINT  LDX  MEMADR-DIRPAG    ;Inhalt der Adresse
-       BRA  MEMOR1     ;nochmal ausgeben
+POINT  LDX  MEMADR-DIRPAG ;load same address in X
+       BRA  MEMOR1     ;loop to output addr. content
 ;
-; UPARROW: Vorige Speicherzelle oeffnen
+; UPARROW: Display previous address and value in new line
 ;
-UPAROW LDX  MEMADR-DIRPAG    ;Pointer auf vorige
-       LEAX -$01,X     ;Adresse und wieder
-       STX  MEMADR-DIRPAG    ;konservieren
-       JSR  PCRLF      ;Zeilen-Vorschub,
-       BRA  LINFE0     ;Adr.+Inhalt ausgeben
+UPAROW LDX  MEMADR-DIRPAG    ;load address in X
+       LEAX -$01,X     ;get previous address in X
+       STX  MEMADR-DIRPAG    ;save address
+       JSR  PCRLF      ;output new line
+       BRA  LINFE0     ;output address and value
 ;
-; Unterprogramm zum erhoehen des Memory-
-; Adress-Zeigers um 1
+; Function to increment the memory address pointer
 ;
-INCADR LDX  MEMADR-DIRPAG    ;Pointer auf naechste
-       LEAX $01,X      ;Adresse und wieder
-       STX  MEMADR-DIRPAG    ;konservieren
+INCADR LDX  MEMADR-DIRPAG    ;load memory address into X
+       LEAX $01,X      ;increment address
+       STX  MEMADR-DIRPAG    ;store new address
        RTS
 ;
-; TABLE: Ausgabe von Speicher-Inhalten
-;        in HEX- und ASCII-Form
+; TABLE: Output a memory dump in hex and ASCII
 ;
-TABLE  JSR  FROMTO     ;Bereich einholen
+TABLE  JSR  FROMTO     ;Get address range
        BCS  ERRO6
-       STD  TEMPX-DIRPAG     ;Von-Adresse und
-       LEAX $01,X      ;Bis-Adresse + 1
-       STX  TEMPY-DIRPAG     ;konservieren
-TABLE0 JSR  PCRLF      ;Zeilenvorschub
-       LDX  #TEMPX     ;naechste Adresse
-       JSR  OUT4HX     ;ausgeben
-       LDB  #16        ;16 Inhalte/Zeilen
-       LDX  TEMPX      ;Pointer auf Adresse
-       PSHS X          ;Pointer retten
-TABLE1 CMPX TEMPY      ;Bis-Adresse erreicht?
-       BEQ  END_TA     ;bei Ende, ASCII-Dump
-       PSHS B          ;Zaehler konservieren
-       JSR  OUT2HX     ;Adress-Inhalt ausgeben
-       PULS B          ;Zaehler zurueck
-       STX  TEMPX-DIRPAG     ;Adresse konservieren
-       BSR  HALTAN     ;Ausgabe unterbrechen?
-       DECB            ;16 Inhalte ausgegeben?
-       BNE  TABLE1     ;nein, weiter
-ASDUMP PULS X          ;Pointer zurueck
+       STD  TEMPX-DIRPAG     ;store start address
+       LEAX $01,X      ;increment end address
+       STX  TEMPY-DIRPAG     ;store it
+TABLE0 JSR  PCRLF      ;new line
+       LDX  #TEMPX     ;get start address
+       JSR  OUT4HX     ;output it
+       LDB  #16        ;16 values per line
+       LDX  TEMPX      ;start address in X
+       PSHS X          ;push it on stack
+TABLE1 CMPX TEMPY      ;reached end address?
+       BEQ  END_TA     ;yes, jump to output ASCII dump
+       PSHS B          ;push value counter
+       JSR  OUT2HX     ;output value of address
+       PULS B          ;restore value counter
+       STX  TEMPX-DIRPAG     ;store current address
+       BSR  HALTAN     ;maybe break output
+       DECB            ;have 16 values been dumped?
+       BNE  TABLE1     ;no, continue in loop
+ASDUMP PULS X          ;Restore address
        LDB  #17        ;16+1
-       JSR  PSPACE     ;Zwischenraum ausgeben
-NEXTT  CMPX TEMPY      ;Bis-Adresse erreicht?
-       LBEQ HKS        ;Schluss
-       BSR  HALTAN     ;Ausgabe unterbrechen?
-       DECB            ;Alle Inhalte ausg.?
-       BEQ  TABLE0     ;ja, naechste Zeile
-       LDA  ,X+        ;Inhalt holen
-       ANDA #$7F       ;oberstes Bit weg
+       JSR  PSPACE     ;output space
+NEXTT  CMPX TEMPY      ;Reached end address?
+       LBEQ HKS        ;yes, jump back to hks
+       BSR  HALTAN     ;maybe break output
+       DECB            ;all values printed?
+       BEQ  TABLE0     ;yes, next line
+       LDA  ,X+        ;get value from memory
+       ANDA #$7F       ;mask for 1-bit ASCII
        CMPA #$20
        BHS  ISAS
-       LDA  #$5F       ;underline
-ISAS   JSR  OUTCH      ;Zeichen ausgeben
-       BRA  NEXTT
+       LDA  #$5F       ;replace non-printable char. by _
+ISAS   JSR  OUTCH      ;Print value
+       BRA  NEXTT      ;loop for next ASCII value
 ;
 END_TA LDA  #3
        MUL
-ENDT1  JSR  PSPACE     ;fuer jedes nicht
-       DECB            ;ausgegebene Byte 3 Spaces
+ENDT1  JSR  PSPACE     ;Output 3 spaces
+       DECB            ;for each not printed value
        BNE  ENDT1
-       BRA  ASDUMP     ;nun den Rest als ASCII
+       BRA  ASDUMP     ;jump to output ASCII
 ;
 HALTAN PSHS A,B,X,Y,U,DP,CC
-       JSR  TSTIN      ;Liegt Eingabe vor?
-       BCC  NOHALT     ;nein, zurueck
-       JSR  INCHA      ;Auf Eingabe warten
-       CMPA #$0D       ;Bei CR
-       LBEQ HKS        ;abbrechen
+       JSR  TSTIN      ;keyboard input?
+       BCC  NOHALT     ;no, jump back
+       JSR  INCHA      ;Wait for input character
+       CMPA #$0D       ;Is it a carrige return?
+       LBEQ HKS        ;yes abort, go back to hks
 NOHALT PULS D,X,Y,U,DP,CC,PC
 ;
-; PUT: Fuellen eines Speicherbereiches
-; mit einem bestimmten Wert
+; PUT: Fill memory range with value
 ;
-PUT    JSR  FROMTO       ;Anfang und Ende holen
-       LBCS ERRHKS       ;Fehler bei der Eingabe
-       STD  TEMPX
-       LEAX 1,X
-       STX  TEMPY
+PUT    JSR  FROMTO     ;Get address range
+       LBCS ERRHKS
+       STD  TEMPX      ;store start address
+       LEAX 1,X        ;increment end address
+       STX  TEMPY      ;store it
        LDX  #WERTMS
        JSR  PDATA1
-       JSR  BYTE         ;den Wert holen
-       LDX  TEMPX
-       STA  ,X           ;gleich in die Anfangsadresse schreiben
-PUTLUP CMPX TEMPY
-       LBEQ HKS          ;alles gefuellt
-       STA  ,X+
-       BRA  PUTLUP
+       JSR  BYTE       ;get value
+       LDX  TEMPX      ;get start address in X
+       STA  ,X         ;store value into address
+PUTLUP CMPX TEMPY      ;reaced end address?
+       LBEQ HKS        ;yes, go back to hks
+       STA  ,X+        ;increment address
+       BRA  PUTLUP     ;loop to store value to next addr.
 ;
-; VIDEO: Reaktion des Mikrocomputers
-;        wie ein Video-Terminal
+; VIDEO: Enter video terminal mode
+;        input from serial port to video console.
+;        input from keyboard to serial port.
 ;
-VIDEO0 JSR  OUTCHS     ;Ausgabe auf ACIA
+VIDEO0 JSR  OUTCHS   ;Switch ouput to serial port
 ;
-VIDEO  JSR  TSTINP     ;PIA-Eingabe erfolgt?
-       BCS  VIDEO0     ;ja, auf ACIA ausgeben
-       JSR  TSTINS     ;ACIA-Eingabe erfolgt?
-       BCC  VIDEO      ;nein, erneut testen
-       JSR  XDTEXT     ;ja, auf Bildsch. schr.
-       BRA  VIDEO      ;erneut ueberpruefen
+VIDEO  JSR  TSTINP   ;keyboard input?
+       BCS  VIDEO0   ;yes, output to serial port
+       JSR  TSTINS   ;input from serial port?
+       BCC  VIDEO    ;no, loop
+       JSR  XDTEXT   ;yes, output to video console
+       BRA  VIDEO    ;loop
 ;
-; Unterprogramm zum Auffinden einer
-; Tasten-Eingabe in der Eingabe-Tabelle
+; Function to find an input character in an input
+; table
+; Parameter:
+;      A: input character
+; Return:
+;      character found if carry clear
+;      U: Points to jump address
 ;
-GETTAS ANDA #$7F       ;Maskiere A
-       CMPA ,U         ;Eingabe in Tabelle?
-       BEQ  ZF2E9      ;ja, carry loeschen
-       LEAU $03,U      ;nein
-       CMPU #ENDHT     ;alles ueberprueft?
-       BNE  GETTAS     ;nein, weiter pruefen
-       ORCC #%00000001 ; SEC, Carry setzen
+GETTAS ANDA #$7F     ;convert to 7-bit ASCII
+       CMPA ,U       ;found character in table?
+       BEQ  GETTS9   ;yes, go back with carry cleared
+       LEAU $03,U    ;no, increment address to next char.
+       CMPU #ENDHT   ;reached end?
+       BNE  GETTAS   ;no, loop
+       ORCC #%00000001 ;go back with carry set
        RTS
 ;
-ZF2E9  ANDCC #%11111110 ;CLC, Eingabe gueltig, carry
-       RTS             ;loeschen, zurueck
+GETTS9 ANDCC #%11111110 ;go back with carry cleared
+       RTS
 ;
-; GO: Benutzer-Programme starten
+; GO: Continue at specified address
 ;
-GO     JSR  IN4HX      ;Startadresse holen
-ERRO3  LBCS ERRHKS     ;Eingabefehler, HKS
-       TFR  X,Y        ;Adresse konservieren
-       JSR  PCRLF      ;Zeilen-Vorschub
+GO     JSR  IN4HX    ;Get jump address, ok?
+ERRO3  LBCS ERRHKS   ;no, jump to hks
+       TFR  X,Y      ;Store address in Y
+       JSR  PCRLF    ;new line
        LDS  #USERST-12 ;Stack > User-Bereich
-       ANDCC #%10101111; CLI, Enable Interrupt
-GO1    CLRA            ;Set Direct Page
-       TFR  A,DP       ;for 6800 Compatibility
-       TFR  Y,PC       ;Zur Start-Adresse
+       ANDCC #%10101111; Enable IRQ,FIRQ interrupt
+GO1    CLRA
+       TFR  A,DP     ;clear direct page for 6800 compatibility
+       TFR  Y,PC     ;continue at specified address
 ;
-; X: Einsprung in FLEX
+; X: Jump back to FLEX
 ;
-CFLEX  LDY  #WARMS     ;Warmstartadresse holen
-       BRA  GO1        ;sonst wie GO
+CFLEX  LDY  #WARMS   ;get warmstart adress into Y
+       BRA  GO1      ;proceed as with GO command
 ;
-; Unterprogramm zum Einlesen von Anfangs-
-; und End-Adresse von der Tastatur
+; Function to input a start and end address
+; from keyboard.
+; return:
+;     X: start address
+;     D: end address
 ;
-FROMTO LDX  #TFROM     ;Text "FROM"
-       BSR  PDATA1     ;ausgeben
-       JSR  IN4HX      ;Von-Adresse holen
-       BCS  ERRO8      ;Eingabe-Fehler, HKS
-       PSHS X          ;Adresse konservieren
-       LDX  #TTO       ;Text "TO"
-       BSR  PDATA1     ;ausgeben
-       JSR  IN4HX      ;Bis-Adresse holen
-       BCS  ERRO4      ;Eingabe-Fehler, HKS
-ERRO4  PULS D          ;Von-Adresse zurueck
-ERRO8  RTS             ;Ruecksprung
+FROMTO LDX  #TFROM
+       BSR  PDATA1   ;output text "FROM"
+       JSR  IN4HX    ;get start address, ok?
+       BCS  ERRO8    ;no, jump to HKS
+       PSHS X        ;push address
+       LDX  #TTO
+       BSR  PDATA1   ;output text "TO"
+       JSR  IN4HX    ;get end address, ok?
+       BCS  ERRO4    ;no, jump to HKS
+ERRO4  PULS D        ;restore start address in D
+ERRO8  RTS
 ;
+; convert upper nibble into ASCII 0-9, A-F
 ;
-CHEXL  LSRA            ;Das obere
-       LSRA            ;Halbbyte in das
-       LSRA            ;untere
-       LSRA            ;rotieren
+CHEXL  LSRA          ;shift upper nibble
+       LSRA          ;into the lower one
+       LSRA
+       LSRA
 ;
-CHEXR  ANDA #$0F       ;Oberes Halbbyte weg
-       ADDA #$90       ;Binaer-Wert in
-       DAA             ;in ASCII-
-       ADCA #$40       ;Wert
-       DAA             ;umwandeln
+; convert lower nibble into ASCII 0-9, A-F
+;
+CHEXR  ANDA #$0F     ;mask upper nibble
+       ADDA #$90     ;convert binary value
+       DAA           ;into ASCII 0-9, A-F
+       ADCA #$40
+       DAA
 PDATA3 RTS
 ;
-; OUTHEX-Routinen
+; Output hexadecimal 16-bit value located at ,X
 ;
 OUT4H  BSR  OUT2H      ;4 Hex-Zeichen ausgeben
 ;
+; Output hexadecimal 8-bit value located at ,X
+;
 OUT2H  LDA  ,X
-       BSR  CHEXL      ;oberes Halbbyte wandeln
-       BSR  OUTA       ;und ausgeben
+       BSR  CHEXL    ;convert upper nibble
+       BSR  OUTA     ;output character
        LDA  ,X+
-       BSR  CHEXR      ;unteres Halbbyte wandeln
-       BRA  OUTA       ;und ausgeben
+       BSR  CHEXR    ;convert lower nibble
+       BRA  OUTA     ;output character
+
+; Output hexadecimal 16-bit value located at ,X
+; followed by a space.
 ;
-OUT4HX BSR  OUT2H      ;4 Hexzeichen + Space
+OUT4HX BSR  OUT2H    ;output two hex digits
 ;
-OUT2HX BSR  OUT2H      ;2 Hexzeichen +
-PSPACE LDA  #$20       ;Space
-       BRA  OUTA       ;ausgeben
+; Output hexadecimal 8-bit value located at ,X
+; followed by a space.
 ;
-; OUT-DATA-Routinen
+OUT2HX BSR  OUT2H    ;output two hex digits
+PSPACE LDA  #$20
+       BRA  OUTA     ;output space
 ;
-PDATA  BSR  PCRLF      ;Zeilen-Vorschub
+; OUT-DATA functions
 ;
-PDATA1 LDA  ,X+        ;ASCII-Wert holen
-       CMPA #$04       ;End of Text (EOT)?
-       BEQ  PDATA3     ;ja, Ruecksprung
-       BSR  OUTCH      ;nein, Zeichen ausgeben
-       BRA  PDATA1     ;naechstes Zeichen
+PDATA  BSR  PCRLF    ;output new line
 ;
-PCRLF  LDA  #$0D       ;CR
-       BSR  OUTCH      ;Ausgeben
+PDATA1 LDA  ,X+      ;get ASCII value
+       CMPA #$04     ;is it end of text (EOT)?
+       BEQ  PDATA3   ;yes, return
+       BSR  OUTCH    ;no, output character
+       BRA  PDATA1   ;loop for next character
 ;
-PLF    LDA  #$0A       ;LF
-OUT1   BRA  OUTCH      ;ausgeben
+PCRLF  LDA  #$0D
+       BSR  OUTCH    ;output CR
+;
+PLF    LDA  #$0A
+OUT1   BRA  OUTCH    ;output LF
 ;
 CLRHKS CLR  LODFLG-DIRPAG
        BRA  TOHKS0
 
-INCH   BSR  INCHA    ;In Char. mit Echo
-       CMPA #$18     ;^X eingegeben?
-TOHKS0 LBEQ HKS
+INCH   BSR  INCHA    ;Input character with echo
+       CMPA #$18     ;Has Ctrl-Y been input?
+TOHKS0 LBEQ HKS      ;yes, abort to hks
 ;
 ;
-; Character ausgeben
+; Output character to video console.
+; If Ctrl-X is entered from keyboard or serial port return to HKS
 ;
-OUTA   PSHS A          ;Accu konservieren
-       JSR  TSTINP     ;Eingabe ueber PIA?
-       BCC  OUTCH0     ;nein, weiter
-       CMPA #$18       ;^X eingegeben?
-       BEQ  CLRHKS     ;ja, Abbruch zur HKS
+OUTA   PSHS A
+       JSR  TSTINP   ;Input from video console?
+       BCC  OUTCH0   ;no, continue
+       CMPA #$18     ;Is it Ctrl-X?
+       BEQ  CLRHKS   ;yes, abort to hks
 ;
-OUTCH0 BSR  TSTINS     ;Eingabe von ACIA?
-       BCC  OUTCH1     ;nein, weiter
-       CMPA #$18       ;^X eingegeben?
-       BEQ  CLRHKS     ;ja, Abbruch zur HKS
+OUTCH0 BSR  TSTINS   ;Input from serial port?
+       BCC  OUTCH1   ;no, continue
+       CMPA #$18     ;Is it Ctrl-X?
+       BEQ  CLRHKS   ;yes, abort to hks
 ;
 OUTCH1 PULS A
 OUTCH  TST  LODFLG
        LBNE XDTEXT
-       TST  SERPAR    ;Ser./par. Output?
-       LBEQ XDTEXT     ;out parallel
+       TST  SERPAR   ;Is Serial or parallel Output?
+       LBEQ XDTEXT   ;out parallel
 ;
 ;
-; Output Character to ACIA
+; Output Character to serial port
 ;
 OUTCHS PSHS B
 OUTCS1 LDB  ACIACO
-       BITB #2         ;Transmit not ready
+       BITB #2       ;Transmit not ready
        BEQ  OUTCS1
-       STA  ACIADA    ;output character
+       STA  ACIADA   ;output character
        PULS PC,B
 ;
-; Statusabfrage der ACIA
+; Get status of serial port
 ;
 SERSTA PSHS A
        LDA  ACIACO
@@ -753,22 +772,23 @@ SERSTA PSHS A
        PULS A,PC
 
 LOAD0  BSR  SERSTA
-       BNE  LOAD0    ;noch keine Eingabe bis jetzt
+       BNE  LOAD0    ;loop until got input from
+                     ;serial port
 ;
 ; Input one Character from ACIA
 ;
-TSTINS BSR  SERSTA    ;get serial status
-       BEQ  NOSERI    ;nothing there
+TSTINS BSR  SERSTA   ;get serial status
+       BEQ  NOSERI   ;nothing there
        LDA  ACIADA
-       ORCC #%00000001 ; SEC, Carry setzen
+       ORCC #%00000001 ;SEC, Carry setzen
        RTS
 NOSERI ANDCC #%11111110 ;CLC
        RTS
 ;
 ; Input one Character
 ;
-INCHA  TST  CURSOR
-       BNE  INOCUR    ;der Cursor ist schon zu sehen
+INCHA  TST  CURSOR   ;is cursor visible?
+       BNE  INOCUR   ;yes, jump
        LDA  INVFLG
        PSHS A
        BSR  ESCOUT
@@ -777,27 +797,27 @@ INCHA  TST  CURSOR
        BSR  INOCUR
        BSR  ESCOUT
        PSHS A
-       LDA  1,S       ;den alten Inhalt von INVFLG
-       STA  INVFLG   ;Cursor wieder auf alten Stand
-       LDA  ,S++      ;Eingabe wiederh. und Stack ok
+       LDA  1,S
+       STA  INVFLG   ;restore old value of INVFLG
+       LDA  ,S++     ;repeat input, make stack ok
 ESCOUT PSHS A
        LDA  #$1B
        BSR  OUTCH
        PULS A,PC
 ;
-; Eingabe, ohne dass Cursor beeinflusst wird
+; Input without changing cursor
 ;
 INOCUR BSR  TSTIN
        BCC  INOCUR
        RTS
 
 STATUS TST  SERPAR
-       BNE  SERSTA    ;check serial status
+       BNE  SERSTA   ;check serial status
 PSTATU PSHS A
        TST  NEWCHR   ;look for char that has not been fetched
-       BNE  NOTEMP    ;found one
+       BNE  NOTEMP   ;found one
        LDA  PIA1AC
-       BPL  ISEMPT    ;empty
+       BPL  ISEMPT   ;empty
        LDA  PIA1AD   ;get char from PIA
        STA  NEWCHR   ;and save it
 ISEMPT ORCC #%00000100  ;set ZERO Flag
@@ -805,34 +825,34 @@ NOTEMP PULS A,PC
 ;
 ; Input one Character from PIA
 ;
-TSTIN  LDA  SERPAR    ;Serielle Eingabe?
-       BNE  TSTINS     ;ja, ACIA ueberpruefen
+TSTIN  LDA  SERPAR   ;input from serial port?
+       BNE  TSTINS   ;yes, check ACIA
 ;
-TSTINP BSR  PSTATU     ;check parallel only
-       BNE  INPPAR     ;found something
+TSTINP BSR  PSTATU   ;check parallel only
+       BNE  INPPAR   ;found something
        ANDCC #%11111110 ;CLC
-       RTS             ;else return
+       RTS           ;else return
 ;
-INPPAR LDA  NEWCHR    ;get character
-       CLR  NEWCHR    ;and clear status
+INPPAR LDA  NEWCHR   ;get character
+       CLR  NEWCHR   ;and clear status
 ;
-CNVERT CMPA #$19       ;^Y
-       BEQ  TRANS1     ;Toggle upper/lower case
+CNVERT CMPA #$19     ;Ctrl-Y
+       BEQ  TRANS1   ;Toggle upper/lower case
        TST  UL
-       BEQ  TRANS2     ;Uppercase only?
-LOWUP  CMPA #'a'        ;Yes
-       BCS  TRANS2     ;lower than a
-       CMPA #'}'        ;
-       BCC  TRANS2     ;higher than }
+       BEQ  TRANS2   ;Uppercase only?
+LOWUP  CMPA #'a'     ;Yes
+       BCS  TRANS2   ;lower than a
+       CMPA #'}'     ;
+       BCC  TRANS2   ;higher than }
        TST  DEUTSC
-       BNE  DO_CNV     ;bei deutsch jetzt konvert.
+       BNE  DO_CNV   ;if german convert now
        CMPA #'{'
-       BCC  TRANS2     ;bei internat. {|} nicht
+       BCC  TRANS2   ;if ASCII {|} not
 DO_CNV ANDA #%11011111
-TRANS2 ORCC #%00000001 ; SEC, Carry setzen
+TRANS2 ORCC #%00000001 ;SEC, set carry
        RTS
 ;
-TRANS1 COM  UL        ;Toggle
+TRANS1 COM  UL       ;Toggle
        BRA  TRANS2
 ;
 ;
@@ -851,59 +871,59 @@ IN4HX0 PSHS X          ;for Motorola comp.
 ;
 NONHEX PULS PC,X
 ;
-IN4HX  BSR  BYTE       ;High-Byte einlesen
+IN4HX  BSR  BYTE       ;input upper byte
 ;
-IN4HX1 BCS  RAUS       ;Eingabe-Fehler
-       PSHS B          ;Accu B retten
-       TFR  A,B        ;Akku A nach B retten
-       BSR  BYTE       ;Low-Byte einlesen
-       BCS  RAUS1      ;Eingabe-Fehler
-       EXG  A,B        ;High-Byte in A, Low-Byte
-       TFR  D,X        ;in B, Beide in D
+IN4HX1 BCS  RAUS       ;input error
+       PSHS B          ;push B on stack
+       TFR  A,B        ;Move A to B
+       BSR  BYTE       ;input lower byte
+       BCS  RAUS1      ;input error
+       EXG  A,B        ;upper byte in A,
+       TFR  D,X        ;lower byte in B => X
 ;
-RAUS1  PULS B          ;Accu B restaurieren
+RAUS1  PULS B          ;Restore B
 RAUS   RTS
 ;
-BYTE   BSR  INHEX      ;HEX-Char. einlesen
+BYTE   BSR  INHEX      ;input hex digit
 ;
-BYTE0  BCS  RAUS       ;Eingabe-Fehler
-BYTE1  ASLA            ;HEX-Zeichen
-       ASLA            ;linksbuendig
-       ASLA            ;in Accu A
-       ASLA            ;rotieren und
-       STA  TEMPA     ;zwischenspeichern
-       BSR  INHEX      ;HEX-Zeichen einholen
-       BCS  RAUS       ;Eingabe-Fehler
-       ADDA TEMPA     ;Zum ersten Zeichen dazu
+BYTE0  BCS  RAUS       ;input error
+BYTE1  ASLA            ;shift hex digit to
+       ASLA            ;upper nibble
+       ASLA
+       ASLA
+       STA  TEMPA      ;store into TEMPA
+       BSR  INHEX      ;input second hex digit
+       BCS  RAUS       ;input error
+       ADDA TEMPA      ;join 1st and 2nd digit
        ANDCC #%11111110 ;CLC
        RTS
 ;
-INHEX  JSR  INCH       ;Zeichen einholen
+INHEX  JSR  INCH        ;get character
 ;;
 INHEX1 CMPA #'0'        ;---
-       BMI  TRANS2     ;zwischen 0 - 9 ?
+       BMI  TRANS2      ;between 0 - 9 ?
        CMPA #'9'        ;---
        BLE  IN1HG
-       ANDA #%11011111 ;lower -> upper case
+       ANDA #%11011111  ;lower -> upper case
        CMPA #'A'        ;---
-       BMI  TRANS2     ;zwischen A - F ?
+       BMI  TRANS2      ;between A - F ?
        CMPA #'F'        ;---
        BGT  TRANS2
        SUBA #$07
 IN1HG  ANDA #$0F
-       ANDCC #%11111110 ;CLC, kein Eingabe-Fehler
+       ANDCC #%11111110 ;CLC, no input error
        RTS
 ;
-; Einsprung-Stelle nach Breakpoint
-; (oder Single-Step-Interrupt)
+; Entry point after a breakpoint
+; (or Single-Step-Interrupt)
 ;
 SWIENT TST  11,S       ;Programm-Counter
-       BNE  SWIEN0     ;wegen SWI wieder
-       DEC  10,S       ;um 1 Byte
+       BNE  SWIEN0     ;due to SWI
+       DEC  10,S       ;1 Byte
 ;
-SWIEN0 DEC  11,S       ;zurueck
-       LDX  10,S       ;Breakpoint-Adresse
-       BRA  IRQEN0     ;ja, Register ausgeben
+SWIEN0 DEC  11,S       ;back again
+       LDX  10,S       ;Breakpoint address
+       BRA  IRQEN0     ;yes, output register
 ;
 IRQENT LDX  #0
 ;
@@ -917,11 +937,11 @@ IRQEN0 LDA  #%00111110
 IRQEN1 BSR  OUTREG
        LBRA HKS
 ;
-; Unterprogramm zur Registerausgabe
+; Function to output register values
 ;
-OUTREG LDX  #TREGIS    ;Text-Pointer laden
-       LDU  SAVUST-DIRPAG    ; Register-Pointer laden
-       LDA  #2         ;2 1-Byte-Register
+OUTREG LDX  #TREGIS    ;load text pointer
+       LDU  SAVUST-DIRPAG
+       LDA  #2         ;2 one byte registers
        BSR  FOUREG
        CLRA
        BSR  FOUREG
@@ -938,20 +958,19 @@ FOURE0 PSHS B,A
        BNE  FOURE0
        RTS
 ;
-; Unterprogramm zur Ausgabe
-; eines Registers
+; Function to output one register value
 ;
-PRIREG LDY  #PDATA     ;Pointer auf "PDATA"
-       JSR  B,Y        ;nach PDATA oder PDATA1
-       EXG  X,U        ;Register-Pointer nach X
-       LDY  #OUT4HX    ;Pointer auf "OUT4HX"
-       LDA  2,S        ;Sprung-Offset in A
-       JSR  A,Y        ;nach OUT4HX oder OUT2HX
-       EXG  X,U        ;Text-Pointer nach X
+PRIREG LDY  #PDATA     ;Pointer to "PDATA"
+       JSR  B,Y        ;to PDATA or PDATA1
+       EXG  X,U        ;register pointer to X
+       LDY  #OUT4HX    ;Pointer to "OUT4HX"
+       LDA  2,S        ;Jump offset in A
+       JSR  A,Y        ;to OUT4HX or OUT2HX
+       EXG  X,U        ;text pointer to X
        RTS
 ;
 ;
-; Interrupt Einsprung Adressen
+; Interrupt entry points
 ;
 SWI3   JMP  [SW3VEC]
 SWI2   JMP  [SW2VEC]
@@ -1545,7 +1564,7 @@ BELL1  MUL            ;Delay
        STB  PIA2BD   ;no bell now
 BELL2  BRA  LF21
 
-LCUR11 SUBA #$20      ;Y-Koordinate berechnen
+LCUR11 SUBA #$20      ;calculate Y coordinate
        CMPA LINES-DIRPAG
        BCC  ZFA0F
        LDB  NRLINS-DIRPAG
@@ -1569,12 +1588,12 @@ LCURS1 BSR  LCUR11
 MORCUP STA  ESCFLG-DIRPAG
        LBRA DTEXT3
 SETCUY BSR  LCUR11
-       BRA  ENDCUP    ;Cursorposi zu ende
+       BRA  ENDCUP    ;Cursorposition finished
 SETCUX BSR  LCUR21
        LDA  #16
-       BRA  MORCUP    ;Sequenz noch nicht zu ende
+       BRA  MORCUP    ;loop, sequence not yet finished
 
-LCUR21 SUBA #$20      ;X-Koordinate berechnen
+LCUR21 SUBA #$20      ;calculate X coordinate
        CMPA NRCHR-DIRPAG
        BHI  ZFA21
        LDB  CHROFS-DIRPAG
@@ -1618,10 +1637,10 @@ CURPS2 LDA  #14
 
 INSLIN LDD  YADDR
        CMPD BOTTOM
-       BEQ  LTD8       ; if already last line do nothing
-       SUBD NRLINS-1  ;die Zeile ist ja schon geloescht
+       BEQ  LTD8      ; if already last line do nothing
+       SUBD NRLINS-1  ;the line is already deleted
        CLRA
-       INCB           ;eine Rasterzeile hoeher anfangen
+       INCB           ;start one rasterline above
        INCB
        PSHS D
        LDD BOTTOM
@@ -1649,9 +1668,9 @@ LTD8   LBRA TD8
 DELLIN LDD  YADDR
        CMPD BOTTOM
        BEQ  LTD8      ; if already last line do nothing
-       SUBD NRLINS-1  ;die Zeile ist ja schon geloescht
+       SUBD NRLINS-1  ; Line is alread deleted
        CLRA
-       INCB           ;eine Rasterzeile hoeher anfangen
+       INCB           ; Start one raster line above
        INCB
 REPTD  SUBB #1
        PSHS D
@@ -1675,7 +1694,7 @@ REPTD  SUBB #1
 
 ORIG   SET  *
        IF   ORIG>(ANFANG+$A1F)
-       ERR  "PROGRAM OVERLAPS CHAR.TAB."
+       ERR  "Program overlaps character table!"
        ENDIF
 
        ORG  $FA1F
@@ -1686,16 +1705,16 @@ ORIG   SET  *
 ; descenders, making it effectively
 ; 5 x 9.
 ;
-; hier die deutschen Grossbuchstaben
+; German umlaut as upper case
        FCB    $88,$00,$70,$88,$F8,$88,$88       ;AE
        FCB    $88,$70,$88,$88,$88,$88,$70       ;OE
        FCB    $88,$00,$88,$88,$88,$88,$70       ;UE
-; und die deutschen Kleinbuchstaben
+; German umlaut as lower case
        FCB    $50,$00,$70,$08,$78,$88,$78       ;ae
        FCB    $50,$00,$70,$88,$88,$88,$70       ;oe
        FCB    $50,$00,$88,$88,$88,$98,$68       ;ue
        FCB    $70,$88,$B0,$88,$88,$A8,$90       ;SZ
-; Zeichen fuer DEL
+; Character for DEL
        FCB    $01,$01,$09,$11,$A1,$C1,$E1       ;DEL
 ;
 CHRTBL FCB    $00,$00,$00,$00,$00,$00,$00      ; SPACE
@@ -1797,7 +1816,7 @@ CHRTBL FCB    $00,$00,$00,$00,$00,$00,$00      ; SPACE
 	;OPT  NOL
 ORIG   SET  *
        IF   ORIG>(ANFANG+$CF0)
-       ERR  "charactertable too long"
+       ERR  "Character table too long!"
        ENDIF
        ;OPT  LIS
 
@@ -1895,12 +1914,12 @@ NODEL  TST  DEUTSC
        CMPA #$5F       ;ULIN
        BEQ  NODEU
        PSHS A
-       ANDA #%11011111 ;in Grossbu wandeln
+       ANDA #%11011111 ;to upper case
        CMPA #'Z'
        PULS A
-       BLS  NODEU      ;keins der Sonderzeichen
+       BLS  NODEU      ;no german umlaut
        BITA #%00100000
-       BEQ  GROSS      ;Grossbuchstabe
+       BEQ  GROSS      ;jump to upper case
        SUBA #($7B-$5E) ;$7B -> $5E, ...
 GROSS  SUBA #($5B+8)   ;$5B -> -8, ...
        NEGA            ;-8 -> 8, ...
@@ -1908,7 +1927,7 @@ GROSS  SUBA #($5B+8)   ;$5B -> -8, ...
        MUL
        COMA
        COMB
-       ADDD #1         ;von U abziehen
+       ADDD #1         ;subtract from U
        BRA  DEU1
 
 NODEU  LDB  MULINS     ;Nr. of lines per char
@@ -1996,11 +2015,11 @@ BUMP0  CMPX DBASE
        LEAX -$4000,X
 BUMP1  RTS
 ;
-; Cursor ganz links, nahe am linken Buchstaben
+; Cursor left, near the left character
 ;
 INVTB2 FDB  $FE00,$3F80,$0FE0,$03F8
 ;
-;Cursor rechts, klein
+; Curosr right, small
 ;
 INVTBL FDB  $7E00,$1F80,$07E0,$01F8
 ;
@@ -2139,10 +2158,10 @@ ENDEL  RTS
 ERAEOS BSR  ERALIN
        LDD  YADDR
        CMPD BOTTOM
-       BEQ  TD8       ;vielleicht war's die letzte
-       SUBD NRLINS-1  ;die Zeile ist ja schon geloescht
+       BEQ  TD8       ;maybe it was the last one
+       SUBD NRLINS-1  ;the line already has been deleted
        CLRA
-       INCB           ;eine Rasterzeile hoeher anfangen
+       INCB           ;start one raster line above
        INCB
 REPT   SUBB #1
        PSHS D,U
@@ -2151,10 +2170,10 @@ REPT   SUBB #1
        BSR  OFFSET
        LEAU 64,X
        CLRA
-       LBSR CLEARS    ;1 Rasterzeile loeschen
+       LBSR CLEARS    ;clear one raster line
        PULS D,U
        CMPD BOTTOM
-       BNE  REPT      ;weiter gehts
+       BNE  REPT      ;do loop
 LASTLI TFR  D,Y
        LDX  #0
        BSR  ERASL     ;clear last line
@@ -2175,7 +2194,7 @@ CURAUS LDA  #5
 ;       OPT  NOL
 ORI    SET  *
        IF   ORI>ANFANG+$FE0
-       ERR  "kein Platz fuer MMU"
+       ERR  "No space left for MMU I/O device!"
        ENDIF
 ;       OPT  LIS
 
