@@ -19,15 +19,19 @@
 ; 31.08.98 W. Schwotzer		support for insert mode cursor with CTRL-F
 ;				and CTRL-G
 ; 09.02.2004 W. Schwotzer       After Reset clear up to 2 x 288K RAM extension
+; 17.09.2018 W. Schwotzer       Make it assemble with:
+;                                   A09 V1.37 https://github.com/Arakula/A09
+;                                   asm6809 V2.11 http://www.6809.org.uk/asm
+
 
 ; SYM 6
 ; OPT -G,P,M,E,-C,
 
-; commandoline for assembler as6809:
-;    as6809,neumon54.asm -l neumon54.lis -o neumon54.hex
-; an existing hex-file will be deleted.
+; Command line for asm6809:
+;    asm6809 --setdp=0 -H -l neumon54.lst -o neumon54.hex neumon54.asm
+; Command line for a09:
+;    a09 -Xneumon54.hex -Lneumon54.lst neumon54.asm
 ;
-
 
 ; PAG
 VERS   EQU  4      ;for ELTEC compatibility
@@ -39,8 +43,9 @@ DRCTPG EQU  DIRPAG/$100
 ;       SETDP  DRCTPG
 
 ; Zero-Page Locations
-       ORG  DIRPAG+1
+       ORG  DIRPAG
 
+DUMMY  RMB  1          ;fill byte
 INSRTF RMB  1          ;insert mode flag
 ESCFLG RMB  1          ;escape sequence flag
 DBASE  RMB  2          ;display base address pointer
@@ -83,7 +88,7 @@ BUMPV  RMB  2          ;bump vector
 ORIG   SET  *
        IF   ORIG>=DIRPAG+$58
        ERR  "Dirpag zu lang vor $58"
-       ENDI
+       ENDIF
 ;       OPT  LIS
 
        ORG  DIRPAG+$58
@@ -238,22 +243,23 @@ MEMTAB FCC  "/"        ;Slash
        FDB  HKS
 ENDHT  EQU  *         ;End of HKS-Table
 ;
-;
-;       OPT  NOL
-       IF   LVN>ANFANG+$8D
-       ERR  "too much code for versionnumber"
-       ENDI
-;       OPT  LIS
-;
 ; outputtexts
 ;
-       ORG ANFANG+$8D-17
+       ORG ANFANG+$7C
 INITSP FCB  0		; initial value for SERPAR
 			; (can be set by by flexemu after load)
 MESEUR EQU  *
 THALLO EQU  *
        FCC  "EUROCOM MONITOR "
-LVN    FCC  "V5."
+LVN    EQU  *
+;
+;       OPT  NOL
+       IF   LVN>ANFANG+$8D
+       ERR  "too much code for versionnumber"
+       ENDIF
+;       OPT  LIS
+;
+       FCC  "V5."
        FCB  VERS+'0'
        FCC  " spec."
        FCB  $0D,$0A
@@ -288,7 +294,7 @@ TREGIS FCC  "CC="
        FCC  "S="
        FCB  4
 ;
-DEFCOM FCC  'HARDCOPY'
+DEFCOM FCC  "HARDCOPY"
        FCB  $0D
 ;
 ;
@@ -776,7 +782,7 @@ INCHA  TST  CURSOR
        LDA  ,S++      ;Eingabe wiederh. und Stack ok
 ESCOUT PSHS A
        LDA  #$1B
-       JSR  OUTCH
+       BSR  OUTCH
        PULS A,PC
 ;
 ; Eingabe, ohne dass Cursor beeinflusst wird
@@ -1044,15 +1050,15 @@ SWITCH PSHS U,A,CC
        LDU  SAVE
        LDA  #DRCTPG
        TFR  D,X
-       LDD  0,X
+       LDD  ,X
        LDY  2,X
        PSHU Y,X,D
        STU  SAVE
        PULS Y,D
-       STD  0,X
+       STD  ,X
        STY  2,X
        PULS X
-       STD  0,X
+       STD  ,X
        STY  2,X
        PULS PC,U,A,CC
 ;
@@ -1069,12 +1075,12 @@ SWTCHB PSHS U,A,CC
        LDU  SAVE
        PULU Y,X,D
        STU  SAVE
-       STD  0,X
+       STD  ,X
        STY  2,X
        EXG  D,X
        LDA  #$FF
        EXG  D,X
-       STD  0,X
+       STD  ,X
        STY  2,X
        EXG  D,X
        PULS PC,U,A,CC
@@ -1670,7 +1676,7 @@ REPTD  SUBB #1
 ORIG   SET  *
        IF   ORIG>(ANFANG+$A1F)
        ERR  "PROGRAM OVERLAPS CHAR.TAB."
-       ENDI
+       ENDIF
 
        ORG  $FA1F
 ;
@@ -1792,7 +1798,7 @@ CHRTBL FCB    $00,$00,$00,$00,$00,$00,$00      ; SPACE
 ORIG   SET  *
        IF   ORIG>(ANFANG+$CF0)
        ERR  "charactertable too long"
-       ENDI
+       ENDIF
        ;OPT  LIS
 
        ORG  ANFANG+$D40  ;$FCF0-$FD3F free for I/O
@@ -2142,7 +2148,7 @@ REPT   SUBB #1
        PSHS D,U
        TFR  D,Y
        LDX  #0
-       LBSR OFFSET
+       BSR  OFFSET
        LEAU 64,X
        CLRA
        LBSR CLEARS    ;1 Rasterzeile loeschen
@@ -2170,7 +2176,7 @@ CURAUS LDA  #5
 ORI    SET  *
        IF   ORI>ANFANG+$FE0
        ERR  "kein Platz fuer MMU"
-       ENDI
+       ENDIF
 ;       OPT  LIS
 
        ORG  ANFANG+$FF0
