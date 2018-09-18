@@ -225,7 +225,24 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     if (c_ramExtension)
     {
-        c_ramExtension->SetSelection(m_options->isHiMem ? 1 : 0);
+        int selection = 0;
+
+        if (m_options->isRamExtension)
+        {
+            selection = 1;
+
+            if (m_options->isHiMem)
+            {
+                selection = 2;
+            }
+        }
+
+        c_ramExtension->SetSelection(selection);
+        if (selection == 0)
+        {
+            c_nColors->SetSelection(0);
+        }
+        c_nColors->Enable(selection > 0);
     }
 
     if (c_flexibleMmu)
@@ -321,10 +338,11 @@ wxPanel *FlexemuOptionsDialog::CreateMemoryOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
     wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
-    wxString choices[2];
+    wxString choices[3];
 
-    choices[0] = _("2 x 96 KByte");
-    choices[1] = _("2 x 288 KByte");
+    choices[0] = _("None");
+    choices[1] = _("2 x 96 KByte");
+    choices[2] = _("2 x 288 KByte");
     c_ramExtension = new wxRadioBox(panel, IDC_RamExtension,
                                     _("RAM extension"), wxDefaultPosition,
                                     wxDefaultSize, WXSIZEOF(choices), choices,
@@ -601,7 +619,8 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
     if (c_ramExtension)
     {
-        m_options->isHiMem = c_ramExtension->GetSelection() > 0;
+        m_options->isRamExtension = c_ramExtension->GetSelection() > 0;
+        m_options->isHiMem = c_ramExtension->GetSelection() > 1;
     };
 
     if (c_flexibleMmu)
@@ -768,6 +787,15 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
 void FlexemuOptionsDialog::OnRamExtensionChanged(
         wxCommandEvent &WXUNUSED(event))
 {
-    c_flexibleMmu->Enable(c_ramExtension->GetSelection() > 0);
+    if (c_ramExtension->GetSelection() == 0)
+    {
+        c_nColors->SetSelection(0);
+    }
+    c_nColors->Enable(c_ramExtension->GetSelection() > 0);
+    c_flexibleMmu->Enable(c_ramExtension->GetSelection() > 1);
+    if (c_ramExtension->GetSelection() < 2)
+    {
+        c_flexibleMmu->SetValue(false);
+    }
 }
 
