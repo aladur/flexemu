@@ -197,11 +197,11 @@ void XAbstractGui::update_block(int block_number)
     win = getWindow();
 
     Byte const *src =
-        memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
+        memory.get_video_ram(vico1.get_value(), block_number);
 
     img = image[pixelSizeX - 1][pixelSizeY - 1];
 
-    if (!(vico1.get_value() & 0x02))
+    if (memory.is_video_bank_valid(vico1.get_value()))
     {
         CopyToZPixmap((Byte *)img->data, src, depth);
 
@@ -232,7 +232,7 @@ void XAbstractGui::update_block(int block_number)
     }
     else
     {
-        // allways display an empty screen
+        // Invalid video bank selected: Always display an empty screen.
         CopyToZPixmap((Byte *)img->data, nullptr, depth);
 
         XPutImage(dpy, win, e2gc,

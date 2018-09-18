@@ -52,7 +52,7 @@ ApplicationRunner::ApplicationRunner(
                     struct sOptions &x_options) :
     guiOptions(x_guiOptions),
     options(x_options),
-    memory(options.isHiMem, options.isFlexibleMmu),
+    memory(options),
     cpu(memory),
     rtc(cpu),
     inout(fdc),
@@ -67,7 +67,19 @@ ApplicationRunner::ApplicationRunner(
     vico1(memory),
     vico2(memory)
 {
-    ioDevices.insert({ mmu.getName(), mmu });
+    if (!options.isRamExtension)
+    {
+        // If no RAM extension is present:
+        // Limit the number of columns to 2.
+        guiOptions.nColors = 2;
+        // Switch of High memory option.
+        options.isHiMem = false;
+    }
+
+    if (options.isRamExtension)
+    {
+        ioDevices.insert({ mmu.getName(), mmu });
+    }
     ioDevices.insert({ acia1.getName(), acia1 });
     ioDevices.insert({ pia1.getName(), pia1 });
     ioDevices.insert({ pia2.getName(), pia2 });

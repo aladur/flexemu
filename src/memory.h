@@ -44,11 +44,12 @@
 class Memory : public MemoryTarget
 {
 public:
-    Memory(bool isHiMem, bool isFlexibleMmu = false);
+    Memory(const struct sOptions &options);
     virtual ~Memory();
 
 private:
     Byte *ppage[16];
+    bool isRamExtension;
     bool isHiMem;
     bool isFlexibleMmu;
     int memory_size;
@@ -74,7 +75,7 @@ private:
     bool changed[YBLOCKS];
 
 private:
-    void init_memory(bool isHiMem);
+    void init_memory();
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_address);
     static Byte initial_content[8];
 
@@ -132,7 +133,12 @@ public:
         {
             if (address < ROM_BASE)
             {
-                *(ppage[address >> 12] + (address & 0x3fff)) = value;
+                // Otherwise directly access RAM
+                memory[address] = value;
+                if (!isRamExtension)
+                {
+                    changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
+                }
             }
         }
     }
@@ -191,15 +197,36 @@ public:
 
     // Get read-only access to video RAM.
     // This can be used by the GUI to update the video display.
-    inline Byte const *get_video_ram(bool isBank1, int block_number) const
+    inline Byte const *get_video_ram(int bank, int block_number) const
     {
-        if (isBank1)
+        if (isRamExtension)
         {
-            return vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
+            if ((bank & 0x01) == 1)
+            {
+                return vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
+            }
+            else
+            {
+                return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
+            }
         }
         else
         {
-            return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
+            int offset = (bank & 0x03) * VIDEORAM_SIZE;
+
+            return &memory[offset] + block_number * YBLOCK_SIZE;
+        }
+    }
+
+    inline bool is_video_bank_valid(int bank) const
+    {
+        if (isRamExtension)
+        {
+            return (bank & 0x2) == 0;
+        }
+        else
+        {
+            return (bank & 0x3) != 3;
         }
     }
 };

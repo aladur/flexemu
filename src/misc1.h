@@ -267,11 +267,14 @@ extern const char *gMemoryAllocationErrorString;
 
 struct sOptions
 {
+    sOptions();
+
     std::string drive[4];
     std::string hex_file;
     std::string disk_dir;
-    bool isHiMem;
-    bool isFlexibleMmu;
+    bool isRamExtension;  // Use RAM extension cards/No RAM extension
+    bool isHiMem;         // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
+    bool isFlexibleMmu;   // Use flexible MMU/Normal MMU
     bool use_undocumented;
     bool useRtc;
     bool term_mode;
@@ -299,6 +302,7 @@ struct sOptions
 #define FLEXINVERSE     "DisplayInverse"
 #define FLEXHIMEM   "HighMemory"
 #define FLEXFLEXIBLEMMU "UseFlexibleMmu"
+#define FLEXRAMEXTENSION "UseRamExtension"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
 #define FLEXRTC         "UseRTC"
 #define FLEXHTMLVIEWER  "HTMLViewer"

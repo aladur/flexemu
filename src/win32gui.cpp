@@ -1225,11 +1225,11 @@ void Win32Gui::update_block(int block_number, HDC hdc)
     img = image[pixelSizeX - 1][pixelSizeY - 1];
     bmi_index = (pixelSizeX - 1) * MAX_PIXELSIZEY + (pixelSizeY - 1);
 
-    if (!(vico1.get_value() & 0x02))
+    if (memory.is_video_bank_valid(vico1.get_value()))
     {
         // copy block from video ram into device independant bitmap
         Byte const *src =
-            memory.get_video_ram((vico1.get_value() & 0x01) != 0, block_number);
+            memory.get_video_ram(vico1.get_value(), block_number);
 
         CopyToZPixmap(image_data.get(), src, 8);
 
@@ -1266,13 +1266,13 @@ void Win32Gui::update_block(int block_number, HDC hdc)
             BitBlt(hdc, 0, startLine,
                    BLOCKWIDTH * pixelSizeX, BLOCKHEIGHT * pixelSizeY,
                    hMemoryDC, 0, 0, SRCCOPY);
-        } // else
+        }
 
         SelectBitmap(hMemoryDC, hBitmapOrig);
     }
     else
     {
-        // display an "empty" screen:
+        // Invalid video bank selected: Always display an empty screen.
         CopyToZPixmap(image_data.get(), nullptr, 8);
         SetDIBits(
             hdc, img,

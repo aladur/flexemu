@@ -31,18 +31,23 @@
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
 
-Memory::Memory(bool x_isHiMem, bool x_isFlexibleMmu /* = false */) :
-    isHiMem(x_isHiMem),
-    isFlexibleMmu(x_isFlexibleMmu),
+Memory::Memory(const struct sOptions &options) :
+    isRamExtension(options.isRamExtension),
+    isHiMem(options.isHiMem),
+    isFlexibleMmu(options.isFlexibleMmu),
     memory_size(0x10000),
+    video_ram_size(0),
     video_ram_active_bits(0)
 {
     memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
-    video_ram_size = VIDEORAM_SIZE *
+    if (isRamExtension)
+    {
+        video_ram_size = VIDEORAM_SIZE *
                      (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2));
-    video_ram = std::unique_ptr<Byte[]>(new Byte[video_ram_size]);
+        video_ram = std::unique_ptr<Byte[]>(new Byte[video_ram_size]);
+    }
 
-    init_memory(isHiMem);
+    init_memory();
 }
 
 Memory::~Memory()
@@ -51,7 +56,7 @@ Memory::~Memory()
 }
 
 // memory must be initialized AFTER all memory mapped I/O is created
-void Memory::init_memory(bool himem)
+void Memory::init_memory()
 {
     int i;
     Byte j;
@@ -101,43 +106,48 @@ void Memory::init_memory(bool himem)
     // 0x01:    blue  high, Bank 1
     // 0x02:    red   high, Bank 1
     // 0x0F, 0x07, 0x0B, 0x03 switch back to non paged memory
-    i = 0;
-
-    for (j = 0; j < 0x40; j += 0x10)
+    if (isRamExtension)
     {
-        if (!himem)
+        i = 0;
+
+        for (j = 0; j < 0x40; j += 0x10)
         {
-            i = 0;
+            if (!isHiMem)
+            {
+                i = 0;
+            }
+
+            init_vram_ptr(j | 0x0c, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0d, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0e, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0f, &memory[VIDEORAM_SIZE * (j >> 4)]);
+            init_vram_ptr(j | 0x04, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x05, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x06, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x07, &memory[VIDEORAM_SIZE * (j >> 4)]);
+            init_vram_ptr(j | 0x08, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x09, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0a, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0b, &memory[VIDEORAM_SIZE * (j >> 4)]);
+            init_vram_ptr(j | 0x00, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x01, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x02, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x03, &memory[VIDEORAM_SIZE * (j >> 4)]);
         }
 
-        init_vram_ptr(j | 0x0c, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x0d, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x0e, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x0f, &memory[VIDEORAM_SIZE * (j >> 4)]);
-        init_vram_ptr(j | 0x04, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x05, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x06, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x07, &memory[VIDEORAM_SIZE * (j >> 4)]);
-        init_vram_ptr(j | 0x08, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x09, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x0a, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x0b, &memory[VIDEORAM_SIZE * (j >> 4)]);
-        init_vram_ptr(j | 0x00, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x01, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x02, &video_ram[VIDEORAM_SIZE * i++]);
-        init_vram_ptr(j | 0x03, &memory[VIDEORAM_SIZE * (j >> 4)]);
+        if (i != (isHiMem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2))
+        {
+            fprintf(stderr,
+                    "Memory management initialization failure (i=%d)\n", i);
+        }
+
+        // initialize mmu pointers
+        for (i = 0; i < 16; i++)
+        {
+            ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
+        }
     }
 
-    if (i != (himem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2))
-    {
-        fprintf(stderr, "Memory management initialization failure (i=%d)\n", i);
-    }
-
-    // initialize mmu pointers
-    for (i = 0; i < 16; i++)
-    {
-        ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
-    }
     video_ram_active_bits = 0;
 } // init_memory
 

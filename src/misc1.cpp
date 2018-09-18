@@ -357,3 +357,10 @@ std::string getFlexemuSystemConfigFile()
 #endif
 }
 
+sOptions::sOptions() :
+    isRamExtension(false), isHiMem(false), isFlexibleMmu(false),
+    use_undocumented(false), useRtc(false), term_mode(false), reset_key(0),
+    frequency(0.0f)
+{
+}
+

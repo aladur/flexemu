@@ -497,7 +497,8 @@ bool test_gccasm_fctByte(std::string mnemonic,
                          tFctByte test_function,
                          Byte opcode)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
@@ -542,7 +543,8 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
                             tFctRefByte test_function,
                             Byte opcode)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     bool success = true;
@@ -593,7 +595,8 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
                              tFctByteByte test_function,
                              Byte opcode)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1, op2;
@@ -642,7 +645,8 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
                                 tFctRefByteByte test_function,
                                 Byte opcode)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     Word op1, op2;
@@ -698,7 +702,8 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
                              Byte opcode1,
                              Byte opcode2)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1, op2;
@@ -753,7 +758,8 @@ bool test_gccasm_fctRefWordWord(std::string mnemonic,
                                 tFctRefWordWord test_function,
                                 Byte opcode)
 {
-    Memory memory(false);
+    struct sOptions options;
+    Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
     DWord op1, op2;

@@ -159,6 +159,7 @@ void FlexOptionManager::InitOptions(
     pOptions->drive[3]         = "";
     pOptions->hex_file         = "neumon54.hex";
     pOptions->term_mode        = false;
+    pOptions->isRamExtension   = true;
     pOptions->isHiMem          = false;
     pOptions->isFlexibleMmu    = false;
     pOptions->use_undocumented = false;
@@ -207,6 +208,11 @@ void FlexOptionManager::GetEnvironmentOptions(
     if (env.GetValue((const char *)"FLEX" FLEXINVERSE, &value))
     {
         pGuiOptions->isInverse = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXRAMEXTENSION, &value))
+    {
+        pOptions->isRamExtension = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXHIMEM, &value))
@@ -462,6 +468,7 @@ void FlexOptionManager::WriteOptions(
     }
 
     reg.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
+    reg.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
     reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     reg.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
     reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
@@ -510,6 +517,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
     rcFile.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
     rcFile.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
+    rcFile.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
     rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     rcFile.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
@@ -575,6 +583,11 @@ void FlexOptionManager::GetOptions(
     if (!reg.GetValue(FLEXINVERSE, &val))
     {
         pGuiOptions->isInverse = (val != 0);
+    }
+
+    if (!reg.GetValue(FLEXRAMEXTENSION, &val))
+    {
+        pOptions->isRamExtension = (val != 0);
     }
 
     if (!reg.GetValue(FLEXHIMEM, &val))
@@ -659,6 +672,11 @@ void FlexOptionManager::GetOptions(
     if (!rcFile.GetValue(FLEXINVERSE, &val))
     {
         pGuiOptions->isInverse = (val != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXRAMEXTENSION, &val))
+    {
+        pOptions->isRamExtension = (val != 0);
     }
 
     if (!rcFile.GetValue(FLEXHIMEM, &val))
