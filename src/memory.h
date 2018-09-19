@@ -52,6 +52,7 @@ private:
     bool isRamExtension;
     bool isHiMem;
     bool isFlexibleMmu;
+    bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
     int memory_size;
     int video_ram_size;
     std::unique_ptr<Byte[]> memory;
@@ -133,8 +134,9 @@ public:
         {
             if (address < ROM_BASE)
             {
-                // Otherwise directly access RAM
-                memory[address] = value;
+                // Use paged memory access to be able to mirror
+                // RAM banks (e.g. for Eurocom V5).
+                *(ppage[address >> 12] + (address & 0x3fff)) = value;
                 if (!isRamExtension)
                 {
                     changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
@@ -156,17 +158,7 @@ public:
             }
         }
 
-        if (video_ram_active_bits != 0)
-        {
-            // If at least one video memory page is active
-            // access memory through video page memory mapping
-            return *(ppage[address >> 12] + (address & 0x3fff));
-        }
-        else
-        {
-            // Otherwise directly access RAM
-            return memory[address];
-        }
+        return *(ppage[address >> 12] + (address & 0x3fff));
     } // read_byte
 
     inline void write_word(Word address, Word value)

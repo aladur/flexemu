@@ -48,7 +48,7 @@ class Pia1;
 class Inout
 {
 private:
-    E2floppy &fdc;
+    E2floppy *fdc; // fdc not present for Eurocom II/V5
     Mc146818 *rtc; // RTC is an optional device
     std::unique_ptr<AbstractGui> gui;
     int local_serpar_address;
@@ -78,6 +78,7 @@ public:
 
     // Floppy interface
 public:
+    void set_fdc(E2floppy *x_fdc);
     void    get_drive_status(DiskStatus status[4]);
     std::string get_drive_info(Word drive_nr);
 
@@ -88,8 +89,7 @@ public:
     void serpar_address(int value);
 
 public:
-    Inout() = delete;
-    Inout(E2floppy &x_fdc);
+    Inout();
     ~Inout();
 };
 

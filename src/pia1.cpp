@@ -29,8 +29,10 @@
 #include "cacttrns.h"
 
 
-Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO) :
-    cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO)
+Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
+           bool x_a_set_msb) :
+    cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO),
+    a_set_msb(x_a_set_msb)
 {
 }
 
@@ -62,7 +64,12 @@ Byte Pia1::readInputA()
         }
     }
 
-    return ora;
+    // The Eurocom V5 needs the msb to be set to 1.
+    // This is needed for monitor V2.4 to use RAM Bank 1 ($4000 - $7FFF)
+    // for video display.
+    // If it is 0 RAM Bank 2 ($8000 - $BFFF) will be used for video display
+    // which also contains the stack and the direct page registers.
+    return ora | (a_set_msb ? 0x80 : 0);
 }
 
 void Pia1::set_irq_A()

@@ -40,8 +40,8 @@
 #endif
 
 
-Inout::Inout(E2floppy &x_fdc)
-     : fdc(x_fdc)
+Inout::Inout()
+     : fdc(nullptr)
      , rtc(nullptr)
      , gui(nullptr)
      , local_serpar_address(-1)
@@ -52,14 +52,34 @@ Inout::~Inout()
 {
 }
 
+void Inout::set_fdc(E2floppy *x_fdc)
+{
+    fdc = x_fdc;
+}
+
 void Inout::get_drive_status(DiskStatus status[4])
 {
-    fdc.get_drive_status(status);
+    if (fdc)
+    {
+        fdc->get_drive_status(status);
+    }
+    else
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            status[i] = DiskStatus::EMPTY;
+        }
+    }
 }
 
 std::string Inout::get_drive_info(Word drive_nr)
 {
-    return fdc.drive_info(drive_nr);
+    if (fdc)
+    {
+        return fdc->drive_info(drive_nr);
+    }
+
+    return std::string();
 }
 
 void Inout::create_gui(JoystickIO &joystickIO,

@@ -55,18 +55,24 @@ ApplicationRunner::ApplicationRunner(
     memory(options),
     cpu(memory),
     rtc(cpu),
-    inout(fdc),
+    inout(),
     scheduler(cpu, inout),
     terminalIO(cpu, scheduler),
     mmu(memory),
     acia1(terminalIO, cpu),
-    pia1(cpu, scheduler, keyboardIO),
+    pia1(cpu, scheduler, keyboardIO, x_options.isEurocom2V5),
     pia2(cpu, keyboardIO, joystickIO),
     drisel(fdc),
     command(inout, cpu, scheduler, fdc),
     vico1(memory),
     vico2(memory)
 {
+    if (options.isEurocom2V5)
+    {
+        // Eurocom II/V5 is always emulated without RAM extension.
+        options.isRamExtension = false;
+    }
+
     if (!options.isRamExtension)
     {
         // If no RAM extension is present:
@@ -83,8 +89,12 @@ ApplicationRunner::ApplicationRunner(
     ioDevices.insert({ acia1.getName(), acia1 });
     ioDevices.insert({ pia1.getName(), pia1 });
     ioDevices.insert({ pia2.getName(), pia2 });
-    ioDevices.insert({ fdc.getName(), fdc });
-    ioDevices.insert({ drisel.getName(), drisel });
+    if (!options.isEurocom2V5)
+    {
+        ioDevices.insert({ fdc.getName(), fdc });
+        ioDevices.insert({ drisel.getName(), drisel });
+        inout.set_fdc(&fdc);
+    }
     ioDevices.insert({ command.getName(), command });
     ioDevices.insert({ vico1.getName(), vico1 });
     ioDevices.insert({ vico2.getName(), vico2 });

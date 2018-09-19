@@ -162,6 +162,7 @@ void FlexOptionManager::InitOptions(
     pOptions->isRamExtension   = true;
     pOptions->isHiMem          = false;
     pOptions->isFlexibleMmu    = false;
+    pOptions->isEurocom2V5     = false;
     pOptions->use_undocumented = false;
     pOptions->useRtc           = true;
 #ifndef _WIN32
@@ -223,6 +224,11 @@ void FlexOptionManager::GetEnvironmentOptions(
     if (env.GetValue((const char *)"FLEX" FLEXFLEXIBLEMMU, &value))
     {
         pOptions->isFlexibleMmu = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXEUROCOM2V5, &value))
+    {
+        pOptions->isEurocom2V5 = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXUNDOCUMENTED, &value))
@@ -471,6 +477,7 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
     reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     reg.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
+    reg.SetValue(FLEXEUROCOM2V5, pOptions->isEurocom2V5 ? 1 : 0);
     reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
     reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
@@ -520,6 +527,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
     rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     rcFile.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
+    rcFile.SetValue(FLEXEUROCOM2V5, pOptions->isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
 #endif
@@ -598,6 +606,11 @@ void FlexOptionManager::GetOptions(
     if (!reg.GetValue(FLEXFLEXIBLEMMU, &val))
     {
         pOptions->isFlexibleMmu = (val != 0);
+    }
+
+    if (!reg.GetValue(FLEXEUROCOM2V5, &val))
+    {
+        pOptions->isEurocom2V5 = (val != 0);
     }
 
     if (!reg.GetValue(FLEXUNDOCUMENTED, &val))
@@ -687,6 +700,11 @@ void FlexOptionManager::GetOptions(
     if (!rcFile.GetValue(FLEXFLEXIBLEMMU, &val))
     {
         pOptions->isFlexibleMmu = (val != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXEUROCOM2V5, &val))
+    {
+        pOptions->isEurocom2V5 = (val != 0);
     }
 
     if (!rcFile.GetValue(FLEXUNDOCUMENTED, &val))

@@ -35,6 +35,7 @@ Memory::Memory(const struct sOptions &options) :
     isRamExtension(options.isRamExtension),
     isHiMem(options.isHiMem),
     isFlexibleMmu(options.isFlexibleMmu),
+    isEurocom2V5(options.isEurocom2V5),
     memory_size(0x10000),
     video_ram_size(0),
     video_ram_active_bits(0)
@@ -140,11 +141,19 @@ void Memory::init_memory()
             fprintf(stderr,
                     "Memory management initialization failure (i=%d)\n", i);
         }
+    }
 
-        // initialize mmu pointers
-        for (i = 0; i < 16; i++)
+    // initialize mmu pointers
+    for (i = 0; i < 16; i++)
+    {
+        ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
+    }
+
+    if (isEurocom2V5)
+    {
+        for (i = 12; i < 15; i++)
         {
-            ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
+            ppage[i] = &memory[VIDEORAM_SIZE * ((i - 4) >> 2)];
         }
     }
 
