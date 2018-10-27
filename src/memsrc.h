@@ -1,5 +1,5 @@
 /*
-    memtgt.h
+    memsrc.h
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -22,18 +22,19 @@
 
 
 
-#ifndef MEMTGT_INCLUDED
-#define MEMTGT_INCLUDED
+#ifndef MEMSRC_INCLUDED
+#define MEMSRC_INCLUDED
 
 #include "typedefs.h"
 
 
 template<class T>
-class MemoryTarget
+class MemorySource
 {
 public:
-    virtual void set_tgt_addr(T address) = 0;
-    virtual MemoryTarget& operator<<(Byte b) = 0;
+    virtual T reset_src_addr() = 0;
+    virtual bool src_at_end() const = 0;
+    virtual MemorySource& operator>>(Byte &b) = 0;
 };
 #endif
 

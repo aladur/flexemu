@@ -207,9 +207,9 @@ fi
   echo
   echo "Configure finished.  Type 'make' to compile"
 if test "$WXCONFIG" != 1; then
-  echo "flexemu"
+  echo "flexemu and dcrtool"
 else
-  echo "flexemu, fsetup and flexplorer"
+  echo "flexemu, fsetup, flexplorer and dcrtool"
 fi
   echo
 

@@ -90,8 +90,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = flexemu$(EXEEXT) @FLEXPLORER@ @FSETUP@
-EXTRA_PROGRAMS = flexplorer$(EXEEXT) fsetup$(EXEEXT)
+bin_PROGRAMS = flexemu$(EXEEXT) @FLEXPLORER@ @FSETUP@ dcrtool$(EXEEXT)
+EXTRA_PROGRAMS = flexplorer$(EXEEXT) fsetup$(EXEEXT) dcrtool$(EXEEXT)
 noinst_PROGRAMS = test$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -112,6 +112,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)" \
 	"$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+am_dcrtool_OBJECTS = dcrtool-dcrtool.$(OBJEXT) \
+	dcrtool-mdcrtape.$(OBJEXT) dcrtool-mdcrfs.$(OBJEXT) \
+	dcrtool-fileread.$(OBJEXT) dcrtool-bfileptr.$(OBJEXT) \
+	dcrtool-bmembuf.$(OBJEXT)
+dcrtool_OBJECTS = $(am_dcrtool_OBJECTS)
+dcrtool_DEPENDENCIES =
+dcrtool_LINK = $(CXXLD) $(dcrtool_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
 	flexemu-bjoystck.$(OBJEXT) flexemu-colors.$(OBJEXT) \
@@ -143,7 +151,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-keyboard.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
 	flexemu-drisel.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-binifile.$(OBJEXT) flexemu-fcnffile.$(OBJEXT) \
-	flexemu-iodevdbg.$(OBJEXT)
+	flexemu-iodevdbg.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-mdcrtape.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -234,10 +243,12 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(flexemu_SOURCES) $(EXTRA_flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(fsetup_SOURCES) $(test_SOURCES)
-DIST_SOURCES = $(flexemu_SOURCES) $(EXTRA_flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(fsetup_SOURCES) $(test_SOURCES)
+SOURCES = $(dcrtool_SOURCES) $(flexemu_SOURCES) \
+	$(EXTRA_flexemu_SOURCES) $(flexplorer_SOURCES) \
+	$(fsetup_SOURCES) $(test_SOURCES)
+DIST_SOURCES = $(dcrtool_SOURCES) $(flexemu_SOURCES) \
+	$(EXTRA_flexemu_SOURCES) $(flexplorer_SOURCES) \
+	$(fsetup_SOURCES) $(test_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -497,12 +508,18 @@ fsetup_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
 
+dcrtool_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+                        -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+			@OS_TYPE@ @WX_CFLAGS@
+
 test_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD = @WX_LIBS@ @PTHREAD_LD@
+dcrtool_LDADD = @PTHREAD_LD@
 flexemu_LDADD = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
@@ -524,7 +541,7 @@ bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
-binifile.cpp fcnffile.cpp iodevdbg.cpp \
+binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -537,7 +554,8 @@ clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
-bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h
+bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
+memsrc.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 flexplorer_SOURCES = \
@@ -556,6 +574,11 @@ bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
 sprinter.h flexemu.h
+
+dcrtool_SOURCES = \
+dcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
+mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+typedefs.h misc1.h config.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -670,6 +693,10 @@ clean-binPROGRAMS:
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
+dcrtool$(EXEEXT): $(dcrtool_OBJECTS) $(dcrtool_DEPENDENCIES) $(EXTRA_dcrtool_DEPENDENCIES) 
+	@rm -f dcrtool$(EXEEXT)
+	$(AM_V_CXXLD)$(dcrtool_LINK) $(dcrtool_OBJECTS) $(dcrtool_LDADD) $(LIBS)
+
 flexemu$(EXEEXT): $(flexemu_OBJECTS) $(flexemu_DEPENDENCIES) $(EXTRA_flexemu_DEPENDENCIES) 
 	@rm -f flexemu$(EXEEXT)
 	$(AM_V_CXXLD)$(flexemu_LINK) $(flexemu_OBJECTS) $(flexemu_LDADD) $(LIBS)
@@ -692,6 +719,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-bfileptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-bmembuf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-dcrtool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-fileread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-mdcrfs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-mdcrtape.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-absgui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-acia1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-apprun.Po@am__quote@
@@ -739,12 +772,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6809st.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6821.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6850.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mdcrtape.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-memory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-misc1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mmu.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ndircont.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2v5.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-rfilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@
@@ -828,6 +863,90 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+dcrtool-dcrtool.o: dcrtool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-dcrtool.o -MD -MP -MF $(DEPDIR)/dcrtool-dcrtool.Tpo -c -o dcrtool-dcrtool.o `test -f 'dcrtool.cpp' || echo '$(srcdir)/'`dcrtool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-dcrtool.Tpo $(DEPDIR)/dcrtool-dcrtool.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dcrtool.cpp' object='dcrtool-dcrtool.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-dcrtool.o `test -f 'dcrtool.cpp' || echo '$(srcdir)/'`dcrtool.cpp
+
+dcrtool-dcrtool.obj: dcrtool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-dcrtool.obj -MD -MP -MF $(DEPDIR)/dcrtool-dcrtool.Tpo -c -o dcrtool-dcrtool.obj `if test -f 'dcrtool.cpp'; then $(CYGPATH_W) 'dcrtool.cpp'; else $(CYGPATH_W) '$(srcdir)/dcrtool.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-dcrtool.Tpo $(DEPDIR)/dcrtool-dcrtool.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dcrtool.cpp' object='dcrtool-dcrtool.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-dcrtool.obj `if test -f 'dcrtool.cpp'; then $(CYGPATH_W) 'dcrtool.cpp'; else $(CYGPATH_W) '$(srcdir)/dcrtool.cpp'; fi`
+
+dcrtool-mdcrtape.o: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-mdcrtape.o -MD -MP -MF $(DEPDIR)/dcrtool-mdcrtape.Tpo -c -o dcrtool-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-mdcrtape.Tpo $(DEPDIR)/dcrtool-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='dcrtool-mdcrtape.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+
+dcrtool-mdcrtape.obj: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-mdcrtape.obj -MD -MP -MF $(DEPDIR)/dcrtool-mdcrtape.Tpo -c -o dcrtool-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-mdcrtape.Tpo $(DEPDIR)/dcrtool-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='dcrtool-mdcrtape.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
+
+dcrtool-mdcrfs.o: mdcrfs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-mdcrfs.o -MD -MP -MF $(DEPDIR)/dcrtool-mdcrfs.Tpo -c -o dcrtool-mdcrfs.o `test -f 'mdcrfs.cpp' || echo '$(srcdir)/'`mdcrfs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-mdcrfs.Tpo $(DEPDIR)/dcrtool-mdcrfs.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrfs.cpp' object='dcrtool-mdcrfs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-mdcrfs.o `test -f 'mdcrfs.cpp' || echo '$(srcdir)/'`mdcrfs.cpp
+
+dcrtool-mdcrfs.obj: mdcrfs.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-mdcrfs.obj -MD -MP -MF $(DEPDIR)/dcrtool-mdcrfs.Tpo -c -o dcrtool-mdcrfs.obj `if test -f 'mdcrfs.cpp'; then $(CYGPATH_W) 'mdcrfs.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrfs.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-mdcrfs.Tpo $(DEPDIR)/dcrtool-mdcrfs.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrfs.cpp' object='dcrtool-mdcrfs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-mdcrfs.obj `if test -f 'mdcrfs.cpp'; then $(CYGPATH_W) 'mdcrfs.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrfs.cpp'; fi`
+
+dcrtool-fileread.o: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-fileread.o -MD -MP -MF $(DEPDIR)/dcrtool-fileread.Tpo -c -o dcrtool-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-fileread.Tpo $(DEPDIR)/dcrtool-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='dcrtool-fileread.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+
+dcrtool-fileread.obj: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-fileread.obj -MD -MP -MF $(DEPDIR)/dcrtool-fileread.Tpo -c -o dcrtool-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-fileread.Tpo $(DEPDIR)/dcrtool-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='dcrtool-fileread.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
+
+dcrtool-bfileptr.o: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-bfileptr.o -MD -MP -MF $(DEPDIR)/dcrtool-bfileptr.Tpo -c -o dcrtool-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-bfileptr.Tpo $(DEPDIR)/dcrtool-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='dcrtool-bfileptr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+
+dcrtool-bfileptr.obj: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-bfileptr.obj -MD -MP -MF $(DEPDIR)/dcrtool-bfileptr.Tpo -c -o dcrtool-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-bfileptr.Tpo $(DEPDIR)/dcrtool-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='dcrtool-bfileptr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+
+dcrtool-bmembuf.o: bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-bmembuf.o -MD -MP -MF $(DEPDIR)/dcrtool-bmembuf.Tpo -c -o dcrtool-bmembuf.o `test -f 'bmembuf.cpp' || echo '$(srcdir)/'`bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-bmembuf.Tpo $(DEPDIR)/dcrtool-bmembuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='dcrtool-bmembuf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-bmembuf.o `test -f 'bmembuf.cpp' || echo '$(srcdir)/'`bmembuf.cpp
+
+dcrtool-bmembuf.obj: bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-bmembuf.obj -MD -MP -MF $(DEPDIR)/dcrtool-bmembuf.Tpo -c -o dcrtool-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-bmembuf.Tpo $(DEPDIR)/dcrtool-bmembuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='dcrtool-bmembuf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
 
 flexemu-absgui.o: absgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-absgui.o -MD -MP -MF $(DEPDIR)/flexemu-absgui.Tpo -c -o flexemu-absgui.o `test -f 'absgui.cpp' || echo '$(srcdir)/'`absgui.cpp
@@ -1710,6 +1829,34 @@ flexemu-iodevdbg.obj: iodevdbg.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iodevdbg.cpp' object='flexemu-iodevdbg.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-iodevdbg.obj `if test -f 'iodevdbg.cpp'; then $(CYGPATH_W) 'iodevdbg.cpp'; else $(CYGPATH_W) '$(srcdir)/iodevdbg.cpp'; fi`
+
+flexemu-pia2v5.o: pia2v5.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pia2v5.o -MD -MP -MF $(DEPDIR)/flexemu-pia2v5.Tpo -c -o flexemu-pia2v5.o `test -f 'pia2v5.cpp' || echo '$(srcdir)/'`pia2v5.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pia2v5.Tpo $(DEPDIR)/flexemu-pia2v5.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pia2v5.cpp' object='flexemu-pia2v5.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pia2v5.o `test -f 'pia2v5.cpp' || echo '$(srcdir)/'`pia2v5.cpp
+
+flexemu-pia2v5.obj: pia2v5.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pia2v5.obj -MD -MP -MF $(DEPDIR)/flexemu-pia2v5.Tpo -c -o flexemu-pia2v5.obj `if test -f 'pia2v5.cpp'; then $(CYGPATH_W) 'pia2v5.cpp'; else $(CYGPATH_W) '$(srcdir)/pia2v5.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pia2v5.Tpo $(DEPDIR)/flexemu-pia2v5.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pia2v5.cpp' object='flexemu-pia2v5.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pia2v5.obj `if test -f 'pia2v5.cpp'; then $(CYGPATH_W) 'pia2v5.cpp'; else $(CYGPATH_W) '$(srcdir)/pia2v5.cpp'; fi`
+
+flexemu-mdcrtape.o: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mdcrtape.o -MD -MP -MF $(DEPDIR)/flexemu-mdcrtape.Tpo -c -o flexemu-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mdcrtape.Tpo $(DEPDIR)/flexemu-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='flexemu-mdcrtape.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+
+flexemu-mdcrtape.obj: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mdcrtape.obj -MD -MP -MF $(DEPDIR)/flexemu-mdcrtape.Tpo -c -o flexemu-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mdcrtape.Tpo $(DEPDIR)/flexemu-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='flexemu-mdcrtape.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
 
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp

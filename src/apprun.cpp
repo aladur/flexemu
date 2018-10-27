@@ -62,6 +62,7 @@ ApplicationRunner::ApplicationRunner(
     acia1(terminalIO, cpu),
     pia1(cpu, scheduler, keyboardIO, x_options.isEurocom2V5),
     pia2(cpu, keyboardIO, joystickIO),
+    pia2v5(cpu),
     drisel(fdc),
     command(inout, cpu, scheduler, fdc),
     vico1(memory),
@@ -69,8 +70,9 @@ ApplicationRunner::ApplicationRunner(
 {
     if (options.isEurocom2V5)
     {
-        // Eurocom II/V5 is always emulated without RAM extension.
+        // Eurocom II/V5 is always emulated without RAM extension and RTC.
         options.isRamExtension = false;
+        options.useRtc = false;
     }
 
     if (!options.isRamExtension)
@@ -88,14 +90,18 @@ ApplicationRunner::ApplicationRunner(
     }
     ioDevices.insert({ acia1.getName(), acia1 });
     ioDevices.insert({ pia1.getName(), pia1 });
-    ioDevices.insert({ pia2.getName(), pia2 });
-    if (!options.isEurocom2V5)
+    if (options.isEurocom2V5)
     {
+        ioDevices.insert({ pia2v5.getName(), pia2v5 });
+    }
+    else
+    {
+        ioDevices.insert({ pia2.getName(), pia2 });
         ioDevices.insert({ fdc.getName(), fdc });
         ioDevices.insert({ drisel.getName(), drisel });
         inout.set_fdc(&fdc);
+        ioDevices.insert({ command.getName(), command });
     }
-    ioDevices.insert({ command.getName(), command });
     ioDevices.insert({ vico1.getName(), vico1 });
     ioDevices.insert({ vico2.getName(), vico2 });
     if (options.useRtc)
@@ -112,6 +118,13 @@ ApplicationRunner::ApplicationRunner(
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     auto address = configFile.GetSerparAddress(options.hex_file.c_str());
     inout.serpar_address(address);
+
+    if (options.isEurocom2V5)
+    {
+        auto debugMdcr = configFile.GetDebugOption("debugMdcr");
+        auto logFilePath = configFile.GetDebugOption("debugMdcrFilePath");
+        pia2v5.set_debug(debugMdcr, logFilePath);
+    }
 }
 
 ApplicationRunner::~ApplicationRunner()
@@ -192,6 +205,8 @@ int ApplicationRunner::run()
 
     fdc.disk_directory(options.disk_dir.c_str());
     fdc.mount_all_drives(options.drive);
+    pia2v5.disk_directory(options.disk_dir.c_str());
+    pia2v5.mount_all_drives(options.mdcrDrives);
 
     terminalIO.init(options.reset_key);
 

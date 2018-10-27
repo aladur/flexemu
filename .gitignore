@@ -29,6 +29,7 @@
 src/flexemu
 src/fsetup
 src/flexplorer
+src/dcrtool
 src/test
 src/tools/bin2s19
 src/tools/*flex

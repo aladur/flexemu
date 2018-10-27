@@ -41,7 +41,7 @@
 #define MAX_VRAM        (4 * 16)
 
 
-class Memory : public MemoryTarget
+class Memory : public MemoryTarget<size_t>
 {
 public:
     Memory(const struct sOptions &options);
@@ -100,7 +100,7 @@ public:
         return *this;
     }
 
-    void set_address(Word newAddress)
+    void set_tgt_addr(size_t newAddress)
     {
         target_address = newAddress;
     }

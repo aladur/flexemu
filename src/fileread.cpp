@@ -24,7 +24,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <ctype.h>
-#include "memtgt.h"
+#include "fileread.h"
 #include "bfileptr.h"
 
 
@@ -52,7 +52,7 @@ static Word fread_word(FILE *fp)
     return ret;
 }
 
-static void load_intelhex(FILE *fp, MemoryTarget &memtgt)
+static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     bool done = false;
     Byte count, type, value;
@@ -64,7 +64,7 @@ static void load_intelhex(FILE *fp, MemoryTarget &memtgt)
         count = fread_byte(fp);
         address = fread_word(fp);
         type = fread_byte(fp);
-        memtgt.set_address(address);
+        memtgt.set_tgt_addr(address);
 
         if (type == 0x00)
         {
@@ -89,7 +89,7 @@ static void load_intelhex(FILE *fp, MemoryTarget &memtgt)
     }
 }
 
-static void load_motorola_srec(FILE *fp, MemoryTarget &memtgt)
+static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     Byte done = 0;
     Byte count, type, value;
@@ -116,7 +116,7 @@ static void load_motorola_srec(FILE *fp, MemoryTarget &memtgt)
             case '1':
                 count -= 3;
                 address = fread_word(fp);
-                memtgt.set_address(address);
+                memtgt.set_tgt_addr(address);
 
                 while (count--)
                 {
@@ -145,7 +145,7 @@ static void load_motorola_srec(FILE *fp, MemoryTarget &memtgt)
     }
 }
 
-void load_flex_binary(FILE *fp, MemoryTarget &memtgt)
+void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     int value;
     Word address = 0;
@@ -161,7 +161,7 @@ void load_flex_binary(FILE *fp, MemoryTarget &memtgt)
                 address = (fgetc(fp) & 0xff) << 8;
                 address |= fgetc(fp) & 0xff;
                 count = fgetc(fp) & 0xff;
-                memtgt.set_address(address);
+                memtgt.set_tgt_addr(address);
             } else if (value == 0x16)
             {
                 // Read start address and ignore it.
@@ -180,7 +180,7 @@ void load_flex_binary(FILE *fp, MemoryTarget &memtgt)
     }
 }
 
-int load_hexfile(const char *filename, MemoryTarget &memtgt)
+int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
 {
     Word ch;
     BFilePtr fp(filename, "rb");
@@ -208,6 +208,59 @@ int load_hexfile(const char *filename, MemoryTarget &memtgt)
     else
     {
         return -2; // Unknown file format
+    }
+
+    return 0;
+}
+
+int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
+{
+    BFilePtr fp(filename, "wb");
+
+    if (fp == nullptr)
+    {
+        return -1; // Could not open file for writing
+    }
+
+    const size_t buffer_size = 255;
+    Byte header[4] = { 0x02, 0x00, 0x00, 0x00 };
+    Byte buffer[buffer_size];
+    Word address = memsrc.reset_src_addr();
+    size_t index = 0;
+    bool last_junk_written = false;
+    bool at_end;
+
+    while (!(at_end = memsrc.src_at_end()) || !last_junk_written)
+    {
+        if (!at_end)
+        {
+            memsrc >> buffer[index++];
+        }
+
+        if (index == buffer_size || (at_end && !last_junk_written))
+        {
+            header[1] = (address >> 8) & 0xff;
+            header[2] = address & 0xff;
+            header[3] = index;
+            if (fwrite(&header, sizeof(Byte), sizeof(header), fp) !=
+                sizeof(header))
+            {
+                return -2; // write error
+            }
+
+            if (fwrite(&buffer, sizeof(Byte), index, fp) != index)
+            {
+                return -2; // write error
+            }
+
+            address += index;
+            index = 0;
+
+            if (at_end)
+            {
+                last_junk_written = true;
+            }
+        }
     }
 
     return 0;

@@ -382,7 +382,7 @@ CpuState Mc6809::runloop()
                         InstFlg flags = InstFlg::NONE;
 
                         Disassemble(PC, &flags, &pCode, &pMnemonic);
-                        fprintf(log_fp, "%04X %s\n", PC, pMnemonic);
+                        fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
                     }
                 }
             }

@@ -16,8 +16,8 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 
 SUBDIRS = bitmaps tools
 
-bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@
-EXTRA_PROGRAMS = flexplorer fsetup
+bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ dcrtool
+EXTRA_PROGRAMS = flexplorer fsetup dcrtool
 noinst_PROGRAMS = test
 
 flexemu_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
@@ -32,12 +32,17 @@ fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
                         -DF_DATADIR=\"$(pkgdatadir)\" \
 			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 			@OS_TYPE@ @WX_CFLAGS@
+dcrtool_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+                        -DF_DATADIR=\"$(pkgdatadir)\" \
+			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+			@OS_TYPE@ @WX_CFLAGS@
 test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
+dcrtool_LDADD    = @PTHREAD_LD@
 flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
@@ -60,7 +65,7 @@ bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
-binifile.cpp fcnffile.cpp iodevdbg.cpp \
+binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -73,7 +78,8 @@ clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
 memory.h resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
-bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h
+bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
+memsrc.h
 
 EXTRA_flexemu_SOURCES = wwinres.rc
 
@@ -93,6 +99,11 @@ bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
 sprinter.h flexemu.h
+
+dcrtool_SOURCES = \
+dcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
+mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+typedefs.h misc1.h config.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \

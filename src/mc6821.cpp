@@ -55,7 +55,7 @@ Byte Mc6821::readIo(Word offset)
         case 0:
             if (cra & 0x04)         // check data direction bit
             {
-                ora = readInputA(); // get data from HW-input
+                Byte result = readInputA(); // get data from HW-input
                 cra &= 0xbf;    // clear IRQA2 flag
                 cra &= 0x7f;    // clear IRQA1 flag
 
@@ -64,7 +64,7 @@ Byte Mc6821::readIo(Word offset)
                     cls &= ~ControlLine::CA2;
                 }
 
-                return ora; // read output register A
+                return result; // read output register A
             }
             else
             {
@@ -78,10 +78,10 @@ Byte Mc6821::readIo(Word offset)
         case 2:
             if (crb & 0x04)         // check data direction bit
             {
-                orb = readInputB(); // get data from HW-input
+                Byte result = readInputB(); // get data from HW-input
                 crb &= 0xbf;    // clear IRQB2 flag
                 crb &= 0x7f;    // clear IRQB1 flag
-                return orb; // read output register B
+                return result; // read output register B
             }
             else
             {
@@ -128,7 +128,7 @@ void Mc6821::writeIo(Word offset, Byte val)
         case 0:
             if (BTST2(cra))     // check data direction bit
             {
-                ora = val;
+                ora = val & ddra;
                 writeOutputA(ora); // write output to port-Pins
             }
             else
@@ -158,7 +158,7 @@ void Mc6821::writeIo(Word offset, Byte val)
         case 2:
             if (BTST2(crb))     // check data direction bit
             {
-                orb = val;
+                orb = val & ddrb;
                 writeOutputB(orb); // write output to port-Pins
 
                 if ((crb & 0x38) == 0x20)
@@ -241,6 +241,15 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
                     // send an interrupt to CPU
                 }
             }
+            else if (!BTST5(cra))
+            {
+                BSET6(cra); // set IRQA2 flag
+
+                if (BTST3(cra))
+                {
+                    set_irq_A();
+                }
+            }
             break;
 
         case ControlLine::CB1:
@@ -265,6 +274,15 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
                 if (BTST3(crb))
                 {
                     // send an interrupt to CPU
+                }
+            }
+            else if (!BTST5(crb))
+            {
+                BSET6(crb); // set IRQB2 flag
+
+                if (BTST3(crb))
+                {
+                    set_irq_B();
                 }
             }
             break;

@@ -126,6 +126,9 @@
     <ClCompile Include="mc146818.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="mdcrtape.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="memory.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -142,6 +145,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="pia2.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="pia2v5.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="rfilecnt.cpp">
@@ -414,7 +420,13 @@
     <ClInclude Include="mc146818.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="mdcrtape.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="memory.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="memsrc.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="memtgt.h">
@@ -433,6 +445,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="pia2.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="pia2v5.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">

@@ -192,7 +192,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
 {
     static const auto validKeys = std::set<std::string>{
-        "presetRAM"
+        "presetRAM", "debugMdcr", "debugMdcrFilePath"
     };
 
     BIniFile iniFile(iniFileName.c_str());

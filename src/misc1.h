@@ -44,6 +44,7 @@
 #endif
 #include "typedefs.h"
 #include <string>
+#include <array>
 
 /* Uncomment the following if You want native file system support */
 
@@ -270,6 +271,7 @@ struct sOptions
     sOptions();
 
     std::string drive[4];
+    std::array<std::string, 2> mdcrDrives;
     std::string hex_file;
     std::string disk_dir;
     bool isRamExtension;  // Use RAM extension cards/No RAM extension
@@ -298,6 +300,8 @@ struct sOptions
 #define FLEXDISK1       "Disk1Path"
 #define FLEXDISK2       "Disk2Path"
 #define FLEXDISK3       "Disk3Path"
+#define FLEXMDCRDRIVE0  "MdcrDrive0Path"
+#define FLEXMDCRDRIVE1  "MdcrDrive1Path"
 #define FLEXCOLOR       "DisplayColor"
 #define FLEXNCOLORS     "NoOfColors"
 #define FLEXINVERSE     "DisplayInverse"

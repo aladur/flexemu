@@ -272,7 +272,8 @@ protected:
     atomic_event events; // event status flags (atomic access)
     tInterruptStatus    interrupt_status;
 #ifdef FASTFLEX
-    Word            ipcreg, iureg, isreg, ixreg, iyreg;
+    std::atomic<Word> ipcreg;
+    Word            iureg, isreg, ixreg, iyreg;
     Byte            iareg, ibreg, iccreg, idpreg;
     Word            eaddr;
     Byte            ireg;
@@ -282,7 +283,7 @@ protected:
     Byte            k;
     Byte            *pMem;      // needed for memory access
 #else
-    Word            pc;
+    std::atomic<Word> pc;
     Word            u, s;       // Stack pointers
     Word            x, y;       // Index registers
     union uacc acc;
@@ -992,6 +993,10 @@ public:
 public:
     void        set_disassembler(Da6809 *x_da);
     bool        set_logfile(const struct s_cpu_logfile &x_lfs);
+    Word        get_pc()
+    {
+        return PC;
+    }
 protected:
     int Disassemble(Word address, InstFlg *pFlags,
                     char **pCode, char **pMnemonic);

@@ -157,6 +157,8 @@ void FlexOptionManager::InitOptions(
     pOptions->drive[1]         = "";
     pOptions->drive[2]         = "";
     pOptions->drive[3]         = "";
+    pOptions->mdcrDrives[0]    = "system.dcr";
+    pOptions->mdcrDrives[1]    = "";
     pOptions->hex_file         = "neumon54.hex";
     pOptions->term_mode        = false;
     pOptions->isRamExtension   = true;
@@ -286,9 +288,14 @@ void FlexOptionManager::GetEnvironmentOptions(
         pOptions->drive[2] = str;
     }
 
-    if (env.GetValue((const char *)"FLEX" FLEXDISK3, str))
+    if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE0, str))
     {
-        pOptions->drive[3] = str;
+        pOptions->mdcrDrives[0] = str;
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE1, str))
+    {
+        pOptions->mdcrDrives[1] = str;
     }
 }
 #else
@@ -491,6 +498,8 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
     reg.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
     reg.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
+    reg.SetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0].c_str());
+    reg.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
     reg.SetValue(FLEXVERSION, VERSION);
 #endif
 #ifdef UNIX
@@ -524,6 +533,8 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
     rcFile.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
     rcFile.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
     rcFile.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
     rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
     rcFile.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
@@ -546,6 +557,8 @@ void FlexOptionManager::GetOptions(
     reg.GetValue(FLEXDISK1, pOptions->drive[1]);
     reg.GetValue(FLEXDISK2, pOptions->drive[2]);
     reg.GetValue(FLEXDISK3, pOptions->drive[3]);
+    reg.GetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0]);
+    reg.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
     reg.GetValue(FLEXMONITOR, pOptions->hex_file);
     reg.GetValue(FLEXCOLOR, pGuiOptions->color);
 
@@ -639,6 +652,8 @@ void FlexOptionManager::GetOptions(
     rcFile.GetValue(FLEXDISK1, pOptions->drive[1]);
     rcFile.GetValue(FLEXDISK2, pOptions->drive[2]);
     rcFile.GetValue(FLEXDISK3, pOptions->drive[3]);
+    rcFile.GetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0]);
+    rcFile.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
     rcFile.GetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
     rcFile.GetValue(FLEXMONITOR, pOptions->hex_file);
     rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);

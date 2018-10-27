@@ -24,10 +24,13 @@
 #define BMEMBUF_INCLUDED
 
 #include "misc1.h"
-#include <memory>
+#include "memsrc.h"
+#include "memtgt.h"
+#include <vector>
+#include <utility>
 
 
-class BMemoryBuffer
+class BMemoryBuffer : public MemorySource<size_t>, public MemoryTarget<size_t>
 {
 public:
     BMemoryBuffer() = delete;
@@ -49,13 +52,32 @@ public:
         return baseAddress;
     };
     bool CopyFrom(const Byte *from, size_t aSize, size_t address);
-    const Byte *GetBuffer(size_t address) const;
-    Byte operator[](size_t address) const;
+    Byte &operator[](size_t address);
+    const Byte &operator[](size_t address) const;
+
+    // MemorySource interface
+    size_t reset_src_addr() override;
+    bool src_at_end() const override;
+    MemorySource& operator>>(Byte &b) override;
+
+    // MemoryTarget interface
+    void set_tgt_addr(size_t address) override;
+    MemoryTarget& operator<<(Byte b) override;
+
+public:
+    bool IsStartEndAddressValid() const;
+    std::pair<size_t, size_t> GetStartEndAddress() const;
+    bool CopyStartEndRangeTo(std::vector<Byte> &buffer) const;
+    void ResetStartEndAddress();
 
 private:
     size_t baseAddress;
     size_t size;
-    std::unique_ptr<Byte[]> buffer;
+    std::vector<Byte> buffer;
+    size_t startAddress;
+    size_t endAddress;
+    size_t currentAddress;
+    size_t sourceAddress;
 };
 
 #endif // BMEMBUF_INCLUDED

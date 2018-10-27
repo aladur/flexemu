@@ -25,9 +25,11 @@
 
 
 #include <stdio.h>
+#include "memsrc.h"
 #include "memtgt.h"
 
-extern int load_hexfile(const char *filename, MemoryTarget &memtgt);
+extern int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt);
+extern int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc);
 
 #endif // FILREAD_INCLUDED
 
