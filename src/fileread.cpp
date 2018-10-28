@@ -239,22 +239,25 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
 
         if (index == buffer_size || (at_end && !last_junk_written))
         {
-            header[1] = (address >> 8) & 0xff;
-            header[2] = address & 0xff;
-            header[3] = index;
-            if (fwrite(&header, sizeof(Byte), sizeof(header), fp) !=
-                sizeof(header))
+            if (index > 0)
             {
-                return -2; // write error
-            }
+                header[1] = (address >> 8) & 0xff;
+                header[2] = address & 0xff;
+                header[3] = index;
+                if (fwrite(&header, sizeof(Byte), sizeof(header), fp) !=
+                    sizeof(header))
+                {
+                    return -2; // write error
+                }
 
-            if (fwrite(&buffer, sizeof(Byte), index, fp) != index)
-            {
-                return -2; // write error
-            }
+                if (fwrite(&buffer, sizeof(Byte), index, fp) != index)
+                {
+                    return -2; // write error
+                }
 
-            address += index;
-            index = 0;
+                address += index;
+                index = 0;
+            }
 
             if (at_end)
             {
