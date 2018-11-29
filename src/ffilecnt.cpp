@@ -940,9 +940,12 @@ void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
 
     if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)
     {
-        // No boot sector or read error
+        // No boot sector or read error.
+        // Instead jump to monitor program warm start entry point.
         memset(sec_buf, 0, SECTOR_SIZE);
-        sec_buf[0] = 0x39;  // means RTS
+        sec_buf[0] = 0x7E; // JMP $F02D
+        sec_buf[1] = 0xF0;
+        sec_buf[2] = 0x2D;
     }
 } // Create_boot_sector
 

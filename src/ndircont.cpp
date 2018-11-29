@@ -1383,8 +1383,11 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     }
                     else
                     {
-                        // Default buffer content if boot sector not present
-                        buffer[0] = 0x39; // means RTS
+                        // Default buffer content if boot sector not present.
+                        // Jump to monitor program warm start entry point.
+                        buffer[0] = 0x7E; // JMP $F02D
+                        buffer[1] = 0xF0;
+                        buffer[2] = 0x2D;
                     }
                     break;
                 }
