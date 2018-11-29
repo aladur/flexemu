@@ -1365,7 +1365,6 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 {
                     memset(buffer, 0, SECTOR_SIZE);
 
-                    buffer[0] = 0x39; // means RTS
                     link = link_address();
                     strcpy((char *)path, directory.c_str());
                     strcat((char *)path, PATHSEPARATORSTRING "boot");
@@ -1377,13 +1376,16 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         fclose(fp);
                     }
 
-                    if (bytes != SECTOR_SIZE)
+                    if (bytes == SECTOR_SIZE)
                     {
-                        result = false;
+                        buffer[3] = link->st.trk;
+                        buffer[4] = link->st.sec;
                     }
-
-                    buffer[3] = link->st.trk;
-                    buffer[4] = link->st.sec;
+                    else
+                    {
+                        // Default buffer content if boot sector not present
+                        buffer[0] = 0x39; // means RTS
+                    }
                     break;
                 }
                 else
