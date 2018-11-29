@@ -976,7 +976,7 @@ public:
     void            set_irq();
 
 protected:
-    QWord           total_cycles; // total cycle count with 64 Bit resolution
+    std::atomic<QWord> total_cycles; // total cycle count with 64 Bit resolution
     t_cycles        cycles;     // cycle cnt for one timer tick
     t_cycles        required_cyclecount;//cycle count for freq ctrl
 

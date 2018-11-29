@@ -24,6 +24,7 @@
 #include "mdcrtape.h"
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 
@@ -118,7 +119,7 @@ bool MiniDcrTape::IsWriteProtected() const
     return is_write_protected;
 }
 
-bool MiniDcrTape::HasRecord()
+bool MiniDcrTape::HasRecord() const
 {
     if (IsOpen())
     {
@@ -127,6 +128,21 @@ bool MiniDcrTape::HasRecord()
     }
 
     return false;
+}
+
+RecordType MiniDcrTape::GetRecordType() const
+{
+    if (IsOpen() && (record_index < record_types.size()))
+    {
+        return record_types[record_index];
+    }
+
+    return RecordType::NONE;
+}
+
+DWord MiniDcrTape::GetRecordIndex() const
+{
+    return record_index;
 }
 
 bool MiniDcrTape::ReadRecord(std::vector<Byte> &buffer)
@@ -188,6 +204,7 @@ bool MiniDcrTape::WriteRecord(const std::vector<Byte> &buffer)
                 record_positions.resize(record_index + 1);
             }
             max_pos = record_position;
+            VerifyTape();
         }
         else
         {
@@ -206,10 +223,12 @@ bool MiniDcrTape::VerifyTape()
     bool result = false;
 
     record_positions.clear();
+    record_types.clear();
     max_pos = 0;
 
     if (IsOpen())
     {
+        std::vector<Word> record_sizes;
         static std::array<char, 4> magic_bytes { 0, 0, 0, 0 };
         std::ios::pos_type read_pos = stream.tellg();
         std::ios::pos_type record_position;
@@ -245,6 +264,7 @@ bool MiniDcrTape::VerifyTape()
                 break;
             }
 
+            record_sizes.push_back(size);
             record_positions.push_back(record_position);
         }
 
@@ -256,6 +276,45 @@ bool MiniDcrTape::VerifyTape()
 
         // Restore previous read position.
         stream.seekg(read_pos);
+
+        RecordType previous_record_type = RecordType::NONE;
+        for (auto sizeIter = record_sizes.crbegin();
+             sizeIter < record_sizes.crend();
+             ++sizeIter)
+        {
+            auto record_type = RecordType::NONE;
+
+            if (*sizeIter == 1027)
+            {
+                record_type = RecordType::Data;
+            }
+            else if (previous_record_type == RecordType::Data ||
+                       previous_record_type == RecordType::LastData)
+            {
+
+                record_type = *sizeIter == 13 ?
+                    RecordType::Header :
+                    RecordType::Data;
+            }
+            else if (previous_record_type == RecordType::NONE ||
+                     previous_record_type == RecordType::Header)
+            {
+                record_type = RecordType::LastData;
+            }
+
+            record_types.push_back(record_type);
+            previous_record_type = record_type;
+            /*
+            switch(record_type)
+            {
+                case RecordType::NONE: std::cerr << "type=NONE\n"; break;
+                case RecordType::Data: std::cerr << "type=Data\n"; break;
+                case RecordType::LastData: std::cerr << "type=LastData\n"; break;
+                case RecordType::Header: std::cerr << "type=Header\n"; break;
+            }
+            */
+        }
+        std::reverse(record_types.begin(), record_types.end());
     }
 
     return result;

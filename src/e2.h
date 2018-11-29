@@ -59,6 +59,7 @@
 #define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
 
 #define ORIGINAL_FREQUENCY 1.3396f
+#define ORIGINAL_PERIOD (1.0f / ORIGINAL_FREQUENCY)
 
 #endif
 

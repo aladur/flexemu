@@ -301,7 +301,6 @@ MdcrStatus MdcrFileSystem::WriteFile(
         size_t size =
           std::min<size_t>(ibuffer.size() - index, MaxRecordSize);
         obuffer.resize(size + 3);
-        checksumIter = obuffer.cbegin() + 1;
 
         // Write a data record (size of data record + 3 Byte).
         // Format:
@@ -320,6 +319,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
         std::copy_n(ibuffer.cbegin() + index, size, obuffer.begin() + 1);
 
+        checksumIter = obuffer.cbegin() + 1;
         obuffer[size + 1] = CalculateChecksum(checksumIter, size);
         obuffer[size + 2] = 0;
 

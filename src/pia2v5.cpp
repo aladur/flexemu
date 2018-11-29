@@ -33,10 +33,15 @@
 #include <iomanip>
 
 
-Pia2V5::Pia2V5(Mc6809 &x_cpu) : cpu(x_cpu), last_ora(0), delay_BET(0),
-    read_bit_mask(0x80), read_index(0), delay_read(0),
-    write_bit_mask(0x80), write_byte(0), drive_idx(-1), read_mode(false),
-    direction(TapeDirection::NONE), debug(0)
+Pia2V5::Pia2V5(Mc6809 &x_cpu) : cpu(x_cpu)
+    , write_bit_mask(0x80), write_byte(0)
+    , last_ora(0)
+    , read_bit_mask(0x80), read_index(0)
+    , drive_idx(-1)
+    , read_mode(ReadMode::Off)
+    , direction(TapeDirection::NONE), debug(0)
+    , delay_RDC(0)
+    , cycles_RDC(0), cycles_BET(0), cycles_cdbg(0)
 {
     write_buffer.reserve(256);
     read_buffer.reserve(256);
@@ -57,28 +62,30 @@ void Pia2V5::writeOutputA(Byte value)
     ora = value & ddra;
     static DWord write_count = 0;
 
-    if (ora == 0xE8 || ora == 0xF8)
+    if (debug && !cycles_cdbg)
     {
-        write_count++;
-    }
-    else
-    {
-        write_count = 0;
+        cdbg.precision(2);
+        cdbg << "time=" << std::fixed << 0.0 << "us" << std::endl;
+        cycles_cdbg = cpu.get_cycles();
     }
 
-    if (debug)
+    write_count = (ora == 0xE8 || ora == 0xF8) ? write_count + 1 : 0;
+
+    if (debug && write_count <= 6)
     { 
+        cdbg << "delta_time=" <<
+                (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                "us PC=" << std::uppercase << std::hex << cpu.get_pc() <<
+                " MDCR command=";
         if (write_count < 6)
         {
-            cdbg << "PC=" << std::uppercase << std::hex << cpu.get_pc() <<
-                     " MDCR command=" <<
-                     std::hex << (unsigned int)ora << std::endl;
+            cdbg << std::hex << (unsigned int)ora << std::endl;
         }
         else if (write_count == 6)
         {
-            cdbg << "PC=" << std::uppercase << std::hex << cpu.get_pc() <<
-                     " MDCR command=..." << std::endl;
+            cdbg << "..." << std::endl;
         }
+        cycles_cdbg = cpu.get_cycles();
     }
 
     if (drive_idx < 0)
@@ -99,7 +106,9 @@ void Pia2V5::writeOutputA(Byte value)
                     cdbg << "Rewind Tape" << std::endl;
                 }
                 direction = TapeDirection::Rewind;
-                delay_BET = default_delay_BET;
+                cycles_BET = cpu.get_cycles();
+                cycles_RDC = cpu.get_cycles();
+                delay_RDC = (QWord)(166.f / ORIGINAL_PERIOD);
                 // Prepare for write
                 write_buffer.clear();
                 write_bit_mask = 0x80;
@@ -120,13 +129,17 @@ void Pia2V5::writeOutputA(Byte value)
                 drive[drive_idx]->WriteRecord(write_buffer);
                 if (debug)
                 {
-                    cdbg << "Write Record size=" <<
+                    cdbg << "delta_time=" <<
+                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                            "us Write Record size=" <<
                             std::dec << write_buffer.size() <<
                             std::endl;
+                    cycles_cdbg = cpu.get_cycles();
                 }
                 log_buffer(write_buffer);
                 write_buffer.clear();
             }
+            write_count = 0;
             last_ora = ora;
             break;
 
@@ -158,32 +171,27 @@ void Pia2V5::writeOutputA(Byte value)
             break;
 
         case 0x40: // ???
+            read_mode = ReadMode::Off;
             last_ora = ora;
             direction = TapeDirection::NONE;
             break;
 
         case 0xc8: // Start read data
-            if (direction == TapeDirection::Rewind)
-            {
-                if (!drive[drive_idx]->GotoPreviousRecord())
-                {
-                    // Begin-of-Tape: Signal it after a delay.
-                    delay_BET = default_delay_BET;
-                }
-            }
-
-            if (!delay_BET && drive[drive_idx]->HasRecord())
+            if (direction == TapeDirection::Forward &&
+                cpu.get_cycles() - cycles_BET > delay_BET &&
+                drive[drive_idx]->GetRecordType() != RecordType::NONE &&
+                read_mode != ReadMode::Init)
             {
                 if (debug)
                 {
-                    cdbg << "Enter read mode" << std::endl;
+                    cdbg << "delta_time=" <<
+                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                            "us Enter read mode" << std::endl;
+                    cycles_cdbg = cpu.get_cycles();
                 }
-                read_mode = true;
-                read_buffer.clear();
-                read_index = 0;
-                read_bit_mask = 0x80;
-                delay_read = 10;
-                delay_BET = 0;
+
+                // Prepare for read
+                SetReadModeToInit();
             }
             break;
 
@@ -204,66 +212,96 @@ Byte Pia2V5::readInputA()
 {
     last_ora = 0;
     Byte result = ora;
+    result |= 0x01; // Default: set data bit
 
-    if (drive_idx >= 0)
+    if (drive_idx < 0)
     {
-        result |= 0x02; // Cassette in position (CIP)
-        if (!drive[drive_idx]->IsWriteProtected())
+        return result;
+    }
+
+    result |= 0x02; // Cassette in position (CIP)
+    if (!drive[drive_idx]->IsWriteProtected())
+    {
+        result |= 0x04;  // No write protection (WPRT)
+    }
+
+    if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
+        (read_mode == ReadMode::Init && BTST7(cra)))
+    {
+        result &= ~0x01;
+        read_mode = ReadMode::Read;
+        cycles_RDC = cpu.get_cycles();
+
+        if (drive[drive_idx]->GetRecordIndex() > 0)
         {
-            result |= 0x04;  // No write protection (WPRT)
+            delay_RDC = (QWord)(600000.f / ORIGINAL_PERIOD);
+        }
+        else
+        {
+            delay_RDC = (QWord)(166.f / ORIGINAL_PERIOD);
+        }
+    }
+    else if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
+             (read_mode == ReadMode::Read && BTST7(cra)))
+    {
+        cycles_RDC = cpu.get_cycles();
+        delay_RDC = (QWord)(166.f / ORIGINAL_PERIOD);
+
+        // Only read a bit if Read Clock (RDC) has been signaled.
+        if (read_buffer.empty())
+        {
+            bool success = drive[drive_idx]->ReadRecord(read_buffer);
+
+            if (debug)
+            {
+                cdbg << "delta_time=" <<
+                       (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                        "us Read record " <<
+                     (success ? "size=" : "failed") << std::dec <<
+                     (success ? std::to_string(read_buffer.size()) : "")
+                     << std::endl;
+                cycles_cdbg = cpu.get_cycles();
+            }
+
+            if (success)
+            {
+                read_index = 0;
+                read_bit_mask = 0x80;
+                log_buffer(read_buffer);
+            }
+            else
+            {
+                read_mode = ReadMode::Off;
+            }
         }
 
-        if (read_mode)
+        if (read_mode == ReadMode::Read)
         {
-            if (!delay_read || (delay_read && !--delay_read))
+            if (read_buffer[read_index] & read_bit_mask)
             {
-                if (read_buffer.empty())
-                {
-                    bool success = drive[drive_idx]->ReadRecord(read_buffer);
-
-                    if (debug)
-                    {
-                        cdbg << "Read record " <<
-                             (success ? "size=" : "failed") << std::dec <<
-                             (success ? std::to_string(read_buffer.size()) : "")
-                             << std::endl;
-                    }
-
-                    if (success)
-                    {
-                        log_buffer(read_buffer);
-                    }
-                    else
-                    {
-                        read_mode = false;
-                    }
-                }
-
-                if (read_mode)
-                {
-                    if (!(read_buffer[read_index] & read_bit_mask))
-                    {
-                        // If bit is clear set Read Data (/RDA) low-active
-                        result |= 0x01;
-                    }
-
-                    read_bit_mask >>= 1;
-                    if (read_bit_mask == 0)
-                    {
-                        read_bit_mask = 0x80;
-                        read_index++;
-                        if (read_index > read_buffer.size())
-                        {
-                            read_mode = false;
-                        }
-                    }
-                }
+                // If bit is set clear Read Data (/RDA) (low-active)
+                result &= ~0x01;
             }
 
-            if (debug && !read_mode)
+            read_bit_mask >>= 1;
+            if (read_bit_mask == 0)
             {
-                cdbg << "Finish read mode" << std::endl;
+                read_bit_mask = 0x80;
+                read_index++;
+
+                if (read_index > read_buffer.size())
+                {
+                    SetReadModeToInit();
+                }
             }
+        }
+
+        if (debug && read_mode == ReadMode::Off)
+        {
+            cdbg << "cycles_delta=" << std::dec <<
+                    cpu.get_cycles() - cycles_cdbg <<
+                    " Finish read mode" << std::endl;
+            cycles_cdbg = cpu.get_cycles();
         }
     }
 
@@ -290,23 +328,26 @@ void Pia2V5::writeOutputB(Byte value)
         // No MDCR tape object assigned or tape file could not be opened.
         drive_idx = -1;
     }
+
     if (debug)
     {
+        cdbg << "delta_time=" <<
+                (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                "us PC=" << std::uppercase << std::hex << cpu.get_pc();
+
         switch(drive_idx)
         {
             case 0:
             case 1:
-                cdbg << "PC=" << std::uppercase << std::hex <<
-                        cpu.get_pc() << " Select drive #" << drive_idx <<
-                        std::endl;
+                cdbg << " Select drive #" << drive_idx << std::endl;
                 break;
 
             default:
-                cdbg << "PC=" << std::uppercase << std::hex <<
-                    cpu.get_pc() << " Deselect all drives" <<
-                    std::endl;
+                cdbg << " Deselect all drives" << std::endl;
                 break;
         }
+
+        cycles_cdbg = cpu.get_cycles();
     }
 }
 
@@ -317,7 +358,7 @@ Byte Pia2V5::readInputB()
 
 void Pia2V5::requestInputA()
 {
-    if (delay_BET && !--delay_BET)
+    if (cpu.get_cycles() - cycles_BET > delay_BET)
     {
         if (direction == TapeDirection::Rewind && drive_idx >= 0)
         {
@@ -330,28 +371,56 @@ void Pia2V5::requestInputA()
                 activeTransition(ControlLine::CA2); // Set /BET
                 if (debug)
                 {
-                    cdbg << "PC=" << std::uppercase << std::hex <<
+                    cdbg << "delta_time=" <<
+                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                            "us PC=" << std::uppercase << std::hex <<
                             cpu.get_pc() << " Detected Begin-End-of-Tape" <<
                             std::endl;
+                    cycles_cdbg = cpu.get_cycles();
+                    cdbg << std::dec;
                 }
             }
             else
             {
-                delay_BET = default_delay_BET;
+                cycles_BET = cpu.get_cycles();
             }
 
         }
     }
 
-    if (read_mode || direction == TapeDirection::Rewind)
+    if (read_mode != ReadMode::Off || direction == TapeDirection::Rewind)
     {
-        activeTransition(ControlLine::CA1); // Set Read clock (RDC)
+        if (cpu.get_cycles() - cycles_RDC > delay_RDC)
+        {
+            activeTransition(ControlLine::CA1); // Set Read clock (RDC)
+        }
     }
 }
 
 void Pia2V5::disk_directory(const char *x_disk_dir)                           
 {
         disk_dir = x_disk_dir;
+}
+
+void Pia2V5::SetReadModeToInit()
+{
+    read_mode = ReadMode::Init;
+    read_buffer.clear();
+    read_index = 0;
+    read_bit_mask = 0x80;
+    cycles_RDC = cpu.get_cycles();
+
+    if ((drive[drive_idx]->GetRecordType() == RecordType::Header) &&
+        (drive[drive_idx]->GetRecordIndex() > 0))
+    {
+        // When reading the header of the next file
+        // there is an extra long delay
+        delay_RDC = (QWord)(900000.f / ORIGINAL_PERIOD);
+    }
+    else
+    {
+        delay_RDC = (QWord)(120000.f / ORIGINAL_PERIOD);
+    }
 }
 
 void Pia2V5::mount_all_drives(std::array<std::string, 2> drives)

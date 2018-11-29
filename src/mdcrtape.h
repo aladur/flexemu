@@ -34,6 +34,14 @@ class MiniDcrTape;
 
 using MiniDcrTapePtr = std::unique_ptr<MiniDcrTape>;
 
+enum class RecordType : Byte
+{
+    NONE,      // There is no (more) record
+    Header,    // Record containing a file header
+    Data,      // Record containing file data
+    LastData,  // Last record of a file containing file data
+};
+
 class MiniDcrTape
 {
 private:
@@ -44,6 +52,7 @@ private:
     bool is_write_protected;
     std::ios::pos_type max_pos;
     std::vector<std::ios::pos_type> record_positions;
+    std::vector<RecordType> record_types;
     DWord record_index;
 
 public:
@@ -59,7 +68,9 @@ public:
     static MiniDcrTapePtr Create(const char *path);
     int  Close();
     bool IsOpen() const;
-    bool HasRecord();
+    bool HasRecord() const;
+    RecordType GetRecordType() const;
+    DWord GetRecordIndex() const;
     bool ReadRecord(std::vector<Byte> &buffer);
     bool WriteRecord(const std::vector<Byte> &buffer);
     bool GotoPreviousRecord();
