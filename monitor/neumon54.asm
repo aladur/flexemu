@@ -1820,6 +1820,10 @@ ORIG   SET  *
        ENDIF
        ;OPT  LIS
 
+       ORG  ANFANG+$D00  ;$FD00-$FD0F patch with 0 if no RTC present
+
+       FCB   $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+
        ORG  ANFANG+$D40  ;$FCF0-$FD3F free for I/O
 ;
 ;

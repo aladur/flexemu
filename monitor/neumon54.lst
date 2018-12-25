@@ -1834,6 +1834,14 @@ zu loeschen
                       ORIG   SET  *
                              ;OPT  LIS
  
+                             ORG  ANFANG+$D00  ;$FD00-$FD0F patch with 0 if no 
+RTC present
+ 
+ FD00 00000000000000         FCB   $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$
+00,$00,$00,$00,$00
+ FD07 00000000000000
+ FD0E 0000
+ 
                              ORG  ANFANG+$D40  ;$FCF0-$FD3F free for I/O
                       ;
                       ;
