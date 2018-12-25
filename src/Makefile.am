@@ -20,24 +20,22 @@ bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ dcrtool
 EXTRA_PROGRAMS = flexplorer fsetup dcrtool
 noinst_PROGRAMS = test
 
+AM_CXXFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
+
 flexemu_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-			-DF_DATADIR=\"$(pkgdatadir)\" \
-			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+		        $(AM_CXXFLAGS) \
 			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
 flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-                        -DF_DATADIR=\"$(pkgdatadir)\" \
-			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
 fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-                        -DF_DATADIR=\"$(pkgdatadir)\" \
-			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
 dcrtool_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-                        -DF_DATADIR=\"$(pkgdatadir)\" \
-			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
 test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
-			-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+		        $(AM_CXXFLAGS) \
 		        @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
