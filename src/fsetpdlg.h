@@ -56,13 +56,18 @@ enum
     IDC_Undocumented = 212,
     IDC_FlexibleMmu = 213,
     IDC_UseRtc = 214,
+    IDC_EmulatedHardware = 215,
+    IDC_MdcrDrive0 = 216,
+    IDC_MdcrDrive1 = 217,
 
     IDC_DiskDirButton = 304,
     IDC_MonitorButton = 305,
     IDC_Drive0Button = 306,
     IDC_Drive1Button = 307,
     IDC_Drive2Button = 308,
-    IDC_Drive3Button = 309
+    IDC_Drive3Button = 309,
+    IDC_MdcrDrive0Button = 310,
+    IDC_MdcrDrive1Button = 311
 };
 
 class FlexemuOptionsDialog : public wxDialog
@@ -82,6 +87,7 @@ public:
     virtual ~FlexemuOptionsDialog();
 
     void OnInitDialog(wxInitDialogEvent &event);
+    wxPanel *CreateEmulatedHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateCpuOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateHardwareOptionsPage(wxBookCtrlBase *parent);
@@ -89,6 +95,9 @@ public:
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
+    wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
+                                   const wxString &text,
+                                   int textId, int buttonId);
     //void OnCloseWindow(wxCloseEvent &event);
     bool TransferDataFromWindow();
     bool TransferDataToWindow();
@@ -98,14 +107,17 @@ public:
         const wxString &caption = wxT(""),
         const wxString &defaultExtension = wxT("*.*"),
         const wxString &filter = wxT("*.*"));
-    void OnSelectDriveN(int n);
+    void OnSelectDrive(wxTextCtrl *c_driveX, bool isDisk);
     void OnSelectDrive0(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive1(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive2(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive3(wxCommandEvent &WXUNUSED(event));
+    void OnSelectMdcrDrive0(wxCommandEvent &WXUNUSED(event));
+    void OnSelectMdcrDrive1(wxCommandEvent &WXUNUSED(event));
     void OnSelectDiskDir(wxCommandEvent &WXUNUSED(event));
     void OnSelectMonitor(wxCommandEvent &WXUNUSED(event));
     void OnRamExtensionChanged(wxCommandEvent &WXUNUSED(event));
+    void OnEmulatedHardwareChanged(wxCommandEvent &WXUNUSED(event));
 
 private:
     FlexemuOptionsDialog() { }; // should not be used
@@ -122,9 +134,11 @@ private:
     wxTextCtrl *c_htmlViewer;
     wxTextCtrl *c_diskDir;
     wxTextCtrl *c_drive[4];
+    wxTextCtrl *c_mdcrDrive[2];
     wxRadioBox *c_ramExtension;
     wxCheckBox *c_flexibleMmu;
     wxCheckBox *c_useRtc;
+    wxRadioBox *c_emulatedHardware;
 
     static const int gap;
     static const int textWidth;

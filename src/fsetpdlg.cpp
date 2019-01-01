@@ -74,10 +74,14 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
     EVT_BUTTON(IDC_Drive1Button, FlexemuOptionsDialog::OnSelectDrive1)
     EVT_BUTTON(IDC_Drive2Button, FlexemuOptionsDialog::OnSelectDrive2)
     EVT_BUTTON(IDC_Drive3Button, FlexemuOptionsDialog::OnSelectDrive3)
+    EVT_BUTTON(IDC_MdcrDrive0Button, FlexemuOptionsDialog::OnSelectMdcrDrive0)
+    EVT_BUTTON(IDC_MdcrDrive1Button, FlexemuOptionsDialog::OnSelectMdcrDrive1)
     EVT_BUTTON(IDC_DiskDirButton, FlexemuOptionsDialog::OnSelectDiskDir)
     EVT_BUTTON(IDC_MonitorButton, FlexemuOptionsDialog::OnSelectMonitor)
     EVT_INIT_DIALOG(FlexemuOptionsDialog::OnInitDialog)
     EVT_RADIOBOX(IDC_RamExtension, FlexemuOptionsDialog::OnRamExtensionChanged)
+    EVT_RADIOBOX(IDC_EmulatedHardware,
+            FlexemuOptionsDialog::OnEmulatedHardwareChanged)
     //  EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
 
@@ -101,7 +105,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_htmlViewer(nullptr), c_diskDir(nullptr),
     c_ramExtension(nullptr), c_flexibleMmu(nullptr),
-    c_useRtc(nullptr)
+    c_useRtc(nullptr), c_emulatedHardware(nullptr)
 
 {
     int i;
@@ -166,6 +170,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
             n++;
         }
+        c_nColors->Enable(!m_options->isEurocom2V5);
     }
 
     if (c_color)
@@ -216,12 +221,19 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_diskDir->SetValue(disk_dir);
     }
 
-    for (x = 0; x <= 3; x++)
-        if (c_drive[x])
-        {
-            wxString driveName(m_options->drive[x].c_str(), *wxConvCurrent);
-            c_drive[x]->SetValue(driveName);
-        }
+    for (x = 0; x < WXSIZEOF(c_drive); x++)
+    {
+        wxString driveName(m_options->drive[x].c_str(), *wxConvCurrent);
+        c_drive[x]->SetValue(driveName);
+        c_drive[x]->Enable(!m_options->isEurocom2V5);
+    }
+
+    for (x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
+    {
+        wxString driveName(m_options->mdcrDrives[x].c_str(), *wxConvCurrent);
+        c_mdcrDrive[x]->SetValue(driveName);
+        c_mdcrDrive[x]->Enable(m_options->isEurocom2V5);
+    }
 
     if (c_ramExtension)
     {
@@ -243,20 +255,47 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
             c_nColors->SetSelection(0);
         }
         c_nColors->Enable(selection > 0);
+        c_ramExtension->Enable(!m_options->isEurocom2V5);
     }
 
     if (c_flexibleMmu)
     {
         c_flexibleMmu->SetValue(m_options->isHiMem && m_options->isFlexibleMmu);
-        c_flexibleMmu->Enable(m_options->isHiMem);
+        c_flexibleMmu->Enable(m_options->isHiMem && !m_options->isEurocom2V5);
     }
 
     if (c_useRtc)
     {
         c_useRtc->SetValue(m_options->useRtc);
+        c_useRtc->Enable(!m_options->isEurocom2V5);
+    }
+
+    if (c_emulatedHardware)
+    {
+        c_emulatedHardware->SetSelection(m_options->isEurocom2V5 ? 0 : 1);
     }
 
     return wxWindow::TransferDataToWindow();
+}
+
+wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
+        wxBookCtrlBase *parent)
+{
+    wxPanel *panel = new wxPanel(parent);
+    wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
+    wxString choices[2];
+
+    choices[0] = _("Eurocom II V5 (Philips Mini DCR)");
+    choices[1] = _("Eurocom II V7 (Floppy Disk)");
+    c_emulatedHardware = new wxRadioBox(panel, IDC_EmulatedHardware,
+                                    _("Emulated Hardware"), wxDefaultPosition,
+                                    wxDefaultSize, WXSIZEOF(choices), choices,
+                                    1, wxRA_SPECIFY_COLS);
+    pPanelSizer->Add(c_emulatedHardware, 0, wxTOP | wxLEFT, gap);
+
+    panel->SetSizer(pPanelSizer);
+
+    return panel;
 }
 
 wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
@@ -354,6 +393,30 @@ wxPanel *FlexemuOptionsDialog::CreateMemoryOptionsPage(wxBookCtrlBase *parent)
     return panel;
 }
 
+wxTextCtrl *FlexemuOptionsDialog::CreateFileControls(
+        wxPanel *panel, wxBoxSizer *panelSizer, const wxString &text,
+        int textId, int buttonId)
+{
+    wxBoxSizer *pBoxSizer;
+    wxStaticText *pStatic;
+    wxButton *pButton;
+    wxTextCtrl *textCtrl;
+
+    pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
+    pStatic = new wxStaticText(panel, -1, text,
+                               wxDefaultPosition, wxSize(stextWidth, -1));
+    pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+    textCtrl = new wxTextCtrl(panel, textId, wxT(""),
+                              wxDefaultPosition, wxSize(textWidth, -1));
+    pBoxSizer->Add(textCtrl, 1, wxEXPAND);
+    pButton = new wxButton(panel, buttonId, _("..."),
+                           wxDefaultPosition, wxSize(40, 25));
+    pBoxSizer->Add(pButton, 0, 0);
+    panelSizer->Add(pBoxSizer, 0, wxEXPAND);
+
+    return textCtrl;
+}
+
 wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
@@ -361,8 +424,8 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     wxBoxSizer *pBoxSizer;
     wxStaticText *pStatic;
     wxButton *pButton;
-    int i;
     wxString text;
+    int i;
 
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
@@ -388,20 +451,19 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     pBoxSizer->Add(pButton, 0, 0);
     pPanelSizer->Add(pBoxSizer, 0, wxEXPAND);
 
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
-        pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-        text.Printf(_("Disk for Drive %d"), i);
-        pStatic = new wxStaticText(panel, -1, text,
-                                   wxDefaultPosition, wxSize(stextWidth, -1));
-        pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-        c_drive[i] = new wxTextCtrl(panel, IDC_Drive0 + i, wxT(""),
-                                    wxDefaultPosition, wxSize(textWidth, -1));
-        pBoxSizer->Add(c_drive[i], 1, wxEXPAND);
-        pButton = new wxButton(panel, IDC_Drive0Button + i, _("..."),
-                               wxDefaultPosition, wxSize(40, 25));
-        pBoxSizer->Add(pButton, 0, 0);
-        pPanelSizer->Add(pBoxSizer, 0, wxEXPAND);
+        text.Printf(_("Disk Drive %d"), i);
+        c_drive[i] = CreateFileControls(panel, pPanelSizer, text,
+                                        IDC_Drive0 + i, IDC_Drive0Button + i);
+    }
+
+    for (i = 0; i < WXSIZEOF(c_mdcrDrive); ++i)
+    {
+        text.Printf(_("Cassette Drive %d"), i);
+        c_mdcrDrive[i] = CreateFileControls(panel, pPanelSizer, text,
+                                            IDC_MdcrDrive0 + i,
+                                            IDC_MdcrDrive0Button + i);
     }
 
     panel->SetSizer(pPanelSizer);
@@ -468,6 +530,8 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
 
     pMainSizer->Add(notebook, 1, wxEXPAND | wxALL, gap);
 
+    panel = CreateEmulatedHardwareOptionsPage(notebook);
+    notebook->AddPage(panel, _("Emulated Hardware"), false);
     panel = CreateGuiOptionsPage(notebook);
     notebook->AddPage(panel, _("User Interface"), false);
     panel = CreateMemoryOptionsPage(notebook);
@@ -612,10 +676,16 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
             c_diskDir->GetValue().mb_str(*wxConvCurrent);
     };
 
-    for (int i = 0; i <= 3; i++)
-        if (c_drive[i])
-            m_options->drive[i] =
-                c_drive[i]->GetValue().mb_str(*wxConvCurrent);
+    for (int i = 0; i < WXSIZEOF(c_drive); i++)
+    {
+        m_options->drive[i] = c_drive[i]->GetValue().mb_str(*wxConvCurrent);
+    }
+
+    for (int i = 0; i < WXSIZEOF(c_mdcrDrive); i++)
+    {
+        m_options->mdcrDrives[i] =
+            c_mdcrDrive[i]->GetValue().mb_str(*wxConvCurrent);
+    }
 
     if (c_ramExtension)
     {
@@ -632,6 +702,32 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     if (c_useRtc)
     {
         m_options->useRtc = (c_useRtc->GetValue() != 0);
+    }
+
+    if (c_emulatedHardware)
+    {
+        m_options->isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
+    }
+
+    if (!m_options->isRamExtension)
+    {
+        m_guiOptions->nColors = 2;
+        m_options->isHiMem = false;
+        m_options->isFlexibleMmu = false;
+    }
+
+    if (m_options->isRamExtension && !m_options->isHiMem)
+    {
+        m_options->isFlexibleMmu = false;
+    }
+
+    if (m_options->isEurocom2V5)
+    {
+        m_guiOptions->nColors = 2;
+        m_options->useRtc = false;
+        m_options->isRamExtension = false;
+        m_options->isHiMem = false;
+        m_options->isFlexibleMmu = false;
     }
 
     return wxWindow::TransferDataFromWindow();
@@ -664,24 +760,30 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
     return drive;
 }
 
-void FlexemuOptionsDialog::OnSelectDriveN(int n)
+void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl *c_driveX, bool isDisk)
 {
     wxString path;
     wxString diskDir;
 
-    if (n > 3)
-    {
-        return;
-    }
-
     if (c_diskDir)
     {
         diskDir = c_diskDir->GetValue();
-    };
+    }
 
-    path = OpenFilePrompter(diskDir, wxT("Select a Disk file"), wxT("*.dsk"),
-        wxT("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
-            "All files (*.*)|*.*"));
+    if (isDisk)
+    {
+        path = OpenFilePrompter(
+                diskDir, wxT("Select a Disk file"),wxT("*.dsk"),
+            wxT("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
+                "All files (*.*)|*.*"));
+    }
+    else
+    {
+        path = OpenFilePrompter(
+                diskDir, wxT("Select a MDCR file"), wxT("*.dcr"),
+            wxT("MDCR containers (*.dcr)|*.dcr|"
+                "All files (*.*)|*.*"));
+    }
 
     if (!diskDir.IsEmpty() &&
         (path.Find(diskDir) == 0) &&
@@ -695,31 +797,40 @@ void FlexemuOptionsDialog::OnSelectDriveN(int n)
         }
     }
 
-    if (!path.IsEmpty())
-        if (c_drive[n])
-        {
-            c_drive[n]->SetValue(path);
-        }
+    if (!path.IsEmpty() && c_driveX)
+    {
+        c_driveX->SetValue(path);
+    }
 }
 
 void FlexemuOptionsDialog::OnSelectDrive0(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDriveN(0);
+    OnSelectDrive(c_drive[0], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive1(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDriveN(1);
+    OnSelectDrive(c_drive[1], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive2(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDriveN(2);
+    OnSelectDrive(c_drive[2], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive3(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDriveN(3);
+    OnSelectDrive(c_drive[3], true);
+}
+
+void FlexemuOptionsDialog::OnSelectMdcrDrive0(wxCommandEvent &WXUNUSED(event))
+{
+    OnSelectDrive(c_mdcrDrive[0], false);
+}
+
+void FlexemuOptionsDialog::OnSelectMdcrDrive1(wxCommandEvent &WXUNUSED(event))
+{
+    OnSelectDrive(c_mdcrDrive[1], false);
 }
 
 void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
@@ -787,15 +898,28 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
 void FlexemuOptionsDialog::OnRamExtensionChanged(
         wxCommandEvent &WXUNUSED(event))
 {
-    if (c_ramExtension->GetSelection() == 0)
-    {
-        c_nColors->SetSelection(0);
-    }
     c_nColors->Enable(c_ramExtension->GetSelection() > 0);
     c_flexibleMmu->Enable(c_ramExtension->GetSelection() > 1);
-    if (c_ramExtension->GetSelection() < 2)
+}
+
+void FlexemuOptionsDialog::OnEmulatedHardwareChanged(
+        wxCommandEvent &WXUNUSED(event))
+{
+    bool isEurocom2V7 = c_emulatedHardware->GetSelection() != 0;
+
+    c_nColors->Enable(isEurocom2V7);
+    c_ramExtension->Enable(isEurocom2V7);
+    c_flexibleMmu->Enable(isEurocom2V7);
+    c_useRtc->Enable(isEurocom2V7);
+
+    for (int x = 0; x < WXSIZEOF(c_drive); x++)
     {
-        c_flexibleMmu->SetValue(false);
+        c_drive[x]->Enable(isEurocom2V7);
+    }
+
+    for (int x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
+    {
+        c_mdcrDrive[x]->Enable(!isEurocom2V7);
     }
 }
 
