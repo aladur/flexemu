@@ -123,12 +123,11 @@ FlexemuOptionsDialog::~FlexemuOptionsDialog()
 bool FlexemuOptionsDialog::TransferDataToWindow()
 {
     wxString str;
-    int x;
     int n = 0;
 
     if (c_geometry)
     {
-        for (x = 1; x <= MAX_PIXELSIZEX; x++)
+        for (int x = 1; x <= MAX_PIXELSIZEX; x++)
         {
             int y;
 
@@ -175,7 +174,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     if (c_color)
     {
-        unsigned int i;
+        size_t i;
         wxString colorName;
         std::string bColorName;
 
@@ -221,14 +220,14 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_diskDir->SetValue(disk_dir);
     }
 
-    for (x = 0; x < WXSIZEOF(c_drive); x++)
+    for (size_t x = 0; x < WXSIZEOF(c_drive); x++)
     {
         wxString driveName(m_options->drive[x].c_str(), *wxConvCurrent);
         c_drive[x]->SetValue(driveName);
         c_drive[x]->Enable(!m_options->isEurocom2V5);
     }
 
-    for (x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
+    for (size_t x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
     {
         wxString driveName(m_options->mdcrDrives[x].c_str(), *wxConvCurrent);
         c_mdcrDrive[x]->SetValue(driveName);
@@ -425,7 +424,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     wxStaticText *pStatic;
     wxButton *pButton;
     wxString text;
-    int i;
+    size_t i;
 
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
@@ -596,6 +595,7 @@ bool FlexemuOptionsDialog::Validate()
 
 bool FlexemuOptionsDialog::TransferDataFromWindow()
 {
+    size_t i;
 
     if (c_geometry)
     {
@@ -676,12 +676,12 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
             c_diskDir->GetValue().mb_str(*wxConvCurrent);
     };
 
-    for (int i = 0; i < WXSIZEOF(c_drive); i++)
+    for (i = 0; i < WXSIZEOF(c_drive); i++)
     {
         m_options->drive[i] = c_drive[i]->GetValue().mb_str(*wxConvCurrent);
     }
 
-    for (int i = 0; i < WXSIZEOF(c_mdcrDrive); i++)
+    for (i = 0; i < WXSIZEOF(c_mdcrDrive); i++)
     {
         m_options->mdcrDrives[i] =
             c_mdcrDrive[i]->GetValue().mb_str(*wxConvCurrent);
@@ -854,8 +854,7 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 
         if (c_diskDir)
         {
-            disk_dir = m_options->disk_dir.c_str(), *wxConvCurrent;
-            c_diskDir->SetValue(disk_dir);
+            c_diskDir->SetValue(dialog->GetPath());
         }
     }
 }
@@ -906,18 +905,19 @@ void FlexemuOptionsDialog::OnEmulatedHardwareChanged(
         wxCommandEvent &WXUNUSED(event))
 {
     bool isEurocom2V7 = c_emulatedHardware->GetSelection() != 0;
+    size_t x;
 
     c_nColors->Enable(isEurocom2V7);
     c_ramExtension->Enable(isEurocom2V7);
     c_flexibleMmu->Enable(isEurocom2V7);
     c_useRtc->Enable(isEurocom2V7);
 
-    for (int x = 0; x < WXSIZEOF(c_drive); x++)
+    for (x = 0; x < WXSIZEOF(c_drive); x++)
     {
         c_drive[x]->Enable(isEurocom2V7);
     }
 
-    for (int x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
+    for (x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
     {
         c_mdcrDrive[x]->Enable(!isEurocom2V7);
     }
