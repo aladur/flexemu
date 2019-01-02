@@ -457,14 +457,14 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
 
     for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
-        text.Printf(_("Disk Drive %d"), i);
+        text.Printf(_("Disk Drive %ld"), i);
         c_drive[i] = CreateFileControls(panel, pPanelSizer, text,
                                         IDC_Drive0 + i, IDC_Drive0Button + i);
     }
 
     for (i = 0; i < WXSIZEOF(c_mdcrDrive); ++i)
     {
-        text.Printf(_("Cassette Drive %d"), i);
+        text.Printf(_("Cassette Drive %ld"), i);
         c_mdcrDrive[i] = CreateFileControls(panel, pPanelSizer, text,
                                             IDC_MdcrDrive0 + i,
                                             IDC_MdcrDrive0Button + i);
