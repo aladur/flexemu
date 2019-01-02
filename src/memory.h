@@ -102,7 +102,7 @@ public:
 
     void set_tgt_addr(size_t newAddress)
     {
-        target_address = newAddress;
+        target_address = static_cast<Word>(newAddress);
     }
 
 public:

@@ -225,7 +225,7 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
     const size_t buffer_size = 255;
     Byte header[4] = { 0x02, 0x00, 0x00, 0x00 };
     Byte buffer[buffer_size];
-    Word address = memsrc.reset_src_addr();
+    Word address = static_cast<Word>(memsrc.reset_src_addr());
     size_t index = 0;
     bool last_junk_written = false;
     bool at_end;
@@ -243,7 +243,7 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
             {
                 header[1] = (address >> 8) & 0xff;
                 header[2] = address & 0xff;
-                header[3] = index;
+                header[3] = static_cast<Byte>(index);
                 if (fwrite(&header, sizeof(Byte), sizeof(header), fp) !=
                     sizeof(header))
                 {
@@ -255,7 +255,7 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
                     return -2; // write error
                 }
 
-                address += index;
+                address += static_cast<Word>(index);
                 index = 0;
             }
 
