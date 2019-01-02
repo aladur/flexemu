@@ -1,0 +1,196 @@
+<html>
+<head>
+<title>Flexemu Monitor program mon24.hex</title>
+</head>
+<body>
+<h2>
+Flexemu Monitor program mon24.s19
+<hr></h2>
+<a name="monitor">
+The monitor program provides basic I/O functions to the operating system. It
+is comparable to the BIOS on a PC.
+<BR><BR>
+But in addition it provides a simple user
+interface to display or change memory contents or set or clear breakpoints. 
+mon24.s19 is designed to support Eurocom II/V5. It does not have a FLEX boot
+loader. Instead files can be loaded from a Philips Mini Digital Cassette
+Recorder (Philips MDCR). See command D for details.
+<BR><BR>
+The following table gives an overview of the available commands:
+<p>
+<table border>
+ <tr>
+  <th>Command</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>A</td>
+  <td>Read and modify CPU registers</td>
+ </tr>
+ <tr>
+  <td>B XXXX</td>
+  <td>Set breakpoint at address XXXX. Only supported for an address located in
+  RAM.</td>
+ </tr>
+ <tr>
+  <td>C</td>
+  <td>Continue programm exection e.g. after a breakpoint.</td>
+ </tr>
+ <tr>
+  <td>D</td>
+  <td>Read or write a file to or from a Philips Mini Digital Cassette Recorder
+  (Philips MDCR). Two drives 0 and 1 are supported. There are four sub commands
+  available:
+  <BR><BR>
+  L NAME06 XXXX YYYY
+  <BR>
+  Load: Load a file from MDCR.
+  The filename, a start- and end address has to be
+  specified.
+  <BR><BR>
+  RN NAME06 XXXX YYYY
+  <BR>
+  Record New: Rewind the cassette tape and write the file. All existing files
+  on the tape get lost. The filename, a start- and end address has to be
+  specified.
+  <BR><BR>
+  RO NAME06 XXXX YYYY
+  <BR>
+  Record Old: Forward the cassette tape until the end of the last written file
+  and write the file. All existing files on the tape are still available.
+  The filename, a start- and end address has to be specified.
+  <BR><BR>
+  B
+  <BR>
+  Back: Jump back to the command prompt.
+  <BR><BR>
+  flexemu comes with a cassette file system.dcr. It contains the following
+  files:
+  <BR><BR>
+  BASIC4 from $0000 to $39FF
+  <BR>
+  DEBG64 from $8500 to $AFFF
+  <BR>
+ </tr>
+ <tr>
+  <td>E ZZ</td>
+  <td>Switch the video graphics RAM. The following values are supported:
+  <BR><BR>
+  00: Video RAM from $0000 to $3FFF
+  <BR>
+  01: Video RAM from $4000 to $7FFF
+  <BR>
+  02: Video RAM from $8000 to $BFFF (Take care. $BF00 to $BFFF is the RAM area
+  of mon24.s19 itself)
+  <BR><BR>
+  Any other value is ignored.</td>
+ </tr>
+ <tr>
+  <td>G XXXX</td>
+  <td>Jump to address XXXX.</td>
+ </tr>
+ <tr>
+  <td>L NAME06</td>
+  <td>Load a file in Motorola S-Record format from serial port. Not
+  supported on flexemu.</td>
+ </tr>
+ <tr>
+  <td>CTRL-L</td>
+  <td>Clear screen.</td>
+ </tr>
+ <tr>
+  <td>M XXXX</td>
+  <td>Display and modify memory at address XXXX. After displaying the memory
+  content a new value ZZ can be entered. CTRL-J displays the memory content
+  of the next address. The command can be aborted with ENTER or CTRL-X.
+  </td>
+ </tr>
+ <tr>
+  <td>O XXXX YYYY</td>
+  <td>Calculate address offset for a MC6809 branch or long branch
+      operation.</td>
+ </tr>
+ <tr>
+  <td>P XXXX YYYY</td>
+  <td>Command P: Details are unknown.</td>
+ </tr>
+ <tr>
+  <td>R XXXX YYYY NAME06</td>
+  <td>Write a file in Motorola S-Record format to serial port. In flexemu
+  the serial port is the connected terminal (linux only).</td>
+ </tr>
+ <tr>
+  <td>S</td>
+  <td>Command S: Step over a breakpoint.</td>
+ </tr>
+ <tr>
+  <td>T XXXX YYYY</td>
+  <td>Memory dump from XXXX to YYYY.</td>
+ </tr>
+ <tr>
+  <td>V</td>
+  <td>Terminal mode: Any input and output is sent or received from or to serial
+      port.</td>
+ </tr>
+ <tr>
+  <td>/</td>
+  <td>Continue displaying memory content of next address based on a previous M
+      command.</td>
+ </tr>
+ <tr>
+  <td>.</td>
+  <td>Continue displaying memory content of same address based on a previous M
+      command.</td>
+ </tr>
+ <tr>
+  <td>^</td>
+  <td>Continue displaying memory content of previous address based on a
+      previous M command.</td>
+ </tr>
+</table>
+</p>
+ZZ means a two digit hex number, XXXX or YYYY means a four digit hex number.
+NAME06 means a file name consisting of 6 ASCII characters.
+<p>
+Flexemu can also be used with other monitor programs as long as they support
+the special hardware needs of the Eurocom II V5 or V7.
+<p>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+</ul>
+<h2>Documents on the behalf of the FLEX User Group</h2>
+<ul>
+ <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
+ <li><a href="swflexum.pdf" target="_blank">FLEX User's Manual (2)</a>
+ <li><a href="flexapg.pdf" target="_blank">FLEX Programmer's Manual</a>
+ <li><a href="6809fadg.pdf" target="_blank">6809 FLEX Adaption Guide</a>
+ <li><a href="tedit.pdf" target="_blank">FLEX Editor</a>
+ <li><a href="relasmb.pdf" target="_blank">FLEX 6809 Relocating Assembler</a>
+ <li><a href="asmb.pdf" target="_blank">FLEX Assembler</a>
+ <li><a href="linkload.pdf" target="_blank">FLEX Linking Loader</a>
+ <li><a href="crasmb.pdf" target="_blank">Lloyd Macro Cross Assembler</a>
+ <li><a href="6809diag.pdf" target="_blank">6809 FLEX Diagnostics</a>
+ <li><a href="debug.pdf" target="_blank">6809 Debug Package</a>
+ <li><a href="dynamite.pdf" target="_blank">DYNAMITE Disassembler User's Manual</a>
+ <li><a href="basic_um.pdf" target="_blank">BASIC Users Manual</a>
+ <li><a href="ba2bqs.pdf" target="_blank">BASIC Answers to BASIC Questions</a>
+ <li><a href="basprec.pdf" target="_blank">BASIC Precompiler User's Manual</a>
+ <li><a href="f77.pdf" target="_blank">Fortan 77</a>
+     <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
+</ul>
+<h2>Related Links</h2>
+<ul>
+ <li><a href="https://aladur.neocities.org/flexemu">Flexemu Homepage</a>
+</ul>
+</body>
+</html>

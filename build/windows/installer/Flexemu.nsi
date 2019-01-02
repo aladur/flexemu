@@ -216,6 +216,23 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\flexuser.htm"
   File /a "${BASEDIR}\doc\flexutil.htm"
   File /a "${BASEDIR}\doc\neumon54.htm"
+  File /a "${BASEDIR}\doc\6809diag.pdf"
+  File /a "${BASEDIR}\doc\6809fadg.pdf"
+  File /a "${BASEDIR}\doc\asmb.pdf"
+  File /a "${BASEDIR}\doc\ba2bqs.pdf"
+  File /a "${BASEDIR}\doc\basic_um.pdf"
+  File /a "${BASEDIR}\doc\basprec.pdf"
+  File /a "${BASEDIR}\doc\crasmb.pdf"
+  File /a "${BASEDIR}\doc\debug.pdf"
+  File /a "${BASEDIR}\doc\dynamite.pdf"
+  File /a "${BASEDIR}\doc\f77.pdf"
+  File /a "${BASEDIR}\doc\flex2um.pdf"
+  File /a "${BASEDIR}\doc\flexapg.pdf"
+  File /a "${BASEDIR}\doc\linkload.pdf"
+  File /a "${BASEDIR}\doc\relasmb.pdf"
+  File /a "${BASEDIR}\doc\swflexum.pdf"
+  File /a "${BASEDIR}\doc\tedit.pdf"
+  File /a "${BASEDIR}\doc\util_man.pdf"
 
 SectionEnd   
 
