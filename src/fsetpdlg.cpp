@@ -635,7 +635,6 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     {
         m_guiOptions->color =
             c_color->GetValue().mb_str(*wxConvCurrent);
-        unsigned int i;
         wxString colorName;
 
         for (i = 0; i < WXSIZEOF(color_table); i++)
