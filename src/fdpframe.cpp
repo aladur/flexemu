@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 1998-2018  W. Schwotzer
+    Copyright (C) 1998-2019  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -211,7 +211,7 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
     msgFormat =  _("FLEXplorer V");
     msgFormat += progVersion;
     msgFormat += wxT("\n");
-    msgFormat += _("Copyright (C) W. Schwotzer  1998-2018\n");
+    msgFormat += _("Copyright (C) W. Schwotzer  1998-2019\n");
     msgFormat += _("FLEXplorer comes with ABSOLUTELY NO WARRANTY.\n");
     msgFormat += _("This is free software, and you are welcome\n");
     msgFormat += _("to redistribute it under certain\n");

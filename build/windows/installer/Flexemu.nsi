@@ -29,7 +29,7 @@ LicenseBkColor /windows
 
 ; file info
 VIAddVersionKey ProductName     "${APPNAME}"
-VIAddVersionKey LegalCopyright  "(C) 1997-2018 W. Schwotzer"
+VIAddVersionKey LegalCopyright  "(C) 1997-2019 W. Schwotzer"
 VIAddVersionKey Comment         "an MC6809 emulator running FLEX"
 VIAddVersionKey ProductVersion  "${APPVERSION}"
 VIAddVersionKey FileDescription "an MC6809 emulator running FLEX"

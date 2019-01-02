@@ -2,7 +2,7 @@
     absgui.h: abstract gui interface.
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2018  W. Schwotzer
+    Copyright (C) 1997-2019  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 #define HEADER1 "                 " PROGRAMNAME "\n\
 an MC6809 emulator running FLEX\n                 "
 #define HEADER2 "\n\n\
-  Copyright (C) 1997-2018 W. Schwotzer\n\n\
+  Copyright (C) 1997-2019 W. Schwotzer\n\n\
 " PROGRAMNAME " comes with ABSOLUTELY NO WARRANTY.\n\
 This is free software, and you are welcome\n\
     to redistribute it under certain\n\

@@ -2,7 +2,7 @@
     pia1.h
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2018  W. Schwotzer
+    Copyright (C) 1997-2019  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
