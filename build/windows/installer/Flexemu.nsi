@@ -187,7 +187,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   File /a "${BASEDIR}\monitor\monu54-6.s19"
   File /a "${BASEDIR}\monitor\neumnt54.hex"
   File /a "${BASEDIR}\monitor\neumon54.hex"
-  ; Install disk files
+  ; Install cassette/disk files
   File /a "${BASEDIR}\disks\btx.dsk"
   File /a "${BASEDIR}\disks\colors.dsk"
   File /a "${BASEDIR}\disks\games.dsk"
@@ -198,6 +198,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   File /a "${BASEDIR}\disks\system.dsk"
   File /a "${BASEDIR}\disks\test.dsk"
   File /a "${BASEDIR}\disks\system54.dsk"
+  File /a "${BASEDIR}\disks\system.dcr"
 
 SectionEnd
 
