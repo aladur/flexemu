@@ -224,18 +224,22 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xf0:
             stack -= 2;
             memory.write_word(stack, pc);
+            FALLTHROUGH;
 
         case 0x70:
             stack -= 2;
             memory.write_word(stack, reg_s_or_u);
+            FALLTHROUGH;
 
         case 0x30:
             stack -= 2;
             memory.write_word(stack, y);
+            FALLTHROUGH;
 
         case 0x10:
             stack -= 2;
             memory.write_word(stack, x);
+            FALLTHROUGH;
 
         case 0x00:
             break;
@@ -243,10 +247,12 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xe0:
             stack -= 2;
             memory.write_word(stack, pc);
+            FALLTHROUGH;
 
         case 0x60:
             stack -= 2;
             memory.write_word(stack, reg_s_or_u);
+            FALLTHROUGH;
 
         case 0x20:
             stack -= 2;
@@ -256,6 +262,7 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xd0:
             stack -= 2;
             memory.write_word(stack, pc);
+            FALLTHROUGH;
 
         case 0x50:
             stack -= 2;
@@ -267,6 +274,7 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xc0:
             stack -= 2;
             memory.write_word(stack, pc);
+            FALLTHROUGH;
 
         case 0x40:
             stack -= 2;
@@ -306,24 +314,30 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
     {
         case 0x0f:
             memory.write_byte(--stack, dp);
+            FALLTHROUGH;
 
         case 0x07:
             memory.write_byte(--stack, b);
+            FALLTHROUGH;
 
         case 0x03:
             memory.write_byte(--stack, a);
+            FALLTHROUGH;
 
         case 0x01:
             memory.write_byte(--stack, cc.all);
+            FALLTHROUGH;
 
         case 0x00:
             break;
 
         case 0x0e:
             memory.write_byte(--stack, dp);
+            FALLTHROUGH;
 
         case 0x06:
             memory.write_byte(--stack, b);
+            FALLTHROUGH;
 
         case 0x02:
             memory.write_byte(--stack, a);
@@ -331,6 +345,7 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 
         case 0x0d:
             memory.write_byte(--stack, dp);
+            FALLTHROUGH;
 
         case 0x05:
             memory.write_byte(--stack, b);
@@ -339,6 +354,7 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 
         case 0x0c:
             memory.write_byte(--stack, dp);
+            FALLTHROUGH;
 
         case 0x04:
             memory.write_byte(--stack, b);
@@ -374,24 +390,30 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
     {
         case 0x0f:
             cc.all = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x0e:
             a = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x0c:
             b = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x08:
             dp = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x00:
             break;
 
         case 0x07:
             cc.all = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x06:
             a = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x04:
             b = memory.read_byte(stack++);
@@ -399,6 +421,7 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 
         case 0x0b:
             cc.all = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x0a:
             a = memory.read_byte(stack++);
@@ -407,6 +430,7 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 
         case 0x03:
             cc.all = memory.read_byte(stack++);
+            FALLTHROUGH;
 
         case 0x02:
             a = memory.read_byte(stack++);
@@ -438,18 +462,22 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xf0:
             x = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0xe0:
             y = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0xc0:
             reg_s_or_u = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0x80:
             pc = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0x00:
             break;
@@ -457,10 +485,12 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0x70:
             x = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0x60:
             y = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0x40:
             reg_s_or_u = memory.read_word(stack);
@@ -470,6 +500,7 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xb0:
             x = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0xa0:
             y = memory.read_word(stack);
@@ -481,6 +512,7 @@ t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0x30:
             x = memory.read_word(stack);
             stack += 2;
+            FALLTHROUGH;
 
         case 0x20:
             y = memory.read_word(stack);

@@ -357,6 +357,15 @@ struct sOptions
         }                                                  \
     }
 
+#if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
+#define FALLTHROUGH [[fallthrough]]
+#elif __cplusplus && __GNUC__
+#define FALLTHROUGH __attribute__ ((fallthrough))
+#elif __cplusplus && __has_cpp_attribute(clang::fallthrough)
+#define FALLTHROUGH [[clang::fallthrough]]
+#else
+#define FALLTHROUGH
+#endif
 
 #ifdef __cplusplus
     extern int      copyFile(const char *srcPath, const char *destPath);

@@ -254,8 +254,8 @@ int main(int argc, char *argv[])
                       {
                           std::cerr << "Unknown option character '\\x" <<
                                        std::hex << optopt << "'.\n";
-                         return 1;
                       }
+                      return 1;
             default:  return 1;
         }
     }

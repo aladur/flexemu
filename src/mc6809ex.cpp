@@ -24,6 +24,7 @@ case 0x01:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x00:
     neg(fetch_ea_dir());
@@ -54,6 +55,7 @@ case 0x05:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x04:
     lsr(fetch_ea_dir());
@@ -87,6 +89,7 @@ case 0x0b:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x0a:
     dec(fetch_ea_dir());
@@ -571,6 +574,7 @@ case 0x41:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x40:
     neg(a);
@@ -589,6 +593,7 @@ case 0x45:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x44:
     lsr(a);
@@ -622,6 +627,7 @@ case 0x4b:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x4a:
     dec(a);
@@ -662,6 +668,7 @@ case 0x51:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x50:
     neg(b);
@@ -680,6 +687,7 @@ case 0x55:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x54:
     lsr(b);
@@ -713,6 +721,7 @@ case 0x5b:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x5a:
     dec(b);
@@ -753,6 +762,7 @@ case 0x61:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x60:
     neg(fetch_ea_idx(cycles));
@@ -771,6 +781,7 @@ case 0x65:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x64:
     lsr(fetch_ea_idx(cycles));
@@ -804,6 +815,7 @@ case 0x6b:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x6a:
     dec(fetch_ea_idx(cycles));
@@ -837,6 +849,7 @@ case 0x71:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x70:
     neg(fetch_ea_ext());
@@ -855,6 +868,7 @@ case 0x75:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x74:
     lsr(fetch_ea_ext());
@@ -888,6 +902,7 @@ case 0x7b:
         invalid("instruction");
         break;
     }
+    FALLTHROUGH;
 
 case 0x7a:
     dec(fetch_ea_ext());

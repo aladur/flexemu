@@ -457,6 +457,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x11 : // [,R++]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x01 : // ,R++
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -473,6 +474,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x13 : // [,R--]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x03 : // ,--R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -483,6 +485,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x14 : // [,R--]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x04 : // ,R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -493,6 +496,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x15 : // [B,R]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x05 : // B,R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -503,6 +507,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x16 : // [A,R]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x06 : // A,R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -513,6 +518,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x18 : // [,R + 8 Bit Offset]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x08 : // ,R + 8 Bit Offset
                 offset = *(pMemory + 2);
@@ -537,6 +543,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x19 : // [,R + 16 Bit Offset]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x09 : // ,R + 16 Bit Offset
                 offset = (*(pMemory + 2) << 8 | *(pMemory + 3));
@@ -551,6 +558,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x1b : // [D,R]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x0b : // D,R
                 sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
@@ -561,6 +569,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x1c : // [,PC + 8 Bit Offset]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x0c : // ,PC + 8 Bit Offset
                 offset = (EXTEND8(*(pMemory + 2)) + pc + 3) & 0xFFFF;
@@ -575,6 +584,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x1d : // [,PC + 16 Bit Offset]
                 br1 = "[";
                 br2 = "]";
+                FALLTHROUGH;
 
             case 0x0d :  // ,PC + 16 Bit Offset
                 offset = (((*(pMemory + 2) << 8) | *(pMemory + 3)) + pc + 4) &

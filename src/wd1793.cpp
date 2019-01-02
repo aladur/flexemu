@@ -237,6 +237,7 @@ void Wd1793::command(Byte command)
 
             case CMD_STEP_TU:
                 do_seek(tr + stepOffset);
+                FALLTHROUGH;
 
             case CMD_STEP:
                 setIrq();
