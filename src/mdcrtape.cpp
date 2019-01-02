@@ -229,15 +229,16 @@ bool MiniDcrTape::VerifyTape()
     if (IsOpen())
     {
         std::vector<Word> record_sizes;
-        static std::array<char, 4> magic_bytes { 0, 0, 0, 0 };
+        static std::array<char, 4> magic_bytes_read { 0, 0, 0, 0 };
         std::ios::pos_type read_pos = stream.tellg();
         std::ios::pos_type record_position;
 
         stream.seekg(0);
 
-        stream.read(magic_bytes.data(), magic_bytes.size());
-        if (stream.fail() || stream.tellg() != magic_bytes.size() ||
-                magic_bytes != MiniDcrTape::magic_bytes)
+        stream.read(magic_bytes_read.data(), magic_bytes_read.size());
+        if (stream.fail() ||
+            static_cast<size_t>(stream.tellg()) != magic_bytes_read.size() ||
+            magic_bytes_read != MiniDcrTape::magic_bytes)
         {
             // Wrong or incomplete magic number
             return result;
@@ -248,8 +249,8 @@ bool MiniDcrTape::VerifyTape()
         while (size != 0)
         {
             record_position = stream.tellg();
-            size = (stream.get() << 8);
-            size |= (stream.get() & 0xFF);
+            size = (static_cast<Byte>(stream.get()) << 8);
+            size |= (static_cast<Byte>(stream.get()) & 0xFF);
             if (stream.eof() || stream.fail())
             {
                 size = 0xFFFF;

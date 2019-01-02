@@ -28,6 +28,7 @@
 #include "pia2v5.h"
 #include "mc6809.h"
 #include "mdcrtape.h"
+#include "flexerr.h"
 #include <sstream>
 #include <iostream>
 #include <iomanip>
@@ -461,7 +462,7 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
             return true;
         }
 
-        std::string containerPath = disk_dir;
+        containerPath = disk_dir;
 
         if (containerPath.length() > 0 &&
         containerPath[containerPath.length()-1] != PATHSEPARATOR)
