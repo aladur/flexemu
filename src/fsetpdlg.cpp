@@ -108,11 +108,16 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_useRtc(nullptr), c_emulatedHardware(nullptr)
 
 {
-    int i;
+    size_t i;
 
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
         c_drive[i] = nullptr;
+    }
+
+    for (i = 0; i < WXSIZEOF(c_mdcrDrive); ++i)
+    {
+        c_mdcrDrive[i] = nullptr;
     }
 }
 
