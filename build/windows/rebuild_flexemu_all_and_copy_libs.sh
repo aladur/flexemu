@@ -24,7 +24,7 @@ cd ../..
 # Create and execute a batch file to build all four configurations
 create_rebuild_script flexemu.sln rebuild.bat
 echo build flexemu...
-#$COMSPEC //C rebuild.bat
+$COMSPEC //C rebuild.bat
 
 # check existence of result files and copy them to corresponding
 # flexemu build directory
