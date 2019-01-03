@@ -204,6 +204,7 @@
     <ClCompile Include="idircnt.cpp" />
     <ClCompile Include="iffilcnt.cpp" />
     <ClCompile Include="ifilecnt.cpp" />
+    <ClCompile Include="mdcrtape.cpp" />
     <ClCompile Include="misc1.cpp" />
     <ClCompile Include="ndircont.cpp" />
     <ClCompile Include="optdlg.cpp" />
@@ -254,6 +255,7 @@
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
     <ClInclude Include="ifilecnt.h" />
+    <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="ndircont.h" />
     <ClInclude Include="optdlg.h" />

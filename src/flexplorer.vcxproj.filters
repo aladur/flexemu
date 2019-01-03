@@ -99,6 +99,9 @@
     <ClCompile Include="rfilecnt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="mdcrtape.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmaps\chart.ico">
@@ -238,6 +241,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="sprinter.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="mdcrtape.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
