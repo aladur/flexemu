@@ -365,3 +365,76 @@ sOptions::sOptions() :
 {
 }
 
+#ifdef _WIN32
+// uses its own implementation of getopt
+int optind = 1;
+int opterr = 0;
+int optopt = 0;
+const char *optarg = nullptr;
+
+int getopt(int argc, char *const argv[], const char *optstr)
+{
+    int     i;
+
+    while (1)
+    {
+        char    opt;
+
+        optarg = optstr;
+
+        for (i = 1; i < optind; i++)
+        {
+            if (*(++optarg) == ':')
+            {
+                optarg++;
+            }
+        }
+
+        if ((opt = *optarg) == '\0')
+        {
+            return -1;
+        }
+
+        optind++;
+        i = 1;
+
+        while (i < argc)
+        {
+            if (argv[i][0] == '-' && argv[i][1] == opt)
+            {
+                // found option
+                if (*(optarg + 1) == ':')
+                {
+                    // option has a parameter
+                    if (argv[i][2] != '\0')
+                    {
+                        optarg = &argv[i][2];
+                        return opt;
+                    }
+                    else
+                    {
+                        if (++i < argc)
+                        {
+                            optarg = &argv[i][0];
+                            return opt;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    } // else
+                }
+                else
+                    // option has no parameter
+                {
+                    return opt;
+                }
+            } // if
+
+            i++;
+        } // while
+    } // while
+
+    return -1;
+} // getopt
+#endif

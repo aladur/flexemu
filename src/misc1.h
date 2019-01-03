@@ -383,10 +383,11 @@ struct sOptions
     extern std::string tohexstr(Word x);
 
     #ifdef _WIN32
-        extern int getopt(int argc, char *const argv[], char *optstr);
+        extern int getopt(int argc, char *const argv[], const char *optstr);
         extern int  optind;
         extern int  opterr;
-        extern char *optarg;
+        extern int  optopt;
+        extern const char *optarg;
     #endif
 #endif /* ifdef __cplusplus */
 

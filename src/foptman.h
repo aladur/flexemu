@@ -26,12 +26,6 @@
 #include "misc1.h"
 #include <stdio.h>
 
-#ifndef UNIX
-    extern int optind;
-    extern int opterr;
-    extern char *optarg;
-#endif
-
 class FlexOptionManager
 {
 public:
