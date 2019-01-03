@@ -116,7 +116,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 {
     if (aBase != nullptr)
     {
-        imp = std::move(aBase->IteratorFactory());
+        imp = aBase->IteratorFactory();
 
         if (!imp->NextDirEntry(filePattern))
         {
