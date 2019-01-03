@@ -228,10 +228,11 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
     Word address = static_cast<Word>(memsrc.reset_src_addr());
     size_t index = 0;
     bool last_junk_written = false;
-    bool at_end;
 
-    while (!(at_end = memsrc.src_at_end()) || !last_junk_written)
+    while (!memsrc.src_at_end() || !last_junk_written)
     {
+        bool at_end = memsrc.src_at_end();
+
         if (!at_end)
         {
             memsrc >> buffer[index++];
