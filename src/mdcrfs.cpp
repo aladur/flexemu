@@ -26,6 +26,7 @@
 #include "bmembuf.h"
 #include <limits>
 #include <algorithm>
+#include <cctype>
 
 const std::vector<std::string> mdcrErrors
 {
@@ -176,7 +177,7 @@ MdcrStatus MdcrFileSystem::ReadFile(
                 return MdcrStatus::ReadError;
             }
 
-            auto iter = ibuffer.cbegin() + 1;
+            iter = ibuffer.cbegin() + 1;
             if (ibuffer[ibuffer.size() - 2] !=
                 CalculateChecksum(iter, ibuffer.size() - 3))
             {
@@ -281,9 +282,9 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
     *(iter++) = 0x55;
     SetFilename(iter, mdcrFilename.c_str());
-    *(iter++) = startEndAddress.first >> 8;
+    *(iter++) = (startEndAddress.first >> 8) & 0xFF;
     *(iter++) = startEndAddress.first & 0xFF;
-    *(iter++) = startEndAddress.second >> 8;
+    *(iter++) = (startEndAddress.second >> 8) & 0xFF;
     *(iter++) = startEndAddress.second & 0xFF;
     *(iter++) = CalculateChecksum(checksumIter, 10);
     *(iter++) = 0;
