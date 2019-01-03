@@ -41,10 +41,12 @@
 #endif
 
 #include "contpdlg.h"
+#include "mdcrtape.h"
 
 
 BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
     EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
+    EVT_RADIOBOX(IDC_FormatCheckBox, ContainerPropertiesDialog::OnFormatChanged)
     //  EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
     //  EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
@@ -71,12 +73,14 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     wxBoxSizer *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
 
-    wxString choices[2];
+    wxString choices[3];
     choices[0] = _("DSK-File");
     choices[1] = _("FLX-File");
+    choices[2] = _("DCR-File");
 
     c_format = new wxRadioBox(this, IDC_FormatCheckBox, _("Format"),
-                              wxDefaultPosition, wxDefaultSize, 2, choices, 2,
+                              wxDefaultPosition, wxDefaultSize,
+                              WXSIZEOF(choices), choices, WXSIZEOF(choices),
                               wxRA_SPECIFY_COLS, wxGenericValidator(&m_format));
 
     pWidgetSizer->Add(c_format, 0, wxALL, 10);
@@ -155,6 +159,14 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
             c_path->SetValue(m_path);
         }
     }
+}
+
+void ContainerPropertiesDialog::OnFormatChanged(wxCommandEvent &WXUNUSED(event))
+{
+    bool isDcrFormat = c_format->GetSelection() == 2;
+
+    c_tracks->Enable(!isDcrFormat);
+    c_sectors->Enable(!isDcrFormat);
 }
 
 int ContainerPropertiesDialog::GetTracks()

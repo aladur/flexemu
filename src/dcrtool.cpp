@@ -26,8 +26,8 @@
 #include "mdcrfs.h"
 #include "bmembuf.h"
 #include "fileread.h"
+#include "flexerr.h"
 #include <ctype.h>
-#include <sys/stat.h>
 #include <limits>
 #include <iostream>
 #include <iomanip>
@@ -38,8 +38,11 @@
 void syntax()
 {
     std::cout << "dcrtool syntax:\n"
-              << " Write/Append files to a DCR file:\n"
+              << " Write/Append files to a DCR file."
+                 " (DCR file is created if it does not exist):\n"
               << "   dcrtool [-t][-u] -o <dcr_file> <bin_file> [<bin_file>...]\n"
+              << " Create a new empty DCR file:\n"
+              << "   dcrtool -c <dcr_file>\n"
               << " Extract all files from a DCR file:\n"
               << "   dcrtool -x <dcr_file>\n"
               << " List contents of a DCR file:\n"
@@ -61,12 +64,26 @@ int WriteAppendToDcrFile(const std::vector<const char *> &ifiles,
     MiniDcrTapePtr mdcr;
     BMemoryBuffer memory(65536);
 
-    mdcr = MiniDcrTape::Create(ofile);
-    if (!mdcr->IsOpen())
+    try
     {
-        std::cerr << "*** Error opening " << ofile << " for output\n";
-        return 1;
+        // 1. try to open existing file
+        mdcr = MiniDcrTape::Open(ofile);
     }
+    catch (FlexException &ex)
+    {
+        try
+        {
+            // 2. try to create a new file
+            mdcr = MiniDcrTape::Create(ofile);
+        }
+        catch (FlexException &ex)
+        {
+            std::cerr << "*** Error creating or opening " << ofile <<
+                         " for output\n";
+            return 1;
+        }
+    }
+
     if (mdcr->IsWriteProtected())
     {
         std::cerr << "*** Error: file " << ofile << " is write protected\n";
@@ -120,21 +137,34 @@ int WriteAppendToDcrFile(const std::vector<const char *> &ifiles,
     return 0;
 }
 
-int ExtractFromDcrFile(const char *ifile)
+int CreateDcrFile(const char *ofile)
 {
-    struct stat file_stat;
     MiniDcrTapePtr mdcr;
 
-    if (stat(ifile, &file_stat) == -1)
+    try
     {
-        syntax();
+        mdcr = MiniDcrTape::Create(ofile);
+    }
+    catch (FlexException &ex)
+    {
+        std::cerr << "*** Error: " << ex.what() << "\n";
         return 1;
     }
 
-    mdcr = MiniDcrTape::Create(ifile);
-    if (!mdcr->IsOpen())
+    return 0;
+}
+
+int ExtractFromDcrFile(const char *ifile)
+{
+    MiniDcrTapePtr mdcr;
+
+    try
     {
-        std::cerr << "*** Error opening " << ifile << " for output\n";
+        mdcr = MiniDcrTape::Open(ifile);
+    }
+    catch (FlexException &ex)
+    {
+        std::cerr << "*** Error: " << ex.what() << "\n";
         return 1;
     }
 
@@ -174,19 +204,15 @@ int ExtractFromDcrFile(const char *ifile)
 
 int ListContentOfDcrFile(const char *ifile)
 {
-    struct stat file_stat;
     MiniDcrTapePtr mdcr;
 
-    if (stat(ifile, &file_stat) == -1)
+    try
     {
-        syntax();
-        return 1;
+        mdcr = MiniDcrTape::Open(ifile);
     }
-
-    mdcr = MiniDcrTape::Create(ifile);
-    if (!mdcr->IsOpen())
+    catch (FlexException &ex)
     {
-        std::cerr << "*** Error opening " << ifile << " for output\n";
+        std::cerr << "*** Error: " << ex.what() << "\n";
         return 1;
     }
 
@@ -220,7 +246,7 @@ int ListContentOfDcrFile(const char *ifile)
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("o:x:l:tuh");
+    std::string optstr("o:c:x:l:tuh");
     std::vector<const char *>ifiles;
     char *ofile = nullptr;
     char *ifile = nullptr;
@@ -235,6 +261,9 @@ int main(int argc, char *argv[])
         switch (result)
         {
             case 'o': ofile = optarg;
+                      command = result;
+                      break;
+            case 'c': ofile = optarg;
                       command = result;
                       break;
             case 'x': ifile = optarg;
@@ -267,6 +296,8 @@ int main(int argc, char *argv[])
 
     if (command == 0 ||
         (command == 'o' && (ifiles.empty() || ofile == nullptr)) ||
+        (command == 'c' && (!ifiles.empty() || ofile == nullptr ||
+                            isTruncate || isUppercase)) ||
         (command == 'x' && (!ifiles.empty() || ifile == nullptr ||
                             isTruncate || isUppercase)) ||
         (command == 'l' && (!ifiles.empty() || ifile == nullptr ||
@@ -280,6 +311,10 @@ int main(int argc, char *argv[])
     {
         case 'o':
             return WriteAppendToDcrFile(ifiles, ofile, isTruncate, isUppercase);
+            break;
+
+        case 'c':
+            return CreateDcrFile(ofile);
             break;
 
         case 'x':

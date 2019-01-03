@@ -44,6 +44,7 @@ public:
     virtual ~ContainerPropertiesDialog();
     void OnInitDialog(wxInitDialogEvent &event);
     void OnSelectPath(wxCommandEvent &event);
+    void OnFormatChanged(wxCommandEvent &event);
     int GetTracks();
     int GetSectors();
     inline const wxString &GetPath()

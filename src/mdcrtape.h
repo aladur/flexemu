@@ -30,6 +30,8 @@
 #include <fstream>
 
 
+const int TYPE_DCR_CONTAINER = 0x100; /* file container with DCR format */
+
 class MiniDcrTape;
 
 using MiniDcrTapePtr = std::unique_ptr<MiniDcrTape>;
@@ -44,6 +46,12 @@ enum class RecordType : Byte
 
 class MiniDcrTape
 {
+    enum class Mode : Byte
+    {
+        Create, // Create a new file
+        Open,   // Open an existing file
+    };
+
 private:
 // Using a Byte stream would fit better but no read/write is possible
 // on Linux gcc 5.4.0
@@ -59,13 +67,14 @@ public:
     MiniDcrTape() = delete;
     MiniDcrTape(const MiniDcrTape &) = delete;
     MiniDcrTape(MiniDcrTape &&);
-    MiniDcrTape(const char *path);
+    MiniDcrTape(const char *path, Mode mode);
     virtual ~MiniDcrTape();
 
     MiniDcrTape &operator= (const MiniDcrTape &) = delete;
     MiniDcrTape &operator= (MiniDcrTape &&);
 
     static MiniDcrTapePtr Create(const char *path);
+    static MiniDcrTapePtr Open(const char *path);
     int  Close();
     bool IsOpen() const;
     bool HasRecord() const;

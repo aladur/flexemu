@@ -88,7 +88,7 @@ fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp \
+bprocess.cpp mdcrtape.cpp \
 bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
 fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
@@ -96,12 +96,13 @@ rfilecnt.h brcfile.h benv.h fmenufac.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
-sprinter.h flexemu.h
+sprinter.h flexemu.h mdcrtape.h
 
 dcrtool_SOURCES = \
 dcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
+flexerr.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
-typedefs.h misc1.h config.h
+typedefs.h misc1.h config.h flexerr.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \

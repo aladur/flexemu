@@ -61,6 +61,7 @@ static const char *_progVersion = VERSION;
 #include "fcopyman.h"
 #include "fmenufac.h"
 #include "optdlg.h"
+#include "mdcrtape.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     #include "bitmaps/flexdisk.xpm"
@@ -313,6 +314,15 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
 
         try
         {
+            if (format == TYPE_DCR_CONTAINER)
+            {
+                MiniDcrTapePtr mdcr = MiniDcrTape::Create(
+                            containerPath.mb_str(*wxConvCurrent));
+                // DCR containers can be created but not displayed in
+                // FLEXplorer, so immediately return.
+                return;
+            }
+
             container = FlexFileContainer::Create(
                             directory.mb_str(*wxConvCurrent),
                             containerName.mb_str(*wxConvCurrent),
@@ -398,6 +408,10 @@ bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
 
             case 1:
                 *format = TYPE_FLX_CONTAINER;
+                break;
+
+            case 2:
+                *format = TYPE_DCR_CONTAINER;
                 break;
 
             default:

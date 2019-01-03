@@ -115,7 +115,7 @@ PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_dcrtool_OBJECTS = dcrtool-dcrtool.$(OBJEXT) \
 	dcrtool-mdcrtape.$(OBJEXT) dcrtool-mdcrfs.$(OBJEXT) \
 	dcrtool-fileread.$(OBJEXT) dcrtool-bfileptr.$(OBJEXT) \
-	dcrtool-bmembuf.$(OBJEXT)
+	dcrtool-bmembuf.$(OBJEXT) dcrtool-flexerr.$(OBJEXT)
 dcrtool_OBJECTS = $(am_dcrtool_OBJECTS)
 dcrtool_DEPENDENCIES =
 dcrtool_LINK = $(CXXLD) $(dcrtool_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -170,7 +170,8 @@ am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
 	flexplorer-bmembuf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
 	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
 	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
-	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT)
+	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT) \
+	flexplorer-mdcrtape.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
@@ -562,7 +563,7 @@ fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp \
+bprocess.cpp mdcrtape.cpp \
 bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
 fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
@@ -570,12 +571,13 @@ rfilecnt.h brcfile.h benv.h fmenufac.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
-sprinter.h flexemu.h
+sprinter.h flexemu.h mdcrtape.h
 
 dcrtool_SOURCES = \
 dcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
+flexerr.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
-typedefs.h misc1.h config.h
+typedefs.h misc1.h config.h flexerr.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -720,6 +722,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-bmembuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-dcrtool.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-fileread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-flexerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-mdcrfs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dcrtool-mdcrtape.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-absgui.Po@am__quote@
@@ -813,6 +816,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-idircnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-iffilcnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ifilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-mdcrtape.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-misc1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-optdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-rfilecnt.Po@am__quote@
@@ -944,6 +948,20 @@ dcrtool-bmembuf.obj: bmembuf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='dcrtool-bmembuf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
+
+dcrtool-flexerr.o: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-flexerr.o -MD -MP -MF $(DEPDIR)/dcrtool-flexerr.Tpo -c -o dcrtool-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-flexerr.Tpo $(DEPDIR)/dcrtool-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='dcrtool-flexerr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+
+dcrtool-flexerr.obj: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -MT dcrtool-flexerr.obj -MD -MP -MF $(DEPDIR)/dcrtool-flexerr.Tpo -c -o dcrtool-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dcrtool-flexerr.Tpo $(DEPDIR)/dcrtool-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='dcrtool-flexerr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dcrtool_CXXFLAGS) $(CXXFLAGS) -c -o dcrtool-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
 
 flexemu-absgui.o: absgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-absgui.o -MD -MP -MF $(DEPDIR)/flexemu-absgui.Tpo -c -o flexemu-absgui.o `test -f 'absgui.cpp' || echo '$(srcdir)/'`absgui.cpp
@@ -2260,6 +2278,20 @@ flexplorer-bprocess.obj: bprocess.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bprocess.cpp' object='flexplorer-bprocess.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bprocess.obj `if test -f 'bprocess.cpp'; then $(CYGPATH_W) 'bprocess.cpp'; else $(CYGPATH_W) '$(srcdir)/bprocess.cpp'; fi`
+
+flexplorer-mdcrtape.o: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-mdcrtape.o -MD -MP -MF $(DEPDIR)/flexplorer-mdcrtape.Tpo -c -o flexplorer-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-mdcrtape.Tpo $(DEPDIR)/flexplorer-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='flexplorer-mdcrtape.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-mdcrtape.o `test -f 'mdcrtape.cpp' || echo '$(srcdir)/'`mdcrtape.cpp
+
+flexplorer-mdcrtape.obj: mdcrtape.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-mdcrtape.obj -MD -MP -MF $(DEPDIR)/flexplorer-mdcrtape.Tpo -c -o flexplorer-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-mdcrtape.Tpo $(DEPDIR)/flexplorer-mdcrtape.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='flexplorer-mdcrtape.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
 
 fsetup-fsetup.o: fsetup.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup.Tpo -c -o fsetup-fsetup.o `test -f 'fsetup.cpp' || echo '$(srcdir)/'`fsetup.cpp

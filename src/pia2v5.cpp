@@ -454,12 +454,23 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
 
     for (i = 0; i < 2; ++i)
     {
-        cdbg << "path=" << containerPath << std::endl;
-        drive[drive_nr] = MiniDcrTape::Create(containerPath.c_str());
-
-        if (drive[drive_nr].get() != nullptr)
+        try
         {
+            drive[drive_nr] = MiniDcrTape::Open(containerPath.c_str());
+            if (debug)
+            {
+                cdbg << "drive_nr=" << drive_nr <<
+                        " path=" << containerPath << std::endl;
+            }
             return true;
+        }
+        catch (FlexException &exception)
+        {
+            if (debug)
+            {
+                cdbg << "drive_nr=" << drive_nr <<
+                        " exception.what=" << exception.what() << std::endl;
+            }
         }
 
         containerPath = disk_dir;

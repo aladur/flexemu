@@ -22,9 +22,12 @@
 
 
 #include "mdcrtape.h"
+#include "flexerr.h"
+#include "sys/stat.h"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 
@@ -36,40 +39,73 @@ MiniDcrTape::MiniDcrTape(MiniDcrTape &&src) :
 {
 }
 
-MiniDcrTape::MiniDcrTape(const char *path) : is_write_protected(false)
+MiniDcrTape::MiniDcrTape(const char *path, Mode mode) :
+    is_write_protected(false)
 {
-    stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
+    struct stat sbuf;
 
-    if (!IsOpen())
+    if (path == nullptr)
     {
-        stream.open(path, std::ios::in | std::ios::binary);
-        if (IsOpen())
-        {
-            // file only can be opened read-only.
-            is_write_protected = true;
-        }
-        else
-        {
-            // file does not exist, create a new one.
-            stream.open(path, std::ios::out | std::ios::binary);
-            if (IsOpen())
-            {
-                stream.write(MiniDcrTape::magic_bytes.data(),
-                             MiniDcrTape::magic_bytes.size());
-                stream.put(0);
-                stream.put(0);
-                stream.close();
-                stream.open(path,
-                        std::ios::in | std::ios::out | std::ios::binary);
-            }
-        }
+        throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    if (!VerifyTape())
+    switch (mode)
     {
-        // Wrong file format
-        std::cerr << "wrong file format: " << path << std::endl;
-        stream.close();
+        case Mode::Open:
+            if (stat(path, &sbuf) || !S_ISREG(sbuf.st_mode))
+            {
+                throw FlexException(FERR_UNABLE_TO_OPEN, path);
+            }
+
+            stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
+
+            if (!IsOpen())
+            {
+                stream.open(path, std::ios::in | std::ios::binary);
+
+                if (!IsOpen())
+                {
+                    throw FlexException(FERR_UNABLE_TO_OPEN, path);
+                }
+
+                // file only can be opened read-only.
+                is_write_protected = true;
+            }
+
+            if (!VerifyTape())
+            {
+                throw FlexException(FERR_INVALID_FORMAT, path);
+            }
+            break;
+
+        case Mode::Create:
+            if (!stat(path, &sbuf))
+            {
+                throw FlexException(FERR_FILE_ALREADY_EXISTS, path);
+            }
+
+            stream.open(path, std::ios::out | std::ios::binary);
+
+            if (!IsOpen())
+            {
+                throw FlexException(FERR_UNABLE_TO_CREATE, path);
+            }
+
+            stream.write(MiniDcrTape::magic_bytes.data(),
+                         MiniDcrTape::magic_bytes.size());
+            stream.put(0);
+            stream.put(0);
+            stream.close();
+            stream.open(path, std::ios::in | std::ios::out | std::ios::binary);
+
+            if (!IsOpen())
+            {
+                throw FlexException(FERR_UNABLE_TO_CREATE, path);
+            }
+            break;
+
+        default:
+            throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     record_index = 0;
@@ -98,7 +134,12 @@ MiniDcrTape &MiniDcrTape::operator= (MiniDcrTape &&src)
 
 MiniDcrTapePtr MiniDcrTape::Create(const char *path)
 {
-    return MiniDcrTapePtr(new MiniDcrTape(path));
+    return MiniDcrTapePtr(new MiniDcrTape(path, Mode::Create));
+}
+
+MiniDcrTapePtr MiniDcrTape::Open(const char *path)
+{
+    return MiniDcrTapePtr(new MiniDcrTape(path, Mode::Open));
 }
 
 int MiniDcrTape::Close()
