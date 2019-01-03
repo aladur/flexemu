@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fsetup", "src\fsetup.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flexplorer", "src\flexplorer.vcxproj", "{F25D3632-E44A-4251-8D56-05A2862D756D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcrtool", "src\dcrtool.vcxproj", "{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +43,14 @@ Global
 		{F25D3632-E44A-4251-8D56-05A2862D756D}.Release|Win32.Build.0 = Release|Win32
 		{F25D3632-E44A-4251-8D56-05A2862D756D}.Release|x64.ActiveCfg = Release|x64
 		{F25D3632-E44A-4251-8D56-05A2862D756D}.Release|x64.Build.0 = Release|x64
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Debug|Win32.Build.0 = Debug|Win32
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Debug|x64.ActiveCfg = Debug|x64
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Debug|x64.Build.0 = Debug|x64
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Release|Win32.ActiveCfg = Release|Win32
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Release|Win32.Build.0 = Release|Win32
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Release|x64.ActiveCfg = Release|x64
+		{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

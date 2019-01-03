@@ -69,14 +69,14 @@ int WriteAppendToDcrFile(const std::vector<const char *> &ifiles,
         // 1. try to open existing file
         mdcr = MiniDcrTape::Open(ofile);
     }
-    catch (FlexException &ex)
+    catch (FlexException &)
     {
         try
         {
             // 2. try to create a new file
             mdcr = MiniDcrTape::Create(ofile);
         }
-        catch (FlexException &ex)
+        catch (FlexException &)
         {
             std::cerr << "*** Error creating or opening " << ofile <<
                          " for output\n";
@@ -248,8 +248,8 @@ int main(int argc, char *argv[])
 {
     std::string optstr("o:c:x:l:tuh");
     std::vector<const char *>ifiles;
-    char *ofile = nullptr;
-    char *ifile = nullptr;
+    const char *ofile = nullptr;
+    const char *ifile = nullptr;
     bool isTruncate = false;
     bool isUppercase = false;
     int command = 0;
