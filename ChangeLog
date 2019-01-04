@@ -302,7 +302,31 @@ Bug Fixes:
 	o FlexRamFileContainer: Avoid stack overflow in operator=
 	o ContainerPropertiesDialog: Bugfix to correctly read sector count
 
-V2.22 (not yet published)
+V2.22 (20190104)
 New Features:
+	o Optionally support a more flexible MMU (hardware modification)
+	o Optionally disable realtime clock
+	o Command line parameter -F to set CPU frequency
+	o By default start flexemu with the original frequency (1.3396 MHz)
+	o Introduce ApplicationRunner to create most objects on stack
+	o Visual Studio: Increase warning level to 4
+	o neumon54 sources: Make it assemble with available assemblers
+	o neumon54 sources: Full english translation
+	o Optionally run flexemu without RAM extension
+	o Optionally emulate an Eurocom II/V5 (mon24.s19)
+	o Support Philips Mini Data Cassette Recorder (MDCR) with mon24.s19
+	o Boot FLEX: Either get date from RTC if present or prompt for date
+	o Add boot disk system54.dsk to boot from mon54.s19 or monu54-6.s19
+	o Added flexemu system config file flexemu.conf
+	  - Specify base address and optional size for I/O devices
+	  - Optionally support logging any I/O device access
+	  - Make SERPAR address configurable for any monitor file
+	  - Optionally initialize memory mapped RAM with a byte pattern
+	  - Optionally add logging for Philips Mini Data Cassette Recorder
+	o Added documentation for monitor program mon24.s19
+	o Added original FLEX PDF documentation available from FLEX User Group
 Bug Fixes:
+	o Directory container: Support reading from boot sector even if file
+	  'boot' is not present
+	o Removed any warnings for newer compilers
 
