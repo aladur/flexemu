@@ -107,7 +107,7 @@ public:
         const wxString &caption = wxT(""),
         const wxString &defaultExtension = wxT("*.*"),
         const wxString &filter = wxT("*.*"));
-    void OnSelectDrive(wxTextCtrl *c_driveX, bool isDisk);
+    void OnSelectDrive(wxTextCtrl &driveX, bool isDisk);
     void OnSelectDrive0(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive1(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive2(wxCommandEvent &WXUNUSED(event));

@@ -130,100 +130,73 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     wxString str;
     int n = 0;
 
-    if (c_geometry)
+    for (int x = 1; x <= MAX_PIXELSIZEX; x++)
     {
-        for (int x = 1; x <= MAX_PIXELSIZEX; x++)
+        int y;
+
+        for (y = 1; y <= MAX_PIXELSIZEY; y++)
         {
-            int y;
+            str.Printf(wxT("%ix%i"), WINDOWWIDTH * x, WINDOWHEIGHT * y);
 
-            for (y = 1; y <= MAX_PIXELSIZEY; y++)
+            c_geometry->Append(str);
+
+            if (m_guiOptions->pixelSizeX == x &&
+                m_guiOptions->pixelSizeY == y)
             {
-                str.Printf(wxT("%ix%i"), WINDOWWIDTH * x, WINDOWHEIGHT * y);
-
-                if (c_geometry)
-                {
-                    c_geometry->Append(str);
-                }
-
-                if (m_guiOptions->pixelSizeX == x &&
-                    m_guiOptions->pixelSizeY == y)
-                {
-                    c_geometry->SetSelection(n);
-                }
-
-                n++;
+                c_geometry->SetSelection(n);
             }
+
+            n++;
         }
     }
 
     n = 0;
 
-    if (c_nColors)
+    int *pInt = possible_nColors;
+
+    while (*pInt)
     {
-        int *pInt = possible_nColors;
+        str.Printf(wxT("%d"), *pInt);
+        c_nColors->Append(str);
 
-        while (*pInt)
+        if (m_guiOptions->nColors == *(pInt++))
         {
-            str.Printf(wxT("%d"), *pInt);
-            c_nColors->Append(str);
-
-            if (m_guiOptions->nColors == *(pInt++))
-            {
-                c_nColors->SetSelection(n);
-            }
-
-            n++;
+            c_nColors->SetSelection(n);
         }
-        c_nColors->Enable(!m_options->isEurocom2V5);
+
+        n++;
     }
+    c_nColors->Enable(!m_options->isEurocom2V5);
 
-    if (c_color)
+    size_t i;
+    wxString colorName;
+    std::string bColorName;
+
+    for (i = 0; i < WXSIZEOF(color_table); i++)
     {
-        size_t i;
-        wxString colorName;
-        std::string bColorName;
+        colorName = wxGetTranslation(color_table[i]);
+        c_color->Append(colorName);
+        wxString color(color_table[i], *wxConvCurrent);
+        std::string sColorName(color.mb_str(*wxConvCurrent));
 
-        for (i = 0; i < WXSIZEOF(color_table); i++)
+        if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
         {
-            colorName = wxGetTranslation(color_table[i]);
-            c_color->Append(colorName);
-            wxString color(color_table[i], *wxConvCurrent);
-            std::string sColorName(color.mb_str(*wxConvCurrent));
-
-            if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
-            {
-                c_color->SetSelection(i);
-            }
+            c_color->SetSelection(i);
         }
     }
 
-    if (c_isInverse)
-    {
-        c_isInverse->SetValue(m_guiOptions->isInverse != 0);
-    }
+    c_isInverse->SetValue(m_guiOptions->isInverse != 0);
 
-    if (c_undocumented)
-    {
-        c_undocumented->SetValue(m_options->use_undocumented);
-    }
+    c_undocumented->SetValue(m_options->use_undocumented);
 
-    if (c_monitor)
-    {
-        wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
-        c_monitor->SetValue(hex_file);
-    }
+    wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
+    c_monitor->SetValue(hex_file);
 
-    if (c_htmlViewer)
-    {
-        wxString html_viewer(m_guiOptions->html_viewer.c_str(), *wxConvCurrent);
-        c_htmlViewer->SetValue(html_viewer);
-    }
+    wxString html_viewer(m_guiOptions->html_viewer.c_str(), *wxConvCurrent);
+    c_htmlViewer->SetValue(html_viewer);
 
-    if (c_diskDir)
-    {
-        wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
-        c_diskDir->SetValue(disk_dir);
-    }
+    wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
+    c_diskDir->SetValue(disk_dir);
 
     for (size_t x = 0; x < WXSIZEOF(c_drive); x++)
     {
@@ -239,45 +212,33 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_mdcrDrive[x]->Enable(m_options->isEurocom2V5);
     }
 
-    if (c_ramExtension)
-    {
-        int selection = 0;
+    int selection = 0;
 
-        if (m_options->isRamExtension)
+    if (m_options->isRamExtension)
+    {
+        selection = 1;
+
+        if (m_options->isHiMem)
         {
-            selection = 1;
-
-            if (m_options->isHiMem)
-            {
-                selection = 2;
-            }
+            selection = 2;
         }
-
-        c_ramExtension->SetSelection(selection);
-        if (selection == 0)
-        {
-            c_nColors->SetSelection(0);
-        }
-        c_nColors->Enable(selection > 0);
-        c_ramExtension->Enable(!m_options->isEurocom2V5);
     }
 
-    if (c_flexibleMmu)
+    c_ramExtension->SetSelection(selection);
+    if (selection == 0)
     {
-        c_flexibleMmu->SetValue(m_options->isHiMem && m_options->isFlexibleMmu);
-        c_flexibleMmu->Enable(m_options->isHiMem && !m_options->isEurocom2V5);
+        c_nColors->SetSelection(0);
     }
+    c_nColors->Enable(selection > 0);
+    c_ramExtension->Enable(!m_options->isEurocom2V5);
 
-    if (c_useRtc)
-    {
-        c_useRtc->SetValue(m_options->useRtc);
-        c_useRtc->Enable(!m_options->isEurocom2V5);
-    }
+    c_flexibleMmu->SetValue(m_options->isHiMem && m_options->isFlexibleMmu);
+    c_flexibleMmu->Enable(m_options->isHiMem && !m_options->isEurocom2V5);
 
-    if (c_emulatedHardware)
-    {
-        c_emulatedHardware->SetSelection(m_options->isEurocom2V5 ? 0 : 1);
-    }
+    c_useRtc->SetValue(m_options->useRtc);
+    c_useRtc->Enable(!m_options->isEurocom2V5);
+
+    c_emulatedHardware->SetSelection(m_options->isEurocom2V5 ? 0 : 1);
 
     return wxWindow::TransferDataToWindow();
 }
@@ -588,7 +549,7 @@ void FlexemuOptionsDialog::OnCloseWindow(wxCloseEvent &event)
 bool FlexemuOptionsDialog::Validate()
 {
     // doing some verification of the values
-    if (c_monitor != nullptr && c_monitor->GetValue().IsEmpty())
+    if (c_monitor->GetValue().IsEmpty())
     {
         wxMessageBox(_("Monitor program must not be empty"),
                      _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);
@@ -602,83 +563,56 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 {
     size_t i;
 
-    if (c_geometry)
+    wxString geometry;
+    unsigned long x = 0;
+    unsigned long y = 0;
+
+    geometry = c_geometry->GetValue();
+
+    if (geometry.BeforeFirst(wxT('x')).ToULong(&x) &&
+        geometry.AfterFirst(wxT('x')).ToULong(&y))
     {
-        wxString geometry;
-        unsigned long x = 0;
-        unsigned long y = 0;
+        m_guiOptions->pixelSizeX = x / WINDOWWIDTH;
+        m_guiOptions->pixelSizeY = y / WINDOWHEIGHT;
+    }
 
-        geometry = c_geometry->GetValue();
+    wxString nrOfColors;
+    unsigned long n;
 
-        if (geometry.BeforeFirst(wxT('x')).ToULong(&x) &&
-            geometry.AfterFirst(wxT('x')).ToULong(&y))
+    nrOfColors = c_nColors->GetValue();
+
+    if (nrOfColors.ToULong(&n))
+    {
+        m_guiOptions->nColors = n;
+    }
+
+    m_guiOptions->color =
+        c_color->GetValue().mb_str(*wxConvCurrent);
+    wxString colorName;
+
+    for (i = 0; i < WXSIZEOF(color_table); i++)
+    {
+        colorName = wxGetTranslation(color_table[i]);
+
+        if (!colorName.Cmp(c_color->GetValue()))
         {
-            m_guiOptions->pixelSizeX = x / WINDOWWIDTH;
-            m_guiOptions->pixelSizeY = y / WINDOWHEIGHT;
+            wxString color(color_table[i]);
+            m_guiOptions->color =
+                color.mb_str(*wxConvCurrent);
         }
     }
 
-    if (c_nColors)
-    {
-        wxString nrOfColors;
-        unsigned long n;
+    m_guiOptions->isInverse = c_isInverse->GetValue();
 
-        nrOfColors = c_nColors->GetValue();
+    m_options->use_undocumented = (c_undocumented->GetValue() != 0);
 
-        if (nrOfColors.ToULong(&n))
-        {
-            m_guiOptions->nColors = n;
-        }
-    }
-
-    if (c_color)
-    {
-        m_guiOptions->color =
-            c_color->GetValue().mb_str(*wxConvCurrent);
-        wxString colorName;
-
-        for (i = 0; i < WXSIZEOF(color_table); i++)
-        {
-            colorName = wxGetTranslation(color_table[i]);
-
-            if (!colorName.Cmp(c_color->GetValue()))
-            {
-                wxString color(color_table[i]);
-                m_guiOptions->color =
-                    color.mb_str(*wxConvCurrent);
-            }
-        }
-    };
-
-    if (c_isInverse)
-    {
-        m_guiOptions->isInverse = c_isInverse->GetValue();
-    };
-
-    if (c_undocumented)
-    {
-        m_options->use_undocumented = (c_undocumented->GetValue() != 0);
-    };
-
-    if (c_monitor)
-    {
-        m_options->hex_file =
-            c_monitor->GetValue().mb_str(*wxConvCurrent);
-    };
+    m_options->hex_file = c_monitor->GetValue().mb_str(*wxConvCurrent);
 
 #ifndef WIN32
-    if (c_htmlViewer)
-    {
-        m_guiOptions->html_viewer =
-            c_htmlViewer->GetValue().mb_str(*wxConvCurrent);
-    };
-
+    m_guiOptions->html_viewer = c_htmlViewer->GetValue().mb_str(*wxConvCurrent);
 #endif
-    if (c_diskDir)
-    {
-        m_options->disk_dir =
-            c_diskDir->GetValue().mb_str(*wxConvCurrent);
-    };
+
+    m_options->disk_dir = c_diskDir->GetValue().mb_str(*wxConvCurrent);
 
     for (i = 0; i < WXSIZEOF(c_drive); i++)
     {
@@ -691,27 +625,15 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
             c_mdcrDrive[i]->GetValue().mb_str(*wxConvCurrent);
     }
 
-    if (c_ramExtension)
-    {
-        m_options->isRamExtension = c_ramExtension->GetSelection() > 0;
-        m_options->isHiMem = c_ramExtension->GetSelection() > 1;
-    };
+    m_options->isRamExtension = c_ramExtension->GetSelection() > 0;
+    m_options->isHiMem = c_ramExtension->GetSelection() > 1;
 
-    if (c_flexibleMmu)
-    {
-        m_options->isFlexibleMmu =
+    m_options->isFlexibleMmu =
             m_options->isHiMem & (c_flexibleMmu->GetValue() != 0);
-    };
 
-    if (c_useRtc)
-    {
-        m_options->useRtc = (c_useRtc->GetValue() != 0);
-    }
+    m_options->useRtc = (c_useRtc->GetValue() != 0);
 
-    if (c_emulatedHardware)
-    {
-        m_options->isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
-    }
+    m_options->isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
 
     if (!m_options->isRamExtension)
     {
@@ -764,15 +686,12 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
     return drive;
 }
 
-void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl *c_driveX, bool isDisk)
+void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl &driveX, bool isDisk)
 {
     wxString path;
     wxString diskDir;
 
-    if (c_diskDir)
-    {
-        diskDir = c_diskDir->GetValue();
-    }
+    diskDir = c_diskDir->GetValue();
 
     if (isDisk)
     {
@@ -801,51 +720,47 @@ void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl *c_driveX, bool isDisk)
         }
     }
 
-    if (!path.IsEmpty() && c_driveX)
+    if (!path.IsEmpty())
     {
-        c_driveX->SetValue(path);
+        driveX.SetValue(path);
     }
 }
 
 void FlexemuOptionsDialog::OnSelectDrive0(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_drive[0], true);
+    OnSelectDrive(*c_drive[0], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive1(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_drive[1], true);
+    OnSelectDrive(*c_drive[1], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive2(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_drive[2], true);
+    OnSelectDrive(*c_drive[2], true);
 }
 
 void FlexemuOptionsDialog::OnSelectDrive3(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_drive[3], true);
+    OnSelectDrive(*c_drive[3], true);
 }
 
 void FlexemuOptionsDialog::OnSelectMdcrDrive0(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_mdcrDrive[0], false);
+    OnSelectDrive(*c_mdcrDrive[0], false);
 }
 
 void FlexemuOptionsDialog::OnSelectMdcrDrive1(wxCommandEvent &WXUNUSED(event))
 {
-    OnSelectDrive(c_mdcrDrive[1], false);
+    OnSelectDrive(*c_mdcrDrive[1], false);
 }
 
 void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 {
     std::unique_ptr<wxDirDialog> dialog;
 
-    if (c_diskDir)
-    {
-        m_options->disk_dir =
-            c_diskDir->GetValue().mb_str(*wxConvCurrent);
-    };
+    m_options->disk_dir = c_diskDir->GetValue().mb_str(*wxConvCurrent);
 
     wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
 
@@ -856,10 +771,7 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
     {
         m_options->disk_dir = dialog->GetPath().mb_str(*wxConvCurrent);
 
-        if (c_diskDir)
-        {
-            c_diskDir->SetValue(dialog->GetPath());
-        }
+        c_diskDir->SetValue(dialog->GetPath());
     }
 }
 
@@ -868,10 +780,7 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
     wxString path;
     wxString diskDir;
 
-    if (c_diskDir)
-    {
-        diskDir = c_diskDir->GetValue();
-    };
+    diskDir = c_diskDir->GetValue();
 
     path = OpenFilePrompter(diskDir, _("Select a monitor program"), wxT("*.hex"),
         wxT("Intel HEX files (*.hex)|*.hex|"
@@ -892,10 +801,9 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
     }
 
     if (!path.IsEmpty())
-        if (c_monitor)
-        {
-            c_monitor->SetValue(path);
-        }
+    {
+        c_monitor->SetValue(path);
+    }
 }
 
 void FlexemuOptionsDialog::OnRamExtensionChanged(
