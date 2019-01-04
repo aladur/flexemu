@@ -93,7 +93,9 @@ public:
     wxPanel *CreateHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
+#ifndef _WIN32
     wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
+#endif
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
     wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
                                    const wxString &text,
@@ -131,7 +133,9 @@ private:
     wxComboBox *c_geometry;
     wxComboBox *c_nColors;
     wxTextCtrl *c_monitor;
+#ifndef _WIN32
     wxTextCtrl *c_htmlViewer;
+#endif
     wxTextCtrl *c_diskDir;
     wxTextCtrl *c_drive[4];
     wxTextCtrl *c_mdcrDrive[2];

@@ -103,7 +103,10 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     m_guiOptions(pGuiOptions), m_options(pOptions),
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
-    c_htmlViewer(nullptr), c_diskDir(nullptr),
+#ifndef _WIN32
+    c_htmlViewer(nullptr),
+#endif
+    c_diskDir(nullptr),
     c_ramExtension(nullptr), c_flexibleMmu(nullptr),
     c_useRtc(nullptr), c_emulatedHardware(nullptr)
 
@@ -192,8 +195,10 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
     c_monitor->SetValue(hex_file);
 
+#ifndef _WIN32
     wxString html_viewer(m_guiOptions->html_viewer.c_str(), *wxConvCurrent);
     c_htmlViewer->SetValue(html_viewer);
+#endif
 
     wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
     c_diskDir->SetValue(disk_dir);
@@ -390,7 +395,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     wxStaticText *pStatic;
     wxButton *pButton;
     wxString text;
-    size_t i;
+    uint32_t i;
 
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
@@ -418,14 +423,14 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
 
     for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
-        text.Printf(_("Disk Drive %ld"), i);
+        text.Printf(_("Disk Drive %d"), i);
         c_drive[i] = CreateFileControls(panel, pPanelSizer, text,
                                         IDC_Drive0 + i, IDC_Drive0Button + i);
     }
 
     for (i = 0; i < WXSIZEOF(c_mdcrDrive); ++i)
     {
-        text.Printf(_("Cassette Drive %ld"), i);
+        text.Printf(_("Cassette Drive %d"), i);
         c_mdcrDrive[i] = CreateFileControls(panel, pPanelSizer, text,
                                             IDC_MdcrDrive0 + i,
                                             IDC_MdcrDrive0Button + i);
@@ -436,6 +441,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     return panel;
 }
 
+#ifndef _WIN32
 wxPanel *FlexemuOptionsDialog::CreateDocuOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
@@ -459,6 +465,7 @@ wxPanel *FlexemuOptionsDialog::CreateDocuOptionsPage(wxBookCtrlBase *parent)
 
     return panel;
 }
+#endif
 
 wxPanel *FlexemuOptionsDialog::CreateExpertOptionsPage(wxBookCtrlBase *parent)
 {
@@ -505,7 +512,7 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     panel = CreatePathOptionsPage(notebook);
     notebook->AddPage(panel, _("Files and Directories"), true);
     pageId++;
-#ifndef WIN32
+#ifndef _WIN32
     panel = CreateDocuOptionsPage(notebook);
     notebook->AddPage(panel, _("Documentation"), false);
     pageId++;
@@ -529,7 +536,7 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
 //    pMainSizer->Layout();
 
     SetSizer(pMainSizer);
-    SetMinSize(wxSize(640,185));
+    SetMinSize(wxSize(640, 260));
     //SetAutoLayout(true);
     Layout();
     Centre(wxBOTH);
@@ -608,7 +615,7 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
     m_options->hex_file = c_monitor->GetValue().mb_str(*wxConvCurrent);
 
-#ifndef WIN32
+#ifndef _WIN32
     m_guiOptions->html_viewer = c_htmlViewer->GetValue().mb_str(*wxConvCurrent);
 #endif
 
@@ -667,7 +674,7 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
 {
     wxString drive;
 
-#ifdef WIN32
+#ifdef _WIN32
     char wd[PATH_MAX];
 
     getcwd((char *)wd, PATH_MAX);
@@ -680,7 +687,7 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
                 filter,
                 wxFD_OPEN | wxFD_FILE_MUST_EXIST,
                 this);
-#ifdef WIN32
+#ifdef _WIN32
     chdir((char *)wd);
 #endif
     return drive;
