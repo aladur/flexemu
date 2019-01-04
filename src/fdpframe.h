@@ -60,6 +60,7 @@ public:
     void OnNewDirectory(wxCommandEvent &event);
     void OnOpenDirectory(wxCommandEvent &event);
     void OnOptions(wxCommandEvent &event);
+    bool OpenContainer(const wxString &containerPath);
     void OpenChild(wxString &title, FileContainerIf *container);
     bool GetContainerProperties(int *tracks, int *sectors,
                                 int *format, wxString &path);

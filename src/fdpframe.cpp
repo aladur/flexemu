@@ -226,11 +226,8 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 
 void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
 {
-    FileContainerIf *container;
-    static wxString containerPath;
     static wxString defaultDir;
     wxArrayString paths;
-    wxString title;
     unsigned int i = 0;
 
     wxFileDialog dialog(
@@ -251,50 +248,61 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
 
     for (i = 0; i < paths.GetCount(); ++i)
     {
-        containerPath = paths.Item(i);
-        defaultDir = containerPath.BeforeLast(PATHSEPARATOR);
+        defaultDir = paths.Item(i).BeforeLast(PATHSEPARATOR);
+        if (!OpenContainer(paths.Item(i)))
+        {
+            break;
+        }
+    }
+}
 
+bool FlexParentFrame::OpenContainer(const wxString &containerPath)
+{
+    FileContainerIf *container;
+    wxString title;
+
+    try
+    {
+        container = new FlexFileContainer(
+            containerPath.mb_str(*wxConvCurrent), "rb+");
+    }
+    catch (FlexException &)
+    {
         try
         {
             container = new FlexFileContainer(
-                containerPath.mb_str(*wxConvCurrent), "rb+");
+                containerPath.mb_str(*wxConvCurrent), "rb");
         }
-        catch (FlexException &)
+        catch (FlexException &ex)
         {
-            try
-            {
-                container = new FlexFileContainer(
-                    containerPath.mb_str(*wxConvCurrent), "rb");
-            }
-            catch (FlexException &ex)
-            {
-                int r = wxMessageBox(ex.what(),
-                                     _("FLEXplorer Error"), wxOK |
-                                     wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
+            int r = wxMessageBox(ex.what(),
+                                 _("FLEXplorer Error"), wxOK |
+                                 wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
 
-                if (r == wxCANCEL)
-                {
-                    return;
-                }
-
-                continue;
+            if (r == wxCANCEL)
+            {
+                return false;
             }
+
+            return true;
         }
+    }
 
 #ifdef WIN32
-        title = containerPath;
+    title = containerPath;
 #endif
 #ifdef UNIX
-        title = containerPath.AfterLast(PATHSEPARATOR);
+    title = containerPath.AfterLast(PATHSEPARATOR);
 #endif
 
-        if (container->IsWriteProtected())
-        {
-            title += _(" [read-only]");
-        }
-
-        OpenChild(title, container);
+    if (container->IsWriteProtected())
+    {
+        title += _(" [read-only]");
     }
+
+    OpenChild(title, container);
+
+    return true;
 }
 
 void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))

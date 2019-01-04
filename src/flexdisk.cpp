@@ -77,6 +77,15 @@ bool FLEXplorer::OnInit()
                             wxDEFAULT_FRAME_STYLE | wxHSCROLL | wxVSCROLL);
     frame->Show(true);
     SetTopWindow(frame);
+
+    for (int i = 1; i < argc; ++i)
+    {
+        if (!frame->OpenContainer(wxConvCurrent->cWX2MB(argv[i])))
+        {
+            break;
+        }
+    }
+
     return true;
 }
 
