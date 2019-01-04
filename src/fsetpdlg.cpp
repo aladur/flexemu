@@ -103,9 +103,6 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     m_guiOptions(pGuiOptions), m_options(pOptions),
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
-#ifndef _WIN32
-    c_htmlViewer(nullptr),
-#endif
     c_diskDir(nullptr),
     c_ramExtension(nullptr), c_flexibleMmu(nullptr),
     c_useRtc(nullptr), c_emulatedHardware(nullptr)
@@ -194,11 +191,6 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
     c_monitor->SetValue(hex_file);
-
-#ifndef _WIN32
-    wxString html_viewer(m_guiOptions->html_viewer.c_str(), *wxConvCurrent);
-    c_htmlViewer->SetValue(html_viewer);
-#endif
 
     wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
     c_diskDir->SetValue(disk_dir);
@@ -441,32 +433,6 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     return panel;
 }
 
-#ifndef _WIN32
-wxPanel *FlexemuOptionsDialog::CreateDocuOptionsPage(wxBookCtrlBase *parent)
-{
-    wxPanel *panel = new wxPanel(parent);
-    wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *pBoxSizer;
-    wxStaticText *pStatic;
-
-    pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    pStatic = new wxStaticText(panel, -1, _("HTML Viewer"),
-                               wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxLEFT | wxTOP, gap);
-    c_htmlViewer = new wxTextCtrl(panel, IDC_HTMLViewer, wxT(""),
-                                  wxDefaultPosition, wxSize(textWidth, -1), 0);
-    pBoxSizer->Add(c_htmlViewer, 1, wxEXPAND, gap);
-    pStatic = new wxStaticText(panel, -1, wxT(""), wxDefaultPosition,
-                               wxSize(40, 25));
-    pBoxSizer->Add(pStatic, 0, 0); // dummy widget instead of a Button
-    pPanelSizer->Add(pBoxSizer, 0, wxTOP | wxEXPAND, gap);
-
-    panel->SetSizer(pPanelSizer);
-
-    return panel;
-}
-#endif
-
 wxPanel *FlexemuOptionsDialog::CreateExpertOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
@@ -512,11 +478,6 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     panel = CreatePathOptionsPage(notebook);
     notebook->AddPage(panel, _("Files and Directories"), true);
     pageId++;
-#ifndef _WIN32
-    panel = CreateDocuOptionsPage(notebook);
-    notebook->AddPage(panel, _("Documentation"), false);
-    pageId++;
-#endif
     panel = CreateExpertOptionsPage(notebook);
     notebook->AddPage(panel, _("Expert Options"), false);
     pageId++;
@@ -614,10 +575,6 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     m_options->use_undocumented = (c_undocumented->GetValue() != 0);
 
     m_options->hex_file = c_monitor->GetValue().mb_str(*wxConvCurrent);
-
-#ifndef _WIN32
-    m_guiOptions->html_viewer = c_htmlViewer->GetValue().mb_str(*wxConvCurrent);
-#endif
 
     m_options->disk_dir = c_diskDir->GetValue().mb_str(*wxConvCurrent);
 

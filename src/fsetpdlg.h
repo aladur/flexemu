@@ -44,7 +44,6 @@ enum
     IDC_Geometry = 200,
     IDC_Color = 201,
     IDC_Inverse = 202,
-    IDC_HTMLViewer = 203,
     IDC_DiskDir = 204,
     IDC_Monitor = 205,
     IDC_Drive0 = 206,
@@ -93,9 +92,6 @@ public:
     wxPanel *CreateHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateMemoryOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreatePathOptionsPage(wxBookCtrlBase *parent);
-#ifndef _WIN32
-    wxPanel *CreateDocuOptionsPage(wxBookCtrlBase *parent);
-#endif
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
     wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
                                    const wxString &text,
@@ -133,9 +129,6 @@ private:
     wxComboBox *c_geometry;
     wxComboBox *c_nColors;
     wxTextCtrl *c_monitor;
-#ifndef _WIN32
-    wxTextCtrl *c_htmlViewer;
-#endif
     wxTextCtrl *c_diskDir;
     wxTextCtrl *c_drive[4];
     wxTextCtrl *c_mdcrDrive[2];

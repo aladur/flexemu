@@ -311,7 +311,6 @@ struct sOptions
 #define FLEXEUROCOM2V5 "UseEurocom2V5"
 #define FLEXUNDOCUMENTED    "UndocumentedMc6809"
 #define FLEXRTC         "UseRTC"
-#define FLEXHTMLVIEWER  "HTMLViewer"
 #define FLEXDOCDIR      "DocDirectory"
 #define FLEXMONITOR     "MonitorPath"
 #define FLEXVERSION     "Version"

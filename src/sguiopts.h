@@ -39,7 +39,6 @@ struct sGuiOptions
     int argc;
     char *const *argv;
     std::string color;
-    std::string html_viewer;
     std::string doc_dir;
     int nColors; // Number of colors or gray scale values { 2, 8, 64 }
     bool isInverse; // Display inverse colors or gray scale values

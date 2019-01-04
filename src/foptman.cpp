@@ -100,9 +100,6 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->nColors       = 2;
     pGuiOptions->isInverse     = false;
 #ifdef UNIX
-    pGuiOptions->html_viewer   = "firefox";
-#endif
-#ifdef UNIX
     pGuiOptions->doc_dir       = F_DATADIR;
     pGuiOptions->guiType       = GuiType::XTOOLKIT;
     pOptions->disk_dir         = F_DATADIR;
@@ -160,11 +157,6 @@ void FlexOptionManager::GetEnvironmentOptions(
     if (env.GetValue((const char *)"FLEX" FLEXRTC, &value))
     {
         pOptions->useRtc = (value != 0);
-    }
-
-    if (env.GetValue((const char *)"FLEX" FLEXHTMLVIEWER, str))
-    {
-        pGuiOptions->html_viewer = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDOCDIR, str))
@@ -446,7 +438,6 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
     rcFile.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
     rcFile.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
-    rcFile.SetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer.c_str());
     rcFile.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
     rcFile.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
     rcFile.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
@@ -573,7 +564,6 @@ void FlexOptionManager::GetOptions(
     rcFile.GetValue(FLEXDISK3, pOptions->drive[3]);
     rcFile.GetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0]);
     rcFile.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
-    rcFile.GetValue(FLEXHTMLVIEWER, pGuiOptions->html_viewer);
     rcFile.GetValue(FLEXMONITOR, pOptions->hex_file);
     rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);
     rcFile.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);

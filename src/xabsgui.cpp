@@ -714,12 +714,6 @@ int XAbstractGui::popup_help()
     char helpfile[PATH_MAX];
     const char *args[3];
 
-    // if no environment variable for browser return with error
-    if (options.html_viewer.empty())
-    {
-        return -1;
-    }
-
     strcpy(helpfile, options.doc_dir.c_str());
 
     if (helpfile[strlen(helpfile) - 1] != '/')
@@ -727,14 +721,15 @@ int XAbstractGui::popup_help()
         strcat(helpfile, "/");
     }
 
+    // Use xdg-open to open a file of mime type text/html.
+    // For detail see: https://www.freedesktop.org/wiki/Software/xdg-utils/
     strcat(helpfile, "flexemu.htm");
-    args[0] = options.html_viewer.c_str();
+    args[0] = "xdg-open";
     args[1] = helpfile;
     args[2] = nullptr;
 
     if ((child_pid = fork()) == 0)
     {
-        // try to start HTML viewer
         success = execvp(args[0], const_cast<char **>(args));
         // if it fails exit with errorcode
         exit(255);
@@ -749,9 +744,10 @@ int XAbstractGui::popup_help()
              WIFEXITED(status) != 0 &&
              WEXITSTATUS(status) == 255)) // check for errorcode
         {
+            fprintf(stderr, "xdg-open failed. Try installing xdg-utils.\n");
             return -1;
         }
-    } // else
+    }
 
     return 0;
 } // popup_help
