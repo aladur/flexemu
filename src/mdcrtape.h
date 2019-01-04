@@ -30,7 +30,7 @@
 #include <fstream>
 
 
-const int TYPE_DCR_CONTAINER = 0x100; /* file container with DCR format */
+const int TYPE_MDCR_CONTAINER = 0x100; /* file container with MDCR format */
 
 class MiniDcrTape;
 

@@ -16,8 +16,8 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 
 SUBDIRS = bitmaps tools
 
-bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ dcrtool
-EXTRA_PROGRAMS = flexplorer fsetup dcrtool
+bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool
+EXTRA_PROGRAMS = flexplorer fsetup mdcrtool
 noinst_PROGRAMS = test
 
 AM_CXXFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
@@ -31,7 +31,7 @@ flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
-dcrtool_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+mdcrtool_CXXFLAGS   = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
 test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
@@ -40,7 +40,7 @@ test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
-dcrtool_LDADD    = @PTHREAD_LD@
+mdcrtool_LDADD   = @PTHREAD_LD@
 flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
@@ -98,8 +98,8 @@ bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
 filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
 sprinter.h flexemu.h mdcrtape.h
 
-dcrtool_SOURCES = \
-dcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
+mdcrtool_SOURCES = \
+mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
 flexerr.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 typedefs.h misc1.h config.h flexerr.h

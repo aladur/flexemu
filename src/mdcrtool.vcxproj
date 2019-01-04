@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="bmembuf.cpp" />
-    <ClCompile Include="dcrtool.cpp" />
+    <ClCompile Include="mdcrtool.cpp" />
     <ClCompile Include="fileread.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="mdcrfs.cpp" />
@@ -44,7 +44,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>dcrtool</RootNamespace>
+    <RootNamespace>mdcrtool</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -95,22 +95,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>temp\dcrtool\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>temp\mdcrtool\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>temp\dcrtool\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>temp\mdcrtool\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>temp\dcrtool\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>temp\mdcrtool\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>temp\dcrtool\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>temp\mdcrtool\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

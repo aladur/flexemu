@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fsetup", "src\fsetup.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flexplorer", "src\flexplorer.vcxproj", "{F25D3632-E44A-4251-8D56-05A2862D756D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dcrtool", "src\dcrtool.vcxproj", "{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mdcrtool", "src\mdcrtool.vcxproj", "{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

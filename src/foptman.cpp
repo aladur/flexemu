@@ -76,7 +76,7 @@ void FlexOptionManager::InitOptions(
     pOptions->drive[1]         = "";
     pOptions->drive[2]         = "";
     pOptions->drive[3]         = "";
-    pOptions->mdcrDrives[0]    = "system.dcr";
+    pOptions->mdcrDrives[0]    = "system.mdcr";
     pOptions->mdcrDrives[1]    = "";
     pOptions->hex_file         = "neumon54.hex";
     pOptions->term_mode        = false;

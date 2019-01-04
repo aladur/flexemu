@@ -76,7 +76,7 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     wxString choices[3];
     choices[0] = _("DSK-File");
     choices[1] = _("FLX-File");
-    choices[2] = _("DCR-File");
+    choices[2] = _("MDCR-File");
 
     c_format = new wxRadioBox(this, IDC_FormatCheckBox, _("Format"),
                               wxDefaultPosition, wxDefaultSize,
@@ -163,10 +163,10 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
 
 void ContainerPropertiesDialog::OnFormatChanged(wxCommandEvent &WXUNUSED(event))
 {
-    bool isDcrFormat = c_format->GetSelection() == 2;
+    bool isMdcrFormat = c_format->GetSelection() == 2;
 
-    c_tracks->Enable(!isDcrFormat);
-    c_sectors->Enable(!isDcrFormat);
+    c_tracks->Enable(!isMdcrFormat);
+    c_sectors->Enable(!isMdcrFormat);
 }
 
 int ContainerPropertiesDialog::GetTracks()

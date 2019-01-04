@@ -1,5 +1,5 @@
 /*
-    dcrtool.cpp
+    mdcrtool.cpp
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
@@ -37,27 +37,27 @@
 
 void syntax()
 {
-    std::cout << "dcrtool syntax:\n"
-              << " Write/Append files to a DCR file."
-                 " (DCR file is created if it does not exist):\n"
-              << "   dcrtool [-t][-u] -o <dcr_file> <bin_file> [<bin_file>...]\n"
-              << " Create a new empty DCR file:\n"
-              << "   dcrtool -c <dcr_file>\n"
-              << " Extract all files from a DCR file:\n"
-              << "   dcrtool -x <dcr_file>\n"
-              << " List contents of a DCR file:\n"
-              << "   dcrtool -l <dcr_file>\n"
+    std::cout << "mdcrtool syntax:\n"
+              << " Write/Append files to a MDCR file."
+                 " (MDCR file is created if it does not exist):\n"
+              << "   mdcrtool [-t][-u] -o <mdcr_file> <bin_file> [<bin_file>...]\n"
+              << " Create a new empty MDCR file:\n"
+              << "   mdcrtool -c <mdcr_file>\n"
+              << " Extract all files from a MDCR file:\n"
+              << "   mdcrtool -x <mdcr_file>\n"
+              << " List contents of a MDCR file:\n"
+              << "   mdcrtool -l <mdcr_file>\n"
               << "\n"
-              << "   <bin_file>: A file in FLEX binary format.\n"
-              << "   <dcr_file>: A file in Philips MDCR format.\n"
-              << "   -t: Truncate. Overwrite existing files on DCR file.\n"
-              << "       Default: Append files at the end of DCR file.\n"
+              << "   <bin_file>:  A file in FLEX binary format.\n"
+              << "   <mdcr_file>: A file in Philips MDCR format.\n"
+              << "   -t: Truncate. Overwrite existing files on MDCR file.\n"
+              << "       Default: Append files at the end of MDCR file.\n"
               << "   -u: Convert file names to uppercase.\n"
               << "       Default: Keep file name as is.\n";
 
 }
 
-int WriteAppendToDcrFile(const std::vector<const char *> &ifiles,
+int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
                       const char *ofile,
                       bool isTruncate, bool toUppercase)
 {
@@ -137,7 +137,7 @@ int WriteAppendToDcrFile(const std::vector<const char *> &ifiles,
     return 0;
 }
 
-int CreateDcrFile(const char *ofile)
+int CreateMdcrFile(const char *ofile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -154,7 +154,7 @@ int CreateDcrFile(const char *ofile)
     return 0;
 }
 
-int ExtractFromDcrFile(const char *ifile)
+int ExtractFromMdcrFile(const char *ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -202,7 +202,7 @@ int ExtractFromDcrFile(const char *ifile)
     return 0;
 }
 
-int ListContentOfDcrFile(const char *ifile)
+int ListContentOfMdcrFile(const char *ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -310,19 +310,19 @@ int main(int argc, char *argv[])
     switch(command)
     {
         case 'o':
-            return WriteAppendToDcrFile(ifiles, ofile, isTruncate, isUppercase);
+            return WriteAppendToMdcrFile(ifiles, ofile, isTruncate, isUppercase);
             break;
 
         case 'c':
-            return CreateDcrFile(ofile);
+            return CreateMdcrFile(ofile);
             break;
 
         case 'x':
-            return ExtractFromDcrFile(ifile);
+            return ExtractFromMdcrFile(ifile);
             break;
 
         case 'l':
-            return ListContentOfDcrFile(ifile);
+            return ListContentOfMdcrFile(ifile);
             break;
 
         default:

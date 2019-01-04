@@ -667,8 +667,8 @@ void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl &driveX, bool isDisk)
     else
     {
         path = OpenFilePrompter(
-                diskDir, wxT("Select a MDCR file"), wxT("*.dcr"),
-            wxT("MDCR containers (*.dcr)|*.dcr|"
+                diskDir, wxT("Select a MDCR file"), wxT("*.mdcr"),
+            wxT("MDCR containers (*.mdcr)|*.mdcr|"
                 "All files (*.*)|*.*"));
     }
 

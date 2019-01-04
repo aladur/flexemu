@@ -322,7 +322,7 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
 
         try
         {
-            if (format == TYPE_DCR_CONTAINER)
+            if (format == TYPE_MDCR_CONTAINER)
             {
                 MiniDcrTapePtr mdcr = MiniDcrTape::Create(
                             containerPath.mb_str(*wxConvCurrent));
@@ -419,7 +419,7 @@ bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
                 break;
 
             case 2:
-                *format = TYPE_DCR_CONTAINER;
+                *format = TYPE_MDCR_CONTAINER;
                 break;
 
             default:
