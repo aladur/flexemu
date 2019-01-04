@@ -121,9 +121,9 @@ ApplicationRunner::ApplicationRunner(
 
     if (options.isEurocom2V5)
     {
-        auto debugMdcr = configFile.GetDebugOption("debugMdcr");
-        auto logFilePath = configFile.GetDebugOption("debugMdcrFilePath");
-        pia2v5.set_debug(debugMdcr, logFilePath);
+        auto logMdcr = configFile.GetDebugSupportOption("logMdcr");
+        auto logFilePath = configFile.GetDebugSupportOption("logMdcrFilePath");
+        pia2v5.set_debug(logMdcr, logFilePath);
     }
 }
 

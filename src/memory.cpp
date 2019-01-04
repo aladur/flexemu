@@ -173,7 +173,7 @@ void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
     if (do_preset_ram < 0)
     {
         FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-        const auto value = configFile.GetDebugOption("presetRAM");
+        const auto value = configFile.GetDebugSupportOption("presetRAM");
 
         do_preset_ram = (value == "1") ? 1 : 0;
     }

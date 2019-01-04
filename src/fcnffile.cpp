@@ -189,15 +189,15 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
     return -1;
 }
 
-std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
+std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
 {
     static const auto validKeys = std::set<std::string>{
-        "presetRAM", "debugMdcr", "debugMdcrFilePath"
+        "presetRAM", "logMdcr", "logMdcrFilePath"
     };
 
     BIniFile iniFile(iniFileName.c_str());
 
-    auto valueForKey = iniFile.ReadSection("Debug");
+    auto valueForKey = iniFile.ReadSection("DebugSupport");
 
     for (const auto iter : valueForKey)
     {
