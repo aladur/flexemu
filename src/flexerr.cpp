@@ -161,5 +161,6 @@ const char *FlexException::errString[] =
     _("Unsupported GUI type (#{0})"),
     _("Invalid magic number 0x{0}"),
     _("Invalid line '{0}' in file {1}"),
+    _("Invalid usage of file container iterator"),
 };
 

@@ -26,6 +26,7 @@
 #include "filecont.h"
 #include "ifilecnt.h"
 #include "ifilcnti.h"
+#include "flexerr.h"
 
 /* iterator class for file container
    Can be used to iterate over the files in a container.
@@ -66,7 +67,7 @@ FlexDirEntry &FileContainerIterator::operator*()
     }
 
     // maybe you used the iterator in the wrong way ?
-    return *(FlexDirEntry *)nullptr;
+    throw FlexException(FERR_INVALID_ITERATOR_USE);
 }
 
 FlexDirEntry *FileContainerIterator::operator->()
@@ -114,21 +115,21 @@ FileContainerIterator &FileContainerIterator::operator++()
 
 FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 {
-    if (aBase != nullptr)
+    if (aBase == nullptr)
     {
-        imp = aBase->IteratorFactory();
-
-        if (!imp->NextDirEntry(filePattern))
-        {
-            imp->AtEnd();
-        }
+        throw FlexException(FERR_INVALID_ITERATOR_USE);
     }
-    else
+
+    if (imp != nullptr)
     {
-        if (imp != nullptr)
-        {
-            imp->AtEnd();
-        }
+        imp->AtEnd();
+    }
+
+    imp = aBase->IteratorFactory();
+
+    if (!imp->NextDirEntry(filePattern))
+    {
+        imp->AtEnd();
     }
 
     return *this;
