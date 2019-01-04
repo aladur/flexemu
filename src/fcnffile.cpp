@@ -218,7 +218,7 @@ std::string FlexemuConfigFile::GetDebugOption(const std::string &key)
 }
 
 std::pair<std::string, std::set<std::string> >
-    FlexemuConfigFile::GetDebugIoDevices()
+    FlexemuConfigFile::GetIoDeviceLogging()
 {
     static const auto validKeys = std::set<std::string>{
         "logFilePath", "devices"
@@ -229,7 +229,7 @@ std::pair<std::string, std::set<std::string> >
     std::pair<std::string, std::set<std::string> > result;
     BIniFile iniFile(iniFileName.c_str());
 
-    auto valueForKey = iniFile.ReadSection("DebugIoDevices");
+    auto valueForKey = iniFile.ReadSection("IoDeviceLogging");
 
     for (const auto iter : valueForKey)
     {

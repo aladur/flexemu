@@ -50,7 +50,7 @@ public:
 
     std::vector<sIoDeviceMapping> ReadIoDevices();
     std::string GetDebugOption(const std::string &key);
-    std::pair<std::string, std::set<std::string> > GetDebugIoDevices();
+    std::pair<std::string, std::set<std::string> > GetIoDeviceLogging();
     int GetSerparAddress(const std::string &monitorFilePath);
 
     static const std::set<std::string> validDevices;

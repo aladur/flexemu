@@ -136,7 +136,7 @@ void ApplicationRunner::AddIoDevicesToMemory()
 {
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     const auto deviceParams = configFile.ReadIoDevices();
-    const auto pairOfParams = configFile.GetDebugIoDevices();
+    const auto pairOfParams = configFile.GetIoDeviceLogging();
     const auto logFilePath = std::get<0>(pairOfParams);
     const auto deviceNames = std::get<1>(pairOfParams);
 
