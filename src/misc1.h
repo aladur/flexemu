@@ -361,8 +361,8 @@ struct sOptions
 #define FALLTHROUGH [[fallthrough]]
 #elif __cplusplus && __has_cpp_attribute(clang::fallthrough)
 #define FALLTHROUGH [[clang::fallthrough]]
-#elif __cplusplus && __GNUC__
-#define FALLTHROUGH __attribute__ ((fallthrough))
+#elif __cplusplus && __has_cpp_attribute(gnu::fallthrough)
+#define FALLTHROUGH [[gnu::fallthrough]]
 #else
 #define FALLTHROUGH
 #endif
