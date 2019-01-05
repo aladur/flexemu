@@ -200,7 +200,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   File /a "${BASEDIR}\disks\system.dsk"
   File /a "${BASEDIR}\disks\test.dsk"
   File /a "${BASEDIR}\disks\system54.dsk"
-  File /a "${BASEDIR}\disks\system.dcr"
+  File /a "${BASEDIR}\disks\system.mdcr"
 
 SectionEnd
 
