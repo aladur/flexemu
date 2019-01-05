@@ -330,7 +330,13 @@ Bug Fixes:
 	  'boot' is not present
 	o Removed any warnings for newer compilers
 
-V2.23 (not yet published)
+V2.23 (20190105)
 New Features:
+	o Linux: Removed 'HTML Viewer' Property. (Using xdg-open instead)
+	o FLEXplorer: Opens any command line parameters as container files
+	o Use MDCR instead of DCR for Philips Mini Disk Cassette Recorder files
+	  - breaking change
 Bug Fixes:
+	o GCC: Bugfix for c++11 gcc compilers (gnu::fallthrough)
+	  - This fixes a gcc compile error for gcc version < 7.0.0
 
