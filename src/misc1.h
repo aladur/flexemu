@@ -356,7 +356,7 @@ struct sOptions
         }                                                  \
     }
 
-#if defined(__GNUC__) || defined(__clang__)
+#if __GNUC__ >= 5 || __clang__ >= 4 || (__clang__ == 3 && __clang_minor__ >= 6)
 #if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
 #define FALLTHROUGH [[fallthrough]]
 #elif __cplusplus && __has_cpp_attribute(clang::fallthrough)

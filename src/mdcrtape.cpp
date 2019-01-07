@@ -31,14 +31,6 @@
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 
-MiniDcrTape::MiniDcrTape(MiniDcrTape &&src) :
-    stream(std::move(src.stream)), is_write_protected(src.is_write_protected),
-    max_pos(src.max_pos),
-    record_positions(src.record_positions),
-    record_index(src.record_index)
-{
-}
-
 MiniDcrTape::MiniDcrTape(const char *path, Mode mode) :
     is_write_protected(false)
 {
@@ -117,19 +109,6 @@ MiniDcrTape::MiniDcrTape::~MiniDcrTape()
     {
         Close();
     }
-}
-
-MiniDcrTape &MiniDcrTape::operator= (MiniDcrTape &&src)
-{
-    if (&src != this)
-    {
-        stream = std::move(src.stream);
-        is_write_protected = src.is_write_protected;
-        max_pos = src.max_pos;
-        record_positions = src.record_positions;
-        record_index = src.record_index;
-    }
-    return *this;
 }
 
 MiniDcrTapePtr MiniDcrTape::Create(const char *path)

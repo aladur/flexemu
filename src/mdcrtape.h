@@ -66,12 +66,12 @@ private:
 public:
     MiniDcrTape() = delete;
     MiniDcrTape(const MiniDcrTape &) = delete;
-    MiniDcrTape(MiniDcrTape &&);
+    MiniDcrTape(MiniDcrTape &&) = delete;
     MiniDcrTape(const char *path, Mode mode);
     virtual ~MiniDcrTape();
 
     MiniDcrTape &operator= (const MiniDcrTape &) = delete;
-    MiniDcrTape &operator= (MiniDcrTape &&);
+    MiniDcrTape &operator= (MiniDcrTape &&) = delete;
 
     static MiniDcrTapePtr Create(const char *path);
     static MiniDcrTapePtr Open(const char *path);
