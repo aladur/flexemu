@@ -229,25 +229,25 @@ void TerminalIO::put_char_serial(Byte key)
 // poll serial port for input character.
 bool TerminalIO::has_key_serial()
 {
+    bool has_key = false;
 #ifdef HAVE_TERMIOS_H
-    char    buf[1];
     static Word count = 0;
 
     if (++count >= 100)
     {
+        char buffer[1] = { '\0' };
         count = 0;
         fflush(stdout);
 
-        if (read(fileno(stdin), &buf, 1) > 0)
+        if (read(fileno(stdin), &buffer, 1) > 0)
         {
-            put_char_serial(buf[0]);
+            put_char_serial(buffer[0]);
+            has_key = true;
         }
     }
-
-    return true;
-#else
-    return false;
 #endif // #ifdef HAVE_TERMIOS_H
+
+    return has_key;
 }
 
 // Read a serial character from cpu.
