@@ -56,8 +56,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,23,0,0
- PRODUCTVERSION 2,23,0,0
+ FILEVERSION 2,24,0,0
+ PRODUCTVERSION 2,24,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,12 +74,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "an MC6809 emulator running FLEX\0"
-            VALUE "FileVersion", "2,23,0,0\0"
+            VALUE "FileVersion", "2,24,0,0\0"
             VALUE "InternalName", "Flexemu.exe\0"
             VALUE "LegalCopyright", "Copyright © 1997-2019 W. Schwotzer\0"
             VALUE "OriginalFilename", "FLEXEMU.EXE\0"
             VALUE "ProductName", "Flexemu\0"
-            VALUE "ProductVersion", "2,23,0,0\0"
+            VALUE "ProductVersion", "2,24,0,0\0"
         END
     END
     BLOCK "VarFileInfo"

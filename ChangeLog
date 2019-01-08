@@ -340,3 +340,7 @@ Bug Fixes:
 	o GCC: Bugfix for c++11 gcc compilers (gnu::fallthrough)
 	  - This fixes a gcc compile error for gcc version < 7.0.0
 
+V2.24 (not yet published)
+New Features:
+Bug Fixes:
+
