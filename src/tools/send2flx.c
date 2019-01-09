@@ -191,7 +191,7 @@ void read_file(FILE *fp, unsigned char *buffer, eFileType *filetype, int *filesi
 		short sc = 0;
 		int spaces = 0;
 		int i = 0;
-		char c;
+		int c;
 	        while ((c = fgetc(fp)) != EOF && i < MAX_FILESIZE - 3) {
         	        if (c != ' ' && c != '\t' && spaces) {
                 	        if (sc && spaces > 1) {
