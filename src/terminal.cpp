@@ -229,7 +229,6 @@ void TerminalIO::put_char_serial(Byte key)
 // poll serial port for input character.
 bool TerminalIO::has_key_serial()
 {
-    bool has_key = false;
 #ifdef HAVE_TERMIOS_H
     static Word count = 0;
 
@@ -242,12 +241,12 @@ bool TerminalIO::has_key_serial()
         if (read(fileno(stdin), &buffer, 1) > 0)
         {
             put_char_serial(buffer[0]);
-            has_key = true;
         }
     }
 #endif // #ifdef HAVE_TERMIOS_H
 
-    return has_key;
+    std::lock_guard<std::mutex> guard(serial_mutex);
+    return !key_buffer_serial.empty();
 }
 
 // Read a serial character from cpu.
