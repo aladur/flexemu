@@ -316,6 +316,7 @@ struct sOptions
 #define FLEXVERSION     "Version"
 #define FLEXSCREENWIDTH "ScreenWidthFactor"
 #define FLEXSCREENHEIGHT "ScreenHeightFactor"
+#define FLEXFREQUENCY    "Frequency"
 
 #define FLEXPLORERFILEVIEWER    "FileViewer"
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"

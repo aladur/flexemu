@@ -22,6 +22,8 @@
 
 #include "misc1.h"
 #include <signal.h>
+#include <stdexcept>
+#include <string>
 #include <new>
 
 #include "e2.h"
@@ -207,6 +209,18 @@ void FlexOptionManager::GetEnvironmentOptions(
     if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE1, str))
     {
         pOptions->mdcrDrives[1] = str;
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXFREQUENCY, str))
+    {
+        try
+        {
+            pOptions->frequency = (stof(str));
+        }
+        catch(std::exception &)
+        {
+            // Intentionally ignore value if not convertible to float.
+        }
     }
 }
 #else
@@ -411,6 +425,7 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
     reg.SetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0].c_str());
     reg.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
+    reg.SetValue(FLEXFREQUENCY, std::to_string(pOptions->frequency));
     reg.SetValue(FLEXVERSION, VERSION);
 #endif
 #ifdef UNIX
@@ -451,6 +466,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXEUROCOM2V5, pOptions->isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
+    rcFile.SetValue(FLEXFREQUENCY, std::to_string(pOptions->frequency).c_str());
 #endif
 } /* WriteOptions */
 
@@ -459,6 +475,8 @@ void FlexOptionManager::GetOptions(
     struct sOptions *pOptions)
 {
     int val;
+    std::string string_value;
+
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
@@ -544,6 +562,23 @@ void FlexOptionManager::GetOptions(
     if (!reg.GetValue(FLEXRTC, &val))
     {
         pOptions->useRtc = (val != 0);
+    }
+
+    if (!reg.GetValue(FLEXRTC, &val))
+    {
+        pOptions->useRtc = (val != 0);
+    }
+
+    if (!reg.GetValue(FLEXFREQUENCY, &string_value))
+    {
+        try
+        {
+            pOptions->frequency = (stof(string_value));
+        }
+        catch(std::exception &)
+        {
+            // Intentionally ignore value if not convertible to float.
+        }
     }
 #endif
 #ifdef UNIX
@@ -639,6 +674,18 @@ void FlexOptionManager::GetOptions(
     if (!rcFile.GetValue(FLEXRTC, &val))
     {
         pOptions->useRtc = (val != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXFREQUENCY, string_value))
+    {
+        try
+        {
+            pOptions->frequency = (stof(string_value));
+        }
+        catch(std::exception &)
+        {
+            // Intentionally ignore value if not convertible to float.
+        }
     }
 #endif
 } // GetOptions

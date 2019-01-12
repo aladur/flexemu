@@ -37,6 +37,7 @@ class wxComboBox;
 class wxRadioBox;
 class wxPanel;
 class wxBookCtrlBase;
+class wxTreebook;
 
 
 enum
@@ -58,6 +59,8 @@ enum
     IDC_EmulatedHardware = 215,
     IDC_MdcrDrive0 = 216,
     IDC_MdcrDrive1 = 217,
+    IDC_FrequencyChoices = 218,
+    IDC_Frequency = 219,
 
     IDC_DiskDirButton = 304,
     IDC_MonitorButton = 305,
@@ -116,6 +119,7 @@ public:
     void OnSelectMonitor(wxCommandEvent &WXUNUSED(event));
     void OnRamExtensionChanged(wxCommandEvent &WXUNUSED(event));
     void OnEmulatedHardwareChanged(wxCommandEvent &WXUNUSED(event));
+    void OnFrequencyChoicesChanged(wxCommandEvent &WXUNUSED(event));
 
 private:
     FlexemuOptionsDialog() { }; // should not be used
@@ -136,6 +140,9 @@ private:
     wxCheckBox *c_flexibleMmu;
     wxCheckBox *c_useRtc;
     wxRadioBox *c_emulatedHardware;
+    wxRadioBox *c_frequencyChoices;
+    wxTextCtrl *c_frequency;
+    wxTreebook *c_notebook;
 
     static const int gap;
     static const int textWidth;

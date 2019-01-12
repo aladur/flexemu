@@ -82,6 +82,8 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
     EVT_RADIOBOX(IDC_RamExtension, FlexemuOptionsDialog::OnRamExtensionChanged)
     EVT_RADIOBOX(IDC_EmulatedHardware,
             FlexemuOptionsDialog::OnEmulatedHardwareChanged)
+    EVT_RADIOBOX(IDC_FrequencyChoices,
+            FlexemuOptionsDialog::OnFrequencyChoicesChanged)
     //  EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
 
@@ -237,6 +239,24 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     c_emulatedHardware->SetSelection(m_options->isEurocom2V5 ? 0 : 1);
 
+    if (m_options->frequency < 0.0f)
+    {
+        c_frequencyChoices->SetSelection(0);
+        c_frequency->Enable(false);
+        c_frequency->SetValue(std::to_string(ORIGINAL_FREQUENCY));
+    }
+    else
+    if (m_options->frequency == 0.0f)
+    {
+        c_frequencyChoices->SetSelection(1);
+        c_frequency->Enable(false);
+    }
+    else
+    {
+        c_frequencyChoices->SetSelection(2);
+        c_frequency->SetValue(std::to_string(m_options->frequency));
+    }
+
     return wxWindow::TransferDataToWindow();
 }
 
@@ -245,15 +265,38 @@ wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
 {
     wxPanel *panel = new wxPanel(parent);
     wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
-    wxString choices[2];
+    wxBoxSizer *pFrequencySizer;
+    wxStaticText *pStatic;
+    wxString hardwareChoices[2];
+    wxString frequencyChoices[3];
 
-    choices[0] = _("Eurocom II V5 (Philips Mini DCR)");
-    choices[1] = _("Eurocom II V7 (Floppy Disk)");
+    hardwareChoices[0] = _("Eurocom II V5 (Philips Mini DCR)");
+    hardwareChoices[1] = _("Eurocom II V7 (Floppy Disk)");
     c_emulatedHardware = new wxRadioBox(panel, IDC_EmulatedHardware,
                                     _("Emulated Hardware"), wxDefaultPosition,
-                                    wxDefaultSize, WXSIZEOF(choices), choices,
+                                    wxDefaultSize,
+                                    WXSIZEOF(hardwareChoices), hardwareChoices,
                                     1, wxRA_SPECIFY_COLS);
     pPanelSizer->Add(c_emulatedHardware, 0, wxTOP | wxLEFT, gap);
+    frequencyChoices[0] = _("Use original frequency");
+    frequencyChoices[1] = _("Emulate as fast as possible");
+    frequencyChoices[2] = _("Set frequency:");
+    c_frequencyChoices = new wxRadioBox(panel, IDC_FrequencyChoices,
+                                    _("CPU Frequency"), wxDefaultPosition,
+                                    wxDefaultSize,
+                                    WXSIZEOF(frequencyChoices),
+                                    frequencyChoices,
+                                    1, wxRA_SPECIFY_COLS);
+    pPanelSizer->Add(c_frequencyChoices, 0, wxTOP | wxLEFT, gap);
+    pFrequencySizer = new wxBoxSizer(wxHORIZONTAL);
+    pPanelSizer->Add(pFrequencySizer, 0, wxTOP | wxLEFT, gap);
+    c_frequency = new wxTextCtrl(panel, IDC_Frequency, wxT(""),
+                               wxDefaultPosition, wxSize(textWidth, -1));
+    pFrequencySizer->Add(c_frequency, 0, wxTOP | wxLEFT, gap);
+    pStatic = new wxStaticText(panel, -1, _("MHz"),
+                               wxDefaultPosition, wxSize(stextWidth, -1));
+    pFrequencySizer->Add(pStatic, 0, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL,
+                         gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -455,7 +498,6 @@ wxPanel *FlexemuOptionsDialog::CreateExpertOptionsPage(wxBookCtrlBase *parent)
 void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
 {
     wxWindow *parent = this;
-    wxTreebook *notebook;
     wxPanel *panel;
     wxButton *pButton;
     size_t pageId = 0;
@@ -463,28 +505,28 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     wxBoxSizer *pMainSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
 
-    notebook = new wxTreebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                              wxBK_LEFT);
+    c_notebook = new wxTreebook(this, wxID_ANY, wxDefaultPosition,
+                                wxDefaultSize, wxBK_LEFT);
 
-    pMainSizer->Add(notebook, 1, wxEXPAND | wxALL, gap);
+    pMainSizer->Add(c_notebook, 1, wxEXPAND | wxALL, gap);
 
-    panel = CreateEmulatedHardwareOptionsPage(notebook);
-    notebook->AddPage(panel, _("Emulated Hardware"), false);
-    panel = CreateGuiOptionsPage(notebook);
-    notebook->AddPage(panel, _("User Interface"), false);
-    panel = CreateMemoryOptionsPage(notebook);
-    notebook->AddPage(panel, _("Memory"), false);
+    panel = CreateEmulatedHardwareOptionsPage(c_notebook);
+    c_notebook->AddPage(panel, _("Emulated Hardware"), false);
+    panel = CreateGuiOptionsPage(c_notebook);
+    c_notebook->AddPage(panel, _("User Interface"), false);
+    panel = CreateMemoryOptionsPage(c_notebook);
+    c_notebook->AddPage(panel, _("Memory"), false);
     pageId++;
-    panel = CreatePathOptionsPage(notebook);
-    notebook->AddPage(panel, _("Files and Directories"), true);
+    panel = CreatePathOptionsPage(c_notebook);
+    c_notebook->AddPage(panel, _("Files and Directories"), true);
     pageId++;
-    panel = CreateExpertOptionsPage(notebook);
-    notebook->AddPage(panel, _("Expert Options"), false);
+    panel = CreateExpertOptionsPage(c_notebook);
+    c_notebook->AddPage(panel, _("Expert Options"), false);
     pageId++;
-    panel = CreateCpuOptionsPage(notebook);
-    notebook->AddSubPage(panel, _("CPU"), false);
-    panel = CreateHardwareOptionsPage(notebook);
-    notebook->AddSubPage(panel, _("Hardware"), false);
+    panel = CreateCpuOptionsPage(c_notebook);
+    c_notebook->AddSubPage(panel, _("CPU"), false);
+    panel = CreateHardwareOptionsPage(c_notebook);
+    c_notebook->AddSubPage(panel, _("Hardware"), false);
 
     pButton = new wxButton(parent, wxID_OK, _("&Ok"));
     pButtonSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
@@ -519,9 +561,45 @@ bool FlexemuOptionsDialog::Validate()
     // doing some verification of the values
     if (c_monitor->GetValue().IsEmpty())
     {
+        c_notebook->SetSelection(3);
+        c_monitor->SetFocus();
+        c_monitor->SetSelection(-1, -1);
         wxMessageBox(_("Monitor program must not be empty"),
                      _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);
         return false;
+    }
+
+    if (c_frequencyChoices->GetSelection() == 2)
+    {
+        std::string valueString =
+            c_frequency->GetValue().mb_str(*wxConvCurrent).data();
+        float value;
+
+        try
+        {
+            value = std::stof(valueString);
+        }
+        catch (std::exception &)
+        {
+            c_notebook->SetSelection(0);
+            c_frequency->SetFocus();
+            c_frequency->SetSelection(-1, -1);
+            wxMessageBox(_(
+                       "CPU Frequency is not a valid floating point number."),
+                       _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);
+            return false;
+        }
+
+        if (value < 0.1)
+        {
+            c_notebook->SetSelection(0);
+            c_frequency->SetFocus();
+            c_frequency->SetSelection(-1, -1);
+            wxMessageBox(_(
+                       "CPU Frequency has a minimum of 0.1 MHz"),
+                       _("FSetup Error"), wxOK | wxCENTRE | wxICON_EXCLAMATION);
+            return false;
+        }
     }
 
     return wxWindow::Validate();
@@ -598,6 +676,32 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     m_options->useRtc = (c_useRtc->GetValue() != 0);
 
     m_options->isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
+
+    switch (c_frequencyChoices->GetSelection())
+    {
+        case 0:
+            m_options->frequency = -1.0f;
+            break;
+
+        case 1:
+            m_options->frequency = 0.0f;
+            break;
+
+        case 2:
+            std::string value =
+                c_frequency->GetValue().mb_str(*wxConvCurrent).data();
+
+            try
+            {
+                m_options->frequency = std::stof(value);
+            }
+            catch (std::exception &)
+            {
+                // This case should be prevented by Validate.
+                m_options->frequency = -1.0f;
+            }
+            break;
+    }
 
     if (!m_options->isRamExtension)
     {
@@ -796,6 +900,24 @@ void FlexemuOptionsDialog::OnEmulatedHardwareChanged(
     for (x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
     {
         c_mdcrDrive[x]->Enable(!isEurocom2V7);
+    }
+}
+
+void FlexemuOptionsDialog::OnFrequencyChoicesChanged(
+        wxCommandEvent &WXUNUSED(event))
+{
+    bool isEnableFrequency = (c_frequencyChoices->GetSelection() == 2);
+
+    c_frequency->Enable(isEnableFrequency);
+
+
+    if (c_frequencyChoices->GetSelection() == 0)
+    {
+        c_frequency->SetValue(std::to_string(ORIGINAL_FREQUENCY));
+    }
+    else if (c_frequencyChoices->GetSelection() == 1)
+    {
+        c_frequency->SetValue("");
     }
 }
 
