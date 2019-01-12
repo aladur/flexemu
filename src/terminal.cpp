@@ -299,7 +299,15 @@ void TerminalIO::write_char_serial(Byte value)
     }
     else
 #endif
-    count = write(fileno(stdout), &value, 1);
+    // NUL characters are intentionally ignored.
+    // Their initial usage to wait until the teleprinter returns to the first
+    // printing position is not needed any more. There are terminals which
+    // incorrectly display is as a space.
+    // For details see: https://en.wikipedia.org/wiki/Null_character
+    if (value != '\0')
+    {
+        count = write(fileno(stdout), &value, 1);
+    }
     (void)count; // satisfy compiler
 }
 #else
