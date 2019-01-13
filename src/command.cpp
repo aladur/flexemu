@@ -50,16 +50,6 @@ Command::Command(
     command_index(0), answer_index(0)
 {
     memset(command, 0, sizeof(command));
-
-    err[UNKNOWN]        = "Unknown command";
-    err[PARAM]      = "Parameter invalid";
-    err[PATH]       = "Nonexistent path";
-    err[UNABLE_MOUNT]   = "Unable to mount drive";
-    err[UNABLE_UMOUNT]  = "Unable to umount drive";
-    err[UNABLE_UPDATE]  = "Unable to update drive. There are open files";
-    err[CANT_CHANGE_GRAPHIC] = "Unable to change to graphic mode";
-    err[UNABLE_FORMAT]  = "Unable to format disk";
-    err[MEMORY_ERROR]   = "Not enough memory to execute";
 }
 
 Command::~Command()
@@ -185,6 +175,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
             char       *p;
             const char *arg1, *arg2, *arg3, *arg4;
             int         count, number;
+            std::stringstream answer_stream;
 
             command_index = 0;
             answer_index  = 0;
@@ -233,15 +224,15 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         if (!inout.output_to_graphic())
                         {
-                            ANSWER_ERR(CANT_CHANGE_GRAPHIC);
+                            answer_stream << "EMU error: Unable to change to "
+                                             "graphic mode.";
+                            answer = answer_stream.str();
                         }
 
                         return;
                     }
                     else if (stricmp(arg1, "freq") == 0)
                     {
-                        std::stringstream answer_stream;
-
                         answer_stream << std::fixed << std::setprecision(2)
                                       << scheduler.get_frequency() << " MHz";
                         answer = answer_stream.str();
@@ -249,8 +240,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "cycles") == 0)
                     {
-                        std::stringstream answer_stream;
-
                         answer_stream << scheduler.get_total_cycles()
                                       << " cycles";
                         answer = answer_stream.str();
@@ -258,8 +247,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        std::stringstream answer_stream;
-
                         for (number = 0; number <= 3; number++)
                         {
                             answer_stream <<
@@ -273,7 +260,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         if (!fdc.update_all_drives())
                         {
-                            ANSWER_ERR(UNABLE_UPDATE);
+                            answer_stream << "EMU error: "
+                                             "Unable to update all drives.";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -298,7 +287,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     if ((sscanf(arg2, "%d", &number) != 1) ||
                         number < 0 || number > 3)
                     {
-                        ANSWER_ERR(PARAM);
+                        answer_stream << "EMU parameter error: " << arg2 <<
+                                         " is not a valid drive number.";
+                        answer = answer_stream.str();
                         return;
                     }
 
@@ -306,7 +297,10 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         if (!fdc.umount_drive(static_cast<Word>(number)))
                         {
-                            ANSWER_ERR(UNABLE_UMOUNT);
+                            answer_stream << "EMU error: "
+                                             "Unable to unmount drive #" <<
+                                             number << ".";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -320,7 +314,10 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     {
                         if (!fdc.update_drive(static_cast<Word>(number)))
                         {
-                            ANSWER_ERR(UNABLE_UPDATE);
+                            answer_stream << "EMU error: "
+                                             "Unable to update drive #" <<
+                                             number << ".";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -334,13 +331,18 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
                         {
-                            ANSWER_ERR(PARAM);
+                            answer_stream << "EMU parameter error: " << arg3 <<
+                                             " is not a valid drive number.";
+                            answer = answer_stream.str();
                             return;
                         }
 
                         if (!fdc.mount_drive(arg2, static_cast<Byte>(number)))
                         {
-                            ANSWER_ERR(UNABLE_MOUNT);
+                            answer_stream << "EMU error: "
+                                             "Unable to mount " << arg2 <<
+                                             " to drive #" << number << ".";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -350,13 +352,19 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         if ((sscanf(arg3, "%d", &number) != 1) ||
                             number < 0 || number > 3)
                         {
-                            ANSWER_ERR(PARAM);
+                            answer_stream << "EMU parameter error: " << arg3 <<
+                                             " is not a valid drive number.";
+                            answer = answer_stream.str();
                             return;
                         }
 
-                        if (!fdc.mount_drive(arg2, static_cast<Byte>(number), MOUNT_RAM))
+                        if (!fdc.mount_drive(arg2, static_cast<Byte>(number),
+                                             MOUNT_RAM))
                         {
-                            ANSWER_ERR(UNABLE_MOUNT);
+                            answer_stream << "EMU error: "
+                                             "Unable to mount " << arg2 <<
+                                             " to drive #" << number << ".";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -370,10 +378,19 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         int trk, sec;
 
                         if ((sscanf(arg3, "%d", &trk) != 1) ||
-                            (sscanf(arg4, "%d", &sec) != 1) ||
-                            trk < 2 || sec < 5)
+                            trk < 2 || trk > 255)
                         {
-                            ANSWER_ERR(PARAM);
+                            answer_stream << "EMU parameter error: " << arg3 <<
+                                             " is not a valid track count.";
+                            answer = answer_stream.str();
+                            return;
+                        }
+                        if ((sscanf(arg4, "%d", &sec) != 1) ||
+                            sec < 6 || sec > 255)
+                        {
+                            answer_stream << "EMU parameter error: " << arg4 <<
+                                             " is not a valid sector count.";
+                            answer = answer_stream.str();
                             return;
                         }
 
@@ -382,7 +399,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             static_cast<SWord>(sec),
                             arg2, TYPE_DSK_CONTAINER))
                         {
-                            ANSWER_ERR(UNABLE_FORMAT);
+                            answer_stream << "EMU error: Unable to format " <<
+                                             arg2 << ".";
+                            answer = answer_stream.str();
                         }
 
                         return;
@@ -390,8 +409,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     break;
             } // switch
-
-            ANSWER_ERR(UNKNOWN);
+            answer_stream << "Unknown command: " << command << ".";
+            answer = answer_stream.str();
         } // if
     }
     catch (std::bad_alloc UNUSED(&e))

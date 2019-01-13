@@ -29,23 +29,9 @@
 #include <string>
 
 #define MAX_COMMAND     (128)
-
-#define UNKNOWN         (0)
-#define PARAM           (1)
-#define PATH            (2)
-#define UNABLE_MOUNT        (3)
-#define UNABLE_UMOUNT       (4)
-#define UNABLE_UPDATE       (5)
-#define CANT_CHANGE_GRAPHIC (6)
-#define UNABLE_FORMAT       (7)
-#define MEMORY_ERROR        (8)
-#define MAX_ERR         (MEMORY_ERROR+1)
-
-#define INVALID_DRIVE       (4)
+#define INVALID_DRIVE   (4)
 
 #define CR          (0x0d)
-
-#define ANSWER_ERR(type) answer = err[type]
 
 class Mc6809;
 class Inout;
@@ -67,7 +53,6 @@ protected:
     Word         command_index;
     Word         answer_index;
     std::string  answer;
-    const char  *err[MAX_ERR];
 
     // private interface:
 private:
