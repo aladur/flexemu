@@ -68,6 +68,14 @@ ApplicationRunner::ApplicationRunner(
     vico1(memory),
     vico2(memory)
 {
+    if (options.startup_command.size() > MAX_COMMAND)
+    {
+        std::stringstream message;
+
+        message << "Startup command exceeds " << MAX_COMMAND << " characters";
+        throw std::invalid_argument(message.str());
+    }
+
     if (options.isEurocom2V5)
     {
         // Eurocom II/V5 is always emulated without RAM extension and RTC.
@@ -234,6 +242,15 @@ int ApplicationRunner::run()
 
     memory.reset_io();
     cpu.reset();
+
+    if (options.term_mode && terminalIO.is_terminal_supported())
+    {
+        terminalIO.set_startup_command(options.startup_command.c_str());
+    }
+    else
+    {
+        keyboardIO.set_startup_command(options.startup_command.c_str());
+    }
 
     // start CPU thread
     std::thread cpu_thread(&Scheduler::run, &scheduler);

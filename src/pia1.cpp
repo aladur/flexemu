@@ -44,24 +44,41 @@ void Pia1::resetIo()
 
 void Pia1::requestInputA()
 {
-    //  if (keyboardIO.has_key_parallel()) {
-    //      activeTransition(CA1);
-    //  }
+    bool do_notify = false;
+
+    keyboardIO.has_key_parallel(do_notify);
+    if (do_notify)
+    {
+        auto command = BCommandPtr(
+                new CActiveTransition(*this, Mc6821::ControlLine::CA1));
+
+        scheduler.sync_exec(std::move(command));
+    }
 }
 
 Byte Pia1::readInputA()
 {
-    if (keyboardIO.has_key_parallel())
+    bool do_notify1 = false;
+
+    if (keyboardIO.has_key_parallel(do_notify1))
     {
-        bool do_notify = false;
-        ora = keyboardIO.read_char_parallel(do_notify);
-        if (do_notify)
+        bool do_notify2 = false;
+        ora = keyboardIO.read_char_parallel(do_notify2);
+        if (do_notify2)
         {
             auto command = BCommandPtr(
                     new CActiveTransition(*this, Mc6821::ControlLine::CA1));
 
             scheduler.sync_exec(std::move(command));
         }
+    }
+
+    if (do_notify1)
+    {
+        auto command = BCommandPtr(
+                new CActiveTransition(*this, Mc6821::ControlLine::CA1));
+
+        scheduler.sync_exec(std::move(command));
     }
 
     // The Eurocom V5 needs the msb to be set to 1.

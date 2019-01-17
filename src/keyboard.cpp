@@ -25,13 +25,14 @@
 #include "keyboard.h"
 
 
-KeyboardIO::KeyboardIO()
+KeyboardIO::KeyboardIO() : init_delay(500)
 {
     reset_parallel();
 }
 
 void KeyboardIO::reset_parallel()
 {
+    init_delay = 500;
     std::lock_guard<std::mutex> guard(parallel_mutex);
     key_buffer_parallel.clear();
 }
@@ -47,14 +48,23 @@ void KeyboardIO::put_char_parallel(Byte key, bool &do_notify)
     }
 }
 
-bool KeyboardIO::has_key_parallel()
+bool KeyboardIO::has_key_parallel(bool &do_notify)
 {
-    bool result;
-
+    // After a reset delay the parallel key input request.
+    // Reason: After output one line FLEX requests for keyboard input.
+    // If startup command is present any keyboard input has to be
+    // delayed until the FLEX prompt.
+    if (init_delay)
+    {
+        --init_delay;
+        if (!init_delay)
+        {
+            do_notify = true;
+        }
+        return false;
+    }
     std::lock_guard<std::mutex> guard(parallel_mutex);
-    result = !key_buffer_parallel.empty();
-
-    return result;
+    return !key_buffer_parallel.empty();
 }
 
 // Read character and remove it from the queue.
@@ -120,3 +130,17 @@ void KeyboardIO::get_value(unsigned int *x_keyMask)
         *x_keyMask = keyMask;
     }
 }
+
+void KeyboardIO::set_startup_command(const char *x_startup_command)
+{
+    std::string startup_command(x_startup_command);
+
+    if (!startup_command.empty())
+    {
+        std::lock_guard<std::mutex> guard(parallel_mutex);
+        std::copy(startup_command.begin(), startup_command.end(),
+                  std::back_inserter(key_buffer_parallel));
+        key_buffer_parallel.push_back('\r');
+    }
+}
+

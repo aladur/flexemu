@@ -8,9 +8,9 @@ flexemu - a FLEX emulator with X11/WIN32 interface
 <hr></h2>
 <h2>SYNOPSIS</h2>
 <h3>On Linux/X11</h3>
-<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-s] [-v] [-u] [-j xFactor] [-k yFactor]</tt>
+<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-s] [-v] [-u] [-j xFactor] [-k yFactor] [-C startup_command] </tt>
 <h3>On WIN32</h3>
-<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j xFactor] [-k yFactor]</tt>
+<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j xFactor] [-k yFactor] [-C startup_command]</tt>
 <a name="description">
 <h2>DESCRIPTION</h2>
 <b>flexemu</b> emulates a MC6809 microprocessor system running FLEX Operating
@@ -119,6 +119,16 @@ for details.
 </b><dd>
 Specifies a factor to multiply the height of the FLEX display. Default is <b>2</b>.
 Valid values are 1, 2 and 3.
+<dt><b><tt>-C &lt;startup_command&gt;</tt>
+</b><dd>
+When starting flexemu a startup command can be specified. Multiple commands
+can be separated by the FLEX end-of-line character, which by default is a colon.
+The emulator will be exited when specifying <b><tt>exit</tt></b> as the last
+command.
+Example: <b><tt>"list 0.termcon.txt:dir 0:exit"</tt></b> will print the file
+contents of <b><tt>0.termcon.txt</tt></b>, make a directory listing of drive #0
+and immediately exits the emulator. The startup command accepts a maximum of
+128 characters.
 </dl>
 <p><dt><h3>Commandline options only on Linux (X11):</h3>
 <p>

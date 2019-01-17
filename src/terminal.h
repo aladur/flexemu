@@ -52,6 +52,7 @@ private:
     static bool used_serial_io;
     static struct termios save_termios;
 #endif
+    Word init_delay;
 
 public:
     static TerminalIO *instance;
@@ -70,6 +71,7 @@ public:
     void write_char_serial(Byte val);
     bool is_terminal_supported();
     void signal_reset(int sig_no);
+    void set_startup_command(const char *x_startup_command);
 
 private:
     static void reset_terminal_io();

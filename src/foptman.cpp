@@ -50,6 +50,7 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -u (support undocumented MC6809 processor instructions)\n");
     fprintf(fp, "  -F <frequency> (set CPU frequency in MHz)\n");
     fprintf(fp, "     0.0 runs CPU with maximum frequency\n");
+    fprintf(fp, "  -C <startup command>\n");
 #ifdef HAVE_TERMIOS_H
     fprintf(fp, "  -t (terminal only mode)\n");
     fprintf(fp, "  -r <two-hex-digit reset key>\n");
@@ -81,6 +82,7 @@ void FlexOptionManager::InitOptions(
     pOptions->mdcrDrives[0]    = "system.mdcr";
     pOptions->mdcrDrives[1]    = "";
     pOptions->hex_file         = "neumon54.hex";
+    pOptions->startup_command  = "";
     pOptions->term_mode        = false;
     pOptions->isRamExtension   = true;
     pOptions->isHiMem          = false;
@@ -237,12 +239,12 @@ void FlexOptionManager::GetCommandlineOptions(
     int argc,
     char *const argv[])
 {
-    char    optstr[32];
+    char    optstr[64];
     int     i;
     float   f;
     optind = 1;
     opterr = 0;
-    strcpy((char *)optstr, "mup:f:0:1:2:3:j:k:F:");
+    strcpy((char *)optstr, "mup:f:0:1:2:3:j:k:F:C:");
 #ifdef HAVE_TERMIOS_H
     strcat((char *)optstr, "tr:");  // terminal mode and reset key
 #endif
@@ -328,6 +330,10 @@ void FlexOptionManager::GetCommandlineOptions(
                     pOptions->frequency = f;
                 }
 
+                break;
+
+            case 'C':
+                pOptions->startup_command = optarg;
                 break;
 #ifdef HAVE_TERMIOS_H
 

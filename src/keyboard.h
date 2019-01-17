@@ -45,16 +45,18 @@ class KeyboardIO
     std::mutex parallel_mutex;
     std::deque<Byte> key_buffer_parallel;
     unsigned int keyMask;
+    Word init_delay;
 
 public:
     void set_bell(Word x_percent);
     void reset_parallel();
-    bool has_key_parallel();
+    bool has_key_parallel(bool &do_notify);
     Byte read_char_parallel(bool &do_notify);
     Byte peek_char_parallel();
     void put_char_parallel(Byte key, bool &do_notify);
     void put_value(unsigned int keyMask);
     void get_value(unsigned int *keyMask);
+    void set_startup_command(const char *x_startup_command);
 
     KeyboardIO();
 };
