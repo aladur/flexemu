@@ -575,7 +575,7 @@ void FlexOptionManager::GetOptions(
         pOptions->useRtc = (val != 0);
     }
 
-    if (!reg.GetValue(FLEXFREQUENCY, &string_value))
+    if (!reg.GetValue(FLEXFREQUENCY, string_value))
     {
         try
         {
