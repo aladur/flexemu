@@ -120,15 +120,32 @@ void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv, size_t max_count)
 {
     *argc = 1;
     *(argv + 0) = "flexemu";
+    bool is_double_quote = false;
+
+    while (*lpCmdLine && (*lpCmdLine == ' ' || *lpCmdLine == '\t'))
+    {
+        lpCmdLine++;
+    }
 
     while (*lpCmdLine && *argc < (int)max_count)
     {
+        if (!is_double_quote && *lpCmdLine == '"')
+        {
+            lpCmdLine++;
+            is_double_quote = true;
+        }
+
         *(argv + *argc) = lpCmdLine;
 
-        while (*lpCmdLine && *lpCmdLine != ' ' && *lpCmdLine != '\t')
+        while (*lpCmdLine &&
+               ((is_double_quote && *lpCmdLine != '"') ||
+                (!is_double_quote && *lpCmdLine != ' ' &&
+                 *lpCmdLine != '\t' && *lpCmdLine != '"')))
         {
             lpCmdLine++;
         }
+
+        is_double_quote = (!is_double_quote && *lpCmdLine == '"');
 
         if (*lpCmdLine)
         {
