@@ -480,8 +480,8 @@ void FlexOptionManager::GetOptions(
     struct sGuiOptions *pGuiOptions,
     struct sOptions *pOptions)
 {
-    int val;
-    std::string string_value;
+    int int_result;
+    std::string string_result;
 
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
@@ -497,89 +497,89 @@ void FlexOptionManager::GetOptions(
     reg.GetValue(FLEXCOLOR, pGuiOptions->color);
 
     if (!reg.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir))
-        if (!reg.GetValue(FLEXNCOLORS, &val))
+        if (!reg.GetValue(FLEXNCOLORS, int_result))
         {
-            if (val == 2 || val == 8 || val == 64)
+            if (int_result == 2 || int_result == 8 || int_result == 64)
             {
-                pGuiOptions->nColors = val;
+                pGuiOptions->nColors = int_result;
             }
         }
 
-    if (!reg.GetValue(FLEXSCREENWIDTH, &val))
+    if (!reg.GetValue(FLEXSCREENWIDTH, int_result))
     {
-        if (val < 1)
+        if (int_result < 1)
         {
-            val = 1;
+            int_result = 1;
         }
 
-        if (val > MAX_PIXELSIZEX)
+        if (int_result > MAX_PIXELSIZEX)
         {
-            val = MAX_PIXELSIZEX;
+            int_result = MAX_PIXELSIZEX;
         }
 
-        pGuiOptions->pixelSizeX = val;
+        pGuiOptions->pixelSizeX = int_result;
     }
 
-    if (!reg.GetValue(FLEXSCREENHEIGHT, &val))
+    if (!reg.GetValue(FLEXSCREENHEIGHT, int_result))
     {
-        if (val < 1)
+        if (int_result < 1)
         {
-            val = 1;
+            int_result = 1;
         }
 
-        if (val > MAX_PIXELSIZEY)
+        if (int_result > MAX_PIXELSIZEY)
         {
-            val = MAX_PIXELSIZEY;
+            int_result = MAX_PIXELSIZEY;
         }
 
-        pGuiOptions->pixelSizeY = val;
+        pGuiOptions->pixelSizeY = int_result;
     }
 
-    if (!reg.GetValue(FLEXINVERSE, &val))
+    if (!reg.GetValue(FLEXINVERSE, int_result))
     {
-        pGuiOptions->isInverse = (val != 0);
+        pGuiOptions->isInverse = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXRAMEXTENSION, &val))
+    if (!reg.GetValue(FLEXRAMEXTENSION, int_result))
     {
-        pOptions->isRamExtension = (val != 0);
+        pOptions->isRamExtension = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXHIMEM, &val))
+    if (!reg.GetValue(FLEXHIMEM, int_result))
     {
-        pOptions->isHiMem = (val != 0);
+        pOptions->isHiMem = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXFLEXIBLEMMU, &val))
+    if (!reg.GetValue(FLEXFLEXIBLEMMU, int_result))
     {
-        pOptions->isFlexibleMmu = (val != 0);
+        pOptions->isFlexibleMmu = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXEUROCOM2V5, &val))
+    if (!reg.GetValue(FLEXEUROCOM2V5, int_result))
     {
-        pOptions->isEurocom2V5 = (val != 0);
+        pOptions->isEurocom2V5 = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXUNDOCUMENTED, &val))
+    if (!reg.GetValue(FLEXUNDOCUMENTED, int_result))
     {
-        pOptions->use_undocumented = (val != 0);
+        pOptions->use_undocumented = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXRTC, &val))
+    if (!reg.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (val != 0);
+        pOptions->useRtc = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXRTC, &val))
+    if (!reg.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (val != 0);
+        pOptions->useRtc = (int_result != 0);
     }
 
-    if (!reg.GetValue(FLEXFREQUENCY, string_value))
+    if (!reg.GetValue(FLEXFREQUENCY, string_result))
     {
         try
         {
-            pOptions->frequency = (stof(string_value));
+            pOptions->frequency = (stof(string_result));
         }
         catch(std::exception &)
         {
@@ -609,84 +609,84 @@ void FlexOptionManager::GetOptions(
     rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);
     rcFile.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
 
-    if (!rcFile.GetValue(FLEXNCOLORS, &val))
+    if (!rcFile.GetValue(FLEXNCOLORS, int_result))
     {
-        if (val == 2 || val == 8 || val == 64)
+        if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            pGuiOptions->nColors = val;
+            pGuiOptions->nColors = int_result;
         }
     }
 
-    if (!rcFile.GetValue(FLEXSCREENWIDTH, &val))
+    if (!rcFile.GetValue(FLEXSCREENWIDTH, int_result))
     {
-        if (val < 1)
+        if (int_result < 1)
         {
-            val = 1;
+            int_result = 1;
         }
 
-        if (val > MAX_PIXELSIZEX)
+        if (int_result > MAX_PIXELSIZEX)
         {
-            val = MAX_PIXELSIZEX;
+            int_result = MAX_PIXELSIZEX;
         }
 
-        pGuiOptions->pixelSizeX = val;
+        pGuiOptions->pixelSizeX = int_result;
     }
 
-    if (!rcFile.GetValue(FLEXSCREENHEIGHT, &val))
+    if (!rcFile.GetValue(FLEXSCREENHEIGHT, int_result))
     {
-        if (val < 1)
+        if (int_result < 1)
         {
-            val = 1;
+            int_result = 1;
         }
 
-        if (val > MAX_PIXELSIZEY)
+        if (int_result > MAX_PIXELSIZEY)
         {
-            val = MAX_PIXELSIZEY;
+            int_result = MAX_PIXELSIZEY;
         }
 
-        pGuiOptions->pixelSizeY = val;
+        pGuiOptions->pixelSizeY = int_result;
     }
 
-    if (!rcFile.GetValue(FLEXINVERSE, &val))
+    if (!rcFile.GetValue(FLEXINVERSE, int_result))
     {
-        pGuiOptions->isInverse = (val != 0);
+        pGuiOptions->isInverse = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXRAMEXTENSION, &val))
+    if (!rcFile.GetValue(FLEXRAMEXTENSION, int_result))
     {
-        pOptions->isRamExtension = (val != 0);
+        pOptions->isRamExtension = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXHIMEM, &val))
+    if (!rcFile.GetValue(FLEXHIMEM, int_result))
     {
-        pOptions->isHiMem = (val != 0);
+        pOptions->isHiMem = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXFLEXIBLEMMU, &val))
+    if (!rcFile.GetValue(FLEXFLEXIBLEMMU, int_result))
     {
-        pOptions->isFlexibleMmu = (val != 0);
+        pOptions->isFlexibleMmu = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXEUROCOM2V5, &val))
+    if (!rcFile.GetValue(FLEXEUROCOM2V5, int_result))
     {
-        pOptions->isEurocom2V5 = (val != 0);
+        pOptions->isEurocom2V5 = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXUNDOCUMENTED, &val))
+    if (!rcFile.GetValue(FLEXUNDOCUMENTED, int_result))
     {
-        pOptions->use_undocumented = (val != 0);
+        pOptions->use_undocumented = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXRTC, &val))
+    if (!rcFile.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (val != 0);
+        pOptions->useRtc = (int_result != 0);
     }
 
-    if (!rcFile.GetValue(FLEXFREQUENCY, string_value))
+    if (!rcFile.GetValue(FLEXFREQUENCY, string_result))
     {
         try
         {
-            pOptions->frequency = (stof(string_value));
+            pOptions->frequency = (stof(string_result));
         }
         catch(std::exception &)
         {

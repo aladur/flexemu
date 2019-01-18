@@ -134,7 +134,7 @@ void FLEXplorer::ReadDefaultOptions()
     BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
     reg.GetValue(FLEXPLORERFILEVIEWER, str);
     reg.GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg.GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag);
+    reg.GetValue(FLEXPLORERTEXTFLAG, autoTextFlag);
 
     if (str.length() == 0)
     {

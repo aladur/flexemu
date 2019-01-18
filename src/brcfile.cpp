@@ -125,7 +125,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
     return BRC_NOT_FOUND;
 }
 
-int BRcFile::GetValue(const char *key, int *pValue)
+int BRcFile::GetValue(const char *key, int &value)
 {
     std::string str;
     int isInt;
@@ -140,7 +140,7 @@ int BRcFile::GetValue(const char *key, int *pValue)
         return BRC_NO_INTEGER;
     }
 
-    if (sscanf(str.c_str(), "%i", pValue) != 1)
+    if (sscanf(str.c_str(), "%i", &value) != 1)
     {
         return BRC_NO_INTEGER;    // returned value is no integer
     }

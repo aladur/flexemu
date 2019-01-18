@@ -50,7 +50,7 @@ public:
     LONG SetValue(const std::string &name, const int value);
     LONG SetValue(const std::string &name, const BYTE *value, int size);
     LONG GetValue(const std::string &name, std::string &value);
-    LONG GetValue(const std::string &name, int *value);
+    LONG GetValue(const std::string &name, int &value);
     // implicit type conversions !
     operator HKEY() const ;
 

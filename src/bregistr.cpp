@@ -157,7 +157,7 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
     return lastError;
 }
 
-LONG BRegistry::GetValue(const std::string &name, int *pvalue)
+LONG BRegistry::GetValue(const std::string &name, int &value)
 {
     DWORD aSize;
     DWORD type;
@@ -165,9 +165,9 @@ LONG BRegistry::GetValue(const std::string &name, int *pvalue)
     aSize = sizeof(DWORD);
 #ifdef UNICODE
     lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0,
-        &type, (BYTE *)pvalue, &aSize);
+        &type, (BYTE *)&value, &aSize);
 #else
-    lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, (BYTE *)pvalue,
+    lastError = RegQueryValueEx(hKey, name.c_str(), 0, &type, (BYTE *)&value,
         &aSize);
 #endif
 
