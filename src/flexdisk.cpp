@@ -128,21 +128,30 @@ void FLEXplorer::WriteDefaultOptions()
 
 void FLEXplorer::ReadDefaultOptions()
 {
-    int autoTextFlag;
-    std::string str;
+    int int_result;
+    std::string string_result;
 #ifdef WIN32
     BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
-    reg.GetValue(FLEXPLORERFILEVIEWER, str);
-    reg.GetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg.GetValue(FLEXPLORERTEXTFLAG, autoTextFlag);
 
-    if (str.length() == 0)
+    string_result.clear();
+    reg.GetValue(FLEXPLORERFILEVIEWER, string_result);
+    if (string_result.empty())
     {
-        str = "Notepad.exe";
+        string_result = "Notepad.exe";
     }
 
-    FlexDiskListCtrl::fileViewer = str.c_str();
-    FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
+    FlexDiskListCtrl::fileViewer = string_result.c_str();
+
+    if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
+        !string_result.empty())
+    {
+        FlexFileContainer::bootSectorFile = string_result;
+    }
+
+    if (!reg.GetValue(FLEXPLORERTEXTFLAG, int_result))
+    {
+        FlexCopyManager::autoTextConversion = (int_result != 0);
+    }
 #endif
 #ifdef UNIX
     std::string rcFileName;
@@ -156,20 +165,22 @@ void FLEXplorer::ReadDefaultOptions()
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
 
-    if (!rcFile.GetValue(FLEXPLORERFILEVIEWER, str) && str.length() > 0)
+    if (!rcFile.GetValue(FLEXPLORERFILEVIEWER, string_result) && 
+        !string_result.empty())
     {
-        wxString fileViewer(str.c_str(), *wxConvCurrent);
+        wxString fileViewer(string_result.c_str(), *wxConvCurrent);
         FlexDiskListCtrl::fileViewer = fileViewer;
     }
 
-    if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, str) && str.length() > 0)
+    if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
+        !string_result.empty())
     {
-        FlexFileContainer::bootSectorFile = str;
+        FlexFileContainer::bootSectorFile = string_result;
     }
 
-    if (!rcFile.GetValue(FLEXPLORERTEXTFLAG, &autoTextFlag))
+    if (!rcFile.GetValue(FLEXPLORERTEXTFLAG, int_result))
     {
-        FlexCopyManager::autoTextConversion = (autoTextFlag != 0);
+        FlexCopyManager::autoTextConversion = (int_result != 0);
     }
 #endif
 }
