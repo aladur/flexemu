@@ -6,9 +6,10 @@ int main(int argc, char *argv[])
 {
     bool failure = false;
 
+#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
     init_test_gccasm(argc, argv);
 
-    failure = test_gccasm_add8();
+    failure |= test_gccasm_add8();
     failure |= test_gccasm_add16();
     failure |= test_gccasm_adc();
     failure |= test_gccasm_sub8();
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     failure |= test_gccasm_asr();
     failure |= test_gccasm_ror();
     failure |= test_gccasm_rol();
+#endif
 
     return failure ? 1 : 0;
 }

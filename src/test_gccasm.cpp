@@ -16,6 +16,7 @@ typedef void (*tFctRefByte)(Byte &);
 typedef void (*tFctRefWordWord)(Word &, Word);
 typedef void (*tFctWordWord)(Word, Word);
 
+#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 void addx(Byte &reg, Byte operand)
 {
     Word sum = reg + operand;
@@ -907,4 +908,5 @@ bool test_gccasm_rol()
     //    return test_gccasm_fctRefByte("rola", rol, 0x49);
     return true;
 }
+#endif
 
