@@ -1526,7 +1526,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
                 if ((fp = fopen(path, "wb")) != nullptr)
                 {
-                    Word bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
+                    size_t bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
                     if (bytes != SECTOR_SIZE)
                     {
                         result = false;
