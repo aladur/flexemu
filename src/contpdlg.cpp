@@ -136,7 +136,7 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
 #ifdef WIN32
     char                    wd[PATH_MAX];
 
-    getcwd((char *)wd, PATH_MAX);
+    getcwd(wd, PATH_MAX);
 #endif
     containerPath = wxFileSelector(
                         _("Input a FLEX file container"),
@@ -147,7 +147,7 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
                         wxFD_SAVE,
                         this);
 #ifdef WIN32
-    chdir((char *)wd);
+    chdir(wd);
 #endif
 
     if (!containerPath.IsEmpty())

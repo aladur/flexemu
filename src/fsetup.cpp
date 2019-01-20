@@ -61,7 +61,7 @@ bool FlexemuSetup::OnInit()
     }
     for (i = 0; i < argc; i++)
     {
-        mb_argv[i] = (char *)args[i].data();
+        mb_argv[i] = args[i].data();
     }
 
     optionMan.InitOptions(&guiOptions, &options, argc, mb_argv.get());

@@ -244,9 +244,9 @@ void FlexOptionManager::GetCommandlineOptions(
     float   f;
     optind = 1;
     opterr = 0;
-    strcpy((char *)optstr, "mup:f:0:1:2:3:j:k:F:C:");
+    strcpy(optstr, "mup:f:0:1:2:3:j:k:F:C:");
 #ifdef HAVE_TERMIOS_H
-    strcat((char *)optstr, "tr:");  // terminal mode and reset key
+    strcat(optstr, "tr:");  // terminal mode and reset key
 #endif
 #ifdef HAVE_X11
     strcat(optstr, "s");            // X11 synchronised
@@ -256,7 +256,7 @@ void FlexOptionManager::GetCommandlineOptions(
 #endif
 #if defined (HAVE_X11) || defined(WIN32)
     strcat(optstr, "ic:n:");          // color, inverse video, # of colors
-    strcat((char *)optstr, "vh");   // version and help
+    strcat(optstr, "vh");   // version and help
 #endif
 
     while (1)

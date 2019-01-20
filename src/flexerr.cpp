@@ -109,7 +109,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 
     errorCode = FERR_WINDOWS_ERROR;
 
-    errorString = (char *)lpMsgBuf;
+    errorString = static_cast<char *>(lpMsgBuf);
     errorString += sp1;
 
     LocalFree(lpMsgBuf);

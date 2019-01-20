@@ -160,6 +160,7 @@ private:
         SWord index,
         SWord old_id,
         SWord new_id) const;
+    void check_pointer(void *ptr);
 
 };  // class NafsDirectoryContainer
 

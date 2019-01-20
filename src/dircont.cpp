@@ -181,7 +181,7 @@ bool DirectoryContainer::IsRandomFile(
     strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
     strncpy(lowFilename, pfilename, 13);
     lowFilename[13] = '\0';
-    strlower((char *)lowFilename);
+    strlower(lowFilename);
 
     BFilePtr fp(str, "r");
 
@@ -399,7 +399,7 @@ bool DirectoryContainer::CheckFilename(const char *fileName) const
 
     dot    = '\0';
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-    result = sscanf(fileName, format, (char *)&name, (char *)&name + 1);
+    result = sscanf(fileName, format, name, &name[1]);
 
     if (!result || result == EOF)
     {
@@ -415,8 +415,7 @@ bool DirectoryContainer::CheckFilename(const char *fileName) const
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
     }
 
-    result = sscanf(fileName, format,
-                    &dot, (char *)&ext, (char *)&ext + 1);
+    result = sscanf(fileName, format, &dot, ext, &ext[1]);
 
     if (!result || result == 1 || result == EOF)
     {
@@ -717,8 +716,7 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
     char    ext[4];
 
     dot    = '\0';
-    result = sscanf(pfilename, "%1[a-z]%7[a-z0-9_-]",
-                    (char *)&name, (char *)&name + 1);
+    result = sscanf(pfilename, "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
 
     if (!result || result == EOF)
     {
@@ -726,11 +724,15 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
     }
 
     if (result == 1)
+    {
         result = sscanf(pfilename, "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]",
-                        &dot, (char *)&ext, (char *)&ext + 1);
+                        &dot, ext, &ext[1]);
+    }
     else
+    {
         result = sscanf(pfilename, "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]",
-                        &dot, (char *)&ext, (char *)&ext + 1);
+                        &dot, ext, &ext[1]);
+    }
 
     if (!result || result == 1 || result == EOF)
     {

@@ -896,7 +896,7 @@ void XtGui::timerCallback(XtIntervalId)
         {
             char err_msg[128];
 
-            sprintf((char *)&err_msg, "\
+            sprintf(err_msg, "\
 Got invalid instruction pc=%04x instr=%02x %02x %02x %02x \
 Processor stopped. To continue press Reset button",
                     status->pc,
@@ -1511,9 +1511,9 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
     if (errorStatus != XpmSuccess)
 #endif
         mainpixmap = XCreateBitmapFromData(XtDisplay(w),
-                                           RootWindowOfScreen(screen),
-                                           (char *)flexmain_bits,
-                                           flexmain_width, flexmain_height);
+                                        RootWindowOfScreen(screen),
+                                        reinterpret_cast<char *>(flexmain_bits),
+                                        flexmain_width, flexmain_height);
 
     if (mainpixmap != None)
     {
@@ -1560,9 +1560,10 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             image[i][j] = XCreateImage(display, visual, depth,
-                                       ZPixmap, 0, (char *)image_data.get(),
-                                       BLOCKWIDTH * (i + 1),
-                                       BLOCKHEIGHT * (j + 1), 32, 0);
+                                     ZPixmap, 0,
+                                     reinterpret_cast<char *>(image_data.get()),
+                                     BLOCKWIDTH * (i + 1),
+                                     BLOCKHEIGHT * (j + 1), 32, 0);
 
             switch (depth)
             {
@@ -1638,7 +1639,8 @@ void XtGui::initialize_after_open(Widget w, const char *title)
 #endif
     okpixmap = XCreateBitmapFromData(XtDisplay(w),
                                      RootWindowOfScreen(XtScreen(w)),
-                                     (char *)ok_bits, ok_width, ok_height);
+                                     reinterpret_cast<char *>(ok_bits),
+                                     ok_width, ok_height);
 
     if (okpixmap != None && cpu.is_use_undocumented())
     {
@@ -2122,10 +2124,10 @@ void XtGui::create_cpuview(Widget parent)
     if (errorStatus != XpmSuccess)
 #endif
         cpupixmap = XCreateBitmapFromData(XtDisplay(cpuframe),
-                                          RootWindowOfScreen(
-                                              XtScreen(cpuframe)),
-                                          (char *)flexcpu_bits, flexcpu_width,
-                                          flexcpu_height);
+                                         RootWindowOfScreen(XtScreen(cpuframe)),
+                                         reinterpret_cast<char *>(flexcpu_bits),
+                                         flexcpu_width,
+                                         flexcpu_height);
 
     if (cpupixmap != None)
     {

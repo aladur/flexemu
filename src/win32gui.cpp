@@ -241,7 +241,7 @@ void Win32Gui::onTimer(HWND hwnd, UINT id)
             {
                 char err_msg[128];
 
-                sprintf((char *)&err_msg, "\
+                sprintf(err_msg, "\
 Got invalid instruction\n\
 pc=%04x instr=%02x %02x %02x %02x\n\
 Processor stopped. To\n\

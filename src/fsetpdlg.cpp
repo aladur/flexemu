@@ -738,7 +738,7 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
 #ifdef _WIN32
     char wd[PATH_MAX];
 
-    getcwd((char *)wd, PATH_MAX);
+    getcwd(wd, PATH_MAX);
 #endif
     drive = wxFileSelector(
                 caption,
@@ -749,7 +749,7 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
                 wxFD_OPEN | wxFD_FILE_MUST_EXIST,
                 this);
 #ifdef _WIN32
-    chdir((char *)wd);
+    chdir(wd);
 #endif
     return drive;
 }

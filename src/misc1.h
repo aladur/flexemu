@@ -232,19 +232,19 @@ extern const char *gMemoryAllocationErrorString;
 #define DEBUGPRINT1(fmt,p1)                        \
     {                                                \
         char str[255];                                 \
-        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1); \
+        sprintf(str, "[" PROGRAMNAME "] " fmt,p1); \
         OutputDebugString((LPCTSTR)str);                        \
     }
 #define DEBUGPRINT2(fmt,p1,p2)                        \
     {                                                   \
         char str[255];                                    \
-        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1,p2); \
+        sprintf(str, "[" PROGRAMNAME "] " fmt,p1,p2); \
         OutputDebugString((LPCTSTR)str);                           \
     }
 #define DEBUGPRINT3(fmt,p1,p2,p3)                        \
     {                                                      \
         char str[255];                                       \
-        sprintf((char *)str, "[" PROGRAMNAME "] " fmt,p1,p2,p3); \
+        sprintf(str, "[" PROGRAMNAME "] " fmt,p1,p2,p3); \
         OutputDebugString((LPCTSTR)str);                              \
     }
 #endif

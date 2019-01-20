@@ -48,17 +48,6 @@
     #include "debug.h"
 #endif
 
-int initializeWithZero(char *ptr, int count)
-{
-    char *p = ptr;
-
-    for (int i = 0; i < count; i++)
-    {
-        p[i] = '\0';
-    }
-
-    return count;
-}
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
     attributes(0), isOpen(false), dir_sectors(0), new_files(0), dir_extend{0}
@@ -218,6 +207,8 @@ int NafsDirectoryContainer::GetContainerType() const
 
 void NafsDirectoryContainer::initialize_header(Byte wp)
 {
+    size_t i;
+
     param.offset        = 0;
     param.write_protect = wp;
     param.max_sector    = MAX_SECTOR >> 1;
@@ -230,29 +221,46 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
 
     pflex_links = std::unique_ptr<s_link_table[]>(
             new s_link_table[LINK_TABLE_SIZE]);
-    initializeWithZero((char *)pflex_links.get(), LINK_TABLE_SIZE *
-                       sizeof(s_link_table));
+    check_pointer(pflex_links.get());
+    for (i = 0; i < LINK_TABLE_SIZE; ++i)
+    {
+        pflex_links[i] = { };
+    }
 
     pflex_sys_info = std::unique_ptr<s_sys_info_sector[]>(
             new s_sys_info_sector[2]);
-    initializeWithZero((char *)pflex_sys_info.get(), 2 * sizeof(s_sys_info_sector));
+    check_pointer(pflex_sys_info.get());
+    for (i = 0; i < 2; ++i)
+    {
+        pflex_sys_info[i] = { };
+    }
+
     pflex_unused = std::unique_ptr<s_unused_sector>(new s_unused_sector);
-    initializeWithZero((char *)pflex_unused.get(), sizeof(s_unused_sector));
+    check_pointer(pflex_unused.get());
+    *pflex_unused = { };
 
     dir_sectors = INIT_DIR_SECTORS;
     pflex_directory = std::unique_ptr<s_dir_sector[]>(
             new s_dir_sector[dir_sectors]);
-    initializeWithZero((char *)pflex_directory.get(),
-                       dir_sectors * sizeof(s_dir_sector));
+    check_pointer(pflex_directory.get());
+    for (i = 0; i < dir_sectors; ++i)
+    {
+        pflex_directory[i] = { };
+    }
 
     new_files = INIT_NEW_FILES;
     pnew_file = std::unique_ptr<s_new_file[]>(new s_new_file[new_files]);
-    initializeWithZero((char *)pnew_file.get(), new_files * sizeof(s_new_file));
+    check_pointer(pnew_file.get());
+    for (i = 0; i < new_files; ++i)
+    {
+        pnew_file[i] = { };
+    }
     dir_extend.sec_trk = 0;
+} // initialize_header
 
-    if (pflex_links == nullptr || pflex_sys_info == nullptr ||
-        pflex_unused == nullptr || pflex_directory == nullptr ||
-        pnew_file == nullptr)
+void NafsDirectoryContainer::check_pointer(void *ptr)
+{
+    if (ptr == nullptr)
     {
         std::string msg("Not enough memory, can't continue\n");
 
@@ -271,7 +279,7 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
 #endif
         exit(EXIT_FAILURE);
     } // if
-} // initialize_header
+}
 
 // if valid flex filename return is > 0 otherwise = 0
 /*
@@ -292,7 +300,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 
     dot    = '\0';
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-    result = sscanf(pfilename, format, (char *)&name, (char *)&name + 1);
+    result = sscanf(pfilename, format, name, &name[1]);
 
     if (!result || result == EOF)
     {
@@ -308,8 +316,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
     }
 
-    result = sscanf(pfilename, format,
-                    &dot, (char *)&ext, (char *)&ext + 1);
+    result = sscanf(pfilename, format, &dot, ext, &ext[1]);
 
     if (!result || result == 1 || result == EOF)
     {
@@ -340,17 +347,11 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 
 void NafsDirectoryContainer::initialize_flex_directory()
 {
-    Word i, j;
-    char *p;
+    Word i;
 
     for (i = 0; i < dir_sectors; i++)
     {
-        p = (char *)&pflex_directory[i];
-
-        for (j = 0; j < SECTOR_SIZE; j++)
-        {
-            *(p++) = 0x00;
-        }
+        pflex_directory[i] = { };
 
         if (i < dir_sectors - 1)
         {
@@ -460,11 +461,10 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
         pnew_file[new_files - 1].first.sec_trk = 0;
     }
 
-    strcpy((char *)&pnew_file[i].filename,
-           unix_filename(NEW_FILE1 - i).c_str());
-    strcpy((char *)&path, directory.c_str());
-    strcat((char *)&path, PATHSEPARATORSTRING);
-    strcat((char *)&path, &pnew_file[i].filename[0]);
+    strcpy(pnew_file[i].filename, unix_filename(NEW_FILE1 - i).c_str());
+    strcpy(path, directory.c_str());
+    strcat(path, PATHSEPARATORSTRING);
+    strcat(path, &pnew_file[i].filename[0]);
     pnew_file[i].fp = fopen(path, "wb+");
 
     if (pnew_file[i].fp == nullptr)
@@ -938,15 +938,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         filename.begin(), ::tolower);
 #endif
 #ifdef UNIX
-                    filename = (char *)&pentry->d_name;
+                    filename = pentry->d_name;
 #endif
                     random = 0;
-                    strcpy((char *)&path, directory.c_str());
-                    strcat((char *)&path, PATHSEPARATORSTRING);
-                    strcat((char *)&path, filename.c_str());
+                    strcpy(path, directory.c_str());
+                    strcat(path, PATHSEPARATORSTRING);
+                    strcat(path, filename.c_str());
 
-                    if (IsFlexFilename(filename.c_str(), (char *)&name,
-                                       (char *)&ext) &&
+                    if (IsFlexFilename(filename.c_str(), name, ext) &&
                         !stat(path, &sbuf) && (S_ISREG(sbuf.st_mode)) &&
                         // exclude file "random":
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
@@ -1046,8 +1045,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 psis->unused1[i] = 0;
             }
 
-            strncpy((char *) & (psis->disk_name), name, 8);
-            strncpy((char *) & (psis->disk_ext), ext, 3);
+            strncpy(psis->disk_name, name, 8);
+            strncpy(psis->disk_ext, ext, 3);
             psis->disk_number[0] = number >> 8;
             psis->disk_number[1] = number & 0xff;
             psis->fc_start_trk = 0;
@@ -1067,8 +1066,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 psis->unused2[i] = 0;
             }
 
-            memcpy((char *)&pflex_sys_info[1], (const char *)&pflex_sys_info[0],
-                   sizeof(s_sys_info_sector));
+            pflex_sys_info[1] = pflex_sys_info[0];
         } // if
     } // initialize_flex_sys_info_sectors
 
@@ -1123,9 +1121,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 pfilename = unix_filename(dir_index * 10 + i).c_str();
                 index = pd->dir_entry[i].start_trk * MAX_SECTOR +
                         pd->dir_entry[i].start_sec - 1;
-                strcpy((char *)&path, directory.c_str());
-                strcat((char *)&path, PATHSEPARATORSTRING);
-                strcat((char *)&path, pfilename);
+                strcpy(path, directory.c_str());
+                strcat(path, PATHSEPARATORSTRING);
+                strcat(path, pfilename);
                 unlink(path);
                 change_file_id(index, dir_index * 10 + i, FREE_CHAIN);
 #ifdef DEBUG_FILE
@@ -1157,12 +1155,12 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
             if (*pfilename1 && *pfilename2 &&
                 strcmp(pfilename1, pfilename2) != 0)
             {
-                strcpy((char *)&old_path, directory.c_str());
-                strcat((char *)&old_path, PATHSEPARATORSTRING);
-                strcat((char *)&old_path, pfilename1);
-                strcpy((char *)&new_path, directory.c_str());
-                strcat((char *)&new_path, PATHSEPARATORSTRING);
-                strcat((char *)&new_path, pfilename2);
+                strcpy(old_path, directory.c_str());
+                strcat(old_path, PATHSEPARATORSTRING);
+                strcat(old_path, pfilename1);
+                strcpy(new_path, directory.c_str());
+                strcat(new_path, PATHSEPARATORSTRING);
+                strcat(new_path, pfilename2);
                 rename(old_path, new_path);
 #ifdef DEBUG_FILE
                 LOG_XX("     rename %s to %s\n",
@@ -1248,9 +1246,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     change_file_id(index, NEW_FILE1 - j,
                                    10 * dir_index + i);
                     fclose(pnew_file[j].fp);
-                    strcpy((char *)&old_path, directory.c_str());
-                    strcat((char *)&old_path, PATHSEPARATORSTRING);
-                    strcat((char *)&old_path, pnew_file[j].filename);
+                    strcpy(old_path, directory.c_str());
+                    strcat(old_path, PATHSEPARATORSTRING);
+                    strcat(old_path, pnew_file[j].filename);
 
                     // check for random file, if true set user execute bit
                     if (pd->dir_entry[i].sector_map & 0x02)
@@ -1273,9 +1271,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #endif
                     std::string new_name = unix_filename(
                                pflex_links[index].file_id);
-                    strcpy((char *)&new_path, directory.c_str());
-                    strcat((char *)&new_path, PATHSEPARATORSTRING);
-                    strcat((char *)&new_path, new_name.c_str());
+                    strcpy(new_path, directory.c_str());
+                    strcat(new_path, PATHSEPARATORSTRING);
+                    strcat(new_path, new_name.c_str());
                     rename(old_path, new_path);
 #ifdef DEBUG_FILE
                     LOG_XX("     new file %s, was %s\n",
@@ -1290,7 +1288,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     while (pnew_file[j + 1].first.sec_trk &&
                            j < new_files - 1)
                     {
-                        strcpy((char *)&pnew_file[j].filename[0],
+                        strcpy(pnew_file[j].filename,
                                &pnew_file[j + 1].filename[0]);
                         pnew_file[j].first.sec_trk =
                             pnew_file[j + 1].first.sec_trk;
@@ -1354,19 +1352,19 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                 if (sec >= 3)
                 {
-                    p = (char *)(&pflex_sys_info[sec - 3]);
+                    p = reinterpret_cast<char *>(&pflex_sys_info[sec - 3]);
                 }
                 else if (sec == 2)
                 {
-                    p = (char *)pflex_unused.get();
+                    p = reinterpret_cast<char *>(pflex_unused.get());
                 }
                 else if (sec == 1)
                 {
                     memset(buffer, 0, SECTOR_SIZE);
 
                     link = link_address();
-                    strcpy((char *)path, directory.c_str());
-                    strcat((char *)path, PATHSEPARATORSTRING "boot");
+                    strcpy(path, directory.c_str());
+                    strcat(path, PATHSEPARATORSTRING "boot");
 
                     if ((fp = fopen(path, mode)) != nullptr)
                     {
@@ -1403,7 +1401,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 LOG("directorysector\n");
 #endif
                 di = pfl->f_record;
-                p = (char *)&pflex_directory[di];
+                p = reinterpret_cast<char *>(&pflex_directory[di]);
                 memcpy(buffer, p, param.byte_p_sector);
                 break;
 
@@ -1428,9 +1426,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                     LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
 #endif
-                    strcpy((char *)&path, directory.c_str());
-                    strcat((char *)&path, PATHSEPARATORSTRING);
-                    strcat((char *)&path, unix_filename(pfl->file_id).c_str());
+                    strcpy(path, directory.c_str());
+                    strcat(path, PATHSEPARATORSTRING);
+                    strcat(path, unix_filename(pfl->file_id).c_str());
 
                     if ((fp = fopen(path, mode)) != nullptr &&
                         !fseek(fp, (long)(pfl->f_record * 252L),
@@ -1523,17 +1521,17 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
                 if (sector >= 3)
                 {
-                    p = (char *)(&pflex_sys_info[sector - 3]);
+                    p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
                 }
                 else if (sector == 2)
                 {
-                    p = (char *)pflex_unused.get();
+                    p = reinterpret_cast<char *>(pflex_unused.get());
                 }
                 else if (sector == 1)
                 {
                     mode = "wb";
-                    strcpy((char *)&path, directory.c_str());
-                    strcat((char *)&path, PATHSEPARATORSTRING "boot");
+                    strcpy(path, directory.c_str());
+                    strcat(path, PATHSEPARATORSTRING "boot");
 
                     if ((fp = fopen(path, mode)) != nullptr)
                     {
@@ -1561,7 +1559,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 LOG("directorysector\n");
 #endif
                 di = pfl->f_record;
-                p = (char *)&pflex_directory[di];
+                p = reinterpret_cast<char *>(&pflex_directory[di]);
                 check_for_delete(di, (s_dir_sector *)buffer);
                 check_for_new_file(di, (s_dir_sector *)buffer);
                 check_for_rename(di, (s_dir_sector *)buffer);
@@ -1639,9 +1637,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                     LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
 #endif
-                    strcpy((char *)&path, directory.c_str());
-                    strcat((char *)&path, PATHSEPARATORSTRING);
-                    strcat((char *)&path, unix_filename(pfl->file_id).c_str());
+                    strcpy(path, directory.c_str());
+                    strcat(path, PATHSEPARATORSTRING);
+                    strcat(path, unix_filename(pfl->file_id).c_str());
                     pfl->next.st.trk = buffer[0];
                     pfl->next.st.sec = buffer[1];
                     pfl->record_nr[0] = buffer[2];

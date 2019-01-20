@@ -123,7 +123,7 @@ void GlobalOptionsDialog::OnSelectViewer(wxCommandEvent &WXUNUSED(event))
 #ifdef WIN32
     char  wd[PATH_MAX];
 
-    getcwd((char *)wd, PATH_MAX);
+    getcwd(wd, PATH_MAX);
 #endif
     viewerPath = wxFileSelector(
                      _("Select a File Viewer to be used"),
@@ -134,7 +134,7 @@ void GlobalOptionsDialog::OnSelectViewer(wxCommandEvent &WXUNUSED(event))
                      wxFD_SAVE,
                      this);
 #ifdef WIN32
-    chdir((char *)wd);
+    chdir(wd);
 #endif
 
     if (!viewerPath.IsEmpty())
@@ -155,7 +155,7 @@ void GlobalOptionsDialog::OnSelectBootSectorFile(wxCommandEvent &WXUNUSED(
 #ifdef WIN32
     char  wd[PATH_MAX];
 
-    getcwd((char *)wd, PATH_MAX);
+    getcwd(wd, PATH_MAX);
 #endif
     bootSectorFile = wxFileSelector(
                          _("Select a Boot Sector file to be used"),
@@ -166,7 +166,7 @@ void GlobalOptionsDialog::OnSelectBootSectorFile(wxCommandEvent &WXUNUSED(
                          wxFD_SAVE,
                          this);
 #ifdef WIN32
-    chdir((char *)wd);
+    chdir(wd);
 #endif
 
     if (!bootSectorFile.IsEmpty())

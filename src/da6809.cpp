@@ -744,7 +744,7 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
     {
         if (postbyte & (1 << i))
         {
-            sprintf((char *)&mnem_buf[index], "%s%s",
+            sprintf(&mnem_buf[index], "%s%s",
                     comma ? "," : "", StackRegister(i, "U"));
             index += strlen(StackRegister(i, "U")) + (comma ? 1 : 0);
             comma = 1;
@@ -774,7 +774,7 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
     {
         if (postbyte & (1 << i))
         {
-            sprintf((char *)&mnem_buf[index], "%s%s",
+            sprintf(&mnem_buf[index], "%s%s",
                     comma ? "," : "", StackRegister(i, "S"));
             index += strlen(StackRegister(i, "S")) + (comma ? 1 : 0);
             comma = 1;

@@ -402,7 +402,7 @@ bool FlexFileContainer::CheckFilename(const char *fileName) const
 
     dot    = '\0';
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-    result = sscanf(fileName, format, (char *)&name, (char *)&name + 1);
+    result = sscanf(fileName, format, name, &name[1]);
 
     if (!result || result == EOF)
     {
@@ -418,8 +418,7 @@ bool FlexFileContainer::CheckFilename(const char *fileName) const
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
     }
 
-    result = sscanf(fileName, format,
-                    &dot, (char *)&ext, (char *)&ext + 1);
+    result = sscanf(fileName, format, &dot, ext, &ext[1]);
 
     if (!result || result == 1 || result == EOF)
     {

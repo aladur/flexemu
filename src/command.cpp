@@ -181,7 +181,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
             answer_index  = 0;
             number        = INVALID_DRIVE;
             count         = 0;
-            p             = (char *)command;
+            p             = command;
             arg1 = next_token(&p, &count);  // get arg1
             skip_token(&p);
             arg2 = next_token(&p, &count);  // get arg2

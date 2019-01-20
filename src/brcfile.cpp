@@ -53,7 +53,7 @@ int BRcFile::SetValue(const char *key, const char *value)
         return errno;
     }
 
-    res = fprintf(fp, "%s\t\t\"%s\"\n", (char *)key, (char *)value);
+    res = fprintf(fp, "%s\t\t\"%s\"\n", key, value);
 
     if (res != 2)
     {
@@ -74,7 +74,7 @@ int BRcFile::SetValue(const char *key, int value)
         return errno;
     }
 
-    res = fprintf(fp, "%s\t\t%i\n", (char *)key, value);
+    res = fprintf(fp, "%s\t\t%i\n", key, value);
 
     if (res != 2)
     {
