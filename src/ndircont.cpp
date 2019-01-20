@@ -917,7 +917,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     hdl = FindFirstFile(path, &pentry);
 #endif
     if (hdl != INVALID_HANDLE_VALUE)
-        {
+    {
         do
         {
 #endif
@@ -994,706 +994,706 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
             closedir(pd);
 #endif
-        } //if
-    } // fill_flex_directory
+    } //if
+} // fill_flex_directory
 
 
-    void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
+void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
+{
+    Word i;
+    char name[9], ext[4];
+    const char *pName;
+    struct stat sbuf;
+    struct tm *lt;
+    s_sys_info_sector *psis;
+
+    if (!stat(directory.c_str(), &sbuf))
     {
-        Word i;
-        char name[9], ext[4];
-        const char *pName;
-        struct stat sbuf;
-        struct tm *lt;
-        s_sys_info_sector *psis;
+        psis = &pflex_sys_info[0];
+        lt = localtime(&(sbuf.st_mtime));
+        name[0] = '\0';
+        ext[0]  = '\0';
+        pName = directory.c_str() + directory.length() - 1;
 
-        if (!stat(directory.c_str(), &sbuf))
+        if (*pName == PATHSEPARATOR)
         {
-            psis = &pflex_sys_info[0];
-            lt = localtime(&(sbuf.st_mtime));
-            name[0] = '\0';
-            ext[0]  = '\0';
-            pName = directory.c_str() + directory.length() - 1;
-
-            if (*pName == PATHSEPARATOR)
-            {
-                pName--;
-            }
-
-            while (pName != directory.c_str() && *pName != PATHSEPARATOR)
-            {
-                pName--;
-            }
-
-            if (*pName == PATHSEPARATOR)
-            {
-                pName++;
-            }
-
-            if (sscanf(pName, "%8[a-zA-Z0-9_-]", name) != 1)
-            {
-                strcpy(name, "UNIX");
-            }
-            else
-            {
-                strupper(name);
-                strupper(ext);
-            } // else
-
-            for (i = 0; i < 16; i++)
-            {
-                psis->unused1[i] = 0;
-            }
-
-            strncpy(psis->disk_name, name, 8);
-            strncpy(psis->disk_ext, ext, 3);
-            psis->disk_number[0] = number >> 8;
-            psis->disk_number[1] = number & 0xff;
-            psis->fc_start_trk = 0;
-            psis->fc_start_sec = 0;
-            psis->fc_end_trk = 0;
-            psis->fc_end_sec = 0;
-            psis->free[0] = 0;
-            psis->free[1] = 0;
-            psis->month = static_cast<Byte>(lt->tm_mon + 1);
-            psis->day = static_cast<Byte>(lt->tm_mday);
-            psis->year = static_cast<Byte>(lt->tm_year);
-            psis->last_trk = MAX_TRACK;
-            psis->last_sec = MAX_SECTOR;
-
-            for (i = 0; i < 216; i++)
-            {
-                psis->unused2[i] = 0;
-            }
-
-            pflex_sys_info[1] = pflex_sys_info[0];
-        } // if
-    } // initialize_flex_sys_info_sectors
-
-
-    // I don't know what this sector should be used for but
-    // emulate it anyway
-    void NafsDirectoryContainer::initialize_flex_unused_sector()
-    {
-        Word i;
-
-        pflex_unused->next_trk = 0x00;
-        pflex_unused->next_sec = 0x03;
-
-        for (i = 0; i < 254; i++)
-        {
-            pflex_unused->unused[i] = 0;
+            pName--;
         }
-    } // initialize_flex_unused_sector
 
-
-    // change the file id in flex_links
-    void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
-            SWord new_id) const
-    {
-        SWord i = index;
-
-        while (i >= 0 && pflex_links[i].file_id == old_id)
+        while (pName != directory.c_str() && *pName != PATHSEPARATOR)
         {
-            pflex_links[i].file_id = new_id;
-            i = pflex_links[i].next.st.trk * MAX_SECTOR +
-                pflex_links[i].next.st.sec - 1;
-        } // while
-    } // change_file_id
+            pName--;
+        }
 
-
-    void NafsDirectoryContainer::check_for_delete(SWord dir_index,
-            s_dir_sector * pdb) const
-    {
-        Word i;
-        SWord index;
-        char path[PATH_MAX + 1];
-        const char *pfilename;
-        s_dir_sector *pd;
-
-        pd = &pflex_directory[dir_index];
-
-        for (i = 0; i < 10; i++)
+        if (*pName == PATHSEPARATOR)
         {
-            if (pdb->dir_entry[i].filename[0] == DE_DELETED &&
-                pd->dir_entry[i].filename[0] != DE_DELETED)
-            {
-                pfilename = unix_filename(dir_index * 10 + i).c_str();
-                index = pd->dir_entry[i].start_trk * MAX_SECTOR +
-                        pd->dir_entry[i].start_sec - 1;
-                strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING);
-                strcat(path, pfilename);
-                unlink(path);
-                change_file_id(index, dir_index * 10 + i, FREE_CHAIN);
+            pName++;
+        }
+
+        if (sscanf(pName, "%8[a-zA-Z0-9_-]", name) != 1)
+        {
+            strcpy(name, "UNIX");
+        }
+        else
+        {
+            strupper(name);
+            strupper(ext);
+        } // else
+
+        for (i = 0; i < 16; i++)
+        {
+            psis->unused1[i] = 0;
+        }
+
+        strncpy(psis->disk_name, name, 8);
+        strncpy(psis->disk_ext, ext, 3);
+        psis->disk_number[0] = number >> 8;
+        psis->disk_number[1] = number & 0xff;
+        psis->fc_start_trk = 0;
+        psis->fc_start_sec = 0;
+        psis->fc_end_trk = 0;
+        psis->fc_end_sec = 0;
+        psis->free[0] = 0;
+        psis->free[1] = 0;
+        psis->month = static_cast<Byte>(lt->tm_mon + 1);
+        psis->day = static_cast<Byte>(lt->tm_mday);
+        psis->year = static_cast<Byte>(lt->tm_year);
+        psis->last_trk = MAX_TRACK;
+        psis->last_sec = MAX_SECTOR;
+
+        for (i = 0; i < 216; i++)
+        {
+            psis->unused2[i] = 0;
+        }
+
+        pflex_sys_info[1] = pflex_sys_info[0];
+    } // if
+} // initialize_flex_sys_info_sectors
+
+
+// I don't know what this sector should be used for but
+// emulate it anyway
+void NafsDirectoryContainer::initialize_flex_unused_sector()
+{
+    Word i;
+
+    pflex_unused->next_trk = 0x00;
+    pflex_unused->next_sec = 0x03;
+
+    for (i = 0; i < 254; i++)
+    {
+        pflex_unused->unused[i] = 0;
+    }
+} // initialize_flex_unused_sector
+
+
+// change the file id in flex_links
+void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
+        SWord new_id) const
+{
+    SWord i = index;
+
+    while (i >= 0 && pflex_links[i].file_id == old_id)
+    {
+        pflex_links[i].file_id = new_id;
+        i = pflex_links[i].next.st.trk * MAX_SECTOR +
+            pflex_links[i].next.st.sec - 1;
+    } // while
+} // change_file_id
+
+
+void NafsDirectoryContainer::check_for_delete(SWord dir_index,
+        s_dir_sector * pdb) const
+{
+    Word i;
+    SWord index;
+    char path[PATH_MAX + 1];
+    const char *pfilename;
+    s_dir_sector *pd;
+
+    pd = &pflex_directory[dir_index];
+
+    for (i = 0; i < 10; i++)
+    {
+        if (pdb->dir_entry[i].filename[0] == DE_DELETED &&
+            pd->dir_entry[i].filename[0] != DE_DELETED)
+        {
+            pfilename = unix_filename(dir_index * 10 + i).c_str();
+            index = pd->dir_entry[i].start_trk * MAX_SECTOR +
+                    pd->dir_entry[i].start_sec - 1;
+            strcpy(path, directory.c_str());
+            strcat(path, PATHSEPARATORSTRING);
+            strcat(path, pfilename);
+            unlink(path);
+            change_file_id(index, dir_index * 10 + i, FREE_CHAIN);
 #ifdef DEBUG_FILE
-                LOG_X("     delete %s\n", pfilename);
+            LOG_X("     delete %s\n", pfilename);
 #endif
-                break;
-            } // if
-        } // for
+            break;
+        } // if
+    } // for
 
-    } // check_for_delete
+} // check_for_delete
 
 
-    void NafsDirectoryContainer::check_for_rename(SWord dir_index,
-            s_dir_sector * pdb) const
+void NafsDirectoryContainer::check_for_rename(SWord dir_index,
+        s_dir_sector * pdb) const
+{
+    Word i;
+    char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
+    std::string filename1, filename2;
+    const char *pfilename1, *pfilename2;
+
+    for (i = 0; i < 10; i++)
     {
-        Word i;
-        char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
-        std::string filename1, filename2;
-        const char *pfilename1, *pfilename2;
+        filename1 = unix_filename(dir_index * 10 + i);
+        filename2 = get_unix_filename(pdb->dir_entry[i].filename);
 
+        pfilename1 = filename1.c_str();
+        pfilename2 = filename2.c_str();
+
+        if (*pfilename1 && *pfilename2 &&
+            strcmp(pfilename1, pfilename2) != 0)
+        {
+            strcpy(old_path, directory.c_str());
+            strcat(old_path, PATHSEPARATORSTRING);
+            strcat(old_path, pfilename1);
+            strcpy(new_path, directory.c_str());
+            strcat(new_path, PATHSEPARATORSTRING);
+            strcat(new_path, pfilename2);
+            rename(old_path, new_path);
+#ifdef DEBUG_FILE
+            LOG_XX("     rename %s to %s\n",
+                    pfilename1, pfilename2);
+#endif
+            break;
+        } // if
+    } // for
+} // check_for_rename
+
+
+void NafsDirectoryContainer::check_for_extend(SWord dir_index,
+        s_dir_sector * pdb)
+{
+    s_dir_sector *pd;
+
+    pd = &pflex_directory[dir_index];
+
+    if (!pd->next_sec && !pd->next_trk && (pdb->next_trk || pdb->next_sec))
+    {
+        dir_extend.st.trk = pdb->next_trk;
+        dir_extend.st.sec = pdb->next_sec;
+    } // if
+} // check_for_extend
+
+
+// return -1 if not successful otherwise return 0
+// years < 75 will be represented as >= 2000
+SWord NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
+        Byte day, Byte year) const
+{
+    struct stat    statbuf;
+    struct utimbuf timebuf;
+    struct tm      file_time;
+
+    if (stat(ppath, &statbuf) >= 0)
+    {
+        timebuf.actime = statbuf.st_atime;
+        file_time.tm_sec = 0;
+        file_time.tm_min = 0;
+        file_time.tm_hour = 12;
+        file_time.tm_mon = month - 1;
+        file_time.tm_mday = day;
+        file_time.tm_year = year < 75 ? year + 100 : year;
+        file_time.tm_isdst = 0;
+        timebuf.modtime = mktime(&file_time);
+
+        if (timebuf.modtime >= 0 && utime(ppath, &timebuf) >= 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    } // if
+
+    return -1;
+} // set_file_time
+
+
+Byte NafsDirectoryContainer::check_for_new_file(SWord dir_index,
+        s_dir_sector * pd) const
+{
+    Word i, j;
+    SWord index;
+    char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
+#ifdef UNIX
+    struct stat sbuf;
+#endif
+
+    j = 0;
+
+    while (pnew_file[j].first.sec_trk && j < new_files)
+    {
         for (i = 0; i < 10; i++)
         {
-            filename1 = unix_filename(dir_index * 10 + i);
-            filename2 = get_unix_filename(pdb->dir_entry[i].filename);
-
-            pfilename1 = filename1.c_str();
-            pfilename2 = filename2.c_str();
-
-            if (*pfilename1 && *pfilename2 &&
-                strcmp(pfilename1, pfilename2) != 0)
+            if (pnew_file[j].first.st.sec == pd->dir_entry[i].start_sec &&
+                pnew_file[j].first.st.trk == pd->dir_entry[i].start_trk)
             {
+                index = pnew_file[j].first.st.trk * MAX_SECTOR +
+                        pnew_file[j].first.st.sec - 1;
+                change_file_id(index, NEW_FILE1 - j,
+                                10 * dir_index + i);
+                fclose(pnew_file[j].fp);
                 strcpy(old_path, directory.c_str());
                 strcat(old_path, PATHSEPARATORSTRING);
-                strcat(old_path, pfilename1);
-                strcpy(new_path, directory.c_str());
-                strcat(new_path, PATHSEPARATORSTRING);
-                strcat(new_path, pfilename2);
-                rename(old_path, new_path);
-#ifdef DEBUG_FILE
-                LOG_XX("     rename %s to %s\n",
-                       pfilename1, pfilename2);
-#endif
-                break;
-            } // if
-        } // for
-    } // check_for_rename
+                strcat(old_path, pnew_file[j].filename);
 
-
-    void NafsDirectoryContainer::check_for_extend(SWord dir_index,
-            s_dir_sector * pdb)
-    {
-        s_dir_sector *pd;
-
-        pd = &pflex_directory[dir_index];
-
-        if (!pd->next_sec && !pd->next_trk && (pdb->next_trk || pdb->next_sec))
-        {
-            dir_extend.st.trk = pdb->next_trk;
-            dir_extend.st.sec = pdb->next_sec;
-        } // if
-    } // check_for_extend
-
-
-    // return -1 if not successful otherwise return 0
-    // years < 75 will be represented as >= 2000
-    SWord NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
-            Byte day, Byte year) const
-    {
-        struct stat    statbuf;
-        struct utimbuf timebuf;
-        struct tm      file_time;
-
-        if (stat(ppath, &statbuf) >= 0)
-        {
-            timebuf.actime = statbuf.st_atime;
-            file_time.tm_sec = 0;
-            file_time.tm_min = 0;
-            file_time.tm_hour = 12;
-            file_time.tm_mon = month - 1;
-            file_time.tm_mday = day;
-            file_time.tm_year = year < 75 ? year + 100 : year;
-            file_time.tm_isdst = 0;
-            timebuf.modtime = mktime(&file_time);
-
-            if (timebuf.modtime >= 0 && utime(ppath, &timebuf) >= 0)
-            {
-                return 0;
-            }
-            else
-            {
-                return -1;
-            }
-        } // if
-
-        return -1;
-    } // set_file_time
-
-
-    Byte NafsDirectoryContainer::check_for_new_file(SWord dir_index,
-            s_dir_sector * pd) const
-    {
-        Word i, j;
-        SWord index;
-        char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
-#ifdef UNIX
-        struct stat sbuf;
-#endif
-
-        j = 0;
-
-        while (pnew_file[j].first.sec_trk && j < new_files)
-        {
-            for (i = 0; i < 10; i++)
-            {
-                if (pnew_file[j].first.st.sec == pd->dir_entry[i].start_sec &&
-                    pnew_file[j].first.st.trk == pd->dir_entry[i].start_trk)
-                {
-                    index = pnew_file[j].first.st.trk * MAX_SECTOR +
-                            pnew_file[j].first.st.sec - 1;
-                    change_file_id(index, NEW_FILE1 - j,
-                                   10 * dir_index + i);
-                    fclose(pnew_file[j].fp);
-                    strcpy(old_path, directory.c_str());
-                    strcat(old_path, PATHSEPARATORSTRING);
-                    strcat(old_path, pnew_file[j].filename);
-
-                    // check for random file, if true set user execute bit
-                    if (pd->dir_entry[i].sector_map & 0x02)
+                // check for random file, if true set user execute bit
+                if (pd->dir_entry[i].sector_map & 0x02)
 #ifdef _WIN32
 #ifdef UNICODE
-                    SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
-                        FILE_ATTRIBUTE_HIDDEN);
+                SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
+                    FILE_ATTRIBUTE_HIDDEN);
 #else
-                    SetFileAttributes(old_path, FILE_ATTRIBUTE_HIDDEN);
+                SetFileAttributes(old_path, FILE_ATTRIBUTE_HIDDEN);
 #endif
 
 #endif
 #ifdef UNIX
 
-                    if (!stat(old_path, &sbuf))
-                    {
-                        chmod(old_path, sbuf.st_mode | S_IXUSR);
-                    }
+                if (!stat(old_path, &sbuf))
+                {
+                    chmod(old_path, sbuf.st_mode | S_IXUSR);
+                }
 
 #endif
-                    std::string new_name = unix_filename(
-                               pflex_links[index].file_id);
-                    strcpy(new_path, directory.c_str());
-                    strcat(new_path, PATHSEPARATORSTRING);
-                    strcat(new_path, new_name.c_str());
-                    rename(old_path, new_path);
+                std::string new_name = unix_filename(
+                            pflex_links[index].file_id);
+                strcpy(new_path, directory.c_str());
+                strcat(new_path, PATHSEPARATORSTRING);
+                strcat(new_path, new_name.c_str());
+                rename(old_path, new_path);
 #ifdef DEBUG_FILE
-                    LOG_XX("     new file %s, was %s\n",
-                           unix_filename(pflex_links[index].file_id),
-                           pnew_file[j].filename);
+                LOG_XX("     new file %s, was %s\n",
+                        unix_filename(pflex_links[index].file_id),
+                        pnew_file[j].filename);
 #endif
-                    set_file_time(new_path, pd->dir_entry[i].month,
-                                  pd->dir_entry[i].day, pd->dir_entry[i].year);
+                set_file_time(new_path, pd->dir_entry[i].month,
+                                pd->dir_entry[i].day, pd->dir_entry[i].year);
 
-                    // remove entry in new file table and
-                    // move following entries
-                    while (pnew_file[j + 1].first.sec_trk &&
-                           j < new_files - 1)
-                    {
-                        strcpy(pnew_file[j].filename,
-                               &pnew_file[j + 1].filename[0]);
-                        pnew_file[j].first.sec_trk =
-                            pnew_file[j + 1].first.sec_trk;
-                        pnew_file[j].next.sec_trk =
-                            pnew_file[j + 1].next.sec_trk;
-                        pnew_file[j].f_record = pnew_file[j + 1].f_record;
-                        pnew_file[j].fp = pnew_file[j + 1].fp;
-                        index = pnew_file[j].first.st.trk * MAX_SECTOR +
-                                pnew_file[j].first.st.sec - 1;
-                        change_file_id(index, NEW_FILE1 - j - 1, NEW_FILE1 - j);
-                        j++;
-                    } // while
+                // remove entry in new file table and
+                // move following entries
+                while (pnew_file[j + 1].first.sec_trk &&
+                        j < new_files - 1)
+                {
+                    strcpy(pnew_file[j].filename,
+                            &pnew_file[j + 1].filename[0]);
+                    pnew_file[j].first.sec_trk =
+                        pnew_file[j + 1].first.sec_trk;
+                    pnew_file[j].next.sec_trk =
+                        pnew_file[j + 1].next.sec_trk;
+                    pnew_file[j].f_record = pnew_file[j + 1].f_record;
+                    pnew_file[j].fp = pnew_file[j + 1].fp;
+                    index = pnew_file[j].first.st.trk * MAX_SECTOR +
+                            pnew_file[j].first.st.sec - 1;
+                    change_file_id(index, NEW_FILE1 - j - 1, NEW_FILE1 - j);
+                    j++;
+                } // while
 
-                    pnew_file[j].first.sec_trk = 0;
-                    return 0;
-                } // if
-            } // for
+                pnew_file[j].first.sec_trk = 0;
+                return 0;
+            } // if
+        } // for
 
-            j++;
-        } // while
+        j++;
+    } // while
 
-        return 0;
-    } // check_for_new_file
+    return 0;
+} // check_for_new_file
 
 
-    Byte NafsDirectoryContainer::last_of_free_chain(Byte trk, Byte sec) const
+Byte NafsDirectoryContainer::last_of_free_chain(Byte trk, Byte sec) const
+{
+    return (pflex_sys_info[0].fc_end_trk == trk &&
+            pflex_sys_info[0].fc_end_sec == sec);
+} // last_of_free_chain
+
+
+// return true on success
+bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
+                                        int sec) const
+{
+    char path[PATH_MAX + 1];
+    int index = trk * MAX_SECTOR + (sec - 1);
+    t_st *link;
+    bool result = true;
+
+#ifdef DEBUG_FILE
+    LOG_XX("read: %02X/%02X ", trk, sec);
+#endif
+    s_link_table *pfl = &pflex_links[index];
+
+    switch (pfl->file_id)
     {
-        return (pflex_sys_info[0].fc_end_trk == trk &&
-                pflex_sys_info[0].fc_end_sec == sec);
-    } // last_of_free_chain
-
-
-    // return true on success
-    bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
-                                            int sec) const
-    {
-        char path[PATH_MAX + 1];
-        int index = trk * MAX_SECTOR + (sec - 1);
-        t_st *link;
-        bool result = true;
-
+        case SYSTEM :
 #ifdef DEBUG_FILE
-        LOG_XX("read: %02X/%02X ", trk, sec);
+            LOG("systemsector\n");
 #endif
-        s_link_table *pfl = &pflex_links[index];
-
-        switch (pfl->file_id)
-        {
-            case SYSTEM :
-#ifdef DEBUG_FILE
-                LOG("systemsector\n");
-#endif
-                if (sec >= 3)
-                {
-                    char *p = reinterpret_cast<char *>(&pflex_sys_info[sec-3]);
-                    memcpy(buffer, p, param.byte_p_sector);
-                    break;
-                }
-                else if (sec == 2)
-                {
-                    char *p = reinterpret_cast<char *>(pflex_unused.get());
-                    memcpy(buffer, p, param.byte_p_sector);
-                    break;
-                }
-                else if (sec == 1)
-                {
-                    FILE *fp;
-
-                    memset(buffer, 0, SECTOR_SIZE);
-
-                    link = link_address();
-                    strcpy(path, directory.c_str());
-                    strcat(path, PATHSEPARATORSTRING "boot");
-
-                    if ((fp = fopen(path, "rb")) != nullptr)
-                    {
-                        Word bytes = static_cast<Word>(
-                            fread(buffer, 1, SECTOR_SIZE, fp));
-                        if (bytes == SECTOR_SIZE)
-                        {
-                            buffer[3] = link->st.trk;
-                            buffer[4] = link->st.sec;
-                        }
-                        else
-                        {
-                            // Default buffer content if no boot sector present.
-                            // Jump to monitor program warm start entry point.
-                            buffer[0] = 0x7E; // JMP $F02D
-                            buffer[1] = 0xF0;
-                            buffer[2] = 0x2D;
-                        }
-                        fclose(fp);
-                    }
-
-                    break;
-                }
+            if (sec >= 3)
+            {
+                char *p = reinterpret_cast<char *>(&pflex_sys_info[sec-3]);
+                memcpy(buffer, p, param.byte_p_sector);
+                break;
+            }
+            else if (sec == 2)
+            {
+                char *p = reinterpret_cast<char *>(pflex_unused.get());
+                memcpy(buffer, p, param.byte_p_sector);
+                break;
+            }
+            else if (sec == 1)
+            {
+                FILE *fp;
 
                 memset(buffer, 0, SECTOR_SIZE);
-                break;
 
-            case DIRECTORY:
-#ifdef DEBUG_FILE
-                LOG("directorysector\n");
-#endif
+                link = link_address();
+                strcpy(path, directory.c_str());
+                strcat(path, PATHSEPARATORSTRING "boot");
+
+                if ((fp = fopen(path, "rb")) != nullptr)
                 {
-                    Word di = pfl->f_record;
-                    char *p = reinterpret_cast<char *>(&pflex_directory[di]);
-                    memcpy(buffer, p, param.byte_p_sector);
-                }
-                break;
-
-            case FREE_CHAIN :
-#ifdef DEBUG_FILE
-                LOG("free chain\n");
-#endif
-                buffer[0] = pfl->next.st.trk;
-                buffer[1] = pfl->next.st.sec;
-                buffer[2] = pfl->record_nr[0];
-                buffer[3] = pfl->record_nr[1];
-
-                // free chain sector reads always
-                // filled with zero
-                memset(buffer + 4, 0, SECTOR_SIZE - 4);
-
-                break;
-
-            default :
-                if (pfl->file_id >= 0)
-                {
-                    // Read from an existing file.
-                    FILE *fp;
-
-#ifdef DEBUG_FILE
-                    LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
-#endif
-                    strcpy(path, directory.c_str());
-                    strcat(path, PATHSEPARATORSTRING);
-                    strcat(path, unix_filename(pfl->file_id).c_str());
-
-                    if ((fp = fopen(path, "rb")) != nullptr &&
-                        !fseek(fp, (long)(pfl->f_record * 252L),
-                               SEEK_SET))
+                    Word bytes = static_cast<Word>(
+                        fread(buffer, 1, SECTOR_SIZE, fp));
+                    if (bytes == SECTOR_SIZE)
                     {
-                        Word bytes = static_cast<Word>(
-                            fread(buffer + 4, 1, 252, fp));
-                        fclose(fp);
-
-                        // stuff last sector of file with 0
-                        if (bytes < 252)
-                        {
-                            memset(buffer + 4 + bytes, 0,
-                                   SECTOR_SIZE - 4 - bytes);
-                        }
-                    }
-                    else     // unable to read sector
-                    {
-                        result = false;
-                    } // else
-                }
-                else
-                {
-                    // new file with name tmpXX
-                    FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
-
-                    if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
-                    {
-                        Word bytes =
-                            static_cast<Word>(fread(buffer + 4, 1, 252, fp));
-
-                        // stuff last sector of file with 0
-                        if (bytes < 252)
-                        {
-                            memset(buffer + 4 + bytes, 0,
-                                   SECTOR_SIZE - 4 - bytes);
-                        }
-
-                        fseek(fp, 0L, SEEK_END); // position end of file
-                    }
-                    else     // unable to read sector
-                    {
-                        result = false;
-                    } // else
-                } // else
-
-                buffer[0] = pfl->next.st.trk;
-                buffer[1] = pfl->next.st.sec;
-                buffer[2] = pfl->record_nr[0];
-                buffer[3] = pfl->record_nr[1];
-                break;
-        } // switch
-
-        return result;
-    } //ReadSector
-
-
-    bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
-            int sec)
-    {
-        char path[PATH_MAX + 1];
-        SWord new_file_index;
-        bool result = true;
-        Byte track = static_cast<Byte>(trk);
-        Byte sector = static_cast<Byte>(sec);
-        SWord index = track * MAX_SECTOR + (sector - 1);
-        s_link_table *pfl = &pflex_links[index];
-
-#ifdef DEBUG_FILE
-        LOG_XX("write: %02X/%02X ", trk, sec);
-#endif
-
-        switch (pfl->file_id)
-        {
-            case SYSTEM :
-#ifdef DEBUG_FILE
-                LOG("systemsector\n");
-#endif
-                if (sector >= 3)
-                {
-                    char *p;
-
-                    p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
-                    memcpy(p, buffer, param.byte_p_sector);
-                }
-                else if (sector == 2)
-                {
-                    char *p = reinterpret_cast<char *>(pflex_unused.get());
-                    memcpy(p, buffer, param.byte_p_sector);
-                }
-                else if (sector == 1)
-                {
-                    FILE *fp;
-
-                    strcpy(path, directory.c_str());
-                    strcat(path, PATHSEPARATORSTRING "boot");
-
-                    if ((fp = fopen(path, "wb")) != nullptr)
-                    {
-                        Word bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
-                        if (bytes != SECTOR_SIZE)
-                        {
-                            result = false;
-                        }
-                        fclose(fp);
-                    }
-
-                    break;
-                }
-
-                break;
-
-            case DIRECTORY:
-#ifdef DEBUG_FILE
-                LOG("directorysector\n");
-#endif
-                {
-                    Word di = pfl->f_record;
-                    char *p = reinterpret_cast<char *>(&pflex_directory[di]);
-                    check_for_delete(di, (s_dir_sector *)buffer);
-                    check_for_new_file(di, (s_dir_sector *)buffer);
-                    check_for_rename(di, (s_dir_sector *)buffer);
-                    check_for_extend(di, (s_dir_sector *)buffer);
-                    memcpy(p, buffer, param.byte_p_sector);
-                }
-                break;
-
-            case FREE_CHAIN :
-#ifdef DEBUG_FILE
-                LOG("free chain\n");
-#endif
-
-                if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
-                {
-                    extend_directory(index, (s_dir_sector *)buffer);
-#ifdef DEBUG_FILE
-                    LOG("      extend directory\n");
-#endif
-                    break;
-                } // if
-
-                if (last_of_free_chain(track, sector) && (buffer[1] || buffer[0]))
-                {
-                    pfl->next.st.trk  = buffer[0];
-                    pfl->next.st.sec  = buffer[1];
-                    pfl->record_nr[0] = buffer[2];
-                    pfl->record_nr[1] = buffer[3];
-#ifdef DEBUG_FILE
-                    LOG("      file deleted\n");
-#endif
-                    break;
-                }
-
-                if ((new_file_index = index_of_new_file(track, sector)) < 0)
-                {
-#ifdef DEBUG_FILE
-                    LOG("   ** error: unable to create new file\n");
-#endif
-                    result = false; // no more new files can be created
-                    break;
-                }
-
-#ifdef DEBUG_FILE
-                LOG_X("      file %s\n", pnew_file[new_file_index].filename);
-#endif
-                {
-                    FILE *fp = pnew_file[new_file_index].fp;
-                    pnew_file[new_file_index].next.st.trk = buffer[0];
-                    pnew_file[new_file_index].next.st.sec = buffer[1];
-                    pfl->file_id  = NEW_FILE1 - new_file_index;
-                    //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
-                    //pfl->f_record = ((sector_buffer[2] << 8) |
-                    // sector_buffer[3]) - 1;
-                    pfl->next.st.trk = buffer[0];
-                    pfl->next.st.sec = buffer[1];
-                    pfl->record_nr[0] = buffer[2];
-                    pfl->record_nr[1] = buffer[3];
-                    pfl->f_record = record_nr_of_new_file(new_file_index, index);
-
-                    if (ftell(fp) != (pfl->f_record * 252L) &&
-                        fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
-                    {
-                        result = false;
-                    }
-                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
-                    {
-                        result = false;
-                    }
-
-                    // (pfs->pnew_file[new_file_index].f_record++;
-                }
-                break;
-
-            default :
-                if (pfl->file_id >=  0)
-                {
-                    FILE *fp;
-#ifdef DEBUG_FILE
-                    LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
-#endif
-                    strcpy(path, directory.c_str());
-                    strcat(path, PATHSEPARATORSTRING);
-                    strcat(path, unix_filename(pfl->file_id).c_str());
-                    pfl->next.st.trk = buffer[0];
-                    pfl->next.st.sec = buffer[1];
-                    pfl->record_nr[0] = buffer[2];
-                    pfl->record_nr[1] = buffer[3];
-
-                    if ((fp = fopen(path, "rb+")) == nullptr)
-                    {
-                        result = false;
+                        buffer[3] = link->st.trk;
+                        buffer[4] = link->st.sec;
                     }
                     else
                     {
-                        if (ftell(fp) != pfl->f_record &&
-                            fseek(fp, (long)(pfl->f_record * 252L),
-                                  SEEK_SET) != 0)
-                        {
-                            result = false;
-                        }
-                        else if (fwrite(buffer + 4, 1, 252, fp) != 252)
-                        {
-                            result = false;
-                        }
-
-                        fclose(fp);
-                    } // else
+                        // Default buffer content if no boot sector present.
+                        // Jump to monitor program warm start entry point.
+                        buffer[0] = 0x7E; // JMP $F02D
+                        buffer[1] = 0xF0;
+                        buffer[2] = 0x2D;
+                    }
+                    fclose(fp);
                 }
-                else
-                {
+
+                break;
+            }
+
+            memset(buffer, 0, SECTOR_SIZE);
+            break;
+
+        case DIRECTORY:
 #ifdef DEBUG_FILE
-                    LOG_X("sector of new file %s\n",
-                          unix_filename(pfl->file_id));
+            LOG("directorysector\n");
 #endif
-                    FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+            {
+                Word di = pfl->f_record;
+                char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                memcpy(buffer, p, param.byte_p_sector);
+            }
+            break;
 
-                    if (ftell(fp) != pfl->f_record &&
-                        fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+        case FREE_CHAIN :
+#ifdef DEBUG_FILE
+            LOG("free chain\n");
+#endif
+            buffer[0] = pfl->next.st.trk;
+            buffer[1] = pfl->next.st.sec;
+            buffer[2] = pfl->record_nr[0];
+            buffer[3] = pfl->record_nr[1];
+
+            // free chain sector reads always
+            // filled with zero
+            memset(buffer + 4, 0, SECTOR_SIZE - 4);
+
+            break;
+
+        default :
+            if (pfl->file_id >= 0)
+            {
+                // Read from an existing file.
+                FILE *fp;
+
+#ifdef DEBUG_FILE
+                LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
+#endif
+                strcpy(path, directory.c_str());
+                strcat(path, PATHSEPARATORSTRING);
+                strcat(path, unix_filename(pfl->file_id).c_str());
+
+                if ((fp = fopen(path, "rb")) != nullptr &&
+                    !fseek(fp, (long)(pfl->f_record * 252L),
+                            SEEK_SET))
+                {
+                    Word bytes = static_cast<Word>(
+                        fread(buffer + 4, 1, 252, fp));
+                    fclose(fp);
+
+                    // stuff last sector of file with 0
+                    if (bytes < 252)
+                    {
+                        memset(buffer + 4 + bytes, 0,
+                                SECTOR_SIZE - 4 - bytes);
+                    }
+                }
+                else     // unable to read sector
+                {
+                    result = false;
+                } // else
+            }
+            else
+            {
+                // new file with name tmpXX
+                FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+
+                if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
+                {
+                    Word bytes =
+                        static_cast<Word>(fread(buffer + 4, 1, 252, fp));
+
+                    // stuff last sector of file with 0
+                    if (bytes < 252)
+                    {
+                        memset(buffer + 4 + bytes, 0,
+                                SECTOR_SIZE - 4 - bytes);
+                    }
+
+                    fseek(fp, 0L, SEEK_END); // position end of file
+                }
+                else     // unable to read sector
+                {
+                    result = false;
+                } // else
+            } // else
+
+            buffer[0] = pfl->next.st.trk;
+            buffer[1] = pfl->next.st.sec;
+            buffer[2] = pfl->record_nr[0];
+            buffer[3] = pfl->record_nr[1];
+            break;
+    } // switch
+
+    return result;
+} //ReadSector
+
+
+bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
+        int sec)
+{
+    char path[PATH_MAX + 1];
+    SWord new_file_index;
+    bool result = true;
+    Byte track = static_cast<Byte>(trk);
+    Byte sector = static_cast<Byte>(sec);
+    SWord index = track * MAX_SECTOR + (sector - 1);
+    s_link_table *pfl = &pflex_links[index];
+
+#ifdef DEBUG_FILE
+    LOG_XX("write: %02X/%02X ", trk, sec);
+#endif
+
+    switch (pfl->file_id)
+    {
+        case SYSTEM :
+#ifdef DEBUG_FILE
+            LOG("systemsector\n");
+#endif
+            if (sector >= 3)
+            {
+                char *p;
+
+                p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
+                memcpy(p, buffer, param.byte_p_sector);
+            }
+            else if (sector == 2)
+            {
+                char *p = reinterpret_cast<char *>(pflex_unused.get());
+                memcpy(p, buffer, param.byte_p_sector);
+            }
+            else if (sector == 1)
+            {
+                FILE *fp;
+
+                strcpy(path, directory.c_str());
+                strcat(path, PATHSEPARATORSTRING "boot");
+
+                if ((fp = fopen(path, "wb")) != nullptr)
+                {
+                    Word bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
+                    if (bytes != SECTOR_SIZE)
                     {
                         result = false;
                     }
-                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
-                    {
-                        result = false;
-                    }
-                } //else
+                    fclose(fp);
+                }
 
+                break;
+            }
+
+            break;
+
+        case DIRECTORY:
+#ifdef DEBUG_FILE
+            LOG("directorysector\n");
+#endif
+            {
+                Word di = pfl->f_record;
+                char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                check_for_delete(di, (s_dir_sector *)buffer);
+                check_for_new_file(di, (s_dir_sector *)buffer);
+                check_for_rename(di, (s_dir_sector *)buffer);
+                check_for_extend(di, (s_dir_sector *)buffer);
+                memcpy(p, buffer, param.byte_p_sector);
+            }
+            break;
+
+        case FREE_CHAIN :
+#ifdef DEBUG_FILE
+            LOG("free chain\n");
+#endif
+
+            if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
+            {
+                extend_directory(index, (s_dir_sector *)buffer);
+#ifdef DEBUG_FILE
+                LOG("      extend directory\n");
+#endif
+                break;
+            } // if
+
+            if (last_of_free_chain(track, sector) && (buffer[1] || buffer[0]))
+            {
+                pfl->next.st.trk  = buffer[0];
+                pfl->next.st.sec  = buffer[1];
+                pfl->record_nr[0] = buffer[2];
+                pfl->record_nr[1] = buffer[3];
+#ifdef DEBUG_FILE
+                LOG("      file deleted\n");
+#endif
+                break;
+            }
+
+            if ((new_file_index = index_of_new_file(track, sector)) < 0)
+            {
+#ifdef DEBUG_FILE
+                LOG("   ** error: unable to create new file\n");
+#endif
+                result = false; // no more new files can be created
+                break;
+            }
+
+#ifdef DEBUG_FILE
+            LOG_X("      file %s\n", pnew_file[new_file_index].filename);
+#endif
+            {
+                FILE *fp = pnew_file[new_file_index].fp;
+                pnew_file[new_file_index].next.st.trk = buffer[0];
+                pnew_file[new_file_index].next.st.sec = buffer[1];
+                pfl->file_id  = NEW_FILE1 - new_file_index;
+                //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
+                //pfl->f_record = ((sector_buffer[2] << 8) |
+                // sector_buffer[3]) - 1;
                 pfl->next.st.trk = buffer[0];
                 pfl->next.st.sec = buffer[1];
                 pfl->record_nr[0] = buffer[2];
                 pfl->record_nr[1] = buffer[3];
-        } // switch
+                pfl->f_record = record_nr_of_new_file(new_file_index, index);
 
-        return result;
-    } // WriteSector
+                if (ftell(fp) != (pfl->f_record * 252L) &&
+                    fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+                {
+                    result = false;
+                }
+                else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                {
+                    result = false;
+                }
+
+                // (pfs->pnew_file[new_file_index].f_record++;
+            }
+            break;
+
+        default :
+            if (pfl->file_id >=  0)
+            {
+                FILE *fp;
+#ifdef DEBUG_FILE
+                LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
+#endif
+                strcpy(path, directory.c_str());
+                strcat(path, PATHSEPARATORSTRING);
+                strcat(path, unix_filename(pfl->file_id).c_str());
+                pfl->next.st.trk = buffer[0];
+                pfl->next.st.sec = buffer[1];
+                pfl->record_nr[0] = buffer[2];
+                pfl->record_nr[1] = buffer[3];
+
+                if ((fp = fopen(path, "rb+")) == nullptr)
+                {
+                    result = false;
+                }
+                else
+                {
+                    if (ftell(fp) != pfl->f_record &&
+                        fseek(fp, (long)(pfl->f_record * 252L),
+                                SEEK_SET) != 0)
+                    {
+                        result = false;
+                    }
+                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                    {
+                        result = false;
+                    }
+
+                    fclose(fp);
+                } // else
+            }
+            else
+            {
+#ifdef DEBUG_FILE
+                LOG_X("sector of new file %s\n",
+                        unix_filename(pfl->file_id));
+#endif
+                FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+
+                if (ftell(fp) != pfl->f_record &&
+                    fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+                {
+                    result = false;
+                }
+                else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                {
+                    result = false;
+                }
+            } //else
+
+            pfl->next.st.trk = buffer[0];
+            pfl->next.st.sec = buffer[1];
+            pfl->record_nr[0] = buffer[2];
+            pfl->record_nr[1] = buffer[3];
+    } // switch
+
+    return result;
+} // WriteSector
 
 
-    void NafsDirectoryContainer::mount(Word number)
-    {
-        Byte wp_flag;
+void NafsDirectoryContainer::mount(Word number)
+{
+    Byte wp_flag;
 
-        wp_flag = static_cast<Byte>(access(directory.c_str(), W_OK));
-        initialize_header(wp_flag);
-        initialize_new_file_table();
-        initialize_flex_sys_info_sectors(number);
-        initialize_flex_unused_sector();
-        fill_flex_directory(wp_flag);
-    } // mount
+    wp_flag = static_cast<Byte>(access(directory.c_str(), W_OK));
+    initialize_header(wp_flag);
+    initialize_new_file_table();
+    initialize_flex_sys_info_sectors(number);
+    initialize_flex_unused_sector();
+    fill_flex_directory(wp_flag);
+} // mount
 
 #endif // #ifdef NAFS
