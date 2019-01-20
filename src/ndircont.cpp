@@ -1325,21 +1325,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                                             int sec) const
     {
-        char *p, path[PATH_MAX + 1];
-        const char *mode;
-        int index;
-        Word di;
-        Word bytes = 0;
-        FILE *fp;
+        char path[PATH_MAX + 1];
+        int index = trk * MAX_SECTOR + (sec - 1);
         t_st *link;
-        bool result;
+        bool result = true;
 
 #ifdef DEBUG_FILE
         LOG_XX("read: %02X/%02X ", trk, sec);
 #endif
-        mode = "rb";
-        result = true;
-        index = trk * MAX_SECTOR + (sec - 1);
         s_link_table *pfl = &pflex_links[index];
 
         switch (pfl->file_id)
@@ -1348,61 +1341,63 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                 LOG("systemsector\n");
 #endif
-                p = nullptr; // satisfy compiler
-
                 if (sec >= 3)
                 {
-                    p = reinterpret_cast<char *>(&pflex_sys_info[sec - 3]);
+                    char *p = reinterpret_cast<char *>(&pflex_sys_info[sec-3]);
+                    memcpy(buffer, p, param.byte_p_sector);
+                    break;
                 }
                 else if (sec == 2)
                 {
-                    p = reinterpret_cast<char *>(pflex_unused.get());
+                    char *p = reinterpret_cast<char *>(pflex_unused.get());
+                    memcpy(buffer, p, param.byte_p_sector);
+                    break;
                 }
                 else if (sec == 1)
                 {
+                    FILE *fp;
+
                     memset(buffer, 0, SECTOR_SIZE);
 
                     link = link_address();
                     strcpy(path, directory.c_str());
                     strcat(path, PATHSEPARATORSTRING "boot");
 
-                    if ((fp = fopen(path, mode)) != nullptr)
+                    if ((fp = fopen(path, "rb")) != nullptr)
                     {
-                        bytes = static_cast<Word>(
+                        Word bytes = static_cast<Word>(
                             fread(buffer, 1, SECTOR_SIZE, fp));
+                        if (bytes == SECTOR_SIZE)
+                        {
+                            buffer[3] = link->st.trk;
+                            buffer[4] = link->st.sec;
+                        }
+                        else
+                        {
+                            // Default buffer content if no boot sector present.
+                            // Jump to monitor program warm start entry point.
+                            buffer[0] = 0x7E; // JMP $F02D
+                            buffer[1] = 0xF0;
+                            buffer[2] = 0x2D;
+                        }
                         fclose(fp);
                     }
 
-                    if (bytes == SECTOR_SIZE)
-                    {
-                        buffer[3] = link->st.trk;
-                        buffer[4] = link->st.sec;
-                    }
-                    else
-                    {
-                        // Default buffer content if boot sector not present.
-                        // Jump to monitor program warm start entry point.
-                        buffer[0] = 0x7E; // JMP $F02D
-                        buffer[1] = 0xF0;
-                        buffer[2] = 0x2D;
-                    }
-                    break;
-                }
-                else
-                {
                     break;
                 }
 
-                memcpy(buffer, p, param.byte_p_sector);
+                memset(buffer, 0, SECTOR_SIZE);
                 break;
 
             case DIRECTORY:
 #ifdef DEBUG_FILE
                 LOG("directorysector\n");
 #endif
-                di = pfl->f_record;
-                p = reinterpret_cast<char *>(&pflex_directory[di]);
-                memcpy(buffer, p, param.byte_p_sector);
+                {
+                    Word di = pfl->f_record;
+                    char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                    memcpy(buffer, p, param.byte_p_sector);
+                }
                 break;
 
             case FREE_CHAIN :
@@ -1423,6 +1418,9 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
             default :
                 if (pfl->file_id >= 0)
                 {
+                    // Read from an existing file.
+                    FILE *fp;
+
 #ifdef DEBUG_FILE
                     LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
 #endif
@@ -1430,11 +1428,11 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     strcat(path, PATHSEPARATORSTRING);
                     strcat(path, unix_filename(pfl->file_id).c_str());
 
-                    if ((fp = fopen(path, mode)) != nullptr &&
+                    if ((fp = fopen(path, "rb")) != nullptr &&
                         !fseek(fp, (long)(pfl->f_record * 252L),
                                SEEK_SET))
                     {
-                        bytes = static_cast<Word>(
+                        Word bytes = static_cast<Word>(
                             fread(buffer + 4, 1, 252, fp));
                         fclose(fp);
 
@@ -1453,11 +1451,11 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                 else
                 {
                     // new file with name tmpXX
-                    fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+                    FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
                     if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
                     {
-                        bytes =
+                        Word bytes =
                             static_cast<Word>(fread(buffer + 4, 1, 252, fp));
 
                         // stuff last sector of file with 0
@@ -1489,27 +1487,17 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             int sec)
     {
-        char *p, path[PATH_MAX + 1];
-        const char *mode;
-        SWord index;
-        Word di;
-        size_t bytes;
+        char path[PATH_MAX + 1];
         SWord new_file_index;
-        FILE *fp;
-        s_link_table *pfl;
-        bool result;
+        bool result = true;
         Byte track = static_cast<Byte>(trk);
         Byte sector = static_cast<Byte>(sec);
+        SWord index = track * MAX_SECTOR + (sector - 1);
+        s_link_table *pfl = &pflex_links[index];
 
 #ifdef DEBUG_FILE
         LOG_XX("write: %02X/%02X ", trk, sec);
 #endif
-        fp = nullptr;
-        mode = "rb+";
-        result = 1;
-        bytes = 0;      // satisfy compiler
-        index = track * MAX_SECTOR + (sector - 1);
-        pfl = &pflex_links[index];
 
         switch (pfl->file_id)
         {
@@ -1517,54 +1505,53 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                 LOG("systemsector\n");
 #endif
-                p = nullptr; // satisfy compiler
-
                 if (sector >= 3)
                 {
+                    char *p;
+
                     p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
+                    memcpy(p, buffer, param.byte_p_sector);
                 }
                 else if (sector == 2)
                 {
-                    p = reinterpret_cast<char *>(pflex_unused.get());
+                    char *p = reinterpret_cast<char *>(pflex_unused.get());
+                    memcpy(p, buffer, param.byte_p_sector);
                 }
                 else if (sector == 1)
                 {
-                    mode = "wb";
+                    FILE *fp;
+
                     strcpy(path, directory.c_str());
                     strcat(path, PATHSEPARATORSTRING "boot");
 
-                    if ((fp = fopen(path, mode)) != nullptr)
+                    if ((fp = fopen(path, "wb")) != nullptr)
                     {
-                        bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
+                        Word bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
+                        if (bytes != SECTOR_SIZE)
+                        {
+                            result = false;
+                        }
                         fclose(fp);
                     }
 
-                    if (bytes != SECTOR_SIZE)
-                    {
-                        result = false;
-                    }
-
-                    break;
-                }
-                else
-                {
                     break;
                 }
 
-                memcpy(p, buffer, param.byte_p_sector);
                 break;
 
             case DIRECTORY:
 #ifdef DEBUG_FILE
                 LOG("directorysector\n");
 #endif
-                di = pfl->f_record;
-                p = reinterpret_cast<char *>(&pflex_directory[di]);
-                check_for_delete(di, (s_dir_sector *)buffer);
-                check_for_new_file(di, (s_dir_sector *)buffer);
-                check_for_rename(di, (s_dir_sector *)buffer);
-                check_for_extend(di, (s_dir_sector *)buffer);
-                memcpy(p, buffer, param.byte_p_sector);
+                {
+                    Word di = pfl->f_record;
+                    char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                    check_for_delete(di, (s_dir_sector *)buffer);
+                    check_for_new_file(di, (s_dir_sector *)buffer);
+                    check_for_rename(di, (s_dir_sector *)buffer);
+                    check_for_extend(di, (s_dir_sector *)buffer);
+                    memcpy(p, buffer, param.byte_p_sector);
+                }
                 break;
 
             case FREE_CHAIN :
@@ -1605,35 +1592,38 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef DEBUG_FILE
                 LOG_X("      file %s\n", pnew_file[new_file_index].filename);
 #endif
-                fp = pnew_file[new_file_index].fp;
-                pnew_file[new_file_index].next.st.trk = buffer[0];
-                pnew_file[new_file_index].next.st.sec = buffer[1];
-                pfl->file_id  = NEW_FILE1 - new_file_index;
-                //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
-                //pfl->f_record = ((sector_buffer[2] << 8) |
-                // sector_buffer[3]) - 1;
-                pfl->next.st.trk = buffer[0];
-                pfl->next.st.sec = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
-                pfl->f_record = record_nr_of_new_file(new_file_index, index);
-
-                if (ftell(fp) != (pfl->f_record * 252L) &&
-                    fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
                 {
-                    result = false;
-                }
-                else if ((bytes = fwrite(buffer + 4, 1, 252, fp)) != 252)
-                {
-                    result = false;
-                }
+                    FILE *fp = pnew_file[new_file_index].fp;
+                    pnew_file[new_file_index].next.st.trk = buffer[0];
+                    pnew_file[new_file_index].next.st.sec = buffer[1];
+                    pfl->file_id  = NEW_FILE1 - new_file_index;
+                    //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
+                    //pfl->f_record = ((sector_buffer[2] << 8) |
+                    // sector_buffer[3]) - 1;
+                    pfl->next.st.trk = buffer[0];
+                    pfl->next.st.sec = buffer[1];
+                    pfl->record_nr[0] = buffer[2];
+                    pfl->record_nr[1] = buffer[3];
+                    pfl->f_record = record_nr_of_new_file(new_file_index, index);
 
-                // (pfs->pnew_file[new_file_index].f_record++;
+                    if (ftell(fp) != (pfl->f_record * 252L) &&
+                        fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+                    {
+                        result = false;
+                    }
+                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                    {
+                        result = false;
+                    }
+
+                    // (pfs->pnew_file[new_file_index].f_record++;
+                }
                 break;
 
             default :
                 if (pfl->file_id >=  0)
                 {
+                    FILE *fp;
 #ifdef DEBUG_FILE
                     LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
 #endif
@@ -1645,7 +1635,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     pfl->record_nr[0] = buffer[2];
                     pfl->record_nr[1] = buffer[3];
 
-                    if ((fp = fopen(path, mode)) == nullptr)
+                    if ((fp = fopen(path, "rb+")) == nullptr)
                     {
                         result = false;
                     }
@@ -1657,8 +1647,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         {
                             result = false;
                         }
-                        else if ((bytes = fwrite(buffer + 4, 1, 252,
-                                                 fp)) != 252)
+                        else if (fwrite(buffer + 4, 1, 252, fp) != 252)
                         {
                             result = false;
                         }
@@ -1672,14 +1661,14 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                     LOG_X("sector of new file %s\n",
                           unix_filename(pfl->file_id));
 #endif
-                    fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+                    FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
                     if (ftell(fp) != pfl->f_record &&
                         fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
                     {
                         result = false;
                     }
-                    else if ((bytes = fwrite(buffer + 4, 1, 252, fp)) != 252)
+                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
                     {
                         result = false;
                     }
