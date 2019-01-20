@@ -83,13 +83,13 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
         s_dir_entry *pd = &dirSector.dir_entry[dirIndex % 10];
 
         // an empty entry aborts the search
-        if (pd->filename[0] == '\0')
+        if (pd->filename[0] == DE_EMPTY)
         {
             return false;
         }
 
         // look for the next used directory entry
-        if (pd->filename[0] != -1)
+        if (pd->filename[0] != DE_DELETED)
         {
             // ok, found a valid directory entry
             std::string::size_type length;
@@ -155,7 +155,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     psis = (s_sys_info_sector *)buffer;
 
     // deleted file is signed by 0xFF as first byte of filename
-    pd->filename[0] = static_cast<Byte>(0xFF);
+    pd->filename[0] = DE_DELETED;
 
     if (!base->WriteSector((const Byte *)&dirSector, dirSectorTrk,
                            dirSectorSec))

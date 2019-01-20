@@ -112,6 +112,12 @@ struct s_dir_entry
     Byte    year;
 };
 
+/* filename[0] within s_dir_entry has a special meaning: */
+/* 1. An empty directory entry: */
+#define DE_EMPTY    '\0'
+/* 2. A deleted directory entry: */
+#define DE_DELETED  '\xFF'
+
 /* structure of one FLEX directory sector */
 struct s_dir_sector
 {

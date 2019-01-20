@@ -365,7 +365,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
 
 std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
 {
-    if (*pfn != -1)
+    if (*pfn != DE_EMPTY && *pfn != DE_DELETED)
     {
         std::string::size_type length;
 
@@ -377,8 +377,7 @@ std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
         std::transform(name.begin(), name.end(), name.begin(), ::tolower);
         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
         return name + '.' + ext;
-
-    } // if
+    }
 
     return std::string();
 } // get_unix_filename
@@ -539,7 +538,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     for (i = 0; i < dir_sectors * 10; i++)
     {
-        if (!pflex_directory[i / 10].dir_entry[i % 10].filename[0])
+        if (pflex_directory[i / 10].dir_entry[i % 10].filename[0] == DE_EMPTY)
         {
             return i;
         }
@@ -1118,8 +1117,8 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
         for (i = 0; i < 10; i++)
         {
-            if (pdb->dir_entry[i].filename[0] == -1 &&
-                pd->dir_entry[i].filename[0] != -1)
+            if (pdb->dir_entry[i].filename[0] == DE_DELETED &&
+                pd->dir_entry[i].filename[0] != DE_DELETED)
             {
                 pfilename = unix_filename(dir_index * 10 + i).c_str();
                 index = pd->dir_entry[i].start_trk * MAX_SECTOR +
