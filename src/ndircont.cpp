@@ -1365,8 +1365,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
 
                 if ((fp = fopen(path, "rb")) != nullptr)
                 {
-                    Word bytes = static_cast<Word>(
-                        fread(buffer, 1, SECTOR_SIZE, fp));
+                    size_t bytes = fread(buffer, 1, SECTOR_SIZE, fp);
                     if (bytes == SECTOR_SIZE)
                     {
                         buffer[3] = link->st.trk;
@@ -1432,8 +1431,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                     !fseek(fp, (long)(pfl->f_record * 252L),
                             SEEK_SET))
                 {
-                    Word bytes = static_cast<Word>(
-                        fread(buffer + 4, 1, 252, fp));
+                    size_t bytes = fread(buffer + 4, 1, 252, fp);
                     fclose(fp);
 
                     // stuff last sector of file with 0
@@ -1455,8 +1453,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
 
                 if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
                 {
-                    Word bytes =
-                        static_cast<Word>(fread(buffer + 4, 1, 252, fp));
+                    size_t bytes = fread(buffer + 4, 1, 252, fp);
 
                     // stuff last sector of file with 0
                     if (bytes < 252)
