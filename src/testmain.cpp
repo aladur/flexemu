@@ -2,7 +2,11 @@
 #include "test_gccasm.h"
 
 
+#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 int main(int argc, char *argv[])
+#else
+int main()
+#endif
 {
     bool failure = false;
 
