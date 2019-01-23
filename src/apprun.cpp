@@ -108,8 +108,8 @@ ApplicationRunner::ApplicationRunner(
         ioDevices.insert({ fdc.getName(), fdc });
         ioDevices.insert({ drisel.getName(), drisel });
         inout.set_fdc(&fdc);
-        ioDevices.insert({ command.getName(), command });
     }
+    ioDevices.insert({ command.getName(), command });
     ioDevices.insert({ vico1.getName(), vico1 });
     ioDevices.insert({ vico2.getName(), vico2 });
     if (options.useRtc)
