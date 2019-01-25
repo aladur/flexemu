@@ -140,6 +140,13 @@ ApplicationRunner::ApplicationRunner(
     if (terminalIO.is_terminal_supported())
     {
         auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+        if (address < 0)
+        {
+            // The specified hex_file does not support switching between
+            // serial/parallel input/output or it is unknown how to switch.
+            // Terminal mode has to be switched off.
+            options.term_mode = false;
+        }
         inout.serpar_address(address);
     }
 
