@@ -729,7 +729,7 @@ private:
 
     inline void clr(Word addr)
     {
-        Byte m = memory.read_byte(addr);
+        Byte m;
         clr(m);
         memory.write_byte(addr, m);
     }
