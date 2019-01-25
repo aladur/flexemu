@@ -152,6 +152,10 @@ FLSEKT EQU  $FD32      ;sectorregister
 FLDATA EQU  $FD33      ;dataregister
 FLDRIV EQU  $FD38      ;driveselectregister
 ;
+; emulator command register
+;
+EMUCMD EQU  $FD3C
+
 ; System equates for FLEX 9.1
 ;
 WARMS  EQU  $CD03      ;warmstart entry point
@@ -231,6 +235,8 @@ HKSTAB EQU  *
        FDB  VIDEO
        FCC  "X"        ;Flex Warmstart
        FDB  CFLEX
+       FCC  "Z"        ;Exit emulator
+       FDB  EMUEXIT
 ;
 MEMTAB FCC  "/"        ;Slash
        FDB  SLASH
@@ -1635,15 +1641,15 @@ SPCUR1 STA  ESCFLG-DIRPAG
 CURPS2 LDA  #14
        BRA  SPCUR1
 
-INSLIN LDD  YADDR
-       CMPD BOTTOM
+INSLIN LDD  YADDR-DIRPAG
+       CMPD BOTTOM-DIRPAG
        BEQ  LTD8      ; if already last line do nothing
-       SUBD NRLINS-1  ;the line is already deleted
+       SUBD NRLINS-1-DIRPAG ;the line is already deleted
        CLRA
        INCB           ;start one rasterline above
        INCB
        PSHS D
-       LDD BOTTOM
+       LDD BOTTOM-DIRPAG
        INCB
 REPTI  SUBB #1
        PSHS D
@@ -1651,7 +1657,7 @@ REPTI  SUBB #1
        LBSR OFFSET
        TFR X,U	     ; Dest Pointer in U
        LDD  ,S
-       SUBD NRLINS-1
+       SUBD NRLINS-1-DIRPAG
        LDX  #0
        LBSR OFFSET   ; Source Pointer in X
        LBSR COPYL    ; Copy one Rasterline
@@ -1659,16 +1665,16 @@ REPTI  SUBB #1
        CMPD ,S
        BNE  REPTI
        PULS D
-       ADDD NRLINS-1
+       ADDD NRLINS-1-DIRPAG
        TFR  D,Y
        LDX  #0
        LBSR ERASL     ;clear last line
 LTD8   LBRA TD8
 
-DELLIN LDD  YADDR
-       CMPD BOTTOM
+DELLIN LDD  YADDR-DIRPAG
+       CMPD BOTTOM-DIRPAG
        BEQ  LTD8      ; if already last line do nothing
-       SUBD NRLINS-1  ; Line is alread deleted
+       SUBD NRLINS-1-DIRPAG ; Line is alread deleted
        CLRA
        INCB           ; Start one raster line above
        INCB
@@ -1678,19 +1684,27 @@ REPTD  SUBB #1
        LBSR OFFSET
        TFR X,U	     ; Source Pointer in U
        LDD  ,S
-       ADDD NRLINS-1
+       ADDD NRLINS-1-DIRPAG
        LDX  #0
        LBSR OFFSET   ; Dest Pointer in X
        EXG  X,U
        LBSR COPYL    ; Copy one Rasterline
        PULS D
-       CMPD BOTTOM 
+       CMPD BOTTOM-DIRPAG
        BNE  REPTD
-       ADDD NRLINS-1
+       ADDD NRLINS-1-DIRPAG
        TFR  D,Y
        LDX  #0
        LBSR ERASL     ;clear last line
        BRA  LTD8
+
+EMUEXIT LDX  #TEXIT
+LPEXIT  LDA  ,X+
+        STA  EMUCMD
+        BNE  LPEXIT
+        JMP  HKS
+TEXIT   FCC  "EXIT"
+        FCB  $00
 
 ORIG   SET  *
        IF   ORIG>(ANFANG+$A1F)
