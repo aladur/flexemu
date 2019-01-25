@@ -913,7 +913,7 @@ void AbstractGui::output_to_terminal()
 {
     if (terminalIO.is_terminal_supported() && inout.is_serpar_address_valid())
     {
-        memory.write_byte(inout.serpar_address(), static_cast<Byte>(0xff));
+        memory.write_byte(inout.serpar_address(), '\xFF');
     }
 }
 
