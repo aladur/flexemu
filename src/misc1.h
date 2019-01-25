@@ -372,6 +372,8 @@ struct sOptions
 #define FALLTHROUGH
 #endif
 
+#define OBSERVE_FIRST_KEYBOARD_REQUEST (534)
+
 #ifdef __cplusplus
     extern int      copyFile(const char *srcPath, const char *destPath);
     extern void     strupper(char *pstr);

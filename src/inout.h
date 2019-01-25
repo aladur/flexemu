@@ -27,6 +27,7 @@
 
 #include "misc1.h"
 #include "flexemu.h"
+#include "bobserv.h"
 #include <string>
 #include <memory>
 
@@ -45,9 +46,11 @@ class KeyboardIO;
 class TerminalIO;
 class Pia1;
 
-class Inout
+class Inout : public BObserver
 {
 private:
+    Memory &memory;
+    const struct sOptions &options;
     E2floppy *fdc; // fdc not present for Eurocom II/V5
     Mc146818 *rtc; // RTC is an optional device
     std::unique_ptr<AbstractGui> gui;
@@ -88,8 +91,12 @@ public:
     Word serpar_address() const;
     void serpar_address(int value);
 
+    // BObserver interface
 public:
-    Inout();
+    void UpdateFrom(const void *);
+
+public:
+    Inout(const struct sOptions &x_options, Memory &x_memory);
     ~Inout();
 };
 

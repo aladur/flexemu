@@ -30,6 +30,7 @@
 #include "absgui.h"
 #include "joystick.h"
 #include "terminal.h"
+#include "memory.h"
 
 #ifdef HAVE_XTK
     #include "xtgui.h"
@@ -40,8 +41,10 @@
 #endif
 
 
-Inout::Inout()
-     : fdc(nullptr)
+Inout::Inout(const struct sOptions &x_options, Memory &x_memory) :
+     memory(x_memory)
+     , options(x_options)
+     , fdc(nullptr)
      , rtc(nullptr)
      , gui(nullptr)
      , local_serpar_address(-1)
@@ -204,3 +207,15 @@ void Inout::set_rtc(Mc146818 *x_rtc)
 {
     rtc = x_rtc;
 }
+
+void Inout::UpdateFrom(const void *pObject)
+{
+    const int id = *static_cast<const int *>(pObject);
+
+    if (id == OBSERVE_FIRST_KEYBOARD_REQUEST && options.term_mode &&
+        is_serpar_address_valid())
+    {
+        memory.write_byte(serpar_address(), '\xFF');
+    }
+}
+

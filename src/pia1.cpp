@@ -27,17 +27,20 @@
 #include "schedule.h"
 #include "keyboard.h"
 #include "cacttrns.h"
+#include "bobserv.h"
 
 
 Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
            bool x_a_set_msb) :
     cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO),
-    a_set_msb(x_a_set_msb)
+    a_set_msb(x_a_set_msb), request_a_updated(false),
+    observer(nullptr)
 {
 }
 
 void Pia1::resetIo()
 {
+    request_a_updated = false;
     Mc6821::resetIo();
     keyboardIO.reset_parallel();
 }
@@ -45,6 +48,12 @@ void Pia1::resetIo()
 void Pia1::requestInputA()
 {
     bool do_notify = false;
+
+    if (!request_a_updated)
+    {
+        request_a_updated = true;
+        Notify(OBSERVE_FIRST_KEYBOARD_REQUEST);
+    }
 
     keyboardIO.has_key_parallel(do_notify);
     if (do_notify)
@@ -98,5 +107,26 @@ void Pia1::set_irq_A()
 void Pia1::set_irq_B()
 {
     cpu.set_irq();
+}
+
+void Pia1::Notify(int id)
+{
+    if (observer != nullptr)
+    {
+        observer->UpdateFrom(static_cast<const int *>(&id));
+    }
+}
+
+void Pia1::Attach(BObserver *x_observer)
+{
+    observer = x_observer;
+}
+
+void Pia1::Detach(BObserver *x_observer)
+{
+    if (x_observer == observer)
+    {
+        observer = nullptr;
+    }
 }
 

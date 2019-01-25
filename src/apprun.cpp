@@ -55,7 +55,7 @@ ApplicationRunner::ApplicationRunner(
     memory(options),
     cpu(memory),
     rtc(cpu),
-    inout(),
+    inout(x_options, memory),
     scheduler(cpu, inout),
     terminalIO(cpu, scheduler),
     mmu(memory),
@@ -73,6 +73,19 @@ ApplicationRunner::ApplicationRunner(
         std::stringstream message;
 
         message << "Startup command exceeds " << MAX_COMMAND << " characters";
+        throw std::invalid_argument(message.str());
+    }
+
+    // neumnt54.hex is obsolete now.
+    // neumon54.hex can be used for both terminal and GUI mode.
+    // SERPAR flag is switched dynamically during emulation.
+    auto pos = options.hex_file.find_last_of(PATHSEPARATOR);
+    if (pos != std::string::npos &&
+        options.hex_file.substr(pos + 1) == std::string("neumnt54.hex"))
+    {
+        std::stringstream message;
+
+        message << "Also for terminal mode neumon54.hex can be used now!";
         throw std::invalid_argument(message.str());
     }
 
@@ -124,8 +137,11 @@ ApplicationRunner::ApplicationRunner(
     }
 
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
-    inout.serpar_address(address);
+    if (terminalIO.is_terminal_supported())
+    {
+        auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+        inout.serpar_address(address);
+    }
 
     if (options.isEurocom2V5)
     {
@@ -133,6 +149,8 @@ ApplicationRunner::ApplicationRunner(
         auto logFilePath = configFile.GetDebugSupportOption("logMdcrFilePath");
         pia2v5.set_debug(logMdcr, logFilePath);
     }
+
+    pia1.Attach(&inout);
 }
 
 ApplicationRunner::~ApplicationRunner()
