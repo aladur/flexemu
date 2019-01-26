@@ -85,52 +85,52 @@ std::string Inout::get_drive_info(Word drive_nr)
     return std::string();
 }
 
-void Inout::create_gui(JoystickIO &joystickIO,
-                       KeyboardIO &keyboardIO, TerminalIO &terminalIO,
-                       Pia1 &pia1,
-                       Memory &memory, Scheduler &scheduler,
-                       Mc6809 &cpu,
-                       VideoControl1 &vico1, VideoControl2 &vico2,
-                       struct sGuiOptions &options)
+void Inout::create_gui(JoystickIO &x_joystickIO,
+                       KeyboardIO &x_keyboardIO, TerminalIO &x_terminalIO,
+                       Pia1 &x_pia1,
+                       Memory &x_memory, Scheduler &x_scheduler,
+                       Mc6809 &x_cpu,
+                       VideoControl1 &x_vico1, VideoControl2 &x_vico2,
+                       struct sGuiOptions &x_options)
 {
 #ifdef UNIT_TEST
-    (void)joystickIO;
-    (void)keyboardIO;
-    (void)terminalIO;
-    (void)pia1;
-    (void)memory;
-    (void)scheduler;
-    (void)cpu;
-    (void)vico1;
-    (void)vico2;
-    (void)options;
+    (void)x_joystickIO;
+    (void)x_keyboardIO;
+    (void)x_terminalIO;
+    (void)x_pia1;
+    (void)x_memory;
+    (void)x_scheduler;
+    (void)x_cpu;
+    (void)x_vico1;
+    (void)x_vico2;
+    (void)x_options;
 #else
     // Only allow to open Gui once.
     if (gui == nullptr)
     {
-        switch (static_cast<GuiType>(options.guiType))
+        switch (static_cast<GuiType>(x_options.guiType))
         {
 #ifdef HAVE_XTK
 
             case GuiType::XTOOLKIT:
                 gui = std::unique_ptr<AbstractGui>(
-                       new XtGui(cpu, memory, scheduler, *this, vico1, vico2,
-                                joystickIO, keyboardIO, terminalIO,
-                                pia1, options));
+                       new XtGui(x_cpu, x_memory, x_scheduler, *this, x_vico1,
+                                 x_vico2, x_joystickIO, x_keyboardIO,
+                                 x_terminalIO, x_pia1, x_options));
                 break;
 #endif
 #ifdef _WIN32
 
             case GuiType::WINDOWS:
                 gui = std::unique_ptr<AbstractGui>(
-                       new Win32Gui(cpu, memory, scheduler, *this, vico1, vico2,
-                                   joystickIO, keyboardIO, terminalIO,
-                                   pia1, options));
+                       new Win32Gui(x_cpu, x_memory, x_scheduler, *this, x_vico1,
+                                    x_vico2, x_joystickIO, x_keyboardIO,
+                                    x_terminalIO, x_pia1, x_options));
                 break;
 #endif
             default:
                 throw FlexException(FERR_UNSUPPORTED_GUI_TYPE,
-                        static_cast<int>(options.guiType));
+                        static_cast<int>(x_options.guiType));
                 break;
         }
     }
@@ -215,7 +215,7 @@ void Inout::UpdateFrom(const void *pObject)
     if (id == OBSERVE_FIRST_KEYBOARD_REQUEST && options.term_mode &&
         is_serpar_address_valid())
     {
-        memory.write_byte(serpar_address(), '\xFF');
+        memory.write_byte(serpar_address(), Byte(0xFF));
     }
 }
 
