@@ -68,18 +68,17 @@ sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
-iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h \
+iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h ioaccess.h \
 mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
 xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
 bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
-memory.h resource.h filecntb.h filecnts.h mc6809st.h \
+resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
-memsrc.h
-
-EXTRA_flexemu_SOURCES = wwinres.rc
+memsrc.h \
+tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h
 
 flexplorer_SOURCES = \
 bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
@@ -115,7 +114,7 @@ mc6809st.cpp binifile.cpp fcnffile.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
-memory.h mc6809.h misc1.h \
+memory.h mc6809.h misc1.h ioaccess.h \
 typedefs.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h \
