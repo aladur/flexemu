@@ -6,5 +6,3 @@ extra_files = asneumon neumon54.asm neumon54.lst mon24.bin \
 
 EXTRA_DIST = ${pkgdata_DATA} ${extra_files}
 
-all:
-

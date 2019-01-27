@@ -292,10 +292,7 @@ pkgdata_DATA = pictures.dsk system.dsk games.dsk source.dsk test.dsk\
 	btx.dsk colors.dsk laycad.dsk layout.dsk system54.dsk\
 	system.mdcr
 
-EXTRA_DIST = pictures.dsk system.dsk games.dsk source.dsk test.dsk\
-	btx.dsk colors.dsk laycad.dsk layout.dsk system54.dsk\
-	system.mdcr
-
+EXTRA_DIST = ${pkgdata_DATA}
 all: all-am
 
 .SUFFIXES:
@@ -505,8 +502,6 @@ uninstall-am: uninstall-pkgdataDATA
 
 .PRECIOUS: Makefile
 
-
-all:
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

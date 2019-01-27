@@ -14,5 +14,4 @@ EXTRA_DIST = bitmap1.bmp bitmap2.bmp calc.bmp \
 	preview.xpm print.xpm save.xpm write.xbm \
 	dirplain.xbm draft.xbm drawing.xbm flowchar.xbm open.bmp open_con.bmp \
 	open_dir.bmp paste.bmp dnd_copy.xpm dnd_move.xpm dnd_none.xpm
-all:
 

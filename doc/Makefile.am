@@ -16,5 +16,3 @@ pkgdata_DATA = flexdos.htm flexfcb.htm flexmem.htm neumon54.htm \
 	flex2um.pdf flexapg.pdf linkload.pdf relasmb.pdf swflexum.pdf\
 	tedit.pdf util_man.pdf
 
-all:
-
