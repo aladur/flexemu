@@ -174,6 +174,7 @@ AC_OUTPUT(m4/Makefile \
 	src/tools/Makefile \
 	disks/Makefile \
 	monitor/Makefile \
+	monitor/mon24/Makefile \
 	doc/Makefile)
 
   echo
