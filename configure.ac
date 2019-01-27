@@ -176,6 +176,9 @@ AC_OUTPUT(m4/Makefile \
 	monitor/Makefile \
 	monitor/mon24/Makefile \
 	monitor/mon24z/Makefile \
+        build/Makefile \
+        build/windows/Makefile \
+        build/windows/installer/Makefile \
 	doc/Makefile)
 
   echo
