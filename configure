@@ -8186,7 +8186,7 @@ if test "x$enable_speed" = "xyes"; then
 fi
 
 
-ac_config_files="$ac_config_files m4/Makefile Makefile src/Makefile src/bitmaps/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile doc/Makefile"
+ac_config_files="$ac_config_files m4/Makefile Makefile src/Makefile src/bitmaps/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile doc/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -8931,6 +8931,7 @@ do
     "disks/Makefile") CONFIG_FILES="$CONFIG_FILES disks/Makefile" ;;
     "monitor/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/Makefile" ;;
     "monitor/mon24/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/mon24/Makefile" ;;
+    "monitor/mon24z/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/mon24z/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
