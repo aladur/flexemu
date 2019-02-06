@@ -198,7 +198,7 @@ void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
 
     if (pWindow == GetActiveChild())
     {
-        int id = OBSERVE_STATUS_BAR;
+        int id = NOTIFY_STATUS_BAR;
 
         UpdateFrom(&id);
     }
@@ -495,7 +495,7 @@ void FlexParentFrame::UpdateFrom(const void *pObject)
 {
     const int id = *static_cast<const int *>(pObject);
 
-    if (id == OBSERVE_STATUS_BAR)
+    if (id == NOTIFY_STATUS_BAR)
     {
         if (!GetActiveChild())
         {

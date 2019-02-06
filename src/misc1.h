@@ -372,7 +372,7 @@ struct sOptions
 #define FALLTHROUGH
 #endif
 
-#define OBSERVE_FIRST_KEYBOARD_REQUEST (534)
+#define NOTIFY_FIRST_KEYBOARD_REQUEST  (534)
 #define NOTIFY_SET_FIRQ                (535)
 
 #ifdef __cplusplus

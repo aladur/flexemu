@@ -212,7 +212,7 @@ void Inout::UpdateFrom(const void *pObject)
 {
     const int id = *static_cast<const int *>(pObject);
 
-    if (id == OBSERVE_FIRST_KEYBOARD_REQUEST && options.term_mode &&
+    if (id == NOTIFY_FIRST_KEYBOARD_REQUEST && options.term_mode &&
         is_serpar_address_valid())
     {
         memory.write_byte(serpar_address(), Byte(0xFF));

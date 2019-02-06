@@ -47,7 +47,7 @@ void Pia1::resetIo()
 void Pia1::requestInputA()
 {
     bool do_notify = false;
-    const int id = OBSERVE_FIRST_KEYBOARD_REQUEST;
+    const int id = NOTIFY_FIRST_KEYBOARD_REQUEST;
 
     if (!request_a_updated)
     {
