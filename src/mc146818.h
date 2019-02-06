@@ -27,17 +27,16 @@
 
 #include "misc1.h"
 #include "iodevice.h"
+#include "bobservd.h"
 
 
 class Mc6809;
 
-class Mc146818 : public IoDevice
+class Mc146818 : public IoDevice, public BObserved
 {
     // Internal registers:
 
 protected:
-    Mc6809 &cpu;
-
     Byte                second, minute, hour;
     Byte                al_second, al_minute, al_hour;
     Byte                weekday, day, month, year;
@@ -74,7 +73,7 @@ private:
 
 public:
 
-    Mc146818(Mc6809 &x_cpu);
+    Mc146818();
     virtual             ~Mc146818();
 
 };

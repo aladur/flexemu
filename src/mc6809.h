@@ -23,6 +23,7 @@
 #include "cpustate.h"
 #include "flexemu.h"
 #include "absdisas.h"
+#include "bobserv.h"
 
 #define USE_ASM 1
 
@@ -195,7 +196,7 @@ class Da6809;
 class Mc6809CpuStatus;
 
 
-class Mc6809 : public ScheduledCpu
+class Mc6809 : public ScheduledCpu, public BObserver
 {
 public:
     enum class Event : Word
@@ -997,6 +998,11 @@ public:
     {
         return PC;
     }
+
+public:
+    // BObserver interface
+    void UpdateFrom(const void *pObject);
+
 protected:
     int Disassemble(Word address, InstFlg *pFlags,
                     char **pCode, char **pMnemonic);

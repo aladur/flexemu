@@ -30,8 +30,8 @@
 
 Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-Mc146818::Mc146818(Mc6809 &x_cpu) :
-    cpu(x_cpu), al_second(0), al_minute(0), al_hour(0),
+Mc146818::Mc146818() :
+    al_second(0), al_minute(0), al_hour(0),
     A(0), B(0), C(0), D(0)
 {
     struct tm   *lt;
@@ -228,6 +228,7 @@ void Mc146818::writeIo(Word offset, Byte val)
 
 void Mc146818::update_1_second()
 {
+    const int id = NOTIFY_SET_FIRQ;
 
     // update only if SET bit is 0
     if (!BTST7(B))
@@ -282,7 +283,7 @@ void Mc146818::update_1_second()
         if (BTST4(B))
         {
             BSET7(C);
-            cpu.set_firq();
+            Notify(&id);
         }
 
         // now check for an alarm
@@ -295,7 +296,7 @@ void Mc146818::update_1_second()
             if (BTST5(B))
             {
                 BSET7(C);
-                cpu.set_firq();
+                Notify(&id);
             }
         }
     }

@@ -373,6 +373,7 @@ struct sOptions
 #endif
 
 #define OBSERVE_FIRST_KEYBOARD_REQUEST (534)
+#define NOTIFY_SET_FIRQ                (535)
 
 #ifdef __cplusplus
     extern int      copyFile(const char *srcPath, const char *destPath);

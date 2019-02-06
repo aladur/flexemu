@@ -54,7 +54,7 @@ ApplicationRunner::ApplicationRunner(
     options(x_options),
     memory(options),
     cpu(memory),
-    rtc(cpu),
+    rtc(),
     inout(x_options, memory),
     scheduler(cpu, inout),
     terminalIO(cpu, scheduler),
@@ -158,6 +158,7 @@ ApplicationRunner::ApplicationRunner(
     }
 
     pia1.Attach(inout);
+    rtc.Attach(cpu);
 }
 
 ApplicationRunner::~ApplicationRunner()
