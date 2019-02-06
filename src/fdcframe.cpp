@@ -125,7 +125,7 @@ FlexChildFrame::FlexChildFrame(
     statusBar->SetFieldsCount(3, fieldWidth);
 
     // Attach itself for statusbar update
-    listCtrl->Attach(this);
+    listCtrl->Attach(*this);
     UpdateFrom(&id);
 #endif
 }

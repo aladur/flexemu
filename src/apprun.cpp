@@ -157,7 +157,7 @@ ApplicationRunner::ApplicationRunner(
         pia2v5.set_debug(logMdcr, logFilePath);
     }
 
-    pia1.Attach(&inout);
+    pia1.Attach(inout);
 }
 
 ApplicationRunner::~ApplicationRunner()

@@ -31,6 +31,7 @@
 #include "flexdisk.h"
 #include "fddnd.h"
 #include "flexerr.h"
+#include "bobservd.h"
 #include <vector>
 #include <memory>
 
@@ -48,7 +49,7 @@ using FileNames = std::vector<std::string>;
  A specialized ListCtrl used to display a FLEX Container
 --------------------------------------------------------*/
 
-class FlexDiskListCtrl : public wxListCtrl
+class FlexDiskListCtrl : public wxListCtrl, public BObserved
 {
 public:
     FlexDiskListCtrl(wxWindow *parent, wxWindowID id, const wxPoint &pos,
@@ -59,17 +60,7 @@ public:
     virtual ~FlexDiskListCtrl();
 
     const wxMenu *GetMenu();
-    inline void  Attach(BObserver *anObserver) const
-    {
-        m_statusbarObserver = anObserver;
-    };
-    inline void  Detach(BObserver *anObserver) const
-    {
-        if (m_statusbarObserver == anObserver)
-        {
-            m_statusbarObserver = nullptr;
-        }
-    };
+
     inline int GetTotalSize() const
     {
         return m_totalSize;

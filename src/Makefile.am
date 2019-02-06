@@ -64,6 +64,7 @@ btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
+bobservd.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -77,7 +78,7 @@ resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
-memsrc.h \
+memsrc.h bobserv.h bobservd.h \
 tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h
 
 flexplorer_SOURCES = \
@@ -87,8 +88,8 @@ fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp mdcrtape.cpp \
-bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
+bprocess.cpp mdcrtape.cpp bobservd.cpp \
+bdate.h bdir.h bobserv.h bobservd.h contpdlg.h dircont.h fcinfo.h \
 fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h fmenufac.h \

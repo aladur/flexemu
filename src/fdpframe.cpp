@@ -479,7 +479,7 @@ void FlexParentFrame::OpenChild(wxString &title, FileContainerIf *container)
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     // statusbar support with GTK, X11, MOTIF
-    childFrame->GetListControl().Attach(this);
+    childFrame->GetListControl().Attach(*this);
 #endif
     childFrame->Show(TRUE);
 }

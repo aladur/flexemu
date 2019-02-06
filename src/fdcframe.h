@@ -55,14 +55,12 @@ public:
                    const wxPoint &pos, const wxSize &size, const long style,
                    FileContainerIf *container);
     virtual ~FlexChildFrame();
-    void Attach(BObserver *clipboardObserver);
-    void Detach(BObserver *clipboardObserver);
     wxMenu *GetPopupMenu();
     virtual void UpdateFrom(const void *pObject);
     void ViewProperties();
     void OnActivate(wxActivateEvent &event);
     void OnSetFocus(wxFocusEvent &event);
-    const FlexDiskListCtrl &GetListControl()
+    FlexDiskListCtrl &GetListControl()
     {
         return *listCtrl.get();
     };

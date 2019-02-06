@@ -27,6 +27,9 @@
     <ClCompile Include="bmembuf.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="bobservd.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="bprocess.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -166,6 +169,12 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bmembuf.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="bobserv.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="bobservd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bprocess.h">

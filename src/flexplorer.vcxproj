@@ -184,6 +184,7 @@
     <ClCompile Include="bdir.cpp" />
     <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="bmembuf.cpp" />
+    <ClCompile Include="bobservd.cpp" />
     <ClCompile Include="bprocess.cpp" />
     <ClCompile Include="bregistr.cpp" />
     <ClCompile Include="contpdlg.cpp" />
@@ -235,6 +236,8 @@
     <ClInclude Include="bdir.h" />
     <ClInclude Include="bfileptr.h" />
     <ClInclude Include="bmembuf.h" />
+    <ClInclude Include="bobserv.h" />
+    <ClInclude Include="bobservd.h" />
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="contpdlg.h" />

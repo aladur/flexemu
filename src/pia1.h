@@ -26,13 +26,15 @@
 
 #include "misc1.h"
 #include "mc6821.h"
+#include "bobservd.h"
+
 
 class Mc6809;
 class KeyboardIO;
 class Scheduler;
 class BObserver;
 
-class Pia1 : public Mc6821
+class Pia1 : public Mc6821, public BObserved
 {
 
     // Terminal connected to port A of pia1
@@ -44,7 +46,6 @@ protected:
     KeyboardIO &keyboardIO;
     bool a_set_msb;
     bool request_a_updated;
-    BObserver *observer;
 
 protected:
 
@@ -52,8 +53,6 @@ protected:
     Byte readInputA() override;
     void set_irq_A() override;
     void set_irq_B() override;
-
-    void Notify(int id);
 
 public:
     Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
@@ -63,9 +62,6 @@ public:
     {
         return "pia1";
     }
-
-    void Attach(BObserver *anObserver);
-    void Detach(BObserver *anObserver);
 };
 
 #endif // PIA1_INCLUDED

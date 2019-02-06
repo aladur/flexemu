@@ -145,7 +145,7 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-drisel.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-binifile.$(OBJEXT) flexemu-fcnffile.$(OBJEXT) \
 	flexemu-iodevdbg.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
-	flexemu-mdcrtape.$(OBJEXT)
+	flexemu-mdcrtape.$(OBJEXT) flexemu-bobservd.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -164,7 +164,7 @@ am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
 	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
 	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
 	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT) \
-	flexplorer-mdcrtape.$(OBJEXT)
+	flexplorer-mdcrtape.$(OBJEXT) flexplorer-bobservd.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
@@ -539,6 +539,7 @@ btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
+bobservd.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
@@ -552,7 +553,7 @@ resource.h filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
-memsrc.h \
+memsrc.h bobserv.h bobservd.h \
 tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h
 
 flexplorer_SOURCES = \
@@ -562,8 +563,8 @@ fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
 ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp mdcrtape.cpp \
-bdate.h bdir.h bobserv.h contpdlg.h dircont.h fcinfo.h \
+bprocess.cpp mdcrtape.cpp bobservd.cpp \
+bdate.h bdir.h bobserv.h bobservd.h contpdlg.h dircont.h fcinfo.h \
 fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
 fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
 rfilecnt.h brcfile.h benv.h fmenufac.h \
@@ -728,6 +729,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-binifile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bjoystck.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bmembuf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bobservd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bregistr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-btime.Po@am__quote@
@@ -787,6 +789,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-benv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bmembuf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bobservd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bprocess.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bregistr.Po@am__quote@
@@ -1774,6 +1777,20 @@ flexemu-mdcrtape.obj: mdcrtape.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
 
+flexemu-bobservd.o: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bobservd.o -MD -MP -MF $(DEPDIR)/flexemu-bobservd.Tpo -c -o flexemu-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bobservd.Tpo $(DEPDIR)/flexemu-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='flexemu-bobservd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+
+flexemu-bobservd.obj: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-bobservd.obj -MD -MP -MF $(DEPDIR)/flexemu-bobservd.Tpo -c -o flexemu-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-bobservd.Tpo $(DEPDIR)/flexemu-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='flexemu-bobservd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
+
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bdate.Tpo $(DEPDIR)/flexplorer-bdate.Po
@@ -2193,6 +2210,20 @@ flexplorer-mdcrtape.obj: mdcrtape.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mdcrtape.cpp' object='flexplorer-mdcrtape.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-mdcrtape.obj `if test -f 'mdcrtape.cpp'; then $(CYGPATH_W) 'mdcrtape.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtape.cpp'; fi`
+
+flexplorer-bobservd.o: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bobservd.o -MD -MP -MF $(DEPDIR)/flexplorer-bobservd.Tpo -c -o flexplorer-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bobservd.Tpo $(DEPDIR)/flexplorer-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='flexplorer-bobservd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+
+flexplorer-bobservd.obj: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bobservd.obj -MD -MP -MF $(DEPDIR)/flexplorer-bobservd.Tpo -c -o flexplorer-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bobservd.Tpo $(DEPDIR)/flexplorer-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='flexplorer-bobservd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
 
 fsetup-fsetup.o: fsetup.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup.Tpo -c -o fsetup-fsetup.o `test -f 'fsetup.cpp' || echo '$(srcdir)/'`fsetup.cpp

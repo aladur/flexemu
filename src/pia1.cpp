@@ -33,8 +33,7 @@
 Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
            bool x_a_set_msb) :
     cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO),
-    a_set_msb(x_a_set_msb), request_a_updated(false),
-    observer(nullptr)
+    a_set_msb(x_a_set_msb), request_a_updated(false)
 {
 }
 
@@ -48,11 +47,12 @@ void Pia1::resetIo()
 void Pia1::requestInputA()
 {
     bool do_notify = false;
+    const int id = OBSERVE_FIRST_KEYBOARD_REQUEST;
 
     if (!request_a_updated)
     {
         request_a_updated = true;
-        Notify(OBSERVE_FIRST_KEYBOARD_REQUEST);
+        Notify(&id);
     }
 
     keyboardIO.has_key_parallel(do_notify);
@@ -107,26 +107,5 @@ void Pia1::set_irq_A()
 void Pia1::set_irq_B()
 {
     cpu.set_irq();
-}
-
-void Pia1::Notify(int id)
-{
-    if (observer != nullptr)
-    {
-        observer->UpdateFrom(static_cast<const int *>(&id));
-    }
-}
-
-void Pia1::Attach(BObserver *x_observer)
-{
-    observer = x_observer;
-}
-
-void Pia1::Detach(BObserver *x_observer)
-{
-    if (x_observer == observer)
-    {
-        observer = nullptr;
-    }
 }
 
