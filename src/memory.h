@@ -34,6 +34,7 @@
 #include "ioaccess.h"
 #include "memtgt.h"
 #include "e2.h"
+#include "bobserv.h"
 
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
@@ -41,7 +42,7 @@
 #define MAX_VRAM        (4 * 16)
 
 
-class Memory : public MemoryTarget<size_t>
+class Memory : public MemoryTarget<size_t>, public BObserver
 {
 public:
     Memory(const struct sOptions &options);
@@ -91,6 +92,10 @@ public:
     void reset_io();
     void switch_mmu(Word offset, Byte val);
     void init_blocks_to_update();
+
+    // BObserver interface
+public:
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
     // memory target interface
 public:

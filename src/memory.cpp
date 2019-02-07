@@ -313,3 +313,11 @@ void Memory::dump_ram_rom(Word min, Word max)
     }
 }
 
+void Memory::UpdateFrom(NotifyId id, void *)
+{
+    if (id == NotifyId::RequestScreenUpdate)
+    {
+        init_blocks_to_update();
+    }
+}
+

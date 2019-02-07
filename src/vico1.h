@@ -26,8 +26,7 @@
 
 #include "misc1.h"
 #include "bytereg.h"
-
-class Memory;
+#include "bobservd.h"
 
 // VideoControl1 emulates the Eurocom II VICO1 register,
 // a single byte write-only register (SN74LS377, Octal
@@ -52,11 +51,10 @@ class Memory;
 //     1   |   0   | none (white screen)
 //     1   |   1   | none (white screen)
 
-class VideoControl1 : public ByteRegister
+class VideoControl1 : public ByteRegister, public BObserved
 {
 private:
 
-    Memory &memory;
     Byte value;
     bool isFirstWrite;
 
@@ -64,8 +62,7 @@ private:
 
 public:
 
-    VideoControl1() = delete;
-    VideoControl1(Memory &memory);
+    VideoControl1();
     virtual ~VideoControl1();
 
     const char *getName() override

@@ -23,11 +23,9 @@
 
 #include "misc1.h"
 #include "vico1.h"
-#include "memory.h"
 
 
-VideoControl1::VideoControl1(Memory &x_memory) :
-    memory(x_memory),
+VideoControl1::VideoControl1() :
     value(0),
     isFirstWrite(true)
 {
@@ -46,7 +44,7 @@ void VideoControl1::requestWriteValue(Byte new_value)
     if (isUpdate)
     {
         isFirstWrite = false;
-        memory.init_blocks_to_update();
+        Notify(NotifyId::RequestScreenUpdate);
     }
 }
 

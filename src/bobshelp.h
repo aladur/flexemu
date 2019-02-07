@@ -30,6 +30,7 @@ enum class NotifyId : uint8_t
     SetNmi,
     UpdateStatusBar,
     FirstKeyboardRequest,
+    RequestScreenUpdate,
 };
 
 #endif // #ifndef _BOBSHELP_INCLUDED_

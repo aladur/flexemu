@@ -65,7 +65,7 @@ ApplicationRunner::ApplicationRunner(
     pia2v5(cpu),
     drisel(fdc),
     command(inout, scheduler, fdc),
-    vico1(memory),
+    vico1(),
     vico2(memory)
 {
     if (options.startup_command.size() > MAX_COMMAND)
@@ -163,6 +163,7 @@ ApplicationRunner::ApplicationRunner(
     rtc.Attach(cpu);
     terminalIO.Attach(cpu);
     command.Attach(cpu);
+    vico1.Attach(memory);
 }
 
 ApplicationRunner::~ApplicationRunner()
