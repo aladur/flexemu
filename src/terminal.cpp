@@ -33,8 +33,8 @@ TerminalIO *TerminalIO::instance = nullptr;
     bool   TerminalIO::used_serial_io = false;
 #endif
 
-TerminalIO::TerminalIO(Mc6809 &x_cpu, Scheduler &x_scheduler) :
-                        cpu(x_cpu), scheduler(x_scheduler), init_delay(500)
+TerminalIO::TerminalIO(Scheduler &x_scheduler) :
+                       scheduler(x_scheduler), init_delay(500)
 {
     instance = this;
     reset_serial();
@@ -359,18 +359,18 @@ void TerminalIO::exec_signal(int sig_no)
     switch (sig_no)
     {
         case SIGINT:
-            cpu.set_nmi();
+            Notify(NotifyId::SetNmi);
             break;
 
 #if defined(SIGUSR1)
         case SIGUSR1:
-            cpu.set_irq();
+            Notify(NotifyId::SetIrq);
             break;
 #endif
 
 #if defined(SIGUSR2)
         case SIGUSR2:
-            cpu.set_firq();
+            Notify(NotifyId::SetFirq);
             break;
 #endif
 

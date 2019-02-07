@@ -32,20 +32,19 @@
 #include <signal.h>
 #include "flexemu.h"
 #include "flexerr.h"
+#include "bobservd.h"
 #include <deque>
 #include <mutex>
 
 #define BACK_SPACE  (0x08)
 
 
-class Mc6809;
 class Scheduler;
 
-class TerminalIO
+class TerminalIO : public BObserved
 {
 private:
     std::deque<Byte> key_buffer_serial;
-    Mc6809 &cpu;
     Scheduler &scheduler;
     std::mutex serial_mutex;
 #ifdef HAVE_TERMIOS_H
@@ -81,7 +80,7 @@ private:
 
 public:
     TerminalIO() = delete;
-    TerminalIO(Mc6809 &x_cpu, Scheduler &x_scheduler);
+    TerminalIO(Scheduler &x_scheduler);
     ~TerminalIO();
 };
 

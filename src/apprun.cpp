@@ -57,7 +57,7 @@ ApplicationRunner::ApplicationRunner(
     rtc(),
     inout(x_options, memory),
     scheduler(cpu, inout),
-    terminalIO(cpu, scheduler),
+    terminalIO(scheduler),
     mmu(memory),
     acia1(terminalIO),
     pia1(cpu, scheduler, keyboardIO, x_options.isEurocom2V5),
@@ -160,6 +160,7 @@ ApplicationRunner::ApplicationRunner(
     pia1.Attach(inout);
     acia1.Attach(cpu);
     rtc.Attach(cpu);
+    terminalIO.Attach(cpu);
 }
 
 ApplicationRunner::~ApplicationRunner()
