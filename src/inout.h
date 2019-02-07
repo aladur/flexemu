@@ -93,7 +93,7 @@ public:
 
     // BObserver interface
 public:
-    void UpdateFrom(const void *);
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 public:
     Inout(const struct sOptions &x_options, Memory &x_memory);

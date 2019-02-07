@@ -1001,7 +1001,7 @@ public:
 
 public:
     // BObserver interface
-    void UpdateFrom(const void *pObject);
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 protected:
     int Disassemble(Word address, InstFlg *pFlags,

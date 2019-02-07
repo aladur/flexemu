@@ -267,6 +267,7 @@
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bobserv.h" />
     <ClInclude Include="bobservd.h" />
+    <ClInclude Include="bobshelp.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="btime.h" />

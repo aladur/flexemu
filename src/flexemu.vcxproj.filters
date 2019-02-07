@@ -294,6 +294,9 @@
     <ClInclude Include="bobservd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="bobshelp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="bmembuf.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

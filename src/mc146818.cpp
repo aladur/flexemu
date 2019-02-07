@@ -228,8 +228,6 @@ void Mc146818::writeIo(Word offset, Byte val)
 
 void Mc146818::update_1_second()
 {
-    const int id = NOTIFY_SET_FIRQ;
-
     // update only if SET bit is 0
     if (!BTST7(B))
     {
@@ -283,7 +281,7 @@ void Mc146818::update_1_second()
         if (BTST4(B))
         {
             BSET7(C);
-            Notify(&id);
+            Notify(NotifyId::SetFirq);
         }
 
         // now check for an alarm
@@ -296,7 +294,7 @@ void Mc146818::update_1_second()
             if (BTST5(B))
             {
                 BSET7(C);
-                Notify(&id);
+                Notify(NotifyId::SetFirq);
             }
         }
     }

@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <functional>
+#include "bobshelp.h"
 #include "bobserv.h"
 
 /*------------------------------------------------------
@@ -43,7 +44,7 @@ public:
     void Detach(BObserver &x_observer);
 
 protected:
-    void Notify(const void *id);
+    void Notify(NotifyId id, void *param = nullptr);
 
 private:
     std::vector<std::reference_wrapper<BObserver> > observers;

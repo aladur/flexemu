@@ -47,12 +47,11 @@ void Pia1::resetIo()
 void Pia1::requestInputA()
 {
     bool do_notify = false;
-    const int id = NOTIFY_FIRST_KEYBOARD_REQUEST;
 
     if (!request_a_updated)
     {
         request_a_updated = true;
-        Notify(&id);
+        Notify(NotifyId::FirstKeyboardRequest);
     }
 
     keyboardIO.has_key_parallel(do_notify);

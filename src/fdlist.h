@@ -36,7 +36,6 @@
 #include <memory>
 
 #define LIST_CTRL   1000
-#define NOTIFY_STATUS_BAR      (545)
 
 class BObserver;
 class FileContainerIf;

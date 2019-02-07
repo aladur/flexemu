@@ -608,9 +608,7 @@ void FlexDiskListCtrl::OnDeselected(wxListEvent &event)
 
 void FlexDiskListCtrl::Notify()
 {
-    const int id = NOTIFY_STATUS_BAR;
-
-    BObserved::Notify(&id);
+    BObserved::Notify(NotifyId::UpdateStatusBar);
 }
 
 void FlexDiskListCtrl::OnActivated(wxListEvent &WXUNUSED(event))

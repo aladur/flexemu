@@ -238,6 +238,7 @@
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bobserv.h" />
     <ClInclude Include="bobservd.h" />
+    <ClInclude Include="bobshelp.h" />
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="contpdlg.h" />

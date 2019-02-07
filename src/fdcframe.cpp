@@ -119,14 +119,13 @@ FlexChildFrame::FlexChildFrame(
 #ifdef __WXMSW__
     // create a status bar
     wxStatusBar *statusBar = this->CreateStatusBar(3);
-    int id = NOTIFY_STATUS_BAR;
 
     const int fieldWidth[3] = { 300, -1, -1 };
     statusBar->SetFieldsCount(3, fieldWidth);
 
     // Attach itself for statusbar update
     listCtrl->Attach(*this);
-    UpdateFrom(&id);
+    UpdateFrom(NotifyId::UpdateStatusBar);
 #endif
 }
 
@@ -138,10 +137,8 @@ void FlexChildFrame::OnActivate(wxActivateEvent &event)
 {
     if (event.GetActive() && listCtrl)
     {
-        int id = NOTIFY_STATUS_BAR;
-
         listCtrl->SetFocus();
-        UpdateFrom(&id);
+        UpdateFrom(NotifyId::UpdateStatusBar);
     }
 }
 
@@ -149,10 +146,8 @@ void FlexChildFrame::OnSetFocus(wxFocusEvent &)
 {
     if (listCtrl)
     {
-        int id = NOTIFY_STATUS_BAR;
-
         listCtrl->SetFocus();
-        UpdateFrom(&id);
+        UpdateFrom(NotifyId::UpdateStatusBar);
     }
 }
 
@@ -161,15 +156,14 @@ void FlexChildFrame::OnCloseChild(wxCommandEvent &WXUNUSED(event))
     Close(TRUE);
 }
 
-void FlexChildFrame::UpdateFrom(const void *pObject)
+void FlexChildFrame::UpdateFrom(NotifyId id, void *)
 {
     if (!listCtrl)
     {
         return;
     }
 
-    const int id = *static_cast<const int *>(pObject);
-    if (id == NOTIFY_STATUS_BAR)
+    if (id == NotifyId::UpdateStatusBar)
     {        
         wxStatusBar *sBar = GetStatusBar();
 

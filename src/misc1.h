@@ -372,9 +372,6 @@ struct sOptions
 #define FALLTHROUGH
 #endif
 
-#define NOTIFY_FIRST_KEYBOARD_REQUEST  (534)
-#define NOTIFY_SET_FIRQ                (535)
-
 #ifdef __cplusplus
     extern int      copyFile(const char *srcPath, const char *destPath);
     extern void     strupper(char *pstr);

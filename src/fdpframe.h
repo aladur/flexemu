@@ -67,7 +67,7 @@ public:
     bool GetGlobalOptions(bool *autoTextFlag, wxString &viewer,
                           wxString &bootFile);
     void OnQuit(wxCommandEvent &event);
-    void UpdateFrom(const void *pObject);
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 private:
     void InitToolBar(wxToolBar *toolBar);

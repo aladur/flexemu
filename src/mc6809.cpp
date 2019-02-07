@@ -1473,12 +1473,23 @@ void Mc6809::get_interrupt_status(tInterruptStatus &stat)
     memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
 }
 
-void Mc6809::UpdateFrom(const void *pObject)
+void Mc6809::UpdateFrom(NotifyId id, void *)
 {
-    const int id = *static_cast<const int *>(pObject);
-
-    if (id == NOTIFY_SET_FIRQ)
+    switch (id)
     {
-        set_firq();
+        case NotifyId::SetIrq:
+            set_firq();
+            break;
+
+        case NotifyId::SetFirq:
+            set_firq();
+            break;
+
+        case NotifyId::SetNmi:
+            set_nmi();
+            break;
+
+        default:
+            break;
     }
 }

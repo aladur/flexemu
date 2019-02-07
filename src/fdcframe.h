@@ -56,7 +56,7 @@ public:
                    FileContainerIf *container);
     virtual ~FlexChildFrame();
     wxMenu *GetPopupMenu();
-    virtual void UpdateFrom(const void *pObject);
+    void UpdateFrom(NotifyId id, void *param = nullptr) override;
     void ViewProperties();
     void OnActivate(wxActivateEvent &event);
     void OnSetFocus(wxFocusEvent &event);

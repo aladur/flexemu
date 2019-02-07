@@ -51,11 +51,11 @@ void BObserved::Detach(BObserver &x_observer)
     }
 }
 
-void BObserved::Notify(const void *id)
+void BObserved::Notify(NotifyId id, void *param)
 {
     for (auto &observer : observers)
     {
-        observer.get().UpdateFrom(id);
+        observer.get().UpdateFrom(id, param);
     }
 }
 

@@ -208,11 +208,10 @@ void Inout::set_rtc(Mc146818 *x_rtc)
     rtc = x_rtc;
 }
 
-void Inout::UpdateFrom(const void *pObject)
+void Inout::UpdateFrom(NotifyId id, void *)
 {
-    const int id = *static_cast<const int *>(pObject);
-
-    if (id == NOTIFY_FIRST_KEYBOARD_REQUEST && options.term_mode &&
+    if (id == NotifyId::FirstKeyboardRequest &&
+        options.term_mode &&
         is_serpar_address_valid())
     {
         memory.write_byte(serpar_address(), Byte(0xFF));

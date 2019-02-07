@@ -198,9 +198,7 @@ void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
 
     if (pWindow == GetActiveChild())
     {
-        int id = NOTIFY_STATUS_BAR;
-
-        UpdateFrom(&id);
+        UpdateFrom(NotifyId::UpdateStatusBar);
     }
 }
 
@@ -491,11 +489,9 @@ void FlexParentFrame::OnSize(wxSizeEvent &WXUNUSED(event))
     GetClientWindow()->SetSize(0, 0, w, h);
 }
 
-void FlexParentFrame::UpdateFrom(const void *pObject)
+void FlexParentFrame::UpdateFrom(NotifyId id, void *)
 {
-    const int id = *static_cast<const int *>(pObject);
-
-    if (id == NOTIFY_STATUS_BAR)
+    if (id == NotifyId::UpdateStatusBar)
     {
         if (!GetActiveChild())
         {

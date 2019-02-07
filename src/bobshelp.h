@@ -1,9 +1,9 @@
 /*
-    bobserv.h
+    bobshelp.h
 
 
-    Basic abstract class used to implement an observer pattern
-    Copyright (C) 1999-2019  W. Schwotzer
+    Basic helper class used as notification identifier in an observer pattern
+    Copyright (C) 2019  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,23 +20,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BOBSERV_INCLUDED_
-#define _BOBSERV_INCLUDED_
+#ifndef _BOBSHELP_INCLUDED_
+#define _BOBSHELP_INCLUDED_
 
-#include "bobshelp.h"
-
-/*------------------------------------------------------
- BObserver
- An virtual observer class used to observe any action.
- Only the class implementing the BObserver interface
- knows what to do with pObject
---------------------------------------------------------*/
-class BObserver
+enum class NotifyId : uint8_t
 {
-public:
-    virtual void UpdateFrom(NotifyId id, void *param = nullptr) = 0;
-    virtual ~BObserver() { };
+    SetIrq,
+    SetFirq,
+    SetNmi,
+    UpdateStatusBar,
+    FirstKeyboardRequest,
 };
 
-#endif // #ifndef _BOBSERV_INCLUDED_
+#endif // #ifndef _BOBSHELP_INCLUDED_
 
