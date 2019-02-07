@@ -1478,7 +1478,7 @@ void Mc6809::UpdateFrom(NotifyId id, void *)
     switch (id)
     {
         case NotifyId::SetIrq:
-            set_firq();
+            set_irq();
             break;
 
         case NotifyId::SetFirq:
