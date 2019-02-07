@@ -111,7 +111,7 @@ flexerr.cpp inout.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
-mc6809st.cpp binifile.cpp fcnffile.cpp \
+mc6809st.cpp binifile.cpp fcnffile.cpp bobservd.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
@@ -120,7 +120,8 @@ typedefs.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h \
 mc6809st.h \
-schedcpu.h sprinter.h
+schedcpu.h sprinter.h \
+bobshelp.h bobservd.h bobserv.h
 
 ################################################################################
 @no_appsdir@install \

@@ -64,7 +64,7 @@ ApplicationRunner::ApplicationRunner(
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
     drisel(fdc),
-    command(inout, cpu, scheduler, fdc),
+    command(inout, scheduler, fdc),
     vico1(memory),
     vico2(memory)
 {
@@ -162,6 +162,7 @@ ApplicationRunner::ApplicationRunner(
     acia1.Attach(cpu);
     rtc.Attach(cpu);
     terminalIO.Attach(cpu);
+    command.Attach(cpu);
 }
 
 ApplicationRunner::~ApplicationRunner()

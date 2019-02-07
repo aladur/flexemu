@@ -36,17 +36,15 @@
 #include "e2floppy.h"
 #include "inout.h"
 #include "schedule.h"
-#include "mc6809.h"
 #include <sstream>
 #include <iomanip>
 
 
 Command::Command(
         Inout &x_inout,
-        Mc6809 &x_cpu,
         Scheduler &x_scheduler,
         E2floppy &x_fdc) :
-    cpu(x_cpu), inout(x_inout), scheduler(x_scheduler), fdc(x_fdc),
+    inout(x_inout), scheduler(x_scheduler), fdc(x_fdc),
     command_index(0), answer_index(0)
 {
     memset(command, 0, sizeof(command));
@@ -202,17 +200,17 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "irq")  == 0)
                     {
-                        cpu.set_irq();
+                        Notify(NotifyId::SetIrq);
                         return;
                     }
                     else if (stricmp(arg1, "firq")  == 0)
                     {
-                        cpu.set_firq();
+                        Notify(NotifyId::SetFirq);
                         return;
                     }
                     else if (stricmp(arg1, "nmi")  == 0)
                     {
-                        cpu.set_nmi();
+                        Notify(NotifyId::SetNmi);
                         return;
                     }
                     else if (stricmp(arg1, "terminal") == 0)

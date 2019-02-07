@@ -195,7 +195,8 @@ am_test_OBJECTS = test-testmain.$(OBJEXT) test-test_gccasm.$(OBJEXT) \
 	test-bcommand.$(OBJEXT) test-btime.$(OBJEXT) \
 	test-schedule.$(OBJEXT) test-btimer.$(OBJEXT) \
 	test-clogfile.$(OBJEXT) test-mc6809st.$(OBJEXT) \
-	test-binifile.$(OBJEXT) test-fcnffile.$(OBJEXT)
+	test-binifile.$(OBJEXT) test-fcnffile.$(OBJEXT) \
+	test-bobservd.$(OBJEXT)
 test_OBJECTS = $(am_test_OBJECTS)
 test_DEPENDENCIES =
 test_LINK = $(CXXLD) $(test_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -586,7 +587,7 @@ flexerr.cpp inout.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp  \
-mc6809st.cpp binifile.cpp fcnffile.cpp \
+mc6809st.cpp binifile.cpp fcnffile.cpp bobservd.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
@@ -595,7 +596,8 @@ typedefs.h \
 csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h \
 mc6809st.h \
-schedcpu.h sprinter.h
+schedcpu.h sprinter.h \
+bobshelp.h bobservd.h bobserv.h
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -834,6 +836,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bdate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-binifile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-bobservd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-btime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-btimer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-clogfile.Po@am__quote@
@@ -2742,6 +2745,20 @@ test-fcnffile.obj: fcnffile.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcnffile.cpp' object='test-fcnffile.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-fcnffile.obj `if test -f 'fcnffile.cpp'; then $(CYGPATH_W) 'fcnffile.cpp'; else $(CYGPATH_W) '$(srcdir)/fcnffile.cpp'; fi`
+
+test-bobservd.o: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bobservd.o -MD -MP -MF $(DEPDIR)/test-bobservd.Tpo -c -o test-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bobservd.Tpo $(DEPDIR)/test-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='test-bobservd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bobservd.o `test -f 'bobservd.cpp' || echo '$(srcdir)/'`bobservd.cpp
+
+test-bobservd.obj: bobservd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-bobservd.obj -MD -MP -MF $(DEPDIR)/test-bobservd.Tpo -c -o test-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-bobservd.Tpo $(DEPDIR)/test-bobservd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='test-bobservd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \

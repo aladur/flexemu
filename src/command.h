@@ -26,6 +26,7 @@
 
 #include "misc1.h"
 #include "iodevice.h"
+#include "bobservd.h"
 #include <string>
 
 #define MAX_COMMAND     (128)
@@ -33,19 +34,17 @@
 
 #define CR          (0x0d)
 
-class Mc6809;
 class Inout;
 class E2floppy;
 class Scheduler;
 
 
-class Command : public IoDevice
+class Command : public IoDevice, public BObserved
 {
 
     // Internal registers
 protected:
 
-    Mc6809      &cpu;
     Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    &fdc;
@@ -78,7 +77,6 @@ public:
 public:
     Command(
             Inout &x_inout,
-            Mc6809 &x_cpu,
             Scheduler &x_scheduler,
             E2floppy &x_fdc);
     virtual ~Command();
