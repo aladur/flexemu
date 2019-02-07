@@ -160,11 +160,14 @@ ApplicationRunner::ApplicationRunner(
     pia1.Attach(inout);
     pia1.Attach(cpu);
     acia1.Attach(cpu);
-    rtc.Attach(cpu);
     terminalIO.Attach(cpu);
     command.Attach(cpu);
     vico1.Attach(memory);
     vico2.Attach(memory);
+    if (options.useRtc)
+    {
+        rtc.Attach(cpu);
+    }
 }
 
 ApplicationRunner::~ApplicationRunner()
