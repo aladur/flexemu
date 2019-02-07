@@ -41,6 +41,7 @@ private:
 
     Memory &memory;
     Byte value;
+    bool isFirstWrite;
 
     void requestWriteValue(Byte value) override;
 
