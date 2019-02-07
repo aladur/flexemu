@@ -23,16 +23,15 @@
 
 #include "misc1.h"
 #include "pia1.h"
-#include "mc6809.h"
 #include "schedule.h"
 #include "keyboard.h"
 #include "cacttrns.h"
 #include "bobserv.h"
 
 
-Pia1::Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
+Pia1::Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
            bool x_a_set_msb) :
-    cpu(x_cpu), scheduler(x_scheduler), keyboardIO(x_keyboardIO),
+    scheduler(x_scheduler), keyboardIO(x_keyboardIO),
     a_set_msb(x_a_set_msb), request_a_updated(false)
 {
 }
@@ -99,12 +98,12 @@ Byte Pia1::readInputA()
 
 void Pia1::set_irq_A()
 {
-    cpu.set_irq();
+    Notify(NotifyId::SetIrq);
 }
 
 
 void Pia1::set_irq_B()
 {
-    cpu.set_irq();
+    Notify(NotifyId::SetIrq);
 }
 

@@ -29,7 +29,6 @@
 #include "bobservd.h"
 
 
-class Mc6809;
 class KeyboardIO;
 class Scheduler;
 class BObserver;
@@ -41,7 +40,6 @@ class Pia1 : public Mc6821, public BObserved
 
 protected:
 
-    Mc6809 &cpu;
     Scheduler &scheduler;
     KeyboardIO &keyboardIO;
     bool a_set_msb;
@@ -55,7 +53,7 @@ protected:
     void set_irq_B() override;
 
 public:
-    Pia1(Mc6809 &x_cpu, Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
+    Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
          bool x_a_set_msb = false);
     void resetIo() override;
     const char *getName() override
