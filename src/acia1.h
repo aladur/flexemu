@@ -27,16 +27,15 @@
 
 #include <stdio.h>
 #include "mc6850.h"
+#include "bobservd.h"
 
 class TerminalIO;
-class Mc6809;
 
-class Acia1 : public Mc6850
+class Acia1 : public Mc6850, public BObserved
 {
 
 protected:
 
-    Mc6809 &cpu;
     TerminalIO &terminalIO;
 
 public:
@@ -63,7 +62,7 @@ public:
 public:
 
     Acia1() = delete;
-    Acia1(TerminalIO &x_terminalIO, Mc6809 &x_cpu);
+    Acia1(TerminalIO &x_terminalIO);
     virtual             ~Acia1();
 
 };

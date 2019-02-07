@@ -59,7 +59,7 @@ ApplicationRunner::ApplicationRunner(
     scheduler(cpu, inout),
     terminalIO(cpu, scheduler),
     mmu(memory),
-    acia1(terminalIO, cpu),
+    acia1(terminalIO),
     pia1(cpu, scheduler, keyboardIO, x_options.isEurocom2V5),
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
@@ -158,6 +158,7 @@ ApplicationRunner::ApplicationRunner(
     }
 
     pia1.Attach(inout);
+    acia1.Attach(cpu);
     rtc.Attach(cpu);
 }
 

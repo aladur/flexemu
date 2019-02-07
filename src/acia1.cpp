@@ -27,8 +27,8 @@
 #include "terminal.h"
 #include "mc6809.h"
 
-Acia1::Acia1(TerminalIO &x_terminalIO, Mc6809 &x_cpu) :
-             cpu(x_cpu), terminalIO(x_terminalIO)
+Acia1::Acia1(TerminalIO &x_terminalIO) :
+             terminalIO(x_terminalIO)
 {
 }
 
@@ -73,6 +73,6 @@ void Acia1::writeOutput(Byte val)
 void Acia1::set_irq()
 {
     Mc6850::set_irq();
-    cpu.set_irq();
+    Notify(NotifyId::SetIrq);
 }
 
