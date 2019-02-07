@@ -26,7 +26,10 @@
 #include "memory.h"
 
 
-VideoControl1::VideoControl1(Memory &x_memory) : memory(x_memory), value(0)
+VideoControl1::VideoControl1(Memory &x_memory) :
+    memory(x_memory),
+    value(0),
+    isFirstWrite(true)
 {
 }
 
@@ -36,8 +39,14 @@ VideoControl1::~VideoControl1()
 
 void VideoControl1::requestWriteValue(Byte new_value)
 {
+    bool isUpdate = isFirstWrite || (value != new_value);
+
     value = new_value;
 
-    memory.init_blocks_to_update();
+    if (isUpdate)
+    {
+        isFirstWrite = false;
+        memory.init_blocks_to_update();
+    }
 }
 
