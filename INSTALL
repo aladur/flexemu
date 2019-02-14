@@ -2,11 +2,19 @@
 * Compiling/Install flexemu on Unix/Linux  *
 ********************************************
 
-Flexemu supports configure scripts. So there are three steps to install it:
+Flexemu supports configure scripts. So there are three steps to compile and
+install it:
 
 	- ./configure --with-app-defaults=auto --sysconfdir=/etc
 	- make
 	- sudo make install
+
+prerequisites:
+
+        On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian)
+        install the following deb-packages:
+
+        sudo apt-get install libxt-dev libxaw7-dev lixwxgtk3.0-dev
 
 remarks:
 
@@ -32,6 +40,37 @@ remarks:
 	  (4.8 cycles for each instruction). The faster processor can
 	  be compiled with switch FASTFLEX uncommented in config.h.
 
+****************************************
+* Compiling/Install flexemu on Windows *
+****************************************
+
+For Windows there is a ready-to-use installation executable available. See
+flexemu homepage for details: https://aladur.neocities.org/flexemu/
+
+For Microsoft Visual Studio (15 or higher) there is a solution flexemu.sln
+available.
+
+To compile and creating an installation there are bash scripts available
+in directory build/windows. You can use e.g. git bash to execute these scripts.
+curl has to be available within the bash script. It can be downloaded from:
+https://curl.haxx.se/download.html
+
+1. download_and_rebuild_libs.sh
+
+        It downloads and rebuilds all dependent libraries (wxWidgets).
+
+2. rebuild_flexemu_all_and_copy_libs.sh
+
+        It makes a full rebuild in all configurations and copies the dependent
+        libraries into the target directories.
+
+3. create_installer.sh
+
+        It creates a flexemu installer executable. It automatically downloads
+        the Visual C/C++ redistributable packages. Before doing this the NSIS
+        windows installer has to be downloaded from:
+        http://nsis.sourceforge.net/Download
+
 ***********************
 * help, Documentation *
 ***********************
@@ -47,5 +86,6 @@ flexfs.htm	'filesystems' supported by flexemu
 flexerr.htm	description of the FLEX error messages
 flexfcb.htm	description of a FLEX file control block
 flexmem.htm	the FLEX memory map
-neumon54.htm	Flexemu monitor program
+neumon54.htm	Flexemu monitor program for Eurocom II/V7
+mon24.htm	Flexemu monitor program for Eurocom II/V5
 
