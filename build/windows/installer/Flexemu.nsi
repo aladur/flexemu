@@ -329,7 +329,19 @@ Section "-Registry update"
   WriteRegDWORD HKLM "${ARP}" "VersionMinor"    "$VersionMinor"
   WriteRegDWORD HKLM "${ARP}" "NoModify"        1
   WriteRegDWORD HKLM "${ARP}" "NoRepair"        1
-  WriteUninstaller "uninstall.exe"  
+  WriteUninstaller "uninstall.exe"
+
+  ; Add File associations supported by FLEXplorer
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe" "" ""
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".dsk" ""
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".flx" ""
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe\SupportedTypes" ".wta" ""
+  WriteRegStr   HKCR "Applications\FLEXplorer.exe\shell\open\command" "" "$\"$INSTDIR\FLEXplorer.exe$\" $\"%1$\""
+
+  ; Add Application paths
+  WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\${APPNAME}.exe" "" "$INSTDIR\${APPNAME}.exe"
+  WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FLEXplorer.exe" "" "$INSTDIR\FLEXplorer.exe"
+  WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FSetup.exe" "" "$INSTDIR\FSetup.exe"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, p0, p0)'
 
@@ -389,7 +401,11 @@ Section "Uninstall" Uninstall
   DeleteRegKey HKLM "${ARP}"
   DeleteRegKey HKLM SOFTWARE\Gnu\${APPNAME}
   DeleteRegKey HKLM SOFTWARE\Gnu\FLEXplorer
-  
+  DeleteRegKey HKCR "Applications\FLEXplorer.exe"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\${APPNAME}.exe"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FLEXplorer.exe"
+  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FSetup.exe"
+
   ; Remove files and uninstaller
   Delete $INSTDIR\Documentation\*.*
   Delete $INSTDIR\Data\*.*
