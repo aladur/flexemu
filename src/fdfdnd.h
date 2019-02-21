@@ -45,6 +45,7 @@ public:
 
     bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
     wxDragResult OnData(wxCoord x, wxCoord y, wxDragResult defResult);
+    wxDragResult GetDefaultAction();
 
 private:
     FlexParentFrame *m_pOwner;

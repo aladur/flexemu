@@ -60,8 +60,7 @@ bool FileDropTarget::OnDropFiles(wxCoord, wxCoord,
     return true;
 }
 
-wxDragResult FileDropTarget::OnData(wxCoord x, wxCoord y,
-                                    wxDragResult defResult)
+wxDragResult FileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult)
 {
     if (!GetData())
     {
@@ -91,12 +90,16 @@ wxDragResult FileDropTarget::OnData(wxCoord x, wxCoord y,
 
     if (success)
     {
-        return OnDropFiles(x, y, fileNames) ? defResult : wxDragNone;
+        return OnDropFiles(x, y, fileNames) ? wxDragCopy : wxDragNone;
     }
 
     return wxDragNone;
 }
 
+wxDragResult FileDropTarget::GetDefaultAction()
+{
+    return wxDragCopy;
+}
 #endif
 #endif
 
