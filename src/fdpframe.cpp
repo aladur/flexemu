@@ -62,6 +62,7 @@ static const char *_progVersion = VERSION;
 #include "fmenufac.h"
 #include "optdlg.h"
 #include "mdcrtape.h"
+#include "fdfdnd.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     #include "bitmaps/flexdisk.xpm"
@@ -142,6 +143,12 @@ FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
     // create a tool bar
     CreateToolBar(wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL);
     InitToolBar(GetToolBar());
+
+#ifdef wxUSE_DRAG_AND_DROP
+#ifndef __WXMOTIF__
+    SetDropTarget(new FileDropTarget(this));
+#endif
+#endif
 }
 
 FlexParentFrame::~FlexParentFrame()

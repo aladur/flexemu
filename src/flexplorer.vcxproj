@@ -194,6 +194,7 @@
     <ClCompile Include="fcopyman.cpp" />
     <ClCompile Include="fdcframe.cpp" />
     <ClCompile Include="fddnd.cpp" />
+    <ClCompile Include="fdfdnd.cpp" />
     <ClCompile Include="fdirent.cpp" />
     <ClCompile Include="fdlist.cpp" />
     <ClCompile Include="fdpframe.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdcframe.h" />
     <ClInclude Include="fddnd.h" />
+    <ClInclude Include="fdfdnd.h" />
     <ClInclude Include="fdirent.h" />
     <ClInclude Include="fdlist.h" />
     <ClInclude Include="fdpframe.h" />

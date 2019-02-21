@@ -57,6 +57,9 @@
     <ClCompile Include="fddnd.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="fdfdnd.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="fdirent.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -205,6 +208,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="fddnd.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="fdfdnd.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="fdirent.h">
