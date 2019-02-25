@@ -100,7 +100,7 @@ sprinter.h flexemu.h mdcrtape.h fdfdnd.h
 
 mdcrtool_SOURCES = \
 mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
-flexerr.cpp \
+flexerr.cpp misc1.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 typedefs.h misc1.h config.h flexerr.h
 

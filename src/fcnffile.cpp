@@ -126,18 +126,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 
 int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 {
-    std::string fileName;
-
-
-    auto pos = monitorFilePath.find_last_of(PATHSEPARATOR);
-    if (pos != std::string::npos)
-    {
-        fileName = monitorFilePath.substr(pos + 1);
-    }
-    else
-    {
-        fileName = monitorFilePath;
-    }
+    std::string fileName = getFileName(monitorFilePath);
 
 #ifdef _WIN32
     std::transform(fileName.begin(), fileName.end(), fileName.begin(),

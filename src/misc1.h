@@ -402,6 +402,7 @@ extern std::string getExecutablePath();
 #endif
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
+extern std::string getFileName(const std::string &path);
 
 extern const char* white_space;
 

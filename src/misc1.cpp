@@ -375,6 +375,35 @@ std::string getTempPath()
 #endif
 }
 
+std::string getFileName(const std::string &path)
+{
+#ifdef _WIN32
+    const char *pathSeparators = "\\/";
+#else
+    const char *pathSeparators = "/";
+#endif
+    auto pos = path.find_last_of(pathSeparators);
+
+    if (pos != std::string::npos)
+    {
+        if (pos == (path.size() - 1))
+        {
+            // If path == "/", return "/".
+            // If path is "/foo/bar/" return ".".
+            return pos == 0 ? path : ".";
+        }
+
+        // If path == "/foo/bar.txt" return "bar.txt".
+        // If path == "/foo/bar" return "bar".
+        return path.substr(pos + 1);
+    }
+
+    // If path == "bar.txt" return "bar.txt".
+    // If path == "." return ".".
+    // If path == ".." return "..".
+    return path;
+}
+
 std::string getFlexemuSystemConfigFile()
 {
     static const auto flexemuConfigFile = std::string("flexemu.conf");

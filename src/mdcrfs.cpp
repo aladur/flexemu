@@ -215,12 +215,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     size_t index;
     std::vector<Byte> ibuffer;
     std::vector<Byte> obuffer;
-    std::string filename = filepath;
-
-    if (filename.find_last_of("/\\") != std::string::npos)
-    {
-        filename = filename.substr(filename.find_last_of("/\\") + 1);
-    }
+    std::string filename = getFileName(filepath);
     std::string mdcrFilename = CreateMdcrFilename(filename.c_str(), toUppercase);
 
     if (mdcr.IsWriteProtected())

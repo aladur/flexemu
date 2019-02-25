@@ -79,9 +79,7 @@ ApplicationRunner::ApplicationRunner(
     // neumnt54.hex is obsolete now.
     // neumon54.hex can be used for both terminal and GUI mode.
     // SERPAR flag is switched dynamically during emulation.
-    auto pos = options.hex_file.find_last_of(PATHSEPARATOR);
-    if (pos != std::string::npos &&
-        options.hex_file.substr(pos + 1) == std::string("neumnt54.hex"))
+    if (getFileName(options.hex_file) == std::string("neumnt54.hex"))
     {
         std::stringstream message;
 
