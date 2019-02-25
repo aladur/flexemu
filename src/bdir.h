@@ -41,7 +41,7 @@ private:
 public:
     static bool Exists(const std::string &aPath);
     static bool Remove(const std::string &aPath);
-    static bool Create(const std::string &aPath, int mode = 0x0755);
+    static bool Create(const std::string &aPath, int mode = 0755);
     static bool RemoveRecursive(const std::string &aPath);
     static tPathList GetSubDirectories(const std::string &aPath);
     static tPathList GetFiles(const std::string &aPath);
@@ -60,7 +60,7 @@ public:
     };
     bool Exists() const;
     bool Remove() const;
-    bool Create(int mode = 0x0755) const;
+    bool Create(int mode = 0755) const;
     bool RemoveRecursive() const;
     tPathList GetSubDirectories() const;
     tPathList GetFiles() const;

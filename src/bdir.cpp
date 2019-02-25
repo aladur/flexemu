@@ -80,13 +80,13 @@ bool BDirectory::Remove(const std::string &aPath)
 }
 
 #if defined(_MSC_VER) || defined(__MINGW32)
-bool BDirectory::Create(const std::string &aPath, int /* [[maybe_unused]] int mode = 0x0755 */)
+bool BDirectory::Create(const std::string &aPath, int /* [[maybe_unused]] int mode = 0755 */)
 {
     return _mkdir(aPath.c_str()) >= 0;
 }
 #endif
 #if defined(UNIX) || defined(__CYGWIN32)
-bool BDirectory::Create(const std::string &aPath, int mode /* = 0x0755 */)
+bool BDirectory::Create(const std::string &aPath, int mode /* = 0755 */)
 {
     return mkdir(aPath.c_str(), mode) >= 0;
 }
@@ -350,7 +350,7 @@ bool BDirectory::RemoveRecursive() const
     return RemoveRecursive(m_path);
 }
 
-bool BDirectory::Create(int mode /* = 0x0755 */) const
+bool BDirectory::Create(int mode /* = 0755 */) const
 {
     return Create(m_path, mode);
 }

@@ -177,7 +177,7 @@ int main(int argc, char **argv)
         testPath = tempDir;
         testPath += PATHSEPARATORSTRING "flextest" PATHSEPARATORSTRING;
         BDirectory::RemoveRecursive(testPath);
-        BDirectory::Create(testPath, 755);
+        BDirectory::Create(testPath, 0755);
 
         file = testPath + "system.dsk";
         copyFile(".." PATHSEPARATORSTRING "disks" PATHSEPARATORSTRING
