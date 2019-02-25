@@ -400,6 +400,7 @@ extern bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 extern std::string getExecutablePath();
 #endif
+extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 
 extern const char* white_space;

@@ -270,21 +270,8 @@ std::pair<std::string, std::set<std::string> >
     {
         if (logFilePath.empty())
         {
-            // On POSIX compliant file systems /tmp has to be available
-            std::string tmpPath = "/tmp";
-
-#ifdef _WIN32
-            char cTempPath[MAX_PATH];
-            if (!GetTempPath(MAX_PATH, cTempPath))
-            {
-                throw FlexException(GetLastError(),
-                std::string("In function GetTempPath"));
-            }
-            tmpPath = cTempPath;
-#endif
-            logFilePath = tmpPath + "/flexemu_device.log";
+            logFilePath = getTempPath() + "/flexemu_device.log";
         }
-
 
         result.first = logFilePath;
         result.second = devices;

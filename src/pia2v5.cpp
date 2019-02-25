@@ -492,19 +492,7 @@ void Pia2V5::set_debug(const std::string &debugLevel,
 {
     if (logFilePath.empty())
     {
-        // On POSIX compliant file systems /tmp has to be available
-        std::string tmpPath = "/tmp";
- 
-#ifdef _WIN32
-        char cTempPath[MAX_PATH];
-        if (!GetTempPath(MAX_PATH, cTempPath))
-        {
-            throw FlexException(GetLastError(),
-                   std::string("In function GetTempPath"));
-        }
-        tmpPath = cTempPath;
-#endif
-        logFilePath = tmpPath + "/flexemu_mdcr.log";                      
+        logFilePath = getTempPath() + "/flexemu_mdcr.log";
     }
 
     std::stringstream streamDebugLevel(debugLevel);

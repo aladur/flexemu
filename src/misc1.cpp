@@ -345,6 +345,36 @@ std::string getExecutablePath()
 }
 #endif
 
+std::string getTempPath()
+{
+#ifdef _WIN32
+#ifdef UNICODE
+    wchar_t tempPath[MAX_PATH];
+
+    if (!GetTempPath(MAX_PATH, tempPath))
+    {
+       throw FlexException(GetLastError(),
+                           std::string("In function GetTempPath"));
+    }
+
+    return ConvertToUtf8String(tempPath);
+#else
+    char tempPath[MAX_PATH];
+
+    if (!GetTempPath(MAX_PATH, tempPath))
+    {
+       throw FlexException(GetLastError(),
+                           std::string("In function GetTempPath"));
+    }
+
+    return std::string(tempPath);
+#endif
+#else
+    // On POSIX compliant file systems /tmp has to be available
+    return "/tmp";
+#endif
+}
+
 std::string getFlexemuSystemConfigFile()
 {
     static const auto flexemuConfigFile = std::string("flexemu.conf");
