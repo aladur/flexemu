@@ -49,6 +49,7 @@
 #include "ifilecnt.h"
 #include "bprocess.h"
 #include "cvtwchar.h"
+#include "bdir.h"
 #include <memory>
 #include <algorithm>
 
@@ -391,20 +392,20 @@ void FlexDiskListCtrl::RenameSelectedItems()
 
 void FlexDiskListCtrl::ViewSelectedItems()
 {
-    BProcess    process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
-
-    auto items = GetSelections();
-
-    if (m_container && !items.empty())
+    if (!m_container)
     {
-        // view the last selected item
-        auto item = items[items.size() - 1];
-        auto fileName = GetItemText(item);
+        return;
+    }
+
+    for (const auto &item : GetSelections())
+    {
+        std::string fileName = GetItemText(item).mb_str(*wxConvCurrent).data();
+        std::transform(fileName.begin(), fileName.end(),
+                        fileName.begin(), ::tolower);
 
         try
         {
-            auto buffer = m_container->ReadToBuffer(
-                              fileName.mb_str(*wxConvCurrent));
+            auto buffer = m_container->ReadToBuffer(fileName.c_str());
 
             if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
                 buffer.IsFlexTextFile())
@@ -412,88 +413,54 @@ void FlexDiskListCtrl::ViewSelectedItems()
                 buffer.ConvertFromFlex();
             }
 
-#ifdef WIN32
-            std::string path;
-#ifdef UNICODE
-            wchar_t wpath[MAX_PATH], tempPath[MAX_PATH];
+            auto tempPath = getTempPath() + PATHSEPARATORSTRING "flexplorer";
 
-            if (!GetTempPath(MAX_PATH, tempPath))
+            if (!BDirectory::Exists(tempPath))
             {
-                throw FlexException(GetLastError(),
-                    std::string("In function GetTempPath"));
-            }
-
-            if (!GetTempFileName(tempPath, _("FLX"), 0, wpath))
-            {
-                throw FlexException(GetLastError(),
-                    std::string("In function GetTempFileName"));
-            }
-            path = ConvertToUtf8String(wpath);
-#else
-            char cpath[MAX_PATH], tempPath[MAX_PATH];
-
-            if (!GetTempPath(MAX_PATH, tempPath))
-            {
-                throw FlexException(GetLastError(),
-                    std::string("In function GetTempPath"));
-            }
-
-            if (!GetTempFileName(tempPath, _("FLX"), 0, cpath))
-            {
-                throw FlexException(GetLastError(),
-                    std::string("In function GetTempFileName"));
-            }
-            path = cpath;
-#endif
-
-            if (buffer.WriteToFile(path.c_str()))
-            {
-                process.AddArgument(path.c_str());
-
-                if (!process.Start())
+                if (!BDirectory::Create(tempPath))
                 {
-                    throw FlexException(GetLastError(),
-                        std::string(fileViewer));
+                    throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
                 }
             }
-            else
+
+            tempPath += PATHSEPARATORSTRING +
+                            getFileName(m_container->GetPath());
+            if (!BDirectory::Exists(tempPath))
             {
-                throw FlexException(FERR_CREATE_TEMP_FILE, path);
+                if (!BDirectory::Create(tempPath))
+                {
+                    throw FlexException(FERR_UNABLE_TO_CREATE, tempPath);
+                }
             }
 
-#else
-            int fd;
-            char cTemplate[PATH_MAX];
+            const std::string tempFile =
+                tempPath + PATHSEPARATORSTRING + fileName;
 
-            strcpy(cTemplate, "/tmp");
-            strcat(cTemplate, "/FLXXXXXXX");
-            fd = mkstemp(cTemplate);
-
-            if (fd != -1 && buffer.WriteToFile(fd))
+            if (buffer.WriteToFile(tempFile.c_str()))
             {
-                close(fd);
-                process.AddArgument(cTemplate);
+                BProcess process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
+
+                process.AddArgument(tempFile);
 
                 if (!process.Start())
                 {
                     throw FlexException(
                         FERR_CREATE_PROCESS,
                         fileViewer.mb_str(*wxConvCurrent).data(),
-                        cTemplate);
+                        tempFile);
                 }
             }
             else
             {
-                throw FlexException(FERR_CREATE_TEMP_FILE, cTemplate);
+                throw FlexException(FERR_UNABLE_TO_CREATE, tempFile);
             }
-#endif
         }
         catch (FlexException &ex)
         {
             wxMessageBox(ex.what(), _("FLEXplorer Error"),
                          wxOK | wxCENTRE | wxICON_EXCLAMATION);
         }
-    } // if
+    } // for
 }
 
 #ifdef wxUSE_DRAG_AND_DROP

@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "bfileptr.h"
 #include "cvtwchar.h"
+#include "flexerr.h"
 
 const char* white_space = " \t\n\r\f\v";
 
