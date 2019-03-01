@@ -407,8 +407,7 @@ void FlexDiskListCtrl::ViewSelectedItems()
         {
             auto buffer = m_container->ReadToBuffer(fileName.c_str());
 
-            if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
-                buffer.IsFlexTextFile())
+            if (buffer.IsFlexTextFile())
             {
                 buffer.ConvertToTextFile();
             }
