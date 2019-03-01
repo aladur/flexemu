@@ -205,7 +205,7 @@ unsigned int FlexFileBuffer::SizeOfConvertedTextFile()
 // Convert a FLEX text file into a text file on the host operating
 // system.
 // Replace the buffer contents by the converted file contents.
-int FlexFileBuffer::ConvertFromFlex()
+int FlexFileBuffer::ConvertToTextFile()
 {
     Byte *new_buffer;
     unsigned int new_index, new_size;
@@ -272,7 +272,7 @@ int FlexFileBuffer::ConvertFromFlex()
 
 // Convert a host operating system text file into a FLEX test file.
 // Replace the buffer contents by the converted file contents.
-int FlexFileBuffer::ConvertToFlex()
+int FlexFileBuffer::ConvertToFlexTextFile()
 {
     Byte c;
     Byte *new_buffer;

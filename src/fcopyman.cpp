@@ -52,14 +52,14 @@ bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
         (dst.GetContainerType() & TYPE_DIRECTORY) &&
         fileBuffer.IsFlexTextFile() && autoTextConversion)
     {
-        fileBuffer.ConvertFromFlex();
+        fileBuffer.ConvertToTextFile();
     }
 
     if ((src.GetContainerType() & TYPE_DIRECTORY) &&
         (dst.GetContainerType() & TYPE_CONTAINER) &&
         fileBuffer.IsTextFile() && autoTextConversion)
     {
-        fileBuffer.ConvertToFlex();
+        fileBuffer.ConvertToFlexTextFile();
     }
 
     if (!dst.WriteFromBuffer(fileBuffer, destName))

@@ -410,7 +410,7 @@ void FlexDiskListCtrl::ViewSelectedItems()
             if ((m_container->GetContainerType() & TYPE_CONTAINER) &&
                 buffer.IsFlexTextFile())
             {
-                buffer.ConvertFromFlex();
+                buffer.ConvertToTextFile();
             }
 
             auto tempPath = getTempPath() + PATHSEPARATORSTRING "flexplorer";

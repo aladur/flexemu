@@ -59,8 +59,8 @@ public:
     FlexFileBuffer &operator=(const FlexFileBuffer &src);
     FlexFileBuffer &operator=(FlexFileBuffer &&src);
 
-    int ConvertFromFlex();
-    int ConvertToFlex();
+    int ConvertToTextFile();
+    int ConvertToFlexTextFile();
     bool WriteToFile(const char *path) const;
 #ifdef __GNUC__
     bool WriteToFile(int fd) const;
