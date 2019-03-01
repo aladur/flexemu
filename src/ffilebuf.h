@@ -136,6 +136,7 @@ private:
     DWord SizeOfConvertedFlexTextFile();
 
     tFlexFileHeader fileHeader;
+    DWord capacity;
     std::unique_ptr<Byte[]> buffer;
 };
 

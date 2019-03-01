@@ -36,7 +36,7 @@
 // FLEX Advanced Programmer's Guide in Chapter
 // DESCRIPTION OF A TEXT FILE.
 
-FlexFileBuffer::FlexFileBuffer()
+FlexFileBuffer::FlexFileBuffer() : capacity(0)
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
     fileHeader.magicNumber = flexFileHeaderMagicNumber;
@@ -55,8 +55,10 @@ FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
     if (&src != this)
     {
         buffer = std::move(src.buffer);
+        capacity = src.capacity;
         memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
         memset(&src.fileHeader, 0, sizeof(src.fileHeader));
+        src.capacity = 0;
     }
 }
 
@@ -75,8 +77,10 @@ FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src)
     if (&src != this)
     {
         buffer = std::move(src.buffer);
+        capacity = src.capacity;
         memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
         memset(&src.fileHeader, 0, sizeof(src.fileHeader));
+        src.capacity = 0;
     }
 
     return *this;
@@ -88,6 +92,7 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
     {
         auto new_buffer = std::unique_ptr<Byte[]>(
                               new Byte[src.fileHeader.fileSize]);
+        capacity = src.fileHeader.fileSize;
         memcpy(new_buffer.get(), src.buffer.get(), src.fileHeader.fileSize);
         buffer = std::move(new_buffer);
         memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
@@ -133,9 +138,14 @@ void FlexFileBuffer::Realloc(DWord new_size,
         return;
     }
 
-    if (new_size <= fileHeader.fileSize)
+    if (new_size <= capacity)
     {
-        // Don't allocate memory if buffer size decreases.
+        // Don't allocate memory if buffer capacity decreases.
+        if (new_size > fileHeader.fileSize)
+        {
+            memset(&buffer[fileHeader.fileSize], 0,
+                   new_size - fileHeader.fileSize);
+        }
         fileHeader.fileSize = new_size;
         return;
     }
@@ -150,6 +160,7 @@ void FlexFileBuffer::Realloc(DWord new_size,
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
+    capacity = new_size;
 }
 
 // Estimate the needed buffer size after converting
@@ -266,6 +277,7 @@ void FlexFileBuffer::ConvertToTextFile()
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
+    capacity = new_size;
 }
 
 // Convert a host operating system text file into a FLEX test file.
@@ -334,6 +346,7 @@ void FlexFileBuffer::ConvertToFlexTextFile()
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
+    capacity = new_size;
 }
 
 // Estimate the needed buffer size after converting
