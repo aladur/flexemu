@@ -28,6 +28,7 @@
 #include "flexemu.h"
 #include "bdate.h"
 #include <memory>
+#include <functional>
 
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
@@ -132,6 +133,8 @@ public:
 
 private:
     void copyFrom(const FlexFileBuffer &src);
+    void TraverseForTextFileConversion(std::function<void(char c)> fct);
+    void TraverseForFlexTextFileConversion(std::function<void(char c)> fct);
     DWord SizeOfConvertedTextFile();
     DWord SizeOfConvertedFlexTextFile();
 

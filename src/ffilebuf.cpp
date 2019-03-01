@@ -44,22 +44,16 @@ FlexFileBuffer::FlexFileBuffer() : capacity(0)
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
 {
-    if (&src != this)
-    {
-        copyFrom(src);
-    }
+    copyFrom(src);
 }
 
 FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
 {
-    if (&src != this)
-    {
-        buffer = std::move(src.buffer);
-        capacity = src.capacity;
-        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
-        memset(&src.fileHeader, 0, sizeof(src.fileHeader));
-        src.capacity = 0;
-    }
+    buffer = std::move(src.buffer);
+    capacity = src.capacity;
+    memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
+    memset(&src.fileHeader, 0, sizeof(src.fileHeader));
+    src.capacity = 0;
 }
 
 FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &src)
@@ -163,6 +157,52 @@ void FlexFileBuffer::Realloc(DWord new_size,
     capacity = new_size;
 }
 
+// Traverse through a given FLEX text file and call a function for each
+// converted character for converting to a host operating system text file.
+void FlexFileBuffer::TraverseForTextFileConversion(
+        std::function<void(char c)> fct)
+{
+    for (DWord index = 0; index < fileHeader.fileSize; index++)
+    {
+        Byte c = buffer[index];
+
+        if (c >= ' ')
+        {
+            fct(c);
+        }
+        else if (c == 0x0d)
+        {
+            // Convert ASCII CR, the FLEX text file end of line character
+            // into a new line (depending on the operating system).
+#ifdef _WIN32
+            fct(0x0d);
+#endif
+            fct(0x0a);
+        }
+        else if (c == 0x09)
+        {
+            DWord spaces;
+
+            // Expand space compression.
+            if (index < fileHeader.fileSize - 1)
+            {
+                spaces = buffer[++index];
+            }
+            else
+            {
+                spaces = 1;
+            }
+
+            while (spaces--)
+            {
+                fct(' ');
+            }
+        }
+
+        // Other control characters than ASCII TAB, ASCII CR are ignored.
+    } // for
+}
+
 // Estimate the needed buffer size after converting
 // a given FLEX text file into a text file on the host operating
 // system.
@@ -171,44 +211,15 @@ DWord FlexFileBuffer::SizeOfConvertedTextFile()
 {
     DWord count = 0;
 
-    if (!buffer || fileHeader.fileSize == 0)
+    if (!buffer)
     {
-        return 0;
+        return count;
     }
 
-    for (DWord i = 0; i < fileHeader.fileSize; i++)
-    {
-        switch (buffer[i])
+    TraverseForTextFileConversion([&count](char)
         {
-            case 0x0d:
-#ifndef _WIN32
-                count += 1;
-#else
-                count += 2;
-#endif
-                break;
-
-            case 0x09:
-                if (i < fileHeader.fileSize - 1)
-                {
-                    count += buffer[++i];
-                }
-                else
-                {
-                    count++;
-                }
-
-                break;
-
-            case 0x0a:
-            case 0x00:
-                break;
-
-            default:
-                count++;
-                break;
-        }
-    }
+            count++;
+        });
 
     return count;
 }
@@ -218,111 +229,59 @@ DWord FlexFileBuffer::SizeOfConvertedTextFile()
 // Replace the buffer contents by the converted file contents.
 void FlexFileBuffer::ConvertToTextFile()
 {
-    Byte *new_buffer;
-    DWord new_index, new_size;
-    DWord count;
-
     if (!buffer || fileHeader.fileSize == 0)
     {
         return;
     }
 
-    new_size = SizeOfConvertedTextFile();
-    new_buffer = new Byte[new_size];
-    new_index = 0;
+    DWord new_size = SizeOfConvertedTextFile();
+    Byte *new_buffer = new Byte[new_size];
+    DWord new_index = 0;
 
-    for (DWord i = 0; i < fileHeader.fileSize; i++)
-    {
-        Byte c = buffer[i];
-
-        if (c > 0x0d)
+    TraverseForTextFileConversion([&new_buffer, &new_index](char c)
         {
             new_buffer[new_index++] = c;
-        }
-        else if (c == 0x0d)
-        {
-            // Convert ASCII CR, the FLEX text file end of line character
-            // into a new line (depending on the operating system).
-#ifndef _WIN32
-            new_buffer[new_index++] = 0x0a;
-#else
-            new_buffer[new_index++] = 0x0d;
-            new_buffer[new_index++] = 0x0a;
-#endif
-        }
-        else if (c == 0x09)
-        {
-            // Expand space compression.
-            if (i < fileHeader.fileSize - 1)
-            {
-                count = buffer[++i];
-            }
-            else
-            {
-                count = 1;
-            }
-
-            while (count--)
-            {
-                new_buffer[new_index++] = ' ';
-            }
-        }
-        else if (c != 0x00 && c != 0x0a)
-        {
-            new_buffer[new_index++] = c;
-        }
-        // Other control characters than ASCII TAB, ASCII LF or ASCII NUL
-        // are ignored.
-    } // for
+        });
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
     capacity = new_size;
 }
 
-// Convert a host operating system text file into a FLEX test file.
-// Replace the buffer contents by the converted file contents.
-void FlexFileBuffer::ConvertToFlexTextFile()
+// Traverse through a given host operating system text file and call a function
+// for each converted character for converting to a FLEX text file.
+void FlexFileBuffer::TraverseForFlexTextFileConversion(
+        std::function<void(char c)> fct)
 {
-    Byte c;
-    Byte *new_buffer;
-    int new_index = 0;
-    int new_size;
-    DWord i;
-    Word spaces = 0;
+    DWord spaces = 0;
 
-    if (!buffer || fileHeader.fileSize == 0)
+    for (DWord index = 0; index < fileHeader.fileSize; index++)
     {
-        return;
-    }
+        Byte c = buffer[index];
 
-    new_size = SizeOfConvertedFlexTextFile();
-    new_buffer = new Byte[new_size];
-
-    for (i = 0; i < fileHeader.fileSize; i++)
-    {
-        c = buffer[i];
-
-        if (c == ' ' && (++spaces == 127))
+        if (c == ' ')
         {
-            // Do space compression for a maximum of 127 characters.
-            new_buffer[new_index++] = 0x09;
-            new_buffer[new_index++] = static_cast<Byte>(spaces);
-            spaces = 0;
+            if (++spaces == 127)
+            {
+                // Expand space compression for a maximum of 127 characters.
+                fct(0x09);
+                fct(static_cast<Byte>(spaces));
+                spaces = 0;
+            }
         }
         else
         {
             if (spaces)
             {
-                // Do space compression for a maximum of 127 characters.
-                new_buffer[new_index++] = 0x09;
-                new_buffer[new_index++] = static_cast<Byte>(spaces);
+                // Expand space compression.
+                fct(0x09);
+                fct(static_cast<Byte>(spaces));
                 spaces = 0;
             }
 
             if (c > ' ')
             {
-                new_buffer[new_index++] = c;
+                fct(c);
             }
             else if (c == 0x0a)
             {
@@ -330,19 +289,38 @@ void FlexFileBuffer::ConvertToFlexTextFile()
                 // in a FLEX text file.
                 // If ASCII CR is ignored this works for both Unix/Linux
                 // and DOS/Windows text files.
-                new_buffer[new_index++] = 0x0d;
+                fct(0x0d);
             }
             else if (c == 0x09)
             {
                 // ASCII TAB is converted to 8 spaces.
-                new_buffer[new_index++] = 0x09;
-                new_buffer[new_index++] = 8;
+                fct(0x09);
+                fct(8);
             }
 
             // Other control characters than ASCII TAB or ASCII CR will be
             // ignored.
         }
     } // for
+}
+
+// Convert a host operating system text file into a FLEX test file.
+// Replace the buffer contents by the converted file contents.
+void FlexFileBuffer::ConvertToFlexTextFile()
+{
+    if (!buffer)
+    {
+        return;
+    }
+
+    DWord new_size = SizeOfConvertedFlexTextFile();
+    Byte *new_buffer = new Byte[new_size];
+    DWord new_index = 0;
+
+    TraverseForFlexTextFileConversion([&new_buffer, &new_index](char c)
+        {
+            new_buffer[new_index++] = c;
+        });
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
@@ -354,48 +332,17 @@ void FlexFileBuffer::ConvertToFlexTextFile()
 // Returns the estimated file size in byte.
 DWord FlexFileBuffer::SizeOfConvertedFlexTextFile()
 {
-    DWord count, spaces;
+    DWord count = 0;
 
-    if (!buffer || fileHeader.fileSize == 0)
+    if (!buffer)
     {
-        return 0;
+        return count;
     }
 
-    count = spaces = 0;
-
-    for (DWord i = 0; i < fileHeader.fileSize; i++)
-    {
-        Byte c = buffer[i];
-
-        if (c == ' ' && (++spaces == 127))
+    TraverseForFlexTextFileConversion([&count](char)
         {
-            count += 2;
-            spaces = 0;
-        }
-        else
-        {
-            if (spaces)
-            {
-                count += 2;
-                spaces = 0;
-            }
-
-            if (c == 0x0a || c > ' ')
-            {
-                count++;
-            }
-            else
-            {
-                if (c == 0x09)
-                {
-                    count += 2;
-                }
-
-                // Other control characters than ASCII TAB or ASCII CR will be
-                // ignored.
-            }
-        }
-    } // for
+            count++;
+        });
 
     return count;
 }
@@ -428,13 +375,14 @@ bool FlexFileBuffer::IsFlexTextFile() const
         Byte c = buffer[i];
 
         // Allowed characters of a FLEX text file are:
-        // ASCII LF, ASCII CR, ASCII NUL and any character >= ASCII Space
-        if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00)
+        // ASCII LF, ASCII CR, ASCII NUL, ASCII CANCEL and
+        // any character >= ASCII Space.
+        if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00 || c == 0x18)
         {
             continue;
         }
 
-        if (c == 0x09 && i < fileHeader.fileSize - 1)
+        if (c == 0x09)
         {
             // ASCII TAB is followed by one space count byte.
             i++;
