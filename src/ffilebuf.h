@@ -59,8 +59,8 @@ public:
     FlexFileBuffer &operator=(const FlexFileBuffer &src);
     FlexFileBuffer &operator=(FlexFileBuffer &&src);
 
-    int ConvertToTextFile();
-    int ConvertToFlexTextFile();
+    void ConvertToTextFile();
+    void ConvertToFlexTextFile();
     bool WriteToFile(const char *path) const;
 #ifdef __GNUC__
     bool WriteToFile(int fd) const;
@@ -70,29 +70,26 @@ public:
     bool IsFlexTextFile() const;
     bool IsFlexExecutableFile() const;
     void CopyHeaderFrom(const tFlexFileHeader *from);
-    bool CopyFrom(const Byte *from, unsigned int aSize,
-                  unsigned int offset = 0);
-    bool CopyTo(Byte *to, unsigned int aSize,
-                unsigned int offset = 0, int stuffByte = -1) const;
+    bool CopyFrom(const Byte *from, DWord aSize, DWord offset = 0);
+    bool CopyTo(Byte *to, DWord aSize,
+                DWord offset = 0, int stuffByte = -1) const;
     bool CopyTo(BMemoryBuffer &memory);
     void FillWith(const Byte pattern = 0);
-    void Realloc(unsigned int newSize,
-                 bool restoreContents = false);  // must NOT be virtual !!
-    const Byte *GetBuffer(unsigned int offset = 0,
-                          unsigned int bytes = 1) const;
+    void Realloc(DWord newSize, bool restoreContents = false);
+    const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
     const tFlexFileHeader &GetHeader() const
     {
         return fileHeader;
     }
-    void  SetDate(const BDate &date);
-    void  SetDate(int day, int month, int year);
+    void SetDate(const BDate &date);
+    void SetDate(int day, int month, int year);
     void SetFilename(const char *name);
     void SetAdjustedFilename(const char *name);
     inline const char *GetFilename() const
     {
         return fileHeader.fileName;
     };
-    inline unsigned int GetFileSize() const
+    inline DWord GetFileSize() const
     {
         return fileHeader.fileSize;
     };
@@ -119,7 +116,7 @@ public:
     {
         fileHeader.attributes = attributes;
     };
-    inline int IsRandom() const
+    inline bool IsRandom() const
     {
         return (fileHeader.sectorMap != 0);
     }
@@ -135,8 +132,8 @@ public:
 
 private:
     void copyFrom(const FlexFileBuffer &src);
-    unsigned int SizeOfConvertedTextFile();
-    unsigned int SizeOfConvertedFlexTextFile();
+    DWord SizeOfConvertedTextFile();
+    DWord SizeOfConvertedFlexTextFile();
 
     tFlexFileHeader fileHeader;
     std::unique_ptr<Byte[]> buffer;

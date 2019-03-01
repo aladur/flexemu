@@ -103,8 +103,8 @@ FlexFileBuffer::~FlexFileBuffer()
 {
 }
 
-const Byte *FlexFileBuffer::GetBuffer(unsigned int offset /* = 0*/,
-                                      unsigned int bytes /* = 1 */) const
+const Byte *FlexFileBuffer::GetBuffer(DWord offset /* = 0*/,
+                                      DWord bytes /* = 1 */) const
 {
     if (offset + bytes > fileHeader.fileSize)
     {
@@ -123,7 +123,7 @@ void FlexFileBuffer::SetFilename(const char *name)
 // Reallocate the buffer with a different size.
 // Buffer will be initialized to zero or
 // optionally with a copy of the contents of the old buffer.
-void FlexFileBuffer::Realloc(unsigned int new_size,
+void FlexFileBuffer::Realloc(DWord new_size,
                              bool restoreContents /* = false*/)
 {
     Byte *new_buffer;
@@ -156,16 +156,16 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
 // a given FLEX text file into a text file on the host operating
 // system.
 // Returns the estimated file size in byte.
-unsigned int FlexFileBuffer::SizeOfConvertedTextFile()
+DWord FlexFileBuffer::SizeOfConvertedTextFile()
 {
-    unsigned int count = 0;
+    DWord count = 0;
 
     if (!buffer || fileHeader.fileSize == 0)
     {
         return 0;
     }
 
-    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+    for (DWord i = 0; i < fileHeader.fileSize; i++)
     {
         switch (buffer[i])
         {
@@ -205,22 +205,22 @@ unsigned int FlexFileBuffer::SizeOfConvertedTextFile()
 // Convert a FLEX text file into a text file on the host operating
 // system.
 // Replace the buffer contents by the converted file contents.
-int FlexFileBuffer::ConvertToTextFile()
+void FlexFileBuffer::ConvertToTextFile()
 {
     Byte *new_buffer;
-    unsigned int new_index, new_size;
-    unsigned int count;
+    DWord new_index, new_size;
+    DWord count;
 
     if (!buffer || fileHeader.fileSize == 0)
     {
-        return 0;
+        return;
     }
 
     new_size = SizeOfConvertedTextFile();
     new_buffer = new Byte[new_size];
     new_index = 0;
 
-    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+    for (DWord i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -266,13 +266,11 @@ int FlexFileBuffer::ConvertToTextFile()
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
-
-    return fileHeader.fileSize;
 }
 
 // Convert a host operating system text file into a FLEX test file.
 // Replace the buffer contents by the converted file contents.
-int FlexFileBuffer::ConvertToFlexTextFile()
+void FlexFileBuffer::ConvertToFlexTextFile()
 {
     Byte c;
     Byte *new_buffer;
@@ -283,7 +281,7 @@ int FlexFileBuffer::ConvertToFlexTextFile()
 
     if (!buffer || fileHeader.fileSize == 0)
     {
-        return 0;
+        return;
     }
 
     new_size = SizeOfConvertedFlexTextFile();
@@ -336,16 +334,14 @@ int FlexFileBuffer::ConvertToFlexTextFile()
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
-
-    return fileHeader.fileSize;
 }
 
 // Estimate the needed buffer size after converting
 // a given text file on the host operating system into a FLEX text file.
 // Returns the estimated file size in byte.
-unsigned int FlexFileBuffer::SizeOfConvertedFlexTextFile()
+DWord FlexFileBuffer::SizeOfConvertedFlexTextFile()
 {
-    unsigned int count, spaces;
+    DWord count, spaces;
 
     if (!buffer || fileHeader.fileSize == 0)
     {
@@ -354,7 +350,7 @@ unsigned int FlexFileBuffer::SizeOfConvertedFlexTextFile()
 
     count = spaces = 0;
 
-    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+    for (DWord i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -394,7 +390,7 @@ unsigned int FlexFileBuffer::SizeOfConvertedFlexTextFile()
 // Evaluate if the given file is a text file on the host operating system.
 bool FlexFileBuffer::IsTextFile() const
 {
-    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+    for (DWord i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -414,7 +410,7 @@ bool FlexFileBuffer::IsTextFile() const
 // Evaluate if the given file is a FLEX text file.
 bool FlexFileBuffer::IsFlexTextFile() const
 {
-    for (unsigned int i = 0; i < fileHeader.fileSize; i++)
+    for (DWord i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
@@ -560,8 +556,8 @@ void FlexFileBuffer::CopyHeaderFrom(const tFlexFileHeader *src)
     Realloc(newSize);
 }
 
-bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,
-                              unsigned int offset /* = 0 */)
+bool FlexFileBuffer::CopyFrom(const Byte *from, DWord aSize,
+                              DWord offset /* = 0 */)
 {
     if (offset + aSize > fileHeader.fileSize)
     {
@@ -572,8 +568,8 @@ bool FlexFileBuffer::CopyFrom(const Byte *from, unsigned int aSize,
     return true;
 }
 
-bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
-                            unsigned int offset /* = 0 */,
+bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
+                            DWord offset /* = 0 */,
                             int stuffByte /* = -1 */) const
 {
     if (offset + aSize > fileHeader.fileSize)
@@ -596,7 +592,7 @@ bool FlexFileBuffer::CopyTo(Byte *to, unsigned int aSize,
 
 void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
 {
-    for (unsigned int i = 0; i < GetFileSize(); i++)
+    for (DWord i = 0; i < GetFileSize(); i++)
     {
         buffer[i] = pattern;
     }
