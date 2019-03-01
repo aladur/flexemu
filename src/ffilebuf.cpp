@@ -32,6 +32,10 @@
 #include <sstream>
 
 
+// The format of a FLEX text file is described in the
+// FLEX Advanced Programmer's Guide in Chapter
+// DESCRIPTION OF A TEXT FILE.
+
 FlexFileBuffer::FlexFileBuffer()
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
@@ -116,9 +120,9 @@ void FlexFileBuffer::SetFilename(const char *name)
     fileHeader.fileName[sizeof(fileHeader.fileName) - 1] = '\0';
 }
 
-// reallocate the buffer with different size
-// buffer will be initialized to zero or
-// optionally with a copy of the contents of the old buffer
+// Reallocate the buffer with a different size.
+// Buffer will be initialized to zero or
+// optionally with a copy of the contents of the old buffer.
 void FlexFileBuffer::Realloc(unsigned int new_size,
                              bool restoreContents /* = false*/)
 {
@@ -131,7 +135,7 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
 
     if (new_size <= fileHeader.fileSize)
     {
-        // dont allocate memory if buffer size decreases
+        // Don't allocate memory if buffer size decreases.
         fileHeader.fileSize = new_size;
         return;
     }
@@ -148,6 +152,10 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
     fileHeader.fileSize = new_size;
 }
 
+// Estimate the needed buffer size after converting
+// a given FLEX text file into a text file on the host operating
+// system.
+// Returns the estimated file size in byte.
 unsigned int FlexFileBuffer::SizeOfFlexFile()
 {
     unsigned int count = 0;
@@ -194,6 +202,9 @@ unsigned int FlexFileBuffer::SizeOfFlexFile()
     return count;
 }
 
+// Convert a FLEX text file into a text file on the host operating
+// system.
+// Replace the buffer contents by the converted file contents.
 int FlexFileBuffer::ConvertFromFlex()
 {
     Byte *new_buffer;
@@ -219,6 +230,8 @@ int FlexFileBuffer::ConvertFromFlex()
         }
         else if (c == 0x0d)
         {
+            // Convert ASCII CR, the FLEX text file end of line character
+            // into a new line (depending on the operating system).
 #ifndef _WIN32
             new_buffer[new_index++] = 0x0a;
 #else
@@ -228,7 +241,7 @@ int FlexFileBuffer::ConvertFromFlex()
         }
         else if (c == 0x09)
         {
-            /* expand space compression */
+            // Expand space compression.
             if (i < fileHeader.fileSize - 1)
             {
                 count = buffer[++i];
@@ -247,6 +260,8 @@ int FlexFileBuffer::ConvertFromFlex()
         {
             new_buffer[new_index++] = c;
         }
+        // Other control characters than ASCII TAB, ASCII LF or ASCII NUL
+        // are ignored.
     } // for
 
     buffer.reset(new_buffer);
@@ -255,6 +270,8 @@ int FlexFileBuffer::ConvertFromFlex()
     return fileHeader.fileSize;
 }
 
+// Convert a host operating system text file into a FLEX test file.
+// Replace the buffer contents by the converted file contents.
 int FlexFileBuffer::ConvertToFlex()
 {
     Byte c;
@@ -301,7 +318,7 @@ int FlexFileBuffer::ConvertToFlex()
 
                 if (c == ' ')
                 {
-                    // do space compression
+                    // Do space compression
                     if (++spaces == 127)
                     {
                         new_buffer[new_index++] = 0x09;
@@ -311,7 +328,7 @@ int FlexFileBuffer::ConvertToFlex()
                 }
                 else if (c == 0x09)
                 {
-                    // tab will be converted to 8 spaces
+                    // ASCII TAB will be converted to 8 spaces.
                     if (spaces >= 127 - 8)
                     {
                         new_buffer[new_index++] = 0x09;
@@ -342,7 +359,7 @@ int FlexFileBuffer::ConvertToFlex()
 
             if (c == ' ' && (++spaces == 127))
             {
-                /* do space compression */
+                // Do space compression for a maximum of 127 characters.
                 new_buffer[new_index++] = 0x09;
                 new_buffer[new_index++] = static_cast<Byte>(spaces);
                 spaces = 0;
@@ -351,6 +368,7 @@ int FlexFileBuffer::ConvertToFlex()
             {
                 if (spaces)
                 {
+                    // Do space compression for a maximum of 127 characters.
                     new_buffer[new_index++] = 0x09;
                     new_buffer[new_index++] = static_cast<Byte>(spaces);
                     spaces = 0;
@@ -362,17 +380,23 @@ int FlexFileBuffer::ConvertToFlex()
                 }
                 else if (c == 0x0a)
                 {
+                    // For ASCII LF write ASCII CR indicating end of line
+                    // in a FLEX text file.
+                    // If ASCII CR is ignored this works for both Unix/Linux
+                    // and DOS/Windows text files.
                     new_buffer[new_index++] = 0x0d;
                 }
                 else if (c == 0x09)
                 {
+                    // ASCII TAB is converted to 8 spaces.
                     new_buffer[new_index++] = 0x09;
                     new_buffer[new_index++] = 8;
                 }
 
-                /* other control chars than 0x09 and 0x0d will be ignored */
+                // Other control characters than ASCII TAB or ASCII CR will be
+                // ignored.
             }
-        } /* for */
+        } // for
     }
 
     buffer.reset(new_buffer);
@@ -381,6 +405,9 @@ int FlexFileBuffer::ConvertToFlex()
     return fileHeader.fileSize;
 }
 
+// Estimate the needed buffer size after converting
+// a given text file on the host operating system into a FLEX text file.
+// Returns the estimated file size in byte.
 unsigned int FlexFileBuffer::SizeOfFile()
 {
     unsigned int count, spaces;
@@ -420,20 +447,24 @@ unsigned int FlexFileBuffer::SizeOfFile()
                     count += 2;
                 }
 
-                /* other control chars than 0x09 and 0x0d will be ignored */
+                // Other control characters than ASCII TAB or ASCII CR will be
+                // ignored.
             }
         }
-    } /* for */
+    } // for
 
     return count;
 }
 
+// Evaluate if the given file is a text file on the host operating system.
 bool FlexFileBuffer::IsTextFile() const
 {
     for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
+        // Allowed characters of a host operating system text file are:
+        // ASCII LF, ASCII CR, ASCII TAB and any character >= ASCII Space
         if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x09)
         {
             continue;
@@ -445,12 +476,15 @@ bool FlexFileBuffer::IsTextFile() const
     return true;
 }
 
+// Evaluate if the given file is a FLEX text file.
 bool FlexFileBuffer::IsFlexTextFile() const
 {
     for (unsigned int i = 0; i < fileHeader.fileSize; i++)
     {
         Byte c = buffer[i];
 
+        // Allowed characters of a FLEX text file are:
+        // ASCII LF, ASCII CR, ASCII NUL and any character >= ASCII Space
         if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00)
         {
             continue;
@@ -458,6 +492,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
 
         if (c == 0x09 && i < fileHeader.fileSize - 1)
         {
+            // ASCII TAB is followed by one space count byte.
             i++;
             continue;
         }
@@ -468,6 +503,8 @@ bool FlexFileBuffer::IsFlexTextFile() const
     return true;
 }
 
+// Estimate if the given file is a FLEX executable file.
+// Not implemented yet.
 bool FlexFileBuffer::IsExecutableFile() const
 {
     return false;
