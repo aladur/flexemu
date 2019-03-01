@@ -289,115 +289,50 @@ int FlexFileBuffer::ConvertToFlexTextFile()
     new_size = SizeOfConvertedFlexTextFile();
     new_buffer = new Byte[new_size];
 
-    if (0)
+    for (i = 0; i < fileHeader.fileSize; i++)
     {
-        for (i = 0; i < fileHeader.fileSize; i++)
+        c = buffer[i];
+
+        if (c == ' ' && (++spaces == 127))
         {
-            c = buffer[i];
-
-            if (c > ' ')
-            {
-                new_buffer[new_index++] = c;
-            }
-            else
-            {
-                if (c != ' ' && c != 0x09 && spaces)
-                {
-                    if (spaces > 1)
-                    {
-                        new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = static_cast<Byte>(spaces);
-                    }
-                    else
-                    {
-                        new_buffer[new_index++] = ' ';
-                    }
-
-                    spaces = 0;
-                }
-
-                if (c == ' ')
-                {
-                    // Do space compression
-                    if (++spaces == 127)
-                    {
-                        new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = static_cast<Byte>(spaces);
-                        spaces = 0;
-                    }
-                }
-                else if (c == 0x09)
-                {
-                    // ASCII TAB will be converted to 8 spaces.
-                    if (spaces >= 127 - 8)
-                    {
-                        new_buffer[new_index++] = 0x09;
-                        new_buffer[new_index++] = static_cast<Byte>(spaces);
-                        spaces -= 127 - 8;
-                    }
-                    else
-                    {
-                        spaces += 8;
-                    }
-                }
-                else if (c == 0x0a)
-                {
-                    new_buffer[new_index++] = 0x0d;
-                }
-                else if (c != 0x0d)
-                {
-                    new_buffer[new_index++] = c;
-                }
-            }
-        } // while
-    }
-    else
-    {
-        for (i = 0; i < fileHeader.fileSize; i++)
+            // Do space compression for a maximum of 127 characters.
+            new_buffer[new_index++] = 0x09;
+            new_buffer[new_index++] = static_cast<Byte>(spaces);
+            spaces = 0;
+        }
+        else
         {
-            c = buffer[i];
-
-            if (c == ' ' && (++spaces == 127))
+            if (spaces)
             {
                 // Do space compression for a maximum of 127 characters.
                 new_buffer[new_index++] = 0x09;
                 new_buffer[new_index++] = static_cast<Byte>(spaces);
                 spaces = 0;
             }
-            else
+
+            if (c > ' ')
             {
-                if (spaces)
-                {
-                    // Do space compression for a maximum of 127 characters.
-                    new_buffer[new_index++] = 0x09;
-                    new_buffer[new_index++] = static_cast<Byte>(spaces);
-                    spaces = 0;
-                }
-
-                if (c > ' ')
-                {
-                    new_buffer[new_index++] = c;
-                }
-                else if (c == 0x0a)
-                {
-                    // For ASCII LF write ASCII CR indicating end of line
-                    // in a FLEX text file.
-                    // If ASCII CR is ignored this works for both Unix/Linux
-                    // and DOS/Windows text files.
-                    new_buffer[new_index++] = 0x0d;
-                }
-                else if (c == 0x09)
-                {
-                    // ASCII TAB is converted to 8 spaces.
-                    new_buffer[new_index++] = 0x09;
-                    new_buffer[new_index++] = 8;
-                }
-
-                // Other control characters than ASCII TAB or ASCII CR will be
-                // ignored.
+                new_buffer[new_index++] = c;
             }
-        } // for
-    }
+            else if (c == 0x0a)
+            {
+                // For ASCII LF write ASCII CR indicating end of line
+                // in a FLEX text file.
+                // If ASCII CR is ignored this works for both Unix/Linux
+                // and DOS/Windows text files.
+                new_buffer[new_index++] = 0x0d;
+            }
+            else if (c == 0x09)
+            {
+                // ASCII TAB is converted to 8 spaces.
+                new_buffer[new_index++] = 0x09;
+                new_buffer[new_index++] = 8;
+            }
+
+            // Other control characters than ASCII TAB or ASCII CR will be
+            // ignored.
+        }
+    } // for
 
     buffer.reset(new_buffer);
     fileHeader.fileSize = new_size;
