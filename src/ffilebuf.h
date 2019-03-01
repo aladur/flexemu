@@ -136,12 +136,13 @@ public:
 
 private:
     void copyFrom(const FlexFileBuffer &src);
-    void TraverseForTextFileConversion(std::function<void(char c)> fct);
-    void TraverseForFlexTextFileConversion(std::function<void(char c)> fct);
+    void TraverseForTextFileConversion(std::function<void(char c)> fct) const;
+    void TraverseForFlexTextFileConversion(std::function<void(char c)> fct)
+         const;
     void TraverseForDumpFileConversion(DWord bytesPerLine,
                                        std::function<void(char c)> fct) const;
-    DWord SizeOfConvertedTextFile();
-    DWord SizeOfConvertedFlexTextFile();
+    DWord SizeOfConvertedTextFile() const;
+    DWord SizeOfConvertedFlexTextFile() const;
     DWord SizeOfConvertedDumpFile(DWord bytesPerLine) const;
 
     tFlexFileHeader fileHeader;
