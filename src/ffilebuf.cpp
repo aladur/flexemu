@@ -395,6 +395,118 @@ bool FlexFileBuffer::IsFlexTextFile() const
     return true;
 }
 
+// Traverse through a given file and call a function
+// for each converted character for converting to a ASCII dump file.
+void FlexFileBuffer::TraverseForDumpFileConversion(
+        DWord bytesPerLine,
+        std::function<void(char c)> fct) const
+{
+    DWord offset;
+    DWord index;
+    size_t width = 4;
+
+    width = (fileHeader.fileSize > 0xFFFF) ? 5 : width;
+    width = (fileHeader.fileSize > 0xFFFFF) ? 6 : width;
+
+    for (offset = 0; offset < fileHeader.fileSize; offset += bytesPerLine)
+    {
+        // File offset.
+        std::stringstream offsetstream;
+
+        offsetstream << std::setw(width) << std::setfill('0') <<
+                        std::hex << offset;
+        for (DWord i = 0; i < width; i++)
+        {
+            fct(offsetstream.str()[i]);
+        }
+        fct(' ');
+
+        // Hex values for each byte.
+        for (index = 0;
+             index < bytesPerLine && (offset + index < fileHeader.fileSize);
+             index++)
+        {
+            std::stringstream bytestream;
+
+            auto c = buffer[offset + index] & 0xFF;
+            bytestream << std::setw(2) << std::setfill('0') <<
+                      std::hex << static_cast<Word>(c);
+            fct(bytestream.str()[0]);
+            fct(bytestream.str()[1]);
+            fct(' ');
+        }
+
+        for (; index < bytesPerLine; index++)
+        {
+            // Fill up with spaces.
+            fct(' ');
+            fct(' ');
+            fct(' ');
+        }
+
+        fct(' ');
+        fct(' ');
+
+        // ASCII values for each byte.
+        for (index = 0;
+             index < bytesPerLine && (offset + index < fileHeader.fileSize);
+             index++)
+        {
+            char c = buffer[offset + index] & 0xFF;
+
+            if (c < ' ' || c >= '\x7F')
+            {
+                c = '_';
+            }
+            fct(c);
+        }
+
+#ifdef _WIN32
+        fct(0x0d);
+#endif
+        fct(0x0a);
+    }
+}
+
+DWord FlexFileBuffer::SizeOfConvertedDumpFile(DWord bytesPerLine) const
+{
+    DWord count = 0;
+
+    if (!buffer)
+    {
+        return count;
+    }
+
+    TraverseForDumpFileConversion(bytesPerLine, [&count](char)
+        {
+            count++;
+        });
+
+    return count;
+}
+
+void FlexFileBuffer::ConvertToDumpFile(DWord bytesPerLine)
+{
+    if (!buffer)
+    {
+        return;
+    }
+
+    DWord new_size = SizeOfConvertedDumpFile(bytesPerLine);
+    Byte *new_buffer = new Byte[new_size];
+    DWord new_index = 0;
+
+    TraverseForDumpFileConversion(bytesPerLine,
+                                  [&new_buffer, &new_index](char c)
+        {
+            new_buffer[new_index++] = c;
+        });
+
+    buffer.reset(new_buffer);
+    fileHeader.fileSize = new_size;
+    capacity = new_size;
+}
+
 // Estimate if the given file is a FLEX executable file.
 // Not implemented yet.
 bool FlexFileBuffer::IsFlexExecutableFile() const

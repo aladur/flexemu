@@ -29,6 +29,8 @@
 #include "bdate.h"
 #include <memory>
 #include <functional>
+#include <sstream>
+#include <iomanip>
 
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
@@ -62,6 +64,7 @@ public:
 
     void ConvertToTextFile();
     void ConvertToFlexTextFile();
+    void ConvertToDumpFile(DWord bytesPerLine);
     bool WriteToFile(const char *path) const;
 #ifdef __GNUC__
     bool WriteToFile(int fd) const;
@@ -135,8 +138,11 @@ private:
     void copyFrom(const FlexFileBuffer &src);
     void TraverseForTextFileConversion(std::function<void(char c)> fct);
     void TraverseForFlexTextFileConversion(std::function<void(char c)> fct);
+    void TraverseForDumpFileConversion(DWord bytesPerLine,
+                                       std::function<void(char c)> fct) const;
     DWord SizeOfConvertedTextFile();
     DWord SizeOfConvertedFlexTextFile();
+    DWord SizeOfConvertedDumpFile(DWord bytesPerLine) const;
 
     tFlexFileHeader fileHeader;
     DWord capacity;

@@ -411,6 +411,14 @@ void FlexDiskListCtrl::ViewSelectedItems()
             {
                 buffer.ConvertToTextFile();
             }
+            else
+            {
+                buffer.ConvertToDumpFile(16);
+                if (getFileExtension(fileName) != ".txt")
+                {
+                    fileName += ".txt";
+                }
+            }
 
             auto tempPath = getTempPath() + PATHSEPARATORSTRING "flexplorer";
 
