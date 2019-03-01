@@ -405,6 +405,24 @@ std::string getFileName(const std::string &path)
     return path;
 }
 
+std::string getFileExtension(const std::string &path)
+{
+    std::string fileName = getFileName(path);
+
+    auto pos = fileName.find_last_of(".");
+
+    if (pos != std::string::npos)
+    {
+        // If path == "bar.txt" return ".txt".
+        // If path == "foo.bar.txt" return ".txt".
+        return fileName.substr(pos);
+    }
+
+    // If path == "." return "".
+    // If path == ".." return "".
+    return "";
+}
+
 std::string getFlexemuSystemConfigFile()
 {
     static const auto flexemuConfigFile = std::string("flexemu.conf");
