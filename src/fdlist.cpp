@@ -414,11 +414,16 @@ void FlexDiskListCtrl::ViewSelectedItems()
             else
             {
                 buffer.ConvertToDumpFile(16);
-                if (getFileExtension(fileName) != ".txt")
-                {
-                    fileName += ".txt";
-                }
             }
+
+#ifdef _WIN32
+            // Windows ShellExtensions works best with a
+            // well known file extension.
+            if (getFileExtension(fileName) != ".txt")
+            {
+                fileName += ".txt";
+            }
+#endif
 
             auto tempPath = getTempPath() + PATHSEPARATORSTRING "flexplorer";
 
@@ -464,18 +469,18 @@ void FlexDiskListCtrl::ViewSelectedItems()
                 }
                 */
 #else
+                // On Unix/Linux the mime type is used depending
+                // on the file contents. It can have any file extension.
                 BProcess process("xdg-open", ".");
 
                 process.AddArgument(tempFile);
-#endif
 
                 if (!process.Start())
                 {
-                    throw FlexException(
-                        FERR_CREATE_PROCESS,
-                        fileViewer.mb_str(*wxConvCurrent).data(),
-                        tempFile);
+                    throw FlexException(FERR_CREATE_PROCESS,
+                                        "xdg-open", tempFile);
                 }
+#endif
             }
             else
             {
