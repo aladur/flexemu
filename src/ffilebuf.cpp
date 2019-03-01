@@ -156,7 +156,7 @@ void FlexFileBuffer::Realloc(unsigned int new_size,
 // a given FLEX text file into a text file on the host operating
 // system.
 // Returns the estimated file size in byte.
-unsigned int FlexFileBuffer::SizeOfFlexFile()
+unsigned int FlexFileBuffer::SizeOfConvertedTextFile()
 {
     unsigned int count = 0;
 
@@ -216,7 +216,7 @@ int FlexFileBuffer::ConvertFromFlex()
         return 0;
     }
 
-    new_size = SizeOfFlexFile();
+    new_size = SizeOfConvertedTextFile();
     new_buffer = new Byte[new_size];
     new_index = 0;
 
@@ -286,7 +286,7 @@ int FlexFileBuffer::ConvertToFlex()
         return 0;
     }
 
-    new_size = SizeOfFile();
+    new_size = SizeOfConvertedFlexTextFile();
     new_buffer = new Byte[new_size];
 
     if (0)
@@ -408,7 +408,7 @@ int FlexFileBuffer::ConvertToFlex()
 // Estimate the needed buffer size after converting
 // a given text file on the host operating system into a FLEX text file.
 // Returns the estimated file size in byte.
-unsigned int FlexFileBuffer::SizeOfFile()
+unsigned int FlexFileBuffer::SizeOfConvertedFlexTextFile()
 {
     unsigned int count, spaces;
 
@@ -505,7 +505,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
 
 // Estimate if the given file is a FLEX executable file.
 // Not implemented yet.
-bool FlexFileBuffer::IsExecutableFile() const
+bool FlexFileBuffer::IsFlexExecutableFile() const
 {
     return false;
 }

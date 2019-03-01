@@ -68,7 +68,7 @@ public:
     bool ReadFromFile(const char *path);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
-    bool IsExecutableFile() const;
+    bool IsFlexExecutableFile() const;
     void CopyHeaderFrom(const tFlexFileHeader *from);
     bool CopyFrom(const Byte *from, unsigned int aSize,
                   unsigned int offset = 0);
@@ -135,8 +135,8 @@ public:
 
 private:
     void copyFrom(const FlexFileBuffer &src);
-    unsigned int SizeOfFlexFile();
-    unsigned int SizeOfFile();
+    unsigned int SizeOfConvertedTextFile();
+    unsigned int SizeOfConvertedFlexTextFile();
 
     tFlexFileHeader fileHeader;
     std::unique_ptr<Byte[]> buffer;
