@@ -451,23 +451,21 @@ void FlexDiskListCtrl::ViewSelectedItems()
             if (buffer.WriteToFile(tempFile.c_str()))
             {
 #ifdef _WIN32
-                BProcess process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
+                SHELLEXECUTEINFO execInfo;
+                std::wstring wTempFile = ConvertToUtf16String(tempFile);
 
-                process.AddArgument(tempFile);
-/*
-                 HINSTANCE res = ShellExecute(
-                    nullptr,
-                    "edit",
-                    tempFile,
-                    nullptr,
-                    ".",
-                    SW_SHOWNORMAL
-                );
-                if ((INT_PTR)res <= 32)
+                memset(&execInfo, 0, sizeof(execInfo));
+                execInfo.cbSize = sizeof(execInfo);
+                execInfo.lpVerb = L"open";
+                execInfo.lpFile = wTempFile.c_str();
+                execInfo.lpDirectory = L".";
+                execInfo.nShow = SW_SHOWNORMAL;
+
+                if (!ShellExecuteEx(&execInfo))
                 {
-                    throw FlexException(FERR_UNABLE_TO_CREATE, tempFile);
+                    throw FlexException(GetLastError(),
+                        std::string("In function ViewSelectedItems()."));
                 }
-                */
 #else
                 // On Unix/Linux the mime type is used depending
                 // on the file contents. It can have any file extension.

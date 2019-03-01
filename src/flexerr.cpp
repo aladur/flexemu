@@ -96,11 +96,11 @@ FlexException::FlexException(int ec, const std::string &sp1,
 #ifdef _WIN32
 FlexException::FlexException(unsigned long lastError, const std::string &sp1) throw()
 {
-    LPVOID lpMsgBuf;
+    LPTSTR lpMsgBuf = nullptr;
 
     if (!FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-            nullptr, lastError, 0, (LPTSTR) &lpMsgBuf, 0, nullptr))
+            nullptr, lastError, 0, (LPTSTR)&lpMsgBuf, 0, nullptr))
     {
         errorCode = FERR_UNSPEC_WINDOWS_ERROR;
         errorString = sprinter::print(errString[errorCode], sp1);
@@ -109,7 +109,11 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 
     errorCode = FERR_WINDOWS_ERROR;
 
-    errorString = static_cast<char *>(lpMsgBuf);
+#ifdef UNICODE
+    errorString = ConvertToUtf8String(lpMsgBuf);
+#else
+    errorString = lpMsgBuffer;
+#endif
     errorString += sp1;
 
     LocalFree(lpMsgBuf);
