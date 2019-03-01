@@ -445,9 +445,29 @@ void FlexDiskListCtrl::ViewSelectedItems()
 
             if (buffer.WriteToFile(tempFile.c_str()))
             {
+#ifdef _WIN32
                 BProcess process(fileViewer.mb_str(*wxConvCurrent).data(), ".");
 
                 process.AddArgument(tempFile);
+/*
+                 HINSTANCE res = ShellExecute(
+                    nullptr,
+                    "edit",
+                    tempFile,
+                    nullptr,
+                    ".",
+                    SW_SHOWNORMAL
+                );
+                if ((INT_PTR)res <= 32)
+                {
+                    throw FlexException(FERR_UNABLE_TO_CREATE, tempFile);
+                }
+                */
+#else
+                BProcess process("xdg-open", ".");
+
+                process.AddArgument(tempFile);
+#endif
 
                 if (!process.Start())
                 {
