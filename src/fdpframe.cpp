@@ -261,37 +261,52 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
     }
 }
 
-bool FlexParentFrame::OpenContainer(const wxString &containerPath)
+bool FlexParentFrame::OpenContainer(const wxString &wxContainerPath)
 {
     FileContainerIf *container;
-    wxString title;
-    std::string sContainerPath = containerPath.mb_str(*wxConvCurrent).data();
+    auto containerPath = std::string(wxContainerPath.mb_str());
 
     try
     {
-        container = new FlexFileContainer(sContainerPath.c_str(), "rb+");
-    }
-    catch (FlexException &)
-    {
-        try
-        {
-            container = new FlexFileContainer(sContainerPath.c_str(), "rb");
-        }
-        catch (FlexException &ex)
-        {
-            int r = wxMessageBox(ex.what(),
-                                 _("FLEXplorer Error"), wxOK |
-                                 wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
+        struct stat sbuf;
 
-            return (r != wxCANCEL);
+        if (!stat(containerPath.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode))
+        {
+            if (endsWithPathSeparator(containerPath))
+            {
+                containerPath = containerPath.substr(0, containerPath.size()-1);
+            }
+
+            container = new DirectoryContainer(containerPath.c_str());
         }
+        else
+        {
+            try
+            {
+                container = new FlexFileContainer(containerPath.c_str(), "rb+");
+            }
+            catch (FlexException &)
+            {
+                // 2nd try opening read-only.
+                container = new FlexFileContainer(containerPath.c_str(), "rb");
+            }
+        }
+    }
+    catch (FlexException &ex)
+    {
+        printf("Exception\n");
+        int result = wxMessageBox(ex.what(),
+                             _("FLEXplorer Error"), wxOK |
+                             wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
+
+        return (result != wxCANCEL);
     }
 
 #ifdef WIN32
-    title = containerPath;
+    auto title = wxContainerPath;
 #endif
 #ifdef UNIX
-    title = containerPath.AfterLast(PATHSEPARATOR);
+    auto title = wxString(getFileName(containerPath).c_str(), wxConvUTF8);
 #endif
 
     if (container->IsWriteProtected())
@@ -355,7 +370,6 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
 void FlexParentFrame::OnOpenDirectory(wxCommandEvent &WXUNUSED(event))
 {
     static wxString containerPath;
-    wxString    title;
 
     auto dialog = std::unique_ptr<wxDirDialog>(
                  new wxDirDialog(this, _("Open a FLEX directory container"),
@@ -363,30 +377,9 @@ void FlexParentFrame::OnOpenDirectory(wxCommandEvent &WXUNUSED(event))
 
     if (dialog->ShowModal() == wxID_OK)
     {
-        FileContainerIf *container;
-
         containerPath = dialog->GetPath();
 
-        if (containerPath.Right(1) == wxT(PATHSEPARATORSTRING))
-        {
-            containerPath = containerPath.BeforeLast(PATHSEPARATOR);
-        }
-
-#ifdef WIN32
-        title = containerPath;
-#endif
-#ifdef UNIX
-        title = containerPath.AfterLast(PATHSEPARATOR);
-#endif
-        container = new DirectoryContainer(
-            containerPath.mb_str(*wxConvCurrent));
-
-        if (container->IsWriteProtected())
-        {
-            title += _(" [read-only]");
-        }
-
-        OpenChild(title, container);
+        OpenContainer(dialog->GetPath());
     }
 }
 
