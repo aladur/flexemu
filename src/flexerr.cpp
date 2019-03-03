@@ -112,7 +112,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 #ifdef UNICODE
     errorString = ConvertToUtf8String(lpMsgBuf);
 #else
-    errorString = lpMsgBuffer;
+    errorString = lpMsgBuf;
 #endif
     errorString += sp1;
 
