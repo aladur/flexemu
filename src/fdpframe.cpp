@@ -265,18 +265,17 @@ bool FlexParentFrame::OpenContainer(const wxString &containerPath)
 {
     FileContainerIf *container;
     wxString title;
+    std::string sContainerPath = containerPath.mb_str(*wxConvCurrent).data();
 
     try
     {
-        container = new FlexFileContainer(
-            containerPath.mb_str(*wxConvCurrent), "rb+");
+        container = new FlexFileContainer(sContainerPath.c_str(), "rb+");
     }
     catch (FlexException &)
     {
         try
         {
-            container = new FlexFileContainer(
-                containerPath.mb_str(*wxConvCurrent), "rb");
+            container = new FlexFileContainer(sContainerPath.c_str(), "rb");
         }
         catch (FlexException &ex)
         {
