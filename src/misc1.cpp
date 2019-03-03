@@ -28,6 +28,12 @@
 #include "cvtwchar.h"
 #include "flexerr.h"
 
+#ifdef _WIN32
+    static const char *pathSeparators = "\\/";
+#else
+    static const char *pathSeparators = "/";
+#endif
+
 const char* white_space = " \t\n\r\f\v";
 
 const char *gMemoryAllocationErrorString =
@@ -378,11 +384,6 @@ std::string getTempPath()
 
 std::string getFileName(const std::string &path)
 {
-#ifdef _WIN32
-    const char *pathSeparators = "\\/";
-#else
-    const char *pathSeparators = "/";
-#endif
     auto pos = path.find_last_of(pathSeparators);
 
     if (pos != std::string::npos)
@@ -407,11 +408,6 @@ std::string getFileName(const std::string &path)
 
 std::string getParentPath(const std::string &path)
 {
-#ifdef _WIN32
-    const char *pathSeparators = "\\/";
-#else
-    const char *pathSeparators = "/";
-#endif
     auto pos = path.find_last_of(pathSeparators);
 
     if (pos != std::string::npos)
@@ -453,6 +449,13 @@ std::string getFileExtension(const std::string &path)
     // If path == "." return "".
     // If path == ".." return "".
     return "";
+}
+
+bool endsWithPathSeparator(const std::string &path)
+{
+    auto pos = path.find_last_of(pathSeparators);
+
+    return (pos != std::string::npos && (pos == (path.size() - 1)));
 }
 
 std::string getFlexemuSystemConfigFile()
