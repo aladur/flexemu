@@ -284,12 +284,7 @@ bool FlexParentFrame::OpenContainer(const wxString &containerPath)
                                  _("FLEXplorer Error"), wxOK |
                                  wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
 
-            if (r == wxCANCEL)
-            {
-                return false;
-            }
-
-            return true;
+            return (r != wxCANCEL);
         }
     }
 
