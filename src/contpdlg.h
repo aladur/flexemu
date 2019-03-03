@@ -40,7 +40,7 @@ public:
     ContainerPropertiesDialog(wxWindow *parent,
                               const wxPoint &pos, int tracks = 80,
                               int sectors = 40,
-                              const wxString &path = wxT(""));
+                              const wxString &path = "");
     virtual ~ContainerPropertiesDialog();
     void OnInitDialog(wxInitDialogEvent &event);
     void OnSelectPath(wxCommandEvent &event);

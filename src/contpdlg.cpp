@@ -55,13 +55,13 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,
         int tracks /* = 80 */,
         int sectors /* = 40 */,
-        const wxString &path /* = wxT("") */) :
+        const wxString &path /* = "" */) :
     wxDialog(parent, 112, _("Create new File Container"), pos),
     m_format(0), c_tracks(nullptr), c_sectors(nullptr),
     c_path(nullptr), c_format(nullptr)
 {
-    m_tracks.Printf(wxT("%d"), tracks);
-    m_sectors.Printf(wxT("%d"), sectors);
+    m_tracks.Printf("%d", tracks);
+    m_sectors.Printf("%d", sectors);
     m_path = path;
 
     wxButton     *pButton;
@@ -87,13 +87,13 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
 
     pStatic = new wxStaticText(this, -1, _("Tracks"));
     pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-    c_tracks = new wxTextCtrl(this, IDC_Tracks, wxT(""), wxDefaultPosition,
+    c_tracks = new wxTextCtrl(this, IDC_Tracks, "", wxDefaultPosition,
                               wxDefaultSize, 0,
                               wxTextValidator(wxFILTER_NUMERIC, &m_tracks));
     pTrkSecSizer->Add(c_tracks, 0, wxALL, 10);
     pStatic = new wxStaticText(this, -1, _("Sectors"));
     pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
-    c_sectors = new wxTextCtrl(this, IDC_Sectors, wxT(""), wxDefaultPosition,
+    c_sectors = new wxTextCtrl(this, IDC_Sectors, "", wxDefaultPosition,
                                wxDefaultSize, 0,
                                wxTextValidator(wxFILTER_NUMERIC, &m_sectors));
     pTrkSecSizer->Add(c_sectors, 0, wxALL, 10);
@@ -102,7 +102,7 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
 
     pStatic = new wxStaticText(this, -1, _("Filename"));
     pFileSizer->Add(pStatic, 0, wxALL, 10);
-    c_path = new wxTextCtrl(this, IDC_Path, wxT(""), wxDefaultPosition,
+    c_path = new wxTextCtrl(this, IDC_Path, "", wxDefaultPosition,
                             wxSize(200, -1), 0,
                             wxTextValidator(wxFILTER_NONE, &m_path));
     pFileSizer->Add(c_path, 0, wxALL, 10);
@@ -140,8 +140,8 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
 #endif
     containerPath = wxFileSelector(
                         _("Input a FLEX file container"),
-                        wxT(""),
-                        wxT(""),
+                        "",
+                        "",
                         _("*.DSK"),
                         _("*.*"),
                         wxFD_SAVE,

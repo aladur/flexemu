@@ -85,7 +85,7 @@ FlexChildFrame::FlexChildFrame(
 {
     // Give it an icon
 #ifdef __WXMSW__
-    SetIcon(wxIcon(wxT("CONTAINER_ICON")));
+    SetIcon(wxIcon("CONTAINER_ICON"));
 #else
     SetIcon(wxIcon(container_xpm));
 #endif

@@ -85,7 +85,7 @@ public:
         const wxPoint &pos = wxDefaultPosition,
         const wxSize &size = wxDefaultSize,
         long style = wxDEFAULT_DIALOG_STYLE,
-        const wxString &name = wxT("FlexemuOptionsDialog"));
+        const wxString &name = "FlexemuOptionsDialog");
     virtual ~FlexemuOptionsDialog();
 
     void OnInitDialog(wxInitDialogEvent &event);
@@ -104,10 +104,10 @@ public:
     bool TransferDataToWindow();
     bool Validate();
     wxString OpenFilePrompter(
-        const wxString &defautPath = wxT(""),
-        const wxString &caption = wxT(""),
-        const wxString &defaultExtension = wxT("*.*"),
-        const wxString &filter = wxT("*.*"));
+        const wxString &defautPath = "",
+        const wxString &caption = "",
+        const wxString &defaultExtension = "*.*",
+        const wxString &filter = "*.*");
     void OnSelectDrive(wxTextCtrl &driveX, bool isDisk);
     void OnSelectDrive0(wxCommandEvent &WXUNUSED(event));
     void OnSelectDrive1(wxCommandEvent &WXUNUSED(event));

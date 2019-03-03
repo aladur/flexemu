@@ -42,7 +42,7 @@ public:
     GlobalOptionsDialog(wxWindow *pParent,
                         const wxPoint &pos = wxDefaultPosition,
                         const bool autoTextFlag = false,
-                        wxString bootFile = wxT("boot"));
+                        wxString bootFile = "boot");
     virtual ~GlobalOptionsDialog();
     void OnSelectBootSectorFile(wxCommandEvent &event);
     inline bool GetAutoTextFlag()

@@ -44,7 +44,7 @@
 #include "ffilebuf.h"
 
 
-wxString FlexFileFormatId(wxT("FlexFileDataFormat"));
+wxString FlexFileFormatId("FlexFileDataFormat");
 
 FlexDnDFiles::FlexDnDFiles()
 {

@@ -56,11 +56,11 @@ IMPLEMENT_APP(FLEXplorer)
 --------------------------------------------------------*/
 bool FLEXplorer::OnInit()
 {
-    wxLocale::AddCatalogLookupPathPrefix(wxT("."));
-    wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
+    wxLocale::AddCatalogLookupPathPrefix(".");
+    wxLocale::AddCatalogLookupPathPrefix("./locale");
 
     m_locale.Init();
-    m_locale.AddCatalog(wxT("flexemu"));
+    m_locale.AddCatalog("flexemu");
 
     ReadDefaultOptions();
     SetAppName(_("FLEXplorer"));

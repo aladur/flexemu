@@ -138,7 +138,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
         for (y = 1; y <= MAX_PIXELSIZEY; y++)
         {
-            str.Printf(wxT("%ix%i"), WINDOWWIDTH * x, WINDOWHEIGHT * y);
+            str.Printf("%ix%i", WINDOWWIDTH * x, WINDOWHEIGHT * y);
 
             c_geometry->Append(str);
 
@@ -158,7 +158,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     while (*pInt)
     {
-        str.Printf(wxT("%d"), *pInt);
+        str.Printf("%d", *pInt);
         c_nColors->Append(str);
 
         if (m_guiOptions->nColors == *(pInt++))
@@ -290,7 +290,7 @@ wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
     pPanelSizer->Add(c_frequencyChoices, 0, wxTOP | wxLEFT, gap);
     pFrequencySizer = new wxBoxSizer(wxHORIZONTAL);
     pPanelSizer->Add(pFrequencySizer, 0, wxTOP | wxLEFT, gap);
-    c_frequency = new wxTextCtrl(panel, IDC_Frequency, wxT(""),
+    c_frequency = new wxTextCtrl(panel, IDC_Frequency, "",
                                wxDefaultPosition, wxSize(textWidth, -1));
     pFrequencySizer->Add(c_frequency, 0, wxTOP | wxLEFT, gap);
     pStatic = new wxStaticText(panel, -1, _("MHz"),
@@ -313,7 +313,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     pStatic = new wxStaticText(panel, -1, _("Screen geometry"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_geometry = new wxComboBox(panel, IDC_Geometry, wxT(""),
+    c_geometry = new wxComboBox(panel, IDC_Geometry, "",
                                 wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                 wxCB_READONLY);
     pGridSizer->Add(c_geometry, 0, wxEXPAND);
@@ -321,7 +321,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     pStatic = new wxStaticText(panel, -1, _("Number of Colors"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_nColors = new wxComboBox(panel, IDC_nColors, wxT(""),
+    c_nColors = new wxComboBox(panel, IDC_nColors, "",
                                wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                wxCB_READONLY);
     pGridSizer->Add(c_nColors, 0, wxEXPAND);
@@ -329,7 +329,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     pStatic = new wxStaticText(panel, -1, _("Color"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_color = new wxComboBox(panel, IDC_Color, wxT(""), wxDefaultPosition,
+    c_color = new wxComboBox(panel, IDC_Color, "", wxDefaultPosition,
                              wxDefaultSize, 0, nullptr, wxCB_READONLY);
     pGridSizer->Add(c_color);
     pPanelSizer->Add(pGridSizer, 0, wxTOP, gap);
@@ -411,7 +411,7 @@ wxTextCtrl *FlexemuOptionsDialog::CreateFileControls(
     pStatic = new wxStaticText(panel, -1, text,
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    textCtrl = new wxTextCtrl(panel, textId, wxT(""),
+    textCtrl = new wxTextCtrl(panel, textId, "",
                               wxDefaultPosition, wxSize(textWidth, -1));
     pBoxSizer->Add(textCtrl, 1, wxEXPAND);
     pButton = new wxButton(panel, buttonId, _("..."),
@@ -436,7 +436,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pBoxSizer->Add(pStatic, 0, wxLEFT | wxTOP, gap);
-    c_diskDir = new wxTextCtrl(panel, IDC_DiskDir, wxT(""),
+    c_diskDir = new wxTextCtrl(panel, IDC_DiskDir, "",
                                wxDefaultPosition, wxSize(textWidth, -1));
     pBoxSizer->Add(c_diskDir, 1, wxEXPAND);
     pButton = new wxButton(panel, IDC_DiskDirButton, _("..."),
@@ -448,7 +448,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     pStatic = new wxStaticText(panel, -1, _("Monitor program"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_monitor = new wxTextCtrl(panel, IDC_Monitor, wxT(""), wxDefaultPosition,
+    c_monitor = new wxTextCtrl(panel, IDC_Monitor, "", wxDefaultPosition,
                                wxSize(textWidth, -1));
     pBoxSizer->Add(c_monitor, 1, wxEXPAND);
     pButton = new wxButton(panel, IDC_MonitorButton, _("..."),
@@ -615,8 +615,8 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
     geometry = c_geometry->GetValue();
 
-    if (geometry.BeforeFirst(wxT('x')).ToULong(&x) &&
-        geometry.AfterFirst(wxT('x')).ToULong(&y))
+    if (geometry.BeforeFirst('x').ToULong(&x) &&
+        geometry.AfterFirst('x').ToULong(&y))
     {
         m_guiOptions->pixelSizeX = x / WINDOWWIDTH;
         m_guiOptions->pixelSizeY = y / WINDOWHEIGHT;
@@ -743,7 +743,7 @@ wxString FlexemuOptionsDialog::OpenFilePrompter(
     drive = wxFileSelector(
                 caption,
                 defautPath,
-                wxT(""),
+                "",
                 defaultExtension,
                 filter,
                 wxFD_OPEN | wxFD_FILE_MUST_EXIST,
@@ -764,14 +764,14 @@ void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl &driveX, bool isDisk)
     if (isDisk)
     {
         path = OpenFilePrompter(
-                diskDir, _("Select a Disk file"),wxT("*.dsk"),
+                diskDir, _("Select a Disk file"),"*.dsk",
             _("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
                 "All files (*.*)|*.*"));
     }
     else
     {
         path = OpenFilePrompter(
-                diskDir, _("Select a MDCR file"), wxT("*.mdcr"),
+                diskDir, _("Select a MDCR file"), "*.mdcr",
             _("MDCR containers (*.mdcr)|*.mdcr|"
                 "All files (*.*)|*.*"));
     }
@@ -850,7 +850,7 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
 
     diskDir = c_diskDir->GetValue();
 
-    path = OpenFilePrompter(diskDir, _("Select a monitor program"), wxT("*.hex"),
+    path = OpenFilePrompter(diskDir, _("Select a monitor program"), "*.hex",
         _("Intel HEX files (*.hex)|*.hex|"
             "Motorola S-Record files (*.s19;*.srec;*.mot)|*.s19;*.srec;*.mot|"
             "FLEX binary files (*.cmd;*.bin)|*.cmd;*.bin|"

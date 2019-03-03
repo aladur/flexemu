@@ -68,15 +68,15 @@ bool FlexemuSetup::OnInit()
 #else
     optionMan.InitOptions(&guiOptions, &options, argc, argv);
 #endif
-    wxLocale::AddCatalogLookupPathPrefix(wxT("."));
-    wxLocale::AddCatalogLookupPathPrefix(wxT("./locale"));
+    wxLocale::AddCatalogLookupPathPrefix(".");
+    wxLocale::AddCatalogLookupPathPrefix("./locale");
 
     m_locale.Init();
-    m_locale.AddCatalog(wxT("flexemu"));
+    m_locale.AddCatalog("flexemu");
 
     optionMan.GetOptions(&guiOptions, &options);
     optionMan.GetEnvironmentOptions(&guiOptions, &options);
-    SetAppName(wxT("FlexemuSetup"));
+    SetAppName("FlexemuSetup");
     SetExitOnFrameDelete(true);
 
     auto dialog = new FlexemuOptionsDialog(&guiOptions, &options,

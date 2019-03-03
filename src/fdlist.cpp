@@ -67,16 +67,16 @@ const int LC_FILESIZE   = 3;
 const int LC_FILEDATE   = 4;
 const int LC_FILEATTR   = 5;
 
-static const wxChar *fileDescription[] =
+static const char *fileDescription[] =
 {
-    wxT("BIN"), _("Binary file"),
-    wxT("TXT"), _("Text file"),
-    wxT("CMD"), _("Executable file"),
-    wxT("BAS"), _("Basic file"),
-    wxT("SYS"), _("System file"),
-    wxT("BAK"), _("Backup file"),
-    wxT("BAC"), _("Backup file"),
-    wxT("DAT"), _("Data file"),
+    "BIN", _("Binary file"),
+    "TXT", _("Text file"),
+    "CMD", _("Executable file"),
+    "BAS", _("Basic file"),
+    "SYS", _("System file"),
+    "BAK", _("Backup file"),
+    "BAC", _("Backup file"),
+    "DAT", _("Data file"),
     nullptr
 };
 
@@ -239,8 +239,8 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &dirEntry)
 {
     wxString filesize;
 
-    filesize.Printf(wxT("%d"), dirEntry.GetSize());
-    SetItem(item, LC_RANDOM, dirEntry.IsRandom() ? _("Yes") : wxT(""));
+    filesize.Printf("%d", dirEntry.GetSize());
+    SetItem(item, LC_RANDOM, dirEntry.IsRandom() ? _("Yes") : "");
     SetItem(item, LC_FILESIZE, filesize);
     wxString date(dirEntry.GetDate().GetDateString(), *wxConvCurrent);
     SetItem(item, LC_FILEDATE, date);
@@ -354,7 +354,7 @@ void FlexDiskListCtrl::RenameSelectedItems()
             do_rename = dialog->ShowModal() == wxID_OK;
             fName  = dialog->GetValue();
             dialogText =  _("Wrong file name specified.");
-            dialogText += wxT("\n");
+            dialogText += "\n";
             dialogText += _("Please input the new file name");
         }
         while (do_rename &&
@@ -627,11 +627,11 @@ void FlexDiskListCtrl::OnListKeyDown(wxListEvent &event)
             UpdateItems();
             break;
 
-        case wxT('C') - wxT('A') + 1 :
+        case 'C' - 'A' + 1 :
             CopyToClipboard();
             break;
 
-        case wxT('V') - wxT('A') + 1 :
+        case 'V' - 'A' + 1 :
             PasteFromClipboard();
             break;
     } // switch
@@ -711,37 +711,37 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         str.Append(_("Path: "));
         wxString path(info.GetPath().c_str(), *wxConvCurrent);
         str += path;
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Type: "));
         wxString type(info.GetTypeString().c_str(), *wxConvCurrent);
         type = wxGetTranslation(type);
         str += type;
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Date: "));
         wxString date(info.GetDate().GetDateString(), *wxConvCurrent);
         str += date;
 
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Tracks: "));
         str << tracks;
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Sectors: "));
         str << sectors;
 
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Size: "));
         str << info.GetTotalSize();
         str.Append(_(" KByte"));
-        str += wxT("\n");
+        str += "\n";
         str.Append(_("Free: "));
         str << info.GetFree();
         str.Append(_(" KByte"));
-        str += wxT("\n");
+        str += "\n";
 
         if (info.GetAttributes() & FLX_READONLY)
         {
             str.Append(_("Attributes: read-only"));
-            str += wxT("\n");
+            str += "\n";
         }
 
         wxMessageBox(str, caption, wxOK | wxCENTRE, this);
@@ -1024,9 +1024,9 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
 wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry &dirEntry)
 {
     wxString        tmp;
-    wxChar          **pFDesc;
+    char            **pFDesc;
 
-    pFDesc = (wxChar **)fileDescription;
+    pFDesc = (char **)fileDescription;
     wxString extension(dirEntry.GetFileExt().c_str(), *wxConvCurrent);
 
     while (*pFDesc != nullptr)
@@ -1042,7 +1042,7 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry &dirEntry)
         pFDesc += 2;
     }
 
-    extension += wxT(" ");
+    extension += " ";
     extension += _("file");
     return extension;
 }

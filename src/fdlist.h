@@ -55,7 +55,7 @@ public:
                      const wxSize &size, long style,
                      FileContainerIf *container,
                      const wxValidator &validator = wxDefaultValidator,
-                     const wxString &name = wxT("flexDiskListCtrl"));
+                     const wxString &name = "flexDiskListCtrl");
     virtual ~FlexDiskListCtrl();
 
     const wxMenu *GetMenu();

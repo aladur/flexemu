@@ -52,7 +52,7 @@ END_EVENT_TABLE()
 GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,
         const bool autoTextFlag /* = false */,
-        wxString bootFile /* = wxT("boot") */) :
+        wxString bootFile /* = "boot" */) :
     wxDialog(parent, 111, _("Global Options"), pos),
     m_bootSectorFile(bootFile),
     m_autoTextFlag(autoTextFlag),
@@ -75,7 +75,7 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
     pStatic = new wxStaticText(this, -1, _("Boot Sector file"),
                                wxDefaultPosition, wxSize(100, -1));
     pFileSizer->Add(pStatic, 0, wxALL, 5);
-    c_bootSectorFile = new wxTextCtrl(this, IDC_BootSectorFile, wxT(""),
+    c_bootSectorFile = new wxTextCtrl(this, IDC_BootSectorFile, "",
                                       wxDefaultPosition, wxSize(200, -1), 0,
                                       wxTextValidator(wxFILTER_NONE,
                                               &m_bootSectorFile));
@@ -113,8 +113,8 @@ void GlobalOptionsDialog::OnSelectBootSectorFile(wxCommandEvent &WXUNUSED(
 #endif
     bootSectorFile = wxFileSelector(
                          _("Select a Boot Sector file to be used"),
-                         wxT(""),
-                         wxT(""),
+                         "",
+                         "",
                          _("*"),
                          _("*"),
                          wxFD_SAVE,

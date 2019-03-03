@@ -97,7 +97,7 @@ FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
 {
     // give it an icon
 #ifdef __WXMSW__
-    SetIcon(wxIcon(wxT("AFLEXDISK_ICON")));
+    SetIcon(wxIcon("AFLEXDISK_ICON"));
 #else
     SetIcon(wxIcon(flexdisk_xpm));
 #endif
@@ -163,9 +163,9 @@ void FlexParentFrame::OnQuit(wxCommandEvent &WXUNUSED(event))
 void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
 {
 #ifdef __WXMSW__
-    auto newContainerBitmap = wxBitmap(wxT("new_con"),wxBITMAP_TYPE_RESOURCE);
-    auto openContainerBitmap = wxBitmap(wxT("open_con"),wxBITMAP_TYPE_RESOURCE);
-    auto openDirectoryBitmap = wxBitmap(wxT("open_dir"),wxBITMAP_TYPE_RESOURCE);
+    auto newContainerBitmap = wxBitmap("new_con",wxBITMAP_TYPE_RESOURCE);
+    auto openContainerBitmap = wxBitmap("open_con",wxBITMAP_TYPE_RESOURCE);
+    auto openDirectoryBitmap = wxBitmap("open_dir",wxBITMAP_TYPE_RESOURCE);
 #else
     auto newContainerBitmap = wxBitmap(new_con_xpm);
     auto openContainerBitmap = wxBitmap(open_con_xpm);
@@ -216,14 +216,14 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 
     msgFormat =  _("FLEXplorer V");
     msgFormat += progVersion;
-    msgFormat += wxT("\n");
+    msgFormat += "\n";
     msgFormat += _("Copyright (C) W. Schwotzer  1998-2019\n");
     msgFormat += _("FLEXplorer comes with ABSOLUTELY NO WARRANTY.\n");
     msgFormat += _("This is free software, and you are welcome\n");
     msgFormat += _("to redistribute it under certain\n");
     msgFormat += _("conditions. For more information\n");
     msgFormat += _("look at file COPYING.\n");
-    msgFormat += wxT("\n");
+    msgFormat += "\n";
     msgFormat += _("https://aladur.neocities.org/flexemu");
 
     (void)wxMessageBox(msgFormat, _("About FLEXplorer"));
@@ -239,7 +239,7 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
         this,
         _("Select FLEX file containers"),
         defaultDir,
-        wxT(""),
+        "",
         _("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
             "All files (*.*)|*.*"),
         wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
@@ -325,7 +325,7 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
     int     tracks, sectors, format;
     wxString title;
 
-    containerPath = wxT("");
+    containerPath = "";
 
     if (GetContainerProperties(&tracks, &sectors, &format, containerPath))
     {
@@ -431,7 +431,7 @@ void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
 
     auto dialog = std::unique_ptr<wxDirDialog>(new wxDirDialog(this,
                              _("Create a new FLEX directory container"),
-                             wxT("")));
+                             ""));
 
     if (dialog->ShowModal() == wxID_OK)
     {
