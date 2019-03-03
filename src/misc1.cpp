@@ -405,6 +405,38 @@ std::string getFileName(const std::string &path)
     return path;
 }
 
+std::string getParentPath(const std::string &path)
+{
+#ifdef _WIN32
+    const char *pathSeparators = "\\/";
+#else
+    const char *pathSeparators = "/";
+#endif
+    auto pos = path.find_last_of(pathSeparators);
+
+    if (pos != std::string::npos)
+    {
+        if (pos == (path.size() - 1))
+        {
+            // If path == "/", return "".
+            if (pos == 0)
+            {
+                return "";
+            }
+        }
+
+        // If path is "/foo/bar/" return "/foo/bar".
+        // If path == "/foo/bar.txt" return "/foo".
+        // If path == "/foo/bar" return "/foo".
+        return path.substr(pos - 1);
+    }
+
+    // If path == "bar.txt" return "".
+    // If path == "." return "".
+    // If path == ".." return "".
+    return "";
+}
+
 std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);

@@ -404,6 +404,7 @@ extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
+extern std::string getParentPath(const std::string &path);
 
 extern const char* white_space;
 
