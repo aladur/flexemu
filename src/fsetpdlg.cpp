@@ -50,7 +50,7 @@
 #include "fsetup.h"
 
 
-static const wxChar *color_table[] =
+static const char *color_table[] =
 {
     _("default"),
     _("white"),
@@ -178,8 +178,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     {
         colorName = wxGetTranslation(color_table[i]);
         c_color->Append(colorName);
-        wxString color(color_table[i], *wxConvCurrent);
-        std::string sColorName(color.mb_str(*wxConvCurrent));
+        std::string sColorName(color_table[i]);
 
         if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
         {
@@ -191,22 +190,22 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     c_undocumented->SetValue(m_options->use_undocumented);
 
-    wxString hex_file(m_options->hex_file.c_str(), *wxConvCurrent);
+    wxString hex_file(m_options->hex_file.c_str(), wxConvUTF8);
     c_monitor->SetValue(hex_file);
 
-    wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
+    wxString disk_dir(m_options->disk_dir.c_str(), wxConvUTF8);
     c_diskDir->SetValue(disk_dir);
 
     for (size_t x = 0; x < WXSIZEOF(c_drive); x++)
     {
-        wxString driveName(m_options->drive[x].c_str(), *wxConvCurrent);
+        wxString driveName(m_options->drive[x].c_str(), wxConvUTF8);
         c_drive[x]->SetValue(driveName);
         c_drive[x]->Enable(!m_options->isEurocom2V5);
     }
 
     for (size_t x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
     {
-        wxString driveName(m_options->mdcrDrives[x].c_str(), *wxConvCurrent);
+        wxString driveName(m_options->mdcrDrives[x].c_str(), wxConvUTF8);
         c_mdcrDrive[x]->SetValue(driveName);
         c_mdcrDrive[x]->Enable(m_options->isEurocom2V5);
     }
@@ -571,8 +570,7 @@ bool FlexemuOptionsDialog::Validate()
 
     if (c_frequencyChoices->GetSelection() == 2)
     {
-        std::string valueString =
-            c_frequency->GetValue().mb_str(*wxConvCurrent).data();
+        std::string valueString(c_frequency->GetValue().ToUTF8().data());
         float value;
 
         try
@@ -632,8 +630,7 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         m_guiOptions->nColors = n;
     }
 
-    m_guiOptions->color =
-        c_color->GetValue().mb_str(*wxConvCurrent);
+    m_guiOptions->color = c_color->GetValue().ToUTF8().data();
     wxString colorName;
 
     for (i = 0; i < WXSIZEOF(color_table); i++)
@@ -643,8 +640,7 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         if (!colorName.Cmp(c_color->GetValue()))
         {
             wxString color(color_table[i]);
-            m_guiOptions->color =
-                color.mb_str(*wxConvCurrent);
+            m_guiOptions->color = color.ToUTF8().data();
         }
     }
 
@@ -652,19 +648,18 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
     m_options->use_undocumented = (c_undocumented->GetValue() != 0);
 
-    m_options->hex_file = c_monitor->GetValue().mb_str(*wxConvCurrent);
+    m_options->hex_file = c_monitor->GetValue().ToUTF8().data();
 
-    m_options->disk_dir = c_diskDir->GetValue().mb_str(*wxConvCurrent);
+    m_options->disk_dir = c_diskDir->GetValue().ToUTF8().data();
 
     for (i = 0; i < WXSIZEOF(c_drive); i++)
     {
-        m_options->drive[i] = c_drive[i]->GetValue().mb_str(*wxConvCurrent);
+        m_options->drive[i] = c_drive[i]->GetValue().ToUTF8().data();
     }
 
     for (i = 0; i < WXSIZEOF(c_mdcrDrive); i++)
     {
-        m_options->mdcrDrives[i] =
-            c_mdcrDrive[i]->GetValue().mb_str(*wxConvCurrent);
+        m_options->mdcrDrives[i] = c_mdcrDrive[i]->GetValue().ToUTF8().data();
     }
 
     m_options->isRamExtension = c_ramExtension->GetSelection() > 0;
@@ -688,8 +683,7 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
             break;
 
         case 2:
-            std::string value =
-                c_frequency->GetValue().mb_str(*wxConvCurrent).data();
+            std::string value = c_frequency->GetValue().ToUTF8().data();
 
             try
             {
@@ -828,16 +822,16 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 {
     std::unique_ptr<wxDirDialog> dialog;
 
-    m_options->disk_dir = c_diskDir->GetValue().mb_str(*wxConvCurrent);
+    m_options->disk_dir = c_diskDir->GetValue().ToUTF8().data();
 
-    wxString disk_dir(m_options->disk_dir.c_str(), *wxConvCurrent);
+    wxString disk_dir(m_options->disk_dir.c_str(), wxConvUTF8);
 
     dialog = std::unique_ptr<wxDirDialog>(
             new wxDirDialog(this, _("Select folder with DSK files"), disk_dir));
 
     if (dialog->ShowModal() == wxID_OK)
     {
-        m_options->disk_dir = dialog->GetPath().mb_str(*wxConvCurrent);
+        m_options->disk_dir = dialog->GetPath().ToUTF8().data();
 
         c_diskDir->SetValue(dialog->GetPath());
     }

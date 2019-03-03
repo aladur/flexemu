@@ -212,7 +212,7 @@ void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
 void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 {
     wxString msgFormat;
-    wxString progVersion(_progVersion, *wxConvCurrent);
+    wxString progVersion(_progVersion, wxConvUTF8);
 
     msgFormat =  _("FLEXplorer V");
     msgFormat += progVersion;
@@ -339,15 +339,15 @@ void FlexParentFrame::OnNewContainer(wxCommandEvent &WXUNUSED(event))
             if (format == TYPE_MDCR_CONTAINER)
             {
                 MiniDcrTapePtr mdcr = MiniDcrTape::Create(
-                            containerPath.mb_str(*wxConvCurrent));
+                            containerPath.ToUTF8().data());
                 // DCR containers can be created but not displayed in
                 // FLEXplorer, so immediately return.
                 return;
             }
 
             container = FlexFileContainer::Create(
-                            directory.mb_str(*wxConvCurrent),
-                            containerName.mb_str(*wxConvCurrent),
+                            directory.ToUTF8().data(),
+                            containerName.ToUTF8().data(),
                             tracks, sectors, format);
         }
         catch (FlexException &ex)
@@ -441,8 +441,8 @@ void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
         directory = containerPath.BeforeLast(PATHSEPARATOR);
         containerName = containerPath.AfterLast(PATHSEPARATOR);
         container = DirectoryContainer::Create(
-                        directory.mb_str(*wxConvCurrent),
-                        containerName.mb_str(*wxConvCurrent),
+                        directory.ToUTF8().data(),
+                        containerName.ToUTF8().data(),
                         80, 40);
         OpenChild(containerPath, container);
     }
@@ -512,15 +512,13 @@ void FlexParentFrame::OnOptions(wxCommandEvent &WXUNUSED(event))
 {
     bool autoTextFlag;
 
-    wxString bootFile(FlexFileContainer::bootSectorFile.c_str(),
-                      *wxConvCurrent);
+    wxString bootFile(FlexFileContainer::bootSectorFile.c_str(), wxConvUTF8);
     autoTextFlag = FlexCopyManager::autoTextConversion;
 
     if (GetGlobalOptions(&autoTextFlag, bootFile))
     {
         FlexCopyManager::autoTextConversion = autoTextFlag;
-        FlexFileContainer::bootSectorFile =
-            bootFile.mb_str(*wxConvCurrent);
+        FlexFileContainer::bootSectorFile = bootFile.ToUTF8().data();
     }
 }
 

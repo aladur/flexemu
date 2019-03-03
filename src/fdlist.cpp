@@ -205,7 +205,7 @@ int FlexDiskListCtrl::UpdateItems()
         for (iter = m_container->begin(); iter != m_container->end(); ++iter)
         {
             auto dirEntry = new FlexDirEntry(*iter);
-            wxString m_text(iter->GetTotalFileName().c_str(), *wxConvCurrent);
+            wxString m_text(iter->GetTotalFileName().c_str(), wxConvUTF8);
             anItem.m_text   = m_text;
             anItem.m_itemId = index;
             anItem.m_col    = 0;
@@ -242,9 +242,9 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &dirEntry)
     filesize.Printf("%d", dirEntry.GetSize());
     SetItem(item, LC_RANDOM, dirEntry.IsRandom() ? _("Yes") : "");
     SetItem(item, LC_FILESIZE, filesize);
-    wxString date(dirEntry.GetDate().GetDateString(), *wxConvCurrent);
+    wxString date(dirEntry.GetDate().GetDateString(), wxConvUTF8);
     SetItem(item, LC_FILEDATE, date);
-    wxString attributes(dirEntry.GetAttributesString().c_str(), *wxConvCurrent);
+    wxString attributes(dirEntry.GetAttributesString().c_str(), wxConvUTF8);
     SetItem(item, LC_FILEATTR, attributes);
     SetItem(item, LC_FILEDESC, GetFileDescription(dirEntry));
 }
@@ -304,8 +304,7 @@ void FlexDiskListCtrl::DeleteSelectedItems(bool askUser /* = true */)
 
                 try
                 {
-                    m_container->DeleteFile(
-                        fileName.mb_str(*wxConvCurrent));
+                    m_container->DeleteFile(fileName.ToUTF8());
                 }
                 catch (FlexException &ex)
                 {
@@ -357,20 +356,17 @@ void FlexDiskListCtrl::RenameSelectedItems()
             dialogText += "\n";
             dialogText += _("Please input the new file name");
         }
-        while (do_rename &&
-               !m_container->CheckFilename(fName.mb_str(*wxConvCurrent)));
+        while (do_rename && !m_container->CheckFilename(fName.ToUTF8()));
 
         if (do_rename)
         {
             try
             {
                 fName.MakeUpper();
-                m_container->RenameFile(
-                    itemText.mb_str(*wxConvCurrent),
-                    fName.mb_str(*wxConvCurrent));
+                m_container->RenameFile(itemText.ToUTF8(), fName.ToUTF8());
                 auto dirEntry =
                     *reinterpret_cast<FlexDirEntry *>(GetItemData(item));
-                dirEntry.SetTotalFileName(fName.mb_str(*wxConvCurrent));
+                dirEntry.SetTotalFileName(fName.ToUTF8());
                 SetItemText(item, fName);
                 UpdateItem(item, dirEntry);
             }
@@ -392,7 +388,7 @@ void FlexDiskListCtrl::ViewSelectedItems()
 
     for (const auto &item : GetSelections())
     {
-        std::string fileName = GetItemText(item).mb_str(*wxConvCurrent).data();
+        std::string fileName(GetItemText(item).ToUTF8().data());
         std::transform(fileName.begin(), fileName.end(),
                         fileName.begin(), ::tolower);
 
@@ -575,7 +571,7 @@ void FlexDiskListCtrl::OnSelected(wxListEvent &event)
     FlexDirEntry dirEntry;
 
     if (m_container && m_container->FindFile(
-            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), dirEntry))
+            GetItemText(event.m_itemIndex).ToUTF8(), dirEntry))
     {
         m_totalSize += dirEntry.GetSize();
     }
@@ -588,7 +584,7 @@ void FlexDiskListCtrl::OnDeselected(wxListEvent &event)
     FlexDirEntry dirEntry;
 
     if (m_container && m_container->FindFile(
-            GetItemText(event.m_itemIndex).mb_str(*wxConvCurrent), dirEntry))
+            GetItemText(event.m_itemIndex).ToUTF8(), dirEntry))
     {
         m_totalSize -= dirEntry.GetSize();
     }
@@ -657,15 +653,12 @@ void FlexDiskListCtrl::SetPropertyOnSelectedItems(Byte protection,
             Byte clearMask = isToBeSet ? 0 : protection;
             auto newDirEntry =
                 *reinterpret_cast<FlexDirEntry *>(GetItemData(item));
-            m_container->SetAttributes(
-                fileName.mb_str(*wxConvCurrent),
-                setMask, clearMask);
+            m_container->SetAttributes(fileName.ToUTF8(), setMask, clearMask);
 
             // read back properties from container
             // (because maybe not all properties are
             // supported)
-            if (m_container->FindFile(
-                    fileName.mb_str(*wxConvCurrent), dirEntry))
+            if (m_container->FindFile(fileName.ToUTF8(), dirEntry))
             {
                 setMask = dirEntry.GetAttributes();
                 clearMask = ~setMask;
@@ -709,16 +702,16 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         caption.Printf(_("Container %s"), info.GetName());
         info.GetTrackSector(&tracks, &sectors);
         str.Append(_("Path: "));
-        wxString path(info.GetPath().c_str(), *wxConvCurrent);
+        wxString path(info.GetPath().c_str(), wxConvUTF8);
         str += path;
         str += "\n";
         str.Append(_("Type: "));
-        wxString type(info.GetTypeString().c_str(), *wxConvCurrent);
+        wxString type(info.GetTypeString().c_str(), wxConvUTF8);
         type = wxGetTranslation(type);
         str += type;
         str += "\n";
         str.Append(_("Date: "));
-        wxString date(info.GetDate().GetDateString(), *wxConvCurrent);
+        wxString date(info.GetDate().GetDateString(), wxConvUTF8);
         str += date;
 
         str += "\n";
@@ -817,7 +810,7 @@ FileNames FlexDiskListCtrl::GetSelectedFileNames()
 
     for (auto item : GetSelections())
     {
-        std::string fileName(GetItemText(item).mb_str(*wxConvCurrent));
+        std::string fileName(GetItemText(item).ToUTF8());
 #ifdef UNIX
         std::transform(fileName.begin(), fileName.end(), fileName.begin(),
                        ::tolower);
@@ -863,7 +856,7 @@ void FlexDiskListCtrl::FindFiles()
     if (result == wxID_OK)
     {
         value = dialog.GetValue();
-        std::string filePattern(value.mb_str(*wxConvCurrent));
+        std::string filePattern(value.ToUTF8());
         FileContainerIterator it(filePattern.c_str());
         std::string sFileName;
 
@@ -874,7 +867,7 @@ void FlexDiskListCtrl::FindFiles()
             int i;
 
             sFileName = (*it).GetTotalFileName();
-            wxString fileName(sFileName.c_str(), *wxConvCurrent);
+            wxString fileName(sFileName.c_str(), wxConvUTF8);
 
             if (multimatches(sFileName.c_str(), filePattern.c_str(),
                              ';', true) &&
@@ -987,9 +980,8 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
             {
                 wxListItem anItem;
 
-                wxString m_text(dirEntry->GetTotalFileName().c_str(),
-                                *wxConvCurrent);
-                anItem.m_text   = m_text;
+                wxString text(dirEntry->GetTotalFileName().c_str(), wxConvUTF8);
+                anItem.m_text   = text;
                 anItem.m_itemId = 0;
                 anItem.m_col    = 0;
                 anItem.m_data   = reinterpret_cast<wxUIntPtr>(dirEntry);
@@ -1027,7 +1019,7 @@ wxString FlexDiskListCtrl::GetFileDescription(const FlexDirEntry &dirEntry)
     char            **pFDesc;
 
     pFDesc = (char **)fileDescription;
-    wxString extension(dirEntry.GetFileExt().c_str(), *wxConvCurrent);
+    wxString extension(dirEntry.GetFileExt().c_str(), wxConvUTF8);
 
     while (*pFDesc != nullptr)
     {

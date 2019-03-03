@@ -57,7 +57,7 @@ bool FlexemuSetup::OnInit()
 
     for (i = 0; i < argc; i++)
     {
-        args.push_back(wxConvCurrent->cWX2MB(argv[i]));
+        args.push_back(argv[i].ToUTF8());
     }
     for (i = 0; i < argc; i++)
     {

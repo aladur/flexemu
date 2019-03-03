@@ -80,7 +80,7 @@ bool FLEXplorer::OnInit()
 
     for (int i = 1; i < argc; ++i)
     {
-        if (!frame->OpenContainer(wxConvCurrent->cWX2MB(argv[i])))
+        if (!frame->OpenContainer(argv[i].ToUTF8()))
         {
             break;
         }

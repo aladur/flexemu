@@ -51,7 +51,7 @@ bool FileDropTarget::OnDropFiles(wxCoord, wxCoord,
 {
     for (size_t i = 0; i < fileNames.GetCount(); ++i)
     {
-        if (!m_pOwner->OpenContainer(fileNames.Item(i).mb_str(*wxConvCurrent)))
+        if (!m_pOwner->OpenContainer(fileNames.Item(i).ToUTF8().data()))
         {
             break;
         }
@@ -77,7 +77,7 @@ wxDragResult FileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult)
             ".dsk", ".flx", ".wta"
         };
 
-        std::string filename(fileNames.Item(i).mb_str(*wxConvCurrent).data());
+        std::string filename(fileNames.Item(i).ToUTF8().data());
         std::string fileExtension = filename.substr(filename.size() - 4);
 
         std::transform(fileExtension.begin(), fileExtension.end(),
