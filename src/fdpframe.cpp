@@ -109,28 +109,19 @@ FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
     SetMenuBar(pMenuBar);
 
     // Accelerators
-    int i = 0;
-    const wxChar *acc = _("NODXACVF");
+    size_t i = 0;
     wxAcceleratorEntry entries[9];
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_NEW_CONTAINER);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_OPEN_CONTAINER);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_NEW_DIRECTORY);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_QUIT);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_SELECTALL);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_COPY);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_PASTE);
-    i++;
-    entries[i].Set(wxACCEL_CTRL, (int) acc[i], MDI_FIND);
-    i++;
-    entries[i].Set(wxACCEL_NORMAL, WXK_DELETE, MDI_DELETE);
-    i++;
-    wxAcceleratorTable accel(i, entries);
+
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('N'), MDI_NEW_CONTAINER);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('O'), MDI_OPEN_CONTAINER);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('D'), MDI_NEW_DIRECTORY);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('X'), MDI_QUIT);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('A'), MDI_SELECTALL);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('C'), MDI_COPY);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('V'), MDI_PASTE);
+    entries[i++].Set(wxACCEL_CTRL, static_cast<int>('F'), MDI_FIND);
+    entries[i++].Set(wxACCEL_NORMAL, WXK_DELETE, MDI_DELETE);
+    wxAcceleratorTable accel(WXSIZEOF(entries), entries);
     SetAcceleratorTable(accel);
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
