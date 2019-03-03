@@ -764,15 +764,15 @@ void FlexemuOptionsDialog::OnSelectDrive(wxTextCtrl &driveX, bool isDisk)
     if (isDisk)
     {
         path = OpenFilePrompter(
-                diskDir, wxT("Select a Disk file"),wxT("*.dsk"),
-            wxT("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
+                diskDir, _("Select a Disk file"),wxT("*.dsk"),
+            _("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
                 "All files (*.*)|*.*"));
     }
     else
     {
         path = OpenFilePrompter(
-                diskDir, wxT("Select a MDCR file"), wxT("*.mdcr"),
-            wxT("MDCR containers (*.mdcr)|*.mdcr|"
+                diskDir, _("Select a MDCR file"), wxT("*.mdcr"),
+            _("MDCR containers (*.mdcr)|*.mdcr|"
                 "All files (*.*)|*.*"));
     }
 
@@ -851,7 +851,7 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
     diskDir = c_diskDir->GetValue();
 
     path = OpenFilePrompter(diskDir, _("Select a monitor program"), wxT("*.hex"),
-        wxT("Intel HEX files (*.hex)|*.hex|"
+        _("Intel HEX files (*.hex)|*.hex|"
             "Motorola S-Record files (*.s19;*.srec;*.mot)|*.s19;*.srec;*.mot|"
             "FLEX binary files (*.cmd;*.bin)|*.cmd;*.bin|"
             "All files (*.*)|*.*"));

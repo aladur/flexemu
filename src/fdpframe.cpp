@@ -240,7 +240,7 @@ void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
         _("Select FLEX file containers"),
         defaultDir,
         wxT(""),
-        wxT("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
+        _("FLEX file containers (*.dsk;*.flx;*.wta)|*.dsk;*.flx;*.wta|"
             "All files (*.*)|*.*"),
         wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
