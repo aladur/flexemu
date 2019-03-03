@@ -55,7 +55,7 @@ AX_CXXFLAGS_NO_STRICT_ALIASING
 dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
 dnl check for wx-config
-WX_PATH_WXCONFIG(2.8.0, WXCONFIG=1)
+WX_PATH_WXCONFIG(3.0.0, WXCONFIG=1)
 
 dnl check for optional parameters
 CF_WITH_APP_DEFAULTS
