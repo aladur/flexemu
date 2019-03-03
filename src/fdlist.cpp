@@ -67,13 +67,6 @@ const int LC_FILESIZE   = 3;
 const int LC_FILEDATE   = 4;
 const int LC_FILEATTR   = 5;
 
-#ifdef WIN32
-    wxString FlexDiskListCtrl::fileViewer = wxT("Notepad.exe");
-#endif
-#ifdef UNIX
-    wxString FlexDiskListCtrl::fileViewer = wxT("xedit");
-#endif
-
 static const wxChar *fileDescription[] =
 {
     wxT("BIN"), _("Binary file"),

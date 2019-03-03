@@ -510,40 +510,33 @@ void FlexParentFrame::UpdateFrom(NotifyId id, void *)
 
 void FlexParentFrame::OnOptions(wxCommandEvent &WXUNUSED(event))
 {
-    wxString viewer;
     bool autoTextFlag;
 
-    viewer = FlexDiskListCtrl::fileViewer;
     wxString bootFile(FlexFileContainer::bootSectorFile.c_str(),
                       *wxConvCurrent);
     autoTextFlag = FlexCopyManager::autoTextConversion;
 
-    if (GetGlobalOptions(&autoTextFlag, viewer, bootFile))
+    if (GetGlobalOptions(&autoTextFlag, bootFile))
     {
         FlexCopyManager::autoTextConversion = autoTextFlag;
-        FlexDiskListCtrl::fileViewer = viewer;
         FlexFileContainer::bootSectorFile =
             bootFile.mb_str(*wxConvCurrent);
     }
 }
 
-bool FlexParentFrame::GetGlobalOptions(bool *autoTextFlag,
-                                       wxString &viewer,
-                                       wxString &bootFile)
+bool FlexParentFrame::GetGlobalOptions(bool *autoTextFlag, wxString &bootFile)
 {
     wxPoint pos = GetPosition();
 
     pos.x += 10;
     pos.y += 10;
     auto dialog = std::unique_ptr<GlobalOptionsDialog>(
-                 new GlobalOptionsDialog(this, pos, *autoTextFlag, bootFile,
-                                         viewer));
+                 new GlobalOptionsDialog(this, pos, *autoTextFlag, bootFile));
 
     if (dialog->ShowModal() == wxID_OK)
     {
         *autoTextFlag = dialog->GetAutoTextFlag();
         bootFile = dialog->GetBootSectorFile();
-        viewer = dialog->GetViewer();
         return true;
     }
 

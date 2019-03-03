@@ -64,8 +64,7 @@ public:
     void OpenChild(wxString &title, FileContainerIf *container);
     bool GetContainerProperties(int *tracks, int *sectors,
                                 int *format, wxString &path);
-    bool GetGlobalOptions(bool *autoTextFlag, wxString &viewer,
-                          wxString &bootFile);
+    bool GetGlobalOptions(bool *autoTextFlag, wxString &bootFile);
     void OnQuit(wxCommandEvent &event);
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
 

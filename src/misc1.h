@@ -319,7 +319,6 @@ struct sOptions
 #define FLEXSCREENHEIGHT "ScreenHeightFactor"
 #define FLEXFREQUENCY    "Frequency"
 
-#define FLEXPLORERFILEVIEWER    "FileViewer"
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"
 

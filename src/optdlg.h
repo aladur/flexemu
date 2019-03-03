@@ -28,8 +28,6 @@
 enum
 {
     IDC_AutoTextFlag         = 202,
-    IDC_Viewer               = 203,
-    IDC_ViewerButton         = 204,
     IDC_BootSectorFile       = 205,
     IDC_BootSectorFileButton = 206
 };
@@ -44,18 +42,12 @@ public:
     GlobalOptionsDialog(wxWindow *pParent,
                         const wxPoint &pos = wxDefaultPosition,
                         const bool autoTextFlag = false,
-                        wxString bootFile = wxT("boot"),
-                        wxString editor = wxT(""));
+                        wxString bootFile = wxT("boot"));
     virtual ~GlobalOptionsDialog();
-    void OnSelectViewer(wxCommandEvent &event);
     void OnSelectBootSectorFile(wxCommandEvent &event);
     inline bool GetAutoTextFlag()
     {
         return m_autoTextFlag;
-    };
-    inline wxString GetViewer()
-    {
-        return m_viewer;
     };
     inline wxString GetBootSectorFile()
     {
@@ -63,11 +55,9 @@ public:
     };
 
 private:
-    wxString    m_viewer;
     wxString    m_bootSectorFile;
     bool        m_autoTextFlag;
 
-    wxTextCtrl      *c_viewer;
     wxTextCtrl      *c_bootSectorFile;
     wxCheckBox      *c_autoTextFlag;
 private:

@@ -99,8 +99,6 @@ void FLEXplorer::WriteDefaultOptions()
 {
 #ifdef WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
-    reg.SetValue(FLEXPLORERFILEVIEWER,
-        std::string(FlexDiskListCtrl::fileViewer));
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
     reg.SetValue(FLEXPLORERTEXTFLAG, FlexCopyManager::autoTextConversion ?
                   1 : 0);
@@ -117,8 +115,6 @@ void FLEXplorer::WriteDefaultOptions()
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXPLORERFILEVIEWER,
-                    FlexDiskListCtrl::fileViewer.mb_str(*wxConvCurrent));
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE,
                     FlexFileContainer::bootSectorFile.c_str());
     rcFile.SetValue(FLEXPLORERTEXTFLAG,
@@ -132,15 +128,6 @@ void FLEXplorer::ReadDefaultOptions()
     std::string string_result;
 #ifdef WIN32
     BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
-
-    string_result.clear();
-    reg.GetValue(FLEXPLORERFILEVIEWER, string_result);
-    if (string_result.empty())
-    {
-        string_result = "Notepad.exe";
-    }
-
-    FlexDiskListCtrl::fileViewer = string_result.c_str();
 
     if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
         !string_result.empty())
@@ -164,13 +151,6 @@ void FLEXplorer::ReadDefaultOptions()
 
     rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
-
-    if (!rcFile.GetValue(FLEXPLORERFILEVIEWER, string_result) && 
-        !string_result.empty())
-    {
-        wxString fileViewer(string_result.c_str(), *wxConvCurrent);
-        FlexDiskListCtrl::fileViewer = fileViewer;
-    }
 
     if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
         !string_result.empty())

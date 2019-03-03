@@ -43,7 +43,6 @@
 
 
 BEGIN_EVENT_TABLE(GlobalOptionsDialog, wxDialog)
-    EVT_BUTTON(IDC_ViewerButton,         GlobalOptionsDialog::OnSelectViewer)
     EVT_BUTTON(IDC_BootSectorFileButton,
                GlobalOptionsDialog::OnSelectBootSectorFile)
     //  EVT_BUTTON(wxID_OK,                  GlobalOptionsDialog::OnOK)
@@ -53,12 +52,11 @@ END_EVENT_TABLE()
 GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,
         const bool autoTextFlag /* = false */,
-        wxString bootFile /* = wxT("boot") */,
-        wxString viewer /* = wxT("") */) :
+        wxString bootFile /* = wxT("boot") */) :
     wxDialog(parent, 111, _("Global Options"), pos),
-    m_viewer(viewer), m_bootSectorFile(bootFile),
+    m_bootSectorFile(bootFile),
     m_autoTextFlag(autoTextFlag),
-    c_viewer(nullptr), c_bootSectorFile(nullptr), c_autoTextFlag(nullptr)
+    c_bootSectorFile(nullptr), c_autoTextFlag(nullptr)
 {
     wxButton     *pButton;
     wxStaticText *pStatic;
@@ -66,8 +64,7 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
     wxBoxSizer *pMainSizer   = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *pFile1Sizer  = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer *pFile2Sizer  = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
 
     c_autoTextFlag = new wxCheckBox(this, IDC_AutoTextFlag,
                                     _("Automatic Text Conversion"),
@@ -75,30 +72,18 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
                                     wxGenericValidator(&m_autoTextFlag));
     pWidgetSizer->Add(c_autoTextFlag, 0, wxALL, 5);
 
-    pStatic = new wxStaticText(this, -1, _("File Viewer"),
-                               wxDefaultPosition, wxSize(100, -1));
-    pFile1Sizer->Add(pStatic, 0, wxALL, 5);
-    c_viewer = new wxTextCtrl(this, IDC_Viewer, wxT(""),
-                              wxDefaultPosition, wxSize(200, -1), 0,
-                              wxTextValidator(wxFILTER_NONE, &m_viewer));
-    pFile1Sizer->Add(c_viewer, 0, wxALL, 5);
-    pButton = new wxButton(this, IDC_ViewerButton, _("..."),
-                           wxDefaultPosition, wxSize(40, -1));
-    pFile1Sizer->Add(pButton, 0, wxALL, 5);
-    pWidgetSizer->Add(pFile1Sizer);
-
     pStatic = new wxStaticText(this, -1, _("Boot Sector file"),
                                wxDefaultPosition, wxSize(100, -1));
-    pFile2Sizer->Add(pStatic, 0, wxALL, 5);
+    pFileSizer->Add(pStatic, 0, wxALL, 5);
     c_bootSectorFile = new wxTextCtrl(this, IDC_BootSectorFile, wxT(""),
                                       wxDefaultPosition, wxSize(200, -1), 0,
                                       wxTextValidator(wxFILTER_NONE,
                                               &m_bootSectorFile));
-    pFile2Sizer->Add(c_bootSectorFile, 0, wxALL, 5);
+    pFileSizer->Add(c_bootSectorFile, 0, wxALL, 5);
     pButton = new wxButton(this, IDC_BootSectorFileButton, _("..."),
                            wxDefaultPosition, wxSize(40, -1));
-    pFile2Sizer->Add(pButton, 0, wxALL, 5);
-    pWidgetSizer->Add(pFile2Sizer);
+    pFileSizer->Add(pButton, 0, wxALL, 5);
+    pWidgetSizer->Add(pFileSizer);
 
     pMainSizer->Add(pWidgetSizer);
 
@@ -115,37 +100,6 @@ GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
 
 GlobalOptionsDialog::~GlobalOptionsDialog()
 {
-}
-
-void GlobalOptionsDialog::OnSelectViewer(wxCommandEvent &WXUNUSED(event))
-{
-    wxString viewerPath;
-#ifdef WIN32
-    char  wd[PATH_MAX];
-
-    getcwd(wd, PATH_MAX);
-#endif
-    viewerPath = wxFileSelector(
-                     _("Select a File Viewer to be used"),
-                     wxT(""),
-                     wxT(""),
-                     _("*.EXE"),
-                     _("*.*"),
-                     wxFD_SAVE,
-                     this);
-#ifdef WIN32
-    chdir(wd);
-#endif
-
-    if (!viewerPath.IsEmpty())
-    {
-        m_viewer = viewerPath;
-
-        if (c_viewer)
-        {
-            c_viewer->SetValue(m_viewer);
-        }
-    }
 }
 
 void GlobalOptionsDialog::OnSelectBootSectorFile(wxCommandEvent &WXUNUSED(

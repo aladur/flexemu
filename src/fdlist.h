@@ -97,8 +97,6 @@ public:
     DECLARE_MENUCOMMAND(OnClearCatalogProtect)
     DECLARE_MENUCOMMAND(OnViewProperties)
 
-    static wxString fileViewer;
-
 private:
     void Notify();
     std::vector<long> GetSelections() const;
