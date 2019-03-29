@@ -5,7 +5,7 @@
 Flexemu supports configure scripts. So there are three steps to compile and
 install it:
 
-	- ./configure --with-app-defaults=auto --sysconfdir=/etc
+	- ./configure --with-app-defaults=auto --prefix=/usr --sysconfdir=/etc
 	- make
 	- sudo make install
 
@@ -18,6 +18,13 @@ prerequisites:
 
 remarks:
 
+        - When using --prefix=/usr flexemu also get's integrated into the
+          desktop and appears in the Games menu category, Emulator sub
+          category. If --prefix is not specified the default prefix is
+          /usr/local. For this prefix desktop or icon files may not be
+          correctly integrated into the desktop. This has been exprienced
+          with Linux Mint. It may behave differently for other Linux
+          distributions.
 	- --with-app-defaults=auto parameter makes the best guess
           for installing the X11 application defaults file.
           If this parameter is not present the default path 

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=flexemu
+Exec=flexemu
+Icon=flexemu
+Comment=An MC6809 emulator running FLEX
+Categories=GTK;GNOME;Game;Emulator
+Keywords=MC6809;Emulator;FLEX

@@ -110,8 +110,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)" \
-	"$(DESTDIR)$(sysconfdir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
+	"$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
@@ -292,7 +292,7 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-DATA = $(pkgdata_DATA) $(sysconf_DATA)
+DATA = $(desktop_DATA) $(pkgdata_DATA) $(sysconf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -381,6 +381,7 @@ FLEXPLORER = @FLEXPLORER@
 FLEX_RC = @FLEX_RC@
 FSETUP = @FSETUP@
 GREP = @GREP@
+GTK_UPDATE_ICON_CACHE = @GTK_UPDATE_ICON_CACHE@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -411,6 +412,7 @@ PTHREAD_LIBS = @PTHREAD_LIBS@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+UPDATE_DESKTOP_DATABASE = @UPDATE_DESKTOP_DATABASE@
 VERSION = @VERSION@
 WIN32_LIBS = @WIN32_LIBS@
 WINDRES_EXE = @WINDRES_EXE@
@@ -496,6 +498,13 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 	     flexemu.conf
 
 SUBDIRS = bitmaps tools
+
+# Directory where .desktop files are located
+desktopdir = $(datadir)/applications
+desktop_DATA = flexemu.desktop \
+	       flexemu-flexplorer.desktop \
+	       flexemu-fsetup.desktop
+
 AM_CXXFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 flexemu_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
@@ -601,6 +610,11 @@ mc6809st.h \
 schedcpu.h sprinter.h \
 bobshelp.h bobservd.h bobserv.h
 
+
+################################################################################
+# Post installation hook to execute update-desktop-database if present.
+# Post installation hook to execute gtk-update-icon-cache if present.
+appicondir = $(datadir)/icons/hicolor
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -2791,6 +2805,27 @@ test-bobservd.obj: bobservd.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bobservd.cpp' object='test-bobservd.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
+install-desktopDATA: $(desktop_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(desktop_DATA)'; test -n "$(desktopdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(desktopdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(desktopdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(desktopdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(desktopdir)" || exit $$?; \
+	done
+
+uninstall-desktopDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(desktop_DATA)'; test -n "$(desktopdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(desktopdir)'; $(am__uninstall_files_from_dir)
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
@@ -2993,7 +3028,7 @@ check: check-recursive
 all-am: Makefile $(PROGRAMS) $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -3049,8 +3084,9 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-pkgdataDATA
-
+install-data-am: install-desktopDATA install-pkgdataDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
 
 install-dvi-am:
@@ -3094,10 +3130,12 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA \
-	uninstall-sysconfDATA
-
-.MAKE: $(am__recursive_targets) all install-am install-strip
+uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
+	uninstall-pkgdataDATA uninstall-sysconfDATA
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
+.MAKE: $(am__recursive_targets) all install-am install-data-am \
+	install-strip uninstall-am
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
 	check-am clean clean-binPROGRAMS clean-generic \
@@ -3105,21 +3143,30 @@ uninstall-am: uninstall-binPROGRAMS uninstall-pkgdataDATA \
 	distclean-compile distclean-generic distclean-hdr \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-binPROGRAMS install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-pkgdataDATA install-ps install-ps-am install-strip \
-	install-sysconfDATA installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
-	ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-binPROGRAMS uninstall-pkgdataDATA \
+	install-data-am install-data-hook install-desktopDATA \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-pkgdataDATA \
+	install-ps install-ps-am install-strip install-sysconfDATA \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-desktopDATA uninstall-hook uninstall-pkgdataDATA \
 	uninstall-sysconfDATA
 
 .PRECIOUS: Makefile
 
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
+
+install-data-hook :
+	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
+	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+
+uninstall-hook :
+	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
+	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
 
 ################################################################################
 @no_appsdir@install \

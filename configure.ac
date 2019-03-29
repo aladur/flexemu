@@ -113,6 +113,8 @@ AC_OBJEXT
 AC_SYS_LONG_FILE_NAMES
 AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
 ACX_PTHREAD
+AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
+AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
 
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_PRE_LIBS)
@@ -171,6 +173,13 @@ AC_OUTPUT(m4/Makefile \
 	Makefile \
 	src/Makefile \
 	src/bitmaps/Makefile \
+	src/bitmaps/16x16/Makefile \
+	src/bitmaps/32x32/Makefile \
+	src/bitmaps/48x48/Makefile \
+	src/bitmaps/64x64/Makefile \
+	src/bitmaps/128x128/Makefile \
+	src/bitmaps/256x256/Makefile \
+	src/bitmaps/scalable/Makefile \
 	src/tools/Makefile \
 	disks/Makefile \
 	monitor/Makefile \

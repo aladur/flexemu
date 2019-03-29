@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FSetup
+Exec=fsetup
+Icon=flexemu-fsetup
+Comment=Setup flexemu
+Categories=GTK;GNOME;Game;Emulator
+Keywords=MC6809;Emulator;FLEX

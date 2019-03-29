@@ -15,3 +15,5 @@ EXTRA_DIST = bitmap1.bmp bitmap2.bmp calc.bmp \
 	dirplain.xbm draft.xbm drawing.xbm flowchar.xbm open.bmp open_con.bmp \
 	open_dir.bmp paste.bmp dnd_copy.xpm dnd_move.xpm dnd_none.xpm
 
+SUBDIRS = 16x16 32x32 48x48 64x64 128x128 256x256 scalable
+

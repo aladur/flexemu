@@ -169,7 +169,9 @@ void FlexParentFrame::InitToolBar(wxToolBar *toolBar)
     int width = 16;
 #endif
     int currentX = 5;
+    wxSize size(32, 32);
 
+    toolBar->SetToolBitmapSize(size);
     toolBar->AddTool(MDI_NEW_CONTAINER, _("New File Container"),
                      newContainerBitmap, wxNullBitmap);
     toolBar->SetToolLongHelp(MDI_NEW_CONTAINER, "Create a new File Container");

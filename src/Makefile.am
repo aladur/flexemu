@@ -16,6 +16,13 @@ EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
 
 SUBDIRS = bitmaps tools
 
+# Directory where .desktop files are located
+desktopdir = $(datadir)/applications
+
+desktop_DATA = flexemu.desktop \
+	       flexemu-flexplorer.desktop \
+	       flexemu-fsetup.desktop
+
 bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool
 EXTRA_PROGRAMS = flexplorer fsetup mdcrtool
 noinst_PROGRAMS = test
@@ -122,6 +129,19 @@ clogfile.h \
 mc6809st.h \
 schedcpu.h sprinter.h \
 bobshelp.h bobservd.h bobserv.h
+
+################################################################################
+# Post installation hook to execute update-desktop-database if present.
+# Post installation hook to execute gtk-update-icon-cache if present.
+appicondir = $(datadir)/icons/hicolor
+
+install-data-hook :
+	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
+	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+
+uninstall-hook :
+	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
+	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
 
 ################################################################################
 @no_appsdir@install \
