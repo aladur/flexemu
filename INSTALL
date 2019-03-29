@@ -28,11 +28,8 @@ remarks:
 	- --with-app-defaults=auto parameter makes the best guess
           for installing the X11 application defaults file.
           If this parameter is not present the default path 
-          EPREFIX/lib/X11/app-defaults is used (which usually does not
+          PREFIX/lib/X11/app-defaults is used (which usually does not
           fit).
-          To compile flexplorer you first have to install GTK.
-	  (http://www.gtk.org/) and wxWindows for GTK and compile
-	  static or shared libs. (http://www.wxWindows.com/)
 	- If You don't want native file system support comment out
 	  NAFS switch in src/config.h
 	- If You don't want the disassembler to substitute some FLEX jump
