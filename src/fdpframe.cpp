@@ -41,6 +41,7 @@ static const char *_progVersion = VERSION;
     // Include your minimal set of headers here, or wx.h
     #include <wx/wx.h>
 #endif
+#include <wx/aboutdlg.h>
 
 #include "misc1.h"
 
@@ -66,6 +67,7 @@ static const char *_progVersion = VERSION;
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
     #include "bitmaps/flexdisk.xpm"
+    #include "bitmaps/flexdisk64.xpm"
     #include "bitmaps/new_con.xpm"
     #include "bitmaps/open_con.xpm"
     #include "bitmaps/open_dir.xpm"
@@ -205,21 +207,31 @@ void FlexParentFrame::OnChildFocus(wxChildFocusEvent &event)
 void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 {
     wxString msgFormat;
-    wxString progVersion(_progVersion, wxConvUTF8);
+    wxString progVersion(wxString("V") + _progVersion);
+    wxAboutDialogInfo aboutInfo;
 
-    msgFormat =  _("FLEXplorer V");
-    msgFormat += progVersion;
-    msgFormat += "\n";
-    msgFormat += _("Copyright (C) W. Schwotzer  1998-2019\n");
+    msgFormat += _("Explore FLEX disk and directory containers.\n");
+    msgFormat += _("\n");
     msgFormat += _("FLEXplorer comes with ABSOLUTELY NO WARRANTY.\n");
-    msgFormat += _("This is free software, and you are welcome\n");
-    msgFormat += _("to redistribute it under certain\n");
-    msgFormat += _("conditions. For more information\n");
-    msgFormat += _("look at file COPYING.\n");
-    msgFormat += "\n";
-    msgFormat += _("https://aladur.neocities.org/flexemu");
+    msgFormat += _("This is free software, and You are welcome\n");
+    msgFormat += _("to redistribute it under certain conditions.\n");
+    msgFormat += _("\n");
+    msgFormat += _("Have Fun!\n");
 
-    (void)wxMessageBox(msgFormat, _("About FLEXplorer"));
+    aboutInfo.SetName("FLEXplorer");
+    aboutInfo.SetVersion(progVersion);
+    aboutInfo.SetCopyright("Copyright (C) 1998-2019\n");
+    aboutInfo.AddDeveloper("Wolfgang Schwotzer");
+    aboutInfo.SetWebSite("https://aladur.neocities.org/flexemu");
+    aboutInfo.SetDescription(msgFormat);
+
+#ifdef __WXMSW__
+    aboutInfo.SetIcon(wxIcon("AFLEXDISK_ICON"));
+#else
+    aboutInfo.SetIcon(wxIcon(flexdisk64_xpm));
+#endif
+
+    wxAboutBox(aboutInfo);
 }
 
 void FlexParentFrame::OnOpenContainer(wxCommandEvent &WXUNUSED(event))
