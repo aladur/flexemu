@@ -1,27 +1,30 @@
 pkgdata_DATA = boot flexemu.xpm  \
 		flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm
+
 sysconf_DATA = flexemu.conf
+
+desktop_DATA = flexemu.desktop \
+	       flexemu-flexplorer.desktop \
+	       flexemu-fsetup.desktop
 
 SUFFIXES = .rc .o
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             Flexemu.ad boot flexemu.astyle flexemu.xpm \
-	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
+             Flexemu.ad flexemu.astyle \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
-	     flexemu.conf
+	     $(pkgdata_DATA) \
+	     $(sysconf_DATA) \
+	     $(desktop_DATA)
+
 
 SUBDIRS = bitmaps tools
 
 # Directory where .desktop files are located
 desktopdir = $(datadir)/applications
-
-desktop_DATA = flexemu.desktop \
-	       flexemu-flexplorer.desktop \
-	       flexemu-fsetup.desktop
 
 bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool
 EXTRA_PROGRAMS = flexplorer fsetup mdcrtool
