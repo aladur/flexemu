@@ -226,10 +226,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_FLEXEMU             ICON    DISCARDABLE     "bitmaps\\flexemu.ico"
-IDI_FLEXMAIN            ICON    DISCARDABLE     "bitmaps\\flexmain.ico"
-IDI_FLEXEMU1            ICON    DISCARDABLE     "bitmaps\\flexemu1.ico"
-IDI_FLEXEMU2            ICON    DISCARDABLE     "bitmaps\\flexemu2.ico"
-IDI_FLEXEMU3            ICON    DISCARDABLE     "bitmaps\\flexemu3.ico"
 IDI_FLEXCPU             ICON    DISCARDABLE     "bitmaps\\flexcpu.ico"
 IDI_FLOPPY0             ICON    DISCARDABLE     "bitmaps\\floppy0.ico"
 IDI_FLOPPY1             ICON    DISCARDABLE     "bitmaps\\floppy1.ico"

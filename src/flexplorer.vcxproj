@@ -213,21 +213,12 @@
     <ClCompile Include="rfilecnt.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmaps\chart.ico" />
     <Image Include="bitmaps\contain.ico" />
     <Image Include="bitmaps\copy.bmp" />
-    <Image Include="bitmaps\cut.bmp" />
     <Image Include="bitmaps\flexdisk.ico" />
-    <Image Include="bitmaps\help.bmp" />
-    <Image Include="bitmaps\mondrian.ico" />
-    <Image Include="bitmaps\new.bmp" />
-    <Image Include="bitmaps\open.bmp" />
     <Image Include="bitmaps\open_con.bmp" />
     <Image Include="bitmaps\open_dir.bmp" />
     <Image Include="bitmaps\paste.bmp" />
-    <Image Include="bitmaps\print.bmp" />
-    <Image Include="bitmaps\resize.ico" />
-    <Image Include="bitmaps\save.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexdisk.rc" />

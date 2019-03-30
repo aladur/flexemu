@@ -214,15 +214,6 @@
     <Image Include="bitmaps\flexemu.ico">
       <Filter>Ressourcendateien</Filter>
     </Image>
-    <Image Include="bitmaps\flexemu1.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\flexemu2.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\flexemu3.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
     <Image Include="bitmaps\floppy0.ico">
       <Filter>Ressourcendateien</Filter>
     </Image>
@@ -248,9 +239,6 @@
       <Filter>Ressourcendateien</Filter>
     </Image>
     <Image Include="bitmaps\resize.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\flexmain.ico">
       <Filter>Ressourcendateien</Filter>
     </Image>
   </ItemGroup>

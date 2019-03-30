@@ -1336,7 +1336,7 @@ BOOL Win32Gui::registerWindowClasses(HINSTANCE hinst)
     wcex.cbClsExtra    = 0 ;
     wcex.cbWndExtra    = 0 ;
     wcex.hInstance     = hinst ;
-    wcex.hIcon         = LoadIcon(hinst, MAKEINTRESOURCE(IDI_FLEXMAIN)) ;
+    wcex.hIcon         = LoadIcon(hinst, MAKEINTRESOURCE(IDI_FLEXEMU)) ;
     wcex.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     // wcex.lpszMenuName  = MAKEINTRESOURCE(IDR_MAINMENU);

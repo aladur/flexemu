@@ -40,14 +40,7 @@
 #include "fcopyman.h"
 
 #if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__)
-    #include "bitmaps/container.xpm"
-    /*
-    #include "bitmaps/new_con.xpm"
-    #include "bitmaps/open_con.xpm"
-    #include "bitmaps/open_dir.xpm"
-    #include "bitmaps/copy.xpm"
-    #include "bitmaps/paste.xpm"
-    */
+    #include "bitmaps/contain.xpm"
 #endif
 
 // Event table
@@ -87,7 +80,7 @@ FlexChildFrame::FlexChildFrame(
 #ifdef __WXMSW__
     SetIcon(wxIcon("CONTAINER_ICON"));
 #else
-    SetIcon(wxIcon(container_xpm));
+    SetIcon(wxIcon(contain_xpm));
 #endif
 
 

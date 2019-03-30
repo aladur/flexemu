@@ -110,31 +110,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmaps\chart.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
     <Image Include="bitmaps\contain.ico">
       <Filter>Ressourcendateien</Filter>
     </Image>
     <Image Include="bitmaps\copy.bmp">
       <Filter>Ressourcendateien</Filter>
     </Image>
-    <Image Include="bitmaps\cut.bmp">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
     <Image Include="bitmaps\flexdisk.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\help.bmp">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\mondrian.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\new.bmp">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\open.bmp">
       <Filter>Ressourcendateien</Filter>
     </Image>
     <Image Include="bitmaps\open_con.bmp">
@@ -144,15 +126,6 @@
       <Filter>Ressourcendateien</Filter>
     </Image>
     <Image Include="bitmaps\paste.bmp">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\print.bmp">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\resize.ico">
-      <Filter>Ressourcendateien</Filter>
-    </Image>
-    <Image Include="bitmaps\save.bmp">
       <Filter>Ressourcendateien</Filter>
     </Image>
   </ItemGroup>

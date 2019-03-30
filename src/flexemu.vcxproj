@@ -238,10 +238,6 @@
   <ItemGroup>
     <Image Include="bitmaps\flexcpu.ico" />
     <Image Include="bitmaps\flexemu.ico" />
-    <Image Include="bitmaps\flexemu1.ico" />
-    <Image Include="bitmaps\flexemu2.ico" />
-    <Image Include="bitmaps\flexemu3.ico" />
-    <Image Include="bitmaps\flexmain.ico" />
     <Image Include="bitmaps\floppy0.ico" />
     <Image Include="bitmaps\floppy1.ico" />
     <Image Include="bitmaps\floppy2.ico" />
