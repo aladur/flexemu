@@ -39,7 +39,7 @@ if [ "x$curlpath" = "x" ]; then
     echo "  mingw32/bin or mingw64/bin."
 fi
 
-urls="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.0/wxWidgets-3.1.0.zip"
+urls="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.2/wxWidgets-3.1.2.zip"
 
 
 # Option -d: delete previously downloaded packages and intermediate directories
@@ -130,7 +130,7 @@ if [ ! -d lib ]; then
 			fi
 			srcdir="wxWidgets/lib/vc${x64}_dll"
 			echo srcdir= $srcdir
-			for file in wxbase31u${d}_vc${x64}_custom.dll wxmsw31u${d}_core_vc${x64}_custom.dll \
+			for file in wxbase312u${d}_vc${x64}_custom.dll wxmsw312u${d}_core_vc${x64}_custom.dll \
 				wxbase31u${d}.lib wxmsw31u${d}_core.lib
 			do
 				if [ ! -f $srcdir/$file ]; then
