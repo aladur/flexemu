@@ -67,7 +67,7 @@ const char *FlexemuOptionsDialog::color_name[] =
     _("brown"),
 };
 
-int possible_nColors[4] = { 2, 8, 64, 0 };
+int FlexemuOptionsDialog::ncolor_count[] = { 2, 8, 64 };
 
 BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
     EVT_BUTTON(IDC_Drive0Button, FlexemuOptionsDialog::OnSelectDrive0)
@@ -96,8 +96,8 @@ const int FlexemuOptionsDialog::stextWidth = 150;
 const int FlexemuOptionsDialog::gap = 5;
 
 FlexemuOptionsDialog::FlexemuOptionsDialog(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions,
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options,
     wxWindow *parent,
     wxWindowID id,
     const wxString &title,
@@ -106,7 +106,7 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     long style,
     const wxString &name) :
     wxDialog(parent, id, title, pos, size, style, name),
-    m_guiOptions(pGuiOptions), m_options(pOptions),
+    m_guiOptions(guiOptions), m_options(options),
     c_color(nullptr), c_isInverse(nullptr), c_undocumented(nullptr),
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_diskDir(nullptr),
@@ -151,7 +151,9 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         0x2a2aa5,
     };
 
+    bool hasSelection = false;
     wxString str;
+    size_t i;
     int n = 0;
 
     for (int x = 1; x <= MAX_PIXELSIZEX; x++)
@@ -164,39 +166,43 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
             c_geometry->Append(str);
 
-            if (m_guiOptions->pixelSizeX == x &&
-                m_guiOptions->pixelSizeY == y)
+            if (m_guiOptions.pixelSizeX == x &&
+                m_guiOptions.pixelSizeY == y)
             {
                 c_geometry->SetSelection(n);
+                hasSelection = true;
             }
 
             n++;
         }
     }
-
-    n = 0;
-
-    int *pInt = possible_nColors;
-
-    while (*pInt)
+    if (!hasSelection)
     {
-        str.Printf("%d", *pInt);
+        c_geometry->SetSelection(0);
+    }
+
+    hasSelection = false;
+    for (i = 0; i < WXSIZEOF(ncolor_count); i++)
+    {
+        str.Printf("%d", ncolor_count[i]);
         c_nColors->Append(str);
 
-        if (m_guiOptions->nColors == *(pInt++))
+        if (m_guiOptions.nColors == ncolor_count[i])
         {
-            c_nColors->SetSelection(n);
+            c_nColors->SetSelection(i);
+            hasSelection = true;
         }
-
-        n++;
     }
-    c_nColors->Enable(!m_options->isEurocom2V5);
+    if (!hasSelection)
+    {
+        c_nColors->SetSelection(0);
+    }
+    c_nColors->Enable(!m_options.isEurocom2V5);
 
-    size_t i;
     wxString colorName;
     std::string bColorName;
-    bool hasColorSelection = false;
 
+    hasSelection = false;
     for (i = 0; i < WXSIZEOF(color_name); i++)
     {
         colorName = wxGetTranslation(color_name[i]);
@@ -205,58 +211,58 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
                                           wxSize(16, 16)));
         std::string sColorName(color_name[i]);
 
-        if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
+        if (!stricmp(m_guiOptions.color.c_str(), sColorName.c_str()))
         {
             c_color->SetSelection(i);
-            hasColorSelection = true;
+            hasSelection = true;
         }
     }
-    if (!hasColorSelection)
+    if (!hasSelection)
     {
         c_color->SetSelection(0);
     }
 
     bool isMultiColorSchemeEnabled =
-            c_nColors->GetSelection() > 0 && !m_options->isEurocom2V5;
+            c_nColors->GetSelection() > 0 && !m_options.isEurocom2V5;
     bool isMultiColorSchemeChecked =
             isMultiColorSchemeEnabled &&
-	    (0 == stricmp(m_guiOptions->color.c_str(), "default"));
+	    (0 == stricmp(m_guiOptions.color.c_str(), "default"));
 
     c_multiColorScheme->SetValue(isMultiColorSchemeChecked);
     c_multiColorScheme->Enable(isMultiColorSchemeEnabled);
     c_color->Enable(!isMultiColorSchemeChecked);
 
-    c_isInverse->SetValue(m_guiOptions->isInverse != 0);
+    c_isInverse->SetValue(m_guiOptions.isInverse != 0);
 
-    c_undocumented->SetValue(m_options->use_undocumented);
+    c_undocumented->SetValue(m_options.use_undocumented);
 
-    wxString hex_file(m_options->hex_file.c_str(), wxConvUTF8);
+    wxString hex_file(m_options.hex_file.c_str(), wxConvUTF8);
     c_monitor->SetValue(hex_file);
 
-    wxString disk_dir(m_options->disk_dir.c_str(), wxConvUTF8);
+    wxString disk_dir(m_options.disk_dir.c_str(), wxConvUTF8);
     c_diskDir->SetValue(disk_dir);
 
     for (size_t x = 0; x < WXSIZEOF(c_drive); x++)
     {
-        wxString driveName(m_options->drive[x].c_str(), wxConvUTF8);
+        wxString driveName(m_options.drive[x].c_str(), wxConvUTF8);
         c_drive[x]->SetValue(driveName);
-        c_drive[x]->Enable(!m_options->isEurocom2V5);
+        c_drive[x]->Enable(!m_options.isEurocom2V5);
     }
 
     for (size_t x = 0; x < WXSIZEOF(c_mdcrDrive); x++)
     {
-        wxString driveName(m_options->mdcrDrives[x].c_str(), wxConvUTF8);
+        wxString driveName(m_options.mdcrDrives[x].c_str(), wxConvUTF8);
         c_mdcrDrive[x]->SetValue(driveName);
-        c_mdcrDrive[x]->Enable(m_options->isEurocom2V5);
+        c_mdcrDrive[x]->Enable(m_options.isEurocom2V5);
     }
 
     int selection = 0;
 
-    if (m_options->isRamExtension)
+    if (m_options.isRamExtension)
     {
         selection = 1;
 
-        if (m_options->isHiMem)
+        if (m_options.isHiMem)
         {
             selection = 2;
         }
@@ -268,24 +274,24 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
         c_nColors->SetSelection(0);
     }
     c_nColors->Enable(selection > 0);
-    c_ramExtension->Enable(!m_options->isEurocom2V5);
+    c_ramExtension->Enable(!m_options.isEurocom2V5);
 
-    c_flexibleMmu->SetValue(m_options->isHiMem && m_options->isFlexibleMmu);
-    c_flexibleMmu->Enable(m_options->isHiMem && !m_options->isEurocom2V5);
+    c_flexibleMmu->SetValue(m_options.isHiMem && m_options.isFlexibleMmu);
+    c_flexibleMmu->Enable(m_options.isHiMem && !m_options.isEurocom2V5);
 
-    c_useRtc->SetValue(m_options->useRtc);
-    c_useRtc->Enable(!m_options->isEurocom2V5);
+    c_useRtc->SetValue(m_options.useRtc);
+    c_useRtc->Enable(!m_options.isEurocom2V5);
 
-    c_emulatedHardware->SetSelection(m_options->isEurocom2V5 ? 0 : 1);
+    c_emulatedHardware->SetSelection(m_options.isEurocom2V5 ? 0 : 1);
 
-    if (m_options->frequency < 0.0f)
+    if (m_options.frequency < 0.0f)
     {
         c_frequencyChoices->SetSelection(0);
         c_frequency->Enable(false);
         c_frequency->SetValue(std::to_string(ORIGINAL_FREQUENCY));
     }
     else
-    if (m_options->frequency == 0.0f)
+    if (m_options.frequency == 0.0f)
     {
         c_frequencyChoices->SetSelection(1);
         c_frequency->Enable(false);
@@ -293,7 +299,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     else
     {
         c_frequencyChoices->SetSelection(2);
-        c_frequency->SetValue(std::to_string(m_options->frequency));
+        c_frequency->SetValue(std::to_string(m_options.frequency));
     }
 
     return wxWindow::TransferDataToWindow();
@@ -581,26 +587,15 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
 
     pMainSizer->Add(pButtonSizer, 0, wxTOP, gap);
 
-//    pMainSizer->Layout();
-
     SetSizer(pMainSizer);
     SetMinSize(wxSize(640, 260));
-    //SetAutoLayout(true);
+
     Layout();
     Centre(wxBOTH);
 
     wxDialog::OnInitDialog(event); // must be last command
 }
 
-/*
-void FlexemuOptionsDialog::OnCloseWindow(wxCloseEvent &event)
-{
-    if (!event.CanVeto())
-        Destroy();
-    else
-        wxDialog::OnCloseWindow(event);
-}
-*/
 bool FlexemuOptionsDialog::Validate()
 {
     // doing some verification of the values
@@ -662,8 +657,8 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
     if (geometry.BeforeFirst('x').ToULong(&x) &&
         geometry.AfterFirst('x').ToULong(&y))
     {
-        m_guiOptions->pixelSizeX = x / WINDOWWIDTH;
-        m_guiOptions->pixelSizeY = y / WINDOWHEIGHT;
+        m_guiOptions.pixelSizeX = x / WINDOWWIDTH;
+        m_guiOptions.pixelSizeY = y / WINDOWHEIGHT;
     }
 
     wxString nrOfColors;
@@ -673,16 +668,16 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
     if (nrOfColors.ToULong(&n))
     {
-        m_guiOptions->nColors = n;
+        m_guiOptions.nColors = n;
     }
 
     if (c_multiColorScheme->IsChecked() && c_nColors->GetSelection() > 0)
     {
-         m_guiOptions->color = "default";
+         m_guiOptions.color = "default";
     }
     else
     {
-        m_guiOptions->color = c_color->GetValue().ToUTF8().data();
+        m_guiOptions.color = c_color->GetValue().ToUTF8().data();
         wxString colorName;
 
         for (i = 0; i < WXSIZEOF(color_name); i++)
@@ -692,47 +687,47 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
             if (!colorName.Cmp(c_color->GetValue()))
             {
                 wxString color(color_name[i]);
-                m_guiOptions->color = color.ToUTF8().data();
+                m_guiOptions.color = color.ToUTF8().data();
             }
         }
     }
 
-    m_guiOptions->isInverse = c_isInverse->GetValue();
+    m_guiOptions.isInverse = c_isInverse->GetValue();
 
-    m_options->use_undocumented = (c_undocumented->GetValue() != 0);
+    m_options.use_undocumented = (c_undocumented->GetValue() != 0);
 
-    m_options->hex_file = c_monitor->GetValue().ToUTF8().data();
+    m_options.hex_file = c_monitor->GetValue().ToUTF8().data();
 
-    m_options->disk_dir = c_diskDir->GetValue().ToUTF8().data();
+    m_options.disk_dir = c_diskDir->GetValue().ToUTF8().data();
 
     for (i = 0; i < WXSIZEOF(c_drive); i++)
     {
-        m_options->drive[i] = c_drive[i]->GetValue().ToUTF8().data();
+        m_options.drive[i] = c_drive[i]->GetValue().ToUTF8().data();
     }
 
     for (i = 0; i < WXSIZEOF(c_mdcrDrive); i++)
     {
-        m_options->mdcrDrives[i] = c_mdcrDrive[i]->GetValue().ToUTF8().data();
+        m_options.mdcrDrives[i] = c_mdcrDrive[i]->GetValue().ToUTF8().data();
     }
 
-    m_options->isRamExtension = c_ramExtension->GetSelection() > 0;
-    m_options->isHiMem = c_ramExtension->GetSelection() > 1;
+    m_options.isRamExtension = c_ramExtension->GetSelection() > 0;
+    m_options.isHiMem = c_ramExtension->GetSelection() > 1;
 
-    m_options->isFlexibleMmu =
-            m_options->isHiMem & (c_flexibleMmu->GetValue() != 0);
+    m_options.isFlexibleMmu =
+            m_options.isHiMem & (c_flexibleMmu->GetValue() != 0);
 
-    m_options->useRtc = (c_useRtc->GetValue() != 0);
+    m_options.useRtc = (c_useRtc->GetValue() != 0);
 
-    m_options->isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
+    m_options.isEurocom2V5 = (c_emulatedHardware->GetSelection() == 0);
 
     switch (c_frequencyChoices->GetSelection())
     {
         case 0:
-            m_options->frequency = -1.0f;
+            m_options.frequency = -1.0f;
             break;
 
         case 1:
-            m_options->frequency = 0.0f;
+            m_options.frequency = 0.0f;
             break;
 
         case 2:
@@ -740,35 +735,35 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
 
             try
             {
-                m_options->frequency = std::stof(value);
+                m_options.frequency = std::stof(value);
             }
             catch (std::exception &)
             {
                 // This case should be prevented by Validate.
-                m_options->frequency = -1.0f;
+                m_options.frequency = -1.0f;
             }
             break;
     }
 
-    if (!m_options->isRamExtension)
+    if (!m_options.isRamExtension)
     {
-        m_guiOptions->nColors = 2;
-        m_options->isHiMem = false;
-        m_options->isFlexibleMmu = false;
+        m_guiOptions.nColors = 2;
+        m_options.isHiMem = false;
+        m_options.isFlexibleMmu = false;
     }
 
-    if (m_options->isRamExtension && !m_options->isHiMem)
+    if (m_options.isRamExtension && !m_options.isHiMem)
     {
-        m_options->isFlexibleMmu = false;
+        m_options.isFlexibleMmu = false;
     }
 
-    if (m_options->isEurocom2V5)
+    if (m_options.isEurocom2V5)
     {
-        m_guiOptions->nColors = 2;
-        m_options->useRtc = false;
-        m_options->isRamExtension = false;
-        m_options->isHiMem = false;
-        m_options->isFlexibleMmu = false;
+        m_guiOptions.nColors = 2;
+        m_options.useRtc = false;
+        m_options.isRamExtension = false;
+        m_options.isHiMem = false;
+        m_options.isFlexibleMmu = false;
     }
 
     return wxWindow::TransferDataFromWindow();
@@ -875,16 +870,16 @@ void FlexemuOptionsDialog::OnSelectDiskDir(wxCommandEvent &WXUNUSED(event))
 {
     std::unique_ptr<wxDirDialog> dialog;
 
-    m_options->disk_dir = c_diskDir->GetValue().ToUTF8().data();
+    m_options.disk_dir = c_diskDir->GetValue().ToUTF8().data();
 
-    wxString disk_dir(m_options->disk_dir.c_str(), wxConvUTF8);
+    wxString disk_dir(m_options.disk_dir.c_str(), wxConvUTF8);
 
     dialog = std::unique_ptr<wxDirDialog>(
             new wxDirDialog(this, _("Select folder with DSK files"), disk_dir));
 
     if (dialog->ShowModal() == wxID_OK)
     {
-        m_options->disk_dir = dialog->GetPath().ToUTF8().data();
+        m_options.disk_dir = dialog->GetPath().ToUTF8().data();
 
         c_diskDir->SetValue(dialog->GetPath());
     }

@@ -79,7 +79,7 @@ bool FlexemuSetup::OnInit()
     SetAppName("FlexemuSetup");
     SetExitOnFrameDelete(true);
 
-    auto dialog = new FlexemuOptionsDialog(&guiOptions, &options,
+    auto dialog = new FlexemuOptionsDialog(guiOptions, options,
                                       nullptr, -1, _("Flexemu Options Dialog"),
                                       wxDefaultPosition, wxDefaultSize,
                                       wxCAPTION | wxSYSTEM_MENU |

@@ -43,46 +43,46 @@ class wxBitmapComboBox;
 class wxColour;
 
 
-enum
-{
-    IDC_Geometry = 200,
-    IDC_Color = 201,
-    IDC_Inverse = 202,
-    IDC_DiskDir = 204,
-    IDC_Monitor = 205,
-    IDC_Drive0 = 206,
-    IDC_Drive1 = 207,
-    IDC_Drive2 = 208,
-    IDC_Drive3 = 209,
-    IDC_nColors = 210,
-    IDC_RamExtension = 211,
-    IDC_Undocumented = 212,
-    IDC_FlexibleMmu = 213,
-    IDC_UseRtc = 214,
-    IDC_EmulatedHardware = 215,
-    IDC_MdcrDrive0 = 216,
-    IDC_MdcrDrive1 = 217,
-    IDC_FrequencyChoices = 218,
-    IDC_Frequency = 219,
-    IDC_MultiColorScheme = 220,
-
-    IDC_DiskDirButton = 304,
-    IDC_MonitorButton = 305,
-    IDC_Drive0Button = 306,
-    IDC_Drive1Button = 307,
-    IDC_Drive2Button = 308,
-    IDC_Drive3Button = 309,
-    IDC_MdcrDrive0Button = 310,
-    IDC_MdcrDrive1Button = 311
-};
-
 class FlexemuOptionsDialog : public wxDialog
 {
+    enum
+    {
+        IDC_Geometry = 200,
+        IDC_Color = 201,
+        IDC_Inverse = 202,
+        IDC_DiskDir = 204,
+        IDC_Monitor = 205,
+        IDC_Drive0 = 206,
+        IDC_Drive1 = 207,
+        IDC_Drive2 = 208,
+        IDC_Drive3 = 209,
+        IDC_nColors = 210,
+        IDC_RamExtension = 211,
+        IDC_Undocumented = 212,
+        IDC_FlexibleMmu = 213,
+        IDC_UseRtc = 214,
+        IDC_EmulatedHardware = 215,
+        IDC_MdcrDrive0 = 216,
+        IDC_MdcrDrive1 = 217,
+        IDC_FrequencyChoices = 218,
+        IDC_Frequency = 219,
+        IDC_MultiColorScheme = 220,
+
+        IDC_DiskDirButton = 304,
+        IDC_MonitorButton = 305,
+        IDC_Drive0Button = 306,
+        IDC_Drive1Button = 307,
+        IDC_Drive2Button = 308,
+        IDC_Drive3Button = 309,
+        IDC_MdcrDrive0Button = 310,
+        IDC_MdcrDrive1Button = 311
+    };
+
 public:
 
     FlexemuOptionsDialog(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions,
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options,
         wxWindow *parent,
         wxWindowID id,
         const wxString &title,
@@ -91,8 +91,11 @@ public:
         long style = wxDEFAULT_DIALOG_STYLE,
         const wxString &name = "FlexemuOptionsDialog");
     virtual ~FlexemuOptionsDialog();
-
     void OnInitDialog(wxInitDialogEvent &event);
+
+private:
+    FlexemuOptionsDialog() = delete;
+
     wxPanel *CreateEmulatedHardwareOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateGuiOptionsPage(wxBookCtrlBase *parent);
     wxPanel *CreateCpuOptionsPage(wxBookCtrlBase *parent);
@@ -103,7 +106,7 @@ public:
     wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
                                    const wxString &text,
                                    int textId, int buttonId);
-    //void OnCloseWindow(wxCloseEvent &event);
+
     bool TransferDataFromWindow();
     bool TransferDataToWindow();
     bool Validate();
@@ -127,16 +130,16 @@ public:
     void OnMultiColorSchemeChanged(wxCommandEvent &WXUNUSED(event));
     void OnNColorsChanged(wxCommandEvent &WXUNUSED(event));
 
-private:
-    FlexemuOptionsDialog() { }; // should not be used
     void UpdateHardwareDependencies();
     void UpdateRamDependencies();
     void UpdateColorDependencies();
+
     wxBitmap CreateColorBitmap(const wxColour &color, const wxSize &size);
 
     static const char *color_name[];
-    struct sGuiOptions *m_guiOptions;
-    struct sOptions *m_options;
+    static int ncolor_count[];
+    struct sGuiOptions &m_guiOptions;
+    struct sOptions &m_options;
 
     wxBitmapComboBox *c_color;
     wxCheckBox *c_isInverse;
