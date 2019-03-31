@@ -25,6 +25,7 @@
 #define FSETPDLG_INCLUDED
 
 #include <wx/dialog.h>
+#include <wx/bitmap.h>
 
 #include "misc1.h"
 #include "absgui.h"
@@ -38,6 +39,8 @@ class wxRadioBox;
 class wxPanel;
 class wxBookCtrlBase;
 class wxTreebook;
+class wxBitmapComboBox;
+class wxColour;
 
 
 enum
@@ -61,6 +64,7 @@ enum
     IDC_MdcrDrive1 = 217,
     IDC_FrequencyChoices = 218,
     IDC_Frequency = 219,
+    IDC_MultiColorScheme = 220,
 
     IDC_DiskDirButton = 304,
     IDC_MonitorButton = 305,
@@ -120,14 +124,21 @@ public:
     void OnRamExtensionChanged(wxCommandEvent &WXUNUSED(event));
     void OnEmulatedHardwareChanged(wxCommandEvent &WXUNUSED(event));
     void OnFrequencyChoicesChanged(wxCommandEvent &WXUNUSED(event));
+    void OnMultiColorSchemeChanged(wxCommandEvent &WXUNUSED(event));
+    void OnNColorsChanged(wxCommandEvent &WXUNUSED(event));
 
 private:
     FlexemuOptionsDialog() { }; // should not be used
+    void UpdateHardwareDependencies();
+    void UpdateRamDependencies();
+    void UpdateColorDependencies();
+    wxBitmap CreateColorBitmap(const wxColour &color, const wxSize &size);
 
+    static const char *color_name[];
     struct sGuiOptions *m_guiOptions;
     struct sOptions *m_options;
 
-    wxComboBox *c_color;
+    wxBitmapComboBox *c_color;
     wxCheckBox *c_isInverse;
     wxCheckBox *c_undocumented;
     wxComboBox *c_geometry;
@@ -143,6 +154,7 @@ private:
     wxRadioBox *c_frequencyChoices;
     wxTextCtrl *c_frequency;
     wxTreebook *c_notebook;
+    wxCheckBox *c_multiColorScheme;
 
     static const int gap;
     static const int textWidth;

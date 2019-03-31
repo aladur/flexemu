@@ -37,6 +37,7 @@
 #include <wx/treebook.h>
 #include <wx/valgen.h>
 #include <wx/valtext.h>
+#include <wx/bmpcbox.h>
 
 #include "misc1.h"
 #include <string>
@@ -50,9 +51,8 @@
 #include "fsetup.h"
 
 
-static const char *color_table[] =
+const char *FlexemuOptionsDialog::color_name[] =
 {
-    _("default"),
     _("white"),
     _("red"),
     _("green"),
@@ -84,6 +84,10 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
             FlexemuOptionsDialog::OnEmulatedHardwareChanged)
     EVT_RADIOBOX(IDC_FrequencyChoices,
             FlexemuOptionsDialog::OnFrequencyChoicesChanged)
+    EVT_CHECKBOX(IDC_MultiColorScheme,
+            FlexemuOptionsDialog::OnMultiColorSchemeChanged)
+    EVT_COMBOBOX(IDC_nColors,
+            FlexemuOptionsDialog::OnNColorsChanged)
     //  EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
 
@@ -107,7 +111,9 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_diskDir(nullptr),
     c_ramExtension(nullptr), c_flexibleMmu(nullptr),
-    c_useRtc(nullptr), c_emulatedHardware(nullptr)
+    c_useRtc(nullptr), c_emulatedHardware(nullptr),
+    c_frequencyChoices(nullptr), c_frequency(nullptr),
+    c_notebook(nullptr), c_multiColorScheme(nullptr)
 
 {
     size_t i;
@@ -129,6 +135,22 @@ FlexemuOptionsDialog::~FlexemuOptionsDialog()
 
 bool FlexemuOptionsDialog::TransferDataToWindow()
 {
+    static const DWord color_rgb_value[] =
+    {
+        0xffffff,
+        0x0000ff,
+        0x00ff00,
+        0xff0000,
+        0x00ffff,
+        0xff00ff,
+        0xffff00,
+        0x00a5ff,
+        0xcbc0ff,
+        0xf020a0,
+        0xee82ee,
+        0x2a2aa5,
+    };
+
     wxString str;
     int n = 0;
 
@@ -173,18 +195,36 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     size_t i;
     wxString colorName;
     std::string bColorName;
+    bool hasColorSelection = false;
 
-    for (i = 0; i < WXSIZEOF(color_table); i++)
+    for (i = 0; i < WXSIZEOF(color_name); i++)
     {
-        colorName = wxGetTranslation(color_table[i]);
-        c_color->Append(colorName);
-        std::string sColorName(color_table[i]);
+        colorName = wxGetTranslation(color_name[i]);
+        c_color->Append(colorName,
+                        CreateColorBitmap(wxColour(color_rgb_value[i]),
+                                          wxSize(16, 16)));
+        std::string sColorName(color_name[i]);
 
         if (!stricmp(m_guiOptions->color.c_str(), sColorName.c_str()))
         {
             c_color->SetSelection(i);
+            hasColorSelection = true;
         }
     }
+    if (!hasColorSelection)
+    {
+        c_color->SetSelection(0);
+    }
+
+    bool isMultiColorSchemeEnabled =
+            c_nColors->GetSelection() > 0 && !m_options->isEurocom2V5;
+    bool isMultiColorSchemeChecked =
+            isMultiColorSchemeEnabled &&
+	    (0 == stricmp(m_guiOptions->color.c_str(), "default"));
+
+    c_multiColorScheme->SetValue(isMultiColorSchemeChecked);
+    c_multiColorScheme->Enable(isMultiColorSchemeEnabled);
+    c_color->Enable(!isMultiColorSchemeChecked);
 
     c_isInverse->SetValue(m_guiOptions->isInverse != 0);
 
@@ -317,7 +357,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
                                 wxCB_READONLY);
     pGridSizer->Add(c_geometry, 0, wxEXPAND);
 
-    pStatic = new wxStaticText(panel, -1, _("Number of Colors"),
+    pStatic = new wxStaticText(panel, -1, _("Number of shades"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
     c_nColors = new wxComboBox(panel, IDC_nColors, "",
@@ -325,13 +365,19 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
                                wxCB_READONLY);
     pGridSizer->Add(c_nColors, 0, wxEXPAND);
 
-    pStatic = new wxStaticText(panel, -1, _("Color"),
+    pStatic = new wxStaticText(panel, -1, _("Monochromatic color"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
     pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_color = new wxComboBox(panel, IDC_Color, "", wxDefaultPosition,
-                             wxDefaultSize, 0, nullptr, wxCB_READONLY);
-    pGridSizer->Add(c_color);
+    c_color = new wxBitmapComboBox(panel, IDC_Color, wxEmptyString,
+                                   wxDefaultPosition, wxDefaultSize,
+				   0, nullptr, wxCB_READONLY);
+    pGridSizer->Add(c_color, 0, wxEXPAND);
     pPanelSizer->Add(pGridSizer, 0, wxTOP, gap);
+
+    c_multiColorScheme = new wxCheckBox(panel, IDC_MultiColorScheme,
+                                _("Multi color scheme"),
+				wxDefaultPosition, wxDefaultSize, 0);
+    pPanelSizer->Add(c_multiColorScheme, 0, wxTOP | wxLEFT, gap);
 
     c_isInverse = new wxCheckBox(panel, IDC_Inverse,
                                 _("Display inverse colors"), wxDefaultPosition,
@@ -630,17 +676,24 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         m_guiOptions->nColors = n;
     }
 
-    m_guiOptions->color = c_color->GetValue().ToUTF8().data();
-    wxString colorName;
-
-    for (i = 0; i < WXSIZEOF(color_table); i++)
+    if (c_multiColorScheme->IsChecked() && c_nColors->GetSelection() > 0)
     {
-        colorName = wxGetTranslation(color_table[i]);
+         m_guiOptions->color = "default";
+    }
+    else
+    {
+        m_guiOptions->color = c_color->GetValue().ToUTF8().data();
+        wxString colorName;
 
-        if (!colorName.Cmp(c_color->GetValue()))
+        for (i = 0; i < WXSIZEOF(color_name); i++)
         {
-            wxString color(color_table[i]);
-            m_guiOptions->color = color.ToUTF8().data();
+            colorName = wxGetTranslation(color_name[i]);
+
+            if (!colorName.Cmp(c_color->GetValue()))
+            {
+                wxString color(color_name[i]);
+                m_guiOptions->color = color.ToUTF8().data();
+            }
         }
     }
 
@@ -871,19 +924,29 @@ void FlexemuOptionsDialog::OnSelectMonitor(wxCommandEvent &WXUNUSED(event))
 void FlexemuOptionsDialog::OnRamExtensionChanged(
         wxCommandEvent &WXUNUSED(event))
 {
-    c_nColors->Enable(c_ramExtension->GetSelection() > 0);
-    c_flexibleMmu->Enable(c_ramExtension->GetSelection() > 1);
+    UpdateRamDependencies();
+}
+
+void FlexemuOptionsDialog::UpdateRamDependencies()
+{
+    c_ramExtension->Enable(c_emulatedHardware->GetSelection() != 0);
+    c_flexibleMmu->Enable(c_ramExtension->IsEnabled() &&
+                          c_ramExtension->GetSelection() > 1);
+
+    UpdateColorDependencies();
 }
 
 void FlexemuOptionsDialog::OnEmulatedHardwareChanged(
         wxCommandEvent &WXUNUSED(event))
 {
+    UpdateHardwareDependencies();
+}
+
+void FlexemuOptionsDialog::UpdateHardwareDependencies()
+{
     bool isEurocom2V7 = c_emulatedHardware->GetSelection() != 0;
     size_t x;
 
-    c_nColors->Enable(isEurocom2V7);
-    c_ramExtension->Enable(isEurocom2V7);
-    c_flexibleMmu->Enable(isEurocom2V7);
     c_useRtc->Enable(isEurocom2V7);
 
     for (x = 0; x < WXSIZEOF(c_drive); x++)
@@ -895,6 +958,8 @@ void FlexemuOptionsDialog::OnEmulatedHardwareChanged(
     {
         c_mdcrDrive[x]->Enable(!isEurocom2V7);
     }
+
+    UpdateRamDependencies();
 }
 
 void FlexemuOptionsDialog::OnFrequencyChoicesChanged(
@@ -915,3 +980,46 @@ void FlexemuOptionsDialog::OnFrequencyChoicesChanged(
     }
 }
 
+void FlexemuOptionsDialog::OnMultiColorSchemeChanged(
+        wxCommandEvent &WXUNUSED(event))
+{
+    UpdateColorDependencies();
+}
+
+void FlexemuOptionsDialog::OnNColorsChanged(
+        wxCommandEvent &WXUNUSED(event))
+{
+    UpdateColorDependencies();
+}
+
+void FlexemuOptionsDialog::UpdateColorDependencies()
+{
+    c_nColors->Enable(c_ramExtension->IsEnabled() &&
+                      c_ramExtension->GetSelection() != 0);
+
+    if (c_nColors->IsEnabled())
+    {
+        c_multiColorScheme->Enable(c_nColors->GetSelection() != 0);
+        c_color->Enable(!c_multiColorScheme->IsEnabled() || 
+                        !c_multiColorScheme->IsChecked());
+    }
+    else
+    {
+        c_multiColorScheme->Enable(false);
+        c_color->Enable(true);
+    }
+}
+
+wxBitmap FlexemuOptionsDialog::CreateColorBitmap(const wxColour &color,
+		                                 const wxSize &size)
+{
+    wxMemoryDC dc;
+    wxBitmap bmp(size);
+    dc.SelectObject(bmp);
+
+    dc.SetBrush(wxBrush(color));
+    dc.DrawRectangle(wxPoint(0, 0), size);
+    dc.SelectObject(wxNullBitmap);
+
+    return bmp;
+}
