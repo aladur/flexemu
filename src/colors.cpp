@@ -12,10 +12,8 @@
 extern "C" {
 #endif
 
-
-struct sRGBDef colors[] =
+struct sRGBDef colors[25] =
 {
-    {"black", 0, 0, 0},
     {"white", 255, 255, 255},
     {"blue", 0, 0, 255},
     {"red", 255, 0, 0},
@@ -24,7 +22,6 @@ struct sRGBDef colors[] =
     {"brown", 165, 42, 42},
     {"cyan", 0, 255, 255},
     {"gray", 192, 192, 192},
-    {"grey", 192, 192, 192},
     {"orange", 255, 165, 0},
     {"pink", 255, 192, 203},
     {"purple", 160, 32, 240},
@@ -39,10 +36,8 @@ struct sRGBDef colors[] =
     {"darkcyan", 0, 127, 127},
     {"darkgray", 63, 63, 63},
     {"darkgreen", 0, 100, 0},
-    {"darkgrey", 63, 63, 63},
     {"darkred", 127, 0, 0},
     {"lightgreen", 127, 255, 127},
-    {nullptr, 0, 0, 0}
 };
 
 /*
@@ -684,6 +679,39 @@ yellow4", 139 139 0
 yellowgreen", 154 205 50
 
 */
+
+bool getRGBForName(const char *colorName, Word &red, Word &green, Word &blue)
+{
+    for (int i = 0; i < (sizeof(colors) / sizeof(colors[0])); ++i)
+    {
+        if (strcmp(colorName, colors[i].colorName) == 0)
+        {
+            red = colors[i].red;
+            green = colors[i].green;
+            blue = colors[i].blue;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool getColorForName(const char *colorName, DWord &rgbColor)
+{
+    Word red;
+    Word green;
+    Word blue;
+
+    if (getRGBForName(colorName, red, green, blue))
+    {
+        rgbColor = blue & 0xff;
+        rgbColor |= (rgbColor << 8) | (green & 0xff);
+        rgbColor |= (rgbColor << 8) | (red & 0xff);
+        return true;
+    }
+
+    return false;
+}
 
 #ifdef __cplusplus
 }

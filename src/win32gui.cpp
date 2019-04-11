@@ -1730,30 +1730,12 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
 {
     LOGPALETTE *pLog;
     int scale;
-    struct sRGBDef  *pc;
     Word    red   = 255;
     Word    green = 255;
     Word    blue  = 255;
     int     i, idx;
 
-    pc = (struct sRGBDef *)&colors;
-
-    while (pc->colorName != nullptr)
-    {
-        if (strcmp(guiOptions.color.c_str(), pc->colorName) == 0)
-        {
-            break;
-        }
-
-        pc++;
-    }
-
-    if (pc->colorName != nullptr)
-    {
-        red   = pc->red;
-        green = pc->green;
-        blue  = pc->blue;
-    }
+    getRGBForName(guiOptions.color.c_str(), red, green, blue);
 
     pLog = (LOGPALETTE *)new char[sizeof(LOGPALETTE) +
                                   ((1 << COLOR_PLANES) - 1) *
@@ -1808,7 +1790,6 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
 void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
 {
     HDC             hdc;
-    struct sRGBDef  *pc;
 
     oldX          = 0;
     oldY          = 0;
@@ -1827,24 +1808,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
     memset(image_data.get(), 0, size);
     bmis.clear();
 
-    pc = (struct sRGBDef *)&colors;
-
-    while (pc->colorName != nullptr)
-    {
-        if (strcmp(guiOptions.color.c_str(), pc->colorName) == 0)
-        {
-            break;
-        }
-
-        pc++;
-    }
-
-    if (pc->colorName != nullptr)
-    {
-        red   = pc->red;
-        green = pc->green;
-        blue  = pc->blue;
-    }
+    getRGBForName(guiOptions.color.c_str(), red, green, blue);
 
     if (!guiOptions.isInverse)
     {

@@ -112,16 +112,6 @@ class Pia1;
 
 #define GUI_TIMER_ID          (556)
 
-struct sRGBDef
-{
-    char *colorName;
-    Byte red;
-    Byte green;
-    Byte blue;
-};
-
-extern struct sRGBDef colors[];
-
 class Win32Gui : public AbstractGui
 {
 protected:

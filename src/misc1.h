@@ -286,6 +286,14 @@ struct sOptions
     float frequency;
 };
 
+struct sRGBDef
+{
+    const char *colorName;
+    Byte red;
+    Byte green;
+    Byte blue;
+};
+
 /* Names of Environment or Registry variables */
 
 #ifdef _WIN32
@@ -405,8 +413,11 @@ extern std::string getFileName(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
 extern std::string getParentPath(const std::string &path);
 extern bool endsWithPathSeparator(const std::string &path);
+extern "C" bool getRGBForName(const char *colorName, Word &red, Word &green, Word &blue);
+extern "C" bool getColorForName(const char *colorName, DWord &color);
 
 extern const char* white_space;
+extern struct sRGBDef colors[25];
 
 // trim from end of string (right)
 inline std::string& rtrim(std::string& str, const char* t = white_space)
