@@ -136,7 +136,6 @@ private:
 
     wxBitmap CreateColorBitmap(const wxColour &color, const wxSize &size);
 
-    static const char *color_name[];
     static int ncolor_count[];
     struct sGuiOptions &m_guiOptions;
     struct sOptions &m_options;

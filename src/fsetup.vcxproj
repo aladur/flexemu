@@ -197,6 +197,7 @@
   <ItemGroup>
     <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="bregistr.cpp" />
+    <ClCompile Include="colors.cpp" />
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />

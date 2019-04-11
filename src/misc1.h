@@ -286,7 +286,7 @@ struct sOptions
     float frequency;
 };
 
-struct sRGBDef
+extern "C" struct sRGBDef
 {
     const char *colorName;
     Byte red;
@@ -413,11 +413,12 @@ extern std::string getFileName(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
 extern std::string getParentPath(const std::string &path);
 extern bool endsWithPathSeparator(const std::string &path);
-extern "C" bool getRGBForName(const char *colorName, Word &red, Word &green, Word &blue);
-extern "C" bool getColorForName(const char *colorName, DWord &color);
+extern "C" int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue);
+extern "C" int getColorForName(const char *colorName, DWord *color);
+extern "C" struct sRGBDef colors[];
+extern "C" const size_t color_count;
 
 extern const char* white_space;
-extern struct sRGBDef colors[25];
 
 // trim from end of string (right)
 inline std::string& rtrim(std::string& str, const char* t = white_space)

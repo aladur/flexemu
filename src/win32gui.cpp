@@ -1735,7 +1735,7 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
     Word    blue  = 255;
     int     i, idx;
 
-    getRGBForName(guiOptions.color.c_str(), red, green, blue);
+    getRGBForName(guiOptions.color.c_str(), &red, &green, &blue);
 
     pLog = (LOGPALETTE *)new char[sizeof(LOGPALETTE) +
                                   ((1 << COLOR_PLANES) - 1) *
@@ -1808,7 +1808,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
     memset(image_data.get(), 0, size);
     bmis.clear();
 
-    getRGBForName(guiOptions.color.c_str(), red, green, blue);
+    getRGBForName(guiOptions.color.c_str(), &red, &green, &blue);
 
     if (!guiOptions.isInverse)
     {

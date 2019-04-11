@@ -173,7 +173,8 @@ flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
 am_fsetup_OBJECTS = fsetup-fsetup.$(OBJEXT) fsetup-fsetpdlg.$(OBJEXT) \
 	fsetup-foptman.$(OBJEXT) fsetup-brcfile.$(OBJEXT) \
 	fsetup-benv.$(OBJEXT) fsetup-misc1.$(OBJEXT) \
-	fsetup-bfileptr.$(OBJEXT) fsetup-bregistr.$(OBJEXT)
+	fsetup-bfileptr.$(OBJEXT) fsetup-bregistr.$(OBJEXT) \
+	fsetup-colors.$(OBJEXT)
 fsetup_OBJECTS = $(am_fsetup_OBJECTS)
 fsetup_DEPENDENCIES =
 fsetup_LINK = $(CXXLD) $(fsetup_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
@@ -494,11 +495,11 @@ desktop_DATA = flexemu.desktop \
 
 SUFFIXES = .rc .o
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             Flexemu.ad boot flexemu.astyle flexemu.xpm \
-	     flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm \
+             Flexemu.ad flexemu.astyle \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
+	     $(pkgdata_DATA) \
 	     $(sysconf_DATA) \
 	     $(desktop_DATA)
 
@@ -535,7 +536,7 @@ test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 fsetup_SOURCES = \
 fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
-bfileptr.cpp bregistr.cpp\
+bfileptr.cpp bregistr.cpp colors.cpp \
 fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
 bfileptr.h bregistr.h sguiopts.h
 
@@ -839,6 +840,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bregistr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-colors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-foptman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetpdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup.Po@am__quote@
@@ -2372,6 +2374,20 @@ fsetup-bregistr.obj: bregistr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bregistr.cpp' object='fsetup-bregistr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bregistr.obj `if test -f 'bregistr.cpp'; then $(CYGPATH_W) 'bregistr.cpp'; else $(CYGPATH_W) '$(srcdir)/bregistr.cpp'; fi`
+
+fsetup-colors.o: colors.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-colors.o -MD -MP -MF $(DEPDIR)/fsetup-colors.Tpo -c -o fsetup-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-colors.Tpo $(DEPDIR)/fsetup-colors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='fsetup-colors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
+
+fsetup-colors.obj: colors.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-colors.obj -MD -MP -MF $(DEPDIR)/fsetup-colors.Tpo -c -o fsetup-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-colors.Tpo $(DEPDIR)/fsetup-colors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='fsetup-colors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
 
 mdcrtool-mdcrtool.o: mdcrtool.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-mdcrtool.o -MD -MP -MF $(DEPDIR)/mdcrtool-mdcrtool.Tpo -c -o mdcrtool-mdcrtool.o `test -f 'mdcrtool.cpp' || echo '$(srcdir)/'`mdcrtool.cpp

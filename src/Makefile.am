@@ -57,7 +57,7 @@ flexemu_DEPENDENCIES = @FLEX_RC@
 
 fsetup_SOURCES = \
 fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
-bfileptr.cpp bregistr.cpp\
+bfileptr.cpp bregistr.cpp colors.cpp \
 fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
 bfileptr.h bregistr.h sguiopts.h
 

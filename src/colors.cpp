@@ -3,44 +3,43 @@
 */
 
 
-#ifdef _WIN32
 #include "misc1.h"
-#include <stdlib.h>
-#include "win32gui.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct sRGBDef colors[25] =
+struct sRGBDef colors[] =
 {
     {"white", 255, 255, 255},
-    {"blue", 0, 0, 255},
     {"red", 255, 0, 0},
     {"green", 0, 255, 0},
+    {"blue", 0, 0, 255},
     {"yellow", 255, 255, 0},
-    {"brown", 165, 42, 42},
+    {"magenta", 255, 0, 255},
     {"cyan", 0, 255, 255},
-    {"gray", 192, 192, 192},
     {"orange", 255, 165, 0},
     {"pink", 255, 192, 203},
     {"purple", 160, 32, 240},
-    {"tan", 210, 180, 140},
     {"violet", 238, 130, 238},
-    {"gold", 255, 215, 0},
-    {"magenta", 255, 0, 255},
-    {"maroon", 176, 48, 96},
-    {"mediumblue", 0, 0, 205},
-    {"palegreen", 152, 251, 152},
-    {"darkblue", 0, 0, 127},
-    {"darkcyan", 0, 127, 127},
-    {"darkgray", 63, 63, 63},
-    {"darkgreen", 0, 100, 0},
-    {"darkred", 127, 0, 0},
-    {"lightgreen", 127, 255, 127},
+    {"brown", 165, 42, 42},
 };
 
+const size_t color_count = sizeof(colors) / sizeof(colors[0]);
+
 /*
+{"gray", 192, 192, 192},
+{"tan", 210, 180, 140},
+{"gold", 255, 215, 0},
+{"maroon", 176, 48, 96},
+{"mediumblue", 0, 0, 205},
+{"palegreen", 152, 251, 152},
+{"darkblue", 0, 0, 127},
+{"darkcyan", 0, 127, 127},
+{"darkgray", 63, 63, 63},
+{"darkgreen", 0, 100, 0},
+{"darkred", 127, 0, 0},
+{"lightgreen", 127, 255, 127},
 {"lightblue", 173 216 230
 {"lightgray", 211 211 211
 {"lightgrey", 211 211 211
@@ -680,42 +679,40 @@ yellowgreen", 154 205 50
 
 */
 
-bool getRGBForName(const char *colorName, Word &red, Word &green, Word &blue)
+int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue)
 {
-    for (int i = 0; i < (sizeof(colors) / sizeof(colors[0])); ++i)
+    for (size_t i = 0; i < (sizeof(colors) / sizeof(colors[0])); ++i)
     {
         if (strcmp(colorName, colors[i].colorName) == 0)
         {
-            red = colors[i].red;
-            green = colors[i].green;
-            blue = colors[i].blue;
-            return true;
+            *red = colors[i].red;
+            *green = colors[i].green;
+            *blue = colors[i].blue;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
-bool getColorForName(const char *colorName, DWord &rgbColor)
+int getColorForName(const char *colorName, DWord *rgbColor)
 {
     Word red;
     Word green;
     Word blue;
 
-    if (getRGBForName(colorName, red, green, blue))
+    if (getRGBForName(colorName, &red, &green, &blue))
     {
-        rgbColor = blue & 0xff;
-        rgbColor |= (rgbColor << 8) | (green & 0xff);
-        rgbColor |= (rgbColor << 8) | (red & 0xff);
-        return true;
+        *rgbColor = red & 0xff;
+        *rgbColor |= (green & 0xff) << 8;
+        *rgbColor |= (DWord)(blue & 0xff) << 16;
+        return 1;
     }
 
-    return false;
+    return 0;
 }
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
-
-#endif /* _WIN32 */
 

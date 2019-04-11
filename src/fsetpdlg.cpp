@@ -51,22 +51,6 @@
 #include "fsetup.h"
 
 
-const char *FlexemuOptionsDialog::color_name[] =
-{
-    _("white"),
-    _("red"),
-    _("green"),
-    _("blue"),
-    _("yellow"),
-    _("magenta"),
-    _("cyan"),
-    _("orange"),
-    _("pink"),
-    _("purple"),
-    _("violet"),
-    _("brown"),
-};
-
 int FlexemuOptionsDialog::ncolor_count[] = { 2, 8, 64 };
 
 BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
@@ -135,22 +119,6 @@ FlexemuOptionsDialog::~FlexemuOptionsDialog()
 
 bool FlexemuOptionsDialog::TransferDataToWindow()
 {
-    static const DWord color_rgb_value[] =
-    {
-        0xffffff,
-        0x0000ff,
-        0x00ff00,
-        0xff0000,
-        0x00ffff,
-        0xff00ff,
-        0xffff00,
-        0x00a5ff,
-        0xcbc0ff,
-        0xf020a0,
-        0xee82ee,
-        0x2a2aa5,
-    };
-
     bool hasSelection = false;
     wxString str;
     size_t i;
@@ -200,18 +168,18 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     c_nColors->Enable(!m_options.isEurocom2V5);
 
     wxString colorName;
-    std::string bColorName;
+    DWord colorRGBValue;
 
     hasSelection = false;
-    for (i = 0; i < WXSIZEOF(color_name); i++)
+    for (i = 0; i < color_count; i++)
     {
-        colorName = wxGetTranslation(color_name[i]);
+        colorName = wxGetTranslation(colors[i].colorName);
+        getColorForName(colors[i].colorName, &colorRGBValue);
         c_color->Append(colorName,
-                        CreateColorBitmap(wxColour(color_rgb_value[i]),
+                        CreateColorBitmap(wxColour(colorRGBValue),
                                           wxSize(16, 16)));
-        std::string sColorName(color_name[i]);
 
-        if (!stricmp(m_guiOptions.color.c_str(), sColorName.c_str()))
+        if (!stricmp(m_guiOptions.color.c_str(), colors[i].colorName))
         {
             c_color->SetSelection(i);
             hasSelection = true;
@@ -680,14 +648,13 @@ bool FlexemuOptionsDialog::TransferDataFromWindow()
         m_guiOptions.color = c_color->GetValue().ToUTF8().data();
         wxString colorName;
 
-        for (i = 0; i < WXSIZEOF(color_name); i++)
+        for (i = 0; i < color_count; i++)
         {
-            colorName = wxGetTranslation(color_name[i]);
+            colorName = wxGetTranslation(colors[i].colorName);
 
             if (!colorName.Cmp(c_color->GetValue()))
             {
-                wxString color(color_name[i]);
-                m_guiOptions.color = color.ToUTF8().data();
+                m_guiOptions.color = colors[i].colorName;
             }
         }
     }
