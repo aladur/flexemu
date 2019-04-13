@@ -24,7 +24,6 @@
 #define FFILEBUF_INCLUDED
 
 #include "misc1.h"
-#include "bmembuf.h"
 #include "flexemu.h"
 #include "bdate.h"
 #include <memory>
@@ -77,7 +76,6 @@ public:
     bool CopyFrom(const Byte *from, DWord aSize, DWord offset = 0);
     bool CopyTo(Byte *to, DWord aSize,
                 DWord offset = 0, int stuffByte = -1) const;
-    bool CopyTo(BMemoryBuffer &memory);
     void FillWith(const Byte pattern = 0);
     void Realloc(DWord newSize, bool restoreContents = false);
     const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
