@@ -34,7 +34,7 @@ class BMemoryBuffer : public MemorySource<size_t>, public MemoryTarget<size_t>
 {
 public:
     BMemoryBuffer() = delete;
-    BMemoryBuffer(size_t aSize, size_t aBase = 0);
+    BMemoryBuffer(size_t aSize);
     BMemoryBuffer(const BMemoryBuffer &src);
     BMemoryBuffer(BMemoryBuffer &&src);
     ~BMemoryBuffer();
@@ -42,18 +42,10 @@ public:
     BMemoryBuffer &operator=(const BMemoryBuffer &src);
     BMemoryBuffer &operator=(BMemoryBuffer &&src);
 
-    void FillWith(const Byte pattern = 0);
     inline size_t GetSize() const
     {
         return size;
     };
-    inline size_t GetBaseAddress() const
-    {
-        return baseAddress;
-    };
-    bool CopyFrom(const Byte *from, size_t aSize, size_t address);
-    Byte &operator[](size_t address);
-    const Byte &operator[](size_t address) const;
 
     // MemorySource interface
     size_t reset_src_addr() override;
@@ -71,7 +63,6 @@ public:
     void ResetStartEndAddress();
 
 private:
-    size_t baseAddress;
     size_t size;
     std::vector<Byte> buffer;
     size_t startAddress;
