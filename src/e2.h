@@ -36,7 +36,7 @@
 #define RASTERLINE_SIZE 64
 #define YBLOCK_BASE 4   /* number of yblocks as a power of 2 */
 #define COLOR_PLANES    6   /* number of color planes */
-#define MAXVIDEORAM_BANKS (48)  /* max number of ram banks of size 16K   */
+#define MAXVIDEORAM_BANKS (48u)  /* max number of ram banks of size 16K   */
 /* possible values: 12, 48 */
 /* number of yblocks */
 #define YBLOCKS     (1 << YBLOCK_BASE) /* Nr. of blocks vertically */

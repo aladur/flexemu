@@ -53,8 +53,7 @@ public:
     MemorySource& operator>>(Byte &b) override;
 
     // MemoryTarget interface
-    void set_tgt_addr(size_t address) override;
-    MemoryTarget& operator<<(Byte b) override;
+    void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
 
 public:
     bool IsStartEndAddressValid() const;
@@ -67,7 +66,6 @@ private:
     std::vector<Byte> buffer;
     size_t startAddress;
     size_t endAddress;
-    size_t currentAddress;
     size_t sourceAddress;
 };
 

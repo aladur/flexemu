@@ -131,7 +131,6 @@ MdcrStatus MdcrFileSystem::ReadFile(
     Word endAddress = 0;
     size_t size;
     size_t count = 0;
-    size_t index;
     bool hasFoundFile = false;
 
     while (true)
@@ -166,7 +165,6 @@ MdcrStatus MdcrFileSystem::ReadFile(
         if (filename.empty() || mdcrFilename == filename)
         {
             hasFoundFile = true;
-            memory.set_tgt_addr(startAddress);
         }
 
         while (count < size)
@@ -187,10 +185,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
             if (hasFoundFile)
             {
                 // Copy file contents into memory.
-                for (index = 0; index < ibuffer.size() - 3; ++index)
-                {
-                    memory << ibuffer[index + 1];
-                }
+                memory.CopyFrom(&ibuffer[1], startAddress, ibuffer.size() - 3u);
+                startAddress += static_cast<Word>(ibuffer.size() - 3u);
             }
             count += ibuffer.size() - 3;
         }

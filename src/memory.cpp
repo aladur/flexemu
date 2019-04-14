@@ -59,7 +59,7 @@ Memory::~Memory()
 // memory must be initialized AFTER all memory mapped I/O is created
 void Memory::init_memory()
 {
-    int i;
+    DWord i;
     Byte j;
     Byte *p;
 
@@ -139,7 +139,7 @@ void Memory::init_memory()
         if (i != (isHiMem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2))
         {
             fprintf(stderr,
-                    "Memory management initialization failure (i=%d)\n", i);
+                    "Memory management initialization failure (i=%u)\n", i);
         }
     }
 
@@ -319,5 +319,22 @@ void Memory::UpdateFrom(NotifyId id, void *)
     {
         init_blocks_to_update();
     }
+}
+
+void Memory::CopyFrom(const Byte *buffer, size_t address, size_t aSize)
+{
+    size_t secureSize = aSize;
+
+    if (address >= memory_size)
+    {
+        throw std::out_of_range("address is out of valid range");
+    }
+
+    if (address + secureSize >= memory_size)
+    {
+        secureSize -= address + aSize - memory_size;
+    }
+
+    memcpy(memory.get() + address, buffer, secureSize);
 }
 

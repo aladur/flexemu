@@ -28,8 +28,7 @@
 BMemoryBuffer::BMemoryBuffer(size_t aSize) :
     size(aSize),
     startAddress(std::numeric_limits<size_t>::max()),
-    endAddress(std::numeric_limits<size_t>::min()),
-    currentAddress(0)
+    endAddress(std::numeric_limits<size_t>::min())
 {
     buffer.resize(size, 0);
 }
@@ -41,7 +40,6 @@ BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
               std::back_inserter(buffer));
     startAddress = src.startAddress;
     endAddress = src.endAddress;
-    currentAddress = src.currentAddress;
 }
 
 BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src)
@@ -50,7 +48,6 @@ BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src)
     buffer = std::move(src.buffer);
     startAddress = src.startAddress;
     endAddress = src.endAddress;
-    currentAddress = src.currentAddress;
 }
 
 BMemoryBuffer::~BMemoryBuffer()
@@ -66,7 +63,6 @@ BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
                   std::back_inserter(buffer));
         startAddress = src.startAddress;
         endAddress = src.endAddress;
-        currentAddress = src.currentAddress;
     }
 
     return *this;
@@ -78,7 +74,6 @@ BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src)
     buffer = std::move(src.buffer);
     startAddress = src.startAddress;
     endAddress = src.endAddress;
-    currentAddress = src.currentAddress;
 
     return *this;
 }
@@ -108,37 +103,31 @@ MemorySource<size_t> &BMemoryBuffer::operator>>(Byte &value)
     return *this;
 }
 
-void BMemoryBuffer::set_tgt_addr(size_t x_address)
+void BMemoryBuffer::CopyFrom(const Byte *src, size_t address, size_t aSize)
 {
-    currentAddress = x_address;
-    if ((currentAddress < size) && (currentAddress < startAddress))
-    {
-        startAddress = currentAddress;
-    }
-}
+    size_t secureSize = aSize;
 
-MemoryTarget<size_t> &BMemoryBuffer::operator<<(Byte value)
-{
-    if (currentAddress >= size)
+    if (address >= size)
     {
-        return *this;
+        throw std::out_of_range("address is out of valid range");
     }
 
-    buffer[currentAddress] = value;
-
-    if (currentAddress == 0 && (currentAddress < startAddress))
+    if (address + secureSize >= size)
     {
-        startAddress = currentAddress;
+        secureSize -= address + aSize - size;
     }
 
-    if (currentAddress > endAddress)
+    memcpy(buffer.data() + address, src, secureSize);
+
+    if (address < startAddress)
     {
-        endAddress = currentAddress;
+        startAddress = address;
     }
 
-    currentAddress++;
-
-    return *this;
+    if (address + secureSize - 1 > endAddress)
+    {
+        endAddress = address + secureSize - 1;
+    }
 }
 
 bool BMemoryBuffer::IsStartEndAddressValid() const

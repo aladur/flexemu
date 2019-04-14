@@ -32,8 +32,7 @@ template<class T>
 class MemoryTarget
 {
 public:
-    virtual void set_tgt_addr(T address) = 0;
-    virtual MemoryTarget& operator<<(Byte b) = 0;
+    virtual void CopyFrom(const Byte *buffer, T address, T aSize) = 0;
 };
 #endif
 

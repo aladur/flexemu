@@ -22,6 +22,7 @@
 
 
 #include <sstream>
+#include <limits>
 #include <stdio.h>
 #include <ctype.h>
 #include "fileread.h"
@@ -55,8 +56,11 @@ static Word fread_word(FILE *fp)
 static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     bool done = false;
-    Byte count, type, value;
-    Word address;
+    Byte type;
+    DWord index;
+    DWord count;
+    DWord address;
+    Byte buffer[256];
 
     while (!done)
     {
@@ -64,15 +68,19 @@ static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
         count = fread_byte(fp);
         address = fread_word(fp);
         type = fread_byte(fp);
-        memtgt.set_tgt_addr(address);
 
         if (type == 0x00)
         {
-            while (count--)
+            index = 0;
+            while (index < count)
             {
-                value = fread_byte(fp);
-                memtgt << value;
+                if (address + index <= std::numeric_limits<Word>::max())
+                {
+                    *(buffer + index) = fread_byte(fp);
+                }
+                index++;
             }
+            memtgt.CopyFrom(buffer, address, count);
         }
         else if (type == 0x01)
         {
@@ -92,8 +100,11 @@ static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
 static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     Byte done = 0;
-    Byte count, type, value;
-    Word address;
+    Byte type;
+    DWord index;
+    DWord count;
+    DWord address;
+    Byte buffer[256];
 
     while (!done)
     {
@@ -108,7 +119,7 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 
                 while (count--)
                 {
-                    value = fread_byte(fp);
+                    (void)fread_byte(fp);
                 };
 
                 break;
@@ -116,13 +127,17 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
             case '1':
                 count -= 3;
                 address = fread_word(fp);
-                memtgt.set_tgt_addr(address);
+                index = 0;
 
-                while (count--)
+                while (index < count)
                 {
-                    value = fread_byte(fp);
-                    memtgt << value;
-                };
+                    if (address + index <= std::numeric_limits<Word>::max())
+                    {
+                        *(buffer + index) = fread_byte(fp);
+                    }
+                    index++;
+                }
+                memtgt.CopyFrom(buffer, address, count);
 
                 break;
 
@@ -148,12 +163,14 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
 {
     int value;
-    Word address = 0;
-    size_t count = 0;
+    DWord address = 0;
+    DWord count = 0;
+    DWord index = 0;
+    Byte buffer[256];
 
     while ((value = fgetc(fp)) != EOF)
     {
-        if (count == 0)
+        if (index == count)
         {
             if (value == 0x02)
             {
@@ -161,7 +178,6 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
                 address = (fgetc(fp) & 0xff) << 8;
                 address |= fgetc(fp) & 0xff;
                 count = fgetc(fp) & 0xff;
-                memtgt.set_tgt_addr(address);
             } else if (value == 0x16)
             {
                 // Read start address and ignore it.
@@ -175,8 +191,14 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
             // Read next byte.
             value = fgetc(fp);
         }
-        memtgt << (Byte)value;
-        --count;
+        if (address + index <= std::numeric_limits<Word>::max())
+        {
+            *(buffer + index) = fread_byte(fp);
+        }
+        if (++index == count)
+        {
+            memtgt.CopyFrom(buffer, address, count);
+        }
     }
 }
 

@@ -54,11 +54,10 @@ private:
     bool isHiMem;
     bool isFlexibleMmu;
     bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
-    int memory_size;
-    int video_ram_size;
+    DWord memory_size;
+    DWord video_ram_size;
     std::unique_ptr<Byte[]> memory;
     std::unique_ptr<Byte[]> video_ram;
-    Word target_address;
 
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;
@@ -99,16 +98,7 @@ public:
 
     // memory target interface
 public:
-    MemoryTarget& operator<< (Byte value)
-    {
-        write_ram_rom(target_address++, value);
-        return *this;
-    }
-
-    void set_tgt_addr(size_t newAddress)
-    {
-        target_address = static_cast<Word>(newAddress);
-    }
+    void CopyFrom(const Byte *buffer, size_t address, size_t aSize);
 
 public:
     void write_ram_rom(Word address, Byte value);
