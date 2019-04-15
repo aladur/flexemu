@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="bintervl.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="fileread.h" />

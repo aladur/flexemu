@@ -37,6 +37,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bintervl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="confignt.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

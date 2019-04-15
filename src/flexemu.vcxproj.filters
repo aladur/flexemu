@@ -270,6 +270,9 @@
     <ClInclude Include="bfileptr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="bintervl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="binifile.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>

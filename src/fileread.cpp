@@ -235,6 +235,29 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
     return 0;
 }
 
+static int write_buffer(FILE *fp, const Byte *buffer, size_t address,
+                        size_t size)
+{
+    Byte header[4];
+
+    header[0] = 0x02;
+    header[1] = (address >> 8) & 0xff;
+    header[2] = address & 0xff;
+    header[3] = static_cast<Byte>(size);
+
+    if (fwrite(header, sizeof(Byte), sizeof(header), fp) != sizeof(header))
+    {
+        return -2; // write error
+    }
+
+    if (fwrite(buffer, sizeof(Byte), size, fp) != size)
+    {
+        return -2; // write error
+    }
+
+    return 0;
+}
+
 int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
 {
     BFilePtr fp(filename, "wb");
@@ -244,47 +267,34 @@ int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
         return -1; // Could not open file for writing
     }
 
-    const size_t buffer_size = 255;
-    Byte header[4] = { 0x02, 0x00, 0x00, 0x00 };
-    Byte buffer[buffer_size];
-    Word address = static_cast<Word>(memsrc.reset_src_addr());
-    size_t index = 0;
-    bool last_junk_written = false;
+    const auto& addressRanges = memsrc.GetAddressRanges();
 
-    while (!memsrc.src_at_end() || !last_junk_written)
+    for (const auto& addressRange : addressRanges)
     {
-        bool at_end = memsrc.src_at_end();
+        Byte buffer[255];
+        int result;
+        size_t address;
+        size_t remainder = (1 + width(addressRange)) % sizeof(buffer);
 
-        if (!at_end)
+        for (address = addressRange.lower();
+                address <= (addressRange.upper() - sizeof(buffer) + 1);
+                address += sizeof(buffer))
         {
-            memsrc >> buffer[index++];
+            memsrc.CopyTo(buffer, address, sizeof(buffer));
+            result = write_buffer(fp, buffer, address, sizeof(buffer));
+            if (result != 0)
+            {
+                return result;
+            }
         }
 
-        if (index == buffer_size || (at_end && !last_junk_written))
+        if (remainder)
         {
-            if (index > 0)
+            memsrc.CopyTo(buffer, address, remainder);
+            result = write_buffer(fp, buffer, address, remainder);
+            if (result != 0)
             {
-                header[1] = (address >> 8) & 0xff;
-                header[2] = address & 0xff;
-                header[3] = static_cast<Byte>(index);
-                if (fwrite(&header, sizeof(Byte), sizeof(header), fp) !=
-                    sizeof(header))
-                {
-                    return -2; // write error
-                }
-
-                if (fwrite(&buffer, sizeof(Byte), index, fp) != index)
-                {
-                    return -2; // write error
-                }
-
-                address += static_cast<Word>(index);
-                index = 0;
-            }
-
-            if (at_end)
-            {
-                last_junk_written = true;
+                return result;
             }
         }
     }

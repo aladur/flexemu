@@ -227,6 +227,7 @@
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
     <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="bintervl.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bobserv.h" />
     <ClInclude Include="bobservd.h" />

@@ -48,9 +48,8 @@ public:
     };
 
     // MemorySource interface
-    size_t reset_src_addr() override;
-    bool src_at_end() const override;
-    MemorySource& operator>>(Byte &b) override;
+    const MemorySource::AddressRanges& GetAddressRanges() override;
+    void CopyTo(Byte *buffer, size_t address, size_t aSize) override;
 
     // MemoryTarget interface
     void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
@@ -66,7 +65,7 @@ private:
     std::vector<Byte> buffer;
     size_t startAddress;
     size_t endAddress;
-    size_t sourceAddress;
+    AddressRanges addressRanges;
 };
 
 #endif // BMEMBUF_INCLUDED

@@ -26,15 +26,20 @@
 #define MEMSRC_INCLUDED
 
 #include "typedefs.h"
+#include "bintervl.h"
+#include <vector>
+
 
 
 template<class T>
 class MemorySource
 {
 public:
-    virtual T reset_src_addr() = 0;
-    virtual bool src_at_end() const = 0;
-    virtual MemorySource& operator>>(Byte &b) = 0;
+    using AddressRange = BInterval<T>;
+    using AddressRanges = std::vector<AddressRange>;
+
+    virtual const AddressRanges& GetAddressRanges() = 0;
+    virtual void CopyTo(Byte *buffer, T address, T aSize) = 0;
 };
 #endif
 

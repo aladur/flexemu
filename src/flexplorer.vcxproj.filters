@@ -144,6 +144,9 @@
     <ClInclude Include="bfileptr.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="bintervl.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
     <ClInclude Include="bmembuf.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
