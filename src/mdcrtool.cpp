@@ -92,7 +92,7 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
 
     for (const char *ifile : ifiles)
     {
-        memory.ResetStartEndAddress();
+        memory.Reset();
         auto result = load_hexfile(ifile, memory);
         if (result == -1)
         {
@@ -224,10 +224,18 @@ int ListContentOfMdcrFile(const char *ifile)
                        [](const std::string &filename,
                           BMemoryBuffer &memory)
     {
-        auto addrRange = memory.GetStartEndAddress();
-        std::cout << filename << std::hex << std::uppercase
-                  << " " << std::setw(4) << std::setfill('0') << addrRange.first
-                  << " " << std::setw(4) << std::setfill('0') << addrRange.second << "\n";
+        if (memory.GetAddressRanges().size() != 1)
+        {
+            std::cout << filename << " unknown address range\n";
+        }
+        else
+        {
+            const auto addrRange = memory.GetAddressRanges()[0];
+            std::cout << filename << std::hex << std::uppercase
+                      << std::setw(4) << std::setfill('0')
+                      << " " << addrRange.lower()
+                      << " " << addrRange.upper() << "\n";
+        }
         return MdcrStatus::Success;
     });
 

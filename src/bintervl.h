@@ -24,6 +24,8 @@
 #define _BINTERVL_H_
 
 #include <algorithm>
+#include <vector>
+#include <ostream>
 
 
 template <typename T>
@@ -145,6 +147,54 @@ template <typename T>
 bool cergt(const BInterval<T>& src, const T& y)
 {
     return src.lower() > y;
+}
+
+// The following free functions are not part of the boost::interval
+// implementation.
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const BInterval<T> &iv)
+{
+    os << "[" << iv.lower() << "," << iv.upper() << "]";
+    return os;
+}
+
+// Compare intervals lower limit values.
+template <typename T>
+bool cmp_lower(const BInterval<T> &a, const BInterval<T> &b)
+{
+    return cerlt(a.lower(), b);
+}
+
+// Sort all intervals by their lower value.
+template <typename T>
+void sort_lower(std::vector<BInterval<T> > &bintervals)
+{
+    std::sort(std::begin(bintervals), std::end(bintervals), cmp_lower<T>);
+}
+
+// Join all intervals which either overlap or adjoin.
+template <typename T>
+void join(std::vector<BInterval<T> > &bintervals)
+{
+    sort_lower(bintervals);
+
+    for (auto it = bintervals.begin(); it != bintervals.end(); ++it)
+    {
+        bool done = false;
+        while (!done)
+        {
+            done = true;
+            const auto itNext = it + 1;
+            if (itNext != bintervals.end() &&
+                (overlap(*it, *itNext) || (it->upper() + 1 == itNext->lower())))
+            {
+                *it = hull(*it, *itNext);
+                bintervals.erase(itNext);
+                done = false;
+            }
+        }
+    }
 }
 #endif // #ifndef _BINTERVL_H_
 

@@ -44,28 +44,24 @@ public:
 
     inline size_t GetSize() const
     {
-        return size;
+        return buffer.size();
     };
 
     // MemorySource interface
-    const MemorySource::AddressRanges& GetAddressRanges() override;
-    void CopyTo(Byte *buffer, size_t address, size_t aSize) override;
+    const MemorySource<size_t>::AddressRanges& GetAddressRanges() const override;
+    void CopyTo(Byte *buffer, size_t address, size_t aSize) const override;
 
     // MemoryTarget interface
     void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
 
 public:
-    bool IsStartEndAddressValid() const;
-    std::pair<size_t, size_t> GetStartEndAddress() const;
-    bool CopyStartEndRangeTo(std::vector<Byte> &buffer) const;
-    void ResetStartEndAddress();
+    bool CopyTo(std::vector<Byte> &buffer,
+                const MemorySource<size_t>::AddressRange &addressRange) const;
+    void Reset();
 
 private:
-    size_t size;
     std::vector<Byte> buffer;
-    size_t startAddress;
-    size_t endAddress;
-    AddressRanges addressRanges;
+    MemorySource<size_t>::AddressRanges addressRanges;
 };
 
 #endif // BMEMBUF_INCLUDED

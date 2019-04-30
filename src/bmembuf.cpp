@@ -25,29 +25,24 @@
 #include <algorithm>
 
 
-BMemoryBuffer::BMemoryBuffer(size_t aSize) :
-    size(aSize),
-    startAddress(std::numeric_limits<size_t>::max()),
-    endAddress(std::numeric_limits<size_t>::min())
+BMemoryBuffer::BMemoryBuffer(size_t aSize)
 {
-    buffer.resize(size, 0);
+    buffer.resize(aSize, 0);
 }
 
 BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
 {
-    size = src.size;
+    buffer.clear();
     std::copy(src.buffer.cbegin(), src.buffer.cend(),
               std::back_inserter(buffer));
-    startAddress = src.startAddress;
-    endAddress = src.endAddress;
+    std::copy(src.addressRanges.cbegin(), src.addressRanges.cend(),
+              std::back_inserter(addressRanges));
 }
 
 BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src)
 {
-    size = src.size;
     buffer = std::move(src.buffer);
-    startAddress = src.startAddress;
-    endAddress = src.endAddress;
+    addressRanges = std::move(src.addressRanges);
 }
 
 BMemoryBuffer::~BMemoryBuffer()
@@ -58,11 +53,11 @@ BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
 {
     if (this != &src)
     {
-        size = src.size;
+        buffer.clear();
         std::copy(src.buffer.cbegin(), src.buffer.cend(),
                   std::back_inserter(buffer));
-        startAddress = src.startAddress;
-        endAddress = src.endAddress;
+        std::copy(src.addressRanges.cbegin(), src.addressRanges.cend(),
+                  std::back_inserter(addressRanges));
     }
 
     return *this;
@@ -70,26 +65,24 @@ BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
 
 BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src)
 {
-    size = src.size;
     buffer = std::move(src.buffer);
-    startAddress = src.startAddress;
-    endAddress = src.endAddress;
+    addressRanges = std::move(src.addressRanges);
 
     return *this;
 }
 
-void BMemoryBuffer::CopyTo(Byte *target, size_t address, size_t aSize)
+void BMemoryBuffer::CopyTo(Byte *target, size_t address, size_t aSize) const
 {
     size_t secureSize = aSize;
 
-    if (address >= size)
+    if (address >= buffer.size())
     {
         throw std::out_of_range("address is out of valid range");
     }
 
-    if (address + secureSize >= size)
+    if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + aSize - size;
+        secureSize -= address + aSize - buffer.size();
     }
 
     memcpy(target, buffer.data() + address, secureSize);
@@ -104,76 +97,43 @@ void BMemoryBuffer::CopyFrom(const Byte *src, size_t address, size_t aSize)
 {
     size_t secureSize = aSize;
 
-    if (address >= size)
+    if (address >= buffer.size())
     {
         throw std::out_of_range("address is out of valid range");
     }
 
-    if (address + secureSize >= size)
+    if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + aSize - size;
+        secureSize -= address + aSize - buffer.size();
     }
 
     memcpy(buffer.data() + address, src, secureSize);
 
-    if (address < startAddress)
-    {
-        startAddress = address;
-    }
-
-    if (address + secureSize - 1 > endAddress)
-    {
-        endAddress = address + secureSize - 1;
-    }
+    size_t endAddress = address + secureSize - 1;
+    addressRanges.emplace_back(
+            MemorySource<size_t>::AddressRange(address, endAddress));
+    join(addressRanges);
 }
 
-bool BMemoryBuffer::IsStartEndAddressValid() const
+bool BMemoryBuffer::CopyTo(std::vector<Byte> &targetBuffer,
+           const MemorySource<size_t>::AddressRange &addressRange) const
 {
-    return (startAddress != std::numeric_limits<size_t>::max() &&
-            endAddress != std::numeric_limits<size_t>::min());
-}
-
-std::pair<size_t, size_t> BMemoryBuffer::GetStartEndAddress() const
-{
-    return std::pair<size_t, size_t>(startAddress, endAddress);
-}
-
-bool BMemoryBuffer::CopyStartEndRangeTo(std::vector<Byte> &targetBuffer) const
-{
-    targetBuffer.clear();
-
-    if (!IsStartEndAddressValid())
-    {
-        return false;
-    }
-
-    auto startIter = buffer.cbegin() + startAddress;
-    auto endIter = buffer.cbegin() + endAddress + 1;
+    auto startIter = buffer.cbegin() + addressRange.lower();
+    auto endIter = buffer.cbegin() + addressRange.upper() + 1;
 
     std::copy(startIter, endIter, std::back_inserter(targetBuffer));
 
     return true;
 }
 
-void BMemoryBuffer::ResetStartEndAddress()
+void BMemoryBuffer::Reset()
 {
-    startAddress = std::numeric_limits<size_t>::max();
-    endAddress = std::numeric_limits<size_t>::min();
+    memset(buffer.data(), 0, buffer.size());
+    addressRanges.clear();
 }
 
-const MemorySource<size_t>::AddressRanges& BMemoryBuffer::GetAddressRanges()
+const MemorySource<size_t>::AddressRanges& BMemoryBuffer::GetAddressRanges() const
 {
-    // In this version only one contiguous address range is supported.
-    // This will be changed.
-    if (addressRanges.empty())
-    {
-        addressRanges.emplace_back(BInterval<size_t>(startAddress, endAddress));
-    }
-    else
-    {
-        addressRanges[0].assign(startAddress, endAddress);
-    }
-
     return addressRanges;
 }
 

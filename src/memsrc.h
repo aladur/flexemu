@@ -38,8 +38,8 @@ public:
     using AddressRange = BInterval<T>;
     using AddressRanges = std::vector<AddressRange>;
 
-    virtual const AddressRanges& GetAddressRanges() = 0;
-    virtual void CopyTo(Byte *buffer, T address, T aSize) = 0;
+    virtual const AddressRanges& GetAddressRanges() const = 0;
+    virtual void CopyTo(Byte *buffer, T address, T aSize) const = 0;
 };
 #endif
 

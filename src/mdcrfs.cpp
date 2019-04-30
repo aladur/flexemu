@@ -218,8 +218,14 @@ MdcrStatus MdcrFileSystem::WriteFile(
     {
         return MdcrStatus::WriteProtected;
     }
-    
-    if (!memory.CopyStartEndRangeTo(ibuffer) || ibuffer.empty())
+
+    if (memory.GetAddressRanges().size() != 1)
+    {
+        return MdcrStatus::InvalidData;
+    }
+
+    const auto addressRange = memory.GetAddressRanges()[0];
+    if (!memory.CopyTo(ibuffer, addressRange) || ibuffer.empty())
     {
         return MdcrStatus::InvalidData;
     }
@@ -251,7 +257,6 @@ MdcrStatus MdcrFileSystem::WriteFile(
         }
     }
 
-    auto startEndAddress = memory.GetStartEndAddress();
     obuffer.resize(13);
     auto iter = obuffer.begin();
     auto checksumIter = obuffer.cbegin() + 1;
@@ -273,10 +278,10 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
     *(iter++) = 0x55;
     SetFilename(iter, mdcrFilename.c_str());
-    *(iter++) = (startEndAddress.first >> 8) & 0xFF;
-    *(iter++) = startEndAddress.first & 0xFF;
-    *(iter++) = (startEndAddress.second >> 8) & 0xFF;
-    *(iter++) = startEndAddress.second & 0xFF;
+    *(iter++) = (addressRange.lower() >> 8) & 0xFF;
+    *(iter++) = addressRange.lower() & 0xFF;
+    *(iter++) = (addressRange.upper() >> 8) & 0xFF;
+    *(iter++) = addressRange.upper() & 0xFF;
     *(iter++) = CalculateChecksum(checksumIter, 10);
     *(iter++) = 0;
   
@@ -343,7 +348,7 @@ MdcrStatus MdcrFileSystem::ForEachFile(MiniDcrTape &mdcr,
     while (mdcr.HasRecord())
     {
         filename.clear();
-        memory.ResetStartEndAddress();
+        memory.Reset();
         MdcrStatus status = ReadFile(filename, memory, mdcr);
 
         if (status != MdcrStatus::Success)
