@@ -231,10 +231,11 @@ int ListContentOfMdcrFile(const char *ifile)
         else
         {
             const auto addrRange = memory.GetAddressRanges()[0];
-            std::cout << filename << std::hex << std::uppercase
-                      << std::setw(4) << std::setfill('0')
-                      << " " << addrRange.lower()
-                      << " " << addrRange.upper() << "\n";
+            std::cout
+                << filename << std::hex << std::uppercase
+                << " " << std::setw(4) << std::setfill('0') << addrRange.lower()
+                << " " << std::setw(4) << std::setfill('0') << addrRange.upper()
+                << "\n";
         }
         return MdcrStatus::Success;
     });
