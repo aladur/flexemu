@@ -26,6 +26,7 @@
 #include <fstream>
 #include <limits>
 #include <memory>
+#include <functional>
 #include "fileread.h"
 
 
@@ -248,8 +249,8 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
     return 0;
 }
 
-static int write_buffer(std::ostream &ostream, const Byte *buffer,
-                        size_t address, size_t size)
+static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
+                                    size_t address, size_t size)
 {
     Byte header[4];
 
@@ -273,9 +274,11 @@ static int write_buffer(std::ostream &ostream, const Byte *buffer,
     return 0;
 }
 
-static int write_hexfile(const char *filename,
-                         const MemorySource<size_t> &memsrc,
-                         Byte buffer_size)
+static int write_hexfile(
+   const char *filename,
+   const MemorySource<size_t> &memsrc,
+   std::function<int(std::ostream&, const Byte *, size_t, size_t)> write_buffer,
+   Byte buffer_size)
 {
     const auto mode = std::ios_base::out |
                       std::ios_base::trunc |
@@ -324,6 +327,6 @@ static int write_hexfile(const char *filename,
 
 int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
 {
-    return write_hexfile(filename, memsrc, 255);
+    return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255);
 }
 
