@@ -258,7 +258,7 @@ static int write_buffer(FILE *fp, const Byte *buffer, size_t address,
     return 0;
 }
 
-int write_flex_binary(const char *filename, MemorySource<size_t> &memsrc)
+int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
 {
     BFilePtr fp(filename, "wb");
 
