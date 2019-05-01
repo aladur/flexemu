@@ -173,6 +173,7 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
     {
         if (index == count)
         {
+            index = 0;
             if (value == 0x02)
             {
                 // Read address and byte count.
@@ -194,7 +195,7 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
         }
         if (address + index <= std::numeric_limits<Word>::max())
         {
-            *(buffer + index) = fread_byte(fp);
+            *(buffer + index) = value;
         }
         if (++index == count)
         {
