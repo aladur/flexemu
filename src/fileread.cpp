@@ -23,6 +23,7 @@
 
 #include <sstream>
 #include <limits>
+#include <memory>
 #include <stdio.h>
 #include <ctype.h>
 #include "fileread.h"
@@ -258,7 +259,9 @@ static int write_buffer(FILE *fp, const Byte *buffer, size_t address,
     return 0;
 }
 
-int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
+static int write_hexfile(const char *filename,
+                         const MemorySource<size_t> &memsrc,
+                         Byte buffer_size)
 {
     BFilePtr fp(filename, "wb");
 
@@ -267,21 +270,21 @@ int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
         return -1; // Could not open file for writing
     }
 
+    auto buffer = std::unique_ptr<Byte []>(new Byte[buffer_size]);
     const auto& addressRanges = memsrc.GetAddressRanges();
 
     for (const auto& addressRange : addressRanges)
     {
-        Byte buffer[255];
         int result;
         size_t address;
-        size_t remainder = (1 + width(addressRange)) % sizeof(buffer);
+        size_t remainder = (1 + width(addressRange)) % buffer_size;
 
         for (address = addressRange.lower();
-                address <= (addressRange.upper() - sizeof(buffer) + 1);
-                address += sizeof(buffer))
+                address <= addressRange.upper() - buffer_size + 1;
+                address += buffer_size)
         {
-            memsrc.CopyTo(buffer, address, sizeof(buffer));
-            result = write_buffer(fp, buffer, address, sizeof(buffer));
+            memsrc.CopyTo(buffer.get(), address, buffer_size);
+            result = write_buffer(fp, buffer.get(), address, buffer_size);
             if (result != 0)
             {
                 return result;
@@ -290,8 +293,8 @@ int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
 
         if (remainder)
         {
-            memsrc.CopyTo(buffer, address, remainder);
-            result = write_buffer(fp, buffer, address, remainder);
+            memsrc.CopyTo(buffer.get(), address, remainder);
+            result = write_buffer(fp, buffer.get(), address, remainder);
             if (result != 0)
             {
                 return result;
@@ -300,5 +303,10 @@ int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
     }
 
     return 0;
+}
+
+int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
+{
+    return write_hexfile(filename, memsrc, 255);
 }
 
