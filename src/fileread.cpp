@@ -22,39 +22,40 @@
 
 
 #include <sstream>
+#include <iostream>
+#include <fstream>
 #include <limits>
 #include <memory>
-#include <stdio.h>
-#include <ctype.h>
 #include "fileread.h"
-#include "bfileptr.h"
 
 
-static Byte fread_byte(FILE *fp)
+static Byte fread_byte(std::istream &istream)
 {
+    std::stringstream stream;
     char str[3];
-    DWord value;
+    unsigned int value;
 
-    str[0] = static_cast<char>(fgetc(fp));
-    str[1] = static_cast<char>(fgetc(fp));
+    str[0] = istream.get();
+    str[1] = istream.get();
     str[2] = '\0';
 
-    value = strtol(str, nullptr, 16);
+    stream << std::hex << str;
+    stream >> value;
     return (Byte)(value & 0xff);
 }
 
-static Word fread_word(FILE *fp)
+static Word fread_word(std::istream &istream)
 {
     Word ret;
 
-    ret = fread_byte(fp);
+    ret = fread_byte(istream);
     ret <<= 8;
-    ret |= fread_byte(fp);
+    ret |= fread_byte(istream);
 
     return ret;
 }
 
-static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
+static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt)
 {
     bool done = false;
     Byte type;
@@ -65,10 +66,10 @@ static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
 
     while (!done)
     {
-        (void)fgetc(fp);
-        count = fread_byte(fp);
-        address = fread_word(fp);
-        type = fread_byte(fp);
+        (void)istream.get();
+        count = fread_byte(istream);
+        address = fread_word(istream);
+        type = fread_byte(istream);
 
         if (type == 0x00)
         {
@@ -77,7 +78,7 @@ static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
             {
                 if (address + index <= std::numeric_limits<Word>::max())
                 {
-                    *(buffer + index) = fread_byte(fp);
+                    *(buffer + index) = fread_byte(istream);
                 }
                 index++;
             }
@@ -89,18 +90,19 @@ static void load_intelhex(FILE *fp, MemoryTarget<size_t> &memtgt)
         }
 
         // Read and discard checksum byte
-        (void)fread_byte(fp);
+        (void)fread_byte(istream);
 
-        if (fgetc(fp) == '\r')
+        if (istream.get() == '\r')
         {
-            (void)fgetc(fp);
+            (void)istream.get();
         }
     }
 }
 
-static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
+static void load_motorola_srec(std::istream &istream,
+                               MemoryTarget<size_t> &memtgt)
 {
-    Byte done = 0;
+    bool done = false;
     Byte type;
     DWord index;
     DWord count;
@@ -109,9 +111,13 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 
     while (!done)
     {
-        (void)fgetc(fp); /* read 'S' */
-        type = static_cast<char>(fgetc(fp));   /* read type of line */
-        count = fread_byte(fp);
+        (void)istream.get(); /* read 'S' */
+        if (istream.eof())
+        {
+            break;
+        }
+        type = static_cast<char>(istream.get());   /* read type of line */
+        count = fread_byte(istream);
 
         switch (type)
         {
@@ -120,21 +126,21 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
 
                 while (count--)
                 {
-                    (void)fread_byte(fp);
+                    (void)fread_byte(istream);
                 };
 
                 break;
 
             case '1':
                 count -= 3;
-                address = fread_word(fp);
+                address = fread_word(istream);
                 index = 0;
 
                 while (index < count)
                 {
                     if (address + index <= std::numeric_limits<Word>::max())
                     {
-                        *(buffer + index) = fread_byte(fp);
+                        *(buffer + index) = fread_byte(istream);
                     }
                     index++;
                 }
@@ -143,7 +149,7 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
                 break;
 
             case '9':
-                address = fread_word(fp);
+                address = fread_word(istream);
                 done = 1;
                 break;
 
@@ -152,38 +158,43 @@ static void load_motorola_srec(FILE *fp, MemoryTarget<size_t> &memtgt)
         }
 
         // Read and discard checksum byte
-        (void)fread_byte(fp);
+        (void)fread_byte(istream);
 
-        if (fgetc(fp) == '\r')
+        if (istream.get() == '\r')
         {
-            (void)fgetc(fp);
+            (void)istream.get();
         }
     }
 }
 
-void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
+void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt)
 {
-    int value;
+    Byte value;
     DWord address = 0;
     DWord count = 0;
     DWord index = 0;
     Byte buffer[256];
 
-    while ((value = fgetc(fp)) != EOF)
+    while (true)
     {
+        value = istream.get();
+        if (istream.eof())
+        {
+            break;
+        }
         if (index == count)
         {
             index = 0;
             if (value == 0x02)
             {
                 // Read address and byte count.
-                address = (fgetc(fp) & 0xff) << 8;
-                address |= fgetc(fp) & 0xff;
-                count = fgetc(fp) & 0xff;
+                address = (istream.get() & 0xff) << 8;
+                address |= istream.get() & 0xff;
+                count = istream.get() & 0xff;
             } else if (value == 0x16)
             {
                 // Read start address and ignore it.
-                Word temp = fread_word(fp);
+                Word temp = fread_word(istream);
                 (void)temp;
                 return;
             } else
@@ -191,7 +202,7 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
                 return;
             }
             // Read next byte.
-            value = fgetc(fp);
+            value = istream.get();
         }
         if (address + index <= std::numeric_limits<Word>::max())
         {
@@ -207,27 +218,27 @@ void load_flex_binary(FILE *fp, MemoryTarget<size_t> &memtgt)
 int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
 {
     Word ch;
-    BFilePtr fp(filename, "rb");
+    std::ifstream istream(filename, std::ios_base::in);
 
-    if (fp == nullptr)
+    if (!istream.is_open())
     {
-        return -1; // File not found
+        return -1; // Could not open file for reading
     }
 
-    ch = static_cast<Word>(fgetc(fp));
-    ungetc(ch, fp);
+    ch = static_cast<Word>(istream.get());
+    istream.unget();
 
     if (ch == ':')
     {
-        load_intelhex(fp, memtgt);
+        load_intelhex(istream, memtgt);
     }
     else if (toupper(ch) == 'S')
     {
-        load_motorola_srec(fp, memtgt);
+        load_motorola_srec(istream, memtgt);
     }
     else if (ch == 0x02)
     {
-        load_flex_binary(fp, memtgt);
+        load_flex_binary(istream, memtgt);
     }
     else
     {
@@ -237,8 +248,8 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
     return 0;
 }
 
-static int write_buffer(FILE *fp, const Byte *buffer, size_t address,
-                        size_t size)
+static int write_buffer(std::ostream &ostream, const Byte *buffer,
+                        size_t address, size_t size)
 {
     Byte header[4];
 
@@ -247,12 +258,14 @@ static int write_buffer(FILE *fp, const Byte *buffer, size_t address,
     header[2] = address & 0xff;
     header[3] = static_cast<Byte>(size);
 
-    if (fwrite(header, sizeof(Byte), sizeof(header), fp) != sizeof(header))
+    ostream.write(reinterpret_cast<const char *>(&header[0]), sizeof(header));
+    if (ostream.fail())
     {
         return -2; // write error
     }
 
-    if (fwrite(buffer, sizeof(Byte), size, fp) != size)
+    ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
+    if (ostream.fail())
     {
         return -2; // write error
     }
@@ -264,9 +277,12 @@ static int write_hexfile(const char *filename,
                          const MemorySource<size_t> &memsrc,
                          Byte buffer_size)
 {
-    BFilePtr fp(filename, "wb");
+    const auto mode = std::ios_base::out |
+                      std::ios_base::trunc |
+                      std::ios_base::binary;
+    std::ofstream ostream(filename, mode);
 
-    if (fp == nullptr)
+    if (!ostream.is_open())
     {
         return -1; // Could not open file for writing
     }
@@ -285,7 +301,7 @@ static int write_hexfile(const char *filename,
                 address += buffer_size)
         {
             memsrc.CopyTo(buffer.get(), address, buffer_size);
-            result = write_buffer(fp, buffer.get(), address, buffer_size);
+            result = write_buffer(ostream, buffer.get(), address, buffer_size);
             if (result != 0)
             {
                 return result;
@@ -295,7 +311,7 @@ static int write_hexfile(const char *filename,
         if (remainder)
         {
             memsrc.CopyTo(buffer.get(), address, remainder);
-            result = write_buffer(fp, buffer.get(), address, remainder);
+            result = write_buffer(ostream, buffer.get(), address, remainder);
             if (result != 0)
             {
                 return result;
