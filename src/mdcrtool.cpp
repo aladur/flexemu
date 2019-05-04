@@ -186,8 +186,10 @@ int ExtractFromMdcrFile(const char *ifile)
         auto result = write_flex_binary(outFilename.c_str(), memory);
         if (result < 0)
         {
-            std::cerr << "*** Error opening or writing to " << outFilename <<
-                         ". Ignored.\n";
+            std::cerr << "*** Error in \"" << outFilename << "\":"
+                      << std::endl << "    ";
+            print_hexfile_error(std::cerr, result);
+            std::cerr << " Ignored." << std::endl;
         }
 
         return MdcrStatus::Success;

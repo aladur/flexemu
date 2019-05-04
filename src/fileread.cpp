@@ -464,7 +464,7 @@ static int write_hexfile(
 
     if (!ostream.is_open())
     {
-        return -1; // Could not open file for writing
+        return -6; // Could not open file for writing
     }
 
     auto buffer = std::unique_ptr<Byte []>(new Byte[buffer_size]);
@@ -531,7 +531,8 @@ void print_hexfile_error(std::ostream &ostream, int error_id)
     {
         switch (error_id)
         {
-            case -1: ostream << "File does not exist or can not be opened.";
+            case -1: ostream << "File does not exist or "
+                                "can not be opened for reading.";
                      break;
 
             case -2: ostream << "Error reading from file.";
@@ -544,6 +545,9 @@ void print_hexfile_error(std::ostream &ostream, int error_id)
                      break;
 
             case -5: ostream << "Error writing to file.";
+                     break;
+
+            case -6: ostream << "File can not be opened for writing.";
                      break;
 
             default: ostream << "Unspecified error.";

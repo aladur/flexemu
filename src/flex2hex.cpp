@@ -81,16 +81,25 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
 
     switch(ofiletype)
     {
-        case FileType::IntelHex: write_intelhex(ofile, memory, startAddress);
+        case FileType::IntelHex:
+                  result = write_intelhex(ofile, memory, startAddress);
                   break;
 
-        case FileType::MotorolaSRec: write_motorola_srec(ofile, memory,
-                                                         startAddress);
+        case FileType::MotorolaSRec:
+                  result = write_motorola_srec(ofile, memory, startAddress);
                   break;
 
         case FileType::Unknown:
                   std::cerr << "*** No file format specified" << std::endl;
                   return 1;
+    }
+
+    if (result < 0)
+    {
+        std::cerr << "*** Error in \"" << ofile << "\":" << std::endl << "    ";
+        print_hexfile_error(std::cerr, result);
+        std::cerr << std::endl;
+        return 1;
     }
 
     if (verbose > 0)
@@ -183,6 +192,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    result = 0;
+
     for (const auto &ifile : ifiles)
     {
         struct stat status;
@@ -245,8 +256,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        result = ConvertFlexToHex(ifile.c_str(), ofile.c_str(),
-                                  ofiletype, verbose);
+        result |= ConvertFlexToHex(ifile.c_str(), ofile.c_str(),
+                                   ofiletype, verbose);
     }
 
     return result;
