@@ -318,7 +318,15 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
-static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
+enum class WBType
+{
+    Header,
+    Data,
+    StartAddress,
+};
+
+static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
+                                    const Byte *buffer,
                                     size_t address, size_t size)
 {
     Byte header[4];
@@ -326,48 +334,62 @@ static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
     header[1] = (address >> 8) & 0xff;
     header[2] = address & 0xff;
 
-    if (size > 0)
+    switch (wbType)
     {
-        header[0] = 0x02;
-        header[3] = static_cast<Byte>(size);
+        case WBType::Header:
+            break;
 
-        ostream.write(
-                reinterpret_cast<const char *>(&header[0]), sizeof(header));
-        if (ostream.fail())
-        {
-            return -5; // write error
-        }
+        case WBType::Data:
+            header[0] = 0x02;
+            header[3] = static_cast<Byte>(size);
 
-        ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
-        if (ostream.fail())
-        {
-            return -5; // write error
-        }
-    }
-    else if (address != std::numeric_limits<size_t>::max())
-    {
-        // Write start address if available
-        header[0] = 0x16;
+            ostream.write(
+                    reinterpret_cast<const char *>(&header[0]), sizeof(header));
+            if (ostream.fail())
+            {
+                return -5; // write error
+            }
 
-        ostream.write(
-                reinterpret_cast<const char *>(&header[0]), sizeof(header) - 1);
-        if (ostream.fail())
-        {
-            return -5; // write error
-        }
+            ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
+            if (ostream.fail())
+            {
+                return -5; // write error
+            }
+            break;
+
+        case WBType::StartAddress:
+            if (address != std::numeric_limits<size_t>::max())
+            {
+                // Write start address if available
+                header[0] = 0x16;
+
+                ostream.write(
+                        reinterpret_cast<const char *>(&header[0]), sizeof(header) - 1);
+                if (ostream.fail())
+                {
+                    return -5; // write error
+                }
+            }
+            break;
     }
 
     return 0;
 }
 
-static int write_buffer_intelhex(std::ostream &ostream, const Byte *buffer,
+static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
+                                 const Byte *buffer,
                                  size_t address, size_t size)
 {
     Byte checksum = 0;
     Byte type = 0;
     size_t index;
 
-    if (size == 0)
+    if (wbType == WBType::Header)
+    {
+        return 0;
+    }
+
+    if (wbType == WBType::StartAddress)
     {
         // Write the end-of-file record with start address
         type = 1;
@@ -406,21 +428,26 @@ static int write_buffer_intelhex(std::ostream &ostream, const Byte *buffer,
     return 0;
 }
 
-static int write_buffer_motorola_srec(std::ostream &ostream, const Byte *buffer,
+static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
+                                      const Byte *buffer,
                                       size_t address, size_t size)
 {
     Byte checksum = 0;
     Byte type = 1;
     size_t index;
 
-    if (size == 0)
+    switch (wbType)
+    {
+        case WBType::Header: type = 0; break;
+        case WBType::Data: type = 1; break;
+        case WBType::StartAddress: type = 9; break;
+    }
+
+    if (wbType == WBType::StartAddress &&
+        address == std::numeric_limits<size_t>::max())
     {
         // Write the end-of-file record with start address
-        type = 9;
-        if (address == std::numeric_limits<size_t>::max())
-        {
-            address = 0;
-        }
+        address = 0;
     }
 
     ostream
@@ -453,7 +480,8 @@ static int write_buffer_motorola_srec(std::ostream &ostream, const Byte *buffer,
 static int write_hexfile(
    const char *filename,
    const MemorySource<size_t> &memsrc,
-   std::function<int(std::ostream&, const Byte *, size_t, size_t)> write_buffer,
+   std::function<int(WBType, std::ostream&, const Byte *, size_t, size_t)>
+        write_buffer,
    Byte buffer_size, size_t startAddress)
 {
     int result;
@@ -469,6 +497,15 @@ static int write_hexfile(
 
     auto buffer = std::unique_ptr<Byte []>(new Byte[buffer_size]);
     const auto& addressRanges = memsrc.GetAddressRanges();
+    const std::string header{"Created with flex2hex"};
+
+    result = write_buffer(WBType::Header, ostream,
+                          reinterpret_cast<const Byte *>(header.c_str()), 0,
+                          header.size() + 1);
+    if (result != 0)
+    {
+        return result;
+    }
 
     for (const auto& addressRange : addressRanges)
     {
@@ -480,7 +517,8 @@ static int write_hexfile(
                 address += buffer_size)
         {
             memsrc.CopyTo(buffer.get(), address, buffer_size);
-            result = write_buffer(ostream, buffer.get(), address, buffer_size);
+            result = write_buffer(WBType::Data, ostream, buffer.get(), address,
+                                  buffer_size);
             if (result != 0)
             {
                 return result;
@@ -490,7 +528,8 @@ static int write_hexfile(
         if (remainder)
         {
             memsrc.CopyTo(buffer.get(), address, remainder);
-            result = write_buffer(ostream, buffer.get(), address, remainder);
+            result = write_buffer(WBType::Data, ostream, buffer.get(), address,
+                                  remainder);
             if (result != 0)
             {
                 return result;
@@ -498,7 +537,8 @@ static int write_hexfile(
         }
     }
 
-    result = write_buffer(ostream, buffer.get(), startAddress, 0);
+    result = write_buffer(WBType::StartAddress, ostream, buffer.get(),
+                          startAddress, 0);
 
     return result;
 }
