@@ -73,7 +73,9 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
     auto result = load_hexfile(ifile, memory, startAddress);
     if (result < 0)
     {
-        std::cerr << "*** Error opening or reading from " << ifile << ".\n";
+        std::cerr << "*** Error in \"" << ifile << "\":" << std::endl << "    ";
+        print_hexfile_error(std::cerr, result);
+        std::cerr << std::endl;
         return 1;
     }
 

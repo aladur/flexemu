@@ -525,3 +525,30 @@ int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc,
                          startAddress);
 }
 
+void print_hexfile_error(std::ostream &ostream, int error_id)
+{
+    if (error_id < 0)
+    {
+        switch (error_id)
+        {
+            case -1: ostream << "File does not exist or can not be opened.";
+                     break;
+
+            case -2: ostream << "Error reading from file.";
+                     break;
+
+            case -3: ostream << "Unknown or invalid file format.";
+                     break;
+
+            case -4: ostream << "Wrong checksum.";
+                     break;
+
+            case -5: ostream << "Error writing to file.";
+                     break;
+
+            default: ostream << "Unspecified error.";
+                     break;
+        }
+    }
+}
+

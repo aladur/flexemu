@@ -25,6 +25,7 @@
 
 
 #include <limits>
+#include <ostream>
 #include "memsrc.h"
 #include "memtgt.h"
 
@@ -42,7 +43,7 @@ extern int write_motorola_srec(const char *filename,
                                const MemorySource<size_t> &memsrc,
                                size_t startAddress =
                                    std::numeric_limits<size_t>::max());
-
+extern void print_hexfile_error(std::ostream &ostream, int error_id);
 
 #endif // FILREAD_INCLUDED
 

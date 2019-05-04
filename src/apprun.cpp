@@ -226,9 +226,10 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
         {
             std::stringstream pmsg;
 
-            pmsg << "File \"" << hexFilePath
-                 << "\" not found or has unknown file format (" << error <<")"
-                 << std::endl;
+            pmsg << "*** Error in \"" << hexFilePath
+                 << "\":" << std::endl << "    ";
+            print_hexfile_error(pmsg, error);
+            pmsg << std::endl;
 #ifdef _WIN32
             MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
             MB_OK | MB_ICONERROR);
