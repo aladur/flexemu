@@ -96,7 +96,7 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
 
         memory.Reset();
         auto result = load_hexfile(ifile, memory, startAddress);
-        if (result == -1)
+        if (result < 0)
         {
             std::cerr << "*** Error opening or reading from " << ifile <<
                          ". Ignored.\n";

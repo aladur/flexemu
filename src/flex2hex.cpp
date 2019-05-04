@@ -71,7 +71,7 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
 
     // TODO only support FLEX binary
     auto result = load_hexfile(ifile, memory, startAddress);
-    if (result == -1)
+    if (result < 0)
     {
         std::cerr << "*** Error opening or reading from " << ifile << ".\n";
         return 1;

@@ -1,5 +1,5 @@
 /*
-    fileread.h
+    fileread.cpp
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -31,7 +31,15 @@
 #include "fileread.h"
 
 
-static Byte fread_byte(std::istream &istream)
+static Word read_word(std::istream &istream)
+{
+    Word result = (istream.get() & 0xFF) << 8;
+    result |= istream.get() & 0xFF;
+
+    return result;
+}
+
+static Byte read_hex_byte(std::istream &istream, Byte *checksum = nullptr)
 {
     std::stringstream stream;
     char str[3];
@@ -43,25 +51,35 @@ static Byte fread_byte(std::istream &istream)
 
     stream << std::hex << str;
     stream >> value;
-    return (Byte)(value & 0xff);
+    if (checksum != nullptr)
+    {
+        *checksum += static_cast<Byte>(value);
+    }
+    return static_cast<Byte>(value & 0xff);
 }
 
-static Word fread_word(std::istream &istream)
+static Word read_hex_word(std::istream &istream, Byte &checksum)
 {
+    Byte value;
     Word ret;
 
-    ret = fread_byte(istream);
-    ret <<= 8;
-    ret |= fread_byte(istream);
+    value = read_hex_byte(istream);
+    checksum += value;
+    ret = (Word)value << 8;
+    value = read_hex_byte(istream);
+    checksum += value;
+    ret |= value;
 
     return ret;
 }
 
-static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
-                          size_t &startAddress)
+static int load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
+                         size_t &startAddress)
 {
     bool done = false;
+    std::istream::int_type value;
     Byte type;
+    Byte checksum;
     DWord index;
     DWord count;
     DWord address;
@@ -69,46 +87,65 @@ static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
 
     while (!done)
     {
-        (void)istream.get();
-        count = fread_byte(istream);
-        address = fread_word(istream);
-        type = fread_byte(istream);
-
-        if (type == 0x00)
+        checksum = 0;
+        value = istream.get();
+        if (value != ':')
         {
-            index = 0;
-            while (index < count)
+            return -3; // format error
+        }
+        count = read_hex_byte(istream, &checksum);
+        address = read_hex_word(istream, checksum);
+        type = read_hex_byte(istream, &checksum);
+
+        if (type == 0x00) // Data
+        {
+            for (index = 0; index < count; ++index)
             {
                 if (address + index <= std::numeric_limits<Word>::max())
                 {
-                    *(buffer + index) = fread_byte(istream);
+                    *(buffer + index) = read_hex_byte(istream, &checksum);
                 }
-                index++;
             }
             memtgt.CopyFrom(buffer, address, count);
         }
-        else if (type == 0x01)
+        else if (type == 0x01) // End of file / start address
         {
             startAddress = address;
             done = true;
+        } else
+        {
+            return -3; // format error
         }
 
-        // Read and discard checksum byte
-        (void)fread_byte(istream);
+        checksum = ~checksum + 1;
+
+        if (checksum != read_hex_byte(istream))
+        {
+            return -4; // checksum error
+        }
 
         if (istream.get() == '\r')
         {
             (void)istream.get();
         }
+
+        if (istream.fail())
+        {
+            return -2; // read error
+        }
     }
+
+    return 0;
 }
 
-static void load_motorola_srec(std::istream &istream,
-                               MemoryTarget<size_t> &memtgt,
-                               size_t &startAddress)
+static int load_motorola_srec(std::istream &istream,
+                              MemoryTarget<size_t> &memtgt,
+                              size_t &startAddress)
 {
     bool done = false;
+    std::istream::int_type value;
     Byte type;
+    Byte checksum;
     DWord index;
     DWord count;
     DWord address;
@@ -116,74 +153,98 @@ static void load_motorola_srec(std::istream &istream,
 
     while (!done)
     {
-        (void)istream.get(); /* read 'S' */
+        checksum = 0;
+        value = istream.get(); /* read 'S' */
+        if (tolower(value) != 's')
+        {
+            return -3; // format error
+        }
+
         if (istream.eof())
         {
             break;
         }
+
         type = static_cast<char>(istream.get());   /* read type of line */
-        count = fread_byte(istream);
+        count = read_hex_byte(istream, &checksum);
+        address = read_hex_word(istream, checksum);
 
         switch (type)
         {
-            case '0':
-                count -= 1;
+            case '0': // Header
+                count -= 3;
 
-                while (count--)
+                for (index = 0; index < count; ++index)
                 {
-                    (void)fread_byte(istream);
-                };
-
+                    (void)read_hex_byte(istream, &checksum);
+                }
                 break;
 
-            case '1':
+            case '1': // Data
                 count -= 3;
-                address = fread_word(istream);
-                index = 0;
 
-                while (index < count)
+                for (index = 0; index < count; ++index)
                 {
                     if (address + index <= std::numeric_limits<Word>::max())
                     {
-                        *(buffer + index) = fread_byte(istream);
+                        *(buffer + index) = read_hex_byte(istream, &checksum);
                     }
-                    index++;
                 }
                 memtgt.CopyFrom(buffer, address, count);
 
                 break;
 
-            case '9':
-                startAddress = fread_word(istream);
+            case '9': // End of file / start address
+                startAddress = address;
                 done = 1;
                 break;
 
+            case '5': // Record count
+                break;
+
             default:
-                done = 1;
+                return -3; // format error
         }
 
-        // Read and discard checksum byte
-        (void)fread_byte(istream);
+        checksum = ~checksum;
+
+        if (checksum != read_hex_byte(istream))
+        {
+            return -4; // checksum error
+        }
 
         if (istream.get() == '\r')
         {
             (void)istream.get();
         }
+
+        if (istream.fail())
+        {
+            return -2; // read error
+        }
     }
+
+    return 0;
 }
 
-void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
-                      size_t &startAddress)
+static int load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
+                            size_t &startAddress)
 {
     Byte value;
     DWord address = 0;
     DWord count = 0;
     DWord index = 0;
     Byte buffer[256];
+    bool isFirst = true;
 
     while (true)
     {
         value = static_cast<char>(istream.get());
+        if (isFirst && value != 0x02)
+        {
+            return -3; // format error
+        }
+
         if (istream.eof())
         {
             break;
@@ -193,19 +254,24 @@ void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
             index = 0;
             if (value == 0x02)
             {
+                isFirst = false;
                 // Read address and byte count.
-                address = (istream.get() & 0xff) << 8;
-                address |= istream.get() & 0xff;
+                address = read_word(istream);
                 count = istream.get() & 0xff;
-            } else if (value == 0x16)
+            }
+            else if (value == 0x16)
             {
-                startAddress = (istream.get() & 0xff) << 8;
-                startAddress |= istream.get() & 0xff;
-                return;
+                startAddress = read_word(istream);
+                return 0;
+            }
+            else if (value == 0x00)
+            {
+                return 0;
             } else
             {
-                return;
+                return -3;
             }
+
             // Read next byte.
             value = static_cast<char>(istream.get());
         }
@@ -218,6 +284,8 @@ void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
             memtgt.CopyFrom(buffer, address, count);
         }
     }
+
+    return 0;
 }
 
 int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
@@ -236,22 +304,18 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
 
     if (ch == ':')
     {
-        load_intelhex(istream, memtgt, startAddress);
+        return load_intelhex(istream, memtgt, startAddress);
     }
     else if (toupper(ch) == 'S')
     {
-        load_motorola_srec(istream, memtgt, startAddress);
+        return load_motorola_srec(istream, memtgt, startAddress);
     }
     else if (ch == 0x02)
     {
-        load_flex_binary(istream, memtgt, startAddress);
-    }
-    else
-    {
-        return -2; // Unknown file format
+        return load_flex_binary(istream, memtgt, startAddress);
     }
 
-    return 0;
+    return -3; // Unknown or invalid file format
 }
 
 static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
