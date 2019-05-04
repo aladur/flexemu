@@ -30,6 +30,7 @@ src/flexemu
 src/fsetup
 src/flexplorer
 src/mdcrtool
+src/flex2hex
 src/test
 src/tools/bin2s19
 src/tools/*flex

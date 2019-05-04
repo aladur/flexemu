@@ -211,15 +211,18 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
-    int error;
-    if ((error = load_hexfile(options.hex_file.c_str(), memory)) < 0)
+    size_t startAddress = 0;
+
+    int error = load_hexfile(options.hex_file.c_str(), memory, startAddress);
+    if (error < 0)
     {
         std::string hexFilePath;
 
         hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
                       options.hex_file;
 
-        if ((error = load_hexfile(hexFilePath.c_str(), memory)) < 0)
+        error = load_hexfile(options.hex_file.c_str(), memory, startAddress);
+        if (error < 0)
         {
             std::stringstream pmsg;
 

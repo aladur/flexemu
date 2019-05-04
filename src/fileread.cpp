@@ -23,6 +23,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <limits>
 #include <memory>
@@ -36,8 +37,8 @@ static Byte fread_byte(std::istream &istream)
     char str[3];
     unsigned int value;
 
-    str[0] = istream.get();
-    str[1] = istream.get();
+    str[0] = static_cast<char>(istream.get());
+    str[1] = static_cast<char>(istream.get());
     str[2] = '\0';
 
     stream << std::hex << str;
@@ -56,7 +57,8 @@ static Word fread_word(std::istream &istream)
     return ret;
 }
 
-static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt)
+static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
+                          size_t &startAddress)
 {
     bool done = false;
     Byte type;
@@ -87,6 +89,7 @@ static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt)
         }
         else if (type == 0x01)
         {
+            startAddress = address;
             done = true;
         }
 
@@ -101,7 +104,8 @@ static void load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt)
 }
 
 static void load_motorola_srec(std::istream &istream,
-                               MemoryTarget<size_t> &memtgt)
+                               MemoryTarget<size_t> &memtgt,
+                               size_t &startAddress)
 {
     bool done = false;
     Byte type;
@@ -150,7 +154,7 @@ static void load_motorola_srec(std::istream &istream,
                 break;
 
             case '9':
-                address = fread_word(istream);
+                startAddress = fread_word(istream);
                 done = 1;
                 break;
 
@@ -168,7 +172,8 @@ static void load_motorola_srec(std::istream &istream,
     }
 }
 
-void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt)
+void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
+                      size_t &startAddress)
 {
     Byte value;
     DWord address = 0;
@@ -178,7 +183,7 @@ void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt)
 
     while (true)
     {
-        value = istream.get();
+        value = static_cast<char>(istream.get());
         if (istream.eof())
         {
             break;
@@ -194,16 +199,15 @@ void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt)
                 count = istream.get() & 0xff;
             } else if (value == 0x16)
             {
-                // Read start address and ignore it.
-                Word temp = fread_word(istream);
-                (void)temp;
+                startAddress = (istream.get() & 0xff) << 8;
+                startAddress |= istream.get() & 0xff;
                 return;
             } else
             {
                 return;
             }
             // Read next byte.
-            value = istream.get();
+            value = static_cast<char>(istream.get());
         }
         if (address + index <= std::numeric_limits<Word>::max())
         {
@@ -216,7 +220,8 @@ void load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt)
     }
 }
 
-int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
+int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
+                 size_t &startAddress)
 {
     Word ch;
     std::ifstream istream(filename, std::ios_base::in);
@@ -231,15 +236,15 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt)
 
     if (ch == ':')
     {
-        load_intelhex(istream, memtgt);
+        load_intelhex(istream, memtgt, startAddress);
     }
     else if (toupper(ch) == 'S')
     {
-        load_motorola_srec(istream, memtgt);
+        load_motorola_srec(istream, memtgt, startAddress);
     }
     else if (ch == 0x02)
     {
-        load_flex_binary(istream, memtgt);
+        load_flex_binary(istream, memtgt, startAddress);
     }
     else
     {
@@ -254,18 +259,125 @@ static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
 {
     Byte header[4];
 
-    header[0] = 0x02;
     header[1] = (address >> 8) & 0xff;
     header[2] = address & 0xff;
-    header[3] = static_cast<Byte>(size);
 
-    ostream.write(reinterpret_cast<const char *>(&header[0]), sizeof(header));
+    if (size > 0)
+    {
+        header[0] = 0x02;
+        header[3] = static_cast<Byte>(size);
+
+        ostream.write(
+                reinterpret_cast<const char *>(&header[0]), sizeof(header));
+        if (ostream.fail())
+        {
+            return -2; // write error
+        }
+
+        ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
+        if (ostream.fail())
+        {
+            return -2; // write error
+        }
+    }
+    else if (address != std::numeric_limits<size_t>::max())
+    {
+        // Write start address if available
+        header[0] = 0x16;
+
+        ostream.write(
+                reinterpret_cast<const char *>(&header[0]), sizeof(header) - 1);
+        if (ostream.fail())
+        {
+            return -2; // write error
+        }
+    }
+
+    return 0;
+}
+
+static int write_buffer_intelhex(std::ostream &ostream, const Byte *buffer,
+                                 size_t address, size_t size)
+{
+    Byte checksum = 0;
+    Byte type = 0;
+    size_t index;
+
+    if (size == 0)
+    {
+        // Write the end-of-file record with start address
+        type = 1;
+        if (address == std::numeric_limits<size_t>::max())
+        {
+            address = 0;
+        }
+    }
+
+    ostream
+        << ":"
+        << std::hex << std::setw(2) << std::setfill('0') << (size & 0xFF)
+        << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF)
+        << std::hex << std::setw(2) << std::setfill('0') << (unsigned int)type;
+
+    checksum += size & 0xFF;
+    checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
+    checksum += type;
+
+    for (index = 0; index < size; ++index)
+    {
+        ostream << std::hex << std::setw(2) << std::setfill('0')
+                << (unsigned int)buffer[index];
+        checksum += buffer[index];
+    }
+
+    checksum = ~checksum + 1;
+    ostream << std::hex << std::setw(2) << std::setfill('0')
+            << (unsigned int)checksum << std::endl;
+
     if (ostream.fail())
     {
         return -2; // write error
     }
 
-    ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
+    return 0;
+}
+
+static int write_buffer_motorola_srec(std::ostream &ostream, const Byte *buffer,
+                                      size_t address, size_t size)
+{
+    Byte checksum = 0;
+    Byte type = 1;
+    size_t index;
+
+    if (size == 0)
+    {
+        // Write the end-of-file record with start address
+        type = 9;
+        if (address == std::numeric_limits<size_t>::max())
+        {
+            address = 0;
+        }
+    }
+
+    ostream
+        << "S" << (unsigned int)type
+        << std::hex << std::setw(2) << std::setfill('0') << ((size + 3) & 0xFF)
+        << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF);
+
+    checksum += (size + 3) & 0xFF;
+    checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
+
+    for (index = 0; index < size; ++index)
+    {
+        ostream << std::hex << std::setw(2) << std::setfill('0')
+                << (unsigned int)buffer[index];
+        checksum += buffer[index];
+    }
+
+    checksum = ~checksum;
+    ostream << std::hex << std::setw(2) << std::setfill('0')
+            << (unsigned int)checksum << std::endl;
+
     if (ostream.fail())
     {
         return -2; // write error
@@ -278,8 +390,9 @@ static int write_hexfile(
    const char *filename,
    const MemorySource<size_t> &memsrc,
    std::function<int(std::ostream&, const Byte *, size_t, size_t)> write_buffer,
-   Byte buffer_size)
+   Byte buffer_size, size_t startAddress)
 {
+    int result;
     const auto mode = std::ios_base::out |
                       std::ios_base::trunc |
                       std::ios_base::binary;
@@ -295,7 +408,6 @@ static int write_hexfile(
 
     for (const auto& addressRange : addressRanges)
     {
-        int result;
         size_t address;
         size_t remainder = (1 + width(addressRange)) % buffer_size;
 
@@ -322,11 +434,30 @@ static int write_hexfile(
         }
     }
 
-    return 0;
+    result = write_buffer(ostream, buffer.get(), startAddress, 0);
+
+    return result;
 }
 
-int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc)
+int write_intelhex(const char *filename, const MemorySource<size_t> &memsrc,
+                   size_t startAddress)
 {
-    return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255);
+    return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
+                         startAddress);
+}
+
+int write_motorola_srec(const char *filename,
+                        const MemorySource<size_t> &memsrc,
+                        size_t startAddress)
+{
+    return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
+                         startAddress);
+}
+
+int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc,
+                      size_t startAddress)
+{
+    return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255,
+                         startAddress);
 }
 

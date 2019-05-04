@@ -451,6 +451,35 @@ std::string getFileExtension(const std::string &path)
     return "";
 }
 
+std::string getFileStem(const std::string &path)
+{
+    std::string fileName = getFileName(path);
+
+    auto pos = fileName.find_last_of(".");
+
+    if (pos != std::string::npos)
+    {
+        if (pos == 0)
+        {
+            // If path == "." return "".
+            // If path == ".." return "".
+            if (fileName.size() <= 2 && fileName.at(0) == '.')
+            {
+                return fileName;
+            }
+
+            // If path == ".txt" return "".
+            return "";
+        }
+        // If path == "bar.txt" return "bar".
+        // If path == "foo.bar.txt" return "foo.bar".
+        return fileName.substr(0, pos);
+    }
+
+    // If path == "bar" return "bar".
+    return fileName;
+}
+
 bool endsWithPathSeparator(const std::string &path)
 {
     auto pos = path.find_last_of(pathSeparators);

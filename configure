@@ -9792,9 +9792,9 @@ fi
   echo
   echo "Configure finished.  Type 'make' to compile"
 if test "$WXCONFIG" != 1; then
-  echo "flexemu and mdcrtool"
+  echo "flexemu, mdcrtool and flex2hex"
 else
-  echo "flexemu, fsetup, flexplorer and mdcrtool"
+  echo "flexemu, fsetup, flexplorer, mdcrtool and flex2hex"
 fi
   echo
 

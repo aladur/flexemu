@@ -24,13 +24,25 @@
 #define FILEREAD_INCLUDED
 
 
-#include <stdio.h>
+#include <limits>
 #include "memsrc.h"
 #include "memtgt.h"
 
-extern int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt);
+extern int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
+                        size_t &startAddress);
 extern int write_flex_binary(const char *filename,
-                             const MemorySource<size_t> &memsrc);
+                             const MemorySource<size_t> &memsrc,
+                             size_t startAddress =
+                                 std::numeric_limits<size_t>::max());
+extern int write_intelhex(const char *filename,
+                          const MemorySource<size_t> &memsrc,
+                          size_t startAddress =
+                              std::numeric_limits<size_t>::max());
+extern int write_motorola_srec(const char *filename,
+                               const MemorySource<size_t> &memsrc,
+                               size_t startAddress =
+                                   std::numeric_limits<size_t>::max());
+
 
 #endif // FILREAD_INCLUDED
 

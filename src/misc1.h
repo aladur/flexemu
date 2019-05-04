@@ -410,6 +410,7 @@ extern std::string getExecutablePath();
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
+extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
 extern std::string getParentPath(const std::string &path);
 extern bool endsWithPathSeparator(const std::string &path);

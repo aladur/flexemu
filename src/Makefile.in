@@ -91,8 +91,9 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = flexemu$(EXEEXT) @FLEXPLORER@ @FSETUP@ \
-	mdcrtool$(EXEEXT)
-EXTRA_PROGRAMS = flexplorer$(EXEEXT) fsetup$(EXEEXT) mdcrtool$(EXEEXT)
+	mdcrtool$(EXEEXT) flex2hex$(EXEEXT)
+EXTRA_PROGRAMS = flexplorer$(EXEEXT) fsetup$(EXEEXT) mdcrtool$(EXEEXT) \
+	flex2hex$(EXEEXT)
 noinst_PROGRAMS = test$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -113,6 +114,14 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
 	"$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+am_flex2hex_OBJECTS = flex2hex-fileread.$(OBJEXT) \
+	flex2hex-bfileptr.$(OBJEXT) flex2hex-bmembuf.$(OBJEXT) \
+	flex2hex-flexerr.$(OBJEXT) flex2hex-misc1.$(OBJEXT) \
+	flex2hex-flex2hex.$(OBJEXT)
+flex2hex_OBJECTS = $(am_flex2hex_OBJECTS)
+flex2hex_DEPENDENCIES =
+flex2hex_LINK = $(CXXLD) $(flex2hex_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-bdate.$(OBJEXT) flexemu-bdir.$(OBJEXT) \
 	flexemu-bjoystck.$(OBJEXT) flexemu-colors.$(OBJEXT) \
@@ -249,10 +258,11 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(flexemu_SOURCES) $(flexplorer_SOURCES) $(fsetup_SOURCES) \
-	$(mdcrtool_SOURCES) $(test_SOURCES)
-DIST_SOURCES = $(flexemu_SOURCES) $(flexplorer_SOURCES) \
+SOURCES = $(flex2hex_SOURCES) $(flexemu_SOURCES) $(flexplorer_SOURCES) \
 	$(fsetup_SOURCES) $(mdcrtool_SOURCES) $(test_SOURCES)
+DIST_SOURCES = $(flex2hex_SOURCES) $(flexemu_SOURCES) \
+	$(flexplorer_SOURCES) $(fsetup_SOURCES) $(mdcrtool_SOURCES) \
+	$(test_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -524,6 +534,10 @@ mdcrtool_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
 
+flex2hex_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+		        $(AM_CXXFLAGS) \
+			@OS_TYPE@ @WX_CFLAGS@
+
 test_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 		        @OS_TYPE@ -DUNIT_TEST
@@ -531,6 +545,7 @@ test_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD = @WX_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD = @PTHREAD_LD@
+flex2hex_LDADD = @PTHREAD_LD@
 flexemu_LDADD = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
@@ -593,6 +608,12 @@ mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
 flexerr.cpp misc1.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 typedefs.h misc1.h config.h flexerr.h bintervl.h
+
+flex2hex_SOURCES = \
+fileread.cpp bfileptr.cpp bmembuf.cpp \
+flexerr.cpp misc1.cpp flex2hex.cpp \
+fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+bintervl.h typedefs.h misc1.h config.h flexerr.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -713,6 +734,10 @@ clean-binPROGRAMS:
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
+flex2hex$(EXEEXT): $(flex2hex_OBJECTS) $(flex2hex_DEPENDENCIES) $(EXTRA_flex2hex_DEPENDENCIES) 
+	@rm -f flex2hex$(EXEEXT)
+	$(AM_V_CXXLD)$(flex2hex_LINK) $(flex2hex_OBJECTS) $(flex2hex_LDADD) $(LIBS)
+
 flexemu$(EXEEXT): $(flexemu_OBJECTS) $(flexemu_DEPENDENCIES) $(EXTRA_flexemu_DEPENDENCIES) 
 	@rm -f flexemu$(EXEEXT)
 	$(AM_V_CXXLD)$(flexemu_LINK) $(flexemu_OBJECTS) $(flexemu_LDADD) $(LIBS)
@@ -739,6 +764,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-bfileptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-bmembuf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-fileread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-flex2hex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-flexerr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-misc1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-absgui.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-acia1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-apprun.Po@am__quote@
@@ -891,6 +922,90 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+flex2hex-fileread.o: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-fileread.o -MD -MP -MF $(DEPDIR)/flex2hex-fileread.Tpo -c -o flex2hex-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-fileread.Tpo $(DEPDIR)/flex2hex-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='flex2hex-fileread.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp
+
+flex2hex-fileread.obj: fileread.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-fileread.obj -MD -MP -MF $(DEPDIR)/flex2hex-fileread.Tpo -c -o flex2hex-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-fileread.Tpo $(DEPDIR)/flex2hex-fileread.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fileread.cpp' object='flex2hex-fileread.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
+
+flex2hex-bfileptr.o: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-bfileptr.o -MD -MP -MF $(DEPDIR)/flex2hex-bfileptr.Tpo -c -o flex2hex-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-bfileptr.Tpo $(DEPDIR)/flex2hex-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='flex2hex-bfileptr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+
+flex2hex-bfileptr.obj: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-bfileptr.obj -MD -MP -MF $(DEPDIR)/flex2hex-bfileptr.Tpo -c -o flex2hex-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-bfileptr.Tpo $(DEPDIR)/flex2hex-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='flex2hex-bfileptr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+
+flex2hex-bmembuf.o: bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-bmembuf.o -MD -MP -MF $(DEPDIR)/flex2hex-bmembuf.Tpo -c -o flex2hex-bmembuf.o `test -f 'bmembuf.cpp' || echo '$(srcdir)/'`bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-bmembuf.Tpo $(DEPDIR)/flex2hex-bmembuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='flex2hex-bmembuf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-bmembuf.o `test -f 'bmembuf.cpp' || echo '$(srcdir)/'`bmembuf.cpp
+
+flex2hex-bmembuf.obj: bmembuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-bmembuf.obj -MD -MP -MF $(DEPDIR)/flex2hex-bmembuf.Tpo -c -o flex2hex-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-bmembuf.Tpo $(DEPDIR)/flex2hex-bmembuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='flex2hex-bmembuf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
+
+flex2hex-flexerr.o: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flexerr.o -MD -MP -MF $(DEPDIR)/flex2hex-flexerr.Tpo -c -o flex2hex-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-flexerr.Tpo $(DEPDIR)/flex2hex-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='flex2hex-flexerr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+
+flex2hex-flexerr.obj: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flexerr.obj -MD -MP -MF $(DEPDIR)/flex2hex-flexerr.Tpo -c -o flex2hex-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-flexerr.Tpo $(DEPDIR)/flex2hex-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='flex2hex-flexerr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+
+flex2hex-misc1.o: misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-misc1.o -MD -MP -MF $(DEPDIR)/flex2hex-misc1.Tpo -c -o flex2hex-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-misc1.Tpo $(DEPDIR)/flex2hex-misc1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='flex2hex-misc1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
+
+flex2hex-misc1.obj: misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-misc1.obj -MD -MP -MF $(DEPDIR)/flex2hex-misc1.Tpo -c -o flex2hex-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-misc1.Tpo $(DEPDIR)/flex2hex-misc1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='flex2hex-misc1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
+
+flex2hex-flex2hex.o: flex2hex.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flex2hex.o -MD -MP -MF $(DEPDIR)/flex2hex-flex2hex.Tpo -c -o flex2hex-flex2hex.o `test -f 'flex2hex.cpp' || echo '$(srcdir)/'`flex2hex.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-flex2hex.Tpo $(DEPDIR)/flex2hex-flex2hex.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flex2hex.cpp' object='flex2hex-flex2hex.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-flex2hex.o `test -f 'flex2hex.cpp' || echo '$(srcdir)/'`flex2hex.cpp
+
+flex2hex-flex2hex.obj: flex2hex.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flex2hex.obj -MD -MP -MF $(DEPDIR)/flex2hex-flex2hex.Tpo -c -o flex2hex-flex2hex.obj `if test -f 'flex2hex.cpp'; then $(CYGPATH_W) 'flex2hex.cpp'; else $(CYGPATH_W) '$(srcdir)/flex2hex.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flex2hex-flex2hex.Tpo $(DEPDIR)/flex2hex-flex2hex.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flex2hex.cpp' object='flex2hex-flex2hex.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -c -o flex2hex-flex2hex.obj `if test -f 'flex2hex.cpp'; then $(CYGPATH_W) 'flex2hex.cpp'; else $(CYGPATH_W) '$(srcdir)/flex2hex.cpp'; fi`
 
 flexemu-absgui.o: absgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-absgui.o -MD -MP -MF $(DEPDIR)/flexemu-absgui.Tpo -c -o flexemu-absgui.o `test -f 'absgui.cpp' || echo '$(srcdir)/'`absgui.cpp

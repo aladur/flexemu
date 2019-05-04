@@ -26,8 +26,8 @@ SUBDIRS = bitmaps tools
 # Directory where .desktop files are located
 desktopdir = $(datadir)/applications
 
-bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool
-EXTRA_PROGRAMS = flexplorer fsetup mdcrtool
+bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex
+EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
 noinst_PROGRAMS = test
 
 AM_CXXFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
@@ -44,6 +44,9 @@ fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 mdcrtool_CXXFLAGS   = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 			@OS_TYPE@ @WX_CFLAGS@
+flex2hex_CXXFLAGS   = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
+		        $(AM_CXXFLAGS) \
+			@OS_TYPE@ @WX_CFLAGS@
 test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 		        $(AM_CXXFLAGS) \
 		        @OS_TYPE@ -DUNIT_TEST
@@ -51,6 +54,7 @@ test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic -Wno-long-long \
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
+flex2hex_LDADD   = @PTHREAD_LD@
 flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
@@ -114,6 +118,12 @@ mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
 flexerr.cpp misc1.cpp \
 mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 typedefs.h misc1.h config.h flexerr.h bintervl.h
+
+flex2hex_SOURCES = \
+fileread.cpp bfileptr.cpp bmembuf.cpp \
+flexerr.cpp misc1.cpp flex2hex.cpp \
+fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+bintervl.h typedefs.h misc1.h config.h flexerr.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
