@@ -69,8 +69,7 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
     BMemoryBuffer memory(65536);
     size_t startAddress = std::numeric_limits<size_t>::max();
 
-    // TODO only support FLEX binary
-    auto result = load_hexfile(ifile, memory, startAddress);
+    auto result = load_flex_binary(ifile, memory, startAddress);
     if (result < 0)
     {
         std::cerr << "*** Error in \"" << ifile << "\":" << std::endl << "    ";

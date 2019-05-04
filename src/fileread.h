@@ -31,6 +31,8 @@
 
 extern int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
                         size_t &startAddress);
+extern int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
+                            size_t &startAddress);
 extern int write_flex_binary(const char *filename,
                              const MemorySource<size_t> &memsrc,
                              size_t startAddress =

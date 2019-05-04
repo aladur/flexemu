@@ -318,6 +318,19 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
+int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
+                     size_t &startAddress)
+{
+    std::ifstream istream(filename, std::ios_base::in);
+
+    if (!istream.is_open())
+    {
+        return -1; // Could not open file for reading
+    }
+
+    return load_flex_binary(istream, memtgt, startAddress);
+}
+
 enum class WBType
 {
     Header,
