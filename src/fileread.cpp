@@ -335,13 +335,13 @@ static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
                 reinterpret_cast<const char *>(&header[0]), sizeof(header));
         if (ostream.fail())
         {
-            return -2; // write error
+            return -5; // write error
         }
 
         ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
         if (ostream.fail())
         {
-            return -2; // write error
+            return -5; // write error
         }
     }
     else if (address != std::numeric_limits<size_t>::max())
@@ -353,7 +353,7 @@ static int write_buffer_flex_binary(std::ostream &ostream, const Byte *buffer,
                 reinterpret_cast<const char *>(&header[0]), sizeof(header) - 1);
         if (ostream.fail())
         {
-            return -2; // write error
+            return -5; // write error
         }
     }
 
@@ -400,7 +400,7 @@ static int write_buffer_intelhex(std::ostream &ostream, const Byte *buffer,
 
     if (ostream.fail())
     {
-        return -2; // write error
+        return -5; // write error
     }
 
     return 0;
@@ -444,7 +444,7 @@ static int write_buffer_motorola_srec(std::ostream &ostream, const Byte *buffer,
 
     if (ostream.fail())
     {
-        return -2; // write error
+        return -5; // write error
     }
 
     return 0;
