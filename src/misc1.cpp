@@ -510,73 +510,94 @@ sOptions::sOptions() :
 #ifdef _WIN32
 // uses its own implementation of getopt
 int optind = 1;
-int opterr = 0;
+int opterr = 1;
 int optopt = 0;
 const char *optarg = nullptr;
+static int argvind = 1;
+
+static void next_opt(char *const argv[]);
 
 int getopt(int argc, char *const argv[], const char *optstr)
 {
-    int     i;
+    int opt;
+    const char *popt;
 
-    while (1)
+    if (optind < argc)
     {
-        char    opt;
-
-        optarg = optstr;
-
-        for (i = 1; i < optind; i++)
+        for (popt = optstr; *popt != '\0'; ++popt)
         {
-            if (*(++optarg) == ':')
-            {
-                optarg++;
-            }
-        }
-
-        if ((opt = *optarg) == '\0')
-        {
-            return -1;
-        }
-
-        optind++;
-        i = 1;
-
-        while (i < argc)
-        {
-            if (argv[i][0] == '-' && argv[i][1] == opt)
+            opt = *popt;
+            if (argv[optind][0] == '-' && argv[optind][argvind] == opt)
             {
                 // found option
-                if (*(optarg + 1) == ':')
+                if (*(popt + 1) == ':')
                 {
-                    // option has a parameter
-                    if (argv[i][2] != '\0')
+                    // option has an argument
+                    if (argv[optind][argvind + 1] != '\0')
                     {
-                        optarg = &argv[i][2];
+                        optarg = &argv[optind++][argvind + 1];
+                        argvind = 1;
                         return opt;
                     }
                     else
                     {
-                        if (++i < argc)
+                        if (++optind < argc)
                         {
-                            optarg = &argv[i][0];
+                            optarg = &argv[optind++][0];
                             return opt;
                         }
                         else
                         {
-                            break;
+                            // missing argument
+                            if (opterr)
+                            {
+                                fprintf(stderr, "%s: option requires an "
+                                        "argument -- '%c'\n",
+                                        argv[0], opt);
+                            }
+                            optopt = opt;
+                            return '?';
                         }
-                    } // else
+                    }
                 }
                 else
-                    // option has no parameter
                 {
+                    // option has no argument
+                    next_opt(argv);
                     return opt;
                 }
-            } // if
+            }
+            else if (argv[optind][0] != '-')
+            {
+                // First argument without option prefix '-'
+                return -1;
+            }
+        }
 
-            i++;
-        } // while
-    } // while
+        // Unknown option
+        if (opterr)
+        {
+            fprintf(stderr, "%s: illegal option -- '%c'\n",
+                    argv[0], argv[optind][argvind]);
+        }
+        optopt = argv[optind][argvind];
+        next_opt(argv);
+        return '?';
+    }
 
     return -1;
-} // getopt
+}
+
+void next_opt(char *const argv[])
+{
+    if (argv[optind][argvind + 1] == '\0')
+    {
+        ++optind;
+    }
+    else
+    {
+        ++argvind;
+    }
+}
+
 #endif

@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
     int verbose = 0;
     int result;
 
+    opterr = 1;
     while ((result = getopt(argc, argv, optstr.c_str())) != -1)
     {
         switch (result)

@@ -243,7 +243,7 @@ void FlexOptionManager::GetCommandlineOptions(
     int     i;
     float   f;
     optind = 1;
-    opterr = 0;
+    opterr = 1;
     strcpy(optstr, "mup:f:0:1:2:3:j:k:F:C:");
 #ifdef HAVE_TERMIOS_H
     strcat(optstr, "tr:");  // terminal mode and reset key
