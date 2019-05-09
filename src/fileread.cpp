@@ -292,7 +292,7 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
                  size_t &startAddress)
 {
     Word ch;
-    std::ifstream istream(filename, std::ios_base::in);
+    std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
 
     if (!istream.is_open())
     {
@@ -301,6 +301,16 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
 
     ch = static_cast<Word>(istream.get());
     istream.unget();
+
+    if (ch != 0x02)
+    {
+        istream.close();
+        istream.open(filename, std::ios_base::in);
+        if (!istream.is_open())
+        {
+            return -1; // Could not open file for reading
+        }
+    }
 
     if (ch == ':')
     {
@@ -321,7 +331,7 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
 int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
                      size_t &startAddress)
 {
-    std::ifstream istream(filename, std::ios_base::in);
+    std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
 
     if (!istream.is_open())
     {
@@ -491,16 +501,20 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
 }
 
 static int write_hexfile(
-   const char *filename,
-   const MemorySource<size_t> &memsrc,
-   std::function<int(WBType, std::ostream&, const Byte *, size_t, size_t)>
+    const char *filename,
+    const MemorySource<size_t> &memsrc,
+    std::function<int(WBType, std::ostream&, const Byte *, size_t, size_t)>
         write_buffer,
-   Byte buffer_size, size_t startAddress)
+    Byte buffer_size, size_t startAddress,
+    bool isBinary)
 {
     int result;
-    const auto mode = std::ios_base::out |
-                      std::ios_base::trunc |
-                      std::ios_base::binary;
+    const auto mode = isBinary ?
+                         std::ios_base::out |
+                         std::ios_base::trunc |
+                         std::ios_base::binary :
+                         std::ios_base::out |
+                         std::ios_base::trunc;
     std::ofstream ostream(filename, mode);
 
     if (!ostream.is_open())
@@ -560,7 +574,7 @@ int write_intelhex(const char *filename, const MemorySource<size_t> &memsrc,
                    size_t startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
-                         startAddress);
+                         startAddress, false);
 }
 
 int write_motorola_srec(const char *filename,
@@ -568,14 +582,14 @@ int write_motorola_srec(const char *filename,
                         size_t startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
-                         startAddress);
+                         startAddress, false);
 }
 
 int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc,
                       size_t startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255,
-                         startAddress);
+                         startAddress, true);
 }
 
 void print_hexfile_error(std::ostream &ostream, int error_id)
