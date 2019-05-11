@@ -218,6 +218,8 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\flexutil.htm"
   File /a "${BASEDIR}\doc\neumon54.htm"
   File /a "${BASEDIR}\doc\mon24.htm"
+  File /a "${BASEDIR}\doc\e2ramext.htm"
+  File /a "${BASEDIR}\doc\mc6809.htm"
   File /a "${BASEDIR}\doc\6809diag.pdf"
   File /a "${BASEDIR}\doc\6809fadg.pdf"
   File /a "${BASEDIR}\doc\asmb.pdf"
@@ -235,6 +237,14 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\swflexum.pdf"
   File /a "${BASEDIR}\doc\tedit.pdf"
   File /a "${BASEDIR}\doc\util_man.pdf"
+  File /a "${BASEDIR}\doc\6x09_Instruction_Sets.pdf"
+  SetOutPath $INSTDIR\Documentation\images
+  File /a "${BASEDIR}\doc\images\e2v5m.png"
+  File /a "${BASEDIR}\doc\images\e2v7m.png"
+  File /a "${BASEDIR}\doc\images\2x96k.png"
+  File /a "${BASEDIR}\doc\images\2x384k.png"
+  File /a "${BASEDIR}\doc\images\2x384flx.png"
+  File /a "${BASEDIR}\doc\images\e2scn.png"
 
 SectionEnd   
 

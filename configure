@@ -8270,7 +8270,7 @@ if test "x$enable_speed" = "xyes"; then
 fi
 
 
-ac_config_files="$ac_config_files m4/Makefile Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile"
+ac_config_files="$ac_config_files m4/Makefile Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -9027,6 +9027,7 @@ do
     "build/windows/Makefile") CONFIG_FILES="$CONFIG_FILES build/windows/Makefile" ;;
     "build/windows/installer/Makefile") CONFIG_FILES="$CONFIG_FILES build/windows/installer/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
+    "doc/images/Makefile") CONFIG_FILES="$CONFIG_FILES doc/images/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

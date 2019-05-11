@@ -188,7 +188,8 @@ AC_OUTPUT(m4/Makefile \
         build/Makefile \
         build/windows/Makefile \
         build/windows/installer/Makefile \
-	doc/Makefile)
+	doc/Makefile \
+	doc/images/Makefile)
 
   echo
   echo "************************** summary ************************************"

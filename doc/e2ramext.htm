@@ -1,0 +1,249 @@
+<html>
+<head>
+<title>Eurocom II Memory</title>
+</head>
+<body>
+<h2>Eurocom II Memory </h2>
+<h3>Eurocom II on-board memory</h3>
+As the following figure shows the Eurocom II/V5 has 48 KByte RAM, organized as
+3 x 16 KByte RAM + 4 KByte EPROM. The EPROM contains the monitor program:
+<figure>
+<img src="images/e2v5m.png" alt="Eurocom II/V5 on-board memory">
+<figcaption><b>Eurocom II/V5 on-board memory</b></figcaption>
+</figure>
+<p>
+The following figure shows the Eurocom II/V7 has 64 KByte RAM, organized as
+1 x 64 KByte RAM. 4 KByte out of it are mapped to an EPROM. The EPROM contains
+the monitor program:
+<figure>
+<img src="images/e2v7m.png" alt="Eurocom II/V7 on-board memory">
+<figcaption><b>Eurocom II/V7 on-board memory</b></figcaption>
+</figure>
+<h3>Eurocom II/V7 RAM Extension</h3>
+The Eurocom II/V7 has two extension slots which can be used for extending the
+RAM size. There are two types of RAM extensions available:
+<p>
+<table border>
+    <tr><th>RAM Extension<br>[KByte]</th><th>Organized</th></th></tr>
+    <tr><td>96</td><td>6 x 16 KByte</td></tr>
+    <tr><td>384 (288 *)</td><td>6 x 64 KByte</td></tr>
+</table>
+<p>
+A RAM extension can be used to extend the main RAM, as video RAM, or as RAM disk. The MC6809 only supports an address range of 64 KByte, so a Memory Management
+unit (MMU) is used to map parts of the RAM extension into the available address
+range.
+<p>
+The MMU of the 384 KByte RAM extension is not very flexible as will be described
+later in the chapter describing the
+<a href="#MMU">MMU</a> which means that the upper 16 KByte of each RAM bank
+is only accessible under some restrictions. This is the reason why ELTEC
+promoted it only as a 288 KByte RAM extension. This limitations have been
+overcome with a hardware modification as will be described in the chapter for
+<a href="#FlexibleMMU">flexible MMU</a>.
+
+<h3 id="96KbRamExt">2 x 96 KByte RAM Extension</h3>
+The following figure shows how this RAM extension is organized. There are six RAM
+banks with 16 KByte each. They can be identified as:
+<p>
+<table border>
+  <tr><th>RAM bank</th><th>Bank identifier</th></tr>
+  <tr><td>6 x 16 KByte<td>$0C, $0D, $0E, $04, $05, $06</td></tr>
+  <tr><td>6 x 16 KByte<td>$08, $09, $0A, $00, $01, $02</td></tr>
+</table>
+<p>
+
+<figure>
+<img src="images/2x96k.png" alt="2 x 96 KByte RAM Extension">
+<figcaption><b>2 x 96 KByte RAM Extension</b></figcaption>
+</figure>
+
+<h3 id="384KbRamExt">2 x 384 KByte RAM Extension</h3>
+The following figure shows how this RAM extension is organized. There are six RAM
+banks with 64 KByte each. They can be identified as:
+<p>
+<table border>
+  <tr><th>RAM bank</th><th>Bank identifier</th></tr>
+  <tr><td>6 x 64 KByte<td>$0C, $0D, $0E, $04, $05, $06</td></tr>
+  <tr><td>6 x 64 KByte<td>$08, $09, $0A, $00, $01, $02</td></tr>
+</table>
+<p>
+
+<figure>
+<img src="images/2x384k.png" alt="2 x 96 KByte RAM Extension">
+<figcaption><b>2 x 384 KByte RAM Extension</b></figcaption>
+</figure>
+
+<h3 id="MMU">Memory Management Unit (MMU)</h3>
+Due to a limited address range of the MC6809 a memory management unit is
+necessary to map parts of the RAM extension into the available address
+range. The MMU consists of 16 Byte registers located at $FFE0 - $FFEF. They
+are write-only registers. When reading they always return $FF. Each register
+can map a 4 KByte memory segment.
+
+<p>
+<table border>
+  <tr><th>MMU<br>register</th><th>Target address<br>range</th></tr>
+  <tr><td>$FFEF<td>$F000 - $FFFF</td></tr>
+  <tr><td>$FFEE<td>$E000 - $EFFF</td></tr>
+  <tr><td>$FFED<td>$D000 - $DFFF</td></tr>
+  <tr><td>$FFEC<td>$C000 - $CFFF</td></tr>
+  <tr><td>$FFEB<td>$B000 - $BFFF</td></tr>
+  <tr><td>$FFEA<td>$A000 - $AFFF</td></tr>
+  <tr><td>$FFE9<td>$9000 - $9FFF</td></tr>
+  <tr><td>$FFE8<td>$8000 - $8FFF</td></tr>
+  <tr><td>$FFE7<td>$7000 - $7FFF</td></tr>
+  <tr><td>$FFE6<td>$6000 - $6FFF</td></tr>
+  <tr><td>$FFE5<td>$5000 - $5FFF</td></tr>
+  <tr><td>$FFE4<td>$4000 - $4FFF</td></tr>
+  <tr><td>$FFE3<td>$3000 - $3FFF</td></tr>
+  <tr><td>$FFE2<td>$2000 - $2FFF</td></tr>
+  <tr><td>$FFE1<td>$1000 - $1FFF</td></tr>
+  <tr><td>$FFE0<td>$0000 - $0FFF</td></tr>
+</table>
+<p>
+
+The RAM bank and source address range which is mapped is specified by the
+RAM bank identifier.<p>
+<b>Example:</b> When writing <b>$0C</b> into MMU register <b>$FFE4</b> 4 KByte
+RAM of RAM bank $0C is mapped into the target address range
+<b>$4000 - $4FFF</b>.
+<p>Which source address range is used depends on the RAM extension type:
+A 96 KByte RAM bank only has 16 KByte (address range $0000 - $3FFF).
+So in this example the address range of $0000 - $0FFF is mapped. For 384 KByte
+RAM bank the source address range is always the same as the target address
+range. The blue arrows in the figures show by example which (blue marked) source
+address ranges can be mapped to which (also blue) target address ranges.
+
+<p>When writing $03, $07, $0B or $0F into any MMU register it's previous mapping
+is removed. Also the monitor program uses the MMU. To know the current state of
+all MMU registers the monitor program saves a copy of them into the address
+location $EFE0 - $EFEF. When writing to a MMU register the upper four bits 
+should always be 0.
+
+<h3 id="FlexibleMMU">Flexible Memory Management Unit (MMU)</h3>
+With a hardware modification also for the 384 KByte RAM extension it is possible
+to select the target address range (one out of four possibilities) where to
+map the 4 KByte RAM segment.
+
+<figure>
+<img src="images/2x384flx.png" alt="2 x 384 KByte RAM Extension, flexible MMU ">
+<figcaption><b>2 x 384 KByte RAM Extension with flexible MMU</b></figcaption>
+</figure>
+By using bit 4 and 5 of the MMU register the target address range can be
+selected:
+<p>
+<table border>
+  <tr><th>MMU register<br>value</th><th>Target address<br>range</th></tr>
+  <tr><td>$0X<td>$0000 - $3FFF</td></tr>
+  <tr><td>$1X<td>$4000 - $7FFF</td></tr>
+  <tr><td>$2X<td>$8000 - $BFFF</td></tr>
+  <tr><td>$3X<td>$C000 - $FFFF</td></tr>
+</table>
+<p>
+
+<b>Example:</b> When writing <b>$2C</b> into MMU register <b>$FFE4</b> 4 KByte
+RAM of RAM bank $0C is mapped into the target address range
+<b>$8000 - $8FFF</b>.
+
+<p>When writing to a flexible MMU register the upper two bits should always be
+0.
+
+<h2 id="VideoRam">Video RAM</h2>
+
+The Eurocom II has a video resolution of 512 horizontal and 256 vertical pixel.
+Assuming the video RAM starts at address $0000 the video RAM is organized as in
+the following figure:
+<figure>
+<img src="images/e2scn.png" alt="Eurocom II video RAM">
+<figcaption><b>Eurocom II video RAM</b></figcaption>
+</figure>
+Hence the video RAM has a minimum size of 16 KByte when displaying 2 colors,
+3 x 16 KByte when displaying 8 colors or 6 x 16 KByte when displaying 64 colors.
+Video contol Register 2 (VICO2 at $FCF7) can be used for hardware scrolling.
+Its value defines the raster line displayed top-most on the screen.
+
+<h3 id="VideoRamNoRamExt">Video RAM without RAM Extension</h3>
+When using the Eurocom II without a RAM extension a 16 KByte memory segment of
+the on-board RAM is used for video display. The display supports two colors.
+Which RAM segment is used depends on the
+Video Control Register 1 (VICO1 at $FCF6).
+<p>
+<table border>
+  <tr><th>VICO1 register<br>value</th><th>Video address<br>range</th></tr>
+  <tr><td>$00<td>$0000 - $3FFF</td></tr>
+  <tr><td>$01<td>$4000 - $7FFF</td></tr>
+  <tr><td>$02<td>$8000 - $BFFF</td></tr>
+  <tr><td>$03<td>No video RAM</td></tr>
+</table>
+<p>
+VICO1 is a write-only register. When reading it always returns $FF. Only bit 0
+and 1 select the video RAM segment. Bit 7 up to bit 2 should always be written
+as 0.
+<h3 id="VideoRamRamExt">Video RAM with RAM Extension</h3>
+When using the Eurocom II/V7 with a RAM extension one, three or six 16 KByte
+RAM bank(s) of the RAM Extension are used for video display. That means for
+displaying more than two colors a RAM extension is needed. Which RAM bank is
+used depends on the Video Control Register 1 (VICO1 at $FCF6):
+<p>
+<table border>
+  <tr><th>VICO1 register<br>value</th><th>Video address<br>range</th></tr>
+  <tr><td>$00</td><td>$0C, $0D, $0E, $04, $05, $06</td></tr>
+  <tr><td>$01</td><td>$08, $09, $0A, $00, $01, $02</td></tr>
+</table>
+<p>
+Only bit 0 select the video RAM segment. Bit 7 up to bit 1 should always
+be written as 0.
+<p>
+When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
+<p>
+<table border>
+    <tr><th>bank identifier<br>value</th><th>Colors</th><th>Video address<br>range</th></tr>
+    <tr><td>$0C, $08</td><td>2,8,64</td><td>Green low</td></tr>
+  <tr><td>$0D, $09</td><td>8,64</td><td>Blue low</td></tr>
+  <tr><td>$0E, $0A</td><td>8,64</td><td>Red low</td></tr>
+  <tr><td>$04, $00</td><td>64</td><td>Green high</td></tr>
+  <tr><td>$05, $01</td><td>64</td><td>Blue high</td></tr>
+  <tr><td>$06, $02</td><td>64</td><td>Red high</td></tr>
+</table>
+<p>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+ <li><a href="mon24.htm"> Monitor program mon24.s19</a>
+ <li><a href="mc6809.htm"> Motorola MC6809</a>
+</ul>
+<h2>Documents on the behalf of the FLEX User Group</h2>
+<ul>
+ <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
+ <li><a href="swflexum.pdf" target="_blank">FLEX User's Manual (2)</a>
+ <li><a href="flexapg.pdf" target="_blank">FLEX Programmer's Manual</a>
+ <li><a href="6809fadg.pdf" target="_blank">6809 FLEX Adaption Guide</a>
+ <li><a href="tedit.pdf" target="_blank">FLEX Editor</a>
+ <li><a href="relasmb.pdf" target="_blank">FLEX 6809 Relocating Assembler</a>
+ <li><a href="asmb.pdf" target="_blank">FLEX Assembler</a>
+ <li><a href="linkload.pdf" target="_blank">FLEX Linking Loader</a>
+ <li><a href="crasmb.pdf" target="_blank">Lloyd Macro Cross Assembler</a>
+ <li><a href="6809diag.pdf" target="_blank">6809 FLEX Diagnostics</a>
+ <li><a href="debug.pdf" target="_blank">6809 Debug Package</a>
+ <li><a href="dynamite.pdf" target="_blank">DYNAMITE Disassembler User's Manual</a>
+ <li><a href="basic_um.pdf" target="_blank">BASIC Users Manual</a>
+ <li><a href="ba2bqs.pdf" target="_blank">BASIC Answers to BASIC Questions</a>
+ <li><a href="basprec.pdf" target="_blank">BASIC Precompiler User's Manual</a>
+ <li><a href="f77.pdf" target="_blank">Fortan 77</a>
+ <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
+</ul>
+<h2>Related Links</h2>
+<ul>
+ <li><a href="https://aladur.neocities.org/flexemu">Flexemu Homepage</a>
+</ul>
+</body>
+</html>

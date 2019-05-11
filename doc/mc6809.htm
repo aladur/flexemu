@@ -1,0 +1,238 @@
+<html>
+<head>
+<title>Motorola MC6809</title>
+</head>
+<body>
+<h2>Motorola MC6809</h2>
+<h3 id="InstructionSet">Instruction Set</h3>
+A good overview about the Motorlola MC6809 can be found on the
+<a href="https://wikipedia.org/wiki/Motorola_6809">MC6809 wiki page</a>.
+A good detailed and well structured overview of the instruction set can be
+found in this
+<a href="6x09_Instruction_Sets.pdf" target="_blank">6X09 Instruction Sets</a>
+manual. It describes both the Motorola 6809 and Hitachi 6309, which
+has more registers and instructions and also an 6809 emulation mode.
+<h3 id="UndocumentedInstructions">Undocumented Instructions</h3>
+The support of undocumented MC6809 instructions can be controlled either
+with the command line option <b>-u</b>, with the menu item
+Processor-&gt;Undocumented Instructions or in the user settings. To be able do
+distinguish them from the supported instructions the disassembler
+displays their mnemonics in lower case. Undocumented MC6809 instructions
+are not available with Fastflex.
+<p>
+They have been found empirically so they may not be reliable, incomplete or may
+work on some MC6809 chips but not on others. Motorola never published any
+information about undefined opcodes.
+<p>
+The following undocumented instructions are supported by flexemu:
+<p>
+<table border>
+ <tr>
+  <th>Mnemonic</th>
+  <th>Opcode</th>
+  <th>Mode</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>01</td>
+  <td>Direct</td>
+  <td>Same as Op 00 (NEG)</td>
+ </tr>
+ <tr>
+  <td>negcom</td>
+  <td>02</td>
+  <td>Direct</td>
+  <td>If cc.c = 0 then NEG else COM</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>05</td>
+  <td>Direct</td>
+  <td>Same as Op 04 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>0B</td>
+  <td>Direct</td>
+  <td>Same as Op 0A (DEC)</td>
+ </tr>
+ <tr>
+  <td>reset</td>
+  <td>3E</td>
+  <td>Inherent</td>
+  <td>Same as CPU Reset</td>
+ </tr>
+ <tr>
+  <td>nega</td>
+  <td>41</td>
+  <td>Inherent</td>
+  <td>Same Op 40 (NEGA)</td>
+ </tr>
+ <tr>
+  <td>coma</td>
+  <td>42</td>
+  <td>Inherent</td>
+  <td>Same Op 43 (COMA)</td>
+ </tr>
+ <tr>
+  <td>lsra</td>
+  <td>45</td>
+  <td>Inherent</td>
+  <td>Same Op 44 (LSRA)</td>
+ </tr>
+ <tr>
+  <td>deca</td>
+  <td>4B</td>
+  <td>Inherent</td>
+  <td>Same Op 4A (DECA)</td>
+ </tr>
+ <tr>
+  <td>clra</td>
+  <td>4E</td>
+  <td>Inherent</td>
+  <td>Same Op 4F (CLRA)</td>
+ </tr>
+ <tr>
+  <td>negb</td>
+  <td>51</td>
+  <td>Inherent</td>
+  <td>Same Op 50 (NEGB)</td>
+ </tr>
+ <tr>
+  <td>comb</td>
+  <td>52</td>
+  <td>Inherent</td>
+  <td>Same Op 53 (COMB)</td>
+ </tr>
+ <tr>
+  <td>lsrb</td>
+  <td>55</td>
+  <td>Inherent</td>
+  <td>Same Op 54 (LSRB)</td>
+ </tr>
+ <tr>
+  <td>decb</td>
+  <td>5B</td>
+  <td>Inherent</td>
+  <td>Same Op 5A (DECB)</td>
+ </tr>
+ <tr>
+  <td>clrb</td>
+  <td>5E</td>
+  <td>Inherent</td>
+  <td>Same Op 5F (CLRB)</td>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>61</td>
+  <td>Indexed</td>
+  <td>Same Op 60 (NEG)</td>
+ </tr>
+ <tr>
+  <td>com</td>
+  <td>62</td>
+  <td>Indexed</td>
+  <td>Same Op 63 (COM)</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>65</td>
+  <td>Indexed</td>
+  <td>Same Op 64 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>6B</td>
+  <td>Indexed</td>                                                              
+  <td>Same Op 6A (DEC)</td>
+ </tr>
+ <tr>
+  <td>neg</td>
+  <td>71</td>
+  <td>Extended</td>
+  <td>Same Op 70 (NEG)</td>
+ </tr>
+ <tr>
+  <td>com</td>
+  <td>72</td>
+  <td>Extended</td>
+  <td>Same Op 73 (COM)</td>
+ </tr>
+ <tr>
+  <td>lsr</td>
+  <td>75</td>
+  <td>Extended</td>
+  <td>Same Op 74 (LSR)</td>
+ </tr>
+ <tr>
+  <td>dec</td>
+  <td>7B</td>
+  <td>Extended</td>
+  <td>Same Op 7A (DEC)</td>
+ </tr>
+ <tr>
+  <td>EXG</td>
+  <td>1E</td>
+  <td>Implied</td>
+  <td>In extension to the normal exchange of Byte and Word registers also
+      exchange of mixed Byte/Word registers is supported. If the target is a 
+      Word the upper Byte is filled with $FF. If the target is a Byte only
+      the lower Byte of the source register is moved.<p>
+      Also supports "invalid" register codes. If the source is such an
+      invalid register $FF or $FFFF is moved to the target register</td>
+ </tr>
+ <tr>
+  <td>TFR</td>
+  <td>1F</td>
+  <td>Implied</td>
+  <td>In extension to the normal transfer of Byte and Word registers also
+      transfer of mixed Byte/Word registers is supported. If the target is a 
+      Word the upper Byte is filled with $FF. If the target is a Byte only
+      the lower Byte of the source register is moved.<p>
+      Also supports "invalid" register codes. If the source is such an
+      invalid register $FF or $FFFF is moved to the target register</td>
+ </tr>
+</table>
+<p>
+<h2>SEE ALSO</h2>
+<ul>
+ <li><a href="flexemu.htm"> flexemu Main</a>
+ <li><a href="flexuser.htm"> FLEX Users Manual</a>
+ <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
+ <li><a href="flexdos.htm"> FLEX Disk Operating System (DOS)</a>
+ <li><a href="flexfms.htm"> FLEX File Management System (FMS)</a>
+ <li><a href="flexfs.htm"> File systems supported by flexemu</a>
+ <li><a href="flexerr.htm"> FLEX Error Messages</a>
+ <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
+ <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
+ <li><a href="mon24.htm"> Monitor program mon24.s19</a>
+ <li><a href="e2ramext.htm"> Eurocom II memory, MMU and video display</a>       
+</ul>
+<h2>Documents on the behalf of the FLEX User Group</h2>
+<ul>
+ <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
+ <li><a href="swflexum.pdf" target="_blank">FLEX User's Manual (2)</a>
+ <li><a href="flexapg.pdf" target="_blank">FLEX Programmer's Manual</a>
+ <li><a href="6809fadg.pdf" target="_blank">6809 FLEX Adaption Guide</a>
+ <li><a href="tedit.pdf" target="_blank">FLEX Editor</a>
+ <li><a href="relasmb.pdf" target="_blank">FLEX 6809 Relocating Assembler</a>
+ <li><a href="asmb.pdf" target="_blank">FLEX Assembler</a>
+ <li><a href="linkload.pdf" target="_blank">FLEX Linking Loader</a>
+ <li><a href="crasmb.pdf" target="_blank">Lloyd Macro Cross Assembler</a>
+ <li><a href="6809diag.pdf" target="_blank">6809 FLEX Diagnostics</a>
+ <li><a href="debug.pdf" target="_blank">6809 Debug Package</a>
+ <li><a href="dynamite.pdf" target="_blank">DYNAMITE Disassembler User's Manual</a>
+ <li><a href="basic_um.pdf" target="_blank">BASIC Users Manual</a>
+ <li><a href="ba2bqs.pdf" target="_blank">BASIC Answers to BASIC Questions</a>
+ <li><a href="basprec.pdf" target="_blank">BASIC Precompiler User's Manual</a>
+ <li><a href="f77.pdf" target="_blank">Fortan 77</a>
+ <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
+</ul>
+<h2>Related Links</h2>
+<ul>
+ <li><a href="https://aladur.neocities.org/flexemu">Flexemu Homepage</a>
+</ul>
+</body>
+</html>
