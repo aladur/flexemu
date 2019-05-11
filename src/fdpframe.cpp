@@ -222,7 +222,7 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
     aboutInfo.SetVersion(progVersion);
     aboutInfo.SetCopyright("Copyright (C) 1998-2019\n");
     aboutInfo.AddDeveloper("Wolfgang Schwotzer");
-    aboutInfo.SetWebSite("https://aladur.neocities.org/flexemu");
+    aboutInfo.SetWebSite("http://flexemu.neocities.org");
     aboutInfo.SetDescription(msgFormat);
 
 #ifdef __WXMSW__
