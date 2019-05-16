@@ -245,13 +245,69 @@ void XAbstractGui::update_block(int block_number)
 SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
 {
     KeySym      keysym;
-    char        charString[2];
+    char        charString[4];
     int     count;
 
     // first check for control character
-    count = XLookupString(pevent, charString, 2, &keysym, nullptr);
+    count = XLookupString(pevent, charString, sizeof(charString), &keysym,
+                          nullptr);
 
-    //  fprintf(stderr, "%X\n", keysym); only needed for debugging
+    if ((pevent->state & ControlMask) && (pevent->state & ShiftMask))
+    {
+        switch (keysym)
+        {
+            case XK_Break:
+            case XK_Pause:
+                request_new_state(CpuState::ResetRun);
+                return -1;
+
+            case XK_Home:
+            case XK_KP_Home:
+            case XK_KP_7:
+                return 0xa1;
+
+            case XK_Up:
+            case XK_KP_8:
+            case XK_KP_Up:
+                return 0xa8;
+
+            case XK_Prior:
+            case XK_KP_9:
+            case XK_KP_Prior:
+                return 0xa7;
+
+            case XK_Left:
+            case XK_KP_4:
+            case XK_KP_Left:
+                return 0xa4;
+
+            case XK_Begin:
+            case XK_KP_5:
+            case XK_KP_Begin:
+                return 0xa5;
+
+            case XK_Right:
+            case XK_KP_6:
+            case XK_KP_Right:
+                return 0xa6;
+
+            case XK_End:
+            case XK_KP_1:
+            case XK_KP_End:
+                return 0xa9;
+
+            case XK_Down:
+            case XK_KP_2:
+            case XK_KP_Down:
+                return 0xa2;
+
+            case XK_Next:
+            case XK_KP_3:
+            case XK_KP_Next:
+                return 0xa3;
+        }
+    }
+
     if (pevent->state & ControlMask)
     {
         switch (keysym)
@@ -359,6 +415,9 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
                 return 0x09;
 
             case XK_Delete:
+            case XK_KP_Delete:
+                return 0x1f;
+
             case XK_BackSpace:
                 return 0x08;
 
@@ -370,44 +429,54 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
 
             case XK_Home:
             case XK_KP_7:
-                return 0xb7;
+            case XK_KP_Home:
+                return 0xb1;
 
             case XK_Up:
             case XK_KP_8:
+            case XK_KP_Up:
                 return 0xb8;
 
             case XK_Prior:
             case XK_KP_9:
-                return 0xb9;
+            case XK_KP_Prior:
+                return 0xb7;
 
             case XK_Left:
             case XK_KP_4:
+            case XK_KP_Left:
                 return 0xb4;
 
             case XK_Begin:
             case XK_KP_5:
+            case XK_KP_Begin:
                 return 0xb5;
 
             case XK_Right:
             case XK_KP_6:
+            case XK_KP_Right:
                 return 0xb6;
 
+            case XK_End:
             case XK_KP_1:
-                return 0xb1;
+            case XK_KP_End:
+                return 0xb9;
 
             case XK_Down:
             case XK_KP_2:
+            case XK_KP_Down:
                 return 0xb2;
 
             case XK_Next:
             case XK_KP_3:
+            case XK_KP_Next:
                 return 0xb3;
 
             case XK_F11:
-                return 0xfa; // PAT09: RIGHT MOST
+                return 0xfb; // PAT09: RIGHT MOST
 
             case XK_F12:
-                return 0x91; // PAT09: LEFT  MOST
+                return 0x92; // PAT09: LEFT  MOST
 
             default:
                 return -1;
@@ -458,53 +527,95 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
             case XK_Break:
             case XK_Pause:
                 cpu.set_nmi();
-
                 return -1;
 
             case XK_Delete:
-            case XK_BackSpace:
+            case XK_KP_Delete:
+            case XK_KP_Separator:
                 return 0x7f; // PAT09: SHIFT DEL
+
+            case XK_BackSpace:
+                return 0x08; // PAT09: SHIFT BS
 
             case XK_Home:
             case XK_KP_7:
-                return 0xe7; // PAT09: SHIFT ARR UL
+            case XK_KP_Home:
+                return 0xe1; // PAT09: SHIFT ARR L
 
             case XK_Up:
             case XK_KP_8:
+            case XK_KP_Up:
                 return 0xe8; // PAT09: SHIFT CUR U
 
             case XK_Prior:
             case XK_KP_9:
-                return 0xe9; // PAT09: SHIFT ARR R
+            case XK_KP_Prior:
+                return 0xe7; // PAT09: SHIFT ARR UL
 
             case XK_Left:
             case XK_KP_4:
+            case XK_KP_Left:
                 return 0xe4; // PAT09: SHIFT CUR L
 
             case XK_Begin:
             case XK_KP_5:
+            case XK_KP_Begin:
                 return 0xe5; // PAT09: SHIFT MODE
 
             case XK_Right:
             case XK_KP_6:
+            case XK_KP_Right:
                 return 0xe6; // PAT09: SHIFT CUR R
 
+            case XK_End:
             case XK_KP_1:
-                return 0xe1; // PAT09: SHIFT ARR L
+            case XK_KP_End:
+                return 0xe9; // PAT09: SHIFT ARR R
 
             case XK_Down:
             case XK_KP_2:
+            case XK_KP_Down:
                 return 0xe2; // PAT09: SHIFT CUR D
 
             case XK_Next:
             case XK_KP_3:
+            case XK_KP_Next:
                 return 0xe3; // PAT09: SHIFT ARR DR
         } // switch
     } // if
 
     switch (keysym)
     {
-        // main keyboard
+        case XK_KP_0:
+            return 0x30;
+
+        case XK_KP_1:
+            return 0x31;
+
+        case XK_KP_2:
+            return 0x32;
+
+        case XK_KP_3:
+            return 0x33;
+
+        case XK_KP_4:
+            return 0x34;
+
+        case XK_KP_5:
+            return 0x35;
+
+        case XK_KP_6:
+            return 0x36;
+
+        case XK_KP_7:
+            return 0x37;
+
+        case XK_KP_8:
+            return 0x38;
+
+        case XK_KP_9:
+            return 0x39;
+
         case XK_Return:
             return 0x0d;
 
@@ -518,6 +629,9 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
             return ' ';
 
         case XK_Delete:
+        case XK_KP_Delete:
+            return 0x7f;
+
         case XK_BackSpace:
             return 0x08;
 
@@ -562,48 +676,43 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
             return 0x91; // PAT09: LEFT  MOST
 
         case XK_Home:
-        case XK_KP_7:
-            return 0xf7;
+        case XK_KP_Home:
+            return 0xf1;
 
         case XK_Up:
-        case XK_KP_8:
+        case XK_KP_Up:
             return 0xf8;
 
         case XK_Prior:
-        case XK_KP_9:
-            return 0xf9;
+        case XK_KP_Prior:
+            return 0xf7;
 
         case XK_Left:
-        case XK_KP_4:
+        case XK_KP_Left:
             return 0xf4;
 
         case XK_Begin:
-        case XK_KP_5:
+        case XK_KP_Begin:
             return 0xf5;
 
         case XK_Right:
-        case XK_KP_6:
+        case XK_KP_Right:
             return 0xf6;
 
-        case XK_KP_1:
-            return 0xf1;
+        case XK_End:
+        case XK_KP_End:
+            return 0xf9;
 
         case XK_Down:
-        case XK_KP_2:
+        case XK_KP_Down:
             return 0xf2;
 
         case XK_Next:
-        case XK_KP_3:
+        case XK_KP_Next:
             return 0xf3;
 
-        case XK_KP_Decimal:
-            return ',';
-
-        case XK_KP_Add:
-            return '+';
-
-        case XK_KP_Subtract:
-            return '-';
+        case XK_KP_Separator:
+            return '.';
 
         case XK_KP_Enter:
             return 0x0d;

@@ -876,7 +876,46 @@ SWord Win32Gui::translate_to_ascii(SWord key)
 
 SWord Win32Gui::translate_to_ascii1(SWord key)
 {
+    if ((GetKeyState(VK_CONTROL) < 0) &&
+        (GetKeyState(VK_SHIFT) < 0))
+    {
+        switch (key)
+        {
+            case VK_PAUSE:
+            case VK_CANCEL:
+                request_new_state(CpuState::ResetRun);
+
+            case VK_HOME:
+                return 0xa1;
+
+            case VK_UP:
+                return 0xa8;
+
+            case VK_PRIOR:
+                return 0xa7;
+
+            case VK_LEFT:
+                return 0xa4;
+
+            case VK_CLEAR:
+                return 0xa5;
+
+            case VK_RIGHT:
+                return 0xa6;
+
+            case VK_END:
+                return 0xa9;
+
+            case VK_DOWN:
+                return 0xa2;
+
+            case VK_NEXT:
+                return 0xa3;
+        }
+    }
+
     if (GetKeyState(VK_CONTROL) < 0)
+    {
         switch (key)
         {
             case VK_PAUSE:
@@ -886,13 +925,13 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
                 return -1;
 
             case VK_HOME:
-                return 0xb7;
+                return 0xb1;
 
             case VK_UP:
                 return 0xb8;
 
             case VK_PRIOR:
-                return 0xb9;
+                return 0xb7;
 
             case VK_LEFT:
                 return 0xb4;
@@ -904,7 +943,7 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
                 return 0xb6;
 
             case VK_END:
-                return 0xb1;
+                return 0xb9;
 
             case VK_DOWN:
                 return 0xb2;
@@ -917,16 +956,21 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
                 return -1;
 
             case VK_F11:
-                return 0xfa; // PAT09: RIGHT MOST
+                return 0xfb; // PAT09: RIGHT MOST
 
             case VK_F12:
-                return 0x91; // PAT09: LEFT  MOST
+                return 0x92; // PAT09: LEFT  MOST
+
+            case VK_DELETE:
+                return 0x1f;
 
             default:
                 return -1;
         }
+    }
 
     if (GetKeyState(VK_SHIFT) < 0)
+    {
         switch (key)
         {
             case VK_F1:
@@ -969,13 +1013,13 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
                 return -1;
 
             case VK_HOME:
-                return 0xe7;
+                return 0xe1;
 
             case VK_UP:
                 return 0xe8;
 
             case VK_PRIOR:
-                return 0xe9;
+                return 0xe7;
 
             case VK_LEFT:
                 return 0xe4;
@@ -987,7 +1031,7 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
                 return 0xe6;
 
             case VK_END:
-                return 0xe1;
+                return 0xe9;
 
             case VK_DOWN:
                 return 0xe2;
@@ -995,9 +1039,13 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
             case VK_NEXT:
                 return 0xe3;
 
+            case VK_DELETE:
+                return 0x7f;
+
             default:
                 return -1;
         }
+    }
 
     switch (key)
     {
@@ -1038,13 +1086,13 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
             return 0x91; // PAT09: LEFT  MOST
 
         case VK_HOME:
-            return 0xf7;
+            return 0xf1;
 
         case VK_UP:
             return 0xf8;
 
         case VK_PRIOR:
-            return 0xf9;
+            return 0xf7;
 
         case VK_LEFT:
             return 0xf4;
@@ -1056,13 +1104,16 @@ SWord Win32Gui::translate_to_ascii1(SWord key)
             return 0xf6;
 
         case VK_END:
-            return 0xf1;
+            return 0xf9;
 
         case VK_DOWN:
             return 0xf2;
 
         case VK_NEXT:
             return 0xf3;
+
+        case VK_DELETE:
+            return 0x7f;
 
         default:
             return -1;
