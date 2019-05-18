@@ -829,49 +829,12 @@ int Win32Gui::onMinMaxInfo(MINMAXINFO *lpmmi)
 
 SWord Win32Gui::translate_to_ascii(SWord key)
 {
-    switch (key)
+    if (!(key & 0xFF80))
     {
-        case 0xdf:
-            return '^';  // german sharp s
-
-        case 0xa7:
-            return '#';  // paragraph
-
-        case 0xb4:
-            return '\'';
-
-        case 0xb5:
-            return 'u';  // my
-
-        case 0xb0:
-            return '0';  // degree
-
-        case 0xb2:
-            return '2';  // index 2
-
-        case 0xb3:
-            return '3';  // index 3
-
-        case 0xf6:
-            return '[';  // german umlaut oe
-
-        case 0xe4:
-            return ']';  // german umlaut ae
-
-        case 0xfc:
-            return '\\'; // german umlaut ue
-
-        case 0xd6:
-            return '{';  // german umlaut OE
-
-        case 0xc4:
-            return '}';  // german umlaut AE
-
-        case 0xdc:
-            return '|';  // german umlaut UE
+        return key;
     }
 
-    return key;
+    return -1;
 } // translate_to_ascii
 
 SWord Win32Gui::translate_to_ascii1(SWord key)

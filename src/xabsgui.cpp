@@ -718,37 +718,9 @@ SWord XAbstractGui::translate_to_ascii(XKeyEvent *pevent)
             return 0x0d;
     } // switch
 
-    if (count == 1)
+    if (count == 1 && !(charString[0] & '\x80'))
     {
-        switch (static_cast<unsigned char>(charString[0]))
-        {
-            case 0xdf:
-                return '^';
-
-            case 0xb0:
-                return '~';
-
-            case 0xc4:
-                return '[';
-
-            case 0xd6:
-                return '\\';
-
-            case 0xdc:
-                return ']';
-
-            case 0xe4:
-                return '{';
-
-            case 0xf6:
-                return '|';
-
-            case 0xfc:
-                return '}';
-
-            default:
-                return charString[0];
-        } // switch
+        return charString[0];
     }
 
     return -1;
