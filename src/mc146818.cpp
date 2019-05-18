@@ -61,7 +61,7 @@ Mc146818::Mc146818() :
     weekday = static_cast<Byte>(lt->tm_wday + 1);
     day = convert(static_cast<Byte>(lt->tm_mday));
     month = convert(static_cast<Byte>(lt->tm_mon + 1));
-    year = convert(static_cast<Byte>(lt->tm_year));
+    year = convert(static_cast<Byte>(lt->tm_year % 100));
 }
 
 const char *Mc146818::getFileName()
