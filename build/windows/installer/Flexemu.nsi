@@ -417,6 +417,7 @@ Section "Uninstall" Uninstall
   DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FSetup.exe"
 
   ; Remove files and uninstaller
+  Delete $INSTDIR\Documentation\images\*.*
   Delete $INSTDIR\Documentation\*.*
   Delete $INSTDIR\Data\*.*
   Delete $INSTDIR\*.*
