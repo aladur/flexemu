@@ -34,12 +34,14 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 // Maximum y-size of one emulated pixel on screen 
 #define MAX_PIXELSIZEY    (4)
 
+// The values for argc, argv and doc_dir are set once
+// and should not be edited.
 struct sGuiOptions
 {
     int argc;
     char *const *argv;
     std::string color;
-    std::string doc_dir;
+    std::string doc_dir; // Directory containing html documenation
     int nColors; // Number of colors or gray scale values { 2, 8, 64 }
     bool isInverse; // Display inverse colors or gray scale values
     bool isSynchronized; // Use X11 in synchronized mode

@@ -163,11 +163,6 @@ void FlexOptionManager::GetEnvironmentOptions(
         pOptions->useRtc = (value != 0);
     }
 
-    if (env.GetValue((const char *)"FLEX" FLEXDOCDIR, str))
-    {
-        pGuiOptions->doc_dir = str;
-    }
-
     if (env.GetValue((const char *)"FLEX" FLEXMONITOR, str))
     {
         pOptions->hex_file = str;
@@ -420,7 +415,6 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
     reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     reg.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    reg.SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
     reg.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
     reg.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
     reg.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
@@ -433,6 +427,7 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
     reg.SetValue(FLEXFREQUENCY, std::to_string(pOptions->frequency));
     reg.SetValue(FLEXVERSION, VERSION);
+    reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
 #endif
 #ifdef UNIX
     std::string rcFileName;
@@ -455,7 +450,6 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
     rcFile.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     rcFile.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    rcFile.SetValue(FLEXDOCDIR, pGuiOptions->doc_dir.c_str());
     rcFile.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
     rcFile.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
     rcFile.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
@@ -496,14 +490,13 @@ void FlexOptionManager::GetOptions(
     reg.GetValue(FLEXMONITOR, pOptions->hex_file);
     reg.GetValue(FLEXCOLOR, pGuiOptions->color);
 
-    if (!reg.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir))
-        if (!reg.GetValue(FLEXNCOLORS, int_result))
+    if (!reg.GetValue(FLEXNCOLORS, int_result))
+    {
+        if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            if (int_result == 2 || int_result == 8 || int_result == 64)
-            {
-                pGuiOptions->nColors = int_result;
-            }
+            pGuiOptions->nColors = int_result;
         }
+    }
 
     if (!reg.GetValue(FLEXSCREENWIDTH, int_result))
     {
@@ -607,7 +600,6 @@ void FlexOptionManager::GetOptions(
     rcFile.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
     rcFile.GetValue(FLEXMONITOR, pOptions->hex_file);
     rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);
-    rcFile.GetValue(FLEXDOCDIR, pGuiOptions->doc_dir);
 
     if (!rcFile.GetValue(FLEXNCOLORS, int_result))
     {

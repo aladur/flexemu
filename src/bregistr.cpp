@@ -174,4 +174,14 @@ LONG BRegistry::GetValue(const std::string &name, int &value)
     return lastError;
 }
 
+LONG BRegistry::DeleteValue(const std::string &name)
+{
+#ifdef UNICODE
+    lastError = RegDeleteValue(hKey, ConvertToUtf16String(name).c_str());
+#else
+    lastError = RegDeleteValue(hKey, name.c_str());
+#endif
+    return lastError;
+}
+
 #endif
