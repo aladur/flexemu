@@ -106,7 +106,8 @@ private:
     wxPanel *CreateExpertOptionsPage(wxBookCtrlBase *parent);
     wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
                                    const wxString &text,
-                                   int textId, int buttonId);
+                                   int textId, int buttonId,
+                                   int topBorderWidth);
     wxGenericHyperlinkCtrl *CreateHyperlinkCtrl(
                                      wxWindow *window,
                                      const wxString &label,

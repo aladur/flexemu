@@ -292,7 +292,7 @@ wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
                                     wxDefaultSize,
                                     WXSIZEOF(hardwareChoices), hardwareChoices,
                                     1, wxRA_SPECIFY_COLS);
-    pPanelSizer->Add(c_emulatedHardware, 0, wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_emulatedHardware, 0, wxLEFT, gap);
     frequencyChoices[0] = _("Use original frequency");
     frequencyChoices[1] = _("Emulate as fast as possible");
     frequencyChoices[2] = _("Set frequency:");
@@ -327,7 +327,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
 
     pStatic = new wxStaticText(panel, -1, _("Screen geometry"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
-    pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+    pGridSizer->Add(pStatic, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
     c_geometry = new wxComboBox(panel, IDC_Geometry, "",
                                 wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                 wxCB_READONLY);
@@ -335,7 +335,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
 
     pStatic = new wxStaticText(panel, -1, _("Number of shades"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
-    pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+    pGridSizer->Add(pStatic, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
     c_nColors = new wxComboBox(panel, IDC_nColors, "",
                                wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                wxCB_READONLY);
@@ -343,12 +343,12 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
 
     pStatic = new wxStaticText(panel, -1, _("Monochromatic color"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
-    pGridSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+    pGridSizer->Add(pStatic, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
     c_color = new wxBitmapComboBox(panel, IDC_Color, wxEmptyString,
                                    wxDefaultPosition, wxDefaultSize,
 				   0, nullptr, wxCB_READONLY);
     pGridSizer->Add(c_color, 0, wxEXPAND);
-    pPanelSizer->Add(pGridSizer, 0, wxTOP, gap);
+    pPanelSizer->Add(pGridSizer);
 
     c_multiColorScheme = new wxCheckBox(panel, IDC_MultiColorScheme,
                                 _("Multi color scheme"),
@@ -373,7 +373,7 @@ wxPanel *FlexemuOptionsDialog::CreateCpuOptionsPage(wxBookCtrlBase *parent)
     c_undocumented = new wxCheckBox(panel, IDC_Inverse,
                                     _("Undocumented MC6809 instructions"),
                                     wxDefaultPosition, wxDefaultSize, 0);
-    pPanelSizer->Add(c_undocumented, 0, wxEXPAND | wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_undocumented, 0, wxEXPAND | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -388,7 +388,7 @@ wxPanel *FlexemuOptionsDialog::CreateHardwareOptionsPage(wxBookCtrlBase *parent)
     c_flexibleMmu = new wxCheckBox(panel, IDC_FlexibleMmu,
                                     _("More flexible MMU (Hardware modification)"),
                                     wxDefaultPosition, wxDefaultSize, 0);
-    pPanelSizer->Add(c_flexibleMmu, 0, wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_flexibleMmu, 0, wxLEFT, gap);
     c_useRtc = new wxCheckBox(panel, IDC_UseRtc,
                               _("MC146818 Realtime clock (Hardware extension)"),
                               wxDefaultPosition, wxDefaultSize, 0);
@@ -412,7 +412,7 @@ wxPanel *FlexemuOptionsDialog::CreateMemoryOptionsPage(wxBookCtrlBase *parent)
                                     _("RAM extension"), wxDefaultPosition,
                                     wxDefaultSize, WXSIZEOF(choices), choices,
                                     1, wxRA_SPECIFY_COLS);
-    pPanelSizer->Add(c_ramExtension, 0, wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(c_ramExtension, 0, wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -421,7 +421,7 @@ wxPanel *FlexemuOptionsDialog::CreateMemoryOptionsPage(wxBookCtrlBase *parent)
 
 wxTextCtrl *FlexemuOptionsDialog::CreateFileControls(
         wxPanel *panel, wxBoxSizer *panelSizer, const wxString &text,
-        int textId, int buttonId)
+        int textId, int buttonId, int topBorderWidth)
 {
     wxBoxSizer *pBoxSizer;
     wxStaticText *pStatic;
@@ -431,14 +431,15 @@ wxTextCtrl *FlexemuOptionsDialog::CreateFileControls(
     pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     pStatic = new wxStaticText(panel, -1, text,
                                wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
+    pBoxSizer->Add(pStatic, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
     textCtrl = new wxTextCtrl(panel, textId, "",
                               wxDefaultPosition, wxSize(textWidth, -1));
     pBoxSizer->Add(textCtrl, 1, wxEXPAND);
     pButton = new wxButton(panel, buttonId, _("..."),
-                           wxDefaultPosition, wxSize(40, 25));
-    pBoxSizer->Add(pButton, 0, 0);
-    panelSizer->Add(pBoxSizer, 0, wxEXPAND);
+                           wxDefaultPosition, wxSize(40, 30));
+    pBoxSizer->Add(pButton, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, gap);
+    int flags = wxEXPAND | (topBorderWidth > 0 ? wxTOP : 0);
+    panelSizer->Add(pBoxSizer, 0, flags, topBorderWidth);
 
     return textCtrl;
 }
@@ -451,16 +452,17 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
     uint32_t i;
 
     c_diskDir = CreateFileControls(panel, pPanelSizer, "Disk/Monitor directory",
-                                   IDC_DiskDir, IDC_DiskDirButton);
+                                   IDC_DiskDir, IDC_DiskDirButton, 0);
 
     c_monitor = CreateFileControls(panel, pPanelSizer, "Monitor program",
-                                   IDC_Monitor, IDC_MonitorButton);
+                                   IDC_Monitor, IDC_MonitorButton, 2);
 
     for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
         text.Printf(_("Disk Drive %d"), i);
         c_drive[i] = CreateFileControls(panel, pPanelSizer, text,
-                                        IDC_Drive0 + i, IDC_Drive0Button + i);
+                                        IDC_Drive0 + i,
+                                        IDC_Drive0Button + i, 2);
     }
 
     for (i = 0; i < WXSIZEOF(c_mdcrDrive); ++i)
@@ -468,7 +470,7 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
         text.Printf(_("Cassette Drive %d"), i);
         c_mdcrDrive[i] = CreateFileControls(panel, pPanelSizer, text,
                                             IDC_MdcrDrive0 + i,
-                                            IDC_MdcrDrive0Button + i);
+                                            IDC_MdcrDrive0Button + i, 2);
     }
 
     panel->SetSizer(pPanelSizer);
@@ -488,7 +490,7 @@ wxPanel *FlexemuOptionsDialog::CreateExpertOptionsPage(wxBookCtrlBase *parent)
                                  "experts."),
                                wxDefaultPosition, wxSize(-1, 50),
                                wxALIGN_LEFT);
-    pPanelSizer->Add(pStatic, 0, wxEXPAND | wxTOP | wxLEFT, gap);
+    pPanelSizer->Add(pStatic, 0, wxEXPAND | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -540,7 +542,7 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     pMainSizer->Add(pRightSizer);
 
     SetSizer(pMainSizer);
-    SetMinSize(wxSize(640, 300));
+    SetMinSize(wxSize(640, 320));
 
     Layout();
     Centre(wxBOTH);
