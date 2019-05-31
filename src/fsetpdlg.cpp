@@ -293,26 +293,26 @@ wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
                                     WXSIZEOF(hardwareChoices), hardwareChoices,
                                     1, wxRA_SPECIFY_COLS);
     pPanelSizer->Add(c_emulatedHardware, 0, wxLEFT, gap);
+    int maxWidth = c_emulatedHardware->GetSize().GetWidth();
     frequencyChoices[0] = _("Use original frequency");
     frequencyChoices[1] = _("Emulate as fast as possible");
     frequencyChoices[2] = _("Set frequency:");
     c_frequencyChoices = new wxRadioBox(panel, IDC_FrequencyChoices,
                                     _("CPU Frequency"), wxDefaultPosition,
-                                    wxDefaultSize,
+                                    wxSize(maxWidth, -1),
                                     WXSIZEOF(frequencyChoices),
                                     frequencyChoices,
                                     1, wxRA_SPECIFY_COLS);
     pPanelSizer->Add(c_frequencyChoices, 0, wxTOP | wxLEFT, gap);
     pFrequencySizer = new wxBoxSizer(wxHORIZONTAL);
     pPanelSizer->Add(pFrequencySizer, 0, wxTOP | wxLEFT, gap);
-    c_frequency = new wxTextCtrl(panel, IDC_Frequency, "",
-                               wxDefaultPosition, wxSize(textWidth, -1));
-    pFrequencySizer->Add(c_frequency, 0, wxTOP | wxLEFT, gap);
     pStatic = new wxStaticText(panel, -1, _("MHz"),
-                               wxDefaultPosition, wxSize(stextWidth, -1));
-    pFrequencySizer->Add(pStatic, 0, wxTOP | wxLEFT | wxALIGN_CENTER_VERTICAL,
-                         gap);
-
+                               wxDefaultPosition, wxDefaultSize);
+    int frequencyWidth = maxWidth - pStatic->GetSize().GetWidth() - gap;
+    c_frequency = new wxTextCtrl(panel, IDC_Frequency, "",
+                               wxDefaultPosition, wxSize(frequencyWidth, -1));
+    pFrequencySizer->Add(c_frequency, 1);
+    pFrequencySizer->Add(pStatic, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, gap);
     panel->SetSizer(pPanelSizer);
 
     return panel;
