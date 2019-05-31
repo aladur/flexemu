@@ -447,35 +447,14 @@ wxPanel *FlexemuOptionsDialog::CreatePathOptionsPage(wxBookCtrlBase *parent)
 {
     wxPanel *panel = new wxPanel(parent);
     wxBoxSizer *pPanelSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer *pBoxSizer;
-    wxStaticText *pStatic;
-    wxButton *pButton;
     wxString text;
     uint32_t i;
 
-    pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    pStatic = new wxStaticText(panel, -1, _("Disk/Monitor directory"),
-                               wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxLEFT | wxTOP, gap);
-    c_diskDir = new wxTextCtrl(panel, IDC_DiskDir, "",
-                               wxDefaultPosition, wxSize(textWidth, -1));
-    pBoxSizer->Add(c_diskDir, 1, wxEXPAND);
-    pButton = new wxButton(panel, IDC_DiskDirButton, _("..."),
-                           wxDefaultPosition, wxSize(40, 25));
-    pBoxSizer->Add(pButton, 0, wxTOP);
-    pPanelSizer->Add(pBoxSizer, 0, wxTOP | wxEXPAND, gap);
+    c_diskDir = CreateFileControls(panel, pPanelSizer, "Disk/Monitor directory",
+                                   IDC_DiskDir, IDC_DiskDirButton);
 
-    pBoxSizer = new wxBoxSizer(wxHORIZONTAL);
-    pStatic = new wxStaticText(panel, -1, _("Monitor program"),
-                               wxDefaultPosition, wxSize(stextWidth, -1));
-    pBoxSizer->Add(pStatic, 0, wxTOP | wxLEFT, gap);
-    c_monitor = new wxTextCtrl(panel, IDC_Monitor, "", wxDefaultPosition,
-                               wxSize(textWidth, -1));
-    pBoxSizer->Add(c_monitor, 1, wxEXPAND);
-    pButton = new wxButton(panel, IDC_MonitorButton, _("..."),
-                           wxDefaultPosition, wxSize(40, 25));
-    pBoxSizer->Add(pButton, 0, 0);
-    pPanelSizer->Add(pBoxSizer, 0, wxEXPAND);
+    c_monitor = CreateFileControls(panel, pPanelSizer, "Monitor program",
+                                   IDC_Monitor, IDC_MonitorButton);
 
     for (i = 0; i < WXSIZEOF(c_drive); ++i)
     {
