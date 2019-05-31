@@ -339,7 +339,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     c_nColors = new wxComboBox(panel, IDC_nColors, "",
                                wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                wxCB_READONLY);
-    pGridSizer->Add(c_nColors, 0, wxEXPAND);
+    pGridSizer->Add(c_nColors, 0, wxEXPAND | wxTOP, 2);
 
     pStatic = new wxStaticText(panel, -1, _("Monochromatic color"),
                                wxDefaultPosition, wxSize(stextWidth, -1));
@@ -347,7 +347,7 @@ wxPanel *FlexemuOptionsDialog::CreateGuiOptionsPage(wxBookCtrlBase *parent)
     c_color = new wxBitmapComboBox(panel, IDC_Color, wxEmptyString,
                                    wxDefaultPosition, wxDefaultSize,
 				   0, nullptr, wxCB_READONLY);
-    pGridSizer->Add(c_color, 0, wxEXPAND);
+    pGridSizer->Add(c_color, 0, wxEXPAND | wxTOP, 2);
     pPanelSizer->Add(pGridSizer);
 
     c_multiColorScheme = new wxCheckBox(panel, IDC_MultiColorScheme,
