@@ -542,7 +542,7 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     pMainSizer->Add(pRightSizer);
 
     SetSizer(pMainSizer);
-    SetMinSize(wxSize(640, 320));
+    SetMinSize(wxSize(640, 330));
 
     Layout();
     Centre(wxBOTH);
