@@ -512,7 +512,7 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
 
     auto *pEurocom2Link = CreateHyperlinkCtrl(parent,
                                           _("Eurocom II hardware description"),
-                                          _("e2ramext.htm"));
+                                          _("e2hwdesc.htm"));
 
     pLeftSizer->Add(pEurocom2Link, 0, wxTOP | wxLEFT, gap);
     pLeftSizer->Add(c_notebook, 0, wxALL, gap);
