@@ -1,10 +1,77 @@
 <html>
 <head>
-<title>Eurocom II Memory</title>
+<title>Eurocom II Hardware Description</title>
 </head>
 <body>
-<h2>Eurocom II Memory </h2>
-<h3>Eurocom II on-board memory</h3>
+<h2><a id="TableOfContents">Table of Contents</a></h2>
+<ul>
+    <li><a href="#E2">Eurocom II Hardware Description</a>
+        <ul>
+            <li><a href="#E2V5">Eurocom II V5</a></li>
+            <li><a href="#E2V7">Eurocom II V7</a></li>
+        </ul>
+    </li>
+    <li><a href="#Memory">Eurocom II Memory</a>
+        <ul>
+            <li><a href="#OnBoardMemory">Eurocom II on-board Memory</a></li>
+            <li><a href="#RamExt">Eurocom II/V7 RAM Extension</a></li>
+            <li><a href="#96KbRamExt">2 x 96 KByte RAM Extension</a></li>
+            <li><a href="#384KbRamExt">2 x 384 KByte RAM Extension</a></li>
+            <li><a href="#MMU">Memory Management Unit (MMU)</a></li>
+            <li><a href="#FlexibleMMU">Flexible Memory Management Unit</a></li>
+        </ul>
+    </li>
+    <li><a href="#RealtimeClock">Realtime clock</a></li>
+    <li><a href="#VideoDisplay">Video Display</a>
+        <ul>
+            <li><a href="#VideoRamNoRamExt">Video RAM without RAM Extension</a></li>
+            <li><a href="#VideoRamRamExt">Video RAM with RAM Extension</a></li>
+        </ul>
+    </li>
+    <li><a href="#SeeAlso">See also</a></li>
+    <li><a href="#FUGLinks">Documents on the behalf of the FLEX User Group</a></li>
+    <li><a href="#RelatedLinks">RelatedLinks</a></li>
+</ul>
+
+<h2 id="E2">Eurocom II Hardware Description</h2>
+<h3 id="E2V5">Eurocom II/V5</h3>
+<ul>
+    <li>CPU: <a href="mc6809.htm">Motorola MC6809</a>, 1.3396 MHz</li>
+    <li>2 x PIA MC6821 for parallel I/O</li>
+    <li>1 x ACIA MC6850 for serial I/O</li>
+    <li>48 KByte on-board RAM</li>
+    <li>4 KByte EPROM</li>
+    <li>No RAM extension *)</li>
+    <li>Permanent storage: 2 x Philips Mini Digital Cassette Recorder (MDCR)</li>
+    <li>Operating system: Monitor program with MDCR driver</li>
+    <li>Video resolution: 512 x 256, 2 colors</li>
+    <li>Supported monitor programs:
+        <a href="mon24.htm#Mon24">mon24.s19</a>
+        <a href="mon24.htm#Mon24z">mon24z.s19</a>
+    </li>
+</ul>
+<p>*) The hardware supports a RAM extension but this is not emulated due to
+lack of software.
+<p>
+<h3 id="E2V7">Eurocom II/V7</h3>
+<ul>
+    <li>CPU: <a href="mc6809.htm">Motorola MC6809</a>, 1.3396 MHz</li>
+    <li>2 x PIA for parallel I/O</li>
+    <li>1 x ACIA for serial I/O</li>
+    <li>1 x Floppy disk controller WD1793</li>
+    <li>64 KByte on-board RAM</li>
+    <li>4 KByte EPROM</li>
+    <li>RAM extension: Up to 2 x 96 KByte or 2 x 384 KByte</li>
+    <li>MMU for RAM extension</li>
+    <li>Flexible MMU for RAM extension (optional hardware modification)</li>
+    <li>Permanent storage: 4 x Floppy disk</li>
+    <li>Operating system: FLEX 9.1</li>
+    <li>Video resolution: 512 x 256, 2, 8 or 64 colors</li>
+    <li>Optional <a href="#RealtimeClock">realtime clock MC146818</a> (hardware extension)</li>
+    <li>Supported monitor programs: <a href="neumon54.htm">neumon54.hex</a></li>
+</ul>
+<h2 id="Memory">Eurocom II Memory</h2>
+<h3 id="OnBoardMemory">Eurocom II on-board memory</h3>
 As the following figure shows the Eurocom II/V5 has 48 KByte RAM, organized as
 3 x 16 KByte RAM + 4 KByte EPROM. The EPROM contains the monitor program:
 <figure>
@@ -19,7 +86,7 @@ the monitor program:
 <img src="images/e2v7m.png" alt="Eurocom II/V7 on-board memory">
 <figcaption><b>Eurocom II/V7 on-board memory</b></figcaption>
 </figure>
-<h3>Eurocom II/V7 RAM Extension</h3>
+<h3 id="RamExt">Eurocom II/V7 RAM Extension</h3>
 The Eurocom II/V7 has two extension slots which can be used for extending the
 RAM size. There are two types of RAM extensions available:
 <p>
@@ -120,7 +187,7 @@ all MMU registers the monitor program saves a copy of them into the address
 location $EFE0 - $EFEF. When writing to a MMU register the upper four bits 
 should always be 0.
 
-<h3 id="FlexibleMMU">Flexible Memory Management Unit (MMU)</h3>
+<h3 id="FlexibleMMU">Flexible Memory Management Unit</h3>
 With a hardware modification also for the 384 KByte RAM extension it is possible
 to select the target address range (one out of four possibilities) where to
 map the 4 KByte RAM segment.
@@ -148,7 +215,37 @@ RAM of RAM bank $0C is mapped into the target address range
 <p>When writing to a flexible MMU register the upper two bits should always be
 0.
 
-<h2 id="VideoRam">Video RAM</h2>
+<h2 id="RealtimeClock">Realtime clock</h2>
+
+As an optional hardware extension a realtime clock MC146818 is available. When
+it is enabled when booting FLEX the realtime clock is initialized in binary
+mode in 24 hour mode. The FLEX date is automatically set from the realtime
+clock. If the realtime clock is not present FLEX asks for the current date.
+It is accessible through memory mapped I/O in the address range $FD00 - $FD2F:
+<p>
+<table border>
+  <tr><th>Address</th><th>Content</th></tr>
+  <tr><td>$FD00<td>Seconds ($00-$3B)</td></tr>
+  <tr><td>$FD01<td>Seconds Alarm ($00-$3B)</td></tr>
+  <tr><td>$FD02<td>Minutes ($00-$3B)</td></tr>
+  <tr><td>$FD03<td>Minutes Alarm ($00-$3B)</td></tr>
+  <tr><td>$FD04<td>Hours ($00-$17)</td></tr>
+  <tr><td>$FD05<td>Hours Alarm ($00-$17)</td></tr>
+  <tr><td>$FD06<td>Day of Week ($01-$07, Sunday=1)</td></tr>
+  <tr><td>$FD07<td>Date of Month ($01-$1F)</td></tr>
+  <tr><td>$FD08<td>Month ($01-$12)</td></tr>
+  <tr><td>$FD09<td>Year ($00-$63)</td></tr>
+  <tr><td>$FD0A<td>Register A</td></tr>
+  <tr><td>$FD0B<td>Register B</td></tr>
+  <tr><td>$FD0C<td>Register C</td></tr>
+  <tr><td>$FD0D<td>Register D</td></tr>
+  <tr><td>$FD0E - $FD2F<td>User RAM</td></tr>
+</table>
+<p>
+For more details see
+<a href="https://www.nxp.com/docs/en/data-sheet/MC146818.pdf">MC146818 data sheet</a>.
+
+<h2 id="VideoDisplay">Video Display</h2>
 
 The Eurocom II has a video resolution of 512 horizontal and 256 vertical pixel.
 Assuming the video RAM starts at address $0000 the video RAM is organized as in
@@ -206,7 +303,7 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
   <tr><td>$06, $02</td><td>64</td><td>Red high</td></tr>
 </table>
 <p>
-<h2>SEE ALSO</h2>
+<h2 id="SeeAlso">SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
  <li><a href="flexuser.htm"> FLEX Users Manual</a>
@@ -221,7 +318,7 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
  <li><a href="mon24.htm"> Monitor program mon24.s19</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
-<h2>Documents on the behalf of the FLEX User Group</h2>
+<h2 id="FUGLinks">Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
  <li><a href="swflexum.pdf" target="_blank">FLEX User's Manual (2)</a>
@@ -241,7 +338,7 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
-<h2>Related Links</h2>
+<h2 id="RelatedLinks">Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>
 </ul>
