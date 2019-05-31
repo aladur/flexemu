@@ -38,6 +38,8 @@
 #include <wx/valgen.h>
 #include <wx/valtext.h>
 #include <wx/bmpcbox.h>
+#include <wx/hyperlink.h>
+#include <wx/filesys.h>
 
 #include "misc1.h"
 #include <string>
@@ -519,15 +521,21 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     wxWindow *parent = this;
     wxPanel *panel;
     wxButton *pButton;
-    size_t pageId = 0;
 
     wxBoxSizer *pMainSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *pLeftSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *pRightSizer = new wxBoxSizer(wxVERTICAL);
 
-    c_notebook = new wxTreebook(this, wxID_ANY, wxDefaultPosition,
+    c_notebook = new wxTreebook(parent, wxID_ANY, wxDefaultPosition,
                                 wxDefaultSize, wxBK_LEFT);
 
-    pMainSizer->Add(c_notebook, 1, wxEXPAND | wxALL, gap);
+    auto *pEurocom2Link = CreateHyperlinkCtrl(parent,
+                                          _("Eurocom II hardware description"),
+                                          _("e2ramext.htm"));
+
+    pLeftSizer->Add(pEurocom2Link, 0, wxTOP | wxLEFT, gap);
+    pLeftSizer->Add(c_notebook, 0, wxALL, gap);
+    pMainSizer->Add(pLeftSizer, 1);
 
     panel = CreateEmulatedHardwareOptionsPage(c_notebook);
     c_notebook->AddPage(panel, _("Emulated Hardware"), false);
@@ -535,25 +543,22 @@ void FlexemuOptionsDialog::OnInitDialog(wxInitDialogEvent &event)
     c_notebook->AddPage(panel, _("User Interface"), false);
     panel = CreateMemoryOptionsPage(c_notebook);
     c_notebook->AddPage(panel, _("Memory"), false);
-    pageId++;
     panel = CreatePathOptionsPage(c_notebook);
     c_notebook->AddPage(panel, _("Files and Directories"), true);
-    pageId++;
     panel = CreateExpertOptionsPage(c_notebook);
     c_notebook->AddPage(panel, _("Expert Options"), false);
-    pageId++;
     panel = CreateCpuOptionsPage(c_notebook);
     c_notebook->AddSubPage(panel, _("CPU"), false);
     panel = CreateHardwareOptionsPage(c_notebook);
     c_notebook->AddSubPage(panel, _("Hardware"), false);
 
     pButton = new wxButton(parent, wxID_OK, _("&Ok"));
-    pButtonSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
+    pRightSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
     pButton = new wxButton(parent, wxID_CANCEL, _("&Cancel"));
-    pButtonSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
+    pRightSizer->Add(pButton, 0, wxTOP | wxRIGHT, gap);
     pButton->SetFocus();
 
-    pMainSizer->Add(pButtonSizer, 0, wxTOP, gap);
+    pMainSizer->Add(pRightSizer);
 
     SetSizer(pMainSizer);
     SetMinSize(wxSize(640, 300));
@@ -985,3 +990,17 @@ wxBitmap FlexemuOptionsDialog::CreateColorBitmap(const wxColour &color,
 
     return bmp;
 }
+
+wxGenericHyperlinkCtrl *FlexemuOptionsDialog::CreateHyperlinkCtrl(
+                                     wxWindow *parent,
+                                     const wxString &label,
+                                     const wxString &htmlFile)
+{
+    wxString path = m_guiOptions.doc_dir + PATHSEPARATORSTRING + htmlFile;
+    wxString url = wxFileSystem::FileNameToURL(path);
+
+    return new wxGenericHyperlinkCtrl(parent, 0, label, url,
+                                      wxDefaultPosition, wxDefaultSize,
+                                      wxHL_DEFAULT_STYLE);
+}
+

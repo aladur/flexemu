@@ -41,6 +41,7 @@ class wxBookCtrlBase;
 class wxTreebook;
 class wxBitmapComboBox;
 class wxColour;
+class wxGenericHyperlinkCtrl;
 
 
 class FlexemuOptionsDialog : public wxDialog
@@ -106,6 +107,10 @@ private:
     wxTextCtrl *CreateFileControls(wxPanel *panel, wxBoxSizer *panelSizer,
                                    const wxString &text,
                                    int textId, int buttonId);
+    wxGenericHyperlinkCtrl *CreateHyperlinkCtrl(
+                                     wxWindow *window,
+                                     const wxString &label,
+                                     const wxString &htmlFile);
 
     bool TransferDataFromWindow();
     bool TransferDataToWindow();
