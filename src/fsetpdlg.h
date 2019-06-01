@@ -42,6 +42,7 @@ class wxTreebook;
 class wxBitmapComboBox;
 class wxColour;
 class wxGenericHyperlinkCtrl;
+class wxStaticText;
 
 
 class FlexemuOptionsDialog : public wxDialog
@@ -158,6 +159,7 @@ private:
     wxRadioBox *c_ramExtension;
     wxCheckBox *c_flexibleMmu;
     wxCheckBox *c_useRtc;
+    wxStaticText *c_useRtcStatic;
     wxRadioBox *c_emulatedHardware;
     wxRadioBox *c_frequencyChoices;
     wxTextCtrl *c_frequency;

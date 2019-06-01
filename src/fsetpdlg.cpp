@@ -97,7 +97,8 @@ FlexemuOptionsDialog::FlexemuOptionsDialog(
     c_geometry(nullptr), c_nColors(nullptr), c_monitor(nullptr),
     c_diskDir(nullptr),
     c_ramExtension(nullptr), c_flexibleMmu(nullptr),
-    c_useRtc(nullptr), c_emulatedHardware(nullptr),
+    c_useRtc(nullptr), c_useRtcStatic(nullptr),
+    c_emulatedHardware(nullptr),
     c_frequencyChoices(nullptr), c_frequency(nullptr),
     c_notebook(nullptr), c_multiColorScheme(nullptr)
 
@@ -251,6 +252,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 
     c_useRtc->SetValue(m_options.useRtc);
     c_useRtc->Enable(!m_options.isEurocom2V5);
+    c_useRtcStatic->Enable(!m_options.isEurocom2V5);
 
     c_emulatedHardware->SetSelection(m_options.isEurocom2V5 ? 0 : 1);
 
@@ -313,6 +315,13 @@ wxPanel *FlexemuOptionsDialog::CreateEmulatedHardwareOptionsPage(
                                wxDefaultPosition, wxSize(frequencyWidth, -1));
     pFrequencySizer->Add(c_frequency, 1);
     pFrequencySizer->Add(pStatic, 0, wxLEFT | wxALIGN_CENTER_VERTICAL, gap);
+    c_useRtc = new wxCheckBox(panel, IDC_UseRtc, _("MC146818 Realtime clock"),
+                              wxDefaultPosition, wxSize(maxWidth, -1), 0);
+    pPanelSizer->Add(c_useRtc, 0, wxTOP | wxLEFT, gap);
+    c_useRtcStatic = new wxStaticText(panel, -1, _("(Hardware extension)"),
+                                      wxDefaultPosition, wxDefaultSize);
+    pPanelSizer->Add(c_useRtcStatic, 0, wxLEFT, 25);
+
     panel->SetSizer(pPanelSizer);
 
     return panel;
@@ -389,10 +398,6 @@ wxPanel *FlexemuOptionsDialog::CreateHardwareOptionsPage(wxBookCtrlBase *parent)
                                     _("More flexible MMU (Hardware modification)"),
                                     wxDefaultPosition, wxDefaultSize, 0);
     pPanelSizer->Add(c_flexibleMmu, 0, wxLEFT, gap);
-    c_useRtc = new wxCheckBox(panel, IDC_UseRtc,
-                              _("MC146818 Realtime clock (Hardware extension)"),
-                              wxDefaultPosition, wxDefaultSize, 0);
-    pPanelSizer->Add(c_useRtc, 0, wxTOP | wxLEFT, gap);
 
     panel->SetSizer(pPanelSizer);
 
@@ -896,6 +901,7 @@ void FlexemuOptionsDialog::UpdateHardwareDependencies()
     size_t x;
 
     c_useRtc->Enable(isEurocom2V7);
+    c_useRtcStatic->Enable(isEurocom2V7);
 
     for (x = 0; x < WXSIZEOF(c_drive); x++)
     {
