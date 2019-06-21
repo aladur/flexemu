@@ -24,6 +24,10 @@
 #include "misc1.h"
 #include <ctype.h>
 #include <stdio.h>
+#ifdef UNIX
+#include <linux/param.h>
+#include <netdb.h>
+#endif
 #include "bfileptr.h"
 #include "cvtwchar.h"
 #include "flexerr.h"
@@ -478,6 +482,47 @@ std::string getFileStem(const std::string &path)
 
     // If path == "bar" return "bar".
     return fileName;
+}
+
+std::string getHostName()
+{
+    std::string dnsHostName;
+
+#ifdef _WIN32
+#ifdef UNICODE
+    wchar_t hostname[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = sizeof(hostname) / sizeof(hostname[0]);
+
+    if (GetComputerNameEx(ComputerNameDnsFullyQualified, hostname, &size))
+    {
+        dnsHostName = ConvertToUtf8String(hostname);
+    }
+#else
+    char hostname[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = sizeof(hostname) / sizeof(hostname[0]);
+
+    if (GetComputerNameEx(ComputerNameDnsFullyQualified, hostname, &size))
+    {
+        dnsHostName = hostname;
+    }
+#endif
+#else
+    char hostname[MAXHOSTNAMELEN];
+    if (gethostname(hostname, sizeof(hostname)) == 0)
+    {
+        struct hostent *host_entry = gethostbyname(hostname);
+        if (host_entry != nullptr)
+        {
+            dnsHostName = host_entry->h_name;
+        }
+        else
+        {
+            dnsHostName = hostname;
+        }
+    }
+#endif
+
+    return dnsHostName;
 }
 
 bool endsWithPathSeparator(const std::string &path)
