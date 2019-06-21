@@ -221,7 +221,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
         hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
                       options.hex_file;
 
-        error = load_hexfile(options.hex_file.c_str(), memory, startAddress);
+        error = load_hexfile(hexFilePath.c_str(), memory, startAddress);
         if (error < 0)
         {
             std::stringstream pmsg;
