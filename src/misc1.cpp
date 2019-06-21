@@ -437,6 +437,50 @@ std::string getParentPath(const std::string &path)
     return "";
 }
 
+std::string getCurrentPath()
+{
+    std::string cwd;
+#ifdef _WIN32
+#ifdef UNICODE
+    DWORD size = GetCurrentDirectory(0, nullptr);
+    wchar_t *buffer = new wchar_t[size];
+
+    if (GetCurrentDirectory(size, buffer) > 0)
+    {
+        cwd = ConvertToUtf8String(buffer);
+    }
+    delete [] buffer;
+#else
+    DWORD size = GetCurrentDirectory(0, nullptr);
+    char *buffer = new char[size];
+
+    if (GetCurrentDirectory(size, buffer) > 0)
+    {
+        cwd = buffer;
+    }
+    delete [] buffer;
+#endif
+#else
+    char buffer[PATH_MAX];
+
+    if (getcwd(buffer, sizeof(buffer)))
+    {
+        cwd = buffer;
+    }
+#endif
+
+    return cwd;
+}
+
+bool isAbsolutePath(const std::string &path)
+{
+#ifdef _WIN32
+    return path.size() >= 2 && isalpha(path[0]) && path[1] == ':';
+#else
+    return path.size() >= 1 && path[0] == '/';
+#endif
+}
+
 std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);
