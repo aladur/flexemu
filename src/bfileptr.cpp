@@ -38,7 +38,19 @@ BFilePtr::BFilePtr(const char *x_path, const char *x_mode /* = nullptr */) :
 
     if (x_path != nullptr)
     {
-        path = x_path;
+        if (isAbsolutePath(x_path))
+        {
+            path = x_path;
+        }
+        else
+        {
+            path = getCurrentPath();
+            if (!endsWithPathSeparator(path))
+            {
+                path += PATHSEPARATORSTRING;
+            }
+            path += x_path;
+        }
     }
     else
     {
