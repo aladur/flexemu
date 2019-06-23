@@ -65,7 +65,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 {
     struct stat sbuf;
 
-    if (!stat(aPath, &sbuf) && !S_ISDIR(sbuf.st_mode))
+    if (aPath == nullptr || stat(aPath, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, std::string(aPath));
     }
