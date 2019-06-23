@@ -481,6 +481,21 @@ bool isAbsolutePath(const std::string &path)
 #endif
 }
 
+bool isPathsEqual(const std::string &path1, const std::string &path2)
+{
+    if (path1.size() != path2.size())
+    {
+        return false;
+    }
+
+#ifdef _WIN32
+    // TODO: utf-8 case insensitive compare
+    return stricmp(path1.c_str(), path2.c_str()) == 0;
+#else
+    return strcmp(path1.c_str(), path2.c_str()) == 0;
+#endif
+}
+
 std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);

@@ -417,6 +417,7 @@ extern std::string getCurrentPath();
 extern std::string getHostName();
 extern bool endsWithPathSeparator(const std::string &path);
 extern bool isAbsolutePath(const std::string &path);
+extern bool isPathsEqual(const std::string &path1, const std::string &path2);
 extern "C" int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue);
 extern "C" int getColorForName(const char *colorName, DWord *color);
 extern "C" struct sRGBDef colors[];
