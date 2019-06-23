@@ -70,13 +70,26 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
         throw FlexException(FERR_UNABLE_TO_OPEN, std::string(aPath));
     }
 
+    if (isAbsolutePath(aPath))
+    {
+        directory = aPath;
+    }
+    else
+    {
+        directory = getCurrentPath();
+        if (!endsWithPathSeparator(aPath))
+        {
+            directory += PATHSEPARATORSTRING;
+        }
+        directory += aPath;
+    }
+
     if (access(aPath, W_OK))
     {
         attributes |= FLX_READONLY;
     }
 
     Initialize_header(attributes & FLX_READONLY);
-    directory = aPath;
     isOpen = true;
 }
 
