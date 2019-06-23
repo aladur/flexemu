@@ -299,7 +299,6 @@ bool FlexParentFrame::OpenContainer(const wxString &wxContainerPath)
     }
     catch (FlexException &ex)
     {
-        printf("Exception\n");
         int result = wxMessageBox(ex.what(),
                              _("FLEXplorer Error"), wxOK |
                              wxCANCEL | wxCENTRE | wxICON_EXCLAMATION);
