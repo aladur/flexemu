@@ -45,6 +45,8 @@
 #include "typedefs.h"
 #include <string>
 #include <array>
+#include <algorithm>
+
 
 /* Uncomment the following if You want native file system support */
 
@@ -445,4 +447,36 @@ inline std::string& trim(std::string& str, const char* t = white_space)
     return ltrim(rtrim(str, t), t);
 }
 
+template<typename T> T reverseBytes(const T& value)
+{
+    union values_t
+    {
+        std::array<char, sizeof(T)> bytes;
+        T value;
+    } temp;
+
+    temp.value = value;
+
+    std::reverse(temp.bytes.begin(), temp.bytes.end());
+
+    return temp.value;
+}
+
+template<typename T> T toBigEndian(const T& value)
+{
+#if defined WORDS_BIGENDIAN
+    return value;
+#else
+    return reverseBytes<T>(value);
+#endif
+}
+
+template<typename T> T fromBigEndian(const T& value)
+{
+#if defined WORDS_BIGENDIAN
+    return value;
+#else
+    return reverseBytes<T>(value);
+#endif
+}
 #endif /* __misc1.h__ */
