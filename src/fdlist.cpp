@@ -953,12 +953,19 @@ bool FlexDiskListCtrl::PasteFromClipboard()
         return false;
     }
 
-    FlexDnDFiles files;
-    bool     result;
+    bool result = false;
 
-    flexFileData.WriteDataTo(files);
+    try {
+        FlexDnDFiles files;
 
-    result = PasteFrom(files);
+        flexFileData.WriteDataTo(files);
+
+        result = PasteFrom(files);
+    } catch (FlexException &ex)
+    {
+        wxMessageBox(ex.what(), _("FLEXplorer Error"),
+                wxOK | wxCENTRE | wxICON_EXCLAMATION, this);
+    }
 
     return result;
 }
