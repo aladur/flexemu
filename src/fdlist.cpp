@@ -490,8 +490,10 @@ void FlexDiskListCtrl::OnBeginDrag(wxListEvent &event)
     {
         wxDragResult    result;
         int     flags = 0;
-        FlexDnDFiles    files;
         int count = 0;
+        FlexDnDFiles files(
+            GetContainer()->GetPath(),
+            getHostName());
 
         for (auto fileName : GetSelectedFileNames())
         {
@@ -882,10 +884,6 @@ void FlexDiskListCtrl::FindFiles()
 
 void FlexDiskListCtrl::CopyToClipboard()
 {
-    FlexDnDFiles files;
-    int count = 0;
-    FlexFileDataObject *pClipboardData;
-
     wxClipboardLocker locker; // implicit open/close wxTheClipboard
 
     if (!locker)
@@ -894,6 +892,9 @@ void FlexDiskListCtrl::CopyToClipboard()
         wxBell();
         return;
     }
+
+    FlexDnDFiles files(GetContainer()->GetPath(), getHostName());
+    int count = 0;
 
     for (auto fileName : GetSelectedFileNames())
     {
@@ -909,7 +910,7 @@ void FlexDiskListCtrl::CopyToClipboard()
         }
     }
 
-    pClipboardData = new FlexFileDataObject();
+    FlexFileDataObject *pClipboardData = new FlexFileDataObject();
     pClipboardData->ReadDataFrom(files);
 
     if (!wxTheClipboard->SetData(pClipboardData))
@@ -967,6 +968,14 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
     const char *fileName;
     unsigned int index;
     FlexDirEntry *dirEntry;
+
+    if (getHostName() == files.GetDnsHostName() &&
+            isPathsEqual(GetContainer()->GetPath(), files.GetPath()))
+    {
+        wxLogWarning(_("Unable to paste files into same container"));
+        wxBell();
+        return false;
+    }
 
     for (index = 0; index < files.GetFileCount(); ++index)
     {

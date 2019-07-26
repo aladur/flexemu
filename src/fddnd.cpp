@@ -50,10 +50,19 @@ FlexDnDFiles::FlexDnDFiles()
 {
 }
 
+FlexDnDFiles::FlexDnDFiles(
+        const std::string &pPath,
+        const std::string &pDnsHostName) :
+      path(pPath)
+    , dnsHostName(pDnsHostName)
+{
+}
+
 void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
     const Byte *ptr = buffer;
     DWord count, index;
+    DWord size;
 
     fileBuffers.clear();
 
@@ -62,14 +71,29 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
         return;
     }
 
-    memcpy(&count, ptr, sizeof(count));
+    size = *reinterpret_cast<const DWord *>(ptr);
+    // Independent of the cpu architecture the
+    // clipboard format uses big endian.
+    size = fromBigEndian<DWord>(size);
+    ptr += sizeof(size);
+    dnsHostName = reinterpret_cast<const char *>(ptr);
+    ptr += size;
+
+    size = *reinterpret_cast<const DWord *>(ptr);
+    size = fromBigEndian<DWord>(size);
+    ptr += sizeof(size);
+    path = reinterpret_cast<const char *>(ptr);
+    ptr += size;
+
+    count = *reinterpret_cast<const DWord *>(ptr);
+    count = fromBigEndian<DWord>(count);
     ptr += sizeof(count);
 
     for (index = 0; index < count; ++index)
     {
         FlexFileBuffer fileBuffer;
-
-        fileBuffer.CopyHeaderFrom((tFlexFileHeader *)ptr);
+        auto &fileHeader = *reinterpret_cast<const tFlexFileHeader *>(ptr);
+        fileBuffer.CopyHeaderBigEndianFrom(fileHeader);
         ptr += sizeof(tFlexFileHeader);
         fileBuffer.CopyFrom(ptr, fileBuffer.GetFileSize());
         ptr += fileBuffer.GetFileSize();
@@ -94,7 +118,10 @@ FlexDnDFiles::~FlexDnDFiles()
 
 size_t FlexDnDFiles::GetFileSize() const
 {
-    size_t fileSize = sizeof(DWord); // Reserve space for the file count
+    // Reserve memory for path size, dnsHostName size and file count
+    size_t fileSize = 3 * sizeof(DWord);
+    fileSize += path.size() + 1;
+    fileSize += dnsHostName.size() + 1;
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
@@ -111,6 +138,7 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 {
     Byte *ptr = buffer;
     DWord count;
+    DWord size, reversed;
     BDate date;
 
     if (buffer == nullptr)
@@ -118,14 +146,33 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
         return;
     }
 
+    size = dnsHostName.size() + 1;
+    // Independent of the cpu architecture the
+    // clipboard format uses big endian byte order.
+    reversed = toBigEndian<DWord>(size);
+    memcpy(ptr, &reversed, sizeof(reversed));
+    ptr += sizeof(reversed);
+    memcpy(ptr, dnsHostName.c_str(), size);
+    ptr += size;
+
+    size = path.size() + 1;
+    reversed = toBigEndian<DWord>(size);
+    memcpy(ptr, &reversed, sizeof(reversed));
+    ptr += sizeof(reversed);
+    memcpy(ptr, path.c_str(), size);
+    ptr += size;
+
     count = fileBuffers.size();
+    count = toBigEndian<DWord>(count);
     memcpy(ptr, &count, sizeof(count));
     ptr += sizeof(count);
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
-        memcpy(ptr, &iter->GetHeader(), sizeof(iter->GetHeader()));
-        ptr += sizeof(iter->GetHeader());
+        auto header = iter->GetHeaderBigEndian();
+
+        memcpy(ptr, &header, sizeof(tFlexFileHeader));
+        ptr += sizeof(tFlexFileHeader);
         iter->CopyTo(ptr, iter->GetFileSize());
         ptr += iter->GetFileSize();
     }
@@ -136,6 +183,26 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 void FlexDnDFiles::Add(FlexFileBuffer &&fileBuffer)
 {
     fileBuffers.push_back(std::move(fileBuffer));
+}
+
+void FlexDnDFiles::SetPath(const std::string &pPath)
+{
+    path = pPath;
+}
+
+std::string FlexDnDFiles::GetPath() const
+{
+    return path;
+}
+
+void FlexDnDFiles::SetDnsHostName(const std::string &pDnsHostName)
+{
+    dnsHostName = pDnsHostName;
+}
+
+std::string FlexDnDFiles::GetDnsHostName() const
+{
+    return dnsHostName;
 }
 
 FlexFileDataObject::FlexFileDataObject()
@@ -167,11 +234,18 @@ wxDragResult FlexFileDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
         return wxDragNone;
     }
 
-    FlexDnDFiles files;
+    try {
+        FlexDnDFiles files;
 
-    ((FlexFileDataObject *)m_dataObject)->WriteDataTo(files);
+        ((FlexFileDataObject *)m_dataObject)->WriteDataTo(files);
 
-    OnDropFiles(x, y, files);
+        OnDropFiles(x, y, files);
+    } catch (FlexException &ex)
+    {
+        wxMessageBox(ex.what(), _("FLEXplorer Error"),
+                wxOK | wxCENTRE | wxICON_EXCLAMATION);
+        return wxDragNone;
+    }
 
     return def;
 }

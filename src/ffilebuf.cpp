@@ -30,6 +30,7 @@
 #include "bfileptr.h"
 #include "flexerr.h"
 #include <sstream>
+#include <algorithm>
 
 
 // The format of a FLEX text file is described in the
@@ -39,7 +40,9 @@
 FlexFileBuffer::FlexFileBuffer() : capacity(0)
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
-    fileHeader.magicNumber = flexFileHeaderMagicNumber;
+    memcpy(fileHeader.magicNumber,
+           static_cast<const char *>(flexFileHeaderMagicNumber.data()),
+           flexFileHeaderMagicNumber.size());
 }
 
 FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
@@ -608,20 +611,34 @@ void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
     }
 }
 
-void FlexFileBuffer::CopyHeaderFrom(const tFlexFileHeader *src)
+void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
 {
     // Directly copy the file header from a source object.
-    // For consitency check verify the magic number.
+    // For consistency check verify the magic number.
     DWord oldSize = fileHeader.fileSize;
 
-    memcpy(&fileHeader, src, sizeof(tFlexFileHeader));
+    memcpy(&fileHeader, &src, sizeof(tFlexFileHeader));
+    fileHeader.fileSize = fromBigEndian<DWord>(src.fileSize);
+    fileHeader.attributes = fromBigEndian<Word>(src.attributes);
+    fileHeader.sectorMap = fromBigEndian<Word>(src.sectorMap);
+    fileHeader.day = fromBigEndian<Word>(src.day);
+    fileHeader.month = fromBigEndian<Word>(src.month);
+    fileHeader.year = fromBigEndian<Word>(src.year);
 
-    if (fileHeader.magicNumber != flexFileHeaderMagicNumber)
+    for (unsigned index = 0; index < sizeof(fileHeader.magicNumber); ++index)
     {
-        std::stringstream stream;
+        if (fileHeader.magicNumber[index] != flexFileHeaderMagicNumber[index])
+        {
+            std::stringstream stream;
 
-        stream << std::hex << fileHeader.magicNumber;
-        throw FlexException(FERR_INVALID_MAGIC_NUMBER, stream.str());
+            for (unsigned index = 0; index < sizeof(fileHeader.magicNumber); )
+            {
+                stream << std::hex <<
+                    (0xff & (unsigned)fileHeader.magicNumber[index++]);
+            }
+            throw FlexException(FERR_INVALID_MAGIC_NUMBER,
+                                stream.str().c_str());
+        }
     }
 
     DWord newSize = fileHeader.fileSize;
@@ -669,6 +686,21 @@ void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
     {
         buffer[i] = pattern;
     }
+}
+
+tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
+{
+    tFlexFileHeader result;
+
+    memcpy(&result, &fileHeader, sizeof(result));
+    result.fileSize = toBigEndian<DWord>(fileHeader.fileSize);
+    result.attributes = toBigEndian<Word>(fileHeader.attributes);
+    result.sectorMap = toBigEndian<Word>(fileHeader.sectorMap);
+    result.day = toBigEndian<Word>(fileHeader.day);
+    result.month = toBigEndian<Word>(fileHeader.month);
+    result.year = toBigEndian<Word>(fileHeader.year);
+
+    return result;
 }
 
 void FlexFileBuffer::SetDate(const BDate &new_date)

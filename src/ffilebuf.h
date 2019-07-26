@@ -30,17 +30,22 @@
 #include <functional>
 #include <sstream>
 #include <iomanip>
+#include <array>
 
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
-const DWord flexFileHeaderMagicNumber = 0xdeadbeaf;
+const std::array<char,4> flexFileHeaderMagicNumber = {
+    '\xde', '\xad', '\xbe', '\xaf'
+};
 
 // This is a POD data structure. It can be used to
 // read or write FLEX files to and from the clipboard.
 // A POD is needed here to simply copy it by memcpy().
+// Independent of the cpu architecture the values
+// have big-endian byte order.
 struct tFlexFileHeader
 {
-    DWord magicNumber;
+    char magicNumber[4];
     DWord fileSize;
     Word  attributes;
     Word  sectorMap;
@@ -72,7 +77,7 @@ public:
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
     bool IsFlexExecutableFile() const;
-    void CopyHeaderFrom(const tFlexFileHeader *from);
+    void CopyHeaderBigEndianFrom(const tFlexFileHeader &from);
     bool CopyFrom(const Byte *from, DWord aSize, DWord offset = 0);
     bool CopyTo(Byte *to, DWord aSize,
                 DWord offset = 0, int stuffByte = -1) const;
@@ -83,6 +88,7 @@ public:
     {
         return fileHeader;
     }
+    tFlexFileHeader GetHeaderBigEndian() const;
     void SetDate(const BDate &date);
     void SetDate(int day, int month, int year);
     void SetFilename(const char *name);

@@ -49,10 +49,15 @@ class FlexDnDFiles
 {
 public:
     FlexDnDFiles();
+    FlexDnDFiles(const std::string &path, const std::string &dnsHostName);
     virtual ~FlexDnDFiles();
 
     void ReadDataFrom(const Byte *buffer);
     void WriteDataTo(Byte *buffer) const;
+    void SetPath(const std::string &path);
+    std::string GetPath() const;
+    void SetDnsHostName(const std::string &dnsHostName);
+    std::string GetDnsHostName() const;
     void Add(FlexFileBuffer &&fileBuffer);
     FlexFileBuffer &GetBufferAt(unsigned int);
     size_t GetFileSize() const;
@@ -62,6 +67,8 @@ public:
     };
 
 private:
+    std::string path;
+    std::string dnsHostName;
     std::vector<FlexFileBuffer> fileBuffers;
 };
 
