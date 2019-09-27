@@ -754,7 +754,7 @@ private:
     inline void com(Byte &reg)
     {
         reg = ~reg;
-        cc.bit.c = 0;
+        cc.bit.c = 1;
         tst(reg);
     }
 
