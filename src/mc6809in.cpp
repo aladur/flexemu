@@ -362,29 +362,6 @@ CpuState Mc6809::runloop()
                         break;
                     }
                 }
-
-                if (log_fp != nullptr && ((events & Event::Log) != Event::NONE))
-                {
-                    if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
-                    {
-                        do_logging = true;
-                    }
-
-                    if (lfs.stopAddr < 0x10000 && PC == lfs.stopAddr)
-                    {
-                        do_logging = false;
-                    }
-
-                    if (do_logging && disassembler != nullptr &&
-                        PC >= lfs.minAddr && PC <= lfs.maxAddr)
-                    {
-                        char *pCode, *pMnemonic;
-                        InstFlg flags = InstFlg::NONE;
-
-                        Disassemble(PC, &flags, &pCode, &pMnemonic);
-                        fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
-                    }
-                }
             }
 
             if ((events & AnyInterrupt) != Event::NONE)
@@ -402,6 +379,29 @@ CpuState Mc6809::runloop()
                 events &= ~Event::DoSchedule;
                 new_state = CpuState::Schedule;
                 break;
+            }
+
+            if (log_fp != nullptr && ((events & Event::Log) != Event::NONE))
+            {
+                if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
+                {
+                    do_logging = true;
+                }
+
+                if (lfs.stopAddr < 0x10000 && PC == lfs.stopAddr)
+                {
+                    do_logging = false;
+                }
+
+                if (do_logging && disassembler != nullptr &&
+                    PC >= lfs.minAddr && PC <= lfs.maxAddr)
+                {
+                    char *pCode, *pMnemonic;
+                    InstFlg flags = InstFlg::NONE;
+
+                    Disassemble(PC, &flags, &pCode, &pMnemonic);
+                    fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
+                }
             }
         } // if
 
