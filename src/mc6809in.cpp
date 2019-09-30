@@ -266,7 +266,7 @@ CpuState Mc6809::runloop()
         {
             if ((events & (Event::BreakPoint | Event::Invalid |
                            Event::SingleStep | Event::SingleStepFinished |
-                           Event::FrequencyControl | Event::Log |
+                           Event::FrequencyControl |
                            Event::Cwai | Event::Sync)) != Event::NONE)
             {
                 // All non time critical events
@@ -380,31 +380,30 @@ CpuState Mc6809::runloop()
                 new_state = CpuState::Schedule;
                 break;
             }
-
-            if (log_fp != nullptr && ((events & Event::Log) != Event::NONE))
-            {
-                if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
-                {
-                    do_logging = true;
-                }
-
-                if (lfs.stopAddr < 0x10000 && PC == lfs.stopAddr)
-                {
-                    do_logging = false;
-                }
-
-                if (do_logging && disassembler != nullptr &&
-                    PC >= lfs.minAddr && PC <= lfs.maxAddr)
-                {
-                    char *pCode, *pMnemonic;
-                    InstFlg flags = InstFlg::NONE;
-
-                    Disassemble(PC, &flags, &pCode, &pMnemonic);
-                    fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
-                }
-            }
         } // if
 
+        if (log_fp != nullptr)
+        {
+            if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
+            {
+                do_logging = true;
+            }
+
+            if (lfs.stopAddr < 0x10000 && PC == lfs.stopAddr)
+            {
+                do_logging = false;
+            }
+
+            if (do_logging && disassembler != nullptr &&
+                PC >= lfs.minAddr && PC <= lfs.maxAddr)
+            {
+                char *pCode, *pMnemonic;
+                InstFlg flags = InstFlg::NONE;
+
+                Disassemble(PC, &flags, &pCode, &pMnemonic);
+                fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
+            }
+        }
 
         // execute one CPU instruction
 #ifdef FASTFLEX

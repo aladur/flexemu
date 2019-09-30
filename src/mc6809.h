@@ -214,7 +214,6 @@ public:
         SetStatus = (1 << 9),
         FrequencyControl = (1 << 10),
         DoSchedule = (1 << 11),
-        Log = (1 << 12),
         Cwai = (1 << 13),
         Sync = (1 << 14),
         IgnoreBP = (1 << 15),

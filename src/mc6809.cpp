@@ -1448,24 +1448,16 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile &x_lfs)
 
     if (!lfs.logFileName.empty())
     {
-        if ((log_fp = fopen(x_lfs.logFileName.c_str(), "w")) != nullptr)
-        {
-            // Enable logging
-            events |= Event::Log;
-        }
-        else
+        if ((log_fp = fopen(x_lfs.logFileName.c_str(), "w")) == nullptr)
         {
             // Error when trying to open log file.
             lfs.logFileName.clear();
-            events &= ~Event::Log;
         }
 
         return log_fp != nullptr;
     }
 
-    // Disable logging
-    events &= ~Event::Log;
-    return true;
+    return false;
 }
 
 void Mc6809::get_interrupt_status(tInterruptStatus &stat)
