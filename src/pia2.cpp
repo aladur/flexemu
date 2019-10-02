@@ -181,7 +181,7 @@ Byte Pia2::readInputB()
     static int tx = 0;
     static int ty = 0;
     int dX, dY;
-    t_cycles cyclediff;
+    cycles_t cyclediff;
 
     count++;
 
@@ -214,7 +214,7 @@ Byte Pia2::readInputB()
 
     prev_cycles = cycles;
     cycles      = cpu.get_cycles();
-    cyclediff   = static_cast<t_cycles>(cycles - prev_cycles);
+    cyclediff   = static_cast<cycles_t>(cycles - prev_cycles);
 
     if (cyclediff & (1L << ((sizeof(cyclediff) << 3) - 1)))
     {

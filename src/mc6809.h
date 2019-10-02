@@ -340,7 +340,7 @@ private:
     }
 
     // fetch indexed 16-Bit operand
-    inline Word fetch_idx_16(t_cycles &cycle_count)
+    inline Word fetch_idx_16(cycles_t &cycle_count)
     {
         Word addr;
         Byte post;
@@ -373,7 +373,7 @@ private:
     }
 
     // fetch indexed 8-Bit operand
-    inline Byte fetch_idx_08(t_cycles &cycle_count)
+    inline Byte fetch_idx_08(cycles_t &cycle_count)
     {
         Word addr;
         Byte post;
@@ -400,7 +400,7 @@ private:
     }
 
     // fetch indexed address
-    inline Word fetch_ea_idx(t_cycles &cycle_count)
+    inline Word fetch_ea_idx(cycles_t &cycle_count)
     {
         Byte post = memory.read_byte(pc++);
         cycle_count += indexed_cycles[post];
@@ -529,7 +529,7 @@ private:
         }
     }
 
-    inline t_cycles do_lbr(bool condition)
+    inline cycles_t do_lbr(bool condition)
     {
         if (condition)
         {
@@ -548,7 +548,7 @@ private:
         do_br(!cc.bit.c);
     }
 
-    inline t_cycles lbcc()
+    inline cycles_t lbcc()
     {
         return do_lbr(!cc.bit.c);
     }
@@ -558,7 +558,7 @@ private:
         do_br(cc.bit.c);
     }
 
-    inline t_cycles lbcs()
+    inline cycles_t lbcs()
     {
         return do_lbr(cc.bit.c);
     }
@@ -568,7 +568,7 @@ private:
         do_br(cc.bit.z);
     }
 
-    inline t_cycles lbeq()
+    inline cycles_t lbeq()
     {
         return do_lbr(cc.bit.z);
     }
@@ -578,7 +578,7 @@ private:
         do_br(!(cc.bit.n ^ cc.bit.v));
     }
 
-    inline t_cycles lbge()
+    inline cycles_t lbge()
     {
         return do_lbr(!(cc.bit.n ^ cc.bit.v));
     }
@@ -588,7 +588,7 @@ private:
         do_br(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
     }
 
-    inline t_cycles lbgt()
+    inline cycles_t lbgt()
     {
         return do_lbr(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
     }
@@ -598,7 +598,7 @@ private:
         do_br(!(cc.bit.c | cc.bit.z));
     }
 
-    inline t_cycles lbhi()
+    inline cycles_t lbhi()
     {
         return do_lbr(!(cc.bit.c | cc.bit.z));
     }
@@ -608,7 +608,7 @@ private:
         do_br(cc.bit.z | (cc.bit.n ^ cc.bit.v));
     }
 
-    inline t_cycles lble()
+    inline cycles_t lble()
     {
         return do_lbr(cc.bit.z | (cc.bit.n ^ cc.bit.v));
     }
@@ -618,7 +618,7 @@ private:
         do_br(cc.bit.c | cc.bit.z);
     }
 
-    inline t_cycles lbls()
+    inline cycles_t lbls()
     {
         return do_lbr(cc.bit.c | cc.bit.z);
     }
@@ -628,7 +628,7 @@ private:
         do_br(cc.bit.n ^ cc.bit.v);
     }
 
-    inline t_cycles lblt()
+    inline cycles_t lblt()
     {
         return do_lbr(cc.bit.n ^ cc.bit.v);
     }
@@ -638,17 +638,17 @@ private:
         do_br(cc.bit.n);
     }
 
-    inline t_cycles lbmi()
+    inline cycles_t lbmi()
     {
         return do_lbr(cc.bit.n);
     }
 
-    inline t_cycles lbne()
+    inline cycles_t lbne()
     {
         return do_lbr(!cc.bit.z);
     }
 
-    inline t_cycles lbpl()
+    inline cycles_t lbpl()
     {
         return do_lbr(!cc.bit.n);
     }
@@ -668,7 +668,7 @@ private:
         pc += EXTEND8(memory.read_byte(pc)) + 1;
     }
 
-    inline t_cycles lbra()
+    inline cycles_t lbra()
     {
         pc += memory.read_word(pc) + 2;
         return 0;
@@ -679,7 +679,7 @@ private:
         pc++;
     }
 
-    inline t_cycles lbrn()
+    inline cycles_t lbrn()
     {
         pc += 2;
         return 5;
@@ -693,7 +693,7 @@ private:
         pc += EXTEND8(offset);
     }
 
-    inline t_cycles lbsr()
+    inline cycles_t lbsr()
     {
         Word offset = memory.read_word(pc);
         pc += 2;
@@ -708,7 +708,7 @@ private:
         do_br(!cc.bit.v);
     }
 
-    inline t_cycles lbvc()
+    inline cycles_t lbvc()
     {
         return do_lbr(!cc.bit.v);
     }
@@ -718,7 +718,7 @@ private:
         do_br(cc.bit.v);
     }
 
-    inline t_cycles lbvs()
+    inline cycles_t lbvs()
     {
         return do_lbr(cc.bit.v);
     }
@@ -931,12 +931,12 @@ private:
     inline void     sub(Word &reg, Word operand);
     inline void     swi(), swi2(), swi3();
     inline void     cwai(), sync();
-    inline t_cycles rti();
+    inline cycles_t rti();
     inline void     asr(Byte &reg);
     void     tfr();
     void     exg();
-    t_cycles psh(Byte what, Word &s, Word &u);
-    t_cycles pul(Byte what, Word &s, Word &u);
+    cycles_t psh(Byte what, Word &s, Word &u);
+    cycles_t pul(Byte what, Word &s, Word &u);
     Word     do_effective_address(Byte);
 #endif
     void     nmi(bool save_state);
@@ -960,7 +960,7 @@ public:
     void get_status(CpuStatus *x_cpu_status) override;
     CpuStatusPtr create_status_object() override;
     void get_interrupt_status(tInterruptStatus &s) override;
-    void set_required_cyclecount(t_cycles x_cycles) override;
+    void set_required_cyclecount(cycles_t x_cycles) override;
 
     // test support
     void set_status(CpuStatus *x_cpu_status);
@@ -970,15 +970,15 @@ protected:
     // interrupt handling:
 public:
     void            reset();        // CPU reset
-    inline t_cycles        exec_irqs(bool save_state = true);
+    inline cycles_t        exec_irqs(bool save_state = true);
     void            set_nmi();
     void            set_firq();
     void            set_irq();
 
 protected:
     std::atomic<QWord> total_cycles; // total cycle count with 64 Bit resolution
-    t_cycles        cycles;     // cycle cnt for one timer tick
-    t_cycles        required_cyclecount;//cycle count for freq ctrl
+    cycles_t        cycles;     // cycle cnt for one timer tick
+    cycles_t        required_cyclecount;//cycle count for freq ctrl
 
     // breakpoint support
 protected:
@@ -1546,7 +1546,7 @@ inline void Mc6809::asr(Byte &reg)
 //**********************************
 // Interrupt related Instructions
 //**********************************
-inline t_cycles Mc6809::rti()
+inline cycles_t Mc6809::rti()
 {
     cc.all = memory.read_byte(s++);
 

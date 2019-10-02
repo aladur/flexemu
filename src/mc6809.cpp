@@ -217,7 +217,7 @@ void Mc6809::set_irq()
 } // set_irq
 
 #ifndef FASTFLEX
-t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
+cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 {
     switch ((Byte)(what & 0xf0))
     {
@@ -384,7 +384,7 @@ t_cycles Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
     return psh_pul_cycles[what];
 }
 
-t_cycles Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
+cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 {
     switch ((Byte)(what & 0x0f))
     {

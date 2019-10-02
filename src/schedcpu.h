@@ -28,7 +28,7 @@
 #include "typedefs.h"
 #include "cpustate.h"
 
-typedef unsigned long int t_cycles; // must be unsigned long because of sprintf
+typedef unsigned long int cycles_t; // must be unsigned long because of sprintf
 
 enum tIrqType
 {
@@ -64,7 +64,7 @@ public:
     virtual void get_status(CpuStatus *cpu_status) = 0;
     virtual CpuStatusPtr create_status_object() = 0;
     virtual void get_interrupt_status(tInterruptStatus &s) = 0;
-    virtual void set_required_cyclecount(t_cycles required_cyclecount) = 0;
+    virtual void set_required_cyclecount(cycles_t required_cyclecount) = 0;
 };
 
 #endif // SCHEDCPU_INCLUDED
