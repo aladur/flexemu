@@ -82,11 +82,11 @@ typedef union
 {
     Word        sec_trk;    /* spec. sector and tracknr. of as sect. */
     struct s_st st;
-} t_st;
+} st_t;
 
 struct s_link_table
 {
-    t_st        next;       /* sector and tracknumber of next sect.*/
+    st_t        next;       /* sector and tracknumber of next sect.*/
     Byte        record_nr[2];   /* FLEX record number */
     Word        f_record;   /* rel position in file / 252 */
     SWord       file_id;    /* index of file in directory */

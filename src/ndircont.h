@@ -53,8 +53,8 @@ enum : SWord
 struct s_new_file
 {
     char filename[FLEX_FILENAME_LENGTH];
-    t_st first;
-    t_st next;
+    st_t first;
+    st_t next;
     Word f_record;
     FILE *fp;
 };
@@ -87,7 +87,7 @@ private:
     std::unique_ptr<s_new_file[]> pnew_file;             // new file table
     Word dir_sectors;        // nr. of dir sectors in flex_dir.
     Word new_files;          // nr. of new file entries
-    t_st dir_extend;         // track/sector of dir. ext. sect.
+    st_t dir_extend;         // track/sector of dir. ext. sect.
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,
@@ -125,18 +125,18 @@ private:
         SWord dir_index,
         off_t size,
         Byte random,
-        t_st *begin,
-        t_st *end);
+        st_t *begin,
+        st_t *end);
     void add_to_directory(
         char *name,
         char *ext,
         SWord dir_index,
         Byte random,
         struct stat *pstat,
-        t_st *begin,
-        t_st *end,
+        st_t *begin,
+        st_t *end,
         Byte wp);
-    void modify_random_file(char *path, struct stat *pstat, t_st *pbegin);
+    void modify_random_file(char *path, struct stat *pstat, st_t *pbegin);
     bool IsFlexFilename(
         const char *filename,
         char *name = nullptr,
@@ -152,7 +152,7 @@ private:
         Byte month,
         Byte day,
         Byte year) const;
-    t_st *link_address() const;
+    st_t *link_address() const;
     Byte last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;

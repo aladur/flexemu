@@ -502,9 +502,9 @@ Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
 } // extend_directory
 
 
-t_st *NafsDirectoryContainer::link_address() const
+st_t *NafsDirectoryContainer::link_address() const
 {
-    static t_st link;
+    static st_t link;
     s_dir_entry *pd;
     Word i;
 
@@ -719,8 +719,8 @@ Byte NafsDirectoryContainer::add_to_link_table(
     SWord dir_index,
     off_t size,
     Byte random,
-    t_st *pbegin,
-    t_st *pend)
+    st_t *pbegin,
+    st_t *pend)
 {
     off_t i, free, begin, records;
     s_link_table *plink;
@@ -780,8 +780,8 @@ void NafsDirectoryContainer::add_to_directory(
     SWord dir_index,
     Byte random,
     struct stat *pstat,
-    t_st *pbegin,
-    t_st *pend,
+    st_t *pbegin,
+    st_t *pend,
     Byte wp)
 {
     s_dir_entry *pd;
@@ -839,7 +839,7 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 } // is_in_file_random
 
 void NafsDirectoryContainer::modify_random_file(char *path, struct stat *pstat,
-        t_st *pbegin)
+        st_t *pbegin)
 {
     Byte file_sector_map[252 * 2];
     SDWord data_size;
@@ -902,7 +902,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     std::string filename;
     SWord dir_index = 0;
     Word random;
-    t_st begin, end;
+    st_t begin, end;
     struct stat sbuf;
 
     initialize_flex_directory();
@@ -1327,7 +1327,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
 {
     char path[PATH_MAX + 1];
     int index = trk * MAX_SECTOR + (sec - 1);
-    t_st *link;
+    st_t *link;
     bool result = true;
 
 #ifdef DEBUG_FILE
