@@ -174,7 +174,6 @@ Byte Pia2::readInputB()
         208
     };
 
-    QWord  prev_cycles = 0;
     static int count     = 0;
     static int Tx = tab_period_from_mouse[TAB_OFFSET];
     static int Ty = tab_period_from_mouse[TAB_OFFSET];
@@ -212,14 +211,18 @@ Byte Pia2::readInputB()
         dY = 0;
     }
 
-    prev_cycles = cycles;
-    cycles      = cpu.get_cycles();
-    cyclediff   = static_cast<cycles_t>(cycles - prev_cycles);
+    QWord prev_cycles = cycles;
+    cycles = cpu.get_cycles();
 
-    if (cyclediff & (1L << ((sizeof(cyclediff) << 3) - 1)))
+    if (cycles < prev_cycles)
     {
-        // should only happen on 64 Bit cycle overflow
-        return orb;
+        // cycle count overflow
+        cyclediff = std::numeric_limits<QWord>::max() - prev_cycles +
+                    cycles + 1;
+    }
+    else
+    {
+        cyclediff = static_cast<cycles_t>(cycles - prev_cycles);
     }
 
     if (cyclediff > 100) // more than 75 us
