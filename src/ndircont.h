@@ -152,7 +152,7 @@ private:
         Byte month,
         Byte day,
         Byte year) const;
-    st_t *link_address() const;
+    st_t link_address() const;
     Byte last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;

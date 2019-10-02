@@ -502,9 +502,9 @@ Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
 } // extend_directory
 
 
-st_t *NafsDirectoryContainer::link_address() const
+st_t NafsDirectoryContainer::link_address() const
 {
-    static st_t link;
+    st_t link;
     s_dir_entry *pd;
     Word i;
 
@@ -523,7 +523,7 @@ st_t *NafsDirectoryContainer::link_address() const
         }
     } // for
 
-    return &link;
+    return link;
 }  // link_address
 
 
@@ -1327,7 +1327,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
 {
     char path[PATH_MAX + 1];
     int index = trk * MAX_SECTOR + (sec - 1);
-    st_t *link;
+    st_t link;
     bool result = true;
 
 #ifdef DEBUG_FILE
@@ -1368,8 +1368,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                     size_t bytes = fread(buffer, 1, SECTOR_SIZE, fp);
                     if (bytes == SECTOR_SIZE)
                     {
-                        buffer[3] = link->st.trk;
-                        buffer[4] = link->st.sec;
+                        buffer[3] = link.st.trk;
+                        buffer[4] = link.st.sec;
                     }
                     else
                     {
