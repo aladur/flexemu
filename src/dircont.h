@@ -67,7 +67,7 @@ public:
     static DirectoryContainer *Create(const char *dir, const char *name,
                                       int t, int s,
                                       int fmt = TYPE_DSK_CONTAINER);
-    int Close();
+    bool Close();
     bool IsContainerOpened() const;
     bool IsWriteProtected() const;
     bool GetInfo(FlexContainerInfo &info) const;

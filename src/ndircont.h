@@ -93,7 +93,7 @@ public:
     static NafsDirectoryContainer *Create(const char *dir,
                                           const char *name, int t, int s,
                                           int fmt = TYPE_DSK_CONTAINER);
-    int Close();
+    bool Close();
     bool IsContainerOpened() const;
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
@@ -117,11 +117,11 @@ private:
     void close_new_files();
     void mount(Word number);
     void free_memory();
-    Byte open_files();
+    bool open_files();
     SWord next_free_dir_entry();
     std::string unix_filename(SWord dir_index) const;
     std::string get_unix_filename(const char *pfn) const;
-    Byte    add_to_link_table(
+    bool add_to_link_table(
         SWord dir_index,
         off_t size,
         Byte random,
@@ -145,8 +145,8 @@ private:
     void check_for_delete(SWord dir_index, s_dir_sector *buffer) const;
     void check_for_extend(SWord dir_index, s_dir_sector *buffer);
     void check_for_rename(SWord dir_index, s_dir_sector *pb) const;
-    Byte check_for_new_file(SWord dir_index, s_dir_sector *pd) const;
-    Byte extend_directory(SWord index, s_dir_sector *pdb);
+    void check_for_new_file(SWord dir_index, s_dir_sector *pd) const;
+    bool extend_directory(SWord index, s_dir_sector *pdb);
     SWord set_file_time(
         char *ppath,
         Byte month,

@@ -104,13 +104,13 @@ BFilePtr::~BFilePtr()
     Close();
 }
 
-int BFilePtr::Close()
+bool BFilePtr::Close()
 {
-    int result = 0;
+    bool result = true;
 
     if (fp != nullptr)
     {
-        result = fclose(fp);
+        result = (fclose(fp) == 0);
     }
 
     fp = nullptr;

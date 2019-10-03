@@ -129,7 +129,7 @@ std::string NafsDirectoryContainer::GetPath() const
     return "";
 }
 
-int NafsDirectoryContainer::Close()
+bool NafsDirectoryContainer::Close()
 {
     if (isOpen)
     {
@@ -139,7 +139,7 @@ int NafsDirectoryContainer::Close()
         isOpen = false;
     }
 
-    return 1;
+    return true;
 }
 
 bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
@@ -481,14 +481,14 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 } // index_of_new_file
 
 
-Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
+bool NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
 {
     // increase flex_directory by one sector
     s_dir_sector *pfd = new(std::nothrow) s_dir_sector[dir_sectors + 1];
 
     if (pfd == nullptr)
     {
-        return 0xff;    // can't allocate memory
+        return false;    // can't allocate memory
     }
 
     memcpy(pfd, &pflex_directory[0], dir_sectors * sizeof(s_dir_sector));
@@ -498,7 +498,7 @@ Byte NafsDirectoryContainer::extend_directory(SWord index, s_dir_sector *pdb)
     pflex_directory.reset(pfd);
     dir_sectors++;
     dir_extend.sec_trk = 0;// reset directory extend track/sector
-    return 0;
+    return true;
 } // extend_directory
 
 
@@ -556,7 +556,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
     sec = psis->fc_start_sec;
     index = trk * MAX_SECTOR + sec - 1;
 
-    if (!extend_directory(index, (s_dir_sector *)sector_buffer))
+    if (extend_directory(index, (s_dir_sector *)sector_buffer))
     {
         pflex_directory[dir_sectors - 2].next_trk = (Byte)trk;
         pflex_directory[dir_sectors - 2].next_sec = (Byte)sec;
@@ -646,17 +646,17 @@ void NafsDirectoryContainer::initialize_new_file_table()
 } // initialize_new_file_table
 
 // check for any open file
-Byte NafsDirectoryContainer::open_files()
+bool NafsDirectoryContainer::open_files()
 {
     for (Word i = 0; i < new_files; i++)
     {
         if (pnew_file[i].first.sec_trk != 0)
         {
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 } // open_files
 
 
@@ -715,7 +715,7 @@ void NafsDirectoryContainer::free_memory()
 } // free_memory
 
 // if file won't fit return 0 otherwise return 1
-Byte NafsDirectoryContainer::add_to_link_table(
+bool NafsDirectoryContainer::add_to_link_table(
     SWord dir_index,
     off_t size,
     Byte random,
@@ -730,7 +730,7 @@ Byte NafsDirectoryContainer::add_to_link_table(
 
     if (size > static_cast<off_t>(free * 252L))
     {
-        return 0;
+        return false;
     }
 
     records = (size + 251L) / 252;
@@ -770,7 +770,7 @@ Byte NafsDirectoryContainer::add_to_link_table(
     psis->free[0] = static_cast<Byte>((free - records) >> 8);
     psis->free[1] = (free - records) & 0xff;
 
-    return 1;
+    return true;
 } // add_to_link_table
 
 
@@ -1222,7 +1222,7 @@ SWord NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
 } // set_file_time
 
 
-Byte NafsDirectoryContainer::check_for_new_file(SWord dir_index,
+void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
         s_dir_sector * pd) const
 {
     Word i, j;
@@ -1303,14 +1303,11 @@ Byte NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 } // while
 
                 pnew_file[j].first.sec_trk = 0;
-                return 0;
             } // if
         } // for
 
         j++;
     } // while
-
-    return 0;
 } // check_for_new_file
 
 

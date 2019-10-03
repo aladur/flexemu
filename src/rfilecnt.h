@@ -46,7 +46,7 @@ public:
 
     virtual bool ReadSector(Byte *buffer, int trk, int sec) const;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec);
-    virtual int Close();
+    virtual bool Close();
 
 private:
     virtual void Initialize_for_flx_format(

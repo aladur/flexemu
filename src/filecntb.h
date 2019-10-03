@@ -59,7 +59,7 @@ enum
 class FileContainerIfBase
 {
 public:
-    virtual int  Close() = 0;
+    virtual bool Close() = 0;
     virtual bool IsContainerOpened() const = 0;
     virtual bool IsWriteProtected() const = 0;
     virtual bool  GetInfo(FlexContainerInfo &info) const = 0;

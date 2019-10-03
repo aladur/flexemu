@@ -36,7 +36,7 @@ public:
     BFilePtr &operator= (const BFilePtr &) = delete;
     BFilePtr &operator= (BFilePtr &&);
 
-    int Close();
+    bool Close();
     const char *GetPath() const
     {
         return path.c_str();

@@ -177,11 +177,11 @@ std::string DirectoryContainer::GetPath() const
 // this may cause exeptions!
 // usually files should be closed explicitly
 // with closeFile()
-int DirectoryContainer::Close()
+bool DirectoryContainer::Close()
 {
     isOpen = false;
 
-    return 1;
+    return true;
 }
 
 bool DirectoryContainer::IsRandomFile(

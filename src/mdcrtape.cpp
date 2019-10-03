@@ -121,12 +121,12 @@ MiniDcrTapePtr MiniDcrTape::Open(const char *path)
     return MiniDcrTapePtr(new MiniDcrTape(path, Mode::Open));
 }
 
-int MiniDcrTape::Close()
+bool MiniDcrTape::Close()
 {
     stream.close();
     record_positions.clear();
     record_index = 0;
-    return 0;
+    return true;
 }
 
 bool MiniDcrTape::IsOpen() const

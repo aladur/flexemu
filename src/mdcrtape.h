@@ -75,7 +75,7 @@ public:
 
     static MiniDcrTapePtr Create(const char *path);
     static MiniDcrTapePtr Open(const char *path);
-    int  Close();
+    bool Close();
     bool IsOpen() const;
     bool HasRecord() const;
     RecordType GetRecordType() const;

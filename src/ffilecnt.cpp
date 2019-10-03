@@ -217,10 +217,10 @@ std::string FlexFileContainer::GetPath() const
     return fp.GetPath();
 }
 
-int FlexFileContainer::Close()
+bool FlexFileContainer::Close()
 {
     fp.Close();
-    return 1;
+    return true;
 }
 
 // check if an container is opened

@@ -75,7 +75,7 @@ FlexRamFileContainer &FlexRamFileContainer::operator=
     return *this;
 }
 
-int FlexRamFileContainer::Close()
+bool FlexRamFileContainer::Close()
 {
     bool throwException = false;
     std::string path = fp.GetPath();
@@ -107,7 +107,7 @@ int FlexRamFileContainer::Close()
         throw FlexException(FERR_WRITING_TO, path.c_str());
     }
 
-    return 1;
+    return true;
 }
 
 bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
