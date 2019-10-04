@@ -30,7 +30,6 @@
 #include <locale>
 #include <stdio.h>
 #include <sys/stat.h>
-#include <new>          // needed for (nothrow)
 #include <ctype.h>
 #include <limits.h>
 
@@ -447,7 +446,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     if (i >= new_files)
     {
         // new file table is full, increase new file table by 2
-        pnf = new(std::nothrow) s_new_file[new_files + 2];
+        pnf = new s_new_file[new_files + 2];
 
         if (pnf == nullptr)
         {
@@ -485,7 +484,7 @@ bool NafsDirectoryContainer::extend_directory(SWord index,
     const s_dir_sector &dir_sector)
 {
     // increase flex_directory by one sector
-    s_dir_sector *pfd = new(std::nothrow) s_dir_sector[dir_sectors + 1];
+    s_dir_sector *pfd = new s_dir_sector[dir_sectors + 1];
 
     if (pfd == nullptr)
     {
