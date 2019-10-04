@@ -125,28 +125,29 @@ private:
         SWord dir_index,
         off_t size,
         Byte random,
-        st_t *begin,
-        st_t *end);
+        st_t &begin,
+        st_t &end);
     void add_to_directory(
         char *name,
         char *ext,
         SWord dir_index,
         Byte random,
-        struct stat *pstat,
-        st_t *begin,
-        st_t *end,
+        const struct stat &stat,
+        const st_t &begin,
+        const st_t &end,
         Byte wp);
-    void modify_random_file(char *path, struct stat *pstat, st_t *pbegin);
+    void modify_random_file(char *path, const struct stat &stat,
+                            const st_t &pbegin);
     bool IsFlexFilename(
         const char *filename,
         char *name = nullptr,
         char *ext = nullptr) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
-    void check_for_delete(SWord dir_index, s_dir_sector *buffer) const;
-    void check_for_extend(SWord dir_index, s_dir_sector *buffer);
-    void check_for_rename(SWord dir_index, s_dir_sector *pb) const;
-    void check_for_new_file(SWord dir_index, s_dir_sector *pd) const;
-    bool extend_directory(SWord index, s_dir_sector *pdb);
+    void check_for_delete(SWord dir_index, const s_dir_sector &d) const;
+    void check_for_extend(SWord dir_index, const s_dir_sector &d);
+    void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
+    void check_for_new_file(SWord dir_index, const s_dir_sector &d) const;
+    bool extend_directory(SWord index, const s_dir_sector &d);
     SWord set_file_time(
         char *ppath,
         Byte month,
