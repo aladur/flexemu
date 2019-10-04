@@ -532,7 +532,7 @@ st_t NafsDirectoryContainer::link_address() const
 SWord NafsDirectoryContainer::next_free_dir_entry()
 {
     SWord i;
-    Word j, index;
+    Word index;
     s_sys_info_sector *psis;
     char sector_buffer[SECTOR_SIZE];
     Word trk, sec;
@@ -547,10 +547,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     psis = &pflex_sys_info[0];
 
-    for (j = 0; j < SECTOR_SIZE; j++)
-    {
-        sector_buffer[j] = 0x00;
-    }
+    memset(sector_buffer, 0, sizeof(sector_buffer));
 
     sector_buffer[3] = static_cast<Byte>(dir_sectors - INIT_DIR_SECTORS + 1);
     trk = psis->fc_start_trk;
