@@ -534,7 +534,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
     SWord i;
     Word index;
     s_sys_info_sector *psis;
-    char sector_buffer[SECTOR_SIZE];
+    s_dir_sector dir_sector;
     Word trk, sec;
 
     for (i = 0; i < dir_sectors * 10; i++)
@@ -547,14 +547,16 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     psis = &pflex_sys_info[0];
 
-    memset(sector_buffer, 0, sizeof(sector_buffer));
+    memset(reinterpret_cast<char *>(&dir_sector), 0, sizeof(dir_sector));
 
-    sector_buffer[3] = static_cast<Byte>(dir_sectors - INIT_DIR_SECTORS + 1);
+    Word record_nr = dir_sectors - INIT_DIR_SECTORS + 1;
+    dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
+    dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
     trk = psis->fc_start_trk;
     sec = psis->fc_start_sec;
     index = trk * MAX_SECTOR + sec - 1;
 
-    if (extend_directory(index, (const s_dir_sector &)sector_buffer))
+    if (extend_directory(index, dir_sector))
     {
         pflex_directory[dir_sectors - 2].next_trk = (Byte)trk;
         pflex_directory[dir_sectors - 2].next_sec = (Byte)sec;
