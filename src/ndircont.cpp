@@ -28,6 +28,7 @@
 #include <iomanip>
 #include <algorithm>
 #include <locale>
+#include <cstring>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -546,7 +547,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     psis = &pflex_sys_info[0];
 
-    memset(reinterpret_cast<char *>(&dir_sector), 0, sizeof(dir_sector));
+    dir_sector = { };
 
     Word record_nr = dir_sectors - INIT_DIR_SECTORS + 1;
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
@@ -790,9 +791,9 @@ void NafsDirectoryContainer::add_to_directory(
     lt = localtime(&(stat.st_mtime));
     records = static_cast<SWord>((stat.st_size + 251L) / 252);
     pd = &pflex_directory[dir_index / 10].dir_entry[dir_index % 10];
-    memset(pd->filename, 0, FLEX_BASEFILENAME_LENGTH);
+    std::fill(std::begin(pd->filename), std::end(pd->filename), 0);
     strncpy(pd->filename, name, FLEX_BASEFILENAME_LENGTH);
-    memset(pd->file_ext, 0, FLEX_FILEEXT_LENGTH);
+    std::fill(std::begin(pd->file_ext), std::end(pd->file_ext), 0);
     strncpy(pd->file_ext, ext, FLEX_FILEEXT_LENGTH);
     pd->file_attr   = wp ? 0xc0 : 0x00;
     pd->start_trk   = begin.st.trk;
@@ -850,10 +851,7 @@ void NafsDirectoryContainer::modify_random_file(char *path,
     {
         index = (begin.st.trk * MAX_SECTOR + begin.st.sec) - 1 + 2;
 
-        for (i = 0; i < 252 * 2; i++)
-        {
-            file_sector_map[i] = 0;
-        }
+        std::fill(std::begin(file_sector_map), std::end(file_sector_map), 0);
 
         n = 0;
 
@@ -1000,7 +998,6 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 
 void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 {
-    Word i;
     char name[9], ext[4];
     const char *pName;
     struct stat sbuf;
@@ -1040,10 +1037,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
             strupper(ext);
         } // else
 
-        for (i = 0; i < 16; i++)
-        {
-            psis->unused1[i] = 0;
-        }
+        std::fill(std::begin(psis->unused1), std::end(psis->unused1), 0);
 
         strncpy(psis->disk_name, name, 8);
         strncpy(psis->disk_ext, ext, 3);
@@ -1061,10 +1055,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         psis->last_trk = MAX_TRACK;
         psis->last_sec = MAX_SECTOR;
 
-        for (i = 0; i < 216; i++)
-        {
-            psis->unused2[i] = 0;
-        }
+        std::fill(std::begin(psis->unused2), std::end(psis->unused2), 0);
 
         pflex_sys_info[1] = pflex_sys_info[0];
     } // if
@@ -1075,15 +1066,12 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 // emulate it anyway
 void NafsDirectoryContainer::initialize_flex_unused_sector()
 {
-    Word i;
-
     pflex_unused->next_trk = 0x00;
     pflex_unused->next_sec = 0x03;
 
-    for (i = 0; i < 254; i++)
-    {
-        pflex_unused->unused[i] = 0;
-    }
+    std::fill(std::begin(pflex_unused->unused),
+              std::end(pflex_unused->unused),
+              0);
 } // initialize_flex_unused_sector
 
 
@@ -1323,8 +1311,7 @@ Byte NafsDirectoryContainer::last_of_free_chain(Byte trk, Byte sec) const
 
 
 // return true on success
-bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
-                                        int sec) const
+bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
     char path[PATH_MAX + 1];
     int index = trk * MAX_SECTOR + (sec - 1);
@@ -1358,7 +1345,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
             {
                 FILE *fp;
 
-                memset(buffer, 0, SECTOR_SIZE);
+                std::memset(buffer, 0, SECTOR_SIZE);
 
                 link = link_address();
                 strcpy(path, directory.c_str());
@@ -1386,7 +1373,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                 break;
             }
 
-            memset(buffer, 0, SECTOR_SIZE);
+            std::memset(buffer, 0, SECTOR_SIZE);
             break;
 
         case DIRECTORY:
@@ -1411,7 +1398,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
 
             // free chain sector reads always
             // filled with zero
-            memset(buffer + 4, 0, SECTOR_SIZE - 4);
+            std::memset(buffer + 4, 0, SECTOR_SIZE - 4);
 
             break;
 
@@ -1438,8 +1425,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                     // stuff last sector of file with 0
                     if (bytes < 252)
                     {
-                        memset(buffer + 4 + bytes, 0,
-                                SECTOR_SIZE - 4 - bytes);
+                        std::memset(buffer + 4 + bytes, 0,
+                                    SECTOR_SIZE - 4 - bytes);
                     }
                 }
                 else     // unable to read sector
@@ -1459,8 +1446,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk,
                     // stuff last sector of file with 0
                     if (bytes < 252)
                     {
-                        memset(buffer + 4 + bytes, 0,
-                                SECTOR_SIZE - 4 - bytes);
+                        std::memset(buffer + 4 + bytes, 0,
+                                    SECTOR_SIZE - 4 - bytes);
                     }
 
                     fseek(fp, 0L, SEEK_END); // position end of file
