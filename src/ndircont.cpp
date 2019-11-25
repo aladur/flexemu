@@ -662,18 +662,18 @@ bool NafsDirectoryContainer::open_files()
 void NafsDirectoryContainer::close_new_files()
 {
     Word i;
-    Byte first = 1;
+    bool is_first = true;
     std::string msg;
 
     for (i = 0; i < new_files; i++)
     {
         if (pnew_file[i].first.sec_trk != 0)
         {
-            if (first)
+            if (is_first)
             {
                 msg = "There are still open files\n"
                        "temporarily stored as:\n";
-                first = 0;
+                is_first = false;
             }
 
             fclose(pnew_file[i].fp);
