@@ -25,6 +25,21 @@
 #include <unistd.h>
 #include <ctype.h>
 
+void usage(char *progpath)
+{
+    char *progname = strrchr(progpath, '/');
+
+    progname = (progname == NULL) ? progpath : progname + 1;
+
+    printf("syntax:\n");
+    printf("   %s -f<filename> [-s<start_address>] [-n<bytes_per_line>]\n"
+           "   -f<filename>       FLEX binary file to be converted.\n"
+           "   -s<start_address>  Set start address in hex. Default: Use\n"
+           "                      start address from <filename> if available.\n"
+           "   -n<bytes_per_line> Set number of bytes per line. Default: 32.\n",
+           progname);
+}
+
 int writeS19(char *srcFileName, int startAddress, int max)
 {
 	char	*tgtFileName;
@@ -95,7 +110,7 @@ int writeS19(char *srcFileName, int startAddress, int max)
 
 int main(int argc, char **argv)
 {
-	char    *optstr = "f:s:hn:";
+	char    *optstr = "f:s:h?n:";
 	int     startAddr, max;
 	char *fileName;
 
@@ -115,12 +130,14 @@ int main(int argc, char **argv)
 				  break;
 			case 's': sscanf(optarg, "%x", (unsigned int *)&startAddr);
 				  break;
-			case 'h': fprintf(stdout, "syntax: %s -f<filename> [-sXXXX]", argv[0]);
-				  exit(0);
+			case '?':
+			case 'h': usage(argv[0]);
+                                  exit(0);
 		}  /* switch */
 	} /* while */
 	if (fileName == NULL) {
 		fprintf(stderr, "Please specify a filename with -f<filename>\n");
+                usage(argv[0]);
 		exit(1);
 	}
 	writeS19(fileName, startAddr, max);
