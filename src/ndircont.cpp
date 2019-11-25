@@ -1267,7 +1267,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 rename(old_path, new_path);
 #ifdef DEBUG_FILE
                 LOG_XX("     new file %s, was %s\n",
-                        unix_filename(pflex_links[index].file_id),
+                        unix_filename(pflex_links[index].file_id).c_str(),
                         pnew_file[j].filename);
 #endif
                 set_file_time(new_path,
@@ -1409,7 +1409,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 FILE *fp;
 
 #ifdef DEBUG_FILE
-                LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
+                LOG_X("sector of file %s\n",
+                      unix_filename(pfl->file_id).c_str());
 #endif
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING);
@@ -1611,7 +1612,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
                 FILE *fp;
 #ifdef DEBUG_FILE
-                LOG_X("sector of file %s\n", unix_filename(pfl->file_id));
+                LOG_X("sector of file %s\n",
+                      unix_filename(pfl->file_id).c_str());
 #endif
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING);
@@ -1645,7 +1647,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
 #ifdef DEBUG_FILE
                 LOG_X("sector of new file %s\n",
-                        unix_filename(pfl->file_id));
+                      unix_filename(pfl->file_id).c_str());
 #endif
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
