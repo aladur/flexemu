@@ -678,6 +678,7 @@ void NafsDirectoryContainer::close_new_files()
             }
 
             fclose(pnew_file[i].fp);
+            pnew_file[i].fp = nullptr;
 
             msg += "   ";
             msg += pnew_file[i].filename;
@@ -1228,6 +1229,10 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
         for (i = 0; i < 10; i++)
         {
             if (
+               dir_sector.dir_entry[i].filename[0] != DE_EMPTY &&
+               dir_sector.dir_entry[i].filename[0] != DE_DELETED &&
+               (dir_sector.dir_entry[i].start_sec ||
+                dir_sector.dir_entry[i].start_trk) &&
                pnew_file[j].first.st.sec == dir_sector.dir_entry[i].start_sec &&
                pnew_file[j].first.st.trk == dir_sector.dir_entry[i].start_trk)
             {
@@ -1236,6 +1241,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 change_file_id(index, NEW_FILE1 - j,
                                 10 * dir_index + i);
                 fclose(pnew_file[j].fp);
+                pnew_file[j].fp = nullptr;
                 strcpy(old_path, directory.c_str());
                 strcat(old_path, PATHSEPARATORSTRING);
                 strcat(old_path, pnew_file[j].filename);
@@ -1277,21 +1283,22 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 
                 // remove entry in new file table and
                 // move following entries
-                while (pnew_file[j + 1].first.sec_trk &&
-                        j < new_files - 1)
+                Word k = j;
+                while (k < new_files - 1 &&
+                       pnew_file[k + 1].first.sec_trk)
                 {
-                    strcpy(pnew_file[j].filename,
-                            &pnew_file[j + 1].filename[0]);
-                    pnew_file[j].first.sec_trk =
-                        pnew_file[j + 1].first.sec_trk;
-                    pnew_file[j].next.sec_trk =
-                        pnew_file[j + 1].next.sec_trk;
-                    pnew_file[j].f_record = pnew_file[j + 1].f_record;
-                    pnew_file[j].fp = pnew_file[j + 1].fp;
-                    index = pnew_file[j].first.st.trk * MAX_SECTOR +
-                            pnew_file[j].first.st.sec - 1;
-                    change_file_id(index, NEW_FILE1 - j - 1, NEW_FILE1 - j);
-                    j++;
+                    strcpy(pnew_file[k].filename,
+                            &pnew_file[k + 1].filename[0]);
+                    pnew_file[k].first.sec_trk =
+                        pnew_file[k + 1].first.sec_trk;
+                    pnew_file[k].next.sec_trk =
+                        pnew_file[k + 1].next.sec_trk;
+                    pnew_file[k].f_record = pnew_file[k + 1].f_record;
+                    pnew_file[k].fp = pnew_file[k + 1].fp;
+                    index = pnew_file[k].first.st.trk * MAX_SECTOR +
+                            pnew_file[k].first.st.sec - 1;
+                    change_file_id(index, NEW_FILE1 - k - 1, NEW_FILE1 - k);
+                    ++k;
                 } // while
 
                 pnew_file[j].first.sec_trk = 0;
@@ -1438,6 +1445,10 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             else
             {
                 // new file with name tmpXX
+#ifdef DEBUG_FILE
+                LOG_X("sector of new file %s\n",
+                      unix_filename(pfl->file_id).c_str());
+#endif
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
                 if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
@@ -1531,7 +1542,9 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 #endif
             {
                 Word di = pfl->f_record;
-                s_dir_sector &dir_sector = (s_dir_sector &)buffer;
+                const auto &dir_sector =
+                    *(reinterpret_cast<s_dir_sector *>(
+                      const_cast<Byte *>(buffer)));
                 char *p = reinterpret_cast<char *>(&pflex_directory[di]);
                 check_for_delete(di, dir_sector);
                 check_for_new_file(di, dir_sector);
