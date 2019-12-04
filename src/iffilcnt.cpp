@@ -61,7 +61,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
     {
         dirIndex++;
 
-        if ((dirIndex % 10) == 0)
+        if ((dirIndex % DIRENTRIES) == 0)
         {
             if (dirSector.next_trk == 0 &&
                 dirSector.next_sec == 0)
@@ -80,7 +80,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             }
         }
 
-        s_dir_entry *pd = &dirSector.dir_entry[dirIndex % 10];
+        s_dir_entry *pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
 
         // an empty entry aborts the search
         if (pd->filename[0] == DE_EMPTY)
@@ -146,7 +146,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                             dirSectorSec, base->GetPath().c_str());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % 10];
+    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     start_trk = pd->start_trk;
     start_sec = pd->start_sec;
     end_sec = pd->end_sec;
@@ -250,7 +250,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
                             dirSectorSec, base->GetPath().c_str());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % 10];
+    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
 
     std::string totalName(newName);
 
@@ -321,7 +321,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
                             base->GetPath().c_str());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % 10];
+    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     pd->day = static_cast<Byte>(date.GetDay());
     pd->month = static_cast<Byte>(date.GetMonth());
     pd->year = static_cast<Byte>(date.GetYear() % 100);
@@ -355,7 +355,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
                             dirSectorSec, base->GetPath().c_str());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % 10];
+    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     pd->file_attr = attributes;
 
     if (!base->WriteSector((const Byte *)&dirSector,

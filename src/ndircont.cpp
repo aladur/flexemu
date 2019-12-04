@@ -65,7 +65,7 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
 
     if (access(path, W_OK))
     {
-        attributes |= FLX_READONLY;
+        attributes |= WRITE_PROTECT;
     }
 
     mount(number);
@@ -396,9 +396,9 @@ std::string NafsDirectoryContainer::unix_filename(SWord file_id) const
     }
     else
     {
-        const char *filename =
-            (const char *)
-            &pflex_directory[file_id / 10].dir_entry[file_id % 10].filename;
+        const auto &directory_entry =
+            pflex_directory[file_id/DIRENTRIES].dir_entry[file_id%DIRENTRIES];
+        const char *filename = directory_entry.filename;
         return get_unix_filename(filename);
     }
 } // unix_filename
@@ -511,9 +511,9 @@ st_t NafsDirectoryContainer::link_address() const
 
     link.sec_trk = 0;
 
-    for (i = 0; i < dir_sectors * 10; i++)
+    for (i = 0; i < dir_sectors * DIRENTRIES; i++)
     {
-        pd = &pflex_directory[i / 10].dir_entry[i % 10];
+        pd = &pflex_directory[i / DIRENTRIES].dir_entry[i % DIRENTRIES];
 
         if (!strncmp(pd->filename, "FLEX\0\0\0\0", 8) &&
             !strncmp(pd->file_ext, "SYS", 3))
@@ -537,9 +537,12 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
     s_dir_sector dir_sector;
     Word trk, sec;
 
-    for (i = 0; i < dir_sectors * 10; i++)
+    for (i = 0; i < dir_sectors * DIRENTRIES; i++)
     {
-        if (pflex_directory[i / 10].dir_entry[i % 10].filename[0] == DE_EMPTY)
+        const auto &directory_entry =
+            pflex_directory[i / DIRENTRIES].dir_entry[i % DIRENTRIES];
+
+        if (directory_entry.filename[0] == DE_EMPTY)
         {
             return i;
         }
@@ -785,28 +788,28 @@ void NafsDirectoryContainer::add_to_directory(
     const st_t &end,
     Byte wp)
 {
-    s_dir_entry *pd;
     struct tm *lt;
     SWord records;
 
     lt = localtime(&(stat.st_mtime));
     records = static_cast<SWord>((stat.st_size + 251L) / 252);
-    pd = &pflex_directory[dir_index / 10].dir_entry[dir_index % 10];
-    std::fill(std::begin(pd->filename), std::end(pd->filename), 0);
-    strncpy(pd->filename, name, FLEX_BASEFILENAME_LENGTH);
-    std::fill(std::begin(pd->file_ext), std::end(pd->file_ext), 0);
-    strncpy(pd->file_ext, ext, FLEX_FILEEXT_LENGTH);
-    pd->file_attr   = wp ? 0xc0 : 0x00;
-    pd->start_trk   = begin.st.trk;
-    pd->start_sec   = begin.st.sec;
-    pd->end_trk     = end.st.trk;
-    pd->end_sec     = end.st.sec;
-    pd->records[0]  = records >> 8;
-    pd->records[1]  = records & 0xff;
-    pd->sector_map  = random ? 0x02 : 0x00;
-    pd->month = static_cast<Byte>(lt->tm_mon + 1);
-    pd->day = static_cast<Byte>(lt->tm_mday);
-    pd->year = static_cast<Byte>(lt->tm_year);
+    auto &pd =
+      pflex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
+    std::fill(std::begin(pd.filename), std::end(pd.filename), 0);
+    strncpy(pd.filename, name, FLEX_BASEFILENAME_LENGTH);
+    std::fill(std::begin(pd.file_ext), std::end(pd.file_ext), 0);
+    strncpy(pd.file_ext, ext, FLEX_FILEEXT_LENGTH);
+    pd.file_attr   = wp ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
+    pd.start_trk   = begin.st.trk;
+    pd.start_sec   = begin.st.sec;
+    pd.end_trk     = end.st.trk;
+    pd.end_sec     = end.st.sec;
+    pd.records[0]  = records >> 8;
+    pd.records[1]  = records & 0xff;
+    pd.sector_map  = random ? IS_RANDOM_FILE : 0;
+    pd.month = static_cast<Byte>(lt->tm_mon + 1);
+    pd.day = static_cast<Byte>(lt->tm_mday);
+    pd.year = static_cast<Byte>(lt->tm_year);
 } // add_to_directory
 
 bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
@@ -1102,19 +1105,19 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
 
     pd = &pflex_directory[dir_index];
 
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < DIRENTRIES; i++)
     {
         if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
             pd->dir_entry[i].filename[0] != DE_DELETED)
         {
-            pfilename = unix_filename(dir_index * 10 + i).c_str();
+            pfilename = unix_filename(dir_index * DIRENTRIES + i).c_str();
             index = pd->dir_entry[i].start_trk * MAX_SECTOR +
                     pd->dir_entry[i].start_sec - 1;
             strcpy(path, directory.c_str());
             strcat(path, PATHSEPARATORSTRING);
             strcat(path, pfilename);
             unlink(path);
-            change_file_id(index, dir_index * 10 + i, FREE_CHAIN);
+            change_file_id(index, dir_index * DIRENTRIES + i, FREE_CHAIN);
 #ifdef DEBUG_FILE
             LOG_X("     delete %s\n", pfilename);
 #endif
@@ -1133,9 +1136,9 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
     std::string filename1, filename2;
     const char *pfilename1, *pfilename2;
 
-    for (i = 0; i < 10; i++)
+    for (i = 0; i < DIRENTRIES; i++)
     {
-        filename1 = unix_filename(dir_index * 10 + i);
+        filename1 = unix_filename(dir_index * DIRENTRIES + i);
         filename2 = get_unix_filename(dir_sector.dir_entry[i].filename);
 
         pfilename1 = filename1.c_str();
@@ -1226,7 +1229,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 
     while (pnew_file[j].first.sec_trk && j < new_files)
     {
-        for (i = 0; i < 10; i++)
+        for (i = 0; i < DIRENTRIES; i++)
         {
             if (
                dir_sector.dir_entry[i].filename[0] != DE_EMPTY &&
@@ -1239,7 +1242,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 index = pnew_file[j].first.st.trk * MAX_SECTOR +
                         pnew_file[j].first.st.sec - 1;
                 change_file_id(index, NEW_FILE1 - j,
-                                10 * dir_index + i);
+                                DIRENTRIES * dir_index + i);
                 fclose(pnew_file[j].fp);
                 pnew_file[j].fp = nullptr;
                 strcpy(old_path, directory.c_str());
@@ -1247,7 +1250,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 strcat(old_path, pnew_file[j].filename);
 
                 // check for random file, if true set user execute bit
-                if (dir_sector.dir_entry[i].sector_map & 0x02)
+                if (dir_sector.dir_entry[i].sector_map & IS_RANDOM_FILE)
 #ifdef _WIN32
 #ifdef UNICODE
                 SetFileAttributes(ConvertToUtf16String(old_path).c_str(),

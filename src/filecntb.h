@@ -56,6 +56,9 @@ enum
                       CATALOG_PROTECT
 };
 
+const Byte IS_RANDOM_FILE = 0x02;
+const Byte DIRENTRIES = 10;
+
 class FileContainerIfBase
 {
 public:

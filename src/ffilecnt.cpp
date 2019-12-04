@@ -784,7 +784,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->end_sec = static_cast<Byte>(tmp2);
                 pde->records[0] = static_cast<Byte>(records >> 8);
                 pde->records[1] = static_cast<Byte>(records & 0xFF);
-                pde->sector_map = (entry.IsRandom() ? 0x02 : 0x00);
+                pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
                 pde->reserved2 = 0;
                 date = entry.GetDate();
                 pde->day = static_cast<Byte>(date.GetDay());
