@@ -107,7 +107,7 @@ public:
     std::string GetPath() const;
 
 private:
-    void fill_flex_directory(Byte dwp);
+    void fill_flex_directory(bool is_write_protected);
     void initialize_header(Byte wp);
     void initialize_flex_sys_info_sectors(Word number);
     void initialize_flex_unused_sector();
@@ -119,23 +119,23 @@ private:
     void free_memory();
     bool open_files();
     SWord next_free_dir_entry();
-    std::string unix_filename(SWord dir_index) const;
-    std::string get_unix_filename(const char *pfn) const;
+    std::string get_unix_filename(SWord dir_index) const;
+    std::string get_unix_filename(const s_dir_entry &dir_entry) const;
     bool add_to_link_table(
         SWord dir_index,
         off_t size,
-        Byte random,
+        bool is_random,
         st_t &begin,
         st_t &end);
     void add_to_directory(
         char *name,
         char *ext,
         SWord dir_index,
-        Byte random,
+        bool is_random,
         const struct stat &stat,
         const st_t &begin,
         const st_t &end,
-        Byte wp);
+        bool is_write_protected);
     void modify_random_file(char *path, const struct stat &stat,
                             const st_t &pbegin);
     bool IsFlexFilename(
@@ -148,13 +148,13 @@ private:
     void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
     void check_for_new_file(SWord dir_index, const s_dir_sector &d) const;
     bool extend_directory(SWord index, const s_dir_sector &d);
-    SWord set_file_time(
+    bool set_file_time(
         char *ppath,
         Byte month,
         Byte day,
         Byte year) const;
     st_t link_address() const;
-    Byte last_of_free_chain(Byte tr, Byte sr) const;
+    bool is_last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;
     void change_file_id(

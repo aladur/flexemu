@@ -364,8 +364,11 @@ void NafsDirectoryContainer::initialize_flex_directory()
 } // initialize_flex_directory
 
 
-std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
+std::string NafsDirectoryContainer::get_unix_filename(
+        const s_dir_entry &dir_entry) const
 {
+    const char *pfn = &dir_entry.filename[0];
+
     if (*pfn != DE_EMPTY && *pfn != DE_DELETED)
     {
         std::string::size_type length;
@@ -384,7 +387,7 @@ std::string NafsDirectoryContainer::get_unix_filename(const char *pfn) const
 } // get_unix_filename
 
 // return unix filename from a given file_id
-std::string NafsDirectoryContainer::unix_filename(SWord file_id) const
+std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
 {
     if (file_id < 0)
     {
@@ -398,10 +401,9 @@ std::string NafsDirectoryContainer::unix_filename(SWord file_id) const
     {
         const auto &directory_entry =
             pflex_directory[file_id/DIRENTRIES].dir_entry[file_id%DIRENTRIES];
-        const char *filename = directory_entry.filename;
-        return get_unix_filename(filename);
+        return get_unix_filename(directory_entry);
     }
-} // unix_filename
+} // get_unix_filename
 
 // return the record nr (beginning from 0) of a new file which first
 // sector has index 'index' into flex link table
@@ -461,7 +463,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
         pnew_file[new_files - 1].first.sec_trk = 0;
     }
 
-    strcpy(pnew_file[i].filename, unix_filename(NEW_FILE1 - i).c_str());
+    strcpy(pnew_file[i].filename, get_unix_filename(NEW_FILE1 - i).c_str());
     strcpy(path, directory.c_str());
     strcat(path, PATHSEPARATORSTRING);
     strcat(path, &pnew_file[i].filename[0]);
@@ -722,7 +724,7 @@ void NafsDirectoryContainer::free_memory()
 bool NafsDirectoryContainer::add_to_link_table(
     SWord dir_index,
     off_t size,
-    Byte random,
+    bool is_random,
     st_t &begin,
     st_t &end)
 {
@@ -751,7 +753,7 @@ bool NafsDirectoryContainer::add_to_link_table(
             plink->next.sec_trk = 0;
         }
 
-        if (random)
+        if (is_random)
         {
             plink->record_nr[0] = static_cast<Byte>(i > 2 ? (i - 2) >> 8 : 0);
             plink->record_nr[1] = i > 2 ? (i - 2) & 0xff : 0;
@@ -782,11 +784,11 @@ void NafsDirectoryContainer::add_to_directory(
     char *name,
     char *ext,
     SWord dir_index,
-    Byte random,
+    bool is_random,
     const struct stat &stat,
     const st_t &begin,
     const st_t &end,
-    Byte wp)
+    bool is_write_protected)
 {
     struct tm *lt;
     SWord records;
@@ -799,14 +801,14 @@ void NafsDirectoryContainer::add_to_directory(
     strncpy(pd.filename, name, FLEX_BASEFILENAME_LENGTH);
     std::fill(std::begin(pd.file_ext), std::end(pd.file_ext), 0);
     strncpy(pd.file_ext, ext, FLEX_FILEEXT_LENGTH);
-    pd.file_attr   = wp ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
+    pd.file_attr   = is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
     pd.start_trk   = begin.st.trk;
     pd.start_sec   = begin.st.sec;
     pd.end_trk     = end.st.trk;
     pd.end_sec     = end.st.sec;
     pd.records[0]  = records >> 8;
     pd.records[1]  = records & 0xff;
-    pd.sector_map  = random ? IS_RANDOM_FILE : 0;
+    pd.sector_map  = is_random ? IS_RANDOM_FILE : 0;
     pd.month = static_cast<Byte>(lt->tm_mon + 1);
     pd.day = static_cast<Byte>(lt->tm_mday);
     pd.year = static_cast<Byte>(lt->tm_year);
@@ -889,7 +891,7 @@ void NafsDirectoryContainer::modify_random_file(char *path,
 
 // dwp = write protect for drive
 
-void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
+void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 {
 #ifdef _WIN32
     HANDLE hdl;
@@ -902,7 +904,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
     char name[9], ext[4], path[PATH_MAX + 1];
     std::string filename;
     SWord dir_index = 0;
-    Word random;
+    bool is_random;
     st_t begin, end;
     struct stat sbuf;
 
@@ -941,7 +943,7 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
 #ifdef UNIX
                     filename = pentry->d_name;
 #endif
-                    random = 0;
+                    is_random = false;
                     strcpy(path, directory.c_str());
                     strcat(path, PATHSEPARATORSTRING);
                     strcat(path, filename.c_str());
@@ -954,30 +956,31 @@ void NafsDirectoryContainer::fill_flex_directory(Byte dwp)
                         (dir_index = next_free_dir_entry()) >= 0)
                     {
 #ifdef _WIN32
-                        random = (pentry.dwFileAttributes &
-                                  FILE_ATTRIBUTE_HIDDEN) ? 1 : 0;
+                        is_random = (pentry.dwFileAttributes &
+                                     FILE_ATTRIBUTE_HIDDEN) ? true : false;
 #endif
 #ifdef UNIX
-                        random = sbuf.st_mode & S_IXUSR;
+                        is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
 #endif
 
                         // CDFS-Support: look for file name in file 'random'
-                        if (dwp)
+                        if (is_write_protected)
                         {
-                            random = is_in_file_random(directory.c_str(),
-                                                       filename.c_str());
+                            is_random = is_in_file_random(directory.c_str(),
+                                                          filename.c_str());
                         }
 
                         if (add_to_link_table(dir_index, sbuf.st_size,
-                                              (Byte)random, begin, end))
+                                              is_random, begin, end))
                         {
                             add_to_directory(name, ext, dir_index,
-                                             (Byte)random, sbuf, begin, end,
-                                             dwp || access(path, W_OK));
+                                             is_random, sbuf, begin, end,
+                                             is_write_protected ||
+                                             (access(path, W_OK) != 0));
 
                             // Unfinished: don't write sector map if write
                             // protected
-                            if (random && !dwp)
+                            if (is_random && !is_write_protected)
                             {
                                 modify_random_file(path, sbuf, begin);
                             }
@@ -1110,7 +1113,7 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
         if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
             pd->dir_entry[i].filename[0] != DE_DELETED)
         {
-            pfilename = unix_filename(dir_index * DIRENTRIES + i).c_str();
+            pfilename = get_unix_filename(dir_index * DIRENTRIES + i).c_str();
             index = pd->dir_entry[i].start_trk * MAX_SECTOR +
                     pd->dir_entry[i].start_sec - 1;
             strcpy(path, directory.c_str());
@@ -1138,8 +1141,8 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
 
     for (i = 0; i < DIRENTRIES; i++)
     {
-        filename1 = unix_filename(dir_index * DIRENTRIES + i);
-        filename2 = get_unix_filename(dir_sector.dir_entry[i].filename);
+        filename1 = get_unix_filename(dir_index * DIRENTRIES + i);
+        filename2 = get_unix_filename(dir_sector.dir_entry[i]);
 
         pfilename1 = filename1.c_str();
         pfilename2 = filename2.c_str();
@@ -1180,9 +1183,9 @@ void NafsDirectoryContainer::check_for_extend(SWord dir_index,
 } // check_for_extend
 
 
-// return -1 if not successful otherwise return 0
+// Return false if not successful otherwise return true.
 // years < 75 will be represented as >= 2000
-SWord NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
+bool NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
         Byte day, Byte year) const
 {
     struct stat    statbuf;
@@ -1203,15 +1206,11 @@ SWord NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
 
         if (timebuf.modtime >= 0 && utime(ppath, &timebuf) >= 0)
         {
-            return 0;
-        }
-        else
-        {
-            return -1;
+            return true;
         }
     } // if
 
-    return -1;
+    return false;
 } // set_file_time
 
 
@@ -1268,7 +1267,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 }
 
 #endif
-                std::string new_name = unix_filename(
+                std::string new_name = get_unix_filename(
                             pflex_links[index].file_id);
                 strcpy(new_path, directory.c_str());
                 strcat(new_path, PATHSEPARATORSTRING);
@@ -1276,7 +1275,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 rename(old_path, new_path);
 #ifdef DEBUG_FILE
                 LOG_XX("     new file %s, was %s\n",
-                        unix_filename(pflex_links[index].file_id).c_str(),
+                        get_unix_filename(pflex_links[index].file_id).c_str(),
                         pnew_file[j].filename);
 #endif
                 set_file_time(new_path,
@@ -1313,11 +1312,11 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 } // check_for_new_file
 
 
-Byte NafsDirectoryContainer::last_of_free_chain(Byte trk, Byte sec) const
+bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 {
     return (pflex_sys_info[0].fc_end_trk == trk &&
             pflex_sys_info[0].fc_end_sec == sec);
-} // last_of_free_chain
+} // is_last_of_free_chain
 
 
 // return true on success
@@ -1420,11 +1419,11 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
 #ifdef DEBUG_FILE
                 LOG_X("sector of file %s\n",
-                      unix_filename(pfl->file_id).c_str());
+                      get_unix_filename(pfl->file_id).c_str());
 #endif
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING);
-                strcat(path, unix_filename(pfl->file_id).c_str());
+                strcat(path, get_unix_filename(pfl->file_id).c_str());
 
                 if ((fp = fopen(path, "rb")) != nullptr &&
                     !fseek(fp, (long)(pfl->f_record * 252L),
@@ -1450,7 +1449,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 // new file with name tmpXX
 #ifdef DEBUG_FILE
                 LOG_X("sector of new file %s\n",
-                      unix_filename(pfl->file_id).c_str());
+                      get_unix_filename(pfl->file_id).c_str());
 #endif
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
@@ -1571,7 +1570,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 break;
             } // if
 
-            if (last_of_free_chain(track, sector) && (buffer[1] || buffer[0]))
+            if (is_last_of_free_chain(track, sector) &&
+                    (buffer[1] || buffer[0]))
             {
                 pfl->next.st.trk  = buffer[0];
                 pfl->next.st.sec  = buffer[1];
@@ -1629,11 +1629,11 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 FILE *fp;
 #ifdef DEBUG_FILE
                 LOG_X("sector of file %s\n",
-                      unix_filename(pfl->file_id).c_str());
+                      get_unix_filename(pfl->file_id).c_str());
 #endif
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING);
-                strcat(path, unix_filename(pfl->file_id).c_str());
+                strcat(path, get_unix_filename(pfl->file_id).c_str());
                 pfl->next.st.trk = buffer[0];
                 pfl->next.st.sec = buffer[1];
                 pfl->record_nr[0] = buffer[2];
@@ -1663,7 +1663,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
 #ifdef DEBUG_FILE
                 LOG_X("sector of new file %s\n",
-                      unix_filename(pfl->file_id).c_str());
+                      get_unix_filename(pfl->file_id).c_str());
 #endif
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
