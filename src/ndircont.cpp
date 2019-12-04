@@ -87,12 +87,12 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
     }
 }
 
-// type, track and sectors parameter will be ignored
+// format, track and sectors parameter will be ignored
 NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         const char *name,
-        int /* = 0 */,
-        int /* = 0 */,
-        int /* = TYPE_DSK_FORMAT */)
+        int /* t */,
+        int /* s */,
+        int /* fmt = TYPE_DSK_CONTAINER */)
 {
     struct stat sbuf;
     std::string totalPath;
