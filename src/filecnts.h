@@ -128,7 +128,7 @@ struct s_dir_sector
     Byte    next_sec; // Link to next sector in the chain
     Byte    record_nr[2]; // Logical record number of sector in file, zero based
     Byte    unused[12]; // To be initialized with 0
-    struct s_dir_entry dir_entry[10]; // directory entries in one sector
+    struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector
 };
 
 struct s_unused_sector
