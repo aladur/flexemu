@@ -44,8 +44,11 @@ const unsigned int SECTOR_SIZE  = 256;
 
 class FlexContainerInfo;
 
-/* possible file attributes */
-/* (WRITE_PROTECT also used for container attribute) */
+// Supported file attributes.
+// They are used as bit masks and can be combined.
+// File attributes are used in struct s_dir_entry in field file_attr.
+// All other bits of file_attr should remain 0.
+// (WRITE_PROTECT also used for container attribute)
 enum
 {
     WRITE_PROTECT   = 0x80,
@@ -56,7 +59,10 @@ enum
                       CATALOG_PROTECT
 };
 
+// Magic number to mark a file as random access file. This byte is stored
+// in s_dir_entry in field sector_map.
 const Byte IS_RANDOM_FILE = 0x02;
+// Number of directory entries in one directory sector, struct s_dir_sector
 const Byte DIRENTRIES = 10;
 
 class FileContainerIfBase

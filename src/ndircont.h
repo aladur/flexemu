@@ -35,13 +35,14 @@
 
 #define ERR_SIZE    (200)
 
-const int MAX_TRACK             = 79;       // max. nr. of tracks - 1
-const int MAX_SECTOR            = 36;       // nr of sect. per track,
+const int MAX_TRACK             = 79;       // maximum track number - 1
+const int MAX_SECTOR            = 36;       // number of sectors per track,
                                             // side 0 and 1
 const int INIT_DIR_SECTORS      = (20 - 4); // initial nr. of directory sectors
 const int LINK_TABLE_SIZE       = ((MAX_TRACK + 1) * MAX_SECTOR);
-const int INIT_NEW_FILES        = 4;        // initial nr of new files to be
-// managed at a time
+const int INIT_NEW_FILES        = 4;        // initial number of new files to be
+                                            // managed at a time
+
 enum : SWord
 {
     FREE_CHAIN  = -1,
@@ -50,13 +51,18 @@ enum : SWord
     NEW_FILE1   = -4
 };
 
+// A new file is a newly created file which not yet has an entry in
+// a directory sector (s_dir_sector), so the name of this file is unknown.
+// As soon as a new directory entry (s_dir_entry) is created for it, it is
+// removed from the list of new files (pnew_file[]) and the file is renamed
+// on the host file system.
 struct s_new_file
 {
     char filename[FLEX_FILENAME_LENGTH];
-    st_t first;
-    st_t next;
-    Word f_record;
-    FILE *fp;
+    st_t first; /* track and sector of first first first sector */
+    st_t next; /* track and sector of next sector to be written */
+    Word f_record; /* number of records (= sectors) */
+    FILE *fp; /* file pointer on the target file system */
 };
 
 class NafsDirectoryContainer : public FileContainerIfSector
@@ -85,9 +91,9 @@ private:
     std::unique_ptr<s_unused_sector> pflex_unused;       // unused sector
     std::unique_ptr<s_dir_sector[]> pflex_directory;     // directory entries
     std::unique_ptr<s_new_file[]> pnew_file;             // new file table
-    Word dir_sectors;        // nr. of dir sectors in flex_dir.
-    Word new_files;          // nr. of new file entries
-    st_t dir_extend;         // track/sector of dir. ext. sect.
+    Word dir_sectors;        // number of directory sectors in pflex_directory
+    Word new_files;          // number of new file entries
+    st_t dir_extend;         // track and sector of directory extend sector
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,

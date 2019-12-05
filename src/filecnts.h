@@ -50,21 +50,21 @@ struct s_formats
 /* structure of FLEX system info sector */
 struct s_sys_info_sector
 {
-    Byte    unused1[16];
-    char    disk_name[8];
-    char    disk_ext[3];
-    Byte    disk_number[2];
-    Byte    fc_start_trk;
-    Byte    fc_start_sec;
-    Byte    fc_end_trk;
-    Byte    fc_end_sec;
-    Byte    free[2];
-    Byte    month;
-    Byte    day;
-    Byte    year;
-    Byte    last_trk;
-    Byte    last_sec;
-    Byte    unused2[216];
+    Byte    unused1[16]; // To be initialized with 0
+    char    disk_name[8]; // Name of this disk image
+    char    disk_ext[3]; // Extension of this disk image
+    Byte    disk_number[2]; // Number of this disk image
+    Byte    fc_start_trk; // Start track of free chain
+    Byte    fc_start_sec; // Start sector of free chain
+    Byte    fc_end_trk; // End track of free chain
+    Byte    fc_end_sec; // End sector of free chain
+    Byte    free[2]; // Number of sectors in free chain
+    Byte    month; // Month when the disk was created, range 1 - 12
+    Byte    day; // Day when the disk was created, range 1 - 31
+    Byte    year; // Year when the disk was created, range 0 - 99
+    Byte    last_trk; // Maximum track number this disk image supports
+    Byte    last_sec; // Maximum sector number this disk image supports
+    Byte    unused2[216]; // To be initialized with 0
 };
 
 struct s_st
@@ -80,58 +80,61 @@ struct s_st
 
 typedef union
 {
-    Word        sec_trk;    /* spec. sector and tracknr. of as sect. */
+    Word        sec_trk;    // Specifies track and sector number of a sector
     struct s_st st;
 } st_t;
 
 struct s_link_table
 {
-    st_t        next;       /* sector and tracknumber of next sect.*/
-    Byte        record_nr[2];   /* FLEX record number */
-    Word        f_record;   /* rel position in file / 252 */
-    SWord       file_id;    /* index of file in directory */
+    st_t        next;       // Track and sector number of next sector
+    Byte        record_nr[2]; // FLEX logical record number
+    Word        f_record;   // Relative position in file / 252
+    SWord       file_id;    // Index of file in directory
 };
 
 
 /* structure of one FLEX directory entry */
 struct s_dir_entry
 {
-    char    filename[8];
-    char    file_ext[3];
-    Byte    file_attr;
-    Byte    reserved1;
-    char    start_trk;
-    char    start_sec;
-    Byte    end_trk;
-    Byte    end_sec;
-    Byte    records[2];
-    Byte    sector_map;
-    Byte    reserved2;
-    Byte    month;
-    Byte    day;
-    Byte    year;
+    char    filename[8]; // Name of file
+    char    file_ext[3]; // Extension of file
+    Byte    file_attr; // File attributes, see flexFileAttributes
+    Byte    reserved1; // To be initialized with 0
+    char    start_trk; // Track of first sector of the file
+    char    start_sec; // First sector of this file
+    Byte    end_trk; // Track of last sector of the file
+    Byte    end_sec; // Last sector of the file
+    Byte    records[2]; // Number of records (= sectors) the file has
+    Byte    sector_map; // Indicates a random access file, see IS_RANDOM_FILE
+    Byte    reserved2; // To be initialized with 0
+    Byte    month; // Month when the file was created, range 1 - 12
+    Byte    day; // Day when the file was created, range 1 - 31
+    Byte    year; // Year when the file was created, range 0 - 99
 };
 
-/* filename[0] within s_dir_entry has a special meaning: */
-/* 1. An empty directory entry: */
+/* filename[0] within s_dir_entry has two magic numbers: */
+// 1. An empty directory entry
 #define DE_EMPTY    '\0'
-/* 2. A deleted directory entry: */
+// 2. A deleted directory entry
+// In the FLEX Advanced Programmer's Guide it is stated that a deleted file
+// has the leftmost bit of the first byte of the filename set. But when using
+// the utility DELETE.CMD the first byte is set to 0xFF.
 #define DE_DELETED  '\xFF'
 
 /* structure of one FLEX directory sector */
 struct s_dir_sector
 {
-    Byte    next_trk;
-    Byte    next_sec;
-    Byte    record_nr[2];
-    Byte    unused[12];
-    struct s_dir_entry dir_entry[10];
+    Byte    next_trk; // Link to track of next sector in the chain
+    Byte    next_sec; // Link to next sector in the chain
+    Byte    record_nr[2]; // Logical record number of sector in file, zero based
+    Byte    unused[12]; // To be initialized with 0
+    struct s_dir_entry dir_entry[10]; // directory entries in one sector
 };
 
 struct s_unused_sector
 {
-    Byte    next_trk;
-    Byte    next_sec;
+    Byte    next_trk; // Link to track of next sector in the chain
+    Byte    next_sec; // Link to next sector in the chain
     Byte    unused[254];
 };
 

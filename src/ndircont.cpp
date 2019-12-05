@@ -42,12 +42,29 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 
-// detailed debug messegas can be written to a debug file:
+// detailed debug messages can be written to a debug file:
 //#define DEBUG_FILE "debug.txt"
 #ifdef DEBUG_FILE
     #include "debug.h"
 #endif
 
+// nafs means NAtive File System. It allows to emulate a FLEX disk
+// by simply using a directory on the host file system.
+// The emulation fully supports read, modify, write, delete access for normal
+// and random files. Only files, which are identified as FLEX compatible file
+// names are emulated. All other files in the directory are ignored.
+// See IsFlexFilename for details. If the files in the emulated directory
+// exceed the size of the emulated disk only part of the files are emulated.
+// The size of the emulated disk is fixed and defined by the constants
+// MAX_TRACK and MAX_SECTORS.
+// IMPORTANT HINT: As long as a host file system is mounted as a FLEX
+// disk any file in this directory should not be renamed, modified or deleted
+// Care should also be taken when using low level disk access tools
+// like EXAMINE.CMD which can be used to read, modify and write single sectors.
+// It is possible to read or write sectors of existing files, the system info
+// sector or boot sector.
+// But writing sectors which are part of the free chain or a directory sector
+// can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
     attributes(0), isOpen(false), dir_sectors(0), new_files(0), dir_extend{0}
@@ -87,7 +104,8 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
     }
 }
 
-// format, track and sectors parameter will be ignored
+// Create a new nafs directory container in path pdir.
+// format, track and sector parameter is ignored.
 NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         const char *name,
         int /* t */,
@@ -205,6 +223,7 @@ int NafsDirectoryContainer::GetContainerType() const
 // private interface
 ///////////////////////////////////////////////////////
 
+// Initialize the internal data structures.
 void NafsDirectoryContainer::initialize_header(Byte wp)
 {
     size_t i;
@@ -281,9 +300,18 @@ void NafsDirectoryContainer::check_pointer(void *ptr)
     } // if
 }
 
-// if valid flex filename return is > 0 otherwise = 0
+// Check for a valid FLEX filename.
+// On success return true otherwise false.
+// The rules to be checked:
+// - filename and extension are separated by a dot.
+// filename:
+// - First character is a-z or A-Z
+// - Next up to 7 characters are a-z, A-Z, 0-9, _ or -
+// extension:
+// - First character is a-z or A-Z
+// - Next up to 3 characters are a-z, A-Z, 0-9, _ or -
 /*
-    some examples:
+    Some examples:
 
     allowed:        x.a xx.a xxxxxxxx.a x xx xxxxxxxx
     not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
@@ -345,6 +373,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 } // IsFlexFilename
 
 
+// Initialize the FLEX directory sectors.
 void NafsDirectoryContainer::initialize_flex_directory()
 {
     Word i;
@@ -364,6 +393,10 @@ void NafsDirectoryContainer::initialize_flex_directory()
 } // initialize_flex_directory
 
 
+// Return the unix filename for a given FLEX directory entry s_dir_entry.
+// If directory entry is empty or deleted return an empty string.
+// pfn is a pointer to the filename property in a FLEX directory entry
+// of type s_dir_entry.
 std::string NafsDirectoryContainer::get_unix_filename(
         const s_dir_entry &dir_entry) const
 {
@@ -386,7 +419,11 @@ std::string NafsDirectoryContainer::get_unix_filename(
     return std::string();
 } // get_unix_filename
 
-// return unix filename from a given file_id
+// Return unix filename for a given file_id.
+// - New files: The file_id is < 0. It is named tmpXX where XX
+//   is related to the file_id.
+// - Existing files: The file_id is >= 0. It is used as an index into
+//   the FLEX directory entries of type s_dir_entry.
 std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
 {
     if (file_id < 0)
@@ -405,8 +442,8 @@ std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
     }
 } // get_unix_filename
 
-// return the record nr (beginning from 0) of a new file which first
-// sector has index 'index' into flex link table
+// Return the record number (zero based) of a new file which first
+// sector has index 'index' into FLEX link table.
 Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
         Word index) const
 {
@@ -427,6 +464,9 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
     return record_nr;
 }
 
+// Return the index of the already existing new file with given track
+// and sector. If not found create another new file and return its index.
+// Return -1 if the new file can not be opened.
 SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 {
     SWord           i;
@@ -483,10 +523,11 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 } // index_of_new_file
 
 
+// Extend the FLEX directory by one directory sector.
+// If it fails return false.
 bool NafsDirectoryContainer::extend_directory(SWord index,
     const s_dir_sector &dir_sector)
 {
-    // increase flex_directory by one sector
     s_dir_sector *pfd = new s_dir_sector[dir_sectors + 1];
 
     if (pfd == nullptr)
@@ -505,6 +546,10 @@ bool NafsDirectoryContainer::extend_directory(SWord index,
 } // extend_directory
 
 
+// Return the first sector and track of the file FLEX.SYS.
+// In FLEX this is called to LINK the disk. It is needed
+// to be able to boot from it.
+// If not found return 0/0.
 st_t NafsDirectoryContainer::link_address() const
 {
     st_t link;
@@ -530,7 +575,9 @@ st_t NafsDirectoryContainer::link_address() const
 }  // link_address
 
 
-//if directory can't be extended return -1
+// Return the index (zero based) of the first free directory entry.
+// If directory is full extend it by one directory sector.
+// If directory can't be extended return -1.
 SWord NafsDirectoryContainer::next_free_dir_entry()
 {
     SWord i;
@@ -586,6 +633,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 }  // next_free_dir_entry
 
 
+// Initialize the FLEX link table
 void NafsDirectoryContainer::initialize_flex_link_table()
 {
     Word i;
@@ -639,6 +687,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     }
 } // initialize_flex_link_table
 
+// Initialize the list of new files
 void NafsDirectoryContainer::initialize_new_file_table()
 {
     Word i;
@@ -665,6 +714,8 @@ bool NafsDirectoryContainer::open_files()
 } // open_files
 
 
+// Check for any open new files.
+// If so print a message or open a message dialog.
 void NafsDirectoryContainer::close_new_files()
 {
     Word i;
@@ -711,6 +762,7 @@ void NafsDirectoryContainer::close_new_files()
 } // close_new_files
 
 
+// Free any dynamically allocated memory.
 void NafsDirectoryContainer::free_memory()
 {
     pflex_links.reset(nullptr);
@@ -720,7 +772,9 @@ void NafsDirectoryContainer::free_memory()
     pnew_file.reset(nullptr);
 } // free_memory
 
-// if file won't fit return 0 otherwise return 1
+// Add a file with directory index dir_index to the link table.
+// If file won't fit return false otherwise return true.
+// On success return its first and last track/sector.
 bool NafsDirectoryContainer::add_to_link_table(
     SWord dir_index,
     off_t size,
@@ -780,6 +834,7 @@ bool NafsDirectoryContainer::add_to_link_table(
 } // add_to_link_table
 
 
+// Add file properties to directory entry with index 'dir_index'.
 void NafsDirectoryContainer::add_to_directory(
     char *name,
     char *ext,
@@ -814,6 +869,8 @@ void NafsDirectoryContainer::add_to_directory(
     pd.year = static_cast<Byte>(lt->tm_year);
 } // add_to_directory
 
+// Check if file 'pfilename' is available in file which contains a list
+// of all random files. This file is defined as RANDOM_FILE_LIST.
 bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
         const char *pfilename)
 {
@@ -844,6 +901,7 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 
 } // is_in_file_random
 
+// Update random file sector map.
 void NafsDirectoryContainer::modify_random_file(char *path,
         const struct stat &stat, const st_t &begin)
 {
@@ -889,8 +947,10 @@ void NafsDirectoryContainer::modify_random_file(char *path,
     } // if
 } // modify_random_file
 
-// dwp = write protect for drive
 
+// Create a directory entry for each file for which the file name
+// is identified as a FLEX file name. See IsFlexFilename for details.
+// If is_write_protected is true the drive is write protected.
 void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 {
 #ifdef _WIN32
@@ -979,7 +1039,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                                              (access(path, W_OK) != 0));
 
                             // Unfinished: don't write sector map if write
-                            // protected
+                            // protected.
                             if (is_random && !is_write_protected)
                             {
                                 modify_random_file(path, sbuf, begin);
@@ -1003,6 +1063,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 } // fill_flex_directory
 
 
+// Initialize the FLEX system info sector.
 void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 {
     char name[9], ext[4];
@@ -1069,8 +1130,8 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 } // initialize_flex_sys_info_sectors
 
 
-// I don't know what this sector should be used for but
-// emulate it anyway
+// Initialize the FLEX unused sector.
+// It is unclear for what this sector is used for but it is emulated anyway.
 void NafsDirectoryContainer::initialize_flex_unused_sector()
 {
     pflex_unused->next_trk = 0x00;
@@ -1082,7 +1143,7 @@ void NafsDirectoryContainer::initialize_flex_unused_sector()
 } // initialize_flex_unused_sector
 
 
-// change the file id in flex_links
+// Change the file id in the FLEX link table.
 void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
         SWord new_id) const
 {
@@ -1097,6 +1158,9 @@ void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
 } // change_file_id
 
 
+// Check if a file has been deleted. A file is marked as deleted
+// if the first byte of the file name is set to DE_DELETED.
+// For this compare the old (pd) with the new directory sector (dir_sector).
 void NafsDirectoryContainer::check_for_delete(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
@@ -1131,6 +1195,9 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
 } // check_for_delete
 
 
+// Check if a file has been renamed.
+// For this compare the old (pd) with the new directory sector (dir_sector).
+// If a file has been renamed then rename it on the host file system too.
 void NafsDirectoryContainer::check_for_rename(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
@@ -1167,6 +1234,12 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
 } // check_for_rename
 
 
+// Check if the directory has been extended.
+// For this compare the old (pd) with the new directory sector (dir_sector).
+// If the directoy has been extended then the old directory sector had no
+// link to a next directory sector (next_trk == next_sec == 0) AND the
+// new directory sector has a link to the next directory sector. If so
+// save track and sector in dir_extend.
 void NafsDirectoryContainer::check_for_extend(SWord dir_index,
         const s_dir_sector &dir_sector)
 {
@@ -1214,6 +1287,11 @@ bool NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
 } // set_file_time
 
 
+// Check for new directory entries. A new directory entry is identified
+// by the first byte of the file name set to neither DE_DELETED nor DE_EMPTY.
+// For this compare the old (pd) with the new directory sector (dir_sector).
+// If found remove the file from the list of new files and rename the
+// file to its new file name.
 void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
@@ -1311,7 +1389,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
     } // while
 } // check_for_new_file
 
-
+// Check if track and sector is the last sector in the free chain.
 bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 {
     return (pflex_sys_info[0].fc_end_trk == trk &&
@@ -1319,7 +1397,9 @@ bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 } // is_last_of_free_chain
 
 
-// return true on success
+// Public interface to read one sector contained in byte stream 'buffer'
+// from given track and sector.
+// Return true on success.
 bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
     char path[PATH_MAX + 1];
@@ -1482,7 +1562,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
     return result;
 } //ReadSector
 
-
+// Public interface to write one sector contained in byte stream 'buffer'
+// to given track and sector.
 bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
         int sec)
 {
@@ -1688,6 +1769,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 } // WriteSector
 
 
+// Mount the directory container. number is the disk number.
 void NafsDirectoryContainer::mount(Word number)
 {
     Byte wp_flag;
