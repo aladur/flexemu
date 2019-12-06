@@ -621,7 +621,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
         if (--psis->free[1] == 0xff)
         {
-            psis->free[0]--;
+            --psis->free[0];
         }
 
         return i;
@@ -788,12 +788,12 @@ bool NafsDirectoryContainer::add_to_link_table(
 
     free = (psis->free[0] << 8) + psis->free[1];
 
-    if (size > static_cast<off_t>(free * 252L))
+    if (size > static_cast<off_t>(free * DBPS))
     {
         return false;
     }
 
-    records = (size + 251L) / 252;
+    records = (size + (DBPS - 1)) / DBPS;
     begin.st.sec = psis->fc_start_sec;
     begin.st.trk = psis->fc_start_trk;
     sector_begin = (begin.st.trk * MAX_SECTOR) + begin.st.sec - 1;
@@ -849,7 +849,7 @@ void NafsDirectoryContainer::add_to_directory(
     SWord records;
 
     lt = localtime(&(stat.st_mtime));
-    records = static_cast<SWord>((stat.st_size + 251L) / 252);
+    records = static_cast<SWord>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &pd =
       pflex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
     std::fill(std::begin(pd.filename), std::end(pd.filename), 0);
@@ -905,13 +905,13 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 void NafsDirectoryContainer::modify_random_file(char *path,
         const struct stat &stat, const st_t &begin)
 {
-    Byte file_sector_map[252 * 2];
-    SDWord data_size;
+    Byte file_sector_map[DBPS * 2];
+    DWord data_size;
     Word i, n, index;
 
-    data_size = stat.st_size - (252L * 2);
+    data_size = stat.st_size - (DBPS * 2);
 
-    if (data_size >= 252L * 2)
+    if (data_size >= DBPS * 2)
     {
         index = (begin.st.trk * MAX_SECTOR + begin.st.sec) - 1 + 2;
 
@@ -919,7 +919,7 @@ void NafsDirectoryContainer::modify_random_file(char *path,
 
         n = 0;
 
-        for (n = 0; n < (data_size / (252L * 255)) ; n++)
+        for (n = 0; n < (data_size / (DBPS * 255)) ; n++)
         {
             file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
             file_sector_map[3 * n + 1] =
@@ -928,21 +928,22 @@ void NafsDirectoryContainer::modify_random_file(char *path,
             index += 255;
         } // for
 
-        i = (Word)(data_size % (252L * 255));
+        i = (Word)(data_size % (DBPS * 255));
 
         if (i != 0)
         {
             file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
             file_sector_map[3 * n + 1] =
                 static_cast<Byte>((index % MAX_SECTOR) + 1);
-            file_sector_map[3 * n + 2] = static_cast<Byte>((i + 251) / 252);
+            file_sector_map[3 * n + 2] =
+                static_cast<Byte>((i + (DBPS - 1)) / DBPS);
         } // if
 
         BFilePtr fp(path, "rb+");
 
         if (fp != nullptr)
         {
-            fwrite(file_sector_map, 252, 2, fp);
+            fwrite(file_sector_map, DBPS, 2, fp);
         }
     } // if
 } // modify_random_file
@@ -1487,7 +1488,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
             // free chain sector reads always
             // filled with zero
-            std::memset(buffer + 4, 0, SECTOR_SIZE - 4);
+            std::memset(buffer + MDPS, 0, DBPS);
 
             break;
 
@@ -1506,17 +1507,16 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 strcat(path, get_unix_filename(pfl->file_id).c_str());
 
                 if ((fp = fopen(path, "rb")) != nullptr &&
-                    !fseek(fp, (long)(pfl->f_record * 252L),
+                    !fseek(fp, (long)(pfl->f_record * DBPS),
                             SEEK_SET))
                 {
-                    size_t bytes = fread(buffer + 4, 1, 252, fp);
+                    size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
                     fclose(fp);
 
                     // stuff last sector of file with 0
-                    if (bytes < 252)
+                    if (bytes < DBPS)
                     {
-                        std::memset(buffer + 4 + bytes, 0,
-                                    SECTOR_SIZE - 4 - bytes);
+                        std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
                     }
                 }
                 else     // unable to read sector
@@ -1533,15 +1533,14 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 #endif
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
-                if (!fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET))
+                if (!fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET))
                 {
-                    size_t bytes = fread(buffer + 4, 1, 252, fp);
+                    size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
 
                     // stuff last sector of file with 0
-                    if (bytes < 252)
+                    if (bytes < DBPS)
                     {
-                        std::memset(buffer + 4 + bytes, 0,
-                                    SECTOR_SIZE - 4 - bytes);
+                        std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
                     }
 
                     fseek(fp, 0L, SEEK_END); // position end of file
@@ -1690,12 +1689,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 pfl->record_nr[1] = buffer[3];
                 pfl->f_record = record_nr_of_new_file(new_file_index, index);
 
-                if (ftell(fp) != (pfl->f_record * 252L) &&
-                    fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+                if (ftell(fp) != static_cast<signed>(pfl->f_record * DBPS) &&
+                    fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET) != 0)
                 {
                     result = false;
                 }
-                else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
                 {
                     result = false;
                 }
@@ -1727,12 +1726,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 else
                 {
                     if (ftell(fp) != pfl->f_record &&
-                        fseek(fp, (long)(pfl->f_record * 252L),
+                        fseek(fp, (long)(pfl->f_record * DBPS),
                                 SEEK_SET) != 0)
                     {
                         result = false;
                     }
-                    else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                    else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
                     {
                         result = false;
                     }
@@ -1749,11 +1748,11 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
 
                 if (ftell(fp) != pfl->f_record &&
-                    fseek(fp, (long)(pfl->f_record * 252L), SEEK_SET) != 0)
+                    fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET) != 0)
                 {
                     result = false;
                 }
-                else if (fwrite(buffer + 4, 1, 252, fp) != 252)
+                else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
                 {
                     result = false;
                 }

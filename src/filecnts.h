@@ -84,6 +84,15 @@ typedef union
     struct s_st st;
 } st_t;
 
+// (M)eta (D)ata (P)er (S)ector in Byte. It consists of the:
+// - link to the next sector
+// - 16-bit record number
+#define MDPS (sizeof(s_st) + 2)
+
+// Number of (D)ata (B)ytes (P)er (S)ector.
+// It is the sector size minus the Meta Data Per Sector.
+#define DBPS (SECTOR_SIZE - MDPS)
+
 struct s_link_table
 {
     st_t        next;       // Track and sector number of next sector

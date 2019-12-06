@@ -668,7 +668,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    size = size * 252 / 256;
+    size = size * DBPS / SECTOR_SIZE;
     buffer.Realloc(size);
     de.GetStartTrkSec(&trk, &sec);
     recordNr = 0;
