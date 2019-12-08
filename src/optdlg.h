@@ -24,6 +24,7 @@
 #define OPTDLG_INCLUDED
 
 #include <wx/dialog.h>
+#include "filecntb.h"
 
 enum
 {
@@ -42,7 +43,7 @@ public:
     GlobalOptionsDialog(wxWindow *pParent,
                         const wxPoint &pos = wxDefaultPosition,
                         const bool autoTextFlag = false,
-                        wxString bootFile = "boot");
+                        wxString bootFile = BOOT_FILE);
     virtual ~GlobalOptionsDialog();
     void OnSelectBootSectorFile(wxCommandEvent &event);
     inline bool GetAutoTextFlag()

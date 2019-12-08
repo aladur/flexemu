@@ -38,10 +38,10 @@
 
 #ifdef UNIX
     std::string FlexFileContainer::bootSectorFile =
-        F_DATADIR PATHSEPARATORSTRING "boot";
+        F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
 #endif
 #ifdef _WIN32
-    std::string FlexFileContainer::bootSectorFile = "boot";
+    std::string FlexFileContainer::bootSectorFile = BOOT_FILE;
 #endif
 
 /***********************************************/
@@ -934,7 +934,7 @@ void FlexFileContainer::Initialize_for_dsk_format(
 
 void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
 {
-    // first read boot sector if present as file "boot"
+    // first read boot sector if present from file
     BFilePtr boot(bootSectorFile.c_str(), "rb");
 
     if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)

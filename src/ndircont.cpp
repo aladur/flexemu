@@ -1457,7 +1457,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
                 link = link_address();
                 strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING "boot");
+                strcat(path, PATHSEPARATORSTRING BOOT_FILE);
 
                 if ((fp = fopen(path, "rb")) != nullptr)
                 {
@@ -1619,7 +1619,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 FILE *fp;
 
                 strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING "boot");
+                strcat(path, PATHSEPARATORSTRING BOOT_FILE);
 
                 if ((fp = fopen(path, "wb")) != nullptr)
                 {

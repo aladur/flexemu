@@ -52,7 +52,7 @@ END_EVENT_TABLE()
 GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,
         const bool autoTextFlag /* = false */,
-        wxString bootFile /* = "boot" */) :
+        wxString bootFile /* = BOOT_FILE */) :
     wxDialog(parent, 111, _("Global Options"), pos),
     m_bootSectorFile(bootFile),
     m_autoTextFlag(autoTextFlag),

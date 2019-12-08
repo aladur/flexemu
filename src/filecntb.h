@@ -40,6 +40,8 @@ const int TYPE_RAM_CONTAINER    =
     0x80; /* subtype: filecontainer loaded in RAM */
 
 #define RANDOM_FILE_LIST "random"
+#define BOOT_FILE "boot"
+
 const unsigned int SECTOR_SIZE  = 256;
 
 class FlexContainerInfo;
