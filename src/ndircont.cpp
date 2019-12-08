@@ -794,6 +794,11 @@ bool NafsDirectoryContainer::add_to_link_table(
     s_link_table *plink;
     s_sys_info_sector *psis = &pflex_sys_info[0];
 
+    if (dir_index < 0 || (dir_index / DIRENTRIES) >= dir_sectors)
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     free = (psis->free[0] << 8) + psis->free[1];
 
     if (size > static_cast<off_t>(free * DBPS))
