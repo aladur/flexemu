@@ -93,14 +93,6 @@ typedef union
 // It is the sector size minus the Meta Data Per Sector.
 #define DBPS (SECTOR_SIZE - MDPS)
 
-struct s_link_table
-{
-    st_t        next;       // Track and sector number of next sector
-    Byte        record_nr[2]; // FLEX logical record number
-    Word        f_record;   // Relative position in file / 252
-    SWord       file_id;    // Index of file in directory
-};
-
 
 /* structure of one FLEX directory entry */
 struct s_dir_entry

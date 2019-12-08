@@ -51,6 +51,14 @@ enum : SWord
     NEW_FILE1   = -4
 };
 
+struct s_link_table
+{
+    st_t        next;       // Track and sector number of next sector
+    Byte        record_nr[2]; // FLEX logical record number
+    Word        f_record;   // Relative position in file / 252
+    SWord       file_id;    // Index of file in directory
+};
+
 // A new file is a newly created file which not yet has an entry in
 // a directory sector (s_dir_sector), so the name of this file is unknown.
 // As soon as a new directory entry (s_dir_entry) is created for it, it is
