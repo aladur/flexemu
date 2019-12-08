@@ -51,6 +51,8 @@ enum : SWord
     NEW_FILE1   = -4
 };
 
+// To emulate a FLEX disk meta data for each sector is stored in
+// the following structure.
 struct s_link_table
 {
     st_t        next;       // Track and sector number of next sector

@@ -970,6 +970,13 @@ void NafsDirectoryContainer::modify_random_file(char *path,
 // Create a directory entry for each file for which the file name
 // is identified as a FLEX file name. See IsFlexFilename for details.
 // If is_write_protected is true the drive is write protected.
+// The following criterion have to be met to add a file to the FLEX directory:
+// - It is identified as a FLEX file name.
+// - It is not empty.
+// - There is space left for the file itself and it's directory entry.
+// - It's name is neither "random" nor "boot".
+// Any other files are just ignored. The files "random" and "boot" have
+// a special meaning in a directory container.
 void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 {
 #ifdef _WIN32
