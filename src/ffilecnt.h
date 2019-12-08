@@ -128,10 +128,7 @@ protected:
         s_floppy        *pfloppy,
         s_formats       *pformat,
         bool        wp);
-    static void     Create_boot_sector(Byte sec_buf[]);
-    static void     Create_sector2(
-        Byte    sec_buf[],
-        struct  s_formats *fmt);
+    static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
     static void     Create_sys_info_sector(
         Byte    sec_buf[],
         const char  *name,

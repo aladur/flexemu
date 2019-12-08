@@ -254,10 +254,6 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
         pflex_sys_info[i] = { };
     }
 
-    pflex_unused = std::unique_ptr<s_unused_sector>(new s_unused_sector);
-    check_pointer(pflex_unused.get());
-    *pflex_unused = { };
-
     dir_sectors = INIT_DIR_SECTORS;
     pflex_directory = std::unique_ptr<s_dir_sector[]>(
             new s_dir_sector[dir_sectors]);
@@ -776,7 +772,6 @@ void NafsDirectoryContainer::free_memory()
     pflex_links.reset(nullptr);
     pflex_directory.reset(nullptr);
     pflex_sys_info.reset(nullptr);
-    pflex_unused.reset(nullptr);
     pnew_file.reset(nullptr);
 } // free_memory
 
@@ -1156,19 +1151,6 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 } // initialize_flex_sys_info_sectors
 
 
-// Initialize the FLEX unused sector.
-// It is unclear for what this sector is used for but it is emulated anyway.
-void NafsDirectoryContainer::initialize_flex_unused_sector()
-{
-    pflex_unused->next_trk = 0x00;
-    pflex_unused->next_sec = 0x03;
-
-    std::fill(std::begin(pflex_unused->unused),
-              std::end(pflex_unused->unused),
-              0);
-} // initialize_flex_unused_sector
-
-
 // Change the file id in the FLEX link table.
 void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
         SWord new_id) const
@@ -1430,7 +1412,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
     char path[PATH_MAX + 1];
     int index = trk * MAX_SECTOR + (sec - 1);
-    st_t link;
     bool result = true;
 
 #ifdef DEBUG_FILE
@@ -1450,39 +1431,50 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 memcpy(buffer, p, param.byte_p_sector);
                 break;
             }
-            else if (sec == 2)
+            else if (sec == 1 || sec == 2)
             {
-                char *p = reinterpret_cast<char *>(pflex_unused.get());
-                memcpy(buffer, p, param.byte_p_sector);
-                break;
-            }
-            else if (sec == 1)
-            {
+                // According to the FLEX Advanced Programmer's Guide
+                // chapter "Diskette Initialization" the first two
+                // sectors contain a boot program.
+                // Reading the boot sector 0/1 or 0/2
+                // from a file which name is defined in BOOT_FILE.
+                // If sector 0/2 contains all zeros this file has
+                // a size of SECTOR_SIZE otherwise it has a size of
+                // 2 * SECTOR_SIZE.
+                // The boot code is contained in sector 0/1 and 0/2.
+                // The emulated Eurocom II usually only uses sector 0/1.
                 FILE *fp;
+                size_t count = 0;
 
                 std::memset(buffer, 0, SECTOR_SIZE);
 
-                link = link_address();
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING BOOT_FILE);
 
                 if ((fp = fopen(path, "rb")) != nullptr)
                 {
-                    size_t bytes = fread(buffer, 1, SECTOR_SIZE, fp);
-                    if (bytes == SECTOR_SIZE)
+                    if (sec == 2)
                     {
+                        fseek(fp, SECTOR_SIZE, SEEK_SET);
+                    }
+
+                    count = fread(buffer, 1, SECTOR_SIZE, fp);
+                    if (sec == 1 && count == SECTOR_SIZE)
+                    {
+                        st_t link = link_address();
+
                         buffer[3] = link.st.trk;
                         buffer[4] = link.st.sec;
                     }
-                    else
-                    {
-                        // Default buffer content if no boot sector present.
-                        // Jump to monitor program warm start entry point.
-                        buffer[0] = 0x7E; // JMP $F02D
-                        buffer[1] = 0xF0;
-                        buffer[2] = 0x2D;
-                    }
                     fclose(fp);
+                }
+                if (sec == 1 && count != SECTOR_SIZE)
+                {
+                    // Default buffer content if no boot sector present.
+                    // Jump to monitor program warm start entry point.
+                    buffer[0] = 0x7E; // JMP $F02D
+                    buffer[1] = 0xF0;
+                    buffer[2] = 0x2D;
                 }
 
                 break;
@@ -1616,22 +1608,49 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
                 memcpy(p, buffer, param.byte_p_sector);
             }
-            else if (sector == 2)
+            else if (sector == 1 || sector == 2)
             {
-                char *p = reinterpret_cast<char *>(pflex_unused.get());
-                memcpy(p, buffer, param.byte_p_sector);
-            }
-            else if (sector == 1)
-            {
+                // Write boot sector 0/1 or 0/2
+                // into a file which name is defined in BOOT_FILE.
+                std::array<Byte, 2 * SECTOR_SIZE> boot_buffer;
                 FILE *fp;
+                struct stat sbuf;
 
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING BOOT_FILE);
+                std::fill(boot_buffer.begin(), boot_buffer.end(), '\0');
 
-                if ((fp = fopen(path, "wb")) != nullptr)
+                if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode))
                 {
-                    size_t bytes = fwrite(buffer, 1, SECTOR_SIZE, fp);
-                    if (bytes != SECTOR_SIZE)
+                    if ((fp = fopen(path, "rb")) != nullptr)
+                    {
+                        size_t old_size =
+                            fread(boot_buffer.data(), 1, SECTOR_SIZE * 2, fp);
+                        (void)old_size;
+                        fclose(fp);
+                    }
+                }
+
+                Byte *p = boot_buffer.data() + (SECTOR_SIZE * (sector - 1));
+                memcpy(p, buffer, SECTOR_SIZE);
+                // Check if 2nd sector contains all zeros.
+                bool is_all_zero = std::all_of(
+                        boot_buffer.cbegin() + SECTOR_SIZE,
+                        boot_buffer.cend(),
+                        [](Byte b){ return b == 0; });
+                // Remove link address.
+                boot_buffer[3] = '\0';
+                boot_buffer[4] = '\0';
+                // If sector 2 contains all zero bytes only write
+                // the first sector otherwise write first and second
+                // sector to file.
+                size_t count = !is_all_zero ? 2 : 1;
+
+                if ((fp = fopen(path, "wb+")) != nullptr)
+                {
+                    size_t size =
+                        fwrite(boot_buffer.data(), 1, SECTOR_SIZE * count, fp);
+                    if (size != SECTOR_SIZE * count)
                     {
                         result = false;
                     }
@@ -1802,7 +1821,6 @@ void NafsDirectoryContainer::mount(Word number)
     initialize_header(wp_flag);
     initialize_new_file_table();
     initialize_flex_sys_info_sectors(number);
-    initialize_flex_unused_sector();
     fill_flex_directory(wp_flag);
 } // mount
 

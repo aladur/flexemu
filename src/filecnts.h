@@ -132,12 +132,6 @@ struct s_dir_sector
     struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector
 };
 
-struct s_unused_sector
-{
-    Byte    next_trk; // Link to track of next sector in the chain
-    Byte    next_sec; // Link to next sector in the chain
-    Byte    unused[254];
-};
 
 struct s_floppy
 {

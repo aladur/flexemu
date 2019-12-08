@@ -932,12 +932,12 @@ void FlexFileContainer::Initialize_for_dsk_format(
     pfloppy->type          = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
 } // initialize_for_dsk_format
 
-void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
+void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
 {
-    // first read boot sector if present from file
+    // Read boot sector(s) if present from file.
     BFilePtr boot(bootSectorFile.c_str(), "rb");
 
-    if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) < 1)
+    if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) != 1)
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
@@ -946,20 +946,11 @@ void FlexFileContainer::Create_boot_sector(Byte sec_buf[])
         sec_buf[1] = 0xF0;
         sec_buf[2] = 0x2D;
     }
-} // Create_boot_sector
-
-void FlexFileContainer::Create_sector2(Byte sec_buf[], struct s_formats *)
-{
-    // create unused (???) sector 2
-    unsigned int    i;
-
-    for (i = 0; i < SECTOR_SIZE; i++)
+    if (boot != nullptr && fread(sec_buf2, SECTOR_SIZE, 1, boot) != 1)
     {
-        sec_buf[i] = 0;
+        memset(sec_buf2, 0, SECTOR_SIZE);
     }
-
-    sec_buf[1] = 3; // link to next sector
-} // create_sector2
+} // Create_boot_sectors
 
 void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
         struct s_formats *fmt)
@@ -1148,18 +1139,20 @@ void FlexFileContainer::Format_disk(
             }
         }
 
-        Create_boot_sector(sector_buffer);
-
-        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
-            err = 1;
-        }
+            Byte sector_buffer2[SECTOR_SIZE];
 
-        Create_sector2(sector_buffer, &format);
+            Create_boot_sectors(sector_buffer, sector_buffer2);
 
-        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
-        {
-            err = 1;
+            if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
+            {
+                err = 1;
+            }
+
+            if (fwrite(sector_buffer2, sizeof(sector_buffer2), 1, fp) != 1)
+            {
+                err = 1;
+            }
         }
 
         Create_sys_info_sector(sector_buffer, name, &format);
