@@ -861,6 +861,11 @@ void NafsDirectoryContainer::add_to_directory(
     struct tm *lt;
     SWord records;
 
+    if (dir_index < 0 || (dir_index / DIRENTRIES) >= dir_sectors)
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     lt = localtime(&(stat.st_mtime));
     records = static_cast<SWord>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &pd =
