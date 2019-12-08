@@ -231,7 +231,7 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
     param.offset        = 0;
     param.write_protect = wp;
     param.max_sector    = MAX_SECTOR >> 1;
-    param.max_sector0   = (INIT_DIR_SECTORS + 4) >> 1;
+    param.max_sector0   = MAX_SECTOR0 >> 1;
     param.max_track     = MAX_TRACK;
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 << 9;

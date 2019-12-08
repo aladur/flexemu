@@ -38,7 +38,10 @@
 const int MAX_TRACK             = 79;       // maximum track number - 1
 const int MAX_SECTOR            = 36;       // number of sectors per track,
                                             // side 0 and 1
-const int INIT_DIR_SECTORS      = (20 - 4); // initial nr. of directory sectors
+const int MAX_SECTOR0           = 30;       // number of sectors on track 0,
+                                            // side 0 and 1
+const int INIT_DIR_SECTORS      = (MAX_SECTOR0 - 4); // initial number of
+                                                     // directory sectors
 const int LINK_TABLE_SIZE       = ((MAX_TRACK + 1) * MAX_SECTOR);
 const int INIT_NEW_FILES        = 4;        // initial number of new files to be
                                             // managed at a time
