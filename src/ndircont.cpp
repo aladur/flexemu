@@ -1036,8 +1036,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
                     if (IsFlexFilename(filename.c_str(), name, ext) &&
                         !stat(path, &sbuf) && (S_ISREG(sbuf.st_mode)) &&
-                        // exclude file "random":
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
+                        strcmp(filename.c_str(), BOOT_FILE) &&
                         sbuf.st_size > 0 &&
                         (dir_index = next_free_dir_entry()) >= 0)
                     {
