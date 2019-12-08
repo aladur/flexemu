@@ -125,7 +125,7 @@ private:
     void free_memory();
     bool open_files();
     SWord next_free_dir_entry();
-    std::string get_unix_filename(SWord dir_index) const;
+    std::string get_unix_filename(SWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
     bool add_to_link_table(
         SWord dir_index,

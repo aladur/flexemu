@@ -436,10 +436,18 @@ std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
     }
     else
     {
-        const auto &directory_entry =
-            pflex_directory[file_id/DIRENTRIES].dir_entry[file_id%DIRENTRIES];
-        return get_unix_filename(directory_entry);
+        auto sector_index = file_id / DIRENTRIES;
+
+        if (sector_index < dir_sectors)
+        {
+            const auto &directory_entry =
+                pflex_directory[sector_index].dir_entry[file_id % DIRENTRIES];
+            return get_unix_filename(directory_entry);
+        }
     }
+
+    // file_id located beyond valid range of directory entries.
+    throw FlexException(FERR_WRONG_PARAMETER);
 } // get_unix_filename
 
 // Return the record number (zero based) of a new file which first
