@@ -35,51 +35,53 @@
 
 #define ERR_SIZE    (200)
 
-const int MAX_TRACK             = 79;       // maximum track number - 1
-const int MAX_SECTOR            = 36;       // number of sectors per track,
-                                            // side 0 and 1
-const int MAX_SECTOR0           = 30;       // number of sectors on track 0,
-                                            // side 0 and 1
-const int INIT_DIR_SECTORS      = (MAX_SECTOR0 - 4); // initial number of
-                                                     // directory sectors
-const int LINK_TABLE_SIZE       = ((MAX_TRACK + 1) * MAX_SECTOR);
-const int INIT_NEW_FILES        = 4;        // initial number of new files to be
-                                            // managed at a time
-
-enum : SWord
-{
-    FREE_CHAIN  = -1,
-    DIRECTORY   = -2,
-    SYSTEM      = -3,
-    NEW_FILE1   = -4
-};
-
-// To emulate a FLEX disk meta data for each sector is stored in
-// the following structure.
-struct s_link_table
-{
-    st_t        next;       // Track and sector number of next sector
-    Byte        record_nr[2]; // FLEX logical record number
-    Word        f_record;   // Relative position in file / 252
-    SWord       file_id;    // Index of file in directory
-};
-
-// A new file is a newly created file which not yet has an entry in
-// a directory sector (s_dir_sector), so the name of this file is unknown.
-// As soon as a new directory entry (s_dir_entry) is created for it, it is
-// removed from the list of new files (pnew_file[]) and the file is renamed
-// on the host file system.
-struct s_new_file
-{
-    char filename[FLEX_FILENAME_LENGTH];
-    st_t first; /* track and sector of first first first sector */
-    st_t next; /* track and sector of next sector to be written */
-    Word f_record; /* number of records (= sectors) */
-    FILE *fp; /* file pointer on the target file system */
-};
 
 class NafsDirectoryContainer : public FileContainerIfSector
 {
+
+    static const int MAX_TRACK{79}; // maximum track number (zero based).
+    static const int MAX_SECTOR{36}; // number of sectors per track,
+                                     // side 0 and 1 (one based).
+    static const int MAX_SECTOR0{30}; // number of sectors on track 0,
+                                      // side 0 and 1 (one based).
+    static const int INIT_DIR_SECTORS{MAX_SECTOR0 - 4}; // initial number of
+                                                        // directory sectors.
+    static const int LINK_TABLE_SIZE{(MAX_TRACK + 1) * MAX_SECTOR}; // Each
+                                       // sector has an entry in the link table.
+    static const int INIT_NEW_FILES{4}; // initial number of new files to be
+                                        // managed at a time.
+
+    enum : SWord
+    {
+        FREE_CHAIN  = -1,
+        DIRECTORY   = -2,
+        SYSTEM      = -3,
+        NEW_FILE1   = -4
+    };
+
+    // To emulate a FLEX disk meta data for each sector is stored in
+    // the following structure.
+    struct s_link_table
+    {
+        st_t        next;       // Track and sector number of next sector
+        Byte        record_nr[2]; // FLEX logical record number
+        Word        f_record;   // Relative position in file / 252
+        SWord       file_id;    // Index of file in directory
+    };
+
+    // A new file is a newly created file which not yet has an entry in
+    // a directory sector (s_dir_sector), so the name of this file is unknown.
+    // As soon as a new directory entry (s_dir_entry) is created for it, it is
+    // removed from the list of new files (pnew_file[]) and the file is renamed
+    // on the host file system.
+    struct s_new_file
+    {
+        char filename[FLEX_FILENAME_LENGTH];
+        st_t first; /* track and sector of first first first sector */
+        st_t next; /* track and sector of next sector to be written */
+        Word f_record; /* number of records (= sectors) */
+        FILE *fp; /* file pointer on the target file system */
+    };
 
 public:
     NafsDirectoryContainer() = delete;
