@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <locale>
 #include <cstring>
+#include <unordered_set>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -968,6 +969,8 @@ void NafsDirectoryContainer::modify_random_file(char *path,
 // The following criterion have to be met to add a file to the FLEX directory:
 // - It is identified as a FLEX file name.
 // - It is not empty.
+// - If files just differ in case sensitivity only the first one is used.
+//   (This can happen for case sensitive file systems only).
 // - There is space left for the file itself and it's directory entry.
 // - It's name is neither "random" nor "boot".
 // Any other files are just ignored. The files "random" and "boot" have
@@ -984,6 +987,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 #endif
     char name[9], ext[4], path[PATH_MAX + 1];
     std::string filename;
+    std::string lc_filename; // lower case filename
+    std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
     SWord dir_index = 0;
     bool is_random;
     st_t begin, end;
@@ -1020,9 +1025,13 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 #endif
                     std::transform(filename.begin(), filename.end(),
                         filename.begin(), ::tolower);
+                    lc_filename = filename;
 #endif
 #ifdef UNIX
                     filename = pentry->d_name;
+                    lc_filename.clear();
+                    std::transform(filename.begin(), filename.end(),
+                        std::back_inserter(lc_filename), ::tolower);
 #endif
                     is_random = false;
                     strcpy(path, directory.c_str());
@@ -1034,6 +1043,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
                         strcmp(filename.c_str(), BOOT_FILE) &&
                         sbuf.st_size > 0 &&
+                        lc_filenames.find(lc_filename) == lc_filenames.end() &&
                         (dir_index = next_free_dir_entry()) >= 0)
                     {
 #ifdef _WIN32
@@ -1065,6 +1075,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                             {
                                 modify_random_file(path, sbuf, begin);
                             }
+                            lc_filenames.emplace(lc_filename);
                         }
                     }
 
