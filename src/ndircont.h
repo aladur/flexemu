@@ -27,13 +27,9 @@
 
 #include "misc1.h"
 
-#include "flexerr.h"
 #include "filecnts.h"
 #include "flexemu.h"
 #include <string>
-#include <memory>
-
-#define ERR_SIZE    (200)
 
 
 class NafsDirectoryContainer : public FileContainerIfSector
