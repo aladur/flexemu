@@ -1177,15 +1177,13 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 void NafsDirectoryContainer::change_file_id_and_type(SWord index, SWord old_id,
         SWord new_id, SectorType new_type) const
 {
-    SWord i = index;
-
-    while (i >= 0 && pflex_links[i].file_id == old_id)
+    while (index >= 0 && pflex_links[index].file_id == old_id)
     {
-        pflex_links[i].file_id = new_id;
-        pflex_links[i].type = new_type;
+        pflex_links[index].file_id = new_id;
+        pflex_links[index].type = new_type;
 
-        i = pflex_links[i].next.st.trk * MAX_SECTOR +
-            pflex_links[i].next.st.sec - 1;
+        index = pflex_links[index].next.st.trk * MAX_SECTOR +
+                pflex_links[index].next.st.sec - 1;
     } // while
 } // change_file_id_and_type
 
