@@ -543,7 +543,8 @@ bool NafsDirectoryContainer::extend_directory(SWord index,
     memcpy(pfd, &pflex_directory[0], dir_sectors * sizeof(s_dir_sector));
     memcpy(pfd + dir_sectors, &dir_sector, sizeof(s_dir_sector));
     pflex_links[index].f_record = dir_sectors;
-    pflex_links[index].file_id  = DIRECTORY;
+    pflex_links[index].file_id = std::numeric_limits<SWord>::max();
+    pflex_links[index].type = SectorType::Directory;
     pflex_directory.reset(pfd);
     dir_sectors++;
     dir_extend.sec_trk = 0;// reset directory extend track/sector
@@ -642,10 +643,10 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 void NafsDirectoryContainer::initialize_flex_link_table()
 {
     Word i;
-    Word fc_start = MAX_SECTOR;
+    Word fc_start = MAX_SECTOR; // Start index of free chain.
     s_link_table *plink;
 
-    // entries for system and directory sectors
+    // On track 0 are all boot, system info and directory sectors
     for (i = 0; i < fc_start; i++)
     {
         plink = &pflex_links[i];
@@ -653,9 +654,13 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         plink->record_nr[0] = 0;
         plink->record_nr[1] = 0;
         plink->f_record = i < 4 ? 0 : i - 4;
-        plink->file_id = i < 4 ? SYSTEM : DIRECTORY;
+        plink->file_id = std::numeric_limits<SWord>::max();
+        plink->type = SectorType::Directory;
+        plink->type = (i < 4) ? SectorType::SystemInfo : plink->type;
+        plink->type = (i < 2) ? SectorType::Boot : plink->type;
     } // for
 
+    // All other tracks are initialzied as free chain.
     for (i = fc_start; i < LINK_TABLE_SIZE; i++)
     {
         plink = &pflex_links[i];
@@ -673,7 +678,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         plink->record_nr[0] = 0;
         plink->record_nr[1] = 0;
         plink->f_record = 0;
-        plink->file_id = FREE_CHAIN;
+        plink->file_id = std::numeric_limits<SWord>::max();
+        plink->type = SectorType::FreeChain;
     }
 
     Word free = LINK_TABLE_SIZE - fc_start;
@@ -1162,19 +1168,26 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 } // initialize_flex_sys_info_sectors
 
 
-// Change the file id in the FLEX link table.
-void NafsDirectoryContainer::change_file_id(SWord index, SWord old_id,
-        SWord new_id) const
+// Change the file id and type in the FLEX link table.
+// The following transitions occur:
+// SectorType::FreeChain -> SectorType::NewFile   Writing to a new file.
+// SectorType::NewFile   -> SectorType::File      A directory entry for a new
+//                                                file has been created.
+// SectorType::File      -> SectorType::FreeChain A file has been deleted.
+void NafsDirectoryContainer::change_file_id_and_type(SWord index, SWord old_id,
+        SWord new_id, SectorType new_type) const
 {
     SWord i = index;
 
     while (i >= 0 && pflex_links[i].file_id == old_id)
     {
         pflex_links[i].file_id = new_id;
+        pflex_links[i].type = new_type;
+
         i = pflex_links[i].next.st.trk * MAX_SECTOR +
             pflex_links[i].next.st.sec - 1;
     } // while
-} // change_file_id
+} // change_file_id_and_type
 
 
 // Check if a file has been deleted. A file is marked as deleted
@@ -1203,7 +1216,8 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
             strcat(path, PATHSEPARATORSTRING);
             strcat(path, pfilename);
             unlink(path);
-            change_file_id(index, dir_index * DIRENTRIES + i, FREE_CHAIN);
+            change_file_id_and_type(index, dir_index * DIRENTRIES + i, 0,
+                                    SectorType::FreeChain);
 #ifdef DEBUG_FILE
             LOG_X("     delete %s\n", pfilename);
 #endif
@@ -1337,8 +1351,9 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
             {
                 index = pnew_file[j].first.st.trk * MAX_SECTOR +
                         pnew_file[j].first.st.sec - 1;
-                change_file_id(index, NEW_FILE1 - j,
-                                DIRENTRIES * dir_index + i);
+                change_file_id_and_type(index, NEW_FILE1 - j,
+                                        DIRENTRIES * dir_index + i,
+                                        SectorType::File);
                 fclose(pnew_file[j].fp);
                 pnew_file[j].fp = nullptr;
                 strcpy(old_path, directory.c_str());
@@ -1396,7 +1411,8 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                     pnew_file[k].fp = pnew_file[k + 1].fp;
                     index = pnew_file[k].first.st.trk * MAX_SECTOR +
                             pnew_file[k].first.st.sec - 1;
-                    change_file_id(index, NEW_FILE1 - k - 1, NEW_FILE1 - k);
+                    change_file_id_and_type(index, NEW_FILE1 - k - 1,
+                                            NEW_FILE1 - k, SectorType::NewFile);
                     ++k;
                 } // while
 
@@ -1430,19 +1446,22 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 #endif
     s_link_table *pfl = &pflex_links[index];
 
-    switch (pfl->file_id)
+    switch (pfl->type)
     {
-        case SYSTEM :
+        case SectorType::SystemInfo:
 #ifdef DEBUG_FILE
-            LOG("systemsector\n");
+            LOG("system info sector\n");
 #endif
-            if (sec >= 3)
             {
                 char *p = reinterpret_cast<char *>(&pflex_sys_info[sec-3]);
                 memcpy(buffer, p, param.byte_p_sector);
-                break;
             }
-            else if (sec == 1 || sec == 2)
+            break;
+
+        case SectorType::Boot:
+#ifdef DEBUG_FILE
+            LOG("boot sector\n");
+#endif
             {
                 // According to the FLEX Advanced Programmer's Guide
                 // chapter "Diskette Initialization" the first two
@@ -1454,7 +1473,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 // 2 * SECTOR_SIZE.
                 // The boot code is contained in sector 0/1 and 0/2.
                 // The emulated Eurocom II usually only uses sector 0/1.
-                FILE *fp;
                 size_t count = 0;
 
                 std::memset(buffer, 0, SECTOR_SIZE);
@@ -1462,7 +1480,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING BOOT_FILE);
 
-                if ((fp = fopen(path, "rb")) != nullptr)
+                FILE *fp = fopen(path, "rb");
+                if (fp != nullptr)
                 {
                     if (sec == 2)
                     {
@@ -1487,16 +1506,12 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                     buffer[1] = 0xF0;
                     buffer[2] = 0x2D;
                 }
-
-                break;
             }
-
-            std::memset(buffer, 0, SECTOR_SIZE);
             break;
 
-        case DIRECTORY:
+        case SectorType::Directory:
 #ifdef DEBUG_FILE
-            LOG("directorysector\n");
+            LOG("directory sector\n");
 #endif
             {
                 Word di = pfl->f_record;
@@ -1505,7 +1520,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             }
             break;
 
-        case FREE_CHAIN :
+        case SectorType::FreeChain:
 #ifdef DEBUG_FILE
             LOG("free chain\n");
 #endif
@@ -1520,12 +1535,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
             break;
 
-        default :
-            if (pfl->file_id >= 0)
+        case SectorType::File: // Read from an existing file.
             {
-                // Read from an existing file.
-                FILE *fp;
-
 #ifdef DEBUG_FILE
                 LOG_X("sector of file %s\n",
                       get_unix_filename(pfl->file_id).c_str());
@@ -1534,9 +1545,9 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 strcat(path, PATHSEPARATORSTRING);
                 strcat(path, get_unix_filename(pfl->file_id).c_str());
 
-                if ((fp = fopen(path, "rb")) != nullptr &&
-                    !fseek(fp, (long)(pfl->f_record * DBPS),
-                            SEEK_SET))
+                FILE *fp = fopen(path, "rb");
+                if (fp != nullptr &&
+                    !fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET))
                 {
                     size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
                     fclose(fp);
@@ -1551,10 +1562,16 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 {
                     result = false;
                 } // else
+
+                buffer[0] = pfl->next.st.trk;
+                buffer[1] = pfl->next.st.sec;
+                buffer[2] = pfl->record_nr[0];
+                buffer[3] = pfl->record_nr[1];
             }
-            else
+            break;
+
+        case SectorType::NewFile: // new file with temporary name tmpXX
             {
-                // new file with name tmpXX
 #ifdef DEBUG_FILE
                 LOG_X("sector of new file %s\n",
                       get_unix_filename(pfl->file_id).c_str());
@@ -1577,12 +1594,12 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 {
                     result = false;
                 } // else
-            } // else
 
-            buffer[0] = pfl->next.st.trk;
-            buffer[1] = pfl->next.st.sec;
-            buffer[2] = pfl->record_nr[0];
-            buffer[3] = pfl->record_nr[1];
+                buffer[0] = pfl->next.st.trk;
+                buffer[1] = pfl->next.st.sec;
+                buffer[2] = pfl->record_nr[0];
+                buffer[3] = pfl->record_nr[1];
+            }
             break;
     } // switch
 
@@ -1606,20 +1623,24 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
     LOG_XX("write: %02X/%02X ", trk, sec);
 #endif
 
-    switch (pfl->file_id)
+    switch (pfl->type)
     {
-        case SYSTEM :
+        case SectorType::SystemInfo:
 #ifdef DEBUG_FILE
-            LOG("systemsector\n");
+            LOG("system info sector\n");
 #endif
-            if (sector >= 3)
             {
                 char *p;
 
                 p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
                 memcpy(p, buffer, param.byte_p_sector);
             }
-            else if (sector == 1 || sector == 2)
+            break;
+
+        case SectorType::Boot:
+#ifdef DEBUG_FILE
+            LOG("boot sector\n");
+#endif
             {
                 // Write boot sector 0/1 or 0/2
                 // into a file which name is defined in BOOT_FILE.
@@ -1667,15 +1688,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                     }
                     fclose(fp);
                 }
-
-                break;
             }
-
             break;
 
-        case DIRECTORY:
+        case SectorType::Directory:
 #ifdef DEBUG_FILE
-            LOG("directorysector\n");
+            LOG("directory sector\n");
 #endif
             {
                 Word di = pfl->f_record;
@@ -1691,7 +1709,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             }
             break;
 
-        case FREE_CHAIN :
+        case SectorType::FreeChain:
 #ifdef DEBUG_FILE
             LOG("free chain\n");
 #endif
@@ -1761,10 +1779,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             }
             break;
 
-        default :
-            if (pfl->file_id >=  0)
+        case SectorType::File:
             {
-                FILE *fp;
 #ifdef DEBUG_FILE
                 LOG_X("sector of file %s\n",
                       get_unix_filename(pfl->file_id).c_str());
@@ -1777,7 +1793,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 pfl->record_nr[0] = buffer[2];
                 pfl->record_nr[1] = buffer[3];
 
-                if ((fp = fopen(path, "rb+")) == nullptr)
+                FILE *fp = fopen(path, "rb+");
+                if (fp == nullptr)
                 {
                     result = false;
                 }
@@ -1796,8 +1813,15 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
                     fclose(fp);
                 } // else
+
+                pfl->next.st.trk = buffer[0];
+                pfl->next.st.sec = buffer[1];
+                pfl->record_nr[0] = buffer[2];
+                pfl->record_nr[1] = buffer[3];
             }
-            else
+            break;
+
+        case SectorType::NewFile:
             {
 #ifdef DEBUG_FILE
                 LOG_X("sector of new file %s\n",
@@ -1814,12 +1838,13 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 {
                     result = false;
                 }
-            } //else
 
-            pfl->next.st.trk = buffer[0];
-            pfl->next.st.sec = buffer[1];
-            pfl->record_nr[0] = buffer[2];
-            pfl->record_nr[1] = buffer[3];
+                pfl->next.st.trk = buffer[0];
+                pfl->next.st.sec = buffer[1];
+                pfl->record_nr[0] = buffer[2];
+                pfl->record_nr[1] = buffer[3];
+            }
+            break;
     } // switch
 
     return result;

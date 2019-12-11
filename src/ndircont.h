@@ -46,23 +46,33 @@ class NafsDirectoryContainer : public FileContainerIfSector
                                        // sector has an entry in the link table.
     static const int INIT_NEW_FILES{4}; // initial number of new files to be
                                         // managed at a time.
+    static const int NEW_FILE1{-1}; // id of first new file
 
-    enum : SWord
+    enum class SectorType : Byte
     {
-        FREE_CHAIN  = -1,
-        DIRECTORY   = -2,
-        SYSTEM      = -3,
-        NEW_FILE1   = -4
+        Boot, // Boot sectors.
+        SystemInfo, // System info sectors.
+        Directory, // Directory sectors.
+        FreeChain, // Sectors in free chain (unused sectors).
+        File, // File sectors.
+        NewFile, // New file sectors without directory entry.
     };
 
     // To emulate a FLEX disk meta data for each sector is stored in
     // the following structure.
+    // file_id:
+    // - New files: The file_id is < 0. It is named tmpXX where XX
+    //   is related to the file_id.
+    // - Existing files: The file_id is >= 0. It is used as an index into
+    //   the FLEX directory entry of type s_dir_entry.
+    // - It is only used for SectorType::File and SectorType::NewFile.
     struct s_link_table
     {
         st_t        next;       // Track and sector number of next sector
         Byte        record_nr[2]; // FLEX logical record number
         Word        f_record;   // Relative position in file / 252
-        SWord       file_id;    // Index of file in directory
+        SWord       file_id;
+        SectorType  type; // The sector type.
     };
 
     // A new file is a newly created file which not yet has an entry in
@@ -172,10 +182,11 @@ private:
     bool is_last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;
-    void change_file_id(
+    void change_file_id_and_type(
         SWord index,
         SWord old_id,
-        SWord new_id) const;
+        SWord new_id,
+        SectorType new_type) const;
     void check_pointer(void *ptr);
 
 };  // class NafsDirectoryContainer
