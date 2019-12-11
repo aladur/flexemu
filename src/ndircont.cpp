@@ -1698,7 +1698,10 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
             if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
             {
-                extend_directory(index, (const s_dir_sector &)buffer);
+                const auto &dir_sector =
+                    *(reinterpret_cast<s_dir_sector *>(
+                      const_cast<Byte *>(buffer)));
+                extend_directory(index, dir_sector);
 #ifdef DEBUG_FILE
                 LOG("      extend directory\n");
 #endif
