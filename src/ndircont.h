@@ -66,6 +66,10 @@ class NafsDirectoryContainer : public FileContainerIfSector
     // - Existing files: The file_id is >= 0. It is used as an index into
     //   the FLEX directory entry of type s_dir_entry.
     // - It is only used for SectorType::File and SectorType::NewFile.
+    // Fields next and record_nr are only used for sector type:
+    //   SectorType::File, SectorType::NewFile and SectorType::FreeChain.
+    // Field f_record is only used for sector type:
+    //   SectorType::File, SectorType::NewFile, SectorType::Directory.
     struct s_link_table
     {
         st_t        next;       // Track and sector number of next sector

@@ -1729,6 +1729,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             if (is_last_of_free_chain(track, sector) &&
                     (buffer[1] || buffer[0]))
             {
+                // A file has been deleted. It's sectors are added to the end
+                // of the free chain.
                 pfl->next.st.trk  = buffer[0];
                 pfl->next.st.sec  = buffer[1];
                 pfl->record_nr[0] = buffer[2];
