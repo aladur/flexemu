@@ -191,7 +191,12 @@ private:
         SWord old_id,
         SWord new_id,
         SectorType new_type) const;
+    static void update_sector_buffer_from_link(Byte *buffer,
+                                               const s_link_table &link);
+    static void update_link_from_sector_buffer(s_link_table &link,
+                                               const Byte *buffer);
     void check_pointer(void *ptr);
+
 
 };  // class NafsDirectoryContainer
 

@@ -1188,6 +1188,26 @@ void NafsDirectoryContainer::change_file_id_and_type(SWord index, SWord old_id,
 } // change_file_id_and_type
 
 
+void NafsDirectoryContainer::update_sector_buffer_from_link(Byte *buffer,
+        const s_link_table &link)
+{
+    buffer[0] = link.next.st.trk;
+    buffer[1] = link.next.st.sec;
+    buffer[2] = link.record_nr[0];
+    buffer[3] = link.record_nr[1];
+}
+
+
+void NafsDirectoryContainer::update_link_from_sector_buffer(s_link_table &link,
+        const Byte *buffer)
+{
+     link.next.st.trk = buffer[0];
+     link.next.st.sec = buffer[1];
+     link.record_nr[0] = buffer[2];
+     link.record_nr[1] = buffer[3];
+}
+
+
 // Check if a file has been deleted. A file is marked as deleted
 // if the first byte of the file name is set to DE_DELETED.
 // For this compare the old (pd) with the new directory sector (dir_sector).
@@ -1522,10 +1542,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 #ifdef DEBUG_FILE
             LOG("free chain\n");
 #endif
-            buffer[0] = pfl->next.st.trk;
-            buffer[1] = pfl->next.st.sec;
-            buffer[2] = pfl->record_nr[0];
-            buffer[3] = pfl->record_nr[1];
+            update_sector_buffer_from_link(buffer, *pfl);
 
             // free chain sector reads always
             // filled with zero
@@ -1561,10 +1578,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                     result = false;
                 } // else
 
-                buffer[0] = pfl->next.st.trk;
-                buffer[1] = pfl->next.st.sec;
-                buffer[2] = pfl->record_nr[0];
-                buffer[3] = pfl->record_nr[1];
+                update_sector_buffer_from_link(buffer, *pfl);
             }
             break;
 
@@ -1593,10 +1607,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                     result = false;
                 } // else
 
-                buffer[0] = pfl->next.st.trk;
-                buffer[1] = pfl->next.st.sec;
-                buffer[2] = pfl->record_nr[0];
-                buffer[3] = pfl->record_nr[1];
+                update_sector_buffer_from_link(buffer, *pfl);
             }
             break;
     } // switch
@@ -1729,10 +1740,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
                 // A file has been deleted. It's sectors are added to the end
                 // of the free chain.
-                pfl->next.st.trk  = buffer[0];
-                pfl->next.st.sec  = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
+                update_link_from_sector_buffer(*pfl, buffer);
 #ifdef DEBUG_FILE
                 LOG("      file deleted\n");
 #endif
@@ -1759,10 +1767,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
                 //pfl->f_record = ((sector_buffer[2] << 8) |
                 // sector_buffer[3]) - 1;
-                pfl->next.st.trk = buffer[0];
-                pfl->next.st.sec = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
+                update_link_from_sector_buffer(*pfl, buffer);
                 pfl->f_record = record_nr_of_new_file(new_file_index, index);
 
                 if (ftell(fp) != static_cast<signed>(pfl->f_record * DBPS) &&
@@ -1788,10 +1793,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 strcpy(path, directory.c_str());
                 strcat(path, PATHSEPARATORSTRING);
                 strcat(path, get_unix_filename(pfl->file_id).c_str());
-                pfl->next.st.trk = buffer[0];
-                pfl->next.st.sec = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
+                update_link_from_sector_buffer(*pfl, buffer);
 
                 FILE *fp = fopen(path, "rb+");
                 if (fp == nullptr)
@@ -1814,10 +1816,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                     fclose(fp);
                 } // else
 
-                pfl->next.st.trk = buffer[0];
-                pfl->next.st.sec = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
+                update_link_from_sector_buffer(*pfl, buffer);
             }
             break;
 
@@ -1839,10 +1838,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                     result = false;
                 }
 
-                pfl->next.st.trk = buffer[0];
-                pfl->next.st.sec = buffer[1];
-                pfl->record_nr[0] = buffer[2];
-                pfl->record_nr[1] = buffer[3];
+                update_link_from_sector_buffer(*pfl, buffer);
             }
             break;
     } // switch
