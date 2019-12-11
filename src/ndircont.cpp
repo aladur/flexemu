@@ -68,7 +68,7 @@
 // can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
-    attributes(0), isOpen(false), dir_sectors(0), new_files(0), dir_extend{0}
+    attributes(0), isOpen(false), dir_sectors(0), dir_extend{0}
 {
     struct stat sbuf;
     static Word number = 0;
@@ -264,13 +264,6 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
         pflex_directory[i] = { };
     }
 
-    new_files = INIT_NEW_FILES;
-    pnew_file = std::unique_ptr<s_new_file[]>(new s_new_file[new_files]);
-    check_pointer(pnew_file.get());
-    for (i = 0; i < new_files; ++i)
-    {
-        pnew_file[i] = { };
-    }
     dir_extend.sec_trk = 0;
 } // initialize_header
 
@@ -428,7 +421,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
         std::stringstream filename;
 
         filename << "tmp" << std::setw(2) << std::setfill('0')
-                 << NEW_FILE1 - file_id;
+                 << -1 - file_id;
         return filename.str();
     }
     else
@@ -456,8 +449,8 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
     Word    record_nr;
 
     record_nr = 0;
-    i = pnew_file[new_file_index].first.st.trk * MAX_SECTOR +
-        pnew_file[new_file_index].first.st.sec - 1;
+    i = new_files.at(new_file_index).first.st.trk * MAX_SECTOR +
+        new_files.at(new_file_index).first.st.sec - 1;
 
     while (i != index && i >= 0)
     {
@@ -471,60 +464,48 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
 
 // Return the index of the already existing new file with given track
 // and sector. If not found create another new file and return its index.
-// Return -1 if the new file can not be opened.
+// A new file index is always < 0.
+// Return 0 if the new file can not be opened.
 SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 {
-    SWord           i;
-    char            path[PATH_MAX + 1];
-    s_new_file      *pnf;
-
-    i = 0;
-
-    while (pnew_file[i].first.sec_trk && i < new_files)
+    for (const auto &iter : new_files)
     {
-        if (track == pnew_file[i].next.st.trk &&
-            sector == pnew_file[i].next.st.sec)
+        if (track == iter.second.next.st.trk &&
+            sector == iter.second.next.st.sec)
         {
-            return i;
+            return iter.first;
         }
-
-        i++;
     }
 
-    if (i >= new_files)
+    // Not found in existing new files.
+    // Create another new file.
+    s_new_file new_file{ };
+    SWord new_file_index;
+
+    // Find a new file index which is not yet used.
+    for (new_file_index = -1;
+         new_files.find(new_file_index) != new_files.end();
+         --new_file_index)
     {
-        // new file table is full, increase new file table by 2
-        pnf = new s_new_file[new_files + 2];
-
-        if (pnf == nullptr)
-        {
-            return -1;    // can't allocate memory
-        }
-
-        memcpy(pnf, &pnew_file[0], new_files * sizeof(s_new_file));
-        pnew_file.reset(pnf);
-        new_files += 2;
-        pnew_file[new_files - 2].first.sec_trk = 0;
-        pnew_file[new_files - 1].first.sec_trk = 0;
     }
 
-    strcpy(pnew_file[i].filename, get_unix_filename(NEW_FILE1 - i).c_str());
-    strcpy(path, directory.c_str());
-    strcat(path, PATHSEPARATORSTRING);
-    strcat(path, &pnew_file[i].filename[0]);
-    pnew_file[i].fp = fopen(path, "wb+");
+    strcpy(new_file.filename, get_unix_filename(new_file_index).c_str());
+    auto path = directory + PATHSEPARATORSTRING +  new_file.filename;
+    new_file.fp = fopen(path.c_str(), "wb+");
 
-    if (pnew_file[i].fp == nullptr)
+    if (new_file.fp == nullptr)
     {
-        return -1;
+        return 0;
     }
 
-    pnew_file[i].first.st.trk = track;
-    pnew_file[i].first.st.sec = sector;
-    pnew_file[i].next.sec_trk = 0;
-    pnew_file[i].f_record = 0;
+    new_file.first.st.trk = track;
+    new_file.first.st.sec = sector;
+    new_file.next.sec_trk = 0;
+    new_file.f_record = 0;
 
-    return i;
+    new_files.emplace(new_file_index, new_file);
+
+    return new_file_index;
 } // index_of_new_file
 
 
@@ -698,44 +679,17 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     }
 } // initialize_flex_link_table
 
-// Initialize the list of new files
-void NafsDirectoryContainer::initialize_new_file_table()
-{
-    Word i;
-
-    for (i = 0; i < new_files; i++)
-    {
-        pnew_file[i].first.sec_trk = 0;
-        pnew_file[i].next.sec_trk = 0;
-    }
-} // initialize_new_file_table
-
-// check for any open file
-bool NafsDirectoryContainer::open_files()
-{
-    for (Word i = 0; i < new_files; i++)
-    {
-        if (pnew_file[i].first.sec_trk != 0)
-        {
-            return true;
-        }
-    }
-
-    return false;
-} // open_files
-
 
 // Check for any open new files.
 // If so print a message or open a message dialog.
 void NafsDirectoryContainer::close_new_files()
 {
-    Word i;
     bool is_first = true;
     std::string msg;
 
-    for (i = 0; i < new_files; i++)
+    for (auto &iter : new_files)
     {
-        if (pnew_file[i].first.sec_trk != 0)
+        if (iter.second.fp != nullptr)
         {
             if (is_first)
             {
@@ -744,32 +698,36 @@ void NafsDirectoryContainer::close_new_files()
                 is_first = false;
             }
 
-            fclose(pnew_file[i].fp);
-            pnew_file[i].fp = nullptr;
+            fclose(iter.second.fp);
+            iter.second.fp = nullptr;
 
             msg += "   ";
-            msg += pnew_file[i].filename;
+            msg += iter.second.filename;
             msg += "\n";
         }
     }
+    new_files.clear();
 
     if (!msg.empty())
     {
 #ifdef _WIN32
-    std::string title(PROGRAMNAME " warning");
+        std::string title(PROGRAMNAME " warning");
 #ifdef UNICODE
-    MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
-        ConvertToUtf16String(title).c_str(),
-        MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
+            ConvertToUtf16String(title).c_str(),
+            MB_OK | MB_ICONEXCLAMATION);
 #else
-    MessageBox(nullptr, msg.c_str(), title.c_str(), MB_OK | MB_ICONEXCLAMATION);
+        MessageBox(nullptr, msg.c_str(), title.c_str(),
+                   MB_OK | MB_ICONEXCLAMATION);
 #endif
 
 #endif
 #ifdef UNIX
-    fprintf(stderr, "%s", msg.c_str());
+        fprintf(stderr, "%s", msg.c_str());
 #endif
     }
+
+
 } // close_new_files
 
 
@@ -779,7 +737,6 @@ void NafsDirectoryContainer::free_memory()
     pflex_links.reset(nullptr);
     pflex_directory.reset(nullptr);
     pflex_sys_info.reset(nullptr);
-    pnew_file.reset(nullptr);
 } // free_memory
 
 // Add a file with directory index dir_index to the link table.
@@ -835,6 +792,7 @@ bool NafsDirectoryContainer::add_to_link_table(
 
         plink->f_record = static_cast<Word>(i - 1);
         plink->file_id = dir_index;
+        plink->type = SectorType::File;
     }
 
     end.st.sec = ((i + sector_begin - 2) % MAX_SECTOR) + 1;
@@ -1309,7 +1267,7 @@ void NafsDirectoryContainer::check_for_extend(SWord dir_index,
 
 // Return false if not successful otherwise return true.
 // years < 75 will be represented as >= 2000
-bool NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
+bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
         Byte day, Byte year) const
 {
     struct stat    statbuf;
@@ -1344,39 +1302,42 @@ bool NafsDirectoryContainer::set_file_time(char *ppath, Byte month,
 // If found remove the file from the list of new files and rename the
 // file to its new file name.
 void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
-        const s_dir_sector &dir_sector) const
+        const s_dir_sector &dir_sector)
 {
-    Word i, j;
-    SWord index;
-    char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
+    std::vector<SWord> keys;
+
+    for (Word i = 0; i < DIRENTRIES; i++)
+    {
+        if (
+           dir_sector.dir_entry[i].filename[0] != DE_EMPTY &&
+           dir_sector.dir_entry[i].filename[0] != DE_DELETED &&
+           (dir_sector.dir_entry[i].start_sec ||
+            dir_sector.dir_entry[i].start_trk))
+        {
+            for (const auto &iter : new_files)
+            {
 #ifdef UNIX
-    struct stat sbuf;
+                struct stat sbuf;
 #endif
 
-    j = 0;
+                if (iter.second.first.st.sec !=
+                        dir_sector.dir_entry[i].start_sec ||
+                    iter.second.first.st.trk !=
+                        dir_sector.dir_entry[i].start_trk)
+                {
+                    continue;
+                }
 
-    while (pnew_file[j].first.sec_trk && j < new_files)
-    {
-        for (i = 0; i < DIRENTRIES; i++)
-        {
-            if (
-               dir_sector.dir_entry[i].filename[0] != DE_EMPTY &&
-               dir_sector.dir_entry[i].filename[0] != DE_DELETED &&
-               (dir_sector.dir_entry[i].start_sec ||
-                dir_sector.dir_entry[i].start_trk) &&
-               pnew_file[j].first.st.sec == dir_sector.dir_entry[i].start_sec &&
-               pnew_file[j].first.st.trk == dir_sector.dir_entry[i].start_trk)
-            {
-                index = pnew_file[j].first.st.trk * MAX_SECTOR +
-                        pnew_file[j].first.st.sec - 1;
-                change_file_id_and_type(index, NEW_FILE1 - j,
+                keys.push_back(iter.first);
+                SWord index = iter.second.first.st.trk * MAX_SECTOR +
+                              iter.second.first.st.sec - 1;
+                change_file_id_and_type(index, iter.first,
                                         DIRENTRIES * dir_index + i,
                                         SectorType::File);
-                fclose(pnew_file[j].fp);
-                pnew_file[j].fp = nullptr;
-                strcpy(old_path, directory.c_str());
-                strcat(old_path, PATHSEPARATORSTRING);
-                strcat(old_path, pnew_file[j].filename);
+                fclose(iter.second.fp);
+
+                auto old_path =
+                    directory + PATHSEPARATORSTRING + iter.second.filename;
 
                 // check for random file, if true set user execute bit
                 if (dir_sector.dir_entry[i].sector_map & IS_RANDOM_FILE)
@@ -1391,55 +1352,33 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 #endif
 #ifdef UNIX
 
-                if (!stat(old_path, &sbuf))
+                if (!stat(old_path.c_str(), &sbuf))
                 {
-                    chmod(old_path, sbuf.st_mode | S_IXUSR);
+                    chmod(old_path.c_str(), sbuf.st_mode | S_IXUSR);
                 }
 
 #endif
-                std::string new_name = get_unix_filename(
-                            pflex_links[index].file_id);
-                strcpy(new_path, directory.c_str());
-                strcat(new_path, PATHSEPARATORSTRING);
-                strcat(new_path, new_name.c_str());
-                rename(old_path, new_path);
+                auto new_path = directory + PATHSEPARATORSTRING +
+                                get_unix_filename(pflex_links[index].file_id);
+                rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
                 LOG_XX("     new file %s, was %s\n",
                         get_unix_filename(pflex_links[index].file_id).c_str(),
-                        pnew_file[j].filename);
+                        iter.second.filename);
 #endif
-                set_file_time(new_path,
+                set_file_time(new_path.c_str(),
                     dir_sector.dir_entry[i].month,
                     dir_sector.dir_entry[i].day,
                     dir_sector.dir_entry[i].year);
+            } // for
+        } // if
+    } // for
 
-                // remove entry in new file table and
-                // move following entries
-                Word k = j;
-                while (k < new_files - 1 &&
-                       pnew_file[k + 1].first.sec_trk)
-                {
-                    strcpy(pnew_file[k].filename,
-                            &pnew_file[k + 1].filename[0]);
-                    pnew_file[k].first.sec_trk =
-                        pnew_file[k + 1].first.sec_trk;
-                    pnew_file[k].next.sec_trk =
-                        pnew_file[k + 1].next.sec_trk;
-                    pnew_file[k].f_record = pnew_file[k + 1].f_record;
-                    pnew_file[k].fp = pnew_file[k + 1].fp;
-                    index = pnew_file[k].first.st.trk * MAX_SECTOR +
-                            pnew_file[k].first.st.sec - 1;
-                    change_file_id_and_type(index, NEW_FILE1 - k - 1,
-                                            NEW_FILE1 - k, SectorType::NewFile);
-                    ++k;
-                } // while
-
-                pnew_file[j].first.sec_trk = 0;
-            } // if
-        } // for
-
-        j++;
-    } // while
+    // Remove all new files for which a directory entry has been created.
+    for (auto key : keys)
+    {
+        new_files.erase(key);
+    }
 } // check_for_new_file
 
 // Check if track and sector is the last sector in the free chain.
@@ -1588,7 +1527,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 LOG_X("sector of new file %s\n",
                       get_unix_filename(pfl->file_id).c_str());
 #endif
-                FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+                FILE *fp = new_files.at(pfl->file_id).fp;
 
                 if (!fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET))
                 {
@@ -1747,7 +1686,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 break;
             }
 
-            if ((new_file_index = index_of_new_file(track, sector)) < 0)
+            if ((new_file_index = index_of_new_file(track, sector)) == 0)
             {
 #ifdef DEBUG_FILE
                 LOG("   ** error: unable to create new file\n");
@@ -1757,13 +1696,13 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             }
 
 #ifdef DEBUG_FILE
-            LOG_X("      file %s\n", pnew_file[new_file_index].filename);
+            LOG_X("      file %s\n", new_files.at(new_file_index).filename);
 #endif
             {
-                FILE *fp = pnew_file[new_file_index].fp;
-                pnew_file[new_file_index].next.st.trk = buffer[0];
-                pnew_file[new_file_index].next.st.sec = buffer[1];
-                pfl->file_id  = NEW_FILE1 - new_file_index;
+                FILE *fp = new_files.at(new_file_index).fp;
+                new_files.at(new_file_index).next.st.trk = buffer[0];
+                new_files.at(new_file_index).next.st.sec = buffer[1];
+                pfl->file_id  = new_file_index;
                 //pfl->f_record = (pfs->pnew_file[new_file_index].f_record++;
                 //pfl->f_record = ((sector_buffer[2] << 8) |
                 // sector_buffer[3]) - 1;
@@ -1826,7 +1765,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 LOG_X("sector of new file %s\n",
                       get_unix_filename(pfl->file_id).c_str());
 #endif
-                FILE *fp = pnew_file[NEW_FILE1 - pfl->file_id].fp;
+                FILE *fp = new_files.at(pfl->file_id).fp;
 
                 if (ftell(fp) != pfl->f_record &&
                     fseek(fp, (long)(pfl->f_record * DBPS), SEEK_SET) != 0)
@@ -1854,7 +1793,6 @@ void NafsDirectoryContainer::mount(Word number)
 
     wp_flag = static_cast<Byte>(access(directory.c_str(), W_OK));
     initialize_header(wp_flag);
-    initialize_new_file_table();
     initialize_flex_sys_info_sectors(number);
     fill_flex_directory(wp_flag);
 } // mount

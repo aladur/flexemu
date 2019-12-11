@@ -30,6 +30,7 @@
 #include "filecnts.h"
 #include "flexemu.h"
 #include <string>
+#include <unordered_map>
 
 
 class NafsDirectoryContainer : public FileContainerIfSector
@@ -44,10 +45,6 @@ class NafsDirectoryContainer : public FileContainerIfSector
                                                         // directory sectors.
     static const int LINK_TABLE_SIZE{(MAX_TRACK + 1) * MAX_SECTOR}; // Each
                                        // sector has an entry in the link table.
-    static const int INIT_NEW_FILES{4}; // initial number of new files to be
-                                        // managed at a time.
-    static const int NEW_FILE1{-1}; // id of first new file
-
     enum class SectorType : Byte
     {
         Boot, // Boot sectors.
@@ -82,7 +79,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     // A new file is a newly created file which not yet has an entry in
     // a directory sector (s_dir_sector), so the name of this file is unknown.
     // As soon as a new directory entry (s_dir_entry) is created for it, it is
-    // removed from the list of new files (pnew_file[]) and the file is renamed
+    // removed from the list of new files (new_files) and the file is renamed
     // on the host file system.
     struct s_new_file
     {
@@ -114,9 +111,8 @@ private:
     std::unique_ptr<s_link_table[]> pflex_links;         // link table
     std::unique_ptr<s_sys_info_sector[]> pflex_sys_info; // system info sectors
     std::unique_ptr<s_dir_sector[]> pflex_directory;     // directory entries
-    std::unique_ptr<s_new_file[]> pnew_file;             // new file table
+    std::unordered_map<SWord, s_new_file> new_files; // new file table
     Word dir_sectors;        // number of directory sectors in pflex_directory
-    Word new_files;          // number of new file entries
     st_t dir_extend;         // track and sector of directory extend sector
 
 public:
@@ -142,11 +138,9 @@ private:
     void initialize_flex_sys_info_sectors(Word number);
     void initialize_flex_directory();
     void initialize_flex_link_table();
-    void initialize_new_file_table();
     void close_new_files();
     void mount(Word number);
     void free_memory();
-    bool open_files();
     SWord next_free_dir_entry();
     std::string get_unix_filename(SWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
@@ -175,10 +169,10 @@ private:
     void check_for_delete(SWord dir_index, const s_dir_sector &d) const;
     void check_for_extend(SWord dir_index, const s_dir_sector &d);
     void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
-    void check_for_new_file(SWord dir_index, const s_dir_sector &d) const;
+    void check_for_new_file(SWord dir_index, const s_dir_sector &d);
     bool extend_directory(SWord index, const s_dir_sector &d);
     bool set_file_time(
-        char *ppath,
+        const char *ppath,
         Byte month,
         Byte day,
         Byte year) const;
