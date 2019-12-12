@@ -109,7 +109,7 @@ private:
 
     // Some structures needed for a FLEX file system
     std::unique_ptr<s_link_table[]> pflex_links;         // link table
-    std::unique_ptr<s_sys_info_sector[]> pflex_sys_info; // system info sectors
+    std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::unique_ptr<s_dir_sector[]> pflex_directory;     // directory entries
     std::unordered_map<SWord, s_new_file> new_files; // new file table
     Word dir_sectors;        // number of directory sectors in pflex_directory

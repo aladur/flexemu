@@ -163,25 +163,24 @@ bool NafsDirectoryContainer::Close()
 
 bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
-    struct s_sys_info_sector buffer;
 
     if (!isOpen)
     {
         return false;
     }
 
-    if (!ReadSector((Byte *)&buffer, 0, 3))
-    {
-        throw FlexException(FERR_READING_TRKSEC, 0, 3, directory.c_str());
-    }
+    const auto &sys_info_sector = flex_sys_info[0];
 
-    info.SetDate(buffer.day, buffer.month, buffer.year);
-    info.SetTrackSector(buffer.last_trk + 1, buffer.last_sec);
-    info.SetFree((((buffer.free[0] << 8) | buffer.free[1]) *
+    info.SetDate(sys_info_sector.day,
+                 sys_info_sector.month,
+                 sys_info_sector.year);
+    info.SetTrackSector(sys_info_sector.last_trk + 1, sys_info_sector.last_sec);
+    info.SetFree((((sys_info_sector.free[0] << 8) | sys_info_sector.free[1]) *
                   param.byte_p_sector) >> 10);
-    info.SetTotalSize(((buffer.last_sec * (buffer.last_trk + 1)) *
+    info.SetTotalSize(((sys_info_sector.last_sec *
+                        (sys_info_sector.last_trk + 1)) *
                        param.byte_p_sector) >> 10);
-    info.SetName(buffer.disk_name);
+    info.SetName(sys_info_sector.disk_name);
     info.SetPath(directory.c_str());
     info.SetType(param.type);
     info.SetAttributes(attributes);
@@ -245,14 +244,6 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
     for (i = 0; i < LINK_TABLE_SIZE; ++i)
     {
         pflex_links[i] = { };
-    }
-
-    pflex_sys_info = std::unique_ptr<s_sys_info_sector[]>(
-            new s_sys_info_sector[2]);
-    check_pointer(pflex_sys_info.get());
-    for (i = 0; i < 2; ++i)
-    {
-        pflex_sys_info[i] = { };
     }
 
     dir_sectors = INIT_DIR_SECTORS;
@@ -569,7 +560,6 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 {
     SWord i;
     Word index;
-    s_sys_info_sector *psis;
     s_dir_sector dir_sector;
     Word trk, sec;
 
@@ -584,15 +574,15 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
         }
     } // for
 
-    psis = &pflex_sys_info[0];
+    s_sys_info_sector &sys_info_sector = flex_sys_info[0];
 
     dir_sector = { };
 
     Word record_nr = dir_sectors - INIT_DIR_SECTORS + 1;
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
     dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
-    trk = psis->fc_start_trk;
-    sec = psis->fc_start_sec;
+    trk = sys_info_sector.fc_start_trk;
+    sec = sys_info_sector.fc_start_sec;
     index = trk * MAX_SECTOR + sec - 1;
 
     if (extend_directory(index, dir_sector))
@@ -600,15 +590,15 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
         pflex_directory[dir_sectors - 2].next_trk = (Byte)trk;
         pflex_directory[dir_sectors - 2].next_sec = (Byte)sec;
 
-        if (++psis->fc_start_sec > MAX_SECTOR)
+        if (++sys_info_sector.fc_start_sec > MAX_SECTOR)
         {
-            psis->fc_start_sec = 1;
-            psis->fc_start_trk++;
+            sys_info_sector.fc_start_sec = 1;
+            sys_info_sector.fc_start_trk++;
         }
 
-        if (--psis->free[1] == 0xff)
+        if (--sys_info_sector.free[1] == 0xff)
         {
-            --psis->free[0];
+            --sys_info_sector.free[0];
         }
 
         return i;
@@ -666,16 +656,15 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     Word free = LINK_TABLE_SIZE - fc_start;
 
     // and now update system info sectors
-    for (i = 0; i < 2; i++)
+    for (auto &sys_info_sector : flex_sys_info)
     {
-        s_sys_info_sector *psis = &pflex_sys_info[i];
-
-        psis->fc_start_trk = static_cast<Byte>(fc_start / MAX_SECTOR);
-        psis->fc_start_sec = static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
-        psis->fc_end_trk = MAX_TRACK;
-        psis->fc_end_sec = MAX_SECTOR;
-        psis->free[0] = free >> 8;
-        psis->free[1] = free & 0xff;
+        sys_info_sector.fc_start_trk = static_cast<Byte>(fc_start / MAX_SECTOR);
+        sys_info_sector.fc_start_sec =
+            static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
+        sys_info_sector.fc_end_trk = MAX_TRACK;
+        sys_info_sector.fc_end_sec = MAX_SECTOR;
+        sys_info_sector.free[0] = free >> 8;
+        sys_info_sector.free[1] = free & 0xff;
     }
 } // initialize_flex_link_table
 
@@ -736,7 +725,6 @@ void NafsDirectoryContainer::free_memory()
 {
     pflex_links.reset(nullptr);
     pflex_directory.reset(nullptr);
-    pflex_sys_info.reset(nullptr);
 } // free_memory
 
 // Add a file with directory index dir_index to the link table.
@@ -751,14 +739,14 @@ bool NafsDirectoryContainer::add_to_link_table(
 {
     off_t i, free, sector_begin, records;
     s_link_table *plink;
-    s_sys_info_sector *psis = &pflex_sys_info[0];
+    auto &sys_info_sector = flex_sys_info[0];
 
     if (dir_index < 0 || (dir_index / DIRENTRIES) >= dir_sectors)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    free = (psis->free[0] << 8) + psis->free[1];
+    free = (sys_info_sector.free[0] << 8) + sys_info_sector.free[1];
 
     if (size > static_cast<off_t>(free * DBPS))
     {
@@ -766,8 +754,8 @@ bool NafsDirectoryContainer::add_to_link_table(
     }
 
     records = (size + (DBPS - 1)) / DBPS;
-    begin.st.sec = psis->fc_start_sec;
-    begin.st.trk = psis->fc_start_trk;
+    begin.st.sec = sys_info_sector.fc_start_sec;
+    begin.st.trk = sys_info_sector.fc_start_trk;
     sector_begin = (begin.st.trk * MAX_SECTOR) + begin.st.sec - 1;
 
     for (i = 1; i <= records; i++)
@@ -798,10 +786,12 @@ bool NafsDirectoryContainer::add_to_link_table(
     end.st.sec = ((i + sector_begin - 2) % MAX_SECTOR) + 1;
     end.st.trk = static_cast<Byte>((i + sector_begin - 2) / MAX_SECTOR);
     // update sys info sector
-    psis->fc_start_sec = ((i + sector_begin - 1) % MAX_SECTOR) + 1;
-    psis->fc_start_trk = static_cast<Byte>((i + sector_begin - 1) / MAX_SECTOR);
-    psis->free[0] = static_cast<Byte>((free - records) >> 8);
-    psis->free[1] = (free - records) & 0xff;
+    sys_info_sector.fc_start_sec = ((i + sector_begin - 1) % MAX_SECTOR) + 1;
+    sys_info_sector.fc_start_trk =
+        static_cast<Byte>((i + sector_begin - 1) / MAX_SECTOR);
+
+    sys_info_sector.free[0] = static_cast<Byte>((free - records) >> 8);
+    sys_info_sector.free[1] = (free - records) & 0xff;
 
     return true;
 } // add_to_link_table
@@ -1066,11 +1056,10 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
     const char *pName;
     struct stat sbuf;
     struct tm *lt;
-    s_sys_info_sector *psis;
 
     if (!stat(directory.c_str(), &sbuf))
     {
-        psis = &pflex_sys_info[0];
+        auto &sys_info_sector = flex_sys_info[0];
         lt = localtime(&(sbuf.st_mtime));
         name[0] = '\0';
         ext[0]  = '\0';
@@ -1101,27 +1090,29 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
             strupper(ext);
         } // else
 
-        std::fill(std::begin(psis->unused1), std::end(psis->unused1), 0);
+        std::fill(std::begin(sys_info_sector.unused1),
+                  std::end(sys_info_sector.unused1), 0);
 
-        strncpy(psis->disk_name, name, 8);
-        strncpy(psis->disk_ext, ext, 3);
-        psis->disk_number[0] = number >> 8;
-        psis->disk_number[1] = number & 0xff;
-        psis->fc_start_trk = 0;
-        psis->fc_start_sec = 0;
-        psis->fc_end_trk = 0;
-        psis->fc_end_sec = 0;
-        psis->free[0] = 0;
-        psis->free[1] = 0;
-        psis->month = static_cast<Byte>(lt->tm_mon + 1);
-        psis->day = static_cast<Byte>(lt->tm_mday);
-        psis->year = static_cast<Byte>(lt->tm_year);
-        psis->last_trk = MAX_TRACK;
-        psis->last_sec = MAX_SECTOR;
+        strncpy(sys_info_sector.disk_name, name, 8);
+        strncpy(sys_info_sector.disk_ext, ext, 3);
+        sys_info_sector.disk_number[0] = number >> 8;
+        sys_info_sector.disk_number[1] = number & 0xff;
+        sys_info_sector.fc_start_trk = 0;
+        sys_info_sector.fc_start_sec = 0;
+        sys_info_sector.fc_end_trk = 0;
+        sys_info_sector.fc_end_sec = 0;
+        sys_info_sector.free[0] = 0;
+        sys_info_sector.free[1] = 0;
+        sys_info_sector.month = static_cast<Byte>(lt->tm_mon + 1);
+        sys_info_sector.day = static_cast<Byte>(lt->tm_mday);
+        sys_info_sector.year = static_cast<Byte>(lt->tm_year);
+        sys_info_sector.last_trk = MAX_TRACK;
+        sys_info_sector.last_sec = MAX_SECTOR;
 
-        std::fill(std::begin(psis->unused2), std::end(psis->unused2), 0);
+        std::fill(std::begin(sys_info_sector.unused2),
+                  std::end(sys_info_sector.unused2), 0);
 
-        pflex_sys_info[1] = pflex_sys_info[0];
+        flex_sys_info[1] = flex_sys_info[0];
     } // if
 } // initialize_flex_sys_info_sectors
 
@@ -1384,8 +1375,8 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 // Check if track and sector is the last sector in the free chain.
 bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 {
-    return (pflex_sys_info[0].fc_end_trk == trk &&
-            pflex_sys_info[0].fc_end_sec == sec);
+    return (flex_sys_info[0].fc_end_trk == trk &&
+            flex_sys_info[0].fc_end_sec == sec);
 } // is_last_of_free_chain
 
 
@@ -1410,7 +1401,9 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             LOG("system info sector\n");
 #endif
             {
-                char *p = reinterpret_cast<char *>(&pflex_sys_info[sec-3]);
+                const char *p =
+                    reinterpret_cast<char *>(
+                      const_cast<s_sys_info_sector *>(&flex_sys_info[sec - 3]));
                 memcpy(buffer, p, param.byte_p_sector);
             }
             break;
@@ -1580,7 +1573,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
                 char *p;
 
-                p = reinterpret_cast<char *>(&pflex_sys_info[sector - 3]);
+                p = reinterpret_cast<char *>(&flex_sys_info[sector - 3]);
                 memcpy(p, buffer, param.byte_p_sector);
             }
             break;
