@@ -30,6 +30,7 @@
 #include "filecnts.h"
 #include "flexemu.h"
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 
@@ -47,6 +48,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
                                        // sector has an entry in the link table.
     enum class SectorType : Byte
     {
+        Unknown, // Unknown sector type.
         Boot, // Boot sectors.
         SystemInfo, // System info sectors.
         Directory, // Directory sectors.
@@ -110,9 +112,8 @@ private:
     // Some structures needed for a FLEX file system
     std::unique_ptr<s_link_table[]> pflex_links;         // link table
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
-    std::unique_ptr<s_dir_sector[]> pflex_directory;     // directory entries
+    std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SWord, s_new_file> new_files; // new file table
-    Word dir_sectors;        // number of directory sectors in pflex_directory
     st_t dir_extend;         // track and sector of directory extend sector
 
 public:

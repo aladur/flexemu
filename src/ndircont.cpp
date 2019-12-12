@@ -68,7 +68,7 @@
 // can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
-    attributes(0), isOpen(false), dir_sectors(0), dir_extend{0}
+    attributes(0), isOpen(false), dir_extend{0}
 {
     struct stat sbuf;
     static Word number = 0;
@@ -246,13 +246,9 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
         pflex_links[i] = { };
     }
 
-    dir_sectors = INIT_DIR_SECTORS;
-    pflex_directory = std::unique_ptr<s_dir_sector[]>(
-            new s_dir_sector[dir_sectors]);
-    check_pointer(pflex_directory.get());
-    for (i = 0; i < dir_sectors; ++i)
+    for (i = 0; i < INIT_DIR_SECTORS; ++i)
     {
-        pflex_directory[i] = { };
+        flex_directory.emplace_back();
     }
 
     dir_extend.sec_trk = 0;
@@ -357,19 +353,28 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 // Initialize the FLEX directory sectors.
 void NafsDirectoryContainer::initialize_flex_directory()
 {
-    Word i;
+    Word i = 5;
 
-    for (i = 0; i < dir_sectors; i++)
+    for (auto &dir_sector : flex_directory)
     {
-        pflex_directory[i] = { };
+        bool is_last = (i == flex_directory.size() - 1 + 5);
 
-        if (i < dir_sectors - 1)
+        dir_sector.next_trk =
+            is_last ? '\0' : static_cast<Byte>(i / MAX_SECTOR);
+        dir_sector.next_sec =
+            is_last ? '\0' : static_cast<Byte>((i % MAX_SECTOR) + 1);
+        dir_sector.record_nr[0] = 0;
+        dir_sector.record_nr[1] = 0;
+
+        std::fill(std::begin(dir_sector.unused),
+                  std::end(dir_sector.unused), 0);
+
+        for (Word j = 0; j < DIRENTRIES; ++j)
         {
-            pflex_directory[i].next_trk =
-                static_cast<Byte>((i + 5) / MAX_SECTOR);
-            pflex_directory[i].next_sec =
-                static_cast<Byte>(((i + 5) % MAX_SECTOR) + 1);
+            dir_sector.dir_entry[j].filename[0] = DE_EMPTY;
         }
+
+        ++i;
     }
 } // initialize_flex_directory
 
@@ -417,12 +422,12 @@ std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
     }
     else
     {
-        auto sector_index = file_id / DIRENTRIES;
+        Word sector_index = file_id / DIRENTRIES;
 
-        if (sector_index < dir_sectors)
+        if (sector_index < flex_directory.size())
         {
             const auto &directory_entry =
-                pflex_directory[sector_index].dir_entry[file_id % DIRENTRIES];
+                flex_directory[sector_index].dir_entry[file_id % DIRENTRIES];
             return get_unix_filename(directory_entry);
         }
     }
@@ -505,21 +510,12 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 bool NafsDirectoryContainer::extend_directory(SWord index,
     const s_dir_sector &dir_sector)
 {
-    s_dir_sector *pfd = new s_dir_sector[dir_sectors + 1];
-
-    if (pfd == nullptr)
-    {
-        return false;    // can't allocate memory
-    }
-
-    memcpy(pfd, &pflex_directory[0], dir_sectors * sizeof(s_dir_sector));
-    memcpy(pfd + dir_sectors, &dir_sector, sizeof(s_dir_sector));
-    pflex_links[index].f_record = dir_sectors;
+    pflex_links[index].f_record = flex_directory.size();
     pflex_links[index].file_id = std::numeric_limits<SWord>::max();
     pflex_links[index].type = SectorType::Directory;
-    pflex_directory.reset(pfd);
-    dir_sectors++;
+    flex_directory.push_back(dir_sector);
     dir_extend.sec_trk = 0;// reset directory extend track/sector
+
     return true;
 } // extend_directory
 
@@ -530,22 +526,21 @@ bool NafsDirectoryContainer::extend_directory(SWord index,
 // If not found return 0/0.
 st_t NafsDirectoryContainer::link_address() const
 {
-    st_t link;
-    s_dir_entry *pd;
-    Word i;
+    st_t link { };
 
-    link.sec_trk = 0;
-
-    for (i = 0; i < dir_sectors * DIRENTRIES; i++)
+    for (const auto &dir_sector : flex_directory)
     {
-        pd = &pflex_directory[i / DIRENTRIES].dir_entry[i % DIRENTRIES];
-
-        if (!strncmp(pd->filename, "FLEX\0\0\0\0", 8) &&
-            !strncmp(pd->file_ext, "SYS", 3))
+        for (Word i = 0; i < DIRENTRIES; ++i)
         {
-            link.st.trk = pd->start_trk;
-            link.st.sec = pd->start_sec;
-            break;
+            const auto &dir_entry = dir_sector.dir_entry[i];
+
+            if (!strncmp(dir_entry.filename, "FLEX\0\0\0\0", 8) &&
+                !strncmp(dir_entry.file_ext, "SYS", 3))
+            {
+                link.st.trk = dir_entry.start_trk;
+                link.st.sec = dir_entry.start_sec;
+                break;
+            }
         }
     } // for
 
@@ -558,37 +553,39 @@ st_t NafsDirectoryContainer::link_address() const
 // If directory can't be extended return -1.
 SWord NafsDirectoryContainer::next_free_dir_entry()
 {
-    SWord i;
-    Word index;
-    s_dir_sector dir_sector;
-    Word trk, sec;
+    SWord j = 0;
 
-    for (i = 0; i < dir_sectors * DIRENTRIES; i++)
+    for (const auto &dir_sector : flex_directory)
     {
-        const auto &directory_entry =
-            pflex_directory[i / DIRENTRIES].dir_entry[i % DIRENTRIES];
-
-        if (directory_entry.filename[0] == DE_EMPTY)
+        for (Word i = 0; i < DIRENTRIES; ++i)
         {
-            return i;
+            if (dir_sector.dir_entry[i].filename[0] == DE_EMPTY ||
+                dir_sector.dir_entry[i].filename[0] == DE_DELETED)
+            {
+                return j + i;
+            }
         }
-    } // for
+
+        j += DIRENTRIES;
+    }
 
     s_sys_info_sector &sys_info_sector = flex_sys_info[0];
 
-    dir_sector = { };
+    s_dir_sector dir_sector { };
 
-    Word record_nr = dir_sectors - INIT_DIR_SECTORS + 1;
+    Word record_nr = flex_directory.size() - INIT_DIR_SECTORS + 1;
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
     dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
-    trk = sys_info_sector.fc_start_trk;
-    sec = sys_info_sector.fc_start_sec;
-    index = trk * MAX_SECTOR + sec - 1;
+    Word trk = sys_info_sector.fc_start_trk;
+    Word sec = sys_info_sector.fc_start_sec;
+    SWord index = trk * MAX_SECTOR + sec - 1;
 
     if (extend_directory(index, dir_sector))
     {
-        pflex_directory[dir_sectors - 2].next_trk = (Byte)trk;
-        pflex_directory[dir_sectors - 2].next_sec = (Byte)sec;
+        auto dir_sectors = static_cast<Word>(flex_directory.size());
+
+        flex_directory[dir_sectors - 2].next_trk = (Byte)trk;
+        flex_directory[dir_sectors - 2].next_sec = (Byte)sec;
 
         if (++sys_info_sector.fc_start_sec > MAX_SECTOR)
         {
@@ -601,7 +598,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
             --sys_info_sector.free[0];
         }
 
-        return i;
+        return j;
     }
     else
     {
@@ -615,6 +612,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
 {
     Word i;
     Word fc_start = MAX_SECTOR; // Start index of free chain.
+    Word max_dir_sector = 3 + INIT_DIR_SECTORS;
     s_link_table *plink;
 
     // On track 0 are all boot, system info and directory sectors
@@ -626,7 +624,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         plink->record_nr[1] = 0;
         plink->f_record = i < 4 ? 0 : i - 4;
         plink->file_id = std::numeric_limits<SWord>::max();
-        plink->type = SectorType::Directory;
+        plink->type =
+            (i > max_dir_sector) ? SectorType::Unknown : SectorType::Directory;
         plink->type = (i < 4) ? SectorType::SystemInfo : plink->type;
         plink->type = (i < 2) ? SectorType::Boot : plink->type;
     } // for
@@ -724,7 +723,6 @@ void NafsDirectoryContainer::close_new_files()
 void NafsDirectoryContainer::free_memory()
 {
     pflex_links.reset(nullptr);
-    pflex_directory.reset(nullptr);
 } // free_memory
 
 // Add a file with directory index dir_index to the link table.
@@ -741,7 +739,8 @@ bool NafsDirectoryContainer::add_to_link_table(
     s_link_table *plink;
     auto &sys_info_sector = flex_sys_info[0];
 
-    if (dir_index < 0 || (dir_index / DIRENTRIES) >= dir_sectors)
+    if (dir_index < 0 ||
+        (dir_index / DIRENTRIES) >= static_cast<signed>(flex_directory.size()))
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
@@ -811,30 +810,32 @@ void NafsDirectoryContainer::add_to_directory(
     struct tm *lt;
     SWord records;
 
-    if (dir_index < 0 || (dir_index / DIRENTRIES) >= dir_sectors)
+    if (dir_index < 0 ||
+        (dir_index / DIRENTRIES) >= static_cast<signed>(flex_directory.size()))
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     lt = localtime(&(stat.st_mtime));
     records = static_cast<SWord>((stat.st_size + (DBPS - 1)) / DBPS);
-    auto &pd =
-      pflex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
-    std::fill(std::begin(pd.filename), std::end(pd.filename), 0);
-    strncpy(pd.filename, name, FLEX_BASEFILENAME_LENGTH);
-    std::fill(std::begin(pd.file_ext), std::end(pd.file_ext), 0);
-    strncpy(pd.file_ext, ext, FLEX_FILEEXT_LENGTH);
-    pd.file_attr   = is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
-    pd.start_trk   = begin.st.trk;
-    pd.start_sec   = begin.st.sec;
-    pd.end_trk     = end.st.trk;
-    pd.end_sec     = end.st.sec;
-    pd.records[0]  = records >> 8;
-    pd.records[1]  = records & 0xff;
-    pd.sector_map  = is_random ? IS_RANDOM_FILE : 0;
-    pd.month = static_cast<Byte>(lt->tm_mon + 1);
-    pd.day = static_cast<Byte>(lt->tm_mday);
-    pd.year = static_cast<Byte>(lt->tm_year);
+    auto &dir_entry =
+      flex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
+    std::fill(std::begin(dir_entry.filename), std::end(dir_entry.filename), 0);
+    strncpy(dir_entry.filename, name, FLEX_BASEFILENAME_LENGTH);
+    std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext), 0);
+    strncpy(dir_entry.file_ext, ext, FLEX_FILEEXT_LENGTH);
+    dir_entry.file_attr =
+        is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
+    dir_entry.start_trk = begin.st.trk;
+    dir_entry.start_sec = begin.st.sec;
+    dir_entry.end_trk = end.st.trk;
+    dir_entry.end_sec = end.st.sec;
+    dir_entry.records[0] = records >> 8;
+    dir_entry.records[1] = records & 0xff;
+    dir_entry.sector_map = is_random ? IS_RANDOM_FILE : 0;
+    dir_entry.month = static_cast<Byte>(lt->tm_mon + 1);
+    dir_entry.day = static_cast<Byte>(lt->tm_mday);
+    dir_entry.year = static_cast<Byte>(lt->tm_year);
 } // add_to_directory
 
 // Check if file 'pfilename' is available in file which contains a list
@@ -1159,26 +1160,25 @@ void NafsDirectoryContainer::update_link_from_sector_buffer(s_link_table &link,
 
 // Check if a file has been deleted. A file is marked as deleted
 // if the first byte of the file name is set to DE_DELETED.
-// For this compare the old (pd) with the new directory sector (dir_sector).
+// For this compare the old directory sector (old_dir_sector) with the new
+// directory sector (dir_sector).
 void NafsDirectoryContainer::check_for_delete(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
-    Word i;
-    SWord index;
-    char path[PATH_MAX + 1];
-    const char *pfilename;
-    s_dir_sector *pd;
+    const auto &old_dir_sector = flex_directory[dir_index];
 
-    pd = &pflex_directory[dir_index];
-
-    for (i = 0; i < DIRENTRIES; i++)
+    for (Word i = 0; i < DIRENTRIES; i++)
     {
         if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
-            pd->dir_entry[i].filename[0] != DE_DELETED)
+            old_dir_sector.dir_entry[i].filename[0] != DE_DELETED)
         {
+            char path[PATH_MAX + 1];
+            const char *pfilename;
+            SWord index;
+
             pfilename = get_unix_filename(dir_index * DIRENTRIES + i).c_str();
-            index = pd->dir_entry[i].start_trk * MAX_SECTOR +
-                    pd->dir_entry[i].start_sec - 1;
+            index = old_dir_sector.dir_entry[i].start_trk * MAX_SECTOR +
+                    old_dir_sector.dir_entry[i].start_sec - 1;
             strcpy(path, directory.c_str());
             strcat(path, PATHSEPARATORSTRING);
             strcat(path, pfilename);
@@ -1196,17 +1196,17 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
 
 
 // Check if a file has been renamed.
-// For this compare the old (pd) with the new directory sector (dir_sector).
-// If a file has been renamed then rename it on the host file system too.
+// For this compare the filename of the old directory sector (filename1) with
+// the corresponding filename in new directory sector (filename2). If a file
+// has been renamed then rename it on the host file system too.
 void NafsDirectoryContainer::check_for_rename(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
-    Word i;
     char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
     std::string filename1, filename2;
     const char *pfilename1, *pfilename2;
 
-    for (i = 0; i < DIRENTRIES; i++)
+    for (Word i = 0; i < DIRENTRIES; i++)
     {
         filename1 = get_unix_filename(dir_index * DIRENTRIES + i);
         filename2 = get_unix_filename(dir_sector.dir_entry[i]);
@@ -1214,8 +1214,8 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
         pfilename1 = filename1.c_str();
         pfilename2 = filename2.c_str();
 
-        if (*pfilename1 && *pfilename2 &&
-            strcmp(pfilename1, pfilename2) != 0)
+        if (!filename1.empty() && !filename2.empty() &&
+            strcmp(filename1.c_str(), filename2.c_str()) != 0)
         {
             strcpy(old_path, directory.c_str());
             strcat(old_path, PATHSEPARATORSTRING);
@@ -1225,8 +1225,7 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
             strcat(new_path, pfilename2);
             rename(old_path, new_path);
 #ifdef DEBUG_FILE
-            LOG_XX("     rename %s to %s\n",
-                    pfilename1, pfilename2);
+            LOG_XX("     rename %s to %s\n", pfilename1, pfilename2);
 #endif
             break;
         } // if
@@ -1243,11 +1242,9 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
 void NafsDirectoryContainer::check_for_extend(SWord dir_index,
         const s_dir_sector &dir_sector)
 {
-    s_dir_sector *pd;
+    const auto &old_dir_sector = flex_directory[dir_index];
 
-    pd = &pflex_directory[dir_index];
-
-    if (!pd->next_sec && !pd->next_trk &&
+    if (!old_dir_sector.next_sec && !old_dir_sector.next_trk &&
         (dir_sector.next_trk || dir_sector.next_sec))
     {
         dir_extend.st.trk = dir_sector.next_trk;
@@ -1396,6 +1393,13 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
     switch (pfl->type)
     {
+        case SectorType::Unknown:
+#ifdef DEBUG_FILE
+            LOG("unknown sector\n");
+#endif
+            memset(buffer, '\0', SECTOR_SIZE);
+            break;
+
         case SectorType::SystemInfo:
 #ifdef DEBUG_FILE
             LOG("system info sector\n");
@@ -1465,7 +1469,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 #endif
             {
                 Word di = pfl->f_record;
-                char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                char *p = reinterpret_cast<char *>(
+                          const_cast<s_dir_sector *>(&flex_directory[di]));
                 memcpy(buffer, p, param.byte_p_sector);
             }
             break;
@@ -1566,6 +1571,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
     switch (pfl->type)
     {
+        case SectorType::Unknown:
+#ifdef DEBUG_FILE
+            LOG("unknwon sector\n");
+#endif
+            break;
+
         case SectorType::SystemInfo:
 #ifdef DEBUG_FILE
             LOG("system info sector\n");
@@ -1641,7 +1652,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 const auto &dir_sector =
                     *(reinterpret_cast<s_dir_sector *>(
                       const_cast<Byte *>(buffer)));
-                char *p = reinterpret_cast<char *>(&pflex_directory[di]);
+                char *p = reinterpret_cast<char *>(&flex_directory[di]);
                 check_for_delete(di, dir_sector);
                 check_for_new_file(di, dir_sector);
                 check_for_rename(di, dir_sector);
