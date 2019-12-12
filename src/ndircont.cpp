@@ -1408,7 +1408,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 const char *p =
                     reinterpret_cast<char *>(
                       const_cast<s_sys_info_sector *>(&flex_sys_info[sec - 3]));
-                memcpy(buffer, p, param.byte_p_sector);
+                memcpy(buffer, p, SECTOR_SIZE);
             }
             break;
 
@@ -1471,7 +1471,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 Word di = pfl->f_record;
                 char *p = reinterpret_cast<char *>(
                           const_cast<s_dir_sector *>(&flex_directory[di]));
-                memcpy(buffer, p, param.byte_p_sector);
+                memcpy(buffer, p, SECTOR_SIZE);
             }
             break;
 
@@ -1585,7 +1585,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 char *p;
 
                 p = reinterpret_cast<char *>(&flex_sys_info[sector - 3]);
-                memcpy(p, buffer, param.byte_p_sector);
+                memcpy(p, buffer, SECTOR_SIZE);
             }
             break;
 
@@ -1657,7 +1657,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 check_for_new_file(di, dir_sector);
                 check_for_rename(di, dir_sector);
                 check_for_extend(di, dir_sector);
-                memcpy(p, buffer, param.byte_p_sector);
+                memcpy(p, buffer, SECTOR_SIZE);
             }
             break;
 
