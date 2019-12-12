@@ -1196,36 +1196,28 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
 
 
 // Check if a file has been renamed.
-// For this compare the filename of the old directory sector (filename1) with
-// the corresponding filename in new directory sector (filename2). If a file
-// has been renamed then rename it on the host file system too.
+// For this compare the filename of the old directory sector (old_filename)
+// with the corresponding filename in new directory sector (new_filename).
+// If a file has been renamed then rename it on the host file system too.
 void NafsDirectoryContainer::check_for_rename(SWord dir_index,
         const s_dir_sector &dir_sector) const
 {
-    char old_path[PATH_MAX + 1], new_path[PATH_MAX + 1];
-    std::string filename1, filename2;
-    const char *pfilename1, *pfilename2;
+    std::string old_filename, new_filename;
 
     for (Word i = 0; i < DIRENTRIES; i++)
     {
-        filename1 = get_unix_filename(dir_index * DIRENTRIES + i);
-        filename2 = get_unix_filename(dir_sector.dir_entry[i]);
+        old_filename = get_unix_filename(dir_index * DIRENTRIES + i);
+        new_filename = get_unix_filename(dir_sector.dir_entry[i]);
 
-        pfilename1 = filename1.c_str();
-        pfilename2 = filename2.c_str();
-
-        if (!filename1.empty() && !filename2.empty() &&
-            strcmp(filename1.c_str(), filename2.c_str()) != 0)
+        if (!old_filename.empty() && !new_filename.empty() &&
+            strcmp(old_filename.c_str(), new_filename.c_str()) != 0)
         {
-            strcpy(old_path, directory.c_str());
-            strcat(old_path, PATHSEPARATORSTRING);
-            strcat(old_path, pfilename1);
-            strcpy(new_path, directory.c_str());
-            strcat(new_path, PATHSEPARATORSTRING);
-            strcat(new_path, pfilename2);
-            rename(old_path, new_path);
+            auto old_path = directory + PATHSEPARATORSTRING + old_filename;
+            auto new_path = directory + PATHSEPARATORSTRING + new_filename;
+            rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
-            LOG_XX("     rename %s to %s\n", pfilename1, pfilename2);
+            LOG_XX("     rename %s to %s\n",
+                   old_filename.c_str(), new_filename.c_str());
 #endif
             break;
         } // if
