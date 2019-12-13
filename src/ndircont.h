@@ -110,7 +110,7 @@ private:
     s_floppy param;
 
     // Some structures needed for a FLEX file system
-    std::unique_ptr<s_link_table[]> pflex_links;         // link table
+    std::array<s_link_table, LINK_TABLE_SIZE> flex_links; // link table
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SWord, s_new_file> new_files; // new file table
@@ -141,7 +141,6 @@ private:
     void initialize_flex_link_table();
     void close_new_files();
     void mount(Word number);
-    void free_memory();
     SWord next_free_dir_entry();
     std::string get_unix_filename(SWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
@@ -167,7 +166,7 @@ private:
         char *name = nullptr,
         char *ext = nullptr) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
-    void check_for_delete(SWord dir_index, const s_dir_sector &d) const;
+    void check_for_delete(SWord dir_index, const s_dir_sector &d);
     void check_for_extend(SWord dir_index, const s_dir_sector &d);
     void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
     void check_for_new_file(SWord dir_index, const s_dir_sector &d);
@@ -185,13 +184,11 @@ private:
         SWord index,
         SWord old_id,
         SWord new_id,
-        SectorType new_type) const;
+        SectorType new_type);
     static void update_sector_buffer_from_link(Byte *buffer,
                                                const s_link_table &link);
     static void update_link_from_sector_buffer(s_link_table &link,
                                                const Byte *buffer);
-    void check_pointer(void *ptr);
-
 
 };  // class NafsDirectoryContainer
 
