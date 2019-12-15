@@ -164,7 +164,8 @@ private:
     bool IsFlexFilename(
         const char *filename,
         std::string &name,
-        std::string &extension) const;
+        std::string &extension,
+        bool with_extension) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
     void check_for_delete(SWord dir_index, const s_dir_sector &d);
     void check_for_extend(SWord dir_index, const s_dir_sector &d);

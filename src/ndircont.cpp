@@ -79,6 +79,12 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
     }
 
     directory = path;
+    if (directory.size() > 1 &&
+        directory[directory.size() - 1] == PATHSEPARATOR)
+    {
+        // Remove trailing PATHSEPARATOR character.
+        directory.resize(directory.size() - 1);
+    }
     isOpen = true;
 
     if (access(path, W_OK))
@@ -265,7 +271,8 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
 */
 bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         std::string &ret_name,
-        std::string &ret_extension) const
+        std::string &ret_extension,
+        bool with_extension) const
 {
     int result; // result from sscanf should be int
     char dot;
@@ -273,9 +280,10 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
     char extension[4];
     const char *format;
 
+    extension[0] = '\0';
     dot    = '\0';
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-    result = sscanf(pfilename, format, name, &name[1]);
+    result = sscanf(pfilename, format, &name[0], &name[1]);
 
     if (!result || result == EOF)
     {
@@ -291,13 +299,12 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
     }
 
-    result = sscanf(pfilename, format, &dot, extension, &extension[1]);
+    result = sscanf(pfilename, format, &dot, &extension[0], &extension[1]);
 
-    if (!result || result == 1 || result == EOF)
+    if ((with_extension && (!result || result == 1 || result == EOF)))
     {
         return false;
     }
-
     if (strlen(name) + strlen(extension) + (dot == '.' ? 1 : 0) !=
             strlen(pfilename))
     {
@@ -950,7 +957,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                     is_random = false;
                     path = directory + PATHSEPARATORSTRING + filename.c_str();
 
-                    if (IsFlexFilename(filename.c_str(), name, extension) &&
+                    if (IsFlexFilename(filename.c_str(), name, extension,
+                                       true) &&
                         !stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
                         strcmp(filename.c_str(), BOOT_FILE) &&
@@ -1010,49 +1018,34 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 // Initialize the FLEX system info sector.
 void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 {
-    char name[9], ext[4];
-    const char *pName;
     struct stat sbuf;
-    struct tm *lt;
 
     if (!stat(directory.c_str(), &sbuf))
     {
+        std::string name;
+        std::string extension;
+
         auto &sys_info_sector = flex_sys_info[0];
-        lt = localtime(&(sbuf.st_mtime));
-        name[0] = '\0';
-        ext[0]  = '\0';
-        pName = directory.c_str() + directory.length() - 1;
+        struct tm *lt = localtime(&(sbuf.st_mtime));
 
-        if (*pName == PATHSEPARATOR)
-        {
-            pName--;
-        }
+        std::string diskname = getFileName(directory);
 
-        while (pName != directory.c_str() && *pName != PATHSEPARATOR)
+        if (diskname.size() > 8)
         {
-            pName--;
+            diskname.resize(8);
         }
-
-        if (*pName == PATHSEPARATOR)
+        if (!IsFlexFilename(diskname.c_str(), name, extension, false))
         {
-            pName++;
+            name = "FLEXDISK";
         }
-
-        if (sscanf(pName, "%8[a-zA-Z0-9_-]", name) != 1)
-        {
-            strcpy(name, "UNIX");
-        }
-        else
-        {
-            strupper(name);
-            strupper(ext);
-        } // else
 
         std::fill(std::begin(sys_info_sector.unused1),
                   std::end(sys_info_sector.unused1), 0);
-
-        strncpy(sys_info_sector.disk_name, name, 8);
-        strncpy(sys_info_sector.disk_ext, ext, 3);
+        std::fill(std::begin(sys_info_sector.disk_name),
+                  std::end(sys_info_sector.disk_name), 0);
+        strncpy(sys_info_sector.disk_name, name.c_str(), 8);
+        std::fill(std::begin(sys_info_sector.disk_ext),
+                  std::end(sys_info_sector.disk_ext), 0);
         sys_info_sector.disk_number[0] = number >> 8;
         sys_info_sector.disk_number[1] = number & 0xff;
         sys_info_sector.fc_start_trk = 0;
