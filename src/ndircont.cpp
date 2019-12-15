@@ -1319,26 +1319,25 @@ bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
     int index = trk * MAX_SECTOR + (sec - 1);
+    const auto &link = flex_links[index];
     bool result = true;
 
 #ifdef DEBUG_FILE
-    LOG_XX("read: %02X/%02X ", trk, sec);
+    LOG_XXX("read: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
+    if (link.type == SectorType::File || link.type == SectorType::NewFile)
+    {
+        LOG_X(" %s", get_unix_filename(link.file_id).c_str());
+    }
+    LOG("\n");
 #endif
-    const auto &link = flex_links[index];
 
     switch (link.type)
     {
         case SectorType::Unknown:
-#ifdef DEBUG_FILE
-            LOG("unknown sector\n");
-#endif
             memset(buffer, '\0', SECTOR_SIZE);
             break;
 
         case SectorType::SystemInfo:
-#ifdef DEBUG_FILE
-            LOG("system info sector\n");
-#endif
             {
                 const char *p =
                     reinterpret_cast<char *>(
@@ -1348,9 +1347,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             break;
 
         case SectorType::Boot:
-#ifdef DEBUG_FILE
-            LOG("boot sector\n");
-#endif
             {
                 // According to the FLEX Advanced Programmer's Guide
                 // chapter "Diskette Initialization" the first two
@@ -1398,9 +1394,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             break;
 
         case SectorType::Directory:
-#ifdef DEBUG_FILE
-            LOG("directory sector\n");
-#endif
             {
                 Word di = link.f_record;
                 char *p = reinterpret_cast<char *>(
@@ -1410,9 +1403,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             break;
 
         case SectorType::FreeChain:
-#ifdef DEBUG_FILE
-            LOG("free chain\n");
-#endif
             update_sector_buffer_from_link(buffer, link);
 
             // free chain sector reads always
@@ -1423,10 +1413,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
         case SectorType::File: // Read from an existing file.
             {
-#ifdef DEBUG_FILE
-                LOG_X("sector of file %s\n",
-                      get_unix_filename(link.file_id).c_str());
-#endif
                 auto path = directory + PATHSEPARATORSTRING +
                             get_unix_filename(link.file_id);
 
@@ -1454,10 +1440,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
         case SectorType::NewFile: // new file with temporary name tmpXX
             {
-#ifdef DEBUG_FILE
-                LOG_X("sector of new file %s\n",
-                      get_unix_filename(link.file_id).c_str());
-#endif
                 FILE *fp = new_files.at(link.file_id).fp;
 
                 if (!fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
@@ -1498,21 +1480,20 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
     auto &link = flex_links[index];
 
 #ifdef DEBUG_FILE
-    LOG_XX("write: %02X/%02X ", trk, sec);
+    LOG_XXX("write: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
+    if (link.type == SectorType::File || link.type == SectorType::NewFile)
+    {
+        LOG_X(" %s", get_unix_filename(link.file_id).c_str());
+    }
+    LOG("\n");
 #endif
 
     switch (link.type)
     {
         case SectorType::Unknown:
-#ifdef DEBUG_FILE
-            LOG("unknwon sector\n");
-#endif
             break;
 
         case SectorType::SystemInfo:
-#ifdef DEBUG_FILE
-            LOG("system info sector\n");
-#endif
             {
                 char *p;
 
@@ -1522,9 +1503,6 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             break;
 
         case SectorType::Boot:
-#ifdef DEBUG_FILE
-            LOG("boot sector\n");
-#endif
             {
                 // Write boot sector 0/1 or 0/2
                 // into a file which name is defined in BOOT_FILE.
@@ -1575,9 +1553,6 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             break;
 
         case SectorType::Directory:
-#ifdef DEBUG_FILE
-            LOG("directory sector\n");
-#endif
             {
                 Word di = link.f_record;
                 const auto &dir_sector =
@@ -1593,9 +1568,6 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             break;
 
         case SectorType::FreeChain:
-#ifdef DEBUG_FILE
-            LOG("free chain\n");
-#endif
 
             if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
             {
@@ -1655,10 +1627,6 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
         case SectorType::File:
             {
-#ifdef DEBUG_FILE
-                LOG_X("sector of file %s\n",
-                      get_unix_filename(link.file_id).c_str());
-#endif
                 auto path = directory + PATHSEPARATORSTRING +
                             get_unix_filename(link.file_id);
                 update_link_from_sector_buffer(link, buffer);
@@ -1690,10 +1658,6 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
         case SectorType::NewFile:
             {
-#ifdef DEBUG_FILE
-                LOG_X("sector of new file %s\n",
-                      get_unix_filename(link.file_id).c_str());
-#endif
                 FILE *fp = new_files.at(link.file_id).fp;
 
                 if (ftell(fp) != link.f_record &&
@@ -1726,4 +1690,26 @@ void NafsDirectoryContainer::mount(Word number)
     fill_flex_directory(wp_flag);
 } // mount
 
+std::string NafsDirectoryContainer::to_string(SectorType type)
+{
+    switch (type)
+    {
+        case SectorType::Unknown:
+            return "unknown sector";
+        case SectorType::Boot:
+            return "boot sector";
+        case SectorType::SystemInfo:
+            return "system info sector";
+        case SectorType::Directory:
+            return "directory sector";
+        case SectorType::FreeChain:
+            return "free chain";
+        case SectorType::File:
+            return "sector of file";
+        case SectorType::NewFile:
+            return "sector of new file";
+    }
+
+    return std::string();
+}
 #endif // #ifdef NAFS

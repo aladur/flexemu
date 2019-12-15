@@ -190,6 +190,7 @@ private:
                                                const s_link_table &link);
     static void update_link_from_sector_buffer(s_link_table &link,
                                                const Byte *buffer);
+    static std::string to_string(SectorType type);
 
 };  // class NafsDirectoryContainer
 
