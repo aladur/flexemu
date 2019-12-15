@@ -247,6 +247,8 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
 
 // Check for a valid FLEX filename.
 // On success return true otherwise false.
+// If true ret_name and ret_extension contains the upper case
+// file basename and extension.
 // The rules to be checked:
 // - filename and extension are separated by a dot.
 // filename:
@@ -254,7 +256,7 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
 // - Next up to 7 characters are a-z, A-Z, 0-9, _ or -
 // extension:
 // - First character is a-z or A-Z
-// - Next up to 3 characters are a-z, A-Z, 0-9, _ or -
+// - Next up to 2 characters are a-z, A-Z, 0-9, _ or -
 /*
     Some examples:
 
@@ -262,13 +264,13 @@ void NafsDirectoryContainer::initialize_header(Byte wp)
     not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
 */
 bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
-        char *pname /* = nullptr */,
-        char *pext  /* = nullptr */) const
+        std::string &ret_name,
+        std::string &ret_extension) const
 {
     int result; // result from sscanf should be int
     char dot;
     char name[9];
-    char ext[4];
+    char extension[4];
     const char *format;
 
     dot    = '\0';
@@ -289,30 +291,24 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
     }
 
-    result = sscanf(pfilename, format, &dot, ext, &ext[1]);
+    result = sscanf(pfilename, format, &dot, extension, &extension[1]);
 
     if (!result || result == 1 || result == EOF)
     {
         return false;
     }
 
-    if (strlen(name) + strlen(ext) + (dot == '.' ? 1 : 0) != strlen(pfilename))
+    if (strlen(name) + strlen(extension) + (dot == '.' ? 1 : 0) !=
+            strlen(pfilename))
     {
         return false;
     }
 
     strupper(name);
-    strupper(ext);
+    strupper(extension);
 
-    if (pname)
-    {
-        strcpy(pname, name);
-    }
-
-    if (pext)
-    {
-        strcpy(pext, ext);
-    }
+    ret_name = name;
+    ret_extension = extension;
 
     return true;
 } // IsFlexFilename
@@ -454,7 +450,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     }
 
     strcpy(new_file.filename, get_unix_filename(new_file_index).c_str());
-    auto path = directory + PATHSEPARATORSTRING +  new_file.filename;
+    auto path = directory + PATHSEPARATORSTRING + new_file.filename;
     new_file.fp = fopen(path.c_str(), "wb+");
 
     if (new_file.fp == nullptr)
@@ -759,8 +755,8 @@ bool NafsDirectoryContainer::add_to_link_table(
 
 // Add file properties to directory entry with index 'dir_index'.
 void NafsDirectoryContainer::add_to_directory(
-    char *name,
-    char *ext,
+    const char *name,
+    const char *extension,
     SWord dir_index,
     bool is_random,
     const struct stat &stat,
@@ -784,7 +780,7 @@ void NafsDirectoryContainer::add_to_directory(
     std::fill(std::begin(dir_entry.filename), std::end(dir_entry.filename), 0);
     strncpy(dir_entry.filename, name, FLEX_BASEFILENAME_LENGTH);
     std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext), 0);
-    strncpy(dir_entry.file_ext, ext, FLEX_FILEEXT_LENGTH);
+    strncpy(dir_entry.file_ext, extension, FLEX_FILEEXT_LENGTH);
     dir_entry.file_attr =
         is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
     dir_entry.start_trk = begin.st.trk;
@@ -804,15 +800,16 @@ void NafsDirectoryContainer::add_to_directory(
 bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
         const char *pfilename)
 {
-    char str[PATH_MAX + 1];
+    std::string file(ppath);
 
-    strcpy(str, ppath);
-    strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
+    file += PATHSEPARATORSTRING RANDOM_FILE_LIST;
 
-    BFilePtr fp(str, "r");
+    BFilePtr fp(file.c_str(), "r");
 
     if (fp != nullptr)
     {
+        char str[PATH_MAX + 1];
+
         while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
         {
             if (strchr(str, '\n'))
@@ -832,7 +829,7 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 } // is_in_file_random
 
 // Update random file sector map.
-void NafsDirectoryContainer::modify_random_file(char *path,
+void NafsDirectoryContainer::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
 {
     Byte file_sector_map[DBPS * 2];
@@ -901,8 +898,10 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     DIR *pd;
     struct dirent *pentry;
 #endif
-    char name[9], ext[4], path[PATH_MAX + 1];
+    std::string name;
+    std::string extension;
     std::string filename;
+    std::string path;
     std::string lc_filename; // lower case filename
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
     SWord dir_index = 0;
@@ -913,13 +912,12 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     initialize_flex_directory();
     initialize_flex_link_table();
 #ifdef _WIN32
-    strcpy(path, directory.c_str());
-    strcat(path, PATHSEPARATORSTRING "*.*");
+    path = directory + PATHSEPARATORSTRING "*.*";
 
 #ifdef UNICODE
     hdl = FindFirstFile(ConvertToUtf16String(path).c_str(), &pentry);
 #else
-    hdl = FindFirstFile(path, &pentry);
+    hdl = FindFirstFile(path.c_str(), &pentry);
 #endif
     if (hdl != INVALID_HANDLE_VALUE)
     {
@@ -950,12 +948,10 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                         std::back_inserter(lc_filename), ::tolower);
 #endif
                     is_random = false;
-                    strcpy(path, directory.c_str());
-                    strcat(path, PATHSEPARATORSTRING);
-                    strcat(path, filename.c_str());
+                    path = directory + PATHSEPARATORSTRING + filename.c_str();
 
-                    if (IsFlexFilename(filename.c_str(), name, ext) &&
-                        !stat(path, &sbuf) && (S_ISREG(sbuf.st_mode)) &&
+                    if (IsFlexFilename(filename.c_str(), name, extension) &&
+                        !stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
                         strcmp(filename.c_str(), BOOT_FILE) &&
                         sbuf.st_size > 0 &&
@@ -980,16 +976,16 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                         if (add_to_link_table(dir_index, sbuf.st_size,
                                               is_random, begin, end))
                         {
-                            add_to_directory(name, ext, dir_index,
-                                             is_random, sbuf, begin, end,
-                                             is_write_protected ||
-                                             (access(path, W_OK) != 0));
+                            add_to_directory(name.c_str(), extension.c_str(),
+                                             dir_index, is_random, sbuf, begin,
+                                             end, is_write_protected ||
+                                             (access(path.c_str(), W_OK) != 0));
 
                             // Unfinished: don't write sector map if write
                             // protected.
                             if (is_random && !is_write_protected)
                             {
-                                modify_random_file(path, sbuf, begin);
+                                modify_random_file(path.c_str(), sbuf, begin);
                             }
                             lc_filenames.emplace(lc_filename);
                         }
@@ -1133,21 +1129,15 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
         if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
             old_dir_sector.dir_entry[i].filename[0] != DE_DELETED)
         {
-            char path[PATH_MAX + 1];
-            const char *pfilename;
-            SWord index;
-
-            pfilename = get_unix_filename(dir_index * DIRENTRIES + i).c_str();
-            index = old_dir_sector.dir_entry[i].start_trk * MAX_SECTOR +
-                    old_dir_sector.dir_entry[i].start_sec - 1;
-            strcpy(path, directory.c_str());
-            strcat(path, PATHSEPARATORSTRING);
-            strcat(path, pfilename);
-            unlink(path);
+            auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
+            SWord index = old_dir_sector.dir_entry[i].start_trk * MAX_SECTOR +
+                          old_dir_sector.dir_entry[i].start_sec - 1;
+            auto path = directory + PATHSEPARATORSTRING + filename;
+            unlink(path.c_str());
             change_file_id_and_type(index, dir_index * DIRENTRIES + i, 0,
                                     SectorType::FreeChain);
 #ifdef DEBUG_FILE
-            LOG_X("     delete %s\n", pfilename);
+            LOG_X("     delete %s\n", filename.c_str());
 #endif
             break;
         } // if
@@ -1335,7 +1325,6 @@ bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 // Return true on success.
 bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
-    char path[PATH_MAX + 1];
     int index = trk * MAX_SECTOR + (sec - 1);
     bool result = true;
 
@@ -1384,10 +1373,9 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
                 std::memset(buffer, 0, SECTOR_SIZE);
 
-                strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING BOOT_FILE);
+                auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
 
-                FILE *fp = fopen(path, "rb");
+                FILE *fp = fopen(path.c_str(), "rb");
                 if (fp != nullptr)
                 {
                     if (sec == 2)
@@ -1446,11 +1434,10 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                 LOG_X("sector of file %s\n",
                       get_unix_filename(link.file_id).c_str());
 #endif
-                strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING);
-                strcat(path, get_unix_filename(link.file_id).c_str());
+                auto path = directory + PATHSEPARATORSTRING +
+                            get_unix_filename(link.file_id);
 
-                FILE *fp = fopen(path, "rb");
+                FILE *fp = fopen(path.c_str(), "rb");
                 if (fp != nullptr &&
                     !fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
                 {
@@ -1510,7 +1497,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
         int sec)
 {
-    char path[PATH_MAX + 1];
     SWord new_file_index;
     bool result = true;
     Byte track = static_cast<Byte>(trk);
@@ -1553,13 +1539,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 FILE *fp;
                 struct stat sbuf;
 
-                strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING BOOT_FILE);
+                auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
                 std::fill(boot_buffer.begin(), boot_buffer.end(), '\0');
 
-                if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode))
+                if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
                 {
-                    if ((fp = fopen(path, "rb")) != nullptr)
+                    if ((fp = fopen(path.c_str(), "rb")) != nullptr)
                     {
                         size_t old_size =
                             fread(boot_buffer.data(), 1, SECTOR_SIZE * 2, fp);
@@ -1583,7 +1568,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 // sector to file.
                 size_t count = !is_all_zero ? 2 : 1;
 
-                if ((fp = fopen(path, "wb+")) != nullptr)
+                if ((fp = fopen(path.c_str(), "wb+")) != nullptr)
                 {
                     size_t size =
                         fwrite(boot_buffer.data(), 1, SECTOR_SIZE * count, fp);
@@ -1681,12 +1666,11 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 LOG_X("sector of file %s\n",
                       get_unix_filename(link.file_id).c_str());
 #endif
-                strcpy(path, directory.c_str());
-                strcat(path, PATHSEPARATORSTRING);
-                strcat(path, get_unix_filename(link.file_id).c_str());
+                auto path = directory + PATHSEPARATORSTRING +
+                            get_unix_filename(link.file_id);
                 update_link_from_sector_buffer(link, buffer);
 
-                FILE *fp = fopen(path, "rb+");
+                FILE *fp = fopen(path.c_str(), "rb+");
                 if (fp == nullptr)
                 {
                     result = false;

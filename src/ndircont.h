@@ -151,20 +151,20 @@ private:
         st_t &begin,
         st_t &end);
     void add_to_directory(
-        char *name,
-        char *ext,
+        const char *name,
+        const char *ext,
         SWord dir_index,
         bool is_random,
         const struct stat &stat,
         const st_t &begin,
         const st_t &end,
         bool is_write_protected);
-    void modify_random_file(char *path, const struct stat &stat,
+    void modify_random_file(const char *path, const struct stat &stat,
                             const st_t &pbegin);
     bool IsFlexFilename(
         const char *filename,
-        char *name = nullptr,
-        char *ext = nullptr) const;
+        std::string &name,
+        std::string &extension) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
     void check_for_delete(SWord dir_index, const s_dir_sector &d);
     void check_for_extend(SWord dir_index, const s_dir_sector &d);
