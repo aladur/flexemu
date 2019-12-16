@@ -44,8 +44,9 @@
 #include "cvtwchar.h"
 
 // detailed debug messages can be written to a debug file:
-//#define DEBUG_FILE "debug.txt"
+//#define DEBUG_FILE "nafs_debug.log"
 #ifdef DEBUG_FILE
+    #define DEBUG_VERBOSE 2
     #include "debug.h"
 #endif
 
@@ -1130,7 +1131,7 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
             change_file_id_and_type(index, dir_index * DIRENTRIES + i, 0,
                                     SectorType::FreeChain);
 #ifdef DEBUG_FILE
-            LOG_X("     delete %s\n", filename.c_str());
+            LOG_X("      delete %s\n", filename.c_str());
 #endif
             break;
         } // if
@@ -1160,7 +1161,7 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
             auto new_path = directory + PATHSEPARATORSTRING + new_filename;
             rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
-            LOG_XX("     rename %s to %s\n",
+            LOG_XX("      rename %s to %s\n",
                    old_filename.c_str(), new_filename.c_str());
 #endif
             break;
@@ -1286,7 +1287,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                                 get_unix_filename(flex_links[index].file_id);
                 rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
-                LOG_XX("     new file %s, was %s\n",
+                LOG_XX("      new file %s, was %s\n",
                         get_unix_filename(flex_links[index].file_id).c_str(),
                         iter.second.filename);
 #endif
@@ -1463,6 +1464,15 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             }
             break;
     } // switch
+
+#if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
+    FILE *log_fp = fopen(DEBUG_FILE, "a");
+    if (log_fp != nullptr)
+    {
+        dumpSector(log_fp, "      ", buffer, SECTOR_SIZE);
+        fclose(log_fp);
+    }
+#endif
 
     return result;
 } //ReadSector
@@ -1674,6 +1684,15 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             }
             break;
     } // switch
+
+#if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
+    FILE *log_fp = fopen(DEBUG_FILE, "a");
+    if (log_fp != nullptr)
+    {
+        dumpSector(log_fp, "      ", buffer, SECTOR_SIZE);
+        fclose(log_fp);
+    }
+#endif
 
     return result;
 } // WriteSector

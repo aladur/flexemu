@@ -705,3 +705,34 @@ void next_opt(char *const argv[])
 }
 
 #endif
+
+void dumpSector(FILE *fp, const char *indent, const Byte *buffer, uint32_t size)
+{
+    uint32_t i;
+
+    fprintf(fp, "%s  ", indent);
+    for (i = 0; i < 16; ++i)
+    {
+        fprintf(fp, " -%X", i);
+    }
+    fprintf(fp, "\n");
+
+    for (i = 0; i < size; i += 16)
+    {
+        uint32_t j;
+
+        fprintf(fp, "%s%X-", indent, i >> 4);
+        for (j = 0; j < 16; ++j)
+        {
+            fprintf(fp, " %02X", buffer[i + j]);
+        }
+        fprintf(fp, " ");
+        for (j = 0; j < 16; ++j)
+        {
+            const Byte ch = buffer[i + j] & 0x7F;
+
+            fprintf(fp, "%c", (ch >= ' ' && ch <= '~') ? ch : '_');
+        }
+        fprintf(fp, "\n");
+    }
+}

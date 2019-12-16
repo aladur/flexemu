@@ -409,6 +409,8 @@ extern bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 extern std::string getExecutablePath();
 #endif
+extern void dumpSector(FILE *fp, const char *indent,
+                       const Byte *buffer, uint32_t size);
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
