@@ -43,8 +43,12 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 
-// detailed debug messages can be written to a debug file:
-//#define DEBUG_FILE "nafs_debug.log"
+// A debug log can be written to a file
+// by uncommenting the following line.
+// DEBUG_VERBOSE defines the verbosity:
+// 1: Log any read/write access to a sector.
+// 2: Same as 1, additionally log sector dump.
+//#define DEBUG_FILE get_unique_filename("log").c_str()
 #ifdef DEBUG_FILE
     #define DEBUG_VERBOSE 2
     #include "debug.h"
@@ -1720,5 +1724,23 @@ std::string NafsDirectoryContainer::to_string(SectorType type)
     }
 
     return std::string();
+}
+
+// Return a unique filename for this directory container.
+// The file extension is specified as parameter.
+std::string NafsDirectoryContainer::get_unique_filename(
+                                    const char *extension) const
+{
+    Word number =
+        (flex_sys_info[0].disk_number[0] << 8) |
+        (flex_sys_info[0].disk_number[1] & 0xff);
+    std::string diskname = getFileName(directory);
+    if (diskname[0] == '.')
+    {
+        diskname = "flexdisk";
+    }
+    diskname += '_' + std::to_string(number) + "." + extension;
+
+    return diskname;
 }
 #endif // #ifdef NAFS

@@ -190,6 +190,7 @@ private:
     static void update_link_from_sector_buffer(s_link_table &link,
                                                const Byte *buffer);
     static std::string to_string(SectorType type);
+    std::string get_unique_filename(const char *extension) const;
 
 };  // class NafsDirectoryContainer
 
