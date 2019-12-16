@@ -176,8 +176,8 @@ private:
         Byte day,
         Byte year) const;
     st_t link_address() const;
-    bool is_last_of_free_chain(Byte tr, Byte sr) const;
-    SWord index_of_new_file(Byte track, Byte sector);
+    bool is_last_of_free_chain(const st_t &st) const;
+    SWord index_of_new_file(const st_t &st);
     std::string get_path_of_file(SWord file_id) const;
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;
     void change_file_id_and_type(
@@ -191,6 +191,7 @@ private:
                                                const Byte *buffer);
     static std::string to_string(SectorType type);
     std::string get_unique_filename(const char *extension) const;
+    SWord get_sector_index(const st_t &sector_track) const;
 
 };  // class NafsDirectoryContainer
 

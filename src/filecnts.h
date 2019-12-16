@@ -80,7 +80,7 @@ struct s_st
 
 typedef union
 {
-    Word        sec_trk;    // Specifies track and sector number of a sector
+    Word sec_trk; // Specifies track and sector number of a sector
     struct s_st st;
 } st_t;
 

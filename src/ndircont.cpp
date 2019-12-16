@@ -417,18 +417,14 @@ std::string NafsDirectoryContainer::get_unix_filename(SWord file_id) const
 Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
         Word index) const
 {
-    SWord   i;
-    Word    record_nr;
+    Word record_nr = 0;
 
-    record_nr = 0;
-    i = new_files.at(new_file_index).first.st.trk * MAX_SECTOR +
-        new_files.at(new_file_index).first.st.sec - 1;
+    auto i = get_sector_index(new_files.at(new_file_index).first);
 
     while (i != index && i >= 0)
     {
         record_nr++;
-        i = flex_links[i].next.st.trk * MAX_SECTOR +
-            flex_links[i].next.st.sec - 1;
+        i = get_sector_index(flex_links[i].next);
     } // while
 
     return record_nr;
@@ -438,21 +434,18 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_index,
 // and sector. If not found create another new file and return its index.
 // A new file index is always < 0.
 // Return 0 if the new file can not be opened.
-SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
+SWord NafsDirectoryContainer::index_of_new_file(const st_t &sector_track)
 {
     for (const auto &iter : new_files)
     {
-        if (track == iter.second.next.st.trk &&
-            sector == iter.second.next.st.sec)
+        if (sector_track.sec_trk == iter.second.next.sec_trk)
         {
             return iter.first;
         }
 
-        SWord current_index = track * MAX_SECTOR + sector - 1;
-        SWord last_index = iter.second.next.st.trk * MAX_SECTOR +
-                           iter.second.next.st.sec - 1;
-        SWord index = iter.second.first.st.trk * MAX_SECTOR +
-                      iter.second.first.st.sec - 1;
+        auto current_index = get_sector_index(sector_track);
+        auto last_index = get_sector_index(iter.second.next);
+        auto index = get_sector_index(iter.second.first);
 
         while (index != last_index)
         {
@@ -460,8 +453,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
             {
                 return iter.first;
             }
-            index = flex_links[index].next.st.trk * MAX_SECTOR +
-                    flex_links[index].next.st.sec - 1;
+            index = get_sector_index(flex_links[index].next);
         }
     }
 
@@ -478,8 +470,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     }
 
     new_file.filename = get_unix_filename(new_file_index);
-    new_file.first.st.trk = track;
-    new_file.first.st.sec = sector;
+    new_file.first.sec_trk = sector_track.sec_trk;
     new_file.next.sec_trk = 0;
 
     new_files.emplace(new_file_index, new_file);
@@ -586,16 +577,17 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
                      INIT_DIR_SECTORS + 1;
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
     dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
-    Word trk = sys_info_sector.fc_start_trk;
-    Word sec = sys_info_sector.fc_start_sec;
-    SWord index = trk * MAX_SECTOR + sec - 1;
+    st_t sector_track;
+    sector_track.st.trk = sys_info_sector.fc_start_trk;
+    sector_track.st.sec = sys_info_sector.fc_start_sec;
+    auto index = get_sector_index(sector_track);
 
     if (extend_directory(index, dir_sector))
     {
         auto dir_sectors = static_cast<Word>(flex_directory.size());
 
-        flex_directory[dir_sectors - 2].next_trk = (Byte)trk;
-        flex_directory[dir_sectors - 2].next_sec = (Byte)sec;
+        flex_directory[dir_sectors - 2].next_trk = sector_track.st.trk;
+        flex_directory[dir_sectors - 2].next_sec = sector_track.st.sec;
 
         if (++sys_info_sector.fc_start_sec > MAX_SECTOR)
         {
@@ -751,7 +743,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     records = (size + (DBPS - 1)) / DBPS;
     begin.st.sec = sys_info_sector.fc_start_sec;
     begin.st.trk = sys_info_sector.fc_start_trk;
-    sector_begin = (begin.st.trk * MAX_SECTOR) + begin.st.sec - 1;
+    sector_begin = get_sector_index(begin);
 
     for (i = 1; i <= records; i++)
     {
@@ -879,7 +871,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 
     if (data_size >= DBPS * 2)
     {
-        index = (begin.st.trk * MAX_SECTOR + begin.st.sec) - 1 + 2;
+        index = get_sector_index(begin) + 2;
 
         std::fill(std::begin(file_sector_map), std::end(file_sector_map), 0);
 
@@ -1114,9 +1106,7 @@ void NafsDirectoryContainer::change_file_id_and_type(SWord index, SWord old_id,
     {
         flex_links[index].file_id = new_id;
         flex_links[index].type = new_type;
-
-        index = flex_links[index].next.st.trk * MAX_SECTOR +
-                flex_links[index].next.st.sec - 1;
+        index = get_sector_index(flex_links[index].next);
     } // while
 } // change_file_id_and_type
 
@@ -1156,8 +1146,10 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
             old_dir_sector.dir_entry[i].filename[0] != DE_DELETED)
         {
             auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
-            SWord index = old_dir_sector.dir_entry[i].start_trk * MAX_SECTOR +
-                          old_dir_sector.dir_entry[i].start_sec - 1;
+            st_t sector_track;
+            sector_track.st.trk = old_dir_sector.dir_entry[i].start_trk;
+            sector_track.st.sec = old_dir_sector.dir_entry[i].start_sec;
+            auto index = get_sector_index(sector_track);
             auto path = directory + PATHSEPARATORSTRING + filename;
             unlink(path.c_str());
             change_file_id_and_type(index, dir_index * DIRENTRIES + i, 0,
@@ -1286,8 +1278,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 }
 
                 keys.push_back(iter.first);
-                SWord index = iter.second.first.st.trk * MAX_SECTOR +
-                              iter.second.first.st.sec - 1;
+                auto index = get_sector_index(iter.second.first);
                 change_file_id_and_type(index, iter.first,
                                         DIRENTRIES * dir_index + i,
                                         SectorType::File);
@@ -1338,10 +1329,11 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 } // check_for_new_file
 
 // Check if track and sector is the last sector in the free chain.
-bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
+bool NafsDirectoryContainer::is_last_of_free_chain(
+                             const st_t &sector_track) const
 {
-    return (flex_sys_info[0].fc_end_trk == trk &&
-            flex_sys_info[0].fc_end_sec == sec);
+    return (flex_sys_info[0].fc_end_trk == sector_track.st.trk &&
+            flex_sys_info[0].fc_end_sec == sector_track.st.sec);
 } // is_last_of_free_chain
 
 
@@ -1350,7 +1342,10 @@ bool NafsDirectoryContainer::is_last_of_free_chain(Byte trk, Byte sec) const
 // Return true on success.
 bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 {
-    int index = trk * MAX_SECTOR + (sec - 1);
+    st_t sector_track;
+    sector_track.st.trk = static_cast<Byte>(trk);
+    sector_track.st.sec = static_cast<Byte>(sec);
+    auto index = get_sector_index(sector_track);
     const auto &link = flex_links[index];
     bool result = true;
 
@@ -1486,9 +1481,10 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
         int sec)
 {
     bool result = true;
-    Byte track = static_cast<Byte>(trk);
-    Byte sector = static_cast<Byte>(sec);
-    SWord index = track * MAX_SECTOR + (sector - 1);
+    st_t sector_track;
+    sector_track.st.trk = static_cast<Byte>(trk);
+    sector_track.st.sec = static_cast<Byte>(sec);
+    auto index = get_sector_index(sector_track);
     auto &link = flex_links[index];
 
 #ifdef DEBUG_FILE
@@ -1509,7 +1505,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             {
                 char *p;
 
-                p = reinterpret_cast<char *>(&flex_sys_info[sector - 3]);
+                p = reinterpret_cast<char *>(&flex_sys_info[sec - 3]);
                 memcpy(p, buffer, SECTOR_SIZE);
             }
             break;
@@ -1536,7 +1532,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                     }
                 }
 
-                Byte *p = boot_buffer.data() + (SECTOR_SIZE * (sector - 1));
+                Byte *p = boot_buffer.data() + (SECTOR_SIZE * (sec - 1));
                 memcpy(p, buffer, SECTOR_SIZE);
                 // Check if 2nd sector contains all zeros.
                 bool is_all_zero = std::all_of(
@@ -1581,7 +1577,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 
         case SectorType::FreeChain:
 
-            if (dir_extend.st.trk == track && dir_extend.st.sec == sector)
+            if (dir_extend.sec_trk == sector_track.sec_trk)
             {
                 const auto &dir_sector =
                     *(reinterpret_cast<s_dir_sector *>(
@@ -1593,8 +1589,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 break;
             } // if
 
-            if (is_last_of_free_chain(track, sector) &&
-                    (buffer[1] || buffer[0]))
+            if (is_last_of_free_chain(sector_track) && (buffer[1] || buffer[0]))
             {
                 // A file has been deleted. It's sectors are added to the end
                 // of the free chain.
@@ -1606,7 +1601,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
             }
 
             {
-                auto new_file_index = index_of_new_file(track, sector);
+                auto new_file_index = index_of_new_file(sector_track);
                 if (new_file_index == 0)
                 {
 #ifdef DEBUG_FILE
@@ -1652,8 +1647,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                     {
                         // If there is a link to the next track/sector also
                         // type it as a new file sector.
-                        SWord next_index = next.st.trk * MAX_SECTOR +
-                                           next.st.sec - 1;
+                        auto next_index = get_sector_index(next);
                         auto &next_link = flex_links[next_index];
                         next_link.type = SectorType::NewFile;
                         next_link.file_id = link.file_id;
@@ -1742,5 +1736,11 @@ std::string NafsDirectoryContainer::get_unique_filename(
     diskname += '_' + std::to_string(number) + "." + extension;
 
     return diskname;
+}
+
+// Return the sector index of the given track/sector.
+SWord NafsDirectoryContainer::get_sector_index(const st_t &sector_track) const
+{
+        return sector_track.st.trk * MAX_SECTOR + sector_track.st.sec - 1;
 }
 #endif // #ifdef NAFS
