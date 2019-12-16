@@ -478,7 +478,6 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     new_file.first.st.trk = track;
     new_file.first.st.sec = sector;
     new_file.next.sec_trk = 0;
-    new_file.f_record = 0;
 
     new_files.emplace(new_file_index, new_file);
 

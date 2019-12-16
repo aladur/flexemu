@@ -88,7 +88,6 @@ class NafsDirectoryContainer : public FileContainerIfSector
         char filename[FLEX_FILENAME_LENGTH];
         st_t first; /* track and sector of first first first sector */
         st_t next; /* track and sector of next sector to be written */
-        Word f_record; /* number of records (= sectors) */
     };
 
 public:
