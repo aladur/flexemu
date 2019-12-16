@@ -230,12 +230,12 @@ int NafsDirectoryContainer::GetContainerType() const
 ///////////////////////////////////////////////////////
 
 // Initialize the internal data structures.
-void NafsDirectoryContainer::initialize_header(Byte wp)
+void NafsDirectoryContainer::initialize_header(bool is_write_protected)
 {
     size_t i;
 
     param.offset        = 0;
-    param.write_protect = wp;
+    param.write_protect = is_write_protected ? 1U : 0U;
     param.max_sector    = MAX_SECTOR >> 1;
     param.max_sector0   = MAX_SECTOR0 >> 1;
     param.max_track     = MAX_TRACK;
@@ -517,7 +517,7 @@ std::string NafsDirectoryContainer::get_path_of_file(SWord file_id) const
 bool NafsDirectoryContainer::extend_directory(SWord index,
     const s_dir_sector &dir_sector)
 {
-    flex_links[index].f_record = flex_directory.size();
+    flex_links[index].f_record = static_cast<Word>(flex_directory.size());
     flex_links[index].file_id = std::numeric_limits<SWord>::max();
     flex_links[index].type = SectorType::Directory;
     flex_directory.push_back(dir_sector);
@@ -580,7 +580,8 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     s_dir_sector dir_sector { };
 
-    Word record_nr = flex_directory.size() - INIT_DIR_SECTORS + 1;
+    Word record_nr = static_cast<Word>(flex_directory.size()) -
+                     INIT_DIR_SECTORS + 1;
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
     dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
     Word trk = sys_info_sector.fc_start_trk;
@@ -945,6 +946,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     st_t begin, end;
     struct stat sbuf;
 
+    memset(&sbuf, 0, sizeof(sbuf));
     initialize_flex_directory();
     initialize_flex_link_table();
 #ifdef _WIN32
@@ -1298,7 +1300,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
                     FILE_ATTRIBUTE_HIDDEN);
 #else
-                SetFileAttributes(old_path, FILE_ATTRIBUTE_HIDDEN);
+                SetFileAttributes(old_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
 #endif
 
 #endif
@@ -1403,10 +1405,10 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                     count = fread(buffer, 1, SECTOR_SIZE, fp);
                     if (sec == 1 && count == SECTOR_SIZE)
                     {
-                        st_t link = link_address();
+                        st_t boot_link = link_address();
 
-                        buffer[3] = link.st.trk;
-                        buffer[4] = link.st.sec;
+                        buffer[3] = boot_link.st.trk;
+                        buffer[4] = boot_link.st.sec;
                     }
                     fclose(fp);
                 }
@@ -1692,12 +1694,10 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
 // Mount the directory container. number is the disk number.
 void NafsDirectoryContainer::mount(Word number)
 {
-    Byte wp_flag;
-
-    wp_flag = static_cast<Byte>(access(directory.c_str(), W_OK));
-    initialize_header(wp_flag);
+    bool is_write_protected = (access(directory.c_str(), W_OK) != 0);
+    initialize_header(is_write_protected);
     initialize_flex_sys_info_sectors(number);
-    fill_flex_directory(wp_flag);
+    fill_flex_directory(is_write_protected);
 } // mount
 
 std::string NafsDirectoryContainer::to_string(SectorType type)

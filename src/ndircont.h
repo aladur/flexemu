@@ -134,7 +134,7 @@ public:
 
 private:
     void fill_flex_directory(bool is_write_protected);
-    void initialize_header(Byte wp);
+    void initialize_header(bool is_write_protected);
     void initialize_flex_sys_info_sectors(Word number);
     void initialize_flex_directory();
     void initialize_flex_link_table();

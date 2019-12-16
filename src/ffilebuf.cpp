@@ -631,10 +631,10 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
         {
             std::stringstream stream;
 
-            for (unsigned index = 0; index < sizeof(fileHeader.magicNumber); )
+            for (unsigned i = 0; i < sizeof(fileHeader.magicNumber); )
             {
                 stream << std::hex <<
-                    (0xff & (unsigned)fileHeader.magicNumber[index++]);
+                    (0xff & (unsigned)fileHeader.magicNumber[i++]);
             }
             throw FlexException(FERR_INVALID_MAGIC_NUMBER,
                                 stream.str().c_str());

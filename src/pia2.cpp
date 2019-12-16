@@ -235,7 +235,7 @@ Byte Pia2::readInputB()
     }
     else
     {
-        tx += (cyclediff << 4);
+        tx += static_cast<int>(cyclediff << 4);
 
         if (tx >= Tx)
         {
@@ -244,7 +244,7 @@ Byte Pia2::readInputB()
             orb ^= 0x01;
         }
 
-        ty += (cyclediff << 4);
+        ty += static_cast<int>(cyclediff << 4);
 
         if (ty >= Ty)
         {
