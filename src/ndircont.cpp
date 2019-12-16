@@ -473,8 +473,7 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     {
     }
 
-    strcpy(new_file.filename, get_unix_filename(new_file_index).c_str());
-
+    new_file.filename = get_unix_filename(new_file_index);
     new_file.first.st.trk = track;
     new_file.first.st.sec = sector;
     new_file.next.sec_trk = 0;
@@ -1317,7 +1316,7 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 #ifdef DEBUG_FILE
                 LOG_XX("      new file %s, was %s\n",
                         get_unix_filename(flex_links[index].file_id).c_str(),
-                        iter.second.filename);
+                        iter.second.filename.c_str());
 #endif
                 set_file_time(new_path.c_str(),
                     dir_sector.dir_entry[i].month,
@@ -1614,7 +1613,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 }
 
 #ifdef DEBUG_FILE
-                LOG_X("      file %s\n", new_files.at(new_file_index).filename);
+                LOG_X("      file %s\n",
+                      new_files.at(new_file_index).filename.c_str());
 #endif
                 link.file_id = new_file_index;
                 auto path = get_path_of_file(link.file_id);

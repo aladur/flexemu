@@ -85,7 +85,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     // on the host file system.
     struct s_new_file
     {
-        char filename[FLEX_FILENAME_LENGTH];
+        std::string filename;
         st_t first; /* track and sector of first first first sector */
         st_t next; /* track and sector of next sector to be written */
     };
