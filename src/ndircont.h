@@ -89,7 +89,6 @@ class NafsDirectoryContainer : public FileContainerIfSector
         st_t first; /* track and sector of first first first sector */
         st_t next; /* track and sector of next sector to be written */
         Word f_record; /* number of records (= sectors) */
-        FILE *fp; /* file pointer on the target file system */
     };
 
 public:
@@ -180,6 +179,7 @@ private:
     st_t link_address() const;
     bool is_last_of_free_chain(Byte tr, Byte sr) const;
     SWord index_of_new_file(Byte track, Byte sector);
+    std::string get_path_of_file(SWord file_id) const;
     Word record_nr_of_new_file(SWord new_file_index, Word index) const;
     void change_file_id_and_type(
         SWord index,

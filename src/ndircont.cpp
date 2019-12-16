@@ -443,6 +443,22 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
         {
             return iter.first;
         }
+
+        SWord current_index = track * MAX_SECTOR + sector - 1;
+        SWord last_index = iter.second.next.st.trk * MAX_SECTOR +
+                           iter.second.next.st.sec - 1;
+        SWord index = iter.second.first.st.trk * MAX_SECTOR +
+                      iter.second.first.st.sec - 1;
+
+        while (index != last_index)
+        {
+            if (index == current_index)
+            {
+                return iter.first;
+            }
+            index = flex_links[index].next.st.trk * MAX_SECTOR +
+                    flex_links[index].next.st.sec - 1;
+        }
     }
 
     // Not found in existing new files.
@@ -458,13 +474,6 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
     }
 
     strcpy(new_file.filename, get_unix_filename(new_file_index).c_str());
-    auto path = directory + PATHSEPARATORSTRING + new_file.filename;
-    new_file.fp = fopen(path.c_str(), "wb+");
-
-    if (new_file.fp == nullptr)
-    {
-        return 0;
-    }
 
     new_file.first.st.trk = track;
     new_file.first.st.sec = sector;
@@ -475,6 +484,32 @@ SWord NafsDirectoryContainer::index_of_new_file(Byte track, Byte sector)
 
     return new_file_index;
 } // index_of_new_file
+
+std::string NafsDirectoryContainer::get_path_of_file(SWord file_id) const
+{
+    if (file_id < 0)
+    {
+        if (new_files.find(file_id) != new_files.end())
+        {
+            return directory + PATHSEPARATORSTRING +
+                   new_files.at(file_id).filename;
+        }
+    }
+    else
+    {
+        Word sector_index = file_id / DIRENTRIES;
+
+        if (sector_index < flex_directory.size())
+        {
+            const auto &directory_entry =
+                flex_directory[sector_index].dir_entry[file_id % DIRENTRIES];
+            return directory + PATHSEPARATORSTRING +
+                   get_unix_filename(directory_entry);
+        }
+    }
+
+    return std::string();
+}
 
 
 // Extend the FLEX directory by one directory sector.
@@ -649,22 +684,15 @@ void NafsDirectoryContainer::close_new_files()
 
     for (auto &iter : new_files)
     {
-        if (iter.second.fp != nullptr)
+        if (is_first)
         {
-            if (is_first)
-            {
-                msg = "There are still open files\n"
-                       "temporarily stored as:\n";
-                is_first = false;
-            }
-
-            fclose(iter.second.fp);
-            iter.second.fp = nullptr;
-
-            msg += "   ";
-            msg += iter.second.filename;
-            msg += "\n";
+            msg = "There are still temporary files stored as:\n";
+            is_first = false;
         }
+
+        msg += "   ";
+        msg += iter.second.filename;
+        msg += "\n";
     }
     new_files.clear();
 
@@ -1259,7 +1287,6 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 change_file_id_and_type(index, iter.first,
                                         DIRENTRIES * dir_index + i,
                                         SectorType::File);
-                fclose(iter.second.fp);
 
                 auto old_path =
                     directory + PATHSEPARATORSTRING + iter.second.filename;
@@ -1409,14 +1436,14 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
             // free chain sector reads always
             // filled with zero
             std::memset(buffer + MDPS, 0, DBPS);
-
             break;
 
+        case SectorType::NewFile: // new file with temporary name tmpXX
         case SectorType::File: // Read from an existing file.
             {
-                auto path = directory + PATHSEPARATORSTRING +
-                            get_unix_filename(link.file_id);
+                auto path = get_path_of_file(link.file_id);
 
+                result = false;
                 FILE *fp = fopen(path.c_str(), "rb");
                 if (fp != nullptr &&
                     !fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
@@ -1429,36 +1456,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
                     {
                         std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
                     }
+                    result = true;
                 }
-                else     // unable to read sector
-                {
-                    result = false;
-                } // else
-
-                update_sector_buffer_from_link(buffer, link);
-            }
-            break;
-
-        case SectorType::NewFile: // new file with temporary name tmpXX
-            {
-                FILE *fp = new_files.at(link.file_id).fp;
-
-                if (!fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
-                {
-                    size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
-
-                    // stuff last sector of file with 0
-                    if (bytes < DBPS)
-                    {
-                        std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
-                    }
-
-                    fseek(fp, 0L, SEEK_END); // position end of file
-                }
-                else     // unable to read sector
-                {
-                    result = false;
-                } // else
 
                 update_sector_buffer_from_link(buffer, link);
             }
@@ -1482,7 +1481,6 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
         int sec)
 {
-    SWord new_file_index;
     bool result = true;
     Byte track = static_cast<Byte>(trk);
     Byte sector = static_cast<Byte>(sec);
@@ -1603,84 +1601,77 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                 break;
             }
 
-            if ((new_file_index = index_of_new_file(track, sector)) == 0)
             {
+                auto new_file_index = index_of_new_file(track, sector);
+                if (new_file_index == 0)
+                {
 #ifdef DEBUG_FILE
-                LOG("   ** error: unable to create new file\n");
+                    LOG("   ** error: unable to create new file\n");
 #endif
-                result = false; // no more new files can be created
-                break;
-            }
+                    result = false; // no more new files can be created
+                    break;
+                }
 
 #ifdef DEBUG_FILE
-            LOG_X("      file %s\n", new_files.at(new_file_index).filename);
+                LOG_X("      file %s\n", new_files.at(new_file_index).filename);
 #endif
-            {
-                FILE *fp = new_files.at(new_file_index).fp;
-                new_files.at(new_file_index).next.st.trk = buffer[0];
-                new_files.at(new_file_index).next.st.sec = buffer[1];
                 link.file_id = new_file_index;
-                update_link_from_sector_buffer(link, buffer);
-                link.f_record = record_nr_of_new_file(new_file_index, index);
-
-                if (ftell(fp) != static_cast<signed>(link.f_record * DBPS) &&
-                    fseek(fp, (long)(link.f_record * DBPS), SEEK_SET) != 0)
+                auto path = get_path_of_file(link.file_id);
+                // Create an empty new file.
+                FILE *fp = fopen(path.c_str(), "wb");
+                if (fp != nullptr)
                 {
-                    result = false;
-                }
-                else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
-                {
-                    result = false;
+                    fclose(fp);
                 }
             }
-            break;
+            // intentionally fall through.
 
+        case SectorType::NewFile:
         case SectorType::File:
             {
-                auto path = directory + PATHSEPARATORSTRING +
-                            get_unix_filename(link.file_id);
-                update_link_from_sector_buffer(link, buffer);
+                auto path = get_path_of_file(link.file_id);
 
-                FILE *fp = fopen(path.c_str(), "rb+");
-                if (fp == nullptr)
+                update_link_from_sector_buffer(link, buffer);
+                if (link.file_id < 0)
                 {
-                    result = false;
-                }
-                else
-                {
-                    if (ftell(fp) != link.f_record &&
-                        fseek(fp, (long)(link.f_record * DBPS),
-                                SEEK_SET) != 0)
+                    st_t next;
+
+                    next.st.trk = buffer[0];
+                    next.st.sec = buffer[1];
+                    new_files.at(link.file_id).next.st.trk = next.st.trk;
+                    new_files.at(link.file_id).next.st.sec = next.st.sec;
+                    link.type = SectorType::NewFile;
+                    link.f_record =
+                        record_nr_of_new_file(link.file_id, index);
+                    if (next.sec_trk)
                     {
-                        result = false;
+                        // If there is a link to the next track/sector also
+                        // type it as a new file sector.
+                        SWord next_index = next.st.trk * MAX_SECTOR +
+                                           next.st.sec - 1;
+                        auto &next_link = flex_links[next_index];
+                        next_link.type = SectorType::NewFile;
+                        next_link.file_id = link.file_id;
+                        next_link.f_record =
+                           record_nr_of_new_file(next_link.file_id, next_index);
                     }
-                    else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
+                }
+
+                result = false;
+                FILE *fp = fopen(path.c_str(), "rb+");
+                if (fp != nullptr)
+                {
+                    if (ftell(fp) == link.f_record ||
+                        fseek(fp, (long)(link.f_record * DBPS), SEEK_SET) == 0)
                     {
-                        result = false;
+                        if (fwrite(buffer + MDPS, 1, DBPS, fp) == DBPS)
+                        {
+                            result = true;
+                        }
                     }
 
                     fclose(fp);
-                } // else
-
-                update_link_from_sector_buffer(link, buffer);
-            }
-            break;
-
-        case SectorType::NewFile:
-            {
-                FILE *fp = new_files.at(link.file_id).fp;
-
-                if (ftell(fp) != link.f_record &&
-                    fseek(fp, (long)(link.f_record * DBPS), SEEK_SET) != 0)
-                {
-                    result = false;
                 }
-                else if (fwrite(buffer + MDPS, 1, DBPS, fp) != DBPS)
-                {
-                    result = false;
-                }
-
-                update_link_from_sector_buffer(link, buffer);
             }
             break;
     } // switch
