@@ -382,7 +382,7 @@ Byte E2floppy::readByte(Word index)
 
         if (!pfs->ReadSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
-            setStatusRecordNotFound();
+            setStatusReadError();
         }
     }
 
@@ -402,7 +402,7 @@ void E2floppy::writeByte(Word index)
 
         if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
         {
-            setStatusRecordNotFound();
+            setStatusWriteError();
         }
     }
 }

@@ -133,7 +133,7 @@ Byte Wd1793::readIo(Word offset)
                 if (byteCount)
                 {
                     dr = readByte(byteCount);
-                    if (!isErrorStatus())
+                    if (byteCount != 0)
                     {
                         byteCount--;
                     }
@@ -176,7 +176,7 @@ void Wd1793::writeIo(Word offset, Byte val)
             if (byteCount)
             {
                 writeByte(byteCount);
-                if (!isErrorStatus())
+                if (byteCount != 0)
                 {
                     byteCount--;
                 }
@@ -271,7 +271,7 @@ void Wd1793::command(Byte command)
 
                 if (isRecordNotFound())
                 {
-                    str = STR_SEEKERROR;
+                    str = STR_RECORDNOTFOUND;
                 }
                 else
                 {
@@ -298,7 +298,7 @@ void Wd1793::command(Byte command)
 
                 if (isRecordNotFound())
                 {
-                    str = STR_SEEKERROR;
+                    str = STR_RECORDNOTFOUND;
                 }
                 else
                 {
@@ -325,7 +325,7 @@ void Wd1793::command(Byte command)
             case CMD_READADDRESS:
                 if (isRecordNotFound())
                 {
-                    str = STR_SEEKERROR;
+                    str = STR_RECORDNOTFOUND;
                 }
                 else
                 {
@@ -403,15 +403,32 @@ bool Wd1793::isWriteProtect()
     return false;
 }
 
-void Wd1793::setStatusRecordNotFound()
+// Set the status register after a read error.
+// By trial-and-error (when copying a file) it has been found that flexemu
+// responds with the following error messages when an error flag is set.
+// The one with the star has been chosen as best choice.
+// - STR_RECORDNOTFOUND: DISK FILE READ ERROR.
+// - STR_CRCERROR:       DISK FILE READ ERROR.
+// * STR_LOSTDATA:       DISK FILE READ ERROR.
+void Wd1793::setStatusReadError()
 {
     isDataRequest = 0;
-    str = STR_RECORDNOTFOUND;
+    str = STR_LOSTDATA;
     byteCount = 0;
 }
 
-bool Wd1793::isErrorStatus() const
+// Set the status register after a write error.
+// By trial-and-error (when copying a file) it has been found that flexemu
+// responds with the following error messages when an error flag is set.
+// The one with the star has been chosen as best choice.
+// - STR_WRITEFAULT:     The error is ignored but the sector is not written.
+// - STR_RECORDNOTFOUND: DRIVE NOT READY.
+// - STR_CRCERROR:       READ PAST END OF FILE.
+// * STR_LOSTDATA:       FILE NOT FOUND.
+void Wd1793::setStatusWriteError()
 {
-    return (str & (STR_RECORDNOTFOUND | STR_SEEKERROR)) != 0;
+    isDataRequest = 0;
+    str = STR_LOSTDATA;
+    byteCount = 0;
 }
 

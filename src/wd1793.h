@@ -39,9 +39,12 @@ public:
     static const Byte STR_NOTREADY{0x80};
     static const Byte STR_PROTECTED{0x40};
     static const Byte STR_HEADLOADED{0x20};
+    static const Byte STR_WRITEFAULT{0x20}; // for type 2 and 3 write commands
     static const Byte STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
     static const Byte STR_SEEKERROR{0x10}; // for type 1 commands
+    static const Byte STR_CRCERROR{0x08}; // for type 1, 2 and 3 commands
     static const Byte STR_TRACK0{0x04};
+    static const Byte STR_LOSTDATA{0x04}; // for type 2 and 3 commands
     static const Byte STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
     static const Byte STR_INDEX{0x02}; // for type 1 commands
     static const Byte STR_BUSY{0x01};
@@ -161,8 +164,8 @@ protected:
     }
 
     void command(Byte command);
-    void                     setStatusRecordNotFound();
-    bool                     isErrorStatus() const;
+    void setStatusReadError();
+    void setStatusWriteError();
 
     // Read and write functions
     virtual Byte readByte(Word index);

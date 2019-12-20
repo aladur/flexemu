@@ -209,19 +209,21 @@ bool NafsDirectoryContainer::IsWriteProtected() const
 
 bool NafsDirectoryContainer::IsTrackValid(int track) const
 {
-    return (track <= param.max_track);
+    return (track >= 0 && track <= param.max_track);
 }
 
 bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
 {
-    if (track)
+    if (track > 0)
     {
-        return (sector != 0 && sector <= (param.max_sector * 2));
+        return (sector > 0 && sector <= (param.max_sector * 2));
     }
-    else
+    else if (track == 0)
     {
-        return (sector != 0 && sector <= (param.max_sector0 * 2));
+        return (sector > 0 && sector <= (param.max_sector0 * 2));
     }
+
+    return false;
 }
 
 int NafsDirectoryContainer::GetContainerType() const
