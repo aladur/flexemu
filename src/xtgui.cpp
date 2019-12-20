@@ -160,11 +160,11 @@ void XtGui::timerCallbackProc(XtPointer p, XtIntervalId *pId)
     }
 }
 
-void XtGui::initialize(struct sGuiOptions &options)
+void XtGui::initialize(struct sGuiOptions &x_guiOptions)
 {
     int i;
 
-    XAbstractGui::initialize(options);
+    XAbstractGui::initialize(x_guiOptions);
     lfs.reset();
     ggui = this;        // global instance pointer needed for callbacks
     warp_x = 0;
@@ -184,7 +184,7 @@ void XtGui::initialize(struct sGuiOptions &options)
     }
 
 #endif
-    initialize_e2window(options);
+    initialize_e2window(x_guiOptions);
 } // initialize
 
 void XtGui::setCpuExitCallback(Widget,
@@ -445,7 +445,7 @@ void XtGui::c_process_resize(XEvent *pevent)
 
 #ifdef HAVE_XPM
 // color is the color used instead of transparency
-void XtGui::create_pixmaps(Widget w, Pixel color)
+void XtGui::create_pixmaps(Widget w, Pixel x_color)
 {
     int errorStatus = XpmSuccess;
     XpmAttributes xpmattr;
@@ -459,7 +459,7 @@ void XtGui::create_pixmaps(Widget w, Pixel color)
         data = const_cast<char **>(pixmapname[i]);
         symbol.name = nullptr;
         symbol.value = const_cast<char *>(none);
-        symbol.pixel = color;
+        symbol.pixel = x_color;
         xpmattr.colorsymbols = &symbol;
         xpmattr.numsymbols = 1;
         xpmattr.colormap = DefaultColormapOfScreen(XtScreen(w));
@@ -1185,7 +1185,7 @@ void XtGui::c_highlight_child(Widget w, XEvent *pevent, String *params)
     }
 } // c_highlight_child
 
-void XtGui::initialize_e2window(struct sGuiOptions &options)
+void XtGui::initialize_e2window(struct sGuiOptions &x_guiOptions)
 {
     Widget w;
 
@@ -1194,8 +1194,8 @@ void XtGui::initialize_e2window(struct sGuiOptions &options)
     is_menu_mode = false;
     menu_popped_up = None;
     initialize_conv_tables();
-    w = create_main_view(options.argc, options.argv,
-                         options.isSynchronized);
+    w = create_main_view(x_guiOptions.argc, x_guiOptions.argv,
+                         x_guiOptions.isSynchronized);
     create_message_dialog(w);
     create_about_dialog(w);
 #ifdef HAVE_XPM
@@ -1204,7 +1204,7 @@ void XtGui::initialize_e2window(struct sGuiOptions &options)
     create_cpuview(w);
     create_bp_dialog(w);
     create_logfile_dialog(w);
-    initialize_after_create(w, options.isInverse, options.color.c_str());
+    initialize_after_create(w, x_guiOptions.isInverse);
     manage_widget(w);
     initialize_after_open(w, get_title());
     e2toplevel = w;
@@ -1212,9 +1212,9 @@ void XtGui::initialize_e2window(struct sGuiOptions &options)
 
 // The menus are kept open when releasing the mouse button.
 // This is realized by adding a menu handler.
-void XtGui::add_menu_handler(Widget button, Widget /*menu*/)
+void XtGui::add_menu_handler(Widget button_widget, Widget /*menu*/)
 {
-    XtAddEventHandler(button,
+    XtAddEventHandler(button_widget,
                       ButtonPressMask | KeyPressMask | KeyReleaseMask |
                       EnterWindowMask | LeaveWindowMask,
                       False, (XtEventHandler)menuHandlerCallback,
@@ -1477,12 +1477,11 @@ void XtGui::create_message_dialog(Widget parent)
     XSetWMProtocols(getDisplay(), XtWindow(messageframe), &wm_delete_window, 1);
 } // create_message_dialog
 
-void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
+void XtGui::initialize_after_create(Widget w, bool isInverse)
 {
     unsigned int i, j;
     Display *display;
     Screen *screen;
-    Visual *visual;
     XGCValues gcv;
     XWMHints *wm_hints;
     XColor xcolor, exact_color;
@@ -1492,7 +1491,6 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
 
     display = XtDisplay(w);
     screen = XtScreen(w);
-    visual = DefaultVisualOfScreen(screen);
 
     mainpixmap = None;
 #ifdef HAVE_XPM
@@ -1520,13 +1518,13 @@ void XtGui::initialize_after_create(Widget w, bool isInverse, const char *color)
         XtVaSetValues(w, XtNiconPixmap, mainpixmap, nullptr);
     }
 
-    if (!*color || !stricmp(color, "default"))
+    if (color.empty() || !stricmp(color.c_str(), "default"))
     {
         color = "green";
     }
 
     if (!XAllocNamedColor(display, DefaultColormapOfScreen(screen),
-                          color, &xcolor, &exact_color))
+                          color.c_str(), &xcolor, &exact_color))
     {
         xcolor.pixel = WhitePixelOfScreen(screen);
     }

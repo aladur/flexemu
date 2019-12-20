@@ -52,9 +52,9 @@
 #include "joystick.h"
 #include "keyboard.h"
 
-void XAbstractGui::initialize(struct sGuiOptions &options)
+void XAbstractGui::initialize(struct sGuiOptions &x_guiOptions)
 {
-    AbstractGui::initialize(options);
+    AbstractGui::initialize(x_guiOptions);
     bp_input[0] = 0;
     bp_input[1] = 0;
     visual = nullptr;
@@ -868,12 +868,12 @@ XAbstractGui::~XAbstractGui()
 {
 }
 
-Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
+Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *pdepth)
 {
     int default_depth;
     XVisualInfo vTemplate;
     XVisualInfo *visualList = nullptr;
-    Visual *visual = nullptr;
+    Visual *best_visual = nullptr;
     int nrOfVisuals;
 
     vTemplate.screen = DefaultScreen(dpy);
@@ -889,8 +889,8 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
 
             if (nrOfVisuals > 0)
             {
-                *depth = visualList[0].depth;
-                visual = visualList[0].visual;
+                *pdepth = visualList[0].depth;
+                best_visual = visualList[0].visual;
             }
             else
             {
@@ -901,8 +901,8 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
 
                 if (nrOfVisuals > 0)
                 {
-                    *depth = visualList[0].depth;
-                    visual = visualList[0].visual;
+                    *pdepth = visualList[0].depth;
+                    best_visual = visualList[0].visual;
                 }
                 else
                 {
@@ -913,8 +913,8 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
 
                     if (nrOfVisuals > 0)
                     {
-                        *depth = visualList[0].depth;
-                        visual = visualList[0].visual;
+                        *pdepth = visualList[0].depth;
+                        best_visual = visualList[0].visual;
                     }
                 }
             }
@@ -931,15 +931,15 @@ Visual *XAbstractGui::GetBestVisual(Display *dpy, int *vClass, int *depth)
 
             if (nrOfVisuals > 0)
             {
-                *depth = visualList[0].depth;
-                visual = visualList[0].visual;
+                *pdepth = visualList[0].depth;
+                best_visual = visualList[0].visual;
             }
 
             break;
     }
 
     XFree(visualList);
-    return visual;
+    return best_visual;
 }
 
 int XAbstractGui::SetColors(Display *dpy)

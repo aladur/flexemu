@@ -125,7 +125,6 @@ protected:
     GC       authorgc;
 #endif
     bool        is_menu_mode;
-    bool        isSynchronized;
     std::unique_ptr<Byte[]> image_data;
 
     Display *getDisplay() override;
@@ -142,7 +141,7 @@ protected:
     void create_logfile_dialog(Widget parent);
     void manage_widget(Widget w);
     void initialize_e2window(struct sGuiOptions &options);
-    void initialize_after_create(Widget w, bool isInverse, const char *color);
+    void initialize_after_create(Widget w, bool isInverse);
     void initialize_after_open(Widget w, const char *title);
     void update_disk_status(int floppyIndex, DiskStatus status);
     void update_interrupt_status(tIrqType irqType, bool status);

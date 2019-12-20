@@ -27,7 +27,14 @@
 
 #include "misc1.h"
 #include <stdio.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
 #include <tsl/robin_map.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 #include <functional>
 #include <memory>
 #include "iodevice.h"

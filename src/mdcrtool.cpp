@@ -173,8 +173,6 @@ int ExtractFromMdcrFile(const char *ifile)
     }
 
     MdcrFileSystem mdcrfs;
-    std::string filename;
-    BMemoryBuffer memory(65536);
 
     auto status = mdcrfs.ForEachFile(*mdcr.get(),
                        [](const std::string &filename,
@@ -223,8 +221,6 @@ int ListContentOfMdcrFile(const char *ifile)
     }
 
     MdcrFileSystem mdcrfs;
-    std::string filename;
-    BMemoryBuffer memory(65536);
 
     auto status = mdcrfs.ForEachFile(*mdcr.get(),
                        [](const std::string &filename,

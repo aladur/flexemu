@@ -39,16 +39,16 @@ public:
 
 inline InstFlg operator| (InstFlg lhs, InstFlg rhs)
 {
-    using T = std::underlying_type<InstFlg>::type;
+    using TYP = std::underlying_type<InstFlg>::type;
 
-    return static_cast<InstFlg>(static_cast<T>(lhs) | static_cast<T>(rhs));
+    return static_cast<InstFlg>(static_cast<TYP>(lhs) | static_cast<TYP>(rhs));
 }
 
 inline InstFlg operator& (InstFlg lhs, InstFlg rhs)
 {
-    using T = std::underlying_type<InstFlg>::type;
+    using TYP = std::underlying_type<InstFlg>::type;
 
-    return static_cast<InstFlg>(static_cast<T>(lhs) & static_cast<T>(rhs));
+    return static_cast<InstFlg>(static_cast<TYP>(lhs) & static_cast<TYP>(rhs));
 }
 
 
@@ -66,16 +66,16 @@ inline InstFlg operator&= (InstFlg &lhs, InstFlg rhs)
 
 inline InstFlg operator~ (InstFlg rhs)
 {
-    using T = std::underlying_type<InstFlg>::type;
+    using TYP = std::underlying_type<InstFlg>::type;
 
-    return static_cast<InstFlg>(~static_cast<T>(rhs));
+    return static_cast<InstFlg>(~static_cast<TYP>(rhs));
 }
 
 inline bool operator! (InstFlg rhs)
 {
-    using T = std::underlying_type<InstFlg>::type;
+    using TYP = std::underlying_type<InstFlg>::type;
 
-    return static_cast<T>(rhs) == 0;
+    return static_cast<TYP>(rhs) == 0;
 }
 
 #endif // ABSDISAS_INCLUDED

@@ -470,24 +470,24 @@ void init_test_gccasm(int /*argc*/, char ** /*argv*/)
 {
 }
 
-void err(std::string mnemonic, Word op, Byte cc, std::string regname,
+void err(std::string mnemonic, Word op, Byte m6809_cc, std::string regname,
          Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << (Word)op << ")"
-              << ", CC=0x" << (Word)cc
+              << ", CC=0x" << (Word)m6809_cc
               << ", " << regname
               << " expected 0x" << (Word)cpureg
               << " but is 0x" << (Word)x86reg
               << std::endl;
 }
 
-void err(std::string mnemonic, Word op1, Word op2, Byte cc, std::string regname,
-         Word cpureg, Word x86reg)
+void err(std::string mnemonic, Word op1, Word op2, Byte m6809_cc,
+         std::string regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << (Word)op1 << ", 0x" << (Word)op2 << ")"
-              << ", CC=0x" << (Word)cc
+              << ", CC=0x" << (Word)m6809_cc
               << ", " << regname
               << " expected 0x" << (Word)cpureg
               << " but is 0x" << (Word)x86reg
