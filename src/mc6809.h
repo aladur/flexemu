@@ -137,61 +137,6 @@ union ucc
     } bit;
 };
 
-union ux86flags
-{
-    DWord           all;
-    struct
-    {
-#ifdef WORDS_BIGENDIAN
-        Word        h;
-        Word        l;
-#else
-        Word        l;
-        Word        h;
-#endif
-    } word;
-    struct
-    {
-#ifdef BITFIELDS_LSB_FIRST
-        bool        cf    : 1; // carry flag
-        bool        one   : 1; // always one
-        bool        pf    : 1; // parity flag
-        bool        zero1 : 1; // always zero
-        bool        af    : 1; // auxilliary carry flag
-        bool        zero2 : 1; // always zero
-        bool        zf    : 1; // zero flag
-        bool        sf    : 1; // sign flag
-        bool        tf    : 1; // trap flag
-        bool        _if   : 1; // interrupt enable flag
-        bool        df    : 1; // direction flag
-        bool        of    : 1; // overflow flag
-        bool        iopl0 : 1; // i/o previlidge level
-        bool        iopl1 : 1; // i/o previlidge level
-        bool        nt    : 1; // nested task
-        bool        zero3 : 1; // always zero
-        int         dummy : 16; // fill up to 32-bit
-#else
-        int         dummy : 16; // fill up to 32-bit
-        bool        zero3 : 1; // always zero
-        bool        nt    : 1; // nested task
-        bool        iopl1 : 1; // i/o previlidge level
-        bool        iopl0 : 1; // i/o previlidge level
-        bool        of    : 1; // overflow flag
-        bool        df    : 1; // direction flag
-        bool        _if   : 1; // interrupt enable flag
-        bool        tf    : 1; // trap flag
-        bool        sf    : 1; // sign flag
-        bool        zf    : 1; // zero flag
-        bool        zero2 : 1; // always zero
-        bool        af    : 1; // auxilliary carry flag
-        bool        zero1 : 1; // always zero
-        bool        pf    : 1; // parity flag
-        bool        one   : 1; // always one
-        bool        cf    : 1; // carry flag
-#endif
-    } bit;
-};
-
 class Da6809;
 class Mc6809CpuStatus;
 
@@ -293,9 +238,6 @@ protected:
     Word           &d;
     Byte           &dp;
     union ucc cc;
-#ifdef USE_GCCASM
-    union ux86flags x86flags;
-#endif
 #endif // #ifndef FASTFLEX
 
 protected:
