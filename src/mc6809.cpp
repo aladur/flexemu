@@ -1467,21 +1467,16 @@ void Mc6809::get_interrupt_status(tInterruptStatus &stat)
 
 void Mc6809::UpdateFrom(NotifyId id, void *)
 {
-    switch (id)
+    if (id == NotifyId::SetIrq)
     {
-        case NotifyId::SetIrq:
-            set_irq();
-            break;
-
-        case NotifyId::SetFirq:
-            set_firq();
-            break;
-
-        case NotifyId::SetNmi:
-            set_nmi();
-            break;
-
-        default:
-            break;
+        set_irq();
+    }
+    else if (id == NotifyId::SetFirq)
+    {
+        set_firq();
+    }
+    else if (id == NotifyId::SetNmi)
+    {
+        set_nmi();
     }
 }

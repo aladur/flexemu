@@ -128,9 +128,17 @@ void Inout::create_gui(JoystickIO &x_joystickIO,
                                     x_terminalIO, x_pia1, x_options));
                 break;
 #endif
+
+#ifndef HAVE_XTK
+            case GuiType::XTOOLKIT:
+#endif
+#ifndef _WIN32
+            case GuiType::WINDOWS:
+#endif
             default:
                 throw FlexException(FERR_UNSUPPORTED_GUI_TYPE,
                         static_cast<int>(x_options.guiType));
+            case GuiType::NONE:
                 break;
         }
     }

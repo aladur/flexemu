@@ -31,6 +31,7 @@ EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
 noinst_PROGRAMS = test
 
 AM_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic \
+              -Wswitch-enum \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
