@@ -30,33 +30,24 @@ bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex
 EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
 noinst_PROGRAMS = test
 
-AM_CXXFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
+AM_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic \
+              -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
-flexemu_CXXFLAGS    = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
+flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
 			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
-flexplorer_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
-			@OS_TYPE@ @WX_CFLAGS@
-fsetup_CXXFLAGS     = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
-			@OS_TYPE@ @WX_CFLAGS@
-mdcrtool_CXXFLAGS   = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
-			@OS_TYPE@ @WX_CFLAGS@
-flex2hex_CXXFLAGS   = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
-			@OS_TYPE@ @WX_CFLAGS@
-test_CXXFLAGS       = --std=c++11 -Wall -Wextra -Wpedantic \
-		        $(AM_CXXFLAGS) \
-		        @OS_TYPE@ -DUNIT_TEST
+flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
+fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
+mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
+flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
+test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
-flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
-test_LDADD = @PTHREAD_LD@
+flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
+                   @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
+test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
 fsetup_SOURCES = \
