@@ -6742,6 +6742,123 @@ case ".$ac_cv_cxxflags_warn_all" in
  ;;
 esac
 
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wextra" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wextra... " >&6; }
+if ${ax_cv_check_cxxflags___Wextra+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wextra"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wextra=yes
+else
+  ax_cv_check_cxxflags___Wextra=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wextra" >&5
+$as_echo "$ax_cv_check_cxxflags___Wextra" >&6; }
+if test "x$ax_cv_check_cxxflags___Wextra" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -Wextra"
+else
+  :
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wswitch-enum" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wswitch-enum... " >&6; }
+if ${ax_cv_check_cxxflags___Wswitch_enum+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wswitch-enum"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wswitch_enum=yes
+else
+  ax_cv_check_cxxflags___Wswitch_enum=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wswitch_enum" >&5
+$as_echo "$ax_cv_check_cxxflags___Wswitch_enum" >&6; }
+if test "x$ax_cv_check_cxxflags___Wswitch_enum" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -Wswitch-enum"
+else
+  :
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ compiler accepts -Wshadow" >&5
+$as_echo_n "checking whether C++ compiler accepts -Wshadow... " >&6; }
+if ${ax_cv_check_cxxflags___Wshadow+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CXXFLAGS
+  CXXFLAGS="$CXXFLAGS  -Wshadow"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_check_cxxflags___Wshadow=yes
+else
+  ax_cv_check_cxxflags___Wshadow=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CXXFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wshadow" >&5
+$as_echo "$ax_cv_check_cxxflags___Wshadow" >&6; }
+if test "x$ax_cv_check_cxxflags___Wshadow" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -Wshadow"
+else
+  :
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 
 
 # Check whether --with-wx-prefix was given.

@@ -54,6 +54,12 @@ dnl Check for -fno-strict-aliasing compiler switch
 AX_CXXFLAGS_NO_STRICT_ALIASING
 dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
+dnl Check for g++/clang++ compiler warning support
+AC_LANG_PUSH([C++])
+AX_CHECK_COMPILE_FLAG([-Wextra],[CXXFLAGS="$CXXFLAGS -Wextra"])
+AX_CHECK_COMPILE_FLAG([-Wswitch-enum],[CXXFLAGS="$CXXFLAGS -Wswitch-enum"])
+AX_CHECK_COMPILE_FLAG([-Wshadow],[CXXFLAGS="$CXXFLAGS -Wshadow"])
+AC_LANG_POP([C++])
 dnl check for wx-config
 WX_PATH_WXCONFIG(3.0.0, WXCONFIG=1)
 

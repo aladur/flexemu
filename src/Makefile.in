@@ -101,6 +101,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
 	$(top_srcdir)/m4/ax_cflags_no_strict_aliasing.m4 \
 	$(top_srcdir)/m4/ax_cflags_no_variadic_macros.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
+	$(top_srcdir)/m4/ax_check_compile_flag.m4 \
 	$(top_srcdir)/m4/cf_path_syntax.m4 \
 	$(top_srcdir)/m4/cf_with_app_defaults.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
@@ -517,8 +518,7 @@ SUBDIRS = bitmaps tools
 
 # Directory where .desktop files are located
 desktopdir = $(datadir)/applications
-AM_CXXFLAGS = --std=c++11 -Wall -Wextra -Wpedantic \
-              -Wswitch-enum -Wshadow \
+AM_CXXFLAGS = --std=c++11 \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS = $(AM_CXXFLAGS) \
