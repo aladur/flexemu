@@ -25,8 +25,10 @@
 
 #include "misc1.h"
 
+#include "warnoff.h"
 #include <wx/textctrl.h>
 #include <wx/listctrl.h>
+#include "warnon.h"
 
 #include "flexdisk.h"
 #include "fddnd.h"

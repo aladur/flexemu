@@ -30,6 +30,7 @@
 // wx-headers delete predefined VERSION
 static const char *_progVersion = VERSION;
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -42,6 +43,7 @@ static const char *_progVersion = VERSION;
     #include <wx/wx.h>
 #endif
 #include <wx/aboutdlg.h>
+#include "warnon.h"
 
 #include "misc1.h"
 
@@ -80,6 +82,7 @@ static const char *_progVersion = VERSION;
  FlexParentFrame implementation
 --------------------------------------------------------*/
 
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(FlexParentFrame, wxMDIParentFrame)
     EVT_CHILD_FOCUS(FlexParentFrame::OnChildFocus)
     EVT_MENU(MDI_ABOUT, FlexParentFrame::OnAbout)
@@ -91,6 +94,7 @@ BEGIN_EVENT_TABLE(FlexParentFrame, wxMDIParentFrame)
     EVT_MENU(MDI_QUIT, FlexParentFrame::OnQuit)
     EVT_SIZE(FlexParentFrame::OnSize)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 FlexParentFrame::FlexParentFrame(wxWindow *parent, const wxWindowID id,
                                  const wxString &title, const wxPoint &pos,

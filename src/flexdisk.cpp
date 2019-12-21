@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -33,6 +34,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/clipbrd.h>
+#include "warnon.h"
 
 #include "misc1.h"
 

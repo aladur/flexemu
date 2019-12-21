@@ -23,8 +23,10 @@
 #ifndef FLEXDISK_INCLUDED
 #define FLEXDISK_INCLUDED
 
+#include "warnoff.h"
 #include <wx/defs.h>
 #include <wx/app.h>
+#include "warnon.h"
 #include "flexerr.h"
 
 

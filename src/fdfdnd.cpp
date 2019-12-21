@@ -20,6 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -31,6 +32,7 @@
     // Include your minimal set of headers here, or wx.h
     #include <wx/wx.h>
 #endif
+#include "warnon.h"
 
 #include "misc1.h"
 

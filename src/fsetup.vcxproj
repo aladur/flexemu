@@ -193,6 +193,8 @@
     <ClInclude Include="misc1.h" />
     <ClInclude Include="sguiopts.h" />
     <ClInclude Include="typedefs.h" />
+    <ClInclude Include="warnoff.h" />
+    <ClInclude Include="warnon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bfileptr.cpp" />

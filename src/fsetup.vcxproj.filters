@@ -48,6 +48,12 @@
     <ClInclude Include="sguiopts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="warnoff.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="warnon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bfileptr.cpp">

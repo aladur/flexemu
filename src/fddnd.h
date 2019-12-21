@@ -23,9 +23,11 @@
 #ifndef FDDND_INCLUDED
 #define FDDND_INCLUDED
 
+#include "warnoff.h"
 #include <wx/defs.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
+#include "warnon.h"
 
 #ifdef wxUSE_DRAG_AND_DROP
 

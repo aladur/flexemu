@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
@@ -33,6 +34,7 @@
 #include <wx/radiobox.h>
 #include <wx/valgen.h>
 #include <wx/valtext.h>
+#include "warnon.h"
 
 #include "misc1.h"
 
@@ -44,12 +46,14 @@
 #include "mdcrtape.h"
 
 
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
     EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
     EVT_RADIOBOX(IDC_FormatCheckBox, ContainerPropertiesDialog::OnFormatChanged)
     //  EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
     //  EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,

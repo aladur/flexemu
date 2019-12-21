@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -32,6 +33,7 @@
 #endif
 #include "wx/dialog.h"
 #include "wx/valgen.h"
+#include "warnon.h"
 
 #include "misc1.h"
 
@@ -42,12 +44,14 @@
 #include "optdlg.h"
 
 
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(GlobalOptionsDialog, wxDialog)
     EVT_BUTTON(IDC_BootSectorFileButton,
                GlobalOptionsDialog::OnSelectBootSectorFile)
     //  EVT_BUTTON(wxID_OK,                  GlobalOptionsDialog::OnOK)
     //  EVT_BUTTON(wxID_CANCEL,              GlobalOptionsDialog::OnCancel)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 GlobalOptionsDialog::GlobalOptionsDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,

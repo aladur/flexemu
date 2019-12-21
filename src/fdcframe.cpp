@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -32,6 +33,7 @@
     // Include your minimal set of headers here, or wx.h
     #include <wx/wx.h>
 #endif
+#include "warnon.h"
 
 #include "misc1.h"
 
@@ -44,6 +46,7 @@
 #endif
 
 // Event table
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(FlexChildFrame, wxMDIChildFrame)
     EVT_SET_FOCUS(FlexChildFrame::OnSetFocus)
     EVT_MENU(MDI_DESELECTALL, FlexChildFrame::OnDeselectAll)
@@ -65,6 +68,7 @@ BEGIN_EVENT_TABLE(FlexChildFrame, wxMDIChildFrame)
     EVT_MENU(MDI_CONTAINER_CLOSE, FlexChildFrame::OnCloseChild)
     EVT_MENU(MDI_CONTAINER_PROPERTIES, FlexChildFrame::OnViewProperties)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 FlexChildFrame::FlexChildFrame(
     wxMDIParentFrame *parent,

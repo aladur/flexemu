@@ -1,5 +1,5 @@
 /*
-    fsetup.h
+    warnon.h
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -20,42 +20,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef FSETUP_INCLUDED
-#define FSETUP_INCLUDED
+// How to use this header see file warnoff.h.
 
-#include "warnoff.h"
-#include <wx/defs.h>
-#include <wx/app.h>
-#include "warnon.h"
-
-#include "misc1.h"
-#include "absgui.h"
-#include "foptman.h"
-
-
-class FlexemuSetup;
-class FlexemuOptionsDialog;
-
-// Application class can be globally accessed by wxGetApp():
-
-DECLARE_APP(FlexemuSetup)
-
-/*------------------------------------------------------
- FlexemuSetup
- The main application class
- A setup dialog for editing options for flexemu
---------------------------------------------------------*/
-class FlexemuSetup : public wxApp
-{
-public:
-    bool OnInit();
-
-private:
-    FlexOptionManager optionMan;
-    struct sOptions options;
-    struct sGuiOptions guiOptions;
-    wxLocale m_locale;
-};
-
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif

@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -34,6 +35,7 @@
 #endif
 #include <wx/clipbrd.h>
 #include <wx/strconv.h>
+#include "warnon.h"
 
 #include "misc1.h"
 
@@ -117,6 +119,7 @@ int CALLBACK compareFlexListItems(wxIntPtr item1, wxIntPtr item2,
     }
 }
 // Event table
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(FlexDiskListCtrl, wxListCtrl)
 #ifdef wxUSE_DRAG_AND_DROP
     #ifndef __WXMOTIF__
@@ -149,6 +152,7 @@ BEGIN_EVENT_TABLE(FlexDiskListCtrl, wxListCtrl)
     EVT_MENU(MDI_SET_CATALOGPROTECT, FlexDiskListCtrl::OnSetCatalogProtect)
     EVT_MENU(MDI_CLEAR_CATALOGPROTECT, FlexDiskListCtrl::OnClearCatalogProtect)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 FlexDiskListCtrl::FlexDiskListCtrl(wxWindow *parent, wxWindowID id,
                                    const wxPoint &pos, const wxSize &size,

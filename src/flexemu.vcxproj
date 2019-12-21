@@ -299,6 +299,7 @@
     <ClInclude Include="iffilcnt.h" />
     <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="inout.h" />
+    <ClInclude Include="ioaccess.h" />
     <ClInclude Include="iodevdbg.h" />
     <ClInclude Include="iodevice.h" />
     <ClInclude Include="joystick.h" />
@@ -328,10 +329,11 @@
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="vico1.h" />
     <ClInclude Include="vico2.h" />
+    <ClInclude Include="warnoff.h" />
+    <ClInclude Include="warnon.h" />
     <ClInclude Include="wd1793.h" />
     <ClInclude Include="win32gui.h" />
     <ClInclude Include="winctxt.h" />
-    <ClInclude Include="ioaccess.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

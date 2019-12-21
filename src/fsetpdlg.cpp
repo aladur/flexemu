@@ -21,6 +21,7 @@
 */
 
 
+#include "warnoff.h"
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
 
@@ -40,6 +41,7 @@
 #include <wx/bmpcbox.h>
 #include <wx/hyperlink.h>
 #include <wx/filesys.h>
+#include "warnon.h"
 
 #include "misc1.h"
 #include <string>
@@ -55,6 +57,7 @@
 
 int FlexemuOptionsDialog::ncolor_count[] = { 2, 8, 64 };
 
+#include "warnoff.h"
 BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
     EVT_BUTTON(IDC_Drive0Button, FlexemuOptionsDialog::OnSelectDrive0)
     EVT_BUTTON(IDC_Drive1Button, FlexemuOptionsDialog::OnSelectDrive1)
@@ -76,6 +79,7 @@ BEGIN_EVENT_TABLE(FlexemuOptionsDialog, wxDialog)
             FlexemuOptionsDialog::OnNColorsChanged)
     //  EVT_CLOSE(FlexemuOptionsDialog::OnCloseWindow)
 END_EVENT_TABLE()
+#include "warnon.h"
 
 const int FlexemuOptionsDialog::textWidth = 250;
 const int FlexemuOptionsDialog::stextWidth = 150;
