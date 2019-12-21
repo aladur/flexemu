@@ -148,7 +148,7 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
         return;
     }
 
-    size = dnsHostName.size() + 1;
+    size = static_cast<DWord>(dnsHostName.size() + 1);
     // Independent of the cpu architecture the
     // clipboard format uses big endian byte order.
     reversed = toBigEndian<DWord>(size);
@@ -157,14 +157,14 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
     memcpy(ptr, dnsHostName.c_str(), size);
     ptr += size;
 
-    size = path.size() + 1;
+    size = static_cast<DWord>(path.size() + 1);
     reversed = toBigEndian<DWord>(size);
     memcpy(ptr, &reversed, sizeof(reversed));
     ptr += sizeof(reversed);
     memcpy(ptr, path.c_str(), size);
     ptr += size;
 
-    count = fileBuffers.size();
+    count = static_cast<DWord>(fileBuffers.size());
     count = toBigEndian<DWord>(count);
     memcpy(ptr, &count, sizeof(count));
     ptr += sizeof(count);

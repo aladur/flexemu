@@ -65,7 +65,7 @@ public:
     size_t GetFileSize() const;
     unsigned int GetFileCount() const
     {
-        return fileBuffers.size();
+        return static_cast<unsigned int>(fileBuffers.size());
     };
 
 private:

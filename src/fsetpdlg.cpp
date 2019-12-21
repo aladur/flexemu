@@ -128,7 +128,6 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
 {
     bool hasSelection = false;
     wxString str;
-    size_t i;
     int n = 0;
 
     for (int x = 1; x <= MAX_PIXELSIZEX; x++)
@@ -157,7 +156,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     }
 
     hasSelection = false;
-    for (i = 0; i < WXSIZEOF(ncolor_count); i++)
+    for (int i = 0; i < static_cast<int>(WXSIZEOF(ncolor_count)); i++)
     {
         str.Printf("%d", ncolor_count[i]);
         c_nColors->Append(str);
@@ -178,7 +177,7 @@ bool FlexemuOptionsDialog::TransferDataToWindow()
     DWord colorRGBValue;
 
     hasSelection = false;
-    for (i = 0; i < color_count; i++)
+    for (int i = 0; i < static_cast<int>(color_count); i++)
     {
         colorName = wxGetTranslation(colors[i].colorName);
         getColorForName(colors[i].colorName, &colorRGBValue);
