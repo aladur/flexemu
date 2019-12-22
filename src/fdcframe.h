@@ -96,7 +96,9 @@ public:
 
 private:
     std::unique_ptr<FlexDiskListCtrl> listCtrl;
+#include "warnoff.h"
     DECLARE_EVENT_TABLE()
+#include "warnon.h"
 };
 
 #endif // FDCFRAME_INCLUDED

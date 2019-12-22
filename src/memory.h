@@ -100,7 +100,7 @@ public:
 
     // memory target interface
 public:
-    void CopyFrom(const Byte *buffer, size_t address, size_t aSize);
+    void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
 
 public:
     void write_ram_rom(Word address, Byte value);

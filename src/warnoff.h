@@ -43,6 +43,10 @@
 #endif
 #endif
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Winconsistent-missing-override"
+#endif
+
 // Disabled warnings in MSVC:
 // C4127: conditional expression is constant.
 // C4251: 'identifier' : class 'type' needs to have dll-interface to be used

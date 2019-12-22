@@ -73,7 +73,9 @@ public:
 private:
     void InitToolBar(wxToolBar *toolBar);
 
+#include "warnoff.h"
     DECLARE_EVENT_TABLE()
+#include "warnon.h"
 };
 
 #endif
