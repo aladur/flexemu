@@ -48,10 +48,6 @@ dnl Checks for pthread library
 FLX_CHECK_PTHREAD_LIB
 dnl Check for --enable-speed flag
 FLX_ENABLE_SPEED
-dnl Check for -Wno-variadic-macros compiler switch
-AX_CXXFLAGS_NO_VARIADIC_MACROS
-dnl Check for -fno-strict-aliasing compiler switch
-AX_CXXFLAGS_NO_STRICT_ALIASING
 dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
 dnl Check for specific compiler warning support
