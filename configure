@@ -6790,6 +6790,7 @@ esac
 
 
   for flag in \
+        -std=gnu99 \
         -Wall \
         -Wextra \
         -Wpedantic \
