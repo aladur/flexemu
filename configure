@@ -6788,6 +6788,41 @@ case ".$ac_cv_cxxflags_warn_all" in
  ;;
 esac
 
+
+  for flag in \
+        -Wshadow \
+; do
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CFLAGS" >&5
+$as_echo_n "checking if $CC supports flag $flag in envvar CFLAGS... " >&6; }
+if { as_var=`$as_echo "cc_cv_CFLAGS_$flag" | $as_tr_sh`; eval \${$as_var+:} false; }; then :
+  $as_echo_n "(cached) " >&6
+else
+  eval "cc_save_CFLAGS='${CFLAGS}'"
+           eval "CFLAGS='${cc_save_CFLAGS} -Werror `echo "$flag" | sed 's/^-Wno-/-W/'`'"
+           cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int main(void) { return 0; }
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  eval "`$as_echo "cc_cv_CFLAGS_$flag" | $as_tr_sh`='yes'"
+else
+  eval "`$as_echo "cc_cv_CFLAGS_$flag" | $as_tr_sh`='no'"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+           eval "CFLAGS='$cc_save_CFLAGS'"
+fi
+eval ac_res=\$`$as_echo "cc_cv_CFLAGS_$flag" | $as_tr_sh`
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+
+  if eval test x$`$as_echo "cc_cv_CFLAGS_$flag" | $as_tr_sh` = xyes; then :
+  eval "CFLAGS='${CFLAGS} $flag'"
+fi
+
+  done
+
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'

@@ -55,6 +55,9 @@ AX_CXXFLAGS_NO_STRICT_ALIASING
 dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
 dnl Check for specific compiler warning support
+CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
+        -Wshadow \
+])
 AC_LANG_PUSH([C++])
 CC_CHECK_FLAGS_APPEND([CXXFLAGS],[CXXFLAGS],[\
         -Wextra \

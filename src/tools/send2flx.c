@@ -54,25 +54,25 @@ struct termios 		oldtty;
 
 int init_serial_port(const char *device, int speed, struct termios *pOldtty)
 {
-	int    fd;
+	int    new_fd;
 	struct termios ntty;
 
-	fd = open(device, O_RDWR | O_NOCTTY);
-	if (fd == -1)
+	new_fd = open(device, O_RDWR | O_NOCTTY);
+	if (new_fd == -1)
 	{
 		fprintf(stderr, "Unable to open device %s\n", device);
 		return -1;
 	}
-        if (!isatty(fd))
+        if (!isatty(new_fd))
 	{
 		fprintf(stderr, "%s is no tty device\n", device);
-		close(fd);
+		close(new_fd);
 		return -1;
 	}
 
-	if (tcgetattr(fd, pOldtty) == -1) {
+	if (tcgetattr(new_fd, pOldtty) == -1) {
 		fprintf(stderr, "%s is wrong device\n", device);
-		close(fd);
+		close(new_fd);
 		return -1;
 	}
 	/* memcpy(&ntty, &oldtty, sizeof(struct termios)); */
@@ -86,17 +86,17 @@ int init_serial_port(const char *device, int speed, struct termios *pOldtty)
 	cfsetispeed(&ntty, speed);
 	cfsetospeed(&ntty, speed);
 	
-	if (tcsetattr(fd, TCSANOW, &ntty) == -1) {
+	if (tcsetattr(new_fd, TCSANOW, &ntty) == -1) {
 		fprintf(stderr, "can't set serial line %s\n", device);
-		tcsetattr(fd, TCSANOW, pOldtty);
-		close(fd);
+		tcsetattr(new_fd, TCSANOW, pOldtty);
+		close(new_fd);
 		return -1;
 	}
-	return fd;
+	return new_fd;
 }
 
 
-void do_exit(FILE *fp, int fd, struct termios *pOldtty, int exit_code)
+void do_exit(struct termios *pOldtty, int exit_code)
 {
 	if (fp != NULL)
 		fclose(fp);
@@ -112,7 +112,7 @@ void do_exit(FILE *fp, int fd, struct termios *pOldtty, int exit_code)
 #endif
 {
         (void)param; /* satisfy compiler */
-	do_exit(fp, fd, &oldtty, 2);
+	do_exit(&oldtty, 2);
 } /* sigint */
 
 void init_header(struct f_header *pHeader,
@@ -144,30 +144,30 @@ void init_header(struct f_header *pHeader,
 FILE *init_file(const char *filename, int *size)
 {
 	struct stat st;
-	FILE *fp = NULL;
+	FILE *new_fp = NULL;
 
         if (stat(filename, &st) == -1)
 	{
 		fprintf(stderr, "Error getting file info for %s\n", filename);
-		return fp;
+		return new_fp;
 	}
-	fp = fopen(filename, "r");
-	if (fp == NULL)
+	new_fp = fopen(filename, "r");
+	if (new_fp == NULL)
 	{
 		fprintf(stderr, "Error opening file %s\n", filename);
-		return fp;
+		return new_fp;
 	}
         if (st.st_size > MAX_FILESIZE)
 	{
 		fprintf(stderr, "File is too long %s\n", filename);
-		fclose(fp);
+		fclose(new_fp);
 		return NULL;
 	}
 	*size = st.st_size;
-	return fp;
+	return new_fp;
 }
 
-void read_file(FILE *fp, unsigned char *buffer, eFileType *filetype, int *filesize)
+void read_file(unsigned char *buffer, eFileType *filetype, int *filesize)
 {
 	if (*filetype == FT_GUESS)
 	{
@@ -245,7 +245,7 @@ void read_file(FILE *fp, unsigned char *buffer, eFileType *filetype, int *filesi
 	}
 }
 
-void write_serial(int fd, const unsigned char *buffer, int size)
+void write_serial(int fd_out, const unsigned char *buffer, int size)
 {
 	int i;
 	unsigned char checksum;
@@ -253,8 +253,8 @@ void write_serial(int fd, const unsigned char *buffer, int size)
 	checksum = 0;
 	for (i = 0; i < size; i++)
 		checksum += buffer[i];
-	ssize_t count = write(fd, buffer, size);
-	count = write(fd, &checksum, 1);
+	ssize_t count = write(fd_out, buffer, size);
+	count = write(fd_out, &checksum, 1);
         (void)count; /* satisfy compiler */
 }
 
@@ -294,6 +294,7 @@ int main(int argc, char *argv[])
 	help      = 0;
 	filetype  = FT_GUESS;
 	device = DEFAULT_DEVICE;
+        fd = -1;
 	fp = NULL;
 
 	while (1)
@@ -327,8 +328,8 @@ int main(int argc, char *argv[])
 
 	fp = init_file(filename, &filesize);
 	if (fp == NULL)
-		do_exit(fp, fd, &oldtty, 1);
-	read_file(fp, buffer, &filetype, &filesize);
+		do_exit(&oldtty, 1);
+	read_file(buffer, &filetype, &filesize);
 	if (!quiet)
 	{
 		printf("filetype: %s\n",
@@ -343,7 +344,7 @@ int main(int argc, char *argv[])
 	sleep(1);
 	write_serial(fd, buffer, filesize);
 	tcdrain(fd); /* wait until serial data written (important!) */
-	do_exit(fp, fd, &oldtty, 0);
+	do_exit(&oldtty, 0);
 	return 0;
 
 } /* main */
