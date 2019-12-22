@@ -1216,10 +1216,10 @@ AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
 m4_include([m4/acx_pthread.m4])
+m4_include([m4/attributes.m4])
 m4_include([m4/ax_cflags_no_strict_aliasing.m4])
 m4_include([m4/ax_cflags_no_variadic_macros.m4])
 m4_include([m4/ax_cflags_warn_all.m4])
-m4_include([m4/ax_check_compile_flag.m4])
 m4_include([m4/cf_path_syntax.m4])
 m4_include([m4/cf_with_app_defaults.m4])
 m4_include([acinclude.m4])
