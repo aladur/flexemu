@@ -27,13 +27,11 @@
 
 #define USE_ASM 1
 
-// test using GCC inline assembler
-#ifdef __CPU
-    #if __CPU==i386 || __CPU==i486 || __CPU==i586 || __CPU==i686 || __CPU==i786
-        #define __IX86
-    #endif
+// Test if GCC inline assembler can be used
+#if defined(__amd64__) || defined(__i386__)
+    #define IX86
 #endif
-#if defined(__GNUC__) && defined (USE_ASM) && defined(__IX86) && \
+#if defined(__GNUC__) && defined (USE_ASM) && defined(IX86) && \
     defined(__LP64__) && !defined(FASTFLEX)
     #define USE_GCCASM
 #endif
