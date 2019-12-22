@@ -6799,6 +6799,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
         -Wextra \
         -Wshadow \
         -Wswitch-enum \
+        -Wuseless-cast \
 ; do
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CXXFLAGS" >&5

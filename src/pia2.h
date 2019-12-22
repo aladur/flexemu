@@ -45,7 +45,7 @@ private:
     Mc6809 &cpu;
     KeyboardIO &keyboardIO;
     JoystickIO &joystickIO;
-    QWord               cycles;
+    cycles_t cycles;
 
 #ifdef  LINUX_JOYSTICK_IS_PRESENT
     BJoystick joystick;

@@ -128,8 +128,7 @@ void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
  * video_ram read-only Pointer into part of video RAM.
  * depth   Color depth of Z-pixel-map, supported values: { 8, 16, 24, 32 }
  */
-void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *video_ram,
-                                int depth)
+void AbstractGui::CopyToZPixmap(Byte *dest, Byte const *video_ram, int depth)
 {
     int count;              /* Byte counter into video RAM          */
     Byte pixels[6]; /* One byte of video RAM for each plane */
@@ -563,7 +562,7 @@ void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *video_ram,
             }
             else if (depth == 8 || depth == 1)
             {
-                Byte *dest8 = (Byte *)dest;
+                Byte *dest8 = dest;
                 Byte pen = (Byte)pens[penIndex];
 
                 switch (pixelSizeX << 4 | pixelSizeY)
@@ -728,7 +727,7 @@ void AbstractGui::CopyToZPixmap(const Byte *dest, Byte const *video_ram,
 
                         break;
                 }
-                dest = (Byte *)dest8;
+                dest = dest8;
             }
             else
             {

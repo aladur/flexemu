@@ -474,11 +474,11 @@ void err(std::string mnemonic, Word op, Byte m6809_cc, std::string regname,
          Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
-              << mnemonic << "(0x" << (Word)op << ")"
+              << mnemonic << "(0x" << op << ")"
               << ", CC=0x" << (Word)m6809_cc
               << ", " << regname
-              << " expected 0x" << (Word)cpureg
-              << " but is 0x" << (Word)x86reg
+              << " expected 0x" << cpureg
+              << " but is 0x" << x86reg
               << std::endl;
 }
 
@@ -486,11 +486,11 @@ void err(std::string mnemonic, Word op1, Word op2, Byte m6809_cc,
          std::string regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
-              << mnemonic << "(0x" << (Word)op1 << ", 0x" << (Word)op2 << ")"
+              << mnemonic << "(0x" << op1 << ", 0x" << op2 << ")"
               << ", CC=0x" << (Word)m6809_cc
               << ", " << regname
-              << " expected 0x" << (Word)cpureg
-              << " but is 0x" << (Word)x86reg
+              << " expected 0x" << cpureg
+              << " but is 0x" << x86reg
               << std::endl;
 }
 

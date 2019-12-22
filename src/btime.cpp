@@ -43,12 +43,12 @@ void BTime::ResetRelativeTime()
 
 unsigned long BTime::GetRelativeTimeMsl(bool reset /*= false*/)
 {
-    return (unsigned long)(GetRelativeTimeUsll(reset) / 1000);
+    return GetRelativeTimeUsll(reset) / 1000;
 }
 
 unsigned long BTime::GetTimeMsl()
 {
-    return (unsigned long)(GetTimeUsll() / 1000);
+    return GetTimeUsll() / 1000;
 }
 
 

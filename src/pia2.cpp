@@ -211,7 +211,7 @@ Byte Pia2::readInputB()
         dY = 0;
     }
 
-    QWord prev_cycles = cycles;
+    cycles_t prev_cycles = cycles;
     cycles = cpu.get_cycles();
 
     if (cycles < prev_cycles)
@@ -222,7 +222,7 @@ Byte Pia2::readInputB()
     }
     else
     {
-        cyclediff = static_cast<cycles_t>(cycles - prev_cycles);
+        cyclediff = cycles - prev_cycles;
     }
 
     if (cyclediff > 100) // more than 75 us

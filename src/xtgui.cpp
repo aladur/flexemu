@@ -1841,7 +1841,7 @@ void XtGui::popup_bp()
     String bpstring;
     unsigned int which;
 
-    bpstring = (String)XtMalloc(16);
+    bpstring = XtMalloc(16);
 
     for (which = 0; which <= 1; which++)
     {
@@ -1909,7 +1909,7 @@ void XtGui::clear_bp()
 
 void XtGui::popup_log()
 {
-    String tmpstring = (String)XtMalloc(PATH_MAX);
+    String tmpstring = XtMalloc(PATH_MAX);
 
     int which = 0;
     // Min Address

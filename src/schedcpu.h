@@ -28,7 +28,6 @@
 #include "typedefs.h"
 #include "cpustate.h"
 
-typedef QWord cycles_t; // must be unsigned long because of sprintf
 
 enum tIrqType
 {

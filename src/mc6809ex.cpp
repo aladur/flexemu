@@ -15,7 +15,7 @@
 
 
 /* Select instruction */
-switch ((Byte)(memory.read_byte(pc++)))
+switch (memory.read_byte(pc++))
 {
 case 0x01:
     if (!use_undocumented)
@@ -117,7 +117,7 @@ case 0x0f:
     break;
 
 case 0x10:
-    switch ((Byte)(memory.read_byte(pc++)))
+    switch (memory.read_byte(pc++))
     {
         case 0x21:
             cycles += lbrn();
@@ -305,7 +305,7 @@ case 0x10:
     //case 0x11: post11(); break;
 
 case 0x11:
-    switch ((Byte)(memory.read_byte(pc++)))
+    switch (memory.read_byte(pc++))
     {
         case 0x3f:
             swi3();

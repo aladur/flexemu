@@ -110,7 +110,7 @@ protected:
     virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);
 
     void initialize_conv_tables();
-    void CopyToZPixmap(const Byte *dest, Byte const *src, int depth);
+    void CopyToZPixmap(Byte *dest, Byte const *src, int depth);
     void clear_cpuview();
     void redraw_cpuview(const Mc6809CpuStatus &stat);
     void redraw_cpuview_contents(const Mc6809CpuStatus &stat);

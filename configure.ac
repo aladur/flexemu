@@ -60,6 +60,7 @@ CC_CHECK_FLAGS_APPEND([CXXFLAGS],[CXXFLAGS],[\
         -Wextra \
         -Wshadow \
         -Wswitch-enum \
+        -Wuseless-cast \
 ])
 AC_LANG_POP([C++])
 dnl check for wx-config

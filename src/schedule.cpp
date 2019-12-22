@@ -379,10 +379,10 @@ void Scheduler::update_frequency()
 {
     // calculate frequency in MHz
     cycles_t cyclecount;
-    QWord cycles1;
+    cycles_t cycles1;
 
     cycles1 = cpu.get_cycles();
-    cyclecount = static_cast<cycles_t>(cycles1 - cycles0);
+    cyclecount = cycles1 - cycles0;
     frequency = (float)(cyclecount / 1000000.0);
     cycles0 = cycles1;
 }

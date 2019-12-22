@@ -108,7 +108,7 @@ void Inout::create_gui(JoystickIO &x_joystickIO,
     // Only allow to open Gui once.
     if (gui == nullptr)
     {
-        switch (static_cast<GuiType>(x_options.guiType))
+        switch (x_options.guiType)
         {
 #ifdef HAVE_XTK
 

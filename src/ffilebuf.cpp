@@ -41,7 +41,7 @@ FlexFileBuffer::FlexFileBuffer() : capacity(0)
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
     memcpy(fileHeader.magicNumber,
-           static_cast<const char *>(flexFileHeaderMagicNumber.data()),
+           flexFileHeaderMagicNumber.data(),
            flexFileHeaderMagicNumber.size());
 }
 
