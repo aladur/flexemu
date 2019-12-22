@@ -6790,6 +6790,9 @@ esac
 
 
   for flag in \
+        -Wall \
+        -Wextra \
+        -Wpedantic \
         -Wshadow \
 ; do
 

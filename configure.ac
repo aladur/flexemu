@@ -56,6 +56,9 @@ dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
 dnl Check for specific compiler warning support
 CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
+        -Wall \
+        -Wextra \
+        -Wpedantic \
         -Wshadow \
 ])
 AC_LANG_PUSH([C++])
