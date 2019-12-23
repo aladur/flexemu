@@ -663,18 +663,21 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
         size -= 2 * SECTOR_SIZE;
     }
 
-    if (size <= 0)
+    if (size < 0)
     {
-        throw FlexException(FERR_WRONG_PARAMETER);
+        throw FlexException(FERR_FILE_INVALID_SIZE, fileName, std::to_string(size));
     }
 
     size = size * DBPS / SECTOR_SIZE;
     buffer.Realloc(size);
-    de.GetStartTrkSec(&trk, &sec);
-    recordNr = 0;
-    repeat = 1;
+    if (size > 0)
+    {
+        de.GetStartTrkSec(&trk, &sec);
+        recordNr = 0;
+        repeat = 1;
+    }
 
-    while (true)
+    while (size > 0)
     {
         // if random file skip the two sector map sectors
         if (recordNr == 0 && de.IsRandom())

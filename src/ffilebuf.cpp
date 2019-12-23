@@ -523,8 +523,12 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 
     if (fp != nullptr)
     {
-        size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
-        return (blocks == 1);
+        if (GetFileSize() != 0)
+        {
+            size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
+            return (blocks == 1);
+        }
+        return true;
     }
 
     return false;
