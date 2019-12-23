@@ -992,8 +992,10 @@ bool FlexDiskListCtrl::PasteFrom(FlexDnDFiles &files)
     {
         try
         {
-            fileName = files.GetBufferAt(index).GetFilename();
-            GetContainer()->WriteFromBuffer(files.GetBufferAt(index));
+            auto fileBuffer = files.GetBufferAt(index);
+
+            fileName = fileBuffer.GetFilename();
+            GetContainer()->WriteFromBuffer(fileBuffer);
             dirEntry = new FlexDirEntry;
 
             if (GetContainer()->FindFile(fileName, *dirEntry))

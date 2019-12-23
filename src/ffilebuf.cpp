@@ -97,7 +97,8 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
     else
     {
         buffer.reset(nullptr);
-        memset(&fileHeader, 0, sizeof(fileHeader));
+        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
+        capacity = 0;
     }
 }
 
@@ -548,7 +549,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 {
     struct stat sbuf;
 
-    if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size > 0)
+    if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size >= 0)
     {
         BFilePtr fp(path, "rb");
 
@@ -556,9 +557,14 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
         if (fp != nullptr)
         {
-            size_t blocks = fread(buffer.get(), GetFileSize(), 1, fp);
+            size_t blocks = 0;
 
-            if (blocks == 1)
+            if (GetFileSize() > 0)
+            {
+                blocks = fread(buffer.get(), GetFileSize(), 1, fp);
+            }
+
+            if (blocks == 1 || GetFileSize() == 0)
             {
                 const char *pf;
                 struct tm *lt;
@@ -658,7 +664,10 @@ bool FlexFileBuffer::CopyFrom(const Byte *from, DWord aSize,
         return false;
     }
 
-    memcpy(&buffer[offset], from, aSize);
+    if (buffer != nullptr)
+    {
+        memcpy(&buffer[offset], from, aSize);
+    }
     return true;
 }
 
@@ -666,6 +675,11 @@ bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
                             DWord offset /* = 0 */,
                             int stuffByte /* = -1 */) const
 {
+    if (to == nullptr)
+    {
+            throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     if (offset + aSize > fileHeader.fileSize)
     {
         if (stuffByte < 0 || offset >= fileHeader.fileSize)
@@ -675,12 +689,17 @@ bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
         else
         {
             memset(to, stuffByte, aSize);
-            memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
+            if (buffer != nullptr)
+            {
+                memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
+            }
             return true;
         }
     }
-
-    memcpy(to, &buffer[offset], aSize);
+    if (buffer != nullptr)
+    {
+        memcpy(to, &buffer[offset], aSize);
+    }
     return true;
 }
 

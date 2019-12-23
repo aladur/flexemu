@@ -137,7 +137,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
             !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
-            findData.nFileSizeHigh != 0 ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
 
     if (isValid)
@@ -202,7 +201,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
                  &sbuf) ||
             !base->IsFlexFilename(findData->d_name) ||
             !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size <= 0 ||
+            sbuf.st_size < 0 ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
 
     if (isValid)
