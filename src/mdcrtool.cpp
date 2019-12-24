@@ -27,6 +27,7 @@
 #include "bmembuf.h"
 #include "fileread.h"
 #include "flexerr.h"
+#include "bdir.h"
 #include <ctype.h>
 #include <limits>
 #include <iostream>
@@ -44,7 +45,7 @@ void syntax()
               << " Create a new empty MDCR file:\n"
               << "   mdcrtool -c <mdcr_file>\n"
               << " Extract all files from a MDCR file:\n"
-              << "   mdcrtool -x <mdcr_file>\n"
+              << "   mdcrtool [-d<directory>] -x <mdcr_file>\n"
               << " List contents of a MDCR file:\n"
               << "   mdcrtool -l <mdcr_file>\n"
               << "\n"
@@ -53,7 +54,9 @@ void syntax()
               << "   -t: Truncate. Overwrite existing files on MDCR file.\n"
               << "       Default: Append files at the end of MDCR file.\n"
               << "   -u: Convert file names to uppercase.\n"
-              << "       Default: Keep file name as is.\n";
+              << "       Default: Keep file name as is.\n"
+              << "   -d <directory>: Directory where to extract files.\n"
+              << "       Default: Current working directory.\n";
 
 }
 
@@ -158,7 +161,7 @@ int CreateMdcrFile(const char *ofile)
     return 0;
 }
 
-int ExtractFromMdcrFile(const char *ifile)
+int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -172,14 +175,32 @@ int ExtractFromMdcrFile(const char *ifile)
         return 1;
     }
 
+    std::string sTargetDir;
+    if (targetDir != nullptr)
+    {
+        sTargetDir = targetDir;
+        if (!BDirectory::Exists(sTargetDir))
+        {
+            std::cerr << "*** Error: '" << targetDir << "' does not exist or is"
+            " no directory.\n";
+            return 1;
+        }
+
+        if (sTargetDir.at(sTargetDir.size() - 1) != PATHSEPARATOR)
+        {
+            sTargetDir += PATHSEPARATORSTRING;
+        }
+    }
+
     MdcrFileSystem mdcrfs;
 
     auto status = mdcrfs.ForEachFile(*mdcr.get(),
-                       [](const std::string &filename,
+                       [&sTargetDir](const std::string &filename,
                           BMemoryBuffer &memory)
     {
         auto pos = filename.find_last_not_of(' ');
         std::string outFilename(filename.c_str(), pos+1);
+        outFilename = sTargetDir + outFilename;
 
         auto result = write_flex_binary(outFilename.c_str(), memory);
         if (result < 0)
@@ -257,10 +278,11 @@ int ListContentOfMdcrFile(const char *ifile)
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("o:c:x:l:tuh");
+    std::string optstr("o:c:x:l:tuhd:");
     std::vector<const char *>ifiles;
     const char *ofile = nullptr;
     const char *ifile = nullptr;
+    const char *targetDir = nullptr;
     bool isTruncate = false;
     bool isUppercase = false;
     int command = 0;
@@ -282,6 +304,8 @@ int main(int argc, char *argv[])
                       break;
             case 'l': ifile = optarg;
                       command = result;
+                      break;
+            case 'd': targetDir = optarg;
                       break;
             case 't': isTruncate = true;
                       break;
@@ -312,7 +336,8 @@ int main(int argc, char *argv[])
         (command == 'x' && (!ifiles.empty() || ifile == nullptr ||
                             isTruncate || isUppercase)) ||
         (command == 'l' && (!ifiles.empty() || ifile == nullptr ||
-                            isTruncate || isUppercase)))
+                            isTruncate || isUppercase)) ||
+        (command != 'x' && targetDir != nullptr))
     {
         syntax();
         return 1;
@@ -329,7 +354,7 @@ int main(int argc, char *argv[])
             break;
 
         case 'x':
-            return ExtractFromMdcrFile(ifile);
+            return ExtractFromMdcrFile(targetDir, ifile);
             break;
 
         case 'l':

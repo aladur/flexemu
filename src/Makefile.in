@@ -190,8 +190,8 @@ fsetup_LINK = $(CXXLD) $(fsetup_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 am_mdcrtool_OBJECTS = mdcrtool-mdcrtool.$(OBJEXT) \
 	mdcrtool-mdcrtape.$(OBJEXT) mdcrtool-mdcrfs.$(OBJEXT) \
 	mdcrtool-fileread.$(OBJEXT) mdcrtool-bfileptr.$(OBJEXT) \
-	mdcrtool-bmembuf.$(OBJEXT) mdcrtool-flexerr.$(OBJEXT) \
-	mdcrtool-misc1.$(OBJEXT)
+	mdcrtool-bmembuf.$(OBJEXT) mdcrtool-bdir.$(OBJEXT) \
+	mdcrtool-flexerr.$(OBJEXT) mdcrtool-misc1.$(OBJEXT)
 mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS)
 mdcrtool_DEPENDENCIES =
 mdcrtool_LINK = $(CXXLD) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) \
@@ -592,8 +592,8 @@ sprinter.h flexemu.h mdcrtape.h fdfdnd.h bintervl.h
 
 mdcrtool_SOURCES = \
 mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
-flexerr.cpp misc1.cpp \
-mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+bdir.cpp flexerr.cpp misc1.cpp \
+mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h bdir.h \
 typedefs.h misc1.h config.h flexerr.h bintervl.h
 
 flex2hex_SOURCES = \
@@ -864,6 +864,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetpdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-misc1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bmembuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-fileread.Po@am__quote@
@@ -2575,6 +2576,20 @@ mdcrtool-bmembuf.obj: bmembuf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bmembuf.cpp' object='mdcrtool-bmembuf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-bmembuf.obj `if test -f 'bmembuf.cpp'; then $(CYGPATH_W) 'bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/bmembuf.cpp'; fi`
+
+mdcrtool-bdir.o: bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-bdir.o -MD -MP -MF $(DEPDIR)/mdcrtool-bdir.Tpo -c -o mdcrtool-bdir.o `test -f 'bdir.cpp' || echo '$(srcdir)/'`bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mdcrtool-bdir.Tpo $(DEPDIR)/mdcrtool-bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdir.cpp' object='mdcrtool-bdir.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-bdir.o `test -f 'bdir.cpp' || echo '$(srcdir)/'`bdir.cpp
+
+mdcrtool-bdir.obj: bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-bdir.obj -MD -MP -MF $(DEPDIR)/mdcrtool-bdir.Tpo -c -o mdcrtool-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mdcrtool-bdir.Tpo $(DEPDIR)/mdcrtool-bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdir.cpp' object='mdcrtool-bdir.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
 
 mdcrtool-flexerr.o: flexerr.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-flexerr.o -MD -MP -MF $(DEPDIR)/mdcrtool-flexerr.Tpo -c -o mdcrtool-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp

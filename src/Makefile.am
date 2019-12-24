@@ -106,8 +106,8 @@ sprinter.h flexemu.h mdcrtape.h fdfdnd.h bintervl.h
 
 mdcrtool_SOURCES = \
 mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
-flexerr.cpp misc1.cpp \
-mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
+bdir.cpp flexerr.cpp misc1.cpp \
+mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h bdir.h \
 typedefs.h misc1.h config.h flexerr.h bintervl.h
 
 flex2hex_SOURCES = \
