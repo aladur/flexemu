@@ -67,7 +67,7 @@
 #define FERR_INVALID_MAGIC_NUMBER   (37)
 #define FERR_INVALID_LINE_IN_FILE   (38)
 #define FERR_INVALID_ITERATOR_USE   (39)
-#define FERR_FILE_INVALID_SIZE      (40)
+#define FERR_FILE_UNEXPECTED_SEC    (40)
 
 
 class FlexException : public std::exception

@@ -166,6 +166,6 @@ const char *FlexException::errString[] =
     _("Invalid magic number 0x{0}"),
     _("Invalid line '{0}' in file {1}"),
     _("Invalid usage of file container iterator"),
-    _("File {0} has invalid size {1}"),
+    _("File {0} has unexpected sector count {1}"),
 };
 

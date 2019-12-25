@@ -666,7 +666,8 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
     if (size < 0)
     {
-        throw FlexException(FERR_FILE_INVALID_SIZE, fileName, std::to_string(size));
+        throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
+                            std::to_string(size / SECTOR_SIZE));
     }
 
     size = size * DBPS / SECTOR_SIZE;
@@ -706,7 +707,9 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
         if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
                              recordNr * (SECTOR_SIZE - 4)))
         {
-            throw FlexException(FERR_READING_TRKSEC, trk, sec, fileName);
+            size = recordNr + 1;
+            throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
+                                    std::to_string(size));
         }
 
         recordNr++;
