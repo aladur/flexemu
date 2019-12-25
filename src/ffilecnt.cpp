@@ -672,48 +672,48 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
     size = size * DBPS / SECTOR_SIZE;
     buffer.Realloc(size);
+    recordNr = 0;
+    repeat = 1;
+
     if (size > 0)
     {
         de.GetStartTrkSec(&trk, &sec);
-        recordNr = 0;
-        repeat = 1;
-    }
 
-    while (size > 0)
-    {
-        // if random file skip the two sector map sectors
-        if (recordNr == 0 && de.IsRandom())
+        while (true)
         {
-            repeat = 3;
-        }
-
-        for (int i = 0; i < repeat; i++)
-        {
-            if (trk == 0 && sec == 0)
+            // if random file skip the two sector map sectors
+            if (recordNr == 0 && de.IsRandom())
             {
-                return buffer;
+                repeat = 3;
             }
 
-            if (!ReadSector(&sectorBuffer[0], trk, sec))
+            for (int i = 0; i < repeat; i++)
             {
-                throw FlexException(FERR_READING_TRKSEC,
-                                    trk, sec, fileName);
-            }
+                if (trk == 0 && sec == 0)
+                {
+                    return buffer;
+                }
+                if (!ReadSector(&sectorBuffer[0], trk, sec))
+                {
+                    throw FlexException(FERR_READING_TRKSEC,
+                                        trk, sec, fileName);
+                }
 
-            trk = sectorBuffer[0];
-            sec = sectorBuffer[1];
-        } // for
+                trk = sectorBuffer[0];
+                sec = sectorBuffer[1];
+            } // for
 
-        if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
-                             recordNr * (SECTOR_SIZE - 4)))
-        {
-            size = recordNr + 1;
-            throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
+            if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
+                                 recordNr * (SECTOR_SIZE - 4)))
+            {
+                size = recordNr + 1;
+                throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
                                     std::to_string(size));
-        }
+            }
 
-        recordNr++;
-        repeat = 1;
+            recordNr++;
+            repeat = 1;
+        }
     }
 
     return buffer;
