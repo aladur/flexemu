@@ -140,8 +140,8 @@ struct s_floppy
     Word        byte_p_track;   /* total bytes per track */
     Word        byte_p_track0;  /* total bytes on track 0 */
     Word        byte_p_sector;  /* bytes per sector */
-    Word        max_sector; /* max. nr of sectors per side */
-    Word        max_sector0;    /* max. nr of sectors per side track 0*/
+    Word        max_sector; /* max. nr of sectors (all sides) */
+    Word        max_sector0;    /* max. nr of sectors (all sides) track 0*/
     Word        max_track;  /* max. tracknumber of disk */
     Word        track;      /* actual tracknumber */
     Word        type;       /* type of container */

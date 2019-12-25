@@ -218,11 +218,11 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
 {
     if (track > 0)
     {
-        return (sector > 0 && sector <= (param.max_sector * 2));
+        return (sector > 0 && sector <= param.max_sector);
     }
     else if (track == 0)
     {
-        return (sector > 0 && sector <= (param.max_sector0 * 2));
+        return (sector > 0 && sector <= param.max_sector0);
     }
 
     return false;
@@ -244,12 +244,12 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected)
 
     param.offset        = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
-    param.max_sector    = MAX_SECTOR >> 1;
-    param.max_sector0   = MAX_SECTOR0 >> 1;
+    param.max_sector    = MAX_SECTOR;
+    param.max_sector0   = MAX_SECTOR0;
     param.max_track     = MAX_TRACK;
     param.byte_p_sector = SECTOR_SIZE;
-    param.byte_p_track0 = param.max_sector0 << 9;
-    param.byte_p_track  = param.max_sector << 9;
+    param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
+    param.byte_p_track  = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
 
     for (i = 0; i < INIT_DIR_SECTORS; ++i)
