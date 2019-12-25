@@ -61,9 +61,11 @@
 
 DirectoryContainer::DirectoryContainer(const char *aPath) :
     attributes(0),
-    isOpen(false)
+    isOpen(false),
+    disk_number(0)
 {
     struct stat sbuf;
+    static Word number = 0;
 
     if (aPath == nullptr || stat(aPath, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
@@ -90,6 +92,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
     }
 
     Initialize_header(attributes & FLX_READONLY);
+    disk_number = number++;
     isOpen = true;
 }
 
@@ -381,6 +384,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     {
         info.SetName(directory.c_str());
     }
+    info.SetNumber(disk_number);
 
     info.SetPath(directory.c_str());
     //info.SetType(param.type);

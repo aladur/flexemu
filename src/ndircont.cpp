@@ -191,6 +191,8 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
                         (sys_info_sector.last_trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(sys_info_sector.disk_name);
+    info.SetNumber((sys_info_sector.disk_number[0] << 8) |
+                   sys_info_sector.disk_number[1]);
     info.SetPath(directory.c_str());
     info.SetType(param.type);
     info.SetAttributes(attributes);

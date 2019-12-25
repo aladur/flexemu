@@ -51,6 +51,7 @@ private:
     std::string directory;
     Byte attributes;
     bool isOpen;
+    Word disk_number;
 
 public:
     DirectoryContainer() = delete;

@@ -42,6 +42,7 @@ private:
     int     sectors;    // Number of sectors per track
     int     tracks;     // Number of tracks
     std::string name;   // name of disk
+    unsigned int number;// disk number
     int     type;       // container type
     int     free;       // Number of bytes free
     int     totalSize;  // Number of total bytes writable
@@ -54,6 +55,10 @@ public:
     void                SetName(const std::string &n)
     {
         name = n;
+    }
+    void                SetNumber(unsigned int n)
+    {
+        number = n;
     }
     const std::string   GetTypeString() const;
 
@@ -110,6 +115,10 @@ public:
     inline const std::string GetName() const
     {
         return name;
+    };
+    inline unsigned int GetNumber() const
+    {
+        return number;
     };
     inline const std::string GetPath() const
     {

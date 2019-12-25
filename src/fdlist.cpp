@@ -705,7 +705,7 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
             return;
         }
 
-        caption.Printf(_("Container %s"), info.GetName());
+        caption.Printf(_("Container %s #%u"), info.GetName(), info.GetNumber());
         info.GetTrackSector(&tracks, &sectors);
         str.Append(_("Path: "));
         wxString path(info.GetPath().c_str(), wxConvUTF8);

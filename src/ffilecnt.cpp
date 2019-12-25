@@ -381,6 +381,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     info.SetTotalSize(((buffer.last_sec * (buffer.last_trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(buffer.disk_name);
+    info.SetNumber((buffer.disk_number[0] << 8) | buffer.disk_number[1]);
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
     info.SetAttributes(attributes);
