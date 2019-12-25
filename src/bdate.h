@@ -22,11 +22,7 @@
 #ifndef BDATE_INCLUDED
 #define BDATE_INCLUDED
 
-// possible format modes for getDateString:
-
-#define DATE_DEFAULT_FORMAT (1)
-#define DATE_ISO_FORMAT     (2)
-
+#include <string>
 
 class BDate
 {
@@ -39,14 +35,19 @@ private:
 
 public:
 
+    enum class Format
+    {
+        D2MS3Y4, // DD-MMM-YYYY, MMM are the first three char. of month name
+        Iso, // YYYYMMDD
+    };
+
     BDate(int d = 0, int m = 0, int year = 0);  // public constructor
     BDate(const BDate &d);              // public constructor
     ~BDate();                   // public destructor
 
 
     static const BDate Now();
-    static const char *monthName[];
-    const char  *GetDateString(int mode = DATE_DEFAULT_FORMAT) const;
+    const std::string GetDateString(Format format = Format::D2MS3Y4) const;
     void    Assign(int day, int month, int year);
     void    GetDate(int *day, int *month, int *year);
     void    SetDate(int day, int month, int year);
@@ -62,6 +63,7 @@ public:
     bool    operator >= (const BDate &d) const;
     bool    operator <= (const BDate &d) const;
 private:
+    static const char *monthName[];
     int     MakeComparable() const;
 
     //static int        year2000; // if !0 0 and if year < 70 add 1900 to it

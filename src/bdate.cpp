@@ -58,9 +58,9 @@ const char *BDate::monthName[] =
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "???"
 };
 
-const char *BDate::GetDateString(int mode) const
+const std::string BDate::GetDateString(Format format) const
 {
-    static char dateString[32];
+    char dateString[32];
     int m, y;
 
     m = GetMonth();
@@ -69,16 +69,15 @@ const char *BDate::GetDateString(int mode) const
     if (m < 1 || m > 12)
     {
         m = 13;
-        y = 0;
     }
 
-    switch (mode)
+    switch (format)
     {
-        case DATE_ISO_FORMAT:
+        case Format::Iso:
             sprintf(dateString, "%04d%02d%02d", y, GetMonth(), GetDay());
             break;
 
-        default:   // DATE_DEFAULT_FORMAT
+        case Format::D2MS3Y4:
             sprintf(dateString, "%02d-%s-%04d", GetDay(), monthName[m - 1], y);
             break;
     } // switch

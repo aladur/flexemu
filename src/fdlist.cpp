@@ -246,7 +246,7 @@ void FlexDiskListCtrl::UpdateItem(int item, FlexDirEntry &dirEntry)
     filesize.Printf("%d", dirEntry.GetSize());
     SetItem(item, LC_RANDOM, dirEntry.IsRandom() ? _("Yes") : "");
     SetItem(item, LC_FILESIZE, filesize);
-    wxString date(dirEntry.GetDate().GetDateString(), wxConvUTF8);
+    wxString date(dirEntry.GetDate().GetDateString().c_str(), wxConvUTF8);
     SetItem(item, LC_FILEDATE, date);
     wxString attributes(dirEntry.GetAttributesString().c_str(), wxConvUTF8);
     SetItem(item, LC_FILEATTR, attributes);
@@ -717,7 +717,7 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
         str += type;
         str += "\n";
         str.Append(_("Date: "));
-        wxString date(info.GetDate().GetDateString(), wxConvUTF8);
+        wxString date(info.GetDate().GetDateString().c_str(), wxConvUTF8);
         str += date;
 
         str += "\n";
