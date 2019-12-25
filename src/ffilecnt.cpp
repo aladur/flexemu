@@ -677,7 +677,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
     if (size > 0)
     {
-        de.GetStartTrkSec(&trk, &sec);
+        de.GetStartTrkSec(trk, sec);
 
         while (true)
         {
@@ -783,10 +783,10 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                         FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
                 pde->reserved1 = 0;
-                entry.GetStartTrkSec(&tmp1, &tmp2);
+                entry.GetStartTrkSec(tmp1, tmp2);
                 pde->start_trk = static_cast<Byte>(tmp1);
                 pde->start_sec = static_cast<Byte>(tmp2);
-                entry.GetEndTrkSec(&tmp1, &tmp2);
+                entry.GetEndTrkSec(tmp1, tmp2);
                 pde->end_trk = static_cast<Byte>(tmp1);
                 pde->end_sec = static_cast<Byte>(tmp2);
                 pde->records[0] = static_cast<Byte>(records >> 8);

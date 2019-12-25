@@ -77,9 +77,9 @@ public:
     void    SetDate(const BDate &date);
     void    SetDate(int d, int m, int y);
     void    SetStartTrkSec(int t, int s);
-    void    GetStartTrkSec(int *t, int *s);
+    void    GetStartTrkSec(int &t, int &s);
     void    SetEndTrkSec(int t, int s);
-    void    GetEndTrkSec(int *t, int *s);
+    void    GetEndTrkSec(int &t, int &s);
     void    SetTotalFileName(const char *fileName);
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;

@@ -173,10 +173,10 @@ void FlexDirEntry::SetStartTrkSec(int t, int s)
     startSec = s;
 }
 
-void FlexDirEntry::GetStartTrkSec(int *t, int *s)
+void FlexDirEntry::GetStartTrkSec(int &track, int &sector)
 {
-    *t = startTrk;
-    *s = startSec;
+    track = startTrk;
+    sector = startSec;
 }
 
 void FlexDirEntry::SetEndTrkSec(int t, int s)
@@ -185,10 +185,10 @@ void FlexDirEntry::SetEndTrkSec(int t, int s)
     endSec = s;
 }
 
-void FlexDirEntry::GetEndTrkSec(int *t, int *s)
+void FlexDirEntry::GetEndTrkSec(int &track, int &sector)
 {
-    *t = endTrk;
-    *s = endSec;
+    track = endTrk;
+    sector = endSec;
 }
 
 const std::string FlexDirEntry::GetAttributesString()
