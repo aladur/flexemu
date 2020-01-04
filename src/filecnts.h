@@ -75,13 +75,8 @@ struct s_sys_info_sector
 
 struct s_st
 {
-#ifdef WORDS_BIGENDIAN
-    Byte sec;
-    Byte trk;
-#else
     Byte trk;
     Byte sec;
-#endif
 };
 
 typedef union
