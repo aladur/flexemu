@@ -47,10 +47,9 @@ struct s_formats
     Word        dir_sectors;    /* number of directory sectors */
 };
 
-/* structure of FLEX system info sector */
-struct s_sys_info_sector
+/* structure of FLEX system information record (SIR) */
+struct s_sys_info_record
 {
-    Byte    unused1[16]; // To be initialized with 0
     char    disk_name[8]; // Name of this disk image
     char    disk_ext[3]; // Extension of this disk image
     Byte    disk_number[2]; // Number of this disk image
@@ -64,7 +63,14 @@ struct s_sys_info_sector
     Byte    year; // Year when the disk was created, range 0 - 99
     Byte    last_trk; // Maximum track number this disk image supports
     Byte    last_sec; // Maximum sector number this disk image supports
-    Byte    unused2[216]; // To be initialized with 0
+};
+
+/* structure of FLEX system information sector (SIS) */
+struct s_sys_info_sector
+{
+    Byte unused1[16]; // To be initialized with 0
+    s_sys_info_record sir; // System information record
+    Byte unused2[216]; // To be initialized with 0
 };
 
 struct s_st

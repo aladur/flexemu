@@ -131,7 +131,6 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     Byte fc_end_trk, fc_end_sec;
     Word records, free;
     Byte buffer[SECTOR_SIZE];
-    s_sys_info_sector *psis;
     s_dir_entry *pd;
 
     if (base == nullptr)
@@ -152,7 +151,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     end_sec = pd->end_sec;
     end_trk = pd->end_trk;
     records = (pd->records[0] << 8) | pd->records[1];
-    psis = (s_sys_info_sector *)buffer;
+    auto &sis = *reinterpret_cast<s_sys_info_sector *>(buffer);
 
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
@@ -169,8 +168,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         throw FlexException(FERR_READING_TRKSEC, 0, 3, base->GetPath().c_str());
     }
 
-    fc_end_trk = psis->fc_end_trk;
-    fc_end_sec = psis->fc_end_sec;
+    fc_end_trk = sis.sir.fc_end_trk;
+    fc_end_sec = sis.sir.fc_end_sec;
 
     if (fc_end_trk || fc_end_sec)
     {
@@ -196,8 +195,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath().c_str());
         }
 
-        psis->fc_end_trk = end_trk;
-        psis->fc_end_sec = end_sec;
+        sis.sir.fc_end_trk = end_trk;
+        sis.sir.fc_end_sec = end_sec;
     }
     else
     {
@@ -208,19 +207,19 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath().c_str());
         }
 
-        psis->fc_start_trk = start_trk;
-        psis->fc_start_sec = start_sec;
-        psis->fc_end_trk = end_trk;
-        psis->fc_end_sec = end_sec;
+        sis.sir.fc_start_trk = start_trk;
+        sis.sir.fc_start_sec = start_sec;
+        sis.sir.fc_end_trk = end_trk;
+        sis.sir.fc_end_sec = end_sec;
     }
 
     // update sys info sector
     // update number of free sectors
     // and end of free chain trk/sec
-    free = psis->free[0] << 8 | psis->free[1];
+    free = sis.sir.free[0] << 8 | sis.sir.free[1];
     free += records;
-    psis->free[0] = static_cast<Byte>(free >> 8);
-    psis->free[1] = static_cast<Byte>(free & 0xff);
+    sis.sir.free[0] = static_cast<Byte>(free >> 8);
+    sis.sir.free[1] = static_cast<Byte>(free & 0xff);
 
     if (!base->WriteSector(&buffer[0], 0, 3))
     {

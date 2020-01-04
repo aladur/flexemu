@@ -179,20 +179,16 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
         return false;
     }
 
-    const auto &sys_info_sector = flex_sys_info[0];
+    const auto &sis = flex_sys_info[0];
 
-    info.SetDate(sys_info_sector.day,
-                 sys_info_sector.month,
-                 sys_info_sector.year);
-    info.SetTrackSector(sys_info_sector.last_trk + 1, sys_info_sector.last_sec);
-    info.SetFree((((sys_info_sector.free[0] << 8) | sys_info_sector.free[1]) *
+    info.SetDate(sis.sir.day, sis.sir.month, sis.sir.year);
+    info.SetTrackSector(sis.sir.last_trk + 1, sis.sir.last_sec);
+    info.SetFree((((sis.sir.free[0] << 8) | sis.sir.free[1]) *
                   param.byte_p_sector) >> 10);
-    info.SetTotalSize(((sys_info_sector.last_sec *
-                        (sys_info_sector.last_trk + 1)) *
+    info.SetTotalSize(((sis.sir.last_sec * (sis.sir.last_trk + 1)) *
                        param.byte_p_sector) >> 10);
-    info.SetName(sys_info_sector.disk_name);
-    info.SetNumber((sys_info_sector.disk_number[0] << 8) |
-                   sys_info_sector.disk_number[1]);
+    info.SetName(sis.sir.disk_name);
+    info.SetNumber((sis.sir.disk_number[0] << 8) | sis.sir.disk_number[1]);
     info.SetPath(directory.c_str());
     info.SetType(param.type);
     info.SetAttributes(attributes);
@@ -573,7 +569,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
         j += DIRENTRIES;
     }
 
-    s_sys_info_sector &sys_info_sector = flex_sys_info[0];
+    auto &sis = flex_sys_info[0];
 
     s_dir_sector dir_sector { };
 
@@ -582,8 +578,8 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
     dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
     dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
     st_t sector_track;
-    sector_track.st.trk = sys_info_sector.fc_start_trk;
-    sector_track.st.sec = sys_info_sector.fc_start_sec;
+    sector_track.st.trk = sis.sir.fc_start_trk;
+    sector_track.st.sec = sis.sir.fc_start_sec;
     auto index = get_sector_index(sector_track);
 
     if (extend_directory(index, dir_sector))
@@ -593,15 +589,15 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
         flex_directory[dir_sectors - 2].next_trk = sector_track.st.trk;
         flex_directory[dir_sectors - 2].next_sec = sector_track.st.sec;
 
-        if (++sys_info_sector.fc_start_sec > MAX_SECTOR)
+        if (++sis.sir.fc_start_sec > MAX_SECTOR)
         {
-            sys_info_sector.fc_start_sec = 1;
-            sys_info_sector.fc_start_trk++;
+            sis.sir.fc_start_sec = 1;
+            sis.sir.fc_start_trk++;
         }
 
-        if (--sys_info_sector.free[1] == 0xff)
+        if (--sis.sir.free[1] == 0xff)
         {
-            --sys_info_sector.free[0];
+            --sis.sir.free[0];
         }
 
         return j;
@@ -661,15 +657,14 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     Word free = LINK_TABLE_SIZE - fc_start;
 
     // and now update system info sectors
-    for (auto &sys_info_sector : flex_sys_info)
+    for (auto &sis : flex_sys_info)
     {
-        sys_info_sector.fc_start_trk = static_cast<Byte>(fc_start / MAX_SECTOR);
-        sys_info_sector.fc_start_sec =
-            static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
-        sys_info_sector.fc_end_trk = MAX_TRACK;
-        sys_info_sector.fc_end_sec = MAX_SECTOR;
-        sys_info_sector.free[0] = free >> 8;
-        sys_info_sector.free[1] = free & 0xff;
+        sis.sir.fc_start_trk = static_cast<Byte>(fc_start / MAX_SECTOR);
+        sis.sir.fc_start_sec = static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
+        sis.sir.fc_end_trk = MAX_TRACK;
+        sis.sir.fc_end_sec = MAX_SECTOR;
+        sis.sir.free[0] = free >> 8;
+        sis.sir.free[1] = free & 0xff;
     }
 } // initialize_flex_link_table
 
@@ -729,7 +724,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     st_t &end)
 {
     off_t i, free, sector_begin, records;
-    auto &sys_info_sector = flex_sys_info[0];
+    auto &sis = flex_sys_info[0];
 
     if (dir_index < 0 ||
         (dir_index / DIRENTRIES) >= static_cast<signed>(flex_directory.size()))
@@ -737,7 +732,7 @@ bool NafsDirectoryContainer::add_to_link_table(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    free = (sys_info_sector.free[0] << 8) + sys_info_sector.free[1];
+    free = (sis.sir.free[0] << 8) + sis.sir.free[1];
 
     if (size > static_cast<off_t>(free * DBPS))
     {
@@ -745,8 +740,8 @@ bool NafsDirectoryContainer::add_to_link_table(
     }
 
     records = (size + (DBPS - 1)) / DBPS;
-    begin.st.sec = sys_info_sector.fc_start_sec;
-    begin.st.trk = sys_info_sector.fc_start_trk;
+    begin.st.sec = sis.sir.fc_start_sec;
+    begin.st.trk = sis.sir.fc_start_trk;
     sector_begin = get_sector_index(begin);
 
     for (i = 1; i <= records; i++)
@@ -777,12 +772,12 @@ bool NafsDirectoryContainer::add_to_link_table(
     end.st.sec = ((i + sector_begin - 2) % MAX_SECTOR) + 1;
     end.st.trk = static_cast<Byte>((i + sector_begin - 2) / MAX_SECTOR);
     // update sys info sector
-    sys_info_sector.fc_start_sec = ((i + sector_begin - 1) % MAX_SECTOR) + 1;
-    sys_info_sector.fc_start_trk =
+    sis.sir.fc_start_sec = ((i + sector_begin - 1) % MAX_SECTOR) + 1;
+    sis.sir.fc_start_trk =
         static_cast<Byte>((i + sector_begin - 1) / MAX_SECTOR);
 
-    sys_info_sector.free[0] = static_cast<Byte>((free - records) >> 8);
-    sys_info_sector.free[1] = (free - records) & 0xff;
+    sis.sir.free[0] = static_cast<Byte>((free - records) >> 8);
+    sis.sir.free[1] = (free - records) & 0xff;
 
     return true;
 } // add_to_link_table
@@ -1054,7 +1049,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         std::string name;
         std::string extension;
 
-        auto &sys_info_sector = flex_sys_info[0];
+        auto &sis = flex_sys_info[0];
         struct tm *lt = localtime(&(sbuf.st_mtime));
 
         std::string diskname = getFileName(directory);
@@ -1068,29 +1063,25 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
             name = "FLEXDISK";
         }
 
-        std::fill(std::begin(sys_info_sector.unused1),
-                  std::end(sys_info_sector.unused1), 0);
-        std::fill(std::begin(sys_info_sector.disk_name),
-                  std::end(sys_info_sector.disk_name), 0);
-        strncpy(sys_info_sector.disk_name, name.c_str(), 8);
-        std::fill(std::begin(sys_info_sector.disk_ext),
-                  std::end(sys_info_sector.disk_ext), 0);
-        sys_info_sector.disk_number[0] = number >> 8;
-        sys_info_sector.disk_number[1] = number & 0xff;
-        sys_info_sector.fc_start_trk = 0;
-        sys_info_sector.fc_start_sec = 0;
-        sys_info_sector.fc_end_trk = 0;
-        sys_info_sector.fc_end_sec = 0;
-        sys_info_sector.free[0] = 0;
-        sys_info_sector.free[1] = 0;
-        sys_info_sector.month = static_cast<Byte>(lt->tm_mon + 1);
-        sys_info_sector.day = static_cast<Byte>(lt->tm_mday);
-        sys_info_sector.year = static_cast<Byte>(lt->tm_year);
-        sys_info_sector.last_trk = MAX_TRACK;
-        sys_info_sector.last_sec = MAX_SECTOR;
-
-        std::fill(std::begin(sys_info_sector.unused2),
-                  std::end(sys_info_sector.unused2), 0);
+        std::fill(std::begin(sis.unused1), std::end(sis.unused1), 0);
+        std::fill(std::begin(sis.sir.disk_name),
+                  std::end(sis.sir.disk_name), 0);
+        strncpy(sis.sir.disk_name, name.c_str(), 8);
+        std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext), 0);
+        sis.sir.disk_number[0] = number >> 8;
+        sis.sir.disk_number[1] = number & 0xff;
+        sis.sir.fc_start_trk = 0;
+        sis.sir.fc_start_sec = 0;
+        sis.sir.fc_end_trk = 0;
+        sis.sir.fc_end_sec = 0;
+        sis.sir.free[0] = 0;
+        sis.sir.free[1] = 0;
+        sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
+        sis.sir.day = static_cast<Byte>(lt->tm_mday);
+        sis.sir.year = static_cast<Byte>(lt->tm_year);
+        sis.sir.last_trk = MAX_TRACK;
+        sis.sir.last_sec = MAX_SECTOR;
+        std::fill(std::begin(sis.unused2), std::end(sis.unused2), 0);
 
         flex_sys_info[1] = flex_sys_info[0];
     } // if
@@ -1336,8 +1327,8 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 bool NafsDirectoryContainer::is_last_of_free_chain(
                              const st_t &sector_track) const
 {
-    return (flex_sys_info[0].fc_end_trk == sector_track.st.trk &&
-            flex_sys_info[0].fc_end_sec == sector_track.st.sec);
+    return (flex_sys_info[0].sir.fc_end_trk == sector_track.st.trk &&
+            flex_sys_info[0].sir.fc_end_sec == sector_track.st.sec);
 } // is_last_of_free_chain
 
 
@@ -1730,8 +1721,8 @@ std::string NafsDirectoryContainer::get_unique_filename(
                                     const char *extension) const
 {
     Word number =
-        (flex_sys_info[0].disk_number[0] << 8) |
-        (flex_sys_info[0].disk_number[1] & 0xff);
+        (flex_sys_info[0].sir.disk_number[0] << 8) |
+        (flex_sys_info[0].sir.disk_number[1] & 0xff);
     std::string diskname = getFileName(directory);
     if (diskname[0] == '.')
     {
