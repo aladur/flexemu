@@ -495,4 +495,14 @@ template<typename T> T getValueBigEndian(const Byte *p)
     return result;
 }
 
+// Write a big endian data value to buffer p.
+template<typename T> void setValueBigEndian(Byte *p, T value)
+{
+    for (size_t index = sizeof(T); index != 0; --index)
+    {
+        p[index - 1] = value & 0xFF;
+        value >>= 8;
+    }
+}
+
 #endif /* __misc1.h__ */

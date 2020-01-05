@@ -311,8 +311,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
             is_last ? '\0' : static_cast<Byte>(i / MAX_SECTOR);
         dir_sector.next.sec =
             is_last ? '\0' : static_cast<Byte>((i % MAX_SECTOR) + 1);
-        dir_sector.record_nr[0] = 0;
-        dir_sector.record_nr[1] = 0;
+        setValueBigEndian<Word>(&dir_sector.record_nr[0], 0U);
 
         std::fill(std::begin(dir_sector.unused),
                   std::end(dir_sector.unused), 0);
@@ -546,8 +545,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
     Word record_nr = static_cast<Word>(flex_directory.size()) -
                      INIT_DIR_SECTORS + 1;
-    dir_sector.record_nr[0] = static_cast<Byte>(record_nr >> 8);
-    dir_sector.record_nr[1] = static_cast<Byte>(record_nr & 0xFF);
+    setValueBigEndian<Word>(&dir_sector.record_nr[0], record_nr);
 
     auto track_sector = sis.sir.fc_start;
     auto index = get_sector_index(track_sector);
@@ -633,8 +631,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
             static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
         sis.sir.fc_end.trk = MAX_TRACK;
         sis.sir.fc_end.sec = MAX_SECTOR;
-        sis.sir.free[0] = free >> 8;
-        sis.sir.free[1] = free & 0xff;
+        setValueBigEndian<Word>(&sis.sir.free[0], free);
     }
 } // initialize_flex_link_table
 
@@ -724,13 +721,11 @@ bool NafsDirectoryContainer::add_to_link_table(
 
         if (is_random)
         {
-            link.record_nr[0] = static_cast<Byte>(i > 2 ? (i - 2) >> 8 : 0);
-            link.record_nr[1] = i > 2 ? (i - 2) & 0xff : 0;
+            setValueBigEndian<Word>(&link.record_nr[0], i > 2 ? (i - 2) : 0U);
         }
         else
         {
-            link.record_nr[0] = static_cast<Byte>(i >> 8);
-            link.record_nr[1] = i & 0xff;
+            setValueBigEndian<Word>(&link.record_nr[0], i);
         }
 
         link.f_record = static_cast<Word>(i - 1);
@@ -745,8 +740,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     sis.sir.fc_start.trk =
         static_cast<Byte>((i + sector_begin - 1) / MAX_SECTOR);
 
-    sis.sir.free[0] = static_cast<Byte>((free - records) >> 8);
-    sis.sir.free[1] = (free - records) & 0xff;
+    setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free - records));
 
     return true;
 } // add_to_link_table
@@ -784,8 +778,7 @@ void NafsDirectoryContainer::add_to_directory(
         is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
     dir_entry.start = begin;
     dir_entry.end = end;
-    dir_entry.records[0] = records >> 8;
-    dir_entry.records[1] = records & 0xff;
+    setValueBigEndian<Word>(&dir_entry.records[0], records);
     dir_entry.sector_map = is_random ? IS_RANDOM_FILE : 0;
     dir_entry.month = static_cast<Byte>(lt->tm_mon + 1);
     dir_entry.day = static_cast<Byte>(lt->tm_mday);
@@ -1035,12 +1028,10 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
                   std::end(sis.sir.disk_name), 0);
         strncpy(sis.sir.disk_name, name.c_str(), 8);
         std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext), 0);
-        sis.sir.disk_number[0] = number >> 8;
-        sis.sir.disk_number[1] = number & 0xff;
+        setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
         sis.sir.fc_start = st_t{0, 0};
         sis.sir.fc_end = st_t{0, 0};
-        sis.sir.free[0] = 0;
-        sis.sir.free[1] = 0;
+        setValueBigEndian<Word>(&sis.sir.free[0], 0U);
         sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
         sis.sir.day = static_cast<Byte>(lt->tm_mday);
         sis.sir.year = static_cast<Byte>(lt->tm_year);
@@ -1514,8 +1505,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
                         boot_buffer.cend(),
                         [](Byte b){ return b == 0; });
                 // Remove link address.
-                boot_buffer[3] = '\0';
-                boot_buffer[4] = '\0';
+                setValueBigEndian<Word>(&boot_buffer[3], 0U);
                 // If sector 2 contains all zero bytes only write
                 // the first sector otherwise write first and second
                 // sector to file.

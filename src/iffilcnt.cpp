@@ -210,8 +210,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     // and end of free chain trk/sec
     Word free = getValueBigEndian<Word>(&sis.sir.free[0]);
     free += records;
-    sis.sir.free[0] = static_cast<Byte>(free >> 8);
-    sis.sir.free[1] = static_cast<Byte>(free & 0xff);
+    setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!base->WriteSector(&buffer[0], 0, 3))
     {

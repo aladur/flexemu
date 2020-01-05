@@ -534,8 +534,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
             }
 
             // set record nr and if last sector set link to 0. Write sector
-            sectorBuffer[0][2] = recordNr >> 8;
-            sectorBuffer[0][3] = recordNr & 0xFF;
+            setValueBigEndian<Word>(&sectorBuffer[0][2], recordNr);
 
             if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
             {
@@ -581,8 +580,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     // update sys info sector
     auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
     free -= recordNr;
-    sis.sir.free[0] = static_cast<Byte>(free >> 8);
-    sis.sir.free[1] = static_cast<Byte>(free & 0xFF);
+    setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!WriteSector(reinterpret_cast<Byte *>(&sis), 0, 3))
     {
@@ -746,8 +744,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 entry.GetEndTrkSec(tmp1, tmp2);
                 pde->end.trk = static_cast<Byte>(tmp1);
                 pde->end.sec = static_cast<Byte>(tmp2);
-                pde->records[0] = static_cast<Byte>(records >> 8);
-                pde->records[1] = static_cast<Byte>(records & 0xFF);
+                setValueBigEndian<Word>(&pde->records[0], records);
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
                 pde->reserved2 = 0;
                 date = entry.GetDate();
@@ -950,14 +947,12 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     free            = (fmt->sectors * fmt->tracks) - start;
     time_now        = time(nullptr);
     lt          = localtime(&time_now);
-    sis.sir.disk_number[0] = 0;
-    sis.sir.disk_number[1] = 1;
+    setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / fmt->sectors);
     sis.sir.fc_start.sec = static_cast<Byte>((start % fmt->sectors) + 1);
     sis.sir.fc_end.trk = static_cast<Byte>(fmt->tracks - 1);
     sis.sir.fc_end.sec = static_cast<Byte>(fmt->sectors);
-    sis.sir.free[0] = static_cast<Byte>(free >> 8);
-    sis.sir.free[1] = static_cast<Byte>(free & 0xff);
+    setValueBigEndian<Word>(&sis.sir.free[0], free);
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
     sis.sir.year = static_cast<Byte>(lt->tm_year);
