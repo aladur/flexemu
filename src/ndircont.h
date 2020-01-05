@@ -118,8 +118,6 @@ public:
     static NafsDirectoryContainer *Create(const char *dir,
                                           const char *name, int t, int s,
                                           int fmt = TYPE_DSK_CONTAINER);
-    bool Close();
-    bool IsContainerOpened() const;
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);

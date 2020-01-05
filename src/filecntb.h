@@ -76,8 +76,6 @@ const Byte DIRENTRIES = 10;
 class FileContainerIfBase
 {
 public:
-    virtual bool Close() = 0;
-    virtual bool IsContainerOpened() const = 0;
     virtual bool IsWriteProtected() const = 0;
     virtual bool  GetInfo(FlexContainerInfo &info) const = 0;
     virtual int  GetContainerType() const = 0;

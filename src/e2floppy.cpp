@@ -59,7 +59,6 @@ E2floppy::~E2floppy()
         {
             try
             {
-                floppy[drive_nr]->Close();
                 floppy[drive_nr].reset(nullptr);
                 drive_status[drive_nr] = DiskStatus::EMPTY;
             }
@@ -82,7 +81,6 @@ bool E2floppy::umount_drive(Word drive_nr)
 
     try
     {
-        floppy[drive_nr]->Close();
         floppy[drive_nr].reset(nullptr);
         drive_status[drive_nr] = DiskStatus::EMPTY;
     }

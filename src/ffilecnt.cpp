@@ -182,16 +182,6 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
 
 FlexFileContainer::~FlexFileContainer()
 {
-    // final cleanup: close if not already done
-    try
-    {
-        Close();
-    }
-    catch (...)
-    {
-        // ignore exceptions
-        // usually the file should be closed already
-    }
 }
 
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
@@ -215,19 +205,6 @@ FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
 std::string FlexFileContainer::GetPath() const
 {
     return fp.GetPath();
-}
-
-bool FlexFileContainer::Close()
-{
-    fp.Close();
-    return true;
-}
-
-// check if an container is opened
-// If so return true
-bool FlexFileContainer::IsContainerOpened() const
-{
-    return (fp != nullptr);
 }
 
 int FlexFileContainer::GetBytesPerSector() const
@@ -285,7 +262,6 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
 // !entry.isEmpty
 bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 {
-    CHECK_NO_CONTAINER_OPEN;
     FileContainerIterator it(fileName);
 
     it = this->begin();
@@ -302,7 +278,6 @@ bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 
 bool    FlexFileContainer::DeleteFile(const char *filePattern)
 {
-    CHECK_NO_CONTAINER_OPEN;
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FileContainerIterator it(filePattern);
@@ -317,7 +292,6 @@ bool    FlexFileContainer::DeleteFile(const char *filePattern)
 
 bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 {
-    CHECK_NO_CONTAINER_OPEN;
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FlexDirEntry de;
@@ -349,7 +323,6 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
 {
     FlexCopyManager copyMan;
 
-    CHECK_NO_CONTAINER_OPEN;
     return copyMan.FileCopy(sourceName, destName, *this, destination);
 }
 
@@ -357,8 +330,6 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
     s_sys_info_sector sis;
     int year;
-
-    CHECK_NO_CONTAINER_OPEN;
 
     if (!ReadSector(reinterpret_cast<Byte *>(&sis), 0, 3))
     {
@@ -457,8 +428,6 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     const char      *pFileName = fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
-
-    CHECK_NO_CONTAINER_OPEN;
 
     if (fileName == nullptr)
     {
@@ -642,8 +611,6 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     Byte            sectorBuffer[SECTOR_SIZE];
     int             size;
 
-    CHECK_NO_CONTAINER_OPEN;
-
     if (!FindFile(fileName, de))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
@@ -722,7 +689,6 @@ bool    FlexFileContainer::SetAttributes(const char *filePattern,
 {
     FlexDirEntry de;
 
-    CHECK_NO_CONTAINER_OPEN;
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FileContainerIterator it(filePattern);

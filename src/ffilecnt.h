@@ -40,11 +40,6 @@ class FlexFileContainerIteratorImp;
 const int MAX_OPEN_FILES = 1;
 
 
-#define CHECK_NO_CONTAINER_OPEN                 \
-    if (fp == nullptr) {                   \
-        throw FlexException(FERR_NO_CONTAINER_OPEN);    \
-    }
-
 #define CHECK_CONTAINER_WRITEPROTECTED              \
     if (IsWriteProtected())                 \
     {                           \
@@ -82,9 +77,7 @@ public:
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
                                      int fmt = TYPE_DSK_CONTAINER);
-    bool Close();
     bool CheckFilename(const char *fileName) const;
-    bool IsContainerOpened() const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);
     bool IsWriteProtected() const;

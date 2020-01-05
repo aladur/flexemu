@@ -235,7 +235,7 @@ FlexDiskListCtrl::~FlexDiskListCtrl()
 
     if (m_container != nullptr)
     {
-        m_container->Close();
+        m_container.reset();
     }
 }
 

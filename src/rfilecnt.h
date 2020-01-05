@@ -46,9 +46,9 @@ public:
 
     virtual bool ReadSector(Byte *buffer, int trk, int sec) const;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec);
-    virtual bool Close();
 
 private:
+    bool close();
     virtual void Initialize_for_flx_format(
         s_floppy        *pfloppy,
         s_flex_header   *pheader,

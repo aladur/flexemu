@@ -38,11 +38,6 @@ class BDate;
 class DirectoryContainerIteratorImp;
 
 
-#define CHECK_NO_DCONTAINER_OPEN                 \
-    if (!IsContainerOpened()) {              \
-        throw FlexException(FERR_NO_CONTAINER_OPEN); \
-    }
-
 class DirectoryContainer : public FileContainerIf
 {
     friend class DirectoryContainerIteratorImp;  // corresponding iterator class
@@ -50,7 +45,6 @@ class DirectoryContainer : public FileContainerIf
 private:
     std::string directory;
     Byte attributes;
-    bool isOpen;
     Word disk_number;
 
 public:
@@ -68,8 +62,6 @@ public:
     static DirectoryContainer *Create(const char *dir, const char *name,
                                       int t, int s,
                                       int fmt = TYPE_DSK_CONTAINER);
-    bool Close();
-    bool IsContainerOpened() const;
     bool IsWriteProtected() const;
     bool GetInfo(FlexContainerInfo &info) const;
     int  GetContainerType() const;

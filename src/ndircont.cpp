@@ -73,7 +73,7 @@
 // can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
-    attributes(0), isOpen(false), dir_extend{0, 0}
+    attributes(0), dir_extend{0, 0}
 {
     struct stat sbuf;
     static Word number = 0;
@@ -90,7 +90,6 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
         // Remove trailing PATHSEPARATOR character.
         directory.resize(directory.size() - 1);
     }
-    isOpen = true;
 
     if (access(path, W_OK))
     {
@@ -106,7 +105,8 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
     // final cleanup: close if not already done
     try
     {
-        Close();
+        close_new_files();
+        directory.clear();
     }
     catch (...)
     {
@@ -144,40 +144,13 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
     return new NafsDirectoryContainer(totalPath.c_str());
 }
 
-bool NafsDirectoryContainer::IsContainerOpened() const
-{
-    return isOpen;
-}
-
 std::string NafsDirectoryContainer::GetPath() const
 {
-    if (isOpen)
-    {
-        return directory;
-    }
-
-    return "";
-}
-
-bool NafsDirectoryContainer::Close()
-{
-    if (isOpen)
-    {
-        close_new_files();
-        directory.clear();
-        isOpen = false;
-    }
-
-    return true;
+    return directory;
 }
 
 bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
-
-    if (!isOpen)
-    {
-        return false;
-    }
 
     const auto &sis = flex_sys_info[0];
 

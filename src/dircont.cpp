@@ -61,7 +61,6 @@
 
 DirectoryContainer::DirectoryContainer(const char *aPath) :
     attributes(0),
-    isOpen(false),
     disk_number(0)
 {
     struct stat sbuf;
@@ -93,7 +92,6 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 
     Initialize_header(attributes & FLX_READONLY);
     disk_number = number++;
-    isOpen = true;
 }
 
 /****************************************/
@@ -102,17 +100,6 @@ DirectoryContainer::DirectoryContainer(const char *aPath) :
 
 DirectoryContainer::~DirectoryContainer()
 {
-    // final cleanup: close if not already done
-    try
-    {
-        Close();
-    }
-    catch (...)
-    {
-        // ignore exceptions
-        // exceptions in destructors cause much problems
-        // usually the file should be closed already
-    }
 }
 
 /****************************************/
@@ -121,14 +108,7 @@ DirectoryContainer::~DirectoryContainer()
 
 bool DirectoryContainer::IsWriteProtected() const
 {
-    if (isOpen)
-    {
-        return (attributes & FLX_READONLY) ? true : false;
-    }
-    else
-    {
-        return false;
-    }
+    return (attributes & FLX_READONLY) ? true : false;
 }
 
 // type, track and sectors parameter will be ignored
@@ -167,24 +147,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
 
 std::string DirectoryContainer::GetPath() const
 {
-    if (isOpen)
-    {
-        return directory;
-    }
-
-    return std::string();
-}
-
-// return != 0 on success
-// try to close all files still open
-// this may cause exeptions!
-// usually files should be closed explicitly
-// with closeFile()
-bool DirectoryContainer::Close()
-{
-    isOpen = false;
-
-    return true;
+    return directory;
 }
 
 bool DirectoryContainer::IsRandomFile(
@@ -223,7 +186,6 @@ bool DirectoryContainer::IsRandomFile(
 /*
 bool    DirectoryContainer::OpenDirectory(const char *pattern)
 {
-    CHECK_NO_DCONTAINER_OPEN;
     CHECK_DDIRECTORY_ALREADY_OPENED;
     filePattern = pattern;
     dirHdl = nullptr;
@@ -238,7 +200,6 @@ bool    DirectoryContainer::OpenDirectory(const char *pattern)
 // !entry.isEmpty
 bool DirectoryContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 {
-    CHECK_NO_DCONTAINER_OPEN;
     FileContainerIterator it(fileName);
 
     it = this->begin();
@@ -254,7 +215,6 @@ bool DirectoryContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 
 bool    DirectoryContainer::DeleteFile(const char *fileName)
 {
-    CHECK_NO_DCONTAINER_OPEN;
     FileContainerIterator it(fileName);
 
     for (it = this->begin(); it != this->end(); ++it)
@@ -267,7 +227,6 @@ bool    DirectoryContainer::DeleteFile(const char *fileName)
 
 bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 {
-    CHECK_NO_DCONTAINER_OPEN;
     FlexDirEntry de;
 
     // prevent conflict with an existing file
@@ -299,7 +258,6 @@ bool    DirectoryContainer::FileCopy(
 {
     FlexCopyManager copyMan;
 
-    CHECK_NO_DCONTAINER_OPEN;
     return copyMan.FileCopy(sourceName, destName,
                             (FileContainerIf &) * this, destination);
 }
@@ -315,9 +273,6 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     const char  *p;
     std::string rootPath;
     struct stat sbuf;
-
-
-    CHECK_NO_DCONTAINER_OPEN;
 
     if (directory.length() > 3)
     {
@@ -392,14 +347,6 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     info.SetAttributes(attributes);
     return true;
 }
-
-// check if an container is opened
-// If so return true
-bool DirectoryContainer::IsContainerOpened() const
-{
-    return isOpen;
-}
-
 
 int DirectoryContainer::GetContainerType() const
 {

@@ -51,7 +51,7 @@ FlexRamFileContainer::~FlexRamFileContainer()
     // final cleanup: close if not already done
     try
     {
-        Close();
+        close();
     }
     catch (...)
     {
@@ -75,7 +75,7 @@ FlexRamFileContainer &FlexRamFileContainer::operator=
     return *this;
 }
 
-bool FlexRamFileContainer::Close()
+bool FlexRamFileContainer::close()
 {
     bool throwException = false;
     std::string path = fp.GetPath();
