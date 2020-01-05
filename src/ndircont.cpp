@@ -1325,14 +1325,28 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
     const auto &link = flex_links[index];
     bool result = true;
 
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
+    {
+        result = false;
+    }
+
 #ifdef DEBUG_FILE
     LOG_XXX("read: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
         LOG_X(" %s", get_unix_filename(link.file_id).c_str());
     }
+    if (!result)
+    {
+        LOG(". *** Invalid track or sector.");
+    }
     LOG("\n");
 #endif
+
+    if (!result)
+    {
+        return result;
+    }
 
     switch (link.type)
     {
@@ -1461,14 +1475,28 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
     auto index = get_sector_index(track_sector);
     auto &link = flex_links[index];
 
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
+    {
+        result = false;
+    }
+
 #ifdef DEBUG_FILE
     LOG_XXX("write: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
         LOG_X(" %s", get_unix_filename(link.file_id).c_str());
     }
+    if (!result)
+    {
+        LOG(". *** Invalid track or sector.");
+    }
     LOG("\n");
 #endif
+
+    if (!result)
+    {
+        return result;
+    }
 
     switch (link.type)
     {

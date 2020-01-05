@@ -117,6 +117,11 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
+    {
+        return false;
+    }
+
     int pos = ByteOffset(trk, sec);
 
     if (pos < 0)
@@ -131,6 +136,11 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 {
     if (file_buffer.get() == nullptr)
+    {
+        return false;
+    }
+
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
     {
         return false;
     }

@@ -841,6 +841,11 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
+    {
+        return false;
+    }
+
     pos = ByteOffset(trk, sec);
 
     if (pos < 0)
@@ -870,6 +875,11 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
     int pos;
 
     if (fp == nullptr)
+    {
+        return false;
+    }
+
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
     {
         return false;
     }
