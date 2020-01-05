@@ -77,23 +77,23 @@ public:
     void    SetDate(const BDate &date);
     void    SetDate(int d, int m, int y);
     void    SetStartTrkSec(int t, int s);
-    void    GetStartTrkSec(int &t, int &s);
+    void    GetStartTrkSec(int &t, int &s) const;
     void    SetEndTrkSec(int t, int s);
-    void    GetEndTrkSec(int &t, int &s);
+    void    GetEndTrkSec(int &t, int &s) const;
     void    SetTotalFileName(const char *fileName);
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;
     std::string GetFileExt() const;
     void    SetSize(int size);
-    int     GetSize();
+    int     GetSize() const;
     void SetAttributes(Byte attributes);
     void SetAttributes(Byte setMask, Byte clearMask);
-    Byte GetAttributes();
-    const std::string GetAttributesString();
+    Byte GetAttributes() const;
+    const std::string GetAttributesString() const;
     int     GetSectorMap() const;
     int     IsRandom() const;
     void    SetSectorMap(int aSectorMap);
-    int     IsEmpty();
+    int     IsEmpty() const;
     void    SetEmpty();
     void    ClearEmpty();
 
@@ -105,7 +105,7 @@ inline void FlexDirEntry::SetSize(int s)
 {
     size = s;
 }
-inline int FlexDirEntry::GetSize()
+inline int FlexDirEntry::GetSize() const
 {
     return size;
 }
@@ -114,7 +114,7 @@ inline void FlexDirEntry::SetAttributes(Byte x_attributes)
 {
     attributes = x_attributes;
 }
-inline Byte FlexDirEntry::GetAttributes()
+inline Byte FlexDirEntry::GetAttributes() const
 {
     return attributes;
 }
@@ -127,7 +127,7 @@ inline void FlexDirEntry::ClearEmpty()
 {
     status &= ~FLX_EMPTY;
 }
-inline int FlexDirEntry::IsEmpty()
+inline int FlexDirEntry::IsEmpty() const
 {
     return status & FLX_EMPTY;
 }
