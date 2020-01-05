@@ -156,12 +156,11 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetDate(sis.sir.day, sis.sir.month, sis.sir.year);
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    info.SetFree((((sis.sir.free[0] << 8) | sis.sir.free[1]) *
-                  param.byte_p_sector) >> 10);
+    info.SetFree((getValueBigEndian<Word>(&sis.sir.free[0]) * param.byte_p_sector) >> 10);
     info.SetTotalSize(((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(sis.sir.disk_name);
-    info.SetNumber((sis.sir.disk_number[0] << 8) | sis.sir.disk_number[1]);
+    info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     info.SetPath(directory.c_str());
     info.SetType(param.type);
     info.SetAttributes(attributes);
@@ -694,7 +693,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     st_t &begin,
     st_t &end)
 {
-    off_t i, free, sector_begin, records;
+    off_t i, sector_begin, records;
     auto &sis = flex_sys_info[0];
 
     if (dir_index < 0 ||
@@ -703,7 +702,7 @@ bool NafsDirectoryContainer::add_to_link_table(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    free = (sis.sir.free[0] << 8) + sis.sir.free[1];
+    auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
 
     if (size > static_cast<off_t>(free * DBPS))
     {
@@ -1700,9 +1699,7 @@ std::string NafsDirectoryContainer::to_string(SectorType type)
 std::string NafsDirectoryContainer::get_unique_filename(
                                     const char *extension) const
 {
-    Word number =
-        (flex_sys_info[0].sir.disk_number[0] << 8) |
-        (flex_sys_info[0].sir.disk_number[1] & 0xff);
+    auto number = getValueBigEndian<Word>(&flex_sys_info[0].sir.disk_number[0]);
     std::string diskname = getFileName(directory);
     if (diskname[0] == '.')
     {

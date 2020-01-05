@@ -380,11 +380,10 @@ inline Byte Da6809::D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory, DWord * /*pAddr*/)
 {
     Byte code;
-    Word offset;
     const char *label;
 
     code = *pMemory;
-    offset = (*(pMemory + 1) << 8) | *(pMemory + 2);
+    auto offset = getValueBigEndian<Word>(&pMemory[1]);
     sprintf(code_buf, "%04X: %02X %02X %02X", pc, code, *(pMemory + 1),
             *(pMemory + 2));
     label = FlexLabel(offset);
@@ -546,7 +545,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x09 : // ,R + 16 Bit Offset
-                offset = (*(pMemory + 2) << 8 | *(pMemory + 3));
+                offset = getValueBigEndian<Word>(&pMemory[2]);
                 s = "";
                 sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
                         postbyte, *(pMemory + 2), *(pMemory + 3));
@@ -587,8 +586,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x0d :  // ,PC + 16 Bit Offset
-                offset = (((*(pMemory + 2) << 8) | *(pMemory + 3)) + pc + 4) &
-                         0xFFFF;
+                offset = (getValueBigEndian<Word>(&pMemory[2]) + pc + 4) & 0xFFFF;
                 s = ">";
                 sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
                         postbyte, *(pMemory + 2), *(pMemory + 3));
@@ -600,7 +598,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x1f : // [n]
                 br1 = "[";
                 br2 = "]";
-                offset = (*(pMemory + 2) << 8) | *(pMemory + 3);
+                offset = getValueBigEndian<Word>(&pMemory[2]);
                 sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
                         postbyte, *(pMemory + 2), *(pMemory + 2));
                 sprintf(mnem_buf, "%s %s$%04X%s", mnemo, br1, offset, br2);
@@ -621,11 +619,10 @@ inline Byte Da6809::D_Extended(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory, DWord * /*pAddr*/)
 {
     Byte code;
-    Word offset;
     const char *label;
 
     code = *pMemory;
-    offset = (*(pMemory + 1) << 8) | *(pMemory + 2);
+    auto offset = getValueBigEndian<Word>(&pMemory[1]);
     sprintf(code_buf, "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
     label = FlexLabel(offset);
@@ -680,11 +677,10 @@ inline Byte Da6809::D_RelativeL(
     const char *mnemo, Word pc, Byte bytes, const Byte *pMemory, DWord *pAddr)
 {
     Byte code;
-    Word offset;
     const char *label;
 
     code = *pMemory;
-    offset = (*(pMemory + 1) << 8) | *(pMemory + 2);
+    auto offset = getValueBigEndian<Word>(&pMemory[1]);
 
     if (offset < 32767)
     {

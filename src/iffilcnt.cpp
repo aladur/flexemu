@@ -108,8 +108,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
                 dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);
                 dirEntry.SetEndTrkSec(pd->end.trk, pd->end.sec);
                 dirEntry.SetSize(
-                    (pd->records[0] << 8 |
-                     pd->records[1]) * base->GetBytesPerSector());
+                    getValueBigEndian<Word>(&pd->records[0]) * base->GetBytesPerSector());
                 dirEntry.SetSectorMap(pd->sector_map);
                 dirEntry.ClearEmpty();
             }
@@ -126,7 +125,6 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
 {
     st_t start, end;
     st_t fc_end;
-    Word records, free;
     Byte buffer[SECTOR_SIZE];
     s_dir_entry *pd;
 
@@ -147,7 +145,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     start = pd->start;
     end = pd->end;
-    records = (pd->records[0] << 8) | pd->records[1];
+    auto records = getValueBigEndian<Word>(&pd->records[0]);
     auto &sis = *reinterpret_cast<s_sys_info_sector *>(buffer);
 
     // deleted file is signed by 0xFF as first byte of filename
@@ -210,7 +208,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     // update sys info sector
     // update number of free sectors
     // and end of free chain trk/sec
-    free = sis.sir.free[0] << 8 | sis.sir.free[1];
+    Word free = getValueBigEndian<Word>(&sis.sir.free[0]);
     free += records;
     sis.sir.free[0] = static_cast<Byte>(free >> 8);
     sis.sir.free[1] = static_cast<Byte>(free & 0xff);

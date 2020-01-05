@@ -481,4 +481,18 @@ template<typename T> T fromBigEndian(const T& value)
     return reverseBytes<T>(value);
 #endif
 }
+
+// Read a big endian data value from buffer p.
+template<typename T> T getValueBigEndian(const Byte *p)
+{
+    T result = 0U;
+
+    for (size_t index = 0; index < sizeof(T); ++index)
+    {
+        result = (result << 8) | p[index];
+    }
+
+    return result;
+}
+
 #endif /* __misc1.h__ */

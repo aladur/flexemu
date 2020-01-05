@@ -347,12 +347,11 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetDate(sis.sir.day, sis.sir.month, year);
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    info.SetFree((((sis.sir.free[0] << 8) | sis.sir.free[1]) *
-                  param.byte_p_sector) >> 10);
+    info.SetFree((getValueBigEndian<Word>(&sis.sir.free[0]) * param.byte_p_sector) >> 10);
     info.SetTotalSize(((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(sis.sir.disk_name);
-    info.SetNumber((sis.sir.disk_number[0] << 8) | sis.sir.disk_number[1]);
+    info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
     info.SetAttributes(attributes);
@@ -580,7 +579,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // update sys info sector
-    int free = sis.sir.free[0] << 8 | sis.sir.free[1];
+    auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
     free -= recordNr;
     sis.sir.free[0] = static_cast<Byte>(free >> 8);
     sis.sir.free[1] = static_cast<Byte>(free & 0xFF);

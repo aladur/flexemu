@@ -151,8 +151,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
             return MdcrStatus::WrongChecksum;
         }
       
-        startAddress = ibuffer[7] << 8 | ibuffer[8];
-        endAddress = ibuffer[9] << 8 | ibuffer[10];
+        startAddress = getValueBigEndian<Word>(&ibuffer[7]);
+        endAddress = getValueBigEndian<Word>(&ibuffer[9]);
         if (startAddress > endAddress)
         {
             return MdcrStatus::ReadError;
