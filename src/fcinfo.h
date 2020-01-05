@@ -107,10 +107,10 @@ public:
         tracks = t;
         sectors = s;
     };
-    inline void         GetTrackSector(int *t, int *s) const
+    inline void         GetTrackSector(int &t, int &s) const
     {
-        *t = tracks;
-        *s = sectors;
+        t = tracks;
+        s = sectors;
     };
     inline const std::string GetName() const
     {

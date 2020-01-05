@@ -282,7 +282,7 @@ std::string E2floppy::drive_info(Word drive_nr)
                 return stream.str().c_str();
             }
 
-            info.GetTrackSector(&trk, &sec);
+            info.GetTrackSector(trk, sec);
             stream << "drive       #" << drive_nr << std::endl
                 << "type:       " << info.GetTypeString().c_str() << std::endl
                 << "name:       " << info.GetName() << " #" <<
