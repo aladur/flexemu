@@ -78,7 +78,7 @@ FlexDirEntry *FileContainerIterator::operator->()
     }
 
     // maybe you used the iterator in the wrong way ?
-    return (FlexDirEntry *)nullptr;
+    throw FlexException(FERR_INVALID_ITERATOR_USE);
 
 }
 
