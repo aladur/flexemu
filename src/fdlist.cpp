@@ -872,7 +872,7 @@ void FlexDiskListCtrl::FindFiles()
         {
             int i;
 
-            sFileName = (*it).GetTotalFileName();
+            sFileName = it->GetTotalFileName();
             wxString fileName(sFileName.c_str(), wxConvUTF8);
 
             if (multimatches(sFileName.c_str(), filePattern.c_str(),
