@@ -47,22 +47,34 @@ struct s_formats
     Word        dir_sectors;    /* number of directory sectors */
 };
 
+typedef struct s_st
+{
+    Byte trk;
+    Byte sec;
+
+    bool operator== (const s_st &src) const
+    {
+        return (sec == src.sec) && (trk == src.trk);
+    }
+    bool operator!= (const s_st &src) const
+    {
+        return !operator==(src);
+    }
+} st_t;
+
 /* structure of FLEX system information record (SIR) */
 struct s_sys_info_record
 {
     char    disk_name[8]; // Name of this disk image
     char    disk_ext[3]; // Extension of this disk image
     Byte    disk_number[2]; // Number of this disk image
-    Byte    fc_start_trk; // Start track of free chain
-    Byte    fc_start_sec; // Start sector of free chain
-    Byte    fc_end_trk; // End track of free chain
-    Byte    fc_end_sec; // End sector of free chain
+    st_t    fc_start; // Start track/sector of free chain
+    st_t    fc_end; // End track/sector of free chain
     Byte    free[2]; // Number of sectors in free chain
     Byte    month; // Month when the disk was created, range 1 - 12
     Byte    day; // Day when the disk was created, range 1 - 31
     Byte    year; // Year when the disk was created, range 0 - 99
-    Byte    last_trk; // Maximum track number this disk image supports
-    Byte    last_sec; // Maximum sector number this disk image supports
+    st_t    last; // Maximum track/sector number this disk image supports
 };
 
 /* structure of FLEX system information sector (SIS) */
@@ -72,18 +84,6 @@ struct s_sys_info_sector
     s_sys_info_record sir; // System information record
     Byte unused2[216]; // To be initialized with 0
 };
-
-struct s_st
-{
-    Byte trk;
-    Byte sec;
-};
-
-typedef union
-{
-    Word sec_trk; // Specifies track and sector number of a sector
-    struct s_st st;
-} st_t;
 
 // (M)eta (D)ata (P)er (S)ector in Byte. It consists of the:
 // - link to the next sector
@@ -102,10 +102,8 @@ struct s_dir_entry
     char    file_ext[3]; // Extension of file
     Byte    file_attr; // File attributes, see flexFileAttributes
     Byte    reserved1; // To be initialized with 0
-    char    start_trk; // Track of first sector of the file
-    char    start_sec; // First sector of this file
-    Byte    end_trk; // Track of last sector of the file
-    Byte    end_sec; // Last sector of the file
+    st_t    start; // Track/secor of first sector of the file
+    st_t    end; // Track/sector of last sector of the file
     Byte    records[2]; // Number of records (= sectors) the file has
     Byte    sector_map; // Indicates a random access file, see IS_RANDOM_FILE
     Byte    reserved2; // To be initialized with 0
@@ -126,8 +124,7 @@ struct s_dir_entry
 /* structure of one FLEX directory sector */
 struct s_dir_sector
 {
-    Byte    next_trk; // Link to track of next sector in the chain
-    Byte    next_sec; // Link to next sector in the chain
+    st_t    next; // Link to next track/sector in the chain
     Byte    record_nr[2]; // Logical record number of sector in file, zero based
     Byte    unused[12]; // To be initialized with 0
     struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector

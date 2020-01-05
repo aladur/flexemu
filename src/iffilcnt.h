@@ -50,7 +50,8 @@ private:
     FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &);
 
     FlexFileContainer *base;
-    int dirIndex, dirSectorTrk, dirSectorSec;
+    int dirIndex;
+    st_t dirTrackSector;
     struct s_dir_sector dirSector;
     FlexDirEntry dirEntry;
 };

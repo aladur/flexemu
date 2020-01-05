@@ -156,8 +156,8 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
 
         if (fread(&sis, sizeof(sis), 1, fp) == 1)
         {
-            format.tracks = sis.sir.last_trk + 1;
-            format.sectors = sis.sir.last_sec;
+            format.tracks = sis.sir.last.trk + 1;
+            format.sectors = sis.sir.last.sec;
             format.size     = format.tracks * format.sectors * SECTOR_SIZE;
 
             // do a plausibility check with the size of the DSK file
@@ -375,10 +375,10 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     }
 
     info.SetDate(sis.sir.day, sis.sir.month, year);
-    info.SetTrackSector(sis.sir.last_trk + 1, sis.sir.last_sec);
+    info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
     info.SetFree((((sis.sir.free[0] << 8) | sis.sir.free[1]) *
                   param.byte_p_sector) >> 10);
-    info.SetTotalSize(((sis.sir.last_sec * (sis.sir.last_trk + 1)) *
+    info.SetTotalSize(((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                        param.byte_p_sector) >> 10);
     info.SetName(sis.sir.disk_name);
     info.SetNumber((sis.sir.disk_number[0] << 8) | sis.sir.disk_number[1]);
@@ -448,8 +448,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                         const char *fileName /* = nullptr */)
 {
     Byte trk = 0, sec = 0;
-    Byte startTrk, startSec;
-    Byte nextTrk, nextSec;
+    st_t start;
+    st_t next;
     Word recordNr;
     int count;
     FlexDirEntry    de;
@@ -476,8 +476,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
     } // get start trk/sec of free chain
 
-    nextTrk = startTrk = sis.sir.fc_start_trk;
-    nextSec = startSec = sis.sir.fc_start_sec;
+    next = start = sis.sir.fc_start;
     {
         // write each sector to buffer
         Byte repeat = 0;
@@ -497,8 +496,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         {
             for (count = repeat; count >= 0; count--)
             {
-                trk = nextTrk;
-                sec = nextSec;
+                trk = next.trk;
+                sec = next.sec;
 
                 if (trk == 0 && sec == 0)
                 {
@@ -517,8 +516,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                     memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
                 }
 
-                nextTrk = sectorBuffer[count][0];
-                nextSec = sectorBuffer[count][1];
+                next.trk = sectorBuffer[count][0];
+                next.sec = sectorBuffer[count][1];
             }
 
             if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
@@ -585,32 +584,29 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         }
         while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
     }
-    sis.sir.fc_start_trk = nextTrk;
-    sis.sir.fc_start_sec = nextSec;
+    sis.sir.fc_start = next;
 
     // if free chain full, set end trk/sec of free chain also to 0
-    if (!nextTrk && !nextSec)
+    if (!next.sec && !next.trk)
     {
-        sis.sir.fc_end_trk = nextTrk;
-        sis.sir.fc_end_sec = nextSec;
+        sis.sir.fc_end = next;
     }
 
     // if random file, write the sector map buffers back
-    nextTrk = startTrk;
-    nextSec = startSec;
+    next = start;
 
     if (buffer.IsRandom())
     {
         for (count = 2; count >= 1; count--)
         {
-            if (!WriteSector(&sectorBuffer[count][0], nextTrk, nextSec))
+            if (!WriteSector(&sectorBuffer[count][0], next.trk, next.sec))
             {
                 throw FlexException(FERR_WRITING_TRKSEC,
-                                    nextTrk, nextSec, fp.GetPath());
+                                    next.trk, next.sec, fp.GetPath());
             }
 
-            nextTrk = sectorBuffer[count][0];
-            nextSec = sectorBuffer[count][1];
+            next.trk = sectorBuffer[count][0];
+            next.sec = sectorBuffer[count][1];
         }
     }
 
@@ -627,7 +623,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     // make new directory entry
     de.SetDate(buffer.GetDate());
-    de.SetStartTrkSec(startTrk, startSec);
+    de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
     de.SetTotalFileName(pFileName);
     de.SetSize(recordNr * SECTOR_SIZE);
@@ -746,22 +742,18 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     int     i;
     s_dir_sector    ds;
     s_dir_entry *pde;
-    int     nextTrk, nextSec;
+    st_t next{0, 5}; // first directory sector is trk/sec 0/5
     int     tmp1, tmp2;
     BDate       date;
 
-    // first directory sector is trk/sec 0/5
-    nextTrk = 0;
-    nextSec = 5;
-
     // loop until all directory sectors read
-    while (!(nextTrk == 0 && nextSec == 0))
+    while (next.sec != 0 || next.trk != 0)
     {
         // read next directory sector
-        if (!ReadSector((Byte *)&ds, nextTrk, nextSec))
+        if (!ReadSector((Byte *)&ds, next.trk, next.sec))
         {
             throw FlexException(FERR_READING_TRKSEC,
-                                nextTrk, nextSec, fp.GetPath());
+                                next.trk, next.sec, fp.GetPath());
         }
 
         for (i = 0; i < 10; i++)
@@ -784,11 +776,11 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->file_attr = entry.GetAttributes();
                 pde->reserved1 = 0;
                 entry.GetStartTrkSec(tmp1, tmp2);
-                pde->start_trk = static_cast<Byte>(tmp1);
-                pde->start_sec = static_cast<Byte>(tmp2);
+                pde->start.trk = static_cast<Byte>(tmp1);
+                pde->start.sec = static_cast<Byte>(tmp2);
                 entry.GetEndTrkSec(tmp1, tmp2);
-                pde->end_trk = static_cast<Byte>(tmp1);
-                pde->end_sec = static_cast<Byte>(tmp2);
+                pde->end.trk = static_cast<Byte>(tmp1);
+                pde->end.sec = static_cast<Byte>(tmp2);
                 pde->records[0] = static_cast<Byte>(records >> 8);
                 pde->records[1] = static_cast<Byte>(records & 0xFF);
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
@@ -798,18 +790,17 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->month = static_cast<Byte>(date.GetMonth());
                 pde->year = static_cast<Byte>(date.GetYear() % 100);
 
-                if (!WriteSector((Byte *)&ds, nextTrk, nextSec))
+                if (!WriteSector((Byte *)&ds, next.trk, next.sec))
                 {
                     throw FlexException(FERR_WRITING_TRKSEC,
-                                        nextTrk, nextSec, fp.GetPath());
+                                        next.trk, next.sec, fp.GetPath());
                 }
 
                 return true;
             }
         }
 
-        nextTrk = ds.next_trk;
-        nextSec = ds.next_sec;
+        next = ds.next;
     }
 
     throw FlexException(FERR_DIRECTORY_FULL);
@@ -986,17 +977,17 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     lt          = localtime(&time_now);
     sis.sir.disk_number[0] = 0;
     sis.sir.disk_number[1] = 1;
-    sis.sir.fc_start_trk = static_cast<Byte>(start / fmt->sectors);
-    sis.sir.fc_start_sec = static_cast<Byte>((start % fmt->sectors) + 1);
-    sis.sir.fc_end_trk = static_cast<Byte>(fmt->tracks - 1);
-    sis.sir.fc_end_sec = static_cast<Byte>(fmt->sectors);
+    sis.sir.fc_start.trk = static_cast<Byte>(start / fmt->sectors);
+    sis.sir.fc_start.sec = static_cast<Byte>((start % fmt->sectors) + 1);
+    sis.sir.fc_end.trk = static_cast<Byte>(fmt->tracks - 1);
+    sis.sir.fc_end.sec = static_cast<Byte>(fmt->sectors);
     sis.sir.free[0] = static_cast<Byte>(free >> 8);
     sis.sir.free[1] = static_cast<Byte>(free & 0xff);
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
     sis.sir.year = static_cast<Byte>(lt->tm_year);
-    sis.sir.last_trk = static_cast<Byte>(fmt->tracks - 1);
-    sis.sir.last_sec = static_cast<Byte>(fmt->sectors);
+    sis.sir.last.trk = static_cast<Byte>(fmt->tracks - 1);
+    sis.sir.last.sec = static_cast<Byte>(fmt->sectors);
 } // create_sys_info_sectors
 
 // on success return true

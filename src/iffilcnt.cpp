@@ -30,10 +30,9 @@
 
 FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     FlexFileContainer *aBase)
-    : base(aBase), dirIndex(-1), dirSectorTrk(0), dirSectorSec(0)
+    : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
 {
-    dirSector.next_trk = 0;
-    dirSector.next_sec = 5;
+    dirSector.next = st_t{0, 5};
 }
 
 FlexFileContainerIteratorImp::~FlexFileContainerIteratorImp()
@@ -63,20 +62,20 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if ((dirIndex % DIRENTRIES) == 0)
         {
-            if (dirSector.next_trk == 0 &&
-                dirSector.next_sec == 0)
+            if (!dirSector.next.sec && !dirSector.next.trk)
             {
                 return false;
             }
 
-            dirSectorTrk = dirSector.next_trk;
-            dirSectorSec = dirSector.next_sec;
+            dirTrackSector = dirSector.next;
 
             if (!base->ReadSector((Byte *)&dirSector,
-                                  dirSectorTrk, dirSectorSec))
+                                  dirTrackSector.trk, dirTrackSector.sec))
             {
-                throw FlexException(FERR_READING_TRKSEC, dirSectorTrk,
-                                    dirSectorSec, base->GetPath().c_str());
+                throw FlexException(FERR_READING_TRKSEC,
+                                    dirTrackSector.trk,
+                                    dirTrackSector.sec,
+                                    base->GetPath().c_str());
             }
         }
 
@@ -106,10 +105,8 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
                 dirEntry.SetTotalFileName(fileName.c_str());
                 dirEntry.SetAttributes(pd->file_attr);
                 dirEntry.SetSectorMap(pd->sector_map);
-                dirEntry.SetStartTrkSec(pd->start_trk,
-                                        pd->start_sec);
-                dirEntry.SetEndTrkSec(pd->end_trk, pd->end_sec)
-                ;
+                dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);
+                dirEntry.SetEndTrkSec(pd->end.trk, pd->end.sec);
                 dirEntry.SetSize(
                     (pd->records[0] << 8 |
                      pd->records[1]) * base->GetBytesPerSector());
@@ -127,8 +124,8 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::DeleteCurrent()
 {
-    Byte start_trk, start_sec, end_trk, end_sec;
-    Byte fc_end_trk, fc_end_sec;
+    st_t start, end;
+    st_t fc_end;
     Word records, free;
     Byte buffer[SECTOR_SIZE];
     s_dir_entry *pd;
@@ -139,28 +136,29 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector, dirSectorTrk, dirSectorSec))
+    if (!base->ReadSector((Byte *)&dirSector,
+                          dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirSectorTrk,
-                            dirSectorSec, base->GetPath().c_str());
+        throw FlexException(FERR_READING_TRKSEC,
+                            dirTrackSector.trk, dirTrackSector.sec,
+                            base->GetPath().c_str());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
-    start_trk = pd->start_trk;
-    start_sec = pd->start_sec;
-    end_sec = pd->end_sec;
-    end_trk = pd->end_trk;
+    start = pd->start;
+    end = pd->end;
     records = (pd->records[0] << 8) | pd->records[1];
     auto &sis = *reinterpret_cast<s_sys_info_sector *>(buffer);
 
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
 
-    if (!base->WriteSector((const Byte *)&dirSector, dirSectorTrk,
-                           dirSectorSec))
+    if (!base->WriteSector((const Byte *)&dirSector,
+                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, dirSectorTrk,
-                            dirSectorSec, base->GetPath().c_str());
+        throw FlexException(FERR_WRITING_TRKSEC,
+                            dirTrackSector.trk, dirTrackSector.sec,
+                            base->GetPath().c_str());
     }
 
     if (!base->ReadSector(&buffer[0], 0, 3))   /* read sys info sector */
@@ -168,24 +166,23 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         throw FlexException(FERR_READING_TRKSEC, 0, 3, base->GetPath().c_str());
     }
 
-    fc_end_trk = sis.sir.fc_end_trk;
-    fc_end_sec = sis.sir.fc_end_sec;
+    fc_end = sis.sir.fc_end;
 
-    if (fc_end_trk || fc_end_sec)
+    if (fc_end.sec != 0 || fc_end.trk != 0)
     {
         // add deleted file to free chain if free chain not empty
-        if (!base->ReadSector(&buffer[0], fc_end_trk, fc_end_sec))
+        if (!base->ReadSector(&buffer[0], fc_end.trk, fc_end.sec))
         {
-            throw FlexException(FERR_READING_TRKSEC, fc_end_trk, fc_end_sec,
+            throw FlexException(FERR_READING_TRKSEC, fc_end.trk, fc_end.sec,
                                 base->GetPath().c_str());
         }
 
-        buffer[0] = start_trk;
-        buffer[1] = start_sec;
+        buffer[0] = start.trk;
+        buffer[1] = start.sec;
 
-        if (!base->WriteSector(&buffer[0], fc_end_trk, fc_end_sec))
+        if (!base->WriteSector(&buffer[0], fc_end.trk, fc_end.sec))
         {
-            throw FlexException(FERR_WRITING_TRKSEC, fc_end_trk, fc_end_sec,
+            throw FlexException(FERR_WRITING_TRKSEC, fc_end.trk, fc_end.sec,
                                 base->GetPath().c_str());
         }
 
@@ -195,8 +192,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath().c_str());
         }
 
-        sis.sir.fc_end_trk = end_trk;
-        sis.sir.fc_end_sec = end_sec;
+        sis.sir.fc_end = end;
     }
     else
     {
@@ -207,10 +203,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath().c_str());
         }
 
-        sis.sir.fc_start_trk = start_trk;
-        sis.sir.fc_start_sec = start_sec;
-        sis.sir.fc_end_trk = end_trk;
-        sis.sir.fc_end_sec = end_sec;
+        sis.sir.fc_start = start;
+        sis.sir.fc_end = end;
     }
 
     // update sys info sector
@@ -243,10 +237,11 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector, dirSectorTrk, dirSectorSec))
+    if (!base->ReadSector((Byte *)&dirSector,
+                          dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirSectorTrk,
-                            dirSectorSec, base->GetPath().c_str());
+        throw FlexException(FERR_READING_TRKSEC, dirTrackSector.trk,
+                            dirTrackSector.sec, base->GetPath().c_str());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -292,9 +287,10 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     strncpy(&pd->file_ext[0], ext.c_str(), FLEX_FILEEXT_LENGTH);
 
     if (!base->WriteSector((const Byte *)&dirSector,
-                           dirSectorTrk, dirSectorSec))
+                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, dirSectorTrk, dirSectorSec,
+        throw FlexException(FERR_WRITING_TRKSEC,
+                            dirTrackSector.trk, dirTrackSector.sec,
                             base->GetPath().c_str());
     }
 
@@ -314,9 +310,11 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector, dirSectorTrk, dirSectorSec))
+    if (!base->ReadSector((Byte *)&dirSector,
+                          dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirSectorTrk, dirSectorSec,
+        throw FlexException(FERR_READING_TRKSEC,
+                            dirTrackSector.trk, dirTrackSector.sec,
                             base->GetPath().c_str());
     }
 
@@ -326,9 +324,10 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     pd->year = static_cast<Byte>(date.GetYear() % 100);
 
     if (!base->WriteSector((const Byte *)&dirSector,
-                           dirSectorTrk, dirSectorSec))
+                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, dirSectorTrk, dirSectorSec,
+        throw FlexException(FERR_WRITING_TRKSEC,
+                            dirTrackSector.trk, dirTrackSector.sec,
                             base->GetPath().c_str());
     }
 
@@ -348,20 +347,21 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector, dirSectorTrk, dirSectorSec))
+    if (!base->ReadSector((Byte *)&dirSector,
+                          dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirSectorTrk,
-                            dirSectorSec, base->GetPath().c_str());
+        throw FlexException(FERR_READING_TRKSEC, dirTrackSector.trk,
+                            dirTrackSector.sec, base->GetPath().c_str());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     pd->file_attr = attributes;
 
     if (!base->WriteSector((const Byte *)&dirSector,
-                           dirSectorTrk, dirSectorSec))
+                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, dirSectorTrk, dirSectorSec,
-                            base->GetPath().c_str());
+        throw FlexException(FERR_WRITING_TRKSEC, dirTrackSector.trk,
+                            dirTrackSector.sec, base->GetPath().c_str());
     }
 
     return true;
