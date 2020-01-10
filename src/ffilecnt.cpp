@@ -329,6 +329,7 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
 bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
     s_sys_info_sector sis;
+    char disk_name[13];
     int year;
 
     if (!ReadSector(reinterpret_cast<Byte *>(&sis), 0, 3))
@@ -345,12 +346,32 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
         year = sis.sir.year + 1900;
     }
 
+    strncpy(disk_name, sis.sir.disk_name, sizeof(sis.sir.disk_name));
+    disk_name[sizeof(sis.sir.disk_name)] = '\0';
+    if (sis.sir.disk_ext[0] != '\0')
+    {
+        strcat(disk_name, ".");
+        size_t index = strlen(disk_name);
+        for (size_t i = 0; i < sizeof(sis.sir.disk_ext); ++i)
+        {
+            char ch = sis.sir.disk_ext[i];
+            if (ch >= ' ' && ch <= '~')
+            {
+                disk_name[index++] = ch;
+            }
+            else
+            {
+                break;
+            }
+        }
+        disk_name[index++] = '\0';
+    }
     info.SetDate(sis.sir.day, sis.sir.month, year);
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
     info.SetFree((getValueBigEndian<Word>(&sis.sir.free[0]) * param.byte_p_sector) >> 10);
     info.SetTotalSize(((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                        param.byte_p_sector) >> 10);
-    info.SetName(sis.sir.disk_name);
+    info.SetName(disk_name);
     info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
