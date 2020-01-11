@@ -158,13 +158,17 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         {
             format.tracks = sis.sir.last.trk + 1;
             format.sectors = sis.sir.last.sec;
-            format.size     = format.tracks * format.sectors * SECTOR_SIZE;
+            off_t size_min = ((format.tracks - 1) * format.sectors + 1) *
+                             SECTOR_SIZE;
+            off_t size_max = format.tracks * format.sectors * SECTOR_SIZE;
 
             // do a plausibility check with the size of the DSK file
             if (!stat(fp.GetPath(), &sbuf) &&
-                format.size == sbuf.st_size)
+                sbuf.st_size % SECTOR_SIZE == 0 &&
+                sbuf.st_size >= size_min && sbuf.st_size <= size_max)
             {
                 // ok it's a DSK format
+                format.size = sbuf.st_size;
                 bool write_protected = ((attributes & FLX_READONLY) != 0);
                 Initialize_for_dsk_format(format, write_protected);
                 return;
@@ -225,7 +229,9 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
 {
     if (track)
     {
-        return (sector > 0 && sector <= param.max_sector);
+        return (sector > 0 && sector <= param.max_sector &&
+                (param.byte_p_track * track +
+                 sector * param.byte_p_sector <= file_size));
     }
     else
     {
@@ -904,6 +910,7 @@ void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
 void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
                                                   bool write_protected)
 {
+    file_size = format.size;
     param.offset = 0;
     param.write_protect = write_protected ? 1 : 0;
     param.max_sector = format.sectors;

@@ -30,7 +30,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
 {
     unsigned int sectors;
 
-    sectors = ByteOffset(param.max_track + 1, 1) / param.byte_p_sector ;
+    sectors = file_size / param.byte_p_sector ;
     file_buffer =
         std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);
 

@@ -57,6 +57,7 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
 protected:
     BFilePtr    fp;
     s_floppy    param;
+    SDWord      file_size;
 
 private:
     Byte attributes;
