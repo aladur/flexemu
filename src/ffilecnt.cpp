@@ -138,8 +138,8 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         header.magic_number == MAGIC_NUMBER)
     {
         // ok it's a FLX format
-        Initialize_for_flx_format(&param, &header,
-                                  (attributes & FLX_READONLY) ? true : false);
+        bool write_protected = ((attributes & FLX_READONLY) != 0);
+        Initialize_for_flx_format(header, write_protected);
         return;
     }
     else
@@ -165,9 +165,8 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
                 format.size == sbuf.st_size)
             {
                 // ok it's a DSK format
-                Initialize_for_dsk_format(&param, &format,
-                                          (attributes & FLX_READONLY) ?
-                                          true : false);
+                bool write_protected = ((attributes & FLX_READONLY) != 0);
+                Initialize_for_dsk_format(format, write_protected);
                 return;
             }
         }
@@ -887,41 +886,34 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
     return true;
 }
 
-void FlexFileContainer::Initialize_for_flx_format(
-    s_floppy    *pfloppy,
-    s_flex_header   *pheader,
-    bool        wp)
+void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
+                                                  bool write_protected)
 {
-    pfloppy->offset        = sizeof(struct s_flex_header);
-    pfloppy->write_protect =
-        (wp || pheader->write_protect) ? 0x40 : 0;
-    pfloppy->max_sector    = pheader->sectors * pheader->sides;
-    pfloppy->max_sector0   = pheader->sectors0 * pheader->sides0;
-    pfloppy->max_track     = pheader->tracks - 1;
-    pfloppy->byte_p_sector = 128 << pheader->sizecode;
-    pfloppy->byte_p_track0 =
-        pheader->sides0 * pheader->sectors0 * pfloppy->byte_p_sector;
-    pfloppy->byte_p_track  =
-        pheader->sides * pheader->sectors * pfloppy->byte_p_sector;
-    pfloppy->type          = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
+    param.offset = sizeof(struct s_flex_header);
+    param.write_protect = (write_protected || header.write_protect) ? 0x40 : 0;
+    param.max_sector = header.sectors * header.sides;
+    param.max_sector0 = header.sectors0 * header.sides0;
+    param.max_track = header.tracks - 1;
+    param.byte_p_sector = 128 << header.sizecode;
+    param.byte_p_track0 = header.sides0 * header.sectors0 * param.byte_p_sector;
+    param.byte_p_track = header.sides * header.sectors * param.byte_p_sector;
+    param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 
-} // initialize_for_flx_format
+}
 
-void FlexFileContainer::Initialize_for_dsk_format(
-    s_floppy    *pfloppy,
-    s_formats   *pformat,
-    bool        wp)
+void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
+                                                  bool write_protected)
 {
-    pfloppy->offset        = 0;
-    pfloppy->write_protect = wp ? 1 : 0;
-    pfloppy->max_sector    = pformat->sectors;
-    pfloppy->max_sector0   = pformat->sectors;
-    pfloppy->max_track     = pformat->tracks - 1;
-    pfloppy->byte_p_sector = SECTOR_SIZE;
-    pfloppy->byte_p_track0 = pformat->sectors * SECTOR_SIZE;
-    pfloppy->byte_p_track  = pformat->sectors * SECTOR_SIZE;
-    pfloppy->type          = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
-} // initialize_for_dsk_format
+    param.offset = 0;
+    param.write_protect = write_protected ? 1 : 0;
+    param.max_sector = format.sectors;
+    param.max_sector0 = format.sectors;
+    param.max_track = format.tracks - 1;
+    param.byte_p_sector = SECTOR_SIZE;
+    param.byte_p_track0 = format.sectors * SECTOR_SIZE;
+    param.byte_p_track = format.sectors * SECTOR_SIZE;
+    param.type = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
+}
 
 void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
 {

@@ -158,19 +158,15 @@ bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 }
 
 void FlexRamFileContainer::Initialize_for_flx_format(
-    s_floppy        *pfloppy,
-    s_flex_header   *pheader,
-    bool            wp)
+    const s_flex_header &header, bool write_protected)
 {
-    FlexFileContainer::Initialize_for_flx_format(pfloppy, pheader, wp);
-    pfloppy->type |= TYPE_RAM_CONTAINER;
+    FlexFileContainer::Initialize_for_flx_format(header, write_protected);
+    param.type |= TYPE_RAM_CONTAINER;
 }
 
 void FlexRamFileContainer::Initialize_for_dsk_format(
-    s_floppy    *pfloppy,
-    s_formats   *pformat,
-    bool        wp)
+    const s_formats &format, bool write_protected)
 {
-    FlexFileContainer::Initialize_for_dsk_format(pfloppy, pformat, wp);
-    pfloppy->type |= TYPE_RAM_CONTAINER;
+    FlexFileContainer::Initialize_for_dsk_format(format, write_protected);
+    param.type |= TYPE_RAM_CONTAINER;
 }

@@ -113,14 +113,10 @@ protected:
     int ByteOffset(const int trk, const int sec) const;
     bool CreateDirEntry(FlexDirEntry &entry);
 
-    void Initialize_for_flx_format(
-        s_floppy        *pfloppy,
-        s_flex_header   *pheader,
-        bool        wp);
-    void Initialize_for_dsk_format(
-        s_floppy        *pfloppy,
-        s_formats       *pformat,
-        bool        wp);
+    virtual void Initialize_for_flx_format(const s_flex_header &header,
+                                           bool write_protected);
+    virtual void Initialize_for_dsk_format(const s_formats &format,
+                                           bool write_protected);
     static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
     static void     Create_sys_info_sector(
         Byte    sec_buf[],
