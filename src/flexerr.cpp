@@ -128,7 +128,7 @@ const char *FlexException::errString[] =
 {
     _("No Error"),
     _("Unable to open {0}"),
-    _("{0} is no file container"),
+    _("{0} is no FLEX file container"),
     _("No container opened"),
     _("No file opened"),
     _("Unable to format {0}"),
