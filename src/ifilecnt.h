@@ -23,6 +23,7 @@
 #define IFILECNT_INCLUDED
 
 #include "fdirent.h"
+#include "ifilcnti.h"
 
 
 class FileContainerIf;
