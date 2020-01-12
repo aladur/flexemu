@@ -44,12 +44,14 @@
 
 #include "contpdlg.h"
 #include "mdcrtape.h"
+#include "filecnts.h"
 
 
 #include "warnoff.h"
 BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
     EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
     EVT_RADIOBOX(IDC_FormatCheckBox, ContainerPropertiesDialog::OnFormatChanged)
+    EVT_COMBOBOX(IDC_DiskFormat, ContainerPropertiesDialog::OnFormatChanged)
     //  EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
     //  EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
@@ -58,15 +60,26 @@ END_EVENT_TABLE()
 ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
         const wxPoint &pos /* = wxDefaultPosition */,
         int tracks /* = 80 */,
-        int sectors /* = 40 */,
+        int sectors /* = 36 */,
         const wxString &path /* = "" */) :
     wxDialog(parent, 112, _("Create new File Container"), pos),
     m_format(0), c_tracks(nullptr), c_sectors(nullptr),
-    c_path(nullptr), c_format(nullptr)
+    c_path(nullptr), c_format(nullptr), c_diskFormat(nullptr)
 {
+    int diskFormatSelection = 0;
     m_tracks.Printf("%d", tracks);
     m_sectors.Printf("%d", sectors);
     m_path = path;
+    int index = 1;
+    for (const auto &st : flex_formats)
+    {
+        if (st.trk == tracks && st.sec == sectors)
+        {
+            diskFormatSelection = index;
+            break;
+        }
+        ++index;
+    }
 
     wxButton     *pButton;
     wxStaticText *pStatic;
@@ -74,6 +87,7 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     wxBoxSizer *pMainSizer   = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *pButtonSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *pTrkSecSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer *pComboBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer *pWidgetSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *pFileSizer   = new wxBoxSizer(wxHORIZONTAL);
 
@@ -88,6 +102,15 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
                               wxRA_SPECIFY_COLS, wxGenericValidator(&m_format));
 
     pWidgetSizer->Add(c_format, 0, wxALL, 10);
+
+    pStatic = new wxStaticText(this, -1, _("Disk Format"));
+    pComboBoxSizer->Add(pStatic, 0, wxALL, 10);
+    c_diskFormat = new wxComboBox(this, IDC_DiskFormat, "",
+                                  wxDefaultPosition, wxSize(280, -1), 0,
+                                  nullptr, wxCB_READONLY);
+    pComboBoxSizer->Add(c_diskFormat, 0, wxALL, 10);
+
+    pWidgetSizer->Add(pComboBoxSizer);
 
     pStatic = new wxStaticText(this, -1, _("Tracks"));
     pTrkSecSizer->Add(pStatic, 0, wxALL, 10);
@@ -128,6 +151,15 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     SetSizer(pMainSizer);
     pMainSizer->SetSizeHints(this);
     c_path->SetFocus();
+
+    c_diskFormat->Append(_("[Set Tracks and Sectors]"));
+    for (const auto *description : flex_format_descriptions)
+    {
+        c_diskFormat->Append(description);
+    }
+    c_diskFormat->SetSelection(diskFormatSelection);
+    c_tracks->Enable(diskFormatSelection == 0);
+    c_sectors->Enable(diskFormatSelection == 0);
 }
 
 ContainerPropertiesDialog::~ContainerPropertiesDialog()
@@ -167,10 +199,22 @@ void ContainerPropertiesDialog::OnSelectPath(wxCommandEvent &WXUNUSED(event))
 
 void ContainerPropertiesDialog::OnFormatChanged(wxCommandEvent &WXUNUSED(event))
 {
-    bool isMdcrFormat = c_format->GetSelection() == 2;
+    auto selection = c_diskFormat->GetSelection();
+    bool isMdcrFormat = (c_format->GetSelection() == 2);
+    bool isFreeDiskFormat = (selection == 0);
 
-    c_tracks->Enable(!isMdcrFormat);
-    c_sectors->Enable(!isMdcrFormat);
+    if (selection > 0)
+    {
+        auto trk_sec = flex_formats[selection - 1];
+        m_tracks.Printf("%d", static_cast<int>(trk_sec.trk));
+        m_sectors.Printf("%d", static_cast<int>(trk_sec.sec));
+        c_tracks->SetValue(m_tracks);
+        c_sectors->SetValue(m_sectors);
+    }
+
+    c_diskFormat->Enable(!isMdcrFormat);
+    c_tracks->Enable(!isMdcrFormat && isFreeDiskFormat);
+    c_sectors->Enable(!isMdcrFormat && isFreeDiskFormat);
 }
 
 int ContainerPropertiesDialog::GetTracks()

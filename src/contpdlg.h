@@ -30,16 +30,18 @@
 #define IDC_Path    103
 #define IDC_PathButton  108
 #define IDC_FormatCheckBox 109
+#define IDC_DiskFormat 110
 
 class wxTextCtrl;
 class wxRadioBox;
+class wxComboBox;
 
 class ContainerPropertiesDialog : public wxDialog
 {
 public:
     ContainerPropertiesDialog(wxWindow *parent,
                               const wxPoint &pos, int tracks = 80,
-                              int sectors = 40,
+                              int sectors = 36,
                               const wxString &path = "");
     virtual ~ContainerPropertiesDialog();
     void OnInitDialog(wxInitDialogEvent &event);
@@ -66,6 +68,7 @@ private:
     wxTextCtrl  *c_sectors;
     wxTextCtrl  *c_path;
     wxRadioBox  *c_format;
+    wxComboBox  *c_diskFormat;
 private:
     DECLARE_EVENT_TABLE()
 };

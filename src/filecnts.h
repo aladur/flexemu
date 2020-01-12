@@ -27,6 +27,7 @@
 #include "misc1.h"
 #include "filecntb.h"
 #include <memory>
+#include <array>
 
 /* number of Kilo Byte at least available for each directory sector */
 const int DIRSECTOR_PER_KB  = 12800;
@@ -161,6 +162,40 @@ public:
 };  /* class FileContainerIfSector */
 
 using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
+
+constexpr std::array<st_t, 13> flex_formats
+{{
+    {35, 10}, // 5" Single-sided, single-density
+    {40, 10}, // 5" Single-sided, single-density
+    {35, 20}, // 5" Double-sided, single-density
+    {40, 20}, // 5" Double-sided, single-density
+    {40, 36}, // 5" Double-sided, double-density
+    {80, 20}, // 5" Double-sided, single-density
+    {80, 36}, // 5" Double-sided, double-density
+    {80, 72}, // 5" Double-sided, quad-density
+    {77, 15}, // 8" Single-sided, single-density
+    {77, 26}, // 8" Single-sided, double-density
+    {77, 30}, // 8" Double-sided, single-density
+    {77, 52}, // 8" Double-sided, double-density
+    {255, 255} // Hard disk
+}};
+
+constexpr std::array<const char *, 13> flex_format_descriptions
+{{
+    "35-10 5\" Single-sided, sinlge-density",
+    "40-10 5\" Double-sided, single-density",
+    "35-20 5\" Single-sided, single-density",
+    "40-20 5\" Double-sided, single-density",
+    "40-36 5\" Double-sided, double-density",
+    "80-20 5\" Double-sided, single-density",
+    "80-36 5\" Double-sided, double-density",
+    "80-72 5\" Double-sided, quad-density",
+    "77-15 8\" Single-sided, single-density",
+    "77-26 8\" Single-sided, double-density",
+    "77-30 8\" Double-sided, single-density",
+    "77-52 8\" Double-sided, double-density",
+    "255-255 Hard disk"
+}};
 
 #endif /* #ifndef __fromflex__ */
 

@@ -313,7 +313,7 @@ void flexContainerTest(const std::string &testPath,
     try
     {
         buffer[0] = 0;
-        destDsk->create(testPath, destFName, 80, 40, destType);
+        destDsk->create(testPath, destFName, 80, 36, destType);
         destDsk->close();
     }
     catch (exception &e)
@@ -409,7 +409,7 @@ void flexContainerTest(const std::string &testPath,
 
             l[i] = nullptr;
             srcDsk->CloseDirectory();
-            destDsk->Create(testPath, destFName, 80, 40, destType);
+            destDsk->Create(testPath, destFName, 80, 36, destType);
             i = 0;
 
             while (l[i] != nullptr)

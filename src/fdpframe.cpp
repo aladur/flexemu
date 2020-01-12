@@ -400,7 +400,7 @@ bool FlexParentFrame::GetContainerProperties(int *tracks, int *sectors,
     pos.y += 10;
 
     auto dialog = std::unique_ptr<ContainerPropertiesDialog>(
-                 new ContainerPropertiesDialog(this, pos, 80, 40, path));
+                 new ContainerPropertiesDialog(this, pos, 80, 36, path));
 
     if (dialog->ShowModal() == wxID_OK)
     {
@@ -451,7 +451,7 @@ void FlexParentFrame::OnNewDirectory(wxCommandEvent &WXUNUSED(event))
         container = DirectoryContainer::Create(
                         directory.ToUTF8().data(),
                         containerName.ToUTF8().data(),
-                        80, 40);
+                        80, 36);
         OpenChild(containerPath, container);
     }
 }
