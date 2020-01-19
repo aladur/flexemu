@@ -298,7 +298,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     // free size in KByte
     info.SetFree(numberOfFreeClusters * sectorsPerCluster * bytesPerSector);
     // total size in KByte
-    info.SetTotalSize(totalNumberOfClusters * sectorsPerCluster
+    info.SetTotalSize(totalNumberOfClusters * sectorsPerCluster *
                       bytesPerSector);
 #endif
 #ifdef UNIX
