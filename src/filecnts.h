@@ -27,6 +27,7 @@
 #include "misc1.h"
 #include "filecntb.h"
 #include <memory>
+#include <ostream>
 #include <array>
 
 /* number of Kilo Byte at least available for each directory sector */
@@ -162,6 +163,11 @@ public:
 };  /* class FileContainerIfSector */
 
 using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
+
+extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
+
+/* Track/sector of system info sector */
+constexpr st_t sis_trk_sec{0, 3};
 
 constexpr std::array<st_t, 13> flex_formats
 {{

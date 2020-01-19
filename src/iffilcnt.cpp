@@ -25,6 +25,7 @@
 #include "iffilcnt.h"
 #include "ffilecnt.h"
 #include <string>
+#include <sstream>
 #include <algorithm>
 #include <iterator>
 
@@ -72,9 +73,11 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             if (!base->ReadSector((Byte *)&dirSector,
                                   dirTrackSector.trk, dirTrackSector.sec))
             {
+                std::stringstream stream;
+
+                stream << dirTrackSector;
                 throw FlexException(FERR_READING_TRKSEC,
-                                    dirTrackSector.trk,
-                                    dirTrackSector.sec,
+                                    stream.str(),
                                     base->GetPath().c_str());
             }
         }
@@ -137,8 +140,11 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     if (!base->ReadSector((Byte *)&dirSector,
                           dirTrackSector.trk, dirTrackSector.sec))
     {
+        std::stringstream stream;
+
+        stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
-                            dirTrackSector.trk, dirTrackSector.sec,
+                            stream.str(),
                             base->GetPath().c_str());
     }
 
@@ -154,14 +160,23 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     if (!base->WriteSector((const Byte *)&dirSector,
                            dirTrackSector.trk, dirTrackSector.sec))
     {
+        std::stringstream stream;
+
+        stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
-                            dirTrackSector.trk, dirTrackSector.sec,
+                            stream.str(),
                             base->GetPath().c_str());
     }
 
-    if (!base->ReadSector(&buffer[0], 0, 3))   /* read sys info sector */
+    /* read sysstem info sector (SIS) */
+    if (!base->ReadSector(&buffer[0], sis_trk_sec.trk, sis_trk_sec.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, 0, 3, base->GetPath().c_str());
+        std::stringstream stream;
+
+        stream << sis_trk_sec;
+        throw FlexException(FERR_READING_TRKSEC,
+                            stream.str(),
+                            base->GetPath().c_str());
     }
 
     fc_end = sis.sir.fc_end;
@@ -171,7 +186,11 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         // add deleted file to free chain if free chain not empty
         if (!base->ReadSector(&buffer[0], fc_end.trk, fc_end.sec))
         {
-            throw FlexException(FERR_READING_TRKSEC, fc_end.trk, fc_end.sec,
+            std::stringstream stream;
+
+            stream << fc_end;
+            throw FlexException(FERR_READING_TRKSEC,
+                                stream.str(),
                                 base->GetPath().c_str());
         }
 
@@ -180,13 +199,22 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
 
         if (!base->WriteSector(&buffer[0], fc_end.trk, fc_end.sec))
         {
-            throw FlexException(FERR_WRITING_TRKSEC, fc_end.trk, fc_end.sec,
+            std::stringstream stream;
+
+            stream << fc_end;
+            throw FlexException(FERR_WRITING_TRKSEC,
+                                stream.str(),
                                 base->GetPath().c_str());
         }
 
-        if (!base->ReadSector(&buffer[0], 0, 3))
+        if (!base->ReadSector(&buffer[0], sis_trk_sec.trk,
+                              sis_trk_sec.sec))
         {
-            throw FlexException(FERR_READING_TRKSEC, 0, 3,
+            std::stringstream stream;
+
+            stream << sis_trk_sec;
+            throw FlexException(FERR_READING_TRKSEC,
+                                stream.str(),
                                 base->GetPath().c_str());
         }
 
@@ -195,9 +223,14 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     else
     {
         // create a new free chain if free chain is empty
-        if (!base->ReadSector(&buffer[0], 0, 3))
+        if (!base->ReadSector(&buffer[0], sis_trk_sec.trk,
+                              sis_trk_sec.sec))
         {
-            throw FlexException(FERR_READING_TRKSEC, 0, 3,
+            std::stringstream stream;
+
+            stream << sis_trk_sec;
+            throw FlexException(FERR_READING_TRKSEC,
+                                stream.str(),
                                 base->GetPath().c_str());
         }
 
@@ -212,9 +245,15 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     free += records;
     setValueBigEndian<Word>(&sis.sir.free[0], free);
 
-    if (!base->WriteSector(&buffer[0], 0, 3))
+    if (!base->WriteSector(&buffer[0], sis_trk_sec.trk,
+                          sis_trk_sec.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, 0, 3, base->GetPath().c_str());
+        std::stringstream stream;
+
+        stream << sis_trk_sec;
+        throw FlexException(FERR_WRITING_TRKSEC,
+                            stream.str(),
+                            base->GetPath().c_str());
     }
 
     return true;
@@ -237,8 +276,12 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     if (!base->ReadSector((Byte *)&dirSector,
                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirTrackSector.trk,
-                            dirTrackSector.sec, base->GetPath().c_str());
+        std::stringstream stream;
+
+        stream << dirTrackSector;
+        throw FlexException(FERR_READING_TRKSEC,
+                            stream.str(),
+                            base->GetPath().c_str());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -286,8 +329,11 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     if (!base->WriteSector((const Byte *)&dirSector,
                            dirTrackSector.trk, dirTrackSector.sec))
     {
+        std::stringstream stream;
+
+        stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
-                            dirTrackSector.trk, dirTrackSector.sec,
+                            stream.str(),
                             base->GetPath().c_str());
     }
 
@@ -310,8 +356,11 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     if (!base->ReadSector((Byte *)&dirSector,
                           dirTrackSector.trk, dirTrackSector.sec))
     {
+        std::stringstream stream;
+
+        stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
-                            dirTrackSector.trk, dirTrackSector.sec,
+                            stream.str(),
                             base->GetPath().c_str());
     }
 
@@ -323,8 +372,11 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     if (!base->WriteSector((const Byte *)&dirSector,
                            dirTrackSector.trk, dirTrackSector.sec))
     {
+        std::stringstream stream;
+
+        stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
-                            dirTrackSector.trk, dirTrackSector.sec,
+                            stream.str(),
                             base->GetPath().c_str());
     }
 
@@ -347,8 +399,12 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     if (!base->ReadSector((Byte *)&dirSector,
                           dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, dirTrackSector.trk,
-                            dirTrackSector.sec, base->GetPath().c_str());
+        std::stringstream stream;
+
+        stream << dirTrackSector;
+        throw FlexException(FERR_READING_TRKSEC,
+                            stream.str(),
+                            base->GetPath().c_str());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -357,8 +413,12 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     if (!base->WriteSector((const Byte *)&dirSector,
                            dirTrackSector.trk, dirTrackSector.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, dirTrackSector.trk,
-                            dirTrackSector.sec, base->GetPath().c_str());
+        std::stringstream stream;
+
+        stream << dirTrackSector;
+        throw FlexException(FERR_WRITING_TRKSEC,
+                            stream.str(),
+                            base->GetPath().c_str());
     }
 
     return true;

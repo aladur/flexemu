@@ -147,13 +147,14 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-btimer.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
 	flexemu-bfileptr.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
 	flexemu-iffilcnt.$(OBJEXT) flexemu-fileread.$(OBJEXT) \
-	flexemu-mc6809st.$(OBJEXT) flexemu-cvtwchar.$(OBJEXT) \
-	flexemu-joystick.$(OBJEXT) flexemu-apprun.$(OBJEXT) \
-	flexemu-keyboard.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
-	flexemu-drisel.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-binifile.$(OBJEXT) flexemu-fcnffile.$(OBJEXT) \
-	flexemu-iodevdbg.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
-	flexemu-mdcrtape.$(OBJEXT) flexemu-bobservd.$(OBJEXT)
+	flexemu-filecnts.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
+	flexemu-cvtwchar.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
+	flexemu-apprun.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
+	flexemu-bytereg.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT) flexemu-binifile.$(OBJEXT) \
+	flexemu-fcnffile.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
+	flexemu-pia2v5.$(OBJEXT) flexemu-mdcrtape.$(OBJEXT) \
+	flexemu-bobservd.$(OBJEXT)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -170,10 +171,10 @@ am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
 	flexplorer-benv.$(OBJEXT) flexplorer-cvtwchar.$(OBJEXT) \
 	flexplorer-bmembuf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
 	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
-	flexplorer-iffilcnt.$(OBJEXT) flexplorer-fmenufac.$(OBJEXT) \
-	flexplorer-bregistr.$(OBJEXT) flexplorer-bprocess.$(OBJEXT) \
-	flexplorer-mdcrtape.$(OBJEXT) flexplorer-bobservd.$(OBJEXT) \
-	flexplorer-fdfdnd.$(OBJEXT)
+	flexplorer-iffilcnt.$(OBJEXT) flexplorer-filecnts.$(OBJEXT) \
+	flexplorer-fmenufac.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
+	flexplorer-bprocess.$(OBJEXT) flexplorer-mdcrtape.$(OBJEXT) \
+	flexplorer-bobservd.$(OBJEXT) flexplorer-fdfdnd.$(OBJEXT)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
@@ -552,7 +553,7 @@ pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
 xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
 btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
-mc6809st.cpp cvtwchar.cpp joystick.cpp \
+filecnts.cpp mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
 bobservd.cpp \
@@ -579,7 +580,7 @@ fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
 fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
 rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
-ifilecnt.cpp idircnt.cpp iffilcnt.cpp fmenufac.cpp bregistr.cpp \
+ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp fmenufac.cpp bregistr.cpp \
 bprocess.cpp mdcrtape.cpp bobservd.cpp fdfdnd.cpp \
 bdate.h bdir.h bobserv.h bobservd.h bobshelp.h contpdlg.h dircont.h fcinfo.h \
 fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
@@ -789,6 +790,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fdirent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ffilebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ffilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-filecnts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fileread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flexerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-foptman.Po@am__quote@
@@ -845,6 +847,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdpframe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ffilebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ffilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-filecnts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-flexdisk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-flexerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fmenufac.Po@am__quote@
@@ -1723,6 +1726,20 @@ flexemu-fileread.obj: fileread.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fileread.obj `if test -f 'fileread.cpp'; then $(CYGPATH_W) 'fileread.cpp'; else $(CYGPATH_W) '$(srcdir)/fileread.cpp'; fi`
 
+flexemu-filecnts.o: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-filecnts.o -MD -MP -MF $(DEPDIR)/flexemu-filecnts.Tpo -c -o flexemu-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-filecnts.Tpo $(DEPDIR)/flexemu-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='flexemu-filecnts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+
+flexemu-filecnts.obj: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-filecnts.obj -MD -MP -MF $(DEPDIR)/flexemu-filecnts.Tpo -c -o flexemu-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-filecnts.Tpo $(DEPDIR)/flexemu-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='flexemu-filecnts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
+
 flexemu-mc6809st.o: mc6809st.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mc6809st.o -MD -MP -MF $(DEPDIR)/flexemu-mc6809st.Tpo -c -o flexemu-mc6809st.o `test -f 'mc6809st.cpp' || echo '$(srcdir)/'`mc6809st.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mc6809st.Tpo $(DEPDIR)/flexemu-mc6809st.Po
@@ -2282,6 +2299,20 @@ flexplorer-iffilcnt.obj: iffilcnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iffilcnt.cpp' object='flexplorer-iffilcnt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-iffilcnt.obj `if test -f 'iffilcnt.cpp'; then $(CYGPATH_W) 'iffilcnt.cpp'; else $(CYGPATH_W) '$(srcdir)/iffilcnt.cpp'; fi`
+
+flexplorer-filecnts.o: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-filecnts.o -MD -MP -MF $(DEPDIR)/flexplorer-filecnts.Tpo -c -o flexplorer-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-filecnts.Tpo $(DEPDIR)/flexplorer-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='flexplorer-filecnts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+
+flexplorer-filecnts.obj: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-filecnts.obj -MD -MP -MF $(DEPDIR)/flexplorer-filecnts.Tpo -c -o flexplorer-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-filecnts.Tpo $(DEPDIR)/flexplorer-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='flexplorer-filecnts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
 
 flexplorer-fmenufac.o: fmenufac.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fmenufac.o -MD -MP -MF $(DEPDIR)/flexplorer-fmenufac.Tpo -c -o flexplorer-fmenufac.o `test -f 'fmenufac.cpp' || echo '$(srcdir)/'`fmenufac.cpp

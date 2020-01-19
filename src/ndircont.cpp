@@ -1294,7 +1294,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("read: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
+    LOG_XXX("read: %02X-%02X %s", trk, sec, to_string(link.type).c_str());
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
         LOG_X(" %s", get_unix_filename(link.file_id).c_str());
@@ -1444,7 +1444,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("write: %02X/%02X %s", trk, sec, to_string(link.type).c_str());
+    LOG_XXX("write: %02X-%02X %s", trk, sec, to_string(link.type).c_str());
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
         LOG_X(" %s", get_unix_filename(link.file_id).c_str());

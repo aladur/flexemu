@@ -200,6 +200,7 @@
     <ClCompile Include="fdirent.cpp" />
     <ClCompile Include="ffilebuf.cpp" />
     <ClCompile Include="ffilecnt.cpp" />
+    <ClCompile Include="filecnts.cpp" />
     <ClCompile Include="fileread.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />

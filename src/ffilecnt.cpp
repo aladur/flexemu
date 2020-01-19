@@ -24,6 +24,7 @@
 #include "misc1.h"
 #include <sys/stat.h>
 #include <string>
+#include <sstream>
 
 #include "fcinfo.h"
 #include "flexerr.h"
@@ -337,9 +338,13 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     char disk_name[13];
     int year;
 
-    if (!ReadSector(reinterpret_cast<Byte *>(&sis), 0, 3))
+    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                    sis_trk_sec.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
+        std::stringstream stream;
+
+        stream << sis_trk_sec;
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
     }
 
     if (sis.sir.year < 75)
@@ -465,9 +470,13 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // read sys info sector
-    if (!ReadSector(reinterpret_cast<Byte *>(&sis), 0, 3))
+    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                    sis_trk_sec.sec))
     {
-        throw FlexException(FERR_READING_TRKSEC, 0, 3, fp.GetPath());
+        std::stringstream stream;
+
+        stream << sis_trk_sec;
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
     } // get start trk/sec of free chain
 
     next = start = sis.sir.fc_start;
@@ -502,8 +511,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
                 if (!ReadSector(&sectorBuffer[count][0], trk, sec))
                 {
+                    std::stringstream stream;
+
+                    stream << next;
                     throw FlexException(FERR_READING_TRKSEC,
-                                        trk, sec, fp.GetPath());
+                                        stream.str(), fp.GetPath());
                 }
                 else if (count)
                 {
@@ -517,8 +529,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
             if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
                                recordNr * (SECTOR_SIZE - 4), 0x00))
             {
+                std::stringstream stream;
+
+                stream << next;
                 throw FlexException(FERR_WRITING_TRKSEC,
-                                    trk, sec, fp.GetPath());
+                                    stream.str(), fp.GetPath());
             }
 
             recordNr++;
@@ -569,8 +584,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
             if (!WriteSector(&sectorBuffer[0][0], trk, sec))
             {
+                std::stringstream stream;
+
+                stream << next;
                 throw FlexException(FERR_WRITING_TRKSEC,
-                                    trk, sec, fp.GetPath());
+                                    stream.str(), fp.GetPath());
             }
 
             repeat = 0;
@@ -594,8 +612,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         {
             if (!WriteSector(&sectorBuffer[count][0], next.trk, next.sec))
             {
+                std::stringstream stream;
+
+                stream << next;
                 throw FlexException(FERR_WRITING_TRKSEC,
-                                    next.trk, next.sec, fp.GetPath());
+                                    stream.str(), fp.GetPath());
             }
 
             next.trk = sectorBuffer[count][0];
@@ -608,9 +629,13 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     free -= recordNr;
     setValueBigEndian<Word>(&sis.sir.free[0], free);
 
-    if (!WriteSector(reinterpret_cast<Byte *>(&sis), 0, 3))
+    if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                     sis_trk_sec.sec))
     {
-        throw FlexException(FERR_WRITING_TRKSEC, 0, 3, fp.GetPath());
+        std::stringstream stream;
+
+        stream << sis_trk_sec;
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
     }
 
     // make new directory entry
@@ -681,8 +706,12 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
                 }
                 if (!ReadSector(&sectorBuffer[0], trk, sec))
                 {
+                    st_t st{static_cast<Byte>(trk), static_cast<Byte>(sec)};
+                    std::stringstream stream;
+
+                    stream << st;
                     throw FlexException(FERR_READING_TRKSEC,
-                                        trk, sec, fileName);
+                                        stream.str(), fileName);
                 }
 
                 trk = sectorBuffer[0];
@@ -741,8 +770,11 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         // read next directory sector
         if (!ReadSector((Byte *)&ds, next.trk, next.sec))
         {
+            std::stringstream stream;
+
+            stream << next;
             throw FlexException(FERR_READING_TRKSEC,
-                                next.trk, next.sec, fp.GetPath());
+                                stream.str(), fp.GetPath());
         }
 
         for (i = 0; i < 10; i++)
@@ -780,8 +812,11 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 
                 if (!WriteSector((Byte *)&ds, next.trk, next.sec))
                 {
+                    std::stringstream stream;
+
+                    stream << next;
                     throw FlexException(FERR_WRITING_TRKSEC,
-                                        next.trk, next.sec, fp.GetPath());
+                                        stream.str(), fp.GetPath());
                 }
 
                 return true;

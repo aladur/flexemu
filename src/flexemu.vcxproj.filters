@@ -93,6 +93,9 @@
     <ClCompile Include="ffilecnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="filecnts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="flexerr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
