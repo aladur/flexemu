@@ -1003,6 +1003,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     free            = (fmt->sectors * fmt->tracks) - start;
     time_now        = time(nullptr);
     lt          = localtime(&time_now);
+    auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
     setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / fmt->sectors);
     sis.sir.fc_start.sec = static_cast<Byte>((start % fmt->sectors) + 1);
@@ -1011,7 +1012,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     setValueBigEndian<Word>(&sis.sir.free[0], free);
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
-    sis.sir.year = static_cast<Byte>(lt->tm_year);
+    sis.sir.year = static_cast<Byte>(year);
     sis.sir.last.trk = static_cast<Byte>(fmt->tracks - 1);
     sis.sir.last.sec = static_cast<Byte>(fmt->sectors);
 } // create_sys_info_sectors
