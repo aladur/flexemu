@@ -69,14 +69,7 @@ const std::string FlexContainerInfo::GetTypeString() const
     }
     else if (type & TYPE_DIRECTORY)
     {
-        if (type & TYPE_NAFS_DIRECTORY)
-        {
-            str = _("directory, without text file conversion");
-        }
-        else
-        {
-            str = _("directory, with text file conversion");
-        }
+        str = _("directory");
     }
     else
     {
