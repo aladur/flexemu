@@ -30,7 +30,6 @@ std::ostream& operator<<(std::ostream& os, const  st_t &st)
     auto previous_flags = os.flags();
     auto previous_fill = os.fill('0');
 
-    os.setf(std::ios::hex, std::ios::uppercase);
     os <<
         std::hex << std::uppercase <<
         std::setw(2) << (Word)st.trk << "-" <<
