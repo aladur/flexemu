@@ -29,7 +29,9 @@
 #include <algorithm>
 #include <locale>
 #include <cstring>
+#include <vector>
 #include <unordered_set>
+#include <iostream>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -889,22 +891,16 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     DIR *pd;
     struct dirent *pentry;
 #endif
-    std::string name;
-    std::string extension;
-    std::string filename;
-    std::string path;
-    std::string lc_filename; // lower case filename
+    std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
-    SWord dir_index = 0;
-    bool is_random;
-    st_t begin, end;
+    std::unordered_set<std::string> random_filenames; // random files.
     struct stat sbuf;
 
     memset(&sbuf, 0, sizeof(sbuf));
     initialize_flex_directory();
     initialize_flex_link_table();
 #ifdef _WIN32
-    path = directory + PATHSEPARATORSTRING "*.*";
+    auto &path = directory + PATHSEPARATORSTRING "*.*";
 
 #ifdef UNICODE
     hdl = FindFirstFile(ConvertToUtf16String(path).c_str(), &pentry);
@@ -923,67 +919,63 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                 while ((pentry = readdir(pd)) != nullptr)
                 {
 #endif
+                    std::string filename;
+                    std::string lc_filename; // lower case filename
+                    std::string path;
+                    std::string name;
+                    std::string extension;
+                    bool is_random = false;
 #ifdef _WIN32
 #ifdef UNICODE
                     filename = ConvertToUtf8String(pentry.cFileName);
 #else
                     filename = pentry.cFileName;
 #endif
+                    path = directory + PATHSEPARATORSTRING + filename.c_str();
+                    if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+                    {
+                        continue;
+                    }
                     std::transform(filename.begin(), filename.end(),
                         filename.begin(), ::tolower);
                     lc_filename = filename;
+                    is_random = (pentry.dwFileAttributes &
+                                 FILE_ATTRIBUTE_HIDDEN) ? true : false;
 #endif
 #ifdef UNIX
                     filename = pentry->d_name;
+                    path = directory + PATHSEPARATORSTRING + filename.c_str();
+                    if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+                    {
+                        continue;
+                    }
                     lc_filename.clear();
                     std::transform(filename.begin(), filename.end(),
                         std::back_inserter(lc_filename), ::tolower);
+                    is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
 #endif
-                    is_random = false;
-                    path = directory + PATHSEPARATORSTRING + filename.c_str();
+                    // CDFS-Support: look for file name in file 'random'
+                    if (is_write_protected)
+                    {
+                        is_random = is_in_file_random(directory.c_str(),
+                                                      filename.c_str());
+                    }
 
                     if (IsFlexFilename(filename.c_str(), name, extension,
                                        true) &&
-                        !stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
                         strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
                         strcmp(filename.c_str(), BOOT_FILE) &&
-                        sbuf.st_size > 0 &&
-                        lc_filenames.find(lc_filename) == lc_filenames.end() &&
-                        (dir_index = next_free_dir_entry()) >= 0)
+                        lc_filenames.find(lc_filename) == lc_filenames.end())
                     {
-#ifdef _WIN32
-                        is_random = (pentry.dwFileAttributes &
-                                     FILE_ATTRIBUTE_HIDDEN) ? true : false;
-#endif
-#ifdef UNIX
-                        is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
-#endif
 
-                        // CDFS-Support: look for file name in file 'random'
-                        if (is_write_protected)
+                        if (is_random)
                         {
-                            is_random = is_in_file_random(directory.c_str(),
-                                                          filename.c_str());
+                            random_filenames.emplace(filename);
                         }
 
-                        if (add_to_link_table(dir_index, sbuf.st_size,
-                                              is_random, begin, end))
-                        {
-                            add_to_directory(name.c_str(), extension.c_str(),
-                                             dir_index, is_random, sbuf, begin,
-                                             end, is_write_protected ||
-                                             (access(path.c_str(), W_OK) != 0));
-
-                            // Unfinished: don't write sector map if write
-                            // protected.
-                            if (is_random && !is_write_protected)
-                            {
-                                modify_random_file(path.c_str(), sbuf, begin);
-                            }
-                            lc_filenames.emplace(lc_filename);
-                        }
+                        filenames.emplace_back(filename);
+                        lc_filenames.emplace(lc_filename);
                     }
-
 #ifdef _WIN32
                 }
 
@@ -997,6 +989,44 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             closedir(pd);
 #endif
     } //if
+
+    // Sort all filenames before adding them to the container.
+    std::sort(filenames.begin(), filenames.end());
+
+    for (const auto &filename : filenames)
+    {
+        SWord dir_idx;
+
+        if ((dir_idx = next_free_dir_entry()) >= 0)
+        {
+            st_t begin, end;
+            auto path = directory + PATHSEPARATORSTRING + filename.c_str();
+            bool is_random = (random_filenames.find(filename) !=
+                              random_filenames.end());
+
+            if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
+                sbuf.st_size > 0 &&
+                add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
+            {
+                std::string name;
+                std::string extension;
+
+                IsFlexFilename(filename.c_str(), name, extension, true);
+
+                add_to_directory(name.c_str(), extension.c_str(),
+                                 dir_idx, is_random, sbuf, begin,
+                                 end, is_write_protected ||
+                                 (access(path.c_str(), W_OK) != 0));
+
+                // Unfinished: don't write sector map if write
+                // protected.
+                if (is_random && !is_write_protected)
+                {
+                    modify_random_file(path.c_str(), sbuf, begin);
+                }
+            }
+        }
+    }
 } // fill_flex_directory
 
 
