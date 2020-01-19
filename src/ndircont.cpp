@@ -900,12 +900,12 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     initialize_flex_directory();
     initialize_flex_link_table();
 #ifdef _WIN32
-    auto &path = directory + PATHSEPARATORSTRING "*.*";
+    const auto wildcard = directory + PATHSEPARATORSTRING "*.*";
 
 #ifdef UNICODE
-    hdl = FindFirstFile(ConvertToUtf16String(path).c_str(), &pentry);
+    hdl = FindFirstFile(ConvertToUtf16String(wildcard).c_str(), &pentry);
 #else
-    hdl = FindFirstFile(path.c_str(), &pentry);
+    hdl = FindFirstFile(wildcard.c_str(), &pentry);
 #endif
     if (hdl != INVALID_HANDLE_VALUE)
     {
