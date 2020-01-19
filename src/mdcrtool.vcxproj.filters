@@ -35,6 +35,9 @@
     <ClCompile Include="misc1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bdir.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bintervl.h">
@@ -71,6 +74,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bmembuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bdir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

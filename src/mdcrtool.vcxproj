@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="bdir.cpp" />
     <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="bmembuf.cpp" />
     <ClCompile Include="mdcrtool.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="misc1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bdir.h" />
     <ClInclude Include="bfileptr.h" />
     <ClInclude Include="bintervl.h" />
     <ClInclude Include="bmembuf.h" />
