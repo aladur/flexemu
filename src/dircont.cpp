@@ -296,11 +296,10 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     }
 
     // free size in KByte
-    info.SetFree(numberOfFreeClusters * sectorsPerCluster /
-                 1024 * bytesPerSector);
+    info.SetFree(numberOfFreeClusters * sectorsPerCluster * bytesPerSector);
     // total size in KByte
-    info.SetTotalSize(totalNumberOfClusters * sectorsPerCluster /
-                      1024 * bytesPerSector);
+    info.SetTotalSize(totalNumberOfClusters * sectorsPerCluster
+                      bytesPerSector);
 #endif
 #ifdef UNIX
 #ifdef __SOLARIS
@@ -314,8 +313,8 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
         throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
-    info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree / 1024);
-    info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks / 1024);
+    info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree);
+    info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks);
 #endif
 
     if (stat(directory.c_str(), &sbuf) >= 0)

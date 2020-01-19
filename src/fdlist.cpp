@@ -729,11 +729,11 @@ void FlexDiskListCtrl::OnViewProperties(wxCommandEvent &)
 
         str += "\n";
         str.Append(_("Size: "));
-        str << info.GetTotalSize();
+        str << (info.GetTotalSize() / 1024);
         str.Append(_(" KByte"));
         str += "\n";
         str.Append(_("Free: "));
-        str << info.GetFree();
+        str << (info.GetFree() / 1024);
         str.Append(_(" KByte"));
         str += "\n";
 

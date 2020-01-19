@@ -156,9 +156,10 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetDate(sis.sir.day, sis.sir.month, sis.sir.year);
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    info.SetFree((getValueBigEndian<Word>(&sis.sir.free[0]) * param.byte_p_sector) >> 10);
-    info.SetTotalSize(((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
-                       param.byte_p_sector) >> 10);
+    info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+                 param.byte_p_sector);
+    info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
+                       param.byte_p_sector);
     info.SetName(sis.sir.disk_name);
     info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     info.SetPath(directory.c_str());
