@@ -168,6 +168,8 @@ extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
 
 /* Track/sector of system info sector */
 constexpr st_t sis_trk_sec{0, 3};
+/* Track/sector of first directory sector */
+constexpr st_t first_dir_trk_sec{0, 5};
 
 constexpr std::array<st_t, 13> flex_formats
 {{

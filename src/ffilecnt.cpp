@@ -760,7 +760,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     int     i;
     s_dir_sector    ds;
     s_dir_entry *pde;
-    st_t next{0, 5}; // first directory sector is trk/sec 0/5
+    st_t next(first_dir_trk_sec);
     int     tmp1, tmp2;
     BDate       date;
 
@@ -1030,8 +1030,9 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 
         if (i < fmt->dir_sectors - 1)
         {
-            sec_buf[0] = static_cast<Byte>((i + 5) / fmt->sectors);
-            sec_buf[1] = static_cast<Byte>(((i + 5) % fmt->sectors) + 1);
+            auto sector = i + first_dir_trk_sec.sec;
+            sec_buf[0] = static_cast<Byte>(sector / fmt->sectors);
+            sec_buf[1] = static_cast<Byte>((sector % fmt->sectors) + 1);
         }
 
         if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)

@@ -301,11 +301,11 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 // Initialize the FLEX directory sectors.
 void NafsDirectoryContainer::initialize_flex_directory()
 {
-    Word i = 5;
+    Word i = first_dir_trk_sec.sec;
 
     for (auto &dir_sector : flex_directory)
     {
-        bool is_last = (i == flex_directory.size() - 1 + 5);
+        bool is_last = (i == flex_directory.size() - 1 + first_dir_trk_sec.sec);
 
         dir_sector.next.trk =
             is_last ? '\0' : static_cast<Byte>(i / MAX_SECTOR);

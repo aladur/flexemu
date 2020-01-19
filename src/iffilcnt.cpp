@@ -33,7 +33,7 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     FlexFileContainer *aBase)
     : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
 {
-    dirSector.next = st_t{0, 5};
+    dirSector.next = first_dir_trk_sec;
 }
 
 FlexFileContainerIteratorImp::~FlexFileContainerIteratorImp()
