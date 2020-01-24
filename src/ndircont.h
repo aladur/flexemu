@@ -40,12 +40,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     static const int MAX_TRACK{79}; // maximum track number (zero based).
     static const int MAX_SECTOR{36}; // number of sectors per track,
                                      // side 0 and 1 (one based).
-    static const int MAX_SECTOR0{30}; // number of sectors on track 0,
-                                      // side 0 and 1 (one based).
-    static const int INIT_DIR_SECTORS{MAX_SECTOR0 - 4}; // initial number of
-                                                        // directory sectors.
-    static const int LINK_TABLE_SIZE{(MAX_TRACK + 1) * MAX_SECTOR}; // Each
-                                       // sector has an entry in the link table.
+
     enum class SectorType : Byte
     {
         Unknown, // Unknown sector type.
@@ -108,11 +103,14 @@ private:
     s_floppy param;
 
     // Some structures needed for a FLEX file system
-    std::array<s_link_table, LINK_TABLE_SIZE> flex_links; // link table
+    // link table: Each sector has an entry in the link table.
+    std::array<s_link_table, (MAX_TRACK + 1) * MAX_SECTOR> flex_links;
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SWord, s_new_file> new_files; // new file table
     st_t dir_extend;         // track and sector of directory extend sector
+    Word init_dir_sectors; // initial number of directory sectors
+                           // without directory extension.
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,

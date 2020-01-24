@@ -166,6 +166,8 @@ using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
 
 extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
 
+extern int getTrack0SectorCount(int tracks, int sectors);
+
 /* Track/sector of system info sector */
 constexpr st_t sis_trk_sec{0, 3};
 /* Track/sector of first directory sector */

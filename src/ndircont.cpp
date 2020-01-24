@@ -211,19 +211,19 @@ int NafsDirectoryContainer::GetContainerType() const
 // Initialize the internal data structures.
 void NafsDirectoryContainer::initialize_header(bool is_write_protected)
 {
-    size_t i;
-
     param.offset        = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
     param.max_sector    = MAX_SECTOR;
-    param.max_sector0   = MAX_SECTOR0;
+    param.max_sector0   = getTrack0SectorCount(MAX_TRACK + 1, MAX_SECTOR);
     param.max_track     = MAX_TRACK;
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track  = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
 
-    for (i = 0; i < INIT_DIR_SECTORS; ++i)
+    init_dir_sectors = static_cast<Word>(
+                           param.max_sector0 + 1 - first_dir_trk_sec.sec);
+    for (Word i = 0; i < init_dir_sectors; ++i)
     {
         flex_directory.emplace_back();
     }
@@ -308,12 +308,10 @@ void NafsDirectoryContainer::initialize_flex_directory()
 
     for (auto &dir_sector : flex_directory)
     {
-        bool is_last = (i == flex_directory.size() - 1 + first_dir_trk_sec.sec);
+        bool is_last = (i == init_dir_sectors - 1 + first_dir_trk_sec.sec);
 
-        dir_sector.next.trk =
-            is_last ? '\0' : static_cast<Byte>(i / MAX_SECTOR);
-        dir_sector.next.sec =
-            is_last ? '\0' : static_cast<Byte>((i % MAX_SECTOR) + 1);
+        dir_sector.next.trk = '\0';
+        dir_sector.next.sec = is_last ? '\0' : static_cast<Byte>(i + 1);
         setValueBigEndian<Word>(&dir_sector.record_nr[0], 0U);
 
         std::fill(std::begin(dir_sector.unused),
@@ -547,7 +545,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
     s_dir_sector dir_sector { };
 
     Word record_nr = static_cast<Word>(flex_directory.size()) -
-                     INIT_DIR_SECTORS + 1;
+                     init_dir_sectors + 1;
     setValueBigEndian<Word>(&dir_sector.record_nr[0], record_nr);
 
     auto track_sector = sis.sir.fc_start;
@@ -582,9 +580,10 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 // Initialize the FLEX link table
 void NafsDirectoryContainer::initialize_flex_link_table()
 {
-    Word i;
-    Word fc_start = MAX_SECTOR; // Start index of free chain.
-    const Word max_dir_sector = 3 + INIT_DIR_SECTORS;
+    size_t i;
+    Word fc_start = param.max_sector; // Start index of free chain.
+    constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
+    const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
 
     // On track 0 are all boot, system info and directory sectors
     for (i = 0; i < fc_start; i++)
@@ -594,46 +593,45 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         link.next = st_t{0, 0};
         link.record_nr[0] = 0;
         link.record_nr[1] = 0;
-        link.f_record = i < 4 ? 0 : i - 4;
+        link.f_record = i < first_dir_sec ? 0 : i - first_dir_sec;
         link.file_id = std::numeric_limits<SWord>::max();
         link.type =
             (i > max_dir_sector) ? SectorType::Unknown : SectorType::Directory;
-        link.type = (i < 4) ? SectorType::SystemInfo : link.type;
+        link.type = (i < first_dir_sec) ? SectorType::SystemInfo : link.type;
         link.type = (i < 2) ? SectorType::Boot : link.type;
     } // for
 
     // All other tracks are initialzied as free chain.
-    for (i = fc_start; i < LINK_TABLE_SIZE; i++)
+    for (i = fc_start; i < flex_links.size(); i++)
     {
         auto &link = flex_links[i];
 
-        if (i == LINK_TABLE_SIZE - 1)
+        if (i == flex_links.size() - 1)
         {
             link.next = st_t{0, 0};
         }
         else
         {
-            link.next.trk = static_cast<Byte>((i + 1) / MAX_SECTOR);
-            link.next.sec = static_cast<Byte>(((i + 1) % MAX_SECTOR) + 1);
+            link.next.trk = static_cast<Byte>((i + 1) / param.max_sector);
+            link.next.sec = static_cast<Byte>(((i + 1) % param.max_sector) + 1);
         }
 
-        link.record_nr[0] = 0;
-        link.record_nr[1] = 0;
+        setValueBigEndian(&link.record_nr[0], 0U);
         link.f_record = 0;
         link.file_id = std::numeric_limits<SWord>::max();
         link.type = SectorType::FreeChain;
     }
 
-    Word free = LINK_TABLE_SIZE - fc_start;
+    Word free = static_cast<Word>(flex_links.size() - fc_start);
 
     // and now update system info sectors
     for (auto &sis : flex_sys_info)
     {
-        sis.sir.fc_start.trk = static_cast<Byte>(fc_start / MAX_SECTOR);
+        sis.sir.fc_start.trk = static_cast<Byte>(fc_start / param.max_sector);
         sis.sir.fc_start.sec =
-            static_cast<Byte>((fc_start % MAX_SECTOR) + 1);
-        sis.sir.fc_end.trk = MAX_TRACK;
-        sis.sir.fc_end.sec = MAX_SECTOR;
+            static_cast<Byte>((fc_start % param.max_sector) + 1);
+        sis.sir.fc_end.trk = param.max_track;
+        sis.sir.fc_end.sec = param.max_sector;
         setValueBigEndian<Word>(&sis.sir.free[0], free);
     }
 } // initialize_flex_link_table
