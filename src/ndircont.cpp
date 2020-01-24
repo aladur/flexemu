@@ -64,7 +64,7 @@
 // See IsFlexFilename for details. If the files in the emulated directory
 // exceed the size of the emulated disk only part of the files are emulated.
 // The size of the emulated disk is fixed and defined by the constants
-// MAX_TRACK and MAX_SECTORS.
+// MAX_TRACK and MAX_SECTOR's.
 // IMPORTANT HINT: As long as a host file system is mounted as a FLEX
 // disk any file in this directory should not be renamed, modified or deleted
 // Care should also be taken when using low level disk access tools
@@ -557,7 +557,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 
         flex_directory[dir_sectors - 2].next = track_sector;
 
-        if (++sis.sir.fc_start.sec > MAX_SECTOR)
+        if (++sis.sir.fc_start.sec > param.max_sector)
         {
             sis.sir.fc_start.sec = 1;
             sis.sir.fc_start.trk++;
@@ -734,12 +734,12 @@ bool NafsDirectoryContainer::add_to_link_table(
         link.type = SectorType::File;
     }
 
-    end.sec = ((i + sector_begin - 2) % MAX_SECTOR) + 1;
-    end.trk = static_cast<Byte>((i + sector_begin - 2) / MAX_SECTOR);
+    end.sec = ((i + sector_begin - 2) % param.max_sector) + 1;
+    end.trk = static_cast<Byte>((i + sector_begin - 2) / param.max_sector);
     // update sys info sector
-    sis.sir.fc_start.sec = ((i + sector_begin - 1) % MAX_SECTOR) + 1;
+    sis.sir.fc_start.sec = ((i + sector_begin - 1) % param.max_sector) + 1;
     sis.sir.fc_start.trk =
-        static_cast<Byte>((i + sector_begin - 1) / MAX_SECTOR);
+        static_cast<Byte>((i + sector_begin - 1) / param.max_sector);
 
     setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free - records));
 
@@ -839,9 +839,10 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 
         for (n = 0; n < (data_size / (DBPS * 255)) ; n++)
         {
-            file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
+            file_sector_map[3 * n] =
+                static_cast<Byte>(index / param.max_sector);
             file_sector_map[3 * n + 1] =
-                static_cast<Byte>((index % MAX_SECTOR) + 1);
+                static_cast<Byte>((index % param.max_sector) + 1);
             file_sector_map[3 * n + 2] = 255;
             index += 255;
         } // for
@@ -850,9 +851,10 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 
         if (i != 0)
         {
-            file_sector_map[3 * n] = static_cast<Byte>(index / MAX_SECTOR);
+            file_sector_map[3 * n] =
+                static_cast<Byte>(index / param.max_sector);
             file_sector_map[3 * n + 1] =
-                static_cast<Byte>((index % MAX_SECTOR) + 1);
+                static_cast<Byte>((index % param.max_sector) + 1);
             file_sector_map[3 * n + 2] =
                 static_cast<Byte>((i + (DBPS - 1)) / DBPS);
         } // if
@@ -1064,7 +1066,8 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
         sis.sir.day = static_cast<Byte>(lt->tm_mday);
         sis.sir.year = static_cast<Byte>(lt->tm_year);
-        sis.sir.last = st_t{MAX_TRACK, MAX_SECTOR};
+        sis.sir.last = st_t{static_cast<Byte>(param.max_track),
+                            static_cast<Byte>(param.max_sector)};
         std::fill(std::begin(sis.unused2), std::end(sis.unused2), 0);
 
         flex_sys_info[1] = flex_sys_info[0];
@@ -1732,6 +1735,6 @@ std::string NafsDirectoryContainer::get_unique_filename(
 // Return the sector index of the given track/sector.
 SWord NafsDirectoryContainer::get_sector_index(const st_t &track_sector) const
 {
-        return track_sector.trk * MAX_SECTOR + track_sector.sec - 1;
+        return track_sector.trk * param.max_sector + track_sector.sec - 1;
 }
 #endif // #ifdef NAFS
