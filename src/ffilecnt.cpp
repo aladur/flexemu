@@ -996,7 +996,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
             break;
         }
 
-        sis.sir.disk_name[i] = *(name + i);
+        sis.sir.disk_name[i] = std::toupper(*(name + i));
     } // for
 
     start           = fmt->dir_sectors + 4;
