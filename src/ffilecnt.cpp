@@ -25,6 +25,7 @@
 #include <sys/stat.h>
 #include <string>
 #include <sstream>
+#include <cctype>
 
 #include "fcinfo.h"
 #include "flexerr.h"

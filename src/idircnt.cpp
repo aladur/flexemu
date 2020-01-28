@@ -162,7 +162,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             attributes |= WRITE_PROTECT;
         }
 
-        dirEntry.SetSize(((findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE);
+        dirEntry.SetSize((findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
         dirEntry.SetDate(systemTime.wDay, systemTime.wMonth,
                          systemTime.wYear);
