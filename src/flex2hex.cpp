@@ -44,6 +44,7 @@ enum class FileType
     Unknown,
     IntelHex,
     MotorolaSRec,
+    RawBinary,
 };
 
 void syntax()
@@ -51,13 +52,15 @@ void syntax()
     std::cout <<
         "flex2hex syntax:\n"
         " Convert FLEX binary file(s) to Intel Hex or Motorola S-Record File:\n"
-        "   flex2hex [-i|-m][-y][-v] -o <hex_file> <flex_bin_file>\n"
-        "   flex2hex [-i|-m][-y][-v] <flex_bin_file> [<flex_bin_file>...]\n"
+        "   flex2hex [-i|-m|-b][-y][-v] -o <hex_file> <flex_bin_file>\n"
+        "   flex2hex [-i|-m|-b][-y][-v] <flex_bin_file> [<flex_bin_file>...]\n"
         "   flex2hex -h\n\n"
         "   <flex_bin_file>: A input file in FLEX binary format.\n"
         "   -o <hex_file>:   A output file.\n"
         "   -i:              hex_file has Intel Hex format (*.hex).\n"
         "   -m:              hex_file has Motorola S-Record format (*.s19).\n"
+        "   -b:              hex_file has raw binary format (*.bin).\n"
+        "                    Address range gaps are filled up with 0.\n"
         "   -y:              Overwrite existing file(s) without confirmation.\n"
         "   -v:              Verbose output.\n"
         "   -h:              Print this help and exit.\n";
@@ -88,6 +91,10 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
                   result = write_motorola_srec(ofile, memory, startAddress);
                   break;
 
+        case FileType::RawBinary:
+                  result = write_raw_binary(ofile, memory, startAddress);
+                  break;
+
         case FileType::Unknown:
                   std::cerr << "*** No file format specified" << std::endl;
                   return 1;
@@ -111,11 +118,12 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
 
 int main(int argc, char *argv[])
 {
-    std::map<int, FileType> fileTypes{
+    static const std::map<int, FileType> fileTypes{
         { 'm', FileType::MotorolaSRec },
         { 'i', FileType::IntelHex },
+        { 'b', FileType::RawBinary },
     };
-    std::string optstr("himo:vy");
+    std::string optstr("himbo:vy");
     std::vector<std::string> ifiles;
     std::string ofilePrefered;
     FileType ofiletype = FileType::Unknown;
@@ -133,15 +141,16 @@ int main(int argc, char *argv[])
 
             case 'i': 
             case 'm': 
+            case 'b':
                       if (ofiletype != FileType::Unknown &&
-                          ofiletype != fileTypes[result])
+                          ofiletype != fileTypes.at(result))
                       {
                           std::cerr << "*** Error: Only one of -m or -i can "
                                        "be used at a time." << std::endl;
                           syntax();
                           return 1;
                       }
-                      ofiletype = fileTypes[result];
+                      ofiletype = fileTypes.at(result);
                       break;
 
             case 'h': syntax();
@@ -210,6 +219,10 @@ int main(int argc, char *argv[])
 
                 case FileType::MotorolaSRec:
                     ofile += ".s19";
+                    break;
+
+                case FileType::RawBinary:
+                    ofile += ".bin";
                     break;
 
                 case FileType::Unknown:

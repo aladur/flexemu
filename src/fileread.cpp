@@ -500,6 +500,46 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
     return 0;
 }
 
+static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
+                                   const Byte *buffer,
+                                   size_t address, size_t size)
+{
+    static size_t previous_address = std::numeric_limits<size_t>::max();
+
+    switch (wbType)
+    {
+        case WBType::Header:
+        case WBType::StartAddress:
+            return 0;
+
+        case WBType::Data:
+            break;
+    }
+
+    if (previous_address != std::numeric_limits<size_t>::max() &&
+        previous_address < address &&
+        previous_address != address)
+    {
+        // Fill address gap with 0.
+        for (size_t i = 0; i < (address - previous_address); ++i)
+        {
+            ostream.put('\0');
+        }
+    }
+
+    const char *pBuffer = reinterpret_cast<char *>(const_cast<Byte *>(buffer));
+    ostream.write(pBuffer, size);
+
+    previous_address = address + size;
+
+    if (ostream.fail())
+    {
+        return -5; // write error
+    }
+
+    return 0;
+}
+
 static int write_hexfile(
     const char *filename,
     const MemorySource<size_t> &memsrc,
@@ -583,6 +623,14 @@ int write_motorola_srec(const char *filename,
 {
     return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
                          startAddress, false);
+}
+
+int write_raw_binary(const char *filename,
+                     const MemorySource<size_t> &memsrc,
+                     size_t startAddress)
+{
+    return write_hexfile(filename, memsrc, write_buffer_raw_binary, 32,
+                         startAddress, true);
 }
 
 int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc,
