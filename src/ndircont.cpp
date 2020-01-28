@@ -899,23 +899,51 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 // a special meaning in a directory container.
 void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 {
-#ifdef _WIN32
-    HANDLE hdl;
-    WIN32_FIND_DATA pentry;
-#endif
-#ifdef UNIX
-    DIR *pd;
-    struct dirent *pentry;
-#endif
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
     std::unordered_set<std::string> random_filenames; // random files.
     struct stat sbuf;
 
+    auto add_file = [&](const std::string &filename, bool is_random)
+    {
+        std::string lc_filename; // lower case filename
+        std::string name;
+        std::string extension;
+
+        std::transform(filename.begin(), filename.end(),
+            std::back_inserter(lc_filename), ::tolower);
+
+        // CDFS-Support: look for file name in file 'random'
+        if (is_write_protected)
+        {
+            is_random = is_in_file_random(directory.c_str(),
+                                          filename.c_str());
+        }
+
+        if (IsFlexFilename(filename.c_str(), name, extension,
+                           true) &&
+            strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
+            strcmp(filename.c_str(), BOOT_FILE) &&
+            lc_filenames.find(lc_filename) == lc_filenames.end())
+        {
+
+            if (is_random)
+            {
+                random_filenames.emplace(filename);
+            }
+
+            filenames.emplace_back(filename);
+            lc_filenames.emplace(lc_filename);
+        }
+    };
+
     memset(&sbuf, 0, sizeof(sbuf));
     initialize_flex_directory();
     initialize_flex_link_table();
+
 #ifdef _WIN32
+    HANDLE hdl;
+    WIN32_FIND_DATA pentry;
     const auto wildcard = directory + PATHSEPARATORSTRING "*.*";
 
 #ifdef UNICODE
@@ -923,88 +951,61 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 #else
     hdl = FindFirstFile(wildcard.c_str(), &pentry);
 #endif
+
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do
         {
-#endif
-#ifdef UNIX
-
-            if ((pd = opendir(directory.c_str())) != nullptr)
-            {
-                while ((pentry = readdir(pd)) != nullptr)
-                {
-#endif
-                    std::string filename;
-                    std::string lc_filename; // lower case filename
-                    std::string path;
-                    std::string name;
-                    std::string extension;
-                    bool is_random = false;
-#ifdef _WIN32
+            std::string filename;
+            std::string path;
 #ifdef UNICODE
-                    filename = ConvertToUtf8String(pentry.cFileName);
+            filename = ConvertToUtf8String(pentry.cFileName);
 #else
-                    filename = pentry.cFileName;
+            filename = pentry.cFileName;
 #endif
-                    path = directory + PATHSEPARATORSTRING + filename.c_str();
-                    if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
-                    {
-                        continue;
-                    }
-                    std::transform(filename.begin(), filename.end(),
-                        filename.begin(), ::tolower);
-                    lc_filename = filename;
-                    is_random = (pentry.dwFileAttributes &
-                                 FILE_ATTRIBUTE_HIDDEN) ? true : false;
-#endif
-#ifdef UNIX
-                    filename = pentry->d_name;
-                    path = directory + PATHSEPARATORSTRING + filename.c_str();
-                    if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
-                    {
-                        continue;
-                    }
-                    lc_filename.clear();
-                    std::transform(filename.begin(), filename.end(),
-                        std::back_inserter(lc_filename), ::tolower);
-                    is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
-#endif
-                    // CDFS-Support: look for file name in file 'random'
-                    if (is_write_protected)
-                    {
-                        is_random = is_in_file_random(directory.c_str(),
-                                                      filename.c_str());
-                    }
+            path = directory + PATHSEPARATORSTRING + filename.c_str();
+            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+            {
+                continue;
+            }
+            std::transform(filename.begin(), filename.end(),
+                filename.begin(), ::tolower);
+            bool is_random = (pentry.dwFileAttributes &
+                              FILE_ATTRIBUTE_HIDDEN) ? true : false;
 
-                    if (IsFlexFilename(filename.c_str(), name, extension,
-                                       true) &&
-                        strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
-                        strcmp(filename.c_str(), BOOT_FILE) &&
-                        lc_filenames.find(lc_filename) == lc_filenames.end())
-                    {
+            add_file(filename, is_random);
+        }
+        while (FindNextFile(hdl, &pentry) != 0);
 
-                        if (is_random)
-                        {
-                            random_filenames.emplace(filename);
-                        }
-
-                        filenames.emplace_back(filename);
-                        lc_filenames.emplace(lc_filename);
-                    }
-#ifdef _WIN32
-                }
-
-                while (FindNextFile(hdl, &pentry) != 0);
-
-                FindClose(hdl);
-#endif
-#ifdef UNIX
-            } // while
-
-            closedir(pd);
-#endif
+        FindClose(hdl);
     } //if
+#endif
+
+#ifdef UNIX
+    DIR *pd;
+
+    if ((pd = opendir(directory.c_str())) != nullptr)
+    {
+        struct dirent *pentry;
+
+        while ((pentry = readdir(pd)) != nullptr)
+        {
+            std::string path;
+
+            std::string filename = pentry->d_name;
+            path = directory + PATHSEPARATORSTRING + filename.c_str();
+            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+            {
+                continue;
+            }
+            bool is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
+
+            add_file(filename, is_random);
+        } // while
+
+        closedir(pd);
+    } //if
+#endif
 
     // Sort all filenames before adding them to the container.
     std::sort(filenames.begin(), filenames.end());
