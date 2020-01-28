@@ -768,6 +768,7 @@ void NafsDirectoryContainer::add_to_directory(
     }
 
     lt = localtime(&(stat.st_mtime));
+    auto year = lt->tm_year > 100 ? lt->tm_year - 100 : lt->tm_year;
     records = static_cast<SWord>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
       flex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
@@ -783,7 +784,7 @@ void NafsDirectoryContainer::add_to_directory(
     dir_entry.sector_map = is_random ? IS_RANDOM_FILE : 0;
     dir_entry.month = static_cast<Byte>(lt->tm_mon + 1);
     dir_entry.day = static_cast<Byte>(lt->tm_mday);
-    dir_entry.year = static_cast<Byte>(lt->tm_year);
+    dir_entry.year = static_cast<Byte>(year);
 } // add_to_directory
 
 // Check if file 'pfilename' is available in file which contains a list
