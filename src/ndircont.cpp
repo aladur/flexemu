@@ -262,7 +262,12 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 
     extension[0] = '\0';
     dot    = '\0';
+#ifdef _WIN32
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
+#endif
+#ifdef UNIX
+    format = "%1[a-z]%7[a-z0-9_-]";
+#endif
     result = sscanf(pfilename, format, &name[0], &name[1]);
 
     if (!result || result == EOF)
@@ -272,11 +277,21 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 
     if (result == 1)
     {
+#ifdef _WIN32
         format = "%*1[A-Za-z]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
+#endif
+#ifdef UNIX
+        format = "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]";
+#endif
     }
     else
     {
+#ifdef _WIN32
         format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
+#endif
+#ifdef UNIX
+        format = "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]";
+#endif
     }
 
     result = sscanf(pfilename, format, &dot, &extension[0], &extension[1]);
