@@ -35,6 +35,7 @@
 class wxTextCtrl;
 class wxRadioBox;
 class wxComboBox;
+class wxStaticText;
 
 class ContainerPropertiesDialog : public wxDialog
 {
@@ -47,18 +48,20 @@ public:
     void OnInitDialog(wxInitDialogEvent &event);
     void OnSelectPath(wxCommandEvent &event);
     void OnFormatChanged(wxCommandEvent &event);
-    int GetTracks();
-    int GetSectors();
-    inline const wxString &GetPath()
-    {
-        return m_path;
-    };
+    void OnTrkSecChanged(wxCommandEvent &event);
+    int GetTracks() const;
+    int GetSectors() const;
+    const wxString GetPath() const;
     int GetFormat()
     {
         return m_format;
     };
 
 private:
+    static bool IsTracksValid(int tracks);
+    static bool IsSectorsValid(int sectors);
+    bool Validate();
+
     wxString    m_tracks;
     wxString    m_sectors;
     wxString    m_path;
@@ -69,6 +72,8 @@ private:
     wxTextCtrl  *c_path;
     wxRadioBox  *c_format;
     wxComboBox  *c_diskFormat;
+    wxStaticText  *c_formatWarning;
+
 private:
     DECLARE_EVENT_TABLE()
 };

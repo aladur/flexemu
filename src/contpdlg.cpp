@@ -52,6 +52,8 @@ BEGIN_EVENT_TABLE(ContainerPropertiesDialog, wxDialog)
     EVT_BUTTON(IDC_PathButton,  ContainerPropertiesDialog::OnSelectPath)
     EVT_RADIOBOX(IDC_FormatCheckBox, ContainerPropertiesDialog::OnFormatChanged)
     EVT_COMBOBOX(IDC_DiskFormat, ContainerPropertiesDialog::OnFormatChanged)
+    EVT_TEXT(IDC_Tracks, ContainerPropertiesDialog::OnTrkSecChanged)
+    EVT_TEXT(IDC_Sectors, ContainerPropertiesDialog::OnTrkSecChanged)
     //  EVT_BUTTON(wxID_OK,  ContainerPropertiesDialog::OnOK)
     //  EVT_BUTTON(wxID_CANCEL, ContainerPropertiesDialog::OnCancel)
 END_EVENT_TABLE()
@@ -106,7 +108,7 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     pStatic = new wxStaticText(this, -1, _("Disk Format"));
     pComboBoxSizer->Add(pStatic, 0, wxALL, 10);
     c_diskFormat = new wxComboBox(this, IDC_DiskFormat, "",
-                                  wxDefaultPosition, wxSize(280, -1), 0,
+                                  wxDefaultPosition, wxSize(330, -1), 0,
                                   nullptr, wxCB_READONLY);
     pComboBoxSizer->Add(c_diskFormat, 0, wxALL, 10);
 
@@ -126,6 +128,11 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     pTrkSecSizer->Add(c_sectors, 0, wxALL, 10);
 
     pWidgetSizer->Add(pTrkSecSizer);
+
+    c_formatWarning = new wxStaticText(this, -1, _(""));
+    c_formatWarning->SetForegroundColour(*wxColour("darkorange"));
+
+    pWidgetSizer->Add(c_formatWarning, 0, wxLEFT, 10);
 
     pStatic = new wxStaticText(this, -1, _("Filename"));
     pFileSizer->Add(pStatic, 0, wxALL, 10);
@@ -217,11 +224,10 @@ void ContainerPropertiesDialog::OnFormatChanged(wxCommandEvent &WXUNUSED(event))
     c_sectors->Enable(!isMdcrFormat && isFreeDiskFormat);
 }
 
-int ContainerPropertiesDialog::GetTracks()
+int ContainerPropertiesDialog::GetTracks() const
 {
     long t;
-
-    if (m_tracks.ToLong(&t))
+    if (c_tracks->GetValue().ToLong(&t))
     {
         return (int)t;
     }
@@ -231,11 +237,10 @@ int ContainerPropertiesDialog::GetTracks()
     }
 }
 
-int ContainerPropertiesDialog::GetSectors()
+int ContainerPropertiesDialog::GetSectors() const
 {
     long s;
-
-    if (m_sectors.ToLong(&s))
+    if (c_sectors->GetValue().ToLong(&s))
     {
         return (int)s;
     }
@@ -243,5 +248,76 @@ int ContainerPropertiesDialog::GetSectors()
     {
         return 0;
     }
+}
+
+const wxString ContainerPropertiesDialog::GetPath() const
+{
+    return c_path->GetValue();
+}
+
+void ContainerPropertiesDialog::OnTrkSecChanged(wxCommandEvent &WXUNUSED(event))
+{
+    auto selection = c_diskFormat->GetSelection();
+    bool isFreeDiskFormat = (selection == 0);
+    bool isWarning = false;
+
+    if (isFreeDiskFormat)
+    {
+        auto tracks = GetTracks();
+        auto sectors = GetSectors();
+
+        isWarning = true;
+        for (const auto &st : flex_formats)
+        {
+            if (st.trk == tracks && st.sec == sectors)
+            {
+                isWarning = false;
+                break;
+            }
+        }
+    }
+
+    c_formatWarning->SetLabelText(isWarning ?
+                                  _("Uncommon FLEX disk format. "
+                                    "This may cause compatibility "
+                                    "issues!") : "");
+}
+
+bool ContainerPropertiesDialog::IsTracksValid(int tracks)
+{
+        return tracks >= 2 && tracks <= 255;
+}
+
+bool ContainerPropertiesDialog::IsSectorsValid(int sectors)
+{
+        return sectors >= 6 && sectors <= 255;
+}
+
+bool ContainerPropertiesDialog::Validate()
+{
+    if (!IsTracksValid(GetTracks()))
+    {
+        wxMessageBox(_("Invalid track number. Valid range: [2..255]."),
+                     _("FLEXplorer Error"),
+                     wxOK | wxCENTRE | wxICON_EXCLAMATION);
+        return false;
+    }
+
+    if (!IsSectorsValid(GetSectors()))
+    {
+        wxMessageBox(_("Invalid sector number. Valid range: [6..255]."),
+                     _("FLEXplorer Error"),
+                     wxOK | wxCENTRE | wxICON_EXCLAMATION);
+        return false;
+    }
+
+    if (GetPath().IsEmpty())
+    {
+        wxMessageBox(_("No path specified") , _("FLEXplorer Error"),
+                wxOK | wxCENTRE | wxICON_EXCLAMATION);
+        return false;
+    }
+
+    return wxWindow::Validate();
 }
 
