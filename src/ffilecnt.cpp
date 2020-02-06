@@ -804,7 +804,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 entry.GetEndTrkSec(tmp1, tmp2);
                 pde->end.trk = static_cast<Byte>(tmp1);
                 pde->end.sec = static_cast<Byte>(tmp2);
-                setValueBigEndian<Word>(&pde->records[0], records);
+                setValueBigEndian<Word>(&pde->records[0], static_cast<Word>(records));
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
                 pde->reserved2 = 0;
                 date = entry.GetDate();
@@ -997,7 +997,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
             break;
         }
 
-        sis.sir.disk_name[i] = std::toupper(*(name + i));
+        sis.sir.disk_name[i] = static_cast<char>(std::toupper(*(name + i)));
     } // for
 
     start           = fmt->dir_sectors + 4;
@@ -1010,7 +1010,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     sis.sir.fc_start.sec = static_cast<Byte>((start % fmt->sectors) + 1);
     sis.sir.fc_end.trk = static_cast<Byte>(fmt->tracks - 1);
     sis.sir.fc_end.sec = static_cast<Byte>(fmt->sectors);
-    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free));
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
     sis.sir.year = static_cast<Byte>(year);

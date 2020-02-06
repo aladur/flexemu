@@ -505,4 +505,8 @@ template<typename T> void setValueBigEndian(Byte *p, T value)
     }
 }
 
+extern bool AskForInput(const std::string &question,
+                        const std::string &answers,
+                        char default_answer);
+
 #endif /* __misc1.h__ */

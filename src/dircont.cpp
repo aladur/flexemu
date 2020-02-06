@@ -286,7 +286,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
         &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
         &totalNumberOfClusters);
 #else
-    BOOL success = GetDiskFreeSpace(rootPath, &sectorsPerCluster,
+    BOOL success = GetDiskFreeSpace(rootPath.c_str(), &sectorsPerCluster,
         &bytesPerSector, &numberOfFreeClusters,
         &totalNumberOfClusters);
 #endif
@@ -429,7 +429,7 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
         fileAttrib = GetFileAttributes(
             ConvertToUtf16String(filePath).c_str());
 #else
-        fileAttrib = GetFileAttributes(filePath);
+        fileAttrib = GetFileAttributes(filePath.c_str());
 #endif
 
         if (fileAttrib != 0xFFFFFFFF &&
@@ -586,7 +586,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 #ifdef UNICODE
         attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
 #else
-        attrs = GetFileAttributes(filePath);
+        attrs = GetFileAttributes(filePath.c_str());
 #endif
 
         if (clearMask & WRITE_PROTECT)
@@ -602,7 +602,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 #ifdef UNICODE
         SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
 #else
-        SetFileAttributes(filePath, attrs);
+        SetFileAttributes(filePath.c_str(), attrs);
 #endif
 #endif
 #ifdef UNIX
@@ -646,8 +646,8 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
     SetFileAttributes(ConvertToUtf16String(filePath).c_str(),
         attrs | FILE_ATTRIBUTE_HIDDEN);
 #else
-    attrs = GetFileAttributes(filePath);
-    SetFileAttributes(filePath, attrs | FILE_ATTRIBUTE_HIDDEN);
+    attrs = GetFileAttributes(filePath.c_str());
+    SetFileAttributes(filePath.c_str(), attrs | FILE_ATTRIBUTE_HIDDEN);
 #endif
 #endif
 #ifdef UNIX

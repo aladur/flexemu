@@ -26,7 +26,7 @@ SUBDIRS = bitmaps tools
 # Directory where .desktop files are located
 desktopdir = $(datadir)/applications
 
-bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex
+bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex dsktool
 EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
 noinst_PROGRAMS = test
 
@@ -39,12 +39,14 @@ flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
 fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
+dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
+dsktool_LDADD    = @PTHREAD_LD@
 flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
                    @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 test_LDADD       = @PTHREAD_LD@
@@ -115,6 +117,18 @@ fileread.cpp bfileptr.cpp bmembuf.cpp \
 flexerr.cpp misc1.cpp flex2hex.cpp \
 fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 bintervl.h typedefs.h misc1.h config.h flexerr.h
+
+dsktool_SOURCES = \
+dsktool.cpp \
+flexerr.cpp ffilebuf.cpp bfileptr.cpp bdir.cpp bdate.cpp \
+ffilecnt.cpp rfilecnt.cpp dircont.cpp \
+iffilcnt.cpp ifilecnt.cpp idircnt.cpp \
+fcinfo.cpp fcopyman.cpp fdirent.cpp misc1.cpp \
+filfschk.cpp filecnts.cpp \
+flexerr.h ffilebuf.h bfileptr.h bdir.h bdate.h \
+ffilecnt.h rfilecnt.h dircont.h \
+iffilcnt.h ifilecnt.h idircnt.h \
+fcinfo.h fcopyman.h fdirent.h filfschk.h misc1.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \

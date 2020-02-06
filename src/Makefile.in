@@ -91,7 +91,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = flexemu$(EXEEXT) @FLEXPLORER@ @FSETUP@ \
-	mdcrtool$(EXEEXT) flex2hex$(EXEEXT)
+	mdcrtool$(EXEEXT) flex2hex$(EXEEXT) dsktool$(EXEEXT)
 EXTRA_PROGRAMS = flexplorer$(EXEEXT) fsetup$(EXEEXT) mdcrtool$(EXEEXT) \
 	flex2hex$(EXEEXT)
 noinst_PROGRAMS = test$(EXEEXT)
@@ -113,6 +113,20 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
 	"$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
+	dsktool-flexerr.$(OBJEXT) dsktool-ffilebuf.$(OBJEXT) \
+	dsktool-bfileptr.$(OBJEXT) dsktool-bdir.$(OBJEXT) \
+	dsktool-bdate.$(OBJEXT) dsktool-ffilecnt.$(OBJEXT) \
+	dsktool-rfilecnt.$(OBJEXT) dsktool-dircont.$(OBJEXT) \
+	dsktool-iffilcnt.$(OBJEXT) dsktool-ifilecnt.$(OBJEXT) \
+	dsktool-idircnt.$(OBJEXT) dsktool-fcinfo.$(OBJEXT) \
+	dsktool-fcopyman.$(OBJEXT) dsktool-fdirent.$(OBJEXT) \
+	dsktool-misc1.$(OBJEXT) dsktool-filfschk.$(OBJEXT) \
+	dsktool-filecnts.$(OBJEXT)
+dsktool_OBJECTS = $(am_dsktool_OBJECTS)
+dsktool_DEPENDENCIES =
+dsktool_LINK = $(CXXLD) $(dsktool_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_flex2hex_OBJECTS = flex2hex-fileread.$(OBJEXT) \
 	flex2hex-bfileptr.$(OBJEXT) flex2hex-bmembuf.$(OBJEXT) \
 	flex2hex-flexerr.$(OBJEXT) flex2hex-misc1.$(OBJEXT) \
@@ -258,11 +272,12 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(flex2hex_SOURCES) $(flexemu_SOURCES) $(flexplorer_SOURCES) \
-	$(fsetup_SOURCES) $(mdcrtool_SOURCES) $(test_SOURCES)
-DIST_SOURCES = $(flex2hex_SOURCES) $(flexemu_SOURCES) \
+SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) $(flexemu_SOURCES) \
 	$(flexplorer_SOURCES) $(fsetup_SOURCES) $(mdcrtool_SOURCES) \
 	$(test_SOURCES)
+DIST_SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) \
+	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(fsetup_SOURCES) \
+	$(mdcrtool_SOURCES) $(test_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -527,11 +542,13 @@ flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
 fsetup_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
 mdcrtool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
+dsktool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
 fsetup_LDADD = @WX_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD = @PTHREAD_LD@
 flex2hex_LDADD = @PTHREAD_LD@
+dsktool_LDADD = @PTHREAD_LD@
 flexemu_LDADD = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
                    @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
 
@@ -602,6 +619,18 @@ fileread.cpp bfileptr.cpp bmembuf.cpp \
 flexerr.cpp misc1.cpp flex2hex.cpp \
 fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
 bintervl.h typedefs.h misc1.h config.h flexerr.h
+
+dsktool_SOURCES = \
+dsktool.cpp \
+flexerr.cpp ffilebuf.cpp bfileptr.cpp bdir.cpp bdate.cpp \
+ffilecnt.cpp rfilecnt.cpp dircont.cpp \
+iffilcnt.cpp ifilecnt.cpp idircnt.cpp \
+fcinfo.cpp fcopyman.cpp fdirent.cpp misc1.cpp \
+filfschk.cpp filecnts.cpp \
+flexerr.h ffilebuf.h bfileptr.h bdir.h bdate.h \
+ffilecnt.h rfilecnt.h dircont.h \
+iffilcnt.h ifilecnt.h idircnt.h \
+fcinfo.h fcopyman.h fdirent.h filfschk.h misc1.h
 
 test_SOURCES = \
 testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
@@ -722,6 +751,10 @@ clean-binPROGRAMS:
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 
+dsktool$(EXEEXT): $(dsktool_OBJECTS) $(dsktool_DEPENDENCIES) $(EXTRA_dsktool_DEPENDENCIES) 
+	@rm -f dsktool$(EXEEXT)
+	$(AM_V_CXXLD)$(dsktool_LINK) $(dsktool_OBJECTS) $(dsktool_LDADD) $(LIBS)
+
 flex2hex$(EXEEXT): $(flex2hex_OBJECTS) $(flex2hex_DEPENDENCIES) $(EXTRA_flex2hex_DEPENDENCIES) 
 	@rm -f flex2hex$(EXEEXT)
 	$(AM_V_CXXLD)$(flex2hex_LINK) $(flex2hex_OBJECTS) $(flex2hex_LDADD) $(LIBS)
@@ -752,6 +785,24 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-bdate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-bdir.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-bfileptr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-dircont.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-dsktool.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-fcinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-fcopyman.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-fdirent.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-ffilebuf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-ffilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-filecnts.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-filfschk.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-flexerr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-idircnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-iffilcnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-ifilecnt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-misc1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-rfilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-bmembuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-fileread.Po@am__quote@
@@ -913,6 +964,258 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+dsktool-dsktool.o: dsktool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-dsktool.o -MD -MP -MF $(DEPDIR)/dsktool-dsktool.Tpo -c -o dsktool-dsktool.o `test -f 'dsktool.cpp' || echo '$(srcdir)/'`dsktool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-dsktool.Tpo $(DEPDIR)/dsktool-dsktool.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dsktool.cpp' object='dsktool-dsktool.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-dsktool.o `test -f 'dsktool.cpp' || echo '$(srcdir)/'`dsktool.cpp
+
+dsktool-dsktool.obj: dsktool.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-dsktool.obj -MD -MP -MF $(DEPDIR)/dsktool-dsktool.Tpo -c -o dsktool-dsktool.obj `if test -f 'dsktool.cpp'; then $(CYGPATH_W) 'dsktool.cpp'; else $(CYGPATH_W) '$(srcdir)/dsktool.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-dsktool.Tpo $(DEPDIR)/dsktool-dsktool.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dsktool.cpp' object='dsktool-dsktool.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-dsktool.obj `if test -f 'dsktool.cpp'; then $(CYGPATH_W) 'dsktool.cpp'; else $(CYGPATH_W) '$(srcdir)/dsktool.cpp'; fi`
+
+dsktool-flexerr.o: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-flexerr.o -MD -MP -MF $(DEPDIR)/dsktool-flexerr.Tpo -c -o dsktool-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-flexerr.Tpo $(DEPDIR)/dsktool-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='dsktool-flexerr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
+
+dsktool-flexerr.obj: flexerr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-flexerr.obj -MD -MP -MF $(DEPDIR)/dsktool-flexerr.Tpo -c -o dsktool-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-flexerr.Tpo $(DEPDIR)/dsktool-flexerr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='dsktool-flexerr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+
+dsktool-ffilebuf.o: ffilebuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ffilebuf.o -MD -MP -MF $(DEPDIR)/dsktool-ffilebuf.Tpo -c -o dsktool-ffilebuf.o `test -f 'ffilebuf.cpp' || echo '$(srcdir)/'`ffilebuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ffilebuf.Tpo $(DEPDIR)/dsktool-ffilebuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ffilebuf.cpp' object='dsktool-ffilebuf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ffilebuf.o `test -f 'ffilebuf.cpp' || echo '$(srcdir)/'`ffilebuf.cpp
+
+dsktool-ffilebuf.obj: ffilebuf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ffilebuf.obj -MD -MP -MF $(DEPDIR)/dsktool-ffilebuf.Tpo -c -o dsktool-ffilebuf.obj `if test -f 'ffilebuf.cpp'; then $(CYGPATH_W) 'ffilebuf.cpp'; else $(CYGPATH_W) '$(srcdir)/ffilebuf.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ffilebuf.Tpo $(DEPDIR)/dsktool-ffilebuf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ffilebuf.cpp' object='dsktool-ffilebuf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ffilebuf.obj `if test -f 'ffilebuf.cpp'; then $(CYGPATH_W) 'ffilebuf.cpp'; else $(CYGPATH_W) '$(srcdir)/ffilebuf.cpp'; fi`
+
+dsktool-bfileptr.o: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bfileptr.o -MD -MP -MF $(DEPDIR)/dsktool-bfileptr.Tpo -c -o dsktool-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bfileptr.Tpo $(DEPDIR)/dsktool-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='dsktool-bfileptr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
+
+dsktool-bfileptr.obj: bfileptr.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bfileptr.obj -MD -MP -MF $(DEPDIR)/dsktool-bfileptr.Tpo -c -o dsktool-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bfileptr.Tpo $(DEPDIR)/dsktool-bfileptr.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='dsktool-bfileptr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
+
+dsktool-bdir.o: bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bdir.o -MD -MP -MF $(DEPDIR)/dsktool-bdir.Tpo -c -o dsktool-bdir.o `test -f 'bdir.cpp' || echo '$(srcdir)/'`bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bdir.Tpo $(DEPDIR)/dsktool-bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdir.cpp' object='dsktool-bdir.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bdir.o `test -f 'bdir.cpp' || echo '$(srcdir)/'`bdir.cpp
+
+dsktool-bdir.obj: bdir.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bdir.obj -MD -MP -MF $(DEPDIR)/dsktool-bdir.Tpo -c -o dsktool-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bdir.Tpo $(DEPDIR)/dsktool-bdir.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdir.cpp' object='dsktool-bdir.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
+
+dsktool-bdate.o: bdate.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bdate.o -MD -MP -MF $(DEPDIR)/dsktool-bdate.Tpo -c -o dsktool-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bdate.Tpo $(DEPDIR)/dsktool-bdate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdate.cpp' object='dsktool-bdate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
+
+dsktool-bdate.obj: bdate.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-bdate.obj -MD -MP -MF $(DEPDIR)/dsktool-bdate.Tpo -c -o dsktool-bdate.obj `if test -f 'bdate.cpp'; then $(CYGPATH_W) 'bdate.cpp'; else $(CYGPATH_W) '$(srcdir)/bdate.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-bdate.Tpo $(DEPDIR)/dsktool-bdate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdate.cpp' object='dsktool-bdate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-bdate.obj `if test -f 'bdate.cpp'; then $(CYGPATH_W) 'bdate.cpp'; else $(CYGPATH_W) '$(srcdir)/bdate.cpp'; fi`
+
+dsktool-ffilecnt.o: ffilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ffilecnt.o -MD -MP -MF $(DEPDIR)/dsktool-ffilecnt.Tpo -c -o dsktool-ffilecnt.o `test -f 'ffilecnt.cpp' || echo '$(srcdir)/'`ffilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ffilecnt.Tpo $(DEPDIR)/dsktool-ffilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ffilecnt.cpp' object='dsktool-ffilecnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ffilecnt.o `test -f 'ffilecnt.cpp' || echo '$(srcdir)/'`ffilecnt.cpp
+
+dsktool-ffilecnt.obj: ffilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ffilecnt.obj -MD -MP -MF $(DEPDIR)/dsktool-ffilecnt.Tpo -c -o dsktool-ffilecnt.obj `if test -f 'ffilecnt.cpp'; then $(CYGPATH_W) 'ffilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/ffilecnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ffilecnt.Tpo $(DEPDIR)/dsktool-ffilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ffilecnt.cpp' object='dsktool-ffilecnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ffilecnt.obj `if test -f 'ffilecnt.cpp'; then $(CYGPATH_W) 'ffilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/ffilecnt.cpp'; fi`
+
+dsktool-rfilecnt.o: rfilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-rfilecnt.o -MD -MP -MF $(DEPDIR)/dsktool-rfilecnt.Tpo -c -o dsktool-rfilecnt.o `test -f 'rfilecnt.cpp' || echo '$(srcdir)/'`rfilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-rfilecnt.Tpo $(DEPDIR)/dsktool-rfilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rfilecnt.cpp' object='dsktool-rfilecnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-rfilecnt.o `test -f 'rfilecnt.cpp' || echo '$(srcdir)/'`rfilecnt.cpp
+
+dsktool-rfilecnt.obj: rfilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-rfilecnt.obj -MD -MP -MF $(DEPDIR)/dsktool-rfilecnt.Tpo -c -o dsktool-rfilecnt.obj `if test -f 'rfilecnt.cpp'; then $(CYGPATH_W) 'rfilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/rfilecnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-rfilecnt.Tpo $(DEPDIR)/dsktool-rfilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rfilecnt.cpp' object='dsktool-rfilecnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-rfilecnt.obj `if test -f 'rfilecnt.cpp'; then $(CYGPATH_W) 'rfilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/rfilecnt.cpp'; fi`
+
+dsktool-dircont.o: dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-dircont.o -MD -MP -MF $(DEPDIR)/dsktool-dircont.Tpo -c -o dsktool-dircont.o `test -f 'dircont.cpp' || echo '$(srcdir)/'`dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-dircont.Tpo $(DEPDIR)/dsktool-dircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dircont.cpp' object='dsktool-dircont.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-dircont.o `test -f 'dircont.cpp' || echo '$(srcdir)/'`dircont.cpp
+
+dsktool-dircont.obj: dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-dircont.obj -MD -MP -MF $(DEPDIR)/dsktool-dircont.Tpo -c -o dsktool-dircont.obj `if test -f 'dircont.cpp'; then $(CYGPATH_W) 'dircont.cpp'; else $(CYGPATH_W) '$(srcdir)/dircont.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-dircont.Tpo $(DEPDIR)/dsktool-dircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dircont.cpp' object='dsktool-dircont.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-dircont.obj `if test -f 'dircont.cpp'; then $(CYGPATH_W) 'dircont.cpp'; else $(CYGPATH_W) '$(srcdir)/dircont.cpp'; fi`
+
+dsktool-iffilcnt.o: iffilcnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-iffilcnt.o -MD -MP -MF $(DEPDIR)/dsktool-iffilcnt.Tpo -c -o dsktool-iffilcnt.o `test -f 'iffilcnt.cpp' || echo '$(srcdir)/'`iffilcnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-iffilcnt.Tpo $(DEPDIR)/dsktool-iffilcnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iffilcnt.cpp' object='dsktool-iffilcnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-iffilcnt.o `test -f 'iffilcnt.cpp' || echo '$(srcdir)/'`iffilcnt.cpp
+
+dsktool-iffilcnt.obj: iffilcnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-iffilcnt.obj -MD -MP -MF $(DEPDIR)/dsktool-iffilcnt.Tpo -c -o dsktool-iffilcnt.obj `if test -f 'iffilcnt.cpp'; then $(CYGPATH_W) 'iffilcnt.cpp'; else $(CYGPATH_W) '$(srcdir)/iffilcnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-iffilcnt.Tpo $(DEPDIR)/dsktool-iffilcnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='iffilcnt.cpp' object='dsktool-iffilcnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-iffilcnt.obj `if test -f 'iffilcnt.cpp'; then $(CYGPATH_W) 'iffilcnt.cpp'; else $(CYGPATH_W) '$(srcdir)/iffilcnt.cpp'; fi`
+
+dsktool-ifilecnt.o: ifilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ifilecnt.o -MD -MP -MF $(DEPDIR)/dsktool-ifilecnt.Tpo -c -o dsktool-ifilecnt.o `test -f 'ifilecnt.cpp' || echo '$(srcdir)/'`ifilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ifilecnt.Tpo $(DEPDIR)/dsktool-ifilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ifilecnt.cpp' object='dsktool-ifilecnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ifilecnt.o `test -f 'ifilecnt.cpp' || echo '$(srcdir)/'`ifilecnt.cpp
+
+dsktool-ifilecnt.obj: ifilecnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-ifilecnt.obj -MD -MP -MF $(DEPDIR)/dsktool-ifilecnt.Tpo -c -o dsktool-ifilecnt.obj `if test -f 'ifilecnt.cpp'; then $(CYGPATH_W) 'ifilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/ifilecnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-ifilecnt.Tpo $(DEPDIR)/dsktool-ifilecnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ifilecnt.cpp' object='dsktool-ifilecnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-ifilecnt.obj `if test -f 'ifilecnt.cpp'; then $(CYGPATH_W) 'ifilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/ifilecnt.cpp'; fi`
+
+dsktool-idircnt.o: idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-idircnt.o -MD -MP -MF $(DEPDIR)/dsktool-idircnt.Tpo -c -o dsktool-idircnt.o `test -f 'idircnt.cpp' || echo '$(srcdir)/'`idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-idircnt.Tpo $(DEPDIR)/dsktool-idircnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='idircnt.cpp' object='dsktool-idircnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-idircnt.o `test -f 'idircnt.cpp' || echo '$(srcdir)/'`idircnt.cpp
+
+dsktool-idircnt.obj: idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-idircnt.obj -MD -MP -MF $(DEPDIR)/dsktool-idircnt.Tpo -c -o dsktool-idircnt.obj `if test -f 'idircnt.cpp'; then $(CYGPATH_W) 'idircnt.cpp'; else $(CYGPATH_W) '$(srcdir)/idircnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-idircnt.Tpo $(DEPDIR)/dsktool-idircnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='idircnt.cpp' object='dsktool-idircnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-idircnt.obj `if test -f 'idircnt.cpp'; then $(CYGPATH_W) 'idircnt.cpp'; else $(CYGPATH_W) '$(srcdir)/idircnt.cpp'; fi`
+
+dsktool-fcinfo.o: fcinfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fcinfo.o -MD -MP -MF $(DEPDIR)/dsktool-fcinfo.Tpo -c -o dsktool-fcinfo.o `test -f 'fcinfo.cpp' || echo '$(srcdir)/'`fcinfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fcinfo.Tpo $(DEPDIR)/dsktool-fcinfo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcinfo.cpp' object='dsktool-fcinfo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fcinfo.o `test -f 'fcinfo.cpp' || echo '$(srcdir)/'`fcinfo.cpp
+
+dsktool-fcinfo.obj: fcinfo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fcinfo.obj -MD -MP -MF $(DEPDIR)/dsktool-fcinfo.Tpo -c -o dsktool-fcinfo.obj `if test -f 'fcinfo.cpp'; then $(CYGPATH_W) 'fcinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/fcinfo.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fcinfo.Tpo $(DEPDIR)/dsktool-fcinfo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcinfo.cpp' object='dsktool-fcinfo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fcinfo.obj `if test -f 'fcinfo.cpp'; then $(CYGPATH_W) 'fcinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/fcinfo.cpp'; fi`
+
+dsktool-fcopyman.o: fcopyman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fcopyman.o -MD -MP -MF $(DEPDIR)/dsktool-fcopyman.Tpo -c -o dsktool-fcopyman.o `test -f 'fcopyman.cpp' || echo '$(srcdir)/'`fcopyman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fcopyman.Tpo $(DEPDIR)/dsktool-fcopyman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcopyman.cpp' object='dsktool-fcopyman.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fcopyman.o `test -f 'fcopyman.cpp' || echo '$(srcdir)/'`fcopyman.cpp
+
+dsktool-fcopyman.obj: fcopyman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fcopyman.obj -MD -MP -MF $(DEPDIR)/dsktool-fcopyman.Tpo -c -o dsktool-fcopyman.obj `if test -f 'fcopyman.cpp'; then $(CYGPATH_W) 'fcopyman.cpp'; else $(CYGPATH_W) '$(srcdir)/fcopyman.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fcopyman.Tpo $(DEPDIR)/dsktool-fcopyman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fcopyman.cpp' object='dsktool-fcopyman.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fcopyman.obj `if test -f 'fcopyman.cpp'; then $(CYGPATH_W) 'fcopyman.cpp'; else $(CYGPATH_W) '$(srcdir)/fcopyman.cpp'; fi`
+
+dsktool-fdirent.o: fdirent.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fdirent.o -MD -MP -MF $(DEPDIR)/dsktool-fdirent.Tpo -c -o dsktool-fdirent.o `test -f 'fdirent.cpp' || echo '$(srcdir)/'`fdirent.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fdirent.Tpo $(DEPDIR)/dsktool-fdirent.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdirent.cpp' object='dsktool-fdirent.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fdirent.o `test -f 'fdirent.cpp' || echo '$(srcdir)/'`fdirent.cpp
+
+dsktool-fdirent.obj: fdirent.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-fdirent.obj -MD -MP -MF $(DEPDIR)/dsktool-fdirent.Tpo -c -o dsktool-fdirent.obj `if test -f 'fdirent.cpp'; then $(CYGPATH_W) 'fdirent.cpp'; else $(CYGPATH_W) '$(srcdir)/fdirent.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-fdirent.Tpo $(DEPDIR)/dsktool-fdirent.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdirent.cpp' object='dsktool-fdirent.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-fdirent.obj `if test -f 'fdirent.cpp'; then $(CYGPATH_W) 'fdirent.cpp'; else $(CYGPATH_W) '$(srcdir)/fdirent.cpp'; fi`
+
+dsktool-misc1.o: misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-misc1.o -MD -MP -MF $(DEPDIR)/dsktool-misc1.Tpo -c -o dsktool-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-misc1.Tpo $(DEPDIR)/dsktool-misc1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='dsktool-misc1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
+
+dsktool-misc1.obj: misc1.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-misc1.obj -MD -MP -MF $(DEPDIR)/dsktool-misc1.Tpo -c -o dsktool-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-misc1.Tpo $(DEPDIR)/dsktool-misc1.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='dsktool-misc1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
+
+dsktool-filfschk.o: filfschk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filfschk.o -MD -MP -MF $(DEPDIR)/dsktool-filfschk.Tpo -c -o dsktool-filfschk.o `test -f 'filfschk.cpp' || echo '$(srcdir)/'`filfschk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filfschk.Tpo $(DEPDIR)/dsktool-filfschk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filfschk.cpp' object='dsktool-filfschk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filfschk.o `test -f 'filfschk.cpp' || echo '$(srcdir)/'`filfschk.cpp
+
+dsktool-filfschk.obj: filfschk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filfschk.obj -MD -MP -MF $(DEPDIR)/dsktool-filfschk.Tpo -c -o dsktool-filfschk.obj `if test -f 'filfschk.cpp'; then $(CYGPATH_W) 'filfschk.cpp'; else $(CYGPATH_W) '$(srcdir)/filfschk.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filfschk.Tpo $(DEPDIR)/dsktool-filfschk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filfschk.cpp' object='dsktool-filfschk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filfschk.obj `if test -f 'filfschk.cpp'; then $(CYGPATH_W) 'filfschk.cpp'; else $(CYGPATH_W) '$(srcdir)/filfschk.cpp'; fi`
+
+dsktool-filecnts.o: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filecnts.o -MD -MP -MF $(DEPDIR)/dsktool-filecnts.Tpo -c -o dsktool-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filecnts.Tpo $(DEPDIR)/dsktool-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='dsktool-filecnts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filecnts.o `test -f 'filecnts.cpp' || echo '$(srcdir)/'`filecnts.cpp
+
+dsktool-filecnts.obj: filecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filecnts.obj -MD -MP -MF $(DEPDIR)/dsktool-filecnts.Tpo -c -o dsktool-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filecnts.Tpo $(DEPDIR)/dsktool-filecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filecnts.cpp' object='dsktool-filecnts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
 
 flex2hex-fileread.o: fileread.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-fileread.o -MD -MP -MF $(DEPDIR)/flex2hex-fileread.Tpo -c -o flex2hex-fileread.o `test -f 'fileread.cpp' || echo '$(srcdir)/'`fileread.cpp

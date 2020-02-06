@@ -160,6 +160,8 @@ ${If} $Arch == "x64"
   File /a "${BASEDIR}\bin\x64\Release\flexplorer.exe"
   File /a "${BASEDIR}\bin\x64\Release\fsetup.exe"
   File /a "${BASEDIR}\bin\x64\Release\mdcrtool.exe"
+  File /a "${BASEDIR}\bin\x64\Release\dsktool.exe"
+  File /a "${BASEDIR}\bin\x64\Release\flex2hex.exe"
   File /a "${BASEDIR}\bin\x64\Release\wxbase312u_vc_x64_custom.dll"
   File /a "${BASEDIR}\bin\x64\Release\wxmsw312u_core_vc_x64_custom.dll"
 ${Else}
@@ -167,6 +169,8 @@ ${Else}
   File /a "${BASEDIR}\bin\Win32\Release\flexplorer.exe"
   File /a "${BASEDIR}\bin\Win32\Release\fsetup.exe"
   File /a "${BASEDIR}\bin\Win32\Release\mdcrtool.exe"
+  File /a "${BASEDIR}\bin\Win32\Release\dsktool.exe"
+  File /a "${BASEDIR}\bin\Win32\Release\flex2hex.exe"
   File /a "${BASEDIR}\bin\Win32\Release\wxbase312u_vc_custom.dll"
   File /a "${BASEDIR}\bin\Win32\Release\wxmsw312u_core_vc_custom.dll"
 ${EndIf}

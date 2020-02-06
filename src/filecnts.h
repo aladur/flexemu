@@ -54,6 +54,10 @@ typedef struct s_st
     Byte trk;
     Byte sec;
 
+    bool operator< (const s_st &src) const
+    {
+        return (trk < src.trk) || (trk == src.trk && sec < src.sec);
+    }
     bool operator== (const s_st &src) const
     {
         return (sec == src.sec) && (trk == src.trk);
@@ -205,6 +209,23 @@ constexpr std::array<const char *, 13> flex_format_descriptions
     "77-30 8 inch, Double-sided, single-density",
     "77-52 8 inch, Double-sided, double-density",
     "255-255 Hard disk"
+}};
+
+constexpr std::array<const char *, 13> flex_format_shortcuts
+{{
+    "35sssd",
+    "40sssd",
+    "35dssd",
+    "40dssd",
+    "40dsdd",
+    "80dssd",
+    "80dsdd",
+    "80dsqd",
+    "77sssd",
+    "77ssdd",
+    "77dssd",
+    "77dsdd",
+    "256hd"
 }};
 
 #endif /* #ifndef __fromflex__ */

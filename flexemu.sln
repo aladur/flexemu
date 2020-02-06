@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mdcrtool", "src\mdcrtool.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flex2hex", "src\flex2hex.vcxproj", "{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsktool", "src\dsktool.vcxproj", "{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,14 @@ Global
 		{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}.Release|Win32.Build.0 = Release|Win32
 		{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}.Release|x64.ActiveCfg = Release|x64
 		{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}.Release|x64.Build.0 = Release|x64
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Debug|Win32.Build.0 = Debug|Win32
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Debug|x64.ActiveCfg = Debug|x64
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Debug|x64.Build.0 = Debug|x64
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Release|Win32.ActiveCfg = Release|Win32
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Release|Win32.Build.0 = Release|Win32
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Release|x64.ActiveCfg = Release|x64
+		{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

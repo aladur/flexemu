@@ -453,7 +453,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 #ifdef UNICODE
     SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
 #else
-    SetFileAttributes(filePath, attrs);
+    SetFileAttributes(filePath.c_str(), attrs);
 #endif
 #endif
 #ifdef UNIX

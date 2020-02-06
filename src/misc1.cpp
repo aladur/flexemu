@@ -24,6 +24,7 @@
 #include "misc1.h"
 #include <ctype.h>
 #include <stdio.h>
+#include <iostream>
 #ifdef UNIX
 #include <linux/param.h>
 #include <netdb.h>
@@ -736,3 +737,60 @@ void dumpSector(FILE *fp, const char *indent, const Byte *buffer, uint32_t size)
         fprintf(fp, "\n");
     }
 }
+
+bool AskForInput(const std::string &question, const std::string &answers,
+                 char default_answer)
+{
+    char input;
+    char dummy;
+
+    if (answers.empty())
+    {
+        return false;
+    }
+
+    do {
+        if (default_answer == '?')
+        {
+            std::cout << question << " [";
+            for (auto answer : answers)
+            {
+                if (answer == answers[0])
+                {
+                    std::cout << static_cast<char>(::toupper(answer));
+                }
+                else
+                {
+                    std::cout << "/" << answer;
+                }
+            }
+            std::cout << "]: ";
+
+            // Ask user for an input. One character is sufficient.
+            do {
+                std::cin >> std::noskipws >> input;
+            } while (input == ' ' || input == '\t');
+
+            dummy = input;
+            if (input == '\n')
+            {
+                input = answers[0];
+            }
+
+            while (dummy != '\n')
+            {
+                // Read input until end of line.
+                std::cin >> std::noskipws >> dummy;
+            }
+        }
+        else
+        {
+            // Use default_answer as input.
+            input = default_answer;
+        }
+    } while(answers.find_first_of(input) == std::string::npos);
+
+    // Return true if only Return was entered or the first answer character.
+    return input == '\n' || ::tolower(input) == answers.at(0);
+}
+
