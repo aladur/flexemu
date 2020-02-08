@@ -123,13 +123,13 @@ protected:
     static void     Create_sys_info_sector(
         Byte    sec_buf[],
         const char  *name,
-        struct  s_formats *fmt);
+        struct  s_formats &format);
     static bool         Write_dir_sectors(
         FILE *fp,
-        struct  s_formats *fmt);
+        struct  s_formats &format);
     static bool         Write_sectors(
         FILE *fp,
-        struct  s_formats *fmt);
+        struct  s_formats &format);
     static void     Create_format_table(
         int type,
         int trk,

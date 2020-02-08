@@ -1022,7 +1022,7 @@ void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
 } // Create_boot_sectors
 
 void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
-        struct s_formats *fmt)
+        struct s_formats &format)
 {
     int     i, start, free;
     time_t      time_now;
@@ -1042,42 +1042,42 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
         sis.sir.disk_name[i] = static_cast<char>(std::toupper(*(name + i)));
     } // for
 
-    start           = fmt->sectors;
-    free            = (fmt->sectors * fmt->tracks) - start;
+    start           = format.sectors;
+    free            = (format.sectors * format.tracks) - start;
     time_now        = time(nullptr);
     lt          = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
     setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
-    sis.sir.fc_start.trk = static_cast<Byte>(start / fmt->sectors);
-    sis.sir.fc_start.sec = static_cast<Byte>((start % fmt->sectors) + 1);
-    sis.sir.fc_end.trk = static_cast<Byte>(fmt->tracks - 1);
-    sis.sir.fc_end.sec = static_cast<Byte>(fmt->sectors);
+    sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
+    sis.sir.fc_start.sec = static_cast<Byte>((start % format.sectors) + 1);
+    sis.sir.fc_end.trk = static_cast<Byte>(format.tracks - 1);
+    sis.sir.fc_end.sec = static_cast<Byte>(format.sectors);
     setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free));
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
     sis.sir.year = static_cast<Byte>(year);
-    sis.sir.last.trk = static_cast<Byte>(fmt->tracks - 1);
-    sis.sir.last.sec = static_cast<Byte>(fmt->sectors);
+    sis.sir.last.trk = static_cast<Byte>(format.tracks - 1);
+    sis.sir.last.sec = static_cast<Byte>(format.sectors);
 } // create_sys_info_sectors
 
 // on success return true
-bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
+bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 {
     Byte    sec_buf[SECTOR_SIZE];
     int     i;
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
-    for (i = 0; i < fmt->sectors0 - first_dir_trk_sec.sec + 1; i++)
+    for (i = 0; i < format.sectors0 - first_dir_trk_sec.sec + 1; i++)
     {
         sec_buf[0] = 0;
         sec_buf[1] = 0;
 
-        if (i < fmt->dir_sectors - 1)
+        if (i < format.dir_sectors - 1)
         {
             auto sector = i + first_dir_trk_sec.sec;
-            sec_buf[0] = static_cast<Byte>(sector / fmt->sectors);
-            sec_buf[1] = static_cast<Byte>((sector % fmt->sectors) + 1);
+            sec_buf[0] = static_cast<Byte>(sector / format.sectors);
+            sec_buf[1] = static_cast<Byte>((sector % format.sectors) + 1);
         }
 
         if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
@@ -1090,23 +1090,23 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 } // write_dir_sectors
 
 // on success return true
-bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
+bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
 {
     Byte    sec_buf[SECTOR_SIZE];
     int     i;
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
-    for (i = fmt->sectors + 1; i <= fmt->sectors * fmt->tracks; ++i)
+    for (i = format.sectors + 1; i <= format.sectors * format.tracks; ++i)
     {
-        sec_buf[0] = static_cast<Byte>(i / fmt->sectors);
-        sec_buf[1] = static_cast<Byte>((i % fmt->sectors) + 1);
+        sec_buf[0] = static_cast<Byte>(i / format.sectors);
+        sec_buf[1] = static_cast<Byte>((i % format.sectors) + 1);
 
         // use for tests to correctly save random files:
         // (the link always jumps over one sector)
-        //      sec_buf[0] = (i+1) / fmt->sectors;
-        //      sec_buf[1] = ((i+1) % fmt->sectors) + 1;
-        if (i == fmt->sectors * fmt->tracks)
+        //      sec_buf[0] = (i+1) / format.sectors;
+        //      sec_buf[1] = ((i+1) % format.sectors) + 1;
+        if (i == format.sectors * format.tracks)
         {
             sec_buf[0] = sec_buf[1] = 0;
         }
@@ -1227,7 +1227,7 @@ void FlexFileContainer::Format_disk(
             }
         }
 
-        Create_sys_info_sector(sector_buffer, name, &format);
+        Create_sys_info_sector(sector_buffer, name, format);
 
         if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
@@ -1239,12 +1239,12 @@ void FlexFileContainer::Format_disk(
             err = 1;
         }
 
-        if (!Write_dir_sectors(fp, &format))
+        if (!Write_dir_sectors(fp, format))
         {
             err = 1;
         }
 
-        if (!Write_sectors(fp, &format))
+        if (!Write_sectors(fp, format))
         {
             err = 1;
         }
