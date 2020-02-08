@@ -464,6 +464,7 @@ template<typename T> T reverseBytes(const T& value)
     return temp.value;
 }
 
+// Convert data type from current CPU architecture to big endian.
 template<typename T> T toBigEndian(const T& value)
 {
 #if defined WORDS_BIGENDIAN
@@ -473,6 +474,7 @@ template<typename T> T toBigEndian(const T& value)
 #endif
 }
 
+// Convert data type from big endian to current CPU architecture.
 template<typename T> T fromBigEndian(const T& value)
 {
 #if defined WORDS_BIGENDIAN

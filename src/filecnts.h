@@ -32,8 +32,9 @@
 
 /* number of Kilo Byte at least available for each directory sector */
 const int DIRSECTOR_PER_KB  = 12800;
-/* magic number for FLX container format */
-const DWord MAGIC_NUMBER    = 0x485c9a33L;
+/* magic number for FLX container format.    */
+/* It has to be stored in big endian format. */
+const DWord MAGIC_NUMBER    = 0x339a5c48;
 
 enum tMountOption
 {
@@ -234,7 +235,7 @@ constexpr std::array<const char *, 13> flex_format_shortcuts
 
 struct s_flex_header
 {
-    DWord magic_number; /* to identify right format  */
+    DWord magic_number; /* to identify right format, big endian format */
     Byte write_protect; /* if != 0 disk image is write-prot*/
     Byte sizecode;      /* 128 * 2 ^ n Bytes per Sector  */
     Byte sides0;        /* nr. of sides on track 0   */

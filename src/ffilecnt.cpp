@@ -93,7 +93,7 @@ void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
         }
     }
 
-    magic_number    = MAGIC_NUMBER;
+    magic_number    = toBigEndian(MAGIC_NUMBER);
     write_protect   = 0;
     sizecode        = size;
     sides0          = noSides;
@@ -137,7 +137,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
     // try to read the FLX header
     // to check if it is a FLX formated disk
     if (fread(&header, sizeof(header), 1, fp) == 1 &&
-        header.magic_number == MAGIC_NUMBER)
+        fromBigEndian(header.magic_number) == MAGIC_NUMBER)
     {
         // ok it's a FLX format
         bool write_protected = ((attributes & FLX_READONLY) != 0);
