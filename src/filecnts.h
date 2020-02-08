@@ -47,6 +47,7 @@ struct s_formats
     SDWord      size;       /* byte size of disk           */
     Word        tracks;     /* number of tracks            */
     Word        sectors;    /* number of sectors           */
+    Word        sectors0;   /* number of sectors on track 0*/
     Word        dir_sectors;    /* number of directory sectors */
 };
 
@@ -172,6 +173,7 @@ using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
 extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
 
 extern int getTrack0SectorCount(int tracks, int sectors);
+extern int getSides(int tracks, int sectors);
 
 /* Track/sector of system info sector */
 constexpr st_t sis_trk_sec{0, 3};

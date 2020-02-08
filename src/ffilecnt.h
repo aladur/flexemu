@@ -112,6 +112,7 @@ public:
     // internal interface
 protected:
     int ByteOffset(const int trk, const int sec) const;
+    void EvaluateTrack0SectorCount();
     bool CreateDirEntry(FlexDirEntry &entry);
 
     virtual void Initialize_for_flx_format(const s_flex_header &header,
@@ -130,9 +131,10 @@ protected:
         FILE *fp,
         struct  s_formats *fmt);
     static void     Create_format_table(
+        int type,
         int trk,
         int sec,
-        struct s_formats *pformat);
+        struct s_formats &format);
     static void Format_disk(
         int trk,
         int sec,

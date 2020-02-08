@@ -44,7 +44,7 @@ std::ostream& operator<<(std::ostream& os, const  st_t &st)
 // except for a harddisk.
 int getTrack0SectorCount(int tracks, int sectors)
 {
-    if (tracks == 256)
+    if (tracks >= 255)
     {
         // This is a harddisk. Assuming same density for all tracks.
         return sectors;
@@ -73,5 +73,42 @@ int getTrack0SectorCount(int tracks, int sectors)
     }
     // This is a double sided (DS) disk.
     return 20;
+}
+
+// Return the number of sides.
+int getSides(int tracks, int sectors)
+{
+    if (tracks >= 255)
+    {
+        // There are no details available about how many sides a hard disk
+        // used by FLEX has => Return the default.
+        return 1;
+    }
+
+    // Check for 8-inch disk.
+    if (tracks == 77)
+    {
+        if (sectors <= 26)
+        {
+            // This is a 8-inch single sided (SS) disk.
+            return 1;
+        }
+        // This is a 8-inch double sided (DS) disk if sector count is a
+        // multiple of 2.
+        return !(sectors % 2) ? 2 : 1;
+    }
+
+    // Assuming 5 1/4-inch or 3 1/2-inch disk. 34, 35, 40 or 80 tracks.
+    if (sectors <= 18)
+    {
+        // This is a single sided (SS) disk.
+        // This rule can be applied when creating a FLX container.
+        // When reading a FLX container both single or double sided
+        // has to be supported.
+        return 1;
+    }
+    // This is a double sided (DS) disk if sector count is a
+    // multiple of 2.
+    return !(sectors % 2) ? 2 : 1;
 }
 

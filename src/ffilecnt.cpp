@@ -97,9 +97,9 @@ void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
     write_protect   = 0;
     sizecode        = size;
     sides0          = noSides;
-    sectors0        = static_cast<Byte>(sec0);
+    sectors0        = static_cast<Byte>(sec0 / noSides);
     sides           = noSides;
-    sectors         = static_cast<Byte>(sec);
+    sectors         = static_cast<Byte>(sec / noSides);
     tracks          = static_cast<Byte>(trk);
     dummy1          = 0;
     dummy2          = 0;
@@ -139,10 +139,14 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
     if (fread(&header, sizeof(header), 1, fp) == 1 &&
         fromBigEndian(header.magic_number) == MAGIC_NUMBER)
     {
-        // ok it's a FLX format
-        bool write_protected = ((attributes & FLX_READONLY) != 0);
-        Initialize_for_flx_format(header, write_protected);
-        return;
+        if (!stat(fp.GetPath(), &sbuf))
+        {
+            // File is identified as a FLEX FLX container format
+            file_size = sbuf.st_size;
+            bool write_protected = ((attributes & FLX_READONLY) != 0);
+            Initialize_for_flx_format(header, write_protected);
+            return;
+        }
     }
     else
     {
@@ -169,10 +173,11 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
                 sbuf.st_size % SECTOR_SIZE == 0 &&
                 sbuf.st_size >= size_min && sbuf.st_size <= size_max)
             {
-                // ok it's a DSK format
+                // File is identified as a FLEX DSK container format
                 format.size = sbuf.st_size;
                 bool write_protected = ((attributes & FLX_READONLY) != 0);
                 Initialize_for_dsk_format(format, write_protected);
+                EvaluateTrack0SectorCount();
                 return;
             }
         }
@@ -232,7 +237,8 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
     if (track)
     {
         return (sector > 0 && sector <= param.max_sector &&
-                (param.byte_p_track * track +
+                (param.byte_p_track0 +
+                 param.byte_p_track * (track - 1) +
                  sector * param.byte_p_sector <= file_size));
     }
     else
@@ -832,6 +838,41 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     return true; // satisfy compiler
 }
 
+// Evaluate the sector count on track 0.
+// Follow the directory chain until end of chain reached or link is
+// pointing to a directory extend on a track != 0.
+// There are DSK files with the same track-sector count but different
+// number of sectors on track 0:
+//   35-18: Has 10 or 18 sectors on track 0.
+//   40-18: Has 10 or 18 sectors on track 0.
+void FlexFileContainer::EvaluateTrack0SectorCount()
+{
+    st_t link;
+    Word i;
+
+    for (i = first_dir_trk_sec.sec - 1; i < param.max_sector; ++i)
+    {
+        if (fseek(fp, i * param.byte_p_sector, SEEK_SET))
+        {
+            throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
+        }
+
+        if (fread(&link, sizeof(link), 1, fp) == 1)
+        {
+            if (link == st_t{0, 0} || link.trk != 0)
+            {
+                break;
+            }
+        }
+        else
+        {
+            throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
+        }
+    }
+
+    param.max_sector0 = i + 1;
+}
+
 
 /****************************************/
 /* low level routines                   */
@@ -850,6 +891,7 @@ int FlexFileContainer::ByteOffset(const int trk, const int sec) const
     }
 
     byteOffs += param.byte_p_sector * (sec - 1);
+
     return byteOffs;
 }
 
@@ -938,8 +980,8 @@ void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
     param.max_sector0 = header.sectors0 * header.sides0;
     param.max_track = header.tracks - 1;
     param.byte_p_sector = 128 << header.sizecode;
-    param.byte_p_track0 = header.sides0 * header.sectors0 * param.byte_p_sector;
-    param.byte_p_track = header.sides * header.sectors * param.byte_p_sector;
+    param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
+    param.byte_p_track = param.max_sector * param.byte_p_sector;
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 
 }
@@ -951,11 +993,11 @@ void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
     param.offset = 0;
     param.write_protect = write_protected ? 1 : 0;
     param.max_sector = format.sectors;
-    param.max_sector0 = format.sectors;
+    param.max_sector0 = getTrack0SectorCount(format.tracks, format.sectors);
     param.max_track = format.tracks - 1;
     param.byte_p_sector = SECTOR_SIZE;
-    param.byte_p_track0 = format.sectors * SECTOR_SIZE;
-    param.byte_p_track = format.sectors * SECTOR_SIZE;
+    param.byte_p_track0 = param.max_sector * SECTOR_SIZE;
+    param.byte_p_track = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
 }
 
@@ -1000,7 +1042,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
         sis.sir.disk_name[i] = static_cast<char>(std::toupper(*(name + i)));
     } // for
 
-    start           = fmt->dir_sectors + 4;
+    start           = fmt->sectors;
     free            = (fmt->sectors * fmt->tracks) - start;
     time_now        = time(nullptr);
     lt          = localtime(&time_now);
@@ -1026,7 +1068,7 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats *fmt)
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
-    for (i = 0; i < fmt->dir_sectors; i++)
+    for (i = 0; i < fmt->sectors0 - first_dir_trk_sec.sec + 1; i++)
     {
         sec_buf[0] = 0;
         sec_buf[1] = 0;
@@ -1055,8 +1097,7 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
-    for (i = fmt->dir_sectors + 5;
-         i <= fmt->sectors * fmt->tracks; i++)
+    for (i = fmt->sectors + 1; i <= fmt->sectors * fmt->tracks; ++i)
     {
         sec_buf[0] = static_cast<Byte>(i / fmt->sectors);
         sec_buf[1] = static_cast<Byte>((i % fmt->sectors) + 1);
@@ -1079,11 +1120,9 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats *fmt)
     return true;
 } // write_sectors
 
-void FlexFileContainer::Create_format_table(int trk, int sec,
-        struct s_formats *pformat)
+void FlexFileContainer::Create_format_table(int type, int trk, int sec,
+        struct s_formats &format)
 {
-    SDWord tmp;
-
     if (trk < 2)
     {
         trk = 2;
@@ -1102,19 +1141,23 @@ void FlexFileContainer::Create_format_table(int trk, int sec,
         sec = 255;
     }
 
-    pformat->tracks = static_cast<Word>(trk);
-    pformat->sectors = static_cast<Word>(sec);
+    format.tracks = static_cast<Word>(trk);
+    format.sectors = static_cast<Word>(sec);
+    format.sectors0 = (type == TYPE_FLX_CONTAINER) ?
+                          getTrack0SectorCount(format.tracks, format.sectors) :
+                          format.sectors;
 
-    pformat->size = pformat->tracks * pformat->sectors * SECTOR_SIZE;
-    tmp = pformat->size / DIRSECTOR_PER_KB;
-    // calculate number of directory sectors
-    // at least track 0 only contains directory sectors
-    pformat->dir_sectors = static_cast<Word>((tmp < sec - 4) ? sec - 4 : tmp);
+    format.size = format.tracks * format.sectors * SECTOR_SIZE;
+    // calculate number of directory sectors.
+    // track 0 only contains directory sectors.
+    format.dir_sectors = getTrack0SectorCount(trk, sec) -
+                          first_dir_trk_sec.sec + 1;
 } // create_format_table
 
 // return != 0 on success
 // format FLX or DSK format. FLX format always with sector_size 256
-// and same nr of sectors on track 0 and != 0.
+// number of sectors on track 0 is calculated by method
+// getTrack0SectorCount().
 // type:
 //  use TYPE_DSK_CONTAINER for DSK format
 //  use TYPE_FLX_CONTAINER for FLX format
@@ -1128,7 +1171,6 @@ void FlexFileContainer::Format_disk(
 {
     std::string path;
     struct s_formats format;
-    struct s_flex_header hdr;
     int     err = 0;
 
     if (disk_dir == nullptr ||
@@ -1138,7 +1180,8 @@ void FlexFileContainer::Format_disk(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    Create_format_table(trk, sec, &format);
+    Create_format_table(type, trk, sec, format);
+    auto sides_flx = getSides(format.tracks, format.sectors);
 
     path = disk_dir;
 
@@ -1157,10 +1200,12 @@ void FlexFileContainer::Format_disk(
 
         if (type == TYPE_FLX_CONTAINER)
         {
-            hdr.initialize(SECTOR_SIZE, format.tracks, format.sectors,
-                           format.sectors, 1);
+            struct s_flex_header header;
 
-            if (fwrite(&hdr, sizeof(hdr), 1, fp) != 1)
+            header.initialize(SECTOR_SIZE, format.tracks, format.sectors0,
+                              format.sectors, sides_flx);
+
+            if (fwrite(&header, sizeof(header), 1, fp) != 1)
             {
                 err = 1;
             }

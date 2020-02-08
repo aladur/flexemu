@@ -26,15 +26,16 @@
 
 
 FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
-    FlexFileContainer(path, mode)
+    FlexFileContainer(path, mode), is_dirty(false)
 {
     unsigned int sectors;
 
-    sectors = file_size / param.byte_p_sector ;
+    sectors = (file_size - param.offset) / param.byte_p_sector;
     file_buffer =
         std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);
 
-    if (fseek(fp, 0, SEEK_SET))
+    // For FLX file format skip the header, it will never be changed.
+    if (fseek(fp, param.offset, SEEK_SET))
     {
         throw FlexException(FERR_READING_FROM, fp.GetPath());
     }
@@ -80,21 +81,26 @@ bool FlexRamFileContainer::close()
     bool throwException = false;
     std::string path = fp.GetPath();
 
-    if (fp != nullptr && (file_buffer.get() != nullptr))
+    if (fp != nullptr)
     {
-        unsigned int sectors;
-
-        sectors = ByteOffset(param.max_track + 1, 1) / param.byte_p_sector;
-
-        if (fseek(fp, 0, SEEK_SET))
+        // Only if the buffer contents has been changed it
+        // will be written to file.
+        if (is_dirty && (file_buffer.get() != nullptr))
         {
-            throwException = true;
-        }
+            unsigned int sectors;
 
-        if (fwrite(file_buffer.get(), param.byte_p_sector, sectors, fp)
-                != sectors)
-        {
-            throwException = true;
+            sectors = (file_size - param.offset) / param.byte_p_sector;
+
+            if (fseek(fp, param.offset, SEEK_SET))
+            {
+                throwException = true;
+            }
+
+            if (fwrite(file_buffer.get(), param.byte_p_sector, sectors, fp)
+                    != sectors)
+            {
+                throwException = true;
+            }
         }
 
         fp.Close();
@@ -122,7 +128,7 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
-    int pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec) - param.offset;
 
     if (pos < 0)
     {
@@ -145,13 +151,19 @@ bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
         return false;
     }
 
-    int pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec) - param.offset;
 
     if (pos < 0)
     {
         return false;
     }
 
+    if (param.write_protect)
+    {
+        return false;
+    }
+
+    is_dirty = true;
     memcpy(&file_buffer[pos], pbuffer, param.byte_p_sector);
 
     return true;
