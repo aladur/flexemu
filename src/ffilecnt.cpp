@@ -459,7 +459,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     Byte trk = 0, sec = 0;
     st_t start;
     st_t next;
-    Word recordNr;
+    Word recordNr; // Number of record. For random files it does not contain
+                   // the two records for the sector map.
     int count;
     FlexDirEntry    de;
     s_sys_info_sector sis;
@@ -634,7 +635,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     // update sys info sector
     auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
-    free -= recordNr;
+    free -= (recordNr + (buffer.IsRandom() ? 2 : 0));
     setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
