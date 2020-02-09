@@ -315,7 +315,8 @@ void TerminalIO::write_char_serial(Byte value)
     // printing position is not needed any more. There are terminals which
     // incorrectly display is as a space.
     // For details see: https://en.wikipedia.org/wiki/Null_character
-    if (value != '\0')
+    // Also ESC characters are intentionally ignored.
+    if (value != '\0' && value != '\x1b')
     {
         count = write(fileno(stdout), &value, 1);
     }
