@@ -77,6 +77,7 @@ private:
     void init_terminal_io(Word reset_key);
     void put_char_serial(Byte key);
     void exec_signal(int sig_no);
+    void write_char_serial_safe(Byte val);
 
 public:
     TerminalIO() = delete;

@@ -291,22 +291,33 @@ Byte TerminalIO::peek_char_serial()
     return result;
 }
 
+void TerminalIO::write_char_serial_safe(Byte value)
+{
+#ifdef HAVE_TERMIOS_H
+    // the write syscall may be aborted by EINTR or no byte is written.
+    // This is defined bahaviour.
+    // Solution: Retry up to 4 times.
+    for (int i = 0; i < 4; ++i)
+    {
+        if (write(fileno(stdout), &value, 1) == 1)
+        {
+            break;
+        }
+    }
+#endif
+}
 
 #ifdef HAVE_TERMIOS_H
 void TerminalIO::write_char_serial(Byte value)
 {
-    size_t count = 0;
     used_serial_io = true;
 #ifdef VERASE
 
     if (value == BACK_SPACE)
     {
-        const char *str = "\b \b";
-
-        count = write(fileno(stdout), str, strlen(str));
-        //      putc('\b', stdout);
-        //      putc(' ', stdout);
-        //      putc('\b', stdout);
+        write_char_serial_safe('\b');
+        write_char_serial_safe(' ');
+        write_char_serial_safe('\b');
     }
     else
 #endif
@@ -318,9 +329,8 @@ void TerminalIO::write_char_serial(Byte value)
     // Also ESC characters are intentionally ignored.
     if (value != '\0' && value != '\x1b')
     {
-        count = write(fileno(stdout), &value, 1);
+        write_char_serial_safe(value);
     }
-    (void)count; // satisfy compiler
 }
 #else
 void TerminalIO::write_char_serial(Byte /* [[maybe_unused]] Byte value */)
