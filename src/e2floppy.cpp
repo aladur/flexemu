@@ -379,7 +379,7 @@ Byte E2floppy::readByte(Word index)
     {
         drive_status[selected] = DiskStatus::ACTIVE;
 
-        if (!pfs->ReadSector((Byte *)&sector_buffer, getTrack(), getSector()))
+        if (!pfs->ReadSector(&sector_buffer[0], getTrack(), getSector()))
         {
             setStatusReadError();
         }
@@ -399,7 +399,7 @@ void E2floppy::writeByte(Word index)
     {
         drive_status[selected] = DiskStatus::ACTIVE;
 
-        if (!pfs->WriteSector((Byte *)&sector_buffer, getTrack(), getSector()))
+        if (!pfs->WriteSector(&sector_buffer[0], getTrack(), getSector()))
         {
             setStatusWriteError();
         }

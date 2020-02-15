@@ -67,7 +67,7 @@ private:
     FileContainerIfSector *pfs;
     Byte            track[5];
     DiskStatus      drive_status[5];
-    char            sector_buffer[1024];
+    Byte            sector_buffer[1024];
     const char      *disk_dir;
     std::mutex      status_mutex;
 
