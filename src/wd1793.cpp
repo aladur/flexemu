@@ -139,10 +139,11 @@ Byte Wd1793::readIo(Word offset)
                 }
             } // else
 
-            if (!byteCount)
+            if (isDataRequest && !byteCount)
             {
                 isDataRequest = false;
                 str &= ~(STR_DATAREQUEST | STR_BUSY); // read finished
+                setIrq();
             }
 
             return dr;
@@ -181,10 +182,11 @@ void Wd1793::writeIo(Word offset, Byte val)
                 }
             }
 
-            if (!byteCount)
+            if (isDataRequest && !byteCount)
             {
                 isDataRequest = false;
                 str &= ~(STR_DATAREQUEST | STR_BUSY); // write finished
+                setIrq();
             }
 
             break;
@@ -253,10 +255,7 @@ void Wd1793::command(Byte command)
 
             case CMD_STEPOUT_TU:
                 stepOffset = static_cast<Byte>(-1);
-                if (tr)
-                {
-                    do_seek(tr + stepOffset);
-                }
+                do_seek(tr ? tr + stepOffset : tr);
                 break;
 
             case CMD_STEPOUT:
@@ -270,6 +269,7 @@ void Wd1793::command(Byte command)
                 if (isRecordNotFound())
                 {
                     str = STR_RECORDNOTFOUND;
+                    setIrq();
                 }
                 else
                 {
@@ -291,12 +291,14 @@ void Wd1793::command(Byte command)
                 if (isWriteProtect())
                 {
                     str = STR_PROTECTED;
+                    setIrq();
                     break;
                 }
 
                 if (isRecordNotFound())
                 {
                     str = STR_RECORDNOTFOUND;
+                    setIrq();
                 }
                 else
                 {
@@ -312,6 +314,7 @@ void Wd1793::command(Byte command)
                 if (isWriteProtect())
                 {
                     str = STR_PROTECTED;
+                    setIrq();
                     break;
                 }
 
@@ -324,6 +327,7 @@ void Wd1793::command(Byte command)
                 if (isRecordNotFound())
                 {
                     str = STR_RECORDNOTFOUND;
+                    setIrq();
                 }
                 else
                 {
@@ -410,7 +414,7 @@ bool Wd1793::isWriteProtect()
 // * STR_LOSTDATA:       DISK FILE READ ERROR.
 void Wd1793::setStatusReadError()
 {
-    isDataRequest = 0;
+    isDataRequest = false;
     str = STR_LOSTDATA;
     byteCount = 0;
 }
@@ -425,7 +429,7 @@ void Wd1793::setStatusReadError()
 // * STR_LOSTDATA:       FILE NOT FOUND.
 void Wd1793::setStatusWriteError()
 {
-    isDataRequest = 0;
+    isDataRequest = false;
     str = STR_LOSTDATA;
     byteCount = 0;
 }
