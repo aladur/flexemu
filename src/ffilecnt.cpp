@@ -1059,7 +1059,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[], const char *name,
     sis.sir.year = static_cast<Byte>(year);
     sis.sir.last.trk = static_cast<Byte>(format.tracks - 1);
     sis.sir.last.sec = static_cast<Byte>(format.sectors);
-} // create_sys_info_sectors
+} // create_sys_info_sector
 
 // on success return true
 bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
@@ -1235,6 +1235,8 @@ void FlexFileContainer::Format_disk(
             err = 1;
         }
 
+        // Sector 00-04 seems to be unused. Write all zeros.
+        memset(sector_buffer, 0, sizeof(sector_buffer));
         if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
         {
             err = 1;
