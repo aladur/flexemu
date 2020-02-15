@@ -167,5 +167,6 @@ const char *FlexException::errString[] =
     _("Invalid line '{0}' in file {1}"),
     _("Invalid usage of file container iterator"),
     _("File {0} has unexpected sector count {1}"),
+    _("Container {0} is unformatted or has unknown format"),
 };
 

@@ -112,3 +112,16 @@ int getSides(int tracks, int sectors)
     return !(sectors % 2) ? 2 : 1;
 }
 
+int getBytesPerSector(int sizecode)
+{
+    return 128 << sizecode;
+}
+
+size_t getFileSize(const s_flex_header &header)
+{
+    return sizeof(s_flex_header) +
+               ((header.sectors0 * header.sides0) +
+                ((header.tracks - 1) * (header.sectors * header.sides))) *
+                 getBytesPerSector(header.sizecode);
+}
+

@@ -57,7 +57,13 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
 protected:
     BFilePtr    fp;
     s_floppy    param;
-    SDWord      file_size;
+    DWord       file_size;
+
+    // Variables only used for FLX format when formatting a disk
+    bool        is_formatted; // true when using a formatted disk.
+    int         sectors0_side1_max; // Max. sector number on side1 for track 0
+    int         sectors_side1_max; // Max. sector number on side1 for track != 0
+    s_flex_header flx_header;
 
 private:
     Byte attributes;
@@ -81,6 +87,10 @@ public:
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);
+    bool FormatSector(const Byte *buffer, int trk, int sec, int side,
+                      int sizecode);
+    // Return true if file container is identified as a FLEX file container.
+    bool IsFormatted() const;
     bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;
@@ -119,7 +129,12 @@ protected:
                                            bool write_protected);
     virtual void Initialize_for_dsk_format(const s_formats &format,
                                            bool write_protected);
+    virtual void Initialize_unformatted_disk();
+    int CorrectSector(int side, int sector, int &sectorsX_side1_max);
     static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
+    bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
+    bool IsFlexFileFormat(int type) const;
+
     static void     Create_sys_info_sector(
         Byte    sec_buf[],
         const char  *name,

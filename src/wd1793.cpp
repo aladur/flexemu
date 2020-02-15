@@ -175,7 +175,7 @@ void Wd1793::writeIo(Word offset, Byte val)
 
             if (byteCount)
             {
-                writeByte(byteCount);
+                writeByte(byteCount, cr & 0xf0);
                 if (byteCount != 0)
                 {
                     byteCount--;
@@ -282,7 +282,7 @@ void Wd1793::command(Byte command)
 
             case CMD_READTRACK:
             case CMD_READSECTOR_MULT:
-                byteCount = getBytesPerSector() * 16;
+                byteCount = getBytesPerSector() * 16U;
                 isDataRequest = true;
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
@@ -318,9 +318,17 @@ void Wd1793::command(Byte command)
                     break;
                 }
 
-                byteCount = getBytesPerSector() * 16;
-                isDataRequest = true;
-                str = (STR_BUSY | STR_DATAREQUEST);
+                if (startCommand(cr & 0xf0))
+                {
+                    byteCount = 256;
+                    isDataRequest = true;
+                    str = (STR_BUSY | STR_DATAREQUEST);
+                }
+                else
+                {
+                    str = STR_RECORDNOTFOUND;
+                    setIrq();
+                }
                 break;
 
             case CMD_READADDRESS:
@@ -372,14 +380,20 @@ void Wd1793::command(Byte command)
     } // if
 }// command
 
+// should be reimplemented by subclass.
+bool Wd1793::startCommand(Byte)
+{
+    return true;
+}
+
 Byte Wd1793::readByte(Word index)
 {
     return (Byte) index;
 }
 
-void Wd1793::writeByte(Word index)
+// should be reimplemented by subclass.
+void Wd1793::writeByte(Word &, Byte)
 {
-    (void)index;
 }
 
 bool Wd1793::isDriveReady() const

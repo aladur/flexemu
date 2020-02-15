@@ -47,6 +47,18 @@ class E2floppy : public Wd1793
 {
 private:
 
+    // States for writing a track (formatting a disk).
+    enum class WriteTrackState
+    {
+        Inactive,
+        WaitForIdAddressMark,
+        IdAddressMark,
+        WaitForDataAddressMark,
+        WriteData,
+        WaitForCrc,
+    };
+
+
     // Internal registers:
     //
     //  selected        Selected drive as index into floppy array
@@ -69,7 +81,11 @@ private:
     DiskStatus      drive_status[5];
     Byte            sector_buffer[1024];
     const char      *disk_dir;
-    std::mutex      status_mutex;
+    mutable std::mutex status_mutex;
+    // data for CMD_WRITETRACK
+    WriteTrackState writeTrackState; // Write track state
+    Word            offset; // offset when reading a track
+    char            idAddressMark[4]; // Contains track, side, sector, sizecode
 
 public:
     E2floppy();
@@ -100,8 +116,11 @@ public:
 
 private:
 
+    bool startCommand(Byte command_un) override;
     Byte readByte(Word index) override;
-    void writeByte(Word index) override;
+    void writeByte(Word &index, Byte command_un) override;
+    void writeByteInSector(Word index);
+    void writeByteInTrack(Word &index);
     bool isDriveReady() const override;
     bool isWriteProtect() const override;
     bool isRecordNotFound() const override;

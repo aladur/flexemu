@@ -199,6 +199,11 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
     return false;
 }
 
+bool NafsDirectoryContainer::IsFormatted() const
+{
+    return true;
+}
+
 int NafsDirectoryContainer::GetContainerType() const
 {
     return param.type;
@@ -1700,6 +1705,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
     return result;
 } // WriteSector
 
+
+bool NafsDirectoryContainer::FormatSector(const Byte *, int, int, int, int)
+{
+    // Handling unformated disks is not supported by this container.
+    return false;
+}
 
 // Mount the directory container. number is the disk number.
 void NafsDirectoryContainer::mount(Word number)

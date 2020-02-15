@@ -119,6 +119,9 @@ public:
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec) const;
     bool WriteSector(const Byte *buffer, int trk, int sec);
+    bool FormatSector(const Byte *buffer, int trk, int sec, int side,
+                      int sizecode);
+    bool IsFormatted() const;
     bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;

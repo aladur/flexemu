@@ -143,14 +143,17 @@ struct s_floppy
 {
     Byte        write_protect;  /* write protect flag of disk */
     Word        offset;     /* offset for fileheader */
-    Word        byte_p_track;   /* total bytes per track */
-    Word        byte_p_track0;  /* total bytes on track 0 */
+    DWord       byte_p_track;   /* total bytes per track */
+    DWord       byte_p_track0;  /* total bytes on track 0 */
     Word        byte_p_sector;  /* bytes per sector */
     Word        max_sector; /* max. nr of sectors (all sides) */
     Word        max_sector0;    /* max. nr of sectors (all sides) track 0*/
     Word        max_track;  /* max. tracknumber of disk */
     Word        track;      /* actual tracknumber */
     Word        type;       /* type of container */
+    Word        sides;      /* number of sides on track 0 */
+    Word        sides0;     /* number of sides */
+
 };
 
 
@@ -162,6 +165,9 @@ class FileContainerIfSector : public FileContainerIfBase
 public:
     virtual bool ReadSector(Byte *buffer, int trk, int sec) const = 0;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec) = 0;
+    virtual bool FormatSector(const Byte *buffer, int trk, int sec, int side,
+                              int sizecode) = 0;
+    virtual bool IsFormatted() const = 0;
     virtual bool IsTrackValid(int track) const = 0;
     virtual bool IsSectorValid(int track, int sector) const = 0;
     virtual int  GetBytesPerSector() const = 0;
@@ -169,11 +175,6 @@ public:
 };  /* class FileContainerIfSector */
 
 using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
-
-extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
-
-extern int getTrack0SectorCount(int tracks, int sectors);
-extern int getSides(int tracks, int sectors);
 
 /* Track/sector of system info sector */
 constexpr st_t sis_trk_sec{0, 3};
@@ -248,9 +249,19 @@ struct s_flex_header
     Byte dummy1;        /* for future extension      */
     Byte dummy2, dummy3, dummy4, dummy5; /* and for alignment 4*/
 #ifndef __fromflex__
-    void initialize(int secsize, int trk, int sec0, int sec, int sides);
+    void initialize(int sector_size, int tracks, int sectors0,
+                    int sectors, int sides0, int sides);
 #endif /* #ifndef __fromflex__ */
 };
+
+#ifndef __fromflex__
+extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
+
+extern int getTrack0SectorCount(int tracks, int sectors);
+extern int getSides(int tracks, int sectors);
+extern int getBytesPerSector(int sizecode);
+extern size_t getFileSize(const s_flex_header &header);
+#endif /* #ifndef __fromflex__ */
 
 #endif /* FILECNTS_INCLUDED */
 

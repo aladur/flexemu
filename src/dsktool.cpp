@@ -128,6 +128,11 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     size_t byte_size = 0;
     size_t errors = 0;
 
+    if (!src.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+    }
+
     for (iter = src.begin(); iter != src.end(); ++iter)
     {
         const auto &dir_entry = *iter;
@@ -230,6 +235,11 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
     int sumSectors = 0;
     int largest = 0;
 
+    if (!src.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+    }
+
     if (src.GetInfo(info))
     {
         hasInfo = true;
@@ -323,6 +333,11 @@ int SummaryOfDskFile(const std::string &dsk_file,
     FileContainerIterator iter;
     FlexContainerInfo info;
 
+    if (!src.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+    }
+
     if (src.GetInfo(info))
     {
         size_t file_count = 0;
@@ -408,6 +423,11 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexRamFileContainer dst{dsk_file.c_str(), "rb+"};
 
+    if (!dst.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath().c_str());
+    }
+
     for (auto &file : files)
     {
         bool isSuccess = true;
@@ -474,6 +494,11 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexRamFileContainer src{dsk_file.c_str(), "rb+"};
 
+    if (!src.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+    }
+
     for (auto &flex_file : flex_files)
     {
         bool isSuccess = true;
@@ -527,6 +552,11 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
                               bool debug_output)
 {
     FlexRamFileContainer src{dsk_file.c_str(), "rb"};
+
+    if (!src.IsFormatted())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+    }
 
     FileContainerCheck check(src, verbose);
 
@@ -916,31 +946,40 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    switch(command)
+    try
     {
-        case 'c':
-            return CheckConsistencyOfDskFiles(dsk_files, verbose, debug_output);
+        switch(command)
+        {
+            case 'c':
+                return CheckConsistencyOfDskFiles(dsk_files, verbose,
+                                                  debug_output);
 
-        case 'f':
-            return FormatFlexDiskFile(dsk_file, disk_format, tracks, sectors,
-                                      default_answer, verbose);
+            case 'f':
+                return FormatFlexDiskFile(dsk_file, disk_format, tracks,
+                                          sectors, default_answer, verbose);
 
-        case 'i':
-            return InjectToDskFile(dsk_file, verbose, files,
-                                   default_answer, convert_text);
+            case 'i':
+                return InjectToDskFile(dsk_file, verbose, files,
+                                       default_answer, convert_text);
 
-        case 'l':
-            return ListDirectoryOfDskFiles(dsk_files);
+            case 'l':
+                return ListDirectoryOfDskFiles(dsk_files);
 
-        case 'r':
-            return DeleteFromDskFile(dsk_file, verbose, files, default_answer);
+            case 'r':
+                return DeleteFromDskFile(dsk_file, verbose, files,
+                                         default_answer);
 
-        case 's':
-            return SummaryOfDskFiles(dsk_files, verbose);
+            case 's':
+                return SummaryOfDskFiles(dsk_files, verbose);
 
-        case 'X':
-            return ExtractDskFiles(target_dir, verbose, convert_text,
-                                   dsk_files);
+            case 'X':
+                return ExtractDskFiles(target_dir, verbose, convert_text,
+                                       dsk_files);
+        }
+    }
+    catch (FlexException &ex)
+    {
+        std::cerr << "   *** Error: " << ex.what() << ". Aborted.\n";
     }
 }
 

@@ -279,7 +279,12 @@ bool FlexParentFrame::OpenContainer(const wxString &wxContainerPath)
     {
         struct stat sbuf;
 
-        if (!stat(containerPath.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode))
+        if (stat(containerPath.c_str(), &sbuf))
+        {
+            throw FlexException(FERR_UNABLE_TO_OPEN, containerPath.c_str());
+        }
+
+        if (S_ISDIR(sbuf.st_mode))
         {
             if (endsWithPathSeparator(containerPath))
             {
@@ -299,6 +304,13 @@ bool FlexParentFrame::OpenContainer(const wxString &wxContainerPath)
                 // 2nd try opening read-only.
                 container = new FlexFileContainer(containerPath.c_str(), "rb");
             }
+        }
+
+        auto container_s = dynamic_cast<FileContainerIfSector *>(container);
+        if (container_s != nullptr && !container_s->IsFormatted())
+        {
+            throw FlexException(FERR_CONTAINER_UNFORMATTED,
+                                containerPath.c_str());
         }
     }
     catch (FlexException &ex)

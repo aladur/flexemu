@@ -50,57 +50,37 @@
 /* Initialization of a s_flex_header structure */
 /***********************************************/
 
-void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
-                               int aSides)
+void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
+                               int p_sectors, int p_sides0, int p_sides)
 {
-    Byte i, size, noSides;
+    Byte p_sizecode = 1; /* default */
+    Byte i;
 
-    noSides = static_cast<Byte>(aSides);
-
-    if (aSides < 1)
-    {
-        noSides = 1;
-    }
-
-    if (aSides > 2)
-    {
-        noSides = 2;
-    }
-
-    if (trk > 255)
-    {
-        trk = 255;
-    }
-
-    if (sec0 > 255)
-    {
-        sec0 = 255;
-    }
-
-    if (sec > 255)
-    {
-        sec = 255;
-    }
-
-    size = 1; /* default */
+    p_sides0 = std::max(p_sides0, 1);
+    p_sides0 = std::min(p_sides0, 2);
+    p_sides = std::max(p_sides, 1);
+    p_sides = std::min(p_sides, 2);
+    p_tracks = std::min(p_tracks, 255);
+    p_sectors0 = std::min(p_sectors0, 255);
+    p_sectors = std::min(p_sectors, 255);
 
     for (i = 15; i >= 7; i--)
     {
-        if (secsize & (1 << i))
+        if (sector_size & (1 << i))
         {
-            size = i - 7;
+            p_sizecode = i - 7;
             break;
         }
     }
 
     magic_number    = toBigEndian(MAGIC_NUMBER);
     write_protect   = 0;
-    sizecode        = size;
-    sides0          = noSides;
-    sectors0        = static_cast<Byte>(sec0 / noSides);
-    sides           = noSides;
-    sectors         = static_cast<Byte>(sec / noSides);
-    tracks          = static_cast<Byte>(trk);
+    sizecode        = p_sizecode;
+    sides0          = static_cast<Byte>(p_sides0);
+    sectors0        = static_cast<Byte>(p_sectors0 / p_sides0);
+    sides           = static_cast<Byte>(p_sides);
+    sectors         = static_cast<Byte>(p_sectors / p_sides);
+    tracks          = static_cast<Byte>(p_tracks);
     dummy1          = 0;
     dummy2          = 0;
     dummy3          = 0;
@@ -114,68 +94,81 @@ void s_flex_header::initialize(int secsize, int trk, int sec0, int sec,
 /****************************************/
 
 FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
-    fp(path, mode), attributes(0)
+    fp(path, mode), param { },
+    file_size(0), is_formatted(true),
+    sectors0_side1_max(0), sectors_side1_max(0),
+    flx_header { },
+    attributes(0)
 {
     struct  stat sbuf;
-    struct  s_flex_header header;
 
     if (fp == nullptr)
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
+    if (stat(fp.GetPath(), &sbuf) || !S_ISREG(sbuf.st_mode))
+    {
+        throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
+    }
+
+    if (sbuf.st_size == 0)
+    {
+        // If file has been created or file size 0 then
+        // it is marked as an unformatted file container.
+        // No records are available yet but it can be formatted
+        // from within the emulation.
+        is_formatted = false;
+        Initialize_unformatted_disk();
+        return;
+    }
+
     if (fseek(fp, 0, SEEK_SET))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
+    file_size = static_cast<DWord>(sbuf.st_size);
 
     if (strchr(fp.GetMode(), '+') == nullptr)
     {
         attributes |= FLX_READONLY;
     }
 
-    // try to read the FLX header
-    // to check if it is a FLX formated disk
-    if (fread(&header, sizeof(header), 1, fp) == 1 &&
-        fromBigEndian(header.magic_number) == MAGIC_NUMBER)
+    if (!stat(fp.GetPath(), &sbuf))
     {
-        if (!stat(fp.GetPath(), &sbuf))
+        bool write_protected = ((attributes & FLX_READONLY) != 0);
+        Word tracks;
+        Word sectors;
+
+        // Try to read the FLX header and check the magic number
+        // to identify a FLX formatted disk.
+        if (fread(&flx_header, sizeof(flx_header), 1, fp) == 1 &&
+            fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
         {
-            // File is identified as a FLEX FLX container format
-            file_size = sbuf.st_size;
-            bool write_protected = ((attributes & FLX_READONLY) != 0);
-            Initialize_for_flx_format(header, write_protected);
+            // File is identified as a FLX container format.
+            Initialize_for_flx_format(flx_header, write_protected);
+
+            if (!IsFlexFileFormat(TYPE_FLX_CONTAINER))
+            {
+                // This is a FLX file container but it is not compatible
+                // to FLEX.
+                is_formatted = false;
+            }
             return;
         }
-    }
-    else
-    {
-        s_formats   format;
-        s_sys_info_sector sis;
-
-        // check if it is a DSK formated disk
-        // read system info sector
-        if (fseek(fp, 2 * SECTOR_SIZE, SEEK_SET))
+        else
         {
-            throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
-        }
+            s_formats format { };
 
-        if (fread(&sis, sizeof(sis), 1, fp) == 1)
-        {
-            format.tracks = sis.sir.last.trk + 1;
-            format.sectors = sis.sir.last.sec;
-            off_t size_min = ((format.tracks - 1) * format.sectors + 1) *
-                             SECTOR_SIZE;
-            off_t size_max = format.tracks * format.sectors * SECTOR_SIZE;
-
-            // do a plausibility check with the size of the DSK file
-            if (!stat(fp.GetPath(), &sbuf) &&
-                sbuf.st_size % SECTOR_SIZE == 0 &&
-                sbuf.st_size >= size_min && sbuf.st_size <= size_max)
+            // check if it is a DSK formated disk
+            // read system info sector
+            if (IsFlexFileFormat(TYPE_DSK_CONTAINER) &&
+                GetFlexTracksSectors(tracks, sectors, 0U))
             {
                 // File is identified as a FLEX DSK container format
+                format.tracks = tracks;
+                format.sectors = sectors;
                 format.size = sbuf.st_size;
-                bool write_protected = ((attributes & FLX_READONLY) != 0);
                 Initialize_for_dsk_format(format, write_protected);
                 EvaluateTrack0SectorCount();
                 return;
@@ -195,7 +188,11 @@ FlexFileContainer::~FlexFileContainer()
 }
 
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
-    fp(std::move(src.fp)), param(src.param), attributes(src.attributes)
+    fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
+    is_formatted(src.is_formatted),
+    sectors0_side1_max(src.sectors0_side1_max),
+    sectors_side1_max(src.sectors_side1_max),
+    attributes(src.attributes)
 {
 }
 
@@ -203,6 +200,10 @@ FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
 {
     fp = std::move(src.fp);
     param = src.param;
+    file_size = src.file_size;
+    is_formatted = src.is_formatted;
+    sectors0_side1_max = sectors0_side1_max;
+    sectors_side1_max = sectors_side1_max;
     attributes = src.attributes;
 
     return *this;
@@ -229,6 +230,14 @@ bool FlexFileContainer::IsWriteProtected() const
 
 bool FlexFileContainer::IsTrackValid(int track) const
 {
+    if (!is_formatted)
+    {
+        // All tracks have to be seekable because it is unknown
+        // how many tracks the disk will have finally
+        // and in which order they are formatted.
+        return (track >= 0 && track <= 255);
+    }
+
     return (track >= 0 && track <= param.max_track);
 }
 
@@ -237,7 +246,7 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
     if (track)
     {
         return (sector > 0 && sector <= param.max_sector &&
-                (param.byte_p_track0 +
+                (param.offset + param.byte_p_track0 +
                  param.byte_p_track * (track - 1) +
                  sector * param.byte_p_sector <= file_size));
     }
@@ -245,6 +254,11 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
     {
         return (sector > 0 && sector <= param.max_sector0);
     }
+}
+
+bool FlexFileContainer::IsFormatted() const
+{
+    return is_formatted;
 }
 
 FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
@@ -275,22 +289,30 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
 // !entry.isEmpty
 bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 {
-    FileContainerIterator it(fileName);
-
-    it = this->begin();
-
-    if (it == this->end())
+    if (is_formatted)
     {
-        entry.SetEmpty();
-        return false;
+        FileContainerIterator it(fileName);
+
+        it = this->begin();
+
+        if (it != this->end())
+        {
+            entry = *it;
+            return true;
+        }
     }
 
-    entry = *it;
-    return true;
+    entry.SetEmpty();
+    return false;
 }
 
 bool    FlexFileContainer::DeleteFile(const char *filePattern)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
+
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FileContainerIterator it(filePattern);
@@ -305,6 +327,11 @@ bool    FlexFileContainer::DeleteFile(const char *filePattern)
 
 bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
+
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FlexDirEntry de;
@@ -334,6 +361,11 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
                                  FileContainerIf &destination)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
+
     FlexCopyManager copyMan;
 
     return copyMan.FileCopy(sourceName, destName, *this, destination);
@@ -341,59 +373,66 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
 
 bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
-    s_sys_info_sector sis;
-    char disk_name[13];
-    int year;
-
-    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                    sis_trk_sec.sec))
+    if (is_formatted)
     {
-        std::stringstream stream;
+        s_sys_info_sector sis;
+        char disk_name[13];
+        int year;
 
-        stream << sis_trk_sec;
-        throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
-    }
-
-    if (sis.sir.year < 75)
-    {
-        year = sis.sir.year + 2000;
-    }
-    else
-    {
-        year = sis.sir.year + 1900;
-    }
-
-    strncpy(disk_name, sis.sir.disk_name, sizeof(sis.sir.disk_name));
-    disk_name[sizeof(sis.sir.disk_name)] = '\0';
-    if (sis.sir.disk_ext[0] != '\0')
-    {
-        strcat(disk_name, ".");
-        size_t index = strlen(disk_name);
-        for (size_t i = 0; i < sizeof(sis.sir.disk_ext); ++i)
+        if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                        sis_trk_sec.sec))
         {
-            char ch = sis.sir.disk_ext[i];
-            if (ch >= ' ' && ch <= '~')
-            {
-                disk_name[index++] = ch;
-            }
-            else
-            {
-                break;
-            }
+            std::stringstream stream;
+
+            stream << sis_trk_sec;
+            throw FlexException(FERR_READING_TRKSEC, stream.str(),
+                                fp.GetPath());
         }
-        disk_name[index++] = '\0';
+
+        if (sis.sir.year < 75)
+        {
+            year = sis.sir.year + 2000;
+        }
+        else
+        {
+            year = sis.sir.year + 1900;
+        }
+
+        strncpy(disk_name, sis.sir.disk_name, sizeof(sis.sir.disk_name));
+        disk_name[sizeof(sis.sir.disk_name)] = '\0';
+        if (sis.sir.disk_ext[0] != '\0')
+        {
+            strcat(disk_name, ".");
+            size_t index = strlen(disk_name);
+            for (size_t i = 0; i < sizeof(sis.sir.disk_ext); ++i)
+            {
+                char ch = sis.sir.disk_ext[i];
+                if (ch >= ' ' && ch <= '~')
+                {
+                    disk_name[index++] = ch;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            disk_name[index++] = '\0';
+        }
+        info.SetDate(sis.sir.day, sis.sir.month, year);
+        info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+                     param.byte_p_sector);
+        info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
+                           param.byte_p_sector);
+        info.SetName(disk_name);
+        info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
-    info.SetDate(sis.sir.day, sis.sir.month, year);
-    info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
-                 param.byte_p_sector);
-    info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
-                       param.byte_p_sector);
-    info.SetName(disk_name);
-    info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+
+    info.SetTrackSector(param.max_track + 1U, param.max_sector);
+    info.SetIsFormatted(is_formatted);
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
     info.SetAttributes(attributes);
+
     return true;
 }
 
@@ -456,6 +495,11 @@ FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
 bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                         const char *fileName /* = nullptr */)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
+
     Byte trk = 0, sec = 0;
     st_t start;
     st_t next;
@@ -668,6 +712,11 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     Byte            sectorBuffer[SECTOR_SIZE];
     int             size;
 
+    if (!is_formatted)
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
+    }
+
     if (!FindFile(fileName, de))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
@@ -748,6 +797,11 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 bool    FlexFileContainer::SetAttributes(const char *filePattern,
         Byte setMask, Byte clearMask)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
+
     FlexDirEntry de;
 
     CHECK_CONTAINER_WRITEPROTECTED;
@@ -765,6 +819,10 @@ bool    FlexFileContainer::SetAttributes(const char *filePattern,
 
 bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 {
+    if (!is_formatted)
+    {
+        return false;
+    }
 
     int     i;
     s_dir_sector    ds;
@@ -902,8 +960,6 @@ int FlexFileContainer::ByteOffset(const int trk, const int sec) const
 // returns false on failure
 bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 {
-    int pos;
-
     if (fp == nullptr)
     {
         return false;
@@ -914,7 +970,7 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
-    pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec);
 
     if (pos < 0)
     {
@@ -940,8 +996,6 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 // returns false on failure
 bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
 {
-    int pos;
-
     if (fp == nullptr)
     {
         return false;
@@ -952,7 +1006,7 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
         return false;
     }
 
-    pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec);
 
     if (pos < 0)
     {
@@ -969,7 +1023,116 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
         return false;
     }
 
+    if (!is_formatted &&
+        trk == 0 && sec == 3 && IsFlexFileFormat(TYPE_FLX_CONTAINER))
+    {
+        is_formatted = true;
+    }
+
     return true;
+}
+
+bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
+                                     int side, int sizecode)
+{
+    if (is_formatted ||
+        track < 0 || track > 255 ||
+        sector < 1 || sector > 255 ||
+        side < 1 || side > 2 ||
+        sizecode < 0 || sizecode > 3)
+    {
+        return false;
+    }
+
+    int byte_p_sector = getBytesPerSector(sizecode);
+
+    // All sectors have to have same sector size.
+    if (param.byte_p_sector != 0 && param.byte_p_sector != byte_p_sector)
+    {
+        return false;
+    }
+
+    // Dynamically update all disk parameters so that ReadSector or WriteSector
+    // is possible immediately after FormatSector.
+    if (param.byte_p_sector == 0)
+    {
+        param.byte_p_sector = byte_p_sector;
+    }
+
+    param.max_track = std::max(param.max_track, static_cast<Word>(track));
+
+    if (track == 0)
+    {
+        sector = CorrectSector(side, sector, sectors0_side1_max);
+
+        param.sides0 = std::max(param.sides0, static_cast<Word>(side));
+
+        if (sector > param.max_sector0)
+        {
+            param.max_sector0 = sector;
+            param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
+        }
+
+        file_size = std::max(file_size, param.offset + param.byte_p_track0);
+    }
+    else
+    {
+        sector = CorrectSector(side, sector, sectors_side1_max);
+
+        param.sides = std::max(param.sides, static_cast<Word>(side));
+
+        if (sector > param.max_sector)
+        {
+            param.max_sector = sector;
+            param.byte_p_track = param.max_sector * param.byte_p_sector;
+        }
+
+        file_size = std::max(file_size,
+                            param.offset + param.byte_p_track0 +
+                            (track * param.byte_p_track));
+    }
+
+    bool result = true;
+
+    flx_header.initialize(byte_p_sector, param.max_track + 1U,
+                          param.max_sector0, param.max_sector, param.sides0,
+                          param.sides);
+
+    if (fseek(fp, 0, SEEK_SET))
+    {
+        result = false;
+    }
+
+    if (fwrite(&flx_header, sizeof(flx_header), 1, fp) != 1)
+    {
+        result = false;
+    }
+
+    result &= WriteSector(pbuffer, track, sector);
+
+    if (!is_formatted && (file_size == getFileSize(flx_header)) &&
+        IsFlexFileFormat(TYPE_FLX_CONTAINER))
+    {
+        is_formatted = true;
+    }
+
+    return result;
+}
+
+int FlexFileContainer::CorrectSector(int side, int sector,
+                                     int &sectorsX_side1_max)
+{
+    if (side == 1)
+    {
+        sectorsX_side1_max = std::max(sectorsX_side1_max, sector);
+    }
+
+    if (side == 2 && sector <= sectorsX_side1_max)
+    {
+        sector += sectorsX_side1_max;
+    }
+
+    return sector;
 }
 
 void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
@@ -980,11 +1143,12 @@ void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
     param.max_sector = header.sectors * header.sides;
     param.max_sector0 = header.sectors0 * header.sides0;
     param.max_track = header.tracks - 1;
-    param.byte_p_sector = 128 << header.sizecode;
+    param.byte_p_sector = getBytesPerSector(header.sizecode);
     param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
     param.byte_p_track = param.max_sector * param.byte_p_sector;
+    param.sides0 = header.sides0;
+    param.sides = header.sides;
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
-
 }
 
 void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
@@ -999,7 +1163,17 @@ void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector * SECTOR_SIZE;
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
+    param.sides0 = getSides(format.tracks, format.sectors);
+    param.sides = getSides(format.tracks, format.sectors);
     param.type = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
+}
+
+void FlexFileContainer::Initialize_unformatted_disk()
+{
+    file_size = sizeof(struct s_flex_header);
+    param = { };
+    param.offset = sizeof(struct s_flex_header);
+    param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 }
 
 void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
@@ -1182,7 +1356,6 @@ void FlexFileContainer::Format_disk(
     }
 
     Create_format_table(type, trk, sec, format);
-    auto sides_flx = getSides(format.tracks, format.sectors);
 
     path = disk_dir;
 
@@ -1201,10 +1374,11 @@ void FlexFileContainer::Format_disk(
 
         if (type == TYPE_FLX_CONTAINER)
         {
+            int sides = getSides(format.tracks, format.sectors);
             struct s_flex_header header;
 
             header.initialize(SECTOR_SIZE, format.tracks, format.sectors0,
-                              format.sectors, sides_flx);
+                              format.sectors, sides, sides);
 
             if (fwrite(&header, sizeof(header), 1, fp) != 1)
             {
@@ -1262,4 +1436,85 @@ void FlexFileContainer::Format_disk(
         throw FlexException(FERR_UNABLE_TO_FORMAT, name);
     }
 } // format_disk
+
+// Read the number of tracks and sectors for a FLEX file container.
+bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
+                                             Word header_offset) const
+{
+    s_sys_info_sector sis;
+
+    // Read system info sector.
+    long file_offset = header_offset + (sis_trk_sec.sec - 1) * SECTOR_SIZE;
+    if (fseek(fp, file_offset, SEEK_SET))
+    {
+        return false;
+    }
+
+    if (fread(&sis, sizeof(sis), 1, fp) != 1)
+    {
+        return false;
+    }
+
+    tracks = sis.sir.last.trk;
+    sectors = sis.sir.last.sec;
+    if (tracks)
+    {
+        ++tracks;
+    }
+
+    return true;
+}
+
+// Check if the file container contains a FLEX compatible file system.
+bool FlexFileContainer::IsFlexFileFormat(int type) const
+{
+    struct stat sbuf;
+    Word tracks = 35;
+    Word sectors = 10;
+
+    if (stat(fp.GetPath(), &sbuf))
+    {
+        return false;
+    }
+
+    if ((type & TYPE_FLX_CONTAINER) != 0)
+    {
+        if (GetFlexTracksSectors(tracks, sectors, sizeof(s_flex_header)) &&
+            tracks != 0U &&
+            sectors != 0U &&
+            flx_header.sizecode == 1U &&
+            flx_header.tracks == tracks,
+            flx_header.sectors0 != 0U &&
+            flx_header.sectors0 * flx_header.sides0 <= sectors &&
+            flx_header.sectors * flx_header.sides == sectors &&
+            flx_header.sides0 >= 1U && flx_header.sides0 <= 2U &&
+            flx_header.sides >= 1U && flx_header.sides <= 2U)
+        {
+            // Plausibility check with the file size.
+            off_t size = getFileSize(flx_header);
+            if (size == sbuf.st_size)
+            {
+                return true;
+            }
+        }
+    }
+
+    if ((type & TYPE_DSK_CONTAINER) != 0)
+    {
+        if (GetFlexTracksSectors(tracks, sectors, 0U))
+        {
+            off_t size_min = ((tracks - 1) * sectors + 1) * SECTOR_SIZE;
+            off_t size_max = tracks * sectors * SECTOR_SIZE;
+
+            // do a plausibility check with the size of the DSK file
+            if (sbuf.st_size % SECTOR_SIZE == 0 &&
+                sbuf.st_size >= size_min && sbuf.st_size <= size_max)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 

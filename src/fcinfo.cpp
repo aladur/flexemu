@@ -36,12 +36,13 @@
 FlexContainerInfo::FlexContainerInfo() :
     sectors(0),
     tracks(0),
+    number(0U),
     type(0),
     free(0),
     totalSize(0),
-    attributes(0)
+    attributes(0),
+    is_formatted(false)
 {
-    name[0] = '\0';
 } // FlexContainerInfo
 
 FlexContainerInfo::~FlexContainerInfo()

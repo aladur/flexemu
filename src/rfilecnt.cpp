@@ -30,6 +30,11 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
 {
     unsigned int sectors;
 
+    if (!is_formatted)
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, fp.GetPath());
+    }
+
     sectors = (file_size - param.offset) / param.byte_p_sector;
     file_buffer =
         std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);

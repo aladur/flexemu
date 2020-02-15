@@ -69,6 +69,13 @@ public:
     static const Byte CMD_READTRACK{0xe0};
     static const Byte CMD_WRITETRACK{0xf0};
 
+    // Constant bytes used in data stream when writing a track
+    // (formatting a disk).
+    static const Byte TWO_CRCS{0xF7};
+    static const Byte DATA_ADDRESS_MARK{0xFB};
+    static const Byte INDEX_MARK{0xFC};
+    static const Byte ID_ADDRESS_MARK{0xFE};
+
     // Internal registers:
     //
     // dr       data register (r/w)
@@ -176,8 +183,9 @@ protected:
     void setStatusWriteError();
 
     // Read and write functions
+    virtual bool startCommand(Byte command_un);
     virtual Byte readByte(Word index);
-    virtual void writeByte(Word index);
+    virtual void writeByte(Word &index, Byte command_un);
     virtual bool isDriveReady() const;
     virtual bool isWriteProtect() const;
     virtual bool isRecordNotFound() const;
