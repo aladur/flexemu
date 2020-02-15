@@ -67,7 +67,7 @@ private:
     FileContainerIfSector *pfs;
     Byte            track[5];
     DiskStatus      drive_status[5];
-    char            sector_buffer[256];
+    char            sector_buffer[1024];
     const char      *disk_dir;
     std::mutex      status_mutex;
 
@@ -106,6 +106,7 @@ private:
     bool isWriteProtect() override;
     bool isRecordNotFound() override;
     bool isSeekError(Byte new_track) override;
+    Word getBytesPerSector() const override;
     const char       *open_mode(char *path);
 };
 

@@ -492,3 +492,13 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
     return true;
 } // format_disk
 
+Word E2floppy::getBytesPerSector() const
+{
+    if (pfs == nullptr)
+    {
+        return 0U;
+    }
+
+    return pfs->GetBytesPerSector();
+}
+

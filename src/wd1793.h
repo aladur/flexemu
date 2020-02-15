@@ -182,6 +182,7 @@ protected:
     virtual bool isWriteProtect();
     virtual bool isRecordNotFound();
     virtual bool isSeekError(Byte new_track);
+    virtual Word getBytesPerSector() const;
 
 public:
 

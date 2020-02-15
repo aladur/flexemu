@@ -273,7 +273,7 @@ void Wd1793::command(Byte command)
                 }
                 else
                 {
-                    byteCount = SECTOR_SIZE;
+                    byteCount = getBytesPerSector();
                     isDataRequest = true;
                     str = (STR_BUSY | STR_DATAREQUEST);
                 }
@@ -282,7 +282,7 @@ void Wd1793::command(Byte command)
 
             case CMD_READTRACK:
             case CMD_READSECTOR_MULT:
-                byteCount = SECTOR_SIZE * 16;
+                byteCount = getBytesPerSector() * 16;
                 isDataRequest = true;
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
@@ -300,7 +300,7 @@ void Wd1793::command(Byte command)
                 }
                 else
                 {
-                    byteCount = SECTOR_SIZE;
+                    byteCount = getBytesPerSector();
                     isDataRequest = true;
                     str = STR_DATAREQUEST;
                 }
@@ -315,7 +315,7 @@ void Wd1793::command(Byte command)
                     break;
                 }
 
-                byteCount = SECTOR_SIZE * 16;
+                byteCount = getBytesPerSector() * 16;
                 isDataRequest = true;
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
@@ -428,5 +428,11 @@ void Wd1793::setStatusWriteError()
     isDataRequest = 0;
     str = STR_LOSTDATA;
     byteCount = 0;
+}
+
+// should be reimplemented by subclass.
+Word Wd1793::getBytesPerSector() const
+{
+    return 0U;
 }
 
