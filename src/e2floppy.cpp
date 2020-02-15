@@ -407,7 +407,7 @@ void E2floppy::writeByte(Word index)
 }
 
 
-bool E2floppy::isRecordNotFound()
+bool E2floppy::isRecordNotFound() const
 {
     if (pfs == nullptr)
     {
@@ -417,7 +417,7 @@ bool E2floppy::isRecordNotFound()
     return !pfs->IsSectorValid(getTrack(), getSector());
 } // isRecordNotFound
 
-bool E2floppy::isSeekError(Byte new_track)
+bool E2floppy::isSeekError(Byte new_track) const
 {
     if (pfs == nullptr)
     {
@@ -432,7 +432,7 @@ bool E2floppy::isDriveReady() const
     return pfs != nullptr;
 }  // isDriveReady
 
-bool E2floppy::isWriteProtect()
+bool E2floppy::isWriteProtect() const
 {
     if (pfs == nullptr)
     {

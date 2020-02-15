@@ -179,9 +179,9 @@ protected:
     virtual Byte readByte(Word index);
     virtual void writeByte(Word index);
     virtual bool isDriveReady() const;
-    virtual bool isWriteProtect();
-    virtual bool isRecordNotFound();
-    virtual bool isSeekError(Byte new_track);
+    virtual bool isWriteProtect() const;
+    virtual bool isRecordNotFound() const;
+    virtual bool isSeekError(Byte new_track) const;
     virtual Word getBytesPerSector() const;
 
 public:

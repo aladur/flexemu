@@ -103,9 +103,9 @@ private:
     Byte readByte(Word index) override;
     void writeByte(Word index) override;
     bool isDriveReady() const override;
-    bool isWriteProtect() override;
-    bool isRecordNotFound() override;
-    bool isSeekError(Byte new_track) override;
+    bool isWriteProtect() const override;
+    bool isRecordNotFound() const override;
+    bool isSeekError(Byte new_track) const override;
     Word getBytesPerSector() const override;
     const char       *open_mode(char *path);
 };

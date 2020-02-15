@@ -388,19 +388,19 @@ bool Wd1793::isDriveReady() const
 }
 
 
-bool Wd1793::isSeekError(Byte)
+bool Wd1793::isSeekError(Byte) const
 {
     return false;
 }
 
 
-bool Wd1793::isRecordNotFound()
+bool Wd1793::isRecordNotFound() const
 {
     return false;
 }
 
 // should be reimplemented by subclass, return 0x40 if wp, otherwise 0
-bool Wd1793::isWriteProtect()
+bool Wd1793::isWriteProtect() const
 {
     return false;
 }
