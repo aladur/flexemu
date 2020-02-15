@@ -91,6 +91,7 @@ private:
     bool                isDataRequest, isInterrupt;
     bool                side;
     Word                byteCount, strRead;
+    Byte                indexPulse; // emulate index hole of floppy disc.
 
     // Internal functions
 private:
@@ -99,8 +100,15 @@ private:
 
 public:
 
-    bool isIrq() const
+    bool isIrq()
     {
+        indexPulse = (indexPulse + 1) % 16;
+        if (!indexPulse)
+        {
+            // Emulate irq flag on every index pulse.
+            setIrq();
+        }
+
         return isInterrupt;
     }
 
@@ -150,7 +158,7 @@ protected:
     void resetIrq()
     {
         isInterrupt = false;
-        // nterrupt request to CPU
+        // interrupt request to CPU
     }
 
     void setTrack(Byte newTrack)

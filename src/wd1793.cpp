@@ -27,7 +27,7 @@
 
 Wd1793::Wd1793() : dr(0), tr(0), sr(0), cr(0), str(0), stepOffset(1),
     isDataRequest(false), isInterrupt(false), side(false), byteCount(0),
-    strRead(0)
+    strRead(0), indexPulse(0)
 {
 }
 
@@ -45,13 +45,12 @@ void Wd1793::resetIo()
     strRead   = 0;
     str       = 0;
     cr        = 0;  // clear previous command
+    indexPulse= 0;
     command(0); //execute RESTORE after a reset
 }
 
 Byte Wd1793::readIo(Word offset)
 {
-    static Byte index = 0; // emulate index hole of floppy disc
-
     switch (offset & 0x03)
     {
         case 0:
@@ -63,9 +62,9 @@ Byte Wd1793::readIo(Word offset)
                 str &= ~(STR_DATAREQUEST | STR_BUSY); // read finished
             }
 
-            // set index every 16 reads
-            index = (index + 1) % 16;
-            if (!index)
+            // set index pulse every 16 reads.
+            indexPulse = (indexPulse + 1) % 16;
+            if (!indexPulse)
             {
                 // After max. 16x read from STR drive gets ready
                 str &= ~STR_NOTREADY;
@@ -76,7 +75,7 @@ Byte Wd1793::readIo(Word offset)
                 return str;
             }
 
-            if (!index && !(cr & 0x80))
+            if (!indexPulse && !(cr & 0x80))
             {
                 return str | STR_DATAREQUEST;
             }
@@ -217,7 +216,6 @@ void Wd1793::do_seek(Byte new_track)
 void Wd1793::command(Byte command)
 {
     bool isType1Command = !(command & 0x80);
-    static Byte index = 0; // for simulating INDEX bit
 
     if (!(str & STR_BUSY) || (command & 0xf0) == CMD_FORCEIRQ)
     {
@@ -348,14 +346,14 @@ void Wd1793::command(Byte command)
         {
             if (isDriveReady())
             {
-                // set index every 16 reads
-                index = (index + 1) % 16;
+                // set index pulse every 16 reads.
+                indexPulse = (indexPulse + 1) % 16;
                 str = (STR_HEADLOADED | STR_TRACK0);
                 if(isWriteProtect())
                 {
                     str |= STR_PROTECTED;
                 }
-                if (!index)
+                if (!indexPulse)
                 {
                     str |= STR_INDEX;
                 }
