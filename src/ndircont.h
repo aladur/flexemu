@@ -117,8 +117,8 @@ public:
                                           const char *name, int t, int s,
                                           int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
-    bool ReadSector(Byte *buffer, int trk, int sec) const;
-    bool WriteSector(const Byte *buffer, int trk, int sec);
+    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
+    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       int sizecode);
     bool IsFormatted() const;

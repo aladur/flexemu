@@ -45,8 +45,10 @@ public:
     FlexRamFileContainer &operator= (const FlexRamFileContainer &) = delete;
     FlexRamFileContainer &operator= (FlexRamFileContainer &&);
 
-    virtual bool ReadSector(Byte *buffer, int trk, int sec) const;
-    virtual bool WriteSector(const Byte *buffer, int trk, int sec);
+    virtual bool ReadSector(Byte *buffer, int trk, int sec,
+                            int side = -1) const;
+    virtual bool WriteSector(const Byte *buffer, int trk, int sec,
+                            int side = -1);
 
 private:
     bool close();

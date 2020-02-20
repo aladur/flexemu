@@ -359,7 +359,7 @@ void FileContainerCheck::InitializeLinks()
                 continue;
             }
 
-            if (!fc.ReadSector(buffer, track, sector) &&
+            if (!fc.ReadSector(&buffer[0], track, sector) &&
                 links.find(current) == links.end())
             {
                 links.emplace(current, link_t{current});

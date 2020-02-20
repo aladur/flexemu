@@ -163,8 +163,10 @@ class FileContainerIfSector : public FileContainerIfBase
     /* Track/Sector oriented File container interface
        (to be used within flexemu) */
 public:
-    virtual bool ReadSector(Byte *buffer, int trk, int sec) const = 0;
-    virtual bool WriteSector(const Byte *buffer, int trk, int sec) = 0;
+    virtual bool ReadSector(Byte *buffer, int trk, int sec,
+                            int side = -1) const = 0;
+    virtual bool WriteSector(const Byte *buffer, int trk, int sec,
+                             int side = -1) = 0;
     virtual bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                               int sizecode) = 0;
     virtual bool IsFormatted() const = 0;

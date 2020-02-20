@@ -937,11 +937,15 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
 /* low level routines                   */
 /****************************************/
 
-int FlexFileContainer::ByteOffset(const int trk, const int sec) const
+int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
 {
-    int byteOffs;
+    int byteOffs = param.offset;
+    Word side0_offset = 0;
 
-    byteOffs = param.offset;
+    if (!is_formatted && side < 0)
+    {
+        throw FlexException(FERR_UNEXPECTED_SIDE, side);
+    }
 
     if (trk > 0)
     {
@@ -949,7 +953,21 @@ int FlexFileContainer::ByteOffset(const int trk, const int sec) const
         byteOffs += param.byte_p_track * (trk - 1);
     }
 
-    byteOffs += param.byte_p_sector * (sec - 1);
+    if (!is_formatted && side > 0)
+    {
+        // This case handles non FLEX file formats on side 1.
+        // In this case evtl. the sector count from side 0 has to be added,
+        // to get the right byte offset.
+        const Word sectors_side0 =
+                       (trk ? param.max_sector : param.max_sector0) / 2;
+
+        if (sec <= sectors_side0)
+        {
+            side0_offset = sectors_side0;
+        }
+    }
+
+    byteOffs += param.byte_p_sector * (sec + side0_offset - 1);
 
     return byteOffs;
 }
@@ -958,7 +976,8 @@ int FlexFileContainer::ByteOffset(const int trk, const int sec) const
 // should be used with care
 // Does not throw any exception !
 // returns false on failure
-bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
+bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
+                                   int side /* = -1 */) const
 {
     if (fp == nullptr)
     {
@@ -970,7 +989,7 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
-    int pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec, side);
 
     if (pos < 0)
     {
@@ -994,7 +1013,8 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
 // should be used with care
 // Does not throw any exception !
 // returns false on failure
-bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
+bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
+                                    int side /* = -1 */)
 {
     if (fp == nullptr)
     {
@@ -1006,7 +1026,7 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
         return false;
     }
 
-    int pos = ByteOffset(trk, sec);
+    int pos = ByteOffset(trk, sec, side);
 
     if (pos < 0)
     {
@@ -1108,7 +1128,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
         result = false;
     }
 
-    result &= WriteSector(pbuffer, track, sector);
+    result &= WriteSector(pbuffer, track, sector, side);
 
     if (!is_formatted && (file_size == getFileSize(flx_header)) &&
         IsFlexFileFormat(TYPE_FLX_CONTAINER))

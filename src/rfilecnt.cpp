@@ -121,7 +121,8 @@ bool FlexRamFileContainer::close()
     return true;
 }
 
-bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
+bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
+                                      int side /* = -1 */) const
 {
     if (file_buffer.get() == nullptr)
     {
@@ -133,7 +134,7 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
         return false;
     }
 
-    int pos = ByteOffset(trk, sec) - param.offset;
+    int pos = ByteOffset(trk, sec, side) - param.offset;
 
     if (pos < 0)
     {
@@ -144,7 +145,8 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec) const
     return true;
 }
 
-bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
+bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
+                                       int side /* = -1 */)
 {
     if (file_buffer.get() == nullptr)
     {
@@ -156,7 +158,7 @@ bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec)
         return false;
     }
 
-    int pos = ByteOffset(trk, sec) - param.offset;
+    int pos = ByteOffset(trk, sec, side) - param.offset;
 
     if (pos < 0)
     {

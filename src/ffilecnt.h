@@ -85,8 +85,8 @@ public:
                                      int t, int s,
                                      int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
-    bool ReadSector(Byte *buffer, int trk, int sec) const;
-    bool WriteSector(const Byte *buffer, int trk, int sec);
+    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
+    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       int sizecode);
     // Return true if file container is identified as a FLEX file container.
@@ -121,7 +121,7 @@ public:
 
     // internal interface
 protected:
-    int ByteOffset(const int trk, const int sec) const;
+    int ByteOffset(int trk, int sec, int side) const;
     void EvaluateTrack0SectorCount();
     bool CreateDirEntry(FlexDirEntry &entry);
 

@@ -168,5 +168,6 @@ const char *FlexException::errString[] =
     _("Invalid usage of file container iterator"),
     _("File {0} has unexpected sector count {1}"),
     _("Container {0} is unformatted or has unknown format"),
+    _("Unexpected side number {0}"),
 };
 

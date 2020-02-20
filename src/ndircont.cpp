@@ -1335,7 +1335,8 @@ bool NafsDirectoryContainer::is_last_of_free_chain(
 // Public interface to read one sector contained in byte stream 'buffer'
 // from given track and sector.
 // Return true on success.
-bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
+bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
+                                        int /* side = -1 */) const
 {
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
     auto index = get_sector_index(track_sector);
@@ -1484,8 +1485,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec) const
 
 // Public interface to write one sector contained in byte stream 'buffer'
 // to given track and sector.
-bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk,
-        int sec)
+bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
+                                         int /* side = -1 */)
 {
     bool result = true;
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
