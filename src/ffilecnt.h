@@ -60,7 +60,7 @@ protected:
     DWord       file_size;
 
     // Variables only used for FLX format when formatting a disk
-    bool        is_formatted; // true when using a formatted disk.
+    bool        is_flex_format; // true when this is a FLEX compatible format.
     int         sectors0_side1_max; // Max. sector number on side1 for track 0
     int         sectors_side1_max; // Max. sector number on side1 for track != 0
     s_flex_header flx_header;
@@ -89,8 +89,9 @@ public:
     bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       int sizecode);
-    // Return true if file container is identified as a FLEX file container.
-    bool IsFormatted() const;
+    // Return true if file container is identified as a FLEX compatible
+    // file container.
+    bool IsFlexFormat() const;
     bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;

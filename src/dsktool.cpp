@@ -128,7 +128,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     size_t byte_size = 0;
     size_t errors = 0;
 
-    if (!src.IsFormatted())
+    if (!src.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
@@ -235,7 +235,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
     int sumSectors = 0;
     int largest = 0;
 
-    if (!src.IsFormatted())
+    if (!src.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
@@ -333,7 +333,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     FileContainerIterator iter;
     FlexContainerInfo info;
 
-    if (!src.IsFormatted())
+    if (!src.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
@@ -423,7 +423,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexRamFileContainer dst{dsk_file.c_str(), "rb+"};
 
-    if (!dst.IsFormatted())
+    if (!dst.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath().c_str());
     }
@@ -494,7 +494,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexRamFileContainer src{dsk_file.c_str(), "rb+"};
 
-    if (!src.IsFormatted())
+    if (!src.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
@@ -553,7 +553,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexRamFileContainer src{dsk_file.c_str(), "rb"};
 
-    if (!src.IsFormatted())
+    if (!src.IsFlexFormat())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }

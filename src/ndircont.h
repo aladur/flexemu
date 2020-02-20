@@ -121,7 +121,7 @@ public:
     bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       int sizecode);
-    bool IsFormatted() const;
+    bool IsFlexFormat() const;
     bool IsWriteProtected() const;
     bool IsTrackValid(int track) const;
     bool IsSectorValid(int track, int sector) const;

@@ -41,7 +41,7 @@ FlexContainerInfo::FlexContainerInfo() :
     free(0),
     totalSize(0),
     attributes(0),
-    is_formatted(false)
+    is_flex_format(false)
 {
 } // FlexContainerInfo
 

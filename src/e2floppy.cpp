@@ -295,7 +295,7 @@ std::string E2floppy::drive_info(Word drive_nr)
             stream << "drive       #" << drive_nr << std::endl
                 << "type:       " << info.GetTypeString().c_str() << std::endl;
 
-            if (info.GetIsFormatted())
+            if (info.GetIsFlexFormat())
             {
                 stream << "name:       " << info.GetName() << " #" <<
                                             info.GetNumber() << std::endl;
@@ -305,7 +305,7 @@ std::string E2floppy::drive_info(Word drive_nr)
                    << "sectors:    " << sec << std::endl
                    << "write-prot: " << (is_write_protected ? "yes" : "no")
                    << std::endl
-                   << "formatted:  " << (info.GetIsFormatted() ? "yes" : "no")
+                   << "formatted:  " << (info.GetIsFlexFormat() ? "yes" : "no")
                    << std::endl;
         }
     }
@@ -414,9 +414,9 @@ bool E2floppy::startCommand(Byte command_un)
     {
         // CMD_WRITETRACK means a new disk has to be formatted
         // within the emulation.
-        // Only unformatted file containers, if IsFormatted()
+        // Only unformatted file containers, if IsFlexFormat()
         // returns false, can be formatted.
-        if (pfs->IsFormatted())
+        if (pfs->IsFlexFormat())
         {
             return false;
         }

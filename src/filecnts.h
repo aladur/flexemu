@@ -169,7 +169,7 @@ public:
                              int side = -1) = 0;
     virtual bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                               int sizecode) = 0;
-    virtual bool IsFormatted() const = 0;
+    virtual bool IsFlexFormat() const = 0;
     virtual bool IsTrackValid(int track) const = 0;
     virtual bool IsSectorValid(int track, int sector) const = 0;
     virtual int  GetBytesPerSector() const = 0;

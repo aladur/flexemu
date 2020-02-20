@@ -95,7 +95,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 
 FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
     fp(path, mode), param { },
-    file_size(0), is_formatted(true),
+    file_size(0), is_flex_format(true),
     sectors0_side1_max(0), sectors_side1_max(0),
     flx_header { },
     attributes(0)
@@ -118,7 +118,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
         // it is marked as an unformatted file container.
         // No records are available yet but it can be formatted
         // from within the emulation.
-        is_formatted = false;
+        is_flex_format = false;
         Initialize_unformatted_disk();
         return;
     }
@@ -152,7 +152,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
             {
                 // This is a FLX file container but it is not compatible
                 // to FLEX.
-                is_formatted = false;
+                is_flex_format = false;
             }
             return;
         }
@@ -189,7 +189,7 @@ FlexFileContainer::~FlexFileContainer()
 
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
     fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
-    is_formatted(src.is_formatted),
+    is_flex_format(src.is_flex_format),
     sectors0_side1_max(src.sectors0_side1_max),
     sectors_side1_max(src.sectors_side1_max),
     attributes(src.attributes)
@@ -201,7 +201,7 @@ FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
     fp = std::move(src.fp);
     param = src.param;
     file_size = src.file_size;
-    is_formatted = src.is_formatted;
+    is_flex_format = src.is_flex_format;
     sectors0_side1_max = sectors0_side1_max;
     sectors_side1_max = sectors_side1_max;
     attributes = src.attributes;
@@ -230,7 +230,7 @@ bool FlexFileContainer::IsWriteProtected() const
 
 bool FlexFileContainer::IsTrackValid(int track) const
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         // All tracks have to be seekable because it is unknown
         // how many tracks the disk will have finally
@@ -256,9 +256,9 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
     }
 }
 
-bool FlexFileContainer::IsFormatted() const
+bool FlexFileContainer::IsFlexFormat() const
 {
-    return is_formatted;
+    return is_flex_format;
 }
 
 FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
@@ -289,7 +289,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
 // !entry.isEmpty
 bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 {
-    if (is_formatted)
+    if (is_flex_format)
     {
         FileContainerIterator it(fileName);
 
@@ -308,7 +308,7 @@ bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
 
 bool    FlexFileContainer::DeleteFile(const char *filePattern)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -327,7 +327,7 @@ bool    FlexFileContainer::DeleteFile(const char *filePattern)
 
 bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -361,7 +361,7 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
                                  FileContainerIf &destination)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -373,7 +373,7 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
 
 bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
-    if (is_formatted)
+    if (is_flex_format)
     {
         s_sys_info_sector sis;
         char disk_name[13];
@@ -428,7 +428,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     }
 
     info.SetTrackSector(param.max_track + 1U, param.max_sector);
-    info.SetIsFormatted(is_formatted);
+    info.SetIsFlexFormat(is_flex_format);
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
     info.SetAttributes(attributes);
@@ -495,7 +495,7 @@ FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
 bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                         const char *fileName /* = nullptr */)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -712,7 +712,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     Byte            sectorBuffer[SECTOR_SIZE];
     int             size;
 
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
     }
@@ -797,7 +797,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 bool    FlexFileContainer::SetAttributes(const char *filePattern,
         Byte setMask, Byte clearMask)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -819,7 +819,7 @@ bool    FlexFileContainer::SetAttributes(const char *filePattern,
 
 bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 {
-    if (!is_formatted)
+    if (!is_flex_format)
     {
         return false;
     }
@@ -942,7 +942,7 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
     int byteOffs = param.offset;
     Word side0_offset = 0;
 
-    if (!is_formatted && side < 0)
+    if (!is_flex_format && side < 0)
     {
         throw FlexException(FERR_UNEXPECTED_SIDE, side);
     }
@@ -953,7 +953,7 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
         byteOffs += param.byte_p_track * (trk - 1);
     }
 
-    if (!is_formatted && side > 0)
+    if (!is_flex_format && side > 0)
     {
         // This case handles non FLEX file formats on side 1.
         // In this case evtl. the sector count from side 0 has to be added,
@@ -1043,10 +1043,10 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    if (!is_formatted &&
+    if (!is_flex_format &&
         trk == 0 && sec == 3 && IsFlexFileFormat(TYPE_FLX_CONTAINER))
     {
-        is_formatted = true;
+        is_flex_format = true;
     }
 
     return true;
@@ -1055,7 +1055,7 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
 bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
                                      int side, int sizecode)
 {
-    if (is_formatted ||
+    if (is_flex_format ||
         track < 0 || track > 255 ||
         sector < 1 || sector > 255 ||
         side < 1 || side > 2 ||
@@ -1130,10 +1130,10 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
 
     result &= WriteSector(pbuffer, track, sector, side);
 
-    if (!is_formatted && (file_size == getFileSize(flx_header)) &&
+    if (!is_flex_format && (file_size == getFileSize(flx_header)) &&
         IsFlexFileFormat(TYPE_FLX_CONTAINER))
     {
-        is_formatted = true;
+        is_flex_format = true;
     }
 
     return result;

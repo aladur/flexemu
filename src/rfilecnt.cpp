@@ -30,8 +30,9 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
 {
     unsigned int sectors;
 
-    if (!is_formatted)
+    if (!is_flex_format)
     {
+        // This file container only supports compatible FLEX file formats.
         throw FlexException(FERR_CONTAINER_UNFORMATTED, fp.GetPath());
     }
 

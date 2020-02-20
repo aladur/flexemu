@@ -47,7 +47,7 @@ private:
     int     free;       // Number of bytes free
     int     totalSize;  // Number of total bytes writable
     Byte attributes; // Disk attributes
-    bool    is_formatted;// This container contains a FLEX file system.
+    bool    is_flex_format;// This container contains a FLEX file system.
 
 public:
     FlexContainerInfo();        // public constructor
@@ -133,13 +133,13 @@ public:
     {
         return type;
     };
-    inline void SetIsFormatted(bool f)
+    inline void SetIsFlexFormat(bool f)
     {
-        is_formatted = f;
+        is_flex_format = f;
     };
-    inline bool GetIsFormatted() const
+    inline bool GetIsFlexFormat() const
     {
-        return is_formatted;
+        return is_flex_format;
     };
 
 };  // class FlexContainerInfo

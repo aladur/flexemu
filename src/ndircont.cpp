@@ -199,7 +199,7 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
     return false;
 }
 
-bool NafsDirectoryContainer::IsFormatted() const
+bool NafsDirectoryContainer::IsFlexFormat() const
 {
     return true;
 }

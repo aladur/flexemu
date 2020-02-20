@@ -307,7 +307,7 @@ bool FlexParentFrame::OpenContainer(const wxString &wxContainerPath)
         }
 
         auto container_s = dynamic_cast<FileContainerIfSector *>(container);
-        if (container_s != nullptr && !container_s->IsFormatted())
+        if (container_s != nullptr && !container_s->IsFlexFormat())
         {
             throw FlexException(FERR_CONTAINER_UNFORMATTED,
                                 containerPath.c_str());
