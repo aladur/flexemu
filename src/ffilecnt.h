@@ -61,8 +61,8 @@ protected:
 
     // Variables only used for FLX format when formatting a disk
     bool        is_flex_format; // true when this is a FLEX compatible format.
-    int         sectors0_side1_max; // Max. sector number on side1 for track 0
-    int         sectors_side1_max; // Max. sector number on side1 for track != 0
+    int         sectors0_side0_max; // Max. sector number on side0 for track 0
+    int         sectors_side0_max; // Max. sector number on side0 for track != 0
     s_flex_header flx_header;
 
 private:
@@ -131,7 +131,6 @@ protected:
     virtual void Initialize_for_dsk_format(const s_formats &format,
                                            bool write_protected);
     virtual void Initialize_unformatted_disk();
-    int CorrectSector(int side, int sector, int &sectorsX_side1_max);
     static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;

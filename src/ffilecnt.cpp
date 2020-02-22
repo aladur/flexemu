@@ -96,7 +96,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
     fp(path, mode), param { },
     file_size(0), is_flex_format(true),
-    sectors0_side1_max(0), sectors_side1_max(0),
+    sectors0_side0_max(0), sectors_side0_max(0),
     flx_header { },
     attributes(0)
 {
@@ -190,8 +190,8 @@ FlexFileContainer::~FlexFileContainer()
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
     fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
     is_flex_format(src.is_flex_format),
-    sectors0_side1_max(src.sectors0_side1_max),
-    sectors_side1_max(src.sectors_side1_max),
+    sectors0_side0_max(src.sectors0_side0_max),
+    sectors_side0_max(src.sectors_side0_max),
     attributes(src.attributes)
 {
 }
@@ -202,8 +202,8 @@ FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
     param = src.param;
     file_size = src.file_size;
     is_flex_format = src.is_flex_format;
-    sectors0_side1_max = sectors0_side1_max;
-    sectors_side1_max = sectors_side1_max;
+    sectors0_side0_max = sectors0_side0_max;
+    sectors_side0_max = sectors_side0_max;
     attributes = src.attributes;
 
     return *this;
@@ -953,7 +953,7 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
         byteOffs += param.byte_p_track * (trk - 1);
     }
 
-    if (!is_flex_format && side > 0)
+    if (!is_flex_format && side == 1)
     {
         // This case handles non FLEX file formats on side 1.
         // In this case evtl. the sector count from side 0 has to be added,
@@ -1058,7 +1058,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
     if (is_flex_format ||
         track < 0 || track > 255 ||
         sector < 1 || sector > 255 ||
-        side < 1 || side > 2 ||
+        side < 0 || side > 1 ||
         sizecode < 0 || sizecode > 3)
     {
         return false;
@@ -1083,9 +1083,19 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
 
     if (track == 0)
     {
-        sector = CorrectSector(side, sector, sectors0_side1_max);
+        if (side == 0)
+        {
+            sectors0_side0_max = std::max(sectors0_side0_max, sector);
+        }
+        else if (side == 1)
+        {
+            // If side 1 is formatted it immediately is assumed that
+            // the total number of sectors is 2 * sectors0_side0_max.
+            param.max_sector0 = 2 * sectors0_side0_max;
+            param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
+        }
 
-        param.sides0 = std::max(param.sides0, static_cast<Word>(side));
+        param.sides0 = std::max(param.sides0, static_cast<Word>(side + 1));
 
         if (sector > param.max_sector0)
         {
@@ -1097,9 +1107,19 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
     }
     else
     {
-        sector = CorrectSector(side, sector, sectors_side1_max);
+        if (side == 0)
+        {
+            sectors_side0_max = std::max(sectors_side0_max, sector);
+        }
+        else if (side == 1)
+        {
+            // If side 1 is formatted it immediately is assumed that
+            // the total number of sectors is 2 * sectors_side0_max.
+            param.max_sector = 2 * sectors_side0_max;
+            param.byte_p_track = param.max_sector * param.byte_p_sector;
+        }
 
-        param.sides = std::max(param.sides, static_cast<Word>(side));
+        param.sides = std::max(param.sides, static_cast<Word>(side + 1));
 
         if (sector > param.max_sector)
         {
@@ -1137,22 +1157,6 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
     }
 
     return result;
-}
-
-int FlexFileContainer::CorrectSector(int side, int sector,
-                                     int &sectorsX_side1_max)
-{
-    if (side == 1)
-    {
-        sectorsX_side1_max = std::max(sectorsX_side1_max, sector);
-    }
-
-    if (side == 2 && sector <= sectorsX_side1_max)
-    {
-        sector += sectorsX_side1_max;
-    }
-
-    return sector;
 }
 
 void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
