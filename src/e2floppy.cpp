@@ -305,7 +305,7 @@ std::string E2floppy::drive_info(Word drive_nr)
                    << "sectors:    " << sec << std::endl
                    << "write-prot: " << (is_write_protected ? "yes" : "no")
                    << std::endl
-                   << "formatted:  " << (info.GetIsFlexFormat() ? "yes" : "no")
+                   << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
                    << std::endl;
         }
     }
