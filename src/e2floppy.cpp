@@ -434,7 +434,7 @@ Byte E2floppy::readByteInAddress(Word index)
         sector_buffer[0] = getTrack();
         sector_buffer[1] = getSide() ? 1 : 0;
         sector_buffer[2] = 1; // sector address
-        sector_buffer[3] = 1; // sector sizecode
+        sector_buffer[3] = getSizeCode(); // sector sizecode
         sector_buffer[4] = 0x55; // CRC1 TODO unfinished
         sector_buffer[5] = 0x55; // CRC2 TODO unfinished
     }
@@ -658,5 +658,17 @@ Word E2floppy::getBytesPerSector() const
     }
 
     return pfs->GetBytesPerSector();
+}
+
+Byte E2floppy::getSizeCode() const
+{
+    switch (getBytesPerSector())
+    {
+        case 256U: return 1U;
+        case 128U: return 0U;
+        case 512U: return 2U;
+        case 1024U: return 3U;
+        default: return 0U;
+    }
 }
 

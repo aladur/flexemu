@@ -129,6 +129,7 @@ private:
     bool isRecordNotFound() const override;
     bool isSeekError(Byte new_track) const override;
     Word getBytesPerSector() const override;
+    Byte getSizeCode() const;
     const char       *open_mode(char *path);
 };
 
