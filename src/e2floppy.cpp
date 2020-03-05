@@ -383,15 +383,30 @@ void E2floppy::select_drive(Byte new_selected)
     }
 }
 
-Byte E2floppy::readByte(Word index)
+Byte E2floppy::readByte(Word index, Byte command_un)
 {
-    if (pfs == nullptr)
+    if (pfs != nullptr)
     {
-        return 0;
+        std::lock_guard<std::mutex> guard(status_mutex);
+
+        switch (command_un)
+        {
+            case CMD_READSECTOR:
+                return readByteInSector(index);
+
+            case CMD_READTRACK:
+                return readByteInTrack(index);
+
+            case CMD_READADDRESS:
+                return readByteInAddress(index);
+        }
     }
 
-    std::lock_guard<std::mutex> guard(status_mutex);
+    return 0U;
+}
 
+Byte E2floppy::readByteInSector(Word index)
+{
     if (index == pfs->GetBytesPerSector())
     {
         drive_status[selected] = DiskStatus::ACTIVE;
@@ -404,6 +419,27 @@ Byte E2floppy::readByte(Word index)
     }
 
     return sector_buffer[pfs->GetBytesPerSector() - index];
+}
+
+Byte E2floppy::readByteInTrack(Word)
+{
+    // TODO unfinished
+    return 0U;
+}
+
+Byte E2floppy::readByteInAddress(Word index)
+{
+    if (index == 6)
+    {
+        sector_buffer[0] = getTrack();
+        sector_buffer[1] = getSide() ? 1 : 0;
+        sector_buffer[2] = 1; // sector address
+        sector_buffer[3] = 1; // sector sizecode
+        sector_buffer[4] = 0x55; // CRC1 TODO unfinished
+        sector_buffer[5] = 0x55; // CRC2 TODO unfinished
+    }
+
+    return sector_buffer[6 - index];
 }
 
 bool E2floppy::startCommand(Byte command_un)
@@ -429,22 +465,20 @@ bool E2floppy::startCommand(Byte command_un)
 
 void E2floppy::writeByte(Word &index, Byte command_un)
 {
-    if (pfs == nullptr)
+    if (pfs != nullptr)
     {
-        return;
-    }
+        std::lock_guard<std::mutex> guard(status_mutex);
 
-    std::lock_guard<std::mutex> guard(status_mutex);
+        switch (command_un)
+        {
+            case CMD_WRITESECTOR:
+                writeByteInSector(index);
+                break;
 
-    switch (command_un)
-    {
-        case CMD_WRITESECTOR:
-            writeByteInSector(index);
-            break;
-
-        case CMD_WRITETRACK:
-            writeByteInTrack(index);
-            break;
+            case CMD_WRITETRACK:
+                writeByteInTrack(index);
+                break;
+        }
     }
 }
 

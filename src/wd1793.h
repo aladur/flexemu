@@ -184,7 +184,7 @@ protected:
 
     // Read and write functions
     virtual bool startCommand(Byte command_un);
-    virtual Byte readByte(Word index);
+    virtual Byte readByte(Word index, Byte command_un);
     virtual void writeByte(Word &index, Byte command_un);
     virtual bool isDriveReady() const;
     virtual bool isWriteProtect() const;

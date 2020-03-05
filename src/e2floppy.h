@@ -117,7 +117,10 @@ public:
 private:
 
     bool startCommand(Byte command_un) override;
-    Byte readByte(Word index) override;
+    Byte readByte(Word index, Byte command_un) override;
+    Byte readByteInSector(Word index);
+    Byte readByteInTrack(Word index);
+    Byte readByteInAddress(Word index);
     void writeByte(Word &index, Byte command_un) override;
     void writeByteInSector(Word index);
     void writeByteInTrack(Word &index);

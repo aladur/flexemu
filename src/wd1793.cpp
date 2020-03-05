@@ -91,53 +91,16 @@ Byte Wd1793::readIo(Word offset)
             return sr;
 
         case 3:
-            if ((cr & 0xf0) == CMD_READADDRESS)
+            strRead = 0;
+
+            if (byteCount)
             {
-                switch (byteCount)
+                dr = readByte(byteCount, cr & 0xf0);
+                if (byteCount != 0)
                 {
-                    case 6:
-                        dr = tr; // track
-                        break;
-
-                    case 5:
-                        dr = side ? 1 : 0; // side number
-                        break;
-
-                    case 4:
-                        dr = 1; // sector address
-                        break;
-
-                    case 3:
-                        dr = 1; // sector lengsh
-                        break;
-
-                    case 2:
-                        dr = 0x55; // CRC1
-                        break;
-
-                    case 1:
-                        dr = 0x55; // CRC2
-                        break;
-
-                    default:
-                        dr = 0;
-                } // switch
-
-                byteCount--;
-            }
-            else
-            {
-                strRead = 0;
-
-                if (byteCount)
-                {
-                    dr = readByte(byteCount);
-                    if (byteCount != 0)
-                    {
-                        byteCount--;
-                    }
+                    byteCount--;
                 }
-            } // else
+            }
 
             if (isDataRequest && !byteCount)
             {
@@ -386,7 +349,7 @@ bool Wd1793::startCommand(Byte)
     return true;
 }
 
-Byte Wd1793::readByte(Word index)
+Byte Wd1793::readByte(Word index, Byte)
 {
     return (Byte) index;
 }
