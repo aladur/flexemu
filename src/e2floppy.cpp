@@ -429,15 +429,22 @@ bool E2floppy::startCommand(Byte command_un)
 
 void E2floppy::writeByte(Word &index, Byte command_un)
 {
+    if (pfs == nullptr)
+    {
+        return;
+    }
+
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    if (command_un == CMD_WRITETRACK)
+    switch (command_un)
     {
-        writeByteInTrack(index);
-    }
-    else
-    {
-        writeByteInSector(index);
+        case CMD_WRITESECTOR:
+            writeByteInSector(index);
+            break;
+
+        case CMD_WRITETRACK:
+            writeByteInTrack(index);
+            break;
     }
 }
 
