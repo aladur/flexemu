@@ -190,6 +190,7 @@ void Wd1793::command(Byte command)
         switch (cr & 0xf0)
         {
             case CMD_RESTORE:
+                do_seek(0);
                 tr = 0;
                 setIrq();
                 break;
@@ -203,6 +204,7 @@ void Wd1793::command(Byte command)
                 FALLTHROUGH;
 
             case CMD_STEP:
+                str = 0;
                 setIrq();
                 break;
 
@@ -212,6 +214,7 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_STEPIN:
+                str = 0;
                 stepOffset = 1;
                 setIrq();
                 break;
@@ -222,6 +225,7 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_STEPOUT:
+                str = 0;
                 stepOffset = static_cast<Byte>(-1);
                 setIrq();
                 break;
@@ -323,7 +327,7 @@ void Wd1793::command(Byte command)
             {
                 // set index pulse every 16 reads.
                 indexPulse = (indexPulse + 1) % 16;
-                str = (STR_HEADLOADED | STR_TRACK0);
+                str |= STR_HEADLOADED;
                 if(isWriteProtect())
                 {
                     str |= STR_PROTECTED;
