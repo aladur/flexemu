@@ -276,6 +276,7 @@
     <ClInclude Include="command.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cpustate.h" />
+    <ClInclude Include="crc.h" />
     <ClInclude Include="csetfreq.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="da6809.h" />

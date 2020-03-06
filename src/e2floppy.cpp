@@ -31,6 +31,7 @@
 #include "fcinfo.h"
 #include "flexerr.h"
 #include "bdir.h"
+#include "crc.h"
 
 
 E2floppy::E2floppy() : selected(4), pfs(nullptr),
@@ -431,12 +432,17 @@ Byte E2floppy::readByteInAddress(Word index)
 {
     if (index == 6)
     {
+        Crc<Word> crc16(0x1021);
+
         sector_buffer[0] = getTrack();
         sector_buffer[1] = getSide() ? 1 : 0;
         sector_buffer[2] = 1; // sector address
         sector_buffer[3] = getSizeCode(); // sector sizecode
-        sector_buffer[4] = 0x55; // CRC1 TODO unfinished
-        sector_buffer[5] = 0x55; // CRC2 TODO unfinished
+
+        auto crc = crc16.GetResult(&sector_buffer[0], &sector_buffer[4]);
+
+        sector_buffer[4] = static_cast<Byte>(crc >> 8);
+        sector_buffer[5] = static_cast<Byte>(crc & 0xFF);
     }
 
     return sector_buffer[6 - index];

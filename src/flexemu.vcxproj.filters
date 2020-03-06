@@ -324,6 +324,9 @@
     <ClInclude Include="cpustate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="crc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="csetfreq.h">
       <Filter>Header Files</Filter>
     </ClInclude>
