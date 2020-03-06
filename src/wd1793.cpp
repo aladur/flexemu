@@ -299,16 +299,16 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_READADDRESS:
-                if (isRecordNotFound())
-                {
-                    str = STR_RECORDNOTFOUND;
-                    setIrq();
-                }
-                else
+                if (isDriveReady())
                 {
                     byteCount = 6;
                     isDataRequest = true;
                     str = (STR_BUSY | STR_DATAREQUEST);
+                }
+                else
+                {
+                    str = STR_RECORDNOTFOUND;
+                    setIrq();
                 }
 
                 break;
