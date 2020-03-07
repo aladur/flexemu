@@ -130,7 +130,7 @@ ContainerPropertiesDialog::ContainerPropertiesDialog(wxWindow *parent,
     pWidgetSizer->Add(pTrkSecSizer);
 
     c_formatWarning = new wxStaticText(this, -1, _(""));
-    c_formatWarning->SetForegroundColour(*wxColour("darkorange"));
+    c_formatWarning->SetForegroundColour(wxColour("darkorange"));
 
     pWidgetSizer->Add(c_formatWarning, 0, wxLEFT, 10);
 
