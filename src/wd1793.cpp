@@ -102,6 +102,21 @@ Byte Wd1793::readIo(Word offset)
                 }
             }
 
+            if (!byteCount && (cr & 0xF0) == CMD_READSECTOR_MULT)
+            {
+                // When reading multiple sectors read next sector,
+                // until record not found.
+                ++sr;
+                if (isRecordNotFound())
+                {
+                    str |= STR_RECORDNOTFOUND;
+                }
+                else
+                {
+                    byteCount = getBytesPerSector();
+                }
+            }
+
             if (isDataRequest && !byteCount)
             {
                 isDataRequest = false;
@@ -142,6 +157,21 @@ void Wd1793::writeIo(Word offset, Byte val)
                 if (byteCount != 0)
                 {
                     byteCount--;
+                }
+            }
+
+            if (!byteCount && (cr & 0xF0) == CMD_WRITESECTOR_MULT)
+            {
+                // When writing multiple sectors write next sector,
+                // until record not found.
+                ++sr;
+                if (isRecordNotFound())
+                {
+                    str |= STR_RECORDNOTFOUND;
+                }
+                else
+                {
+                    byteCount = getBytesPerSector();
                 }
             }
 
@@ -231,6 +261,7 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_READSECTOR:
+            case CMD_READSECTOR_MULT:
                 strRead = 0;
 
                 if (isRecordNotFound())
@@ -248,13 +279,13 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_READTRACK:
-            case CMD_READSECTOR_MULT:
                 byteCount = getBytesPerSector() * 16U;
                 isDataRequest = true;
                 str = (STR_BUSY | STR_DATAREQUEST);
                 break;
 
             case CMD_WRITESECTOR:
+            case CMD_WRITESECTOR_MULT:
                 if (isWriteProtect())
                 {
                     str = STR_PROTECTED;
@@ -277,7 +308,6 @@ void Wd1793::command(Byte command)
                 break;
 
             case CMD_WRITETRACK:
-            case CMD_WRITESECTOR_MULT:
                 if (isWriteProtect())
                 {
                     str = STR_PROTECTED;

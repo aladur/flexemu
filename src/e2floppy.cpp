@@ -393,6 +393,7 @@ Byte E2floppy::readByte(Word index, Byte command_un)
         switch (command_un)
         {
             case CMD_READSECTOR:
+            case CMD_READSECTOR_MULT:
                 return readByteInSector(index);
 
             case CMD_READTRACK:
@@ -478,6 +479,7 @@ void E2floppy::writeByte(Word &index, Byte command_un)
         switch (command_un)
         {
             case CMD_WRITESECTOR:
+            case CMD_WRITESECTOR_MULT:
                 writeByteInSector(index);
                 break;
 

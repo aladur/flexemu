@@ -51,7 +51,7 @@ public:
 
     // Commands in command register (mask 0xf0)
     // TU:   Track update flag
-    // MULT: Multple record flag
+    static const Byte MULTIPLERECORDS{0x10}; // read/write multiple records
     static const Byte CMD_RESTORE{0x00};
     static const Byte CMD_SEEK{0x10};
     static const Byte CMD_STEP{0x20};
@@ -61,9 +61,9 @@ public:
     static const Byte CMD_STEPOUT{0x60};
     static const Byte CMD_STEPOUT_TU{0x70};
     static const Byte CMD_READSECTOR{0x80};
-    static const Byte CMD_READSECTOR_MULT{0x90};
+    static const Byte CMD_READSECTOR_MULT{CMD_READSECTOR | MULTIPLERECORDS};
     static const Byte CMD_WRITESECTOR{0xa0};
-    static const Byte CMD_WRITESECTOR_MULT{0xb0};
+    static const Byte CMD_WRITESECTOR_MULT{CMD_WRITESECTOR | MULTIPLERECORDS};
     static const Byte CMD_READADDRESS{0xc0};
     static const Byte CMD_FORCEIRQ{0xd0};
     static const Byte CMD_READTRACK{0xe0};
