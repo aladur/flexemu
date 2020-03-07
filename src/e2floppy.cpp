@@ -526,14 +526,14 @@ void E2floppy::writeByteInTrack(Word &index)
             {
                 writeTrackState = WriteTrackState::WriteData;
                 sizecode = idAddressMark[3] & 0x03;
-                offset = static_cast<Word>(::getBytesPerSector(sizecode));
+                offset = ::getBytesPerSector(sizecode);
                 index = offset + 2;
             }
             break;
 
         case WriteTrackState::WriteData:
             sizecode = idAddressMark[3] & 0x03;
-            i = static_cast<Word>(::getBytesPerSector(sizecode)) - offset;
+            i = ::getBytesPerSector(sizecode) - offset;
             sector_buffer[i] = getDataRegister();
             if (--offset == 0U)
             {
