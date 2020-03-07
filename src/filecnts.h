@@ -259,9 +259,9 @@ struct s_flex_header
 #ifndef __fromflex__
 extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
 
-extern int getTrack0SectorCount(int tracks, int sectors);
-extern int getSides(int tracks, int sectors);
-extern int getBytesPerSector(int sizecode);
+extern Word getTrack0SectorCount(int tracks, int sectors);
+extern Word getSides(int tracks, int sectors);
+extern Word getBytesPerSector(int sizecode);
 extern size_t getFileSize(const s_flex_header &header);
 #endif /* #ifndef __fromflex__ */
 

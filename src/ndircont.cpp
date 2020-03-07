@@ -600,7 +600,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
 // Initialize the FLEX link table
 void NafsDirectoryContainer::initialize_flex_link_table()
 {
-    size_t i;
+    Word i;
     Word fc_start = param.max_sector; // Start index of free chain.
     constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
     const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
@@ -650,8 +650,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         sis.sir.fc_start.trk = static_cast<Byte>(fc_start / param.max_sector);
         sis.sir.fc_start.sec =
             static_cast<Byte>((fc_start % param.max_sector) + 1);
-        sis.sir.fc_end.trk = param.max_track;
-        sis.sir.fc_end.sec = param.max_sector;
+        sis.sir.fc_end.trk = static_cast<Byte>(param.max_track);
+        sis.sir.fc_end.sec = static_cast<Byte>(param.max_sector);
         setValueBigEndian<Word>(&sis.sir.free[0], free);
     }
 } // initialize_flex_link_table
@@ -742,11 +742,13 @@ bool NafsDirectoryContainer::add_to_link_table(
 
         if (is_random)
         {
-            setValueBigEndian<Word>(&link.record_nr[0], i > 2 ? (i - 2) : 0U);
+            Word record_count = i > 2 ? static_cast<Word>(i - 2) : 0U;
+            setValueBigEndian<Word>(&link.record_nr[0], record_count);
         }
         else
         {
-            setValueBigEndian<Word>(&link.record_nr[0], i);
+            Word record_count = static_cast<Word>(i);
+            setValueBigEndian<Word>(&link.record_nr[0], record_count);
         }
 
         link.f_record = static_cast<Word>(i - 1);
@@ -754,10 +756,12 @@ bool NafsDirectoryContainer::add_to_link_table(
         link.type = SectorType::File;
     }
 
-    end.sec = ((i + sector_begin - 2) % param.max_sector) + 1;
+    end.sec =
+        static_cast<Byte>(((i + sector_begin - 2) % param.max_sector) + 1);
     end.trk = static_cast<Byte>((i + sector_begin - 2) / param.max_sector);
     // update sys info sector
-    sis.sir.fc_start.sec = ((i + sector_begin - 1) % param.max_sector) + 1;
+    sis.sir.fc_start.sec =
+        static_cast<Byte>(((i + sector_begin - 1) % param.max_sector) + 1);
     sis.sir.fc_start.trk =
         static_cast<Byte>((i + sector_begin - 1) / param.max_sector);
 

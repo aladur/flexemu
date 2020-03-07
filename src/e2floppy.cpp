@@ -665,7 +665,7 @@ Word E2floppy::getBytesPerSector() const
         return 0U;
     }
 
-    return pfs->GetBytesPerSector();
+    return static_cast<Word>(pfs->GetBytesPerSector());
 }
 
 Byte E2floppy::getSizeCode() const

@@ -1064,7 +1064,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
         return false;
     }
 
-    int byte_p_sector = getBytesPerSector(sizecode);
+    auto byte_p_sector = getBytesPerSector(sizecode);
 
     // All sectors have to have same sector size.
     if (param.byte_p_sector != 0 && param.byte_p_sector != byte_p_sector)
@@ -1091,7 +1091,8 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
         {
             // If side 1 is formatted it immediately is assumed that
             // the total number of sectors is 2 * sectors0_side0_max.
-            param.max_sector0 = 2 * sectors0_side0_max;
+            param.max_sector0 =
+                static_cast<Word>(2 * sectors0_side0_max);
             param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
         }
 
@@ -1099,7 +1100,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
 
         if (sector > param.max_sector0)
         {
-            param.max_sector0 = sector;
+            param.max_sector0 = static_cast<Word>(sector);
             param.byte_p_track0 = param.max_sector0 * param.byte_p_sector;
         }
 
@@ -1115,7 +1116,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
         {
             // If side 1 is formatted it immediately is assumed that
             // the total number of sectors is 2 * sectors_side0_max.
-            param.max_sector = 2 * sectors_side0_max;
+            param.max_sector = static_cast<Word>(2 * sectors_side0_max);
             param.byte_p_track = param.max_sector * param.byte_p_sector;
         }
 
@@ -1123,7 +1124,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
 
         if (sector > param.max_sector)
         {
-            param.max_sector = sector;
+            param.max_sector = static_cast<Word>(sector);
             param.byte_p_track = param.max_sector * param.byte_p_sector;
         }
 
@@ -1515,7 +1516,7 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
             flx_header.sides >= 1U && flx_header.sides <= 2U)
         {
             // Plausibility check with the file size.
-            off_t size = getFileSize(flx_header);
+            auto size = static_cast<off_t>(getFileSize(flx_header));
             if (size == sbuf.st_size)
             {
                 return true;

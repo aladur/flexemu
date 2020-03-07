@@ -42,12 +42,12 @@ std::ostream& operator<<(std::ostream& os, const  st_t &st)
 
 // Return the sector count on track 0 which has always single density (SD)
 // except for a harddisk.
-int getTrack0SectorCount(int tracks, int sectors)
+Word getTrack0SectorCount(int tracks, int sectors)
 {
     if (tracks >= 255)
     {
         // This is a harddisk. Assuming same density for all tracks.
-        return sectors;
+        return static_cast<Word>(sectors);
     }
 
     // Check for 8-inch disk.
@@ -56,10 +56,10 @@ int getTrack0SectorCount(int tracks, int sectors)
         if (sectors <= 26)
         {
             // This is a 8-inch single sided (SS) disk.
-            return 15;
+            return 15U;
         }
         // This is a 8-inch double sided (DS) disk.
-        return 30;
+        return 30U;
     }
 
     // Assuming 5 1/4-inch or 3 1/2-inch disk. 34, 35, 40 or 80 tracks.
@@ -69,20 +69,20 @@ int getTrack0SectorCount(int tracks, int sectors)
         // This rule can be applied when creating a DSK container.
         // When reading a DSK container both 10 or 20 sectors
         // has to be supported.
-        return 10;
+        return 10U;
     }
     // This is a double sided (DS) disk.
-    return 20;
+    return 20U;
 }
 
 // Return the number of sides.
-int getSides(int tracks, int sectors)
+Word getSides(int tracks, int sectors)
 {
     if (tracks >= 255)
     {
         // There are no details available about how many sides a hard disk
         // used by FLEX has => Return the default.
-        return 1;
+        return 1U;
     }
 
     // Check for 8-inch disk.
@@ -91,7 +91,7 @@ int getSides(int tracks, int sectors)
         if (sectors <= 26)
         {
             // This is a 8-inch single sided (SS) disk.
-            return 1;
+            return 1U;
         }
         // This is a 8-inch double sided (DS) disk if sector count is a
         // multiple of 2.
@@ -105,16 +105,16 @@ int getSides(int tracks, int sectors)
         // This rule can be applied when creating a FLX container.
         // When reading a FLX container both single or double sided
         // has to be supported.
-        return 1;
+        return 1U;
     }
     // This is a double sided (DS) disk if sector count is a
     // multiple of 2.
-    return !(sectors % 2) ? 2 : 1;
+    return !(sectors % 2) ? 2U : 1U;
 }
 
-int getBytesPerSector(int sizecode)
+Word getBytesPerSector(int sizecode)
 {
-    return 128 << sizecode;
+    return 128U << (sizecode & 0x03);
 }
 
 size_t getFileSize(const s_flex_header &header)

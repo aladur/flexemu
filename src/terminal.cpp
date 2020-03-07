@@ -293,6 +293,7 @@ Byte TerminalIO::peek_char_serial()
 
 void TerminalIO::write_char_serial_safe(Byte value)
 {
+    (void)value;
 #ifdef HAVE_TERMIOS_H
     // the write syscall may be aborted by EINTR or no byte is written.
     // This is defined bahaviour.

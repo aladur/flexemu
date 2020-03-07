@@ -41,14 +41,14 @@ void BTime::ResetRelativeTime()
     lapTime = GetTimeUsll();
 }
 
-unsigned long BTime::GetRelativeTimeMsl(bool reset /*= false*/)
+QWord BTime::GetRelativeTimeMsl(bool reset /*= false*/)
 {
-    return GetRelativeTimeUsll(reset) / 1000;
+    return GetRelativeTimeUsll(reset) / 1000U;
 }
 
-unsigned long BTime::GetTimeMsl()
+QWord BTime::GetTimeMsl()
 {
-    return GetTimeUsll() / 1000;
+    return GetTimeUsll() / 1000U;
 }
 
 
