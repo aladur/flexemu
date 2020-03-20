@@ -202,8 +202,8 @@ FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
     param = src.param;
     file_size = src.file_size;
     is_flex_format = src.is_flex_format;
-    sectors0_side0_max = sectors0_side0_max;
-    sectors_side0_max = sectors_side0_max;
+    sectors0_side0_max = src.sectors0_side0_max;
+    sectors_side0_max = src.sectors_side0_max;
     attributes = src.attributes;
 
     return *this;
