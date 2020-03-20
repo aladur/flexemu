@@ -346,20 +346,17 @@ int main(int argc, char *argv[])
     switch(command)
     {
         case 'o':
-            return WriteAppendToMdcrFile(ifiles, ofile, isTruncate, isUppercase);
-            break;
+            return WriteAppendToMdcrFile(ifiles, ofile, isTruncate,
+                                         isUppercase);
 
         case 'c':
             return CreateMdcrFile(ofile);
-            break;
 
         case 'x':
             return ExtractFromMdcrFile(targetDir, ifile);
-            break;
 
         case 'l':
             return ListContentOfMdcrFile(ifile);
-            break;
 
         default:
             break;
