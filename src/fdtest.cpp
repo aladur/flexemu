@@ -241,7 +241,8 @@ void flexContainerTest(const std::string &testPath,
     }
     catch (exception &e)
     {
-        strcpy(buffer, e.what());
+        strncpy(buffer, e.what(), sizeof(buffer) - 1);
+        buffer[sizeof(buffer) - 1] = '\0';
     }
 
     errMsg = "Unable to open ";
