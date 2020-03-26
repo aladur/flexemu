@@ -39,7 +39,7 @@ BEGIN
             VALUE "FileDescription", "FLEXplorer\0"
             VALUE "FileVersion", "2,24,0,0\0"
             VALUE "InternalName", "FLEXplorer.exe\0"
-            VALUE "LegalCopyright", "Copyright © 1997-2019 W. Schwotzer\0"
+            VALUE "LegalCopyright", "Copyright © 1997-2020 W. Schwotzer\0"
             VALUE "OriginalFilename", "FLEXplorer.exe\0"
             VALUE "ProductName", "FLEXplorer\0"
             VALUE "ProductVersion", "2,24,0,0\0"

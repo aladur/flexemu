@@ -3,7 +3,7 @@
 
 
     Basic helper class used as notification identifier in an observer pattern
-    Copyright (C) 2019  W. Schwotzer
+    Copyright (C) 2020  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

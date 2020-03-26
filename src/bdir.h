@@ -3,7 +3,7 @@
 
 
     Basic class used for directory functions
-    Copyright (C) 1999-2019  W. Schwotzer
+    Copyright (C) 1999-2020  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
