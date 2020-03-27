@@ -1248,6 +1248,28 @@ bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
     return false;
 } // set_file_time
 
+// Set back the file time to the date in the emulated file system.
+bool NafsDirectoryContainer::update_file_time(const char *path,
+                                              SWord file_id) const
+{
+    if (file_id >= 0)
+    {
+        Word sector_index = file_id / DIRENTRIES;
+
+        if (sector_index < flex_directory.size())
+        {
+            const auto &directory_entry =
+                flex_directory[sector_index].dir_entry[file_id % DIRENTRIES];
+            return set_file_time(path,
+                directory_entry.month,
+                directory_entry.day,
+                directory_entry.year);
+        }
+    }
+
+    return true;
+}
+
 
 // Check for new directory entries. A new directory entry is identified
 // by the first byte of the file name set to neither DE_DELETED nor DE_EMPTY.
@@ -1470,6 +1492,13 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
                         result = true;
                     }
                     fclose(fp);
+
+                    if (link.type == SectorType::File)
+                    {
+                        // The host file system changes the modification time.
+                        // Set it back to the time of the emulated file system.
+                        update_file_time(path.c_str(), link.file_id);
+                    }
                 }
 
                 update_sector_buffer_from_link(buffer, link);
@@ -1695,6 +1724,13 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                     }
 
                     fclose(fp);
+
+                    if (link.type == SectorType::File)
+                    {
+                        // The host file system changes the modification time.
+                        // Set it back to the time of the emulated file system.
+                        update_file_time(path.c_str(), link.file_id);
+                    }
                 }
             }
             break;

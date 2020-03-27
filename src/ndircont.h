@@ -174,6 +174,7 @@ private:
         Byte month,
         Byte day,
         Byte year) const;
+    bool update_file_time(const char *path, SWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &st) const;
     SWord index_of_new_file(const st_t &st);
