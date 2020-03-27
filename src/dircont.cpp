@@ -439,9 +439,9 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
         }
 
 #endif
-#ifdef LINUX
+#ifdef UNIX
 
-        if (sbuf.st_mode & S_IXUSR)
+        if (!stat(filePath.c_str(), &sbuf) && (sbuf.st_mode & S_IXUSR))
         {
             sectorMap = 2;
         }
