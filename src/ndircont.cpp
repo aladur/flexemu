@@ -1456,18 +1456,20 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
 
                 result = false;
                 FILE *fp = fopen(path.c_str(), "rb");
-                if (fp != nullptr &&
-                    !fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
+                if (fp != nullptr)
                 {
-                    size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
-                    fclose(fp);
-
-                    // stuff last sector of file with 0
-                    if (bytes < DBPS)
+                    if (!fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
                     {
-                        std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
+                        size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
+
+                        // stuff last sector of file with 0
+                        if (bytes < DBPS)
+                        {
+                            std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
+                        }
+                        result = true;
                     }
-                    result = true;
+                    fclose(fp);
                 }
 
                 update_sector_buffer_from_link(buffer, link);
