@@ -535,16 +535,6 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
     return false;
 }
 
-#ifdef __GNUC__
-bool FlexFileBuffer::WriteToFile(int fd) const
-{
-    ssize_t bytes;
-
-    bytes = write(fd, buffer.get(), GetFileSize());
-    return (bytes == -1 ? false : true);
-}
-#endif
-
 bool FlexFileBuffer::ReadFromFile(const char *path)
 {
     struct stat sbuf;

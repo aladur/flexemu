@@ -70,9 +70,6 @@ public:
     void ConvertToFlexTextFile();
     void ConvertToDumpFile(DWord bytesPerLine);
     bool WriteToFile(const char *path) const;
-#ifdef __GNUC__
-    bool WriteToFile(int fd) const;
-#endif
     bool ReadFromFile(const char *path);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
