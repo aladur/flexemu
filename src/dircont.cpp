@@ -26,9 +26,6 @@
 #include <string>
 #include <algorithm>
 #include <locale>
-#ifdef _MSC_VER
-    #include <direct.h>
-#endif
 
 #ifdef HAVE_SYS_STATVFS_H
     #include <sys/statvfs.h>
@@ -390,30 +387,10 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
     }
     else
     {
-#ifdef WIN32
-        DWord fileAttrib;
-#ifdef UNICODE
-        fileAttrib = GetFileAttributes(
-            ConvertToUtf16String(filePath).c_str());
-#else
-        fileAttrib = GetFileAttributes(filePath.c_str());
-#endif
-
-        if (fileAttrib != 0xFFFFFFFF &&
-            (fileAttrib & FILE_ATTRIBUTE_HIDDEN))
+        if (hasRandomFileAttribute(directory.c_str(), fileName))
         {
             sectorMap = 2;
         }
-
-#endif
-#ifdef UNIX
-
-        if (!stat(filePath.c_str(), &sbuf) && (sbuf.st_mode & S_IXUSR))
-        {
-            sectorMap = 2;
-        }
-
-#endif
     }
 
     buffer.SetSectorMap(sectorMap);

@@ -25,6 +25,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <iostream>
+#include <sys/types.h>
+#include <sys/stat.h>
 #ifdef UNIX
 #include <linux/param.h>
 #include <netdb.h>
@@ -822,6 +824,42 @@ bool isListedInFileRandom(const char *directory, const char *filename)
             }
         }
     } // if
+
+    return false;
+}
+
+bool hasRandomFileAttribute(const char *directory, const char *filename)
+{
+    std::string sFilename(filename);
+
+    std::transform(sFilename.begin(), sFilename.end(), sFilename.begin(),
+         ::tolower);
+
+    std::string filePath(directory);
+    filePath += PATHSEPARATORSTRING;
+    filePath += sFilename;
+
+#ifdef WIN32
+    DWord fileAttrib;
+#ifdef UNICODE
+    fileAttrib = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
+#else
+    fileAttrib = GetFileAttributes(filePath.c_str());
+#endif
+
+    if (fileAttrib != 0xFFFFFFFF && (fileAttrib & FILE_ATTRIBUTE_HIDDEN))
+    {
+        return true;
+    }
+#endif
+#ifdef UNIX
+        struct stat sbuf;
+
+        if (!stat(filePath.c_str(), &sbuf) && (sbuf.st_mode & S_IXUSR))
+        {
+            return true;
+        }
+#endif
 
     return false;
 }

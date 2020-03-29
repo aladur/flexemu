@@ -24,11 +24,6 @@
 
 #include "misc1.h"
 #include <algorithm>
-#ifdef _MSC_VER
-    #include <io.h>         // needed for access
-    #include <direct.h>
-#endif
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -152,7 +147,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
 
         // CDFS support:
-        if (base->IsRandomFile(base->GetPath().c_str(), fileName.c_str()))
+        if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
         {
             sectorMap = 2;
         }
