@@ -431,7 +431,7 @@ std::string getParentPath(const std::string &path)
         // If path is "/foo/bar/" return "/foo/bar".
         // If path == "/foo/bar.txt" return "/foo".
         // If path == "/foo/bar" return "/foo".
-        return path.substr(pos - 1);
+        return path.substr(0, pos);
     }
 
     // If path == "bar.txt" return "".
