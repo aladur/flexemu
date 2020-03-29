@@ -503,8 +503,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     Byte trk = 0, sec = 0;
     st_t start;
     st_t next;
-    Word recordNr; // Number of record. For random files it does not contain
-                   // the two records for the sector map.
+    Word recordNr = 0; // Current record number. For random files
+                       // the two sector map sectors are counted too.
     int count;
     FlexDirEntry    de;
     s_sys_info_sector sis;
@@ -536,14 +536,13 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     {
         // write each sector to buffer
         Byte repeat = 0;
-        unsigned int smIndex,  smSector;
-        Word nextPTrk, nextPSec; // contains next physical trk/sec
-        smIndex = 1;
-        smSector = 2;
-        recordNr = nextPTrk = nextPSec = 0;
+        DWord smSector = 2; // Index of current sector map sector (2..1)
+        DWord smIndex = 1; // Byte index within current sector map sector
+        Word nextTrk = 0; // Contains next subsequent track
+        Word nextSec = 0; // Contains next subsequent sector
 
         // at the begin of a random file reserve two sectors for the sector map
-        if (recordNr == 0 && buffer.IsRandom())
+        if (recordNr == 0U && buffer.IsRandom())
         {
             repeat = 2;
         }
@@ -557,7 +556,6 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
                 if (trk == 0 && sec == 0)
                 {
-                    // disk full
                     throw FlexException(FERR_DISK_FULL_WRITING,
                                         fp.GetPath(), pFileName);
                 }
@@ -572,12 +570,18 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                 }
                 else if (count)
                 {
+                    // For random files the two sector map sectors are
+                    // skipped. They are newly generated in sectorBuffer[2]
+                    // and sectorBuffer[1].
+                    // Here the buffer is initialized to zero.
                     memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
+                    ++recordNr;
                 }
 
                 next.trk = sectorBuffer[count][0];
                 next.sec = sectorBuffer[count][1];
             }
+            repeat = 0; // Finished preparing random file sector map.
 
             if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
                                recordNr * (SECTOR_SIZE - 4), 0x00))
@@ -591,44 +595,46 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
             recordNr++;
 
-            // if random file update sector map
             if (buffer.IsRandom())
             {
-                if (trk != nextPTrk || sec != nextPSec ||
-                    sectorBuffer[smSector][smIndex + 2] == 255)
+                // For random files update the sector map.
+                // For each non continuous sector or if sector count is 255
+                // a new entry in sector map is created.
+                if (trk != nextTrk || sec != nextSec ||
+                    sectorBuffer[smSector][smIndex + 2U] == 255U)
                 {
-                    smIndex += 3;
+                    smIndex += 3U;
 
                     if (smIndex >= SECTOR_SIZE)
                     {
-                        smSector--;
-
-                        if (smSector == 0)
+                        if (--smSector == 0U)
                         {
                             throw FlexException(FERR_RECORDMAP_FULL,
                                                 pFileName, fp.GetPath());
                         }
-
-                        smIndex = 4;
+                        smIndex = 4U;
                     }
 
                     sectorBuffer[smSector][smIndex] = trk;
-                    sectorBuffer[smSector][smIndex + 1] = sec;
+                    sectorBuffer[smSector][smIndex + 1U] = sec;
                 }
 
-                sectorBuffer[smSector][smIndex + 2]++;
-                nextPTrk = trk;
+                ++sectorBuffer[smSector][smIndex + 2U];
 
-                if ((nextPSec = sec + 1) > (param.byte_p_track /
-                                            param.byte_p_sector))
+                // Calculate the next subsequent track/sector for given trk/sec.
+                nextTrk = trk;
+                nextSec = sec + 1;
+                if (nextSec > (param.byte_p_track / param.byte_p_sector))
                 {
-                    nextPTrk++;
-                    nextPSec = 1;
+                    ++nextTrk;
+                    nextSec = 1;
                 }
             }
 
-            // set record nr and if last sector set link to 0. Write sector
-            setValueBigEndian<Word>(&sectorBuffer[0][2], recordNr);
+            // Set record number. If last sector of file set link to 0.
+            // Write the sector to disk.
+            setValueBigEndian<Word>(&sectorBuffer[0][2],
+                                    recordNr - (buffer.IsRandom() ? 2U : 0U));
 
             if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
             {
@@ -643,8 +649,6 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                 throw FlexException(FERR_WRITING_TRKSEC,
                                     stream.str(), fp.GetPath());
             }
-
-            repeat = 0;
         }
         while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
     }
@@ -677,9 +681,9 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         }
     }
 
-    // update sys info sector
+    // Update the system info sector.
     auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
-    free -= (recordNr + (buffer.IsRandom() ? 2 : 0));
+    free -= recordNr;
     setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
@@ -691,7 +695,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    // make new directory entry
+    // Create a new directory entry.
     de.SetDate(buffer.GetDate());
     de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
@@ -700,6 +704,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     de.SetAttributes(buffer.GetAttributes());
     de.SetSectorMap(buffer.GetSectorMap());
     CreateDirEntry(de);
+
     return true;
 }
 
@@ -708,7 +713,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     FlexFileBuffer  buffer;
     FlexDirEntry    de;
     int             trk, sec;
-    int             recordNr, repeat;
+    int             recordNr;
     Byte            sectorBuffer[SECTOR_SIZE];
     int             size;
 
@@ -728,11 +733,6 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     buffer.SetDate(de.GetDate());
     size = de.GetSize();
 
-    if (de.IsRandom())
-    {
-        size -= 2 * SECTOR_SIZE;
-    }
-
     if (size < 0)
     {
         throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
@@ -742,7 +742,6 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     size = size * DBPS / SECTOR_SIZE;
     buffer.Realloc(size);
     recordNr = 0;
-    repeat = 1;
 
     if (size > 0)
     {
@@ -750,31 +749,22 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
         while (true)
         {
-            // if random file skip the two sector map sectors
-            if (recordNr == 0 && de.IsRandom())
+            if (trk == 0 && sec == 0)
             {
-                repeat = 3;
+                return buffer;
+            }
+            if (!ReadSector(&sectorBuffer[0], trk, sec))
+            {
+                st_t st{static_cast<Byte>(trk), static_cast<Byte>(sec)};
+                std::stringstream stream;
+
+                stream << st;
+                throw FlexException(FERR_READING_TRKSEC,
+                                    stream.str(), fileName);
             }
 
-            for (int i = 0; i < repeat; i++)
-            {
-                if (trk == 0 && sec == 0)
-                {
-                    return buffer;
-                }
-                if (!ReadSector(&sectorBuffer[0], trk, sec))
-                {
-                    st_t st{static_cast<Byte>(trk), static_cast<Byte>(sec)};
-                    std::stringstream stream;
-
-                    stream << st;
-                    throw FlexException(FERR_READING_TRKSEC,
-                                        stream.str(), fileName);
-                }
-
-                trk = sectorBuffer[0];
-                sec = sectorBuffer[1];
-            } // for
+            trk = sectorBuffer[0];
+            sec = sectorBuffer[1];
 
             if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
                                  recordNr * (SECTOR_SIZE - 4)))
@@ -785,7 +775,6 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
             }
 
             recordNr++;
-            repeat = 1;
         }
     }
 
@@ -851,10 +840,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {
-                int records;
-
-                records = (entry.GetSize() / param.byte_p_sector) +
-                          (entry.IsRandom() ? 2 : 0);
+                int records = entry.GetSize() / param.byte_p_sector;
                 memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
                 strncpy(pde->filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
