@@ -533,125 +533,125 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     } // get start trk/sec of free chain
 
     next = start = sis.sir.fc_start;
+
+    // write each sector to buffer
+    Byte repeat = 0;
+    DWord smSector = 2; // Index of current sector map sector (2..1)
+    DWord smIndex = 1; // Byte index within current sector map sector
+    Word nextTrk = 0; // Contains next subsequent track
+    Word nextSec = 0; // Contains next subsequent sector
+
+    // at the begin of a random file reserve two sectors for the sector map
+    if (recordNr == 0U && buffer.IsRandom())
     {
-        // write each sector to buffer
-        Byte repeat = 0;
-        DWord smSector = 2; // Index of current sector map sector (2..1)
-        DWord smIndex = 1; // Byte index within current sector map sector
-        Word nextTrk = 0; // Contains next subsequent track
-        Word nextSec = 0; // Contains next subsequent sector
-
-        // at the begin of a random file reserve two sectors for the sector map
-        if (recordNr == 0U && buffer.IsRandom())
-        {
-            repeat = 2;
-        }
-
-        do
-        {
-            for (count = repeat; count >= 0; count--)
-            {
-                trk = next.trk;
-                sec = next.sec;
-
-                if (trk == 0 && sec == 0)
-                {
-                    throw FlexException(FERR_DISK_FULL_WRITING,
-                                        fp.GetPath(), pFileName);
-                }
-
-                if (!ReadSector(&sectorBuffer[count][0], trk, sec))
-                {
-                    std::stringstream stream;
-
-                    stream << next;
-                    throw FlexException(FERR_READING_TRKSEC,
-                                        stream.str(), fp.GetPath());
-                }
-                else if (count)
-                {
-                    // For random files the two sector map sectors are
-                    // skipped. They are newly generated in sectorBuffer[2]
-                    // and sectorBuffer[1].
-                    // Here the buffer is initialized to zero.
-                    memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
-                    ++recordNr;
-                }
-
-                next.trk = sectorBuffer[count][0];
-                next.sec = sectorBuffer[count][1];
-            }
-            repeat = 0; // Finished preparing random file sector map.
-
-            if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
-                               recordNr * (SECTOR_SIZE - 4), 0x00))
-            {
-                std::stringstream stream;
-
-                stream << next;
-                throw FlexException(FERR_WRITING_TRKSEC,
-                                    stream.str(), fp.GetPath());
-            }
-
-            recordNr++;
-
-            if (buffer.IsRandom())
-            {
-                // For random files update the sector map.
-                // For each non continuous sector or if sector count is 255
-                // a new entry in sector map is created.
-                if (trk != nextTrk || sec != nextSec ||
-                    sectorBuffer[smSector][smIndex + 2U] == 255U)
-                {
-                    smIndex += 3U;
-
-                    if (smIndex >= SECTOR_SIZE)
-                    {
-                        if (--smSector == 0U)
-                        {
-                            throw FlexException(FERR_RECORDMAP_FULL,
-                                                pFileName, fp.GetPath());
-                        }
-                        smIndex = 4U;
-                    }
-
-                    sectorBuffer[smSector][smIndex] = trk;
-                    sectorBuffer[smSector][smIndex + 1U] = sec;
-                }
-
-                ++sectorBuffer[smSector][smIndex + 2U];
-
-                // Calculate the next subsequent track/sector for given trk/sec.
-                nextTrk = trk;
-                nextSec = sec + 1;
-                if (nextSec > (param.byte_p_track / param.byte_p_sector))
-                {
-                    ++nextTrk;
-                    nextSec = 1;
-                }
-            }
-
-            // Set record number. If last sector of file set link to 0.
-            // Write the sector to disk.
-            setValueBigEndian<Word>(&sectorBuffer[0][2],
-                                    recordNr - (buffer.IsRandom() ? 2U : 0U));
-
-            if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
-            {
-                sectorBuffer[0][0] = sectorBuffer[0][1] = 0;
-            }
-
-            if (!WriteSector(&sectorBuffer[0][0], trk, sec))
-            {
-                std::stringstream stream;
-
-                stream << next;
-                throw FlexException(FERR_WRITING_TRKSEC,
-                                    stream.str(), fp.GetPath());
-            }
-        }
-        while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
+        repeat = 2;
     }
+
+    do
+    {
+        for (count = repeat; count >= 0; count--)
+        {
+            trk = next.trk;
+            sec = next.sec;
+
+            if (trk == 0 && sec == 0)
+            {
+                throw FlexException(FERR_DISK_FULL_WRITING,
+                                    fp.GetPath(), pFileName);
+            }
+
+            if (!ReadSector(&sectorBuffer[count][0], trk, sec))
+            {
+                std::stringstream stream;
+
+                stream << next;
+                throw FlexException(FERR_READING_TRKSEC,
+                                    stream.str(), fp.GetPath());
+            }
+            else if (count)
+            {
+                // For random files the two sector map sectors are
+                // skipped. They are newly generated in sectorBuffer[2]
+                // and sectorBuffer[1].
+                // Here the buffer is initialized to zero.
+                memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
+                ++recordNr;
+            }
+
+            next.trk = sectorBuffer[count][0];
+            next.sec = sectorBuffer[count][1];
+        }
+        repeat = 0; // Finished preparing random file sector map.
+
+        if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
+                           recordNr * (SECTOR_SIZE - 4), 0x00))
+        {
+            std::stringstream stream;
+
+            stream << next;
+            throw FlexException(FERR_WRITING_TRKSEC,
+                                stream.str(), fp.GetPath());
+        }
+
+        recordNr++;
+
+        if (buffer.IsRandom())
+        {
+            // For random files update the sector map.
+            // For each non continuous sector or if sector count is 255
+            // a new entry in sector map is created.
+            if (trk != nextTrk || sec != nextSec ||
+                sectorBuffer[smSector][smIndex + 2U] == 255U)
+            {
+                smIndex += 3U;
+
+                if (smIndex >= SECTOR_SIZE)
+                {
+                    if (--smSector == 0U)
+                    {
+                        throw FlexException(FERR_RECORDMAP_FULL,
+                                            pFileName, fp.GetPath());
+                    }
+                    smIndex = 4U;
+                }
+
+                sectorBuffer[smSector][smIndex] = trk;
+                sectorBuffer[smSector][smIndex + 1U] = sec;
+            }
+
+            ++sectorBuffer[smSector][smIndex + 2U];
+
+            // Calculate the next subsequent track/sector for given trk/sec.
+            nextTrk = trk;
+            nextSec = sec + 1;
+            if (nextSec > (param.byte_p_track / param.byte_p_sector))
+            {
+                ++nextTrk;
+                nextSec = 1;
+            }
+        }
+
+        // Set record number. If last sector of file set link to 0.
+        // Write the sector to disk.
+        setValueBigEndian<Word>(&sectorBuffer[0][2],
+                                recordNr - (buffer.IsRandom() ? 2U : 0U));
+
+        if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
+        {
+            sectorBuffer[0][0] = sectorBuffer[0][1] = 0;
+        }
+
+        if (!WriteSector(&sectorBuffer[0][0], trk, sec))
+        {
+            std::stringstream stream;
+
+            stream << next;
+            throw FlexException(FERR_WRITING_TRKSEC,
+                                stream.str(), fp.GetPath());
+        }
+    }
+    while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
+
     sis.sir.fc_start = next;
 
     // if free chain full, set end trk/sec of free chain also to 0
