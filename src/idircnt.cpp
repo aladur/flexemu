@@ -215,8 +215,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
-            if (base->IsRandomFile(
-                    base->GetPath().c_str(), findData->d_name))
+            if (isListedInFileRandom(base->GetPath().c_str(), findData->d_name))
             {
                 sectorMap = 2;
             }

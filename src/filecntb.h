@@ -39,11 +39,6 @@ const int TYPE_NAFS_DIRECTORY   = 0x40; /* subtype: NAFS directory */
 const int TYPE_RAM_CONTAINER    =
     0x80; /* subtype: filecontainer loaded in RAM */
 
-// This macro defines the name of a file. It contains a list of files
-// which have to be handled as random files. It is used in directory containers
-// to identify random files.
-#define RANDOM_FILE_LIST "random"
-
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
 #define BOOT_FILE "boot"

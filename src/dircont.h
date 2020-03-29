@@ -92,7 +92,6 @@ public:
 
     // private interface
 private:
-    bool IsRandomFile(const char *ppath, const char *pfilename) const;
     bool IsFlexFilename(const char *pfilename,
                         char *pname = nullptr,
                         char *pext = nullptr) const;

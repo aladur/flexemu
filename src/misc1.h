@@ -332,6 +332,11 @@ extern "C" struct sRGBDef
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"
 
+// This macro defines the name of a file. It contains a list of files
+// which have to be handled as random files. It is used in directory containers
+// to identify random files.
+#define RANDOM_FILE_LIST "random"
+
 #define BTST0(x)  (((x) & 0x01) != 0)
 #define BTST1(x)  (((x) & 0x02) != 0)
 #define BTST2(x)  (((x) & 0x04) != 0)
@@ -428,6 +433,8 @@ extern "C" struct sRGBDef colors[];
 extern "C" const size_t color_count;
 
 extern const char* white_space;
+
+extern bool isListedInFileRandom(const char *directory, const char *filename);
 
 // trim from end of string (right)
 inline std::string& rtrim(std::string& str, const char* t = white_space)

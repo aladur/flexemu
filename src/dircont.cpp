@@ -150,39 +150,6 @@ std::string DirectoryContainer::GetPath() const
     return directory;
 }
 
-bool DirectoryContainer::IsRandomFile(
-    const char *ppath, const char *pfilename) const
-{
-    char    str[PATH_MAX + 1];
-    char    lowFilename[14];
-
-    strcpy(str, ppath);
-    strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
-    strncpy(lowFilename, pfilename, 13);
-    lowFilename[13] = '\0';
-    strlower(lowFilename);
-
-    BFilePtr fp(str, "r");
-
-    if (fp != nullptr)
-    {
-        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
-        {
-            if (strchr(str, '\n'))
-            {
-                *strchr(str, '\n') = '\0';
-            }
-
-            if (strcmp(lowFilename, str) == 0)
-            {
-                return true;
-            }
-        }
-    } // if
-
-    return false;
-} // is_in_file_random
-
 /*
 bool    DirectoryContainer::OpenDirectory(const char *pattern)
 {
@@ -416,7 +383,7 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
     if (attributes & FLX_READONLY)
     {
         // CDFS-Support: look for file name in file 'random'
-        if (IsRandomFile(directory.c_str(), fileName))
+        if (isListedInFileRandom(directory.c_str(), fileName))
         {
             sectorMap = 2;
         }

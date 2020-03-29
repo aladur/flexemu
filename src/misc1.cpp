@@ -794,3 +794,35 @@ bool AskForInput(const std::string &question, const std::string &answers,
     return input == '\n' || ::tolower(input) == answers.at(0);
 }
 
+bool isListedInFileRandom(const char *directory, const char *filename)
+{
+    char str[PATH_MAX + 1];
+    char lowFilename[14];
+
+    strcpy(str, directory);
+    strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
+    strncpy(lowFilename, filename, 13);
+    lowFilename[13] = '\0';
+    strlower(lowFilename);
+
+    BFilePtr fp(str, "r");
+
+    if (fp != nullptr)
+    {
+        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
+        {
+            if (strchr(str, '\n'))
+            {
+                *strchr(str, '\n') = '\0';
+            }
+
+            if (strcmp(lowFilename, str) == 0)
+            {
+                return true;
+            }
+        }
+    } // if
+
+    return false;
+}
+
