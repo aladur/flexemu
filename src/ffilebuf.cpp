@@ -29,6 +29,8 @@
 #include "ffilebuf.h"
 #include "bfileptr.h"
 #include "flexerr.h"
+#include "fdirent.h"
+#include "filecntb.h"
 #include <sstream>
 #include <algorithm>
 
@@ -556,27 +558,36 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
             if (blocks == 1 || GetFileSize() == 0)
             {
-                const char *pf;
-                struct tm *lt;
+                auto directory = getParentPath(path);
 
-                fileHeader.attributes = 0;
-                fileHeader.sectorMap = 0;
-                pf = strrchr(path, PATHSEPARATOR);
+                SetAttributes(0);
+                SetSectorMap(0);
 
-                if (pf == nullptr)
+                if(access(directory.c_str(), W_OK))
                 {
-                    pf = path;
+                    SetAttributes(FLX_READONLY);
+                    // CDFS-Support: look for file name in file 'random'
+                    if (isListedInFileRandom(directory.c_str(),
+                                             getFileName(path).c_str()))
+                    {
+                        SetSectorMap(IS_RANDOM_FILE);
+                    }
                 }
-                else
+                else if (hasRandomFileAttribute(directory.c_str(),
+                                                getFileName(path).c_str()))
                 {
-                    ++pf;
+                    SetSectorMap(IS_RANDOM_FILE);
                 }
 
-                SetAdjustedFilename(pf);
-                lt = localtime(&(sbuf.st_mtime));
-                fileHeader.day = static_cast<Word>(lt->tm_mday);
-                fileHeader.month = static_cast<Word>(lt->tm_mon + 1);
-                fileHeader.year = static_cast<Word>(lt->tm_year + 1900);
+                if(access(path, W_OK))
+                {
+                    SetAttributes(FLX_READONLY);
+                }
+
+                SetAdjustedFilename(getFileName(path).c_str());
+                struct tm *lt = localtime(&(sbuf.st_mtime));
+                SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
+
                 return true;
             }
         }

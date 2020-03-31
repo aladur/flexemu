@@ -361,8 +361,6 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
 {
     FlexFileBuffer buffer;
     std::string filePath(fileName);
-    int sectorMap = 0;
-    struct stat sbuf;
 
     std::transform(filePath.begin(), filePath.end(), filePath.begin(),
          ::tolower);
@@ -372,45 +370,6 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
     if (!buffer.ReadFromFile(filePath.c_str()))
     {
         throw FlexException(FERR_READING_FROM, std::string(fileName));
-    }
-
-    buffer.SetFilename(fileName);
-
-    // check for a random file
-    if (attributes & FLX_READONLY)
-    {
-        // CDFS-Support: look for file name in file 'random'
-        if (isListedInFileRandom(directory.c_str(), fileName))
-        {
-            sectorMap = 2;
-        }
-    }
-    else
-    {
-        if (hasRandomFileAttribute(directory.c_str(), fileName))
-        {
-            sectorMap = 2;
-        }
-    }
-
-    buffer.SetSectorMap(sectorMap);
-
-    // get date of file
-    if (stat(filePath.c_str(), &sbuf) >= 0)
-    {
-        struct tm   *timeStruct;
-
-        timeStruct = localtime(&sbuf.st_mtime);
-        buffer.SetDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
-                       timeStruct->tm_year + 1900);
-    }
-
-    // set attributes
-    int wp = access(filePath.c_str(), W_OK);
-
-    if (wp)
-    {
-        buffer.SetAttributes(FLX_READONLY);
     }
 
     return buffer;
