@@ -34,7 +34,6 @@ enum flexFileAttributes
     FLX_NODELETE    = 0x40,
     FLX_NOREAD  = 0x20,
     FLX_NOCAT   = 0x10,
-    FLX_RANDOM  = 0x02
 };
 
 enum flexFileStatus
