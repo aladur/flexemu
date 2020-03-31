@@ -727,7 +727,11 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
   
     if (!dsk_file.empty())
     { 
-        extension = getFileExtension(dsk_file).substr(1);
+        extension = getFileExtension(dsk_file);
+        if (!extension.empty())
+        {
+            extension = extension.substr(1);
+        }
     }
 
     std::transform(extension.begin(), extension.end(), extension.begin(),
