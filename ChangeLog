@@ -564,8 +564,10 @@ Code Maintenance:
 	o FileContainerIterator: Throw exception on misuse
 	o FlexDirEntry: Improve const correctness
 
-V2.25 (not yet published)
+V3.00 (not yet published)
 New Features:
+	o New Qt user interface (replaces X11/Xt and Windows GDI user
+	  interface)
 Bug Fixes:
 Code Maintenance:
 
