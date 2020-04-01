@@ -340,7 +340,232 @@ Bug Fixes:
 	o GCC: Bugfix for c++11 gcc compilers (gnu::fallthrough)
 	  - This fixes a gcc compile error for gcc version < 7.0.0
 
-V2.24 (not yet published)
+V2.24 (20200401)
+New Features:
+	o FlexemuOptionsDialog: Make CPU frequency configurable
+	o flexemu: New command line parameter -C <startup_commands>
+	o linux: Only -t is needed to set terminal mode
+	o linux: Support terminal mode for monitor mon54.s19 and mon54-6.s19
+	o monitor54.hex: New command 'Z' to exit emulator
+	o Windows installer: Add flexemu homepage
+	o Windows installer: Add FLEXplorer file associations *.dsk, *.flx and
+	o FLEXplorer: Support Drag&Drop (Copy) for *.dsk, *.flx and *.wta
+	o FLEXplorer: Improved file viewer
+	  - View all selected files (not only the last one).
+	  - Export file(s) into a TEMP subdirectory
+	  - Use name of container and file name for export
+	  - Overwrite file if it already exists
+	o FLEXplorer: Support automatic text file conversion for any file
+	  container type
+	o FLEXplorer: Files which are not identifed as FLEX text file are
+	  displayed as hex-dump.
+	o FLEXplorer: On Linux/Unix use xdg-open to view files
+	  The selected file viewer depends on it's mime type
+	  On Windows the view file has always a .txt extension
+	o FLEXplorer: Support to open directory containers on the command line
+	o Provide new desktop icons. Linux: Integrate icons on desktop
+	o FLEXplorer: Improve about dialog
+	o fsetup: Improve color scheme configuration
+	  - Depending on the available number of colors
+	  - A monochromatic color or multiple color scheme can be choosen.
+	  - Monochromatic colors a displayed by the color name and value
+	    within the combo box.
+	  - Build up a dependency chain to resolve configuration dependencies:
+	    Hardware Dependencies -> RAM Dependencies -> Color Dependencies.
+	o flex2hex: Convert FLEX binary to hex files
+	o flex2hex: Set exit code to 1 if any conversion fails
+	o Improved documentation
+	  - Eurocom II on-board memory
+	  - Eurocom II/V7 RAM extension
+	  - Eurocom II/V7 MMU
+	  - Eurocom II video screen, video RAM
+	  - Separate MC6809 page with undocumented instructions
+	  - Added 6x09_Instruction_Sets.pdf
+	o Improved keyboard mapping
+	  - Home returns 0xF1 (corresponding return code for SHIFT and/or CTRL)
+	  - End returns 0xF9 (corresponding return code for SHIFT and/or CTRL)
+	  - PgUp returns 0xF7 (corresponding return code for SHIFT and/or CTRL)
+	  - Delete or SHIFT+Delete returns DEL (0x7F)
+	  - CTRL+Delete returns US (0x1F)
+	  - CTRL+F11 return 0xFB
+	  - CTRL+F12 return 0x92
+	  - Backspace returns BS (0x08)
+	  - Numeric keypad:
+	    - SHIFT+0-9 return 0xEX
+	    - CTRL+0-9 return 0xBX
+	    - CTRL+SHIFT+0-9 returns 0xAX
+	    - SHIFT+Delete returns DEL (0x7F)
+	    - CTRL+Delete returns US (0x1F)
+	    - If NUMLOCK is off:
+	      - 0-9 return 0xFX
+	      - Delete returns DEL (0x7F)
+	    - If NUMLOCK is on:
+	      - 0-9 return 0-9
+	  - CTRL+SHIFT+Break executes a CPU reset
+	o fsetup: Hyperlink to Eurocom II hardware description
+	o Update html documentation
+	o fsetup: Some minor dialog geometry improvements
+	o bin2s19: Add usage massage
+	o mdcrtool: Add command line parameter -d<directory>
+	o When copying files from file container to directory container
+	  support empty files (NULL files)
+	o File Container: Support and display disk number
+	o File Container: Improved file container identification
+	  - Also support FLEX file containers with missing sectors on the
+	    last track.
+	o FLEXplorer: Improve New File container Dialog:
+	  - Add Combobox to preselect common floppy track-sector formats
+	  - Show warning for uncommon track-sector combinations
+	o NafsDirectoryContainer: Create sorted directory entries
+	o NafsDirectoryContainer: Improve compatibilty to real FLEX disks
+	  - Number of tracks, sectors, sectors on track 0,
+	    number of directory sectors
+	o flex2hex: Add conversion to raw binary files (without addresses)
+	o Added FLEX Diagnostics utilities (Memory and disk diagnostics)
+	  See documentation 6809diag.pdf
+	o Add command line utility dsktool for *.dsk, *.flx file containers:
+	  - Check consistency
+	  - Create a new file container
+	  - Inject or extract files
+	  - List directory content or one line summary
+	  - Delete files
+	o File container: Improve FLEX disk compatibility
+	  - DSK format: Correctly detect sector count on track 0.
+	  - DSK format: Limit sector count on track 0 to single density.
+	  - FLX format: Support one or two sided disks.
+	o FLEXplorer: Correctly update free sectors
+	  - After copying a random file the free sectors is two sectors too
+	    high. The two sectors containing the sector map have not been
+	    taken into account.
+	o All deployed file containers are now 100% FLEX disk compatible
+	o Floppy disk controller: Better emulation of index pulse and interrupt
+	  - Cyclically set interrupt flag on index pulse
+	  - Simple emulation: set index pulse each 16 x when
+	  - reading status register or
+	  - writing a type I command
+	  - reading DRISEL register
+	o Floppy disk controller: Support sector sizes 128, 256, 512 and 1024
+	o FlexFileContainer: Support formatting a disk with the emulation.
+	  - WD1793 supports the write track command.
+	  - Even non FLEX compatible formats can be written.
+	  - A non existent file container, file container with size zero or
+	    file container with unknown format can be formatted.
+	  - Only file containers with *.flx file format can be formatted.
+	o Added format / test command to format a CP/M 68K disk
+	  - FORM68.TXT / FORM68.CMD on source.dsk to format a disk
+	  - TEST68.TXT / TEST68.CMD on source.dsk to test the disk
+	o Added format / test command to format a FLEX 5 inch disk
+	  - NEWDISK.TXT on source.dsk, NEWDISK.CMD on system.dsk, system54.dsk
+	  - Single/double density, single/double side, 35, 40 or 80 tracks
+	  - Contains Eurocom II/V7 compatible boot sector
+	o Added utility command APPEND.CMD on system.dsk and system54.cmd
+	o Floppy disk controller supports READADDRESS command
+	o Added test command to test READADDRESS
+	  - RDADDR.TXT, RDADDR.CMD on source.dsk
+	o Floppy disk controller supports READ-/WRITESECTOR with mult. sectors
+	o Added test command to test READSECTOR with multiple sectors
+	  - RDMULSEC.TXT, RDMULSEC.CMD on source.dsk
+
+Bug Fixes:
+	o Linux terminal mode: Avoid flodding stdout with NUL characters
+	o Linux terminal mode: Check key_buffer_serial containing at least
+	  one character
+	o send2flx: Avoid missing EOF character from fgetc()
+	o Linux terminal mode: Suppress to display NUL characters
+	o EXIT.CMD: Bugfix to support several commands
+	o EMU.CMD: Improved error handling
+	o Mc6809: Bugfix CLR instruction (addressing mode direct, indexed or
+	  extended)
+	o mdcrtool: Correctly display mdcr file contents
+	o When reading hex files check for file read and checksum errors
+	o Windows: Bugfix to support non-option arguments
+	  - Support arguments without an option prefix e.g. -x
+	  - Support multiple non-whitespace separated options e.g. -vx
+	  - non-option arguments are used by mdcrtool and flex2hex
+	o Realtime clock: Use the right year (modulo 100)
+	o Windows installer: Correctly uninstall all files
+	o Flexemu documentation not displayed
+	o flexemu: Correct loading monitor file when located relative to
+	  Disk/Monitor file path
+	o Improved error handling when opening a directory container
+	o FLEXplorer: Protect to Drag&Drop into the same container
+	o FLEXplorer: Protect to Copy&Paste into the same container
+	o Mc6809: Fix COM instruction
+	  - Bugfix for any of: COM A/COM B/COM mem
+	  - Always set carry (instead of clearing it)
+	  - Bug since flexemu V2.20a
+	o Mc6809: Avoid duplicate lines in instruction logging
+	o Analog joystick conversion table has 31 items
+	o Correct cycle count overflow handling
+	o File Containers: Support two boot sectors.
+	  see: FLEX Advanced Programmer's Guide
+	o NafsDirectoryContainer: Avoid duplicate filenames (case sensitive)
+	o NafsDirectoryContainer: Bugfix handling new files
+	- Avoiding crash, corrupted files or files not written to host file
+	  system when using more than 4 new files at a time is now reliable.
+	o NafsDirectoryContainer: Correctly writing random files:
+	  When copying a random file the sector map (first two sectors)
+	  is correctly updated.
+	o Floppy disk controller: Set error bit on read/write error
+	o File Container: Support odd sector number (single sided)
+	o File Container: Always check track/sector in Read-/WriteSector
+	  Reason: This avoids segmentation faults when using a file container
+	  outside the context of E2floppy.
+	o FlexFileContainer: Bugfix to correctly read disk name
+	o Improve error message if file container can not be identified
+	  - *.dsk file format is also used for color computer or apple II.
+	o FlexFileContainer: Set correct year when creating a new file
+	  container
+	o FlexFileContainer: Diskname always has to be uppercase
+	o NafsDirectoryContainer: Correct Year 2000 compatibility
+	o NafsDirectoryContainer on Linux/Unix: Support only lowercase
+	  filenames
+	o Correctly identify and use FLX format (was broken)
+	o FlexFileContainer bugfix: Correctly copy random files
+	  - For random files the two sector map sectors are always copied.
+	  - The sector map has to be updated to the target disk geometry.
+	  - Same behaviour for flexemu, flexplorer, dsktool, *.dsk or directory
+	    container.
+
+Code Maintenance:
+	o Use readable variable names
+	o Use ref parameters where appropriate
+	o Avoid c-style casts
+	o Fix unused parameter warnings
+	o Minimize variable scope
+	o Fix signed/unsigned mismatch
+	o src/Makefile.am: Bugfix to support distcheck
+	o Restructure Makefile.am in several directories
+	o Impvoed observer pattern
+	o Remove strong coupling of various device classes and and Mc6809,
+	  VideoControl1, VideoControl2 and Memory.
+	  Instead use obersver pattern
+	o Linux: Set right permissions when creating a directory
+	o FlexFileBuffer refactoring
+	o Remove wxWidgets 2.8 compatibility
+	o FlexemuOptionsDialog: Code cleanup
+	o HEX-file reader/writer: Use stream I/O istead of plain c file I/O
+	o Avoid returning pointer to static local variable, return by value
+	o Use bool return type where only 0/1 is used
+	o Prefer std::fill over memset or raw loop.
+	o Prefer list initialization over memset or raw loop.
+	o Prefer std::memset over memset.
+	o Replace magic numbers by well defined constants
+	o NafsDirctoryContainer: Improved debug logging
+	o gcc: Activate warning -Wswitch-enum
+	o gcc: Activate warning -Wshadow
+	o gcc: Activate and fix warning -Wuseless-cast
+	o clang: Activate and fix warning -Winconsistent-missing-override
+	o gcc: Activate and fix warning -Wshadow for C
+	o C: Use -std=gnu99
+	o Activate warning -Wfloat-conversion
+	o Activate and fix warnig -Wundef
+	o File container: Use RAII
+	o FileContainerIterator: Throw exception on misuse
+	o FlexDirEntry: Improve const correctness
+
+V2.25 (not yet published)
 New Features:
 Bug Fixes:
+Code Maintenance:
 
