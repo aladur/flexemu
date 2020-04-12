@@ -15,6 +15,7 @@ prerequisites:
         install the following deb-packages:
 
         sudo apt-get install libxt-dev libxaw7-dev lixwxgtk3.0-dev
+        sudo apt-get install qtbase5-dev qtbase5-dev-tools libqt5core5a libqt5gui5 libqt5widgets5
 
 remarks:
 

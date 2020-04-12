@@ -1,0 +1,763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FlexemuSetup</class>
+ <widget class="QDialog" name="FlexemuSetup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>730</width>
+    <height>360</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>640</width>
+    <height>360</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Flexemu Options Dialog</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="fsetup.qrc">
+    <normaloff>:/resource/fsetup.png</normaloff>:/resource/fsetup.png</iconset>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="l_hardwareLink">
+       <property name="mouseTracking">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>&amp;lt;hardware_link&amp;gt;</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::RichText</enum>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="openExternalLinks">
+        <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextBrowserInteraction</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTabWidget" name="c_tabWidget">
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
+       <property name="currentIndex">
+        <number>3</number>
+       </property>
+       <widget class="QWidget" name="t_emulatedHardware">
+        <attribute name="title">
+         <string>Emulated Hardware</string>
+        </attribute>
+        <widget class="QGroupBox" name="g_emulatedHardware">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>351</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Emulated Hardware</string>
+         </property>
+         <widget class="QRadioButton" name="r_eurocom2v5">
+          <property name="geometry">
+           <rect>
+            <x>11</x>
+            <y>21</y>
+            <width>311</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Eurocom II V5 (Philips Mini DCR)</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="r_eurocom2v7">
+          <property name="geometry">
+           <rect>
+            <x>11</x>
+            <y>45</y>
+            <width>311</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Eurocom II V7 (Floppy Disk)</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="g_cpuFrequency">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>90</y>
+           <width>351</width>
+           <height>91</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>CPU Frequency</string>
+         </property>
+         <widget class="QRadioButton" name="r_frequencyOriginal">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>311</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Use original frequency</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="r_frequencyFast">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>311</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Emulate as fast as possible</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="r_frequencySet">
+          <property name="geometry">
+           <rect>
+            <x>11</x>
+            <y>61</y>
+            <width>116</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Set Frequency</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="e_frequency">
+          <property name="geometry">
+           <rect>
+            <x>134</x>
+            <y>61</y>
+            <width>144</width>
+            <height>23</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="l_mhz">
+          <property name="geometry">
+           <rect>
+            <x>285</x>
+            <y>61</y>
+            <width>26</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>MHz</string>
+          </property>
+          <property name="buddy">
+           <cstring>e_frequency</cstring>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QCheckBox" name="c_useRtc">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>190</y>
+           <width>351</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>MC146818 Realtime clock (Hardware extension)</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="t_userInterface">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <attribute name="title">
+         <string>User Interface</string>
+        </attribute>
+        <widget class="QLabel" name="l_nColors">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>141</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Number of shades</string>
+         </property>
+         <property name="buddy">
+          <cstring>cb_nColors</cstring>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="cb_nColors">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>40</y>
+           <width>141</width>
+           <height>23</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_color">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>141</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Monochromatic color</string>
+         </property>
+         <property name="buddy">
+          <cstring>cb_color</cstring>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="cb_color">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>70</y>
+           <width>141</width>
+           <height>23</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="c_multiColorScheme">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>301</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Multi color scheme</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="c_isInverse">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>140</y>
+           <width>301</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Display inverse colors</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_geometry">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>111</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Screen geometry</string>
+         </property>
+         <property name="buddy">
+          <cstring>cb_geometry</cstring>
+         </property>
+        </widget>
+        <widget class="QComboBox" name="cb_geometry">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>10</y>
+           <width>141</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="currentText">
+          <string/>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="t_memory">
+        <attribute name="title">
+         <string>Memory</string>
+        </attribute>
+        <widget class="QGroupBox" name="g_ramExtension">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>201</width>
+           <height>91</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>RAM extension</string>
+         </property>
+         <widget class="QRadioButton" name="r_ramExtNone">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>181</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>None</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="r_ramExt2x96">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>40</y>
+            <width>181</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2 x 96 KByte</string>
+          </property>
+         </widget>
+         <widget class="QRadioButton" name="r_ramExt2x288">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>181</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2 x 288 KByte</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="t_filesAndDirectories">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="title">
+         <string>Files and Directories</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_3" rowstretch="0,0,0,0,0,0,0,0">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinAndMaxSize</enum>
+         </property>
+         <property name="leftMargin">
+          <number>4</number>
+         </property>
+         <property name="topMargin">
+          <number>4</number>
+         </property>
+         <property name="rightMargin">
+          <number>4</number>
+         </property>
+         <property name="bottomMargin">
+          <number>4</number>
+         </property>
+         <property name="spacing">
+          <number>4</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="l_diskMonitorDir">
+           <property name="text">
+            <string>Disk/Monitor directory</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_diskMonitorDir</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="e_diskMonitorDir"/>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="e_drive0"/>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="e_drive1"/>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="b_drive0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="l_diskDrive0">
+           <property name="text">
+            <string>Disk Drive 0</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive0</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="l_monitorPgm">
+           <property name="text">
+            <string>Monitor program</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_monitorPgm</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="2">
+          <widget class="QPushButton" name="b_drive2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="e_drive3"/>
+         </item>
+         <item row="5" column="2">
+          <widget class="QPushButton" name="b_drive3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="e_monitorPgm"/>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="l_mdcrDiskDrive0">
+           <property name="text">
+            <string>Cassette Drive 0</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive3</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="b_monitorPgm">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="b_diskMonitorDir">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="e_drive2"/>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="l_diskDrive3">
+           <property name="text">
+            <string>Disk Drive 3</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive3</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="l_diskDrive1">
+           <property name="text">
+            <string>Disk Drive 1</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive1</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="l_diskDrive2">
+           <property name="text">
+            <string>Disk Drive 2</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive2</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="2">
+          <widget class="QPushButton" name="b_mdcrDrive0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="b_drive1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="e_mdcrDrive0"/>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="l_mdcrDiskDrive1">
+           <property name="text">
+            <string>Cassette Drive 1</string>
+           </property>
+           <property name="buddy">
+            <cstring>e_drive3</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QLineEdit" name="e_mdcrDrive1"/>
+         </item>
+         <item row="7" column="2">
+          <widget class="QPushButton" name="b_mdcrDrive1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="t_ExpertOptions">
+        <attribute name="title">
+         <string>Expert Options</string>
+        </attribute>
+        <widget class="QGroupBox" name="g_cpu">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>351</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>CPU</string>
+         </property>
+         <widget class="QCheckBox" name="c_undocumented">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>331</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Undocumented MC6809 instructions</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QGroupBox" name="g_hardware">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>351</width>
+           <height>51</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Hardware</string>
+         </property>
+         <widget class="QCheckBox" name="c_flexibleMmu">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>20</y>
+            <width>331</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>More flexible MMU (Hardware modification)</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="l_expert">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>351</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Expert options have appropriate default values. They should only be changed by experts.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="c_buttonBox">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>c_tabWidget</tabstop>
+  <tabstop>r_eurocom2v5</tabstop>
+  <tabstop>r_eurocom2v7</tabstop>
+  <tabstop>r_frequencyOriginal</tabstop>
+  <tabstop>r_frequencyFast</tabstop>
+  <tabstop>r_frequencySet</tabstop>
+  <tabstop>e_frequency</tabstop>
+  <tabstop>c_useRtc</tabstop>
+  <tabstop>cb_geometry</tabstop>
+  <tabstop>cb_nColors</tabstop>
+  <tabstop>cb_color</tabstop>
+  <tabstop>c_multiColorScheme</tabstop>
+  <tabstop>c_isInverse</tabstop>
+  <tabstop>r_ramExtNone</tabstop>
+  <tabstop>r_ramExt2x96</tabstop>
+  <tabstop>r_ramExt2x288</tabstop>
+  <tabstop>e_diskMonitorDir</tabstop>
+  <tabstop>b_diskMonitorDir</tabstop>
+  <tabstop>e_monitorPgm</tabstop>
+  <tabstop>b_monitorPgm</tabstop>
+  <tabstop>e_drive0</tabstop>
+  <tabstop>b_drive0</tabstop>
+  <tabstop>e_drive1</tabstop>
+  <tabstop>b_drive1</tabstop>
+  <tabstop>e_drive2</tabstop>
+  <tabstop>b_drive2</tabstop>
+  <tabstop>e_drive3</tabstop>
+  <tabstop>b_drive3</tabstop>
+  <tabstop>e_mdcrDrive0</tabstop>
+  <tabstop>b_mdcrDrive0</tabstop>
+  <tabstop>e_mdcrDrive1</tabstop>
+  <tabstop>b_mdcrDrive1</tabstop>
+  <tabstop>c_undocumented</tabstop>
+  <tabstop>c_flexibleMmu</tabstop>
+ </tabstops>
+ <resources>
+  <include location="fsetup.qrc"/>
+ </resources>
+ <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
+</ui>

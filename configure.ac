@@ -71,6 +71,9 @@ AC_LANG_POP([C++])
 dnl check for wx-config
 WX_PATH_WXCONFIG(3.0.0, WXCONFIG=1)
 
+dnl check for qt libraries and tools
+AX_HAVE_QT
+
 dnl check for optional parameters
 CF_WITH_APP_DEFAULTS
 
@@ -218,9 +221,15 @@ if test "$WXCONFIG" != 1; then
   echo " wxWidgets version:           not found"
 else
   echo " wxWidgets version:           $WX_VERSION"
+  echo " WX_LIBS:                     $WX_LIBS"
+fi
+  echo -n " Qt:                          "
+if test "$have_qt" == "yes"; then
+  echo "yes"
+else
+  echo "Not found"
 fi
   echo " speed optimized compilation: $enable_speed"
-  echo " WX_LIBS:                     $WX_LIBS"
   echo " canonical build:             $build"
   echo " canonical host:              $host"
   echo " canonical target:            $target"
@@ -233,6 +242,13 @@ if test "$WXCONFIG" != 1; then
             'wx-config --libs' command) is in LD_LIBRARY_PATH or
             equivalent variable and wxWidgets is version 2.8.0 or above.
             Without wxWidgets only flexemu will be build.
+    ])
+fi
+if test "$have_qt" != "yes"; then
+    AC_MSG_WARN([
+            Please check that libQt 5.x is installed. At least
+            the packages qtbase5-dev and qtbase5-dev-tools have to be
+            installed.
     ])
 fi
   echo

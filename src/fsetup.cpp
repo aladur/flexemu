@@ -21,81 +21,45 @@
 */
 
 
-#include "warnoff.h"
-// For compilers that support precompilation, includes "wx.h".
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-    // Include your minimal set of headers here, or wx.h
-    #include <wx/wx.h>
-#endif
-#include "warnon.h"
-
 #include "misc1.h"
-
-#include "fsetpdlg.h"
-#include "fsetup.h"
+#include "foptman.h"
+#include "ui_fsetup.h"
+#include "fsetupui.h"
+#include "sguiopts.h"
 #include <vector>
 #include <memory>
+#include <QApplication>
+#include <QResource>
 
 
-IMPLEMENT_APP(FlexemuSetup)
-
-/*------------------------------------------------------
- flexemuSetup implementation (The Application class)
---------------------------------------------------------*/
-bool FlexemuSetup::OnInit()
+int main(int argc, char *argv[])
 {
-#ifdef _UNICODE
-    int i;
+    QApplication app(argc, argv);
+    FlexOptionManager optionMan;
+    QDialog dialog;
+    struct sGuiOptions guiOptions;
+    struct sOptions options;
 
-    std::vector<wxCharBuffer> args;
-    auto mb_argv = std::unique_ptr<char *[]>(new char *[argc]);
-    args.reserve(argc);
+    QResource::registerResource("fsetup.rcc");
 
-    for (i = 0; i < argc; i++)
-    {
-        args.push_back(argv[i].ToUTF8());
-    }
-    for (i = 0; i < argc; i++)
-    {
-        mb_argv[i] = args[i].data();
-    }
-
-    optionMan.InitOptions(&guiOptions, &options, argc, mb_argv.get());
-#else
     optionMan.InitOptions(&guiOptions, &options, argc, argv);
-#endif
-    wxLocale::AddCatalogLookupPathPrefix(".");
-    wxLocale::AddCatalogLookupPathPrefix("./locale");
-
-    m_locale.Init();
-    m_locale.AddCatalog("flexemu");
-
     optionMan.GetOptions(&guiOptions, &options);
     optionMan.GetEnvironmentOptions(&guiOptions, &options);
-    SetAppName("FlexemuSetup");
-    SetExitOnFrameDelete(true);
 
-    auto dialog = new FlexemuOptionsDialog(guiOptions, options,
-                                      nullptr, -1, _("Flexemu Options Dialog"),
-                                      wxDefaultPosition, wxDefaultSize,
-                                      wxCAPTION | wxSYSTEM_MENU |
-                                      wxDIALOG_NO_PARENT | wxRESIZE_BORDER);
+    FlexemuOptionsUi ui;
+    ui.setupUi(&dialog);
+    ui.TransferDataToDialog(guiOptions, options);
 
-    SetTopWindow(dialog);
+    dialog.setModal(true);
+    dialog.setSizeGripEnabled(true);
+    auto result = dialog.exec();
 
-    if (dialog->ShowModal() == wxID_OK)
+    if (result == QDialog::Accepted)
     {
+        ui.TransferDataFromDialog(guiOptions, options);
         optionMan.WriteOptions(&guiOptions, &options);
     }
 
-    dialog->Destroy();
-
-    return true;
+    return 0;
 }
 

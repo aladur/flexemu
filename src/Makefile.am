@@ -12,7 +12,7 @@ SUFFIXES = .rc .o
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             Flexemu.ad flexemu.astyle \
+             fsetup.ui fsetup.qrc Flexemu.ad flexemu.astyle \
 	     JoystickTable.gnumeric \
 	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
@@ -36,14 +36,14 @@ AM_CXXFLAGS = --std=c++11 \
 flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
 			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
-fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
+fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
-fsetup_LDADD     = @WX_LIBS@ @PTHREAD_LD@
+fsetup_LDADD     = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
 dsktool_LDADD    = @PTHREAD_LD@
@@ -52,11 +52,15 @@ flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
 test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
+BUILT_SOURCES = ui_fsetup.h.stamp
+
 fsetup_SOURCES = \
-fsetup.cpp fsetpdlg.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
+fsetup.cpp fsetupui.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp colors.cpp \
-fsetup.h fsetpdlg.h foptman.h brcfile.h benv.h misc1.h \
-bfileptr.h bregistr.h sguiopts.h
+moc_fsetupui.cpp qrc_fsetup.cpp \
+fsetupui.h foptman.h brcfile.h benv.h misc1.h \
+bfileptr.h bregistr.h sguiopts.h \
+ui_fsetup.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
@@ -148,6 +152,25 @@ clogfile.h \
 mc6809st.h \
 schedcpu.h sprinter.h \
 bobshelp.h bobservd.h bobserv.h
+
+################################################################################
+# Specific build steps needed for Qt support.
+moc_fsetupui.cpp: fsetupui.h
+	${QT_MOC} $< -o $@
+
+ui_fsetup.h.stamp: fsetup.ui
+	${QT_UIC} fsetup.ui -o ui_fsetup.h.tmp
+	cmp ui_fsetup.h.tmp ui_fsetup.h || mv ui_fsetup.h.tmp ui_fsetup.h
+
+qrc_fsetup.cpp: fsetup.qrc
+	${QT_RCC} $< -o $@
+
+clean-local: clean-local-qt
+
+.PHONY: clean-local-qt
+
+clean-local-qt:
+	rm -f moc_fsetupui.cpp ui_fsetup.h qrc_fsetup.cpp
 
 ################################################################################
 # Post installation hook to execute update-desktop-database if present.
