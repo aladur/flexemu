@@ -163,7 +163,7 @@ ui_fsetup.h.stamp: fsetup.ui
 	cmp ui_fsetup.h.tmp ui_fsetup.h || mv ui_fsetup.h.tmp ui_fsetup.h
 
 qrc_fsetup.cpp: fsetup.qrc
-	${QT_RCC} $< -o $@
+	${QT_RCC} -name fsetup $< -o $@
 
 clean-local: clean-local-qt
 

@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     struct sGuiOptions guiOptions;
     struct sOptions options;
 
-    QResource::registerResource("fsetup.rcc");
+    Q_INIT_RESOURCE(fsetup);
 
     optionMan.InitOptions(&guiOptions, &options, argc, argv);
     optionMan.GetOptions(&guiOptions, &options);
