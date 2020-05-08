@@ -30,6 +30,7 @@
 #include <QtGlobal>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QFontMetricsF>
 
 #ifdef _MSC_VER
     #include <direct.h>
@@ -247,6 +248,10 @@ void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
     Ui_FlexemuSetup::setupUi(p_dialog);
     AddFrequencyValidator(*e_frequency);
     ConnectSignalsWithSlots();
+    // This dialog width calculation tries to make all available tabs
+    // visible. It is just a rough estimation.
+    QFontMetrics metrics(dialog->font());
+    e_drive2->setMinimumWidth(metrics.width('x') * 52);
 }
 
 bool FlexemuOptionsUi::Validate()

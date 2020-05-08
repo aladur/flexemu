@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     ui.setupUi(&dialog);
     ui.TransferDataToDialog(guiOptions, options);
 
+    dialog.resize({0, 0});
     dialog.setModal(true);
     dialog.setSizeGripEnabled(true);
     auto result = dialog.exec();
