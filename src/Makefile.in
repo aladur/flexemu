@@ -103,6 +103,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
 	$(top_srcdir)/m4/ax_have_qt.m4 \
 	$(top_srcdir)/m4/cf_path_syntax.m4 \
 	$(top_srcdir)/m4/cf_with_app_defaults.m4 \
+	$(top_srcdir)/m4/flx_disable_post_install.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -112,7 +113,8 @@ CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
-	"$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"
+	"$(DESTDIR)$(mimetypedir)" "$(DESTDIR)$(pkgdatadir)" \
+	"$(DESTDIR)$(sysconfdir)"
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
 	dsktool-flexerr.$(OBJEXT) dsktool-ffilebuf.$(OBJEXT) \
@@ -173,24 +175,34 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 flexemu_OBJECTS = $(am_flexemu_OBJECTS)
 flexemu_LINK = $(CXXLD) $(flexemu_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am_flexplorer_OBJECTS = flexplorer-bdate.$(OBJEXT) \
-	flexplorer-bdir.$(OBJEXT) flexplorer-contpdlg.$(OBJEXT) \
-	flexplorer-dircont.$(OBJEXT) flexplorer-fcinfo.$(OBJEXT) \
-	flexplorer-fcopyman.$(OBJEXT) flexplorer-fdcframe.$(OBJEXT) \
-	flexplorer-fddnd.$(OBJEXT) flexplorer-fdirent.$(OBJEXT) \
-	flexplorer-fdlist.$(OBJEXT) flexplorer-fdpframe.$(OBJEXT) \
-	flexplorer-ffilebuf.$(OBJEXT) flexplorer-ffilecnt.$(OBJEXT) \
-	flexplorer-flexdisk.$(OBJEXT) flexplorer-flexerr.$(OBJEXT) \
+am_flexplorer_OBJECTS = flexplorer-fpmain.$(OBJEXT) \
+	flexplorer-fpwin.$(OBJEXT) flexplorer-fpmdich.$(OBJEXT) \
+	flexplorer-fpmodel.$(OBJEXT) flexplorer-fpedit.$(OBJEXT) \
+	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptui.$(OBJEXT) \
+	flexplorer-fpdnd.$(OBJEXT) flexplorer-bdate.$(OBJEXT) \
+	flexplorer-bdir.$(OBJEXT) flexplorer-dircont.$(OBJEXT) \
+	flexplorer-fcinfo.$(OBJEXT) flexplorer-fcopyman.$(OBJEXT) \
+	flexplorer-fdirent.$(OBJEXT) flexplorer-ffilebuf.$(OBJEXT) \
+	flexplorer-ffilecnt.$(OBJEXT) flexplorer-flexerr.$(OBJEXT) \
 	flexplorer-misc1.$(OBJEXT) flexplorer-rfilecnt.$(OBJEXT) \
-	flexplorer-optdlg.$(OBJEXT) flexplorer-brcfile.$(OBJEXT) \
-	flexplorer-benv.$(OBJEXT) flexplorer-cvtwchar.$(OBJEXT) \
-	flexplorer-bmembuf.$(OBJEXT) flexplorer-bfileptr.$(OBJEXT) \
-	flexplorer-ifilecnt.$(OBJEXT) flexplorer-idircnt.$(OBJEXT) \
-	flexplorer-iffilcnt.$(OBJEXT) flexplorer-filecnts.$(OBJEXT) \
-	flexplorer-fmenufac.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
+	flexplorer-brcfile.$(OBJEXT) flexplorer-benv.$(OBJEXT) \
+	flexplorer-cvtwchar.$(OBJEXT) flexplorer-bmembuf.$(OBJEXT) \
+	flexplorer-bfileptr.$(OBJEXT) flexplorer-ifilecnt.$(OBJEXT) \
+	flexplorer-idircnt.$(OBJEXT) flexplorer-iffilcnt.$(OBJEXT) \
+	flexplorer-filecnts.$(OBJEXT) flexplorer-bregistr.$(OBJEXT) \
 	flexplorer-bprocess.$(OBJEXT) flexplorer-mdcrtape.$(OBJEXT) \
-	flexplorer-bobservd.$(OBJEXT) flexplorer-fdfdnd.$(OBJEXT)
-flexplorer_OBJECTS = $(am_flexplorer_OBJECTS)
+	flexplorer-bobservd.$(OBJEXT)
+am__objects_1 = flexplorer-fpnewui_moc.$(OBJEXT) \
+	flexplorer-fpoptui_moc.$(OBJEXT) \
+	flexplorer-fpwin_moc.$(OBJEXT) \
+	flexplorer-fpmdich_moc.$(OBJEXT) \
+	flexplorer-fpmodel_moc.$(OBJEXT) \
+	flexplorer-fpedit_moc.$(OBJEXT)
+am__objects_2 = $(am__objects_1)
+nodist_flexplorer_OBJECTS = flexplorer-fpmain_qrc.$(OBJEXT) \
+	$(am__objects_2)
+flexplorer_OBJECTS = $(am_flexplorer_OBJECTS) \
+	$(nodist_flexplorer_OBJECTS)
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -198,9 +210,11 @@ am_fsetup_OBJECTS = fsetup-fsetup.$(OBJEXT) fsetup-fsetupui.$(OBJEXT) \
 	fsetup-foptman.$(OBJEXT) fsetup-brcfile.$(OBJEXT) \
 	fsetup-benv.$(OBJEXT) fsetup-misc1.$(OBJEXT) \
 	fsetup-bfileptr.$(OBJEXT) fsetup-bregistr.$(OBJEXT) \
-	fsetup-colors.$(OBJEXT) fsetup-moc_fsetupui.$(OBJEXT) \
-	fsetup-qrc_fsetup.$(OBJEXT)
-fsetup_OBJECTS = $(am_fsetup_OBJECTS)
+	fsetup-colors.$(OBJEXT)
+am__objects_3 = fsetup-fsetupui_moc.$(OBJEXT)
+am__objects_4 = $(am__objects_3)
+nodist_fsetup_OBJECTS = fsetup-fsetup_qrc.$(OBJEXT) $(am__objects_4)
+fsetup_OBJECTS = $(am_fsetup_OBJECTS) $(nodist_fsetup_OBJECTS)
 fsetup_DEPENDENCIES =
 fsetup_LINK = $(CXXLD) $(fsetup_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
@@ -275,7 +289,8 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) $(flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(fsetup_SOURCES) $(mdcrtool_SOURCES) \
+	$(flexplorer_SOURCES) $(nodist_flexplorer_SOURCES) \
+	$(fsetup_SOURCES) $(nodist_fsetup_SOURCES) $(mdcrtool_SOURCES) \
 	$(test_SOURCES)
 DIST_SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) \
 	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(fsetup_SOURCES) \
@@ -320,7 +335,8 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-DATA = $(desktop_DATA) $(pkgdata_DATA) $(sysconf_DATA)
+DATA = $(desktop_DATA) $(mimetype_DATA) $(pkgdata_DATA) \
+	$(sysconf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -410,6 +426,7 @@ FLEX_RC = @FLEX_RC@
 FSETUP = @FSETUP@
 GREP = @GREP@
 GTK_UPDATE_ICON_CACHE = @GTK_UPDATE_ICON_CACHE@
+IGNORE = @IGNORE@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -449,14 +466,11 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 UPDATE_DESKTOP_DATABASE = @UPDATE_DESKTOP_DATABASE@
+UPDATE_MIME_DATABASE = @UPDATE_MIME_DATABASE@
 VERSION = @VERSION@
 WIN32_LIBS = @WIN32_LIBS@
 WINDRES_EXE = @WINDRES_EXE@
 WNO_VARIADIC_MACROS = @WNO_VARIADIC_MACROS@
-WXGTK_LIBS = @WXGTK_LIBS@
-WX_CFLAGS = @WX_CFLAGS@
-WX_CONFIG = @WX_CONFIG@
-WX_LIBS = @WX_LIBS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -528,33 +542,41 @@ desktop_DATA = flexemu.desktop \
 	       flexemu-flexplorer.desktop \
 	       flexemu-fsetup.desktop
 
-SUFFIXES = .rc .o
+mimetype_DATA = flexemu.xml
+SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             fsetup.ui fsetup.qrc Flexemu.ad flexemu.astyle \
+	     fsetup.ui fpopt.ui fpnew.ui \
+	     fsetup.qrc Flexemu.ad flexemu.astyle \
+	     fpmain.qrc \
 	     JoystickTable.gnumeric \
-	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
+	     wwinres.rc winres.rc fsetup.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
 	     $(pkgdata_DATA) \
 	     $(sysconf_DATA) \
-	     $(desktop_DATA)
+	     $(desktop_DATA) \
+	     $(mimetype_DATA)
 
 SUBDIRS = bitmaps tools
 
-# Directory where .desktop files are located
+# Directory where *.desktop files are located
 desktopdir = $(datadir)/applications
+
+# Directory where mimetype *.xml files are located
+mimetypebasedir = $(datadir)/mime
+mimetypedir = $(mimetypebasedir)/packages
 AM_CXXFLAGS = --std=c++11 \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS = $(AM_CXXFLAGS) \
 			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
 
-flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
+flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 fsetup_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
-flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
+flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@
 fsetup_LDADD = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD = @PTHREAD_LD@
 flex2hex_LDADD = @PTHREAD_LD@
@@ -564,14 +586,26 @@ flexemu_LDADD = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
 
 test_LDADD = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
-BUILT_SOURCES = ui_fsetup.h.stamp
+
+# Rule for Qt moc files:
+# Define all fsetup header files from which to create moc cpp files.
+fsetup_moc_hdr = fsetupui.h
+fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
+nodist_fsetup_SOURCES = fsetup_ui.h fsetup_qrc.cpp $(fsetup_moc_src)
+
+# Define all flexplorer header files from which to create moc cpp files.
+flexplorer_moc_hdr = fpnewui.h fpoptui.h fpwin.h fpmdich.h fpmodel.h fpedit.h
+flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
+nodist_flexplorer_SOURCES = fpnew_ui.h fpopt_ui.h fpmain_qrc.cpp \
+			    $(flexplorer_moc_src)
+
+BUILT_SOURCES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
+CLEANFILES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
 fsetup_SOURCES = \
 fsetup.cpp fsetupui.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp colors.cpp \
-moc_fsetupui.cpp qrc_fsetup.cpp \
 fsetupui.h foptman.h brcfile.h benv.h misc1.h \
-bfileptr.h bregistr.h sguiopts.h \
-ui_fsetup.h
+bfileptr.h bregistr.h sguiopts.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
@@ -602,24 +636,31 @@ fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
 memsrc.h bobserv.h bobservd.h bobshelp.h \
 tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h \
-bintervl.h crc.h
+bintervl.h crc.h warnoff.h warnon.h
 
 flexplorer_SOURCES = \
-bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
-fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
-fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
-rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
+fpmain.cpp fpwin.cpp fpmdich.cpp \
+fpmodel.cpp fpedit.cpp \
+fpnewui.cpp fpoptui.cpp \
+fpdnd.cpp \
+bdate.cpp bdir.cpp dircont.cpp fcinfo.cpp \
+fcopyman.cpp fdirent.cpp \
+ffilebuf.cpp ffilecnt.cpp flexerr.cpp misc1.cpp \
+rfilecnt.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
-ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp mdcrtape.cpp bobservd.cpp fdfdnd.cpp \
-bdate.h bdir.h bobserv.h bobservd.h bobshelp.h contpdlg.h dircont.h fcinfo.h \
-fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
-fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
-rfilecnt.h brcfile.h benv.h fmenufac.h \
+ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp bregistr.cpp \
+bprocess.cpp mdcrtape.cpp bobservd.cpp \
+fpwin.h fpmdich.h \
+fpmodel.h fpedit.h \
+fpnewui.h fpoptui.h fpdnd.h fpattrui.h \
+bdate.h bdir.h bobserv.h bobservd.h bobshelp.h dircont.h fcinfo.h \
+fcopyman.h fdirent.h \
+ffilebuf.h ffilecnt.h flexerr.h misc1.h \
+rfilecnt.h brcfile.h benv.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
-sprinter.h flexemu.h mdcrtape.h fdfdnd.h bintervl.h
+filecntb.h filecont.h bregistr.h bprocess.h cvtwchar.h \
+sprinter.h flexemu.h mdcrtape.h bintervl.h
 
 mdcrtool_SOURCES = \
 mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
@@ -662,18 +703,22 @@ csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h \
 mc6809st.h \
 schedcpu.h sprinter.h \
-bobshelp.h bobservd.h bobserv.h
+bobshelp.h bobservd.h bobserv.h \
+warnoff.h warnon.h
 
 
 ################################################################################
-# Post installation hook to execute update-desktop-database if present.
-# Post installation hook to execute gtk-update-icon-cache if present.
+# Post (un)installation hook:
+#   gtk-update-icon-cache
+#   update-mime-database
+#   update-desktop-database
+#   (Un)install application default file (X11)
 appicondir = $(datadir)/icons/hicolor
 all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .rc .o .cpp .obj
+.SUFFIXES: .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .cpp .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -898,29 +943,35 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bprocess.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-brcfile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-bregistr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-contpdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-cvtwchar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-dircont.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fcinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fcopyman.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdcframe.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fddnd.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdfdnd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdirent.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdlist.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fdpframe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ffilebuf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ffilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-filecnts.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-flexdisk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-flexerr.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fmenufac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpdnd.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpedit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpedit_moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmain.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmain_qrc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmdich.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmdich_moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmodel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmodel_moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui_moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui_moc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin_moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-idircnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-iffilcnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-ifilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-mdcrtape.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-misc1.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-optdlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-rfilecnt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-benv.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bfileptr.Po@am__quote@
@@ -929,10 +980,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-colors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-foptman.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup_qrc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetupui.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetupui_moc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-misc1.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-moc_fsetupui.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-qrc_fsetup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bfileptr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bmembuf.Po@am__quote@
@@ -2254,6 +2305,118 @@ flexemu-bobservd.obj: bobservd.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
 
+flexplorer-fpmain.o: fpmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmain.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmain.Tpo -c -o flexplorer-fpmain.o `test -f 'fpmain.cpp' || echo '$(srcdir)/'`fpmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmain.Tpo $(DEPDIR)/flexplorer-fpmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmain.cpp' object='flexplorer-fpmain.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmain.o `test -f 'fpmain.cpp' || echo '$(srcdir)/'`fpmain.cpp
+
+flexplorer-fpmain.obj: fpmain.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmain.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmain.Tpo -c -o flexplorer-fpmain.obj `if test -f 'fpmain.cpp'; then $(CYGPATH_W) 'fpmain.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmain.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmain.Tpo $(DEPDIR)/flexplorer-fpmain.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmain.cpp' object='flexplorer-fpmain.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmain.obj `if test -f 'fpmain.cpp'; then $(CYGPATH_W) 'fpmain.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmain.cpp'; fi`
+
+flexplorer-fpwin.o: fpwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpwin.o -MD -MP -MF $(DEPDIR)/flexplorer-fpwin.Tpo -c -o flexplorer-fpwin.o `test -f 'fpwin.cpp' || echo '$(srcdir)/'`fpwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpwin.Tpo $(DEPDIR)/flexplorer-fpwin.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpwin.cpp' object='flexplorer-fpwin.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin.o `test -f 'fpwin.cpp' || echo '$(srcdir)/'`fpwin.cpp
+
+flexplorer-fpwin.obj: fpwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpwin.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpwin.Tpo -c -o flexplorer-fpwin.obj `if test -f 'fpwin.cpp'; then $(CYGPATH_W) 'fpwin.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpwin.Tpo $(DEPDIR)/flexplorer-fpwin.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpwin.cpp' object='flexplorer-fpwin.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin.obj `if test -f 'fpwin.cpp'; then $(CYGPATH_W) 'fpwin.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin.cpp'; fi`
+
+flexplorer-fpmdich.o: fpmdich.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmdich.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmdich.Tpo -c -o flexplorer-fpmdich.o `test -f 'fpmdich.cpp' || echo '$(srcdir)/'`fpmdich.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmdich.Tpo $(DEPDIR)/flexplorer-fpmdich.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmdich.cpp' object='flexplorer-fpmdich.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmdich.o `test -f 'fpmdich.cpp' || echo '$(srcdir)/'`fpmdich.cpp
+
+flexplorer-fpmdich.obj: fpmdich.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmdich.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmdich.Tpo -c -o flexplorer-fpmdich.obj `if test -f 'fpmdich.cpp'; then $(CYGPATH_W) 'fpmdich.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmdich.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmdich.Tpo $(DEPDIR)/flexplorer-fpmdich.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmdich.cpp' object='flexplorer-fpmdich.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmdich.obj `if test -f 'fpmdich.cpp'; then $(CYGPATH_W) 'fpmdich.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmdich.cpp'; fi`
+
+flexplorer-fpmodel.o: fpmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel.Tpo -c -o flexplorer-fpmodel.o `test -f 'fpmodel.cpp' || echo '$(srcdir)/'`fpmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel.Tpo $(DEPDIR)/flexplorer-fpmodel.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel.cpp' object='flexplorer-fpmodel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel.o `test -f 'fpmodel.cpp' || echo '$(srcdir)/'`fpmodel.cpp
+
+flexplorer-fpmodel.obj: fpmodel.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel.Tpo -c -o flexplorer-fpmodel.obj `if test -f 'fpmodel.cpp'; then $(CYGPATH_W) 'fpmodel.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel.Tpo $(DEPDIR)/flexplorer-fpmodel.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel.cpp' object='flexplorer-fpmodel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel.obj `if test -f 'fpmodel.cpp'; then $(CYGPATH_W) 'fpmodel.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel.cpp'; fi`
+
+flexplorer-fpedit.o: fpedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpedit.o -MD -MP -MF $(DEPDIR)/flexplorer-fpedit.Tpo -c -o flexplorer-fpedit.o `test -f 'fpedit.cpp' || echo '$(srcdir)/'`fpedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpedit.Tpo $(DEPDIR)/flexplorer-fpedit.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpedit.cpp' object='flexplorer-fpedit.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpedit.o `test -f 'fpedit.cpp' || echo '$(srcdir)/'`fpedit.cpp
+
+flexplorer-fpedit.obj: fpedit.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpedit.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpedit.Tpo -c -o flexplorer-fpedit.obj `if test -f 'fpedit.cpp'; then $(CYGPATH_W) 'fpedit.cpp'; else $(CYGPATH_W) '$(srcdir)/fpedit.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpedit.Tpo $(DEPDIR)/flexplorer-fpedit.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpedit.cpp' object='flexplorer-fpedit.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpedit.obj `if test -f 'fpedit.cpp'; then $(CYGPATH_W) 'fpedit.cpp'; else $(CYGPATH_W) '$(srcdir)/fpedit.cpp'; fi`
+
+flexplorer-fpnewui.o: fpnewui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpnewui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpnewui.Tpo -c -o flexplorer-fpnewui.o `test -f 'fpnewui.cpp' || echo '$(srcdir)/'`fpnewui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpnewui.Tpo $(DEPDIR)/flexplorer-fpnewui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpnewui.cpp' object='flexplorer-fpnewui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpnewui.o `test -f 'fpnewui.cpp' || echo '$(srcdir)/'`fpnewui.cpp
+
+flexplorer-fpnewui.obj: fpnewui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpnewui.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpnewui.Tpo -c -o flexplorer-fpnewui.obj `if test -f 'fpnewui.cpp'; then $(CYGPATH_W) 'fpnewui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpnewui.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpnewui.Tpo $(DEPDIR)/flexplorer-fpnewui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpnewui.cpp' object='flexplorer-fpnewui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpnewui.obj `if test -f 'fpnewui.cpp'; then $(CYGPATH_W) 'fpnewui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpnewui.cpp'; fi`
+
+flexplorer-fpoptui.o: fpoptui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpoptui.Tpo -c -o flexplorer-fpoptui.o `test -f 'fpoptui.cpp' || echo '$(srcdir)/'`fpoptui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptui.Tpo $(DEPDIR)/flexplorer-fpoptui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptui.cpp' object='flexplorer-fpoptui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptui.o `test -f 'fpoptui.cpp' || echo '$(srcdir)/'`fpoptui.cpp
+
+flexplorer-fpoptui.obj: fpoptui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptui.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpoptui.Tpo -c -o flexplorer-fpoptui.obj `if test -f 'fpoptui.cpp'; then $(CYGPATH_W) 'fpoptui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptui.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptui.Tpo $(DEPDIR)/flexplorer-fpoptui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptui.cpp' object='flexplorer-fpoptui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptui.obj `if test -f 'fpoptui.cpp'; then $(CYGPATH_W) 'fpoptui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptui.cpp'; fi`
+
+flexplorer-fpdnd.o: fpdnd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpdnd.o -MD -MP -MF $(DEPDIR)/flexplorer-fpdnd.Tpo -c -o flexplorer-fpdnd.o `test -f 'fpdnd.cpp' || echo '$(srcdir)/'`fpdnd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpdnd.Tpo $(DEPDIR)/flexplorer-fpdnd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpdnd.cpp' object='flexplorer-fpdnd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpdnd.o `test -f 'fpdnd.cpp' || echo '$(srcdir)/'`fpdnd.cpp
+
+flexplorer-fpdnd.obj: fpdnd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpdnd.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpdnd.Tpo -c -o flexplorer-fpdnd.obj `if test -f 'fpdnd.cpp'; then $(CYGPATH_W) 'fpdnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fpdnd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpdnd.Tpo $(DEPDIR)/flexplorer-fpdnd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpdnd.cpp' object='flexplorer-fpdnd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpdnd.obj `if test -f 'fpdnd.cpp'; then $(CYGPATH_W) 'fpdnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fpdnd.cpp'; fi`
+
 flexplorer-bdate.o: bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bdate.o -MD -MP -MF $(DEPDIR)/flexplorer-bdate.Tpo -c -o flexplorer-bdate.o `test -f 'bdate.cpp' || echo '$(srcdir)/'`bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bdate.Tpo $(DEPDIR)/flexplorer-bdate.Po
@@ -2281,20 +2444,6 @@ flexplorer-bdir.obj: bdir.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bdir.cpp' object='flexplorer-bdir.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bdir.obj `if test -f 'bdir.cpp'; then $(CYGPATH_W) 'bdir.cpp'; else $(CYGPATH_W) '$(srcdir)/bdir.cpp'; fi`
-
-flexplorer-contpdlg.o: contpdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-contpdlg.o -MD -MP -MF $(DEPDIR)/flexplorer-contpdlg.Tpo -c -o flexplorer-contpdlg.o `test -f 'contpdlg.cpp' || echo '$(srcdir)/'`contpdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-contpdlg.Tpo $(DEPDIR)/flexplorer-contpdlg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='contpdlg.cpp' object='flexplorer-contpdlg.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-contpdlg.o `test -f 'contpdlg.cpp' || echo '$(srcdir)/'`contpdlg.cpp
-
-flexplorer-contpdlg.obj: contpdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-contpdlg.obj -MD -MP -MF $(DEPDIR)/flexplorer-contpdlg.Tpo -c -o flexplorer-contpdlg.obj `if test -f 'contpdlg.cpp'; then $(CYGPATH_W) 'contpdlg.cpp'; else $(CYGPATH_W) '$(srcdir)/contpdlg.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-contpdlg.Tpo $(DEPDIR)/flexplorer-contpdlg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='contpdlg.cpp' object='flexplorer-contpdlg.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-contpdlg.obj `if test -f 'contpdlg.cpp'; then $(CYGPATH_W) 'contpdlg.cpp'; else $(CYGPATH_W) '$(srcdir)/contpdlg.cpp'; fi`
 
 flexplorer-dircont.o: dircont.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-dircont.o -MD -MP -MF $(DEPDIR)/flexplorer-dircont.Tpo -c -o flexplorer-dircont.o `test -f 'dircont.cpp' || echo '$(srcdir)/'`dircont.cpp
@@ -2338,34 +2487,6 @@ flexplorer-fcopyman.obj: fcopyman.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fcopyman.obj `if test -f 'fcopyman.cpp'; then $(CYGPATH_W) 'fcopyman.cpp'; else $(CYGPATH_W) '$(srcdir)/fcopyman.cpp'; fi`
 
-flexplorer-fdcframe.o: fdcframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdcframe.o -MD -MP -MF $(DEPDIR)/flexplorer-fdcframe.Tpo -c -o flexplorer-fdcframe.o `test -f 'fdcframe.cpp' || echo '$(srcdir)/'`fdcframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdcframe.Tpo $(DEPDIR)/flexplorer-fdcframe.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdcframe.cpp' object='flexplorer-fdcframe.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdcframe.o `test -f 'fdcframe.cpp' || echo '$(srcdir)/'`fdcframe.cpp
-
-flexplorer-fdcframe.obj: fdcframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdcframe.obj -MD -MP -MF $(DEPDIR)/flexplorer-fdcframe.Tpo -c -o flexplorer-fdcframe.obj `if test -f 'fdcframe.cpp'; then $(CYGPATH_W) 'fdcframe.cpp'; else $(CYGPATH_W) '$(srcdir)/fdcframe.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdcframe.Tpo $(DEPDIR)/flexplorer-fdcframe.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdcframe.cpp' object='flexplorer-fdcframe.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdcframe.obj `if test -f 'fdcframe.cpp'; then $(CYGPATH_W) 'fdcframe.cpp'; else $(CYGPATH_W) '$(srcdir)/fdcframe.cpp'; fi`
-
-flexplorer-fddnd.o: fddnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fddnd.o -MD -MP -MF $(DEPDIR)/flexplorer-fddnd.Tpo -c -o flexplorer-fddnd.o `test -f 'fddnd.cpp' || echo '$(srcdir)/'`fddnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fddnd.Tpo $(DEPDIR)/flexplorer-fddnd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fddnd.cpp' object='flexplorer-fddnd.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fddnd.o `test -f 'fddnd.cpp' || echo '$(srcdir)/'`fddnd.cpp
-
-flexplorer-fddnd.obj: fddnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fddnd.obj -MD -MP -MF $(DEPDIR)/flexplorer-fddnd.Tpo -c -o flexplorer-fddnd.obj `if test -f 'fddnd.cpp'; then $(CYGPATH_W) 'fddnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fddnd.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fddnd.Tpo $(DEPDIR)/flexplorer-fddnd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fddnd.cpp' object='flexplorer-fddnd.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fddnd.obj `if test -f 'fddnd.cpp'; then $(CYGPATH_W) 'fddnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fddnd.cpp'; fi`
-
 flexplorer-fdirent.o: fdirent.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdirent.o -MD -MP -MF $(DEPDIR)/flexplorer-fdirent.Tpo -c -o flexplorer-fdirent.o `test -f 'fdirent.cpp' || echo '$(srcdir)/'`fdirent.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdirent.Tpo $(DEPDIR)/flexplorer-fdirent.Po
@@ -2379,34 +2500,6 @@ flexplorer-fdirent.obj: fdirent.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdirent.cpp' object='flexplorer-fdirent.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdirent.obj `if test -f 'fdirent.cpp'; then $(CYGPATH_W) 'fdirent.cpp'; else $(CYGPATH_W) '$(srcdir)/fdirent.cpp'; fi`
-
-flexplorer-fdlist.o: fdlist.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdlist.o -MD -MP -MF $(DEPDIR)/flexplorer-fdlist.Tpo -c -o flexplorer-fdlist.o `test -f 'fdlist.cpp' || echo '$(srcdir)/'`fdlist.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdlist.Tpo $(DEPDIR)/flexplorer-fdlist.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdlist.cpp' object='flexplorer-fdlist.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdlist.o `test -f 'fdlist.cpp' || echo '$(srcdir)/'`fdlist.cpp
-
-flexplorer-fdlist.obj: fdlist.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdlist.obj -MD -MP -MF $(DEPDIR)/flexplorer-fdlist.Tpo -c -o flexplorer-fdlist.obj `if test -f 'fdlist.cpp'; then $(CYGPATH_W) 'fdlist.cpp'; else $(CYGPATH_W) '$(srcdir)/fdlist.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdlist.Tpo $(DEPDIR)/flexplorer-fdlist.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdlist.cpp' object='flexplorer-fdlist.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdlist.obj `if test -f 'fdlist.cpp'; then $(CYGPATH_W) 'fdlist.cpp'; else $(CYGPATH_W) '$(srcdir)/fdlist.cpp'; fi`
-
-flexplorer-fdpframe.o: fdpframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdpframe.o -MD -MP -MF $(DEPDIR)/flexplorer-fdpframe.Tpo -c -o flexplorer-fdpframe.o `test -f 'fdpframe.cpp' || echo '$(srcdir)/'`fdpframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdpframe.Tpo $(DEPDIR)/flexplorer-fdpframe.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdpframe.cpp' object='flexplorer-fdpframe.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdpframe.o `test -f 'fdpframe.cpp' || echo '$(srcdir)/'`fdpframe.cpp
-
-flexplorer-fdpframe.obj: fdpframe.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdpframe.obj -MD -MP -MF $(DEPDIR)/flexplorer-fdpframe.Tpo -c -o flexplorer-fdpframe.obj `if test -f 'fdpframe.cpp'; then $(CYGPATH_W) 'fdpframe.cpp'; else $(CYGPATH_W) '$(srcdir)/fdpframe.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdpframe.Tpo $(DEPDIR)/flexplorer-fdpframe.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdpframe.cpp' object='flexplorer-fdpframe.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdpframe.obj `if test -f 'fdpframe.cpp'; then $(CYGPATH_W) 'fdpframe.cpp'; else $(CYGPATH_W) '$(srcdir)/fdpframe.cpp'; fi`
 
 flexplorer-ffilebuf.o: ffilebuf.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-ffilebuf.o -MD -MP -MF $(DEPDIR)/flexplorer-ffilebuf.Tpo -c -o flexplorer-ffilebuf.o `test -f 'ffilebuf.cpp' || echo '$(srcdir)/'`ffilebuf.cpp
@@ -2435,20 +2528,6 @@ flexplorer-ffilecnt.obj: ffilecnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ffilecnt.cpp' object='flexplorer-ffilecnt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-ffilecnt.obj `if test -f 'ffilecnt.cpp'; then $(CYGPATH_W) 'ffilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/ffilecnt.cpp'; fi`
-
-flexplorer-flexdisk.o: flexdisk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-flexdisk.o -MD -MP -MF $(DEPDIR)/flexplorer-flexdisk.Tpo -c -o flexplorer-flexdisk.o `test -f 'flexdisk.cpp' || echo '$(srcdir)/'`flexdisk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-flexdisk.Tpo $(DEPDIR)/flexplorer-flexdisk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexdisk.cpp' object='flexplorer-flexdisk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-flexdisk.o `test -f 'flexdisk.cpp' || echo '$(srcdir)/'`flexdisk.cpp
-
-flexplorer-flexdisk.obj: flexdisk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-flexdisk.obj -MD -MP -MF $(DEPDIR)/flexplorer-flexdisk.Tpo -c -o flexplorer-flexdisk.obj `if test -f 'flexdisk.cpp'; then $(CYGPATH_W) 'flexdisk.cpp'; else $(CYGPATH_W) '$(srcdir)/flexdisk.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-flexdisk.Tpo $(DEPDIR)/flexplorer-flexdisk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexdisk.cpp' object='flexplorer-flexdisk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-flexdisk.obj `if test -f 'flexdisk.cpp'; then $(CYGPATH_W) 'flexdisk.cpp'; else $(CYGPATH_W) '$(srcdir)/flexdisk.cpp'; fi`
 
 flexplorer-flexerr.o: flexerr.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-flexerr.o -MD -MP -MF $(DEPDIR)/flexplorer-flexerr.Tpo -c -o flexplorer-flexerr.o `test -f 'flexerr.cpp' || echo '$(srcdir)/'`flexerr.cpp
@@ -2491,20 +2570,6 @@ flexplorer-rfilecnt.obj: rfilecnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rfilecnt.cpp' object='flexplorer-rfilecnt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-rfilecnt.obj `if test -f 'rfilecnt.cpp'; then $(CYGPATH_W) 'rfilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/rfilecnt.cpp'; fi`
-
-flexplorer-optdlg.o: optdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-optdlg.o -MD -MP -MF $(DEPDIR)/flexplorer-optdlg.Tpo -c -o flexplorer-optdlg.o `test -f 'optdlg.cpp' || echo '$(srcdir)/'`optdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-optdlg.Tpo $(DEPDIR)/flexplorer-optdlg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='optdlg.cpp' object='flexplorer-optdlg.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-optdlg.o `test -f 'optdlg.cpp' || echo '$(srcdir)/'`optdlg.cpp
-
-flexplorer-optdlg.obj: optdlg.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-optdlg.obj -MD -MP -MF $(DEPDIR)/flexplorer-optdlg.Tpo -c -o flexplorer-optdlg.obj `if test -f 'optdlg.cpp'; then $(CYGPATH_W) 'optdlg.cpp'; else $(CYGPATH_W) '$(srcdir)/optdlg.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-optdlg.Tpo $(DEPDIR)/flexplorer-optdlg.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='optdlg.cpp' object='flexplorer-optdlg.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-optdlg.obj `if test -f 'optdlg.cpp'; then $(CYGPATH_W) 'optdlg.cpp'; else $(CYGPATH_W) '$(srcdir)/optdlg.cpp'; fi`
 
 flexplorer-brcfile.o: brcfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-brcfile.o -MD -MP -MF $(DEPDIR)/flexplorer-brcfile.Tpo -c -o flexplorer-brcfile.o `test -f 'brcfile.cpp' || echo '$(srcdir)/'`brcfile.cpp
@@ -2632,20 +2697,6 @@ flexplorer-filecnts.obj: filecnts.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-filecnts.obj `if test -f 'filecnts.cpp'; then $(CYGPATH_W) 'filecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/filecnts.cpp'; fi`
 
-flexplorer-fmenufac.o: fmenufac.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fmenufac.o -MD -MP -MF $(DEPDIR)/flexplorer-fmenufac.Tpo -c -o flexplorer-fmenufac.o `test -f 'fmenufac.cpp' || echo '$(srcdir)/'`fmenufac.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fmenufac.Tpo $(DEPDIR)/flexplorer-fmenufac.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fmenufac.cpp' object='flexplorer-fmenufac.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fmenufac.o `test -f 'fmenufac.cpp' || echo '$(srcdir)/'`fmenufac.cpp
-
-flexplorer-fmenufac.obj: fmenufac.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fmenufac.obj -MD -MP -MF $(DEPDIR)/flexplorer-fmenufac.Tpo -c -o flexplorer-fmenufac.obj `if test -f 'fmenufac.cpp'; then $(CYGPATH_W) 'fmenufac.cpp'; else $(CYGPATH_W) '$(srcdir)/fmenufac.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fmenufac.Tpo $(DEPDIR)/flexplorer-fmenufac.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fmenufac.cpp' object='flexplorer-fmenufac.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fmenufac.obj `if test -f 'fmenufac.cpp'; then $(CYGPATH_W) 'fmenufac.cpp'; else $(CYGPATH_W) '$(srcdir)/fmenufac.cpp'; fi`
-
 flexplorer-bregistr.o: bregistr.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-bregistr.o -MD -MP -MF $(DEPDIR)/flexplorer-bregistr.Tpo -c -o flexplorer-bregistr.o `test -f 'bregistr.cpp' || echo '$(srcdir)/'`bregistr.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-bregistr.Tpo $(DEPDIR)/flexplorer-bregistr.Po
@@ -2702,19 +2753,103 @@ flexplorer-bobservd.obj: bobservd.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-bobservd.obj `if test -f 'bobservd.cpp'; then $(CYGPATH_W) 'bobservd.cpp'; else $(CYGPATH_W) '$(srcdir)/bobservd.cpp'; fi`
 
-flexplorer-fdfdnd.o: fdfdnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdfdnd.o -MD -MP -MF $(DEPDIR)/flexplorer-fdfdnd.Tpo -c -o flexplorer-fdfdnd.o `test -f 'fdfdnd.cpp' || echo '$(srcdir)/'`fdfdnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdfdnd.Tpo $(DEPDIR)/flexplorer-fdfdnd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdfdnd.cpp' object='flexplorer-fdfdnd.o' libtool=no @AMDEPBACKSLASH@
+flexplorer-fpmain_qrc.o: fpmain_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmain_qrc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmain_qrc.Tpo -c -o flexplorer-fpmain_qrc.o `test -f 'fpmain_qrc.cpp' || echo '$(srcdir)/'`fpmain_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmain_qrc.Tpo $(DEPDIR)/flexplorer-fpmain_qrc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmain_qrc.cpp' object='flexplorer-fpmain_qrc.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdfdnd.o `test -f 'fdfdnd.cpp' || echo '$(srcdir)/'`fdfdnd.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmain_qrc.o `test -f 'fpmain_qrc.cpp' || echo '$(srcdir)/'`fpmain_qrc.cpp
 
-flexplorer-fdfdnd.obj: fdfdnd.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fdfdnd.obj -MD -MP -MF $(DEPDIR)/flexplorer-fdfdnd.Tpo -c -o flexplorer-fdfdnd.obj `if test -f 'fdfdnd.cpp'; then $(CYGPATH_W) 'fdfdnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fdfdnd.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fdfdnd.Tpo $(DEPDIR)/flexplorer-fdfdnd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fdfdnd.cpp' object='flexplorer-fdfdnd.obj' libtool=no @AMDEPBACKSLASH@
+flexplorer-fpmain_qrc.obj: fpmain_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmain_qrc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmain_qrc.Tpo -c -o flexplorer-fpmain_qrc.obj `if test -f 'fpmain_qrc.cpp'; then $(CYGPATH_W) 'fpmain_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmain_qrc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmain_qrc.Tpo $(DEPDIR)/flexplorer-fpmain_qrc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmain_qrc.cpp' object='flexplorer-fpmain_qrc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fdfdnd.obj `if test -f 'fdfdnd.cpp'; then $(CYGPATH_W) 'fdfdnd.cpp'; else $(CYGPATH_W) '$(srcdir)/fdfdnd.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmain_qrc.obj `if test -f 'fpmain_qrc.cpp'; then $(CYGPATH_W) 'fpmain_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmain_qrc.cpp'; fi`
+
+flexplorer-fpnewui_moc.o: fpnewui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpnewui_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpnewui_moc.Tpo -c -o flexplorer-fpnewui_moc.o `test -f 'fpnewui_moc.cpp' || echo '$(srcdir)/'`fpnewui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpnewui_moc.Tpo $(DEPDIR)/flexplorer-fpnewui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpnewui_moc.cpp' object='flexplorer-fpnewui_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpnewui_moc.o `test -f 'fpnewui_moc.cpp' || echo '$(srcdir)/'`fpnewui_moc.cpp
+
+flexplorer-fpnewui_moc.obj: fpnewui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpnewui_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpnewui_moc.Tpo -c -o flexplorer-fpnewui_moc.obj `if test -f 'fpnewui_moc.cpp'; then $(CYGPATH_W) 'fpnewui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpnewui_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpnewui_moc.Tpo $(DEPDIR)/flexplorer-fpnewui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpnewui_moc.cpp' object='flexplorer-fpnewui_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpnewui_moc.obj `if test -f 'fpnewui_moc.cpp'; then $(CYGPATH_W) 'fpnewui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpnewui_moc.cpp'; fi`
+
+flexplorer-fpoptui_moc.o: fpoptui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptui_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpoptui_moc.Tpo -c -o flexplorer-fpoptui_moc.o `test -f 'fpoptui_moc.cpp' || echo '$(srcdir)/'`fpoptui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptui_moc.Tpo $(DEPDIR)/flexplorer-fpoptui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptui_moc.cpp' object='flexplorer-fpoptui_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptui_moc.o `test -f 'fpoptui_moc.cpp' || echo '$(srcdir)/'`fpoptui_moc.cpp
+
+flexplorer-fpoptui_moc.obj: fpoptui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptui_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpoptui_moc.Tpo -c -o flexplorer-fpoptui_moc.obj `if test -f 'fpoptui_moc.cpp'; then $(CYGPATH_W) 'fpoptui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptui_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptui_moc.Tpo $(DEPDIR)/flexplorer-fpoptui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptui_moc.cpp' object='flexplorer-fpoptui_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptui_moc.obj `if test -f 'fpoptui_moc.cpp'; then $(CYGPATH_W) 'fpoptui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptui_moc.cpp'; fi`
+
+flexplorer-fpwin_moc.o: fpwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpwin_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpwin_moc.Tpo -c -o flexplorer-fpwin_moc.o `test -f 'fpwin_moc.cpp' || echo '$(srcdir)/'`fpwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpwin_moc.Tpo $(DEPDIR)/flexplorer-fpwin_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpwin_moc.cpp' object='flexplorer-fpwin_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin_moc.o `test -f 'fpwin_moc.cpp' || echo '$(srcdir)/'`fpwin_moc.cpp
+
+flexplorer-fpwin_moc.obj: fpwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpwin_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpwin_moc.Tpo -c -o flexplorer-fpwin_moc.obj `if test -f 'fpwin_moc.cpp'; then $(CYGPATH_W) 'fpwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpwin_moc.Tpo $(DEPDIR)/flexplorer-fpwin_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpwin_moc.cpp' object='flexplorer-fpwin_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin_moc.obj `if test -f 'fpwin_moc.cpp'; then $(CYGPATH_W) 'fpwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin_moc.cpp'; fi`
+
+flexplorer-fpmdich_moc.o: fpmdich_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmdich_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmdich_moc.Tpo -c -o flexplorer-fpmdich_moc.o `test -f 'fpmdich_moc.cpp' || echo '$(srcdir)/'`fpmdich_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmdich_moc.Tpo $(DEPDIR)/flexplorer-fpmdich_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmdich_moc.cpp' object='flexplorer-fpmdich_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmdich_moc.o `test -f 'fpmdich_moc.cpp' || echo '$(srcdir)/'`fpmdich_moc.cpp
+
+flexplorer-fpmdich_moc.obj: fpmdich_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmdich_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmdich_moc.Tpo -c -o flexplorer-fpmdich_moc.obj `if test -f 'fpmdich_moc.cpp'; then $(CYGPATH_W) 'fpmdich_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmdich_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmdich_moc.Tpo $(DEPDIR)/flexplorer-fpmdich_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmdich_moc.cpp' object='flexplorer-fpmdich_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmdich_moc.obj `if test -f 'fpmdich_moc.cpp'; then $(CYGPATH_W) 'fpmdich_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmdich_moc.cpp'; fi`
+
+flexplorer-fpmodel_moc.o: fpmodel_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel_moc.Tpo -c -o flexplorer-fpmodel_moc.o `test -f 'fpmodel_moc.cpp' || echo '$(srcdir)/'`fpmodel_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel_moc.Tpo $(DEPDIR)/flexplorer-fpmodel_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel_moc.cpp' object='flexplorer-fpmodel_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel_moc.o `test -f 'fpmodel_moc.cpp' || echo '$(srcdir)/'`fpmodel_moc.cpp
+
+flexplorer-fpmodel_moc.obj: fpmodel_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel_moc.Tpo -c -o flexplorer-fpmodel_moc.obj `if test -f 'fpmodel_moc.cpp'; then $(CYGPATH_W) 'fpmodel_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel_moc.Tpo $(DEPDIR)/flexplorer-fpmodel_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel_moc.cpp' object='flexplorer-fpmodel_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel_moc.obj `if test -f 'fpmodel_moc.cpp'; then $(CYGPATH_W) 'fpmodel_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel_moc.cpp'; fi`
+
+flexplorer-fpedit_moc.o: fpedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpedit_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpedit_moc.Tpo -c -o flexplorer-fpedit_moc.o `test -f 'fpedit_moc.cpp' || echo '$(srcdir)/'`fpedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpedit_moc.Tpo $(DEPDIR)/flexplorer-fpedit_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpedit_moc.cpp' object='flexplorer-fpedit_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpedit_moc.o `test -f 'fpedit_moc.cpp' || echo '$(srcdir)/'`fpedit_moc.cpp
+
+flexplorer-fpedit_moc.obj: fpedit_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpedit_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpedit_moc.Tpo -c -o flexplorer-fpedit_moc.obj `if test -f 'fpedit_moc.cpp'; then $(CYGPATH_W) 'fpedit_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpedit_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpedit_moc.Tpo $(DEPDIR)/flexplorer-fpedit_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpedit_moc.cpp' object='flexplorer-fpedit_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpedit_moc.obj `if test -f 'fpedit_moc.cpp'; then $(CYGPATH_W) 'fpedit_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpedit_moc.cpp'; fi`
 
 fsetup-fsetup.o: fsetup.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup.Tpo -c -o fsetup-fsetup.o `test -f 'fsetup.cpp' || echo '$(srcdir)/'`fsetup.cpp
@@ -2842,33 +2977,33 @@ fsetup-colors.obj: colors.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
 
-fsetup-moc_fsetupui.o: moc_fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-moc_fsetupui.o -MD -MP -MF $(DEPDIR)/fsetup-moc_fsetupui.Tpo -c -o fsetup-moc_fsetupui.o `test -f 'moc_fsetupui.cpp' || echo '$(srcdir)/'`moc_fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-moc_fsetupui.Tpo $(DEPDIR)/fsetup-moc_fsetupui.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_fsetupui.cpp' object='fsetup-moc_fsetupui.o' libtool=no @AMDEPBACKSLASH@
+fsetup-fsetup_qrc.o: fsetup_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup_qrc.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup_qrc.Tpo -c -o fsetup-fsetup_qrc.o `test -f 'fsetup_qrc.cpp' || echo '$(srcdir)/'`fsetup_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup_qrc.Tpo $(DEPDIR)/fsetup-fsetup_qrc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup_qrc.cpp' object='fsetup-fsetup_qrc.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-moc_fsetupui.o `test -f 'moc_fsetupui.cpp' || echo '$(srcdir)/'`moc_fsetupui.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup_qrc.o `test -f 'fsetup_qrc.cpp' || echo '$(srcdir)/'`fsetup_qrc.cpp
 
-fsetup-moc_fsetupui.obj: moc_fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-moc_fsetupui.obj -MD -MP -MF $(DEPDIR)/fsetup-moc_fsetupui.Tpo -c -o fsetup-moc_fsetupui.obj `if test -f 'moc_fsetupui.cpp'; then $(CYGPATH_W) 'moc_fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_fsetupui.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-moc_fsetupui.Tpo $(DEPDIR)/fsetup-moc_fsetupui.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='moc_fsetupui.cpp' object='fsetup-moc_fsetupui.obj' libtool=no @AMDEPBACKSLASH@
+fsetup-fsetup_qrc.obj: fsetup_qrc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup_qrc.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetup_qrc.Tpo -c -o fsetup-fsetup_qrc.obj `if test -f 'fsetup_qrc.cpp'; then $(CYGPATH_W) 'fsetup_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup_qrc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup_qrc.Tpo $(DEPDIR)/fsetup-fsetup_qrc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup_qrc.cpp' object='fsetup-fsetup_qrc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-moc_fsetupui.obj `if test -f 'moc_fsetupui.cpp'; then $(CYGPATH_W) 'moc_fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/moc_fsetupui.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup_qrc.obj `if test -f 'fsetup_qrc.cpp'; then $(CYGPATH_W) 'fsetup_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup_qrc.cpp'; fi`
 
-fsetup-qrc_fsetup.o: qrc_fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-qrc_fsetup.o -MD -MP -MF $(DEPDIR)/fsetup-qrc_fsetup.Tpo -c -o fsetup-qrc_fsetup.o `test -f 'qrc_fsetup.cpp' || echo '$(srcdir)/'`qrc_fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-qrc_fsetup.Tpo $(DEPDIR)/fsetup-qrc_fsetup.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qrc_fsetup.cpp' object='fsetup-qrc_fsetup.o' libtool=no @AMDEPBACKSLASH@
+fsetup-fsetupui_moc.o: fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui_moc.o -MD -MP -MF $(DEPDIR)/fsetup-fsetupui_moc.Tpo -c -o fsetup-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui_moc.Tpo $(DEPDIR)/fsetup-fsetupui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='fsetup-fsetupui_moc.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-qrc_fsetup.o `test -f 'qrc_fsetup.cpp' || echo '$(srcdir)/'`qrc_fsetup.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
 
-fsetup-qrc_fsetup.obj: qrc_fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-qrc_fsetup.obj -MD -MP -MF $(DEPDIR)/fsetup-qrc_fsetup.Tpo -c -o fsetup-qrc_fsetup.obj `if test -f 'qrc_fsetup.cpp'; then $(CYGPATH_W) 'qrc_fsetup.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_fsetup.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-qrc_fsetup.Tpo $(DEPDIR)/fsetup-qrc_fsetup.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qrc_fsetup.cpp' object='fsetup-qrc_fsetup.obj' libtool=no @AMDEPBACKSLASH@
+fsetup-fsetupui_moc.obj: fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui_moc.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetupui_moc.Tpo -c -o fsetup-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui_moc.Tpo $(DEPDIR)/fsetup-fsetupui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='fsetup-fsetupui_moc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-qrc_fsetup.obj `if test -f 'qrc_fsetup.cpp'; then $(CYGPATH_W) 'qrc_fsetup.cpp'; else $(CYGPATH_W) '$(srcdir)/qrc_fsetup.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
 
 mdcrtool-mdcrtool.o: mdcrtool.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-mdcrtool.o -MD -MP -MF $(DEPDIR)/mdcrtool-mdcrtool.Tpo -c -o mdcrtool-mdcrtool.o `test -f 'mdcrtool.cpp' || echo '$(srcdir)/'`mdcrtool.cpp
@@ -3338,6 +3473,27 @@ uninstall-desktopDATA:
 	@list='$(desktop_DATA)'; test -n "$(desktopdir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(desktopdir)'; $(am__uninstall_files_from_dir)
+install-mimetypeDATA: $(mimetype_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(mimetype_DATA)'; test -n "$(mimetypedir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(mimetypedir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(mimetypedir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(mimetypedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(mimetypedir)" || exit $$?; \
+	done
+
+uninstall-mimetypeDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(mimetype_DATA)'; test -n "$(mimetypedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(mimetypedir)'; $(am__uninstall_files_from_dir)
 install-pkgdataDATA: $(pkgdata_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(pkgdata_DATA)'; test -n "$(pkgdatadir)" || list=; \
@@ -3541,7 +3697,7 @@ check: $(BUILT_SOURCES)
 all-am: Makefile $(PROGRAMS) $(DATA) config.h
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" "$(DESTDIR)$(mimetypedir)" "$(DESTDIR)$(pkgdatadir)" "$(DESTDIR)$(sysconfdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: $(BUILT_SOURCES)
@@ -3567,6 +3723,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -3578,8 +3735,8 @@ maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-recursive
 
-clean-am: clean-binPROGRAMS clean-generic clean-local \
-	clean-noinstPROGRAMS mostlyclean-am
+clean-am: clean-binPROGRAMS clean-generic clean-noinstPROGRAMS \
+	mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -3599,7 +3756,8 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-desktopDATA install-pkgdataDATA
+install-data-am: install-desktopDATA install-mimetypeDATA \
+	install-pkgdataDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
@@ -3646,14 +3804,15 @@ ps: ps-recursive
 ps-am:
 
 uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
-	uninstall-pkgdataDATA uninstall-sysconfDATA
+	uninstall-mimetypeDATA uninstall-pkgdataDATA \
+	uninstall-sysconfDATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 .MAKE: $(am__recursive_targets) all check install install-am \
 	install-data-am install-strip uninstall-am
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
-	check-am clean clean-binPROGRAMS clean-generic clean-local \
+	check-am clean clean-binPROGRAMS clean-generic \
 	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-hdr \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
@@ -3661,13 +3820,14 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 	install-data-am install-data-hook install-desktopDATA \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-pkgdataDATA \
-	install-ps install-ps-am install-strip install-sysconfDATA \
-	installcheck installcheck-am installdirs installdirs-am \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-desktopDATA uninstall-hook uninstall-pkgdataDATA \
+	install-man install-mimetypeDATA install-pdf install-pdf-am \
+	install-pkgdataDATA install-ps install-ps-am install-strip \
+	install-sysconfDATA installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-binPROGRAMS uninstall-desktopDATA uninstall-hook \
+	uninstall-mimetypeDATA uninstall-pkgdataDATA \
 	uninstall-sysconfDATA
 
 .PRECIOUS: Makefile
@@ -3676,44 +3836,56 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 ################################################################################
-# Specific build steps needed for Qt support.
-moc_fsetupui.cpp: fsetupui.h
+# Use traditional-style suffix rules for generic Qt support.
+
+# Create a *_moc.cpp file from a *.h file
+# To see which *.h files are used to create *_moc.cpp files see
+# variables fsetup_moc_hdr and flexplorer_moc_hdr.
+.h_moc.cpp:
 	${QT_MOC} $< -o $@
 
-ui_fsetup.h.stamp: fsetup.ui
-	${QT_UIC} fsetup.ui -o ui_fsetup.h.tmp
-	cmp ui_fsetup.h.tmp ui_fsetup.h || mv ui_fsetup.h.tmp ui_fsetup.h
+# Create a *_qrc.cpp file from a *.qrc file
+.qrc_qrc.cpp:
+	${QT_RCC} $< --name $(@F) -o $@
 
-qrc_fsetup.cpp: fsetup.qrc
-	${QT_RCC} -name fsetup $< -o $@
+# Create a *_ui.h file from a *.ui file
+.ui_ui.h:
+	${QT_UIC} $< -o $@
 
-clean-local: clean-local-qt
+install-data-hook: update-icon-cache update-mime-database update-desktop-database install-app-defaults
 
-.PHONY: clean-local-qt
+uninstall-hook: update-desktop-database update-mime-database update-icon-cache uninstall-app-defaults
 
-clean-local-qt:
-	rm -f moc_fsetupui.cpp ui_fsetup.h qrc_fsetup.cpp
+update-icon-cache:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	echo "Updating Gtk icon cache.";\
+@IGNORE@	$(GTK_UPDATE_ICON_CACHE) -f -t $(appicondir); \
+@IGNORE@	else \
+@IGNORE@	echo "*** Icon cache not updated. Remember to run:";\
+@IGNORE@	echo "*** sudo $(GTK_UPDATE_ICON_CACHE) -f -t $(appicondir)";\
+@IGNORE@	fi
 
-install-data-hook :
-	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
-	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+update-mime-database:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	$(UPDATE_MIME_DATABASE) $(mimetypebasedir); \
+@IGNORE@	fi
 
-uninstall-hook :
-	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
-	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+update-desktop-database:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	$(UPDATE_DESKTOP_DATABASE) $(desktopdir); \
+@IGNORE@	fi
 
-################################################################################
-@no_appsdir@install \
-@no_appsdir@install-app \
-@no_appsdir@install-full :
-@no_appsdir@	@echo installing $(APPSDIR)/Flexemu
-@no_appsdir@	@$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu
-@no_appsdir@	@echo "... installed app-defaults"
+install-app-defaults:
+@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
+@no_appsdir@	echo Installing $(APPSDIR)/Flexemu; \
+@no_appsdir@	$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu; \
+@no_appsdir@	fi
 
-@no_appsdir@uninstall \
-@no_appsdir@uninstall-app \
-@no_appsdir@uninstall-full :
-@no_appsdir@	-$(RM) $(APPSDIR)/Flexemu
+uninstall-app-defaults:
+@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
+@no_appsdir@	$(RM) $(APPSDIR)/Flexemu; \
+@no_appsdir@	fi
+
 ################################################################################
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

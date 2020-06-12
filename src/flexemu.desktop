@@ -5,5 +5,5 @@ Name=flexemu
 Exec=flexemu
 Icon=flexemu
 Comment=An MC6809 emulator running FLEX
-Categories=GTK;GNOME;Game;Emulator
+Categories=GTK;GNOME;System;Emulator
 Keywords=MC6809;Emulator;FLEX

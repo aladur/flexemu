@@ -24,6 +24,7 @@
 
 #include "fdirent.h"
 #include "ifilcnti.h"
+#include <string>
 
 
 class FileContainerIf;
@@ -45,7 +46,7 @@ public:
     bool                   SetDateCurrent(const BDate &date);
     bool                   SetAttributesCurrent(Byte attributes);
 private:
-    const char            *filePattern;
+    std::string            filePattern;
     FileContainerIteratorImpPtr imp;
     FileContainerIterator(const FileContainerIterator &); // should not be used
     FileContainerIterator &operator=(const FileContainerIterator

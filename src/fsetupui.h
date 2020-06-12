@@ -28,7 +28,7 @@
 #include "misc1.h"
 #include "brcfile.h"
 #include "bregistr.h"
-#include "ui_fsetup.h"
+#include "fsetup_ui.h"
 #include <string>
 #include <QObject>
 #include <QString>

@@ -23,7 +23,7 @@
 
 #include "misc1.h"
 #include "foptman.h"
-#include "ui_fsetup.h"
+#include "fsetup_ui.h"
 #include "fsetupui.h"
 #include "sguiopts.h"
 #include <vector>
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     struct sGuiOptions guiOptions;
     struct sOptions options;
 
-    Q_INIT_RESOURCE(fsetup);
+    Q_INIT_RESOURCE(fsetup_qrc_cpp);
 
     optionMan.InitOptions(&guiOptions, &options, argc, argv);
     optionMan.GetOptions(&guiOptions, &options);

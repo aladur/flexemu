@@ -5,5 +5,5 @@ Name=FSetup
 Exec=fsetup
 Icon=flexemu-fsetup
 Comment=Setup flexemu
-Categories=GTK;GNOME;Game;Emulator
+Categories=GTK;GNOME;System;Emulator
 Keywords=MC6809;Emulator;FLEX

@@ -105,7 +105,7 @@ bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
 FileContainerIterator &FileContainerIterator::operator++()
 {
     if (imp != nullptr)
-        if (!imp->NextDirEntry(filePattern))
+        if (!imp->NextDirEntry(filePattern.c_str()))
         {
             imp->AtEnd();
         }
@@ -127,7 +127,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 
     imp = aBase->IteratorFactory();
 
-    if (!imp->NextDirEntry(filePattern))
+    if (!imp->NextDirEntry(filePattern.c_str()))
     {
         imp->AtEnd();
     }

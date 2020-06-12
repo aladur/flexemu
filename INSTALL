@@ -19,18 +19,19 @@ prerequisites:
 
 remarks:
 
-        - When using --prefix=/usr flexemu also get's integrated into the
-          desktop and appears in the Games menu category, Emulator sub
-          category. If --prefix is not specified the default prefix is
-          /usr/local. For this prefix desktop or icon files may not be
-          correctly integrated into the desktop. This has been exprienced
-          with Linux Mint. It may behave differently for other Linux
-          distributions.
-	- --with-app-defaults=auto parameter makes the best guess
-          for installing the X11 application defaults file.
-          If this parameter is not present the default path 
+        - When using configure with --prefix=/usr flexemu also get's
+          integrated into the desktop and appears in the System menu
+          category, Emulator sub category. If --prefix is not specified
+          the default prefix is /usr/local. For this prefix desktop or
+          icon files may not be correctly integrated into the desktop.
+          This has been exprienced with Linux Mint. It may behave
+          differently for other Linux distributions.
+	- When using configure with --with-app-defaults=auto parameter
+          makes the best guess for installing the X11 application defaults
+          file.  If this parameter is not present the default path 
           PREFIX/lib/X11/app-defaults is used (which usually does not
-          fit).
+          fit). When setting --with-app-defaults=no The file is not 
+          installed.
 	- If You don't want native file system support comment out
 	  NAFS switch in src/config.h
 	- If You don't want the disassembler to substitute some FLEX jump
@@ -44,6 +45,15 @@ remarks:
 	  inline-function. The processor cycles are only aproximated
 	  (4.8 cycles for each instruction). The faster processor can
 	  be compiled with switch FASTFLEX uncommented in config.h.
+        - There are post installation steps executed to provide desktop
+          icons and adding mime types for support of *.dsk, *.flx and *.wta
+          files. If they do not work as expected they can be disabled with
+          the configure option --disable-post-install
+          The post installation steps are (assuming --prefix=/usr):
+
+             gtk-update-icon-cache /usr/share/icons/hicolor
+             update-mime-database /usr/share/mime
+             update-desktop-database /usr/share/applications
 
 ****************************************
 * Compiling/Install flexemu on Windows *

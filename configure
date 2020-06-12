@@ -633,8 +633,8 @@ FLEX_RC
 WNO_VARIADIC_MACROS
 WIN32_LIBS
 PTHREAD_LD
-WXGTK_LIBS
 GTK_UPDATE_ICON_CACHE
+UPDATE_MIME_DATABASE
 UPDATE_DESKTOP_DATABASE
 PTHREAD_CFLAGS
 PTHREAD_LIBS
@@ -651,9 +651,7 @@ QT_UIC
 QT_LIBS
 QT_DIR
 QT_CXXFLAGS
-WX_LIBS
-WX_CFLAGS
-WX_CONFIG
+IGNORE
 EGREP
 GREP
 X_EXTRA_LIBS
@@ -775,9 +773,7 @@ enable_maintainer_mode
 enable_dependency_tracking
 with_x
 enable_speed
-with_wx_prefix
-with_wx_exec_prefix
-enable_wx_shared
+enable_post_install
 with_app_defaults
 '
       ac_precious_vars='build_alias
@@ -1437,14 +1433,12 @@ Optional Features:
   --disable-dependency-tracking
                           speeds up one-time build
   --enable-speed    compile flexemu for optimized speed
-  --disable-wx-shared    statically link wxWidgets
+  --disable-post-install  disable executing post installation steps
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-x                use the X Window System
-  --with-wx-prefix=PREFIX   Prefix where wxWidgets is installed (optional)
-  --with-wx-exec-prefix=PREFIX Exec prefix where wxWidgets is installed (optional)
   --with-app-defaults=DIR directory in which to install resource files (EPREFIX/lib/X11/app-defaults)
 
 Some influential environment variables:
@@ -3349,7 +3343,6 @@ fi
 
 
 ac_config_headers="$ac_config_headers src/config.h:src/config.hin"
-
 
 
 case $host_os in
@@ -6604,6 +6597,27 @@ $as_echo_n "checking for optimized speed compilation... " >&6; }
 $as_echo "$enable_speed" >&6; }
 
 
+  # Check whether --enable-post-install was given.
+if test "${enable_post_install+set}" = set; then :
+  enableval=$enable_post_install;
+else
+  enable_post_install="yes"
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for executing post installation steps" >&5
+$as_echo_n "checking for executing post installation steps... " >&6; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_post_install" >&5
+$as_echo "$enable_post_install" >&6; }
+
+IGNORE="#"
+if test "x$enable_post_install" = "xyes"
+then
+    IGNORE=
+fi
+
+
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking CXXFLAGS for maximum warnings" >&5
 $as_echo_n "checking CXXFLAGS for maximum warnings... " >&6; }
 if ${ac_cv_cxxflags_warn_all+:} false; then :
@@ -6758,125 +6772,6 @@ ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-# Check whether --with-wx-prefix was given.
-if test "${with_wx_prefix+set}" = set; then :
-  withval=$with_wx_prefix; wx_config_prefix="$withval"
-else
-  wx_config_prefix=""
-fi
-
-
-# Check whether --with-wx-exec-prefix was given.
-if test "${with_wx_exec_prefix+set}" = set; then :
-  withval=$with_wx_exec_prefix; wx_config_exec_prefix="$withval"
-else
-  wx_config_exec_prefix=""
-fi
-
-# Check whether --enable-wx-shared was given.
-if test "${enable_wx_shared+set}" = set; then :
-  enableval=$enable_wx_shared;
-else
-  enable_wx_shared="yes"
-fi
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking linking wxWidgets as shared lib" >&5
-$as_echo_n "checking linking wxWidgets as shared lib... " >&6; }
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $enable_wx_shared" >&5
-$as_echo "$enable_wx_shared" >&6; }
-
-    if test x$wx_config_exec_prefix != x ; then
-     wx_config_args="$wx_config_args --exec-prefix=$wx_config_exec_prefix"
-     if test x${WX_CONFIG+set} != xset ; then
-        WX_CONFIG=$wx_config_exec_prefix/bin/wx-config
-     fi
-  fi
-  if test x$wx_config_prefix != x ; then
-     wx_config_args="$wx_config_args --prefix=$wx_config_prefix"
-     if test x${WX_CONFIG+set} != xset ; then
-        WX_CONFIG=$wx_config_prefix/bin/wx-config
-     fi
-  fi
-
-  # Extract the first word of "wx-config", so it can be a program name with args.
-set dummy wx-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_path_WX_CONFIG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $WX_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_WX_CONFIG="$WX_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_path_WX_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  test -z "$ac_cv_path_WX_CONFIG" && ac_cv_path_WX_CONFIG="no"
-  ;;
-esac
-fi
-WX_CONFIG=$ac_cv_path_WX_CONFIG
-if test -n "$WX_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WX_CONFIG" >&5
-$as_echo "$WX_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  min_wx_version=3.0.0
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version" >&5
-$as_echo_n "checking for wxWidgets version >= $min_wx_version... " >&6; }
-  no_wx=""
-  if test "$WX_CONFIG" = "no" ; then
-    no_wx=yes
-  else
-    wx_include_dir=`$WX_CONFIG $wx_config_args --exec-prefix`
-    WX_CFLAGS="-I$wx_include_dir/include `$WX_CONFIG $wx_config_args --cflags`"
-    if test x$enable_wx_shared = "xyes" ; then
-       WX_LIBS=`$WX_CONFIG $wx_config_args --libs`
-    else
-       WX_LIBS=`$WX_CONFIG $wx_config_args --static=yes --libs`
-    fi
-    wx_config_major_version=`$WX_CONFIG $wx_config_args --version | \
-           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
-    wx_config_minor_version=`$WX_CONFIG $wx_config_args --version | \
-           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
-    wx_config_micro_version=`$WX_CONFIG $wx_config_args --version | \
-           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
-  fi
-  WX_VERSION="$wx_config_major_version.$wx_config_minor_version.$wx_config_micro_version"
-  if test "x$no_wx" = x ; then
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes (version $WX_VERSION)" >&5
-$as_echo "yes (version $WX_VERSION)" >&6; }
-     WXCONFIG=1
-  else
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-     WX_CFLAGS=""
-     WX_LIBS=""
-     :
-  fi
-
-
 
 
 
@@ -8398,6 +8293,47 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of "update-mime-database", so it can be a program name with args.
+set dummy update-mime-database; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_UPDATE_MIME_DATABASE+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $UPDATE_MIME_DATABASE in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_UPDATE_MIME_DATABASE="$UPDATE_MIME_DATABASE" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_UPDATE_MIME_DATABASE="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_UPDATE_MIME_DATABASE" && ac_cv_path_UPDATE_MIME_DATABASE="true"
+  ;;
+esac
+fi
+UPDATE_MIME_DATABASE=$ac_cv_path_UPDATE_MIME_DATABASE
+if test -n "$UPDATE_MIME_DATABASE"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $UPDATE_MIME_DATABASE" >&5
+$as_echo "$UPDATE_MIME_DATABASE" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
 # Extract the first word of "gtk-update-icon-cache", so it can be a program name with args.
 set dummy gtk-update-icon-cache; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -8451,19 +8387,11 @@ fi
 
 
 
+FLEXPLORER='flexplorer${EXEEXT}'
+
+FSETUP='fsetup${EXEEXT}'
 
 
-if test "$WXCONFIG" == 1; then
-  FLEXPLORER='flexplorer${EXEEXT}'
-
-  FSETUP='fsetup${EXEEXT}'
-
-else
-  FLEXPLORER=""
-
-  FSETUP=""
-
-fi
 CXXSPEED="-D__CPU=$target_cpu"
 if test "x$enable_speed" = "xyes"; then
    case $host_os in
@@ -8494,6 +8422,7 @@ if test "x$enable_speed" = "xyes"; then
 	esac ;;
    esac
 fi
+
 
 
 ac_config_files="$ac_config_files m4/Makefile Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile"
@@ -9990,12 +9919,6 @@ fi
   echo " X_LIBS:                     $X_LIBS"
   echo " X_EXTRA_LIBS:               $X_EXTRA_LIBS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
-if test "$WXCONFIG" != 1; then
-  echo " wxWidgets version:           not found"
-else
-  echo " wxWidgets version:           $WX_VERSION"
-  echo " WX_LIBS:                     $WX_LIBS"
-fi
   echo -n " Qt:                          "
 if test "$have_qt" == "yes"; then
   echo "yes"
@@ -10003,27 +9926,12 @@ else
   echo "Not found"
 fi
   echo " speed optimized compilation: $enable_speed"
+  echo " execute post installation:   $enable_post_install"
   echo " canonical build:             $build"
   echo " canonical host:              $host"
   echo " canonical target:            $target"
   echo "***********************************************************************"
   echo
-if test "$WXCONFIG" != 1; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
-            Please check that wx-config is in path, the directory
-            where wxWidgets libraries are installed (returned by
-            'wx-config --libs' command) is in LD_LIBRARY_PATH or
-            equivalent variable and wxWidgets is version 2.8.0 or above.
-            Without wxWidgets only flexemu will be build.
-    " >&5
-$as_echo "$as_me: WARNING:
-            Please check that wx-config is in path, the directory
-            where wxWidgets libraries are installed (returned by
-            'wx-config --libs' command) is in LD_LIBRARY_PATH or
-            equivalent variable and wxWidgets is version 2.8.0 or above.
-            Without wxWidgets only flexemu will be build.
-    " >&2;}
-fi
 if test "$have_qt" != "yes"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
             Please check that libQt 5.x is installed. At least
@@ -10038,7 +9946,7 @@ $as_echo "$as_me: WARNING:
 fi
   echo
   echo "Configure finished.  Type 'make' to compile"
-if test "$WXCONFIG" != 1; then
+if test "$have_qt" != "yes"; then
   echo "flexemu, mdcrtool, dsktool and flex2hex"
 else
   echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"

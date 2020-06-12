@@ -7,5 +7,5 @@ SUBDIRS = src disks doc monitor build
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 
-AM_DISTCHECK_CONFIGURE_FLAGS = --with-app-defaults=auto
+AM_DISTCHECK_CONFIGURE_FLAGS = --with-app-defaults=no --disable-post-install
 

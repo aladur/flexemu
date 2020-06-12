@@ -7,24 +7,32 @@ desktop_DATA = flexemu.desktop \
 	       flexemu-flexplorer.desktop \
 	       flexemu-fsetup.desktop
 
-SUFFIXES = .rc .o
+mimetype_DATA = flexemu.xml
+
+SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-             fsetup.ui fsetup.qrc Flexemu.ad flexemu.astyle \
+	     fsetup.ui fpopt.ui fpnew.ui \
+	     fsetup.qrc Flexemu.ad flexemu.astyle \
+	     fpmain.qrc \
 	     JoystickTable.gnumeric \
-	     flexdisk.rc wwinres.rc winres.rc fsetup.rc \
+	     wwinres.rc winres.rc fsetup.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
 	     $(pkgdata_DATA) \
 	     $(sysconf_DATA) \
-	     $(desktop_DATA)
-
+	     $(desktop_DATA) \
+	     $(mimetype_DATA)
 
 SUBDIRS = bitmaps tools
 
-# Directory where .desktop files are located
+# Directory where *.desktop files are located
 desktopdir = $(datadir)/applications
+
+# Directory where mimetype *.xml files are located
+mimetypebasedir = $(datadir)/mime
+mimetypedir = $(mimetypebasedir)/packages
 
 bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex dsktool
 EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
@@ -35,14 +43,14 @@ AM_CXXFLAGS = --std=c++11 \
 
 flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
 			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
-flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @WX_CFLAGS@
+flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
-flexplorer_LDADD = @WX_LIBS@ @PTHREAD_LD@
+flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@
 fsetup_LDADD     = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
@@ -52,15 +60,29 @@ flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
 test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
-BUILT_SOURCES = ui_fsetup.h.stamp
+# Rule for Qt moc files:
+# Define all fsetup header files from which to create moc cpp files.
+fsetup_moc_hdr = fsetupui.h
+fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
+
+nodist_fsetup_SOURCES = fsetup_ui.h fsetup_qrc.cpp $(fsetup_moc_src)
+
+# Define all flexplorer header files from which to create moc cpp files.
+flexplorer_moc_hdr = fpnewui.h fpoptui.h fpwin.h fpmdich.h fpmodel.h fpedit.h
+flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
+
+nodist_flexplorer_SOURCES = fpnew_ui.h fpopt_ui.h fpmain_qrc.cpp \
+			    $(flexplorer_moc_src)
+
+BUILT_SOURCES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
+
+CLEANFILES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
 
 fsetup_SOURCES = \
 fsetup.cpp fsetupui.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
 bfileptr.cpp bregistr.cpp colors.cpp \
-moc_fsetupui.cpp qrc_fsetup.cpp \
 fsetupui.h foptman.h brcfile.h benv.h misc1.h \
-bfileptr.h bregistr.h sguiopts.h \
-ui_fsetup.h
+bfileptr.h bregistr.h sguiopts.h
 
 flexemu_SOURCES = \
 absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
@@ -91,24 +113,31 @@ fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
 memsrc.h bobserv.h bobservd.h bobshelp.h \
 tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h \
-bintervl.h crc.h
+bintervl.h crc.h warnoff.h warnon.h
 
 flexplorer_SOURCES = \
-bdate.cpp bdir.cpp contpdlg.cpp dircont.cpp fcinfo.cpp \
-fcopyman.cpp fdcframe.cpp fddnd.cpp fdirent.cpp fdlist.cpp \
-fdpframe.cpp ffilebuf.cpp ffilecnt.cpp flexdisk.cpp flexerr.cpp misc1.cpp \
-rfilecnt.cpp optdlg.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
+fpmain.cpp fpwin.cpp fpmdich.cpp \
+fpmodel.cpp fpedit.cpp \
+fpnewui.cpp fpoptui.cpp \
+fpdnd.cpp \
+bdate.cpp bdir.cpp dircont.cpp fcinfo.cpp \
+fcopyman.cpp fdirent.cpp \
+ffilebuf.cpp ffilecnt.cpp flexerr.cpp misc1.cpp \
+rfilecnt.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
 bmembuf.cpp bfileptr.cpp \
-ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp fmenufac.cpp bregistr.cpp \
-bprocess.cpp mdcrtape.cpp bobservd.cpp fdfdnd.cpp \
-bdate.h bdir.h bobserv.h bobservd.h bobshelp.h contpdlg.h dircont.h fcinfo.h \
-fcopyman.h fdcframe.h fddnd.h fdirent.h fdlist.h \
-fdpframe.h ffilebuf.h ffilecnt.h flexdisk.h flexerr.h misc1.h \
-rfilecnt.h brcfile.h benv.h fmenufac.h \
+ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp bregistr.cpp \
+bprocess.cpp mdcrtape.cpp bobservd.cpp \
+fpwin.h fpmdich.h \
+fpmodel.h fpedit.h \
+fpnewui.h fpoptui.h fpdnd.h fpattrui.h \
+bdate.h bdir.h bobserv.h bobservd.h bobshelp.h dircont.h fcinfo.h \
+fcopyman.h fdirent.h \
+ffilebuf.h ffilecnt.h flexerr.h misc1.h \
+rfilecnt.h brcfile.h benv.h \
 bmembuf.h \
 bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h optdlg.h bregistr.h bprocess.h cvtwchar.h \
-sprinter.h flexemu.h mdcrtape.h fdfdnd.h bintervl.h
+filecntb.h filecont.h bregistr.h bprocess.h cvtwchar.h \
+sprinter.h flexemu.h mdcrtape.h bintervl.h
 
 mdcrtool_SOURCES = \
 mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
@@ -151,51 +180,68 @@ csetfreq.h btime.h schedule.h cpustate.h btimer.h \
 clogfile.h \
 mc6809st.h \
 schedcpu.h sprinter.h \
-bobshelp.h bobservd.h bobserv.h
+bobshelp.h bobservd.h bobserv.h \
+warnoff.h warnon.h
 
 ################################################################################
-# Specific build steps needed for Qt support.
-moc_fsetupui.cpp: fsetupui.h
+# Use traditional-style suffix rules for generic Qt support.
+
+# Create a *_moc.cpp file from a *.h file
+# To see which *.h files are used to create *_moc.cpp files see
+# variables fsetup_moc_hdr and flexplorer_moc_hdr.
+.h_moc.cpp:
 	${QT_MOC} $< -o $@
 
-ui_fsetup.h.stamp: fsetup.ui
-	${QT_UIC} fsetup.ui -o ui_fsetup.h.tmp
-	cmp ui_fsetup.h.tmp ui_fsetup.h || mv ui_fsetup.h.tmp ui_fsetup.h
+# Create a *_qrc.cpp file from a *.qrc file
+.qrc_qrc.cpp:
+	${QT_RCC} $< --name $(@F) -o $@
 
-qrc_fsetup.cpp: fsetup.qrc
-	${QT_RCC} -name fsetup $< -o $@
-
-clean-local: clean-local-qt
-
-.PHONY: clean-local-qt
-
-clean-local-qt:
-	rm -f moc_fsetupui.cpp ui_fsetup.h qrc_fsetup.cpp
+# Create a *_ui.h file from a *.ui file
+.ui_ui.h:
+	${QT_UIC} $< -o $@
 
 ################################################################################
-# Post installation hook to execute update-desktop-database if present.
-# Post installation hook to execute gtk-update-icon-cache if present.
+# Post (un)installation hook:
+#   gtk-update-icon-cache
+#   update-mime-database
+#   update-desktop-database
+#   (Un)install application default file (X11)
+
 appicondir = $(datadir)/icons/hicolor
 
-install-data-hook :
-	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
-	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+install-data-hook: update-icon-cache update-mime-database update-desktop-database install-app-defaults
 
-uninstall-hook :
-	-$(UPDATE_DESKTOP_DATABASE) -q $(desktopdir)
-	-$(GTK_UPDATE_ICON_CACHE) -q $(appicondir)
+uninstall-hook: update-desktop-database update-mime-database update-icon-cache uninstall-app-defaults
 
-################################################################################
-@no_appsdir@install \
-@no_appsdir@install-app \
-@no_appsdir@install-full :
-@no_appsdir@	@echo installing $(APPSDIR)/Flexemu
-@no_appsdir@	@$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu
-@no_appsdir@	@echo "... installed app-defaults"
+update-icon-cache:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	echo "Updating Gtk icon cache.";\
+@IGNORE@	$(GTK_UPDATE_ICON_CACHE) -f -t $(appicondir); \
+@IGNORE@	else \
+@IGNORE@	echo "*** Icon cache not updated. Remember to run:";\
+@IGNORE@	echo "*** sudo $(GTK_UPDATE_ICON_CACHE) -f -t $(appicondir)";\
+@IGNORE@	fi
 
-@no_appsdir@uninstall \
-@no_appsdir@uninstall-app \
-@no_appsdir@uninstall-full :
-@no_appsdir@	-$(RM) $(APPSDIR)/Flexemu
+update-mime-database:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	$(UPDATE_MIME_DATABASE) $(mimetypebasedir); \
+@IGNORE@	fi
+
+update-desktop-database:
+@IGNORE@	@-if test -z "$(DESTDIR)"; then \
+@IGNORE@	$(UPDATE_DESKTOP_DATABASE) $(desktopdir); \
+@IGNORE@	fi
+
+install-app-defaults:
+@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
+@no_appsdir@	echo Installing $(APPSDIR)/Flexemu; \
+@no_appsdir@	$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu; \
+@no_appsdir@	fi
+
+uninstall-app-defaults:
+@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
+@no_appsdir@	$(RM) $(APPSDIR)/Flexemu; \
+@no_appsdir@	fi
+
 ################################################################################
 

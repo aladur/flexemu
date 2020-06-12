@@ -10,7 +10,6 @@ AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([disable])
 AM_CONFIG_HEADER(src/config.h:src/config.hin)
 
-
 dnl Checks for programs.
 case $host_os in
   *cygwin* ) CYGWIN=yes;;
@@ -48,6 +47,8 @@ dnl Checks for pthread library
 FLX_CHECK_PTHREAD_LIB
 dnl Check for --enable-speed flag
 FLX_ENABLE_SPEED
+dnl Check for --disable-post-install flag
+FLX_ENABLE_POST_INSTALL
 dnl Check for -pedantic -Wall compiler switch
 AX_CXXFLAGS_WARN_ALL
 dnl Check for specific compiler warning support
@@ -68,8 +69,6 @@ CC_CHECK_FLAGS_APPEND([CXXFLAGS],[CXXFLAGS],[\
         -Wundef \
 ])
 AC_LANG_POP([C++])
-dnl check for wx-config
-WX_PATH_WXCONFIG(3.0.0, WXCONFIG=1)
 
 dnl check for qt libraries and tools
 AX_HAVE_QT
@@ -131,13 +130,13 @@ AC_SYS_LONG_FILE_NAMES
 AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
 ACX_PTHREAD
 AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
+AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
 
 AC_SUBST(X_CFLAGS)
 AC_SUBST(X_PRE_LIBS)
 AC_SUBST(X_LIBS)
 AC_SUBST(X_EXTRA_LIBS)
-AC_SUBST(WXGTK_LIBS)
 AC_SUBST(PTHREAD_LD)
 AC_SUBST(WIN32_LIBS)
 AC_SUBST(WNO_VARIADIC_MACROS)
@@ -145,14 +144,9 @@ AC_SUBST([FLEX_RC])
 AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([FLEXEMU_CXXADD])
 AC_SUBST([OS_TYPE])
+AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
+AC_SUBST([FSETUP], ['fsetup${EXEEXT}'])
 
-if test "$WXCONFIG" == 1; then
-  AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
-  AC_SUBST([FSETUP], ['fsetup${EXEEXT}'])
-else
-  AC_SUBST([FLEXPLORER], [""])
-  AC_SUBST([FSETUP], [""])
-fi
 dnl which optimizations are possible depends on the cpu architecture
 CXXSPEED="-D__CPU=$target_cpu"
 if test "x$enable_speed" = "xyes"; then
@@ -184,6 +178,7 @@ if test "x$enable_speed" = "xyes"; then
 	esac ;;
    esac
 fi
+
 AC_SUBST([CXXSPEED])
 
 AC_OUTPUT(m4/Makefile \
@@ -217,12 +212,6 @@ AC_OUTPUT(m4/Makefile \
   echo " X_LIBS:                     $X_LIBS"
   echo " X_EXTRA_LIBS:               $X_EXTRA_LIBS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
-if test "$WXCONFIG" != 1; then
-  echo " wxWidgets version:           not found"
-else
-  echo " wxWidgets version:           $WX_VERSION"
-  echo " WX_LIBS:                     $WX_LIBS"
-fi
   echo -n " Qt:                          "
 if test "$have_qt" == "yes"; then
   echo "yes"
@@ -230,20 +219,12 @@ else
   echo "Not found"
 fi
   echo " speed optimized compilation: $enable_speed"
+  echo " execute post installation:   $enable_post_install"
   echo " canonical build:             $build"
   echo " canonical host:              $host"
   echo " canonical target:            $target"
   echo "***********************************************************************"
   echo
-if test "$WXCONFIG" != 1; then
-    AC_MSG_WARN([
-            Please check that wx-config is in path, the directory
-            where wxWidgets libraries are installed (returned by
-            'wx-config --libs' command) is in LD_LIBRARY_PATH or
-            equivalent variable and wxWidgets is version 2.8.0 or above.
-            Without wxWidgets only flexemu will be build.
-    ])
-fi
 if test "$have_qt" != "yes"; then
     AC_MSG_WARN([
             Please check that libQt 5.x is installed. At least
@@ -253,7 +234,7 @@ if test "$have_qt" != "yes"; then
 fi
   echo
   echo "Configure finished.  Type 'make' to compile"
-if test "$WXCONFIG" != 1; then
+if test "$have_qt" != "yes"; then
   echo "flexemu, mdcrtool, dsktool and flex2hex"
 else
   echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"

@@ -97,6 +97,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/acx_pthread.m4 \
 	$(top_srcdir)/m4/ax_have_qt.m4 \
 	$(top_srcdir)/m4/cf_path_syntax.m4 \
 	$(top_srcdir)/m4/cf_with_app_defaults.m4 \
+	$(top_srcdir)/m4/flx_disable_post_install.m4 \
 	$(top_srcdir)/acinclude.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -188,6 +189,7 @@ FLEX_RC = @FLEX_RC@
 FSETUP = @FSETUP@
 GREP = @GREP@
 GTK_UPDATE_ICON_CACHE = @GTK_UPDATE_ICON_CACHE@
+IGNORE = @IGNORE@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -227,14 +229,11 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 UPDATE_DESKTOP_DATABASE = @UPDATE_DESKTOP_DATABASE@
+UPDATE_MIME_DATABASE = @UPDATE_MIME_DATABASE@
 VERSION = @VERSION@
 WIN32_LIBS = @WIN32_LIBS@
 WINDRES_EXE = @WINDRES_EXE@
 WNO_VARIADIC_MACROS = @WNO_VARIADIC_MACROS@
-WXGTK_LIBS = @WXGTK_LIBS@
-WX_CFLAGS = @WX_CFLAGS@
-WX_CONFIG = @WX_CONFIG@
-WX_LIBS = @WX_LIBS@
 XMKMF = @XMKMF@
 X_CFLAGS = @X_CFLAGS@
 X_EXTRA_LIBS = @X_EXTRA_LIBS@
@@ -298,10 +297,26 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = $(app_icons)
+EXTRA_DIST = $(app_icons) $(dist_icons)
 app_icons = flexemu.svg flexemu-fsetup.svg flexemu-flexplorer.svg
 appicondir = $(datadir)/icons/hicolor/scalable/apps
 appicon_DATA = $(app_icons)
+dist_icons = flexemu-flexplorer-about.svg \
+             flexemu-flexplorer-attributes.svg \
+             flexemu-flexplorer-copy.svg \
+             flexemu-flexplorer-delete.svg \
+             flexemu-flexplorer-deselectall.svg \
+             flexemu-flexplorer-exit.svg \
+             flexemu-flexplorer-find.svg \
+             flexemu-flexplorer-info.svg \
+             flexemu-flexplorer-new.svg \
+             flexemu-flexplorer-open.svg \
+             flexemu-flexplorer-opendir.svg \
+             flexemu-flexplorer-options.svg \
+             flexemu-flexplorer-paste.svg \
+             flexemu-flexplorer-view.svg \
+             flexemu-flexplorer-window-close.svg
+
 all: all-am
 
 .SUFFIXES:

@@ -222,6 +222,20 @@ extern const char *gMemoryAllocationErrorString;
     #define PATHSEPARATORSTRING "/"
 #endif
 
+#ifdef __LINUX
+#define OSTYPE "Linux"
+#else
+#ifdef(__BSD)
+#define OSTYPE "BSD"
+#else
+#ifdef(_WIN32)
+#define OTYPE "Windows"
+#else
+#define OSTYPE "unknown"
+#endif
+#endif
+#endif
+
 #ifndef EXIT_SUCCESS
     #define EXIT_SUCCESS 0
 #endif

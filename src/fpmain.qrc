@@ -1,0 +1,26 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/resource">
+        <file alias="flexplorer.png">bitmaps/32x32/flexemu-flexplorer.png</file>
+        <file alias="new.png">bitmaps/32x32/flexemu-flexplorer-new.png</file>
+        <file alias="open_con.png">bitmaps/32x32/flexemu-flexplorer-open.png</file>
+        <file alias="open_dir.png">bitmaps/32x32/flexemu-flexplorer-opendir.png</file>
+        <file alias="exit.png">bitmaps/32x32/flexemu-flexplorer-exit.png</file>
+        <file alias="find.png">bitmaps/32x32/flexemu-flexplorer-find.png</file>
+        <file alias="copy.png">bitmaps/32x32/flexemu-flexplorer-copy.png</file>
+        <file alias="paste.png">bitmaps/32x32/flexemu-flexplorer-paste.png</file>
+        <file alias="delete.png">bitmaps/32x32/flexemu-flexplorer-delete.png</file>
+        <file alias="view.png">bitmaps/32x32/flexemu-flexplorer-view.png</file>
+        <file alias="attributes.png">bitmaps/32x32/flexemu-flexplorer-attributes.png</file>
+        <file alias="info.png">bitmaps/32x32/flexemu-flexplorer-info.png</file>
+        <file alias="dir.png">bitmaps/32x32/flexemu-flexplorer-dir.png</file>
+        <file alias="selectall.png">bitmaps/32x32/flexemu-flexplorer-selectall.png</file>
+        <file alias="deselectall.png">bitmaps/32x32/flexemu-flexplorer-deselectall.png</file>
+        <file alias="options.png">bitmaps/32x32/flexemu-flexplorer-options.png</file>
+        <file alias="window-close.png">bitmaps/32x32/flexemu-flexplorer-window-close.png</file>
+        <file alias="about.png">bitmaps/32x32/flexemu-flexplorer-about.png</file>
+        <file alias="qt.png">bitmaps/32x32/qt_extended_32x32.png</file>
+        <file alias="diskimagefiles.png">bitmaps/64x64/flexemu-flexplorer-diskimagefiles.png</file>
+        <file alias="background.png">bitmaps/256x256/flexemu-flexplorer-background.png</file>
+    </qresource>
+</RCC>

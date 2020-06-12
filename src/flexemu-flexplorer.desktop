@@ -1,9 +1,10 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
+MimeType=application/x-flex-diskimage;application/x-flex-flxdiskimage
 Name=FLEXplorer
 Exec=flexplorer %F
 Icon=flexemu-flexplorer
-Comment=Explore FLEX Disk Containers
-Categories=GTK;GNOME;Game;Emulator
-Keywords=MC6809;Emulator;FLEX;File-explorer;Disk-container
+Comment=Explore FLEX Disk Images
+Categories=GTK;GNOME;System;Emulator
+Keywords=MC6809;Emulator;FLEX;File-explorer;Diskimage
