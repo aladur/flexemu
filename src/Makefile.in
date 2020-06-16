@@ -564,7 +564,7 @@ desktopdir = $(datadir)/applications
 # Directory where mimetype *.xml files are located
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
-AM_CXXFLAGS = --std=c++11 \
+AM_CXXFLAGS = --std=c++14 \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS = $(AM_CXXFLAGS) \
