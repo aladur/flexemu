@@ -734,9 +734,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
         }
     }
 
-    std::transform(extension.begin(), extension.end(), extension.begin(),
-            ::tolower);
-
+    strlower(extension);
     if (!estimateDiskFormat(extension.c_str(), disk_format))
     {
         disk_format = TYPE_DSK_CONTAINER;

@@ -39,8 +39,7 @@ bool BEnvironment::RemoveKey(const char *key)
 {
     std::string upperKey(key);
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
 #ifdef _WIN32
     SetEnvironmentVariable(upperKey.c_str(), nullptr);
 #endif
@@ -56,8 +55,7 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 {
     std::string upperKey(key);
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
 #ifdef _WIN32
     return (SetEnvironmentVariable(upperKey.c_str(), value) != 0);
 #endif
@@ -75,8 +73,7 @@ bool BEnvironment::SetValue(const char *key, int value)
     char str[32];
     std::string upperKey(key);
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
     sprintf(str, "%i", value);
 #ifdef _WIN32
     return (SetEnvironmentVariable(upperKey.c_str(), str) != 0);
@@ -111,8 +108,7 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
     std::string upperKey(key);
     bool ret = false;
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
 #ifdef _WIN32
     int size = GetEnvironmentVariable(upperKey.c_str(), nullptr, 0);
 
@@ -147,8 +143,7 @@ bool BEnvironment::GetValue(const char *key, int *pValue)
     std::string str;
     std::string upperKey(key);
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
 
     if (!GetValue(upperKey.c_str(), str))
     {

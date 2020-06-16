@@ -256,8 +256,7 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
     }
 
     filePath = dirEntry.GetTotalFileName();
-    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
-         ::tolower);
+    strlower(filePath);
     filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
 
@@ -385,8 +384,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     filePath = dirEntry.GetTotalFileName();
-    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
-        ::tolower);
+    strlower(filePath);
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)

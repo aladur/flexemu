@@ -36,9 +36,6 @@
     <ClCompile Include="bregistr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="contpdlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="cvtwchar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,22 +48,7 @@
     <ClCompile Include="fcopyman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fdcframe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fddnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fdfdnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="fdirent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fdlist.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fdpframe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ffilebuf.cpp">
@@ -78,13 +60,7 @@
     <ClCompile Include="filecnts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="flexdisk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="flexerr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fmenufac.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="idircnt.cpp">
@@ -102,40 +78,39 @@
     <ClCompile Include="ndircont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="optdlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rfilecnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mdcrtape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="bitmaps\contain.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\copy.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\flexdisk.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\open_con.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\open_dir.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\paste.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="flexdisk.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <ClCompile Include="fpdnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpedit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpmdich.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpmodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpnewui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpoptui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpwin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h">
@@ -168,9 +143,6 @@
     <ClInclude Include="bregistr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="contpdlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cvtwchar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -183,22 +155,7 @@
     <ClInclude Include="fcopyman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fdcframe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fddnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdfdnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fdirent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdlist.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fdpframe.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ffilebuf.h">
@@ -207,13 +164,7 @@
     <ClInclude Include="ffilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="flexdisk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="flexerr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fmenufac.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="idircnt.h">
@@ -231,9 +182,6 @@
     <ClInclude Include="ndircont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="optdlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="rfilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -249,5 +197,53 @@
     <ClInclude Include="warnon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fpdnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fpmodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="fpmdich.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpwin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpedit.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpnewui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpoptui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpmain.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpnew.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpopt.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="bitmaps\contain.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="bitmaps\flexdisk.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="flexdisk.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

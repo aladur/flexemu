@@ -118,8 +118,7 @@ void FlexDirEntry::SetDate(int d, int m, int y)
 void FlexDirEntry::SetTotalFileName(const char *s)
 {
     fileName = s;
-    std::transform(fileName.begin(), fileName.end(), fileName.begin(),
-         ::toupper);
+    strupper(fileName);
 }
 
 std::string FlexDirEntry::GetFileName() const

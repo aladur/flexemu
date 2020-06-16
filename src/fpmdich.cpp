@@ -26,6 +26,7 @@
 #include "fdirent.h"
 #include "filecntb.h"
 #include "flexerr.h"
+#include "cvtwchar.h"
 #include "bdir.h"
 #include "bprocess.h"
 #include <QDate>
@@ -211,9 +212,9 @@ int FlexplorerMdiChild::ViewSelected()
 #ifdef _WIN32
             // Windows ShellExtensions works best with a
             // well known file extension.
-            if (getFileExtension(fileName) != ".txt")
+            if (getFileExtension(filename.c_str()) != ".txt")
             {
-                fileName += ".txt";
+                filename += ".txt";
             }
 #endif
 

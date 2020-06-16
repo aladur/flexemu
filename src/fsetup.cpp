@@ -30,7 +30,14 @@
 #include <memory>
 #include <QApplication>
 #include <QResource>
+#include <QDialog>
+#include "winctxt.h"
+#include "winmain.h"
 
+
+#ifdef _WIN32
+WinApiContext winApiContext;
+#endif
 
 int main(int argc, char *argv[])
 {

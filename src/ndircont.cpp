@@ -365,8 +365,8 @@ std::string NafsDirectoryContainer::get_unix_filename(
         length = std::min<size_t>(strlen(pfn + FLEX_BASEFILENAME_LENGTH),
                           FLEX_FILEEXT_LENGTH);
         std::string ext(pfn + FLEX_BASEFILENAME_LENGTH, length);
-        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+        strlower(name);
+        strlower(ext);
         return name + '.' + ext;
     }
 
@@ -915,12 +915,11 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
     auto add_file = [&](const std::string &filename, bool is_random)
     {
-        std::string lc_filename; // lower case filename
+        std::string lc_filename = filename; // lower case filename
         std::string name;
         std::string extension;
 
-        std::transform(filename.begin(), filename.end(),
-            std::back_inserter(lc_filename), ::tolower);
+        strlower(lc_filename);
 
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
@@ -977,8 +976,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            std::transform(filename.begin(), filename.end(),
-                filename.begin(), ::tolower);
+            strlower(filename);
             bool is_random = (pentry.dwFileAttributes &
                               FILE_ATTRIBUTE_HIDDEN) ? true : false;
 

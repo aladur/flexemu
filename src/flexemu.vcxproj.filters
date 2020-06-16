@@ -204,6 +204,9 @@
     <ClCompile Include="vico2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="wwinres.rc">
@@ -502,6 +505,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="warnon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

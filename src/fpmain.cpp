@@ -24,7 +24,14 @@
 #include "fpwin.h"
 #include <QApplication>
 #include <QResource>
+#include "winmain.h"
+#include "winctxt.h"
+#include "winmain.h"
 
+
+#ifdef _WIN32
+WinApiContext winApiContext;
+#endif
 
 static void LoadFiles(int argc, char *argv[], FLEXplorer &window)
 {

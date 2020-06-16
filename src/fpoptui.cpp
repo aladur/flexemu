@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include "fpoptui.h"
+#include <stdexcept>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>

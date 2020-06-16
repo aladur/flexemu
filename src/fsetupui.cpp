@@ -251,7 +251,7 @@ void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
     // This dialog width calculation tries to make all available tabs
     // visible. It is just a rough estimation.
     QFontMetrics metrics(dialog->font());
-    e_drive2->setMinimumWidth(metrics.width('x') * 52);
+    e_drive2->setMinimumWidth(metrics.boundingRect('x').width() * 52);
 }
 
 bool FlexemuOptionsUi::Validate()

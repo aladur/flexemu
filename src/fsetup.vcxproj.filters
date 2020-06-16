@@ -39,9 +39,6 @@
     <ClInclude Include="flexerr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="fsetpdlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fsetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -52,6 +49,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="warnon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,13 +74,16 @@
     <ClCompile Include="foptman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fsetpdlg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="fsetup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fsetupui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="misc1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,6 +91,17 @@
     <Image Include="bitmaps\fsetup.ico">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="fsetupui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fsetup.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fsetup.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="fsetup.rc">

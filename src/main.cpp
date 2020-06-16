@@ -32,6 +32,7 @@
 #include "apprun.h"
 #include "sguiopts.h"
 #include "winctxt.h"
+#include "winmain.h"
 
 
 #ifdef _WIN32
@@ -114,70 +115,3 @@ int main(int argc, char *argv[])
 
     return return_code;
 }
-
-#ifdef _WIN32
-void scanCmdLine(LPSTR lpCmdLine, int *argc, char **argv, size_t max_count)
-{
-    *argc = 1;
-    *(argv + 0) = "flexemu";
-    bool is_double_quote = false;
-
-    while (*lpCmdLine && (*lpCmdLine == ' ' || *lpCmdLine == '\t'))
-    {
-        lpCmdLine++;
-    }
-
-    while (*lpCmdLine && *argc < (int)max_count)
-    {
-        if (!is_double_quote && *lpCmdLine == '"')
-        {
-            lpCmdLine++;
-            is_double_quote = true;
-        }
-
-        *(argv + *argc) = lpCmdLine;
-
-        while (*lpCmdLine &&
-               ((is_double_quote && *lpCmdLine != '"') ||
-                (!is_double_quote && *lpCmdLine != ' ' &&
-                 *lpCmdLine != '\t' && *lpCmdLine != '"')))
-        {
-            lpCmdLine++;
-        }
-
-        is_double_quote = (!is_double_quote && *lpCmdLine == '"');
-
-        if (*lpCmdLine)
-        {
-            *(lpCmdLine++) = '\0';
-        }
-
-        while (*lpCmdLine && (*lpCmdLine == ' ' || *lpCmdLine == '\t'))
-        {
-            lpCmdLine++;
-        }
-
-        (*argc)++;
-    }
-}
-
-int WINAPI WinMain(
-    _In_ HINSTANCE hInstance,
-    _In_opt_ HINSTANCE hPrevInstance,
-    _In_ LPSTR lpCmdLine,
-    _In_ int nCmdShow)
-{
-    int argc;
-    char *argv[50];
-
-    winApiContext.hPrevInstance = hPrevInstance;
-    winApiContext.hInstance = hInstance;
-    winApiContext.nCmdShow = nCmdShow;
-
-    scanCmdLine(lpCmdLine, &argc, (char **)argv, sizeof(argv)/sizeof(argv[0]));
-
-    return main(argc, argv);
-}
-
-#endif // #ifdef _WIN32
-

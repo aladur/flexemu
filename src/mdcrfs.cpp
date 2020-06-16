@@ -67,11 +67,7 @@ std::string MdcrFileSystem::CreateMdcrFilename(const char *name,
 
     if (toUppercase)
     {
-        std::transform(result.begin(), result.end(), result.begin(),
-            [](Byte character)
-            {
-                return std::toupper(character);
-            });
+        strupper(result);
     }
 
     return result;

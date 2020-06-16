@@ -25,6 +25,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <iostream>
+#include <functional>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef UNIX
@@ -85,6 +86,26 @@ void strlower(char *pstr)
         pstr++;
     }
 } // strlower
+
+void strlower(std::string& str)
+{
+    std::function<char(char)> tolower_ch = [](char ch) -> char
+    {
+        return static_cast<char>(tolower(ch));
+    };
+
+    std::transform(str.begin(), str.end(), str.begin(), tolower_ch);
+}
+
+void strupper(std::string& str)
+{
+    std::function<char(char)> toupper_ch = [](char ch) -> char
+    {
+        return static_cast<char>(toupper(ch));
+    };
+
+    std::transform(str.begin(), str.end(), str.begin(), toupper_ch);
+}
 
 // Base 2 and Base 16 conversion functions
 char *binstr(Byte x)
@@ -832,9 +853,7 @@ bool hasRandomFileAttribute(const char *directory, const char *filename)
 {
     std::string sFilename(filename);
 
-    std::transform(sFilename.begin(), sFilename.end(), sFilename.begin(),
-         ::tolower);
-
+    strlower(sFilename);
     std::string filePath(directory);
     filePath += PATHSEPARATORSTRING;
     filePath += sFilename;

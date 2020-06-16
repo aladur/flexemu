@@ -2,7 +2,8 @@
 #include "afxres.h"
 #undef APSTUDIO_READONLY_SYMBOLS
 
-FSETUP_ICON    ICON    "bitmaps/FSETUP.ICO"
+AFLEXDISK_ICON          ICON    "bitmaps/FLEXDISK.ICO"
+CONTAINER_ICON          ICON    "bitmaps/CONTAIN.ICO"
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 3,0,0,0
@@ -22,12 +23,12 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "CompanyName", "\0"
-            VALUE "FileDescription", "FSetup\0"
+            VALUE "FileDescription", "FLEXplorer\0"
             VALUE "FileVersion", "3,0,0,0\0"
-            VALUE "InternalName", "FSetup.exe\0"
-            VALUE "LegalCopyright", "Copyright © 2000-2020 W. Schwotzer\0"
-            VALUE "OriginalFilename", "FSetup.exe\0"
-            VALUE "ProductName", "FSetup\0"
+            VALUE "InternalName", "FLEXplorer.exe\0"
+            VALUE "LegalCopyright", "Copyright © 1997-2020 W. Schwotzer\0"
+            VALUE "OriginalFilename", "FLEXplorer.exe\0"
+            VALUE "ProductName", "FLEXplorer\0"
             VALUE "ProductVersion", "3,0,0,0\0"
         END
     END

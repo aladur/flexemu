@@ -129,8 +129,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
     std::string fileName = getFileName(monitorFilePath);
 
 #ifdef _WIN32
-    std::transform(fileName.begin(), fileName.end(), fileName.begin(),
-                   ::tolower);
+    strlower(fileName);
 #endif
 
     BIniFile iniFile(iniFileName.c_str());
@@ -142,7 +141,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
         std::string key = iter.first;
 
 #ifdef _WIN32
-        std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+        strlower(key);
 #endif
         if (fileName == key)
         {

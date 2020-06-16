@@ -362,9 +362,7 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
     FlexFileBuffer buffer;
     std::string filePath(fileName);
 
-    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
-         ::tolower);
-
+    strlower(filePath);
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
     if (!buffer.ReadFromFile(filePath.c_str()))
@@ -446,8 +444,7 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
     std::string filePath;
     std::string lowerFileName(fileName);
 
-    std::transform(lowerFileName.begin(), lowerFileName.end(),
-         lowerFileName.begin(), ::tolower);
+    strlower(lowerFileName);
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)

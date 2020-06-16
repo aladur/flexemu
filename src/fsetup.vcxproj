@@ -22,32 +22,32 @@
     <ProjectGuid>{360B1749-B0A6-4FC6-B583-8F172F1B26FA}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>fsetup</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -58,15 +58,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="msvcQtPath.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="msvcQtPath.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="msvcQtPath.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="msvcQtPath.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -95,9 +99,9 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WXUSINGDLL;wxNO_NET_LIB;wxNO_XML_LIB;wxNO_ADV_LIB;wxNO_HTML_LIB;wxNO_GL_LIB;wxNO_QA_LIB;wxNO_XRC_LIB;wxNO_AUI_LIB;wxNO_PROPGRID_LIB;wxNO_RIBBON_LIB;wxNO_RICHTEXT_LIB;wxNO_MEDIA_LIB;wxNO_STC_LIB;wxNO_WEBVIEW_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\windows\wxWidgets\include\msvc;$(SolutionDir)build\windows\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UndefinePreprocessorDefinitions>;</UndefinePreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -105,11 +109,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)build/windows/lib/$(Platform)/$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>wxmsw31ud_core.lib;wxbase31ud.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\build\windows\wxWidgets\include</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,19 +121,19 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;WXUSINGDLL;wxNO_NET_LIB;wxNO_XML_LIB;wxNO_ADV_LIB;wxNO_HTML_LIB;wxNO_GL_LIB;wxNO_QA_LIB;wxNO_XRC_LIB;wxNO_AUI_LIB;wxNO_PROPGRID_LIB;wxNO_RIBBON_LIB;wxNO_RICHTEXT_LIB;wxNO_MEDIA_LIB;wxNO_STC_LIB;wxNO_WEBVIEW_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\windows\wxWidgets\include\msvc;$(SolutionDir)build\windows\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)build/windows/lib/$(Platform)/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\build\windows\wxWidgets\include</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -141,9 +144,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;WXUSINGDLL;wxNO_NET_LIB;wxNO_XML_LIB;wxNO_ADV_LIB;wxNO_HTML_LIB;wxNO_GL_LIB;wxNO_QA_LIB;wxNO_XRC_LIB;wxNO_AUI_LIB;wxNO_PROPGRID_LIB;wxNO_RIBBON_LIB;wxNO_RICHTEXT_LIB;wxNO_MEDIA_LIB;wxNO_STC_LIB;wxNO_WEBVIEW_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\windows\wxWidgets\include\msvc;$(SolutionDir)build\windows\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -151,10 +154,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)build/windows/lib/$(Platform)/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\build\windows\wxWidgets\include</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,9 +168,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;WXUSINGDLL;wxNO_NET_LIB;wxNO_XML_LIB;wxNO_ADV_LIB;wxNO_HTML_LIB;wxNO_GL_LIB;wxNO_QA_LIB;wxNO_XRC_LIB;wxNO_AUI_LIB;wxNO_PROPGRID_LIB;wxNO_RIBBON_LIB;wxNO_RICHTEXT_LIB;wxNO_MEDIA_LIB;wxNO_STC_LIB;wxNO_WEBVIEW_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\windows\wxWidgets\include\msvc;$(SolutionDir)build\windows\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -175,10 +178,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)build/windows/lib/$(Platform)/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)\build\windows\wxWidgets\include</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -188,13 +191,21 @@
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="foptman.h" />
-    <ClInclude Include="fsetpdlg.h" />
     <ClInclude Include="fsetup.h" />
+    <CustomBuild Include="fsetupui.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
     <ClInclude Include="misc1.h" />
     <ClInclude Include="sguiopts.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="warnoff.h" />
     <ClInclude Include="warnon.h" />
+    <ClInclude Include="winmain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bfileptr.cpp" />
@@ -203,15 +214,30 @@
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />
-    <ClCompile Include="fsetpdlg.cpp" />
     <ClCompile Include="fsetup.cpp" />
+    <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="misc1.cpp" />
+    <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="bitmaps\fsetup.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="fsetup.rc" />
+    <CustomBuild Include="fsetup.qrc">
+      <Command>"$(QTDIR)\$(Platform)\bin\rcc.exe" "%(FullPath)" -name %(Filename)_qrc.cpp -o "$(IntDir)\%(Filename)_qrc.cpp"</Command>
+      <Message>Resource compile %(Filename).qrc</Message>
+      <Outputs>$(IntDir)\%(Filename)_qrc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\rcc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="fsetup.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

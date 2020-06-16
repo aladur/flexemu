@@ -225,11 +225,11 @@ extern const char *gMemoryAllocationErrorString;
 #ifdef __LINUX
 #define OSTYPE "Linux"
 #else
-#ifdef(__BSD)
+#ifdef __BSD
 #define OSTYPE "BSD"
 #else
-#ifdef(_WIN32)
-#define OTYPE "Windows"
+#ifdef _WIN32
+#define OSTYPE "Windows"
 #else
 #define OSTYPE "unknown"
 #endif
@@ -404,6 +404,8 @@ extern "C" struct sRGBDef
     extern int      copyFile(const char *srcPath, const char *destPath);
     extern void     strupper(char *pstr);
     extern void     strlower(char *pstr);
+    extern void     strlower(std::string& str);
+    extern void     strupper(std::string& str);
     extern char     *binstr(Byte x);
     extern char     *hexstr(Byte x);
     extern char     *hexstr(Word x);
