@@ -1770,21 +1770,25 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
 
         if (withColorScale)
         {
+            // Use same color values as Enhanced Graphics Adapter (EGA)
+            // or Tandy Color Computer 3 RGB.
+            // For details see:
+            // https://en.wikipedia.org/wiki/Enhanced_Graphics_Adapter
+            // https://exstructus.com/tags/coco/australia-colour-palette/
+            static constexpr Byte colorValues[4] { 0x00, 0x55, 0xAA, 0xFF };
+
             // DEPENDANCIES:
             // the color plane masks used here depend on
             // the same masks used in CopyToZPixmap
             scale  = i & 0x20 ? 2 : 0;
             scale |= i & 0x04 ? 1 : 0;
-            pLog->palPalEntry[idx].peGreen =
-                (Byte)(255 * sqrt((double)scale / 3));
+            pLog->palPalEntry[idx].peGreen = colorValues[scale];
             scale  = i & 0x10 ? 2 : 0;
             scale |= i & 0x02 ? 1 : 0;
-            pLog->palPalEntry[idx].peRed =
-                (Byte)(255 * sqrt((double)scale / 3));
+            pLog->palPalEntry[idx].peRed = colorValues[scale];
             scale  = i & 0x08 ? 2 : 0;
             scale |= i & 0x01 ? 1 : 0;
-            pLog->palPalEntry[idx].peBlue =
-                (Byte)(255 * sqrt((double)scale / 3));
+            pLog->palPalEntry[idx].peBlue = colorValues[scale];
         }
         else
         {

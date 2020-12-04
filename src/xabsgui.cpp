@@ -1002,18 +1002,24 @@ int XAbstractGui::SetColors(Display *dpy)
     {
         if (withColorScale)
         {
+            // Use same color values as Enhanced Graphics Adapter (EGA)
+            // or Tandy Color Computer 3 RGB.
+            // For details see:
+            // https://en.wikipedia.org/wiki/Enhanced_Graphics_Adapter
+            // https://exstructus.com/tags/coco/australia-colour-palette/
+            static constexpr Byte colorValues[4] { 0x00, 0x55, 0xAA, 0xFF };
             // DEPENDANCIES:
             // the color plane masks used here depend on
             // the same masks used in CopyToZPixmap
             scale  = i & 0x20 ? 2 : 0;
             scale |= i & 0x04 ? 1 : 0;
-            xcolor.spec.RGBi.green = 1.0 * scale / 3;
+            xcolor.spec.RGBi.green = 1.0 * colorValues[scale] / 255;
             scale  = i & 0x10 ? 2 : 0;
             scale |= i & 0x02 ? 1 : 0;
-            xcolor.spec.RGBi.red   = 1.0 * scale / 3;
+            xcolor.spec.RGBi.red = 1.0 * colorValues[scale] / 255;
             scale  = i & 0x08 ? 2 : 0;
             scale |= i & 0x01 ? 1 : 0;
-            xcolor.spec.RGBi.blue  = 1.0 * scale / 3;
+            xcolor.spec.RGBi.blue = 1.0 * colorValues[scale] / 255;
         }
         else
         {
