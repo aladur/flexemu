@@ -14,7 +14,7 @@ prerequisites:
         On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian)
         install the following deb-packages:
 
-        sudo apt-get install libxt-dev libxaw7-dev lixwxgtk3.0-dev
+        sudo apt-get install libxt-dev libxaw7-dev libwxgtk3.0-dev
 
 remarks:
 
