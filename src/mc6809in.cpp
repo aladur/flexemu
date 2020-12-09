@@ -32,7 +32,7 @@ void Mc6809::reset()
     total_cycles    = 0;
     nmi_armed       = 0;
     /* no interrupts yet */
-    events = Event::NONE;
+    events = events & Event::FrequencyControl;
     reset_bp(2);    // remove next-breakpoint
 
     if (bp[0] > 0xffff && bp[1] > 0xffff && bp[2] > 0xffff)
