@@ -21,7 +21,7 @@
 */
 
 
-#include <limits.h>
+#include <limits>
 #ifndef _WIN32
     #include <sched.h>
 #endif
@@ -388,18 +388,22 @@ void Scheduler::update_frequency()
 }
 
 
-void Scheduler::set_frequency(float target_freq)
+void Scheduler::set_frequency(float x_target_frequency)
 {
-    if (target_freq <= 0)
+    cycles_t cycles;
+
+    if (x_target_frequency <= 0.0f)
     {
-        target_frequency = (float)0.0;
+        target_frequency = 0.0f;
+        cycles = std::numeric_limits<decltype(cycles)>::max();
     }
     else
     {
-        target_frequency = target_freq;
+        target_frequency = x_target_frequency;
+        cycles = static_cast<cycles_t>(TIME_BASE * 1000 * x_target_frequency);
         time0 = 0;
     }
 
-    cpu.set_required_cyclecount(ULONG_MAX);
+    cpu.set_required_cyclecount(cycles);
 } // set_frequency
 
