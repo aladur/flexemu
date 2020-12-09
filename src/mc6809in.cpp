@@ -35,11 +35,6 @@ void Mc6809::reset()
     events = events & Event::FrequencyControl;
     reset_bp(2);    // remove next-breakpoint
 
-    if (bp[0] > 0xffff && bp[1] > 0xffff && bp[2] > 0xffff)
-    {
-        events &= ~Event::BreakPoint;
-    }
-
 #ifdef FASTFLEX
     ipcreg          = memory.read_word(0xfffe);
     idpreg          = 0x00;         /* Direct page register = 0x00 */
