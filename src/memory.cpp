@@ -49,6 +49,7 @@ Memory::Memory(const struct sOptions &options) :
     }
 
     init_memory();
+    init_blocks_to_update();
 }
 
 Memory::~Memory()
