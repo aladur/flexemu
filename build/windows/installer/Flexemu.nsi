@@ -162,8 +162,9 @@ ${If} $Arch == "x64"
   File /a "${BASEDIR}\bin\x64\Release\mdcrtool.exe"
   File /a "${BASEDIR}\bin\x64\Release\dsktool.exe"
   File /a "${BASEDIR}\bin\x64\Release\flex2hex.exe"
-  File /a "${BASEDIR}\bin\x64\Release\wxbase312u_vc_x64_custom.dll"
-  File /a "${BASEDIR}\bin\x64\Release\wxmsw312u_core_vc_x64_custom.dll"
+  File /a "${BASEDIR}\bin\x64\Release\Qt5Core.dll"
+  File /a "${BASEDIR}\bin\x64\Release\Qt5Gui.dll"
+  File /a "${BASEDIR}\bin\x64\Release\Qt5Widgets.dll"
 ${Else}
   File /a "${BASEDIR}\bin\Win32\Release\flexemu.exe"
   File /a "${BASEDIR}\bin\Win32\Release\flexplorer.exe"
@@ -171,14 +172,33 @@ ${Else}
   File /a "${BASEDIR}\bin\Win32\Release\mdcrtool.exe"
   File /a "${BASEDIR}\bin\Win32\Release\dsktool.exe"
   File /a "${BASEDIR}\bin\Win32\Release\flex2hex.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\wxbase312u_vc_custom.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\wxmsw312u_core_vc_custom.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\Qt5Core.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\Qt5Gui.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\Qt5Widgets.dll"
 ${EndIf}
   File /a "${BASEDIR}\src\boot"
   File /a "${BASEDIR}\src\flexemu.conf"
   File /a /oname=Changes.txt "${BASEDIR}\ChangeLog"
   File /a /oname=Copying.txt "${BASEDIR}\COPYING"
   File /a /oname=Readme.txt "${BASEDIR}\README"
+  SetOutPath $INSTDIR\platforms
+${If} $Arch == "x64"
+  File /a "${BASEDIR}\bin\x64\Release\platforms\qdirect2d.dll"
+  File /a "${BASEDIR}\bin\x64\Release\platforms\qminimal.dll"
+  File /a "${BASEDIR}\bin\x64\Release\platforms\qoffscreen.dll"
+  File /a "${BASEDIR}\bin\x64\Release\platforms\qwindows.dll"
+${Else}
+  File /a "${BASEDIR}\bin\Win32\Release\platforms\qdirect2d.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\platforms\qminimal.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\platforms\qoffscreen.dll"
+  File /a "${BASEDIR}\bin\Win32\Release\platforms\qwindows.dll"
+${EndIf}
+  SetOutPath $INSTDIR\styles
+${If} $Arch == "x64"
+  File /a "${BASEDIR}\bin\x64\Release\styles\qwindowsvistastyle.dll"
+${Else}
+  File /a "${BASEDIR}\bin\Win32\Release\styles\qwindowsvistastyle.dll"
+${EndIf}
 SectionEnd
 
 Section "Monitor programs and disk files" MonitorDiskFiles
@@ -278,9 +298,10 @@ Section "Microsoft Visual C++ Redistributables" VC_Redist
 
   SetOutPath $TEMP
 ${If} $Arch == "x64"
-  ReadRegDword $R1 HKLM "SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
+  ReadRegDword $R1 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
   ; Only istall VC_Redist if it is not already installed.
-  ; Do not check for version, only for VS2015 (14.0).
+  ; Do not check for version, only if it is already installed.
+  ; 14.0 supports VS2015, VS2017 and VS2019.
   ${If} $R1 != "1"
     File ..\vc_redist.x64.exe  
     ExecWait '"$TEMP\vc_redist.x64.exe" /install /passive /norestart' 
@@ -425,6 +446,8 @@ Section "Uninstall" Uninstall
   Delete $INSTDIR\Documentation\images\*.*
   Delete $INSTDIR\Documentation\*.*
   Delete $INSTDIR\Data\*.*
+  Delete $INSTDIR\platforms\*.*
+  Delete $INSTDIR\styles\*.*
   Delete $INSTDIR\*.*
 
   ; Remove shortcuts, if any
@@ -436,8 +459,11 @@ Section "Uninstall" Uninstall
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\${APPNAME}"
+  RMDir "$INSTDIR\Documentation\images"
   RMDir "$INSTDIR\Documentation"
   RMDir "$INSTDIR\Data"
+  RMDir "$INSTDIR\platforms"
+  RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, p0, p0)'

@@ -42,10 +42,10 @@ if [ "x$nsispath" = "x" ]; then
 	exit
 fi
 
-# URL from where to get the download location of vc_redist packages for VS2015/VS2017:
-# https://github.com/WPN-XM/vcredist
-urls="https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x86.exe \
-      https://download.microsoft.com/download/6/A/A/6AA4EDFF-645B-48C5-81CC-ED5963AEAD48/vc_redist.x64.exe"
+# URL from where to get the download location of vc_redist packages for VS2015/VS2017/VS2019:
+# https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+urls="https://aka.ms/vs/16/release/vc_redist.x86.exe \
+      https://aka.ms/vs/16/release/vc_redist.x64.exe"
 
 # Option -d: delete previously downloaded packages and intermediate directories
 if [ "$delete" = "yes" ]; then
