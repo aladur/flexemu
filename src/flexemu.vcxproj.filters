@@ -21,6 +21,9 @@
     <ClCompile Include="acia1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="apprun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="bcommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -34,6 +37,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bfileptr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="binifile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bjoystck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bmembuf.cpp">
@@ -51,7 +60,10 @@
     <ClCompile Include="btime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="btimer.cpp">
+    <ClCompile Include="bui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bytereg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cacttrns.cpp">
@@ -75,10 +87,25 @@
     <ClCompile Include="da6809.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="drawnwid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drisel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="e2floppy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="e2screen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="efslctle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fcinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fcnffile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fcopyman.cpp">
@@ -96,6 +123,9 @@
     <ClCompile Include="filecnts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fileread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="flexerr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -111,7 +141,22 @@
     <ClCompile Include="inout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="iodevdbg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="joystick.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logfilui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mc146818.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mc6809.cpp">
@@ -127,9 +172,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mc6850.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mc146818.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mdcrtape.cpp">
@@ -162,39 +204,6 @@
     <ClCompile Include="schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wd1793.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="win32gui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="apprun.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="binifile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bytereg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="drisel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fcnffile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fileread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="iodevdbg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="joystick.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="terminal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -204,47 +213,20 @@
     <ClCompile Include="vico2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wd1793.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="wwinres.rc">
+    <ResourceCompile Include="flexemu.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="bitmaps\flexcpu.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="bitmaps\flexemu.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\floppy0.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\floppy1.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\floppy2.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\irq0.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\irq1.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\irq2.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\irq3.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\irq4.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="bitmaps\resize.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -276,13 +258,19 @@
     <ClInclude Include="bfileptr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bintervl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="binifile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bintervl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bjoystck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bmembuf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bmp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bobserv.h">
@@ -294,19 +282,19 @@
     <ClInclude Include="bobshelp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bmembuf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="brcfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bregistr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="brkptui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="btime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="btimer.h">
+    <ClInclude Include="bui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bytereg.h">
@@ -342,6 +330,9 @@
     <ClInclude Include="debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="drawnwid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="drisel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -349,6 +340,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="e2floppy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="e2screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="efslctle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fcinfo.h">
@@ -399,22 +399,31 @@
     <ClInclude Include="ifilcnti.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ifilecnt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="inout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ioaccess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="iodevice.h">
+    <ClInclude Include="iodevdbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="iodevdbg.h">
+    <ClInclude Include="iodevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="joystick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logfilui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mc146818.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mc6809.h">
@@ -427,9 +436,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mc6850.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mc146818.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mdcrtape.h">
@@ -462,6 +468,12 @@
     <ClInclude Include="pia2v5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="propsui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="qtgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -477,6 +489,12 @@
     <ClInclude Include="scpulog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="sguiopts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sprinter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="terminal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -489,22 +507,16 @@
     <ClInclude Include="vico2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wd1793.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="win32gui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sguiopts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="winctxt.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="warnoff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="warnon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wd1793.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="winctxt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="winmain.h">

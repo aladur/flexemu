@@ -918,7 +918,7 @@ public:
 protected:
     std::atomic<QWord> total_cycles; // total cycle count with 64 Bit resolution
     cycles_t        cycles;     // cycle cnt for one timer tick
-    cycles_t        required_cyclecount;//cycle count for freq ctrl
+    std::atomic<cycles_t> required_cyclecount;//cycle count for freq ctrl
 
     // breakpoint support
 protected:

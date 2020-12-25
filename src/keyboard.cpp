@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include "keyboard.h"
+#include <iterator>
 
 
 KeyboardIO::KeyboardIO() : init_delay(500)

@@ -32,58 +32,29 @@
 #include <memory>
 
 
-class E2floppy;
-class Mc6809;
 class Memory;
-class Mc6821;
 class Mc146818;
-class VideoControl1;
-class VideoControl2;
 class AbstractGui;
-class Scheduler;
-class JoystickIO;
-class KeyboardIO;
-class TerminalIO;
-class Pia1;
 
 class Inout : public BObserver
 {
 private:
     Memory &memory;
     const struct sOptions &options;
-    E2floppy *fdc; // fdc not present for Eurocom II/V5
     Mc146818 *rtc; // RTC is an optional device
-    std::unique_ptr<AbstractGui> gui;
+    AbstractGui *gui;
     int local_serpar_address;
 
 public:
-    void create_gui(
-             JoystickIO &joystickIO
-           , KeyboardIO &keyboardIO
-           , TerminalIO &terminalIO
-           , Pia1 &pia1
-           , Memory &memory
-           , Scheduler &scheduler
-           , Mc6809 &cpu
-           , VideoControl1 &vico1
-           , VideoControl2 &vico2
-           , struct sGuiOptions &options);
-
     void    update_1_second();
     void    set_rtc(Mc146818 *x_rtc);
+    void    set_gui(AbstractGui *x_gui);
 
     // Communication with GUI
 public:
     bool    output_to_terminal();
     bool    output_to_graphic();
     bool    is_gui_present();
-    void    main_loop();
-
-    // Floppy interface
-public:
-    void set_fdc(E2floppy *x_fdc);
-    void    get_drive_status(DiskStatus status[4]);
-    std::string get_drive_info(Word drive_nr);
 
     // local interface
 public:

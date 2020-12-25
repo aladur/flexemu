@@ -33,6 +33,7 @@
 #include "sguiopts.h"
 #include "winctxt.h"
 #include "winmain.h"
+#include <QApplication>
 
 
 #ifdef _WIN32
@@ -77,18 +78,23 @@ int main(int argc, char *argv[])
     std::set_new_handler(std_new_handler);
 #endif
 
+    optionMan.InitOptions(&guiOptions, &options, argc, argv);
+    optionMan.GetOptions(&guiOptions, &options);
+    optionMan.GetEnvironmentOptions(&guiOptions, &options);
+    optionMan.GetCommandlineOptions(&guiOptions, &options, argc, argv);
+    // write options but only if options file not already exists
+    optionMan.WriteOptions(&guiOptions, &options, true);
+
     try
     {
-        optionMan.InitOptions(&guiOptions, &options, argc, argv);
-        optionMan.GetOptions(&guiOptions, &options);
-        optionMan.GetEnvironmentOptions(&guiOptions, &options);
-        optionMan.GetCommandlineOptions(&guiOptions, &options, argc, argv);
-        // write options but only if options file not already exists
-        optionMan.WriteOptions(&guiOptions, &options, true);
-
+        Q_INIT_RESOURCE(flexemu_qrc_cpp);
+        QApplication app(argc, argv);
         ApplicationRunner runner(guiOptions, options);
 
-        return_code = runner.run();
+        if (!(return_code = runner.startup()))
+        {
+            return_code = app.exec();
+        }
     }
 #ifdef _WIN32
     catch (std::bad_alloc UNUSED(&e))

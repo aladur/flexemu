@@ -1429,7 +1429,7 @@ void Mc6809::reset_bp(int which)
     }
 
     // if a bp has been set in another thread check again
-    if (bp[0] <= 0xffff || (bp[1] <= 0xffff && bp[2] <= 0xffff))
+    if (bp[0] <= 0xffff || bp[1] <= 0xffff || bp[2] <= 0xffff)
     {
         events |= Event::BreakPoint;
     }

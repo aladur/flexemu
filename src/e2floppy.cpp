@@ -258,60 +258,70 @@ bool E2floppy::umount_all_drives()
     return result;
 }  // umount_all_drives
 
-// get info for corresponding drive or nullptr
-// the info string should not exceed 512 Bytes
-// it is dynamically allocated and should be freed
-// by the calling program
-
-std::string E2floppy::drive_info(Word drive_nr)
+std::string E2floppy::drive_info_string(Word drive_nr)
 {
+    FlexContainerInfo info = drive_info(drive_nr);
     std::stringstream stream;
 
+    if (!info.IsValid())
+    {
+        stream << "drive #" << drive_nr << " not ready" << std::endl;
+    }
+    else
+    {
+        int trk, sec;
+        bool is_write_protected = info.GetIsWriteProtected();
+
+        info.GetTrackSector(trk, sec);
+        stream << "drive       #" << drive_nr << std::endl
+            << "type:       " << info.GetTypeString().c_str() << std::endl;
+
+        if (info.GetIsFlexFormat())
+        {
+            stream << "name:       " << info.GetName() << " #" <<
+                                        info.GetNumber() << std::endl;
+        }
+        stream << "path:       " << info.GetPath().c_str() << std::endl
+               << "tracks:     " << trk << std::endl
+               << "sectors:    " << sec << std::endl
+               << "write-prot: " << (is_write_protected ? "yes" : "no")
+               << std::endl
+               << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
+               << std::endl;
+    }
+
+    return stream.str().c_str();
+}
+
+// get info for corresponding drive. If drive is not ready the result is empty.
+FlexContainerInfo E2floppy::drive_info(Word drive_nr)
+{
     if (drive_nr <= 3)
     {
         std::lock_guard<std::mutex> guard(status_mutex);
 
         if (floppy[drive_nr].get() == nullptr)
         {
-            stream << "drive #" << drive_nr << " not ready" << std::endl;
+            return FlexContainerInfo();
         }
         else
         {
             FlexContainerInfo info;
-            int trk, sec;
-            bool is_write_protected = false;
 
             try
             {
                 floppy[drive_nr]->GetInfo(info);
-                is_write_protected = floppy[drive_nr]->IsWriteProtected();
             }
             catch (FlexException &ex)
             {
-                stream << ex.what() << std::endl;
-                return stream.str().c_str();
+                return FlexContainerInfo();
             }
 
-            info.GetTrackSector(trk, sec);
-            stream << "drive       #" << drive_nr << std::endl
-                << "type:       " << info.GetTypeString().c_str() << std::endl;
-
-            if (info.GetIsFlexFormat())
-            {
-                stream << "name:       " << info.GetName() << " #" <<
-                                            info.GetNumber() << std::endl;
-            }
-            stream << "path:       " << info.GetPath().c_str() << std::endl
-                   << "tracks:     " << trk << std::endl
-                   << "sectors:    " << sec << std::endl
-                   << "write-prot: " << (is_write_protected ? "yes" : "no")
-                   << std::endl
-                   << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
-                   << std::endl;
+            return info;
         }
     }
 
-    return stream.str().c_str();
+    return FlexContainerInfo();
 }
 
 const char *E2floppy::open_mode(char *path)

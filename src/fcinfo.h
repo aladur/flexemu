@@ -48,6 +48,7 @@ private:
     int     totalSize;  // Number of total bytes writable
     Byte attributes; // Disk attributes
     bool    is_flex_format;// This container contains a FLEX file system.
+    bool    is_write_protected;// This container is write protected.
 
 public:
     FlexContainerInfo();        // public constructor
@@ -142,6 +143,18 @@ public:
         return is_flex_format;
     };
 
+    inline void SetIsWriteProtected(bool f)
+    {
+        is_write_protected = f;
+    };
+    inline bool GetIsWriteProtected() const
+    {
+        return is_write_protected;
+    };
+    inline bool IsValid() const
+    {
+        return tracks != 0 && sectors != 0;
+    };
 };  // class FlexContainerInfo
 
 #endif // FCINFO_INCLUDED

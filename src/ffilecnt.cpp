@@ -432,6 +432,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     info.SetPath(fp.GetPath());
     info.SetType(param.type);
     info.SetAttributes(attributes);
+    info.SetIsWriteProtected(IsWriteProtected());
 
     return true;
 }

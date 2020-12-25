@@ -58,6 +58,7 @@ private:
     bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
     DWord memory_size;
     DWord video_ram_size;
+    Byte ramBank;
     std::unique_ptr<Byte[]> memory;
     std::unique_ptr<Byte[]> video_ram;
 
@@ -134,7 +135,8 @@ public:
                 // Use paged memory access to be able to mirror
                 // RAM banks (e.g. for Eurocom V5).
                 *(ppage[address >> 12] + (address & 0x3fff)) = value;
-                if (!isRamExtension)
+                if (!isRamExtension && ((ramBank & 0x03) != 3) &&
+                    (address >> 14 == (ramBank & 0x03)))
                 {
                     changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
                 }

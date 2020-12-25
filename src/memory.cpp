@@ -38,6 +38,7 @@ Memory::Memory(const struct sOptions &options) :
     isEurocom2V5(options.isEurocom2V5),
     memory_size(0x10000),
     video_ram_size(0),
+    ramBank(0),
     video_ram_active_bits(0)
 {
     memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
@@ -49,6 +50,7 @@ Memory::Memory(const struct sOptions &options) :
     }
 
     init_memory();
+    init_blocks_to_update();
 }
 
 Memory::~Memory()
@@ -313,10 +315,15 @@ void Memory::dump_ram_rom(Word min, Word max)
     }
 }
 
-void Memory::UpdateFrom(NotifyId id, void *)
+void Memory::UpdateFrom(NotifyId id, void *param)
 {
     if (id == NotifyId::RequestScreenUpdate)
     {
+        init_blocks_to_update();
+    }
+    else if (id == NotifyId::VideoRamBankChanged)
+    {
+        ramBank = *static_cast<Byte *>(param);
         init_blocks_to_update();
     }
 }

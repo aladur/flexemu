@@ -508,6 +508,26 @@ template<typename T> T fromBigEndian(const T& value)
 #endif
 }
 
+// Convert data type from current CPU architecture to little endian.
+template<typename T> T toLittleEndian(const T& value)
+{
+#if defined WORDS_BIGENDIAN
+    return reverseBytes<T>(value);
+#else
+    return value;
+#endif
+}
+
+// Convert data type from little endian to current CPU architecture.
+template<typename T> T fromLittleEndian(const T& value)
+{
+#if defined WORDS_BIGENDIAN
+    return reverseBytes<T>(value);
+#else
+    return value;
+#endif
+}
+
 // Read a big endian data value from buffer p.
 template<typename T> T getValueBigEndian(const Byte *p)
 {

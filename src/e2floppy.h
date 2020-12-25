@@ -33,6 +33,7 @@
     #include "flexemu.h"
     #include "wd1793.h"
     #include "filecnts.h"
+    #include "fcinfo.h"
     #include <string>
     #include <mutex>
 
@@ -111,7 +112,8 @@ public:
                                      int type = TYPE_DSK_CONTAINER);
     virtual bool         update_drive(Word drive_nr);
     virtual bool         umount_drive(Word drive_nr);
-    virtual std::string  drive_info(Word drive_nr);
+    virtual FlexContainerInfo drive_info(Word drive_nr);
+    virtual std::string  drive_info_string(Word drive_nr);
     virtual void         select_drive(Byte new_selected);
 
 private:

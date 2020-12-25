@@ -61,8 +61,24 @@ public:
         logFileName.clear();
     }
 
-    s_cpu_logfile(s_cpu_logfile &&src) = delete;
-    s_cpu_logfile &operator=(s_cpu_logfile &&src) = delete;
+    s_cpu_logfile(s_cpu_logfile &&src)
+    {
+        minAddr = src.minAddr;
+        maxAddr = src.maxAddr;
+        startAddr = src.startAddr;
+        stopAddr = src.stopAddr;
+        logFileName = std::move(src.logFileName);
+    }
+
+    s_cpu_logfile &operator=(s_cpu_logfile &&src)
+    {
+        minAddr = src.minAddr;
+        maxAddr = src.maxAddr;
+        startAddr = src.startAddr;
+        stopAddr = src.stopAddr;
+        logFileName = std::move(src.logFileName);
+        return *this;
+    }
 
     unsigned int minAddr;
     unsigned int maxAddr;

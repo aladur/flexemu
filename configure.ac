@@ -111,8 +111,8 @@ case $host_os in
        *)         FLEXEMU_LDADD="" ;;
 esac
 case $host_os in
-       *mingw32*) FLEX_RC='wwinres.${OBJEXT}' ;;
-       *cygwin*)  FLEX_RC='wwinres.${OBJEXT}' ;;
+       *mingw32*) FLEX_RC='flexemu.${OBJEXT}' ;;
+       *cygwin*)  FLEX_RC='flexemu.${OBJEXT}' ;;
        *)         FLEX_RC="" ;;
 esac
 case $host_os in

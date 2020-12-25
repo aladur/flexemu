@@ -96,7 +96,10 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             this, &FlexemuOptionsUi::OnRejected);
 }
 
-FlexemuOptionsUi::FlexemuOptionsUi() : Ui_FlexemuSetup(), dialog(nullptr)
+FlexemuOptionsUi::FlexemuOptionsUi()
+    : Ui_FlexemuSetup()
+    , dialog(nullptr)
+    , englishUS(QLocale::English, QLocale::UnitedStates)
 {
 }
 
@@ -234,7 +237,7 @@ void FlexemuOptionsUi::TransferDataToDialog(
     }
     else
     {
-        QString frequency_string(std::to_string(options.frequency).c_str());
+        QString frequency_string = englishUS.toString(options.frequency);
 
         r_frequencySet->setChecked(true);
         e_frequency->setText(frequency_string);
@@ -388,9 +391,8 @@ void FlexemuOptionsUi::TransferDataFromDialog(
     }
     else if (r_frequencySet->isChecked())
     {
-        auto frequency = e_frequency->text().toFloat(&success);
-
-        // The 1.0f case should be prevented by Validate().
+        // success == false should be prevented by Validate().
+        auto frequency = englishUS.toFloat(e_frequency->text(), &success);
         options.frequency = (success ? frequency : -1.0f);
     }
 
@@ -596,6 +598,7 @@ void FlexemuOptionsUi::AddFrequencyValidator(QLineEdit &lineEdit)
 {
     auto validator = new QDoubleValidator(0.1, 10000.0, 6, &lineEdit);
 
+    validator->setLocale(englishUS);
     validator->setNotation(QDoubleValidator::StandardNotation);
     lineEdit.setValidator(validator);
 }

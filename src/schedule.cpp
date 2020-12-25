@@ -21,7 +21,7 @@
 */
 
 
-#include <limits.h>
+#include <limits>
 #ifndef _WIN32
     #include <sched.h>
 #endif
@@ -30,48 +30,35 @@
 #include "schedule.h"
 #include "mc6809.h"
 #include "inout.h"
-#include "btime.h"
-#include "btimer.h"
-#include "bcommand.h"
 
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
     cpu(x_cpu), inout(x_inout),
     state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
-    is_status_valid(false),
+    is_status_valid(false), is_resume(false),
     target_frequency(ORIGINAL_FREQUENCY), frequency(0.0), time0(0), cycles0(0)
 {
-#ifdef UNIX
-    sigset_t sigmask;
-
-    // By default mask the SIGALRM signal
-    // ATTENTION: For POSIX compatibility
-    // this should be done in the main thread
-    // before creating any thread
-    sigemptyset(&sigmask);
-    sigaddset(&sigmask, SIGALRM);
-    sigprocmask(SIG_BLOCK, &sigmask, nullptr);
-#endif
-
     memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 }
 
 Scheduler::~Scheduler()
 {
-    BTimer::Instance()->Stop();
     commands.clear();
 }
 
 void Scheduler::request_new_state(CpuState x_user_state)
 {
-    user_state = x_user_state;
-    cpu.exit_run();
+    if (x_user_state != CpuState::NONE)
+    {
+        user_state = x_user_state;
+        cpu.exit_run();
+    }
 }
 
 bool Scheduler::is_finished()
 {
-    // this is the final state. program can savely be shutdown
+    // this is the final state. program can safely be shutdown.
     return state == CpuState::Exit;
 }
 
@@ -142,7 +129,7 @@ CpuState Scheduler::idleloop()
     while (user_state == CpuState::NONE || user_state == CpuState::Stop)
     {
         process_events();
-        BTimer::Instance()->Suspend();
+        suspend();
 
         // CpuState::Invalid is only a temporary state to update CPU view.
         if (state == CpuState::Invalid)
@@ -165,7 +152,7 @@ CpuState Scheduler::runloop(RunMode mode)
         if (new_state == CpuState::Suspend)
         {
             // suspend thread until next timer tick
-            BTimer::Instance()->Suspend();
+            suspend();
             new_state = CpuState::Schedule;
         }
 
@@ -252,21 +239,11 @@ CpuState Scheduler::statemachine(CpuState initial_state)
     return state;
 } // statemachine
 
-void Scheduler::timer_elapsed(void *p)
-{
-    if (p != nullptr)
-    {
-        ((Scheduler *)p)->timer_elapsed();
-    }
-}
-
 void Scheduler::timer_elapsed()
 {
     events |= Event::Timer;
+    resume();
     cpu.exit_run();
-#ifdef __BSD
-    BTimer::Instance()->Start(false, TIME_BASE);
-#endif
 }
 
 void Scheduler::do_reset()
@@ -279,8 +256,6 @@ void Scheduler::do_reset()
 // thread support: Start Running CPU Thread
 void Scheduler::run()
 {
-    bool periodic = true;
-
 #ifdef _WIN32
     HANDLE hThread = (HANDLE)GetCurrentThread();
     // Decrease Thread priority of CPU thread so that
@@ -288,13 +263,6 @@ void Scheduler::run()
     SetThreadPriority(hThread, GetThreadPriority(hThread) - 1);
 #endif
 
-    BTimer::Instance()->SetTimerProc(timer_elapsed, this);
-#ifdef __BSD
-    // do not use a periodic timer because it is
-    // not reliable on FreeBSD 5.1
-    periodic = false;
-#endif
-    BTimer::Instance()->Start(periodic, TIME_BASE);
     time0sec = systemTime.GetTimeUsll();
     statemachine(CpuState::Run);
 }
@@ -351,8 +319,8 @@ void Scheduler::frequency_control(QWord time1)
     if (time0 == 0)
     {
         time0 = time1;
-        required_cyclecount = static_cast<cycles_t>
-                              (TIME_BASE * target_frequency);
+        required_cyclecount =
+            static_cast<cycles_t>(TIME_BASE * target_frequency);
         cpu.set_required_cyclecount(required_cyclecount);
     }
     else
@@ -388,18 +356,42 @@ void Scheduler::update_frequency()
 }
 
 
-void Scheduler::set_frequency(float target_freq)
+void Scheduler::set_frequency(float x_target_frequency)
 {
-    if (target_freq <= 0)
+    cycles_t cycles;
+
+    if (x_target_frequency == 0.0f)
     {
-        target_frequency = (float)0.0;
+        target_frequency = x_target_frequency;
+        cycles = std::numeric_limits<decltype(cycles)>::max();
     }
     else
     {
-        target_frequency = target_freq;
+        if (x_target_frequency < 0.0f)
+        {
+            x_target_frequency = ORIGINAL_FREQUENCY;
+        }
+        target_frequency = x_target_frequency;
+        cycles = static_cast<cycles_t>(TIME_BASE * target_frequency);
         time0 = 0;
     }
 
-    cpu.set_required_cyclecount(ULONG_MAX);
+    cpu.set_required_cyclecount(cycles);
 } // set_frequency
+
+void Scheduler::suspend()
+{
+    std::unique_lock<std::mutex> lock(condition_mutex);
+    is_resume = false;
+    condition.wait(lock, [&](){ return is_resume; });
+}
+
+void Scheduler::resume()
+{
+    {
+        std::unique_lock<std::mutex> lock(condition_mutex);
+        is_resume = true;
+    }
+    condition.notify_one();
+}
 

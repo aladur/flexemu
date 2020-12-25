@@ -41,7 +41,8 @@ FlexContainerInfo::FlexContainerInfo() :
     free(0),
     totalSize(0),
     attributes(0),
-    is_flex_format(false)
+    is_flex_format(false),
+    is_write_protected(false)
 {
 } // FlexContainerInfo
 

@@ -167,6 +167,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
     info.SetPath(directory.c_str());
     info.SetType(param.type);
     info.SetAttributes(attributes);
+    info.SetIsWriteProtected(IsWriteProtected());
     return true;
 }
 

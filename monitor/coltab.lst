@@ -1,0 +1,247 @@
+                      ; TTL "COLOR TABLE"
+                      ;
+                      ; create a color table on the screen
+                      ;
+                      ; History
+                      ;========
+                      ;
+                      ; 22.09.2000 W. Schwotzer Created
+                      ; 04.12.2020 W. Schwotzer Reduced all over cycle time
+                      ; 04.12.2020 W. Schwotzer Added two more color tables
+                      ; 04.12.2020 W. Schwotzer Leave emulator with ESC key
+ 
+                      ESC     EQU     $1B     ; ESC Character to exit emulator
+                      MMU     EQU     $FFE0   ; I/O base address of memory 
+management unit (MMU)
+                      EMUCMD  EQU     $FD3C   ; flexemu emulator command 
+register
+                      PIA1AD  EQU     $FCF0   ; Pia A data- and
+                      PIA1AC  EQU     $FCF1   ; control register
+                      DIRPAG  EQU     $EF00   ; Direct page base address
+                      SCRNBAS EQU     $0000   ; Screen base address
+                      SIZEX   EQU     64      ; Screen raster line size in 
+byte
+                      SIZEY   EQU     256     ; Number of raster lines on 
+screen
+                      SCRNSIZ EQU     SIZEX*SIZEY ; Screen memory size in byte
+                      BLOCKH  EQU     SIZEY/8 ; Height of one block (COLTAB2)
+                      STACK   EQU     $F000   ; Base addr of stack / program 
+start address
+ 
+                              ORG     DIRPAG
+                      COUNT   RMB     1       ; Base counter to change color 
+bit
+                      COUNT1  RMB     1       ; Counter to change color bit
+                      LCOUNT  RMB     1       ; Inner loop counter (COLTAB2)
+                      BCOUNT  RMB     1       ; Color bar/block counter, 0..63
+ 
+                              ORG     STACK
+ 
+ F000 2037            START   BRA     START1
+                      *
+                      VERS    EQU     4 ; Version number
+                      *
+                      ; Color plane codes to switch MMU
+ F002 0C              PLANES1 FCB     $0C ; Green low
+ F003 0D                      FCB     $0D ; Blue low
+ F004 0E                      FCB     $0E ; Red low
+ F005 04                      FCB     $04 ; Green high
+ F006 05                      FCB     $05 ; Blue high
+ F007 06                      FCB     $06 ; Red high
+ F008 00                      FCB     $00 ; End marker
+                      *
+ F009 0C              PLANES2 FCB     $0C ; Green low
+ F00A 04                      FCB     $04 ; Green high
+ F00B 0D                      FCB     $0D ; Blue low
+ F00C 05                      FCB     $05 ; Blue high
+ F00D 0E                      FCB     $0E ; Red low
+ F00E 06                      FCB     $06 ; Red high
+ F00F 00                      FCB     $00 ; End marker
+ 
+                      ; Initialize PIA1 for keyboard input
+ F010 3402            INITPIA PSHS    A
+ F012 7FFCF1                  CLR     PIA1AC
+ F015 7FFCF0                  CLR     PIA1AD
+ F018 863E                    LDA     #$3E
+ F01A B7FCF1                  STA     PIA1AC
+ F01D 3582                    PULS    A, PC
+                      *
+                      ; Wait for keyboard input character from PIA1
+ F01F B6FCF1          INCH    LDA     PIA1AC
+ F022 2AFB                    BPL     INCH
+ F024 B6FCF0                  LDA     PIA1AD
+ F027 39                      RTS
+                      *
+                      ; Exit emulator
+ F028 8EF034          EMUEXIT LDX     #TEXIT
+ F02B A680            LPEXIT  LDA     ,X+
+ F02D B7FD3C                  STA     EMUCMD
+ F030 26F9                    BNE     LPEXIT
+ F032 20FE            LPEX9   BRA     LPEX9
+                      *
+ F034 45584954        TEXIT   FCC     "EXIT"
+ F038 00                      FCB     $00
+                      *
+                      RESET   EQU     *
+ F039 10CEF000        START1  LDS     #STACK
+ F03D 86EF                    LDA     #DIRPAG/$100
+ F03F 1F8B                    TFR     A,DP
+ F041 8DCD                    BSR     INITPIA
+ 
+                      ; Top quater of screen: Horizontal color bar
+ F043 8E0000                  LDX     #SCRNBAS
+ F046 CEF002                  LDU     #PLANES1
+ F049 8640                    LDA     #64
+ F04B 8D67                    BSR     COLTAB1
+                      ; Next quater of screen: Horizontal color bar with 
+changed color planes
+ F04D 8E1000                  LDX     #SCRNBAS+(SCRNSIZ/4)
+ F050 CEF009                  LDU     #PLANES2
+ F053 8640                    LDA     #64
+ F055 8D5D                    BSR     COLTAB1
+                      ; Bottom half of screen: Color blocks, 16 horizontally, 
+4 vertically
+ F057 8E2000                  LDX     #SCRNBAS+(SCRNSIZ/2)
+ F05A CEF009                  LDU     #PLANES2
+ F05D 8640                    LDA     #64
+ F05F 1700CA                  LBSR    COLTAB2
+                      *
+ F062 8DBB            END8    BSR     INCH
+ F064 811B                    CMPA    #ESC
+ F066 26FA                    BNE     END8
+ F068 8DBE                    BSR     EMUEXIT
+ 
+                      *****************************************
+                      * Color table 1 algorithm               *
+                      *****************************************
+ F06A 8D4E            LOOP3   BSR     SWTCH
+ F06C 4F                      CLRA
+ F06D D600            LOOP1   LDB     <COUNT
+ F06F D701                    STB     <COUNT1
+ F071 C608            LOOP2   LDB     #(SIZEY / 8 / 4)
+ F073 A700            LOOP4   STA     0,X
+ F075 A78840                  STA     SIZEX,X
+ F078 A7890080                STA     2*SIZEX,X
+ F07C A78900C0                STA     3*SIZEX,X
+ F080 A7890100                STA     4*SIZEX,X
+ F084 A7890140                STA     5*SIZEX,X
+ F088 A7890180                STA     6*SIZEX,X
+ F08C A78901C0                STA     7*SIZEX,X
+ F090 30890200                LEAX    8*SIZEX,X
+ F094 5A                      DECB
+ F095 26DC                    BNE     LOOP4
+ F097 0A03                    DEC     <BCOUNT
+ F099 3089F001                LEAX    1-(SCRNSIZ / 4),X
+ F09D 0A01                    DEC     <COUNT1
+ F09F 26D0                    BNE     LOOP2
+ F0A1 43                      COMA
+ F0A2 0D03                    TST     <BCOUNT
+ F0A4 26C7                    BNE     LOOP1
+                      *
+ F0A6 0400            CT10    LSR     <COUNT
+ F0A8 1F21                    TFR     Y,X
+ F0AA C640                    LDB     #64
+ F0AC D703                    STB     <BCOUNT
+ F0AE E6C0                    LDB     ,U+
+ F0B0 26B8                    BNE     LOOP3
+ F0B2 2012                    BRA     SWTCHB
+                      *
+ F0B4 1F12            COLTAB1 TFR     X,Y
+ F0B6 9700                    STA     <COUNT
+ F0B8 20EC                    BRA     CT10
+ 
+                      ; Switch MMU
+ F0BA 3404            SWTCH   PSHS    B
+ F0BC 1F98                    TFR     B,A
+ F0BE FDFFE0                  STD     MMU
+ F0C1 FDFFE2                  STD     MMU+2
+ F0C4 3584                    PULS    B, PC
+                      *
+                      ; Switch back MMU
+ F0C6 3404            SWTCHB  PSHS    B
+ F0C8 C60F                    LDB     #$0F
+ F0CA 1F89                    TFR     A, B
+ F0CC FDFFE0                  STD     MMU
+ F0CF FDFFE2                  STD     MMU+2
+ F0D2 3584                    PULS    B, PC
+ 
+                      *****************************************
+                      * Color table 2 algorithm               *
+                      *****************************************
+ F0D4 8DE4            LOOP7   BSR     SWTCH
+ F0D6 8E2000                  LDX     #SCRNBAS+(SCRNSIZ / 2)
+ F0D9 C640                    LDB     #64
+ F0DB D703                    STB     <BCOUNT
+ F0DD 4F                      CLRA
+ F0DE D600            LOOP5   LDB     <COUNT
+ F0E0 D701                    STB     <COUNT1
+ F0E2 C608            LOOP8   LDB     #BLOCKH / 4
+ F0E4 D702                    STB     <LCOUNT
+ F0E6 1F89                    TFR     A,B
+ F0E8 ED00            LOOP6   STD     0,X
+ F0EA ED02                    STD     2,X
+ F0EC ED8840                  STD     SIZEX+0,X
+ F0EF ED8842                  STD     SIZEX+2,X
+ F0F2 ED890080                STD     2*SIZEX+0,X
+ F0F6 ED890082                STD     2*SIZEX+2,X
+ F0FA ED8900C0                STD     3*SIZEX+0,X
+ F0FE ED8900C2                STD     3*SIZEX+2,X
+ F102 30890100                LEAX    4*SIZEX,X
+ F106 0A02                    DEC     <LCOUNT
+ F108 26DE                    BNE     LOOP6
+ F10A 3089F804                LEAX    4-(BLOCKH*SIZEX),X
+ F10E 0A03                    DEC     <BCOUNT
+ F110 D603                    LDB     <BCOUNT
+ F112 C50F                    BITB    #15
+ F114 2604                    BNE     NOXKOR
+                      ; After 16 Blocks begin a next row of 16 blocks
+ F116 308907C0                LEAX    (BLOCKH-1)*SIZEX,X
+ F11A 7AEF01          NOXKOR  DEC     COUNT1
+ F11D 26C3                    BNE     LOOP8
+ F11F 43                      COMA
+ F120 0D03                    TST     <BCOUNT
+ F122 26BA                    BNE     LOOP5
+                      *
+ F124 0400            CT20    LSR     <COUNT
+ F126 E6C0                    LDB     ,U+
+ F128 26AA                    BNE     LOOP7
+ F12A 209A                    BRA     SWTCHB
+                      *
+ F12C 9700            COLTAB2 STA     <COUNT
+ F12E 20F4                    BRA     CT20
+                      *
+ F130 3B              SWI     RTI
+ F131 16FEF4          IRQ     LBRA    EMUEXIT
+                      *
+                      ORIG   SET  *
+ 
+                      ; Interrupt vectors
+                              ORG     $FFF0
+ 
+ FFF0 0000                    FDB     0   ; reserved
+ FFF2 F130                    FDB     SWI ; SWI3
+ FFF4 F130                    FDB     SWI ; SWI2
+ FFF6 F131                    FDB     IRQ ; FIRQ
+ FFF8 F131                    FDB     IRQ ; IRQ
+ FFFA F130                    FDB     SWI ; SWI
+ FFFC F131                    FDB     IRQ ; NMI
+ FFFE F039                    FDB     RESET ; RESET
+ 
+                              END START
+
+SYMBOL TABLE
+    BCOUNT 02 EF03    BLOCKH 00 0020   COLTAB1 02 F0B4   COLTAB2 02 F12C
+     COUNT 02 EF00    COUNT1 02 EF01      CT10 02 F0A6      CT20 02 F124
+    DIRPAG 00 EF00    EMUCMD 00 FD3C   EMUEXIT 02 F028      END8 02 F062
+       ESC 00 001B      INCH 02 F01F   INITPIA 02 F010       IRQ 02 F131
+    LCOUNT 02 EF02     LOOP1 02 F06D     LOOP2 02 F071     LOOP3 02 F06A
+     LOOP4 02 F073     LOOP5 02 F0DE     LOOP6 02 F0E8     LOOP7 02 F0D4
+     LOOP8 02 F0E2     LPEX9 02 F032    LPEXIT 02 F02B       MMU 00 FFE0
+    NOXKOR 02 F11A      ORIG 03 F134    PIA1AC 00 FCF1    PIA1AD 00 FCF0
+   PLANES1 02 F002   PLANES2 02 F009     RESET 02 F039   SCRNBAS 00 0000
+   SCRNSIZ 00 4000     SIZEX 00 0040     SIZEY 00 0100     STACK 00 F000
+     START 02 F000    START1 02 F039       SWI 02 F130     SWTCH 02 F0BA
+    SWTCHB 02 F0C6     TEXIT 02 F034      VERS 00 0004
+47 SYMBOLS
+
+0 error(s), 0 warning(s)

@@ -31,6 +31,7 @@ enum class NotifyId : uint8_t
     UpdateStatusBar,
     FirstKeyboardRequest,
     RequestScreenUpdate,
+    VideoRamBankChanged,
 };
 
 #endif // #ifndef _BOBSHELP_INCLUDED_

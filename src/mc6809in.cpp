@@ -9,7 +9,7 @@
 */
 
 
-#include <limits.h>
+#include <limits>
 #include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
@@ -32,13 +32,8 @@ void Mc6809::reset()
     total_cycles    = 0;
     nmi_armed       = 0;
     /* no interrupts yet */
-    events = Event::NONE;
+    events = events & Event::FrequencyControl;
     reset_bp(2);    // remove next-breakpoint
-
-    if (bp[0] > 0xffff && bp[1] > 0xffff && bp[2] > 0xffff)
-    {
-        events &= ~Event::BreakPoint;
-    }
 
 #ifdef FASTFLEX
     ipcreg          = memory.read_word(0xfffe);
@@ -445,7 +440,7 @@ void Mc6809::set_required_cyclecount(cycles_t x_cycles)
     required_cyclecount = x_cycles;
 #endif
 
-    if (x_cycles == ULONG_MAX)
+    if (x_cycles == std::numeric_limits<decltype(cycles)>::max())
     {
         events &= ~Event::FrequencyControl;
     }

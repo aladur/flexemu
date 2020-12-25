@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="12"
+   inkscape:export-xdpi="12"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 67.733331 67.733331"
+   height="256"
+   width="256"
+   sodipodi:docname="flexemu-cpu.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2405"
+     inkscape:window-height="1340"
+     id="namedview1034"
+     showgrid="true"
+     inkscape:zoom="3.49"
+     inkscape:cx="122.4"
+     inkscape:cy="117.6"
+     inkscape:window-x="-83"
+     inkscape:window-y="20"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg8">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1146" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <marker
+       style="overflow:visible"
+       id="TriangleInS"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="TriangleInS"
+       inkscape:isstock="true">
+      <path
+         transform="scale(-0.2)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         id="path2981" />
+    </marker>
+    <inkscape:path-effect
+       only_selected="false"
+       apply_with_weight="true"
+       apply_no_weight="true"
+       helper_size="0"
+       steps="2"
+       weight="33.33"
+       lpeversion="1"
+       is_visible="true"
+       id="path-effect934"
+       effect="bspline" />
+  </defs>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     style="display:none"
+     id="layer1">
+    <rect
+       y="1.5894591e-08"
+       x="0"
+       height="67.73333"
+       width="67.73333"
+       id="rect990"
+       style="fill:#070707;fill-opacity:1;stroke:none;stroke-width:0.7109;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+  <path
+     id="body"
+     style="fill:#000000;stroke:none;stroke-width:16.7463;stroke-linecap:round;stroke-linejoin:round"
+     d="M 57 10 C 53.14 10 50 13.12 50 17 L 50 233 C 50 236.9 53.14 240 57 240 L 198 240 C 201.9 240 205 236.9 205 233 L 205 17 C 205 13.12 201.9 10 198 10 L 140 10 L 140 29.99 C 140 38.29 133.3 44.98 125 44.98 C 116.7 44.98 110 38.29 110 29.99 L 110 10 L 57 10 z "
+     transform="scale(0.2646)" />
+  <g
+     id="pin1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin2"
+     transform="translate(-4.167e-4,7.938)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin3"
+     transform="translate(-4.167e-4,15.88)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9-0"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3-6"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin4"
+     transform="translate(2.495e-4,23.81)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9-0-6"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3-6-1"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin5"
+     transform="translate(-4.167e-4,31.75)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9-0-6-7"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3-6-1-9"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin6"
+     transform="translate(-4.167e-4,39.69)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9-0-6-7-0"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3-6-1-9-2"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin7"
+     transform="translate(-4.167e-4,47.63)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2912;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-9-0-6-7-0-7"
+       width="5.294"
+       height="5.286"
+       x="6.612"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6473;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-3-6-1-9-2-5"
+       width="2.648"
+       height="2.646"
+       x="3.967"
+       y="6.614" />
+  </g>
+  <g
+     id="pin8"
+     transform="translate(0.0042,47.62)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2-9-6-9-9-8"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2-7-1-3-4-4"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin9"
+     transform="translate(0.0042,39.69)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2-9-6-9-9"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2-7-1-3-4"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin13"
+     transform="translate(1.645e-4,7.938)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin12"
+     transform="translate(0.0042,15.87)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2-9"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2-7"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin11"
+     transform="translate(0.0042,23.81)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2-9-6"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2-7-1"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin10"
+     transform="translate(0.0042,31.75)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2-2-9-6-9"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7-2-7-1-3"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+  <g
+     id="pin14">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:5.2919;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-2"
+       width="5.294"
+       height="5.286"
+       x="55.56"
+       y="5.297" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.6476;stroke-linecap:round;stroke-linejoin:round"
+       id="rect9202-1-7"
+       width="2.648"
+       height="2.646"
+       x="60.85"
+       y="6.615" />
+  </g>
+</svg>

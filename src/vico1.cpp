@@ -44,7 +44,7 @@ void VideoControl1::requestWriteValue(Byte new_value)
     if (isUpdate)
     {
         isFirstWrite = false;
-        Notify(NotifyId::RequestScreenUpdate);
+        Notify(NotifyId::VideoRamBankChanged, &value);
     }
 }
 

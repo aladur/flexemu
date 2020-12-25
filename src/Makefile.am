@@ -14,12 +14,14 @@ SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
 EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-	     fsetup.ui fpopt.ui fpnew.ui \
-	     fsetup.qrc Flexemu.ad flexemu.astyle \
-	     fpmain.qrc \
+	     $(flexemu_ui) $(fsetup_ui) $(flexplorer_ui) \
+	     $(flexemu_qrc) $(fsetup_qrc) $(flexplorer_qrc) \
+	     Flexemu.ad flexemu.astyle \
 	     JoystickTable.gnumeric \
-	     wwinres.rc winres.rc fsetup.rc \
+	     flexemu.rc fsetup.rc flexdisk.rc \
 	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
+	     dsktool.vcxproj flex2hex.vcxproj mdcrtool.vcxproj \
+	     msvcQtPath.props \
 	     $(pkgdata_DATA) \
 	     $(sysconf_DATA) \
 	     $(desktop_DATA) \
@@ -42,7 +44,8 @@ AM_CXXFLAGS = --std=c++14 \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
-			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@
+			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ \
+			@QT_CXXFLAGS@
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
@@ -56,27 +59,52 @@ mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
 dsktool_LDADD    = @PTHREAD_LD@
 flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
-                   @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@
+                   @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@
 test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
+# Rule for Qt qrc files:
+# Define all *.qrc files from which to create *_qrc.cpp files.
+flexemu_qrc = flexemu.qrc
+flexemu_qrc_src = $(flexemu_qrc:.qrc=_qrc.cpp)
+fsetup_qrc = fsetup.qrc
+fsetup_qrc_src = $(fsetup_qrc:.qrc=_qrc.cpp)
+flexplorer_qrc = fpmain.qrc
+flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
+
+# Rule for Qt ui files:
+# Define all *.ui files from which to create *_ui.h files.
+flexemu_ui = brkpt.ui logfil.ui cpustat.ui
+flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
+fsetup_ui = fsetup.ui
+fsetup_ui_hdr = $(fsetup_ui:.ui=_ui.h)
+flexplorer_ui = fpnew.ui fpopt.ui
+flexplorer_ui_hdr = $(flexplorer_ui:.ui=_ui.h)
+
 # Rule for Qt moc files:
-# Define all fsetup header files from which to create moc cpp files.
+# Define all header files from which to create *_moc.cpp files.
+flexemu_moc_hdr = qtgui.h e2screen.h brkptui.h logfilui.h efslctle.h \
+		  drawnwid.h
+flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 fsetup_moc_hdr = fsetupui.h
 fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
-
-nodist_fsetup_SOURCES = fsetup_ui.h fsetup_qrc.cpp $(fsetup_moc_src)
-
-# Define all flexplorer header files from which to create moc cpp files.
 flexplorer_moc_hdr = fpnewui.h fpoptui.h fpwin.h fpmdich.h fpmodel.h fpedit.h
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
-nodist_flexplorer_SOURCES = fpnew_ui.h fpopt_ui.h fpmain_qrc.cpp \
+nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
+
+nodist_fsetup_SOURCES = $(fsetup_ui_hdr) $(fsetup_qrc_src) $(fsetup_moc_src)
+
+nodist_flexplorer_SOURCES = $(flexplorer_ui_hdr) $(flexplorer_qrc_src) \
 			    $(flexplorer_moc_src)
 
-BUILT_SOURCES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
+BUILT_SOURCES = $(nodist_flexemu_SOURCES) \
+		$(nodist_fsetup_SOURCES) \
+		$(nodist_flexplorer_SOURCE)
 
-CLEANFILES = $(nodist_fsetup_SOURCES) $(nodist_flexplorer_SOURCES)
+CLEANFILES = $(nodist_flexemu_SOURCES) \
+	     $(nodist_fsetup_SOURCES) \
+	     $(nodist_flexplorer_SOURCES)
 
 fsetup_SOURCES = \
 fsetup.cpp fsetupui.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
@@ -90,30 +118,34 @@ command.cpp da6809.cpp e2floppy.cpp vico1.cpp vico2.cpp fcinfo.cpp \
 fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
 memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
 mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
-pia2.cpp rfilecnt.cpp wd1793.cpp win32gui.cpp xabsgui.cpp xres.cpp \
-xtgui.cpp brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
+pia2.cpp rfilecnt.cpp wd1793.cpp \
+brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
 bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
-btimer.cpp clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
+clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
 filecnts.cpp mc6809st.cpp cvtwchar.cpp joystick.cpp \
 apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
 binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
 bobservd.cpp \
+qtgui.cpp e2screen.cpp brkptui.cpp logfilui.cpp efslctle.cpp bui.cpp \
+drawnwid.cpp winmain.cpp \
 sprinter.h \
 absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
 da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
 fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
 iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h ioaccess.h \
-mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h win32gui.h \
-xabsgui.h xtgui.h brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
-bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h btimer.h \
+mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h \
+brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
+bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h \
 clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
-resource.h filecntb.h filecnts.h mc6809st.h \
+filecntb.h filecnts.h mc6809st.h \
 schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
 fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
 bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
 memsrc.h bobserv.h bobservd.h bobshelp.h \
 tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h \
-bintervl.h crc.h warnoff.h warnon.h
+bintervl.h crc.h warnoff.h warnon.h \
+qtgui.h e2screen.h brkptui.h logfilui.h efslctle.h bui.h drawnwid.h \
+propsui.h bmp.h winmain.h
 
 flexplorer_SOURCES = \
 fpmain.cpp fpwin.cpp fpmdich.cpp \
@@ -169,14 +201,14 @@ command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
 flexerr.cpp inout.cpp \
 memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
 bcommand.cpp btime.cpp schedule.cpp \
-btimer.cpp clogfile.cpp  \
+clogfile.cpp  \
 mc6809st.cpp binifile.cpp fcnffile.cpp bobservd.cpp \
 test_gccasm.h bdate.h \
 command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
 flexerr.h inout.h \
 memory.h mc6809.h misc1.h ioaccess.h \
 typedefs.h \
-csetfreq.h btime.h schedule.h cpustate.h btimer.h \
+csetfreq.h btime.h schedule.h cpustate.h \
 clogfile.h \
 mc6809st.h \
 schedcpu.h sprinter.h \
@@ -188,7 +220,7 @@ warnoff.h warnon.h
 
 # Create a *_moc.cpp file from a *.h file
 # To see which *.h files are used to create *_moc.cpp files see
-# variables fsetup_moc_hdr and flexplorer_moc_hdr.
+# variables flexemu_moc_hdr, fsetup_moc_hdr and flexplorer_moc_hdr.
 .h_moc.cpp:
 	${QT_MOC} $< -o $@
 

@@ -23,7 +23,6 @@
 #include "misc1.h"
 #include <new>
 #include <sstream>
-#include <thread>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
@@ -37,14 +36,13 @@
 
 #include "e2.h"
 #include "apprun.h"
-#include "win32gui.h"
-#include "xtgui.h"
 #include "foptman.h"
 #include "flexerr.h"
 #include "fileread.h"
-#include "btimer.h"
 #include "fcnffile.h"
 #include "iodevdbg.h"
+#include "sguiopts.h"
+#include "qtgui.h"
 
 
 ApplicationRunner::ApplicationRunner(
@@ -66,7 +64,9 @@ ApplicationRunner::ApplicationRunner(
     drisel(fdc),
     command(inout, scheduler, fdc),
     vico1(),
-    vico2()
+    vico2(),
+    gui(cpu, memory, scheduler, inout, vico1, vico2,
+        joystickIO, keyboardIO, terminalIO, pia1, x_guiOptions)
 {
     if (options.startup_command.size() > MAX_COMMAND)
     {
@@ -94,7 +94,11 @@ ApplicationRunner::ApplicationRunner(
         options.useRtc = false;
     }
 
-    if (!options.isRamExtension)
+    if (options.isRamExtension)
+    {
+        ioDevices.insert({ mmu.getName(), mmu });
+    }
+    else
     {
         // If no RAM extension is present:
         // Limit the number of columns to 2.
@@ -103,10 +107,6 @@ ApplicationRunner::ApplicationRunner(
         options.isHiMem = false;
     }
 
-    if (options.isRamExtension)
-    {
-        ioDevices.insert({ mmu.getName(), mmu });
-    }
     ioDevices.insert({ acia1.getName(), acia1 });
     ioDevices.insert({ pia1.getName(), pia1 });
     if (options.isEurocom2V5)
@@ -118,7 +118,7 @@ ApplicationRunner::ApplicationRunner(
         ioDevices.insert({ pia2.getName(), pia2 });
         ioDevices.insert({ fdc.getName(), fdc });
         ioDevices.insert({ drisel.getName(), drisel });
-        inout.set_fdc(&fdc);
+        gui.SetFloppy(&fdc);
     }
     ioDevices.insert({ command.getName(), command });
     ioDevices.insert({ vico1.getName(), vico1 });
@@ -129,10 +129,7 @@ ApplicationRunner::ApplicationRunner(
         inout.set_rtc(&rtc);
     }
 
-    if (options.frequency >= 0.0f)
-    {
-        scheduler.set_frequency(options.frequency);
-    }
+    scheduler.set_frequency(options.frequency);
 
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
     if (terminalIO.is_terminal_supported())
@@ -170,7 +167,7 @@ ApplicationRunner::ApplicationRunner(
 
 ApplicationRunner::~ApplicationRunner()
 {
-    BTimer::Destroy();
+    cleanup();
 }
 
 void ApplicationRunner::AddIoDevicesToMemory()
@@ -243,7 +240,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
     return true;
 }
 
-int ApplicationRunner::run()
+int ApplicationRunner::startup()
 {
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
@@ -254,20 +251,11 @@ int ApplicationRunner::run()
     pia2v5.mount_all_drives(options.mdcrDrives);
 
     terminalIO.init(options.reset_key);
+    inout.set_gui(&gui);
 
     if (!(options.term_mode && terminalIO.is_terminal_supported()))
     {
-        inout.create_gui(
-                joystickIO,
-                keyboardIO,
-                terminalIO,
-                pia1,
-                memory,
-                scheduler,
-                cpu,
-                vico1,
-                vico2,
-                guiOptions);
+        gui.show();
     }
 
     AddIoDevicesToMemory();
@@ -290,12 +278,20 @@ int ApplicationRunner::run()
     }
 
     // start CPU thread
-    std::thread cpu_thread(&Scheduler::run, &scheduler);
-
-    inout.main_loop();
-
-    cpu_thread.join();  // wait for termination of CPU thread
+    cpuThread = std::make_unique<std::thread>(&Scheduler::run, &scheduler);
 
     return 0;
+}
+
+void ApplicationRunner::cleanup()
+{
+    if (cpuThread)
+    {
+        // Make sure that the CPU thread leaves the suspended state
+        // otherwise join will end up in an endless state.
+        scheduler.request_new_state(CpuState::Exit);
+        cpuThread->join();  // wait for termination of CPU thread
+        cpuThread.reset();
+    }
 }
 

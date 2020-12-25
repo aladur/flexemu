@@ -29,6 +29,8 @@
 #include <mutex>
 #include <vector>
 #include <memory>
+#include <condition_variable>
+#include <mutex>
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "btime.h"
@@ -36,7 +38,6 @@
 
 
 
-class BTimer;
 class Inout;
 
 class Scheduler
@@ -66,8 +67,13 @@ public:
 public:
     void        sync_exec(BCommandPtr new_command);
     void    run();
+
 protected:
     void        execute_commands();
+    void suspend();
+    void resume();
+    std::mutex condition_mutex;
+    std::condition_variable condition;
     std::mutex      command_mutex;
     std::mutex      status_mutex;
     std::mutex      irq_status_mutex;
@@ -79,10 +85,10 @@ public:
     {
         return total_cycles;
     }
-protected:
-    static void timer_elapsed(void *p);
     void timer_elapsed();
-    void set_timer();
+protected:
+//    static void timer_elapsed(void *p);
+//    void set_timer();
 
     ScheduledCpu &cpu;
     Inout &inout;
@@ -92,7 +98,6 @@ protected:
     QWord       total_cycles;
     QWord       time0sec;
     BTime       systemTime;
-    static Scheduler *instance;
 
     // CPU status
 public:
@@ -103,6 +108,7 @@ protected:
     void        do_reset();
     CpuStatusPtr cpu_status;
     bool        is_status_valid;
+    bool        is_resume;
 
     // CPU frequency
 public:

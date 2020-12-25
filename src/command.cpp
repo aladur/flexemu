@@ -245,10 +245,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        for (number = 0; number <= 3; number++)
+                        for (Word drive_nr = 0; drive_nr <= 3; drive_nr++)
                         {
-                            answer_stream <<
-                                fdc.drive_info(static_cast<Word>(number));
+                            answer_stream << fdc.drive_info_string(drive_nr);
                         }
 
                         answer = answer_stream.str();
@@ -305,7 +304,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     }
                     else if (stricmp(arg1, "info") == 0)
                     {
-                        answer = fdc.drive_info(static_cast<Word>(number));
+                        answer =
+                            fdc.drive_info_string(static_cast<Word>(number));
                         return;
                     }
                     else if (stricmp(arg1, "update") == 0)

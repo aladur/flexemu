@@ -1,0 +1,33 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/resource">
+        <file alias="flexemu.png">bitmaps/32x32/flexemu.png</file>
+        <file alias="exit.png">bitmaps/32x32/flexemu-flexplorer-exit.png</file>
+        <file alias="copy.png">bitmaps/32x32/flexemu-flexplorer-copy.png</file>
+        <file alias="info.png">bitmaps/32x32/flexemu-flexplorer-info.png</file>
+        <file alias="about.png">bitmaps/32x32/flexemu-flexplorer-about.png</file>
+        <file alias="screen-full.png">bitmaps/32x32/flexemu-screen-full.png</file>
+        <file alias="screen1.png">bitmaps/32x32/flexemu-screen1.png</file>
+        <file alias="screen2.png">bitmaps/32x32/flexemu-screen2.png</file>
+        <file alias="screen3.png">bitmaps/32x32/flexemu-screen3.png</file>
+        <file alias="screen4.png">bitmaps/32x32/flexemu-screen4.png</file>
+        <file alias="screen5.png">bitmaps/32x32/flexemu-screen5.png</file>
+        <file alias="floppy.png">bitmaps/32x32/flexemu-floppy.png</file>
+        <file alias="floppy256.png">bitmaps/256x256/flexemu-floppy.png</file>
+        <file alias="original-frequency.png">bitmaps/32x32/flexemu-original-frequency.png</file>
+        <file alias="reset.png">bitmaps/32x32/flexemu-reset.png</file>
+        <file alias="stop.png">bitmaps/32x32/flexemu-stop.png</file>
+        <file alias="run.png">bitmaps/32x32/flexemu-run.png</file>
+        <file alias="breakpoints.png">bitmaps/32x32/flexemu-breakpoints.png</file>
+        <file alias="logging.png">bitmaps/32x32/flexemu-logging.png</file>
+        <file alias="cpu.png">bitmaps/32x32/flexemu-cpu.png</file>
+        <file alias="cpu-undocumented.png">bitmaps/32x32/flexemu-cpu-undocumented.png</file>
+        <file alias="irq-gray.png">bitmaps/32x32/flexemu-irq-gray.png</file>
+        <file alias="irq-yellow.png">bitmaps/32x32/flexemu-irq-yellow.png</file>
+        <file alias="irq-red.png">bitmaps/32x32/flexemu-irq-red.png</file>
+        <file alias="irq-magenta.png">bitmaps/32x32/flexemu-irq-magenta.png</file>
+        <file alias="irq-lightblue.png">bitmaps/32x32/flexemu-irq-lightblue.png</file>
+        <file alias="irqs.png">bitmaps/128x128/flexemu-irqs.png</file>
+        <file alias="qt.png">bitmaps/32x32/qt_extended_32x32.png</file>
+    </qresource>
+</RCC>

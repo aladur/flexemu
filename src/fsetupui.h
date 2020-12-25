@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QString>
 #include <QUrl>
+#include <QLocale>
 
 
 class QLineEdit;
@@ -90,6 +91,7 @@ private:
             const QString &filePath);
 
     QDialog *dialog;
+    QLocale englishUS;
 };
 
 #endif

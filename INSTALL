@@ -14,7 +14,6 @@ prerequisites:
         On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian)
         install the following deb-packages:
 
-        sudo apt-get install libxt-dev libxaw7-dev lixwxgtk3.0-dev
         sudo apt-get install qtbase5-dev qtbase5-dev-tools libqt5core5a libqt5gui5 libqt5widgets5
 
 remarks:
@@ -62,8 +61,7 @@ remarks:
 For Windows there is a ready-to-use installation executable available. See
 flexemu homepage for details: http://flexemu.neocities.org
 
-For Microsoft Visual Studio (15 or higher) there is a solution flexemu.sln
-available.
+For Microsoft Visual Studio 2019 there is a solution flexemu.sln available.
 
 To compile and creating an installation there are bash scripts available
 in directory build/windows. You can use e.g. git bash to execute these scripts.
@@ -72,7 +70,7 @@ https://curl.haxx.se/download.html
 
 1. download_and_rebuild_libs.sh
 
-        It downloads and rebuilds all dependent libraries (wxWidgets).
+        It downloads and rebuilds all dependent libraries (Qt).
 
 2. rebuild_flexemu_all_and_copy_libs.sh
 

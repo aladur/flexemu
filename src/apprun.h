@@ -44,10 +44,12 @@
 #include "vico1.h"
 #include "vico2.h"
 #include "mc146818.h"
+#include "qtgui.h"
 #include "drisel.h"
 #include "iodevdbg.h"
 #include <string>
 #include <map>
+#include <thread>
 
 struct sGuiOptions;
 struct sOptions;
@@ -61,7 +63,8 @@ public:
             struct sGuiOptions &x_guiOptions,
             struct sOptions &x_options);
 
-    int run();
+    int startup();
+    void cleanup();
 
 private:
     void AddIoDevicesToMemory();
@@ -88,8 +91,10 @@ private:
     Command command;
     VideoControl1 vico1;
     VideoControl2 vico2;
+    QtGui gui;
     std::map<std::string, IoDevice &> ioDevices;
     std::vector<IoDeviceDebug> debugLogDevices;
+    std::unique_ptr<std::thread> cpuThread;
 };
 
 #endif
