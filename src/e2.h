@@ -36,6 +36,13 @@
 #define RASTERLINE_SIZE 64
 #define YBLOCK_BASE 4   /* number of yblocks as a power of 2 */
 #define COLOR_PLANES    6   /* number of color planes */
+#define MAX_COLORS (1U << COLOR_PLANES)   /* maximum number of color values */
+#define RED_HIGH 0x10 /* Color bitmask for green high */
+#define RED_LOW 0x02 /* Color bitmask for red low */
+#define GREEN_HIGH 0x20 /* Color bitmask for green high */
+#define GREEN_LOW 0x04 /* Color bitmask for green low */
+#define BLUE_HIGH 0x08 /* Color bitmask for blue low */
+#define BLUE_LOW 0x01 /* Color bitmask for blue low */
 #define MAXVIDEORAM_BANKS (48u)  /* max number of ram banks of size 16K   */
 /* possible values: 12, 48 */
 /* number of yblocks */

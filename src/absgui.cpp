@@ -175,46 +175,46 @@ void AbstractGui::CopyToZPixmap(Byte *dest, Byte const *video_ram, int depth)
             {
                 if (pixels[0] & pixelBitMask)
                 {
-                    penIndex |= 32;    // 0x0C, green high
+                    penIndex |= GREEN_HIGH;    // 0x0C, green high
                 }
 
                 if (nColors > 8)
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        penIndex |= 16;    // 0x0D, red high
+                        penIndex |= RED_HIGH;    // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        penIndex |= 8;    // 0x0E, blue high
+                        penIndex |= BLUE_HIGH;    // 0x0E, blue high
                     }
 
                     if (pixels[1] & pixelBitMask)
                     {
-                        penIndex |= 4;    // 0x04, green low
+                        penIndex |= GREEN_LOW;    // 0x04, green low
                     }
 
                     if (pixels[3] & pixelBitMask)
                     {
-                        penIndex |= 2;    // 0x05, red low
+                        penIndex |= RED_LOW;    // 0x05, red low
                     }
 
                     if (pixels[5] & pixelBitMask)
                     {
-                        penIndex |= 1;    // 0x06, blue low
+                        penIndex |= BLUE_LOW;    // 0x06, blue low
                     }
                 }
                 else
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        penIndex |= 16;    // 0x0D, red high
+                        penIndex |= RED_HIGH;    // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        penIndex |= 8;    // 0x0E, blue high
+                        penIndex |= BLUE_HIGH;    // 0x0E, blue high
                     }
                 }
             }

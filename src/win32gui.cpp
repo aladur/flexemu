@@ -1780,14 +1780,14 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
             // DEPENDANCIES:
             // the color plane masks used here depend on
             // the same masks used in CopyToZPixmap
-            scale  = i & 0x20 ? 2 : 0;
-            scale |= i & 0x04 ? 1 : 0;
+            scale  = i & GREEN_HIGH ? 2 : 0;
+            scale |= i & GREEN_LOW ? 1 : 0;
             pLog->palPalEntry[idx].peGreen = colorValues[scale];
-            scale  = i & 0x10 ? 2 : 0;
-            scale |= i & 0x02 ? 1 : 0;
+            scale  = i & RED_HIGH ? 2 : 0;
+            scale |= i & RED_LOW ? 1 : 0;
             pLog->palPalEntry[idx].peRed = colorValues[scale];
-            scale  = i & 0x08 ? 2 : 0;
-            scale |= i & 0x01 ? 1 : 0;
+            scale  = i & BLUE_HIGH ? 2 : 0;
+            scale |= i & BLUE_LOW ? 1 : 0;
             pLog->palPalEntry[idx].peBlue = colorValues[scale];
         }
         else

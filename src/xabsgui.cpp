@@ -1010,17 +1010,15 @@ int XAbstractGui::SetColors(Display *dpy)
             static constexpr Word colorValues[4] {
                 0x0000, 0x5555, 0xAAAA, 0xFFFF
             };
-            // DEPENDANCIES:
-            // the color plane masks used here depend on
-            // the same masks used in CopyToZPixmap
-            scale  = i & 0x20 ? 2 : 0;
-            scale |= i & 0x04 ? 1 : 0;
+
+            scale  = i & GREEN_HIGH ? 2 : 0;
+            scale |= i & GREEN_LOW ? 1 : 0;
             xcolor.spec.RGB.green = colorValues[scale];
-            scale  = i & 0x10 ? 2 : 0;
-            scale |= i & 0x02 ? 1 : 0;
+            scale  = i & RED_HIGH ? 2 : 0;
+            scale |= i & RED_LOW ? 1 : 0;
             xcolor.spec.RGB.red = colorValues[scale];
-            scale  = i & 0x08 ? 2 : 0;
-            scale |= i & 0x01 ? 1 : 0;
+            scale  = i & BLUE_HIGH ? 2 : 0;
+            scale |= i & BLUE_LOW ? 1 : 0;
             xcolor.spec.RGB.blue = colorValues[scale];
         }
         else
