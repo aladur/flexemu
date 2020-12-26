@@ -436,6 +436,7 @@ Section "Uninstall" Uninstall
 
   ; Remove directories used
   RMDir "$SMPROGRAMS\${APPNAME}"
+  RMDir "$INSTDIR\Documentation\images"
   RMDir "$INSTDIR\Documentation"
   RMDir "$INSTDIR\Data"
   RMDir "$INSTDIR"
