@@ -1,5 +1,4 @@
-pkgdata_DATA = boot flexemu.xpm  \
-		flexemu1.xpm flexemu2.xpm flexemu3.xpm flexcpu.xpm
+pkgdata_DATA = boot
 
 sysconf_DATA = flexemu.conf
 
