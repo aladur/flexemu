@@ -989,14 +989,14 @@ int XAbstractGui::SetColors(Display *dpy)
     }
 
     if (!XcmsLookupColor(dpy, cmap, color.c_str(), &xcolor, &exact,
-                         XcmsRGBiFormat))
+                         XcmsRGBFormat))
     {
-        exact.spec.RGBi.blue  = 1.0;
-        exact.spec.RGBi.red   = 1.0;
-        exact.spec.RGBi.green = 1.0;
+        exact.spec.RGB.blue = 0xFFFF;
+        exact.spec.RGB.red = 0xFFFF;
+        exact.spec.RGB.green = 0xFFFF;
     }
 
-    xcolor.format = XcmsRGBiFormat;
+    xcolor.format = XcmsRGBFormat;
 
     for (i = 0; i < (1 << COLOR_PLANES); i++)
     {
@@ -1007,36 +1007,37 @@ int XAbstractGui::SetColors(Display *dpy)
             // For details see:
             // https://en.wikipedia.org/wiki/Enhanced_Graphics_Adapter
             // https://exstructus.com/tags/coco/australia-colour-palette/
-            static constexpr Byte colorValues[4] { 0x00, 0x55, 0xAA, 0xFF };
+            static constexpr Word colorValues[4] {
+                0x0000, 0x5555, 0xAAAA, 0xFFFF
+            };
             // DEPENDANCIES:
             // the color plane masks used here depend on
             // the same masks used in CopyToZPixmap
             scale  = i & 0x20 ? 2 : 0;
             scale |= i & 0x04 ? 1 : 0;
-            xcolor.spec.RGBi.green = 1.0 * colorValues[scale] / 255;
+            xcolor.spec.RGB.green = colorValues[scale];
             scale  = i & 0x10 ? 2 : 0;
             scale |= i & 0x02 ? 1 : 0;
-            xcolor.spec.RGBi.red = 1.0 * colorValues[scale] / 255;
+            xcolor.spec.RGB.red = colorValues[scale];
             scale  = i & 0x08 ? 2 : 0;
             scale |= i & 0x01 ? 1 : 0;
-            xcolor.spec.RGBi.blue = 1.0 * colorValues[scale] / 255;
+            xcolor.spec.RGB.blue = colorValues[scale];
         }
         else
         {
-            xcolor.spec.RGBi.blue  =
-                exact.spec.RGBi.blue  * i / (1 << COLOR_PLANES);
-            xcolor.spec.RGBi.red   =
-                exact.spec.RGBi.red   * i / (1 << COLOR_PLANES);
-            xcolor.spec.RGBi.green =
-                exact.spec.RGBi.green * i / (1 << COLOR_PLANES);
+            xcolor.spec.RGB.blue =
+                exact.spec.RGB.blue * i / (1 << COLOR_PLANES);
+            xcolor.spec.RGB.red =
+                exact.spec.RGB.red * i / (1 << COLOR_PLANES);
+            xcolor.spec.RGB.green =
+                exact.spec.RGB.green * i / (1 << COLOR_PLANES);
         }
 
         if (rw_color)
         {
             xcolor.pixel = pixels[i];
 
-            if (XcmsStoreColor(dpy, cmap,
-                               &xcolor) == XcmsFailure)
+            if (XcmsStoreColor(dpy, cmap, &xcolor) == XcmsFailure)
             {
                 fprintf(stderr, "Error storing a color\n");
                 return 0;
@@ -1045,7 +1046,7 @@ int XAbstractGui::SetColors(Display *dpy)
         else
         {
             if (XcmsAllocColor(dpy, cmap,
-                               &xcolor, XcmsRGBiFormat) == XcmsFailure)
+                               &xcolor, XcmsRGBFormat) == XcmsFailure)
             {
                 fprintf(stderr, "Error allocating a color\n");
                 return 0;
@@ -1054,8 +1055,6 @@ int XAbstractGui::SetColors(Display *dpy)
 
         pens[i] = xcolor.pixel;
     }
-
-    //gcVal.plane_mask = 0xFFFFFFFF;
 
     return 1;
 }
