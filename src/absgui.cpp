@@ -209,12 +209,12 @@ void AbstractGui::CopyToZPixmap(Byte *dest, Byte const *video_ram, int depth)
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        penIndex |= 8;    // 0x0D, red high
+                        penIndex |= 16;    // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        penIndex |= 2;    // 0x0E, blue high
+                        penIndex |= 8;    // 0x0E, blue high
                     }
                 }
             }
