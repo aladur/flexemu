@@ -950,7 +950,7 @@ int XAbstractGui::SetColors(Display *dpy)
     int i, scale;
     int rw_color;   /* is it a read/write color ?*/
     int visualClass;
-    unsigned long pixels[1 << COLOR_PLANES];
+    unsigned long pixels[MAX_COLORS];
 
     screen = DefaultScreen(dpy);
     visual = GetBestVisual(dpy, &visualClass, &depth);
@@ -970,7 +970,7 @@ int XAbstractGui::SetColors(Display *dpy)
         /* on visuals with read/write color cells
            first allocate them */
         if (!XAllocColorCells(dpy, cmap, False, nullptr, 0, pixels,
-                              1 << COLOR_PLANES))
+                              MAX_COLORS));
         {
             /* try again with a own colormap */
             cmap = XCreateColormap(dpy,
@@ -979,10 +979,10 @@ int XAbstractGui::SetColors(Display *dpy)
             own_cmap = 1;
 
             if (!XAllocColorCells(dpy, cmap, False, nullptr, 0,
-                                  pixels, 1 << COLOR_PLANES))
+                                  pixels, MAX_COLORS))
             {
                 fprintf(stderr, "Unable to allocate %d colors\n",
-                        1 << COLOR_PLANES);
+                        MAX_COLORS);
                 return 0; /* failed even with own colormap */
             }
         }
@@ -998,7 +998,7 @@ int XAbstractGui::SetColors(Display *dpy)
 
     xcolor.format = XcmsRGBFormat;
 
-    for (i = 0; i < (1 << COLOR_PLANES); i++)
+    for (i = 0; i < MAX_COLORS; i++)
     {
         if (withColorScale)
         {
@@ -1023,12 +1023,9 @@ int XAbstractGui::SetColors(Display *dpy)
         }
         else
         {
-            xcolor.spec.RGB.blue =
-                exact.spec.RGB.blue * i / (1 << COLOR_PLANES);
-            xcolor.spec.RGB.red =
-                exact.spec.RGB.red * i / (1 << COLOR_PLANES);
-            xcolor.spec.RGB.green =
-                exact.spec.RGB.green * i / (1 << COLOR_PLANES);
+            xcolor.spec.RGB.blue = exact.spec.RGB.blue * i / MAX_COLORS;
+            xcolor.spec.RGB.red = exact.spec.RGB.red * i / MAX_COLORS;
+            xcolor.spec.RGB.green = exact.spec.RGB.green * i / MAX_COLORS;
         }
 
         if (rw_color)

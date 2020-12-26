@@ -1751,19 +1751,18 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
 
     getRGBForName(guiOptions.color.c_str(), &red, &green, &blue);
 
-    pLog = (LOGPALETTE *)new char[sizeof(LOGPALETTE) +
-                                  ((1 << COLOR_PLANES) - 1) *
+    pLog = (LOGPALETTE *)new char[sizeof(LOGPALETTE) + (MAX_COLORS - 1) *
                                   sizeof(PALETTEENTRY)];
     pLog->palVersion = 0x300;
-    pLog->palNumEntries = 1 << COLOR_PLANES;
+    pLog->palNumEntries = MAX_COLORS;
 
-    for (i = 0; i < (1 << COLOR_PLANES); i++)
+    for (i = 0; i < MAX_COLORS; i++)
     {
         idx = i;
 
         if (guiOptions.isInverse)
         {
-            idx = (1 << COLOR_PLANES) - idx - 1;
+            idx = MAX_COLORS - idx - 1;
         }
 
         pLog->palPalEntry[idx].peFlags = PC_NOCOLLAPSE;
@@ -1792,12 +1791,12 @@ void Win32Gui::SetColors(struct sGuiOptions &guiOptions)
         }
         else
         {
-            pLog->palPalEntry[idx].peBlue = (Byte)(blue  * sqrt((double)i / ((
-                    1 << COLOR_PLANES) - 1)));
-            pLog->palPalEntry[idx].peRed   = (Byte)(red   * sqrt((double)i / ((
-                    1 << COLOR_PLANES) - 1)));
-            pLog->palPalEntry[idx].peGreen = (Byte)(green * sqrt((double)i / ((
-                    1 << COLOR_PLANES) - 1)));
+            pLog->palPalEntry[idx].peBlue = (Byte)(blue  * sqrt((double)i / (
+                    MAX_COLORS - 1)));
+            pLog->palPalEntry[idx].peRed   = (Byte)(red   * sqrt((double)i / (
+                    MAX_COLORS - 1)));
+            pLog->palPalEntry[idx].peGreen = (Byte)(green * sqrt((double)i / (
+                    MAX_COLORS - 1)));
         }
     }
 
@@ -1848,7 +1847,7 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
         for (j = 0; j < MAX_PIXELSIZEY; j++)
         {
             pbmi = (BITMAPINFO *)new char[sizeof(BITMAPINFOHEADER) +
-                                           (1 << COLOR_PLANES) * sizeof(Word)];
+                                           MAX_COLORS * sizeof(Word)];
 
             pbmi->bmiHeader.biSize           = sizeof(BITMAPINFOHEADER);
             pbmi->bmiHeader.biPlanes         = 1;
@@ -1859,12 +1858,12 @@ void Win32Gui::initialize_after_create(HWND w, struct sGuiOptions &guiOptions)
             pbmi->bmiHeader.biSizeImage      = 0;
             pbmi->bmiHeader.biXPelsPerMeter  = 0;
             pbmi->bmiHeader.biYPelsPerMeter  = 0;
-            pbmi->bmiHeader.biClrUsed        = 1 << COLOR_PLANES;
+            pbmi->bmiHeader.biClrUsed        = MAX_COLORS;
             pbmi->bmiHeader.biClrImportant   = 0;
 
             Word *wp = (Word *)((Byte *)pbmi + sizeof(BITMAPINFOHEADER));
 
-            for (Word coloridx = 0; coloridx < (1 << COLOR_PLANES); coloridx++)
+            for (Word coloridx = 0; coloridx < MAX_COLORS; coloridx++)
             {
                 *(wp++) = coloridx;
             }

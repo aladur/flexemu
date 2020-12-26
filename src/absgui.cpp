@@ -105,7 +105,7 @@ void AbstractGui::initialize_conv_tables()
     } // for
 
     // the default color table
-    for (i = 0; i < (1 << COLOR_PLANES); i++)
+    for (i = 0; i < MAX_COLORS; i++)
     {
         pens[i] = i;
     }

@@ -96,7 +96,7 @@ protected:
     int timebase;
     int cpu_line_size;
     const char *cpu_line_delim;
-    unsigned long pens[1 << COLOR_PLANES];
+    unsigned long pens[MAX_COLORS];
     Word conv_2byte_tab[256];
     DWord conv_3byte_tab[256];
     DWord conv_4byte_tab[256];
