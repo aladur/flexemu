@@ -69,8 +69,6 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
 {
     assert(event != nullptr);
 
-    printf("DWI: paintEvent\n");
-
     QPainter painter(this);
     painter.drawPixmap(0, 0, pixmap);
 
