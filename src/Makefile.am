@@ -43,8 +43,7 @@ AM_CXXFLAGS = --std=c++14 \
               -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
-			@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ \
-			@QT_CXXFLAGS@
+	@CXXSPEED@ @OS_TYPE@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
@@ -57,8 +56,8 @@ fsetup_LDADD     = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
 dsktool_LDADD    = @PTHREAD_LD@
-flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
-                   @X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@
+flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ \
+	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@
 test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
@@ -240,9 +239,9 @@ warnoff.h warnon.h
 
 appicondir = $(datadir)/icons/hicolor
 
-install-data-hook: update-icon-cache update-mime-database update-desktop-database install-app-defaults
+install-data-hook: update-icon-cache update-mime-database update-desktop-database
 
-uninstall-hook: update-desktop-database update-mime-database update-icon-cache uninstall-app-defaults
+uninstall-hook: update-desktop-database update-mime-database update-icon-cache
 
 update-icon-cache:
 @IGNORE@	@-if test -z "$(DESTDIR)"; then \
@@ -262,17 +261,6 @@ update-desktop-database:
 @IGNORE@	@-if test -z "$(DESTDIR)"; then \
 @IGNORE@	$(UPDATE_DESKTOP_DATABASE) $(desktopdir); \
 @IGNORE@	fi
-
-install-app-defaults:
-@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
-@no_appsdir@	echo Installing $(APPSDIR)/Flexemu; \
-@no_appsdir@	$(INSTALL_DATA) $(top_srcdir)/src/Flexemu.ad $(APPSDIR)/Flexemu; \
-@no_appsdir@	fi
-
-uninstall-app-defaults:
-@no_appsdir@	@-if test -z "$(DESTDIR)"; then \
-@no_appsdir@	$(RM) $(APPSDIR)/Flexemu; \
-@no_appsdir@	fi
 
 ################################################################################
 

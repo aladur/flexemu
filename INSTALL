@@ -5,7 +5,7 @@
 Flexemu supports configure scripts. So there are three steps to compile and
 install it:
 
-	- ./configure --with-app-defaults=auto --prefix=/usr --sysconfdir=/etc
+	- ./configure --prefix=/usr --sysconfdir=/etc
 	- make
 	- sudo make install
 
@@ -25,12 +25,6 @@ remarks:
           icon files may not be correctly integrated into the desktop.
           This has been exprienced with Linux Mint. It may behave
           differently for other Linux distributions.
-	- When using configure with --with-app-defaults=auto parameter
-          makes the best guess for installing the X11 application defaults
-          file.  If this parameter is not present the default path 
-          PREFIX/lib/X11/app-defaults is used (which usually does not
-          fit). When setting --with-app-defaults=no The file is not 
-          installed.
 	- If You don't want native file system support comment out
 	  NAFS switch in src/config.h
 	- If You don't want the disassembler to substitute some FLEX jump

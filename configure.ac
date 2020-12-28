@@ -26,7 +26,6 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 dnl Checks for header files.
-AC_PATH_XTRA
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
@@ -39,8 +38,6 @@ AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32,1,[1 if Windows headers are available
 AC_CHECK_HEADER(linux/joystick.h, AC_DEFINE(LINUX_JOYSTICK_IS_PRESENT,1,[1 if Linux joystick headers are available]))
 AC_CHECK_FUNCS(gettid)
 
-dnl Checks for X extension libraries.
-FLX_CHECK_XEXTENSIONS
 dnl Checks for Win32 libraries.
 FLX_CHECK_WIN32_LIBS
 dnl Checks for pthread library
@@ -72,9 +69,6 @@ AC_LANG_POP([C++])
 
 dnl check for qt libraries and tools
 AX_HAVE_QT
-
-dnl check for optional parameters
-CF_WITH_APP_DEFAULTS
 
 dnl Checks for typedefs
 AC_C_CONST
@@ -133,10 +127,6 @@ AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
 
-AC_SUBST(X_CFLAGS)
-AC_SUBST(X_PRE_LIBS)
-AC_SUBST(X_LIBS)
-AC_SUBST(X_EXTRA_LIBS)
 AC_SUBST(PTHREAD_LD)
 AC_SUBST(WIN32_LIBS)
 AC_SUBST(WNO_VARIADIC_MACROS)
@@ -207,10 +197,6 @@ AC_OUTPUT(m4/Makefile \
   echo "************************** summary ************************************"
   echo " CFLAGS:                     $CFLAGS"
   echo " CXXFLAGS:                   $CXXFLAGS"
-  echo " X_CFLAGS:                   $X_CFLAGS"
-  echo " X_PRE_LIBS:                 $X_PRE_LIBS"
-  echo " X_LIBS:                     $X_LIBS"
-  echo " X_EXTRA_LIBS:               $X_EXTRA_LIBS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
   echo -n " Qt:                          "
 if test "$have_qt" == "yes"; then
@@ -235,7 +221,7 @@ fi
   echo
   echo "Configure finished.  Type 'make' to compile"
 if test "$have_qt" != "yes"; then
-  echo "flexemu, mdcrtool, dsktool and flex2hex"
+  echo "mdcrtool, dsktool and flex2hex"
 else
   echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
 fi
