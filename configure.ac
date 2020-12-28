@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([Flexemu],3.00)
+AC_INIT([Flexemu],[3.00])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR(m4)
@@ -8,7 +8,7 @@ AC_CANONICAL_TARGET
 AC_ARG_PROGRAM dnl Perform program name transformation
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([disable])
-AM_CONFIG_HEADER(src/config.h:src/config.hin)
+AC_CONFIG_HEADERS([src/config.h:src/config.hin])
 
 dnl Checks for programs.
 case $host_os in
@@ -27,9 +27,10 @@ AC_PROG_MAKE_SET
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
-AC_HEADER_STDC
+AC_PROG_EGREP
+
 AC_HEADER_SYS_WAIT
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
 AC_CHECK_HEADERS(stdarg.h)
 AC_CHECK_HEADERS(unistd.h inttypes.h stdint.h)
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h termios.h)
@@ -81,7 +82,6 @@ dnl Checks for structures
 dnl Checks for compiler characteristics
 AC_C_BIGENDIAN
 AC_C_CHAR_UNSIGNED
-AC_C_LONG_DOUBLE
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long)
@@ -92,7 +92,6 @@ AC_CHECK_DECLS([setenv, unsetenv])
 dnl Checks for library functions
 AC_FUNC_VPRINTF
 AC_PROG_GCC_TRADITIONAL
-AC_TYPE_SIGNAL
 
 dnl Check for system services
 case $host_os in
@@ -122,7 +121,6 @@ AC_EXEEXT
 AC_OBJEXT
 AC_SYS_LONG_FILE_NAMES
 AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
-ACX_PTHREAD
 AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
@@ -171,7 +169,7 @@ fi
 
 AC_SUBST([CXXSPEED])
 
-AC_OUTPUT(m4/Makefile \
+AC_CONFIG_FILES([m4/Makefile \
 	Makefile \
 	src/Makefile \
 	src/bitmaps/Makefile \
@@ -191,7 +189,8 @@ AC_OUTPUT(m4/Makefile \
         build/windows/Makefile \
         build/windows/installer/Makefile \
 	doc/Makefile \
-	doc/images/Makefile)
+	doc/images/Makefile])
+AC_OUTPUT
 
   echo
   echo "************************** summary ************************************"
