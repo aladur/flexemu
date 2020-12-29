@@ -351,11 +351,23 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-pkgdata_DATA = neumon54.hex mon24.s19 mon53.s19 \
-               mon54.s19 monu54-6.s19 coltab.hex mon24z.s19
+pkgdata_DATA = \
+	coltab.hex \
+	mon24.s19 \
+	mon24z.s19 \
+	mon53.s19 \
+	mon54.s19 \
+	monu54-6.s19 \
+	neumon54.hex
 
-extra_files = asneumon neumon54.asm neumon54.lst mon24.bin \
-             coltab.asm coltab.org coltab.lst
+extra_files = \
+	asneumon \
+	coltab.asm \
+	coltab.lst \
+	coltab.org \
+	neumon54.asm \
+	neumon54.lst \
+	mon24.bin
 
 EXTRA_DIST = ${pkgdata_DATA} ${extra_files}
 SUBDIRS = mon24 mon24z

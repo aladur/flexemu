@@ -1,11 +1,15 @@
 EXTRA_DIST=$(app_icons) $(dist_icons)
 
-app_icons = flexemu.svg flexemu-fsetup.svg flexemu-flexplorer.svg
+app_icons = \
+	flexemu.svg \
+	flexemu-flexplorer.svg \
+	flexemu-fsetup.svg
 
 appicondir = $(datadir)/icons/hicolor/scalable/apps
 appicon_DATA = $(app_icons)
 
-dist_icons = flexemu-breakpoints.svg \
+dist_icons = \
+	flexemu-breakpoints.svg \
 	flexemu-cpu-undocumented.svg \
 	flexemu-cpu.svg \
 	flexemu-flexplorer-about.svg \

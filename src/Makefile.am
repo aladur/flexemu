@@ -2,29 +2,46 @@ pkgdata_DATA = boot
 
 sysconf_DATA = flexemu.conf
 
-desktop_DATA = flexemu.desktop \
-	       flexemu-flexplorer.desktop \
-	       flexemu-fsetup.desktop
+desktop_DATA = \
+	flexemu.desktop \
+	flexemu-flexplorer.desktop \
+	flexemu-fsetup.desktop
 
 mimetype_DATA = flexemu.xml
 
 SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
+
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
 
-EXTRA_DIST = fdtest.cpp mc6809ex.cpp engine.cpp confignt.h \
-	     $(flexemu_ui) $(fsetup_ui) $(flexplorer_ui) \
-	     $(flexemu_qrc) $(fsetup_qrc) $(flexplorer_qrc) \
-	     Flexemu.ad flexemu.astyle \
-	     JoystickTable.gnumeric \
-	     flexemu.rc fsetup.rc flexdisk.rc \
-	     flexemu.vcxproj flexplorer.vcxproj fsetup.vcxproj \
-	     dsktool.vcxproj flex2hex.vcxproj mdcrtool.vcxproj \
-	     msvcQtPath.props \
-	     $(pkgdata_DATA) \
-	     $(sysconf_DATA) \
-	     $(desktop_DATA) \
-	     $(mimetype_DATA)
+EXTRA_DIST = \
+	$(desktop_DATA) \
+	$(flexemu_qrc) \
+	$(flexemu_ui) \
+	$(flexplorer_qrc) \
+	$(flexplorer_ui) \
+	$(fsetup_qrc) \
+	$(fsetup_ui) \
+	$(mimetype_DATA) \
+	$(pkgdata_DATA) \
+	$(sysconf_DATA) \
+	confignt.h \
+	dsktool.vcxproj \
+	engine.cpp \
+	fdtest.cpp \
+	flex2hex.vcxproj \
+	flexdisk.rc \
+	Flexemu.ad \
+	flexemu.astyle \
+	flexemu.rc \
+	flexemu.vcxproj \
+	flexplorer.vcxproj \
+	fsetup.rc \
+	fsetup.vcxproj \
+	JoystickTable.gnumeric \
+	mc6809ex.cpp \
+	mdcrtool.vcxproj \
+	msvcQtPath.props
 
 SUBDIRS = bitmaps tools
 
@@ -35,15 +52,32 @@ desktopdir = $(datadir)/applications
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 
-bin_PROGRAMS   = flexemu @FLEXPLORER@ @FSETUP@ mdcrtool flex2hex dsktool
-EXTRA_PROGRAMS = flexplorer fsetup mdcrtool flex2hex
+bin_PROGRAMS = \
+	@FLEXPLORER@ \
+	@FSETUP@ \
+	dsktool \
+	flex2hex \
+	flexemu \
+	mdcrtool
+
+EXTRA_PROGRAMS = \
+	dsktool \
+	flex2hex \
+	flexplorer \
+	fsetup \
+	mdcrtool
+
 noinst_PROGRAMS = test
 
-AM_CXXFLAGS = --std=c++14 \
-              -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
+AM_CXXFLAGS = \
+	--std=c++14 \
+	-DF_DATADIR=\"$(pkgdatadir)\" \
+	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 
-flexemu_CXXFLAGS    = $(AM_CXXFLAGS) \
-	@CXXSPEED@ @OS_TYPE@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
+flexemu_CXXFLAGS = \
+	$(AM_CXXFLAGS) \
+	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
+
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
@@ -56,8 +90,9 @@ fsetup_LDADD     = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
 dsktool_LDADD    = @PTHREAD_LD@
-flexemu_LDADD    = @FLEX_RC@ @FLEXEMU_LDADD@ \
-	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@
+flexemu_LDADD    = \
+	@FLEX_RC@ @FLEXEMU_LDADD@ @X_PRE_LIBS@ @X_LIBS@ \
+	@X_EXTRA_LIBS@ @WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@
 test_LDADD       = @PTHREAD_LD@
 flexemu_DEPENDENCIES = @FLEX_RC@
 
@@ -72,146 +107,446 @@ flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 
 # Rule for Qt ui files:
 # Define all *.ui files from which to create *_ui.h files.
-flexemu_ui = brkpt.ui logfil.ui cpustat.ui
+flexemu_ui = \
+	brkpt.ui \
+	cpustat.ui \
+	logfil.ui
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 fsetup_ui = fsetup.ui
 fsetup_ui_hdr = $(fsetup_ui:.ui=_ui.h)
-flexplorer_ui = fpnew.ui fpopt.ui
+flexplorer_ui = \
+	fpnew.ui \
+	fpopt.ui
 flexplorer_ui_hdr = $(flexplorer_ui:.ui=_ui.h)
 
 # Rule for Qt moc files:
 # Define all header files from which to create *_moc.cpp files.
-flexemu_moc_hdr = qtgui.h e2screen.h brkptui.h logfilui.h efslctle.h \
-		  drawnwid.h
+flexemu_moc_hdr = \
+	brkptui.h \
+	drawnwid.h \
+	e2screen.h \
+	efslctle.h \
+	logfilui.h \
+	qtgui.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 fsetup_moc_hdr = fsetupui.h
 fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
-flexplorer_moc_hdr = fpnewui.h fpoptui.h fpwin.h fpmdich.h fpmodel.h fpedit.h
+flexplorer_moc_hdr = \
+	fpedit.h \
+	fpmdich.h \
+	fpmodel.h \
+	fpnewui.h \
+	fpoptui.h \
+	fpwin.h
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
 nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
-
 nodist_fsetup_SOURCES = $(fsetup_ui_hdr) $(fsetup_qrc_src) $(fsetup_moc_src)
 
-nodist_flexplorer_SOURCES = $(flexplorer_ui_hdr) $(flexplorer_qrc_src) \
-			    $(flexplorer_moc_src)
+nodist_flexplorer_SOURCES = \
+	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
-BUILT_SOURCES = $(nodist_flexemu_SOURCES) \
-		$(nodist_fsetup_SOURCES) \
-		$(nodist_flexplorer_SOURCE)
+BUILT_SOURCES = \
+	$(nodist_flexemu_SOURCES) \
+	$(nodist_flexplorer_SOURCE) \
+	$(nodist_fsetup_SOURCES)
 
-CLEANFILES = $(nodist_flexemu_SOURCES) \
-	     $(nodist_fsetup_SOURCES) \
-	     $(nodist_flexplorer_SOURCES)
+CLEANFILES = \
+	$(nodist_flexemu_SOURCES) \
+	$(nodist_flexplorer_SOURCES) \
+	$(nodist_fsetup_SOURCES)
 
 fsetup_SOURCES = \
-fsetup.cpp fsetupui.cpp foptman.cpp brcfile.cpp benv.cpp misc1.cpp\
-bfileptr.cpp bregistr.cpp colors.cpp \
-fsetupui.h foptman.h brcfile.h benv.h misc1.h \
-bfileptr.h bregistr.h sguiopts.h
+	benv.cpp \
+	bfileptr.cpp \
+	brcfile.cpp \
+	bregistr.cpp \
+	colors.cpp \
+	foptman.cpp \
+	fsetup.cpp \
+	fsetupui.cpp \
+	misc1.cpp\
+	benv.h \
+	bfileptr.h \
+	brcfile.h \
+	bregistr.h \
+	foptman.h \
+	fsetupui.h \
+	misc1.h \
+	sguiopts.h
 
 flexemu_SOURCES = \
-absgui.cpp acia1.cpp bdate.cpp bdir.cpp bjoystck.cpp colors.cpp \
-command.cpp da6809.cpp e2floppy.cpp vico1.cpp vico2.cpp fcinfo.cpp \
-fcopyman.cpp fdirent.cpp ffilebuf.cpp ffilecnt.cpp flexerr.cpp inout.cpp \
-memory.cpp main.cpp mc146818.cpp mc6809.cpp mc6809in.cpp \
-mc6821.cpp mc6850.cpp misc1.cpp mmu.cpp ndircont.cpp pia1.cpp \
-pia2.cpp rfilecnt.cpp wd1793.cpp \
-brcfile.cpp benv.cpp foptman.cpp bmembuf.cpp bregistr.cpp\
-bcommand.cpp cacttrns.cpp csetfreq.cpp btime.cpp schedule.cpp \
-clogfile.cpp bfileptr.cpp ifilecnt.cpp iffilcnt.cpp fileread.cpp \
-filecnts.cpp mc6809st.cpp cvtwchar.cpp joystick.cpp \
-apprun.cpp keyboard.cpp bytereg.cpp drisel.cpp terminal.cpp \
-binifile.cpp fcnffile.cpp iodevdbg.cpp pia2v5.cpp mdcrtape.cpp \
-bobservd.cpp \
-qtgui.cpp e2screen.cpp brkptui.cpp logfilui.cpp efslctle.cpp bui.cpp \
-drawnwid.cpp winmain.cpp \
-sprinter.h \
-absgui.h acia1.h bdate.h bdir.h bjoystck.h command.h \
-da6809.h debug.h e2.h e2floppy.h vico1.h vico2.h engine.h fcinfo.h \
-fcopyman.h fdirent.h ffilebuf.h ffilecnt.h flexerr.h inout.h \
-iodevice.h mc146818.h mc6809.h mc6821.h mc6850.h memory.h misc1.h ioaccess.h \
-mmu.h ndircont.h pia1.h pia2.h rfilecnt.h typedefs.h wd1793.h \
-brcfile.h benv.h foptman.h bmembuf.h bregistr.h \
-bcommand.h cacttrns.h csetfreq.h btime.h schedule.h cpustate.h \
-clogfile.h bfileptr.h ifilecnt.h ifilcnti.h iffilcnt.h \
-filecntb.h filecnts.h mc6809st.h \
-schedcpu.h absdisas.h cvtwchar.h flexemu.h scpulog.h sguiopts.h \
-fileread.h memtgt.h joystick.h keyboard.h apprun.h winctxt.h terminal.h \
-bytereg.h drisel.h binifile.h fcnffile.h iodevdbg.h pia2v5.h mdcrtape.h \
-memsrc.h bobserv.h bobservd.h bobshelp.h \
-tsl/robin_growth_policy.h tsl/robin_hash.h tsl/robin_map.h tsl/robin_set.h \
-bintervl.h crc.h warnoff.h warnon.h \
-qtgui.h e2screen.h brkptui.h logfilui.h efslctle.h bui.h drawnwid.h \
-propsui.h bmp.h winmain.h
+	absgui.cpp \
+	acia1.cpp \
+	apprun.cpp \
+	bcommand.cpp \
+	bdate.cpp \
+	bdir.cpp \
+	benv.cpp \
+	bfileptr.cpp \
+	binifile.cpp \
+	bjoystck.cpp \
+	bmembuf.cpp \
+	bobservd.cpp \
+	brcfile.cpp \
+	bregistr.cpp\
+	brkptui.cpp \
+	btime.cpp \
+	bui.cpp \
+	bytereg.cpp \
+	cacttrns.cpp \
+	clogfile.cpp \
+	colors.cpp \
+	command.cpp \
+	csetfreq.cpp \
+	cvtwchar.cpp \
+	da6809.cpp \
+	drawnwid.cpp \
+	drisel.cpp \
+	e2floppy.cpp \
+	e2screen.cpp \
+	efslctle.cpp \
+	fcinfo.cpp \
+	fcnffile.cpp \
+	fcopyman.cpp \
+	fdirent.cpp \
+	ffilebuf.cpp \
+	ffilecnt.cpp \
+	filecnts.cpp \
+	fileread.cpp \
+	flexerr.cpp \
+	foptman.cpp \
+	iffilcnt.cpp \
+	ifilecnt.cpp \
+	inout.cpp \
+	iodevdbg.cpp \
+	joystick.cpp \
+	keyboard.cpp \
+	logfilui.cpp \
+	main.cpp \
+	mc146818.cpp \
+	mc6809.cpp \
+	mc6809in.cpp \
+	mc6809st.cpp \
+	mc6821.cpp \
+	mc6850.cpp \
+	mdcrtape.cpp \
+	memory.cpp \
+	misc1.cpp \
+	mmu.cpp \
+	ndircont.cpp \
+	pia1.cpp \
+	pia2.cpp \
+	pia2v5.cpp \
+	qtgui.cpp \
+	rfilecnt.cpp \
+	schedule.cpp \
+	terminal.cpp \
+	vico1.cpp \
+	vico2.cpp \
+	wd1793.cpp \
+	winmain.cpp \
+	absdisas.h \
+	absgui.h \
+	acia1.h \
+	apprun.h \
+	bcommand.h \
+	bdate.h \
+	bdir.h \
+	benv.h \
+	bfileptr.h \
+	binifile.h \
+	bintervl.h \
+	bjoystck.h \
+	bmembuf.h \
+	bmp.h \
+	bobserv.h \
+	bobservd.h \
+	bobshelp.h \
+	brcfile.h \
+	bregistr.h \
+	brkptui.h \
+	btime.h \
+	bui.h \
+	bytereg.h \
+	cacttrns.h \
+	clogfile.h \
+	command.h \
+	cpustate.h \
+	crc.h \
+	csetfreq.h \
+	cvtwchar.h \
+	da6809.h \
+	debug.h \
+	drawnwid.h \
+	drisel.h \
+	e2.h \
+	e2floppy.h \
+	e2screen.h \
+	efslctle.h \
+	engine.h \
+	fcinfo.h \
+	fcnffile.h \
+	fcopyman.h \
+	fdirent.h \
+	ffilebuf.h \
+	ffilecnt.h \
+	filecntb.h \
+	filecnts.h \
+	fileread.h \
+	flexemu.h \
+	flexerr.h \
+	foptman.h \
+	iffilcnt.h \
+	ifilcnti.h \
+	ifilecnt.h \
+	inout.h \
+	ioaccess.h \
+	iodevdbg.h \
+	iodevice.h \
+	joystick.h \
+	keyboard.h \
+	logfilui.h \
+	mc146818.h \
+	mc6809.h \
+	mc6809st.h \
+	mc6821.h \
+	mc6850.h \
+	mdcrtape.h \
+	memory.h \
+	memsrc.h \
+	memtgt.h \
+	misc1.h \
+	mmu.h \
+	ndircont.h \
+	pia1.h \
+	pia2.h \
+	pia2v5.h \
+	propsui.h \
+	qtgui.h \
+	rfilecnt.h \
+	schedcpu.h \
+	schedule.h \
+	scpulog.h \
+	sguiopts.h \
+	sprinter.h \
+	terminal.h \
+	tsl/robin_growth_policy.h \
+	tsl/robin_hash.h \
+	tsl/robin_map.h \
+	tsl/robin_set.h \
+	typedefs.h \
+	vico1.h \
+	vico2.h \
+	warnoff.h \
+	warnon.h \
+	wd1793.h \
+	winctxt.h \
+	winmain.h
 
 flexplorer_SOURCES = \
-fpmain.cpp fpwin.cpp fpmdich.cpp \
-fpmodel.cpp fpedit.cpp \
-fpnewui.cpp fpoptui.cpp \
-fpdnd.cpp \
-bdate.cpp bdir.cpp dircont.cpp fcinfo.cpp \
-fcopyman.cpp fdirent.cpp \
-ffilebuf.cpp ffilecnt.cpp flexerr.cpp misc1.cpp \
-rfilecnt.cpp brcfile.cpp benv.cpp cvtwchar.cpp \
-bmembuf.cpp bfileptr.cpp \
-ifilecnt.cpp idircnt.cpp iffilcnt.cpp filecnts.cpp bregistr.cpp \
-bprocess.cpp mdcrtape.cpp bobservd.cpp \
-fpwin.h fpmdich.h \
-fpmodel.h fpedit.h \
-fpnewui.h fpoptui.h fpdnd.h fpattrui.h \
-bdate.h bdir.h bobserv.h bobservd.h bobshelp.h dircont.h fcinfo.h \
-fcopyman.h fdirent.h \
-ffilebuf.h ffilecnt.h flexerr.h misc1.h \
-rfilecnt.h brcfile.h benv.h \
-bmembuf.h \
-bfileptr.h ifilecnt.h ifilcnti.h idircnt.h iffilcnt.h \
-filecntb.h filecont.h bregistr.h bprocess.h cvtwchar.h \
-sprinter.h flexemu.h mdcrtape.h bintervl.h
+	bdate.cpp \
+	bdir.cpp \
+	benv.cpp \
+	bfileptr.cpp \
+	bmembuf.cpp \
+	bobservd.cpp \
+	bprocess.cpp \
+	brcfile.cpp \
+	bregistr.cpp \
+	cvtwchar.cpp \
+	dircont.cpp \
+	fcinfo.cpp \
+	fcopyman.cpp \
+	fdirent.cpp \
+	ffilebuf.cpp \
+	ffilecnt.cpp \
+	filecnts.cpp \
+	flexerr.cpp \
+	fpdnd.cpp \
+	fpedit.cpp \
+	fpmain.cpp \
+	fpmdich.cpp \
+	fpmodel.cpp \
+	fpnewui.cpp \
+	fpoptui.cpp \
+	fpwin.cpp \
+	idircnt.cpp \
+	iffilcnt.cpp \
+	ifilecnt.cpp \
+	mdcrtape.cpp \
+	misc1.cpp \
+	rfilecnt.cpp \
+	bdate.h \
+	bdir.h \
+	benv.h \
+	bfileptr.h \
+	bintervl.h
+	bmembuf.h \
+	bobserv.h \
+	bobservd.h \
+	bobshelp.h \
+	bprocess.h \
+	brcfile.h \
+	bregistr.h \
+	cvtwchar.h \
+	dircont.h \
+	fcinfo.h \
+	fcopyman.h \
+	fdirent.h \
+	ffilebuf.h \
+	ffilecnt.h \
+	filecntb.h \
+	filecont.h \
+	flexemu.h \
+	flexerr.h \
+	fpattrui.h \
+	fpdnd.h \
+	fpedit.h \
+	fpmdich.h \
+	fpmodel.h \
+	fpnewui.h \
+	fpoptui.h \
+	fpwin.h \
+	idircnt.h \
+	iffilcnt.h \
+	ifilcnti.h \
+	ifilecnt.h \
+	mdcrtape.h \
+	misc1.h \
+	rfilecnt.h \
+	sprinter.h
 
 mdcrtool_SOURCES = \
-mdcrtool.cpp mdcrtape.cpp mdcrfs.cpp fileread.cpp bfileptr.cpp bmembuf.cpp \
-bdir.cpp flexerr.cpp misc1.cpp \
-mdcrtape.h mdcrfs.h fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h bdir.h \
-typedefs.h misc1.h config.h flexerr.h bintervl.h
+	bdir.cpp \
+	bfileptr.cpp \
+	bmembuf.cpp \
+	fileread.cpp \
+	flexerr.cpp \
+	mdcrfs.cpp \
+	mdcrtape.cpp \
+	mdcrtool.cpp \
+	misc1.cpp \
+	bdir.h \
+	bfileptr.h \
+	bintervl.h \
+	bmembuf.h \
+	config.h \
+	fileread.h \
+	flexerr.h \
+	mdcrfs.h \
+	mdcrtape.h \
+	memsrc.h \
+	memtgt.h \
+	misc1.h \
+	typedefs.h
 
 flex2hex_SOURCES = \
-fileread.cpp bfileptr.cpp bmembuf.cpp \
-flexerr.cpp misc1.cpp flex2hex.cpp \
-fileread.h memsrc.h memtgt.h bfileptr.h bmembuf.h \
-bintervl.h typedefs.h misc1.h config.h flexerr.h
+	bfileptr.cpp \
+	bmembuf.cpp \
+	fileread.cpp \
+	flex2hex.cpp \
+	flexerr.cpp \
+	misc1.cpp \
+	bfileptr.h \
+	bintervl.h \
+	bmembuf.h \
+	config.h \
+	fileread.h \
+	flexerr.h \
+	memsrc.h \
+	memtgt.h \
+	misc1.h \
+	typedefs.h
 
 dsktool_SOURCES = \
-dsktool.cpp \
-flexerr.cpp ffilebuf.cpp bfileptr.cpp bdir.cpp bdate.cpp \
-ffilecnt.cpp rfilecnt.cpp dircont.cpp \
-iffilcnt.cpp ifilecnt.cpp idircnt.cpp \
-fcinfo.cpp fcopyman.cpp fdirent.cpp misc1.cpp \
-filfschk.cpp filecnts.cpp \
-flexerr.h ffilebuf.h bfileptr.h bdir.h bdate.h \
-ffilecnt.h rfilecnt.h dircont.h \
-iffilcnt.h ifilecnt.h idircnt.h \
-fcinfo.h fcopyman.h fdirent.h filfschk.h misc1.h
+	bdate.cpp \
+	bdir.cpp \
+	bfileptr.cpp \
+	dircont.cpp \
+	dsktool.cpp \
+	fcinfo.cpp \
+	fcopyman.cpp \
+	fdirent.cpp \
+	ffilebuf.cpp \
+	ffilecnt.cpp \
+	filecnts.cpp \
+	filfschk.cpp \
+	flexerr.cpp \
+	idircnt.cpp \
+	iffilcnt.cpp \
+	ifilecnt.cpp \
+	misc1.cpp \
+	rfilecnt.cpp \
+	bdate.h \
+	bdir.h \
+	bfileptr.h \
+	dircont.h \
+	fcinfo.h \
+	fcopyman.h \
+	fdirent.h \
+	ffilebuf.h \
+	ffilecnt.h \
+	filfschk.h \
+	flexerr.h \
+	idircnt.h \
+	iffilcnt.h \
+	ifilecnt.h \
+	misc1.h \
+	rfilecnt.h
 
 test_SOURCES = \
-testmain.cpp test_gccasm.cpp bdate.cpp colors.cpp \
-command.cpp bfileptr.cpp da6809.cpp fcinfo.cpp \
-flexerr.cpp inout.cpp \
-memory.cpp mc6809.cpp mc6809in.cpp misc1.cpp \
-bcommand.cpp btime.cpp schedule.cpp \
-clogfile.cpp  \
-mc6809st.cpp binifile.cpp fcnffile.cpp bobservd.cpp \
-test_gccasm.h bdate.h \
-command.h bfileptr.h da6809.h debug.h e2.h engine.h fcinfo.h \
-flexerr.h inout.h \
-memory.h mc6809.h misc1.h ioaccess.h \
-typedefs.h \
-csetfreq.h btime.h schedule.h cpustate.h \
-clogfile.h \
-mc6809st.h \
-schedcpu.h sprinter.h \
-bobshelp.h bobservd.h bobserv.h \
-warnoff.h warnon.h
+	bcommand.cpp \
+	bdate.cpp \
+	bfileptr.cpp \
+	binifile.cpp \
+	bobservd.cpp \
+	btime.cpp \
+	clogfile.cpp  \
+	colors.cpp \
+	command.cpp \
+	da6809.cpp \
+	fcinfo.cpp \
+	fcnffile.cpp \
+	flexerr.cpp \
+	inout.cpp \
+	mc6809.cpp \
+	mc6809in.cpp \
+	mc6809st.cpp \
+	memory.cpp \
+	misc1.cpp \
+	schedule.cpp \
+	test_gccasm.cpp \
+	testmain.cpp \
+	bdate.h \
+	bfileptr.h \
+	bobserv.h \
+	bobservd.h \
+	bobshelp.h \
+	btime.h \
+	clogfile.h \
+	command.h \
+	cpustate.h \
+	csetfreq.h \
+	da6809.h \
+	debug.h \
+	e2.h \
+	engine.h \
+	fcinfo.h \
+	flexerr.h \
+	inout.h \
+	ioaccess.h \
+	mc6809.h \
+	mc6809st.h \
+	memory.h \
+	misc1.h \
+	schedcpu.h \
+	schedule.h \
+	sprinter.h \
+	test_gccasm.h \
+	typedefs.h \
+	warnoff.h \
+	warnon.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

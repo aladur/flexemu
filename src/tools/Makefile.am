@@ -1,6 +1,18 @@
-EXTRA_DIST = daa.txt conv.c tounix.txt cputest.txt rcvfile.txt undoc.txt
+EXTRA_DIST = \
+	conv.c \
+	cputest.txt \
+	daa.txt \
+	rcvfile.txt \
+	tounix.txt \
+	undoc.txt
 
-bin_PROGRAMS = bin2s19 fromflex rcvflex toflex send2flx testdaa
+bin_PROGRAMS = \
+	bin2s19 \
+	fromflex \
+	rcvflex \
+	send2flx \
+	testdaa \
+	toflex
 
 AM_CFLAGS = @OS_TYPE@
 

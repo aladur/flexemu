@@ -261,10 +261,13 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = Flexemu.nsi \
-	     HistoricFLEXFiles.nsi \
-	     StrStr.nsh GetParameters.nsh \
-	     GetParameterValue.nsh SplitFirstStrPart.nsh
+EXTRA_DIST = \
+	Flexemu.nsi \
+	GetParameterValue.nsh \
+	GetParameters.nsh \
+	HistoricFLEXFiles.nsi \
+	SplitFirstStrPart.nsh \
+	StrStr.nsh
 
 all: all-am
 

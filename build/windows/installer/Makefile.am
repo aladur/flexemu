@@ -1,4 +1,7 @@
-EXTRA_DIST = Flexemu.nsi \
-	     HistoricFLEXFiles.nsi \
-	     StrStr.nsh GetParameters.nsh \
-	     GetParameterValue.nsh SplitFirstStrPart.nsh
+EXTRA_DIST = \
+	Flexemu.nsi \
+	GetParameterValue.nsh \
+	GetParameters.nsh \
+	HistoricFLEXFiles.nsi \
+	SplitFirstStrPart.nsh \
+	StrStr.nsh

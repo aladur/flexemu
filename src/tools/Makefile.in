@@ -90,7 +90,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = bin2s19$(EXEEXT) fromflex$(EXEEXT) rcvflex$(EXEEXT) \
-	toflex$(EXEEXT) send2flx$(EXEEXT) testdaa$(EXEEXT)
+	send2flx$(EXEEXT) testdaa$(EXEEXT) toflex$(EXEEXT)
 subdir = src/tools
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
@@ -324,7 +324,14 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = daa.txt conv.c tounix.txt cputest.txt rcvfile.txt undoc.txt
+EXTRA_DIST = \
+	conv.c \
+	cputest.txt \
+	daa.txt \
+	rcvfile.txt \
+	tounix.txt \
+	undoc.txt
+
 AM_CFLAGS = @OS_TYPE@
 bin2s19_LINK = $(CCLD) -o $@
 fromflex_LINK = $(CCLD) -o $@

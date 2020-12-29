@@ -1,11 +1,21 @@
 ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST = NEWS AUTHORS COPYING ChangeLog INSTALL LICENSE README README.md \
-             INSTALL.Win32 TODO flexemu.sln
+EXTRA_DIST = \
+	AUTHORS \
+	ChangeLog \
+	COPYING \
+	flexemu.sln \
+	INSTALL \
+	INSTALL.Win32 \
+	LICENSE \
+	NEWS \
+	README \
+	README.md \
+	TODO
 
 SUBDIRS = src disks doc monitor build
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 
-AM_DISTCHECK_CONFIGURE_FLAGS = --with-app-defaults=no --disable-post-install
+AM_DISTCHECK_CONFIGURE_FLAGS = --disable-post-install
 

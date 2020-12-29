@@ -321,7 +321,10 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = download_fug_dsk_files.sh fug.ico
+EXTRA_DIST = \
+	download_fug_dsk_files.sh \
+	fug.ico
+
 SUBDIRS = windows
 all: all-recursive
 

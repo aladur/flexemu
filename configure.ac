@@ -169,8 +169,7 @@ fi
 
 AC_SUBST([CXXSPEED])
 
-AC_CONFIG_FILES([m4/Makefile \
-	Makefile \
+AC_CONFIG_FILES([Makefile \
 	src/Makefile \
 	src/bitmaps/Makefile \
 	src/bitmaps/16x16/Makefile \
