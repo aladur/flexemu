@@ -317,8 +317,7 @@ extern "C" struct sRGBDef
 #define FLEXDOCDIR      "DocDirectory"
 #define FLEXMONITOR     "MonitorPath"
 #define FLEXVERSION     "Version"
-#define FLEXSCREENWIDTH "ScreenWidthFactor"
-#define FLEXSCREENHEIGHT "ScreenHeightFactor"
+#define FLEXSCREENFACTOR "ScreenFactor"
 #define FLEXFREQUENCY    "Frequency"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"

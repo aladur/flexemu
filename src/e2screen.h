@@ -120,8 +120,7 @@ private:
     int warpHomeX;
     int warpHomeY;
     int mouseButtonState;
-    int pixelSizeX;
-    int pixelSizeY;
+    int pixelSize;
     int cursorType;
     bool doScaledScreenUpdate;
     QSize preferredScreenSize;

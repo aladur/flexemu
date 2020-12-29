@@ -8,9 +8,9 @@ flexemu - a FLEX emulator with Qt user interface
 <hr></h2>
 <h2>SYNOPSIS</h2>
 <h3>On Linux</h3>
-<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j xFactor] [-k yFactor] [-C startup_command] </tt>
+<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </tt>
 <h3>On Windows</h3>
-<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j xFactor] [-k yFactor] [-C startup_command]</tt>
+<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j screen_factor] [-C startup_command]</tt>
 <a name="description">
 <h2>DESCRIPTION</h2>
 <b>flexemu</b> emulates a MC6809 microprocessor system running FLEX Operating
@@ -106,19 +106,15 @@ The default is
 </b>for drive 0. The file or directory will be looked for in the actual
 directory.  If nothing is found the directory specified with the
 <b><tt>-p</tt></b> option used for Disk/Monitor files will be looked for.
-<dt><b><tt>-j &lt;xFactor&gt;</tt>
+<dt><b><tt>-j &lt;screen_factor&gt;</tt>
 </b><dd>
-Specifies a factor to multiply the width of the FLEX display. Default is <b>2</b>.
-Valid values are 1 and 2.
+Specifies a factor to multiply the size of the FLEX screen display. Default is <b>2</b>.
+Valid values are 1, 2, 3, 4 and 5. It depends on the screen size where flexemu is executed which <b><tt>screen_factor</tt></b> is supported.
 <dt><b><tt>-u</tt>
 </b><dd>
 Enables the support of undocumented MC6809 Instructions. See Chapter
 <a href="#undocumented_instructions">Undocumented MC6809 Instructions</a>
 for details.
-<dt><b><tt>-k &lt;yFactor&gt;</tt>
-</b><dd>
-Specifies a factor to multiply the height of the FLEX display. Default is <b>2</b>.
-Valid values are 1, 2 and 3.
 <dt><b><tt>-C &lt;startup_command&gt;</tt>
 </b><dd>
 When starting flexemu a startup command can be specified. Multiple commands
@@ -164,7 +160,7 @@ With <b>fsetup</b> the following options can be modified.
  </tr>
  <tr>
   <td>Screen geometry</td>
-  <td>Pixel size used for the video display</td>
+  <td>Geometry used for the flexemu screen display</td>
   <td>1024x512</td>
  </tr>
  <tr>

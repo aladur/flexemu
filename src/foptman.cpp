@@ -100,8 +100,7 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->doc_dir       = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
     pOptions->disk_dir         = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
-    pGuiOptions->pixelSizeX      = 2;
-    pGuiOptions->pixelSizeY      = 2;
+    pGuiOptions->pixelSize     = 2;
 } // InitOptions
 
 #ifdef UNIX
@@ -225,7 +224,7 @@ void FlexOptionManager::GetCommandlineOptions(
     float   f;
     optind = 1;
     opterr = 1;
-    strcpy(optstr, "mup:f:0:1:2:3:j:k:F:C:");
+    strcpy(optstr, "mup:f:0:1:2:3:j:F:C:");
 #ifdef HAVE_TERMIOS_H
     strcat(optstr, "tr:");  // terminal mode and reset key
 #endif
@@ -278,19 +277,9 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'j':
                 sscanf(optarg, "%d", &i);
 
-                if (i > 0 && i <= MAX_PIXELSIZEX)
+                if (i > 0 && i <= MAX_PIXELSIZE)
                 {
-                    pGuiOptions->pixelSizeX = i;
-                }
-
-                break;
-
-            case 'k':
-                sscanf(optarg, "%d", &i);
-
-                if (i > 0 && i <= MAX_PIXELSIZEY)
-                {
-                    pGuiOptions->pixelSizeY = i;
+                    pGuiOptions->pixelSize = i;
                 }
 
                 break;
@@ -369,8 +358,7 @@ void FlexOptionManager::WriteOptions(
     reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
     reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     reg.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    reg.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
-    reg.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
+    reg.SetValue(FLEXSCREENFACTOR, pGuiOptions->pixelSize);
     reg.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
     reg.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
     reg.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
@@ -404,8 +392,7 @@ void FlexOptionManager::WriteOptions(
     rcFile.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
     rcFile.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
     rcFile.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    rcFile.SetValue(FLEXSCREENWIDTH, pGuiOptions->pixelSizeX);
-    rcFile.SetValue(FLEXSCREENHEIGHT, pGuiOptions->pixelSizeY);
+    rcFile.SetValue(FLEXSCREENFACTOR, pGuiOptions->pixelSize);
     rcFile.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
     rcFile.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
     rcFile.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
@@ -452,34 +439,19 @@ void FlexOptionManager::GetOptions(
         }
     }
 
-    if (!reg.GetValue(FLEXSCREENWIDTH, int_result))
+    if (!reg.GetValue(FLEXSCREENFACTOR, int_result))
     {
         if (int_result < 1)
         {
             int_result = 1;
         }
 
-        if (int_result > MAX_PIXELSIZEX)
+        if (int_result > MAX_PIXELSIZE)
         {
-            int_result = MAX_PIXELSIZEX;
+            int_result = MAX_PIXELSIZE;
         }
 
-        pGuiOptions->pixelSizeX = int_result;
-    }
-
-    if (!reg.GetValue(FLEXSCREENHEIGHT, int_result))
-    {
-        if (int_result < 1)
-        {
-            int_result = 1;
-        }
-
-        if (int_result > MAX_PIXELSIZEY)
-        {
-            int_result = MAX_PIXELSIZEY;
-        }
-
-        pGuiOptions->pixelSizeY = int_result;
+        pGuiOptions->pixelSize = int_result;
     }
 
     if (!reg.GetValue(FLEXINVERSE, int_result))
@@ -563,34 +535,19 @@ void FlexOptionManager::GetOptions(
         }
     }
 
-    if (!rcFile.GetValue(FLEXSCREENWIDTH, int_result))
+    if (!rcFile.GetValue(FLEXSCREENFACTOR, int_result))
     {
         if (int_result < 1)
         {
             int_result = 1;
         }
 
-        if (int_result > MAX_PIXELSIZEX)
+        if (int_result > MAX_PIXELSIZE)
         {
-            int_result = MAX_PIXELSIZEX;
+            int_result = MAX_PIXELSIZE;
         }
 
-        pGuiOptions->pixelSizeX = int_result;
-    }
-
-    if (!rcFile.GetValue(FLEXSCREENHEIGHT, int_result))
-    {
-        if (int_result < 1)
-        {
-            int_result = 1;
-        }
-
-        if (int_result > MAX_PIXELSIZEY)
-        {
-            int_result = MAX_PIXELSIZEY;
-        }
-
-        pGuiOptions->pixelSizeY = int_result;
+        pGuiOptions->pixelSize = int_result;
     }
 
     if (!rcFile.GetValue(FLEXINVERSE, int_result))

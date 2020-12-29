@@ -122,21 +122,18 @@ void FlexemuOptionsUi::TransferDataToDialog(
 
     InitializeHardwareHyperlink(guiOptions.doc_dir.c_str());
 
-    for (int x = 1; x <= MAX_PIXELSIZEX; x++)
+    for (int x = 1; x <= MAX_PIXELSIZE; x++)
     {
-        for (int y = 1; y <= MAX_PIXELSIZEY; y++)
+        auto text = QString::asprintf("%dx%d",
+                                     WINDOWWIDTH * x, WINDOWHEIGHT * x);
+
+        cb_geometry->addItem(text);
+
+        if (guiOptions.pixelSize == x)
         {
-            auto text = QString::asprintf("%dx%d",
-                                         WINDOWWIDTH * x, WINDOWHEIGHT * y);
-
-            cb_geometry->addItem(text);
-
-            if (guiOptions.pixelSizeX == x && guiOptions.pixelSizeY == y)
-            {
-                index = n;
-            }
-            ++n;
+            index = n;
         }
+        ++n;
     }
     cb_geometry->setMaxVisibleItems(cb_geometry->count());
     cb_geometry->setCurrentIndex(std::max(index, 0));
@@ -314,17 +311,13 @@ void FlexemuOptionsUi::TransferDataFromDialog(
 {
     bool success = false;
     bool x_ok = false;
-    bool y_ok = false;
     auto geometry = cb_geometry->currentText();
     auto xString = geometry.midRef(0, geometry.indexOf("x")).toString();
-    auto yString = geometry.midRef(geometry.indexOf("x") + 1, 10).toString();
     unsigned int x = xString.toUInt(&x_ok);
-    unsigned int y = yString.toUInt(&y_ok);
 
-    if (x_ok && y_ok)
+    if (x_ok)
     {
-        guiOptions.pixelSizeX = x / WINDOWWIDTH;
-        guiOptions.pixelSizeY = y / WINDOWHEIGHT;
+        guiOptions.pixelSize = x / WINDOWWIDTH;
     }
 
     auto n = cb_nColors->currentText().toUInt(&success);

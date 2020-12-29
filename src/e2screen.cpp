@@ -60,19 +60,18 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     , warpHomeX(0)
     , warpHomeY(0)
     , mouseButtonState(-1)
-    , pixelSizeX(1)
-    , pixelSizeY(1)
+    , pixelSize(x_guiOptions.pixelSize)
     , cursorType(FLX_DEFAULT_CURSOR)
     , doScaledScreenUpdate(true)
-    , preferredScreenSize(WINDOWWIDTH * x_guiOptions.pixelSizeX,
-                          2 * WINDOWHEIGHT * x_guiOptions.pixelSizeX)
+    , preferredScreenSize(WINDOWWIDTH * x_guiOptions.pixelSize,
+                          WINDOWHEIGHT * x_guiOptions.pixelSize)
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     setBaseSize({WINDOWWIDTH, WINDOWHEIGHT});
     setMinimumSize({WINDOWWIDTH, WINDOWHEIGHT});
     setMouseTracking(true);
-    warpHomeX = (pixelSizeX * WINDOWWIDTH) >> 1;
-    warpHomeY = (pixelSizeY * WINDOWHEIGHT) >> 1;
+    warpHomeX = (pixelSize * WINDOWWIDTH) >> 1;
+    warpHomeY = (pixelSize * WINDOWHEIGHT) >> 1;
 }
 
 QSize E2Screen::GetScaledSize() const

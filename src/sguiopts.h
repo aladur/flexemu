@@ -29,10 +29,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "flexemu.h"
 #include <string>
 
-// Maximum x-size of one emulated pixel on screen
-#define MAX_PIXELSIZEX    (3)
-// Maximum y-size of one emulated pixel on screen 
-#define MAX_PIXELSIZEY    (4)
+// Maximum size of one emulated pixel on screen
+#define MAX_PIXELSIZE     (5)
 
 // The values for argc, argv and doc_dir are set once
 // and should not be edited.
@@ -44,8 +42,9 @@ struct sGuiOptions
     std::string doc_dir; // Directory containing html documenation
     int nColors; // Number of colors or gray scale values { 2, 8, 64 }
     bool isInverse; // Display inverse colors or gray scale values
-    int pixelSizeX; // x-size of one pixel on the screen
-    int pixelSizeY; // y-size of one pixel on the screen
+    int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
+                   // It depends on the screen dimensions on which flexemu
+                   // is executed.
 };
 
 #endif
