@@ -27,7 +27,7 @@
 #include "schedule.h"
 
 // pointer to this instance for signal handling
-TerminalIO *TerminalIO::instance = nullptr;                                               
+TerminalIO *TerminalIO::instance = nullptr;
 #ifdef HAVE_TERMIOS_H
     struct termios TerminalIO::save_termios;
     bool   TerminalIO::used_serial_io = false;
@@ -342,9 +342,9 @@ void TerminalIO::write_char_serial(Byte /* [[maybe_unused]] Byte value */)
 bool TerminalIO::is_terminal_supported()
 {
 #ifdef HAVE_TERMIOS_H
-    return 1;
+    return true;
 #else
-    return 0;
+    return false;
 #endif
 }
 

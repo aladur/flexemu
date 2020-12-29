@@ -76,7 +76,7 @@ bool E2floppy::umount_drive(Word drive_nr)
 {
     if (drive_nr > 3 || (floppy[drive_nr].get() == nullptr))
     {
-        return 0;
+        return false;
     }
 
     std::lock_guard<std::mutex> guard(status_mutex);
@@ -91,7 +91,7 @@ bool E2floppy::umount_drive(Word drive_nr)
         // ignore errors
     }
 
-    return 1;
+    return true;
 } // umount_drive
 
 bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
