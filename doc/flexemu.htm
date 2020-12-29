@@ -1,15 +1,15 @@
 <html>
 <head>
-<title>flexemu - a FLEX emulator with X11/WIN32 interface</title>
+<title>flexemu - a FLEX emulator with Qt user interface</title>
 </head>
 <body>
 <h2>
-flexemu - a FLEX emulator with X11/WIN32 interface
+flexemu - a FLEX emulator with Qt user interface
 <hr></h2>
 <h2>SYNOPSIS</h2>
-<h3>On Linux/X11</h3>
-<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-s] [-v] [-u] [-j xFactor] [-k yFactor] [-C startup_command] </tt>
-<h3>On WIN32</h3>
+<h3>On Linux</h3>
+<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j xFactor] [-k yFactor] [-C startup_command] </tt>
+<h3>On Windows</h3>
 <tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j xFactor] [-k yFactor] [-C startup_command]</tt>
 <a name="description">
 <h2>DESCRIPTION</h2>
@@ -25,8 +25,8 @@ in Germany in the 80ies.
 <b>flexemu</b> supports the following features:
 <p>
 <ul>
- <li>running on Linux (X11) and WIN32.
- <li>XToolkit/Athena Widgets interface
+ <li>running on Linux and Windows.
+ <li>using Qt framework as platform independent user interface
  <li>supporting all MC6809 instructions incl. CWAI and SYNC
  <li>CPU monitor with start/stop/step/next/reset, two breakpoints
  <li>continuous display of CPU frequency and cycle count
@@ -72,7 +72,7 @@ in Germany in the 80ies.
 In general there are command line options and options editable by <b>fsetup</b>
 available. Command line options can supersede fsetup options.
 <a name="options_linux">
-<h3>Commandline options on Linux (X11) and WIN32</h3>
+<h3>Commandline options on Linux and Windows</h3>
 <dl compact>
 <dt><b><tt>-f &lt;hexfile&gt;</tt>
 </b><dd>
@@ -96,8 +96,8 @@ Inverse video display (foreground and background colors exchanged)
 </b><dd>
 Specifies a path in which disk image files or nafs-directories will be looked
 for. Defaults:<BR>
-  <b>WIN32:</b> &lt;INSTDIR&gt;\data<BR>
-  <b>X11:</b> /usr/local/share/Flexemu
+  <b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
+  <b>Linux:</b> /usr/local/share/Flexemu
 <dt><b><tt>-0|1|2|3 &lt;path&gt;</tt>
 </b><dd>
 Specifies a disk image file or a directory path for drive 0, 1, 2 or 3.<tt> </tt>
@@ -129,16 +129,16 @@ Example: <b><tt>"list 0.termcon.txt:dir 0:exit"</tt></b> will print the file
 contents of <b><tt>0.termcon.txt</tt></b>, make a directory listing of drive #0
 and immediately exits the emulator. The startup command accepts a maximum of
 128 characters.
-</dl>
-<p><dt><h3>Commandline options only on Linux (X11):</h3>
-<p>
-<dl compact>
 <dt><b><tt>-h</tt>
 </b><dd>
 Print a short syntax description.
 <dt><b><tt>-v</tt>
 </b><dd>
 only print version number
+</dl>
+<p><dt><h3>Commandline options only on Linux:</h3>
+<p>
+<dl compact>
 <dt><b><tt>-t</tt>
 </b><dd>
 Terminal only mode. All input/output will be done on the terminal from
@@ -152,17 +152,9 @@ default is
 <b>1E
 </b>, means <b>Ctrl-^</b>
 </dl>
-<p><dt><h3>Only if X11 present:</h3>
-<p>
-<dl compact>
-<dt><b><tt>-s</tt>
-</b><dd>
-run X11 synchronized
-</dl>
 <a name="fsetup_options">
-<h3>Options editable with fsetup</h3>
-On both X11 and WIN32 there is a program <b>fsetup</b> available to edit
-options
+<h3>fsetup</h3>
+With <b>fsetup</b> the following options can be modified.
 <p>
 <table border>
  <tr>
@@ -186,15 +178,10 @@ options
   <td>green</td>
  </tr>
  <tr>
-  <td><b>X11 only:</b>HTML browser</td>
-  <td>Executable used as HTML browser</td>
-  <td>firefox</td>
- </tr>
- <tr>
   <td>Disk/Monitor directory</td>
   <td>A Directory Path containing<BR>FLEX disks and monitor program</td>
-  <td><b>WIN32:</b> &lt;INSTDIR&gt;\data<BR>
-  <b>X11:</b> /usr/local/share/Flexemu</td>
+  <td><b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
+  <b>Linux:</b> /usr/local/share/Flexemu</td>
  </tr>
  <tr>
   <td>Monitor program</td>
@@ -224,13 +211,13 @@ options
 </table>
 <a name="breakpoints">
 <h3>Breakpoint support</h3>
-With the menu Processor-&gt;Breakpoints up to two breakpoints
+With the menu CPU-&gt;Breakpoints up to two breakpoints
 can be set. They have to be input as a one to four digit hexadecimal
 address. Execution automatically stops when the PC contains one
 of the breakpoint addresses.
 <a name="logging">
 <h3>CPU Instruction Logging</h3>
-With the menu Processor-&gt;Logging the logging of each executed CPU
+With the menu CPU-&gt;Logging the logging of each executed CPU
 instruction can be enabled. The Instruction Logging Dialog contains
 the following entry fields. Addresses have to be input as a one to 
 four digit hexadecimal address:
@@ -274,7 +261,7 @@ four digit hexadecimal address:
 </table>
 <a name="frequency_control">
 <h3>CPU Frequency control</h3>
-With the toggle menu item Processor-&gt;Frequency 1.3396 MHz the CPU
+With the toggle menu item "CPU-&gt;Original Frequency" 1.3396 MHz the CPU
 frequency can be switched between the maximum possible frequency 
 (depending on the available host CPU performance) and the original
 CPU frequency which exactly is 1.3396 MHz. With the command <b>emu freq</b>

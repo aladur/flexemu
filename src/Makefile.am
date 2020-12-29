@@ -570,7 +570,6 @@ test_SOURCES = \
 #   gtk-update-icon-cache
 #   update-mime-database
 #   update-desktop-database
-#   (Un)install application default file (X11)
 
 appicondir = $(datadir)/icons/hicolor
 

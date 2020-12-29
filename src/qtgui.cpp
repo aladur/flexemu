@@ -1154,8 +1154,6 @@ void QtGui::update_block(int blockNumber)
     }
 
     memory.reset_changed(blockNumber);
-    //img = image[pixelSizeX - 1][pixelSizeY - 1];
-    //bmi_index = (pixelSizeX - 1) * MAX_PIXELSIZEY + (pixelSizeY - 1);
 
     Byte const *src = nullptr;
     auto video_bank = vico1.get_value();

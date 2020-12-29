@@ -55,15 +55,9 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -t (terminal only mode)\n");
     fprintf(fp, "  -r <two-hex-digit reset key>\n");
 #endif
-#ifdef HAVE_X11
-    fprintf(fp, "  -s (run X11 synchronized)\n");
     fprintf(fp, "  -c <color> define foreground color\n");
     fprintf(fp, "  -i (display inverse video)\n");
     fprintf(fp, "  -n <# of colors>\n");
-#ifdef _WIN32
-    fprintf(fp, "  -g [win32|x11] (select type of GUI)\n");
-#endif
-#endif
     fprintf(fp, "  -h (display this)\n");
     fprintf(fp, "  -? (display this)\n");
     fprintf(fp, "  -v (print version number)\n");
@@ -90,11 +84,6 @@ void FlexOptionManager::InitOptions(
     pOptions->isEurocom2V5     = false;
     pOptions->use_undocumented = false;
     pOptions->useRtc           = true;
-#ifndef _WIN32
-#ifndef HAVE_X11
-    pOptions->term_mode        = true;
-#endif
-#endif
     pOptions->reset_key        = 0x1e; // is Ctrl-^ for reset or Sig. INT
     pOptions->frequency        = -1.0; // default: ignore
 
@@ -105,17 +94,14 @@ void FlexOptionManager::InitOptions(
     pGuiOptions->isInverse     = false;
 #ifdef UNIX
     pGuiOptions->doc_dir       = F_DATADIR;
-    pGuiOptions->guiType       = GuiType::XTOOLKIT;
     pOptions->disk_dir         = F_DATADIR;
 #endif
 #ifdef _WIN32
     pGuiOptions->doc_dir       = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
-    pGuiOptions->guiType       = GuiType::WINDOWS;
     pOptions->disk_dir         = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     pGuiOptions->pixelSizeX      = 2;
     pGuiOptions->pixelSizeY      = 2;
-    pGuiOptions->isSynchronized  = false;
 } // InitOptions
 
 #ifdef UNIX
@@ -243,16 +229,8 @@ void FlexOptionManager::GetCommandlineOptions(
 #ifdef HAVE_TERMIOS_H
     strcat(optstr, "tr:");  // terminal mode and reset key
 #endif
-#ifdef HAVE_X11
-    strcat(optstr, "s");            // X11 synchronised
-#ifdef _WIN32
-    strcat(optstr, "g:");           // Select type of GUI
-#endif
-#endif
-#if defined (HAVE_X11) || defined(WIN32)
     strcat(optstr, "ic:n:");          // color, inverse video, # of colors
     strcat(optstr, "vh");   // version and help
-#endif
 
     while (1)
     {
@@ -340,29 +318,6 @@ void FlexOptionManager::GetCommandlineOptions(
                 sscanf(optarg, "%hx", (Word *)&pOptions->reset_key);
                 break;
 #endif
-#ifdef HAVE_X11
-
-            case 's':
-                pGuiOptions->isSynchronized     = true;
-                break;
-#ifdef _WIN32
-
-            case 'g':
-                if (stricmp(optarg, "win32") == 0)
-                {
-                    pGuiOptions->guiType = GuiType::WINDOWS;
-                }
-
-                if (stricmp(optarg, "x11") == 0)
-                {
-                    pGuiOptions->guiType = GuiType::XTOOLKIT;
-                }
-
-                break;
-#endif
-#endif
-#if defined (HAVE_X11) || defined(WIN32)
-
             case 'n':
                 sscanf(optarg, "%d", &i);
                 pGuiOptions->nColors          = i;
@@ -384,7 +339,6 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'h':
                 PrintHelp(stderr);
                 exit(EXIT_SUCCESS);
-#endif
         }  // switch
     } // while
 } // GetCommandlineOptions

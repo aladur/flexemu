@@ -70,10 +70,6 @@
 #define PROGRAMNAME     PACKAGE_NAME
 #define PROGRAM_VERSION VERSION
 
-#ifndef X_DISPLAY_MISSING
-    #define HAVE_X11
-#endif
-
 extern const char *gMemoryAllocationErrorString;
 
 /* adaptions for autoconf to use with/without ANSI C headers */

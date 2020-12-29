@@ -21,10 +21,6 @@
 */
 
 #include "misc1.h"
-
-#ifdef HAVE_X11
-    #include <X11/X.h>
-#endif
 #include "pia2v5.h"
 #include "mc6809.h"
 #include "mdcrtape.h"

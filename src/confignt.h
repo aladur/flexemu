@@ -59,15 +59,6 @@
 /* Define if you don't have vprintf but do have _doprnt.  */
 /* #undef HAVE_DOPRNT */
 
-/* Define if the `long double' type works.  */
-#define HAVE_LONG_DOUBLE 1
-
-/* Define if you support file names longer than 14 characters.  */
-#define HAVE_LONG_FILE_NAMES 1
-
-/* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
-
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
 
@@ -148,30 +139,6 @@
 
 /* Define if you have the <unistd.h> header file.  */
 /* undef HAVE_UNISTD_H */
-
-/* Define if you have the X11 library (-lX11).  */
-/* undef HAVE_LIBX11 */
-
-/* Define if you have the Xaw library (-lXaw).  */
-/* undef HAVE_LIBXAW */
-
-/* Define if you have the Xpm library (-lXpm).  */
-/* undef HAVE_LIBXPM */
-
-/* Define if you have the Xt library (-lXt).  */
-/* undef HAVE_LIBXT */
-
-/* Define if you have the gdk library (-lgdk).  */
-/* undef HAVE_LIBGDK */
-
-/* Define if you have the gtk library (-lgtk).  */
-/* undef HAVE_LIBGTK */
-
-/* Define if you have the pthread library (-lpthread).  */
-/* undef HAVE_LIBPTHREAD */
-
-/* Define if you have the wx_gtk library (-lwx_gtk).  */
-/* #undef HAVE_LIBWX_GTK */
 
 /* Name of package */
 #define PACKAGE "flexemu"

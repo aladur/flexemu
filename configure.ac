@@ -119,7 +119,6 @@ case $host_os in
 esac
 AC_EXEEXT
 AC_OBJEXT
-AC_SYS_LONG_FILE_NAMES
 AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
 AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
