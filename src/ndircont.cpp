@@ -1085,11 +1085,11 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         }
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), Byte(0U));
-        std::fill(std::begin(sis.sir.disk_name),
-                  std::end(sis.sir.disk_name), char('\0'));
+        std::fill(std::begin(sis.sir.disk_name), std::end(sis.sir.disk_name),
+                  '\0');
         strncpy(sis.sir.disk_name, name.c_str(), 8);
         std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
-            char('\0'));
+                  '\0');
         setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
         sis.sir.fc_start = st_t{0, 0};
         sis.sir.fc_end = st_t{0, 0};

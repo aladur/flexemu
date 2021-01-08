@@ -425,8 +425,7 @@ QVariant FlexplorerTableModel::data(const QModelIndex &index, int role) const
     if (index.isValid() &&
         (role == Qt::DisplayRole || role == Qt::EditRole))
     {
-        if (index.row() < static_cast<int>(rows.size()) &&
-            index.column() < COLUMNS)
+        if (index.row() < rows.size() && index.column() < COLUMNS)
         {
             return rows.at(index.row()).at(index.column());
         }
@@ -509,7 +508,7 @@ bool FlexplorerTableModel::insertRows(
         int count,
         const QModelIndex &)
 {
-    if (count >= 0 && row <= static_cast<int>(rows.size()) + 1)
+    if (count >= 0 && row <= rows.size() + 1)
     {
         if (count > 0)
         {
@@ -531,7 +530,7 @@ bool FlexplorerTableModel::removeRows(
         int count,
         const QModelIndex &)
 {
-    if (count >= 0 && row + count <= static_cast<int>(rows.size()))
+    if (count >= 0 && row + count <= rows.size())
     {
         if (count > 0)
         {
@@ -587,7 +586,7 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
 
 void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 {
-    if (column >= 0 && column < static_cast<int>(rows.size()))
+    if (column >= 0 && column < rows.size())
     {
         auto oldIds = GetIds();
         std::function<bool(const RowType &lhs, const RowType &rhs)> compare;
