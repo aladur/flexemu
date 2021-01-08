@@ -120,7 +120,7 @@ private:
     static QString GetFileType(const FlexDirEntry &dirEntry);
 
     std::unique_ptr<FileContainerIf> container;
-    std::vector<RowType> rows;
+    QVector<RowType> rows;
     QString path;
 
     static std::array<const char *, COLUMNS> headerNames;

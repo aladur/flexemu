@@ -82,7 +82,9 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
 
     if (path == nullptr || stat(path, &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, path);
+        std::string spath(path == nullptr ? "<nullptr>" : path);
+
+        throw FlexException(FERR_UNABLE_TO_OPEN, spath);
     }
 
     directory = path;
@@ -336,7 +338,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
         setValueBigEndian<Word>(&dir_sector.record_nr[0], 0U);
 
         std::fill(std::begin(dir_sector.unused),
-                  std::end(dir_sector.unused), 0);
+                  std::end(dir_sector.unused), Byte(0U));
 
         for (Word j = 0; j < DIRENTRIES; ++j)
         {
@@ -797,9 +799,11 @@ void NafsDirectoryContainer::add_to_directory(
     records = static_cast<SWord>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
       flex_directory[dir_index / DIRENTRIES].dir_entry[dir_index % DIRENTRIES];
-    std::fill(std::begin(dir_entry.filename), std::end(dir_entry.filename), 0);
+    std::fill(std::begin(dir_entry.filename), std::end(dir_entry.filename),
+        Byte(0U));
     strncpy(dir_entry.filename, name, FLEX_BASEFILENAME_LENGTH);
-    std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext), 0);
+    std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext),
+        Byte(0U));
     strncpy(dir_entry.file_ext, extension, FLEX_FILEEXT_LENGTH);
     dir_entry.file_attr =
         is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
@@ -859,7 +863,8 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
     {
         index = get_sector_index(begin) + 2;
 
-        std::fill(std::begin(file_sector_map), std::end(file_sector_map), 0);
+        std::fill(std::begin(file_sector_map), std::end(file_sector_map),
+            Byte(0U));
 
         n = 0;
 
@@ -1079,11 +1084,12 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
             name = "FLEXDISK";
         }
 
-        std::fill(std::begin(sis.unused1), std::end(sis.unused1), 0);
+        std::fill(std::begin(sis.unused1), std::end(sis.unused1), Byte(0U));
         std::fill(std::begin(sis.sir.disk_name),
-                  std::end(sis.sir.disk_name), 0);
+                  std::end(sis.sir.disk_name), char('\0'));
         strncpy(sis.sir.disk_name, name.c_str(), 8);
-        std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext), 0);
+        std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
+            char('\0'));
         setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
         sis.sir.fc_start = st_t{0, 0};
         sis.sir.fc_end = st_t{0, 0};
@@ -1093,7 +1099,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         sis.sir.year = static_cast<Byte>(lt->tm_year);
         sis.sir.last = st_t{static_cast<Byte>(param.max_track),
                             static_cast<Byte>(param.max_sector)};
-        std::fill(std::begin(sis.unused2), std::end(sis.unused2), 0);
+        std::fill(std::begin(sis.unused2), std::end(sis.unused2), Byte(0U));
 
         flex_sys_info[1] = flex_sys_info[0];
     } // if

@@ -312,7 +312,7 @@ FlexContainerInfo E2floppy::drive_info(Word drive_nr)
             {
                 floppy[drive_nr]->GetInfo(info);
             }
-            catch (FlexException &ex)
+            catch (FlexException &)
             {
                 return FlexContainerInfo();
             }

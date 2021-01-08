@@ -330,8 +330,8 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
     std::string dst(newName);
     FlexDirEntry de;
 #ifdef UNIX
-    std::transform(src.begin(), src.end(), src.begin(), ::tolower);
-    std::transform(dst.begin(), dst.end(), dst.begin(), ::tolower);
+    strlower(src);
+    strlower(dst);
 #endif
 
     // prevent overwriting of an existing file
@@ -452,8 +452,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     struct stat sbuf;
 
     filePath = dirEntry.GetTotalFileName();
-    std::transform(filePath.begin(), filePath.end(), filePath.begin(),
-         ::tolower);
+    strlower(filePath);
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (!stat(filePath.c_str(), &sbuf))

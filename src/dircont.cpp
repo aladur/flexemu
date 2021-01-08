@@ -388,8 +388,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
 #ifdef UNIX
-    std::transform(lowerFileName.begin(), lowerFileName.end(),
-         lowerFileName.begin(), ::tolower);
+    strlower(lowerFileName);
 #endif
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
@@ -509,8 +508,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
         struct stat sbuf;
         std::string lowerFileName(fileName);
 
-        std::transform(lowerFileName.begin(), lowerFileName.end(),
-            lowerFileName.begin(), ::tolower);
+        strlower(lowerFileName);
         filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
         if (!stat(filePath.c_str(), &sbuf))
@@ -554,8 +552,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
     struct stat sbuf;
     std::string lowerFileName(fileName);
 
-    std::transform(lowerFileName.begin(), lowerFileName.end(),
-        lowerFileName.begin(), ::tolower);
+    strlower(lowerFileName);
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     if (!stat(filePath.c_str(), &sbuf))

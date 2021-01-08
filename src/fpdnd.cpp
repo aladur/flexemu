@@ -99,12 +99,12 @@ FlexDnDFiles::~FlexDnDFiles()
     fileBuffers.clear();
 }
 
-size_t FlexDnDFiles::GetFileSize() const
+DWord FlexDnDFiles::GetFileSize() const
 {
     // Reserve memory for path size, dnsHostName size and file count
-    size_t fileSize = 3 * sizeof(DWord);
-    fileSize += path.size() + 1;
-    fileSize += dnsHostName.size() + 1;
+    DWord fileSize = 3 * sizeof(DWord);
+    fileSize += static_cast<DWord>(path.size()) + 1U;
+    fileSize += static_cast<DWord>(dnsHostName.size()) + 1U;
 
     for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
     {
@@ -112,7 +112,8 @@ size_t FlexDnDFiles::GetFileSize() const
     }
 
     // Add size of header of each file
-    fileSize += fileBuffers.size() * sizeof(tFlexFileHeader);
+    fileSize +=
+        static_cast<DWord>(fileBuffers.size() * sizeof(tFlexFileHeader));
 
     return fileSize;
 }

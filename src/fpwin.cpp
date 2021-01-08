@@ -36,6 +36,7 @@
 #include "flexerr.h"
 #include "ffilecnt.h"
 #include "fcopyman.h"
+#include "warnoff.h"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QMessageBox>
@@ -57,6 +58,7 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include <QSettings>
+#include "warnon.h"
 
 
 FLEXplorer::FLEXplorer() : mdiArea(new QMdiArea),
@@ -218,8 +220,6 @@ bool FLEXplorer::OpenContainerForPath(const QString &path, bool isLast)
 
         return isLast || (result == QMessageBox::Yes);
     }
-
-    return false;
 }
 
 void FLEXplorer::ExecuteInChild(

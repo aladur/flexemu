@@ -24,9 +24,11 @@
 #define FPWIN_INCLUDED
 
 #include "misc1.h"
+#include "warnoff.h"
 #include <QMainWindow>
 #include <QString>
 #include <QStringList>
+#include "warnon.h"
 #include <functional>
 
 

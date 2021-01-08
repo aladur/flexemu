@@ -52,7 +52,7 @@ public:
     std::string GetDnsHostName() const;
     void Add(FlexFileBuffer &&fileBuffer);
     FlexFileBuffer &GetBufferAt(unsigned int);
-    size_t GetFileSize() const;
+    DWord GetFileSize() const;
     unsigned int GetFileCount() const
     {
         return static_cast<unsigned int>(fileBuffers.size());

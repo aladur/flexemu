@@ -233,8 +233,8 @@ bool Memory::add_io_device(
     {
         ioAccessForAddressMap.emplace(
             std::piecewise_construct,
-            std::forward_as_tuple(base_address + offset),
-            std::forward_as_tuple(device, offset % sizeOfIo));
+            std::forward_as_tuple<Word>(base_address + offset),
+            std::forward_as_tuple<IoDevice &, Word>(device, offset % sizeOfIo));
     }
 
     return true;

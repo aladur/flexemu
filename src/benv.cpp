@@ -92,8 +92,7 @@ bool BEnvironment::GetValue(const char *key, char **pValue)
 {
     std::string upperKey(key);
 
-    std::transform(upperKey.begin(), upperKey.end(), upperKey.begin(),
-         ::toupper);
+    strupper(upperKey);
 #ifdef _WIN32
     return (SetEnvironmentVariable(upperKey, str) != 0);
 #endif

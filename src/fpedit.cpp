@@ -22,6 +22,7 @@
 
 
 #include "flexerr.h"
+#include "warnoff.h"
 #include <QWidget>
 #include <QDateEdit>
 #include <QLineEdit>
@@ -31,6 +32,7 @@
 #include <QAbstractItemModel>
 #include <QStyleOptionViewItem>
 #include <QMessageBox>
+#include "warnon.h"
 #include <algorithm>
 #include "fpmodel.h"
 #include "fpedit.h"

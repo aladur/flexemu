@@ -32,6 +32,7 @@
 #include "filecont.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "warnoff.h"
 #include <QObject>
 #include <QString>
 #include <QDate>
@@ -40,6 +41,7 @@
 #include <QModelIndex>
 #include <QModelIndexList>
 #include <QTextStream>
+#include "warnon.h"
 #include "fpmodel.h"
 
 
@@ -131,7 +133,7 @@ QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
     setData(index(row, column++), random, role);
     auto filesize = dirEntry.GetSize();
     setData(index(row, column++), filesize, role);
-    auto date = dirEntry.GetDate();
+    const auto &date = dirEntry.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
     setData(index(row, column++), qdate, role);
     QString attributes(dirEntry.GetAttributesString().c_str());
@@ -235,7 +237,7 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
     attributes.reserve(filenames.size());
     for (iter = container->begin(); iter != container->end(); ++iter)
     {
-        auto dirEntry = *iter;
+        const auto &dirEntry = *iter;
 
         if (filenames.contains(QString(dirEntry.GetTotalFileName().c_str())))
         {
@@ -441,13 +443,12 @@ bool FlexplorerTableModel::setData(
     if (index.isValid() &&
         (role == Qt::DisplayRole || role == Qt::EditRole))
     {
-        if (index.row() < static_cast<int>(rows.size()) &&
-            index.column() < COLUMNS)
+        if (index.row() < rows.size() && index.column() < COLUMNS)
         {
             QVector<int> roles { role };
             if (rows.at(index.row()).at(index.column()) != value)
             {
-                rows.at(index.row()).at(index.column()) = value;
+                rows[index.row()].at(index.column()) = value;
                 dataChanged(index, index, roles);
                 return true;
             }
@@ -570,9 +571,9 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
     {
         if (oldIds[oldRow] != newIds[oldRow])
         {
-            int newRow =
-                std::find(newIds.begin(), newIds.end(), oldIds[oldRow]) -
-                     newIds.begin();
+            auto pos = std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
+            int newRow = static_cast<int>(pos - newIds.begin());
+
             for (int col = 0; col < COLUMNS; ++col)
             {
                 fromList.push_back(index(oldRow, col));

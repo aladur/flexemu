@@ -25,10 +25,12 @@
 #include "fpnewui.h"
 #include "mdcrtape.h"
 #include "filecnts.h"
+#include "warnoff.h"
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "warnon.h"
 
 FlexplorerNewUi::FlexplorerNewUi() :
     Ui_FlexplorerNew(), dialog(nullptr), format(TYPE_DSK_CONTAINER)

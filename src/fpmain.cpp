@@ -22,8 +22,10 @@
 
 
 #include "fpwin.h"
+#include "warnoff.h"
 #include <QApplication>
 #include <QResource>
+#include "warnon.h"
 #include "winmain.h"
 #include "winctxt.h"
 #include "winmain.h"

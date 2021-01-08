@@ -193,8 +193,7 @@ int FlexplorerMdiChild::ViewSelected()
     for (auto &index : selectedRows)
     {
         auto filename = model->GetFilename(index).toStdString();
-        std::transform(filename.begin(), filename.end(),
-                       filename.begin(), ::tolower);
+        strlower(filename);
 
         try
         {
@@ -382,7 +381,7 @@ void FlexplorerMdiChild::Info()
     str += tr("Type: ");
     str += QString(info.GetTypeString().c_str()).append("\n");
     str += tr("Date: ");
-    auto date = info.GetDate();
+    auto &date = info.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
     str += qdate.toString().append("\n");
     str += tr("Tracks: ");
@@ -645,7 +644,7 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
     {
         try
         {
-            auto buffer = files.GetBufferAt(fileIndex);
+            const auto &buffer = files.GetBufferAt(fileIndex);
             auto index = model->AddFile(buffer);
             if (index.isValid())
             {

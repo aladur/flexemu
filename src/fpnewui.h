@@ -26,10 +26,12 @@
 
 
 #include "misc1.h"
-#include "fpnew_ui.h"
 #include "filecntb.h"
+#include "warnoff.h"
+#include "fpnew_ui.h"
 #include <QObject>
 #include <QString>
+#include "warnon.h"
 
 class QLineEdit;
 

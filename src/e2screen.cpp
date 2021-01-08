@@ -112,19 +112,15 @@ void E2Screen::mouseReleaseEvent(QMouseEvent *event)
     event->accept();
 }
 
-void E2Screen::leaveEvent(QEvent *event)
+void E2Screen::leaveEvent(QEvent *)
 {
-    assert(event != nullptr);
-
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;
     mouseButtonState = 0;
 }
 
-void E2Screen::enterEvent(QEvent *event)
+void E2Screen::enterEvent(QEvent *)
 {
-    assert(event != nullptr);
-
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;
     mouseButtonState = 0;
@@ -207,10 +203,8 @@ int E2Screen::heightForWidth(int width) const
     return width / 2;
 }
 
-void E2Screen::paintEvent(QPaintEvent *event)
+void E2Screen::paintEvent(QPaintEvent *)
 {
-    assert(event != nullptr);
-
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing, false);
