@@ -134,7 +134,6 @@ fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
 	fpedit.h \
 	fpmdich.h \
-	fpmodel.h \
 	fpnewui.h \
 	fpoptui.h \
 	fpwin.h

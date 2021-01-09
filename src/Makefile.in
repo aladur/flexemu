@@ -207,7 +207,6 @@ am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
 am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
 	flexplorer-fpmdich_moc.$(OBJEXT) \
-	flexplorer-fpmodel_moc.$(OBJEXT) \
 	flexplorer-fpnewui_moc.$(OBJEXT) \
 	flexplorer-fpoptui_moc.$(OBJEXT) \
 	flexplorer-fpwin_moc.$(OBJEXT)
@@ -363,7 +362,6 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-bdate.Po \
 	./$(DEPDIR)/flexplorer-fpmdich.Po \
 	./$(DEPDIR)/flexplorer-fpmdich_moc.Po \
 	./$(DEPDIR)/flexplorer-fpmodel.Po \
-	./$(DEPDIR)/flexplorer-fpmodel_moc.Po \
 	./$(DEPDIR)/flexplorer-fpnewui.Po \
 	./$(DEPDIR)/flexplorer-fpnewui_moc.Po \
 	./$(DEPDIR)/flexplorer-fpoptui.Po \
@@ -783,7 +781,6 @@ fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
 	fpedit.h \
 	fpmdich.h \
-	fpmodel.h \
 	fpnewui.h \
 	fpoptui.h \
 	fpwin.h
@@ -1442,7 +1439,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmdich.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmdich_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmodel.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmodel_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui.Po@am__quote@ # am--include-marker
@@ -3422,20 +3418,6 @@ flexplorer-fpmdich_moc.obj: fpmdich_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmdich_moc.obj `if test -f 'fpmdich_moc.cpp'; then $(CYGPATH_W) 'fpmdich_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmdich_moc.cpp'; fi`
 
-flexplorer-fpmodel_moc.o: fpmodel_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel_moc.Tpo -c -o flexplorer-fpmodel_moc.o `test -f 'fpmodel_moc.cpp' || echo '$(srcdir)/'`fpmodel_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel_moc.Tpo $(DEPDIR)/flexplorer-fpmodel_moc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel_moc.cpp' object='flexplorer-fpmodel_moc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel_moc.o `test -f 'fpmodel_moc.cpp' || echo '$(srcdir)/'`fpmodel_moc.cpp
-
-flexplorer-fpmodel_moc.obj: fpmodel_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmodel_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpmodel_moc.Tpo -c -o flexplorer-fpmodel_moc.obj `if test -f 'fpmodel_moc.cpp'; then $(CYGPATH_W) 'fpmodel_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel_moc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmodel_moc.Tpo $(DEPDIR)/flexplorer-fpmodel_moc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmodel_moc.cpp' object='flexplorer-fpmodel_moc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmodel_moc.obj `if test -f 'fpmodel_moc.cpp'; then $(CYGPATH_W) 'fpmodel_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmodel_moc.cpp'; fi`
-
 flexplorer-fpnewui_moc.o: fpnewui_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpnewui_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpnewui_moc.Tpo -c -o flexplorer-fpnewui_moc.o `test -f 'fpnewui_moc.cpp' || echo '$(srcdir)/'`fpnewui_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpnewui_moc.Tpo $(DEPDIR)/flexplorer-fpnewui_moc.Po
@@ -4483,7 +4465,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpmdich.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpmdich_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpmodel.Po
-	-rm -f ./$(DEPDIR)/flexplorer-fpmodel_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui.Po
@@ -4712,7 +4693,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpmdich.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpmdich_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpmodel.Po
-	-rm -f ./$(DEPDIR)/flexplorer-fpmodel_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui.Po
