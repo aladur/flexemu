@@ -376,7 +376,8 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     if (is_flex_format)
     {
         s_sys_info_sector sis;
-        char disk_name[13];
+        char disk_name[sizeof(sis.sir.disk_name) +
+                       sizeof(sis.sir.disk_ext) + 1];
         int year;
 
         if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
@@ -398,7 +399,14 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
             year = sis.sir.year + 1900;
         }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsizeof-pointer-memaccess"
+#endif
         strncpy(disk_name, sis.sir.disk_name, sizeof(sis.sir.disk_name));
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
         disk_name[sizeof(sis.sir.disk_name)] = '\0';
         if (sis.sir.disk_ext[0] != '\0')
         {

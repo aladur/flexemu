@@ -148,7 +148,15 @@ void AbstractGui::redraw_cpuview_impl(const Mc6809CpuStatus &)
 
 void AbstractGui::text(int x, int y, const char *str)
 {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-truncation"
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     strncpy(&cpustring[cpu_line_size * y + x], str, strlen(str));
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 }
 
 void AbstractGui::clear_cpuview()
