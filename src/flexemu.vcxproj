@@ -293,14 +293,6 @@
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
-    <CustomBuild Include="apprun.h">
-      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
-      <Message>Meta object compile %(Filename).h</Message>
-      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
-      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <OutputItemType>ClCompile</OutputItemType>
-      <BuildInParallel>true</BuildInParallel>
-    </CustomBuild>
     <CustomBuild Include="brkptui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
@@ -354,6 +346,7 @@
     <ClInclude Include="absdisas.h" />
     <ClInclude Include="absgui.h" />
     <ClInclude Include="acia1.h" />
+    <ClInclude Include="apprun.h" />
     <ClInclude Include="bcommand.h" />
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
