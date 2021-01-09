@@ -42,19 +42,27 @@
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
     <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="confignt.h" />
+    <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdirent.h" />
     <ClInclude Include="ffilebuf.h" />
     <ClInclude Include="ffilecnt.h" />
+    <ClInclude Include="filecntb.h" />
+    <ClInclude Include="filecnts.h" />
+    <ClInclude Include="filecont.h" />
     <ClInclude Include="filfschk.h" />
+    <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
+    <ClInclude Include="ifilcnti.h" />
     <ClInclude Include="ifilecnt.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="rfilecnt.h" />
+    <ClInclude Include="typedefs.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}</ProjectGuid>

@@ -185,10 +185,14 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="benv.h" />
     <ClInclude Include="bfileptr.h" />
+    <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
+    <ClInclude Include="e2.h" />
+    <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="foptman.h" />
     <ClInclude Include="fsetup.h" />

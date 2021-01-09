@@ -58,6 +58,9 @@
     <ClInclude Include="confignt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cvtwchar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="flexerr.h">
       <Filter>Header Files</Filter>
     </ClInclude>

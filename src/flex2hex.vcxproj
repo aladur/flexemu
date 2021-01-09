@@ -27,6 +27,7 @@
     <ClCompile Include="flex2hex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="fileread.h" />
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />

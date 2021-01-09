@@ -253,6 +253,7 @@
   <ItemGroup>
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
+    <ClInclude Include="benv.h" />
     <ClInclude Include="bfileptr.h" />
     <ClInclude Include="bintervl.h" />
     <ClInclude Include="bmembuf.h" />
@@ -260,7 +261,9 @@
     <ClInclude Include="bobservd.h" />
     <ClInclude Include="bobshelp.h" />
     <ClInclude Include="bprocess.h" />
+    <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
+    <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />
     <ClInclude Include="fcinfo.h" />
@@ -268,8 +271,16 @@
     <ClInclude Include="fdirent.h" />
     <ClInclude Include="ffilebuf.h" />
     <ClInclude Include="ffilecnt.h" />
+    <ClInclude Include="filecntb.h" />
+    <ClInclude Include="filecnts.h" />
+    <ClInclude Include="filecont.h" />
+    <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
+    <ClInclude Include="fpattrui.h" />
     <ClInclude Include="fpdnd.h" />
+    <ClInclude Include="ifilcnti.h" />
+    <ClInclude Include="memsrc.h" />
+    <ClInclude Include="memtgt.h" />
     <ClInclude Include="winmain.h" />
     <CustomBuild Include="fpedit.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>

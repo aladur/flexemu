@@ -170,10 +170,19 @@ fsetup_SOURCES = \
 	bfileptr.h \
 	brcfile.h \
 	bregistr.h \
+	config.h \
+	cvtwchar.h \
+	e2.h \
+	flexemu.h \
+	flexerr.h \
 	foptman.h \
 	fsetupui.h \
 	misc1.h \
-	sguiopts.h
+	sguiopts.h \
+	typedefs.h \
+	warnoff.h \
+	warnon.h \
+	winmain.h
 
 flexemu_SOURCES = \
 	absgui.cpp \
@@ -389,6 +398,7 @@ flexplorer_SOURCES = \
 	bprocess.h \
 	brcfile.h \
 	bregistr.h \
+	config.h \
 	cvtwchar.h \
 	dircont.h \
 	fcinfo.h \
@@ -397,6 +407,7 @@ flexplorer_SOURCES = \
 	ffilebuf.h \
 	ffilecnt.h \
 	filecntb.h \
+	filecnts.h \
 	filecont.h \
 	flexemu.h \
 	flexerr.h \
@@ -413,9 +424,13 @@ flexplorer_SOURCES = \
 	ifilcnti.h \
 	ifilecnt.h \
 	mdcrtape.h \
+	memsrc.h \
+	memtgt.h \
 	misc1.h \
 	rfilecnt.h \
-	sprinter.h
+	sprinter.h \
+	warnoff.h \
+	warnon.h
 
 mdcrtool_SOURCES = \
 	bdir.cpp \
@@ -452,6 +467,7 @@ flex2hex_SOURCES = \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
+	cvtwchar.h \
 	fileread.h \
 	flexerr.h \
 	memsrc.h \
@@ -481,19 +497,26 @@ dsktool_SOURCES = \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
+	cvtwchar.h \
 	dircont.h \
 	fcinfo.h \
 	fcopyman.h \
 	fdirent.h \
 	ffilebuf.h \
 	ffilecnt.h \
+	filecntb.h \
+	filecnts.h \
+	filecont.h \
 	filfschk.h \
+	flexemu.h \
 	flexerr.h \
 	idircnt.h \
 	iffilcnt.h \
+	ifilcnti.h \
 	ifilecnt.h \
 	misc1.h \
-	rfilecnt.h
+	rfilecnt.h \
+	typedefs.h
 
 test_SOURCES = \
 	bcommand.cpp \

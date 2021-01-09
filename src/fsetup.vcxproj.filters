@@ -15,13 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="benv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bfileptr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="brcfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="bregistr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="confignt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="e2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flexemu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="misc1.h">

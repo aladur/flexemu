@@ -119,6 +119,9 @@
     <ClInclude Include="bdir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="benv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bfileptr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -140,10 +143,16 @@
     <ClInclude Include="bprocess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="brcfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bregistr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cvtwchar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="confignt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dircont.h">
@@ -164,7 +173,22 @@
     <ClInclude Include="ffilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="filecntb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filecnts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filecont.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flexemu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="flexerr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fpattrui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="idircnt.h">
@@ -173,7 +197,16 @@
     <ClInclude Include="iffilcnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ifilcnti.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ifilecnt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memsrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="memtgt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="misc1.h">
