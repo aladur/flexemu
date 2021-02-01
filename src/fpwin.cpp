@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 2020  W. Schwotzer
+    Copyright (C) 2020-2021  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -394,7 +394,7 @@ void FLEXplorer::About()
            "<a href=\"http://flexemu.neocities.org/copying.txt\">"
            "GNU GENERAL PUBLIC LICENCE V2</a>.<p><p>"
            "Have Fun!<p><p>"
-           "Copyright (C) 1998-2020 "
+           "Copyright (C) 1998-2021 "
            "<a href=\"mailto:wolfgang.schwotzer@gmx.net\">"
            "Wolfgang Schwotzer</a><p>"
            "<a href=\"http://flexemu.neocities.org\">"
