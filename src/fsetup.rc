@@ -29,7 +29,7 @@ BEGIN
             VALUE "FileDescription", "FSetup\0"
             VALUE "FileVersion", "2,25,0,0\0"
             VALUE "InternalName", "FSetup.exe\0"
-            VALUE "LegalCopyright", "Copyright © 2000-2020 W. Schwotzer\0"
+            VALUE "LegalCopyright", "Copyright © 2000-2021 W. Schwotzer\0"
             VALUE "OriginalFilename", "FSetup.exe\0"
             VALUE "ProductName", "FSetup\0"
             VALUE "ProductVersion", "2,25,0,0\0"

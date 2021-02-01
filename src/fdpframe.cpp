@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 1998-2020  W. Schwotzer
+    Copyright (C) 1998-2021  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ void FlexParentFrame::OnAbout(wxCommandEvent &WXUNUSED(event))
 
     aboutInfo.SetName("FLEXplorer");
     aboutInfo.SetVersion(progVersion);
-    aboutInfo.SetCopyright("Copyright (C) 1998-2020\n");
+    aboutInfo.SetCopyright("Copyright (C) 1998-2021\n");
     aboutInfo.AddDeveloper("Wolfgang Schwotzer");
     aboutInfo.SetWebSite("http://flexemu.neocities.org");
     aboutInfo.SetDescription(msgFormat);
