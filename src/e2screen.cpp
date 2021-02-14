@@ -315,7 +315,7 @@ void E2Screen::ToggleSmoothDisplay()
 {
     transformationMode = (transformationMode == Qt::FastTransformation) ?
         Qt::SmoothTransformation : Qt::FastTransformation;
-    update();
+    doScaledScreenUpdate = true;
 }
 
 bool E2Screen::IsSmoothDisplay() const

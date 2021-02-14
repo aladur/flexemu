@@ -219,6 +219,11 @@ void QtGui::OnExit()
     close();
 }
 
+void QtGui::OnRepaintScreen()
+{
+    e2screen->RepaintScreen();
+}
+
 void QtGui::OnFullScreen()
 {
     ToggleFullScreenMode();
@@ -1265,6 +1270,7 @@ void QtGui::ToggleSmoothDisplay() const
 {
     e2screen->ToggleSmoothDisplay();
     UpdateSmoothDisplayCheck();
+    QTimer::singleShot(0, this, &QtGui::OnRepaintScreen);
 }
 
 void QtGui::SetFullScreenMode(bool isFullScreen)

@@ -115,6 +115,7 @@ protected:
 private slots:
     void OnExit();
     void OnFullScreen();
+    void OnRepaintScreen();
     void OnStatusBar();
     void OnSmoothDisplay();
     void OnCpuRun();
