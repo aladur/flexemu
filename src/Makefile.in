@@ -703,7 +703,7 @@ EXTRA_DIST = \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
-	msvcQtPath.props
+	msvcQtPath.props.in
 
 SUBDIRS = bitmaps tools
 
@@ -793,7 +793,7 @@ nodist_flexplorer_SOURCES = \
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCE) \
+	$(nodist_flexplorer_SOURCES) \
 	$(nodist_fsetup_SOURCES)
 
 CLEANFILES = \
@@ -1035,7 +1035,47 @@ flexplorer_SOURCES = \
 	bdir.h \
 	benv.h \
 	bfileptr.h \
-	bintervl.h
+	bintervl.h \
+	bmembuf.h \
+	bobserv.h \
+	bobservd.h \
+	bobshelp.h \
+	bprocess.h \
+	brcfile.h \
+	bregistr.h \
+	config.h \
+	cvtwchar.h \
+	dircont.h \
+	fcinfo.h \
+	fcopyman.h \
+	fdirent.h \
+	ffilebuf.h \
+	ffilecnt.h \
+	filecntb.h \
+	filecnts.h \
+	filecont.h \
+	flexemu.h \
+	flexerr.h \
+	fpattrui.h \
+	fpdnd.h \
+	fpedit.h \
+	fpmdich.h \
+	fpmodel.h \
+	fpnewui.h \
+	fpoptui.h \
+	fpwin.h \
+	idircnt.h \
+	iffilcnt.h \
+	ifilcnti.h \
+	ifilecnt.h \
+	mdcrtape.h \
+	memsrc.h \
+	memtgt.h \
+	misc1.h \
+	rfilecnt.h \
+	sprinter.h \
+	warnoff.h \
+	warnon.h
 
 mdcrtool_SOURCES = \
 	bdir.cpp \
@@ -4794,46 +4834,6 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
-	bmembuf.h \
-	bobserv.h \
-	bobservd.h \
-	bobshelp.h \
-	bprocess.h \
-	brcfile.h \
-	bregistr.h \
-	config.h \
-	cvtwchar.h \
-	dircont.h \
-	fcinfo.h \
-	fcopyman.h \
-	fdirent.h \
-	ffilebuf.h \
-	ffilecnt.h \
-	filecntb.h \
-	filecnts.h \
-	filecont.h \
-	flexemu.h \
-	flexerr.h \
-	fpattrui.h \
-	fpdnd.h \
-	fpedit.h \
-	fpmdich.h \
-	fpmodel.h \
-	fpnewui.h \
-	fpoptui.h \
-	fpwin.h \
-	idircnt.h \
-	iffilcnt.h \
-	ifilcnti.h \
-	ifilecnt.h \
-	mdcrtape.h \
-	memsrc.h \
-	memtgt.h \
-	misc1.h \
-	rfilecnt.h \
-	sprinter.h \
-	warnoff.h \
-	warnon.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

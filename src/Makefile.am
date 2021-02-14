@@ -41,7 +41,7 @@ EXTRA_DIST = \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
-	msvcQtPath.props
+	msvcQtPath.props.in
 
 SUBDIRS = bitmaps tools
 
@@ -147,7 +147,7 @@ nodist_flexplorer_SOURCES = \
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCE) \
+	$(nodist_flexplorer_SOURCES) \
 	$(nodist_fsetup_SOURCES)
 
 CLEANFILES = \
@@ -389,7 +389,7 @@ flexplorer_SOURCES = \
 	bdir.h \
 	benv.h \
 	bfileptr.h \
-	bintervl.h
+	bintervl.h \
 	bmembuf.h \
 	bobserv.h \
 	bobservd.h \
