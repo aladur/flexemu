@@ -683,7 +683,7 @@ void QtGui::CreateFileActions(QLayout& layout)
     const auto exitIcon = QIcon(":/resource/exit.png");
     exitAction = fileMenu->addAction(exitIcon, tr("E&xit"));
     connect(exitAction, &QAction::triggered, this, &QtGui::OnExit);
-    exitAction->setShortcuts(QKeySequence::Quit);
+    exitAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_Q));
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
 }
@@ -697,11 +697,17 @@ void QtGui::CreateViewActions(QLayout& layout)
     viewToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(viewToolBar);
 
+    auto keySequenceFullScreen = QKeySequence(QKeySequence::FullScreen);
+    auto sequences = QKeySequence::keyBindings(QKeySequence::FullScreen);
+    if (sequences.isEmpty())
+    {
+        keySequenceFullScreen = QKeySequence(Qt::Key_F11);
+    }
     const auto fullScreenIcon = QIcon(":/resource/screen-full.png");
     fullScreenAction = viewMenu->addAction(fullScreenIcon, tr("&Full Screen"));
     connect(fullScreenAction, &QAction::triggered, this, &QtGui::OnFullScreen);
     fullScreenAction->setCheckable(true);
-    fullScreenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F11));
+    fullScreenAction->setShortcut(keySequenceFullScreen);
     fullScreenAction->setStatusTip(tr("Enter or exit Fullscreen mode"));
 
     statusBarAction = viewMenu->addAction(tr("&Status Bar"));
@@ -746,7 +752,7 @@ void QtGui::CreateViewActions(QLayout& layout)
     smoothAction = viewMenu->addAction(tr("&Smooth Display"));
     connect(smoothAction, &QAction::triggered, this, &QtGui::OnSmoothDisplay);
     smoothAction->setCheckable(true);
-    smoothAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_F12));
+    smoothAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F12));
     smoothAction->setStatusTip(tr("Enter or exit smooth display mode"));
     viewMenu->addAction(smoothAction);
 }
@@ -923,7 +929,7 @@ QAction *QtGui::CreateScreenSizeAction(
 
     assert (index <= 4);
 
-    auto keySequence = QKeySequence(Qt::ALT + (Qt::Key_1 + index));
+    auto keySequence = QKeySequence(Qt::CTRL + (Qt::Key_1 + index));
     auto *action = menu.addAction(icon, menuText[index]);
     connect(action, &QAction::triggered,
         this, [&,index](){ OnScreenSize(index); });
@@ -1723,12 +1729,33 @@ void QtGui::keyPressEvent(QKeyEvent *event)
 {
     assert(event != nullptr);
 
+    // Defined hotkeys:
+    //
+    // Hotkey           | Action
+    // ----------------------------------------------------------
+    // Ctrl+1           | Set default screen size
+    // Ctrl+2           | Set double screen size
+    // Ctrl+3           | Set triple screen size
+    // Ctrl+4           | Set quadruple screen size
+    // Ctrl+5           | Set quintuple screen size
+    // Ctrl+F12         | Toogle smooth display
+    // Pause            | Toggle CPU to stop or run
+    // Ctrl+Pause       | Send non maskable interrupt (NMI) to CPU
+    // Alt+Pause        | Reset and run CPU
+    //
+    // Hotkey for toggling full screen mode depends on the user interface:
+    // Windows        | F11, Alt+Enter
+    // macOS          | Ctrl+Meta+F
+    // KDE            | F11, Ctrl+Shift+F
+    // GNOME          | Ctrl+F11
+    // Others         | F11
+
     static const auto modifiers =
         Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier;
 
     switch (event->modifiers() & modifiers)
     {
-        case Qt::AltModifier:
+        case Qt::ControlModifier:
             switch (event->key())
             {
                 case Qt::Key_1:
@@ -1746,28 +1773,23 @@ void QtGui::keyPressEvent(QKeyEvent *event)
                     return;
                 }
 
-                case Qt::Key_F11:
-                    ToggleFullScreenMode();
-                    event->accept();
-                    return;
-
                 case Qt::Key_F12:
                     OnSmoothDisplay();
                     event->accept();
                     return;
 
                 case Qt::Key_Pause:
-                    scheduler.request_new_state(CpuState::ResetRun);
+                    cpu.set_nmi();
                     event->accept();
                     return;
             }
             break;
 
-        case Qt::ShiftModifier:
+        case Qt::ShiftModifier | Qt::AltModifier:
             switch (event->key())
             {
                 case Qt::Key_Pause:
-                    cpu.set_nmi();
+                    scheduler.request_new_state(CpuState::ResetRun);
                     event->accept();
                     return;
             }

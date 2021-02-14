@@ -26,6 +26,7 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 
 dnl Checks for header files.
+AC_PATH_XTRA
 AC_HEADER_DIRENT
 AC_PROG_EGREP
 
@@ -124,6 +125,15 @@ AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
 
+if test "x$with_x" != "xno"; then
+    X_LIBS="$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS"
+    dnl AC_PATH_XTRA only defines the path needed to find the X libs,
+    dnl it does not add the libs; therefore we add them here
+    X_LIBS="$X_LIBS -lX11"
+    AC_SUBST(X_CFLAGS)
+    AC_SUBST(X_LIBS)
+fi
+
 AC_SUBST(PTHREAD_LD)
 AC_SUBST(WIN32_LIBS)
 AC_SUBST(WNO_VARIADIC_MACROS)
@@ -195,11 +205,17 @@ AC_OUTPUT
   echo " CFLAGS:                     $CFLAGS"
   echo " CXXFLAGS:                   $CXXFLAGS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
-  echo -n " Qt:                          "
-if test "$have_qt" == "yes"; then
-  echo "yes"
-else
+  echo -n " Xlib:                        "
+if test "x$with_x" = "xno"; then
   echo "Not found"
+else
+  echo "yes"
+fi
+  echo -n " Qt:                          "
+if test "x$have_qt" = "xno"; then
+  echo "Not found"
+else
+  echo "yes"
 fi
   echo " speed optimized compilation: $enable_speed"
   echo " execute post installation:   $enable_post_install"
@@ -208,19 +224,30 @@ fi
   echo " canonical target:            $target"
   echo "***********************************************************************"
   echo
-if test "$have_qt" != "yes"; then
+
+if test "x$with_x" = "xno"; then
     AC_MSG_WARN([
-            Please check that libQt 5.x is installed. At least
-            the packages qtbase5-dev and qtbase5-dev-tools have to be
+            Please check that libX11.so is installed. On debian based
+            systems the package libX11-dev has to be installed.
+    ])
+fi
+if test "x$have_qt" = "xno"; then
+    AC_MSG_WARN([
+            Please check that libQt 5.x is installed. On debian based
+            systems the packages qtbase5-dev and qtbase5-dev-tools have to be
             installed.
     ])
 fi
   echo
   echo "Configure finished.  Type 'make' to compile"
-if test "$have_qt" != "yes"; then
+if test "x$have_qt" = "xno"; then
   echo "mdcrtool, dsktool and flex2hex"
 else
-  echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
+  if test "x$with_x" = "xno"; then
+    echo "fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
+  else
+    echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
+  fi
 fi
   echo
 

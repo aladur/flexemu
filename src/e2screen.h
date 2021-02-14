@@ -101,6 +101,8 @@ private:
     void SetMouseCoordinatesAndButtons(QMouseEvent *event);
     void SetCursorType(int type = FLX_DEFAULT_CURSOR);
     void SetCursorPosition(int x, int y);
+    void InitializeNumLockIndicatorMask();
+    bool IsNumLockOn() const;
 
     Scheduler &scheduler;
     JoystickIO &joystickIO;
@@ -126,6 +128,7 @@ private:
     QSize preferredScreenSize;
     QSize scaledScreenSize;
     QPoint origin;
+    unsigned int numLockIndicatorMask;
 };
 #endif
 

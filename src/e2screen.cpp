@@ -35,6 +35,8 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QApplication>
+#include <QX11Info>
+#include <X11/XKBlib.h>
 
 class JoystickIO;
 
@@ -65,6 +67,7 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     , doScaledScreenUpdate(true)
     , preferredScreenSize(WINDOWWIDTH * x_guiOptions.pixelSize,
                           WINDOWHEIGHT * x_guiOptions.pixelSize)
+    , numLockIndicatorMask(0U)
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     setBaseSize({WINDOWWIDTH, WINDOWHEIGHT});
@@ -72,6 +75,7 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     setMouseTracking(true);
     warpHomeX = (pixelSize * WINDOWWIDTH) >> 1;
     warpHomeY = (pixelSize * WINDOWHEIGHT) >> 1;
+    InitializeNumLockIndicatorMask();
 }
 
 QSize E2Screen::GetScaledSize() const
@@ -424,227 +428,291 @@ int E2Screen::ConvertMouseButtonState(Qt::MouseButtons mouseButtonState)
     return state;
 }
 
+bool E2Screen::IsNumLockOn() const
+{
+    // Get state of Num Lock indicator is not available in Qt.
+    // Use Win32/X11 low level access.
+#ifdef _WIN32
+    return (0x0001U & GetKeyState(VK_NUMLOCK)) != 0U;
+#else
+#ifdef UNIX
+    Display *display = QX11Info::display();
+    unsigned int state;
+
+    if (Success != XkbGetIndicatorState(display, XkbUseCoreKbd, &state))
+    {
+        return false;
+    }
+
+    return (state & numLockIndicatorMask) != 0;
+#else
+# error Platform not supported
+#endif
+#endif
+}
+
 int E2Screen::TranslateToAscii(QKeyEvent *event)
 {
     static const auto modifiers =
         Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier;
+    // On Eurocom II PAT09 keyboard the following keys are mapped:
+    //
+    // keyboard input           | Eurocom II mapped key
+    // --------------------------------------------------
+    // Key_Left                 | Left Arrow
+    // Key_Right                | Right Arrow
+    // Key_Up                   | Up Arrow
+    // Key_Down                 | Down Arrow
+    // Key_Home                 | Thick Left Arrow
+    // Key_End                  | Thick Right Arrow
+    // Key_PageUp               | Thick Upper Left Arrow
+    // Key_PageDown             | Thick Lower Right Arrow
+    // Key_Clear                | Mode
+    // Key_Insert (Keypad only) | Left limit
+    // Key_Delete (Keypad only) | Right limit
+    // Key_F1                   | F1
+    // Key_F2                   | F2
+    // Key_F3                   | F3
+    // Key_F4                   | F4
+    // Key_F5                   | F5
+    // Key_F6                   | F6
+    // Key_F7                   | F7
+    // Key_F8                   | F8
+    // Key_F9                   | F9
+    // Key_F10                  | F10
+    // Shift+Key_F1             | F11
+    // Shift+Key_F2             | F12
+    // Shift+Key_F3             | F13
+    // Shift+Key_F4             | F14
+    // Shift+Key_F5             | F15
+    // Shift+Key_F6             | F16
+    // Shift+Key_F7             | F17
+    // Shift+Key_F8             | F18
+    // Shift+Key_F9             | F19
+    //
+    // Coding of keypad keys if Num Lock is off:
+    //
+    //     +--------------------- key only
+    //     |     +--------------- Shift+key
+    //     |     |     +--------- Ctrl+key
+    //     |     |     |     +--- Shift+Ctrl+key
+    //     |     |     |     |
+    static int cursorCtrlCode[11][4] = {
+        { 0xFA, 0xEA, 0xFA, 0xEA }, // Key_Insert
+        { 0xF9, 0xE9, 0xB9, 0xA9 }, // Key_End
+        { 0xF2, 0xE2, 0xB2, 0xA2 }, // Key_Down
+        { 0xF3, 0xE3, 0xB3, 0xA3 }, // Key_PageDown
+        { 0xF4, 0xE4, 0xB4, 0xA4 }, // Key_Left
+        { 0xF5, 0xE5, 0xB5, 0xA5 }, // Key_Clear
+        { 0xF6, 0xE6, 0xB6, 0xA6 }, // Key_Right
+        { 0xF1, 0xE1, 0xB1, 0xA1 }, // Key_Home
+        { 0xF8, 0xE8, 0xB8, 0xA8 }, // Key_Up
+        { 0xF7, 0xE7, 0xB7, 0xA7 }, // Key_PageUp
+        { 0x91, 0x81, 0x91, 0x81 }, // Key_Delete
+    };
+    static int deleteKeyCode[4] = { 0x7F, 0x7F, 0x1F, 0x7F }; // Key_Delete
+    Word index = event->modifiers() & Qt::ShiftModifier ? 1U : 0U;
+    index |= event->modifiers() & Qt::ControlModifier ? 2U : 0U;
+
+    // Process Keypad keys. It depends on the Num Lock indicator.
+    if (event->modifiers() & Qt::KeypadModifier)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_0:
+            case Qt::Key_Insert:
+                return IsNumLockOn() ? 0x30 : cursorCtrlCode[0][index];
+
+            case Qt::Key_1:
+            case Qt::Key_End:
+                return IsNumLockOn() ? 0x31 : cursorCtrlCode[1][index];
+
+            case Qt::Key_2:
+            case Qt::Key_Down:
+                return IsNumLockOn() ? 0x32 : cursorCtrlCode[2][index];
+
+            case Qt::Key_3:
+            case Qt::Key_PageDown:
+                return IsNumLockOn() ? 0x33 : cursorCtrlCode[3][index];
+
+            case Qt::Key_4:
+            case Qt::Key_Left:
+                return IsNumLockOn() ? 0x34 : cursorCtrlCode[4][index];
+
+            case Qt::Key_5:
+            case Qt::Key_Clear:
+                return IsNumLockOn() ? 0x35 : cursorCtrlCode[5][index];
+
+            case Qt::Key_6:
+            case Qt::Key_Right:
+                return IsNumLockOn() ? 0x36 : cursorCtrlCode[6][index];
+
+            case Qt::Key_7:
+            case Qt::Key_Home:
+                return IsNumLockOn() ? 0x37 : cursorCtrlCode[7][index];
+
+            case Qt::Key_8:
+            case Qt::Key_Up:
+                return IsNumLockOn() ? 0x38 : cursorCtrlCode[8][index];
+
+            case Qt::Key_9:
+            case Qt::Key_PageUp:
+                return IsNumLockOn() ? 0x39 : cursorCtrlCode[9][index];
+
+            case Qt::Key_Comma:
+            case Qt::Key_Period:
+            case Qt::Key_Delete:
+                return
+                    IsNumLockOn() ? 0x2E : cursorCtrlCode[10][index];
+        }
+    }
+
+    // Process keys without Ctrl modifier set.
+    if ((event->modifiers() & Qt::ControlModifier) == 0)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_acute:
+            case Qt::Key_Dead_Acute:
+                return 0x27;
+
+            case Qt::Key_AsciiCircum:
+            case Qt::Key_Dead_Circumflex:
+                return 0x5E;
+
+            case Qt::Key_Dead_Grave:
+                return 0x60;
+
+        }
+    }
+
+    // Process keys with Ctrl modifier set.
+    if ((event->modifiers() & Qt::ControlModifier) == Qt::ControlModifier)
+    {
+        switch (event->key())
+        {
+            case Qt::Key_0:
+            case Qt::Key_6:
+            case Qt::Key_7:
+            case Qt::Key_8:
+            case Qt::Key_9:
+                return event->key();
+
+            case Qt::Key_QuoteLeft:
+            case Qt::Key_At:
+            case Qt::Key_Dead_Grave:
+                return 0x00;
+
+            case Qt::Key_BracketLeft:
+            case Qt::Key_BraceLeft:
+                return 0x1B;
+
+            case Qt::Key_Backslash:
+            case Qt::Key_Bar:
+                return 0x1C;
+
+            case Qt::Key_BracketRight:
+            case Qt::Key_BraceRight:
+                return 0x1D;
+
+            case Qt::Key_AsciiCircum:
+            case Qt::Key_Dead_Circumflex:
+            case Qt::Key_AsciiTilde:
+            case Qt::Key_Dead_Tilde:
+                return 0x1E;
+
+            case Qt::Key_Underscore:
+                return 0x1F;
+        }
+    }
+
+    // Process keys (not on Keypad)
+    switch (event->key())
+    {
+        case Qt::Key_Insert:
+            return -1;
+
+        case Qt::Key_degree:
+            return -1;
+
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            return 0x09;
+
+        case Qt::Key_End:
+            return cursorCtrlCode[1][index];
+
+        case Qt::Key_Down:
+            return cursorCtrlCode[2][index];
+
+        case Qt::Key_PageDown:
+            return cursorCtrlCode[3][index];
+
+        case Qt::Key_Left:
+            return cursorCtrlCode[4][index];
+
+        case Qt::Key_Clear:
+            return cursorCtrlCode[5][index];
+
+        case Qt::Key_Right:
+            return cursorCtrlCode[6][index];
+
+        case Qt::Key_Home:
+            return cursorCtrlCode[7][index];
+
+        case Qt::Key_Up:
+            return cursorCtrlCode[8][index];
+
+        case Qt::Key_PageUp:
+            return cursorCtrlCode[9][index];
+
+        case Qt::Key_Delete:
+            return deleteKeyCode[index];
+    }
 
     switch (event->modifiers() & modifiers)
     {
         case Qt::AltModifier:
             return -1;
 
-        case Qt::ControlModifier | Qt::ShiftModifier:
-            switch (event->key())
-            {
-                case Qt::Key_0:
-                    return 0x30;
-
-                case Qt::Key_1:
-                    return 0x31;
-
-                case Qt::Key_2:
-                    return 0x32;
-
-                case Qt::Key_3:
-                    return 0x33;
-
-                case Qt::Key_4:
-                    return 0x34;
-
-                case Qt::Key_5:
-                    return 0x35;
-
-                case Qt::Key_6:
-                    return 0xa1;
-
-                case Qt::Key_7:
-                    return 0x37;
-
-                case Qt::Key_8:
-                    return 0x38;
-
-                case Qt::Key_9:
-                    return 0x39;
-
-                case Qt::Key_Home:
-                    return 0xa1;
-
-                case Qt::Key_Up:
-                    return 0xa8;
-
-                case Qt::Key_PageUp:
-                    return 0xa7;
-
-                case Qt::Key_Left:
-                    return 0xa4;
-
-                case Qt::Key_Clear:
-                    return 0xa5;
-
-                case Qt::Key_Right:
-                    return 0xa6;
-
-                case Qt::Key_End:
-                    return 0xa9;
-
-                case Qt::Key_Down:
-                    return 0xa2;
-
-                case Qt::Key_PageDown:
-                    return 0xa3;
-
-                case Qt::Key_Backtab:
-                    return 0x09;
-            }
-            break;
-
         case Qt::ControlModifier:
             switch (event->key())
             {
-                case Qt::Key_0:
-                    return 0x30;
-
-                case Qt::Key_1:
-                    return 0x31;
-
-                case Qt::Key_2:
-                    return 0x32;
-
-                case Qt::Key_3:
-                    return 0x33;
-
-                case Qt::Key_4:
-                    return 0x34;
-
-                case Qt::Key_5:
-                    return 0x35;
-
-                case Qt::Key_6:
-                    return 0x36;
-
-                case Qt::Key_7:
-                    return 0x37;
-
-                case Qt::Key_8:
-                    return 0x38;
-
-                case Qt::Key_9:
-                    return 0x39;
-
-                case Qt::Key_Home:
-                    return 0xb1;
-
-                case Qt::Key_Up:
-                    return 0xb8;
-
-                case Qt::Key_PageUp:
-                    return 0xb7;
-
-                case Qt::Key_Left:
-                    return 0xb4;
-
-                case Qt::Key_Clear:
-                    return 0xb5;
-
-                case Qt::Key_Right:
-                    return 0xb6;
-
-                case Qt::Key_End:
-                    return 0xb9;
-
-                case Qt::Key_Down:
-                    return 0xb2;
-
-                case Qt::Key_PageDown:
-                    return 0xb3;
-
                 case Qt::Key_F10:
                     ToggleMouseCapture();
                     return -1;
-
-                case Qt::Key_F11:
-                    return 0xfb; // PAT09: RIGHT MOST
-
-                case Qt::Key_F12:
-                    return 0x92; // PAT09: LEFT  MOST
-
-                case Qt::Key_Delete:
-                    return 0x1f;
-
-                case Qt::Key_Tab:
-                    return 0x09;
             }
             break;
 
-        case Qt::ShiftModifier:                                                 
+        case Qt::ShiftModifier:
             switch (event->key())
             {
                 case Qt::Key_F1:
                     return 0xca; // PAT09: F11
 
                 case Qt::Key_F2:
-                    return 0xcb;
+                    return 0xcb; // PAT09: F12
 
                 case Qt::Key_F3:
-                    return 0xcc;
+                    return 0xcc; // PAT09: F13
 
                 case Qt::Key_F4:
-                    return 0xcd;
+                    return 0xcd; // PAT09: F14
 
                 case Qt::Key_F5:
-                    return 0xce;
+                    return 0xce; // PAT09: F15
 
                 case Qt::Key_F6:
-                    return 0xcf;
+                    return 0xcf; // PAT09: F16
 
                 case Qt::Key_F7:
-                    return 0xd0;
+                    return 0xd0; // PAT09: F17
 
                 case Qt::Key_F8:
-                    return 0xd1;
+                    return 0xd1; // PAT09: F18
 
                 case Qt::Key_F9:
                     return 0xd2; // PAT09: F19
-
-                case Qt::Key_F11:
-                    return 0xea; // PAT09: RIGHT MOST
-
-                case Qt::Key_F12:
-                    return 0x81; // PAT09: LEFT  MOST
-
-                case Qt::Key_Home:
-                    return 0xe1;
-
-                case Qt::Key_Up:
-                    return 0xe8;
-
-                case Qt::Key_PageUp:
-                    return 0xe7;
-
-                case Qt::Key_Left:
-                    return 0xe4;
-
-                case Qt::Key_Clear:
-                    return 0xe5;
-
-                case Qt::Key_Right:
-                    return 0xe6;
-
-                case Qt::Key_End:
-                    return 0xe9;
-
-                case Qt::Key_Down:
-                    return 0xe2;
-
-                case Qt::Key_PageDown:
-                    return 0xe3;
-
-                case Qt::Key_Delete:
-                    return 0x7f;
-
-                case Qt::Key_Backtab:
-                    return 0x09;
             }
             break;
 
@@ -680,45 +748,6 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
 
                 case Qt::Key_F10:
                     return 0xc9;
-
-                case Qt::Key_F11:
-                    return 0xfa; // PAT09: RIGHT MOST
-
-                case Qt::Key_F12:
-                    return 0x91; // PAT09: LEFT  MOST
-
-                case Qt::Key_Home:
-                    return 0xf1;
-
-                case Qt::Key_Up:
-                    return 0xf8;
-
-                case Qt::Key_PageUp:
-                    return 0xf7;
-
-                case Qt::Key_Left:
-                    return 0xf4;
-
-                case Qt::Key_Clear:
-                    return 0xf5;
-
-                case Qt::Key_Right:
-                    return 0xf6;
-
-                case Qt::Key_End:
-                    return 0xf9;
-
-                case Qt::Key_Down:
-                    return 0xf2;
-
-                case Qt::Key_PageDown:
-                    return 0xf3;
-
-                case Qt::Key_Delete:
-                    return 0x7f;
-
-                case Qt::Key_Tab:
-                    return 0x09;
             }
             break;
     }
@@ -729,5 +758,35 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
     }
 
     return -1;
+}
+
+void E2Screen::InitializeNumLockIndicatorMask()
+{
+#ifdef UNIX
+    Display *display = QX11Info::display();
+    XkbDescRec* kbDesc = XkbAllocKeyboard();
+    int index;
+
+    if (kbDesc == nullptr ||
+        (Success != XkbGetNames(display, XkbIndicatorNamesMask, kbDesc)))
+    {
+        return;
+    }
+
+    for (index = 0; index < XkbNumIndicators; ++index)
+    {
+        if (kbDesc->names->indicators[index])
+        {
+           char *name = XGetAtomName(display, kbDesc->names->indicators[index]);
+           if (0 == strcmp(name, "Num Lock"))
+           {
+               numLockIndicatorMask = 1 << index;
+               break;
+           }
+        }
+    }
+
+    XkbFreeKeyboard(kbDesc, 0, True);
+#endif
 }
 
