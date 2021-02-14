@@ -14,6 +14,7 @@ pkgdata_DATA = \
 	flex2um.pdf \
 	flexapg.pdf \
 	flexdos.htm \
+	flexemu.css \
 	flexemu.htm \
 	flexerr.htm \
 	flexfcb.htm \

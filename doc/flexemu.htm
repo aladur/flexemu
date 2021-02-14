@@ -1,5 +1,7 @@
 <html>
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>flexemu - a FLEX emulator with Qt user interface</title>
 </head>
 <body>
@@ -145,8 +147,7 @@ accessed. Montior program <b>neumnt54.hex</b> is NOT needed for this any more.
 </b><dd>
 Define a reset key for terminal mode specified as two hex digits. The
 default is
-<b>1E
-</b>, means <b>Ctrl-^</b>
+<code>1E</code>, means <kbd>Ctrl</kbd>+<kbd>^</kbd>
 </dl>
 <a name="fsetup_options">
 <h3>fsetup</h3>
@@ -263,6 +264,429 @@ frequency can be switched between the maximum possible frequency
 CPU frequency which exactly is 1.3396 MHz. With the command <b>emu freq</b>
 other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
+<a name="keyboard">
+<h2>KEYBOARD</h2>
+<h3>Eurocom PAT09 keyboard</h3>
+The Eurocom II/V7 typically was shipped with a PAT09 keyboard:
+<p>
+<img src="images/pat09_keyboard.png" alt="PAT09 keyboard"
+ title="PAT09 keyboard" width="1024" />
+<p>
+PAT09 can emit the whole ASCII character set (hex code <code>00</code> ..
+<code>7F</code>) together with some additional keys codes
+(hex code &gt; <code>7F</code>). flexemu emulates almost all keys available on
+PAT09 as discribed in the following chapters. Eurocom II/V5 strips off the
+most significant bit from the keyboard input with the concequence of only
+supporting the ASCII character set.
+<h3>Hotkeys</h3>
+The following table shows the hotkeys available in flexemu.
+<p>
+<table border>
+ <tr>
+  <th>Hotkey</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Q</kbd></td>
+  <td>Exit application</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>1</kbd></td>
+  <td>Set default screen size</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>2</kbd></td>
+  <td>Set double screen size</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>3</kbd></td>
+  <td>Set triple screen size</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>4</kbd></td>
+  <td>Set quadruple screen size</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>5</kbd></td>
+  <td>Set quintuple screen size</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>F12</kbd></td>
+  <td>Toggle smooth display</td>
+ </tr>
+ <tr>
+  <td><kbd>Pause</kbd></td>
+  <td>Toggle CPU to stop or run</td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>Pause</kbd></td>
+  <td>Send non maskable interrupt (NMI) to CPU</td>
+ </tr>
+ <tr>
+  <td><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Pause</kbd></td>
+  <td>Reset and run CPU</td>
+ </tr>
+</table>
+<p>
+There is also a hotkey for toggling full screen and window mode. It depends on
+the user interface.
+<p>
+<table border>
+ <tr>
+  <th>User Interface</th>
+  <th>Hotkeys</th>
+ </tr>
+ <tr>
+  <td>Windows</td>
+  <td><kbd>F11</kbd> or <kbd>Alt</kbd>+<kbd>Enter</kbd></td>
+ </tr>
+ <tr>
+  <td>macOS</td>
+  <td><kbd>Ctrl</kbd>+<kbd>Meta</kbd>+<kbd>F</kbd></td>
+ </tr>
+ <tr>
+  <td>KDE</td>
+  <td><kbd>F11</kbd> or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd></td>
+ </tr>
+ <tr>
+  <td>GNOME</td>
+  <td><kbd>Ctrl</kbd>+<kbd>F11</kbd></td>
+ </tr>
+ <tr>
+  <td>Others</td>
+  <td><kbd>F11</kbd></td>
+ </tr>
+</table>
+<h3>Function keys</h3>
+All PAT09 function keys <kbd>F1</kbd> up to <kbd>F19</kbd> are emulated as
+defined in the following table:
+<p>
+<table border>
+ <tr>
+  <th>PAT09 key</th>
+  <th>Mapped key</th>
+  <th>Emitted hex code</th>
+ </tr>
+ <tr>
+  <td><kbd>F1</kbd></td>
+  <td><kbd>F1</kbd></td>
+  <td><code>C0</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F2</kbd></td>
+  <td><kbd>F2</kbd></td>
+  <td><code>C1</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F3</kbd></td>
+  <td><kbd>F3</kbd></td>
+  <td><code>C2</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F4</kbd></td>
+  <td><kbd>F4</kbd></td>
+  <td><code>C3</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F5</kbd></td>
+  <td><kbd>F5</kbd></td>
+  <td><code>C4</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F6</kbd></td>
+  <td><kbd>F6</kbd></td>
+  <td><code>C5</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F7</kbd></td>
+  <td><kbd>F7</kbd></td>
+  <td><code>C6</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F8</kbd></td>
+  <td><kbd>F8</kbd></td>
+  <td><code>C7</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F9</kbd></td>
+  <td><kbd>F9</kbd></td>
+  <td><code>C8</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F10</kbd></td>
+  <td><kbd>F10</kbd></td>
+  <td><code>C9</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F11</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F1</kbd></td>
+  <td><code>CA</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F12</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F2</kbd></td>
+  <td><code>CB</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F13</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F3</kbd></td>
+  <td><code>CC</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F14</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F4</kbd></td>
+  <td><code>CD</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F15</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F5</kbd></td>
+  <td><code>CE</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F16</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F6</kbd></td>
+  <td><code>CF</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F17</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F7</kbd></td>
+  <td><code>D0</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F18</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F8</kbd></td>
+  <td><code>D1</code></td>
+ </tr>
+ <tr>
+  <td><kbd>F19</kbd></td>
+  <td><kbd>Shift</kbd>+<kbd>F9</kbd></td>
+  <td><code>D2</code></td>
+ </tr>
+</table>
+<h4>ASCII control characters</h4>
+All ASCII control characters with hex code <code>00</code> up to
+<code>1F</code> and <code>7F</code> can be entered with flexemu:
+<p>
+<table border>
+ <tr>
+  <th>key combination</th>
+  <th>Control character</th>
+  <th>hex code</th>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Ctrl</kbd>+<kbd>@</kbd> or <kbd>Ctrl</kbd>+<kbd>`</kbd></span>
+   <span id="right">[1]</span>
+  </td>
+  <td><code>NUL</code></td>
+  <td><code>00</code></td>
+ </tr>
+ <tr>
+  <td><kbd>Ctrl</kbd>+<kbd>A</kbd> ... <kbd>Ctrl</kbd>+<kbd>Z</kbd></td>
+  <td><code>SOH</code> ... <code>SUB</code></td>
+  <td><code>01</code> ... <code>1A</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>ESC</kbd> or <kbd>Ctrl</kbd>+<kbd>[</kbd> or <kbd>Ctrl</kbd>+<kbd>{</kbd></span>
+   &nbsp;&nbsp;&nbsp;
+   <span id="right">[1]</span>
+  </td>
+  <td><code>ESC</code></td>
+  <td><code>1B</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Ctrl</kbd>+<kbd>\</kbd> or <kbd>Ctrl</kbd>+<kbd>|</kbd></span>
+   <span id="right">[1]</span>
+  </td>
+  <td><code>FS</code></td>
+  <td><code>1C</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Ctrl</kbd>+<kbd>]</kbd> or <kbd>Ctrl</kbd>+<kbd>}</kbd></span>
+   <span id="right">[1]</span>
+  </td>
+  <td><code>GS</code></td>
+  <td><code>1D</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Ctrl</kbd>+<kbd>^</kbd> or <kbd>Ctrl</kbd>+<kbd>~</kbd></span>
+   <span id="right">[1]</span>
+  </td>
+  <td><code>RS</code></td>
+  <td><code>1E</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Ctrl</kbd>+<kbd>_</kbd> or <kbd>Ctrl</kbd>+<kbd>Delete</kbd></span>
+   <span id="right">[1]</span>
+  </td>
+  <td><code>US</code></td>
+  <td><code>1F</code></td>
+ </tr>
+ <tr>
+  <td>
+   <span id="left"><kbd>Delete</kbd></span>
+   <span id="right">[2]</span>
+  </td>
+  <td><code>DEL</code></td>
+  <td><code>7F</code></td>
+ </tr>
+</table>
+<p>
+[1] Depending on the keyboard layout evtl. also <kbd>Alt Gr</kbd> has to be pressed.
+<p>
+[2] Works only for the <kbd>Delete</kbd> key located on the main keypad.
+<p>
+<h4>Numeric Keypad and Cursor Control</h4>
+On a standarized keyboard a separate numeric keypad can be used for both
+entering numbers (<kbd>Num Lock</kbd> is switched on) or cursor control
+characters (<kbd>Num Lock</kbd> is switched off).
+The Eurocom II
+PAT09 keyboard has both a separate cursor control keypad and numeric keypad:
+<p>
+<table border="0px">
+ <tr>
+  <td>
+    <img src="images/pat09_cursorpad.png" alt="PAT09 cursor pad"
+     title="PAT09 cursor pad" width="138" />
+  </td>
+  <td>
+    <img src="images/pat09_numpad.png" alt="PAT09 numpad"
+     title="PAT09 numpad" width="138" />
+  </td>
+</table>
+<p>
+On flexemu both keypads are emulated using the numeric keypad.
+<p>
+If <kbd>Num Lock</kbd> is switched on all keys of the PAT09 numeric keypad
+are emulated one by one. Depending on the current locale setting the decimal
+point character can be a comma or period. flexemu
+always maps this to a period because it is not locale aware.
+<p>
+If <kbd>Num Lock</kbd> is switched off the cursor control keys of the PAT09
+keyboard are mapped to a standardized keyboard on the numeric keypad.
+The following hex codes can be generated.
+<p>
+<table border>
+ <tr>
+  <th rowspan="2">PAT09 key</th>
+  <th rowspan="2">Mapped key</th>
+  <th colspan="4">Emitted hex code</th>
+ </tr>
+ <tr>
+  <th><kbd>&lt;key&gt;</kbd></th>
+  <th><kbd>Shift</kbd>+<kbd>&lt;key&gt;</kbd></th>
+  <th><kbd>Ctrl</kbd>+<kbd>&lt;key&gt;</kbd></th>
+  <th><kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>&lt;key&gt;</kbd></th>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_thick_left_arrow.png" alt="Thick left arrow" width="48" /></td>
+  <td><kbd>Pos1</td></kbd>
+  <td><code>F1</code></td>
+  <td><code>E1</code></td>
+  <td><code>B1</code></td>
+  <td><code>A1</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_down_arrow.png" alt="Down arrow" width="48" /></td>
+  <td><kbd>&#8595;</kbd></td> <!-- cursor down -->
+  <td><code>F2</code></td>
+  <td><code>E2</code></td>
+  <td><code>B2</code></td>
+  <td><code>A2</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_thick_lower_right_arrow.png" alt="Thick lower right arrow" width="48" /></td>
+  <td><kbd>Page Down</td></kbd>
+  <td><code>F3</code></td>
+  <td><code>E3</code></td>
+  <td><code>B3</code></td>
+  <td><code>A3</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_left_arrow.png" alt="Left arrow" width="48" /></td>
+  <td><kbd>&#8592;</kbd></td> <!-- cursor left -->
+  <td><code>F4</code></td>
+  <td><code>E4</code></td>
+  <td><code>B4</code></td>
+  <td><code>A4</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_mode.png" alt="Mode" width="48" /></td>
+  <td><kbd>Clear</kbd></td>
+  <td><code>F5</code></td>
+  <td><code>E5</code></td>
+  <td><code>B5</code></td>
+  <td><code>A5</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_right_arrow.png" alt="Right arrow" width="48" /></td>
+  <td><kbd>&#8594;</kbd></td> <!-- cursor right -->
+  <td><code>F6</code></td>
+  <td><code>E6</code></td>
+  <td><code>B6</code></td>
+  <td><code>A6</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_thick_upper_left_arrow.png" alt="Thick upper left arrow" width="48" /></td>
+  <td><kbd>Page Up</kbd></td>
+  <td><code>F7</code></td>
+  <td><code>E7</code></td>
+  <td><code>B7</code></td>
+  <td><code>A7</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_up_arrow.png" alt="Up arrow" width="48" /></td>
+  <td><kbd>&#8593;</kbd></td> <!-- cursor up -->
+  <td><code>F8</code></td>
+  <td><code>E8</code></td>
+  <td><code>B8</code></td>
+  <td><code>A8</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_thick_right_arrow.png" alt="Thick right arrow" width="48" /></td>
+  <td><kbd>End</kbd></td>
+  <td><code>F9</code></td>
+  <td><code>E9</code></td>
+  <td><code>B9</code></td>
+  <td><code>A9</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_left_limit.png" alt="Left limit" width="64" /></td>
+  <td>
+   <span id="left"><kbd>Insert</kbd></span>
+   &nbsp;&nbsp;&nbsp;
+   <span id="right">[1]</span>
+  </td>
+  <td><code>FA</code></td>
+  <td><code>EA</code></td>
+  <td><code>FA</code></td>
+  <td><code>EA</code></td>
+ </tr>
+ <tr>
+  <td><img src="images/pat09_key_right_limit.png" alt="Right limit" width="64" /></td>
+  <td>
+   <span id="left"><kbd>Delete</kbd></span>
+   <span id="right">[2]</span>
+  </td>
+  <td><code>91</code></td>
+  <td><code>81</code></td>
+  <td><code>91</code></td>
+  <td><code>81</code></td>
+ </tr>
+</table>
+<p>
+[1] The <kbd>Insert</kbd> key located on the main keypad doess not emit
+any hex code.
+<p>
+[2] The <kbd>Delete</kbd> key located on the main keypad emits hex code
+<code>7F</code>,
+<kbd>Ctrl</kbd>+<kbd>Delete</kbd> key emits key code <code>1F</code>.
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexuser.htm"> FLEX Users Manual</a>
