@@ -245,10 +245,16 @@ int ApplicationRunner::startup()
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
 
-    fdc.disk_directory(options.disk_dir.c_str());
-    fdc.mount_all_drives(options.drive);
-    pia2v5.disk_directory(options.disk_dir.c_str());
-    pia2v5.mount_all_drives(options.mdcrDrives);
+    if (options.isEurocom2V5)
+    {
+        pia2v5.disk_directory(options.disk_dir.c_str());
+        pia2v5.mount_all_drives(options.mdcrDrives);
+    }
+    else
+    {
+        fdc.disk_directory(options.disk_dir.c_str());
+        fdc.mount_all_drives(options.drive);
+    }
 
     terminalIO.init(options.reset_key);
     inout.set_gui(&gui);
