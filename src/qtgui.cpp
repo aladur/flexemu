@@ -182,7 +182,12 @@ QtGui::~QtGui()
 
 void QtGui::SetFloppy(E2floppy *x_fdc)
 {
-    fdc = x_fdc; // Only Eurocom II/V7 has a floppy controller.
+    if (fdc == nullptr && x_fdc != nullptr)
+    {
+        fdc = x_fdc; // Only Eurocom II/V7 has a floppy controller.
+
+        AddDiskStatusButtons();
+    }
 }
 
 bool QtGui::HasFloppy() const
@@ -880,20 +885,29 @@ void QtGui::CreateStatusToolBar(QLayout &layout)
         CreateToolBar(this, tr("Status"), QStringLiteral("statusToolBar"));
     layout.addWidget(statusToolBar);
 
-    for (Word i = 0; i < 4; ++i)
-    {
-        diskStatusAction[i] =
-            statusToolBar->addAction(iconNoFloppy, tr("Disk #%1").arg(i));
-        connect(diskStatusAction[i], &QAction::triggered,
-            this, [this, i=i]() { OnDiskStatus(i); });
-        diskStatusAction[i]->setStatusTip(tr("Open disk #%1 status").arg(i));
-    }
-
     auto text = tr("Interrupts");
     interruptStatusAction = statusToolBar->addAction(iconInterrupt, text);
     connect(interruptStatusAction, &QAction::triggered,
         this, [this]() { OnCpuInterruptStatus(); });
     interruptStatusAction->setStatusTip(tr("Open interrupt status"));
+}
+
+void QtGui::AddDiskStatusButtons()
+{
+    if (HasFloppy())
+    {
+        assert(statusToolBar != nullptr);
+
+        for (Word i = 0; i < 4; ++i)
+        {
+            diskStatusAction[i] =
+                statusToolBar->addAction(iconNoFloppy, tr("Disk #%1").arg(i));
+            connect(diskStatusAction[i], &QAction::triggered,
+                this, [this, i=i]() { OnDiskStatus(i); });
+            auto statusTip = tr("Open disk #%1 status").arg(i);
+            diskStatusAction[i]->setStatusTip(statusTip);
+        }
+    }
 }
 
 QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint index)
@@ -973,7 +987,7 @@ void QtGui::OnCpuInterruptStatus()
     auto *dialog = new QDialog(this);
     Ui::Properties ui;
     tInterruptStatus status;
-    
+
     scheduler.get_interrupt_status(status);
 
     ui.setupUi(dialog);
@@ -1018,7 +1032,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
         auto *dialog = new QDialog(this);
         Ui::Properties ui;
         int row = 0;
-        
+
         ui.setupUi(dialog);
         ui.SetDriveInfo(driveNumber, info);
 

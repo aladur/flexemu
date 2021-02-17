@@ -155,6 +155,7 @@ private:
     QAction *CreateIconSizeAction(QMenu &menu, uint index);
     void CreateStatusToolBar(QLayout &layout);
     void CreateStatusBar(QLayout &layout);
+    void AddDiskStatusButtons();
     void ConnectCpuUiSignalsWithSlots();
     void SetStatusMessage(const QString &message) const;
     bool IsClosingConfirmed();
