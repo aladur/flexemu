@@ -55,7 +55,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         }
 
         std::string question(dsk_file);
-            
+
         question += " already exists. Overwrite?";
         if (AskForInput(question, "yn", default_answer))
         {
@@ -136,14 +136,14 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     for (iter = src.begin(); iter != src.end(); ++iter)
     {
         const auto &dir_entry = *iter;
-        
+
         try
         {
             src.FileCopy(dir_entry.GetTotalFileName().c_str(),
                          dir_entry.GetTotalFileName().c_str(), dest);
 
             ++count;
-            byte_size += dir_entry.GetSize();
+            byte_size += dir_entry.GetFileSize();
             random_count += dir_entry.IsRandom() ? 1 : 0;
         }
         catch (FlexException &ex)
@@ -268,8 +268,8 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
         ++number;
         dir_entry.GetStartTrkSec(startTrack, startSector);
         dir_entry.GetEndTrkSec(endTrack, endSector);
-         
-        int sectors = static_cast<int>(dir_entry.GetSize() / SECTOR_SIZE);
+
+        int sectors = static_cast<int>(dir_entry.GetFileSize() / SECTOR_SIZE);
         sumSectors += sectors;
         if (sectors > largest)
         {
@@ -452,7 +452,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
             if (dst.FindFile(fileBuffer.GetFilename(), dir_entry))
             {
                 std::string question(fileBuffer.GetFilename());
-                
+
                 question += " already exists. Overwrite?";
                 if (AskForInput(question, "yn", default_answer))
                 {
@@ -510,7 +510,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
             if (src.FindFile(flex_file.c_str(), dir_entry))
             {
                 std::stringstream question;
-                
+
                 question << "Delete " << flex_file << "?";
                 if (AskForInput(question.str(), "yn", default_answer))
                 {
@@ -724,7 +724,7 @@ bool estimateDiskFormat(const char *format, int &disk_format)
 void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
 {
     std::string extension;
-  
+
     if (!dsk_file.empty())
     { 
         extension = getFileExtension(dsk_file);

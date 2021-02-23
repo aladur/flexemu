@@ -157,7 +157,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             attributes |= WRITE_PROTECT;
         }
 
-        dirEntry.SetSize((findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE);
+        auto fileSize = (findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE;
+        dirEntry.SetFileSize(fileSize);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
         dirEntry.SetDate(systemTime.wDay, systemTime.wMonth,
                          systemTime.wYear);
@@ -229,7 +230,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
 
         dirEntry.SetTotalFileName(findData->d_name);
-        dirEntry.SetSize((sbuf.st_size + 251) / 252 * SECTOR_SIZE);
+        dirEntry.SetFileSize((sbuf.st_size + 251) / 252 * SECTOR_SIZE);
         lt = localtime(&(sbuf.st_mtime));
         dirEntry.SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
         dirEntry.SetAttributes(attributes);

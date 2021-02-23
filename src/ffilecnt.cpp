@@ -709,7 +709,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
     de.SetTotalFileName(pFileName);
-    de.SetSize(recordNr * SECTOR_SIZE);
+    de.SetFileSize(recordNr * SECTOR_SIZE);
     de.SetAttributes(buffer.GetAttributes());
     de.SetSectorMap(buffer.GetSectorMap());
     CreateDirEntry(de);
@@ -740,7 +740,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     buffer.SetSectorMap(de.GetSectorMap());
     buffer.SetFilename(fileName);
     buffer.SetDate(de.GetDate());
-    size = de.GetSize();
+    size = de.GetFileSize();
 
     if (size < 0)
     {
@@ -849,7 +849,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {
-                int records = entry.GetSize() / param.byte_p_sector;
+                int records = entry.GetFileSize() / param.byte_p_sector;
                 memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
                 strncpy(pde->filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);

@@ -131,7 +131,7 @@ QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
     setData(index(row, column++), fileType, role);
     QString random(dirEntry.IsRandom() ? "Yes" : "");
     setData(index(row, column++), random, role);
-    auto filesize = dirEntry.GetSize();
+    auto filesize = dirEntry.GetFileSize();
     setData(index(row, column++), filesize, role);
     const auto &date = dirEntry.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());

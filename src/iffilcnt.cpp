@@ -110,7 +110,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
                 dirEntry.SetSectorMap(pd->sector_map);
                 dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);
                 dirEntry.SetEndTrkSec(pd->end.trk, pd->end.sec);
-                dirEntry.SetSize(
+                dirEntry.SetFileSize(
                     getValueBigEndian<Word>(&pd->records[0]) * base->GetBytesPerSector());
                 dirEntry.SetSectorMap(pd->sector_map);
                 dirEntry.ClearEmpty();

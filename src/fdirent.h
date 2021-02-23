@@ -83,8 +83,8 @@ public:
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;
     std::string GetFileExt() const;
-    void    SetSize(int size);
-    int     GetSize() const;
+    void    SetFileSize(int size);
+    int     GetFileSize() const;
     void SetAttributes(Byte attributes);
     void SetAttributes(Byte setMask, Byte clearMask);
     Byte GetAttributes() const;
@@ -100,11 +100,11 @@ private:
     void CopyFrom(const FlexDirEntry &src);
 };  // class FlexDirEntry
 
-inline void FlexDirEntry::SetSize(int s)
+inline void FlexDirEntry::SetFileSize(int s)
 {
     size = s;
 }
-inline int FlexDirEntry::GetSize() const
+inline int FlexDirEntry::GetFileSize() const
 {
     return size;
 }
