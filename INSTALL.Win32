@@ -1,65 +1,41 @@
 ********************************
-* compiling flexemu on Win32   *
+* Compiling flexemu on Windows *
 ********************************
 
-To compile flexemu on Windows95/98/NT/2000 You need MSVC V5.0 or V6.0.
-Alternatively you need a Cygwin installation.
+Compiling flexemu needs:
 
-Compile with MSVC:
+- Microsoft Windows 8, 8.1 or Windows 10
+- Microsoft Visual Studio 2019. (community edition is fine)
+- Git for Windows, https://git-scm.com/download/win
+- curl, https://curl.haxx.se/download.html
+- flexemu sources, https://github.com/aladur/flexemu
 
-	- there is already a project workspace flexemu.dsw defined
-	  together with three projects flexemu.dsp, flexdisk.dsp and
-	  fsetup.dsp. Simply recompile them.
+Creating an installer needs:
 
-Compile with Cygwin (experimental):
+- NSIS installer, http://nsis.sourceforge.net/Download
 
-	- get Cygwin from http://sourceware.cygnus.com
-	- Just use the configure script like on Linux
-	- Only flexemu can be compiled with cygwin
+To build the Qt libraries from the sources additional tools have to
+be installed. This is documented in the file download_and_rebuild_libs_qt5.sh
 
-remarks:
+To build flexemu and create an installer executable the following
+scripts are available in the sub directory build\windows. They can
+be executed from the git-bash:
 
-	- To compile flexplorer or fsetup you first have to install
-	  wxWidgets for Win32 and compile static or shared libs.
-	  (http://www.wxWidgets.org/)
-	- The file confignt.h contains some defines to control some
-	  special features
-	- If You don't want the disassembler to substitute some FLEX jump
-	  vectors to print as labels delete -DFLEX_LABEL switch
-	- There are two MC6809 processor implementations. One of them is
-	  about 20% slower but a very well structured implementation. Each
-	  instruction is executed in it's own function. So it can easily be
-	  debugged with gdb. The processor cycles are exactly calculated.
-	  The second is faster, the complete processor is emulated in one
-	  inline-function. The processor cycles are only aproximated
-	  (4.8 cycles for each instruction). The faster processor can
-	  be compiled with option -DFASTFLEX.
+- download_and_rebuild_libs_qt5.sh
+- rebuild_flexemu_all_and_copy_libs.sh
+- create_installer.sh
 
-***********************
-* install flexemu     *
-***********************
+download_and_rebuild_libs_qt5.sh needs to know the Qt version to build:
+>  download_and_rebuild_libs_qt5.sh -v 5.minor.patch
+Newer Qt5 versions are recommended, with Qt5.15.2 everything works fine.
 
-	- Simply use the flexemu binary distribution. It is provided as
-	  a self extracting tar-gzip file, which extracts to an installation
-	  directory. Install flexemu, FLEXplorer and FSetup simply by executing
-	  setup.exe.
+******************************
+* Install flexemu on Windows *
+******************************
 
-***********************
-* help, Documentation *
-***********************
+Simply use the flexemu Windows installer. It can be downloaded
+from the flexemu homepage https://flexemu.neocities.org/. The download is
+provided as a ZIP file, which contains the installer executable
+Flexemu-Setup-X.YY.exe.
 
-There are some html-pages for flexemu:
-
-flexemu.htm	general description, command line options
-flexuser.htm	the FLEX users manual
-flexutil.htm	some FLEX utilities
-flexdos.htm	description of the FLEX disk operating system
-flexfms.htm	description of the FLEX file management system
-flexfs.htm	'filesystems' supported by flexemu
-flexerr.htm	description of the FLEX error messages
-flexfcb.htm	description of a FLEX file control block
-flexmem.htm	the FLEX memory map
-neumon54.htm	Default Flexemu monitor program
-
-FLEXplorer is self explaining (I hope so)
 
