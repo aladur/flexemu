@@ -35,8 +35,10 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QApplication>
+#ifdef UNIX
 #include <QX11Info>
 #include <X11/XKBlib.h>
+#endif
 
 class JoystickIO;
 
