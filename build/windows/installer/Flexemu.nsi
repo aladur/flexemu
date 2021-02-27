@@ -270,6 +270,20 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\images\2x384k.png"
   File /a "${BASEDIR}\doc\images\2x384flx.png"
   File /a "${BASEDIR}\doc\images\e2scn.png"
+  File /a "${BASEDIR}\doc\images\pat09_cursorpad.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_down_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_left_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_left_limit.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_mode.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_right_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_right_limit.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_thick_left_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_thick_lower_right_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_thick_right_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_thick_upper_left_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_key_up_arrow.png"
+  File /a "${BASEDIR}\doc\images\pat09_keyboard.png"
+  File /a "${BASEDIR}\doc\images\pat09_numpad.png"
 
 SectionEnd   
 
