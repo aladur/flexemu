@@ -596,3 +596,8 @@ Code Maintenance:
 	o Support c++14 standard
 	o configure option --disable-post-install to supress post installation
 	  steps
+
+V3.01 (not yet published)
+New Features:
+Bug Fixes:
+Code Maintenance:

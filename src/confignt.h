@@ -147,7 +147,7 @@
 #define PACKAGE_NAME "Flexemu"
 
 /* Version number of package */
-#define VERSION "3.00"
+#define VERSION "3.01"
 
 #endif /* CONFIG_INCLUDED */
 
