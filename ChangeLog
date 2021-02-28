@@ -564,10 +564,35 @@ Code Maintenance:
 	o FileContainerIterator: Throw exception on misuse
 	o FlexDirEntry: Improve const correctness
 
-V3.00 (not yet published)
+V3.00 (20210228)
 New Features:
 	o New Qt user interface (replaces X11/Xt and Windows GDI user
 	  interface)
-Bug Fixes:
-Code Maintenance:
+	o FLEXplorer: Full multi document support on Linux (thanks to Qt)
+	o FLEXplorer: Inplace editor for filename and attributes
+	o FLEXplorer: Confirmation to continue (Yes/No) when opening multiple
+	  container files at once fails
+	o FLEXplorer: Attributes dialog for displaying and modifying attributes
+	  for one or multiple files
+	o FLEXplorer: Windows menu for easy MDI window navigation
+	o FLEXplorer: Window background has a bitmap
+	o Most used menu items also available in toolbar
+	o Detailed status messages in status bar
+	o Linux: Add desktop files to System category (was in Games)
+	o Add mime types for *.dsk, *.flx and *.wta files
+	o flexemu:Toggle smooth screen
+	o flexemu: When resizing always keep emulated screen aspect ratio
+	o flexemu: Add keyboard documentation
 
+Bug Fixes:
+	o FileContainerIterator: Avoid potential dangling pointer
+	o dsktool: Automatic text file con. one space is converted to $09 $01,
+	  should be $20
+	o Only open files needed for current config (Eurocom II/V5 or V7)
+	o Only add floppy disk status buttons for Eurocom II/V7
+	o autotools: Add missing build dependencies
+
+Code Maintenance:
+	o Support c++14 standard
+	o configure option --disable-post-install to supress post installation
+	  steps
