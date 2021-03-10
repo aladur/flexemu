@@ -99,13 +99,10 @@ QtGui::QtGui(
              , x_terminalIO)
         , e2screen(nullptr)
         , isOriginalFrequency(false)
-        , isInverse(x_guiOptions.isInverse)
         , isStatusBarVisible(true)
         , isRunning(true)
         , isConfirmClose(true)
         , timerTicks(0)
-        , color(x_guiOptions.color)
-        , nColors(x_guiOptions.nColors)
         , oldFirstRasterLine(0)
         , scheduler(x_scheduler)
         , vico1(x_vico1)
@@ -1454,7 +1451,7 @@ ColorTable QtGui::CreateColorTable()
 {
     using fn = std::function<QRgb(int)>;
 
-    bool isWithColorScale = !stricmp(color.c_str(), "default");
+    bool isWithColorScale = !stricmp(guiOptions.color.c_str(), "default");
     Word redBase = 255;
     Word greenBase = 255;
     Word blueBase = 255;
@@ -1462,7 +1459,8 @@ ColorTable QtGui::CreateColorTable()
 
     if (!isWithColorScale)
     {
-        getRGBForName(color.c_str(), &redBase, &greenBase, &blueBase);
+        getRGBForName(guiOptions.color.c_str(),
+                      &redBase, &greenBase, &blueBase);
     }
 
     fn GetColor = [&](int index) -> QRgb
@@ -1507,7 +1505,7 @@ ColorTable QtGui::CreateColorTable()
 
     for (int i = 0; i < colorTable.size(); ++i)
     {
-        int idx = isInverse ? colorTable.size() - i - 1 : i;
+        int idx = guiOptions.isInverse ? colorTable.size() - i - 1 : i;
         colorTable[idx] = GetTheColor(i);
     }
 
@@ -1592,7 +1590,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     Byte pixels[6]; /* One byte of video RAM for each plane */
     // Default color index: If no video source is available use highest
     // available color
-    Byte colorIndex = isInverse ? 0x00U : 0x3FU;
+    Byte colorIndex = guiOptions.isInverse ? 0x00U : 0x3FU;
 
     memset(pixels, '\0', sizeof(pixels));
 
@@ -1607,12 +1605,12 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
 
             pixels[0] = videoRam[0];
 
-            if (nColors > 2)
+            if (guiOptions.nColors > 2)
             {
                 pixels[2] = videoRam[VIDEORAM_SIZE];
                 pixels[4] = videoRam[VIDEORAM_SIZE * 2];
 
-                if (nColors > 8)
+                if (guiOptions.nColors > 8)
                 {
                     pixels[1] = videoRam[VIDEORAM_SIZE * 3];
                     pixels[3] = videoRam[VIDEORAM_SIZE * 4];
@@ -1632,7 +1630,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
                     colorIndex |= GREEN_HIGH;    // 0x0C, green high
                 }
 
-                if (nColors > 8)
+                if (guiOptions.nColors > 8)
                 {
                     if (pixels[2] & pixelBitMask)
                     {

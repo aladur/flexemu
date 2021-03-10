@@ -249,13 +249,10 @@ private:
     QByteArray dataBuffer;
 
     bool isOriginalFrequency;
-    bool isInverse;
     bool isStatusBarVisible;
     bool isRunning;
     bool isConfirmClose;
     int timerTicks;
-    std::string color;
-    int nColors;
     Byte oldFirstRasterLine;
     s_cpu_logfile logfileSettings;
 
