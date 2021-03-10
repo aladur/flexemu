@@ -42,6 +42,7 @@
 #include "logfilui.h"
 #include "propsui.h"
 #include "fcinfo.h"
+#include "sguiopts.h"
 #include <QString>
 #include <QVector>
 #include <QPixmap>
