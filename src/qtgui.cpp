@@ -556,18 +556,16 @@ void QtGui::OnTimer()
             isRepaintScreen = true;
             oldFirstRasterLine = firstRasterLine;
         }
-        else
-        {
-            short display_block;
 
-            // update graphic display (only if display memory has changed)
-            for (display_block = 0; display_block < YBLOCKS; display_block++)
+        short display_block;
+
+        // update graphic display (only if display memory has changed)
+        for (display_block = 0; display_block < YBLOCKS; display_block++)
+        {
+            if (memory.has_changed(display_block))
             {
-                if (memory.has_changed(display_block))
-                {
-                    update_block(display_block);
-                    isRepaintScreen = true;
-                }
+                update_block(display_block);
+                isRepaintScreen = true;
             }
         }
 
