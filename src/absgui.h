@@ -30,7 +30,6 @@
 
 #include "e2.h"
 #include "flexemu.h"
-#include "sguiopts.h"
 #include "cpustate.h"
 #include <string>
 #include <memory>
@@ -55,7 +54,6 @@ protected:
     Memory &memory; // Reference to memory (incl. video memory access)
     Inout &inout; // Reference to IO-class handling input/output
     TerminalIO &terminalIO; // Reference to terminal data provider.
-    struct sGuiOptions &options;
     char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
     int cpu_line_size;
     const char *cpu_line_delim;
@@ -77,8 +75,7 @@ public:
         Mc6809 &x_cpu,
         Memory &x_memory,
         Inout &x_inout,
-        TerminalIO &x_terminalIO,
-        struct sGuiOptions &options);
+        TerminalIO &x_terminalIO);
     virtual ~AbstractGui();
 };
 

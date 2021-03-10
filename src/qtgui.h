@@ -267,6 +267,7 @@ private:
     JoystickIO &joystickIO;
     KeyboardIO &keyboardIO;
     E2floppy *fdc;
+    sGuiOptions &guiOptions;
 };
 #endif
 

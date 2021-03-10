@@ -96,8 +96,7 @@ QtGui::QtGui(
                x_cpu
              , x_memory
              , x_inout
-             , x_terminalIO
-             , x_guiOptions)
+             , x_terminalIO)
         , e2screen(nullptr)
         , isOriginalFrequency(false)
         , isInverse(x_guiOptions.isInverse)
@@ -114,6 +113,7 @@ QtGui::QtGui(
         , joystickIO(x_joystickIO)
         , keyboardIO(x_keyboardIO)
         , fdc(nullptr)
+        , guiOptions(x_guiOptions)
 {
     logfileSettings.reset();
 
@@ -409,7 +409,7 @@ void QtGui::OnCpuUndocumentedInstructions()
 
 void QtGui::OnIntroduction()
 {
-    QString documentationDir = options.doc_dir.c_str();
+    QString documentationDir = guiOptions.doc_dir.c_str();
     auto url = CreateDocumentationUrl(documentationDir, "flexemu.htm");
 
     QDesktopServices::openUrl(url);

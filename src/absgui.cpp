@@ -198,13 +198,11 @@ AbstractGui::AbstractGui(
     Mc6809 &x_cpu,
     Memory &x_memory,
     Inout &x_inout,
-    TerminalIO &x_terminalIO,
-    struct sGuiOptions &x_options)
+    TerminalIO &x_terminalIO)
         : cpu(x_cpu)
         , memory(x_memory)
         , inout(x_inout)
         , terminalIO(x_terminalIO)
-        , options(x_options)
         , cpu_line_size(CPU_LINE_SIZE)
         , cpu_line_delim("\n")
 {
