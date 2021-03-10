@@ -31,6 +31,7 @@ TerminalIO *TerminalIO::instance = nullptr;
 #ifdef HAVE_TERMIOS_H
     struct termios TerminalIO::save_termios;
     bool   TerminalIO::used_serial_io = false;
+    bool TerminalIO::is_termios_saved = false;
 #endif
 
 TerminalIO::TerminalIO(Scheduler &x_scheduler) :
@@ -85,7 +86,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
 
     if (isatty(fileno(stdin)))
     {
-        if (tcgetattr(fileno(stdin), &save_termios) < 0)
+        if (tcgetattr(fileno(stdin), &buf) < 0)
         {
             fprintf(stderr, "unable to initialize terminal\n");
 
@@ -93,7 +94,10 @@ void TerminalIO::init_terminal_io(Word reset_key)
         }
         else
         {
-            buf = save_termios;
+            if (!is_termios_saved)
+            {
+                save_termios = buf;
+            }
 
             // c_lflag:
             mask = 0
@@ -197,7 +201,11 @@ void TerminalIO::init_terminal_io(Word reset_key)
         // because the X11 interface under some error
         // condition like missing DISPLAY variable or
         // X11 protocol error aborts with exit()
-        atexit(reset_terminal_io);
+        if (!is_termios_saved)
+        {
+            atexit(reset_terminal_io);
+            is_termios_saved = true;
+        }
     }
 }
 #else

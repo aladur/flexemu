@@ -50,6 +50,7 @@ private:
 #ifdef HAVE_TERMIOS_H
     static bool used_serial_io;
     static struct termios save_termios;
+    static bool is_termios_saved;
 #endif
     Word init_delay;
 
