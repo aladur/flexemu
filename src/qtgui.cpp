@@ -1557,7 +1557,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
 
     const auto size = static_cast<int>(sizeof(sRGBQUAD)) *
                       colTable.size();
-    const auto hash = qHashRangeCommutative(colTable.begin(), colTable.end());
+    const auto hash = qHashRange(colTable.begin(), colTable.end());
     if (colorTablesCache.contains(hash))
     {
         memcpy(pData, colorTablesCache.value(hash).data(), size);
