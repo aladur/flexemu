@@ -280,6 +280,7 @@ flexemu_SOURCES = \
 	cacttrns.h \
 	clogfile.h \
 	command.h \
+	config.h \
 	cpustate.h \
 	crc.h \
 	csetfreq.h \
@@ -496,6 +497,7 @@ dsktool_SOURCES = \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
+	config.h \
 	cvtwchar.h \
 	dircont.h \
 	fcinfo.h \
@@ -548,6 +550,7 @@ test_SOURCES = \
 	btime.h \
 	clogfile.h \
 	command.h \
+	config.h \
 	cpustate.h \
 	csetfreq.h \
 	da6809.h \
