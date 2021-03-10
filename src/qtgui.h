@@ -38,7 +38,6 @@
 #include <QString>
 #include <QByteArray>
 #include <QMap>
-#include "btime.h"
 
 #define SCREEN_SIZES (5)
 #define ICON_SIZES (3)
@@ -259,7 +258,6 @@ private:
     int nColors;
     Byte oldFirstRasterLine;
     s_cpu_logfile logfileSettings;
-    BTime time;
 
     Scheduler &scheduler;
     VideoControl1 &vico1;

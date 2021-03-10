@@ -121,7 +121,6 @@ QtGui::QtGui(
 
     colorTable = CreateColorTable();
 
-    time.ResetRelativeTime();
     mainLayout = new QVBoxLayout(this);
     mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -1188,7 +1187,6 @@ void QtGui::update_block(int blockNumber)
         src = memory.get_video_ram(video_bank, blockNumber);
     }
 
-    time.ResetRelativeTime();
     CopyToBMPArray(BLOCKHEIGHT, dataBuffer, src, colorTable);
     e2screen->UpdateBlock(vico2.get_value(), blockNumber, dataBuffer);
 }
