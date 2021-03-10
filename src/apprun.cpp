@@ -41,6 +41,7 @@
 #include "fileread.h"
 #include "fcnffile.h"
 #include "iodevdbg.h"
+#include "soptions.h"
 #include "sguiopts.h"
 #include "qtgui.h"
 

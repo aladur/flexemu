@@ -1,5 +1,5 @@
 /*
-    memory.h
+    memory.cpp
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -27,6 +27,7 @@
 #include "memory.h"
 #include "bfileptr.h"
 #include "fcnffile.h"
+#include "soptions.h"
 
 Byte Memory::initial_content[8] =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };

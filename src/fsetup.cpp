@@ -25,6 +25,7 @@
 #include "foptman.h"
 #include "fsetup_ui.h"
 #include "fsetupui.h"
+#include "soptions.h"
 #include "sguiopts.h"
 #include <vector>
 #include <memory>

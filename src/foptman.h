@@ -26,6 +26,9 @@
 #include "misc1.h"
 #include <stdio.h>
 
+struct sOptions;
+struct sGuiOptions;
+
 class FlexOptionManager
 {
 public:

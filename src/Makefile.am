@@ -178,6 +178,7 @@ fsetup_SOURCES = \
 	fsetupui.h \
 	misc1.h \
 	sguiopts.h \
+	soptions.h \
 	typedefs.h \
 	warnoff.h \
 	warnon.h \
@@ -338,6 +339,7 @@ flexemu_SOURCES = \
 	schedule.h \
 	scpulog.h \
 	sguiopts.h \
+	soptions.h \
 	sprinter.h \
 	terminal.h \
 	tsl/robin_growth_policy.h \

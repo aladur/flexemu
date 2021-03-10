@@ -28,6 +28,7 @@
 #include "mc146818.h"
 #include "absgui.h"
 #include "memory.h"
+#include "soptions.h"
 
 
 Inout::Inout(const struct sOptions &x_options, Memory &x_memory) :

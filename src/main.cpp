@@ -30,6 +30,7 @@
 #include "foptman.h"
 #include "flexerr.h"
 #include "apprun.h"
+#include "soptions.h"
 #include "sguiopts.h"
 #include "winctxt.h"
 #include "winmain.h"

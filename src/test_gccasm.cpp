@@ -4,6 +4,7 @@
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "memory.h"
+#include "soptions.h"
 #include "test_gccasm.h"
 
 

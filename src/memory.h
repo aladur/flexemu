@@ -43,6 +43,7 @@
 
 #define MAX_VRAM        (4 * 16)
 
+struct sOptions;
 
 class Memory : public MemoryTarget<size_t>, public BObserver
 {

@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include "e2.h"
+#include "soptions.h"
 #include "sguiopts.h"
 #include <string>
 #include <memory>

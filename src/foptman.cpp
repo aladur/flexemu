@@ -28,6 +28,7 @@
 
 #include "e2.h"
 #include "flexemu.h"
+#include "soptions.h"
 #include "sguiopts.h"
 #include "foptman.h"
 #include "bregistr.h"

@@ -35,6 +35,7 @@
 class Memory;
 class Mc146818;
 class AbstractGui;
+struct sOptions;
 
 class Inout : public BObserver
 {
