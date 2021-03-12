@@ -31,7 +31,6 @@
 #include "flexerr.h"
 #include "apprun.h"
 #include "soptions.h"
-#include "sguiopts.h"
 #include "winctxt.h"
 #include "winmain.h"
 #include <QApplication>
@@ -69,7 +68,6 @@ void std_new_handler()
 int main(int argc, char *argv[])
 {
     struct sOptions options;
-    struct sGuiOptions guiOptions;
     FlexOptionManager optionMan;
     int return_code = 0;
 
@@ -79,18 +77,18 @@ int main(int argc, char *argv[])
     std::set_new_handler(std_new_handler);
 #endif
 
-    optionMan.InitOptions(guiOptions, options, argc, argv);
-    optionMan.GetOptions(guiOptions, options);
-    optionMan.GetEnvironmentOptions(guiOptions, options);
-    optionMan.GetCommandlineOptions(guiOptions, options, argc, argv);
+    optionMan.InitOptions(options);
+    optionMan.GetOptions(options);
+    optionMan.GetEnvironmentOptions(options);
+    optionMan.GetCommandlineOptions(options, argc, argv);
     // write options but only if options file not already exists
-    optionMan.WriteOptions(guiOptions, options, true);
+    optionMan.WriteOptions(options, true);
 
     try
     {
         Q_INIT_RESOURCE(flexemu_qrc_cpp);
         QApplication app(argc, argv);
-        ApplicationRunner runner(guiOptions, options);
+        ApplicationRunner runner(options);
 
         if (!(return_code = runner.startup()))
         {

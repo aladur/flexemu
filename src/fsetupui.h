@@ -37,7 +37,6 @@
 
 
 class QLineEdit;
-struct sGuiOptions;
 struct sOptions;
 
 class FlexemuOptionsUi : public QObject, protected Ui_FlexemuSetup
@@ -49,10 +48,8 @@ public:
     FlexemuOptionsUi();
     virtual ~FlexemuOptionsUi();
     void setupUi(QDialog *dialog);
-    void TransferDataToDialog(
-            const sGuiOptions &guiOptions,
-            const sOptions &options);
-    void TransferDataFromDialog(sGuiOptions &guiOptions, sOptions &options);
+    void TransferDataToDialog(const sOptions &options);
+    void TransferDataFromDialog(sOptions &options);
 
 private slots:
     void OnFrequencyOriginal(bool value);

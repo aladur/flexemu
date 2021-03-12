@@ -51,7 +51,7 @@
 #include <map>
 #include <thread>
 
-struct sGuiOptions;
+
 struct sOptions;
 
 class ApplicationRunner
@@ -59,9 +59,7 @@ class ApplicationRunner
 public:
     ApplicationRunner() = delete;
     ~ApplicationRunner();
-    ApplicationRunner(
-            struct sGuiOptions &x_guiOptions,
-            struct sOptions &x_options);
+    ApplicationRunner(struct sOptions &x_options);
 
     int startup();
     void cleanup();
@@ -70,7 +68,6 @@ private:
     void AddIoDevicesToMemory();
     bool LoadMonitorFileIntoRom();
 
-    struct sGuiOptions &guiOptions;
     struct sOptions &options;
     Memory memory;
     Mc6809 cpu;

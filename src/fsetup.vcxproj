@@ -205,7 +205,6 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <ClInclude Include="misc1.h" />
-    <ClInclude Include="sguiopts.h" />
     <ClInclude Include="soptions.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="warnoff.h" />

@@ -101,7 +101,7 @@ public:
         KeyboardIO &,
         TerminalIO &,
         Pia1 &,
-        struct sGuiOptions &);
+        struct sOptions &);
     virtual ~QtGui();
 
     void SetFloppy(E2floppy *fdc);
@@ -262,7 +262,7 @@ private:
     JoystickIO &joystickIO;
     KeyboardIO &keyboardIO;
     E2floppy *fdc;
-    sGuiOptions &guiOptions;
+    sOptions &options;
 };
 #endif
 

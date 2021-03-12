@@ -28,6 +28,8 @@
 #include <string>
 #include <array>
 
+// Maximum size of one emulated pixel on screen
+#define MAX_PIXELSIZE (5)
 
 struct sOptions
 {
@@ -47,6 +49,15 @@ struct sOptions
     bool term_mode;
     short int reset_key; // must be short int because of sscanf !!!
     float frequency;
+
+    // User interface options
+    std::string color; // color name or "default" for multi color palette.
+    std::string doc_dir; // Directory containing html documenation.
+    int nColors; // Number of colors or gray scale values { 2, 8, 64 }.
+    bool isInverse; // Display inverse colors or gray scale values.
+    int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
+                   // It depends on the screen dimensions on which flexemu
+                   // is executed.
 };
 
 #endif

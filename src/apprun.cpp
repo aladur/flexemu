@@ -42,14 +42,10 @@
 #include "fcnffile.h"
 #include "iodevdbg.h"
 #include "soptions.h"
-#include "sguiopts.h"
 #include "qtgui.h"
 
 
-ApplicationRunner::ApplicationRunner(
-                    struct sGuiOptions &x_guiOptions,
-                    struct sOptions &x_options) :
-    guiOptions(x_guiOptions),
+ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     options(x_options),
     memory(options),
     cpu(memory),
@@ -67,7 +63,7 @@ ApplicationRunner::ApplicationRunner(
     vico1(),
     vico2(),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
-        joystickIO, keyboardIO, terminalIO, pia1, x_guiOptions)
+        joystickIO, keyboardIO, terminalIO, pia1, x_options)
 {
     if (options.startup_command.size() > MAX_COMMAND)
     {
@@ -103,7 +99,7 @@ ApplicationRunner::ApplicationRunner(
     {
         // If no RAM extension is present:
         // Limit the number of columns to 2.
-        guiOptions.nColors = 2;
+        options.nColors = 2;
         // Switch of High memory option.
         options.isHiMem = false;
     }

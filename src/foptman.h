@@ -27,32 +27,19 @@
 #include <stdio.h>
 
 struct sOptions;
-struct sGuiOptions;
 
 class FlexOptionManager
 {
 public:
     void PrintHelp(FILE *fp);
-    void InitOptions(
-        struct sGuiOptions &guiOptions,
-        struct sOptions &options,
-        int argc,
-        char *const argv[]);
-    void GetOptions(
-        struct sGuiOptions &guiOptions,
-        struct sOptions &options);
-    void GetEnvironmentOptions(
-        struct sGuiOptions &guiOptions,
-        struct sOptions &options);
+    void InitOptions(struct sOptions &options);
+    void GetOptions(struct sOptions &options);
+    void GetEnvironmentOptions(struct sOptions &options);
     void GetCommandlineOptions(
-        struct sGuiOptions &guiOptions,
         struct sOptions &options,
         int argc,
         char *const argv[]);
-    void WriteOptions(
-        struct sGuiOptions &guiOptions,
-        struct sOptions &options,
-        bool   ifNotExists = false);
+    void WriteOptions(struct sOptions &options, bool ifNotExists = false);
 };
 
 #endif // FOPTMAN_INCLUDED

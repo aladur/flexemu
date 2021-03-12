@@ -45,7 +45,7 @@ class JoystickIO;
 
 E2Screen::E2Screen(Scheduler &x_scheduler,
                    JoystickIO &x_joystickIO, KeyboardIO &x_keyboardIO,
-                   Pia1 &x_pia1, sGuiOptions &x_guiOptions,
+                   Pia1 &x_pia1, sOptions &x_options,
                    const QColor &x_backgroundColor,
                    QWidget *parent)
     : QWidget(parent)
@@ -64,11 +64,11 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     , warpHomeX(0)
     , warpHomeY(0)
     , mouseButtonState(-1)
-    , pixelSize(x_guiOptions.pixelSize)
+    , pixelSize(x_options.pixelSize)
     , cursorType(FLX_DEFAULT_CURSOR)
     , doScaledScreenUpdate(true)
-    , preferredScreenSize(WINDOWWIDTH * x_guiOptions.pixelSize,
-                          WINDOWHEIGHT * x_guiOptions.pixelSize)
+    , preferredScreenSize(WINDOWWIDTH * x_options.pixelSize,
+                          WINDOWHEIGHT * x_options.pixelSize)
     , numLockIndicatorMask(0U)
 {
     setAttribute(Qt::WA_OpaquePaintEvent);

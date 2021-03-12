@@ -42,7 +42,7 @@
 #include "logfilui.h"
 #include "propsui.h"
 #include "fcinfo.h"
-#include "sguiopts.h"
+#include "soptions.h"
 #include <QString>
 #include <QVector>
 #include <QPixmap>
@@ -92,7 +92,7 @@ QtGui::QtGui(
     KeyboardIO &x_keyboardIO,
     TerminalIO &x_terminalIO,
     Pia1 &x_pia1,
-    struct sGuiOptions &x_guiOptions)
+    struct sOptions &x_options)
         : AbstractGui(
                x_cpu
              , x_memory
@@ -111,7 +111,7 @@ QtGui::QtGui(
         , joystickIO(x_joystickIO)
         , keyboardIO(x_keyboardIO)
         , fdc(nullptr)
-        , guiOptions(x_guiOptions)
+        , options(x_options)
 {
     logfileSettings.reset();
 
@@ -131,7 +131,7 @@ QtGui::QtGui(
     toolBarLayout->setSpacing(0);
     mainLayout->addLayout(toolBarLayout);
     e2screen = new E2Screen(x_scheduler, x_joystickIO, x_keyboardIO,
-                            x_pia1, x_guiOptions, colorTable.first(), this);
+                            x_pia1, x_options, colorTable.first(), this);
     mainLayout->addWidget(e2screen, 1); //, Qt::AlignCenter);
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     e2screen->setSizePolicy(sizePolicy);
@@ -406,7 +406,7 @@ void QtGui::OnCpuUndocumentedInstructions()
 
 void QtGui::OnIntroduction()
 {
-    QString documentationDir = guiOptions.doc_dir.c_str();
+    QString documentationDir = options.doc_dir.c_str();
     auto url = CreateDocumentationUrl(documentationDir, "flexemu.htm");
 
     QDesktopServices::openUrl(url);
@@ -1450,7 +1450,7 @@ ColorTable QtGui::CreateColorTable()
 {
     using fn = std::function<QRgb(int)>;
 
-    bool isWithColorScale = !stricmp(guiOptions.color.c_str(), "default");
+    bool isWithColorScale = !stricmp(options.color.c_str(), "default");
     Word redBase = 255;
     Word greenBase = 255;
     Word blueBase = 255;
@@ -1458,8 +1458,7 @@ ColorTable QtGui::CreateColorTable()
 
     if (!isWithColorScale)
     {
-        getRGBForName(guiOptions.color.c_str(),
-                      &redBase, &greenBase, &blueBase);
+        getRGBForName(options.color.c_str(), &redBase, &greenBase, &blueBase);
     }
 
     fn GetColor = [&](int index) -> QRgb
@@ -1504,7 +1503,7 @@ ColorTable QtGui::CreateColorTable()
 
     for (int i = 0; i < colorTable.size(); ++i)
     {
-        int idx = guiOptions.isInverse ? colorTable.size() - i - 1 : i;
+        int idx = options.isInverse ? colorTable.size() - i - 1 : i;
         colorTable[idx] = GetTheColor(i);
     }
 
@@ -1589,7 +1588,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     Byte pixels[6]; /* One byte of video RAM for each plane */
     // Default color index: If no video source is available use highest
     // available color
-    Byte colorIndex = guiOptions.isInverse ? 0x00U : 0x3FU;
+    Byte colorIndex = options.isInverse ? 0x00U : 0x3FU;
 
     memset(pixels, '\0', sizeof(pixels));
 
@@ -1604,12 +1603,12 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
 
             pixels[0] = videoRam[0];
 
-            if (guiOptions.nColors > 2)
+            if (options.nColors > 2)
             {
                 pixels[2] = videoRam[VIDEORAM_SIZE];
                 pixels[4] = videoRam[VIDEORAM_SIZE * 2];
 
-                if (guiOptions.nColors > 8)
+                if (options.nColors > 8)
                 {
                     pixels[1] = videoRam[VIDEORAM_SIZE * 3];
                     pixels[3] = videoRam[VIDEORAM_SIZE * 4];
@@ -1629,7 +1628,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
                     colorIndex |= GREEN_HIGH;    // 0x0C, green high
                 }
 
-                if (guiOptions.nColors > 8)
+                if (options.nColors > 8)
                 {
                     if (pixels[2] & pixelBitMask)
                     {

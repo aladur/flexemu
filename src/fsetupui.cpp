@@ -24,7 +24,6 @@
 #include "misc1.h"
 #include "e2.h"
 #include "soptions.h"
-#include "sguiopts.h"
 #include <string>
 #include <memory>
 #include <stdexcept>
@@ -108,9 +107,7 @@ FlexemuOptionsUi::~FlexemuOptionsUi()
 {
 }
 
-void FlexemuOptionsUi::TransferDataToDialog(
-    const struct sGuiOptions &guiOptions,
-    const struct sOptions &options)
+void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 {
     int index = -1;
     int n = 0;
@@ -121,7 +118,7 @@ void FlexemuOptionsUi::TransferDataToDialog(
                                "has to be called before.");
     }
 
-    InitializeHardwareHyperlink(guiOptions.doc_dir.c_str());
+    InitializeHardwareHyperlink(options.doc_dir.c_str());
 
     for (int x = 1; x <= MAX_PIXELSIZE; x++)
     {
@@ -130,7 +127,7 @@ void FlexemuOptionsUi::TransferDataToDialog(
 
         cb_geometry->addItem(text);
 
-        if (guiOptions.pixelSize == x)
+        if (options.pixelSize == x)
         {
             index = n;
         }
@@ -147,7 +144,7 @@ void FlexemuOptionsUi::TransferDataToDialog(
         auto text = QString::asprintf("%d", nColors);
         cb_nColors->addItem(text);
 
-        if (guiOptions.nColors == nColors)
+        if (options.nColors == nColors)
         {
             index = n;
         }
@@ -168,7 +165,7 @@ void FlexemuOptionsUi::TransferDataToDialog(
         QIcon colorIcon(pixmap);
         cb_color->setItemIcon(i, colorIcon);
 
-        if (!stricmp(guiOptions.color.c_str(), colors[i].colorName))
+        if (!stricmp(options.color.c_str(), colors[i].colorName))
         {
             index = i;
         }
@@ -177,11 +174,11 @@ void FlexemuOptionsUi::TransferDataToDialog(
     cb_color->setCurrentIndex(std::max(index, 0));
 
     bool isMultiColorSchemeChecked =
-	    (0 == stricmp(guiOptions.color.c_str(), "default"));
+	    (0 == stricmp(options.color.c_str(), "default"));
 
     c_multiColorScheme->setChecked(isMultiColorSchemeChecked);
 
-    c_isInverse->setChecked(guiOptions.isInverse != 0);
+    c_isInverse->setChecked(options.isInverse != 0);
 
     c_undocumented->setChecked(options.use_undocumented);
 
@@ -306,9 +303,7 @@ bool FlexemuOptionsUi::Validate()
     return true;
 }
 
-void FlexemuOptionsUi::TransferDataFromDialog(
-    struct sGuiOptions &guiOptions,
-    struct sOptions &options)
+void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 {
     bool success = false;
     bool x_ok = false;
@@ -318,19 +313,19 @@ void FlexemuOptionsUi::TransferDataFromDialog(
 
     if (x_ok)
     {
-        guiOptions.pixelSize = x / WINDOWWIDTH;
+        options.pixelSize = x / WINDOWWIDTH;
     }
 
     auto n = cb_nColors->currentText().toUInt(&success);
-    guiOptions.nColors = (success ? n : 2);
+    options.nColors = (success ? n : 2);
 
     if (c_multiColorScheme->isChecked() && cb_nColors->currentIndex() > 0)
     {
-         guiOptions.color = "default";
+         options.color = "default";
     }
     else
     {
-        guiOptions.color = cb_color->currentText().toStdString();
+        options.color = cb_color->currentText().toStdString();
 
         for (size_t i = 0; i < color_count; i++)
         {
@@ -338,12 +333,12 @@ void FlexemuOptionsUi::TransferDataFromDialog(
 
             if (colorName == cb_color->currentText())
             {
-                guiOptions.color = colors[i].colorName;
+                options.color = colors[i].colorName;
             }
         }
     }
 
-    guiOptions.isInverse = c_isInverse->isChecked();
+    options.isInverse = c_isInverse->isChecked();
 
     options.use_undocumented = c_undocumented->isChecked();
 
@@ -392,7 +387,7 @@ void FlexemuOptionsUi::TransferDataFromDialog(
 
     if (!options.isRamExtension)
     {
-        guiOptions.nColors = 2;
+        options.nColors = 2;
         options.isHiMem = false;
         options.isFlexibleMmu = false;
     }
@@ -404,7 +399,7 @@ void FlexemuOptionsUi::TransferDataFromDialog(
 
     if (options.isEurocom2V5)
     {
-        guiOptions.nColors = 2;
+        options.nColors = 2;
         options.useRtc = false;
         options.isRamExtension = false;
         options.isHiMem = false;

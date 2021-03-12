@@ -26,7 +26,6 @@
 #include "fsetup_ui.h"
 #include "fsetupui.h"
 #include "soptions.h"
-#include "sguiopts.h"
 #include <vector>
 #include <memory>
 #include <QApplication>
@@ -45,18 +44,17 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     FlexOptionManager optionMan;
     QDialog dialog;
-    struct sGuiOptions guiOptions;
     struct sOptions options;
 
     Q_INIT_RESOURCE(fsetup_qrc_cpp);
 
-    optionMan.InitOptions(guiOptions, options, argc, argv);
-    optionMan.GetOptions(guiOptions, options);
-    optionMan.GetEnvironmentOptions(guiOptions, options);
+    optionMan.InitOptions(options);
+    optionMan.GetOptions(options);
+    optionMan.GetEnvironmentOptions(options);
 
     FlexemuOptionsUi ui;
     ui.setupUi(&dialog);
-    ui.TransferDataToDialog(guiOptions, options);
+    ui.TransferDataToDialog(options);
 
     dialog.resize({0, 0});
     dialog.setModal(true);
@@ -65,8 +63,8 @@ int main(int argc, char *argv[])
 
     if (result == QDialog::Accepted)
     {
-        ui.TransferDataFromDialog(guiOptions, options);
-        optionMan.WriteOptions(guiOptions, options);
+        ui.TransferDataFromDialog(options);
+        optionMan.WriteOptions(options);
     }
 
     return 0;

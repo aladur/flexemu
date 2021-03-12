@@ -23,7 +23,7 @@
 #ifndef E2SCREEN_INCLUDED
 #define E2SCREEN_INCLUDED
 
-#include "sguiopts.h"
+#include "soptions.h"
 #include <misc1.h>
 #include <memory>
 #include <QVector>
@@ -59,7 +59,7 @@ public:
     E2Screen() = delete;
     E2Screen(Scheduler &x_scheduler, JoystickIO &x_joystickIO,
              KeyboardIO &x_keyboardIO, Pia1 &x_pia1,
-             sGuiOptions &x_guiOptions,
+             sOptions &x_options,
              const QColor &backgroundColor, QWidget *parent = nullptr);
     virtual ~E2Screen() = default;
 

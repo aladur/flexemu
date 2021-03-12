@@ -177,7 +177,6 @@ fsetup_SOURCES = \
 	foptman.h \
 	fsetupui.h \
 	misc1.h \
-	sguiopts.h \
 	soptions.h \
 	typedefs.h \
 	warnoff.h \
@@ -338,7 +337,6 @@ flexemu_SOURCES = \
 	schedcpu.h \
 	schedule.h \
 	scpulog.h \
-	sguiopts.h \
 	soptions.h \
 	sprinter.h \
 	terminal.h \

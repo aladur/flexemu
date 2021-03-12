@@ -54,9 +54,6 @@
     <ClInclude Include="fsetup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sguiopts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="soptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>

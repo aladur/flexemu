@@ -29,7 +29,6 @@
 #include "e2.h"
 #include "flexemu.h"
 #include "soptions.h"
-#include "sguiopts.h"
 #include "foptman.h"
 #include "bregistr.h"
 #include "brcfile.h"
@@ -64,11 +63,7 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -v (print version number)\n");
 } // PrintHelp
 
-void FlexOptionManager::InitOptions(
-    struct sGuiOptions &guiOptions,
-    struct sOptions &options,
-    int argc,
-    char *const argv[])
+void FlexOptionManager::InitOptions(struct sOptions &options)
 {
     options.drive[0] = "system.dsk";
     options.drive[1] = "";
@@ -88,26 +83,22 @@ void FlexOptionManager::InitOptions(
     options.reset_key = 0x1e; // is Ctrl-^ for reset or Sig. INT
     options.frequency = -1.0; // default: ignore
 
-    guiOptions.argc = argc;
-    guiOptions.argv = argv;
-    guiOptions.color = "green";
-    guiOptions.nColors = 2;
-    guiOptions.isInverse = false;
+    options.color = "green";
+    options.nColors = 2;
+    options.isInverse = false;
 #ifdef UNIX
-    guiOptions.doc_dir = F_DATADIR;
+    options.doc_dir = F_DATADIR;
     options.disk_dir = F_DATADIR;
 #endif
 #ifdef _WIN32
-    guiOptions.doc_dir = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
+    options.doc_dir = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
     options.disk_dir = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
-    guiOptions.pixelSize = 2;
+    options.pixelSize = 2;
 } // InitOptions
 
 #ifdef UNIX
-void FlexOptionManager::GetEnvironmentOptions(
-    struct sGuiOptions &guiOptions,
-    struct sOptions &options)
+void FlexOptionManager::GetEnvironmentOptions(struct sOptions &options)
 {
     std::string str;
     int value;
@@ -116,7 +107,7 @@ void FlexOptionManager::GetEnvironmentOptions(
     // first look for environment variables
     if (env.GetValue((const char *)"FLEX" FLEXINVERSE, &value))
     {
-        guiOptions.isInverse = (value != 0);
+        options.isInverse = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXRAMEXTENSION, &value))
@@ -156,12 +147,12 @@ void FlexOptionManager::GetEnvironmentOptions(
 
     if (env.GetValue((const char *)"FLEX" FLEXCOLOR, str))
     {
-        guiOptions.color = str;
+        options.color = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXNCOLORS, &value))
     {
-        guiOptions.nColors = value;
+        options.nColors = value;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDISKDIR, str))
@@ -208,14 +199,12 @@ void FlexOptionManager::GetEnvironmentOptions(
 }
 #else
 void FlexOptionManager::GetEnvironmentOptions(
-    struct sGuiOptions & /* [[maybe_unused]] struct sGuiOptions &guiOptions */,
     struct sOptions & /* [[maybe_unused]] struct sOptions &options */)
 {
 }
 #endif  // ifdef UNIX
 
 void FlexOptionManager::GetCommandlineOptions(
-    struct sGuiOptions &guiOptions,
     struct sOptions &options,
     int argc,
     char *const argv[])
@@ -280,7 +269,7 @@ void FlexOptionManager::GetCommandlineOptions(
 
                 if (i > 0 && i <= MAX_PIXELSIZE)
                 {
-                    guiOptions.pixelSize = i;
+                    options.pixelSize = i;
                 }
 
                 break;
@@ -310,15 +299,15 @@ void FlexOptionManager::GetCommandlineOptions(
 #endif
             case 'n':
                 sscanf(optarg, "%d", &i);
-                guiOptions.nColors = i;
+                options.nColors = i;
                 break;
 
             case 'c':
-                guiOptions.color = optarg;
+                options.color = optarg;
                 break;
 
             case 'i':
-                guiOptions.isInverse = true;
+                options.isInverse = true;
                 break;
 
             case 'v':
@@ -335,7 +324,6 @@ void FlexOptionManager::GetCommandlineOptions(
 
 
 void FlexOptionManager::WriteOptions(
-    struct sGuiOptions &guiOptions,
     struct sOptions &options,
     bool  ifNotExists /* = false */
 )
@@ -350,16 +338,16 @@ void FlexOptionManager::WriteOptions(
         return;
     }
 
-    reg.SetValue(FLEXINVERSE, guiOptions.isInverse ? 1 : 0);
+    reg.SetValue(FLEXINVERSE, options.isInverse ? 1 : 0);
     reg.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
     reg.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
     reg.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
     reg.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
     reg.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
     reg.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
-    reg.SetValue(FLEXCOLOR, guiOptions.color.c_str());
-    reg.SetValue(FLEXNCOLORS, guiOptions.nColors);
-    reg.SetValue(FLEXSCREENFACTOR, guiOptions.pixelSize);
+    reg.SetValue(FLEXCOLOR, options.color.c_str());
+    reg.SetValue(FLEXNCOLORS, options.nColors);
+    reg.SetValue(FLEXSCREENFACTOR, options.pixelSize);
     reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
     reg.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
     reg.SetValue(FLEXDISK0, options.drive[0].c_str());
@@ -390,10 +378,10 @@ void FlexOptionManager::WriteOptions(
 
     BRcFile rcFile(rcFileName.c_str());
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXINVERSE, guiOptions.isInverse ? 1 : 0);
-    rcFile.SetValue(FLEXCOLOR, guiOptions.color.c_str());
-    rcFile.SetValue(FLEXNCOLORS, guiOptions.nColors);
-    rcFile.SetValue(FLEXSCREENFACTOR, guiOptions.pixelSize);
+    rcFile.SetValue(FLEXINVERSE, options.isInverse ? 1 : 0);
+    rcFile.SetValue(FLEXCOLOR, options.color.c_str());
+    rcFile.SetValue(FLEXNCOLORS, options.nColors);
+    rcFile.SetValue(FLEXSCREENFACTOR, options.pixelSize);
     rcFile.SetValue(FLEXMONITOR, options.hex_file.c_str());
     rcFile.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
     rcFile.SetValue(FLEXDISK0, options.drive[0].c_str());
@@ -412,9 +400,7 @@ void FlexOptionManager::WriteOptions(
 #endif
 } /* WriteOptions */
 
-void FlexOptionManager::GetOptions(
-    struct sGuiOptions &guiOptions,
-    struct sOptions &options)
+void FlexOptionManager::GetOptions(struct sOptions &options)
 {
     int int_result;
     std::string string_result;
@@ -430,13 +416,13 @@ void FlexOptionManager::GetOptions(
     reg.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
     reg.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
     reg.GetValue(FLEXMONITOR, options.hex_file);
-    reg.GetValue(FLEXCOLOR, guiOptions.color);
+    reg.GetValue(FLEXCOLOR, options.color);
 
     if (!reg.GetValue(FLEXNCOLORS, int_result))
     {
         if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            guiOptions.nColors = int_result;
+            options.nColors = int_result;
         }
     }
 
@@ -452,12 +438,12 @@ void FlexOptionManager::GetOptions(
             int_result = MAX_PIXELSIZE;
         }
 
-        guiOptions.pixelSize = int_result;
+        options.pixelSize = int_result;
     }
 
     if (!reg.GetValue(FLEXINVERSE, int_result))
     {
-        guiOptions.isInverse = (int_result != 0);
+        options.isInverse = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXRAMEXTENSION, int_result))
@@ -526,13 +512,13 @@ void FlexOptionManager::GetOptions(
     rcFile.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
     rcFile.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
     rcFile.GetValue(FLEXMONITOR, options.hex_file);
-    rcFile.GetValue(FLEXCOLOR, guiOptions.color);
+    rcFile.GetValue(FLEXCOLOR, options.color);
 
     if (!rcFile.GetValue(FLEXNCOLORS, int_result))
     {
         if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            guiOptions.nColors = int_result;
+            options.nColors = int_result;
         }
     }
 
@@ -548,12 +534,12 @@ void FlexOptionManager::GetOptions(
             int_result = MAX_PIXELSIZE;
         }
 
-        guiOptions.pixelSize = int_result;
+        options.pixelSize = int_result;
     }
 
     if (!rcFile.GetValue(FLEXINVERSE, int_result))
     {
-        guiOptions.isInverse = (int_result != 0);
+        options.isInverse = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXRAMEXTENSION, int_result))
