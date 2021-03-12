@@ -65,49 +65,49 @@ void FlexOptionManager::PrintHelp(FILE *fp)
 } // PrintHelp
 
 void FlexOptionManager::InitOptions(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions,
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options,
     int argc,
     char *const argv[])
 {
-    pOptions->drive[0]         = "system.dsk";
-    pOptions->drive[1]         = "";
-    pOptions->drive[2]         = "";
-    pOptions->drive[3]         = "";
-    pOptions->mdcrDrives[0]    = "system.mdcr";
-    pOptions->mdcrDrives[1]    = "";
-    pOptions->hex_file         = "neumon54.hex";
-    pOptions->startup_command  = "";
-    pOptions->term_mode        = false;
-    pOptions->isRamExtension   = true;
-    pOptions->isHiMem          = false;
-    pOptions->isFlexibleMmu    = false;
-    pOptions->isEurocom2V5     = false;
-    pOptions->use_undocumented = false;
-    pOptions->useRtc           = true;
-    pOptions->reset_key        = 0x1e; // is Ctrl-^ for reset or Sig. INT
-    pOptions->frequency        = -1.0; // default: ignore
+    options.drive[0] = "system.dsk";
+    options.drive[1] = "";
+    options.drive[2] = "";
+    options.drive[3] = "";
+    options.mdcrDrives[0] = "system.mdcr";
+    options.mdcrDrives[1] = "";
+    options.hex_file = "neumon54.hex";
+    options.startup_command = "";
+    options.term_mode = false;
+    options.isRamExtension = true;
+    options.isHiMem = false;
+    options.isFlexibleMmu = false;
+    options.isEurocom2V5 = false;
+    options.use_undocumented = false;
+    options.useRtc = true;
+    options.reset_key = 0x1e; // is Ctrl-^ for reset or Sig. INT
+    options.frequency = -1.0; // default: ignore
 
-    pGuiOptions->argc          = argc;
-    pGuiOptions->argv          = argv;
-    pGuiOptions->color         = "green";
-    pGuiOptions->nColors       = 2;
-    pGuiOptions->isInverse     = false;
+    guiOptions.argc = argc;
+    guiOptions.argv = argv;
+    guiOptions.color = "green";
+    guiOptions.nColors = 2;
+    guiOptions.isInverse = false;
 #ifdef UNIX
-    pGuiOptions->doc_dir       = F_DATADIR;
-    pOptions->disk_dir         = F_DATADIR;
+    guiOptions.doc_dir = F_DATADIR;
+    options.disk_dir = F_DATADIR;
 #endif
 #ifdef _WIN32
-    pGuiOptions->doc_dir       = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
-    pOptions->disk_dir         = getExecutablePath() + PATHSEPARATORSTRING + "Data";
+    guiOptions.doc_dir = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
+    options.disk_dir = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
-    pGuiOptions->pixelSize     = 2;
+    guiOptions.pixelSize = 2;
 } // InitOptions
 
 #ifdef UNIX
 void FlexOptionManager::GetEnvironmentOptions(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions)
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options)
 {
     std::string str;
     int value;
@@ -116,89 +116,89 @@ void FlexOptionManager::GetEnvironmentOptions(
     // first look for environment variables
     if (env.GetValue((const char *)"FLEX" FLEXINVERSE, &value))
     {
-        pGuiOptions->isInverse = (value != 0);
+        guiOptions.isInverse = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXRAMEXTENSION, &value))
     {
-        pOptions->isRamExtension = (value != 0);
+        options.isRamExtension = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXHIMEM, &value))
     {
-        pOptions->isHiMem = (value != 0);
+        options.isHiMem = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXFLEXIBLEMMU, &value))
     {
-        pOptions->isFlexibleMmu = (value != 0);
+        options.isFlexibleMmu = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXEUROCOM2V5, &value))
     {
-        pOptions->isEurocom2V5 = (value != 0);
+        options.isEurocom2V5 = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXUNDOCUMENTED, &value))
     {
-        pOptions->use_undocumented = (value != 0);
+        options.use_undocumented = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXRTC, &value))
     {
-        pOptions->useRtc = (value != 0);
+        options.useRtc = (value != 0);
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXMONITOR, str))
     {
-        pOptions->hex_file = str;
+        options.hex_file = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXCOLOR, str))
     {
-        pGuiOptions->color = str;
+        guiOptions.color = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXNCOLORS, &value))
     {
-        pGuiOptions->nColors = value;
+        guiOptions.nColors = value;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDISKDIR, str))
     {
-        pOptions->disk_dir = str;
+        options.disk_dir = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDISK0, str))
     {
-        pOptions->drive[0] = str;
+        options.drive[0] = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDISK1, str))
     {
-        pOptions->drive[1] = str;
+        options.drive[1] = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXDISK2, str))
     {
-        pOptions->drive[2] = str;
+        options.drive[2] = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE0, str))
     {
-        pOptions->mdcrDrives[0] = str;
+        options.mdcrDrives[0] = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE1, str))
     {
-        pOptions->mdcrDrives[1] = str;
+        options.mdcrDrives[1] = str;
     }
 
     if (env.GetValue((const char *)"FLEX" FLEXFREQUENCY, str))
     {
         try
         {
-            pOptions->frequency = (stof(str));
+            options.frequency = (stof(str));
         }
         catch(std::exception &)
         {
@@ -208,15 +208,15 @@ void FlexOptionManager::GetEnvironmentOptions(
 }
 #else
 void FlexOptionManager::GetEnvironmentOptions(
-    struct sGuiOptions * /* [[maybe_unused]] struct sGuiOptions pGuiOptions */,
-    struct sOptions * /* [[maybe_unused]] struct sOptions pOptions */)
+    struct sGuiOptions & /* [[maybe_unused]] struct sGuiOptions &guiOptions */,
+    struct sOptions & /* [[maybe_unused]] struct sOptions &options */)
 {
 }
 #endif  // ifdef UNIX
 
 void FlexOptionManager::GetCommandlineOptions(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions,
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options,
     int argc,
     char *const argv[])
 {
@@ -244,35 +244,35 @@ void FlexOptionManager::GetCommandlineOptions(
         switch (result)
         {
             case 'f':
-                pOptions->hex_file            = optarg;
+                options.hex_file = optarg;
                 break;
 
             case '0':
-                pOptions->drive[0]           = optarg;
+                options.drive[0] = optarg;
                 break;
 
             case '1':
-                pOptions->drive[1]           = optarg;
+                options.drive[1] = optarg;
                 break;
 
             case '2':
-                pOptions->drive[2]           = optarg;
+                options.drive[2] = optarg;
                 break;
 
             case '3':
-                pOptions->drive[3]           = optarg;
+                options.drive[3] = optarg;
                 break;
 
             case 'p':
-                pOptions->disk_dir            = optarg;
+                options.disk_dir = optarg;
                 break;
 
             case 'm':
-                pOptions->isHiMem = true;
+                options.isHiMem = true;
                 break;
 
             case 'u':
-                pOptions->use_undocumented = true;
+                options.use_undocumented = true;
                 break;
 
             case 'j':
@@ -280,7 +280,7 @@ void FlexOptionManager::GetCommandlineOptions(
 
                 if (i > 0 && i <= MAX_PIXELSIZE)
                 {
-                    pGuiOptions->pixelSize = i;
+                    guiOptions.pixelSize = i;
                 }
 
                 break;
@@ -290,35 +290,35 @@ void FlexOptionManager::GetCommandlineOptions(
 
                 if (f >= 0.0)
                 {
-                    pOptions->frequency = f;
+                    options.frequency = f;
                 }
 
                 break;
 
             case 'C':
-                pOptions->startup_command = optarg;
+                options.startup_command = optarg;
                 break;
 #ifdef HAVE_TERMIOS_H
 
             case 't':
-                pOptions->term_mode           = true;
+                options.term_mode = true;
                 break;
 
             case 'r':
-                sscanf(optarg, "%hx", (Word *)&pOptions->reset_key);
+                sscanf(optarg, "%hx", (Word *)&options.reset_key);
                 break;
 #endif
             case 'n':
                 sscanf(optarg, "%d", &i);
-                pGuiOptions->nColors          = i;
+                guiOptions.nColors = i;
                 break;
 
             case 'c':
-                pGuiOptions->color            = optarg;
+                guiOptions.color = optarg;
                 break;
 
             case 'i':
-                pGuiOptions->isInverse        = true;
+                guiOptions.isInverse = true;
                 break;
 
             case 'v':
@@ -335,8 +335,8 @@ void FlexOptionManager::GetCommandlineOptions(
 
 
 void FlexOptionManager::WriteOptions(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions,
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options,
     bool  ifNotExists /* = false */
 )
 {
@@ -350,25 +350,25 @@ void FlexOptionManager::WriteOptions(
         return;
     }
 
-    reg.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
-    reg.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
-    reg.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    reg.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
-    reg.SetValue(FLEXEUROCOM2V5, pOptions->isEurocom2V5 ? 1 : 0);
-    reg.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
-    reg.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
-    reg.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
-    reg.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    reg.SetValue(FLEXSCREENFACTOR, pGuiOptions->pixelSize);
-    reg.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
-    reg.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
-    reg.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
-    reg.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
-    reg.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
-    reg.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
-    reg.SetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0].c_str());
-    reg.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
-    reg.SetValue(FLEXFREQUENCY, std::to_string(pOptions->frequency));
+    reg.SetValue(FLEXINVERSE, guiOptions.isInverse ? 1 : 0);
+    reg.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
+    reg.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
+    reg.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
+    reg.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
+    reg.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
+    reg.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
+    reg.SetValue(FLEXCOLOR, guiOptions.color.c_str());
+    reg.SetValue(FLEXNCOLORS, guiOptions.nColors);
+    reg.SetValue(FLEXSCREENFACTOR, guiOptions.pixelSize);
+    reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
+    reg.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
+    reg.SetValue(FLEXDISK0, options.drive[0].c_str());
+    reg.SetValue(FLEXDISK1, options.drive[1].c_str());
+    reg.SetValue(FLEXDISK2, options.drive[2].c_str());
+    reg.SetValue(FLEXDISK3, options.drive[3].c_str());
+    reg.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
+    reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
+    reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
     reg.SetValue(FLEXVERSION, VERSION);
     reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
 #endif
@@ -390,31 +390,31 @@ void FlexOptionManager::WriteOptions(
 
     BRcFile rcFile(rcFileName.c_str());
     rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXINVERSE, pGuiOptions->isInverse ? 1 : 0);
-    rcFile.SetValue(FLEXCOLOR, pGuiOptions->color.c_str());
-    rcFile.SetValue(FLEXNCOLORS, pGuiOptions->nColors);
-    rcFile.SetValue(FLEXSCREENFACTOR, pGuiOptions->pixelSize);
-    rcFile.SetValue(FLEXMONITOR, pOptions->hex_file.c_str());
-    rcFile.SetValue(FLEXDISKDIR, pOptions->disk_dir.c_str());
-    rcFile.SetValue(FLEXDISK0, pOptions->drive[0].c_str());
-    rcFile.SetValue(FLEXDISK1, pOptions->drive[1].c_str());
-    rcFile.SetValue(FLEXDISK2, pOptions->drive[2].c_str());
-    rcFile.SetValue(FLEXDISK3, pOptions->drive[3].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1].c_str());
-    rcFile.SetValue(FLEXRAMEXTENSION, pOptions->isRamExtension ? 1 : 0);
-    rcFile.SetValue(FLEXHIMEM, pOptions->isHiMem ? 1 : 0);
-    rcFile.SetValue(FLEXFLEXIBLEMMU, pOptions->isFlexibleMmu ? 1 : 0);
-    rcFile.SetValue(FLEXEUROCOM2V5, pOptions->isEurocom2V5 ? 1 : 0);
-    rcFile.SetValue(FLEXUNDOCUMENTED, pOptions->use_undocumented ? 1 : 0);
-    rcFile.SetValue(FLEXRTC, pOptions->useRtc ? 1 : 0);
-    rcFile.SetValue(FLEXFREQUENCY, std::to_string(pOptions->frequency).c_str());
+    rcFile.SetValue(FLEXINVERSE, guiOptions.isInverse ? 1 : 0);
+    rcFile.SetValue(FLEXCOLOR, guiOptions.color.c_str());
+    rcFile.SetValue(FLEXNCOLORS, guiOptions.nColors);
+    rcFile.SetValue(FLEXSCREENFACTOR, guiOptions.pixelSize);
+    rcFile.SetValue(FLEXMONITOR, options.hex_file.c_str());
+    rcFile.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
+    rcFile.SetValue(FLEXDISK0, options.drive[0].c_str());
+    rcFile.SetValue(FLEXDISK1, options.drive[1].c_str());
+    rcFile.SetValue(FLEXDISK2, options.drive[2].c_str());
+    rcFile.SetValue(FLEXDISK3, options.drive[3].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
+    rcFile.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
+    rcFile.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
+    rcFile.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
+    rcFile.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
+    rcFile.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
+    rcFile.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
+    rcFile.SetValue(FLEXFREQUENCY, std::to_string(options.frequency).c_str());
 #endif
 } /* WriteOptions */
 
 void FlexOptionManager::GetOptions(
-    struct sGuiOptions *pGuiOptions,
-    struct sOptions *pOptions)
+    struct sGuiOptions &guiOptions,
+    struct sOptions &options)
 {
     int int_result;
     std::string string_result;
@@ -422,21 +422,21 @@ void FlexOptionManager::GetOptions(
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
-    reg.GetValue(FLEXDISKDIR, pOptions->disk_dir);
-    reg.GetValue(FLEXDISK0, pOptions->drive[0]);
-    reg.GetValue(FLEXDISK1, pOptions->drive[1]);
-    reg.GetValue(FLEXDISK2, pOptions->drive[2]);
-    reg.GetValue(FLEXDISK3, pOptions->drive[3]);
-    reg.GetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0]);
-    reg.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
-    reg.GetValue(FLEXMONITOR, pOptions->hex_file);
-    reg.GetValue(FLEXCOLOR, pGuiOptions->color);
+    reg.GetValue(FLEXDISKDIR, options.disk_dir);
+    reg.GetValue(FLEXDISK0, options.drive[0]);
+    reg.GetValue(FLEXDISK1, options.drive[1]);
+    reg.GetValue(FLEXDISK2, options.drive[2]);
+    reg.GetValue(FLEXDISK3, options.drive[3]);
+    reg.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
+    reg.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
+    reg.GetValue(FLEXMONITOR, options.hex_file);
+    reg.GetValue(FLEXCOLOR, guiOptions.color);
 
     if (!reg.GetValue(FLEXNCOLORS, int_result))
     {
         if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            pGuiOptions->nColors = int_result;
+            guiOptions.nColors = int_result;
         }
     }
 
@@ -452,54 +452,54 @@ void FlexOptionManager::GetOptions(
             int_result = MAX_PIXELSIZE;
         }
 
-        pGuiOptions->pixelSize = int_result;
+        guiOptions.pixelSize = int_result;
     }
 
     if (!reg.GetValue(FLEXINVERSE, int_result))
     {
-        pGuiOptions->isInverse = (int_result != 0);
+        guiOptions.isInverse = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXRAMEXTENSION, int_result))
     {
-        pOptions->isRamExtension = (int_result != 0);
+        options.isRamExtension = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXHIMEM, int_result))
     {
-        pOptions->isHiMem = (int_result != 0);
+        options.isHiMem = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFLEXIBLEMMU, int_result))
     {
-        pOptions->isFlexibleMmu = (int_result != 0);
+        options.isFlexibleMmu = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXEUROCOM2V5, int_result))
     {
-        pOptions->isEurocom2V5 = (int_result != 0);
+        options.isEurocom2V5 = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXUNDOCUMENTED, int_result))
     {
-        pOptions->use_undocumented = (int_result != 0);
+        options.use_undocumented = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (int_result != 0);
+        options.useRtc = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (int_result != 0);
+        options.useRtc = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFREQUENCY, string_result))
     {
         try
         {
-            pOptions->frequency = (stof(string_result));
+            options.frequency = (stof(string_result));
         }
         catch(std::exception &)
         {
@@ -518,21 +518,21 @@ void FlexOptionManager::GetOptions(
 
     rcFileName += PATHSEPARATORSTRING FLEXEMURC;
     BRcFile rcFile(rcFileName.c_str());
-    rcFile.GetValue(FLEXDISKDIR, pOptions->disk_dir);
-    rcFile.GetValue(FLEXDISK0, pOptions->drive[0]);
-    rcFile.GetValue(FLEXDISK1, pOptions->drive[1]);
-    rcFile.GetValue(FLEXDISK2, pOptions->drive[2]);
-    rcFile.GetValue(FLEXDISK3, pOptions->drive[3]);
-    rcFile.GetValue(FLEXMDCRDRIVE0, pOptions->mdcrDrives[0]);
-    rcFile.GetValue(FLEXMDCRDRIVE1, pOptions->mdcrDrives[1]);
-    rcFile.GetValue(FLEXMONITOR, pOptions->hex_file);
-    rcFile.GetValue(FLEXCOLOR, pGuiOptions->color);
+    rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
+    rcFile.GetValue(FLEXDISK0, options.drive[0]);
+    rcFile.GetValue(FLEXDISK1, options.drive[1]);
+    rcFile.GetValue(FLEXDISK2, options.drive[2]);
+    rcFile.GetValue(FLEXDISK3, options.drive[3]);
+    rcFile.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
+    rcFile.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
+    rcFile.GetValue(FLEXMONITOR, options.hex_file);
+    rcFile.GetValue(FLEXCOLOR, guiOptions.color);
 
     if (!rcFile.GetValue(FLEXNCOLORS, int_result))
     {
         if (int_result == 2 || int_result == 8 || int_result == 64)
         {
-            pGuiOptions->nColors = int_result;
+            guiOptions.nColors = int_result;
         }
     }
 
@@ -548,49 +548,49 @@ void FlexOptionManager::GetOptions(
             int_result = MAX_PIXELSIZE;
         }
 
-        pGuiOptions->pixelSize = int_result;
+        guiOptions.pixelSize = int_result;
     }
 
     if (!rcFile.GetValue(FLEXINVERSE, int_result))
     {
-        pGuiOptions->isInverse = (int_result != 0);
+        guiOptions.isInverse = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXRAMEXTENSION, int_result))
     {
-        pOptions->isRamExtension = (int_result != 0);
+        options.isRamExtension = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXHIMEM, int_result))
     {
-        pOptions->isHiMem = (int_result != 0);
+        options.isHiMem = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFLEXIBLEMMU, int_result))
     {
-        pOptions->isFlexibleMmu = (int_result != 0);
+        options.isFlexibleMmu = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXEUROCOM2V5, int_result))
     {
-        pOptions->isEurocom2V5 = (int_result != 0);
+        options.isEurocom2V5 = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXUNDOCUMENTED, int_result))
     {
-        pOptions->use_undocumented = (int_result != 0);
+        options.use_undocumented = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXRTC, int_result))
     {
-        pOptions->useRtc = (int_result != 0);
+        options.useRtc = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFREQUENCY, string_result))
     {
         try
         {
-            pOptions->frequency = (stof(string_result));
+            options.frequency = (stof(string_result));
         }
         catch(std::exception &)
         {

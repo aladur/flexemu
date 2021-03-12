@@ -79,12 +79,12 @@ int main(int argc, char *argv[])
     std::set_new_handler(std_new_handler);
 #endif
 
-    optionMan.InitOptions(&guiOptions, &options, argc, argv);
-    optionMan.GetOptions(&guiOptions, &options);
-    optionMan.GetEnvironmentOptions(&guiOptions, &options);
-    optionMan.GetCommandlineOptions(&guiOptions, &options, argc, argv);
+    optionMan.InitOptions(guiOptions, options, argc, argv);
+    optionMan.GetOptions(guiOptions, options);
+    optionMan.GetEnvironmentOptions(guiOptions, options);
+    optionMan.GetCommandlineOptions(guiOptions, options, argc, argv);
     // write options but only if options file not already exists
-    optionMan.WriteOptions(&guiOptions, &options, true);
+    optionMan.WriteOptions(guiOptions, options, true);
 
     try
     {

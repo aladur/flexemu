@@ -34,24 +34,24 @@ class FlexOptionManager
 public:
     void PrintHelp(FILE *fp);
     void InitOptions(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions,
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options,
         int argc,
         char *const argv[]);
     void GetOptions(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions);
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options);
     void GetEnvironmentOptions(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions);
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options);
     void GetCommandlineOptions(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions,
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options,
         int argc,
         char *const argv[]);
     void WriteOptions(
-        struct sGuiOptions *pGuiOptions,
-        struct sOptions *pOptions,
+        struct sGuiOptions &guiOptions,
+        struct sOptions &options,
         bool   ifNotExists = false);
 };
 

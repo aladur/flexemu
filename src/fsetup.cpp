@@ -50,9 +50,9 @@ int main(int argc, char *argv[])
 
     Q_INIT_RESOURCE(fsetup_qrc_cpp);
 
-    optionMan.InitOptions(&guiOptions, &options, argc, argv);
-    optionMan.GetOptions(&guiOptions, &options);
-    optionMan.GetEnvironmentOptions(&guiOptions, &options);
+    optionMan.InitOptions(guiOptions, options, argc, argv);
+    optionMan.GetOptions(guiOptions, options);
+    optionMan.GetEnvironmentOptions(guiOptions, options);
 
     FlexemuOptionsUi ui;
     ui.setupUi(&dialog);
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     if (result == QDialog::Accepted)
     {
         ui.TransferDataFromDialog(guiOptions, options);
-        optionMan.WriteOptions(&guiOptions, &options);
+        optionMan.WriteOptions(guiOptions, options);
     }
 
     return 0;
