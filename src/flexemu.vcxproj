@@ -424,6 +424,7 @@
     <ClInclude Include="schedule.h" />
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sguiopts.h" />
+    <ClInclude Include="soptions.h" />
     <ClInclude Include="sprinter.h" />
     <ClInclude Include="terminal.h" />
     <ClInclude Include="typedefs.h" />
