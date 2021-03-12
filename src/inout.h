@@ -41,7 +41,7 @@ class Inout : public BObserver
 {
 private:
     Memory &memory;
-    const struct sOptions &options;
+    const bool term_mode;
     Mc146818 *rtc; // RTC is an optional device
     AbstractGui *gui;
     int local_serpar_address;

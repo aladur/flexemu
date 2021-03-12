@@ -33,7 +33,7 @@
 
 Inout::Inout(const struct sOptions &x_options, Memory &x_memory) :
      memory(x_memory)
-     , options(x_options)
+     , term_mode(x_options.term_mode)
      , rtc(nullptr)
      , gui(nullptr)
      , local_serpar_address(-1)
@@ -111,7 +111,7 @@ void Inout::set_rtc(Mc146818 *x_rtc)
 void Inout::UpdateFrom(NotifyId id, void *)
 {
     if (id == NotifyId::FirstKeyboardRequest &&
-        options.term_mode &&
+        term_mode &&
         is_serpar_address_valid())
     {
         memory.write_byte(serpar_address(), Byte(0xFF));
