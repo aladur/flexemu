@@ -27,6 +27,7 @@ dist_icons = \
 	flexemu-flexplorer-open.svg \
 	flexemu-flexplorer-opendir.svg \
 	flexemu-flexplorer-options.svg \
+	flexemu-flexplorer-options-needs-restart.svg \
 	flexemu-flexplorer-paste.svg \
 	flexemu-flexplorer-selectall.svg \
 	flexemu-flexplorer-view.svg \

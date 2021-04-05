@@ -27,13 +27,63 @@
 
 #include <string>
 #include <array>
+#include <vector>
+#include <algorithm>
 
 // Maximum size of one emulated pixel on screen
 #define MAX_PIXELSIZE (5)
 
+enum class FlexemuOptionId : uint8_t
+{
+    Drive0,
+    Drive1,
+    Drive2,
+    Drive3,
+    MdcrDrive0,
+    MdcrDrive1,
+    HexFile,
+    DiskDirectory,
+    IsRamExt2x96,
+    IsRamExt2x288,
+    IsFlexibleMmu,
+    IsEurocom2V5,
+    IsUseUndocumented,
+    IsUseRtc,
+    Frequency,
+    Color,
+    NColors,
+    IsInverse,
+    PixelSize,
+};
+using FlexemuOptionIds = std::vector<FlexemuOptionId>;
+
+const FlexemuOptionIds allFlexemuOptionIds {
+    FlexemuOptionId::Drive0,
+    FlexemuOptionId::Drive1,
+    FlexemuOptionId::Drive2,
+    FlexemuOptionId::Drive3,
+    FlexemuOptionId::MdcrDrive0,
+    FlexemuOptionId::MdcrDrive1,
+    FlexemuOptionId::HexFile,
+    FlexemuOptionId::DiskDirectory,
+    FlexemuOptionId::IsRamExt2x96,
+    FlexemuOptionId::IsRamExt2x288,
+    FlexemuOptionId::IsFlexibleMmu,
+    FlexemuOptionId::IsEurocom2V5,
+    FlexemuOptionId::IsUseUndocumented,
+    FlexemuOptionId::IsUseRtc,
+    FlexemuOptionId::Frequency,
+    FlexemuOptionId::Color,
+    FlexemuOptionId::NColors,
+    FlexemuOptionId::IsInverse,
+    FlexemuOptionId::PixelSize,
+};
+
 struct sOptions
 {
     sOptions() = default;
+    sOptions(const sOptions &src) = default;
+    sOptions& operator=(const sOptions &src) = default;
 
     std::string drive[4];
     std::array<std::string, 2> mdcrDrives;
@@ -58,6 +108,9 @@ struct sOptions
     int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
                    // It depends on the screen dimensions on which flexemu
                    // is executed.
+
+    FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
+                                       // read-only.
 };
 
 #endif

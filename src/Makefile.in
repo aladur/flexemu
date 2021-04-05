@@ -157,19 +157,20 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-ffilebuf.$(OBJEXT) flexemu-ffilecnt.$(OBJEXT) \
 	flexemu-filecnts.$(OBJEXT) flexemu-fileread.$(OBJEXT) \
 	flexemu-flexerr.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
-	flexemu-iffilcnt.$(OBJEXT) flexemu-ifilecnt.$(OBJEXT) \
-	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
-	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
-	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
-	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
-	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-mdcrtape.$(OBJEXT) flexemu-memory.$(OBJEXT) \
-	flexemu-misc1.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
-	flexemu-ndircont.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
-	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
-	flexemu-qtgui.$(OBJEXT) flexemu-rfilecnt.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-fsetupui.$(OBJEXT) flexemu-iffilcnt.$(OBJEXT) \
+	flexemu-ifilecnt.$(OBJEXT) flexemu-inout.$(OBJEXT) \
+	flexemu-iodevdbg.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
+	flexemu-keyboard.$(OBJEXT) flexemu-logfilui.$(OBJEXT) \
+	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
+	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-mdcrtape.$(OBJEXT) \
+	flexemu-memory.$(OBJEXT) flexemu-misc1.$(OBJEXT) \
+	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
+	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
+	flexemu-pia2v5.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
+	flexemu-rfilecnt.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-sodiff.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
 	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_1 =
@@ -178,8 +179,8 @@ am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-drawnwid_moc.$(OBJEXT) flexemu-e2screen_moc.$(OBJEXT) \
-	flexemu-efslctle_moc.$(OBJEXT) flexemu-logfilui_moc.$(OBJEXT) \
-	flexemu-qtgui_moc.$(OBJEXT)
+	flexemu-efslctle_moc.$(OBJEXT) flexemu-fsetupui_moc.$(OBJEXT) \
+	flexemu-logfilui_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
 	$(am__objects_6)
@@ -317,6 +318,8 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-bdate.Po \
 	./$(DEPDIR)/flexemu-fileread.Po \
 	./$(DEPDIR)/flexemu-flexemu_qrc.Po \
 	./$(DEPDIR)/flexemu-flexerr.Po ./$(DEPDIR)/flexemu-foptman.Po \
+	./$(DEPDIR)/flexemu-fsetupui.Po \
+	./$(DEPDIR)/flexemu-fsetupui_moc.Po \
 	./$(DEPDIR)/flexemu-iffilcnt.Po \
 	./$(DEPDIR)/flexemu-ifilecnt.Po ./$(DEPDIR)/flexemu-inout.Po \
 	./$(DEPDIR)/flexemu-iodevdbg.Po \
@@ -334,7 +337,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-bdate.Po \
 	./$(DEPDIR)/flexemu-pia2v5.Po ./$(DEPDIR)/flexemu-qtgui.Po \
 	./$(DEPDIR)/flexemu-qtgui_moc.Po \
 	./$(DEPDIR)/flexemu-rfilecnt.Po \
-	./$(DEPDIR)/flexemu-schedule.Po \
+	./$(DEPDIR)/flexemu-schedule.Po ./$(DEPDIR)/flexemu-sodiff.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
 	./$(DEPDIR)/flexemu-winmain.Po ./$(DEPDIR)/flexplorer-bdate.Po \
@@ -772,6 +775,7 @@ flexemu_moc_hdr = \
 	drawnwid.h \
 	e2screen.h \
 	efslctle.h \
+	fsetupui.h \
 	logfilui.h \
 	qtgui.h
 
@@ -870,6 +874,7 @@ flexemu_SOURCES = \
 	fileread.cpp \
 	flexerr.cpp \
 	foptman.cpp \
+	fsetupui.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
 	inout.cpp \
@@ -895,6 +900,7 @@ flexemu_SOURCES = \
 	qtgui.cpp \
 	rfilecnt.cpp \
 	schedule.cpp \
+	sodiff.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -952,6 +958,7 @@ flexemu_SOURCES = \
 	flexemu.h \
 	flexerr.h \
 	foptman.h \
+	fsetupui.h \
 	iffilcnt.h \
 	ifilcnti.h \
 	ifilecnt.h \
@@ -983,6 +990,7 @@ flexemu_SOURCES = \
 	schedcpu.h \
 	schedule.h \
 	scpulog.h \
+	sodiff.h \
 	soptions.h \
 	sprinter.h \
 	terminal.h \
@@ -1424,6 +1432,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flexemu_qrc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-flexerr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-foptman.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fsetupui.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fsetupui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-iffilcnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ifilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-inout.Po@am__quote@ # am--include-marker
@@ -1451,6 +1461,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-rfilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-sodiff.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
@@ -2453,6 +2464,20 @@ flexemu-foptman.obj: foptman.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-foptman.obj `if test -f 'foptman.cpp'; then $(CYGPATH_W) 'foptman.cpp'; else $(CYGPATH_W) '$(srcdir)/foptman.cpp'; fi`
 
+flexemu-fsetupui.o: fsetupui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fsetupui.o -MD -MP -MF $(DEPDIR)/flexemu-fsetupui.Tpo -c -o flexemu-fsetupui.o `test -f 'fsetupui.cpp' || echo '$(srcdir)/'`fsetupui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fsetupui.Tpo $(DEPDIR)/flexemu-fsetupui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui.cpp' object='flexemu-fsetupui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fsetupui.o `test -f 'fsetupui.cpp' || echo '$(srcdir)/'`fsetupui.cpp
+
+flexemu-fsetupui.obj: fsetupui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fsetupui.obj -MD -MP -MF $(DEPDIR)/flexemu-fsetupui.Tpo -c -o flexemu-fsetupui.obj `if test -f 'fsetupui.cpp'; then $(CYGPATH_W) 'fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fsetupui.Tpo $(DEPDIR)/flexemu-fsetupui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui.cpp' object='flexemu-fsetupui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fsetupui.obj `if test -f 'fsetupui.cpp'; then $(CYGPATH_W) 'fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui.cpp'; fi`
+
 flexemu-iffilcnt.o: iffilcnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-iffilcnt.o -MD -MP -MF $(DEPDIR)/flexemu-iffilcnt.Tpo -c -o flexemu-iffilcnt.o `test -f 'iffilcnt.cpp' || echo '$(srcdir)/'`iffilcnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-iffilcnt.Tpo $(DEPDIR)/flexemu-iffilcnt.Po
@@ -2803,6 +2828,20 @@ flexemu-schedule.obj: schedule.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-schedule.obj `if test -f 'schedule.cpp'; then $(CYGPATH_W) 'schedule.cpp'; else $(CYGPATH_W) '$(srcdir)/schedule.cpp'; fi`
 
+flexemu-sodiff.o: sodiff.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-sodiff.o -MD -MP -MF $(DEPDIR)/flexemu-sodiff.Tpo -c -o flexemu-sodiff.o `test -f 'sodiff.cpp' || echo '$(srcdir)/'`sodiff.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-sodiff.Tpo $(DEPDIR)/flexemu-sodiff.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sodiff.cpp' object='flexemu-sodiff.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-sodiff.o `test -f 'sodiff.cpp' || echo '$(srcdir)/'`sodiff.cpp
+
+flexemu-sodiff.obj: sodiff.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-sodiff.obj -MD -MP -MF $(DEPDIR)/flexemu-sodiff.Tpo -c -o flexemu-sodiff.obj `if test -f 'sodiff.cpp'; then $(CYGPATH_W) 'sodiff.cpp'; else $(CYGPATH_W) '$(srcdir)/sodiff.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-sodiff.Tpo $(DEPDIR)/flexemu-sodiff.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='sodiff.cpp' object='flexemu-sodiff.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-sodiff.obj `if test -f 'sodiff.cpp'; then $(CYGPATH_W) 'sodiff.cpp'; else $(CYGPATH_W) '$(srcdir)/sodiff.cpp'; fi`
+
 flexemu-terminal.o: terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-terminal.o -MD -MP -MF $(DEPDIR)/flexemu-terminal.Tpo -c -o flexemu-terminal.o `test -f 'terminal.cpp' || echo '$(srcdir)/'`terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-terminal.Tpo $(DEPDIR)/flexemu-terminal.Po
@@ -2942,6 +2981,20 @@ flexemu-efslctle_moc.obj: efslctle_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='efslctle_moc.cpp' object='flexemu-efslctle_moc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-efslctle_moc.obj `if test -f 'efslctle_moc.cpp'; then $(CYGPATH_W) 'efslctle_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/efslctle_moc.cpp'; fi`
+
+flexemu-fsetupui_moc.o: fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fsetupui_moc.o -MD -MP -MF $(DEPDIR)/flexemu-fsetupui_moc.Tpo -c -o flexemu-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fsetupui_moc.Tpo $(DEPDIR)/flexemu-fsetupui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='flexemu-fsetupui_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
+
+flexemu-fsetupui_moc.obj: fsetupui_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fsetupui_moc.obj -MD -MP -MF $(DEPDIR)/flexemu-fsetupui_moc.Tpo -c -o flexemu-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fsetupui_moc.Tpo $(DEPDIR)/flexemu-fsetupui_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='flexemu-fsetupui_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
 
 flexemu-logfilui_moc.o: logfilui_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-logfilui_moc.o -MD -MP -MF $(DEPDIR)/flexemu-logfilui_moc.Tpo -c -o flexemu-logfilui_moc.o `test -f 'logfilui_moc.cpp' || echo '$(srcdir)/'`logfilui_moc.cpp
@@ -4450,6 +4503,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-flexemu_qrc.Po
 	-rm -f ./$(DEPDIR)/flexemu-flexerr.Po
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po
+	-rm -f ./$(DEPDIR)/flexemu-fsetupui.Po
+	-rm -f ./$(DEPDIR)/flexemu-fsetupui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-ifilecnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-inout.Po
@@ -4477,6 +4532,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
+	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
@@ -4678,6 +4734,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-flexemu_qrc.Po
 	-rm -f ./$(DEPDIR)/flexemu-flexerr.Po
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po
+	-rm -f ./$(DEPDIR)/flexemu-fsetupui.Po
+	-rm -f ./$(DEPDIR)/flexemu-fsetupui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-ifilecnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-inout.Po
@@ -4705,6 +4763,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
+	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po

@@ -28,6 +28,7 @@
 #include "absgui.h"
 #include "schedcpu.h"
 #include "scpulog.h"
+#include "soptions.h"
 #include "cpustat_ui.h"
 #include <vector>
 #include <string>
@@ -56,6 +57,7 @@ class Pia1;
 class E2floppy;
 class E2Screen;
 class FlexContainerInfo;
+class FlexemuOptionsDifference;
 class QAction;
 class QSize;
 class QString;
@@ -73,6 +75,7 @@ class QToolBar;
 class QStatusBar;
 class QStackedWidget;
 class QComboBox;
+struct sOptions;
 
 using ColorTable = QVector<QRgb>;
 using ColorTablesCache = QHash<uint, QByteArray>;
@@ -113,6 +116,7 @@ protected:
 
 private slots:
     void OnExit();
+    void OnPreferences();
     void OnFullScreen();
     void OnRepaintScreen();
     void OnStatusBar();
@@ -146,6 +150,7 @@ private:
     void CreateIcons();
     void CreateActions(QLayout &layout);
     void CreateFileActions(QLayout &layout);
+    void CreateEditActions(QLayout &layout);
     void CreateViewActions(QLayout &layout);
     void CreateCpuActions(QLayout &layout);
     void CreateHelpActions(QLayout &layout);
@@ -191,6 +196,9 @@ private:
     void ConnectScreenSizeComboBoxSignalSlots() const;
     QString GetScreenSizeStatusTip(int index) const;
     static QString AsString(Word driveNumber, const FlexContainerInfo &info);
+    QIcon GetPreferencesIcon(bool isRestartNeeded) const;
+    void SetPreferencesStatusText(bool isRestartNeeded) const;
+    void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;
 
     // QWidget Overrides
     bool event(QEvent *event) override;
@@ -209,6 +217,7 @@ private:
     E2Screen *e2screen;
     QMenuBar *menuBar;
     QToolBar *fileToolBar;
+    QToolBar *editToolBar;
     QToolBar *viewToolBar;
     QToolBar *cpuToolBar;
     QToolBar *helpToolBar;
@@ -218,6 +227,7 @@ private:
     QDialog *cpuDialog;
     Ui::CpuStatus cpuUi;
     QAction *exitAction;
+    QAction *preferencesAction;
     QAction *fullScreenAction;
     QAction *smoothAction;
     QAction *statusBarAction;
@@ -252,6 +262,8 @@ private:
     bool isStatusBarVisible;
     bool isRunning;
     bool isConfirmClose;
+    bool isForceScreenUpdate;
+    bool isRestartNeeded;
     int timerTicks;
     Byte oldFirstRasterLine;
     s_cpu_logfile logfileSettings;
@@ -263,6 +275,7 @@ private:
     KeyboardIO &keyboardIO;
     E2floppy *fdc;
     sOptions &options;
+    sOptions oldOptions;
 };
 #endif
 

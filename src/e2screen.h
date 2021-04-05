@@ -76,6 +76,7 @@ public:
     QString GetTitle();
     void ResizeToFactor(int factor);
     bool IsSmoothDisplay() const;
+    void SetBackgroundColor(const QColor &color);
 
     // QWidget Overrides
     QSize minimumSizeHint() const override;

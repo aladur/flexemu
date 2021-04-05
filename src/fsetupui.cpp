@@ -118,6 +118,8 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
                                "has to be called before.");
     }
 
+    readOnlyOptions = AddDependentReadOnlyOptions(options.readOnlyOptionIds);
+
     InitializeHardwareHyperlink(options.doc_dir.c_str());
 
     for (int x = 1; x <= MAX_PIXELSIZE; x++)
@@ -237,6 +239,189 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
         r_frequencySet->setChecked(true);
         e_frequency->setText(frequency_string);
     }
+    SetOptionsReadOnly(readOnlyOptions);
+}
+
+void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
+        &p_readOnlyOptions)
+{
+    for (auto readOnlyOptionId : p_readOnlyOptions)
+    {
+        switch (readOnlyOptionId)
+        {
+            case FlexemuOptionId::Drive0:
+                e_drive0->setEnabled(false);
+                b_drive0->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::Drive1:
+                e_drive1->setEnabled(false);
+                b_drive1->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::Drive2:
+                e_drive2->setEnabled(false);
+                b_drive2->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::Drive3:
+                e_drive3->setEnabled(false);
+                b_drive3->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::MdcrDrive0:
+                e_mdcrDrive0->setEnabled(false);
+                b_mdcrDrive0->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::MdcrDrive1:
+                e_mdcrDrive1->setEnabled(false);
+                b_mdcrDrive1->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::HexFile:
+                e_monitorPgm->setEnabled(false);
+                b_monitorPgm->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::DiskDirectory:
+                e_diskMonitorDir->setEnabled(false);
+                b_diskMonitorDir->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsUseUndocumented:
+                c_undocumented->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::Frequency:
+                r_frequencyOriginal->setEnabled(false);
+                r_frequencyFast->setEnabled(false);
+                r_frequencySet->setEnabled(false);
+                e_frequency->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::Color:
+                cb_color->setEnabled(false);
+                c_multiColorScheme->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::NColors:
+                cb_nColors->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsInverse:
+                c_isInverse->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::PixelSize:
+                cb_geometry->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsRamExt2x96:
+            case FlexemuOptionId::IsRamExt2x288:
+                r_ramExtNone->setEnabled(false);
+                r_ramExt2x96->setEnabled(false);
+                r_ramExt2x288->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsFlexibleMmu:
+                c_flexibleMmu->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsEurocom2V5:
+                r_eurocom2v5->setEnabled(false);
+                r_eurocom2v7->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::IsUseRtc:
+                c_useRtc->setEnabled(false);
+                break;
+        }
+    }
+}
+
+std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
+    const std::vector<FlexemuOptionId> &readOnlyOptions)
+{
+    std::vector<FlexemuOptionId> result(readOnlyOptions);
+    std::vector<FlexemuOptionId> dependents;
+
+    auto addDependent = [&](FlexemuOptionId option){
+        if (std::find(result.begin(), result.end(), option) == result.end())
+        {
+            dependents.push_back(option);
+        }
+    };
+
+    do {
+        for (auto readOnlyOptionId : result)
+        {
+            dependents.clear();
+            switch (readOnlyOptionId)
+            {
+                case FlexemuOptionId::IsRamExt2x96:
+                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsFlexibleMmu);
+                    addDependent(FlexemuOptionId::IsEurocom2V5);
+                    break;
+
+                case FlexemuOptionId::IsRamExt2x288:
+                    addDependent(FlexemuOptionId::IsRamExt2x96);
+                    addDependent(FlexemuOptionId::IsFlexibleMmu);
+                    addDependent(FlexemuOptionId::IsEurocom2V5);
+                    break;
+
+                case FlexemuOptionId::IsFlexibleMmu:
+                    addDependent(FlexemuOptionId::IsRamExt2x96);
+                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    addDependent(FlexemuOptionId::IsEurocom2V5);
+                    break;
+
+                case FlexemuOptionId::Drive0:
+                case FlexemuOptionId::Drive1:
+                case FlexemuOptionId::Drive2:
+                case FlexemuOptionId::Drive3:
+                case FlexemuOptionId::MdcrDrive0:
+                case FlexemuOptionId::MdcrDrive1:
+                case FlexemuOptionId::IsUseRtc:
+                    addDependent(FlexemuOptionId::IsEurocom2V5);
+                    break;
+
+                case FlexemuOptionId::Color:
+                    addDependent(FlexemuOptionId::NColors);
+                    addDependent(FlexemuOptionId::IsRamExt2x96);
+                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    break;
+
+                case FlexemuOptionId::NColors:
+                    addDependent(FlexemuOptionId::Color);
+                    addDependent(FlexemuOptionId::IsRamExt2x96);
+                    addDependent(FlexemuOptionId::IsRamExt2x288);
+                    break;
+
+                case FlexemuOptionId::DiskDirectory:
+                case FlexemuOptionId::HexFile:
+                case FlexemuOptionId::IsEurocom2V5:
+                case FlexemuOptionId::IsUseUndocumented:
+                case FlexemuOptionId::Frequency:
+                case FlexemuOptionId::IsInverse:
+                case FlexemuOptionId::PixelSize:
+                    break;
+            }
+        }
+
+        std::copy(dependents.begin(), dependents.end(),
+                std::back_inserter(result));
+
+    } while (!dependents.empty());
+
+    return result;
+}
+
+bool FlexemuOptionsUi::IsReadOnly(FlexemuOptionId optionId)
+{
+    return std::find(readOnlyOptions.cbegin(), readOnlyOptions.cend(),
+                     optionId) != readOnlyOptions.cend();
 }
 
 void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
@@ -306,104 +491,136 @@ bool FlexemuOptionsUi::Validate()
 void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 {
     bool success = false;
-    bool x_ok = false;
-    auto geometry = cb_geometry->currentText();
-    auto xString = geometry.midRef(0, geometry.indexOf("x")).toString();
-    unsigned int x = xString.toUInt(&x_ok);
 
-    if (x_ok)
+    if (!IsReadOnly(FlexemuOptionId::PixelSize))
     {
-        options.pixelSize = x / WINDOWWIDTH;
-    }
+        bool x_ok = false;
+        auto geometry = cb_geometry->currentText();
+        auto xString = geometry.midRef(0, geometry.indexOf("x")).toString();
+        unsigned int x = xString.toUInt(&x_ok);
 
-    auto n = cb_nColors->currentText().toUInt(&success);
-    options.nColors = (success ? n : 2);
-
-    if (c_multiColorScheme->isChecked() && cb_nColors->currentIndex() > 0)
-    {
-         options.color = "default";
-    }
-    else
-    {
-        options.color = cb_color->currentText().toStdString();
-
-        for (size_t i = 0; i < color_count; i++)
+        if (x_ok)
         {
-            auto colorName = tr(colors[i].colorName);
+            options.pixelSize = x / WINDOWWIDTH;
+        }
+    }
 
-            if (colorName == cb_color->currentText())
+    if (!IsReadOnly(FlexemuOptionId::NColors) &&
+        !IsReadOnly(FlexemuOptionId::Color))
+    {
+        auto n = cb_nColors->currentText().toUInt(&success);
+        options.nColors = (success ? n : 2);
+
+        if (c_multiColorScheme->isChecked() && cb_nColors->currentIndex() > 0)
+        {
+             options.color = "default";
+        }
+        else
+        {
+            options.color = cb_color->currentText().toStdString();
+
+            for (size_t i = 0; i < color_count; i++)
             {
-                options.color = colors[i].colorName;
+                auto colorName = tr(colors[i].colorName);
+
+                if (colorName == cb_color->currentText())
+                {
+                    options.color = colors[i].colorName;
+                }
             }
         }
     }
 
-    options.isInverse = c_isInverse->isChecked();
-
-    options.use_undocumented = c_undocumented->isChecked();
-
-    options.disk_dir = e_diskMonitorDir->text().toStdString();
-
-    options.hex_file = e_monitorPgm->text().toStdString();
-
-    options.drive[0] = e_drive0->text().toStdString();
-    options.drive[1] = e_drive1->text().toStdString();
-    options.drive[2] = e_drive2->text().toStdString();
-    options.drive[3] = e_drive3->text().toStdString();
-
-    options.mdcrDrives[0] = e_mdcrDrive0->text().toStdString();
-    options.mdcrDrives[1] = e_mdcrDrive1->text().toStdString();
-
-    auto ramExt = r_ramExt2x96->isEnabled() && r_ramExt2x96->isChecked();
-    auto hiMem = r_ramExt2x288->isEnabled() && r_ramExt2x288->isChecked();
-    options.isRamExtension = ramExt || hiMem;
-    options.isHiMem = hiMem;
-
-    if (options.isHiMem)
+    if (!IsReadOnly(FlexemuOptionId::PixelSize))
     {
-        auto flexMmu = c_flexibleMmu->isEnabled() && c_flexibleMmu->isChecked();
-        options.isFlexibleMmu = flexMmu;
+        options.isInverse = c_isInverse->isChecked();
     }
 
-    auto useRtc = c_useRtc->isEnabled() && c_useRtc->isChecked();
-    options.useRtc = useRtc;
-
-    options.isEurocom2V5 = r_eurocom2v5->isChecked();
-
-    if (r_frequencyOriginal->isChecked())
+    if (!IsReadOnly(FlexemuOptionId::IsUseUndocumented))
     {
-            options.frequency = -1.0f;
-    }
-    else if (r_frequencyFast->isChecked())
-    {
-            options.frequency = 0.0f;
-    }
-    else if (r_frequencySet->isChecked())
-    {
-        // success == false should be prevented by Validate().
-        auto frequency = englishUS.toFloat(e_frequency->text(), &success);
-        options.frequency = (success ? frequency : -1.0f);
+        options.use_undocumented = c_undocumented->isChecked();
     }
 
-    if (!options.isRamExtension)
+    if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
-        options.nColors = 2;
-        options.isHiMem = false;
-        options.isFlexibleMmu = false;
+        options.disk_dir = e_diskMonitorDir->text().toStdString();
     }
 
-    if (options.isRamExtension && !options.isHiMem)
+    if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
-        options.isFlexibleMmu = false;
+        options.hex_file = e_monitorPgm->text().toStdString();
     }
 
-    if (options.isEurocom2V5)
+    if (!IsReadOnly(FlexemuOptionId::Drive0))
     {
-        options.nColors = 2;
-        options.useRtc = false;
-        options.isRamExtension = false;
-        options.isHiMem = false;
-        options.isFlexibleMmu = false;
+        options.drive[0] = e_drive0->text().toStdString();
+    }
+    if (!IsReadOnly(FlexemuOptionId::Drive1))
+    {
+        options.drive[1] = e_drive1->text().toStdString();
+    }
+    if (!IsReadOnly(FlexemuOptionId::Drive2))
+    {
+        options.drive[2] = e_drive2->text().toStdString();
+    }
+    if (!IsReadOnly(FlexemuOptionId::Drive3))
+    {
+        options.drive[3] = e_drive3->text().toStdString();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::MdcrDrive0))
+    {
+        options.mdcrDrives[0] = e_mdcrDrive0->text().toStdString();
+    }
+    if (!IsReadOnly(FlexemuOptionId::MdcrDrive1))
+    {
+        options.mdcrDrives[1] = e_mdcrDrive1->text().toStdString();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsRamExt2x96) &&
+        !IsReadOnly(FlexemuOptionId::IsRamExt2x288) &&
+        !IsReadOnly(FlexemuOptionId::IsFlexibleMmu))
+    {
+        auto ramExt = r_ramExt2x96->isChecked();
+        auto hiMem = r_ramExt2x288->isChecked();
+        options.isRamExtension = ramExt || hiMem;
+        options.isHiMem = hiMem;
+
+        if (options.isHiMem)
+        {
+            auto flexibleMmu =
+                c_flexibleMmu->isEnabled() && c_flexibleMmu->isChecked();
+            options.isFlexibleMmu = flexibleMmu;
+        }
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsUseRtc))
+    {
+        auto useRtc = c_useRtc->isEnabled() && c_useRtc->isChecked();
+        options.useRtc = useRtc;
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsEurocom2V5))
+    {
+        options.isEurocom2V5 = r_eurocom2v5->isChecked();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsUseRtc))
+    {
+        if (r_frequencyOriginal->isChecked())
+        {
+                options.frequency = -1.0f;
+        }
+        else if (r_frequencyFast->isChecked())
+        {
+                options.frequency = 0.0f;
+        }
+        else if (r_frequencySet->isChecked())
+        {
+            // success == false should be prevented by Validate().
+            auto frequency = englishUS.toFloat(e_frequency->text(), &success);
+            options.frequency = (success ? frequency : -1.0f);
+        }
     }
 }
 
@@ -529,13 +746,13 @@ void FlexemuOptionsUi::UpdateRamDependencies()
 
 void FlexemuOptionsUi::UpdateColorDependencies()
 {
-    bool nColors_enabled =
+    bool canEnableNColors =
         (r_ramExt2x96->isEnabled() && r_ramExt2x96->isChecked()) ||
         (r_ramExt2x288->isEnabled() && r_ramExt2x288->isChecked());
 
-    cb_nColors->setEnabled(nColors_enabled);
+    cb_nColors->setEnabled(canEnableNColors);
 
-    if (nColors_enabled)
+    if (canEnableNColors)
     {
         c_multiColorScheme->setEnabled(cb_nColors->currentIndex() != 0);
         bool color_enabled = !(c_multiColorScheme->isEnabled() &&

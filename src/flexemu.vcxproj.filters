@@ -204,6 +204,9 @@
     <ClCompile Include="schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sodiff.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="terminal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -487,6 +490,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="scpulog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sodiff.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="soptions.h">

@@ -316,6 +316,7 @@ dist_icons = \
 	flexemu-flexplorer-open.png \
 	flexemu-flexplorer-opendir.png \
 	flexemu-flexplorer-options.png \
+	flexemu-flexplorer-options-needs-restart.png \
 	flexemu-flexplorer-paste.png \
 	flexemu-flexplorer-selectall.png \
 	flexemu-flexplorer-view.png \

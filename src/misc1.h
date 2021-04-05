@@ -220,6 +220,7 @@ extern const char *gMemoryAllocationErrorString;
 #ifndef EXIT_FAILURE
     #define EXIT_FAILURE 1
 #endif
+#define EXIT_RESTART 25262728 // (pseudo) Exit code to restart flexemu
 
 #if defined(WIN32) && !defined(NO_DEBUGPRINT)
 #define DEBUGPRINT(fmt)   OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " fmt))

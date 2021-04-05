@@ -24,9 +24,9 @@
 #define FOPTMAN_INCLUDED
 
 #include "misc1.h"
+#include "soptions.h"
 #include <stdio.h>
 
-struct sOptions;
 
 class FlexOptionManager
 {
@@ -39,7 +39,25 @@ public:
         struct sOptions &options,
         int argc,
         char *const argv[]);
-    void WriteOptions(struct sOptions &options, bool ifNotExists = false);
+    void WriteOptions(
+        const struct sOptions &options,
+        bool ifNotExists = false,
+        bool readWriteOptionsOnly = false);
+
+private:
+#ifdef _WIN32
+    void WriteOptionsToRegistry(
+        const struct sOptions &options,
+        const std::vector<FlexemuOptionId> &optionIds,
+        bool ifNotExists = false);
+#endif
+#ifdef UNIX
+    void WriteOptionsToFile(
+        const struct sOptions &options,
+        const std::vector<FlexemuOptionId> &optionIds,
+        const std::string &fileName,
+        bool ifNotExists = false);
+#endif
 };
 
 #endif // FOPTMAN_INCLUDED

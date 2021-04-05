@@ -227,6 +227,7 @@
     <ClCompile Include="fileread.cpp" />
     <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />
+    <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="iffilcnt.cpp" />
     <ClCompile Include="ifilecnt.cpp" />
     <ClCompile Include="inout.cpp" />
@@ -252,6 +253,7 @@
     <ClCompile Include="qtgui.cpp" />
     <ClCompile Include="rfilecnt.cpp" />
     <ClCompile Include="schedule.cpp" />
+    <ClCompile Include="sodiff.cpp" />
     <ClCompile Include="terminal.cpp" />
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />
@@ -293,6 +295,14 @@
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
+    <CustomBuild Include="fsetup.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
     <CustomBuild Include="brkptui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
@@ -318,6 +328,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="efslctle.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="fsetupui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
       <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
@@ -423,6 +441,7 @@
     <ClInclude Include="schedcpu.h" />
     <ClInclude Include="schedule.h" />
     <ClInclude Include="scpulog.h" />
+    <ClInclude Include="sodiff.h" />
     <ClInclude Include="soptions.h" />
     <ClInclude Include="sprinter.h" />
     <ClInclude Include="terminal.h" />

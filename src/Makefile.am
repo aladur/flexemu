@@ -126,6 +126,7 @@ flexemu_moc_hdr = \
 	drawnwid.h \
 	e2screen.h \
 	efslctle.h \
+	fsetupui.h \
 	logfilui.h \
 	qtgui.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
@@ -224,6 +225,7 @@ flexemu_SOURCES = \
 	fileread.cpp \
 	flexerr.cpp \
 	foptman.cpp \
+	fsetupui.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
 	inout.cpp \
@@ -249,6 +251,7 @@ flexemu_SOURCES = \
 	qtgui.cpp \
 	rfilecnt.cpp \
 	schedule.cpp \
+	sodiff.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -306,6 +309,7 @@ flexemu_SOURCES = \
 	flexemu.h \
 	flexerr.h \
 	foptman.h \
+	fsetupui.h \
 	iffilcnt.h \
 	ifilcnti.h \
 	ifilecnt.h \
@@ -337,6 +341,7 @@ flexemu_SOURCES = \
 	schedcpu.h \
 	schedule.h \
 	scpulog.h \
+	sodiff.h \
 	soptions.h \
 	sprinter.h \
 	terminal.h \

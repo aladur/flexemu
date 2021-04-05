@@ -95,6 +95,7 @@ void FlexOptionManager::InitOptions(struct sOptions &options)
     options.disk_dir = getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     options.pixelSize = 2;
+    options.readOnlyOptionIds.clear();
 } // InitOptions
 
 #ifdef UNIX
@@ -204,6 +205,7 @@ void FlexOptionManager::GetEnvironmentOptions(
 }
 #endif  // ifdef UNIX
 
+
 void FlexOptionManager::GetCommandlineOptions(
     struct sOptions &options,
     int argc,
@@ -221,6 +223,16 @@ void FlexOptionManager::GetCommandlineOptions(
     strcat(optstr, "ic:n:");          // color, inverse video, # of colors
     strcat(optstr, "vh");   // version and help
 
+    auto setReadOnly =
+        [&roOptions = options.readOnlyOptionIds](FlexemuOptionId enumValue)
+    {
+        if (std::find(roOptions.cbegin(), roOptions.cend(), enumValue) ==
+            roOptions.cend())
+        {
+            roOptions.push_back(enumValue);
+        }
+    };
+
     while (1)
     {
         int result = getopt(argc, argv, optstr);
@@ -234,34 +246,42 @@ void FlexOptionManager::GetCommandlineOptions(
         {
             case 'f':
                 options.hex_file = optarg;
+                setReadOnly(FlexemuOptionId::HexFile);
                 break;
 
             case '0':
                 options.drive[0] = optarg;
+                setReadOnly(FlexemuOptionId::Drive0);
                 break;
 
             case '1':
                 options.drive[1] = optarg;
+                setReadOnly(FlexemuOptionId::Drive1);
                 break;
 
             case '2':
                 options.drive[2] = optarg;
+                setReadOnly(FlexemuOptionId::Drive2);
                 break;
 
             case '3':
                 options.drive[3] = optarg;
+                setReadOnly(FlexemuOptionId::Drive3);
                 break;
 
             case 'p':
                 options.disk_dir = optarg;
+                setReadOnly(FlexemuOptionId::DiskDirectory);
                 break;
 
             case 'm':
                 options.isHiMem = true;
+                setReadOnly(FlexemuOptionId::IsRamExt2x288);
                 break;
 
             case 'u':
                 options.use_undocumented = true;
+                setReadOnly(FlexemuOptionId::IsUseUndocumented);
                 break;
 
             case 'j':
@@ -270,6 +290,7 @@ void FlexOptionManager::GetCommandlineOptions(
                 if (i > 0 && i <= MAX_PIXELSIZE)
                 {
                     options.pixelSize = i;
+                    setReadOnly(FlexemuOptionId::PixelSize);
                 }
 
                 break;
@@ -280,6 +301,7 @@ void FlexOptionManager::GetCommandlineOptions(
                 if (f >= 0.0)
                 {
                     options.frequency = f;
+                    setReadOnly(FlexemuOptionId::Frequency);
                 }
 
                 break;
@@ -300,14 +322,17 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'n':
                 sscanf(optarg, "%d", &i);
                 options.nColors = i;
+                setReadOnly(FlexemuOptionId::NColors);
                 break;
 
             case 'c':
                 options.color = optarg;
+                setReadOnly(FlexemuOptionId::Color);
                 break;
 
             case 'i':
                 options.isInverse = true;
+                setReadOnly(FlexemuOptionId::IsInverse);
                 break;
 
             case 'v':
@@ -324,41 +349,24 @@ void FlexOptionManager::GetCommandlineOptions(
 
 
 void FlexOptionManager::WriteOptions(
-    struct sOptions &options,
-    bool  ifNotExists /* = false */
+    const struct sOptions &options,
+    bool  ifNotExists, /* = false */
+    bool isReadWriteOptionsOnly /* = false */
 )
 {
-#ifdef _WIN32
-    std::string   v;
+    auto optionIds(allFlexemuOptionIds);
 
-    BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
-
-    if (ifNotExists && reg.GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
+    if (isReadWriteOptionsOnly)
     {
-        return;
+        for (auto optionId : options.readOnlyOptionIds)
+        {
+            optionIds.erase(
+                std::remove(optionIds.begin(), optionIds.end(), optionId),
+                optionIds.end());
+        }
     }
-
-    reg.SetValue(FLEXINVERSE, options.isInverse ? 1 : 0);
-    reg.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
-    reg.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
-    reg.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
-    reg.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
-    reg.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
-    reg.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
-    reg.SetValue(FLEXCOLOR, options.color.c_str());
-    reg.SetValue(FLEXNCOLORS, options.nColors);
-    reg.SetValue(FLEXSCREENFACTOR, options.pixelSize);
-    reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
-    reg.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
-    reg.SetValue(FLEXDISK0, options.drive[0].c_str());
-    reg.SetValue(FLEXDISK1, options.drive[1].c_str());
-    reg.SetValue(FLEXDISK2, options.drive[2].c_str());
-    reg.SetValue(FLEXDISK3, options.drive[3].c_str());
-    reg.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
-    reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
-    reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
-    reg.SetValue(FLEXVERSION, VERSION);
-    reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
+#ifdef _WIN32
+    WriteOptionsToRegistry(options, optionIds, ifNotExists);
 #endif
 #ifdef UNIX
     std::string rcFileName;
@@ -371,34 +379,249 @@ void FlexOptionManager::WriteOptions(
 
     rcFileName += PATHSEPARATORSTRING FLEXEMURC;
 
-    if (ifNotExists && access(rcFileName.c_str(), F_OK) == 0)
+    WriteOptionsToFile(options, optionIds, rcFileName, ifNotExists);
+#endif
+
+} /* WriteOptions */
+
+#ifdef _WIN32
+void FlexOptionManager::WriteOptionsToRegistry(
+        const struct sOptions &options,
+        const std::vector<FlexemuOptionId> &optionIdsToWrite,
+        bool ifNotExists /* = false */
+        )
+{
+    BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
+    std::string v;
+
+    if (ifNotExists && reg.GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
     {
         return;
     }
 
-    BRcFile rcFile(rcFileName.c_str());
-    rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXINVERSE, options.isInverse ? 1 : 0);
-    rcFile.SetValue(FLEXCOLOR, options.color.c_str());
-    rcFile.SetValue(FLEXNCOLORS, options.nColors);
-    rcFile.SetValue(FLEXSCREENFACTOR, options.pixelSize);
-    rcFile.SetValue(FLEXMONITOR, options.hex_file.c_str());
-    rcFile.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
-    rcFile.SetValue(FLEXDISK0, options.drive[0].c_str());
-    rcFile.SetValue(FLEXDISK1, options.drive[1].c_str());
-    rcFile.SetValue(FLEXDISK2, options.drive[2].c_str());
-    rcFile.SetValue(FLEXDISK3, options.drive[3].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
-    rcFile.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
-    rcFile.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
-    rcFile.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
-    rcFile.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
-    rcFile.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
-    rcFile.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
-    rcFile.SetValue(FLEXFREQUENCY, std::to_string(options.frequency).c_str());
+    // Only write options contained in optionIds.
+    for (auto optionId : optionIdsToWrite)
+    {
+        switch (optionId)
+        {
+        case FlexemuOptionId::IsInverse:
+            reg.SetValue(FLEXINVERSE, options.isInverse ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsRamExt2x96:
+            reg.SetValue(FLEXRAMEXTENSION, options.isRamExtension ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsRamExt2x288:
+            reg.SetValue(FLEXHIMEM, options.isHiMem ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsFlexibleMmu:
+            reg.SetValue(FLEXFLEXIBLEMMU, options.isFlexibleMmu ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsEurocom2V5:
+            reg.SetValue(FLEXEUROCOM2V5, options.isEurocom2V5 ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsUseUndocumented:
+            reg.SetValue(FLEXUNDOCUMENTED, options.use_undocumented ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::IsUseRtc:
+            reg.SetValue(FLEXRTC, options.useRtc ? 1 : 0);
+            break;
+
+        case FlexemuOptionId::Color:
+            reg.SetValue(FLEXCOLOR, options.color.c_str());
+            break;
+
+        case FlexemuOptionId::NColors:
+            reg.SetValue(FLEXNCOLORS, options.nColors);
+            break;
+
+        case FlexemuOptionId::PixelSize:
+            reg.SetValue(FLEXSCREENFACTOR, options.pixelSize);
+            break;
+
+        case FlexemuOptionId::HexFile:
+            reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
+            break;
+
+        case FlexemuOptionId::DiskDirectory:
+            reg.SetValue(FLEXDISKDIR, options.disk_dir.c_str());
+            break;
+
+        case FlexemuOptionId::Drive0:
+            reg.SetValue(FLEXDISK0, options.drive[0].c_str());
+            break;
+
+        case FlexemuOptionId::Drive1:
+            reg.SetValue(FLEXDISK1, options.drive[1].c_str());
+            break;
+
+        case FlexemuOptionId::Drive2:
+            reg.SetValue(FLEXDISK2, options.drive[2].c_str());
+            break;
+
+        case FlexemuOptionId::Drive3:
+            reg.SetValue(FLEXDISK3, options.drive[3].c_str());
+            break;
+
+        case FlexemuOptionId::MdcrDrive0:
+            reg.SetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0].c_str());
+            break;
+
+        case FlexemuOptionId::MdcrDrive1:
+            reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
+            break;
+
+        case FlexemuOptionId::Frequency:
+            reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
+            break;
+        }
+
+        reg.SetValue(FLEXVERSION, VERSION);
+        reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
+    }
+}
 #endif
-} /* WriteOptions */
+
+#ifdef UNIX
+void FlexOptionManager::WriteOptionsToFile(
+        const struct sOptions &options,
+        const std::vector<FlexemuOptionId> &optionIdsToWrite,
+        const std::string &fileName,
+        bool ifNotExists /* = false */)
+{
+    if (ifNotExists && access(fileName.c_str(), F_OK) == 0)
+    {
+        return;
+    }
+
+    auto optionIds(allFlexemuOptionIds);
+
+    // Collect all optionIds to overwrite from previous options.
+    for (auto optionId : optionIdsToWrite)
+    {
+        optionIds.erase(
+            std::remove(optionIds.begin(), optionIds.end(), optionId),
+            optionIds.end());
+    }
+
+    sOptions previousOptions; // Previous options read from file.
+    sOptions optionsToWrite(options); // Options to write to file.
+
+    // Read previous options from file.
+    InitOptions(previousOptions);
+    GetOptions(previousOptions);
+
+    for (auto optionId : optionIds)
+    {
+        switch (optionId)
+        {
+        case FlexemuOptionId::IsInverse:
+            optionsToWrite.isInverse = previousOptions.isInverse;
+            break;
+
+        case FlexemuOptionId::IsRamExt2x96:
+            optionsToWrite.isRamExtension = previousOptions.isRamExtension;
+            break;
+
+        case FlexemuOptionId::IsRamExt2x288:
+            optionsToWrite.isHiMem = previousOptions.isHiMem;
+            break;
+
+        case FlexemuOptionId::IsFlexibleMmu:
+            optionsToWrite.isFlexibleMmu = previousOptions.isFlexibleMmu;
+            break;
+
+        case FlexemuOptionId::IsEurocom2V5:
+            optionsToWrite.isEurocom2V5 = previousOptions.isEurocom2V5;
+            break;
+
+        case FlexemuOptionId::IsUseUndocumented:
+            optionsToWrite.use_undocumented = previousOptions.use_undocumented;
+            break;
+
+        case FlexemuOptionId::IsUseRtc:
+            optionsToWrite.useRtc = previousOptions.useRtc;
+            break;
+
+        case FlexemuOptionId::Color:
+            optionsToWrite.color = previousOptions.color;
+            break;
+
+        case FlexemuOptionId::NColors:
+            optionsToWrite.nColors = previousOptions.nColors;
+            break;
+
+        case FlexemuOptionId::PixelSize:
+            optionsToWrite.pixelSize = previousOptions.pixelSize;
+            break;
+
+        case FlexemuOptionId::HexFile:
+            optionsToWrite.hex_file = previousOptions.hex_file;
+            break;
+
+        case FlexemuOptionId::DiskDirectory:
+            optionsToWrite.disk_dir = previousOptions.disk_dir;
+            break;
+
+        case FlexemuOptionId::Drive0:
+            optionsToWrite.drive[0] = previousOptions.drive[0];
+            break;
+
+        case FlexemuOptionId::Drive1:
+            optionsToWrite.drive[1] = previousOptions.drive[1];
+            break;
+
+        case FlexemuOptionId::Drive2:
+            optionsToWrite.drive[2] = previousOptions.drive[2];
+            break;
+
+        case FlexemuOptionId::Drive3:
+            optionsToWrite.drive[3] = previousOptions.drive[3];
+            break;
+
+        case FlexemuOptionId::MdcrDrive0:
+            optionsToWrite.mdcrDrives[0] = previousOptions.mdcrDrives[0];
+            break;
+
+        case FlexemuOptionId::MdcrDrive1:
+            optionsToWrite.mdcrDrives[1] = previousOptions.mdcrDrives[1];
+            break;
+
+        case FlexemuOptionId::Frequency:
+            optionsToWrite.frequency = previousOptions.frequency;
+            break;
+        }
+    }
+
+    BRcFile rcFile(fileName.c_str());
+    rcFile.Initialize(); // truncate file
+    rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
+    rcFile.SetValue(FLEXCOLOR, optionsToWrite.color.c_str());
+    rcFile.SetValue(FLEXNCOLORS, optionsToWrite.nColors);
+    rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
+    rcFile.SetValue(FLEXMONITOR, optionsToWrite.hex_file.c_str());
+    rcFile.SetValue(FLEXDISKDIR, optionsToWrite.disk_dir.c_str());
+    rcFile.SetValue(FLEXDISK0, optionsToWrite.drive[0].c_str());
+    rcFile.SetValue(FLEXDISK1, optionsToWrite.drive[1].c_str());
+    rcFile.SetValue(FLEXDISK2, optionsToWrite.drive[2].c_str());
+    rcFile.SetValue(FLEXDISK3, optionsToWrite.drive[3].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE0, optionsToWrite.mdcrDrives[0].c_str());
+    rcFile.SetValue(FLEXMDCRDRIVE1, optionsToWrite.mdcrDrives[1].c_str());
+    rcFile.SetValue(FLEXRAMEXTENSION, optionsToWrite.isRamExtension ? 1 : 0);
+    rcFile.SetValue(FLEXHIMEM, optionsToWrite.isHiMem ? 1 : 0);
+    rcFile.SetValue(FLEXFLEXIBLEMMU, optionsToWrite.isFlexibleMmu ? 1 : 0);
+    rcFile.SetValue(FLEXEUROCOM2V5, optionsToWrite.isEurocom2V5 ? 1 : 0);
+    rcFile.SetValue(FLEXUNDOCUMENTED, optionsToWrite.use_undocumented ? 1 : 0);
+    rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
+    rcFile.SetValue(FLEXFREQUENCY,
+                    std::to_string(optionsToWrite.frequency).c_str());
+}
+#endif
 
 void FlexOptionManager::GetOptions(struct sOptions &options)
 {

@@ -313,6 +313,11 @@ void E2Screen::SetCursorPosition(int dx, int dy)
     }
 }
 
+void E2Screen::SetBackgroundColor(const QColor &color)
+{
+    backgroundColor = color;
+}
+
 void E2Screen::ToggleSmoothDisplay()
 {
     transformationMode = (transformationMode == Qt::FastTransformation) ?

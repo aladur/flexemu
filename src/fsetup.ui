@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Flexemu Options Dialog</string>
+   <string>Flexemu Preferences</string>
   </property>
   <property name="windowIcon">
    <iconset resource="fsetup.qrc">
@@ -743,13 +743,13 @@
        </widget>
        <widget class="QWidget" name="t_ExpertOptions">
         <attribute name="title">
-         <string>Expert Options</string>
+         <string>Expert Preferences</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
           <widget class="QLabel" name="l_expert">
            <property name="text">
-            <string>Expert options have appropriate default values. They should only be changed by experts.</string>
+            <string>Expert preferences have appropriate default values. They should only be changed by experts.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

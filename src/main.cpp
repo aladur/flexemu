@@ -40,6 +40,7 @@
 WinApiContext winApiContext;
 #endif
 
+
 // define an exception handler when new fails
 
 #ifdef _MSC_VER
@@ -67,9 +68,8 @@ void std_new_handler()
 
 int main(int argc, char *argv[])
 {
-    struct sOptions options;
-    FlexOptionManager optionMan;
-    int return_code = 0;
+    int return_code = EXIT_RESTART;
+    bool isRestarted = false;
 
 #ifdef _MSC_VER
     set_new_handler(std_new_handler);
@@ -77,46 +77,63 @@ int main(int argc, char *argv[])
     std::set_new_handler(std_new_handler);
 #endif
 
-    optionMan.InitOptions(options);
-    optionMan.GetOptions(options);
-    optionMan.GetEnvironmentOptions(options);
-    optionMan.GetCommandlineOptions(options, argc, argv);
-    // write options but only if options file not already exists
-    optionMan.WriteOptions(options, true);
+    Q_INIT_RESOURCE(flexemu_qrc_cpp);
 
-    try
+
+    while (return_code == EXIT_RESTART)
     {
-        Q_INIT_RESOURCE(flexemu_qrc_cpp);
-        QApplication app(argc, argv);
-        ApplicationRunner runner(options);
+        struct sOptions options;
+        FlexOptionManager optionMan;
 
-        if (!(return_code = runner.startup()))
+        try
         {
-            return_code = app.exec();
+            optionMan.InitOptions(options);
+            optionMan.GetOptions(options);
+            optionMan.GetEnvironmentOptions(options);
+            optionMan.GetCommandlineOptions(options, argc, argv);
+            // write options but only if options file not already exists
+            optionMan.WriteOptions(options, true);
+            if (isRestarted)
+            {
+                options.startup_command = "";
+                options.term_mode = false;
+            }
+
+            QApplication app(argc, argv);
+            ApplicationRunner runner(options);
+
+            if (!(return_code = runner.startup()))
+            {
+                return_code = app.exec();
+            }
+            isRestarted = true;
         }
-    }
+
 #ifdef _WIN32
-    catch (std::bad_alloc UNUSED(&e))
-    {
-        MessageBox(nullptr, gMemoryAllocationErrorString,
-                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
-        return_code = 1;
-    }
+        catch (std::bad_alloc UNUSED(&e))
+        {
+            MessageBox(nullptr, gMemoryAllocationErrorString,
+                       PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+            return_code = 1;
+            break;
+        }
 #endif
-    catch (std::exception &ex)
-    {
-        std::stringstream msg;
+        catch (std::exception &ex)
+        {
+            std::stringstream msg;
 
-        msg << PROGRAMNAME << ": An error has occured: " << ex.what();
+            msg << PROGRAMNAME << ": An error has occured: " << ex.what();
 
 #ifdef _WIN32
-        MessageBox(nullptr, msg.str().c_str(),
-                   PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+            MessageBox(nullptr, msg.str().c_str(),
+                       PROGRAMNAME " error", MB_OK | MB_ICONERROR);
 #else
-        fprintf(stderr, "%s\n", msg.str().c_str());
+            fprintf(stderr, "%s\n", msg.str().c_str());
 #endif
-        return_code = 1;
-    }
+            return_code = 1;
+            break;
+        }
+    };
 
     return return_code;
 }

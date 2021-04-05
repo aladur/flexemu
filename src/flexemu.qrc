@@ -3,6 +3,8 @@
     <qresource prefix="/resource">
         <file alias="flexemu.png">bitmaps/32x32/flexemu.png</file>
         <file alias="exit.png">bitmaps/32x32/flexemu-flexplorer-exit.png</file>
+        <file alias="preferences.png">bitmaps/32x32/flexemu-flexplorer-options.png</file>
+        <file alias="preferences-needs-restart.png">bitmaps/32x32/flexemu-flexplorer-options-needs-restart.png</file>
         <file alias="copy.png">bitmaps/32x32/flexemu-flexplorer-copy.png</file>
         <file alias="info.png">bitmaps/32x32/flexemu-flexplorer-info.png</file>
         <file alias="about.png">bitmaps/32x32/flexemu-flexplorer-about.png</file>

@@ -61,7 +61,7 @@ void TerminalIO::reset_terminal_io()
 {
 #ifdef HAVE_TERMIOS_H
 
-    if (isatty(fileno(stdin)))
+    if (is_termios_saved && isatty(fileno(stdin)))
     {
         tcsetattr(0, TCSAFLUSH, &save_termios);
 

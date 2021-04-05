@@ -29,7 +29,9 @@
 #include "brcfile.h"
 #include "bregistr.h"
 #include "fsetup_ui.h"
+#include "soptions.h"
 #include <string>
+#include <vector>
 #include <QObject>
 #include <QString>
 #include <QUrl>
@@ -37,7 +39,6 @@
 
 
 class QLineEdit;
-struct sOptions;
 
 class FlexemuOptionsUi : public QObject, protected Ui_FlexemuSetup
 {
@@ -76,6 +77,10 @@ private:
     void AddFrequencyValidator(QLineEdit &lineEdit);
     void InitializeHardwareHyperlink(const char *doc_dir);
     bool Validate();
+    bool IsReadOnly(FlexemuOptionId optionId);
+    void SetOptionsReadOnly(const std::vector<FlexemuOptionId> &readOnlyOptions);
+    static std::vector<FlexemuOptionId> AddDependentReadOnlyOptions(
+            const std::vector<FlexemuOptionId> &readOnlyOptions);
 
     void OnSelectFile(QLineEdit &lineEdit, FileType type);
 
@@ -89,6 +94,7 @@ private:
 
     QDialog *dialog;
     QLocale englishUS;
+    std::vector<FlexemuOptionId> readOnlyOptions;
 };
 
 #endif

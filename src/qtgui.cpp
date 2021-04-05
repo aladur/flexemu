@@ -42,7 +42,9 @@
 #include "logfilui.h"
 #include "propsui.h"
 #include "fcinfo.h"
-#include "soptions.h"
+#include "sodiff.h"
+#include "foptman.h"
+#include "fsetupui.h"
 #include <QString>
 #include <QVector>
 #include <QPixmap>
@@ -99,10 +101,13 @@ QtGui::QtGui(
              , x_inout
              , x_terminalIO)
         , e2screen(nullptr)
+        , preferencesAction(nullptr)
         , isOriginalFrequency(false)
         , isStatusBarVisible(true)
         , isRunning(true)
         , isConfirmClose(true)
+        , isForceScreenUpdate(true)
+        , isRestartNeeded(false)
         , timerTicks(0)
         , oldFirstRasterLine(0)
         , scheduler(x_scheduler)
@@ -112,6 +117,7 @@ QtGui::QtGui(
         , keyboardIO(x_keyboardIO)
         , fdc(nullptr)
         , options(x_options)
+        , oldOptions(x_options)
 {
     logfileSettings.reset();
 
@@ -218,7 +224,143 @@ QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
 
 void QtGui::OnExit()
 {
+    bool safeFlag = isRestartNeeded;
+
+    isRestartNeeded = false;
     close();
+    isRestartNeeded = safeFlag;
+}
+
+void QtGui::SetPreferencesStatusText(bool x_isRestartNeeded) const
+{
+    assert(preferencesAction != nullptr);
+
+    const auto statusText = x_isRestartNeeded ?
+        tr("Edit application preferences - Needs restart") :
+        tr("Edit application preferences");
+
+    preferencesAction->setStatusTip(statusText);
+}
+
+QIcon QtGui::GetPreferencesIcon(bool x_isRestartNeeded) const
+{
+    return x_isRestartNeeded ?
+        QIcon(":/resource/preferences-needs-restart.png") :
+        QIcon(":/resource/preferences.png");
+}
+
+void QtGui::OnPreferences()
+{
+    QDialog dialog;
+    FlexemuOptionsUi ui;
+
+    if (!isRestartNeeded)
+    {
+        oldOptions = options;
+    }
+
+    ui.setupUi(&dialog);
+    const auto preferencesIcon = GetPreferencesIcon(isRestartNeeded);
+    dialog.setWindowIcon(preferencesIcon);
+    ui.TransferDataToDialog(options);
+    dialog.resize({0, 0});
+    dialog.setModal(true);
+    dialog.setSizeGripEnabled(true);
+    auto result = dialog.exec();
+
+    if (result == QDialog::Accepted)
+    {
+        ui.TransferDataFromDialog(options);
+        FlexemuOptionsDifference optionsDiff(options, oldOptions);
+
+        isRestartNeeded = ::IsRestartNeeded(optionsDiff);
+        const auto icon = GetPreferencesIcon(isRestartNeeded);
+        preferencesAction->setIcon(icon);
+        SetPreferencesStatusText(isRestartNeeded);
+
+        if (isRestartNeeded)
+        {
+            if (close())
+            {
+                // Force restart flexemu
+                QApplication::exit(EXIT_RESTART);
+            }
+            return;
+        }
+
+        // The following preferences need no restart.
+        // They are directly taken over without user interaction.
+        bool isWriteOptions = false;
+        for (auto id : optionsDiff.GetNotEquals())
+        {
+            switch (id)
+            {
+                case FlexemuOptionId::Frequency:
+                {
+                    auto f = options.frequency;
+                    auto command =
+                        BCommandPtr(new CSetFrequency(scheduler, f));
+                    scheduler.sync_exec(std::move(command));
+                    UpdateCpuFrequencyCheck();
+                    isWriteOptions = true;
+                }
+                    break;
+
+                case FlexemuOptionId::IsUseUndocumented:
+                    cpu.set_use_undocumented(options.use_undocumented);
+                    UpdateCpuUndocumentedCheck();
+                    isWriteOptions = true;
+                    break;
+
+                case FlexemuOptionId::Color:
+                case FlexemuOptionId::NColors:
+                case FlexemuOptionId::IsInverse:
+                    colorTable = CreateColorTable();
+                    e2screen->SetBackgroundColor(colorTable.first());
+                    isForceScreenUpdate = true;
+                    isWriteOptions = true;
+                    break;
+
+                case FlexemuOptionId::PixelSize:
+                    OnScreenSize(options.pixelSize - 1);
+                    break;
+
+                case FlexemuOptionId::Drive0:
+                case FlexemuOptionId::Drive1:
+                case FlexemuOptionId::Drive2:
+                case FlexemuOptionId::Drive3:
+                case FlexemuOptionId::MdcrDrive0:
+                case FlexemuOptionId::MdcrDrive1:
+                case FlexemuOptionId::HexFile:
+                case FlexemuOptionId::DiskDirectory:
+                case FlexemuOptionId::IsRamExt2x96:
+                case FlexemuOptionId::IsRamExt2x288:
+                case FlexemuOptionId::IsFlexibleMmu:
+                case FlexemuOptionId::IsEurocom2V5:
+                case FlexemuOptionId::IsUseRtc:
+                    break;
+            }
+        }
+
+        if (isWriteOptions)
+        {
+            FlexOptionManager optionMan;
+
+            optionMan.WriteOptions(options, false, true);
+        }
+    }
+    else
+    {
+        // User pressed cancel => Cancel any preference changes.
+        if (isRestartNeeded)
+        {
+            isRestartNeeded = false;
+            const auto icon = GetPreferencesIcon(isRestartNeeded);
+            preferencesAction->setIcon(icon);
+            SetPreferencesStatusText(isRestartNeeded);
+            options = oldOptions;
+        }
+    }
 }
 
 void QtGui::OnRepaintScreen()
@@ -552,6 +694,7 @@ void QtGui::OnTimer()
 
         auto firstRasterLine = vico2.get_value();
         bool isRepaintScreen = false;
+
         if (firstRasterLine != oldFirstRasterLine)
         {
             isRepaintScreen = true;
@@ -563,7 +706,7 @@ void QtGui::OnTimer()
         // update graphic display (only if display memory has changed)
         for (display_block = 0; display_block < YBLOCKS; display_block++)
         {
-            if (memory.has_changed(display_block))
+            if (isForceScreenUpdate || memory.has_changed(display_block))
             {
                 update_block(display_block);
                 isRepaintScreen = true;
@@ -574,6 +717,7 @@ void QtGui::OnTimer()
         {
             e2screen->RepaintScreen();
         }
+        isForceScreenUpdate = false;
 
         e2screen->UpdateMouse();
 
@@ -644,6 +788,10 @@ void QtGui::OnScreenSize(int index)
         }
         e2screen->ResizeToFactor(index + 1);
         AdjustSize();
+
+        oldOptions.pixelSize = index + 1;
+        options.pixelSize = index + 1;
+        WriteOneOption(options, FlexemuOptionId::PixelSize);
     }
 
     UpdateScreenSizeCheck(index);
@@ -670,6 +818,7 @@ void QtGui::UpdateScreenSizeValue(int index) const
 void QtGui::CreateActions(QLayout &layout)
 {
     CreateFileActions(layout);
+    CreateEditActions(layout);
     CreateViewActions(layout);
     CreateCpuActions(layout);
     CreateHelpActions(layout);
@@ -691,6 +840,26 @@ void QtGui::CreateFileActions(QLayout& layout)
     exitAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_Q));
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
+}
+
+void QtGui::CreateEditActions(QLayout& layout)
+{
+    auto *editMenu = menuBar->addMenu(tr("&Edit"));
+    editToolBar =
+        CreateToolBar(this, tr("Edit"), QStringLiteral("editToolBar"));
+    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    editToolBar->setSizePolicy(sizePolicy);
+    layout.addWidget(editToolBar);
+
+    const auto preferencesIcon = GetPreferencesIcon(isRestartNeeded);
+    preferencesAction =
+        editMenu->addAction(preferencesIcon, tr("&Preferences"));
+    SetPreferencesStatusText(isRestartNeeded);
+    connect(preferencesAction, &QAction::triggered,
+            this, &QtGui::OnPreferences);
+    const auto keySequence = QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_P);
+    preferencesAction->setShortcut(keySequence);
+    editToolBar->addAction(preferencesAction);
 }
 
 void QtGui::CreateViewActions(QLayout& layout)
@@ -1134,7 +1303,10 @@ bool QtGui::IsClosingConfirmed()
 {
     if (isConfirmClose)
     {
-        auto message = tr("Do you really want to close ") + PROGRAMNAME;
+        auto message = isRestartNeeded ?
+            tr("Do you want to restart %s now?") :
+            tr("Do you want to close %s?");
+        message = QString::asprintf(message.toUtf8().data(), PROGRAMNAME);
         auto result = QMessageBox::question(this, tr("Flexemu"), message,
                           QMessageBox::Yes | QMessageBox::No);
         return (result == QMessageBox::Yes);
@@ -1167,11 +1339,6 @@ void QtGui::SetBell(int /*percent*/)
 void QtGui::update_block(int blockNumber)
 {
     assert(blockNumber >= 0 && blockNumber < YBLOCKS);
-
-    if (!memory.has_changed(blockNumber))
-    {
-        return;
-    }
 
     memory.reset_changed(blockNumber);
 
@@ -1244,15 +1411,21 @@ void QtGui::ToggleCpuFrequency()
 {
     isOriginalFrequency = !isOriginalFrequency;
     auto frequency = isOriginalFrequency ? ORIGINAL_FREQUENCY : 0.0f;
+    options.frequency = frequency;
+    oldOptions.frequency = frequency;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
-
     UpdateCpuFrequencyCheck();
+    WriteOneOption(options, FlexemuOptionId::Frequency);
 }
 
 void QtGui::ToggleCpuUndocumented()
 {
-    cpu.set_use_undocumented(!cpu.is_use_undocumented());
+    options.use_undocumented = !oldOptions.use_undocumented;
+    oldOptions.use_undocumented = options.use_undocumented;
+    cpu.set_use_undocumented(options.use_undocumented);
+
     UpdateCpuUndocumentedCheck();
+    WriteOneOption(options, FlexemuOptionId::IsUseUndocumented);
 }
 
 void QtGui::ToggleCpuRunStop()
@@ -1336,7 +1509,7 @@ void QtGui::UpdateCpuRunStopCheck() const
 
 void QtGui::UpdateCpuUndocumentedCheck() const
 {
-    undocumentedAction->setChecked(cpu.is_use_undocumented());
+    undocumentedAction->setChecked(options.use_undocumented);
 }
 
 void QtGui::UpdateFullScreenCheck() const
@@ -1849,11 +2022,32 @@ void QtGui::closeEvent(QCloseEvent *event)
             QThread::msleep(10);
         }
         timer.stop();
+        FlexemuOptionsDifference optionsDiff(options, oldOptions);
+
+        if (!optionsDiff.GetNotEquals().empty())
+        {
+            FlexOptionManager optionMan;
+
+            optionMan.WriteOptions(options, false, true);
+        }
         event->accept();
     }
     else
     {
         event->ignore();
     }
+}
+
+void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
+{
+    FlexOptionManager optionMan;
+
+    p_options.readOnlyOptionIds = allFlexemuOptionIds;
+    p_options.readOnlyOptionIds.erase(
+        std::remove(p_options.readOnlyOptionIds.begin(),
+                    p_options.readOnlyOptionIds.end(),
+                    optionId),
+        p_options.readOnlyOptionIds.end());
+    optionMan.WriteOptions(p_options, false, true);
 }
 

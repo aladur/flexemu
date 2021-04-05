@@ -1,0 +1,164 @@
+/*
+    sodiff.cpp
+
+
+    flexemu, an MC6809 emulator running FLEX
+    Copyright (C) 2021  W. Schwotzer
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+
+#include "sodiff.h"
+
+FlexemuOptionsDifference::FlexemuOptionsDifference(
+        const sOptions &opt1, const sOptions &opt2)
+{
+    if (opt1.drive[0] != opt2.drive[0])
+    {
+        notEquals.push_back(FlexemuOptionId::Drive0);
+    }
+
+    if (opt1.drive[1] != opt2.drive[1])
+    {
+        notEquals.push_back(FlexemuOptionId::Drive1);
+    }
+
+    if (opt1.drive[2] != opt2.drive[2])
+    {
+        notEquals.push_back(FlexemuOptionId::Drive2);
+    }
+
+    if (opt1.drive[3] != opt2.drive[3])
+    {
+        notEquals.push_back(FlexemuOptionId::Drive3);
+    }
+
+    if (opt1.mdcrDrives[0] != opt2.mdcrDrives[0])
+    {
+        notEquals.push_back(FlexemuOptionId::MdcrDrive0);
+    }
+
+    if (opt1.mdcrDrives[1] != opt2.mdcrDrives[1])
+    {
+        notEquals.push_back(FlexemuOptionId::MdcrDrive1);
+    }
+
+    if (opt1.hex_file != opt2.hex_file)
+    {
+        notEquals.push_back(FlexemuOptionId::HexFile);
+    }
+
+    if (opt1.disk_dir != opt2.disk_dir)
+    {
+        notEquals.push_back(FlexemuOptionId::DiskDirectory);
+    }
+
+    if (opt1.isRamExtension != opt2.isRamExtension)
+    {
+        notEquals.push_back(FlexemuOptionId::IsRamExt2x96);
+    }
+
+    if (opt1.isHiMem != opt2.isHiMem)
+    {
+        notEquals.push_back(FlexemuOptionId::IsRamExt2x288);
+    }
+
+    if (opt1.isFlexibleMmu != opt2.isFlexibleMmu)
+    {
+        notEquals.push_back(FlexemuOptionId::IsFlexibleMmu);
+    }
+
+    if (opt1.isEurocom2V5 != opt2.isEurocom2V5)
+    {
+        notEquals.push_back(FlexemuOptionId::IsEurocom2V5);
+    }
+
+    if (opt1.use_undocumented != opt2.use_undocumented)
+    {
+        notEquals.push_back(FlexemuOptionId::IsUseUndocumented);
+    }
+
+    if (opt1.useRtc != opt2.useRtc)
+    {
+        notEquals.push_back(FlexemuOptionId::IsUseRtc);
+    }
+
+    if (opt1.frequency != opt2.frequency)
+    {
+        notEquals.push_back(FlexemuOptionId::Frequency);
+    }
+
+    if (opt1.color != opt2.color)
+    {
+        notEquals.push_back(FlexemuOptionId::Color);
+    }
+
+    if (opt1.nColors != opt2.nColors)
+    {
+        notEquals.push_back(FlexemuOptionId::NColors);
+    }
+
+    if (opt1.isInverse != opt2.isInverse)
+    {
+        notEquals.push_back(FlexemuOptionId::IsInverse);
+    }
+
+    if (opt1.pixelSize != opt2.pixelSize)
+    {
+        notEquals.push_back(FlexemuOptionId::PixelSize);
+    }
+}
+
+const FlexemuOptionsDifference::Result&
+    FlexemuOptionsDifference::GetNotEquals() const
+{
+    return notEquals;
+}
+
+bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
+{
+    for (auto id : optionsDiff.GetNotEquals())
+    {
+        switch (id)
+        {
+            case FlexemuOptionId::Drive0:
+            case FlexemuOptionId::Drive1:
+            case FlexemuOptionId::Drive2:
+            case FlexemuOptionId::Drive3:
+            case FlexemuOptionId::MdcrDrive0:
+            case FlexemuOptionId::MdcrDrive1:
+            case FlexemuOptionId::HexFile:
+            case FlexemuOptionId::DiskDirectory:
+            case FlexemuOptionId::IsRamExt2x96:
+            case FlexemuOptionId::IsRamExt2x288:
+            case FlexemuOptionId::IsFlexibleMmu:
+            case FlexemuOptionId::IsEurocom2V5:
+            case FlexemuOptionId::IsUseRtc:
+                return true;
+
+            case FlexemuOptionId::IsUseUndocumented:
+            case FlexemuOptionId::Frequency:
+            case FlexemuOptionId::Color:
+            case FlexemuOptionId::NColors:
+            case FlexemuOptionId::IsInverse:
+            case FlexemuOptionId::PixelSize:
+                break;
+        }
+    }
+
+    return false;
+}
+
