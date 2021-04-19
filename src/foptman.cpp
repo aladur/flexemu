@@ -44,12 +44,11 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -2 <diskimage/directory drive 2>\n");
     fprintf(fp, "  -3 <diskimage/directory drive 3>\n");
     fprintf(fp, "  -p (directory for FLEX disks)\n");
-    fprintf(fp, "  -j <factor for screen width>\n");
-    fprintf(fp, "  -k <factor for screen height>\n");
-    fprintf(fp, "  -m (use 2 x 288 K RAM extension)\n");
+    fprintf(fp, "  -j <factor for screen size>\n");
+    fprintf(fp, "  -m (use 2 x 288 KByte RAM extension)\n");
     fprintf(fp, "  -u (support undocumented MC6809 processor instructions)\n");
     fprintf(fp, "  -F <frequency> (set CPU frequency in MHz)\n");
-    fprintf(fp, "     0.0 runs CPU with maximum frequency\n");
+    fprintf(fp, "     0.0 sets maximum frequency, -1.0 sets original frequency.\n");
     fprintf(fp, "  -C <startup command>\n");
 #ifdef HAVE_TERMIOS_H
     fprintf(fp, "  -t (terminal only mode)\n");
