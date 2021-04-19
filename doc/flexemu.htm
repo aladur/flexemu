@@ -12,37 +12,47 @@ flexemu - a FLEX emulator with Qt user interface
 <h3>On Linux</h3>
 <tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </tt>
 <h3>On Windows</h3>
-<tt>flexemu [-i] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-u] [-j screen_factor] [-C startup_command]</tt>
+<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-v] [-u] [-j screen_factor] [-C startup_command]</tt>
 <a name="description">
 <h2>DESCRIPTION</h2>
-<b>flexemu</b> emulates a MC6809 microprocessor system running FLEX Operating
-System.
+<b>flexemu</b> emulates a MC6809 microprocessor system running
+<a href="https://en.wikipedia.org/wiki/FLEX_(operating_system)">FLEX Operating System</a>.
 Additional hardware modules as for ex. two MC6821 parallel input/output
-ports, a floppy disk controller WD1793, a realtime clock MC146818  and a
-special video interface completely emulate the hardware of an Eurocom II/V7
-computer. It was developed by
+ports, a floppy disk controller WD1793, a
+<a href="e2hwdesc.htm#RealtimeClock">MC146818 real time clock</a>
+and a special video screen interface completely emulate the hardware of an
+<a href="e2hwdesc.htm#E2V5">Eurocom II/V5</a> or an
+<a href="e2hwdesc.htm#E2V7">Eurocom II/V7</a> computer. It was developed by
 <a href="http://www.eltec.de/">ELTEC Elektronik</a> and mainly distributed
-in Germany in the 80ies.
+in Germany in the 1980ies.
 <p>
 <b>flexemu</b> supports the following features:
 <p>
 <ul>
  <li>running on Linux and Windows.
  <li>using Qt framework as platform independent user interface
- <li>supporting all MC6809 instructions incl. CWAI and SYNC
+ <li>Emulate
+<a href="e2hwdesc.htm#E2V5">Eurocom II/V5</a> with digital cassette drives or
+<a href="e2hwdesc.htm#E2V7">Eurocom II/V7</a> with floppy disk drives.
+<li>supporting all <a href="mc6809.htm">MC6809</a> instructions incl. CWAI and SYNC
  <li>CPU monitor with start/stop/step/next/reset, two breakpoints
  <li>continuous display of CPU frequency and cycle count
  <li>full interrupt support
  <li>stop processor and pop up dialog at unimplemented processor instructions
- <li>Optionally support undocumented processor instructions
- <li>Configurable frequency control for either emulate with maximum possible
-     frequency or with original frequency
+ <li>Optionally support
+<a href="mc6809.htm#UndocumentedInstructions">undocumented processor instructions</a>
+ <li>Configurable frequency control to emulate with fixed, maximum possible
+or original frequency
  <li>mouse pointer support
- <li>512 x 256 pixel, 1, 3 or 6 bit plane video graphics display with 2, 8 or
+ <li>512 x 256 pixel, 1, 3 or 6 bit plane
+<a href="e2hwdesc.htm#VideoDisplay">video graphics display</a> with 2, 8 or
      64 colors
- <li>MC146818 real time clock
- <li>MMU for extension of the 64K address range
- <li>192K RAM extension
+ <li><a href="e2hwdesc.htm#RealtimeClock">MC146818 real time clock</a>
+ <li>
+<a href="e2hwdesc.htm#MMU">MMU</a> for extension of the 64K address range
+ <li>
+<a href="e2hwdesc.htm#96KbRamExt">2 x 96 KByte RAM extension</a> or
+<a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>
  <li>MC6850 serial line used for terminal I/O
  <li>terminal only mode without graphical user interface (Linux only)
  <li>WD1793 floppy disk controller support with up to 4 disk drives
@@ -71,10 +81,12 @@ in Germany in the 80ies.
 </ul>
 <a name="options">
 <h2>OPTIONS</h2>
-In general there are command line options and options editable by <b>fsetup</b>
-available. Command line options can supersede fsetup options.
-<a name="options_linux">
-<h3>Commandline options on Linux and Windows</h3>
+In general there are command line options and preferences editable in the <b>flexemu</b>
+preferences dialog. Command line options supersede preferences and makes the
+corresponding preferences together with its dependent preferences read-only.
+
+<a name="options_linux_windows">
+<h3>Command line options on Linux and Windows</h3>
 <dl compact>
 <dt><b><tt>-f &lt;hexfile&gt;</tt>
 </b><dd>
@@ -89,8 +101,7 @@ special hardware needs of the Eurocom II/V7.<tt> </tt>
 <dt><b><tt>-c &lt;color&gt;</tt>
 </b><dd>
 Specifies the foreground color. The default is
-<b>green
-</b>The background color is always black.<tt> </tt>
+<b>green</b>. The background color is always black.<tt> </tt>
 <dt><b><tt>-i</tt>
 </b><dd>
 Inverse video display (foreground and background colors exchanged)
@@ -110,12 +121,12 @@ directory.  If nothing is found the directory specified with the
 <b><tt>-p</tt></b> option used for Disk/Monitor files will be looked for.
 <dt><b><tt>-j &lt;screen_factor&gt;</tt>
 </b><dd>
-Specifies a factor to multiply the size of the FLEX screen display. Default is <b>2</b>.
-Valid values are 1, 2, 3, 4 and 5. It depends on the screen size where flexemu is executed which <b><tt>screen_factor</tt></b> is supported.
+Specifies a factor to multiply the size of the flexemu video display. Default is <b>2</b>.
+Valid values are 1, 2, 3, 4 and 5. It depends on the host screen size where flexemu is executed which <b><tt>screen_factor</tt></b> is supported.
 <dt><b><tt>-u</tt>
 </b><dd>
 Enables the support of undocumented MC6809 Instructions. See Chapter
-<a href="#undocumented_instructions">Undocumented MC6809 Instructions</a>
+<a href="mc6809.htm#UndocumentedInstructions">Undocumented Instructions</a>
 for details.
 <dt><b><tt>-C &lt;startup_command&gt;</tt>
 </b><dd>
@@ -127,14 +138,27 @@ Example: <b><tt>"list 0.termcon.txt:dir 0:exit"</tt></b> will print the file
 contents of <b><tt>0.termcon.txt</tt></b>, make a directory listing of drive #0
 and immediately exits the emulator. The startup command accepts a maximum of
 128 characters.
+<dt><b><tt>-m</tt>
+</b><dd>
+Use
+<a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>.
+Only for Eurocom II/V7.
+<dt><b><tt>-F &lt;frequency&gt;</tt>
+</b><dd>
+Set frequency value in MHz. 0.0 runs CPU with maximum frequency. -1.0 runs CPU
+with the original hardware frequency which is the default.
+<dt><b><tt>-n &lt;number_of_colors&gt;</tt>
+</b><dd>
+Number of shades or colors. Default is <b>2</b>. Valid values are 2, 8 and 64.
 <dt><b><tt>-h</tt>
 </b><dd>
-Print a short syntax description.
+Print a command line parameter description and exit.
 <dt><b><tt>-v</tt>
 </b><dd>
-only print version number
+Print version number and exit.
 </dl>
-<p><dt><h3>Commandline options only on Linux:</h3>
+<a name="options_linux">
+<p><dt><h3>Command line options only on Linux</h3>
 <p>
 <dl compact>
 <dt><b><tt>-t</tt>
@@ -149,68 +173,181 @@ Define a reset key for terminal mode specified as two hex digits. The
 default is
 <code>1E</code>, means <kbd>Ctrl</kbd>+<kbd>^</kbd>
 </dl>
-<a name="fsetup_options">
-<h3>fsetup</h3>
-With <b>fsetup</b> the following options can be modified.
+<a name="preferences">
+<h3>Flexemu Preferences</h3>
+In <b>flexemu</b> menu Edit->Preferences opens the preferences dialog.
+The following preferences can be modified.
 <p>
 <table border>
  <tr>
-  <th>Name</th>
-  <th>Description</th>
-  <th>Default</th>
+  <th rowspan="2">Name</th>
+  <th rowspan="2">Description</th>
+  <th colspan="2">Eurocom II</th>
+  <th rowspan="2">Default</th>
  </tr>
  <tr>
-  <td>Screen geometry</td>
-  <td>Geometry used for the flexemu screen display</td>
-  <td>1024x512</td>
+  <th>V5</th>
+  <th>V7</th>
+ </tr>
+ <tr>
+  <td>Emulated hardware</td>
+  <td>flexemu can either emulate an Eurocom II/V5 or Eurocom II/V7</td>
+  <td></td>
+  <td></td>
+  <td>Eurocom II/V7</td>
+ </tr>
+ <tr>
+  <td>CPU frequency</td>
+  <td>The CPU frequency can be set to:
+   <ul>
+    <li>The original frequency of the emulated hardware, which is 1.3396 MHz.</li>
+    <li>To be emulated as fast as possible.</li>
+    <li>Set to a static frequency in the range of 0.1 ... 10000 MHz.</li>
+   <ul>
+  </td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>Original frequency</td>
+ </tr>
+ <tr>
+  <td>MC146818 Realtime Clock
+  <td>Optionally emulate a
+   <a href="e2hwdesc.htm#RealtimeClock">MC146818 real time clock</a>,
+   which is a hardware extension.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>Emulate realtime clock</td>
+ </tr>
+ <tr>
+  <td>Screen size</td>
+  <td>The screen size can be set to default, double, triple, quadruple or quintuple size.</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>Double size (1024x512 pixel)</td>
+ </tr>
+ <tr>
+  <td>Number of shades or colors</td>
+  <td>Depending on the available RAM extension 2, 8 or 64 shades can be supported. Only if a RAM extension is selected, 8 or 64 shades are available.</td>
+  <td>2/8/64<br><b>&check;</b>/<b>-</b>/<b>-</b></td>
+  <td>2/8/64<br><b>&check;</b>/<b>&check;</b>/<b>&check;</b></td>
+  <td>2</td>
+ </tr>
+ <tr>
+  <td>Monochromatic color</td>
+  <td>A monochromatic color like green or orange can be selected.</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>green</td>
+ </tr>
+ <tr>
+  <td>Multi color scheme</td>
+  <td>Displaying multiple colors (not only shades of a monochromatic color).
+   Only if 8 or 64 shades are selected.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
  </tr>
  <tr>
   <td>Display Inverse</td>
   <td>Display video normal or inverse</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
   <td>off</td>
  </tr>
  <tr>
-  <td>Color</td>
-  <td>Specifies the foreground color</td>
-  <td>green</td>
+  <td>RAM extension</td>
+  <td>
+   <ul>
+    <li><a href="e2hwdesc.htm#OnBoardMemory">No RAM extension</a>.</li>
+    <li><a href="e2hwdesc.htm#96KbRamExt">2 x 96 KByte RAM extension</a>.</li>
+    <li><a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>.</li>
+   <ul>
+  </td>
+  <td><b>&check;<br><b>-</b><br><b>-</b></b></td>
+  <td><b>&check;<br><b>&check;</b><br><b>&check;</b></b></td>
+  <td>2 x 96 KByte</td>
  </tr>
  <tr>
   <td>Disk/Monitor directory</td>
-  <td>A Directory Path containing<BR>FLEX disks and monitor program</td>
+  <td>A Directory Path containing FLEX disks and monitor program</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
   <td><b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
   <b>Linux:</b> /usr/local/share/Flexemu</td>
  </tr>
  <tr>
   <td>Monitor program</td>
   <td>A Filename or Directory Path for the monitor program</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
   <td><a href="neumon54.htm"><b>neumon54.hex</b></a></td>
  </tr>
  <tr>
-  <td>Disk for drive 0</td>
-  <td>A Filename or Directory Path for FLEX disk 0</td>
+  <td>Disk Drive 0</td>
+  <td>A filename or directory Path for disk drive 0.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
   <td>system.dsk</td>
  </tr>
  <tr>
-  <td>Disk for drive 1</td>
-  <td>A Filename or Directory Path for FLEX disk 1</td>
-  <td>no default</td>
+  <td>Disk Drive 1</td>
+  <td>A filename or directory path for disk drive 1.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>Not set</td>
  </tr>
  <tr>
-  <td>Disk for drive 2</td>
-  <td>A Filename or Directory Path for FLEX disk 2</td>
-  <td>no default</td>
+  <td>Disk Drive 2</td>
+  <td>A filename or directory path for disk drive 2.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>Not set</td>
  </tr>
  <tr>
-  <td>Disk for drive 3</td>
-  <td>A Filename or Directory Path for FLEX disk 3</td>
-  <td>no default</td>
+  <td>Disk Drive 3</td>
+  <td>A filename or directory path for disk drive 3.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>Not set</td>
+ </tr>
+ <tr>
+  <td>Cassette Drive 0</td>
+  <td>A filename or directory path for cassette drive 0.</td>
+  <td><b>&check;</b></td>
+  <td><b>-</b></td>
+  <td>system.mdcr</td>
+ </tr>
+ <tr>
+  <td>Cassette Drive 1</td>
+  <td>A filename or directory path for cassette drive 1.</td>
+  <td><b>&check;</b></td>
+  <td><b>-</b></td>
+  <td>Not set</td>
+ </tr>
+ <tr>
+  <td>Undocumented instructions</td>
+  <td>Optionally emulate MC6809 with
+   <a href="mc6809.htm#UndocumentedInstructions">undocumented instructions</a>.</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>More flexible MMU</td>
+  <td>Optionally emulate a
+    <a href="e2hwdesc.htm#FlexibleMMU">more flexible MMU</a>. Only if
+    <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a> is
+     selected.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
  </tr>
 </table>
 <a name="breakpoints">
 <h3>Breakpoint support</h3>
 With the menu CPU-&gt;Breakpoints up to two breakpoints
 can be set. They have to be input as a one to four digit hexadecimal
-address. Execution automatically stops when the PC contains one
+address. Execution automatically stops when the PC register contains one
 of the breakpoint addresses.
 <a name="logging">
 <h3>CPU Instruction Logging</h3>
