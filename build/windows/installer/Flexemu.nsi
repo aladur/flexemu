@@ -208,6 +208,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   ; Install Monitor programs
   File /a "${BASEDIR}\monitor\coltab.hex"
   File /a "${BASEDIR}\monitor\mon24.s19"
+  File /a "${BASEDIR}\monitor\mon24z.s19"
   File /a "${BASEDIR}\monitor\mon53.s19"
   File /a "${BASEDIR}\monitor\mon54.s19"
   File /a "${BASEDIR}\monitor\monu54-6.s19"
