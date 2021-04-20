@@ -110,7 +110,6 @@ FlexemuOptionsUi::~FlexemuOptionsUi()
 void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 {
     int index = -1;
-    int n = 0;
 
     if (dialog == nullptr)
     {
@@ -122,24 +121,26 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     InitializeHardwareHyperlink(options.doc_dir.c_str());
 
-    for (int x = 1; x <= MAX_PIXELSIZE; x++)
+    for (int x = 1; x <= MAX_PIXELSIZE; ++x)
     {
-        auto text = QString::asprintf("%dx%d",
-                                     WINDOWWIDTH * x, WINDOWHEIGHT * x);
+        const auto iconPath =
+            QString::asprintf(":/resource/screen%u.png", x);
+        const auto screenSizeIcon = QIcon(iconPath);
 
-        cb_geometry->addItem(text);
+        auto text = QString::asprintf("x%u", x);
+
+        cb_screenSize->addItem(screenSizeIcon, text);
 
         if (options.pixelSize == x)
         {
-            index = n;
+            index = x - 1;
         }
-        ++n;
     }
-    cb_geometry->setMaxVisibleItems(cb_geometry->count());
-    cb_geometry->setCurrentIndex(std::max(index, 0));
+    cb_screenSize->setMaxVisibleItems(cb_screenSize->count());
+    cb_screenSize->setCurrentIndex(std::max(index, 0));
 
     index = -1;
-    n = 0;
+    int n = 0;
     static int ncolor_count[] = { 2, 8, 64 };
     for (auto nColors : ncolor_count)
     {
@@ -314,7 +315,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::PixelSize:
-                cb_geometry->setEnabled(false);
+                cb_screenSize->setEnabled(false);
                 break;
 
             case FlexemuOptionId::IsRamExt2x96:
@@ -494,15 +495,7 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::PixelSize))
     {
-        bool x_ok = false;
-        auto geometry = cb_geometry->currentText();
-        auto xString = geometry.midRef(0, geometry.indexOf("x")).toString();
-        unsigned int x = xString.toUInt(&x_ok);
-
-        if (x_ok)
-        {
-            options.pixelSize = x / WINDOWWIDTH;
-        }
+        options.pixelSize = cb_screenSize->currentIndex() + 1;
     }
 
     if (!IsReadOnly(FlexemuOptionId::NColors) &&

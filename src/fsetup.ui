@@ -237,7 +237,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="cb_geometry">
+          <widget class="QComboBox" name="cb_screenSize">
            <property name="minimumSize">
             <size>
              <width>100</width>
@@ -252,10 +252,10 @@
          <item row="0" column="0">
           <widget class="QLabel" name="l_geometry">
            <property name="text">
-            <string>Screen geometry</string>
+            <string>Screen size</string>
            </property>
            <property name="buddy">
-            <cstring>cb_geometry</cstring>
+            <cstring>cb_screenSize</cstring>
            </property>
           </widget>
          </item>
@@ -855,7 +855,7 @@
   <tabstop>r_frequencySet</tabstop>
   <tabstop>e_frequency</tabstop>
   <tabstop>c_useRtc</tabstop>
-  <tabstop>cb_geometry</tabstop>
+  <tabstop>cb_screenSize</tabstop>
   <tabstop>cb_nColors</tabstop>
   <tabstop>cb_color</tabstop>
   <tabstop>c_multiColorScheme</tabstop>
