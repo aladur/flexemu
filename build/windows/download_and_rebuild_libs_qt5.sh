@@ -21,8 +21,9 @@
 
 #Set all platforms to be build (Supported: Win32, x64)
 platforms="Win32 x64"
-# Set the script path of Your Visual Studio installation to set all needed variables:
-msvcscript="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat"
+# Appropriate Visual Studio versions and types:
+vsversions="2019 2017"
+vstypes="Enterprise Professional Community"
 
 # DO NOT CHANGE ANYTHING BEYOND THIS LINE
 #========================================
@@ -35,11 +36,19 @@ function usage() {
     echo "Parameters:"
     echo "   -d:             Delete Qt downloads and build directories before downloading"
     echo "                   and building them"
+    echo "   -V <vs_version> The Visual Studio version, 2017 or 2019."
+    echo "                   If not set the script looks for an installed VS version"
+    echo "                   2019 or 2017, in this order."
+    echo "   -T <vs_type>    The Visual Studio type, Enterprise, Professional or"
+    echo "                   Community. If not set the script looks for an installed VS"
+    echo "                   type Enterprise, Professional or Community, in this order."
     echo "   -v <qt_version> Specify Qt version to be build. Syntax: 5.<minor>.<patch>"
 }
 
 qtversion=
 delete=
+vsversion=
+vstype=
 while :
 do
     case "$1" in
@@ -50,6 +59,22 @@ do
             if [ -n "$2" ]; then
                 qtversion=$2
                 shift 2
+            else
+                echo "Error: Argument for $1 is missing" >&2
+                exit 1
+            fi;;
+        -V)
+            if [ -n "$2" ]; then
+                vsversion=$2
+                shift
+            else
+                echo "Error: Argument for $1 is missing" >&2
+                exit 1
+            fi;;
+        -T)
+            if [ -n "$2" ]; then
+                vstype=$2
+                shift
             else
                 echo "Error: Argument for $1 is missing" >&2
                 exit 1
@@ -72,6 +97,85 @@ if [ "x$match" == "x" ]; then
 fi
 qtversion=$match
 qtmamiversion=`echo $qtversion | sed -e "s/\([0-9]\+\.[0-9]\+\).*/\1/"`
+
+check_value() {
+    if [ "x$1" == "x" ]; then
+        return 0; # no value is valid
+    fi
+    for value in $2
+    do
+        if [ "$value" == "$1" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Look for an appropriate Visual Studio installation to set all needed
+# variables:
+check_value "$vsversion" "$vsversions"
+if [ $? -ne 0 ]; then
+    echo "*** Error: Visual Studio version \"$vsversion\" is not supported."
+    usage
+    exit 1
+fi
+
+check_value "$vstype" "$vstypes"
+if [ $? -ne 0 ]; then
+    echo "*** Error: Visual Studio type \"$vstype\" is not supported."
+    usage
+    exit 1
+fi
+
+if [ "x$vstype" == "x" ]; then
+    if [ "x$vsversion" == "x" ]; then
+        # No vstype or vsversion specified, look for it.
+        for vsversion in $vsversions
+        do
+            for vstype in $vstypes
+            do
+                msvcscript="C:\Program Files (x86)\Microsoft Visual Studio\\$vsversion\\$vstype\VC\Auxiliary\Build\vcvarsall.bat"
+                if [ -f "$msvcscript" ]; then
+                    break
+                fi
+            done
+            if [ -f "$msvcscript" ]; then
+                break
+            fi
+        done
+    else
+        # vsversion specified, look for vstype.
+        for vstype in $vstypes
+        do
+            msvcscript="C:\Program Files (x86)\Microsoft Visual Studio\\$vsversion\\$vstype\VC\Auxiliary\Build\vcvarsall.bat"
+            if [ -f "$msvcscript" ]; then
+                break
+            fi
+        done
+    fi
+else
+    if [ "x$vsversion" == "x" ]; then
+        # vstype specified, look for vsversion.
+        for vsversion in $vsversions
+        do
+            msvcscript="C:\Program Files (x86)\Microsoft Visual Studio\\$vsversion\\$vstype\VC\Auxiliary\Build\vcvarsall.bat"
+            if [ -f "$msvcscript" ]; then
+                break
+            fi
+        done
+    else
+        # both vstype and vsversion specified.
+        msvcscript="C:\Program Files (x86)\Microsoft Visual Studio\\$vsversion\\$vstype\VC\Auxiliary\Build\vcvarsall.bat"
+    fi
+fi
+
+if [ -f "$msvcscript" ]; then
+    echo "Found Visual Studio $vsversion $vstype"
+else
+    echo "*** Error: No appropriate Visual Studio Installation found."
+    usage
+    exit 1
+fi
 
 # Create the url from which to download a specific version (Supported: Qt5.minor.patch)
 qturl=`echo "https://download.qt.io/archive/qt/${qtmamiversion}/${qtversion}/submodules/qtbase-everywhere-src-${qtversion}.zip"`
