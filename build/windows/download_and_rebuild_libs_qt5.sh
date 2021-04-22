@@ -72,7 +72,7 @@ if [ "x$match" == "x" ]; then
 fi
 qtversion=$match
 qtmamiversion=`echo $qtversion | sed -e "s/\([0-9]\+\.[0-9]\+\).*/\1/"`
-echo $qtmamiversion
+
 # Create the url from which to download a specific version (Supported: Qt5.minor.patch)
 qturl=`echo "https://download.qt.io/archive/qt/${qtmamiversion}/${qtversion}/submodules/qtbase-everywhere-src-${qtversion}.zip"`
 
