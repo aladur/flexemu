@@ -3,10 +3,19 @@
 # Download and rebuild Qt 5.x.y libraries needed to build flexemu
 #
 # syntax:
-#    download_and_rebuild_libs_qt5.sh [-d] -v <qt_version>
+#    download_and_rebuild_libs_qt5.sh [-d][-V <vs_version][-T <vs_type>]
+#                                     -v <qt_version>
 # parameters:
-#   -d:           Delete packages and directories before downloading and building them
-#   -v qt_version Specify Qt version to be build. Syntax: <major>.<minor>.<patch>
+#   -d:             Delete packages and directories before downloading
+#                   and building them.
+#   -V <vs_version> The Visual Studio version, 2017 or 2019.
+#                   If not set the script looks for an installed VS version
+#                   2019 or 2017, in this order.
+#   -T <vs_type>    The Visual Studio type, Enterprise, Professional or
+#                   Community. If not set the script looks for an installed VS
+#                   type Enterprise, Professional or Community, in this order.
+#   -v qt_version   Specify Qt version to be build.
+#                   Syntax: <major>.<minor>.<patch>
 #
 # Prerequisites to build Qt on Windows see:
 #    https://doc.qt.io/qt-5/windows-requirements.html
@@ -32,8 +41,9 @@ function usage() {
     echo "Download and rebuild Qt 5.x.y libraries needed to build flexemu"
     echo ""
     echo "Syntax:"
-    echo "   download_and_rebuild_libs_qt5.sh [-d] -v <qt_version>"
-    echo "Parameters:"
+    echo "   download_and_rebuild_libs_qt5.sh [-d][-V <vs_version][-T <vs_type>]"
+    echo "                                    -v <qt_version>"
+    echo "Options:"
     echo "   -d:             Delete Qt downloads and build directories before downloading"
     echo "                   and building them"
     echo "   -V <vs_version> The Visual Studio version, 2017 or 2019."
