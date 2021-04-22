@@ -116,14 +116,18 @@ as_doublebslash_windows_path() {
 # $5: Path of the generated batch script
 create_qt_build_script() {
     echo CALL \"$1\" $2 >$5
+    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$5
     echo SET _ROOT=$3 >>$5
     echo SET PATH=\%_ROOT\%\\bin\;\%PATH\% >>$5
     echo SET _ROOT= >>$5
     echo >>$5
     echo cd \"$4\" >>$5
     echo CALL \"$3\\configure.bat\" -redo >>$5
+    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$5
     echo jom.exe >>$5
+    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$5
     echo jom.exe install >>$5
+    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$5
 }
 
 # Create the Qt build config file.
