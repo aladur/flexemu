@@ -131,31 +131,30 @@ create_qt_build_script() {
 }
 
 # Create the Qt build config file.
-# $1: Platform (Win32 or x64)
-# $2: The target directory where the build artefacts are copied
-# $3: Path to the config file
+# $1: The target directory where the build artefacts are copied
+# $2: Path to the config file
 create_config_file() {
-    echo "-platform" > $3
-    echo "win32-msvc2019" >> $3
-    echo "-prefix" >> $3
-    echo "$2" >>$3
-    echo "-debug-and-release" >>$3
-    echo "-no-feature-network" >>$3
-    echo "-no-feature-sql" >>$3
-    echo "-no-feature-testlib" >>$3
-    echo "-no-feature-concurrent" >>$3
-    echo "-no-feature-dbus" >>$3
-    echo "-no-feature-xml" >>$3
-    echo "-nomake" >>$3
-    echo "examples" >>$3
-    echo "-qt-zlib" >>$3
-    echo "-no-harfbuzz" >>$3
-    echo "-no-opengl" >>$3
-    echo "-c++std" >>$3
-    echo "c++11" >>$3
-    echo "-mp" >>$3
-    echo "-confirm-license" >>$3
-    echo "-opensource" >>$3
+    echo "-platform" > $2
+    echo "win32-msvc2019" >> $2
+    echo "-prefix" >> $2
+    echo "$1" >>$2
+    echo "-debug-and-release" >>$2
+    echo "-no-feature-network" >>$2
+    echo "-no-feature-sql" >>$2
+    echo "-no-feature-testlib" >>$2
+    echo "-no-feature-concurrent" >>$2
+    echo "-no-feature-dbus" >>$2
+    echo "-no-feature-xml" >>$2
+    echo "-nomake" >>$2
+    echo "examples" >>$2
+    echo "-qt-zlib" >>$2
+    echo "-no-harfbuzz" >>$2
+    echo "-no-opengl" >>$2
+    echo "-c++std" >>$2
+    echo "c++11" >>$2
+    echo "-mp" >>$2
+    echo "-confirm-license" >>$2
+    echo "-opensource" >>$2
 }
 
 curlpath=`which curl 2>/dev/null`
@@ -269,7 +268,7 @@ do
     fi
 
     configoptpath=$qtdir/$directory/config.opt
-    create_config_file $platform $absqttgtdir\\$platform $configoptpath
+    create_config_file $absqttgtdir\\$platform $configoptpath
     absqtsrcdir=$( as_absolute_windows_path $qtsrcdir )
     absqtbuilddir=$( as_absolute_windows_path $qtdir/$directory )
     batchscript=$qtdir/$directory/build_qt.bat
