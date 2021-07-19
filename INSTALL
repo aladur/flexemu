@@ -5,6 +5,7 @@
 Flexemu supports configure scripts. So there are three steps to compile and
 install it:
 
+        - export QT_SELECT=qt5
 	- ./configure --prefix=/usr --sysconfdir=/etc
 	- make
 	- sudo make install
