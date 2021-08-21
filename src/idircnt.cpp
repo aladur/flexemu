@@ -334,8 +334,9 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
     FlexDirEntry de;
 #ifdef UNIX
     strlower(src);
-    strlower(dst);
 #endif
+    // When renaming always prefer lowercase filenames
+    strlower(dst);
 
     // prevent overwriting of an existing file
     if (base->FindFile(dst.c_str(), de))
