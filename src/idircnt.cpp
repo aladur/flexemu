@@ -139,7 +139,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         // ok, found a valid directory entry
         Byte attributes = 0;
         int sectorMap = 0;
-        dirEntry.SetTotalFileName(fileName.c_str());
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
         {
@@ -157,6 +156,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             attributes |= WRITE_PROTECT;
         }
 
+        strupper(fileName);
+        dirEntry.SetTotalFileName(fileName.c_str());
         auto fileSize = (findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE;
         dirEntry.SetFileSize(fileSize);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
@@ -193,9 +194,9 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
     }
     while (isValid &&
-           (stat((str + PATHSEPARATORSTRING + findData->d_name).c_str(),
+           (stat((str + PATHSEPARATORSTRING + fileName).c_str(),
                  &sbuf) ||
-            !base->IsFlexFilename(findData->d_name) ||
+            !base->IsFlexFilename(fileName.c_str()) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
@@ -211,7 +212,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
-            if (isListedInFileRandom(base->GetPath().c_str(), findData->d_name))
+            if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
             {
                 sectorMap = 2;
             }
@@ -229,7 +230,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             attributes |= WRITE_PROTECT;
         }
 
-        dirEntry.SetTotalFileName(findData->d_name);
+        strupper(fileName);
+        dirEntry.SetTotalFileName(fileName.c_str());
         dirEntry.SetFileSize((sbuf.st_size + 251) / 252 * SECTOR_SIZE);
         lt = localtime(&(sbuf.st_mtime));
         dirEntry.SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);

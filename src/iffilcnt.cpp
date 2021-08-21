@@ -288,8 +288,6 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
 
     std::string totalName(newName);
 
-    strlower(totalName);
-
     std::string::iterator it =
         std::find(totalName.begin(), totalName.end(), '.');
 
