@@ -337,7 +337,8 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
     FlexDirEntry de;
 
     // prevent overwriting of an existing file
-    if (FindFile(newName, de))
+    // except for changing lower to uppercase.
+    if (stricmp(oldName, newName) != 0 && FindFile(newName, de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
