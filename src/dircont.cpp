@@ -193,6 +193,11 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 {
     FlexDirEntry de;
 
+    if (strcmp(oldName, newName) == 0)
+    {
+        return false;
+    }
+
     // prevent conflict with an existing file
     if (FindFile(newName, de))
     {

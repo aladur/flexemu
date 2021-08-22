@@ -327,7 +327,7 @@ bool    FlexFileContainer::DeleteFile(const char *filePattern)
 
 bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 {
-    if (!is_flex_format)
+    if (!is_flex_format || (strcmp(oldName, newName) == 0))
     {
         return false;
     }
