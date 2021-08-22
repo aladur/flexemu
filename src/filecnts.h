@@ -202,19 +202,19 @@ constexpr std::array<st_t, 13> flex_formats
 
 constexpr std::array<const char *, 13> flex_format_descriptions
 {{
-    "35-10 5 1/4 inch, Single-sided, sinlge-density",
-    "40-10 5 1/4 inch, Single-sided, single-density",
-    "35-20 5 1/4 inch, Double-sided, single-density",
-    "40-20 5 1/4 inch, Double-sided, single-density",
-    "40-36 5 1/4 inch, Double-sided, double-density",
-    "80-20 5 1/4 inch, Double-sided, single-density",
-    "80-36 5 1/4 inch, Double-sided, double-density",
-    "80-72 5 1/4 inch, Double-sided, quad-density",
-    "77-15 8 inch, Single-sided, single-density",
-    "77-26 8 inch, Single-sided, double-density",
-    "77-30 8 inch, Double-sided, single-density",
-    "77-52 8 inch, Double-sided, double-density",
-    "255-255 Hard disk"
+    "35-10 5 1/4 inch, Single-sided, sinlge-density, 87.5 KByte",
+    "40-10 5 1/4 inch, Single-sided, single-density, 100 KByte",
+    "35-20 5 1/4 inch, Double-sided, single-density, 175 KByte",
+    "40-20 5 1/4 inch, Double-sided, single-density, 200 KByte",
+    "40-36 5 1/4 inch, Double-sided, double-density, 360 KByte",
+    "80-20 5 1/4 inch, Double-sided, single-density, 400 KByte",
+    "80-36 5 1/4 inch, Double-sided, double-density, 720 KByte",
+    "80-72 5 1/4 inch, Double-sided, quad-density, 1440 KByte",
+    "77-15 8 inch, Single-sided, single-density, 288.75 KByte",
+    "77-26 8 inch, Single-sided, double-density, 500.5 KByte",
+    "77-30 8 inch, Double-sided, single-density, 577.5 KByte",
+    "77-52 8 inch, Double-sided, double-density, 1001 KByte",
+    "255-255 Hard disk, 16256.25 KByte"
 }};
 
 constexpr std::array<const char *, 13> flex_format_shortcuts
