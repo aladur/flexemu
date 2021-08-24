@@ -668,7 +668,8 @@ void usage()
         "Usage: dsktool -h\n" <<
         "Usage: dsktool -i <dsk-file> [-v][-t][-y|-n] <file> [<file>...]\n" <<
         "Usage: dsktool -l <dsk-file> [<dsk-file>...]\n" <<
-        "Usage: dsktool -r <dsk-file> [-v] <FLEX-file> [<FLEX-file>...]\n" <<
+        "Usage: dsktool -r <dsk-file> [-v][-y|-n] <FLEX-file> "
+        "[<FLEX-file>...]\n" <<
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v] [<dsk-file>...]"
@@ -937,7 +938,6 @@ int main(int argc, char *argv[])
         (command == 'i' && files.empty()) ||
         (command == 'r' && files.empty()) ||
         (command != 'X' && !target_dir.empty()) ||
-        //(command != 'i' && command != 'r' && command != 'f' &&
         (std::string("fir").find_first_of(command) == std::string::npos &&
          (default_answer != '?')) ||
         (command != 'i' && command != 'X' && convert_text) ||
