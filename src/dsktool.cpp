@@ -798,6 +798,13 @@ void helpOnDiskSize()
     }
 }
 
+void version()
+{
+    std::cout <<
+        "dsktool " << VERSION << "\n" <<
+        "dsktool " << COPYRIGHT_MESSAGE;
+}
+
 void usage()
 {
     std::cout <<
@@ -812,6 +819,7 @@ void usage()
         "[<FLEX-file>...]\n" <<
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
+        "Usage: dsktool -V\n" <<
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v] "
         "[<dsk-file>...]\n\n" <<
         "Commands:\n" <<
@@ -824,6 +832,7 @@ void usage()
         "  -l: List directory contents of a FLEX file container.\n" <<
         "  -r: Delete FLEX-files from a FLEX file container.\n" <<
         "  -s: One line summary of a FLEX file container.\n" <<
+        "  -V: Print version number and exit.\n" <<
         "  -X: Extract all files from a FLEX file container.\n\n" <<
         "Parameters:\n" <<
         "  -d<directory> The target directory.\n" <<
@@ -1004,7 +1013,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("f:X:l:s:c:C:i:r:R:T:d:o:S:F:Dhntvy");
+    std::string optstr("f:X:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVy");
     std::string target_dir;
     std::vector<std::string> dsk_files;
     std::vector<std::string> files;
@@ -1076,6 +1085,9 @@ int main(int argc, char *argv[])
 
             case 'T': dst_dsk_file = optarg;
                       break;
+
+            case 'V': version();
+                      return 0;
 
             case 'h': usage();
                       return 0;

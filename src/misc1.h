@@ -69,6 +69,13 @@
 // Use PACKAGE_NAME instead.
 #define PROGRAMNAME     PACKAGE_NAME
 #define PROGRAM_VERSION VERSION
+#define COPYRIGHT_MESSAGE \
+    "comes with ABSOLUTELY NO WARRANTY. This is free software,\n" \
+    "and You are welcome to redistribute it under certain conditions.\n" \
+    "Please notice that this project was developed under the terms of the\n" \
+    "GNU GENERAL PUBLIC LICENCE V2.\n" \
+    "Copyright (C) 1998-2021 Wolfgang Schwotzer\n" \
+    "http://flexemu.neocities.org\n"
 
 extern const char *gMemoryAllocationErrorString;
 
