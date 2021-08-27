@@ -47,6 +47,13 @@ enum class FileType
     RawBinary,
 };
 
+void version()
+{
+    std::cout <<
+        "flex2hex " << VERSION << "\n" <<
+        "flex2hex " << COPYRIGHT_MESSAGE;
+}
+
 void syntax()
 {
     std::cout <<
@@ -63,6 +70,7 @@ void syntax()
         "                    Address range gaps are filled up with 0.\n"
         "   -y:              Overwrite existing file(s) without confirmation.\n"
         "   -v:              Verbose output.\n"
+        "   -V:              Print version number and exit.\n";
         "   -h:              Print this help and exit.\n";
 }
 
@@ -123,7 +131,7 @@ int main(int argc, char *argv[])
         { 'i', FileType::IntelHex },
         { 'b', FileType::RawBinary },
     };
-    std::string optstr("himbo:vy");
+    std::string optstr("himbo:vVy");
     std::vector<std::string> ifiles;
     std::string ofilePrefered;
     FileType ofiletype = FileType::Unknown;
@@ -152,6 +160,9 @@ int main(int argc, char *argv[])
                       }
                       ofiletype = fileTypes.at(result);
                       break;
+
+            case 'V': version();
+                      return 0;
 
             case 'h': syntax();
                       return 0;
