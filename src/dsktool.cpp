@@ -139,31 +139,38 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
 }
 
 int ExtractDskFile(const std::string &target_dir, bool verbose,
-                   bool convert_text, const std::string &dsk_file)
+                   bool convert_text, const std::string &dsk_file,
+                   const std::vector<std::regex> &regexs)
 {
+    std::string subdir = target_dir + getFileStem(getFileName(dsk_file));
+
     if (verbose)
     {
-        std::cout << "extracting " << dsk_file << " ...";
+        std::cout << "Extracting " << dsk_file << " into " << subdir <<
+                     " ... " << std::endl;
     }
 
-    std::string subdir = target_dir + getFileStem(getFileName(dsk_file));
-    if (BDirectory::Exists(subdir))
+    if (regexs.empty() && BDirectory::Exists(subdir))
     {
-        std::cerr << "\n   *** Error: '" << subdir << "' already exists.\n" <<
-                       "       Extraction from '" << dsk_file << "' aborted.\n";
+        std::cerr << "  *** Error: '" << subdir << "' already exists.\n" <<
+                     "    Extraction from '" << dsk_file << "' aborted.\n";
         return 0;
     }
-    if (!BDirectory::Create(subdir))
+
+    // If there are regular expressions subdir may already exist.
+    // If subdir does not exist create it.
+    if ((regexs.empty() ||
+        (!regexs.empty() && !BDirectory::Exists(subdir))) &&
+        !BDirectory::Create(subdir))
     {
-        std::cerr << "\n   *** Error creating '" << subdir << "'.\n" <<
-                       "       Extraction from '" << dsk_file << "' aborted.\n";
+        std::cerr << "  *** Error creating '" << subdir << "'.\n" <<
+                     "    Extraction from '" << dsk_file << "' aborted.\n";
         return 0;
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
     FlexRamFileContainer src{dsk_file.c_str(), "rb"};
     DirectoryContainer dest{subdir.c_str()};
-    FileContainerIterator iter;
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;
@@ -174,40 +181,48 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
 
-    for (iter = src.begin(); iter != src.end(); ++iter)
+    auto matchedFilenames = GetMatchingFilenames(src, regexs);
+
+    for (const auto &filename : matchedFilenames)
     {
-        const auto &dir_entry = *iter;
+        std::string result = "ok";
+        std::string what;
 
         try
         {
-            src.FileCopy(dir_entry.GetTotalFileName().c_str(),
-                         dir_entry.GetTotalFileName().c_str(), dest);
+            FlexDirEntry dir_entry;
+
+            src.FileCopy(filename.c_str(), filename.c_str(), dest);
 
             ++count;
-            byte_size += dir_entry.GetFileSize();
-            random_count += dir_entry.IsRandom() ? 1 : 0;
+            if (src.FindFile(filename.c_str(), dir_entry))
+            {
+                byte_size += dir_entry.GetFileSize();
+                random_count += dir_entry.IsRandom() ? 1 : 0;
+            }
         }
         catch (FlexException &ex)
         {
-            if (verbose && errors == 0)
-            {
-                std::cout << " failed." << std::endl;
-            }
-
-            std::cerr << "   *** " << ex.what() << ".\n";
+            result = "failed";
+            what = ex.what();
             ++errors;
         }
 
+        if (verbose)
+        {
+            std::cout << " extracting " << filename << " ... " << result <<
+                         std::endl;
+        }
+        if (!what.empty())
+        {
+            std::cerr << "   *** Error: " << what << std::endl;
+        }
     }
 
     if (verbose)
     {
-        if (errors == 0)
-        {
-            std::cout << " ok." << std::endl;
-        }
-        std::cout <<
-            count << " file(s), " << random_count << " random file(s), ";
+        std::cout << " " << count << " file(s), " << random_count <<
+                     " random file(s), ";
         if (errors != 0)
         {
             std::cout << errors << " errors, ";
@@ -220,7 +235,8 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 }
 
 int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
-                    const std::vector<std::string> &dsk_files)
+                    const std::vector<std::string> &dsk_files,
+                    const std::vector<std::regex> &regexs)
 {
     if (target_dir.empty())
     {
@@ -244,7 +260,7 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
         try
         {
             int result = ExtractDskFile(target_dir, verbose, convert_text,
-                                        dsk_file);
+                                        dsk_file, regexs);
             if (result != 0)
             {
                 // Abort after fatal error.
@@ -820,12 +836,14 @@ void usage()
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -V\n" <<
+        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-R<file>...]"
+        "[<regex>...]\n" <<
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v] "
         "[<dsk-file>...]\n\n" <<
         "Commands:\n" <<
         "  -c: Check consistency of FLEX file container.\n" <<
-        "  -C: Copy files from a FLEX file container into another one. If\n" <<
-        "      none of -R or <regex> is specified, all files are copied.\n" <<
+        "  -C: Copy files from a FLEX file container into another one.\n" <<
+        "      If no regex is specified, all files are copied.\n" <<
         "  -f: Create a new FLEX file container.\n" <<
         "  -h: Print this help.\n" <<
         "  -i: Inject FLEX-files to a FLEX file container.\n" <<
@@ -833,7 +851,9 @@ void usage()
         "  -r: Delete FLEX-files from a FLEX file container.\n" <<
         "  -s: One line summary of a FLEX file container.\n" <<
         "  -V: Print version number and exit.\n" <<
-        "  -X: Extract all files from a FLEX file container.\n\n" <<
+        "  -x: Extract files from a FLEX file container using regex.\n" <<
+        "      If no regex is specified, all files are extracted.\n" <<
+        "  -X: Extract all files from FLEX file container(s).\n\n" <<
         "Parameters:\n" <<
         "  -d<directory> The target directory.\n" <<
         "                For each dsk-file a subdirectory is created.\n" <<
@@ -1013,7 +1033,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("f:X:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVy");
+    std::string optstr("f:X:x:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVy");
     std::string target_dir;
     std::vector<std::string> dsk_files;
     std::vector<std::string> files;
@@ -1049,6 +1069,7 @@ int main(int argc, char *argv[])
                       }
                       break;
 
+            case 'x':
             case 'f':
             case 'i':
             case 'r':
@@ -1068,7 +1089,7 @@ int main(int argc, char *argv[])
                       break;
 
             case 'R': has_regex_file = true;
-                      if (command == 'C')
+                      if (command == 'C' || command == 'x')
                       {
                           // Create regular expr. from regex file contents.
                           bool success;
@@ -1158,7 +1179,7 @@ int main(int argc, char *argv[])
             dsk_files.push_back(argv[index]);
         }
     }
-    else if (command == 'C')
+    else if (command == 'C' || command == 'x')
     {
         std::vector<std::string> regexLines;
 
@@ -1185,13 +1206,13 @@ int main(int argc, char *argv[])
         (command == 'i' && files.empty()) ||
         (command == 'r' && files.empty()) ||
         (command == 'C' && dst_dsk_file.empty()) ||
-        (command != 'X' && !target_dir.empty()) ||
+        (command != 'X' && command != 'x' && !target_dir.empty()) ||
         (command != 'C' && !dst_dsk_file.empty()) ||
-        (command != 'C' && has_regex_file) ||
-        (command != 'C' && !regexs.empty()) ||
+        (command != 'C' && command != 'x' && has_regex_file) ||
+        (command != 'C' && command != 'x' && !regexs.empty()) ||
         (std::string("firC").find_first_of(command) == std::string::npos &&
          (default_answer != '?')) ||
-        (command != 'i' && command != 'X' && convert_text) ||
+        (command != 'i' && command != 'X' && command != 'x' && convert_text) ||
         (command != 'c' && debug_output))
     {
         std::cerr << "*** Error: Wrong syntax\n";
@@ -1225,9 +1246,12 @@ int main(int argc, char *argv[])
             case 's':
                 return SummaryOfDskFiles(dsk_files, verbose);
 
+            case 'x':
+                dsk_files.push_back(dsk_file);
+                // fall through
             case 'X':
                 return ExtractDskFiles(target_dir, verbose, convert_text,
-                                       dsk_files);
+                                       dsk_files, regexs);
 
             case 'C':
                 return CopyFromToDskFile(dsk_file, dst_dsk_file, verbose,
