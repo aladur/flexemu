@@ -36,6 +36,13 @@
 #include <algorithm>
 #include <vector>
 
+void version()
+{
+    std::cout <<
+        "mdcrtool " << VERSION << "\n" <<
+        "mdcrtool " << COPYRIGHT_MESSAGE;
+}
+
 void syntax()
 {
     std::cout << "mdcrtool syntax:\n"
@@ -48,6 +55,8 @@ void syntax()
               << "   mdcrtool [-d<directory>] -x <mdcr_file>\n"
               << " List contents of a MDCR file:\n"
               << "   mdcrtool -l <mdcr_file>\n"
+              << " Print version number and exit:\n"
+              << "   mdcrtool -V\n"
               << "\n"
               << "   <bin_file>:  A file in FLEX binary format.\n"
               << "   <mdcr_file>: A file in Philips MDCR format.\n"
@@ -278,7 +287,7 @@ int ListContentOfMdcrFile(const char *ifile)
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("o:c:x:l:tuhd:");
+    std::string optstr("o:c:x:l:tuhd:V");
     std::vector<const char *>ifiles;
     const char *ofile = nullptr;
     const char *ifile = nullptr;
@@ -311,6 +320,8 @@ int main(int argc, char *argv[])
                       break;
             case 'u': isUppercase = true;
                       break;
+            case 'V': version();
+                      return 0;
             case 'h': syntax();
                       return 0;
             case '?':
