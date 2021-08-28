@@ -19,9 +19,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __idircnt_cpp__
-#define __idircnt_cpp__
-
 #include "misc1.h"
 #include <algorithm>
 #include <sys/types.h>
@@ -474,6 +471,4 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 #endif
     return true;
 }
-
-#endif // __idircnt_h__
 

@@ -19,9 +19,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __ifilecnt_cpp__
-#define __ifilecnt_cpp__
-
 #include "misc1.h"  // needed for nullptr
 #include "filecont.h"
 #include "ifilecnt.h"
@@ -174,7 +171,4 @@ bool FileContainerIterator::SetAttributesCurrent(Byte attributes)
 
     return imp->SetAttributesCurrent(attributes);
 }
-
-
-#endif // __ifilecnt_h__
 

@@ -19,9 +19,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __iffilcnt_cpp__
-#define __iffilcnt_cpp__
-
 #include "iffilcnt.h"
 #include "ffilecnt.h"
 #include <string>
@@ -420,6 +417,4 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 
     return true;
 }
-
-#endif // __iffilcnt_h__
 
