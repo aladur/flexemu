@@ -142,7 +142,6 @@ AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([FLEXEMU_CXXADD])
 AC_SUBST([OS_TYPE])
 AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
-AC_SUBST([FSETUP], ['fsetup${EXEEXT}'])
 
 dnl which optimizations are possible depends on the cpu architecture
 CXXSPEED="-D__CPU=$target_cpu"
@@ -244,9 +243,9 @@ if test "x$have_qt" = "xno"; then
   echo "mdcrtool, dsktool and flex2hex"
 else
   if test "x$with_x" = "xno"; then
-    echo "fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
+    echo "flexplorer, mdcrtool, dsktool and flex2hex"
   else
-    echo "flexemu, fsetup, flexplorer, mdcrtool, dsktool and flex2hex"
+    echo "flexemu, flexplorer, mdcrtool, dsktool and flex2hex"
   fi
 fi
   echo

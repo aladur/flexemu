@@ -1,6 +1,0 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-    <qresource prefix="/resource">
-        <file alias="fsetup.png">bitmaps/32x32/flexemu-fsetup.png</file>
-    </qresource>
-</RCC>

@@ -90,10 +90,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = @FLEXPLORER@ @FSETUP@ dsktool$(EXEEXT) \
-	flex2hex$(EXEEXT) flexemu$(EXEEXT) mdcrtool$(EXEEXT)
+bin_PROGRAMS = @FLEXPLORER@ dsktool$(EXEEXT) flex2hex$(EXEEXT) \
+	flexemu$(EXEEXT) mdcrtool$(EXEEXT)
 EXTRA_PROGRAMS = dsktool$(EXEEXT) flex2hex$(EXEEXT) \
-	flexplorer$(EXEEXT) fsetup$(EXEEXT) mdcrtool$(EXEEXT)
+	flexplorer$(EXEEXT) mdcrtool$(EXEEXT)
 noinst_PROGRAMS = test$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -219,21 +219,6 @@ flexplorer_OBJECTS = $(am_flexplorer_OBJECTS) \
 flexplorer_DEPENDENCIES =
 flexplorer_LINK = $(CXXLD) $(flexplorer_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_fsetup_OBJECTS = fsetup-benv.$(OBJEXT) fsetup-bfileptr.$(OBJEXT) \
-	fsetup-brcfile.$(OBJEXT) fsetup-bregistr.$(OBJEXT) \
-	fsetup-colors.$(OBJEXT) fsetup-foptman.$(OBJEXT) \
-	fsetup-fsetup.$(OBJEXT) fsetup-fsetupui.$(OBJEXT) \
-	fsetup-misc1.$(OBJEXT)
-am__objects_11 = fsetup-fsetup_qrc.$(OBJEXT)
-am__objects_12 = $(am__objects_11)
-am__objects_13 = fsetup-fsetupui_moc.$(OBJEXT)
-am__objects_14 = $(am__objects_13)
-nodist_fsetup_OBJECTS = $(am__objects_2) $(am__objects_12) \
-	$(am__objects_14)
-fsetup_OBJECTS = $(am_fsetup_OBJECTS) $(nodist_fsetup_OBJECTS)
-fsetup_DEPENDENCIES =
-fsetup_LINK = $(CXXLD) $(fsetup_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
-	$(LDFLAGS) -o $@
 am_mdcrtool_OBJECTS = mdcrtool-bdir.$(OBJEXT) \
 	mdcrtool-bfileptr.$(OBJEXT) mdcrtool-bmembuf.$(OBJEXT) \
 	mdcrtool-fileread.$(OBJEXT) mdcrtool-flexerr.$(OBJEXT) \
@@ -376,13 +361,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-bdate.Po \
 	./$(DEPDIR)/flexplorer-ifilecnt.Po \
 	./$(DEPDIR)/flexplorer-mdcrtape.Po \
 	./$(DEPDIR)/flexplorer-misc1.Po \
-	./$(DEPDIR)/flexplorer-rfilecnt.Po ./$(DEPDIR)/fsetup-benv.Po \
-	./$(DEPDIR)/fsetup-bfileptr.Po ./$(DEPDIR)/fsetup-brcfile.Po \
-	./$(DEPDIR)/fsetup-bregistr.Po ./$(DEPDIR)/fsetup-colors.Po \
-	./$(DEPDIR)/fsetup-foptman.Po ./$(DEPDIR)/fsetup-fsetup.Po \
-	./$(DEPDIR)/fsetup-fsetup_qrc.Po \
-	./$(DEPDIR)/fsetup-fsetupui.Po \
-	./$(DEPDIR)/fsetup-fsetupui_moc.Po ./$(DEPDIR)/fsetup-misc1.Po \
+	./$(DEPDIR)/flexplorer-rfilecnt.Po \
 	./$(DEPDIR)/mdcrtool-bdir.Po ./$(DEPDIR)/mdcrtool-bfileptr.Po \
 	./$(DEPDIR)/mdcrtool-bmembuf.Po \
 	./$(DEPDIR)/mdcrtool-fileread.Po \
@@ -432,11 +411,11 @@ am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) $(flexemu_SOURCES) \
 	$(nodist_flexemu_SOURCES) $(flexplorer_SOURCES) \
-	$(nodist_flexplorer_SOURCES) $(fsetup_SOURCES) \
-	$(nodist_fsetup_SOURCES) $(mdcrtool_SOURCES) $(test_SOURCES)
+	$(nodist_flexplorer_SOURCES) $(mdcrtool_SOURCES) \
+	$(test_SOURCES)
 DIST_SOURCES = $(dsktool_SOURCES) $(flex2hex_SOURCES) \
-	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(fsetup_SOURCES) \
-	$(mdcrtool_SOURCES) $(test_SOURCES)
+	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(mdcrtool_SOURCES) \
+	$(test_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -564,7 +543,6 @@ FLEXEMU_CXXADD = @FLEXEMU_CXXADD@
 FLEXEMU_LDADD = @FLEXEMU_LDADD@
 FLEXPLORER = @FLEXPLORER@
 FLEX_RC = @FLEX_RC@
-FSETUP = @FSETUP@
 GREP = @GREP@
 GTK_UPDATE_ICON_CACHE = @GTK_UPDATE_ICON_CACHE@
 IGNORE = @IGNORE@
@@ -674,8 +652,7 @@ pkgdata_DATA = boot
 sysconf_DATA = flexemu.conf
 desktop_DATA = \
 	flexemu.desktop \
-	flexemu-flexplorer.desktop \
-	flexemu-fsetup.desktop
+	flexemu-flexplorer.desktop
 
 mimetype_DATA = flexemu.xml
 SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
@@ -685,8 +662,6 @@ EXTRA_DIST = \
 	$(flexemu_ui) \
 	$(flexplorer_qrc) \
 	$(flexplorer_ui) \
-	$(fsetup_qrc) \
-	$(fsetup_ui) \
 	$(mimetype_DATA) \
 	$(pkgdata_DATA) \
 	$(sysconf_DATA) \
@@ -701,8 +676,6 @@ EXTRA_DIST = \
 	flexemu.rc \
 	flexemu.vcxproj \
 	flexplorer.vcxproj \
-	fsetup.rc \
-	fsetup.vcxproj \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
@@ -726,13 +699,11 @@ flexemu_CXXFLAGS = \
 	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
 
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
-fsetup_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@
-fsetup_LDADD = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD = @PTHREAD_LD@
 flex2hex_LDADD = @PTHREAD_LD@
 dsktool_LDADD = @PTHREAD_LD@
@@ -747,8 +718,6 @@ flexemu_DEPENDENCIES = @FLEX_RC@
 # Define all *.qrc files from which to create *_qrc.cpp files.
 flexemu_qrc = flexemu.qrc
 flexemu_qrc_src = $(flexemu_qrc:.qrc=_qrc.cpp)
-fsetup_qrc = fsetup.qrc
-fsetup_qrc_src = $(fsetup_qrc:.qrc=_qrc.cpp)
 flexplorer_qrc = fpmain.qrc
 flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 
@@ -757,11 +726,10 @@ flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
-	logfil.ui
+	logfil.ui \
+	fsetup.ui
 
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
-fsetup_ui = fsetup.ui
-fsetup_ui_hdr = $(fsetup_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \
 	fpopt.ui
@@ -780,8 +748,6 @@ flexemu_moc_hdr = \
 	qtgui.h
 
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
-fsetup_moc_hdr = fsetupui.h
-fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
 	fpedit.h \
 	fpmdich.h \
@@ -791,47 +757,16 @@ flexplorer_moc_hdr = \
 
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
-nodist_fsetup_SOURCES = $(fsetup_ui_hdr) $(fsetup_qrc_src) $(fsetup_moc_src)
 nodist_flexplorer_SOURCES = \
 	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES) \
-	$(nodist_fsetup_SOURCES)
+	$(nodist_flexplorer_SOURCES)
 
 CLEANFILES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES) \
-	$(nodist_fsetup_SOURCES)
-
-fsetup_SOURCES = \
-	benv.cpp \
-	bfileptr.cpp \
-	brcfile.cpp \
-	bregistr.cpp \
-	colors.cpp \
-	foptman.cpp \
-	fsetup.cpp \
-	fsetupui.cpp \
-	misc1.cpp\
-	benv.h \
-	bfileptr.h \
-	brcfile.h \
-	bregistr.h \
-	config.h \
-	cvtwchar.h \
-	e2.h \
-	flexemu.h \
-	flexerr.h \
-	foptman.h \
-	fsetupui.h \
-	misc1.h \
-	soptions.h \
-	typedefs.h \
-	warnoff.h \
-	warnon.h \
-	winmain.h
+	$(nodist_flexplorer_SOURCES)
 
 flexemu_SOURCES = \
 	absgui.cpp \
@@ -1345,10 +1280,6 @@ flexplorer$(EXEEXT): $(flexplorer_OBJECTS) $(flexplorer_DEPENDENCIES) $(EXTRA_fl
 	@rm -f flexplorer$(EXEEXT)
 	$(AM_V_CXXLD)$(flexplorer_LINK) $(flexplorer_OBJECTS) $(flexplorer_LDADD) $(LIBS)
 
-fsetup$(EXEEXT): $(fsetup_OBJECTS) $(fsetup_DEPENDENCIES) $(EXTRA_fsetup_DEPENDENCIES) 
-	@rm -f fsetup$(EXEEXT)
-	$(AM_V_CXXLD)$(fsetup_LINK) $(fsetup_OBJECTS) $(fsetup_LDADD) $(LIBS)
-
 mdcrtool$(EXEEXT): $(mdcrtool_OBJECTS) $(mdcrtool_DEPENDENCIES) $(EXTRA_mdcrtool_DEPENDENCIES) 
 	@rm -f mdcrtool$(EXEEXT)
 	$(AM_V_CXXLD)$(mdcrtool_LINK) $(mdcrtool_OBJECTS) $(mdcrtool_LDADD) $(LIBS)
@@ -1505,17 +1436,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-mdcrtape.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-misc1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-rfilecnt.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-benv.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bfileptr.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-brcfile.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-bregistr.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-colors.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-foptman.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetup_qrc.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetupui.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-fsetupui_moc.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fsetup-misc1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bdir.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bfileptr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-bmembuf.Po@am__quote@ # am--include-marker
@@ -3556,160 +3476,6 @@ flexplorer-fpwin_moc.obj: fpwin_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin_moc.obj `if test -f 'fpwin_moc.cpp'; then $(CYGPATH_W) 'fpwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin_moc.cpp'; fi`
 
-fsetup-benv.o: benv.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-benv.o -MD -MP -MF $(DEPDIR)/fsetup-benv.Tpo -c -o fsetup-benv.o `test -f 'benv.cpp' || echo '$(srcdir)/'`benv.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-benv.Tpo $(DEPDIR)/fsetup-benv.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='benv.cpp' object='fsetup-benv.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-benv.o `test -f 'benv.cpp' || echo '$(srcdir)/'`benv.cpp
-
-fsetup-benv.obj: benv.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-benv.obj -MD -MP -MF $(DEPDIR)/fsetup-benv.Tpo -c -o fsetup-benv.obj `if test -f 'benv.cpp'; then $(CYGPATH_W) 'benv.cpp'; else $(CYGPATH_W) '$(srcdir)/benv.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-benv.Tpo $(DEPDIR)/fsetup-benv.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='benv.cpp' object='fsetup-benv.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-benv.obj `if test -f 'benv.cpp'; then $(CYGPATH_W) 'benv.cpp'; else $(CYGPATH_W) '$(srcdir)/benv.cpp'; fi`
-
-fsetup-bfileptr.o: bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bfileptr.o -MD -MP -MF $(DEPDIR)/fsetup-bfileptr.Tpo -c -o fsetup-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bfileptr.Tpo $(DEPDIR)/fsetup-bfileptr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='fsetup-bfileptr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
-
-fsetup-bfileptr.obj: bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bfileptr.obj -MD -MP -MF $(DEPDIR)/fsetup-bfileptr.Tpo -c -o fsetup-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bfileptr.Tpo $(DEPDIR)/fsetup-bfileptr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='fsetup-bfileptr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
-
-fsetup-brcfile.o: brcfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-brcfile.o -MD -MP -MF $(DEPDIR)/fsetup-brcfile.Tpo -c -o fsetup-brcfile.o `test -f 'brcfile.cpp' || echo '$(srcdir)/'`brcfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-brcfile.Tpo $(DEPDIR)/fsetup-brcfile.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='brcfile.cpp' object='fsetup-brcfile.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-brcfile.o `test -f 'brcfile.cpp' || echo '$(srcdir)/'`brcfile.cpp
-
-fsetup-brcfile.obj: brcfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-brcfile.obj -MD -MP -MF $(DEPDIR)/fsetup-brcfile.Tpo -c -o fsetup-brcfile.obj `if test -f 'brcfile.cpp'; then $(CYGPATH_W) 'brcfile.cpp'; else $(CYGPATH_W) '$(srcdir)/brcfile.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-brcfile.Tpo $(DEPDIR)/fsetup-brcfile.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='brcfile.cpp' object='fsetup-brcfile.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-brcfile.obj `if test -f 'brcfile.cpp'; then $(CYGPATH_W) 'brcfile.cpp'; else $(CYGPATH_W) '$(srcdir)/brcfile.cpp'; fi`
-
-fsetup-bregistr.o: bregistr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bregistr.o -MD -MP -MF $(DEPDIR)/fsetup-bregistr.Tpo -c -o fsetup-bregistr.o `test -f 'bregistr.cpp' || echo '$(srcdir)/'`bregistr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bregistr.Tpo $(DEPDIR)/fsetup-bregistr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bregistr.cpp' object='fsetup-bregistr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bregistr.o `test -f 'bregistr.cpp' || echo '$(srcdir)/'`bregistr.cpp
-
-fsetup-bregistr.obj: bregistr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-bregistr.obj -MD -MP -MF $(DEPDIR)/fsetup-bregistr.Tpo -c -o fsetup-bregistr.obj `if test -f 'bregistr.cpp'; then $(CYGPATH_W) 'bregistr.cpp'; else $(CYGPATH_W) '$(srcdir)/bregistr.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-bregistr.Tpo $(DEPDIR)/fsetup-bregistr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bregistr.cpp' object='fsetup-bregistr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-bregistr.obj `if test -f 'bregistr.cpp'; then $(CYGPATH_W) 'bregistr.cpp'; else $(CYGPATH_W) '$(srcdir)/bregistr.cpp'; fi`
-
-fsetup-colors.o: colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-colors.o -MD -MP -MF $(DEPDIR)/fsetup-colors.Tpo -c -o fsetup-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-colors.Tpo $(DEPDIR)/fsetup-colors.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='fsetup-colors.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
-
-fsetup-colors.obj: colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-colors.obj -MD -MP -MF $(DEPDIR)/fsetup-colors.Tpo -c -o fsetup-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-colors.Tpo $(DEPDIR)/fsetup-colors.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='fsetup-colors.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
-
-fsetup-foptman.o: foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-foptman.o -MD -MP -MF $(DEPDIR)/fsetup-foptman.Tpo -c -o fsetup-foptman.o `test -f 'foptman.cpp' || echo '$(srcdir)/'`foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-foptman.Tpo $(DEPDIR)/fsetup-foptman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='foptman.cpp' object='fsetup-foptman.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-foptman.o `test -f 'foptman.cpp' || echo '$(srcdir)/'`foptman.cpp
-
-fsetup-foptman.obj: foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-foptman.obj -MD -MP -MF $(DEPDIR)/fsetup-foptman.Tpo -c -o fsetup-foptman.obj `if test -f 'foptman.cpp'; then $(CYGPATH_W) 'foptman.cpp'; else $(CYGPATH_W) '$(srcdir)/foptman.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-foptman.Tpo $(DEPDIR)/fsetup-foptman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='foptman.cpp' object='fsetup-foptman.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-foptman.obj `if test -f 'foptman.cpp'; then $(CYGPATH_W) 'foptman.cpp'; else $(CYGPATH_W) '$(srcdir)/foptman.cpp'; fi`
-
-fsetup-fsetup.o: fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup.Tpo -c -o fsetup-fsetup.o `test -f 'fsetup.cpp' || echo '$(srcdir)/'`fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup.Tpo $(DEPDIR)/fsetup-fsetup.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup.cpp' object='fsetup-fsetup.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup.o `test -f 'fsetup.cpp' || echo '$(srcdir)/'`fsetup.cpp
-
-fsetup-fsetup.obj: fsetup.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetup.Tpo -c -o fsetup-fsetup.obj `if test -f 'fsetup.cpp'; then $(CYGPATH_W) 'fsetup.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup.Tpo $(DEPDIR)/fsetup-fsetup.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup.cpp' object='fsetup-fsetup.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup.obj `if test -f 'fsetup.cpp'; then $(CYGPATH_W) 'fsetup.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup.cpp'; fi`
-
-fsetup-fsetupui.o: fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui.o -MD -MP -MF $(DEPDIR)/fsetup-fsetupui.Tpo -c -o fsetup-fsetupui.o `test -f 'fsetupui.cpp' || echo '$(srcdir)/'`fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui.Tpo $(DEPDIR)/fsetup-fsetupui.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui.cpp' object='fsetup-fsetupui.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui.o `test -f 'fsetupui.cpp' || echo '$(srcdir)/'`fsetupui.cpp
-
-fsetup-fsetupui.obj: fsetupui.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetupui.Tpo -c -o fsetup-fsetupui.obj `if test -f 'fsetupui.cpp'; then $(CYGPATH_W) 'fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui.Tpo $(DEPDIR)/fsetup-fsetupui.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui.cpp' object='fsetup-fsetupui.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui.obj `if test -f 'fsetupui.cpp'; then $(CYGPATH_W) 'fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui.cpp'; fi`
-
-fsetup-misc1.o: misc1.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-misc1.o -MD -MP -MF $(DEPDIR)/fsetup-misc1.Tpo -c -o fsetup-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-misc1.Tpo $(DEPDIR)/fsetup-misc1.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='fsetup-misc1.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-misc1.o `test -f 'misc1.cpp' || echo '$(srcdir)/'`misc1.cpp
-
-fsetup-misc1.obj: misc1.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-misc1.obj -MD -MP -MF $(DEPDIR)/fsetup-misc1.Tpo -c -o fsetup-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-misc1.Tpo $(DEPDIR)/fsetup-misc1.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='misc1.cpp' object='fsetup-misc1.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-misc1.obj `if test -f 'misc1.cpp'; then $(CYGPATH_W) 'misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/misc1.cpp'; fi`
-
-fsetup-fsetup_qrc.o: fsetup_qrc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup_qrc.o -MD -MP -MF $(DEPDIR)/fsetup-fsetup_qrc.Tpo -c -o fsetup-fsetup_qrc.o `test -f 'fsetup_qrc.cpp' || echo '$(srcdir)/'`fsetup_qrc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup_qrc.Tpo $(DEPDIR)/fsetup-fsetup_qrc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup_qrc.cpp' object='fsetup-fsetup_qrc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup_qrc.o `test -f 'fsetup_qrc.cpp' || echo '$(srcdir)/'`fsetup_qrc.cpp
-
-fsetup-fsetup_qrc.obj: fsetup_qrc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetup_qrc.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetup_qrc.Tpo -c -o fsetup-fsetup_qrc.obj `if test -f 'fsetup_qrc.cpp'; then $(CYGPATH_W) 'fsetup_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup_qrc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetup_qrc.Tpo $(DEPDIR)/fsetup-fsetup_qrc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetup_qrc.cpp' object='fsetup-fsetup_qrc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetup_qrc.obj `if test -f 'fsetup_qrc.cpp'; then $(CYGPATH_W) 'fsetup_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetup_qrc.cpp'; fi`
-
-fsetup-fsetupui_moc.o: fsetupui_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui_moc.o -MD -MP -MF $(DEPDIR)/fsetup-fsetupui_moc.Tpo -c -o fsetup-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui_moc.Tpo $(DEPDIR)/fsetup-fsetupui_moc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='fsetup-fsetupui_moc.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui_moc.o `test -f 'fsetupui_moc.cpp' || echo '$(srcdir)/'`fsetupui_moc.cpp
-
-fsetup-fsetupui_moc.obj: fsetupui_moc.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -MT fsetup-fsetupui_moc.obj -MD -MP -MF $(DEPDIR)/fsetup-fsetupui_moc.Tpo -c -o fsetup-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/fsetup-fsetupui_moc.Tpo $(DEPDIR)/fsetup-fsetupui_moc.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui_moc.cpp' object='fsetup-fsetupui_moc.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fsetup_CXXFLAGS) $(CXXFLAGS) -c -o fsetup-fsetupui_moc.obj `if test -f 'fsetupui_moc.cpp'; then $(CYGPATH_W) 'fsetupui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui_moc.cpp'; fi`
-
 mdcrtool-bdir.o: bdir.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -MT mdcrtool-bdir.o -MD -MP -MF $(DEPDIR)/mdcrtool-bdir.Tpo -c -o mdcrtool-bdir.o `test -f 'bdir.cpp' || echo '$(srcdir)/'`bdir.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mdcrtool-bdir.Tpo $(DEPDIR)/mdcrtool-bdir.Po
@@ -4576,17 +4342,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-mdcrtape.Po
 	-rm -f ./$(DEPDIR)/flexplorer-misc1.Po
 	-rm -f ./$(DEPDIR)/flexplorer-rfilecnt.Po
-	-rm -f ./$(DEPDIR)/fsetup-benv.Po
-	-rm -f ./$(DEPDIR)/fsetup-bfileptr.Po
-	-rm -f ./$(DEPDIR)/fsetup-brcfile.Po
-	-rm -f ./$(DEPDIR)/fsetup-bregistr.Po
-	-rm -f ./$(DEPDIR)/fsetup-colors.Po
-	-rm -f ./$(DEPDIR)/fsetup-foptman.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetup.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetup_qrc.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetupui.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetupui_moc.Po
-	-rm -f ./$(DEPDIR)/fsetup-misc1.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bdir.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bfileptr.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bmembuf.Po
@@ -4807,17 +4562,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-mdcrtape.Po
 	-rm -f ./$(DEPDIR)/flexplorer-misc1.Po
 	-rm -f ./$(DEPDIR)/flexplorer-rfilecnt.Po
-	-rm -f ./$(DEPDIR)/fsetup-benv.Po
-	-rm -f ./$(DEPDIR)/fsetup-bfileptr.Po
-	-rm -f ./$(DEPDIR)/fsetup-brcfile.Po
-	-rm -f ./$(DEPDIR)/fsetup-bregistr.Po
-	-rm -f ./$(DEPDIR)/fsetup-colors.Po
-	-rm -f ./$(DEPDIR)/fsetup-foptman.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetup.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetup_qrc.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetupui.Po
-	-rm -f ./$(DEPDIR)/fsetup-fsetupui_moc.Po
-	-rm -f ./$(DEPDIR)/fsetup-misc1.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bdir.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bfileptr.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-bmembuf.Po
@@ -4902,7 +4646,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 
 # Create a *_moc.cpp file from a *.h file
 # To see which *.h files are used to create *_moc.cpp files see
-# variables flexemu_moc_hdr, fsetup_moc_hdr and flexplorer_moc_hdr.
+# variables flexemu_moc_hdr and flexplorer_moc_hdr.
 .h_moc.cpp:
 	${QT_MOC} $< -o $@
 

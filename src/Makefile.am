@@ -4,8 +4,7 @@ sysconf_DATA = flexemu.conf
 
 desktop_DATA = \
 	flexemu.desktop \
-	flexemu-flexplorer.desktop \
-	flexemu-fsetup.desktop
+	flexemu-flexplorer.desktop
 
 mimetype_DATA = flexemu.xml
 
@@ -20,8 +19,6 @@ EXTRA_DIST = \
 	$(flexemu_ui) \
 	$(flexplorer_qrc) \
 	$(flexplorer_ui) \
-	$(fsetup_qrc) \
-	$(fsetup_ui) \
 	$(mimetype_DATA) \
 	$(pkgdata_DATA) \
 	$(sysconf_DATA) \
@@ -36,8 +33,6 @@ EXTRA_DIST = \
 	flexemu.rc \
 	flexemu.vcxproj \
 	flexplorer.vcxproj \
-	fsetup.rc \
-	fsetup.vcxproj \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
@@ -54,7 +49,6 @@ mimetypedir = $(mimetypebasedir)/packages
 
 bin_PROGRAMS = \
 	@FLEXPLORER@ \
-	@FSETUP@ \
 	dsktool \
 	flex2hex \
 	flexemu \
@@ -64,7 +58,6 @@ EXTRA_PROGRAMS = \
 	dsktool \
 	flex2hex \
 	flexplorer \
-	fsetup \
 	mdcrtool
 
 noinst_PROGRAMS = test
@@ -79,14 +72,12 @@ flexemu_CXXFLAGS = \
 	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
 
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
-fsetup_CXXFLAGS     = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
 flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@
-fsetup_LDADD     = @QT_LIBS@ @PTHREAD_LD@
 mdcrtool_LDADD   = @PTHREAD_LD@
 flex2hex_LDADD   = @PTHREAD_LD@
 dsktool_LDADD    = @PTHREAD_LD@
@@ -100,8 +91,6 @@ flexemu_DEPENDENCIES = @FLEX_RC@
 # Define all *.qrc files from which to create *_qrc.cpp files.
 flexemu_qrc = flexemu.qrc
 flexemu_qrc_src = $(flexemu_qrc:.qrc=_qrc.cpp)
-fsetup_qrc = fsetup.qrc
-fsetup_qrc_src = $(fsetup_qrc:.qrc=_qrc.cpp)
 flexplorer_qrc = fpmain.qrc
 flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 
@@ -110,10 +99,9 @@ flexplorer_qrc_src = $(flexplorer_qrc:.qrc=_qrc.cpp)
 flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
-	logfil.ui
+	logfil.ui \
+	fsetup.ui
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
-fsetup_ui = fsetup.ui
-fsetup_ui_hdr = $(fsetup_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \
 	fpopt.ui
@@ -130,8 +118,6 @@ flexemu_moc_hdr = \
 	logfilui.h \
 	qtgui.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
-fsetup_moc_hdr = fsetupui.h
-fsetup_moc_src = $(fsetup_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
 	fpedit.h \
 	fpmdich.h \
@@ -141,48 +127,17 @@ flexplorer_moc_hdr = \
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
 nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
-nodist_fsetup_SOURCES = $(fsetup_ui_hdr) $(fsetup_qrc_src) $(fsetup_moc_src)
 
 nodist_flexplorer_SOURCES = \
 	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES) \
-	$(nodist_fsetup_SOURCES)
+	$(nodist_flexplorer_SOURCES)
 
 CLEANFILES = \
 	$(nodist_flexemu_SOURCES) \
-	$(nodist_flexplorer_SOURCES) \
-	$(nodist_fsetup_SOURCES)
-
-fsetup_SOURCES = \
-	benv.cpp \
-	bfileptr.cpp \
-	brcfile.cpp \
-	bregistr.cpp \
-	colors.cpp \
-	foptman.cpp \
-	fsetup.cpp \
-	fsetupui.cpp \
-	misc1.cpp\
-	benv.h \
-	bfileptr.h \
-	brcfile.h \
-	bregistr.h \
-	config.h \
-	cvtwchar.h \
-	e2.h \
-	flexemu.h \
-	flexerr.h \
-	foptman.h \
-	fsetupui.h \
-	misc1.h \
-	soptions.h \
-	typedefs.h \
-	warnoff.h \
-	warnon.h \
-	winmain.h
+	$(nodist_flexplorer_SOURCES)
 
 flexemu_SOURCES = \
 	absgui.cpp \
@@ -583,7 +538,7 @@ test_SOURCES = \
 
 # Create a *_moc.cpp file from a *.h file
 # To see which *.h files are used to create *_moc.cpp files see
-# variables flexemu_moc_hdr, fsetup_moc_hdr and flexplorer_moc_hdr.
+# variables flexemu_moc_hdr and flexplorer_moc_hdr.
 .h_moc.cpp:
 	${QT_MOC} $< -o $@
 

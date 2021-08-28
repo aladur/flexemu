@@ -31,5 +31,6 @@
         <file alias="irq-lightblue.png">bitmaps/32x32/flexemu-irq-lightblue.png</file>
         <file alias="irqs.png">bitmaps/128x128/flexemu-irqs.png</file>
         <file alias="qt.png">bitmaps/32x32/qt_extended_32x32.png</file>
+        <file alias="fsetup.png">bitmaps/32x32/flexemu-fsetup.png</file>
     </qresource>
 </RCC>
