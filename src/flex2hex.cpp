@@ -70,7 +70,7 @@ void syntax()
         "                    Address range gaps are filled up with 0.\n"
         "   -y:              Overwrite existing file(s) without confirmation.\n"
         "   -v:              Verbose output.\n"
-        "   -V:              Print version number and exit.\n";
+        "   -V:              Print version number and exit.\n"
         "   -h:              Print this help and exit.\n";
 }
 
