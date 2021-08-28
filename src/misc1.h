@@ -82,7 +82,7 @@ extern const char *gMemoryAllocationErrorString;
 /* adaptions for autoconf to use with/without ANSI C headers */
 
 #ifndef UNIX
-    #if defined(__LINUX) || defined(__BSD) || defined(__SOLARIS)
+    #if defined(__LINUX) || defined(__BSD)
         #define UNIX
     #endif
 #endif
@@ -190,9 +190,6 @@ extern const char *gMemoryAllocationErrorString;
     #endif
     #ifdef __LINUX
         #include <sys/param.h>
-    #endif
-    #ifdef __SOLARIS
-        #include <limits.h>
     #endif
 #endif
 

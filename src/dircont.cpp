@@ -271,11 +271,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
                       bytesPerSector);
 #endif
 #ifdef UNIX
-#ifdef __SOLARIS
-    statvfs_t fsbuf;
-#else
     struct statvfs fsbuf;
-#endif
 
     if (statvfs(directory.c_str(), &fsbuf))
     {

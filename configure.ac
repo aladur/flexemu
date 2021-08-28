@@ -97,10 +97,6 @@ AC_PROG_GCC_TRADITIONAL
 
 dnl Check for system services
 case $host_os in
-       *solaris*) FLEXEMU_CXXADD="-D_POSIX_PTHREAD_SEMANTICS" ;;
-       *)         FLEXEMU_CXXADD="" ;;
-esac
-case $host_os in
        *mingw32*) FLEXEMU_LDADD="-mwindows" ;;
        *cygwin*)  FLEXEMU_LDADD="-mwindows" ;;
        *)         FLEXEMU_LDADD="" ;;
@@ -114,7 +110,6 @@ case $host_os in
        *linux*)   OS_TYPE="-D__LINUX" ;;
        *freebsd*) OS_TYPE="-D__BSD -D__FREEBSD" ;;
        *openbsd*) OS_TYPE="-D__OPENBSD" ;;
-       *solaris*) OS_TYPE="-D__SOLARIS" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
        *)         OS_TYPE="" ;;
@@ -140,7 +135,6 @@ AC_SUBST(WIN32_LIBS)
 AC_SUBST(WNO_VARIADIC_MACROS)
 AC_SUBST([FLEX_RC])
 AC_SUBST([FLEXEMU_LDADD])
-AC_SUBST([FLEXEMU_CXXADD])
 AC_SUBST([OS_TYPE])
 AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
 
@@ -168,11 +162,6 @@ if test "x$enable_speed" = "xyes"; then
            i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
  -frename-registers -mcpu=$target_cpu -DUSE_ASM" ;;
         esac ;;
-      *solaris*)
-	case $target_cpu in
-           i*86) CXXSPEED="$CXXSPEED -Winline -O3 -finline-limit=4000 \
- -frename-registers -mcpu=$target_cpu -DUSE_ASM";;
-	esac ;;
    esac
 fi
 
