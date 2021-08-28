@@ -47,6 +47,8 @@ desktopdir = $(datadir)/applications
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 
+noinst_LIBRARIES = libflex.a
+
 bin_PROGRAMS = \
 	@FLEXPLORER@ \
 	dsktool \
@@ -67,25 +69,33 @@ AM_CXXFLAGS = \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 
+libflex_a_CXXFLAGS  = $(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@ @FLEXEMU_CXXADD@
 flexemu_CXXFLAGS = \
 	$(AM_CXXFLAGS) \
 	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @FLEXEMU_CXXADD@ @QT_CXXFLAGS@
-
 flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
 mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
 dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
 test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
 
-flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@
-mdcrtool_LDADD   = @PTHREAD_LD@
-flex2hex_LDADD   = @PTHREAD_LD@
-dsktool_LDADD    = @PTHREAD_LD@
+libflex_a_LIBADD = $(LIBOBJS)
+
+flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@ libflex.a
+mdcrtool_LDADD   = @PTHREAD_LD@ libflex.a
+flex2hex_LDADD   = @PTHREAD_LD@ libflex.a
+dsktool_LDADD    = @PTHREAD_LD@ libflex.a
 flexemu_LDADD    = \
 	@FLEX_RC@ @FLEXEMU_LDADD@ \
-	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@ @X_LIBS@
-test_LDADD       = @PTHREAD_LD@
-flexemu_DEPENDENCIES = @FLEX_RC@
+	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@ @X_LIBS@ libflex.a
+test_LDADD       = @PTHREAD_LD@ libflex.a
+
+flexemu_DEPENDENCIES    = @FLEX_RC@ libflex.a
+flexplorer_DEPENDENCIES = libflex.a
+flex2hex_DEPENDENCIES   = libflex.a
+dsktool_DEPENDENCIES    = libflex.a
+mdcrtool_DEPENDENCIES   = libflex.a
+test_DEPENDENCIES       = libflex.a
 
 # Rule for Qt qrc files:
 # Define all *.qrc files from which to create *_qrc.cpp files.
@@ -143,19 +153,8 @@ flexemu_SOURCES = \
 	absgui.cpp \
 	acia1.cpp \
 	apprun.cpp \
-	bcommand.cpp \
-	bdate.cpp \
-	bdir.cpp \
-	benv.cpp \
-	bfileptr.cpp \
-	binifile.cpp \
 	bjoystck.cpp \
-	bmembuf.cpp \
-	bobservd.cpp \
-	brcfile.cpp \
-	bregistr.cpp\
 	brkptui.cpp \
-	btime.cpp \
 	bui.cpp \
 	bytereg.cpp \
 	cacttrns.cpp \
@@ -163,26 +162,14 @@ flexemu_SOURCES = \
 	colors.cpp \
 	command.cpp \
 	csetfreq.cpp \
-	cvtwchar.cpp \
 	da6809.cpp \
 	drawnwid.cpp \
 	drisel.cpp \
 	e2floppy.cpp \
 	e2screen.cpp \
 	efslctle.cpp \
-	fcinfo.cpp \
-	fcnffile.cpp \
-	fcopyman.cpp \
-	fdirent.cpp \
-	ffilebuf.cpp \
-	ffilecnt.cpp \
-	filecnts.cpp \
-	fileread.cpp \
-	flexerr.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
-	iffilcnt.cpp \
-	ifilecnt.cpp \
 	inout.cpp \
 	iodevdbg.cpp \
 	joystick.cpp \
@@ -195,16 +182,12 @@ flexemu_SOURCES = \
 	mc6809st.cpp \
 	mc6821.cpp \
 	mc6850.cpp \
-	mdcrtape.cpp \
-	memory.cpp \
-	misc1.cpp \
 	mmu.cpp \
 	ndircont.cpp \
 	pia1.cpp \
 	pia2.cpp \
 	pia2v5.cpp \
 	qtgui.cpp \
-	rfilecnt.cpp \
 	schedule.cpp \
 	sodiff.cpp \
 	terminal.cpp \
@@ -314,24 +297,6 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
-	bdate.cpp \
-	bdir.cpp \
-	benv.cpp \
-	bfileptr.cpp \
-	bmembuf.cpp \
-	bobservd.cpp \
-	bprocess.cpp \
-	brcfile.cpp \
-	bregistr.cpp \
-	cvtwchar.cpp \
-	dircont.cpp \
-	fcinfo.cpp \
-	fcopyman.cpp \
-	fdirent.cpp \
-	ffilebuf.cpp \
-	ffilecnt.cpp \
-	filecnts.cpp \
-	flexerr.cpp \
 	fpdnd.cpp \
 	fpedit.cpp \
 	fpmain.cpp \
@@ -340,12 +305,6 @@ flexplorer_SOURCES = \
 	fpnewui.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
-	idircnt.cpp \
-	iffilcnt.cpp \
-	ifilecnt.cpp \
-	mdcrtape.cpp \
-	misc1.cpp \
-	rfilecnt.cpp \
 	bdate.h \
 	bdir.h \
 	benv.h \
@@ -393,15 +352,8 @@ flexplorer_SOURCES = \
 	warnon.h
 
 mdcrtool_SOURCES = \
-	bdir.cpp \
-	bfileptr.cpp \
-	bmembuf.cpp \
-	fileread.cpp \
-	flexerr.cpp \
 	mdcrfs.cpp \
-	mdcrtape.cpp \
 	mdcrtool.cpp \
-	misc1.cpp \
 	bdir.h \
 	bfileptr.h \
 	bintervl.h \
@@ -417,12 +369,7 @@ mdcrtool_SOURCES = \
 	typedefs.h
 
 flex2hex_SOURCES = \
-	bfileptr.cpp \
-	bmembuf.cpp \
-	fileread.cpp \
 	flex2hex.cpp \
-	flexerr.cpp \
-	misc1.cpp \
 	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
@@ -436,24 +383,8 @@ flex2hex_SOURCES = \
 	typedefs.h
 
 dsktool_SOURCES = \
-	bdate.cpp \
-	bdir.cpp \
-	bfileptr.cpp \
-	dircont.cpp \
 	dsktool.cpp \
-	fcinfo.cpp \
-	fcopyman.cpp \
-	fdirent.cpp \
-	ffilebuf.cpp \
-	ffilecnt.cpp \
-	filecnts.cpp \
 	filfschk.cpp \
-	flexerr.cpp \
-	idircnt.cpp \
-	iffilcnt.cpp \
-	ifilecnt.cpp \
-	misc1.cpp \
-	rfilecnt.cpp \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
@@ -480,25 +411,14 @@ dsktool_SOURCES = \
 	typedefs.h
 
 test_SOURCES = \
-	bcommand.cpp \
-	bdate.cpp \
-	bfileptr.cpp \
-	binifile.cpp \
-	bobservd.cpp \
-	btime.cpp \
 	clogfile.cpp  \
 	colors.cpp \
 	command.cpp \
 	da6809.cpp \
-	fcinfo.cpp \
-	fcnffile.cpp \
-	flexerr.cpp \
 	inout.cpp \
 	mc6809.cpp \
 	mc6809in.cpp \
 	mc6809st.cpp \
-	memory.cpp \
-	misc1.cpp \
 	schedule.cpp \
 	test_gccasm.cpp \
 	testmain.cpp \
@@ -532,6 +452,74 @@ test_SOURCES = \
 	typedefs.h \
 	warnoff.h \
 	warnon.h
+
+libflex_a_SOURCES = \
+	bcommand.cpp \
+	bdate.cpp \
+	bdir.cpp \
+	benv.cpp \
+	bfileptr.cpp \
+	binifile.cpp \
+	bmembuf.cpp \
+	bobservd.cpp \
+	bprocess.cpp \
+	brcfile.cpp \
+	bregistr.cpp \
+	btime.cpp \
+	cvtwchar.cpp \
+	dircont.cpp \
+	fcinfo.cpp \
+	fcnffile.cpp \
+	fcopyman.cpp \
+	fdirent.cpp \
+	ffilebuf.cpp \
+	ffilecnt.cpp \
+	filecnts.cpp \
+	fileread.cpp \
+	filfschk.cpp \
+	flexerr.cpp \
+	idircnt.cpp \
+	iffilcnt.cpp \
+	ifilecnt.cpp \
+	mdcrtape.cpp \
+	memory.cpp \
+	misc1.cpp \
+	rfilecnt.cpp \
+	bcommand.h \
+	bdate.h \
+	bdir.h \
+	benv.h \
+	bfileptr.h \
+	binifile.h \
+	bmembuf.h \
+	brcfile.h \
+	bregistr.h \
+	btime.h \
+	config.h \
+	cvtwchar.h \
+	dircont.h \
+	fcinfo.h \
+	fcnffile.h \
+	fcopyman.h \
+	fdirent.h \
+	ffilebuf.h \
+	ffilecnt.h \
+	filecntb.h \
+	filecnts.h \
+	fileread.h \
+	filecont.h \
+	filfschk.h \
+	flexemu.h \
+	flexerr.h \
+	idircnt.h \
+	iffilcnt.h \
+	ifilcnti.h \
+	ifilecnt.h \
+	mdcrtape.h \
+	memory.h \
+	misc1.h \
+	rfilecnt.h \
+	typedefs.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

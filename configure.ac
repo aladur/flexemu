@@ -7,6 +7,7 @@ AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_TARGET
 AC_ARG_PROGRAM dnl Perform program name transformation
 AM_INIT_AUTOMAKE
+LT_INIT
 AM_MAINTAINER_MODE([disable])
 AC_CONFIG_HEADERS([src/config.h:src/config.hin])
 
