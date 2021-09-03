@@ -50,8 +50,6 @@ void FlexFileContainerIteratorImp::AtEnd()
 
 bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
-    std::string fileName;
-
     dirEntry.SetEmpty();
 
     while (dirEntry.IsEmpty())
@@ -91,13 +89,9 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
         if (pd->filename[0] != DE_DELETED)
         {
             // ok, found a valid directory entry
-            std::string::size_type length;
-
-            length = std::min<size_t>(strlen(pd->filename), FLEX_BASEFILENAME_LENGTH);
-            fileName = std::string(pd->filename, length);
-            fileName += ".";
-            length = std::min<size_t>(strlen(pd->file_ext), FLEX_FILEEXT_LENGTH);
-            fileName += std::string(pd->file_ext, length);
+            std::string fileName(pd->filename, 0U, FLEX_BASEFILENAME_LENGTH);
+            std::string fileExtension(pd->file_ext, 0U, FLEX_FILEEXT_LENGTH);
+            fileName += '.' + fileExtension;
 
             if (multimatches(fileName.c_str(), filePattern, ';', true))
             {

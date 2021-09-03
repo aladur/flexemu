@@ -527,22 +527,17 @@ void FileContainerCheck::InitializeFreeChainSectors()
 std::string FileContainerCheck::GetUnixFilename(
         const s_dir_entry &dir_entry)
 {
-    const char *pfn = &dir_entry.filename[0];
-
-    if (*pfn != DE_EMPTY && *pfn != DE_DELETED)
+    if (dir_entry.filename[0] != DE_EMPTY &&
+        dir_entry.filename[0] != DE_DELETED)
     {
-        std::string::size_type length;
-
-        length = std::min<size_t>(strlen(pfn), FLEX_BASEFILENAME_LENGTH);
-        std::string name(pfn, length);
-        length = std::min<size_t>(strlen(pfn + FLEX_BASEFILENAME_LENGTH),
-                          FLEX_FILEEXT_LENGTH);
-        std::string ext(pfn + FLEX_BASEFILENAME_LENGTH, length);
-        return name + '.' + ext;
+        std::string basename(dir_entry.filename, 0U, FLEX_BASEFILENAME_LENGTH);
+        std::string extension(dir_entry.file_ext, 0U, FLEX_FILEEXT_LENGTH);
+        strlower(basename);
+        strlower(extension);
+        return basename + '.' + extension;
     }
 
     return std::string();
-
 }
 
 void FileContainerCheck::InitializeFileSectors()

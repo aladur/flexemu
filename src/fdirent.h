@@ -41,15 +41,8 @@ enum flexFileStatus
     FLX_EMPTY   = 0x1
 };
 
-
-#ifdef _MSC_VER
-const SIZE_T FLEX_BASEFILENAME_LENGTH = 8;
-const SIZE_T FLEX_FILEEXT_LENGTH = 3;
-#else
-const unsigned long FLEX_BASEFILENAME_LENGTH = 8;
-const unsigned long FLEX_FILEEXT_LENGTH = 3;
-#endif
-
+const size_t FLEX_BASEFILENAME_LENGTH = 8U;
+const size_t FLEX_FILEEXT_LENGTH = 3U;
 
 class FlexDirEntry
 {
