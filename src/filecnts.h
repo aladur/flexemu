@@ -73,8 +73,8 @@ typedef struct s_st
 /* structure of FLEX system information record (SIR) */
 struct s_sys_info_record
 {
-    char    disk_name[8]; // Name of this disk image
-    char    disk_ext[3]; // Extension of this disk image
+    char    disk_name[FLEX_DISKNAME_LENGTH]; // Name of this disk image
+    char    disk_ext[FLEX_DISKEXT_LENGTH]; // Extension of this disk image
     Byte    disk_number[2]; // Number of this disk image
     st_t    fc_start; // Start track/sector of free chain
     st_t    fc_end; // End track/sector of free chain
@@ -106,8 +106,8 @@ struct s_sys_info_sector
 /* structure of one FLEX directory entry */
 struct s_dir_entry
 {
-    char    filename[8]; // Name of file
-    char    file_ext[3]; // Extension of file
+    char    filename[FLEX_BASEFILENAME_LENGTH]; // Name of file
+    char    file_ext[FLEX_FILEEXT_LENGTH]; // Extension of file
     Byte    file_attr; // File attributes, see flexFileAttributes
     Byte    reserved1; // To be initialized with 0
     st_t    start; // Track/secor of first sector of the file

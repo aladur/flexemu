@@ -27,6 +27,7 @@
 #include "misc1.h"
 #include <string>
 #include "bdate.h"
+#include "filecntb.h"
 
 enum flexFileAttributes
 {
@@ -40,9 +41,6 @@ enum flexFileStatus
 {
     FLX_EMPTY   = 0x1
 };
-
-const size_t FLEX_BASEFILENAME_LENGTH = 8U;
-const size_t FLEX_FILEEXT_LENGTH = 3U;
 
 class FlexDirEntry
 {

@@ -68,6 +68,11 @@ const Byte IS_RANDOM_FILE = 0x02;
 // Number of directory entries in one directory sector, struct s_dir_sector
 const Byte DIRENTRIES = 10;
 
+const size_t FLEX_DISKNAME_LENGTH = 8U;
+const size_t FLEX_DISKEXT_LENGTH = 3U;
+const size_t FLEX_BASEFILENAME_LENGTH = 8U;
+const size_t FLEX_FILEEXT_LENGTH = 3U;
+
 class FileContainerIfBase
 {
 public:

@@ -378,7 +378,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     {
         s_sys_info_sector sis;
         char disk_name[sizeof(sis.sir.disk_name) +
-                       sizeof(sis.sir.disk_ext) + 1];
+                       sizeof(sis.sir.disk_ext) + 2];
         int year;
 
         if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,

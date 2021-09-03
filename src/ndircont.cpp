@@ -157,6 +157,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
 
     const auto &sis = flex_sys_info[0];
+    std::string disk_name(sis.sir.disk_name, 0U, sizeof(sis.sir.disk_name));
 
     info.SetDate(sis.sir.day, sis.sir.month, sis.sir.year);
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
@@ -164,7 +165,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
                  param.byte_p_sector);
     info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                        param.byte_p_sector);
-    info.SetName(sis.sir.disk_name);
+    info.SetName(disk_name);
     info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     info.SetPath(directory.c_str());
     info.SetType(param.type);
@@ -523,8 +524,9 @@ st_t NafsDirectoryContainer::link_address() const
         {
             const auto &dir_entry = dir_sector.dir_entry[i];
 
-            if (!strncmp(dir_entry.filename, "FLEX\0\0\0\0", 8) &&
-                !strncmp(dir_entry.file_ext, "SYS", 3))
+            if (!strncmp(dir_entry.filename, "FLEX\0\0\0\0",
+                         FLEX_BASEFILENAME_LENGTH) &&
+                !strncmp(dir_entry.file_ext, "SYS", FLEX_FILEEXT_LENGTH))
             {
                 link = dir_entry.start;
                 break;
@@ -1069,9 +1071,9 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 
         std::string diskname = getFileName(directory);
 
-        if (diskname.size() > 8)
+        if (diskname.size() > FLEX_DISKNAME_LENGTH)
         {
-            diskname.resize(8);
+            diskname.resize(FLEX_DISKNAME_LENGTH);
         }
         if (!IsFlexFilename(diskname.c_str(), name, extension, false))
         {
@@ -1081,7 +1083,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), Byte(0U));
         std::fill(std::begin(sis.sir.disk_name), std::end(sis.sir.disk_name),
                   '\0');
-        strncpy(sis.sir.disk_name, name.c_str(), 8);
+        strncpy(sis.sir.disk_name, name.c_str(), FLEX_DISKNAME_LENGTH);
         std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
                   '\0');
         setValueBigEndian<Word>(&sis.sir.disk_number[0], number);

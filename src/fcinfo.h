@@ -29,9 +29,6 @@
 #include "bdate.h"
 
 
-const int   FLEX_DISKNAME_LENGTH = 12;
-
-
 class FlexContainerInfo
 {
 
