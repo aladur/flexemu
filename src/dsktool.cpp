@@ -447,7 +447,7 @@ int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
 
     std::cout <<
         "DATE        DISKNAME     #     TT-SS FILES SIZE  FREE  FILE\n" <<
-        "                                           [KB]  [KB]\n";
+        "                                           [SECTORS]\n";
 
     for (const auto &dsk_file : dsk_files)
     {
@@ -466,9 +466,11 @@ int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
     if (dsk_files.size() > 1)
     {
         std::cout <<
-            "SUMMARY:    FILES: " << sum_files <<
-            " SIZE: " << sum_size << " KByte" <<
-            " FREE: " << sum_free << " KByte\n";
+            "FILES: " << sum_files <<
+            " SIZE: " << sum_size << " Sectors/" <<
+            (sum_size / 4.0) << " KByte" <<
+            " FREE: " << sum_free << " Sectors/" <<
+            (sum_free / 4.0) << " KByte\n";
     }
 
     return 0;
