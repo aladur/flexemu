@@ -8,7 +8,7 @@ desktop_DATA = \
 
 mimetype_DATA = flexemu.xml
 
-SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
+SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .h.gch
 
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
@@ -36,7 +36,8 @@ EXTRA_DIST = \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
-	msvcQtPath.props.in
+	msvcQtPath.props.in \
+	pch.h
 
 SUBDIRS = bitmaps tools
 
@@ -69,14 +70,18 @@ AM_CXXFLAGS = \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 
-libflex_a_CXXFLAGS  = $(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@
-flexemu_CXXFLAGS = \
+# To use precompiled headers all targets have to use the same CXXFLAGS
+# (especially preprocessor directives).
+ALL_TARGETS_CXXFLAGS = \
 	$(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@
-flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
-mdcrtool_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
-flex2hex_CXXFLAGS   = $(AM_CXXFLAGS) @OS_TYPE@
-dsktool_CXXFLAGS    = $(AM_CXXFLAGS) @OS_TYPE@
-test_CXXFLAGS       = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
+
+libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexemu_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+test_CXXFLAGS       = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 
 libflex_a_LIBADD = $(LIBOBJS)
 
@@ -95,6 +100,11 @@ flex2hex_DEPENDENCIES   = libflex.a
 dsktool_DEPENDENCIES    = libflex.a
 mdcrtool_DEPENDENCIES   = libflex.a
 test_DEPENDENCIES       = libflex.a
+
+# Rule for precompiled header:
+# Build a pch.h.gch file from pch.h
+pch_h = pch.h
+pch_h_gch = $(pch_h:.h=.h.gch)
 
 # Rule for Qt qrc files:
 # Define all *.qrc files from which to create *_qrc.cpp files.
@@ -135,10 +145,17 @@ flexplorer_moc_hdr = \
 	fpwin.h
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
-nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
+nodist_flexemu_SOURCES = \
+	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src) $(pch_h_gch)
 
 nodist_flexplorer_SOURCES = \
-	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
+	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src) \
+	$(pch_h_gch)
+
+nodist_flex2hex_SOURCES = $(pch_h_gch)
+nodist_dsktool_SOURCES = $(pch_h_gch)
+nodist_mdcrtool_SOURCES = $(pch_h_gch)
+nodist_test_SOURCES = $(pch_h_gch)
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
@@ -519,6 +536,15 @@ libflex_a_SOURCES = \
 	misc1.h \
 	rfilecnt.h \
 	typedefs.h
+
+################################################################################
+# Use traditional-style suffix rules for precompiled header support.
+# Also define dependencies of precompiled header file.
+.h.h.gch:
+	$(CXX) $(DEFS) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) \
+	-o $@ -x c++-header -c $<
+
+pch.h.gcp: pch.h misc1.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.

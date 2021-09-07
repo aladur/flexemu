@@ -147,7 +147,10 @@ am_libflex_a_OBJECTS = libflex_a-bcommand.$(OBJEXT) \
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
 	dsktool-filfschk.$(OBJEXT)
-dsktool_OBJECTS = $(am_dsktool_OBJECTS)
+am__objects_1 =
+am__objects_2 = $(am__objects_1)
+nodist_dsktool_OBJECTS = $(am__objects_2)
+dsktool_OBJECTS = $(am_dsktool_OBJECTS) $(nodist_dsktool_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -156,7 +159,8 @@ dsktool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(dsktool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_flex2hex_OBJECTS = flex2hex-flex2hex.$(OBJEXT)
-flex2hex_OBJECTS = $(am_flex2hex_OBJECTS)
+nodist_flex2hex_OBJECTS = $(am__objects_2)
+flex2hex_OBJECTS = $(am_flex2hex_OBJECTS) $(nodist_flex2hex_OBJECTS)
 flex2hex_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flex2hex_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -183,8 +187,6 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
 	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
 	flexemu-winmain.$(OBJEXT)
-am__objects_1 =
-am__objects_2 = $(am__objects_1)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -193,7 +195,7 @@ am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-logfilui_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
-	$(am__objects_6)
+	$(am__objects_6) $(am__objects_2)
 flexemu_OBJECTS = $(am_flexemu_OBJECTS) $(nodist_flexemu_OBJECTS)
 flexemu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flexemu_CXXFLAGS) \
@@ -212,7 +214,7 @@ am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
 	flexplorer-fpwin_moc.$(OBJEXT)
 am__objects_10 = $(am__objects_9)
 nodist_flexplorer_OBJECTS = $(am__objects_2) $(am__objects_8) \
-	$(am__objects_10)
+	$(am__objects_10) $(am__objects_2)
 flexplorer_OBJECTS = $(am_flexplorer_OBJECTS) \
 	$(nodist_flexplorer_OBJECTS)
 flexplorer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -220,7 +222,8 @@ flexplorer_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_mdcrtool_OBJECTS = mdcrtool-mdcrfs.$(OBJEXT) \
 	mdcrtool-mdcrtool.$(OBJEXT)
-mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS)
+nodist_mdcrtool_OBJECTS = $(am__objects_2)
+mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS) $(nodist_mdcrtool_OBJECTS)
 mdcrtool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(mdcrtool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -230,7 +233,8 @@ am_test_OBJECTS = test-clogfile.$(OBJEXT) test-colors.$(OBJEXT) \
 	test-mc6809in.$(OBJEXT) test-mc6809st.$(OBJEXT) \
 	test-schedule.$(OBJEXT) test-test_gccasm.$(OBJEXT) \
 	test-testmain.$(OBJEXT)
-test_OBJECTS = $(am_test_OBJECTS)
+nodist_test_OBJECTS = $(am__objects_2)
+test_OBJECTS = $(am_test_OBJECTS) $(nodist_test_OBJECTS)
 test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -370,10 +374,13 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libflex_a_SOURCES) $(dsktool_SOURCES) $(flex2hex_SOURCES) \
-	$(flexemu_SOURCES) $(nodist_flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(nodist_flexplorer_SOURCES) \
-	$(mdcrtool_SOURCES) $(test_SOURCES)
+SOURCES = $(libflex_a_SOURCES) $(dsktool_SOURCES) \
+	$(nodist_dsktool_SOURCES) $(flex2hex_SOURCES) \
+	$(nodist_flex2hex_SOURCES) $(flexemu_SOURCES) \
+	$(nodist_flexemu_SOURCES) $(flexplorer_SOURCES) \
+	$(nodist_flexplorer_SOURCES) $(mdcrtool_SOURCES) \
+	$(nodist_mdcrtool_SOURCES) $(test_SOURCES) \
+	$(nodist_test_SOURCES)
 DIST_SOURCES = $(libflex_a_SOURCES) $(dsktool_SOURCES) \
 	$(flex2hex_SOURCES) $(flexemu_SOURCES) $(flexplorer_SOURCES) \
 	$(mdcrtool_SOURCES) $(test_SOURCES)
@@ -635,7 +642,7 @@ desktop_DATA = \
 	flexemu-flexplorer.desktop
 
 mimetype_DATA = flexemu.xml
-SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp
+SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .h.gch
 EXTRA_DIST = \
 	$(desktop_DATA) \
 	$(flexemu_qrc) \
@@ -659,7 +666,8 @@ EXTRA_DIST = \
 	JoystickTable.gnumeric \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
-	msvcQtPath.props.in
+	msvcQtPath.props.in \
+	pch.h
 
 SUBDIRS = bitmaps tools
 
@@ -675,15 +683,19 @@ AM_CXXFLAGS = \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 
-libflex_a_CXXFLAGS = $(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@
-flexemu_CXXFLAGS = \
+
+# To use precompiled headers all targets have to use the same CXXFLAGS
+# (especially preprocessor directives).
+ALL_TARGETS_CXXFLAGS = \
 	$(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@
 
-flexplorer_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ @QT_CXXFLAGS@
-mdcrtool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
-flex2hex_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
-dsktool_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@
-test_CXXFLAGS = $(AM_CXXFLAGS) @OS_TYPE@ -DUNIT_TEST
+libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexemu_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+test_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 libflex_a_LIBADD = $(LIBOBJS)
 flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@ libflex.a
 mdcrtool_LDADD = @PTHREAD_LD@ libflex.a
@@ -700,6 +712,11 @@ flex2hex_DEPENDENCIES = libflex.a
 dsktool_DEPENDENCIES = libflex.a
 mdcrtool_DEPENDENCIES = libflex.a
 test_DEPENDENCIES = libflex.a
+
+# Rule for precompiled header:
+# Build a pch.h.gch file from pch.h
+pch_h = pch.h
+pch_h_gch = $(pch_h:.h=.h.gch)
 
 # Rule for Qt qrc files:
 # Define all *.qrc files from which to create *_qrc.cpp files.
@@ -743,10 +760,17 @@ flexplorer_moc_hdr = \
 	fpwin.h
 
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
-nodist_flexemu_SOURCES = $(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src)
-nodist_flexplorer_SOURCES = \
-	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src)
+nodist_flexemu_SOURCES = \
+	$(flexemu_ui_hdr) $(flexemu_qrc_src) $(flexemu_moc_src) $(pch_h_gch)
 
+nodist_flexplorer_SOURCES = \
+	$(flexplorer_ui_hdr) $(flexplorer_qrc_src) $(flexplorer_moc_src) \
+	$(pch_h_gch)
+
+nodist_flex2hex_SOURCES = $(pch_h_gch)
+nodist_dsktool_SOURCES = $(pch_h_gch)
+nodist_mdcrtool_SOURCES = $(pch_h_gch)
+nodist_test_SOURCES = $(pch_h_gch)
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
 	$(nodist_flexplorer_SOURCES)
@@ -1138,7 +1162,7 @@ all: $(BUILT_SOURCES) config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .cpp .lo .obj
+.SUFFIXES: .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .h.gch .cpp .lo .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -3638,6 +3662,15 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
+
+################################################################################
+# Use traditional-style suffix rules for precompiled header support.
+# Also define dependencies of precompiled header file.
+.h.h.gch:
+	$(CXX) $(DEFS) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) \
+	-o $@ -x c++-header -c $<
+
+pch.h.gcp: pch.h misc1.h
 
 ################################################################################
 # Use traditional-style suffix rules for generic Qt support.
