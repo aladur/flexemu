@@ -30,7 +30,6 @@
 #include <vector>
 #include <memory>
 #include <condition_variable>
-#include <mutex>
 #include "cpustate.h"
 #include "schedcpu.h"
 #include "btime.h"
