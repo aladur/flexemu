@@ -204,7 +204,7 @@ constexpr std::array<st_t, 15> flex_formats
 
 constexpr std::array<const char *, 15> flex_format_descriptions
 {{
-    "35-10 5 1/4 inch, Single-sided, sinlge-density, 87.5 KByte",
+    "35-10 5 1/4 inch, Single-sided, single-density, 87.5 KByte",
     "35-20 5 1/4 inch, Double-sided, single-density, 175 KByte",
     "40-10 5 1/4 inch, Single-sided, single-density, 100 KByte",
     "40-18 5 1/4 inch, Single-sided, double-density, 180 KByte",

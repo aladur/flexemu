@@ -801,7 +801,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
 void helpOnDiskSize()
 {
     std::cout <<
-        "The following FLEX disk size paramaters are supported:\n\n" <<
+        "The following FLEX disk size parameters are supported:\n\n" <<
         "size     description\n";
 
     static_assert(flex_format_descriptions.size() ==
