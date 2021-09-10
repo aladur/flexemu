@@ -222,6 +222,15 @@
     <ClCompile Include="winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="brkptui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fsetupui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="qtgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexemu.rc">
@@ -291,9 +300,6 @@
     <ClInclude Include="bregistr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="brkptui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="btime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -333,9 +339,6 @@
     <ClInclude Include="debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="drawnwid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="drisel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -343,12 +346,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="e2floppy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="e2screen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="efslctle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="engine.h">
@@ -423,9 +420,6 @@
     <ClInclude Include="keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="logfilui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mc146818.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -472,9 +466,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="propsui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="qtgui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -528,5 +519,43 @@
     <ClInclude Include="winmain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="brkptui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="drawnwid.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="e2screen.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="efslctle.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="logfilui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtgui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="brkpt.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="cpustat.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="flexemu.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fsetup.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="logfil.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fsetupui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
