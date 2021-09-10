@@ -25,6 +25,7 @@
 #include <locale>
 #include <algorithm>
 #include "benv.h"
+#include "cvtwchar.h"
 
 
 BEnvironment::BEnvironment()
@@ -41,7 +42,7 @@ bool BEnvironment::RemoveKey(const char *key)
 
     strupper(upperKey);
 #ifdef _WIN32
-    SetEnvironmentVariable(upperKey.c_str(), nullptr);
+    SetEnvironmentVariable(ConvertToUtf16String(upperKey).c_str(), nullptr);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_UNSETENV==1)
@@ -57,7 +58,9 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 
     strupper(upperKey);
 #ifdef _WIN32
-    return (SetEnvironmentVariable(upperKey.c_str(), value) != 0);
+    return (SetEnvironmentVariable(
+        ConvertToUtf16String(upperKey).c_str(),
+        ConvertToUtf16String(value).c_str()) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
@@ -76,7 +79,9 @@ bool BEnvironment::SetValue(const char *key, int value)
     strupper(upperKey);
     sprintf(str, "%i", value);
 #ifdef _WIN32
-    return (SetEnvironmentVariable(upperKey.c_str(), str) != 0);
+    return (SetEnvironmentVariable(
+        ConvertToUtf16String(upperKey).c_str(),
+        ConvertToUtf16String(str).c_str()) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
@@ -94,38 +99,40 @@ bool BEnvironment::GetValue(const char *key, char **pValue)
 
     strupper(upperKey);
 #ifdef _WIN32
-    return (SetEnvironmentVariable(upperKey, str) != 0);
+    return (SetEnvironmentVariable(
+        ConvertToUtf16String(upperKey).c_str(),
+        ConvertToUtf16String(str).c_str()) != 0);
 #endif
 #ifdef UNIX
     return (*pValue = getenv(upperKey));
+#endif
 }
 */
 
 bool BEnvironment::GetValue(const char *key, std::string &value)
 {
-    char *p;
     std::string upperKey(key);
     bool ret = false;
 
     strupper(upperKey);
 #ifdef _WIN32
-    int size = GetEnvironmentVariable(upperKey.c_str(), nullptr, 0);
-
+    auto wUpperKey = ConvertToUtf16String(upperKey);
+    auto size = GetEnvironmentVariable(wUpperKey.c_str(), nullptr, 0);
     if (size)
     {
-        p = new char[size];
+        auto p = new wchar_t[size + 1U];
 
-        if (GetEnvironmentVariable(upperKey.c_str(), p, size))
+        if (GetEnvironmentVariable(wUpperKey.c_str(), p, size + 1U))
         {
-            value = p;
+            value = ConvertToUtf8String(p);
             ret = true;
         }
 
         delete [] p;
     }
-
 #endif
 #ifdef UNIX
+    char* p;
 
     if ((p = getenv(upperKey.c_str())))
     {

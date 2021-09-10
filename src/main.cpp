@@ -33,6 +33,7 @@
 #include "soptions.h"
 #include "winctxt.h"
 #include "winmain.h"
+#include "cvtwchar.h"
 #include <QApplication>
 
 
@@ -49,8 +50,11 @@ int std_new_handler(size_t /* [[maybe_unused]] size_t n */)
 {
     int result;
 
-    result = MessageBox(nullptr, gMemoryAllocationErrorString,
-                        PROGRAMNAME " error", MB_RETRYCANCEL | MB_ICONWARNING);
+    result = MessageBox(
+        nullptr,
+        ConvertToUtf16String(gMemoryAllocationErrorString).c_str(),
+        ConvertToUtf16String(PROGRAMNAME " error").c_str(),
+        MB_RETRYCANCEL | MB_ICONWARNING);
 
     if (result == IDRETRY)
     {
@@ -112,8 +116,11 @@ int main(int argc, char *argv[])
 #ifdef _WIN32
         catch (std::bad_alloc UNUSED(&e))
         {
-            MessageBox(nullptr, gMemoryAllocationErrorString,
-                       PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+            MessageBox(
+                nullptr,
+                ConvertToUtf16String(gMemoryAllocationErrorString).c_str(),
+                ConvertToUtf16String(PROGRAMNAME " error").c_str(),
+                 MB_OK | MB_ICONERROR);
             return_code = 1;
             break;
         }
@@ -125,8 +132,11 @@ int main(int argc, char *argv[])
             msg << PROGRAMNAME << ": An error has occured: " << ex.what();
 
 #ifdef _WIN32
-            MessageBox(nullptr, msg.str().c_str(),
-                       PROGRAMNAME " error", MB_OK | MB_ICONERROR);
+            MessageBox(
+                nullptr,
+                ConvertToUtf16String(msg.str()).c_str(),
+                ConvertToUtf16String(PROGRAMNAME " error").c_str(),
+                MB_OK | MB_ICONERROR);
 #else
             fprintf(stderr, "%s\n", msg.str().c_str());
 #endif

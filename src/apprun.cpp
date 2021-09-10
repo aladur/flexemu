@@ -43,6 +43,7 @@
 #include "iodevdbg.h"
 #include "soptions.h"
 #include "qtgui.h"
+#include "cvtwchar.h"
 
 
 ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
@@ -225,8 +226,11 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
             print_hexfile_error(pmsg, error);
             pmsg << std::endl;
 #ifdef _WIN32
-            MessageBox(nullptr, pmsg.str().c_str(), PROGRAMNAME " error",
-            MB_OK | MB_ICONERROR);
+            MessageBox(
+                nullptr,
+                ConvertToUtf16String(pmsg.str()).c_str(),
+                ConvertToUtf16String(PROGRAMNAME " error").c_str(),
+                MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
             fprintf(stderr, "%s", pmsg.str().c_str());
