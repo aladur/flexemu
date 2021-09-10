@@ -29,6 +29,9 @@
     <ClCompile Include="flex2hex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cvtwchar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fileread.h">
