@@ -65,6 +65,9 @@
     <ClCompile Include="dircont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cvtwchar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h">
