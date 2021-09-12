@@ -72,41 +72,25 @@ bool BProcess::Start()
 {
     STARTUPINFO             si;
     PROCESS_INFORMATION     pi;
-    std::string             commandline;
-    DWORD                   result;
 
-    commandline = executable + " " + arguments;
+    const auto wExecutable(ConvertToUtf16String(executable));
+    auto wArguments(ConvertToUtf16String(arguments));
+    const auto wDirectory(ConvertToUtf16String(directory));
     memset((void *)&si, 0, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
-#ifdef UNICODE
-    const wchar_t *pDirectoryw = nullptr;
-    std::wstring directoryw;
 
-    if (!directory.empty())
-    {
-        directoryw = ConvertToUtf16String(directory).c_str();
-        pDirectoryw = directoryw.c_str();
-    }
-
-    // For CreateProcessW parameter lpCommandLine must not be const
-    std::wstring commandlinew = ConvertToUtf16String(commandline);
-    auto pCommandLine =
-        std::unique_ptr<wchar_t[]>(new wchar_t[commandlinew.size()+1]);
-    wcscpy(pCommandLine.get(), commandlinew.c_str());
-    result = CreateProcess(nullptr, pCommandLine.get(),
-        nullptr, nullptr, 0, 0, nullptr, pDirectoryw, &si, &pi);
-#else
-    const char *pDirectory = nullptr;
-
-    if (!directory.empty())
-    {
-        pDirectory = directory.c_str();
-    }
-
-    result = CreateProcess(nullptr,
-        const_cast<char *>(commandline.c_str()),
-        nullptr, nullptr, 0, 0, nullptr, pDirectory, &si, &pi);
-#endif
+    // For CreateProcessW parameter wArguments must not be const
+    auto result = CreateProcess(
+        wExecutable.c_str(), // Name/path of executable
+        &wArguments[0], // Command line arguments
+        nullptr, // Security attributes, handle can not be inherited
+        nullptr, // Thread attributes, handle can not be inherited
+        FALSE, // Handles are not inherited
+        0, // Process creation flags
+        nullptr, // Environment block for new process
+        wDirectory.c_str(), // Current directory for new process
+        &si, // Startup info
+        &pi); // Process info
 
     if (result != 0)
     {

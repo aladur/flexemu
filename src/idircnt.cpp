@@ -88,11 +88,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (dirHdl == nullptr)
         {
-#ifdef UNICODE
             dirHdl = FindFirstFile(ConvertToUtf16String(str).c_str(), &findData);
-#else
-            dirHdl = FindFirstFile(str.c_str(), &findData);
-#endif
             if (dirHdl != INVALID_HANDLE_VALUE)
             {
                 isValid = true;
@@ -108,18 +104,10 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             {
                 isValid = true;
 
-#ifdef UNICODE
                 fileName = ConvertToUtf8String(findData.cFileName);
-#else
-                fileName = findData.cFileName;
-#endif
                 if (fileName.size() > 12)
                 {
-#ifdef UNICODE
                     fileName = ConvertToUtf8String(findData.cAlternateFileName);
-#else
-                    fileName = findData.cAlternateFileName;
-#endif
                 }
             }
         }
@@ -276,26 +264,15 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
 #ifdef WIN32
     // evtl. remove read-only attribute
     // to be able to delete it
-#ifdef UNICODE
-    DWORD attributes = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-#else
-    DWORD attributes = GetFileAttributes(filePath.c_str());
-#endif
+    const auto wFilePath(ConvertToUtf16String(filePath));
+    DWORD attributes = GetFileAttributes(wFilePath.c_str());
 
     if (attributes & FILE_ATTRIBUTE_READONLY)
     {
-#ifdef UNICODE
-        SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
-#else
-        SetFileAttributes(filePath.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
-#endif
+        SetFileAttributes(wFilePath.c_str(), attributes & ~FILE_ATTRIBUTE_READONLY);
     }
 
-#ifdef UNICODE
-    BOOL success = DeleteFile(ConvertToUtf16String(filePath).c_str());
-#else
-    BOOL success = DeleteFile(filePath.c_str());
-#endif
+    BOOL success = DeleteFile(wFilePath.c_str());
 
     if (!success)
     {
@@ -426,13 +403,10 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     }
 
 #ifdef WIN32
-    filePath = base->GetPath() + PATHSEPARATORSTRING +
-               dirEntry.GetTotalFileName();
-#ifdef UNICODE
-    DWORD attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-#else
-    DWORD attrs = GetFileAttributes(filePath.c_str());
-#endif
+    const auto wFilePath(
+        ConvertToUtf16String(base->GetPath() + PATHSEPARATORSTRING +
+                             dirEntry.GetTotalFileName()));
+    DWORD attrs = GetFileAttributes(wFilePath.c_str());
 
     if (attributes & WRITE_PROTECT)
     {
@@ -443,11 +417,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
         attrs &= ~FILE_ATTRIBUTE_READONLY;
     }
 
-#ifdef UNICODE
-    SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
-#else
-    SetFileAttributes(filePath.c_str(), attrs);
-#endif
+    SetFileAttributes(wFilePath.c_str(), attrs);
 #endif
 #ifdef UNIX
     struct stat sbuf;

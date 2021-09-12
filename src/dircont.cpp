@@ -250,15 +250,10 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
 #ifdef WIN32
 
-#ifdef UNICODE
     BOOL success = GetDiskFreeSpace(ConvertToUtf16String(rootPath).c_str(),
         &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
         &totalNumberOfClusters);
-#else
-    BOOL success = GetDiskFreeSpace(rootPath.c_str(), &sectorsPerCluster,
-        &bytesPerSector, &numberOfFreeClusters,
-        &totalNumberOfClusters);
-#endif
+
     if (!success)
     {
         throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
@@ -479,15 +474,10 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
     // only WRITE_PROTECT flag is supported
     if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))
     {
-        std::string filePath;
 #ifdef WIN32
-        DWORD attrs;
-        filePath = directory + PATHSEPARATORSTRING + fileName;
-#ifdef UNICODE
-        attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-#else
-        attrs = GetFileAttributes(filePath.c_str());
-#endif
+        const auto wFilePath(
+            ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
+        DWORD attrs = GetFileAttributes(wFilePath.c_str());
 
         if (clearMask & WRITE_PROTECT)
         {
@@ -499,18 +489,14 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
             attrs |= FILE_ATTRIBUTE_READONLY;
         }
 
-#ifdef UNICODE
-        SetFileAttributes(ConvertToUtf16String(filePath).c_str(), attrs);
-#else
-        SetFileAttributes(filePath.c_str(), attrs);
-#endif
+        SetFileAttributes(wFilePath.c_str(), attrs);
 #endif
 #ifdef UNIX
         struct stat sbuf;
         std::string lowerFileName(fileName);
 
         strlower(lowerFileName);
-        filePath = directory + PATHSEPARATORSTRING + lowerFileName;
+        auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
         if (!stat(filePath.c_str(), &sbuf))
         {
@@ -535,26 +521,18 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 // on UNIX a random file will be represented by a user execute flag
 bool    DirectoryContainer::SetRandom(const char *fileName)
 {
-    std::string filePath;
-
 #ifdef WIN32
-    DWORD attrs;
-    filePath = directory + PATHSEPARATORSTRING + fileName;
-#ifdef UNICODE
-    attrs = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-    SetFileAttributes(ConvertToUtf16String(filePath).c_str(),
-        attrs | FILE_ATTRIBUTE_HIDDEN);
-#else
-    attrs = GetFileAttributes(filePath.c_str());
-    SetFileAttributes(filePath.c_str(), attrs | FILE_ATTRIBUTE_HIDDEN);
-#endif
+    const auto wFilePath(
+        ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
+    DWORD attrs = GetFileAttributes(wFilePath.c_str());
+    SetFileAttributes(wFilePath.c_str(), attrs | FILE_ATTRIBUTE_HIDDEN);
 #endif
 #ifdef UNIX
     struct stat sbuf;
     std::string lowerFileName(fileName);
 
     strlower(lowerFileName);
-    filePath = directory + PATHSEPARATORSTRING + lowerFileName;
+    auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
     if (!stat(filePath.c_str(), &sbuf))
     {

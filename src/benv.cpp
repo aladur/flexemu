@@ -116,7 +116,7 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
 
     strupper(upperKey);
 #ifdef _WIN32
-    auto wUpperKey = ConvertToUtf16String(upperKey);
+    const auto wUpperKey(ConvertToUtf16String(upperKey));
     auto size = GetEnvironmentVariable(wUpperKey.c_str(), nullptr, 0);
     if (size)
     {

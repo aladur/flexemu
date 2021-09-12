@@ -31,6 +31,9 @@
     #include "config.h"
 #endif
 #ifdef _WIN32
+    #if !defined(_UNICODE) && !defined(UNICODE)
+        #error This program can only be compiled with Unicode support.
+    #endif
     #ifndef NOMINMAX
         #define NOMINMAX
     #endif

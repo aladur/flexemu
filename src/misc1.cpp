@@ -341,11 +341,7 @@ bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 std::string getExecutablePath()
 {
-#ifdef UNICODE
-    WCHAR path[MAX_PATH];
-#else
-    CHAR path[MAX_PATH];
-#endif
+    wchar_t path[MAX_PATH];
 
     HMODULE hModule = GetModuleHandle(nullptr);
     std::string retval;
@@ -355,25 +351,17 @@ std::string getExecutablePath()
         size_t index;
 
         GetModuleFileName(hModule, path, MAX_PATH);
-#ifdef UNICODE
         index = wcslen(path);
-#else
-        index = strlen(path);
-#endif
         while (index > 0)
         {
-            if (path[index - 1] == PATHSEPARATOR)
+            if (path[index - 1] == wchar_t(PATHSEPARATOR))
             {
                 path[index - 1] = '\0';
                 break;
             }
             --index;
         }
-#ifdef UNICODE
         retval = ConvertToUtf8String(path);
-#else
-        retval = path;
-#endif
     }
 
     return retval;
@@ -383,7 +371,6 @@ std::string getExecutablePath()
 std::string getTempPath()
 {
 #ifdef _WIN32
-#ifdef UNICODE
     wchar_t tempPath[MAX_PATH];
 
     if (!GetTempPath(MAX_PATH, tempPath))
@@ -393,17 +380,6 @@ std::string getTempPath()
     }
 
     return ConvertToUtf8String(tempPath);
-#else
-    char tempPath[MAX_PATH];
-
-    if (!GetTempPath(MAX_PATH, tempPath))
-    {
-       throw FlexException(GetLastError(),
-                           std::string("In function GetTempPath"));
-    }
-
-    return std::string(tempPath);
-#endif
 #else
     // On POSIX compliant file systems /tmp has to be available
     return "/tmp";
@@ -463,37 +439,24 @@ std::string getParentPath(const std::string &path)
 
 std::string getCurrentPath()
 {
-    std::string cwd;
 #ifdef _WIN32
-#ifdef UNICODE
     DWORD size = GetCurrentDirectory(0, nullptr);
-    wchar_t *buffer = new wchar_t[size];
+    auto buffer = std::unique_ptr<wchar_t[]>(new wchar_t[size]);
 
-    if (GetCurrentDirectory(size, buffer) > 0)
+    if (GetCurrentDirectory(size, buffer.get()) > 0)
     {
-        cwd = ConvertToUtf8String(buffer);
+        return ConvertToUtf8String(buffer.get());
     }
-    delete [] buffer;
-#else
-    DWORD size = GetCurrentDirectory(0, nullptr);
-    char *buffer = new char[size];
-
-    if (GetCurrentDirectory(size, buffer) > 0)
-    {
-        cwd = buffer;
-    }
-    delete [] buffer;
-#endif
 #else
     char buffer[PATH_MAX];
 
     if (getcwd(buffer, sizeof(buffer)))
     {
-        cwd = buffer;
+        return buffer;
     }
 #endif
 
-    return cwd;
+    return std::string();
 }
 
 bool isAbsolutePath(const std::string &path)
@@ -572,7 +535,6 @@ std::string getHostName()
     std::string dnsHostName;
 
 #ifdef _WIN32
-#ifdef UNICODE
     wchar_t hostname[MAX_COMPUTERNAME_LENGTH + 1];
     DWORD size = sizeof(hostname) / sizeof(hostname[0]);
 
@@ -580,15 +542,6 @@ std::string getHostName()
     {
         dnsHostName = ConvertToUtf8String(hostname);
     }
-#else
-    char hostname[MAX_COMPUTERNAME_LENGTH + 1];
-    DWORD size = sizeof(hostname) / sizeof(hostname[0]);
-
-    if (GetComputerNameEx(ComputerNameDnsFullyQualified, hostname, &size))
-    {
-        dnsHostName = hostname;
-    }
-#endif
 #else
     char hostname[MAXHOSTNAMELEN];
     if (gethostname(hostname, sizeof(hostname)) == 0)
@@ -851,12 +804,8 @@ bool hasRandomFileAttribute(const char *directory, const char *filename)
     filePath += sFilename;
 
 #ifdef WIN32
-    DWord fileAttrib;
-#ifdef UNICODE
-    fileAttrib = GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-#else
-    fileAttrib = GetFileAttributes(filePath.c_str());
-#endif
+    DWord fileAttrib =
+        GetFileAttributes(ConvertToUtf16String(filePath).c_str());
 
     if (fileAttrib != 0xFFFFFFFF && (fileAttrib & FILE_ATTRIBUTE_HIDDEN))
     {

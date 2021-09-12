@@ -30,19 +30,28 @@
 
 std::wstring ConvertToUtf16String(const std::string &value)
 {
-    int size = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, nullptr, 0);
-    if (size > 0)
+    if (!value.empty())
     {
-        auto wideString = std::unique_ptr<wchar_t[]>(new wchar_t[size]);
+        int size =
+            MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, nullptr, 0);
+        if (size > 0)
+        {
+            auto buffer = std::unique_ptr<wchar_t[]>(new wchar_t[size]);
 
-        MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1, wideString.get(), size);
-        return std::wstring(wideString.get());
-    }
+            size = MultiByteToWideChar(CP_UTF8, 0, value.c_str(), -1,
+                                       buffer.get(), size);
 
-    if (size == 0)
-    {
-        DWORD lastError = GetLastError();
-        throw FlexException(lastError, "Conversion to UTF16 string failed.");
+            if (size > 0)
+            {
+                return std::wstring(buffer.get());
+            }
+        }
+        else if (size == 0)
+        {
+            DWORD lastError = GetLastError();
+            throw FlexException(lastError,
+                                "Conversion to UTF16 string failed.");
+        }
     }
 
     return std::wstring();
@@ -50,26 +59,27 @@ std::wstring ConvertToUtf16String(const std::string &value)
 
 std::string ConvertToUtf8String(const std::wstring &value)
 {
-    std::string result;
-
-    int size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, nullptr, 0,
-        nullptr, nullptr);
-    if (size > 0)
+    if (!value.empty())
     {
-        auto multiByteString = std::unique_ptr<char[]>(new char[size]);
-
-        size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1,
-                               multiByteString.get(), size, nullptr, nullptr);
+        int size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1, nullptr,
+                                       0, nullptr, nullptr);
         if (size > 0)
         {
-            return std::string(multiByteString.get());
-        }
-    }
+            auto buffer = std::unique_ptr<char[]>(new char[size]);
 
-    if (size == 0)
-    {
-        DWORD lastError = GetLastError();
-        throw FlexException(lastError, "Conversion to UTF8 string failed.");
+            size = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), -1,
+                buffer.get(), size, nullptr, nullptr);
+            if (size > 0)
+            {
+                return std::string(buffer.get());
+            }
+        }
+        else if (size == 0)
+        {
+            DWORD lastError = GetLastError();
+            throw FlexException(lastError,
+                                "Conversion to UTF8 string failed.");
+        }
     }
 
     return std::string();

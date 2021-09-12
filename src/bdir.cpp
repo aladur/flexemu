@@ -95,33 +95,22 @@ bool BDirectory::Create(const std::string &aPath, int mode /* = 0755 */)
 #ifdef _WIN32
 bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
-    std::string     basePath;
-    std::string     dirEntry;
-    HANDLE          hdl;
+    std::string basePath(aPath);
     WIN32_FIND_DATA pentry;
-
-    basePath = aPath;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
     {
         basePath += PATHSEPARATOR;
     }
 
-    std::string filePattern = basePath + "*.*";
-#ifdef UNICODE
-    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
-#else
-    hdl = FindFirstFile(filePattern.c_str(), &pentry);
-#endif
+    const auto wFilePattern (ConvertToUtf16String(basePath + "*.*"));
+    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do
         {
-#ifdef UNICODE
-            dirEntry = basePath + ConvertToUtf8String(pentry.cFileName);
-#else
-            dirEntry = basePath + pentry.cFileName;
-#endif
+            const auto dirEntry(
+                basePath + ConvertToUtf8String(pentry.cFileName));
 
             if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
             {
@@ -192,7 +181,6 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
     std::vector<std::string> subDirList;
     std::string     basePath(aPath);
 #ifdef _WIN32
-    HANDLE          hdl;
     WIN32_FIND_DATA pentry;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
@@ -200,12 +188,8 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
         basePath += PATHSEPARATOR;
     }
 
-    std::string filePattern = basePath + "*.*";
-#ifdef UNICODE
-    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
-#else
-    hdl = FindFirstFile(filePattern.c_str(), &pentry);
-#endif
+    const auto wFilePattern(ConvertToUtf16String(basePath + "*.*"));
+    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do
@@ -213,11 +197,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
             if (pentry.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY &&
                 pentry.cFileName[0] != '.')
             {
-#ifdef UNICODE
                 subDirList.push_back(ConvertToUtf8String(pentry.cFileName));
-#else
-                subDirList.push_back(pentry.cFileName);
-#endif
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);
@@ -265,7 +245,6 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
     std::vector<std::string> fileList;
     std::string     basePath(aPath);
 #ifdef _WIN32
-    HANDLE          hdl;
     WIN32_FIND_DATA pentry;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
@@ -273,12 +252,8 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
         basePath += PATHSEPARATOR;
     }
 
-    std::string filePattern = basePath + "*.*";
-#ifdef UNICODE
-    hdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(), &pentry);
-#else
-    hdl = FindFirstFile(filePattern.c_str(), &pentry);
-#endif
+    const auto wFilePattern(ConvertToUtf16String(basePath + "*.*"));
+    auto hdl = FindFirstFile(wFilePattern.c_str(), &pentry);
     if (hdl != INVALID_HANDLE_VALUE)
     {
         do
@@ -287,11 +262,7 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
                 (pentry.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) == 0 &&
                 (pentry.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) == 0)
             {
-#ifdef UNICODE
                 fileList.push_back(ConvertToUtf8String(pentry.cFileName));
-#else
-                fileList.push_back(pentry.cFileName);
-#endif
             }
         }
         while (FindNextFile(hdl, &pentry) != 0);

@@ -681,15 +681,9 @@ void NafsDirectoryContainer::close_new_files()
     {
 #ifdef _WIN32
         std::string title(PROGRAMNAME " warning");
-#ifdef UNICODE
         MessageBox(nullptr, ConvertToUtf16String(msg).c_str(),
             ConvertToUtf16String(title).c_str(),
             MB_OK | MB_ICONEXCLAMATION);
-#else
-        MessageBox(nullptr, msg.c_str(), title.c_str(),
-                   MB_OK | MB_ICONEXCLAMATION);
-#endif
-
 #endif
 #ifdef UNIX
         fprintf(stderr, "%s", msg.c_str());
@@ -952,15 +946,11 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     initialize_flex_link_table();
 
 #ifdef _WIN32
-    HANDLE hdl;
     WIN32_FIND_DATA pentry;
-    const auto wildcard = directory + PATHSEPARATORSTRING "*.*";
+    const auto wWildcard(
+        ConvertToUtf16String(directory + PATHSEPARATORSTRING "*.*"));
 
-#ifdef UNICODE
-    hdl = FindFirstFile(ConvertToUtf16String(wildcard).c_str(), &pentry);
-#else
-    hdl = FindFirstFile(wildcard.c_str(), &pentry);
-#endif
+    auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
     if (hdl != INVALID_HANDLE_VALUE)
     {
@@ -968,11 +958,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         {
             std::string filename;
             std::string path;
-#ifdef UNICODE
             filename = ConvertToUtf8String(pentry.cFileName);
-#else
-            filename = pentry.cFileName;
-#endif
             path = directory + PATHSEPARATORSTRING + filename.c_str();
             if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
             {
@@ -1312,13 +1298,8 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 // check for random file, if true set user execute bit
                 if (dir_sector.dir_entry[i].sector_map & IS_RANDOM_FILE)
 #ifdef _WIN32
-#ifdef UNICODE
                 SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
                     FILE_ATTRIBUTE_HIDDEN);
-#else
-                SetFileAttributes(old_path.c_str(), FILE_ATTRIBUTE_HIDDEN);
-#endif
-
 #endif
 #ifdef UNIX
 
