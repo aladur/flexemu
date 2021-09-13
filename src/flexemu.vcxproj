@@ -99,7 +99,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -110,8 +110,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -132,8 +132,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -146,7 +146,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -157,8 +157,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -182,27 +182,16 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="absgui.cpp" />
     <ClCompile Include="acia1.cpp" />
     <ClCompile Include="apprun.cpp" />
-    <ClCompile Include="bcommand.cpp" />
-    <ClCompile Include="bdate.cpp" />
-    <ClCompile Include="bdir.cpp" />
-    <ClCompile Include="benv.cpp" />
-    <ClCompile Include="bfileptr.cpp" />
-    <ClCompile Include="binifile.cpp" />
     <ClCompile Include="bjoystck.cpp" />
-    <ClCompile Include="bmembuf.cpp" />
-    <ClCompile Include="bobservd.cpp" />
-    <ClCompile Include="brcfile.cpp" />
-    <ClCompile Include="bregistr.cpp" />
     <ClCompile Include="brkptui.cpp" />
-    <ClCompile Include="btime.cpp" />
     <ClCompile Include="bui.cpp" />
     <ClCompile Include="bytereg.cpp" />
     <ClCompile Include="cacttrns.cpp" />
@@ -210,26 +199,14 @@
     <ClCompile Include="colors.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="csetfreq.cpp" />
-    <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="da6809.cpp" />
     <ClCompile Include="drawnwid.cpp" />
     <ClCompile Include="drisel.cpp" />
     <ClCompile Include="e2floppy.cpp" />
     <ClCompile Include="e2screen.cpp" />
     <ClCompile Include="efslctle.cpp" />
-    <ClCompile Include="fcinfo.cpp" />
-    <ClCompile Include="fcnffile.cpp" />
-    <ClCompile Include="fcopyman.cpp" />
-    <ClCompile Include="fdirent.cpp" />
-    <ClCompile Include="ffilebuf.cpp" />
-    <ClCompile Include="ffilecnt.cpp" />
-    <ClCompile Include="filecnts.cpp" />
-    <ClCompile Include="fileread.cpp" />
-    <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="fsetupui.cpp" />
-    <ClCompile Include="iffilcnt.cpp" />
-    <ClCompile Include="ifilecnt.cpp" />
     <ClCompile Include="inout.cpp" />
     <ClCompile Include="iodevdbg.cpp" />
     <ClCompile Include="joystick.cpp" />
@@ -242,16 +219,12 @@
     <ClCompile Include="mc6809st.cpp" />
     <ClCompile Include="mc6821.cpp" />
     <ClCompile Include="mc6850.cpp" />
-    <ClCompile Include="mdcrtape.cpp" />
-    <ClCompile Include="memory.cpp" />
-    <ClCompile Include="misc1.cpp" />
     <ClCompile Include="mmu.cpp" />
     <ClCompile Include="ndircont.cpp" />
     <ClCompile Include="pia1.cpp" />
     <ClCompile Include="pia2.cpp" />
     <ClCompile Include="pia2v5.cpp" />
     <ClCompile Include="qtgui.cpp" />
-    <ClCompile Include="rfilecnt.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
     <ClCompile Include="terminal.cpp" />

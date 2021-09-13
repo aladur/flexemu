@@ -109,8 +109,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -131,8 +131,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -145,7 +145,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;</AdditionalIncludeDirectories>
@@ -156,8 +156,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -181,29 +181,13 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bdate.cpp" />
-    <ClCompile Include="bdir.cpp" />
-    <ClCompile Include="bfileptr.cpp" />
-    <ClCompile Include="bmembuf.cpp" />
-    <ClCompile Include="bobservd.cpp" />
-    <ClCompile Include="bprocess.cpp" />
-    <ClCompile Include="bregistr.cpp" />
-    <ClCompile Include="cvtwchar.cpp" />
-    <ClCompile Include="dircont.cpp" />
-    <ClCompile Include="fcinfo.cpp" />
-    <ClCompile Include="fcopyman.cpp" />
-    <ClCompile Include="fdirent.cpp" />
-    <ClCompile Include="ffilebuf.cpp" />
-    <ClCompile Include="ffilecnt.cpp" />
-    <ClCompile Include="filecnts.cpp" />
-    <ClCompile Include="flexerr.cpp" />
     <ClCompile Include="fpdnd.cpp" />
     <ClCompile Include="fpedit.cpp" />
     <ClCompile Include="fpmain.cpp" />
@@ -212,13 +196,7 @@
     <ClCompile Include="fpnewui.cpp" />
     <ClCompile Include="fpoptui.cpp" />
     <ClCompile Include="fpwin.cpp" />
-    <ClCompile Include="idircnt.cpp" />
-    <ClCompile Include="iffilcnt.cpp" />
-    <ClCompile Include="ifilecnt.cpp" />
-    <ClCompile Include="mdcrtape.cpp" />
-    <ClCompile Include="misc1.cpp" />
     <ClCompile Include="ndircont.cpp" />
-    <ClCompile Include="rfilecnt.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>

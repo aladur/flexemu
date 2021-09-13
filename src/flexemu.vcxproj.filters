@@ -24,40 +24,7 @@
     <ClCompile Include="apprun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="bcommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bdate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bdir.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="benv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bfileptr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="binifile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="bjoystck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bmembuf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bobservd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="brcfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bregistr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="btime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bui.cpp">
@@ -81,9 +48,6 @@
     <ClCompile Include="csetfreq.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cvtwchar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="da6809.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,40 +66,7 @@
     <ClCompile Include="efslctle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fcinfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fcnffile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fcopyman.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fdirent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ffilebuf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ffilecnt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="filecnts.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fileread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="flexerr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="foptman.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="iffilcnt.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ifilecnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inout.cpp">
@@ -174,15 +105,6 @@
     <ClCompile Include="mc6850.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mdcrtape.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="misc1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mmu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -196,9 +118,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pia2v5.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rfilecnt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="schedule.cpp">
