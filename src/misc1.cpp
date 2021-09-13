@@ -803,7 +803,7 @@ bool hasRandomFileAttribute(const char *directory, const char *filename)
     filePath += PATHSEPARATORSTRING;
     filePath += sFilename;
 
-#ifdef WIN32
+#ifdef _WIN32
     DWord fileAttrib =
         GetFileAttributes(ConvertToUtf16String(filePath).c_str());
 

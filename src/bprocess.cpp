@@ -34,7 +34,7 @@ BProcess::BProcess(const std::string &x_exec,
                    const std::string &x_dir /* = "" */,
                    const std::string &x_arg /* = "" */) :
     executable(x_exec), arguments(x_arg), directory(x_dir)
-#ifdef WIN32
+#ifdef _WIN32
     , hProcess(nullptr)
 #endif
 #ifdef UNIX
@@ -61,7 +61,7 @@ void BProcess::SetDirectory(const std::string &x_dir)
 //***********************************************
 // Win32 specific implementation
 //***********************************************
-#ifdef WIN32
+#ifdef _WIN32
 BProcess::~BProcess()
 {
     CloseHandle(hProcess);

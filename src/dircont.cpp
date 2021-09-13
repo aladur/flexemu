@@ -233,7 +233,7 @@ bool    DirectoryContainer::FileCopy(
 
 bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
-#ifdef WIN32
+#ifdef _WIN32
     DWORD sectorsPerCluster = 0;
     DWORD bytesPerSector = 1;
     DWORD numberOfFreeClusters = 0;
@@ -248,7 +248,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
         rootPath = directory.substr(0, 3);
     }
 
-#ifdef WIN32
+#ifdef _WIN32
 
     BOOL success = GetDiskFreeSpace(ConvertToUtf16String(rootPath).c_str(),
         &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
@@ -474,7 +474,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
     // only WRITE_PROTECT flag is supported
     if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))
     {
-#ifdef WIN32
+#ifdef _WIN32
         const auto wFilePath(
             ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
         DWORD attrs = GetFileAttributes(wFilePath.c_str());
@@ -521,7 +521,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 // on UNIX a random file will be represented by a user execute flag
 bool    DirectoryContainer::SetRandom(const char *fileName)
 {
-#ifdef WIN32
+#ifdef _WIN32
     const auto wFilePath(
         ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
     DWORD attrs = GetFileAttributes(wFilePath.c_str());

@@ -953,7 +953,7 @@ void FLEXplorer::dropEvent(QDropEvent *event)
 
 void FLEXplorer::WriteDefaultOptions()
 {
-#ifdef WIN32
+#ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
 #endif
@@ -976,7 +976,7 @@ void FLEXplorer::WriteDefaultOptions()
 void FLEXplorer::ReadDefaultOptions()
 {
     std::string string_result;
-#ifdef WIN32
+#ifdef _WIN32
     BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
 
     if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&

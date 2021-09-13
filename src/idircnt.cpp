@@ -40,7 +40,7 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
 {
     if (dirHdl != nullptr)
     {
-#ifdef WIN32
+#ifdef _WIN32
         FindClose(dirHdl);
 #endif
 #ifdef UNIX
@@ -67,7 +67,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
     std::string str, fileName;
     bool isValid;
-#ifdef WIN32
+#ifdef _WIN32
     WIN32_FIND_DATA findData;
     SYSTEMTIME systemTime;
 #endif
@@ -77,7 +77,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 #endif
     dirEntry.SetEmpty();
     // repeat until a valid directory entry found
-#ifdef WIN32
+#ifdef _WIN32
     str = base->GetPath();
     str += PATHSEPARATOR;
     str += "*.*";
@@ -261,7 +261,7 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
     }
 
 #endif
-#ifdef WIN32
+#ifdef _WIN32
     // evtl. remove read-only attribute
     // to be able to delete it
     const auto wFilePath(ConvertToUtf16String(filePath));
@@ -402,7 +402,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
         return false;
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     const auto wFilePath(
         ConvertToUtf16String(base->GetPath() + PATHSEPARATORSTRING +
                              dirEntry.GetTotalFileName()));

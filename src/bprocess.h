@@ -57,7 +57,7 @@ protected:
     std::string arguments;
     std::string directory;
 
-#ifdef WIN32
+#ifdef _WIN32
     HANDLE hProcess;
 #endif
 #ifdef UNIX
