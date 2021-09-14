@@ -37,7 +37,8 @@ EXTRA_DIST = \
 	mc6809ex.cpp \
 	mdcrtool.vcxproj \
 	msvcQtPath.props.in \
-	pch.h
+	pch.h \
+	pch.cpp
 
 SUBDIRS = bitmaps tools
 
