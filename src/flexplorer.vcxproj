@@ -327,6 +327,11 @@
     <ClInclude Include="warnoff.h" />
     <ClInclude Include="warnon.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libflex.vcxproj">
+      <Project>{87bf512f-3f2d-4ffd-a848-3b967ba54eda}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -34,6 +34,11 @@
     <ClInclude Include="confignt.h" />
     <ClInclude Include="flexerr.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libflex.vcxproj">
+      <Project>{87bf512f-3f2d-4ffd-a848-3b967ba54eda}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

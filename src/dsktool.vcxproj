@@ -47,6 +47,11 @@
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="typedefs.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="libflex.vcxproj">
+      <Project>{87bf512f-3f2d-4ffd-a848-3b967ba54eda}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
