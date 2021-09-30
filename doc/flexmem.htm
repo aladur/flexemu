@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>FLEX Memory Map</title>
@@ -12,20 +13,18 @@ portion of FLEX which contain information of interest to the programmer.
 The user is cautioned against utilization for his own purposes any
 locations documented as being either "reserved" or "system scratch", as
 this action may cause destruction of data.
-<a name="map">
-<h2>FLEX GLOBAL SYSTEM MEMORY MAP</h2>
+<h2 id="map">FLEX GLOBAL SYSTEM MEMORY MAP</h2>
 <p>
 <table border>
- <tr><align=left><th>Address Range</th><th>Usage</th></tr>
- <tr><align=left><td>0000-BFFF</td><td>User RAM</td></tr>
- <tr><align=left><td>C000-DFFF</td><td>Disk Operating System</td></tr>
- <tr><align=left><td>C07F</td><td>System Stack</td></tr>
- <tr><align=left><td>C100-C6FF</td><td>Utility command space (UCS)</td></tr>
- <tr><align=left><td>CD00</th><td>FLEX cold start entry address</td></tr>
- <tr><align=left><td>CD03</td><td>FLEX warm start entry address</td></tr>
+ <tr><th>Address Range</th><th>Usage</th></tr>
+ <tr><td>0000-BFFF</td><td>User RAM</td></tr>
+ <tr><td>C000-DFFF</td><td>Disk Operating System</td></tr>
+ <tr><td>C07F</td><td>System Stack</td></tr>
+ <tr><td>C100-C6FF</td><td>Utility command space (UCS)</td></tr>
+ <tr><td>CD00</td><td>FLEX cold start entry address</td></tr>
+ <tr><td>CD03</td><td>FLEX warm start entry address</td></tr>
 </table>
-<a name="fmsmem">
-<h2>FLEX FMS VARIABLE SYSTEM MEMORY MAP</h2>
+<h2 id="fmsmem">FLEX FMS VARIABLE SYSTEM MEMORY MAP</h2>
 <dl>
 <dt><b>$D409-$D40A FCB Base Pointer
 </b><dd>
@@ -51,8 +50,7 @@ written for errors immediately after writing it. A zero value indicates that
 no error checking on writes is to be performed. The default value is
 "non-zero". Flexemu does not support this feature.
 </dl>
-<a name="dosmem">
-<h2>FLEX DOS VARIABLE SYSTEM MEMORY MAP</h2>
+<h2 id="dosmem">FLEX DOS VARIABLE SYSTEM MEMORY MAP</h2>
 <p>
 <dl>
 <dt><b>Line Buffer $C080-$C0FF
@@ -238,8 +236,7 @@ Management System functions. See
 <a href="flexerr.htm">FLEX Error Messages</a>
 for an interpretation of the 
 error numbers.
-<a name="special_io">
-<dt><b>Special I/O Flag $CC21
+<dt id="special_io"><b>Special I/O Flag $CC21
 </b><dd>
 If this byte is non-zero, the
 <a href="flexdos.htm#putchr">PUTCHR</a>

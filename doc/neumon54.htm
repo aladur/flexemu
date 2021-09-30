@@ -1,19 +1,20 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>Flexemu Monitor program neumon54.hex</title>
 </head>
 <body>
-<h2>
+<h2 id="neumon54">
 Flexemu Monitor program neumon54.hex
 <hr></h2>
-<a name="monitor">
 The monitor program provides basic I/O functions to the operating system. It
 is comparable to the BIOS on a PC.
-<BR><BR>
+<p>
 But in addition it provides a simple user
 interface to display or change memory contents or boot FLEX operating system.
 From within FLEX the monitor program can be entered by entering MON on the
 FLEX prompt.
+<p>
 The following table gives an overview of the available commands:
 <p>
 <table border>
@@ -71,7 +72,6 @@ The following table gives an overview of the available commands:
   <td>Exit the emulator</td>
  </tr>
 </table>
-</p>
 ZZ means a two digit hex number, XXXX or YYYY means a four digit hex number
 <br><br>
 Neumon54 also contains a terminal emulator which can be controlled with
@@ -155,7 +155,6 @@ the following Control- and Escape-sequences:
   <td>Toggle between soft- and hard scroll</td>
  </tr>
 </table>
-</p>
 The following Escape sequences are available:
 <p>
 <table border>
@@ -208,7 +207,7 @@ The following Escape sequences are available:
   <td>Erase to end of screen</td>
  </tr>
 </table>
-</p>
+<p>
 On X11 there is mode to use flexemu in terminal only mode. No special
 version of Monitor program is needed any more. It simply can be started by:
 <BR><b>flexemu -t</b>.

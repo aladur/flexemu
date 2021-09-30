@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -13,8 +14,7 @@ flexemu - a FLEX emulator with Qt user interface
 <tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </tt>
 <h3>On Windows</h3>
 <tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-v] [-u] [-j screen_factor] [-C startup_command]</tt>
-<a name="description">
-<h2>DESCRIPTION</h2>
+<h2 id="description">DESCRIPTION</h2>
 <b>flexemu</b> emulates a MC6809 microprocessor system running
 <a href="https://en.wikipedia.org/wiki/FLEX_(operating_system)">FLEX Operating System</a>.
 Additional hardware modules as for ex. two MC6821 parallel input/output
@@ -79,14 +79,12 @@ or original frequency
  <li>command to format a disk
  <li>HTML-documents with full description of FLEX API
 </ul>
-<a name="options">
-<h2>OPTIONS</h2>
+<h2 id="options">OPTIONS</h2>
 In general there are command line options and preferences editable in the <b>flexemu</b>
 preferences dialog. Command line options supersede preferences and makes the
 corresponding preferences together with its dependent preferences read-only.
 
-<a name="options_linux_windows">
-<h3>Command line options on Linux and Windows</h3>
+<h3 id="options_linux_windows">Command line options on Linux and Windows</h3>
 <dl compact>
 <dt><b><tt>-f &lt;hexfile&gt;</tt>
 </b><dd>
@@ -157,8 +155,7 @@ Print a command line parameter description and exit.
 </b><dd>
 Print version number and exit.
 </dl>
-<a name="options_linux">
-<p><dt><h3>Command line options only on Linux</h3>
+<p><dt><h3 id="options_linux">Command line options only on Linux</h3>
 <p>
 <dl compact>
 <dt><b><tt>-t</tt>
@@ -173,8 +170,7 @@ Define a reset key for terminal mode specified as two hex digits. The
 default is
 <code>1E</code>, means <kbd>Ctrl</kbd>+<kbd>^</kbd>
 </dl>
-<a name="preferences">
-<h3>Flexemu Preferences</h3>
+<h3 id="preferences">Flexemu Preferences</h3>
 In <b>flexemu</b> menu Edit->Preferences opens the preferences dialog.
 The following preferences can be modified.
 <p>
@@ -203,7 +199,7 @@ The following preferences can be modified.
     <li>The original frequency of the emulated hardware, which is 1.3396 MHz.</li>
     <li>To be emulated as fast as possible.</li>
     <li>Set to a static frequency in the range of 0.1 ... 10000 MHz.</li>
-   <ul>
+   </ul>
   </td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
@@ -261,7 +257,7 @@ The following preferences can be modified.
     <li><a href="e2hwdesc.htm#OnBoardMemory">No RAM extension</a>.</li>
     <li><a href="e2hwdesc.htm#96KbRamExt">2 x 96 KByte RAM extension</a>.</li>
     <li><a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>.</li>
-   <ul>
+   </ul>
   </td>
   <td><b>&check;<br><b>-</b><br><b>-</b></b></td>
   <td><b>&check;<br><b>&check;</b><br><b>&check;</b></b></td>
@@ -343,14 +339,12 @@ The following preferences can be modified.
   <td>off</td>
  </tr>
 </table>
-<a name="breakpoints">
-<h3>Breakpoint support</h3>
+<h3 id="breakpoints">Breakpoint support</h3>
 With the menu CPU-&gt;Breakpoints up to two breakpoints
 can be set. They have to be input as a one to four digit hexadecimal
 address. Execution automatically stops when the PC register contains one
 of the breakpoint addresses.
-<a name="logging">
-<h3>CPU Instruction Logging</h3>
+<h3 id="logging">CPU Instruction Logging</h3>
 With the menu CPU-&gt;Logging the logging of each executed CPU
 instruction can be enabled. The Instruction Logging Dialog contains
 the following entry fields. Addresses have to be input as a one to 
@@ -393,17 +387,15 @@ four digit hexadecimal address:
       An empty filename finishes Instruction logging.</td>
  </tr>
 </table>
-<a name="frequency_control">
-<h3>CPU Frequency control</h3>
+<h3 id="frequency_control">CPU Frequency control</h3>
 With the toggle menu item "CPU-&gt;Original Frequency" 1.3396 MHz the CPU
 frequency can be switched between the maximum possible frequency 
 (depending on the available host CPU performance) and the original
 CPU frequency which exactly is 1.3396 MHz. With the command <b>emu freq</b>
 other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
-<a name="keyboard">
-<h2>KEYBOARD</h2>
-<h3>Eurocom PAT09 keyboard</h3>
+<h2 id="keyboard">KEYBOARD</h2>
+<h3 id="keyboard_pat09">Eurocom PAT09 keyboard</h3>
 The Eurocom II/V7 typically was shipped with a PAT09 keyboard:
 <p>
 <img src="images/pat09_keyboard.png" alt="PAT09 keyboard"
@@ -722,7 +714,7 @@ The following hex codes can be generated.
  </tr>
  <tr>
   <td><img src="images/pat09_key_thick_left_arrow.png" alt="Thick left arrow" width="48" /></td>
-  <td><kbd>Pos1</td></kbd>
+  <td><kbd>Pos1</kbd></td>
   <td><code>F1</code></td>
   <td><code>E1</code></td>
   <td><code>B1</code></td>
@@ -738,7 +730,7 @@ The following hex codes can be generated.
  </tr>
  <tr>
   <td><img src="images/pat09_key_thick_lower_right_arrow.png" alt="Thick lower right arrow" width="48" /></td>
-  <td><kbd>Page Down</td></kbd>
+  <td><kbd>Page Down</kbd></td>
   <td><code>F3</code></td>
   <td><code>E3</code></td>
   <td><code>B3</code></td>

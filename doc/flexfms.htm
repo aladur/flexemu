@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>FLEX File Management System</title>
@@ -123,7 +124,6 @@ without user intervention.
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>If reading:</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
@@ -132,7 +132,6 @@ Example:
  <tr><td colspan=3>; The character read is now in A</td></tr>
 </table>
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>If writing:</td></tr>
  <tr><td>LDA</td><td>CHAR</td><td>; Get the character</td></tr>
@@ -158,7 +157,6 @@ in anticipation of I/O on the file.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ Set up file spec in FCB ]</td></tr>
@@ -188,7 +186,6 @@ will be created on the first drive found to be ready.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ Set up file spec in FCB ]</td></tr>
@@ -207,7 +204,6 @@ and must exist on the specified drive. If the drive spec is $FF, all drives
 will be searched. Once the file has been opened for update, four operations
 may be performed on it:
 <p>
-<spacer type=horizontal size=40>
 <table border=0>
  <tr><td>1.</td><td>sequential read</td></tr>
  <tr><td>2.</td><td>random read</td></tr>
@@ -229,7 +225,6 @@ file contains no data.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#4</td><td>; Setup close code</td></tr>
@@ -249,7 +244,6 @@ reading.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>; Assuming the file is open for read:</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
@@ -339,7 +333,6 @@ conventions to which most of other FLEX functions adhere.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>TRACK</td><td>; Get track number</td></tr>
@@ -388,7 +381,6 @@ The file specification in the FCB is altered during the delete process.<tt> </tt
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ setup file spec in FCB ]</td></tr>
@@ -413,7 +405,6 @@ name nor the extension can be defaulted.<tt> </tt>
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ setup both file specs in FCB ]</td></tr>
@@ -470,7 +461,6 @@ of the sector.
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>; To read the 54th data byte of the current sector</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
@@ -497,7 +487,6 @@ bytes of the sector.
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>; To write the 54th data byte of the current sector</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
@@ -551,7 +540,6 @@ on random files see
 <p>
 Example:
 <p>
-<spacer type=horizontal size=40>
 <table cellspacing=0 border=0>
  <tr><td colspan=3>; To position to record #6</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>

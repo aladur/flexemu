@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>Misc FLEX utilities</title>
@@ -57,8 +59,8 @@ toflex
 <p>
 <b>rcvflex</b>
 <br>
-</b><h2>DESCRIPTION</h2>
-<a name="emu">
+<h2>DESCRIPTION</h2>
+<p id="emu"><b>emu</b></p>
 <b>emu
 </b>is a command to directly communicate with the emulator from within the FLEX
 command shell. There are different operations concerning the cpu, the
@@ -68,7 +70,6 @@ floppy controller or the graphical user interface (gui).
 </b><dd>
 send a corresponding interrupt signal to the cpu. before invoking this
 command, there should already be set an interrupt vector before!
-<a name="mount">
 <dt><b>emu mount &lt;path&gt; &lt;drive_nr&gt;
 </b><dd>
 mounts a disk image (DSK- or FLX-Format) or a NAtive File System
@@ -80,36 +81,30 @@ drive number
 </b><b>&lt;drive_nr&gt;
 </b>can be one of 0 - 3.
 It is equivalent to the <b>mount</b> command.
-<a name="info">
 <dt><b>emu info [&lt;drive_nr&gt;]
 </b><dd>
 prints some information on drive with number <b>drive_nr</b> or on all drives.
 <b>&lt;drive_nr&gt;.
 </b><b>&lt;drive_nr&gt;
 </b>can be one of 0 - 3.
-<a name="update">
 <dt><b>emu update [&lt;drive_nr&gt;]
 </b><dd>
 Updates the contents of a native file system drive with number <b>drive_nr</b> or all drives. An error message is returned if any file is currently opened on the specified drive.
 <b>&lt;drive_nr&gt;.
 </b><b>&lt;drive_nr&gt;
 </b>can be one of 0 - 3.
-<a name="umount">
 <dt><b>emu umount &lt;drive_nr&gt;
 </b><dd>
 unmounts a previously mounted disk image or nafs-directory.
 <b>&lt;drive_nr&gt;
 </b>can be one of 0 - 3.
 It is equivalent to the <b>umount</b> command.
-<a name="format">
 <dt><b>emu format &lt;disk_name&gt; &lt;size_in_KByte&gt;
 </b><dd>
 formats a disk with name <b>&lt;disk_name&gt;</b> and with total size greater
 or equal to &lt;size_in_KByte&gt;. Disk sizes of up to 800 KByte are available.
 The disk will be formated in DSK-Format. The newly formated disk will
 <b>not</b> be mounted automatically!
-<a name="terminal">
-<a name="graphic">
 <dt><b>emu terminal | graphic
 </b><dd>
 At the time only available on Linux (sorry). If started flexemu in full
@@ -133,32 +128,28 @@ used in the terminal mode. for <b>neumon54.hex</b> the modes can be switched
 <p>
 After a reset or nmi SERPAR will be initialized by the contents of address
 0xf07c (INITSP).
-<a name="freq">
 <dt><b>emu freq [&lt;target_frequency&gt;]
 </b><dd>
 Prints the actual frequency on which the virtual CPU is running. An optionally
 given <b>target_frequency</b> gives a target frequency.
-<a name="cycles">
 <dt><b>emu cycles
 </b><dd>
 Prints the actual number of processor cycles executed.
-<a name="exit">
 <dt><b>emu exit
 </b><dd>
 immediately exits the emulator. It is equivalent to the
 <b>exit
 </b>command.
-<dt><b>timeset
+<dt id="timeset"><b>timeset
 </b><dd>
 a menu driven command to set the time, date or alarm time of the real time clock
 MC146818. If setting the alarm time a interrupt vector for firq should already
 be installed! Setting the date only updates the date in the real time clock but
 not the date used by FLEX.
-<dt><b>time
+<dt id="time"><b>time
 </b><dd>
 Prints the actual date and time of the real time clock MC146818.
-<a name="rtc">
-<dt><b>rtc on | off | alarm
+<dt id="rtc"><b>rtc on | off | alarm
 </b><dd>
 Initializes or removes a continuous display of the actual time on the down
 left corner of the graphic display. The periodic interrupt of the rtc
@@ -169,20 +160,17 @@ MC146818 will be used for this. The optional parameter specifies the action:
 </b>initializes the display to update if alarm time reached.
 <b>off
 </b>removes the clock display.
-<a name="cls">
-<dt><b>cls
+<dt id="cls"><b>cls
 </b><dd>
 Clears the graphics display.
-<a name="tounix">
-<dt><b>tounix &lt;disk_image_name&gt;
+<dt id="tounix"><b>tounix &lt;disk_image_name&gt;
 </b><dd>
 This utility is useful on a real FLEX system. It transmits the whole
 contents of a FLEX disk in drive 1 over the serial line. tounix is
 available as source file so it can be adapted to any special needs.
 The counterpart on linux is
 <b>rcvflex.
-<a name="fromflex">
-</b><dt><b>fromflex
+</b><dt id="fromflex"><b>fromflex
 </b><dd>
 convert FLEX ASCII format to UNIX/MS-DOS ASCII format. The conversion will
 be done from stdin to stdout.
@@ -190,8 +178,7 @@ be done from stdin to stdout.
 </b><dd>
 convert a UNIX/MS-DOS ASCII format to FLEX ASCII format. The conversion will
 be done from stdin to stdout.
-<a name="rcvflex">
-<dt><b>rcvflex [-h | &lt;serial_device&gt;]
+<dt id="rcvflex"><b>rcvflex [-h | &lt;serial_device&gt;]
 </b><dd>
 At the time only available on Linux (sorry). This utility transmits a FLEX
 disk from a real FLEX system to a Linux box. The counterpart on the

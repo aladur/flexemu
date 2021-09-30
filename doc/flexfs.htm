@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <html>
 <head>
 <title>File systems supported by flexemu</title>
@@ -15,14 +16,13 @@ Flexemu supports three different file systems:
  <li><a href="#nafs_format">Native file system support (all files in a directory)</a>
 </ul>
 <dl>
-<a name="dsk_format">
-<dt><b>Disk image created by Ben Williams (DSK-format)
+<dt id="dsk_format"><b>Disk image created by Ben Williams (DSK-format)
 </b><p><dd>
 <a href="http://ourtimelines.com/reflex/tocpage.html">
 Ben Williams has written a FLEX emulator</a>
 too.
 The complete disk is contained in one file. A wide range of track/sector
-combinations is supported: <b>2 <= tracks <= 255 and 6 <= sectors <= 255</b>.
+combinations is supported: <b>2 &lt;= tracks &lt;= 255 and 6 &lt;= sectors &lt;= 255</b>.
 Following map shows some typical track/sector combinations:
 <p>
 <table border>
@@ -42,8 +42,7 @@ Each sector contains 256 Byte. There is no file header. The size of the file
 can simply be computed with &lt;nr_of_tracks&gt; x &lt;nr_of_sectors&gt; x 256 Byte. If
 the DSK-file is write protected the drive within flexemu is write protected too.
 <p>
-<a name="ws_format">
-<dt><b>Disk image created by Wolfgang Schwotzer (FLX-format)
+<dt id="ws_format"><b>Disk image created by Wolfgang Schwotzer (FLX-format)
 </b>
 <p><dd>
 The complete disk is contained in one file. All the information about how
@@ -51,15 +50,15 @@ many tracks and sectors are described in a file header:
 <p>
 <table border>
  <tr><th>bytes</th><th>name</th><th>description</th>
- <tr><align=left><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
- <tr><align=left><td>1</td><td>write_protect</td><td>flag for write protection</td>
- <tr><align=left><td>1</td><td>size code</td><td>128 * 2 ^ n Bytes/sector</td>
- <tr><align=left><td>1</td><td>sides0</td><td>nr of sides on track 0</td>
- <tr><align=left><td>1</td><td>sectors0</td><td>nr of sect. on track 0</td>
- <tr><align=left><td>1</td><td>sides</td><td>nr of sides on track != 0</td>
- <tr><align=left><td>1</td><td>sectors</td><td>nr of sect. on track != 0</td>
- <tr><align=left><td>1</td><td>tracks</td><td>nr of tracks total</td>
- <tr><align=left><td>5</td><td>dummy1 - dummy 5</td><td>for stuffing</td>
+ <tr><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
+ <tr><td>1</td><td>write_protect</td><td>flag for write protection</td>
+ <tr><td>1</td><td>size code</td><td>128 * 2 ^ n Bytes/sector</td>
+ <tr><td>1</td><td>sides0</td><td>nr of sides on track 0</td>
+ <tr><td>1</td><td>sectors0</td><td>nr of sect. on track 0</td>
+ <tr><td>1</td><td>sides</td><td>nr of sides on track != 0</td>
+ <tr><td>1</td><td>sectors</td><td>nr of sect. on track != 0</td>
+ <tr><td>1</td><td>tracks</td><td>nr of tracks total</td>
+ <tr><td>5</td><td>dummy1 - dummy 5</td><td>for stuffing</td>
 </table>
 <p>
 The format of the file header can be changed for future improvements. For the
@@ -67,8 +66,7 @@ actual format look at
 <b>struct s_flex_header
 </b>in the header file
 <b>filecnts.h</b>.
-<a name="nafs_format">
-<p><dt><b>NAtive File System support (nafs)
+<p><dt id="nafs_format"><b>NAtive File System support (nafs)
 </b><p><dd>
 A directory will be made visible as a disk drive from within flexemu.
 So each file in the directory will be visible as a file contained on the disk.
@@ -100,6 +98,7 @@ renamed to their real name after closing them. So if there are any files
 with that name anything goes wrong with the file creation.
  <li>If the directory of a nafs drive is full it will be extended
 automatically. So no directory extend utility needs to be used.
+</ul>
 <p>
 There is a utility to dynamically
 <a href="flexutil.htm#mount">mount</a>,

@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <title>FLEX Users Manual</title>
@@ -6,8 +8,7 @@
 <h2>
 flexuser - FLEX Users Manual 
 <hr></h2>
-<a name="commands">
-<h2>FLEX USER COMMANDS</h2>
+<h2 id="commands">FLEX USER COMMANDS</h2>
 <dl>
 <dt><b>GET[,&lt;filespec&gt;[,&lt;filespec&gt;]...]
 </b><dd>
@@ -188,20 +189,17 @@ it's contents. Within flexemu no printing is supported.
 The
 <b>RENAME
 </b>command is used to give an existing file a new name in the directory.
-<a name="save">
-<dt><b>SAVE,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
+<dt id="save"><b>SAVE,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
 </b><dd>
 The
 <b>SAVE
 </b>command is used for saving a section of memory on the disk. The address fields
 should be expressed as hex numbers. The default file extension is .BIN
-<a name="save_low">
-<dt><b>SAVE.LOW,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
+<dt id="save_low"><b>SAVE.LOW,&lt;filespec&gt;,&lt;begin adr&gt;,&lt;end adr&gt;[,&lt;transfer adr&gt;]
 </b><dd>
 Same as SAVE but SAVE.LOW itself is located in a lower memory area. With this
 command it is possible to save programs located in the UCS area.
-<a name="startup">
-<dt><b>STARTUP
+<dt id="startup"><b>STARTUP
 </b><dd>
 <b>STARTUP
 </b>is not a utility command but is a feature of FLEX. It is often desirable to have
@@ -219,8 +217,7 @@ initialization for a file called
 <b>STARTUP
 </b>file is present, it is read and interpreted as a single command line.
 Several commands in one line can be separated by a end of line character.
-<a name="ttyset">
-<dt><b>TTYSET[,&lt;parameter list&gt;]
+<dt id="ttyset"><b>TTYSET[,&lt;parameter list&gt;]
 </b><dd>
 The
 <b>TTYSET
@@ -291,8 +288,7 @@ any verify operations.
 </b>is a special form of the delete command which deletes all files having
 the extension .OUT.
 </dl>
-<a name="system">
-<h2>GENERAL SYSTEM INFORMATION</h2>
+<h2 id="system">GENERAL SYSTEM INFORMATION</h2>
 <dl>
 <dt><b>DISK CAPACITY
 </b><dd>
