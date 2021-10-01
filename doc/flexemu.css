@@ -7,15 +7,20 @@ table, th {
     border: 2px solid black;
 }
 
-td {
+table, td {
     border: 1px solid black;
 }
 
-#left {
+/* class="invisible", a table with invisible borders */
+table.invisible,
+table.invisible th,
+table.invisible td { border: 0px solid black; }
+
+.left {
     float: left;
 }
 
-#right {
+.right {
     float: right;
 }
 

@@ -1,12 +1,15 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>File systems supported by flexemu</title>
 </head>
 <body>
 <h2>
 flexfs - File systems supported by flexemu
-<hr></h2>
+</h2>
+<hr>
 <h2>DESCRIPTION</h2>
 Flexemu supports three different file systems:
 <p>
@@ -25,7 +28,7 @@ The complete disk is contained in one file. A wide range of track/sector
 combinations is supported: <b>2 &lt;= tracks &lt;= 255 and 6 &lt;= sectors &lt;= 255</b>.
 Following map shows some typical track/sector combinations:
 <p>
-<table border>
+<table>
  <tr><th>filesize [Byte]</th><th>tracks</th><th>sectors</th>
  <tr><th>89600</th><th>35</th><th>10</th>
  <tr><th>179000</th><th>35</th><th>20</th>
@@ -48,7 +51,7 @@ the DSK-file is write protected the drive within flexemu is write protected too.
 The complete disk is contained in one file. All the information about how
 many tracks and sectors are described in a file header:
 <p>
-<table border>
+<table>
  <tr><th>bytes</th><th>name</th><th>description</th>
  <tr><td>4</td><td>magic_number</td><td>always 0x485C9A33</td>
  <tr><td>1</td><td>write_protect</td><td>flag for write protection</td>

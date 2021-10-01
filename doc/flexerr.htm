@@ -1,29 +1,32 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>FLEX Error Messages</title>
 </head>
 <body>
 <h2>
 flexerr - FLEX Error Messages
-<hr></h2>
+</h2>
+<hr>
 <h2>DESCRIPTION</h2>
 <dl>
 <dt><b>1 - ILLEGAL FMS FUNCTION CODE ENCOUNTERED
 </b><dd>
 FMS was called with a function code in the Function Code byte of the FCB that
-was too large or illegal.<tt> </tt>
+was too large or illegal.
 <dt><b>2 - THE REQUESTED FILE IS IN USE
 </b><dd>
 An Open for Read, Update, or Write function was issued on an FCB that is
-already open.<tt> </tt>
+already open.
 <dt><b>3 - THE FILE SPECIFIED ALREADY EXISTS
 </b><dd>
 a. An Open For Write was issued on an FCB containing the specification for a
-file already existing in the diskette directory.<tt> </tt>
+file already existing in the diskette directory.
 <p>
 b. A Rename function was issued specifying a new name that was the same as the
-name of a file already existing in the diskette directory.<tt> </tt>
+name of a file already existing in the diskette directory.
 <dt><b>4 - THE SPECIFIED FILE COULD NOT BE FOUND
 </b><dd>
 An open for Read or Update, a Rename, or a Delete function was requested on
@@ -31,31 +34,31 @@ an FCB containing the file specification for a file which does not exist in
 the diskette directory
 <dt><b>5 - SYSTEM DIRECTORY ERROR - REBOOT SYSTEM
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>6 - THE SYSTEM DIRECTORY SPACE IS FULL
 </b><dd>
 This error should never occur since the directory space is self expanding, and
-can never be filled. Only disk space can be filled (error #7).<tt> </tt>
+can never be filled. Only disk space can be filled (error #7).
 <dt><b>7 - ALL AVAILABLE DISK SPACE HAS BEEN USED
 </b><dd>
 All of the available space on the diskette has been used up by files. If this
 error is returned by FMS, the last character sent to be written to a file did
-not actually get written.<tt> </tt>
+not actually get written.
 <dt><b>8 - READ PAST END OF FILE
 </b><dd>
 A read operation on a file encountered an end-of-file. All of the data in the
 file has been processed. This error will also be returned when reading a
 directory whth the Get Information Record function when the end of directory
-is reached.<tt> </tt>
+is reached.
 <dt><b>9 - DISK FILE READ ERROR
 </b><dd>
 A checksum error was encountered by the hardware in attempting to read a
 sector. DOS has already attempted to re-read the failing sector several times,
 without success, before reporting the error. This error may also result from
-illegal track and sector addresses being put in the FCB.<tt> </tt>
+illegal track and sector addresses being put in the FCB.
 <dt><b>10 - DISK FILE WRITE ERROR
 </b><dd>
-A checksum error was detected by the hardware in attempting to write a sector.<tt> </tt>
+A checksum error was detected by the hardware in attempting to write a sector.
 DOS has already tried several times, without success, to re-write the failing
 sector before reporting the error. This error may also result from illegal
 track and sector numbers being put in the FCB. A write-error status may also
@@ -65,21 +68,21 @@ diskette directory
 </b><dd>
 An attempt was made to write on a diskette which has been write-protected by
 use of the write-enable cutout in the diskette or to a file which has the
-write protect bit set.<tt> </tt>
+write protect bit set.
 <dt><b>12 - THE FILE IS PROTECTED - FILE NOT DELETED
 </b><dd>
 The file attempted to be deleted has its delete protect bit set and can not be
-deleted.<tt> </tt>
+deleted.
 <dt><b>13 - ILLEGAL FILE CONTROL BLOCK SPECIFIED
 </b><dd>
 An attempt was made to access an FCB from the open FCB chain, but it was not
-in the chain.<tt> </tt>
+in the chain.
 <dt><b>14 - ILLEGAL DISK ADDRESS ENCOUNTERED
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>15 - AN ILLEGAL DRIVE NUMBER WAS SPECIFIED
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>16 - DRIVES NOT READY
 </b><dd>
 The drive does not have a diskette in it or the door is open. This message
@@ -87,29 +90,29 @@ cannot be issued for mini floppys since there is no means of detecting such
 a state.
 <dt><b>17 - THE FILE IS PROTECTED - ACCESS DENIED
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>18 - SYSTEM FILE STATUS ERROR
 </b><dd>
 a. A read or Rewind was attempted on a file which was closed, or open for
-write access.<tt> </tt>
+write access.
 <p>
-b. A write was attempted on a file which was closed, or open for read access.<tt> </tt>
+b. A write was attempted on a file which was closed, or open for read access.
 <dt><b>19 - FMS DATA INDEX RANGE ERROR
 </b><dd>
 The Get Random Byte from Sector function was issued with a Random Byte nuber
 greater than 256
 <dt><b>20 - FMS INACTIVE - REBOOT SYSTEM
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>21 - ILLEGAL FILE SPECIFICATION
 </b><dd>
 A format error was detected in a file name specification. The name must begin
-with a letter and contain only letters, digits, hyphens, and/or underscores.<tt> </tt>
+with a letter and contain only letters, digits, hyphens, and/or underscores.
 Similarly with file extensions. File names are limited to 8 characters,
-extensions to 3.<tt> </tt>
+extensions to 3.
 <dt><b>22 - SYSTEM FILE CLOSE ERROR
 </b><dd>
-Reserved for future system use.<tt> </tt>
+Reserved for future system use.
 <dt><b>23 - SECTOR MAP OVERFLOW - DISK TOO SEGMENTED
 </b><dd>
 An attempt was made to create a very large random access file on a disk which
@@ -119,23 +122,23 @@ problem
 <dt><b>24 - NON-EXISTENT RECORD NUMBER SPECIFIED
 </b><dd>
 A record number larger than the last record number of the file was specified
-in a random position access.<tt> </tt>
+in a random position access.
 <dt><b>25 - RECORD NUMBER MATCH ERROR - FILE DAMAGED
 </b><dd>
 The record located by the FMS random search is not the correct record. The
-file is probably damaged.<tt> </tt>
+file is probably damaged.
 <dt><b>26 - COMMAND SYNTAX ERROR - RETYPE COMMAND
 </b><dd>
-The command line just typed has a syntax error.<tt> </tt>
+The command line just typed has a syntax error.
 <dt><b>27 - THAT COMMAND IS NOT ALLOWED WHILE PRINTING
 </b><dd>
 The command just entered is not allowed to operate while the system printer
-spooler is activated.<tt> </tt>
+spooler is activated.
 <dt><b>28 - WRONG HARDWARE CONFIGURATION
 </b><dd>
 This error usually implies insufficient memory installed in the computer
 for a particular function or trying to use the printer spooler without the
-hardware timer board installed.<tt> </tt>
+hardware timer board installed.
 </dl>
 <h2>SEE ALSO</h2>
 <ul>

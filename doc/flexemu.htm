@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="flexemu.css">
@@ -8,12 +8,13 @@
 <body>
 <h2>
 flexemu - a FLEX emulator with Qt user interface
-<hr></h2>
+</h2>
+<hr>
 <h2>SYNOPSIS</h2>
 <h3>On Linux</h3>
-<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </tt>
+<p>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </p>
 <h3>On Windows</h3>
-<tt>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-v] [-u] [-j screen_factor] [-C startup_command]</tt>
+<p>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-v] [-u] [-j screen_factor] [-C startup_command]</p>
 <h2 id="description">DESCRIPTION</h2>
 <b>flexemu</b> emulates a MC6809 microprocessor system running
 <a href="https://en.wikipedia.org/wiki/FLEX_(operating_system)">FLEX Operating System</a>.
@@ -85,8 +86,8 @@ preferences dialog. Command line options supersede preferences and makes the
 corresponding preferences together with its dependent preferences read-only.
 
 <h3 id="options_linux_windows">Command line options on Linux and Windows</h3>
-<dl compact>
-<dt><b><tt>-f &lt;hexfile&gt;</tt>
+<dl>
+<dt><b>-f &lt;hexfile&gt;
 </b><dd>
 Specifies the name of a program read during startup, usually a system
 monitor. Intel Hex, Motorola S-record and FLEX binary file format is supported.
@@ -95,76 +96,76 @@ The default is
 The file will be looked for in the working directory or in the directory
 specified as -p option or as Disk/Monitor directory.
 Flexemu can be used with other monitor programs as long as they support the
-special hardware needs of the Eurocom II/V7.<tt> </tt>
-<dt><b><tt>-c &lt;color&gt;</tt>
+special hardware needs of the Eurocom II/V7.
+<dt><b>-c &lt;color&gt;
 </b><dd>
 Specifies the foreground color. The default is
-<b>green</b>. The background color is always black.<tt> </tt>
-<dt><b><tt>-i</tt>
+<b>green</b>. The background color is always black.
+<dt><b>-i
 </b><dd>
 Inverse video display (foreground and background colors exchanged)
-<dt><b><tt>-p &lt;path&gt;</tt>
+<dt><b>-p &lt;path&gt;
 </b><dd>
 Specifies a path in which disk image files or nafs-directories will be looked
 for. Defaults:<BR>
   <b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
   <b>Linux:</b> /usr/local/share/Flexemu
-<dt><b><tt>-0|1|2|3 &lt;path&gt;</tt>
+<dt><b>-0|1|2|3 &lt;path&gt;
 </b><dd>
-Specifies a disk image file or a directory path for drive 0, 1, 2 or 3.<tt> </tt>
+Specifies a disk image file or a directory path for drive 0, 1, 2 or 3.
 The default is
 <b>system.dsk
 </b>for drive 0. The file or directory will be looked for in the actual
 directory.  If nothing is found the directory specified with the
-<b><tt>-p</tt></b> option used for Disk/Monitor files will be looked for.
-<dt><b><tt>-j &lt;screen_factor&gt;</tt>
+<b>-p</b> option used for Disk/Monitor files will be looked for.
+<dt><b>-j &lt;screen_factor&gt;
 </b><dd>
 Specifies a factor to multiply the size of the flexemu video display. Default is <b>2</b>.
-Valid values are 1, 2, 3, 4 and 5. It depends on the host screen size where flexemu is executed which <b><tt>screen_factor</tt></b> is supported.
-<dt><b><tt>-u</tt>
+Valid values are 1, 2, 3, 4 and 5. It depends on the host screen size where flexemu is executed which <b>screen_factor</b> is supported.
+<dt><b>-u
 </b><dd>
 Enables the support of undocumented MC6809 Instructions. See Chapter
 <a href="mc6809.htm#UndocumentedInstructions">Undocumented Instructions</a>
 for details.
-<dt><b><tt>-C &lt;startup_command&gt;</tt>
+<dt><b>-C &lt;startup_command&gt;
 </b><dd>
 When starting flexemu a startup command can be specified. Multiple commands
 can be separated by the FLEX end-of-line character, which by default is a colon.
-The emulator will be exited when specifying <b><tt>exit</tt></b> as the last
+The emulator will be exited when specifying <b>exit</b> as the last
 command.
-Example: <b><tt>"list 0.termcon.txt:dir 0:exit"</tt></b> will print the file
-contents of <b><tt>0.termcon.txt</tt></b>, make a directory listing of drive #0
+Example: <b>"list 0.termcon.txt:dir 0:exit"</b> will print the file
+contents of <b>0.termcon.txt</b>, make a directory listing of drive #0
 and immediately exits the emulator. The startup command accepts a maximum of
 128 characters.
-<dt><b><tt>-m</tt>
+<dt><b>-m
 </b><dd>
 Use
 <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>.
 Only for Eurocom II/V7.
-<dt><b><tt>-F &lt;frequency&gt;</tt>
+<dt><b>-F &lt;frequency&gt;
 </b><dd>
 Set frequency value in MHz. 0.0 runs CPU with maximum frequency. -1.0 runs CPU
 with the original hardware frequency which is the default.
-<dt><b><tt>-n &lt;number_of_colors&gt;</tt>
+<dt><b>-n &lt;number_of_colors&gt;
 </b><dd>
 Number of shades or colors. Default is <b>2</b>. Valid values are 2, 8 and 64.
-<dt><b><tt>-h</tt>
+<dt><b>-h
 </b><dd>
 Print a command line parameter description and exit.
-<dt><b><tt>-v</tt>
+<dt><b>-v
 </b><dd>
 Print version number and exit.
 </dl>
-<p><dt><h3 id="options_linux">Command line options only on Linux</h3>
+<p><h3 id="options_linux">Command line options only on Linux</h3>
 <p>
-<dl compact>
-<dt><b><tt>-t</tt>
+<dl>
+<dt><b>-t
 </b><dd>
 Terminal only mode. All input/output will be done on the terminal from
 which flexemu is started. All Escape-Sequences of this terminal can be
 accessed. Montior program <b>neumnt54.hex</b> is NOT needed for this any more.
-<b>neumon54.hex</b> can be used for both terminal and GUI mode.<tt> </tt>
-<dt><b><tt>-r &lt;two_hex_digits&gt;</tt>
+<b>neumon54.hex</b> can be used for both terminal and GUI mode.
+<dt><b>-r &lt;two_hex_digits&gt;
 </b><dd>
 Define a reset key for terminal mode specified as two hex digits. The
 default is
@@ -174,7 +175,7 @@ default is
 In <b>flexemu</b> menu Edit->Preferences opens the preferences dialog.
 The following preferences can be modified.
 <p>
-<table border>
+<table>
  <tr>
   <th rowspan="2">Name</th>
   <th rowspan="2">Description</th>
@@ -350,7 +351,7 @@ instruction can be enabled. The Instruction Logging Dialog contains
 the following entry fields. Addresses have to be input as a one to 
 four digit hexadecimal address:
 <p>
-<table border>
+<table>
  <tr>
   <th>Fieldname</th>
   <th>Default value</th>
@@ -410,7 +411,7 @@ supporting the ASCII character set.
 <h3>Hotkeys</h3>
 The following table shows the hotkeys available in flexemu.
 <p>
-<table border>
+<table>
  <tr>
   <th>Hotkey</th>
   <th>Description</th>
@@ -460,7 +461,7 @@ The following table shows the hotkeys available in flexemu.
 There is also a hotkey for toggling full screen and window mode. It depends on
 the user interface.
 <p>
-<table border>
+<table>
  <tr>
   <th>User Interface</th>
   <th>Hotkeys</th>
@@ -490,7 +491,7 @@ the user interface.
 All PAT09 function keys <kbd>F1</kbd> up to <kbd>F19</kbd> are emulated as
 defined in the following table:
 <p>
-<table border>
+<table>
  <tr>
   <th>PAT09 key</th>
   <th>Mapped key</th>
@@ -596,7 +597,7 @@ defined in the following table:
 All ASCII control characters with hex code <code>00</code> up to
 <code>1F</code> and <code>7F</code> can be entered with flexemu:
 <p>
-<table border>
+<table>
  <tr>
   <th>key combination</th>
   <th>Control character</th>
@@ -604,8 +605,8 @@ All ASCII control characters with hex code <code>00</code> up to
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Ctrl</kbd>+<kbd>@</kbd> or <kbd>Ctrl</kbd>+<kbd>`</kbd></span>
-   <span id="right">[1]</span>
+   <span class=left><kbd>Ctrl</kbd>+<kbd>@</kbd> or <kbd>Ctrl</kbd>+<kbd>`</kbd></span>
+   <span class=right>[1]</span>
   </td>
   <td><code>NUL</code></td>
   <td><code>00</code></td>
@@ -617,49 +618,49 @@ All ASCII control characters with hex code <code>00</code> up to
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>ESC</kbd> or <kbd>Ctrl</kbd>+<kbd>[</kbd> or <kbd>Ctrl</kbd>+<kbd>{</kbd></span>
+   <span class=left><kbd>ESC</kbd> or <kbd>Ctrl</kbd>+<kbd>[</kbd> or <kbd>Ctrl</kbd>+<kbd>{</kbd></span>
    &nbsp;&nbsp;&nbsp;
-   <span id="right">[1]</span>
+   <span class=right>[1]</span>
   </td>
   <td><code>ESC</code></td>
   <td><code>1B</code></td>
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Ctrl</kbd>+<kbd>\</kbd> or <kbd>Ctrl</kbd>+<kbd>|</kbd></span>
-   <span id="right">[1]</span>
+   <span class=left><kbd>Ctrl</kbd>+<kbd>\</kbd> or <kbd>Ctrl</kbd>+<kbd>|</kbd></span>
+   <span class=right>[1]</span>
   </td>
   <td><code>FS</code></td>
   <td><code>1C</code></td>
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Ctrl</kbd>+<kbd>]</kbd> or <kbd>Ctrl</kbd>+<kbd>}</kbd></span>
-   <span id="right">[1]</span>
+   <span class=left><kbd>Ctrl</kbd>+<kbd>]</kbd> or <kbd>Ctrl</kbd>+<kbd>}</kbd></span>
+   <span class=right>[1]</span>
   </td>
   <td><code>GS</code></td>
   <td><code>1D</code></td>
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Ctrl</kbd>+<kbd>^</kbd> or <kbd>Ctrl</kbd>+<kbd>~</kbd></span>
-   <span id="right">[1]</span>
+   <span class=left><kbd>Ctrl</kbd>+<kbd>^</kbd> or <kbd>Ctrl</kbd>+<kbd>~</kbd></span>
+   <span class=right>[1]</span>
   </td>
   <td><code>RS</code></td>
   <td><code>1E</code></td>
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Ctrl</kbd>+<kbd>_</kbd> or <kbd>Ctrl</kbd>+<kbd>Delete</kbd></span>
-   <span id="right">[1]</span>
+   <span class=left><kbd>Ctrl</kbd>+<kbd>_</kbd> or <kbd>Ctrl</kbd>+<kbd>Delete</kbd></span>
+   <span class=right>[1]</span>
   </td>
   <td><code>US</code></td>
   <td><code>1F</code></td>
  </tr>
  <tr>
   <td>
-   <span id="left"><kbd>Delete</kbd></span>
-   <span id="right">[2]</span>
+   <span class=left><kbd>Delete</kbd></span>
+   <span class=right>[2]</span>
   </td>
   <td><code>DEL</code></td>
   <td><code>7F</code></td>
@@ -677,7 +678,7 @@ characters (<kbd>Num Lock</kbd> is switched off).
 The Eurocom II
 PAT09 keyboard has both a separate cursor control keypad and numeric keypad:
 <p>
-<table border="0px">
+<table class="invisible">
  <tr>
   <td>
     <img src="images/pat09_cursorpad.png" alt="PAT09 cursor pad"
@@ -700,7 +701,7 @@ If <kbd>Num Lock</kbd> is switched off the cursor control keys of the PAT09
 keyboard are mapped to a standardized keyboard on the numeric keypad.
 The following hex codes can be generated.
 <p>
-<table border>
+<table>
  <tr>
   <th rowspan="2">PAT09 key</th>
   <th rowspan="2">Mapped key</th>
@@ -787,9 +788,9 @@ The following hex codes can be generated.
  <tr>
   <td><img src="images/pat09_key_left_limit.png" alt="Left limit" width="64" /></td>
   <td>
-   <span id="left"><kbd>Insert</kbd></span>
+   <span class=left><kbd>Insert</kbd></span>
    &nbsp;&nbsp;&nbsp;
-   <span id="right">[1]</span>
+   <span class=right>[1]</span>
   </td>
   <td><code>FA</code></td>
   <td><code>EA</code></td>
@@ -799,8 +800,8 @@ The following hex codes can be generated.
  <tr>
   <td><img src="images/pat09_key_right_limit.png" alt="Right limit" width="64" /></td>
   <td>
-   <span id="left"><kbd>Delete</kbd></span>
-   <span id="right">[2]</span>
+   <span class=left><kbd>Delete</kbd></span>
+   <span class=right>[2]</span>
   </td>
   <td><code>91</code></td>
   <td><code>81</code></td>

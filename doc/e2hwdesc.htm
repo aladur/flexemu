@@ -1,6 +1,8 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>Eurocom II Hardware Description</title>
 </head>
 <body>
@@ -91,7 +93,7 @@ the monitor program:
 The Eurocom II/V7 has two extension slots which can be used for extending the
 RAM size. There are two types of RAM extensions available:
 <p>
-<table border>
+<table>
     <tr><th>RAM Extension<br>[KByte]</th><th>Organized</th></tr>
     <tr><td>96</td><td>6 x 16 KByte</td></tr>
     <tr><td>384 (288 *)</td><td>6 x 64 KByte</td></tr>
@@ -113,7 +115,7 @@ overcome with a hardware modification as will be described in the chapter for
 The following figure shows how this RAM extension is organized. There are six RAM
 banks with 16 KByte each. They can be identified as:
 <p>
-<table border>
+<table>
   <tr><th>RAM bank</th><th>Bank identifier</th></tr>
   <tr><td>6 x 16 KByte<td>$0C, $0D, $0E, $04, $05, $06</td></tr>
   <tr><td>6 x 16 KByte<td>$08, $09, $0A, $00, $01, $02</td></tr>
@@ -131,7 +133,7 @@ capable of using the whole 384 KByte of RAM. The following figure shows how
 this RAM extension is organized. There are two times six RAM
 banks with 64 KByte each. They can be identified as:
 <p>
-<table border>
+<table>
   <tr><th>RAM bank</th><th>Bank identifier</th></tr>
   <tr><td>6 x 64 KByte<td>$0C, $0D, $0E, $04, $05, $06</td></tr>
   <tr><td>6 x 64 KByte<td>$08, $09, $0A, $00, $01, $02</td></tr>
@@ -151,7 +153,7 @@ are write-only registers. When reading they always return $FF. Each register
 can map a 4 KByte memory segment.
 
 <p>
-<table border>
+<table>
   <tr><th>MMU<br>register</th><th>Target address<br>range</th></tr>
   <tr><td>$FFEF<td>$F000 - $FFFF</td></tr>
   <tr><td>$FFEE<td>$E000 - $EFFF</td></tr>
@@ -202,7 +204,7 @@ map the 4 KByte RAM segment.
 By using bit 4 and 5 of the MMU register the target address range can be
 selected:
 <p>
-<table border>
+<table>
   <tr><th>MMU register<br>value</th><th>Target address<br>range</th></tr>
   <tr><td>$0X<td>$0000 - $3FFF</td></tr>
   <tr><td>$1X<td>$4000 - $7FFF</td></tr>
@@ -226,7 +228,7 @@ mode in 24 hour mode. The FLEX date is automatically set from the realtime
 clock. If the realtime clock is not present FLEX asks for the current date.
 It is accessible through memory mapped I/O in the address range $FD00 - $FD2F:
 <p>
-<table border>
+<table>
   <tr><th>Address</th><th>Content</th></tr>
   <tr><td>$FD00<td>Seconds ($00-$3B)</td></tr>
   <tr><td>$FD01<td>Seconds Alarm ($00-$3B)</td></tr>
@@ -268,7 +270,7 @@ the on-board RAM is used for video display. The display supports two colors.
 Which RAM segment is used depends on the
 Video Control Register 1 (VICO1 at $FCF6).
 <p>
-<table border>
+<table>
   <tr><th>VICO1 register<br>value</th><th>Video address<br>range</th></tr>
   <tr><td>$00<td>$0000 - $3FFF</td></tr>
   <tr><td>$01<td>$4000 - $7FFF</td></tr>
@@ -285,7 +287,7 @@ RAM bank(s) of the RAM Extension are used for video display. That means for
 displaying more than two colors a RAM extension is needed. Which RAM bank is
 used depends on the Video Control Register 1 (VICO1 at $FCF6):
 <p>
-<table border>
+<table>
   <tr><th>VICO1 register<br>value</th><th>Video address<br>range</th></tr>
   <tr><td>$00</td><td>$0C, $0D, $0E, $04, $05, $06</td></tr>
   <tr><td>$01</td><td>$08, $09, $0A, $00, $01, $02</td></tr>
@@ -296,7 +298,7 @@ be written as 0.
 <p>
 When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
 <p>
-<table border>
+<table>
     <tr><th>bank identifier<br>value</th><th>Colors</th><th>Video address<br>range</th></tr>
     <tr><td>$0C, $08</td><td>2,8,64</td><td>Green low</td></tr>
   <tr><td>$0D, $09</td><td>8,64</td><td>Blue low</td></tr>

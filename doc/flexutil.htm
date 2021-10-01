@@ -1,13 +1,15 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
- "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE HTML>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>Misc FLEX utilities</title>
 </head>
 <body>
 <h2>
 flexutil - Miscellaneous FLEX utilities
-<hr></h2>
+</h2>
+<hr>
 <h2>SYNOPSIS</h2>
 <h3>Utilities within flexemu:</h3>
 <b><br>
@@ -120,7 +122,7 @@ used in the graphic mode, and a serial I/O on acia1 (MC6850) wich will be
 used in the terminal mode. for <b>neumon54.hex</b> the modes can be switched
 'by hand' by changing the contents of address 0xEF86 (SERPAR):
 <p>
-<table border>
+<table>
  <tr><th>SERPAR</th><th>mode</th></tr>
  <tr><th>== 0</th><th>parallel I/O (graphic mode)</th></tr>
  <tr><th>!= 0</th><th>seriell I/O (terminal mode)</th></tr>

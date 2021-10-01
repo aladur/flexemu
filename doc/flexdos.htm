@@ -1,12 +1,15 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="flexemu.css">
 <title>FLEX Disk Operating System</title>
 </head>
 <body>
 <h2>
 flexdos - FLEX Disk Operating System
-<hr></h2>
+</h2>
+<hr>
 <h2>DESCRIPTION</h2>
 The
 <b>Disk Operating System
@@ -313,7 +316,7 @@ immediately. If there is
 no extension in the FCB, the extension indicated by the numeric code in the
 A-register is placed in the FCB File Extension area. The legal codes are:
 <p>
-<table border>
+<table>
  <tr><th>Code</th><th>Extension</th></tr>
  <tr><td>0</td><td>BIN</td></tr>
  <tr><td>1</td><td>TXT</td></tr>
@@ -368,7 +371,7 @@ If the string is not found (due to too large of error number being encountered)
 or if the error file itself was not located on the disk, the error number is 
 reported to the monitor terminal as part of the message:
 <p>
-&#160;<tt> </tt>&#160;<tt> </tt>DISK ERROR #nnn
+&#160; &#160; DISK ERROR #nnn
 <p>
 Where "nnn" is the error number being reported. A description of the error
 numbers is given in <a href="flexerr.htm">FLEX Error Messages</a>.
@@ -443,19 +446,16 @@ which invokes the program, and the entry-point of the program, are stored in
 a User Command Table created by the programmer in memory. Each entry in the
 User Command Table has the following format:
 <p>
-<dd>
-<table cellspacing=0 border=0>
+<table class="invisible">
  <tr><td>FCC</td><td>'command'</td><td>(Name that will invode the program)</td>
  <tr><td>FCB</td><td>0</td><td> </td>
  <tr><td>FDB</td><td>entry address</td><td>(The entry address of the program)</td>
 </table>
-</dd>
 <p>
 The entire table is ended by a zero byte. For example, the following table
 contains the commands DEBUG (entry at $3000) and PUNT (entry at $3200):
 <p>
-<dd>
-<table cellspacing=0>
+<table class="invisible">
  <tr><td>FCC</td><td colspan=2>'DEBUG'</td></tr>
  <tr><td>FCB</td><td colspan=2>0</td></tr>
  <tr><td>FDB</td><td colspan=2>$3000</td></tr>
@@ -464,7 +464,6 @@ contains the commands DEBUG (entry at $3000) and PUNT (entry at $3200):
  <tr><td>FDB</td><td colspan=2>$3200</td></tr>
  <tr><td>FCB</td><td>0</td><td>End of Command table</td></tr>
 </table>
-</dd>
 <p>
 The address of the User Command Table is made known to DOS by storing it in the
 User Command Table Address locations (see).
