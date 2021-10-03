@@ -26,7 +26,7 @@
    <string>Flexemu Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="fsetup.qrc">
+   <iconset resource="flexemu.qrc">
     <normaloff>:/resource/fsetup.png</normaloff>:/resource/fsetup.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -883,7 +883,7 @@
   <tabstop>c_flexibleMmu</tabstop>
  </tabstops>
  <resources>
-  <include location="fsetup.qrc"/>
+  <include location="flexemu.qrc"/>
  </resources>
  <connections/>
  <designerdata>
