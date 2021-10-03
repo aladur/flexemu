@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>Motorola MC6809</title>
 </head>
 <body>
 <h2>Motorola MC6809</h2>
+<hr>
+
 <h3 id="InstructionSet">Instruction Set</h3>
+<div class="justify">
 A good overview about the Motorlola MC6809 can be found on the
 <a href="https://wikipedia.org/wiki/Motorola_6809">MC6809 wiki page</a>.
 A good detailed and well structured overview of the instruction set can be
@@ -15,7 +19,9 @@ found in this
 <a href="6x09_Instruction_Sets.pdf" target="_blank">6X09 Instruction Sets</a>
 manual. It describes both the Motorola 6809 and Hitachi 6309, which
 has more registers and instructions and also an 6809 emulation mode.
+</div>
 <h3 id="UndocumentedInstructions">Undocumented Instructions</h3>
+<div class="justify">
 The support of undocumented MC6809 instructions can be controlled either
 with the command line option <b>-u</b>, with the menu item
 Processor-&gt;Undocumented Instructions or in the user settings. To be able do
@@ -28,6 +34,7 @@ work on some MC6809 chips but not on others. Motorola never published any
 information about undefined opcodes.
 <p>
 The following undocumented instructions are supported by flexemu:
+</div>
 <table>
  <tr>
   <th>Mnemonic</th>

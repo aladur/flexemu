@@ -2,20 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- This google font has to be downloaded. O.m.o. it best fits to this
+     project because it looks like the output of a vintage dot matrix printer
+     when printing in highest density.
+     When first time diplaying it the browser has to download it from the
+     internet. When working offline hopefully the browser automatically jumps
+     to the next font in the font-family list. -->
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
-<title>flexemu - a FLEX emulator with Qt user interface</title>
+<title>flexemu - an MC6809 emulator running FLEX</title>
 </head>
 <body>
-<h2>
-flexemu - a FLEX emulator with Qt user interface
-</h2>
+<h1>flexemu - an MC6809 emulator running FLEX</h1>
 <hr>
-<h2>SYNOPSIS</h2>
-<h3>On Linux</h3>
-<p>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-t] [-r &lt;two_hex_digits&gt;] [-v] [-u] [-j screen_factor] [-C startup_command] </p>
-<h3>On Windows</h3>
-<p>flexemu [-i] [-h] [-f path] [-p path] [-c color] [-0 path] [-1 path] [-2 path] [-3 path] [-v] [-u] [-j screen_factor] [-C startup_command]</p>
+<h2 id="synopsis">SYNOPSIS</h2>
+<h3 id="synopsis_linux">On Linux</h3>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command]</p>
+<h3 id="synopsis_windows">On Windows</h3>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command]</p>
+
 <h2 id="description">DESCRIPTION</h2>
+<div class="justify">
 <b>flexemu</b> emulates a MC6809 microprocessor system running
 <a href="https://en.wikipedia.org/wiki/FLEX_(operating_system)">FLEX Operating System</a>.
 Additional hardware modules as for ex. two MC6821 parallel input/output
@@ -26,6 +33,8 @@ and a special video screen interface completely emulate the hardware of an
 <a href="e2hwdesc.htm#E2V7">Eurocom II/V7</a> computer. It was developed by
 <a href="http://www.eltec.de/">ELTEC Elektronik</a> and mainly distributed
 in Germany in the 1980ies.
+</div>
+
 <p>
 <b>flexemu</b> supports the following features:
 <p>
@@ -80,15 +89,19 @@ or original frequency
  <li>command to format a disk
  <li>HTML-documents with full description of FLEX API
 </ul>
+
 <h2 id="options">OPTIONS</h2>
+<div class="justify">
 In general there are command line options and preferences editable in the <b>flexemu</b>
 preferences dialog. Command line options supersede preferences and makes the
 corresponding preferences together with its dependent preferences read-only.
+</div>
 
 <h3 id="options_linux_windows">Command line options on Linux and Windows</h3>
+<div class="options-list">
 <dl>
-<dt><b>-f &lt;hexfile&gt;
-</b><dd>
+<dt>-f &lt;hexfile&gt;</dt>
+<dd>
 Specifies the name of a program read during startup, usually a system
 monitor. Intel Hex, Motorola S-record and FLEX binary file format is supported.
 The default is
@@ -97,83 +110,112 @@ The file will be looked for in the working directory or in the directory
 specified as -p option or as Disk/Monitor directory.
 Flexemu can be used with other monitor programs as long as they support the
 special hardware needs of the Eurocom II/V7.
-<dt><b>-c &lt;color&gt;
-</b><dd>
+</dd>
+<dt>-c &lt;color&gt;</dt>
+<dd>
 Specifies the foreground color. The default is
 <b>green</b>. The background color is always black.
-<dt><b>-i
-</b><dd>
-Inverse video display (foreground and background colors exchanged)
-<dt><b>-p &lt;path&gt;
-</b><dd>
+</dd>
+<dt>-i</dt>
+<dd>
+Inverse video display (foreground and background colors exchanged).
+</dd>
+<dt>-p &lt;path&gt;</dt>
+<dd>
 Specifies a path in which disk image files or nafs-directories will be looked
-for. Defaults:<BR>
-  <b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
-  <b>Linux:</b> /usr/local/share/Flexemu
-<dt><b>-0|1|2|3 &lt;path&gt;
-</b><dd>
+for.<BR>Defaults:
+<table class="invisible compact">
+ <tr>
+  <td>Windows:</td>
+  <td>&lt;INSTDIR&gt;\data</td>
+ </tr>
+ <tr>
+  <td>Linux:</td>
+  <td>/usr/share/flexemu</td>
+ </tr>
+</table>
+</dd>
+<dt>-0|1|2|3 &lt;path&gt;</dt>
+<dd>
 Specifies a disk image file or a directory path for drive 0, 1, 2 or 3.
 The default is
 <b>system.dsk
 </b>for drive 0. The file or directory will be looked for in the actual
 directory.  If nothing is found the directory specified with the
 <b>-p</b> option used for Disk/Monitor files will be looked for.
-<dt><b>-j &lt;screen_factor&gt;
-</b><dd>
+</dd>
+<dt>-j &lt;screen_factor&gt;</dt>
+<dd>
 Specifies a factor to multiply the size of the flexemu video display. Default is <b>2</b>.
 Valid values are 1, 2, 3, 4 and 5. It depends on the host screen size where flexemu is executed which <b>screen_factor</b> is supported.
-<dt><b>-u
-</b><dd>
+</dd>
+<dt>-u</dt>
+<dd>
 Enables the support of undocumented MC6809 Instructions. See Chapter
 <a href="mc6809.htm#UndocumentedInstructions">Undocumented Instructions</a>
 for details.
-<dt><b>-C &lt;startup_command&gt;
-</b><dd>
+</dd>
+<dt>-C &lt;startup_command&gt;</dt>
+<dd>
 When starting flexemu a startup command can be specified. Multiple commands
 can be separated by the FLEX end-of-line character, which by default is a colon.
 The emulator will be exited when specifying <b>exit</b> as the last
 command.
-Example: <b>"list 0.termcon.txt:dir 0:exit"</b> will print the file
+Example: <b>"list&nbsp;0.termcon.txt:dir&nbsp;0:exit"</b> will print the file
 contents of <b>0.termcon.txt</b>, make a directory listing of drive #0
 and immediately exits the emulator. The startup command accepts a maximum of
 128 characters.
-<dt><b>-m
-</b><dd>
+</dd>
+<dt>-m</dt>
+<dd>
 Use
 <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>.
 Only for Eurocom II/V7.
-<dt><b>-F &lt;frequency&gt;
-</b><dd>
+</dd>
+<dt>-F &lt;frequency&gt;</dt>
+<dd>
 Set frequency value in MHz. 0.0 runs CPU with maximum frequency. -1.0 runs CPU
 with the original hardware frequency which is the default.
-<dt><b>-n &lt;number_of_colors&gt;
-</b><dd>
+</dd>
+<dt>-n &lt;number_of_colors&gt;</dt>
+<dd>
 Number of shades or colors. Default is <b>2</b>. Valid values are 2, 8 and 64.
-<dt><b>-h
-</b><dd>
+</dd>
+<dt>-h</dt>
+<dd>
 Print a command line parameter description and exit.
-<dt><b>-v
-</b><dd>
+</dd>
+<dt>-v</dt>
+<dd>
 Print version number and exit.
+</dd>
 </dl>
+</div>
+
 <p><h3 id="options_linux">Command line options only on Linux</h3>
-<p>
+<div class="options-list">
 <dl>
-<dt><b>-t
-</b><dd>
+<dt>-t</dt>
+<dd>
 Terminal only mode. All input/output will be done on the terminal from
 which flexemu is started. All Escape-Sequences of this terminal can be
 accessed. Montior program <b>neumnt54.hex</b> is NOT needed for this any more.
 <b>neumon54.hex</b> can be used for both terminal and GUI mode.
-<dt><b>-r &lt;two_hex_digits&gt;
-</b><dd>
+</dd>
+<dt>-r &lt;two_hex_digits&gt;</dt>
+<dd>
 Define a reset key for terminal mode specified as two hex digits. The
 default is
-<code>1E</code>, means <kbd>Ctrl</kbd>+<kbd>^</kbd>
+<code>1E</code>, means <kbd>Ctrl</kbd>+<kbd>^</kbd>.
+</dd>
 </dl>
+</div>
+
 <h3 id="preferences">Flexemu Preferences</h3>
+<div class="justify">
 In <b>flexemu</b> menu Edit->Preferences opens the preferences dialog.
 The following preferences can be modified.
+</div>
 <p>
 <table>
  <tr>
@@ -188,14 +230,15 @@ The following preferences can be modified.
  </tr>
  <tr>
   <td>Emulated hardware</td>
-  <td>flexemu can either emulate an Eurocom II/V5 or Eurocom II/V7</td>
+  <td>flexemu can either emulate an Eurocom II/V5 or Eurocom II/V7.</td>
   <td></td>
   <td></td>
   <td>Eurocom II/V7</td>
  </tr>
  <tr>
   <td>CPU frequency</td>
-  <td>The CPU frequency can be set to:
+  <td>
+   The CPU frequency can be set to:
    <ul>
     <li>The original frequency of the emulated hardware, which is 1.3396 MHz.</li>
     <li>To be emulated as fast as possible.</li>
@@ -207,46 +250,58 @@ The following preferences can be modified.
   <td>Original frequency</td>
  </tr>
  <tr>
-  <td>MC146818 Realtime Clock
-  <td>Optionally emulate a
+  <td>MC146818 Realtime Clock</td>
+  <td>
+   Optionally emulate a
    <a href="e2hwdesc.htm#RealtimeClock">MC146818 real time clock</a>,
-   which is a hardware extension.</td>
+   which is a hardware extension.
+  </td>
   <td><b>-</b></td>
   <td><b>&check;</b></td>
   <td>Emulate realtime clock</td>
  </tr>
  <tr>
   <td>Screen size</td>
-  <td>The screen size can be set to default, double, triple, quadruple or quintuple size.</td>
+  <td>
+   The screen size can be set to default, double, triple, quadruple or
+   quintuple size.
+  </td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td>Double size (1024x512 pixel)</td>
  </tr>
  <tr>
   <td>Number of shades or colors</td>
-  <td>Depending on the available RAM extension 2, 8 or 64 shades can be supported. Only if a RAM extension is selected, 8 or 64 shades are available.</td>
+  <td>
+   Depending on the available RAM extension 2, 8 or 64 shades can be supported.
+   Only if a RAM extension is selected, 8 or 64 shades are available.
+  </td>
   <td>2/8/64<br><b>&check;</b>/<b>-</b>/<b>-</b></td>
   <td>2/8/64<br><b>&check;</b>/<b>&check;</b>/<b>&check;</b></td>
   <td>2</td>
  </tr>
  <tr>
   <td>Monochromatic color</td>
-  <td>A monochromatic color like green or orange can be selected.</td>
+  <td>
+   A monochromatic color like green or orange can be selected.
+  </td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td>green</td>
  </tr>
  <tr>
   <td>Multi color scheme</td>
-  <td>Displaying multiple colors (not only shades of a monochromatic color).
-   Only if 8 or 64 shades are selected.</td>
+  <td>
+   Displaying multiple colors (not only shades of a monochromatic color).
+   Only if 8 or 64 shades are selected.
+  </td>
   <td><b>-</b></td>
   <td><b>&check;</b></td>
   <td>off</td>
  </tr>
  <tr>
   <td>Display Inverse</td>
-  <td>Display video normal or inverse</td>
+  <td>Display video normal or inverse.</td>
   <td><b>-</b></td>
   <td><b>&check;</b></td>
   <td>off</td>
@@ -266,15 +321,15 @@ The following preferences can be modified.
  </tr>
  <tr>
   <td>Disk/Monitor directory</td>
-  <td>A Directory Path containing FLEX disks and monitor program</td>
+  <td>A Directory Path containing FLEX disks and monitor program.</td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
-  <td><b>Windows:</b> &lt;INSTDIR&gt;\data<BR>
-  <b>Linux:</b> /usr/local/share/Flexemu</td>
+  <td>Windows: &lt;INSTDIR&gt;\data<BR>
+  Linux: /usr/share/flexemu</td>
  </tr>
  <tr>
   <td>Monitor program</td>
-  <td>A Filename or Directory Path for the monitor program</td>
+  <td>A Filename or Directory Path for the monitor program.</td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td><a href="neumon54.htm"><b>neumon54.hex</b></a></td>
@@ -323,33 +378,43 @@ The following preferences can be modified.
  </tr>
  <tr>
   <td>Undocumented instructions</td>
-  <td>Optionally emulate MC6809 with
-   <a href="mc6809.htm#UndocumentedInstructions">undocumented instructions</a>.</td>
+  <td>
+   Optionally emulate MC6809 with
+   <a href="mc6809.htm#UndocumentedInstructions">undocumented instructions</a>.
+  </td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td>off</td>
  </tr>
  <tr>
   <td>More flexible MMU</td>
-  <td>Optionally emulate a
+  <td>
+   Optionally emulate a
     <a href="e2hwdesc.htm#FlexibleMMU">more flexible MMU</a>. Only if
     <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a> is
-     selected.</td>
+     selected.
+  </td>
   <td><b>-</b></td>
   <td><b>&check;</b></td>
   <td>off</td>
  </tr>
 </table>
+
 <h3 id="breakpoints">Breakpoint support</h3>
+<div class="justify">
 With the menu CPU-&gt;Breakpoints up to two breakpoints
 can be set. They have to be input as a one to four digit hexadecimal
 address. Execution automatically stops when the PC register contains one
 of the breakpoint addresses.
+</div>
+
 <h3 id="logging">CPU Instruction Logging</h3>
+<div class="justify">
 With the menu CPU-&gt;Logging the logging of each executed CPU
 instruction can be enabled. The Instruction Logging Dialog contains
 the following entry fields. Addresses have to be input as a one to 
 four digit hexadecimal address:
+</div>
 <p>
 <table>
  <tr>
@@ -360,56 +425,73 @@ four digit hexadecimal address:
  <tr>
   <td>Min Address</td>
   <td>0000</td>
-  <td>Only log instructions on an address higher or equal to this address</td>
+  <td>Only log instructions on an address higher or equal to this address.</td>
  </tr>
  <tr>
   <td>Max Address</td>
   <td>FFFF</td>
-  <td>Only log instructions on an address lower or equal to this address</td>
+  <td>Only log instructions on an address lower or equal to this address.</td>
  </tr>
  <tr>
   <td>Start Address</td>
   <td>&lt;not set&gt;</td>
-  <td>Start Instruction logging when the value of the PC is equal to the
-      Start Address</td>
+  <td>
+    Start Instruction logging when the value of the PC
+    is equal to the Start Address.
+  </td>
  </tr>
  <tr>
   <td>Stop Address</td>
   <td>&lt;not set&gt;</td>
-  <td>Stop Instruction logging when the value of the PC is equal to the
-      Stop Address</td>
+  <td>
+    Stop Instruction logging when the value of the PC is equal to the Stop
+    Address.
+  </td>
  </tr>
  <tr>
   <td>Filename</td>
   <td>&lt;not set&gt;</td>
-  <td>Filename to be used for the instruction logging.
-      Independant of the Start and Stop Address this file remains open
-      as long as Flexemu keeps running until another Filename is set.
-      An empty filename finishes Instruction logging.</td>
+  <td>
+    Filename to be used for the instruction logging. Independant of the Start
+    and Stop Address this file remains open as long as Flexemu keeps running
+    until another Filename is set. An empty filename finishes Instruction
+    logging.
+  </td>
  </tr>
 </table>
+
 <h3 id="frequency_control">CPU Frequency control</h3>
-With the toggle menu item "CPU-&gt;Original Frequency" 1.3396 MHz the CPU
+<div class="justify">
+With the toggle menu item "CPU-&gt;Original&nbsp;Frequency" 1.3396 MHz the CPU
 frequency can be switched between the maximum possible frequency 
 (depending on the available host CPU performance) and the original
 CPU frequency which exactly is 1.3396 MHz. With the command <b>emu freq</b>
 other frequencies can be specified. See
 <a href="flexutil.htm">FLEX Utilities</a> for details.
+</div>
+
 <h2 id="keyboard">KEYBOARD</h2>
 <h3 id="keyboard_pat09">Eurocom PAT09 keyboard</h3>
+<div class="justify">
 The Eurocom II/V7 typically was shipped with a PAT09 keyboard:
+</div>
 <p>
 <img src="images/pat09_keyboard.png" alt="PAT09 keyboard"
  title="PAT09 keyboard" width="1024" />
 <p>
+<div class="justify">
 PAT09 can emit the whole ASCII character set (hex code <code>00</code> ..
 <code>7F</code>) together with some additional keys codes
 (hex code &gt; <code>7F</code>). flexemu emulates almost all keys available on
 PAT09 as discribed in the following chapters. Eurocom II/V5 strips off the
 most significant bit from the keyboard input with the concequence of only
 supporting the ASCII character set.
-<h3>Hotkeys</h3>
+</div>
+
+<h3 id="hotkeys">Hotkeys</h3>
+<div class="justify">
 The following table shows the hotkeys available in flexemu.
+</div>
 <p>
 <table>
  <tr>
@@ -458,8 +540,10 @@ The following table shows the hotkeys available in flexemu.
  </tr>
 </table>
 <p>
+<div class="justify">
 There is also a hotkey for toggling full screen and window mode. It depends on
 the user interface.
+</div>
 <p>
 <table>
  <tr>
@@ -487,9 +571,12 @@ the user interface.
   <td><kbd>F11</kbd></td>
  </tr>
 </table>
-<h3>Function keys</h3>
+
+<h3 id="function_keys">Function keys</h3>
+<div class="justify">
 All PAT09 function keys <kbd>F1</kbd> up to <kbd>F19</kbd> are emulated as
 defined in the following table:
+</div>
 <p>
 <table>
  <tr>
@@ -593,9 +680,12 @@ defined in the following table:
   <td><code>D2</code></td>
  </tr>
 </table>
-<h4>ASCII control characters</h4>
+
+<h4 id="ascii_control_characters">ASCII control characters</h4>
+<div class="justify">
 All ASCII control characters with hex code <code>00</code> up to
 <code>1F</code> and <code>7F</code> can be entered with flexemu:
+</div>
 <p>
 <table>
  <tr>
@@ -671,12 +761,15 @@ All ASCII control characters with hex code <code>00</code> up to
 <p>
 [2] Works only for the <kbd>Delete</kbd> key located on the main keypad.
 <p>
-<h4>Numeric Keypad and Cursor Control</h4>
+
+<h4 id="numeric_keypad_cursor_control">Numeric Keypad and Cursor Control</h4>
+<div class="justify">
 On a standarized keyboard a separate numeric keypad can be used for both
 entering numbers (<kbd>Num Lock</kbd> is switched on) or cursor control
 characters (<kbd>Num Lock</kbd> is switched off).
 The Eurocom II
 PAT09 keyboard has both a separate cursor control keypad and numeric keypad:
+</div>
 <p>
 <table class="invisible">
  <tr>
@@ -690,16 +783,20 @@ PAT09 keyboard has both a separate cursor control keypad and numeric keypad:
   </td>
 </table>
 <p>
-On flexemu both keypads are emulated using the numeric keypad.
+On flexemu both keypads are emulated using the numeric keypad:
 <p>
+<div class="justify">
 If <kbd>Num Lock</kbd> is switched on all keys of the PAT09 numeric keypad
 are emulated one by one. Depending on the current locale setting the decimal
 point character can be a comma or period. flexemu
 always maps this to a period because it is not locale aware.
+</div>
 <p>
+<div class="justify">
 If <kbd>Num Lock</kbd> is switched off the cursor control keys of the PAT09
 keyboard are mapped to a standardized keyboard on the numeric keypad.
 The following hex codes can be generated.
+</div>
 <p>
 <table>
  <tr>
@@ -810,14 +907,18 @@ The following hex codes can be generated.
  </tr>
 </table>
 <p>
-[1] The <kbd>Insert</kbd> key located on the main keypad doess not emit
+<div class="justify">
+[1] The <kbd>Insert</kbd> key located on the main keypad does not emit
 any hex code.
+</div>
 <p>
+<div class="justify">
 [2] The <kbd>Delete</kbd> key located on the main keypad emits hex code
 <code>7F</code>,
 <kbd>Ctrl</kbd>+<kbd>Delete</kbd> key emits key code <code>1F</code>.
+</div>
 
-<h2>SEE ALSO</h2>
+<h2 id="see_also">SEE ALSO</h2>
 <ul>
  <li><a href="flexuser.htm"> FLEX Users Manual</a>
  <li><a href="flexutil.htm"> Misc FLEX Utilities</a>
@@ -832,7 +933,8 @@ any hex code.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
-<h2>Documents on the behalf of the FLEX User Group</h2>
+
+<h2 id="documents_flex_user_group">Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
  <li><a href="swflexum.pdf" target="_blank">FLEX User's Manual (2)</a>
@@ -852,16 +954,20 @@ any hex code.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
-<h2>Related Links</h2>
+
+<h2 id="related_links">Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>
 </ul>
-<h2>BUGS</h2>
+
+<h2 id="bugs">BUGS</h2>
+<div class="justify">
 If a drive can not be logged in no error message will be displayed.
 If a directory will be logged in as a drive and it has too much files or its
 filesize all together is too large no error message will be displayed and
 as much files as possible will be managed.
 emu commands (See <a href="flexutil.htm">FLEX Utilities</a> for details)
 only have poor error messages.
+</div>
 </body>
 </html>

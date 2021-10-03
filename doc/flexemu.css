@@ -1,5 +1,11 @@
+body {
+    font-family: "Courier Prime","Courier new",Courier,monospace;
+    background-color: WhiteSmoke;
+    margin: 1em;
+}
+
 table, th, td {
-    padding: 4px;
+    padding: 0.4em;
     border-collapse: collapse;
 }
 
@@ -11,10 +17,26 @@ table, td {
     border: 1px solid black;
 }
 
+dt {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+ul {
+    margin-bottom: 0px;
+}
+
 /* class="invisible", a table with invisible borders */
 table.invisible,
 table.invisible th,
-table.invisible td { border: 0px solid black; }
+table.invisible td {
+    border: 0px solid black;
+}
+/* class="compact", a table with no top/bottom padding */
+table.compact td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
 
 .left {
     float: left;
@@ -22,6 +44,21 @@ table.invisible td { border: 0px solid black; }
 
 .right {
     float: right;
+}
+
+div.options-list dt {
+    font-weight: bold;
+}
+div.options-list dd {
+    text-align: justify;
+}
+
+.justify {
+    text-align: justify;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 kbd {

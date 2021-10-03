@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>FLEX File Management System</title>
 </head>
 <body>
-<h2>
-flexfms - FLEX File Management System (FMS)
-</h2>
+<h1>flexfms - FLEX File Management System (FMS)</h1>
 <hr>
+
 <h2>DESCRIPTION</h2>
+<div class="justify">
 The
 <b>File Management System (FMS)
 </b>forms the communication link between the DOS and the actual Disk Hardware.
@@ -59,10 +60,13 @@ with this fragmentation, but should be aware of the fact that files may exist
 whose sectors seem to be spattered all over the disk. The only result of
 fragmentation is the slowing down of file read times, because of the increased
 number of head seeks necessary while reading the file.
+</div>
+
 <h2>FMS ENTRY POINTS</h2>
+<div class="options-list">
 <dl>
-<dt><b>$D400 - FMS Initialization
-</b><dd>
+<dt>$D400 - FMS Initialization</dt>
+<dd>
 This entry point is used by the DOS portion of FLEX to initialize the
 <b>File Management System
 </b>after a cold start. There should be no need for a user-written program to
@@ -70,8 +74,9 @@ use
 this entry point. Executing an FMS Initialization at the wrong time may result
 in the destruction of data files, necessitating a re-initialization of the
 diskette.
-<dt><b>$D403 - FMS Close
-</b><dd>
+</dd>
+<dt>$D403 - FMS Close</dt>
+<dd>
 This entry point is used by the DOS portion of FLEX at the end of each command
 line to close any files left open by the command processor. User-written
 programs may also use this entry point to close all open files; however, if an
@@ -83,8 +88,9 @@ though it were a subroutine. On exit, the CPU Z-Condition code is set if no
 error was detected (i. e. a "zero" condition exists). If an error was detected,
 the CPU Z-Condition code bit is cleared and the X-register contains the address
 of the FCB causing the error.
-<dt><b>$D406 FMS Call
-</b><dd>
+</dd>
+<dt>$D406 FMS Call</dt>
+<dd>
 This entry point is used for all calls to the File Management System. A
 function code is stored in the Function Code byte of the FCB, the address of
 the FCB is put in the X-register, and this entry point is called by a JSR
@@ -96,8 +102,12 @@ number. Under all circumstances, the address of the FCB is still in the
 X-register on exit from this entry point. Some of the functions require
 additional parameters in the A and/or B-registers. The B, X, Y and U registers
 are always preserved with a call to FMS.
+</dd>
 </dl>
+</div>
+
 <h2>FMS FUNCTION CODES</h2>
+<div class="justify options-list">
 The FLEX File Management System is utilized by the user through function codes.
 The proper function code number is placed, by the user, in the Function Code
 byte of the File Control Block (FCB) before calling FMS (Byte 0). FMS should
@@ -107,8 +117,8 @@ code bit will be clear if an error was detected while processing the function.
 This bit may be tested by the BNE and BEQ instructions. Note: In the following
 examples, the line "JSR FMS" is referencing the FMS Call entry at $D406.
 <dl>
-<dt><b>Function 0: Read/Write Next Byte/Character
-</b><dd>
+<dt>Function 0: Read/Write Next Byte/Character</dt>
+<dd>
 If the file is open for reading, the next byte is fetched from the file and
 returned to the calling program in the A-register. If the file is open for
 writing, the content of the A-register on entry is placed in the buffer as the
@@ -127,7 +137,7 @@ without user intervention.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>If reading:</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>JSR</td><td>FMS</td><td>; Call FMS</td></tr>
@@ -135,7 +145,7 @@ Example:
  <tr><td colspan=3>; The character read is now in A</td></tr>
 </table>
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>If writing:</td></tr>
  <tr><td>LDA</td><td>CHAR</td><td>; Get the character</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
@@ -144,8 +154,9 @@ Example:
  <tr><td colspan=3>; The character in A has been written</td></tr>
 </table>
 <p>
-<dt><b>Function 1: Open for Read
-</b><dd>
+</dd>
+<dt>Function 1: Open for Read</dt>
+<dd>
 The file specified in the FCB is opened for read-only access. If the file
 cannot be found, an error is returned. The only parts of the FCB which must
 be preset by the programmer before issuing this function are the file
@@ -160,7 +171,7 @@ in anticipation of I/O on the file.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ Set up file spec in FCB ]</td></tr>
  <tr><td>LDA</td><td>#1</td><td>; Set open function mode</td></tr>
@@ -174,8 +185,9 @@ Example:
  <tr><td>STA</td><td>59,X</td><td>; Store in suppression flag</td></tr>
 </table>
 <p>
-<dt><b>Function 2: Open for Write
-</b><dd>
+</dd>
+<dt>Function 2: Open for Write</dt>
+<dd>
 This is the same as Function 1, Open For Read, except that the file must not
 already exist in the diskette directory, and it is opened for write-only
 access. A file opened for write may not be read unless it is first closed and
@@ -189,7 +201,7 @@ will be created on the first drive found to be ready.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ Set up file spec in FCB ]</td></tr>
  <tr><td>LDA</td><td>#2</td><td>; Setup open for write code</td></tr>
@@ -200,14 +212,15 @@ Example:
  <tr><td colspan=3>; For binary write, follow example in Read open.</td></tr>
 </table>
 <p>
-<dt><b>Function 3: Open for Update
-</b><dd>
+</dd>
+<dt>Function 3: Open for Update</dt>
+<dd>
 This function opens the file for both read and write. The file must not be open
 and must exist on the specified drive. If the drive spec is $FF, all drives
 will be searched. Once the file has been opened for update, four operations
 may be performed on it:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>1.</td><td>sequential read</td></tr>
  <tr><td>2.</td><td>random read</td></tr>
  <tr><td>3.</td><td>random write</td></tr>
@@ -217,8 +230,9 @@ may be performed on it:
 Note that it is not possible to do sequential writes to a file open for update.
 This implies that it is not possible to increase the size of a file which is
 open for update.
-<dt><b>Function 4: Close File
-</b><dd>
+</dd>
+<dt>Function 4: Close File</dt>
+<dd>
 If the file was opened for reading, a close merely removes the FCB from the
 chain of open files. If the file was opened for writing, any data remaining in
 the buffer is first written to the disk, padding with zeros if necessary,
@@ -228,7 +242,7 @@ file contains no data.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#4</td><td>; Setup close code</td></tr>
  <tr><td>STA</td><td>0,X</td><td>; Store in FCB</td></tr>
@@ -237,8 +251,9 @@ Example:
  <tr><td colspan=3>; File has now been closed</td></tr>
 </table>
 <p>
-<dt><b>Function 5: Rewind File
-</b><dd>
+</dd>
+<dt>Function 5: Rewind File</dt>
+<dd>
 Only files which have been opened for read may be rewound. On exit from FMS,
 the function code in the FCB is set to zero, anticipating a read operation on
 the file. If the programmer wishes to rewind a file which is open for writing
@@ -247,7 +262,7 @@ reading.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>; Assuming the file is open for read:</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#5</td><td>; Setup rewind code</td></tr>
@@ -257,8 +272,9 @@ Example:
  <tr><td colspan=3>; File is now rewound &amp; ready for read</td></tr>
 </table>
 <p>
-<dt><b>Function 6: Open Directory
-</b><dd>
+</dd>
+<dt>Function 6: Open Directory</dt>
+<dd>
 This function opens the directory on the diskette for access by a program. The
 FCB used for this function must not already be open for use by a file. On
 entry, the only information which must be preset in the FCB is the drive
@@ -272,8 +288,9 @@ number; no file name is required. The directory entries are read by using the
 access. It is not necessary to close an FCB which has been opened for directory
 access after the directory manipulation is finished. The user should normally
 not need to access the directory.
-<dt><b>Function 7: Get Information Record
-</b><dd>
+</dd>
+<dt>Function 7: Get Information Record</dt>
+<dd>
 This function should only be issued on an FCB which has been opened with the
 <b>Open Directory
 </b>function. Each time the
@@ -289,7 +306,7 @@ when the end of the directory is reached.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td></td><td colspan=3>; Get the 3rd directory entry:</td></tr>
  <tr><td></td><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td></td><td>LDA</td><td>DRIVE</td><td>; Get the drive number</td></tr>
@@ -308,8 +325,9 @@ Example:
  <tr><td></td><td colspan=3>; The 3rd entry is now in the FCB</td></tr>
 </table>
 <p>
-<dt><b>Function 7: Put Information Record
-</b><dd>
+</dd>
+<dt>Function 7: Put Information Record</dt>
+<dd>
 This function should only be issued on an FCB which has been opened whith the
 <b>Open Directory
 </b>function. The directory information is copied from the
@@ -320,8 +338,9 @@ diskette to ensure that the directory is up-to-date. A user program should
 normally never have to write into a directory. Careless use of this function
 can lead to the destruction of data files, necessitating a re-initialization of
 the diskette.
-<dt><b>Function 9: Read Single Sector
-</b><dd>
+</dd>
+<dt>Function 9: Read Single Sector</dt>
+<dd>
 This function is a low-level interface directly to the disk driver which
 permits the reading of a single sector, to which the
 <b>Current Position
@@ -336,7 +355,7 @@ conventions to which most of other FLEX functions adhere.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>TRACK</td><td>; Get track number</td></tr>
  <tr><td>STA</td><td>30,X</td><td>; Set current track</td></tr>
@@ -348,8 +367,9 @@ Example:
  <tr><td>BNE</td><td>ERROR</td><td>; Check for errors</td></tr>
 </table>
 <p>
-<dt><b>Function 10: Write Single Sector
-</b><dd>
+</dd>
+<dt>Function 10: Write Single Sector</dt>
+<dd>
 This function, like the
 <b>Read Single Sector
 </b>function, is a low-level interface directly to the disk driver which permits
@@ -373,10 +393,12 @@ from the
 <a href="flexmem.htm">FLEX Memory Map</a>
 ), and will check the sector after writing it if directed to do so by the
 <b>Verify Flag.
-</b><dt><b>Function 11: Reserved for future system use
-</b><dd>
-<dt><b>Function 12: Delete File
-</b><dd>
+</b>
+</dd>
+<dt>Function 11: Reserved for future system use</dt>
+<dd></dd>
+<dt>Function 12: Delete File</dt>
+<dd>
 This function deletes the file whose specification is in the FCB (drive number,
 file name and extension). The sectors used by the file are released to the
 system for re-use. The file should not be open when this function is issued.
@@ -384,7 +406,7 @@ The file specification in the FCB is altered during the delete process.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ setup file spec in FCB ]</td></tr>
  <tr><td>LDA</td><td>#12</td><td>; Setup function code</td></tr>
@@ -394,8 +416,9 @@ Example:
  <tr><td colspan=3>; File has now been deleted</td></tr>
 </table>
 <p>
-<dt><b>Function 13: Rename File
-</b><dd>
+</dd>
+<dt>Function 13: Rename File</dt>
+<dd>
 On entry, the file must not be open, the old name must be in the
 <b>File Specification
 </b>area of the FCB, and the new name and extension must be in the
@@ -408,7 +431,7 @@ name nor the extension can be defaulted.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td colspan=3>[ setup both file specs in FCB ]</td></tr>
  <tr><td>LDA</td><td>#13</td><td>; Setup function code</td></tr>
@@ -418,10 +441,11 @@ Example:
  <tr><td colspan=3>; File has been renamed</td></tr>
 </table>
 <p>
-<dt><b>Function 14: Reserved for future system use
-</b><dd>
-<dt><b>Function 15: Next Sequential Sector
-</b><dd>
+</dd>
+<dt>Function 14: Reserved for future system use</dt>
+<dd></dd>
+<dt>Function 15: Next Sequential Sector</dt>
+<dd>
 On entry the file should be open for either reading or writing (not update). If
 the file is open for reading, this function code will cause all of the remaining
 (yet unread) data bytes in the current sector to be skipped, and the data
@@ -431,8 +455,9 @@ remainder of the current sector to be zero filled and written out to the first
 available data location in the next sequential sector. It should be noted that
 all calls to this function code will be ignored unless at least one byte of
 data has either been written or read from the current sector.
-<dt><b>Function 16: Open System Information Record
-</b><dd>
+</dd>
+<dt>Function 16: Open System Information Record</dt>
+<dd>
 On entry, only the drive number need be specified in the FCB; there is no file
 name associated with this function. The FCB must not be open for use by a file.
 This function accesses the
@@ -449,8 +474,9 @@ need for a user-written program to change the
 </b>Doing so may result in the destruction of data, necessitating the
 re-initialization of the diskette. There is no need to close the FCB when
 finished.
-<dt><b>Function 17: Get Random Byte From Sector
-</b><dd>
+</dd>
+<dt>Function 17: Get Random Byte From Sector</dt>
+<dd>
 On entry, the file should be open for reading or update. Also, the desired
 byte's number should be stored in the
 <b>Random Index
@@ -464,7 +490,7 @@ of the sector.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>; To read the 54th data byte of the current sector</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#54+4</td><td>; Setup to item + 4</td></tr>
@@ -476,8 +502,9 @@ Example:
  <tr><td colspan=3>; Character is now in accu A</td></tr>
 </table>
 <p>
-<dt><b>Function 18: Put Random Byte in Sector
-</b><dd>
+</dd>
+<dt>Function 18: Put Random Byte in Sector</dt>
+<dd>
 The file must be open for update. This function is similar to
 <b>Get Random Byte
 </b>except the character in the A accumulator is written into the sector at the
@@ -490,7 +517,7 @@ bytes of the sector.
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>; To write the 54th data byte of the current sector</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#54+4</td><td>; Setup to item + 4</td></tr>
@@ -503,10 +530,11 @@ Example:
  <tr><td colspan=3>; Character has been written</td></tr>
 </table>
 <p>
-<dt><b>Function 19: Reserved for future system use
-</b><dd>
-<dt><b>Function 20: Find Next Drive
-</b><dd>
+</dd>
+<dt>Function 19: Reserved for future system use</dt>
+<dd></dd>
+<dt>Function 20: Find Next Drive</dt>
+<dd>
 This function is used to find the next online drive which is in the "ready"
 state. Due to hardware limitations, the mini floppy version of FLEX performs
 this command differently than the full size floppy version. The functioning
@@ -524,8 +552,9 @@ the FCB. If called with a 0, it will return with the drive number set to 1. In
 both cases the carry is cleared on return. If called with a drive number of 1
 or higher, the drive number is left unchanged, the carry bit is set on return
 and error #16 (Drives Not Ready) is set.
-<dt><b>Function 21: Position to Record N
-</b><dd>
+</dd>
+<dt>Function 21: Position to Record N</dt>
+<dd>
 This is one of the 2 function codes provided for random file accessing by
 sector. The desired record number to be accessed should be stored in the FCB
 location
@@ -543,7 +572,7 @@ on random files see
 <p>
 Example:
 <p>
-<table class="invisible">
+<table class="invisible compact">
  <tr><td colspan=3>; To position to record #6</td></tr>
  <tr><td>LDX</td><td>#FCB</td><td>; Point to the FCB</td></tr>
  <tr><td>LDA</td><td>#6</td><td>; Set position</td></tr>
@@ -556,8 +585,9 @@ Example:
  <tr><td colspan=3>; Record ready to be read</td></tr>
 </table>
 <p>
-<dt><b>Function 22: Backup One Record
-</b><dd>
+</dd>
+<dt>Function 22: Backup One Record</dt>
+<dd>
 This is also used for random file accessing. This function takes the
 <b>Current Record Number
 </b>in the FCB and decrements it by one. A Position to the new record is performed.
@@ -570,8 +600,12 @@ record #15. The file must be open for read or update before this function may
 be used. See section
 <b>RANDOM FILES
 </b>for details.
+</dd>
 </dl>
+</div>
+
 <h2>RANDOM FILES</h2>
+<div class="justify">
 FLEX version 9.0 supports random files. The random access technique allows
 access by record number of a file and can reach any specified sector in a 
 file, no matter how large it is, in a maximum of two disk reads. With a small
@@ -615,6 +649,8 @@ Within
 </b>if using a directory as a FLEX drive the user execution bit will be used to
 distinguish between random and sequential files. Random files have this bit
 set.
+</div>
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -630,6 +666,7 @@ set.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2>Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -650,6 +687,7 @@ set.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2>Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>

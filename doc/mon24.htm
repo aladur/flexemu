@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>Flexemu Monitor program mon24.hex</title>
 </head>
 <body>
-<h2 id="Mon24">Flexemu Monitor program mon24.s19</h2>
+
+<h1 id="Mon24">Flexemu Monitor program mon24.s19</h1>
+<hr>
+<div class="justify">
 The monitor program provides basic I/O functions to the operating system. It
 is comparable to the BIOS on a PC.
 <p>
@@ -17,6 +21,7 @@ loader. Instead files can be loaded from a Philips Mini Digital Cassette
 Recorder (Philips MDCR). See command D for details.
 <p>
 The following table gives an overview of the available commands:
+</div>
 <p>
 <table>
  <tr>
@@ -115,9 +120,9 @@ The following table gives an overview of the available commands:
   <td>Command P: Details are unknown.</td>
  </tr>
  <tr>
-  <td>R XXXX YYYY NAME06</td>
+  <td style="min-width: 12em">R XXXX YYYY NAME06</td>
   <td>Write a file in Motorola S-Record format to serial port. In flexemu
-  the serial port is the connected terminal (linux only).</td>
+  the serial port is the connected terminal (Linux only).</td>
  </tr>
  <tr>
   <td>S</td>
@@ -149,12 +154,26 @@ The following table gives an overview of the available commands:
  </tr>
 </table>
 <p>
-ZZ means a two digit hex number, XXXX or YYYY means a four digit hex number.
-NAME06 means a file name consisting of 6 ASCII characters.
-<p>
+<table class="invisible compact">
+ <tr>
+  <td>ZZ:</td>
+  <td>A two digit hex number.</td>
+ </tr>
+ <tr>
+  <td>XXXX or YYYY:</td>
+  <td>A four digit hex address.</td>
+ </tr>
+ <tr>
+  <td>NAME06:</td>
+  <td>A file name consisting of 6 ASCII characters.</td>
+ </tr>
+</table>
+
 <h2 id="Mon24z">Flexemu Monitor program mon24z.s19</h2>
+<div class="justify">
 Monitor program mon24z.s19 has the same commands as mon24.s19. There is one
 additional command available in context of the emulation:
+</div>
 <p>
 <table>
  <tr>
@@ -166,10 +185,8 @@ additional command available in context of the emulation:
   <td>Exit the emulator.</td>
  </tr>
 </table>
-<hr>
-Flexemu can also be used with other monitor programs as long as they support
-the special hardware needs of the Eurocom II V5 or V7.
 <p>
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -185,6 +202,7 @@ the special hardware needs of the Eurocom II V5 or V7.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2>Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -205,6 +223,7 @@ the special hardware needs of the Eurocom II V5 or V7.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
      <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2>Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>

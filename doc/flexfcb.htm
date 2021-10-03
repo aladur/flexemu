@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>FLEX File Control Block</title>
 </head>
 <body>
-<h2>
-flexfcb - FLEX File Control Block (FCB)
-</h2>
+<h1>flexfcb - FLEX File Control Block (FCB)</h1>
 <hr>
+
 <h2>GENERAL DESCRIPTION</h2>
+<div class="justify">
 The
 <b>File Control Block (FCB)
 </b>is the heart of the FLEX File Management System (FMS). An FCB is a 320 byte long
@@ -23,21 +24,26 @@ The memory reserved for use as an FCB need not be preset or initialized in any
 way. Only the parameters necessary to perform the function need be stored in 
 the FCB; the File Management System will initialize those areas of the FCB
 needed for it's use.
+</div>
+
 <h2>DESCRIPTION OF AN FCB</h2>
+<div class="justify options-list">
 <dl>
-<dt><b>Byte 0: Function Code
-</b><dd>
+<dt>Byte 0: Function Code</dt>
+<dd>
 The desired function code must be stored in this byte by the user before
 calling FMS to process the FCB. See
 <a href="flexfms.htm"> FLEX File Management System</a>.
-<dt><b>Byte 1: Error Status Byte
-</b><dd>
+</dd>
+<dt>Byte 1: Error Status Byte</dt>
+<dd>
 If an error was detected during the processing of a function, FMS stores the
 error number in this byte and returns to the user with the CPU Z-Condition Code
 bit clear, i. e. a non-zero condition exists. This may be tested by the BEQ
 instruction.
-<dt><b>Byte 2: Activity Status
-</b><dd>
+</dd>
+<dt>Byte 2: Activity Status</dt>
+<dd>
 This byte is set by FMS to a "1" if the file is open for read, or "2" if the
 file is open for writing. This byte is checked by several FMS function
 processors to determine if the requested operation is legal. A Status Error
@@ -50,25 +56,28 @@ file name, and file extension. Some of the FMS functions do not require the
 file name or extension. See the documentation of the individual function codes
 for details.
 <dl>
-<dt><b>Byte 3: Drive Number
-</b><dd>
+<dt>Byte 3: Drive Number</dt>
+<dd>
 This is the hardware drive number whose diskette contains the file being
 referenced. It should be binary 0 to 3.
-<dt><b>Bytes 4-11: File Name
-</b><dd>
+</dd>
+<dt>Bytes 4-11: File Name</dt>
+<dd>
 This is the name of the file being referenced. The name must start with a
 letter and contain only letters, digits, hyphens and/or underscores. If the
 name is less than 8 characters long, the remaining bytes must be zero. The name
 should be left adjusted in its field.
-<dt><b>Bytes 12-14: Extension
-</b><dd>
+</dd>
+<dt>Bytes 12-14: Extension</dt>
+<dd>
 This is the extension of the file name for the file being referenced. It must
 start with a letter and contain only letters , digits, hyphens and/or
 underscores. If the extension is less than 3 characters long, the remaining
 bytes must be zero. The extension should be left adjusted. Files with null
 extensions should not be created.
-<dt><b>Byte 15: File Attributes
-</b><dd>
+</dd>
+<dt>Byte 15: File Attributes</dt>
+<dd>
 At present, only the most significant 4 bits are defined in this byte. These
 bits are used for the protection status bits and are assigned as follows:
 <p>
@@ -81,58 +90,69 @@ bits are used for the protection status bits and are assigned as follows:
 <p>
 Setting these bits to 1 will activate the appropriate protection status. All
 undefined bits of this byte should remain 0!
-<dt><b>Byte 16: Reserved for future system use
-</b><dd>
-<dt><b>Bytes 17-18: Starting disk address of the file
-</b><dd>
+</dd>
+<dt>Byte 16: Reserved for future system use</dt>
+<dd></dd>
+<dt>Bytes 17-18: Starting disk address of the file</dt>
+<dd>
 These two bytes contain the hardware track and sector numbers, respectively,
 of the first sector of the file.
-<dt><b>Bytes 19-20: Ending disk address of the file
-</b><dd>
+</dd>
+<dt>Bytes 19-20: Ending disk address of the file</dt>
+<dd>
 These two bytes contain the hardware track and sector numbers, respectively,
 of the last sector of the file.
-<dt><b>Bytes 21-22: File size
-</b><dd>
+</dd>
+<dt>Bytes 21-22: File size</dt>
+<dd>
 This is a 16-bit number indicating the number of sectors in the file.
-<dt><b>Byte 23: File Sector Map Indicator
-</b><dd>
+</dd>
+<dt>Byte 23: File Sector Map Indicator</dt>
+<dd>
 If this byte is non-zero (usually $02), the file has been created as a random
 access file and contains a File Sector Map. See the description of Random Files
 for details.
-<dt><b>Byte 24: Reserved for future system use
-</b><dd>
-<dt><b>Bytes 25-27: File Creation Date
-</b><dd>
+</dd>
+<dt>Byte 24: Reserved for future system use</dt>
+<dd></dd>
+<dt>Bytes 25-27: File Creation Date</dt>
+<dd>
 These three bytes contain the binary date of the files creation. The first byte
 is the month, the second is the day, and the third is the year (only the tens
 of ones digits).
-<dt><b>Bytes 28-29 FCB List Pointer
-</b><dd>
+</dd>
+<dt>Bytes 28-29 FCB List Pointer</dt>
+<dd>
 All FCBs which are open for reading or writing are chained together. These two
 bytes contain the memory address of the FCB List Pointer of the next FCB in the
 chain. These bytes are zero if this FCB is the last FCB in the chain. The first
 FCB in the chain is pointed to by the FCB Base Pointer. (See
 <a href="flexmem.htm"> FLEX Memory Map</a>
-). <dt><b>Bytes 30-31: Current Position
-</b><dd>
+).
+</dd>
+<dt>Bytes 30-31: Current Position</dt>
+<dd>
 These bytes contain the hardware track and sector numbers, respectively, of the
 sector currently in the sector buffer portion of the FCB. If the file is being
 written, the sector to which these bytes point has not yet been written to the
 diskette; it is still in the buffer.
-<dt><b>Bytes 32-33: Current Record Number
-</b><dd>
+</dd>
+<dt>Bytes 32-33: Current Record Number</dt>
+<dd>
 These bytes contain the current logical Record Number of the sector in the
 FCB buffer.
-<dt><b>Bytes 34: Data Index
-</b><dd>
+</dd>
+<dt>Bytes 34: Data Index</dt>
+<dd>
 This byte contains the address of the next data byte to be fetched from (if
 reading) or stored to (if writing) the sector buffer. This address is relative
 to the beginning of the sector, and is advanced automatically by the Read/Write
 Next Byte function (see
 <a href="flexfms.htm"> FLEX File Management System</a>.
 ). The user program has no need to manipulate this byte.
-<dt><b>Byte 35: Random Index
-</b><dd>
+</dd>
+<dt>Byte 35: Random Index</dt>
+<dd>
 This byte is used in conjunction with the
 <b>Get Random Byte From Sector
 </b>function (see
@@ -146,12 +166,14 @@ the beginning of the sector, is stored in
 </b>function is issued to FMS. The specified data byte will be returned in the
 A-register. A value less than 4 will access one of the linkage bytes in the
 sector. User data starts at an index of 4.
-<dt><b>Bytes 36-46: Name Work Buffer
-</b><dd>
+</dd>
+<dt>Bytes 36-46: Name Work Buffer</dt>
+<dd>
 These bytes are used internally by FMS as temporary storage for a file name.
 These locations are not for use by a user program.
-<dt><b>Bytes 47-49: Current Directory Address
-</b><dd>
+</dd>
+<dt>Bytes 47-49: Current Directory Address</dt>
+<dd>
 If the FCB is being used to process directory information with the
 <b>Get/Put Information Record
 </b>functions, (see
@@ -162,20 +184,22 @@ portion of the FCB. The values in these three bytes are updated automatically
 by the
 <b>Get Information Record
 </b>function.
-<dt><b>Bytes 50-52: First Deleted Directory Pointer
-</b><dd>
+</dd>
+<dt>Bytes 50-52: First Deleted Directory Pointer</dt>
+<dd>
 These bytes are used internally by FMS when looking for a free entry in the
 directory to which to assign the name of a new file.
-<dt><b>Bytes 53-63: Scratch Bytes
-</b><dd>
+</dd>
+<dt>Bytes 53-63: Scratch Bytes</dt>
+<dd>
 These are the bytes into which the user stores the new name and extension of
 a file being renamed. The new name is formatted the same as described above
 under
 <b>File Name
 </b>and
-<b>File Extension.
-</b><dt><b>Byte 59: Space Compression Flag
-</b><dd>
+<b>File Extension.</b>
+<dt>Byte 59: Space Compression Flag</dt>
+<dd>
 If a file is open for read or write, this byte indicates if space compression
 is being performed. A value of zero indicates that space compression is to be
 done when reading or writing the data. This is the vlaue that is stored by
@@ -200,12 +224,16 @@ progress; the value being a count of the number of spaces processed thus far.
 <b>Rename
 </b>, which requires that the file be closed). In general, this byte should be 0
 while working with text type files, and $FF for binary files.
-<dt><b>Bytes 64-319: Sector Buffer
-</b><dd>
+</dd>
+<dt>Bytes 64-319: Sector Buffer</dt>
+<dd>
 These bytes contain the data contained in the sector being read or written.
 The first four bytes of the sector are used by the system. The remaining 252
 are used for data storage.
+</dd>
 </dl>
+</div>
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -221,6 +249,7 @@ are used for data storage.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2>Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -241,6 +270,7 @@ are used for data storage.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2>Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>

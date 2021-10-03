@@ -6,10 +6,9 @@
 <title>File systems supported by flexemu</title>
 </head>
 <body>
-<h2>
-flexfs - File systems supported by flexemu
-</h2>
+<h1>flexfs - File systems supported by flexemu</h1>
 <hr>
+
 <h2>DESCRIPTION</h2>
 Flexemu supports three different file systems:
 <p>
@@ -18,9 +17,10 @@ Flexemu supports three different file systems:
  <li><a href="#ws_format">Disk image created by Wolfgang Schwotzer</a>
  <li><a href="#nafs_format">Native file system support (all files in a directory)</a>
 </ul>
+<div class="options-list">
 <dl>
-<dt id="dsk_format"><b>Disk image created by Ben Williams (DSK-format)
-</b><p><dd>
+<dt id="dsk_format">Disk image created by Ben Williams (DSK-format)
+<dd>
 <a href="http://ourtimelines.com/reflex/tocpage.html">
 Ben Williams has written a FLEX emulator</a>
 too.
@@ -30,24 +30,23 @@ Following map shows some typical track/sector combinations:
 <p>
 <table>
  <tr><th>filesize [Byte]</th><th>tracks</th><th>sectors</th>
- <tr><th>89600</th><th>35</th><th>10</th>
- <tr><th>179000</th><th>35</th><th>20</th>
- <tr><th>358400</th><th>35</th><th>40</th>
- <tr><th>102400</th><th>40</th><th>10</th>
- <tr><th>204800</th><th>40</th><th>20</th>
- <tr><th>409600</th><th>40</th><th>40</th>
- <tr><th>(204800</th><th>80</th><th>10)</th>
- <tr><th>(409600</th><th>80</th><th>20)</th>
- <tr><th>819200</th><th>80</th><th>40</th>
+ <tr><td>89600</td><td>35</td><td>10</td>
+ <tr><td>179000</td><td>35</td><td>20</td>
+ <tr><td>358400</td><td>35</td><td>40</td>
+ <tr><td>102400</td><td>40</td><td>10</td>
+ <tr><td>204800</td><td>40</td><td>20</td>
+ <tr><td>409600</td><td>40</td><td>40</td>
+ <tr><td>(204800</td><td>80</td><td>10)</td>
+ <tr><td>(409600</td><td>80</td><td>20)</td>
+ <tr><td>819200</td><td>80</td><td>40</td>
 </table>
 <p>
 Each sector contains 256 Byte. There is no file header. The size of the file
 can simply be computed with &lt;nr_of_tracks&gt; x &lt;nr_of_sectors&gt; x 256 Byte. If
 the DSK-file is write protected the drive within flexemu is write protected too.
-<p>
-<dt id="ws_format"><b>Disk image created by Wolfgang Schwotzer (FLX-format)
-</b>
-<p><dd>
+</dd>
+<dt id="ws_format">Disk image created by Wolfgang Schwotzer (FLX-format)
+<dd>
 The complete disk is contained in one file. All the information about how
 many tracks and sectors are described in a file header:
 <p>
@@ -69,12 +68,13 @@ actual format look at
 <b>struct s_flex_header
 </b>in the header file
 <b>filecnts.h</b>.
-<p><dt id="nafs_format"><b>NAtive File System support (nafs)
-</b><p><dd>
+</dd>
+<dt id="nafs_format">NAtive File System support (nafs)
+<dd>
 A directory will be made visible as a disk drive from within flexemu.
 So each file in the directory will be visible as a file contained on the disk.
-Random files are identified by the user execute bit (on Unix) or the hidden bit
-(Win32) of the corresponding file set.
+Random files are identified by the user execute bit (Linux) or the hidden bit
+(Windows) of the corresponding file set.
 <p>
 The system info sectors and directory sectors are managed by flexemu and
 are not accessible as file. The boot sector (track 0/sector 1) is contained
@@ -84,9 +84,11 @@ in the file
 to FLEX.SYS will be generated dynamically by flexemu. The user does not have
 to input any link command.
 <p>
-<dt>There are some restrictions the user should be aware of:
-<dd>
+</dd>
 </dl>
+</div>
+<div>
+There are some restrictions the user should be aware of:
 <p>
 <ul>
  <li>A nafs drive always contains 80 tracks and 36 sectors. If the size of
@@ -105,12 +107,14 @@ automatically. So no directory extend utility needs to be used.
 <p>
 There is a utility to dynamically
 <a href="flexutil.htm#mount">mount</a>,
-update,
-<a href="flexutil.htm#info">give info</a>
+<a href="flexutil.htm#update">update</a>,
+<a href="flexutil.htm#info">get drive info</a>
 or
 <a href="flexutil.htm#umount">umount</a>
 a nafs
 drive.
+</div>
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -126,6 +130,7 @@ drive.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2>Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -146,6 +151,7 @@ drive.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2>Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>

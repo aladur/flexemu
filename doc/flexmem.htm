@@ -2,20 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>FLEX Memory Map</title>
 </head>
 <body>
-<h2>
-flexmem - FLEX Memory Map
-</h2>
+<h1>flexmem - FLEX Memory Map</h1>
 <hr>
+
 <h2>DESCRIPTION</h2>
+<div class="justify">
 The following is a description of those memory locations within the DOS
 portion of FLEX which contain information of interest to the programmer.
 The user is cautioned against utilization for his own purposes any
 locations documented as being either "reserved" or "system scratch", as
 this action may cause destruction of data.
+</div>
+
 <h2 id="map">FLEX GLOBAL SYSTEM MEMORY MAP</h2>
 <p>
 <table>
@@ -27,10 +30,12 @@ this action may cause destruction of data.
  <tr><td>CD00</td><td>FLEX cold start entry address</td></tr>
  <tr><td>CD03</td><td>FLEX warm start entry address</td></tr>
 </table>
+
 <h2 id="fmsmem">FLEX FMS VARIABLE SYSTEM MEMORY MAP</h2>
+<div class="options-list">
 <dl>
-<dt><b>$D409-$D40A FCB Base Pointer
-</b><dd>
+<dt>$D409-$D40A FCB Base Pointer</dt>
+<dd>
 These locations contain the address of the
 <a href="flexfcb.htm">FCB</a>
 List Pointer bytes of the first
@@ -42,25 +47,31 @@ some reason, and the address stored in these locations is the proper starting
 point. Remember that the address is that of the FCB List Pointer locations
 in the FCB, not the first word of the FCB. A value of zero in these locations
 indicates that there are no open files.
-<dt><b>$D40B-$D$0C Current FCB Address
-</b><dd>
+</dd>
+<dt>$D40B-$D40C Current FCB Address</dt>
+<dd>
 These locations contain the address of the last FCB processed by the File
 Management System. The address is that of the first word of the FCB.
-<dt><b>$D435 Verify Flag
-</b><dd>
+</dd>
+<dt>$D435 Verify Flag</dt>
+<dd>
 A non-zero value in this location indicates that FMS will check each sector
 written for errors immediately after writing it. A zero value indicates that
 no error checking on writes is to be performed. The default value is
 "non-zero". Flexemu does not support this feature.
+</dd>
 </dl>
+</div>
+
 <h2 id="dosmem">FLEX DOS VARIABLE SYSTEM MEMORY MAP</h2>
 <p>
+<div class="options-list">
 <dl>
-<dt><b>Line Buffer $C080-$C0FF
-</b><dd>
+<dt>Line Buffer $C080-$C0FF</dt>
+<dd>
 The line buffer is a 128 byte area into which characters typed at the keyboard
 are placed by the routine
-<a href="flexdos.htm#inbuff">INBUF</a>
+<a href="flexdos.htm#inbuff">INBUFF</a>
 . All characters entered from the keyboard are
 placed in this buffer with the exception of control characters. Characters
 which have been deleted by entering the backspace character do not appear in
@@ -69,111 +80,130 @@ return signaling the end of the keyboard input is, however, put in the buffer.
 This buffer is also used to hold the
 <a href="flexuser.htm#startup">STARTUP</a> file during a cold start (boot)
 operation. 
-<dt><b>TTYSET Backspace Character $CC00
-</b><dd>
+</dd>
+<dt>TTYSET Backspace Character $CC00</dt>
+<dd>
 This is the character which the routine
-<a href="flexdos.htm#inbuff">INBUF</a>
+<a href="flexdos.htm#inbuff">INBUFF</a>
 will interpret as the
 Backspace character. It is user definable through the
-<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default = $08, a Ctrl-H (ASCII BS)
-<dt><b>TTYSET Delete $CC01
-</b><dd>
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+Default = $08, a Ctrl-H (ASCII BS).
+</dd>
+<dt>TTYSET Delete $CC01</dt>
+<dd>
 This is the character which the routine
-<a href="flexdos.htm#inbuff">INBUF</a>
+<a href="flexdos.htm#inbuff">INBUFF</a>
 will interpret as the line
 cancel or Delete character. It is user definable through the
-<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default = $18, Ctrl-X (ASCII CAN)
-<dt><b>TTYSET End of Line Character $CC02
-</b><dd>
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+Default = $18, Ctrl-X (ASCII CAN).
+</dd>
+<dt>TTYSET End of Line Character $CC02</dt>
+<dd>
 This is the character DOS recognizes as the multiple command per line
 separator. It is user definable through the
-<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default=$3A,
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+Default=$3A,
 a colon (:).
-<dt><b>TTYSET Depth Count $CC03
-</b><dd>
+</dd>
+<dt>TTYSET Depth Count $CC03</dt>
+<dd>
 This byte determines how many lines DOS will print on a page before Pausing
 or issuing Ejects. It may be set by the user with the
 <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
 command.
 Default=0.
-<dt><b>TTYSET Width Count $CC04
-</b><dd>
+</dd>
+<dt>TTYSET Width Count $CC04</dt>
+<dd>
 This byte tells DOS how many characters to output on each line. If zero,
 there is no limit to the number output. This count may be set by the user
 using
-<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default=0.
-<dt><b>TTYSET Null Count $CC05
-</b><dd>
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+Default=0.
+</dd>
+<dt>TTYSET Null Count $CC05</dt>
+<dd>
 This byte informs DOS if the number of null or pad characters to be
 output after each carriage return, line feed pair. This count maybe
-set using <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-. Default=4.
-<dt><b>TTYSET Tab Character $CC06
-</b><dd>
+set using <a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+Default=4.
+</dd>
+<dt>TTYSET Tab Character $CC06</dt>
+<dd>
 This byte defines a tab character which may be used by other
 programs, such as the Editor. DOS itself does not make use of the
 Tab character. Default=0, no tab character defined.
-<dt><b>TTYSET Backspace Echo Character $CC07
-</b><dd>
-This is the character the routine INBUF will echo upon the receipt
+</dd>
+<dt>TTYSET Backspace Echo Character $CC07</dt>
+<dd>
+This is the character the routine
+<a href="flexdos.htm#inbuff">INBUFF</a>
+will echo upon the receipt
 of a backspace character. If the backspace echo character is set
 to a $08, and the backspace character is also a $08, FLEX will
 output a space ($20) prior to the outputting of the backspace echo
 character. Default=0.
-<dt><b>TTYSET Eject Count $CC08
-</b><dd>
+</dd>
+<dt>TTYSET Eject Count $CC08</dt>
+<dd>
 The Eject Count instructs DOS as to the number of blank lines to be
 output after each page. (A page is a set of lines equal in number
 to the Depth count). If this byte is zero, no Eject lines are
 output. Default=0.
-<dt><b>TTYSET Pause Control $CC09
-</b><dd>
+</dd>
+<dt>TTYSET Pause Control $CC09</dt>
+<dd>
 The Pause byte instructs DOS what action to take after each page is
 output. A zero value indicates that the pause feature is enabled;
 a non-zero value, pause is disabled. Default=$FF, pause disabled.
-<dt><b>TTYSET Escape Character $CC0A
-</b><dd>
+</dd>
+<dt>TTYSET Escape Character $CC0A</dt>
+<dd>
 The Escape character causes DOS to pause after an output line.
 Default=$1B, ASCII ESC.
-<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>
-<dt><b>System Drive Number $CC0B
-</b><dd>
+<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+</dd>
+<dt>System Drive Number $CC0B</dt>
+<dd>
 This is the number of the disk drive from which commands are
 loaded. If this byte is $FF, both drives 0 and 1 will be searched.
 Default= drive #0.
-<dt><b>Working Drive Number $CC0C
-</b><dd>
+</dd>
+<dt>Working Drive Number $CC0C</dt>
+<dd>
 This is the number of the default disk drive referenced for
 non-command files. If this byte is $FF, both drives 0 and 1 will
 be searched. Default= drive #0.
-<dt><b>System Scratch $CC0D
-</b><dd>
-<dt><b>System Date Registers $CC0E - $CC10
-</b><dd>
+</dd>
+<dt>System Scratch $CC0D</dt>
+<dd></dd>
+<dt>System Date Registers $CC0E - $CC10</dt>
+<dd>
 These three bytes are used to store the system date. It is stored
 in binary form with the month in the first byte, followed by the
 day, then the year. The year byte contains only the tens and ones
 digits.
-<dt><b>Last Terminator $CC11
-</b><dd>
+</dd>
+<dt>Last Terminator $CC11</dt>
+<dd>
 This location contains the most recent non-alphanumeric character encountered
 in processing the line buffer. See
 <a href="flexdos.htm#nxtch">NXTCH</a>
 and
 <a href="flexdos.htm#class">CLASS</a>
 for details.
-<dt><b>User Command Table Address $CC12-$CC13
-</b><dd>
+</dd>
+<dt>User Command Table Address $CC12-$CC13</dt>
+<dd>
 The programmer may store into these locations the address of a command table
 of his own construction. See the section called
 <a href="flexdos.htm#user_commands">"User-Written commands"</a> for
 details. Default=0000, no user command table is defined.
-<dt><b>Line Buffer Pointer $CC14-$CC15
-</b><dd>
+</dd>
+<dt>Line Buffer Pointer $CC14-$CC15</dt>
+<dd>
 These locations contain the address of the next character in the Line Buffer
 to be precessed. See
 <a href="flexdos.htm#inbuff">INBUFF</a>,
@@ -182,65 +212,74 @@ to be precessed. See
 <a href="flexdos.htm#getchr">GETCHR</a> and
 <a href="flexdos.htm#docmnd">DOCMND</a>
 for instances of its use.
-<dt><b>Escape Return Register $CC16-$CC17
-</b><dd>
+</dd>
+<dt>Escape Return Register $CC16-$CC17</dt>
+<dd>
 These locations contain the address to which to jump if a RETURN is typed
 while output has been stopped by an Escape Character. See
 <a href="flexuser.htm#ttyset">TTYSET utility</a>
 for information on Escape processing. See
 <a href="flexdos.htm#pcrlf">PCRLF</a>
 for details.
-<dt><b>Current Character $CC18
-</b><dd>
+</dd>
+<dt>Current Character $CC18</dt>
+<dd>
 This location contains the most recent character taken from the Line Buffer
 by the
 <a href="flexdos.htm#nxtch">NXTCH</a>
 routine. See
 <a href="flexdos.htm#nxtch">NXTCH</a>
 for details.
-<dt><b>Previous Character $CC19
-</b><dd>
+</dd>
+<dt>Previous Character $CC19</dt>
+<dd>
 This location contains the previous character taken from the Line Buffer
 by the
 <a href="flexdos.htm#nxtch">NXTCH</a>
 routine. See
 <a href="flexdos.htm#nxtch">NXTCH</a>
 for details.
-<dt><b>Current Line Number $CC1A
-</b><dd>
+</dd>
+<dt>Current Line Number $CC1A</dt>
+<dd>
 This location contains a count of the number of lines currently on the page.
 This value is compared to the Line Count value to determine if a full page 
 has been printed.
-<dt><b>Loader Address Offset $CC1B-$CC1C
-</b><dd>
+</dd>
+<dt>Loader Address Offset $CC1B-$CC1C</dt>
+<dd>
 These locations contain the 16-bit bias to be added to the load address of a
 routine being loaded from the disk. See
 <a href="flexdos.htm#load">System Routine LOAD</a>
 for details. These locations are also used as scratch by some system
 routines.
-<dt><b>Transfer Flag $CC1D
-</b><dd>
+</dd>
+<dt>Transfer Flag $CC1D</dt>
+<dd>
 After a program has been loaded from the disk (see
 <a href="flexdos.htm#load">System Routine LOAD</a>
 ), this
 location is non-zero if a transfer address was found during the loading
 process. This location is also used as scratch by some system routines.
-<dt><b>Transfer Address $CC1E-$CC1F
-</b><dd>
+</dd>
+<dt>Transfer Address $CC1E-$CC1F</dt>
+<dd>
 If the Transfer Flag was set non-zero by a load from the disk (see
 <a href="flexdos.htm#load">System Routine LOAD</a>
 ), these locations contain the last transfer address encountered.
 If the Transfer Flag was set zero by the disk load, the content of these
 locations is indeterminate.
-<dt><b>Error Type $CC20
-</b><dd>
+</dd>
+<dt>Error Type $CC20</dt>
+<dd>
 This location contains the error number returned by several of the File
 Management System functions. See
 <a href="flexerr.htm">FLEX Error Messages</a>
 for an interpretation of the 
 error numbers.
-<dt id="special_io"><b>Special I/O Flag $CC21
-</b><dd>
+</dd>
+<dt id="special_io">Special I/O Flag $CC21
+<dd>
 If this byte is non-zero, the
 <a href="flexdos.htm#putchr">PUTCHR</a>
 routine will ignore the
@@ -250,8 +289,9 @@ feature and also ignore the Escape Character. The routine
 <a href="flexdos.htm#rstrio">RSTRIO</a>
 clears
 this byte. Default=0.
-<dt><b>Output Switch $CC22
-</b><dd>
+</dd>
+<dt id="out_switch">Output Switch $CC22</dt>
+<dd>
 If zero, output performed by the
 <a href="flexdos.htm#putchr">PUTCHR</a>
 routine is through the routine
@@ -263,8 +303,9 @@ is used. See
 and
 <a href="flexdos.htm#outch2">OUTCH2</a>
 for details.
-<dt><b>Input Switch $CC23
-</b><dd>
+</dd>
+<dt>Input Switch $CC23</dt>
+<dd>
 If zero, input performed by
 is through the routine INCH. If it is
 <a href="flexdos.htm#getchr">GETCHR</a>
@@ -275,44 +316,50 @@ is used. See
 and
 <a href="flexdos.htm#inch2">INCH2</a>
 for detail.
-<dt><b>File Output Address $CC24-$CC25
-</b><dd>
+</dd>
+<dt>File Output Address $CC24-$CC25</dt>
+<dd>
 These bytes contain the address of the File Control Block being used for
 file output. If the bytes are zero, no file output is performed. See
 <a href="flexdos.htm#putchr">PUTCHR</a>
 for details. These locations are reset by
 <a href="flexdos.htm#rstrio">RSTRIO</a>
 .
-<dt><b>File Input Address $CC26-$CC27
-</b><dd>
+</dd>
+<dt>File Input Address $CC26-$CC27</dt>
+<dd>
 These bytes contain the address of the File Control Block being used for 
 file input. If the bytes are zero, no file input is performed. The routine
 <a href="flexdos.htm#rstrio">RSTRIO</a>
 clears these bytes. See
 <a href="flexdos.htm#getchr">GETCHR</a>
 for details.
-<dt><b>Command Flag $CC28
-</b><dd>
+</dd>
+<dt>Command Flag $CC28</dt>
+<dd>
 This location is non-zero if DOS was called from a user program via the
 <a href="flexdos.htm#docmnd">DOCMND</a>
 entry point. See
 <a href="flexdos.htm#docmnd">DOCMND</a>
 for details.
-<dt><b>Current Output Column $CC29
-</b><dd>
+</dd>
+<dt>Current Output Column $CC29</dt>
+<dd>
 This location contains a count of the number of characters currently in the
 line being output to the terminal. This is compared to the
 <a href="flexuser.htm#ttyset">TTYSET</a> Width Count
 to determine when to start a new line. The output of a control character
 resets this count to zero.
-<dt><b>System Scratch $CC2A
-</b><dd>
-<dt><b>Memory End $CC2B-$CC2C
-</b><dd>
+</dd>
+<dt>System Scratch $CC2A</dt>
+<dd></dd>
+<dt>Memory End $CC2B-$CC2C</dt>
+<dd>
 These two bytes contain the end of user memory. This location is set during
 system boot and may be read by programs requiring this information.
-<dt><b>Error Name Vector $CC2D-$CC2E
-</b><dd>
+</dd>
+<dt>Error Name Vector $CC2D-$CC2E</dt>
+<dd>
 If these bytes are zero, the
 <a href="flexdos.htm#rpterr">routine RPTERR</a>
 will use the file ERRORS.SYS as
@@ -321,28 +368,35 @@ an ASCII string of characters (in directory format) of the name of the file
 to be used as the error file. See
 <a href="flexdos.htm#rpterr">RPTERR</a>
 for details.
-<dt><b>File Input Echo Flag $CC2F
-</b><dd>
+</dd>
+<dt>File Input Echo Flag $CC2F</dt>
+<dd>
 If this byte is non-zero (default) and input is being done through a file,
 the character input will be echoed to the output channel. If this byte is
 zero, the character retrieved will not be echoed.
-<dt><b>System Scratch $CC30-CC4D
-</b><dd>
-<dt><b>System Constants $CC4E-CCBF
-</b><dd>
-<dt><b>Printer Initialize $CCC0-$CCD7
-</b><dd>
+</dd>
+<dt>System Scratch $CC30-CC4D</dt>
+<dd></dd>
+<dt>System Constants $CC4E-CCBF</dt>
+<dd></dd>
+<dt>Printer Initialize $CCC0-$CCD7</dt>
+<dd>
 This area is reserved for the overlay of the system printer initialization
 subroutines.
-<dt><b>Printer Ready Check $CCD8-$CCE7
-</b><dd>
+</dd>
+<dt>Printer Ready Check $CCD8-$CCE7</dt>
+<dd>
 This area is reserved for the overlay of the system "check for printer ready"
 subroutine.
-<dt><b>Printer Output $CCE4-$CCF7
-</b><dd>
+</dd>
+<dt>Printer Output $CCE4-$CCF7</dt>
+<dd>
 This area is reserved for the overlay of the system printer output character
 routine. See Printer Routine descriptions for details.
+</dd>
 </dl>
+</div>
+
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -358,6 +412,7 @@ routine. See Printer Routine descriptions for details.
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2>Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -378,6 +433,7 @@ routine. See Printer Routine descriptions for details.
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2>Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>

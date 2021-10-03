@@ -2,10 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>Eurocom II Hardware Description</title>
 </head>
 <body>
+<h1>Eurocom II Hardware Description</h1>
+<hr>
+
 <h2><a id="TableOfContents">Table of Contents</a></h2>
 <ul>
     <li><a href="#E2">Eurocom II Hardware Description</a>
@@ -73,8 +77,10 @@ lack of software.
     <li>Optional <a href="#RealtimeClock">realtime clock MC146818</a> (hardware extension)</li>
     <li>Supported monitor programs: <a href="neumon54.htm">neumon54.hex</a></li>
 </ul>
+
 <h2 id="Memory">Eurocom II Memory</h2>
 <h3 id="OnBoardMemory">Eurocom II on-board memory</h3>
+<div class="justify">
 As the following figure shows the Eurocom II/V5 has 48 KByte RAM, organized as
 3 x 16 KByte RAM + 4 KByte EPROM. The EPROM contains the monitor program:
 <figure>
@@ -89,7 +95,10 @@ the monitor program:
 <img src="images/e2v7m.png" alt="Eurocom II/V7 on-board memory">
 <figcaption><b>Eurocom II/V7 on-board memory</b></figcaption>
 </figure>
+</div>
+
 <h3 id="RamExt">Eurocom II/V7 RAM Extension</h3>
+<div class="justify">
 The Eurocom II/V7 has two extension slots which can be used for extending the
 RAM size. There are two types of RAM extensions available:
 <p>
@@ -110,8 +119,10 @@ is only accessible under some restrictions. This is the reason why ELTEC
 promoted it only as a 288 KByte RAM extension. This limitations have been
 overcome with a hardware modification as will be described in the chapter for
 <a href="#FlexibleMMU">flexible MMU</a>.
+</div>
 
 <h3 id="96KbRamExt">2 x 96 KByte RAM Extension</h3>
+<div class="justify">
 The following figure shows how this RAM extension is organized. There are six RAM
 banks with 16 KByte each. They can be identified as:
 <p>
@@ -126,8 +137,10 @@ banks with 16 KByte each. They can be identified as:
 <img src="images/2x96k.png" alt="2 x 96 KByte RAM Extension">
 <figcaption><b>2 x 96 KByte RAM Extension</b></figcaption>
 </figure>
+</div>
 
 <h3 id="384KbRamExt">2 x 384 KByte RAM Extension</h3>
+<div class="justify">
 Also referenced as 2 x 288 KByte RAM extension because not all applications are
 capable of using the whole 384 KByte of RAM. The following figure shows how
 this RAM extension is organized. There are two times six RAM
@@ -144,8 +157,10 @@ banks with 64 KByte each. They can be identified as:
 <img src="images/2x384k.png" alt="2 x 96 KByte RAM Extension">
 <figcaption><b>2 x 384 KByte RAM Extension</b></figcaption>
 </figure>
+</div>
 
 <h3 id="MMU">Memory Management Unit (MMU)</h3>
+<div class="justify">
 Due to a limited address range of the MC6809 a memory management unit is
 necessary to map parts of the RAM extension into the available address
 range. The MMU consists of 16 Byte registers located at $FFE0 - $FFEF. They
@@ -191,8 +206,10 @@ is removed. Also the monitor program uses the MMU. To know the current state of
 all MMU registers the monitor program saves a copy of them into the address
 location $EFE0 - $EFEF. When writing to a MMU register the upper four bits 
 should always be 0.
+</div>
 
 <h3 id="FlexibleMMU">Flexible Memory Management Unit</h3>
+<div class="justify">
 With a hardware modification also for the 384 KByte RAM extension it is possible
 to select the target address range (one out of four possibilities) where to
 map the 4 KByte RAM segment.
@@ -219,9 +236,11 @@ RAM of RAM bank $0C is mapped into the target address range
 
 <p>When writing to a flexible MMU register the upper two bits should always be
 0.
+</div>
 
 <h2 id="RealtimeClock">Realtime clock</h2>
 
+<div class="justify">
 As an optional hardware extension a realtime clock MC146818 is available. When
 it is enabled when booting FLEX the realtime clock is initialized in binary
 mode in 24 hour mode. The FLEX date is automatically set from the realtime
@@ -249,9 +268,11 @@ It is accessible through memory mapped I/O in the address range $FD00 - $FD2F:
 <p>
 For more details see
 <a href="https://www.nxp.com/docs/en/data-sheet/MC146818.pdf">MC146818 data sheet</a>.
+</div>
 
 <h2 id="VideoDisplay">Video Display</h2>
 
+<div class="justify">
 The Eurocom II has a video resolution of 512 horizontal and 256 vertical pixel.
 Assuming the video RAM starts at address $0000 the video RAM is organized as in
 the following figure:
@@ -263,8 +284,10 @@ Hence the video RAM has a minimum size of 16 KByte when displaying 2 colors,
 3 x 16 KByte when displaying 8 colors or 6 x 16 KByte when displaying 64 colors.
 Video contol Register 2 (VICO2 at $FCF7) can be used for hardware scrolling.
 Its value defines the raster line displayed top-most on the screen.
+</div>
 
 <h3 id="VideoRamNoRamExt">Video RAM without RAM Extension</h3>
+<div class="justify">
 When using the Eurocom II without a RAM extension a 16 KByte memory segment of
 the on-board RAM is used for video display. The display supports two colors.
 Which RAM segment is used depends on the
@@ -281,7 +304,9 @@ Video Control Register 1 (VICO1 at $FCF6).
 VICO1 is a write-only register. When reading it always returns $FF. Only bit 0
 and 1 select the video RAM segment. Bit 7 up to bit 2 should always be written
 as 0.
+</div>
 <h3 id="VideoRamRamExt">Video RAM with RAM Extension</h3>
+<div class="justify">
 When using the Eurocom II/V7 with a RAM extension one, three or six 16 KByte
 RAM bank(s) of the RAM Extension are used for video display. That means for
 displaying more than two colors a RAM extension is needed. Which RAM bank is
@@ -308,6 +333,8 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
   <tr><td>$06, $02</td><td>64</td><td>Red high</td></tr>
 </table>
 <p>
+</div>
+
 <h2 id="SeeAlso">SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
@@ -323,6 +350,7 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
  <li><a href="mon24.htm"> Monitor program mon24.s19</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
 </ul>
+
 <h2 id="FUGLinks">Documents on the behalf of the FLEX User Group</h2>
 <ul>
  <li><a href="flex2um.pdf" target="_blank">FLEX User's Manual</a>
@@ -343,6 +371,7 @@ When choosing 2, 8 or 64 colors the RAM banks are used as color planes:
  <li><a href="f77.pdf" target="_blank">Fortan 77</a>
  <li><a href="util_man.pdf" target="_blank">Windrush FLEX Utilities Package</a>
 </ul>
+
 <h2 id="RelatedLinks">Related Links</h2>
 <ul>
  <li><a href="http://flexemu.neocities.org">Flexemu Homepage</a>
