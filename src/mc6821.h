@@ -101,11 +101,11 @@ public:
     virtual ~Mc6821();
 };
 
-using T = std::underlying_type<Mc6821::ControlLine>::type;
-
 inline Mc6821::ControlLine operator| (Mc6821::ControlLine lhs,
                                       Mc6821::ControlLine rhs)
 {
+    using T = std::underlying_type<Mc6821::ControlLine>::type;
+
     return static_cast<Mc6821::ControlLine>(static_cast<T>(lhs) |
                                             static_cast<T>(rhs));
 }
@@ -113,6 +113,8 @@ inline Mc6821::ControlLine operator| (Mc6821::ControlLine lhs,
 inline Mc6821::ControlLine operator& (Mc6821::ControlLine lhs,
                                       Mc6821::ControlLine rhs)
 {
+    using T = std::underlying_type<Mc6821::ControlLine>::type;
+
     return static_cast<Mc6821::ControlLine>(static_cast<T>(lhs) &
                                             static_cast<T>(rhs));
 }
@@ -131,6 +133,8 @@ inline Mc6821::ControlLine operator&= (Mc6821::ControlLine &lhs,
 
 inline Mc6821::ControlLine operator~ (const Mc6821::ControlLine lhs)
 {
+    using T = std::underlying_type<Mc6821::ControlLine>::type;
+
     return static_cast<Mc6821::ControlLine>(~static_cast<T>(lhs));
 }
 
