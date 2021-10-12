@@ -323,7 +323,8 @@ void Wd1793::command(Byte command)
                 }
                 else
                 {
-                    str = STR_RECORDNOTFOUND;
+                    isDataRequest = false;
+                    str = STR_WRITEFAULT;
                     setIrq();
                 }
                 break;
