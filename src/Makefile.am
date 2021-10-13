@@ -328,9 +328,6 @@ flexplorer_SOURCES = \
 	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
-	bobserv.h \
-	bobservd.h \
-	bobshelp.h \
 	bprocess.h \
 	brcfile.h \
 	bregistr.h \
@@ -509,6 +506,9 @@ libflex_a_SOURCES = \
 	bfileptr.h \
 	binifile.h \
 	bmembuf.h \
+	bobserv.h \
+	bobservd.h \
+	bobshelp.h \
 	brcfile.h \
 	bregistr.h \
 	btime.h \

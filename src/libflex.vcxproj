@@ -235,6 +235,9 @@
     <ClInclude Include="bfileptr.h" />
     <ClInclude Include="binifile.h" />
     <ClInclude Include="bmembuf.h" />
+    <ClInclude Include="bobserv.h" />
+    <ClInclude Include="bobservd.h" />
+    <ClInclude Include="bobshelp.h" />
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />

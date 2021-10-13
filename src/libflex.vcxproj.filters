@@ -32,6 +32,15 @@
     <ClInclude Include="bmembuf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bobserv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bobservd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bobshelp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="bprocess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
