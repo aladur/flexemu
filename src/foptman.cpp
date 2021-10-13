@@ -56,6 +56,11 @@ void FlexOptionManager::PrintHelp(FILE *fp)
 #endif
     fprintf(fp, "  -c <color> define foreground color\n");
     fprintf(fp, "  -i (display inverse video)\n");
+    fprintf(fp, "  -O <cccc> (Support formatting disk in drive 0..3\n");
+    fprintf(fp, "     'c' represents drive 0..3 and can be: '0'=no; '1'=yes or "
+            "'-'=unchanged,\n");
+    fprintf(fp, "     Example: -O 001- Drive 2 allows format, drive 0,1 not, ");
+    fprintf(fp, "drive 3 unchanged.\n");
     fprintf(fp, "  -n <# of colors>\n");
     fprintf(fp, "  -h (display this)\n");
     fprintf(fp, "  -? (display this)\n");
@@ -79,6 +84,10 @@ void FlexOptionManager::InitOptions(struct sOptions &options)
     options.isEurocom2V5 = false;
     options.use_undocumented = false;
     options.useRtc = true;
+    options.canFormatDrive[0] = false;
+    options.canFormatDrive[1] = false;
+    options.canFormatDrive[2] = false;
+    options.canFormatDrive[3] = false;
     options.reset_key = 0x1e; // is Ctrl-^ for reset or Sig. INT
     options.frequency = -1.0; // default: ignore
 
@@ -175,6 +184,26 @@ void FlexOptionManager::GetEnvironmentOptions(struct sOptions &options)
         options.drive[2] = str;
     }
 
+    if (env.GetValue((const char *)"FLEX" FLEXFORMATDRIVE0, &value))
+    {
+        options.canFormatDrive[0] = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXFORMATDRIVE1, &value))
+    {
+        options.canFormatDrive[1] = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXFORMATDRIVE2, &value))
+    {
+        options.canFormatDrive[2] = (value != 0);
+    }
+
+    if (env.GetValue((const char *)"FLEX" FLEXFORMATDRIVE3, &value))
+    {
+        options.canFormatDrive[3] = (value != 0);
+    }
+
     if (env.GetValue((const char *)"FLEX" FLEXMDCRDRIVE0, str))
     {
         options.mdcrDrives[0] = str;
@@ -215,7 +244,7 @@ void FlexOptionManager::GetCommandlineOptions(
     float   f;
     optind = 1;
     opterr = 1;
-    strcpy(optstr, "mup:f:0:1:2:3:j:F:C:");
+    strcpy(optstr, "mup:f:0:1:2:3:j:F:C:O:");
 #ifdef HAVE_TERMIOS_H
     strcat(optstr, "tr:");  // terminal mode and reset key
 #endif
@@ -332,6 +361,30 @@ void FlexOptionManager::GetCommandlineOptions(
             case 'i':
                 options.isInverse = true;
                 setReadOnly(FlexemuOptionId::IsInverse);
+                break;
+
+            case 'O':
+                if (std::string(optarg).size() != 4)
+                {
+                    fprintf(stderr, "parameter -O should have 4 characters\n");
+                    exit(EXIT_FAILURE);
+                }
+                i = 0;
+                for (auto ch : std::string(optarg))
+                {
+                    if (ch != '0' && ch != '1' && ch != '-')
+                    {
+                        fprintf(stderr, "parameter -O contains wrong value "
+                                "'%c' for drive number %d\n", ch, i);
+                        exit(EXIT_FAILURE);
+                    }
+                    if (ch != '-')
+                    {
+                        options.canFormatDrive[i] = (ch == '1');
+                        setReadOnly(canFormatDriveOptionId[i]);
+                    }
+                    ++i;
+                }
                 break;
 
             case 'v':
@@ -475,6 +528,22 @@ void FlexOptionManager::WriteOptionsToRegistry(
             reg.SetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1].c_str());
             break;
 
+        case FlexemuOptionId::CanFormatDrive0:
+            reg.SetValue(FLEXFORMATDISK0, options.canFormatDrive[0].c_str());
+            break;
+
+        case FlexemuOptionId::CanFormatDrive1:
+            reg.SetValue(FLEXFORMATDISK1, options.canFormatDrive[1].c_str());
+            break;
+
+        case FlexemuOptionId::CanFormatDrive2:
+            reg.SetValue(FLEXFORMATDISK2, options.canFormatDrive[2].c_str());
+            break;
+
+        case FlexemuOptionId::CanFormatDrive3:
+            reg.SetValue(FLEXFORMATDISK3, options.canFormatDrive[3].c_str());
+            break;
+
         case FlexemuOptionId::Frequency:
             reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
             break;
@@ -583,6 +652,26 @@ void FlexOptionManager::WriteOptionsToFile(
             optionsToWrite.drive[3] = previousOptions.drive[3];
             break;
 
+        case FlexemuOptionId::CanFormatDrive0:
+            optionsToWrite.canFormatDrive[0] =
+                previousOptions.canFormatDrive[0];
+            break;
+
+        case FlexemuOptionId::CanFormatDrive1:
+            optionsToWrite.canFormatDrive[1] =
+                previousOptions.canFormatDrive[1];
+            break;
+
+        case FlexemuOptionId::CanFormatDrive2:
+            optionsToWrite.canFormatDrive[2] =
+                previousOptions.canFormatDrive[2];
+            break;
+
+        case FlexemuOptionId::CanFormatDrive3:
+            optionsToWrite.canFormatDrive[3] =
+                previousOptions.canFormatDrive[3];
+            break;
+
         case FlexemuOptionId::MdcrDrive0:
             optionsToWrite.mdcrDrives[0] = previousOptions.mdcrDrives[0];
             break;
@@ -619,6 +708,10 @@ void FlexOptionManager::WriteOptionsToFile(
     rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
     rcFile.SetValue(FLEXFREQUENCY,
                     std::to_string(optionsToWrite.frequency).c_str());
+    rcFile.SetValue(FLEXFORMATDRIVE0, optionsToWrite.canFormatDrive[0] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE1, optionsToWrite.canFormatDrive[1] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE2, optionsToWrite.canFormatDrive[2] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE3, optionsToWrite.canFormatDrive[3] ? 1 : 0);
 }
 #endif
 
@@ -714,6 +807,27 @@ void FlexOptionManager::GetOptions(struct sOptions &options)
             // Intentionally ignore value if not convertible to float.
         }
     }
+
+    if (!reg.GetValue(FLEXFORMATDRIVE0, int_result))
+    {
+        options.canFormatDrive[0] = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXFORMATDRIVE1, int_result))
+    {
+        options.canFormatDrive[1] = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXFORMATDRIVE2, int_result))
+    {
+        options.canFormatDrive[2] = (int_result != 0);
+    }
+
+    if (!reg.GetValue(FLEXFORMATDRIVE3, int_result))
+    {
+        options.canFormatDrive[3] = (int_result != 0);
+    }
+
 #endif
 #ifdef UNIX
     std::string rcFileName;
@@ -804,6 +918,26 @@ void FlexOptionManager::GetOptions(struct sOptions &options)
         {
             // Intentionally ignore value if not convertible to float.
         }
+    }
+
+    if (!rcFile.GetValue(FLEXFORMATDRIVE0, int_result))
+    {
+        options.canFormatDrive[0] = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXFORMATDRIVE1, int_result))
+    {
+        options.canFormatDrive[1] = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXFORMATDRIVE2, int_result))
+    {
+        options.canFormatDrive[2] = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXFORMATDRIVE3, int_result))
+    {
+        options.canFormatDrive[3] = (int_result != 0);
     }
 #endif
 } // GetOptions

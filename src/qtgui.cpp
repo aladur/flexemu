@@ -325,6 +325,13 @@ void QtGui::OnPreferences()
                     OnScreenSize(options.pixelSize - 1);
                     break;
 
+                case FlexemuOptionId::CanFormatDrive0:
+                case FlexemuOptionId::CanFormatDrive1:
+                case FlexemuOptionId::CanFormatDrive2:
+                case FlexemuOptionId::CanFormatDrive3:
+                    isWriteOptions = true;
+                    break;
+
                 case FlexemuOptionId::Drive0:
                 case FlexemuOptionId::Drive1:
                 case FlexemuOptionId::Drive2:

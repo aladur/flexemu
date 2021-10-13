@@ -337,6 +337,11 @@ void FileContainerCheck::InitializeLinks()
 
     fc.GetInfo(fc_info);
 
+    if (!fc_info.IsValid())
+    {
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, fc.GetPath());
+    }
+
     fc_info.GetTrackSector(tracks, sectors);
 
     for (int track = 0; track < tracks; ++track)

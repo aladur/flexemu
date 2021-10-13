@@ -32,10 +32,14 @@
 #include "flexerr.h"
 #include "bdir.h"
 #include "crc.h"
+#include "soptions.h"
 
 
-E2floppy::E2floppy() : selected(4), pfs(nullptr),
-    writeTrackState(WriteTrackState::Inactive)
+E2floppy::E2floppy(struct sOptions &x_options)
+    : selected(4)
+    , pfs(nullptr)
+    , writeTrackState(WriteTrackState::Inactive)
+    , options(x_options)
 {
     Word i;
 
@@ -98,7 +102,6 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 {
     int i = 0;
     FileContainerIfSectorPtr pfloppy;
-    struct stat sbuf;
 
     if (drive_nr > 3 || path == nullptr || strlen(path) == 0)
     {
@@ -134,10 +137,6 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
     for (i = 0; i < 2; i++)
     {
-        // A file which does not exist or has file size zero
-        // is marked as unformatted.
-        bool is_formatted = !stat(containerPath.c_str(), &sbuf) &&
-                            (S_ISREG(sbuf.st_mode) && sbuf.st_size);
 #ifdef NAFS
 
         if (BDirectory::Exists(containerPath))
@@ -154,6 +153,23 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
         }
         else
 #endif
+        {
+            struct stat sbuf;
+            bool fileExists = !stat(containerPath.c_str(), &sbuf);
+
+            // Empty or non existing files are only mounted if
+            // option canFormatDrive is set.
+            if (!options.canFormatDrive[drive_nr] &&
+                (!fileExists ||
+                (fileExists && S_ISREG(sbuf.st_mode) && sbuf.st_size == 0)))
+            {
+                continue;
+            }
+            // A file which does not exist or has file size zero
+            // is marked as unformatted.
+            bool is_formatted = !stat(containerPath.c_str(), &sbuf) &&
+                                (S_ISREG(sbuf.st_mode) && sbuf.st_size);
+
             if (is_formatted && option == MOUNT_RAM)
             {
                 try
@@ -199,6 +215,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                     }
                 }
             }
+        }
 
         std::lock_guard<std::mutex> guard(status_mutex);
         floppy[drive_nr] = std::move(pfloppy);
@@ -469,7 +486,7 @@ bool E2floppy::startCommand(Byte command_un)
         // within the emulation.
         // Only unformatted file containers, if IsFlexFormat()
         // returns false, can be formatted.
-        if (pfs->IsFlexFormat())
+        if (pfs->IsFlexFormat() || !options.canFormatDrive[selected])
         {
             return false;
         }

@@ -58,6 +58,13 @@ private:
         const std::string &fileName,
         bool ifNotExists = false);
 #endif
+    std::array<FlexemuOptionId, 4> canFormatDriveOptionId
+    {
+        FlexemuOptionId::CanFormatDrive0,
+        FlexemuOptionId::CanFormatDrive1,
+        FlexemuOptionId::CanFormatDrive2,
+        FlexemuOptionId::CanFormatDrive3,
+    };
 };
 
 #endif // FOPTMAN_INCLUDED

@@ -46,6 +46,26 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::Drive3);
     }
 
+    if (opt1.canFormatDrive[0] != opt2.canFormatDrive[0])
+    {
+        notEquals.push_back(FlexemuOptionId::CanFormatDrive0);
+    }
+
+    if (opt1.canFormatDrive[1] != opt2.canFormatDrive[1])
+    {
+        notEquals.push_back(FlexemuOptionId::CanFormatDrive1);
+    }
+
+    if (opt1.canFormatDrive[2] != opt2.canFormatDrive[2])
+    {
+        notEquals.push_back(FlexemuOptionId::CanFormatDrive2);
+    }
+
+    if (opt1.canFormatDrive[3] != opt2.canFormatDrive[3])
+    {
+        notEquals.push_back(FlexemuOptionId::CanFormatDrive3);
+    }
+
     if (opt1.mdcrDrives[0] != opt2.mdcrDrives[0])
     {
         notEquals.push_back(FlexemuOptionId::MdcrDrive0);
@@ -155,6 +175,10 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::NColors:
             case FlexemuOptionId::IsInverse:
             case FlexemuOptionId::PixelSize:
+            case FlexemuOptionId::CanFormatDrive0:
+            case FlexemuOptionId::CanFormatDrive1:
+            case FlexemuOptionId::CanFormatDrive2:
+            case FlexemuOptionId::CanFormatDrive3:
                 break;
         }
     }

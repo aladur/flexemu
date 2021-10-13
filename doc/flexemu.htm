@@ -17,9 +17,9 @@
 <hr>
 <h2 id="synopsis">SYNOPSIS</h2>
 <h3 id="synopsis_linux">On Linux</h3>
-<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command]</p>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc]</p>
 <h3 id="synopsis_windows">On Windows</h3>
-<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command]</p>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc]</p>
 
 <h2 id="description">DESCRIPTION</h2>
 <div class="justify">
@@ -180,6 +180,30 @@ with the original hardware frequency which is the default.
 <dt>-n &lt;number_of_colors&gt;</dt>
 <dd>
 Number of shades or colors. Default is <b>2</b>. Valid values are 2, 8 and 64.
+</dd>
+<dt>-O &lt;cccc&gt;</dt>
+<dd>
+Support formatting disk in drive 0..3 (Overwrite format). This option enables
+or disables the write track command on the floppy disk controller.
+c represents drive 0..3 in this order. All drives have to be specified. Only
+file containers (not directory containers) support formatting a disk.
+Supported values:
+<p>
+<table class="invisible compact">
+ <tr>
+  <td style="min-width: 2em">0</td><td>Do not allow to format drive.</td>
+ </tr>
+ <tr>
+  <td>1</td><td>Allow to format drive.</td>
+ </tr>
+ <tr>
+  <td>-</td><td>Keep drive unchanged.</td>
+ </tr>
+</table>
+<p>
+Only container files which do not have a valid file format are allowed to be formatted this way.<BR>
+Example: <b>-O&nbsp;001-</b><BR>
+Drive 2 allows format, drive 0 and 1 not, drive 3 is kept unchanged.
 </dd>
 <dt>-h</dt>
 <dd>
@@ -398,7 +422,82 @@ The following preferences can be modified.
   <td><b>&check;</b></td>
   <td>off</td>
  </tr>
+ <tr>
+  <td>Enable formatting disk in drive 0</td>
+  <td>
+   <table class="invisible">
+    <tr>
+     <td>
+      This option enables or disables the write track command on the floppy
+      disk controller for drive 0.
+     </td>
+     <td>[1]</td>
+    </tr>
+   </table>
+  </td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>Enable formatting disk in drive 1</td>
+  <td>
+   <table class="invisible">
+    <tr>
+     <td>
+      This option enables or disables the write track command on the floppy
+      disk controller for drive 1.
+     </td>
+     <td>[1]</td>
+    </tr>
+   </table>
+  </td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>Enable formatting disk in drive 2</td>
+  <td>
+   <table class="invisible">
+    <tr>
+     <td>
+      This option enables or disables the write track command on the floppy
+      disk controller for drive 2.
+     </td>
+     <td>[1]</td>
+    </tr>
+   </table>
+  </td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>Enable formatting disk in drive 3</td>
+  <td>
+   <table class="invisible">
+    <tr>
+     <td>
+      This option enables or disables the write track command on the floppy
+      disk controller for drive 3.
+     </td>
+     <td>[1]</td>
+    </tr>
+   </table>
+  </td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
 </table>
+<p>
+[1] When this option is enabled a floppy disk can be formatted from within the
+emulator. Only file containers (not directory containers) support formatting a
+disk. When this option is on, the corresponding file container can be an empty
+non existent file. NEWDISK.CMD distributed on system.dsk for example can be
+used to format a disk.
+<p>
 
 <h3 id="breakpoints">Breakpoint support</h3>
 <div class="justify">

@@ -39,6 +39,10 @@ enum class FlexemuOptionId : uint8_t
     Drive1,
     Drive2,
     Drive3,
+    CanFormatDrive0,
+    CanFormatDrive1,
+    CanFormatDrive2,
+    CanFormatDrive3,
     MdcrDrive0,
     MdcrDrive1,
     HexFile,
@@ -62,6 +66,10 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::Drive1,
     FlexemuOptionId::Drive2,
     FlexemuOptionId::Drive3,
+    FlexemuOptionId::CanFormatDrive0,
+    FlexemuOptionId::CanFormatDrive1,
+    FlexemuOptionId::CanFormatDrive2,
+    FlexemuOptionId::CanFormatDrive3,
     FlexemuOptionId::MdcrDrive0,
     FlexemuOptionId::MdcrDrive1,
     FlexemuOptionId::HexFile,
@@ -97,6 +105,7 @@ struct sOptions
     bool use_undocumented;
     bool useRtc;
     bool term_mode;
+    bool canFormatDrive[4];
     short int reset_key; // must be short int because of sscanf !!!
     float frequency;
 

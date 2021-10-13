@@ -43,6 +43,7 @@
 
 #ifndef __fromflex__
 
+struct sOptions;
 
 class E2floppy : public Wd1793
 {
@@ -87,9 +88,11 @@ private:
     WriteTrackState writeTrackState; // Write track state
     Word            offset; // offset when reading a track
     char            idAddressMark[4]; // Contains track, side, sector, sizecode
+    struct sOptions &options;
 
 public:
-    E2floppy();
+    E2floppy() = delete;
+    E2floppy(struct sOptions &options);
     virtual ~E2floppy();
 
     // public interface

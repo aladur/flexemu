@@ -196,6 +196,11 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     e_mdcrDrive0->setText(QString(options.mdcrDrives[0].c_str()));
     e_mdcrDrive1->setText(QString(options.mdcrDrives[1].c_str()));
 
+    c_canFormatDrive0->setChecked(options.canFormatDrive[0]);
+    c_canFormatDrive1->setChecked(options.canFormatDrive[1]);
+    c_canFormatDrive2->setChecked(options.canFormatDrive[2]);
+    c_canFormatDrive3->setChecked(options.canFormatDrive[3]);
+
     if (options.isRamExtension)
     {
         if (options.isHiMem)
@@ -268,6 +273,22 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::Drive3:
                 e_drive3->setEnabled(false);
                 b_drive3->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::CanFormatDrive0:
+                c_canFormatDrive0->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::CanFormatDrive1:
+                c_canFormatDrive1->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::CanFormatDrive2:
+                c_canFormatDrive2->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::CanFormatDrive3:
+                c_canFormatDrive3->setEnabled(false);
                 break;
 
             case FlexemuOptionId::MdcrDrive0:
@@ -382,6 +403,10 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::Drive1:
                 case FlexemuOptionId::Drive2:
                 case FlexemuOptionId::Drive3:
+                case FlexemuOptionId::CanFormatDrive0:
+                case FlexemuOptionId::CanFormatDrive1:
+                case FlexemuOptionId::CanFormatDrive2:
+                case FlexemuOptionId::CanFormatDrive3:
                 case FlexemuOptionId::MdcrDrive0:
                 case FlexemuOptionId::MdcrDrive1:
                 case FlexemuOptionId::IsUseRtc:
@@ -561,6 +586,23 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         options.drive[3] = e_drive3->text().toStdString();
     }
 
+    if (!IsReadOnly(FlexemuOptionId::CanFormatDrive0))
+    {
+        options.canFormatDrive[0] = c_canFormatDrive0->isChecked();
+    }
+    if (!IsReadOnly(FlexemuOptionId::CanFormatDrive1))
+    {
+        options.canFormatDrive[1] = c_canFormatDrive1->isChecked();
+    }
+    if (!IsReadOnly(FlexemuOptionId::CanFormatDrive2))
+    {
+        options.canFormatDrive[2] = c_canFormatDrive2->isChecked();
+    }
+    if (!IsReadOnly(FlexemuOptionId::CanFormatDrive3))
+    {
+        options.canFormatDrive[3] = c_canFormatDrive3->isChecked();
+    }
+
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive0))
     {
         options.mdcrDrives[0] = e_mdcrDrive0->text().toStdString();
@@ -722,6 +764,11 @@ void FlexemuOptionsUi::UpdateHardwareDependencies()
     e_mdcrDrive1->setEnabled(!r_eurocom2v7->isChecked());
     b_mdcrDrive0->setEnabled(!r_eurocom2v7->isChecked());
     b_mdcrDrive1->setEnabled(!r_eurocom2v7->isChecked());
+
+    c_canFormatDrive0->setEnabled(r_eurocom2v7->isChecked());
+    c_canFormatDrive1->setEnabled(r_eurocom2v7->isChecked());
+    c_canFormatDrive2->setEnabled(r_eurocom2v7->isChecked());
+    c_canFormatDrive3->setEnabled(r_eurocom2v7->isChecked());
 
     UpdateRamDependencies();
 }

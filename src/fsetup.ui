@@ -63,7 +63,7 @@
         <enum>QTabWidget::North</enum>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="t_emulatedHardware">
         <attribute name="title">
@@ -757,73 +757,142 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="g_cpu">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>CPU</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>5</number>
-            </property>
-            <item>
-             <widget class="QCheckBox" name="c_undocumented">
-              <property name="text">
-               <string>Undocumented MC6809 instructions</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="g_hardware">
-           <property name="title">
-            <string>Hardware</string>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>5</number>
-            </property>
-            <item>
-             <widget class="QCheckBox" name="c_flexibleMmu">
-              <property name="text">
-               <string>More flexible MMU (Hardware modification)</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>2</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <widget class="QGroupBox" name="g_cpu">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="title">
+                <string>CPU</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>5</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="c_undocumented">
+                  <property name="text">
+                   <string>Undocumented MC6809 instructions</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="g_hardware">
+               <property name="title">
+                <string>Hardware</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>5</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="c_flexibleMmu">
+                  <property name="text">
+                   <string>More flexible MMU
+(Hardware modification)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>2</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_12">
+             <item>
+              <widget class="QGroupBox" name="g_formatDrive">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="title">
+                <string>Floppy Disks</string>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <widget class="QCheckBox" name="c_canFormatDrive0">
+                  <property name="text">
+                   <string>Enable formatting disk in drive 0</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="c_canFormatDrive1">
+                  <property name="text">
+                   <string>Enable formatting disk in drive 1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="c_canFormatDrive2">
+                  <property name="text">
+                   <string>Enable formatting disk in drive 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QCheckBox" name="c_canFormatDrive3">
+                  <property name="text">
+                   <string>Enable formatting disk in drive 3</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>2</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -881,6 +950,10 @@
   <tabstop>b_mdcrDrive1</tabstop>
   <tabstop>c_undocumented</tabstop>
   <tabstop>c_flexibleMmu</tabstop>
+  <tabstop>c_canFormatDrive0</tabstop>
+  <tabstop>c_canFormatDrive1</tabstop>
+  <tabstop>c_canFormatDrive2</tabstop>
+  <tabstop>c_canFormatDrive3</tabstop>
  </tabstops>
  <resources>
   <include location="flexemu.qrc"/>
