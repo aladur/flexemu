@@ -72,7 +72,7 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.drawPixmap(0, 0, pixmap);
 
-    if (driveInfo.IsValid() && pixmap.size() == QSize(256, 256))
+    if (driveInfo.GetIsFlexFormat() && pixmap.size() == QSize(256, 256))
     {
         int tracks;
         int sectors;

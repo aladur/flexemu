@@ -1192,7 +1192,6 @@ void QtGui::OnDiskStatus(Word driveNumber)
         int sectors;
         auto info = fdc->drive_info(driveNumber);
         QStandardItemModel model;
-        auto message = fdc->drive_info_string(driveNumber);
         auto *dialog = new QDialog(this);
         Ui::Properties ui;
         int row = 0;
@@ -1203,14 +1202,17 @@ void QtGui::OnDiskStatus(Word driveNumber)
         model.setColumnCount(2);
         if (info.IsValid())
         {
-            model.setRowCount(9);
+            model.setRowCount(info.GetIsFlexFormat() ? 9 : 6);
             info.GetTrackSector(tracks, sectors);
             model.setItem(row++, 0, new QStandardItem(tr("Drive")));
             model.setItem(row++, 0, new QStandardItem(tr("Type")));
-            model.setItem(row++, 0, new QStandardItem(tr("Name")));
-            model.setItem(row++, 0, new QStandardItem(tr("Number")));
-            model.setItem(row++, 0, new QStandardItem(tr("Date")));
             model.setItem(row++, 0, new QStandardItem(tr("Path")));
+            if (info.GetIsFlexFormat())
+            {
+                model.setItem(row++, 0, new QStandardItem(tr("Name")));
+                model.setItem(row++, 0, new QStandardItem(tr("Number")));
+                model.setItem(row++, 0, new QStandardItem(tr("Date")));
+            }
             model.setItem(row++, 0, new QStandardItem(tr("Tracks")));
             model.setItem(row++, 0, new QStandardItem(tr("Sectors")));
             model.setItem(row++, 0, new QStandardItem(tr("Write-protect")));
@@ -1220,14 +1222,19 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 1, new QStandardItem(text));
             text = info.GetTypeString().c_str();
             model.setItem(row++, 1, new QStandardItem(text));
-            model.setItem(row++, 1, new QStandardItem(info.GetName().c_str()));
-            text = QString::number(info.GetNumber());
-            model.setItem(row++, 1, new QStandardItem(text));
-            auto date = info.GetDate();
-            auto qdate = QDate(date.GetYear(), date.GetMonth(), date.GetDay());
-            text = QLocale::system().toString(qdate, QLocale::ShortFormat);
-            model.setItem(row++, 1, new QStandardItem(text));
             model.setItem(row++, 1, new QStandardItem(info.GetPath().c_str()));
+            if (info.GetIsFlexFormat())
+            {
+                text = info.GetName().c_str();
+                model.setItem(row++, 1, new QStandardItem(text));
+                text = QString::number(info.GetNumber());
+                model.setItem(row++, 1, new QStandardItem(text));
+                auto date = info.GetDate();
+                auto qdate = QDate(
+                    date.GetYear(), date.GetMonth(), date.GetDay());
+                text = QLocale::system().toString(qdate, QLocale::ShortFormat);
+                model.setItem(row++, 1, new QStandardItem(text));
+            }
             model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
             model.setItem(row++, 1, new QStandardItem(QString::number(sectors)));
             text = info.GetIsWriteProtected() ? tr("yes") : tr("no");

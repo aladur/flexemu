@@ -46,6 +46,7 @@ private:
     Byte attributes; // Disk attributes
     bool    is_flex_format;// This container contains a FLEX file system.
     bool    is_write_protected;// This container is write protected.
+    bool    is_valid;   // This container info is valid.
 
 public:
     FlexContainerInfo();        // public constructor
@@ -54,20 +55,24 @@ public:
     void                SetName(const std::string &n)
     {
         name = n;
+        is_valid = true;
     }
     void                SetNumber(unsigned int n)
     {
         number = n;
+        is_valid = true;
     }
     const std::string   GetTypeString() const;
 
     inline void         SetPath(const std::string &p)
     {
         path = p;
+        is_valid = true;
     };
     inline void         SetFree(int f)
     {
         free = f;
+        is_valid = true;
     };
     inline int          GetFree() const
     {
@@ -76,6 +81,7 @@ public:
     inline void         SetTotalSize(int s)
     {
         totalSize = s;
+        is_valid = true;
     };
     inline int          GetTotalSize() const
     {
@@ -84,11 +90,13 @@ public:
     inline void SetAttributes(Byte x_attributes)
     {
         attributes = x_attributes;
+        is_valid = true;
     };
     inline Byte GetAttributes() const
     {
         return attributes;
     };
+    /* Property only valid if GetIsFlexFormat() == true */
     inline const        BDate &GetDate() const
     {
         return date;
@@ -96,25 +104,30 @@ public:
     inline void         SetDate(const BDate &d)
     {
         date = d;
+        is_valid = true;
     };
     inline void         SetDate(int d, int m, int y)
     {
         date.SetDate(d, m, y);
+        is_valid = true;
     };
     inline void         SetTrackSector(int t, int s)
     {
         tracks = t;
         sectors = s;
+        is_valid = true;
     };
     inline void         GetTrackSector(int &t, int &s) const
     {
         t = tracks;
         s = sectors;
     };
+    /* Property only valid if GetIsFlexFormat() == true */
     inline const std::string GetName() const
     {
         return name;
     };
+    /* Property only valid if GetIsFlexFormat() == true */
     inline unsigned int GetNumber() const
     {
         return number;
@@ -126,6 +139,7 @@ public:
     inline void         SetType(int t)
     {
         type = t;
+        is_valid = true;
     };
     inline int          GetType() const
     {
@@ -134,6 +148,7 @@ public:
     inline void SetIsFlexFormat(bool f)
     {
         is_flex_format = f;
+        is_valid = true;
     };
     inline bool GetIsFlexFormat() const
     {
@@ -143,6 +158,7 @@ public:
     inline void SetIsWriteProtected(bool f)
     {
         is_write_protected = f;
+        is_valid = true;
     };
     inline bool GetIsWriteProtected() const
     {
@@ -150,7 +166,7 @@ public:
     };
     inline bool IsValid() const
     {
-        return tracks != 0 && sectors != 0;
+        return is_valid;
     };
 };  // class FlexContainerInfo
 

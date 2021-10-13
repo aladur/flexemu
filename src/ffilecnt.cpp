@@ -436,7 +436,9 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
         info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
 
-    info.SetTrackSector(param.max_track + 1U, param.max_sector);
+    info.SetTrackSector(
+            param.max_track ? param.max_track + 1U : 0U,
+            param.max_sector);
     info.SetIsFlexFormat(is_flex_format);
     info.SetPath(fp.GetPath());
     info.SetType(param.type);

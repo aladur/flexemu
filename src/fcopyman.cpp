@@ -43,7 +43,7 @@ bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
         FlexContainerInfo info;
 
         dst.GetInfo(info);
-        throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetName());
+        throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetPath());
     }
 
     auto fileBuffer = src.ReadToBuffer(srcName);
@@ -67,8 +67,7 @@ bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
         FlexContainerInfo info;
 
         dst.GetInfo(info);
-        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath().c_str(),
-                            destName);
+        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
     }
 
     return true;
