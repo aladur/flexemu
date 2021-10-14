@@ -534,6 +534,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_FILE_ALREADY_EXISTS, pFileName);
     }
 
+    if (buffer.GetFileSize() == 0U)
+    {
+        throw FlexException(FERR_COPY_EMPTY_FILE, pFileName);
+    }
+
     // read sys info sector
     if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
                     sis_trk_sec.sec))

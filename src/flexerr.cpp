@@ -165,5 +165,6 @@ const char *FlexException::errString[] =
     _("File {0} has unexpected sector count {1}"),
     _("Container {0} is unformatted or has unknown format"),
     _("Unexpected side number {0}"),
+    _("Empty files can not be copied. File {0}"),
 };
 

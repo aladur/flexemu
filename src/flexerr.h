@@ -70,6 +70,7 @@
 #define FERR_FILE_UNEXPECTED_SEC    (40)
 #define FERR_CONTAINER_UNFORMATTED  (41)
 #define FERR_UNEXPECTED_SIDE        (42)
+#define FERR_COPY_EMPTY_FILE        (43)
 
 
 class FlexException : public std::exception
