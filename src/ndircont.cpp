@@ -716,6 +716,13 @@ bool NafsDirectoryContainer::add_to_link_table(
 
     auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
 
+    if (size == 0U)
+    {
+        begin = {};
+        end = {};
+        return true;
+    }
+
     if (size > static_cast<off_t>(free * DBPS))
     {
         return false;
@@ -1018,7 +1025,6 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                               random_filenames.end());
 
             if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
-                sbuf.st_size > 0 &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
                 std::string name;
