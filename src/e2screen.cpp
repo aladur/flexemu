@@ -774,7 +774,7 @@ void E2Screen::InitializeNumLockIndicatorMask()
     XkbDescRec* kbDesc = XkbAllocKeyboard();
     int index;
 
-    if (kbDesc == nullptr ||
+    if (display == nullptr || kbDesc == nullptr ||
         (Success != XkbGetNames(display, XkbIndicatorNamesMask, kbDesc)))
     {
         return;
