@@ -134,6 +134,7 @@ protected:
     static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;
+    st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
 
     static void     Create_sys_info_sector(
         Byte    sec_buf[],

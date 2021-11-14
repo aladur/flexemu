@@ -893,7 +893,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
             }
         }
 
-        next = ds.next;
+        next = (ds.next == st_t{}) ? ExtendDirectory(ds, next) : ds.next;
     }
 
     throw FlexException(FERR_DIRECTORY_FULL);
@@ -1544,5 +1544,76 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
     }
 
     return false;
+}
+
+// Extend the directory by one sector. On success return trk-sec of it.
+// If disk is full return 00-00.
+// parameters:
+//    last_dir_sector    sector buffer of last directory sector
+//    st_last            trk-sec of last directory sector
+st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
+                                        const st_t &st_last)
+{
+    std::stringstream stream;
+    s_sys_info_sector sis;
+
+    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                    sis_trk_sec.sec))
+    {
+        stream << sis_trk_sec;
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
+    }
+
+    auto next = sis.sir.fc_start; // Get next trk-sec from start of free chain
+    if (next == st_t{})
+    {
+        return next; // Free chain is empty, directory extend failed.
+    }
+    last_dir_sector.next = next;
+
+    if (!WriteSector((Byte *)&last_dir_sector, st_last.trk, st_last.sec))
+    {
+        stream << st_last;
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
+    }
+
+    s_dir_sector dir_sector;
+    if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
+    {
+        stream << next;
+        throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
+    }
+
+    auto new_fc_start = dir_sector.next;
+    memset(reinterpret_cast<Byte *>(&dir_sector), '\0', sizeof(dir_sector));
+    dir_sector.record_nr[0] = 0x00;
+    dir_sector.record_nr[1] = 0x01;
+
+    if (!WriteSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
+    {
+        stream << next;
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
+    }
+
+    sis.sir.fc_start = new_fc_start;
+    if (--sis.sir.free[1] == 0xff)
+    {
+        --sis.sir.free[0];
+    }
+    // Check if free chain is at the end. If so update sir.
+    if (new_fc_start == st_t{})
+    {
+        sis.sir.fc_end = st_t{};
+        sis.sir.free[0] = sis.sir.free[1] = 0x00;
+    }
+
+    if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
+                     sis_trk_sec.sec))
+    {
+        stream << sis_trk_sec;
+        throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
+    }
+
+    return next;
 }
 
