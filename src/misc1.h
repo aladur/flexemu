@@ -266,8 +266,6 @@ extern const char *gMemoryAllocationErrorString;
     #define DEBUGPRINT2(fmt,p1,p2,p3)
 #endif
 
-#define BITFIELDS_LSB_FIRST
-
 extern "C" struct sRGBDef
 {
     const char *colorName;

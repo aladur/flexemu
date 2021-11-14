@@ -83,6 +83,10 @@ dnl Checks for structures
 
 dnl Checks for compiler characteristics
 AC_C_BIGENDIAN
+dnl Check if bitfields are big endian, set result in config.h
+AC_LANG_PUSH([C++])
+FLX_BITFIELDS_BIGENDIAN
+AC_LANG_POP([C++])
 AC_C_CHAR_UNSIGNED
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(int)
