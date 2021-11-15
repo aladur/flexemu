@@ -58,7 +58,7 @@ private:
         const std::string &fileName,
         bool ifNotExists = false);
 #endif
-    std::array<FlexemuOptionId, 4> canFormatDriveOptionId
+    const std::array<FlexemuOptionId, 4> canFormatDriveOptionId
     {{
         FlexemuOptionId::CanFormatDrive0,
         FlexemuOptionId::CanFormatDrive1,
