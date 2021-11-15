@@ -529,19 +529,19 @@ void FlexOptionManager::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::CanFormatDrive0:
-            reg.SetValue(FLEXFORMATDISK0, options.canFormatDrive[0].c_str());
+            reg.SetValue(FLEXFORMATDRIVE0, options.canFormatDrive[0] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive1:
-            reg.SetValue(FLEXFORMATDISK1, options.canFormatDrive[1].c_str());
+            reg.SetValue(FLEXFORMATDRIVE1, options.canFormatDrive[1] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive2:
-            reg.SetValue(FLEXFORMATDISK2, options.canFormatDrive[2].c_str());
+            reg.SetValue(FLEXFORMATDRIVE2, options.canFormatDrive[2] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive3:
-            reg.SetValue(FLEXFORMATDISK3, options.canFormatDrive[3].c_str());
+            reg.SetValue(FLEXFORMATDRIVE3, options.canFormatDrive[3] ? 1 : 0);
             break;
 
         case FlexemuOptionId::Frequency:
