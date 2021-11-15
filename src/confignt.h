@@ -41,12 +41,8 @@
 /*#define FASTFLEX*/
 
 
-
-/********************************************************************/
-/* following lines will be automatically be configured by           */
-/* autoheader as part of autoconf                                   */
-/********************************************************************/
-
+/* bitfields ordering is little endian */
+#define BITFIELDS_LSB_FIRST /**/
 
 /* Define if type char is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__
