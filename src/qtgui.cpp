@@ -1626,10 +1626,19 @@ void QtGui::SetCpuDialogMonospaceFont(int pointSize)
     auto monospaceFont = GetMonospaceFont(pointSize);
     cpuUi.e_status->setFont(monospaceFont);
     QFontMetrics monospaceFontMetrics(monospaceFont);
+    int height = std::lround(monospaceFontMetrics.height() * (CPU_LINES + 0.5));
+    int width;
 
-    cpuUi.e_status->setMinimumSize(
-            monospaceFontMetrics.averageCharWidth() * 40,
-            monospaceFontMetrics.height() * 14);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    // horizontalAdvance() gives better results than averageCharWidth()
+    auto text = QString(CPU_LINE_WIDTH + 1, ' ');
+    width = monospaceFontMetrics.horizontalAdvance(text);
+#else
+    // Best value has empirically been estimated.
+    width = (CPU_LINE_WIDTH + 3) * monospaceFontMetrics.averageCharWidth();
+#endif
+
+    cpuUi.e_status->setMinimumSize(width, height);
     cpuDialog->adjustSize();
 }
 

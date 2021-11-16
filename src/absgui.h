@@ -35,9 +35,6 @@
 #include <memory>
 
 
-#define CPU_LINES   (15)
-#define CPU_LINE_SIZE   (39)
-
 class Mc6809;
 class Inout;
 class Memory;
@@ -50,13 +47,14 @@ class AbstractGui
     // private instance variables:
 
 protected:
+    static constexpr int CPU_LINE_WIDTH{39};
+    static constexpr int CPU_LINES{14};
+
     Mc6809 &cpu;    // Reference to cpu to send interrupts
     Memory &memory; // Reference to memory (incl. video memory access)
     Inout &inout; // Reference to IO-class handling input/output
     TerminalIO &terminalIO; // Reference to terminal data provider.
-    char cpustring[CPU_LINES * (CPU_LINE_SIZE + 1)];
-    int cpu_line_size;
-    const char *cpu_line_delim;
+    char cpustring[CPU_LINES * CPU_LINE_WIDTH + 1];
 
 protected:
     virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);

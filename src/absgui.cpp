@@ -71,7 +71,7 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
 
 void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 {
-    static char             tmp[40];
+    static char tmp[CPU_LINE_WIDTH];
     Byte                    i, j;
     Word            mem_addr;
     std::stringstream total_cycles;
@@ -148,12 +148,14 @@ void AbstractGui::redraw_cpuview_impl(const Mc6809CpuStatus &)
 
 void AbstractGui::text(int x, int y, const char *str)
 {
+    assert(x >= 0 && x + strlen(str) <= CPU_LINE_WIDTH);
+    assert(y >= 0 && y < CPU_LINES);
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
-    strncpy(&cpustring[cpu_line_size * y + x], str, strlen(str));
+    strncpy(&cpustring[CPU_LINE_WIDTH * y + x], str, strlen(str));
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
@@ -161,20 +163,15 @@ void AbstractGui::text(int x, int y, const char *str)
 
 void AbstractGui::clear_cpuview()
 {
-    int i;
-    size_t size;
+    static const char *delim = "\n";
 
-    for (i = 0; i <= CPU_LINES * cpu_line_size - 1; i++)
+    memset(cpustring, ' ', sizeof(cpustring));
+    cpustring[sizeof(cpustring) - 1] = '\0';
+    auto size = strlen(delim);
+
+    for (int y = 0; y < CPU_LINES; ++y)
     {
-        cpustring[i] = ' ';
-    }
-
-    cpustring[i] = '\0';
-    size = strlen(cpu_line_delim);
-
-    for (i = 1; i <= CPU_LINES; i++)
-    {
-        strncpy(&cpustring[i * cpu_line_size - size], cpu_line_delim, size);
+        text(CPU_LINE_WIDTH - size, y, delim);
     }
 }
 
@@ -203,8 +200,6 @@ AbstractGui::AbstractGui(
         , memory(x_memory)
         , inout(x_inout)
         , terminalIO(x_terminalIO)
-        , cpu_line_size(CPU_LINE_SIZE)
-        , cpu_line_delim("\n")
 {
 }
 
