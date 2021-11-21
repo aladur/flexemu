@@ -100,9 +100,6 @@ bool E2floppy::umount_drive(Word drive_nr)
 
 bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 {
-    int i = 0;
-    FileContainerIfSectorPtr pfloppy;
-
     if (drive_nr > 3 || path == nullptr || strlen(path) == 0)
     {
         return false;
@@ -116,29 +113,24 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
     track[drive_nr] = 1;    // position to a track != 0  !!!
 
-    std::string containerPath(path);
+    auto TryMount = [&](std::string containerPath) -> bool
+    {
+        FileContainerIfSectorPtr pfloppy;
 
-    // first try with given path
 #ifdef _WIN32
-    std::string::iterator it;
-
-    for (it = containerPath.begin(); it != containerPath.end(); ++it)
-    {
-        if (*it == '|')
+        for (auto it = containerPath.begin(); it != containerPath.end(); ++it)
         {
-            *it = ':';
+            if (*it == '|')
+            {
+                *it = ':';
+            }
+            if (*it == '/')
+            {
+                *it = '\\';
+            }
         }
-        if (*it == '/')
-        {
-            *it = '\\';
-        }
-    }
 #endif
-
-    for (i = 0; i < 2; i++)
-    {
 #ifdef NAFS
-
         if (BDirectory::Exists(containerPath))
         {
             try
@@ -163,7 +155,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 (!fileExists ||
                 (fileExists && S_ISREG(sbuf.st_mode) && sbuf.st_size == 0)))
             {
-                continue;
+                return false;
             }
             // A file which does not exist or has file size zero
             // is marked as unformatted.
@@ -226,19 +218,30 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             return true;
         }
 
-        // second try with path within disk_dir directory
-        containerPath = disk_dir;
+        return false;
+    };
 
-        if (containerPath.length() > 0 &&
-            containerPath[containerPath.length()-1] != PATHSEPARATOR)
-        {
-            containerPath += PATHSEPARATORSTRING;
-        }
+    // first try with given path
+    if (TryMount(path))
+    {
+        return true;
+    }
 
-        containerPath += path;
-    } // for
+    if (isAbsolutePath(path))
+    {
+        return false;
+    }
 
-    return floppy[drive_nr].get() != nullptr;
+    // If path is relative, second try with full path in disk_dir directory
+    auto fullPath = std::string(disk_dir);
+
+    if (fullPath.length() > 0 && fullPath[fullPath.length()-1] != PATHSEPARATOR)
+    {
+        fullPath += PATHSEPARATORSTRING;
+    }
+    fullPath += path;
+
+    return TryMount(fullPath);
 } // mount_drive
 
 void E2floppy::disk_directory(const char *x_disk_dir)
