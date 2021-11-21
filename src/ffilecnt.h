@@ -36,10 +36,6 @@ class BDate;
 class FlexCopyManager;
 class FlexFileContainerIteratorImp;
 
-
-const int MAX_OPEN_FILES = 1;
-
-
 #define CHECK_CONTAINER_WRITEPROTECTED              \
     if (IsWriteProtected())                 \
     {                           \
