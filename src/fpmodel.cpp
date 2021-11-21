@@ -167,6 +167,11 @@ bool FlexplorerTableModel::IsWriteProtected() const
     return container->IsWriteProtected();
 }
 
+std::string FlexplorerTableModel::GetSupportedAttributes() const
+{
+    return container->GetSupportedAttributes();
+}
+
 int FlexplorerTableModel::GetContainerType() const                                
 {
     return container->GetContainerType();

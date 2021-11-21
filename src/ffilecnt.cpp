@@ -453,6 +453,11 @@ int FlexFileContainer::GetContainerType() const
     return param.type;
 }
 
+std::string FlexFileContainer::GetSupportedAttributes() const
+{
+    return "WDRC";
+}
+
 bool FlexFileContainer::CheckFilename(const char *fileName) const
 {
     int     result; // result from sscanf should be int

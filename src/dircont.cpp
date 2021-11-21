@@ -147,6 +147,11 @@ std::string DirectoryContainer::GetPath() const
     return directory;
 }
 
+std::string DirectoryContainer::GetSupportedAttributes() const
+{
+    return "W";
+}
+
 /*
 bool    DirectoryContainer::OpenDirectory(const char *pattern)
 {

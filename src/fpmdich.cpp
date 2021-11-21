@@ -109,7 +109,8 @@ int FlexplorerMdiChild::GetContainerType() const
 
 QString FlexplorerMdiChild::GetSupportedAttributes() const
 {
-    return (GetContainerType() & TYPE_DIRECTORY) ? "W" : "WDRC";
+    assert(model);
+    return QString(model->GetSupportedAttributes().c_str());
 }
 
 int FlexplorerMdiChild::GetSelectedFilesCount() const

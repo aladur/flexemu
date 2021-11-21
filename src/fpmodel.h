@@ -35,6 +35,7 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include <string>
 
 class FlexDirEntry;
 class FlexFileBuffer;
@@ -79,7 +80,7 @@ public:
     void DeleteFile(const QModelIndex &index);
     void RenameFile(const QModelIndex &index, const QString &newFilename);
     FlexFileBuffer CopyFile(const QModelIndex &index) const;
-
+    std::string GetSupportedAttributes() const;
 
     // QAbstractTableModel overrides
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

@@ -115,6 +115,7 @@ public:
                          const char *fileName = nullptr);
     bool FileCopy(const char *sourceName, const char *destName,
                   FileContainerIf &destination);
+    std::string GetSupportedAttributes() const;
 
     // internal interface
 protected:
