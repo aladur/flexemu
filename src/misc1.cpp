@@ -462,7 +462,10 @@ std::string getCurrentPath()
 bool isAbsolutePath(const std::string &path)
 {
 #ifdef _WIN32
-    return path.size() >= 2 && isalpha(path[0]) && path[1] == ':';
+    return path.size() >= 2 &&
+        ((isalpha(path[0]) && path[1] == ':') ||
+         (path[0] == '\\' && path[1] == '\\') ||
+         (path[0] == '/' && path[1] == '/'));
 #else
     return path.size() >= 1 && path[0] == '/';
 #endif
