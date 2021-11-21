@@ -82,7 +82,7 @@ private:
     Byte            track[5];
     DiskStatus      drive_status[5];
     Byte            sector_buffer[1024];
-    const char      *disk_dir;
+    std::string     disk_dir;
     mutable std::mutex status_mutex;
     // data for CMD_WRITETRACK
     WriteTrackState writeTrackState; // Write track state

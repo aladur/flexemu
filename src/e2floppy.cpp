@@ -43,8 +43,6 @@ E2floppy::E2floppy(struct sOptions &x_options)
 {
     Word i;
 
-    disk_dir = "";
-
     for (i = 0; i <= 4; i++)
     {
         track[i] = 1; // position all drives to track != 0  !!!
@@ -233,7 +231,7 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
     }
 
     // If path is relative, second try with full path in disk_dir directory
-    auto fullPath = std::string(disk_dir);
+    auto fullPath = disk_dir;
 
     if (fullPath.length() > 0 && fullPath[fullPath.length()-1] != PATHSEPARATOR)
     {
@@ -669,14 +667,16 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
 
             case TYPE_NAFS_DIRECTORY:
                 pfloppy = FileContainerIfSectorPtr(
-                NafsDirectoryContainer::Create(disk_dir, name, trk, sec, type));
+                NafsDirectoryContainer::Create(
+                    disk_dir.c_str(), name, trk, sec, type));
                 break;
 #endif
 
             case TYPE_DSK_CONTAINER:
             case TYPE_FLX_CONTAINER:
                 pfloppy = FileContainerIfSectorPtr(
-                FlexFileContainer::Create(disk_dir, name, trk, sec, type));
+                FlexFileContainer::Create(
+                    disk_dir.c_str(), name, trk, sec, type));
                 break;
         }
     }
