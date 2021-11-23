@@ -32,7 +32,6 @@
 #include "foptman.h"
 #include "bregistr.h"
 #include "brcfile.h"
-#include "benv.h"
 
 void FlexOptionManager::PrintHelp(FILE *fp)
 {
@@ -293,15 +292,7 @@ void FlexOptionManager::WriteOptions(
     WriteOptionsToRegistry(options, optionIds, ifNotExists);
 #endif
 #ifdef UNIX
-    std::string rcFileName;
-    BEnvironment env;
-
-    if (!env.GetValue("HOME", rcFileName))
-    {
-        rcFileName = ".";
-    }
-
-    rcFileName += PATHSEPARATORSTRING FLEXEMURC;
+    const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
 
     WriteOptionsToFile(options, optionIds, rcFileName, ifNotExists);
 #endif
@@ -702,15 +693,7 @@ void FlexOptionManager::GetOptions(struct sOptions &options)
 
 #endif
 #ifdef UNIX
-    std::string rcFileName;
-    BEnvironment env;
-
-    if (!env.GetValue("HOME", rcFileName))
-    {
-        rcFileName = ".";
-    }
-
-    rcFileName += PATHSEPARATORSTRING FLEXEMURC;
+    const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
     BRcFile rcFile(rcFileName.c_str());
     rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
     rcFile.GetValue(FLEXDISK0, options.drive[0]);

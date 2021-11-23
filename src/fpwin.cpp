@@ -32,7 +32,6 @@
 #include "filecntb.h"
 #include "bregistr.h"
 #include "brcfile.h"
-#include "benv.h"
 #include "flexerr.h"
 #include "ffilecnt.h"
 #include "fcopyman.h"
@@ -958,14 +957,8 @@ void FLEXplorer::WriteDefaultOptions()
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
 #endif
 #ifdef UNIX
-    std::string rcFileName;
-    BEnvironment env;
-
-    if (!env.GetValue("HOME", rcFileName))
-    {
-        rcFileName = ".";
-    }
-    rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
+    const auto rcFileName =
+        getHomeDirectory() + PATHSEPARATORSTRING FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE,
@@ -986,15 +979,8 @@ void FLEXplorer::ReadDefaultOptions()
     }
 #endif
 #ifdef UNIX
-    std::string rcFileName;
-    BEnvironment env;
-
-    if (!env.GetValue("HOME", rcFileName))
-    {
-        rcFileName = ".";
-    }
-
-    rcFileName += PATHSEPARATORSTRING FLEXPLORERRC;
+    const auto rcFileName =
+        getHomeDirectory() + PATHSEPARATORSTRING FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
 
     if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
