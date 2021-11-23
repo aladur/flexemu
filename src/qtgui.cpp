@@ -351,9 +351,7 @@ void QtGui::OnPreferences()
 
         if (isWriteOptions)
         {
-            FlexOptionManager optionMan;
-
-            optionMan.WriteOptions(options, false, true);
+            FlexemuOptions::WriteOptions(options, false, true);
         }
     }
     else
@@ -2049,9 +2047,7 @@ void QtGui::closeEvent(QCloseEvent *event)
 
         if (!optionsDiff.GetNotEquals().empty())
         {
-            FlexOptionManager optionMan;
-
-            optionMan.WriteOptions(options, false, true);
+            FlexemuOptions::WriteOptions(options, false, true);
         }
         event->accept();
     }
@@ -2063,14 +2059,12 @@ void QtGui::closeEvent(QCloseEvent *event)
 
 void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
 {
-    FlexOptionManager optionMan;
-
     p_options.readOnlyOptionIds = allFlexemuOptionIds;
     p_options.readOnlyOptionIds.erase(
         std::remove(p_options.readOnlyOptionIds.begin(),
                     p_options.readOnlyOptionIds.end(),
                     optionId),
         p_options.readOnlyOptionIds.end());
-    optionMan.WriteOptions(p_options, false, true);
+    FlexemuOptions::WriteOptions(p_options, false, true);
 }
 

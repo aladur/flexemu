@@ -25,45 +25,45 @@
 
 #include "misc1.h"
 #include "soptions.h"
-#include <stdio.h>
 
 
-class FlexOptionManager
+static constexpr std::array<FlexemuOptionId, 4> canFormatDriveOptionId
+{{
+    FlexemuOptionId::CanFormatDrive0,
+    FlexemuOptionId::CanFormatDrive1,
+    FlexemuOptionId::CanFormatDrive2,
+    FlexemuOptionId::CanFormatDrive3,
+}};
+
+class FlexemuOptions
 {
 public:
-    void PrintHelp(FILE *fp);
-    void InitOptions(struct sOptions &options);
-    void GetOptions(struct sOptions &options);
-    void GetCommandlineOptions(
+    static void PrintHelp(FILE *fp);
+    static void InitOptions(struct sOptions &options);
+    static void GetOptions(struct sOptions &options);
+    static void GetCommandlineOptions(
         struct sOptions &options,
         int argc,
         char *const argv[]);
-    void WriteOptions(
+    static void WriteOptions(
         const struct sOptions &options,
         bool ifNotExists = false,
         bool readWriteOptionsOnly = false);
 
 private:
 #ifdef _WIN32
-    void WriteOptionsToRegistry(
+    static void WriteOptionsToRegistry(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIds,
         bool ifNotExists = false);
 #endif
 #ifdef UNIX
-    void WriteOptionsToFile(
+    static void WriteOptionsToFile(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIds,
         const std::string &fileName,
         bool ifNotExists = false);
 #endif
-    const std::array<FlexemuOptionId, 4> canFormatDriveOptionId
-    {{
-        FlexemuOptionId::CanFormatDrive0,
-        FlexemuOptionId::CanFormatDrive1,
-        FlexemuOptionId::CanFormatDrive2,
-        FlexemuOptionId::CanFormatDrive3,
-    }};
 };
 
 #endif // FOPTMAN_INCLUDED

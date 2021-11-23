@@ -87,15 +87,14 @@ int main(int argc, char *argv[])
     while (return_code == EXIT_RESTART)
     {
         struct sOptions options;
-        FlexOptionManager optionMan;
 
         try
         {
-            optionMan.InitOptions(options);
-            optionMan.GetOptions(options);
-            optionMan.GetCommandlineOptions(options, argc, argv);
+            FlexemuOptions::InitOptions(options);
+            FlexemuOptions::GetOptions(options);
+            FlexemuOptions::GetCommandlineOptions(options, argc, argv);
             // write options but only if options file not already exists
-            optionMan.WriteOptions(options, true);
+            FlexemuOptions::WriteOptions(options, true);
             if (isRestarted)
             {
                 options.startup_command = "";

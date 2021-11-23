@@ -33,7 +33,8 @@
 #include "bregistr.h"
 #include "brcfile.h"
 
-void FlexOptionManager::PrintHelp(FILE *fp)
+
+void FlexemuOptions::PrintHelp(FILE *fp)
 {
     fprintf(fp, "usage: flexemu <options>\n");
     fprintf(fp, "  <options> are:\n");
@@ -66,7 +67,7 @@ void FlexOptionManager::PrintHelp(FILE *fp)
     fprintf(fp, "  -v (print version number)\n");
 } // PrintHelp
 
-void FlexOptionManager::InitOptions(struct sOptions &options)
+void FlexemuOptions::InitOptions(struct sOptions &options)
 {
     options.drive[0] = "system.dsk";
     options.drive[1] = "";
@@ -105,7 +106,7 @@ void FlexOptionManager::InitOptions(struct sOptions &options)
     options.readOnlyOptionIds.clear();
 } // InitOptions
 
-void FlexOptionManager::GetCommandlineOptions(
+void FlexemuOptions::GetCommandlineOptions(
     struct sOptions &options,
     int argc,
     char *const argv[])
@@ -271,7 +272,7 @@ void FlexOptionManager::GetCommandlineOptions(
 } // GetCommandlineOptions
 
 
-void FlexOptionManager::WriteOptions(
+void FlexemuOptions::WriteOptions(
     const struct sOptions &options,
     bool  ifNotExists, /* = false */
     bool isReadWriteOptionsOnly /* = false */
@@ -300,7 +301,7 @@ void FlexOptionManager::WriteOptions(
 } /* WriteOptions */
 
 #ifdef _WIN32
-void FlexOptionManager::WriteOptionsToRegistry(
+void FlexemuOptions::WriteOptionsToRegistry(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIdsToWrite,
         bool ifNotExists /* = false */
@@ -419,7 +420,7 @@ void FlexOptionManager::WriteOptionsToRegistry(
 #endif
 
 #ifdef UNIX
-void FlexOptionManager::WriteOptionsToFile(
+void FlexemuOptions::WriteOptionsToFile(
         const struct sOptions &options,
         const std::vector<FlexemuOptionId> &optionIdsToWrite,
         const std::string &fileName,
@@ -578,7 +579,7 @@ void FlexOptionManager::WriteOptionsToFile(
 }
 #endif
 
-void FlexOptionManager::GetOptions(struct sOptions &options)
+void FlexemuOptions::GetOptions(struct sOptions &options)
 {
     int int_result;
     std::string string_result;
