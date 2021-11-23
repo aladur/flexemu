@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
         {
             optionMan.InitOptions(options);
             optionMan.GetOptions(options);
-            optionMan.GetEnvironmentOptions(options);
             optionMan.GetCommandlineOptions(options, argc, argv);
             // write options but only if options file not already exists
             optionMan.WriteOptions(options, true);

@@ -34,7 +34,6 @@ public:
     void PrintHelp(FILE *fp);
     void InitOptions(struct sOptions &options);
     void GetOptions(struct sOptions &options);
-    void GetEnvironmentOptions(struct sOptions &options);
     void GetCommandlineOptions(
         struct sOptions &options,
         int argc,
