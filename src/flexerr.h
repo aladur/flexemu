@@ -71,6 +71,7 @@
 #define FERR_CONTAINER_UNFORMATTED  (41)
 #define FERR_UNEXPECTED_SIDE        (42)
 #define FERR_COPY_EMPTY_FILE        (43)
+#define FERR_ERROR_IN_SYSTEM_CALL   (44)
 
 
 class FlexException : public std::exception
@@ -92,6 +93,7 @@ public:
     FlexException(int ec, const std::string &sp1) throw();
     FlexException(int ec, const std::string &sp1,
         const std::string &sp2) throw();
+    FlexException(int ec, int ip1, const std::string &sp1) throw();
     FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw();
     FlexException(int ec, const std::string &sp1, const std::string &sp2,
                   const std::string &sp3) throw();

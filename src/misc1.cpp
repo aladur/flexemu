@@ -31,10 +31,12 @@
 #ifdef UNIX
 #include <linux/param.h>
 #include <netdb.h>
+#include <pwd.h>
 #endif
 #include "bfileptr.h"
 #include "cvtwchar.h"
 #include "flexerr.h"
+#include "benv.h"
 
 #ifdef _WIN32
     static const char *pathSeparators = "\\/";
@@ -365,6 +367,27 @@ std::string getExecutablePath()
     }
 
     return retval;
+}
+#endif
+
+#ifdef UNIX
+std::string getHomeDirectory()
+{
+    BEnvironment env;
+    std::string result;
+
+    if (!env.GetValue("HOME", result))
+    {
+        struct passwd *pwd = getpwuid(getuid());
+        if (pwd == nullptr)
+        {
+            throw FlexException(FERR_ERROR_IN_SYSTEM_CALL, errno,
+                                std::string("getpwuid"));
+        }
+        result = pwd->pw_dir;
+    }
+
+    return result;
 }
 #endif
 

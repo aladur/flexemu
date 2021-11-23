@@ -80,6 +80,12 @@ FlexException::FlexException(int ec, const std::string &sp1, const std::string &
     errorString = sprinter::print(errString[ec], sp1, sp2);
 }
 
+FlexException::FlexException(int ec, int ip1, const std::string &sp1) throw()
+    : errorCode(ec)
+{
+    errorString = sprinter::print(errString[ec], ip1, sp1);
+}
+
 FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw()
     : errorCode(ec)
 {
@@ -166,5 +172,6 @@ const char *FlexException::errString[] =
     _("Container {0} is unformatted or has unknown format"),
     _("Unexpected side number {0}"),
     _("Empty files can not be copied. File {0}"),
+    _("Error {0} on system call '{1}'"),
 };
 

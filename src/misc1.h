@@ -397,6 +397,9 @@ extern bool multimatches(const char *text, const char *multipattern,
 #ifdef _WIN32
 extern std::string getExecutablePath();
 #endif
+#ifdef UNIX
+extern std::string getHomeDirectory();
+#endif
 extern void dumpSector(FILE *fp, const char *indent,
                        const Byte *buffer, uint32_t size);
 extern std::string getTempPath();
