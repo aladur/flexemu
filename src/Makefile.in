@@ -659,7 +659,6 @@ EXTRA_DIST = \
 	fdtest.cpp \
 	flex2hex.vcxproj \
 	flexdisk.rc \
-	Flexemu.ad \
 	flexemu.astyle \
 	flexemu.rc \
 	flexemu.vcxproj \
