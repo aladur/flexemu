@@ -343,16 +343,6 @@ extern "C" struct sRGBDef
 
 #define EXTEND8(x) (Word)(SWord)(SByte)(x)
 
-#define DECLARE_MENUCOMMAND(function)   void function(wxCommandEvent& event);
-#define FORWARD_MENUCOMMAND_TO(cls, destination, function) \
-    void cls::function(wxCommandEvent& event)              \
-    {                                                      \
-        if (destination)                                   \
-        {                                                  \
-            destination->function(event);                  \
-        }                                                  \
-    }
-
 #if __GNUC__ >= 5 || __clang__ >= 4 || (__clang__ == 3 && __clang_minor__ >= 6)
 #if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
 #define FALLTHROUGH [[fallthrough]]
