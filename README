@@ -86,7 +86,8 @@ Eltec Elektronik (http://www.eltec.de) which has developed the hardware on which
 	the emulator is based on, and gave me the OK for shipping the full
 	screen editor e.cmd
 
-The wxWidgets dev. team developping a platform independent GUI API.
+The Qt team developping a platform independent API Framework
+        (https://www.qt.io). It really makes fun working with Qt.
 
 Thibaut Tessil for its fast hash map implementation, robin-map.
 
