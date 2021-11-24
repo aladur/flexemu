@@ -30,7 +30,8 @@ struct s_cpu_logfile
 {
 public:
     s_cpu_logfile() : minAddr(0x0000), maxAddr(0xFFFF),
-                      startAddr(0x10000), stopAddr(0x10000)
+                      startAddr(0x10000), stopAddr(0x10000),
+                      logCycleCount(false)
     {
         logFileName.reserve(PATH_MAX);
     }
@@ -38,6 +39,7 @@ public:
     s_cpu_logfile(const s_cpu_logfile &src) :
         minAddr(src.minAddr), maxAddr(src.maxAddr),
         startAddr(src.startAddr), stopAddr(src.stopAddr),
+        logCycleCount(src.logCycleCount),
         logFileName(src.logFileName)
     {
     }
@@ -48,6 +50,7 @@ public:
         maxAddr = src.maxAddr;
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
+        logCycleCount = src.logCycleCount;
         logFileName = src.logFileName;
         return *this;
     }
@@ -58,6 +61,7 @@ public:
         maxAddr = 0xFFFF;
         startAddr = 0x10000;
         stopAddr = 0x10000;
+        logCycleCount = false;
         logFileName.clear();
     }
 
@@ -67,6 +71,7 @@ public:
         maxAddr = src.maxAddr;
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
+        logCycleCount = src.logCycleCount;
         logFileName = std::move(src.logFileName);
     }
 
@@ -76,6 +81,7 @@ public:
         maxAddr = src.maxAddr;
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
+        logCycleCount = src.logCycleCount;
         logFileName = std::move(src.logFileName);
         return *this;
     }
@@ -84,6 +90,7 @@ public:
     unsigned int maxAddr;
     unsigned int startAddr;
     unsigned int stopAddr;
+    bool logCycleCount;
     std::string logFileName;
 };
 

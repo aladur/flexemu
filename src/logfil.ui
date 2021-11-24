@@ -166,6 +166,13 @@
       </layout>
      </item>
      <item>
+      <widget class="QCheckBox" name="c_logCycleCount">
+       <property name="text">
+        <string>Log cycle count</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1,0">
        <property name="spacing">
         <number>6</number>

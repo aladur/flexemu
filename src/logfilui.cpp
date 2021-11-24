@@ -46,6 +46,7 @@ void LogfileSettingsUi::setupUi(QDialog &p_dialog)
     assert(e_maxAddress != nullptr);
     assert(e_startAddress != nullptr);
     assert(e_stopAddress != nullptr);
+    assert(c_logCycleCount != nullptr);
     assert(e_logFilename != nullptr);
 
     InitializeWidgets();
@@ -79,6 +80,7 @@ void LogfileSettingsUi::SetData(const s_cpu_logfile &settings)
     ::SetData(settings.startAddr, *e_startAddress);
     ::SetData(settings.stopAddr, *e_stopAddress);
 
+    c_logCycleCount->setChecked(settings.logCycleCount);
     e_logFilename->setText(settings.logFileName.c_str());
 }
 
@@ -91,6 +93,7 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
     settings.startAddr = ::GetData<uint>(*e_startAddress);
     settings.stopAddr = ::GetData<uint>(*e_stopAddress);
 
+    settings.logCycleCount = c_logCycleCount->isChecked();
     settings.logFileName = e_logFilename->text().toUtf8().data();
 
     return settings;
@@ -128,6 +131,7 @@ void LogfileSettingsUi::OnClicked(QAbstractButton *button)
         e_maxAddress->clear();
         e_startAddress->clear();
         e_stopAddress->clear();
+        c_logCycleCount->setChecked(false);
         e_logFilename->clear();
     }
 }
