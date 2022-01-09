@@ -416,6 +416,8 @@ void FlexplorerMdiChild::SetupView()
     setSelectionModel(new QItemSelectionModel(model.get()));
     connect(selectionModel(), &QItemSelectionModel::selectionChanged,
             this, &FlexplorerMdiChild::SelectionChanged);
+    connect(this, &FlexplorerMdiChild::activated,
+            this, &FlexplorerMdiChild::IsActivated);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
     setAcceptDrops(true);
     horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -694,4 +696,9 @@ int FlexplorerMdiChild::PasteFromClipboard()
     return 0;
 }
 #endif
+
+void FlexplorerMdiChild::IsActivated(const QModelIndex &index)
+{
+    ViewSelected();
+}
 

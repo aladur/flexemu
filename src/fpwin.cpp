@@ -584,6 +584,36 @@ void FLEXplorer::CreateEditActions()
     editToolBar = CreateToolBar(this, tr("Edit"),
                                 QStringLiteral("editToolBar"));
 
+    const auto viewIcon = QIcon(":/resource/view.png");
+    viewAction = new QAction(viewIcon, tr("&View..."), this);
+    viewAction->setStatusTip(tr("View selected files"));
+    auto font = viewAction->font();
+    font.setBold(true);
+    viewAction->setFont(font);
+    connect(viewAction, &QAction::triggered, this, &FLEXplorer::ViewSelected);
+    editMenu->addAction(viewAction);
+    editToolBar->addAction(viewAction);
+
+    const auto deleteIcon = QIcon(":/resource/delete.png");
+    deleteAction = new QAction(deleteIcon, tr("&Delete..."), this);
+    deleteAction->setStatusTip(tr("Delete selected files"));
+    deleteAction->setShortcut(QKeySequence::Delete);
+    connect(deleteAction, &QAction::triggered,
+            this, &FLEXplorer::DeleteSelected);
+    editMenu->addAction(deleteAction);
+    editToolBar->addAction(deleteAction);
+
+    const auto attributesIcon = QIcon(":/resource/attributes.png");
+    attributesAction = new QAction(attributesIcon, tr("&Attributes..."), this);
+    attributesAction->setStatusTip(tr("Display and modify attributes of "
+                                      "selected files"));
+    connect(attributesAction, &QAction::triggered,
+            this, &FLEXplorer::AttributesSelected);
+    editMenu->addAction(attributesAction);
+    editMenu->addSeparator();
+    editToolBar->addAction(attributesAction);
+    editToolBar->addSeparator();
+
     const auto selectAllIcon = QIcon(":/resource/selectall.png");
     selectAllAction = new QAction(selectAllIcon, tr("Select &All"), this);
     selectAllAction->setStatusTip(tr("Select all files"));
@@ -607,11 +637,11 @@ void FLEXplorer::CreateEditActions()
     findFilesAction->setStatusTip(tr("Find files by filename pattern"));
     connect(findFilesAction, &QAction::triggered, this, &FLEXplorer::FindFiles);
     editMenu->addAction(findFilesAction);
-    editMenu->addSeparator();
     editToolBar->addAction(findFilesAction);
     editToolBar->addSeparator();
 
 #ifndef QT_NO_CLIPBOARD
+    editMenu->addSeparator();
     const auto copyIcon = QIcon(":/resource/copy.png");
     copyAction = new QAction(copyIcon, tr("&Copy"), this);
     copyAction->setShortcuts(QKeySequence::Copy);
@@ -626,35 +656,9 @@ void FLEXplorer::CreateEditActions()
     pasteAction->setStatusTip(tr("Paste files from the clipboard"));
     connect(pasteAction, &QAction::triggered, this, &FLEXplorer::Paste);
     editMenu->addAction(pasteAction);
-    editMenu->addSeparator();
     editToolBar->addAction(pasteAction);
     editToolBar->addSeparator();
 #endif
-
-    const auto deleteIcon = QIcon(":/resource/delete.png");
-    deleteAction = new QAction(deleteIcon, tr("&Delete..."), this);
-    deleteAction->setStatusTip(tr("Delete selected files"));
-    deleteAction->setShortcut(QKeySequence::Delete);
-    connect(deleteAction, &QAction::triggered,
-            this, &FLEXplorer::DeleteSelected);
-    editMenu->addAction(deleteAction);
-    editToolBar->addAction(deleteAction);
-
-    const auto viewIcon = QIcon(":/resource/view.png");
-    viewAction = new QAction(viewIcon, tr("&View..."), this);
-    viewAction->setStatusTip(tr("View selected files"));
-    connect(viewAction, &QAction::triggered, this, &FLEXplorer::ViewSelected);
-    editMenu->addAction(viewAction);
-    editToolBar->addAction(viewAction);
-
-    const auto attributesIcon = QIcon(":/resource/attributes.png");
-    attributesAction = new QAction(attributesIcon, tr("&Attributes..."), this);
-    attributesAction->setStatusTip(tr("Display and modify attributes of "
-                                      "selected files"));
-    connect(attributesAction, &QAction::triggered,
-            this, &FLEXplorer::AttributesSelected);
-    editMenu->addAction(attributesAction);
-    editToolBar->addAction(attributesAction);
 }
 
 void FLEXplorer::CreateContainerActions()
@@ -762,18 +766,18 @@ void FLEXplorer::ContextMenuRequested(QPoint pos)
     {
         QMenu *contextMenu = new QMenu(this);
 
+        contextMenu->addAction(viewAction);
+        contextMenu->addAction(deleteAction);
+        contextMenu->addAction(attributesAction);
+        contextMenu->addSeparator();
         contextMenu->addAction(selectAllAction);
         contextMenu->addAction(deselectAllAction);
         contextMenu->addAction(findFilesAction);
-        contextMenu->addSeparator();
 #ifndef QT_NO_CLIPBOARD
+        contextMenu->addSeparator();
         contextMenu->addAction(copyAction);
         contextMenu->addAction(pasteAction);
-        contextMenu->addSeparator();
 #endif
-        contextMenu->addAction(deleteAction);
-        contextMenu->addAction(viewAction);
-        contextMenu->addAction(attributesAction);
         contextMenu->popup(child.viewport()->mapToGlobal(pos));
     });
 }

@@ -79,6 +79,9 @@ public:
 signals:
     void SelectionHasChanged();
 
+private slots:
+    void IsActivated(const QModelIndex &index);
+
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
