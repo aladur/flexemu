@@ -1948,8 +1948,8 @@ void QtGui::keyPressEvent(QKeyEvent *event)
     // Ctrl+5           | Set quintuple screen size
     // Ctrl+F12         | Toogle smooth display
     // Pause            | Toggle CPU to stop or run
-    // Ctrl+Pause       | Send non maskable interrupt (NMI) to CPU
-    // Alt+Pause        | Reset and run CPU
+    // Shift+Pause      | Send non maskable interrupt (NMI) to CPU
+    // Shift+Alt+Pause  | Reset and run CPU
     //
     // Hotkey for toggling full screen mode depends on the user interface:
     // Windows        | F11, Alt+Enter
@@ -1963,6 +1963,16 @@ void QtGui::keyPressEvent(QKeyEvent *event)
 
     switch (event->modifiers() & modifiers)
     {
+        case Qt::ShiftModifier:
+            switch (event->key())
+            {
+                case Qt::Key_Pause:
+                    cpu.set_nmi();
+                    event->accept();
+                    return;
+            }
+            break;
+
         case Qt::ControlModifier:
             switch (event->key())
             {
@@ -1983,11 +1993,6 @@ void QtGui::keyPressEvent(QKeyEvent *event)
 
                 case Qt::Key_F12:
                     OnSmoothDisplay();
-                    event->accept();
-                    return;
-
-                case Qt::Key_Pause:
-                    cpu.set_nmi();
                     event->accept();
                     return;
             }
