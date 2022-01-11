@@ -65,7 +65,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 
     auto valueForKey = iniFile.ReadSection("IoDevices");
 
-    for (const auto iter : valueForKey)
+    for (const auto &iter : valueForKey)
     {
         if (validDevices.find(iter.first) == validDevices.end())
         {
@@ -136,7 +136,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 
     auto valueForKey = iniFile.ReadSection("SERPARAddress");
 
-    for (const auto iter : valueForKey)
+    for (const auto &iter : valueForKey)
     {
         std::string key = iter.first;
 
@@ -187,7 +187,7 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
 
     auto valueForKey = iniFile.ReadSection("DebugSupport");
 
-    for (const auto iter : valueForKey)
+    for (const auto &iter : valueForKey)
     {
         if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
         {
@@ -219,7 +219,7 @@ std::pair<std::string, std::set<std::string> >
 
     auto valueForKey = iniFile.ReadSection("IoDeviceLogging");
 
-    for (const auto iter : valueForKey)
+    for (const auto &iter : valueForKey)
     {
         if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
         {
