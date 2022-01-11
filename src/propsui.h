@@ -24,6 +24,7 @@
 #ifndef PROPSUI_H
 #define PROPSUI_H
 
+#include "warnoff.h"
 #include <QApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -32,6 +33,7 @@
 #include <QTableWidget>
 #include <QStandardItemModel>
 #include <QHeaderView>
+#include "warnon.h"
 #include <numeric>
 #include "drawnwid.h"
 

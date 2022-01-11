@@ -24,7 +24,9 @@
 #ifndef EFSLCTLE_INCLUDED
 #define EFSLCTLE_INCLUDED
 
+#include "warnoff.h"
 #include <QObject>
+#include "warnon.h"
 
 
 class QEvent;

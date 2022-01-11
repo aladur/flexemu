@@ -26,9 +26,11 @@
 
 
 #include "misc1.h"
+#include "warnoff.h"
 #include "fpopt_ui.h"
 #include <QObject>
 #include <QString>
+#include "warnon.h"
 
 class QLineEdit;
 

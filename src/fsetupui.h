@@ -28,14 +28,16 @@
 #include "misc1.h"
 #include "brcfile.h"
 #include "bregistr.h"
-#include "fsetup_ui.h"
 #include "soptions.h"
 #include <string>
 #include <vector>
+#include "warnoff.h"
+#include "fsetup_ui.h"
 #include <QObject>
 #include <QString>
 #include <QUrl>
 #include <QLocale>
+#include "warnon.h"
 
 
 class QLineEdit;

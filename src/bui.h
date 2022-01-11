@@ -25,7 +25,9 @@
 #define BUI_INCLUDE
 
 #include "efslctle.h"
+#include "warnoff.h"
 #include <QLineEdit>
+#include "warnon.h"
 
 
 extern void InstallSelectionEventFilter(QLineEdit &lineEdit, QObject *parent);

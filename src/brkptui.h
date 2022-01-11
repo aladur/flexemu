@@ -24,8 +24,10 @@
 #ifndef BRKPTUI_INCLUDE
 #define BRKPTUI_INCLUDE
 
+#include "warnoff.h"
 #include "brkpt_ui.h"
 #include <QObject>
+#include "warnon.h"
 
 class QDialog;
 class QLineEdit;

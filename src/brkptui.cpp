@@ -27,7 +27,9 @@
 #include "efslctle.h"
 #include <stdexcept>
 #include <cassert>
+#include "warnoff.h"
 #include <QAbstractButton>
+#include "warnon.h"
 
 BreakpointSettingsUi::BreakpointSettingsUi() :
     Ui_BreakpointSettings(), dialog(nullptr)

@@ -25,9 +25,11 @@
 
 #include "fcinfo.h"
 #include <memory>
+#include "warnoff.h"
 #include <QSize>
 #include <QWidget>
 #include <QPixmap>
+#include "warnon.h"
 
 class QPaintEvent;
 class QByteArray;

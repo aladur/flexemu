@@ -24,6 +24,7 @@
 #include "bdate.h"
 #include "drawnwid.h"
 #include <cassert>
+#include "warnoff.h"
 #include <QString>
 #include <QPainter>
 #include <QPixmap>
@@ -32,6 +33,7 @@
 #include <QFont>
 #include <QDate>
 #include <QLocale>
+#include "warnon.h"
 
 
 DrawnWidget::DrawnWidget(QWidget *parent)

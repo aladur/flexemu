@@ -27,10 +27,12 @@
 #include "bui.h"
 #include <stdexcept>
 #include <cassert>
+#include "warnoff.h"
 #include <QAbstractButton>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
+#include "warnon.h"
 
 LogfileSettingsUi::LogfileSettingsUi() :
     Ui_LogfileSettings(), dialog(nullptr)

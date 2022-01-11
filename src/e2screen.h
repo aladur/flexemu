@@ -26,11 +26,13 @@
 #include "soptions.h"
 #include <misc1.h>
 #include <memory>
+#include "warnoff.h"
 #include <QVector>
 #include <QSize>
 #include <QRgb>
 #include <QWidget>
 #include <QPixmap>
+#include "warnon.h"
 
 class VideoControl2;
 class QPaintEvent;

@@ -29,16 +29,18 @@
 #include "schedcpu.h"
 #include "scpulog.h"
 #include "soptions.h"
-#include "cpustat_ui.h"
 #include <vector>
 #include <string>
 #include <memory>
+#include "warnoff.h"
+#include "cpustat_ui.h"
 #include <QWidget>
 #include <QIcon>
 #include <QTimer>
 #include <QString>
 #include <QByteArray>
 #include <QMap>
+#include "warnon.h"
 
 #define SCREEN_SIZES (5)
 #define ICON_SIZES (3)

@@ -23,8 +23,10 @@
 #ifndef FPEDIT_INCLUDED
 #define FPEDIT_INCLUDED
 
+#include "warnoff.h"
 #include <QStyledItemDelegate>
 #include <QRegularExpressionValidator>
+#include "warnon.h"
 
 class QWidget;
 class QStringList;

@@ -24,11 +24,13 @@
 #define FPMDICH_INCLUDED
 
 #include "misc1.h"
+#include "warnoff.h"
 #include <QPair>
 #include <QPoint>
 #include <QVector>
 #include <QString>
 #include <QTableView>
+#include "warnon.h"
 #include <memory>
 
 class FlexDateDelegate;

@@ -24,10 +24,12 @@
 #include "misc1.h"
 #include "fpoptui.h"
 #include <stdexcept>
+#include "warnoff.h"
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "warnon.h"
 
 FlexplorerOptionsUi::FlexplorerOptionsUi() :
     Ui_FlexplorerOptions(), dialog(nullptr)

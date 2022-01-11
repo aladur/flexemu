@@ -26,12 +26,14 @@
 #include "misc1.h"
 #include "fcinfo.h"
 #include "ffilebuf.h"
+#include "warnoff.h"
 #include <QPair>
 #include <QString>
 #include <QVector>
 #include <QVariant>
 #include <QModelIndex>
 #include <QAbstractTableModel>
+#include "warnon.h"
 #include <memory>
 #include <vector>
 #include <array>

@@ -29,12 +29,14 @@
 #include "keyboard.h"
 #include "pia1.h"
 #include "cacttrns.h"
+#include "warnoff.h"
 #include <QPainter>
 #include <QPixmap>
 #include <QByteArray>
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QApplication>
+#include "warnon.h"
 #ifdef UNIX
 #include <QX11Info>
 #include <X11/XKBlib.h>

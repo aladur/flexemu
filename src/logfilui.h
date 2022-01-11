@@ -24,8 +24,10 @@
 #ifndef LOGFILUI_INCLUDED
 #define LOGFILUI_INCLUDED
 
+#include "warnoff.h"
 #include "logfil_ui.h"
 #include <QObject>
+#include "warnon.h"
 
 class QDialog;
 class QAbstractButton;

@@ -23,10 +23,12 @@
 
 #include "efslctle.h"
 #include <cassert>
+#include "warnoff.h"
 #include <QEvent>
 #include <QFocusEvent>
 #include <QMouseEvent>
 #include <QLineEdit>
+#include "warnon.h"
 
 
 SelectAllOnFocusInLE::SelectAllOnFocusInLE(

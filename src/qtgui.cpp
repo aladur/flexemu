@@ -45,6 +45,7 @@
 #include "sodiff.h"
 #include "foptman.h"
 #include "fsetupui.h"
+#include "warnoff.h"
 #include <QString>
 #include <QVector>
 #include <QPixmap>
@@ -80,6 +81,7 @@
 #include <QHash>
 #include <QFont>
 #include <QFontDatabase>
+#include "warnon.h"
 #include <cmath>
 
 

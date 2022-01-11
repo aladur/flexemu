@@ -29,6 +29,7 @@
 #include "cvtwchar.h"
 #include "bdir.h"
 #include "bprocess.h"
+#include "warnoff.h"
 #include <QDate>
 #include <QDrag>
 #include <QMouseEvent>
@@ -38,6 +39,7 @@
 #include <QItemSelectionModel>
 #include <QClipboard>
 #include <QApplication>
+#include "warnon.h"
 #include <cassert>
 #include <string>
 #include "fpdnd.h"

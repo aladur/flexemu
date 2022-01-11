@@ -27,10 +27,12 @@
 #include <string>
 #include <memory>
 #include <stdexcept>
+#include "warnoff.h"
 #include <QtGlobal>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QFontMetricsF>
+#include <QFontMetrics>
+#include "warnon.h"
 
 #ifdef _MSC_VER
     #include <direct.h>
