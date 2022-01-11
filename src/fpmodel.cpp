@@ -591,34 +591,74 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
 
 void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 {
-    if (column >= 0 && column < rows.size())
+    if (column < 0 || column >= rows.size())
     {
-        auto oldIds = GetIds();
-        std::function<bool(const RowType &lhs, const RowType &rhs)> compare;
-
-        switch (order)
-        {
-            case Qt::AscendingOrder:
-                compare = [&column](const RowType &lhs, const RowType &rhs){
-                              return lhs[column] < rhs[column];
-                          };
-                break;
-
-            case Qt::DescendingOrder:
-                compare = [&column](const RowType &lhs, const RowType &rhs){
-                              return lhs[column] > rhs[column];
-                          };
-                break;
-        }
-
-        emit layoutAboutToBeChanged(QList<QPersistentModelIndex>(),
-                                    QAbstractItemModel::VerticalSortHint);
-
-        std::stable_sort(rows.begin(), rows.end(), compare);
-        CalculateAndChangePersistentIndexList(oldIds);
-
-        emit layoutChanged();
+        return;
     }
+
+    auto oldIds = GetIds();
+    std::function<bool(const RowType &lhs, const RowType &rhs)> compare;
+
+    switch (order)
+    {
+        case Qt::AscendingOrder:
+            compare = [&column](const RowType &lhs, const RowType &rhs){
+                if (lhs[column].type() == QVariant::String)
+                {
+                    return lhs[column].toString() < rhs[column].toString();
+                }
+                else if (lhs[column].type() == QVariant::Date)
+                {
+                    return lhs[column].toDate() < rhs[column].toDate();
+                }
+                else if (lhs[column].type() == QVariant::Int)
+                {
+                    return lhs[column].toInt() < rhs[column].toInt();
+                }
+                else
+                {
+                    auto msg = std::string(
+                        "FlexplorerTableModel::sort(): Unexpected type '");
+                    msg += std::string(lhs[column].typeName()) + "'";
+
+                    throw std::logic_error(msg);
+                }
+            };
+            break;
+
+        case Qt::DescendingOrder:
+            compare = [&column](const RowType &lhs, const RowType &rhs){
+                if (lhs[column].type() == QVariant::String)
+                {
+                    return lhs[column].toString() > rhs[column].toString();
+                }
+                else if (lhs[column].type() == QVariant::Date)
+                {
+                    return lhs[column].toDate() > rhs[column].toDate();
+                }
+                else if (lhs[column].type() == QVariant::Int)
+                {
+                    return lhs[column].toInt() > rhs[column].toInt();
+                }
+                else
+                {
+                    auto msg = std::string(
+                        "FlexplorerTableModel::sort(): Unexpected type '");
+                    msg += std::string(lhs[column].typeName()) + "'";
+
+                    throw std::logic_error(msg);
+                }
+            };
+            break;
+    }
+
+    emit layoutAboutToBeChanged(QList<QPersistentModelIndex>(),
+                                QAbstractItemModel::VerticalSortHint);
+
+    std::stable_sort(rows.begin(), rows.end(), compare);
+    CalculateAndChangePersistentIndexList(oldIds);
+
+    emit layoutChanged();
 }
 
 QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const

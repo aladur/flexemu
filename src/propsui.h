@@ -119,7 +119,13 @@ public:
         QFontMetrics fontMetrics(w_table->font());
         for (column = 0; column < headerLabels.size(); ++column)
         {
+            columnWidth[column] =
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+            columnWidth[column] =
+                fontMetrics.horizontalAdvance(headerLabels[column]);
+#else
             columnWidth[column] = fontMetrics.width(headerLabels[column]);
+#endif
         }
 
         for (int row = 0; row < model.rowCount(); ++row)
@@ -128,7 +134,11 @@ public:
             {
                 auto *item = model.item(row, column);
                 const auto text = item->text();
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+                int width = fontMetrics.horizontalAdvance(text);
+#else
                 int width = fontMetrics.width(text);
+#endif
                 if (width > columnWidth[column])
                 {
                     columnWidth[column] = width;
