@@ -86,7 +86,7 @@ inline void adc(Byte &reg, Byte operand)
     Byte mask = 0;
 
     asm volatile(\
-                 "bt $0,%1;"      // Copy 6809 carry bit into condition flags
+                 "btw $0,%1;"     // Copy 6809 carry bit into condition flags
                  "adcb %5,%0;"    // Execute 8-bit addition
                  "pushf;"         // Push x86 condition code register
                  "pop %2;"        // read condition code into x86flags
@@ -162,7 +162,7 @@ inline void sbc(Byte &reg, Byte operand)
     Byte mask = 0;
 
     asm volatile(\
-                 "bt $0,%1;"      // Copy 6809 carry bit into condition flags
+                 "btw $0,%1;"     // Copy 6809 carry bit into condition flags
                  "sbbb %5,%0;"    // Execute 8-bit subtraction with borrow
                  "pushf;"         // Push x86 condition code register
                  "pop %2;"        // read condition code into x86flags
