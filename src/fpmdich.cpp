@@ -697,7 +697,8 @@ int FlexplorerMdiChild::PasteFromClipboard()
 }
 #endif
 
-void FlexplorerMdiChild::IsActivated(const QModelIndex &index)
+void FlexplorerMdiChild::IsActivated(const QModelIndex &
+        /* [[maybe_unused]] const QModelIndex &index */)
 {
     ViewSelected();
 }
