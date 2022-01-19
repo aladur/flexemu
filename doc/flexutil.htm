@@ -53,12 +53,12 @@ command shell. There are different operations concerning the cpu, the
 floppy controller or the graphical user interface (gui).
 <div class="options-list">
 <dl>
-<dt>emu &lt;irq | firq | nmi&gt;</dt>
+<dt id="interrupt">emu &lt;irq | firq | nmi&gt;</dt>
 <dd>
 send a corresponding interrupt signal to the cpu. before invoking this
 command, there should already be set an interrupt vector before!
 </dd>
-<dt>emu mount &lt;path&gt; &lt;drive_nr&gt;</dt>
+<dt id="mount">emu mount &lt;path&gt; &lt;drive_nr&gt;</dt>
 <dd>
 mounts a disk image (DSK- or FLX-Format) or a NAtive File System
 (nafs)-directory.
@@ -85,20 +85,20 @@ specified drive.
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
 </dd>
-<dt>emu umount &lt;drive_nr&gt;</dt>
+<dt id="umount">emu umount &lt;drive_nr&gt;</dt>
 <dd>
 unmounts a previously mounted disk image or nafs-directory.
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
 </dd>
-<dt>emu format &lt;disk_name&gt; &lt;size_in_KByte&gt;</dt>
+<dt id="format">emu format &lt;disk_name&gt; &lt;size_in_KByte&gt;</dt>
 <dd>
 formats a disk with name <b>&lt;disk_name&gt;</b> and with total size greater
 or equal to &lt;size_in_KByte&gt;. Disk sizes of up to 800 KByte are available.
 The disk will be formated in DSK-Format. The newly formated disk will
 <b>not</b> be mounted automatically!
 </dd>
-<dt>emu terminal | graphic</dt>
+<dt id="terminal_graphic">emu terminal | graphic</dt>
 <dd>
 At the time only available on Linux (sorry). If started flexemu in full
 graphics mode (without option
@@ -122,16 +122,16 @@ used in the terminal mode. for <b>neumon54.hex</b> the modes can be switched
 After a reset or nmi SERPAR will be initialized by the contents of address
 0xf07c (INITSP).
 </dd>
-<dt>emu freq [&lt;target_frequency&gt;]</dt>
+<dt id="freq">emu freq [&lt;target_frequency&gt;]</dt>
 <dd>
 Prints the actual frequency on which the virtual CPU is running. An optionally
 given <b>target_frequency</b> gives a target frequency.
 </dd>
-<dt>emu cycles</dt>
+<dt id="cycles">emu cycles</dt>
 <dd>
 Prints the actual number of processor cycles executed.
 </dd>
-<dt>emu exit</dt>
+<dt id="exit">emu exit</dt>
 <dd>
 immediately exits the emulator.
 </dd>
@@ -182,7 +182,7 @@ The counterpart on Linux is
 convert FLEX ASCII format to UNIX/MS-DOS ASCII format. The conversion will
 be done from stdin to stdout.
 </dd>
-<dt>toflex</dt>
+<dt id="toflex">toflex</dt>
 <dd>
 convert a UNIX/MS-DOS ASCII format to FLEX ASCII format. The conversion will
 be done from stdin to stdout.
