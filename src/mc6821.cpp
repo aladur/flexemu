@@ -90,7 +90,7 @@ Byte Mc6821::readIo(Word offset)
 
         case 3:
             requestInputB();        // request for input
-            return cra;
+            return crb;
     }
 
     return 0;
