@@ -7,6 +7,7 @@ EXTRA_DIST = \
 	flexemu.sln \
 	INSTALL \
 	INSTALL.Win32 \
+	INSTALL.unix \
 	LICENSE \
 	NEWS \
 	README \

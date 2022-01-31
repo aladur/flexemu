@@ -1,0 +1,69 @@
+********************************************
+* Compiling/Install flexemu on Unix/Linux  *
+********************************************
+
+Flexemu supports configure scripts. So there are three steps to compile and
+install it:
+
+        - export QT_SELECT=qt5
+	- ./configure --prefix=/usr --sysconfdir=/etc
+	- make
+	- sudo make install
+
+prerequisites:
+
+        On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian)
+        install the following deb-packages:
+
+        sudo apt-get install qtbase5-dev qtbase5-dev-tools libqt5core5a libqt5gui5 libqt5widgets5 libqt5x11extras5-dev
+
+remarks:
+
+        - When using configure with --prefix=/usr flexemu also get's
+          integrated into the desktop and appears in the System menu
+          category, Emulator sub category. If --prefix is not specified
+          the default prefix is /usr/local. For this prefix desktop or
+          icon files may not be correctly integrated into the desktop.
+          This has been exprienced with Linux Mint. It may behave
+          differently for other Linux distributions.
+	- If You don't want native file system support comment out
+	  NAFS switch in src/config.h
+	- If You don't want the disassembler to substitute some FLEX jump
+	  vectors to print as labels comment out FLEX_LABEL switch in
+	  config.h.
+	- There are two MC6809 processor implementations. One of them is
+	  about 20% slower but a very well structured implementation. Each
+	  instruction is executed in it's own function. So it can easily be
+	  debuged with gdb. The processor cycles are exactly calculated.
+	  The second is faster, the complete processor is emulated in one
+	  inline-function. The processor cycles are only aproximated
+	  (4.8 cycles for each instruction). The faster processor can
+	  be compiled with switch FASTFLEX uncommented in config.h.
+        - There are post installation steps executed to provide desktop
+          icons and adding mime types for support of *.dsk, *.flx and *.wta
+          files. If they do not work as expected they can be disabled with
+          the configure option --disable-post-install
+          The post installation steps are (assuming --prefix=/usr):
+
+             gtk-update-icon-cache /usr/share/icons/hicolor
+             update-mime-database /usr/share/mime
+             update-desktop-database /usr/share/applications
+
+***********************
+* help, Documentation *
+***********************
+
+There are some html-pages for flexemu:
+
+flexemu.htm	general description, command line options
+flexuser.htm	the FLEX users manual
+flexutil.htm	some FLEX utilities
+flexdos.htm	description of the FLEX disk operating system
+flexfms.htm	description of the FLEX file management system
+flexfs.htm	'filesystems' supported by flexemu
+flexerr.htm	description of the FLEX error messages
+flexfcb.htm	description of a FLEX file control block
+flexmem.htm	the FLEX memory map
+neumon54.htm	Flexemu monitor program for Eurocom II/V7
+mon24.htm	Flexemu monitor program for Eurocom II/V5
+
