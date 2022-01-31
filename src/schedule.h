@@ -96,7 +96,7 @@ protected:
     CpuState user_state;
     QWord       total_cycles;
     QWord       time0sec;
-    BTime       systemTime;
+    BRelativeTime systemTime;
 
     // CPU status
 public:

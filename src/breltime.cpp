@@ -28,105 +28,28 @@
 // This class could also be realized as a envelope/letter pattern
 // but this is still the most efficient C++ implementation
 
-BTime::BTime() : lapTime(0)
+BRelativeTime::BRelativeTime()
 {
 }
 
-BTime::~BTime()
+BRelativeTime::~BRelativeTime()
 {
 }
-
-void BTime::ResetRelativeTime()
-{
-    lapTime = GetTimeUsll();
-}
-
-QWord BTime::GetRelativeTimeMsl(bool reset /*= false*/)
-{
-    return GetRelativeTimeUsll(reset) / 1000U;
-}
-
-QWord BTime::GetTimeMsl()
-{
-    return GetTimeUsll() / 1000U;
-}
-
 
 #ifdef UNIX
-QWord BTime::GetRelativeTimeUsll(bool reset /*= false*/)
-{
-    QWord currentTime = GetTimeUsll();
-    QWord result = currentTime - lapTime;
-
-    if (reset)
-    {
-        lapTime = currentTime;
-    }
-
-    return result;
-}
-
-double BTime::GetRelativeTimeUsf(bool  reset /*= false*/)
-{
-    QWord currentTime = GetTimeUsll();
-    double result = (double)(currentTime - lapTime);
-
-    if (reset)
-    {
-        lapTime = currentTime;
-    }
-
-    return result;
-}
-
 // return time in us as a unsigned int 64 Bit value
-QWord BTime::GetTimeUsll()
+QWord BRelativeTime::GetTimeUsll()
 {
     struct timeval tv;
 
     gettimeofday(&tv, nullptr);
     return ((QWord)tv.tv_sec * 1000000 + tv.tv_usec);
 }
-
-// return time in us as a double value
-double BTime::GetTimeUsf()
-{
-    struct timeval tv;
-
-    gettimeofday(&tv, nullptr);
-    return ((double)tv.tv_sec * 1000000.0 + tv.tv_usec);
-}
 #endif
 
 #ifdef _WIN32
-QWord BTime::GetRelativeTimeUsll(bool reset /*= false*/)
-{
-    QWord currentTime = GetTimeUsll();
-    QWord result = currentTime - lapTime;
-
-    if (reset)
-    {
-        lapTime = currentTime;
-    }
-
-    return result;
-}
-
-double BTime::GetRelativeTimeUsf(bool  reset /*= false*/)
-{
-    QWord currentTime = GetTimeUsll();
-    double result = (double)(SQWord)(currentTime - lapTime);
-
-    if (reset)
-    {
-        lapTime = currentTime;
-    }
-
-    return result;
-}
-
 // return time in us as a unsigned int 64 Bit value
-QWord BTime::GetTimeUsll()
+QWord BRelativeTime::GetTimeUsll()
 {
     LARGE_INTEGER count, freq;
 
@@ -138,23 +61,6 @@ QWord BTime::GetTimeUsll()
     else
     {
         return 0;
-    }
-
-}
-
-// return time in us as a double value
-double BTime::GetTimeUsf()
-{
-    LARGE_INTEGER count, freq;
-
-    if (QueryPerformanceCounter(&count))
-    {
-        QueryPerformanceFrequency(&freq);
-        return (double)count.QuadPart * 1000000 / (double)freq.QuadPart;
-    }
-    else
-    {
-        return 0.0;
     }
 
 }

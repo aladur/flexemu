@@ -1,5 +1,5 @@
 /*
-    btime.h
+    breltime.h
 
 
     Basic class for platform independent high resolution time support
@@ -20,27 +20,21 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef BTIME_INCLUDED
-#define BTIME_INCLUDED
+#ifndef BRELTIME_INCLUDED
+#define BRELTIME_INCLUDED
 
 #include "misc1.h"
 
-
-class BTime
+// Get relative time values with us resolution with unknown reference.
+// Interface can be used to calculate precise time differences between
+// two time values.
+//
+class BRelativeTime
 {
 public:
-    BTime();
-    ~BTime();
-    void     ResetRelativeTime();
-    QWord    GetRelativeTimeUsll(bool reset = false);
-    double   GetRelativeTimeUsf(bool  reset = false);
-    QWord GetRelativeTimeMsl(bool reset = false);
-    QWord    GetTimeUsll();
-    double   GetTimeUsf();
-    QWord GetTimeMsl();
-
-private:
-    QWord    lapTime;
+    BRelativeTime();
+    ~BRelativeTime();
+    QWord GetTimeUsll();
 };
 
-#endif // BTIME_INCLUDED
+#endif
