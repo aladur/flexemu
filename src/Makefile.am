@@ -231,7 +231,7 @@ flexemu_SOURCES = \
 	brcfile.h \
 	bregistr.h \
 	brkptui.h \
-	btime.h \
+	breltime.h \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
@@ -440,7 +440,7 @@ test_SOURCES = \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
-	btime.h \
+	breltime.h \
 	clogfile.h \
 	command.h \
 	config.h \
@@ -478,7 +478,7 @@ libflex_a_SOURCES = \
 	bprocess.cpp \
 	brcfile.cpp \
 	bregistr.cpp \
-	btime.cpp \
+	breltime.cpp \
 	cvtwchar.cpp \
 	dircont.cpp \
 	fcinfo.cpp \
@@ -510,7 +510,7 @@ libflex_a_SOURCES = \
 	bobshelp.h \
 	brcfile.h \
 	bregistr.h \
-	btime.h \
+	breltime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \

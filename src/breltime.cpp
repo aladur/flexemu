@@ -1,5 +1,5 @@
 /*
-    btime.cpp
+    breltime.cpp
 
 
     Basic class for platform independent high resolution time support
@@ -23,7 +23,7 @@
 #ifdef _WIN32
     #include "misc1.h"
 #endif
-#include "btime.h"
+#include "breltime.h"
 
 // This class could also be realized as a envelope/letter pattern
 // but this is still the most efficient C++ implementation

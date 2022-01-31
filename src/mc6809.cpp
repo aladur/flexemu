@@ -14,7 +14,6 @@
 #include "mc6809.h"
 #include "da6809.h"
 #include "inout.h"
-#include "btime.h"
 
 #ifdef FASTFLEX
     #define PC ipcreg
