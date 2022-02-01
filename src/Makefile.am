@@ -232,6 +232,7 @@ flexemu_SOURCES = \
 	bregistr.h \
 	brkptui.h \
 	breltime.h \
+	btime.h \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
@@ -330,6 +331,7 @@ flexplorer_SOURCES = \
 	bprocess.h \
 	brcfile.h \
 	bregistr.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -401,6 +403,7 @@ dsktool_SOURCES = \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -441,6 +444,7 @@ test_SOURCES = \
 	bobservd.h \
 	bobshelp.h \
 	breltime.h \
+	btime.h \
 	clogfile.h \
 	command.h \
 	config.h \
@@ -479,6 +483,7 @@ libflex_a_SOURCES = \
 	brcfile.cpp \
 	bregistr.cpp \
 	breltime.cpp \
+	btime.cpp \
 	cvtwchar.cpp \
 	dircont.cpp \
 	fcinfo.cpp \
@@ -511,6 +516,7 @@ libflex_a_SOURCES = \
 	brcfile.h \
 	bregistr.h \
 	breltime.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \

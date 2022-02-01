@@ -135,16 +135,17 @@ am_libflex_a_OBJECTS = libflex_a-bcommand.$(OBJEXT) \
 	libflex_a-binifile.$(OBJEXT) libflex_a-bmembuf.$(OBJEXT) \
 	libflex_a-bobservd.$(OBJEXT) libflex_a-bprocess.$(OBJEXT) \
 	libflex_a-brcfile.$(OBJEXT) libflex_a-bregistr.$(OBJEXT) \
-	libflex_a-breltime.$(OBJEXT) libflex_a-cvtwchar.$(OBJEXT) \
-	libflex_a-dircont.$(OBJEXT) libflex_a-fcinfo.$(OBJEXT) \
-	libflex_a-fcnffile.$(OBJEXT) libflex_a-fcopyman.$(OBJEXT) \
-	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
-	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
-	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
-	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
-	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
-	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
-	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT)
+	libflex_a-breltime.$(OBJEXT) libflex_a-btime.$(OBJEXT) \
+	libflex_a-cvtwchar.$(OBJEXT) libflex_a-dircont.$(OBJEXT) \
+	libflex_a-fcinfo.$(OBJEXT) libflex_a-fcnffile.$(OBJEXT) \
+	libflex_a-fcopyman.$(OBJEXT) libflex_a-fdirent.$(OBJEXT) \
+	libflex_a-ffilebuf.$(OBJEXT) libflex_a-ffilecnt.$(OBJEXT) \
+	libflex_a-filecnts.$(OBJEXT) libflex_a-fileread.$(OBJEXT) \
+	libflex_a-filfschk.$(OBJEXT) libflex_a-flexerr.$(OBJEXT) \
+	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
+	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
+	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
+	libflex_a-rfilecnt.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
 	dsktool-filfschk.$(OBJEXT)
@@ -313,6 +314,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/libflex_a-brcfile.Po \
 	./$(DEPDIR)/libflex_a-bregistr.Po \
 	./$(DEPDIR)/libflex_a-breltime.Po \
+	./$(DEPDIR)/libflex_a-btime.Po \
 	./$(DEPDIR)/libflex_a-cvtwchar.Po \
 	./$(DEPDIR)/libflex_a-dircont.Po \
 	./$(DEPDIR)/libflex_a-fcinfo.Po \
@@ -847,6 +849,7 @@ flexemu_SOURCES = \
 	bregistr.h \
 	brkptui.h \
 	breltime.h \
+	btime.h \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
@@ -945,6 +948,7 @@ flexplorer_SOURCES = \
 	bprocess.h \
 	brcfile.h \
 	bregistr.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -1016,6 +1020,7 @@ dsktool_SOURCES = \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -1056,6 +1061,7 @@ test_SOURCES = \
 	bobservd.h \
 	bobshelp.h \
 	breltime.h \
+	btime.h \
 	clogfile.h \
 	command.h \
 	config.h \
@@ -1094,6 +1100,7 @@ libflex_a_SOURCES = \
 	brcfile.cpp \
 	bregistr.cpp \
 	breltime.cpp \
+	btime.cpp \
 	cvtwchar.cpp \
 	dircont.cpp \
 	fcinfo.cpp \
@@ -1126,6 +1133,7 @@ libflex_a_SOURCES = \
 	brcfile.h \
 	bregistr.h \
 	breltime.h \
+	btime.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -1387,6 +1395,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-brcfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bregistr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-breltime.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-btime.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-cvtwchar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-dircont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fcinfo.Po@am__quote@ # am--include-marker
@@ -1614,6 +1623,20 @@ libflex_a-breltime.obj: breltime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='breltime.cpp' object='libflex_a-breltime.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-breltime.obj `if test -f 'breltime.cpp'; then $(CYGPATH_W) 'breltime.cpp'; else $(CYGPATH_W) '$(srcdir)/breltime.cpp'; fi`
+
+libflex_a-btime.o: btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-btime.o -MD -MP -MF $(DEPDIR)/libflex_a-btime.Tpo -c -o libflex_a-btime.o `test -f 'btime.cpp' || echo '$(srcdir)/'`btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-btime.Tpo $(DEPDIR)/libflex_a-btime.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='btime.cpp' object='libflex_a-btime.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-btime.o `test -f 'btime.cpp' || echo '$(srcdir)/'`btime.cpp
+
+libflex_a-btime.obj: btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-btime.obj -MD -MP -MF $(DEPDIR)/libflex_a-btime.Tpo -c -o libflex_a-btime.obj `if test -f 'btime.cpp'; then $(CYGPATH_W) 'btime.cpp'; else $(CYGPATH_W) '$(srcdir)/btime.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-btime.Tpo $(DEPDIR)/libflex_a-btime.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='btime.cpp' object='libflex_a-btime.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-btime.obj `if test -f 'btime.cpp'; then $(CYGPATH_W) 'btime.cpp'; else $(CYGPATH_W) '$(srcdir)/btime.cpp'; fi`
 
 libflex_a-cvtwchar.o: cvtwchar.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-cvtwchar.o -MD -MP -MF $(DEPDIR)/libflex_a-cvtwchar.Tpo -c -o libflex_a-cvtwchar.o `test -f 'cvtwchar.cpp' || echo '$(srcdir)/'`cvtwchar.cpp
@@ -3421,6 +3444,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-brcfile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bregistr.Po
 	-rm -f ./$(DEPDIR)/libflex_a-breltime.Po
+	-rm -f ./$(DEPDIR)/libflex_a-btime.Po
 	-rm -f ./$(DEPDIR)/libflex_a-cvtwchar.Po
 	-rm -f ./$(DEPDIR)/libflex_a-dircont.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcinfo.Po
@@ -3582,6 +3606,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-brcfile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bregistr.Po
 	-rm -f ./$(DEPDIR)/libflex_a-breltime.Po
+	-rm -f ./$(DEPDIR)/libflex_a-btime.Po
 	-rm -f ./$(DEPDIR)/libflex_a-cvtwchar.Po
 	-rm -f ./$(DEPDIR)/libflex_a-dircont.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcinfo.Po
