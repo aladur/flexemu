@@ -51,14 +51,25 @@ BTime BTime::Now()
     return BTime(lt->tm_hour, lt->tm_min, lt->tm_sec);
 }
 
-const std::string BTime::AsString() const
+const std::string BTime::AsString(Format format) const
 {
     std::stringstream stream;
 
-    stream << std::setfill('0') <<
-        std::setw(2) << hour << ':' <<
-        std::setw(2) << minute << ':' <<
-        std::setw(2) << second;
+    switch (format)
+    {
+        case Format::HHMMSS:
+            stream << std::setfill('0') <<
+                std::setw(2) << static_cast<Word>(hour) << ':' <<
+                std::setw(2) << static_cast<Word>(minute) << ':' <<
+                std::setw(2) << static_cast<Word>(second);
+            break;
+
+        case Format::HHMM:
+            stream << std::setfill('0') <<
+                std::setw(2) << static_cast<Word>(hour) << ':' <<
+                std::setw(2) << static_cast<Word>(minute);
+            break;
+    }
 
     return stream.str();
 }

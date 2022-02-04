@@ -34,12 +34,18 @@ private:
 
 public:
 
+    enum class Format : uint8_t
+    {
+        HHMMSS, // HH:MM:SS hour:minute:second
+        HHMM, // HH:MM hour:minute
+    };
+
     BTime(uint8_t h = 0U, uint8_t m = 0U, uint8_t s = 0U);
     BTime(const BTime &src);
     ~BTime();
 
     static BTime Now();
-    const std::string AsString() const;
+    const std::string AsString(Format = Format::HHMMSS) const;
     void Get(uint8_t &hour, uint8_t &minute, uint8_t &second) const;
     void Set(uint8_t hour, uint8_t minute, uint8_t second);
     void Set(const BTime &src);
