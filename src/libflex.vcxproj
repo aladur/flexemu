@@ -200,6 +200,7 @@
     <ClCompile Include="bprocess.cpp" />
     <ClCompile Include="brcfile.cpp" />
     <ClCompile Include="bregistr.cpp" />
+    <ClCompile Include="breltime.cpp" />
     <ClCompile Include="btime.cpp" />
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="dircont.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
+    <ClInclude Include="breltime.h" />
     <ClInclude Include="btime.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
