@@ -377,8 +377,6 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     if (is_flex_format)
     {
         s_sys_info_sector sis;
-        char disk_name[sizeof(sis.sir.disk_name) +
-                       sizeof(sis.sir.disk_ext) + 2];
         int year;
 
         if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
@@ -400,32 +398,30 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
             year = sis.sir.year + 1900;
         }
 
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wsizeof-pointer-memaccess"
-#endif
-        strncpy(disk_name, sis.sir.disk_name, sizeof(sis.sir.disk_name));
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
-        disk_name[sizeof(sis.sir.disk_name)] = '\0';
-        if (sis.sir.disk_ext[0] != '\0')
+        auto size = 0U;
+        while (size < sizeof(sis.sir.disk_name) && sis.sir.disk_name[size])
         {
-            strcat(disk_name, ".");
-            size_t index = strlen(disk_name);
-            for (size_t i = 0; i < sizeof(sis.sir.disk_ext); ++i)
+            ++size;
+        }
+        std::string disk_name(sis.sir.disk_name, size);
+        disk_name.append("");
+        bool is_valid = true;
+        size = 0U;
+        while (size < sizeof(sis.sir.disk_ext) && sis.sir.disk_ext[size])
+        {
+            if (sis.sir.disk_ext[size] < ' ' || sis.sir.disk_ext[size] > '~')
             {
-                char ch = sis.sir.disk_ext[i];
-                if (ch >= ' ' && ch <= '~')
-                {
-                    disk_name[index++] = ch;
-                }
-                else
-                {
-                    break;
-                }
+                is_valid = false;
+                break;
             }
-            disk_name[index++] = '\0';
+            ++size;
+        }
+        if (size > 0U && is_valid)
+        {
+            std::string disk_ext(sis.sir.disk_ext, size);
+            disk_ext.append("");
+            disk_name.append(".");
+            disk_name.append(disk_ext);
         }
         info.SetDate(sis.sir.day, sis.sir.month, year);
         info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
