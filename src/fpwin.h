@@ -52,7 +52,7 @@ class FLEXplorer : public QMainWindow
 public:
     FLEXplorer();
 
-    bool OpenContainerForPath(const QString &path, bool isLast = true);
+    bool OpenContainerForPath(QString path, bool isLast = true);
 
 private slots:
     void NewContainer();
