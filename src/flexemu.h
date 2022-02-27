@@ -34,10 +34,6 @@
 
 #include "typedefs.h"
 
-enum
-{
-    FLEX_FILENAME_LENGTH = 13
-};
 
 enum class DiskStatus
 {

@@ -24,7 +24,7 @@
 #define FFILEBUF_INCLUDED
 
 #include "misc1.h"
-#include "flexemu.h"
+#include "filecntb.h"
 #include "bdate.h"
 #include <memory>
 #include <functional>

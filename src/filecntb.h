@@ -68,10 +68,17 @@ const Byte IS_RANDOM_FILE = 0x02;
 // Number of directory entries in one directory sector, struct s_dir_sector
 const Byte DIRENTRIES = 10;
 
+// Max. length of the diskname, without terminating NUL
 const size_t FLEX_DISKNAME_LENGTH = 8U;
+// Max. length of the disk extension, without terminating NUL
 const size_t FLEX_DISKEXT_LENGTH = 3U;
+// Max. length of the file basename, without extension, without term. NUL
 const size_t FLEX_BASEFILENAME_LENGTH = 8U;
+// Max. length of the file extension, without terminating NUL
 const size_t FLEX_FILEEXT_LENGTH = 3U;
+// Max. length of a FLEX filename incl. dot and terminating NUL
+const size_t FLEX_FILENAME_LENGTH =
+                 FLEX_BASEFILENAME_LENGTH + FLEX_FILEEXT_LENGTH + 2U;
 
 class FileContainerIfBase
 {
