@@ -600,11 +600,13 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 // conformous to 8.3
 void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
 {
+    std::string uFileName(afileName);
     const char *p, *pe;
 
+    strupper(uFileName);
     memset(fileHeader.fileName, '\0', FLEX_FILENAME_LENGTH);
-    pe = strrchr(afileName, '.');
-    strncpy(fileHeader.fileName, afileName, 8);
+    pe = strrchr(uFileName.c_str(), '.');
+    strncpy(fileHeader.fileName, uFileName.c_str(), 8);
     p = strrchr(fileHeader.fileName, '.');
 
     if (p != nullptr)
