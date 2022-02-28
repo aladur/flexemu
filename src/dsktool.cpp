@@ -30,6 +30,7 @@
 #include <string>
 #include <regex>
 #include "bdir.h"
+#include "benv.h"
 #include "flexerr.h"
 #include "efiletim.h"
 #include "fdirent.h"
@@ -890,7 +891,7 @@ void usage()
         "  -t            Automatic detection and conversion of text files.\n" <<
         "  -v            More verbose output.\n" <<
         "  -y            Answer yes to all questions.\n" <<
-        "  -z            With file time (FLEX extension).\n" <<
+        "  -z            Use file time (FLEX extension).\n" <<
         "  -R<file>      A file containing regular expressions, one per line."
         "\n" <<
         "  -S<size>      Size of FLEX file container. Use -S help for help."
@@ -903,7 +904,9 @@ void usage()
         "  <regex>       A regular expression specifying FLEX file(s).\n" <<
         "                Extended POSIX regular expression grammar is\n" <<
         "                supported. <regex> parameters are processed after\n" <<
-        "                all -R<file> parameters.\n";
+        "                all -R<file> parameters.\n\n" <<
+        "Environment Variables:\n" <<
+        "  DSKTOOL_USE_FILETIME     Same a option -z.\n";
 }
 
 bool estimateDiskFormat(const char *format, int &disk_format)
@@ -1249,6 +1252,12 @@ int main(int argc, char *argv[])
         std::cerr << "*** Error: Wrong syntax\n";
         usage();
         return 1;
+    }
+
+    if (std::string("CilxX").find_first_of(command) != std::string::npos &&
+       (getenv("DSKTOOL_USE_FILETIME") != nullptr))
+    {
+        fileTimeAccess = FileTimeAccess::Get | FileTimeAccess::Set;
     }
 
     try
