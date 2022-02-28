@@ -84,7 +84,8 @@ FLEXplorer::FLEXplorer() : mdiArea(new QMdiArea),
     aboutQtAction(nullptr),
     newDialogSize{0, 0}, optionsDialogSize{0, 0},
     attributesDialogSize{0, 0},
-    findPattern("*.*")
+    findPattern("*.*"),
+    ft_access(FileTimeAccess::NONE)
 {
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -138,6 +139,7 @@ void FLEXplorer::NewContainer()
                                   directory.c_str(),
                                   filename.c_str(),
                                   ui.GetTracks(), ui.GetSectors(),
+                                  ft_access,
                                   ui.GetFormat());
             delete container;
 
@@ -201,7 +203,7 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
 
     try
     {
-        auto *child = CreateMdiChild(path);
+        auto *child = CreateMdiChild(path, ft_access);
 
         connect(child, &FlexplorerMdiChild::SelectionHasChanged,
                 this, &FLEXplorer::SelectionHasChanged);
@@ -495,9 +497,10 @@ void FLEXplorer::CloseAllSubWindows()
     SetStatusMessage(tr("Closed all windows"));
 }
 
-FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path)
+FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
+                                               FileTimeAccess &fileTimeAccess)
 {
-    auto *child = new FlexplorerMdiChild(path);
+    auto *child = new FlexplorerMdiChild(path, fileTimeAccess);
 
     auto subWindow = mdiArea->addSubWindow(child);
     QString iconResource =
@@ -967,6 +970,7 @@ void FLEXplorer::WriteDefaultOptions()
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
+    reg.SetValue(FLEXFILETIMEACCESS, static_cast<int>(ft_access));
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -975,12 +979,15 @@ void FLEXplorer::WriteDefaultOptions()
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE,
                     FlexFileContainer::bootSectorFile.c_str());
+    rcFile.SetValue(FLEXFILETIMEACCESS, static_cast<int>(ft_access));
 #endif
 }
 
 void FLEXplorer::ReadDefaultOptions()
 {
     std::string string_result;
+    int int_result;
+
 #ifdef _WIN32
     BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
 
@@ -988,6 +995,19 @@ void FLEXplorer::ReadDefaultOptions()
         !string_result.empty())
     {
         FlexFileContainer::bootSectorFile = string_result;
+    }
+
+    if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
+    {
+        if (int_result < 0)
+        {
+            int_result = 0;
+        }
+        else if (int_result == 2 || int_result > 3)
+        {
+            int_result = 3;
+        }
+        ft_access = static_cast<FileTimeAccess>(int_result);
     }
 #endif
 #ifdef UNIX
@@ -999,6 +1019,19 @@ void FLEXplorer::ReadDefaultOptions()
         !string_result.empty())
     {
         FlexFileContainer::bootSectorFile = string_result;
+    }
+
+    if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))
+    {
+        if (int_result < 0)
+        {
+            int_result = 0;
+        }
+        else if (int_result == 2 || int_result > 3)
+        {
+            int_result = 3;
+        }
+        ft_access = static_cast<FileTimeAccess>(int_result);
     }
 #endif
 }

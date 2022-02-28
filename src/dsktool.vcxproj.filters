@@ -34,6 +34,9 @@
     <ClInclude Include="dircont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="efiletim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="ffilebuf.h">
       <Filter>Header Files</Filter>
     </ClInclude>

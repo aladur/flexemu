@@ -360,6 +360,10 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::IsUseRtc:
                 c_useRtc->setEnabled(false);
                 break;
+
+            case FlexemuOptionId::FileTimeAccess:
+                // TODO
+                break;
         }
     }
 }
@@ -434,6 +438,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::Frequency:
                 case FlexemuOptionId::IsInverse:
                 case FlexemuOptionId::PixelSize:
+                case FlexemuOptionId::FileTimeAccess:
                     break;
             }
         }

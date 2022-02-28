@@ -25,6 +25,7 @@
 
 #include "misc1.h"
 #include "fcinfo.h"
+#include "efiletim.h"
 #include "ffilebuf.h"
 #include "warnoff.h"
 #include <QPair>
@@ -55,7 +56,8 @@ class FlexplorerTableModel : public QAbstractTableModel
 
 public:
     FlexplorerTableModel() = delete;
-    FlexplorerTableModel(const char *path, QObject *parent = Q_NULLPTR);
+    FlexplorerTableModel(const char *path, const FileTimeAccess &fileTimeAccess,
+                         QObject *parent = Q_NULLPTR);
     virtual ~FlexplorerTableModel();
 
     QString GetPath() const;
@@ -114,7 +116,7 @@ private:
     using RowType = std::array<QVariant, COLUMNS>;
     using IdsType = QVector<QString>;
 
-    void OpenContainer(const char *path);
+    void OpenContainer(const char *path, const FileTimeAccess &fileTimeAccess);
     void Initialize();
     QModelIndex AddRow(const FlexDirEntry &dirEntry, int role = Qt::EditRole);
     IdsType GetIds() const;

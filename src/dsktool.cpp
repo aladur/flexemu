@@ -31,6 +31,7 @@
 #include <regex>
 #include "bdir.h"
 #include "flexerr.h"
+#include "efiletim.h"
 #include "fdirent.h"
 #include "rfilecnt.h"
 #include "dircont.h"
@@ -115,11 +116,12 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
     try
     {
         std::unique_ptr<FlexFileContainer> container;
+        auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexFileContainer::Create(
                         getParentPath(dsk_file).c_str(),
                         getFileName(dsk_file).c_str(),
-                        tracks, sectors, disk_format));
+                        tracks, sectors, fileTimeAccess, disk_format));
 
         if (container && verbose)
         {
@@ -140,7 +142,8 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
 
 int ExtractDskFile(const std::string &target_dir, bool verbose,
                    bool convert_text, const std::string &dsk_file,
-                   const std::vector<std::regex> &regexs)
+                   const std::vector<std::regex> &regexs,
+                   FileTimeAccess fileTimeAccess)
 {
     std::string subdir = target_dir + getFileStem(getFileName(dsk_file));
 
@@ -169,8 +172,8 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
-    FlexRamFileContainer src{dsk_file.c_str(), "rb"};
-    DirectoryContainer dest{subdir.c_str()};
+    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
+    DirectoryContainer dest{subdir.c_str(), fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;
@@ -236,7 +239,8 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 
 int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
                     const std::vector<std::string> &dsk_files,
-                    const std::vector<std::regex> &regexs)
+                    const std::vector<std::regex> &regexs,
+                    FileTimeAccess fileTimeAccess)
 {
     if (target_dir.empty())
     {
@@ -260,7 +264,7 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
         try
         {
             int result = ExtractDskFile(target_dir, verbose, convert_text,
-                                        dsk_file, regexs);
+                                        dsk_file, regexs, fileTimeAccess);
             if (result != 0)
             {
                 // Abort after fatal error.
@@ -282,9 +286,10 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
     return 0;
 }
 
-int ListDirectoryOfDskFile(const std::string &dsk_file)
+int ListDirectoryOfDskFile(const std::string &dsk_file,
+                           FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb"};
+    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
     FileContainerIterator iter;
     FlexContainerInfo info;
     unsigned int number = 0;
@@ -313,8 +318,12 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
                      getFileName(dsk_file) << "\n";
     }
 
-    std::cout << "FILE#   NAME   TYPE  BEGIN   END   SIZE    DATE     " <<
-                 "PRT   RND" << std::endl << std::endl;
+    std::cout << "FILE#   NAME   TYPE  BEGIN   END   SIZE    DATE      ";
+    if ((fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get)
+    {
+        std::cout << " TIME ";
+    }
+    std::cout << " PRT   RND" << std::endl << std::endl;
 
     for (iter = src.begin(); iter != src.end(); ++iter)
     {
@@ -344,7 +353,13 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
             std::setw(2) << endSector << " " <<
             std::dec << std::setfill(' ') <<
             std::setw(5) << sectors << "  " <<
-            std::setw(11) << dir_entry.GetDate().GetDateString() << " " <<
+            std::setw(11) << dir_entry.GetDate().GetDateString() << " ";
+        if ((fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get)
+        {
+            std::cout <<
+                dir_entry.GetTime().AsString(BTime::Format::HHMM) << " ";
+        }
+        std::cout <<
             std::left << std::setw(4) <<
             dir_entry.GetAttributesString() << " " <<
             (dir_entry.IsRandom() ? "R" : "") << std::endl;
@@ -363,13 +378,14 @@ int ListDirectoryOfDskFile(const std::string &dsk_file)
     return 0;
 }
 
-int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files)
+int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
+                            FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
     {
         try
         {
-            ListDirectoryOfDskFile(dsk_file);
+            ListDirectoryOfDskFile(dsk_file, fileTimeAccess);
         }
         catch (FlexException &ex)
         {
@@ -386,7 +402,8 @@ int SummaryOfDskFile(const std::string &dsk_file,
                      size_t &sum_files, size_t &sum_size, size_t &sum_free,
                      bool verbose)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb"};
+    auto fileTimeAccess = FileTimeAccess::NONE;
+    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
     FileContainerIterator iter;
     FlexContainerInfo info;
 
@@ -478,9 +495,10 @@ int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
 
 int InjectToDskFile(const std::string &dsk_file, bool verbose,
                     const std::vector<std::string> &files,
-                    char default_answer, bool isConvertText)
+                    char default_answer, bool isConvertText,
+                    FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer dst{dsk_file.c_str(), "rb+"};
+    FlexRamFileContainer dst{dsk_file.c_str(), "rb+", fileTimeAccess};
 
     if (!dst.IsFlexFormat())
     {
@@ -551,7 +569,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
                       const std::vector<std::string> &flex_files,
                       char default_answer)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb+"};
+    auto fileTimeAccess = FileTimeAccess::NONE;
+    FlexRamFileContainer src{dsk_file.c_str(), "rb+", fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -610,7 +629,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
                               bool debug_output)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb"};
+    auto fileTimeAccess = FileTimeAccess::NONE;
+    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -703,10 +723,11 @@ int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
 
 int CopyFromToDskFile(const std::string &src_dsk_file,
         const std::string &dst_dsk_file, bool verbose,
-        const std::vector<std::regex> &regexs, char default_answer)
+        const std::vector<std::regex> &regexs, char default_answer,
+        FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer src{src_dsk_file.c_str(), "rb"};
-    FlexRamFileContainer dst{dst_dsk_file.c_str(), "rb+"};
+    FlexRamFileContainer src{src_dsk_file.c_str(), "rb", fileTimeAccess};
+    FlexRamFileContainer dst{dst_dsk_file.c_str(), "rb+", fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -827,20 +848,20 @@ void usage()
 {
     std::cout <<
         "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n" <<
-        "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-y|-n][-R<file>...]"
-        "[<regex>...]\n" <<
+        "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n]"
+        "[-R<file>...][<regex>...]\n" <<
         "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>\n" <<
         "Usage: dsktool -h\n" <<
-        "Usage: dsktool -i <dsk-file> [-v][-t][-y|-n] <file> [<file>...]\n" <<
-        "Usage: dsktool -l <dsk-file> [<dsk-file>...]\n" <<
+        "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n" <<
+        "Usage: dsktool -l <dsk-file> [-z][<dsk-file>...]\n" <<
         "Usage: dsktool -r <dsk-file> [-v][-y|-n] <FLEX-file> "
         "[<FLEX-file>...]\n" <<
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -V\n" <<
-        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-R<file>...]"
+        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-R<file>...]"
         "[<regex>...]\n" <<
-        "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v] "
+        "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v][-z] "
         "[<dsk-file>...]\n\n" <<
         "Commands:\n" <<
         "  -c: Check consistency of FLEX file container.\n" <<
@@ -869,6 +890,7 @@ void usage()
         "  -t            Automatic detection and conversion of text files.\n" <<
         "  -v            More verbose output.\n" <<
         "  -y            Answer yes to all questions.\n" <<
+        "  -z            With file time (FLEX extension).\n" <<
         "  -R<file>      A file containing regular expressions, one per line."
         "\n" <<
         "  -S<size>      Size of FLEX file container. Use -S help for help."
@@ -1035,7 +1057,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("f:X:x:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVy");
+    std::string optstr("f:X:x:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVyz");
     std::string target_dir;
     std::vector<std::string> dsk_files;
     std::vector<std::string> files;
@@ -1050,6 +1072,7 @@ int main(int argc, char *argv[])
     bool debug_output = false;
     bool convert_text = false;
     bool has_regex_file = false;
+    FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
     char default_answer = '?'; // Means: Ask user.
     int result;
     char command = '\0';
@@ -1150,6 +1173,10 @@ int main(int argc, char *argv[])
             case 'v': verbose = true;
                       break;
 
+            case 'z': fileTimeAccess =
+                          FileTimeAccess::Get | FileTimeAccess::Set;
+                      break;
+
             case '?':
                       if (optopt != 'X' && !isprint(optopt))
                       {
@@ -1215,7 +1242,9 @@ int main(int argc, char *argv[])
         (std::string("firC").find_first_of(command) == std::string::npos &&
          (default_answer != '?')) ||
         (command != 'i' && command != 'X' && command != 'x' && convert_text) ||
-        (command != 'c' && debug_output))
+        (command != 'c' && debug_output) ||
+        (std::string("CilxX").find_first_of(command) == std::string::npos &&
+            (fileTimeAccess != FileTimeAccess::NONE)))
     {
         std::cerr << "*** Error: Wrong syntax\n";
         usage();
@@ -1236,10 +1265,11 @@ int main(int argc, char *argv[])
 
             case 'i':
                 return InjectToDskFile(dsk_file, verbose, files,
-                                       default_answer, convert_text);
+                                       default_answer, convert_text,
+                                       fileTimeAccess);
 
             case 'l':
-                return ListDirectoryOfDskFiles(dsk_files);
+                return ListDirectoryOfDskFiles(dsk_files, fileTimeAccess);
 
             case 'r':
                 return DeleteFromDskFile(dsk_file, verbose, files,
@@ -1253,11 +1283,12 @@ int main(int argc, char *argv[])
                 // fall through
             case 'X':
                 return ExtractDskFiles(target_dir, verbose, convert_text,
-                                       dsk_files, regexs);
+                                       dsk_files, regexs, fileTimeAccess);
 
             case 'C':
                 return CopyFromToDskFile(dsk_file, dst_dsk_file, verbose,
-                                         regexs, default_answer);
+                                         regexs, default_answer,
+                                         fileTimeAccess);
         }
     }
     catch (FlexException &ex)

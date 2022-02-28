@@ -331,6 +331,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::CanFormatDrive1:
                 case FlexemuOptionId::CanFormatDrive2:
                 case FlexemuOptionId::CanFormatDrive3:
+                case FlexemuOptionId::FileTimeAccess:
                     isWriteOptions = true;
                     break;
 

@@ -88,6 +88,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.canFormatDrive[1] = false;
     options.canFormatDrive[2] = false;
     options.canFormatDrive[3] = false;
+    options.fileTimeAccess = FileTimeAccess::NONE;
     options.reset_key = 0x1e; // is Ctrl-^ for reset or Sig. INT
     options.frequency = -1.0; // default: ignore
 
@@ -411,6 +412,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
         case FlexemuOptionId::Frequency:
             reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
             break;
+
+        case FlexemuOptionId::FileTimeAccess:
+            reg.SetValue(FLEXFILETIMEACCESS,
+                static_cast<int>(options.fileTimeAccess));
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -547,6 +553,10 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::Frequency:
             optionsToWrite.frequency = previousOptions.frequency;
             break;
+
+        case FlexemuOptionId::FileTimeAccess:
+            optionsToWrite.fileTimeAccess = previousOptions.fileTimeAccess;
+            break;
         }
     }
 
@@ -576,6 +586,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXFORMATDRIVE1, optionsToWrite.canFormatDrive[1] ? 1 : 0);
     rcFile.SetValue(FLEXFORMATDRIVE2, optionsToWrite.canFormatDrive[2] ? 1 : 0);
     rcFile.SetValue(FLEXFORMATDRIVE3, optionsToWrite.canFormatDrive[3] ? 1 : 0);
+    rcFile.SetValue(FLEXFILETIMEACCESS,
+                    static_cast<int>(optionsToWrite.fileTimeAccess));
 }
 #endif
 
@@ -692,6 +704,19 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.canFormatDrive[3] = (int_result != 0);
     }
 
+    if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
+    {
+        if (int_result < 0)
+        {
+            int_result = 0;
+        }
+        else if (int_result == 2 || int_result > 3)
+        {
+            int_result = 3;
+        }
+        options.fileTimeAccess = static_cast<FileTimeAccess>(int_result);
+    }
+
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -794,6 +819,19 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXFORMATDRIVE3, int_result))
     {
         options.canFormatDrive[3] = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))
+    {
+        if (int_result < 0)
+        {
+            int_result = 0;
+        }
+        else if (int_result == 2 || int_result > 3)
+        {
+            int_result = 3;
+        }
+        options.fileTimeAccess = static_cast<FileTimeAccess>(int_result);
     }
 #endif
 } // GetOptions

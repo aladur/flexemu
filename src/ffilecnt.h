@@ -25,6 +25,7 @@
 
 #include "misc1.h"
 #include <stdio.h>
+#include "efiletim.h"
 #include "filecont.h"
 #include "filecnts.h"
 #include "fdirent.h"
@@ -54,6 +55,7 @@ protected:
     BFilePtr    fp;
     s_floppy    param;
     DWord       file_size;
+    const FileTimeAccess &ft_access;
 
     // Variables only used for FLX format when formatting a disk
     bool        is_flex_format; // true when this is a FLEX compatible format.
@@ -68,7 +70,8 @@ public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
     FlexFileContainer(FlexFileContainer &&);
-    FlexFileContainer(const char *path, const char *mode);
+    FlexFileContainer(const char *path, const char *mode,
+                      const FileTimeAccess &fileTimeAccess);
     virtual ~FlexFileContainer();       // public destructor
 
     FlexFileContainer &operator= (const FlexFileContainer &) = delete;
@@ -79,6 +82,7 @@ public:
     static std::string bootSectorFile;
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
+                                     const FileTimeAccess &fileTimeAccess,
                                      int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;

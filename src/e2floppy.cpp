@@ -134,7 +134,8 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             try
             {
                 pfloppy = FileContainerIfSectorPtr(
-                 new NafsDirectoryContainer(containerPath.c_str()));
+                 new NafsDirectoryContainer(
+                     containerPath.c_str(), options.fileTimeAccess));
             }
             catch (FlexException &)
             {
@@ -165,14 +166,16 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 try
                 {
                     pfloppy = FileContainerIfSectorPtr(
-                     new FlexRamFileContainer(containerPath.c_str(), "rb+"));
+                     new FlexRamFileContainer(containerPath.c_str(), "rb+",
+                                              options.fileTimeAccess));
                 }
                 catch (FlexException &)
                 {
                     try
                     {
                         pfloppy = FileContainerIfSectorPtr(
-                         new FlexRamFileContainer(containerPath.c_str(), "rb"));
+                         new FlexRamFileContainer(containerPath.c_str(), "rb",
+                                                  options.fileTimeAccess));
                     }
                     catch (FlexException &)
                     {
@@ -186,7 +189,8 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                 try
                 {
                     pfloppy = FileContainerIfSectorPtr(
-                      new FlexFileContainer(containerPath.c_str(), mode));
+                      new FlexFileContainer(containerPath.c_str(), mode,
+                                            options.fileTimeAccess));
                 }
                 catch (FlexException &)
                 {
@@ -196,7 +200,8 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
                         {
                             pfloppy = FileContainerIfSectorPtr(
                              new FlexFileContainer(containerPath.c_str(),
-                                                   "rb"));
+                                                   "rb",
+                                                   options.fileTimeAccess));
                         }
                         catch (FlexException &)
                         {
@@ -658,6 +663,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
                            int type /* = TYPE_DSK_CONTAINER */)
 {
     FileContainerIfSectorPtr pfloppy;
+    FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
 
     try
     {
@@ -668,7 +674,8 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
             case TYPE_NAFS_DIRECTORY:
                 pfloppy = FileContainerIfSectorPtr(
                 NafsDirectoryContainer::Create(
-                    disk_dir.c_str(), name, trk, sec, type));
+                    disk_dir.c_str(), name, options.fileTimeAccess, trk, sec,
+                    type));
                 break;
 #endif
 
@@ -676,7 +683,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
             case TYPE_FLX_CONTAINER:
                 pfloppy = FileContainerIfSectorPtr(
                 FlexFileContainer::Create(
-                    disk_dir.c_str(), name, trk, sec, type));
+                    disk_dir.c_str(), name, trk, sec, fileTimeAccess, type));
                 break;
         }
     }

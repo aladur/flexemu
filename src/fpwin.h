@@ -24,6 +24,7 @@
 #define FPWIN_INCLUDED
 
 #include "misc1.h"
+#include "efiletim.h"
 #include "warnoff.h"
 #include <QMainWindow>
 #include <QString>
@@ -94,7 +95,8 @@ private:
     void CreateWindowsActions();
     void CreateHelpActions();
     void CreateStatusBar();
-    FlexplorerMdiChild *CreateMdiChild(const QString &path);
+    FlexplorerMdiChild *CreateMdiChild(const QString &path,
+                                       FileTimeAccess &fileTimeAccess);
     FlexplorerMdiChild *ActiveMdiChild() const;
     QMdiSubWindow *FindMdiChild(const QString &path) const;
     void changeEvent(QEvent *event);
@@ -146,6 +148,8 @@ protected:
     QSize optionsDialogSize;
     QSize attributesDialogSize;
     QString findPattern;
+
+    FileTimeAccess ft_access;
 };
 
 #endif

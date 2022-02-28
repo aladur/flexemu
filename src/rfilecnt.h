@@ -23,6 +23,7 @@
 #ifndef RFILECNT_INCLUDED
 #define RFILECNT_INCLUDED
 
+#include "efiletim.h"
 #include "ffilecnt.h"
 #include <memory>
 
@@ -39,7 +40,8 @@ public:
     FlexRamFileContainer() = delete;
     FlexRamFileContainer(const FlexRamFileContainer &) = delete;
     FlexRamFileContainer(FlexRamFileContainer &&);
-    FlexRamFileContainer(const char *path, const char *mode);
+    FlexRamFileContainer(const char *path, const char *mode,
+                         const FileTimeAccess &fileTimeAccess);
     virtual ~FlexRamFileContainer();
 
     FlexRamFileContainer &operator= (const FlexRamFileContainer &) = delete;

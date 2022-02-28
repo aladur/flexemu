@@ -56,9 +56,11 @@
 /* Constructor                          */
 /****************************************/
 
-DirectoryContainer::DirectoryContainer(const char *aPath) :
+DirectoryContainer::DirectoryContainer(const char *aPath,
+                                       const FileTimeAccess &fileTimeAccess) :
     attributes(0),
-    disk_number(0)
+    disk_number(0),
+    ft_access(fileTimeAccess)
 {
     struct stat sbuf;
     static Word number = 0;
@@ -110,7 +112,7 @@ bool DirectoryContainer::IsWriteProtected() const
 
 // type, track and sectors parameter will be ignored
 DirectoryContainer *DirectoryContainer::Create(const char *dir,
-        const char *name, int, int, int)
+        const char *name, int, int, const FileTimeAccess &fileTimeAccess, int)
 {
     struct stat sbuf;
     std::string aPath;
@@ -139,7 +141,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
         }
     }
 
-    return new DirectoryContainer(aPath.c_str());
+    return new DirectoryContainer(aPath.c_str(), fileTimeAccess);
 }
 
 std::string DirectoryContainer::GetPath() const
@@ -404,7 +406,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_WRITING_TO, std::string(fileName));
     }
 
-    SetDate(lowerFileName.c_str(), buffer.GetDate());
+    SetDateTime(lowerFileName.c_str(), buffer.GetDate(), buffer.GetTime());
     SetAttributes(lowerFileName.c_str(), buffer.GetAttributes());
 
     if (buffer.IsRandom())
@@ -434,9 +436,9 @@ void DirectoryContainer::Initialize_header(Byte)
     */
 }
 
-// set the date of a file
-
-bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
+// set the date and time of a file
+bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
+                                     const BTime &time)
 {
     struct stat    sbuf;
     struct utimbuf timebuf;
@@ -446,13 +448,15 @@ bool    DirectoryContainer::SetDate(const char *fileName, const BDate &date)
 
     strlower(lowerFileName);
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
+    const bool setFileTime =
+        (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
     if (stat(filePath.c_str(), &sbuf) >= 0)
     {
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec   = 0;
-        file_time.tm_min   = 0;
-        file_time.tm_hour  = 12;
+        file_time.tm_min   = setFileTime ? time.GetMinute() : 0;
+        file_time.tm_hour  = setFileTime ? time.GetHour() : 12;
         file_time.tm_mon   = date.GetMonth() - 1;
         file_time.tm_mday  = date.GetDay();
         file_time.tm_year  = date.GetYear() - 1900;

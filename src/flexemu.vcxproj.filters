@@ -273,6 +273,9 @@
     <ClInclude Include="engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="efiletim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="fcinfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>

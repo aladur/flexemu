@@ -89,6 +89,7 @@ FlexDirEntry &FlexDirEntry::operator=(FlexDirEntry &&src)
 void FlexDirEntry::CopyFrom(const FlexDirEntry &src)
 {
     date = src.date;
+    time = src.time;
     size = src.size;
     attributes = src.attributes;
     sectorMap = src.sectorMap;
@@ -114,6 +115,15 @@ void FlexDirEntry::SetDate(int d, int m, int y)
     date.SetDate(d, m, y);
 }
 
+const BTime &FlexDirEntry::GetTime() const
+{
+    return time;
+}
+
+void FlexDirEntry::SetTime(const BTime &t)
+{
+    time = t;
+}
 
 void FlexDirEntry::SetTotalFileName(const char *s)
 {

@@ -93,9 +93,12 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 /* Constructor                          */
 /****************************************/
 
-FlexFileContainer::FlexFileContainer(const char *path, const char *mode) :
+FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
+                                     const FileTimeAccess &fileTimeAccess) :
     fp(path, mode), param { },
-    file_size(0), is_flex_format(true),
+    file_size(0),
+    ft_access(fileTimeAccess),
+    is_flex_format(true),
     sectors0_side0_max(0), sectors_side0_max(0),
     flx_header { },
     attributes(0)
@@ -189,6 +192,7 @@ FlexFileContainer::~FlexFileContainer()
 
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
     fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
+    ft_access(src.ft_access),
     is_flex_format(src.is_flex_format),
     sectors0_side0_max(src.sectors0_side0_max),
     sectors_side0_max(src.sectors_side0_max),
@@ -262,7 +266,7 @@ bool FlexFileContainer::IsFlexFormat() const
 }
 
 FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
-        int t, int s, int fmt)
+        int t, int s, const FileTimeAccess &fileTimeAccess, int fmt)
 {
     std::string path;
 
@@ -281,7 +285,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
     }
 
     path += name;
-    return new FlexFileContainer(path.c_str(), "rb+");
+    return new FlexFileContainer(path.c_str(), "rb+", fileTimeAccess);
 }
 
 // return true if file found
@@ -715,6 +719,10 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     // Create a new directory entry.
     de.SetDate(buffer.GetDate());
+    if ((ft_access & FileTimeAccess::Set) == FileTimeAccess::Set)
+    {
+        de.SetTime(buffer.GetTime());
+    }
     de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
     de.SetTotalFileName(pFileName);
@@ -748,7 +756,12 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     buffer.SetAttributes(de.GetAttributes());
     buffer.SetSectorMap(de.GetSectorMap());
     buffer.SetFilename(fileName);
-    buffer.SetDate(de.GetDate());
+    BTime time;
+    if ((ft_access & FileTimeAccess::Get) == FileTimeAccess::Get)
+    {
+        time = de.GetTime();
+    }
+    buffer.SetDateTime(de.GetDate(), time);
     size = de.GetFileSize();
 
     if (size < 0)
@@ -858,6 +871,12 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {
+                BTime time;
+
+                if ((ft_access & FileTimeAccess::Set) == FileTimeAccess::Set)
+                {
+                   time = entry.GetTime();
+                }
                 int records = entry.GetFileSize() / param.byte_p_sector;
                 memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
                 strncpy(pde->filename, entry.GetFileName().c_str(),
@@ -866,7 +885,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 strncpy(pde->file_ext, entry.GetFileExt().c_str(),
                         FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
-                pde->reserved1 = 0;
+                pde->hour = time.GetHour();
                 entry.GetStartTrkSec(tmp1, tmp2);
                 pde->start.trk = static_cast<Byte>(tmp1);
                 pde->start.sec = static_cast<Byte>(tmp2);
@@ -875,7 +894,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->end.sec = static_cast<Byte>(tmp2);
                 setValueBigEndian<Word>(&pde->records[0], static_cast<Word>(records));
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
-                pde->reserved2 = 0;
+                pde->minute = time.GetMinute();
                 date = entry.GetDate();
                 pde->day = static_cast<Byte>(date.GetDay());
                 pde->month = static_cast<Byte>(date.GetMonth());

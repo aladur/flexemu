@@ -25,8 +25,10 @@
 #include "flexerr.h"
 
 
-FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode) :
-    FlexFileContainer(path, mode), is_dirty(false)
+FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
+                                           const FileTimeAccess
+                                           &p_fileTimeAccess) :
+    FlexFileContainer(path, mode, p_fileTimeAccess), is_dirty(false)
 {
     unsigned int sectors;
 

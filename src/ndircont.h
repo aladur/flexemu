@@ -27,6 +27,7 @@
 
 #include "misc1.h"
 
+#include "efiletim.h"
 #include "filecnts.h"
 #include "flexemu.h"
 #include <string>
@@ -89,7 +90,8 @@ public:
     NafsDirectoryContainer() = delete;
     NafsDirectoryContainer(const NafsDirectoryContainer &) = delete;
     NafsDirectoryContainer(NafsDirectoryContainer &&) = delete;
-    NafsDirectoryContainer(const char *path);
+    NafsDirectoryContainer(const char *path,
+                           const FileTimeAccess &fileTimeAccess);
     virtual ~NafsDirectoryContainer();
 
     NafsDirectoryContainer &operator=(const NafsDirectoryContainer &) = delete;
@@ -99,6 +101,7 @@ private:
     std::string directory;
     Byte attributes;
     bool isOpen;
+    const FileTimeAccess &ft_access;
 
     s_floppy param;
 
@@ -114,7 +117,9 @@ private:
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,
-                                          const char *name, int t, int s,
+                                          const char *name,
+                                          const FileTimeAccess &fileTimeAccess,
+                                          int t, int s,
                                           int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
@@ -173,7 +178,9 @@ private:
         const char *ppath,
         Byte month,
         Byte day,
-        Byte year) const;
+        Byte year,
+        Byte hour,
+        Byte minute) const;
     bool update_file_time(const char *path, SWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &st) const;

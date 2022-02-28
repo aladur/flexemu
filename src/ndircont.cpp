@@ -74,8 +74,9 @@
 // But writing sectors which are part of the free chain or a directory sector
 // can corrupt the emulation.
 
-NafsDirectoryContainer::NafsDirectoryContainer(const char *path) :
-    attributes(0), dir_extend{0, 0}
+NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
+        const FileTimeAccess &fileTimeAccess) :
+    attributes(0), ft_access(fileTimeAccess), dir_extend{0, 0}
 {
     struct stat sbuf;
     static Word number = 0;
@@ -124,6 +125,7 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
 // format, track and sector parameter is ignored.
 NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         const char *name,
+        const FileTimeAccess &fileTimeAccess,
         int /* t */,
         int /* s */,
         int /* fmt = TYPE_DSK_CONTAINER */)
@@ -145,7 +147,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
-    return new NafsDirectoryContainer(totalPath.c_str());
+    return new NafsDirectoryContainer(totalPath.c_str(), fileTimeAccess);
 }
 
 std::string NafsDirectoryContainer::GetPath() const
@@ -785,6 +787,8 @@ void NafsDirectoryContainer::add_to_directory(
 {
     struct tm *lt;
     SWord records;
+    const bool setFileTime =
+        (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
     if (dir_index < 0 ||
         (dir_index / DIRENTRIES) >= static_cast<signed>(flex_directory.size()))
@@ -812,6 +816,8 @@ void NafsDirectoryContainer::add_to_directory(
     dir_entry.month = static_cast<Byte>(lt->tm_mon + 1);
     dir_entry.day = static_cast<Byte>(lt->tm_mday);
     dir_entry.year = static_cast<Byte>(year);
+    dir_entry.hour = setFileTime ? static_cast<Byte>(lt->tm_hour) : 0U;
+    dir_entry.minute = setFileTime ? static_cast<Byte>(lt->tm_min) : 0U;
 } // add_to_directory
 
 // Check if file 'pfilename' is available in file which contains a list
@@ -1215,18 +1221,20 @@ void NafsDirectoryContainer::check_for_extend(SWord dir_index,
 // Return false if not successful otherwise return true.
 // years < 75 will be represented as >= 2000
 bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
-        Byte day, Byte year) const
+        Byte day, Byte year, Byte hour, Byte minute) const
 {
     struct stat    statbuf;
     struct utimbuf timebuf;
     struct tm      file_time;
+    const bool setFileTime =
+        (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
     if (stat(ppath, &statbuf) >= 0)
     {
         timebuf.actime = statbuf.st_atime;
         file_time.tm_sec = 0;
-        file_time.tm_min = 0;
-        file_time.tm_hour = 12;
+        file_time.tm_min = setFileTime ? minute : 0;
+        file_time.tm_hour = setFileTime ? hour : 12;
         file_time.tm_mon = month - 1;
         file_time.tm_mday = day;
         file_time.tm_year = year < 75 ? year + 100 : year;
@@ -1257,7 +1265,9 @@ bool NafsDirectoryContainer::update_file_time(const char *path,
             return set_file_time(path,
                 directory_entry.month,
                 directory_entry.day,
-                directory_entry.year);
+                directory_entry.year,
+                directory_entry.hour,
+                directory_entry.minute);
         }
     }
 
@@ -1327,7 +1337,9 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 set_file_time(new_path.c_str(),
                     dir_sector.dir_entry[i].month,
                     dir_sector.dir_entry[i].day,
-                    dir_sector.dir_entry[i].year);
+                    dir_sector.dir_entry[i].year,
+                    dir_sector.dir_entry[i].hour,
+                    dir_sector.dir_entry[i].minute);
             } // for
         } // if
     } // for

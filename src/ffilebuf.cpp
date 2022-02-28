@@ -586,7 +586,9 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
                 SetAdjustedFilename(getFileName(path).c_str());
                 struct tm *lt = localtime(&(sbuf.st_mtime));
-                SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
+                SetDateTime(
+                        BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900),
+                        BTime(lt->tm_hour, lt->tm_min));
 
                 return true;
             }
@@ -729,18 +731,13 @@ tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
     return result;
 }
 
-void FlexFileBuffer::SetDate(const BDate &new_date)
+void FlexFileBuffer::SetDateTime(const BDate &new_date, const BTime &new_time)
 {
     fileHeader.day = static_cast<Word>(new_date.GetDay());
     fileHeader.month = static_cast<Word>(new_date.GetMonth());
     fileHeader.year = static_cast<Word>(new_date.GetYear());
-}
-
-void FlexFileBuffer::SetDate(int day, int month, int year)
-{
-    fileHeader.day = static_cast<Word>(day);
-    fileHeader.month = static_cast<Word>(month);
-    fileHeader.year = static_cast<Word>(year);
+    fileHeader.hour = new_time.GetHour();
+    fileHeader.minute = new_time.GetMinute();
 }
 
 const BDate FlexFileBuffer::GetDate() const
@@ -753,5 +750,10 @@ const BDate FlexFileBuffer::GetDate() const
             fileHeader.year);
 
     return date;
+}
+
+BTime FlexFileBuffer::GetTime() const
+{
+    return BTime(fileHeader.hour, fileHeader.minute, 0U);
 }
 

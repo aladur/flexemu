@@ -247,6 +247,7 @@
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />
+    <ClInclude Include="efiletim.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcnffile.h" />
     <ClInclude Include="fcopyman.h" />

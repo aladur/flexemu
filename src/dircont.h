@@ -26,6 +26,7 @@
 #include "misc1.h"
 #include <stdio.h>
 
+#include "efiletim.h"
 #include "filecont.h"
 #include "fdirent.h"
 #include "flexerr.h"
@@ -46,12 +47,13 @@ private:
     std::string directory;
     Byte attributes;
     Word disk_number;
+    const FileTimeAccess &ft_access;
 
 public:
     DirectoryContainer() = delete;
     DirectoryContainer(const DirectoryContainer &) = delete;
     DirectoryContainer(DirectoryContainer &&) = delete;
-    DirectoryContainer(const char *path);
+    DirectoryContainer(const char *path, const FileTimeAccess &fileTimeAccess);
     virtual ~DirectoryContainer();      // public destructor
 
     DirectoryContainer &operator= (const DirectoryContainer &) = delete;
@@ -61,6 +63,7 @@ public:
 public:
     static DirectoryContainer *Create(const char *dir, const char *name,
                                       int t, int s,
+                                      const FileTimeAccess &fileTimeAccess,
                                       int fmt = TYPE_DSK_CONTAINER);
     bool IsWriteProtected() const;
     bool GetInfo(FlexContainerInfo &info) const;
@@ -96,7 +99,8 @@ private:
     bool IsFlexFilename(const char *pfilename,
                         char *pname = nullptr,
                         char *pext = nullptr) const;
-    bool    SetDate(const char *fileName, const BDate &date);
+    bool SetDateTime(const char *fileName, const BDate &date,
+                     const BTime &time);
     bool    SetRandom(const char *fileName);
     void Initialize_header(Byte wp);
 

@@ -24,6 +24,7 @@
 #define FPMDICH_INCLUDED
 
 #include "misc1.h"
+#include "efiletim.h"
 #include "warnoff.h"
 #include <QPair>
 #include <QPoint>
@@ -53,7 +54,8 @@ class FlexplorerMdiChild : public QTableView
     Q_OBJECT
 
 public:
-    FlexplorerMdiChild(const QString &path);
+    FlexplorerMdiChild(const QString &path,
+                       const FileTimeAccess &fileTimeAccess);
     FlexplorerMdiChild() = delete;
     virtual ~FlexplorerMdiChild();
 
@@ -108,6 +110,7 @@ private:
     QPoint dragStartPosition;
     int selectedFilesCount;
     int selectedFilesByteSize;
+    const FileTimeAccess &fileTimeAccess;
 
     static const QString mimeTypeFlexDiskImageFile;
 };

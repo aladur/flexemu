@@ -250,6 +250,7 @@ flexemu_SOURCES = \
 	e2.h \
 	e2floppy.h \
 	e2screen.h \
+	efiletim.h \
 	efslctle.h \
 	engine.h \
 	fcinfo.h \
@@ -335,6 +336,7 @@ flexplorer_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	efiletim.h \
 	fcinfo.h \
 	fcopyman.h \
 	fdirent.h \
@@ -407,6 +409,7 @@ dsktool_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	efiletim.h \
 	fcinfo.h \
 	fcopyman.h \
 	fdirent.h \
@@ -520,6 +523,7 @@ libflex_a_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	efiletim.h \
 	fcinfo.h \
 	fcnffile.h \
 	fcopyman.h \

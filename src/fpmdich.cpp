@@ -50,9 +50,11 @@
 const QString FlexplorerMdiChild::mimeTypeFlexDiskImageFile =
                                       "application/x-flexdiskimagefile";
 
-FlexplorerMdiChild::FlexplorerMdiChild(const QString &path) :
+FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
+                                       const FileTimeAccess &p_fileTimeAccess) :
     dragStartPosition(0,0),
-    selectedFilesCount(0), selectedFilesByteSize(0)
+    selectedFilesCount(0), selectedFilesByteSize(0),
+    fileTimeAccess(p_fileTimeAccess)
 {
     SetupModel(path);
     SetupView();
@@ -408,7 +410,8 @@ void FlexplorerMdiChild::Info()
 
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
-    model.reset(new FlexplorerTableModel(path.toUtf8().data(), this));
+    model.reset(
+        new FlexplorerTableModel(path.toUtf8().data(), fileTimeAccess, this));
     setModel(model.get());
 }
 

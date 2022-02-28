@@ -109,12 +109,12 @@ struct s_dir_entry
     char    filename[FLEX_BASEFILENAME_LENGTH]; // Name of file
     char    file_ext[FLEX_FILEEXT_LENGTH]; // Extension of file
     Byte    file_attr; // File attributes, see flexFileAttributes
-    Byte    reserved1; // To be initialized with 0
+    Byte    hour; // FLEX extension: hour of creation. Default: 0
     st_t    start; // Track/secor of first sector of the file
     st_t    end; // Track/sector of last sector of the file
     Byte    records[2]; // Number of records (= sectors) the file has
     Byte    sector_map; // Indicates a random access file, see IS_RANDOM_FILE
-    Byte    reserved2; // To be initialized with 0
+    Byte    minute; // FLEX extension: minute of creation. Default: 0
     Byte    month; // Month when the file was created, range 1 - 12
     Byte    day; // Day when the file was created, range 1 - 31
     Byte    year; // Year when the file was created, range 0 - 99

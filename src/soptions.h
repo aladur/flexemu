@@ -29,6 +29,7 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include "efiletim.h"
 
 // Maximum size of one emulated pixel on screen
 #define MAX_PIXELSIZE (5)
@@ -58,6 +59,7 @@ enum class FlexemuOptionId : uint8_t
     NColors,
     IsInverse,
     PixelSize,
+    FileTimeAccess,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -85,6 +87,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::NColors,
     FlexemuOptionId::IsInverse,
     FlexemuOptionId::PixelSize,
+    FlexemuOptionId::FileTimeAccess,
 };
 
 struct sOptions
@@ -106,6 +109,7 @@ struct sOptions
     bool useRtc;
     bool term_mode;
     bool canFormatDrive[4];
+    FileTimeAccess fileTimeAccess;
     short int reset_key; // must be short int because of sscanf !!!
     float frequency;
 

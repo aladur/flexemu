@@ -72,10 +72,12 @@ const QVector<FlexplorerTableModel::sFileTypes>
     { "DAT", "Data file" },
 };
 
-FlexplorerTableModel::FlexplorerTableModel(const char *p_path, QObject *parent)
+FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
+                                           const FileTimeAccess &fileTimeAccess,
+                                           QObject *parent)
     : QAbstractTableModel(parent)
 {
-    OpenContainer(p_path);
+    OpenContainer(p_path, fileTimeAccess);
     Initialize();
 }
 
@@ -135,7 +137,10 @@ QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
     setData(index(row, column++), filesize, role);
     const auto &date = dirEntry.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
-    setData(index(row, column++), qdate, role);
+    const auto &time = dirEntry.GetTime();
+    QTime qtime(time.GetHour(), time.GetMinute());
+    QDateTime qDateTime(qdate, qtime);
+    setData(index(row, column++), qDateTime, role);
     QString attributes(dirEntry.GetAttributesString().c_str());
     setData(index(row, column), attributes, role);
 
@@ -607,9 +612,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                 {
                     return lhs[column].toString() < rhs[column].toString();
                 }
-                else if (lhs[column].type() == QVariant::Date)
+                else if (lhs[column].type() == QVariant::DateTime)
                 {
-                    return lhs[column].toDate() < rhs[column].toDate();
+                    return lhs[column].toDateTime() < rhs[column].toDateTime();
                 }
                 else if (lhs[column].type() == QVariant::Int)
                 {
@@ -632,9 +637,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                 {
                     return lhs[column].toString() > rhs[column].toString();
                 }
-                else if (lhs[column].type() == QVariant::Date)
+                else if (lhs[column].type() == QVariant::DateTime)
                 {
-                    return lhs[column].toDate() > rhs[column].toDate();
+                    return lhs[column].toDateTime() > rhs[column].toDateTime();
                 }
                 else if (lhs[column].type() == QVariant::Int)
                 {
@@ -777,7 +782,8 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
     return textString;
 }
 
-void FlexplorerTableModel::OpenContainer(const char *p_path)
+void FlexplorerTableModel::OpenContainer(const char *p_path,
+                                         const FileTimeAccess &fileTimeAccess)
 {
     struct stat sbuf;
     
@@ -802,19 +808,22 @@ void FlexplorerTableModel::OpenContainer(const char *p_path)
             directory = directory.substr(0, directory.size()-1);
         }
         
-        container.reset(new DirectoryContainer(directory.c_str()));
+        container.reset(
+            new DirectoryContainer(directory.c_str(), fileTimeAccess));
     }
     else
     {   
         try 
         {   
             // 1st try opening read-write.
-            container.reset(new FlexFileContainer(p_path, "rb+"));
+            container.reset(new FlexFileContainer(p_path, "rb+",
+                            fileTimeAccess));
         }
         catch (FlexException &)
         {   
             // 2nd try opening read-only.
-            container.reset(new FlexFileContainer(p_path, "rb"));
+            container.reset(new FlexFileContainer(p_path, "rb",
+                            fileTimeAccess));
         }
     }
     auto container_s =
