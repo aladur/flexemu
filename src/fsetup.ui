@@ -875,6 +875,16 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QCheckBox" name="c_fileTime">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="text">
+                   <string>Use file time (FLEX extension)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="verticalSpacer_6">
                   <property name="orientation">
                    <enum>Qt::Vertical</enum>

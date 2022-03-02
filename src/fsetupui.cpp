@@ -247,6 +247,11 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
         r_frequencySet->setChecked(true);
         e_frequency->setText(frequency_string);
     }
+
+    auto setFileTime = (options.fileTimeAccess ==
+           (FileTimeAccess::Get | FileTimeAccess::Set));
+    c_fileTime->setChecked(setFileTime);
+
     SetOptionsReadOnly(readOnlyOptions);
 }
 
@@ -362,7 +367,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::FileTimeAccess:
-                // TODO
+                c_fileTime->setEnabled(false);
                 break;
         }
     }
@@ -663,6 +668,12 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
             auto frequency = englishUS.toFloat(e_frequency->text(), &success);
             options.frequency = (success ? frequency : -1.0f);
         }
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::FileTimeAccess))
+    {
+        options.fileTimeAccess = c_fileTime->isChecked() ?
+            FileTimeAccess::Get | FileTimeAccess::Set : FileTimeAccess::NONE;
     }
 }
 

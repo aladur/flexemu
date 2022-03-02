@@ -140,6 +140,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::PixelSize);
     }
+
+    if (opt1.fileTimeAccess != opt2.fileTimeAccess)
+    {
+        notEquals.push_back(FlexemuOptionId::FileTimeAccess);
+    }
 }
 
 const FlexemuOptionsDifference::Result&
