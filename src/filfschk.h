@@ -25,6 +25,7 @@
 #include <string>
 #include <iostream>
 #include "typedefs.h"
+#include "efiletim.h"
 #include "filecnts.h"
 #include "fcinfo.h"
 
@@ -105,6 +106,8 @@ class FileContainerCheck
         Byte month;
         Byte day;
         Byte year;
+        Byte hour;
+        Byte minute;
 
         s_item(SectorType p_type, st_t p_start, st_t p_end,
                const std::string &p_name) :
@@ -120,7 +123,8 @@ class FileContainerCheck
 
 public:
     FileContainerCheck() = delete;
-    FileContainerCheck(FileContainerIfSector &fc, bool verbose);
+    FileContainerCheck(FileContainerIfSector &fc, bool verbose,
+                       FileTimeAccess fileTimeAccess);
     FileContainerCheck(const FileContainerCheck &src) = delete;
     FileContainerCheck(FileContainerCheck &&src) = delete;
     ~FileContainerCheck();
@@ -145,6 +149,7 @@ private:
     void CheckLinks();
     void CheckItems();
     static bool CheckDate(Byte day, Byte month, Byte year);
+    static bool CheckTime(Byte hour, Byte minute);
     void DumpItemChains(std::ostream &os) const;
 
     void AddItem(const std::string &name, SectorType type,      
@@ -174,6 +179,7 @@ private:
     Byte disk_day;
     Byte disk_year;
     bool verbose;
+    FileTimeAccess fileTimeAccess;
 };
 
 // The following objects represent and discribe the check results.
@@ -262,6 +268,13 @@ struct BadDate : ContainerCheckResultItem
     Byte year;
 };
 
+struct BadTime : ContainerCheckResultItem
+{
+    std::string name;
+    Byte hour;
+    Byte minute;
+};
+
 extern std::ostream &operator<<(std::ostream &os,
                                 const ContainerCheckResultItemPtr &result);
 
@@ -280,4 +293,5 @@ extern std::ostream& operator<<(std::ostream &os, const LostSectors &item);
 extern std::ostream& operator<<(std::ostream &os, const HasCycle &item);
 extern std::ostream& operator<<(std::ostream &os, const BadLink &item);
 extern std::ostream& operator<<(std::ostream &os, const BadDate &item);
+extern std::ostream& operator<<(std::ostream &os, const BadTime &item);
 

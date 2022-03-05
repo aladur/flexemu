@@ -628,9 +628,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 }
 
 int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
-                              bool debug_output)
+                              bool debug_output, FileTimeAccess fileTimeAccess)
 {
-    auto fileTimeAccess = FileTimeAccess::NONE;
     FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
 
     if (!src.IsFlexFormat())
@@ -638,7 +637,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
 
-    FileContainerCheck check(src, verbose);
+    FileContainerCheck check(src, verbose, fileTimeAccess);
 
     std::cout << "Check " << dsk_file << " ...";
     if (check.CheckFileSystem())
@@ -703,13 +702,15 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
 }
 
 int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
-                               bool verbose, bool debug_output)
+                               bool verbose, bool debug_output,
+                               FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
     {
         try
         {
-            CheckConsistencyOfDskFile(dsk_file, verbose, debug_output);
+            CheckConsistencyOfDskFile(dsk_file, verbose, debug_output,
+                    fileTimeAccess);
         }
         catch (FlexException &ex)
         {
@@ -1246,7 +1247,7 @@ int main(int argc, char *argv[])
          (default_answer != '?')) ||
         (command != 'i' && command != 'X' && command != 'x' && convert_text) ||
         (command != 'c' && debug_output) ||
-        (std::string("CilxX").find_first_of(command) == std::string::npos &&
+        (std::string("cCilxX").find_first_of(command) == std::string::npos &&
             (fileTimeAccess != FileTimeAccess::NONE)))
     {
         std::cerr << "*** Error: Wrong syntax\n";
@@ -1254,7 +1255,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (std::string("CilxX").find_first_of(command) != std::string::npos &&
+    if (std::string("cCilxX").find_first_of(command) != std::string::npos &&
        (getenv("DSKTOOL_USE_FILETIME") != nullptr))
     {
         fileTimeAccess = FileTimeAccess::Get | FileTimeAccess::Set;
@@ -1266,7 +1267,8 @@ int main(int argc, char *argv[])
         {
             case 'c':
                 return CheckConsistencyOfDskFiles(dsk_files, verbose,
-                                                  debug_output);
+                                                  debug_output,
+                                                  fileTimeAccess);
 
             case 'f':
                 return FormatFlexDiskFile(dsk_file, disk_format, tracks,

@@ -32,8 +32,9 @@
 
 
 FileContainerCheck::FileContainerCheck(
-        FileContainerIfSector &p_fc, bool p_verbose) :
-    fc(p_fc), verbose(p_verbose)
+        FileContainerIfSector &p_fc, bool p_verbose,
+        FileTimeAccess p_fileTimeAccess) :
+    fc(p_fc), verbose(p_verbose), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();
 }
@@ -99,6 +100,11 @@ bool FileContainerCheck::CheckDate(Byte p_day, Byte p_month, Byte p_year)
     }
 
     return p_day <= max_day;
+}
+
+bool FileContainerCheck::CheckTime(Byte p_hour, Byte p_minute)
+{
+    return p_hour < 24 && p_minute < 60;
 }
 
 void FileContainerCheck::CheckDisk()
@@ -196,6 +202,19 @@ void FileContainerCheck::CheckItems()
             result->day = item.day;
             result->month = item.month;
             result->year = item.year;
+            results.emplace_back(result);
+        }
+
+        if (item.type == SectorType::File &&
+            fileTimeAccess != FileTimeAccess::NONE &&
+            !CheckTime(item.hour, item.minute))
+        {
+            auto *result = new BadTime;
+
+            result->type = ContainerCheckResultItem::Type::Info;
+            result->name = GetItemName(item);
+            result->hour = item.hour;
+            result->minute = item.minute;
             results.emplace_back(result);
         }
 
@@ -582,12 +601,16 @@ void FileContainerCheck::InitializeFileSectors()
             auto day = dir_entry.day;
             auto month = dir_entry.month;
             auto year = dir_entry.year;
+            auto hour = dir_entry.hour & 0x7F;
+            auto minute = dir_entry.minute;
 
             AddItem(name, SectorType::File, start, end, records, is_random);
             auto &item = items.at(items.size() - 1);
             item.day = day;
             item.month = month;
             item.year = year;
+            item.hour = hour;
+            item.minute = minute;
         }
 
         current = dir_sector.next;
@@ -829,6 +852,10 @@ std::ostream &operator<<(std::ostream &os,
     {
         return os << *bd;
     }
+    if (const auto *bt = dynamic_cast<BadTime *>(result.get()))
+    {
+        return os << *bt;
+    }
     return os;
 }
 
@@ -958,6 +985,22 @@ std::ostream& operator<<(std::ostream &os, const BadDate &item)
           std::setw(2) << (Word)item.month << "-" <<
           std::setw(2) << (Word)item.day << "-" <<
           std::setw(2) << (Word)item.year;
+
+    os.fill(previous_fill);
+    os.flags(previous_flags);
+
+    return os;
+}
+
+std::ostream& operator<<(std::ostream &os, const BadTime &item)
+{
+    auto previous_flags = os.flags();
+    auto previous_fill = os.fill('0');
+
+    os << std::hex << std::uppercase << item.type <<
+          "BADTIM: " << item.name << " has a bad time. HH-MM is " <<
+          std::setw(2) << (Word)item.hour << "-" <<
+          std::setw(2) << (Word)item.minute;
                  
     os.fill(previous_fill);
     os.flags(previous_flags);
