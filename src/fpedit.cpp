@@ -57,16 +57,24 @@ QValidator::State FlexRegularExpressionValidator::validate(QString &input,
     return result;
 }
 
-FlexDateDelegate::FlexDateDelegate(QWidget *p_parentWidget) :
+FlexDateDelegate::FlexDateDelegate(const FileTimeAccess &p_fileTimeAccess,
+        QWidget *p_parentWidget) :
+    fileTimeAccess(p_fileTimeAccess),
     parentWidget(p_parentWidget)
 {
+}
+
+QString FlexDateDelegate::displayText(const QVariant &value,
+        const QLocale &locale) const
+{
+    return locale.toString(value.toDate(), QLocale::ShortFormat);
 }
 
 QWidget *FlexDateDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &,
                                         const QModelIndex &) const
 {
-    auto *editor = new QDateEdit(parent);
+    auto editor = new QDateEdit(parent);
 
     editor->setFrame(false);
     // Limit the date range to valid FLEX dates.
@@ -94,10 +102,65 @@ void FlexDateDelegate::setModelData(QWidget *editor,
     model->setData(index, value, Qt::EditRole);
     //TODO: Set date in model
     QMessageBox::warning(parentWidget, tr("FLEXPlorer Error"),
-                         "Changing date not implemented yet", QMessageBox::Ok);
+        "Changing date not implemented yet", QMessageBox::Ok);
 }
 
 void FlexDateDelegate::updateEditorGeometry(QWidget *editor,
+                                            const QStyleOptionViewItem &option,
+                                            const QModelIndex &) const
+{
+    editor->setGeometry(option.rect);
+}
+
+FlexDateTimeDelegate::FlexDateTimeDelegate(
+        const FileTimeAccess &p_fileTimeAccess,
+        QWidget *p_parentWidget) :
+    fileTimeAccess(p_fileTimeAccess),
+    parentWidget(p_parentWidget)
+{
+}
+
+QString FlexDateTimeDelegate::displayText(const QVariant &value,
+        const QLocale &locale) const
+{
+    return locale.toString(value.toDateTime(), QLocale::ShortFormat);
+}
+
+QWidget *FlexDateTimeDelegate::createEditor(QWidget *parent,
+                                            const QStyleOptionViewItem &,
+                                            const QModelIndex &) const
+{
+    auto editor = new QDateTimeEdit(parent);
+
+    editor->setFrame(false);
+    // Limit the date range to valid FLEX dates.
+    editor->setDateRange(QDate(1975, 1, 1), QDate(2074, 12, 31));
+    editor->setSelectedSection(QDateTimeEdit::YearSection);
+
+    return editor;
+}
+
+void FlexDateTimeDelegate::setEditorData(QWidget *editor,
+                                         const QModelIndex &index) const
+{
+    auto value = index.model()->data(index, Qt::EditRole).toDateTime();
+    auto *dateTimeEditor = static_cast<QDateTimeEdit *>(editor);
+    dateTimeEditor->setDateTime(value);
+}
+
+void FlexDateTimeDelegate::setModelData(QWidget *editor,
+                                        QAbstractItemModel *model,
+                                        const QModelIndex &index) const
+{
+    auto *dateTimeEditor = static_cast<QDateTimeEdit *>(editor);
+    auto value = dateTimeEditor->dateTime();
+    model->setData(index, value, Qt::EditRole);
+    //TODO: Set date and time in model
+    QMessageBox::warning(parentWidget, tr("FLEXPlorer Error"),
+        "Changing date and time not implemented yet", QMessageBox::Ok);
+}
+
+void FlexDateTimeDelegate::updateEditorGeometry(QWidget *editor,
                                             const QStyleOptionViewItem &option,
                                             const QModelIndex &) const
 {

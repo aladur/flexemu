@@ -368,7 +368,8 @@ void FLEXplorer::Options()
     QDialog dialog;
     FlexplorerOptionsUi ui;
     ui.setupUi(dialog);
-    ui.TransferDataToDialog(FlexFileContainer::bootSectorFile.c_str());
+    ui.TransferDataToDialog(FlexFileContainer::bootSectorFile.c_str(),
+            ft_access);
     dialog.resize(optionsDialogSize);
     auto result = dialog.exec();
     optionsDialogSize = dialog.size();
@@ -377,6 +378,7 @@ void FLEXplorer::Options()
     {
         std::string bootSectorFile = ui.GetBootSectorFile().toUtf8().data();
         FlexFileContainer::bootSectorFile = bootSectorFile;
+        SetFileTimeAccess(ui.GetFileTimeAccess());
     }
 }
 
@@ -513,6 +515,8 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
     child->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(child, &FlexplorerMdiChild::customContextMenuRequested,
             this, &FLEXplorer::ContextMenuRequested);
+    connect(this, &FLEXplorer::FileTimeAccessHasChanged,
+            child, &FlexplorerMdiChild::OnFileTimeAccessChanged);
 
     return child;
 }
@@ -1034,5 +1038,16 @@ void FLEXplorer::ReadDefaultOptions()
         ft_access = static_cast<FileTimeAccess>(int_result);
     }
 #endif
+}
+
+void FLEXplorer::SetFileTimeAccess(FileTimeAccess fileTimeAccess)
+{
+    auto hasChanged = (ft_access != fileTimeAccess);
+
+    ft_access = fileTimeAccess;
+    if (hasChanged)
+    {
+        emit FileTimeAccessHasChanged();
+    }
 }
 

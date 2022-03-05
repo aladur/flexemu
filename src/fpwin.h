@@ -55,6 +55,9 @@ public:
 
     bool OpenContainerForPath(QString path, bool isLast = true);
 
+signals:
+    void FileTimeAccessHasChanged();
+
 private slots:
     void NewContainer();
     void OpenContainer();
@@ -105,6 +108,7 @@ private:
     void UpdateSelectedFiles();
     void UpdateMenus();
     static QStringList GetSupportedFiles(const QMimeData *mimeData);
+    void SetFileTimeAccess(FileTimeAccess fileTimeAccess);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

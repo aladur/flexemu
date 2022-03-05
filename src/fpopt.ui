@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>80</height>
+    <height>84</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,7 +42,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -76,6 +76,48 @@
          <property name="text">
           <string>...</string>
          </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,10">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
+       <item>
+        <widget class="QLabel" name="l_fileTimeAccess">
+         <property name="text">
+          <string>File Time (FLEX extension)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="cb_fileTimeAccess">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maxVisibleItems">
+          <number>3</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Not Supported</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Display</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Display and Copy</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

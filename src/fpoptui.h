@@ -26,6 +26,7 @@
 
 
 #include "misc1.h"
+#include "efiletim.h"
 #include "warnoff.h"
 #include "fpopt_ui.h"
 #include <QObject>
@@ -43,9 +44,11 @@ public:
     FlexplorerOptionsUi();
     virtual ~FlexplorerOptionsUi();
     void setupUi(QDialog &dialog);
-    void TransferDataToDialog(const QString &bootSectorFile = "");
+    void TransferDataToDialog(const QString &bootSectorFile,
+            FileTimeAccess fileTimeAccess);
 
     QString GetBootSectorFile() const;
+    FileTimeAccess GetFileTimeAccess() const;
 
 private slots:
     void OnSelectBootSectorFile();

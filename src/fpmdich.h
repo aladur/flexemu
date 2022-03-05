@@ -35,6 +35,7 @@
 #include <memory>
 
 class FlexDateDelegate;
+class FlexDateTimeDelegate;
 class FlexFilenameDelegate;
 class FlexAttributesDelegate;
 class FlexplorerTableModel;
@@ -83,6 +84,9 @@ public:
 signals:
     void SelectionHasChanged();
 
+public slots:
+    void OnFileTimeAccessChanged();
+
 private slots:
     void IsActivated(const QModelIndex &index);
 
@@ -102,9 +106,11 @@ private:
     int PasteFrom(const QMimeData &mimeData);
     QMimeData *GetMimeDataForSelected(int *count = nullptr);
     QMimeData *GetHtmlMimeDataForSelected();
+    void UpdateDateDelegate();
 
     std::unique_ptr<FlexplorerTableModel> model;
     std::unique_ptr<FlexDateDelegate> dateDelegate;
+    std::unique_ptr<FlexDateTimeDelegate> dateTimeDelegate;
     std::unique_ptr<FlexFilenameDelegate> filenameDelegate;
     std::unique_ptr<FlexAttributesDelegate> attributesDelegate;
     QPoint dragStartPosition;

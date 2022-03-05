@@ -53,7 +53,8 @@ void FlexplorerOptionsUi::InitializeWidgets()
 {
 }
 
-void FlexplorerOptionsUi::TransferDataToDialog(const QString &bootSectorFile)
+void FlexplorerOptionsUi::TransferDataToDialog(const QString &bootSectorFile,
+        FileTimeAccess fileTimeAccess)
 {
     if (dialog == nullptr)
     {
@@ -61,6 +62,10 @@ void FlexplorerOptionsUi::TransferDataToDialog(const QString &bootSectorFile)
     }
 
     e_bootSectorFile->setText(bootSectorFile);
+
+    auto index = static_cast<int>(fileTimeAccess);
+    index = (index == 3) ? 2 : index;
+    cb_fileTimeAccess->setCurrentIndex(index);
 }
 
 void FlexplorerOptionsUi::ConnectSignalsWithSlots()
@@ -77,6 +82,13 @@ void FlexplorerOptionsUi::ConnectSignalsWithSlots()
 QString FlexplorerOptionsUi::GetBootSectorFile() const
 {
     return e_bootSectorFile->text();
+}
+
+FileTimeAccess FlexplorerOptionsUi::GetFileTimeAccess() const
+{
+    auto index = cb_fileTimeAccess->currentIndex();
+    index = (index == 2) ? 3 : index;
+    return static_cast<FileTimeAccess>(index);
 }
 
 void FlexplorerOptionsUi::OnSelectBootSectorFile()

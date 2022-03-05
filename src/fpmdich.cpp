@@ -66,9 +66,9 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
     // Set column for unique Id hidden.
     setColumnHidden(FlexplorerTableModel::COL_ID, true);
 
-    dateDelegate.reset(new FlexDateDelegate(this));
-    setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
-                             dateDelegate.get());
+    dateDelegate.reset(new FlexDateDelegate(fileTimeAccess, this));
+    dateTimeDelegate.reset(new FlexDateTimeDelegate(fileTimeAccess, this));
+    UpdateDateDelegate();
     filenameDelegate.reset(new FlexFilenameDelegate(this));
     setItemDelegateForColumn(FlexplorerTableModel::COL_FILENAME,
                              filenameDelegate.get());
@@ -706,5 +706,29 @@ void FlexplorerMdiChild::IsActivated(const QModelIndex &
         /* [[maybe_unused]] const QModelIndex &index */)
 {
     ViewSelected();
+}
+
+void FlexplorerMdiChild::OnFileTimeAccessChanged()
+{
+    UpdateDateDelegate();
+    for (int row = 0; row < model->rowCount(); ++row)
+    {
+        update(model->index(row, FlexplorerTableModel::COL_DATE));
+    }
+    horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+}
+
+void FlexplorerMdiChild::UpdateDateDelegate()
+{
+    if (fileTimeAccess == FileTimeAccess::NONE)
+    {
+        setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
+                                 dateDelegate.get());
+    }
+    else
+    {
+        setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
+                                 dateTimeDelegate.get());
+    }
 }
 
