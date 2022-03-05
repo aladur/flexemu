@@ -205,8 +205,6 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
     {
         auto *child = CreateMdiChild(path, ft_access);
 
-        connect(child, &FlexplorerMdiChild::SelectionHasChanged,
-                this, &FLEXplorer::SelectionHasChanged);
         child->show();
 
         SetStatusMessage(tr("Loaded %1").arg(path));
@@ -517,6 +515,8 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
             this, &FLEXplorer::ContextMenuRequested);
     connect(this, &FLEXplorer::FileTimeAccessHasChanged,
             child, &FlexplorerMdiChild::OnFileTimeAccessChanged);
+    connect(child, &FlexplorerMdiChild::SelectionHasChanged,
+            this, &FLEXplorer::SelectionHasChanged);
 
     return child;
 }
