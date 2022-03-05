@@ -401,7 +401,6 @@ flex2hex_SOURCES = \
 
 dsktool_SOURCES = \
 	dsktool.cpp \
-	filfschk.cpp \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \

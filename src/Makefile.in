@@ -147,8 +147,7 @@ am_libflex_a_OBJECTS = libflex_a-bcommand.$(OBJEXT) \
 	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
 	libflex_a-rfilecnt.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
-am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT) \
-	dsktool-filfschk.$(OBJEXT)
+am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
 nodist_dsktool_OBJECTS = $(am__objects_2)
@@ -256,7 +255,6 @@ DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
-	./$(DEPDIR)/dsktool-filfschk.Po \
 	./$(DEPDIR)/flex2hex-flex2hex.Po ./$(DEPDIR)/flexemu-absgui.Po \
 	./$(DEPDIR)/flexemu-acia1.Po ./$(DEPDIR)/flexemu-apprun.Po \
 	./$(DEPDIR)/flexemu-bjoystck.Po ./$(DEPDIR)/flexemu-brkptui.Po \
@@ -1019,7 +1017,6 @@ flex2hex_SOURCES = \
 
 dsktool_SOURCES = \
 	dsktool.cpp \
-	filfschk.cpp \
 	bdate.h \
 	bdir.h \
 	bfileptr.h \
@@ -1319,7 +1316,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-dsktool.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flex2hex-flex2hex.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-absgui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-acia1.Po@am__quote@ # am--include-marker
@@ -1922,20 +1918,6 @@ dsktool-dsktool.obj: dsktool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dsktool.cpp' object='dsktool-dsktool.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-dsktool.obj `if test -f 'dsktool.cpp'; then $(CYGPATH_W) 'dsktool.cpp'; else $(CYGPATH_W) '$(srcdir)/dsktool.cpp'; fi`
-
-dsktool-filfschk.o: filfschk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filfschk.o -MD -MP -MF $(DEPDIR)/dsktool-filfschk.Tpo -c -o dsktool-filfschk.o `test -f 'filfschk.cpp' || echo '$(srcdir)/'`filfschk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filfschk.Tpo $(DEPDIR)/dsktool-filfschk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filfschk.cpp' object='dsktool-filfschk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filfschk.o `test -f 'filfschk.cpp' || echo '$(srcdir)/'`filfschk.cpp
-
-dsktool-filfschk.obj: filfschk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-filfschk.obj -MD -MP -MF $(DEPDIR)/dsktool-filfschk.Tpo -c -o dsktool-filfschk.obj `if test -f 'filfschk.cpp'; then $(CYGPATH_W) 'filfschk.cpp'; else $(CYGPATH_W) '$(srcdir)/filfschk.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dsktool-filfschk.Tpo $(DEPDIR)/dsktool-filfschk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='filfschk.cpp' object='dsktool-filfschk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -c -o dsktool-filfschk.obj `if test -f 'filfschk.cpp'; then $(CYGPATH_W) 'filfschk.cpp'; else $(CYGPATH_W) '$(srcdir)/filfschk.cpp'; fi`
 
 flex2hex-flex2hex.o: flex2hex.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flex2hex_CXXFLAGS) $(CXXFLAGS) -MT flex2hex-flex2hex.o -MD -MP -MF $(DEPDIR)/flex2hex-flex2hex.Tpo -c -o flex2hex-flex2hex.o `test -f 'flex2hex.cpp' || echo '$(srcdir)/'`flex2hex.cpp
@@ -3367,7 +3349,6 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool \
 
 distclean: distclean-recursive
 		-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
-	-rm -f ./$(DEPDIR)/dsktool-filfschk.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
 	-rm -f ./$(DEPDIR)/flexemu-absgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
@@ -3529,7 +3510,6 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
 		-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
-	-rm -f ./$(DEPDIR)/dsktool-filfschk.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
 	-rm -f ./$(DEPDIR)/flexemu-absgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
