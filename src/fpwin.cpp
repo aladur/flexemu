@@ -222,7 +222,7 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
             message += "\nContinue?";
         }
         auto result = QMessageBox::critical(
-                nullptr, tr("FLEXplorer Error"),
+                this, tr("FLEXplorer Error"),
                 message, buttons);
 
         return isLast || (result == QMessageBox::Yes);
