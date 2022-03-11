@@ -136,7 +136,7 @@ public:
     {
         return fileHeader.sectorMap;
     }
-    const BDate GetDate() const;
+    BDate GetDate() const;
     BTime GetTime() const;
 
 private:

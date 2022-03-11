@@ -732,16 +732,9 @@ void FlexFileBuffer::SetDateTime(const BDate &new_date, const BTime &new_time)
     fileHeader.minute = new_time.GetMinute();
 }
 
-const BDate FlexFileBuffer::GetDate() const
+BDate FlexFileBuffer::GetDate() const
 {
-    BDate date;
-
-    date.Assign(
-            fileHeader.day,
-            fileHeader.month,
-            fileHeader.year);
-
-    return date;
+    return BDate(fileHeader.day, fileHeader.month, fileHeader.year);
 }
 
 BTime FlexFileBuffer::GetTime() const
