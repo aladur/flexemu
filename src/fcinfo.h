@@ -106,11 +106,6 @@ public:
         date = d;
         is_valid = true;
     };
-    inline void         SetDate(int d, int m, int y)
-    {
-        date.SetDate(d, m, y);
-        is_valid = true;
-    };
     inline void         SetTrackSector(int t, int s)
     {
         tracks = t;

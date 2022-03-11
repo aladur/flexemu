@@ -287,12 +287,12 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     if (stat(directory.c_str(), &sbuf) >= 0)
     {
         struct tm *timeStruct = localtime(&sbuf.st_mtime);
-        info.SetDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
-                     timeStruct->tm_year + 1900);
+        info.SetDate(BDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
+                     timeStruct->tm_year + 1900));
     }
     else
     {
-        info.SetDate(0, 0, 0);
+        info.SetDate(BDate());
     }
 
     info.SetTrackSector(0, 0);
