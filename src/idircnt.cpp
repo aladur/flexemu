@@ -222,7 +222,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         lt = localtime(&(sbuf.st_mtime));
         dirEntry.SetDate(BDate(lt->tm_mday, lt->tm_mon + 1,
                     lt->tm_year + 1900));
-        BTime time;
         dirEntry.SetTime(BTime(lt->tm_hour, lt->tm_min, 0U));
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
