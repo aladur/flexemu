@@ -110,11 +110,6 @@ void FlexDirEntry::SetDate(const BDate &d)
     date = d;
 }
 
-void FlexDirEntry::SetDate(int d, int m, int y)
-{
-    date.SetDate(d, m, y);
-}
-
 const BTime &FlexDirEntry::GetTime() const
 {
     return time;

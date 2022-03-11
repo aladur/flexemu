@@ -161,7 +161,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
     const auto &sis = flex_sys_info[0];
     std::string disk_name(sis.sir.disk_name, 0U, sizeof(sis.sir.disk_name));
 
-    info.SetDate(sis.sir.day, sis.sir.month, sis.sir.year);
+    info.SetDate(BDate(sis.sir.day, sis.sir.month, sis.sir.year));
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
     info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
                  param.byte_p_sector);

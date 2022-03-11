@@ -427,7 +427,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
             disk_name.append(".");
             disk_name.append(disk_ext);
         }
-        info.SetDate(sis.sir.day, sis.sir.month, year);
+        info.SetDate(BDate(sis.sir.day, sis.sir.month, year));
         info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
                      param.byte_p_sector);
         info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *

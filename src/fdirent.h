@@ -67,7 +67,6 @@ public:
 
     const BDate &GetDate() const;
     void    SetDate(const BDate &date);
-    void    SetDate(int d, int m, int y);
     const BTime &GetTime() const;
     void    SetTime(const BTime &time);
     void    SetStartTrkSec(int t, int s);

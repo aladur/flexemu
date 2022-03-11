@@ -146,8 +146,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         auto fileSize = (findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE;
         dirEntry.SetFileSize(fileSize);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
-        dirEntry.SetDate(systemTime.wDay, systemTime.wMonth,
-                         systemTime.wYear);
+        dirEntry.SetDate(BDate(systemTime.wDay, systemTime.wMonth,
+                         systemTime.wYear));
         dirEntry.SetTime(BTime(systemTime.wHour, systemTime.wMinute, 0U));
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
@@ -220,7 +220,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         dirEntry.SetTotalFileName(fileName.c_str());
         dirEntry.SetFileSize((sbuf.st_size + 251) / 252 * SECTOR_SIZE);
         lt = localtime(&(sbuf.st_mtime));
-        dirEntry.SetDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
+        dirEntry.SetDate(BDate(lt->tm_mday, lt->tm_mon + 1,
+                    lt->tm_year + 1900));
         BTime time;
         dirEntry.SetTime(BTime(lt->tm_hour, lt->tm_min, 0U));
         dirEntry.SetAttributes(attributes);
