@@ -25,6 +25,7 @@
 #include "warnoff.h"
 #include <QApplication>
 #include <QResource>
+#include <QMessageBox>
 #include "warnon.h"
 #include "winmain.h"
 #include "winctxt.h"
@@ -53,15 +54,27 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
     FLEXplorer window;
+    int return_code = EXIT_FAILURE;
 
     const auto icon = QIcon(":/resource/flexplorer.png");
     app.setWindowIcon(icon);
 
-    window.show();
+    try
+    {
+        window.show();
 
-    LoadFiles(argc, argv, window);
-    app.processEvents();
+        LoadFiles(argc, argv, window);
+        app.processEvents();
 
-    return app.exec();
+        return_code = app.exec();
+    }
+    catch (std::exception &ex)
+    {
+        QMessageBox::critical(&window, QObject::tr("FLEXplorer Error"),
+                QObject::tr("An unrecoverable error has occured:\n") +
+                ex.what());
+    }
+
+    return return_code;
 }
 
