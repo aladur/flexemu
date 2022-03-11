@@ -31,7 +31,6 @@
 #include "flexerr.h"
 #include "fdirent.h"
 #include "filecntb.h"
-#include <sstream>
 #include <algorithm>
 
 
@@ -598,32 +597,25 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
     return false;
 }
 
-// Adjust the file name so that it is
-// conformous to 8.3
-void FlexFileBuffer::SetAdjustedFilename(const char *afileName)
+// Adjust the file name so that it conforms to 8.3
+// Copy file name into file header struct.
+void FlexFileBuffer::SetAdjustedFilename(const std::string &fileName)
 {
-    std::string uFileName(afileName);
-    const char *p, *pe;
-
-    strupper(uFileName);
-    memset(fileHeader.fileName, '\0', FLEX_FILENAME_LENGTH);
-    pe = strrchr(uFileName.c_str(), '.');
-    strncpy(fileHeader.fileName, uFileName.c_str(), 8);
-    p = strrchr(fileHeader.fileName, '.');
-
-    if (p != nullptr)
+    auto pos = fileName.find('.');
+    auto baseNameSize = (pos == std::string::npos) ?
+        FLEX_BASEFILENAME_LENGTH : std::min(pos, FLEX_BASEFILENAME_LENGTH);
+    auto adjustedFileName = fileName.substr(0U, baseNameSize);
+    if (pos != std::string::npos)
     {
-        *(const_cast<char *>(p)) = '\0';
+        auto extension = fileName.substr(pos + 1U, FLEX_FILEEXT_LENGTH);
+        if (!extension.empty())
+        {
+            adjustedFileName.append(".").append(extension);
+        }
     }
-
-    if (pe != nullptr)
-    {
-        char ext[5];
-
-        memset(ext, '\0', 5);
-        strncpy(ext, pe, 4);
-        strcat(fileHeader.fileName, ext);
-    }
+    strupper(adjustedFileName);
+    memset(fileHeader.fileName, '\0', sizeof(fileHeader.fileName));
+    strcpy(fileHeader.fileName, adjustedFileName.c_str());
 }
 
 void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)

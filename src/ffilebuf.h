@@ -32,6 +32,7 @@
 #include <sstream>
 #include <iomanip>
 #include <array>
+#include <string>
 
 
 typedef char FlexFileName[FLEX_FILENAME_LENGTH];
@@ -92,7 +93,6 @@ public:
     tFlexFileHeader GetHeaderBigEndian() const;
     void SetDateTime(const BDate &date, const BTime &time);
     void SetFilename(const char *name);
-    void SetAdjustedFilename(const char *name);
     inline const char *GetFilename() const
     {
         return fileHeader.fileName;
@@ -140,6 +140,7 @@ public:
     BTime GetTime() const;
 
 private:
+    void SetAdjustedFilename(const std::string &name);
     void copyFrom(const FlexFileBuffer &src);
     void TraverseForTextFileConversion(std::function<void(char c)> fct) const;
     void TraverseForFlexTextFileConversion(std::function<void(char c)> fct)
