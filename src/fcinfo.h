@@ -41,8 +41,8 @@ private:
     std::string name;   // name of disk
     unsigned int number;// disk number
     int     type;       // container type
-    int     free;       // Number of bytes free
-    int     totalSize;  // Number of total bytes writable
+    uint64_t free; // Number of bytes free
+    uint64_t totalSize; // Number of total bytes writable
     Byte attributes; // Disk attributes
     bool    is_flex_format;// This container contains a FLEX file system.
     bool    is_write_protected;// This container is write protected.
@@ -69,21 +69,21 @@ public:
         path = p;
         is_valid = true;
     };
-    inline void         SetFree(int f)
+    inline void SetFree(uint64_t f)
     {
         free = f;
         is_valid = true;
     };
-    inline int          GetFree() const
+    inline uint64_t GetFree() const
     {
         return free;
     };
-    inline void         SetTotalSize(int s)
+    inline void SetTotalSize(uint64_t s)
     {
         totalSize = s;
         is_valid = true;
     };
-    inline int          GetTotalSize() const
+    inline uint64_t GetTotalSize() const
     {
         return totalSize;
     };

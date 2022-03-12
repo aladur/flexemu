@@ -240,12 +240,6 @@ bool    DirectoryContainer::FileCopy(
 
 bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
-#ifdef _WIN32
-    DWORD sectorsPerCluster = 0;
-    DWORD bytesPerSector = 1;
-    DWORD numberOfFreeClusters = 0;
-    DWORD totalNumberOfClusters = 0;
-#endif
     const char  *p;
     std::string rootPath;
     struct stat sbuf;
@@ -256,6 +250,10 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     }
 
 #ifdef _WIN32
+    DWORD sectorsPerCluster;
+    DWORD bytesPerSector;
+    DWORD numberOfFreeClusters;
+    DWORD totalNumberOfClusters;
 
     BOOL success = GetDiskFreeSpace(ConvertToUtf16String(rootPath).c_str(),
         &sectorsPerCluster, &bytesPerSector, &numberOfFreeClusters,
@@ -266,11 +264,10 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
         throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
-    // free size in KByte
-    info.SetFree(numberOfFreeClusters * sectorsPerCluster * bytesPerSector);
-    // total size in KByte
-    info.SetTotalSize(totalNumberOfClusters * sectorsPerCluster *
-                      bytesPerSector);
+    info.SetFree(static_cast<uint64_t>(numberOfFreeClusters) *
+                 sectorsPerCluster * bytesPerSector);
+    info.SetTotalSize(static_cast<uint64_t>(totalNumberOfClusters) *
+                      sectorsPerCluster * bytesPerSector);
 #endif
 #ifdef UNIX
     struct statvfs fsbuf;
@@ -280,7 +277,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
         throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
-    info.SetFree(fsbuf.f_bsize * fsbuf.f_bfree);
+    info.SetFree(fsbuf.f_bsize * fsbuf.f_bavail);
     info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks);
 #endif
 
