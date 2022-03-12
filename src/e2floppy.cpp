@@ -36,14 +36,14 @@
 
 
 E2floppy::E2floppy(struct sOptions &x_options)
-    : selected(4)
+    : selected(MAX_DRIVES)
     , pfs(nullptr)
     , writeTrackState(WriteTrackState::Inactive)
     , options(x_options)
 {
     Word i;
 
-    for (i = 0; i <= 4; i++)
+    for (i = 0; i <= MAX_DRIVES; i++)
     {
         track[i] = 1; // position all drives to track != 0  !!!
         drive_status[i] = DiskStatus::EMPTY;
@@ -57,7 +57,7 @@ E2floppy::~E2floppy()
 {
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    for (Word drive_nr = 0; drive_nr < 4; drive_nr++)
+    for (Word drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
     {
         if (floppy[drive_nr].get() != nullptr)
         {
@@ -76,7 +76,7 @@ E2floppy::~E2floppy()
 
 bool E2floppy::umount_drive(Word drive_nr)
 {
-    if (drive_nr > 3 || (floppy[drive_nr].get() == nullptr))
+    if (drive_nr >= MAX_DRIVES || (floppy[drive_nr].get() == nullptr))
     {
         return false;
     }
@@ -98,7 +98,7 @@ bool E2floppy::umount_drive(Word drive_nr)
 
 bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 {
-    if (drive_nr > 3 || path == nullptr || strlen(path) == 0)
+    if (drive_nr >= MAX_DRIVES || path == nullptr || strlen(path) == 0)
     {
         return false;
     }
@@ -256,12 +256,12 @@ void E2floppy::mount_all_drives(std::string drive[])
 {
     Word drive_nr;
 
-    for (drive_nr = 0; drive_nr < 4; drive_nr++)
+    for (drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
     {
         mount_drive(drive[drive_nr].c_str(), drive_nr);
     }
 
-    selected = 4;           // deselect all drives
+    selected = MAX_DRIVES; // deselect all drives
     pfs = nullptr;
 }  // mount_all_drives
 
@@ -272,11 +272,13 @@ bool E2floppy::umount_all_drives()
 
     result = true;
 
-    for (drive_nr = 0; drive_nr < 4; drive_nr++)
+    for (drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
+    {
         if (!umount_drive(drive_nr))
         {
             result = false;
         }
+    }
 
     return result;
 }  // umount_all_drives
@@ -319,7 +321,7 @@ std::string E2floppy::drive_info_string(Word drive_nr)
 // get info for corresponding drive. If drive is not ready the result is empty.
 FlexContainerInfo E2floppy::drive_info(Word drive_nr)
 {
-    if (drive_nr <= 3)
+    if (drive_nr < MAX_DRIVES)
     {
         std::lock_guard<std::mutex> guard(status_mutex);
 
@@ -363,7 +365,7 @@ bool E2floppy::update_all_drives()
     Word drive_nr;
     bool result = true;
 
-    for (drive_nr = 0; drive_nr < 4; drive_nr++)
+    for (drive_nr = 0; drive_nr < MAX_DRIVES; ++drive_nr)
     {
         if (floppy[drive_nr].get() == nullptr)
         {
@@ -382,7 +384,7 @@ bool E2floppy::update_all_drives()
 
 bool E2floppy::update_drive(Word drive_nr)
 {
-    if (drive_nr > 3)
+    if (drive_nr >= MAX_DRIVES)
     {
         return false;
     }
@@ -403,9 +405,9 @@ void E2floppy::resetIo()
 
 void E2floppy::select_drive(Byte new_selected)
 {
-    if (new_selected > 4)
+    if (new_selected > MAX_DRIVES)
     {
-        new_selected = 4;
+        new_selected = MAX_DRIVES;
     }
 
     if (new_selected != selected)
@@ -642,13 +644,13 @@ bool E2floppy::isWriteProtect() const
     return pfs->IsWriteProtected();
 }  // isWriteProtect
 
-void E2floppy::get_drive_status(DiskStatus stat[4])
+void E2floppy::get_drive_status(DiskStatus stat[MAX_DRIVES])
 {
     Word i;
 
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    for (i = 0; i < 4; ++i)
+    for (i = 0; i < MAX_DRIVES; ++i)
     {
         stat[i] = drive_status[i];
 

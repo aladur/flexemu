@@ -47,6 +47,9 @@ struct sOptions;
 
 class E2floppy : public Wd1793
 {
+public:
+    static const unsigned MAX_DRIVES{4U}; // max. number of disk drives.
+
 private:
 
     // States for writing a track (formatting a disk).
@@ -77,10 +80,10 @@ private:
     //  disk_dir        Disk directory
     // Drive nr. 4 means no drive selected
 
-    FileContainerIfSectorPtr floppy[5];
+    FileContainerIfSectorPtr floppy[MAX_DRIVES + 1U];
     FileContainerIfSector *pfs;
-    Byte            track[5];
-    DiskStatus      drive_status[5];
+    Byte            track[MAX_DRIVES + 1U];
+    DiskStatus      drive_status[MAX_DRIVES + 1U];
     Byte            sector_buffer[1024];
     std::string     disk_dir;
     mutable std::mutex status_mutex;
@@ -103,7 +106,7 @@ public:
         return "fdc";
     };
 
-    virtual void         get_drive_status(DiskStatus status[4]);
+    virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
     virtual void         disk_directory(const char *x_disk_dir);
     virtual void         mount_all_drives(std::string drive[]);
     virtual bool         update_all_drives();
