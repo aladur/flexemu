@@ -41,9 +41,7 @@ E2floppy::E2floppy(struct sOptions &x_options)
     , writeTrackState(WriteTrackState::Inactive)
     , options(x_options)
 {
-    Word i;
-
-    for (i = 0; i <= MAX_DRIVES; i++)
+    for (auto i = 0U; i <= MAX_DRIVES; i++)
     {
         track[i] = 1; // position all drives to track != 0  !!!
         drive_status[i] = DiskStatus::EMPTY;
@@ -57,7 +55,7 @@ E2floppy::~E2floppy()
 {
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    for (Word drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
+    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
     {
         if (floppy[drive_nr].get() != nullptr)
         {
@@ -254,9 +252,7 @@ void E2floppy::disk_directory(const char *x_disk_dir)
 
 void E2floppy::mount_all_drives(std::string drive[])
 {
-    Word drive_nr;
-
-    for (drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
+    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
     {
         mount_drive(drive[drive_nr].c_str(), drive_nr);
     }
@@ -267,12 +263,9 @@ void E2floppy::mount_all_drives(std::string drive[])
 
 bool E2floppy::umount_all_drives()
 {
-    Word drive_nr;
-    bool result;
+    bool result = true;
 
-    result = true;
-
-    for (drive_nr = 0; drive_nr < MAX_DRIVES; drive_nr++)
+    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
     {
         if (!umount_drive(drive_nr))
         {
@@ -362,10 +355,9 @@ const char *E2floppy::open_mode(char *path)
 
 bool E2floppy::update_all_drives()
 {
-    Word drive_nr;
     bool result = true;
 
-    for (drive_nr = 0; drive_nr < MAX_DRIVES; ++drive_nr)
+    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; ++drive_nr)
     {
         if (floppy[drive_nr].get() == nullptr)
         {
@@ -384,16 +376,13 @@ bool E2floppy::update_all_drives()
 
 bool E2floppy::update_drive(Word drive_nr)
 {
-    if (drive_nr >= MAX_DRIVES)
+    // Return false if invalid drive number or drive not ready.
+    if (drive_nr >= MAX_DRIVES || floppy[drive_nr].get() == nullptr)
     {
         return false;
     }
 
-    if (floppy[drive_nr].get() == nullptr)
-    {
-        // error if drive not ready
-        return false;
-    }
+    // TODO: Update drive
 
     return true;
 } // update_drive
@@ -646,11 +635,9 @@ bool E2floppy::isWriteProtect() const
 
 void E2floppy::get_drive_status(DiskStatus stat[MAX_DRIVES])
 {
-    Word i;
-
     std::lock_guard<std::mutex> guard(status_mutex);
 
-    for (i = 0; i < MAX_DRIVES; ++i)
+    for (auto i = 0U; i < MAX_DRIVES; ++i)
     {
         stat[i] = drive_status[i];
 
