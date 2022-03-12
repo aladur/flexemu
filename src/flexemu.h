@@ -41,12 +41,5 @@ enum class DiskStatus
     INACTIVE,
     ACTIVE
 };
-
-enum class GuiType
-{
-    NONE = 0,
-    XTOOLKIT = 2,
-    WINDOWS = 3,
-};
 #endif
 
