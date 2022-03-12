@@ -389,10 +389,13 @@ void FlexplorerMdiChild::Info()
     auto &date = info.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
     str += qdate.toString().append("\n");
-    str += tr("Tracks: ");
-    str += QString::number(tracks).append("\n");
-    str += tr("Sectors: ");
-    str += QString::number(sectors).append("\n");
+    if (tracks != 0 && sectors != 0)
+    {
+        str += tr("Tracks: ");
+        str += QString::number(tracks).append("\n");
+        str += tr("Sectors: ");
+        str += QString::number(sectors).append("\n");
+    }
     str += tr("Size: ");
     str += QString::number(info.GetTotalSize() / 1024);
     str += tr(" KByte").append("\n");
