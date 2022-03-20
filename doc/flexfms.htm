@@ -65,7 +65,7 @@ number of head seeks necessary while reading the file.
 <h2>FMS ENTRY POINTS</h2>
 <div class="options-list">
 <dl>
-<dt>$D400 - FMS Initialization</dt>
+<dt>$D400 - FMS Initialization (FMSINI)</dt>
 <dd>
 This entry point is used by the DOS portion of FLEX to initialize the
 <b>File Management System
@@ -75,7 +75,7 @@ this entry point. Executing an FMS Initialization at the wrong time may result
 in the destruction of data files, necessitating a re-initialization of the
 diskette.
 </dd>
-<dt>$D403 - FMS Close</dt>
+<dt>$D403 - FMS Close (FMSCLS)</dt>
 <dd>
 This entry point is used by the DOS portion of FLEX at the end of each command
 line to close any files left open by the command processor. User-written
@@ -89,7 +89,7 @@ error was detected (i. e. a "zero" condition exists). If an error was detected,
 the CPU Z-Condition code bit is cleared and the X-register contains the address
 of the FCB causing the error.
 </dd>
-<dt>$D406 FMS Call</dt>
+<dt>$D406 FMS Call (FMS)</dt>
 <dd>
 This entry point is used for all calls to the File Management System. A
 function code is stored in the Function Code byte of the FCB, the address of
