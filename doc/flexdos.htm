@@ -287,7 +287,7 @@ which the X-register points. If a drive number was not specified in the file
 specification, the working drive number will be used. On exit, the carry bit
 will be clear if no error was detected in processing the file specification.
 The carry bit will be set if there was a format error int the file
-specifiation. If no extension was specified in the file specification, none
+specification. If no extension was specified in the file specification, none
 is stored. The calling program should set the default extension desired after
 GETFIL has been called by using the
 <a href="#setext">SETEXT</a>
@@ -311,7 +311,7 @@ carry generated out of the most significant bit of the address is lost. The
 transfer address, if any is encountered, is not modified by the Loader Address
 Offset. Note that the setting of a value in the Loader Address Offset does
 not act as a program relocator in that it does not change any addresses in
-the program itslef, merely the location of the program in memory. If the file
+the program itself, merely the location of the program in memory. If the file
 is to be loaded without an offset, be certain to clear the Loader Address
 Offset locations before calling this routine. On exit, the Transfer Address
 Flag is zero if no transfer address was found. This flag is non-zero if a 
@@ -372,7 +372,7 @@ on entry, printing of the number will start with the first non-zero digit.
 <dd>
 preserved: B, X.<br>
 On entry, the X-register contains the address of a single binary byte. The
-byte ot which the X-register points is printed as 2 hexadecimal digits.
+byte on which the X-register points is printed as 2 hexadecimal digits.
 </dd>
 <dt id="rpterr">Report Error $CD3F (RPTERR)</dt>
 <dd>
@@ -386,7 +386,7 @@ file ERRORS.SYS is opened for random read. If this location is non-zero, it
 is assumed to be an address pointing to an ASCII string (containing any
 necessary null pad characters) of a legal File name plus extension (string
 should be 11 characters long). This user provided file is then opened for
-randoem read. The error number is used in a calculation to determine the
+random read. The error number is used in a calculation to determine the
 record number and offset of the appropriate error string message in the file.
 Each error message string is 63 characters in length, thus allowing 4
 messages per sector. If the string is found, it is printed on the terminal.
@@ -431,9 +431,9 @@ B-register is set non-zero, and the X-register contains the binary value of
 the number, The Line Buffer Pointer is left pointing as described in the
 routine
 <a href="#gethex">GETHEX</a>
-. If the first character examined in the ubffer is a separator
+. If the first character examined in the buffer is a separator
 character (such as a comma), the carry bit is still cleared, but the B-register
-is set to zero inidcating that no actual number was found. In this case, the 
+is set to zero indicating that no actual number was found. In this case, the 
 number returned in X is zero. The number in the Line Buffer may be of any
 length but the result is truncated to 16 bit precision.
 </dd>
@@ -458,7 +458,7 @@ DOCMND entry point. On return, the memory will have been saved on the disk.
 <dt id="stat">Check Terminal Input Status $CD4E (STAT)</dt>
 <dd>
 This routine may be called to check the status of the terminal input device
-(to see if a character has been typed on teh keyboard). If a character has
+(to see if a character has been typed on the keyboard). If a character has
 been hit, the Z condition code will be cleared on return (a not-equal
 condition). If no character has been hit, the Z condition code will be set (an
 equal condition). No registers, other than the CC-register, are altered.
@@ -481,7 +481,7 @@ a User Command Table created by the programmer in memory. Each entry in the
 User Command Table has the following format:
 <p>
 <table class="invisible compact">
- <tr><td>FCC</td><td>'command'</td><td>(Name that will invode the program)</td>
+ <tr><td>FCC</td><td>'command'</td><td>(Name that will invoke the program)</td>
  <tr><td>FCB</td><td>0</td><td> </td>
  <tr><td>FDB</td><td>entry address</td><td>(The entry address of the program)</td>
 </table>
@@ -504,7 +504,7 @@ User Command Table Address locations (see).
 <p>
 The User Command Table is searched before the disk directory, but after DOS's
 own command table is searched. The DOS command table contains only the GET and
-MON commands. Therfore, the user may not define his own GET and MON commands.
+MON commands. Therefore, the user may not define his own GET and MON commands.
 <p>
 Since the User Command Table is searched before the disk directory, the
 programmer may have commands with the same name as those on the disk. However,
