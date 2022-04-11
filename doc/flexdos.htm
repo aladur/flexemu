@@ -205,8 +205,9 @@ carriage return and line feed are output before the string.
 preserved: All registers.<br>
 This routine is used for testing if a character is alphanumeric (i. e. a
 letter or a number). On entry, the character should be in the A-register. If
-the character is alphanumeric, the routine returns with the carry flag is set
-and the character is stored in the Last Terminator location.
+the character is alphanumeric, the routine returns with the carry flag cleared.
+If the character is not alphanumeric, the carry flag is set and the character
+is stored in the Last Terminator location.
 </dd>
 <dt id="pcrlf">Print Carriage Return and Line Feed $CD24 (PCRLF)</dt>
 <dd>
