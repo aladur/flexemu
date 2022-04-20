@@ -253,12 +253,12 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer = answer_stream.str();
                         return;
                     }
-                    else if (stricmp(arg1, "update") == 0)
+                    else if (stricmp(arg1, "sync") == 0)
                     {
-                        if (!fdc.update_all_drives())
+                        if (!fdc.sync_all_drives())
                         {
                             answer_stream << "EMU error: "
-                                             "Unable to update all drives.";
+                                             "Unable to sync all drives.";
                             answer = answer_stream.str();
                         }
 
@@ -308,12 +308,12 @@ void Command::writeIo(Word /*offset*/, Byte val)
                             fdc.drive_info_string(static_cast<Word>(number));
                         return;
                     }
-                    else if (stricmp(arg1, "update") == 0)
+                    else if (stricmp(arg1, "sync") == 0)
                     {
-                        if (!fdc.update_drive(static_cast<Word>(number)))
+                        if (!fdc.sync_drive(static_cast<Word>(number)))
                         {
                             answer_stream << "EMU error: "
-                                             "Unable to update drive #" <<
+                                             "Unable to sync drive #" <<
                                              number << ".";
                             answer = answer_stream.str();
                         }

@@ -18,6 +18,8 @@ mount
 <br>
 umount
 <br>
+sync
+<br>
 exit
 <br>
 timeset
@@ -29,6 +31,10 @@ rtc
 cls
 <br>
 tounix
+<br>
+fmsstat
+<br>
+ofiles
 <br>
 <p>
 
@@ -76,20 +82,24 @@ prints some information on drive with number <b>&lt;drive_nr&gt;</b> or, if no
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
 </dd>
-<dt id="update">emu update [&lt;drive_nr&gt;]</dt>
+<dt id="sync">emu sync [&lt;drive_nr&gt;]</dt>
 <dd>
-Updates the contents of a native file system drive with number
+Synchronizes the contents of a native file system drive with number
 <b>&lt;drive_nr&gt;</b> or, if no <b>&lt;drive_nr&gt;</b> is specified on all
-drives. An error message is returned if any file is currently opened on the
-specified drive.
+drives.
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
+The execution is aborted and an error message is printed if any file
+is currently opened on the specified drive. Drives mounted with a disk image
+are silently ignored.
 </dd>
 <dt id="umount">emu umount &lt;drive_nr&gt;</dt>
 <dd>
 unmounts a previously mounted disk image or nafs-directory.
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
+The execution is aborted and an error message is printed if any file
+is currently opened on the specified drive.
 </dd>
 <dt id="format">emu format &lt;disk_name&gt; &lt;track_count&gt; &lt;sector_count&gt;</dt>
 <dd>
@@ -134,6 +144,10 @@ Prints the actual number of processor cycles executed.
 <dt id="exit">emu exit</dt>
 <dd>
 immediately exits the emulator.
+A warning message is printed if any file is currently opened for
+WRITE or UPDATE.
+In this case it has to be confirmed to really exit the emulator, because files
+could get corrupted.
 </dd>
 <dt id="mount">mount &lt;path&gt; &lt;drive_nr&gt;</dt>
 <dd>
@@ -142,6 +156,10 @@ Shortcut to <b>emu mount</b> command.
 <dt id="umount">umount &lt;drive_nr&gt;</dt>
 <dd>
 Shortcut to <b>emu umount</b> command.
+</dd>
+<dt id="sync">sync [&lt;drive_nr&gt;]</dt>
+<dd>
+Shortcut to <b>emu sync</b> command.
 </dd>
 <dt>exit</dt>
 <dd>
@@ -170,6 +188,39 @@ MC146818 will be used for this. The optional parameter specifies the action:
 <dt id="cls">cls</dt>
 <dd>
 Clears the graphics display.
+<dt id="fmsstat">fmsstat</dt>
+<dd>
+File Management System (FMS) status. Print a list of currently opened files.
+<dt id="ofiles">ofiles &lt;count&gt; [&lt;file_spec&gt; &lt;mode&gt; [&lt;file_spec&gt; &lt;mode&gt; ...]] &lt;command&gt;</dt>
+
+<dd>
+The <b>ofiles</b> utility can open one or multiple files with a file access
+mode followed by executing a command. This way a command can be tested
+executing in the context of opened files.
+<p>
+<b>&lt;count&gt;</b> is the number of files to be opened. <b>&lt;count&gt;</b>
+can be 0 up to 12.
+<p>
+<b>&lt;file_spec&gt;</b> specifies the file to be opened.
+<p>
+<b>&lt;mode&gt;</b> specifies one of the following file access modes:
+<p>
+<table>
+ <tr><th>mode</th><th>description</th></tr>
+ <tr><th>+R</th><th>Open for read, the file has to exist.</th></tr>
+ <tr><th>+W</th><th>Open for write, the file must not exist.</th></tr>
+ <tr><th>+U</th><th>Open for update, the file has to exist. According to the FLEX documentation only supported for random files.</th></tr>
+</table>
+<p>
+If <b>&lt;file_spec&gt;</b> has no drive specified the working drive is used,
+if no file extension is specified TXT is used.
+<b>&lt;command&gt;</b> can be any standard utility command
+located in the utility command space (UCS)
+to be executed. See 
+ <a href="flexmem.htm">FLEX Memory Map</a> for details.
+After processing <b>&lt;command&gt;</b> all files are closed.
+<b>&lt;command&gt;</b> only is processed if all <b>&lt;file_specs&gt;</b>
+have successfully been opened.
 <dt id="tounix">tounix &lt;disk_image_name&gt;</dt>
 <dd>
 This utility is useful on a real FLEX system. It transmits the whole

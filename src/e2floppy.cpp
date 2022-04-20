@@ -353,7 +353,7 @@ const char *E2floppy::open_mode(char *path)
 } // open_mode
 
 
-bool E2floppy::update_all_drives()
+bool E2floppy::sync_all_drives(tMountOption option)
 {
     bool result = true;
 
@@ -365,27 +365,34 @@ bool E2floppy::update_all_drives()
             continue;
         }
 
-        if (!update_drive(drive_nr))
+        if (!sync_drive(drive_nr, option))
         {
             result = false;
         }
     }
 
     return result;
-} // update_all_drives
+} // sync_all_drives
 
-bool E2floppy::update_drive(Word drive_nr)
+bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
 {
+    bool result = true;
+
     // Return false if invalid drive number or drive not ready.
     if (drive_nr >= MAX_DRIVES || floppy[drive_nr].get() == nullptr)
     {
         return false;
     }
 
-    // TODO: Update drive
+    if (floppy[drive_nr]->GetContainerType() & TYPE_DIRECTORY)
+    {
+        auto path = floppy[drive_nr]->GetPath();
+        result = umount_drive(drive_nr);
+        result &= mount_drive(path.c_str(), drive_nr, option);
+    }
 
-    return true;
-} // update_drive
+    return result;
+} // sync_drive
 
 void E2floppy::resetIo()
 {

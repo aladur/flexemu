@@ -109,14 +109,16 @@ public:
     virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
     virtual void         disk_directory(const char *x_disk_dir);
     virtual void         mount_all_drives(std::string drive[]);
-    virtual bool         update_all_drives();
+    virtual bool         sync_all_drives(
+                                    tMountOption option = MOUNT_DEFAULT);
     virtual bool         umount_all_drives();
     virtual bool         mount_drive(const char *path, Word drive_nr,
                                      tMountOption option = MOUNT_DEFAULT);
     virtual bool         format_disk(SWord trk, SWord sec,
                                      const char *name,
                                      int type = TYPE_DSK_CONTAINER);
-    virtual bool         update_drive(Word drive_nr);
+    virtual bool         sync_drive(Word drive_nr,
+                                    tMountOption option = MOUNT_DEFAULT);
     virtual bool         umount_drive(Word drive_nr);
     virtual FlexContainerInfo drive_info(Word drive_nr);
     virtual std::string  drive_info_string(Word drive_nr);
