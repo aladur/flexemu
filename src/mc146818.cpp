@@ -32,21 +32,28 @@ Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 Mc146818::Mc146818() :
     al_second(0), al_minute(0), al_hour(0),
-    A(0), B(0), C(0), D(0)
+    A(0), B(0), C(0), D(0),
+    path("")
 {
     struct tm   *lt;
     time_t       time_now;
+    const char* home = getFileName();
 
-    path[0] = '\0';
-
-    BFilePtr fp(getFileName(), "rb");
-
-    if (fp != nullptr)
+    if (home[0] != '\0')
     {
-        if (fread(ram, sizeof(ram), 1, fp) != sizeof(ram))
+        BFilePtr fp(home, "rb");
+
+        if (fp != nullptr)
         {
-            memset(ram, 0, sizeof(ram));
+            if (fread(ram, 1, sizeof(ram), fp) != sizeof(ram))
+            {
+                memset(ram, 0, sizeof(ram));
+            }
         }
+    }
+    else
+    {
+        memset(ram, 0, sizeof(ram));
     }
 
     A = 0;
@@ -70,6 +77,10 @@ const char *Mc146818::getFileName()
     {
 #ifdef UNIX
         char *home = getenv("HOME");
+#endif
+#ifdef _WIN32
+        char* home = getenv("USERPROFILE");
+#endif
 
         if (home != nullptr)
         {
@@ -77,8 +88,10 @@ const char *Mc146818::getFileName()
             strcat(path, PATHSEPARATORSTRING);
         }
 
-#endif
-        strcat(path, ".mc146818");
+        if (path[0] != '\0')
+        {
+            strcat(path, ".mc146818");
+        }
     }
 
     return path;
@@ -86,12 +99,16 @@ const char *Mc146818::getFileName()
 
 Mc146818::~Mc146818()
 {
+    const char* home = getFileName();
 
-    BFilePtr fp(getFileName(), "wb");
-
-    if (fp != nullptr)
+    if (home[0] != '\0')
     {
-        fwrite(ram, sizeof(ram), 1, fp);
+        BFilePtr fp(home, "wb");
+
+        if (fp != nullptr)
+        {
+            fwrite(ram, 1, sizeof(ram), fp);
+        }
     }
 }
 
