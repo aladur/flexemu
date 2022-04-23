@@ -68,10 +68,6 @@ The following table gives an overview of the available commands:
   <td>Go back to FLEX (Warm start)</td>
  </tr>
  <tr>
-  <td>T XXXX YYYY</td>
-  <td>Dump memory from address XXXX up to including YYYY</td>
- </tr>
- <tr>
   <td>Z</td>
   <td>Exit the emulator</td>
  </tr>
@@ -182,12 +178,20 @@ The following Escape sequences are available:
   <td>Plot a Dot</td>
  </tr>
  <tr>
+  <td>ESC B</td>
+  <td>Delete line</td>
+ </tr>
+ <tr>
+  <td>ESC C</td>
+  <td>Insert line</td>
+ </tr>
+ <tr>
   <td>ESC D</td>
   <td>Switch to german character set</td>
  </tr>
  <tr>
   <td>ESC E YY XX</td>
-  <td>Set Cursor to line YY and Column XX</td>
+  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
  </tr>
  <tr>
   <td>ESC F</td>
@@ -202,8 +206,8 @@ The following Escape sequences are available:
   <td>Switch to ASCII character set</td>
  </tr>
  <tr>
-  <td>ESC I XX YY</td>
-  <td>Set Cursor to line YY and Column XX</td>
+  <td>ESC = XX YY</td>
+  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
  </tr>
  <tr>
   <td>ESC P or ESC p</td>
