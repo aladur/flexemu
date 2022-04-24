@@ -1786,6 +1786,11 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     // Default color index: If no video source is available use highest
     // available color
     Byte colorIndex = options.isInverse ? 0x00U : 0x3FU;
+    Byte colorIndexOffset = 0U;
+    if (options.isInverse)
+    {
+        colorIndexOffset = (64U / options.nColors) - 1;
+    }
 
     memset(pixels, '\0', sizeof(pixels));
 
@@ -1797,7 +1802,6 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
 
         if (videoRam != nullptr)
         {
-
             pixels[0] = videoRam[0];
 
             if (options.nColors > 2)
@@ -1818,50 +1822,50 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
             /* Loop from MSBit to LSBit */
             for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1)
             {
-                colorIndex = 0U; /* calculated color index */
+                colorIndex = colorIndexOffset; /* calculated color index */
 
                 if (pixels[0] & pixelBitMask)
                 {
-                    colorIndex |= GREEN_HIGH;    // 0x0C, green high
+                    colorIndex += GREEN_HIGH;    // 0x0C, green high
                 }
 
                 if (options.nColors > 8)
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        colorIndex |= RED_HIGH;    // 0x0D, red high
+                        colorIndex += RED_HIGH;    // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        colorIndex |= BLUE_HIGH;    // 0x0E, blue high
+                        colorIndex += BLUE_HIGH;    // 0x0E, blue high
                     }
 
                     if (pixels[1] & pixelBitMask)
                     {
-                        colorIndex |= GREEN_LOW;    // 0x04, green low
+                        colorIndex += GREEN_LOW;    // 0x04, green low
                     }
 
                     if (pixels[3] & pixelBitMask)
                     {
-                        colorIndex |= RED_LOW;    // 0x05, red low
+                        colorIndex += RED_LOW;    // 0x05, red low
                     }
 
                     if (pixels[5] & pixelBitMask)
                     {
-                        colorIndex |= BLUE_LOW;    // 0x06, blue low
+                        colorIndex += BLUE_LOW;    // 0x06, blue low
                     }
                 }
                 else
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        colorIndex |= RED_HIGH;    // 0x0D, red high
+                        colorIndex += RED_HIGH;    // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        colorIndex |= BLUE_HIGH;    // 0x0E, blue high
+                        colorIndex += BLUE_HIGH;    // 0x0E, blue high
                     }
                 }
                 *(pData)++ = colorIndex;
