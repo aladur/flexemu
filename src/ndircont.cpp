@@ -763,12 +763,21 @@ bool NafsDirectoryContainer::add_to_link_table(
         static_cast<Byte>(((i + sector_begin - 2) % param.max_sector) + 1);
     end.trk = static_cast<Byte>((i + sector_begin - 2) / param.max_sector);
     // update sys info sector
-    sis.sir.fc_start.sec =
-        static_cast<Byte>(((i + sector_begin - 1) % param.max_sector) + 1);
-    sis.sir.fc_start.trk =
-        static_cast<Byte>((i + sector_begin - 1) / param.max_sector);
-
-    setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free - records));
+    free -= static_cast<Word>(records);
+    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    if (free > 0U)
+    {
+        sis.sir.fc_start.sec =
+            static_cast<Byte>(((i + sector_begin - 1) % param.max_sector) + 1);
+        sis.sir.fc_start.trk =
+            static_cast<Byte>((i + sector_begin - 1) / param.max_sector);
+    }
+    else
+    {
+        // No space left => no more free chain sectors available.
+        sis.sir.fc_start = st_t{ };
+        sis.sir.fc_end = st_t{ };
+    }
 
     return true;
 } // add_to_link_table
