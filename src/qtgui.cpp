@@ -112,6 +112,7 @@ QtGui::QtGui(
         , isRestartNeeded(false)
         , timerTicks(0)
         , oldFirstRasterLine(0)
+        , preferencesTabIndex(0)
         , scheduler(x_scheduler)
         , vico1(x_vico1)
         , vico2(x_vico2)
@@ -265,10 +266,12 @@ void QtGui::OnPreferences()
     const auto preferencesIcon = GetPreferencesIcon(isRestartNeeded);
     dialog.setWindowIcon(preferencesIcon);
     ui.TransferDataToDialog(options);
+    ui.SetTabIndex(preferencesTabIndex);
     dialog.resize({0, 0});
     dialog.setModal(true);
     dialog.setSizeGripEnabled(true);
     auto result = dialog.exec();
+    preferencesTabIndex = ui.GetTabIndex();
 
     if (result == QDialog::Accepted)
     {

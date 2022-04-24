@@ -906,3 +906,21 @@ void FlexemuOptionsUi::OnRejected()
     dialog->done(QDialog::Rejected);
 }
 
+void FlexemuOptionsUi::SetTabIndex(int index)
+{
+    if (c_tabWidget != nullptr)
+    {
+        c_tabWidget->setCurrentIndex(index);
+    }
+}
+
+int FlexemuOptionsUi::GetTabIndex() const
+{
+    if (c_tabWidget != nullptr)
+    {
+        return c_tabWidget->currentIndex();
+    }
+
+    return 0;
+}
+

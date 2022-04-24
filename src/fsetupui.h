@@ -53,6 +53,8 @@ public:
     void setupUi(QDialog *dialog);
     void TransferDataToDialog(const sOptions &options);
     void TransferDataFromDialog(sOptions &options);
+    void SetTabIndex(int index);
+    int GetTabIndex() const;
 
 private slots:
     void OnFrequencyOriginal(bool value);
