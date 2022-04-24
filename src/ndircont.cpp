@@ -1110,11 +1110,21 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 void NafsDirectoryContainer::change_file_id_and_type(SWord index, SWord old_id,
         SWord new_id, SectorType new_type)
 {
+    std::set<SWord> usedIndices;
+
     while (index >= 0 && flex_links[index].file_id == old_id)
     {
         flex_links[index].file_id = new_id;
         flex_links[index].type = new_type;
         index = get_sector_index(flex_links[index].next);
+        // Remember all indices already used and break loop if an index
+        // appears a second time. This protects from endless loops based on
+        // wrong sector links.
+        if (usedIndices.find(index) != usedIndices.end())
+        {
+            break;
+        }
+        usedIndices.insert(index);
     } // while
 } // change_file_id_and_type
 
