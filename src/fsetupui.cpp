@@ -115,8 +115,10 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     if (dialog == nullptr)
     {
-        throw std::logic_error("setupUi(dialog) with a valid dialog instance "
-                               "has to be called before.");
+        QMessageBox::critical(nullptr, PROGRAMNAME " Logic Error",
+                              "setupUi(dialog) with a valid dialog instance "
+                              "has to be called before.");
+        return;
     }
 
     readOnlyOptions = AddDependentReadOnlyOptions(options.readOnlyOptionIds);
@@ -908,19 +910,27 @@ void FlexemuOptionsUi::OnRejected()
 
 void FlexemuOptionsUi::SetTabIndex(int index)
 {
-    if (c_tabWidget != nullptr)
+    if (c_tabWidget == nullptr)
     {
-        c_tabWidget->setCurrentIndex(index);
+        QMessageBox::critical(nullptr, PROGRAMNAME " Logic Error",
+                              "setupUi(dialog) with a valid dialog instance "
+                              "has to be called before.");
+        return;
     }
+
+    c_tabWidget->setCurrentIndex(index);
 }
 
 int FlexemuOptionsUi::GetTabIndex() const
 {
-    if (c_tabWidget != nullptr)
+    if (c_tabWidget == nullptr)
     {
-        return c_tabWidget->currentIndex();
+        QMessageBox::critical(nullptr, PROGRAMNAME " Logic Error",
+                              "setupUi(dialog) with a valid dialog instance "
+                              "has to be called before.");
+        return 0;
     }
 
-    return 0;
+    return c_tabWidget->currentIndex();
 }
 
