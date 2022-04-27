@@ -84,6 +84,7 @@
 #include "warnon.h"
 #include <cmath>
 
+int QtGui::preferencesTabIndex = 0;
 
 QtGui::QtGui(
     Mc6809 &x_cpu,
@@ -112,7 +113,6 @@ QtGui::QtGui(
         , isRestartNeeded(false)
         , timerTicks(0)
         , oldFirstRasterLine(0)
-        , preferencesTabIndex(0)
         , scheduler(x_scheduler)
         , vico1(x_vico1)
         , vico2(x_vico2)

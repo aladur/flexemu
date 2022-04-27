@@ -269,7 +269,6 @@ private:
     int timerTicks;
     Byte oldFirstRasterLine;
     s_cpu_logfile logfileSettings;
-    int preferencesTabIndex;
 
     Scheduler &scheduler;
     VideoControl1 &vico1;
@@ -279,6 +278,8 @@ private:
     E2floppy *fdc;
     sOptions &options;
     sOptions oldOptions;
+
+    static int preferencesTabIndex;
 };
 #endif
 
