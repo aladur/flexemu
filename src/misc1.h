@@ -310,6 +310,7 @@ extern "C" struct sRGBDef
 #define FLEXSCREENFACTOR "ScreenFactor"
 #define FLEXFREQUENCY    "Frequency"
 #define FLEXFILETIMEACCESS "FileTimeAccess"
+#define FLEXDISPLAYSMOOTH "DisplaySmooth"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

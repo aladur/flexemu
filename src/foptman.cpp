@@ -95,6 +95,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.color = "green";
     options.nColors = 2;
     options.isInverse = false;
+    options.isSmooth = false;
 #ifdef UNIX
     options.doc_dir = F_DATADIR;
     options.disk_dir = F_DATADIR;
@@ -417,6 +418,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXFILETIMEACCESS,
                 static_cast<int>(options.fileTimeAccess));
             break;
+
+        case FlexemuOptionId::IsDisplaySmooth:
+            reg.SetValue(FLEXDISPLAYSMOOTH, options.isSmooth ? 1 : 0);
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -557,12 +562,17 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::FileTimeAccess:
             optionsToWrite.fileTimeAccess = previousOptions.fileTimeAccess;
             break;
+
+        case FlexemuOptionId::IsDisplaySmooth:
+            optionsToWrite.isSmooth = previousOptions.isSmooth;
+            break;
         }
     }
 
     BRcFile rcFile(fileName.c_str());
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
+    rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
     rcFile.SetValue(FLEXCOLOR, optionsToWrite.color.c_str());
     rcFile.SetValue(FLEXNCOLORS, optionsToWrite.nColors);
     rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
@@ -717,6 +727,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.fileTimeAccess = static_cast<FileTimeAccess>(int_result);
     }
 
+    if (!reg.GetValue(FLEXDISPLAYSMOOTH, int_result))
+    {
+        options.isSmooth = (int_result != 0);
+    }
+
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -833,6 +848,12 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         }
         options.fileTimeAccess = static_cast<FileTimeAccess>(int_result);
     }
+
+    if (!rcFile.GetValue(FLEXDISPLAYSMOOTH, int_result))
+    {
+        options.isSmooth = (int_result != 0);
+    }
+
 #endif
 } // GetOptions
 

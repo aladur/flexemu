@@ -371,6 +371,10 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::FileTimeAccess:
                 c_fileTime->setEnabled(false);
                 break;
+
+            case FlexemuOptionId::IsDisplaySmooth:
+                // No widget in Preferences Dialog yet
+                break;
         }
     }
 }
@@ -446,6 +450,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IsInverse:
                 case FlexemuOptionId::PixelSize:
                 case FlexemuOptionId::FileTimeAccess:
+                case FlexemuOptionId::IsDisplaySmooth:
                     break;
             }
         }

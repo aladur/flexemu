@@ -171,7 +171,7 @@ private:
     void update_block(int blockNumber);
     void UpdateDiskStatus(int floppyIndex, DiskStatus status);
     void UpdateInterruptStatus(tIrqType irqType, bool status);
-    void ToggleSmoothDisplay() const;
+    void ToggleSmoothDisplay();
     void ToggleCpuFrequency();
     void ToggleCpuUndocumented();
     void ToggleFullScreenMode();

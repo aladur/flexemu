@@ -177,6 +177,10 @@ QtGui::QtGui(
     SetCpuDialogMonospaceFont(QApplication::font().pointSize());
     UpdateCpuFrequencyCheck();
     UpdateCpuUndocumentedCheck();
+    if (options.isSmooth)
+    {
+        ToggleSmoothDisplay();
+    }
 
     OnIconSize(0);
 }
@@ -351,6 +355,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsFlexibleMmu:
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:
+                case FlexemuOptionId::IsDisplaySmooth:
                     break;
             }
         }
@@ -1465,11 +1470,15 @@ void QtGui::ToggleFullScreenMode()
     SetFullScreenMode(!IsFullScreenMode());
 }
 
-void QtGui::ToggleSmoothDisplay() const
+void QtGui::ToggleSmoothDisplay()
 {
     e2screen->ToggleSmoothDisplay();
     UpdateSmoothDisplayCheck();
     QTimer::singleShot(0, this, &QtGui::OnRepaintScreen);
+
+    oldOptions.isSmooth = e2screen->IsSmoothDisplay();
+    options.isSmooth = e2screen->IsSmoothDisplay();
+    WriteOneOption(options, FlexemuOptionId::IsDisplaySmooth);
 }
 
 void QtGui::SetFullScreenMode(bool isFullScreen)

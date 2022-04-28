@@ -60,6 +60,7 @@ enum class FlexemuOptionId : uint8_t
     IsInverse,
     PixelSize,
     FileTimeAccess,
+    IsDisplaySmooth,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -88,6 +89,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::IsInverse,
     FlexemuOptionId::PixelSize,
     FlexemuOptionId::FileTimeAccess,
+    FlexemuOptionId::IsDisplaySmooth,
 };
 
 struct sOptions
@@ -118,6 +120,7 @@ struct sOptions
     std::string doc_dir; // Directory containing html documenation.
     int nColors; // Number of colors or gray scale values { 2, 8, 64 }.
     bool isInverse; // Display inverse colors or gray scale values.
+    bool isSmooth; // Display mode is smooth display.
     int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
                    // It depends on the screen dimensions on which flexemu
                    // is executed.
