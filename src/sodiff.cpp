@@ -145,6 +145,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::FileTimeAccess);
     }
+
+    if (opt1.isSmooth != opt2.isSmooth)
+    {
+        notEquals.push_back(FlexemuOptionId::IsDisplaySmooth);
+    }
 }
 
 const FlexemuOptionsDifference::Result&

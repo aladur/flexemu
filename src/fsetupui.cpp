@@ -254,6 +254,8 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
            (FileTimeAccess::Get | FileTimeAccess::Set));
     c_fileTime->setChecked(setFileTime);
 
+    c_isDisplaySmooth->setChecked(options.isSmooth != 0);
+
     SetOptionsReadOnly(readOnlyOptions);
 }
 
@@ -373,7 +375,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::IsDisplaySmooth:
-                // No widget in Preferences Dialog yet
+                c_isDisplaySmooth->setEnabled(false);
                 break;
         }
     }
@@ -681,6 +683,11 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     {
         options.fileTimeAccess = c_fileTime->isChecked() ?
             FileTimeAccess::Get | FileTimeAccess::Set : FileTimeAccess::NONE;
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsDisplaySmooth))
+    {
+        options.isSmooth = c_isDisplaySmooth->isChecked();
     }
 }
 

@@ -334,6 +334,10 @@ void QtGui::OnPreferences()
                     OnScreenSize(options.pixelSize - 1);
                     break;
 
+                case FlexemuOptionId::IsDisplaySmooth:
+                    ToggleSmoothDisplay();
+                    break;
+
                 case FlexemuOptionId::CanFormatDrive0:
                 case FlexemuOptionId::CanFormatDrive1:
                 case FlexemuOptionId::CanFormatDrive2:
@@ -355,7 +359,6 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsFlexibleMmu:
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:
-                case FlexemuOptionId::IsDisplaySmooth:
                     break;
             }
         }

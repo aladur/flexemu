@@ -279,7 +279,14 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="6" column="0" colspan="2">
+          <widget class="QCheckBox" name="c_isDisplaySmooth">
+           <property name="text">
+            <string>Display Smooth</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
           <spacer name="verticalSpacer_5">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -939,6 +946,7 @@
   <tabstop>cb_color</tabstop>
   <tabstop>c_multiColorScheme</tabstop>
   <tabstop>c_isInverse</tabstop>
+  <tabstop>c_isDisplaySmooth</tabstop>
   <tabstop>r_ramExtNone</tabstop>
   <tabstop>r_ramExt2x96</tabstop>
   <tabstop>r_ramExt2x288</tabstop>
