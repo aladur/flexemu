@@ -1784,9 +1784,9 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
         {
             sRGBQUAD colorEntry;
 
-            colorEntry.red = qRed(rgbColor);
-            colorEntry.green = qGreen(rgbColor);
-            colorEntry.blue = qBlue(rgbColor);
+            colorEntry.red = static_cast<Byte>(qRed(rgbColor));
+            colorEntry.green = static_cast<Byte>(qGreen(rgbColor));
+            colorEntry.blue = static_cast<Byte>(qBlue(rgbColor));
             colorEntry.reserved = '\0';
             memcpy(pData, &colorEntry, sizeof(colorEntry));
             pData += sizeof(colorEntry);
@@ -1804,7 +1804,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     Byte colorIndexOffset = 0U;
     if (options.isInverse)
     {
-        colorIndexOffset = (64U / options.nColors) - 1;
+        colorIndexOffset = static_cast<Byte>((64U / options.nColors) - 1U);
     }
 
     memset(pixels, '\0', sizeof(pixels));

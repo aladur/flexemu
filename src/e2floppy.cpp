@@ -252,7 +252,7 @@ void E2floppy::disk_directory(const char *x_disk_dir)
 
 void E2floppy::mount_all_drives(std::string drive[])
 {
-    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
+    for (Word drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
     {
         mount_drive(drive[drive_nr].c_str(), drive_nr);
     }
@@ -265,7 +265,7 @@ bool E2floppy::umount_all_drives()
 {
     bool result = true;
 
-    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
+    for (Word drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
     {
         if (!umount_drive(drive_nr))
         {
@@ -357,7 +357,7 @@ bool E2floppy::sync_all_drives(tMountOption option)
 {
     bool result = true;
 
-    for (auto drive_nr = 0U; drive_nr < MAX_DRIVES; ++drive_nr)
+    for (Word drive_nr = 0U; drive_nr < MAX_DRIVES; ++drive_nr)
     {
         if (floppy[drive_nr].get() == nullptr)
         {

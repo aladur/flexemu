@@ -885,7 +885,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 strncpy(pde->file_ext, entry.GetFileExt().c_str(),
                         FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
-                pde->hour = time.GetHour();
+                pde->hour = static_cast<Byte>(time.GetHour());
                 entry.GetStartTrkSec(tmp1, tmp2);
                 pde->start.trk = static_cast<Byte>(tmp1);
                 pde->start.sec = static_cast<Byte>(tmp2);
@@ -894,7 +894,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->end.sec = static_cast<Byte>(tmp2);
                 setValueBigEndian<Word>(&pde->records[0], static_cast<Word>(records));
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
-                pde->minute = time.GetMinute();
+                pde->minute = static_cast<Byte>(time.GetMinute());
                 date = entry.GetDate();
                 pde->day = static_cast<Byte>(date.GetDay());
                 pde->month = static_cast<Byte>(date.GetMonth());

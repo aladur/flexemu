@@ -25,7 +25,7 @@
 #include <iomanip>
 
 
-BTime::BTime(uint8_t h, uint8_t m, uint8_t s)
+BTime::BTime(int h, int m, int s)
     : hour(h)
     , minute(m)
     , second(s)
@@ -59,29 +59,29 @@ const std::string BTime::AsString(Format format) const
     {
         case Format::HHMMSS:
             stream << std::setfill('0') <<
-                std::setw(2) << static_cast<Word>(hour) << ':' <<
-                std::setw(2) << static_cast<Word>(minute) << ':' <<
-                std::setw(2) << static_cast<Word>(second);
+                std::setw(2) << hour << ':' <<
+                std::setw(2) << minute << ':' <<
+                std::setw(2) << second;
             break;
 
         case Format::HHMM:
             stream << std::setfill('0') <<
-                std::setw(2) << static_cast<Word>(hour) << ':' <<
-                std::setw(2) << static_cast<Word>(minute);
+                std::setw(2) << hour << ':' <<
+                std::setw(2) << minute;
             break;
     }
 
     return stream.str();
 }
 
-void BTime::Get(uint8_t &h, uint8_t &m, uint8_t &s) const
+void BTime::Get(int &h, int &m, int &s) const
 {
     h = hour;
     m = minute;
     s = second;
 }
 
-void BTime::Set(uint8_t h, uint8_t m, uint8_t s)
+void BTime::Set(int h, int m, int s)
 {
     hour = h;
     minute = m;
@@ -95,17 +95,17 @@ void BTime::Set(const BTime &src)
     second = src.second;
 }
 
-uint8_t BTime::GetHour() const
+int BTime::GetHour() const
 {
     return hour;
 }
 
-uint8_t BTime::GetMinute() const
+int BTime::GetMinute() const
 {
     return minute;
 }
 
-uint8_t BTime::GetSecond() const
+int BTime::GetSecond() const
 {
     return second;
 }

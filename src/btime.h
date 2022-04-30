@@ -28,9 +28,9 @@ class BTime
 {
 private:
 
-    uint8_t hour; // range 0..23
-    uint8_t minute; // range 0..59
-    uint8_t second; // range 0..59
+    int hour; // range 0..23
+    int minute; // range 0..59
+    int second; // range 0..59
 
 public:
 
@@ -40,18 +40,18 @@ public:
         HHMM, // HH:MM hour:minute
     };
 
-    BTime(uint8_t h = 0U, uint8_t m = 0U, uint8_t s = 0U);
+    BTime(int h = 0U, int m = 0U, int s = 0U);
     BTime(const BTime &src);
     ~BTime();
 
     static BTime Now();
     const std::string AsString(Format = Format::HHMMSS) const;
-    void Get(uint8_t &hour, uint8_t &minute, uint8_t &second) const;
-    void Set(uint8_t hour, uint8_t minute, uint8_t second);
+    void Get(int &hour, int &minute, int &second) const;
+    void Set(int hour, int minute, int second);
     void Set(const BTime &src);
-    uint8_t GetHour() const;
-    uint8_t GetMinute() const;
-    uint8_t GetSecond() const;
+    int GetHour() const;
+    int GetMinute() const;
+    int GetSecond() const;
     size_t ToSeconds() const;
     BTime &operator = (const BTime &src);
 };

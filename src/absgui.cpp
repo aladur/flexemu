@@ -167,7 +167,7 @@ void AbstractGui::clear_cpuview()
 
     memset(cpustring, ' ', sizeof(cpustring));
     cpustring[sizeof(cpustring) - 1] = '\0';
-    auto size = strlen(delim);
+    auto size = static_cast<int>(strlen(delim));
 
     for (int y = 0; y < CPU_LINES; ++y)
     {

@@ -400,7 +400,7 @@ int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
 }
 
 int SummaryOfDskFile(const std::string &dsk_file,
-                     size_t &sum_files, size_t &sum_size, size_t &sum_free,
+                     uint64_t &sum_files, uint64_t&sum_size, uint64_t&sum_free,
                      bool verbose)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
@@ -415,7 +415,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
     if (src.GetInfo(info))
     {
-        size_t file_count = 0;
+        uint64_t file_count = 0;
         int tracks;
         int sectors;
 
@@ -459,9 +459,9 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
 int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
 {
-    size_t sum_files = 0;
-    size_t sum_size = 0;
-    size_t sum_free = 0;
+    uint64_t sum_files = 0U;
+    uint64_t sum_size = 0U;
+    uint64_t sum_free = 0U;
 
     std::cout <<
         "DATE        DISKNAME     #     TT-SS FILES SIZE  FREE  FILE\n" <<

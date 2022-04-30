@@ -728,8 +728,8 @@ void FlexFileBuffer::SetDateTime(const BDate &new_date, const BTime &new_time)
     fileHeader.day = static_cast<Word>(new_date.GetDay());
     fileHeader.month = static_cast<Word>(new_date.GetMonth());
     fileHeader.year = static_cast<Word>(new_date.GetYear());
-    fileHeader.hour = new_time.GetHour();
-    fileHeader.minute = new_time.GetMinute();
+    fileHeader.hour = static_cast<Word>(new_time.GetHour());
+    fileHeader.minute = static_cast<Word>(new_time.GetMinute());
 }
 
 BDate FlexFileBuffer::GetDate() const
