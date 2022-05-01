@@ -597,7 +597,168 @@ Code Maintenance:
 	o configure option --disable-post-install to supress post installation
 	  steps
 
-V3.01 (not yet published)
+V3.10 (20220501)
 New Features:
+	o Integrate FSetup into flexemu (as new Preferences Dialog)
+	o Improve flexemu syntax help
+	o Update documentation
+	o dsktool -S help, add disk sizes in KByte
+	o dsktool -S help: Sort formats by track
+	o dsktool: Support new formats 40ssdd and 80ssdd
+	o dsktool usage: For -r command add -y|-n options
+	o dsktool: New command to copy from/to file container
+	o dsktool: Add option to print version number
+	o mdcrtool: Add option to print version number
+	o flex2hex: Add option to print version number
+	o dsktool: New command to extract from file container with regex
+	o Update html documentation after validation check
+	o Update html documentation after validation check (2)
+	o Update html documentation (layout, style, font, typos)
+	o Improve wording in preferences dialog
+	o Self explaining error message when copying empty file
+	o flexemu: Support empty files in directory container
+	o flexplorer, dsktool: Support directory extension
+	o flexemu: Improved geometry of CPU dialog
+	o Support UNC path when checking for absolute path
+	o CPU logging: Optionally log cycle count
+	o FLEXplorer: View file contents on activate (Double Click)
+	o flexemu: Change key sequence for NMI
+	o Update FLEX utilities documentation
+	o flexemu/FLEXplorer/dsktool: Optional file time support
+	o dsktool: Set environment variable to use file time
+	o flexemu: Edit file time usage in preferences dialog
+	o flexplorer: Edit file time usage in preferences dialog
+	o dsktool: consistency check: Optionally check file time
+	o flexplorer: Always open MessageBox with parent window
+	o Documentation: Add FMS label names
+	o Documenation: Add DOS variable label names
+	o flexemu: Support sync a directory container (re-read directory)
+	o flexemu: Remember Preferences Dialog tab index
+	o flexemu: Remember Preferences Dialog tab index (2)
+	o flexemu: Permanently store 'Smooth Display'
+	o flexemu Preferences Dialog: Add 'Smooth Display'
 Bug Fixes:
+	o autotools: Add missing header files
+	o in QtGui improved screen update
+	o QtGui color table caching
+	o MSVC: Add soptions.h header dependency to project
+	o Windows: Add mon24z.s19 to installer
+	o File Container: Dont force a filename for uppercase
+	o Windows, Directory container: On rename file prefer lowercase
+	o FLEXplorer: Avoid unnecessary "File already exists"
+	o FLEXplorer: Support change to uppercase filename
+	o flex2hex: Print whole usage message
+	o Correctly create filename from FLEX directory entry
+	o dsktool: Bugfix in -s (summary) command
+	o dsktool: Bugfix typos in -S help (size parameters)
+	o Improved error handling in NEWDISK.CMD (format disk)
+	o flexemu: Correctly display drive info
+	o flexemu: Options to format floppy disks (-O)
+	o Fix for undefined reference to '__atomic_load_8'
+	o flexemu on Linux: Avoid SIGSEGV if no display available
+	o flexemu: Support big endian bitfields
+	o flexemu: Correctly mount file containers
+	o flexemu: MC6821, access right register
+	o Use correct syntax in FLEX utilities documentation
+	o FLEXplorer: Avoid wrong title for directory container
+	o FLEXplorer: Use always uppercase filename
+	o FLEXplorer: Correctly show available and free bytes
+	o FLExplorer: Don't show tracks/sectors for directory container
+	o Documentation: Fix typos
+	o Documentation: Fix typos in flexdos.htm
+	o Documentation: Add missing sentence in flexdos.htm
+	o Documentation: Corrections and additions to neumon54.htm
+	o Windows, flexemu: Correctly emulate non-volatile RAM in RTC
+	o flexemu: Avoid endless loop in directory container
+	o flexemu: Avoid free chain error in directory container
+	o flexemu: Diplay same colors in inverse color mode
+	o OFILES.CMD utility, avoid wrong error message
 Code Maintenance:
+	o Remove unused code
+	o Remove unused files
+	o Store termios only once in a static variable
+	o Move guiOptions from AbstractGui to QtGui
+	o Remove unused code
+	o QtGui: Use all options from guiOptions
+	o Move sOptions into own header file
+	o QtGui: include what you use
+	o inout: Store terminal mode as const property
+	o Fix indentation
+	o FlexOptionManager: Use ref parameter for option parameters
+	o Use struct sOptions for all options
+	o Windows: Set same default content to all *.vcxproj.user files
+	o flexemu: Always use same screen size combobox and icon
+	o Bugfix in Windows Qt5 build script
+	o Improved error handling in Windows Qt5 build script
+	o Removed unused parameter in Qt5 build script
+	o Add options in Qt5 build script
+	o Update documentation and usage in Qt5 build script
+	o Improve install instructions
+	o Remove fsetup project from build
+	o Remove include guard from *.cpp files
+	o autotools: Create static library
+	o Remove Solaris from supported operating systems
+	o File container: Use constants instead of magic numbers
+	o autotools: Support precompiled header
+	o Remove duplicate header include
+	o Windows: Update file filter for flexemu project
+	o Windows: Build flexemu as Unicode Application
+	o Windows: Build dsktool as Unicode Application
+	o Windows: Build flex2hex as Unicode Application
+	o Windows: Build mdcrtool as Unicode Application
+	o Windows: Remove multibye character support
+	o Windows: Independence of MFC/ATL headers
+	o Windows: Only use _WIN32 for Windows platform
+	o Windows: Create static library flex.lib
+	o Add Precompiled Header source file
+	o Windows: Support precompiled header
+	o Windows: Always use multi processor compilation
+	o Windows: Replace dependencies by references
+	o Bugfix to update right qrc resource file
+	o Avoid global using-declaration
+	o Update project dependencies
+	o Bugfix flexemu: Compatability to gcc < 6.1
+	o Use const, where possible
+	o Bugfix Windows: Avoid compile error
+	o Bugfix Windows: correct CPU emulation
+	o Avoid potential dangling pointer in E2floppy
+	o Move GetSupportedAttributes() into container classes
+	o Avoid reading options from environment variables
+	o Add free function to get home directory
+	o Use function to get home directory
+	o Refactor FlexOptionManager
+	o Update README
+	o Update copyright year to 2022
+	o Avoid using deprecated Qt methods
+	o flexemu: Remove assembler warnings
+	o Remove gcc compiler warning
+	o Remove gcc compiler warning (2)
+	o Suppress gcc compiler warnings in Qt headers
+	o Rename files (class BTime)
+	o Avoid symbolic links for m4 scripts
+	o Keep INSTALL file from autoconf
+	o Linux: Update to new autoconf/automake versions
+	o Add missing m4 script
+	o Remove unused methods
+	o Add BTime class containing time of day
+	o BTime: String conversion, support multiple formats
+	o Improved algorithm to get disk name
+	o Bugfix on Windows: Make it compile
+	o Linux: Update to new autoconf/automake versions (2)
+	o Linux: Update autoconf files
+	o Move constant, improve documentation
+	o Linux: Update to new autoconf/automake versions (3)
+	o autotools: Remove obsolete dependency
+	o flexemu: Avoid warning
+	o flexplorer: Simple refactoring
+	o Refactor C-string handling by using std::string
+	o Refactoring FlexFileBuffer
+	o FlexDirEntry: Remove redundant member function
+	o FlexContainerInfo: Rmove redundant member function
+	o DirectoryContainer: Remove unused local variable
+	o flexplorer: Catch any global exception
+	o Remove unused enum
+	o Use constant for max. number of disk drives
+	o Refactoring
+	o flexemu: Avoid throwing exceptions in Qt events
+	o Remove compiler warnings
