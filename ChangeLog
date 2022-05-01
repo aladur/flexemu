@@ -762,3 +762,8 @@ Code Maintenance:
 	o Refactoring
 	o flexemu: Avoid throwing exceptions in Qt events
 	o Remove compiler warnings
+
+V3.11 (not yet published)
+New Features:
+Bug Fixes:
+Code Maintenance:
