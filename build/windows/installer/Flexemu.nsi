@@ -158,7 +158,6 @@ Section "${APPNAME}" BinaryFiles
 ${If} $Arch == "x64"
   File /a "${BASEDIR}\bin\x64\Release\flexemu.exe"
   File /a "${BASEDIR}\bin\x64\Release\flexplorer.exe"
-  File /a "${BASEDIR}\bin\x64\Release\fsetup.exe"
   File /a "${BASEDIR}\bin\x64\Release\mdcrtool.exe"
   File /a "${BASEDIR}\bin\x64\Release\dsktool.exe"
   File /a "${BASEDIR}\bin\x64\Release\flex2hex.exe"
@@ -168,7 +167,6 @@ ${If} $Arch == "x64"
 ${Else}
   File /a "${BASEDIR}\bin\Win32\Release\flexemu.exe"
   File /a "${BASEDIR}\bin\Win32\Release\flexplorer.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\fsetup.exe"
   File /a "${BASEDIR}\bin\Win32\Release\mdcrtool.exe"
   File /a "${BASEDIR}\bin\Win32\Release\dsktool.exe"
   File /a "${BASEDIR}\bin\Win32\Release\flex2hex.exe"
@@ -294,7 +292,6 @@ Section "Start Menu Shortcuts" StartMenu
   SetOutPath $INSTDIR ; for working directory
   CreateDirectory "$SMPROGRAMS\${APPNAME}"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" "$INSTDIR\${APPNAME}.exe" 0 "" "" "A MC6809 Emulator running FLEX"
-  CreateShortCut "$SMPROGRAMS\${APPNAME}\FSetup.lnk" "$INSTDIR\FSetup.exe" "" "$INSTDIR\FSetup.exe" 0 "" "" "Setup for flexemu"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\FLEXplorer.lnk" "$INSTDIR\FLEXplorer.exe" "" "$INSTDIR\FLEXplorer.exe" 0 "" "" "Explorer for FLEX container files"
   CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall ${APPNAME}.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0 "" "" "Uninstall Flexemu Installation"  
 
@@ -304,7 +301,6 @@ Section "Desktop Icons" DesktopIcons
 
   SetOutPath $INSTDIR ; for working directory
   CreateShortCut "$DESKTOP\${APPNAME}.lnk" "$INSTDIR\${APPNAME}.exe" "" "$INSTDIR\${APPNAME}.exe" 0 "" "" "A MC6809 Emulator running FLEX"
-  CreateShortCut "$DESKTOP\FSetup.lnk" "$INSTDIR\FSetup.exe" "" "$INSTDIR\FSetup.exe" 0 "" "" "Setup for flexemu"
   CreateShortCut "$DESKTOP\FLEXplorer.lnk" "$INSTDIR\FLEXplorer.exe" "" "$INSTDIR\FLEXplorer.exe" 0 "" "" "Explorer for FLEX container files"
 
 SectionEnd
@@ -392,7 +388,6 @@ Section "-Registry update"
   ; Add Application paths
   WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\${APPNAME}.exe" "" "$INSTDIR\${APPNAME}.exe"
   WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FLEXplorer.exe" "" "$INSTDIR\FLEXplorer.exe"
-  WriteRegStr   HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FSetup.exe" "" "$INSTDIR\FSetup.exe"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, p0, p0)'
 
@@ -406,12 +401,8 @@ Function un.onInit
   ; Check if any application installed by this installer is running. If so open a user dialog and retry or abort installation.
 uninit.checkrun1:
   FindWindow $0 "${APPNAME}" ""
-  StrCmp $0 0 uninit.checkrun2
-    MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "${APPNAME} is running. Please close it first" /SD IDRETRY IDRETRY uninit.checkrun1 IDABORT uninit.abort
-uninit.checkrun2:
-  FindWindow $0 "" "${APPNAME} Options Dialog"
   StrCmp $0 0 uninit.checkrun3
-    MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "FSetup is running. Please close it first" /SD IDRETRY IDRETRY uninit.checkrun1 IDABORT uninit.abort
+    MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "${APPNAME} is running. Please close it first" /SD IDRETRY IDRETRY uninit.checkrun1 IDABORT uninit.abort
 uninit.checkrun3:
   FindWindow $0 "" "FLEXplorer"
   StrCmp $0 0 uninit.notrunning
@@ -455,7 +446,6 @@ Section "Uninstall" Uninstall
   DeleteRegKey HKCR "Applications\FLEXplorer.exe"
   DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\${APPNAME}.exe"
   DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FLEXplorer.exe"
-  DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\FSetup.exe"
 
   ; Remove files and uninstaller
   Delete $INSTDIR\Documentation\images\*.*
@@ -468,7 +458,6 @@ Section "Uninstall" Uninstall
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\${APPNAME}\*.*"
   Delete "$DESKTOP\${APPNAME}.lnk"
-  Delete "$DESKTOP\FSetup.lnk"
   Delete "$DESKTOP\FLEXplorer.lnk"
   
 
