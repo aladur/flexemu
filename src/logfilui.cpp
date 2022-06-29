@@ -44,12 +44,22 @@ void LogfileSettingsUi::setupUi(QDialog &p_dialog)
     dialog = &p_dialog;
     Ui_LogfileSettings::setupUi(dialog);
 
+    regCheckBoxes = {
+        c_reg_cc, c_reg_a, c_reg_b, c_reg_dp,
+        c_reg_x, c_reg_y, c_reg_u, c_reg_s
+    };
+
     assert(e_minAddress != nullptr);
     assert(e_maxAddress != nullptr);
     assert(e_startAddress != nullptr);
     assert(e_stopAddress != nullptr);
     assert(c_logCycleCount != nullptr);
     assert(e_logFilename != nullptr);
+
+    for (auto i = 0U; i < sizeof(regCheckBoxes) / sizeof(regCheckBoxes[0]); ++i)
+    {
+        assert(regCheckBoxes[i] != nullptr);
+    }
 
     InitializeWidgets();
     ConnectSignalsWithSlots();
@@ -84,6 +94,15 @@ void LogfileSettingsUi::SetData(const s_cpu_logfile &settings)
 
     c_logCycleCount->setChecked(settings.logCycleCount);
     e_logFilename->setText(settings.logFileName.c_str());
+
+    auto logRegister = LogRegister::CC;
+    for (auto regCheckBox : regCheckBoxes)
+    {
+        bool isChecked =
+            (settings.logRegisters & logRegister) != LogRegister::NONE;
+        regCheckBox->setChecked(isChecked);
+        logRegister <<= 1;
+    }
 }
 
 s_cpu_logfile LogfileSettingsUi::GetData() const
@@ -97,6 +116,17 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
 
     settings.logCycleCount = c_logCycleCount->isChecked();
     settings.logFileName = e_logFilename->text().toUtf8().data();
+
+    settings.logRegisters = LogRegister::NONE;
+    auto logRegister = LogRegister::CC;
+    for (auto regCheckBox : regCheckBoxes)
+    {
+        if (regCheckBox->isChecked())
+        {
+            settings.logRegisters |= logRegister;
+        }
+        logRegister <<= 1;
+    }
 
     return settings;
 }
@@ -135,6 +165,11 @@ void LogfileSettingsUi::OnClicked(QAbstractButton *button)
         e_stopAddress->clear();
         c_logCycleCount->setChecked(false);
         e_logFilename->clear();
+
+        for (auto regCheckBox : regCheckBoxes)
+        {
+            regCheckBox->setChecked(false);
+        }
     }
 }
 

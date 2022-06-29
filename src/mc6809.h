@@ -250,6 +250,8 @@ private:
     void            init_indexed_cycles();
     void            init_psh_pul_cycles();
     void            illegal();
+    void            log_current_instruction();
+    std::string     asCCString(Byte reg);
 
 #ifndef FASTFLEX
     //***********************************

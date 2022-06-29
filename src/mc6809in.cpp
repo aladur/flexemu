@@ -392,20 +392,7 @@ CpuState Mc6809::runloop()
             if (do_logging && disassembler != nullptr &&
                 PC >= lfs.minAddr && PC <= lfs.maxAddr)
             {
-                char *pCode, *pMnemonic;
-                InstFlg flags = InstFlg::NONE;
-
-                Disassemble(PC, &flags, &pCode, &pMnemonic);
-                if (lfs.logCycleCount)
-                {
-#if (SIZEOF_LONG == 4)
-                    fprintf(log_fp, "%20llu ", get_cycles());
-#endif
-#if (SIZEOF_LONG == 8)
-                    fprintf(log_fp, "%20lu ", get_cycles());
-#endif
-                }
-                fprintf(log_fp, "%04X %s\n", PC.load(), pMnemonic);
+                log_current_instruction();
             }
         }
 
@@ -420,6 +407,67 @@ CpuState Mc6809::runloop()
 
     return new_state;
 } // runloop
+
+void Mc6809::log_current_instruction()
+{
+    Mc6809CpuStatus cpu_status;
+
+    get_status(&cpu_status);
+    if (lfs.logCycleCount)
+    {
+#if (SIZEOF_LONG == 4)
+        fprintf(log_fp, "%20llu ", cpu_status.total_cylces);
+#endif
+#if (SIZEOF_LONG == 8)
+        fprintf(log_fp, "%20lu ", cpu_status.total_cycles);
+#endif
+    }
+    fprintf(log_fp, "%04X %-23s", PC.load(), cpu_status.mnemonic);
+
+    if (lfs.logRegisters != LogRegister::NONE)
+    {
+        LogRegister registerBit = LogRegister::CC;
+        while (registerBit != LogRegister::NONE)
+        {
+            registerBit <<= 1;
+        }
+
+        if ((lfs.logRegisters & LogRegister::CC) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " CC=%s", asCCString(cpu_status.cc).c_str());
+        }
+        if ((lfs.logRegisters & LogRegister::A) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " A=%02X", (Word)cpu_status.a);
+        }
+        if ((lfs.logRegisters & LogRegister::B) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " B=%02X", (Word)cpu_status.b);
+        }
+        if ((lfs.logRegisters & LogRegister::DP) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " DP=%02X", (Word)cpu_status.dp);
+        }
+        if ((lfs.logRegisters & LogRegister::X) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " X=%04X", cpu_status.x);
+        }
+        if ((lfs.logRegisters & LogRegister::Y) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " Y=%04X", cpu_status.y);
+        }
+        if ((lfs.logRegisters & LogRegister::U) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " U=%04X", cpu_status.u);
+        }
+        if ((lfs.logRegisters & LogRegister::S) != LogRegister::NONE)
+        {
+           fprintf(log_fp, " S=%04X", cpu_status.s);
+        }
+    }
+    fprintf(log_fp, "\n");
+    fflush(log_fp);
+}
 
 void Mc6809::do_reset()
 {
@@ -487,5 +535,25 @@ cycles_t Mc6809::exec_irqs(bool save_state)
     }
 
     return 0;
+}
+
+std::string Mc6809::asCCString(Byte reg)
+{
+    const static Byte cc_bitmask[8] = {
+        CC_BIT_E, CC_BIT_F, CC_BIT_H, CC_BIT_I,
+        CC_BIT_N, CC_BIT_Z, CC_BIT_V, CC_BIT_C,
+    };
+    const static std::string cc_bitnames = "EFHINZVC";
+    std::string result = "--------";
+
+    for (int i = 0; i < 8; ++i)
+    {
+        if (reg & cc_bitmask[i])
+        {
+            result[i] = cc_bitnames[i];
+        }
+    }
+
+    return result;
 }
 

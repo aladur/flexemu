@@ -26,12 +26,67 @@
 #include "misc1.h"
 #include <string>
 
+enum class LogRegister : Byte
+{
+    NONE = 0,
+    CC = (1 << 0),
+    A = (1 << 1),
+    B = (1 << 2),
+    DP = (1 << 3),
+    X = (1 << 4),
+    Y = (1 << 5),
+    U = (1 << 6),
+    S = (1 << 7),
+};
+
+inline LogRegister operator| (LogRegister lhs, LogRegister rhs)
+{
+    using TYPE = std::underlying_type<LogRegister>::type;
+
+    return static_cast<LogRegister>(static_cast<TYPE>(lhs) |
+                                    static_cast<TYPE>(rhs));
+}
+
+inline LogRegister operator& (LogRegister lhs, LogRegister rhs)
+{
+    using TYPE = std::underlying_type<LogRegister>::type;
+
+    return static_cast<LogRegister>(static_cast<TYPE>(lhs) &
+                                    static_cast<TYPE>(rhs));
+}
+
+inline LogRegister operator<< (LogRegister lhs, int shift_count)
+{
+    using TYPE = std::underlying_type<LogRegister>::type;
+
+    return static_cast<LogRegister>(static_cast<TYPE>(lhs) << shift_count);
+}
+
+inline LogRegister operator|= (LogRegister &lhs, LogRegister rhs)
+{
+    lhs = lhs | rhs;
+    return lhs;
+}
+
+inline LogRegister operator&= (LogRegister &lhs, LogRegister rhs)
+{
+    lhs = lhs & rhs;
+    return lhs;
+}
+
+inline LogRegister operator<<= (LogRegister &lhs, int shift_count)
+{
+    lhs = lhs << shift_count;
+    return lhs;
+}
+
 struct s_cpu_logfile
 {
 public:
     s_cpu_logfile() : minAddr(0x0000), maxAddr(0xFFFF),
                       startAddr(0x10000), stopAddr(0x10000),
-                      logCycleCount(false)
+                      logCycleCount(false),
+                      logRegisters(LogRegister::NONE)
     {
         logFileName.reserve(PATH_MAX);
     }
@@ -40,6 +95,7 @@ public:
         minAddr(src.minAddr), maxAddr(src.maxAddr),
         startAddr(src.startAddr), stopAddr(src.stopAddr),
         logCycleCount(src.logCycleCount),
+        logRegisters(src.logRegisters),
         logFileName(src.logFileName)
     {
     }
@@ -51,6 +107,7 @@ public:
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
         logCycleCount = src.logCycleCount;
+        logRegisters = src.logRegisters;
         logFileName = src.logFileName;
         return *this;
     }
@@ -62,6 +119,7 @@ public:
         startAddr = 0x10000;
         stopAddr = 0x10000;
         logCycleCount = false;
+        logRegisters = LogRegister::NONE;
         logFileName.clear();
     }
 
@@ -72,6 +130,7 @@ public:
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
         logCycleCount = src.logCycleCount;
+        logRegisters = src.logRegisters;
         logFileName = std::move(src.logFileName);
     }
 
@@ -82,6 +141,7 @@ public:
         startAddr = src.startAddr;
         stopAddr = src.stopAddr;
         logCycleCount = src.logCycleCount;
+        logRegisters = src.logRegisters;
         logFileName = std::move(src.logFileName);
         return *this;
     }
@@ -91,6 +151,7 @@ public:
     unsigned int startAddr;
     unsigned int stopAddr;
     bool logCycleCount;
+    LogRegister logRegisters;
     std::string logFileName;
 };
 
