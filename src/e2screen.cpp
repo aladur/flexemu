@@ -792,6 +792,7 @@ void E2Screen::InitializeNumLockIndicatorMask()
                numLockIndicatorMask = 1 << index;
                break;
            }
+           XFree(name);
         }
     }
 
