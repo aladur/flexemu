@@ -102,7 +102,7 @@ private:
                                        FileTimeAccess &fileTimeAccess);
     FlexplorerMdiChild *ActiveMdiChild() const;
     QMdiSubWindow *FindMdiChild(const QString &path) const;
-    void changeEvent(QEvent *event);
+    void changeEvent(QEvent *event) override;
     void ReadDefaultOptions();
     void WriteDefaultOptions();
     void UpdateSelectedFiles();

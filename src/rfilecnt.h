@@ -48,9 +48,9 @@ public:
     FlexRamFileContainer &operator= (FlexRamFileContainer &&);
 
     virtual bool ReadSector(Byte *buffer, int trk, int sec,
-                            int side = -1) const;
+                            int side = -1) const override;
     virtual bool WriteSector(const Byte *buffer, int trk, int sec,
-                            int side = -1);
+                            int side = -1) override;
 
 private:
     bool close();

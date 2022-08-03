@@ -114,7 +114,7 @@ public:
     void output_to_graphic() override;
 
 protected:
-    void redraw_cpuview_impl(const Mc6809CpuStatus &status);
+    void redraw_cpuview_impl(const Mc6809CpuStatus &status) override;
 
 private slots:
     void OnExit();

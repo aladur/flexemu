@@ -84,42 +84,45 @@ public:
                                      int t, int s,
                                      const FileTimeAccess &fileTimeAccess,
                                      int fmt = TYPE_DSK_CONTAINER);
-    bool CheckFilename(const char *fileName) const;
-    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
-    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
+    bool CheckFilename(const char *fileName) const override;
+    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1)
+        const override;
+    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1)
+        override;
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
-                      int sizecode);
+                      int sizecode) override;
     // Return true if file container is identified as a FLEX compatible
     // file container.
-    bool IsFlexFormat() const;
-    bool IsWriteProtected() const;
-    bool IsTrackValid(int track) const;
-    bool IsSectorValid(int track, int sector) const;
-    int  GetBytesPerSector() const;
-    bool GetInfo(FlexContainerInfo &info) const;
-    int  GetContainerType() const;
+    bool IsFlexFormat() const override;
+    bool IsWriteProtected() const override;
+    bool IsTrackValid(int track) const override;
+    bool IsSectorValid(int track, int sector) const override;
+    int  GetBytesPerSector() const override;
+    bool GetInfo(FlexContainerInfo &info) const override;
+    int  GetContainerType() const override;
 
     // enhanced interface (to be used within flexdisk)
 public:
-    std::string GetPath() const;
-    FileContainerIf *begin()
+    std::string GetPath() const override;
+    FileContainerIf *begin() override
     {
         return this;
     };
-    FileContainerIf *end()   const
+    FileContainerIf *end() const override
     {
         return nullptr;
     };
-    bool FindFile(const char *fileName, FlexDirEntry &entry);
-    bool DeleteFile(const char *fileName);
-    bool RenameFile(const char *oldName, const char *newName);
-    bool SetAttributes(const char *fileName, Byte setMask, Byte clearMask);
-    FlexFileBuffer ReadToBuffer(const char *fileName);
+    bool FindFile(const char *fileName, FlexDirEntry &entry) override;
+    bool DeleteFile(const char *fileName) override;
+    bool RenameFile(const char *oldName, const char *newName) override;
+    bool SetAttributes(const char *fileName, Byte setMask, Byte clearMask)
+        override;
+    FlexFileBuffer ReadToBuffer(const char *fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
-                         const char *fileName = nullptr);
+                         const char *fileName = nullptr) override;
     bool FileCopy(const char *sourceName, const char *destName,
-                  FileContainerIf &destination);
-    std::string GetSupportedAttributes() const;
+                  FileContainerIf &destination) override;
+    std::string GetSupportedAttributes() const override;
 
     // internal interface
 protected:
@@ -159,7 +162,7 @@ protected:
         const char *name,
         int type);
 private:
-    FileContainerIteratorImpPtr IteratorFactory();
+    FileContainerIteratorImpPtr IteratorFactory() override;
 
 };  // class FlexFileContainer
 
