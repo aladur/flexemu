@@ -32,9 +32,8 @@
 
 
 FileContainerCheck::FileContainerCheck(
-        FileContainerIfSector &p_fc, bool p_verbose,
-        FileTimeAccess p_fileTimeAccess) :
-    fc(p_fc), verbose(p_verbose), fileTimeAccess(p_fileTimeAccess)
+        FileContainerIfSector &p_fc, FileTimeAccess p_fileTimeAccess) :
+    fc(p_fc), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();
 }

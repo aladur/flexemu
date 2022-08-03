@@ -123,7 +123,7 @@ class FileContainerCheck
 
 public:
     FileContainerCheck() = delete;
-    FileContainerCheck(FileContainerIfSector &fc, bool verbose,
+    FileContainerCheck(FileContainerIfSector &fc,
                        FileTimeAccess fileTimeAccess);
     FileContainerCheck(const FileContainerCheck &src) = delete;
     FileContainerCheck(FileContainerCheck &&src) = delete;
@@ -178,7 +178,6 @@ private:
     Byte disk_month;
     Byte disk_day;
     Byte disk_year;
-    bool verbose;
     FileTimeAccess fileTimeAccess;
 };
 

@@ -637,7 +637,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
 
-    FileContainerCheck check(src, verbose, fileTimeAccess);
+    FileContainerCheck check(src, fileTimeAccess);
 
     std::cout << "Check " << dsk_file << " ...";
     if (check.CheckFileSystem())
