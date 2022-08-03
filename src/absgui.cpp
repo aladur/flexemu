@@ -150,13 +150,13 @@ void AbstractGui::text(int x, int y, const char *str)
 {
     assert(x >= 0 && x + strlen(str) <= CPU_LINE_WIDTH);
     assert(y >= 0 && y < CPU_LINES);
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
     strncpy(&cpustring[CPU_LINE_WIDTH * y + x], str, strlen(str));
-#ifdef __GNUC__
+#if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
 }
