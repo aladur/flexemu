@@ -41,6 +41,7 @@
 #include <QModelIndex>
 #include <QModelIndexList>
 #include <QTextStream>
+#include <QIODevice>
 #include "warnon.h"
 #include "fpmodel.h"
 

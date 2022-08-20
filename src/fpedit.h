@@ -25,6 +25,7 @@
 
 #include "efiletim.h"
 #include "warnoff.h"
+#include <QStringList>
 #include <QStyledItemDelegate>
 #include <QRegularExpressionValidator>
 #include "warnon.h"
