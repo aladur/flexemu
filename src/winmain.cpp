@@ -28,8 +28,10 @@
 
 void scanCmdLine(LPSTR lpCmdLine, int* argc, char** argv, size_t max_count)
 {
+    static char argv0[8]{ "flexemu" };
+
     *argc = 1;
-    *(argv + 0) = "flexemu";
+    *(argv + 0) = argv0;
     bool is_double_quote = false;
 
     while (*lpCmdLine && (*lpCmdLine == ' ' || *lpCmdLine == '\t'))
