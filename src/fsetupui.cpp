@@ -702,12 +702,12 @@ QString FlexemuOptionsUi::GetRelativePath(
         (result.indexOf(directory) == 0) &&
         (result.indexOf(PATHSEPARATOR) >= 0))
     {
-        result = result.midRef(directory.length(),
-                       result.length() - directory.length()).toString();
+        result = result.mid(directory.length(),
+                       result.length() - directory.length());
 
         if (result.indexOf(PATHSEPARATOR) == 0)
         {
-            result = result.midRef(1, result.length() - 1).toString();
+            result = result.mid(1, result.length() - 1);
         }
     }
 
