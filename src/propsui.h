@@ -25,6 +25,7 @@
 #define PROPSUI_H
 
 #include "warnoff.h"
+#include <QtGlobal>
 #include <QApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -152,7 +153,12 @@ public:
         }
 
         tableWidth = std::accumulate(columnWidth.begin(), columnWidth.end(), 0);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+        tableWidth = std::min(tableWidth + static_cast<int>(columnWidth.size())
+                              * 22, 800);
+#else
         tableWidth = std::min(tableWidth + columnWidth.size() * 22, 800);
+#endif
     }
 
     void SetMinimumSize(QDialog *dialog) const
