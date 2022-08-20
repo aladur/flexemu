@@ -46,7 +46,7 @@ BRegistry::BRegistry(const BRegistry &regKey, const std::string &subKey)
     DWORD flags;
 
     lastError = RegCreateKeyEx(regKey, ConvertToUtf16String(subKey).c_str(), 0,
-        L"", 0, KEY_ALL_ACCESS, nullptr, &hKey, &flags);
+        nullptr, 0, KEY_ALL_ACCESS, nullptr, &hKey, &flags);
 
     if (lastError != ERROR_SUCCESS)
     {
