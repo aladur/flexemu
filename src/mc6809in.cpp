@@ -416,7 +416,7 @@ void Mc6809::log_current_instruction()
     if (lfs.logCycleCount)
     {
 #if (SIZEOF_LONG == 4)
-        fprintf(log_fp, "%20llu ", cpu_status.total_cylces);
+        fprintf(log_fp, "%20llu ", cpu_status.total_cycles);
 #endif
 #if (SIZEOF_LONG == 8)
         fprintf(log_fp, "%20lu ", cpu_status.total_cycles);
