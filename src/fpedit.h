@@ -31,7 +31,6 @@
 #include "warnon.h"
 
 class QWidget;
-class QStringList;
 class QModelIndex;
 class QAbstractItemModel;
 class QStyledOptionViewItem;
