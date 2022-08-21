@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "warnoff.h"
+#include <QtGlobal>
 #include <QObject>
 #include <QString>
 #include <QDate>
@@ -42,6 +43,11 @@
 #include <QModelIndexList>
 #include <QTextStream>
 #include <QIODevice>
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#include <QRegularExpression>
+#else
+#include <QRegExp>
+#endif
 #include "warnon.h"
 #include "fpmodel.h"
 
@@ -299,14 +305,31 @@ bool FlexplorerTableModel::GetAttributes(const QModelIndex &index,
 
 QVector<int> FlexplorerTableModel::FindFiles(const QString &pattern) const
 {
-    QRegExp regex(pattern, Qt::CaseSensitive, QRegExp::Wildcard);
     QVector<int> rowIndices;
     int rowIndex = 0;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    QString regexPattern(pattern);
+
+    // Convert wildcard pattern into a regex pattern
+    regexPattern.replace(QString(".").data(), 1, QString("\\.").data(), 2);
+    regexPattern.replace(QString("*").data(), 1, QString(".*").data(), 2);
+    regexPattern.replace('?', '.');
+    QRegularExpression regex(regexPattern,
+        QRegularExpression::CaseInsensitiveOption);
+    auto doesMatch = [&](const QString& subject) -> bool {
+        return regex.match(subject).hasMatch();
+    };
+#else
+    QRegExp regex(pattern, Qt::CaseSensitive, QRegExp::Wildcard);
+    auto doesMatch = [&](const QString& subject) -> bool {
+        return regex.exactMatch(subject);
+    };
+#endif
 
     rowIndices.reserve(rows.size() / 2);
     for (const auto &row : rows)
     {
-        if (regex.exactMatch(row[COL_FILENAME].toString()))
+        if (doesMatch(row[COL_FILENAME].toString()))
         {
             rowIndices.push_back(rowIndex);
         }
