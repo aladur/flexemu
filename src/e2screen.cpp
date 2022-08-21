@@ -30,6 +30,7 @@
 #include "pia1.h"
 #include "cacttrns.h"
 #include "warnoff.h"
+#include <QtGlobal>
 #include <QPainter>
 #include <QPixmap>
 #include <QByteArray>
@@ -127,7 +128,11 @@ void E2Screen::leaveEvent(QEvent *)
     mouseButtonState = 0;
 }
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+void E2Screen::enterEvent(QEnterEvent *)
+#else
 void E2Screen::enterEvent(QEvent *)
+#endif
 {
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;

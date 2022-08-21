@@ -41,6 +41,9 @@ class QEvent;
 class QResizeEvent;
 class QMouseEvent;
 class QPaintEvent;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+class QEnterEvent;
+#endif
 class Scheduler;
 class JoystickIO;
 class KeyboardIO;
@@ -92,7 +95,11 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    void enterEvent(QEnterEvent *event) override;
+#else
     void enterEvent(QEvent *event) override;
+#endif
     void leaveEvent(QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
