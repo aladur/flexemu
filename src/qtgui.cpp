@@ -856,7 +856,11 @@ void QtGui::CreateFileActions(QLayout& layout)
     const auto exitIcon = QIcon(":/resource/exit.png");
     exitAction = fileMenu->addAction(exitIcon, tr("E&xit"));
     connect(exitAction, &QAction::triggered, this, &QtGui::OnExit);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    exitAction->setShortcut(QKeySequence(Qt::SHIFT | Qt::CTRL | Qt::Key_Q));
+#else
     exitAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_Q));
+#endif
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
 }
@@ -876,7 +880,11 @@ void QtGui::CreateEditActions(QLayout& layout)
     SetPreferencesStatusText(isRestartNeeded);
     connect(preferencesAction, &QAction::triggered,
             this, &QtGui::OnPreferences);
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    const auto keySequence = QKeySequence(Qt::SHIFT | Qt::CTRL | Qt::Key_P);
+#else
     const auto keySequence = QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_P);
+#endif
     preferencesAction->setShortcut(keySequence);
     editToolBar->addAction(preferencesAction);
 }
@@ -1119,7 +1127,7 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint index)
 }
 
 QAction *QtGui::CreateScreenSizeAction(
-        const QIcon &icon, QMenu &menu, uint index)
+        const QIcon &icon, QMenu &menu, int index)
 {
     static const QVector<QString> menuText{
         tr("&Default"),
@@ -1131,7 +1139,11 @@ QAction *QtGui::CreateScreenSizeAction(
 
     assert (index <= 4);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    auto keySequence = QKeySequence(Qt::CTRL | (Qt::Key_1 + index));
+#else
     auto keySequence = QKeySequence(Qt::CTRL + (Qt::Key_1 + index));
+#endif
     auto *action = menu.addAction(icon, menuText[index]);
     connect(action, &QAction::triggered,
         this, [&,index](){ OnScreenSize(index); });

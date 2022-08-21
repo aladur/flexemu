@@ -157,7 +157,7 @@ private:
     void CreateCpuActions(QLayout &layout);
     void CreateHelpActions(QLayout &layout);
     void CreateHorizontalSpacer(QLayout &layout);
-    QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu, uint index);
+    QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu, int index);
     QAction *CreateIconSizeAction(QMenu &menu, uint index);
     void CreateStatusToolBar(QLayout &layout);
     void CreateStatusBar(QLayout &layout);
