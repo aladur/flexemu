@@ -53,7 +53,7 @@
 #include <QIODevice>
 #include <QTextStream>
 #include <QWidget>
-#include <QDesktopWidget>
+#include <QScreen>
 #include <QToolBar>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -465,10 +465,15 @@ void QtGui::OnCpuDialogToggle()
         }
         else
         {
-            auto desktop = QApplication::desktop();
+            int screenHeight = 0;
+
+            if (!QGuiApplication::screens().isEmpty())
+            {
+                screenHeight = QGuiApplication::screens().first()->geometry().height();
+            }
 
             y = frameGeometry().y() + frameGeometry().height() + 1;
-            if (y + cpuDialog->frameGeometry().height() < desktop->height())
+            if (y + cpuDialog->frameGeometry().height() < screenHeight)
             {
                 position = QPoint(x, y);
             }
