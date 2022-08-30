@@ -68,7 +68,7 @@ do
         -v)
             if [ -n "$2" ]; then
                 qtversion=$2
-                shift 2
+                shift
             else
                 echo "Error: Argument for $1 is missing" >&2
                 exit 1
