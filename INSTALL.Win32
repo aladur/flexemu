@@ -5,7 +5,7 @@
 Compiling flexemu needs:
 
 - Microsoft Windows 8, 8.1 or Windows 10
-- Microsoft Visual Studio 2019. (community edition is fine)
+- Microsoft Visual Studio 2019 or 2022. (community edition is fine)
 - Git for Windows, https://git-scm.com/download/win
 - curl, https://curl.haxx.se/download.html
 - flexemu sources, https://github.com/aladur/flexemu
@@ -15,19 +15,22 @@ Creating an installer needs:
 - NSIS installer, http://nsis.sourceforge.net/Download
 
 To build the Qt libraries from the sources additional tools have to
-be installed. This is documented in the file download_and_rebuild_libs_qt5.sh
+be installed. This is documented in the file download_and_rebuild_libs.sh
 
 To build flexemu and create an installer executable the following
 scripts are available in the sub directory build\windows. They can
 be executed from the git-bash:
 
-- download_and_rebuild_libs_qt5.sh
+- download_and_rebuild_libs.sh
 - rebuild_flexemu_all_and_copy_libs.sh
 - create_installer.sh
 
-download_and_rebuild_libs_qt5.sh needs to know the Qt version to build:
->  download_and_rebuild_libs_qt5.sh -v 5.minor.patch
+download_and_rebuild_libs.sh needs to know the Qt version to build:
+>  download_and_rebuild_libs.sh -v (5|6).minor.patch
 Newer Qt5 versions are recommended, with Qt5.15.2 everything works fine.
+Please remember that Qt6 only supports x64 builds (no more Win32 support).
+The flexemu solution and projects do not yet directly support
+to build with Qt6. The sources can be build with Qt6.
 
 ******************************
 * Install flexemu on Windows *
