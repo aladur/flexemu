@@ -91,11 +91,11 @@ private:
     WriteTrackState writeTrackState; // Write track state
     Word            offset; // offset when reading a track
     char            idAddressMark[4]; // Contains track, side, sector, sizecode
-    struct sOptions &options;
+    const struct sOptions &options;
 
 public:
     E2floppy() = delete;
-    E2floppy(struct sOptions &options);
+    E2floppy(const struct sOptions &options);
     virtual ~E2floppy();
 
     // public interface

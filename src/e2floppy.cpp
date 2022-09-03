@@ -35,7 +35,7 @@
 #include "soptions.h"
 
 
-E2floppy::E2floppy(struct sOptions &x_options)
+E2floppy::E2floppy(const struct sOptions &x_options)
     : selected(MAX_DRIVES)
     , pfs(nullptr)
     , writeTrackState(WriteTrackState::Inactive)
