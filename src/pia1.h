@@ -27,6 +27,7 @@
 #include "misc1.h"
 #include "mc6821.h"
 #include "bobservd.h"
+#include "soptions.h"
 
 
 class KeyboardIO;
@@ -42,7 +43,7 @@ protected:
 
     Scheduler &scheduler;
     KeyboardIO &keyboardIO;
-    bool a_set_msb;
+    const struct sOptions &options;
     bool request_a_updated;
 
 protected:
@@ -54,7 +55,7 @@ protected:
 
 public:
     Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
-         bool x_a_set_msb = false);
+         const struct sOptions &x_options);
     void resetIo() override;
     const char *getName() override
     {

@@ -30,9 +30,9 @@
 
 
 Pia1::Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
-           bool x_a_set_msb) :
+           const struct sOptions &x_options) :
     scheduler(x_scheduler), keyboardIO(x_keyboardIO),
-    a_set_msb(x_a_set_msb), request_a_updated(false)
+    options(x_options), request_a_updated(false)
 {
 }
 
@@ -93,7 +93,7 @@ Byte Pia1::readInputA()
     // for video display.
     // If it is 0 RAM Bank 2 ($8000 - $BFFF) will be used for video display
     // which also contains the stack and the direct page registers.
-    return ora | (a_set_msb ? 0x80 : 0);
+    return ora | (options.isEurocom2V5 ? 0x80 : 0);
 }
 
 void Pia1::set_irq_A()

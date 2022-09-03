@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include "flexemu.h"
 #include "bobserv.h"
+#include "soptions.h"
 #include <string>
 #include <memory>
 
@@ -41,7 +42,7 @@ class Inout : public BObserver
 {
 private:
     Memory &memory;
-    const bool term_mode;
+    const struct sOptions &options;
     Mc146818 *rtc; // RTC is an optional device
     AbstractGui *gui;
     int local_serpar_address;

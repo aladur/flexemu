@@ -57,7 +57,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     terminalIO(scheduler),
     mmu(memory),
     acia1(terminalIO),
-    pia1(scheduler, keyboardIO, x_options.isEurocom2V5),
+    pia1(scheduler, keyboardIO, x_options),
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
     drisel(fdc),
