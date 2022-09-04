@@ -34,8 +34,11 @@ TerminalIO *TerminalIO::instance = nullptr;
     bool TerminalIO::is_termios_saved = false;
 #endif
 
-TerminalIO::TerminalIO(Scheduler &x_scheduler) :
-                       scheduler(x_scheduler), init_delay(500)
+TerminalIO::TerminalIO(Scheduler &x_scheduler,
+                       const struct sOptions &x_options) :
+                       scheduler(x_scheduler),
+                       options(x_options),
+                       init_delay(500)
 {
     instance = this;
     reset_serial();
@@ -330,13 +333,14 @@ void TerminalIO::write_char_serial(Byte value)
     }
     else
 #endif
-    // NUL characters are intentionally ignored.
+    // NUL characters are optionally ignored.
     // Their initial usage to wait until the teleprinter returns to the first
     // printing position is not needed any more. There are terminals which
     // incorrectly display is as a space.
     // For details see: https://en.wikipedia.org/wiki/Null_character
-    // Also ESC characters are intentionally ignored.
-    if (value != '\0' && value != '\x1b')
+    // Also ESC characters are optionally ignored.
+    if ((value != '\0' || !options.isTerminalIgnoreNUL) &&
+        (value != '\x1b' || !options.isTerminalIgnoreESC))
     {
         write_char_serial_safe(value);
     }

@@ -33,6 +33,7 @@
 #include "flexemu.h"
 #include "flexerr.h"
 #include "bobservd.h"
+#include "soptions.h"
 #include <deque>
 #include <mutex>
 
@@ -46,6 +47,7 @@ class TerminalIO : public BObserved
 private:
     std::deque<Byte> key_buffer_serial;
     Scheduler &scheduler;
+    const struct sOptions &options;
     std::mutex serial_mutex;
 #ifdef HAVE_TERMIOS_H
     static bool used_serial_io;
@@ -82,7 +84,7 @@ private:
 
 public:
     TerminalIO() = delete;
-    TerminalIO(Scheduler &x_scheduler);
+    TerminalIO(Scheduler &x_scheduler, const struct sOptions &x_options);
     ~TerminalIO();
 };
 

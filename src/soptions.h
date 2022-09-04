@@ -54,6 +54,8 @@ enum class FlexemuOptionId : uint8_t
     IsEurocom2V5,
     IsUseUndocumented,
     IsUseRtc,
+    IsTerminalIgnoreESC,
+    IsTerminalIgnoreNUL,
     Frequency,
     Color,
     NColors,
@@ -83,6 +85,8 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::IsEurocom2V5,
     FlexemuOptionId::IsUseUndocumented,
     FlexemuOptionId::IsUseRtc,
+    FlexemuOptionId::IsTerminalIgnoreESC,
+    FlexemuOptionId::IsTerminalIgnoreNUL,
     FlexemuOptionId::Frequency,
     FlexemuOptionId::Color,
     FlexemuOptionId::NColors,
@@ -111,6 +115,8 @@ struct sOptions
     bool useRtc;
     bool term_mode;
     bool canFormatDrive[4];
+    bool isTerminalIgnoreESC; // Terminal mode: Ignore ESC (0x1B) characters
+    bool isTerminalIgnoreNUL; // Terminal mode: Ignore NUL (0x00) characters
     FileTimeAccess fileTimeAccess;
     short int reset_key; // must be short int because of sscanf !!!
     float frequency;

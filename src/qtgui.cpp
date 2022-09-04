@@ -343,6 +343,8 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::CanFormatDrive2:
                 case FlexemuOptionId::CanFormatDrive3:
                 case FlexemuOptionId::FileTimeAccess:
+                case FlexemuOptionId::IsTerminalIgnoreESC:
+                case FlexemuOptionId::IsTerminalIgnoreNUL:
                     isWriteOptions = true;
                     break;
 

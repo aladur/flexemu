@@ -377,6 +377,14 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::IsDisplaySmooth:
                 c_isDisplaySmooth->setEnabled(false);
                 break;
+
+            case FlexemuOptionId::IsTerminalIgnoreESC:
+                // TODO
+                break;
+
+            case FlexemuOptionId::IsTerminalIgnoreNUL:
+                // TODO
+                break;
         }
     }
 }
@@ -453,6 +461,8 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PixelSize:
                 case FlexemuOptionId::FileTimeAccess:
                 case FlexemuOptionId::IsDisplaySmooth:
+                case FlexemuOptionId::IsTerminalIgnoreESC:
+                case FlexemuOptionId::IsTerminalIgnoreNUL:
                     break;
             }
         }

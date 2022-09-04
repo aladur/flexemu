@@ -191,6 +191,8 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::CanFormatDrive3:
             case FlexemuOptionId::FileTimeAccess:
             case FlexemuOptionId::IsDisplaySmooth:
+            case FlexemuOptionId::IsTerminalIgnoreESC:
+            case FlexemuOptionId::IsTerminalIgnoreNUL:
                 break;
         }
     }

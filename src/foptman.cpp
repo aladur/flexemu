@@ -96,6 +96,8 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.nColors = 2;
     options.isInverse = false;
     options.isSmooth = false;
+    options.isTerminalIgnoreESC = true;
+    options.isTerminalIgnoreNUL = true;
 #ifdef UNIX
     options.doc_dir = F_DATADIR;
     options.disk_dir = F_DATADIR;
@@ -566,6 +568,16 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::IsDisplaySmooth:
             optionsToWrite.isSmooth = previousOptions.isSmooth;
             break;
+
+        case FlexemuOptionId::IsTerminalIgnoreESC:
+            optionsToWrite.isTerminalIgnoreESC =
+                previousOptions.isTerminalIgnoreESC;
+            break;
+
+        case FlexemuOptionId::IsTerminalIgnoreNUL:
+            optionsToWrite.isTerminalIgnoreNUL =
+                previousOptions.isTerminalIgnoreNUL;
+            break;
         }
     }
 
@@ -598,6 +610,10 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXFORMATDRIVE3, optionsToWrite.canFormatDrive[3] ? 1 : 0);
     rcFile.SetValue(FLEXFILETIMEACCESS,
                     static_cast<int>(optionsToWrite.fileTimeAccess));
+    rcFile.SetValue(FLEXTERMINALIGNOREESC,
+            optionsToWrite.isTerminalIgnoreESC ? 1 : 0);
+    rcFile.SetValue(FLEXTERMINALIGNORENUL,
+            optionsToWrite.isTerminalIgnoreNUL ? 1 : 0);
 }
 #endif
 
@@ -852,6 +868,16 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXDISPLAYSMOOTH, int_result))
     {
         options.isSmooth = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXTERMINALIGNOREESC, int_result))
+    {
+        options.isTerminalIgnoreESC = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXTERMINALIGNORENUL, int_result))
+    {
+        options.isTerminalIgnoreNUL = (int_result != 0);
     }
 
 #endif

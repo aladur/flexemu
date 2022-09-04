@@ -54,7 +54,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     fdc(options),
     inout(x_options, memory),
     scheduler(cpu, inout),
-    terminalIO(scheduler),
+    terminalIO(scheduler, x_options),
     mmu(memory),
     acia1(terminalIO),
     pia1(scheduler, keyboardIO, x_options),
