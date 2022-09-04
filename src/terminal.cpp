@@ -336,7 +336,7 @@ void TerminalIO::write_char_serial(Byte value)
     // NUL characters are optionally ignored.
     // Their initial usage to wait until the teleprinter returns to the first
     // printing position is not needed any more. There are terminals which
-    // incorrectly display is as a space.
+    // incorrectly display it as a space.
     // For details see: https://en.wikipedia.org/wiki/Null_character
     // Also ESC characters are optionally ignored.
     if ((value != '\0' || !options.isTerminalIgnoreNUL) &&
