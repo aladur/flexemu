@@ -256,6 +256,9 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     c_isDisplaySmooth->setChecked(options.isSmooth != 0);
 
+    c_terminalIgnoreNUL->setChecked(options.isTerminalIgnoreNUL);
+    c_terminalIgnoreESC->setChecked(options.isTerminalIgnoreESC);
+
     SetOptionsReadOnly(readOnlyOptions);
 }
 
@@ -379,11 +382,11 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::IsTerminalIgnoreESC:
-                // TODO
+                c_terminalIgnoreESC->setEnabled(false);
                 break;
 
             case FlexemuOptionId::IsTerminalIgnoreNUL:
-                // TODO
+                c_terminalIgnoreNUL->setEnabled(false);
                 break;
         }
     }
@@ -492,6 +495,9 @@ void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
     // visible. It is just a rough estimation.
     QFontMetrics metrics(dialog->font());
     e_drive2->setMinimumWidth(metrics.boundingRect('x').width() * 52);
+#ifdef _WIN32
+    c_tabWidget->removeTab(4); // On Windows there is no terminal mode
+#endif
 }
 
 bool FlexemuOptionsUi::Validate()
@@ -698,6 +704,16 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     if (!IsReadOnly(FlexemuOptionId::IsDisplaySmooth))
     {
         options.isSmooth = c_isDisplaySmooth->isChecked();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsTerminalIgnoreNUL))
+    {
+        options.isTerminalIgnoreNUL = c_terminalIgnoreNUL->isChecked();
+    }
+
+    if (!IsReadOnly(FlexemuOptionId::IsTerminalIgnoreESC))
+    {
+        options.isTerminalIgnoreESC = c_terminalIgnoreESC->isChecked();
     }
 }
 

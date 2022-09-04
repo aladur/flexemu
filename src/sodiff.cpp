@@ -150,6 +150,16 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::IsDisplaySmooth);
     }
+
+    if (opt1.isTerminalIgnoreNUL != opt2.isTerminalIgnoreNUL)
+    {
+        notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreNUL);
+    }
+
+    if (opt1.isTerminalIgnoreESC != opt2.isTerminalIgnoreESC)
+    {
+        notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreESC);
+    }
 }
 
 const FlexemuOptionsDifference::Result&

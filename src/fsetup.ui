@@ -748,6 +748,40 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="t_terminal">
+        <attribute name="title">
+         <string>Terminal</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_13">
+         <item>
+          <widget class="QCheckBox" name="c_terminalIgnoreNUL">
+           <property name="text">
+            <string>Ignore output of NUL (0x00) characters</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="c_terminalIgnoreESC">
+           <property name="text">
+            <string>Ignore output of ESC (0x1B) characters</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>2</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="t_ExpertOptions">
         <attribute name="title">
          <string>Expert Preferences</string>

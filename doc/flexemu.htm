@@ -401,6 +401,35 @@ The following preferences can be modified.
   <td>Not set</td>
  </tr>
  <tr>
+  <td>Ignore output of NUL (0x00) characters</td>
+  <td>
+			In terminal mode the output of NUL characters can be ignored. Their initial
+			usage to wait until the teleprinter returns to the first printing position
+			is not needed any more. There are terminals which incorrectly display it as
+			a space. For details see:
+			<a href="https://en.wikipedia.org/wiki/Null_character">
+				Wikipedia Null character</a>. Some terminals also use NUL characters in
+			escape sequences.
+		</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>on</td>
+ </tr>
+ <tr>
+  <td>Ignore output of ESC (0x1B) characters</td>
+  <td>
+			In terminal mode the output of ESC characters can be ignored. This option
+			has to be switched off, to send escape sequences to the terminal. When doing
+			this it is recommended to change <a href="flexmem.htm#ttyesc">TTYESC</a>
+			to a different character than ESC using
+			<a href="flexuser.htm#ttyset">TTYSET DOS Utility</a>.
+			This can avoid the terminal to stick in an escape sequence.
+		</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>on</td>
+ </tr>
+ <tr>
   <td>Undocumented instructions</td>
   <td>
    Optionally emulate MC6809 with
