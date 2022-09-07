@@ -850,7 +850,7 @@ void usage()
 {
     std::cout <<
         "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n" <<
-        "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n]"
+        "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n][-m]"
         "[-R<file>...][<regex>...]\n" <<
         "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>\n" <<
         "Usage: dsktool -h\n" <<
@@ -861,8 +861,8 @@ void usage()
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -V\n" <<
-        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-R<file>...]"
-        "[<regex>...]\n" <<
+        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-m]"  <<
+        "[-R<file>...][<regex>...]\n" <<
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v][-z] "
         "[<dsk-file>...]\n\n" <<
         "Commands:\n" <<
@@ -888,6 +888,7 @@ void usage()
         "                If not set it is determined from the file extension"
         "\n" <<
         "                or finally the default is *.dsk\n" <<
+        "  -m            Regex is case sensitive (case has meaning).\n" <<
         "  -n            Answer no to all questions.\n" <<
         "  -t            Automatic detection and conversion of text files.\n" <<
         "  -v            More verbose output.\n" <<
@@ -905,7 +906,8 @@ void usage()
         "  <regex>       A regular expression specifying FLEX file(s).\n" <<
         "                Extended POSIX regular expression grammar is\n" <<
         "                supported. <regex> parameters are processed after\n" <<
-        "                all -R<file> parameters.\n\n" <<
+        "                all -R<file> parameters. By default it is case\n" <<
+        "                insensitive. See also -m.\n\n" <<
         "Environment Variables:\n" <<
         "  DSKTOOL_USE_FILETIME     Same a option -z.\n";
 }
@@ -1035,11 +1037,15 @@ readFile(const std::string &fileName)
 }
 
 bool addToRegexList(const std::vector<std::string> &regexLines,
-                    std::vector<std::regex> &regexs)
+                    std::vector<std::regex> &regexs, bool isCaseSensitive)
 {
     bool result = true;
 
-    const auto flags = std::regex_constants::extended;
+    auto flags = std::regex_constants::extended;
+    if (!isCaseSensitive)
+    {
+        flags |= std::regex_constants::icase;
+    }
 
     for (const auto &regex : regexLines)
     {
@@ -1061,10 +1067,11 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("f:X:x:l:s:c:C:i:r:R:T:d:o:S:F:DhntvVyz");
+    std::string optstr("f:X:x:l:s:c:C:i:r:R:T:d:o:S:F:DhmntvVyz");
     std::string target_dir;
     std::vector<std::string> dsk_files;
     std::vector<std::string> files;
+    std::vector<std::string> regexFiles;
     std::vector<std::regex> regexs;
     std::string dsk_file;
     std::string dst_dsk_file;
@@ -1076,6 +1083,7 @@ int main(int argc, char *argv[])
     bool debug_output = false;
     bool convert_text = false;
     bool has_regex_file = false;
+    bool regexCaseSense = false;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
     char default_answer = '?'; // Means: Ask user.
     int result;
@@ -1120,20 +1128,14 @@ int main(int argc, char *argv[])
             case 'R': has_regex_file = true;
                       if (command == 'C' || command == 'x')
                       {
-                          // Create regular expr. from regex file contents.
-                          bool success;
-                          std::vector<std::string> regexLines;
-                          tie(success, regexLines) = readFile(optarg);
-
-                          if (!success || !addToRegexList(regexLines, regexs))
-                          {
-                              usage();
-                              return 1;
-                          }
+                          regexFiles.push_back(optarg);
                       }
                       break;
 
             case 'T': dst_dsk_file = optarg;
+                      break;
+
+            case 'm': regexCaseSense = true;
                       break;
 
             case 'V': version();
@@ -1197,6 +1199,20 @@ int main(int argc, char *argv[])
         estimateDiskFormat(dsk_file, disk_format);
     }
 
+    for (const auto &regexFile : regexFiles)
+    {
+        // Create regular expr. from regex file contents.
+        bool success;
+        std::vector<std::string> regexLines;
+        tie(success, regexLines) = readFile(regexFile);
+
+        if (!success || !addToRegexList(regexLines, regexs, regexCaseSense))
+        {
+            usage();
+            return 1;
+        }
+    }
+
     if (command == 'i' || command == 'r')
     {
         for (index = optind; index < argc; index++)
@@ -1221,7 +1237,7 @@ int main(int argc, char *argv[])
             regexLines.push_back(argv[index]);
         }
 
-        if (!addToRegexList(regexLines, regexs))
+        if (!addToRegexList(regexLines, regexs, regexCaseSense))
         {
             usage();
             return 1;
@@ -1241,6 +1257,7 @@ int main(int argc, char *argv[])
         (command == 'C' && dst_dsk_file.empty()) ||
         (command != 'X' && command != 'x' && !target_dir.empty()) ||
         (command != 'C' && !dst_dsk_file.empty()) ||
+        (command != 'C' && command != 'x' && regexCaseSense) ||
         (command != 'C' && command != 'x' && has_regex_file) ||
         (command != 'C' && command != 'x' && !regexs.empty()) ||
         (std::string("firC").find_first_of(command) == std::string::npos &&
