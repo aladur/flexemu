@@ -297,6 +297,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     bool hasInfo = false;
     int sumSectors = 0;
     int largest = 0;
+    const auto format = BDate::Format::D2MSU3Y4;
 
     if (!src.IsFlexFormat())
     {
@@ -310,7 +311,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
             "FILE: " << getFileName(dsk_file) << "  " <<
             "DISK: " << info.GetName() <<
             " #" << info.GetNumber() <<
-            "  CREATED: " << info.GetDate().GetDateString() <<
+            "  CREATED: " << info.GetDate().GetDateString(format) <<
             "\n";
     }
     else
@@ -354,7 +355,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
             std::setw(2) << endSector << " " <<
             std::dec << std::setfill(' ') <<
             std::setw(5) << sectors << "  " <<
-            std::setw(11) << dir_entry.GetDate().GetDateString() << " ";
+            std::setw(11) << dir_entry.GetDate().GetDateString(format) << " ";
         if ((fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get)
         {
             std::cout <<
@@ -407,6 +408,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
     FileContainerIterator iter;
     FlexContainerInfo info;
+    const auto format = BDate::Format::D2MSU3Y4;
 
     if (!src.IsFlexFormat())
     {
@@ -437,7 +439,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
         std::cout <<
             std::left <<
-            info.GetDate().GetDateString() << " " <<
+            info.GetDate().GetDateString(format) << " " <<
             std::setw(12) << name << " " <<
             std::setw(5) << info.GetNumber() << " " <<
             std::setw(2) << tracks << "-" << std::setw(2) << sectors << " " <<
