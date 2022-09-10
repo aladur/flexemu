@@ -577,7 +577,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 }
 
 int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
-                      const std::vector<std::string> &flex_files,
+                      const std::vector<std::regex> &regexs,
                       char default_answer)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
@@ -588,7 +588,14 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
     }
 
-    for (auto &flex_file : flex_files)
+    if (regexs.empty())
+    {
+        return 0;
+    }
+
+    auto matchedFilenames = GetMatchingFilenames(src, regexs);
+
+    for (auto &flex_file : matchedFilenames)
     {
         bool isSuccess = true;
 
@@ -867,8 +874,8 @@ void usage()
         "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n" <<
         "Usage: dsktool -l <dsk-file> [-z][<dsk-file>...]\n" <<
         "Usage: dsktool -L <dsk-file> [-z][-m][-R<file>...][<regex>...]\n" <<
-        "Usage: dsktool -r <dsk-file> [-v][-y|-n] <FLEX-file> "
-        "[<FLEX-file>...]\n" <<
+        "Usage: dsktool -r <dsk-file> [-v][-y|-n][-m][-R<file>...][<regex>...]"
+        "\n" <<
         "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -V\n" <<
@@ -887,7 +894,7 @@ void usage()
         "  -L: List directory contents of a FLEX file container using regex."
         "\n" <<
         "      If no regex is specified, all files are listed.\n" <<
-        "  -r: Delete FLEX-files from a FLEX file container.\n" <<
+        "  -r: Delete files from a FLEX file container using regex.\n" <<
         "  -s: One line summary of a FLEX file container.\n" <<
         "  -V: Print version number and exit.\n" <<
         "  -x: Extract files from a FLEX file container using regex.\n" <<
@@ -1209,6 +1216,9 @@ int main(int argc, char *argv[])
         }
     }
 
+    bool isRegexCommand = (command == 'C' || command == 'x' ||
+                           command == 'L' || command == 'r');
+
     if (disk_format == 0)
     {
         estimateDiskFormat(dsk_file, disk_format);
@@ -1228,7 +1238,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (command == 'i' || command == 'r')
+    if (command == 'i')
     {
         for (index = optind; index < argc; index++)
         {
@@ -1243,8 +1253,7 @@ int main(int argc, char *argv[])
             dsk_files.push_back(argv[index]);
         }
     }
-    else if (command == 'C' || command == 'x' ||
-             command == 'L')
+    else if (isRegexCommand)
     {
         std::vector<std::string> regexLines;
 
@@ -1267,12 +1276,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    bool isRegexCommand = (command == 'C' || command == 'x' ||
-                           command == 'L');
-
     if ((tolower(command == 'l') && verbose) ||
         (command == 'i' && files.empty()) ||
-        (command == 'r' && files.empty()) ||
         (command == 'C' && dst_dsk_file.empty()) ||
         (command != 'X' && command != 'x' && !target_dir.empty()) ||
         (command != 'C' && !dst_dsk_file.empty()) ||
@@ -1323,7 +1328,7 @@ int main(int argc, char *argv[])
                                                fileTimeAccess);
 
             case 'r':
-                return DeleteFromDskFile(dsk_file, verbose, files,
+                return DeleteFromDskFile(dsk_file, verbose, regexs,
                                          default_answer);
 
             case 's':
