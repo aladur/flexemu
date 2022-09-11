@@ -63,6 +63,11 @@ echo "Using Visual Studio $vsversion $vstype"
 # Path of Qt build.
 # Parse it from the *.props file.
 propsfile="../../src/msvcQtPath.props"
+if [ ! -f $propsfile ]; then
+    echo "**** File ${propsfile} does not exist."
+    echo "**** First call download_and_rebuild_libs.sh to create Qt libraries!"
+    exit 1
+fi
 QTDIR=`sed -ne "s/<QTDIR>\(.*\)<\/QTDIR>/\1/p" $propsfile`
 QTDIR=$( as_mingw_path $QTDIR)
 qtversion=`echo $QTDIR | sed -e "s/.*\([56]\.[0-9]\+\.[0-9]\+\)$/\1/"`
@@ -85,9 +90,11 @@ temp=$QTDIR/x64/bin
 if [ ! -d $temp ]; then
     echo "**** Qt libraries build directory does not exist:"
     echo "**** $temp"
-    echo "**** First call download_and_rebuild_libs.sh to create QT libraries!"
+    echo "**** First call download_and_rebuild_libs.sh to create Qt libraries!"
     exit 1
 fi
+
+echo "Using Qt V${qtversion}"
 
 cd ../..
 # Create and execute a batch file to build all four configurations
