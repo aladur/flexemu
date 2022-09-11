@@ -15,7 +15,7 @@ prerequisites:
         On a debian based system (Debian / Ubuntu / Linux Mint / Raspbian)
         install the following deb-packages:
 
-        sudo apt-get install qtbase5-dev qtbase5-dev-tools libqt5core5a libqt5gui5 libqt5widgets5 libqt5x11extras5-dev
+        sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5core5a libqt5gui5 libqt5widgets5 libqt5x11extras5-dev
 
 remarks:
 
