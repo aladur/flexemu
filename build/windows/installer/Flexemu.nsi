@@ -1,6 +1,8 @@
 ;--------------------------------
 ; flexemu.nsi
 ;--------------------------------
+;
+; This installer requires NSIS EnVar plug-in
 
 !include LogicLib.nsh
 !include x64.nsh
@@ -29,7 +31,7 @@ LicenseBkColor /windows
 
 ; file info
 VIAddVersionKey ProductName     "${APPNAME}"
-VIAddVersionKey LegalCopyright  "(C) 1997-2020 W. Schwotzer"
+VIAddVersionKey LegalCopyright  "(C) 1997-2022 W. Schwotzer"
 VIAddVersionKey Comment         "an MC6809 emulator running FLEX"
 VIAddVersionKey ProductVersion  "${APPVERSION}"
 VIAddVersionKey FileDescription "an MC6809 emulator running FLEX"
@@ -329,6 +331,13 @@ ${EndIf}
 
 SectionEnd   
 
+Section "Update PATH environment variable" UpdatePath
+
+  EnVar::SetHKLM
+  EnVar::AddValue "PATH" "$INSTDIR"
+
+SectionEnd
+
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${BinaryFiles} "${APPNAME} binary files."
   !insertmacro MUI_DESCRIPTION_TEXT ${MonitorDiskFiles} "Monitor programs to boot MC6809. Disk files to boot FLEX operating system from emulated disk drive. Containing some sample programs."
@@ -336,7 +345,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${StartMenu} "Create start menu."
   !insertmacro MUI_DESCRIPTION_TEXT ${DesktopIcons} "Create desktop icons."
   !insertmacro MUI_DESCRIPTION_TEXT ${VC_Redist} "Install Microsoft Visual C++ Redistributable package 2015 (vc_redist). If unsure install it."
-  
+  !insertmacro MUI_DESCRIPTION_TEXT ${UpdatePath} "Add Flexemu installation path to PATH environment variable to use FLEX utilities from command prompt."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Section "-Registry update"
@@ -469,6 +478,10 @@ Section "Uninstall" Uninstall
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR"
+
+  ; Remove install directory from PATH environment variable
+  EnVar::SetHKLM
+  EnVar::DeleteValue "PATH" "$INSTDIR"
 
   System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, p0, p0)'
 
