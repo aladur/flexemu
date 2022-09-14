@@ -1609,10 +1609,11 @@ void QtGui::AdjustSize()
 
 void QtGui::OnResize()
 {
-    // To adjust the window size the adjustSize has to be processed
+    // To adjust the window size resize() has to be processed
     // within the event loop, e.g. with a singleShot timer.
     // See also: QtGui::AdjustSize().
-    adjustSize();
+    auto size = sizeHint();
+    resize(size);
 }
 
 QUrl QtGui::CreateDocumentationUrl(const QString &docDir,
