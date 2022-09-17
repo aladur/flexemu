@@ -326,10 +326,8 @@ create_config_file() {
     echo "-qt-harfbuzz" >>$3
     echo "-opengl" >>$3
     echo "desktop" >>$3
-if [ "$2" = "6" ]; then
-    # Avoid internal compiler error on Qt6
+    # Avoid internal compiler error on Qt5, Qt6
     echo "-no-pch" >>$3
-fi
     echo "-c++std" >>$3
 if [ "$2" = "5" ]; then
     echo "c++11" >>$3
