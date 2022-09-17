@@ -152,6 +152,9 @@ QtGui::QtGui(
     CreateStatusBar(*mainLayout);
 
     setWindowState(Qt::WindowActive);
+    // Resize needed here to overwrite previous adjustSize()
+    // with 2/3 screen limit.
+    resize(sizeHint());
     const auto flexemuIcon = QIcon(":/resource/flexemu.png");
     setWindowIcon(flexemuIcon);
 
