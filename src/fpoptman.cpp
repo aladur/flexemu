@@ -64,7 +64,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     std::string string_result;
 
 #ifdef _WIN32
-    BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
+    BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
 
     if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
         !string_result.empty())
