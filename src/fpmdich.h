@@ -55,8 +55,7 @@ class FlexplorerMdiChild : public QTableView
     Q_OBJECT
 
 public:
-    FlexplorerMdiChild(const QString &path,
-                       const FileTimeAccess &fileTimeAccess);
+    FlexplorerMdiChild(const QString &path, const struct sFPOptions &options);
     FlexplorerMdiChild() = delete;
     virtual ~FlexplorerMdiChild();
 
@@ -116,7 +115,7 @@ private:
     QPoint dragStartPosition;
     int selectedFilesCount;
     int selectedFilesByteSize;
-    const FileTimeAccess &fileTimeAccess;
+    const struct sFPOptions &options;
 
     static const QString mimeTypeFlexDiskImageFile;
 };

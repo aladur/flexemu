@@ -53,19 +53,27 @@ void FlexplorerOptionsUi::InitializeWidgets()
 {
 }
 
-void FlexplorerOptionsUi::TransferDataToDialog(const QString &bootSectorFile,
-        FileTimeAccess fileTimeAccess)
+void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
 {
     if (dialog == nullptr)
     {
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    e_bootSectorFile->setText(bootSectorFile);
+    e_bootSectorFile->setText(options.bootSectorFile.c_str());
 
-    auto index = static_cast<int>(fileTimeAccess);
+    auto index = static_cast<int>(options.ft_access);
     index = (index == 3) ? 2 : index;
     cb_fileTimeAccess->setCurrentIndex(index);
+}
+
+void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
+{
+    options.bootSectorFile = e_bootSectorFile->text().toUtf8().data();
+
+    auto index = cb_fileTimeAccess->currentIndex();
+    index = (index == 2) ? 3 : index;
+    options.ft_access = static_cast<FileTimeAccess>(index);
 }
 
 void FlexplorerOptionsUi::ConnectSignalsWithSlots()
@@ -77,18 +85,6 @@ void FlexplorerOptionsUi::ConnectSignalsWithSlots()
         this, &FlexplorerOptionsUi::OnAccepted);
     QObject::connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &FlexplorerOptionsUi::OnRejected);
-}
-
-QString FlexplorerOptionsUi::GetBootSectorFile() const
-{
-    return e_bootSectorFile->text();
-}
-
-FileTimeAccess FlexplorerOptionsUi::GetFileTimeAccess() const
-{
-    auto index = cb_fileTimeAccess->currentIndex();
-    index = (index == 2) ? 3 : index;
-    return static_cast<FileTimeAccess>(index);
 }
 
 void FlexplorerOptionsUi::OnSelectBootSectorFile()

@@ -30,6 +30,8 @@
 #include "winmain.h"
 #include "winctxt.h"
 #include "winmain.h"
+#include "sfpopts.h"
+#include "fpoptman.h"
 
 
 #ifdef _WIN32
@@ -51,9 +53,12 @@ static void LoadFiles(int argc, char *argv[], FLEXplorer &window)
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(fpmain_qrc_cpp);
+    sFPOptions options;
 
     QApplication app(argc, argv);
-    FLEXplorer window;
+    FlexplorerOptions::InitOptions(options);
+    FlexplorerOptions::ReadOptions(options);
+    FLEXplorer window(options);
     int return_code = EXIT_FAILURE;
 
     const auto icon = QIcon(":/resource/flexplorer.png");
@@ -74,6 +79,7 @@ int main(int argc, char *argv[])
                 QObject::tr("An unrecoverable error has occured:\n") +
                 ex.what());
     }
+    FlexplorerOptions::WriteOptions(options);
 
     return return_code;
 }

@@ -204,8 +204,8 @@ flexemu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 am_flexplorer_OBJECTS = flexplorer-fpdnd.$(OBJEXT) \
 	flexplorer-fpedit.$(OBJEXT) flexplorer-fpmain.$(OBJEXT) \
 	flexplorer-fpmdich.$(OBJEXT) flexplorer-fpmodel.$(OBJEXT) \
-	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptui.$(OBJEXT) \
-	flexplorer-fpwin.$(OBJEXT)
+	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptman.$(OBJEXT) \
+	flexplorer-fpoptui.$(OBJEXT) flexplorer-fpwin.$(OBJEXT)
 am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
 am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
@@ -297,6 +297,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flexplorer-fpmodel.Po \
 	./$(DEPDIR)/flexplorer-fpnewui.Po \
 	./$(DEPDIR)/flexplorer-fpnewui_moc.Po \
+	./$(DEPDIR)/flexplorer-fpoptman.Po \
 	./$(DEPDIR)/flexplorer-fpoptui.Po \
 	./$(DEPDIR)/flexplorer-fpoptui_moc.Po \
 	./$(DEPDIR)/flexplorer-fpwin.Po \
@@ -938,6 +939,7 @@ flexplorer_SOURCES = \
 	fpmdich.cpp \
 	fpmodel.cpp \
 	fpnewui.cpp \
+	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
 	bdate.h \
@@ -970,6 +972,7 @@ flexplorer_SOURCES = \
 	fpmdich.h \
 	fpmodel.h \
 	fpnewui.h \
+	fpoptman.h \
 	fpoptui.h \
 	fpwin.h \
 	idircnt.h \
@@ -981,6 +984,7 @@ flexplorer_SOURCES = \
 	memtgt.h \
 	misc1.h \
 	rfilecnt.h \
+	sfpopts.h \
 	sprinter.h \
 	warnoff.h \
 	warnon.h
@@ -1381,6 +1385,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpmodel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpnewui_moc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin.Po@am__quote@ # am--include-marker
@@ -2760,6 +2765,20 @@ flexplorer-fpnewui.obj: fpnewui.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpnewui.obj `if test -f 'fpnewui.cpp'; then $(CYGPATH_W) 'fpnewui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpnewui.cpp'; fi`
 
+flexplorer-fpoptman.o: fpoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptman.o -MD -MP -MF $(DEPDIR)/flexplorer-fpoptman.Tpo -c -o flexplorer-fpoptman.o `test -f 'fpoptman.cpp' || echo '$(srcdir)/'`fpoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptman.Tpo $(DEPDIR)/flexplorer-fpoptman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptman.cpp' object='flexplorer-fpoptman.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptman.o `test -f 'fpoptman.cpp' || echo '$(srcdir)/'`fpoptman.cpp
+
+flexplorer-fpoptman.obj: fpoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptman.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpoptman.Tpo -c -o flexplorer-fpoptman.obj `if test -f 'fpoptman.cpp'; then $(CYGPATH_W) 'fpoptman.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptman.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptman.Tpo $(DEPDIR)/flexplorer-fpoptman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpoptman.cpp' object='flexplorer-fpoptman.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpoptman.obj `if test -f 'fpoptman.cpp'; then $(CYGPATH_W) 'fpoptman.cpp'; else $(CYGPATH_W) '$(srcdir)/fpoptman.cpp'; fi`
+
 flexplorer-fpoptui.o: fpoptui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpoptui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpoptui.Tpo -c -o flexplorer-fpoptui.o `test -f 'fpoptui.cpp' || echo '$(srcdir)/'`fpoptui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpoptui.Tpo $(DEPDIR)/flexplorer-fpoptui.Po
@@ -3414,6 +3433,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpmodel.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fpoptman.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po
@@ -3575,6 +3595,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpmodel.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpnewui_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fpoptman.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po

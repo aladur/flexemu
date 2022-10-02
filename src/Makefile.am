@@ -321,6 +321,7 @@ flexplorer_SOURCES = \
 	fpmdich.cpp \
 	fpmodel.cpp \
 	fpnewui.cpp \
+	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
 	bdate.h \
@@ -353,6 +354,7 @@ flexplorer_SOURCES = \
 	fpmdich.h \
 	fpmodel.h \
 	fpnewui.h \
+	fpoptman.h \
 	fpoptui.h \
 	fpwin.h \
 	idircnt.h \
@@ -364,6 +366,7 @@ flexplorer_SOURCES = \
 	memtgt.h \
 	misc1.h \
 	rfilecnt.h \
+	sfpopts.h \
 	sprinter.h \
 	warnoff.h \
 	warnon.h

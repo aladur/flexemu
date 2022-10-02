@@ -206,6 +206,7 @@
     <ClCompile Include="fpmdich.cpp" />
     <ClCompile Include="fpmodel.cpp" />
     <ClCompile Include="fpnewui.cpp" />
+    <ClCompile Include="fpoptman.cpp" />
     <ClCompile Include="fpoptui.cpp" />
     <ClCompile Include="fpwin.cpp" />
     <ClCompile Include="ndircont.cpp" />
@@ -302,6 +303,7 @@
       <OutputItemType>ClCompile</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
+    <ClInclude Include="fpoptman.h" />
     <CustomBuild Include="fpoptui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
@@ -326,6 +328,7 @@
     <ClInclude Include="ndircont.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="sprinter.h" />
+    <ClInclude Include="sfpopts.h" />
     <ClInclude Include="warnoff.h" />
     <ClInclude Include="warnon.h" />
   </ItemGroup>

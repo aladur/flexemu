@@ -60,7 +60,7 @@
 #include "warnon.h"
 
 
-FLEXplorer::FLEXplorer() : mdiArea(new QMdiArea),
+FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     windowMenu(nullptr),
     l_selectedFilesCount(nullptr), l_selectedFilesByteSize(nullptr),
     fileToolBar(nullptr), editToolBar(nullptr),
@@ -85,7 +85,7 @@ FLEXplorer::FLEXplorer() : mdiArea(new QMdiArea),
     newDialogSize{0, 0}, optionsDialogSize{0, 0},
     attributesDialogSize{0, 0},
     findPattern("*.*"),
-    ft_access(FileTimeAccess::NONE)
+    options(p_options)
 {
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -100,8 +100,6 @@ FLEXplorer::FLEXplorer() : mdiArea(new QMdiArea),
     CreateActions();
     CreateStatusBar();
     UpdateMenus();
-
-    ReadDefaultOptions();
 
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -139,7 +137,7 @@ void FLEXplorer::NewContainer()
                                   directory.c_str(),
                                   filename.c_str(),
                                   ui.GetTracks(), ui.GetSectors(),
-                                  ft_access,
+                                  options.ft_access,
                                   ui.GetFormat());
             delete container;
 
@@ -203,7 +201,7 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
 
     try
     {
-        auto *child = CreateMdiChild(path, ft_access);
+        auto *child = CreateMdiChild(path, options);
 
         child->show();
 
@@ -366,17 +364,21 @@ void FLEXplorer::Options()
     QDialog dialog;
     FlexplorerOptionsUi ui;
     ui.setupUi(dialog);
-    ui.TransferDataToDialog(FlexFileContainer::bootSectorFile.c_str(),
-            ft_access);
+    ui.TransferDataToDialog(options);
     dialog.resize(optionsDialogSize);
     auto result = dialog.exec();
     optionsDialogSize = dialog.size();
 
     if (result == QDialog::Accepted)
     {
-        std::string bootSectorFile = ui.GetBootSectorFile().toUtf8().data();
-        FlexFileContainer::bootSectorFile = bootSectorFile;
-        SetFileTimeAccess(ui.GetFileTimeAccess());
+        auto oldFileTimeAccess = options.ft_access;
+
+        ui.TransferDataFromDialog(options);
+        FlexFileContainer::bootSectorFile = options.bootSectorFile;
+        if (oldFileTimeAccess != options.ft_access)
+        {
+            emit FileTimeAccessHasChanged();
+        }
     }
 }
 
@@ -498,9 +500,9 @@ void FLEXplorer::CloseAllSubWindows()
 }
 
 FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
-                                               FileTimeAccess &fileTimeAccess)
+        const struct sFPOptions &p_options)
 {
-    auto *child = new FlexplorerMdiChild(path, fileTimeAccess);
+    auto *child = new FlexplorerMdiChild(path, p_options);
 
     auto subWindow = mdiArea->addSubWindow(child);
     QString iconResource =
@@ -842,7 +844,6 @@ QMdiSubWindow *FLEXplorer::FindMdiChild(const QString &path) const
 void FLEXplorer::Exit()
 {
     qApp->closeAllWindows();
-    WriteDefaultOptions();
     QCoreApplication::quit();
 }
 
@@ -969,82 +970,11 @@ void FLEXplorer::dropEvent(QDropEvent *event)
     }
 }
 
-void FLEXplorer::WriteDefaultOptions()
-{
-#ifdef _WIN32
-    BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
-    reg.SetValue(FLEXPLORERBOOTSECTORFILE, FlexFileContainer::bootSectorFile);
-    reg.SetValue(FLEXFILETIMEACCESS, static_cast<int>(ft_access));
-#endif
-#ifdef UNIX
-    const auto rcFileName =
-        getHomeDirectory() + PATHSEPARATORSTRING FLEXPLORERRC;
-    BRcFile rcFile(rcFileName.c_str());
-    rcFile.Initialize(); // truncate file
-    rcFile.SetValue(FLEXPLORERBOOTSECTORFILE,
-                    FlexFileContainer::bootSectorFile.c_str());
-    rcFile.SetValue(FLEXFILETIMEACCESS, static_cast<int>(ft_access));
-#endif
-}
-
-void FLEXplorer::ReadDefaultOptions()
-{
-    std::string string_result;
-    int int_result;
-
-#ifdef _WIN32
-    BRegistry reg(BRegistry::localMachine, FLEXPLOREREG);
-
-    if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
-        !string_result.empty())
-    {
-        FlexFileContainer::bootSectorFile = string_result;
-    }
-
-    if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
-    {
-        if (int_result < 0)
-        {
-            int_result = 0;
-        }
-        else if (int_result == 2 || int_result > 3)
-        {
-            int_result = 3;
-        }
-        ft_access = static_cast<FileTimeAccess>(int_result);
-    }
-#endif
-#ifdef UNIX
-    const auto rcFileName =
-        getHomeDirectory() + PATHSEPARATORSTRING FLEXPLORERRC;
-    BRcFile rcFile(rcFileName.c_str());
-
-    if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
-        !string_result.empty())
-    {
-        FlexFileContainer::bootSectorFile = string_result;
-    }
-
-    if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))
-    {
-        if (int_result < 0)
-        {
-            int_result = 0;
-        }
-        else if (int_result == 2 || int_result > 3)
-        {
-            int_result = 3;
-        }
-        ft_access = static_cast<FileTimeAccess>(int_result);
-    }
-#endif
-}
-
 void FLEXplorer::SetFileTimeAccess(FileTimeAccess fileTimeAccess)
 {
-    auto hasChanged = (ft_access != fileTimeAccess);
+    auto hasChanged = (options.ft_access != fileTimeAccess);
 
-    ft_access = fileTimeAccess;
+    options.ft_access = fileTimeAccess;
     if (hasChanged)
     {
         emit FileTimeAccessHasChanged();

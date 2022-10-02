@@ -46,15 +46,16 @@
 #include "fpmodel.h"
 #include "fpedit.h"
 #include "fpmdich.h"
+#include "sfpopts.h"
 
 const QString FlexplorerMdiChild::mimeTypeFlexDiskImageFile =
                                       "application/x-flexdiskimagefile";
 
 FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
-                                       const FileTimeAccess &p_fileTimeAccess) :
+                                       const struct sFPOptions &p_options) :
     dragStartPosition(0,0),
     selectedFilesCount(0), selectedFilesByteSize(0),
-    fileTimeAccess(p_fileTimeAccess)
+    options(p_options)
 {
     SetupModel(path);
     SetupView();
@@ -66,8 +67,8 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
     // Set column for unique Id hidden.
     setColumnHidden(FlexplorerTableModel::COL_ID, true);
 
-    dateDelegate.reset(new FlexDateDelegate(fileTimeAccess, this));
-    dateTimeDelegate.reset(new FlexDateTimeDelegate(fileTimeAccess, this));
+    dateDelegate.reset(new FlexDateDelegate(options.ft_access, this));
+    dateTimeDelegate.reset(new FlexDateTimeDelegate(options.ft_access, this));
     UpdateDateDelegate();
     filenameDelegate.reset(new FlexFilenameDelegate(this));
     setItemDelegateForColumn(FlexplorerTableModel::COL_FILENAME,
@@ -414,7 +415,8 @@ void FlexplorerMdiChild::Info()
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
     model.reset(
-        new FlexplorerTableModel(path.toUtf8().data(), fileTimeAccess, this));
+        new FlexplorerTableModel(path.toUtf8().data(),
+                                 options.ft_access, this));
     setModel(model.get());
 }
 
@@ -723,7 +725,7 @@ void FlexplorerMdiChild::OnFileTimeAccessChanged()
 
 void FlexplorerMdiChild::UpdateDateDelegate()
 {
-    if (fileTimeAccess == FileTimeAccess::NONE)
+    if (options.ft_access == FileTimeAccess::NONE)
     {
         setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
                                  dateDelegate.get());

@@ -31,6 +31,7 @@
 #include <QStringList>
 #include "warnon.h"
 #include <functional>
+#include "sfpopts.h"
 
 
 class FlexplorerMdiChild;
@@ -51,7 +52,8 @@ class FLEXplorer : public QMainWindow
     Q_OBJECT
 
 public:
-    FLEXplorer();
+    FLEXplorer() = delete;
+    FLEXplorer(struct sFPOptions &options);
 
     bool OpenContainerForPath(QString path, bool isLast = true);
 
@@ -99,12 +101,10 @@ private:
     void CreateHelpActions();
     void CreateStatusBar();
     FlexplorerMdiChild *CreateMdiChild(const QString &path,
-                                       FileTimeAccess &fileTimeAccess);
+                                       const struct sFPOptions &options);
     FlexplorerMdiChild *ActiveMdiChild() const;
     QMdiSubWindow *FindMdiChild(const QString &path) const;
     void changeEvent(QEvent *event) override;
-    void ReadDefaultOptions();
-    void WriteDefaultOptions();
     void UpdateSelectedFiles();
     void UpdateMenus();
     static QStringList GetSupportedFiles(const QMimeData *mimeData);
@@ -152,8 +152,7 @@ protected:
     QSize optionsDialogSize;
     QSize attributesDialogSize;
     QString findPattern;
-
-    FileTimeAccess ft_access;
+    sFPOptions &options;
 };
 
 #endif

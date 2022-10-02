@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QString>
 #include "warnon.h"
+#include "sfpopts.h"
 
 class QLineEdit;
 
@@ -44,11 +45,8 @@ public:
     FlexplorerOptionsUi();
     virtual ~FlexplorerOptionsUi();
     void setupUi(QDialog &dialog);
-    void TransferDataToDialog(const QString &bootSectorFile,
-            FileTimeAccess fileTimeAccess);
-
-    QString GetBootSectorFile() const;
-    FileTimeAccess GetFileTimeAccess() const;
+    void TransferDataToDialog(const struct sFPOptions &options);
+    void TransferDataFromDialog(struct sFPOptions &options);
 
 private slots:
     void OnSelectBootSectorFile();

@@ -36,6 +36,9 @@
     <ClCompile Include="fpnewui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fpoptman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fpoptui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -164,6 +167,9 @@
     <ClInclude Include="fpdnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fpoptman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="fpmodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -171,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sfpopts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
