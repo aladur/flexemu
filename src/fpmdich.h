@@ -55,7 +55,7 @@ class FlexplorerMdiChild : public QTableView
     Q_OBJECT
 
 public:
-    FlexplorerMdiChild(const QString &path, const struct sFPOptions &options);
+    FlexplorerMdiChild(const QString &path, struct sFPOptions &options);
     FlexplorerMdiChild() = delete;
     virtual ~FlexplorerMdiChild();
 
@@ -69,6 +69,7 @@ public:
     void DeselectAll();
     int FindFiles(const QString &pattern);
     int DeleteSelected();
+    int ExtractSelected(const QString &targetDirectory);
     int ViewSelected();
     QVector<QString> GetSelectedFilenames() const;
     QString GetSupportedAttributes() const;
@@ -115,7 +116,7 @@ private:
     QPoint dragStartPosition;
     int selectedFilesCount;
     int selectedFilesByteSize;
-    const struct sFPOptions &options;
+    struct sFPOptions &options;
 
     static const QString mimeTypeFlexDiskImageFile;
 };

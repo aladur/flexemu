@@ -316,6 +316,8 @@ extern "C" struct sRGBDef
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"
+#define FLEXPLOREREXTRACTCNV  "ExtractTextFileConvert"
+#define FLEXPLOREREXTRACTASK  "ExtractTextFileAskUser"
 
 // This macro defines the name of a file. It contains a list of files
 // which have to be handled as random files. It is used in directory containers

@@ -38,6 +38,8 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 #ifdef _WIN32
     options.bootSectorFile = BOOT_FILE;
 #endif
+    options.extractTextFileConvert = true;
+    options.extractTextFileAskUser = true;
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
@@ -46,6 +48,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     reg.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
+    reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() +
@@ -55,6 +59,10 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.c_str());
     rcFile.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    rcFile.SetValue(FLEXPLOREREXTRACTCNV,
+                    options.extractTextFileConvert ? 1 : 0);
+    rcFile.SetValue(FLEXPLOREREXTRACTASK,
+                    options.extractTextFileAskUser ? 1 : 0);
 #endif
 }
 
@@ -84,6 +92,14 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
     }
+    if (!reg.GetValue(FLEXPLOREREXTRACTCNV, int_result))
+    {
+        options.extractTextFileConvert = (int_result != 0);
+    }
+    if (!reg.GetValue(FLEXPLOREREXTRACTASK, int_result))
+    {
+        options.extractTextFileAskUser = (int_result != 0);
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -107,6 +123,14 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             int_result = 3;
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
+    }
+    if (!rcFile.GetValue(FLEXPLOREREXTRACTCNV, int_result))
+    {
+        options.extractTextFileConvert = (int_result != 0);
+    }
+    if (!rcFile.GetValue(FLEXPLOREREXTRACTASK, int_result))
+    {
+        options.extractTextFileAskUser = (int_result != 0);
     }
 #endif
 }

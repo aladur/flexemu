@@ -73,6 +73,7 @@ private slots:
     void DeselectAll();
     void FindFiles();
     void DeleteSelected();
+    void ExtractSelected();
     void ViewSelected();
     void AttributesSelected();
     void Info();
@@ -101,7 +102,7 @@ private:
     void CreateHelpActions();
     void CreateStatusBar();
     FlexplorerMdiChild *CreateMdiChild(const QString &path,
-                                       const struct sFPOptions &options);
+                                       struct sFPOptions &options);
     FlexplorerMdiChild *ActiveMdiChild() const;
     QMdiSubWindow *FindMdiChild(const QString &path) const;
     void changeEvent(QEvent *event) override;
@@ -127,6 +128,7 @@ protected:
     QAction *newContainerAction;
     QAction *openContainerAction;
     QAction *openDirectoryAction;
+    QAction *extractAction;
     QAction *selectAllAction;
     QAction *deselectAllAction;
     QAction *findFilesAction;
@@ -152,6 +154,7 @@ protected:
     QSize optionsDialogSize;
     QSize attributesDialogSize;
     QString findPattern;
+    QString extractDirectory;
     sFPOptions &options;
 };
 

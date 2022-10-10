@@ -65,6 +65,9 @@ void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
     auto index = static_cast<int>(options.ft_access);
     index = (index == 3) ? 2 : index;
     cb_fileTimeAccess->setCurrentIndex(index);
+
+    c_extractTextFileConvert->setChecked(options.extractTextFileConvert);
+    c_extractTextFileAskUser->setChecked(options.extractTextFileAskUser);
 }
 
 void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
@@ -74,6 +77,9 @@ void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
     auto index = cb_fileTimeAccess->currentIndex();
     index = (index == 2) ? 3 : index;
     options.ft_access = static_cast<FileTimeAccess>(index);
+
+    options.extractTextFileConvert = c_extractTextFileConvert->isChecked();
+    options.extractTextFileAskUser = c_extractTextFileAskUser->isChecked();
 }
 
 void FlexplorerOptionsUi::ConnectSignalsWithSlots()

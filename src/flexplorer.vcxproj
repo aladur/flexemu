@@ -200,6 +200,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fpcnvui.cpp" />
     <ClCompile Include="fpdnd.cpp" />
     <ClCompile Include="fpedit.cpp" />
     <ClCompile Include="fpmain.cpp" />
@@ -246,6 +247,14 @@
       <OutputItemType>ClInclude</OutputItemType>
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
+    <CustomBuild Include="fpcnv.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bdate.h" />
@@ -278,6 +287,14 @@
     <ClInclude Include="memtgt.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="winmain.h" />
+    <CustomBuild Include="fpcnvui.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
     <CustomBuild Include="fpedit.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>

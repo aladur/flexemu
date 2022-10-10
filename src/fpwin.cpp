@@ -67,6 +67,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     containerToolBar(nullptr),
     newContainerAction(nullptr), openContainerAction(nullptr),
     openDirectoryAction(nullptr), 
+    extractAction(nullptr),
     selectAllAction(nullptr), deselectAllAction(nullptr),
     findFilesAction(nullptr),
 #ifndef QT_NO_CLIPBOARD
@@ -318,6 +319,28 @@ void FLEXplorer::DeleteSelected()
     });
 }
 
+void FLEXplorer::ExtractSelected()
+{
+    ExecuteInChild([&](FlexplorerMdiChild &child)
+    {
+        auto *subWindow = mdiArea->activeSubWindow();
+        auto targetDirectory = QFileDialog::getExistingDirectory(this,
+                tr("Target Directory to extract file(s)"), extractDirectory,
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+        // As a result of opening a directory browser there maybe is no active
+        // child any more => reactivate it.
+        mdiArea->setActiveSubWindow(subWindow);
+
+        if (!targetDirectory.isEmpty())
+        {
+            auto count = child.ExtractSelected(targetDirectory);
+            SetStatusMessage(tr("Extracted %1 file(s)").arg(count));
+            extractDirectory = targetDirectory;
+        }
+    });
+}
+
 void FLEXplorer::ViewSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
@@ -420,6 +443,7 @@ void FLEXplorer::UpdateMenus()
     bool isWriteProtected = (hasMdiChild && child->IsWriteProtected());
     bool hasSelection = (hasMdiChild && child->GetSelectedFilesCount() > 0);
 
+    extractAction->setEnabled(hasMdiChild && hasSelection);
     selectAllAction->setEnabled(hasMdiChild);
     deselectAllAction->setEnabled(hasMdiChild);
     findFilesAction->setEnabled(hasMdiChild);
@@ -500,7 +524,7 @@ void FLEXplorer::CloseAllSubWindows()
 }
 
 FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
-        const struct sFPOptions &p_options)
+        struct sFPOptions &p_options)
 {
     auto *child = new FlexplorerMdiChild(path, p_options);
 
@@ -629,6 +653,17 @@ void FLEXplorer::CreateEditActions()
     editMenu->addAction(attributesAction);
     editMenu->addSeparator();
     editToolBar->addAction(attributesAction);
+    editToolBar->addSeparator();
+
+    const auto extractIcon = QIcon(":/resource/extract.png");
+    extractAction = new QAction(extractIcon, tr("E&xtract..."), this);
+    extractAction->setStatusTip(tr("Extract selected files"));
+    extractAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+    connect(extractAction, &QAction::triggered, this,
+            &FLEXplorer::ExtractSelected);
+    editMenu->addAction(extractAction);
+    editMenu->addSeparator();
+    editToolBar->addAction(extractAction);
     editToolBar->addSeparator();
 
     const auto selectAllIcon = QIcon(":/resource/selectall.png");
@@ -786,6 +821,8 @@ void FLEXplorer::ContextMenuRequested(QPoint pos)
         contextMenu->addAction(viewAction);
         contextMenu->addAction(deleteAction);
         contextMenu->addAction(attributesAction);
+        contextMenu->addSeparator();
+        contextMenu->addAction(extractAction);
         contextMenu->addSeparator();
         contextMenu->addAction(selectAllAction);
         contextMenu->addAction(deselectAllAction);

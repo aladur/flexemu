@@ -30,6 +30,8 @@
 #include "bdir.h"
 #include "bprocess.h"
 #include "warnoff.h"
+#include <QFileInfo>
+#include <QFile>
 #include <QDate>
 #include <QDrag>
 #include <QMouseEvent>
@@ -42,17 +44,19 @@
 #include "warnon.h"
 #include <cassert>
 #include <string>
+#include "fcopyman.h"
 #include "fpdnd.h"
 #include "fpmodel.h"
 #include "fpedit.h"
 #include "fpmdich.h"
 #include "sfpopts.h"
+#include "fpcnvui.h"
 
 const QString FlexplorerMdiChild::mimeTypeFlexDiskImageFile =
                                       "application/x-flexdiskimagefile";
 
 FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
-                                       const struct sFPOptions &p_options) :
+                                       struct sFPOptions &p_options) :
     dragStartPosition(0,0),
     selectedFilesCount(0), selectedFilesByteSize(0),
     options(p_options)
@@ -185,6 +189,104 @@ int FlexplorerMdiChild::DeleteSelected()
             }
 
             continue;
+        }
+    }
+
+    return count;
+}
+
+int FlexplorerMdiChild::ExtractSelected(const QString &targetDirectory)
+{
+    auto selectedRows = selectionModel()->selectedRows();
+    int count = 0;
+
+    for (auto &index : selectedRows)
+    {
+        try
+        {
+            QString filename = model->GetFilename(index);
+            auto buffer = model->CopyFile(index);
+
+            if (buffer.IsFlexTextFile())
+            {
+                if (options.extractTextFileAskUser)
+                {
+                    QDialog dialog(this);
+                    FlexplorerConvertUi ui;
+
+                    ui.setupUi(dialog);
+                    ui.TransferDataToDialog(tr("Extract text file"),
+                                            filename,
+                                            tr("Convert to host text file"),
+                                            options.extractTextFileConvert,
+                                            options.extractTextFileAskUser);
+                    dialog.adjustSize();
+                    auto result = dialog.exec();
+
+                    if (result == QDialog::Accepted)
+                    {
+                        options.extractTextFileConvert = ui.GetConvert();
+                        options.extractTextFileAskUser = ui.GetAskUser();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (options.extractTextFileConvert)
+                {
+                    buffer.ConvertToTextFile();
+                }
+            }
+
+            auto targetFilename = filename.toLower();
+            auto targetPath = targetDirectory + PATHSEPARATORSTRING +
+                              targetFilename;
+
+            if (QFile::exists(targetPath))
+            {
+                auto msg = tr("%1\nalready exists. Overwrite it?");
+
+                msg = msg.arg(targetPath);
+                auto answer = QMessageBox::question(this, "FLEXplorer", msg,
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::Yes);
+                if (answer != QMessageBox::Yes)
+                {
+                    continue;
+                }
+                if (!QFile::remove(targetPath))
+                {
+                    msg = tr("Cannot remove\n%1\nExtraction aborted.");
+                    msg = msg.arg(targetPath);
+                    QMessageBox::warning(this, tr("FLEXplorer warning"), msg);
+                    continue;
+                }
+            }
+
+            if (!buffer.WriteToFile(targetPath.toUtf8().data()))
+            {
+                throw FlexException(FERR_UNABLE_TO_CREATE,
+                                    targetFilename.toUtf8().data());
+            }
+
+            ++count;
+        }
+        catch (FlexException &ex)
+        {
+            auto msg = tr("%1\nExtraction aborted.\nContinue?");
+
+            msg = msg.arg(ex.what());
+            auto buttons = QMessageBox::Yes | QMessageBox::No;
+            auto answer = QMessageBox::critical(this, tr("FLEXPlorer Error"),
+                                                msg, buttons,
+                                                QMessageBox::Yes);
+
+            if (answer == QMessageBox::No)
+            {
+                break;
+            }
         }
     }
 

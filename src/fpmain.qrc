@@ -14,6 +14,7 @@
         <file alias="attributes.png">bitmaps/32x32/flexemu-flexplorer-attributes.png</file>
         <file alias="info.png">bitmaps/32x32/flexemu-flexplorer-info.png</file>
         <file alias="dir.png">bitmaps/32x32/flexemu-flexplorer-dir.png</file>
+        <file alias="extract.png">bitmaps/32x32/flexemu-flexplorer-extract.png</file>
         <file alias="selectall.png">bitmaps/32x32/flexemu-flexplorer-selectall.png</file>
         <file alias="deselectall.png">bitmaps/32x32/flexemu-flexplorer-deselectall.png</file>
         <file alias="options.png">bitmaps/32x32/flexemu-flexplorer-options.png</file>

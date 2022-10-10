@@ -18,6 +18,9 @@
     <ClCompile Include="ndircont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fpcnvui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fpdnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -164,6 +167,9 @@
     <ClInclude Include="warnon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fpcnvui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="fpdnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -206,6 +212,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fpopt.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fpcnv.ui">
       <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>

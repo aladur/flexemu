@@ -123,7 +123,8 @@ flexemu_ui = \
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \
-	fpopt.ui
+	fpopt.ui \
+	fpcnv.ui
 flexplorer_ui_hdr = $(flexplorer_ui:.ui=_ui.h)
 
 # Rule for Qt moc files:
@@ -142,6 +143,7 @@ flexplorer_moc_hdr = \
 	fpmdich.h \
 	fpnewui.h \
 	fpoptui.h \
+	fpcnvui.h \
 	fpwin.h
 flexplorer_moc_src = $(flexplorer_moc_hdr:.h=_moc.cpp)
 
@@ -315,6 +317,7 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
+	fpcnvui.cpp \
 	fpdnd.cpp \
 	fpedit.cpp \
 	fpmain.cpp \
@@ -349,6 +352,7 @@ flexplorer_SOURCES = \
 	flexemu.h \
 	flexerr.h \
 	fpattrui.h \
+	fpcnvui.h \
 	fpdnd.h \
 	fpedit.h \
 	fpmdich.h \

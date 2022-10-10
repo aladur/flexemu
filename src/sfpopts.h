@@ -36,6 +36,8 @@ struct sFPOptions
 
     FileTimeAccess ft_access;
     std::string bootSectorFile;
+    bool extractTextFileConvert;
+    bool extractTextFileAskUser;
 };
 
 #endif
