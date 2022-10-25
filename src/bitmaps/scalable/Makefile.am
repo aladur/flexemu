@@ -24,6 +24,7 @@ dist_icons = \
 	flexemu-flexplorer-extract.svg \
 	flexemu-flexplorer-find.svg \
 	flexemu-flexplorer-info.svg \
+	flexemu-flexplorer-inject.svg \
 	flexemu-flexplorer-new.svg \
 	flexemu-flexplorer-open.svg \
 	flexemu-flexplorer-opendir.svg \

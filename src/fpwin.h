@@ -73,6 +73,7 @@ private slots:
     void DeselectAll();
     void FindFiles();
     void DeleteSelected();
+    void InjectFiles();
     void ExtractSelected();
     void ViewSelected();
     void AttributesSelected();
@@ -128,6 +129,7 @@ protected:
     QAction *newContainerAction;
     QAction *openContainerAction;
     QAction *openDirectoryAction;
+    QAction *injectAction;
     QAction *extractAction;
     QAction *selectAllAction;
     QAction *deselectAllAction;
@@ -154,6 +156,7 @@ protected:
     QSize optionsDialogSize;
     QSize attributesDialogSize;
     QString findPattern;
+    QString injectDirectory;
     QString extractDirectory;
     sFPOptions &options;
 };

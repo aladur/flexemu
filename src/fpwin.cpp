@@ -67,7 +67,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     containerToolBar(nullptr),
     newContainerAction(nullptr), openContainerAction(nullptr),
     openDirectoryAction(nullptr), 
-    extractAction(nullptr),
+    injectAction(nullptr), extractAction(nullptr),
     selectAllAction(nullptr), deselectAllAction(nullptr),
     findFilesAction(nullptr),
 #ifndef QT_NO_CLIPBOARD
@@ -88,6 +88,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     findPattern("*.*"),
     options(p_options)
 {
+    injectDirectory = getHomeDirectory().c_str();
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     QImage image(":resource/background.png");
@@ -105,7 +106,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    resize(820, 680);
+    resize(860, 720);
 }
 
 void FLEXplorer::NewContainer()
@@ -319,6 +320,27 @@ void FLEXplorer::DeleteSelected()
     });
 }
 
+void FLEXplorer::InjectFiles()
+{
+    ExecuteInChild([&](FlexplorerMdiChild &child)
+    {
+        QFileDialog dialog(this, tr("Select file(s) to inject"),
+                           injectDirectory);
+
+        dialog.setFileMode(QFileDialog::ExistingFiles);
+        dialog.setDirectory(injectDirectory);
+        dialog.setViewMode(QFileDialog::Detail);
+
+        if (dialog.exec())
+        {
+            auto fileNames = dialog.selectedFiles();
+            auto count = child.InjectFiles(fileNames);
+            SetStatusMessage(tr("Injected %1 file(s)").arg(count));
+            injectDirectory = dialog.directory().absolutePath();
+        }
+    });
+}
+
 void FLEXplorer::ExtractSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
@@ -443,6 +465,7 @@ void FLEXplorer::UpdateMenus()
     bool isWriteProtected = (hasMdiChild && child->IsWriteProtected());
     bool hasSelection = (hasMdiChild && child->GetSelectedFilesCount() > 0);
 
+    injectAction->setEnabled(hasMdiChild && !isWriteProtected);
     extractAction->setEnabled(hasMdiChild && hasSelection);
     selectAllAction->setEnabled(hasMdiChild);
     deselectAllAction->setEnabled(hasMdiChild);
@@ -655,6 +678,15 @@ void FLEXplorer::CreateEditActions()
     editToolBar->addAction(attributesAction);
     editToolBar->addSeparator();
 
+    const auto injectIcon = QIcon(":/resource/inject.png");
+    injectAction = new QAction(injectIcon, tr("&Inject..."), this);
+    injectAction->setStatusTip(tr("Inject selected files"));
+    injectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
+    connect(injectAction, &QAction::triggered, this,
+            &FLEXplorer::InjectFiles);
+    editMenu->addAction(injectAction);
+    editToolBar->addAction(injectAction);
+
     const auto extractIcon = QIcon(":/resource/extract.png");
     extractAction = new QAction(extractIcon, tr("E&xtract..."), this);
     extractAction->setStatusTip(tr("Extract selected files"));
@@ -822,6 +854,7 @@ void FLEXplorer::ContextMenuRequested(QPoint pos)
         contextMenu->addAction(deleteAction);
         contextMenu->addAction(attributesAction);
         contextMenu->addSeparator();
+        contextMenu->addAction(injectAction);
         contextMenu->addAction(extractAction);
         contextMenu->addSeparator();
         contextMenu->addAction(selectAllAction);

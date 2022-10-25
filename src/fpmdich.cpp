@@ -146,20 +146,11 @@ void FlexplorerMdiChild::DeselectAll()
 
 int FlexplorerMdiChild::FindFiles(const QString &pattern)
 {
-    int count = 0;
-
     assert(model);
-    clearSelection();
-    auto selection = selectionMode();
-    setSelectionMode(QAbstractItemView::MultiSelection);
-    for (auto rowIndex : model->FindFiles(pattern))
-    {
-        selectRow(rowIndex);
-        ++count;
-    }
-    setSelectionMode(selection);
+    auto rowIndices = model->FindFiles(pattern);
+    MultiSelect(rowIndices);
 
-    return count;
+    return rowIndices.count();
 }
 
 int FlexplorerMdiChild::DeleteSelected()
@@ -193,6 +184,102 @@ int FlexplorerMdiChild::DeleteSelected()
     }
 
     return count;
+}
+
+int FlexplorerMdiChild::InjectFiles(const QStringList &filePaths)
+{
+    QVector<int> rowIndices;
+
+    for (const auto &filePath : filePaths)
+    {
+        FlexFileBuffer buffer;
+
+        if (!buffer.ReadFromFile(filePath.toUtf8().data()))
+        {
+            auto msg = tr("Error reading from\n%1\nInjection aborted.");
+            msg = msg.arg(filePath);
+            QMessageBox::warning(this, tr("FLEXplorer warning"), msg);
+            continue;
+        }
+
+        if (buffer.IsTextFile())
+        {
+            if (options.injectTextFileAskUser)
+            {
+                QDialog dialog(this);
+                FlexplorerConvertUi ui;
+
+                ui.setupUi(dialog);
+                ui.TransferDataToDialog(tr("Inject text file"),
+                                        filePath,
+                                        tr("Convert to FLEX text file"),
+                                        options.injectTextFileConvert,
+                                        options.injectTextFileAskUser);
+                dialog.adjustSize();
+                auto result = dialog.exec();
+
+                if (result == QDialog::Accepted)
+                {
+                    options.injectTextFileConvert = ui.GetConvert();
+                    options.injectTextFileAskUser = ui.GetAskUser();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (options.injectTextFileConvert)
+            {
+                buffer.ConvertToFlexTextFile();
+            }
+        }
+
+        try
+        {
+            auto rowIndicesFound = model->FindFiles(buffer.GetFilename());
+            if (!rowIndicesFound.isEmpty())
+            {
+                auto msg = tr("%1\nalready exists. Overwrite?");
+
+                msg = msg.arg(buffer.GetFilename());
+                auto answer = QMessageBox::question(this, "FLEXplorer", msg,
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::Yes);
+
+                if (answer == QMessageBox::Yes)
+                {
+                    auto modelIndex = model->index(rowIndicesFound[0], 0);
+                    model->DeleteFile(modelIndex);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            rowIndices.append(model->AddFile(buffer).row());
+        }
+        catch (FlexException &ex)
+        {
+            auto msg = tr("%1\nInjection aborted.\nContinue?");
+
+            msg = msg.arg(ex.what());
+            auto buttons = QMessageBox::Yes | QMessageBox::No;
+            auto answer = QMessageBox::critical(this, tr("FLEXPlorer Error"),
+                                                msg, buttons,
+                                                QMessageBox::Yes);
+
+            if (answer == QMessageBox::No)
+            {
+                break;
+            }
+        }
+    }
+
+    MultiSelect(rowIndices);
+
+    return rowIndices.count();
 }
 
 int FlexplorerMdiChild::ExtractSelected(const QString &targetDirectory)
@@ -837,5 +924,18 @@ void FlexplorerMdiChild::UpdateDateDelegate()
         setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
                                  dateTimeDelegate.get());
     }
+}
+
+void FlexplorerMdiChild::MultiSelect(const QVector<int> &rowIndices)
+{
+    clearSelection();
+    auto selection = selectionMode();
+    setSelectionMode(QAbstractItemView::MultiSelection);
+
+    for (auto rowIndex : rowIndices)
+    {
+        selectRow(rowIndex);
+    }
+    setSelectionMode(selection);
 }
 

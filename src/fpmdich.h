@@ -69,6 +69,7 @@ public:
     void DeselectAll();
     int FindFiles(const QString &pattern);
     int DeleteSelected();
+    int InjectFiles(const QStringList &filePaths);
     int ExtractSelected(const QString &targetDirectory);
     int ViewSelected();
     QVector<QString> GetSelectedFilenames() const;
@@ -107,6 +108,7 @@ private:
     QMimeData *GetMimeDataForSelected(int *count = nullptr);
     QMimeData *GetHtmlMimeDataForSelected();
     void UpdateDateDelegate();
+    void MultiSelect(const QVector<int> &rowIndices);
 
     std::unique_ptr<FlexplorerTableModel> model;
     std::unique_ptr<FlexDateDelegate> dateDelegate;

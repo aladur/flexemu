@@ -390,6 +390,25 @@ std::string getHomeDirectory()
     return result;
 }
 #endif
+#ifdef _WIN32
+std::string getHomeDirectory()
+{
+    BEnvironment env;
+    std::string homeDrive;
+    std::string homePath;
+
+    if (!env.GetValue("HOMEDRIVE", homeDrive))
+    {
+        return "";
+    }
+    if (!env.GetValue("HOMEPATH", homePath))
+    {
+        return "";
+    }
+
+    return homeDrive + homePath;
+}
+#endif
 
 std::string getTempPath()
 {

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>220</height>
+    <height>290</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>640</width>
-    <height>220</height>
+    <height>290</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -42,7 +42,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -121,6 +121,29 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="g_injectFiles">
+       <property name="title">
+        <string>Inject Files</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QCheckBox" name="c_injectTextFileConvert">
+          <property name="text">
+           <string>Convert text files to FLEX text files</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="c_injectTextFileAskUser">
+          <property name="text">
+           <string>Always ask user</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QGroupBox" name="g_extractFiles">

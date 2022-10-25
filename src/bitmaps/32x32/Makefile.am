@@ -22,6 +22,7 @@ dist_icons = \
 	flexemu-flexplorer-extract.png \
 	flexemu-flexplorer-find.png \
 	flexemu-flexplorer-info.png \
+	flexemu-flexplorer-inject.png \
 	flexemu-flexplorer-new.png \
 	flexemu-flexplorer-open.png \
 	flexemu-flexplorer-opendir.png \

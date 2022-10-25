@@ -38,6 +38,8 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 #ifdef _WIN32
     options.bootSectorFile = BOOT_FILE;
 #endif
+    options.injectTextFileConvert = true;
+    options.injectTextFileAskUser = true;
     options.extractTextFileConvert = true;
     options.extractTextFileAskUser = true;
 }
@@ -48,6 +50,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     reg.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    reg.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
+    reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
 #endif
@@ -59,6 +63,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.c_str());
     rcFile.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    rcFile.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
+    rcFile.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTCNV,
                     options.extractTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTASK,
@@ -92,6 +98,14 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
     }
+    if (!reg.GetValue(FLEXPLORERINJECTCNV, int_result))
+    {
+        options.injectTextFileConvert = (int_result != 0);
+    }
+    if (!reg.GetValue(FLEXPLORERINJECTASK, int_result))
+    {
+        options.injectTextFileAskUser = (int_result != 0);
+    }
     if (!reg.GetValue(FLEXPLOREREXTRACTCNV, int_result))
     {
         options.extractTextFileConvert = (int_result != 0);
@@ -123,6 +137,14 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             int_result = 3;
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
+    }
+    if (!rcFile.GetValue(FLEXPLORERINJECTCNV, int_result))
+    {
+        options.injectTextFileConvert = (int_result != 0);
+    }
+    if (!rcFile.GetValue(FLEXPLORERINJECTASK, int_result))
+    {
+        options.injectTextFileAskUser = (int_result != 0);
     }
     if (!rcFile.GetValue(FLEXPLOREREXTRACTCNV, int_result))
     {
