@@ -472,7 +472,7 @@ void FLEXplorer::UpdateMenus()
     findFilesAction->setEnabled(hasMdiChild);
 #ifndef QT_NO_CLIPBOARD
     copyAction->setEnabled(hasMdiChild && hasSelection);
-    pasteAction->setEnabled(!isWriteProtected);
+    pasteAction->setEnabled(hasMdiChild && !isWriteProtected);
 #endif
     deleteAction->setEnabled(!isWriteProtected && hasSelection);
     viewAction->setEnabled(hasSelection);
