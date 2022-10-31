@@ -306,6 +306,28 @@ std::string E2floppy::drive_info_string(Word drive_nr)
                << std::endl
                << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
                << std::endl;
+        if (info.GetType() & TYPE_DSK_CONTAINER)
+        {
+            auto header = info.GetJvcFileHeader();
+
+            stream << "JVC header: ";
+            if (header.empty())
+            {
+                stream << "none";
+            }
+            else
+            {
+                for (Word index = 0; index < header.size(); ++index)
+                {
+                    if (index != 0)
+                    {
+                        stream << ",";
+                    }
+                    stream << (Word)header[index];
+                }
+            }
+            stream << std::endl;
+        }
     }
 
     return stream.str().c_str();

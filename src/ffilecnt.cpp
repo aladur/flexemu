@@ -140,8 +140,6 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
     if (!stat(fp.GetPath(), &sbuf))
     {
         bool write_protected = ((attributes & FLX_READONLY) != 0);
-        Word tracks;
-        Word sectors;
 
         // Try to read the FLX header and check the magic number
         // to identify a FLX formatted disk.
@@ -162,16 +160,43 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
         else
         {
             s_formats format { };
+            auto jvcHeader = GetJvcFileHeader();
+            auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
+            Word tracks;
+            Word sectors;
 
             // check if it is a DSK formated disk
             // read system info sector
             if (IsFlexFileFormat(TYPE_DSK_CONTAINER) &&
-                GetFlexTracksSectors(tracks, sectors, 0U))
+                GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
             {
                 // File is identified as a FLEX DSK container format
-                format.tracks = tracks;
-                format.sectors = sectors;
-                format.size = sbuf.st_size;
+                if (jvcHeaderSize == 0U)
+                {
+                    format.tracks = tracks;
+                    format.sectors = sectors;
+                    format.sides = 0U;
+                }
+                else
+                {
+                    Word jvcSectors = jvcHeader[0];
+                    Word jvcSides = (jvcHeaderSize >= 2) ? jvcHeader[1] : 1U;
+
+                    // FLEX DSK container with JVC file header
+                    format.tracks = static_cast<Word>(
+                                    (file_size - jvcHeaderSize) /
+                                    (jvcSectors * SECTOR_SIZE) / jvcSides);
+                    format.sectors = jvcSectors * jvcSides;
+                    format.sides = jvcSides;
+
+                    if (tracks != format.tracks || sectors != format.sectors)
+                    {
+                        throw FlexException(FERR_INVALID_JVC_HEADER,
+                                            fp.GetPath());
+                    }
+                }
+                format.size = file_size;
+                format.offset = jvcHeaderSize;
                 Initialize_for_dsk_format(format, write_protected);
                 EvaluateTrack0SectorCount();
                 return;
@@ -444,6 +469,10 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     info.SetType(param.type);
     info.SetAttributes(attributes);
     info.SetIsWriteProtected(IsWriteProtected());
+    if (param.type & TYPE_DSK_CONTAINER)
+    {
+        info.SetJvcFileHeader(GetJvcFileHeader());
+    }
 
     return true;
 }
@@ -934,7 +963,7 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
 
     for (i = first_dir_trk_sec.sec - 1; i < param.max_sector; ++i)
     {
-        if (fseek(fp, i * param.byte_p_sector, SEEK_SET))
+        if (fseek(fp, param.offset + (i * param.byte_p_sector), SEEK_SET))
         {
             throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
         }
@@ -1202,18 +1231,27 @@ void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
 void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
                                                   bool write_protected)
 {
+    auto sides = format.sides ? format.sides :
+                     getSides(format.tracks, format.sectors);
+    auto sector0 = (format.offset != 0U) ? format.sectors :
+                     getTrack0SectorCount(format.tracks, format.sectors);
+
     file_size = format.size;
-    param.offset = 0;
+    param.offset = format.offset;
     param.write_protect = write_protected ? 1 : 0;
     param.max_sector = format.sectors;
-    param.max_sector0 = getTrack0SectorCount(format.tracks, format.sectors);
+    param.max_sector0 = sector0;
     param.max_track = format.tracks - 1;
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector * SECTOR_SIZE;
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
-    param.sides0 = getSides(format.tracks, format.sectors);
-    param.sides = getSides(format.tracks, format.sectors);
+    param.sides0 = sides;
+    param.sides = sides;
     param.type = TYPE_CONTAINER | TYPE_DSK_CONTAINER;
+    if (format.offset != 0U)
+    {
+        param.type |= TYPE_JVC_HEADER;
+    }
 }
 
 void FlexFileContainer::Initialize_unformatted_disk()
@@ -1549,13 +1587,17 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
 
     if ((type & TYPE_DSK_CONTAINER) != 0)
     {
-        if (GetFlexTracksSectors(tracks, sectors, 0U))
+        auto jvcHeader = GetJvcFileHeader();
+        auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
+
+        if (GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
         {
-            off_t size_min = ((tracks - 1) * sectors + 1) * SECTOR_SIZE;
-            off_t size_max = tracks * sectors * SECTOR_SIZE;
+            off_t size_min = jvcHeaderSize + ((tracks - 1) * sectors + 1) *
+                             SECTOR_SIZE;
+            off_t size_max = jvcHeaderSize + tracks * sectors * SECTOR_SIZE;
 
             // do a plausibility check with the size of the DSK file
-            if (sbuf.st_size % SECTOR_SIZE == 0 &&
+            if (sbuf.st_size % SECTOR_SIZE == jvcHeaderSize &&
                 sbuf.st_size >= size_min && sbuf.st_size <= size_max)
             {
                 return true;
@@ -1635,5 +1677,95 @@ st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
     }
 
     return next;
+}
+
+// JVC file header support functions
+// For details see:
+// https://sites.google.com/site/dabarnstudio/coco-utilities/jvc-disk-format
+//
+// The JVC file header has 1 up to 5 bytes:
+//
+// Byte Offset | Description           | Default | Values supported
+//             |                       |         | by flexemu
+// ------------+-----------------------+---------+-----------------
+//      0      | Sectors per track     |    - 1) | 5-255
+//      1      | Side count            |    1    | 1,2
+//      2      | Sector Size code      |    1 2) | 1
+//      3      | First sector ID       |    1 3) | 1
+//      4      | Sector attribute flag |    0 4) | 0
+//
+// 1) If JVC file header size is 0 then flexemu automatically tries to detect
+//    the right disk geometry
+// 2) A sector size code of 1 means a sector size of 256 bytes
+// 3) On FLEX the first sector ID always should be 1
+// 4) Sector attribute flag should be 0, an additional sector attribute byte
+//    is not supported by flexemu
+
+std::vector<Byte> FlexFileContainer::GetJvcFileHeader() const
+{
+    std::vector<Byte> header;
+    Word headerSize = file_size % SECTOR_SIZE;
+    Byte temp;
+
+    if (headerSize > MAX_JVC_HEADERSIZE)
+    {
+        throw FlexException(FERR_INVALID_FORMAT, fp.GetPath());
+    }
+
+    if (!headerSize)
+    {
+        return {};
+    }
+
+    if (fseek(fp, 0, SEEK_SET))
+    {
+        throw FlexException(FERR_READING_FROM, fp.GetPath());
+    }
+
+    header.resize(headerSize);
+    if (fread(header.data(), headerSize, 1, fp) != 1)
+    {
+        throw FlexException(FERR_READING_FROM, fp.GetPath());
+    }
+
+    switch(headerSize)
+    {
+        case 5:
+            temp = header[4]; // sector attribute flag
+            if (temp != 0U)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
+            }
+            // fall through
+        case 4:
+            temp = header[3]; // first sector ID
+            if (temp != 1U)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
+            }
+            // fall through
+        case 3:
+            temp = header[2]; // sector size count
+            if (temp != 1U)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
+            }
+            // fall through
+        case 2:
+            temp = header[1]; // side count
+            if (temp < 1U || temp > 2U)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
+            }
+            // fall through
+        case 1:
+            temp = header[0]; // sectors per track
+            if (temp < 5U)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
+            }
+    }
+
+    return header;
 }
 

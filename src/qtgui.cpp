@@ -1243,7 +1243,12 @@ void QtGui::OnDiskStatus(Word driveNumber)
         model.setColumnCount(2);
         if (info.IsValid())
         {
-            model.setRowCount(info.GetIsFlexFormat() ? 9 : 6);
+            auto rowCount = info.GetIsFlexFormat() ? 9 : 6;
+            if (info.GetType() & TYPE_DSK_CONTAINER)
+            {
+                ++rowCount;
+            }
+            model.setRowCount(rowCount);
             info.GetTrackSector(tracks, sectors);
             model.setItem(row++, 0, new QStandardItem(tr("Drive")));
             model.setItem(row++, 0, new QStandardItem(tr("Type")));
@@ -1258,6 +1263,10 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 0, new QStandardItem(tr("Sectors")));
             model.setItem(row++, 0, new QStandardItem(tr("Write-protect")));
             model.setItem(row++, 0, new QStandardItem(tr("FLEX format")));
+            if (info.GetType() & TYPE_DSK_CONTAINER)
+            {
+                model.setItem(row++, 0, new QStandardItem(tr("JVC header")));
+            }
             row = 0;
             text = QString::asprintf("#%u", driveNumber);
             model.setItem(row++, 1, new QStandardItem(text));
@@ -1282,6 +1291,28 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 1, new QStandardItem(text));
             text = info.GetIsFlexFormat() ? tr("yes") : tr("no");
             model.setItem(row++, 1, new QStandardItem(text));
+            if (info.GetType() & TYPE_DSK_CONTAINER)
+            {
+                auto header = info.GetJvcFileHeader();
+
+                if (header.empty())
+                {
+                    text = tr("none");
+                }
+                else
+                {
+                    text = "";
+                    for (Word index = 0; index < header.size(); ++index)
+                    {
+                        if (index != 0)
+                        {
+                            text += ",";
+                        }
+                        text += QString::number((Word)header[index]);
+                    }
+                }
+                model.setItem(row++, 1, new QStandardItem(text));
+            }
         }
         else
         {

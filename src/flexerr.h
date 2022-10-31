@@ -72,6 +72,7 @@
 #define FERR_UNEXPECTED_SIDE        (42)
 #define FERR_COPY_EMPTY_FILE        (43)
 #define FERR_ERROR_IN_SYSTEM_CALL   (44)
+#define FERR_INVALID_JVC_HEADER     (45)
 
 
 class FlexException : public std::exception

@@ -139,6 +139,7 @@ protected:
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
+    std::vector<Byte> GetJvcFileHeader() const;
 
     static void     Create_sys_info_sector(
         Byte    sec_buf[],

@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include "misc1.h"
 #include <string>
+#include <vector>
 #include "bdate.h"
 
 
@@ -47,6 +48,7 @@ private:
     bool    is_flex_format;// This container contains a FLEX file system.
     bool    is_write_protected;// This container is write protected.
     bool    is_valid;   // This container info is valid.
+    std::vector<Byte> jvc_header; // JVC header Bytes, size==0 if not present.
 
 public:
     FlexContainerInfo();        // public constructor
@@ -158,6 +160,15 @@ public:
     inline bool GetIsWriteProtected() const
     {
         return is_write_protected;
+    };
+    inline void SetJvcFileHeader(const std::vector<Byte> &header)
+    {
+        jvc_header = header;
+        is_valid = true;
+    };
+    inline std::vector<Byte> GetJvcFileHeader() const
+    {
+        return jvc_header;
     };
     inline bool IsValid() const
     {

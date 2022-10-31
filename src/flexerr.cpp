@@ -173,5 +173,6 @@ const char *FlexException::errString[] =
     _("Unexpected side number {0}"),
     _("Empty files can not be copied. File {0}"),
     _("Error {0} on system call '{1}'"),
+    _("Container {0} has invalid or unsupported JVC header"),
 };
 

@@ -597,6 +597,27 @@ void FlexplorerMdiChild::Info()
     {
         str += tr("Attributes: read-only").append("\n");
     }
+    if (info.GetType() & TYPE_DSK_CONTAINER)
+    {
+        auto header = info.GetJvcFileHeader();
+
+        str += tr("JVC header: ");
+        if (header.empty())
+        {
+            str += tr("none");
+        }
+        else
+        {
+            for (Word index = 0; index < header.size(); ++index)
+            {
+                if (index != 0)
+                {
+                    str += ",";
+                }
+                str += QString::number((Word)header[index]);
+            }
+        }
+    }
 
     QMessageBox::information(this, title, str);
 }

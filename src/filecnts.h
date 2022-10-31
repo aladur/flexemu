@@ -36,6 +36,9 @@ const int DIRSECTOR_PER_KB  = 12800;
 /* It has to be stored in big endian format. */
 const DWord MAGIC_NUMBER    = 0x339a5c48;
 
+/* Max. size of a JVC file header */
+const Word MAX_JVC_HEADERSIZE = 5U;
+
 enum tMountOption
 {
     MOUNT_DEFAULT   = 0,
@@ -49,6 +52,8 @@ struct s_formats
     Word        sectors;    /* number of sectors           */
     Word        sectors0;   /* number of sectors on track 0*/
     Word        dir_sectors;    /* number of directory sectors */
+    Word        sides;      /* 1 or 2 sides. If 0 estimate no. of sides */
+    Word        offset;     /* offset for fileheader */
 };
 
 typedef struct s_st

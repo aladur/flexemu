@@ -38,6 +38,8 @@ const int TYPE_NAFS_DIRECTORY   = 0x40; /* subtype: NAFS directory */
 /* (means: without text conversion) */
 const int TYPE_RAM_CONTAINER    =
     0x80; /* subtype: filecontainer loaded in RAM */
+const int TYPE_JVC_HEADER       =
+    0x100; /* subtype: DSK filecontainer with JVC header */
 
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
