@@ -51,10 +51,10 @@ if [ "x$vsversion" = "x" ] || [ "x$vstype" = "x" ]; then
 fi
 vsbasedir=$( get_vsbasedir $vsversion )
 
-VS160COMNTOOLS="$vsbasedir\\$vsversion\\$vstype\\Common7\\Tools\\"
-if [ ! -d "$VS160COMNTOOLS" ]; then
+VSMSBUILDDIR="$vsbasedir\\$vsversion\\$vstype\\MSBuild\\Current\\Bin"
+if [ ! -d "$VSMSBUILDDIR" ]; then
     echo "**** Microsoft Visual Studio path not found:"
-    echo "**** $VS160COMNTOOLS"
+    echo "**** $VSMSBUILDDIR"
     echo "**** Check Your Microsoft Visual Studio installation."
     exit 1
 fi
@@ -69,22 +69,9 @@ if [ ! -f $propsfile ]; then
     exit 1
 fi
 QTDIR=`sed -ne "s/<QTDIR>\(.*\)<\/QTDIR>/\1/p" $propsfile`
-QTDIR=$( as_mingw_path $QTDIR)
+QTDIR=$( as_mingw_path "$QTDIR")
 qtversion=`echo $QTDIR | sed -e "s/.*\([56]\.[0-9]\+\.[0-9]\+\)$/\1/"`
 qtmaversion=`echo $qtversion | sed -e "s/\([56]\).*/\1/"`
-
-create_rebuild_script() {
-    echo \@echo off >$2
-    echo set DevEnvDir=$VS160COMNTOOLS\..\\IDE >>$2
-    echo echo ... rebuild Release Win32 >>$2
-    echo \"\%DevEnvDir%\\devenv.exe\" $1 /Rebuild \"Release\|Win32\" >>$2
-    echo echo ... rebuild Release x64 >>$2
-    echo \"\%DevEnvDir%\\devenv.exe\" $1 /Rebuild \"Release\|x64\" >>$2
-    echo echo ... rebuild Debug Win32 >>$2
-    echo \"\%DevEnvDir%\\devenv.exe\" $1 /Rebuild \"Debug\|Win32\" >>$2
-    echo echo ... rebuild Debug x64 >>$2
-    echo \"\%DevEnvDir%\\devenv.exe\" $1 /Rebuild \"Debug\|x64\" >>$2
-}
 
 temp=$QTDIR/x64/bin
 if [ ! -d $temp ]; then
@@ -97,53 +84,57 @@ fi
 echo "Using Qt V${qtversion}"
 
 cd ../..
-# Create and execute a batch file to build all four configurations
-create_rebuild_script flexemu.sln rebuild.bat
-echo build flexemu...
-$COMSPEC //C rebuild.bat
+vsmsbuilddir=$( as_mingw_path "$VSMSBUILDDIR")
 
-# check existence of result files and copy them to corresponding
-# flexemu build directory
+# Rebuild flexemu solution for all platforms and configurations.
+# Check existence of result files and copy them to corresponding
+# flexemu build directory.
 
-echo copy libraries...
 if [ ! -d bin ]; then mkdir bin; fi
 for platform in Win32 x64
 do
     if [ ! -d bin/$platform ]; then mkdir bin/$platform; fi
     for configuration in Debug Release
     do
-        postfix=
-        if [ "x$configuration" = "xDebug" ]; then
-            postfix=d
+        logfile=Build-flexemu-${platform}-${configuration}.log
+        echo ==== Rebuild flexemu solution $configuration $platform ...
+        echo For details see log-file "$logfile".
+        "$vsmsbuilddir/MSBuild.exe" flexemu.sln -t:Rebuild -m -v:quiet -clp:Summary -fl -flp:Verbosity=minimal\;LogFile=$logfile -property:Configuration=${configuration}\;Platform=${platform}
+        if [[ $? == 0 ]]; then
+            echo ==== Copy libraries ...
+            postfix=
+            if [ "x$configuration" = "xDebug" ]; then
+                postfix=d
+            fi
+            targetdir=bin/$platform/$configuration
+            if [ ! -d $targetdir ]; then
+                mkdir $targetdir
+            fi
+            if [ "$qtmaversion" = "5" ]; then
+                qtlibs="Qt5Core Qt5Gui Qt5Widgets"
+            else
+                qtlibs="Qt6Core Qt6Gui Qt6Widgets"
+            fi
+            for file in $qtlibs
+            do
+                cp -f ${QTDIR}/${platform}/bin/${file}${postfix}.dll $targetdir
+            done
+            if [ ! -d $targetdir/platforms ]; then
+                mkdir $targetdir/platforms
+            fi
+            for file in qdirect2d qminimal qoffscreen qwindows
+            do
+                cp -f ${QTDIR}/${platform}/plugins/platforms/${file}${postfix}.dll $targetdir/platforms
+            done
+            if [ ! -d $targetdir/styles ]; then
+                mkdir $targetdir/styles
+            fi
+            for file in qwindowsvistastyle
+            do
+                cp -f ${QTDIR}/${platform}/plugins/styles/${file}${postfix}.dll $targetdir/styles
+            done
+            cp -f src/flexemu.conf $targetdir
         fi
-        targetdir=bin/$platform/$configuration
-        if [ ! -d $targetdir ]; then
-            mkdir $targetdir
-        fi
-        if [ "$qtmaversion" = "5" ]; then
-            qtlibs="Qt5Core Qt5Gui Qt5Widgets"
-        else
-            qtlibs="Qt6Core Qt6Gui Qt6Widgets"
-        fi
-        for file in $qtlibs
-        do
-            cp -f ${QTDIR}/${platform}/bin/${file}${postfix}.dll $targetdir
-        done
-        if [ ! -d $targetdir/platforms ]; then
-            mkdir $targetdir/platforms
-        fi
-        for file in qdirect2d qminimal qoffscreen qwindows
-        do
-            cp -f ${QTDIR}/${platform}/plugins/platforms/${file}${postfix}.dll $targetdir/platforms
-        done
-        if [ ! -d $targetdir/styles ]; then
-            mkdir $targetdir/styles
-        fi
-        for file in qwindowsvistastyle
-        do
-            cp -f ${QTDIR}/${platform}/plugins/styles/${file}${postfix}.dll $targetdir/styles
-        done
-        cp -f src/flexemu.conf $targetdir
     done
 done
 cd build/windows
