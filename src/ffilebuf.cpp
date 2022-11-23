@@ -278,9 +278,16 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
         {
             if (spaces)
             {
-                // Expand space compression.
-                fct(0x09);
-                fct(static_cast<Byte>(spaces));
+                if (spaces == 1)
+                {
+                    fct(' ');
+                }
+                else
+                {
+                    // Expand space compression.
+                    fct(0x09);
+                    fct(static_cast<Byte>(spaces));
+                }
                 spaces = 0;
             }
 
