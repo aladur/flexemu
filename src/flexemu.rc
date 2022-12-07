@@ -5,8 +5,8 @@
 FLEXEMU_ICON          ICON    "bitmaps/FLEXEMU.ICO"
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,11,0,0
- PRODUCTVERSION 3,11,0,0
+ FILEVERSION 3,12,0,0
+ PRODUCTVERSION 3,12,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -23,12 +23,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "\0"
             VALUE "FileDescription", "Flexemu - an MC6809 emulator running FLEX\0"
-            VALUE "FileVersion", "3,11,0,0\0"
+            VALUE "FileVersion", "3,12,0,0\0"
             VALUE "InternalName", "Flexemu.exe\0"
             VALUE "LegalCopyright", "Copyright © 1997-2022 W. Schwotzer\0"
             VALUE "OriginalFilename", "FLEXEMU.EXE\0"
             VALUE "ProductName", "Flexemu\0"
-            VALUE "ProductVersion", "3,11,0,0\0"
+            VALUE "ProductVersion", "3,12,0,0\0"
         END
     END
     BLOCK "VarFileInfo"
