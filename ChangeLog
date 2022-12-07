@@ -763,7 +763,53 @@ Code Maintenance:
 	o flexemu: Avoid throwing exceptions in Qt events
 	o Remove compiler warnings
 
-V3.11 (not yet published)
+V3.11 (20221207)
 New Features:
+	o Support DSK container with JVC file header
+	o flexplorer: New menu item to inject file(s)
+	o flexplorer: New menu item to extract file(s)
+	o Windows installer: Update PATH environment variable
+	o Documentation: Add debian package dependency
+	o dsktool: Support regex when deleting files (-r)
+	o dsktool: Add command (-L) to list with regex
+	o dsktool: Print month as uppercase.
+	o dsktool: By default use case insensitive regex (Command -C and -x)
+	o Documentation: Add Tab name in Flexemu Preferences table
+	o flexemu Preferences Dialog: Add 'Terminal' tab
+	o Linux terminal mode: Optionally ignore ESC or NUL
+	o flexemu: Optionally log CPU register values.
+	o Documentation: Add logging of cycle count.
 Bug Fixes:
+	o Bugfix converting to FLEX text file
+	o Also detect ASCII FF as a FLEX text file
+	o Bugfix flexplorer: Only activate Paste menu if container opened
+	o Bugfix flexplorer: Avoid always using default options
+	o flexemu: Support opening with a larger screen size
+	o flexemu: Support larger screen sizes
+	o Bugfix flexemu: Avoid memory leak.
 Code Maintenance:
+	o Windows installer: Use newest Qt5 open-source libraries V5.15.7
+	o Windows: Improve build script, use MSBuild (instead of devenv)
+	o flexplorer: Introduce class containing all options.
+	o Windows: Improve build script (avoid internal compiler errors)
+	o Windows: Improve build script (print Qt version, user guidance)
+	o Distribute sOptions always by const reference
+	o Use sOptions always const
+	o autotools: Update due to updated files
+	o Windows: Improve build scripts
+	o Windows: Bugfix build script (avoid ign. arguments after -v)
+	o flexemu: Avoid using obsolete QDesktopWidget (Qt6 compatibility)
+	o flexemu: Support QWidget::enterEvent in Qt6
+	o flexemu: Support new QKeySequence syntax for Qt6
+	o flexplorer: Support Qt6 QRegularExpression
+	o Windows: Add additional options to project (Qt6 compatibility)
+	o Remove superfluous forward class declaration (Qt6 compatibility)
+	o Windows: Fix conformance issue
+	o Avoid compile error on Qt6 (std::min needs identical types)
+	o flexemu: Avoid using QString::midRef (Qt6 compatibility)
+	o Include what you use
+	o Windows: Fix conformance issue
+	o flexemu: Avoid compile error on Windows
+	o clang: Avoid warning about unsupported warning supression
+	o Remove unused private member variable
+	o Add 'override' where needed.
