@@ -37,9 +37,12 @@
 #include <QPaintEvent>
 #include <QResizeEvent>
 #include <QApplication>
+#include <QGuiApplication>
 #include "warnon.h"
 #ifdef UNIX
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include <QX11Info>
+#endif
 #include <X11/XKBlib.h>
 #endif
 
@@ -450,7 +453,17 @@ bool E2Screen::IsNumLockOn() const
     return (0x0001U & GetKeyState(VK_NUMLOCK)) != 0U;
 #else
 #ifdef UNIX
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
+    auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
+    Display *display = x11App->display();
+#else
+#error Only Qt6 versions 6.2.0 or higher are supported
+#endif
+#else
     Display *display = QX11Info::display();
+#endif
+
     unsigned int state;
 
     if (Success != XkbGetIndicatorState(display, XkbUseCoreKbd, &state))
@@ -777,7 +790,16 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
 void E2Screen::InitializeNumLockIndicatorMask()
 {
 #ifdef UNIX
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
+    auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
+    Display *display = x11App->display();
+#else
+#error Only Qt6 versions 6.2.0 or higher are supported
+#endif
+#else
     Display *display = QX11Info::display();
+#endif
     XkbDescRec* kbDesc = XkbAllocKeyboard();
     int index;
 
