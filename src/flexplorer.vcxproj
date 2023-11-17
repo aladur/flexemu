@@ -75,22 +75,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\flexdisk\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\flexdisk\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\flexdisk\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\flexdisk\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,7 +115,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -142,7 +142,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -172,7 +172,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -202,7 +202,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flex.lib;kernel32.lib;advapi32.lib;shell32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>

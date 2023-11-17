@@ -3,12 +3,20 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <QTDIR>QTDIRPLACEHOLDER</QTDIR>
+    <QTVERSION>QTVERSIONPLACEHOLDER</QTVERSION>
+    <QTMAJOR>QTMAJORPLACEHOLDER</QTMAJOR>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />
   <ItemGroup>
     <BuildMacro Include="QTDIR">
       <Value>$(QTDIR)</Value>
+    </BuildMacro>
+    <BuildMacro Include="QTVERSION">
+      <Value>$(QTVERSION)</Value>
+    </BuildMacro>
+    <BuildMacro Include="QTMAJOR">
+      <Value>$(QTMAJOR)</Value>
     </BuildMacro>
   </ItemGroup>
 </Project>

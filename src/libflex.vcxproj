@@ -76,25 +76,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\libflex\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>flexd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\libflex\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>flex</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\libflex\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>flexd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\Qt$(QTVERSION)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>temp\libflex\$(Platform)\$(Configuration)\</IntDir>
     <TargetName>flex</TargetName>
   </PropertyGroup>

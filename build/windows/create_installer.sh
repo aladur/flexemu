@@ -22,6 +22,17 @@ do
     shift
 done
 
+# Version of Qt build.
+# Parse it from the *.props file.
+propsfile="../../src/msvcQtPath.props"
+if [ ! -f $propsfile ]; then
+    echo "**** File ${propsfile} does not exist."
+    echo "**** First call download_and_rebuild_libs.sh to create Qt libraries!"
+    exit 1
+fi
+qtversion=`sed -ne "s/ *<QTVERSION>\(.*\)<\/QTVERSION>/\1/p" $propsfile`
+qtmaversion=`echo $qtversion | sed -e "s/\([56]\).*/\1/"`
+
 # curl is needed to execute this script.
 curlpath=`which curl 2>/dev/null`
 if [ "x$curlpath" = "x" ]; then
@@ -77,4 +88,4 @@ done
 # Calling NSIS to create the windows installer executable.
 # makensis enters the installer directory so installer is
 # the current working directory when executing Flexemu.nsi.
-makensis installer\\Flexemu.nsi
+makensis //DQTVERSION=$qtversion //DQTMAVERSION=$qtmaversion installer\\Flexemu.nsi

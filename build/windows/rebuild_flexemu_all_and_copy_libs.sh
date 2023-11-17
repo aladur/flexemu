@@ -91,7 +91,13 @@ vsmsbuilddir=$( as_mingw_path "$VSMSBUILDDIR")
 # flexemu build directory.
 
 if [ ! -d bin ]; then mkdir bin; fi
-for platform in Win32 x64
+if [ ! -d bin/Qt${qtversion} ]; then mkdir bin/Qt${qtversion}; fi
+if [ "$qtmaversion" = "5" ]; then
+    platforms="Win32 x64"
+else
+    platforms="x64"
+fi
+for platform in $platforms
 do
     if [ ! -d bin/$platform ]; then mkdir bin/$platform; fi
     for configuration in Debug Release
@@ -106,7 +112,11 @@ do
             if [ "x$configuration" = "xDebug" ]; then
                 postfix=d
             fi
-            targetdir=bin/$platform/$configuration
+            targetdir=bin/Qt${qtversion}/$platform
+            if [ ! -d $targetdir ]; then
+                mkdir $targetdir
+            fi
+            targetdir=${targetdir}/$configuration
             if [ ! -d $targetdir ]; then
                 mkdir $targetdir
             fi

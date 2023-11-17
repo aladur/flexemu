@@ -21,6 +21,10 @@
 !define ERROR_ALREADY_EXISTS 183
 !define ARP "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
 !define BASEDIR    "..\..\.."
+; The variables QTVERSION and QTMAVERSION have to be set as command line parameters
+; !define QTVERSION "0.0.0"   ; Qt version
+; !define QTMAVERSION "0"     ; Qt Major version
+!define QTBASEDIR "Qt${QTVERSION}"
 
 CRCCheck on
 SetDateSave on
@@ -158,23 +162,25 @@ Section "${APPNAME}" BinaryFiles
   SetOutPath $INSTDIR ; Set output path to the installation directory.
   ; Add files to be extracted to the current $OUTDIR path
 ${If} $Arch == "x64"
-  File /a "${BASEDIR}\bin\x64\Release\flexemu.exe"
-  File /a "${BASEDIR}\bin\x64\Release\flexplorer.exe"
-  File /a "${BASEDIR}\bin\x64\Release\mdcrtool.exe"
-  File /a "${BASEDIR}\bin\x64\Release\dsktool.exe"
-  File /a "${BASEDIR}\bin\x64\Release\flex2hex.exe"
-  File /a "${BASEDIR}\bin\x64\Release\Qt5Core.dll"
-  File /a "${BASEDIR}\bin\x64\Release\Qt5Gui.dll"
-  File /a "${BASEDIR}\bin\x64\Release\Qt5Widgets.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\flexemu.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\flexplorer.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\mdcrtool.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\dsktool.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\flex2hex.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Core.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Gui.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Widgets.dll"
 ${Else}
-  File /a "${BASEDIR}\bin\Win32\Release\flexemu.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\flexplorer.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\mdcrtool.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\dsktool.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\flex2hex.exe"
-  File /a "${BASEDIR}\bin\Win32\Release\Qt5Core.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\Qt5Gui.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\Qt5Widgets.dll"
+!if ${QTMAVERSION} == 5
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\flexemu.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\flexplorer.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\mdcrtool.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\dsktool.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\flex2hex.exe"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Core.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Gui.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Widgets.dll"
+!endif
 ${EndIf}
   File /a "${BASEDIR}\src\boot"
   File /a "${BASEDIR}\src\flexemu.conf"
@@ -183,21 +189,25 @@ ${EndIf}
   File /a /oname=Readme.txt "${BASEDIR}\README"
   SetOutPath $INSTDIR\platforms
 ${If} $Arch == "x64"
-  File /a "${BASEDIR}\bin\x64\Release\platforms\qdirect2d.dll"
-  File /a "${BASEDIR}\bin\x64\Release\platforms\qminimal.dll"
-  File /a "${BASEDIR}\bin\x64\Release\platforms\qoffscreen.dll"
-  File /a "${BASEDIR}\bin\x64\Release\platforms\qwindows.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\platforms\qdirect2d.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\platforms\qminimal.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\platforms\qoffscreen.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\platforms\qwindows.dll"
 ${Else}
-  File /a "${BASEDIR}\bin\Win32\Release\platforms\qdirect2d.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\platforms\qminimal.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\platforms\qoffscreen.dll"
-  File /a "${BASEDIR}\bin\Win32\Release\platforms\qwindows.dll"
+!if ${QTMAVERSION} == 5
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\platforms\qdirect2d.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\platforms\qminimal.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\platforms\qoffscreen.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\platforms\qwindows.dll"
+!endif
 ${EndIf}
   SetOutPath $INSTDIR\styles
 ${If} $Arch == "x64"
-  File /a "${BASEDIR}\bin\x64\Release\styles\qwindowsvistastyle.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\styles\qwindowsvistastyle.dll"
 ${Else}
-  File /a "${BASEDIR}\bin\Win32\Release\styles\qwindowsvistastyle.dll"
+!if ${QTMAVERSION} == 5
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\styles\qwindowsvistastyle.dll"
+!endif
 ${EndIf}
 SectionEnd
 

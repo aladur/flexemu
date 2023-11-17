@@ -501,6 +501,10 @@ cp -f ${file}.in $file
 path=$( as_doublebslash_windows_path $absqttgtdir )
 expr="s/QTDIRPLACEHOLDER/$path/"
 sed -i -e $expr $file
+expr="s/QTVERSIONPLACEHOLDER/$qtversion/"
+sed -i -e $expr $file
+expr="s/QTMAJORPLACEHOLDER/$qtmaversion/"
+sed -i -e $expr $file
 
 echo ""
 echo "Finished successfully. Next step is to call"
