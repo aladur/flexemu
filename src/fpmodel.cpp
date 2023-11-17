@@ -632,6 +632,21 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
     {
         case Qt::AscendingOrder:
             compare = [&column](const RowType &lhs, const RowType &rhs){
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+                if (lhs[column].typeId() == QMetaType::QString)
+                {
+                    return lhs[column].toString() < rhs[column].toString();
+                }
+                else if (lhs[column].typeId() == QMetaType::QDateTime)
+                {
+                    return lhs[column].toDateTime() < rhs[column].toDateTime();
+                }
+                else if (lhs[column].typeId() == QMetaType::Int)
+                {
+                    return lhs[column].toInt() < rhs[column].toInt();
+                }
+                else
+#else
                 if (lhs[column].type() == QVariant::String)
                 {
                     return lhs[column].toString() < rhs[column].toString();
@@ -645,6 +660,7 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                     return lhs[column].toInt() < rhs[column].toInt();
                 }
                 else
+#endif
                 {
                     auto msg = std::string(
                         "FlexplorerTableModel::sort(): Unexpected type '");
@@ -657,6 +673,21 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 
         case Qt::DescendingOrder:
             compare = [&column](const RowType &lhs, const RowType &rhs){
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+                if (lhs[column].typeId() == QMetaType::QString)
+                {
+                    return lhs[column].toString() > rhs[column].toString();
+                }
+                else if (lhs[column].typeId() == QMetaType::QDateTime)
+                {
+                    return lhs[column].toDateTime() > rhs[column].toDateTime();
+                }
+                else if (lhs[column].typeId() == QMetaType::Int)
+                {
+                    return lhs[column].toInt() > rhs[column].toInt();
+                }
+                else
+#else
                 if (lhs[column].type() == QVariant::String)
                 {
                     return lhs[column].toString() > rhs[column].toString();
@@ -670,6 +701,7 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                     return lhs[column].toInt() > rhs[column].toInt();
                 }
                 else
+#endif
                 {
                     auto msg = std::string(
                         "FlexplorerTableModel::sort(): Unexpected type '");
