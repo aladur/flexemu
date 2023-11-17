@@ -268,8 +268,14 @@ void E2Screen::paintEvent(QPaintEvent *)
 
 void E2Screen::SetMouseCoordinatesAndButtons(QMouseEvent *event)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    auto pos = event->position();
+    mouseX = static_cast<int>(pos.x());
+    mouseY = static_cast<int>(pos.y());
+#else
     mouseX = event->x();
     mouseY = event->y();
+#endif
     mouseButtonState = ConvertMouseButtonState(event->buttons());
 }
 
