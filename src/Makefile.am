@@ -66,7 +66,7 @@ EXTRA_PROGRAMS = \
 noinst_PROGRAMS = test
 
 AM_CXXFLAGS = \
-	--std=c++14 \
+	--std=c++17 \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 

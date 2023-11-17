@@ -688,7 +688,7 @@ mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 noinst_LIBRARIES = libflex.a
 AM_CXXFLAGS = \
-	--std=c++14 \
+	--std=c++17 \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\"
 
