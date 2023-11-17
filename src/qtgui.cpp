@@ -866,11 +866,7 @@ void QtGui::CreateFileActions(QLayout& layout)
     const auto exitIcon = QIcon(":/resource/exit.png");
     exitAction = fileMenu->addAction(exitIcon, tr("E&xit"));
     connect(exitAction, &QAction::triggered, this, &QtGui::OnExit);
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-    exitAction->setShortcut(QKeySequence(Qt::SHIFT | Qt::CTRL | Qt::Key_Q));
-#else
-    exitAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_Q));
-#endif
+    exitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+Q")));
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
 }
@@ -890,11 +886,7 @@ void QtGui::CreateEditActions(QLayout& layout)
     SetPreferencesStatusText(isRestartNeeded);
     connect(preferencesAction, &QAction::triggered,
             this, &QtGui::OnPreferences);
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-    const auto keySequence = QKeySequence(Qt::SHIFT | Qt::CTRL | Qt::Key_P);
-#else
-    const auto keySequence = QKeySequence(Qt::SHIFT + Qt::CTRL + Qt::Key_P);
-#endif
+    const auto keySequence = QKeySequence(tr("Shift+Ctrl+P"));
     preferencesAction->setShortcut(keySequence);
     editToolBar->addAction(preferencesAction);
 }
@@ -963,7 +955,7 @@ void QtGui::CreateViewActions(QLayout& layout)
     smoothAction = viewMenu->addAction(tr("&Smooth Display"));
     connect(smoothAction, &QAction::triggered, this, &QtGui::OnSmoothDisplay);
     smoothAction->setCheckable(true);
-    smoothAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F12));
+    smoothAction->setShortcut(QKeySequence(tr("Ctrl+F12")));
     smoothAction->setStatusTip(tr("Enter or exit smooth display mode"));
     viewMenu->addAction(smoothAction);
 }

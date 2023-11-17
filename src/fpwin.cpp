@@ -630,7 +630,7 @@ void FLEXplorer::CreateFileActions()
     const auto openDirIcon = QIcon(":/resource/open_dir.png");
     openDirectoryAction = new QAction(openDirIcon, tr("Open &Directory..."),
                                       this);
-    openDirectoryAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
+    openDirectoryAction->setShortcut(QKeySequence(tr("Ctrl+D")));
     openDirectoryAction->setStatusTip(
             tr("Open a directory as FLEX file container"));
     connect(openDirectoryAction, &QAction::triggered,
@@ -681,7 +681,7 @@ void FLEXplorer::CreateEditActions()
     const auto injectIcon = QIcon(":/resource/inject.png");
     injectAction = new QAction(injectIcon, tr("&Inject..."), this);
     injectAction->setStatusTip(tr("Inject selected files"));
-    injectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
+    injectAction->setShortcut(QKeySequence(tr("Ctrl+I")));
     connect(injectAction, &QAction::triggered, this,
             &FLEXplorer::InjectFiles);
     editMenu->addAction(injectAction);
@@ -690,7 +690,7 @@ void FLEXplorer::CreateEditActions()
     const auto extractIcon = QIcon(":/resource/extract.png");
     extractAction = new QAction(extractIcon, tr("E&xtract..."), this);
     extractAction->setStatusTip(tr("Extract selected files"));
-    extractAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_X));
+    extractAction->setShortcut(QKeySequence(tr("Ctrl+X")));
     connect(extractAction, &QAction::triggered, this,
             &FLEXplorer::ExtractSelected);
     editMenu->addAction(extractAction);
@@ -709,7 +709,7 @@ void FLEXplorer::CreateEditActions()
     const auto deselectAllIcon = QIcon(":/resource/deselectall.png");
     deselectAllAction = new QAction(deselectAllIcon, tr("D&elect All"), this);
     deselectAllAction->setStatusTip(tr("Deselect all files"));
-    deselectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
+    deselectAllAction->setShortcut(QKeySequence(tr("Ctrl+E")));
     connect(deselectAllAction, &QAction::triggered, this,
             &FLEXplorer::DeselectAll);
     editMenu->addAction(deselectAllAction);
@@ -753,7 +753,7 @@ void FLEXplorer::CreateContainerActions()
 
     const auto infoIcon = QIcon(":/resource/info.png");
     infoAction = new QAction(infoIcon, tr("&Info..."), this);
-    infoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
+    infoAction->setShortcut(QKeySequence(tr("Ctrl+I")));
     infoAction->setStatusTip(tr("Show container properties"));
     connect(infoAction, &QAction::triggered, this, &FLEXplorer::Info);
     containerMenu->addAction(infoAction);
