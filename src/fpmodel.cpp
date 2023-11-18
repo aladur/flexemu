@@ -446,7 +446,8 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
 
 int FlexplorerTableModel::rowCount(const QModelIndex &) const
 {
-    return rows.size();
+    // This is an override method with a defined return type.
+    return static_cast<int>(rows.size());
 }
 
 int FlexplorerTableModel::columnCount(const QModelIndex &) const
