@@ -276,7 +276,7 @@ QWidget *FlexAttributesDelegate::createEditor(QWidget *parent,
     auto *completer = new QCompleter(attributeStrings, parent);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-    completer->setMaxVisibleItems(attributeStrings.size());
+    completer->setMaxVisibleItems(static_cast<int>(attributeStrings.size()));
     auto *editor = new QLineEdit(parent);
 
     editor->setValidator(validator);
