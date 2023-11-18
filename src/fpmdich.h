@@ -67,11 +67,11 @@ public:
     int GetContainerType() const;
     void SelectAll();
     void DeselectAll();
-    int FindFiles(const QString &pattern);
-    int DeleteSelected();
-    int InjectFiles(const QStringList &filePaths);
-    int ExtractSelected(const QString &targetDirectory);
-    int ViewSelected();
+    QVector<int>::size_type FindFiles(const QString &pattern);
+    QVector<int>::size_type DeleteSelected();
+    QVector<int>::size_type InjectFiles(const QStringList &filePaths);
+    QVector<int>::size_type ExtractSelected(const QString &targetDirectory);
+    QVector<int>::size_type ViewSelected();
     QVector<QString> GetSelectedFilenames() const;
     QString GetSupportedAttributes() const;
     QVector<Byte> GetSelectedAttributes() const;

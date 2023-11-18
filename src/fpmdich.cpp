@@ -144,7 +144,7 @@ void FlexplorerMdiChild::DeselectAll()
     selectedFilesByteSize = 0;
 }
 
-int FlexplorerMdiChild::FindFiles(const QString &pattern)
+QVector<int>::size_type FlexplorerMdiChild::FindFiles(const QString &pattern)
 {
     assert(model);
     auto rowIndices = model->FindFiles(pattern);
@@ -153,7 +153,7 @@ int FlexplorerMdiChild::FindFiles(const QString &pattern)
     return rowIndices.count();
 }
 
-int FlexplorerMdiChild::DeleteSelected()
+QVector<int>::size_type FlexplorerMdiChild::DeleteSelected()
 {
     auto selectedRows = selectionModel()->selectedRows();
     int count = 0;
@@ -186,7 +186,8 @@ int FlexplorerMdiChild::DeleteSelected()
     return count;
 }
 
-int FlexplorerMdiChild::InjectFiles(const QStringList &filePaths)
+QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
+                        const QStringList &filePaths)
 {
     QVector<int> rowIndices;
 
@@ -282,10 +283,11 @@ int FlexplorerMdiChild::InjectFiles(const QStringList &filePaths)
     return rowIndices.count();
 }
 
-int FlexplorerMdiChild::ExtractSelected(const QString &targetDirectory)
+QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
+                        const QString &targetDirectory)
 {
     auto selectedRows = selectionModel()->selectedRows();
-    int count = 0;
+    QVector<int>::size_type count = 0;
 
     for (auto &index : selectedRows)
     {
@@ -380,10 +382,10 @@ int FlexplorerMdiChild::ExtractSelected(const QString &targetDirectory)
     return count;
 }
 
-int FlexplorerMdiChild::ViewSelected()
+QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
 {
     auto selectedRows = selectionModel()->selectedRows();
-    int count = 0;
+    QVector<int>::size_type count = 0;
 
     for (auto &index : selectedRows)
     {
