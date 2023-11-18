@@ -54,15 +54,12 @@ class FlexContainerInfo;
 // File attributes are used in struct s_dir_entry in field file_attr.
 // All other bits of file_attr should remain 0.
 // (WRITE_PROTECT also used for container attribute)
-enum
-{
-    WRITE_PROTECT   = 0x80,
-    DELETE_PROTECT  = 0x40,
-    READ_PROTECT    = 0x20,
-    CATALOG_PROTECT = 0x10,
-    ALL_PROTECT     = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
-                      CATALOG_PROTECT
-};
+const Byte WRITE_PROTECT = 0x80;
+const Byte DELETE_PROTECT = 0x40;
+const Byte READ_PROTECT = 0x20;
+const Byte CATALOG_PROTECT = 0x10;
+const Byte ALL_PROTECT = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
+                         CATALOG_PROTECT;
 
 // Magic number to mark a file as random access file. This byte is stored
 // in s_dir_entry in field sector_map.
