@@ -1760,7 +1760,8 @@ ColorTable QtGui::CreateColorTable()
 
     for (int i = 0; i < colorTable.size(); ++i)
     {
-        int idx = options.isInverse ? colorTable.size() - i - 1 : i;
+        int idx = options.isInverse ?
+                  static_cast<int>(colorTable.size()) - i - 1 : i;
         colorTable[idx] = GetTheColor(i);
     }
 
@@ -1779,7 +1780,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     // Size of BMP stream:
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data
     DWord dataOffset = sizeof(sBITMAPFILEHEADER) + sizeof(sBITMAPINFOHEADER) +
-                     (colTable.size() * sizeof(sRGBQUAD));
+                     (static_cast<DWORD>(colTable.size()) * sizeof(sRGBQUAD));
     DWord destSize = dataOffset + (height * WINDOWWIDTH);
 
     dest.clear();
@@ -1805,12 +1806,14 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     infoHeader.imageSize = toLittleEndian<DWord>(height * WINDOWWIDTH);
     infoHeader.xPixelsPerMeter = 0;
     infoHeader.yPixelsPerMeter = 0;
-    infoHeader.colorsUsed = toLittleEndian<DWord>(colTable.size());
-    infoHeader.colorsImportant = toLittleEndian<DWord>(colTable.size());
+    infoHeader.colorsUsed =
+        toLittleEndian<DWord>(static_cast<DWORD>(colTable.size()));
+    infoHeader.colorsImportant =
+        toLittleEndian<DWord>(static_cast<DWORD>(colTable.size()));
     memcpy(pData, &infoHeader, sizeof(infoHeader));
     pData += sizeof(infoHeader);
 
-    assert(colTable.size() <= static_cast<int>(MAX_COLORS));
+    assert(colTable.size() <= static_cast<ColorTable::size_type>(MAX_COLORS));
 
     const auto size = static_cast<int>(sizeof(sRGBQUAD)) *
                       colTable.size();
