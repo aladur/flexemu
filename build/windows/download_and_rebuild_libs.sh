@@ -334,7 +334,10 @@ if [ "$2" = "5" ]; then
 else
     echo "c++17" >>$3
 fi
+if [ "$2" = "5" ]; then
+    # Option to use multiple cores is only supported on Qt5
     echo "-mp" >>$3
+fi
     echo "-confirm-license" >>$3
     echo "-opensource" >>$3
 }
