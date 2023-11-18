@@ -80,7 +80,14 @@ class QComboBox;
 struct sOptions;
 
 using ColorTable = QVector<QRgb>;
+
+# Cache containing color tables identified by a hash value.
+# The hash value is the key which depends on the Qt version.
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+using ColorTablesCache = QHash<std::size_t, QByteArray>;
+#else
 using ColorTablesCache = QHash<uint, QByteArray>;
+#endif
 
 class QtGui : public QWidget, public AbstractGui
 {
