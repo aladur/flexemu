@@ -1780,7 +1780,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     // Size of BMP stream:
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data
     DWord dataOffset = sizeof(sBITMAPFILEHEADER) + sizeof(sBITMAPINFOHEADER) +
-                     (static_cast<DWORD>(colTable.size()) * sizeof(sRGBQUAD));
+                     (static_cast<DWord>(colTable.size()) * sizeof(sRGBQUAD));
     DWord destSize = dataOffset + (height * WINDOWWIDTH);
 
     dest.clear();
@@ -1807,9 +1807,9 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     infoHeader.xPixelsPerMeter = 0;
     infoHeader.yPixelsPerMeter = 0;
     infoHeader.colorsUsed =
-        toLittleEndian<DWord>(static_cast<DWORD>(colTable.size()));
+        toLittleEndian<DWord>(static_cast<DWord>(colTable.size()));
     infoHeader.colorsImportant =
-        toLittleEndian<DWord>(static_cast<DWORD>(colTable.size()));
+        toLittleEndian<DWord>(static_cast<DWord>(colTable.size()));
     memcpy(pData, &infoHeader, sizeof(infoHeader));
     pData += sizeof(infoHeader);
 
