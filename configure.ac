@@ -39,6 +39,7 @@ AC_CHECK_HEADERS(fcntl.h sys/ioctl.h termios.h)
 AC_CHECK_HEADERS(sys/statvfs.h sys/mount.h)
 AC_CHECK_HEADER(windows.h, AC_DEFINE(WIN32,1,[1 if Windows headers are available]))
 AC_CHECK_HEADER(linux/joystick.h, AC_DEFINE(LINUX_JOYSTICK_IS_PRESENT,1,[1 if Linux joystick headers are available]))
+AC_CHECK_HEADER(wayland-client.h, AC_DEFINE(HAVE_WAYLAND,1,[1 if wayland client is available]))
 AC_CHECK_FUNCS(gettid)
 
 dnl Checks for Win32 libraries.
@@ -98,6 +99,7 @@ AC_CHECK_DECLS([setenv, unsetenv])
 dnl Checks for library functions
 AC_FUNC_VPRINTF
 AC_PROG_GCC_TRADITIONAL
+PKG_CHECK_MODULES([WAYLAND], [wayland-client])
 
 dnl Check for system services
 case $host_os in

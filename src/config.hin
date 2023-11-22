@@ -92,6 +92,9 @@
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
 
+/* 1 if wayland client is available */
+#undef HAVE_WAYLAND
+
 /* 1 if Linux joystick headers are available */
 #undef LINUX_JOYSTICK_IS_PRESENT
 
