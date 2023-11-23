@@ -459,29 +459,43 @@ bool E2Screen::IsNumLockOn() const
     return (0x0001U & GetKeyState(VK_NUMLOCK)) != 0U;
 #else
 #ifdef UNIX
+    Display *display = nullptr;
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
     auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
-    Display *display = x11App->display();
+    if (x11App != nullptr)
+    {
+        display = x11App->display();
+    }
 #else
 #error Only Qt6 versions 6.2.0 or higher are supported
 #endif
 #else
-    Display *display = QX11Info::display();
+    display = QX11Info::display();
 #endif
 
-    unsigned int state;
-
-    if (Success != XkbGetIndicatorState(display, XkbUseCoreKbd, &state))
+    if (display != nullptr)
     {
-        return false;
+        unsigned int state;
+
+        if (Success != XkbGetIndicatorState(display, XkbUseCoreKbd, &state))
+        {
+            return false;
+        }
+
+        return (state & numLockIndicatorMask) != 0;
     }
 
-    return (state & numLockIndicatorMask) != 0;
+#ifdef __LINUX
+    // If Linux kernel present read Num Lock LED status from /sys filesystem
+    auto status = sysInfo.Read(BLinuxSysInfoType::LED, "numlock", "LEDnumlock");
+    return std::stoi(status) != 0;
+#endif
 #else
 # error Platform not supported
 #endif
 #endif
+    return false;
 }
 
 int E2Screen::TranslateToAscii(QKeyEvent *event)
@@ -795,41 +809,54 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
 
 void E2Screen::InitializeNumLockIndicatorMask()
 {
+    Display *display = nullptr;
+
+    if (qApp->platformName() == "xcb")
+    {
 #ifdef UNIX
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
-    auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
-    Display *display = x11App->display();
+        auto *x11App =
+            qApp->nativeInterface<QNativeInterface::QX11Application>();
+        if (x11App != nullptr)
+        {
+            display = x11App->display();
+        }
 #else
 #error Only Qt6 versions 6.2.0 or higher are supported
 #endif
 #else
-    Display *display = QX11Info::display();
+    display = QX11Info::display();
 #endif
-    XkbDescRec* kbDesc = XkbAllocKeyboard();
-    int index;
-
-    if (display == nullptr || kbDesc == nullptr ||
-        (Success != XkbGetNames(display, XkbIndicatorNamesMask, kbDesc)))
-    {
-        return;
     }
 
-    for (index = 0; index < XkbNumIndicators; ++index)
+    if (display != nullptr)
     {
-        if (kbDesc->names->indicators[index])
+        XkbDescRec* kbDesc = XkbAllocKeyboard();
+        int index;
+
+        if (display == nullptr || kbDesc == nullptr ||
+            (Success != XkbGetNames(display, XkbIndicatorNamesMask, kbDesc)))
         {
-           char *name = XGetAtomName(display, kbDesc->names->indicators[index]);
-           if (0 == strcmp(name, "Num Lock"))
-           {
-               numLockIndicatorMask = 1 << index;
-               break;
-           }
-           XFree(name);
+            return;
         }
-    }
 
-    XkbFreeKeyboard(kbDesc, 0, True);
+        for (index = 0; index < XkbNumIndicators; ++index)
+        {
+            if (kbDesc->names->indicators[index])
+            {
+               char *name = XGetAtomName(display, kbDesc->names->indicators[index]);
+               if (0 == strcmp(name, "Num Lock"))
+               {
+                   numLockIndicatorMask = 1 << index;
+                   break;
+               }
+               XFree(name);
+            }
+        }
+
+        XkbFreeKeyboard(kbDesc, 0, True);
+    }
 #endif
 }
 

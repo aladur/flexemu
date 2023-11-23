@@ -167,27 +167,27 @@ flex2hex_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-apprun.$(OBJEXT) flexemu-bjoystck.$(OBJEXT) \
-	flexemu-brkptui.$(OBJEXT) flexemu-bui.$(OBJEXT) \
-	flexemu-bytereg.$(OBJEXT) flexemu-cacttrns.$(OBJEXT) \
-	flexemu-clogfile.$(OBJEXT) flexemu-colors.$(OBJEXT) \
-	flexemu-command.$(OBJEXT) flexemu-csetfreq.$(OBJEXT) \
-	flexemu-da6809.$(OBJEXT) flexemu-drawnwid.$(OBJEXT) \
-	flexemu-drisel.$(OBJEXT) flexemu-e2floppy.$(OBJEXT) \
-	flexemu-e2screen.$(OBJEXT) flexemu-efslctle.$(OBJEXT) \
-	flexemu-foptman.$(OBJEXT) flexemu-fsetupui.$(OBJEXT) \
-	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
-	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
-	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
-	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
-	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
-	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
-	flexemu-pia2v5.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
-	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
-	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
-	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-winmain.$(OBJEXT)
+	flexemu-blinxsys.$(OBJEXT) flexemu-brkptui.$(OBJEXT) \
+	flexemu-bui.$(OBJEXT) flexemu-bytereg.$(OBJEXT) \
+	flexemu-cacttrns.$(OBJEXT) flexemu-clogfile.$(OBJEXT) \
+	flexemu-colors.$(OBJEXT) flexemu-command.$(OBJEXT) \
+	flexemu-csetfreq.$(OBJEXT) flexemu-da6809.$(OBJEXT) \
+	flexemu-drawnwid.$(OBJEXT) flexemu-drisel.$(OBJEXT) \
+	flexemu-e2floppy.$(OBJEXT) flexemu-e2screen.$(OBJEXT) \
+	flexemu-efslctle.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
+	flexemu-fsetupui.$(OBJEXT) flexemu-inout.$(OBJEXT) \
+	flexemu-iodevdbg.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
+	flexemu-keyboard.$(OBJEXT) flexemu-logfilui.$(OBJEXT) \
+	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
+	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
+	flexemu-sodiff.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -259,7 +259,8 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flex2hex-flex2hex.Po ./$(DEPDIR)/flexemu-absgui.Po \
 	./$(DEPDIR)/flexemu-acia1.Po ./$(DEPDIR)/flexemu-apprun.Po \
-	./$(DEPDIR)/flexemu-bjoystck.Po ./$(DEPDIR)/flexemu-brkptui.Po \
+	./$(DEPDIR)/flexemu-bjoystck.Po \
+	./$(DEPDIR)/flexemu-blinxsys.Po ./$(DEPDIR)/flexemu-brkptui.Po \
 	./$(DEPDIR)/flexemu-brkptui_moc.Po ./$(DEPDIR)/flexemu-bui.Po \
 	./$(DEPDIR)/flexemu-bytereg.Po ./$(DEPDIR)/flexemu-cacttrns.Po \
 	./$(DEPDIR)/flexemu-clogfile.Po ./$(DEPDIR)/flexemu-colors.Po \
@@ -803,6 +804,7 @@ flexemu_SOURCES = \
 	acia1.cpp \
 	apprun.cpp \
 	bjoystck.cpp \
+	blinxsys.cpp \
 	brkptui.cpp \
 	bui.cpp \
 	bytereg.cpp \
@@ -855,6 +857,7 @@ flexemu_SOURCES = \
 	bfileptr.h \
 	binifile.h \
 	bintervl.h \
+	blinxsys.h \
 	bjoystck.h \
 	bmembuf.h \
 	bmp.h \
@@ -1343,6 +1346,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-acia1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-apprun.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bjoystck.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-blinxsys.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brkptui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-brkptui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-bui.Po@am__quote@ # am--include-marker
@@ -2013,6 +2017,20 @@ flexemu-bjoystck.obj: bjoystck.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bjoystck.cpp' object='flexemu-bjoystck.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-bjoystck.obj `if test -f 'bjoystck.cpp'; then $(CYGPATH_W) 'bjoystck.cpp'; else $(CYGPATH_W) '$(srcdir)/bjoystck.cpp'; fi`
+
+flexemu-blinxsys.o: blinxsys.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-blinxsys.o -MD -MP -MF $(DEPDIR)/flexemu-blinxsys.Tpo -c -o flexemu-blinxsys.o `test -f 'blinxsys.cpp' || echo '$(srcdir)/'`blinxsys.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-blinxsys.Tpo $(DEPDIR)/flexemu-blinxsys.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='blinxsys.cpp' object='flexemu-blinxsys.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-blinxsys.o `test -f 'blinxsys.cpp' || echo '$(srcdir)/'`blinxsys.cpp
+
+flexemu-blinxsys.obj: blinxsys.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-blinxsys.obj -MD -MP -MF $(DEPDIR)/flexemu-blinxsys.Tpo -c -o flexemu-blinxsys.obj `if test -f 'blinxsys.cpp'; then $(CYGPATH_W) 'blinxsys.cpp'; else $(CYGPATH_W) '$(srcdir)/blinxsys.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-blinxsys.Tpo $(DEPDIR)/flexemu-blinxsys.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='blinxsys.cpp' object='flexemu-blinxsys.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-blinxsys.obj `if test -f 'blinxsys.cpp'; then $(CYGPATH_W) 'blinxsys.cpp'; else $(CYGPATH_W) '$(srcdir)/blinxsys.cpp'; fi`
 
 flexemu-brkptui.o: brkptui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-brkptui.o -MD -MP -MF $(DEPDIR)/flexemu-brkptui.Tpo -c -o flexemu-brkptui.o `test -f 'brkptui.cpp' || echo '$(srcdir)/'`brkptui.cpp
@@ -3421,6 +3439,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-apprun.Po
 	-rm -f ./$(DEPDIR)/flexemu-bjoystck.Po
+	-rm -f ./$(DEPDIR)/flexemu-blinxsys.Po
 	-rm -f ./$(DEPDIR)/flexemu-brkptui.Po
 	-rm -f ./$(DEPDIR)/flexemu-brkptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-bui.Po
@@ -3585,6 +3604,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-acia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-apprun.Po
 	-rm -f ./$(DEPDIR)/flexemu-bjoystck.Po
+	-rm -f ./$(DEPDIR)/flexemu-blinxsys.Po
 	-rm -f ./$(DEPDIR)/flexemu-brkptui.Po
 	-rm -f ./$(DEPDIR)/flexemu-brkptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-bui.Po

@@ -173,6 +173,7 @@ flexemu_SOURCES = \
 	acia1.cpp \
 	apprun.cpp \
 	bjoystck.cpp \
+	blinxsys.cpp \
 	brkptui.cpp \
 	bui.cpp \
 	bytereg.cpp \
@@ -225,6 +226,7 @@ flexemu_SOURCES = \
 	bfileptr.h \
 	binifile.h \
 	bintervl.h \
+	blinxsys.h \
 	bjoystck.h \
 	bmembuf.h \
 	bmp.h \

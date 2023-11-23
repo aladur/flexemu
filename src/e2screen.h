@@ -33,6 +33,7 @@
 #include <QWidget>
 #include <QPixmap>
 #include "warnon.h"
+#include "blinxsys.h"
 
 class VideoControl2;
 class QPaintEvent;
@@ -139,6 +140,9 @@ private:
     QSize scaledScreenSize;
     QPoint origin;
     unsigned int numLockIndicatorMask;
+#ifdef __LINUX
+    BLinuxSysInfo sysInfo;
+#endif
 };
 #endif
 
