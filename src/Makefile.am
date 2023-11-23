@@ -214,7 +214,6 @@ flexemu_SOURCES = \
 	vico2.cpp \
 	wd1793.cpp \
 	winmain.cpp \
-	wlkeylck.c \
 	absdisas.h \
 	absgui.h \
 	acia1.h \
@@ -316,8 +315,7 @@ flexemu_SOURCES = \
 	warnon.h \
 	wd1793.h \
 	winctxt.h \
-	winmain.h \
-	wlkeylck.h
+	winmain.h
 
 flexplorer_SOURCES = \
 	fpcnvui.cpp \
