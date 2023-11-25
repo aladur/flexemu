@@ -92,8 +92,8 @@ dsktool_LDADD    = @PTHREAD_LD@ libflex.a
 flexemu_LDADD    = \
 	@FLEX_RC@ @FLEXEMU_LDADD@ \
 	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@ @X_LIBS@ \
-	libflex.a -latomic
-test_LDADD       = @PTHREAD_LD@ libflex.a -latomic
+	libflex.a
+test_LDADD       = @PTHREAD_LD@ libflex.a
 
 flexemu_DEPENDENCIES    = @FLEX_RC@ libflex.a
 flexplorer_DEPENDENCIES = libflex.a
