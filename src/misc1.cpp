@@ -590,7 +590,7 @@ std::string getHostName()
         dnsHostName = ConvertToUtf8String(hostname);
     }
 #else
-    char hostname[MAXHOSTNAMELEN];
+    char hostname[_POSIX_HOST_NAME_MAX];
     if (gethostname(hostname, sizeof(hostname)) == 0)
     {
         struct hostent *host_entry = gethostbyname(hostname);
