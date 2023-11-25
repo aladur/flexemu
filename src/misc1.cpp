@@ -622,7 +622,7 @@ std::string getFlexemuSystemConfigFile()
 #ifdef _WIN32
     return getExecutablePath() + PATHSEPARATORSTRING + flexemuConfigFile;
 #endif
-#ifdef __LINUX
+#ifdef UNIX
     return std::string(F_SYSCONFDIR) + PATHSEPARATORSTRING + flexemuConfigFile;
 #endif
 }
