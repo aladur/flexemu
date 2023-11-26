@@ -28,9 +28,6 @@
 #include <functional>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef __LINUX
-#include <linux/param.h>
-#endif
 #ifdef UNIX
 #include <netdb.h>
 #include <pwd.h>
