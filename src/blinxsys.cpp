@@ -35,13 +35,25 @@ BLinuxSysInfo::~BLinuxSysInfo()
 {
 }
 
+std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type) const
+{
+    switch (type)
+    {
+        case BLinuxSysInfoType::LED:
+            return "LED";
+    }
+
+    return "unknown";
+}
+
 std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
-        const std::string &subtype, const std::string &id) const
+                                const std::string &subtype) const
 {
     std::string path;
     std::vector<std::string> subdirs;
     BDirectory bdir;
     bool isPathAvailable = true;
+    const auto id = ToString(type) + " " + subtype;
 
     if (pathCache.find(id) == pathCache.end())
     {

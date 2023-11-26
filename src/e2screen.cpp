@@ -488,7 +488,7 @@ bool E2Screen::IsNumLockOn() const
 
 #ifdef __LINUX
     // If Linux kernel present read Num Lock LED status from /sys filesystem
-    auto status = sysInfo.Read(BLinuxSysInfoType::LED, "numlock", "LEDnumlock");
+    auto status = sysInfo.Read(BLinuxSysInfoType::LED, "numlock");
     return std::stoi(status) != 0;
 #endif
 #else

@@ -35,8 +35,8 @@ public:
     BLinuxSysInfo();
     ~BLinuxSysInfo();
 
-    std::string Read(BLinuxSysInfoType type, const std::string &subtype,
-            const std::string &id) const;
+    std::string ToString(BLinuxSysInfoType type) const;
+    std::string Read(BLinuxSysInfoType type, const std::string &subtype) const;
 
 private:
     mutable std::map<std::string, std::string> pathCache;
