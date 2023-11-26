@@ -939,6 +939,7 @@ void QtGui::CreateViewActions(QLayout& layout)
             CreateScreenSizeAction(screenSizeIcon, *screenSizeMenu, index);
         auto text = QString::asprintf("x%u", index + 1);
         screenSizeComboBox->addItem(screenSizeIcon, text);
+        screenSizeComboBox->setMinimumContentsLength(text.size());
     }
 
     const auto screenFullIcon = QIcon(":/resource/screen-full.png");
