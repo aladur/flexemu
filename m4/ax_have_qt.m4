@@ -122,8 +122,23 @@ percent.commands = @echo -n "\$(\$(@))\ "
 QMAKE_EXTRA_TARGETS += percent
 EOF
     $QMAKE $am_have_qt_pro -o $am_have_qt_makefile
-    QT_CXXFLAGS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile CXXFLAGS INCPATH`
-    QT_LIBS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile LIBS`
+    ax_try_1="cd $am_have_qt_dir; make -s -f $am_have_qt_makefile CXXFLAGS >/dev/null 2>/dev/null"
+    AC_TRY_EVAL(ax_try_1)
+    if test x"$ac_status" != x0; then
+      ax_try_2="cd $am_have_qt_dir; make -s -f $am_have_qt_makefile -v CXXFLAGS >/dev/null 2>/dev/null"
+      AC_TRY_EVAL(ax_try_2)
+      if test x"$ac_status" != x0; then
+        echo "configure: Unsupported make version, no variable print support" >&AS_MESSAGE_LOG_FD
+      else
+        # freeBSD needs the -v parameter to output variable contents
+        QT_CXXFLAGS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile -v CXXFLAGS -v INCPATH | tr "\n" " "`
+        QT_LIBS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile -v LIBS | tr "\n" " "`
+      fi
+    else
+        # Default: Output variable contents by their name
+        QT_CXXFLAGS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile CXXFLAGS INCPATH`
+        QT_LIBS=`cd $am_have_qt_dir; make -s -f $am_have_qt_makefile LIBS`
+    fi
     rm $am_have_qt_pro $am_have_qt_stash $am_have_qt_makefile
     rmdir $am_have_qt_dir
 
