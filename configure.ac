@@ -116,6 +116,7 @@ case $host_os in
        *openbsd*) OS_TYPE="-D__OPENBSD" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
+       *darwin*)  OS_TYPE="-D__MACOS" ;;
        *)         OS_TYPE="" ;;
 esac
 AC_EXEEXT

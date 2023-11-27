@@ -85,7 +85,7 @@ extern const char *gMemoryAllocationErrorString;
 /* adaptions for autoconf to use with/without ANSI C headers */
 
 #ifndef UNIX
-    #if defined(__LINUX) || defined(__BSD)
+    #if defined(__LINUX) || defined(__BSD) || defined(__MACOS)
         #define UNIX
     #endif
 #endif
