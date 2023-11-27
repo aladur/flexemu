@@ -353,6 +353,8 @@ int main(int argc, char *argv[])
 #warning "send2flx can only be compiled on Linux, sorry"
 int main(int argc, char *argv[])
 {
+	(void)argc;
+	(void)argv;
 	return 1;
 }
 #endif /* ifdef linux */

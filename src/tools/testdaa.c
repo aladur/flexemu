@@ -29,8 +29,11 @@ int  daa(Byte a, Byte *status)
         return r;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+   (void) argc;
+   (void) argv;
+
    Byte r;
    int count = 0;
    Byte a = 0;

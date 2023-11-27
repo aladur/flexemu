@@ -258,6 +258,8 @@ int main(int argc, char *argv[])
 #else
 int main(int argc, char *argv[])
 {
+	(void)argc;
+	(void)argv;
 	fprintf(stderr, "rcvflex can only be compiled on Linux, sorry\n");
 	return 1;
 } /* main */
