@@ -567,6 +567,13 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
     Word index = event->modifiers() & Qt::ShiftModifier ? 1U : 0U;
     index |= event->modifiers() & Qt::ControlModifier ? 2U : 0U;
 
+    // Process keys which behave the same for any modifier set.
+    switch (event->key())
+    {
+        case Qt::Key_Backspace:
+            return 0x08;
+    }
+
     // Process Keypad keys. It depends on the Num Lock indicator.
     if (event->modifiers() & Qt::KeypadModifier)
     {
