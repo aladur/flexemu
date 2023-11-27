@@ -126,7 +126,7 @@ AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
 
-if test "x$with_x" != "xno"; then
+if test "x$no_x" != "xyes"; then
     X_LIBS="$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS"
     dnl AC_PATH_XTRA only defines the path needed to find the X libs,
     dnl it does not add the libs; therefore we add them here
@@ -194,7 +194,7 @@ AC_CONFIG_FILES([Makefile \
 	doc/images/Makefile])
 AC_OUTPUT
 
-if test "x$with_x" = "xno"; then
+if test "x$no_x" = "xyes"; then
   xlib_text="Not found"
 else
   xlib_text="yes"
@@ -220,12 +220,6 @@ fi
   echo "***********************************************************************"
   echo
 
-if test "x$with_x" = "xno"; then
-    AC_MSG_WARN([
-            Please check that libX11.so is installed. On debian based
-            systems the package libX11-dev has to be installed.
-    ])
-fi
 if test "x$have_qt" = "xno"; then
     AC_MSG_WARN([
             Please check that libQt 5.x is installed. On debian based
@@ -238,11 +232,7 @@ fi
 if test "x$have_qt" = "xno"; then
   echo "mdcrtool, dsktool and flex2hex"
 else
-  if test "x$with_x" = "xno"; then
-    echo "flexplorer, mdcrtool, dsktool and flex2hex"
-  else
-    echo "flexemu, flexplorer, mdcrtool, dsktool and flex2hex"
-  fi
+  echo "flexemu, flexplorer, mdcrtool, dsktool and flex2hex"
 fi
   echo
 
