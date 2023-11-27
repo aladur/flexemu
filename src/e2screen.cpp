@@ -149,7 +149,7 @@ void E2Screen::keyPressEvent(QKeyEvent *event)
 
     assert(event != nullptr);
 
-    if ((key = TranslateToAscii(event)) >= 0)
+    if ((key = TranslateToPAT09Key(event)) >= 0)
     {
         bool do_notify = false;
 
@@ -504,7 +504,7 @@ bool E2Screen::IsNumLockOn() const
     return false;
 }
 
-int E2Screen::TranslateToAscii(QKeyEvent *event)
+int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
 {
     static const auto modifiers =
         Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier;

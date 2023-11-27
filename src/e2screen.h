@@ -107,7 +107,7 @@ protected:
 private:
     static int ConvertMouseButtonState(Qt::MouseButtons mouseButtons);
     static int GetKeyModifiersState();
-    int TranslateToAscii(QKeyEvent *event);
+    int TranslateToPAT09Key(QKeyEvent *event);
     void MouseWarp(int dx, int dy);
     void SetMouseCoordinatesAndButtons(QMouseEvent *event);
     void SetCursorType(int type = FLX_DEFAULT_CURSOR);
