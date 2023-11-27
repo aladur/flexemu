@@ -39,12 +39,13 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include "warnon.h"
-#ifdef UNIX
+#if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 #if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include <QX11Info>
 #endif
+    // Qt < 6.0.0
 #include <X11/XKBlib.h>
-#endif
+#endif // #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 
 class JoystickIO;
 
@@ -458,21 +459,28 @@ bool E2Screen::IsNumLockOn() const
 #ifdef _WIN32
     return (0x0001U & GetKeyState(VK_NUMLOCK)) != 0U;
 #else
-#ifdef UNIX
+#if defined(UNIX) && !defined(X_DISPLAY_MISSING)
     Display *display = nullptr;
+
+    if (qApp->platformName() == "xcb")
+    {
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
-    auto *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
-    if (x11App != nullptr)
-    {
-        display = x11App->display();
-    }
+        auto *x11App =
+            qApp->nativeInterface<QNativeInterface::QX11Application>();
+        if (x11App != nullptr)
+        {
+            display = x11App->display();
+        }
 #else
+    // 6.0.0 <= Qt < 6.2.0
 #error Only Qt6 versions 6.2.0 or higher are supported
-#endif
+#endif // Qt >= 6.2.0
 #else
-    display = QX11Info::display();
-#endif
+        // Qt < 6.0.0
+        display = QX11Info::display();
+#endif // Qt >= 6.0.0
+    }
 
     if (display != nullptr)
     {
@@ -486,15 +494,13 @@ bool E2Screen::IsNumLockOn() const
         return (state & numLockIndicatorMask) != 0;
     }
 
+#endif // #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 #ifdef __LINUX
     // If Linux kernel present read Num Lock LED status from /sys filesystem
     auto status = sysInfo.Read(BLinuxSysInfoType::LED, "numlock");
     return std::stoi(status) != 0;
-#endif
-#else
-# error Platform not supported
-#endif
-#endif
+#endif // #ifdef __LINUX
+#endif // #ifdef __WIN32
     return false;
 }
 
@@ -809,11 +815,11 @@ int E2Screen::TranslateToAscii(QKeyEvent *event)
 
 void E2Screen::InitializeNumLockIndicatorMask()
 {
+#if defined(UNIX) && !defined(X_DISPLAY_MISSING)
     Display *display = nullptr;
 
     if (qApp->platformName() == "xcb")
     {
-#ifdef UNIX
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 2, 0))
         auto *x11App =
@@ -823,11 +829,13 @@ void E2Screen::InitializeNumLockIndicatorMask()
             display = x11App->display();
         }
 #else
+    // 6.0.0 <= Qt < 6.2.0
 #error Only Qt6 versions 6.2.0 or higher are supported
-#endif
+#endif // Qt >= 6.2.0
 #else
-    display = QX11Info::display();
-#endif
+        // Qt < 6.0.0
+        display = QX11Info::display();
+#endif // Qt >= 6.0.0
     }
 
     if (display != nullptr)
@@ -857,6 +865,6 @@ void E2Screen::InitializeNumLockIndicatorMask()
 
         XkbFreeKeyboard(kbDesc, 0, True);
     }
-#endif
+#endif // #if defined(UNIX) && !defined(X_DISPLAY_MISSING)
 }
 
