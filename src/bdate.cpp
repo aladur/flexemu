@@ -74,18 +74,20 @@ const std::string BDate::GetDateString(Format format) const
     switch (format)
     {
         case Format::Iso:
-            sprintf(dateString, "%04d%02d%02d", y, GetMonth(), GetDay());
+            snprintf(dateString, sizeof(dateString), "%04d%02d%02d", y,
+                     GetMonth(), GetDay());
             break;
 
         case Format::D2MS3Y4:
-            sprintf(dateString, "%02d-%s-%04d", GetDay(), monthName[m - 1], y);
+            snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
+                     monthName[m - 1], y);
             break;
 
         case Format::D2MSU3Y4:
             std::string monthString(monthName[m - 1]);
             strupper(monthString);
-            sprintf(dateString, "%02d-%s-%04d", GetDay(), monthString.c_str(),
-                    y);
+            snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
+                     monthString.c_str(), y);
             break;
     } // switch
 
