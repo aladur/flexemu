@@ -91,7 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = @FLEXPLORER@ dsktool$(EXEEXT) flex2hex$(EXEEXT) \
+bin_PROGRAMS = $(FLEXPLORER) dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexemu$(EXEEXT) mdcrtool$(EXEEXT)
 EXTRA_PROGRAMS = dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexplorer$(EXEEXT) mdcrtool$(EXEEXT)
@@ -152,6 +152,7 @@ am__objects_1 =
 am__objects_2 = $(am__objects_1)
 nodist_dsktool_OBJECTS = $(am__objects_2)
 dsktool_OBJECTS = $(am_dsktool_OBJECTS) $(nodist_dsktool_OBJECTS)
+am__DEPENDENCIES_1 =
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -699,7 +700,7 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@ $(AM_CXXFLAGS)
+	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
 
 libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -709,17 +710,17 @@ flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 test_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 libflex_a_LIBADD = $(LIBOBJS)
-flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@ libflex.a
-mdcrtool_LDADD = @PTHREAD_LD@ libflex.a
-flex2hex_LDADD = @PTHREAD_LD@ libflex.a
-dsktool_LDADD = @PTHREAD_LD@ libflex.a
+flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a
+mdcrtool_LDADD = $(PTHREAD_LD) libflex.a
+flex2hex_LDADD = $(PTHREAD_LD) libflex.a
+dsktool_LDADD = $(PTHREAD_LD) libflex.a
 flexemu_LDADD = \
-	@FLEX_RC@ @FLEXEMU_LDADD@ \
-	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@ @X_LIBS@ \
+	$(FLEX_RC) $(FLEXEMU_LDADD) \
+	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a
 
-test_LDADD = @PTHREAD_LD@ libflex.a
-flexemu_DEPENDENCIES = @FLEX_RC@ libflex.a
+test_LDADD = $(PTHREAD_LD) libflex.a
+flexemu_DEPENDENCIES = $(FLEX_RC) libflex.a
 flexplorer_DEPENDENCIES = libflex.a
 flex2hex_DEPENDENCIES = libflex.a
 dsktool_DEPENDENCIES = libflex.a

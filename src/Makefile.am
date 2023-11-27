@@ -51,7 +51,7 @@ mimetypedir = $(mimetypebasedir)/packages
 noinst_LIBRARIES = libflex.a
 
 bin_PROGRAMS = \
-	@FLEXPLORER@ \
+	$(FLEXPLORER) \
 	dsktool \
 	flex2hex \
 	flexemu \
@@ -73,7 +73,7 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@ $(AM_CXXFLAGS)
+	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
 
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -85,17 +85,17 @@ test_CXXFLAGS       = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 
 libflex_a_LIBADD = $(LIBOBJS)
 
-flexplorer_LDADD = @QT_LIBS@ @PTHREAD_LD@ libflex.a
-mdcrtool_LDADD   = @PTHREAD_LD@ libflex.a
-flex2hex_LDADD   = @PTHREAD_LD@ libflex.a
-dsktool_LDADD    = @PTHREAD_LD@ libflex.a
+flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a
+mdcrtool_LDADD   = $(PTHREAD_LD) libflex.a
+flex2hex_LDADD   = $(PTHREAD_LD) libflex.a
+dsktool_LDADD    = $(PTHREAD_LD) libflex.a
 flexemu_LDADD    = \
-	@FLEX_RC@ @FLEXEMU_LDADD@ \
-	@WIN32_LIBS@ @PTHREAD_LD@ @QT_LIBS@ @X_LIBS@ \
+	$(FLEX_RC) $(FLEXEMU_LDADD) \
+	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a
-test_LDADD       = @PTHREAD_LD@ libflex.a
+test_LDADD       = $(PTHREAD_LD) libflex.a
 
-flexemu_DEPENDENCIES    = @FLEX_RC@ libflex.a
+flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a
 flexplorer_DEPENDENCIES = libflex.a
 flex2hex_DEPENDENCIES   = libflex.a
 dsktool_DEPENDENCIES    = libflex.a
