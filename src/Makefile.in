@@ -699,7 +699,7 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	$(AM_CXXFLAGS) @CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@
+	@CXXSPEED@ @OS_TYPE@ @X_CFLAGS@ @QT_CXXFLAGS@ $(AM_CXXFLAGS)
 
 libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
