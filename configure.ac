@@ -193,23 +193,24 @@ AC_CONFIG_FILES([Makefile \
 	doc/images/Makefile])
 AC_OUTPUT
 
+if test "x$with_x" = "xno"; then
+  xlib_text="Not found"
+else
+  xlib_text="yes"
+fi
+if test "x$have_qt" = "xno"; then
+  qt_text="Not found"
+else
+  qt_text="yes"
+fi
+
   echo
   echo "************************** summary ************************************"
-  echo " CFLAGS:                     $CFLAGS"
-  echo " CXXFLAGS:                   $CXXFLAGS"
+  echo " CFLAGS:                      $CFLAGS"
+  echo " CXXFLAGS:                    $CXXFLAGS"
   echo " WIN32_LIBS:                  $WIN32_LIBS"
-  echo -n " Xlib:                        "
-if test "x$with_x" = "xno"; then
-  echo "Not found"
-else
-  echo "yes"
-fi
-  echo -n " Qt:                          "
-if test "x$have_qt" = "xno"; then
-  echo "Not found"
-else
-  echo "yes"
-fi
+  echo " Xlib:                        $xlib_text"
+  echo " Qt:                          $qt_text"
   echo " speed optimized compilation: $enable_speed"
   echo " execute post installation:   $enable_post_install"
   echo " canonical build:             $build"
