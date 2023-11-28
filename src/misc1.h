@@ -266,6 +266,8 @@ extern const char *gMemoryAllocationErrorString;
     #define DEBUGPRINT2(fmt,p1,p2,p3)
 #endif
 
+typedef QWord cycles_t;
+
 extern "C" struct sRGBDef
 {
     const char *colorName;

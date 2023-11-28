@@ -82,7 +82,5 @@
     #endif /* #ifdef _MSC_VER */
 #endif
 
-typedef QWord cycles_t;
-
 #endif /* TYPEDEFS_INCLUDED */
 
