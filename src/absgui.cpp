@@ -89,7 +89,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
     total_cycles << std::setw(16) << stat.total_cycles;
 
     text(5,  0, total_cycles.str().c_str());
-    sprintf(tmp, "%6.2f", stat.freq);
+    snprintf(tmp, sizeof(tmp), "%6.2f", stat.freq);
     text(28,  0, tmp);
     text(6, 1, "                        "); // first clear area
 
