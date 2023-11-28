@@ -77,7 +77,7 @@ bool BEnvironment::SetValue(const char *key, int value)
     std::string upperKey(key);
 
     strupper(upperKey);
-    sprintf(str, "%i", value);
+    snprintf(str, sizeof(str), "%i", value);
 #ifdef _WIN32
     return (SetEnvironmentVariable(
         ConvertToUtf16String(upperKey).c_str(),
