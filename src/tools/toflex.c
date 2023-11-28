@@ -31,11 +31,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../typedefs.h"
 
 int main(int argc, char **argv)
 {
-	SWord c, spaces = 0;
+	int c, spaces = 0;
 
 	if (argc > 1) {
 		fprintf(stderr, "syntax: toflex\n");

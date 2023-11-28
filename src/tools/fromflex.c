@@ -31,11 +31,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../typedefs.h"
 
 int main(int argc, char **argv)
 {
-	SWord c;
+	int c;
 
 	if (argc > 1) {
 		fprintf(stderr, "syntax: fromflex\n");
