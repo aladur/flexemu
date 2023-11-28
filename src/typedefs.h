@@ -36,8 +36,6 @@
     typedef int32_t         SDWord;
     typedef uint64_t        QWord;
     typedef int64_t         SQWord;
-    #define PRlu64 "%lu"
-    #define PRld64 "%ld"
 #else
     typedef unsigned char       Byte;
     typedef signed   char       SByte;
@@ -68,20 +66,14 @@
     #ifdef _MSC_VER
         typedef unsigned __int64 QWord;
         typedef __int64 SQWord;
-        #define PRlu64 "%llu"
-        #define PRld64 "%lld"
     #else
         #if (SIZEOF_LONG == 8)
             typedef unsigned long     QWord;
             typedef long          SQWord;
-            #define PRlu64 "%lu"
-            #define PRld64 "%ld"
         #else
             #if (SIZEOF_LONG_LONG == 8)
                 typedef unsigned long long  QWord;
                 typedef long long       SQWord;
-                #define PRlu64 "%llu"
-                #define PRld64 "%lld"
             #else
                 /* a class with opterator overloading could help here */
                 #error No data type of size 8 found
