@@ -344,8 +344,8 @@ inline Byte Da6809::D_Illegal(const char *mnemo, Word pc, Byte bytes,
     Byte code;
 
     code = *pMemory;
-    sprintf(code_buf, "%04X: %02X", pc, code);
-    sprintf(mnem_buf, "%s ?????", mnemo);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X", pc, code);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s ?????", mnemo);
     return bytes;
 }
 
@@ -357,8 +357,8 @@ inline Byte Da6809::D_Direct(const char *mnemo, Word pc, Byte bytes,
 
     code = *pMemory;
     offset = *(pMemory + 1);
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, offset);
-    sprintf(mnem_buf, "%s $%02X", mnemo, offset);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s $%02X", mnemo, offset);
     return bytes;
 }
 
@@ -370,8 +370,8 @@ inline Byte Da6809::D_Immediat(const char *mnemo, Word pc, Byte bytes,
 
     code = *pMemory;
     offset = *(pMemory + 1);
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, offset);
-    sprintf(mnem_buf, "%s #$%02X", mnemo, offset);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%02X", mnemo, offset);
     return bytes;
 }
 
@@ -384,17 +384,19 @@ inline Byte Da6809::D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
 
     code = *pMemory;
     auto offset = getValueBigEndian<Word>(&pMemory[1]);
-    sprintf(code_buf, "%04X: %02X %02X %02X", pc, code, *(pMemory + 1),
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
+                            *(pMemory + 1),
             *(pMemory + 2));
     label = FlexLabel(offset);
 
     if (label == nullptr)
     {
-        sprintf(mnem_buf, "%s #$%04X", mnemo, offset);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%04X", mnemo, offset);
     }
     else
     {
-        sprintf(mnem_buf, "%s #%s ; $%04X", mnemo, label, offset);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s #%s ; $%04X", mnemo, label,
+                 offset);
     }
 
     return bytes;
@@ -407,8 +409,8 @@ inline Byte Da6809::D_Inherent(const char *mnemo, Word pc, Byte bytes,
     int code;
 
     code = *pMemory;
-    sprintf(code_buf, "%04X: %02X", pc, code);
-    sprintf(mnem_buf, "%s", mnemo);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X", pc, code);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s", mnemo);
     return bytes;
 }  // D_Inherent
 
@@ -439,8 +441,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             disp = 0x20 - disp;
         }
 
-        sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-        sprintf(mnem_buf, "%s %s$%02X,%s", mnemo, s, disp,
+        snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code,
+                 postbyte);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%02X,%s", mnemo, s, disp,
                 IndexedRegister(postbyte >> 5));
     }
     else
@@ -448,8 +451,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
         switch (postbyte & 0x1f)
         {
             case 0x00 : // ,R+
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s ,%s+", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s ,%s+", mnemo,
                         IndexedRegister(postbyte >> 5));
                 break;
 
@@ -459,14 +463,16 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x01 : // ,R++
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %s,%s++%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s++%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
             case 0x02 : // ,-R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s ,-%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s ,-%s", mnemo,
                         IndexedRegister(postbyte >> 5));
                 break;
 
@@ -476,8 +482,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x03 : // ,--R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %s,--%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,--%s%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -487,8 +494,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x04 : // ,R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %s,%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -498,8 +506,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x05 : // B,R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %sB,%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sB,%s%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -509,8 +518,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x06 : // A,R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %sA,%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sA,%s%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -532,10 +542,11 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                     offset = 0x0100 - offset;
                 }
 
-                sprintf(code_buf, "%04X: %02X %02X %02X", pc, code, postbyte,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc,
+                         code, postbyte,
                         *(pMemory + 2));
-                sprintf(mnem_buf, "%s %s%s$%02X,%s%s", mnemo, br1, s, offset,
-                        IndexedRegister(postbyte >> 5), br2);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%02X,%s%s", mnemo,
+                         br1, s, offset, IndexedRegister(postbyte >> 5), br2);
                 extrabytes = 1;
                 break;
 
@@ -547,9 +558,10 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x09 : // ,R + 16 Bit Offset
                 offset = getValueBigEndian<Word>(&pMemory[2]);
                 s = "";
-                sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
-                        postbyte, *(pMemory + 2), *(pMemory + 3));
-                sprintf(mnem_buf, "%s %s%s$%04X,%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf),
+                         "%04X: %02X %02X %02X %02X", pc, code, postbyte,
+                         *(pMemory + 2), *(pMemory + 3));
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%04X,%s%s", mnemo,
                         br1, s, offset, IndexedRegister(postbyte >> 5), br2);
                 extrabytes = 2;
                 break;
@@ -560,8 +572,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 FALLTHROUGH;
 
             case 0x0b : // D,R
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s %sD,%s%s", mnemo,
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sD,%s%s", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -573,10 +586,10 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x0c : // ,PC + 8 Bit Offset
                 offset = (EXTEND8(*(pMemory + 2)) + pc + 3) & 0xFFFF;
                 s = "<";
-                sprintf(code_buf, "%04X: %02X %02X %02X", pc, code, postbyte,
-                        *(pMemory + 2));
-                sprintf(mnem_buf, "%s %s%s$%02X,PCR%s", mnemo, br1, s, offset,
-                        br2);
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc,
+                         code, postbyte, *(pMemory + 2));
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%02X,PCR%s",
+                         mnemo, br1, s, offset, br2);
                 extrabytes = 1;
                 break;
 
@@ -588,10 +601,11 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
             case 0x0d :  // ,PC + 16 Bit Offset
                 offset = (getValueBigEndian<Word>(&pMemory[2]) + pc + 4) & 0xFFFF;
                 s = ">";
-                sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
-                        postbyte, *(pMemory + 2), *(pMemory + 3));
-                sprintf(mnem_buf, "%s %s%s$%04X,PCR%s", mnemo, br1, s, offset,
-                        br2);
+                snprintf(code_buf, sizeof(code_buf),
+                         "%04X: %02X %02X %02X %02X", pc, code, postbyte,
+                         *(pMemory + 2), *(pMemory + 3));
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%04X,PCR%s",
+                         mnemo, br1, s, offset, br2);
                 extrabytes = 2;
                 break;
 
@@ -599,15 +613,17 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 br1 = "[";
                 br2 = "]";
                 offset = getValueBigEndian<Word>(&pMemory[2]);
-                sprintf(code_buf, "%04X: %02X %02X %02X %02X", pc, code,
-                        postbyte, *(pMemory + 2), *(pMemory + 2));
-                sprintf(mnem_buf, "%s %s$%04X%s", mnemo, br1, offset, br2);
-                extrabytes = 2;
+                snprintf(code_buf, sizeof(code_buf),
+                         "%04X: %02X %02X %02X %02X", pc, code, postbyte,
+                         *(pMemory + 2), *(pMemory + 2));
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%04X%s", mnemo, br1,
+                         offset, br2); extrabytes = 2;
                 break;
 
             default:
-                sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-                sprintf(mnem_buf, "%s ????", mnemo);
+                snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
+                         code, postbyte);
+                snprintf(mnem_buf, sizeof(mnem_buf), "%s ????", mnemo);
         }
     }
 
@@ -623,17 +639,18 @@ inline Byte Da6809::D_Extended(const char *mnemo, Word pc, Byte bytes,
 
     code = *pMemory;
     auto offset = getValueBigEndian<Word>(&pMemory[1]);
-    sprintf(code_buf, "%04X: %02X %02X %02X", pc, code,
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
     label = FlexLabel(offset);
 
     if (label == nullptr)
     {
-        sprintf(mnem_buf, "%s $%04X", mnemo, offset);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, offset);
     }
     else
     {
-        sprintf(mnem_buf, "%s %s ; $%04X", mnemo, label, offset);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s ; $%04X", mnemo, label,
+                 offset);
     }
 
     return bytes;
@@ -658,16 +675,17 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
         disp   = pc + 2 - (256 - offset);
     }
 
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, offset);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
     label = FlexLabel(disp);
 
     if (label == nullptr)
     {
-        sprintf(mnem_buf, "%s $%04X", mnemo, disp);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, disp);
     }
     else
     {
-        sprintf(mnem_buf, "%s %s ; $%04X", mnemo, label, disp);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s ; $%04X", mnemo, label,
+                 disp);
     }
 
     return bytes;
@@ -691,17 +709,18 @@ inline Byte Da6809::D_RelativeL(
         *pAddr = pc + 3 - (65536 - offset);
     }
 
-    sprintf(code_buf, "%04X: %02X %02X %02X", pc, code,
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
     label = FlexLabel(static_cast<Word>(*pAddr));
 
     if (label == nullptr)
     {
-        sprintf(mnem_buf, "%s $%04X", mnemo, (Word)*pAddr);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, (Word)*pAddr);
     }
     else
     {
-        sprintf(mnem_buf, "%s %s ; $%04X", mnemo, label, (Word)*pAddr);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s ; $%04X", mnemo, label,
+                 (Word)*pAddr);
     }
 
     return bytes;
@@ -714,8 +733,9 @@ inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
     code = *pMemory;
     postbyte = *(pMemory + 1);
 
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-    sprintf(mnem_buf, "%s %s,%s", mnemo, InterRegister(postbyte >> 4),
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s", mnemo,
+             InterRegister(postbyte >> 4),
             InterRegister(postbyte & 0x0f));
 
     return bytes;
@@ -732,15 +752,15 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
     postbyte  = *(pMemory + 1);
 
     comma = 0;
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-    sprintf(mnem_buf, "%s ", mnemo);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
     index = strlen(mnemo);
 
     for (i = 0; i < 8; i++)
     {
         if (postbyte & (1 << i))
         {
-            sprintf(&mnem_buf[index], "%s%s",
+            snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "%s%s",
                     comma ? "," : "", StackRegister(i, "U"));
             index += strlen(StackRegister(i, "U")) + (comma ? 1 : 0);
             comma = 1;
@@ -762,15 +782,15 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
     postbyte  = *(pMemory + 1);
 
     comma = 0;
-    sprintf(code_buf, "%04X: %02X %02X", pc, code, postbyte);
-    sprintf(mnem_buf, "%s ", mnemo);
+    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
+    snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
     index = strlen(mnemo);
 
     for (i = 0; i < 8; i++)
     {
         if (postbyte & (1 << i))
         {
-            sprintf(&mnem_buf[index], "%s%s",
+            snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "%s%s",
                     comma ? "," : "", StackRegister(i, "S"));
             index += strlen(StackRegister(i, "S")) + (comma ? 1 : 0);
             comma = 1;
