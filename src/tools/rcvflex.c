@@ -19,7 +19,7 @@ FLEX to UNIX
 #include <stdlib.h>
 #include <string.h>
 #define __fromflex__
-#include "../typedefs.h"
+#include "typedefs.h"
 #include "../filecnts.h"
 
 #define DEFAULT_DEVICE	"/dev/cua2"
