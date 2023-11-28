@@ -22,6 +22,7 @@
 
 
 #include <limits>
+#include <cinttypes>
 #ifndef _WIN32
     #include <sched.h>
 #endif
@@ -334,8 +335,8 @@ void Scheduler::frequency_control(QWord time1)
 
         if ((fp = fopen(DEBUG_FILE, "a")) != nullptr)
         {
-            fprintf(fp, "timediff: %llu required_cyclecount: %lu\n",
-                    timediff, required_cyclecount);
+            fprintf(fp, "timediff: %" PRId64 " required_cyclecount: %" PRIu64
+                    "\n", timediff, required_cyclecount);
             fclose(fp);
         }
 

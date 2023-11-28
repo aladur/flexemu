@@ -10,6 +10,7 @@
 
 
 #include <limits>
+#include <cinttypes>
 #include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
@@ -415,12 +416,7 @@ void Mc6809::log_current_instruction()
     get_status(&cpu_status);
     if (lfs.logCycleCount)
     {
-#if (SIZEOF_LONG == 4)
-        fprintf(log_fp, "%20llu ", cpu_status.total_cycles);
-#endif
-#if (SIZEOF_LONG == 8)
-        fprintf(log_fp, "%20lu ", cpu_status.total_cycles);
-#endif
+        fprintf(log_fp, "%20" PRIu64 " ", cpu_status.total_cycles);
     }
     fprintf(log_fp, "%04X %-23s", PC.load(), cpu_status.mnemonic);
 
