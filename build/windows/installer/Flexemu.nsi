@@ -170,6 +170,7 @@ ${If} $Arch == "x64"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Core.dll"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Gui.dll"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}Widgets.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\Qt${QTMAVERSION}PrintSupport.dll"
 ${Else}
 !if ${QTMAVERSION} == 5
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\flexemu.exe"
@@ -180,6 +181,7 @@ ${Else}
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Core.dll"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Gui.dll"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5Widgets.dll"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\Qt5PrintSupport.dll"
 !endif
 ${EndIf}
   File /a "${BASEDIR}\src\boot"
@@ -207,6 +209,14 @@ ${If} $Arch == "x64"
 ${Else}
 !if ${QTMAVERSION} == 5
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\styles\qwindowsvistastyle.dll"
+!endif
+${EndIf}
+  SetOutPath $INSTDIR\printsupport
+${If} $Arch == "x64"
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\printsupport\windowsprintersupport.dll"
+${Else}
+!if ${QTMAVERSION} == 5
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\printsupport\windowsprintersupport.dll"
 !endif
 ${EndIf}
 SectionEnd

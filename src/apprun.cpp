@@ -56,7 +56,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     scheduler(cpu, inout),
     terminalIO(scheduler, x_options),
     mmu(memory),
-    acia1(terminalIO),
+    acia1(terminalIO, inout),
     pia1(scheduler, keyboardIO, x_options),
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
@@ -131,18 +131,16 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     scheduler.set_frequency(options.frequency);
 
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    if (terminalIO.is_terminal_supported())
+    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+    if (address < 0 || !terminalIO.is_terminal_supported())
     {
-        auto address = configFile.GetSerparAddress(options.hex_file.c_str());
-        if (address < 0)
-        {
-            // The specified hex_file does not support switching between
-            // serial/parallel input/output or it is unknown how to switch.
-            // Terminal mode has to be switched off.
-            options.term_mode = false;
-        }
-        inout.serpar_address(address);
+        // The specified hex_file does not support switching between
+        // serial/parallel input/output or it is unknown how to switch.
+        // Or terminal mode is not support in general.
+        // In any of these cases terminal mode has to be switched off.
+        options.term_mode = false;
     }
+    inout.serpar_address(address);
 
     if (options.isEurocom2V5)
     {

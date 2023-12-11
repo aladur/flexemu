@@ -30,6 +30,7 @@
 #include "bobservd.h"
 
 class TerminalIO;
+class Inout;
 
 class Acia1 : public Mc6850, public BObserved
 {
@@ -37,6 +38,7 @@ class Acia1 : public Mc6850, public BObserved
 protected:
 
     TerminalIO &terminalIO;
+    Inout &inout;
 
 public:
     // read data from serial line
@@ -62,7 +64,7 @@ public:
 public:
 
     Acia1() = delete;
-    Acia1(TerminalIO &x_terminalIO);
+    Acia1(TerminalIO &x_terminalIO, Inout &x_inout);
     virtual             ~Acia1();
 
 };

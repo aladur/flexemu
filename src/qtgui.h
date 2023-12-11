@@ -60,6 +60,7 @@ class E2floppy;
 class E2Screen;
 class FlexContainerInfo;
 class FlexemuOptionsDifference;
+class PrintOutputWindow;
 class QAction;
 class QSize;
 class QString;
@@ -119,11 +120,13 @@ public:
     void SetFloppy(E2floppy *fdc);
     bool HasFloppy() const;
     void output_to_graphic() override;
+    void write_char_serial(Byte value) override;
 
 protected:
     void redraw_cpuview_impl(const Mc6809CpuStatus &status) override;
 
 private slots:
+    void OnPrinterOutput();
     void OnExit();
     void OnPreferences();
     void OnFullScreen();
@@ -235,6 +238,7 @@ private:
     QComboBox *screenSizeComboBox;
     QDialog *cpuDialog;
     Ui::CpuStatus cpuUi;
+    QAction *printOutputAction;
     QAction *exitAction;
     QAction *preferencesAction;
     QAction *fullScreenAction;
@@ -255,6 +259,7 @@ private:
     QAction *interruptStatusAction;
     QAction *iconSizeAction[ICON_SIZES];
     QAction *screenSizeAction[SCREEN_SIZES];
+    PrintOutputWindow *printOutputWindow;
     QIcon iconNoFloppy;
     QIcon iconInactiveFloppy;
     QIcon iconActiveFloppy;

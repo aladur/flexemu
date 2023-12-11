@@ -183,8 +183,10 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
 	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
 	flexemu-mc6850.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
-	flexemu-ndircont.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
+	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
 	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
 	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
 	flexemu-sodiff.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
@@ -194,7 +196,8 @@ am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
 	flexemu-drawnwid_moc.$(OBJEXT) flexemu-e2screen_moc.$(OBJEXT) \
 	flexemu-efslctle_moc.$(OBJEXT) flexemu-fsetupui_moc.$(OBJEXT) \
-	flexemu-logfilui_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT)
+	flexemu-logfilui_moc.$(OBJEXT) flexemu-qtgui_moc.$(OBJEXT) \
+	flexemu-poutwin_moc.$(OBJEXT)
 am__objects_6 = $(am__objects_5)
 nodist_flexemu_OBJECTS = $(am__objects_2) $(am__objects_4) \
 	$(am__objects_6) $(am__objects_2)
@@ -285,9 +288,13 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flexemu-mc6809.Po ./$(DEPDIR)/flexemu-mc6809in.Po \
 	./$(DEPDIR)/flexemu-mc6809st.Po ./$(DEPDIR)/flexemu-mc6821.Po \
 	./$(DEPDIR)/flexemu-mc6850.Po ./$(DEPDIR)/flexemu-mmu.Po \
-	./$(DEPDIR)/flexemu-ndircont.Po ./$(DEPDIR)/flexemu-pia1.Po \
+	./$(DEPDIR)/flexemu-ndircont.Po ./$(DEPDIR)/flexemu-pagedet.Po \
+	./$(DEPDIR)/flexemu-pagedetd.Po ./$(DEPDIR)/flexemu-pia1.Po \
 	./$(DEPDIR)/flexemu-pia2.Po ./$(DEPDIR)/flexemu-pia2v5.Po \
-	./$(DEPDIR)/flexemu-qtgui.Po ./$(DEPDIR)/flexemu-qtgui_moc.Po \
+	./$(DEPDIR)/flexemu-poutwin.Po \
+	./$(DEPDIR)/flexemu-poutwin_moc.Po \
+	./$(DEPDIR)/flexemu-poverhlp.Po ./$(DEPDIR)/flexemu-qtgui.Po \
+	./$(DEPDIR)/flexemu-qtgui_moc.Po \
 	./$(DEPDIR)/flexemu-schedule.Po ./$(DEPDIR)/flexemu-sodiff.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
@@ -745,7 +752,8 @@ flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
 	logfil.ui \
-	fsetup.ui
+	fsetup.ui \
+	pprev.ui
 
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 flexplorer_ui = \
@@ -764,7 +772,8 @@ flexemu_moc_hdr = \
 	efslctle.h \
 	fsetupui.h \
 	logfilui.h \
-	qtgui.h
+	qtgui.h \
+	poutwin.h
 
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
@@ -831,9 +840,13 @@ flexemu_SOURCES = \
 	mc6850.cpp \
 	mmu.cpp \
 	ndircont.cpp \
+	pagedet.cpp \
+	pagedetd.cpp \
 	pia1.cpp \
 	pia2.cpp \
 	pia2v5.cpp \
+	poutwin.cpp \
+	poverhlp.cpp \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
@@ -920,9 +933,13 @@ flexemu_SOURCES = \
 	misc1.h \
 	mmu.h \
 	ndircont.h \
+	pagedet.h \
+	pagedetd.h \
 	pia1.h \
 	pia2.h \
 	pia2v5.h \
+	poutwin.h \
+	poverhlp.h \
 	propsui.h \
 	qtgui.h \
 	rfilecnt.h \
@@ -1380,9 +1397,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6850.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mmu.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-ndircont.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pagedet.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pagedetd.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-pia2v5.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poutwin.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poutwin_moc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poverhlp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@ # am--include-marker
@@ -2448,6 +2470,34 @@ flexemu-ndircont.obj: ndircont.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-ndircont.obj `if test -f 'ndircont.cpp'; then $(CYGPATH_W) 'ndircont.cpp'; else $(CYGPATH_W) '$(srcdir)/ndircont.cpp'; fi`
 
+flexemu-pagedet.o: pagedet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pagedet.o -MD -MP -MF $(DEPDIR)/flexemu-pagedet.Tpo -c -o flexemu-pagedet.o `test -f 'pagedet.cpp' || echo '$(srcdir)/'`pagedet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pagedet.Tpo $(DEPDIR)/flexemu-pagedet.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pagedet.cpp' object='flexemu-pagedet.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pagedet.o `test -f 'pagedet.cpp' || echo '$(srcdir)/'`pagedet.cpp
+
+flexemu-pagedet.obj: pagedet.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pagedet.obj -MD -MP -MF $(DEPDIR)/flexemu-pagedet.Tpo -c -o flexemu-pagedet.obj `if test -f 'pagedet.cpp'; then $(CYGPATH_W) 'pagedet.cpp'; else $(CYGPATH_W) '$(srcdir)/pagedet.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pagedet.Tpo $(DEPDIR)/flexemu-pagedet.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pagedet.cpp' object='flexemu-pagedet.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pagedet.obj `if test -f 'pagedet.cpp'; then $(CYGPATH_W) 'pagedet.cpp'; else $(CYGPATH_W) '$(srcdir)/pagedet.cpp'; fi`
+
+flexemu-pagedetd.o: pagedetd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pagedetd.o -MD -MP -MF $(DEPDIR)/flexemu-pagedetd.Tpo -c -o flexemu-pagedetd.o `test -f 'pagedetd.cpp' || echo '$(srcdir)/'`pagedetd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pagedetd.Tpo $(DEPDIR)/flexemu-pagedetd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pagedetd.cpp' object='flexemu-pagedetd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pagedetd.o `test -f 'pagedetd.cpp' || echo '$(srcdir)/'`pagedetd.cpp
+
+flexemu-pagedetd.obj: pagedetd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pagedetd.obj -MD -MP -MF $(DEPDIR)/flexemu-pagedetd.Tpo -c -o flexemu-pagedetd.obj `if test -f 'pagedetd.cpp'; then $(CYGPATH_W) 'pagedetd.cpp'; else $(CYGPATH_W) '$(srcdir)/pagedetd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pagedetd.Tpo $(DEPDIR)/flexemu-pagedetd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pagedetd.cpp' object='flexemu-pagedetd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pagedetd.obj `if test -f 'pagedetd.cpp'; then $(CYGPATH_W) 'pagedetd.cpp'; else $(CYGPATH_W) '$(srcdir)/pagedetd.cpp'; fi`
+
 flexemu-pia1.o: pia1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-pia1.o -MD -MP -MF $(DEPDIR)/flexemu-pia1.Tpo -c -o flexemu-pia1.o `test -f 'pia1.cpp' || echo '$(srcdir)/'`pia1.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-pia1.Tpo $(DEPDIR)/flexemu-pia1.Po
@@ -2489,6 +2539,34 @@ flexemu-pia2v5.obj: pia2v5.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='pia2v5.cpp' object='flexemu-pia2v5.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-pia2v5.obj `if test -f 'pia2v5.cpp'; then $(CYGPATH_W) 'pia2v5.cpp'; else $(CYGPATH_W) '$(srcdir)/pia2v5.cpp'; fi`
+
+flexemu-poutwin.o: poutwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poutwin.o -MD -MP -MF $(DEPDIR)/flexemu-poutwin.Tpo -c -o flexemu-poutwin.o `test -f 'poutwin.cpp' || echo '$(srcdir)/'`poutwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poutwin.Tpo $(DEPDIR)/flexemu-poutwin.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poutwin.cpp' object='flexemu-poutwin.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin.o `test -f 'poutwin.cpp' || echo '$(srcdir)/'`poutwin.cpp
+
+flexemu-poutwin.obj: poutwin.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poutwin.obj -MD -MP -MF $(DEPDIR)/flexemu-poutwin.Tpo -c -o flexemu-poutwin.obj `if test -f 'poutwin.cpp'; then $(CYGPATH_W) 'poutwin.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poutwin.Tpo $(DEPDIR)/flexemu-poutwin.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poutwin.cpp' object='flexemu-poutwin.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin.obj `if test -f 'poutwin.cpp'; then $(CYGPATH_W) 'poutwin.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin.cpp'; fi`
+
+flexemu-poverhlp.o: poverhlp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poverhlp.o -MD -MP -MF $(DEPDIR)/flexemu-poverhlp.Tpo -c -o flexemu-poverhlp.o `test -f 'poverhlp.cpp' || echo '$(srcdir)/'`poverhlp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poverhlp.Tpo $(DEPDIR)/flexemu-poverhlp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poverhlp.cpp' object='flexemu-poverhlp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poverhlp.o `test -f 'poverhlp.cpp' || echo '$(srcdir)/'`poverhlp.cpp
+
+flexemu-poverhlp.obj: poverhlp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poverhlp.obj -MD -MP -MF $(DEPDIR)/flexemu-poverhlp.Tpo -c -o flexemu-poverhlp.obj `if test -f 'poverhlp.cpp'; then $(CYGPATH_W) 'poverhlp.cpp'; else $(CYGPATH_W) '$(srcdir)/poverhlp.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poverhlp.Tpo $(DEPDIR)/flexemu-poverhlp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poverhlp.cpp' object='flexemu-poverhlp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poverhlp.obj `if test -f 'poverhlp.cpp'; then $(CYGPATH_W) 'poverhlp.cpp'; else $(CYGPATH_W) '$(srcdir)/poverhlp.cpp'; fi`
 
 flexemu-qtgui.o: qtgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-qtgui.o -MD -MP -MF $(DEPDIR)/flexemu-qtgui.Tpo -c -o flexemu-qtgui.o `test -f 'qtgui.cpp' || echo '$(srcdir)/'`qtgui.cpp
@@ -2713,6 +2791,20 @@ flexemu-qtgui_moc.obj: qtgui_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qtgui_moc.cpp' object='flexemu-qtgui_moc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-qtgui_moc.obj `if test -f 'qtgui_moc.cpp'; then $(CYGPATH_W) 'qtgui_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/qtgui_moc.cpp'; fi`
+
+flexemu-poutwin_moc.o: poutwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poutwin_moc.o -MD -MP -MF $(DEPDIR)/flexemu-poutwin_moc.Tpo -c -o flexemu-poutwin_moc.o `test -f 'poutwin_moc.cpp' || echo '$(srcdir)/'`poutwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poutwin_moc.Tpo $(DEPDIR)/flexemu-poutwin_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poutwin_moc.cpp' object='flexemu-poutwin_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin_moc.o `test -f 'poutwin_moc.cpp' || echo '$(srcdir)/'`poutwin_moc.cpp
+
+flexemu-poutwin_moc.obj: poutwin_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-poutwin_moc.obj -MD -MP -MF $(DEPDIR)/flexemu-poutwin_moc.Tpo -c -o flexemu-poutwin_moc.obj `if test -f 'poutwin_moc.cpp'; then $(CYGPATH_W) 'poutwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-poutwin_moc.Tpo $(DEPDIR)/flexemu-poutwin_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='poutwin_moc.cpp' object='flexemu-poutwin_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin_moc.obj `if test -f 'poutwin_moc.cpp'; then $(CYGPATH_W) 'poutwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin_moc.cpp'; fi`
 
 flexplorer-fpcnvui.o: fpcnvui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpcnvui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpcnvui.Tpo -c -o flexplorer-fpcnvui.o `test -f 'fpcnvui.cpp' || echo '$(srcdir)/'`fpcnvui.cpp
@@ -3473,9 +3565,14 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-mc6850.Po
 	-rm -f ./$(DEPDIR)/flexemu-mmu.Po
 	-rm -f ./$(DEPDIR)/flexemu-ndircont.Po
+	-rm -f ./$(DEPDIR)/flexemu-pagedet.Po
+	-rm -f ./$(DEPDIR)/flexemu-pagedetd.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia2.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia2v5.Po
+	-rm -f ./$(DEPDIR)/flexemu-poutwin.Po
+	-rm -f ./$(DEPDIR)/flexemu-poutwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexemu-poverhlp.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
@@ -3638,9 +3735,14 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-mc6850.Po
 	-rm -f ./$(DEPDIR)/flexemu-mmu.Po
 	-rm -f ./$(DEPDIR)/flexemu-ndircont.Po
+	-rm -f ./$(DEPDIR)/flexemu-pagedet.Po
+	-rm -f ./$(DEPDIR)/flexemu-pagedetd.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia1.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia2.Po
 	-rm -f ./$(DEPDIR)/flexemu-pia2v5.Po
+	-rm -f ./$(DEPDIR)/flexemu-poutwin.Po
+	-rm -f ./$(DEPDIR)/flexemu-poutwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexemu-poverhlp.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po

@@ -120,7 +120,8 @@ flexemu_ui = \
 	brkpt.ui \
 	cpustat.ui \
 	logfil.ui \
-	fsetup.ui
+	fsetup.ui \
+	pprev.ui
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \
@@ -137,7 +138,8 @@ flexemu_moc_hdr = \
 	efslctle.h \
 	fsetupui.h \
 	logfilui.h \
-	qtgui.h
+	qtgui.h \
+	poutwin.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
 	fpedit.h \
@@ -204,9 +206,13 @@ flexemu_SOURCES = \
 	mc6850.cpp \
 	mmu.cpp \
 	ndircont.cpp \
+	pagedet.cpp \
+	pagedetd.cpp \
 	pia1.cpp \
 	pia2.cpp \
 	pia2v5.cpp \
+	poutwin.cpp \
+	poverhlp.cpp \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
@@ -293,9 +299,13 @@ flexemu_SOURCES = \
 	misc1.h \
 	mmu.h \
 	ndircont.h \
+	pagedet.h \
+	pagedetd.h \
 	pia1.h \
 	pia2.h \
 	pia2v5.h \
+	poutwin.h \
+	poverhlp.h \
 	propsui.h \
 	qtgui.h \
 	rfilecnt.h \

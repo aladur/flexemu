@@ -153,6 +153,18 @@
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="pagedet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pagedetd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="poutwin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="poverhlp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexemu.rc">
@@ -447,6 +459,18 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="pagedet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pagedetd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="poutwin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="poverhlp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="brkptui.h">
@@ -480,6 +504,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="logfil.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pprev.ui">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fsetupui.h">

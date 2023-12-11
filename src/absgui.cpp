@@ -191,6 +191,10 @@ void AbstractGui::output_to_graphic()
     }
 }
 
+void AbstractGui::write_char_serial(Byte /*value*/)
+{
+}
+
 AbstractGui::AbstractGui(
     Mc6809 &x_cpu,
     Memory &x_memory,

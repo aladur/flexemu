@@ -104,7 +104,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
       <PrecompiledHeaderOutputFile>$(IntDir)\pch.pch</PrecompiledHeaderOutputFile>
@@ -116,7 +116,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;Qt$(QTMAJOR)PrintSupportd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -131,7 +131,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
       <PrecompiledHeaderOutputFile>$(IntDir)\pch.pch</PrecompiledHeaderOutputFile>
@@ -143,7 +143,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flexd.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Cored.lib;Qt$(QTMAJOR)Guid.lib;Qt$(QTMAJOR)Widgetsd.lib;Qt$(QTMAJOR)PrintSupportd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -159,7 +159,7 @@
       <SDLCheck>true</SDLCheck>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
       <PrecompiledHeaderOutputFile>$(IntDir)\pch.pch</PrecompiledHeaderOutputFile>
@@ -173,7 +173,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;Qt$(QTMAJOR)PrintSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
     </ResourceCompile>
@@ -189,7 +189,7 @@
       <SDLCheck>true</SDLCheck>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src;$(IntDir);$(QTDIR)\$(Platform)\include;$(QTDIR)\$(Platform)\include\QtCore;$(QTDIR)\$(Platform)\include\QtGui;$(QTDIR)\$(Platform)\include\QtWidgets;$(QTDIR)\$(Platform)\include\QtPrintSupport</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h</ForcedIncludeFiles>
       <PrecompiledHeaderOutputFile>$(IntDir)\pch.pch</PrecompiledHeaderOutputFile>
@@ -203,7 +203,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(QTDIR)\$(Platform)\lib;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>flex.lib;kernel32.lib;user32.lib;advapi32.lib;Qt$(QTMAJOR)Core.lib;Qt$(QTMAJOR)Gui.lib;Qt$(QTMAJOR)Widgets.lib;Qt$(QTMAJOR)PrintSupport.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -241,6 +241,8 @@
     <ClCompile Include="mc6850.cpp" />
     <ClCompile Include="mmu.cpp" />
     <ClCompile Include="ndircont.cpp" />
+    <ClCompile Include="pagedet.cpp" />
+    <ClCompile Include="pagedetd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -250,6 +252,8 @@
     <ClCompile Include="pia1.cpp" />
     <ClCompile Include="pia2.cpp" />
     <ClCompile Include="pia2v5.cpp" />
+    <ClCompile Include="poutwin.cpp" />
+    <ClCompile Include="poverhlp.cpp" />
     <ClCompile Include="qtgui.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
@@ -295,6 +299,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="fsetup.ui">
+      <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
+      <Message>User interface compile %(Filename).ui</Message>
+      <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\uic.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClInclude</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="pprev.ui">
       <Command>"$(QTDIR)\$(Platform)\bin\uic.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_ui.h"</Command>
       <Message>User interface compile %(Filename).ui</Message>
       <Outputs>$(IntDir)\%(Filename)_ui.h</Outputs>
@@ -351,6 +363,14 @@
       <BuildInParallel>true</BuildInParallel>
     </CustomBuild>
     <CustomBuild Include="qtgui.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
+    <CustomBuild Include="poutwin.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>
       <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
@@ -432,10 +452,13 @@
     <ClInclude Include="misc1.h" />
     <ClInclude Include="mmu.h" />
     <ClInclude Include="ndircont.h" />
+    <ClInclude Include="pagedet.h" />
+    <ClInclude Include="pagedetd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pia1.h" />
     <ClInclude Include="pia2.h" />
     <ClInclude Include="pia2v5.h" />
+    <ClInclude Include="poverhlp.h" />
     <ClInclude Include="propsui.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rfilecnt.h" />

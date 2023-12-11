@@ -87,6 +87,16 @@ bool Inout::output_to_graphic()
     return gui != nullptr;
 }
 
+// Redirect serial character into gui.
+// gui provides printer output support.
+void Inout::write_char_serial(Byte value)
+{
+    if (gui != nullptr)
+    {
+        gui->write_char_serial(value);
+    }
+}
+
 Word Inout::serpar_address() const
 {
     return static_cast<Word>(local_serpar_address);
@@ -101,6 +111,18 @@ bool Inout::is_serpar_address_valid() const
 void Inout::serpar_address(int value)
 {
     local_serpar_address = value;
+}
+
+int Inout::read_serpar() const
+{
+     if (is_serpar_address_valid())
+     {
+        return memory.read_byte(serpar_address());
+     }
+     else
+     {
+         return -1;
+     }
 }
 
 void Inout::set_rtc(Mc146818 *x_rtc)

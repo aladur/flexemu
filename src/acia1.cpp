@@ -25,10 +25,12 @@
 
 #include "acia1.h"
 #include "terminal.h"
+#include "inout.h"
 #include "mc6809.h"
 
-Acia1::Acia1(TerminalIO &x_terminalIO) :
+Acia1::Acia1(TerminalIO &x_terminalIO, Inout &x_inout) :
              terminalIO(x_terminalIO)
+             , inout(x_inout)
 {
 }
 
@@ -66,7 +68,15 @@ Byte Acia1::readInput()
 
 void Acia1::writeOutput(Byte val)
 {
-    terminalIO.write_char_serial(val);
+    if (inout.read_serpar() == 0x00)
+    {
+        // Redirect serial output to gui.
+        inout.write_char_serial(val);
+    }
+    else
+    {
+        terminalIO.write_char_serial(val);
+    }
 }
 
 

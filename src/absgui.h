@@ -67,6 +67,7 @@ public:
     virtual void update_cpuview(const Mc6809CpuStatus &stat);
     virtual void output_to_terminal(); // set output to terminal
     virtual void output_to_graphic(); // set output to GUI
+    virtual void write_char_serial(Byte value); // write character to printer
 
 public:
     AbstractGui(

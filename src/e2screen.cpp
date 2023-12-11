@@ -500,8 +500,8 @@ bool E2Screen::IsNumLockOn() const
     auto status = sysInfo.Read(BLinuxSysInfoType::LED, "numlock");
     return std::stoi(status) != 0;
 #endif // #ifdef __LINUX
-#endif // #ifdef __WIN32
     return false;
+#endif // #ifdef __WIN32
 }
 
 int E2Screen::TranslateToPAT09Key(QKeyEvent *event)

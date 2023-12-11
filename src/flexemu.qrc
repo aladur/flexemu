@@ -32,5 +32,11 @@
         <file alias="irqs.png">bitmaps/128x128/flexemu-irqs.png</file>
         <file alias="qt.png">bitmaps/32x32/qt_extended_32x32.png</file>
         <file alias="fsetup.png">bitmaps/32x32/flexemu-fsetup.png</file>
+        <file alias="print.png">bitmaps/32x32/flexemu-print.png</file>
+        <file alias="print-output.png">bitmaps/32x32/flexemu-print-output.png</file>
+        <file alias="print-preview.png">bitmaps/32x32/flexemu-print-preview.png</file>
+        <file alias="print-clear.png">bitmaps/32x32/flexemu-print-clear.png</file>
+        <file alias="detect-page-break.png">bitmaps/32x32/flexemu-detect-page-break.png</file>
+        <file alias="window-close.png">bitmaps/32x32/flexemu-window-close.png</file>
     </qresource>
 </RCC>

@@ -57,12 +57,14 @@ public:
     bool    output_to_terminal();
     bool    output_to_graphic();
     bool    is_gui_present();
+    void    write_char_serial(Byte value);
 
     // local interface
 public:
     bool is_serpar_address_valid() const;
     Word serpar_address() const;
     void serpar_address(int value);
+    int read_serpar() const;
 
     // BObserver interface
 public:

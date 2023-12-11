@@ -46,6 +46,7 @@
 #include "foptman.h"
 #include "fsetupui.h"
 #include "warnoff.h"
+#include "poutwin.h"
 #include <QString>
 #include <QVector>
 #include <QPixmap>
@@ -105,6 +106,7 @@ QtGui::QtGui(
              , x_terminalIO)
         , e2screen(nullptr)
         , preferencesAction(nullptr)
+        , printOutputWindow(nullptr)
         , isOriginalFrequency(false)
         , isStatusBarVisible(true)
         , isRunning(true)
@@ -177,6 +179,8 @@ QtGui::QtGui(
     cpuUi.b_stop->setCheckable(true);
     ConnectCpuUiSignalsWithSlots();
 
+    printOutputWindow = new PrintOutputWindow();
+
     SetCpuDialogMonospaceFont(QApplication::font().pointSize());
     UpdateCpuFrequencyCheck();
     UpdateCpuUndocumentedCheck();
@@ -230,6 +234,12 @@ QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
     toolBarLayout->addWidget(toolBar);
 
     return toolBar;
+}
+
+void QtGui::OnPrinterOutput()
+{
+    printOutputWindow->show();
+    printOutputWindow->raise();
 }
 
 void QtGui::OnExit()
@@ -863,12 +873,22 @@ void QtGui::CreateFileActions(QLayout& layout)
     fileToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(fileToolBar);
 
+    const auto printerIcon = QIcon(":/resource/print-output.png");
+    printOutputAction =
+        fileMenu->addAction(printerIcon, tr("Open &Printer Output Window"));
+    connect(printOutputAction, &QAction::triggered, this,
+            &QtGui::OnPrinterOutput);
+    printOutputAction->setStatusTip(tr("Open the printer output window"));
+    fileMenu->addSeparator();
+
     const auto exitIcon = QIcon(":/resource/exit.png");
     exitAction = fileMenu->addAction(exitIcon, tr("E&xit"));
     connect(exitAction, &QAction::triggered, this, &QtGui::OnExit);
     exitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+Q")));
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
+
+    fileToolBar->addAction(printOutputAction);
 }
 
 void QtGui::CreateEditActions(QLayout& layout)
@@ -2119,6 +2139,11 @@ void QtGui::closeEvent(QCloseEvent *event)
             QThread::msleep(10);
         }
         timer.stop();
+        if (printOutputWindow != nullptr)
+        {
+            printOutputWindow->close();
+            printOutputWindow = nullptr;
+        }
         FlexemuOptionsDifference optionsDiff(options, oldOptions);
 
         if (!optionsDiff.GetNotEquals().empty())
@@ -2142,5 +2167,10 @@ void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
                     optionId),
         p_options.readOnlyOptionIds.end());
     FlexemuOptions::WriteOptions(p_options, false, true);
+}
+
+void QtGui::write_char_serial(Byte value)
+{
+    printOutputWindow->write_char_serial(value);
 }
 
