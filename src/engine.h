@@ -1,7 +1,7 @@
 /* engine.h
 
    flexemu, an MC6809 emulator running FLEX
-   Copyright (C) 1997-2022  W. Schwotzer
+   Copyright (C) 1997-2023  W. Schwotzer
 
    Copyright 1994,1995 L.C. Benschop, Eidnhoven The Netherlands.
 

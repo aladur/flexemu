@@ -3,7 +3,7 @@
 
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 1997-2022  W. Schwotzer
+    Copyright (C) 1997-2023  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@
     "and You are welcome to redistribute it under certain conditions.\n" \
     "Please notice that this project was developed under the terms of the\n" \
     "GNU GENERAL PUBLIC LICENCE V2.\n" \
-    "Copyright (C) 1998-2022 Wolfgang Schwotzer\n" \
+    "Copyright (C) 1998-2023 Wolfgang Schwotzer\n" \
     "http://flexemu.neocities.org\n"
 
 extern const char *gMemoryAllocationErrorString;

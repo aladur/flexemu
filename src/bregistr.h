@@ -2,7 +2,7 @@
     bregistr.h
 
     Basic class containing a windows registry handle
-    Copyright (C) 1999-2022  W. Schwotzer
+    Copyright (C) 1999-2023  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
