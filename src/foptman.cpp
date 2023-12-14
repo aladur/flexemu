@@ -424,6 +424,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
         case FlexemuOptionId::IsDisplaySmooth:
             reg.SetValue(FLEXDISPLAYSMOOTH, options.isSmooth ? 1 : 0);
             break;
+
+        case FlexemuOptionId::PrintFont:
+            reg.SetValue(FLEXPRINTFONT, options.printFont.c_str());
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -578,6 +582,10 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isTerminalIgnoreNUL =
                 previousOptions.isTerminalIgnoreNUL;
             break;
+
+        case FlexemuOptionId::PrintFont:
+            optionsToWrite.printFont = previousOptions.printFont;
+            break;
         }
     }
 
@@ -614,6 +622,7 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isTerminalIgnoreESC ? 1 : 0);
     rcFile.SetValue(FLEXTERMINALIGNORENUL,
             optionsToWrite.isTerminalIgnoreNUL ? 1 : 0);
+    rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
 }
 #endif
 
@@ -748,6 +757,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.isSmooth = (int_result != 0);
     }
 
+    reg.GetValue(FLEXPRINTFONT, options.printFont);
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -880,6 +890,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.isTerminalIgnoreNUL = (int_result != 0);
     }
 
+    rcFile.GetValue(FLEXPRINTFONT, options.printFont);
 #endif
 } // GetOptions
 

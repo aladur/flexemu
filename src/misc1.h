@@ -315,6 +315,7 @@ extern "C" struct sRGBDef
 #define FLEXDISPLAYSMOOTH "DisplaySmooth"
 #define FLEXTERMINALIGNOREESC "TerminalIgnoreESC"
 #define FLEXTERMINALIGNORENUL "TerminalIgnoreNUL"
+#define FLEXPRINTFONT "PrintFont"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

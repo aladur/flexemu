@@ -160,6 +160,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreESC);
     }
+
+    if (opt1.printFont != opt2.printFont)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintFont);
+    }
 }
 
 const FlexemuOptionsDifference::Result&
@@ -203,6 +208,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::IsDisplaySmooth:
             case FlexemuOptionId::IsTerminalIgnoreESC:
             case FlexemuOptionId::IsTerminalIgnoreNUL:
+            case FlexemuOptionId::PrintFont:
                 break;
         }
     }

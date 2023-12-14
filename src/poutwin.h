@@ -57,6 +57,7 @@ class QAction;
 namespace Ui {
 class PrintPreview;
 }
+struct sOptions;
 
 
 class PrintOutputWindow : public QWidget
@@ -64,7 +65,8 @@ class PrintOutputWindow : public QWidget
     Q_OBJECT
 
 public:
-    PrintOutputWindow();
+    PrintOutputWindow() = delete;
+    PrintOutputWindow(sOptions &x_options);
     virtual ~PrintOutputWindow();
 
     // Static functions
@@ -115,6 +117,7 @@ private:
     void InitializeUnit();
     void OpenPrintDialog(QPrinter *printer);
     void ProcessSerialInput();
+    QFont GetFont(const QString &fontName);
     void SetMarginsFor(QPageSize::PageSizeId id, const QMarginsF &margins);
     void SetMarginsInfo(bool isInvalid) const;
     void SetSpinBoxUnit(const QString &unit);
@@ -166,6 +169,7 @@ private:
     mutable int lineCount;
     mutable std::mutex serial_mutex;
     std::deque<Byte> serial_buffer;
+    sOptions &options; 
 };
 
 #endif

@@ -388,6 +388,9 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::IsTerminalIgnoreNUL:
                 c_terminalIgnoreNUL->setEnabled(false);
                 break;
+
+            case FlexemuOptionId::PrintFont:
+                break;
         }
     }
 }
@@ -466,6 +469,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IsDisplaySmooth:
                 case FlexemuOptionId::IsTerminalIgnoreESC:
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
+                case FlexemuOptionId::PrintFont:
                     break;
             }
         }

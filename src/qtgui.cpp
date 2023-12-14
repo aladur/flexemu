@@ -179,7 +179,7 @@ QtGui::QtGui(
     cpuUi.b_stop->setCheckable(true);
     ConnectCpuUiSignalsWithSlots();
 
-    printOutputWindow = new PrintOutputWindow();
+    printOutputWindow = new PrintOutputWindow(options);
 
     SetCpuDialogMonospaceFont(QApplication::font().pointSize());
     UpdateCpuFrequencyCheck();
@@ -358,6 +358,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::FileTimeAccess:
                 case FlexemuOptionId::IsTerminalIgnoreESC:
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
+                case FlexemuOptionId::PrintFont:
                     isWriteOptions = true;
                     break;
 

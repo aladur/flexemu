@@ -58,6 +58,7 @@
 #include <cmath>
 #include <set>
 #include "pagedet.h"
+#include "soptions.h"
 
 const QStringList pageSizeStrings{
     "DIN A3", "DIN A4", "DIN A5", "DIN A6",
@@ -87,7 +88,7 @@ const QList<enum QPrinter::Unit> unitValues{
 ** Constructor, Destructor **
 ****************************/
 
-PrintOutputWindow::PrintOutputWindow() :
+PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
       mainLayout(nullptr)
     , toolBarLayout(nullptr)
     , statusBarFrame(nullptr)
@@ -113,6 +114,7 @@ PrintOutputWindow::PrintOutputWindow() :
     , pageSizeId(QPageSize::A4)
     , characterCount(0)
     , lineCount(0)
+    , options(x_options)
 {
     setObjectName("PrintOutputWindow");
     setWindowTitle("FLEX Print Output");
@@ -143,7 +145,9 @@ PrintOutputWindow::PrintOutputWindow() :
     CreateStatusBar(*mainLayout);
 
     toolBarLayout->addStretch(1);
-    SetTextBrowserFont(fontComboBox->currentFont());
+    auto font = GetFont(options.printFont.c_str());
+    fontComboBox->setCurrentFont(font);
+
     const auto printOutputIcon = QIcon(":/resource/print-output.png");
     setWindowIcon(printOutputIcon);
 
@@ -786,6 +790,28 @@ void PrintOutputWindow::OpenPrintDialog(QPrinter *p)
     }
 }
 
+QFont PrintOutputWindow::GetFont(const QString &fontName)
+{
+    auto list = fontName.split(QLatin1Char(','));
+
+    if (list.size() >= 4)
+    {
+        bool ok = false;
+        auto family = list[0];
+        auto style = list[3];
+        auto pointSizeString = list[1];
+        auto pointSize = pointSizeString.toInt(&ok);
+
+        if (ok && pointSize > 0)
+        {
+            auto fontDatabase = QFontDatabase();
+            return fontDatabase.font(family, style, pointSize);
+        }
+    }
+
+    return QFont();
+}
+
 // Set the margins for a given page size ID.
 // The margins have unit Inches.
 void PrintOutputWindow::SetMarginsFor(QPageSize::PageSizeId id,
@@ -967,6 +993,10 @@ void PrintOutputWindow::ProcessSerialInput()
 
 void PrintOutputWindow::closeEvent(QCloseEvent *event)
 {
+    auto font = fontComboBox->currentFont();
+
+    options.printFont = std::string(font.toString().toUtf8().data());
+
     event->accept();
 }
 

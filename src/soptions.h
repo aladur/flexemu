@@ -63,6 +63,7 @@ enum class FlexemuOptionId : uint8_t
     PixelSize,
     FileTimeAccess,
     IsDisplaySmooth,
+    PrintFont,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -94,6 +95,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::PixelSize,
     FlexemuOptionId::FileTimeAccess,
     FlexemuOptionId::IsDisplaySmooth,
+    FlexemuOptionId::PrintFont,
 };
 
 struct sOptions
@@ -130,6 +132,7 @@ struct sOptions
     int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
                    // It depends on the screen dimensions on which flexemu
                    // is executed.
+    std::string printFont; // Font used for printing documents (monospace)
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.
