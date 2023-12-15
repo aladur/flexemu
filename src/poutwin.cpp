@@ -222,6 +222,9 @@ void PrintOutputWindow::OnClearTextBrowser()
 
 void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
 {
+    auto font = fontComboBox->currentFont();
+
+    options.printFont = std::string(font.toString().toUtf8().data());
     SetTextBrowserFont(newFont);
 }
 
@@ -1001,10 +1004,6 @@ void PrintOutputWindow::ProcessSerialInput()
 
 void PrintOutputWindow::closeEvent(QCloseEvent *event)
 {
-    auto font = fontComboBox->currentFont();
-
-    options.printFont = std::string(font.toString().toUtf8().data());
-
     event->accept();
 }
 
