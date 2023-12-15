@@ -58,21 +58,18 @@ libtool
 
 # Visual Studio files
 .vs/
-Win32/
-x64/
-rebuild.bat
 *.sdf
 *.opensdf
 *.VC.db
 *.VC.opendb
-build/windows/lib*/
-build/windows/wxwidgets/
-build/windows/wxwidgets-*
+build/windows/vsversion.ini
 build/windows/*.tar.gz
 build/windows/*.tgz
-src/Debug/
-src/Release/
-
+build/windows/*.zip
+build/windows/Qt
+src/msvcQtPath.props
+src/*.vcxproj.user
+bin
 # vi swap file
 *.swp
 
