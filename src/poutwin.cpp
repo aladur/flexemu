@@ -800,7 +800,8 @@ QFont PrintOutputWindow::GetFont(const QString &fontName)
         auto family = list[0];
         auto style = list[3];
         auto pointSizeString = list[1];
-        auto pointSize = pointSizeString.toInt(&ok);
+        auto pointSize =
+            static_cast<int>(std::round(pointSizeString.toFloat(&ok)));
 
         if (ok && pointSize > 0)
         {
