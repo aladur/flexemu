@@ -203,8 +203,13 @@ void FlexFileBuffer::TraverseForTextFileConversion(
                 fct(' ');
             }
         }
+        else if (c == 0x1a)
+        {
+            break; // ASCII SUB is end of file marker
+        }
 
-        // Other control characters than ASCII TAB, ASCII CR are ignored.
+        // Other control characters than ASCII TAB, ASCII CR, ASCII SUB
+        // are ignored.
     } // for
 }
 
@@ -387,10 +392,10 @@ bool FlexFileBuffer::IsFlexTextFile() const
         Byte c = buffer[i];
 
         // Allowed characters of a FLEX text file are:
-        // ASCII LF, ASCII CR, ASCII NUL, ASCII CANCEL, ASCII FF and
+        // ASCII LF, ASCII CR, ASCII NUL, ASCII CANCEL, ASCII FF, ASCII SUB and
         // any character >= ASCII Space.
         if (c >= ' ' || c == 0x0a || c == 0x0d || c == 0x00 || c == 0x18 ||
-            c == 0x0c)
+            c == 0x0c || c == 0x1a)
         {
             continue;
         }
