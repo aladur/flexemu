@@ -390,6 +390,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 break;
 
             case FlexemuOptionId::PrintFont:
+            case FlexemuOptionId::IsPrintPageBreakDetected:
                 break;
         }
     }
@@ -470,6 +471,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IsTerminalIgnoreESC:
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
                 case FlexemuOptionId::PrintFont:
+                case FlexemuOptionId::IsPrintPageBreakDetected:
                     break;
             }
         }

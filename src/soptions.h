@@ -64,6 +64,7 @@ enum class FlexemuOptionId : uint8_t
     FileTimeAccess,
     IsDisplaySmooth,
     PrintFont,
+    IsPrintPageBreakDetected,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -96,6 +97,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::FileTimeAccess,
     FlexemuOptionId::IsDisplaySmooth,
     FlexemuOptionId::PrintFont,
+    FlexemuOptionId::IsPrintPageBreakDetected,
 };
 
 struct sOptions
@@ -133,6 +135,7 @@ struct sOptions
                    // It depends on the screen dimensions on which flexemu
                    // is executed.
     std::string printFont; // Font used for printing documents (monospace)
+    bool isPrintPageBreakDetected; // Print preview: Automatic page break det.
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

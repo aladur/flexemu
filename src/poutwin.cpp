@@ -225,6 +225,11 @@ void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
     SetTextBrowserFont(newFont);
 }
 
+void PrintOutputWindow::OnPageBreakDetectionToggled(bool checked) const
+{
+    options.isPrintPageBreakDetected = checked;
+}
+
 void PrintOutputWindow::OnLandscapeClicked(bool checked)
 {
     if (ui != nullptr && checked)
@@ -579,7 +584,7 @@ void PrintOutputWindow::CreateEditActions(QBoxLayout &layout)
     action->setStatusTip(tr(
                 "Automatically detect page breaks in print output"));
     action->setCheckable(true);
-    action->setChecked(true);
+    action->setChecked(options.isPrintPageBreakDetected);
     toolBar->addAction(action);
     pageBreakDetectorAction = action;
 
@@ -591,6 +596,8 @@ void PrintOutputWindow::CreateEditActions(QBoxLayout &layout)
     // Add signal/slot actions
     connect(fontComboBox, &QFontComboBox::currentFontChanged,
             this, &PrintOutputWindow::OnFontChanged);
+    connect(pageBreakDetectorAction, &QAction::toggled,
+            this, &PrintOutputWindow::OnPageBreakDetectionToggled);
 
     editToolBar = toolBar;
 }

@@ -359,6 +359,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsTerminalIgnoreESC:
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
                 case FlexemuOptionId::PrintFont:
+                case FlexemuOptionId::IsPrintPageBreakDetected:
                     isWriteOptions = true;
                     break;
 

@@ -83,6 +83,7 @@ public slots:
     void OnClearTextBrowser();
     void OnCyclicTimer();
     void OnFontChanged(const QFont &newFont) const;
+    void OnPageBreakDetectionToggled(bool checked) const;
     void OnLandscapeClicked(bool checked);
     void OnMarginBottomChanged(double newValue);
     void OnMarginLeftChanged(double newValue);

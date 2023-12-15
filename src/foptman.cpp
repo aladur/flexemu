@@ -108,6 +108,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
 #endif
     options.pixelSize = 2;
     options.readOnlyOptionIds.clear();
+    options.isPrintPageBreakDetected = false;
 } // InitOptions
 
 void FlexemuOptions::GetCommandlineOptions(
@@ -428,6 +429,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
         case FlexemuOptionId::PrintFont:
             reg.SetValue(FLEXPRINTFONT, options.printFont.c_str());
             break;
+
+        case FlexemuOptionId::IsPrintPageBreakDetected:
+            reg.SetValue(FLEXPRINTPAGEBREAKDETECTED,
+                    options.isPrintPageBreakDetected ? 1 : 0);
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -586,6 +592,11 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::PrintFont:
             optionsToWrite.printFont = previousOptions.printFont;
             break;
+
+        case FlexemuOptionId::IsPrintPageBreakDetected:
+            optionsToWrite.isPrintPageBreakDetected =
+                previousOptions.isPrintPageBreakDetected;
+            break;
         }
     }
 
@@ -623,6 +634,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXTERMINALIGNORENUL,
             optionsToWrite.isTerminalIgnoreNUL ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
+    rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
+            optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
 }
 #endif
 
@@ -758,6 +771,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     }
 
     reg.GetValue(FLEXPRINTFONT, options.printFont);
+
+    if (!reg.GetValue(FLEXPRINTPAGEBREAKDETECTED, int_result))
+    {
+        options.isPrintPageBreakDetected = (int_result != 0);
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -891,6 +909,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);
+
+    if (!rcFile.GetValue(FLEXPRINTPAGEBREAKDETECTED, int_result))
+    {
+        options.isPrintPageBreakDetected = (int_result != 0);
+    }
 #endif
 } // GetOptions
 

@@ -316,6 +316,7 @@ extern "C" struct sRGBDef
 #define FLEXTERMINALIGNOREESC "TerminalIgnoreESC"
 #define FLEXTERMINALIGNORENUL "TerminalIgnoreNUL"
 #define FLEXPRINTFONT "PrintFont"
+#define FLEXPRINTPAGEBREAKDETECTED "PrintPageBreakDetected"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

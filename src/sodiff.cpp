@@ -165,6 +165,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::PrintFont);
     }
+
+    if (opt1.isPrintPageBreakDetected != opt2.isPrintPageBreakDetected)
+    {
+        notEquals.push_back(FlexemuOptionId::IsPrintPageBreakDetected);
+    }
 }
 
 const FlexemuOptionsDifference::Result&
@@ -209,6 +214,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::IsTerminalIgnoreESC:
             case FlexemuOptionId::IsTerminalIgnoreNUL:
             case FlexemuOptionId::PrintFont:
+            case FlexemuOptionId::IsPrintPageBreakDetected:
                 break;
         }
     }
