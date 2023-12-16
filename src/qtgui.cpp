@@ -513,22 +513,17 @@ void QtGui::OnCpuDialogClose()
 
 void QtGui::ConnectCpuUiSignalsWithSlots()
 {
-    QObject::connect(cpuUi.b_close, &QAbstractButton::clicked,
+    connect(cpuUi.b_close, &QAbstractButton::clicked,
             this, &QtGui::OnCpuDialogClose);
-
-    QObject::connect(cpuUi.b_run, &QAbstractButton::clicked,
+    connect(cpuUi.b_run, &QAbstractButton::clicked,
             this, &QtGui::OnCpuRun);
-    QObject::connect(cpuUi.b_stop, &QAbstractButton::clicked,
-            this, &QtGui::OnCpuStop);
-    QObject::connect(cpuUi.b_step, &QAbstractButton::clicked,
-            this, &QtGui::OnCpuStep);
-    QObject::connect(cpuUi.b_next, &QAbstractButton::clicked,
-            this, &QtGui::OnCpuNext);
-    QObject::connect(cpuUi.b_reset, &QAbstractButton::clicked,
-            this, &QtGui::OnCpuReset);
-    QObject::connect(cpuUi.b_breakpoints, &QAbstractButton::clicked,
+    connect(cpuUi.b_stop, &QAbstractButton::clicked, this, &QtGui::OnCpuStop);
+    connect(cpuUi.b_step, &QAbstractButton::clicked, this, &QtGui::OnCpuStep);
+    connect(cpuUi.b_next, &QAbstractButton::clicked, this, &QtGui::OnCpuNext);
+    connect(cpuUi.b_reset, &QAbstractButton::clicked, this, &QtGui::OnCpuReset);
+    connect(cpuUi.b_breakpoints, &QAbstractButton::clicked,
             this, &QtGui::OnCpuBreakpoints);
-    QObject::connect(cpuUi.b_logfile, &QAbstractButton::clicked,
+    connect(cpuUi.b_logfile, &QAbstractButton::clicked,
             this, &QtGui::OnCpuLogging);
 }
 

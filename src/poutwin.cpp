@@ -297,70 +297,70 @@ void PrintOutputWindow::OnOpenPrintPreview()
     UpdateMargins();
     UpdatePaperWidthAndHeight(false);
 
-    QObject::connect(ui->cb_unit,
+    connect(ui->cb_unit,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QComboBox::*)(int)>(
-                     &QComboBox::currentIndexChanged),
+            static_cast<void (QComboBox::*)(int)>(
+            &QComboBox::currentIndexChanged),
 #else
-                     QOverload<int>::of(&QComboBox::currentIndexChanged),
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
-                     this, &PrintOutputWindow::OnUnitChanged);
-    QObject::connect(ui->cb_pageSize,
+            this, &PrintOutputWindow::OnUnitChanged);
+    connect(ui->cb_pageSize,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QComboBox::*)(int)>(
-                     &QComboBox::currentIndexChanged),
+            static_cast<void (QComboBox::*)(int)>(
+            &QComboBox::currentIndexChanged),
 #else
-                     QOverload<int>::of(&QComboBox::currentIndexChanged),
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
-                     this, &PrintOutputWindow::OnPageSizeChanged);
-    QObject::connect(ui->s_sizeAdjustment, &QSlider::valueChanged,
-                     this, &PrintOutputWindow::OnSizeFactorChanged);
-    QObject::connect(ui->p_minus, &QPushButton::clicked,
-                     this, &PrintOutputWindow::OnSizeFactorDecrement);
-    QObject::connect(ui->p_plus, &QPushButton::clicked,
-                     this, &PrintOutputWindow::OnSizeFactorIncrement);
-    QObject::connect(ui->rb_portrait, &QRadioButton::clicked,
-                     this, &PrintOutputWindow::OnPortraitClicked);
-    QObject::connect(ui->rb_landscape, &QRadioButton::clicked,
-                     this, &PrintOutputWindow::OnLandscapeClicked);
-    QObject::connect(ui->ds_marginBottom,
+            this, &PrintOutputWindow::OnPageSizeChanged);
+    connect(ui->s_sizeAdjustment, &QSlider::valueChanged,
+            this, &PrintOutputWindow::OnSizeFactorChanged);
+    connect(ui->p_minus, &QPushButton::clicked,
+            this, &PrintOutputWindow::OnSizeFactorDecrement);
+    connect(ui->p_plus, &QPushButton::clicked,
+            this, &PrintOutputWindow::OnSizeFactorIncrement);
+    connect(ui->rb_portrait, &QRadioButton::clicked,
+            this, &PrintOutputWindow::OnPortraitClicked);
+    connect(ui->rb_landscape, &QRadioButton::clicked,
+            this, &PrintOutputWindow::OnLandscapeClicked);
+    connect(ui->ds_marginBottom,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QDoubleSpinBox::*)(double)>(
-                     &QDoubleSpinBox::valueChanged),
+            static_cast<void (QDoubleSpinBox::*)(double)>(
+            &QDoubleSpinBox::valueChanged),
 #else
-                     QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged),
 #endif
-                     this, &PrintOutputWindow::OnMarginBottomChanged);
-    QObject::connect(ui->ds_marginLeft,
+            this, &PrintOutputWindow::OnMarginBottomChanged);
+    connect(ui->ds_marginLeft,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QDoubleSpinBox::*)(double)>(
-                     &QDoubleSpinBox::valueChanged),
+            static_cast<void (QDoubleSpinBox::*)(double)>(
+            &QDoubleSpinBox::valueChanged),
 #else
-                     QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged),
 #endif
-                     this, &PrintOutputWindow::OnMarginLeftChanged);
-    QObject::connect(ui->ds_marginRight,
+            this, &PrintOutputWindow::OnMarginLeftChanged);
+    connect(ui->ds_marginRight,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QDoubleSpinBox::*)(double)>(
-                     &QDoubleSpinBox::valueChanged),
+            static_cast<void (QDoubleSpinBox::*)(double)>(
+            &QDoubleSpinBox::valueChanged),
 #else
-                     QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged),
 #endif
-                     this, &PrintOutputWindow::OnMarginRightChanged);
-    QObject::connect(ui->ds_marginTop,
+            this, &PrintOutputWindow::OnMarginRightChanged);
+    connect(ui->ds_marginTop,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QDoubleSpinBox::*)(double)>(
-                     &QDoubleSpinBox::valueChanged),
+            static_cast<void (QDoubleSpinBox::*)(double)>(
+            &QDoubleSpinBox::valueChanged),
 #else
-                     QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            QOverload<double>::of(&QDoubleSpinBox::valueChanged),
 #endif
-                     this, &PrintOutputWindow::OnMarginTopChanged);
-    QObject::connect(ui->b_print, &QPushButton::clicked,
-                     this, &PrintOutputWindow::OnPrint);
-    QObject::connect(ui->w_printPreview, &QPrintPreviewWidget::paintRequested,
-                     this, &PrintOutputWindow::OnPaintRequested);
-    QObject::connect(ui->w_printPreview, &QPrintPreviewWidget::previewChanged,
-                     this, &PrintOutputWindow::OnPreviewChanged);
+            this, &PrintOutputWindow::OnMarginTopChanged);
+    connect(ui->b_print, &QPushButton::clicked,
+            this, &PrintOutputWindow::OnPrint);
+    connect(ui->w_printPreview, &QPrintPreviewWidget::paintRequested,
+            this, &PrintOutputWindow::OnPaintRequested);
+    connect(ui->w_printPreview, &QPrintPreviewWidget::previewChanged,
+            this, &PrintOutputWindow::OnPreviewChanged);
 
     auto value = GetPercentFromSizeFactor(sizeFactor);
     if (!value)

@@ -99,30 +99,30 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
 
 void FlexplorerNewUi::ConnectSignalsWithSlots()
 {
-    QObject::connect(r_dskFile, &QAbstractButton::toggled,
-        this, &FlexplorerNewUi::OnDskFileFormat);
-    QObject::connect(r_flxFile, &QAbstractButton::toggled,
-        this, &FlexplorerNewUi::OnFlxFileFormat);
-    QObject::connect(r_mdcrFile, &QAbstractButton::toggled,
-        this, &FlexplorerNewUi::OnMdcrFileFormat);
-    QObject::connect(e_tracks, &QLineEdit::textChanged,
-        this, &FlexplorerNewUi::OnTrkSecChanged);
-    QObject::connect(e_sectors, &QLineEdit::textChanged,
-        this, &FlexplorerNewUi::OnTrkSecChanged);
-    QObject::connect(cb_diskFormat,
+    connect(r_dskFile, &QAbstractButton::toggled,
+            this, &FlexplorerNewUi::OnDskFileFormat);
+    connect(r_flxFile, &QAbstractButton::toggled,
+            this, &FlexplorerNewUi::OnFlxFileFormat);
+    connect(r_mdcrFile, &QAbstractButton::toggled,
+            this, &FlexplorerNewUi::OnMdcrFileFormat);
+    connect(e_tracks, &QLineEdit::textChanged,
+            this, &FlexplorerNewUi::OnTrkSecChanged);
+    connect(e_sectors, &QLineEdit::textChanged,
+            this, &FlexplorerNewUi::OnTrkSecChanged);
+    connect(cb_diskFormat,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QComboBox::*)(int)>(                     
-                         &QComboBox::currentIndexChanged),
+            static_cast<void (QComboBox::*)(int)>(
+                &QComboBox::currentIndexChanged),
 #else
-                     QOverload<int>::of(&QComboBox::currentIndexChanged),
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
-        this, &FlexplorerNewUi::OnFormatChanged);
-    QObject::connect(b_path, &QAbstractButton::clicked,
-        this, &FlexplorerNewUi::OnSelectPath);
+            this, &FlexplorerNewUi::OnFormatChanged);
+    connect(b_path, &QAbstractButton::clicked,
+            this, &FlexplorerNewUi::OnSelectPath);
 
-    QObject::connect(c_buttonBox, &QDialogButtonBox::accepted,
-        this, &FlexplorerNewUi::OnAccepted);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::rejected,
+    connect(c_buttonBox, &QDialogButtonBox::accepted,
+            this, &FlexplorerNewUi::OnAccepted);
+    connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &FlexplorerNewUi::OnRejected);
 }
 

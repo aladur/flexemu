@@ -81,11 +81,11 @@ BPArray BreakpointSettingsUi::GetData() const
 
 void BreakpointSettingsUi::ConnectSignalsWithSlots()
 {
-    QObject::connect(c_buttonBox, &QDialogButtonBox::accepted,
-        this, &BreakpointSettingsUi::OnAccepted);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::rejected,
+    connect(c_buttonBox, &QDialogButtonBox::accepted,
+            this, &BreakpointSettingsUi::OnAccepted);
+    connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &BreakpointSettingsUi::OnRejected);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::clicked,
+    connect(c_buttonBox, &QDialogButtonBox::clicked,
             this, &BreakpointSettingsUi::OnClicked);
 }
 

@@ -133,14 +133,14 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
 
 void LogfileSettingsUi::ConnectSignalsWithSlots()
 {
-    QObject::connect(c_buttonBox, &QDialogButtonBox::accepted,
-        this, &LogfileSettingsUi::OnAccepted);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::rejected,
-        this, &LogfileSettingsUi::OnRejected);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::clicked,
-        this, &LogfileSettingsUi::OnClicked);
-    QObject::connect(b_logFilename, &QAbstractButton::clicked,
-        [&](){ OnSelectFile(*e_logFilename); });
+    connect(c_buttonBox, &QDialogButtonBox::accepted,
+            this, &LogfileSettingsUi::OnAccepted);
+    connect(c_buttonBox, &QDialogButtonBox::rejected,
+            this, &LogfileSettingsUi::OnRejected);
+    connect(c_buttonBox, &QDialogButtonBox::clicked,
+            this, &LogfileSettingsUi::OnClicked);
+    connect(b_logFilename, &QAbstractButton::clicked,
+            [&](){ OnSelectFile(*e_logFilename); });
 }
 
 void LogfileSettingsUi::OnAccepted()

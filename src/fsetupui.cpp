@@ -43,58 +43,58 @@
 
 void FlexemuOptionsUi::ConnectSignalsWithSlots()
 {
-    QObject::connect(b_diskMonitorDir, &QAbstractButton::clicked,
+    connect(b_diskMonitorDir, &QAbstractButton::clicked,
             this, &FlexemuOptionsUi::OnSelectDiskMonitorDir);
-    QObject::connect(b_monitorPgm, &QAbstractButton::clicked,
+    connect(b_monitorPgm, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_monitorPgm, FileType::HexBinaryFile); });
 
-    QObject::connect(b_drive0, &QAbstractButton::clicked,
+    connect(b_drive0, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_drive0, FileType::DiskContainerFile); });
-    QObject::connect(b_drive1, &QAbstractButton::clicked,
+    connect(b_drive1, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_drive1, FileType::DiskContainerFile); });
-    QObject::connect(b_drive2, &QAbstractButton::clicked,
+    connect(b_drive2, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_drive2, FileType::DiskContainerFile); });
-    QObject::connect(b_drive3, &QAbstractButton::clicked,
+    connect(b_drive3, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_drive3, FileType::DiskContainerFile); });
 
-    QObject::connect(b_mdcrDrive0, &QAbstractButton::clicked,
+    connect(b_mdcrDrive0, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_mdcrDrive0, FileType::CassetteFile); });
-    QObject::connect(b_mdcrDrive1, &QAbstractButton::clicked,
+    connect(b_mdcrDrive1, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_mdcrDrive1, FileType::CassetteFile); });
 
-    QObject::connect(r_ramExtNone, &QAbstractButton::toggled,
+    connect(r_ramExtNone, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
-    QObject::connect(r_ramExt2x96, &QAbstractButton::toggled,
+    connect(r_ramExt2x96, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
-    QObject::connect(r_ramExt2x288, &QAbstractButton::toggled,
+    connect(r_ramExt2x288, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateRamDependencies);
 
-    QObject::connect(r_eurocom2v5, &QAbstractButton::toggled,
+    connect(r_eurocom2v5, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateHardwareDependencies);
-    QObject::connect(r_eurocom2v7, &QAbstractButton::toggled,
+    connect(r_eurocom2v7, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::UpdateHardwareDependencies);
 
-    QObject::connect(r_frequencyOriginal, &QAbstractButton::toggled,
+    connect(r_frequencyOriginal, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::OnFrequencyOriginal);
-    QObject::connect(r_frequencyFast, &QAbstractButton::toggled,
+    connect(r_frequencyFast, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::OnFrequencyFast);
-    QObject::connect(r_frequencySet, &QAbstractButton::toggled,
+    connect(r_frequencySet, &QAbstractButton::toggled,
             this, &FlexemuOptionsUi::OnFrequencySet);
 
-    QObject::connect(c_multiColorScheme, &QCheckBox::stateChanged,
+    connect(c_multiColorScheme, &QCheckBox::stateChanged,
             this, &FlexemuOptionsUi::OnMultiColorSchemeChanged);
-    QObject::connect(cb_nColors,
+    connect(cb_nColors,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
-                     static_cast<void (QComboBox::*)(int)>(
-                         &QComboBox::currentIndexChanged),
+            static_cast<void (QComboBox::*)(int)>(
+                &QComboBox::currentIndexChanged),
 #else
-                     QOverload<int>::of(&QComboBox::currentIndexChanged),
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
             this, &FlexemuOptionsUi::OnNColorsChanged);
 
-    QObject::connect(c_buttonBox, &QDialogButtonBox::accepted,
+    connect(c_buttonBox, &QDialogButtonBox::accepted,
             this, &FlexemuOptionsUi::OnAccepted);
-    QObject::connect(c_buttonBox, &QDialogButtonBox::rejected,
+    connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &FlexemuOptionsUi::OnRejected);
 }
 
