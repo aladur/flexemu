@@ -298,10 +298,20 @@ void PrintOutputWindow::OnOpenPrintPreview()
     UpdatePaperWidthAndHeight(false);
 
     QObject::connect(ui->cb_unit,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QComboBox::*)(int)>(
+                     &QComboBox::currentIndexChanged),
+#else
                      QOverload<int>::of(&QComboBox::currentIndexChanged),
+#endif
                      this, &PrintOutputWindow::OnUnitChanged);
     QObject::connect(ui->cb_pageSize,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QComboBox::*)(int)>(
+                     &QComboBox::currentIndexChanged),
+#else
                      QOverload<int>::of(&QComboBox::currentIndexChanged),
+#endif
                      this, &PrintOutputWindow::OnPageSizeChanged);
     QObject::connect(ui->s_sizeAdjustment, &QSlider::valueChanged,
                      this, &PrintOutputWindow::OnSizeFactorChanged);
@@ -314,16 +324,36 @@ void PrintOutputWindow::OnOpenPrintPreview()
     QObject::connect(ui->rb_landscape, &QRadioButton::clicked,
                      this, &PrintOutputWindow::OnLandscapeClicked);
     QObject::connect(ui->ds_marginBottom,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QDoubleSpinBox::*)(double)>(
+                     &QDoubleSpinBox::valueChanged),
+#else
                      QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+#endif
                      this, &PrintOutputWindow::OnMarginBottomChanged);
     QObject::connect(ui->ds_marginLeft,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QDoubleSpinBox::*)(double)>(
+                     &QDoubleSpinBox::valueChanged),
+#else
                      QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+#endif
                      this, &PrintOutputWindow::OnMarginLeftChanged);
     QObject::connect(ui->ds_marginRight,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QDoubleSpinBox::*)(double)>(
+                     &QDoubleSpinBox::valueChanged),
+#else
                      QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+#endif
                      this, &PrintOutputWindow::OnMarginRightChanged);
     QObject::connect(ui->ds_marginTop,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+                     static_cast<void (QDoubleSpinBox::*)(double)>(
+                     &QDoubleSpinBox::valueChanged),
+#else
                      QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+#endif
                      this, &PrintOutputWindow::OnMarginTopChanged);
     QObject::connect(ui->b_print, &QPushButton::clicked,
                      this, &PrintOutputWindow::OnPrint);
@@ -457,6 +487,7 @@ void PrintOutputWindow::OnSaveAsHtml()
 
 void PrintOutputWindow::OnSaveAsMarkdown()
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     QString title("Save to Markdown File");
     auto filename =
         QFileDialog::getSaveFileName(this, title, QString(), "*.md");
@@ -483,6 +514,7 @@ void PrintOutputWindow::OnSaveAsMarkdown()
         QTextStream outStream(&file);
         outStream << textBrowser->toMarkdown();
     }
+#endif
 }
 
 void PrintOutputWindow::OnSaveAsPlainText()
@@ -577,8 +609,9 @@ void PrintOutputWindow::CreateEditActions(QBoxLayout &layout)
     layout.addWidget(toolBar);
 
     const auto clearIcon = QIcon(":/resource/print-clear.png");
-    action = editMenu->addAction(clearIcon, tr("&Clear"), this,
-                                 &PrintOutputWindow::OnClearTextBrowser);
+    action = editMenu->addAction(clearIcon, tr("&Clear"));
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnClearTextBrowser);
     action->setStatusTip(tr("Clear print output"));
     toolBar->addAction(action);
 
@@ -615,26 +648,32 @@ void PrintOutputWindow::CreateFileActions(QBoxLayout &layout)
     layout.addWidget(toolBar);
 
     const auto previewIcon = QIcon(":/resource/print-preview.png");
-    action = fileMenu->addAction(previewIcon, tr("&Print Preview ..."),
-                                 this, &PrintOutputWindow::OnOpenPrintPreview);
+    action = fileMenu->addAction(previewIcon, tr("&Print Preview ..."));
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnOpenPrintPreview);
     action->setStatusTip(tr("Open print preview for print output"));
     printPreviewAction = action;
 
-    action = fileMenu->addAction(tr("Save as &HTML ..."), this,
-                                 &PrintOutputWindow::OnSaveAsHtml);
+    action = fileMenu->addAction(tr("Save as &HTML ..."));
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnSaveAsHtml);
     action->setStatusTip(tr("Save print output to a HTML file"));
-    action = fileMenu->addAction(tr("Save as &Markdown ..."), this,
-                                 &PrintOutputWindow::OnSaveAsMarkdown);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    action = fileMenu->addAction(tr("Save as &Markdown ..."));
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnSaveAsMarkdown);
     action->setStatusTip(tr("Save print output to a markdown file"));
-    action = fileMenu->addAction(tr("Save as &Text ..."), this,
-                                 &PrintOutputWindow::OnSaveAsPlainText);
+#endif
+    action = fileMenu->addAction(tr("Save as &Text ..."));
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnSaveAsPlainText);
     action->setStatusTip(tr("Save print output to a plain text file"));
 
     fileMenu->addSeparator();
 
     const auto closeIcon = QIcon(":/resource/window-close.png");
-    action = fileMenu->addAction(closeIcon, tr("&Close"), this,
-                                 &PrintOutputWindow::hide);
+    action = fileMenu->addAction(closeIcon, tr("&Close"));
+    connect(action, &QAction::triggered, this, &PrintOutputWindow::hide);
     action->setStatusTip(tr("Close this window"));
     toolBar->addAction(action);
     toolBar->addAction(printPreviewAction);
