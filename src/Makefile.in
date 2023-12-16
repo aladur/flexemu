@@ -187,10 +187,11 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
 	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
 	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
-	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
-	flexemu-sodiff.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
-	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
+	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
+	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
+	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
+	flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -293,8 +294,8 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flexemu-pia2.Po ./$(DEPDIR)/flexemu-pia2v5.Po \
 	./$(DEPDIR)/flexemu-poutwin.Po \
 	./$(DEPDIR)/flexemu-poutwin_moc.Po \
-	./$(DEPDIR)/flexemu-poverhlp.Po ./$(DEPDIR)/flexemu-qtgui.Po \
-	./$(DEPDIR)/flexemu-qtgui_moc.Po \
+	./$(DEPDIR)/flexemu-poverhlp.Po ./$(DEPDIR)/flexemu-qtfree.Po \
+	./$(DEPDIR)/flexemu-qtgui.Po ./$(DEPDIR)/flexemu-qtgui_moc.Po \
 	./$(DEPDIR)/flexemu-schedule.Po ./$(DEPDIR)/flexemu-sodiff.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
@@ -847,6 +848,7 @@ flexemu_SOURCES = \
 	pia2v5.cpp \
 	poutwin.cpp \
 	poverhlp.cpp \
+	qtfree.cpp \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
@@ -941,6 +943,7 @@ flexemu_SOURCES = \
 	poutwin.h \
 	poverhlp.h \
 	propsui.h \
+	qtfree.h \
 	qtgui.h \
 	rfilecnt.h \
 	schedcpu.h \
@@ -1405,6 +1408,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poutwin.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poutwin_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-poverhlp.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtfree.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@ # am--include-marker
@@ -2568,6 +2572,20 @@ flexemu-poverhlp.obj: poverhlp.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poverhlp.obj `if test -f 'poverhlp.cpp'; then $(CYGPATH_W) 'poverhlp.cpp'; else $(CYGPATH_W) '$(srcdir)/poverhlp.cpp'; fi`
 
+flexemu-qtfree.o: qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-qtfree.o -MD -MP -MF $(DEPDIR)/flexemu-qtfree.Tpo -c -o flexemu-qtfree.o `test -f 'qtfree.cpp' || echo '$(srcdir)/'`qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-qtfree.Tpo $(DEPDIR)/flexemu-qtfree.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qtfree.cpp' object='flexemu-qtfree.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-qtfree.o `test -f 'qtfree.cpp' || echo '$(srcdir)/'`qtfree.cpp
+
+flexemu-qtfree.obj: qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-qtfree.obj -MD -MP -MF $(DEPDIR)/flexemu-qtfree.Tpo -c -o flexemu-qtfree.obj `if test -f 'qtfree.cpp'; then $(CYGPATH_W) 'qtfree.cpp'; else $(CYGPATH_W) '$(srcdir)/qtfree.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-qtfree.Tpo $(DEPDIR)/flexemu-qtfree.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qtfree.cpp' object='flexemu-qtfree.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-qtfree.obj `if test -f 'qtfree.cpp'; then $(CYGPATH_W) 'qtfree.cpp'; else $(CYGPATH_W) '$(srcdir)/qtfree.cpp'; fi`
+
 flexemu-qtgui.o: qtgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-qtgui.o -MD -MP -MF $(DEPDIR)/flexemu-qtgui.Tpo -c -o flexemu-qtgui.o `test -f 'qtgui.cpp' || echo '$(srcdir)/'`qtgui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-qtgui.Tpo $(DEPDIR)/flexemu-qtgui.Po
@@ -3573,6 +3591,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-poutwin.Po
 	-rm -f ./$(DEPDIR)/flexemu-poutwin_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-poverhlp.Po
+	-rm -f ./$(DEPDIR)/flexemu-qtfree.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
@@ -3743,6 +3762,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-poutwin.Po
 	-rm -f ./$(DEPDIR)/flexemu-poutwin_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-poverhlp.Po
+	-rm -f ./$(DEPDIR)/flexemu-qtfree.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui.Po
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po

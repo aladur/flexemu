@@ -57,6 +57,7 @@
 #include <iostream>
 #include <cmath>
 #include <set>
+#include "qtfree.h"
 #include "pagedet.h"
 #include "soptions.h"
 
@@ -837,29 +838,6 @@ void PrintOutputWindow::OpenPrintDialog(QPrinter *p)
     {
         OnPaintRequested(p);
     }
-}
-
-QFont PrintOutputWindow::GetFont(const QString &fontName)
-{
-    auto list = fontName.split(QLatin1Char(','));
-
-    if (list.size() >= 4)
-    {
-        bool ok = false;
-        auto family = list[0];
-        auto style = list[3];
-        auto pointSizeString = list[1];
-        auto pointSize =
-            static_cast<int>(std::round(pointSizeString.toFloat(&ok)));
-
-        if (ok && pointSize > 0)
-        {
-            auto fontDatabase = QFontDatabase();
-            return fontDatabase.font(family, style, pointSize);
-        }
-    }
-
-    return QFont();
 }
 
 // Set the margins for a given page size ID.

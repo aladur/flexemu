@@ -147,6 +147,9 @@
     <ClCompile Include="fsetupui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="qtfree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="qtgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -486,6 +489,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="logfilui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtfree.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qtgui.h">

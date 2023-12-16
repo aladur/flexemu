@@ -254,6 +254,7 @@
     <ClCompile Include="pia2v5.cpp" />
     <ClCompile Include="poutwin.cpp" />
     <ClCompile Include="poverhlp.cpp" />
+    <ClCompile Include="qtfree.cpp" />
     <ClCompile Include="qtgui.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
@@ -460,6 +461,7 @@
     <ClInclude Include="pia2v5.h" />
     <ClInclude Include="poverhlp.h" />
     <ClInclude Include="propsui.h" />
+    <ClInclude Include="qtfree.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="schedcpu.h" />

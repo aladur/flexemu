@@ -213,6 +213,7 @@ flexemu_SOURCES = \
 	pia2v5.cpp \
 	poutwin.cpp \
 	poverhlp.cpp \
+	qtfree.cpp \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
@@ -307,6 +308,7 @@ flexemu_SOURCES = \
 	poutwin.h \
 	poverhlp.h \
 	propsui.h \
+	qtfree.h \
 	qtgui.h \
 	rfilecnt.h \
 	schedcpu.h \

@@ -118,7 +118,6 @@ private:
     void InitializeUnit();
     void OpenPrintDialog(QPrinter *printer);
     void ProcessSerialInput();
-    QFont GetFont(const QString &fontName);
     void SetMarginsFor(QPageSize::PageSizeId id, const QMarginsF &margins);
     void SetMarginsInfo(bool isInvalid) const;
     void SetSpinBoxUnit(const QString &unit);
