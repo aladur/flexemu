@@ -44,6 +44,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QProgressDialog>
 #include <QCloseEvent>
 #include <QStatusTipEvent>
 #include <QFont>
@@ -52,6 +53,7 @@
 #include <QDirIterator>
 #include <QPrintDialog>
 #include <QStatusBar>
+#include <QEventLoop>
 #include "warnon.h"
 #include <algorithm>
 #include <iostream>
@@ -750,6 +752,9 @@ void PrintOutputWindow::DetectPageBreaks()
         }
 
         textBrowser->clear();
+        auto progress =
+            QProgressDialog(tr("Reformatting ..."), tr("Cancel"), 0, 100, this);
+        progress.setCancelButton(nullptr);
 
         // Print lines which are not ignored. Also print page breaks.
         for (index = 0U; index < richLines.size(); ++index)
@@ -758,7 +763,11 @@ void PrintOutputWindow::DetectPageBreaks()
             {
                 const auto iter = pageBreak.find(index);
                 bool isPageBreak = (iter != pageBreak.end());
+
+                progress.setValue(index * 100 / richLines.size());
                 PrintLine(richLines[index], isPageBreak);
+                QGuiApplication::processEvents(
+                        QEventLoop::ExcludeUserInputEvents);
             }
         }
     }
@@ -1005,6 +1014,7 @@ void PrintOutputWindow::ProcessSerialInput()
             isEmptyLine.push_back(overlayHelper.IsRichLineEmpty());
             richLines.push_back(overlayHelper.GetRichLine());
             PrintLine(overlayHelper.GetRichLine());
+            QGuiApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
         }
 
         if (!isVisible())
