@@ -30,7 +30,8 @@ pkgdata_DATA = \
 	relasmb.pdf \
 	swflexum.pdf\
 	tedit.pdf \
-	util_man.pdf
+	util_man.pdf \
+	dynastar.pdf
 
 extra_files = \
 	instance.fig \

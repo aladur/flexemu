@@ -246,6 +246,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   File /a "${BASEDIR}\disks\system54.dsk"
   File /a "${BASEDIR}\disks\diag6809.dsk"
   File /a "${BASEDIR}\disks\system.mdcr"
+  File /a "${BASEDIR}\disks\dynadocu.dsk"
 
 SectionEnd
 
@@ -283,6 +284,7 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\swflexum.pdf"
   File /a "${BASEDIR}\doc\tedit.pdf"
   File /a "${BASEDIR}\doc\util_man.pdf"
+  File /a "${BASEDIR}\doc\dynastar.pdf"
   File /a "${BASEDIR}\doc\6x09_Instruction_Sets.pdf"
   SetOutPath $INSTDIR\Documentation\images
   File /a "${BASEDIR}\doc\images\e2v5m.png"
