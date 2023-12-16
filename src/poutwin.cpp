@@ -358,7 +358,7 @@ void PrintOutputWindow::OnPageSizeChanged(int index)
     {
         SetMarginsFor(pageSizeId, margins);
         pageSizeId = pageSizeValues[index];
-        previewPrinter->setPageSize(pageSizeId);
+        previewPrinter->setPageSize(QPageSize(pageSizeId));
         margins = GetMarginsFor(pageSizeId);
         UpdateMargins();
         UpdatePaperWidthAndHeight(true);
@@ -383,7 +383,7 @@ void PrintOutputWindow::OnPaintRequested(QPrinter *p) const
     layout.setMode(QPageLayout::StandardMode);
     layout.setOrientation(orientation);
     layout.setUnits(QPageLayout::Inch);
-    layout.setPageSize(pageSizeId);
+    layout.setPageSize(QPageSize(pageSizeId));
     layout.setMargins(margins);
     p->setPageLayout(layout);
     bool isInvalid = !p->setPageMargins(margins, QPageLayout::Inch);
