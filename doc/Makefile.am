@@ -31,7 +31,8 @@ pkgdata_DATA = \
 	swflexum.pdf\
 	tedit.pdf \
 	util_man.pdf \
-	dynastar.pdf
+	dynastar.pdf \
+	TSC_Text_Processor.pdf
 
 extra_files = \
 	instance.fig \

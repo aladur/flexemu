@@ -11,7 +11,8 @@ pkgdata_DATA = \
 	system.mdcr \
 	system54.dsk \
 	test.dsk \
-	dynadocu.dsk
+	dynadocu.dsk \
+	tsc_man.dsk
 
 EXTRA_DIST = ${pkgdata_DATA}
 
