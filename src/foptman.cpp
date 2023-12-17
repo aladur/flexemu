@@ -434,6 +434,19 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXPRINTPAGEBREAKDETECTED,
                     options.isPrintPageBreakDetected ? 1 : 0);
             break;
+
+        case FlexemuOptionId::PrintOrientation:
+            reg.SetValue(FLEXPRINTORIENTATION,
+                    options.printOrientation.c_str());
+            break;
+
+        case FlexemuOptionId::PrintPageSize:
+            reg.SetValue(FLEXPRINTPAGESIZE, options.printPageSize.c_str());
+            break;
+
+        case FlexemuOptionId::PrintUnit:
+            reg.SetValue(FLEXPRINTUNIT, options.printUnit.c_str());
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -597,6 +610,18 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isPrintPageBreakDetected =
                 previousOptions.isPrintPageBreakDetected;
             break;
+
+        case FlexemuOptionId::PrintOrientation:
+            optionsToWrite.printOrientation = previousOptions.printOrientation;
+            break;
+
+        case FlexemuOptionId::PrintPageSize:
+            optionsToWrite.printPageSize = previousOptions.printPageSize;
+            break;
+
+        case FlexemuOptionId::PrintUnit:
+            optionsToWrite.printUnit = previousOptions.printUnit;
+            break;
         }
     }
 
@@ -636,6 +661,10 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
+    rcFile.SetValue(FLEXPRINTORIENTATION,
+            optionsToWrite.printOrientation.c_str());
+    rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize.c_str());
+    rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
 }
 #endif
 
@@ -776,6 +805,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     {
         options.isPrintPageBreakDetected = (int_result != 0);
     }
+
+    reg.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
+    reg.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
+    reg.GetValue(FLEXPRINTUNIT, options.printUnit);
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -914,6 +947,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     {
         options.isPrintPageBreakDetected = (int_result != 0);
     }
+
+    rcFile.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
+    rcFile.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
+    rcFile.GetValue(FLEXPRINTUNIT, options.printUnit);
 #endif
 } // GetOptions
 

@@ -317,6 +317,9 @@ extern "C" struct sRGBDef
 #define FLEXTERMINALIGNORENUL "TerminalIgnoreNUL"
 #define FLEXPRINTFONT "PrintFont"
 #define FLEXPRINTPAGEBREAKDETECTED "PrintPageBreakDetected"
+#define FLEXPRINTORIENTATION "PrintOrientation"
+#define FLEXPRINTPAGESIZE "PrintPageSize"
+#define FLEXPRINTUNIT "PrintUnit"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

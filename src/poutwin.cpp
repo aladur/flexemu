@@ -63,6 +63,20 @@
 #include "pagedet.h"
 #include "soptions.h"
 
+// The orientation keys should not be translated (Unique key).
+const QStringList orientationKeys{ "Portrait", "Landscape" };
+const QList<enum QPageLayout::Orientation> orientationValues{
+    QPageLayout::Portrait, QPageLayout::Landscape
+};
+// The pages size keys should not be translated (Unique key).
+const QStringList pageSizeKeys{
+    "DINA3", "DINA4", "DINA5", "DINA6",
+    "DINB3", "DINB4", "DINB5", "DINB6",
+    "EnvC3", "EnvC4", "EnvC5", "EnvC6",
+    "Env10", "EnvDL", "EnvMonarch",
+    "JISB4", "JISB5", "JISB6",
+    "Tabloid", "Legal", "Letter", "Executive", "HalfLetter"
+};
 const QStringList pageSizeStrings{
     "DIN A3", "DIN A4", "DIN A5", "DIN A6",
     "DIN B3", "DIN B4", "DIN B5", "DIN B6",
@@ -81,6 +95,8 @@ const QList<enum QPageSize::PageSizeId> pageSizeValues{
     QPageSize::Tabloid, QPageSize::Legal, QPageSize::Letter,
     QPageSize::ExecutiveStandard, QPageSize::Statement
 };
+// The unit keys should not be translated (Unique key).
+const QStringList unitKeys{ "Millimeter", "Inches" };
 const QStringList unitShortStrings{ "mm", "in" };
 const QStringList unitStrings{ "Millimeter (mm)", "Inches (in)" };
 const QList<enum QPrinter::Unit> unitValues{
@@ -148,8 +164,15 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
     CreateStatusBar(*mainLayout);
 
     toolBarLayout->addStretch(1);
+
     auto font = GetFont(options.printFont.c_str());
     fontComboBox->setCurrentFont(font);
+    auto index = orientationKeys.indexOf(options.printOrientation.c_str());
+    orientation = (index >= 0) ? orientationValues[index] : orientation;
+    index = pageSizeKeys.indexOf(options.printPageSize.c_str());
+    pageSizeId = (index >= 0) ? pageSizeValues[index] : pageSizeId;
+    index = unitKeys.indexOf(options.printUnit.c_str());
+    unit = (index >= 0) ? unitValues[index] : unit;
 
     const auto printOutputIcon = QIcon(":/resource/print-output.png");
     setWindowIcon(printOutputIcon);
@@ -242,6 +265,9 @@ void PrintOutputWindow::OnLandscapeClicked(bool checked)
     {
         orientation = QPageLayout::Landscape;
         previewPrinter->setPageOrientation(orientation);
+        auto index = orientationValues.indexOf(orientation);
+        options.printOrientation =
+            std::string(orientationKeys[index].toUtf8().data());
         UpdatePaperWidthAndHeight(true);
     }
 }
@@ -392,6 +418,8 @@ void PrintOutputWindow::OnPageSizeChanged(int index)
         SetMarginsFor(pageSizeId, margins);
         pageSizeId = pageSizeValues[index];
         previewPrinter->setPageSize(QPageSize(pageSizeId));
+        auto idx = pageSizeValues.indexOf(pageSizeId);
+        options.printPageSize = std::string(pageSizeKeys[idx].toUtf8().data());
         margins = GetMarginsFor(pageSizeId);
         UpdateMargins();
         UpdatePaperWidthAndHeight(true);
@@ -404,6 +432,9 @@ void PrintOutputWindow::OnPortraitClicked(bool checked)
     {
         orientation = QPageLayout::Portrait;
         previewPrinter->setPageOrientation(orientation);
+        auto index = orientationValues.indexOf(orientation);
+        options.printOrientation =
+            std::string(orientationKeys[index].toUtf8().data());
         UpdatePaperWidthAndHeight(true);
     }
 }
@@ -594,6 +625,8 @@ void PrintOutputWindow::OnUnitChanged(int index)
         unit = unitValues[index];
         UpdateMargins();
         SetSpinBoxUnit(unitShortStrings[index]);
+        auto idx = unitValues.indexOf(unit);
+        options.printUnit = std::string(unitKeys[idx].toUtf8().data());
         UpdatePaperWidthAndHeight(true);
     }
 }

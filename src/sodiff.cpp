@@ -170,6 +170,21 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::IsPrintPageBreakDetected);
     }
+
+    if (opt1.printOrientation != opt2.printOrientation)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintOrientation);
+    }
+
+    if (opt1.printPageSize != opt2.printPageSize)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintPageSize);
+    }
+
+    if (opt1.printUnit != opt2.printUnit)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintUnit);
+    }
 }
 
 const FlexemuOptionsDifference::Result&
@@ -215,6 +230,9 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::IsTerminalIgnoreNUL:
             case FlexemuOptionId::PrintFont:
             case FlexemuOptionId::IsPrintPageBreakDetected:
+            case FlexemuOptionId::PrintOrientation:
+            case FlexemuOptionId::PrintPageSize:
+            case FlexemuOptionId::PrintUnit:
                 break;
         }
     }

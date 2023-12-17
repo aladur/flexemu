@@ -65,6 +65,9 @@ enum class FlexemuOptionId : uint8_t
     IsDisplaySmooth,
     PrintFont,
     IsPrintPageBreakDetected,
+    PrintOrientation,
+    PrintPageSize,
+    PrintUnit,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -98,6 +101,9 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::IsDisplaySmooth,
     FlexemuOptionId::PrintFont,
     FlexemuOptionId::IsPrintPageBreakDetected,
+    FlexemuOptionId::PrintOrientation,
+    FlexemuOptionId::PrintPageSize,
+    FlexemuOptionId::PrintUnit,
 };
 
 struct sOptions
@@ -136,6 +142,9 @@ struct sOptions
                    // is executed.
     std::string printFont; // Font used for printing documents (monospace)
     bool isPrintPageBreakDetected; // Print preview: Automatic page break det.
+    std::string printOrientation; // Print preview: Page orientation (Port/Land)
+    std::string printPageSize; // Print preview: Page size
+    std::string printUnit; // Print preview: Unit (mm/inch)
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

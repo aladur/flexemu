@@ -391,6 +391,9 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
 
             case FlexemuOptionId::PrintFont:
             case FlexemuOptionId::IsPrintPageBreakDetected:
+            case FlexemuOptionId::PrintOrientation:
+            case FlexemuOptionId::PrintPageSize:
+            case FlexemuOptionId::PrintUnit:
                 break;
         }
     }
@@ -472,6 +475,9 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
                 case FlexemuOptionId::PrintFont:
                 case FlexemuOptionId::IsPrintPageBreakDetected:
+                case FlexemuOptionId::PrintOrientation:
+                case FlexemuOptionId::PrintPageSize:
+                case FlexemuOptionId::PrintUnit:
                     break;
             }
         }

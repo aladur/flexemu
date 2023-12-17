@@ -360,6 +360,9 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsTerminalIgnoreNUL:
                 case FlexemuOptionId::PrintFont:
                 case FlexemuOptionId::IsPrintPageBreakDetected:
+                case FlexemuOptionId::PrintOrientation:
+                case FlexemuOptionId::PrintPageSize:
+                case FlexemuOptionId::PrintUnit:
                     isWriteOptions = true;
                     break;
 
