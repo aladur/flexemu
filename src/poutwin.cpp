@@ -97,7 +97,7 @@ const QList<enum QPageSize::PageSizeId> pageSizeValues{
 };
 // The unit keys should not be translated (Unique key).
 const QStringList unitKeys{ "Millimeter", "Inches" };
-const QStringList unitShortStrings{ "mm", "in" };
+const QStringList unitSuffix{ "mm", "in" };
 const QStringList unitStrings{ "Millimeter (mm)", "Inches (in)" };
 const QList<enum QPrinter::Unit> unitValues{
     QPrinter::Millimeter, QPrinter::Inch
@@ -624,7 +624,7 @@ void PrintOutputWindow::OnUnitChanged(int index)
     {
         unit = unitValues[index];
         UpdateMargins();
-        SetSpinBoxUnit(unitShortStrings[index]);
+        SetSpinBoxUnit(unitSuffix[index]);
         auto idx = unitValues.indexOf(unit);
         options.printUnit = std::string(unitKeys[idx].toUtf8().data());
         UpdatePaperWidthAndHeight(true);
@@ -868,7 +868,7 @@ void PrintOutputWindow::InitializeUnit()
     if (index >= 0)
     { 
         ui->cb_unit->setCurrentText(unitStrings[index]);
-        SetSpinBoxUnit(unitShortStrings[index]);
+        SetSpinBoxUnit(unitSuffix[index]);
     }
 }
 
