@@ -185,6 +185,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
     {
         notEquals.push_back(FlexemuOptionId::PrintUnit);
     }
+
+    if (opt1.printConfigs != opt2.printConfigs)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintConfigs);
+    }
 }
 
 const FlexemuOptionsDifference::Result&
@@ -233,6 +238,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::PrintOrientation:
             case FlexemuOptionId::PrintPageSize:
             case FlexemuOptionId::PrintUnit:
+            case FlexemuOptionId::PrintConfigs:
                 break;
         }
     }

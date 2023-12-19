@@ -24,6 +24,7 @@
 #define BRCFILE_INCLUDED
 
 #include <string>
+#include <map>
 
 enum
 {
@@ -44,6 +45,8 @@ public:
     int SetValue(const char *key, int value);
     int GetValue(const char *key, std::string &value, int *isInteger = nullptr);
     int GetValue(const char *key, int &value);
+    int GetValues(const char *keyPrefix,
+            std::map<std::string, std::string> &values);
     int Initialize();
 
 private:

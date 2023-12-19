@@ -139,4 +139,48 @@ LONG BRegistry::DeleteValue(const std::string &name)
     return lastError;
 }
 
+LONG BRegistry::GetValues(const std::string &keyPrefix,
+        std::map<std::string, std::string> &values)
+{
+    const DWORD size(16384);
+    DWORD aKeySize;
+    DWORD index = 0U;
+    DWORD type;
+    bool isFinished = false;
+    auto keyBuf =
+        std::unique_ptr<wchar_t>(new wchar_t[size * sizeof(wchar_t)]);
+
+    while (!isFinished)
+    {
+        aKeySize = size;
+        lastError = RegEnumValue(hKey, index, keyBuf.get(), &aKeySize, nullptr,
+                                 &type, nullptr, nullptr);
+        if (lastError == ERROR_SUCCESS && type == REG_SZ)
+        {
+            auto key = ConvertToUtf8String(keyBuf.get());
+            if (key.size() > keyPrefix.size())
+            {
+                std::string value;
+                auto prefixOfKey = key.substr(0, keyPrefix.size());
+
+                if (stricmp(keyPrefix.c_str(), prefixOfKey.c_str()) == 0 &&
+                    GetValue(key, value) == ERROR_SUCCESS)
+                {
+                    auto subKey = key.substr(keyPrefix.size());
+                    values[subKey] = value;
+                }
+            }
+        }
+
+        if (lastError == ERROR_NO_MORE_ITEMS)
+        {
+            isFinished = true;
+            lastError = ERROR_SUCCESS;
+        }
+        ++index;
+    }
+
+    return lastError;
+}
+
 #endif

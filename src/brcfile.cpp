@@ -160,3 +160,42 @@ int BRcFile::Initialize()
     return BRC_NO_ERROR;
 }
 
+int BRcFile::GetValues(const char *keyPrefix,
+        std::map<std::string, std::string> &values)
+{
+    std::ifstream fs(fileName.c_str());
+    std::string key, value;
+
+    values.clear();
+    if (!fs.is_open())
+    {
+        return BRC_NOT_FOUND;
+    }
+
+    while (!fs.eof())
+    {
+        std::stringbuf strbuf;
+
+        fs >> key;
+        fs.get(strbuf);
+        value = strbuf.str();
+        ltrim(value);
+        if (key.size() > strlen(keyPrefix))
+        {
+            auto prefixOfKey = key.substr(0, strlen(keyPrefix));
+            auto subKey = key.substr(strlen(keyPrefix));
+
+            if (fs.good() && stricmp(keyPrefix, prefixOfKey.c_str()) == 0)
+            {
+                if (value[0] == '"')
+                {
+                    value = value.substr(1, value.length() - 2);
+                }
+                values[subKey] = value;
+            }
+        }
+    }
+
+    return BRC_NO_ERROR;
+}
+

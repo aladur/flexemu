@@ -74,7 +74,9 @@ public:
     static float GetDisplayedSizeFactorFromPercent(int percent);
     static int GetPercentFromSizeFactor(float sizeFactor);
     static QMarginsF GetDefaultMarginsFor(QPageSize::PageSizeId id);
-    static double MmToInches(double value);
+
+    // Static constants
+    static const char separator; // Separator for print config values
 
     // Receive flexemu print output
     void write_char_serial(Byte value);
@@ -83,6 +85,7 @@ public slots:
     void OnClearTextBrowser();
     void OnCyclicTimer();
     void OnFontChanged(const QFont &newFont) const;
+    void OnInitializePrintPreview();
     void OnPageBreakDetectionToggled(bool checked) const;
     void OnLandscapeClicked(bool checked);
     void OnMarginBottomChanged(double newValue);
@@ -111,20 +114,22 @@ private:
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
                             const QString &objectName);
     void DetectPageBreaks();
-    QMarginsF GetMarginsFor(QPageSize::PageSizeId id) const;
+    std::string CreatePrintConfigKey() const;
     bool HasSerialInput() const;
     void InitializeOrientation();
     void InitializePageSize();
     void InitializeUnit();
     void OpenPrintDialog(QPrinter *printer);
     void ProcessSerialInput();
-    void SetMarginsFor(QPageSize::PageSizeId id, const QMarginsF &margins);
+    void RestorePrintConfig();
+    void SavePrintConfig();
     void SetMarginsInfo(bool isInvalid) const;
     void SetSpinBoxUnit(const QString &unit);
     void SetTextBrowserFont(const QFont &font) const;
-    double ToInches(double value) const;
-    void UpdateMargins();
-    void UpdatePaperWidthAndHeight(bool doUpdate);
+    double ToMillimeter(double displayValue) const;
+    void UpdateMarginWidgets();
+    void UpdatePageWidthAndHeightWidgets();
+    void UpdateSizeAdjustmentWidget() const;
 
     // Process flexemu print output
     void PrintLine(const RichLine &richLine, bool isPageBreak = false) const;
@@ -163,13 +168,13 @@ private:
     enum QPrinter::Unit unit;
     enum QPageLayout::Orientation orientation;
     enum QPageSize::PageSizeId pageSizeId;
-    QMarginsF margins; // Unit: Inches
-    std::map<QPageSize::PageSizeId, QMarginsF> marginsForPageSize;
+    QMarginsF margins; // Unit: Millimeter, displayed in Centimeter
     mutable int characterCount;
     mutable int lineCount;
     mutable std::mutex serial_mutex;
     std::deque<Byte> serial_buffer;
     sOptions &options; 
+    bool isDeferPreviewUpdate;
 };
 
 #endif

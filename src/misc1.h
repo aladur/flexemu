@@ -320,6 +320,7 @@ extern "C" struct sRGBDef
 #define FLEXPRINTORIENTATION "PrintOrientation"
 #define FLEXPRINTPAGESIZE "PrintPageSize"
 #define FLEXPRINTUNIT "PrintUnit"
+#define FLEXPRINTCONFIG "PrintConfig"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

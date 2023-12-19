@@ -447,6 +447,14 @@ void FlexemuOptions::WriteOptionsToRegistry(
         case FlexemuOptionId::PrintUnit:
             reg.SetValue(FLEXPRINTUNIT, options.printUnit.c_str());
             break;
+
+        case FlexemuOptionId::PrintConfigs:
+            for (const auto& [subKey, value] : options.printConfigs)
+            {
+                const auto key = std::string(FLEXPRINTCONFIG) + subKey;
+                reg.SetValue(key.c_str(), value.c_str());
+            }
+            break;
         }
 
         reg.SetValue(FLEXVERSION, VERSION);
@@ -622,6 +630,10 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::PrintUnit:
             optionsToWrite.printUnit = previousOptions.printUnit;
             break;
+
+        case FlexemuOptionId::PrintConfigs:
+            optionsToWrite.printConfigs = previousOptions.printConfigs;
+            break;
         }
     }
 
@@ -665,6 +677,12 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.printOrientation.c_str());
     rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize.c_str());
     rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
+
+    for (const auto& [subKey, value] : optionsToWrite.printConfigs)
+    {
+        const auto key = std::string(FLEXPRINTCONFIG) + subKey;
+        rcFile.SetValue(key.c_str(), value.c_str());
+    }
 }
 #endif
 
@@ -809,6 +827,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     reg.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     reg.GetValue(FLEXPRINTUNIT, options.printUnit);
+    reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
@@ -951,6 +970,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     rcFile.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     rcFile.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     rcFile.GetValue(FLEXPRINTUNIT, options.printUnit);
+    rcFile.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 } // GetOptions
 

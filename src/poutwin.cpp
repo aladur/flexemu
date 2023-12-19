@@ -58,6 +58,8 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <cctype>
+#include <locale>
 #include <set>
 #include "qtfree.h"
 #include "pagedet.h"
@@ -95,13 +97,18 @@ const QList<enum QPageSize::PageSizeId> pageSizeValues{
     QPageSize::Tabloid, QPageSize::Legal, QPageSize::Letter,
     QPageSize::ExecutiveStandard, QPageSize::Statement
 };
+// The units Millimeter and Inch are supported.
+// Millimeter is used for internal calculations.
+// Centimeter is used in the user interface.
 // The unit keys should not be translated (Unique key).
 const QStringList unitKeys{ "Millimeter", "Inches" };
-const QStringList unitSuffix{ "mm", "in" };
-const QStringList unitStrings{ "Millimeter (mm)", "Inches (in)" };
+const QStringList unitSuffix{ "cm", "in" };
+const QStringList unitStrings{ "Centimeter (cm)", "Inches (in)" };
 const QList<enum QPrinter::Unit> unitValues{
     QPrinter::Millimeter, QPrinter::Inch
 };
+
+const char PrintOutputWindow::separator = ',';
 
 /****************************
 ** Constructor, Destructor **
@@ -134,6 +141,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
     , characterCount(0)
     , lineCount(0)
     , options(x_options)
+    , isDeferPreviewUpdate(false)
 {
     setObjectName("PrintOutputWindow");
     setWindowTitle("FLEX Print Output");
@@ -167,6 +175,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
 
     auto font = GetFont(options.printFont.c_str());
     fontComboBox->setCurrentFont(font);
+
     auto index = orientationKeys.indexOf(options.printOrientation.c_str());
     orientation = (index >= 0) ? orientationValues[index] : orientation;
     index = pageSizeKeys.indexOf(options.printPageSize.c_str());
@@ -230,7 +239,22 @@ int PrintOutputWindow::GetPercentFromSizeFactor(float sizeFactor)
 
 QMarginsF PrintOutputWindow::GetDefaultMarginsFor(QPageSize::PageSizeId)
 {
-    return QMarginsF(0.394, 0.394, 0.394, 0.394); // In Inch
+    return QMarginsF(10.0, 10.0, 10.0, 10.0); // In Millimeter
+}
+
+// Convert a displayed value into millimeter.
+double PrintOutputWindow::ToMillimeter(double displayValue) const
+{
+    if (unit == QPrinter::Inch)
+    {
+        return displayValue * 25.4; // Convert inches into millimeter
+    }
+    else if (unit == QPrinter::Millimeter)
+    {
+        return displayValue * 10.0; // Convert Centimeter into millimeter
+    }
+
+    return displayValue;
 }
 
 /*****************
@@ -263,37 +287,54 @@ void PrintOutputWindow::OnLandscapeClicked(bool checked)
 {
     if (ui != nullptr && checked)
     {
+        SavePrintConfig();
         orientation = QPageLayout::Landscape;
         previewPrinter->setPageOrientation(orientation);
         auto index = orientationValues.indexOf(orientation);
         options.printOrientation =
             std::string(orientationKeys[index].toUtf8().data());
-        UpdatePaperWidthAndHeight(true);
+        isDeferPreviewUpdate = true;
+        RestorePrintConfig();
+        UpdatePageWidthAndHeightWidgets();
+        isDeferPreviewUpdate = false;
+        ui->w_printPreview->updatePreview();
     }
 }
 
-void PrintOutputWindow::OnMarginBottomChanged(double newValue)
+void PrintOutputWindow::OnMarginBottomChanged(double displayValue)
 {
-    margins.setBottom(ToInches(newValue));
-    ui->w_printPreview->updatePreview();
+    margins.setBottom(ToMillimeter(displayValue));
+    if (!isDeferPreviewUpdate)
+    {
+        ui->w_printPreview->updatePreview();
+    }
 }
 
-void PrintOutputWindow::OnMarginLeftChanged(double newValue)
+void PrintOutputWindow::OnMarginLeftChanged(double displayValue)
 {
-    margins.setLeft(ToInches(newValue));
-    ui->w_printPreview->updatePreview();
+    margins.setLeft(ToMillimeter(displayValue));
+    if (!isDeferPreviewUpdate)
+    {
+        ui->w_printPreview->updatePreview();
+    }
 }
 
-void PrintOutputWindow::OnMarginRightChanged(double newValue)
+void PrintOutputWindow::OnMarginRightChanged(double displayValue)
 {
-    margins.setRight(ToInches(newValue));
-    ui->w_printPreview->updatePreview();
+    margins.setRight(ToMillimeter(displayValue));
+    if (!isDeferPreviewUpdate)
+    {
+        ui->w_printPreview->updatePreview();
+    }
 }
 
-void PrintOutputWindow::OnMarginTopChanged(double newValue)
+void PrintOutputWindow::OnMarginTopChanged(double displayValue)
 {
-    margins.setTop(ToInches(newValue));
-    ui->w_printPreview->updatePreview();
+    margins.setTop(ToMillimeter(displayValue));
+    if (!isDeferPreviewUpdate)
+    {
+        ui->w_printPreview->updatePreview();
+    }
 }
 
 void PrintOutputWindow::OnOpenPrintPreview()
@@ -314,17 +355,10 @@ void PrintOutputWindow::OnOpenPrintPreview()
     ui->ds_pageHeight->setMaximum(999.99);
     ui->ds_pageWidth->setReadOnly(true);
     ui->ds_pageHeight->setReadOnly(true);
-    ui->ds_marginTop->setSingleStep(0.1);
-    ui->ds_marginBottom->setSingleStep(0.1);
-    ui->ds_marginLeft->setSingleStep(0.1);
-    ui->ds_marginRight->setSingleStep(0.1);
 
     InitializeUnit();
     InitializeOrientation();
     InitializePageSize();
-    margins = GetMarginsFor(pageSizeId);
-    UpdateMargins();
-    UpdatePaperWidthAndHeight(false);
 
     connect(ui->cb_unit,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
@@ -391,38 +425,44 @@ void PrintOutputWindow::OnOpenPrintPreview()
     connect(ui->w_printPreview, &QPrintPreviewWidget::previewChanged,
             this, &PrintOutputWindow::OnPreviewChanged);
 
-    auto value = GetPercentFromSizeFactor(sizeFactor);
-    if (!value)
-    {
-        // This forces a valueChanged() event if value == 0.
-        ui->s_sizeAdjustment->setValue(value + 1);
-    }
+    ui->s_sizeAdjustment->setTickPosition(QSlider::TicksAbove);
     ui->s_sizeAdjustment->setTickInterval(10);
     ui->s_sizeAdjustment->setTracking(true);
-    ui->s_sizeAdjustment->setValue(value);
-    ui->s_sizeAdjustment->setTickPosition(QSlider::TicksAbove);
+    QTimer::singleShot(0, this, &PrintOutputWindow::OnInitializePrintPreview);
 
     dialog->exec();
 
-    SetMarginsFor(pageSizeId, margins);
+    SavePrintConfig();
+
     delete previewPrinter;
     previewPrinter = nullptr;
     delete(ui);
     ui = nullptr;
 }
 
+void PrintOutputWindow::OnInitializePrintPreview()
+{
+    isDeferPreviewUpdate = true;
+    RestorePrintConfig();
+    UpdatePageWidthAndHeightWidgets();
+    isDeferPreviewUpdate = false;
+    ui->w_printPreview->updatePreview();
+}
+
 void PrintOutputWindow::OnPageSizeChanged(int index)
 {
     if (ui != nullptr && index >= 0)
     {
-        SetMarginsFor(pageSizeId, margins);
+        SavePrintConfig();
         pageSizeId = pageSizeValues[index];
         previewPrinter->setPageSize(QPageSize(pageSizeId));
         auto idx = pageSizeValues.indexOf(pageSizeId);
         options.printPageSize = std::string(pageSizeKeys[idx].toUtf8().data());
-        margins = GetMarginsFor(pageSizeId);
-        UpdateMargins();
-        UpdatePaperWidthAndHeight(true);
+        isDeferPreviewUpdate = true;
+        RestorePrintConfig();
+        UpdatePageWidthAndHeightWidgets();
+        isDeferPreviewUpdate = false;
+        ui->w_printPreview->updatePreview();
     }
 }
 
@@ -430,12 +470,17 @@ void PrintOutputWindow::OnPortraitClicked(bool checked)
 {
     if (ui != nullptr && checked)
     {
+        SavePrintConfig();
         orientation = QPageLayout::Portrait;
         previewPrinter->setPageOrientation(orientation);
         auto index = orientationValues.indexOf(orientation);
         options.printOrientation =
             std::string(orientationKeys[index].toUtf8().data());
-        UpdatePaperWidthAndHeight(true);
+        isDeferPreviewUpdate = true;
+        RestorePrintConfig();
+        UpdatePageWidthAndHeightWidgets();
+        isDeferPreviewUpdate = false;
+        ui->w_printPreview->updatePreview();
     }
 }
 
@@ -446,11 +491,11 @@ void PrintOutputWindow::OnPaintRequested(QPrinter *p) const
 
     layout.setMode(QPageLayout::StandardMode);
     layout.setOrientation(orientation);
-    layout.setUnits(QPageLayout::Inch);
+    layout.setUnits(QPageLayout::Millimeter);
     layout.setPageSize(QPageSize(pageSizeId));
     layout.setMargins(margins);
     p->setPageLayout(layout);
-    bool isInvalid = !p->setPageMargins(margins, QPageLayout::Inch);
+    bool isInvalid = !p->setPageMargins(margins, QPageLayout::Millimeter);
     SetMarginsInfo(isInvalid);
 
     const auto pageSize = p->pageLayout().paintRect(QPageLayout::Point).size();
@@ -623,11 +668,10 @@ void PrintOutputWindow::OnUnitChanged(int index)
     if (ui != nullptr && index >= 0)
     {
         unit = unitValues[index];
-        UpdateMargins();
+        UpdateMarginWidgets();
         SetSpinBoxUnit(unitSuffix[index]);
-        auto idx = unitValues.indexOf(unit);
-        options.printUnit = std::string(unitKeys[idx].toUtf8().data());
-        UpdatePaperWidthAndHeight(true);
+        options.printUnit = std::string(unitKeys[index].toUtf8().data());
+        UpdatePageWidthAndHeightWidgets();
     }
 }
 
@@ -808,21 +852,6 @@ void PrintOutputWindow::DetectPageBreaks()
     isPageBreakDetectionFinished = true;
 }
 
-// Return the margins for a given page size ID.
-// The margins have unit Inches.
-QMarginsF PrintOutputWindow::GetMarginsFor(QPageSize::PageSizeId id) const
-{
-    const auto iter = marginsForPageSize.find(id);
-    if (iter != marginsForPageSize.cend())
-    {
-        return iter->second;
-    }
-    else
-    {
-        return GetDefaultMarginsFor(pageSizeId);
-    }
-}
-
 QToolBar *PrintOutputWindow::CreateToolBar(QWidget *parent,
                                            const QString &title,
                                            const QString &objectName)
@@ -879,15 +908,51 @@ void PrintOutputWindow::OpenPrintDialog(QPrinter *p)
     if (printDialog.exec() == QDialog::Accepted)
     {
         OnPaintRequested(p);
+        SavePrintConfig();
     }
 }
 
-// Set the margins for a given page size ID.
-// The margins have unit Inches.
-void PrintOutputWindow::SetMarginsFor(QPageSize::PageSizeId id,
-        const QMarginsF &newMargins)
+void PrintOutputWindow::RestorePrintConfig()
 {
-    marginsForPageSize[id] = newMargins;
+    auto key = CreatePrintConfigKey();
+    auto const iter = options.printConfigs.find(key);
+
+    margins = GetDefaultMarginsFor(pageSizeId);
+    if (iter != options.printConfigs.end())
+    {
+        auto list = QString(iter->second.c_str()).split(QLatin1Char(separator));
+
+        if (list.size() == 5)
+        {
+            bool ok = false;
+            auto value = list[0].toFloat(&ok);
+            ok ? margins.setLeft(value) : (void)0;
+            value = list[1].toFloat(&ok);
+            ok ? margins.setTop(value) : (void)0;
+            value = list[2].toFloat(&ok);
+            ok ? margins.setRight(value) : (void)0;
+            value = list[3].toFloat(&ok);
+            ok ? margins.setBottom(value) : (void)0;
+            value = list[4].toFloat(&ok);
+            ok ? (void)(sizeFactor = value) : (void)0;
+        }
+    }
+
+    UpdateMarginWidgets();
+    UpdateSizeAdjustmentWidget();
+}
+
+void PrintOutputWindow::SavePrintConfig()
+{
+    std::stringstream value_stream;
+    auto key = CreatePrintConfigKey();
+
+    value_stream.imbue(std::locale("C")); // Force point as decimal separator
+    value_stream <<
+        margins.left() << separator << margins.top() << separator <<
+        margins.right() << separator << margins.bottom() << separator <<
+        sizeFactor;
+    options.printConfigs[key] = value_stream.str();
 }
 
 void PrintOutputWindow::SetMarginsInfo(bool isInvalid) const
@@ -916,41 +981,47 @@ void PrintOutputWindow::SetTextBrowserFont(const QFont &font) const
     doc->setDefaultFont(font);
 }
 
-double PrintOutputWindow::ToInches(double value) const
+void PrintOutputWindow::UpdateMarginWidgets()
 {
-    if (unit == QPrinter::Millimeter)
+    // Display unit is Centimeter
+    double factor = 0.1; // = Millimeter / 10
+    double singleStep = 0.1; // Step size is 0.0394 Inches or 1 Millimeter
+
+    if (unit == QPrinter::Inch)
     {
-        return value / 2.54; // Convert millimeters into inches
-    }
-
-    return value;
-}
-
-void PrintOutputWindow::UpdateMargins()
-{
-    double factor = 1.0;
-
-    if (unit == QPrinter::Millimeter)
-    {
-        factor = 2.54;
+        // Display unit is Inches
+        factor = 1.0 / 25.4; // = Millimeter / 25.4
+        singleStep = 0.05; // Step size is 0.05 Inches or 1.27 Millimeter
     }
 
     ui->ds_marginTop->setValue(margins.top() * factor);
     ui->ds_marginBottom->setValue(margins.bottom() * factor);
     ui->ds_marginLeft->setValue(margins.left() * factor);
     ui->ds_marginRight->setValue(margins.right() * factor);
+
+    ui->ds_marginTop->setSingleStep(singleStep);
+    ui->ds_marginBottom->setSingleStep(singleStep);
+    ui->ds_marginLeft->setSingleStep(singleStep);
+    ui->ds_marginRight->setSingleStep(singleStep);
 }
 
-void PrintOutputWindow::UpdatePaperWidthAndHeight(bool doUpdate)
+void PrintOutputWindow::UpdatePageWidthAndHeightWidgets()
 {
     auto rect = previewPrinter->paperRect(unit);
+    double factor = 1.0;
 
-    ui->ds_pageWidth->setValue(rect.width());
-    ui->ds_pageHeight->setValue(rect.height());
-    if (doUpdate)
+    if (unit == QPrinter::Millimeter)
     {
-        ui->w_printPreview->updatePreview();
+        factor = 1.0 / 10.0;
     }
+    ui->ds_pageWidth->setValue(rect.width() * factor);
+    ui->ds_pageHeight->setValue(rect.height() * factor);
+}
+
+void PrintOutputWindow::UpdateSizeAdjustmentWidget() const
+{
+    auto value = GetPercentFromSizeFactor(sizeFactor);
+    ui->s_sizeAdjustment->setValue(value);
 }
 
 /*********************************
@@ -1019,6 +1090,26 @@ void PrintOutputWindow::write_char_serial(Byte value)
     std::lock_guard<std::mutex> guard(serial_mutex);
 
     serial_buffer.push_back(value);
+}
+
+// The print config key consists of the currenly used font,
+// page size and orientation. The key contains no spaces.
+std::string PrintOutputWindow::CreatePrintConfigKey() const
+{
+    auto font = fontComboBox->currentFont();
+    auto fontKey = std::string(font.toString().toUtf8().data());
+    fontKey.erase(fontKey.find_first_of(','));
+    auto end = fontKey.end();
+    fontKey.erase(std::remove(fontKey.begin(), end, ' '), end);
+
+    auto index = pageSizeValues.indexOf(pageSizeId);
+    auto pageSizeKey = pageSizeKeys[index];
+
+    index = orientationValues.indexOf(orientation);
+    auto orientationKey = orientationKeys[index];
+
+    return std::string((orientationKey + pageSizeKey).toUtf8().data()) +
+        fontKey;
 }
 
 bool PrintOutputWindow::HasSerialInput() const

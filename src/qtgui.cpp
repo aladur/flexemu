@@ -363,6 +363,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::PrintOrientation:
                 case FlexemuOptionId::PrintPageSize:
                 case FlexemuOptionId::PrintUnit:
+                case FlexemuOptionId::PrintConfigs:
                     isWriteOptions = true;
                     break;
 

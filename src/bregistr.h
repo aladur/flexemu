@@ -26,6 +26,7 @@
 
 #include "misc1.h"
 #include <string>
+#include <map>
 
 
 class BRegistry
@@ -51,6 +52,8 @@ public:
     LONG SetValue(const std::string &name, const BYTE *value, int size);
     LONG GetValue(const std::string &name, std::string &value);
     LONG GetValue(const std::string &name, int &value);
+    LONG GetValues(const std::string &keyPrefix,
+            std::map<std::string, std::string> &values);
     LONG DeleteValue(const std::string &name);
     // implicit type conversions !
     operator HKEY() const ;
