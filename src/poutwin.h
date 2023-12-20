@@ -118,7 +118,7 @@ private:
     bool HasSerialInput() const;
     void InitializeOrientation();
     void InitializePageSize();
-    void InitializeUnit();
+    void InitializeUnitWidget();
     void OpenPrintDialog(QPrinter *printer);
     void ProcessSerialInput();
     void RestorePrintConfig();
