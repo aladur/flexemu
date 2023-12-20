@@ -348,15 +348,10 @@ void PrintOutputWindow::OnOpenPrintPreview()
     ui->setupUi(dialog);
 
     ui->cb_pageSize->addItems(pageSizeStrings) ;
-    ui->ds_pageWidth->setMinimum(1.00);
-    ui->ds_pageHeight->setMinimum(1.00);
-    ui->ds_pageWidth->setMaximum(999.99);
-    ui->ds_pageHeight->setMaximum(999.99);
-    ui->ds_pageWidth->setReadOnly(true);
-    ui->ds_pageHeight->setReadOnly(true);
 
     InitializeUnitWidget();
     InitializeOrientation();
+    InitializePageWidthAndHeightWidgets();
     InitializePageSize();
 
     connect(ui->cb_unit,
@@ -886,6 +881,19 @@ void PrintOutputWindow::InitializePageSize()
     if (index >= 0)
     { 
         ui->cb_pageSize->setCurrentText(pageSizeStrings[index]);
+    }
+}
+
+void PrintOutputWindow::InitializePageWidthAndHeightWidgets()
+{
+    if (ui != nullptr)
+    {
+        ui->ds_pageWidth->setMinimum(1.00);
+        ui->ds_pageHeight->setMinimum(1.00);
+        ui->ds_pageWidth->setMaximum(999.99);
+        ui->ds_pageHeight->setMaximum(999.99);
+        ui->ds_pageWidth->setReadOnly(true);
+        ui->ds_pageHeight->setReadOnly(true);
     }
 }
 
