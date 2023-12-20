@@ -669,7 +669,7 @@ void PrintOutputWindow::OnUnitChanged(int index)
     {
         unit = unitValues[index];
         UpdateMarginWidgets();
-        SetSpinBoxUnit(unitSuffix[index]);
+        UpdateSpinBoxUnit(unitSuffix[index]);
         options.printUnit = std::string(unitKeys[index].toUtf8().data());
         UpdatePageWidthAndHeightWidgets();
     }
@@ -897,7 +897,7 @@ void PrintOutputWindow::InitializeUnit()
     if (index >= 0)
     { 
         ui->cb_unit->setCurrentText(unitStrings[index]);
-        SetSpinBoxUnit(unitSuffix[index]);
+        UpdateSpinBoxUnit(unitSuffix[index]);
     }
 }
 
@@ -964,7 +964,7 @@ void PrintOutputWindow::SetMarginsInfo(bool isInvalid) const
     }
 }
 
-void PrintOutputWindow::SetSpinBoxUnit(const QString &p_unit)
+void PrintOutputWindow::UpdateSpinBoxUnit(const QString &p_unit)
 {
     ui->ds_pageWidth->setSuffix(p_unit);
     ui->ds_pageHeight->setSuffix(p_unit);

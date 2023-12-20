@@ -124,12 +124,12 @@ private:
     void RestorePrintConfig();
     void SavePrintConfig();
     void SetMarginsInfo(bool isInvalid) const;
-    void SetSpinBoxUnit(const QString &unit);
     void SetTextBrowserFont(const QFont &font) const;
     double ToMillimeter(double displayValue) const;
     void UpdateMarginWidgets();
     void UpdatePageWidthAndHeightWidgets();
     void UpdateSizeAdjustmentWidget() const;
+    void UpdateSpinBoxUnit(const QString &unit);
 
     // Process flexemu print output
     void PrintLine(const RichLine &richLine, bool isPageBreak = false) const;
