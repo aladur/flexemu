@@ -346,6 +346,7 @@ void PrintOutputWindow::OnOpenPrintPreview()
 
     ui = new Ui::PrintPreview;
     ui->setupUi(printPreviewDialog);
+    printPreviewDialog->setAttribute(Qt::WA_DeleteOnClose);
 
     InitializeUnitWidget();
     InitializeOrientation();
@@ -420,9 +421,10 @@ void PrintOutputWindow::OnOpenPrintPreview()
 
     QTimer::singleShot(0, this, &PrintOutputWindow::OnInitializePrintPreview);
 
-    printPreviewDialog->exec();
-
-    SavePrintConfig();
+    if (printPreviewDialog->exec() == QDialog::Accepted)
+    {
+        SavePrintConfig();
+    }
 
     delete previewPrinter;
     previewPrinter = nullptr;
