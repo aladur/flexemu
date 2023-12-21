@@ -347,12 +347,10 @@ void PrintOutputWindow::OnOpenPrintPreview()
     ui = new Ui::PrintPreview;
     ui->setupUi(dialog);
 
-    ui->cb_pageSize->addItems(pageSizeStrings) ;
-
     InitializeUnitWidget();
     InitializeOrientation();
     InitializePageWidthAndHeightWidgets();
-    InitializePageSize();
+    InitializePageSizeWidget();
 
     connect(ui->cb_unit,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
@@ -874,13 +872,18 @@ void PrintOutputWindow::InitializeOrientation()
     }
 }
 
-void PrintOutputWindow::InitializePageSize()
+void PrintOutputWindow::InitializePageSizeWidget()
 {
-    auto index = pageSizeValues.indexOf(pageSizeId);
-   
-    if (index >= 0)
-    { 
-        ui->cb_pageSize->setCurrentText(pageSizeStrings[index]);
+    if (ui != nullptr)
+    {
+        ui->cb_pageSize->addItems(pageSizeStrings);
+
+        auto index = pageSizeValues.indexOf(pageSizeId);
+
+        if (index >= 0)
+        {
+            ui->cb_pageSize->setCurrentText(pageSizeStrings[index]);
+        }
     }
 }
 

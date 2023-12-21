@@ -117,7 +117,7 @@ private:
     std::string CreatePrintConfigKey() const;
     bool HasSerialInput() const;
     void InitializeOrientation();
-    void InitializePageSize();
+    void InitializePageSizeWidget();
     void InitializePageWidthAndHeightWidgets();
     void InitializeUnitWidget();
     void OpenPrintDialog(QPrinter *printer);
