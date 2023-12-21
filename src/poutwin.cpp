@@ -351,6 +351,7 @@ void PrintOutputWindow::OnOpenPrintPreview()
     InitializeOrientation();
     InitializePageWidthAndHeightWidgets();
     InitializePageSizeWidget();
+    InitializeSizeAdjustmentWidget();
 
     connect(ui->cb_unit,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
@@ -417,9 +418,6 @@ void PrintOutputWindow::OnOpenPrintPreview()
     connect(ui->w_printPreview, &QPrintPreviewWidget::previewChanged,
             this, &PrintOutputWindow::OnPreviewChanged);
 
-    ui->s_sizeAdjustment->setTickPosition(QSlider::TicksAbove);
-    ui->s_sizeAdjustment->setTickInterval(10);
-    ui->s_sizeAdjustment->setTracking(true);
     QTimer::singleShot(0, this, &PrintOutputWindow::OnInitializePrintPreview);
 
     dialog->exec();
@@ -897,6 +895,16 @@ void PrintOutputWindow::InitializePageWidthAndHeightWidgets()
         ui->ds_pageHeight->setMaximum(999.99);
         ui->ds_pageWidth->setReadOnly(true);
         ui->ds_pageHeight->setReadOnly(true);
+    }
+}
+
+void PrintOutputWindow::InitializeSizeAdjustmentWidget()
+{
+    if (ui != nullptr)
+    {
+        ui->s_sizeAdjustment->setTickPosition(QSlider::TicksAbove);
+        ui->s_sizeAdjustment->setTickInterval(10);
+        ui->s_sizeAdjustment->setTracking(true);
     }
 }
 

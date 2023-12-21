@@ -119,6 +119,7 @@ private:
     void InitializeOrientation();
     void InitializePageSizeWidget();
     void InitializePageWidthAndHeightWidgets();
+    void InitializeSizeAdjustmentWidget();
     void InitializeUnitWidget();
     void OpenPrintDialog(QPrinter *printer);
     void ProcessSerialInput();
