@@ -340,12 +340,12 @@ void PrintOutputWindow::OnMarginTopChanged(double displayValue)
 void PrintOutputWindow::OnOpenPrintPreview()
 {
     previewPrinter = new QPrinter(QPrinter::ScreenResolution);
-    auto *dialog = new QDialog(this);
+    auto *printPreviewDialog = new QDialog(this);
 
     DetectPageBreaks();
 
     ui = new Ui::PrintPreview;
-    ui->setupUi(dialog);
+    ui->setupUi(printPreviewDialog);
 
     InitializeUnitWidget();
     InitializeOrientation();
@@ -420,7 +420,7 @@ void PrintOutputWindow::OnOpenPrintPreview()
 
     QTimer::singleShot(0, this, &PrintOutputWindow::OnInitializePrintPreview);
 
-    dialog->exec();
+    printPreviewDialog->exec();
 
     SavePrintConfig();
 
