@@ -816,8 +816,8 @@ void NafsDirectoryContainer::add_to_directory(
     std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext),
         Byte(0U));
     strncpy(dir_entry.file_ext, extension, FLEX_FILEEXT_LENGTH);
-    dir_entry.file_attr =
-        is_write_protected ? (WRITE_PROTECT | DELETE_PROTECT) : 0;
+    // A write protected file is automatically also delete protected.
+    dir_entry.file_attr = is_write_protected ? WRITE_PROTECT : 0;
     dir_entry.start = begin;
     dir_entry.end = end;
     setValueBigEndian<Word>(&dir_entry.records[0], records);
@@ -1049,8 +1049,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
                 add_to_directory(name.c_str(), extension.c_str(),
                                  dir_idx, is_random, sbuf, begin,
-                                 end, is_write_protected ||
-                                 (access(path.c_str(), W_OK) != 0));
+                                 end, (access(path.c_str(), W_OK) != 0));
 
                 // Unfinished: don't write sector map if write
                 // protected.
@@ -1235,6 +1234,83 @@ void NafsDirectoryContainer::check_for_extend(SWord dir_index,
         dir_extend = dir_sector.next;
     } // if
 } // check_for_extend
+
+
+// Check if file attributes have been changed. Only write protection is
+// supported.
+// File attributes is located in struct s_dir_entry in byte file_attr.
+void NafsDirectoryContainer::check_for_changed_file_attr(SWord dir_index,
+        s_dir_sector &dir_sector)
+{
+    static const auto unsupported_attr =
+        DELETE_PROTECT | CATALOG_PROTECT | READ_PROTECT;
+    const auto &old_dir_sector = flex_directory[dir_index];
+
+    for (Word i = 0; i < DIRENTRIES; i++)
+    {
+        if ((dir_sector.dir_entry[i].file_attr & unsupported_attr) != 0)
+        {
+            // Remove all unsupported file attributes.
+            dir_sector.dir_entry[i].file_attr &= ~unsupported_attr;
+        }
+
+        if (attributes & WRITE_PROTECT)
+        {
+            // If disk is write protected the file write protection can not
+            // be removed.
+            dir_sector.dir_entry[i].file_attr |= WRITE_PROTECT;
+            continue;
+        }
+
+        if ((dir_sector.dir_entry[i].file_attr & WRITE_PROTECT) !=
+            (old_dir_sector.dir_entry[i].file_attr & WRITE_PROTECT))
+        {
+            auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
+            auto path = directory + PATHSEPARATORSTRING + filename;
+            auto file_attr = dir_sector.dir_entry[i].file_attr;
+            const char *set_clear = nullptr;
+#ifdef _WIN32
+            DWORD attrs = GetFileAttributes(path.c_str());
+
+            if (file_attr & WRITE_PROTECT)
+            {
+                attrs |= FILE_ATTRIBUTE_READONLY;
+                set_clear = "set";
+            }
+            else
+            {
+                attrs &= ~FILE_ATTRIBUTE_READONLY;
+                set_clear = "clear";
+            }
+
+            SetFileAttributes(wFilePath.c_str(), attrs);
+#endif
+#ifdef UNIX
+            struct stat sbuf;
+            if (!stat(path.c_str(), &sbuf))
+            {
+                if (file_attr & WRITE_PROTECT)
+                {
+                    chmod(path.c_str(), sbuf.st_mode & ~S_IWUSR);
+                    set_clear = "set";
+                }
+                else
+                {
+                    chmod(path.c_str(), sbuf.st_mode | S_IWUSR);
+                    set_clear = "clear";
+                }
+            }
+#endif
+#ifdef DEBUG_FILE
+            LOG_X("      %s write_protect %s\n", set_clear, filename.c_str());
+#else
+            (void)set_clear;
+#endif
+            break;
+        } // if
+    } // for
+
+} // check_for_protection
 
 
 // Return false if not successful otherwise return true.
@@ -1637,7 +1713,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
         case SectorType::Directory:
             {
                 Word di = link.f_record;
-                const auto &dir_sector =
+                auto &dir_sector =
                     *(reinterpret_cast<s_dir_sector *>(
                       const_cast<Byte *>(buffer)));
                 char *p = reinterpret_cast<char *>(&flex_directory[di]);
@@ -1645,6 +1721,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 check_for_new_file(di, dir_sector);
                 check_for_rename(di, dir_sector);
                 check_for_extend(di, dir_sector);
+                check_for_changed_file_attr(di, dir_sector);
                 memcpy(p, buffer, SECTOR_SIZE);
             }
             break;

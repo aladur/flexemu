@@ -173,6 +173,7 @@ private:
     void check_for_extend(SWord dir_index, const s_dir_sector &d);
     void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
     void check_for_new_file(SWord dir_index, const s_dir_sector &d);
+    void check_for_changed_file_attr(SWord dir_index, s_dir_sector &d);
     bool extend_directory(SWord index, const s_dir_sector &d);
     bool set_file_time(
         const char *ppath,
