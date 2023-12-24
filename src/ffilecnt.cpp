@@ -981,7 +981,7 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
         }
     }
 
-    param.max_sector0 = i + 1;
+    param.max_sector0 = std::min(param.max_sector, static_cast<Word>(i + 1));
 }
 
 
