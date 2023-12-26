@@ -222,6 +222,7 @@ flexemu_SOURCES = \
 	vico2.cpp \
 	wd1793.cpp \
 	winmain.cpp \
+	asciictl.h \
 	absdisas.h \
 	absgui.h \
 	acia1.h \

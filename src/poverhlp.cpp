@@ -23,6 +23,7 @@
 
 #include <set>
 #include "poverhlp.h"
+#include "asciictl.h"
 
 std::string toString(const RichLine &richLine)
 {
@@ -46,11 +47,11 @@ bool PrintOverlayHelper::AddCharacter(char character)
 {
     static const std::set<char> ignoredCtrlChars { '\0' };
 
-    if (character == '\x0D')
+    if (character == CR)
     {
         AddOverlay();
     }
-    else if (character == '\x0A')
+    else if (character == LF)
     {
         EvaluateOverlays();
         return true;

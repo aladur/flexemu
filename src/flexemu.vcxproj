@@ -381,6 +381,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asciictl.h" />
     <ClInclude Include="absdisas.h" />
     <ClInclude Include="absgui.h" />
     <ClInclude Include="acia1.h" />

@@ -180,6 +180,9 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="asciictl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="absdisas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
