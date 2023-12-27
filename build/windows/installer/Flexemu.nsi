@@ -235,6 +235,7 @@ Section "Monitor programs and disk files" MonitorDiskFiles
   File /a "${BASEDIR}\monitor\neumon54.hex"
   ; Install cassette/disk files
   File /a "${BASEDIR}\disks\btx.dsk"
+  File /a "${BASEDIR}\disks\cedric.dsk"
   File /a "${BASEDIR}\disks\colors.dsk"
   File /a "${BASEDIR}\disks\games.dsk"
   File /a "${BASEDIR}\disks\just.dsk"
@@ -275,6 +276,7 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\ba2bqs.pdf"
   File /a "${BASEDIR}\doc\basic_um.pdf"
   File /a "${BASEDIR}\doc\basprec.pdf"
+  File /a "${BASEDIR}\doc\cedric.pdf"
   File /a "${BASEDIR}\doc\crasmb.pdf"
   File /a "${BASEDIR}\doc\debug.pdf"
   File /a "${BASEDIR}\doc\dynamite.pdf"

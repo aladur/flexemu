@@ -1,5 +1,6 @@
 pkgdata_DATA = \
 	btx.dsk \
+	cedric.dsk \
 	colors.dsk \
 	diag6809.dsk \
 	games.dsk \

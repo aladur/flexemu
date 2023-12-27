@@ -6,6 +6,7 @@ pkgdata_DATA = \
 	ba2bqs.pdf \
 	basic_um.pdf\
 	basprec.pdf \
+	cedric.pdf \
 	crasmb.pdf \
 	debug.pdf \
 	dynamite.pdf \

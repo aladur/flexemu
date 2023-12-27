@@ -321,6 +321,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 pkgdata_DATA = \
 	btx.dsk \
+	cedric.dsk \
 	colors.dsk \
 	diag6809.dsk \
 	games.dsk \
