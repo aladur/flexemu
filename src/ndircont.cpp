@@ -1266,11 +1266,12 @@ void NafsDirectoryContainer::check_for_changed_file_attr(SWord dir_index,
             (old_dir_sector.dir_entry[i].file_attr & WRITE_PROTECT))
         {
             auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
-            auto path = directory + PATHSEPARATORSTRING + filename;
             auto file_attr = dir_sector.dir_entry[i].file_attr;
             const char *set_clear = nullptr;
 #ifdef _WIN32
-            DWORD attrs = GetFileAttributes(path.c_str());
+            const auto wFilePath(ConvertToUtf16String(directory +
+                PATHSEPARATORSTRING + filename));
+            DWORD attrs = GetFileAttributes(wFilePath.c_str());
 
             if (file_attr & WRITE_PROTECT)
             {
@@ -1286,6 +1287,7 @@ void NafsDirectoryContainer::check_for_changed_file_attr(SWord dir_index,
             SetFileAttributes(wFilePath.c_str(), attrs);
 #endif
 #ifdef UNIX
+            const auto path = directory + PATHSEPARATORSTRING + filename;
             struct stat sbuf;
             if (!stat(path.c_str(), &sbuf))
             {
