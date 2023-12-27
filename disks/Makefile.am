@@ -3,6 +3,7 @@ pkgdata_DATA = \
 	colors.dsk \
 	diag6809.dsk \
 	games.dsk \
+	just.dsk \
 	laycad.dsk \
 	layout.dsk \
 	pictures.dsk \

@@ -23,6 +23,7 @@ pkgdata_DATA = \
 	flexmem.htm \
 	flexuser.htm \
 	flexutil.htm \
+	just.pdf \
 	linkload.pdf \
 	mc6809.htm \
 	mon24.htm \
