@@ -1064,23 +1064,53 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
     for (auto &richChar : richLine)
     {
         isFirst ? cursor.beginEditBlock() : cursor.joinPreviousEditBlock();
-        isFirst = false;
-
-        if (richChar.properties != previousProperty)
+        if (isFirst || (richChar.properties != previousProperty))
         {
+            auto verticalAlignment = QTextCharFormat::AlignNormal;
             auto charFormat = cursor.charFormat();
-            auto isUnderlined = ((richChar.properties & CharProperty::Underlined)
-                                 == CharProperty::Underlined);
-            // DoubleStrike is displayed as italic
-            auto isItalic = ((richChar.properties & CharProperty::DoubleStrike)
-                             == CharProperty::DoubleStrike);
-            auto isBold = ((richChar.properties & CharProperty::Bold)
-                           == CharProperty::Bold);
+            if ((richChar.properties & CharProperty::PageBreak) != 0)
+            {
+                isPageBreak = 1;
+            }
+            auto isUnderlined =
+                ((richChar.properties & CharProperty::Underlined) != 0);
+            auto isItalic =
+                ((richChar.properties & CharProperty::Italic) != 0);
+            auto isDoubleStrike =
+                ((richChar.properties & CharProperty::DoubleStrike) != 0);
+            auto isBoldFace =
+                ((richChar.properties & CharProperty::BoldFace) != 0);
+            auto isDoubleWidth =
+                ((richChar.properties & CharProperty::DoubleWidth) != 0);
+            if ((richChar.properties & CharProperty::SubScript) != 0)
+            {
+                verticalAlignment = QTextCharFormat::AlignSubScript;
+            }
+            if ((richChar.properties & CharProperty::SuperScript) != 0)
+            {
+                verticalAlignment = QTextCharFormat::AlignSuperScript;
+            }
+
             charFormat.setFontUnderline(isUnderlined);
             charFormat.setFontItalic(isItalic);
-            auto fontWeight = QFont::Normal;
-            fontWeight = isBold ? QFont::Bold : fontWeight;
+            // Both DoubleStrike and BoldFace are displayed as bold
+            auto fontWeight = QFont::Thin;
+            fontWeight = (isDoubleStrike | isBoldFace) ?
+                QFont::Bold : fontWeight;
+            fontWeight = (isDoubleStrike & isBoldFace) ?
+                QFont::Black : fontWeight;
             charFormat.setFontWeight(fontWeight);
+            /* Font stretching seems to be not reliable,
+             * use font spacing instead.
+            charFormat.setFontStretch(isDoubleWidth ? QFont::UltraExpanded :
+#if (QT_VERSION < QT_VERSION_CHECK(5, 8, 0))
+                QFont::Unstretched
+#else
+                QFont::AnyStretch
+#endif
+            );*/
+            charFormat.setFontLetterSpacing(isDoubleWidth ? 200.0 : 100.0);
+            charFormat.setVerticalAlignment(verticalAlignment);
             cursor.setCharFormat(charFormat);
 
             previousProperty = richChar.properties;
@@ -1088,6 +1118,7 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
 
         cursor.insertText(QString(richChar.character));
         cursor.endEditBlock();
+        isFirst = false;
     }
 
     isFirst ? cursor.beginEditBlock() : cursor.joinPreviousEditBlock();

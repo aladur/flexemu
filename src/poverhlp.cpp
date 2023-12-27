@@ -38,33 +38,168 @@ std::string toString(const RichLine &richLine)
     return result;
 }
 
-PrintOverlayHelper::PrintOverlayHelper()
+PrintOverlayHelper::PrintOverlayHelper() :
+      currentProps(CharProperty::Normal)
+    , isEscapeSequence(false)
+
 {
     currentOverlay.reserve(80);
 };
 
 bool PrintOverlayHelper::AddCharacter(char character)
 {
-    static const std::set<char> ignoredCtrlChars { '\0' };
+    // Escape sequences using two characters.
+    static const std::set<char> twoCharEscSeq {
+        '-', // Underline mode.
+        'S', // Super/subscript mode.
+        'A', // Specify amount of line spacing in multiples of 1/72 inch, uns.
+        'C', // Specify form length per page, unsupported.
+    };
+    // Escape sequences using multiple characters (> 2 characters)
+    static const std::set<char> multiCharEscSeq {
+        'B', // Specify vertical TAB positions, unsupported
+        'D', // Specify horizontal TAB positions, unsupported
+    };
+    static const std::set<char> ignoredCtrlChars {
+        NUL, // Used for padding or end of ESC B, ESC D.
+        BEL, // Make a buzzer sound, unsupported.
+        HT, // Position print head to next hor. TAB position, unsupported.
+        VT, // Position paper to next vert. TAB position, unsupported.
+        SI, // Print in condensed mode, unsupported.
+        DC1, // Set printer in selected state, unsupported.
+        DC2, // Cancel SI mode, unsupported.
+        DC3, // set printer in deselected state, unsupported.
+        CAN, // Clear print buffer, unsupported.
+        DEL, // Clear print buffer, unsupported.
+    };
 
-    if (character == CR)
+    currentProps &= ~CharProperty::PageBreak;
+
+    if (isEscapeSequence)
+    {
+        if (escapeSequence.size() == 0)
+        {
+            if ((twoCharEscSeq.find(character) != twoCharEscSeq.end()) ||
+                (multiCharEscSeq.find(character) != multiCharEscSeq.end()))
+            {
+                escapeSequence.push_back(character);
+                return false;
+            }
+            else
+            {
+                switch (character)
+                {
+                    case SO: // Double width mode on.
+                        currentProps |= CharProperty::DoubleWidth;
+                        break;
+                    case '4': // Italic mode on.
+                        currentProps |= CharProperty::Italic;
+                        break;
+                    case '5': // Italic mode off.
+                        currentProps &= ~CharProperty::Italic;
+                        break;
+                    case 'E': // Emphasized mode on.
+                        currentProps |= CharProperty::BoldFace;
+                        break;
+                    case 'F': // Emphasized mode off.
+                        currentProps &= ~CharProperty::BoldFace;
+                        break;
+                    case 'G': // Double-strike mode on.
+                        currentProps |= CharProperty::DoubleStrike;
+                        break;
+                    case 'H': // Double-strike mode off.
+                        currentProps &= ~CharProperty::DoubleStrike;
+                        break;
+                    case 'T': // Super/subscript mode off.
+                        currentProps &= ~(CharProperty::SubScript |
+                                          CharProperty::SuperScript);
+                        break;
+                    // ESC SI Print in condensed mode, unsupported.
+                    // ESC 0  Set line spacing to 1/8 inch, unsupported.
+                    // ESC 1  Set line spacing to 7/72 inch, unsupported.
+                    // ESC 2  Set line spacing to 1/6 inch, unsupported.
+                    // ESC 8  Receive data even if there is no paper in, unsup.
+                    // ESC 9  Noreceive data if there is no paper in, unsup.
+                }
+            }
+        }
+        else if (escapeSequence.size() == 1)
+        {
+            switch (escapeSequence[0])
+            {
+                case '-':
+                    if (character == '1') // Begin underline mode
+                    {
+                        currentProps |= CharProperty::Underlined;
+                    }
+                    else if (character == '0') // End underline mode
+                    {
+                        currentProps &= ~CharProperty::Underlined;
+                    }
+                    break;
+
+                case 'S': // Begin super/subscript mode, unsupported
+                    if (character == '1') // Begin subscript mode
+                   {
+                        currentProps |= CharProperty::SubScript;
+                    }
+                    else if (character == '0') // Begin superscript mode
+                    {
+                        currentProps |= CharProperty::SuperScript;
+                    }
+                    break;
+            }
+        }
+        else // ESC sequence with more than two characters
+        {
+            // ESC B or ESC D
+            if (character != NUL) // NUL is end of escape sequence.
+            {
+                escapeSequence.push_back(character);
+                return false;
+            }
+        }
+        isEscapeSequence = false;
+    }
+    else if (character == CR) // Carriage return.
     {
         AddOverlay();
     }
-    else if (character == LF)
+    else if (character == LF) // Line feed.
     {
         EvaluateOverlays();
         return true;
     }
+    else if (character == ESC)
+    {
+        isEscapeSequence = true;
+        escapeSequence.clear();
+    }
     else if (character >= ' ' && character <= '~')
     {
         currentOverlay.push_back(character);
-    } 
-    else
-    {
-        if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
+        if (overlays.empty())
         {
-            //printf("What to do with character 0x%02X\n", (uint16_t)character);
+            currentRichLine.push_back( { character, currentProps } );
+        }
+    } 
+    else if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
+    {
+        switch (character)
+        {
+            case SO: // Double width mode on.
+                currentProps |= CharProperty::DoubleWidth;
+                break;
+            case DC4: // Double width mode off.
+                currentProps &= ~CharProperty::DoubleWidth;
+                break;
+            case FF: // Add page break.
+                currentProps |= CharProperty::PageBreak;
+                break;
+            default:
+                //printf("What to do with character 0x%02X\n",
+                //       (uint16_t)character);
+                break;
         }
     }
 
@@ -83,7 +218,10 @@ bool PrintOverlayHelper::IsRichLineEmpty() const
 
 void PrintOverlayHelper::AddOverlay()
 {
-    overlays.push_back(currentOverlay);
+    if (currentOverlay.size() > 0)
+    {
+        overlays.push_back(currentOverlay);
+    }
     currentOverlay.clear();
 }
 
@@ -102,8 +240,21 @@ size_t PrintOverlayHelper::GetMaxOverlaySize() const
 }
 
 
+void PrintOverlayHelper::EvaluateOverlay()
+{
+    richLine = currentRichLine;
+    currentRichLine.clear();
+    overlays.clear();
+}
+
 void PrintOverlayHelper::EvaluateOverlays()
 {
+    if (overlays.size() <= 1)
+    {
+        EvaluateOverlay();
+        return;
+    }
+
     richLine.clear();
     auto maxSize = GetMaxOverlaySize();
     while (richLine.size() < maxSize)
@@ -145,11 +296,11 @@ void PrintOverlayHelper::EvaluateOverlays()
         }
         else if (count == 3U)
         {
-            properties |= CharProperty::Bold;
+            properties |= CharProperty::BoldFace;
         }
         else if (count > 3U)
         {
-            properties |= CharProperty::DoubleStrike | CharProperty::Bold;
+            properties |= CharProperty::DoubleStrike | CharProperty::BoldFace;
         }
 
         richLine[index] = { character, properties };
@@ -172,5 +323,9 @@ void PrintOverlayHelper::Clear()
     overlays.clear();
     currentOverlay.clear();
     richLine.clear();
+    currentRichLine.clear();
+    currentProps = CharProperty::Normal;
+    isEscapeSequence = false;
+    escapeSequence.clear();
 }
 

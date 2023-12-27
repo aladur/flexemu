@@ -31,9 +31,14 @@
 enum class CharProperty
 {
     Normal = 0,
-    Underlined = 1,
-    DoubleStrike = 2,
-    Bold = 4,
+    Underlined = 1, // Print text underline.
+    DoubleStrike = 2, // Print twice with a small shift inbetween.
+    BoldFace = 4, // Print twice without shift inbetween.
+    Italic = 8, // Print with italic font.
+    DoubleWidth = 16, // Print double width characters.
+    SubScript = 32, // Print subscript aligned.
+    SuperScript = 64, // Print superscript aligned.
+    PageBreak = 128, // Add page break after this line.
 };
 
 struct RichCharacter
@@ -60,12 +65,16 @@ public:
 private:
     size_t GetMaxOverlaySize() const;
     void AddOverlay();
+    void EvaluateOverlay();
     void EvaluateOverlays();
 
     std::vector<std::string> overlays;
     std::string currentOverlay;
     RichLine richLine;
-
+    RichLine currentRichLine;
+    CharProperty currentProps;
+    bool isEscapeSequence;
+    std::string escapeSequence;
 };
 
 inline CharProperty operator| (CharProperty lhs, CharProperty rhs)
@@ -113,5 +122,16 @@ inline bool operator!= (CharProperty lhs, CharProperty rhs)
     return !operator==(lhs, rhs);
 }
 
+inline bool operator== (CharProperty lhs, int rhs)
+{
+    using T1 = std::underlying_type<CharProperty>::type;
+
+    return static_cast<T1>(lhs) == rhs;
+}
+
+inline bool operator!= (CharProperty lhs, int rhs)
+{
+    return !operator==(lhs, rhs);
+}
 #endif
 
