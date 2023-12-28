@@ -178,10 +178,11 @@ bool PrintOverlayHelper::AddCharacter(char character)
     else if (character >= ' ' && character <= '~')
     {
         currentOverlay.push_back(character);
-        if (overlays.empty())
+        if (!overlays.empty())
         {
-            currentRichLine.push_back( { character, currentProps } );
+            return false;
         }
+        currentRichLine.push_back( { character, currentProps } );
     } 
     else if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
     {
