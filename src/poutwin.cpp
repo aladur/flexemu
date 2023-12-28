@@ -821,9 +821,10 @@ void PrintOutputWindow::DetectPageBreaks()
         }
 
         textBrowser->clear();
-        auto progress =
-            QProgressDialog(tr("Reformatting ..."), tr("Cancel"), 0, 100, this);
+        QProgressDialog progress(tr("Reformatting ..."), tr("Cancel"), 0, 100,
+                                 this);
         progress.setCancelButton(nullptr);
+        progress.show();
 
         // Print lines which are not ignored. Also print page breaks.
         for (index = 0U; index < richLines.size(); ++index)
