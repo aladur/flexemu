@@ -41,6 +41,7 @@ std::string toString(const RichLine &richLine)
 PrintOverlayHelper::PrintOverlayHelper() :
       currentProps(CharProperty::Normal)
     , isEscapeSequence(false)
+    , backspaceCount(0)
 
 {
     currentOverlay.reserve(80);
@@ -163,10 +164,15 @@ bool PrintOverlayHelper::AddCharacter(char character)
     }
     else if (character == CR) // Carriage return.
     {
+        backspaceCount = 0;
         AddOverlay();
     }
     else if (character == LF) // Line feed.
     {
+        // It is expected that a line feed is always used in combination
+        // with a carriage return. Starting a line not at the left most
+        // position is not supported.
+        backspaceCount = 0;
         EvaluateOverlays();
         return true;
     }
@@ -182,7 +188,33 @@ bool PrintOverlayHelper::AddCharacter(char character)
         {
             return false;
         }
-        currentRichLine.push_back( { character, currentProps } );
+
+        if (backspaceCount <= 0)
+        {
+            currentRichLine.push_back( { character, currentProps } );
+            return false;
+        }
+
+        const auto index = currentRichLine.size() - backspaceCount;
+
+        switch (character)
+        {
+            case '_':
+                currentRichLine[index].properties |= CharProperty::Underlined;
+                break;
+            case '-':
+                currentRichLine[index].properties |=
+                    CharProperty::StrikeThrough;
+                break;
+            default:
+                if (currentRichLine[index].character == ' ')
+                {
+                    // A space can be overwritten by any other character.
+                    currentRichLine[index].character = character;
+                }
+                break;
+        }
+        --backspaceCount;
     } 
     else if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
     {
@@ -196,6 +228,12 @@ bool PrintOverlayHelper::AddCharacter(char character)
                 break;
             case FF: // Add page break.
                 currentProps |= CharProperty::PageBreak;
+                break;
+            case BS: // Back space
+                if (currentRichLine.size() > backspaceCount)
+                {
+                    ++backspaceCount;
+                }
                 break;
             default:
                 //printf("What to do with character 0x%02X\n",
@@ -224,6 +262,7 @@ void PrintOverlayHelper::AddOverlay()
         overlays.push_back(currentOverlay);
     }
     currentOverlay.clear();
+    backspaceCount = 0;
 }
 
 size_t PrintOverlayHelper::GetMaxOverlaySize() const

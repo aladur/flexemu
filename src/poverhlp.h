@@ -38,7 +38,8 @@ enum class CharProperty
     DoubleWidth = 16, // Print double width characters.
     SubScript = 32, // Print subscript aligned.
     SuperScript = 64, // Print superscript aligned.
-    PageBreak = 128, // Add page break after this line.
+    StrikeThrough = 128, // Print text with strike through.
+    PageBreak = 256, // Add page break after this line.
 };
 
 struct RichCharacter
@@ -75,6 +76,7 @@ private:
     CharProperty currentProps;
     bool isEscapeSequence;
     std::string escapeSequence;
+    int backspaceCount;
 };
 
 inline CharProperty operator| (CharProperty lhs, CharProperty rhs)

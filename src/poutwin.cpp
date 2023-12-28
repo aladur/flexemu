@@ -1075,6 +1075,8 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
             }
             auto isUnderlined =
                 ((richChar.properties & CharProperty::Underlined) != 0);
+            auto isStrikeThrough =
+                ((richChar.properties & CharProperty::StrikeThrough) != 0);
             auto isItalic =
                 ((richChar.properties & CharProperty::Italic) != 0);
             auto isDoubleStrike =
@@ -1093,6 +1095,7 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
             }
 
             charFormat.setFontUnderline(isUnderlined);
+            charFormat.setFontStrikeOut(isStrikeThrough);
             charFormat.setFontItalic(isItalic);
             // Both DoubleStrike and BoldFace are displayed as bold
             auto fontWeight = QFont::Thin;
