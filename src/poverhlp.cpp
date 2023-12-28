@@ -296,6 +296,7 @@ void PrintOverlayHelper::EvaluateOverlays()
     }
 
     richLine.clear();
+    currentRichLine.clear();
     auto maxSize = GetMaxOverlaySize();
     while (richLine.size() < maxSize)
     {
@@ -317,6 +318,10 @@ void PrintOverlayHelper::EvaluateOverlays()
                 if (overlay[index] == '_')
                 {
                     properties |= CharProperty::Underlined;
+                }
+                else if (overlay[index] == '-')
+                {
+                    properties |= CharProperty::StrikeThrough;
                 }
                 else if (character == ' ' && overlay[index] != ' ')
                 {
