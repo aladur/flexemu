@@ -678,10 +678,10 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize.c_str());
     rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
 
-    for (const auto& [subKey, value] : optionsToWrite.printConfigs)
+    for (const auto &iter : optionsToWrite.printConfigs)
     {
-        const auto key = std::string(FLEXPRINTCONFIG) + subKey;
-        rcFile.SetValue(key.c_str(), value.c_str());
+        const auto key = std::string(FLEXPRINTCONFIG) + iter.first;
+        rcFile.SetValue(key.c_str(), iter.second.c_str());
     }
 }
 #endif
