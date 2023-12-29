@@ -100,10 +100,10 @@ bool PrintOverlayHelper::AddCharacter(char character)
                         currentProps &= ~CharProperty::Italic;
                         break;
                     case 'E': // Emphasized mode on.
-                        currentProps |= CharProperty::BoldFace;
+                        currentProps |= CharProperty::Emphasized;
                         break;
                     case 'F': // Emphasized mode off.
-                        currentProps &= ~CharProperty::BoldFace;
+                        currentProps &= ~CharProperty::Emphasized;
                         break;
                     case 'G': // Double-strike mode on.
                         currentProps |= CharProperty::DoubleStrike;
@@ -341,11 +341,11 @@ void PrintOverlayHelper::EvaluateOverlays()
         }
         else if (count == 3U)
         {
-            properties |= CharProperty::BoldFace;
+            properties |= CharProperty::Emphasized;
         }
         else if (count > 3U)
         {
-            properties |= CharProperty::DoubleStrike | CharProperty::BoldFace;
+            properties |= CharProperty::DoubleStrike | CharProperty::Emphasized;
         }
 
         richLine[index] = { character, properties };

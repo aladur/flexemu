@@ -33,7 +33,7 @@ enum class CharProperty
     Normal = 0,
     Underlined = 1, // Print text underline.
     DoubleStrike = 2, // Print twice with a small shift inbetween.
-    BoldFace = 4, // Print twice without shift inbetween.
+    Emphasized = 4, // Print with half speed gives higher pixel density
     Italic = 8, // Print with italic font.
     DoubleWidth = 16, // Print double width characters.
     SubScript = 32, // Print subscript aligned.

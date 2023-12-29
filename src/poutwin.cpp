@@ -1081,8 +1081,8 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
                 ((richChar.properties & CharProperty::Italic) != 0);
             auto isDoubleStrike =
                 ((richChar.properties & CharProperty::DoubleStrike) != 0);
-            auto isBoldFace =
-                ((richChar.properties & CharProperty::BoldFace) != 0);
+            auto isEmphasized =
+                ((richChar.properties & CharProperty::Emphasized) != 0);
             auto isDoubleWidth =
                 ((richChar.properties & CharProperty::DoubleWidth) != 0);
             if ((richChar.properties & CharProperty::SubScript) != 0)
@@ -1097,11 +1097,11 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
             charFormat.setFontUnderline(isUnderlined);
             charFormat.setFontStrikeOut(isStrikeThrough);
             charFormat.setFontItalic(isItalic);
-            // Both DoubleStrike and BoldFace are displayed as bold
+            // Both DoubleStrike and Emphasized are displayed as bold
             auto fontWeight = QFont::Thin;
-            fontWeight = (isDoubleStrike | isBoldFace) ?
+            fontWeight = (isDoubleStrike | isEmphasized) ?
                 QFont::Bold : fontWeight;
-            fontWeight = (isDoubleStrike & isBoldFace) ?
+            fontWeight = (isDoubleStrike & isEmphasized) ?
                 QFont::Black : fontWeight;
             charFormat.setFontWeight(fontWeight);
             /* Font stretching seems to be not reliable,
