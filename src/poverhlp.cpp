@@ -93,6 +93,9 @@ bool PrintOverlayHelper::AddCharacter(char character)
                     case SO: // Double width mode on.
                         currentProps |= CharProperty::DoubleWidth;
                         break;
+                    case DC4: // Double width mode off.
+                        currentProps &= ~CharProperty::DoubleWidth;
+                        break;
                     case '4': // Italic mode on.
                         currentProps |= CharProperty::Italic;
                         break;
