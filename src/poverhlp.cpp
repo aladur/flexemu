@@ -189,7 +189,7 @@ bool PrintOverlayHelper::AddCharacter(char character)
             return false;
         }
 
-        if (backspaceCount <= 0)
+        if (backspaceCount == 0)
         {
             currentRichLine.push_back( { character, currentProps } );
             return false;

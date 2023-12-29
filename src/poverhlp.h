@@ -76,7 +76,7 @@ private:
     CharProperty currentProps;
     bool isEscapeSequence;
     std::string escapeSequence;
-    int backspaceCount;
+    unsigned int backspaceCount;
 };
 
 inline CharProperty operator| (CharProperty lhs, CharProperty rhs)
