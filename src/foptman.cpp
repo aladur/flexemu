@@ -453,6 +453,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
                     options.printOutputWindowGeometry.c_str());
             break;
 
+        case FlexemuOptionId::PrintPreviewDialogGeometry:
+            reg.SetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
+                    options.printPreviewDialogGeometry.c_str());
+            break;
+
         case FlexemuOptionId::PrintConfigs:
             for (const auto& [subKey, value] : options.printConfigs)
             {
@@ -641,6 +646,11 @@ void FlexemuOptions::WriteOptionsToFile(
                     previousOptions.printOutputWindowGeometry;
             break;
 
+        case FlexemuOptionId::PrintPreviewDialogGeometry:
+            optionsToWrite.printPreviewDialogGeometry =
+                    previousOptions.printPreviewDialogGeometry;
+            break;
+
         case FlexemuOptionId::PrintConfigs:
             optionsToWrite.printConfigs = previousOptions.printConfigs;
             break;
@@ -689,6 +699,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
     rcFile.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
             optionsToWrite.printOutputWindowGeometry.c_str());
+    rcFile.SetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
+            optionsToWrite.printPreviewDialogGeometry.c_str());
 
     for (const auto &iter : optionsToWrite.printConfigs)
     {
@@ -839,7 +851,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     reg.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     reg.GetValue(FLEXPRINTUNIT, options.printUnit);
-    reg.GetValue(FLEXPRINTOUTPUTGEOMETRY, options.printOutputWindowGeometry);
+    reg.GetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
+            options.printOutputWindowGeometry);
+    reg.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
+            options.printPreviewDialogGeometry);
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
@@ -985,6 +1000,8 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     rcFile.GetValue(FLEXPRINTUNIT, options.printUnit);
     rcFile.GetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
             options.printOutputWindowGeometry);
+    rcFile.GetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
+            options.printPreviewDialogGeometry);
     rcFile.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 } // GetOptions

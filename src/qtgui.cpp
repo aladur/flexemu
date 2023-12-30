@@ -364,6 +364,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::PrintPageSize:
                 case FlexemuOptionId::PrintUnit:
                 case FlexemuOptionId::PrintOutputWindowGeometry:
+                case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:
                     isWriteOptions = true;
                     break;

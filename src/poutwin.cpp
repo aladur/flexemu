@@ -429,10 +429,18 @@ void PrintOutputWindow::OnOpenPrintPreview()
     connect(ui->w_printPreview, &QPrintPreviewWidget::previewChanged,
             this, &PrintOutputWindow::OnPreviewChanged);
 
+    UpdateWindowGeometryFtor functor(printPreviewDialog,
+            options.printPreviewDialogGeometry);
+
     QTimer::singleShot(0, this, &PrintOutputWindow::OnInitializePrintPreview);
+    QTimer::singleShot(0, functor);
 
     if (printPreviewDialog->exec() == QDialog::Accepted)
     {
+        auto geometry = ::GetWindowGeometry(*printPreviewDialog);
+
+        options.printPreviewDialogGeometry =
+            std::string(geometry.toUtf8().data());
         SavePrintConfig();
     }
 

@@ -25,12 +25,32 @@
 
 #include <QString>
 #include <QFont>
+#include <string>
 
 class QWidget;
 
 extern QFont GetFont(const QString &fontName);
 extern QString GetWindowGeometry(const QWidget &w);
 extern void UpdateWindowGeometry(QWidget &w, const QString &geometry);
+
+class UpdateWindowGeometryFtor
+{
+    QWidget *widget;
+    QString geometry;
+
+public:
+    UpdateWindowGeometryFtor() = delete;
+    UpdateWindowGeometryFtor(QWidget *w, const std::string &p_geometry) :
+        widget(w)
+      , geometry(QString(p_geometry.c_str())) { }
+    UpdateWindowGeometryFtor(const UpdateWindowGeometryFtor &f) :
+        widget(f.widget)
+      , geometry(f.geometry) { }
+    void operator() ()
+    {
+        ::UpdateWindowGeometry(*widget, geometry);
+    }
+};
 
 #endif
 

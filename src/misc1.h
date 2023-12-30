@@ -321,6 +321,7 @@ extern "C" struct sRGBDef
 #define FLEXPRINTPAGESIZE "PrintPageSize"
 #define FLEXPRINTUNIT "PrintUnit"
 #define FLEXPRINTOUTPUTWINDOWGEOMETRY "PrintOutputWindowGeometry"
+#define FLEXPRINTPREVIEWDIALOGGEOMETRY "PrintPreviewDialogGeometry"
 #define FLEXPRINTCONFIG "PrintConfig"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"

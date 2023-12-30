@@ -191,6 +191,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::PrintOutputWindowGeometry);
     }
 
+    if (opt1.printPreviewDialogGeometry != opt2.printPreviewDialogGeometry)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintPreviewDialogGeometry);
+    }
+
     if (opt1.printConfigs != opt2.printConfigs)
     {
         notEquals.push_back(FlexemuOptionId::PrintConfigs);
@@ -244,6 +249,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::PrintPageSize:
             case FlexemuOptionId::PrintUnit:
             case FlexemuOptionId::PrintOutputWindowGeometry:
+            case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
                 break;
         }

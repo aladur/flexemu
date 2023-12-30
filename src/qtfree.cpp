@@ -21,9 +21,11 @@
 */      
 
 
+#include "warnoff.h"
 #include <QLatin1Char>
 #include <QFontDatabase>
 #include <QWidget>
+#include "warnon.h"
 #include <cmath>
 #include "qtfree.h"
 

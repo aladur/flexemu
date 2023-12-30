@@ -69,6 +69,7 @@ enum class FlexemuOptionId : uint8_t
     PrintPageSize,
     PrintUnit,
     PrintOutputWindowGeometry,
+    PrintPreviewDialogGeometry,
     PrintConfigs,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
@@ -107,6 +108,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::PrintPageSize,
     FlexemuOptionId::PrintUnit,
     FlexemuOptionId::PrintOutputWindowGeometry,
+    FlexemuOptionId::PrintPreviewDialogGeometry,
     FlexemuOptionId::PrintConfigs,
 };
 
@@ -153,6 +155,7 @@ struct sOptions
     // Orientation, page size and font are used as a key into the dictionary.
     std::map<std::string, std::string> printConfigs;
     std::string printOutputWindowGeometry; // Geometry of print output window
+    std::string printPreviewDialogGeometry; // Geometry of print preview dialog
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.
