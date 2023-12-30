@@ -278,6 +278,11 @@ void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
     SetTextBrowserFont(newFont);
 }
 
+void PrintOutputWindow::OnHideWindow()
+{
+    hide();
+}
+
 void PrintOutputWindow::OnPageBreakDetectionToggled(bool checked) const
 {
     options.isPrintPageBreakDetected = checked;
@@ -745,7 +750,8 @@ void PrintOutputWindow::CreateFileActions(QBoxLayout &layout)
 
     const auto closeIcon = QIcon(":/resource/window-close.png");
     action = fileMenu->addAction(closeIcon, tr("&Close"));
-    connect(action, &QAction::triggered, this, &PrintOutputWindow::hide);
+    connect(action, &QAction::triggered, this,
+            &PrintOutputWindow::OnHideWindow);
     action->setStatusTip(tr("Close this window"));
     toolBar->addAction(action);
     toolBar->addAction(printPreviewAction);
