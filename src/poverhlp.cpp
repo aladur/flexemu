@@ -186,19 +186,36 @@ bool PrintOverlayHelper::AddCharacter(char character)
     }
     else if (character >= ' ' && character <= '~')
     {
-        currentOverlay.push_back(character);
-        if (!overlays.empty())
-        {
-            return false;
-        }
-
         if (backspaceCount == 0)
         {
-            currentRichLine.push_back( { character, currentProps } );
+            currentOverlay.push_back(character);
+        }
+        else
+        {
+            const auto index = currentOverlay.size() - backspaceCount;
+
+            if (currentOverlay[index] == ' ')
+            {
+                currentOverlay[index] = character;
+            }
+        }
+
+        // The following rich line commands are not needed when using overlays.
+        if (!overlays.empty())
+        {
+            backspaceCount -= (backspaceCount != 0) ? 1 : 0;
             return false;
         }
 
-        const auto index = currentRichLine.size() - backspaceCount;
+        if (backspaceCount == 0 || currentRichLine.empty())
+        {
+            currentRichLine.push_back( { character, currentProps } );
+            backspaceCount -= (backspaceCount != 0) ? 1 : 0;
+            return false;
+        }
+
+        const auto index = currentRichLine.size() > backspaceCount ?
+            currentRichLine.size() - backspaceCount : 0;
 
         switch (character)
         {
@@ -233,7 +250,7 @@ bool PrintOverlayHelper::AddCharacter(char character)
                 currentProps |= CharProperty::PageBreak;
                 break;
             case BS: // Back space
-                if (currentRichLine.size() > backspaceCount)
+                if (currentOverlay.size() > backspaceCount)
                 {
                     ++backspaceCount;
                 }
@@ -265,7 +282,6 @@ void PrintOverlayHelper::AddOverlay()
         overlays.push_back(currentOverlay);
     }
     currentOverlay.clear();
-    backspaceCount = 0;
 }
 
 size_t PrintOverlayHelper::GetMaxOverlaySize() const
