@@ -174,11 +174,19 @@ bool PrintOverlayHelper::AddCharacter(char character)
     }
     else if (character == LF) // Line feed.
     {
-        // It is expected that a line feed is always used in combination
-        // with a carriage return. Starting a line not at the left most
-        // position is not supported.
+        auto index = currentOverlay.size() - backspaceCount;
+
         backspaceCount = 0;
         EvaluateOverlays();
+
+        if (index > 0)
+        {
+            currentOverlay = std::string(index, ' ');
+            for (unsigned int i = 0; i < index; ++i)
+            {
+                currentRichLine.push_back({ ' ', CharProperty::Normal });
+            }
+        }
         return true;
     }
     else if (character == ESC)
