@@ -356,7 +356,6 @@ void PrintOutputWindow::OnOpenPrintPreview()
 
     ui = new Ui::PrintPreview;
     ui->setupUi(printPreviewDialog);
-    printPreviewDialog->setAttribute(Qt::WA_DeleteOnClose);
 
     InitializeUnitWidget();
     InitializeOrientation();
@@ -444,6 +443,7 @@ void PrintOutputWindow::OnOpenPrintPreview()
         SavePrintConfig();
     }
 
+    delete printPreviewDialog;
     delete previewPrinter;
     previewPrinter = nullptr;
     delete(ui);
