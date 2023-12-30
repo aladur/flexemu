@@ -186,6 +186,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::PrintUnit);
     }
 
+    if (opt1.printOutputWindowGeometry != opt2.printOutputWindowGeometry)
+    {
+        notEquals.push_back(FlexemuOptionId::PrintOutputWindowGeometry);
+    }
+
     if (opt1.printConfigs != opt2.printConfigs)
     {
         notEquals.push_back(FlexemuOptionId::PrintConfigs);
@@ -238,6 +243,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::PrintOrientation:
             case FlexemuOptionId::PrintPageSize:
             case FlexemuOptionId::PrintUnit:
+            case FlexemuOptionId::PrintOutputWindowGeometry:
             case FlexemuOptionId::PrintConfigs:
                 break;
         }

@@ -23,6 +23,7 @@
 
 #include <QLatin1Char>
 #include <QFontDatabase>
+#include <QWidget>
 #include <cmath>
 #include "qtfree.h"
 
@@ -47,5 +48,38 @@ QFont GetFont(const QString &fontName)
     }
 
     return QFont();
+}
+
+QString GetWindowGeometry(const QWidget &w)
+{
+    return QString(
+        "%1,%2,%3,%4").arg(w.width()).arg(w.height()).arg(w.x()).arg(w.y());
+}
+
+void UpdateWindowGeometry(QWidget &w, const QString &geometry)
+{
+    auto list = geometry.split(QLatin1Char(','));
+    bool ok1 = false;
+    bool ok2 = false;
+
+    if (list.size() >= 2)
+    {
+        auto width = list[0].toInt(&ok1);
+        auto height = list[1].toInt(&ok2);
+        if (ok1 && ok2)
+        {
+            w.resize(QSize(width, height));
+        }
+    }
+
+    if (list.size() == 4)
+    {
+        auto x = list[2].toInt(&ok1);
+        auto y = list[3].toInt(&ok2);
+        if (ok1 && ok2)
+        {
+            w.move(QPoint(x, y));
+        }
+    }
 }
 

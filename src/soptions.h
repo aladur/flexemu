@@ -68,6 +68,7 @@ enum class FlexemuOptionId : uint8_t
     PrintOrientation,
     PrintPageSize,
     PrintUnit,
+    PrintOutputWindowGeometry,
     PrintConfigs,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
@@ -105,6 +106,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::PrintOrientation,
     FlexemuOptionId::PrintPageSize,
     FlexemuOptionId::PrintUnit,
+    FlexemuOptionId::PrintOutputWindowGeometry,
     FlexemuOptionId::PrintConfigs,
 };
 
@@ -150,6 +152,7 @@ struct sOptions
     // Print preview options: Margins and size factor.
     // Orientation, page size and font are used as a key into the dictionary.
     std::map<std::string, std::string> printConfigs;
+    std::string printOutputWindowGeometry; // Geometry of print output window
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

@@ -190,6 +190,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
             &PrintOutputWindow::OnCyclicTimer);
 
     cyclicTimer.start(100);
+    QTimer::singleShot(0, this, &PrintOutputWindow::OnUpdateGeometry);
 }
 
 PrintOutputWindow::~PrintOutputWindow()
@@ -280,6 +281,10 @@ void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
 
 void PrintOutputWindow::OnHideWindow()
 {
+    auto geometry = ::GetWindowGeometry(*this);
+
+    options.printOutputWindowGeometry = std::string(geometry.toUtf8().data());
+
     hide();
 }
 
@@ -658,6 +663,13 @@ void PrintOutputWindow::OnCyclicTimer()
     ProcessSerialInput();
 
     cyclicTimer.start(20);
+}
+
+void PrintOutputWindow::OnUpdateGeometry()
+{
+    auto geometry = QString(options.printOutputWindowGeometry.c_str());
+
+    ::UpdateWindowGeometry(*this, geometry);
 }
 
 void PrintOutputWindow::OnUnitChanged(int index)

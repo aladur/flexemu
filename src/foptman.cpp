@@ -448,6 +448,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXPRINTUNIT, options.printUnit.c_str());
             break;
 
+        case FlexemuOptionId::PrintOutputWindowGeometry:
+            reg.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
+                    options.printOutputWindowGeometry.c_str());
+            break;
+
         case FlexemuOptionId::PrintConfigs:
             for (const auto& [subKey, value] : options.printConfigs)
             {
@@ -631,6 +636,11 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.printUnit = previousOptions.printUnit;
             break;
 
+        case FlexemuOptionId::PrintOutputWindowGeometry:
+            optionsToWrite.printOutputWindowGeometry =
+                    previousOptions.printOutputWindowGeometry;
+            break;
+
         case FlexemuOptionId::PrintConfigs:
             optionsToWrite.printConfigs = previousOptions.printConfigs;
             break;
@@ -677,6 +687,8 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.printOrientation.c_str());
     rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize.c_str());
     rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
+    rcFile.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
+            optionsToWrite.printOutputWindowGeometry.c_str());
 
     for (const auto &iter : optionsToWrite.printConfigs)
     {
@@ -827,6 +839,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     reg.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     reg.GetValue(FLEXPRINTUNIT, options.printUnit);
+    reg.GetValue(FLEXPRINTOUTPUTGEOMETRY, options.printOutputWindowGeometry);
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
@@ -970,6 +983,8 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     rcFile.GetValue(FLEXPRINTORIENTATION, options.printOrientation);
     rcFile.GetValue(FLEXPRINTPAGESIZE, options.printPageSize);
     rcFile.GetValue(FLEXPRINTUNIT, options.printUnit);
+    rcFile.GetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
+            options.printOutputWindowGeometry);
     rcFile.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 } // GetOptions

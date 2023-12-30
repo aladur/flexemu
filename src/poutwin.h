@@ -105,6 +105,7 @@ public slots:
     void OnSizeFactorChanged(int value);
     void OnSizeFactorDecrement();
     void OnSizeFactorIncrement();
+    void OnUpdateGeometry();
     void OnUnitChanged(int index);
 
 private:
