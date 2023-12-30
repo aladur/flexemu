@@ -22,8 +22,10 @@
 
 
 #include <set>
+#include <functional>
 #include "poverhlp.h"
 #include "asciictl.h"
+#include "bscopeex.h"
 
 std::string toString(const RichLine &richLine)
 {
@@ -186,6 +188,10 @@ bool PrintOverlayHelper::AddCharacter(char character)
     }
     else if (character >= ' ' && character <= '~')
     {
+        BScopeExit<std::function<void()> > executeBeforeScopeExit([&](){
+            backspaceCount -= (backspaceCount != 0) ? 1 : 0;
+        });
+
         if (backspaceCount == 0)
         {
             currentOverlay.push_back(character);
@@ -203,14 +209,12 @@ bool PrintOverlayHelper::AddCharacter(char character)
         // The following rich line commands are not needed when using overlays.
         if (!overlays.empty())
         {
-            backspaceCount -= (backspaceCount != 0) ? 1 : 0;
             return false;
         }
 
         if (backspaceCount == 0 || currentRichLine.empty())
         {
             currentRichLine.push_back( { character, currentProps } );
-            backspaceCount -= (backspaceCount != 0) ? 1 : 0;
             return false;
         }
 
@@ -234,7 +238,6 @@ bool PrintOverlayHelper::AddCharacter(char character)
                 }
                 break;
         }
-        --backspaceCount;
     } 
     else if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
     {
