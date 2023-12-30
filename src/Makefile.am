@@ -245,6 +245,7 @@ flexemu_SOURCES = \
 	bregistr.h \
 	brkptui.h \
 	breltime.h \
+	bscopeex.h \
 	btime.h \
 	bui.h \
 	bytereg.h \

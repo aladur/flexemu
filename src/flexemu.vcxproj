@@ -401,6 +401,7 @@
     <ClInclude Include="bobshelp.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
+    <ClInclude Include="bscopeex.h" />
     <ClInclude Include="btime.h" />
     <ClInclude Include="bui.h" />
     <ClInclude Include="bytereg.h" />
