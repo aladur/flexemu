@@ -40,6 +40,27 @@ std::string toString(const RichLine &richLine)
     return result;
 }
 
+RichLine CreateRichLine(size_t count, const RichCharacter &rc)
+{
+    RichLine richLine;
+
+    richLine.reserve(count);
+    for (auto i = 0U; i < count; ++i)
+    {
+        richLine.push_back(rc);
+    }
+
+    return richLine;
+}
+
+void RichLineAppend(RichLine &richLine, size_t count, const RichCharacter &rc)
+{
+    for (auto i = 0U; i < count; ++i)
+    {
+        richLine.push_back(rc);
+    }
+}
+
 PrintOverlayHelper::PrintOverlayHelper() :
       currentProps(CharProperty::Normal)
     , isEscapeSequence(false)
@@ -181,11 +202,9 @@ bool PrintOverlayHelper::AddCharacter(char character)
 
         if (index > 0)
         {
+            RichCharacter richChar{' ', CharProperty::Normal};
             currentOverlay = std::string(index, ' ');
-            for (unsigned int i = 0; i < index; ++i)
-            {
-                currentRichLine.push_back({ ' ', CharProperty::Normal });
-            }
+            currentRichLine = CreateRichLine(index, richChar);
         }
         return true;
     }
@@ -328,9 +347,11 @@ void PrintOverlayHelper::EvaluateOverlays()
     richLine.clear();
     currentRichLine.clear();
     auto maxSize = GetMaxOverlaySize();
-    while (richLine.size() < maxSize)
+    if (richLine.size() < maxSize)
     {
-        richLine.push_back({ ' ', CharProperty::Normal });
+        const RichCharacter richChar{ ' ', CharProperty::Normal };
+
+        RichLineAppend(richLine, maxSize - richLine.size(), richChar);
     }
 
     for (size_t index = 0U; index < maxSize; ++index)
