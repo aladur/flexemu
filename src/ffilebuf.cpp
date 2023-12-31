@@ -570,14 +570,14 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
             if (blocks == 1 || GetFileSize() == 0)
             {
-                auto directory = getParentPath(path);
+                auto fullPath = toAbsolutePath(path);
+                auto directory = getParentPath(fullPath);
 
                 SetAttributes(0);
                 SetSectorMap(0);
 
                 if(access(directory.c_str(), W_OK))
                 {
-                    SetAttributes(FLX_READONLY);
                     // CDFS-Support: look for file name in file 'random'
                     if (isListedInFileRandom(directory.c_str(),
                                              getFileName(path).c_str()))
