@@ -478,6 +478,22 @@ std::string getParentPath(const std::string &path)
     return "";
 }
 
+std::string toAbsolutePath(const std::string &path)
+{
+    if (isAbsolutePath(path))
+    {
+        return path;
+    }
+
+    auto directory = getCurrentPath();
+    if (!endsWithPathSeparator(path))
+    {
+        directory += PATHSEPARATORSTRING;
+    }
+
+    return directory + path;
+}
+
 std::string getCurrentPath()
 {
 #ifdef _WIN32

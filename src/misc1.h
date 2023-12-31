@@ -414,6 +414,7 @@ extern std::string getFileName(const std::string &path);
 extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);
 extern std::string getParentPath(const std::string &path);
+extern std::string toAbsolutePath(const std::string &path);
 extern std::string getCurrentPath();
 extern std::string getHostName();
 extern bool endsWithPathSeparator(const std::string &path);
