@@ -142,7 +142,8 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
 }
 
 int ExtractDskFile(const std::string &target_dir, bool verbose,
-                   bool convert_text, const std::string &dsk_file,
+                   bool convert_text, char default_answer,
+                   const std::string &dsk_file,
                    const std::vector<std::regex> &regexs,
                    FileTimeAccess fileTimeAccess)
 {
@@ -175,6 +176,23 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
         try
         {
             FlexDirEntry dir_entry;
+
+            if (dest.FindFile(filename.c_str(), dir_entry))
+            {
+                auto question = filename + " already exists. Overwrite?";
+                if (AskForInput(question, "yn", default_answer))
+                {
+                    dest.DeleteFile(dir_entry.GetTotalFileName().c_str());
+                }
+                else
+                {
+                    if (default_answer != '?')
+                    {
+                        std::cout << filename << " already exists. Skipped.\n";
+                    }
+                    continue;
+                }
+            }
 
             src.FileCopy(filename.c_str(), filename.c_str(), dest);
 
@@ -219,6 +237,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 }
 
 int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
+                    char default_answer,
                     const std::vector<std::string> &dsk_files,
                     const std::vector<std::regex> &regexs,
                     FileTimeAccess fileTimeAccess)
@@ -242,7 +261,8 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
         try
         {
             int result = ExtractDskFile(target_dir, verbose, convert_text,
-                                        dsk_file, regexs, fileTimeAccess);
+                                        default_answer, dsk_file, regexs,
+                                        fileTimeAccess);
             if (result != 0)
             {
                 // Abort after fatal error.
@@ -857,9 +877,9 @@ void usage()
         "Usage: dsktool -S help\n" <<
         "Usage: dsktool -V\n" <<
         "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-m]"  <<
-        "[-R<file>...][<regex>...]\n" <<
+        "[-y|-n][-R<file>...][<regex>...]\n" <<
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v][-z] "
-        "[<dsk-file>...]\n\n" <<
+        "[-y|-n][<dsk-file>...]\n\n" <<
         "Commands:\n" <<
         "  -c: Check consistency of FLEX file container.\n" <<
         "  -C: Copy files from a FLEX file container into another one.\n" <<
@@ -1260,7 +1280,7 @@ int main(int argc, char *argv[])
         (!isRegexCommand && regexCaseSense) ||
         (!isRegexCommand && has_regex_file) ||
         (!isRegexCommand && !regexs.empty()) ||
-        (std::string("firC").find_first_of(command) == std::string::npos &&
+        (std::string("firCxX").find_first_of(command) == std::string::npos &&
          (default_answer != '?')) ||
         (command != 'i' && command != 'X' && command != 'x' && convert_text) ||
         (command != 'c' && debug_output) ||
@@ -1315,7 +1335,8 @@ int main(int argc, char *argv[])
                 // fall through
             case 'X':
                 return ExtractDskFiles(target_dir, verbose, convert_text,
-                                       dsk_files, regexs, fileTimeAccess);
+                                       default_answer, dsk_files, regexs,
+                                       fileTimeAccess);
 
             case 'C':
                 return CopyFromToDskFile(dsk_file, dst_dsk_file, verbose,
