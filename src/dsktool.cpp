@@ -106,7 +106,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         }
         else
         {
-            if (verbose)
+            if (default_answer != '?')
             {
                 std::cout << dsk_file << " already exists. Skipped.\n";
             }
@@ -545,7 +545,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                 }
                 else
                 {
-                    if (verbose)
+                    if (default_answer != '?')
                     {
                         std::cout << fileBuffer.GetFilename() <<
                             " already exists. Skipped.\n";
@@ -780,7 +780,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 }
                 else
                 {
-                    if (verbose)
+                    if (default_answer != '?')
                     {
                         std::cout << filename << " already exists. Skipped.\n";
                     }
