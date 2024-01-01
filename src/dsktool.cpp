@@ -146,35 +146,15 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
                    const std::vector<std::regex> &regexs,
                    FileTimeAccess fileTimeAccess)
 {
-    std::string subdir = target_dir + getFileStem(getFileName(dsk_file));
-
     if (verbose)
     {
-        std::cout << "Extracting " << dsk_file << " into " << subdir <<
-                     " ... " << std::endl;
-    }
-
-    if (regexs.empty() && BDirectory::Exists(subdir))
-    {
-        std::cerr << "  *** Error: '" << subdir << "' already exists.\n" <<
-                     "    Extraction from '" << dsk_file << "' aborted.\n";
-        return 0;
-    }
-
-    // If there are regular expressions subdir may already exist.
-    // If subdir does not exist create it.
-    if ((regexs.empty() ||
-        (!regexs.empty() && !BDirectory::Exists(subdir))) &&
-        !BDirectory::Create(subdir))
-    {
-        std::cerr << "  *** Error creating '" << subdir << "'.\n" <<
-                     "    Extraction from '" << dsk_file << "' aborted.\n";
-        return 0;
+        std::cout << "Extracting from '" << dsk_file << "' into '" <<
+                     target_dir << "' ... " << std::endl;
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
     FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
-    DirectoryContainer dest{subdir.c_str(), fileTimeAccess};
+    DirectoryContainer dest{target_dir.c_str(), fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;
@@ -250,14 +230,11 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
 
     if (!BDirectory::Exists(target_dir))
     {
-        std::cerr << "*** Error: '" << target_dir << "' does not exist or is"
-        " no directory.\n";
+        std::cerr <<
+            "*** Error: '" << target_dir << "' does not exist or is"
+            " no directory.\n" <<
+            "    Extraction aborted.\n";
         return 1;
-    }
-
-    if (target_dir.at(target_dir.size() - 1) != PATHSEPARATOR)
-    {
-        target_dir += PATHSEPARATORSTRING;
     }
 
     for (const auto &dsk_file : dsk_files)
@@ -902,7 +879,6 @@ void usage()
         "  -X: Extract all files from FLEX file container(s).\n\n" <<
         "Parameters:\n" <<
         "  -d<directory> The target directory.\n" <<
-        "                For each dsk-file a subdirectory is created.\n" <<
         "                Default: current directory.\n" <<
         "  -D            Additional debug output.\n" <<
         "  -F(dsk|flx)   Use *.dsk or *.flx file container format.\n" <<
