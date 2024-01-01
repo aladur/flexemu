@@ -172,6 +172,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     {
         std::string result = "ok";
         std::string what;
+        bool isText = false;
 
         try
         {
@@ -194,7 +195,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
                 }
             }
 
-            src.FileCopy(filename.c_str(), filename.c_str(), dest);
+            isText = src.FileCopy(filename.c_str(), filename.c_str(), dest);
 
             ++count;
             if (src.FindFile(filename.c_str(), dir_entry))
@@ -212,8 +213,15 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 
         if (verbose)
         {
-            std::cout << " extracting " << filename << " ... " << result <<
-                         std::endl;
+            std::string fileType;
+
+            if (what.empty())
+            {
+                fileType = isText ? "text file" : "binary file";
+            }
+
+            std::cout << " extracting " << fileType << " " << filename <<
+                         " ... " << result << std::endl;
         }
         if (!what.empty())
         {
@@ -506,6 +514,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                     char default_answer, bool isConvertText,
                     FileTimeAccess fileTimeAccess)
 {
+    FlexCopyManager::autoTextConversion = isConvertText;
     FlexRamFileContainer dst{dsk_file.c_str(), "rb+", fileTimeAccess};
 
     if (!dst.IsFlexFormat())
@@ -516,6 +525,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
     for (auto &file : files)
     {
         bool isSuccess = true;
+        bool isText = false;
         FlexFileBuffer fileBuffer;
 
         if (!fileBuffer.ReadFromFile(file.c_str()))
@@ -528,6 +538,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
         if (isConvertText && fileBuffer.IsTextFile())
         {
             fileBuffer.ConvertToFlexTextFile();
+            isText = true;
         }
 
         try
@@ -566,7 +577,9 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 
         if (isSuccess && verbose)
         {
-            std::cout << "Injecting " << file << " ... Ok\n";
+            std::string fileType = isText ? "text file" : "binary file";
+
+            std::cout << "Injecting " << fileType << " " << file << " ... Ok\n";
         }
     }
 
