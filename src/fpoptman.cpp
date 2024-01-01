@@ -42,6 +42,9 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.injectTextFileAskUser = true;
     options.extractTextFileConvert = true;
     options.extractTextFileAskUser = true;
+#ifdef UNIX
+    options.openContainerPath = F_DATADIR;
+#endif
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
@@ -54,6 +57,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
+    reg.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
+    reg.SetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() +
@@ -69,6 +74,9 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.extractTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTASK,
                     options.extractTextFileAskUser ? 1 : 0);
+    rcFile.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath.c_str());
+    rcFile.SetValue(FLEXPLOREROPENDIRCONTPATH,
+                    options.openDirContainerPath.c_str());
 #endif
 }
 
@@ -114,6 +122,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.extractTextFileAskUser = (int_result != 0);
     }
+    reg.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
+    reg.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -154,6 +164,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.extractTextFileAskUser = (int_result != 0);
     }
+    rcFile.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
+    rcFile.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
 #endif
 }
 

@@ -154,23 +154,25 @@ void FLEXplorer::NewContainer()
 
 void FLEXplorer::OpenContainer()
 {
-    static QString defaultDir;
+    const auto defaultDir = QString(options.openContainerPath.c_str());
+    QStringList filePaths;
+    QFileDialog dialog(this, tr("Select FLEX file containers"), defaultDir,
+                       "FLEX file containers (*.dsk *.flx *.wta);;"
+                       "All files (*.*)");
 
-    const auto filePaths =
-        QFileDialog::getOpenFileNames(
-                this, tr("Select FLEX file containers"), defaultDir,
-                "FLEX file containers (*.dsk *.flx *.wta);;"
-                "All files (*.*)");
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        options.openContainerPath =
+            std::string(dialog.directory().absolutePath().toUtf8().data());
+        filePaths = dialog.selectedFiles();
+    }
 
     for (const auto &filePath : filePaths)
     {
-        auto index = filePath.lastIndexOf(PATHSEPARATOR);
         bool isLast = (!QString::compare(filePath, filePaths.back()));
-
-        if (index > 0)
-        {
-            defaultDir = filePath.left(index);
-        }
 
         if (!OpenContainerForPath(filePath, isLast))
         {
@@ -181,13 +183,23 @@ void FLEXplorer::OpenContainer()
 
 void FLEXplorer::OpenDirectory()
 {
-    QString directory =
-        QFileDialog::getExistingDirectory(
-                this, tr("Open a FLEX directory container"));
+    const auto defaultDir = QString(options.openDirContainerPath.c_str());
+    QFileDialog dialog(this, tr("Open a FLEX directory container"),
+                       defaultDir);
 
-    if (!directory.isEmpty())
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setOption(QFileDialog::ShowDirsOnly, true);
+
+    if (dialog.exec() == QDialog::Accepted)
     {
-        OpenContainerForPath(directory);
+        auto directories = dialog.selectedFiles();
+
+        options.openDirContainerPath =
+            std::string(dialog.directory().absolutePath().toUtf8().data());
+        if (directories.size() >= 1)
+        {
+            OpenContainerForPath(directories[0]);
+        }
     }
 }
 

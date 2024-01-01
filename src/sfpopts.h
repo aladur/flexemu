@@ -40,6 +40,8 @@ struct sFPOptions
     bool injectTextFileAskUser;
     bool extractTextFileConvert;
     bool extractTextFileAskUser;
+    std::string openContainerPath;
+    std::string openDirContainerPath;
 };
 
 #endif
