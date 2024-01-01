@@ -52,6 +52,8 @@ public:
     int GetSectors() const;
     QString GetPath() const;
     int GetFormat() const;
+    void SetDefaultPath(const QString &path);
+    QString GetDefaultPath() const;
 
 private slots:
     void OnDskFileFormat(bool value);
@@ -69,9 +71,12 @@ private:
     void AddTracksValidator(QLineEdit &lineEdit);
     void AddSectorsValidator(QLineEdit &lineEdit);
     void UpdateFormatTrkSecEnable(bool isMdcrFormat);
+    void UpdateFilename();
     bool Validate();
+    QString GetCurrentFileExtension() const;
 
     QDialog *dialog;
+    QString defaultPath;
     int format;
 };
 

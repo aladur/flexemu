@@ -94,7 +94,17 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
     e_tracks->setText(text);
     text = QString::asprintf("%d", sectors);
     e_sectors->setText(text);
-    e_path->setText(path);
+
+    if (path.isEmpty())
+    {
+        e_path->setText(defaultPath + PATHSEPARATORSTRING +
+            "new." + GetCurrentFileExtension());
+    }
+    else
+    {
+        e_path->setText(path);
+    }
+    UpdateFilename();
 }
 
 void FlexplorerNewUi::ConnectSignalsWithSlots()
@@ -138,7 +148,20 @@ int FlexplorerNewUi::GetSectors() const
 
 QString FlexplorerNewUi::GetPath() const
 {
-    return e_path->text();
+    auto path = QDir::toNativeSeparators(e_path->text());
+
+    auto pIdx = path.lastIndexOf(PATHSEPARATOR);
+    if (pIdx < 0)
+    {
+        path = defaultPath + PATHSEPARATORSTRING + path;
+    }
+    auto index = path.lastIndexOf('.');
+    if (index < 0 || index < pIdx)
+    {
+        path += "." + GetCurrentFileExtension();
+    }
+
+    return path;
 }
 
 int FlexplorerNewUi::GetFormat() const
@@ -153,6 +176,7 @@ void FlexplorerNewUi::OnDskFileFormat(bool value)
     {
         format = TYPE_DSK_CONTAINER;
         UpdateFormatTrkSecEnable(false);
+        UpdateFilename();
     }
 }
 
@@ -162,6 +186,7 @@ void FlexplorerNewUi::OnFlxFileFormat(bool value)
     {
         format = TYPE_FLX_CONTAINER;
         UpdateFormatTrkSecEnable(false);
+        UpdateFilename();
     }
 }
 
@@ -171,6 +196,7 @@ void FlexplorerNewUi::OnMdcrFileFormat(bool value)
     {
         format = TYPE_MDCR_CONTAINER;
         UpdateFormatTrkSecEnable(true);
+        UpdateFilename();
     }
 
 }
@@ -226,24 +252,32 @@ void FlexplorerNewUi::OnTrkSecChanged()
 
 void FlexplorerNewUi::OnSelectPath()
 {
-    QString path(e_path->text());
+    QString caption = tr("Save disk file");
+    QString filter =
+                tr("FLEX file containers (*.dsk *.flx *.wta);;All files (*.*)");
 
     if (format == TYPE_MDCR_CONTAINER)
     {
-        path = QFileDialog::getSaveFileName(
-            dialog, tr("Select a MDCR file"), path,
-            tr("MDCR containers (*.mdcr);;All files (*.*)"));
-    }
-    else
-    {
-        path = QFileDialog::getSaveFileName(
-            dialog, tr("Select a Disk file"), path,
-            tr("FLEX file containers (*.dsk *.flx *.wta);;All files (*.*)"));
+        caption = tr("Save MDCR file");
+        filter = tr("MDCR containers (*.mdcr);;All files (*.*)");
     }
 
-    if (!path.isEmpty())
+    QFileDialog fileDialog(dialog, caption, defaultPath, filter);
+
+    fileDialog.setFileMode(QFileDialog::AnyFile);
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    fileDialog.selectFile(e_path->text());
+    fileDialog.setDefaultSuffix(GetCurrentFileExtension());
+
+    if (fileDialog.exec() == QDialog::Accepted)
     {
-        e_path->setText(path);
+        defaultPath =
+            QDir::toNativeSeparators(fileDialog.directory().absolutePath());
+        auto files = fileDialog.selectedFiles();
+        if (files.size() > 0)
+        {
+            e_path->setText(QDir::toNativeSeparators(files[0]));
+        }
     }
 }
 
@@ -301,10 +335,13 @@ bool FlexplorerNewUi::Validate()
     else if (QFileInfo::exists(e_path->text()))
     {
         e_path->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), 
-                tr("File already exists"));
+        auto path = QDir::toNativeSeparators(e_path->text());
+        auto fileName = getFileName(path.toStdString());
+        auto result = QMessageBox::question(dialog, tr("Confirm Save"),
+            QString(fileName.c_str()) +
+            tr(" already exists.\nDo You want to replace it?"));
 
-        return false;
+        return result == QMessageBox::Yes;
     }
 
     return true;
@@ -321,5 +358,60 @@ void FlexplorerNewUi::OnAccepted()
 void FlexplorerNewUi::OnRejected()
 {
     dialog->done(QDialog::Rejected);
+}
+
+QString FlexplorerNewUi::GetDefaultPath() const
+{
+    return defaultPath;
+}
+
+void FlexplorerNewUi::SetDefaultPath(const QString &path)
+{
+    defaultPath = QDir::toNativeSeparators(path);
+}
+
+void FlexplorerNewUi::UpdateFilename()
+{
+    auto fileExtension = QString(".") + GetCurrentFileExtension();
+
+    auto path = QDir::toNativeSeparators(e_path->text());
+    if (path.isEmpty())
+    {
+        path = "new" + fileExtension;
+    }
+    if (path.lastIndexOf(PATHSEPARATOR) < 0)
+    {
+        path = defaultPath + PATHSEPARATORSTRING + path;
+    }
+    auto pIdx = path.lastIndexOf(PATHSEPARATOR);
+    auto index = path.lastIndexOf('.');
+    if (index >= 0 && index > pIdx)
+    {
+        path = path.left(index) + fileExtension;
+    }
+    else if (pIdx >= 0 && pIdx < path.size() - 1)
+    {
+        path = path + fileExtension;
+    }
+    else if (pIdx >= 0 && pIdx == path.size() - 1)
+    {
+        path = path + "new" + fileExtension;
+    }
+    e_path->setText(path);
+}
+
+QString FlexplorerNewUi::GetCurrentFileExtension() const
+{
+    switch (format)
+    {
+    case TYPE_DSK_CONTAINER:
+        return "dsk";
+    case TYPE_FLX_CONTAINER:
+        return "flx";
+    case TYPE_MDCR_CONTAINER:
+        return "mdcr";
+    }
+
+    return "";
 }
 

@@ -114,6 +114,7 @@ void FLEXplorer::NewContainer()
     QDialog dialog;
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
+    ui.SetDefaultPath(QString(options.openContainerPath.c_str()));
     ui.TransferDataToDialog(TYPE_DSK_CONTAINER, 80, 36);
     dialog.resize(newDialogSize);
     auto result = dialog.exec();
@@ -121,6 +122,7 @@ void FLEXplorer::NewContainer()
 
     if (result == QDialog::Accepted)
     {
+        options.openContainerPath = ui.GetDefaultPath().toStdString();
         try
         {
             if (ui.GetFormat() == TYPE_MDCR_CONTAINER)
