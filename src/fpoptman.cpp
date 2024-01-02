@@ -36,7 +36,8 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.bootSectorFile = F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
 #endif
 #ifdef _WIN32
-    options.bootSectorFile = BOOT_FILE;
+    options.bootSectorFile =
+        getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
     options.injectTextFileConvert = true;
     options.injectTextFileAskUser = true;

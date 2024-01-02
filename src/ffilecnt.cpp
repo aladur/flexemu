@@ -43,7 +43,8 @@
         F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
 #endif
 #ifdef _WIN32
-    std::string FlexFileContainer::bootSectorFile = BOOT_FILE;
+    std::string FlexFileContainer::bootSectorFile =
+        getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
 
 /***********************************************/
@@ -1275,6 +1276,7 @@ void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
         sec_buf[0] = 0x7E; // JMP $F02D
         sec_buf[1] = 0xF0;
         sec_buf[2] = 0x2D;
+        memset(sec_buf2, 0, SECTOR_SIZE);
     }
     if (boot != nullptr && fread(sec_buf2, SECTOR_SIZE, 1, boot) != 1)
     {
