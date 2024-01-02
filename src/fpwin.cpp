@@ -38,6 +38,7 @@
 #include "warnoff.h"
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDir>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
@@ -167,16 +168,18 @@ void FLEXplorer::OpenContainer()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        options.openContainerPath =
-            std::string(dialog.directory().absolutePath().toUtf8().data());
+        const auto path =
+            QDir::toNativeSeparators(dialog.directory().absolutePath());
+        options.openContainerPath = path.toStdString();
         filePaths = dialog.selectedFiles();
     }
 
     for (const auto &filePath : filePaths)
     {
         bool isLast = (!QString::compare(filePath, filePaths.back()));
+        const auto path = QDir::toNativeSeparators(filePath);
 
-        if (!OpenContainerForPath(filePath, isLast))
+        if (!OpenContainerForPath(path, isLast))
         {
             break;
         }
@@ -194,13 +197,16 @@ void FLEXplorer::OpenDirectory()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        auto directories = dialog.selectedFiles();
+        const auto directories = dialog.selectedFiles();
 
-        options.openDirContainerPath =
-            std::string(dialog.directory().absolutePath().toUtf8().data());
+        auto path =
+            QDir::toNativeSeparators(dialog.directory().absolutePath());
+        options.openDirContainerPath = path.toStdString();
+
         if (directories.size() >= 1)
         {
-            OpenContainerForPath(directories[0]);
+            path = QDir::toNativeSeparators(directories[0]);
+            OpenContainerForPath(path);
         }
     }
 }

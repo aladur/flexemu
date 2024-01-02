@@ -25,6 +25,7 @@
 #include "fpoptui.h"
 #include <stdexcept>
 #include "warnoff.h"
+#include <QDir>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -74,7 +75,8 @@ void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
 
 void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
 {
-    options.bootSectorFile = e_bootSectorFile->text().toUtf8().data();
+    options.bootSectorFile =
+        QDir::toNativeSeparators(e_bootSectorFile->text()).toStdString();
 
     auto index = cb_fileTimeAccess->currentIndex();
     index = (index == 2) ? 3 : index;
@@ -104,6 +106,7 @@ void FlexplorerOptionsUi::OnSelectBootSectorFile()
     bootSectorFile = QFileDialog::getOpenFileName(
         dialog, tr("Select Boot Sector File"), bootSectorFile,
         tr("Boot Sector Files (*);;All files (*.*)"));
+    bootSectorFile = QDir::toNativeSeparators(bootSectorFile);
 
     if (!bootSectorFile.isEmpty())
     {
