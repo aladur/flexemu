@@ -84,7 +84,7 @@ std::vector<std::string> GetMatchingFilenames(
 
 int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
                        int tracks, int sectors, char default_answer,
-                       bool verbose)
+                       bool verbose, const char *bsFile)
 {
     struct stat sbuf;
 
@@ -122,7 +122,8 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         container.reset(FlexFileContainer::Create(
                         getParentPath(dsk_file).c_str(),
                         getFileName(dsk_file).c_str(),
-                        tracks, sectors, fileTimeAccess, disk_format));
+                        tracks, sectors, fileTimeAccess, disk_format,
+                        bsFile));
 
         if (container && verbose)
         {
@@ -879,7 +880,8 @@ void usage()
         "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n" <<
         "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n][-m]"
         "[-R<file>...][<regex>...]\n" <<
-        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>\n" <<
+        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>"
+        " -B<boot-sector-file>\n" <<
         "Usage: dsktool -h\n" <<
         "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n" <<
         "Usage: dsktool -l <dsk-file> [-z][<dsk-file>...]\n" <<
@@ -928,6 +930,9 @@ void usage()
         "\n" <<
         "  -S<size>      Size of FLEX file container. Use -S help for help."
         "\n" <<
+        "  -B<boot-sector-file> Read contents of boot sector(s) from file.\n" <<
+        "                It has a size of one or two sectors" <<
+        " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n" <<
         "  -T<dsk-file>  A target FLEX file container with *.dsk or *.flx "
         "format.\n" <<
         "  <dsk-file>    A FLEX file container with *.dsk or *.flx format.\n" <<
@@ -1033,6 +1038,44 @@ int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
     return 1;
 }
 
+bool checkBootSectorFile(const char *opt, const char **bsFile)
+{
+    struct stat sbuf;
+
+    if (*bsFile != nullptr)
+    {
+        std::cerr << "*** Error: -B can be specified only once\n";
+        return false;
+    }
+
+    if (!stat(opt, &sbuf))
+    {
+        if (!S_ISREG(sbuf.st_mode))
+        {
+            std::cerr << "*** Error: " << opt <<
+                         " is no regular file. Aborted.\n";
+            return false;
+        }
+        else if (sbuf.st_size != SECTOR_SIZE && sbuf.st_size != 2*SECTOR_SIZE)
+        {
+            std::cerr << "*** Error: Boot sector file " << opt <<
+                         "\n    has to have a size of " << SECTOR_SIZE <<
+                         " or " << 2*SECTOR_SIZE <<
+                         " Byte (= one or two sectors). Aborted.\n";
+            return false;
+        }
+
+        *bsFile = opt;
+        return true;
+    }
+
+    std::cerr <<
+        "*** Error: Boot sector file " << opt <<
+        " not found. Aborted.\n";
+
+    return false;
+}
+
 char checkCommand(char oldCommand, int result)
 {
     if (oldCommand == '\0')
@@ -1097,7 +1140,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
 
 int main(int argc, char *argv[])
 {
-    std::string optstr("f:X:x:L:l:s:c:C:i:r:R:T:d:o:S:F:DhmntvVyz");
+    std::string optstr("f:X:x:L:l:s:c:C:i:r:R:T:d:o:S:F:B:DhmntvVyz");
     std::string target_dir;
     std::vector<std::string> dsk_files;
     std::vector<std::string> files;
@@ -1106,6 +1149,7 @@ int main(int argc, char *argv[])
     std::string dsk_file;
     std::string dst_dsk_file;
     std::string size;
+    const char *bsFile = nullptr;
     int disk_format = 0;
     int tracks = 0;
     int sectors = 0;
@@ -1199,6 +1243,12 @@ int main(int argc, char *argv[])
                     }
 
             case 'F': if (!checkDiskFormat(optarg, disk_format))
+                      {
+                          return 1;
+                      }
+                      break;
+
+            case 'B': if (!checkBootSectorFile(optarg, &bsFile))
                       {
                           return 1;
                       }
@@ -1298,7 +1348,8 @@ int main(int argc, char *argv[])
         (command != 'i' && command != 'X' && command != 'x' && convert_text) ||
         (command != 'c' && debug_output) ||
         (std::string("cCilLxX").find_first_of(command) == std::string::npos &&
-            (fileTimeAccess != FileTimeAccess::NONE)))
+            (fileTimeAccess != FileTimeAccess::NONE)) ||
+        (command != 'f' && bsFile != nullptr))
     {
         std::cerr << "*** Error: Wrong syntax\n";
         usage();
@@ -1322,7 +1373,8 @@ int main(int argc, char *argv[])
 
             case 'f':
                 return FormatFlexDiskFile(dsk_file, disk_format, tracks,
-                                          sectors, default_answer, verbose);
+                                          sectors, default_answer, verbose,
+                                          bsFile);
 
             case 'i':
                 return InjectToDskFile(dsk_file, verbose, files,
