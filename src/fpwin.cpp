@@ -137,13 +137,15 @@ void FLEXplorer::NewContainer()
 
             auto filename = getFileName(ui.GetPath().toStdString());
             auto directory = getParentPath(ui.GetPath().toStdString());
-
+            const char *bsFile = !options.bootSectorFile.empty() ?
+                                 options.bootSectorFile.c_str() : nullptr;
             auto *container = FlexFileContainer::Create(
                                   directory.c_str(),
                                   filename.c_str(),
                                   ui.GetTracks(), ui.GetSectors(),
                                   options.ft_access,
-                                  ui.GetFormat());
+                                  ui.GetFormat(),
+                                  bsFile);
             delete container;
 
             OpenContainerForPath(ui.GetPath());

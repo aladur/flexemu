@@ -292,7 +292,8 @@ bool FlexFileContainer::IsFlexFormat() const
 }
 
 FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
-        int t, int s, const FileTimeAccess &fileTimeAccess, int fmt)
+        int t, int s, const FileTimeAccess &fileTimeAccess, int fmt,
+        const char *bsFile)
 {
     std::string path;
 
@@ -301,7 +302,7 @@ FlexFileContainer *FlexFileContainer::Create(const char *dir, const char *name,
         throw FlexException(FERR_INVALID_FORMAT, fmt);
     }
 
-    Format_disk(t, s, dir, name, fmt);
+    Format_disk(t, s, dir, name, fmt, bsFile);
 
     path = dir;
 
@@ -1263,10 +1264,15 @@ void FlexFileContainer::Initialize_unformatted_disk()
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 }
 
-void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[])
+void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[],
+                                            const char *bsFile)
 {
     // Read boot sector(s) if present from file.
-    BFilePtr boot(bootSectorFile.c_str(), "rb");
+    if (bsFile == nullptr)
+    {
+        bsFile = bootSectorFile.c_str();
+    }
+    BFilePtr boot(bsFile, "rb");
 
     if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) != 1)
     {
@@ -1430,7 +1436,8 @@ void FlexFileContainer::Format_disk(
     int sec,
     const char *disk_dir,
     const char *name,
-    int  type /* = TYPE_DSK_CONTAINER */)
+    int  type /* = TYPE_DSK_CONTAINER */,
+    const char *bsFile /*= nullptr */)
 {
     std::string path;
     struct s_formats format;
@@ -1477,7 +1484,7 @@ void FlexFileContainer::Format_disk(
         {
             Byte sector_buffer2[SECTOR_SIZE];
 
-            Create_boot_sectors(sector_buffer, sector_buffer2);
+            Create_boot_sectors(sector_buffer, sector_buffer2, bsFile);
 
             if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
             {

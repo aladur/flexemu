@@ -83,7 +83,8 @@ public:
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
                                      const FileTimeAccess &fileTimeAccess,
-                                     int fmt = TYPE_DSK_CONTAINER);
+                                     int fmt = TYPE_DSK_CONTAINER,
+                                     const char *bsFile = nullptr);
     bool CheckFilename(const char *fileName) const override;
     bool ReadSector(Byte *buffer, int trk, int sec, int side = -1)
         const override;
@@ -135,7 +136,8 @@ protected:
     virtual void Initialize_for_dsk_format(const s_formats &format,
                                            bool write_protected);
     virtual void Initialize_unformatted_disk();
-    static void     Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[]);
+    static void Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[],
+                                    const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
@@ -161,7 +163,8 @@ protected:
         int sec,
         const char *disk_dir,
         const char *name,
-        int type);
+        int type,
+        const char *bsFile);
 private:
     FileContainerIteratorImpPtr IteratorFactory() override;
 
