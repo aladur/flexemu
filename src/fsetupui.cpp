@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFontMetrics>
+#include <QDir>
 #include "warnon.h"
 
 #ifdef _MSC_VER
@@ -616,29 +617,35 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
-        options.disk_dir = e_diskMonitorDir->text().toStdString();
+        options.disk_dir =
+            QDir::toNativeSeparators(e_diskMonitorDir->text()).toStdString();
     }
 
     if (!IsReadOnly(FlexemuOptionId::DiskDirectory))
     {
-        options.hex_file = e_monitorPgm->text().toStdString();
+        options.hex_file =
+            QDir::toNativeSeparators(e_monitorPgm->text()).toStdString();
     }
 
     if (!IsReadOnly(FlexemuOptionId::Drive0))
     {
-        options.drive[0] = e_drive0->text().toStdString();
+        options.drive[0] =
+            QDir::toNativeSeparators(e_drive0->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive1))
     {
-        options.drive[1] = e_drive1->text().toStdString();
+        options.drive[1] =
+            QDir::toNativeSeparators(e_drive1->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive2))
     {
-        options.drive[2] = e_drive2->text().toStdString();
+        options.drive[2] =
+            QDir::toNativeSeparators(e_drive2->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive3))
     {
-        options.drive[3] = e_drive3->text().toStdString();
+        options.drive[3] =
+            QDir::toNativeSeparators(e_drive3->text()).toStdString();
     }
 
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive0))
@@ -660,11 +667,13 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive0))
     {
-        options.mdcrDrives[0] = e_mdcrDrive0->text().toStdString();
+        options.mdcrDrives[0] =
+            QDir::toNativeSeparators(e_mdcrDrive0->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive1))
     {
-        options.mdcrDrives[1] = e_mdcrDrive1->text().toStdString();
+        options.mdcrDrives[1] =
+            QDir::toNativeSeparators(e_mdcrDrive1->text()).toStdString();
     }
 
     if (!IsReadOnly(FlexemuOptionId::IsRamExt2x96) &&
@@ -801,6 +810,7 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
             break;
     }
 
+    path = QDir::toNativeSeparators(path);
     path = GetRelativePath(diskDir, path);
 
     if (!path.isEmpty())
