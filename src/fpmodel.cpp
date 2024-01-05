@@ -52,10 +52,11 @@
 #include "fpmodel.h"
 
 
-std::array<const char *, FlexplorerTableModel::COLUMNS>
+std::array<QString, FlexplorerTableModel::COLUMNS>
     FlexplorerTableModel::headerNames =
 {
-    "Id", "Filename", "Filetype", "Random", "Size", "Date", "Attributes"
+    tr("Id"), tr("Filename"), tr("Filetype"), tr("Random"), tr("Filesize"),
+    tr("Date"), tr("Attributes"),
 };
 
 QVector<QPair<char, Byte> > FlexplorerTableModel::attributeCharToFlag
@@ -503,7 +504,7 @@ QVariant FlexplorerTableModel::headerData(
             section >= 0 &&
             section < static_cast<int>(headerNames.size()))
         {
-            return tr(headerNames.at(section));
+            return headerNames.at(section);
         }
         else if (orientation == Qt::Vertical)
         {
@@ -512,6 +513,31 @@ QVariant FlexplorerTableModel::headerData(
     }
 
     return QVariant();
+}
+
+bool FlexplorerTableModel::setHeaderData(
+        int section,
+        Qt::Orientation orientation,
+        const QVariant &value,
+        int role)
+{
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal &&
+        section >= 0 &&
+        section < static_cast<int>(headerNames.size()) &&
+        role == Qt::DisplayRole)
+    {
+        bool isChanged = (headerNames[section] != value.toString());
+
+        if (isChanged)
+        {
+            headerNames[section] = value.toString();
+            emit headerDataChanged(orientation, section, section);
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 Qt::ItemFlags FlexplorerTableModel::flags(const QModelIndex &index) const
