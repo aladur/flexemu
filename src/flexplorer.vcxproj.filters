@@ -92,6 +92,9 @@
     <ClInclude Include="dircont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="efilesiz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="efiletim.h">
       <Filter>Header Files</Filter>
     </ClInclude>

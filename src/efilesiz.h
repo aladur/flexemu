@@ -1,9 +1,8 @@
 /*
-    sfpopts.h
-
+    efilesiz.h
 
     flexemu, an MC6809 emulator running FLEX
-    Copyright (C) 2022-2023  W. Schwotzer
+    Copyright (C) 2023  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,30 +19,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef EFILESIZE_INCLUDED
+#define EFILESIZE_INCLUDED
 
 
-#ifndef SFPOPTS_INCLUDED
-#define SFPOPTS_INCLUDED
-
-#include <string>
-#include "efiletim.h"
-#include "efilesiz.h"
-
-struct sFPOptions
+// There are differnt choices to handle the file size
+enum class FileSizeType : uint8_t
 {
-    sFPOptions() = default;
-    sFPOptions(const sFPOptions &src) = default;
-    sFPOptions& operator=(const sFPOptions &src) = default;
-
-    FileTimeAccess ft_access;
-    FileSizeType fileSizeType;
-    std::string bootSectorFile;
-    bool injectTextFileConvert;
-    bool injectTextFileAskUser;
-    bool extractTextFileConvert;
-    bool extractTextFileAskUser;
-    std::string openContainerPath;
-    std::string openDirContainerPath;
+    FileSize = 1, // File size base on multiples of sectorsize (= 256 B.)
+    DataSize = 2, // File size base on multiples of sectorsize - 4 (= 252 B)
 };
 
 #endif

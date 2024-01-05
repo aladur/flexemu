@@ -992,6 +992,7 @@ flexplorer_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	efilesiz.h \
 	efiletim.h \
 	fcinfo.h \
 	fcopyman.h \
