@@ -81,11 +81,12 @@ const QVector<FlexplorerTableModel::sFileTypes>
 };
 
 FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
-                                           const FileTimeAccess &fileTimeAccess,
+                                           struct sFPOptions &p_options,
                                            QObject *parent)
     : QAbstractTableModel(parent)
+    , options(p_options)
 {
-    OpenContainer(p_path, fileTimeAccess);
+    OpenContainer(p_path, options.ft_access);
     Initialize();
 }
 

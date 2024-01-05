@@ -627,8 +627,7 @@ void FlexplorerMdiChild::Info()
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
     model.reset(
-        new FlexplorerTableModel(path.toUtf8().data(),
-                                 options.ft_access, this));
+        new FlexplorerTableModel(path.toUtf8().data(), options, this));
     setModel(model.get());
 }
 

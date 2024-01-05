@@ -27,6 +27,7 @@
 #include "fcinfo.h"
 #include "efiletim.h"
 #include "ffilebuf.h"
+#include "sfpopts.h"
 #include "warnoff.h"
 #include <QPair>
 #include <QString>
@@ -56,7 +57,7 @@ class FlexplorerTableModel : public QAbstractTableModel
 
 public:
     FlexplorerTableModel() = delete;
-    FlexplorerTableModel(const char *path, const FileTimeAccess &fileTimeAccess,
+    FlexplorerTableModel(const char *path, struct sFPOptions &options,
                          QObject *parent = Q_NULLPTR);
     virtual ~FlexplorerTableModel();
 
@@ -129,6 +130,7 @@ private:
     std::unique_ptr<FileContainerIf> container;
     QVector<RowType> rows;
     QString path;
+    struct sFPOptions &options;
 
     static std::array<QString, COLUMNS> headerNames;
     static QVector<QPair<char, Byte> > attributeCharToFlag;
