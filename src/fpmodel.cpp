@@ -526,7 +526,7 @@ bool FlexplorerTableModel::setData(
             if (rows.at(index.row()).at(index.column()) != value)
             {
                 rows[index.row()].at(index.column()) = value;
-                dataChanged(index, index, roles);
+                emit dataChanged(index, index, roles);
                 return true;
             }
         }
