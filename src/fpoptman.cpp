@@ -102,11 +102,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 
     if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
     {
-        if (int_result < 0)
-        {
-            int_result = 0;
-        }
-        else if (int_result == 2 || int_result > 3)
+        int_result = std::max(int_result, 0);
+        if (int_result == 2 || int_result > 3)
         {
             int_result = 3;
         }
@@ -131,14 +128,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     reg.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
     reg.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
     reg.GetValue(FLEXPLORERFILESIZETYPE, int_result);
-    if (int_result < 1)
-    {
-        int_result = 1;
-    }
-    else if (int_result > 2)
-    {
-        int_result = 2;
-    }
+    int_result = std::max(int_result, 1);
+    int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
 #endif
 #ifdef UNIX
@@ -154,11 +145,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 
     if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))
     {
-        if (int_result < 0)
-        {
-            int_result = 0;
-        }
-        else if (int_result == 2 || int_result > 3)
+        int_result = std::max(int_result, 0);
+         if (int_result == 2 || int_result > 3)
         {
             int_result = 3;
         }
@@ -183,14 +171,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     rcFile.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
     rcFile.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
     rcFile.GetValue(FLEXPLORERFILESIZETYPE, int_result);
-    if (int_result < 1)
-    {
-        int_result = 1;
-    }
-    else if (int_result > 2)
-    {
-        int_result = 2;
-    }
+    int_result = std::max(int_result, 1);
+    int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
 #endif
 }
