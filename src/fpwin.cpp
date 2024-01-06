@@ -439,12 +439,18 @@ void FLEXplorer::Options()
     if (result == QDialog::Accepted)
     {
         auto oldFileTimeAccess = options.ft_access;
+        auto oldFileSizeType = options.fileSizeType;
 
         ui.TransferDataFromDialog(options);
         FlexFileContainer::bootSectorFile = options.bootSectorFile;
         if (oldFileTimeAccess != options.ft_access)
         {
             emit FileTimeAccessHasChanged();
+        }
+
+        if (oldFileSizeType != options.fileSizeType)
+        {
+            emit FileSizeTypeHasChanged();
         }
     }
 }
@@ -588,6 +594,10 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
             child, &FlexplorerMdiChild::OnFileTimeAccessChanged);
     connect(child, &FlexplorerMdiChild::SelectionHasChanged,
             this, &FLEXplorer::SelectionHasChanged);
+    connect(this, &FLEXplorer::FileSizeTypeHasChanged,
+            child, &FlexplorerMdiChild::OnFileSizeTypeHasChanged);
+    connect(this, &FLEXplorer::FileSizeTypeHasChanged,
+            this, &FLEXplorer::UpdateSelectedFiles);
 
     return child;
 }

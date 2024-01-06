@@ -113,6 +113,10 @@ public:
     static const int COL_DATE{5};
     static const int COL_ATTRIBUTES{6};
 
+public slots:
+    void UpdateFileSizeHeaderName();
+    void UpdateFileSizeColumn();
+
 private:
     static const int COLUMNS{7};
 
@@ -133,6 +137,8 @@ private:
     struct sFPOptions &options;
 
     static std::array<QString, COLUMNS> headerNames;
+    static const QString headerNameFileSize;
+    static const QString headerNameDataSize;
     static QVector<QPair<char, Byte> > attributeCharToFlag;
     static const QVector<sFileTypes> fileTypes;
 };

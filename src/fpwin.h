@@ -59,6 +59,7 @@ public:
 
 signals:
     void FileTimeAccessHasChanged();
+    void FileSizeTypeHasChanged();
 
 private slots:
     void NewContainer();

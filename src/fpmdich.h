@@ -87,6 +87,7 @@ signals:
 
 public slots:
     void OnFileTimeAccessChanged();
+    void OnFileSizeTypeHasChanged();
 
 private slots:
     void IsActivated(const QModelIndex &index);

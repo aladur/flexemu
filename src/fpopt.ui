@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>290</height>
+    <height>390</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>640</width>
-    <height>290</height>
+    <height>390</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -42,7 +42,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -162,6 +162,29 @@
          <widget class="QCheckBox" name="c_extractTextFileAskUser">
           <property name="text">
            <string>Always ask user</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="g_fileSize">
+       <property name="title">
+        <string>Size Column</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QRadioButton" name="r_fileSize">
+          <property name="text">
+           <string>Display file size (a multiple of sector size)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="r_dataSize">
+          <property name="text">
+           <string>Display data size (a multiple of sector size - 4)</string>
           </property>
          </widget>
         </item>

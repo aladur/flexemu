@@ -52,6 +52,9 @@
 #include "fpmodel.h"
 
 
+const QString FlexplorerTableModel::headerNameFileSize(tr("Filesize"));
+const QString FlexplorerTableModel::headerNameDataSize(tr("Datasize"));
+
 std::array<QString, FlexplorerTableModel::COLUMNS>
     FlexplorerTableModel::headerNames =
 {
@@ -131,6 +134,7 @@ void FlexplorerTableModel::CreateAttributesBitmasks(const QString &attributes,
 
 QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
 {
+    static const int ssm4 = SECTOR_SIZE - 4;
     int column = 0;
     auto row = rowCount();
 
@@ -143,6 +147,10 @@ QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
     QString random(dirEntry.IsRandom() ? "Yes" : "");
     setData(index(row, column++), random, role);
     auto filesize = dirEntry.GetFileSize();
+    if (options.fileSizeType == FileSizeType::DataSize)
+    {
+        filesize = filesize / SECTOR_SIZE * ssm4;
+    }
     setData(index(row, column++), filesize, role);
     const auto &date = dirEntry.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
@@ -184,6 +192,39 @@ bool FlexplorerTableModel::IsWriteProtected() const
 std::string FlexplorerTableModel::GetSupportedAttributes() const
 {
     return container->GetSupportedAttributes();
+}
+
+void FlexplorerTableModel::UpdateFileSizeHeaderName()
+{
+    auto headerText = (options.fileSizeType == FileSizeType::FileSize) ?
+                       headerNameFileSize : headerNameDataSize;
+    auto variant = QVariant(headerText);
+
+    setHeaderData(FlexplorerTableModel::COL_SIZE, Qt::Horizontal, variant,
+                  Qt::DisplayRole);
+}
+
+void FlexplorerTableModel::UpdateFileSizeColumn()
+{
+    static const int column = COL_SIZE;
+    static const int ssm4 = SECTOR_SIZE - 4;
+
+    for (int row = 0; row < rows.size(); ++row)
+    {
+        auto value = rows[row].at(column).toInt();
+        if (options.fileSizeType == FileSizeType::FileSize)
+        {
+            value = value / ssm4 * SECTOR_SIZE;
+        }
+        else if (options.fileSizeType == FileSizeType::DataSize)
+        {
+            value = value / SECTOR_SIZE * ssm4;
+        }
+        rows[row].at(column).setValue(value);
+    }
+    QVector<int> roles { Qt::DisplayRole };
+
+    emit dataChanged(index(0, column), index(rowCount(), column), roles);
 }
 
 int FlexplorerTableModel::GetContainerType() const                                

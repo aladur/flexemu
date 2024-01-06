@@ -43,6 +43,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.injectTextFileAskUser = true;
     options.extractTextFileConvert = true;
     options.extractTextFileAskUser = true;
+    options.fileSizeType = FileSizeType::FileSize;
 #ifdef UNIX
     options.openContainerPath = F_DATADIR;
 #endif
@@ -60,6 +61,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
     reg.SetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    reg.SetValue(FLEXPLORERFILESIZETYPE,
+                 static_cast<int>(options.fileSizeType));
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() +
@@ -78,6 +81,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     rcFile.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath.c_str());
     rcFile.SetValue(FLEXPLOREROPENDIRCONTPATH,
                     options.openDirContainerPath.c_str());
+    rcFile.SetValue(FLEXPLORERFILESIZETYPE,
+                    static_cast<int>(options.fileSizeType));
 #endif
 }
 
@@ -125,6 +130,16 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     }
     reg.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
     reg.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    reg.GetValue(FLEXPLORERFILESIZETYPE, int_result);
+    if (int_result < 1)
+    {
+        int_result = 1;
+    }
+    else if (int_result > 2)
+    {
+        int_result = 2;
+    }
+    options.fileSizeType = static_cast<FileSizeType>(int_result);
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -167,6 +182,16 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     }
     rcFile.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
     rcFile.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    rcFile.GetValue(FLEXPLORERFILESIZETYPE, int_result);
+    if (int_result < 1)
+    {
+        int_result = 1;
+    }
+    else if (int_result > 2)
+    {
+        int_result = 2;
+    }
+    options.fileSizeType = static_cast<FileSizeType>(int_result);
 #endif
 }
 

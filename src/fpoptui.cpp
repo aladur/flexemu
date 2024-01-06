@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include "fpoptui.h"
+#include "efilesiz.h"
 #include <stdexcept>
 #include "warnoff.h"
 #include <QDir>
@@ -71,6 +72,10 @@ void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
     c_injectTextFileAskUser->setChecked(options.injectTextFileAskUser);
     c_extractTextFileConvert->setChecked(options.extractTextFileConvert);
     c_extractTextFileAskUser->setChecked(options.extractTextFileAskUser);
+
+    bool isFileSize = (options.fileSizeType == FileSizeType::FileSize);
+    r_fileSize->setChecked(isFileSize);
+    r_dataSize->setChecked(!isFileSize);
 }
 
 void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
@@ -86,6 +91,8 @@ void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
     options.injectTextFileAskUser = c_injectTextFileAskUser->isChecked();
     options.extractTextFileConvert = c_extractTextFileConvert->isChecked();
     options.extractTextFileAskUser = c_extractTextFileAskUser->isChecked();
+    options.fileSizeType = r_fileSize->isChecked() ?
+        FileSizeType::FileSize : FileSizeType::DataSize;
 }
 
 void FlexplorerOptionsUi::ConnectSignalsWithSlots()

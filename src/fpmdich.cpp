@@ -86,6 +86,7 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
                     QAbstractItemView::EditKeyPressed);
     setSortingEnabled(true);
     model->sort(FlexplorerTableModel::COL_FILENAME, Qt::AscendingOrder);
+    model->UpdateFileSizeHeaderName();
 }
 
 FlexplorerMdiChild::~FlexplorerMdiChild()
@@ -656,12 +657,8 @@ void FlexplorerMdiChild::SelectionChanged(
         if (index.column() == FlexplorerTableModel::COL_SIZE)
         {
             selectedFilesCount += pmOne;
-            auto itemData = model->itemData(index);
-            if (itemData.contains(Qt::DisplayRole))
-            {
-                selectedFilesByteSize +=
-                    (pmOne * itemData[Qt::DisplayRole].toInt());
-            }
+            auto variant = model->data(index, Qt::DisplayRole);
+            selectedFilesByteSize += pmOne * variant.toInt();
         }
     };
 
@@ -945,6 +942,23 @@ void FlexplorerMdiChild::UpdateDateDelegate()
     {
         setItemDelegateForColumn(FlexplorerTableModel::COL_DATE,
                                  dateTimeDelegate.get());
+    }
+}
+
+void FlexplorerMdiChild::OnFileSizeTypeHasChanged()
+{
+    static const int ssm4 = SECTOR_SIZE - 4;
+
+    model->UpdateFileSizeColumn();
+    model->UpdateFileSizeHeaderName();
+
+    if (options.fileSizeType == FileSizeType::FileSize)
+    {
+        selectedFilesByteSize = selectedFilesByteSize / ssm4 * SECTOR_SIZE;
+    }
+    else if (options.fileSizeType == FileSizeType::DataSize)
+    {
+        selectedFilesByteSize = selectedFilesByteSize / SECTOR_SIZE * ssm4;
     }
 }
 
