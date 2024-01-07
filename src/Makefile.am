@@ -344,6 +344,7 @@ flexplorer_SOURCES = \
 	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
+	qtfree.cpp \
 	bdate.h \
 	bdir.h \
 	benv.h \
@@ -387,6 +388,7 @@ flexplorer_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	qtfree.h \
 	rfilecnt.h \
 	sfpopts.h \
 	sprinter.h \

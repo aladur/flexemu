@@ -211,7 +211,7 @@ am_flexplorer_OBJECTS = flexplorer-fpcnvui.$(OBJEXT) \
 	flexplorer-fpmain.$(OBJEXT) flexplorer-fpmdich.$(OBJEXT) \
 	flexplorer-fpmodel.$(OBJEXT) flexplorer-fpnewui.$(OBJEXT) \
 	flexplorer-fpoptman.$(OBJEXT) flexplorer-fpoptui.$(OBJEXT) \
-	flexplorer-fpwin.$(OBJEXT)
+	flexplorer-fpwin.$(OBJEXT) flexplorer-qtfree.$(OBJEXT)
 am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
 am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
@@ -317,6 +317,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flexplorer-fpoptui_moc.Po \
 	./$(DEPDIR)/flexplorer-fpwin.Po \
 	./$(DEPDIR)/flexplorer-fpwin_moc.Po \
+	./$(DEPDIR)/flexplorer-qtfree.Po \
 	./$(DEPDIR)/libflex_a-bcommand.Po \
 	./$(DEPDIR)/libflex_a-bdate.Po ./$(DEPDIR)/libflex_a-bdir.Po \
 	./$(DEPDIR)/libflex_a-benv.Po \
@@ -979,6 +980,7 @@ flexplorer_SOURCES = \
 	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
+	qtfree.cpp \
 	bdate.h \
 	bdir.h \
 	benv.h \
@@ -1022,6 +1024,7 @@ flexplorer_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	qtfree.h \
 	rfilecnt.h \
 	sfpopts.h \
 	sprinter.h \
@@ -1438,6 +1441,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin_moc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-qtfree.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bcommand.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdir.Po@am__quote@ # am--include-marker
@@ -2967,6 +2971,20 @@ flexplorer-fpwin.obj: fpwin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin.obj `if test -f 'fpwin.cpp'; then $(CYGPATH_W) 'fpwin.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin.cpp'; fi`
 
+flexplorer-qtfree.o: qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-qtfree.o -MD -MP -MF $(DEPDIR)/flexplorer-qtfree.Tpo -c -o flexplorer-qtfree.o `test -f 'qtfree.cpp' || echo '$(srcdir)/'`qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-qtfree.Tpo $(DEPDIR)/flexplorer-qtfree.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qtfree.cpp' object='flexplorer-qtfree.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-qtfree.o `test -f 'qtfree.cpp' || echo '$(srcdir)/'`qtfree.cpp
+
+flexplorer-qtfree.obj: qtfree.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-qtfree.obj -MD -MP -MF $(DEPDIR)/flexplorer-qtfree.Tpo -c -o flexplorer-qtfree.obj `if test -f 'qtfree.cpp'; then $(CYGPATH_W) 'qtfree.cpp'; else $(CYGPATH_W) '$(srcdir)/qtfree.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-qtfree.Tpo $(DEPDIR)/flexplorer-qtfree.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='qtfree.cpp' object='flexplorer-qtfree.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-qtfree.obj `if test -f 'qtfree.cpp'; then $(CYGPATH_W) 'qtfree.cpp'; else $(CYGPATH_W) '$(srcdir)/qtfree.cpp'; fi`
+
 flexplorer-fpmain_qrc.o: fpmain_qrc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpmain_qrc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpmain_qrc.Tpo -c -o flexplorer-fpmain_qrc.o `test -f 'fpmain_qrc.cpp' || echo '$(srcdir)/'`fpmain_qrc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpmain_qrc.Tpo $(DEPDIR)/flexplorer-fpmain_qrc.Po
@@ -3621,6 +3639,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-qtfree.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bcommand.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po
@@ -3792,6 +3811,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-qtfree.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bcommand.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po

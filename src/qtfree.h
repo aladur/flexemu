@@ -32,6 +32,7 @@ class QWidget;
 extern QFont GetFont(const QString &fontName);
 extern QString GetWindowGeometry(const QWidget &w);
 extern void UpdateWindowGeometry(QWidget &w, const QString &geometry);
+extern QString StripPath(const QString &path, int maxSize = 64);
 
 class UpdateWindowGeometryFtor
 {

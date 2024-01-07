@@ -85,3 +85,14 @@ void UpdateWindowGeometry(QWidget &w, const QString &geometry)
     }
 }
 
+// Strip a path to a max. length (for data display).
+QString StripPath(const QString &path, int maxSize)
+{
+    if (path.size() > maxSize)
+    {
+        return path.left(maxSize/2 - 2) + "..." + path.right(maxSize/2 - 2);
+    }
+
+    return path;
+}
+
