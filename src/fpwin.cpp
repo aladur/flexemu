@@ -60,7 +60,6 @@
 #include <QDragLeaveEvent>
 #include <QDropEvent>
 #include <QMimeData>
-#include <QSettings>
 #include "warnon.h"
 
 
