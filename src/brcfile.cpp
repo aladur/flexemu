@@ -88,6 +88,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
 {
     char def[256];
     char strparm[PATH_MAX];
+    auto keyLength = strlen(key);
     BFilePtr fp(fileName.c_str(), "r");
 
     if (isInteger)
@@ -103,7 +104,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
     while (!feof((FILE *)fp))
     {
         if (fscanf(fp, "%79s %[^\n]\n", def, strparm) == 2 &&
-            stricmp(def, key) == 0)
+            strlen(def) == keyLength && stricmp(def, key) == 0)
         {
             value = strparm;
 
