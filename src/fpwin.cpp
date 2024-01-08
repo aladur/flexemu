@@ -123,7 +123,7 @@ void FLEXplorer::NewContainer()
     QDialog dialog;
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
-    ui.SetDefaultPath(QString(options.openContainerPath.c_str()));
+    ui.SetDefaultPath(QString(options.openDiskPath.c_str()));
     ui.TransferDataToDialog(TYPE_DSK_CONTAINER, 80, 36);
     dialog.resize(newDialogSize);
     auto result = dialog.exec();
@@ -131,7 +131,7 @@ void FLEXplorer::NewContainer()
 
     if (result == QDialog::Accepted)
     {
-        options.openContainerPath = ui.GetDefaultPath().toStdString();
+        options.openDiskPath = ui.GetDefaultPath().toStdString();
         try
         {
             if (ui.GetFormat() == TYPE_MDCR_CONTAINER)
@@ -167,7 +167,7 @@ void FLEXplorer::NewContainer()
 
 void FLEXplorer::OpenContainer()
 {
-    const auto defaultDir = QString(options.openContainerPath.c_str());
+    const auto defaultDir = QString(options.openDiskPath.c_str());
     QStringList filePaths;
     QFileDialog dialog(this, tr("Select FLEX file containers"), defaultDir,
                        "FLEX file containers (*.dsk *.flx *.wta);;"
@@ -180,7 +180,7 @@ void FLEXplorer::OpenContainer()
     {
         const auto path =
             QDir::toNativeSeparators(dialog.directory().absolutePath());
-        options.openContainerPath = path.toStdString();
+        options.openDiskPath = path.toStdString();
         filePaths = dialog.selectedFiles();
     }
 
@@ -198,7 +198,7 @@ void FLEXplorer::OpenContainer()
 
 void FLEXplorer::OpenDirectory()
 {
-    const auto defaultDir = QString(options.openDirContainerPath.c_str());
+    const auto defaultDir = QString(options.openDirectoryPath.c_str());
     QFileDialog dialog(this, tr("Open a FLEX directory container"),
                        defaultDir);
 
@@ -211,7 +211,7 @@ void FLEXplorer::OpenDirectory()
 
         auto path =
             QDir::toNativeSeparators(dialog.directory().absolutePath());
-        options.openDirContainerPath = path.toStdString();
+        options.openDirectoryPath = path.toStdString();
 
         if (directories.size() >= 1)
         {

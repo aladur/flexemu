@@ -45,7 +45,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.extractTextFileAskUser = true;
     options.fileSizeType = FileSizeType::FileSize;
 #ifdef UNIX
-    options.openContainerPath = F_DATADIR;
+    options.openDiskPath = F_DATADIR;
 #endif
 }
 
@@ -59,8 +59,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
-    reg.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
-    reg.SetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    reg.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    reg.SetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.SetValue(FLEXPLORERFILESIZETYPE,
                  static_cast<int>(options.fileSizeType));
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
@@ -85,9 +85,9 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.extractTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTASK,
                     options.extractTextFileAskUser ? 1 : 0);
-    rcFile.SetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath.c_str());
-    rcFile.SetValue(FLEXPLOREROPENDIRCONTPATH,
-                    options.openDirContainerPath.c_str());
+    rcFile.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath.c_str());
+    rcFile.SetValue(FLEXPLOREROPENDIRECTORYPATH,
+                    options.openDirectoryPath.c_str());
     rcFile.SetValue(FLEXPLORERFILESIZETYPE,
                     static_cast<int>(options.fileSizeType));
 
@@ -140,8 +140,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.extractTextFileAskUser = (int_result != 0);
     }
-    reg.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
-    reg.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    reg.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    reg.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.GetValue(FLEXPLORERFILESIZETYPE, int_result);
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
@@ -194,8 +194,8 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.extractTextFileAskUser = (int_result != 0);
     }
-    rcFile.GetValue(FLEXPLOREROPENCONTPATH, options.openContainerPath);
-    rcFile.GetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
+    rcFile.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
+    rcFile.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     rcFile.GetValue(FLEXPLORERFILESIZETYPE, int_result);
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);

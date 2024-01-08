@@ -43,8 +43,8 @@ struct sFPOptions
     bool injectTextFileAskUser;
     bool extractTextFileConvert;
     bool extractTextFileAskUser;
-    std::string openContainerPath;
-    std::string openDirContainerPath;
+    std::string openDiskPath;
+    std::string openDirectoryPath;
     std::vector<std::string> recentDiskPaths;
 
     const int maxRecentFiles = 24;
