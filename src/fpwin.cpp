@@ -35,6 +35,7 @@
 #include "flexerr.h"
 #include "ffilecnt.h"
 #include "fcopyman.h"
+#include "qtfree.h"
 #include "warnoff.h"
 #include <QApplication>
 #include <QCoreApplication>
@@ -42,6 +43,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMdiSubWindow>
@@ -52,6 +54,7 @@
 #include <QEvent>
 #include <QLabel>
 #include <QString>
+#include <QStringList>
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDragLeaveEvent>
@@ -103,11 +106,17 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     CreateActions();
     CreateStatusBar();
     UpdateMenus();
+    RestoreRecentDisks();
 
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
 
     resize(860, 720);
+}
+
+FLEXplorer::~FLEXplorer()
+{
+    DeleteRecentDiskActions();
 }
 
 void FLEXplorer::NewContainer()
@@ -213,6 +222,16 @@ void FLEXplorer::OpenDirectory()
     }
 }
 
+void FLEXplorer::OpenRecentDisk()
+{
+    auto *action = qobject_cast<QAction *>(sender());
+
+    if (action != nullptr)
+    {
+        OpenContainerForPath(action->data().toString());
+    }
+}
+
 bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
 {
     // If path ends with a path separator character it will be cut off.
@@ -230,6 +249,7 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
         child->show();
 
         SetStatusMessage(tr("Loaded %1").arg(path));
+        UpdateForRecentDisk(path);
 
         return true;
     }
@@ -669,6 +689,10 @@ void FLEXplorer::CreateFileActions()
             this, &FLEXplorer::OpenDirectory);
     fileMenu->addAction(openDirectoryAction);
     fileToolBar->addAction(openDirectoryAction);
+
+    recentDisksMenu = fileMenu->addMenu(tr("&Recent Disks"));
+    CreateRecentDiskActionsFor(recentDisksMenu);
+
     fileMenu->addSeparator();
 
     fileMenu->addAction(exitAction);
@@ -1081,5 +1105,97 @@ void FLEXplorer::SetFileTimeAccess(FileTimeAccess fileTimeAccess)
     {
         emit FileTimeAccessHasChanged();
     }
+}
+
+void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
+{
+    QAction *action = nullptr;
+
+    for (auto i = 0; i < options.maxRecentFiles; ++i)
+    {
+        // Create all actions, de/activate them by setVisible() false/true.
+        action = new QAction(this);
+        action->setVisible(false);
+        connect(action, &QAction::triggered, this, &FLEXplorer::OpenRecentDisk);
+        recentDiskActions.append(action);
+        menu->addAction(action);
+    }
+
+    UpdateRecentDiskActions();
+}
+
+// Always call this function when recentDiskPaths has changed or the
+// recentDiskActions have been initialized.
+void FLEXplorer::UpdateRecentDiskActions()
+{
+    ssize_t idx = 0;
+    for (const auto &path : recentDiskPaths)
+    {
+        auto fileInfo = QFileInfo(path);
+        auto idxString = QString("%1. ").arg(idx + 1);
+        const auto strippedPath = StripPath(path);
+
+        recentDiskActions.at(idx)->setText(idxString + strippedPath);
+        recentDiskActions.at(idx)->setData(path);
+        recentDiskActions.at(idx)->setVisible(true);
+        if (fileInfo.isFile())
+        {
+            const QIcon icon(":/resource/open_con.png");
+            recentDiskActions.at(idx)->setIcon(icon);
+        }
+        else if (fileInfo.isDir())
+        {
+            const QIcon icon(":/resource/open_dir.png");
+            recentDiskActions.at(idx)->setIcon(icon);
+        }
+        ++idx;
+    }
+
+    for (idx = recentDiskPaths.size(); idx < options.maxRecentFiles; ++idx)
+    {
+        recentDiskActions.at(idx)->setVisible(false);
+    }
+}
+
+void FLEXplorer::DeleteRecentDiskActions()
+{
+    while (!recentDiskActions.isEmpty())
+    {
+        delete recentDiskActions.takeLast();
+    }
+}
+
+// Call this when a disk has been successfully loaded.
+void FLEXplorer::UpdateForRecentDisk(const QString &path)
+{
+    recentDiskPaths.removeAll(path);
+    recentDiskPaths.prepend(path);
+    while (recentDiskPaths.size() > options.maxRecentFiles)
+    {
+        recentDiskPaths.removeLast();
+    }
+    options.recentDiskPaths.clear();
+    for (const auto &diskPath : recentDiskPaths)
+    {
+        options.recentDiskPaths.push_back(diskPath.toStdString());
+    }
+
+    UpdateRecentDiskActions();
+}
+
+void FLEXplorer::RestoreRecentDisks()
+{
+    recentDiskPaths.clear();
+    for (const auto &path : options.recentDiskPaths)
+    {
+        const QFileInfo fileInfo(path.c_str());
+
+        if (fileInfo.exists())
+        {
+            recentDiskPaths.push_back(path.c_str());
+        }
+    }
+
+    UpdateRecentDiskActions();
 }
 

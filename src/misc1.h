@@ -333,6 +333,7 @@ extern "C" struct sRGBDef
 #define FLEXPLOREROPENCONTPATH  "OpenContainerPath"
 #define FLEXPLOREROPENDIRCONTPATH  "OpenDirContainerPath"
 #define FLEXPLORERFILESIZETYPE  "FileSizeType"
+#define FLEXPLORERRECENTDISKPATH "RecentDiskPath"
 
 // This macro defines the name of a file. It contains a list of files
 // which have to be handled as random files. It is used in directory containers

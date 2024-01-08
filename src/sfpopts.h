@@ -26,6 +26,7 @@
 #define SFPOPTS_INCLUDED
 
 #include <string>
+#include <vector>
 #include "efiletim.h"
 #include "efilesiz.h"
 
@@ -44,6 +45,9 @@ struct sFPOptions
     bool extractTextFileAskUser;
     std::string openContainerPath;
     std::string openDirContainerPath;
+    std::vector<std::string> recentDiskPaths;
+
+    const int maxRecentFiles = 24;
 };
 
 #endif

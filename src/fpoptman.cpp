@@ -63,6 +63,13 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLOREROPENDIRCONTPATH, options.openDirContainerPath);
     reg.SetValue(FLEXPLORERFILESIZETYPE,
                  static_cast<int>(options.fileSizeType));
+    for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDISKPATH << i;
+        reg.SetValue(key.str(), options.recentDiskPaths[i]);
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() +
@@ -83,6 +90,14 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.openDirContainerPath.c_str());
     rcFile.SetValue(FLEXPLORERFILESIZETYPE,
                     static_cast<int>(options.fileSizeType));
+
+    for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
+    {
+        std::stringstream key;
+       
+        key << FLEXPLORERRECENTDISKPATH << i;
+        rcFile.SetValue(key.str().c_str(), options.recentDiskPaths[i].c_str());
+    }
 #endif
 }
 
@@ -131,6 +146,17 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
+
+    for (auto i = 0; i < options.maxRecentFiles; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDISKPATH << i;
+        if (!reg.GetValue(key.str(), string_result))
+        {
+            options.recentDiskPaths.push_back(string_result);
+        }
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -174,6 +200,17 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
+
+    for (auto i = 0; i < options.maxRecentFiles; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDISKPATH << i;
+        if (!rcFile.GetValue(key.str().c_str(), string_result))
+        {
+            options.recentDiskPaths.push_back(string_result);
+        }
+    }
 #endif
 }
 

@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QStringList>
+#include <QList>
 #include "warnon.h"
 #include <functional>
 #include "sfpopts.h"
@@ -54,6 +55,7 @@ class FLEXplorer : public QMainWindow
 public:
     FLEXplorer() = delete;
     FLEXplorer(struct sFPOptions &options);
+    virtual ~FLEXplorer();
 
     bool OpenContainerForPath(QString path, bool isLast = true);
 
@@ -65,6 +67,7 @@ private slots:
     void NewContainer();
     void OpenContainer();
     void OpenDirectory();
+    void OpenRecentDisk();
     void Exit();
 #ifndef QT_NO_CLIPBOARD
     void Copy();
@@ -112,6 +115,11 @@ private:
     void UpdateMenus();
     static QStringList GetSupportedFiles(const QMimeData *mimeData);
     void SetFileTimeAccess(FileTimeAccess fileTimeAccess);
+    void CreateRecentDiskActionsFor(QMenu *menu);
+    void UpdateRecentDiskActions();
+    void DeleteRecentDiskActions();
+    void UpdateForRecentDisk(const QString &path);
+    void RestoreRecentDisks();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -122,6 +130,8 @@ protected:
 
     QMdiArea *mdiArea;
     QMenu *windowMenu;
+    QMenu *recentDisksMenu;
+    QList<QAction *> recentDiskActions;
     QLabel *l_selectedFilesCount;
     QLabel *l_selectedFilesByteSize;
     QToolBar *fileToolBar;
@@ -159,6 +169,7 @@ protected:
     QString findPattern;
     QString injectDirectory;
     QString extractDirectory;
+    QStringList recentDiskPaths;
     sFPOptions &options;
 };
 
