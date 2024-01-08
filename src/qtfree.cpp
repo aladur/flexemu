@@ -90,7 +90,7 @@ QString StripPath(const QString &path, int maxSize)
 {
     if (path.size() > maxSize)
     {
-        return path.left(maxSize/2 - 2) + "..." + path.right(maxSize/2 - 2);
+        return path.left(maxSize/2 - 1) + "..." + path.right(maxSize/2 - 2);
     }
 
     return path;
