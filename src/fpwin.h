@@ -26,6 +26,8 @@
 #include "misc1.h"
 #include "efiletim.h"
 #include "warnoff.h"
+#include <QPoint>
+#include <QSize>
 #include <QMainWindow>
 #include <QString>
 #include <QStringList>
@@ -37,11 +39,18 @@
 
 class FlexplorerMdiChild;
 class QAction;
+class QEvent;
+class QWidget;
+class QToolBar;
 class QLabel;
 class QMenu;
 class QMdiArea;
 class QMimeData;
 class QMdiSubWindow;
+class QDragEnterEvent;
+class QDragMoveEvent;
+class QDragLeaveEvent;
+class QDropEvent;
 
 /*------------------------------------------------------
  FLEXplorer
