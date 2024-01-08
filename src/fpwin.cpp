@@ -1125,7 +1125,7 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
 
 // Always call this function when recentDiskPaths has changed or the
 // recentDiskActions have been initialized.
-void FLEXplorer::UpdateRecentDiskActions()
+void FLEXplorer::UpdateRecentDiskActions() const
 {
     ssize_t idx = 0;
     for (const auto &path : recentDiskPaths)

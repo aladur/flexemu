@@ -116,7 +116,7 @@ private:
     static QStringList GetSupportedFiles(const QMimeData *mimeData);
     void SetFileTimeAccess(FileTimeAccess fileTimeAccess);
     void CreateRecentDiskActionsFor(QMenu *menu);
-    void UpdateRecentDiskActions();
+    void UpdateRecentDiskActions() const;
     void DeleteRecentDiskActions();
     void UpdateForRecentDisk(const QString &path);
     void RestoreRecentDisks();
