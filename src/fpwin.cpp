@@ -1036,7 +1036,7 @@ QStringList FLEXplorer::GetSupportedFiles(const QMimeData *mimeData)
 
     for (const auto &url : mimeData->urls())
     {
-        const auto path = url.toLocalFile();
+        const auto path = QDir::toNativeSeparators(url.toLocalFile());
         const auto fileExtension =
             QString(getFileExtension(path.toStdString()).c_str()).toLower();
 
