@@ -1127,7 +1127,7 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
 // recentDiskActions have been initialized.
 void FLEXplorer::UpdateRecentDiskActions() const
 {
-    ssize_t idx = 0;
+    QStringList::size_type idx = 0;
     for (const auto &path : recentDiskPaths)
     {
         auto fileInfo = QFileInfo(path);
