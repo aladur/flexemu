@@ -860,7 +860,8 @@ void PrintOutputWindow::DetectPageBreaks()
                 const auto iter = pageBreak.find(index);
                 bool isPageBreak = (iter != pageBreak.end());
 
-                progress.setValue(index * 100 / richLines.size());
+                auto percent = index * 100 / richLines.size();
+                progress.setValue(static_cast<int>(percent));
                 PrintLine(richLines[index], isPageBreak);
                 QGuiApplication::processEvents(
                         QEventLoop::ExcludeUserInputEvents);
