@@ -96,3 +96,18 @@ QString StripPath(const QString &path, int maxSize)
     return path;
 }
 
+int cast_from_qsizetype(int source)
+{
+    return source;
+}
+
+int cast_from_qsizetype(long int source)
+{
+    return static_cast<int>(source);
+}
+
+int cast_from_qsizetype(long long int source)
+{
+    return static_cast<int>(source);
+}
+

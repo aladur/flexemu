@@ -30,6 +30,7 @@
 #include "ifilecnt.h"
 #include "ffilebuf.h"
 #include "filecont.h"
+#include "qtfree.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "warnoff.h"
@@ -491,7 +492,7 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
 int FlexplorerTableModel::rowCount(const QModelIndex &) const
 {
     // This is an override method with a defined return type.
-    return static_cast<int>(rows.size());
+    return cast_from_qsizetype(rows.size());
 }
 
 int FlexplorerTableModel::columnCount(const QModelIndex &) const

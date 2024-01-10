@@ -23,8 +23,10 @@
 #ifndef QTFREE_INCLUDED
 #define QTFREE_INCLUDED
 
+#include "warnoff.h"
 #include <QString>
 #include <QFont>
+#include "warnon.h"
 #include <string>
 
 class QWidget;
@@ -52,6 +54,17 @@ public:
         ::UpdateWindowGeometry(*widget, geometry);
     }
 };
+
+// Conditional cast from long long int or long int to int.
+// This is used for Qt5/Qt6 size_type compatibility, and should only
+// be used in this context.
+// On Qt5 size_type is int, no cast is needed.
+// On Qt6 size_type is posix type ssize_t (long int or long long int,
+// depending on the data model), a cast is needed.
+// See also https://en.cppreference.com/w/cpp/language/types
+extern int cast_from_qsizetype(int source);
+extern int cast_from_qsizetype(long int source);
+extern int cast_from_qsizetype(long long int source);
 
 #endif
 

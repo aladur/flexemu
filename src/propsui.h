@@ -37,6 +37,7 @@
 #include "warnon.h"
 #include <numeric>
 #include "drawnwid.h"
+#include "qtfree.h"
 
 class Ui_Properties
 {
@@ -153,12 +154,8 @@ public:
         }
 
         tableWidth = std::accumulate(columnWidth.begin(), columnWidth.end(), 0);
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-        tableWidth = std::min(tableWidth + static_cast<int>(columnWidth.size())
-                              * 22, 800);
-#else
-        tableWidth = std::min(tableWidth + columnWidth.size() * 22, 800);
-#endif
+        tableWidth += cast_from_qsizetype(columnWidth.size() * 22);
+        tableWidth = std::min(tableWidth, 800);
     }
 
     void SetMinimumSize(QDialog *dialog) const

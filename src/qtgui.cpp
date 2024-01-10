@@ -45,6 +45,7 @@
 #include "sodiff.h"
 #include "foptman.h"
 #include "fsetupui.h"
+#include "qtfree.h"
 #include "warnoff.h"
 #include "poutwin.h"
 #include <QString>
@@ -56,6 +57,7 @@
 #include <QWidget>
 #include <QScreen>
 #include <QToolBar>
+#include <QAbstractButton>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QUrl>
@@ -962,7 +964,8 @@ void QtGui::CreateViewActions(QLayout& layout)
             CreateScreenSizeAction(screenSizeIcon, *screenSizeMenu, index);
         auto text = QString::asprintf("x%u", index + 1);
         screenSizeComboBox->addItem(screenSizeIcon, text);
-        screenSizeComboBox->setMinimumContentsLength(text.size());
+        screenSizeComboBox->setMinimumContentsLength(
+                cast_from_qsizetype(text.size()));
     }
 
     const auto screenFullIcon = QIcon(":/resource/screen-full.png");
@@ -1785,7 +1788,7 @@ ColorTable QtGui::CreateColorTable()
     for (int i = 0; i < colorTable.size(); ++i)
     {
         int idx = options.isInverse ?
-                  static_cast<int>(colorTable.size()) - i - 1 : i;
+                  cast_from_qsizetype(colorTable.size()) - i - 1 : i;
         colorTable[idx] = GetTheColor(i);
     }
 

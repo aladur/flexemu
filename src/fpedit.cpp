@@ -22,6 +22,7 @@
 
 
 #include "flexerr.h"
+#include "qtfree.h"
 #include "warnoff.h"
 #include <QWidget>
 #include <QDateEdit>
@@ -276,7 +277,7 @@ QWidget *FlexAttributesDelegate::createEditor(QWidget *parent,
     auto *completer = new QCompleter(attributeStrings, parent);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
     completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-    completer->setMaxVisibleItems(static_cast<int>(attributeStrings.size()));
+    completer->setMaxVisibleItems(cast_from_qsizetype(attributeStrings.size()));
     auto *editor = new QLineEdit(parent);
 
     editor->setValidator(validator);
