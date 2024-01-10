@@ -27,6 +27,7 @@
 #include "warnoff.h"
 #include "logfil_ui.h"
 #include <QObject>
+#include <array>
 #include "warnon.h"
 
 class QDialog;

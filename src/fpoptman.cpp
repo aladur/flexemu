@@ -22,6 +22,7 @@
 
 #include "misc1.h"
 #include <string>
+#include <sstream>
 #include "sfpopts.h"
 #include "filecntb.h"
 #include "fpoptman.h"

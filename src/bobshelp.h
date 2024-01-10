@@ -23,6 +23,8 @@
 #ifndef _BOBSHELP_INCLUDED_
 #define _BOBSHELP_INCLUDED_
 
+#include <cstdint>
+
 enum class NotifyId : uint8_t
 {
     SetIrq,

@@ -23,6 +23,7 @@
 #ifndef PRINTOUTPUTWINDOW_INCLUDED
 #define PRINTOUTPUTWINDOW_INCLUDED
 
+#include "misc1.h"
 #include "warnoff.h"
 #include <QString>
 #include <QTimer>

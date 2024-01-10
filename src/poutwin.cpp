@@ -85,6 +85,7 @@
 #include <cctype>
 #include <locale>
 #include <set>
+#include <sstream>
 #include "qtfree.h"
 #include "pagedet.h"
 #include "soptions.h"

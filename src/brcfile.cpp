@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <sstream>
+#include <fstream>
 #include "misc1.h"
 #include "brcfile.h"
 #include "bfileptr.h"

@@ -23,6 +23,9 @@
 #define EFILETIM_INCLUDED
 
 
+#include <cstdint>
+#include <type_traits>
+
 // There is a FLEX extension to support file creation time (hour, minute) when
 // creating a file on a FLEX file system.
 enum class FileTimeAccess : uint8_t
