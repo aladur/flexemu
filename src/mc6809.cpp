@@ -93,6 +93,7 @@ void Mc6809::init_indexed_cycles()
     }
 
     for (i = 128; i < 256; i++)
+    {
         switch ((Byte)(i & 0x1f))
         {
             case 0x05:
@@ -145,6 +146,7 @@ void Mc6809::init_indexed_cycles()
                 indexed_cycles[i] = 0;
                 break;
         } // switch
+    }
 }
 
 void Mc6809::init_psh_pul_cycles()

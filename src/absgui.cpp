@@ -109,7 +109,9 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
             text(25, 5 + i, "    ");
         }
         else
+        {
             text(25, 5 + i, hexstr((Word)cpu.get_bp(i)));
+        }
     }  // for
 
     Word stk = 0;

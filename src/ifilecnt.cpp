@@ -102,10 +102,12 @@ bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
 FileContainerIterator &FileContainerIterator::operator++()
 {
     if (imp != nullptr)
+    {
         if (!imp->NextDirEntry(filePattern.c_str()))
         {
             imp->AtEnd();
         }
+    }
 
     return *this;
 }

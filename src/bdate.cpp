@@ -117,6 +117,7 @@ void BDate::SetDate(const BDate &date)
 int BDate::GetYear() const
 {
     if (year < 100)
+    {
         if (year < 75)
         {
             return year + 2000;
@@ -125,6 +126,7 @@ int BDate::GetYear() const
         {
             return year + 1900;
         }
+    }
     else if (year < 256)
     {
         return year + 1900;    // flexemu: fix bug for year >= 100

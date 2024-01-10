@@ -280,17 +280,23 @@ void Mc146818::update_1_second()
         {
             // do a normal update
             if (increment(second, 0, 59))
+            {
                 if (increment(minute, 0, 59))
+                {
                     if (increment_hour(hour))
                     {
                         increment(weekday, 1, 7);
 
                         if (increment_day(day, month, year))
+                        {
                             if (increment(month, 1, 12))
                             {
                                 increment(year, 0, 99);
                             }
+                        }
                     }
+                }
+            }
         }
 
         BSET4(C); // set update ended interrupt flag
@@ -336,8 +342,10 @@ Byte Mc146818::convert_hour(Byte val)
     {
         case 0x00:      //12 hour, BCD
             if (val >= 12)
+            {
                 return  0x80 |
                         (((val - 12) / 10) << 4) | ((val - 12) % 10);
+            }
             else
             {
                 return ((val / 10) << 4)  | (val % 10);

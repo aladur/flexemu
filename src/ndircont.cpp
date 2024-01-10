@@ -1411,18 +1411,18 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
 
                 // check for random file, if true set user execute bit
                 if (dir_sector.dir_entry[i].sector_map & IS_RANDOM_FILE)
+                {
 #ifdef _WIN32
-                SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
-                    FILE_ATTRIBUTE_HIDDEN);
+                    SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
+                        FILE_ATTRIBUTE_HIDDEN);
 #endif
 #ifdef UNIX
-
-                if (!stat(old_path.c_str(), &sbuf))
-                {
-                    chmod(old_path.c_str(), sbuf.st_mode | S_IXUSR);
-                }
-
+                    if (!stat(old_path.c_str(), &sbuf))
+                    {
+                        chmod(old_path.c_str(), sbuf.st_mode | S_IXUSR);
+                    }
 #endif
+                }
                 auto new_path = directory + PATHSEPARATORSTRING +
                                 get_unix_filename(flex_links[index].file_id);
                 rename(old_path.c_str(), new_path.c_str());
