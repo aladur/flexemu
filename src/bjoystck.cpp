@@ -21,7 +21,7 @@
 
 
 
-#include <misc1.h>
+#include "misc1.h"
 
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 #include <sys/stat.h>

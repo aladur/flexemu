@@ -24,7 +24,7 @@
 #define E2SCREEN_INCLUDED
 
 #include "soptions.h"
-#include <misc1.h>
+#include "misc1.h"
 #include <memory>
 #include "warnoff.h"
 #include <QVector>
