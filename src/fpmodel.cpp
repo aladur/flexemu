@@ -91,7 +91,6 @@ FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
     , options(p_options)
 {
     OpenContainer(p_path, options.ft_access);
-    Initialize();
 }
 
 FlexplorerTableModel::~FlexplorerTableModel()

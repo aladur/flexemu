@@ -61,6 +61,11 @@ public:
                          QObject *parent = Q_NULLPTR);
     virtual ~FlexplorerTableModel();
 
+    // To correctly initialize the model Initialize() has to be called
+    // right after object construction.
+    // It has been separated to avoid virtual member function calls
+    // in the object constructor.
+    void Initialize();
     QString GetPath() const;
     QString GetUserFriendlyPath() const;
     bool IsWriteProtected() const;
@@ -124,7 +129,6 @@ private:
     using IdsType = QVector<QString>;
 
     void OpenContainer(const char *path, const FileTimeAccess &fileTimeAccess);
-    void Initialize();
     QModelIndex AddRow(const FlexDirEntry &dirEntry, int role = Qt::EditRole);
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);
