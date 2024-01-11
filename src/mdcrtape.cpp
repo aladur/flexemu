@@ -180,7 +180,7 @@ bool MiniDcrTape::ReadRecord(std::vector<Byte> &buffer)
 
         buffer.clear();
         buffer.resize(size, 0);
-        auto pbuffer = reinterpret_cast<char *>(buffer.data());
+        auto *pbuffer = reinterpret_cast<char *>(buffer.data());
         // Read the buffer contents
         stream.read(pbuffer, buffer.size());
         record_index++;
@@ -201,7 +201,7 @@ bool MiniDcrTape::WriteRecord(const std::vector<Byte> &buffer)
         Word size = static_cast<Word>(buffer.size());
         stream.put(static_cast<char>(size >> 8));
         stream.put(static_cast<char>(size & 0xFF));
-        auto pbuffer = reinterpret_cast<const char *>(buffer.data());
+        const auto *pbuffer = reinterpret_cast<const char *>(buffer.data());
         // Write the buffer contents
         stream.write(pbuffer, buffer.size());
         std::ios::pos_type record_position = stream.tellp();

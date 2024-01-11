@@ -289,7 +289,7 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
     QSet<QString> filenames;
 
     filenames.reserve(vFilenames.size());
-    for (auto srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
+    for (auto *srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
     {
         filenames.insert(*(srcIter++));
     }
@@ -387,7 +387,7 @@ QVector<int> FlexplorerTableModel::FindFiles(const QString &pattern) const
 QModelIndex FlexplorerTableModel::AddFile(const FlexFileBuffer &buffer)
 {
     FlexDirEntry dirEntry;
-    auto filename = buffer.GetFilename();
+    const auto *filename = buffer.GetFilename();
 
     container->WriteFromBuffer(buffer);
     if (container->FindFile(filename, dirEntry))
@@ -619,7 +619,7 @@ bool FlexplorerTableModel::insertRows(
         {
             RowType newRow;
             beginInsertRows(QModelIndex(), row, row + count - 1);
-            auto iter = rows.begin() + row;
+            auto *iter = rows.begin() + row;
             rows.insert(iter, newRow);
             endInsertRows();
         }
@@ -640,7 +640,7 @@ bool FlexplorerTableModel::removeRows(
         if (count > 0)
         {
             beginRemoveRows(QModelIndex(), row, row + count - 1);
-            auto iter = rows.begin() + row;
+            auto *iter = rows.begin() + row;
             rows.erase(iter, iter + count);
             endRemoveRows();
         }
@@ -675,8 +675,8 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
     {
         if (oldIds[oldRow] != newIds[oldRow])
         {
-            auto pos = std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
-            int newRow = static_cast<int>(pos - newIds.begin());
+            auto *it = std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
+            int newRow = static_cast<int>(it - newIds.begin());
 
             for (int col = 0; col < COLUMNS; ++col)
             {
@@ -953,7 +953,7 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
                             fileTimeAccess));
         }
     }
-    auto container_s =
+    auto *container_s =
         dynamic_cast<FileContainerIfSector *>(container.get());
     if (container_s != nullptr && !container_s->IsFlexFormat())
     {

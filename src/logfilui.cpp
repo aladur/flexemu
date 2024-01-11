@@ -96,7 +96,7 @@ void LogfileSettingsUi::SetData(const s_cpu_logfile &settings)
     e_logFilename->setText(settings.logFileName.c_str());
 
     auto logRegister = LogRegister::CC;
-    for (auto regCheckBox : regCheckBoxes)
+    for (auto *regCheckBox : regCheckBoxes)
     {
         bool isChecked =
             (settings.logRegisters & logRegister) != LogRegister::NONE;
@@ -119,7 +119,7 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
 
     settings.logRegisters = LogRegister::NONE;
     auto logRegister = LogRegister::CC;
-    for (auto regCheckBox : regCheckBoxes)
+    for (auto *regCheckBox : regCheckBoxes)
     {
         if (regCheckBox->isChecked())
         {
@@ -166,7 +166,7 @@ void LogfileSettingsUi::OnClicked(QAbstractButton *button)
         c_logCycleCount->setChecked(false);
         e_logFilename->clear();
 
-        for (auto regCheckBox : regCheckBoxes)
+        for (auto *regCheckBox : regCheckBoxes)
         {
             regCheckBox->setChecked(false);
         }

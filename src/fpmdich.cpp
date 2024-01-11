@@ -805,7 +805,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
 
 void FlexplorerMdiChild::BeginDrag()
 {
-    auto mimeData = GetMimeDataForSelected();
+    auto *mimeData = GetMimeDataForSelected();
 
     if (mimeData != nullptr)
     {

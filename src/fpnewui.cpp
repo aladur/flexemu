@@ -296,7 +296,7 @@ bool FlexplorerNewUi::Validate()
 {
     if (e_tracks->isEnabled() && !e_tracks->hasAcceptableInput())
     {
-        auto validator =
+        const auto *validator =
             static_cast<const QIntValidator *>(e_tracks->validator());
 
         e_tracks->setFocus(Qt::OtherFocusReason);
@@ -311,7 +311,7 @@ bool FlexplorerNewUi::Validate()
 
     if (e_sectors->isEnabled() && !e_sectors->hasAcceptableInput())
     {
-        auto validator =
+        const auto *validator =
             static_cast<const QIntValidator *>(e_sectors->validator());
 
         e_sectors->setFocus(Qt::OtherFocusReason);

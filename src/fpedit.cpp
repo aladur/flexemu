@@ -75,7 +75,7 @@ QWidget *FlexDateDelegate::createEditor(QWidget *parent,
                                         const QStyleOptionViewItem &,
                                         const QModelIndex &) const
 {
-    auto editor = new QDateEdit(parent);
+    auto *editor = new QDateEdit(parent);
 
     editor->setFrame(false);
     // Limit the date range to valid FLEX dates.
@@ -131,7 +131,7 @@ QWidget *FlexDateTimeDelegate::createEditor(QWidget *parent,
                                             const QStyleOptionViewItem &,
                                             const QModelIndex &) const
 {
-    auto editor = new QDateTimeEdit(parent);
+    auto *editor = new QDateTimeEdit(parent);
 
     editor->setFrame(false);
     // Limit the date range to valid FLEX dates.

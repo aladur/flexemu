@@ -165,7 +165,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     {
         DWord colorRGBValue;
 
-        auto colorName = colors[i].colorName;
+        const auto *colorName = colors[i].colorName;
         getColorForName(colors[i].colorName, &colorRGBValue);
         cb_color->addItem(tr(colorName));
         QPixmap pixmap(16,16);
@@ -540,7 +540,7 @@ bool FlexemuOptionsUi::Validate()
         c_tabWidget->setCurrentIndex(0);
         e_frequency->setFocus(Qt::OtherFocusReason);
         e_frequency->setSelection(0, 20);
-        auto validator =
+        const auto *validator =
             static_cast<const QDoubleValidator *>(e_frequency->validator());
 
         auto message = QString::asprintf(
@@ -928,7 +928,7 @@ void FlexemuOptionsUi::OnNColorsChanged(int /* index */)
 
 void FlexemuOptionsUi::AddFrequencyValidator(QLineEdit &lineEdit)
 {
-    auto validator = new QDoubleValidator(0.1, 10000.0, 6, &lineEdit);
+    auto *validator = new QDoubleValidator(0.1, 10000.0, 6, &lineEdit);
 
     validator->setLocale(englishUS);
     validator->setNotation(QDoubleValidator::StandardNotation);
