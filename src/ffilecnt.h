@@ -133,11 +133,11 @@ protected:
     void EvaluateTrack0SectorCount();
     bool CreateDirEntry(FlexDirEntry &entry);
 
-    virtual void Initialize_for_flx_format(const s_flex_header &header,
-                                           bool write_protected);
-    virtual void Initialize_for_dsk_format(const s_formats &format,
-                                           bool write_protected);
-    virtual void Initialize_unformatted_disk();
+    void Initialize_for_flx_format(const s_flex_header &header,
+                                   bool write_protected);
+    void Initialize_for_dsk_format(const s_formats &format,
+                                   bool write_protected);
+    void Initialize_unformatted_disk();
     static void Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[],
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;

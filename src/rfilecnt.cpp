@@ -38,6 +38,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, fp.GetPath());
     }
 
+    param.type |= TYPE_RAM_CONTAINER;
     sectors = (file_size - param.offset) / param.byte_p_sector;
     file_buffer =
         std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);
@@ -179,16 +180,3 @@ bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
     return true;
 }
 
-void FlexRamFileContainer::Initialize_for_flx_format(
-    const s_flex_header &header, bool write_protected)
-{
-    FlexFileContainer::Initialize_for_flx_format(header, write_protected);
-    param.type |= TYPE_RAM_CONTAINER;
-}
-
-void FlexRamFileContainer::Initialize_for_dsk_format(
-    const s_formats &format, bool write_protected)
-{
-    FlexFileContainer::Initialize_for_dsk_format(format, write_protected);
-    param.type |= TYPE_RAM_CONTAINER;
-}

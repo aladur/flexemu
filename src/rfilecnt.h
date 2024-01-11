@@ -54,10 +54,6 @@ public:
 
 private:
     bool close();
-    void Initialize_for_flx_format(const s_flex_header &header,
-                                   bool write_protected) override;
-    void Initialize_for_dsk_format(const s_formats &format,
-                                   bool write_protected) override;
 };
 
 #endif // RFILECNT_INCLUDED 

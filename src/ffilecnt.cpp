@@ -116,6 +116,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
+    param.type = 0U;
     if (sbuf.st_size == 0)
     {
         // If file has been created or file size 0 then
