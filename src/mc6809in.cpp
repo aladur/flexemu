@@ -399,9 +399,9 @@ CpuState Mc6809::runloop()
 
         // execute one CPU instruction
 #ifdef FASTFLEX
-#include "engine.cpp"
+#include "engine.cpi"
 #else
-#include "mc6809ex.cpp"
+#include "mc6809ex.cpi"
 #endif
         first_time = false;
     } // while
