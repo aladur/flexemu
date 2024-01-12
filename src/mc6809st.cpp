@@ -36,6 +36,11 @@ Mc6809CpuStatus::Mc6809CpuStatus() :
 
 Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
 {
+    if (this == &lhs)
+    {
+        return *this;
+    }
+
     freq         = lhs.freq,
     total_cycles = lhs.total_cycles;
     a            = lhs.a;
