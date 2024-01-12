@@ -947,10 +947,9 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                                           filename.c_str());
         }
 
-        if (IsFlexFilename(filename.c_str(), name, extension,
-                           true) &&
-            strcmp(filename.c_str(), RANDOM_FILE_LIST) &&
-            strcmp(filename.c_str(), BOOT_FILE) &&
+        if (IsFlexFilename(filename.c_str(), name, extension, true) &&
+            strcmp(filename.c_str(), RANDOM_FILE_LIST) != 0 &&
+            strcmp(filename.c_str(), BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
         {
 
