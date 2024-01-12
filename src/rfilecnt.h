@@ -39,13 +39,13 @@ public:
 
     FlexRamFileContainer() = delete;
     FlexRamFileContainer(const FlexRamFileContainer &) = delete;
-    FlexRamFileContainer(FlexRamFileContainer &&);
+    FlexRamFileContainer(FlexRamFileContainer &&) noexcept;
     FlexRamFileContainer(const char *path, const char *mode,
                          const FileTimeAccess &fileTimeAccess);
     virtual ~FlexRamFileContainer();
 
     FlexRamFileContainer &operator= (const FlexRamFileContainer &) = delete;
-    FlexRamFileContainer &operator= (FlexRamFileContainer &&);
+    FlexRamFileContainer &operator= (FlexRamFileContainer &&) noexcept;
 
     virtual bool ReadSector(Byte *buffer, int trk, int sec,
                             int side = -1) const override;

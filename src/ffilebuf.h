@@ -65,11 +65,11 @@ class FlexFileBuffer
 public:
     FlexFileBuffer();
     FlexFileBuffer(const FlexFileBuffer &src);
-    FlexFileBuffer(FlexFileBuffer &&src);
+    FlexFileBuffer(FlexFileBuffer &&src) noexcept;
     virtual ~FlexFileBuffer();
 
     FlexFileBuffer &operator=(const FlexFileBuffer &src);
-    FlexFileBuffer &operator=(FlexFileBuffer &&src);
+    FlexFileBuffer &operator=(FlexFileBuffer &&src) noexcept;
 
     void ConvertToTextFile();
     void ConvertToFlexTextFile();

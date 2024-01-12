@@ -71,13 +71,13 @@ private:
 public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
-    FlexFileContainer(FlexFileContainer &&);
+    FlexFileContainer(FlexFileContainer &&) noexcept;
     FlexFileContainer(const char *path, const char *mode,
                       const FileTimeAccess &fileTimeAccess);
     virtual ~FlexFileContainer();       // public destructor
 
     FlexFileContainer &operator= (const FlexFileContainer &) = delete;
-    FlexFileContainer &operator= (FlexFileContainer &&);
+    FlexFileContainer &operator= (FlexFileContainer &&) noexcept;
 
     // basic interface (to be used within flexemu)
 public:

@@ -55,7 +55,7 @@ FlexDirEntry::FlexDirEntry(const FlexDirEntry &src)
     }
 }
 
-FlexDirEntry::FlexDirEntry(FlexDirEntry &&src)
+FlexDirEntry::FlexDirEntry(FlexDirEntry &&src) noexcept
 {
     if (&src != this)
     {
@@ -75,7 +75,7 @@ FlexDirEntry &FlexDirEntry::operator=(const FlexDirEntry &src)
     return *this;
 }
 
-FlexDirEntry &FlexDirEntry::operator=(FlexDirEntry &&src)
+FlexDirEntry &FlexDirEntry::operator=(FlexDirEntry &&src) noexcept
 {
     if (&src != this)
     {

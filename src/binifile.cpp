@@ -32,12 +32,12 @@ BIniFile::BIniFile(const char *aFileName) :
 {
 }
 
-BIniFile::BIniFile(BIniFile &&src) :
+BIniFile::BIniFile(BIniFile &&src) noexcept :
     fileName(std::move(src.fileName))
 {
 }
 
-BIniFile &BIniFile::operator=(BIniFile &&src) 
+BIniFile &BIniFile::operator=(BIniFile &&src) noexcept
 {
     fileName = std::move(src.fileName);
 

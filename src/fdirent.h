@@ -60,10 +60,10 @@ public:
     FlexDirEntry();
     ~FlexDirEntry();
     FlexDirEntry(const FlexDirEntry &src);
-    FlexDirEntry(FlexDirEntry &&src);
+    FlexDirEntry(FlexDirEntry &&src) noexcept;
 
     FlexDirEntry &operator= (const FlexDirEntry &src);
-    FlexDirEntry &operator= (FlexDirEntry &&src);
+    FlexDirEntry &operator= (FlexDirEntry &&src) noexcept;
 
     const BDate &GetDate() const;
     void    SetDate(const BDate &date);

@@ -33,12 +33,12 @@ class BIniFile
 public:
     BIniFile() = delete;
     BIniFile(const BIniFile &) = delete;
-    BIniFile(BIniFile &&);
+    BIniFile(BIniFile &&) noexcept;
     BIniFile(const char *aFileName);
     ~BIniFile();
 
     BIniFile &operator=(const BIniFile &) = delete;
-    BIniFile &operator=(BIniFile &&);
+    BIniFile &operator=(BIniFile &&) noexcept;
 
     bool IsValid() const;
     std::string GetFileName() const;

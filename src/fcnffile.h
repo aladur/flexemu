@@ -41,12 +41,12 @@ class FlexemuConfigFile
 public:
     FlexemuConfigFile() = delete;
     FlexemuConfigFile(const FlexemuConfigFile &) = delete;
-    FlexemuConfigFile(FlexemuConfigFile &&);
+    FlexemuConfigFile(FlexemuConfigFile &&) noexcept;
     FlexemuConfigFile(const char *aFileName);
     ~FlexemuConfigFile() = default;
 
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
-    FlexemuConfigFile &operator=(FlexemuConfigFile &&);
+    FlexemuConfigFile &operator=(FlexemuConfigFile &&) noexcept;
 
     std::vector<sIoDeviceMapping> ReadIoDevices();
     std::string GetDebugSupportOption(const std::string &key);

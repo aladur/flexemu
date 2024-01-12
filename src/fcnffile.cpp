@@ -46,12 +46,13 @@ FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
     }
 }
 
-FlexemuConfigFile::FlexemuConfigFile(FlexemuConfigFile &&src) :
+FlexemuConfigFile::FlexemuConfigFile(FlexemuConfigFile &&src) noexcept :
     iniFileName(std::move(src.iniFileName))
 {
 }
 
 FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src) 
+noexcept
 {
     iniFileName = std::move(src.iniFileName);
 

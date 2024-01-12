@@ -70,7 +70,7 @@ BFilePtr::BFilePtr(const char *x_path, const char *x_mode /* = nullptr */) :
     fp = fopen(path.c_str(), mode.c_str());
 }
 
-BFilePtr::BFilePtr(BFilePtr &&src) : fp(nullptr)
+BFilePtr::BFilePtr(BFilePtr &&src) noexcept : fp(nullptr)
 {
     fp = src.fp;
     path = src.path;
@@ -81,7 +81,7 @@ BFilePtr::BFilePtr(BFilePtr &&src) : fp(nullptr)
     src.mode.clear();
 }
 
-BFilePtr &BFilePtr::operator=(BFilePtr &&src)
+BFilePtr &BFilePtr::operator=(BFilePtr &&src) noexcept
 {
     if (&src != this)
     {

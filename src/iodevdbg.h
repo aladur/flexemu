@@ -35,7 +35,7 @@ public:
     IoDeviceDebug() = delete;
     IoDeviceDebug(const IoDeviceDebug &) = delete;
     IoDeviceDebug(IoDevice &x_device, const std::string &x_logFilePath);
-    IoDeviceDebug(IoDeviceDebug &&);
+    IoDeviceDebug(IoDeviceDebug &&) noexcept;
     // Avoid using copy or move assignment because of device reference
     // which can not be reassigned.
     IoDeviceDebug& operator=(const IoDeviceDebug &) = delete;

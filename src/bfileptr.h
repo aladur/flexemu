@@ -31,10 +31,10 @@ public:
     BFilePtr();
     BFilePtr(const char *path, const char *mode = nullptr);
     BFilePtr(const BFilePtr &) = delete;
-    BFilePtr(BFilePtr &&);
+    BFilePtr(BFilePtr &&) noexcept;
     ~BFilePtr();
     BFilePtr &operator= (const BFilePtr &) = delete;
-    BFilePtr &operator= (BFilePtr &&);
+    BFilePtr &operator= (BFilePtr &&) noexcept;
 
     bool Close();
     const char *GetPath() const

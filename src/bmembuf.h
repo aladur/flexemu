@@ -36,11 +36,11 @@ public:
     BMemoryBuffer() = delete;
     BMemoryBuffer(size_t aSize);
     BMemoryBuffer(const BMemoryBuffer &src);
-    BMemoryBuffer(BMemoryBuffer &&src);
+    BMemoryBuffer(BMemoryBuffer &&src) noexcept;
     ~BMemoryBuffer();
 
     BMemoryBuffer &operator=(const BMemoryBuffer &src);
-    BMemoryBuffer &operator=(BMemoryBuffer &&src);
+    BMemoryBuffer &operator=(BMemoryBuffer &&src) noexcept;
 
     inline size_t GetSize() const
     {

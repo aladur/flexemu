@@ -39,7 +39,7 @@ BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
               std::back_inserter(addressRanges));
 }
 
-BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src)
+BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src) noexcept
 {
     buffer = std::move(src.buffer);
     addressRanges = std::move(src.addressRanges);
@@ -63,7 +63,7 @@ BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
     return *this;
 }
 
-BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src)
+BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src) noexcept
 {
     buffer = std::move(src.buffer);
     addressRanges = std::move(src.addressRanges);

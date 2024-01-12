@@ -51,7 +51,7 @@ FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
     copyFrom(src);
 }
 
-FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src)
+FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src) noexcept
 {
     buffer = std::move(src.buffer);
     capacity = src.capacity;
@@ -70,7 +70,7 @@ FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &src)
     return *this;
 }
 
-FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src)
+FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src) noexcept
 {
     if (&src != this)
     {

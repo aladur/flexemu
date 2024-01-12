@@ -70,13 +70,14 @@ FlexRamFileContainer::~FlexRamFileContainer()
     }
 }
 
-FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) :
-    FlexFileContainer(std::move(src)), file_buffer(std::move(src.file_buffer))
+FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) noexcept
+    : FlexFileContainer(std::move(src))
+    , file_buffer(std::move(src.file_buffer))
 {
 }
 
 FlexRamFileContainer &FlexRamFileContainer::operator=
-                                         (FlexRamFileContainer &&src)
+                                         (FlexRamFileContainer &&src) noexcept
 {
     file_buffer = std::move(src.file_buffer);
 

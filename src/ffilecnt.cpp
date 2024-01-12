@@ -217,7 +217,7 @@ FlexFileContainer::~FlexFileContainer()
 {
 }
 
-FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
+FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
     fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
     ft_access(src.ft_access),
     is_flex_format(src.is_flex_format),
@@ -228,6 +228,7 @@ FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) :
 }
 
 FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
+noexcept
 {
     fp = std::move(src.fp);
     param = src.param;
