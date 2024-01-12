@@ -566,8 +566,7 @@ bool FlexplorerTableModel::setHeaderData(
 {
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal &&
         section >= 0 &&
-        section < static_cast<int>(headerNames.size()) &&
-        role == Qt::DisplayRole)
+        section < static_cast<int>(headerNames.size()))
     {
         bool isChanged = (headerNames[section] != value.toString());
 
