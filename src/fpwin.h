@@ -104,7 +104,7 @@ public slots:
     void SetStatusMessage(const QString &message);
 
 private:
-    void ExecuteInChild(std::function<void(FlexplorerMdiChild &child)>);
+    void ExecuteInChild(const std::function<void(FlexplorerMdiChild &child)>&);
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
                             const QString &objectName);
     void CreateActions();

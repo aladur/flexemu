@@ -327,8 +327,8 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
 // Call the iterateFunction for each successfully read file on MDCR tape.
 MdcrStatus MdcrFileSystem::ForEachFile(MiniDcrTape &mdcr,
-                  std::function<MdcrStatus
-                            (const std::string&, BMemoryBuffer &memory)>
+                  const std::function<MdcrStatus
+                            (const std::string&, BMemoryBuffer &memory)>&
                             iterateFunction)
 {
     BMemoryBuffer memory(65536);

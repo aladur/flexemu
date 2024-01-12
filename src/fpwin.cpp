@@ -271,7 +271,7 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
 }
 
 void FLEXplorer::ExecuteInChild(
-        std::function<void(FlexplorerMdiChild &child)> action)
+        const std::function<void(FlexplorerMdiChild &child)>& action)
 {
     auto *child = ActiveMdiChild();
 

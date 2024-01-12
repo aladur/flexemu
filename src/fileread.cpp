@@ -543,8 +543,8 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
 static int write_hexfile(
     const char *filename,
     const MemorySource<size_t> &memsrc,
-    std::function<int(WBType, std::ostream&, const Byte *, size_t, size_t)>
-        write_buffer,
+    const std::function<int(WBType, std::ostream&, const Byte *, size_t,
+        size_t)>& write_buffer,
     Byte buffer_size, size_t startAddress,
     bool isBinary)
 {

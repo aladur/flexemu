@@ -165,7 +165,7 @@ void FlexFileBuffer::Realloc(DWord new_size,
 // Traverse through a given FLEX text file and call a function for each
 // converted character for converting to a host operating system text file.
 void FlexFileBuffer::TraverseForTextFileConversion(
-        std::function<void(char c)> fct) const
+        const std::function<void(char c)>& fct) const
 {
     for (DWord index = 0; index < fileHeader.fileSize; index++)
     {
@@ -261,7 +261,7 @@ void FlexFileBuffer::ConvertToTextFile()
 // Traverse through a given host operating system text file and call a function
 // for each converted character for converting to a FLEX text file.
 void FlexFileBuffer::TraverseForFlexTextFileConversion(
-        std::function<void(char c)> fct) const
+        const std::function<void(char c)>& fct) const
 {
     DWord spaces = 0;
 
@@ -417,7 +417,7 @@ bool FlexFileBuffer::IsFlexTextFile() const
 // for each converted character for converting to a ASCII dump file.
 void FlexFileBuffer::TraverseForDumpFileConversion(
         DWord bytesPerLine,
-        std::function<void(char c)> fct) const
+        const std::function<void(char c)>& fct) const
 {
     DWord offset;
     DWord index;

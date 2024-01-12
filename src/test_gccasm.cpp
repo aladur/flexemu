@@ -471,8 +471,8 @@ void init_test_gccasm(int /*argc*/, char ** /*argv*/)
 {
 }
 
-void err(std::string mnemonic, Word op, Byte m6809_cc, std::string regname,
-         Word cpureg, Word x86reg)
+void err(const std::string& mnemonic, Word op, Byte m6809_cc,
+         const std::string& regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << op << ")"
@@ -483,8 +483,8 @@ void err(std::string mnemonic, Word op, Byte m6809_cc, std::string regname,
               << std::endl;
 }
 
-void err(std::string mnemonic, Word op1, Word op2, Byte m6809_cc,
-         std::string regname, Word cpureg, Word x86reg)
+void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
+         const std::string& regname, Word cpureg, Word x86reg)
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << op1 << ", 0x" << op2 << ")"
@@ -495,7 +495,7 @@ void err(std::string mnemonic, Word op1, Word op2, Byte m6809_cc,
               << std::endl;
 }
 
-bool test_gccasm_fctByte(std::string mnemonic,
+bool test_gccasm_fctByte(const std::string& mnemonic,
                          tFctByte test_function,
                          Byte opcode)
 {
@@ -541,7 +541,7 @@ bool test_gccasm_fctByte(std::string mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefByte(std::string mnemonic,
+bool test_gccasm_fctRefByte(const std::string& mnemonic,
                             tFctRefByte test_function,
                             Byte opcode)
 {
@@ -593,7 +593,7 @@ bool test_gccasm_fctRefByte(std::string mnemonic,
     return success;
 }
 
-bool test_gccasm_fctByteByte(std::string mnemonic,
+bool test_gccasm_fctByteByte(const std::string& mnemonic,
                              tFctByteByte test_function,
                              Byte opcode)
 {
@@ -643,7 +643,7 @@ bool test_gccasm_fctByteByte(std::string mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefByteByte(std::string mnemonic,
+bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
                                 tFctRefByteByte test_function,
                                 Byte opcode)
 {
@@ -699,7 +699,7 @@ bool test_gccasm_fctRefByteByte(std::string mnemonic,
     return success;
 }
 
-bool test_gccasm_fctWordWord(std::string mnemonic,
+bool test_gccasm_fctWordWord(const std::string& mnemonic,
                              tFctWordWord test_function,
                              Byte opcode1,
                              Byte opcode2)
@@ -756,7 +756,7 @@ bool test_gccasm_fctWordWord(std::string mnemonic,
     return success;
 }
 
-bool test_gccasm_fctRefWordWord(std::string mnemonic,
+bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
                                 tFctRefWordWord test_function,
                                 Byte opcode)
 {
