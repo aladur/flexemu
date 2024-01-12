@@ -26,12 +26,6 @@
 #include "fcinfo.h"
 #include "filecntb.h"   // needed for containertypes
 
-#ifdef _
-    #undef _
-#endif
-
-#define _(p) p
-
 
 FlexContainerInfo::FlexContainerInfo() :
     sectors(0),
@@ -59,24 +53,24 @@ const std::string FlexContainerInfo::GetTypeString() const
     {
         if (type & TYPE_DSK_CONTAINER)
         {
-            str = _("file container, DSK format");
+            str = "file container, DSK format";
         }
         else if (type & TYPE_FLX_CONTAINER)
         {
-            str = _("file container, FLX format");
+            str = "file container, FLX format";
         }
         else
         {
-            str = _("file container");
+            str = "file container";
         }
     }
     else if (type & TYPE_DIRECTORY)
     {
-        str = _("directory");
+        str = "directory";
     }
     else
     {
-        str = _("Unknown type");
+        str = "Unknown type";
     }
 
     return str;
