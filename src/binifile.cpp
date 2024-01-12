@@ -145,7 +145,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                         if (foundKeys.find(key) != foundKeys.end())
                         {
                             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                    key + "=" + value, fileName);
+                                    key.append("=").append(value), fileName);
                         }
 
                         resultMap.insert({ key, value });;

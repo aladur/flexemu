@@ -435,8 +435,8 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
                 }
             }
 
-            const std::string tempFile =
-                tempPath + PATHSEPARATORSTRING + filename;
+            std::string tempFile(tempPath);
+            tempFile.append(PATHSEPARATORSTRING).append(filename);
 
             if (buffer.WriteToFile(tempFile.c_str()))
             {
