@@ -330,7 +330,7 @@ std::string E2floppy::drive_info_string(Word drive_nr)
         }
     }
 
-    return stream.str().c_str();
+    return stream.str();
 }
 
 // get info for corresponding drive. If drive is not ready the result is empty.

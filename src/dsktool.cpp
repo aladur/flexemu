@@ -164,7 +164,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
     auto matchedFilenames = GetMatchingFilenames(src, regexs);
@@ -308,7 +308,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
     if (src.GetInfo(info))
@@ -426,7 +426,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
     if (src.GetInfo(info))
@@ -520,7 +520,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 
     if (!dst.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath());
     }
 
     for (auto &file : files)
@@ -596,7 +596,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
     if (regexs.empty())
@@ -662,7 +662,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
     FileContainerCheck check(src, fileTimeAccess);
@@ -761,11 +761,11 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
 
     if (!src.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
     if (!dst.IsFlexFormat())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath().c_str());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath());
     }
 
     size_t count = 0;

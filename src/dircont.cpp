@@ -274,7 +274,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     if (statvfs(directory.c_str(), &fsbuf))
     {
-        throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
+        throw FlexException(FERR_READING_DISKSPACE, directory);
     }
 
     info.SetFree(fsbuf.f_bsize * fsbuf.f_bavail);
@@ -300,11 +300,11 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     }
     else
     {
-        info.SetName(directory.c_str());
+        info.SetName(directory);
     }
     info.SetNumber(disk_number);
 
-    info.SetPath(directory.c_str());
+    info.SetPath(directory);
     //info.SetType(param.type);
     info.SetType(TYPE_DIRECTORY);
     info.SetAttributes(attributes);

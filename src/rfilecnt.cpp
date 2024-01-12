@@ -119,7 +119,7 @@ bool FlexRamFileContainer::close()
 
     if (throwException)
     {
-        throw FlexException(FERR_WRITING_TO, path.c_str());
+        throw FlexException(FERR_WRITING_TO, path);
     }
 
     return true;

@@ -596,7 +596,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
                     SetAttributes(FLX_READONLY);
                 }
 
-                SetAdjustedFilename(getFileName(path).c_str());
+                SetAdjustedFilename(getFileName(path));
                 struct tm *lt = localtime(&(sbuf.st_mtime));
                 SetDateTime(
                         BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900),
@@ -657,7 +657,7 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
                     (0xff & (unsigned)fileHeader.magicNumber[i++]);
             }
             throw FlexException(FERR_INVALID_MAGIC_NUMBER,
-                                stream.str().c_str());
+                                stream.str());
         }
     }
 

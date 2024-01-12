@@ -73,7 +73,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
                 stream << dirTrackSector;
                 throw FlexException(FERR_READING_TRKSEC,
                                     stream.str(),
-                                    base->GetPath().c_str());
+                                    base->GetPath());
             }
         }
 
@@ -137,7 +137,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -157,7 +157,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     /* read sysstem info sector (SIS) */
@@ -168,7 +168,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         stream << sis_trk_sec;
         throw FlexException(FERR_READING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     fc_end = sis.sir.fc_end;
@@ -183,7 +183,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
             stream << fc_end;
             throw FlexException(FERR_READING_TRKSEC,
                                 stream.str(),
-                                base->GetPath().c_str());
+                                base->GetPath());
         }
 
         buffer[0] = start.trk;
@@ -196,7 +196,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
             stream << fc_end;
             throw FlexException(FERR_WRITING_TRKSEC,
                                 stream.str(),
-                                base->GetPath().c_str());
+                                base->GetPath());
         }
 
         if (!base->ReadSector(&buffer[0], sis_trk_sec.trk,
@@ -207,7 +207,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
             stream << sis_trk_sec;
             throw FlexException(FERR_READING_TRKSEC,
                                 stream.str(),
-                                base->GetPath().c_str());
+                                base->GetPath());
         }
 
         sis.sir.fc_end = end;
@@ -223,7 +223,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
             stream << sis_trk_sec;
             throw FlexException(FERR_READING_TRKSEC,
                                 stream.str(),
-                                base->GetPath().c_str());
+                                base->GetPath());
         }
 
         sis.sir.fc_start = start;
@@ -245,7 +245,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         stream << sis_trk_sec;
         throw FlexException(FERR_WRITING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     return true;
@@ -273,7 +273,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
         stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -323,7 +323,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
         stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     return true;
@@ -350,7 +350,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
         stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -366,7 +366,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
         stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     return true;
@@ -393,7 +393,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
         stream << dirTrackSector;
         throw FlexException(FERR_READING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
@@ -407,7 +407,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
         stream << dirTrackSector;
         throw FlexException(FERR_WRITING_TRKSEC,
                             stream.str(),
-                            base->GetPath().c_str());
+                            base->GetPath());
     }
 
     return true;

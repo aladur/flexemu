@@ -169,7 +169,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
                        param.byte_p_sector);
     info.SetName(disk_name);
     info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
-    info.SetPath(directory.c_str());
+    info.SetPath(directory);
     info.SetType(param.type);
     info.SetAttributes(attributes);
     info.SetIsWriteProtected(IsWriteProtected());
@@ -1011,7 +1011,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             std::string path;
 
             std::string filename = pentry->d_name;
-            path = directory + PATHSEPARATORSTRING + filename.c_str();
+            path = directory + PATHSEPARATORSTRING + filename;
             if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
             {
                 continue;
@@ -1035,7 +1035,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         if ((dir_idx = next_free_dir_entry()) >= 0)
         {
             st_t begin, end;
-            auto path = directory + PATHSEPARATORSTRING + filename.c_str();
+            auto path = directory + PATHSEPARATORSTRING + filename;
             bool is_random = (random_filenames.find(filename) !=
                               random_filenames.end());
 

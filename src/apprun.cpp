@@ -131,7 +131,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     scheduler.set_frequency(options.frequency);
 
     FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
-    auto address = configFile.GetSerparAddress(options.hex_file.c_str());
+    auto address = configFile.GetSerparAddress(options.hex_file);
     if (address < 0 || !terminalIO.is_terminal_supported())
     {
         // The specified hex_file does not support switching between

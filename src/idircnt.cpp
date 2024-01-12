@@ -256,14 +256,14 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
         if (errno == ENOENT)
         {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                                dirEntry.GetTotalFileName().c_str(),
-                                base->GetPath().c_str());
+                                dirEntry.GetTotalFileName(),
+                                base->GetPath());
         }
         else
         {
             throw FlexException(FERR_REMOVE_FILE,
-                                dirEntry.GetTotalFileName().c_str(),
-                                base->GetPath().c_str());
+                                dirEntry.GetTotalFileName(),
+                                base->GetPath());
         }
     }
 
@@ -343,14 +343,14 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         else if (errno == EACCES)
         {
             throw FlexException(FERR_RENAME_FILE,
-                                dirEntry.GetTotalFileName().c_str(),
-                                base->GetPath().c_str());
+                                dirEntry.GetTotalFileName(),
+                                base->GetPath());
         }
         else if (errno == ENOENT)
         {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
-                                dirEntry.GetTotalFileName().c_str(),
-                                base->GetPath().c_str());
+                                dirEntry.GetTotalFileName(),
+                                base->GetPath());
         }
     }
 
