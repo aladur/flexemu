@@ -1298,7 +1298,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
                 model.setItem(row++, 1, new QStandardItem(text));
                 text = QString::number(info.GetNumber());
                 model.setItem(row++, 1, new QStandardItem(text));
-                auto date = info.GetDate();
+                const auto& date = info.GetDate();
                 auto qdate = QDate(
                     date.GetYear(), date.GetMonth(), date.GetDay());
                 text = QLocale::system().toString(qdate, QLocale::ShortFormat);

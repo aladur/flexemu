@@ -1215,10 +1215,10 @@ std::string PrintOutputWindow::CreatePrintConfigKey() const
     fontKey.erase(std::remove(fontKey.begin(), end, ' '), end);
 
     auto index = pageSizeValues.indexOf(pageSizeId);
-    auto pageSizeKey = pageSizeKeys[index];
+    const auto& pageSizeKey = pageSizeKeys[index];
 
     index = orientationValues.indexOf(orientation);
-    auto orientationKey = orientationKeys[index];
+    const auto& orientationKey = orientationKeys[index];
 
     return std::string((orientationKey + pageSizeKey).toUtf8().data()) +
         fontKey;
