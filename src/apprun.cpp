@@ -179,7 +179,7 @@ void ApplicationRunner::AddIoDevicesToMemory()
     debugLogDevices.reserve(deviceParams.size());
 
     // Add all memory mapped I/O devices to memory.
-    for (auto deviceParam : deviceParams)
+    for (const auto &deviceParam : deviceParams)
     {
         std::string name = deviceParam.name;
 
