@@ -547,7 +547,7 @@ std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
-    auto pos = fileName.find_last_of(".");
+    auto pos = fileName.find_last_of('.');
 
     if (pos != std::string::npos)
     {
@@ -565,7 +565,7 @@ std::string getFileStem(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
-    auto pos = fileName.find_last_of(".");
+    auto pos = fileName.find_last_of('.');
 
     if (pos != std::string::npos)
     {
