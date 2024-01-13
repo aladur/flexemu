@@ -388,7 +388,7 @@ extern "C" struct sRGBDef
     extern char     *binstr(Byte x);
     extern char     *hexstr(Byte x);
     extern char     *hexstr(Word x);
-    extern char     *ascchr(Byte x);
+    extern char     *ascchr(char x);
     extern std::string tohexstr(Byte x);
     extern std::string tohexstr(Word x);
 

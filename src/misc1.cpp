@@ -115,7 +115,7 @@ char *binstr(Byte x)
 
     for (SWord i = 7; i >= 0; --i)
     {
-        tmp[i] = (x & 1) + '0';
+        tmp[i] = (x & 1) ? '1' : '0';
         x >>= 1;
     }
 
@@ -124,16 +124,9 @@ char *binstr(Byte x)
 
 static char hex_digit(Byte x)
 {
-    x &= 0x0f;
+    static const char *digits = "0123456789abcdef";
 
-    if (x <= 9)
-    {
-        return '0' + x;
-    }
-    else
-    {
-        return 'a' + x - 10;
-    }
+    return digits[x & 0x0F];
 }
 
 char *hexstr(Byte x)
@@ -172,7 +165,7 @@ std::string tohexstr(Word x)
     return std::string(hexstr(x));
 }
 
-char *ascchr(Byte x)
+char *ascchr(char x)
 {
     static char             tmp[2] = " ";
 
