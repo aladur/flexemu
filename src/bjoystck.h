@@ -36,26 +36,26 @@ public:
     ~BJoystick();
     short IsOpened();
     short Actualize();
-    short XAxis();
-    short YAxis();
-    int Buttons();
+    int32_t XAxis();
+    int32_t YAxis();
+    int32_t Buttons();
     int IsButtonSet(int which);
 private:
     BJoystick(const BJoystick &d);  // private, should not be used
     int js; // input stream from joystick
-    int buttons;
-    short   axis[2];
+    int32_t buttons;
+    int32_t axis[2];
 };
 
-inline short BJoystick::XAxis()
+inline int32_t BJoystick::XAxis()
 {
     return axis[0];
 }
-inline short BJoystick::YAxis()
+inline int32_t BJoystick::YAxis()
 {
     return axis[1];
 }
-inline int   BJoystick::Buttons()
+inline int32_t BJoystick::Buttons()
 {
     return buttons;
 }

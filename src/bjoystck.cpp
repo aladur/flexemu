@@ -34,7 +34,7 @@
 
 BJoystick::BJoystick(int which)
 {
-    axis[0] = axis[1] = buttons = 0;
+    axis[0] = axis[1] = buttons = static_cast<decltype(buttons)>(0);
 
     if (which == 0)
     {
@@ -71,7 +71,6 @@ short BJoystick::IsOpened()
 
 short BJoystick::Actualize()
 {
-    int status;
     struct JS_DATA_TYPE raw_js_data;
 
     if (js < 0)
@@ -79,14 +78,12 @@ short BJoystick::Actualize()
         return 0;
     }
 
-    status = read(js, &raw_js_data, JS_RETURN);
+    auto status = read(js, &raw_js_data, JS_RETURN);
 
     if (status == JS_RETURN)
     {
-        int x, y;
-
-        x = raw_js_data.x;
-        y = raw_js_data.y;
+        auto x = raw_js_data.x;
+        auto y = raw_js_data.y;
 
         if (x < 0)
         {
