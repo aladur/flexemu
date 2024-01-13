@@ -230,7 +230,7 @@ void E2Screen::paintEvent(QPaintEvent *)
 
     if (firstRasterLine != 0U)
     {
-        auto scaledFirstRasterLine = 0U;
+        auto scaledFirstRasterLine = 0;
 
         if (doScaledScreenUpdate)
         {
