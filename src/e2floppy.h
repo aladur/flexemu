@@ -90,7 +90,7 @@ private:
     // data for CMD_WRITETRACK
     WriteTrackState writeTrackState; // Write track state
     Word            offset; // offset when reading a track
-    char            idAddressMark[4]; // Contains track, side, sector, sizecode
+    Byte idAddressMark[4]; // Contains track, side, sector, sizecode
     const struct sOptions &options;
 
 public:
