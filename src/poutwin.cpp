@@ -239,7 +239,7 @@ PrintOutputWindow::~PrintOutputWindow()
 */
 float PrintOutputWindow::GetSizeFactorFromPercent(int percent)
 {
-    return 0.8f + (100 - percent) * 1.2f / 100.0f;
+    return 0.8f + static_cast<float>(100 - percent) * 1.2f / 100.0f;
 }
 
 /*
@@ -249,7 +249,7 @@ float PrintOutputWindow::GetSizeFactorFromPercent(int percent)
 */
 float PrintOutputWindow::GetDisplayedSizeFactorFromPercent(int percent)
 {
-    return 40.0f + percent * 120.0f / 100.0f;
+    return 40.0f + static_cast<float>(percent) * 120.0f / 100.0f;
 }
 
 /*
