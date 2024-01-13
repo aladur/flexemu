@@ -167,8 +167,9 @@ private:
     void CreateCpuActions(QLayout &layout);
     void CreateHelpActions(QLayout &layout);
     void CreateHorizontalSpacer(QLayout &layout);
-    QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu, int index);
-    QAction *CreateIconSizeAction(QMenu &menu, uint index);
+    QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
+                                    uint16_t index);
+    QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
     void CreateStatusToolBar(QLayout &layout);
     void CreateStatusBar(QLayout &layout);
     void AddDiskStatusButtons();
@@ -200,7 +201,7 @@ private:
     void SetIconSize(const QSize &size);
     QUrl CreateDocumentationUrl(const QString &docDir, const QString &htmlFile);
     ColorTable CreateColorTable();
-    void CopyToBMPArray(DWord height, QByteArray& dest,
+    void CopyToBMPArray(Word height, QByteArray& dest,
                         Byte const *videoRam, const ColorTable& colorTable);
     int TranslateToAscii(QKeyEvent *event);
     QFont GetMonospaceFont(int pointSize = -1);

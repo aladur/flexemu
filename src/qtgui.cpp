@@ -946,7 +946,7 @@ void QtGui::CreateViewActions(QLayout& layout)
 
     auto *iconSizeMenu = viewMenu->addMenu(tr("&Icon Size"));
 
-    for (uint index = 0U; index < ICON_SIZES; ++index)
+    for (uint16_t index = 0U; index < ICON_SIZES; ++index)
     {
         iconSizeAction[index] = CreateIconSizeAction(*iconSizeMenu, index);
     }
@@ -954,7 +954,7 @@ void QtGui::CreateViewActions(QLayout& layout)
     auto *screenSizeMenu = viewMenu->addMenu(tr("&Screen Size"));
     screenSizeComboBox = new QComboBox();
 
-    for (uint index = 0U; index < SCREEN_SIZES; ++index)
+    for (uint16_t index = 0U; index < SCREEN_SIZES; ++index)
     {
         const auto iconPath =
             QString::asprintf(":/resource/screen%u.png", index + 1);
@@ -1130,7 +1130,7 @@ void QtGui::AddDiskStatusButtons()
     }
 }
 
-QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint index)
+QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
 {
     static const QVector<QString> menuText{
         tr("&Small"),
@@ -1145,6 +1145,7 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint index)
 
     assert(menuText.size() == ICON_SIZES);
     assert(toolTipText.size() == ICON_SIZES);
+    assert(index < ICON_SIZES);
 
     auto *action = menu.addAction(menuText[index]);
     connect(action, &QAction::triggered,
@@ -1156,7 +1157,7 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint index)
 }
 
 QAction *QtGui::CreateScreenSizeAction(
-        const QIcon &icon, QMenu &menu, int index)
+        const QIcon &icon, QMenu &menu, uint16_t index)
 {
     static const QVector<QString> menuText{
         tr("&Default"),
@@ -1714,7 +1715,8 @@ void QtGui::SetCpuDialogMonospaceFont(int pointSize)
     auto monospaceFont = GetMonospaceFont(pointSize);
     cpuUi.e_status->setFont(monospaceFont);
     QFontMetrics monospaceFontMetrics(monospaceFont);
-    int height = std::lround(monospaceFontMetrics.height() * (CPU_LINES + 0.5));
+    auto fHeight = monospaceFontMetrics.height() * (CPU_LINES + 0.5);
+    auto height = static_cast<int>(std::lround(fHeight));
     int width;
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
@@ -1795,7 +1797,7 @@ ColorTable QtGui::CreateColorTable()
     return colorTable;
 }
 
-void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
+void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
                            Byte const *videoRam, const ColorTable& colTable)
 {
     sBITMAPFILEHEADER fileHeader;
@@ -1808,7 +1810,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data
     DWord dataOffset = sizeof(sBITMAPFILEHEADER) + sizeof(sBITMAPINFOHEADER) +
                      (static_cast<DWord>(colTable.size()) * sizeof(sRGBQUAD));
-    DWord destSize = dataOffset + (height * WINDOWWIDTH);
+    auto destSize = static_cast<SDWord>(dataOffset + (height * WINDOWWIDTH));
 
     dest.clear();
     dest.resize(destSize);
@@ -1871,7 +1873,6 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
     }
     assert(pData == dest.data() + dataOffset);
 
-    DWord count;    /* Byte counter into video RAM          */
     Byte pixels[6]; /* One byte of video RAM for each plane */
     // Default color index: If no video source is available use highest
     // available color
@@ -1886,7 +1887,7 @@ void QtGui::CopyToBMPArray(DWord height, QByteArray& dest,
 
     // The raster lines have to be filled from bottom to top.
     pData += WINDOWWIDTH * (height - 1);
-    for (count = 0; count < (RASTERLINE_SIZE * height); ++count)
+    for (auto count = 0; count < (RASTERLINE_SIZE * height); ++count)
     {
         Byte pixelBitMask;
 
