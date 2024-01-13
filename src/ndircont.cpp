@@ -555,7 +555,7 @@ SWord NafsDirectoryContainer::next_free_dir_entry()
             if (dir_sector.dir_entry[i].filename[0] == DE_EMPTY ||
                 dir_sector.dir_entry[i].filename[0] == DE_DELETED)
             {
-                return j + i;
+                return static_cast<SWord>(j + i);
             }
         }
 
@@ -1170,13 +1170,13 @@ void NafsDirectoryContainer::check_for_delete(SWord dir_index,
         if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
             old_dir_sector.dir_entry[i].filename[0] != DE_DELETED)
         {
-            auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
+            const auto di = static_cast<SWord>(dir_index * DIRENTRIES + i);
+            auto filename = get_unix_filename(di);
             auto track_sector = old_dir_sector.dir_entry[i].start;
             auto index = get_sector_index(track_sector);
             auto path = directory + PATHSEPARATORSTRING + filename;
             unlink(path.c_str());
-            change_file_id_and_type(index, dir_index * DIRENTRIES + i, 0,
-                                    SectorType::FreeChain);
+            change_file_id_and_type(index, di, 0, SectorType::FreeChain);
 #ifdef DEBUG_FILE
             LOG_X("      delete %s\n", filename.c_str());
 #endif
@@ -1198,7 +1198,8 @@ void NafsDirectoryContainer::check_for_rename(SWord dir_index,
 
     for (Word i = 0; i < DIRENTRIES; i++)
     {
-        old_filename = get_unix_filename(dir_index * DIRENTRIES + i);
+        const auto di = static_cast<SWord>(dir_index * DIRENTRIES + i);
+        old_filename = get_unix_filename(di);
         new_filename = get_unix_filename(dir_sector.dir_entry[i]);
 
         if (!old_filename.empty() && !new_filename.empty() &&
@@ -1264,7 +1265,8 @@ void NafsDirectoryContainer::check_for_changed_file_attr(SWord dir_index,
         if ((dir_sector.dir_entry[i].file_attr & WRITE_PROTECT) !=
             (old_dir_sector.dir_entry[i].file_attr & WRITE_PROTECT))
         {
-            auto filename = get_unix_filename(dir_index * DIRENTRIES + i);
+            const auto di = static_cast<SWord>(dir_index * DIRENTRIES + i);
+            auto filename = get_unix_filename(di);
             auto file_attr = dir_sector.dir_entry[i].file_attr;
             const char *set_clear = nullptr;
 #ifdef _WIN32
@@ -1400,10 +1402,10 @@ void NafsDirectoryContainer::check_for_new_file(SWord dir_index,
                 }
 
                 keys.push_back(iter.first);
+                const auto di = static_cast<SWord>(dir_index * DIRENTRIES + i);
                 auto index = get_sector_index(iter.second.first);
                 change_file_id_and_type(index, iter.first,
-                                        DIRENTRIES * dir_index + i,
-                                        SectorType::File);
+                                        di, SectorType::File);
 
                 auto old_path =
                     directory + PATHSEPARATORSTRING + iter.second.filename;
@@ -1713,7 +1715,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 
         case SectorType::Directory:
             {
-                Word di = link.f_record;
+                const auto di = static_cast<SWord>(link.f_record);
                 auto &dir_sector =
                     *(reinterpret_cast<s_dir_sector *>(
                       const_cast<Byte *>(buffer)));
@@ -1904,6 +1906,7 @@ std::string NafsDirectoryContainer::get_unique_filename(
 // Return the sector index of the given track/sector.
 SWord NafsDirectoryContainer::get_sector_index(const st_t &track_sector) const
 {
-        return track_sector.trk * param.max_sector + track_sector.sec - 1;
+    return static_cast<SWord>(track_sector.trk * param.max_sector +
+            track_sector.sec - 1);
 }
 #endif // #ifdef NAFS
