@@ -582,7 +582,7 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     if (!IsReadOnly(FlexemuOptionId::NColors) &&
         !IsReadOnly(FlexemuOptionId::Color))
     {
-        auto n = cb_nColors->currentText().toUInt(&success);
+        auto n = cb_nColors->currentText().toInt(&success);
         options.nColors = (success ? n : 2);
 
         if (c_multiColorScheme->isChecked() && cb_nColors->currentIndex() > 0)
