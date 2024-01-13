@@ -34,19 +34,19 @@ public:
     PageDetector(const RichLines &lines);
 
     bool HasLinesPerPageDetected() const;
-    size_t GetLinesPerPage() const;
+    int16_t GetLinesPerPage() const;
 
 private:
     void EstimateLinesPerPage(PageDetectorData &data);
     void CollectData(PageDetectorData &data);
     void EstimateScore(PageDetectorData &data);
     void EmptyLinesScore(PageDetectorData &data,
-                         const std::vector<uint32_t> &emptyLines);
+                         const std::vector<int16_t> &emptyLines);
     void FirstNonEmptyLinesScore(PageDetectorData &data,
-                          const std::map<std::string, uint32_t> &nonEmptyLines);
+                          const std::map<std::string, int16_t> &nonEmptyLines);
     void NumberOnlyLinesScore(PageDetectorData &data);
-    uint32_t GetTopEmptyLines(PageDetectorData &data, uint32_t page);
-    uint32_t GetBottomEmptyLines(PageDetectorData &data, uint32_t page);
+    int16_t GetTopEmptyLines(PageDetectorData &data, uint32_t page);
+    int16_t GetBottomEmptyLines(PageDetectorData &data, uint32_t page);
     template<typename T>
     static double MeanValue(const std::vector<T> &values);
     template<typename T>
@@ -55,7 +55,7 @@ private:
     void DebugPrint(PageDetectorData &data);
 
     bool hasLinesPerPageDetected;
-    size_t linesPerPage;
+    int16_t linesPerPage;
     int verbose;
 };
 

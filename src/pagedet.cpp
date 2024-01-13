@@ -43,7 +43,7 @@ bool PageDetector::HasLinesPerPageDetected() const
     return hasLinesPerPageDetected;
 }
 
-size_t PageDetector::GetLinesPerPage() const
+int16_t PageDetector::GetLinesPerPage() const
 {
     return linesPerPage;
 }
@@ -54,7 +54,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
     {
         std::cout << "number of lines=" << data.lines.size() << std::endl;
     }
-    for (uint32_t tryLinesPerPage = 30U; tryLinesPerPage < 90U; ++tryLinesPerPage)
+    for (int16_t tryLinesPerPage = 30; tryLinesPerPage < 90; ++tryLinesPerPage)
     {
         data.SetLinesPerPage(tryLinesPerPage);
         CollectData(data);
@@ -92,7 +92,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
 
 void PageDetector::CollectData(PageDetectorData &data)
 {
-    uint32_t empty;
+    int16_t empty;
     std::string line;
 
     for (uint32_t page = 0U; page < data.pages; ++page)
@@ -108,7 +108,7 @@ void PageDetector::CollectData(PageDetectorData &data)
             auto iter = data.topFirstNonEmptyLines.find(line);
             if (iter == data.topFirstNonEmptyLines.end())
             {
-                data.topFirstNonEmptyLines.emplace(line, 1U);
+                data.topFirstNonEmptyLines.emplace(line, int16_t(1));
             }
             else
             {
@@ -124,7 +124,7 @@ void PageDetector::CollectData(PageDetectorData &data)
         // Check bottom empty lines and first non-empty line.
         empty = GetBottomEmptyLines(data, page);
         data.bottomEmptyLines.push_back(empty);
-        auto lineOffset = -static_cast<int32_t>(empty) - 1;
+        auto lineOffset = static_cast<int16_t>(-empty - 1);
 
         if (data.IsLineValid(page + 1U, lineOffset))
         {
@@ -145,7 +145,7 @@ void PageDetector::CollectData(PageDetectorData &data)
                 auto iter = data.bottomFirstNonEmptyLines.find(line);
                 if (iter == data.bottomFirstNonEmptyLines.end())
                 {
-                    data.bottomFirstNonEmptyLines.emplace(line, 1U);
+                    data.bottomFirstNonEmptyLines.emplace(line, int16_t(1));
                 }
                 else
                 {
@@ -156,11 +156,11 @@ void PageDetector::CollectData(PageDetectorData &data)
     }
 }
 
-uint32_t PageDetector::GetTopEmptyLines(PageDetectorData &data, uint32_t page)
+int16_t PageDetector::GetTopEmptyLines(PageDetectorData &data, uint32_t page)
 {
-    uint32_t lastValidLineOffset = 0U;
+    int16_t lastValidLineOffset = 0;
     auto pageOffset = page * data.linesPerPage;
-    for (uint32_t lineOffset = 0U; lineOffset < data.linesPerPage; ++lineOffset)
+    for (int16_t lineOffset = 0; lineOffset < data.linesPerPage; ++lineOffset)
     {
         if (data.IsLineValid(page, lineOffset))
         {
@@ -172,18 +172,18 @@ uint32_t PageDetector::GetTopEmptyLines(PageDetectorData &data, uint32_t page)
         }
         else
         {
-            return lastValidLineOffset + 1U;
+            ++lastValidLineOffset;
+            return lastValidLineOffset;
         }
     }
 
-    return 0U;
+    return 0;
 }
 
-uint32_t PageDetector::GetBottomEmptyLines(PageDetectorData &data,
-                                           uint32_t page)
+int16_t PageDetector::GetBottomEmptyLines(PageDetectorData &data, uint32_t page)
 {
     auto pageOffset = page * data.linesPerPage;
-    for (uint32_t lineOffset = data.linesPerPage - 1;
+    for (auto lineOffset = static_cast<int16_t>(data.linesPerPage - 1);
             lineOffset <= data.linesPerPage; --lineOffset)
     {
         if (data.IsLineValid(page, lineOffset))
@@ -195,16 +195,16 @@ uint32_t PageDetector::GetBottomEmptyLines(PageDetectorData &data,
                     std::cout << "   bottom pageOffset=" << pageOffset <<
                                  " lineOffset=" << lineOffset << std::endl;
                 }
-                return data.linesPerPage - lineOffset - 1U;
+                return static_cast<int16_t>(data.linesPerPage - lineOffset - 1);
             }
         }
         else
         {
-            return 0U;
+            return 0;
         }
     }
 
-    return 0U;
+    return 0;
 }
 
 void PageDetector::EstimateScore(PageDetectorData &data)
@@ -222,9 +222,9 @@ void PageDetector::EstimateScore(PageDetectorData &data)
 }
 
 void PageDetector::EmptyLinesScore(PageDetectorData &data,
-                                   const std::vector<uint32_t> &emptyLines)
+                                   const std::vector<int16_t> &emptyLines)
 {
-    auto variance = Variance<uint32_t>(emptyLines);
+    auto variance = Variance<int16_t>(emptyLines);
     int32_t score = 200;
 
     if (variance != 0.0)
@@ -239,7 +239,7 @@ void PageDetector::EmptyLinesScore(PageDetectorData &data,
 }
 
 void PageDetector::FirstNonEmptyLinesScore(PageDetectorData &data,
-                           const std::map<std::string, uint32_t> &nonEmptyLines)
+                           const std::map<std::string, int16_t> &nonEmptyLines)
 {
     for (const auto &iter : nonEmptyLines)
     {
@@ -280,7 +280,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
 
     std::cout << "   topEmptyLines";
     std::for_each(std::begin(data.topEmptyLines),
-            std::end(data.topEmptyLines), [](uint32_t v)
+            std::end(data.topEmptyLines), [](int16_t v)
             {
                 std::cout << " " << v;
             });
@@ -288,7 +288,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
 
     std::cout << "   bottomEmptyLines";
     std::for_each(std::begin(data.bottomEmptyLines),
-            std::end(data.bottomEmptyLines), [](uint32_t v)
+            std::end(data.bottomEmptyLines), [](int16_t v)
             {
                 std::cout << " " << v;
             });
@@ -297,7 +297,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
     std::cout << "   topFirstNonEmptyLines" << std::endl;
     std::for_each(std::begin(data.topFirstNonEmptyLines),
                   std::end(data.topFirstNonEmptyLines),
-            [](std::pair<const std::string, uint32_t> &p)
+            [](std::pair<const std::string, int16_t> &p)
             {
                 std::cout << "    " << p.first << " " << p.second <<
                 std::endl;
@@ -307,7 +307,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
     std::cout << "   bottomFirstNonEmptyLines" << std::endl;
     std::for_each(std::begin(data.bottomFirstNonEmptyLines),
                   std::end(data.bottomFirstNonEmptyLines),
-            [](std::pair<const std::string, uint32_t> &p)
+            [](std::pair<const std::string, int16_t> &p)
             {
                 std::cout << "    " << p.first << " " << p.second <<
                 std::endl;
@@ -317,7 +317,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
 template<typename T>
 double PageDetector::MeanValue(const std::vector<T> &values)
 {
-    T sum = std::accumulate(values.begin(), values.end(), 0);
+    int64_t sum = std::accumulate(values.begin(), values.end(), int64_t(0));
     return static_cast<double>(sum) / static_cast<double>(values.size());
 }
 

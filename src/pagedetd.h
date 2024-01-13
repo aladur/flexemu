@@ -34,28 +34,28 @@ struct PageDetectorData
     PageDetectorData() = delete;
     PageDetectorData(const RichLines &p_lines);
 
-    void SetLinesPerPage(uint32_t p_linesPerPage);
-    bool IsLineValid(uint32_t page, int32_t lineOffset) const;
-    std::string GetLineString(uint32_t page, int32_t lineOffset) const;
+    void SetLinesPerPage(int16_t p_linesPerPage);
+    bool IsLineValid(uint32_t page, int16_t lineOffset) const;
+    std::string GetLineString(uint32_t page, int16_t lineOffset) const;
     void AddToScore(int32_t scoreOffset, int verbose);
-    uint32_t GetHalfPageCount() const;
+    int32_t GetHalfPageCount() const;
     void UpdateScores();
     void UpdateHighScore();
 
     const RichLines &lines;
     int32_t highScore;
-    int32_t highScoreLinesPerPage;
+    int16_t highScoreLinesPerPage;
 
-    uint32_t linesPerPage;
+    int16_t linesPerPage;
     double fPages;
     uint32_t pages;
     int32_t score;
     std::vector<int32_t> scores;
-    uint32_t sumBottomLinesWithNumberOnly;
-    std::vector<uint32_t> topEmptyLines;
-    std::vector<uint32_t> bottomEmptyLines;
-    std::map<std::string, uint32_t> topFirstNonEmptyLines;
-    std::map<std::string, uint32_t> bottomFirstNonEmptyLines;
+    int16_t sumBottomLinesWithNumberOnly;
+    std::vector<int16_t> topEmptyLines;
+    std::vector<int16_t> bottomEmptyLines;
+    std::map<std::string, int16_t> topFirstNonEmptyLines;
+    std::map<std::string, int16_t> bottomFirstNonEmptyLines;
 };
 
 #endif

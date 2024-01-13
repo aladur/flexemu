@@ -29,21 +29,21 @@ PageDetectorData::PageDetectorData(const RichLines &p_lines)
     : lines(p_lines)
     , highScore(0)
     , highScoreLinesPerPage(0)
-    , linesPerPage(0U)
+    , linesPerPage(0)
     , fPages(0.0)
     , pages(0U)
     , score(0)
-    , sumBottomLinesWithNumberOnly(0U)
+    , sumBottomLinesWithNumberOnly(0)
 {
 }
 
-void PageDetectorData::SetLinesPerPage(uint32_t p_linesPerPage)
+void PageDetectorData::SetLinesPerPage(int16_t p_linesPerPage)
 {
     linesPerPage = p_linesPerPage;
-    fPages = lines.size() / static_cast<double>(linesPerPage);
+    fPages = static_cast<double>(lines.size() / linesPerPage);
     pages = static_cast<uint32_t>(std::floor(fPages));
     score = 0;
-    sumBottomLinesWithNumberOnly = 0U;
+    sumBottomLinesWithNumberOnly = 0;
     topEmptyLines.clear();
     bottomEmptyLines.clear();
     topFirstNonEmptyLines.clear();
@@ -76,12 +76,12 @@ void PageDetectorData::AddToScore(int32_t scoreOffset, int verbose)
     score += scoreOffset;
 }
 
-bool PageDetectorData::IsLineValid(uint32_t page, int32_t lineOffset) const
+bool PageDetectorData::IsLineValid(uint32_t page, int16_t lineOffset) const
 {
     return page * linesPerPage + lineOffset < lines.size();
 }
 
-std::string PageDetectorData::GetLineString(uint32_t page, int32_t lineOffset)
+std::string PageDetectorData::GetLineString(uint32_t page, int16_t lineOffset)
                                                                           const
 {
     std::string result;
@@ -94,8 +94,8 @@ std::string PageDetectorData::GetLineString(uint32_t page, int32_t lineOffset)
     return result;
 }
 
-uint32_t PageDetectorData::GetHalfPageCount() const
+int32_t PageDetectorData::GetHalfPageCount() const
 {
-    return static_cast<uint32_t>(std::ceil(static_cast<float>(pages) / 2.0F));
+    return static_cast<int32_t>(std::ceil(static_cast<float>(pages) / 2.0F));
 }
 
