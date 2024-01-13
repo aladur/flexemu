@@ -30,6 +30,9 @@
 #include <iomanip>
 
 
+#define GET_DELTA_TIME static_cast<float>((cpu.get_cycles() - cycles_cdbg) * \
+                                          ORIGINAL_PERIOD)
+
 Pia2V5::Pia2V5(Mc6809 &x_cpu) : cpu(x_cpu)
     , write_bit_mask(0x80), write_byte(0)
     , last_ora(0)
@@ -70,8 +73,7 @@ void Pia2V5::writeOutputA(Byte value)
 
     if (debug && write_count <= 6)
     { 
-        cdbg << "delta_time=" <<
-                (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+        cdbg << "delta_time=" << GET_DELTA_TIME <<
                 "us PC=" << std::uppercase << std::hex << cpu.get_pc() <<
                 " MDCR command=";
         if (write_count < 6)
@@ -126,8 +128,7 @@ void Pia2V5::writeOutputA(Byte value)
                 drive[drive_idx]->WriteRecord(write_buffer);
                 if (debug)
                 {
-                    cdbg << "delta_time=" <<
-                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                    cdbg << "delta_time=" << GET_DELTA_TIME <<
                             "us Write Record size=" <<
                             std::dec << write_buffer.size() <<
                             std::endl;
@@ -181,8 +182,7 @@ void Pia2V5::writeOutputA(Byte value)
             {
                 if (debug)
                 {
-                    cdbg << "delta_time=" <<
-                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                    cdbg << "delta_time=" << GET_DELTA_TIME <<
                             "us Enter read mode" << std::endl;
                     cycles_cdbg = cpu.get_cycles();
                 }
@@ -251,8 +251,7 @@ Byte Pia2V5::readInputA()
 
             if (debug)
             {
-                cdbg << "delta_time=" <<
-                       (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                cdbg << "delta_time=" << GET_DELTA_TIME <<
                         "us Read record " <<
                      (success ? "size=" : "failed") << std::dec <<
                      (success ? std::to_string(read_buffer.size()) : "")
@@ -328,8 +327,7 @@ void Pia2V5::writeOutputB(Byte value)
 
     if (debug)
     {
-        cdbg << "delta_time=" <<
-                (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+        cdbg << "delta_time=" << GET_DELTA_TIME <<
                 "us PC=" << std::uppercase << std::hex << cpu.get_pc();
 
         switch(drive_idx)
@@ -368,8 +366,7 @@ void Pia2V5::requestInputA()
                 activeTransition(ControlLine::CA2); // Set /BET
                 if (debug)
                 {
-                    cdbg << "delta_time=" <<
-                           (cpu.get_cycles() - cycles_cdbg) * ORIGINAL_PERIOD <<
+                    cdbg << "delta_time=" << GET_DELTA_TIME <<
                             "us PC=" << std::uppercase << std::hex <<
                             cpu.get_pc() << " Detected Begin-End-of-Tape" <<
                             std::endl;
