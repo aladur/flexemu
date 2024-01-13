@@ -238,7 +238,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
         {
             std::cout << errors << " errors, ";
         }
-        auto kbyte_size = byte_size / 1024.0;
+        auto kbyte_size = byte_size / 1024;
         std::cout << "total size: " << kbyte_size << " KByte." << std::endl; 
     }
 
@@ -502,9 +502,9 @@ int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
         std::cout <<
             "FILES: " << sum_files <<
             " SIZE: " << sum_size << " Sectors/" <<
-            (sum_size / 4.0) << " KByte" <<
+            (sum_size / 4) << " KByte" <<
             " FREE: " << sum_free << " Sectors/" <<
-            (sum_free / 4.0) << " KByte\n";
+            (sum_free / 4) << " KByte\n";
     }
 
     return 0;
@@ -841,7 +841,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
         {
             std::cout << errors << " errors, ";
         }
-        auto kbyte_size = byte_size / 1024.0;
+        auto kbyte_size = byte_size / 1024;
         std::cout << "total size: " << kbyte_size << " KByte." << std::endl;
     }
 
