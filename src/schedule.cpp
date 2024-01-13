@@ -326,9 +326,10 @@ void Scheduler::frequency_control(QWord time1)
     }
     else
     {
-        SQWord timediff = time1 - time0;
-        required_cyclecount = static_cast<cycles_t>
-                              (timediff * target_frequency);
+        auto timediff = time1 - time0;
+        auto fCyclecount = static_cast<double>(timediff) *
+                           static_cast<double>(target_frequency);
+        required_cyclecount = static_cast<cycles_t>(fCyclecount);
         cpu.set_required_cyclecount(required_cyclecount);
         time0 = time1;
 #ifdef DEBUG_FILE
@@ -352,7 +353,7 @@ void Scheduler::update_frequency()
 
     cycles1 = cpu.get_cycles();
     cyclecount = cycles1 - cycles0;
-    frequency = (float)(cyclecount / 1000000.0);
+    frequency = static_cast<float>(static_cast<double>(cyclecount) / 1000000.0);
     cycles0 = cycles1;
 }
 
