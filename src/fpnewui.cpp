@@ -283,7 +283,7 @@ void FlexplorerNewUi::OnSelectPath()
 
 void FlexplorerNewUi::AddTracksValidator(QLineEdit &lineEdit)
 {
-    e_tracks->setValidator(new QIntValidator(2, 255, &lineEdit));
+    e_tracks->setValidator(new QIntValidator(2, 256, &lineEdit));
 
 }
 

@@ -61,7 +61,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
     p_sides0 = std::min(p_sides0, 2);
     p_sides = std::max(p_sides, 1);
     p_sides = std::min(p_sides, 2);
-    p_tracks = std::min(p_tracks, 255);
+    p_tracks = std::min(p_tracks, 256);
     p_sectors0 = std::min(p_sectors0, 255);
     p_sectors = std::min(p_sectors, 255);
 
@@ -1398,9 +1398,9 @@ void FlexFileContainer::Create_format_table(int type, int trk, int sec,
     {
         trk = 2;
     }
-    else if (trk > 255)
+    else if (trk > 256)
     {
-        trk = 255;
+        trk = 256;
     }
 
     if (sec < 5)
@@ -1448,7 +1448,7 @@ void FlexFileContainer::Format_disk(
 
     if (disk_dir == nullptr ||
         name == nullptr || strlen(name) == 0 ||
-        trk < 2 || sec < 6 || trk > 255 || sec > 255)
+        trk < 2 || sec < 6 || trk > 256 || sec > 255)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
