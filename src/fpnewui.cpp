@@ -218,7 +218,7 @@ void FlexplorerNewUi::OnFormatChanged(int index)
     if (!isFreeDiskFormat)
     {
         auto trk_sec = flex_formats[index - 1];                             
-        auto text = QString::asprintf("%d", static_cast<int>(trk_sec.trk));
+        auto text = QString::asprintf("%d", static_cast<int>(trk_sec.trk + 1));
         e_tracks->setText(text);
         text = QString::asprintf("%d", static_cast<int>(trk_sec.sec));
         e_sectors->setText(text);
@@ -236,7 +236,7 @@ void FlexplorerNewUi::OnTrkSecChanged()
     bool isWarning = true;
     for (const auto &st : flex_formats)
     {
-        if (st.trk == tracks && st.sec == sectors)
+        if ((st.trk + 1) == tracks && st.sec == sectors)
         {
             isWarning = false;
             break;

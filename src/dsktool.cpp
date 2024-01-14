@@ -1034,7 +1034,7 @@ int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
         {
             if (strcmp(disk_size, flex_format_shortcuts[i]) == 0)
             {
-                tracks = flex_formats[i].trk;
+                tracks = flex_formats[i].trk + 1;
                 sectors = flex_formats[i].sec;
                 return 2;
             }

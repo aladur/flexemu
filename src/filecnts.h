@@ -188,26 +188,31 @@ constexpr st_t sis_trk_sec{0, 3};
 /* Track/sector of first directory sector */
 constexpr st_t first_dir_trk_sec{0, 5};
 
-constexpr std::array<st_t, 15> flex_formats
+// Array contains the max. track and sector number
+// for all well known disk formats.
+// To get the total number of tracks the st_t.trk
+// member has to be incremented by 1.
+constexpr std::array<st_t, 16> flex_formats
 {{
-    {35, 10}, // 5" Single-sided, single-density
-    {35, 20}, // 5" Double-sided, single-density
-    {40, 10}, // 5" Single-sided, single-density
-    {40, 18}, // 5" Single-sided, double-density
-    {40, 20}, // 5" Double-sided, single-density
-    {40, 36}, // 5" Double-sided, double-density
-    {80, 18}, // 5" Single-sided, double-density
-    {80, 20}, // 5" Double-sided, single-density
-    {80, 36}, // 5" Double-sided, double-density
-    {80, 72}, // 5" Double-sided, quad-density
-    {77, 15}, // 8" Single-sided, single-density
-    {77, 26}, // 8" Single-sided, double-density
-    {77, 30}, // 8" Double-sided, single-density
-    {77, 52}, // 8" Double-sided, double-density
-    {255, 255} // Hard disk
+    {34, 10}, // 5" Single-sided, single-density
+    {34, 20}, // 5" Double-sided, single-density
+    {39, 10}, // 5" Single-sided, single-density
+    {39, 18}, // 5" Single-sided, double-density
+    {39, 20}, // 5" Double-sided, single-density
+    {39, 36}, // 5" Double-sided, double-density
+    {79, 18}, // 5" Single-sided, double-density
+    {79, 20}, // 5" Double-sided, single-density
+    {79, 36}, // 5" Double-sided, double-density
+    {79, 72}, // 5" Double-sided, quad-density
+    {76, 15}, // 8" Single-sided, single-density
+    {76, 26}, // 8" Single-sided, double-density
+    {76, 30}, // 8" Double-sided, single-density
+    {76, 52}, // 8" Double-sided, double-density
+    {254, 255}, // Hard disk, 255 Tracks
+    {255, 255}, // Hard disk, 256 Tracks
 }};
 
-constexpr std::array<const char *, 15> flex_format_descriptions
+constexpr std::array<const char *, 16> flex_format_descriptions
 {{
     "35-10 5 1/4 inch, Single-sided, single-density, 87.5 KByte",
     "35-20 5 1/4 inch, Double-sided, single-density, 175 KByte",
@@ -223,10 +228,11 @@ constexpr std::array<const char *, 15> flex_format_descriptions
     "77-26 8 inch, Single-sided, double-density, 500.5 KByte",
     "77-30 8 inch, Double-sided, single-density, 577.5 KByte",
     "77-52 8 inch, Double-sided, double-density, 1001 KByte",
-    "255-255 Hard disk, 16256.25 KByte"
+    "255-255 Hard disk, 16256.25 KByte",
+    "256-255 Hard disk, 16320 KByte",
 }};
 
-constexpr std::array<const char *, 15> flex_format_shortcuts
+constexpr std::array<const char *, 16> flex_format_shortcuts
 {{
     "35sssd",
     "35dssd",
@@ -242,7 +248,8 @@ constexpr std::array<const char *, 15> flex_format_shortcuts
     "77ssdd",
     "77dssd",
     "77dsdd",
-    "256hd"
+    "255hd",
+    "256hd",
 }};
 
 #endif /* #ifndef __fromflex__ */
