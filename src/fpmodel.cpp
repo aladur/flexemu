@@ -288,7 +288,7 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
     QSet<QString> filenames;
 
     filenames.reserve(vFilenames.size());
-    for (auto *srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
+    for (auto srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
     {
         filenames.insert(*(srcIter++));
     }
@@ -617,7 +617,7 @@ bool FlexplorerTableModel::insertRows(
         {
             RowType newRow;
             beginInsertRows(QModelIndex(), row, row + count - 1);
-            auto *iter = rows.begin() + row;
+            const auto iter = rows.begin() + row;
             rows.insert(iter, newRow);
             endInsertRows();
         }
@@ -638,7 +638,7 @@ bool FlexplorerTableModel::removeRows(
         if (count > 0)
         {
             beginRemoveRows(QModelIndex(), row, row + count - 1);
-            auto *iter = rows.begin() + row;
+            const auto iter = rows.begin() + row;
             rows.erase(iter, iter + count);
             endRemoveRows();
         }
@@ -673,8 +673,9 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
     {
         if (oldIds[oldRow] != newIds[oldRow])
         {
-            auto *it = std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
-            int newRow = static_cast<int>(it - newIds.begin());
+            const auto iter =
+                std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
+            int newRow = static_cast<int>(iter - newIds.begin());
 
             for (int col = 0; col < COLUMNS; ++col)
             {
