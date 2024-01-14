@@ -107,6 +107,12 @@ struct s_sys_info_sector
 // It is the sector size minus the Meta Data Per Sector.
 #define DBPS (static_cast<int>(SECTOR_SIZE) - MDPS)
 
+// The maximum file size supported by FLEX:
+// Using a FLEX harddisk with 256 tracks and 255 sectors (format 256hd).
+// Sector 1 - 4 is defined as usual, sector 5 is the only directory sector.
+// All remaining sectors are used for one file.
+// This file has (256 * 255) - 5 sectors = 65275 sectors.
+const int MAX_FILE_SECTORS = 65275;
 
 /* structure of one FLEX directory entry */
 struct s_dir_entry

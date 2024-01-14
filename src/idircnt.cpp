@@ -27,6 +27,7 @@
 #include "filecont.h"
 #include "dircont.h"
 #include "idircnt.h"
+#include "filecnts.h"
 #include "cvtwchar.h"
 
 
@@ -71,9 +72,9 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     WIN32_FIND_DATA findData;
     SYSTEMTIME systemTime;
 #endif
+    struct stat sbuf;
 #ifdef UNIX
     struct dirent *findData = nullptr;
-    struct stat sbuf;
 #endif
     dirEntry.SetEmpty();
     // repeat until a valid directory entry found
@@ -113,9 +114,13 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
     }
     while (isValid &&
-           ((findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
+           (stat((base->GetPath() + PATHSEPARATORSTRING + fileName).c_str(),
+               &sbuf) != 0 ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
+            !S_ISREG(sbuf.st_mode) ||
+            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
 
@@ -184,7 +189,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
                  &sbuf) ||
             !base->IsFlexFilename(fileName.c_str()) ||
             !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size < 0 ||
+            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));
 
     if (isValid)
