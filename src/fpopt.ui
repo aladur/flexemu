@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>640</width>
-    <height>390</height>
+    <height>415</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>640</width>
-    <height>390</height>
+    <height>415</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -42,7 +42,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_1">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -79,6 +79,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="c_onTrack0OnlyDirSectors">
+       <property name="text">
+        <string>On Track 0 only support directory sectors</string>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,10">

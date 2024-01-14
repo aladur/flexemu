@@ -44,6 +44,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.injectTextFileAskUser = true;
     options.extractTextFileConvert = true;
     options.extractTextFileAskUser = true;
+    options.onTrack0OnlyDirSectors = true;
     options.fileSizeType = FileSizeType::FileSize;
 #ifdef UNIX
     options.openDiskPath = F_DATADIR;
@@ -60,6 +61,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTASK, options.extractTextFileAskUser ? 1 : 0);
+    reg.SetValue(FLEXPLORERTRACK0ONLYDIRSEC,
+                 options.onTrack0OnlyDirSectors ? 1 : 0);
     reg.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
     reg.SetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.SetValue(FLEXPLORERFILESIZETYPE,
@@ -86,6 +89,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.extractTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTASK,
                     options.extractTextFileAskUser ? 1 : 0);
+    rcFile.SetValue(FLEXPLORERTRACK0ONLYDIRSEC,
+                    options.onTrack0OnlyDirSectors ? 1 : 0);
     rcFile.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath.c_str());
     rcFile.SetValue(FLEXPLOREROPENDIRECTORYPATH,
                     options.openDirectoryPath.c_str());
@@ -141,6 +146,10 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     {
         options.extractTextFileAskUser = (int_result != 0);
     }
+    if (!reg.GetValue(FLEXPLORERTRACK0ONLYDIRSEC, int_result))
+    {
+        options.onTrack0OnlyDirSectors = (int_result != 0);
+    }
     reg.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
     reg.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.GetValue(FLEXPLORERFILESIZETYPE, int_result);
@@ -194,6 +203,10 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     if (!rcFile.GetValue(FLEXPLOREREXTRACTASK, int_result))
     {
         options.extractTextFileAskUser = (int_result != 0);
+    }
+    if (!rcFile.GetValue(FLEXPLORERTRACK0ONLYDIRSEC, int_result))
+    {
+        options.onTrack0OnlyDirSectors = (int_result != 0);
     }
     rcFile.GetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
     rcFile.GetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);

@@ -82,6 +82,7 @@ public:
     // basic interface (to be used within flexemu)
 public:
     static std::string bootSectorFile;
+    static bool onTrack0OnlyDirSectors;
     static FlexFileContainer *Create(const char *dir, const char *name,
                                      int t, int s,
                                      const FileTimeAccess &fileTimeAccess,

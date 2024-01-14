@@ -46,6 +46,7 @@
     std::string FlexFileContainer::bootSectorFile =
         getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
+    bool FlexFileContainer::onTrack0OnlyDirSectors = true;
 
 /***********************************************/
 /* Initialization of a s_flex_header structure */
@@ -960,10 +961,18 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 // number of sectors on track 0:
 //   35-18: Has 10 or 18 sectors on track 0.
 //   40-18: Has 10 or 18 sectors on track 0.
+// This default behaviour can be overwritten by the global flag:
+//   FlexFileContainer::onTrack0OnlyDirSectors = false;
 void FlexFileContainer::EvaluateTrack0SectorCount()
 {
     st_t link;
     Word i;
+
+    if (onTrack0OnlyDirSectors == false)
+    {
+        param.max_sector0 = param.max_sector;
+        return;
+    }
 
     for (i = first_dir_trk_sec.sec - 1; i < param.max_sector; ++i)
     {

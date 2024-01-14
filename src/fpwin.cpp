@@ -109,6 +109,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
 
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
+    FlexFileContainer::onTrack0OnlyDirSectors = options.onTrack0OnlyDirSectors;
 
     resize(860, 720);
 }
@@ -462,6 +463,8 @@ void FLEXplorer::Options()
 
         ui.TransferDataFromDialog(options);
         FlexFileContainer::bootSectorFile = options.bootSectorFile;
+        FlexFileContainer::onTrack0OnlyDirSectors =
+            options.onTrack0OnlyDirSectors;
         if (oldFileTimeAccess != options.ft_access)
         {
             emit FileTimeAccessHasChanged();

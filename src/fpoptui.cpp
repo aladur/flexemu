@@ -72,6 +72,7 @@ void FlexplorerOptionsUi::TransferDataToDialog(const struct sFPOptions &options)
     c_injectTextFileAskUser->setChecked(options.injectTextFileAskUser);
     c_extractTextFileConvert->setChecked(options.extractTextFileConvert);
     c_extractTextFileAskUser->setChecked(options.extractTextFileAskUser);
+    c_onTrack0OnlyDirSectors->setChecked(options.onTrack0OnlyDirSectors);
 
     bool isFileSize = (options.fileSizeType == FileSizeType::FileSize);
     r_fileSize->setChecked(isFileSize);
@@ -91,6 +92,7 @@ void FlexplorerOptionsUi::TransferDataFromDialog(struct sFPOptions &options)
     options.injectTextFileAskUser = c_injectTextFileAskUser->isChecked();
     options.extractTextFileConvert = c_extractTextFileConvert->isChecked();
     options.extractTextFileAskUser = c_extractTextFileAskUser->isChecked();
+    options.onTrack0OnlyDirSectors = c_onTrack0OnlyDirSectors->isChecked();
     options.fileSizeType = r_fileSize->isChecked() ?
         FileSizeType::FileSize : FileSizeType::DataSize;
 }

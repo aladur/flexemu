@@ -330,6 +330,7 @@ extern "C" struct sRGBDef
 #define FLEXPLORERINJECTASK  "InjectTextFileAskUser"
 #define FLEXPLOREREXTRACTCNV  "ExtractTextFileConvert"
 #define FLEXPLOREREXTRACTASK  "ExtractTextFileAskUser"
+#define FLEXPLORERTRACK0ONLYDIRSEC  "OnTrack0OnlyDirSectors"
 #define FLEXPLOREROPENDISKPATH  "OpenDiskPath"
 #define FLEXPLOREROPENDIRECTORYPATH  "OpenDirectoryPath"
 #define FLEXPLORERFILESIZETYPE  "FileSizeType"

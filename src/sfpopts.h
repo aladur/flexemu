@@ -43,6 +43,7 @@ struct sFPOptions
     bool injectTextFileAskUser;
     bool extractTextFileConvert;
     bool extractTextFileAskUser;
+    bool onTrack0OnlyDirSectors;
     std::string openDiskPath;
     std::string openDirectoryPath;
     std::vector<std::string> recentDiskPaths;
