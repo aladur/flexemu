@@ -197,7 +197,7 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
                                             fp.GetPath());
                     }
                 }
-                format.size = file_size;
+                format.size = static_cast<SDWord>(file_size);
                 format.offset = jvcHeaderSize;
                 Initialize_for_dsk_format(format, write_protected);
                 EvaluateTrack0SectorCount();
@@ -466,7 +466,7 @@ bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     }
 
     info.SetTrackSector(
-            param.max_track ? param.max_track + 1U : 0U,
+            param.max_track ? param.max_track + 1 : 0,
             param.max_sector);
     info.SetIsFlexFormat(is_flex_format);
     info.SetPath(fp.GetPath());
@@ -759,7 +759,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
     de.SetTotalFileName(pFileName);
-    de.SetFileSize(recordNr * SECTOR_SIZE);
+    de.SetFileSize(recordNr * static_cast<int>(SECTOR_SIZE));
     de.SetAttributes(buffer.GetAttributes());
     de.SetSectorMap(buffer.GetSectorMap());
     CreateDirEntry(de);
@@ -803,7 +803,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
                             std::to_string(size / SECTOR_SIZE));
     }
 
-    size = size * DBPS / SECTOR_SIZE;
+    size = size * DBPS / static_cast<int>(SECTOR_SIZE);
     buffer.Realloc(size);
     recordNr = 0;
 
@@ -1005,8 +1005,8 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
 
     if (trk > 0)
     {
-        byteOffs += param.byte_p_track0;
-        byteOffs += param.byte_p_track * (trk - 1);
+        byteOffs += static_cast<int>(param.byte_p_track0);
+        byteOffs += static_cast<int>(param.byte_p_track * (trk - 1));
     }
 
     if (!is_flex_format && side == 1)
@@ -1191,7 +1191,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
 
     bool result = true;
 
-    flx_header.initialize(byte_p_sector, param.max_track + 1U,
+    flx_header.initialize(byte_p_sector, param.max_track + 1,
                           param.max_sector0, param.max_sector, param.sides0,
                           param.sides);
 
@@ -1418,7 +1418,8 @@ void FlexFileContainer::Create_format_table(int type, int trk, int sec,
                           getTrack0SectorCount(format.tracks, format.sectors) :
                           format.sectors;
 
-    format.size = format.tracks * format.sectors * SECTOR_SIZE;
+    format.size = format.tracks * format.sectors *
+        static_cast<int>(SECTOR_SIZE);
     // calculate number of directory sectors.
     // track 0 only contains directory sectors.
     format.dir_sectors = getTrack0SectorCount(trk, sec) -

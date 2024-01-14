@@ -101,11 +101,11 @@ struct s_sys_info_sector
 // (M)eta (D)ata (P)er (S)ector in Byte. It consists of the:
 // - link to the next sector
 // - 16-bit record number
-#define MDPS (sizeof(s_st) + 2)
+#define MDPS (static_cast<int>(sizeof(s_st)) + 2)
 
 // Number of (D)ata (B)ytes (P)er (S)ector.
 // It is the sector size minus the Meta Data Per Sector.
-#define DBPS (SECTOR_SIZE - MDPS)
+#define DBPS (static_cast<int>(SECTOR_SIZE) - MDPS)
 
 
 /* structure of one FLEX directory entry */
