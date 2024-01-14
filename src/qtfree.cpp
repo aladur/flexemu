@@ -36,9 +36,9 @@ QFont GetFont(const QString &fontName)
     if (list.size() >= 4)
     {
         bool ok = false;
-        auto family = list[0];
-        auto style = list[3];
-        auto pointSizeString = list[1];
+        const auto &family = list[0];
+        const auto &style = list[3];
+        const auto &pointSizeString = list[1];
         auto pointSize =
             static_cast<int>(std::round(pointSizeString.toFloat(&ok)));
 
