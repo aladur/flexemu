@@ -653,7 +653,7 @@ void QtGui::OnTimer()
 
             for (t = 0; t < 4; ++t)
             {
-                if ((newStatus[t] != status[t]) || isFirstTime)
+                if (isFirstTime || (newStatus[t] != status[t]))
                 {
                     UpdateDiskStatus(t, newStatus[t]);
                     status[t] = newStatus[t];
