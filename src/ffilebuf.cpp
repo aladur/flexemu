@@ -165,7 +165,7 @@ void FlexFileBuffer::Realloc(DWord new_size,
 // Traverse through a given FLEX text file and call a function for each
 // converted character for converting to a host operating system text file.
 void FlexFileBuffer::TraverseForTextFileConversion(
-        const std::function<void(char c)>& fct) const
+        const std::function<void(Byte c)>& fct) const
 {
     for (DWord index = 0; index < fileHeader.fileSize; index++)
     {
@@ -186,7 +186,7 @@ void FlexFileBuffer::TraverseForTextFileConversion(
         }
         else if (c == 0x09)
         {
-            DWord spaces;
+            Byte spaces = 0;
 
             // Expand space compression.
             if (index < fileHeader.fileSize - 1)
@@ -226,7 +226,7 @@ DWord FlexFileBuffer::SizeOfConvertedTextFile() const
         return count;
     }
 
-    TraverseForTextFileConversion([&count](char)
+    TraverseForTextFileConversion([&count](Byte)
         {
             count++;
         });
@@ -248,7 +248,7 @@ void FlexFileBuffer::ConvertToTextFile()
     Byte *new_buffer = new Byte[new_size];
     DWord new_index = 0;
 
-    TraverseForTextFileConversion([&new_buffer, &new_index](char c)
+    TraverseForTextFileConversion([&new_buffer, &new_index](Byte c)
         {
             new_buffer[new_index++] = c;
         });
@@ -261,9 +261,9 @@ void FlexFileBuffer::ConvertToTextFile()
 // Traverse through a given host operating system text file and call a function
 // for each converted character for converting to a FLEX text file.
 void FlexFileBuffer::TraverseForFlexTextFileConversion(
-        const std::function<void(char c)>& fct) const
+        const std::function<void(Byte c)>& fct) const
 {
-    DWord spaces = 0;
+    Byte spaces = 0;
 
     for (DWord index = 0; index < fileHeader.fileSize; index++)
     {
@@ -275,7 +275,7 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
             {
                 // Expand space compression for a maximum of 127 characters.
                 fct(0x09);
-                fct(static_cast<Byte>(spaces));
+                fct(spaces);
                 spaces = 0;
             }
         }
@@ -291,7 +291,7 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
                 {
                     // Expand space compression.
                     fct(0x09);
-                    fct(static_cast<Byte>(spaces));
+                    fct(spaces);
                 }
                 spaces = 0;
             }
@@ -334,7 +334,7 @@ void FlexFileBuffer::ConvertToFlexTextFile()
     Byte *new_buffer = new Byte[new_size];
     DWord new_index = 0;
 
-    TraverseForFlexTextFileConversion([&new_buffer, &new_index](char c)
+    TraverseForFlexTextFileConversion([&new_buffer, &new_index](Byte c)
         {
             new_buffer[new_index++] = c;
         });
@@ -356,7 +356,7 @@ DWord FlexFileBuffer::SizeOfConvertedFlexTextFile() const
         return count;
     }
 
-    TraverseForFlexTextFileConversion([&count](char)
+    TraverseForFlexTextFileConversion([&count](Byte)
         {
             count++;
         });
@@ -417,11 +417,11 @@ bool FlexFileBuffer::IsFlexTextFile() const
 // for each converted character for converting to a ASCII dump file.
 void FlexFileBuffer::TraverseForDumpFileConversion(
         DWord bytesPerLine,
-        const std::function<void(char c)>& fct) const
+        const std::function<void(Byte c)>& fct) const
 {
     DWord offset;
     DWord index;
-    size_t width = 4;
+    int width = 4;
 
     width = (fileHeader.fileSize > 0xFFFF) ? 5 : width;
     width = (fileHeader.fileSize > 0xFFFFF) ? 6 : width;
@@ -433,7 +433,7 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
 
         offsetstream << std::setw(width) << std::setfill('0') <<
                         std::hex << offset;
-        for (DWord i = 0; i < width; i++)
+        for (int i = 0; i < width; i++)
         {
             fct(offsetstream.str()[i]);
         }
@@ -470,7 +470,7 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
              index < bytesPerLine && (offset + index < fileHeader.fileSize);
              index++)
         {
-            char c = buffer[offset + index] & 0xFF;
+            auto c = buffer[offset + index];
 
             if (c < ' ' || c >= '\x7F')
             {
@@ -495,7 +495,7 @@ DWord FlexFileBuffer::SizeOfConvertedDumpFile(DWord bytesPerLine) const
         return count;
     }
 
-    TraverseForDumpFileConversion(bytesPerLine, [&count](char)
+    TraverseForDumpFileConversion(bytesPerLine, [&count](Byte)
         {
             count++;
         });
@@ -515,7 +515,7 @@ void FlexFileBuffer::ConvertToDumpFile(DWord bytesPerLine)
     DWord new_index = 0;
 
     TraverseForDumpFileConversion(bytesPerLine,
-                                  [&new_buffer, &new_index](char c)
+                                  [&new_buffer, &new_index](Byte c)
         {
             new_buffer[new_index++] = c;
         });

@@ -143,12 +143,12 @@ private:
     void SetAdjustedFilename(const std::string &name);
     void copyFrom(const FlexFileBuffer &src);
     void TraverseForTextFileConversion(
-            const std::function<void(char c)>& fct) const;
+            const std::function<void(Byte c)>& fct) const;
     void TraverseForFlexTextFileConversion(
-            const std::function<void(char c)>& fct) const;
+            const std::function<void(Byte c)>& fct) const;
     void TraverseForDumpFileConversion(
             DWord bytesPerLine,
-            const std::function<void(char c)>& fct) const;
+            const std::function<void(Byte c)>& fct) const;
     DWord SizeOfConvertedTextFile() const;
     DWord SizeOfConvertedFlexTextFile() const;
     DWord SizeOfConvertedDumpFile(DWord bytesPerLine) const;
