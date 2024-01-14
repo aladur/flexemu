@@ -943,8 +943,15 @@ void usage()
         "                supported. <regex> parameters are processed after\n" <<
         "                all -R<file> parameters. By default it is case\n" <<
         "                insensitive. See also -m.\n\n" <<
-        "Environment Variables:\n" <<
-        "  DSKTOOL_USE_FILETIME     Same a option -z.\n";
+        "Environment Variables:\n\n" <<
+        "  DSKTOOL_USE_FILETIME\n" <<
+        "                Same a option -z.\n" <<
+        "  DSKTOOL_TRACK0_ACCESS\n" <<
+        "                Defines which sectors on track 0 are accessible.\n" <<
+        "                If set to DIRECTORY (=default) only directory\n" <<
+        "                sectors (within the directory sector chain) are\n" <<
+        "                accessible. If set to FULL all sectors are\n" <<
+        "                accessible.\n";
 }
 
 bool estimateDiskFormat(const char *format, int &disk_format)
@@ -1085,6 +1092,33 @@ char checkCommand(char oldCommand, int result)
 
     std::cerr << "*** Error: Only one command -X, -l, -s, -c, -C, -i or -r allowed."                 "\n";
     usage();
+    return 0;
+}
+
+int checkTrack0Access()
+{
+    const std::string key("DSKTOOL_TRACK0_ACCESS");
+    auto track0Access = getenv(key.c_str());
+
+    if (track0Access != nullptr)
+    {
+        if (strcmp(track0Access, "DIRECTORY") == 0)
+        {
+            FlexFileContainer::onTrack0OnlyDirSectors = true;
+        }
+        else if (strcmp(track0Access, "FULL") == 0)
+        {
+            FlexFileContainer::onTrack0OnlyDirSectors = false;
+        }
+        else
+        {
+            std::cerr << "*** Error: " << key << " has unspecified"
+                         " value \"" << track0Access << "\"\n\n";
+            usage();
+            return 1;
+        }
+    }
+
     return 0;
 }
 
@@ -1360,6 +1394,11 @@ int main(int argc, char *argv[])
        (getenv("DSKTOOL_USE_FILETIME") != nullptr))
     {
         fileTimeAccess = FileTimeAccess::Get | FileTimeAccess::Set;
+    }
+
+    if ((result = checkTrack0Access()) != 0)
+    {
+        return result;
     }
 
     try
