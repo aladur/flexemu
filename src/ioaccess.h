@@ -35,7 +35,7 @@ class IoAccess
 public:
     IoAccess() = delete;
 
-    IoAccess(IoAccess &&src) :
+    IoAccess(IoAccess &&src) noexcept :
         deviceRef(std::ref(src.deviceRef)),
         addressOffset(src.addressOffset)
     {
@@ -55,7 +55,7 @@ public:
 
     IoAccess& operator=(const IoAccess &) = delete;
 
-    IoAccess& operator=(IoAccess &&src)
+    IoAccess& operator=(IoAccess &&src) noexcept
     {
         deviceRef = std::ref(src.deviceRef);
         addressOffset = src.addressOffset;
