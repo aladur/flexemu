@@ -70,7 +70,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
         st_t        next;       // Track and sector number of next sector
         Byte        record_nr[2]; // FLEX logical record number
         Word        f_record;   // Relative position in file / 252
-        SWord       file_id;
+        SDWord      file_id;
         SectorType  type; // The sector type.
     };
 
@@ -143,11 +143,11 @@ private:
     void initialize_flex_link_table();
     void close_new_files();
     void mount(Word number);
-    SWord next_free_dir_entry();
-    std::string get_unix_filename(SWord file_id) const;
+    SDWord next_free_dir_entry();
+    std::string get_unix_filename(SDWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
     bool add_to_link_table(
-        SWord dir_index,
+        SDWord dir_index,
         off_t size,
         bool is_random,
         st_t &begin,
@@ -155,7 +155,7 @@ private:
     void add_to_directory(
         const char *name,
         const char *ext,
-        SWord dir_index,
+        SDWord dir_index,
         bool is_random,
         const struct stat &stat,
         const st_t &begin,
@@ -169,12 +169,12 @@ private:
         std::string &extension,
         bool with_extension) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
-    void check_for_delete(SWord dir_index, const s_dir_sector &d);
-    void check_for_extend(SWord dir_index, const s_dir_sector &d);
-    void check_for_rename(SWord dir_index, const s_dir_sector &d) const;
-    void check_for_new_file(SWord dir_index, const s_dir_sector &d);
-    void check_for_changed_file_attr(SWord dir_index, s_dir_sector &d);
-    bool extend_directory(SWord index, const s_dir_sector &d);
+    void check_for_delete(Word dir_index, const s_dir_sector &d);
+    void check_for_extend(Word dir_index, const s_dir_sector &d);
+    void check_for_rename(Word dir_index, const s_dir_sector &d) const;
+    void check_for_new_file(Word dir_index, const s_dir_sector &d);
+    void check_for_changed_file_attr(Word dir_index, s_dir_sector &d);
+    bool extend_directory(SDWord index, const s_dir_sector &d);
     bool set_file_time(
         const char *ppath,
         Byte month,
@@ -182,16 +182,16 @@ private:
         Byte year,
         Byte hour,
         Byte minute) const;
-    bool update_file_time(const char *path, SWord file_id) const;
+    bool update_file_time(const char *path, SDWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &st) const;
     SWord index_of_new_file(const st_t &st);
-    std::string get_path_of_file(SWord file_id) const;
-    Word record_nr_of_new_file(SWord new_file_index, Word index) const;
+    std::string get_path_of_file(SDWord file_id) const;
+    Word record_nr_of_new_file(SDWord new_file_index, SDWord index) const;
     void change_file_id_and_type(
-        SWord index,
-        SWord old_id,
-        SWord new_id,
+        SDWord index,
+        SDWord old_id,
+        SDWord new_id,
         SectorType new_type);
     static void update_sector_buffer_from_link(Byte *buffer,
                                                const s_link_table &link);
@@ -199,7 +199,7 @@ private:
                                                const Byte *buffer);
     static std::string to_string(SectorType type);
     std::string get_unique_filename(const char *extension) const;
-    SWord get_sector_index(const st_t &sector_track) const;
+    SDWord get_sector_index(const st_t &sector_track) const;
 
 };  // class NafsDirectoryContainer
 
