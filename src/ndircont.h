@@ -202,8 +202,7 @@ private:
     static std::string to_string(SectorType type);
     std::string get_unique_filename(const char *extension) const;
     SDWord get_sector_index(const st_t &sector_track) const;
-
-};  // class NafsDirectoryContainer
+};
 
 #endif // NAFS
 #endif // NDIRCONT_INCLUDED

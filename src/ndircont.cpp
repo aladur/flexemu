@@ -236,7 +236,7 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected)
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track  = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
-} // initialize_header
+}
 
 // Check for a valid FLEX filename.
 // On success return true otherwise false.
@@ -261,7 +261,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         std::string &ret_extension,
         bool with_extension) const
 {
-    int result; // result from sscanf should be int
+    int result;
     char dot;
     char name[9];
     char extension[4];
@@ -320,7 +320,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
     ret_extension = extension;
 
     return true;
-} // IsFlexFilename
+}
 
 
 // Initialize the FLEX directory sectors.
@@ -357,7 +357,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
 
         ++i;
     }
-} // initialize_flex_directory
+}
 
 
 // Return the unix filename for a given FLEX directory entry s_dir_entry.
@@ -378,7 +378,7 @@ std::string NafsDirectoryContainer::get_unix_filename(
     }
 
     return std::string();
-} // get_unix_filename
+}
 
 // Return unix filename for a given file_id.
 // - New files: The file_id is < 0. It is named tmpXX where XX
@@ -409,7 +409,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
 
     // file_id located beyond valid range of directory entries.
     throw FlexException(FERR_WRONG_PARAMETER);
-} // get_unix_filename
+}
 
 // Return the record number (zero based) of a new file which first
 // sector has index 'index' into FLEX link table.
@@ -424,7 +424,7 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SDWord new_file_index,
     {
         record_nr++;
         i = get_sector_index(flex_links[i].next);
-    } // while
+    }
 
     return record_nr;
 }
@@ -475,7 +475,7 @@ SWord NafsDirectoryContainer::index_of_new_file(const st_t &track_sector)
     new_files.emplace(new_file_index, new_file);
 
     return new_file_index;
-} // index_of_new_file
+}
 
 std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
 {
@@ -518,10 +518,10 @@ bool NafsDirectoryContainer::extend_directory(SDWord index,
     flex_links[index].file_id = std::numeric_limits<SDWord>::max();
     flex_links[index].type = SectorType::Directory;
     flex_directory.push_back(dir_sector);
-    dir_extend = st_t{0, 0};// reset directory extend track/sector
+    dir_extend = st_t{0, 0}; // reset directory extend track/sector
 
     return true;
-} // extend_directory
+}
 
 
 // Return the first sector and track of the file FLEX.SYS.
@@ -546,10 +546,10 @@ st_t NafsDirectoryContainer::link_address() const
                 break;
             }
         }
-    } // for
+    }
 
     return link;
-}  // link_address
+}
 
 
 // Return the index (zero based) of the first free directory entry.
@@ -611,7 +611,7 @@ SDWord NafsDirectoryContainer::next_free_dir_entry()
     }
 
     return -1;
-}  // next_free_dir_entry
+}
 
 
 // Initialize the FLEX link table
@@ -636,7 +636,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
             (i > max_dir_sector) ? SectorType::Unknown : SectorType::Directory;
         link.type = (i < first_dir_sec) ? SectorType::SystemInfo : link.type;
         link.type = (i < 2) ? SectorType::Boot : link.type;
-    } // for
+    }
 
     // All other tracks are initialized as free chain.
     for (i = fc_start; i < flex_links.size(); i++)
@@ -671,7 +671,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
         sis.sir.fc_end.sec = static_cast<Byte>(param.max_sector);
         setValueBigEndian<Word>(&sis.sir.free[0], free);
     }
-} // initialize_flex_link_table
+}
 
 
 // Check for any open new files.
@@ -707,9 +707,7 @@ void NafsDirectoryContainer::close_new_files()
         fprintf(stderr, "%s", msg.c_str());
 #endif
     }
-
-
-} // close_new_files
+}
 
 
 // Add a file with directory index dir_index to the link table.
@@ -795,7 +793,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     }
 
     return true;
-} // add_to_link_table
+}
 
 
 // Add file properties to directory entry with index 'dir_index'.
@@ -842,7 +840,7 @@ void NafsDirectoryContainer::add_to_directory(
     dir_entry.year = static_cast<Byte>(year);
     dir_entry.hour = setFileTime ? static_cast<Byte>(lt->tm_hour) : 0U;
     dir_entry.minute = setFileTime ? static_cast<Byte>(lt->tm_min) : 0U;
-} // add_to_directory
+}
 
 // Check if file 'pfilename' is available in file which contains a list
 // of all random files. This file is defined as RANDOM_FILE_LIST.
@@ -871,11 +869,11 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
                 return true;
             }
         }
-    } // if
+    }
 
     return false;
 
-} // is_in_file_random
+}
 
 // Update random file sector map.
 void NafsDirectoryContainer::modify_random_file(const char *path,
@@ -904,7 +902,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
                 static_cast<Byte>((index % param.max_sector) + 1);
             file_sector_map[3 * n + 2] = 255;
             index += 255;
-        } // for
+        }
 
         i = (Word)(data_size % (DBPS * 255));
 
@@ -916,7 +914,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
                 static_cast<Byte>((index % param.max_sector) + 1);
             file_sector_map[3 * n + 2] =
                 static_cast<Byte>((i + (DBPS - 1)) / DBPS);
-        } // if
+        }
 
         BFilePtr fp(path, "rb+");
 
@@ -924,8 +922,8 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
         {
             fwrite(file_sector_map, DBPS, 2, fp);
         }
-    } // if
-} // modify_random_file
+    }
+}
 
 
 // Create a directory entry for each file for which the file name
@@ -1010,7 +1008,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         while (FindNextFile(hdl, &pentry) != 0);
 
         FindClose(hdl);
-    } //if
+    }
 #endif
 
 #ifdef UNIX
@@ -1033,10 +1031,10 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             bool is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
 
             add_file(filename, is_random);
-        } // while
+        }
 
         closedir(pd);
-    } //if
+    }
 #endif
 
     // Sort all filenames before adding them to the container.
@@ -1076,7 +1074,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             break;
         }
     }
-} // fill_flex_directory
+}
 
 
 // Initialize the FLEX system info sector.
@@ -1121,8 +1119,8 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         std::fill(std::begin(sis.unused2), std::end(sis.unused2), Byte(0U));
 
         flex_sys_info[1] = flex_sys_info[0];
-    } // if
-} // initialize_flex_sys_info_sectors
+    }
+}
 
 
 // Change the file id and type in the FLEX link table.
@@ -1149,8 +1147,8 @@ void NafsDirectoryContainer::change_file_id_and_type(SDWord index,
             break;
         }
         usedIndices.insert(index);
-    } // while
-} // change_file_id_and_type
+    }
+}
 
 
 void NafsDirectoryContainer::update_sector_buffer_from_link(Byte *buffer,
@@ -1198,10 +1196,9 @@ void NafsDirectoryContainer::check_for_delete(Word dir_index,
             LOG_X("      delete %s\n", filename.c_str());
 #endif
             break;
-        } // if
-    } // for
-
-} // check_for_delete
+        }
+    }
+}
 
 
 // Check if a file has been renamed.
@@ -1230,9 +1227,9 @@ void NafsDirectoryContainer::check_for_rename(Word dir_index,
                    old_filename.c_str(), new_filename.c_str());
 #endif
             break;
-        } // if
-    } // for
-} // check_for_rename
+        }
+    }
+}
 
 
 // Check if the directory has been extended.
@@ -1249,8 +1246,8 @@ void NafsDirectoryContainer::check_for_extend(Word dir_index,
     if (old_dir_sector.next == st_t{0, 0} && (dir_sector.next != st_t{0, 0}))
     {
         dir_extend = dir_sector.next;
-    } // if
-} // check_for_extend
+    }
+}
 
 
 // Check if file attributes have been changed. Only write protection is
@@ -1327,10 +1324,10 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word dir_index,
             (void)set_clear;
 #endif
             break;
-        } // if
-    } // for
+        }
+    }
 
-} // check_for_protection
+}
 
 
 // Return false if not successful otherwise return true.
@@ -1360,10 +1357,10 @@ bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
         {
             return true;
         }
-    } // if
+    }
 
     return false;
-} // set_file_time
+}
 
 // Set back the file time to the date in the emulated file system.
 bool NafsDirectoryContainer::update_file_time(const char *path,
@@ -1455,23 +1452,23 @@ void NafsDirectoryContainer::check_for_new_file(Word dir_index,
                     dir_sector.dir_entry[i].year,
                     dir_sector.dir_entry[i].hour,
                     dir_sector.dir_entry[i].minute);
-            } // for
-        } // if
-    } // for
+            }
+        }
+    }
 
     // Remove all new files for which a directory entry has been created.
     for (auto key : keys)
     {
         new_files.erase(key);
     }
-} // check_for_new_file
+}
 
 // Check if track and sector is the last sector in the free chain.
 bool NafsDirectoryContainer::is_last_of_free_chain(
                              const st_t &track_sector) const
 {
     return flex_sys_info[0].sir.fc_end == track_sector;
-} // is_last_of_free_chain
+}
 
 
 // Public interface to read one sector contained in byte stream 'buffer'
@@ -1620,7 +1617,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
                 update_sector_buffer_from_link(buffer, link);
             }
             break;
-    } // switch
+    }
 
 #if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
     FILE *log_fp = fopen(DEBUG_FILE, "a");
@@ -1632,7 +1629,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
 #endif
 
     return result;
-} //ReadSector
+}
 
 // Public interface to write one sector contained in byte stream 'buffer'
 // to given track and sector.
@@ -1758,7 +1755,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 LOG("      extend directory\n");
 #endif
                 break;
-            } // if
+            }
 
             if (is_last_of_free_chain(track_sector) && (buffer[1] || buffer[0]))
             {
@@ -1851,7 +1848,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 }
             }
             break;
-    } // switch
+    }
 
 #if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
     FILE *log_fp = fopen(DEBUG_FILE, "a");
@@ -1863,7 +1860,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 #endif
 
     return result;
-} // WriteSector
+}
 
 
 bool NafsDirectoryContainer::FormatSector(const Byte *, int, int, int, int)
@@ -1879,7 +1876,7 @@ void NafsDirectoryContainer::mount(Word number)
     initialize_header(is_write_protected);
     initialize_flex_sys_info_sectors(number);
     fill_flex_directory(is_write_protected);
-} // mount
+}
 
 std::string NafsDirectoryContainer::to_string(SectorType type)
 {
