@@ -236,16 +236,6 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected)
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track  = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
-
-    init_dir_sectors = static_cast<Word>(
-                           param.max_sector0 + 1 - first_dir_trk_sec.sec);
-
-    for (Word i = 0; i < init_dir_sectors; ++i)
-    {
-        flex_directory.emplace_back();
-    }
-
-    dir_extend = st_t{0, 0};
 } // initialize_header
 
 // Check for a valid FLEX filename.
@@ -336,6 +326,17 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 // Initialize the FLEX directory sectors.
 void NafsDirectoryContainer::initialize_flex_directory()
 {
+    init_dir_sectors = static_cast<Word>(
+                           param.max_sector0 + 1 - first_dir_trk_sec.sec);
+    next_dir_index = -1;
+
+    flex_directory.clear();
+    for (Word i = 0; i < init_dir_sectors; ++i)
+    {
+        flex_directory.emplace_back();
+    }
+
+    dir_extend = st_t{0, 0};
     Word i = first_dir_trk_sec.sec;
 
     for (auto &dir_sector : flex_directory)
@@ -620,7 +621,6 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     Word fc_start = param.max_sector; // Start index of free chain.
     constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
     const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
-    next_dir_index = -1;
 
     // On track 0 are all boot, system info and directory sectors
     for (i = 0; i < fc_start; i++)
