@@ -75,8 +75,12 @@
 // can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
-        const FileTimeAccess &fileTimeAccess) :
-    attributes(0), ft_access(fileTimeAccess), dir_extend{0, 0}
+        const FileTimeAccess &fileTimeAccess)
+    : attributes(0)
+    , ft_access(fileTimeAccess)
+    , dir_extend{0, 0}
+    , next_dir_index(-1)
+
 {
     struct stat sbuf;
     static Word number = 0;
@@ -235,6 +239,7 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected)
 
     init_dir_sectors = static_cast<Word>(
                            param.max_sector0 + 1 - first_dir_trk_sec.sec);
+
     for (Word i = 0; i < init_dir_sectors; ++i)
     {
         flex_directory.emplace_back();
@@ -551,22 +556,15 @@ st_t NafsDirectoryContainer::link_address() const
 // If directory can't be extended return -1.
 SDWord NafsDirectoryContainer::next_free_dir_entry()
 {
-    SDWord j = 0;
+    ++next_dir_index;
 
-    for (const auto &dir_sector : flex_directory)
+    if ((next_dir_index / DIRENTRIES) <
+            static_cast<SDWord>(flex_directory.size()))
     {
-        for (Word i = 0; i < DIRENTRIES; ++i)
-        {
-            if (dir_sector.dir_entry[i].filename[0] == DE_EMPTY ||
-                dir_sector.dir_entry[i].filename[0] == DE_DELETED)
-            {
-                return j + i;
-            }
-        }
-
-        j += DIRENTRIES;
+        return next_dir_index;
     }
 
+    // Extend directory by one sector.
     auto &sis = flex_sys_info[0];
 
     s_dir_sector dir_sector { };
@@ -608,7 +606,7 @@ SDWord NafsDirectoryContainer::next_free_dir_entry()
             }
         }
 
-        return j;
+        return next_dir_index;
     }
 
     return -1;
@@ -622,6 +620,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     Word fc_start = param.max_sector; // Start index of free chain.
     constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
     const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
+    next_dir_index = -1;
 
     // On track 0 are all boot, system info and directory sectors
     for (i = 0; i < fc_start; i++)
@@ -944,7 +943,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 {
     std::vector<std::string> filenames; // List of to be added files
-    std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
+    std::unordered_set<std::string> lc_filenames; // Compare lower case files.
     std::unordered_set<std::string> random_filenames; // random files.
     struct stat sbuf;
 
@@ -1045,22 +1044,20 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
     for (const auto &filename : filenames)
     {
-        SDWord dir_idx;
+        const auto dir_idx = next_free_dir_entry();
 
-        if ((dir_idx = next_free_dir_entry()) >= 0)
+        if (dir_idx >= 0)
         {
             st_t begin, end;
             auto path = directory + PATHSEPARATORSTRING + filename;
             bool is_random = (random_filenames.find(filename) !=
                               random_filenames.end());
 
-            if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)) &&
+            if (!stat(path.c_str(), &sbuf) &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
-                std::string name;
-                std::string extension;
-
-                IsFlexFilename(filename.c_str(), name, extension, true);
+                std::string name(getFileStem(filename));
+                std::string extension(getFileExtension(filename).c_str() + 1);
 
                 add_to_directory(name.c_str(), extension.c_str(),
                                  dir_idx, is_random, sbuf, begin,
@@ -1073,6 +1070,10 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                     modify_random_file(path.c_str(), sbuf, begin);
                 }
             }
+        }
+        else
+        {
+            break;
         }
     }
 } // fill_flex_directory

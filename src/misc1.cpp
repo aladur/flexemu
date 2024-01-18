@@ -90,22 +90,24 @@ void strlower(char *pstr)
 
 void strlower(std::string& str)
 {
-    std::function<char(char)> tolower_ch = [](char ch) -> char
-    {
-        return static_cast<char>(tolower(ch));
-    };
+    char *pstr = str.data();
 
-    std::transform(str.begin(), str.end(), str.begin(), tolower_ch);
+    while (*pstr)
+    {
+        *pstr = static_cast<char>(tolower(*pstr));
+        pstr++;
+    }
 }
 
 void strupper(std::string& str)
 {
-    std::function<char(char)> toupper_ch = [](char ch) -> char
-    {
-        return static_cast<char>(toupper(ch));
-    };
+    char *pstr = str.data();
 
-    std::transform(str.begin(), str.end(), str.begin(), toupper_ch);
+    while (*pstr)
+    {
+        *pstr = static_cast<char>(toupper(*pstr));
+        pstr++;
+    }
 }
 
 // Base 2 and Base 16 conversion functions

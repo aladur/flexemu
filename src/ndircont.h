@@ -114,6 +114,8 @@ private:
     st_t dir_extend;         // track and sector of directory extend sector
     Word init_dir_sectors; // initial number of directory sectors
                            // without directory extension.
+    SDWord next_dir_index; // Next directory index used when filling up
+                           // directory with file entries.
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,
