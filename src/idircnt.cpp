@@ -381,7 +381,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
     strlower(filePath);
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
-    if (stat(filePath.c_str(), &sbuf) >= 0)
+    if (stat(filePath.c_str(), &sbuf) == 0)
     {
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec   = 0;
