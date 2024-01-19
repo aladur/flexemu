@@ -184,7 +184,7 @@ int16_t PageDetector::GetBottomEmptyLines(PageDetectorData &data, uint32_t page)
 {
     auto pageOffset = page * data.linesPerPage;
     for (auto lineOffset = static_cast<int16_t>(data.linesPerPage - 1);
-            lineOffset <= data.linesPerPage; --lineOffset)
+            lineOffset >= 0; --lineOffset)
     {
         if (data.IsLineValid(page, lineOffset))
         {
