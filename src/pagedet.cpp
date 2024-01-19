@@ -130,7 +130,12 @@ void PageDetector::CollectData(PageDetectorData &data)
         {
             line = data.GetLineString(page + 1, lineOffset);
             auto tLine = trim(line, " ");
-            auto isNoDigit = [](char ch){return !(ch >= '0' && ch <= '9');};
+            auto isNoDigit = [](char ch){
+                // A number-only line may contain numbers, spaces or minus.
+                // For example the page number may be printed as:
+                // - 5- or -22- which is also detected as number-only line.
+                return !((ch >= '0' && ch <= '9') || ch == '-' || ch == ' ');
+            };
             auto tIter = std::find_if(begin(tLine), end(tLine), isNoDigit);
             if (!tLine.empty() && tIter == std::end(tLine))
             {
