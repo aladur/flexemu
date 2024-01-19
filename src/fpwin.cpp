@@ -607,8 +607,9 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
             ":resource/dir.png" :
             ":resource/flexplorer.png";
     subWindow->setWindowIcon(QIcon(iconResource));
-    subWindow->setMinimumSize(200, 200);
-    subWindow->resize(640, 560);
+    subWindow->setMinimumSize(400, 400);
+    subWindow->resize(540, 560);
+
     child->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(child, &FlexplorerMdiChild::customContextMenuRequested,
             this, &FLEXplorer::ContextMenuRequested);

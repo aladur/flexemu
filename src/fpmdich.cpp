@@ -645,8 +645,6 @@ void FlexplorerMdiChild::SetupView()
     setAcceptDrops(true);
     horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
-    resize(QSize(400, size().height()));
 }
 
 void FlexplorerMdiChild::SelectionChanged(
