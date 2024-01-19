@@ -42,6 +42,19 @@ class NafsDirectoryContainer : public FileContainerIfSector
     static const int MAX_SECTOR{36}; // number of sectors per track,
                                      // side 0 and 1 (one based).
 
+    // Common used parameter names and types:
+    //
+    // SDWord sec_idx     Index into flex_links (if < 0 it is invalid e.g.
+    //                    end of free chain).
+    // Word   ds_idx      Directory sector index, index into flex_directory.
+    // SDWord dir_idx     Index to directory entry (s_dir_entry),
+    //                    for existing files can be used as file_id,
+    //                    (if < 0 it is invalid, e.g. directory/disk full).
+    // SDWord file_id     Unique id of a file. For existing files can be used
+    //                    as dir_idx. Ids of new files are < 0.
+    // SWord  new_file_id Id of a new file. always < 0. Used as key in
+    //                    new_files.
+
     enum class SectorType : Byte
     {
         Unknown, // Unknown sector type.
@@ -114,8 +127,8 @@ private:
     st_t dir_extend;         // track and sector of directory extend sector
     Word init_dir_sectors; // initial number of directory sectors
                            // without directory extension.
-    SDWord next_dir_index; // Next directory index used when filling up
-                           // directory with file entries.
+    SDWord next_dir_idx; // Next directory index used when filling up
+                         // directory with file entries.
 
 public:
     static NafsDirectoryContainer *Create(const char *dir,
@@ -149,7 +162,7 @@ private:
     std::string get_unix_filename(SDWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
     bool add_to_link_table(
-        SDWord dir_index,
+        SDWord dir_idx,
         off_t size,
         bool is_random,
         st_t &begin,
@@ -157,7 +170,7 @@ private:
     void add_to_directory(
         const char *name,
         const char *ext,
-        SDWord dir_index,
+        SDWord dir_idx,
         bool is_random,
         const struct stat &stat,
         const st_t &begin,
@@ -171,12 +184,12 @@ private:
         std::string &extension,
         bool with_extension) const;
     bool is_in_file_random(const char *ppath, const char *pfilename);
-    void check_for_delete(Word dir_index, const s_dir_sector &d);
-    void check_for_extend(Word dir_index, const s_dir_sector &d);
-    void check_for_rename(Word dir_index, const s_dir_sector &d) const;
-    void check_for_new_file(Word dir_index, const s_dir_sector &d);
-    void check_for_changed_file_attr(Word dir_index, s_dir_sector &d);
-    bool extend_directory(SDWord index, const s_dir_sector &d);
+    void check_for_delete(Word ds_idx, const s_dir_sector &d);
+    void check_for_extend(Word ds_idx, const s_dir_sector &d);
+    void check_for_rename(Word ds_idx, const s_dir_sector &d) const;
+    void check_for_new_file(Word ds_idx, const s_dir_sector &d);
+    void check_for_changed_file_attr(Word ds_idx, s_dir_sector &d);
+    bool extend_directory(SDWord sec_idx, const s_dir_sector &d);
     bool set_file_time(
         const char *ppath,
         Byte month,
@@ -187,13 +200,13 @@ private:
     bool update_file_time(const char *path, SDWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &st) const;
-    SWord index_of_new_file(const st_t &st);
+    SWord id_of_new_file(const st_t &st);
     std::string get_path_of_file(SDWord file_id) const;
-    Word record_nr_of_new_file(SDWord new_file_index, SDWord index) const;
+    Word record_nr_of_new_file(SWord new_file_id, SDWord sec_idx) const;
     void change_file_id_and_type(
-        SDWord index,
-        SDWord old_id,
-        SDWord new_id,
+        SDWord sec_idx,
+        SDWord old_file_id,
+        SDWord new_file_id,
         SectorType new_type);
     static void update_sector_buffer_from_link(Byte *buffer,
                                                const s_link_table &link);
