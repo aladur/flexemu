@@ -1057,6 +1057,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
                 std::string name(getFileStem(filename));
                 std::string extension(getFileExtension(filename).c_str() + 1);
 
+                strupper(name);
+                strupper(extension);
                 add_to_directory(name.c_str(), extension.c_str(),
                                  dir_idx, is_random, sbuf, begin,
                                  end, (access(path.c_str(), W_OK) != 0));
