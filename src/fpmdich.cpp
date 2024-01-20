@@ -41,6 +41,7 @@
 #include <QItemSelectionModel>
 #include <QClipboard>
 #include <QApplication>
+#include <QDir>
 #include "warnon.h"
 #include <cassert>
 #include <string>
@@ -192,10 +193,11 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
 {
     QVector<int> rowIndices;
 
-    for (const auto &filePath : filePaths)
+    for (const auto &path : filePaths)
     {
         FlexFileBuffer buffer;
 
+        const auto filePath = QDir::toNativeSeparators(path);
         if (!buffer.ReadFromFile(filePath.toUtf8().data()))
         {
             auto msg = tr("Error reading from\n%1\nInjection aborted.");

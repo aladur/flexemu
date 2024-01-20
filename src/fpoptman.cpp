@@ -46,6 +46,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.extractTextFileAskUser = true;
     options.onTrack0OnlyDirSectors = true;
     options.fileSizeType = FileSizeType::FileSize;
+    options.openInjectFilePath = getHomeDirectory();
 #ifdef UNIX
     options.openDiskPath = F_DATADIR;
 #endif
@@ -67,6 +68,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLOREROPENDIRECTORYPATH, options.openDirectoryPath);
     reg.SetValue(FLEXPLORERFILESIZETYPE,
                  static_cast<int>(options.fileSizeType));
+    reg.SetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
         std::stringstream key;
@@ -96,6 +98,8 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.openDirectoryPath.c_str());
     rcFile.SetValue(FLEXPLORERFILESIZETYPE,
                     static_cast<int>(options.fileSizeType));
+    rcFile.SetValue(FLEXPLOREROPENINJECTFILEPATH,
+                    options.openInjectFilePath.c_str());
 
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
@@ -156,6 +160,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
+    reg.GetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
     for (auto i = 0; i < options.maxRecentFiles; ++i)
     {
@@ -214,6 +219,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     int_result = std::max(int_result, 1);
     int_result = std::min(int_result, 2);
     options.fileSizeType = static_cast<FileSizeType>(int_result);
+    rcFile.GetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
     for (auto i = 0; i < options.maxRecentFiles; ++i)
     {

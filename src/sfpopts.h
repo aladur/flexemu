@@ -46,6 +46,7 @@ struct sFPOptions
     bool onTrack0OnlyDirSectors;
     std::string openDiskPath;
     std::string openDirectoryPath;
+    std::string openInjectFilePath;
     std::vector<std::string> recentDiskPaths;
 
     static const int maxRecentFiles = 24;

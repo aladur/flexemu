@@ -333,6 +333,7 @@ extern "C" struct sRGBDef
 #define FLEXPLORERTRACK0ONLYDIRSEC  "OnTrack0OnlyDirSectors"
 #define FLEXPLOREROPENDISKPATH  "OpenDiskPath"
 #define FLEXPLOREROPENDIRECTORYPATH  "OpenDirectoryPath"
+#define FLEXPLOREROPENINJECTFILEPATH "OpenInjectFilePath"
 #define FLEXPLORERFILESIZETYPE  "FileSizeType"
 #define FLEXPLORERRECENTDISKPATH "RecentDiskPath"
 

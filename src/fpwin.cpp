@@ -366,19 +366,20 @@ void FLEXplorer::InjectFiles()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
-        QFileDialog dialog(this, tr("Select file(s) to inject"),
-                           injectDirectory);
+        QFileDialog dialog(this, tr("Select file(s) to inject"));
 
         dialog.setFileMode(QFileDialog::ExistingFiles);
-        dialog.setDirectory(injectDirectory);
+        dialog.setDirectory(options.openInjectFilePath.c_str());
         dialog.setViewMode(QFileDialog::Detail);
 
-        if (dialog.exec())
+        if (dialog.exec() == QDialog::Accepted)
         {
             auto fileNames = dialog.selectedFiles();
             auto count = child.InjectFiles(fileNames);
             SetStatusMessage(tr("Injected %1 file(s)").arg(count));
-            injectDirectory = dialog.directory().absolutePath();
+            const auto path =
+                QDir::toNativeSeparators(dialog.directory().absolutePath());
+            options.openInjectFilePath = path.toStdString();
         }
     });
 }
