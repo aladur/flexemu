@@ -396,7 +396,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
     }
     else
     {
-        Word ds_idx = file_id / DIRENTRIES;
+        const auto ds_idx = static_cast<Word>(file_id / DIRENTRIES);
 
         if (ds_idx < flex_directory.size())
         {
@@ -412,7 +412,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
 
 // Return the record number (zero based) of a new file which first
 // sector has index 'sec_idx' into FLEX link table.
-Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_id,
+Word NafsDirectoryContainer::record_nr_of_new_file(SDWord new_file_id,
         SDWord sec_idx) const
 {
     Word record_nr = 0;
@@ -432,7 +432,7 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SWord new_file_id,
 // and sector. If not found create another new file and return its new_file_id.
 // A new_file_id is always < 0.
 // Return 0 if the new file can not be opened.
-SWord NafsDirectoryContainer::id_of_new_file(const st_t &track_sector)
+SDWord NafsDirectoryContainer::id_of_new_file(const st_t &track_sector)
 {
     for (const auto &iter : new_files)
     {
@@ -487,7 +487,7 @@ std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
     }
     else
     {
-        Word ds_idx = file_id / DIRENTRIES;
+        const auto ds_idx = static_cast<Word>(file_id / DIRENTRIES);
 
         if (ds_idx < flex_directory.size())
         {
@@ -1367,7 +1367,7 @@ bool NafsDirectoryContainer::update_file_time(const char *path,
 {
     if (file_id >= 0)
     {
-        Word ds_idx = file_id / DIRENTRIES;
+        const auto ds_idx = static_cast<Word>(file_id / DIRENTRIES);
 
         if (ds_idx < flex_directory.size())
         {
@@ -1394,7 +1394,7 @@ bool NafsDirectoryContainer::update_file_time(const char *path,
 void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
         const s_dir_sector &dir_sector)
 {
-    std::vector<SWord> keys;
+    std::vector<SDWord> keys;
 
     const auto dir_idx0 = static_cast<SDWord>(ds_idx * DIRENTRIES);
     for (Word i = 0; i < DIRENTRIES; i++)

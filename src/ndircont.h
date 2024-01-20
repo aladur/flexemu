@@ -52,7 +52,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     //                    (if < 0 it is invalid, e.g. directory/disk full).
     // SDWord file_id     Unique id of a file. For existing files can be used
     //                    as dir_idx. Ids of new files are < 0.
-    // SWord  new_file_id Id of a new file. always < 0. Used as key in
+    // SDWord new_file_id Id of a new file. always < 0. Used as key in
     //                    new_files.
 
     enum class SectorType : Byte
@@ -123,7 +123,7 @@ private:
     std::array<s_link_table, (MAX_TRACK + 1) * MAX_SECTOR> flex_links;
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
-    std::unordered_map<SWord, s_new_file> new_files; // new file table
+    std::unordered_map<SDWord, s_new_file> new_files; // new file table
     st_t dir_extend;         // track and sector of directory extend sector
     Word init_dir_sectors; // initial number of directory sectors
                            // without directory extension.
@@ -200,9 +200,9 @@ private:
     bool update_file_time(const char *path, SDWord file_id) const;
     st_t link_address() const;
     bool is_last_of_free_chain(const st_t &st) const;
-    SWord id_of_new_file(const st_t &st);
+    SDWord id_of_new_file(const st_t &st);
     std::string get_path_of_file(SDWord file_id) const;
-    Word record_nr_of_new_file(SWord new_file_id, SDWord sec_idx) const;
+    Word record_nr_of_new_file(SDWord new_file_id, SDWord sec_idx) const;
     void change_file_id_and_type(
         SDWord sec_idx,
         SDWord old_file_id,
