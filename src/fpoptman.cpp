@@ -50,6 +50,9 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 #ifdef UNIX
     options.openDiskPath = F_DATADIR;
 #endif
+#ifdef _WIN32
+    options.openDiskPath = getExecutablePath() + PATHSEPARATORSTRING "Data";
+#endif
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
