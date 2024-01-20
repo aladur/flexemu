@@ -389,19 +389,33 @@ void FLEXplorer::ExtractSelected()
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
         auto *subWindow = mdiArea->activeSubWindow();
-        auto targetDirectory = QFileDialog::getExistingDirectory(this,
-                tr("Target Directory to extract file(s)"), extractDirectory,
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        const auto defaultDir = QString(options.openInjectFilePath.c_str());
+        QFileDialog dialog(this, tr("Target directory to extract file(s)"));
+
+        dialog.setFileMode(QFileDialog::Directory);
+        dialog.setOption(QFileDialog::ShowDirsOnly, true);
+        dialog.setDirectory(defaultDir);
+
+        auto result = dialog.exec();
 
         // As a result of opening a directory browser there maybe is no active
         // child any more => reactivate it.
         mdiArea->setActiveSubWindow(subWindow);
 
-        if (!targetDirectory.isEmpty())
+        if (result == QDialog::Accepted)
         {
-            auto count = child.ExtractSelected(targetDirectory);
-            SetStatusMessage(tr("Extracted %1 file(s)").arg(count));
-            extractDirectory = targetDirectory;
+            const auto directories = dialog.selectedFiles();
+
+            auto path =
+                QDir::toNativeSeparators(dialog.directory().absolutePath());
+            options.openInjectFilePath = path.toStdString();
+
+            if (!directories.empty())
+            {
+                const auto tgtPath = QDir::toNativeSeparators(directories[0]);
+                auto count = child.ExtractSelected(tgtPath);
+                SetStatusMessage(tr("Extracted %1 file(s)").arg(count));
+            }
         }
     });
 }
