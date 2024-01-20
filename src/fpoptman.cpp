@@ -53,6 +53,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 #ifdef _WIN32
     options.openDiskPath = getExecutablePath() + PATHSEPARATORSTRING "Data";
 #endif
+    options.openDirectoryPath = getHomeDirectory();
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
