@@ -1422,7 +1422,7 @@ void QtGui::redraw_cpuview_impl(const Mc6809CpuStatus &status)
     text(5 + 3 * i, 10, "[");
     text(8 + 3 * i, 10, "]");
 
-    cpuUi.e_status->setText(cpustring);
+    cpuUi.e_status->setText(cpustring.c_str());
 }
 
 void QtGui::PopupMessage(const QString &message)

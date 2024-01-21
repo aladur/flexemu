@@ -71,12 +71,9 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
 
 void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 {
-    static char tmp[CPU_LINE_WIDTH];
-    Byte                    i, j;
-    Word            mem_addr;
-    std::stringstream total_cycles;
+    int i, j;
 
-    mem_addr = ((stat.s >> 3) << 3) - 16;
+    int mem_addr = ((stat.s >> 3) << 3) - 16;
     text(6, 2, hexstr(stat.pc));
     text(6, 3, hexstr(stat.s));
     text(6, 4, hexstr(stat.u));
@@ -86,12 +83,17 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
     text(15, 4, hexstr(stat.dp));
     text(15, 5, hexstr(stat.a));
     text(15, 6, hexstr(stat.b));
-    total_cycles << std::setw(16) << stat.total_cycles;
 
-    text(5,  0, total_cycles.str().c_str());
-    snprintf(tmp, sizeof(tmp), "%6.2f", stat.freq);
-    text(28,  0, tmp);
-    text(6, 1, "                        "); // first clear area
+    std::stringstream cycles_str;
+    cycles_str << std::setw(16) << stat.total_cycles;
+    text(5, 0, cycles_str.str());
+
+    std::stringstream freq_str;
+    freq_str << std::fixed << std::setprecision(2) << std::setw(6) << stat.freq;
+    text(28, 0, freq_str.str());
+
+    static const std::string spaces(' ', 24);
+    text(6, 1, spaces); // first clear area
 
     if (stat.mnemonic[0] != '\0')
     {
@@ -112,34 +114,33 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
         {
             text(25, 5 + i, hexstr((Word)cpu.get_bp(i)));
         }
-    }  // for
+    }
 
-    Word stk = 0;
+    int stk = 0;
     Byte ch;
 
     for (i = 0; i < 6; ++i)
     {
-        text(0, i + 8, hexstr((Word)(stk + mem_addr)));
+        text(0, i + 8, hexstr(static_cast<Word>(stk + mem_addr)));
 
-        tmp[0] = ' ';
-        tmp[1] = '\0';
-
-        for (j = 0; j < 8; ++j)
-        {
-            ch = stat.memory[stk + j];
-            strcat(tmp, hexstr(ch));
-            strcat(tmp, " ");
-        } // for
+        std::string tmp(" ");
 
         for (j = 0; j < 8; ++j)
         {
             ch = stat.memory[stk + j];
-            strcat(tmp, ascchr(ch));
-        } // for
+            tmp.append(hexstr(ch));
+            tmp.append(" ");
+        }
+
+        for (j = 0; j < 8; ++j)
+        {
+            ch = stat.memory[stk + j];
+            tmp.append(ascchr(ch));
+        }
 
         text(5, i + 8, tmp);
         stk += 8;
-    } // for
+    }
 
     redraw_cpuview_impl(stat);
 }
@@ -148,28 +149,22 @@ void AbstractGui::redraw_cpuview_impl(const Mc6809CpuStatus &)
 {
 }
 
-void AbstractGui::text(int x, int y, const char *str)
+void AbstractGui::text(int x, int y, const std::string &str)
 {
-    assert(x >= 0 && x + strlen(str) <= CPU_LINE_WIDTH);
+    assert(x >= 0 && x + str.size() <= CPU_LINE_WIDTH);
     assert(y >= 0 && y < CPU_LINES);
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstringop-truncation"
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
-    strncpy(&cpustring[CPU_LINE_WIDTH * y + x], str, strlen(str));
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
+    auto index = CPU_LINE_WIDTH * y + x;
+
+    std::copy(str.begin(), str.cend(), cpustring.data() + index);
 }
 
 void AbstractGui::clear_cpuview()
 {
-    static const char *delim = "\n";
+    const std::string delim("\n");
 
-    memset(cpustring, ' ', sizeof(cpustring));
-    cpustring[sizeof(cpustring) - 1] = '\0';
-    auto size = static_cast<int>(strlen(delim));
+    cpustring.resize(CPU_LINES * CPU_LINE_WIDTH + 1, ' ');
+    cpustring[cpustring.size() - 1] = '\0';
+    auto size = static_cast<int>(delim.size());
 
     for (int y = 0; y < CPU_LINES; ++y)
     {

@@ -111,70 +111,60 @@ void strupper(std::string& str)
 }
 
 // Base 2 and Base 16 conversion functions
-char *binstr(Byte x)
+std::string binstr(Byte x)
 {
-    static char             tmp[9] = "        ";
+    std::string result("        ");
 
-    for (SWord i = 7; i >= 0; --i)
+    for (int i = 7; i >= 0; --i)
     {
-        tmp[i] = (x & 1) ? '1' : '0';
+        result[i] = (x & 1) ? '1' : '0';
         x >>= 1;
     }
 
-    return tmp;
+    return result;
 }
 
-static char hex_digit(Byte x)
+inline char hex_digit(Byte x)
 {
     static const char *digits = "0123456789abcdef";
 
     return digits[x & 0x0F];
 }
 
-char *hexstr(Byte x)
+std::string hexstr(Byte x)
 {
-    static char             tmp[3] = "  ";
+    std::string result("  ");
 
-    tmp[1] = hex_digit(x);
+    result[1] = hex_digit(x);
     x >>= 4;
-    tmp[0] = hex_digit(x);
+    result[0] = hex_digit(x);
 
-    return tmp;
+    return result;
 }
 
-char *hexstr(Word x)
+std::string hexstr(Word x)
 {
-    static char             tmp[5] = "    ";
+    std::string result("    ");
 
-    tmp[3] = hex_digit((Byte)x);
+    result[3] = hex_digit((Byte)x);
     x >>= 4;
-    tmp[2] = hex_digit((Byte)x);
+    result[2] = hex_digit((Byte)x);
     x >>= 4;
-    tmp[1] = hex_digit((Byte)x);
+    result[1] = hex_digit((Byte)x);
     x >>= 4;
-    tmp[0] = hex_digit((Byte)x);
+    result[0] = hex_digit((Byte)x);
 
-    return tmp;
+    return result;
 }
 
-std::string tohexstr(Byte x)
+std::string ascchr(char x)
 {
-    return std::string(hexstr(x));
-}
-
-std::string tohexstr(Word x)
-{
-    return std::string(hexstr(x));
-}
-
-char *ascchr(char x)
-{
-    static char             tmp[2] = " ";
+    std::string result(" ");
 
     x &= 0x7f;
-    tmp[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
+    result[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
 
-    return tmp;
+    return result;
 }
 
 #if defined(__GNUC__) && !(defined(__MINGW32) || defined (__CYGWIN32) )

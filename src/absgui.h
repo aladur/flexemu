@@ -54,14 +54,14 @@ protected:
     Memory &memory; // Reference to memory (incl. video memory access)
     Inout &inout; // Reference to IO-class handling input/output
     TerminalIO &terminalIO; // Reference to terminal data provider.
-    char cpustring[CPU_LINES * CPU_LINE_WIDTH + 1];
+    std::string cpustring;
 
 protected:
     virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);
     void clear_cpuview();
     void redraw_cpuview(const Mc6809CpuStatus &stat);
     void redraw_cpuview_contents(const Mc6809CpuStatus &stat);
-    void text(int x, int y, const char *str);
+    void text(int x, int y, const std::string &str);
 
 public:
     virtual void update_cpuview(const Mc6809CpuStatus &stat);

@@ -387,12 +387,10 @@ extern "C" struct sRGBDef
     extern void     strlower(char *pstr);
     extern void     strlower(std::string& str);
     extern void     strupper(std::string& str);
-    extern char     *binstr(Byte x);
-    extern char     *hexstr(Byte x);
-    extern char     *hexstr(Word x);
-    extern char     *ascchr(char x);
-    extern std::string tohexstr(Byte x);
-    extern std::string tohexstr(Word x);
+    extern std::string binstr(Byte x);
+    extern std::string hexstr(Byte x);
+    extern std::string hexstr(Word x);
+    extern std::string ascchr(char x);
 
     #ifdef _WIN32
         extern int getopt(int argc, char *const argv[], const char *optstr);
