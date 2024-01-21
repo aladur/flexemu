@@ -1026,13 +1026,12 @@ void FLEXplorer::UpdateSelectedFiles()
     {
         auto selectedFilesCount = child.GetSelectedFilesCount();
         auto selectedFilesByteSize = child.GetSelectedFilesByteSize();
-        const char *format =
-            (selectedFilesCount == 1) ?
-                "%d File selected" : "%d Files selected";
+        const auto format = (selectedFilesCount == 1) ?
+                tr("%1 File selected") : tr("%1 Files selected");
 
-        auto text = QString::asprintf(format, selectedFilesCount);
+        auto text = format.arg(selectedFilesCount);
         l_selectedFilesCount->setText(text);
-        text = QString::asprintf("%d Byte", selectedFilesByteSize);
+        text = tr("%1 Byte").arg(selectedFilesByteSize);
         l_selectedFilesByteSize->setText(text);
     });
 }

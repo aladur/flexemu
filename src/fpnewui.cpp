@@ -90,9 +90,9 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
             break;
     }
 
-    auto text = QString::asprintf("%d", tracks);
+    auto text = QString("%1").arg(tracks);
     e_tracks->setText(text);
-    text = QString::asprintf("%d", sectors);
+    text = QString("%1").arg(sectors);
     e_sectors->setText(text);
 
     if (path.isEmpty())
@@ -218,9 +218,9 @@ void FlexplorerNewUi::OnFormatChanged(int index)
     if (!isFreeDiskFormat)
     {
         auto trk_sec = flex_formats[index - 1];                             
-        auto text = QString::asprintf("%d", static_cast<int>(trk_sec.trk + 1));
+        auto text = QString("%1").arg(trk_sec.trk + 1);
         e_tracks->setText(text);
-        text = QString::asprintf("%d", static_cast<int>(trk_sec.sec));
+        text = QString("%1").arg(static_cast<int>(trk_sec.sec));
         e_sectors->setText(text);
     }
 
@@ -245,8 +245,7 @@ void FlexplorerNewUi::OnTrkSecChanged()
 
     auto msg = tr("Uncommon FLEX disk format. "
                   "This may cause compatibility issues!");
-    auto richText = QString::asprintf("<p style=\"color:orange\">%s</p>",
-                        msg.toUtf8().data());
+    auto richText = QString("<p style=\"color:orange\">%1</p>").arg(msg);
     l_formatWarning->setText(isWarning ? richText : "");
 }
 
@@ -300,10 +299,9 @@ bool FlexplorerNewUi::Validate()
             static_cast<const QIntValidator *>(e_tracks->validator());
 
         e_tracks->setFocus(Qt::OtherFocusReason);
-        auto message = QString::asprintf(
-                              "Track count is not in the valid\n"
-                              "range of %d ... %d.",
-                              validator->bottom(), validator->top());
+        auto message = tr("Track count is not in the valid\n"
+                          "range of %1 ... %2.")
+                          .arg(validator->bottom()).arg(validator->top());
         QMessageBox::critical(dialog, tr("Flexplorer Error"), message);
 
         return false;
@@ -315,10 +313,9 @@ bool FlexplorerNewUi::Validate()
             static_cast<const QIntValidator *>(e_sectors->validator());
 
         e_sectors->setFocus(Qt::OtherFocusReason);
-        auto message = QString::asprintf(
-                              "Sector count is not in the valid\n"
-                              "range of %d ... %d.",
-                              validator->bottom(), validator->top());
+        auto message = tr("Sector count is not in the valid\n"
+                          "range of %1 ... %2.")
+                          .arg(validator->bottom()).arg(validator->top());
         QMessageBox::critical(dialog, tr("Flexplorer Error"), message);
 
         return false;

@@ -602,7 +602,7 @@ void QtGui::OnAbout()
 {
     auto version = QString(VERSION);
 
-    auto title = QString::asprintf(tr("About %s").toUtf8().data(), PROGRAMNAME);
+    auto title = tr("About %1").arg(PROGRAMNAME);
 
     QMessageBox::about(this, title,
         tr("<b>%1 V%2</b><p>"
@@ -722,16 +722,16 @@ void QtGui::OnTimer()
 
             if (status->state == CpuState::Invalid)
             {
-                auto message = QString::asprintf(tr("\
+                auto message = tr("\
     Got invalid instruction\n\
-    pc=%04x instr=%02x %02x %02x %02x\n\
+    pc=%1 instr=%2 %3 %4 %5\n\
     Processor stopped. To\n\
-    continue press Reset button").toUtf8().data(),
-                        status->pc,
-                        status->instruction[0],
-                        status->instruction[1],
-                        status->instruction[2],
-                        status->instruction[3]);
+    continue press Reset button")
+                        .arg(status->pc, 4, 16, QLatin1Char('0'))
+                        .arg(status->instruction[0], 2, 16, QLatin1Char('0'))
+                        .arg(status->instruction[1], 2, 16, QLatin1Char('0'))
+                        .arg(status->instruction[2], 2, 16, QLatin1Char('0'))
+                        .arg(status->instruction[3], 2, 16, QLatin1Char('0'));
                 PopupMessage(message);
             }
         }
@@ -956,13 +956,12 @@ void QtGui::CreateViewActions(QLayout& layout)
 
     for (uint16_t index = 0U; index < SCREEN_SIZES; ++index)
     {
-        const auto iconPath =
-            QString::asprintf(":/resource/screen%u.png", index + 1);
+        const auto iconPath = QString(":/resource/screen%1.png").arg(index + 1);
         const auto screenSizeIcon = QIcon(iconPath);
 
         screenSizeAction[index] =
             CreateScreenSizeAction(screenSizeIcon, *screenSizeMenu, index);
-        auto text = QString::asprintf("x%u", index + 1);
+        auto text = QString("x%1").arg(index + 1);
         screenSizeComboBox->addItem(screenSizeIcon, text);
         screenSizeComboBox->setMinimumContentsLength(
                 cast_from_qsizetype(text.size()));
@@ -1224,13 +1223,13 @@ void QtGui::OnCpuInterruptStatus()
     model.setItem(row++, 0, new QStandardItem(tr("NMI")));
     model.setItem(row++, 0, new QStandardItem(tr("RESET")));
     row = 0;
-    text = QString::asprintf("%u", status.count[INT_IRQ]);
+    text = QString("%1").arg(status.count[INT_IRQ]);
     model.setItem(row++, 1, new QStandardItem(text));
-    text = QString::asprintf("%u", status.count[INT_FIRQ]);
+    text = QString("%1").arg(status.count[INT_FIRQ]);
     model.setItem(row++, 1, new QStandardItem(text));
-    text = QString::asprintf("%u", status.count[INT_NMI]);
+    text = QString("%1").arg(status.count[INT_NMI]);
     model.setItem(row++, 1, new QStandardItem(text));
-    text = QString::asprintf("%u", status.count[INT_RESET]);
+    text = QString("%1").arg(status.count[INT_RESET]);
     model.setItem(row++, 1, new QStandardItem(text));
 
     dialog->setWindowTitle(tr("CPU Interrupt Status"));
@@ -1288,7 +1287,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
                 model.setItem(row++, 0, new QStandardItem(tr("JVC header")));
             }
             row = 0;
-            text = QString::asprintf("#%u", driveNumber);
+            text = QString("#%1").arg(driveNumber);
             model.setItem(row++, 1, new QStandardItem(text));
             text = info.GetTypeString().c_str();
             model.setItem(row++, 1, new QStandardItem(text));
@@ -1340,7 +1339,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 0, new QStandardItem(tr("Drive")));
             model.setItem(row++, 0, new QStandardItem(tr("Status")));
             row = 0;
-            text = QString::asprintf("#%u", driveNumber);
+            text = QString("#%1").arg(driveNumber);
             model.setItem(row++, 1, new QStandardItem(text));
             model.setItem(row++, 1, new QStandardItem("Not ready"));
         }
@@ -1403,9 +1402,9 @@ bool QtGui::IsClosingConfirmed()
     if (isConfirmClose)
     {
         auto message = isRestartNeeded ?
-            tr("Do you want to restart %s now?") :
-            tr("Do you want to close %s?");
-        message = QString::asprintf(message.toUtf8().data(), PROGRAMNAME);
+            tr("Do you want to restart %1 now?") :
+            tr("Do you want to close %1?");
+        message = message.arg(PROGRAMNAME);
         auto result = QMessageBox::question(this, tr("Flexemu"), message,
                           QMessageBox::Yes | QMessageBox::No);
         return (result == QMessageBox::Yes);

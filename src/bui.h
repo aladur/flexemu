@@ -26,7 +26,9 @@
 
 #include "efslctle.h"
 #include "warnoff.h"
+#include <QString>
 #include <QLineEdit>
+#include <QLatin1Char>
 #include "warnon.h"
 
 
@@ -37,7 +39,7 @@ void SetData(T1 value, T2 &widget)
 {
     if (value <= 0xFFFF)
     {
-        widget.setText(QString::asprintf("%04X", value));
+        widget.setText(QString("%1").arg(value, 4, 16, QLatin1Char('0')));
     }
     else
     {

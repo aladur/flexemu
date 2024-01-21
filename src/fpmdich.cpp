@@ -572,9 +572,9 @@ void FlexplorerMdiChild::Info()
     int sectors;
     info.GetTrackSector(tracks, sectors);
 
-    auto title = 
-        QString::asprintf(
-                "Container %s #%u", info.GetName().c_str(), info.GetNumber());
+    auto title = tr("Container %1 #%2")
+        .arg(info.GetName().c_str())
+        .arg(info.GetNumber());
 
     QString str = tr("Path: ");
     str += QString(info.GetPath().c_str()).append("\n");

@@ -128,11 +128,10 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     for (int x = 1; x <= MAX_PIXELSIZE; ++x)
     {
-        const auto iconPath =
-            QString::asprintf(":/resource/screen%u.png", x);
+        const auto iconPath = QString(":/resource/screen%1.png").arg(x);
         const auto screenSizeIcon = QIcon(iconPath);
 
-        auto text = QString::asprintf("x%u", x);
+        auto text = QString("x%1").arg(x);
 
         cb_screenSize->addItem(screenSizeIcon, text);
 
@@ -149,7 +148,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     static int ncolor_count[] = { 2, 8, 64 };
     for (auto nColors : ncolor_count)
     {
-        auto text = QString::asprintf("%d", nColors);
+        auto text = QString("%1").arg(nColors);
         cb_nColors->addItem(text);
 
         if (options.nColors == nColors)
@@ -543,10 +542,10 @@ bool FlexemuOptionsUi::Validate()
         const auto *validator =
             static_cast<const QDoubleValidator *>(e_frequency->validator());
 
-        auto message = QString::asprintf(
-                              "CPU Frequency is not in the valid\n"
-                              "range of %.1f ... %.1f MHz",
-                              validator->bottom(), validator->top());
+        auto message = tr("CPU Frequency is not in the valid\n"
+                          "range of %1 ... %2 MHz")
+                          .arg(validator->bottom(), 0, 'f', 1)
+                          .arg(validator->top(), 0, 'f', 1);
         QMessageBox::critical(dialog, tr("FSetup Error"), message);
 
         return false;
