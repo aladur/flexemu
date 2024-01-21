@@ -60,22 +60,22 @@ BJoystick::~BJoystick()
     js = -1;
 }
 
-short BJoystick::IsOpened()
+bool BJoystick::IsOpened()
 {
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     return js >= 0;
 #else
-    return 0;
+    return false;
 #endif
 }
 
-short BJoystick::Actualize()
+bool BJoystick::Actualize()
 {
     struct JS_DATA_TYPE raw_js_data;
 
     if (js < 0)
     {
-        return 0;
+        return false;
     }
 
     auto status = read(js, &raw_js_data, JS_RETURN);
@@ -106,23 +106,22 @@ short BJoystick::Actualize()
         axis[0]   = x - 128;
         axis[1]   = y - 128;
         buttons = raw_js_data.buttons ;
-        return 1;
+
+        return true;
     }
-    else
-    {
-        return 0;
-    }
+
+    return false;
 }
 
 // check for button "which" is set. Which is in the range of 0 .. 31
-int BJoystick::IsButtonSet(int which)
+bool BJoystick::IsButtonSet(int which)
 {
     if (which < 0 || which > 31)
     {
-        return 0;
+        return false;
     }
 
-    return buttons & (1 << which);
+    return (buttons & (1 << which)) != 0;
 }
 
 #endif  //#ifdef LINUX_JOYSTICK_IS_PRESENT

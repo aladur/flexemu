@@ -34,12 +34,12 @@ class  BJoystick
 public:
     BJoystick(int which = 0);
     ~BJoystick();
-    short IsOpened();
-    short Actualize();
+    bool IsOpened();
+    bool Actualize();
     int32_t XAxis();
     int32_t YAxis();
     int32_t Buttons();
-    int IsButtonSet(int which);
+    bool IsButtonSet(int which);
 private:
     BJoystick(const BJoystick &d);  // private, should not be used
     int js; // input stream from joystick
