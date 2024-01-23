@@ -126,7 +126,7 @@ private:
     static const int COLUMNS{7};
 
     using RowType = std::array<QVariant, COLUMNS>;
-    using IdsType = QVector<QString>;
+    using IdsType = QVector<int>;
 
     void OpenContainer(const char *path, const FileTimeAccess &fileTimeAccess);
     QModelIndex AddRow(const FlexDirEntry &dirEntry, int role = Qt::EditRole);

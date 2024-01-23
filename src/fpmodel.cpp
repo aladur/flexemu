@@ -656,7 +656,7 @@ FlexplorerTableModel::IdsType FlexplorerTableModel::GetIds() const
     ids.reserve(rowCount());
     for (const auto &row : rows)
     {
-        ids.push_back(row[COL_ID].toString());
+        ids.push_back(row[COL_ID].toInt());
     }
 
     return ids;
