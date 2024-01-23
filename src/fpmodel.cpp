@@ -690,6 +690,10 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
 
 void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 {
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#endif
     if (column < 0 || column >= rows.size())
     {
         return;
@@ -703,82 +707,100 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
         case Qt::AscendingOrder:
             compare = [&column](const RowType &lhs, const RowType &rhs){
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-                if (lhs[column].typeId() == QMetaType::QString)
+                switch (lhs[column].typeId())
                 {
-                    return lhs[column].toString() < rhs[column].toString();
-                }
-                else if (lhs[column].typeId() == QMetaType::QDateTime)
-                {
-                    return lhs[column].toDateTime() < rhs[column].toDateTime();
-                }
-                else if (lhs[column].typeId() == QMetaType::Int)
-                {
-                    return lhs[column].toInt() < rhs[column].toInt();
-                }
-                else
-#else
-                if (lhs[column].type() == QVariant::String)
-                {
-                    return lhs[column].toString() < rhs[column].toString();
-                }
-                else if (lhs[column].type() == QVariant::DateTime)
-                {
-                    return lhs[column].toDateTime() < rhs[column].toDateTime();
-                }
-                else if (lhs[column].type() == QVariant::Int)
-                {
-                    return lhs[column].toInt() < rhs[column].toInt();
-                }
-                else
-#endif
-                {
-                    auto msg = std::string(
-                        "FlexplorerTableModel::sort(): Unexpected type '");
-                    msg += std::string(lhs[column].typeName()) + "'";
+                    case QMetaType::QString:
+                        return lhs[column].toString() < rhs[column].toString();
 
-                    throw std::logic_error(msg);
+                    case QMetaType::QDateTime:
+                        return lhs[column].toDateTime() <
+                            rhs[column].toDateTime();
+
+                    case QMetaType::Int:
+                        return lhs[column].toInt() < rhs[column].toInt();
+
+                    default:
+                    {
+                        auto msg = std::string(
+                            "FlexplorerTableModel::sort(): Unexpected type '");
+                        msg += std::string(lhs[column].typeName()) + "'";
+
+                        throw std::logic_error(msg);
+                    }
                 }
+#else
+                switch (lhs[column].type())
+                {
+                    case QVariant::String:
+                        return lhs[column].toString() < rhs[column].toString();
+
+                    case QVariant::DateTime:
+                        return lhs[column].toDateTime() <
+                            rhs[column].toDateTime();
+
+                    case QVariant::Int:
+                        return lhs[column].toInt() < rhs[column].toInt();
+
+                    default:
+                    {
+                        auto msg = std::string(
+                            "FlexplorerTableModel::sort(): Unexpected type '");
+                        msg += std::string(lhs[column].typeName()) + "'";
+
+                        throw std::logic_error(msg);
+                    }
+                }
+#endif
             };
             break;
 
         case Qt::DescendingOrder:
             compare = [&column](const RowType &lhs, const RowType &rhs){
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-                if (lhs[column].typeId() == QMetaType::QString)
+                switch (lhs[column].typeId())
                 {
-                    return lhs[column].toString() > rhs[column].toString();
-                }
-                else if (lhs[column].typeId() == QMetaType::QDateTime)
-                {
-                    return lhs[column].toDateTime() > rhs[column].toDateTime();
-                }
-                else if (lhs[column].typeId() == QMetaType::Int)
-                {
-                    return lhs[column].toInt() > rhs[column].toInt();
-                }
-                else
-#else
-                if (lhs[column].type() == QVariant::String)
-                {
-                    return lhs[column].toString() > rhs[column].toString();
-                }
-                else if (lhs[column].type() == QVariant::DateTime)
-                {
-                    return lhs[column].toDateTime() > rhs[column].toDateTime();
-                }
-                else if (lhs[column].type() == QVariant::Int)
-                {
-                    return lhs[column].toInt() > rhs[column].toInt();
-                }
-                else
-#endif
-                {
-                    auto msg = std::string(
-                        "FlexplorerTableModel::sort(): Unexpected type '");
-                    msg += std::string(lhs[column].typeName()) + "'";
+                    case QMetaType::QString:
+                        return lhs[column].toString() > rhs[column].toString();
 
-                    throw std::logic_error(msg);
+                    case QMetaType::QDateTime:
+                        return lhs[column].toDateTime() >
+                            rhs[column].toDateTime();
+
+                    case QMetaType::Int:
+                        return lhs[column].toInt() > rhs[column].toInt();
+
+                    default:
+                    {
+                        auto msg = std::string(
+                            "FlexplorerTableModel::sort(): Unexpected type '");
+                        msg += std::string(lhs[column].typeName()) + "'";
+
+                        throw std::logic_error(msg);
+                    }
                 }
+#else
+                switch (lhs[column].type())
+                {
+                    case QVariant::String:
+                        return lhs[column].toString() > rhs[column].toString();
+
+                    case QVariant::DateTime:
+                        return lhs[column].toDateTime() >
+                            rhs[column].toDateTime();
+
+                    case QVariant::Int:
+                        return lhs[column].toInt() > rhs[column].toInt();
+
+                    default:
+                    {
+                        auto msg = std::string(
+                            "FlexplorerTableModel::sort(): Unexpected type '");
+                        msg += std::string(lhs[column].typeName()) + "'";
+
+                        throw std::logic_error(msg);
+                    }
+                }
+#endif
             };
             break;
     }
@@ -790,6 +812,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
     CalculateAndChangePersistentIndexList(oldIds);
 
     emit layoutChanged();
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 }
 
 QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
