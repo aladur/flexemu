@@ -668,14 +668,23 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
     auto newIds = GetIds();
     QModelIndexList fromList;
     QModelIndexList toList;
+    std::unordered_map<int, int> idToNewRow;
+    int newRow = 0;
 
+    idToNewRow.reserve(oldIds.size());
+    for (int newId : newIds)
+    {
+        idToNewRow.emplace(std::pair(newId, newRow));
+        ++newRow;
+    }
+
+    fromList.reserve(oldIds.size() * COLUMNS);
+    toList.reserve(oldIds.size() * COLUMNS);
     for (int oldRow = 0; oldRow < oldIds.size(); ++oldRow)
     {
         if (oldIds[oldRow] != newIds[oldRow])
         {
-            const auto iter =
-                std::find(newIds.begin(), newIds.end(), oldIds[oldRow]);
-            int newRow = static_cast<int>(iter - newIds.begin());
+            newRow = idToNewRow[oldIds[oldRow]];
 
             for (int col = 0; col < COLUMNS; ++col)
             {
