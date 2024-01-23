@@ -66,7 +66,7 @@ public:
     FLEXplorer(struct sFPOptions &options);
     virtual ~FLEXplorer();
 
-    bool OpenContainerForPath(QString path, bool isLast = true);
+    void ProcessArguments(const QStringList &args);
 
 signals:
     void FileTimeAccessHasChanged();
@@ -129,6 +129,7 @@ private:
     void DeleteRecentDiskActions();
     void UpdateForRecentDisk(const QString &path);
     void RestoreRecentDisks();
+    bool OpenContainerForPath(QString path, bool isLast = true);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -180,6 +181,33 @@ protected:
     QString extractDirectory;
     QStringList recentDiskPaths;
     sFPOptions &options;
+};
+
+class ProcessArgumentsFtor
+{
+    FLEXplorer &window;
+    QStringList args;
+
+public:
+    ProcessArgumentsFtor() = delete;
+    ProcessArgumentsFtor(FLEXplorer &win, int p_argc, char *p_argv[])
+    : window(win)
+    {
+        for (int i = 0; i < p_argc; ++i)
+        {
+            args.push_back(p_argv[i]);
+        }
+    }
+    ProcessArgumentsFtor(const ProcessArgumentsFtor &f)
+      : window(f.window)
+      , args(f.args)
+    {
+    }
+
+    void operator() ()
+    {
+        window.ProcessArguments(args);
+    }
 };
 
 #endif

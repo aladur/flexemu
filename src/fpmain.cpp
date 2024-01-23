@@ -26,6 +26,7 @@
 #include <QApplication>
 #include <QResource>
 #include <QMessageBox>
+#include <QTimer>
 #include "warnon.h"
 #include "winmain.h"
 #include "winctxt.h"
@@ -37,18 +38,6 @@
 #ifdef _WIN32
 WinApiContext winApiContext;
 #endif
-
-static void LoadFiles(int argc, char *argv[], FLEXplorer &window)
-{
-    for (int i = 1; i < argc; ++i)
-    {
-        bool isLast = (i == argc - 1);
-        if (!window.OpenContainerForPath(QString(argv[i]), isLast))
-        {
-            break;
-        }
-    }
-}
 
 int main(int argc, char *argv[])
 {
@@ -66,10 +55,11 @@ int main(int argc, char *argv[])
 
     try
     {
+        ProcessArgumentsFtor functor(window, argc, argv);
+
         window.show();
 
-        LoadFiles(argc, argv, window);
-        app.processEvents();
+        QTimer::singleShot(10, functor);
 
         return_code = app.exec();
     }

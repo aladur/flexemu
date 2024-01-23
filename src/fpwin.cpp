@@ -232,6 +232,31 @@ void FLEXplorer::OpenRecentDisk()
     }
 }
 
+void FLEXplorer::ProcessArguments(const QStringList &args)
+{
+    int i = 0;
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    for (auto arg : args)
+    {
+        bool isLast = (i == args.size() - 1);
+
+        if (i > 0)
+        {
+            arg = QDir::toNativeSeparators(arg);
+            if (!OpenContainerForPath(arg, isLast))
+            {
+                break;
+            }
+            QApplication::processEvents();
+        }
+        ++i;
+    }
+
+    QApplication::restoreOverrideCursor();
+}
+
 bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
 {
     // If path ends with a path separator character it will be cut off.
@@ -614,6 +639,7 @@ void FLEXplorer::CloseAllSubWindows()
 FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
         struct sFPOptions &p_options)
 {
+
     auto *child = new FlexplorerMdiChild(path, p_options);
 
     auto *subWindow = mdiArea->addSubWindow(child);
