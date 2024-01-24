@@ -131,7 +131,7 @@ private:
     using IdsType = QVector<int>;
 
     void OpenContainer(const char *path, const FileTimeAccess &fileTimeAccess);
-    QModelIndex AddRow(const FlexDirEntry &dirEntry, int role = Qt::EditRole);
+    QModelIndex SetRow(const FlexDirEntry &dirEntry, int row, int role);
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);
     QString AsHtml(const QModelIndexList &indexList) const;

@@ -140,13 +140,12 @@ void FlexplorerTableModel::CreateAttributesBitmasks(const QString &attributes,
     }
 }
 
-QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
+QModelIndex FlexplorerTableModel::SetRow(const FlexDirEntry &dirEntry, int row,
+                                         int role)
 {
     static const int ssm4 = SECTOR_SIZE - 4;
     int column = 0;
-    auto row = rowCount();
 
-    insertRows(row, 1);
     setData(index(row, column++), row, role);
     QString fileName(dirEntry.GetTotalFileName().c_str());
     setData(index(row, column++), fileName, role);
@@ -175,10 +174,19 @@ QModelIndex FlexplorerTableModel::AddRow(const FlexDirEntry &dirEntry, int role)
 void FlexplorerTableModel::Initialize()
 {
     FileContainerIterator iter;
+    int columnIndex = 0;
 
     for (iter = container->begin(); iter != container->end(); ++iter)
     {
-        AddRow(*iter);
+        ++columnIndex;
+    }
+
+    insertRows(0, columnIndex);
+    columnIndex = 0;
+    for (iter = container->begin(); iter != container->end(); ++iter)
+    {
+        SetRow(*iter, columnIndex, Qt::DisplayRole);
+        ++columnIndex;
     }
 }
 
@@ -399,7 +407,8 @@ QModelIndex FlexplorerTableModel::AddFile(const FlexFileBuffer &buffer)
     container->WriteFromBuffer(buffer);
     if (container->FindFile(filename, dirEntry))
     {
-        return AddRow(dirEntry, Qt::DisplayRole);
+        insertRows(rowCount(), 1);
+        return SetRow(dirEntry, rowCount() - 1, Qt::DisplayRole);
     }
 
     return QModelIndex();
@@ -619,14 +628,17 @@ bool FlexplorerTableModel::insertRows(
         int count,
         const QModelIndex &)
 {
-    if (count >= 0 && row <= rows.size() + 1)
+    if (count >= 0 && row == rows.size())
     {
         if (count > 0)
         {
             RowType newRow;
-            beginInsertRows(QModelIndex(), row, row + count - 1);
-            const auto iter = rows.begin() + row;
-            rows.insert(iter, newRow);
+            auto max = row + count;
+            beginInsertRows(QModelIndex(), row, max - 1);
+            for (auto i = row; i < max; ++i)
+            {
+                rows.append(newRow);
+            }
             endInsertRows();
         }
 
