@@ -980,14 +980,23 @@ void FlexplorerMdiChild::OnFileSizeTypeHasChanged()
 
 void FlexplorerMdiChild::MultiSelect(const QVector<int> &rowIndices)
 {
+    // Multi selection with iterating selectRow(rowIndex) is much too slow.
+    // Instead using QItemSelection works.
+    QItemSelection allSelections;
     clearSelection();
     auto selection = selectionMode();
     setSelectionMode(QAbstractItemView::MultiSelection);
 
     for (auto rowIndex : rowIndices)
     {
-        selectRow(rowIndex);
+        auto from = model->index(rowIndex, FlexplorerTableModel::COL_ID);
+        auto to = model->index(rowIndex, FlexplorerTableModel::COL_ATTRIBUTES);
+        QItemSelection singleRowSelection(from, to);
+        allSelections.merge(singleRowSelection, QItemSelectionModel::Select);
     }
+
+    selectionModel()->select(allSelections, QItemSelectionModel::Select);
+
     setSelectionMode(selection);
 }
 
