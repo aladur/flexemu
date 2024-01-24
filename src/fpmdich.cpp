@@ -42,6 +42,7 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QDir>
+#include <QProgressDialog>
 #include "warnon.h"
 #include <cassert>
 #include <string>
@@ -52,6 +53,7 @@
 #include "fpmdich.h"
 #include "sfpopts.h"
 #include "fpcnvui.h"
+#include "qtfree.h"
 
 const QString FlexplorerMdiChild::mimeTypeFlexDiskImageFile =
                                       "application/x-flexdiskimagefile";
@@ -152,8 +154,10 @@ void FlexplorerMdiChild::DeselectAll()
 QVector<int>::size_type FlexplorerMdiChild::FindFiles(const QString &pattern)
 {
     assert(model);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
     auto rowIndices = model->FindFiles(pattern);
     MultiSelect(rowIndices);
+    QApplication::restoreOverrideCursor();
 
     return rowIndices.count();
 }
@@ -161,12 +165,22 @@ QVector<int>::size_type FlexplorerMdiChild::FindFiles(const QString &pattern)
 QVector<int>::size_type FlexplorerMdiChild::DeleteSelected()
 {
     auto selectedRows = selectionModel()->selectedRows();
+    QProgressDialog progress(tr("Delete files ..."), tr("&Cancel"), 0,
+                             cast_from_qsizetype(selectedRows.size() - 1), this);
     int count = 0;
 
+    progress.show();
     std::reverse(selectedRows.begin(), selectedRows.end());
 
     for (auto &index : selectedRows)
     {
+        QApplication::processEvents();
+        progress.setValue(count);
+        if (progress.wasCanceled())
+        {
+            break;
+        }
+
         try
         {
             model->DeleteFile(index);
@@ -194,11 +208,22 @@ QVector<int>::size_type FlexplorerMdiChild::DeleteSelected()
 QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
                         const QStringList &filePaths)
 {
+    QProgressDialog progress(tr("Inject files ..."), tr("&Cancel"), 0,
+                             cast_from_qsizetype(filePaths.size() - 1), this);
     QVector<int> rowIndices;
+    auto index = 0;
 
+    progress.show();
     for (const auto &path : filePaths)
     {
         FlexFileBuffer buffer;
+
+        QApplication::processEvents();
+        progress.setValue(index++);
+        if (progress.wasCanceled())
+        {
+            break;
+        }
 
         const auto filePath = QDir::toNativeSeparators(path);
         if (!buffer.ReadFromFile(filePath.toUtf8().data()))
@@ -293,10 +318,20 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                         const QString &targetDirectory)
 {
     auto selectedRows = selectionModel()->selectedRows();
+    QProgressDialog progress(tr("Extract files ..."), tr("&Cancel"), 0,
+                             cast_from_qsizetype(selectedRows.size() - 1), this);
     QVector<int>::size_type count = 0;
 
+    progress.show();
     for (auto &index : selectedRows)
     {
+        QApplication::processEvents();
+        progress.setValue(cast_from_qsizetype(count));
+        if (progress.wasCanceled())
+        {
+            break;
+        }
+
         try
         {
             QString filename = model->GetFilename(index);
