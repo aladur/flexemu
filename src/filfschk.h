@@ -69,7 +69,7 @@ class FileContainerCheck
         st_t trk_sec; // track-sector of this sector.
         st_t to; // track-sector to next linked sector or 00-00.
         std::set<st_t> from; // track-sector from previous linked sector(s)
-        SWord item_index; // index of according item
+        SDWord item_index; // index of according item
         Word record_nr; // record number
         Word expected_record_nr; // expected record number (only valid if
                                  // type == SectorType::File)
@@ -159,7 +159,7 @@ private:
                  bool is_random = false);
 
     static std::string GetItemName(const item_t &item);
-    std::string GetItemName(SWord item_index) const;
+    std::string GetItemName(SDWord item_index) const;
     bool IsTrackSectorValid(st_t sec_trk) const;
     static std::string GetUnixFilename(const s_dir_entry &dir_entry);
 

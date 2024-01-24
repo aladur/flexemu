@@ -66,7 +66,7 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
     return name;
 }
 
-std::string FileContainerCheck::GetItemName(SWord item_index) const
+std::string FileContainerCheck::GetItemName(SDWord item_index) const
 {
     std::string name = "<unknown>";
 
@@ -407,7 +407,7 @@ void FileContainerCheck::AddItem(const std::string &name, SectorType type,
     auto current = start;
     st_t previous = {0, 0};
     std::set<st_t> visited;
-    auto item_index = static_cast<SWord>(items.size());
+    auto item_index = static_cast<SDWord>(items.size());
     items.emplace_back(type, start, end, name);
     auto &item = items.at(item_index);
     item.records = records; // record count from directory entry or 0
