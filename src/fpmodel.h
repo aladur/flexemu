@@ -35,6 +35,7 @@
 #include <QVariant>
 #include <QModelIndex>
 #include <QAbstractTableModel>
+#include <QStringList>
 #include "warnon.h"
 #include <memory>
 #include <vector>
@@ -91,6 +92,7 @@ public:
     void RenameFile(const QModelIndex &index, const QString &newFilename);
     FlexFileBuffer CopyFile(const QModelIndex &index) const;
     std::string GetSupportedAttributes() const;
+    QStringList GetColumnMaxStrings();
 
     // QAbstractTableModel overrides
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -139,6 +141,7 @@ private:
     QVector<RowType> rows;
     QString path;
     struct sFPOptions &options;
+    QStringList maxStrings;
 
     static std::array<QString, COLUMNS> headerNames;
     static const QString headerNameFileSize;

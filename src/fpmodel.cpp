@@ -91,6 +91,14 @@ FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
     , options(p_options)
 {
     OpenContainer(p_path, options.ft_access);
+    // For each column set a string with aproximate maximum size.
+    // Date column width depends on options. See GetColumnMaxStrings()
+    // for details.
+    maxStrings = QStringList({
+        "*88888*", "*MMMMMMMM.MMM*", "*Executable file*", "*Random*",
+        "*Filesize*", "", "*Attributes*"
+    });
+
 }
 
 FlexplorerTableModel::~FlexplorerTableModel()
@@ -993,5 +1001,19 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
         container.reset();
         throw FlexException(FERR_CONTAINER_UNFORMATTED, p_path);
     }
+}
+
+QStringList FlexplorerTableModel::GetColumnMaxStrings()
+{
+    if (options.ft_access == FileTimeAccess::NONE)
+    {
+        maxStrings[COL_DATE] =  "*88/88/8888*";
+    }
+    else
+    {
+        maxStrings[COL_DATE] =  "88/88/88 88:88 MM";
+    }
+
+    return maxStrings;
 }
 

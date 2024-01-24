@@ -85,8 +85,11 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setEditTriggers(QAbstractItemView::DoubleClicked |
                     QAbstractItemView::EditKeyPressed);
+
+    // Although sorting not yet enabled this initiates a first sorting.
+    horizontalHeader()->setSortIndicator(FlexplorerTableModel::COL_FILENAME,
+                                         Qt::AscendingOrder);
     setSortingEnabled(true);
-    model->sort(FlexplorerTableModel::COL_FILENAME, Qt::AscendingOrder);
     model->UpdateFileSizeHeaderName();
 }
 
@@ -644,9 +647,20 @@ void FlexplorerMdiChild::SetupView()
     connect(this, &FlexplorerMdiChild::activated,
             this, &FlexplorerMdiChild::IsActivated);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    // QHeaderView::ResizeToContents would always optimize the column size
+    // based on it's contents but for large tables it is much too slow.
+    // Instead the column width is set by a simple heuristic and also can be
+    // adapted by the user.
+    ResizeColumns();
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    // For vertical headers the minimum size (=height) is sufficient.
+    auto size = verticalHeader()->minimumSectionSize();
+    verticalHeader()->setDefaultSectionSize(size);
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
     setAcceptDrops(true);
-    horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 void FlexplorerMdiChild::SelectionChanged(
@@ -929,7 +943,8 @@ void FlexplorerMdiChild::OnFileTimeAccessChanged()
     {
         update(model->index(row, FlexplorerTableModel::COL_DATE));
     }
-    horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+    ResizeColumn(FlexplorerTableModel::COL_DATE,
+                 model->GetColumnMaxStrings()[FlexplorerTableModel::COL_DATE]);
 }
 
 void FlexplorerMdiChild::UpdateDateDelegate()
@@ -974,5 +989,34 @@ void FlexplorerMdiChild::MultiSelect(const QVector<int> &rowIndices)
         selectRow(rowIndex);
     }
     setSelectionMode(selection);
+}
+
+void FlexplorerMdiChild::ResizeColumn(int column, const QString &text) const
+{
+    QStyleOptionViewItem style;
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    initViewItemOption(&style);
+    auto fontMetrics = QFontMetrics(style.font);
+#else
+    style = viewOptions();
+    auto fontMetrics = QFontMetrics(style.font);
+#endif
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
+    int size = fontMetrics.horizontalAdvance(text);
+#else
+    int size = fontMetrics.width(text);
+#endif
+    horizontalHeader()->resizeSection(column, size);
+}
+
+void FlexplorerMdiChild::ResizeColumns() const
+{
+    int column = 0;
+
+    for (const auto &maxString : model->GetColumnMaxStrings())
+    {
+        ResizeColumn(column++, maxString);
+    }
 }
 

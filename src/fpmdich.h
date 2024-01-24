@@ -110,6 +110,8 @@ private:
     QMimeData *GetHtmlMimeDataForSelected();
     void UpdateDateDelegate();
     void MultiSelect(const QVector<int> &rowIndices);
+    void ResizeColumn(int column, const QString &text) const;
+    void ResizeColumns() const;
 
     std::unique_ptr<FlexplorerTableModel> model;
     std::unique_ptr<FlexDateDelegate> dateDelegate;
