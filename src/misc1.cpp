@@ -747,6 +747,26 @@ void dumpSector(FILE *fp, const char *indent, const Byte *buffer, uint32_t size)
     }
 }
 
+void hex_dump(const char *buffer, int count)
+{
+    const char *p = &buffer[0];
+    int i = 0;
+
+    for (; i < count; ++i)
+    {
+        char ch = *(p++);
+        printf("%02X ", ch);
+        if ((i & 0x0F) == 0x0F)
+        {
+            printf("\n");
+        }
+    }
+    if ((i & 0x0F) != 0)
+    {
+        printf("\n");
+    }
+}
+
 bool AskForInput(const std::string &question, const std::string &answers,
                  char default_answer)
 {

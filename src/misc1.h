@@ -412,6 +412,7 @@ extern std::string getExecutablePath();
 extern std::string getHomeDirectory();
 extern void dumpSector(FILE *fp, const char *indent,
                        const Byte *buffer, uint32_t size);
+extern void hex_dump(const char *buffer, int count);
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
