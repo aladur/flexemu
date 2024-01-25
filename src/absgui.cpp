@@ -92,7 +92,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
     freq_str << std::fixed << std::setprecision(2) << std::setw(6) << stat.freq;
     text(28, 0, freq_str.str());
 
-    static const std::string spaces(' ', 24);
+    static const std::string spaces(24, ' ');
     text(6, 1, spaces); // first clear area
 
     if (stat.mnemonic[0] != '\0')
