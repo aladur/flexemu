@@ -90,23 +90,19 @@ void strlower(char *pstr)
 
 void strlower(std::string& str)
 {
-    char *pstr = str.data();
-
-    while (*pstr)
+    for (auto iter = str.begin(); iter != str.end(); ++iter)
     {
-        *pstr = static_cast<char>(tolower(*pstr));
-        pstr++;
+        *iter = static_cast<char>(tolower(*iter));
+        ++iter;
     }
 }
 
 void strupper(std::string& str)
 {
-    char *pstr = str.data();
-
-    while (*pstr)
+    for (auto iter = str.begin(); iter != str.end(); ++iter)
     {
-        *pstr = static_cast<char>(toupper(*pstr));
-        pstr++;
+        *iter = static_cast<char>(toupper(*iter));
+        ++iter;
     }
 }
 

@@ -155,7 +155,7 @@ void AbstractGui::text(int x, int y, const std::string &str)
     assert(y >= 0 && y < CPU_LINES);
     auto index = CPU_LINE_WIDTH * y + x;
 
-    std::copy(str.begin(), str.cend(), cpustring.data() + index);
+    std::copy(str.begin(), str.cend(), cpustring.begin() + index);
 }
 
 void AbstractGui::clear_cpuview()

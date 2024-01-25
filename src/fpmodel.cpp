@@ -51,6 +51,8 @@
 #endif
 #include "warnon.h"
 #include "fpmodel.h"
+#include <unordered_map>
+#include <utility>
 
 
 const QString FlexplorerTableModel::headerNameFileSize(tr("Filesize"));
@@ -694,7 +696,7 @@ void FlexplorerTableModel::CalculateAndChangePersistentIndexList(
     idToNewRow.reserve(oldIds.size());
     for (int newId : newIds)
     {
-        idToNewRow.emplace(std::pair(newId, newRow));
+        idToNewRow.emplace(std::pair<int, int>(newId, newRow));
         ++newRow;
     }
 
