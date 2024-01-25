@@ -3,7 +3,7 @@
 
 
     Basic abstract class used to implement an observer pattern
-    Copyright (C) 2020-2023  W. Schwotzer
+    Copyright (C) 2020-2024  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

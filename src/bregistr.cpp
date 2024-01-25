@@ -3,7 +3,7 @@
 
 
     FLEXplorer, An explorer for any FLEX file or disk container
-    Copyright (C) 1998-2023 W. Schwotzer
+    Copyright (C) 1998-2024 W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
