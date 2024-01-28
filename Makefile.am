@@ -14,7 +14,7 @@ EXTRA_DIST = \
 	README.md \
 	TODO
 
-SUBDIRS = src disks doc monitor build
+SUBDIRS = src disks doc monitor build python
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 

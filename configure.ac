@@ -191,7 +191,8 @@ AC_CONFIG_FILES([Makefile \
         build/windows/Makefile \
         build/windows/installer/Makefile \
 	doc/Makefile \
-	doc/images/Makefile])
+	doc/images/Makefile] \
+	python/Makefile)
 AC_OUTPUT
 
 if test "x$no_x" = "xyes"; then
