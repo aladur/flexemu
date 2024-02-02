@@ -970,8 +970,8 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
     struct stat sbuf;
     
     // path can either be a directory or a file container.
-    if (p_path == nullptr || *p_path == '\0' || stat(p_path, &sbuf))
-    {   
+    if (p_path == nullptr)
+    {
         throw FlexException(FERR_INVALID_NULL_POINTER, "p_path");
     }
     else if (stat(p_path, &sbuf))
