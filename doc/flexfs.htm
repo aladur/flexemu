@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
 <title>File systems supported by flexemu</title>
 </head>
@@ -10,45 +11,82 @@
 <hr>
 
 <h2>DESCRIPTION</h2>
-Flexemu supports three different file systems:
+Flexemu supports three different file systems to be used as disk drive:
 <p>
 <ul>
- <li><a href="#dsk_format">Disk image created by Ben Williams (DSK-format)</a>
- <li><a href="#ws_format">Disk image created by Wolfgang Schwotzer</a>
- <li><a href="#nafs_format">Native file system support (all files in a directory)</a>
+ <li><a href="#dsk_format">DSK Disk image files</a>
+ <li><a href="#flx_format">FLX Disk image files</a>
+ <li><a href="#nafs_format">Vitual disk images</a>
 </ul>
 <div class="options-list">
 <dl>
-<dt id="dsk_format">Disk image created by Ben Williams (DSK-format)
+<dt id="dsk_format">DSK Disk image files
 <dd>
+DSK disk image files (with file extension *.DSK or *.WTA) are commonly used by
+emulators running the TSC FLEX operating system, see:
 <a href="http://ourtimelines.com/reflex/tocpage.html">
-Ben Williams has written a FLEX emulator</a>
-too.
-The complete disk is contained in one file. A wide range of track/sector
-combinations is supported: <b>2 &lt;= tracks &lt;= 255 and 6 &lt;= sectors &lt;= 255</b>.
-Following map shows some typical track/sector combinations:
+ ReFLEX</a> by Ben Williams,
+<a href="http://www.evenson-consulting.com/swtpc/">
+ SWTPC 6800/6809 Emulator</a> by Evenson Consulting Services or
+<a href="https://github.com/nealcrook/multicomp6809">
+ 6809 FPGA design</a> by Neal Crook.
+Also FLEX software archives use DSK disk image files, see:
+<a href="http://www.flexusergroup.com/flexusergroup/fug1.htm">
+ FLEX User Group</a> by Ian P. Blythe or
+<a href="https://www.simonwynn.com/flex">
+ FLEX Software Archive</a> by Simon Wynn Consulting.<p>
+A *.DSK file contains all sectors of a disk. A wide range of track/sector
+combinations is supported.
+Following table shows typical used disk formats:
 <p>
 <table>
- <tr><th>filesize [Byte]</th><th>tracks</th><th>sectors</th>
- <tr><td>89600</td><td>35</td><td>10</td>
- <tr><td>179000</td><td>35</td><td>20</td>
- <tr><td>358400</td><td>35</td><td>40</td>
- <tr><td>102400</td><td>40</td><td>10</td>
- <tr><td>204800</td><td>40</td><td>20</td>
- <tr><td>409600</td><td>40</td><td>40</td>
- <tr><td>(204800</td><td>80</td><td>10)</td>
- <tr><td>(409600</td><td>80</td><td>20)</td>
- <tr><td>819200</td><td>80</td><td>40</td>
+ <tr><th>Disk size<br>[inch]</th><th>Sides</th><th>Density<br>*)</th><th>Tracks</th><th>Sectors</th><th>File size<br>[KByte]</th>
+ <tr><td>5 1/4</td><td>1</td><td>SD</td><td>35</td><td>10</td><td>87.5</td>
+ <tr><td>5 1/4</td><td>2</td><td>SD</td><td>35</td><td>20</td><td>175</td>
+ <tr><td>5 1/4</td><td>1</td><td>SD</td><td>40</td><td>10</td><td>100</td>
+ <tr><td>5 1/4</td><td>1</td><td>DD</td><td>40</td><td>18</td><td>180</td>
+ <tr><td>5 1/4</td><td>2</td><td>SD</td><td>40</td><td>20</td><td>200</td>
+ <tr><td>5 1/4</td><td>2</td><td>DD</td><td>40</td><td>36</td><td>360</td>
+ <tr><td>5 1/4</td><td>1</td><td>DD</td><td>80</td><td>18</td><td>360</td>
+ <tr><td>5 1/4</td><td>2</td><td>SD</td><td>80</td><td>20</td><td>400</td>
+ <tr><td>5 1/4</td><td>2</td><td>DD</td><td>80</td><td>36</td><td>720</td>
+ <tr><td>5 1/4</td><td>2</td><td>QD</td><td>80</td><td>72</td><td>1440</td>
+ <tr><td>8</td><td>1</td><td>SD</td><td>77</td><td>15</td><td>288.75</td>
+ <tr><td>8</td><td>1</td><td>DD</td><td>77</td><td>26</td><td>500.5</td>
+ <tr><td>8</td><td>2</td><td>SD</td><td>77</td><td>30</td><td>577.5</td>
+ <tr><td>8</td><td>2</td><td>DD</td><td>77</td><td>52</td><td>1001</td>
+ <tr><td>**)</td><td>-</td><td>-</td><td>255</td><td>255</td><td>16256.25</td>
+ <tr><td>**)</td><td>-</td><td>-</td><td>256</td><td>255</td><td>16320</td>
 </table>
 <p>
-Each sector contains 256 Byte. There is no file header. The size of the file
-can simply be computed with &lt;nr_of_tracks&gt; x &lt;nr_of_sectors&gt; x 256 Byte. If
-the DSK-file is write protected the drive within flexemu is write protected too.
+*) SD = single density, DS = double density, QD = quad density<br>
+**) Harddisk<p>
+The sector size is always 256 Byte. The size of the
+file can simply be computed with &lt;nr_of_tracks&gt; * &lt;nr_of_sectors&gt; *
+256 Byte. If the DSK-file is write protected the drive within flexemu is write
+protected too.<p>
+Optionally a
+<a href="https://sites.google.com/site/dabarnstudio/coco-utilities/jvc-disk-format">JVC file header</a> is supported. The header can contain 1 up to 5 bytes.
+flexemu supports the following JVC header values:
+<p>
+<table>
+ <tr><th>Byte offset</th><th>Description</th><th>Default</th><th>Supported<br>values</th>
+ <tr><td>0</td><td>Sectors per track</td><td>-</td><td>5-255</td>
+ <tr><td>1</td><td>Side count</td><td>1</td><td>1,2</td>
+ <tr><td>2</td><td>Sector size code</td><td>1 *)</td><td>1</td>
+ <tr><td>3</td><td>First sector ID</td><td>1 **)</td><td>1</td>
+ <tr><td>4</td><td>Sector attr. flag</td><td>0 ***)</td><td>0</td>
+</table>
+<p>
+*) A sector size code of 1 means a sector size of 256 Byte<br>
+**) For FLEX compatibility the first sector ID always should be 1<br>
+***) Sector attribute flag should be 0 (A sector attribute byte is unsupported)<br>
 </dd>
-<dt id="ws_format">Disk image created by Wolfgang Schwotzer (FLX-format)
+<dt id="flx_format">FLX Disk image files
 <dd>
-The complete disk is contained in one file. All the information about how
-many tracks and sectors are described in a file header:
+FLX disk image files (with file extension *.FLX) have the same structure as a
+*.DSK file with an additional 16-byte header at the beginning of the file. The
+header describes the disk format:
 <p>
 <table>
  <tr><th>bytes</th><th>name</th><th>description</th>
@@ -63,26 +101,22 @@ many tracks and sectors are described in a file header:
  <tr><td>5</td><td>dummy1 - dummy 5</td><td>for stuffing</td>
 </table>
 <p>
-The format of the file header can be changed for future improvements. For the
-actual format look at
-<b>struct s_flex_header
-</b>in the header file
-<b>filecnts.h</b>.
+The header allows to have a different number of sectors on track 0 as on other
+tracks. For the actual format look at
+<a href="https://github.com/aladur/flexemu/blob/899653f1e8dcfc722a803567fb90828f606a2811/src/filecnts.h#L265">struct s_flex_header</a>.
 </dd>
-<dt id="nafs_format">NAtive File System support (nafs)
+<dt id="nafs_format">Virtual disk images
 <dd>
-A directory will be made visible as a disk drive from within flexemu.
+A vitual disk image is a directory on the host file system which will be
+mapped as a disk drive within the emulation.
 So each file in the directory will be visible as a file contained on the disk.
 Random files are identified by the user execute bit (Linux) or the hidden bit
 (Windows) of the corresponding file set.
 <p>
-The system info sectors and directory sectors are managed by flexemu and
-are not accessible as file. The boot sector (track 0/sector 1) is contained
-in the file
-<b>boot.
-</b>If there is no such file the disk can't be booted. The link
-to FLEX.SYS will be generated dynamically by flexemu. The user does not have
-to input any link command.
+The boot sector (on track 0, sector 1 and optionally sector 2) is contained in
+the file <b>boot</b>. If there is no such file the disk can't be booted. The
+link to FLEX.SYS will be generated dynamically by flexemu. The user does not
+have to care about it.
 <p>
 </dd>
 </dl>
@@ -91,28 +125,21 @@ to input any link command.
 There are some restrictions the user should be aware of:
 <p>
 <ul>
- <li>A nafs drive always contains 80 tracks and 36 sectors. If the size of
-all files in the directory won't fit some of them are not visible from within
-flexemu.
+ <li>A virtual disk image always contains 80 tracks and 36 sectors. If the size
+  of all files in the directory won't fit to the virtual disk image size some
+  of them are silently ignored.
  <li>All filenames must conform to FLEX file naming conventions otherwise
-they can't be seen.
- <li>A nafs drive is only accessible by correct FMS calls. Direct
-reading/writing sectors is not supported.
+  they are silently ignored.
+ <li>A virtual disk image is only accessible using FMS calls. Direct
+  reading/writing sectors is not supported an may result in undefined behaviour.
  <li>New files have a name tmpXX (XX = two digit number) and are
-renamed to their real name after closing them. So if there are any files
-with that name anything goes wrong with the file creation.
- <li>If the directory of a nafs drive is full it will be extended
-automatically. So no directory extend utility needs to be used.
+  renamed to their real name after closing them within the emulation.
+ <li>If the directory of a virtual disk image drive is full it will
+  automatically be extended. So no directory extend utility should be used.
+ <li>During emulation modifying files on the host is not supported and may
+  result in undefined behaviour.
 </ul>
 <p>
-There is a utility to dynamically
-<a href="flexutil.htm#mount">mount</a>,
-<a href="flexutil.htm#update">update</a>,
-<a href="flexutil.htm#info">get drive info</a>
-or
-<a href="flexutil.htm#umount">umount</a>
-a nafs
-drive.
 </div>
 
 <h2>SEE ALSO</h2>
