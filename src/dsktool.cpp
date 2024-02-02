@@ -323,7 +323,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     }
     else
     {
-        std::cerr << "Error reading Container info " <<
+        std::cerr << "Error reading disk image info from " <<
                      getFileName(dsk_file) << "\n";
     }
 
@@ -466,7 +466,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     }
     else
     {
-        std::cerr << "Error reading Container info for " <<
+        std::cerr << "Error reading disk image info for " <<
                      getFileName(dsk_file) << "\n";
     }
 
@@ -896,27 +896,27 @@ void usage()
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v][-z] "
         "[-y|-n][<dsk-file>...]\n\n" <<
         "Commands:\n" <<
-        "  -c: Check consistency of FLEX file container.\n" <<
-        "  -C: Copy files from a FLEX file container into another one.\n" <<
+        "  -c: Check consistency of FLEX disk image file.\n" <<
+        "  -C: Copy files from a FLEX disk image file into another one.\n" <<
         "      If no regex is specified, all files are copied.\n" <<
-        "  -f: Create a new FLEX file container.\n" <<
+        "  -f: Create a new FLEX disk image file.\n" <<
         "  -h: Print this help.\n" <<
-        "  -i: Inject FLEX-files to a FLEX file container.\n" <<
-        "  -l: List directory contents of FLEX file container(s).\n" <<
-        "  -L: List directory contents of a FLEX file container using regex."
+        "  -i: Inject FLEX-files to a FLEX disk image file.\n" <<
+        "  -l: List directory contents of FLEX disk image file(s).\n" <<
+        "  -L: List directory contents of a FLEX disk image file using regex."
         "\n" <<
         "      If no regex is specified, all files are listed.\n" <<
-        "  -r: Delete files from a FLEX file container using regex.\n" <<
-        "  -s: One line summary of a FLEX file container.\n" <<
+        "  -r: Delete files from a FLEX disk image file using regex.\n" <<
+        "  -s: One line summary of a FLEX disk image file.\n" <<
         "  -V: Print version number and exit.\n" <<
-        "  -x: Extract files from a FLEX file container using regex.\n" <<
+        "  -x: Extract files from a FLEX disk image file using regex.\n" <<
         "      If no regex is specified, all files are extracted.\n" <<
-        "  -X: Extract all files from FLEX file container(s).\n\n" <<
+        "  -X: Extract all files from FLEX disk image file(s).\n\n" <<
         "Parameters:\n" <<
         "  -d<directory> The target directory.\n" <<
         "                Default: current directory.\n" <<
         "  -D            Additional debug output.\n" <<
-        "  -F(dsk|flx)   Use *.dsk or *.flx file container format.\n" <<
+        "  -F(dsk|flx)   Use *.dsk or *.flx disk image file format.\n" <<
         "                If not set it is determined from the file extension"
         "\n" <<
         "                or finally the default is *.dsk\n" <<
@@ -928,14 +928,15 @@ void usage()
         "  -z            Use file time (FLEX extension).\n" <<
         "  -R<file>      A file containing regular expressions, one per line."
         "\n" <<
-        "  -S<size>      Size of FLEX file container. Use -S help for help."
+        "  -S<size>      Size of FLEX disk image file. Use -S help for help."
         "\n" <<
         "  -B<boot-sector-file> Read contents of boot sector(s) from file.\n" <<
         "                It has a size of one or two sectors" <<
         " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n" <<
-        "  -T<dsk-file>  A target FLEX file container with *.dsk or *.flx "
+        "  -T<dsk-file>  A target FLEX disk image file with *.dsk or *.flx "
         "format.\n" <<
-        "  <dsk-file>    A FLEX file container with *.dsk or *.flx format.\n" <<
+        "  <dsk-file>    A FLEX disk image file with *.dsk or *.flx format."
+        "\n" <<
         "  <FLEX-file>   A FLEX text or binary file.\n" <<
         "  <file>        A text file or FLEX text or binary file.\n" <<
         "  <regex>       A regular expression specifying FLEX file(s).\n" <<

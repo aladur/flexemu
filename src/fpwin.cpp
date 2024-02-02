@@ -170,8 +170,8 @@ void FLEXplorer::OpenContainer()
 {
     const auto defaultDir = QString(options.openDiskPath.c_str());
     QStringList filePaths;
-    QFileDialog dialog(this, tr("Select FLEX file containers"), defaultDir,
-                       "FLEX file containers (*.dsk *.flx *.wta);;"
+    QFileDialog dialog(this, tr("Select FLEX disk image files"), defaultDir,
+                       "FLEX disk image files (*.dsk *.flx *.wta);;"
                        "All files (*.*)");
 
     dialog.setFileMode(QFileDialog::ExistingFiles);
@@ -705,19 +705,19 @@ void FLEXplorer::CreateFileActions()
     fileToolBar->addSeparator();
 
     const auto newIcon = QIcon(":/resource/new.png");
-    newContainerAction = new QAction(newIcon, tr("&New Container..."), this);
+    newContainerAction = new QAction(newIcon, tr("&New Disk image..."), this);
     newContainerAction->setShortcuts(QKeySequence::New);
-    newContainerAction->setStatusTip(tr("Create a new FLEX file container"));
+    newContainerAction->setStatusTip(tr("Create a new FLEX disk image file"));
     connect(newContainerAction, &QAction::triggered,
             this, &FLEXplorer::NewContainer);
     fileMenu->addAction(newContainerAction);
     fileToolBar->addAction(newContainerAction);
 
     const auto openIcon = QIcon(":/resource/open_con.png");
-    openContainerAction = new QAction(openIcon, tr("&Open Container..."), this);
+    openContainerAction = new QAction(openIcon, tr("&Open Disk image..."),
+            this);
     openContainerAction->setShortcuts(QKeySequence::Open);
-    openContainerAction->setStatusTip(
-            tr("Open a FLEX file container"));
+    openContainerAction->setStatusTip(tr("Open a FLEX disk image file"));
     connect(openContainerAction, &QAction::triggered,
             this, &FLEXplorer::OpenContainer);
     fileMenu->addAction(openContainerAction);
@@ -728,7 +728,7 @@ void FLEXplorer::CreateFileActions()
                                       this);
     openDirectoryAction->setShortcut(QKeySequence(tr("Ctrl+D")));
     openDirectoryAction->setStatusTip(
-            tr("Open a directory as FLEX file container"));
+            tr("Open a directory as FLEX disk image"));
     connect(openDirectoryAction, &QAction::triggered,
             this, &FLEXplorer::OpenDirectory);
     fileMenu->addAction(openDirectoryAction);
@@ -847,14 +847,14 @@ void FLEXplorer::CreateEditActions()
 
 void FLEXplorer::CreateContainerActions()
 {
-    QMenu *containerMenu = menuBar()->addMenu(tr("&Container"));
+    QMenu *containerMenu = menuBar()->addMenu(tr("&Disk"));
     containerToolBar = CreateToolBar(this, tr("Edit"),
                                      QStringLiteral("containerToolBar"));
 
     const auto infoIcon = QIcon(":/resource/info.png");
     infoAction = new QAction(infoIcon, tr("&Info..."), this);
     infoAction->setShortcut(QKeySequence(tr("Ctrl+I")));
-    infoAction->setStatusTip(tr("Show container properties"));
+    infoAction->setStatusTip(tr("Show disk image properties"));
     connect(infoAction, &QAction::triggered, this, &FLEXplorer::Info);
     containerMenu->addAction(infoAction);
     containerToolBar->addAction(infoAction);

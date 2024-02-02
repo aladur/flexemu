@@ -185,7 +185,7 @@ Number of shades or colors. Default is <b>2</b>. Valid values are 2, 8 and 64.
 Support formatting disk in drive 0..3 (Overwrite format). This option enables
 or disables the write track command on the floppy disk controller.
 c represents drive 0..3 in this order. All drives have to be specified. Only
-file containers (not directory containers) support formatting a disk.
+disk image files (not virtual disk images) support formatting a disk.
 Supported values:
 <p>
 <table class="invisible compact">
@@ -200,7 +200,7 @@ Supported values:
  </tr>
 </table>
 <p>
-Only container files which do not have a valid file format are allowed to be formatted this way.<BR>
+Only disk image files which do not have a valid file format are allowed to be formatted this way.<BR>
 Example: <b>-O&nbsp;001-</b><BR>
 Drive 2 allows format, drive 0 and 1 not, drive 3 is kept unchanged.
 </dd>
@@ -356,7 +356,7 @@ The following preferences can be modified.
  </tr>
  <tr>
   <td>Disk/Monitor directory</td>
-  <td>A Directory Path containing FLEX disks and monitor program.</td>
+  <td>A Directory Path containing FLEX disk images and monitor program.</td>
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td>Windows: &lt;INSTDIR&gt;\data<BR>
@@ -399,14 +399,14 @@ The following preferences can be modified.
  </tr>
  <tr>
   <td>Cassette Drive 0</td>
-  <td>A filename or directory path for cassette drive 0.</td>
+  <td>A filename for cassette drive 0.</td>
   <td><b>&check;</b></td>
   <td><b>-</b></td>
   <td>system.mdcr</td>
  </tr>
  <tr>
   <td>Cassette Drive 1</td>
-  <td>A filename or directory path for cassette drive 1.</td>
+  <td>A filename for cassette drive 1.</td>
   <td><b>&check;</b></td>
   <td><b>-</b></td>
   <td>Not set</td>
@@ -539,9 +539,9 @@ The following preferences can be modified.
 </table>
 <p>
 [1] When this option is enabled a floppy disk can be formatted from within the
-emulator. Only file containers (not directory containers) support formatting a
-disk. When this option is on, the corresponding file container can be an empty
-non existent file. NEWDISK.CMD distributed on system.dsk for example can be
+emulator. Only disk image files (not virtual disk images) support formatting a
+disk. When this option is on, the corresponding disk image file can be an empty
+or non existent file. NEWDISK.CMD distributed on system.dsk for example can be
 used to format a disk.
 <p>
 

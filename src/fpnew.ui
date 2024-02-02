@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Create new File Container</string>
+   <string>Create new Disk Image File</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>

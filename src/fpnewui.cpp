@@ -253,7 +253,7 @@ void FlexplorerNewUi::OnSelectPath()
 {
     QString caption = tr("Save disk file");
     QString filter =
-                tr("FLEX file containers (*.dsk *.flx *.wta);;All files (*.*)");
+                tr("FLEX disk image files (*.dsk *.flx *.wta);;All files (*.*)");
 
     if (format == TYPE_MDCR_CONTAINER)
     {

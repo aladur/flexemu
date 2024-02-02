@@ -610,7 +610,7 @@ void FlexplorerMdiChild::Info()
     int sectors;
     info.GetTrackSector(tracks, sectors);
 
-    auto title = tr("Container %1 #%2")
+    auto title = tr("Disk image %1 #%2")
         .arg(info.GetName().c_str())
         .arg(info.GetNumber());
 

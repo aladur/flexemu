@@ -784,8 +784,9 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
         case FileType::DiskContainerFile:
             filter = "*.dsk";
             path = QFileDialog::getOpenFileName(
-                dialog, tr("Select a Disk file"), path,
-                tr("FLEX file containers (*.dsk *.flx *.wta);;All files (*.*)"),
+                dialog, tr("Select a Disk image file"), path,
+                tr("FLEX disk image files (*.dsk *.flx *.wta);;"
+                   "All files (*.*)"),
                 &filter);
             break;
 

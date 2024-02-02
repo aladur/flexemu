@@ -53,15 +53,15 @@ const std::string FlexContainerInfo::GetTypeString() const
     {
         if (type & TYPE_DSK_CONTAINER)
         {
-            str = "file container, DSK format";
+            str = "Disk image file, DSK format";
         }
         else if (type & TYPE_FLX_CONTAINER)
         {
-            str = "file container, FLX format";
+            str = "Disk image file, FLX format";
         }
         else
         {
-            str = "file container";
+            str = "Disk image file";
         }
     }
     else if (type & TYPE_DIRECTORY)
