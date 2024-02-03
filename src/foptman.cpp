@@ -313,9 +313,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
         )
 {
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
-    std::string v;
+    std::string str;
+    bool ok;
 
-    if (ifNotExists && reg.GetValue(FLEXVERSION, v) == ERROR_SUCCESS)
+    if (ifNotExists && reg.GetValue(FLEXVERSION, str) == ERROR_SUCCESS)
     {
         return;
     }
@@ -414,7 +415,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::Frequency:
-            reg.SetValue(FLEXFREQUENCY, std::to_string(options.frequency));
+            str = toString(options.frequency, ok);
+            if (ok)
+            {
+                reg.SetValue(FLEXFREQUENCY, str);
+            }
             break;
 
         case FlexemuOptionId::FileTimeAccess:
@@ -658,6 +663,7 @@ void FlexemuOptions::WriteOptionsToFile(
     }
 
     BRcFile rcFile(fileName.c_str());
+    bool ok;
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
@@ -678,8 +684,11 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXEUROCOM2V5, optionsToWrite.isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, optionsToWrite.use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
-    rcFile.SetValue(FLEXFREQUENCY,
-                    std::to_string(optionsToWrite.frequency).c_str());
+    auto str = toString(options.frequency, ok);
+    if (ok)
+    {
+        rcFile.SetValue(FLEXFREQUENCY, str.c_str());
+    }
     rcFile.SetValue(FLEXFORMATDRIVE0, optionsToWrite.canFormatDrive[0] ? 1 : 0);
     rcFile.SetValue(FLEXFORMATDRIVE1, optionsToWrite.canFormatDrive[1] ? 1 : 0);
     rcFile.SetValue(FLEXFORMATDRIVE2, optionsToWrite.canFormatDrive[2] ? 1 : 0);
@@ -793,13 +802,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!reg.GetValue(FLEXFREQUENCY, string_result))
     {
-        try
+        double value;
+
+        if (fromString(string_result, value))
         {
-            options.frequency = (stof(string_result));
-        }
-        catch(std::exception &)
-        {
-            // Intentionally ignore value if not convertible to float.
+            options.frequency = value;
         }
     }
 
@@ -930,13 +937,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!rcFile.GetValue(FLEXFREQUENCY, string_result))
     {
-        try
+        double value;
+
+        if (fromString(string_result, value))
         {
-            options.frequency = (stof(string_result));
-        }
-        catch(std::exception &)
-        {
-            // Intentionally ignore value if not convertible to float.
+            options.frequency = value;
         }
     }
 
