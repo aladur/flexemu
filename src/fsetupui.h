@@ -97,7 +97,6 @@ private:
             const QString &filePath);
 
     QDialog *dialog;
-    QLocale englishUS;
     std::vector<FlexemuOptionId> readOnlyOptions;
 };
 
