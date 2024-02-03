@@ -713,6 +713,7 @@ void QtGui::OnTimer()
         Mc6809CpuStatus *status = (Mc6809CpuStatus *)scheduler.get_status();
         if (status != nullptr)
         {
+            static CpuState previousState = CpuState::NONE;
             isRunning = (status->state == CpuState::Run ||
                          status->state == CpuState::Next);
 
@@ -720,20 +721,30 @@ void QtGui::OnTimer()
 
             update_cpuview(*status);
 
-            if (status->state == CpuState::Invalid)
+            if (previousState != CpuState::Invalid &&
+                status->state == CpuState::Invalid)
             {
+                timer.stop();
+                auto pc = QString("%1")
+                    .arg(status->pc, 4, 16, QChar('0')).toUpper();
+                QStringList hexBytes;
+                for (int i = 0; i < 4; ++i)
+                {
+                    auto hexString = QString("%1")
+                        .arg(status->instruction[i], 2, 16, QChar('0'));
+                    hexBytes.append(hexString.toUpper());
+                }
                 auto message = tr("\
-    Got invalid instruction\n\
-    pc=%1 instr=%2 %3 %4 %5\n\
-    Processor stopped. To\n\
-    continue press Reset button")
-                        .arg(status->pc, 4, 16, QLatin1Char('0'))
-                        .arg(status->instruction[0], 2, 16, QLatin1Char('0'))
-                        .arg(status->instruction[1], 2, 16, QLatin1Char('0'))
-                        .arg(status->instruction[2], 2, 16, QLatin1Char('0'))
-                        .arg(status->instruction[3], 2, 16, QLatin1Char('0'));
-                PopupMessage(message);
+    CPU got invalid instruction.\n\
+    PC=%1 instr=%2\n\
+    CPU has stopped.\n\
+    Pressing OK will execute a Reset.").arg(pc).arg(hexBytes.join(QChar(' ')));
+                QMessageBox::critical(this, "flexemu error", message);
+
+                timer.start(TIME_BASE / 1000);
+                OnCpuResetRun();
             }
+            previousState = status->state;
         }
 
         auto firstRasterLine = vico2.get_value();

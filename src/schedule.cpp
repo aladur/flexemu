@@ -127,16 +127,11 @@ void Scheduler::process_events()
 // Return with any other state.
 CpuState Scheduler::idleloop()
 {
-    while (user_state == CpuState::NONE || user_state == CpuState::Stop)
+    while (user_state == CpuState::NONE || user_state == CpuState::Stop ||
+           user_state == CpuState::Invalid)
     {
         process_events();
         suspend();
-
-        // CpuState::Invalid is only a temporary state to update CPU view.
-        if (state == CpuState::Invalid)
-        {
-            return CpuState::Stop;
-        }
     }
 
     return user_state;
