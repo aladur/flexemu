@@ -896,7 +896,9 @@ void FlexemuOptionsUi::OnFrequencyOriginal(bool value)
 {
     if (value)
     {
-        auto text = QString(std::to_string(ORIGINAL_FREQUENCY).c_str());
+        bool ok;
+        auto text =
+            QString::fromStdString(toString<float>(ORIGINAL_FREQUENCY, ok));
 
         e_frequency->setText(text);
     }
