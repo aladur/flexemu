@@ -415,7 +415,7 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::Frequency:
-            str = toString(options.frequency, ok);
+            str = toString<decltype(options.frequency)>(options.frequency, ok);
             if (ok)
             {
                 reg.SetValue(FLEXFREQUENCY, str);
@@ -684,7 +684,7 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXEUROCOM2V5, optionsToWrite.isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, optionsToWrite.use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
-    auto str = toString(options.frequency, ok);
+    auto str = toString<decltype(options.frequency)>(options.frequency, ok);
     if (ok)
     {
         rcFile.SetValue(FLEXFREQUENCY, str.c_str());
@@ -802,9 +802,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!reg.GetValue(FLEXFREQUENCY, string_result))
     {
-        double value;
+        using T = decltype(options.frequency);
+        T value{};
 
-        if (fromString(string_result, value))
+        if (fromString<T>(string_result, value))
         {
             options.frequency = value;
         }
@@ -937,9 +938,9 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!rcFile.GetValue(FLEXFREQUENCY, string_result))
     {
-        double value;
-
-        if (fromString(string_result, value))
+        using T = decltype(options.frequency);
+        T value{};
+        if (fromString<T>(string_result, value))
         {
             options.frequency = value;
         }

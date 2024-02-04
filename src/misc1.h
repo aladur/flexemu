@@ -49,6 +49,7 @@
 #include <string>
 #include <array>
 #include <algorithm>
+#include <sstream>
 
 
 /* Uncomment the following if You want native file system support */
@@ -425,8 +426,6 @@ extern std::string getHostName();
 extern bool endsWithPathSeparator(const std::string &path);
 extern bool isAbsolutePath(const std::string &path);
 extern bool isPathsEqual(const std::string &path1, const std::string &path2);
-extern std::string toString(double value, bool &success);
-extern bool fromString(const std::string &str, double &value);
 extern "C" int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue);
 extern "C" int getColorForName(const char *colorName, DWord *color);
 extern "C" struct sRGBDef colors[];
@@ -538,5 +537,30 @@ template<typename T> void setValueBigEndian(Byte *p, T value)
 extern bool AskForInput(const std::string &question,
                         const std::string &answers,
                         char default_answer);
+
+// Locale independent conversion from numeric value to string.
+// Use "C" locale to avoid any locale specific conversions.
+template<typename T>
+std::string toString(T value, bool &success)
+{
+   std::stringstream value_stream;
+
+    value_stream.imbue(std::locale("C"));
+    success = !(value_stream << value).fail();
+
+    return value_stream.str();
+}
+
+// Locale independent conversion from string to numeric value.
+// Use "C" locale to avoid any locale specific conversions.
+template<typename T>
+bool fromString(const std::string &str, T &value)
+{
+    std::stringstream value_stream(str);
+
+    value_stream.imbue(std::locale("C"));
+
+    return !(value_stream >> value).fail();
+}
 
 #endif /* __misc1.h__ */

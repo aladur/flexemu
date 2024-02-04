@@ -766,26 +766,6 @@ void hex_dump(const char *buffer, int count)
     }
 }
 
-// Locale independent conversion from double value to string.
-std::string toString(double value, bool &success)
-{
-    std::stringstream value_stream;
-
-    value_stream.imbue(std::locale("C")); // Force point decimal separator
-    success = !(value_stream << value).fail();
-
-    return value_stream.str();
-}
-
-// Locale independent conversion from string to double value.
-bool fromString(const std::string &str, double &value)
-{
-    std::stringstream value_stream(str);
-
-    value_stream.imbue(std::locale("C")); // Force point decimal separator
-    return !(value_stream >> value).fail();
-}
-
 bool AskForInput(const std::string &question, const std::string &answers,
                  char default_answer)
 {
