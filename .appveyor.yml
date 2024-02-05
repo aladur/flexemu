@@ -1,0 +1,48 @@
+image: Visual Studio 2019
+
+environment:
+  matrix:
+    - QTMAJOR: 5
+    - QTMAJOR: 6
+
+platform:
+  - Win32
+  - x64
+
+configuration:
+  - Debug
+  - Release
+
+install:
+  # Create links to build all platform/configuration combinations with the
+  # same *.vcxproj project(s).
+  - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
+  - cmd: mkdir "%QTDIR%"
+  - cmd: mklink /d "%QTDIR%\Win32" C:\Qt\%QTVERSION%\msvc2019
+  - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
+  # Create properties file defining the Qt dependencies.
+  - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
+
+# Qt6 only supports x64 builds.
+matrix:
+  exclude:
+    - platform: Win32
+      QTMAJOR: 6
+
+for:
+  -
+    matrix:
+      only:
+        - QTMAJOR: 5
+    init:
+      - cmd: set QTVERSION=5.15.2
+  -
+    matrix:
+      only:
+        - QTMAJOR: 6
+    init:
+      - cmd: set QTVERSION=6.5.3
+  -
+    matrix:
+      fast_finish: true
+
