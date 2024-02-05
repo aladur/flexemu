@@ -460,6 +460,7 @@ test_SOURCES = \
 	colors.cpp \
 	command.cpp \
 	da6809.cpp \
+	foptman.cpp \
 	inout.cpp \
 	mc6809.cpp \
 	mc6809in.cpp \
@@ -485,6 +486,7 @@ test_SOURCES = \
 	engine.h \
 	fcinfo.h \
 	flexerr.h \
+	foptman.h \
 	inout.h \
 	ioaccess.h \
 	mc6809.h \

@@ -5,6 +5,7 @@
 #include "mc6809st.h"
 #include "memory.h"
 #include "soptions.h"
+#include "foptman.h"
 #include "test_gccasm.h"
 
 
@@ -500,6 +501,7 @@ bool test_gccasm_fctByte(const std::string& mnemonic,
                          Byte opcode)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
@@ -546,6 +548,7 @@ bool test_gccasm_fctRefByte(const std::string& mnemonic,
                             Byte opcode)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
@@ -598,6 +601,7 @@ bool test_gccasm_fctByteByte(const std::string& mnemonic,
                              Byte opcode)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
@@ -648,6 +652,7 @@ bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
                                 Byte opcode)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
@@ -705,6 +710,7 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
                              Byte opcode2)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
@@ -761,6 +767,7 @@ bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
                                 Byte opcode)
 {
     struct sOptions options;
+    FlexemuOptions::InitOptions(options);
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
