@@ -1,6 +1,23 @@
-image: Visual Studio 2019
+# Appveyor build script for flexemu.
+#
+# Supported builds:
+# - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-5/g++-5)
+# - Ubuntu2204 x64 Release with Qt5
+# - Ubuntu2204 x64 Release with Qt6
+# - Visual Studio 2019 Win32 Debug with Qt5
+# - Visual Studio 2019 Win32 Release with Qt5
+# - Visual Studio 2019 x64 Debug with Qt5
+# - Visual Studio 2019 x64 Release with Qt5
+# - Visual Studio 2019 x64 Debug with Qt6
+# - Visual Studio 2019 x64 Release with Qt6
+
+image:
+  - Ubuntu1604
+  - Ubuntu2204
+  - Visual Studio 2019
 
 environment:
+  APPVEYOR_YML_DISABLE_PS_LINUX: true
   matrix:
     - QTMAJOR: 5
     - QTMAJOR: 6
@@ -16,33 +33,89 @@ configuration:
 install:
   # Create links to build all platform/configuration combinations with the
   # same *.vcxproj project(s).
+  - cmd: if %QTMAJOR%==6 set QTVERSION=6.5.3
+  - cmd: if %QTMAJOR%==5 set QTVERSION=5.15.2
   - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
   - cmd: mkdir "%QTDIR%"
   - cmd: mklink /d "%QTDIR%\Win32" C:\Qt\%QTVERSION%\msvc2019
   - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
   # Create properties file defining the Qt dependencies.
   - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
+  - sh: |
+      GETVER='s/.*[^0-9]([0-9]+\.[0-9]+\.[0-9]+).*/\1/p'
+      if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
+          export CC=gcc-5
+          export CXX=g++-5
+          # Install Qt5 from apt packages.
+          sudo apt-get update
+          sudo apt-get install qt5-default libqt5x11extras5-dev -y
+          echo ==== Build on Ubuntu1604 ====
+          VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $GETVER`
+          echo Qt version is $VER
+      fi
+      if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2204" ]; then
+          export CC=gcc
+          export CXX=g++
+          if [ $QTMAJOR -eq 5 ]; then
+              QTVERSION=5.15
+          fi
+          if [ $QTMAJOR -eq 6 ]; then
+              QTVERSION=6.4
+          fi
+          QTDIR=$HOME/Qt/$QTVERSION/gcc_64
+          # Add QTDIR/bin to PATH so that configure script will find Qt.
+          # (see m4/ax_have_qt.m4).
+          # With Qt6 moc, rcc and uic is located in $QTDIR/libexec.
+          PATH=$PATH:$QTDIR/bin:$QTDIR/libexec
+          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$QTDIR/lib
+          sudo ldconfig
+          echo ==== Build on Ubuntu2204 ====
+          VER=`ls -ld $HOME/Qt/$QTVERSION | sed -nE $GETVER`
+          echo Qt version is $VER
+      fi
+      VER=`$CC --version | sed -nE $GETVER`
+      echo $CC version is $VER
+      VER=`$CXX --version | sed -nE $GETVER`
+      echo $CXX version is $VER
 
-# Qt6 only supports x64 builds.
 matrix:
   exclude:
+    # Qt6 only supports x64 builds.
     - platform: Win32
       QTMAJOR: 6
+    # On Linux only do a release build.
+    - configuration: Debug
+      image: Ubuntu1604
+    - configuration: Debug
+      image: Ubuntu2204
+    # On Linux only do a x64 build.
+    - platform: Win32
+      image: Ubuntu1604
+    - platform: Win32
+      image: Ubuntu2204
+    - QTMAJOR: 6
+      image: Ubuntu1604
+  fast_finish: true
 
 for:
   -
     matrix:
       only:
-        - QTMAJOR: 5
-    init:
-      - cmd: set QTVERSION=5.15.2
-  -
-    matrix:
-      only:
-        - QTMAJOR: 6
-    init:
-      - cmd: set QTVERSION=6.5.3
-  -
-    matrix:
-      fast_finish: true
+        - image: Ubuntu1604
+        - image: Ubuntu2204
+    before_build:
+      - sh: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
+    build: none
+    build_script:
+      - make -j4
+    after_build:
+      - make install
+    test_script:
+      - ldd src/flexemu
+      - ldd src/flexplorer
+      - src/test
+      - src/dsktool -l disks/games.dsk
+      - src/dsktool -f new.dsk -S 80dsdd
+      - src/dsktool -C disks/system.dsk -T new.dsk
+      - src/dsktool -l new.dsk
 
