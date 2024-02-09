@@ -1,6 +1,7 @@
 # Appveyor build script for flexemu.
 #
 # Supported builds:
+# - macOS Monterey x64 Release with Qt5
 # - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-5/g++-5)
 # - Ubuntu2204 x64 Release with Qt5
 # - Ubuntu2204 x64 Release with Qt6
@@ -12,6 +13,7 @@
 # - Visual Studio 2019 x64 Release with Qt6
 
 image:
+  - macOS-Monterey
   - Ubuntu1604
   - Ubuntu2204
   - Visual Studio 2019
@@ -42,20 +44,35 @@ install:
   # Create properties file defining the Qt dependencies.
   - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
   - sh: |
-      GETVER='s/.*[^0-9]([0-9]+\.[0-9]+\.[0-9]+).*/\1/p'
+      CC=gcc
+      CXX=g++
+      LDD=ldd
+      CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
+      QTVER='s|([A-Za-z0-9.>/_[:space:]:-]+)([0-9]+\.[0-9]+\.[0-9]+).*|\2|p'
+      if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "macOS-Monterey" ]; then
+          export HOMEBREW_NO_INSTALL_CLEANUP=1
+          export HOMEBREW_NO_ENV_HINTS=1
+          brew install gnu-sed
+          PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+          sed --version
+          LDD="otool -L"
+          # Executable name is gcc/g++ but it identifies as clang/clang++ :-)
+          QTVERSION=5.15
+          QTDIR=$HOME/Qt/$QTVERSION/clang_64
+          # Add QTDIR/bin to PATH so that configure script will find Qt.
+          # (see m4/ax_have_qt.m4).
+          PATH=$PATH:$QTDIR/bin
+          VER=`ls -ld $HOME/Qt/$QTVERSION | sed -nE $QTVER`
+      fi
       if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
-          export CC=gcc-5
-          export CXX=g++-5
+          CC=gcc-5
+          CXX=g++-5
           # Install Qt5 from apt packages.
           sudo apt-get update
           sudo apt-get install qt5-default libqt5x11extras5-dev -y
-          echo ==== Build on Ubuntu1604 ====
-          VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $GETVER`
-          echo Qt version is $VER
+          VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $QTVER`
       fi
       if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2204" ]; then
-          export CC=gcc
-          export CXX=g++
           if [ $QTMAJOR -eq 5 ]; then
               QTVERSION=5.15
           fi
@@ -69,14 +86,14 @@ install:
           PATH=$PATH:$QTDIR/bin:$QTDIR/libexec
           LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$QTDIR/lib
           sudo ldconfig
-          echo ==== Build on Ubuntu2204 ====
-          VER=`ls -ld $HOME/Qt/$QTVERSION | sed -nE $GETVER`
-          echo Qt version is $VER
+          VER=`ls -ld $HOME/Qt/$QTVERSION | sed -nE $QTVER`
       fi
-      VER=`$CC --version | sed -nE $GETVER`
-      echo $CC version is $VER
-      VER=`$CXX --version | sed -nE $GETVER`
-      echo $CXX version is $VER
+      echo ==================== Build on $APPVEYOR_BUILD_WORKER_IMAGE ====================
+      echo "Qt version:" $VER
+      VER=`$CC --version | sed -nE $CCVER`
+      echo "C compiler version:" $VER
+      VER=`$CXX --version | sed -nE $CCVER`
+      echo "C++ compiler version:" $VER
 
 matrix:
   exclude:
@@ -95,6 +112,18 @@ matrix:
       image: Ubuntu2204
     - QTMAJOR: 6
       image: Ubuntu1604
+    # On macOS only do a release build.
+    - configuration: Debug
+      image: macOS-Monterey
+    - configuration: Debug
+      image: macOS-Monterey
+    # On macOS only do a x64 build.
+    - platform: Win32
+      image: macOS-Monterey
+    - platform: Win32
+      image: macOS-Monterey
+    - QTMAJOR: 6
+      image: macOS-Monterey
   fast_finish: true
 
 for:
@@ -103,16 +132,16 @@ for:
       only:
         - image: Ubuntu1604
         - image: Ubuntu2204
+        - image: macOS-Monterey
     before_build:
       - sh: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
-    build: none
     build_script:
       - make -j4
     after_build:
       - make install
     test_script:
-      - ldd src/flexemu
-      - ldd src/flexplorer
+      - $LDD src/flexemu
+      - $LDD src/flexplorer
       - src/test
       - src/dsktool -l disks/games.dsk
       - src/dsktool -f new.dsk -S 80dsdd
