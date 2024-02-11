@@ -1,0 +1,21 @@
+freebsd_instance:
+  image_family: freebsd-14-0
+
+build_task:
+
+  install_pkg_script: pkg install -y libtool qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
+
+  configure_script: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
+
+  make_script: make -j4
+
+  install_script: make install
+
+  test_script:
+    - ldd src/flexemu
+    - ldd src/flexplorer
+    - src/test
+    - src/dsktool -l disks/games.dsk
+    - src/dsktool -f new.dsk -S 80dsdd
+    - src/dsktool -C disks/system.dsk -T new.dsk
+    - src/dsktool -l new.dsk
