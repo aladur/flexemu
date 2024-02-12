@@ -1,6 +1,6 @@
 | Windows | Linux | macOS | freeBSD |
 |---------|-------|-------|---------|
-| ![Build status](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true) | ![Build status](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true) | ![Build status](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true) | ![Build status](https://api.cirrus-ci.com/github/aladur/flexemu.svg?branch=master) |
+| ![Appveyor](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true) | ![Appveyor](https://ci.appveyor.com/api/projects/status/github/aladur/flexemu?svg=true) | ![CircleCI](https://dl.circleci.com/status-badge/img/circleci/KXKKNcBPDqWbv6vCdMkZiJ/WEWzrmkYmTbNfchcPP1m6J/tree/master.svg?style=shield&circle-token=CCIPAT_HiiApN3QnDADWK9rVuXxWr_43287d298938d7726b6976a2d3eda773d9885997) | ![CirrusCI](https://api.cirrus-ci.com/github/aladur/flexemu.svg?branch=master) |
 
 # Flexemu
 
