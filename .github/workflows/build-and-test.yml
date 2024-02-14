@@ -1,0 +1,85 @@
+name: flexemu-linux-build-and-test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04, ubuntu-latest ]
+        qt-version: [ 5, 6 ]
+        compiler: [[ gcc, g++ ], [ gcc-13, g++-13 ], [ clang, clang++ ]]
+        exclude:
+          - os: ubuntu-20.04
+            compiler: [ gcc-13, g++-13 ]
+          - os: ubuntu-20.04
+            qt-version: 6
+          # This combination fails to configure.
+          # Detail: Compile error when trying to compile a moc generated file.
+          - os: ubuntu-latest
+            compiler: [ clang, clang++ ]
+            qt-version: 6
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        # Use bash login shell sourcing ~/.bash_profile
+        shell: bash -leo pipefail {0}
+    env:
+      CC: ${{ matrix.compiler[0] }}
+      CXX: ${{ matrix.compiler[1] }}
+      QT_SELECT: qt${{ matrix.qt-version }}
+    steps:
+
+      - name: Context
+        run: |
+          CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
+          uname -a
+          VER=`$CC --version | sed -nE $CCVER`
+          echo "C compiler version:" $VER
+          VER=`$CXX --version | sed -nE $CCVER`
+          echo "C++ compiler version:" $VER
+          echo "Number of cores: " `grep -c processor /proc/cpuinfo`
+          echo "Qt version:" $QT_SELECT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt5 packages
+        if: ${{ matrix.qt-version == 5 }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev
+
+      - name: Install Qt6 packages
+        if: ${{ matrix.qt-version == 6 }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential qt6-base-dev qt6-base-dev-tools
+          # The following path contains qmake and qmake6
+          echo export PATH=/usr/lib/qt6/libexec:\$PATH >> $HOME/.bash_profile
+          # The following path contains moc, rcc and uic
+          echo export PATH=/usr/lib/qt6/bin:\$PATH >> $HOME/.bash_profile
+
+      - name: Configure
+        run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
+
+      - name: Make
+        run: make -j8
+
+      - name: Install
+        run: make install
+
+      - name: Test
+        run: |
+          ldd src/flexemu
+          ldd src/flexplorer
+          src/test
+          src/dsktool -l disks/games.dsk
+          src/dsktool -f new.dsk -S 80dsdd
+          src/dsktool -C disks/system.dsk -T new.dsk
+          src/dsktool -l new.dsk
+
