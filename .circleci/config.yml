@@ -42,6 +42,7 @@ jobs:
           name: Test
           command: |
             cd flexemu
+            make distcheck
             otool -L src/flexemu
             otool -L src/flexplorer
             src/test

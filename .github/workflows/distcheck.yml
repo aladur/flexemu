@@ -1,0 +1,41 @@
+name: flexemu-distcheck
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  distcheck:
+    runs-on: ubuntu-latest
+    env:
+      CC: gcc
+      CXX: g++
+      QT_SELECT: qt5
+    steps:
+
+      - name: Context
+        run: |
+          CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
+          uname -a
+          VER=`$CC --version | sed -nE $CCVER`
+          echo "C compiler version:" $VER
+          VER=`$CXX --version | sed -nE $CCVER`
+          echo "C++ compiler version:" $VER
+          echo "Number of cores: " `grep -c processor /proc/cpuinfo`
+          echo "Qt version:" $QT_SELECT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt5 packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev
+
+      - name: Configure
+        run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
+
+      - name: Test distribution
+        run: make distcheck
+

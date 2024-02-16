@@ -1,2 +1,3 @@
 EXTRA_DIST = \
-	build-and-test.yml
+	build-and-test.yml \
+	distcheck.yml

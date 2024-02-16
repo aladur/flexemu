@@ -290,7 +290,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = \
-	build-and-test.yml
+	build-and-test.yml \
+	distcheck.yml
 
 all: all-am
 
