@@ -12,6 +12,7 @@ dist_icons = \
 	flexemu-breakpoints.png \
 	flexemu-cpu-undocumented.png \
 	flexemu-cpu.png \
+	flexemu-detect-page-break.png \
 	flexemu-flexplorer-about.png \
 	flexemu-flexplorer-attributes.png \
 	flexemu-flexplorer-copy.png \
@@ -42,6 +43,10 @@ dist_icons = \
 	flexemu-irq-yellow.png \
 	flexemu-logging.png \
 	flexemu-original-frequency.png \
+	flexemu-print-clear.png \
+	flexemu-print-output.png \
+	flexemu-print.png \
+	flexemu-print-preview.png \
 	flexemu-reset.png \
 	flexemu-run.png \
 	flexemu-screen-full.png \
@@ -51,5 +56,6 @@ dist_icons = \
 	flexemu-screen4.png \
 	flexemu-screen5.png \
 	flexemu-stop.png \
+	flexemu-window-close.png \
 	flexemu.png \
 	qt_extended_32x32.png

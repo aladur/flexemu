@@ -13,7 +13,6 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
-
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -89,7 +88,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-subdir = src/bitmaps/32x32
+subdir = .circleci
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
@@ -129,35 +128,6 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
-am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
-am__vpath_adj = case $$p in \
-    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
-    *) f=$$p;; \
-  esac;
-am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
-am__install_max = 40
-am__nobase_strip_setup = \
-  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
-am__nobase_strip = \
-  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
-am__nobase_list = $(am__nobase_strip_setup); \
-  for p in $$list; do echo "$$p $$p"; done | \
-  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
-  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
-    if (++n[$$2] == $(am__install_max)) \
-      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
-    END { for (dir in files) print dir, files[dir] }'
-am__base_list = \
-  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__uninstall_files_from_dir = { \
-  test -z "$$files" \
-    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
-    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
-         $(am__cd) "$$dir" && rm -f $$files; }; \
-  }
-am__installdirs = "$(DESTDIR)$(appicondir)"
-DATA = $(appicon_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 am__DIST_COMMON = $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -319,65 +289,8 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = $(app_icons) $(dist_icons)
-app_icons = \
-	flexemu.png \
-	flexemu-flexplorer.png \
-	flexemu-fsetup.png
-
-appicondir = $(datadir)/icons/hicolor/32x32/apps
-appicon_DATA = $(app_icons)
-dist_icons = \
-	flexemu-breakpoints.png \
-	flexemu-cpu-undocumented.png \
-	flexemu-cpu.png \
-	flexemu-detect-page-break.png \
-	flexemu-flexplorer-about.png \
-	flexemu-flexplorer-attributes.png \
-	flexemu-flexplorer-copy.png \
-	flexemu-flexplorer-delete.png \
-	flexemu-flexplorer-deselectall.png \
-	flexemu-flexplorer-dir.png \
-	flexemu-flexplorer-exit.png \
-	flexemu-flexplorer-extract.png \
-	flexemu-flexplorer-find.png \
-	flexemu-flexplorer-info.png \
-	flexemu-flexplorer-inject.png \
-	flexemu-flexplorer-new.png \
-	flexemu-flexplorer-open.png \
-	flexemu-flexplorer-opendir.png \
-	flexemu-flexplorer-options.png \
-	flexemu-flexplorer-options-needs-restart.png \
-	flexemu-flexplorer-paste.png \
-	flexemu-flexplorer-selectall.png \
-	flexemu-flexplorer-view.png \
-	flexemu-flexplorer-window-close.png \
-	flexemu-flexplorer.png \
-	flexemu-floppy.png \
-	flexemu-fsetup.png \
-	flexemu-irq-gray.png \
-	flexemu-irq-lightblue.png \
-	flexemu-irq-magenta.png \
-	flexemu-irq-red.png \
-	flexemu-irq-yellow.png \
-	flexemu-logging.png \
-	flexemu-original-frequency.png \
-	flexemu-print-clear.png \
-	flexemu-print-output.png \
-	flexemu-print.png \
-	flexemu-print-preview.png \
-	flexemu-reset.png \
-	flexemu-run.png \
-	flexemu-screen-full.png \
-	flexemu-screen1.png \
-	flexemu-screen2.png \
-	flexemu-screen3.png \
-	flexemu-screen4.png \
-	flexemu-screen5.png \
-	flexemu-stop.png \
-	flexemu-window-close.png \
-	flexemu.png \
-	qt_extended_32x32.png
+EXTRA_DIST = \
+	config.yml
 
 all: all-am
 
@@ -391,9 +304,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/bitmaps/32x32/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu .circleci/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/bitmaps/32x32/Makefile
+	  $(AUTOMAKE) --gnu .circleci/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -417,27 +330,6 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-install-appiconDATA: $(appicon_DATA)
-	@$(NORMAL_INSTALL)
-	@list='$(appicon_DATA)'; test -n "$(appicondir)" || list=; \
-	if test -n "$$list"; then \
-	  echo " $(MKDIR_P) '$(DESTDIR)$(appicondir)'"; \
-	  $(MKDIR_P) "$(DESTDIR)$(appicondir)" || exit 1; \
-	fi; \
-	for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  echo "$$d$$p"; \
-	done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(appicondir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(appicondir)" || exit $$?; \
-	done
-
-uninstall-appiconDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(appicon_DATA)'; test -n "$(appicondir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	dir='$(DESTDIR)$(appicondir)'; $(am__uninstall_files_from_dir)
 tags TAGS:
 
 ctags CTAGS:
@@ -479,11 +371,8 @@ distdir-am: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(DATA)
+all-am: Makefile
 installdirs:
-	for dir in "$(DESTDIR)$(appicondir)"; do \
-	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
-	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -534,7 +423,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-appiconDATA
+install-data-am:
 
 install-dvi: install-dvi-am
 
@@ -578,22 +467,21 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-appiconDATA
+uninstall-am:
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
-	install install-am install-appiconDATA install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags-am uninstall \
-	uninstall-am uninstall-appiconDATA
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags-am uninstall uninstall-am
 
 .PRECIOUS: Makefile
 

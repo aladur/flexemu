@@ -12,9 +12,22 @@ EXTRA_DIST = \
 	NEWS \
 	README \
 	README.md \
-	TODO
+	TODO \
+	.appveyor.yml \
+	.cirrus.yml \
+	.gdbinit \
+	.gdbinit-context \
+	.gitignore
 
-SUBDIRS = src disks doc monitor build python
+SUBDIRS = \
+	src \
+	disks \
+	doc \
+	monitor \
+	build \
+	python \
+	.circleci \
+	.github
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 

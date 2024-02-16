@@ -25,7 +25,7 @@ testdaa_LINK  = $(CCLD) -o $@
 
 bin2s19_SOURCES  = bin2s19.c
 fromflex_SOURCES = fromflex.c
-rcvflex_SOURCES  = rcvflex.c
+rcvflex_SOURCES  = rcvflex.c typedefs.h
 toflex_SOURCES   = toflex.c
 send2flx_SOURCES = send2flx.c
 testdaa_SOURCES  = testdaa.c

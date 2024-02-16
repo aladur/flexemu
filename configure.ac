@@ -192,7 +192,10 @@ AC_CONFIG_FILES([Makefile \
         build/windows/installer/Makefile \
 	doc/Makefile \
 	doc/images/Makefile] \
-	python/Makefile)
+	python/Makefile \
+	.circleci/Makefile \
+	.github/Makefile \
+	.github/workflows/Makefile)
 AC_OUTPUT
 
 if test "x$no_x" = "xyes"; then
