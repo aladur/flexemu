@@ -2,8 +2,6 @@
 #
 # Supported builds:
 # - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-5/g++-5)
-# - Ubuntu2204 x64 Release with Qt5
-# - Ubuntu2204 x64 Release with Qt6
 # - Visual Studio 2019 Win32 Debug with Qt5
 # - Visual Studio 2019 Win32 Release with Qt5
 # - Visual Studio 2019 x64 Debug with Qt5
@@ -13,7 +11,6 @@
 
 image:
   - Ubuntu1604
-  - Ubuntu2204
   - Visual Studio 2019
 
 environment:
@@ -55,22 +52,6 @@ install:
           sudo apt-get install qt5-default libqt5x11extras5-dev -y
           VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $QTVER`
       fi
-      if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2204" ]; then
-          if [ $QTMAJOR -eq 5 ]; then
-              QTVERSION=5.15
-          fi
-          if [ $QTMAJOR -eq 6 ]; then
-              QTVERSION=6.4
-          fi
-          QTDIR=$HOME/Qt/$QTVERSION/gcc_64
-          # Add QTDIR/bin to PATH so that configure script will find Qt.
-          # (see m4/ax_have_qt.m4).
-          # With Qt6 moc, rcc and uic is located in $QTDIR/libexec.
-          PATH=$PATH:$QTDIR/bin:$QTDIR/libexec
-          LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$QTDIR/lib
-          sudo ldconfig
-          VER=`ls -ld $HOME/Qt/$QTVERSION | sed -nE $QTVER`
-      fi
       echo ==================== Build on $APPVEYOR_BUILD_WORKER_IMAGE ====================
       echo "Qt version:" $VER
       VER=`$CC --version | sed -nE $CCVER`
@@ -86,13 +67,9 @@ matrix:
     # On Linux only do a release build.
     - configuration: Debug
       image: Ubuntu1604
-    - configuration: Debug
-      image: Ubuntu2204
     # On Linux only do a x64 build.
     - platform: Win32
       image: Ubuntu1604
-    - platform: Win32
-      image: Ubuntu2204
     - QTMAJOR: 6
       image: Ubuntu1604
   fast_finish: true
@@ -102,7 +79,6 @@ for:
     matrix:
       only:
         - image: Ubuntu1604
-        - image: Ubuntu2204
     before_build:
       - sh: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
     build_script:
