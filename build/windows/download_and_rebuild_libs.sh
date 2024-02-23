@@ -19,6 +19,7 @@
 #                   Syntax: <major>.<minor>.<patch>
 #                   Supported major version is 5 or 6.
 #                   See https://download.qt.io/archive/qt/ for available versions.
+#   -s              Suppress progress bar when downloading files.
 #
 # Qt5
 #=====
@@ -79,6 +80,7 @@ qtversion=
 delete=
 vsversion=
 vstype=
+curl_progress=""
 while :
 do
     case "$1" in
@@ -112,6 +114,8 @@ do
                 usage
                 exit 1
             fi;;
+        -s)
+            curl_progress="-sS";;
         *) break;;
     esac
     shift
@@ -281,25 +285,26 @@ as_doublebslash_windows_path() {
 # $6: Path of the generated batch script
 create_qt_build_script() {
     echo CALL \"$1\" $2 >$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
+    echo IF %ERRORLEVEL% neq 0 GOTO :end >>$6
     echo SET _ROOT=$3 >>$6
     echo SET PATH=\%_ROOT\%\\bin\;\%PATH\% >>$6
     echo SET _ROOT= >>$6
-    echo >>$6
     echo cd \"$4\" >>$6
     echo CALL \"$3\\configure.bat\" -redo >>$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
+    echo IF %ERRORLEVEL% neq 0 GOTO :end >>$6
 if [ "$5" = "5" ]; then
     echo jom.exe >>$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
+    echo IF %ERRORLEVEL% neq 0 GOTO :end >>$6
     echo jom.exe install >>$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
 else
     echo cmake --build . --parallel >>$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
+    echo IF %ERRORLEVEL% neq 0 GOTO :end >>$6
     echo ninja.exe install >>$6
-    echo IF %ERRORLEVEL% neq 0 EXIT /b %ERRORLEVEL% >>$6
 fi
+    echo :end >>$6
+    echo echo ERRORLEVEL=\%ERRORLEVEL\% >>$6
+    echo EXIT /b %ERRORLEVEL% >>$6
+    chmod +x $6
 }
 
 # Create the Qt build config file.
@@ -412,7 +417,7 @@ do
     file=$(basename "$url")
     if [ ! -r $qtdir/$file ]; then
         echo downloading $file...
-        curl -# -L $url > "$qtdir/$file"
+        curl $curl_progress -# -L $url > "$qtdir/$file"
     fi
 done
 if [ ! "$?" == "0" ]; then
@@ -488,11 +493,14 @@ do
     create_config_file $absqttgtdir\\$platform $qtmaversion $configoptpath
     absqtsrcdir=$( as_absolute_windows_path $qtsrcdir )
     absqtbuilddir=$( as_absolute_windows_path $qtdir/$directory )
-    batchscript=$qtdir/$directory/build_qt.bat
+    batchscript=$qtdir/$directory/build_qt.cmd
     create_qt_build_script "$msvcscript" $arch "$absqtsrcdir" "$absqtbuilddir" $qtmaversion $batchscript
+    echo ========== START Contents of build batch file ==========
+    cat $batchscript
+    echo ========== END Contents of build batch file ==========
 
     echo building $platform Qt $qtversion libraries...
-    cmd < $batchscript
+    ./$batchscript
     if [ ! "$?" == "0" ]; then
         echo "**** Error: Building Qt libraries. Aborted." >&2
         exit 1
