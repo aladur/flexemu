@@ -211,14 +211,14 @@ ${Else}
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\styles\qwindowsvistastyle.dll"
 !endif
 ${EndIf}
+!if ${QTMAVERSION} == 5
   SetOutPath $INSTDIR\printsupport
 ${If} $Arch == "x64"
   File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\printsupport\windowsprintersupport.dll"
 ${Else}
-!if ${QTMAVERSION} == 5
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\printsupport\windowsprintersupport.dll"
-!endif
 ${EndIf}
+!endif
 SectionEnd
 
 Section "Monitor programs and disk files" MonitorDiskFiles
@@ -490,6 +490,7 @@ Section "Uninstall" Uninstall
   Delete $INSTDIR\Data\*.*
   Delete $INSTDIR\platforms\*.*
   Delete $INSTDIR\styles\*.*
+  Delete $INSTDIR\printsupport\*.*
   Delete $INSTDIR\*.*
 
   ; Remove shortcuts, if any
@@ -505,6 +506,7 @@ Section "Uninstall" Uninstall
   RMDir "$INSTDIR\Data"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\styles"
+  RMDir "$INSTDIR\printsupport"
   RMDir "$INSTDIR"
 
   ; Remove install directory from PATH environment variable

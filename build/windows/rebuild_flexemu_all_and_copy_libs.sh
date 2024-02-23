@@ -143,13 +143,15 @@ do
             do
                 cp -f ${QTDIR}/${platform}/plugins/styles/${file}${postfix}.dll $targetdir/styles
             done
-            if [ ! -d $targetdir/printsupport ]; then
-                mkdir $targetdir/printsupport
+            if [ "$qtmaversion" = "5" ]; then
+                if [ ! -d $targetdir/printsupport ]; then
+                    mkdir $targetdir/printsupport
+                fi
+                for file in windowsprintersupport
+                do
+                    cp -f ${QTDIR}/${platform}/plugins/printsupport/${file}${postfix}.dll $targetdir/printsupport
+                done
             fi
-            for file in windowsprintersupport
-            do
-                cp -f ${QTDIR}/${platform}/plugins/printsupport/${file}${postfix}.dll $targetdir/printsupport
-            done
             cp -f src/flexemu.conf $targetdir
         fi
     done
