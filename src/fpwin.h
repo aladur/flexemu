@@ -78,6 +78,8 @@ private slots:
     void OpenDirectory();
     void OpenRecentDisk();
     void OpenRecentDirectory();
+    void ClearAllRecentDiskEntries();
+    void ClearAllRecentDirectoryEntries();
     void Exit();
 #ifndef QT_NO_CLIPBOARD
     void Copy();
@@ -148,7 +150,9 @@ protected:
     QMenu *windowMenu;
     QMenu *recentDisksMenu;
     QList<QAction *> recentDiskActions;
+    QAction *recentDisksClearAllAction;
     QMenu *recentDirectoriesMenu;
+    QAction *recentDirectoriesClearAllAction;
     QList<QAction *> recentDirectoryActions;
     QLabel *l_selectedFilesCount;
     QLabel *l_selectedFilesByteSize;

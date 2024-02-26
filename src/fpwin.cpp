@@ -1186,6 +1186,13 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
         menu->addAction(action);
     }
 
+    recentDisksClearAllAction = new QAction(tr("Clear List"), this);
+    recentDisksClearAllAction->setVisible(false);
+    connect(recentDisksClearAllAction, &QAction::triggered, this,
+            &FLEXplorer::ClearAllRecentDiskEntries);
+    menu->addSeparator();
+    menu->addAction(recentDisksClearAllAction);
+
     UpdateRecentDiskActions();
 }
 
@@ -1211,6 +1218,16 @@ void FLEXplorer::UpdateRecentDiskActions() const
     {
         recentDiskActions.at(idx)->setVisible(false);
     }
+
+    recentDisksClearAllAction->setVisible(!recentDiskPaths.isEmpty());
+}
+
+void FLEXplorer::ClearAllRecentDiskEntries()
+{
+    recentDiskPaths.clear();
+    options.recentDiskPaths.clear();
+
+    UpdateRecentDiskActions();
 }
 
 void FLEXplorer::DeleteRecentDiskActions()
@@ -1270,6 +1287,13 @@ void FLEXplorer::CreateRecentDirectoryActionsFor(QMenu *menu)
         menu->addAction(action);
     }
 
+    recentDirectoriesClearAllAction = new QAction(tr("Clear List"), this);
+    recentDirectoriesClearAllAction->setVisible(false);
+    connect(recentDirectoriesClearAllAction, &QAction::triggered, this,
+            &FLEXplorer::ClearAllRecentDirectoryEntries);
+    menu->addSeparator();
+    menu->addAction(recentDirectoriesClearAllAction);
+
     UpdateRecentDirectoryActions();
 }
 
@@ -1296,6 +1320,17 @@ void FLEXplorer::UpdateRecentDirectoryActions() const
     {
         recentDirectoryActions.at(idx)->setVisible(false);
     }
+
+    auto isEmpty = recentDirectoryPaths.isEmpty();
+    recentDirectoriesClearAllAction->setVisible(!isEmpty);
+}
+
+void FLEXplorer::ClearAllRecentDirectoryEntries()
+{
+    recentDirectoryPaths.clear();
+    options.recentDirectoryPaths.clear();
+
+    UpdateRecentDirectoryActions();
 }
 
 void FLEXplorer::DeleteRecentDirectoryActions()
