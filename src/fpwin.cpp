@@ -106,6 +106,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     CreateStatusBar();
     UpdateMenus();
     RestoreRecentDisks();
+    RestoreRecentDirectories();
 
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -116,6 +117,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
 
 FLEXplorer::~FLEXplorer()
 {
+    DeleteRecentDirectoryActions();
     DeleteRecentDiskActions();
 }
 
@@ -232,6 +234,16 @@ void FLEXplorer::OpenRecentDisk()
     }
 }
 
+void FLEXplorer::OpenRecentDirectory()
+{
+    auto *action = qobject_cast<QAction *>(sender());
+
+    if (action != nullptr)
+    {
+        OpenContainerForPath(action->data().toString());
+    }
+}
+
 void FLEXplorer::ProcessArguments(const QStringList &args)
 {
     int i = 0;
@@ -274,7 +286,15 @@ bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
         child->show();
 
         SetStatusMessage(tr("Loaded %1").arg(path));
-        UpdateForRecentDisk(path);
+        auto fileInfo = QFileInfo(path);
+        if (fileInfo.isFile())
+        {
+            UpdateForRecentDisk(path);
+        }
+        else if (fileInfo.isDir())
+        {
+            UpdateForRecentDirectory(path);
+        }
 
         return true;
     }
@@ -736,6 +756,8 @@ void FLEXplorer::CreateFileActions()
 
     recentDisksMenu = fileMenu->addMenu(tr("&Recent Disks"));
     CreateRecentDiskActionsFor(recentDisksMenu);
+    recentDirectoriesMenu = fileMenu->addMenu(tr("R&ecent Directories"));
+    CreateRecentDirectoryActionsFor(recentDirectoriesMenu);
 
     fileMenu->addSeparator();
 
@@ -1174,23 +1196,14 @@ void FLEXplorer::UpdateRecentDiskActions() const
     QStringList::size_type idx = 0;
     for (const auto &path : recentDiskPaths)
     {
-        auto fileInfo = QFileInfo(path);
         auto idxString = QString("%1. ").arg(idx + 1);
+        const QIcon icon(":/resource/open_con.png");
         const auto strippedPath = StripPath(path);
 
         recentDiskActions.at(idx)->setText(idxString + strippedPath);
         recentDiskActions.at(idx)->setData(path);
         recentDiskActions.at(idx)->setVisible(true);
-        if (fileInfo.isFile())
-        {
-            const QIcon icon(":/resource/open_con.png");
-            recentDiskActions.at(idx)->setIcon(icon);
-        }
-        else if (fileInfo.isDir())
-        {
-            const QIcon icon(":/resource/open_dir.png");
-            recentDiskActions.at(idx)->setIcon(icon);
-        }
+        recentDiskActions.at(idx)->setIcon(icon);
         ++idx;
     }
 
@@ -1233,12 +1246,97 @@ void FLEXplorer::RestoreRecentDisks()
     {
         const QFileInfo fileInfo(path.c_str());
 
-        if (fileInfo.exists())
+        if (fileInfo.exists() && fileInfo.isFile())
         {
             recentDiskPaths.push_back(path.c_str());
         }
     }
 
     UpdateRecentDiskActions();
+}
+
+void FLEXplorer::CreateRecentDirectoryActionsFor(QMenu *menu)
+{
+    QAction *action = nullptr;
+
+    for (auto i = 0; i < options.maxRecentDirectories; ++i)
+    {
+        // Create all actions, de/activate them by setVisible() false/true.
+        action = new QAction(this);
+        action->setVisible(false);
+        connect(action, &QAction::triggered, this,
+                &FLEXplorer::OpenRecentDirectory);
+        recentDirectoryActions.append(action);
+        menu->addAction(action);
+    }
+
+    UpdateRecentDirectoryActions();
+}
+
+// Always call this function when recentDirectoryPaths has changed or the
+// recentDirectoryActions have been initialized.
+void FLEXplorer::UpdateRecentDirectoryActions() const
+{
+    QStringList::size_type idx = 0;
+    for (const auto &path : recentDirectoryPaths)
+    {
+        const auto idxString = QString("%1. ").arg(idx + 1);
+        const QIcon icon(":/resource/open_dir.png");
+        const auto strippedPath = StripPath(path);
+
+        recentDirectoryActions.at(idx)->setText(idxString + strippedPath);
+        recentDirectoryActions.at(idx)->setData(path);
+        recentDirectoryActions.at(idx)->setVisible(true);
+        recentDirectoryActions.at(idx)->setIcon(icon);
+        ++idx;
+    }
+
+    for (idx = recentDirectoryPaths.size(); idx < options.maxRecentDirectories;
+            ++idx)
+    {
+        recentDirectoryActions.at(idx)->setVisible(false);
+    }
+}
+
+void FLEXplorer::DeleteRecentDirectoryActions()
+{
+    while (!recentDirectoryActions.isEmpty())
+    {
+        delete recentDirectoryActions.takeLast();
+    }
+}
+
+// Call this when a directory has been successfully "loaded".
+void FLEXplorer::UpdateForRecentDirectory(const QString &path)
+{
+    recentDirectoryPaths.removeAll(path);
+    recentDirectoryPaths.prepend(path);
+    while (recentDirectoryPaths.size() > options.maxRecentDirectories)
+    {
+        recentDirectoryPaths.removeLast();
+    }
+    options.recentDirectoryPaths.clear();
+    for (const auto &directoryPath : recentDirectoryPaths)
+    {
+        options.recentDirectoryPaths.push_back(directoryPath.toStdString());
+    }
+
+    UpdateRecentDirectoryActions();
+}
+
+void FLEXplorer::RestoreRecentDirectories()
+{
+    recentDirectoryPaths.clear();
+    for (const auto &path : options.recentDirectoryPaths)
+    {
+        const QFileInfo fileInfo(path.c_str());
+
+        if (fileInfo.exists() && fileInfo.isDir())
+        {
+            recentDirectoryPaths.push_back(path.c_str());
+        }
+    }
+
+    UpdateRecentDirectoryActions();
 }
 

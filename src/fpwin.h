@@ -77,6 +77,7 @@ private slots:
     void OpenContainer();
     void OpenDirectory();
     void OpenRecentDisk();
+    void OpenRecentDirectory();
     void Exit();
 #ifndef QT_NO_CLIPBOARD
     void Copy();
@@ -129,6 +130,11 @@ private:
     void DeleteRecentDiskActions();
     void UpdateForRecentDisk(const QString &path);
     void RestoreRecentDisks();
+    void CreateRecentDirectoryActionsFor(QMenu *menu);
+    void UpdateRecentDirectoryActions() const;
+    void DeleteRecentDirectoryActions();
+    void UpdateForRecentDirectory(const QString &path);
+    void RestoreRecentDirectories();
     bool OpenContainerForPath(QString path, bool isLast = true);
 
 protected:
@@ -142,6 +148,8 @@ protected:
     QMenu *windowMenu;
     QMenu *recentDisksMenu;
     QList<QAction *> recentDiskActions;
+    QMenu *recentDirectoriesMenu;
+    QList<QAction *> recentDirectoryActions;
     QLabel *l_selectedFilesCount;
     QLabel *l_selectedFilesByteSize;
     QToolBar *fileToolBar;
@@ -180,6 +188,7 @@ protected:
     QString injectDirectory;
     QString extractDirectory;
     QStringList recentDiskPaths;
+    QStringList recentDirectoryPaths;
     sFPOptions &options;
 };
 

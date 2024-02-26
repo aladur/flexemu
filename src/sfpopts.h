@@ -48,8 +48,10 @@ struct sFPOptions
     std::string openDirectoryPath;
     std::string openInjectFilePath;
     std::vector<std::string> recentDiskPaths;
+    std::vector<std::string> recentDirectoryPaths;
 
     static const int maxRecentFiles = 24;
+    static const int maxRecentDirectories = 24;
 };
 
 #endif

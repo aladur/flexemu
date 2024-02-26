@@ -80,6 +80,13 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
         key << FLEXPLORERRECENTDISKPATH << i;
         reg.SetValue(key.str(), options.recentDiskPaths[i]);
     }
+    for (auto i = 0U; i < options.recentDirectoryPaths.size(); ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDIRECTORY << i;
+        reg.SetValue(key.str(), options.recentDirectoryPaths[i]);
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName = getHomeDirectory() +
@@ -111,6 +118,14 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
        
         key << FLEXPLORERRECENTDISKPATH << i;
         rcFile.SetValue(key.str().c_str(), options.recentDiskPaths[i].c_str());
+    }
+    for (auto i = 0U; i < options.recentDirectoryPaths.size(); ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDIRECTORY << i;
+        rcFile.SetValue(key.str().c_str(),
+                        options.recentDirectoryPaths[i].c_str());
     }
 #endif
 }
@@ -176,6 +191,16 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             options.recentDiskPaths.push_back(string_result);
         }
     }
+    for (auto i = 0; i < options.maxRecentDirectories; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDIRECTORY << i;
+        if (!reg.GetValue(key.str(), string_result))
+        {
+            options.recentDirectoryPaths.push_back(string_result);
+        }
+    }
 #endif
 #ifdef UNIX
     const auto rcFileName =
@@ -233,6 +258,16 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         if (!rcFile.GetValue(key.str().c_str(), string_result))
         {
             options.recentDiskPaths.push_back(string_result);
+        }
+    }
+    for (auto i = 0; i < options.maxRecentDirectories; ++i)
+    {
+        std::stringstream key;
+
+        key << FLEXPLORERRECENTDIRECTORY << i;
+        if (!rcFile.GetValue(key.str().c_str(), string_result))
+        {
+            options.recentDirectoryPaths.push_back(string_result);
         }
     }
 #endif
