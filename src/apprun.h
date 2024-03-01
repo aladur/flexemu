@@ -51,6 +51,7 @@
 #include <map>
 #include <thread>
 
+class QApplication;
 
 struct sOptions;
 
@@ -61,7 +62,7 @@ public:
     ~ApplicationRunner();
     ApplicationRunner(struct sOptions &x_options);
 
-    int startup();
+    int startup(QApplication &app);
     void cleanup();
 
 private:

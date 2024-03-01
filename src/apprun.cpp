@@ -240,7 +240,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
     return true;
 }
 
-int ApplicationRunner::startup()
+int ApplicationRunner::startup(QApplication &app)
 {
     cpu.set_disassembler(&disassembler);
     cpu.set_use_undocumented(options.use_undocumented);
@@ -285,6 +285,9 @@ int ApplicationRunner::startup()
 
     // start CPU thread
     cpuThread = std::make_unique<std::thread>(&Scheduler::run, &scheduler);
+
+    QObject::connect(&gui, &QtGui::CloseApplication, &app,
+                     &QCoreApplication::quit, Qt::QueuedConnection);
 
     return 0;
 }

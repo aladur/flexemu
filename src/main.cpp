@@ -104,7 +104,8 @@ int main(int argc, char *argv[])
             QApplication app(argc, argv);
             ApplicationRunner runner(options);
 
-            return_code = runner.startup();
+            app.setQuitOnLastWindowClosed(false);
+            return_code = runner.startup(app);
             if (!return_code)
             {
                 return_code = app.exec();

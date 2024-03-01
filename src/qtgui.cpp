@@ -724,25 +724,28 @@ void QtGui::OnTimer()
             if (previousState != CpuState::Invalid &&
                 status->state == CpuState::Invalid)
             {
-                timer.stop();
+                // CPU got an invalid instruction.
                 auto pc = QString("%1")
                     .arg(status->pc, 4, 16, QChar('0')).toUpper();
                 QStringList hexBytes;
-                for (int i = 0; i < 4; ++i)
+                for (unsigned i = 0; i < sizeof(status->instruction); ++i)
                 {
                     auto hexString = QString("%1")
                         .arg(status->instruction[i], 2, 16, QChar('0'));
                     hexBytes.append(hexString.toUpper());
                 }
-                auto message = tr("\
-    CPU got invalid instruction.\n\
-    PC=%1 instr=%2\n\
-    CPU has stopped.\n\
-    Pressing OK will execute a Reset.").arg(pc).arg(hexBytes.join(QChar(' ')));
-                QMessageBox::critical(this, "flexemu error", message);
+                auto message = tr(
+                    "CPU got an invalid instruction.\n"
+                    "PC=%1 opcode=%2\n"
+                    "CPU has stopped.\n"
+                    "Pressing OK will execute a Reset.")
+                        .arg(pc).arg(hexBytes.join(QChar(' ')));
 
-                timer.start(TIME_BASE / 1000);
-                OnCpuResetRun();
+                QTimer::singleShot(0, this, [&, message]()
+                {
+                    QMessageBox::critical(this, "flexemu error", message);
+                    OnCpuResetRun();
+                });
             }
             previousState = status->state;
         }
@@ -2168,6 +2171,7 @@ void QtGui::closeEvent(QCloseEvent *event)
             FlexemuOptions::WriteOptions(options, false, true);
         }
         event->accept();
+        emit CloseApplication();
     }
     else
     {

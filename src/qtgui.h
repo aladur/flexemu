@@ -122,6 +122,9 @@ public:
     void output_to_graphic() override;
     void write_char_serial(Byte value) override;
 
+signals:
+    void CloseApplication();
+
 protected:
     void redraw_cpuview_impl(const Mc6809CpuStatus &status) override;
 
