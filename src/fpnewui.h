@@ -60,7 +60,9 @@ private slots:
     void OnFlxFileFormat(bool value);
     void OnMdcrFileFormat(bool value);
     void OnFormatChanged(int index);
-    void OnTrkSecChanged();
+    void OnTrkSecChanged(int tracks, int sectors);
+    void OnTrackChanged(int value);
+    void OnSectorChanged(int value);
     void OnSelectPath();
     void OnAccepted();
     void OnRejected();
@@ -68,8 +70,6 @@ private slots:
 private:
     void InitializeWidgets();
     void ConnectSignalsWithSlots();
-    void AddTracksValidator(QLineEdit &lineEdit);
-    void AddSectorsValidator(QLineEdit &lineEdit);
     void UpdateFormatTrkSecEnable(bool isMdcrFormat);
     void UpdateFilename();
     bool Validate();

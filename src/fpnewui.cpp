@@ -47,8 +47,6 @@ void FlexplorerNewUi::setupUi(QDialog &p_dialog)
     Ui_FlexplorerNew::setupUi(dialog);
 
     InitializeWidgets();
-    AddTracksValidator(*e_tracks);
-    AddSectorsValidator(*e_sectors);
     ConnectSignalsWithSlots();
 }
 
@@ -90,10 +88,8 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
             break;
     }
 
-    auto text = QString("%1").arg(tracks);
-    e_tracks->setText(text);
-    text = QString("%1").arg(sectors);
-    e_sectors->setText(text);
+    e_tracks->setValue(tracks);
+    e_sectors->setValue(sectors);
 
     if (path.isEmpty())
     {
@@ -115,10 +111,20 @@ void FlexplorerNewUi::ConnectSignalsWithSlots()
             this, &FlexplorerNewUi::OnFlxFileFormat);
     connect(r_mdcrFile, &QAbstractButton::toggled,
             this, &FlexplorerNewUi::OnMdcrFileFormat);
-    connect(e_tracks, &QLineEdit::textChanged,
-            this, &FlexplorerNewUi::OnTrkSecChanged);
-    connect(e_sectors, &QLineEdit::textChanged,
-            this, &FlexplorerNewUi::OnTrkSecChanged);
+    connect(e_tracks,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+#else
+            QOverload<int>::of(&QSpinBox::valueChanged),
+#endif
+            this, &FlexplorerNewUi::OnTrackChanged);
+    connect(e_sectors,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+#else
+            QOverload<int>::of(&QSpinBox::valueChanged),
+#endif
+            this, &FlexplorerNewUi::OnSectorChanged);
     connect(cb_diskFormat,
 #if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
             static_cast<void (QComboBox::*)(int)>(
@@ -138,12 +144,12 @@ void FlexplorerNewUi::ConnectSignalsWithSlots()
 
 int FlexplorerNewUi::GetTracks() const
 {
-    return e_tracks->text().toInt();
+    return e_tracks->value();
 }
 
 int FlexplorerNewUi::GetSectors() const
 {
-    return e_sectors->text().toInt();
+    return e_sectors->value();
 }
 
 QString FlexplorerNewUi::GetPath() const
@@ -218,21 +224,26 @@ void FlexplorerNewUi::OnFormatChanged(int index)
     if (!isFreeDiskFormat)
     {
         auto trk_sec = flex_formats[index - 1];                             
-        auto text = QString("%1").arg(trk_sec.trk + 1);
-        e_tracks->setText(text);
-        text = QString("%1").arg(static_cast<int>(trk_sec.sec));
-        e_sectors->setText(text);
+        e_tracks->setValue(trk_sec.trk + 1);
+        e_sectors->setValue(trk_sec.sec);
     }
 
     e_tracks->setEnabled(!isMdcrFormat && isFreeDiskFormat);
     e_sectors->setEnabled(!isMdcrFormat && isFreeDiskFormat);
 }
 
-void FlexplorerNewUi::OnTrkSecChanged()
+void FlexplorerNewUi::OnSectorChanged(int sectors)
 {
-    auto tracks = GetTracks();
-    auto sectors = GetSectors();
+    OnTrkSecChanged(GetTracks(), sectors);
+}
 
+void FlexplorerNewUi::OnTrackChanged(int tracks)
+{
+    OnTrkSecChanged(tracks, GetSectors());
+}
+
+void FlexplorerNewUi::OnTrkSecChanged(int tracks, int sectors)
+{
     bool isWarning = true;
     for (const auto &st : flex_formats)
     {
@@ -280,47 +291,8 @@ void FlexplorerNewUi::OnSelectPath()
     }
 }
 
-void FlexplorerNewUi::AddTracksValidator(QLineEdit &lineEdit)
-{
-    e_tracks->setValidator(new QIntValidator(2, 256, &lineEdit));
-
-}
-
-void FlexplorerNewUi::AddSectorsValidator(QLineEdit &lineEdit)
-{
-    e_sectors->setValidator(new QIntValidator(6, 255, &lineEdit));
-}
-
 bool FlexplorerNewUi::Validate()
 {
-    if (e_tracks->isEnabled() && !e_tracks->hasAcceptableInput())
-    {
-        const auto *validator =
-            static_cast<const QIntValidator *>(e_tracks->validator());
-
-        e_tracks->setFocus(Qt::OtherFocusReason);
-        auto message = tr("Track count is not in the valid\n"
-                          "range of %1 ... %2.")
-                          .arg(validator->bottom()).arg(validator->top());
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), message);
-
-        return false;
-    }
-
-    if (e_sectors->isEnabled() && !e_sectors->hasAcceptableInput())
-    {
-        const auto *validator =
-            static_cast<const QIntValidator *>(e_sectors->validator());
-
-        e_sectors->setFocus(Qt::OtherFocusReason);
-        auto message = tr("Sector count is not in the valid\n"
-                          "range of %1 ... %2.")
-                          .arg(validator->bottom()).arg(validator->top());
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), message);
-
-        return false;
-    }
-
     if (e_path->text().isEmpty())
     {
         e_path->setFocus(Qt::OtherFocusReason);
