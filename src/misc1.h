@@ -81,8 +81,6 @@
     "Copyright (C) 1998-2024 Wolfgang Schwotzer\n" \
     "http://flexemu.neocities.org\n"
 
-extern const char *gMemoryAllocationErrorString;
-
 /* adaptions for autoconf to use with/without ANSI C headers */
 
 #ifndef UNIX

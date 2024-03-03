@@ -46,11 +46,6 @@
 
 const char* white_space = " \t\n\r\f\v";
 
-const char *gMemoryAllocationErrorString =
-    "Bad memory allocation.\n"
-    "Close other applications\n"
-    "and try again.";
-
 int copyFile(const char *srcPath, const char *destPath)
 {
     BFilePtr sFp(srcPath,  "rb");
