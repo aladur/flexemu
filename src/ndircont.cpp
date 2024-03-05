@@ -63,8 +63,7 @@
 // names are emulated. All other files in the directory are ignored.
 // See IsFlexFilename for details. If the files in the emulated directory
 // exceed the size of the emulated disk only part of the files are emulated.
-// The size of the emulated disk is fixed and defined by the constants
-// MAX_TRACK and MAX_SECTOR's.
+// The size of the emulated disk is defined by parameter tracks and sectors.
 // IMPORTANT HINT: As long as a host file system is mounted as a FLEX
 // disk any file in this directory should not be renamed, modified or deleted
 // Care should also be taken when using low level disk access tools
@@ -75,7 +74,7 @@
 // can corrupt the emulation.
 
 NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
-        const FileTimeAccess &fileTimeAccess)
+        const FileTimeAccess &fileTimeAccess, int tracks, int sectors)
     : attributes(0)
     , ft_access(fileTimeAccess)
     , dir_extend{0, 0}
@@ -104,7 +103,7 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
         attributes |= WRITE_PROTECT;
     }
 
-    mount(number);
+    mount(number, tracks, sectors);
     number++;
 }
 
@@ -125,12 +124,12 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
 }
 
 // Create a new nafs directory container in path pdir.
-// format, track and sector parameter is ignored.
+// format parameter is ignored.
 NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         const char *name,
         const FileTimeAccess &fileTimeAccess,
-        int /* t */,
-        int /* s */,
+        int tracks,
+        int sectors,
         int /* fmt = TYPE_DSK_CONTAINER */)
 {
     struct stat sbuf;
@@ -150,7 +149,8 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
-    return new NafsDirectoryContainer(totalPath.c_str(), fileTimeAccess);
+    return new NafsDirectoryContainer(totalPath.c_str(), fileTimeAccess,
+                                      tracks, sectors);
 }
 
 std::string NafsDirectoryContainer::GetPath() const
@@ -224,13 +224,14 @@ int NafsDirectoryContainer::GetContainerType() const
 ///////////////////////////////////////////////////////
 
 // Initialize the internal data structures.
-void NafsDirectoryContainer::initialize_header(bool is_write_protected)
+void NafsDirectoryContainer::initialize_header(bool is_write_protected,
+                                               int tracks, int sectors)
 {
     param.offset        = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
-    param.max_sector    = MAX_SECTOR;
-    param.max_sector0   = getTrack0SectorCount(MAX_TRACK + 1, MAX_SECTOR);
-    param.max_track     = MAX_TRACK;
+    param.max_sector    = sectors;
+    param.max_sector0   = getTrack0SectorCount(tracks, sectors);
+    param.max_track     = tracks - 1;
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track  = param.max_sector * SECTOR_SIZE;
@@ -619,6 +620,15 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     Word fc_start = param.max_sector; // Start index of free chain.
     constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
     const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
+
+    auto sum_sectors = (param.max_track + 1) * param.max_sector;
+    struct s_link_table new_link{};
+    flex_links.reserve(param.max_sector);
+
+    for (i = 0; i < sum_sectors; ++i)
+    {
+        flex_links.emplace_back(new_link);
+    }
 
     // On track 0 are all boot, system info and directory sectors
     for (i = 0; i < fc_start; i++)
@@ -1870,10 +1880,10 @@ bool NafsDirectoryContainer::FormatSector(const Byte *, int, int, int, int)
 }
 
 // Mount the directory container. number is the disk number.
-void NafsDirectoryContainer::mount(Word number)
+void NafsDirectoryContainer::mount(Word number, int tracks, int sectors)
 {
     bool is_write_protected = (access(directory.c_str(), W_OK) != 0);
-    initialize_header(is_write_protected);
+    initialize_header(is_write_protected, tracks, sectors);
     initialize_flex_sys_info_sectors(number);
     fill_flex_directory(is_write_protected);
 }

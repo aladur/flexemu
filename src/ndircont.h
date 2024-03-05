@@ -37,11 +37,6 @@
 
 class NafsDirectoryContainer : public FileContainerIfSector
 {
-
-    static const int MAX_TRACK{79}; // maximum track number (zero based).
-    static const int MAX_SECTOR{36}; // number of sectors per track,
-                                     // side 0 and 1 (one based).
-
     // Common used parameter names and types:
     //
     // SDWord sec_idx     Index into flex_links (if < 0 it is invalid e.g.
@@ -104,7 +99,8 @@ public:
     NafsDirectoryContainer(const NafsDirectoryContainer &) = delete;
     NafsDirectoryContainer(NafsDirectoryContainer &&) = delete;
     NafsDirectoryContainer(const char *path,
-                           const FileTimeAccess &fileTimeAccess);
+                           const FileTimeAccess &fileTimeAccess,
+                           int tracks, int sectors);
     virtual ~NafsDirectoryContainer();
 
     NafsDirectoryContainer &operator=(const NafsDirectoryContainer &) = delete;
@@ -115,12 +111,11 @@ private:
     Byte attributes;
     bool isOpen;
     const FileTimeAccess &ft_access;
-
     s_floppy param;
 
     // Some structures needed for a FLEX file system
     // link table: Each sector has an entry in the link table.
-    std::array<s_link_table, (MAX_TRACK + 1) * MAX_SECTOR> flex_links;
+    std::vector<s_link_table> flex_links;
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SDWord, s_new_file> new_files; // new file table
@@ -134,7 +129,7 @@ public:
     static NafsDirectoryContainer *Create(const char *dir,
                                           const char *name,
                                           const FileTimeAccess &fileTimeAccess,
-                                          int t, int s,
+                                          int tracks, int sectors,
                                           int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
     bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
@@ -152,12 +147,12 @@ public:
 
 private:
     void fill_flex_directory(bool is_write_protected);
-    void initialize_header(bool is_write_protected);
+    void initialize_header(bool is_write_protected, int tracks, int sectors);
     void initialize_flex_sys_info_sectors(Word number);
     void initialize_flex_directory();
     void initialize_flex_link_table();
     void close_new_files();
-    void mount(Word number);
+    void mount(Word number, int tracks, int sectors);
     SDWord next_free_dir_entry();
     std::string get_unix_filename(SDWord file_id) const;
     std::string get_unix_filename(const s_dir_entry &dir_entry) const;
