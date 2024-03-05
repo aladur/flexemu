@@ -225,6 +225,7 @@
     <ClCompile Include="e2floppy.cpp" />
     <ClCompile Include="e2screen.cpp" />
     <ClCompile Include="efslctle.cpp" />
+    <ClCompile Include="fdoptman.cpp" />
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="inout.cpp" />
@@ -423,6 +424,7 @@
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcnffile.h" />
     <ClInclude Include="fcopyman.h" />
+    <ClInclude Include="fdoptman.h" />
     <ClInclude Include="fdirent.h" />
     <ClInclude Include="ffilebuf.h" />
     <ClInclude Include="ffilecnt.h" />

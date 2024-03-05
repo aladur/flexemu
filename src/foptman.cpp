@@ -109,6 +109,8 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.pixelSize = 2;
     options.readOnlyOptionIds.clear();
     options.isPrintPageBreakDetected = false;
+    options.directoryDiskTracks = 80;
+    options.directoryDiskSectors = 36;
 } // InitOptions
 
 void FlexemuOptions::GetCommandlineOptions(
@@ -431,6 +433,13 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXDISPLAYSMOOTH, options.isSmooth ? 1 : 0);
             break;
 
+        case FlexemuOptionId::DirectoryDiskTrkSec:
+            reg.SetValue(FLEXDIRECTORYDISKTRACKS,
+                options.directoryDiskTracks);
+            reg.SetValue(FLEXDIRECTORYDISKSECTORS,
+                options.directoryDiskSectors);
+            break;
+
         case FlexemuOptionId::PrintFont:
             reg.SetValue(FLEXPRINTFONT, options.printFont.c_str());
             break;
@@ -625,6 +634,13 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isTerminalIgnoreNUL;
             break;
 
+        case FlexemuOptionId::DirectoryDiskTrkSec:
+            optionsToWrite.directoryDiskTracks =
+                previousOptions.directoryDiskTracks;
+            optionsToWrite.directoryDiskSectors =
+                previousOptions.directoryDiskSectors;
+            break;
+
         case FlexemuOptionId::PrintFont:
             optionsToWrite.printFont = previousOptions.printFont;
             break;
@@ -699,6 +715,10 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.isTerminalIgnoreESC ? 1 : 0);
     rcFile.SetValue(FLEXTERMINALIGNORENUL,
             optionsToWrite.isTerminalIgnoreNUL ? 1 : 0);
+    rcFile.SetValue(FLEXDIRECTORYDISKTRACKS,
+            optionsToWrite.directoryDiskTracks);
+    rcFile.SetValue(FLEXDIRECTORYDISKSECTORS,
+            optionsToWrite.directoryDiskSectors);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -849,6 +869,19 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.isSmooth = (int_result != 0);
     }
 
+    if (!reg.GetValue(FLEXDIRECTORYDISKTRACKS, int_result))
+    {
+        int_result = std::max(int_result, 2);
+        int_result = std::min(int_result, 256);
+        options.directoryDiskTracks = int_result;
+    }
+    if (!reg.GetValue(FLEXDIRECTORYDISKSECTORS, int_result))
+    {
+        int_result = std::max(int_result, 6);
+        int_result = std::min(int_result, 255);
+        options.directoryDiskSectors = int_result;
+    }
+
     reg.GetValue(FLEXPRINTFONT, options.printFont);
 
     if (!reg.GetValue(FLEXPRINTPAGEBREAKDETECTED, int_result))
@@ -992,6 +1025,19 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXTERMINALIGNORENUL, int_result))
     {
         options.isTerminalIgnoreNUL = (int_result != 0);
+    }
+
+    if (!rcFile.GetValue(FLEXDIRECTORYDISKTRACKS, int_result))
+    {
+        int_result = std::max(int_result, 2);
+        int_result = std::min(int_result, 256);
+        options.directoryDiskTracks = int_result;
+    }
+    if (!rcFile.GetValue(FLEXDIRECTORYDISKSECTORS, int_result))
+    {
+        int_result = std::max(int_result, 6);
+        int_result = std::min(int_result, 255);
+        options.directoryDiskSectors = int_result;
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

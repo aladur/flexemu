@@ -190,6 +190,7 @@ flexemu_SOURCES = \
 	e2floppy.cpp \
 	e2screen.cpp \
 	efslctle.cpp \
+	fdoptman.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
 	inout.cpp \
@@ -271,6 +272,7 @@ flexemu_SOURCES = \
 	fcnffile.h \
 	fcopyman.h \
 	fdirent.h \
+	fdoptman.h \
 	ffilebuf.h \
 	ffilecnt.h \
 	filecntb.h \

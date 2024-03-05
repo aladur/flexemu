@@ -396,6 +396,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintOutputWindowGeometry:
             case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
+            case FlexemuOptionId::DirectoryDiskTrkSec:
                 break;
         }
     }
@@ -483,6 +484,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PrintOutputWindowGeometry:
                 case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:
+                case FlexemuOptionId::DirectoryDiskTrkSec:
                     break;
             }
         }

@@ -44,6 +44,8 @@
 #include "fcinfo.h"
 #include "flexerr.h"
 #include "cvtwchar.h"
+#include "fdoptman.h"
+
 
 // A debug log can be written to a file
 // by uncommenting the following line.
@@ -63,7 +65,8 @@
 // names are emulated. All other files in the directory are ignored.
 // See IsFlexFilename for details. If the files in the emulated directory
 // exceed the size of the emulated disk only part of the files are emulated.
-// The size of the emulated disk is defined by parameter tracks and sectors.
+// The size of the emulated disk is read from a file .flexdiskrc. If it does
+// not exist the parameters tracks and sectors are used.
 // IMPORTANT HINT: As long as a host file system is mounted as a FLEX
 // disk any file in this directory should not be renamed, modified or deleted
 // Care should also be taken when using low level disk access tools
@@ -101,6 +104,20 @@ NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
     if (access(path, W_OK))
     {
         attributes |= WRITE_PROTECT;
+    }
+
+    FlexDirectoryDiskOptions opts(directory);
+
+    if (opts.Read())
+    {
+        tracks = opts.GetTracks();
+        sectors = opts.GetSectors();
+    }
+    else
+    {
+        opts.SetTracks(tracks);
+        opts.SetSectors(sectors);
+        opts.Write(true);
     }
 
     mount(number, tracks, sectors);

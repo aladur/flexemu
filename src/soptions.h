@@ -72,6 +72,7 @@ enum class FlexemuOptionId : uint8_t
     PrintOutputWindowGeometry,
     PrintPreviewDialogGeometry,
     PrintConfigs,
+    DirectoryDiskTrkSec,
 };
 using FlexemuOptionIds = std::vector<FlexemuOptionId>;
 
@@ -111,6 +112,7 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::PrintOutputWindowGeometry,
     FlexemuOptionId::PrintPreviewDialogGeometry,
     FlexemuOptionId::PrintConfigs,
+    FlexemuOptionId::DirectoryDiskTrkSec,
 };
 
 struct sOptions
@@ -157,6 +159,8 @@ struct sOptions
     std::map<std::string, std::string> printConfigs;
     std::string printOutputWindowGeometry; // Geometry of print output window
     std::string printPreviewDialogGeometry; // Geometry of print preview dialog
+    int directoryDiskTracks; // Default number of track for a directory disk
+    int directoryDiskSectors; // Default number of sectors for a directory disk
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

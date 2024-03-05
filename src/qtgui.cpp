@@ -368,6 +368,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::PrintOutputWindowGeometry:
                 case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:
+                case FlexemuOptionId::DirectoryDiskTrkSec:
                     isWriteOptions = true;
                     break;
 

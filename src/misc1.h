@@ -322,6 +322,8 @@ extern "C" struct sRGBDef
 #define FLEXPRINTOUTPUTWINDOWGEOMETRY "PrintOutputWindowGeometry"
 #define FLEXPRINTPREVIEWDIALOGGEOMETRY "PrintPreviewDialogGeometry"
 #define FLEXPRINTCONFIG "PrintConfig"
+#define FLEXDIRECTORYDISKTRACKS "DirectoryDiskTracks"
+#define FLEXDIRECTORYDISKSECTORS "DirectoryDiskSectors"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

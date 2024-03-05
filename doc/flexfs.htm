@@ -125,7 +125,9 @@ have to care about it.
 There are some restrictions the user should be aware of:
 <p>
 <ul>
- <li>A virtual disk image always contains 80 tracks and 36 sectors. If the size
+ <li>When first time mounting a virtual disk image the track and sector count
+  is used from the preferences. The values are stored in the disk directory
+  in file .flexdiskrc to be reused when mounting again. If the size
   of all files in the directory won't fit to the virtual disk image size some
   of them are silently ignored.
  <li>All filenames must conform to FLEX file naming conventions otherwise

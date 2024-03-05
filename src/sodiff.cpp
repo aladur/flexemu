@@ -161,6 +161,12 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreESC);
     }
 
+    if (opt1.directoryDiskTracks != opt2.directoryDiskTracks ||
+        opt1.directoryDiskSectors != opt2.directoryDiskSectors)
+    {
+        notEquals.push_back(FlexemuOptionId::DirectoryDiskTrkSec);
+    }
+
     if (opt1.printFont != opt2.printFont)
     {
         notEquals.push_back(FlexemuOptionId::PrintFont);
@@ -251,6 +257,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::PrintOutputWindowGeometry:
             case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
+            case FlexemuOptionId::DirectoryDiskTrkSec:
                 break;
         }
     }

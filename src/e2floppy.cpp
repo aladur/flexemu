@@ -134,8 +134,10 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             {
                 pfloppy = FileContainerIfSectorPtr(
                  new NafsDirectoryContainer(
-                     containerPath.c_str(), options.fileTimeAccess,
-                     80, 36));
+                     containerPath.c_str(),
+                     options.fileTimeAccess,
+                     options.directoryDiskTracks,
+                     options.directoryDiskSectors));
             }
             catch (FlexException &)
             {

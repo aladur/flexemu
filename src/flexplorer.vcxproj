@@ -218,7 +218,6 @@
     <ClCompile Include="fpoptman.cpp" />
     <ClCompile Include="fpoptui.cpp" />
     <ClCompile Include="fpwin.cpp" />
-    <ClCompile Include="ndircont.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -353,7 +352,6 @@
     <ClInclude Include="ifilecnt.h" />
     <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="misc1.h" />
-    <ClInclude Include="ndircont.h" />
     <ClInclude Include="rfilecnt.h" />
     <ClInclude Include="sprinter.h" />
     <ClInclude Include="sfpopts.h" />

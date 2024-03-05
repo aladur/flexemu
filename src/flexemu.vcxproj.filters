@@ -66,6 +66,9 @@
     <ClCompile Include="efslctle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fdoptman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="foptman.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -307,6 +310,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fdirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fdoptman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ffilebuf.h">
