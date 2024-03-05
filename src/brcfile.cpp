@@ -47,7 +47,6 @@ void BRcFile::SetFileName(const char *aFileName)
 
 int BRcFile::SetValue(const char *key, const char *value)
 {
-    size_t res;
     BFilePtr fp(fileName.c_str(), "a");
 
     if (fp == nullptr)
@@ -55,9 +54,9 @@ int BRcFile::SetValue(const char *key, const char *value)
         return errno;
     }
 
-    res = fprintf(fp, "%s\t\t\"%s\"\n", key, value);
+    auto res = fprintf(fp, "%s\t\t\"%s\"\n", key, value);
 
-    if (res != 2)
+    if (res < 0)
     {
         return errno;
     }
@@ -67,7 +66,6 @@ int BRcFile::SetValue(const char *key, const char *value)
 
 int BRcFile::SetValue(const char *key, int value)
 {
-    size_t res;
     std::string str;
     BFilePtr fp(fileName.c_str(), "a");
 
@@ -76,9 +74,9 @@ int BRcFile::SetValue(const char *key, int value)
         return errno;
     }
 
-    res = fprintf(fp, "%s\t\t%i\n", key, value);
+    auto res = fprintf(fp, "%s\t\t%i\n", key, value);
 
-    if (res != 2)
+    if (res < 0)
     {
         return errno;
     }
