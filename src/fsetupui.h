@@ -63,11 +63,16 @@ private slots:
     void UpdateHardwareDependencies();
     void UpdateRamDependencies();
     void UpdateColorDependencies();
+    void UpdateFormatTrkSecEnable();
     void OnMultiColorSchemeChanged(int state);
     void OnNColorsChanged(int index);
     void OnSelectDiskMonitorDir();
     void OnAccepted();
     void OnRejected();
+    void OnFormatChanged(int index);
+    void OnTrackChanged(int tracks);
+    void OnSectorChanged(int sectors);
+    void OnTrkSecChanged(int tracks, int sectors);
 
 private:
     enum class FileType

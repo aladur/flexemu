@@ -108,8 +108,9 @@ tracks. For the actual format look at
 <dt id="nafs_format">Virtual disk images
 <dd>
 A vitual disk image is a directory on the host file system which will be
-mapped as a disk drive within the emulation.
-So each file in the directory will be visible as a file contained on the disk.
+mapped as a disk drive within the emulation. So it also could be called a
+<i>directory disk</i>.
+Each file in the directory will be visible as a file contained on the disk.
 Random files are identified by the user execute bit (Linux) or the hidden bit
 (Windows) of the corresponding file set.
 <p>
@@ -126,10 +127,12 @@ There are some restrictions the user should be aware of:
 <p>
 <ul>
  <li>When first time mounting a virtual disk image the track and sector count
-  is used from the preferences. The values are stored in the disk directory
+  is used from the flexemu preferences. The number of tracks and sectors are
+  stored in the disk directory
   in file .flexdiskrc to be reused when mounting again. If the size
   of all files in the directory won't fit to the virtual disk image size some
-  of them are silently ignored.
+  of them are silently ignored. A read-only directory always uses the default
+  track and sector count as defined in the flexemu preferences.
  <li>All filenames must conform to FLEX file naming conventions otherwise
   they are silently ignored.
  <li>A virtual disk image is only accessible using FMS calls. Direct

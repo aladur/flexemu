@@ -24,6 +24,7 @@
 #include "misc1.h"
 #include "e2.h"
 #include "soptions.h"
+#include "filecnts.h"
 #include <string>
 #include <memory>
 #include <stdexcept>
@@ -97,6 +98,30 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             this, &FlexemuOptionsUi::OnAccepted);
     connect(c_buttonBox, &QDialogButtonBox::rejected,
             this, &FlexemuOptionsUi::OnRejected);
+
+    connect(e_tracks,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+#else
+            QOverload<int>::of(&QSpinBox::valueChanged),
+#endif
+            this, &FlexemuOptionsUi::OnTrackChanged);
+    connect(e_sectors,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+#else
+            QOverload<int>::of(&QSpinBox::valueChanged),
+#endif
+            this, &FlexemuOptionsUi::OnSectorChanged);
+
+    connect(cb_diskFormat,
+#if (QT_VERSION <= QT_VERSION_CHECK(5, 7, 0))
+            static_cast<void (QComboBox::*)(int)>(
+                &QComboBox::currentIndexChanged),
+#else
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
+#endif
+            this, &FlexemuOptionsUi::OnFormatChanged);
 }
 
 FlexemuOptionsUi::FlexemuOptionsUi()
@@ -257,6 +282,25 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     c_terminalIgnoreNUL->setChecked(options.isTerminalIgnoreNUL);
     c_terminalIgnoreESC->setChecked(options.isTerminalIgnoreESC);
+
+    index = 0;
+    int selected_index = 0;
+    cb_diskFormat->addItem(tr("[Set Tracks and Sectors]"), index);
+    for (const auto *description : flex_format_descriptions)
+    {
+        if (flex_formats[index].trk + 1 == options.directoryDiskTracks &&
+            flex_formats[index].sec == options.directoryDiskSectors)
+        {
+            selected_index = index + 1;
+        }
+
+        cb_diskFormat->addItem(description, ++index);
+    }
+    cb_diskFormat->setMaxVisibleItems(cb_diskFormat->count());
+    cb_diskFormat->setCurrentIndex(selected_index);
+
+    e_tracks->setValue(options.directoryDiskTracks);
+    e_sectors->setValue(options.directoryDiskSectors);
 
     SetOptionsReadOnly(readOnlyOptions);
 }
@@ -743,6 +787,12 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     {
         options.isTerminalIgnoreESC = c_terminalIgnoreESC->isChecked();
     }
+
+    if (!IsReadOnly(FlexemuOptionId::DirectoryDiskTrkSec))
+    {
+        options.directoryDiskTracks = e_tracks->value();
+        options.directoryDiskSectors = e_sectors->value();
+    }
 }
 
 QString FlexemuOptionsUi::GetRelativePath(
@@ -1002,5 +1052,56 @@ int FlexemuOptionsUi::GetTabIndex() const
     }
 
     return c_tabWidget->currentIndex();
+}
+
+void FlexemuOptionsUi::UpdateFormatTrkSecEnable()
+{
+    bool isFreeDiskFormat = (cb_diskFormat->currentIndex() == 0);
+
+    e_tracks->setEnabled(isFreeDiskFormat);
+    e_sectors->setEnabled(isFreeDiskFormat);
+}
+
+void FlexemuOptionsUi::OnFormatChanged(int index)
+{
+    bool isFreeDiskFormat = (index == 0);
+
+    if (!isFreeDiskFormat)
+    {
+        auto trk_sec = flex_formats[index - 1];
+        e_tracks->setValue(trk_sec.trk + 1);
+        e_sectors->setValue(trk_sec.sec);
+    }
+
+    e_tracks->setEnabled(isFreeDiskFormat);
+    e_sectors->setEnabled(isFreeDiskFormat);
+}
+
+void FlexemuOptionsUi::OnSectorChanged(int sectors)
+{
+    OnTrkSecChanged(e_tracks->value(), sectors);
+}
+
+void FlexemuOptionsUi::OnTrackChanged(int tracks)
+{
+    OnTrkSecChanged(tracks, e_sectors->value());
+}
+
+void FlexemuOptionsUi::OnTrkSecChanged(int tracks, int sectors)
+{
+    bool isWarning = true;
+    for (const auto &st : flex_formats)
+    {
+        if ((st.trk + 1) == tracks && st.sec == sectors)
+        {
+            isWarning = false;
+            break;
+        }
+    }
+
+    static const auto msg = tr("Uncommon FLEX disk format. "
+                               "This may cause compatibility issues!");
+    auto richText = QString("<p style=\"color:orange\">%1</p>").arg(msg);
+    l_formatWarning->setText(isWarning ? richText : "");
 }
 
