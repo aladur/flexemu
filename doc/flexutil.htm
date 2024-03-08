@@ -66,8 +66,7 @@ command, there should already be set an interrupt vector before!
 </dd>
 <dt id="mount">emu mount &lt;path&gt; &lt;drive_nr&gt;</dt>
 <dd>
-mounts a disk image (DSK- or FLX-Format) or a NAtive File System
-(nafs)-directory.
+mounts a disk image (DSK- or FLX-Format) or a virtual disk (directory disk).
 <b>&lt;path&gt;
 </b>as a floppy with
 drive number
@@ -95,7 +94,7 @@ are silently ignored.
 </dd>
 <dt id="umount">emu umount &lt;drive_nr&gt;</dt>
 <dd>
-unmounts a previously mounted disk image or nafs-directory.
+unmounts a previously mounted disk image or a virtual disk (directory disk).
 <b>&lt;drive_nr&gt;
 </b>can be 0 - 3.
 The execution is aborted and an error message is printed if any file
