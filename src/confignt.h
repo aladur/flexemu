@@ -24,9 +24,6 @@
 #ifndef CONFIG_INCLUDED
 #define CONFIG_INCLUDED
 
-/* Uncomment the following if You want native file system support */
-
-#define NAFS
 
 /* uncomment the following if the Disassembler should display FLEX entry
    addresses by symbolic names */

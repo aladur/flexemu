@@ -52,10 +52,6 @@
 #include <sstream>
 
 
-/* Uncomment the following if You want native file system support */
-
-#define NAFS
-
 /* uncomment the following if the Disassembler should display FLEX entry
    addresses by symbolic names */
 
@@ -324,6 +320,7 @@ extern "C" struct sRGBDef
 #define FLEXPRINTCONFIG "PrintConfig"
 #define FLEXDIRECTORYDISKTRACKS "DirectoryDiskTracks"
 #define FLEXDIRECTORYDISKSECTORS "DirectoryDiskSectors"
+#define FLEXISDIRECTORYDISKACTIVE "IsDirectoryDiskActive"
 
 #define FLEXPLORERBOOTSECTORFILE "BootSectorFile"
 #define FLEXPLORERTEXTFLAG  "AutoTextConversion"

@@ -161,6 +161,7 @@ struct sOptions
     std::string printPreviewDialogGeometry; // Geometry of print preview dialog
     int directoryDiskTracks; // Default number of track for a directory disk
     int directoryDiskSectors; // Default number of sectors for a directory disk
+    bool isDirectoryDiskActive; // true if directory disk is active.
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

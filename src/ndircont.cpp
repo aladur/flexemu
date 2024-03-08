@@ -23,7 +23,6 @@
 
 #include "misc1.h"
 
-#ifdef NAFS
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -1950,4 +1949,4 @@ SDWord NafsDirectoryContainer::get_sector_index(const st_t &track_sector) const
 {
     return track_sector.trk * param.max_sector + track_sector.sec - 1;
 }
-#endif // #ifdef NAFS
+

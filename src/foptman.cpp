@@ -111,6 +111,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isPrintPageBreakDetected = false;
     options.directoryDiskTracks = 80;
     options.directoryDiskSectors = 36;
+    options.isDirectoryDiskActive = true;
 } // InitOptions
 
 void FlexemuOptions::GetCommandlineOptions(
@@ -481,6 +482,9 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
         }
 
+        reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
+            options.isDirectoryDiskActive ? 1 : 0);
+
         reg.SetValue(FLEXVERSION, VERSION);
         reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
     }
@@ -676,6 +680,9 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.printConfigs = previousOptions.printConfigs;
             break;
         }
+
+        optionsToWrite.isDirectoryDiskActive =
+            previousOptions.isDirectoryDiskActive;
     }
 
     BRcFile rcFile(fileName.c_str());
@@ -719,6 +726,8 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.directoryDiskTracks);
     rcFile.SetValue(FLEXDIRECTORYDISKSECTORS,
             optionsToWrite.directoryDiskSectors);
+    rcFile.SetValue(FLEXISDIRECTORYDISKACTIVE,
+            optionsToWrite.isDirectoryDiskActive ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -881,6 +890,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         int_result = std::min(int_result, 255);
         options.directoryDiskSectors = int_result;
     }
+    if (!reg.GetValue(FLEXISDIRECTORYDISKACTIVE, int_result))
+    {
+        options.isDirectoryDiskActive = (int_result != 0);
+    }
 
     reg.GetValue(FLEXPRINTFONT, options.printFont);
 
@@ -1038,6 +1051,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         int_result = std::max(int_result, 6);
         int_result = std::min(int_result, 255);
         options.directoryDiskSectors = int_result;
+    }
+    if (!rcFile.GetValue(FLEXISDIRECTORYDISKACTIVE, int_result))
+    {
+        options.isDirectoryDiskActive = (int_result != 0);
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

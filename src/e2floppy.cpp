@@ -127,25 +127,26 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
             }
         }
 #endif
-#ifdef NAFS
         if (BDirectory::Exists(containerPath))
         {
-            try
+            if (options.isDirectoryDiskActive)
             {
-                pfloppy = FileContainerIfSectorPtr(
-                 new NafsDirectoryContainer(
-                     containerPath.c_str(),
-                     options.fileTimeAccess,
-                     options.directoryDiskTracks,
-                     options.directoryDiskSectors));
-            }
-            catch (FlexException &)
-            {
-                // just ignore
+                try
+                {
+                    pfloppy = FileContainerIfSectorPtr(
+                     new NafsDirectoryContainer(
+                         containerPath.c_str(),
+                         options.fileTimeAccess,
+                         options.directoryDiskTracks,
+                         options.directoryDiskSectors));
+                }
+                catch (FlexException &)
+                {
+                    // just ignore
+                }
             }
         }
         else
-#endif
         {
             struct stat sbuf;
             bool fileExists = !stat(containerPath.c_str(), &sbuf);
@@ -691,15 +692,15 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
     {
         switch (type)
         {
-#ifdef NAFS
-
             case TYPE_NAFS_DIRECTORY:
-                pfloppy = FileContainerIfSectorPtr(
-                NafsDirectoryContainer::Create(
-                    disk_dir.c_str(), name, options.fileTimeAccess, trk, sec,
-                    type));
+                if (options.isDirectoryDiskActive)
+                {
+                    pfloppy = FileContainerIfSectorPtr(
+                        NafsDirectoryContainer::Create(
+                            disk_dir.c_str(), name, options.fileTimeAccess, trk,
+                            sec, type));
+                }
                 break;
-#endif
 
             case TYPE_DSK_CONTAINER:
             case TYPE_FLX_CONTAINER:

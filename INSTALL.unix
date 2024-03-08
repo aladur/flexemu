@@ -30,9 +30,6 @@ remarks:
           icon files may not be correctly integrated into the desktop.
           This has been exprienced with Linux Mint. It may behave
           differently for other Linux distributions.
-        - If You don't want native file system support comment out
-          the following switch in src/misc1.h:
-          #define NAFS
         - If You don't want the disassembler to substitute some FLEX jump
           vectors to print as labels comment out the following switch in
           src/misc1.h:

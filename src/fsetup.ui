@@ -754,6 +754,13 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <item>
+          <widget class="QCheckBox" name="c_isDirectoryDiskActive">
+           <property name="text">
+            <string>Active</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QGroupBox" name="g_defaultFormat">
            <property name="title">
             <string>Default Format</string>

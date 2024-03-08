@@ -23,7 +23,6 @@
 #ifndef NDIRCONT_INCLUDED
 #define NDIRCONT_INCLUDED
 
-#ifdef NAFS
 
 #include "misc1.h"
 
@@ -212,6 +211,5 @@ private:
     SDWord get_sector_index(const st_t &sector_track) const;
 };
 
-#endif // NAFS
 #endif // NDIRCONT_INCLUDED
 

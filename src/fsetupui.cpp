@@ -122,6 +122,9 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
             this, &FlexemuOptionsUi::OnFormatChanged);
+
+    connect(c_isDirectoryDiskActive, &QCheckBox::toggled,
+            this, &FlexemuOptionsUi::OnDirectoryDiskActiveChanged);
 }
 
 FlexemuOptionsUi::FlexemuOptionsUi()
@@ -301,6 +304,9 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     e_tracks->setValue(options.directoryDiskTracks);
     e_sectors->setValue(options.directoryDiskSectors);
+
+    c_isDirectoryDiskActive->setChecked(true);
+    c_isDirectoryDiskActive->setChecked(options.isDirectoryDiskActive);
 
     SetOptionsReadOnly(readOnlyOptions);
 }
@@ -793,6 +799,8 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         options.directoryDiskTracks = e_tracks->value();
         options.directoryDiskSectors = e_sectors->value();
     }
+
+    options.isDirectoryDiskActive = c_isDirectoryDiskActive->isChecked();
 }
 
 QString FlexemuOptionsUi::GetRelativePath(
@@ -1054,14 +1062,6 @@ int FlexemuOptionsUi::GetTabIndex() const
     return c_tabWidget->currentIndex();
 }
 
-void FlexemuOptionsUi::UpdateFormatTrkSecEnable()
-{
-    bool isFreeDiskFormat = (cb_diskFormat->currentIndex() == 0);
-
-    e_tracks->setEnabled(isFreeDiskFormat);
-    e_sectors->setEnabled(isFreeDiskFormat);
-}
-
 void FlexemuOptionsUi::OnFormatChanged(int index)
 {
     bool isFreeDiskFormat = (index == 0);
@@ -1103,5 +1103,20 @@ void FlexemuOptionsUi::OnTrkSecChanged(int tracks, int sectors)
                                "This may cause compatibility issues!");
     auto richText = QString("<p style=\"color:orange\">%1</p>").arg(msg);
     l_formatWarning->setText(isWarning ? richText : "");
+}
+
+void FlexemuOptionsUi::OnDirectoryDiskActiveChanged(bool isActive)
+{
+    cb_diskFormat->setEnabled(isActive);
+
+    if (isActive)
+    {
+        OnFormatChanged(cb_diskFormat->currentIndex());
+    }
+    else
+    {
+        e_tracks->setEnabled(isActive);
+        e_sectors->setEnabled(isActive);
+    }
 }
 
