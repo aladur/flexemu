@@ -115,8 +115,7 @@ public:
     virtual bool         mount_drive(const char *path, Word drive_nr,
                                      tMountOption option = MOUNT_DEFAULT);
     virtual bool         format_disk(SWord trk, SWord sec,
-                                     const char *name,
-                                     int type = TYPE_DSK_CONTAINER);
+                                     const char *name, int type);
     virtual bool         sync_drive(Word drive_nr,
                                     tMountOption option = MOUNT_DEFAULT);
     virtual bool         umount_drive(Word drive_nr);

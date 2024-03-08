@@ -105,8 +105,11 @@ is currently opened on the specified drive.
 <dd>
 formats a disk with name <b>&lt;disk_name&gt;</b>, a <b>&lt;track_count&gt;</b>
 and <b>&lt;sector_count&gt;</b>.
-The disk will be formated in DSK-Format. The newly formated disk will
-<b>not</b> be mounted automatically!
+The disk format is estimated by the file extension of <b>&lt;disk_name&gt;</b>.
+Supported file extensions are *.dsk and *.wta for DSK-Format, and *.flx for
+FLX-Format. If <b>&lt;disk_name&gt;</b> has no file extension a directory
+disk will be formatted. The newly formatted disk will <b>not</b> be mounted
+automatically!
 </dd>
 <dt id="terminal_graphic">emu terminal | graphic</dt>
 <dd>

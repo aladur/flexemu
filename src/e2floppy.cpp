@@ -682,8 +682,7 @@ void E2floppy::get_drive_status(DiskStatus stat[MAX_DRIVES])
     }
 }
 
-bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
-                           int type /* = TYPE_DSK_CONTAINER */)
+bool E2floppy::format_disk(SWord trk, SWord sec, const char *name, int type)
 {
     FileContainerIfSectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
@@ -716,7 +715,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec, const char *name,
     }
 
     return true;
-} // format_disk
+}
 
 Word E2floppy::getBytesPerSector() const
 {

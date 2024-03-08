@@ -372,6 +372,29 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 if (stricmp(arg1, "format") == 0)
                 {
                     int trk, sec;
+                    int type = 0;
+                    auto extension = getFileExtension(arg2);
+
+                    if (extension.empty())
+                    {
+                        type = TYPE_NAFS_DIRECTORY;
+                    }
+                    else if ((stricmp(extension.c_str(), ".dsk") == 0) ||
+                        (stricmp(extension.c_str(), ".wta") == 0))
+                    {
+                        type = TYPE_DSK_CONTAINER;
+                    }
+                    else if (stricmp(extension.c_str(), ".flx") == 0)
+                    {
+                        type = TYPE_FLX_CONTAINER;
+                    }
+                    else
+                    {
+                        answer_stream << "EMU parameter error: file extension "
+                                         "of '" << arg2 << "' is unsupported.";
+                        answer = answer_stream.str();
+                        return;
+                    }
 
                     if ((sscanf(arg3, "%d", &trk) != 1) ||
                         trk < 2 || trk > 255)
@@ -390,10 +413,11 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
 
+
                     if (!fdc.format_disk(
                         static_cast<SWord>(trk),
                         static_cast<SWord>(sec),
-                        arg2, TYPE_DSK_CONTAINER))
+                        arg2, type))
                     {
                         answer_stream << "EMU error: Unable to format " <<
                                          arg2 << ".";
