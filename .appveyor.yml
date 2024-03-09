@@ -38,6 +38,7 @@ install:
   - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
   # Create properties file defining the Qt dependencies.
   - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
+  - cmd: git submodule update --init --recursive
   - sh: |
       CC=gcc
       CXX=g++
@@ -58,6 +59,7 @@ install:
       echo "C compiler version:" $VER
       VER=`$CXX --version | sed -nE $CCVER`
       echo "C++ compiler version:" $VER
+      git submodule update --init --recursive
 
 matrix:
   exclude:
@@ -88,6 +90,7 @@ for:
     test_script:
       - $LDD src/flexemu
       - $LDD src/flexplorer
+      - make check
       - src/test
       - src/dsktool -l disks/games.dsk
       - src/dsktool -f new.dsk -S 80dsdd

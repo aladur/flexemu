@@ -6,8 +6,7 @@ AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR(m4)
 AC_CANONICAL_TARGET
 AC_ARG_PROGRAM dnl Perform program name transformation
-AM_INIT_AUTOMAKE
-LT_INIT
+AM_INIT_AUTOMAKE([ subdir-objects ])
 AM_MAINTAINER_MODE([disable])
 AC_CONFIG_HEADERS([src/config.h:src/config.hin])
 
@@ -23,8 +22,10 @@ esac
 AC_PROG_LN_S
 AC_PROG_CC
 AC_PROG_CXX
+AM_PROG_AR
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
+LT_INIT
 
 dnl Checks for header files.
 AC_PATH_XTRA
@@ -193,6 +194,7 @@ AC_CONFIG_FILES([Makefile \
 	doc/Makefile \
 	doc/images/Makefile] \
 	python/Makefile \
+	test/Makefile \
 	.circleci/Makefile \
 	.github/Makefile \
 	.github/workflows/Makefile)

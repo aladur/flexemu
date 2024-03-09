@@ -26,7 +26,10 @@ jobs:
             echo "C++ compiler version:" $VER
       - run:
           name: Checkout
-          command: git clone https://github.com/aladur/flexemu.git
+          command: |
+            git clone https://github.com/aladur/flexemu.git
+            cd flexemu
+            git submodule update --init --recursive
       - run:
           name: Configure
           command: |
@@ -45,6 +48,7 @@ jobs:
             make distcheck
             otool -L src/flexemu
             otool -L src/flexplorer
+            make check
             src/test
             src/dsktool -l disks/games.dsk
             src/dsktool -f new.dsk -S 80dsdd

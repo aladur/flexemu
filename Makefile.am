@@ -26,6 +26,7 @@ SUBDIRS = \
 	monitor \
 	build \
 	python \
+	test \
 	.circleci \
 	.github
 
