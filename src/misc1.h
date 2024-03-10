@@ -382,8 +382,6 @@ extern "C" struct sRGBDef
 
 #ifdef __cplusplus
     extern int      copyFile(const char *srcPath, const char *destPath);
-    extern void     strupper(char *pstr);
-    extern void     strlower(char *pstr);
     extern void     strlower(std::string& str);
     extern void     strupper(std::string& str);
     extern std::string binstr(Byte x);

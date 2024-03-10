@@ -551,9 +551,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 
 // check if pfilename contains a valid FLEX filename
 // on Unix only lowercase filenames are allowed
-bool DirectoryContainer::IsFlexFilename(const char *pfilename,
-                                        char *pname /* = nullptr */,
-                                        char *pext  /* = nullptr */) const
+bool DirectoryContainer::IsFlexFilename(const std::string &filename) const
 {
     int     result; // result from sscanf should be int
     char    dot;
@@ -561,7 +559,7 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
     char    ext[4];
 
     dot    = '\0';
-    result = sscanf(pfilename, "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
+    result = sscanf(filename.c_str(), "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
 
     if (!result || result == EOF)
     {
@@ -570,12 +568,13 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
 
     if (result == 1)
     {
-        result = sscanf(pfilename, "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]",
+        result = sscanf(filename.c_str(), "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]",
                         &dot, ext, &ext[1]);
     }
     else
     {
-        result = sscanf(pfilename, "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]",
+        result = sscanf(filename.c_str(),
+                        "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]",
                         &dot, ext, &ext[1]);
     }
 
@@ -584,22 +583,9 @@ bool DirectoryContainer::IsFlexFilename(const char *pfilename,
         return false;
     }
 
-    if (strlen(name) + strlen(ext) + (dot == '.' ? 1 : 0) != strlen(pfilename))
+    if (strlen(name) + strlen(ext) + (dot == '.' ? 1 : 0) != filename.size())
     {
         return false;
-    }
-
-    strupper(name);
-    strupper(ext);
-
-    if (pname)
-    {
-        strcpy(pname, name);
-    }
-
-    if (pext)
-    {
-        strcpy(pext, ext);
     }
 
     return true;

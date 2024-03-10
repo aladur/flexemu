@@ -329,11 +329,10 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         return false;
     }
 
-    strupper(name);
-    strupper(extension);
-
     ret_name = name;
     ret_extension = extension;
+    strupper(ret_name);
+    strupper(ret_extension);
 
     return true;
 }

@@ -96,9 +96,7 @@ public:
 
     // private interface
 private:
-    bool IsFlexFilename(const char *pfilename,
-                        char *pname = nullptr,
-                        char *pext = nullptr) const;
+    bool IsFlexFilename(const std::string &filename) const;
     bool SetDateTime(const char *fileName, const BDate &date,
                      const BTime &time);
     bool    SetRandom(const char *fileName);

@@ -187,7 +187,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     while (isValid &&
            (stat((str + PATHSEPARATORSTRING + fileName).c_str(),
                  &sbuf) ||
-            !base->IsFlexFilename(fileName.c_str()) ||
+            !base->IsFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !multimatches(fileName.c_str(), filePattern, ';', true)));

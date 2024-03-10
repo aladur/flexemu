@@ -65,25 +65,6 @@ int copyFile(const char *srcPath, const char *destPath)
     return 1;
 }
 
-void strupper(char *pstr)
-{
-    while (*pstr)
-    {
-        *pstr = static_cast<char>(toupper(*pstr));
-        pstr++;
-    }
-} // strupper
-
-
-void strlower(char *pstr)
-{
-    while (*pstr)
-    {
-        *pstr = static_cast<char>(tolower(*pstr));
-        pstr++;
-    }
-} // strlower
-
 void strlower(std::string& str)
 {
     for (auto iter = str.begin(); iter != str.end(); ++iter)
@@ -820,12 +801,10 @@ bool AskForInput(const std::string &question, const std::string &answers,
 bool isListedInFileRandom(const char *directory, const char *filename)
 {
     char str[PATH_MAX + 1];
-    char lowFilename[14];
+    std::string lowFilename(filename);
 
     strcpy(str, directory);
     strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
-    strncpy(lowFilename, filename, 13);
-    lowFilename[13] = '\0';
     strlower(lowFilename);
 
     BFilePtr fp(str, "r");
@@ -839,7 +818,7 @@ bool isListedInFileRandom(const char *directory, const char *filename)
                 *strchr(str, '\n') = '\0';
             }
 
-            if (strcmp(lowFilename, str) == 0)
+            if (strcmp(lowFilename.c_str(), str) == 0)
             {
                 return true;
             }
