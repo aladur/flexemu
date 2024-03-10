@@ -114,15 +114,22 @@ CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-libgtest_la_LIBADD =
+libgmock_la_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
-am_libgtest_la_OBJECTS =  \
-	$(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo
-libgtest_la_OBJECTS = $(am_libgtest_la_OBJECTS)
+am_libgmock_la_OBJECTS =  \
+	$(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo
+libgmock_la_OBJECTS = $(am_libgmock_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+libgmock_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libgmock_la_LDFLAGS) $(LDFLAGS) -o $@
+libgtest_la_LIBADD =
+am_libgtest_la_OBJECTS =  \
+	$(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo
+libgtest_la_OBJECTS = $(am_libgtest_la_OBJECTS)
 libgtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libgtest_la_LDFLAGS) $(LDFLAGS) -o $@
@@ -132,7 +139,7 @@ am_unittests_OBJECTS = unittests-test_misc1.$(OBJEXT) \
 	../src/unittests-flexerr.$(OBJEXT) \
 	../src/unittests-misc1.$(OBJEXT)
 unittests_OBJECTS = $(am_unittests_OBJECTS)
-unittests_DEPENDENCIES = libgtest.la
+unittests_DEPENDENCIES = libgtest.la libgmock.la
 unittests_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(unittests_LDFLAGS) $(LDFLAGS) -o $@
@@ -151,7 +158,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo \
+am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Plo \
+	$(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo \
 	../src/$(DEPDIR)/unittests-benv.Po \
 	../src/$(DEPDIR)/unittests-bfileptr.Po \
 	../src/$(DEPDIR)/unittests-flexerr.Po \
@@ -194,8 +202,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libgtest_la_SOURCES) $(unittests_SOURCES)
-DIST_SOURCES = $(libgtest_la_SOURCES) $(unittests_SOURCES)
+SOURCES = $(libgmock_la_SOURCES) $(libgtest_la_SOURCES) \
+	$(unittests_SOURCES)
+DIST_SOURCES = $(libgmock_la_SOURCES) $(libgtest_la_SOURCES) \
+	$(unittests_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -588,7 +598,8 @@ top_srcdir = @top_srcdir@
 # Instructions to make gtest library.
 #
 gtest_top = googletest/googletest
-check_LTLIBRARIES = libgtest.la
+gmock_top = googletest/googlemock
+check_LTLIBRARIES = libgtest.la libgmock.la
 libgtest_la_SOURCES = $(top_srcdir)/$(gtest_top)/src/gtest-all.cc
 libgtest_la_CPPFLAGS = \
 	-std=c++14 \
@@ -596,6 +607,14 @@ libgtest_la_CPPFLAGS = \
 	-I$(top_srcdir)/$(gtest_top)
 
 libgtest_la_LDFLAGS = -pthread
+libgmock_la_SOURCES = $(top_srcdir)/$(gmock_top)/src/gmock-all.cc
+libgmock_la_CPPFLAGS = \
+	-std=c++14 \
+	-I$(top_srcdir)/$(gtest_top)/include \
+	-I$(top_srcdir)/$(gmock_top)/include \
+	-I$(top_srcdir)/$(gmock_top)
+
+libgmock_la_LDFLAGS = -pthread
 unittests_SOURCES = \
 	test_misc1.cpp \
 	../src/benv.cpp \
@@ -606,7 +625,7 @@ unittests_SOURCES = \
 	../src/bfileptr.h \
 	../src/flexerr.h
 
-unittests_LDADD = libgtest.la
+unittests_LDADD = libgtest.la libgmock.la
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
 	-std=c++17 \
@@ -614,14 +633,15 @@ unittests_CPPFLAGS = \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 	$(OS_TYPE) \
 	-I$(top_srcdir)/$(gtest_top)/include \
+	-I$(top_srcdir)/$(gmock_top)/include \
 	-I$(top_srcdir)/src
 
 TESTS_ENVIRONMENT = export GTEST_OUTPUT="xml";
 
 # To support 'make distcheck' the following googletest files have to be added
 # to the distribution.
-EXTRA_DIST = \
-	$(top_srcdir)/$(gtest_top)/src/gtest.cc \
+# Same for googlemock files.
+EXTRA_DIST = $(top_srcdir)/$(gtest_top)/src/gtest.cc \
 	$(top_srcdir)/$(gtest_top)/src/gtest-all.cc \
 	$(top_srcdir)/$(gtest_top)/src/gtest-assertion-result.cc \
 	$(top_srcdir)/$(gtest_top)/src/gtest-death-test.cc \
@@ -655,8 +675,29 @@ EXTRA_DIST = \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-type-util.h \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest.h \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-port.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-printers.h
-
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-printers.h \
+	$(top_srcdir)/$(gmock_top)/src/gmock.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-all.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-cardinalities.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-internal-utils.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock_main.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-matchers.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-spec-builders.cc \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-cardinalities.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-function-mocker.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-nice-strict.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-spec-builders.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-internal-utils.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-port.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-pp.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-generated-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-port.h
 all: all-am
 
 .SUFFIXES:
@@ -719,6 +760,18 @@ clean-checkLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
+$(top_builddir)/$(gmock_top)/src/$(am__dirstamp):
+	@$(MKDIR_P) $(top_builddir)/$(gmock_top)/src
+	@: > $(top_builddir)/$(gmock_top)/src/$(am__dirstamp)
+$(top_builddir)/$(gmock_top)/src/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) $(top_builddir)/$(gmock_top)/src/$(DEPDIR)
+	@: > $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/$(am__dirstamp)
+$(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo:  \
+	$(top_builddir)/$(gmock_top)/src/$(am__dirstamp) \
+	$(top_builddir)/$(gmock_top)/src/$(DEPDIR)/$(am__dirstamp)
+
+libgmock.la: $(libgmock_la_OBJECTS) $(libgmock_la_DEPENDENCIES) $(EXTRA_libgmock_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libgmock_la_LINK)  $(libgmock_la_OBJECTS) $(libgmock_la_LIBADD) $(LIBS)
 $(top_builddir)/$(gtest_top)/src/$(am__dirstamp):
 	@$(MKDIR_P) $(top_builddir)/$(gtest_top)/src
 	@: > $(top_builddir)/$(gtest_top)/src/$(am__dirstamp)
@@ -752,6 +805,8 @@ unittests$(EXEEXT): $(unittests_OBJECTS) $(unittests_DEPENDENCIES) $(EXTRA_unitt
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f $(top_builddir)/$(gmock_top)/src/*.$(OBJEXT)
+	-rm -f $(top_builddir)/$(gmock_top)/src/*.lo
 	-rm -f $(top_builddir)/$(gtest_top)/src/*.$(OBJEXT)
 	-rm -f $(top_builddir)/$(gtest_top)/src/*.lo
 	-rm -f ../src/*.$(OBJEXT)
@@ -759,6 +814,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@$(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@$(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bfileptr.Po@am__quote@ # am--include-marker
@@ -795,6 +851,13 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LTCXXCOMPILE) -c -o $@ $<
+
+$(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo: $(top_builddir)/$(gmock_top)/src/gmock-all.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgmock_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo -MD -MP -MF $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Tpo -c -o $(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo `test -f '$(top_builddir)/$(gmock_top)/src/gmock-all.cc' || echo '$(srcdir)/'`$(top_builddir)/$(gmock_top)/src/gmock-all.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Tpo $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(gmock_top)/src/gmock-all.cc' object='$(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgmock_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(gmock_top)/src/libgmock_la-gmock-all.lo `test -f '$(top_builddir)/$(gmock_top)/src/gmock-all.cc' || echo '$(srcdir)/'`$(top_builddir)/$(gmock_top)/src/gmock-all.cc
 
 $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo: $(top_builddir)/$(gtest_top)/src/gtest-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo -MD -MP -MF $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Tpo -c -o $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo `test -f '$(top_builddir)/$(gtest_top)/src/gtest-all.cc' || echo '$(srcdir)/'`$(top_builddir)/$(gtest_top)/src/gtest-all.cc
@@ -901,6 +964,7 @@ mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
+	-rm -rf $(top_builddir)/$(gmock_top)/src/.libs $(top_builddir)/$(gmock_top)/src/_libs
 	-rm -rf $(top_builddir)/$(gtest_top)/src/.libs $(top_builddir)/$(gtest_top)/src/_libs
 	-rm -rf .libs _libs
 
@@ -1188,6 +1252,8 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f ../src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../src/$(am__dirstamp)
+	-test -z "$(top_builddir)/$(gmock_top)/src/$(DEPDIR)/$(am__dirstamp)" || rm -f $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/$(am__dirstamp)
+	-test -z "$(top_builddir)/$(gmock_top)/src/$(am__dirstamp)" || rm -f $(top_builddir)/$(gmock_top)/src/$(am__dirstamp)
 	-test -z "$(top_builddir)/$(gtest_top)/src/$(DEPDIR)/$(am__dirstamp)" || rm -f $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/$(am__dirstamp)
 	-test -z "$(top_builddir)/$(gtest_top)/src/$(am__dirstamp)" || rm -f $(top_builddir)/$(gtest_top)/src/$(am__dirstamp)
 
@@ -1200,7 +1266,8 @@ clean-am: clean-checkLTLIBRARIES clean-checkPROGRAMS clean-generic \
 	clean-libtool clean-local clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
-		-rm -f $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo
+		-rm -f $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Plo
+	-rm -f $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bfileptr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
@@ -1251,7 +1318,8 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo
+		-rm -f $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmock-all.Plo
+	-rm -f $(top_builddir)/$(gtest_top)/src/$(DEPDIR)/libgtest_la-gtest-all.Plo
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bfileptr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po

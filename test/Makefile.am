@@ -1,14 +1,24 @@
 # Instructions to make gtest library.
 #
 gtest_top = googletest/googletest
-check_LTLIBRARIES = libgtest.la
+gmock_top = googletest/googlemock
+
+check_LTLIBRARIES = libgtest.la libgmock.la
+
 libgtest_la_SOURCES = $(top_srcdir)/$(gtest_top)/src/gtest-all.cc
 libgtest_la_CPPFLAGS = \
 	-std=c++14 \
 	-I$(top_srcdir)/$(gtest_top)/include \
 	-I$(top_srcdir)/$(gtest_top)
-
 libgtest_la_LDFLAGS = -pthread
+
+libgmock_la_SOURCES = $(top_srcdir)/$(gmock_top)/src/gmock-all.cc
+libgmock_la_CPPFLAGS = \
+	-std=c++14 \
+	-I$(top_srcdir)/$(gtest_top)/include \
+	-I$(top_srcdir)/$(gmock_top)/include \
+	-I$(top_srcdir)/$(gmock_top)
+libgmock_la_LDFLAGS = -pthread
 
 # Instructions to make test executable.
 #
@@ -26,7 +36,7 @@ unittests_SOURCES = \
 	../src/flexerr.h
 	../src/misc1.h
 
-unittests_LDADD = libgtest.la
+unittests_LDADD = libgtest.la libgmock.la
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
 	-std=c++17 \
@@ -34,6 +44,7 @@ unittests_CPPFLAGS = \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 	$(OS_TYPE) \
 	-I$(top_srcdir)/$(gtest_top)/include \
+	-I$(top_srcdir)/$(gmock_top)/include \
 	-I$(top_srcdir)/src
 
 TESTS = unittests
@@ -78,6 +89,30 @@ EXTRA_DIST = \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest.h \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-port.h \
 	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-printers.h
+# Same for googlemock files.
+EXTRA_DIST += \
+	$(top_srcdir)/$(gmock_top)/src/gmock.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-all.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-cardinalities.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-internal-utils.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock_main.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-matchers.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-spec-builders.cc \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-cardinalities.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-function-mocker.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-nice-strict.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-spec-builders.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-internal-utils.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-port.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-pp.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-generated-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-port.h
 
 clean-local:
 	rm -rf test_detail.xml
