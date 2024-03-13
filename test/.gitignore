@@ -1,0 +1,7 @@
+# Executables
+unittests
+
+# Test execution result files
+*.log
+*.xml
+*.trs
