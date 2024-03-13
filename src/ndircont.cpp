@@ -245,9 +245,9 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected,
 {
     param.offset        = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
-    param.max_sector    = sectors;
+    param.max_sector    = static_cast<Word>(sectors);
     param.max_sector0   = getTrack0SectorCount(tracks, sectors);
-    param.max_track     = tracks - 1;
+    param.max_track     = static_cast<Word>(tracks - 1);
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track  = param.max_sector * SECTOR_SIZE;
