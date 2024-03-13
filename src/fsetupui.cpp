@@ -564,8 +564,17 @@ void FlexemuOptionsUi::setupUi(QDialog *p_dialog)
     // visible. It is just a rough estimation.
     QFontMetrics metrics(dialog->font());
     e_drive2->setMinimumWidth(metrics.boundingRect('x').width() * 52);
+
 #ifdef _WIN32
-    c_tabWidget->removeTab(4); // On Windows there is no terminal mode
+    // On Windows hide terminal Tab because there is no terminal mode.
+    for (int index = 0; index < c_tabWidget->count(); ++index)
+    {
+        if (c_tabWidget->tabText(index) == "Terminal")
+        {
+            c_tabWidget->setTabVisible(index, false);
+            break;
+        }
+    }
 #endif
 }
 
