@@ -132,7 +132,6 @@ std::string ascchr(char x)
 {
     std::string result(" ");
 
-    x &= 0x7f;
     result[0] = ((x >= 0x20) && (x < 0x7f)) ? x : '.';
 
     return result;
@@ -503,17 +502,31 @@ std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
+    if (path.size() > 0)
+    {
+        auto ch = path.at(path.size() - 1);
+
+        if (ch == PATHSEPARATOR
+#ifdef _WIN32
+            || ch == '/'
+#endif
+        )
+        {
+            return "";
+        }
+    }
+
     auto pos = fileName.find_last_of('.');
 
-    if (pos != std::string::npos)
+    if (pos != std::string::npos && fileName != "." && fileName != "..")
     {
-        // If path == "bar.txt" return ".txt".
-        // If path == "foo.bar.txt" return ".txt".
+        // If fileName == "bar.txt" return ".txt".
+        // If fileName == "foo.bar.txt" return ".txt".
         return fileName.substr(pos);
     }
 
-    // If path == "." return "".
-    // If path == ".." return "".
+    // If fileName == "." or ".." return "".
+    // If fileName contains no dot return "".
     return "";
 }
 
@@ -521,19 +534,17 @@ std::string getFileStem(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
+    if (fileName == "." || fileName == "..")
+    {
+        return fileName;
+    }
+
     auto pos = fileName.find_last_of('.');
 
     if (pos != std::string::npos)
     {
         if (pos == 0)
         {
-            // If path == "." return "".
-            // If path == ".." return "".
-            if (fileName.size() <= 2 && fileName.at(0) == '.')
-            {
-                return fileName;
-            }
-
             // If path == ".txt" return "".
             return "";
         }
