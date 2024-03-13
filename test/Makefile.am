@@ -26,6 +26,7 @@ check_PROGRAMS = unittests
 noinst_PROGRAMS = unittests
 
 unittests_SOURCES = \
+	test_main.cpp \
 	test_misc1.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
