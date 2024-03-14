@@ -202,7 +202,7 @@ void FLEXplorer::OpenContainer()
 void FLEXplorer::OpenDirectory()
 {
     const auto defaultDir = QString(options.openDirectoryPath.c_str());
-    QFileDialog dialog(this, tr("Open a FLEX directory container"),
+    QFileDialog dialog(this, tr("Open a FLEX directory disk"),
                        defaultDir);
 
     dialog.setFileMode(QFileDialog::Directory);
@@ -551,8 +551,8 @@ void FLEXplorer::About()
 
     QMessageBox::about(this, tr("About FLEXplorer"),
         tr("<b>FLEXplorer V%1</b><p>"
-           "FLEXplorer is an explorer for FLEX disk and "
-           "directory containers.<p>FLEXplorer comes with "
+           "FLEXplorer is an explorer for FLEX disk images and "
+           "directory disks.<p>FLEXplorer comes with "
            "ABSOLUTELY NO WARRANTY. This is free software, and You "
            "are welcome to redistribute it under certain conditions.<p>"
            "Please notice that this project was developed under the "
