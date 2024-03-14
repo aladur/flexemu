@@ -813,3 +813,136 @@ Code Maintenance:
 	o clang: Avoid warning about unsupported warning supression
 	o Remove unused private member variable
 	o Add 'override' where needed.
+
+V3.20 (20240314)
+New Features:
+	o Full Qt5 and Qt6 compatibility.
+	o flexemu: Add printing support.
+	  - A new print output window, printer font configurable, automatic
+	    page break detection.
+	  - A new print preview window, paper orientation and size,
+	    position and size of text configurable.
+	  - Print to physical printer or *.pdf file supported.
+	  - Support of underlined, emphasized, double strike,
+	    italic, strike throuch, subscript, superscript text.
+	  - Support of Epson FX80 escape sequences.
+	  - This was only possible with Qt printing framework,
+	    my great appreciation for this!
+	o Improve automatic FLEX text file detection/conversion.
+	o Deploy Dynastar screen editor and text processor.
+	o Deploy TSC Text Processor (PR.CMD) with examples
+	  (the original TSC FLEX users and advanced programmers manual).
+	o Documentation update.
+	o flexemu, make btx.dsk bootable.
+	o flexemu, directory disk, file attribute support.
+	o Deploy Just Text Processor (JUST5.CMD).
+	o Deploy Cedric screen editor (CED.CMD).
+	o dsktool: Extract (-X/-x) does not create a subdirectory.
+	o dsktool: Extract (-X/-x) asks to overwrite existing files.
+	o dsktool: -C, -i, -f: If -n set, give user feedback if action skipped.
+	o dsktool: -x, -X, -i: Automatic text file conversion feedback.
+	o flexplorer: File/directory dialog: save/restore path for open
+	  disk image or directory, inject/extract files.
+	o flexplorer: Improved new container file selection.
+	o dsktool: New option -B to set boot sector file.
+	o flexplorer: Add option to support file size (x256) or data size (x252).
+	o flexplorer: Support not only directory sectors on track 0.
+	o dsktool: Environment variable to define track 0 access.
+	o dsktool, flexplorer: Add new hard disk format with 256 tracks.
+	o flexplorer: Only support file in a directory disk which fit into
+	  a disk image.
+	o flexemu: Directory container performance improvement.
+	o flexplorer: Set appropriate subwindow default and min. size.
+	o flexplorer: Process command line as part of the event loop.
+	o flexplorer: Performance optimized sort algorithm.
+	o flexplorer: Performance improved PersistentIndexList algorithm.
+	o flexplorer: Avoid QHeaderView::ResizeToContents. It has a big
+	  performance impact on disk with many files.
+	o flexplorer: Performance improvement for multi row selections.
+	o flexplorer: Add progress dialog for long operations.
+	o Update documentation (file systems).
+	o Naming: Use "disk image" instead of "file container" and
+	  "directory disks" instead of "directory container".
+	o flexplorer: Support "Recent Disks" and "Recent Directories" menu.
+	o Documentation: Update to be installed debian packages.
+	o flexplorer: Use spin boxes to enter track and sector count.
+	o flexemu: Make size of directory disks configurable.
+	o flexemu: Support to disable directory disk support.
+	o flexemu, Improve emu 'format' command.
+Bug Fixes:
+	o flexemu: Make text in window size combobox always visible.
+	o flexemu: Force backspace key always returns same key code.
+	o flexemu: Bugfix for file containers with more than 83 tracks.
+	o Bugfix dsktool: Avoid out of bounds exception.
+	o Bugfix dsktool: Inject file, set right attributes.
+	o Format disk: On Windows use deployed boot sector file.
+	o flexplorer: Support boot sector file (Options Dialog).
+	o Windows: Always use native path separators.
+	o Bugfix to avoid accessing uninitialized variable.
+	o Bugfix to support disk images with 256 tracks.
+	o Bugfix dsktool: Set item_index datatype to SDWord.
+	o Bugfix flexemu to persist frequency setting locale independent.
+	o Bugfix flexemu: Preferences, show correct frequency value.
+	o Bugfix flexemu: Make invalid instruction dialog reliable.
+	o Bugfix flexemu: In preferences dialog, show correct frequency.
+	o Bugfix flexemu: terminal mode stuck on invalid instr.
+	o flexemu: Use message box for exceptions on all platforms.
+Code Maintenance:
+	o For Qt6 compatibility set c++ standard to c++17.
+	o autotools: Replace ax_have_qt.m4 with current release 25.
+	o Bugfix: Datatype of hash key depends on Qt version.
+	o Define constants with well known type instead of enum.
+	o Reduce compiler warnings.
+	o Update Linux/Unix installation instructions.
+	o Use POSIX define for max. hostname length.
+	o In ax_have_qt.m4 add widgets module.
+	o Remove unused libatomic dependency.
+	o get flexemu system config file for all UNIX platforms.
+	o ax_have_qt.m4 support 'make' version on freeBSD.
+	o Remove unused header file include.
+	o configure: Avoid using echo with -n parameter (macOS compatibility).
+	o flexemu: Support UNIX platforms without X11 support.
+	o Define macOS as UNIX like platform.
+	o flexemu: Support linking without X11 libraries.
+	o Separate typedefs for c and c++.
+	o Include what you use.
+	o Use forward declarations.
+	o clang-tidy: Use double quotes for local header includes.
+	o clang-tidy: Always use braces around control commands.
+	o clang-tidy: Include what you use.
+	o clang-tidy: Use qualified auto.
+	o clang-tidy: Avoid calling virtual memb. fct. in ctor.
+	o clang-tidy: Avoid unnecessary string conversion.
+	o clang-tidy: Range-based for loop, avoid copy.
+	o clang-tidy: Mark move ctors and assignment ops with noexcept.
+	o clang-tidy: Use append() for efficient string concatenation.
+	o clang-tidy: Avoid value parameter.
+	o clang-tidy: Avoid unnecessary copy initialization.
+	o clang-tidy: Use faster string find.
+	o clang-tidy: Remove redundant parameters.
+	o clang-tidy: Add self check in copy assignment operator.
+	o clang-tidy: Avoid reserved identifier.
+	o clang-tidy: Always check result of strcmp().
+	o clang-tidy: Avoid narrowing conversions.
+	o Mark move ctors and assignment operators with noexcept.
+	o flexemu: Directory container consistent parameter names.
+	o Make free functions thread safe.
+	o Joystick support: For member functions returning a boolean use bool.
+	o Avoid using QString::asprintf().
+	o flexplorer: Use int for IdsType.
+	o flexplorer, table model: Allocate all rows at once.
+	o Add hex_dump() free function for debugging support.
+	o Improve gdb debugging support.
+	o Add free functions for locale independent double/string conv.
+	o Add template function for locale indep. numeric/string conv.
+	o Bugfix assembler test files.
+	o Add continuous integration for Linux, Windows, macOS and freeBSD.
+	o Make download and rebuild script more reliable.
+	o Bugfix flexemu: Correct error handling writing rc-file.
+	o Update autotools files.
+	o Add and integrate googletest (git submodule).
+	O Add unit tests with googletest.
+	o Remove unreliable free functions.
+	o Bugfix free functions in misc1.cpp.
+	o Windows installer: Use newest Qt5 open-source libraries V5.15.13.
+
