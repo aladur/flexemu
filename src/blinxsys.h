@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     blinxsys.h
 
 
@@ -23,7 +23,12 @@
 #ifndef BLINXSYS_INCLUDED
 #define BLINXSYS_INCLUDED
 
+
 #ifdef __LINUX
+
+#include <string>
+#include <map>
+
 enum class BLinuxSysInfoType
 {
     LED,

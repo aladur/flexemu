@@ -22,6 +22,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <cassert>
 #include "misc1.h"
 #include "pia1.h"
 #include "absgui.h"

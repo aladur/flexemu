@@ -31,6 +31,7 @@
 #include "warnon.h"
 #include <functional>
 #include <memory>
+#include <vector>
 #include "iodevice.h"
 #include "memtgt.h"
 #include "e2.h"

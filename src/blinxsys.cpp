@@ -25,6 +25,7 @@
 #include "bdir.h"
 #include <string>
 #include <vector>
+#include <fstream>
 
 #ifdef __LINUX
 BLinuxSysInfo::BLinuxSysInfo()
