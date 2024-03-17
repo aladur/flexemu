@@ -25,7 +25,6 @@ EXTRA_DIST = \
 	confignt.h \
 	dsktool.vcxproj \
 	engine.cpi \
-	fdtest.cpp \
 	flex2hex.vcxproj \
 	flexdisk.rc \
 	flexemu.astyle \
