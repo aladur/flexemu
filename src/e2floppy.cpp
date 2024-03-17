@@ -109,7 +109,8 @@ bool E2floppy::mount_drive(const char *path, Word drive_nr, tMountOption option)
 
     track[drive_nr] = 1;    // position to a track != 0  !!!
 
-    // Copy argument, it may be changed on Windows.
+    // Intentionally use value argument, it may be changed on Windows.
+    // NOLINTNEXTLINE(performance-unnecessary-value-param)
     auto TryMount = [&](std::string containerPath) -> bool
     {
         FileContainerIfSectorPtr pfloppy;
