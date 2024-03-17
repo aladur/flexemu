@@ -286,7 +286,6 @@ flexemu_SOURCES = \
 	ifilcnti.h \
 	ifilecnt.h \
 	inout.h \
-	ioaccess.h \
 	iodevdbg.h \
 	iodevice.h \
 	joystick.h \
@@ -322,10 +321,6 @@ flexemu_SOURCES = \
 	soptions.h \
 	sprinter.h \
 	terminal.h \
-	tsl/robin_growth_policy.h \
-	tsl/robin_hash.h \
-	tsl/robin_map.h \
-	tsl/robin_set.h \
 	typedefs.h \
 	vico1.h \
 	vico2.h \
@@ -490,7 +485,6 @@ test_SOURCES = \
 	flexerr.h \
 	foptman.h \
 	inout.h \
-	ioaccess.h \
 	mc6809.h \
 	mc6809st.h \
 	memory.h \

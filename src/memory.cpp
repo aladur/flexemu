@@ -40,6 +40,7 @@ Memory::Memory(const struct sOptions &options) :
     memory_size(0x10000),
     video_ram_size(0),
     ramBank(0),
+    deviceAccess(0x10000 - GENIO_BASE, ioDeviceAccess{NO_DEVICE, 0U}),
     video_ram_active_bits(0)
 {
     memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
@@ -215,7 +216,6 @@ bool Memory::add_io_device(
         Word base_address,
         int size /* = -1 */)
 {
-    Word offset;
     Word sizeOfIo = device.sizeOfIo();
 
     if (size < 0)
@@ -228,14 +228,23 @@ bool Memory::add_io_device(
         return false;
     }
 
+    auto deviceIndex = static_cast<Byte>(ioDevices.size());
+    if (deviceIndex == NO_DEVICE)
+    {
+        return false; // No more I/O devices allowed.
+    }
     ioDevices.push_back(std::ref(device));
 
-    for (offset = 0; offset < size; ++offset)
+    // To access a device store the device index and it's byte offset
+    // in a vector. The vector index is the address - GENIO_BASE.
+    // If device index contains NO_DEVICE there is no memory mapped device
+    // at this address location.
+    for (Word offset = 0; offset < size; ++offset)
     {
-        ioAccessForAddressMap.emplace(
-            std::piecewise_construct,
-            std::forward_as_tuple<Word>(base_address + offset),
-            std::forward_as_tuple<IoDevice &, Word>(device, offset % sizeOfIo));
+        auto byteOffset = static_cast<Byte>(offset % sizeOfIo);
+        ioDeviceAccess access{ deviceIndex, byteOffset };
+
+        deviceAccess[base_address + offset - GENIO_BASE] = access;
     }
 
     return true;

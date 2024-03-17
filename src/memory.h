@@ -28,12 +28,10 @@
 #include "misc1.h"
 #include <stdio.h>
 #include "warnoff.h"
-#include "tsl/robin_map.h"
 #include "warnon.h"
 #include <functional>
 #include <memory>
 #include "iodevice.h"
-#include "ioaccess.h"
 #include "memtgt.h"
 #include "e2.h"
 #include "bobserv.h"
@@ -44,6 +42,12 @@
 #define MAX_VRAM        (4 * 16)
 
 struct sOptions;
+
+struct ioDeviceAccess
+{
+    Byte deviceIndex;
+    Byte addressOffset;
+};
 
 class Memory : public MemoryTarget<size_t>, public BObserver
 {
@@ -65,14 +69,8 @@ private:
 
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;
-    tsl::robin_map<
-        Word,
-        IoAccess,
-        std::hash<Word>,
-        std::equal_to<Word>,
-        std::allocator<std::pair<Word, IoAccess>>,
-        false,
-        tsl::rh::power_of_two_growth_policy<16>> ioAccessForAddressMap;
+    std::vector<ioDeviceAccess> deviceAccess;
+    static const Byte NO_DEVICE = 0xFF;
 
     // interface to video display
     Byte *vram_ptrs[MAX_VRAM];
@@ -113,13 +111,16 @@ public:
     // inlined for optimized performance.
     inline void write_byte(Word address, Byte value)
     {
-        if ((address & GENIO_BASE) == GENIO_BASE)
+        if (address >= GENIO_BASE)
         {
-            auto iterator = ioAccessForAddressMap.find(address);
+            auto access = deviceAccess[address - GENIO_BASE];
 
-            if (iterator != ioAccessForAddressMap.end())
+            if (access.deviceIndex != NO_DEVICE)
             {
-                iterator.value().write(value);
+                auto offset = access.addressOffset;
+
+                // Write one Byte to memory mapped I/O device.
+                ioDevices[access.deviceIndex].get().writeIo(offset, value);
                 return;
             }
         }
@@ -147,14 +148,16 @@ public:
 
     inline Byte read_byte(Word address)
     {
-        if ((address & GENIO_BASE) == GENIO_BASE)
+        if (address >= GENIO_BASE)
         {
-            auto iterator = ioAccessForAddressMap.find(address);
+            auto access = deviceAccess[address - GENIO_BASE];
 
-            if (iterator != ioAccessForAddressMap.end())
+            if (access.deviceIndex != NO_DEVICE)
             {
-                // read one Byte from memory mapped I/O device
-                return iterator.value().read();
+                auto offset = access.addressOffset;
+
+                // Read one Byte from memory mapped I/O device.
+                return ioDevices[access.deviceIndex].get().readIo(offset);
             }
         }
 
