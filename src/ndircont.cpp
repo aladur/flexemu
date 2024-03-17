@@ -912,8 +912,6 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
         std::fill(std::begin(file_sector_map), std::end(file_sector_map),
             Byte(0U));
 
-        n = 0;
-
         for (n = 0; n < (data_size / (DBPS * 255)) ; n++)
         {
             file_sector_map[3 * n] =
