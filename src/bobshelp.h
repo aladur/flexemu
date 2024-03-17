@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BOBSHELP_INCLUDED_
-#define _BOBSHELP_INCLUDED_
+#ifndef BOBSHELP_INCLUDED
+#define BOBSHELP_INCLUDED
 
 #include <cstdint>
 
@@ -36,5 +36,5 @@ enum class NotifyId : uint8_t
     VideoRamBankChanged,
 };
 
-#endif // #ifndef _BOBSHELP_INCLUDED_
+#endif // #ifndef BOBSHELP_INCLUDED
 

@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BOBSERVD_INCLUDED_
-#define _BOBSERVD_INCLUDED_
+#ifndef BOBSERVED_INCLUDED
+#define BOBSERVED_INCLUDED
 
 #include <vector>
 #include <functional>
@@ -50,5 +50,5 @@ private:
     std::vector<std::reference_wrapper<BObserver> > observers;
 };
 
-#endif // #ifndef _BOBSERVD_INCLUDED_
+#endif // #ifndef BOBSERVED_INCLUDED
 

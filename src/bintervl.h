@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BINTERVL_H_
-#define _BINTERVL_H_
+#ifndef BINTERVAL_INCLUDED
+#define BINTERVAL_INCLUDED
 
 #include <algorithm>
 #include <vector>
@@ -196,5 +196,5 @@ void join(std::vector<BInterval<T> > &bintervals)
         }
     }
 }
-#endif // #ifndef _BINTERVL_H_
+#endif // #ifndef BINTERVAL_INCLUDED
 
