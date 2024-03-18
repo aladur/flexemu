@@ -1099,7 +1099,7 @@ char checkCommand(char oldCommand, int result)
 int checkTrack0Access()
 {
     const std::string key("DSKTOOL_TRACK0_ACCESS");
-    auto track0Access = getenv(key.c_str());
+    auto *track0Access = getenv(key.c_str());
 
     if (track0Access != nullptr)
     {

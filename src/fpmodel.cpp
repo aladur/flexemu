@@ -306,6 +306,8 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
     QSet<QString> filenames;
 
     filenames.reserve(vFilenames.size());
+    // clang-tidy: auto *srcIter is not compatible with Qt6.
+    // NOLINTNEXTLINE(llvm-qualified-auto)
     for (auto srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
     {
         filenames.insert(*(srcIter++));
@@ -660,6 +662,8 @@ bool FlexplorerTableModel::removeRows(
         if (count > 0)
         {
             beginRemoveRows(QModelIndex(), row, row + count - 1);
+            // clang-tidy: auto *const iter is not compatible with Qt6.
+            // NOLINTNEXTLINE(llvm-qualified-auto)
             const auto iter = rows.begin() + row;
             rows.erase(iter, iter + count);
             endRemoveRows();

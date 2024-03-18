@@ -77,7 +77,7 @@ public:
     T GetResult(const Byte *begin, const Byte *end)
     {
         Reset();
-        for (auto iter = begin; iter != end; ++iter)
+        for (const auto *iter = begin; iter != end; ++iter)
         {
             Add(*iter);
         }
