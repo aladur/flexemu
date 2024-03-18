@@ -54,7 +54,7 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
     std::vector<std::string> subdirs;
     BDirectory bdir;
     bool isPathAvailable = true;
-    const auto id = ToString(type) + " " + subtype;
+    const auto id = ToString(type).append(" ").append(subtype);
 
     if (pathCache.find(id) == pathCache.end())
     {
@@ -71,7 +71,10 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
                     {
                         if (pos == (subdir.size() - subtype.size()))
                         {
-                            pathCache[id] = path + "/" + subdir + "/brightness";
+                            path.append("/")
+                                .append(subdir)
+                                .append("/brightness");
+                            pathCache[id] = path;
                             isPathAvailable = true;
                             break;
                         }
