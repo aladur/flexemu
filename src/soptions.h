@@ -115,6 +115,8 @@ const FlexemuOptionIds allFlexemuOptionIds {
     FlexemuOptionId::DirectoryDiskTrkSec,
 };
 
+// No glue why clang-tidy finds an identifier __i0 here.
+// NOLINTNEXTLINE(bugprone-reserved-identifier)
 struct sOptions
 {
     sOptions() = default;
