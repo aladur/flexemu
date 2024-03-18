@@ -156,7 +156,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 
     FlexCopyManager::autoTextConversion = convert_text;
     FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
-    DirectoryContainer dest{target_dir.c_str(), fileTimeAccess};
+    DirectoryContainer dest{target_dir, fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
     size_t byte_size = 0;

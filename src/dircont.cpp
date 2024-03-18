@@ -56,7 +56,7 @@
 /* Constructor                          */
 /****************************************/
 
-DirectoryContainer::DirectoryContainer(const char *aPath,
+DirectoryContainer::DirectoryContainer(const std::string &aPath,
                                        const FileTimeAccess &fileTimeAccess) :
     attributes(0),
     disk_number(0),
@@ -65,9 +65,9 @@ DirectoryContainer::DirectoryContainer(const char *aPath,
     struct stat sbuf;
     static Word number = 0;
 
-    if (aPath == nullptr || stat(aPath, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(aPath.c_str(), &sbuf) || !S_ISDIR(sbuf.st_mode))
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, std::string(aPath));
+        throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
     }
 
     if (isAbsolutePath(aPath))
@@ -84,7 +84,7 @@ DirectoryContainer::DirectoryContainer(const char *aPath,
         directory += aPath;
     }
 
-    if (access(aPath, W_OK))
+    if (access(aPath.c_str(), W_OK))
     {
         attributes |= FLX_READONLY;
     }
@@ -141,7 +141,7 @@ DirectoryContainer *DirectoryContainer::Create(const char *dir,
         }
     }
 
-    return new DirectoryContainer(aPath.c_str(), fileTimeAccess);
+    return new DirectoryContainer(aPath, fileTimeAccess);
 }
 
 std::string DirectoryContainer::GetPath() const
@@ -400,7 +400,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (!buffer.WriteToFile(filePath.c_str()))
     {
-        throw FlexException(FERR_WRITING_TO, std::string(fileName));
+        throw FlexException(FERR_WRITING_TO, filePath);
     }
 
     SetDateTime(lowerFileName.c_str(), buffer.GetDate(), buffer.GetTime());

@@ -53,7 +53,8 @@ public:
     DirectoryContainer() = delete;
     DirectoryContainer(const DirectoryContainer &) = delete;
     DirectoryContainer(DirectoryContainer &&) = delete;
-    DirectoryContainer(const char *path, const FileTimeAccess &fileTimeAccess);
+    DirectoryContainer(const std::string &path,
+                       const FileTimeAccess &fileTimeAccess);
     virtual ~DirectoryContainer();      // public destructor
 
     DirectoryContainer &operator= (const DirectoryContainer &) = delete;

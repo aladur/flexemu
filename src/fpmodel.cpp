@@ -995,7 +995,7 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
         }
         
         container.reset(
-            new DirectoryContainer(directory.c_str(), fileTimeAccess));
+            new DirectoryContainer(directory, fileTimeAccess));
     }
     else
     {   
