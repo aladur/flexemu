@@ -760,7 +760,7 @@ bool NafsDirectoryContainer::add_to_link_table(
         return true;
     }
 
-    if (size > static_cast<off_t>(free * DBPS))
+    if (size > free * DBPS)
     {
         return false;
     }
@@ -1616,7 +1616,7 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
                 FILE *fp = fopen(path.c_str(), "rb");
                 if (fp != nullptr)
                 {
-                    if (!fseek(fp, (long)(link.f_record * DBPS), SEEK_SET))
+                    if (!fseek(fp, link.f_record * DBPS, SEEK_SET))
                     {
                         size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
 
@@ -1852,7 +1852,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 if (fp != nullptr)
                 {
                     if (ftell(fp) == link.f_record ||
-                        fseek(fp, (long)(link.f_record * DBPS), SEEK_SET) == 0)
+                        fseek(fp, link.f_record * DBPS, SEEK_SET) == 0)
                     {
                         if (fwrite(buffer + MDPS, 1, DBPS, fp) == DBPS)
                         {
