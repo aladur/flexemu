@@ -302,15 +302,11 @@ int main(int argc, char *argv[])
     {
         switch (result)
         {
-            case 'o': ofile = optarg;
-                      command = result;
-                      break;
+            case 'o':
             case 'c': ofile = optarg;
                       command = result;
                       break;
-            case 'x': ifile = optarg;
-                      command = result;
-                      break;
+            case 'x':
             case 'l': ifile = optarg;
                       command = result;
                       break;

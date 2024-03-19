@@ -232,10 +232,8 @@ void Mc146818::writeIo(Word offset, Byte val)
         //if (BSET7(B))
         //   B = val & 0xef;
         case 0x0c:
-            break;   // Reg. C is read only
-
         case 0x0d:
-            break;   // Reg. D is read only
+            break;   // Reg. C and D is read only
 
         default:
             ram[offset - 0x0e] = val;

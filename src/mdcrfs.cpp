@@ -132,11 +132,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
     while (true)
     {
         // Read the file header 
-        if (!mdcr.ReadRecord(ibuffer))
-        {
-            return MdcrStatus::ReadError;
-        }
-        else if (ibuffer.size() != 13 || ibuffer[0] != 0x55 || ibuffer[12] != 0)
+        if (!mdcr.ReadRecord(ibuffer) ||
+            ibuffer.size() != 13 || ibuffer[0] != 0x55 || ibuffer[12] != 0)
         {
             return MdcrStatus::ReadError;
         }

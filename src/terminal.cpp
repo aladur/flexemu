@@ -399,6 +399,8 @@ void TerminalIO::exec_signal(int sig_no)
 #endif
 
 #if defined(SIGQUIT)
+        // Due to if conditions for SIGQUIT and SIGTERM keep two cases.
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         case SIGQUIT:
             scheduler.request_new_state(CpuState::Exit);
             break;

@@ -690,8 +690,6 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Insert:
-            return -1;
-
         case Qt::Key_degree:
             return -1;
 
