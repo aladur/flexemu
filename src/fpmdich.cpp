@@ -698,6 +698,8 @@ void FlexplorerMdiChild::SetupView()
     setAcceptDrops(true);
 }
 
+// Intentionally do not override QAbstractItemView::selectionChanged().
+// NOLINTNEXTLINE(bugprone-virtual-near-miss)
 void FlexplorerMdiChild::SelectionChanged(
         const QItemSelection &selected,
         const QItemSelection &deselected)
