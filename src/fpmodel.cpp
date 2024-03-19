@@ -614,11 +614,11 @@ Qt::ItemFlags FlexplorerTableModel::flags(const QModelIndex &index) const
 
         if (isEditable)
         {
-            return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
+            return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
         }
         else
         {
-            return QAbstractItemModel::flags(index);
+            return QAbstractTableModel::flags(index);
         }
     }
     else
