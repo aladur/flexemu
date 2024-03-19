@@ -40,7 +40,7 @@ PageDetectorData::PageDetectorData(const RichLines &p_lines)
 void PageDetectorData::SetLinesPerPage(int16_t p_linesPerPage)
 {
     linesPerPage = p_linesPerPage;
-    fPages = static_cast<double>(lines.size() / linesPerPage);
+    fPages = static_cast<double>(lines.size()) / linesPerPage;
     pages = static_cast<uint32_t>(std::floor(fPages));
     score = 0;
     sumBottomLinesWithNumberOnly = 0;
