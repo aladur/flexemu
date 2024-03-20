@@ -353,16 +353,16 @@ extern "C" struct sRGBDef
 #define BTST15(x) (((x) & 0x8000) != 0)
 #define BTST16(x) (((x) & 0x10000) != 0)
 
-#define BSET7(x) (x |= 0x80)
-#define BSET6(x) (x |= 0x40)
-#define BSET5(x) (x |= 0x20)
-#define BSET4(x) (x |= 0x10)
-#define BSET3(x) (x |= 0x08)
-#define BSET2(x) (x |= 0x04)
-#define BSET1(x) (x |= 0x02)
-#define BSET0(x) (x |= 0x01)
+#define BSET7(x) ((x) |= 0x80)
+#define BSET6(x) ((x) |= 0x40)
+#define BSET5(x) ((x) |= 0x20)
+#define BSET4(x) ((x) |= 0x10)
+#define BSET3(x) ((x) |= 0x08)
+#define BSET2(x) ((x) |= 0x04)
+#define BSET1(x) ((x) |= 0x02)
+#define BSET0(x) ((x) |= 0x01)
 
-#define BCLR7(x) (x &= 0x7f)
+#define BCLR7(x) ((x) &= 0x7f)
 
 #define EXTEND8(x) (Word)(SWord)(SByte)(x)
 
@@ -560,3 +560,4 @@ bool fromString(const std::string &str, T &value)
 }
 
 #endif /* __misc1.h__ */
+
