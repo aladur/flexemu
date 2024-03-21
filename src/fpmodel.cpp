@@ -266,7 +266,7 @@ QVector<QString> FlexplorerTableModel::GetFilenames(
     QVector<QString> filenames;
 
     filenames.reserve(indexList.size());
-    for (auto &index : indexList)
+    for (const auto &index : indexList)
     {
         if (index.isValid())
         {
@@ -663,7 +663,7 @@ bool FlexplorerTableModel::removeRows(
         {
             beginRemoveRows(QModelIndex(), row, row + count - 1);
             // clang-tidy: auto *const iter is not compatible with Qt6.
-            // NOLINTNEXTLINE(llvm-qualified-auto)
+            // NOLINTNEXTLINE(readability-qualified-auto)
             const auto iter = rows.begin() + row;
             rows.erase(iter, iter + count);
             endRemoveRows();

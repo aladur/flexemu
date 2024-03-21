@@ -886,7 +886,7 @@ std::ostream& operator<<(std::ostream &os, const MultipleLinkInputs &item)
 
     os << item.type << "MULIN: " << item.name << " sector " << item.current <<
           " has links from ";
-    for (auto &input : item.inputs)
+    for (const auto &input : item.inputs)
     {
         if (index + 1 == item.inputs.size())
         {

@@ -523,7 +523,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, dst.GetPath());
     }
 
-    for (auto &file : files)
+    for (const auto &file : files)
     {
         bool isSuccess = true;
         bool isText = false;

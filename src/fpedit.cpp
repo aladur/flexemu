@@ -181,7 +181,8 @@ QWidget *FlexFilenameDelegate::createEditor(QWidget *parent,
     // for the FLEX filename syntax and also rejects duplicate filenames.
     QString rxString("[A-Za-z][A-Za-z0-9_-]{0,7}\\.[A-Za-z][A-Za-z0-9_-]{0,2}");
     QRegularExpression regex(rxString);
-    auto *model = static_cast<const FlexplorerTableModel *>(index.model());
+    const auto *model =
+        static_cast<const FlexplorerTableModel *>(index.model());
     auto filenames = model->GetFilenames();
     filenames.removeAll(model->GetFilename(index));
     auto *validator =
@@ -234,7 +235,7 @@ static QString GetAttributesRegularExpression(const QStringList &items)
 {
     QStringList regexItems;
 
-    for (auto &item : items)
+    for (const auto &item : items)
     {
         QString regexString;
 

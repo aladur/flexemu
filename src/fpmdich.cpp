@@ -619,7 +619,7 @@ void FlexplorerMdiChild::Info()
     str += tr("Type: ");
     str += QString(info.GetTypeString().c_str()).append("\n");
     str += tr("Date: ");
-    auto &date = info.GetDate();
+    const auto &date = info.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
     str += qdate.toString().append("\n");
     if (tracks != 0 && sectors != 0)
@@ -953,7 +953,7 @@ int FlexplorerMdiChild::PasteFromClipboard()
 
     if (clipboard != nullptr)
     {
-        auto *mimeData = clipboard->mimeData();
+        const auto *mimeData = clipboard->mimeData();
 
         if (mimeData != nullptr &&
             mimeData->hasFormat(mimeTypeFlexDiskImageFile))

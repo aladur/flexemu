@@ -75,7 +75,8 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
     for (index = 0; index < count; ++index)
     {
         FlexFileBuffer fileBuffer;
-        auto &fileHeader = *reinterpret_cast<const tFlexFileHeader *>(ptr);
+        const auto &fileHeader =
+            *reinterpret_cast<const tFlexFileHeader *>(ptr);
         fileBuffer.CopyHeaderBigEndianFrom(fileHeader);
         ptr += sizeof(tFlexFileHeader);
         fileBuffer.CopyFrom(ptr, fileBuffer.GetFileSize());
