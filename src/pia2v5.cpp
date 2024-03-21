@@ -417,7 +417,7 @@ void Pia2V5::SetReadModeToInit()
     }
 }
 
-void Pia2V5::mount_all_drives(std::array<std::string, 2> drives)
+void Pia2V5::mount_all_drives(const std::array<std::string, 2> &drives)
 {
     Word drive_nr = 0U;
 
