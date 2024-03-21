@@ -102,6 +102,8 @@ protected:
 private:
     void SetupModel(const QString &path);
     void SetupView();
+    // Intentionally do not override QAbstractItemView::selectionChanged().
+    // NOLINTNEXTLINE(bugprone-virtual-near-miss)
     void SelectionChanged(const QItemSelection &selected,
                           const QItemSelection &deselected);
     void BeginDrag();
