@@ -651,13 +651,12 @@ void FlexplorerMdiChild::Info()
         }
         else
         {
-            for (Word index = 0; index < header.size(); ++index)
+            bool isAppend = false;
+            for (const auto value : header)
             {
-                if (index != 0)
-                {
-                    str += ",";
-                }
-                str += QString::number((Word)header[index]);
+                str += (isAppend ? "," : "");
+                str += QString::number((Word)value);
+                isAppend = true;
             }
         }
     }

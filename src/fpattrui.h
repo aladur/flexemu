@@ -37,6 +37,7 @@
 #include <QString>
 #include <QVector>
 #include <cassert>
+#include <array>
 
 
 class FileAttributesUi
@@ -46,7 +47,7 @@ private:
     QLabel *l_filename;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_2;
-    QCheckBox *c_protect[4];
+    std::array<QCheckBox *, 4> c_protect;
     QDialogButtonBox *buttonBox;
     QVector<Qt::CheckState> initialState;
     Byte clearMask;
@@ -99,9 +100,9 @@ public:
             }
         }
 
-        assert(sizeof(c_protect) / sizeof(c_protect[0]) == initialState.size());
+        assert(c_protect.size() == initialState.size());
 
-        for (Word i = 0; i < (sizeof(c_protect) / sizeof(c_protect[0])); ++i)
+        for (Word i = 0; i < static_cast<Word>(c_protect.size()); ++i)
         {
             bool isEnabled = !isWriteProtected && i < protectChars.size() &&
                              supportedAttributes.contains(protectChars[i]);
@@ -172,7 +173,7 @@ public:
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
 
-        for (Word i = 0; i < (sizeof(c_protect) / sizeof(c_protect[0])); ++i)
+        for (Word i = 0; i < static_cast<Word>(c_protect.size()); ++i)
         {
             c_protect[i] = new QCheckBox(&dialog);
             c_protect[i]->setObjectName(GetObjectName(protectText[i]));
@@ -197,7 +198,7 @@ public:
                          &dialog, &QDialog::accept);
         QObject::connect(buttonBox, &QDialogButtonBox::rejected,
                          &dialog, &QDialog::reject);
-        for (Word i = 0; i < (sizeof(c_protect) / sizeof(c_protect[0])); ++i)
+        for (Word i = 0; i < static_cast<Word>(c_protect.size()); ++i)
         {
             QObject::connect(c_protect[i], &QCheckBox::stateChanged,
                 [&, i](int state){ CheckBoxStateChanged(state, i); });

@@ -636,7 +636,8 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     constexpr Word first_dir_sec = first_dir_trk_sec.sec - 1U; // zero based
     const Word max_dir_sector = first_dir_sec - 1U + init_dir_sectors;
 
-    auto sum_sectors = (param.max_track + 1) * param.max_sector;
+    const auto sum_sectors =
+        static_cast<Word>((param.max_track + 1) * param.max_sector);
     struct s_link_table new_link{};
     flex_links.reserve(param.max_sector);
 
@@ -662,7 +663,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
     }
 
     // All other tracks are initialized as free chain.
-    for (i = fc_start; i < flex_links.size(); i++)
+    for (i = fc_start; i < static_cast<Word>(flex_links.size()); i++)
     {
         auto &link = flex_links[i];
 
@@ -912,7 +913,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
         std::fill(std::begin(file_sector_map), std::end(file_sector_map),
             Byte(0U));
 
-        for (n = 0; n < (data_size / (DBPS * 255)) ; n++)
+        for (n = 0; n < static_cast<Word>(data_size / (DBPS * 255)) ; n++)
         {
             file_sector_map[3 * n] =
                 static_cast<Byte>(sec_idx / param.max_sector);

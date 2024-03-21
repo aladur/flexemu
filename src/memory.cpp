@@ -239,7 +239,7 @@ bool Memory::add_io_device(
     // in a vector. The vector index is the address - GENIO_BASE.
     // If device index contains NO_DEVICE there is no memory mapped device
     // at this address location.
-    for (Word offset = 0; offset < size; ++offset)
+    for (Word offset = 0; offset < static_cast<Word>(size); ++offset)
     {
         auto byteOffset = static_cast<Byte>(offset % sizeOfIo);
         ioDeviceAccess access{ deviceIndex, byteOffset };

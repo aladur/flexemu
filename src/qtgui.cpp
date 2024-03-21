@@ -1336,13 +1336,12 @@ void QtGui::OnDiskStatus(Word driveNumber)
                 else
                 {
                     text = "";
-                    for (Word index = 0; index < header.size(); ++index)
+                    bool isAppend = false;
+                    for (const auto value : header)
                     {
-                        if (index != 0)
-                        {
-                            text += ",";
-                        }
-                        text += QString::number((Word)header[index]);
+                        text += (isAppend ? "," : "");
+                        text += QString::number((Word)value);
+                        isAppend = true;
                     }
                 }
                 model.setItem(row++, 1, new QStandardItem(text));

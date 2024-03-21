@@ -419,11 +419,12 @@ void Pia2V5::SetReadModeToInit()
 
 void Pia2V5::mount_all_drives(std::array<std::string, 2> drives)
 {
-    Word drive_nr;
+    Word drive_nr = 0U;
 
-    for (drive_nr = 0; drive_nr < drives.size(); drive_nr++)
+    for (auto drive : drives)
     {
-        mount_drive(drives[drive_nr].c_str(), drive_nr);
+        mount_drive(drive.c_str(), drive_nr);
+        ++drive_nr;
     }
 
     drive_idx = -1;

@@ -24,17 +24,19 @@
 #define CRC_INCLUDED
 
 #include "typedefs.h"
+#include <array>
+
 
 template<typename T>
 class Crc
 {
     T crc;
-    T crc_table[256];
+    std::array<T, 256> crc_table;
 
     void Initialize(T polynomial)
     {
         for (Word dividend = 0U;
-             dividend < (sizeof(crc_table) / sizeof(T));
+             dividend < static_cast<Word>(crc_table.size());
              ++dividend)
         {
             T current = (T)dividend << ((sizeof(T) * 8U) - 8U);
