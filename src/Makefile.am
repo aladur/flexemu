@@ -64,10 +64,11 @@ EXTRA_PROGRAMS = \
 
 noinst_PROGRAMS = test
 
+DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
+
 AM_CXXFLAGS = \
 	--std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\"
+	$(DIRFLAGS)
 
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
@@ -595,6 +596,12 @@ pch.h.gcp: pch.h misc1.h
 # Create a *_ui.h file from a *.ui file
 .ui_ui.h:
 	${QT_UIC} $< -o $@
+
+# Static code analysis using clang-tidy. By default it reads the configuration
+# from the file .clang-tidy in the current directory.
+clang-tidy-check:
+	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_moc.cpp/d" | xargs` \
+	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@
 
 ################################################################################
 # Post (un)installation hook:

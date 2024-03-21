@@ -74,6 +74,9 @@ AC_LANG_POP([C++])
 dnl check for qt libraries and tools
 AX_HAVE_QT
 
+dnl Create command line options for clang-tidy
+AX_CLANG_TIDY_OPTS([$QT_CXXFLAGS])
+
 dnl Checks for typedefs
 AC_C_CONST
 AC_C_INLINE
@@ -126,6 +129,7 @@ AC_CHECK_PROG(WINDRES_EXE, [windres], [windres])
 AC_PATH_PROG(UPDATE_DESKTOP_DATABASE,[update-desktop-database],[true])
 AC_PATH_PROG(UPDATE_MIME_DATABASE,[update-mime-database],[true])
 AC_PATH_PROG(GTK_UPDATE_ICON_CACHE,[gtk-update-icon-cache],[true])
+AC_PATH_PROG(CLANG_TIDY,[clang-tidy],[true])
 
 if test "x$no_x" != "xyes"; then
     X_LIBS="$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS"
