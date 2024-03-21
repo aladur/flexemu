@@ -63,7 +63,7 @@ public:
         verticalLayout_2(nullptr), c_protect{ },
         buttonBox(nullptr), clearMask(0), setMask(0)
     {
-        assert(sizeof(c_protect) / sizeof(c_protect[0]) == flags.size());
+        assert(c_protect.size() == flags.size());
         assert(protectText.size() == flags.size());
     }
 
