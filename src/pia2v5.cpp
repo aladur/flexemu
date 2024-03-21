@@ -421,7 +421,7 @@ void Pia2V5::mount_all_drives(std::array<std::string, 2> drives)
 {
     Word drive_nr = 0U;
 
-    for (auto drive : drives)
+    for (const auto &drive : drives)
     {
         mount_drive(drive.c_str(), drive_nr);
         ++drive_nr;
