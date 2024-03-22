@@ -145,11 +145,10 @@ void E2Screen::enterEvent(QEvent *)
 
 void E2Screen::keyPressEvent(QKeyEvent *event)
 {
-    int key;
-
     assert(event != nullptr);
 
-    if ((key = TranslateToPAT09Key(event)) >= 0)
+    const auto key = TranslateToPAT09Key(event);
+    if (key >= 0)
     {
         bool do_notify = false;
 

@@ -172,16 +172,21 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (dirHdl == nullptr)
         {
-            if ((dirHdl = opendir(str.c_str())) != nullptr)
+            dirHdl = opendir(str.c_str());
+            if (dirHdl != nullptr)
             {
                 isValid = true;
             }
         }
 
-        if (dirHdl != nullptr && (findData = readdir(dirHdl)) != nullptr)
+        if (dirHdl != nullptr)
         {
-            isValid = true;
-            fileName = findData->d_name;
+            findData = readdir(dirHdl);
+            if (findData != nullptr)
+            {
+                isValid = true;
+                fileName = findData->d_name;
+            }
         }
     }
     while (isValid &&

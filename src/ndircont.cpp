@@ -1031,9 +1031,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 #endif
 
 #ifdef UNIX
-    DIR *pd;
-
-    if ((pd = opendir(directory.c_str())) != nullptr)
+    auto *pd = opendir(directory.c_str());
+    if (pd != nullptr)
     {
         struct dirent *pentry;
 
@@ -1715,7 +1714,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 
                 if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
                 {
-                    if ((fp = fopen(path.c_str(), "rb")) != nullptr)
+                    fp = fopen(path.c_str(), "rb");
+                    if (fp != nullptr)
                     {
                         size_t old_size =
                             fread(boot_buffer.data(), 1, SECTOR_SIZE * 2, fp);
@@ -1738,7 +1738,8 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 // sector to file.
                 size_t count = !is_all_zero ? 2 : 1;
 
-                if ((fp = fopen(path.c_str(), "wb+")) != nullptr)
+                fp = fopen(path.c_str(), "wb+");
+                if (fp != nullptr)
                 {
                     size_t size =
                         fwrite(boot_buffer.data(), 1, SECTOR_SIZE * count, fp);

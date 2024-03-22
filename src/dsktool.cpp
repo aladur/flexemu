@@ -1268,9 +1268,8 @@ int main(int argc, char *argv[])
 
             case 'S':
                     {
-                        int s;
-
-                        if ((s = checkDiskSize(optarg, tracks, sectors)) < 2)
+                        const auto s = checkDiskSize(optarg, tracks, sectors);
+                        if (s < 2)
                         {
                             return s;
                         }
@@ -1397,7 +1396,8 @@ int main(int argc, char *argv[])
         fileTimeAccess = FileTimeAccess::Get | FileTimeAccess::Set;
     }
 
-    if ((result = checkTrack0Access()) != 0)
+    result = checkTrack0Access();
+    if (result != 0)
     {
         return result;
     }

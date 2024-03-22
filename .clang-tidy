@@ -6,7 +6,6 @@ Checks: '
   -bugprone-narrowing-conversions,
   -bugprone-easily-swappable-parameters,
   -bugprone-empty-catch,
-  -bugprone-assignment-in-if-condition,
   clang-analyzer-optin.cplusplus.VirtualCall,
   clang-analyzer-cplusplus.StringChecker,
   -clang-analyzer-security.insecureAPI.strcpy,

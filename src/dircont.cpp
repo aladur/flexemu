@@ -240,7 +240,6 @@ bool    DirectoryContainer::FileCopy(
 
 bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
-    const char  *p;
     std::string rootPath;
     struct stat sbuf;
 
@@ -294,7 +293,8 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 
     info.SetTrackSector(0, 0);
 
-    if ((p = strrchr(directory.c_str(), PATHSEPARATOR)) != nullptr)
+    const auto *p = strrchr(directory.c_str(), PATHSEPARATOR);
+    if (p != nullptr)
     {
         info.SetName(p + 1);
     }

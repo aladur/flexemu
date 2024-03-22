@@ -141,7 +141,8 @@ bool BProcess::Start()
     default_action.sa_flags   = 0;
     sigemptyset(&default_action.sa_mask);
 
-    if ((pid = fork()) == 0)
+    pid = fork();
+    if (pid == 0)
     {
         sigaction(SIGPIPE, &default_action, nullptr);
 

@@ -137,7 +137,6 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
     std::string basePath;
     std::string dirEntry;
-    DIR         *pd;
     struct stat sbuf;
 
     basePath = aPath;
@@ -149,7 +148,8 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != nullptr)
+    auto *pd = opendir(basePath.c_str());
+    if (pd != nullptr)
     {
         struct dirent   *pentry;
 
@@ -207,7 +207,6 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 
 #else
     std::string     dirEntry;
-    DIR             *pd;
     struct stat     sbuf;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
@@ -217,7 +216,8 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != nullptr)
+    auto *pd = opendir(basePath.c_str());
+    if (pd != nullptr)
     {
         struct dirent   *pentry;
 
@@ -272,7 +272,6 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
 
 #else
     std::string     dirEntry;
-    DIR             *pd;
     struct stat     sbuf;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
@@ -282,7 +281,8 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
         basePath = temp;
     }
 
-    if ((pd = opendir(basePath.c_str())) != nullptr)
+    auto *pd = opendir(basePath.c_str());
+    if (pd != nullptr)
     {
         struct dirent *pentry;
 

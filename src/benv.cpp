@@ -132,11 +132,10 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
     }
 #endif
 #ifdef UNIX
-    char* p;
-
-    if ((p = getenv(upperKey.c_str())))
+    const auto *envValue = getenv(upperKey.c_str());
+    if (envValue != nullptr)
     {
-        value = p;
+        value = envValue;
         ret = true;
     }
 
