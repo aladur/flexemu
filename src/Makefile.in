@@ -100,6 +100,7 @@ subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
+	$(top_srcdir)/m4/ax_clang_tidy_opts.m4 \
 	$(top_srcdir)/m4/ax_compiler_vendor.m4 \
 	$(top_srcdir)/m4/ax_have_qt.m4 \
 	$(top_srcdir)/m4/ax_prepend_flag.m4 \
@@ -512,6 +513,7 @@ AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
+CLANG_TIDY_OPTS = @CLANG_TIDY_OPTS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CSCOPE = @CSCOPE@
@@ -701,10 +703,10 @@ desktopdir = $(datadir)/applications
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 noinst_LIBRARIES = libflex.a
+DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 AM_CXXFLAGS = \
 	--std=c++17 \
-	-DF_DATADIR=\"$(pkgdatadir)\" \
-	-DF_SYSCONFDIR=\"$(sysconfdir)\"
+	$(DIRFLAGS)
 
 
 # To use precompiled headers all targets have to use the same CXXFLAGS
@@ -3968,6 +3970,13 @@ pch.h.gcp: pch.h misc1.h
 # Create a *_ui.h file from a *.ui file
 .ui_ui.h:
 	${QT_UIC} $< -o $@
+
+# Static code analysis using clang-tidy. By default it reads the configuration
+# from the file .clang-tidy in the current directory or nearest parent dir.
+# Generated *_moc.cpp files are excluded from the check.
+clang-tidy-check:
+	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_moc.cpp/d"` \
+	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@
 
 install-data-hook: update-icon-cache update-mime-database update-desktop-database
 

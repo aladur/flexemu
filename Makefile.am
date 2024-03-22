@@ -34,3 +34,6 @@ AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 
 AM_DISTCHECK_CONFIGURE_FLAGS = --disable-post-install
 
+clang-tidy-check:
+	cd src; $(MAKE) clang-tidy-check
+

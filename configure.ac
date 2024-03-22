@@ -74,6 +74,9 @@ AC_LANG_POP([C++])
 dnl check for qt libraries and tools
 AX_HAVE_QT
 
+dnl Create command line options for clang-tidy
+AX_CLANG_TIDY_OPTS([$QT_CXXFLAGS])
+
 dnl Checks for typedefs
 AC_C_CONST
 AC_C_INLINE

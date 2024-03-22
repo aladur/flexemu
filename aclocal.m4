@@ -1246,6 +1246,7 @@ AC_SUBST([am__untar])
 
 m4_include([m4/attributes.m4])
 m4_include([m4/ax_cflags_warn_all.m4])
+m4_include([m4/ax_clang_tidy_opts.m4])
 m4_include([m4/ax_compiler_vendor.m4])
 m4_include([m4/ax_have_qt.m4])
 m4_include([m4/ax_prepend_flag.m4])

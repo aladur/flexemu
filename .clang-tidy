@@ -1,0 +1,62 @@
+---
+Checks: '
+  abseil-*,
+  bugprone-*,
+  -bugprone-implicit-widening-of-multiplication-result,
+  -bugprone-narrowing-conversions,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-empty-catch,
+  -bugprone-assignment-in-if-condition,
+  clang-analyzer-optin.cplusplus.VirtualCall,
+  clang-analyzer-cplusplus.StringChecker,
+  -clang-analyzer-security.insecureAPI.strcpy,
+  -clang-analyzer-cplusplus.NewDeleteLeaks,
+  -clang-diagnostic-sign-compare,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-narrowing-conversions,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-c-copy-assignment-signature,
+  -cppcoreguidelines-virtual-class-destructor,
+  -cppcoreguidelines-pro-type-const-cast,
+  -cppcoreguidelines-pro-type-cstyle-cast,
+  -cppcoreguidelines-pro-type-static-cast-downcast,
+  -cppcoreguidelines-prefer-member-initializer,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-pro-type-member-init,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-non-private-member-variables-in-classes,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-type-union-access,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -cppcoreguidelines-init-variables,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-explicit-virtual-functions,
+  misc-*,
+  -misc-unconventional-assign-operator,
+  -misc-no-recursion,
+  -misc-definitions-in-headers,
+  -misc-non-private-member-variables-in-classes,
+  -misc-const-correctness,
+  performance-*,
+  portability-*,
+  readability-redundant-string-cstr,
+  -readability-qualified-auto'
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: false
+UseColor: true
+FormatStyle: 'xml'
+CheckOptions:
+  - key: cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value: '1'
+  - key: google-readability-namespace-comments.ShortNamespaceLines
+    value: '10'
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '50'

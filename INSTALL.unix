@@ -53,6 +53,21 @@ remarks:
              update-mime-database /usr/share/mime
              update-desktop-database /usr/share/applications
 
+        - For static code analysis there is a target 'clang-tidy-check'
+          available. It can be used as:
+
+             make clang-tidy-check
+
+          By default the used executable name is 'clang-tidy'. With the
+          environment variable CLANG_TIDY a different executable can be chosen.
+          For example:
+
+             export CLANG_TIDY=clang-tidy-16
+
+          The executed checks are located in file '.clang-tidy' in the base
+          directory. When executing ./configure the existance of clang-tidy
+          executable intentionally is not checked so it is an optional feature.
+
 ***********************
 * help, Documentation *
 ***********************

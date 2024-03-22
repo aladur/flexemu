@@ -673,6 +673,7 @@ GTK_UPDATE_ICON_CACHE
 UPDATE_MIME_DATABASE
 UPDATE_DESKTOP_DATABASE
 WINDRES_EXE
+CLANG_TIDY_OPTS
 QT_LUPDATE
 QT_LRELEASE
 QT_RCC
@@ -19456,6 +19457,11 @@ printf "%s\n" "$ax_cv_qt_test_result" >&6; }
     rm -f ax_qt_test.h moc_ax_qt_test.$ac_ext moc_ax_qt_test.o \
           ax_qt_main.$ac_ext ax_qt_main.o ax_qt_main
   fi
+
+
+
+
+   CLANG_TIDY_OPTS=`echo $QT_CXXFLAGS | $SED "s/-I\([a-zA-Z0-9_/-]\+\)/-isystem \1/g"`
 
 
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for an ANSI C-conforming const" >&5
