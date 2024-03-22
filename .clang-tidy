@@ -44,8 +44,7 @@ Checks: '
   -misc-const-correctness,
   performance-*,
   portability-*,
-  readability-redundant-string-cstr,
-  -readability-qualified-auto'
+  readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

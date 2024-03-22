@@ -1114,7 +1114,7 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
     bool isFirst = true;
 
     textBrowser->setUpdatesEnabled(false);
-    for (auto &richChar : richLine)
+    for (const auto richChar : richLine)
     {
         isFirst ? cursor.beginEditBlock() : cursor.joinPreviousEditBlock();
         if (isFirst || (richChar.properties != previousProperty))

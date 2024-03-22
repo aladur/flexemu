@@ -307,7 +307,7 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
 
     filenames.reserve(vFilenames.size());
     // clang-tidy: auto *srcIter is not compatible with Qt6.
-    // NOLINTNEXTLINE(llvm-qualified-auto)
+    // NOLINTNEXTLINE(readability-qualified-auto)
     for (auto srcIter = vFilenames.begin(); srcIter != vFilenames.end(); )
     {
         filenames.insert(*(srcIter++));
