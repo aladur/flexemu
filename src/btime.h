@@ -22,6 +22,7 @@
 #ifndef BTIME_INCLUDED
 #define BTIME_INCLUDED
 
+#include <cstdint>
 #include <string>
 
 class BTime

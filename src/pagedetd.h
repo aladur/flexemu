@@ -23,6 +23,7 @@
 #ifndef PAGEDETECTORDATA_INCLUDED
 #define PAGEDETECTORDATA_INCLUDED
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <map>
