@@ -18,7 +18,6 @@ Checks: '
   -cppcoreguidelines-c-copy-assignment-signature,
   -cppcoreguidelines-virtual-class-destructor,
   -cppcoreguidelines-pro-type-const-cast,
-  -cppcoreguidelines-pro-type-cstyle-cast,
   -cppcoreguidelines-pro-type-static-cast-downcast,
   -cppcoreguidelines-prefer-member-initializer,
   -cppcoreguidelines-pro-type-reinterpret-cast,

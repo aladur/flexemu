@@ -711,7 +711,9 @@ void QtGui::OnTimer()
     if ((timerTicks % 2) == 1)
     {
         // check if CPU view has to be updated
-        Mc6809CpuStatus *status = (Mc6809CpuStatus *)scheduler.get_status();
+        const auto *status =
+            static_cast<Mc6809CpuStatus *>(scheduler.get_status());
+
         if (status != nullptr)
         {
             static CpuState previousState = CpuState::NONE;
@@ -1995,7 +1997,7 @@ bool QtGui::event(QEvent *event)
 {
     if (event->type() == QEvent::StatusTip)
     {
-        auto *statusTipEvent = (QStatusTipEvent *)event;
+        auto *statusTipEvent = dynamic_cast<QStatusTipEvent *>(event);
         SetStatusMessage(statusTipEvent->tip());
         statusTipEvent->accept();
 

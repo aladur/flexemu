@@ -154,7 +154,7 @@ bool BProcess::Start()
                 }
         }
 
-        execvp(args[0], (char *const *)args);
+        execvp(args[0], const_cast<char *const *>(args));
         // if we come here an error has occured
         _exit(1);
     }

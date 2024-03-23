@@ -889,7 +889,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     while (next.sec != 0 || next.trk != 0)
     {
         // read next directory sector
-        if (!ReadSector((Byte *)&ds, next.trk, next.sec))
+        if (!ReadSector(reinterpret_cast<Byte *>(&ds), next.trk, next.sec))
         {
             std::stringstream stream;
 
@@ -934,7 +934,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->month = static_cast<Byte>(date.GetMonth());
                 pde->year = static_cast<Byte>(date.GetYear() % 100);
 
-                if (!WriteSector((Byte *)&ds, next.trk, next.sec))
+                if (!WriteSector(reinterpret_cast<Byte *>(&ds), next.trk,
+                    next.sec))
                 {
                     std::stringstream stream;
 
@@ -1654,7 +1655,8 @@ st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
     }
     last_dir_sector.next = next;
 
-    if (!WriteSector((Byte *)&last_dir_sector, st_last.trk, st_last.sec))
+    if (!WriteSector(reinterpret_cast<Byte *>(&last_dir_sector), st_last.trk,
+        st_last.sec))
     {
         stream << st_last;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());

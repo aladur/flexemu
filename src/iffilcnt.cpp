@@ -65,7 +65,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 
             dirTrackSector = dirSector.next;
 
-            if (!base->ReadSector((Byte *)&dirSector,
+            if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                                   dirTrackSector.trk, dirTrackSector.sec))
             {
                 std::stringstream stream;
@@ -129,7 +129,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -149,7 +149,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
 
-    if (!base->WriteSector((const Byte *)&dirSector,
+    if (!base->WriteSector(reinterpret_cast<Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -265,7 +265,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -315,7 +315,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     memset(&pd->file_ext[0], 0, FLEX_FILEEXT_LENGTH);
     strncpy(&pd->file_ext[0], ext.c_str(), FLEX_FILEEXT_LENGTH);
 
-    if (!base->WriteSector((const Byte *)&dirSector,
+    if (!base->WriteSector(reinterpret_cast<Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -342,7 +342,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -358,7 +358,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     pd->month = static_cast<Byte>(date.GetMonth());
     pd->year = static_cast<Byte>(date.GetYear() % 100);
 
-    if (!base->WriteSector((const Byte *)&dirSector,
+    if (!base->WriteSector(reinterpret_cast<Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -385,7 +385,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector((Byte *)&dirSector,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -399,7 +399,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
     pd->file_attr = attributes;
 
-    if (!base->WriteSector((const Byte *)&dirSector,
+    if (!base->WriteSector(reinterpret_cast<Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
