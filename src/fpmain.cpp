@@ -30,7 +30,6 @@
 #include "warnon.h"
 #include "winmain.h"
 #include "winctxt.h"
-#include "winmain.h"
 #include "sfpopts.h"
 #include "fpoptman.h"
 

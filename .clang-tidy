@@ -49,6 +49,7 @@ Checks: '
   readability-redundant-control-flow,
   readability-redundant-declaration,
   readability-function-size,
+  readability-duplicate-include,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'

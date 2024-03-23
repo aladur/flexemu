@@ -23,12 +23,11 @@
 #include "misc1.h"
 #include <stdio.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
-    #include <sys/types.h>
     #include <unistd.h>
 #endif
 #ifdef HAVE_DIRENT_H
-    #include <sys/types.h>
     #include <dirent.h>
     #define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
