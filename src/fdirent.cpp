@@ -136,18 +136,16 @@ std::string FlexDirEntry::GetFileName() const
         // If '.' not found return whole string
         return fileName;
     }
-    else
+
+    std::string result;
+
+    it++;
+    if (it != fileName.rend())
     {
-        std::string result;
-
-        it++;
-        if (it != fileName.rend())
-        {
-            std::copy(fileName.begin(), it.base(), std::back_inserter(result));
-        }
-
-        return result;
+        std::copy(fileName.begin(), it.base(), std::back_inserter(result));
     }
+
+    return result;
 }
 
 std::string FlexDirEntry::GetFileExt() const

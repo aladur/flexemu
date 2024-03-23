@@ -934,11 +934,9 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
 
                 return count;
             }
-            else
-            {
-                QMessageBox::warning(this, tr("FLEXPlorer Error"),
-                                     ex.what(), QMessageBox::Ok);
-            }
+
+            QMessageBox::warning(this, tr("FLEXPlorer Error"),
+                                 ex.what(), QMessageBox::Ok);
         }
     }
     setSortingEnabled(true);

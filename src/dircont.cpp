@@ -220,10 +220,8 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
         throw FlexException(FERR_NO_FILE_IN_CONTAINER, std::string(oldName),
                             GetPath());
     }
-    else
-    {
-        it.RenameCurrent(newName);
-    }
+
+    it.RenameCurrent(newName);
 
     return true;
 }
@@ -460,15 +458,8 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
         file_time.tm_isdst = 0;
         timebuf.modtime    = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    } // if
+        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);
+    }
 
     return false;
 }

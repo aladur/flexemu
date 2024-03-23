@@ -275,7 +275,8 @@ double PrintOutputWindow::ToMillimeter(double displayValue) const
     {
         return displayValue * 25.4; // Convert inches into millimeter
     }
-    else if (unit == QPrinter::Millimeter)
+
+    if (unit == QPrinter::Millimeter)
     {
         return displayValue * 10.0; // Convert Centimeter into millimeter
     }

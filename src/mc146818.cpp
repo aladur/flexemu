@@ -328,10 +328,8 @@ Byte Mc146818::convert(Byte val)
     {
         return val;
     }
-    else
-    {
-        return ((val / 10) << 4)  | (val % 10);
-    }
+
+    return ((val / 10) << 4)  | (val % 10);
 }
 
 Byte Mc146818::convert_hour(Byte val)
@@ -376,10 +374,8 @@ Byte Mc146818::convert_bin(Byte val)
     {
         return val;
     }
-    else
-    {
-        return ((val >> 4) * 10)  | (val & 0x0f);
-    }
+
+    return ((val >> 4) * 10)  | (val & 0x0f);
 }
 
 // return 1 on overflow
@@ -395,33 +391,27 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
             reg = min;
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
+    }
+
+    // bcd calculation
+    if ((reg & 0x0f) == 9)
+    {
+        reg = (reg & 0xf0) + 0x10;
     }
     else
     {
-        // bcd calculation
-        if ((reg & 0x0f) == 9)
-        {
-            reg = (reg & 0xf0) + 0x10;
-        }
-        else
-        {
-            reg++;
-        }
-
-        if (reg > convert(max))
-        {
-            reg = min;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        reg++;
     }
+
+    if (reg > convert(max))
+    {
+        reg = min;
+        return true;
+    }
+
+    return false;
 }
 
 

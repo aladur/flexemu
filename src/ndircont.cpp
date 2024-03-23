@@ -217,7 +217,8 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
     {
         return (sector > 0 && sector <= param.max_sector);
     }
-    else if (track == 0)
+
+    if (track == 0)
     {
         return (sector > 0 && sector <= param.max_sector0);
     }
@@ -410,16 +411,14 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
                  << -1 - file_id;
         return filename.str();
     }
-    else
-    {
-        const auto ds_idx = static_cast<Word>(file_id / DIRENTRIES);
 
-        if (ds_idx < flex_directory.size())
-        {
-            const auto &directory_entry =
-                flex_directory[ds_idx].dir_entry[file_id % DIRENTRIES];
-            return get_unix_filename(directory_entry);
-        }
+    const auto ds_idx = static_cast<Word>(file_id / DIRENTRIES);
+
+    if (ds_idx < flex_directory.size())
+    {
+        const auto &directory_entry =
+            flex_directory[ds_idx].dir_entry[file_id % DIRENTRIES];
+        return get_unix_filename(directory_entry);
     }
 
     // file_id located beyond valid range of directory entries.

@@ -201,17 +201,13 @@ public:
             {
                 return vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
             }
-            else
-            {
-                return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
-            }
-        }
-        else
-        {
-            int offset = (bank & 0x03) * VIDEORAM_SIZE;
 
-            return &memory[offset] + block_number * YBLOCK_SIZE;
+            return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
         }
+
+        int offset = (bank & 0x03) * VIDEORAM_SIZE;
+
+        return &memory[offset] + block_number * YBLOCK_SIZE;
     }
 
     inline bool is_video_bank_valid(int bank) const
@@ -220,10 +216,8 @@ public:
         {
             return (bank & 0x2) == 0;
         }
-        else
-        {
-            return (bank & 0x3) != 3;
-        }
+
+        return (bank & 0x3) != 3;
     }
 };
 #endif // MEMORY_INCLUDED

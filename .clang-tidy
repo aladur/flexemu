@@ -50,6 +50,7 @@ Checks: '
   readability-redundant-declaration,
   readability-function-size,
   readability-duplicate-include,
+  readability-else-after-return,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'

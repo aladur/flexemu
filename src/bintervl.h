@@ -111,11 +111,9 @@ bool overlap(const BInterval<T>& lhs, const BInterval<T>& rhs)
         return (rhs.lower() >= lhs.lower() && rhs.lower() <= lhs.upper()) ||
                (rhs.upper() >= lhs.lower() && rhs.upper() <= lhs.upper());
     }
-    else
-    {
-        return (lhs.lower() >= rhs.lower() && lhs.lower() <= rhs.upper()) ||
-               (lhs.upper() >= rhs.lower() && lhs.upper() <= rhs.upper());
-    }
+
+    return (lhs.lower() >= rhs.lower() && lhs.lower() <= rhs.upper()) ||
+            (lhs.upper() >= rhs.lower() && lhs.upper() <= rhs.upper());
 }
 
 template <typename T>

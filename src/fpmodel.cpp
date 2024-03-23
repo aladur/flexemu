@@ -570,7 +570,8 @@ QVariant FlexplorerTableModel::headerData(
         {
             return headerNames.at(section);
         }
-        else if (orientation == Qt::Vertical)
+
+        if (orientation == Qt::Vertical)
         {
             return QString("%1").arg(section + 1);
         }
@@ -616,15 +617,11 @@ Qt::ItemFlags FlexplorerTableModel::flags(const QModelIndex &index) const
         {
             return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
         }
-        else
-        {
-            return QAbstractTableModel::flags(index);
-        }
+
+        return QAbstractTableModel::flags(index);
     }
-    else
-    {
-        return Qt::ItemIsEnabled;
-    }
+
+    return Qt::ItemIsEnabled;
 }
 
 bool FlexplorerTableModel::insertRows(
@@ -978,7 +975,8 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
     {
         throw FlexException(FERR_INVALID_NULL_POINTER, "p_path");
     }
-    else if (stat(p_path, &sbuf))
+
+    if (stat(p_path, &sbuf))
     {   
         throw FlexException(FERR_UNABLE_TO_OPEN, p_path);
     }

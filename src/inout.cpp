@@ -119,10 +119,8 @@ int Inout::read_serpar() const
      {
         return memory.read_byte(serpar_address());
      }
-     else
-     {
-         return -1;
-     }
+
+     return -1;
 }
 
 void Inout::set_rtc(Mc146818 *x_rtc)

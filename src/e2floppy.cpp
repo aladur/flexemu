@@ -340,32 +340,28 @@ std::string E2floppy::drive_info_string(Word drive_nr)
 // get info for corresponding drive. If drive is not ready the result is empty.
 FlexContainerInfo E2floppy::drive_info(Word drive_nr)
 {
+    FlexContainerInfo info;
+
     if (drive_nr < MAX_DRIVES)
     {
         std::lock_guard<std::mutex> guard(status_mutex);
 
         if (floppy[drive_nr].get() == nullptr)
         {
-            return FlexContainerInfo();
-        }
-        else
-        {
-            FlexContainerInfo info;
-
-            try
-            {
-                floppy[drive_nr]->GetInfo(info);
-            }
-            catch (FlexException &)
-            {
-                return FlexContainerInfo();
-            }
-
             return info;
+        }
+
+        try
+        {
+            floppy[drive_nr]->GetInfo(info);
+        }
+        catch (FlexException &)
+        {
+            return FlexContainerInfo();
         }
     }
 
-    return FlexContainerInfo();
+    return info;
 }
 
 const char *E2floppy::open_mode(char *path)

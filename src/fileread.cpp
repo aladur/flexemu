@@ -316,11 +316,13 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
     {
         return load_intelhex(istream, memtgt, startAddress);
     }
-    else if (toupper(ch) == 'S')
+
+    if (toupper(ch) == 'S')
     {
         return load_motorola_srec(istream, memtgt, startAddress);
     }
-    else if (ch == 0x02)
+
+    if (ch == 0x02)
     {
         return load_flex_binary(istream, memtgt, startAddress);
     }

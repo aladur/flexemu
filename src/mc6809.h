@@ -478,11 +478,9 @@ private:
             pc += 2 + memory.read_word(pc);
             return 6;
         }
-        else
-        {
-            pc += 2;
-            return 5;
-        }
+
+        pc += 2;
+        return 5;
     }
 
     inline void bcc()
@@ -1497,12 +1495,10 @@ inline cycles_t Mc6809::rti()
         pul(0xfe, s, u);
         return 15;
     }
-    else
-    {
-        pc = memory.read_word(s);
-        s += 2;
-        return 6;
-    }
+
+    pc = memory.read_word(s);
+    s += 2;
+    return 6;
 }
 
 inline void Mc6809::sync()

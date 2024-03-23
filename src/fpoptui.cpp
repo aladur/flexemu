@@ -135,7 +135,8 @@ bool FlexplorerOptionsUi::Validate()
 
         return false;
     }
-    else if (!info.isFile() || (info.size() != 256 && info.size() != 512))
+
+    if (!info.isFile() || (info.size() != 256 && info.size() != 512))
     {
         e_bootSectorFile->setFocus(Qt::OtherFocusReason);
         QMessageBox::critical(dialog, tr("Flexplorer Error"), 

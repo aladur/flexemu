@@ -269,12 +269,10 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
                                 dirEntry.GetTotalFileName(),
                                 base->GetPath());
         }
-        else
-        {
-            throw FlexException(FERR_REMOVE_FILE,
-                                dirEntry.GetTotalFileName(),
-                                base->GetPath());
-        }
+
+        throw FlexException(FERR_REMOVE_FILE,
+                            dirEntry.GetTotalFileName(),
+                            base->GetPath());
     }
 
 #endif
@@ -350,13 +348,15 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
         {
             throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
         }
-        else if (errno == EACCES)
+
+        if (errno == EACCES)
         {
             throw FlexException(FERR_RENAME_FILE,
                                 dirEntry.GetTotalFileName(),
                                 base->GetPath());
         }
-        else if (errno == ENOENT)
+
+        if (errno == ENOENT)
         {
             throw FlexException(FERR_NO_FILE_IN_CONTAINER,
                                 dirEntry.GetTotalFileName(),
@@ -398,15 +398,8 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
         file_time.tm_isdst = 0;
         timebuf.modtime    = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    } // if
+        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);
+    }
 
     return false;
 }

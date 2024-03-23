@@ -955,11 +955,9 @@ std::ostream& operator<<(std::ostream &os, const LostSectors &item)
         return os << " sector, called " << item.name << " at " <<
                      item.start << ".";
     }
-    else
-    {
-        return os << " sectors, called " << item.name << " from " <<
-                     item.start << " to " << item.end << ".";
-    }
+
+    return os << " sectors, called " << item.name << " from " <<
+                 item.start << " to " << item.end << ".";
 }
 
 std::ostream& operator<<(std::ostream &os, const HasCycle &item)

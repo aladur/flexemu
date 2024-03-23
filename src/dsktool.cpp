@@ -821,10 +821,8 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 std::cerr << "    Copying aborted.\n";
                 break;
             }
-            else
-            {
-                std::cerr << "    Copying of " << filename << " aborted.\n";
-            }
+
+            std::cerr << "    Copying of " << filename << " aborted.\n";
         }
 
         if (isSuccess && verbose)
@@ -964,7 +962,8 @@ bool estimateDiskFormat(const char *format, int &disk_format)
             disk_format = TYPE_DSK_CONTAINER;
             return true;
         }
-        else if (strcmp(format, "flx") == 0)
+
+        if (strcmp(format, "flx") == 0)
         {
             disk_format = TYPE_FLX_CONTAINER;
             return true;
@@ -1064,7 +1063,8 @@ bool checkBootSectorFile(const char *opt, const char **bsFile)
                          " is no regular file. Aborted.\n";
             return false;
         }
-        else if (sbuf.st_size != SECTOR_SIZE && sbuf.st_size != 2*SECTOR_SIZE)
+
+        if (sbuf.st_size != SECTOR_SIZE && sbuf.st_size != 2*SECTOR_SIZE)
         {
             std::cerr << "*** Error: Boot sector file " << opt <<
                          "\n    has to have a size of " << SECTOR_SIZE <<

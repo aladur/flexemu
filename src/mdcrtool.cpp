@@ -140,13 +140,11 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
                           << ". Ignored.\n";
                 continue; // Double name error is ignored.
             }
-            else
-            {
-                std::cerr << "*** Error: "
-                          << mdcrErrors[static_cast<T>(status)]
-                          << ". Mdcr file: " << ofile << ".\n";
-                return 1;
-            }
+
+            std::cerr << "*** Error: "
+                      << mdcrErrors[static_cast<T>(status)]
+                      << ". Mdcr file: " << ofile << ".\n";
+            return 1;
         }
     }
 

@@ -160,50 +160,48 @@ FlexFileContainer::FlexFileContainer(const char *path, const char *mode,
             }
             return;
         }
-        else
+
+        s_formats format { };
+        auto jvcHeader = GetJvcFileHeader();
+        auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
+        Word tracks;
+        Word sectors;
+
+        // check if it is a DSK formated disk
+        // read system info sector
+        if (IsFlexFileFormat(TYPE_DSK_CONTAINER) &&
+            GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
         {
-            s_formats format { };
-            auto jvcHeader = GetJvcFileHeader();
-            auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
-            Word tracks;
-            Word sectors;
-
-            // check if it is a DSK formated disk
-            // read system info sector
-            if (IsFlexFileFormat(TYPE_DSK_CONTAINER) &&
-                GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
+            // File is identified as a FLEX DSK container format
+            if (jvcHeaderSize == 0U)
             {
-                // File is identified as a FLEX DSK container format
-                if (jvcHeaderSize == 0U)
-                {
-                    format.tracks = tracks;
-                    format.sectors = sectors;
-                    format.sides = 0U;
-                }
-                else
-                {
-                    Word jvcSectors = jvcHeader[0];
-                    Word jvcSides = (jvcHeaderSize >= 2) ? jvcHeader[1] : 1U;
-
-                    // FLEX DSK container with JVC file header
-                    format.tracks = static_cast<Word>(
-                                    (file_size - jvcHeaderSize) /
-                                    (jvcSectors * SECTOR_SIZE) / jvcSides);
-                    format.sectors = jvcSectors * jvcSides;
-                    format.sides = jvcSides;
-
-                    if (tracks != format.tracks || sectors != format.sectors)
-                    {
-                        throw FlexException(FERR_INVALID_JVC_HEADER,
-                                            fp.GetPath());
-                    }
-                }
-                format.size = static_cast<SDWord>(file_size);
-                format.offset = jvcHeaderSize;
-                Initialize_for_dsk_format(format, write_protected);
-                EvaluateTrack0SectorCount();
-                return;
+                format.tracks = tracks;
+                format.sectors = sectors;
+                format.sides = 0U;
             }
+            else
+            {
+                Word jvcSectors = jvcHeader[0];
+                Word jvcSides = (jvcHeaderSize >= 2) ? jvcHeader[1] : 1U;
+
+                // FLEX DSK container with JVC file header
+                format.tracks = static_cast<Word>(
+                                (file_size - jvcHeaderSize) /
+                                (jvcSectors * SECTOR_SIZE) / jvcSides);
+                format.sectors = jvcSectors * jvcSides;
+                format.sides = jvcSides;
+
+                if (tracks != format.tracks || sectors != format.sectors)
+                {
+                    throw FlexException(FERR_INVALID_JVC_HEADER,
+                                        fp.GetPath());
+                }
+            }
+            format.size = static_cast<SDWord>(file_size);
+            format.offset = jvcHeaderSize;
+            Initialize_for_dsk_format(format, write_protected);
+            EvaluateTrack0SectorCount();
+            return;
         }
     }
 
@@ -283,10 +281,8 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
                  param.byte_p_track * (track - 1) +
                  sector * param.byte_p_sector <= file_size));
     }
-    else
-    {
-        return (sector > 0 && sector <= param.max_sector0);
-    }
+
+    return (sector > 0 && sector <= param.max_sector0);
 }
 
 bool FlexFileContainer::IsFlexFormat() const
@@ -385,10 +381,8 @@ bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
     {
         throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, fp.GetPath());
     }
-    else
-    {
-        it.RenameCurrent(newName);
-    }
+
+    it.RenameCurrent(newName);
 
     return true;
 }
@@ -624,7 +618,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                 throw FlexException(FERR_READING_TRKSEC,
                                     stream.str(), fp.GetPath());
             }
-            else if (count)
+
+            if (count)
             {
                 // For random files the two sector map sectors are
                 // skipped. They are newly generated in sectorBuffer[2]

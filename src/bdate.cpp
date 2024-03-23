@@ -122,19 +122,13 @@ int BDate::GetYear() const
         {
             return year + 2000;
         }
-        else
-        {
-            return year + 1900;
-        }
+        return year + 1900;
     }
-    else if (year < 256)
+    if (year < 256)
     {
         return year + 1900;    // flexemu: fix bug for year >= 100
     }
-    else
-    {
-        return year;
-    }
+    return year;
 }
 
 int BDate::MakeComparable() const

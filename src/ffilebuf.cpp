@@ -696,15 +696,14 @@ bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
         {
             return false;
         }
-        else
+
+        memset(to, stuffByte, aSize);
+        if (buffer != nullptr)
         {
-            memset(to, stuffByte, aSize);
-            if (buffer != nullptr)
-            {
-                memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
-            }
-            return true;
+            memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
         }
+
+        return true;
     }
     if (buffer != nullptr)
     {

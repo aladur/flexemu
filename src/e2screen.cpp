@@ -353,11 +353,9 @@ QString E2Screen::GetTitle()
         return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
                tr("Press CTRL F10 to capture mouse");
     }
-    else
-    {
-        return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
-               tr("Press CTRL F10 to release mouse");
-    }
+
+    return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
+           tr("Press CTRL F10 to release mouse");
 }
 
 void E2Screen::UpdateBlock(Byte p_firstRasterLine, int displayBlock,

@@ -111,10 +111,8 @@ public:
         {
             return nullptr;
         }
-        else
-        {
-            return GetBuffer(0);
-        }
+
+        return GetBuffer(0);
     };
     inline Byte GetAttributes() const
     {

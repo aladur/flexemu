@@ -90,14 +90,12 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
         cycles = 0;
         return total_cycles;
     }
-    else
-    {
+
 #ifdef FASTFLEX
-        return total_cycles + (cycles / 10);
+    return total_cycles + (cycles / 10);
 #else
-        return total_cycles +  cycles;
+    return total_cycles +  cycles;
 #endif
-    }
 }
 
 void Mc6809::get_status(CpuStatus *cpu_status)
@@ -518,14 +516,16 @@ cycles_t Mc6809::exec_irqs(bool save_state)
             events &= ~Event::Nmi;
             return save_state ? 17 : 5;
         }
-        else if (((events & Event::Firq) != Event::NONE) && !CC_BITF)
+
+        if (((events & Event::Firq) != Event::NONE) && !CC_BITF)
         {
             ++interrupt_status.count[INT_FIRQ];
             EXEC_FIRQ(save_state);
             events &= ~Event::Firq;
             return save_state ? 8 : 5;
         }
-        else if (((events & Event::Irq) != Event::NONE) && !CC_BITI)
+
+        if (((events & Event::Irq) != Event::NONE) && !CC_BITI)
         {
             ++interrupt_status.count[INT_IRQ];
             EXEC_IRQ(save_state);

@@ -79,10 +79,8 @@ Byte Wd1793::readIo(Word offset)
             {
                 return str | STR_DATAREQUEST;
             }
-            else
-            {
-                return str;
-            }
+
+            return str;
 
         case 1:
             return tr;

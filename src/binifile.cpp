@@ -101,11 +101,8 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
 
                     return Type::KeyValue;
                 }
-                else
-                {
-                    throw FlexException(FERR_INVALID_LINE_IN_FILE, line,
-                                        fileName);
-                }
+
+                throw FlexException(FERR_INVALID_LINE_IN_FILE, line, fileName);
             }
         }
     }

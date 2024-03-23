@@ -109,45 +109,43 @@ bool PrintOverlayHelper::AddCharacter(char character)
                 escapeSequence.push_back(character);
                 return false;
             }
-            else
+
+            switch (character)
             {
-                switch (character)
-                {
-                    case SO: // Double width mode on.
-                        currentProps |= CharProperty::DoubleWidth;
-                        break;
-                    case DC4: // Double width mode off.
-                        currentProps &= ~CharProperty::DoubleWidth;
-                        break;
-                    case '4': // Italic mode on.
-                        currentProps |= CharProperty::Italic;
-                        break;
-                    case '5': // Italic mode off.
-                        currentProps &= ~CharProperty::Italic;
-                        break;
-                    case 'E': // Emphasized mode on.
-                        currentProps |= CharProperty::Emphasized;
-                        break;
-                    case 'F': // Emphasized mode off.
-                        currentProps &= ~CharProperty::Emphasized;
-                        break;
-                    case 'G': // Double-strike mode on.
-                        currentProps |= CharProperty::DoubleStrike;
-                        break;
-                    case 'H': // Double-strike mode off.
-                        currentProps &= ~CharProperty::DoubleStrike;
-                        break;
-                    case 'T': // Super/subscript mode off.
-                        currentProps &= ~(CharProperty::SubScript |
-                                          CharProperty::SuperScript);
-                        break;
-                    // ESC SI Print in condensed mode, unsupported.
-                    // ESC 0  Set line spacing to 1/8 inch, unsupported.
-                    // ESC 1  Set line spacing to 7/72 inch, unsupported.
-                    // ESC 2  Set line spacing to 1/6 inch, unsupported.
-                    // ESC 8  Receive data even if there is no paper in, unsup.
-                    // ESC 9  Noreceive data if there is no paper in, unsup.
-                }
+                case SO: // Double width mode on.
+                    currentProps |= CharProperty::DoubleWidth;
+                    break;
+                case DC4: // Double width mode off.
+                    currentProps &= ~CharProperty::DoubleWidth;
+                    break;
+                case '4': // Italic mode on.
+                    currentProps |= CharProperty::Italic;
+                    break;
+                case '5': // Italic mode off.
+                    currentProps &= ~CharProperty::Italic;
+                    break;
+                case 'E': // Emphasized mode on.
+                    currentProps |= CharProperty::Emphasized;
+                    break;
+                case 'F': // Emphasized mode off.
+                    currentProps &= ~CharProperty::Emphasized;
+                    break;
+                case 'G': // Double-strike mode on.
+                    currentProps |= CharProperty::DoubleStrike;
+                    break;
+                case 'H': // Double-strike mode off.
+                    currentProps &= ~CharProperty::DoubleStrike;
+                    break;
+                case 'T': // Super/subscript mode off.
+                    currentProps &= ~(CharProperty::SubScript |
+                                      CharProperty::SuperScript);
+                    break;
+                // ESC SI Print in condensed mode, unsupported.
+                // ESC 0  Set line spacing to 1/8 inch, unsupported.
+                // ESC 1  Set line spacing to 7/72 inch, unsupported.
+                // ESC 2  Set line spacing to 1/6 inch, unsupported.
+                // ESC 8  Receive data even if there is no paper in, unsup.
+                // ESC 9  Noreceive data if there is no paper in, unsup.
             }
         }
         else if (escapeSequence.size() == 1)

@@ -166,12 +166,10 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 
                 return address;
             }
-            else
-            {
-                throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                    iter.first + "=" + iter.second,
-                                    iniFile.GetFileName());
-            }
+
+            throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                iter.first + "=" + iter.second,
+                                iniFile.GetFileName());
         }
     }
 

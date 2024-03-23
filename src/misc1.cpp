@@ -199,7 +199,8 @@ bool matches(const char *text, const char *pattern,
                 max = INT_MAX;
                 continue;
             }
-            else if (char_pat == '?')
+
+            if (char_pat == '?')
             {
                 // wildchard for exactly one char
                 min++;
@@ -211,7 +212,8 @@ bool matches(const char *text, const char *pattern,
 
                 continue;
             }
-            else if (char_pat != '\0')
+
+            if (char_pat != '\0')
             {
                 // any other character
                 if (ignorecase)

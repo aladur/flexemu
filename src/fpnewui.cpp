@@ -301,7 +301,8 @@ bool FlexplorerNewUi::Validate()
 
         return false;
     }
-    else if (QFileInfo::exists(e_path->text()))
+
+    if (QFileInfo::exists(e_path->text()))
     {
         e_path->setFocus(Qt::OtherFocusReason);
         auto path = QDir::toNativeSeparators(e_path->text());

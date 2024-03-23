@@ -196,27 +196,32 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     scheduler.request_new_state(CpuState::Exit);
                     return;
                 }
-                else if (stricmp(arg1, "irq")  == 0)
+
+                if (stricmp(arg1, "irq")  == 0)
                 {
                     Notify(NotifyId::SetIrq);
                     return;
                 }
-                else if (stricmp(arg1, "firq")  == 0)
+
+                if (stricmp(arg1, "firq")  == 0)
                 {
                     Notify(NotifyId::SetFirq);
                     return;
                 }
-                else if (stricmp(arg1, "nmi")  == 0)
+
+                if (stricmp(arg1, "nmi")  == 0)
                 {
                     Notify(NotifyId::SetNmi);
                     return;
                 }
-                else if (stricmp(arg1, "terminal") == 0)
+
+                if (stricmp(arg1, "terminal") == 0)
                 {
                     inout.output_to_terminal();
                     return;
                 }
-                else if (stricmp(arg1, "graphic") == 0)
+
+                if (stricmp(arg1, "graphic") == 0)
                 {
                     if (!inout.output_to_graphic())
                     {
@@ -224,24 +229,26 @@ void Command::writeIo(Word /*offset*/, Byte val)
                                          "graphic mode.";
                         answer = answer_stream.str();
                     }
-
                     return;
                 }
-                else if (stricmp(arg1, "freq") == 0)
+
+                if (stricmp(arg1, "freq") == 0)
                 {
                     answer_stream << std::fixed << std::setprecision(2)
                                   << scheduler.get_frequency() << " MHz";
                     answer = answer_stream.str();
                     return;
                 }
-                else if (stricmp(arg1, "cycles") == 0)
+
+                if (stricmp(arg1, "cycles") == 0)
                 {
                     answer_stream << scheduler.get_total_cycles()
                                   << " cycles";
                     answer = answer_stream.str();
                     return;
                 }
-                else if (stricmp(arg1, "info") == 0)
+
+                if (stricmp(arg1, "info") == 0)
                 {
                     for (Word drive_nr = 0; drive_nr <= 3; drive_nr++)
                     {
@@ -251,7 +258,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     answer = answer_stream.str();
                     return;
                 }
-                else if (stricmp(arg1, "sync") == 0)
+
+                if (stricmp(arg1, "sync") == 0)
                 {
                     if (!fdc.sync_all_drives())
                     {
@@ -300,13 +308,15 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     return;
                 }
-                else if (stricmp(arg1, "info") == 0)
+
+                if (stricmp(arg1, "info") == 0)
                 {
                     answer =
                         fdc.drive_info_string(static_cast<Word>(number));
                     return;
                 }
-                else if (stricmp(arg1, "sync") == 0)
+
+                if (stricmp(arg1, "sync") == 0)
                 {
                     if (!fdc.sync_drive(static_cast<Word>(number)))
                     {
@@ -343,7 +353,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     return;
                 }
-                else if (stricmp(arg1, "rmount") == 0)
+
+                if (stricmp(arg1, "rmount") == 0)
                 {
                     if ((sscanf(arg3, "%d", &number) != 1) ||
                         number < 0 || number > 3)
@@ -404,6 +415,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer = answer_stream.str();
                         return;
                     }
+
                     if ((sscanf(arg4, "%d", &sec) != 1) ||
                         sec < 6 || sec > 255)
                     {
@@ -412,7 +424,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         answer = answer_stream.str();
                         return;
                     }
-
 
                     if (!fdc.format_disk(
                         static_cast<SWord>(trk),
