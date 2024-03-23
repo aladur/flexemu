@@ -34,37 +34,37 @@
 #include "brcfile.h"
 
 
-void FlexemuOptions::PrintHelp(FILE *fp)
+void FlexemuOptions::PrintHelp(std::ostream &os)
 {
-    fprintf(fp, "usage: flexemu <options>\n");
-    fprintf(fp, "  <options> are:\n");
-    fprintf(fp, "  -f <hexfile>\n");
-    fprintf(fp, "  -0 <diskimage/directory drive 0>\n");
-    fprintf(fp, "  -1 <diskimage/directory drive 1>\n");
-    fprintf(fp, "  -2 <diskimage/directory drive 2>\n");
-    fprintf(fp, "  -3 <diskimage/directory drive 3>\n");
-    fprintf(fp, "  -p (directory for FLEX disks)\n");
-    fprintf(fp, "  -j <factor for screen size>\n");
-    fprintf(fp, "  -m (use 2 x 288 KByte RAM extension)\n");
-    fprintf(fp, "  -u (support undocumented MC6809 processor instructions)\n");
-    fprintf(fp, "  -F <frequency> (set CPU frequency in MHz)\n");
-    fprintf(fp, "     0.0 sets maximum frequency, -1.0 sets original frequency.\n");
-    fprintf(fp, "  -C <startup command>\n");
+    os << "usage: flexemu <options>\n"
+          "  <options> are:\n"
+          "  -f <hexfile>\n"
+          "  -0 <diskimage/directory drive 0>\n"
+          "  -1 <diskimage/directory drive 1>\n"
+          "  -2 <diskimage/directory drive 2>\n"
+          "  -3 <diskimage/directory drive 3>\n"
+          "  -p (directory for FLEX disks)\n"
+          "  -j <factor for screen size>\n"
+          "  -m (use 2 x 288 KByte RAM extension)\n"
+          "  -u (support undocumented MC6809 processor instructions)\n"
+          "  -F <frequency> (set CPU frequency in MHz)\n"
+          "     0.0 sets maximum frequency, -1.0 sets original frequency.\n"
+          "  -C <startup command>\n"
 #ifdef HAVE_TERMIOS_H
-    fprintf(fp, "  -t (terminal only mode)\n");
-    fprintf(fp, "  -r <two-hex-digit reset key>\n");
+          "  -t (terminal only mode)\n"
+          "  -r <two-hex-digit reset key>\n"
 #endif
-    fprintf(fp, "  -c <color> define foreground color\n");
-    fprintf(fp, "  -i (display inverse video)\n");
-    fprintf(fp, "  -O <cccc> (Support formatting disk in drive 0..3\n");
-    fprintf(fp, "     'c' represents drive 0..3 and can be: '0'=no; '1'=yes or "
-            "'-'=unchanged,\n");
-    fprintf(fp, "     Example: -O 001- Drive 2 allows format, drive 0,1 not, ");
-    fprintf(fp, "drive 3 unchanged.\n");
-    fprintf(fp, "  -n <# of colors>\n");
-    fprintf(fp, "  -h (display this)\n");
-    fprintf(fp, "  -? (display this)\n");
-    fprintf(fp, "  -v (print version number)\n");
+          "  -c <color> define foreground color\n"
+          "  -i (display inverse video)\n"
+          "  -O <cccc> (Support formatting disk in drive 0..3\n"
+          "     'c' represents drive 0..3 and can be: '0'=no; '1'=yes or "
+            "'-'=unchanged,\n"
+          "     Example: -O 001- Drive 2 allows format, drive 0,1 not, "
+          "drive 3 unchanged.\n"
+          "  -n <# of colors>\n"
+          "  -h (display this)\n"
+          "  -? (display this)\n"
+          "  -v (print version number)\n";
 } // PrintHelp
 
 void FlexemuOptions::InitOptions(struct sOptions &options)
@@ -193,24 +193,38 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'j':
-                sscanf(optarg, "%d", &i);
-
-                if (i > 0 && i <= MAX_PIXELSIZE)
                 {
-                    options.pixelSize = i;
-                    setReadOnly(FlexemuOptionId::PixelSize);
+                    std::stringstream str(optarg);
+
+                    if (!(str >> i) || i < 1 || i > MAX_PIXELSIZE)
+                    {
+                        std::cerr << "Invalid -j value: '" << optarg << "'.\n"
+                            "Only values 1 to " << MAX_PIXELSIZE <<
+                            " are allowed.\n";
+                        exit(EXIT_FAILURE);
+                    }
                 }
+
+                options.pixelSize = i;
+                setReadOnly(FlexemuOptionId::PixelSize);
 
                 break;
 
             case 'F':
-                sscanf(optarg, "%f", &f);
-
-                if (f >= 0.0)
                 {
-                    options.frequency = f;
-                    setReadOnly(FlexemuOptionId::Frequency);
+                    std::stringstream str(optarg);
+
+                    if (!(str >> f) || (f < 0.0 && f != -1.0))
+                    {
+                        std::cerr << "Invalid -F value: '" << optarg << "'.\n"
+                            "Only values >= 0.0 or -1.0 are allowed, "
+                            "unit is MHz.\n";
+                        exit(EXIT_FAILURE);
+                    }
                 }
+
+                options.frequency = f;
+                setReadOnly(FlexemuOptionId::Frequency);
 
                 break;
 
@@ -224,11 +238,31 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'r':
-                sscanf(optarg, "%hx", (Word *)&options.reset_key);
+                {
+                    std::stringstream str(optarg);
+
+                    if (strlen(optarg) != 2 ||
+                        !(str >> std::hex >> options.reset_key))
+                    {
+                        std::cerr << "Invalid -r value: '" << optarg << "'.\n"
+                            "Only a two digit hex value is allowed.\n";
+                        exit(EXIT_FAILURE);
+                    }
+                }
                 break;
 #endif
             case 'n':
-                sscanf(optarg, "%d", &i);
+                {
+                    std::stringstream str(optarg);
+
+                    if (!(str >> i) ||
+                        (i != 2 && i != 8 && i != 64))
+                    {
+                        std::cerr << "Invalid -n value: '" << optarg << "'.\n"
+                            "Only 2, 8 or 64 colors are allowed.\n";
+                        exit(EXIT_FAILURE);
+                    }
+                }
                 options.nColors = i;
                 setReadOnly(FlexemuOptionId::NColors);
                 break;
@@ -246,7 +280,9 @@ void FlexemuOptions::GetCommandlineOptions(
             case 'O':
                 if (std::string(optarg).size() != 4)
                 {
-                    fprintf(stderr, "parameter -O should have 4 characters\n");
+                    std::cerr << "Invalid -O value: '" << optarg << "'.\n"
+                        "It should have four characters, each "
+                        "can be '0', '1' or '-'.\n";
                     exit(EXIT_FAILURE);
                 }
                 i = 0;
@@ -254,8 +290,8 @@ void FlexemuOptions::GetCommandlineOptions(
                 {
                     if (ch != '0' && ch != '1' && ch != '-')
                     {
-                        fprintf(stderr, "parameter -O contains wrong value "
-                                "'%c' for drive number %d\n", ch, i);
+                        std::cerr << "parameter -O contains wrong value '" <<
+                            ch << "' for drive number " << i << ".\n";
                         exit(EXIT_FAILURE);
                     }
                     if (ch != '-')
@@ -268,12 +304,12 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'v':
-                fprintf(stdout, PROGRAMNAME ": V %s\n", PROGRAM_VERSION);
+                std::cout << PROGRAMNAME ": V " PROGRAM_VERSION "\n";
                 exit(EXIT_SUCCESS);
 
             case '?':
             case 'h':
-                PrintHelp(stderr);
+                PrintHelp(std::cerr);
                 exit(EXIT_SUCCESS);
         }  // switch
     } // while

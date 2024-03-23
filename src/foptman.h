@@ -25,6 +25,7 @@
 
 #include "misc1.h"
 #include "soptions.h"
+#include <iostream>
 
 
 static constexpr std::array<FlexemuOptionId, 4> canFormatDriveOptionId
@@ -38,7 +39,7 @@ static constexpr std::array<FlexemuOptionId, 4> canFormatDriveOptionId
 class FlexemuOptions
 {
 public:
-    static void PrintHelp(FILE *fp);
+    static void PrintHelp(std::ostream &os);
     static void InitOptions(struct sOptions &options);
     static void GetOptions(struct sOptions &options);
     static void GetCommandlineOptions(

@@ -139,7 +139,7 @@ struct sOptions
     bool isTerminalIgnoreESC; // Terminal mode: Ignore ESC (0x1B) characters
     bool isTerminalIgnoreNUL; // Terminal mode: Ignore NUL (0x00) characters
     FileTimeAccess fileTimeAccess;
-    short int reset_key; // must be short int because of sscanf !!!
+    short int reset_key;
     float frequency;
 
     // User interface options
