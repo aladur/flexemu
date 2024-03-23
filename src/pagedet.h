@@ -26,7 +26,6 @@
 #include "poverhlp.h"
 #include "pagedetd.h"
 
-extern const char * white_space;
 
 class PageDetector
 {
