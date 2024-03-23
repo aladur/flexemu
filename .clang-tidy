@@ -43,6 +43,7 @@ Checks: '
   -misc-const-correctness,
   performance-*,
   portability-*,
+  readability-redundant-preprocessor,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'

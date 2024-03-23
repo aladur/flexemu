@@ -62,11 +62,7 @@ BJoystick::~BJoystick()
 
 bool BJoystick::IsOpened()
 {
-#ifdef LINUX_JOYSTICK_IS_PRESENT
     return js >= 0;
-#else
-    return false;
-#endif
 }
 
 bool BJoystick::Actualize()
