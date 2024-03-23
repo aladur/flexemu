@@ -44,6 +44,7 @@ Checks: '
   performance-*,
   portability-*,
   readability-redundant-preprocessor,
+  readability-container-data-pointer,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'
