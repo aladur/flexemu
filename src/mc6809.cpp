@@ -928,7 +928,6 @@ void Mc6809::tfr()
 
     pc -= 2;
     invalid("transfer register");
-    return;
 }
 #endif
 

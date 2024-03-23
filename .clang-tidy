@@ -45,6 +45,7 @@ Checks: '
   portability-*,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
+  readability-redundant-control-flow,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'
