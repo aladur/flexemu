@@ -46,7 +46,7 @@ private:
 public:
 
     VideoControl2();
-    virtual ~VideoControl2();
+    ~VideoControl2() override;
 
     const char *getName() override
     {

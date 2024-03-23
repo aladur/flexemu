@@ -41,7 +41,7 @@ class BreakpointSettingsUi : public QObject, protected Ui_BreakpointSettings
 
 public:
     BreakpointSettingsUi();
-    ~BreakpointSettingsUi() = default;
+    ~BreakpointSettingsUi() override = default;
     void setupUi(QDialog &dialog);
     void SetData(const BPArray &breakpoints);
     BPArray GetData() const;

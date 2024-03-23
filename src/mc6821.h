@@ -98,7 +98,7 @@ protected:
 public:
 
     Mc6821();
-    virtual ~Mc6821();
+    ~Mc6821() override;
 };
 
 inline Mc6821::ControlLine operator| (Mc6821::ControlLine lhs,

@@ -75,8 +75,7 @@ protected:
 public:
 
     Mc6850();
-    virtual             ~Mc6850();
-
+    ~Mc6850() override;
 };
 
 #endif // MC6850_INCLUDED

@@ -59,7 +59,7 @@ public:
 public:
 
     ByteRegister();
-    virtual ~ByteRegister();
+    ~ByteRegister() override;
 };
 
 #endif

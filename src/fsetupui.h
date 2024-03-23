@@ -49,7 +49,7 @@ class FlexemuOptionsUi : public QObject, protected Ui_FlexemuSetup
 public:
 
     FlexemuOptionsUi();
-    virtual ~FlexemuOptionsUi();
+    ~FlexemuOptionsUi() override;
     void setupUi(QDialog *dialog);
     void TransferDataToDialog(const sOptions &options);
     void TransferDataFromDialog(sOptions &options);

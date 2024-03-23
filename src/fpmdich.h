@@ -57,7 +57,7 @@ class FlexplorerMdiChild : public QTableView
 public:
     FlexplorerMdiChild(const QString &path, struct sFPOptions &options);
     FlexplorerMdiChild() = delete;
-    virtual ~FlexplorerMdiChild();
+    ~FlexplorerMdiChild() override;
 
     QString GetPath() const;
     QString GetUserFriendlyPath() const;

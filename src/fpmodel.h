@@ -60,7 +60,7 @@ public:
     FlexplorerTableModel() = delete;
     FlexplorerTableModel(const char *path, struct sFPOptions &options,
                          QObject *parent = Q_NULLPTR);
-    virtual ~FlexplorerTableModel();
+    ~FlexplorerTableModel() override;
 
     // To correctly initialize the model Initialize() has to be called
     // right after object construction.

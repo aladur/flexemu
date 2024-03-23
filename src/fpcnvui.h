@@ -39,7 +39,7 @@ class FlexplorerConvertUi : public QObject, protected Ui_FlexplorerConvert
 public:
 
     FlexplorerConvertUi();
-    virtual ~FlexplorerConvertUi();
+    ~FlexplorerConvertUi() override;
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(const QString &title,
                               const QString &filename,

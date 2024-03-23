@@ -67,7 +67,7 @@ public:
              KeyboardIO &x_keyboardIO, Pia1 &x_pia1,
              sOptions &x_options,
              const QColor &backgroundColor, QWidget *parent = nullptr);
-    virtual ~E2Screen() = default;
+    ~E2Screen() override = default;
 
     QSize GetScaledSize() const;
     void UpdateBlock(Byte firstRasterLine, int displayBlock,

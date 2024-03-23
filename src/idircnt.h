@@ -38,19 +38,19 @@ class DirectoryContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
     DirectoryContainerIteratorImp(DirectoryContainer *);
-    virtual ~DirectoryContainerIteratorImp();
-    bool operator==(const FileContainerIf *aBase) const;
-    void AtEnd();
-    FlexDirEntry &GetDirEntry()
+    ~DirectoryContainerIteratorImp() override;
+    bool operator==(const FileContainerIf *aBase) const override;
+    void AtEnd() override;
+    FlexDirEntry &GetDirEntry() override
     {
         return dirEntry;
     };
-    bool NextDirEntry(const char *filePattern);
+    bool NextDirEntry(const char *filePattern) override;
 private:
-    bool DeleteCurrent();
-    bool RenameCurrent(const char *);
-    bool SetDateCurrent(const BDate &date);
-    bool SetAttributesCurrent(Byte attributes);
+    bool DeleteCurrent() override;
+    bool RenameCurrent(const char *) override;
+    bool SetDateCurrent(const BDate &date) override;
+    bool SetAttributesCurrent(Byte attributes) override;
 
     DirectoryContainerIteratorImp();
     DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &);

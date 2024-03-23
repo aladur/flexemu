@@ -74,7 +74,7 @@ private:
 public:
 
     Mc146818();
-    virtual             ~Mc146818();
+    ~Mc146818() override;
 
 };
 

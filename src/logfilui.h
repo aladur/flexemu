@@ -42,7 +42,7 @@ class LogfileSettingsUi : public QObject, protected Ui_LogfileSettings
 public:
 
     LogfileSettingsUi();
-    ~LogfileSettingsUi() = default;
+    ~LogfileSettingsUi() override = default;
     void setupUi(QDialog &dialog);
     void SetData(const s_cpu_logfile &settings);
     s_cpu_logfile GetData() const;

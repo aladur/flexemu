@@ -65,7 +65,7 @@ public:
         return "pia2";
     };
     Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystick);
-    virtual             ~Pia2();
+    ~Pia2() override;
 };
 
 #endif // PIA2_INCLUDED

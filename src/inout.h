@@ -72,7 +72,7 @@ public:
 
 public:
     Inout(const struct sOptions &x_options, Memory &x_memory);
-    ~Inout();
+    ~Inout() override;
 };
 
 #endif // INOUT_INCLUDED

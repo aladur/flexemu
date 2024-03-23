@@ -55,7 +55,7 @@ public:
     DirectoryContainer(DirectoryContainer &&) = delete;
     DirectoryContainer(const std::string &path,
                        const FileTimeAccess &fileTimeAccess);
-    virtual ~DirectoryContainer();      // public destructor
+    ~DirectoryContainer() override;
 
     DirectoryContainer &operator= (const DirectoryContainer &) = delete;
     DirectoryContainer &operator= (DirectoryContainer &&) = delete;
@@ -66,34 +66,34 @@ public:
                                       int t, int s,
                                       const FileTimeAccess &fileTimeAccess,
                                       int fmt = TYPE_DSK_CONTAINER);
-    bool IsWriteProtected() const;
-    bool GetInfo(FlexContainerInfo &info) const;
-    int  GetContainerType() const;
-    std::string GetPath() const;
-    bool CheckFilename(const char *) const;
+    bool IsWriteProtected() const override;
+    bool GetInfo(FlexContainerInfo &info) const override;
+    int GetContainerType() const override;
+    std::string GetPath() const override;
+    bool CheckFilename(const char *) const override;
 
     // file oriented interface (to be used within flexdisk)
 public:
-    FileContainerIf *begin()
+    FileContainerIf *begin() override
     {
         return this;
     };
-    FileContainerIf *end() const
+    FileContainerIf *end() const override
     {
         return nullptr;
     };
-    FileContainerIteratorImpPtr IteratorFactory();
-    bool    FindFile(const char *fileName, FlexDirEntry &entry);
-    bool    DeleteFile(const char *fileName);
-    bool    RenameFile(const char *oldName, const char *newName);
-    bool    SetAttributes(const char *fileName, Byte setMask,
-                          Byte clearMask = ~0);
-    FlexFileBuffer ReadToBuffer(const char *fileName);
+    FileContainerIteratorImpPtr IteratorFactory() override;
+    bool FindFile(const char *fileName, FlexDirEntry &entry) override;
+    bool DeleteFile(const char *fileName) override;
+    bool RenameFile(const char *oldName, const char *newName) override;
+    bool SetAttributes(const char *fileName, Byte setMask,
+                       Byte clearMask = ~0) override;
+    FlexFileBuffer ReadToBuffer(const char *fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
-                         const char *fileName = nullptr);
-    bool    FileCopy(const char *sourceName, const char *destName,
-                     FileContainerIf &destination);
-    std::string GetSupportedAttributes() const;
+                         const char *fileName = nullptr) override;
+    bool FileCopy(const char *sourceName, const char *destName,
+                  FileContainerIf &destination) override;
+    std::string GetSupportedAttributes() const override;
 
     // private interface
 private:

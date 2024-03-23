@@ -100,7 +100,7 @@ public:
     NafsDirectoryContainer(const char *path,
                            const FileTimeAccess &fileTimeAccess,
                            int tracks, int sectors);
-    virtual ~NafsDirectoryContainer();
+    ~NafsDirectoryContainer() override;
 
     NafsDirectoryContainer &operator=(const NafsDirectoryContainer &) = delete;
     NafsDirectoryContainer &operator=(NafsDirectoryContainer &&) = delete;
@@ -131,18 +131,18 @@ public:
                                           int tracks, int sectors,
                                           int fmt = TYPE_DSK_CONTAINER);
     bool CheckFilename(const char *fileName) const;
-    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const;
-    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1);
+    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const override;
+    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1) override;
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
-                      int sizecode);
-    bool IsFlexFormat() const;
-    bool IsWriteProtected() const;
-    bool IsTrackValid(int track) const;
-    bool IsSectorValid(int track, int sector) const;
-    int GetBytesPerSector() const;
-    bool GetInfo(FlexContainerInfo &info) const;
-    int GetContainerType() const;
-    std::string GetPath() const;
+                      int sizecode) override;
+    bool IsFlexFormat() const override;
+    bool IsWriteProtected() const override;
+    bool IsTrackValid(int track) const override;
+    bool IsSectorValid(int track, int sector) const override;
+    int GetBytesPerSector() const override;
+    bool GetInfo(FlexContainerInfo &info) const override;
+    int GetContainerType() const override;
+    std::string GetPath() const override;
 
 private:
     void fill_flex_directory(bool is_write_protected);

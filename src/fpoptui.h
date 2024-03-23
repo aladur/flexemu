@@ -43,7 +43,7 @@ class FlexplorerOptionsUi : public QObject, protected Ui_FlexplorerOptions
 public:
 
     FlexplorerOptionsUi();
-    virtual ~FlexplorerOptionsUi();
+    ~FlexplorerOptionsUi() override;
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(const struct sFPOptions &options);
     void TransferDataFromDialog(struct sFPOptions &options);

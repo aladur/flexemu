@@ -41,6 +41,7 @@ Checks: '
   -misc-definitions-in-headers,
   -misc-non-private-member-variables-in-classes,
   -misc-const-correctness,
+  modernize-use-override,
   performance-*,
   portability-*,
   readability-redundant-preprocessor,

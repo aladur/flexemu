@@ -54,7 +54,7 @@ class Memory : public MemoryTarget<size_t>, public BObserver
 {
 public:
     Memory(const struct sOptions &options);
-    virtual ~Memory();
+    ~Memory() override;
 
 private:
     Byte *ppage[16];

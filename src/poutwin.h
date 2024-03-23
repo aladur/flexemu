@@ -68,7 +68,7 @@ class PrintOutputWindow : public QWidget
 public:
     PrintOutputWindow() = delete;
     PrintOutputWindow(sOptions &x_options);
-    virtual ~PrintOutputWindow();
+    ~PrintOutputWindow() override;
 
     // Static functions
     static float GetSizeFactorFromPercent(int percent);
@@ -140,8 +140,8 @@ private:
     void PrintLine(const RichLine &richLine, bool isPageBreak = false) const;
 
     // Event handlers
-    void closeEvent(QCloseEvent *event);
-    bool event(QEvent *event);
+    void closeEvent(QCloseEvent *event) override;
+    bool event(QEvent *event) override;
 
     // Private member variables
     QTimer cyclicTimer;

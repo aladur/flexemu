@@ -956,7 +956,7 @@ protected:
     // Public constructor and destructor
 public:
     Mc6809(Memory &x_memory);
-    virtual ~Mc6809();
+    ~Mc6809() override;
 };
 
 //*******************************************************************

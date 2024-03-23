@@ -70,7 +70,7 @@ public:
 
     DriveSelect() = delete;
     DriveSelect(E2floppy &fdc);
-    virtual ~DriveSelect();
+    ~DriveSelect() override;
 
     void resetIo() override;
     const char *getName() override

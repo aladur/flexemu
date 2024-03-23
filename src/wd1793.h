@@ -209,8 +209,7 @@ public:
 public:
 
     Wd1793();
-    virtual             ~Wd1793();
-
+    ~Wd1793() override;
 };
 
 #endif // WD1793_INCLUDED

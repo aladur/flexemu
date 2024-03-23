@@ -102,7 +102,7 @@ public:
     };
 
     Pia2V5(Mc6809 &x_cpu);
-    virtual ~Pia2V5();
+    ~Pia2V5() override;
 
 private:
     void log_buffer(const std::vector<Byte> &buffer);

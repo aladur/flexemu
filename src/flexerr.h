@@ -101,9 +101,9 @@ public:
 #ifdef _WIN32
     FlexException(unsigned long lastError, const std::string &sp1) throw();
 #endif
-    virtual ~FlexException();
+    ~FlexException() override;
 
-    virtual const char *what() const noexcept;
+    const char *what() const noexcept override;
     int GetErrorCode() const
     {
         return errorCode;

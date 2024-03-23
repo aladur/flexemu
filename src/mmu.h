@@ -58,7 +58,7 @@ public:
 
 public:
     Mmu(Memory &x_memory);
-    virtual ~Mmu();
+    ~Mmu() override;
 };
 
 #endif // MMU_INCLUDED

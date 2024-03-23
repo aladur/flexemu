@@ -115,7 +115,7 @@ public:
         TerminalIO &,
         Pia1 &,
         struct sOptions &);
-    virtual ~QtGui();
+    ~QtGui() override;
 
     void SetFloppy(E2floppy *fdc);
     bool HasFloppy() const;

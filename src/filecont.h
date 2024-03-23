@@ -54,7 +54,7 @@ public:
     virtual bool  FileCopy(const char *sourceName, const char *destName,
                            FileContainerIf &destination) = 0;
     virtual std::string GetSupportedAttributes() const = 0;
-    virtual ~FileContainerIf() { };
+    ~FileContainerIf() override { };
 
 private:
     virtual FileContainerIteratorImpPtr IteratorFactory() = 0;

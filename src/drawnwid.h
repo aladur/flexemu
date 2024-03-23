@@ -43,7 +43,7 @@ class DrawnWidget : public QWidget
 public:
     DrawnWidget() = delete;
     DrawnWidget(QWidget *parent = nullptr);
-    virtual ~DrawnWidget() = default;
+    ~DrawnWidget() override = default;
 
     void SetPixmap(const QPixmap &p_pixmap);
     void SetDriveInfo(Word number, const FlexContainerInfo &info);

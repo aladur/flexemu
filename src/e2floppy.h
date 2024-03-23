@@ -96,7 +96,7 @@ private:
 public:
     E2floppy() = delete;
     E2floppy(const struct sOptions &options);
-    virtual ~E2floppy();
+    ~E2floppy() override;
 
     // public interface
 public:

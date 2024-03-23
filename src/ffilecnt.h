@@ -74,7 +74,7 @@ public:
     FlexFileContainer(FlexFileContainer &&) noexcept;
     FlexFileContainer(const char *path, const char *mode,
                       const FileTimeAccess &fileTimeAccess);
-    virtual ~FlexFileContainer();       // public destructor
+    ~FlexFileContainer() override;
 
     FlexFileContainer &operator= (const FlexFileContainer &) = delete;
     FlexFileContainer &operator= (FlexFileContainer &&) noexcept;

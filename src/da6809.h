@@ -20,7 +20,7 @@ protected:
 
 public:
     Da6809();
-    virtual ~Da6809() override;
+    ~Da6809() override;
 
     int Disassemble(
             const Byte * const pMemory,

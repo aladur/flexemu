@@ -79,7 +79,7 @@ public:
             Inout &x_inout,
             Scheduler &x_scheduler,
             E2floppy &x_fdc);
-    virtual ~Command();
+    ~Command() override;
 };
 
 #endif // COMMAND_INCLUDED
