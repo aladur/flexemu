@@ -47,6 +47,7 @@ Checks: '
   readability-container-data-pointer,
   readability-redundant-control-flow,
   readability-redundant-declaration,
+  readability-function-size,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'

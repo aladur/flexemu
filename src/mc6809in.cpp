@@ -251,6 +251,10 @@ CpuState Mc6809::run(RunMode mode)
 #ifdef _MSC_VER
     #pragma inline_depth(255)
 #endif
+
+// This function is performance critical for the CPU emulation and thus should
+// not be split up.
+// NOLINTNEXTLINE(readability-function-size)
 CpuState Mc6809::runloop()
 {
     CpuState new_state = CpuState::NONE;
