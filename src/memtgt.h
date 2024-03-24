@@ -33,6 +33,7 @@ class MemoryTarget
 {
 public:
     virtual void CopyFrom(const Byte *buffer, T address, T aSize) = 0;
+    virtual ~MemoryTarget() = default;
 };
 #endif
 
