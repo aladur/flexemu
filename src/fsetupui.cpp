@@ -465,7 +465,11 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
         }
     };
 
-    do {
+    // This initialization is needed to always enter the while-loop.
+    dependents.push_back(FlexemuOptionId::IsInverse);
+
+    while (!dependents.empty())
+    {
         for (auto readOnlyOptionId : result)
         {
             dependents.clear();
@@ -541,8 +545,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
 
         std::copy(dependents.begin(), dependents.end(),
                 std::back_inserter(result));
-
-    } while (!dependents.empty());
+    }
 
     return result;
 }

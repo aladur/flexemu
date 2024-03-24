@@ -139,9 +139,9 @@ CpuState Scheduler::idleloop()
 
 CpuState Scheduler::runloop(RunMode mode)
 {
-    CpuState new_state;
+    CpuState new_state = CpuState::Schedule;
 
-    do
+    while (new_state == CpuState::Schedule)
     {
         new_state = cpu.run(mode);
 
@@ -161,7 +161,6 @@ CpuState Scheduler::runloop(RunMode mode)
 
         mode = RunMode::RunningContinue;
     }
-    while (new_state == CpuState::Schedule);
 
     return new_state;
 }

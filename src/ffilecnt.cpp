@@ -597,7 +597,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         repeat = 2;
     }
 
-    do
+    while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize())
     {
         for (count = repeat; count >= 0; count--)
         {
@@ -701,7 +701,6 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                                 stream.str(), fp.GetPath());
         }
     }
-    while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize());
 
     sis.sir.fc_start = next;
 

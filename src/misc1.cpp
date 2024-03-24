@@ -758,7 +758,7 @@ void hex_dump(const char *buffer, int count)
 bool AskForInput(const std::string &question, const std::string &answers,
                  char default_answer)
 {
-    char input;
+    char input = ' ';
     char dummy;
 
     if (answers.empty())
@@ -766,7 +766,8 @@ bool AskForInput(const std::string &question, const std::string &answers,
         return false;
     }
 
-    do {
+    while(answers.find_first_of(input) == std::string::npos)
+    {
         if (default_answer == '?')
         {
             std::cout << question << " [";
@@ -784,9 +785,11 @@ bool AskForInput(const std::string &question, const std::string &answers,
             std::cout << "]: ";
 
             // Ask user for an input. One character is sufficient.
-            do {
+            input = ' ';
+            while (input == ' ' || input == '\t')
+            {
                 std::cin >> std::noskipws >> input;
-            } while (input == ' ' || input == '\t');
+            }
 
             dummy = input;
             if (input == '\n')
@@ -805,7 +808,7 @@ bool AskForInput(const std::string &question, const std::string &answers,
             // Use default_answer as input.
             input = default_answer;
         }
-    } while(answers.find_first_of(input) == std::string::npos);
+    }
 
     // Return true if only Return was entered or the first answer character.
     return input == '\n' || ::tolower(input) == answers.at(0);

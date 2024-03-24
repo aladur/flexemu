@@ -66,30 +66,39 @@ void DirectoryContainerIteratorImp::AtEnd()
 
 bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
-    std::string str, fileName;
-    bool isValid;
+    // Initialize following variable to a filename which never exists.
+    std::string fileName = ".\\/\\/\\/.\\/\\";
+    bool isValid = true;
 #ifdef _WIN32
-    WIN32_FIND_DATA findData;
-    SYSTEMTIME systemTime;
+    WIN32_FIND_DATA findData{};
+    SYSTEMTIME systemTime{};
 #endif
-    struct stat sbuf;
+    struct stat sbuf{};
 #ifdef UNIX
     struct dirent *findData = nullptr;
 #endif
     dirEntry.SetEmpty();
     // repeat until a valid directory entry found
 #ifdef _WIN32
-    str = base->GetPath();
-    str += PATHSEPARATOR;
-    str += "*.*";
+    const auto path = base->GetPath() + PATHSEPARATORSTRING;
+    const auto pattern = path + "*.*";
 
-    do
+    while (isValid &&
+           (stat((path + fileName).c_str(), &sbuf) != 0 ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
+            (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
+            !S_ISREG(sbuf.st_mode) ||
+            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
+            !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
+            !multimatches(fileName.c_str(), filePattern, ';', true)))
     {
         isValid = false;
 
         if (dirHdl == nullptr)
         {
-            dirHdl = FindFirstFile(ConvertToUtf16String(str).c_str(), &findData);
+            dirHdl = FindFirstFile(ConvertToUtf16String(pattern).c_str(),
+                                   &findData);
             if (dirHdl != INVALID_HANDLE_VALUE)
             {
                 isValid = true;
@@ -113,16 +122,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             }
         }
     }
-    while (isValid &&
-           (stat((base->GetPath() + PATHSEPARATORSTRING + fileName).c_str(),
-               &sbuf) != 0 ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
-            (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
-            !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
-            !multimatches(fileName.c_str(), filePattern, ';', true)));
 
     if (isValid)
     {
@@ -163,16 +162,20 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
 #endif
 #ifdef UNIX
-    // unfinished
-    str = base->GetPath();
+    const auto path = base->GetPath() + PATHSEPARATORSTRING;
 
-    do
+    while (isValid &&
+           (stat((path + fileName).c_str(), &sbuf) ||
+            !base->IsFlexFilename(fileName) ||
+            !S_ISREG(sbuf.st_mode) ||
+            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
+            !multimatches(fileName.c_str(), filePattern, ';', true)))
     {
         isValid = false;
 
         if (dirHdl == nullptr)
         {
-            dirHdl = opendir(str.c_str());
+            dirHdl = opendir(path.c_str());
             if (dirHdl != nullptr)
             {
                 isValid = true;
@@ -189,13 +192,6 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             }
         }
     }
-    while (isValid &&
-           (stat((str + PATHSEPARATORSTRING + fileName).c_str(),
-                 &sbuf) ||
-            !base->IsFlexFilename(fileName) ||
-            !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName.c_str(), filePattern, ';', true)));
 
     if (isValid)
     {
