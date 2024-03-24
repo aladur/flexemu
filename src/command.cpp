@@ -116,43 +116,6 @@ void Command::skip_token(char **pp)
     }
 }
 
-// remove drive id and file extension
-// from command token
-const char *Command::modify_command_token(char *p)
-{
-    char *p1 = p;
-    int i = 0;
-
-    if (p1 == nullptr)
-    {
-        return nullptr;
-    }
-
-    if (*p1 == '\0')
-    {
-        return p1;
-    }
-
-    if (isdigit(*p1) && *(p1 + 1) == '.')
-    {
-        p1 += 2;
-    }
-
-    do
-    {
-        if (*(p1 + i) == '.')
-        {
-            *(p1 + i) = '\0';
-            break;
-        }
-
-        i++;
-    }
-    while (*(p1 + i) != '\0');
-
-    return p1;
-}
-
 void Command::writeIo(Word /*offset*/, Byte val)
 {
     answer.clear();

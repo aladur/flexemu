@@ -57,7 +57,6 @@ protected:
 private:
     void        skip_token(char **);
     const char  *next_token(char **, int *);
-    const char  *modify_command_token(char *p);
 
     // public interface
 public:
