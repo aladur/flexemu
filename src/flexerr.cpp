@@ -51,9 +51,10 @@ FlexException::FlexException() noexcept : errorCode(FERR_FLEX_EXCEPTION)
 {
 }
 
-FlexException::FlexException(int ec) throw() : errorCode(ec)
+FlexException::FlexException(int ec) throw()
+    : errorCode(ec)
+    , errorString(errString[ec])
 {
-    errorString = errString[ec];
 }
 
 FlexException::FlexException(int ec, int ip1) throw() : errorCode(ec)

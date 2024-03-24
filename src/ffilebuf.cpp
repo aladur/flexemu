@@ -52,10 +52,10 @@ FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
 }
 
 FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src) noexcept
+    : fileHeader(src.fileHeader)
+    , capacity(src.capacity)
+    , buffer(std::move(src.buffer))
 {
-    buffer = std::move(src.buffer);
-    capacity = src.capacity;
-    memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
     memset(&src.fileHeader, 0, sizeof(src.fileHeader));
     src.capacity = 0;
 }

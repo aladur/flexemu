@@ -124,14 +124,14 @@ public:
     }
 
     s_cpu_logfile(s_cpu_logfile &&src) noexcept
+        : minAddr(src.minAddr)
+        , maxAddr(src.maxAddr)
+        , startAddr(src.startAddr)
+        , stopAddr(src.stopAddr)
+        , logCycleCount(src.logCycleCount)
+        , logRegisters(src.logRegisters)
+        , logFileName(std::move(src.logFileName))
     {
-        minAddr = src.minAddr;
-        maxAddr = src.maxAddr;
-        startAddr = src.startAddr;
-        stopAddr = src.stopAddr;
-        logCycleCount = src.logCycleCount;
-        logRegisters = src.logRegisters;
-        logFileName = std::move(src.logFileName);
     }
 
     s_cpu_logfile &operator=(s_cpu_logfile &&src) noexcept

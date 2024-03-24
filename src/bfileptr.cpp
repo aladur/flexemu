@@ -70,12 +70,11 @@ BFilePtr::BFilePtr(const char *x_path, const char *x_mode /* = nullptr */) :
     fp = fopen(path.c_str(), mode.c_str());
 }
 
-BFilePtr::BFilePtr(BFilePtr &&src) noexcept : fp(nullptr)
+BFilePtr::BFilePtr(BFilePtr &&src) noexcept
+    : path(std::move(src.path))
+    , mode(std::move(src.mode))
+    , fp(src.fp)
 {
-    fp = src.fp;
-    path = src.path;
-    mode = src.mode;
-
     src.fp = nullptr;
     src.path.clear();
     src.mode.clear();

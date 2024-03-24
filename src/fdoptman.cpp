@@ -30,10 +30,10 @@ const std::string FlexDirectoryDiskOptions::filename{".flexdiskrc"};
 
 FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
         const std::string &directory)
-    : tracks(0)
+    : path(directory)
+    , tracks(0)
     , sectors(0)
 {
-    path = directory;
     if (path[path.length() - 1] != PATHSEPARATOR)
     {
         path += PATHSEPARATOR;

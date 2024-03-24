@@ -140,11 +140,11 @@ const char PrintOutputWindow::separator = ',';
 ** Constructor, Destructor **
 ****************************/
 
-PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
-      mainLayout(nullptr)
-    , toolBarLayout(nullptr)
+PrintOutputWindow::PrintOutputWindow(sOptions &x_options)
+    : mainLayout(new QVBoxLayout(this))
+    , toolBarLayout(new QHBoxLayout)
     , statusBarFrame(nullptr)
-    , menuBar(nullptr)
+    , menuBar(new QMenuBar(this))
     , fileToolBar(nullptr)
     , editToolBar(nullptr)
     , fileMenu(nullptr)
@@ -153,7 +153,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
     , printPreviewAction(nullptr)
     , pageBreakDetectorAction(nullptr)
     , fontComboBox(nullptr)
-    , textBrowser(nullptr)
+    , textBrowser(new QTextEdit(this))
     , printer(nullptr)
     , ui(nullptr)
     , hasFixedFont(false)
@@ -172,20 +172,16 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options) :
     setObjectName("PrintOutputWindow");
     setWindowTitle("FLEX Print Output");
 
-    mainLayout = new QVBoxLayout(this);
     mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
-    menuBar = new QMenuBar(this);
     mainLayout->addWidget(menuBar);
-    toolBarLayout = new QHBoxLayout();
     toolBarLayout->setObjectName(QString::fromUtf8("toolBarLayout"));
     toolBarLayout->setContentsMargins(4, 2, 4, 2);
     toolBarLayout->setSpacing(2);
     mainLayout->addLayout(toolBarLayout);
 
-    textBrowser = new QTextEdit(this);
     textBrowser->setMinimumSize(640, 800);
     textBrowser->setAutoFillBackground(true);
     textBrowser->setBackgroundRole(QPalette::Base);

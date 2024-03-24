@@ -171,8 +171,8 @@ protected:
     public:
         atomic_event() = delete;
         atomic_event(Event x_event)
+            : event(static_cast<T>(x_event))
         {
-            event = static_cast<T>(x_event);
         }
         ~atomic_event() = default;
         atomic_event(const atomic_event&) = delete;

@@ -40,9 +40,9 @@ BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)
 }
 
 BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src) noexcept
+    : buffer(std::move(src.buffer))
+    , addressRanges(std::move(src.addressRanges))
 {
-    buffer = std::move(src.buffer);
-    addressRanges = std::move(src.addressRanges);
 }
 
 BMemoryBuffer::~BMemoryBuffer()

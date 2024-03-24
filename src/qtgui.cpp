@@ -106,7 +106,11 @@ QtGui::QtGui(
              , x_memory
              , x_inout
              , x_terminalIO)
+        , mainLayout(new QVBoxLayout(this))
+        , toolBarLayout(new QHBoxLayout)
         , e2screen(nullptr)
+        , menuBar(new QMenuBar)
+        , cpuDialog(new QDialog(this))
         , preferencesAction(nullptr)
         , printOutputWindow(nullptr)
         , isOriginalFrequency(false)
@@ -132,14 +136,11 @@ QtGui::QtGui(
 
     colorTable = CreateColorTable();
 
-    mainLayout = new QVBoxLayout(this);
     mainLayout->setObjectName(QString::fromUtf8("mainLayout"));
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
-
-    menuBar = new QMenuBar;
     mainLayout->addWidget(menuBar);
-    toolBarLayout = new QHBoxLayout();
+
     toolBarLayout->setObjectName(QString::fromUtf8("toolBarLayout"));
     toolBarLayout->setSpacing(0);
     mainLayout->addLayout(toolBarLayout);
@@ -172,7 +173,6 @@ QtGui::QtGui(
     e2screen->ReleaseMouseCapture();
 
     // Initialize the non-modal CPU Dialog but don't open it.
-    cpuDialog = new QDialog(this);
     cpuUi.setupUi(cpuDialog);
     cpuDialog->setWindowTitle("Mc6809");
     cpuDialog->setModal(false);
