@@ -17,7 +17,6 @@ Checks: '
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-c-copy-assignment-signature,
   -cppcoreguidelines-pro-type-const-cast,
-  -cppcoreguidelines-pro-type-static-cast-downcast,
   -cppcoreguidelines-prefer-member-initializer,
   -cppcoreguidelines-pro-type-reinterpret-cast,
   -cppcoreguidelines-avoid-non-const-global-variables,

@@ -35,6 +35,7 @@
 #include <QMessageBox>
 #include "warnon.h"
 #include <algorithm>
+#include <cassert>
 #include "fpmodel.h"
 #include "fpedit.h"
 
@@ -90,7 +91,8 @@ void FlexDateDelegate::setEditorData(QWidget *editor,
                                      const QModelIndex &index) const
 {
     auto value = index.model()->data(index, Qt::EditRole).toDate();
-    auto *dateEditor = static_cast<QDateEdit *>(editor);
+    auto *dateEditor = dynamic_cast<QDateEdit *>(editor);
+    assert(dateEditor != nullptr);
     dateEditor->setDate(value);
 }
 
@@ -98,7 +100,8 @@ void FlexDateDelegate::setModelData(QWidget *editor,
                                     QAbstractItemModel *model,
                                     const QModelIndex &index) const
 {
-    auto *dateEditor = static_cast<QDateEdit *>(editor);
+    auto *dateEditor = dynamic_cast<QDateEdit *>(editor);
+    assert(dateEditor != nullptr);
     auto value = dateEditor->date();
     model->setData(index, value, Qt::EditRole);
     //TODO: Set date in model
@@ -145,7 +148,8 @@ void FlexDateTimeDelegate::setEditorData(QWidget *editor,
                                          const QModelIndex &index) const
 {
     auto value = index.model()->data(index, Qt::EditRole).toDateTime();
-    auto *dateTimeEditor = static_cast<QDateTimeEdit *>(editor);
+    auto *dateTimeEditor = dynamic_cast<QDateTimeEdit *>(editor);
+    assert(dateTimeEditor != nullptr);
     dateTimeEditor->setDateTime(value);
 }
 
@@ -153,7 +157,8 @@ void FlexDateTimeDelegate::setModelData(QWidget *editor,
                                         QAbstractItemModel *model,
                                         const QModelIndex &index) const
 {
-    auto *dateTimeEditor = static_cast<QDateTimeEdit *>(editor);
+    auto *dateTimeEditor = dynamic_cast<QDateTimeEdit *>(editor);
+    assert(dateTimeEditor != nullptr);
     auto value = dateTimeEditor->dateTime();
     model->setData(index, value, Qt::EditRole);
     //TODO: Set date and time in model
@@ -182,7 +187,8 @@ QWidget *FlexFilenameDelegate::createEditor(QWidget *parent,
     QString rxString("[A-Za-z][A-Za-z0-9_-]{0,7}\\.[A-Za-z][A-Za-z0-9_-]{0,2}");
     QRegularExpression regex(rxString);
     const auto *model =
-        static_cast<const FlexplorerTableModel *>(index.model());
+        dynamic_cast<const FlexplorerTableModel *>(index.model());
+    assert(model != nullptr);
     auto filenames = model->GetFilenames();
     filenames.removeAll(model->GetFilename(index));
     auto *validator =
@@ -200,7 +206,8 @@ void FlexFilenameDelegate::setEditorData(QWidget *editor,
                                          const QModelIndex &index) const
 {
     auto value = index.model()->data(index, Qt::EditRole).toString();
-    auto *filenameEditor = static_cast<QLineEdit *>(editor);
+    auto *filenameEditor = dynamic_cast<QLineEdit *>(editor);
+    assert(filenameEditor != nullptr);
     filenameEditor->setText(value);
 }
 
@@ -208,8 +215,10 @@ void FlexFilenameDelegate::setModelData(QWidget *editor,
                                         QAbstractItemModel *abstractModel,
                                         const QModelIndex &index) const
 {
-    auto *model = static_cast<FlexplorerTableModel *>(abstractModel);
-    auto *filenameEditor = static_cast<QLineEdit *>(editor);
+    auto *model = dynamic_cast<FlexplorerTableModel *>(abstractModel);
+    assert(model != nullptr);
+    auto *filenameEditor = dynamic_cast<QLineEdit *>(editor);
+    assert(filenameEditor != nullptr);
     auto newFilename = filenameEditor->text().toUpper();
 
     try
@@ -293,7 +302,8 @@ void FlexAttributesDelegate::setEditorData(QWidget *editor,
                                            const QModelIndex &index) const
 {
     auto value = index.model()->data(index, Qt::EditRole).toString();
-    auto *filenameEditor = static_cast<QLineEdit *>(editor);
+    auto *filenameEditor = dynamic_cast<QLineEdit *>(editor);
+    assert(filenameEditor != nullptr);
     filenameEditor->setText(value);
 }
 
@@ -301,8 +311,10 @@ void FlexAttributesDelegate::setModelData(QWidget *editor,
                                           QAbstractItemModel *abstractModel,
                                           const QModelIndex &index) const
 {
-    auto *model = static_cast<FlexplorerTableModel *>(abstractModel);
-    auto *attributesEditor = static_cast<QLineEdit *>(editor);
+    auto *model = dynamic_cast<FlexplorerTableModel *>(abstractModel);
+    assert(model != nullptr);
+    auto *attributesEditor = dynamic_cast<QLineEdit *>(editor);
+    assert(attributesEditor != nullptr);
     auto value = attributesEditor->text().toUpper();
 
     try

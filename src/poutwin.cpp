@@ -86,6 +86,7 @@
 #include <locale>
 #include <set>
 #include <sstream>
+#include <cassert>
 #include "qtfree.h"
 #include "pagedet.h"
 #include "soptions.h"
@@ -1275,7 +1276,8 @@ bool PrintOutputWindow::event(QEvent *event)
 {
     if (event->type() == QEvent::StatusTip)
     {
-        auto *statusTipEvent = static_cast<QStatusTipEvent *>(event);
+        auto *statusTipEvent = dynamic_cast<QStatusTipEvent *>(event);
+        assert(statusTipEvent != nullptr);
         statusBar->showMessage(statusTipEvent->tip());
         statusTipEvent->accept();
 

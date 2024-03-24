@@ -43,8 +43,9 @@ bool SelectAllOnFocusInLE::eventFilter(QObject *object, QEvent *event)
 
     if (event->type() == QEvent::FocusIn)
     {
-        auto *focusEvent = static_cast<QFocusEvent *>(event);
+        auto *focusEvent = dynamic_cast<QFocusEvent *>(event);
 
+        assert(focusEvent != nullptr);
         if (focusEvent->gotFocus())
         {
             DoSelectAll();
@@ -52,8 +53,9 @@ bool SelectAllOnFocusInLE::eventFilter(QObject *object, QEvent *event)
     }
     else if (event->type() == QEvent::MouseButtonPress)
     {
-        auto *mouseEvent = static_cast<QMouseEvent *>(event);
+        auto *mouseEvent = dynamic_cast<QMouseEvent *>(event);
 
+        assert(mouseEvent != nullptr);
         if (mouseEvent->button() == Qt::LeftButton)
         {
             DoSelectAll();

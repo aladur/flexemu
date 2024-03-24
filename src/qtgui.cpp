@@ -712,7 +712,7 @@ void QtGui::OnTimer()
     {
         // check if CPU view has to be updated
         const auto *status =
-            static_cast<Mc6809CpuStatus *>(scheduler.get_status());
+            dynamic_cast<Mc6809CpuStatus *>(scheduler.get_status());
 
         if (status != nullptr)
         {

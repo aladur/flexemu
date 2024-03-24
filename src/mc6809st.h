@@ -37,6 +37,7 @@ public:
     char            mnemonic[28];
     Byte            memory[48];
     Mc6809CpuStatus();
+    ~Mc6809CpuStatus() override { };
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
 };
 

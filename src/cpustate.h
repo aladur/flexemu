@@ -51,7 +51,7 @@ class CpuStatus
 {
 public:
     CpuStatus() : freq(0.0), state(CpuState::NONE) { };
-    ~CpuStatus() { };
+    virtual ~CpuStatus() { };
 
     float freq;
     CpuState state;

@@ -11,6 +11,7 @@
 
 #include <limits>
 #include <cinttypes>
+#include <cassert>
 #include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
@@ -104,7 +105,8 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     InstFlg flags = InstFlg::NONE;
     char *pmnem_buf, *pbuffer;
     Word i, mem_addr;
-    Mc6809CpuStatus *stat = static_cast<Mc6809CpuStatus *>(cpu_status);
+    auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
+    assert(stat != nullptr);
 
 #ifdef FASTFLEX
     stat->a        = iareg;
@@ -153,7 +155,8 @@ void Mc6809::get_status(CpuStatus *cpu_status)
 
 void Mc6809::set_status(CpuStatus *cpu_status)
 {
-    Mc6809CpuStatus *stat = static_cast<Mc6809CpuStatus *>(cpu_status);
+    const auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
+    assert(stat != nullptr);
 
 #ifdef FASTFLEX
     iareg = stat->a;

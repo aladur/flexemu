@@ -35,6 +35,7 @@
 #include <QFontMetrics>
 #include <QDir>
 #include "warnon.h"
+#include <cassert>
 
 #ifdef _MSC_VER
     #include <direct.h>
@@ -603,8 +604,9 @@ bool FlexemuOptionsUi::Validate()
         e_frequency->setFocus(Qt::OtherFocusReason);
         e_frequency->setSelection(0, 20);
         const auto *validator =
-            static_cast<const QDoubleValidator *>(e_frequency->validator());
+            dynamic_cast<const QDoubleValidator *>(e_frequency->validator());
 
+        assert(validator != nullptr);
         auto message = tr("CPU Frequency is not in the valid\n"
                           "range of %1 ... %2 MHz")
                           .arg(validator->bottom(), 0, 'f', 1)
