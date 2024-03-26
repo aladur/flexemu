@@ -79,10 +79,28 @@ jobs:
         run: |
           ldd src/flexemu
           ldd src/flexplorer
-          make check
+          make check && cat test/unittests.log
           src/test
           src/dsktool -l disks/games.dsk
           src/dsktool -f new.dsk -S 80dsdd
           src/dsktool -C disks/system.dsk -T new.dsk
           src/dsktool -l new.dsk
 
+      - name: Create artifacts
+        if: always()
+        run: |
+          mkdir -p result/test
+          cd test; cp *.log *.trs *.xml ../result/test; cd ..
+          cp config.log result
+          echo "OS:           ${{matrix.os}}" > result/context.txt
+          echo "Qt-version:   Qt${{matrix.qt-version}}" > result/context.txt
+          echo "C-compiler:   ${{matrix.compiler[0]}}" > result/context.txt
+          echo "C++-compiler: ${{matrix.compiler[1]}}" > result/context.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flexemu-build-and-test-${{matrix.os}}-qt${{matrix.qt-version}}-${{matrix.compiler[0]}}-result
+          path: result
+          if-no-files-found: error

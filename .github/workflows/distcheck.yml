@@ -39,5 +39,19 @@ jobs:
         run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
 
       - name: Test distribution
-        run: make distcheck
+        run: make distcheck >distcheck.log 2>distcheck_err.log
 
+      - name: Create artifacts
+        if: always()
+        run: |
+          mkdir -p result/test
+          cp config.log distcheck*.log result
+          echo "Qt-version:   ${QT_SELECT}" > result/context.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flexemu-distcheck-result
+          path: result
+          if-no-files-found: error

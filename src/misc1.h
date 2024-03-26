@@ -50,6 +50,7 @@
 #include <array>
 #include <algorithm>
 #include <sstream>
+#include <tuple>
 
 
 /* uncomment the following if the Disassembler should display FLEX entry
@@ -558,13 +559,27 @@ bool fromString(const std::string &str, T &value)
 }
 
 // template to create a string from a cstyle character array with given length.
-// The cstyle array not necessarily has a terminating NUL.
+// The cstyle array not necessarily has a terminating NUL, std::string
+// constructors do not support this.
 template<size_t N>
 std::string getstr(const char (&array)[N])
 {
-    // String instantiation is checked by unit tests and safe.
-    // NOLINTNEXTLINE(bugprone-string-constructor)
-    return std::string(array, 0U, N);
+    std::string result;
+    result.reserve(N);
+    auto iter = std::back_inserter(result);
+
+    std::ignore = std::any_of(std::begin(array), std::end(array),
+                              [&iter](const char &ch)
+    {
+        if (ch == '\0')
+        {
+            return true;
+        }
+        *(iter++) = ch;
+        return false;
+    });
+
+    return result;
 }
 #endif /* __misc1.h__ */
 

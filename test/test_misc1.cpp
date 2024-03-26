@@ -26,6 +26,41 @@ TEST(test_misc1, fct_strupper)
     EXPECT_EQ(str, "ABC012");
 }
 
+TEST(test_misc1, fct_getstr)
+{
+    // Array NUL terminated.
+    char arr1[]{"abcd"};
+    EXPECT_EQ(sizeof(arr1), 5U);
+    auto str1 = getstr<>(arr1);
+    EXPECT_EQ(str1, "abcd");
+    EXPECT_EQ(str1.size(), 4U);
+    EXPECT_EQ(str1.c_str()[str1.size()], '\0');
+
+    // Array not NUL terminated.
+    char arr2[]{'a', 'b', 'c', 'd', 'e'};
+    EXPECT_EQ(sizeof(arr2), 5U);
+    auto str2 = getstr<>(arr2);
+    EXPECT_EQ(str2, "abcde");
+    EXPECT_EQ(str2.size(), 5U);
+    EXPECT_EQ(str2.c_str()[str2.size()], '\0');
+
+    // Array NUL terminated early.
+    char arr3[]{"abc\0\0\0\0"};
+    EXPECT_EQ(sizeof(arr3), 8U);
+    auto str3 = getstr<>(arr3);
+    EXPECT_EQ(str3, "abc");
+    EXPECT_EQ(str3.size(), 3U);
+    EXPECT_EQ(str3.c_str()[str3.size()], '\0');
+
+    // Array with "empty string".
+    char arr4[]{""};
+    EXPECT_EQ(sizeof(arr4), 1U);
+    auto str4 = getstr<>(arr4);
+    EXPECT_EQ(str4, "");
+    EXPECT_EQ(str4.size(), 0U);
+    EXPECT_EQ(str4.c_str()[str4.size()], '\0');
+}
+
 TEST(test_misc1, fct_binstr)
 {
     auto result = binstr(0x55);

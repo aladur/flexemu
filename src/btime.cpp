@@ -21,6 +21,7 @@
 */
 
 #include "btime.h"
+#include <sstream>
 #include <iostream>
 #include <iomanip>
 
