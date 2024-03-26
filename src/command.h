@@ -27,12 +27,16 @@
 #include "misc1.h"
 #include "iodevice.h"
 #include "bobservd.h"
+#include "asciictl.h"
 #include <string>
 
-#define MAX_COMMAND     (128)
-#define INVALID_DRIVE   (4)
+enum {
+MAX_COMMAND = 128,
+};
 
-#define CR          (0x0d)
+enum {
+INVALID_DRIVE = 4, /* Identifier for an invalid drive */
+};
 
 class Inout;
 class E2floppy;

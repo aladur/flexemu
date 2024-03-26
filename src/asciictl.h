@@ -24,89 +24,24 @@
 #ifndef ASCIICTL_INCLUDED
 #define ASCIICTL_INCLUDED
 
-#ifdef NUL
-#undef NUL
-#endif
-#define NUL '\0'
-
-#ifdef BEL
-#undef BEL
-#endif
-#define BEL '\x07'
-
-#ifdef BS
-#undef BS
-#endif
-#define BS '\x08'
-
-#ifdef HT
-#undef HT
-#endif
-#define HT '\x09'
-
-#ifdef LF
-#undef LF
-#endif
-#define LF '\x0A'
-
-#ifdef VT
-#undef VT
-#endif
-#define VT '\x0B'
-
-#ifdef FF
-#undef FF
-#endif
-#define FF '\x0C'
-
-#ifdef CR
-#undef CR
-#endif
-#define CR '\x0D'
-
-#ifdef SO
-#undef SO
-#endif
-#define SO '\x0E'
-
-#ifdef SI
-#undef SI
-#endif
-#define SI '\x0F'
-
-#ifdef DC1
-#undef DC1
-#endif
-#define DC1 '\x11'
-
-#ifdef DC2
-#undef DC2
-#endif
-#define DC2 '\x12'
-
-#ifdef DC3
-#undef DC3
-#endif
-#define DC3 '\x13'
-
-#ifdef DC4
-#undef DC4
-#endif
-#define DC4 '\x14'
-
-#ifdef CAN
-#undef CAN
-#endif
-#define CAN '\x18'
-
-#ifdef ESC
-#undef ESC
-#endif
-#define ESC '\x1B'
-
-#ifdef DEL
-#undef DEL
-#endif
-#define DEL '\x7F'
+enum {
+NUL = '\x00',
+BEL = '\x07',
+BS = '\x08',
+HT = '\x09',
+LF = '\x0A',
+VT = '\x0B',
+FF = '\x0C',
+CR = '\x0D',
+SO = '\x0E',
+SI = '\x0F',
+DC1 = '\x11',
+DC2 = '\x12',
+DC3 = '\x13',
+DC4 = '\x14',
+CAN = '\x18',
+ESC = '\x1B',
+DEL = '\x7F',
+};
 
 #endif

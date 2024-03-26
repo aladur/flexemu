@@ -29,6 +29,7 @@
 #include "schedcpu.h"
 #include "scpulog.h"
 #include "soptions.h"
+#include "e2.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -41,9 +42,6 @@
 #include <QByteArray>
 #include <QMap>
 #include "warnon.h"
-
-#define SCREEN_SIZES (5)
-#define ICON_SIZES (3)
 
 class Mc6809;
 class Memory;
@@ -259,7 +257,7 @@ private:
     QAction *introductionAction;
     QAction *aboutAction;
     QAction *aboutQtAction;
-    QAction *diskStatusAction[4];
+    QAction *diskStatusAction[MAX_DRIVES];
     QAction *interruptStatusAction;
     QAction *iconSizeAction[ICON_SIZES];
     QAction *screenSizeAction[SCREEN_SIZES];

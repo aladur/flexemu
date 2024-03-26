@@ -40,7 +40,9 @@
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
 
-#define MAX_VRAM        (4 * 16)
+enum {
+MAX_VRAM = (4 * 16),
+};
 
 struct sOptions;
 

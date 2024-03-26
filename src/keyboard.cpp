@@ -112,7 +112,7 @@ void KeyboardIO::set_bell(Word /*x_percent*/)
     Beep(400, 100);
 #endif
 #ifdef UNIX
-    static char bell = BELL;
+    static char bell = BEL;
 
     ssize_t count = write(fileno(stdout), &bell, 1);
     (void)count; // satisfy compiler

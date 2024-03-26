@@ -28,17 +28,17 @@
 #include "misc1.h"
 #include <stdio.h>
 #include "flexemu.h"
+#include "asciictl.h"
 #include <string>
 #include <deque>
 #include <mutex>
 #include <memory>
 
-#define BELL        (0x07)
-
 // key mask for shift, control key
-#define SHIFT_KEY   (8)
-#define CONTROL_KEY (16)
-
+enum {
+SHIFT_KEY = 8,
+CONTROL_KEY = 16,
+};
 
 class KeyboardIO
 {

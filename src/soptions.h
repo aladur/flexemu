@@ -31,9 +31,8 @@
 #include <map>
 #include <algorithm>
 #include "efiletim.h"
+#include "e2.h"
 
-// Maximum size of one emulated pixel on screen
-#define MAX_PIXELSIZE (5)
 
 enum class FlexemuOptionId : uint8_t
 {

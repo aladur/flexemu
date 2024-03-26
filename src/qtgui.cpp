@@ -1134,7 +1134,7 @@ void QtGui::AddDiskStatusButtons()
     {
         assert(statusToolBar != nullptr);
 
-        for (Word i = 0; i < 4; ++i)
+        for (Word i = 0; i < MAX_DRIVES; ++i)
         {
             diskStatusAction[i] =
                 statusToolBar->addAction(iconNoFloppy, tr("Disk #%1").arg(i));

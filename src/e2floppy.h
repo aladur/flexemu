@@ -33,6 +33,7 @@
     #include "flexemu.h"
     #include "wd1793.h"
     #include "filecnts.h"
+    #include "e2.h"
     #include "fcinfo.h"
     #include <string>
     #include <mutex>
@@ -47,9 +48,6 @@ struct sOptions;
 
 class E2floppy : public Wd1793
 {
-public:
-    static const unsigned MAX_DRIVES{4U}; // max. number of disk drives.
-
 private:
 
     // States for writing a track (formatting a disk).

@@ -154,7 +154,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     InitializeHardwareHyperlink(options.doc_dir.c_str());
 
-    for (int x = 1; x <= MAX_PIXELSIZE; ++x)
+    for (int x = 1; x <= SCREEN_SIZES; ++x)
     {
         const auto iconPath = QString(":/resource/screen%1.png").arg(x);
         const auto screenSizeIcon = QIcon(iconPath);

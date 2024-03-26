@@ -32,41 +32,88 @@
 #ifndef E2_INCLUDED
 #define E2_INCLUDED
 
-#define VIDEORAM_SIZE   0x4000
-#define RASTERLINE_SIZE 64
-#define YBLOCK_BASE 4   /* number of yblocks as a power of 2 */
-#define COLOR_PLANES    6   /* maximum number of color planes */
-#define MAX_COLORS (1U << COLOR_PLANES)   /* maximum number of color values */
-#define RED_HIGH 0x10 /* Color bitmask for green high */
-#define RED_LOW 0x02 /* Color bitmask for red low */
-#define GREEN_HIGH 0x20 /* Color bitmask for green high */
-#define GREEN_LOW 0x04 /* Color bitmask for green low */
-#define BLUE_HIGH 0x08 /* Color bitmask for blue low */
-#define BLUE_LOW 0x01 /* Color bitmask for blue low */
-#define MAXVIDEORAM_BANKS (48u)  /* max number of ram banks of size 16K   */
+enum {
+VIDEORAM_SIZE = 0x4000,
+};
+
+enum {
+RASTERLINE_SIZE = 64, /* byte size of one raster-line */
+};
+
+enum {
+YBLOCK_BASE = 4, /* number of yblocks as a power of 2 */
+};
+
+enum {
+COLOR_PLANES = 6,   /* maximum number of color planes */
+};
+
+enum {
+MAX_COLORS = (1U << COLOR_PLANES),   /* maximum number of color values */
+};
+
+enum {
+SCREEN_SIZES = 5, /* maximum screen size factor */
+};
+
+enum {
+ICON_SIZES = 3, /* maximum icon size factor */
+};
+
+enum {
+RED_HIGH = 0x10, /* Color bitmask for green high */
+RED_LOW = 0x02, /* Color bitmask for red low */
+GREEN_HIGH = 0x20, /* Color bitmask for green high */
+GREEN_LOW = 0x04, /* Color bitmask for green low */
+BLUE_HIGH = 0x08, /* Color bitmask for blue low */
+BLUE_LOW = 0x01, /* Color bitmask for blue low */
+};
+
+enum {
+MAXVIDEORAM_BANKS = 48U, /* max number of ram banks of size 16K */
+};
+
 /* possible values: 12, 48 */
 /* number of yblocks */
-#define YBLOCKS     (1 << YBLOCK_BASE) /* Nr. of blocks vertically */
+enum {
+YBLOCKS = (1 << YBLOCK_BASE), /* Nr. of blocks vertically */
+};
+
 /* bytesize of one yblock */
-#define YBLOCK_SIZE (VIDEORAM_SIZE / YBLOCKS)
+enum {
+YBLOCK_SIZE = (VIDEORAM_SIZE / YBLOCKS),
+};
 
 /* pixelsize of one block */
-#define BLOCKWIDTH  (RASTERLINE_SIZE << 3)
-#define BLOCKHEIGHT (YBLOCK_SIZE / RASTERLINE_SIZE)
+enum {
+BLOCKWIDTH = (RASTERLINE_SIZE << 3),
+BLOCKHEIGHT = (YBLOCK_SIZE / RASTERLINE_SIZE),
+};
 
 /* pixelsize of whole video display represented by a window */
-#define WINDOWWIDTH (RASTERLINE_SIZE << 3)
-#define WINDOWHEIGHT    (VIDEORAM_SIZE / RASTERLINE_SIZE)
+enum {
+WINDOWWIDTH = (RASTERLINE_SIZE << 3),
+WINDOWHEIGHT = (VIDEORAM_SIZE / RASTERLINE_SIZE),
+};
 
 /* GENIO_BASE provides a general address range  */
 /* where memory mapped I/O is placed            */
 /* the range is: $fc00 - ffff                   */
 /* It has to be a multiple of 1024              */
-#define GENIO_BASE  0xfc00
-#define ROM_BASE    0xf000   /* Start addr. of ROM up to 0xffff */
+/* ROM_BASE defines the base address where ROM  */
+/* memory is locatad (read-only memory).        */
+enum {
+GENIO_BASE = 0xfc00, /* Start addr. of mm-I/O up to 0xffff */
+ROM_BASE = 0xf000, /* Start addr. of ROM up to 0xffff */
+};
 
-#define ORIGINAL_FREQUENCY 1.3396f
-#define ORIGINAL_PERIOD (1.0f / ORIGINAL_FREQUENCY)
+enum {
+MAX_DRIVES = 4, /* Max. number of supported disk drives */
+};
+
+/* The default CPU frequncy [MHz] and time period [micro-seconds] */
+constexpr float ORIGINAL_FREQUENCY = 1.3396F;
+constexpr float ORIGINAL_PERIOD = (1.0F / ORIGINAL_FREQUENCY);
 
 #endif
 

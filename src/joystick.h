@@ -29,9 +29,11 @@
 #include <mutex>
 
 // Button mask for left, middle and right button
-#define L_MB        (4)
-#define M_MB        (2)
-#define R_MB        (1)
+enum {
+L_MB = 4,
+M_MB = 2,
+R_MB = 1,
+};
 
 class JoystickIO
 {

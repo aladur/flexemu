@@ -44,7 +44,11 @@ enum class CpuState : Byte
     _count
 };
 
-#define TIME_BASE               10000
+// The time in micro-seconds on which a timer get's a timeout
+// to execute updates.
+enum {
+TIME_BASE = 10000,
+};
 
 
 class CpuStatus

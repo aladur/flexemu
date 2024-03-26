@@ -196,10 +196,10 @@ void FlexemuOptions::GetCommandlineOptions(
                 {
                     std::stringstream str(optarg);
 
-                    if (!(str >> i) || i < 1 || i > MAX_PIXELSIZE)
+                    if (!(str >> i) || i < 1 || i > SCREEN_SIZES)
                     {
                         std::cerr << "Invalid -j value: '" << optarg << "'.\n"
-                            "Only values 1 to " << MAX_PIXELSIZE <<
+                            "Only values 1 to " << SCREEN_SIZES <<
                             " are allowed.\n";
                         exit(EXIT_FAILURE);
                     }
@@ -817,9 +817,9 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
             int_result = 1;
         }
 
-        if (int_result > MAX_PIXELSIZE)
+        if (int_result > SCREEN_SIZES)
         {
-            int_result = MAX_PIXELSIZE;
+            int_result = SCREEN_SIZES;
         }
 
         options.pixelSize = int_result;
@@ -975,9 +975,9 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
             int_result = 1;
         }
 
-        if (int_result > MAX_PIXELSIZE)
+        if (int_result > SCREEN_SIZES)
         {
-            int_result = MAX_PIXELSIZE;
+            int_result = SCREEN_SIZES;
         }
 
         options.pixelSize = int_result;

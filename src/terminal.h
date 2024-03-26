@@ -34,10 +34,9 @@
 #include "flexerr.h"
 #include "bobservd.h"
 #include "soptions.h"
+#include "asciictl.h"
 #include <deque>
 #include <mutex>
-
-#define BACK_SPACE  (0x08)
 
 
 class Scheduler;

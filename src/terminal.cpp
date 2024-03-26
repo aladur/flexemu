@@ -229,7 +229,7 @@ void TerminalIO::put_char_serial(Byte key)
 
     if (key == save_termios.c_cc[VERASE] || key == 0x7f)
     {
-        key = BACK_SPACE;
+        key = BS;
     }
 
 #endif
@@ -325,7 +325,7 @@ void TerminalIO::write_char_serial(Byte value)
     used_serial_io = true;
 #ifdef VERASE
 
-    if (value == BACK_SPACE)
+    if (value == BS)
     {
         write_char_serial_safe('\b');
         write_char_serial_safe(' ');
