@@ -89,8 +89,8 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
         if (pd->filename[0] != DE_DELETED)
         {
             // ok, found a valid directory entry
-            std::string fileName(pd->filename, 0U, FLEX_BASEFILENAME_LENGTH);
-            std::string fileExtension(pd->file_ext, 0U, FLEX_FILEEXT_LENGTH);
+            std::string fileName(getstr<>(pd->filename));
+            std::string fileExtension(getstr<>(pd->file_ext));
             fileName += '.' + fileExtension;
 
             if (multimatches(fileName.c_str(), filePattern, ';', true))

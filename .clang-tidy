@@ -2,6 +2,7 @@
 Checks: '
   abseil-*,
   bugprone-*,
+  bugprone-string-constructor,
   -bugprone-implicit-widening-of-multiplication-result,
   -bugprone-narrowing-conversions,
   -bugprone-easily-swappable-parameters,

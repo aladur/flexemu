@@ -553,8 +553,8 @@ std::string FileContainerCheck::GetUnixFilename(
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)
     {
-        std::string basename(dir_entry.filename, 0U, FLEX_BASEFILENAME_LENGTH);
-        std::string extension(dir_entry.file_ext, 0U, FLEX_FILEEXT_LENGTH);
+        std::string basename(getstr<>(dir_entry.filename));
+        std::string extension(getstr<>(dir_entry.file_ext));
         strlower(basename);
         strlower(extension);
         return basename + '.' + extension;

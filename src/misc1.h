@@ -554,5 +554,14 @@ bool fromString(const std::string &str, T &value)
     return !(value_stream >> value).fail();
 }
 
+// template to create a string from a cstyle character array with given length.
+// The cstyle array not necessarily has a terminating NUL.
+template<size_t N>
+std::string getstr(const char (&array)[N])
+{
+    // String instantiation is checked by unit tests and safe.
+    // NOLINTNEXTLINE(bugprone-string-constructor)
+    return std::string(array, 0U, N);
+}
 #endif /* __misc1.h__ */
 

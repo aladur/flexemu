@@ -178,7 +178,7 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
 
     const auto &sis = flex_sys_info[0];
-    std::string disk_name(sis.sir.disk_name, 0U, sizeof(sis.sir.disk_name));
+    std::string disk_name(getstr<>(sis.sir.disk_name));
 
     info.SetDate(BDate(sis.sir.day, sis.sir.month, sis.sir.year));
     info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
@@ -386,8 +386,8 @@ std::string NafsDirectoryContainer::get_unix_filename(
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)
     {
-        std::string basename(dir_entry.filename, 0U, FLEX_BASEFILENAME_LENGTH);
-        std::string extension(dir_entry.file_ext, 0U, FLEX_FILEEXT_LENGTH);
+        std::string basename(getstr<>(dir_entry.filename));
+        std::string extension(getstr<>(dir_entry.file_ext));
         strlower(basename);
         strlower(extension);
         return basename + '.' + extension;
