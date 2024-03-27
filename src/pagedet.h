@@ -44,14 +44,14 @@ private:
     void FirstNonEmptyLinesScore(PageDetectorData &data,
                           const std::map<std::string, int16_t> &nonEmptyLines);
     void NumberOnlyLinesScore(PageDetectorData &data);
-    int16_t GetTopEmptyLines(PageDetectorData &data, uint32_t page);
+    static int16_t GetTopEmptyLines(PageDetectorData &data, uint32_t page);
     int16_t GetBottomEmptyLines(PageDetectorData &data, uint32_t page);
     template<typename T>
     static double MeanValue(const std::vector<T> &values);
     template<typename T>
     static double Variance(const std::vector<T> &values);
 
-    void DebugPrint(PageDetectorData &data);
+    static void DebugPrint(PageDetectorData &data);
 
     bool hasLinesPerPageDetected;
     int16_t linesPerPage;

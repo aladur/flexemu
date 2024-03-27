@@ -48,7 +48,7 @@ class KeyboardIO
     Word init_delay;
 
 public:
-    void set_bell(Word x_percent);
+    static void set_bell(Word x_percent);
     void reset_parallel();
     bool has_key_parallel(bool &do_notify);
     Byte read_char_parallel(bool &do_notify);

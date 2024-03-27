@@ -476,6 +476,8 @@ Byte E2floppy::readByteInSector(Word index)
     return sector_buffer[pfs->GetBytesPerSector() - index];
 }
 
+// Unfinished feature.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Byte E2floppy::readByteInTrack(Word)
 {
     // TODO unfinished

@@ -302,6 +302,8 @@ Byte TerminalIO::peek_char_serial()
     return result;
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void TerminalIO::write_char_serial_safe(Byte value)
 {
     (void)value;
@@ -351,6 +353,8 @@ void TerminalIO::write_char_serial(Byte /* [[maybe_unused]] Byte value */)
 }
 #endif // #ifdef HAVE_TERMIOS_H
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 bool TerminalIO::is_terminal_supported()
 {
 #ifdef HAVE_TERMIOS_H

@@ -329,10 +329,9 @@ std::string getExecutablePath()
 #ifdef UNIX
 std::string getHomeDirectory()
 {
-    BEnvironment env;
     std::string result;
 
-    if (!env.GetValue("HOME", result))
+    if (!BEnvironment::GetValue("HOME", result))
     {
         struct passwd *pwd = getpwuid(getuid());
         if (pwd == nullptr)
@@ -349,15 +348,14 @@ std::string getHomeDirectory()
 #ifdef _WIN32
 std::string getHomeDirectory()
 {
-    BEnvironment env;
     std::string homeDrive;
     std::string homePath;
 
-    if (!env.GetValue("HOMEDRIVE", homeDrive))
+    if (!BEnvironment::GetValue("HOMEDRIVE", homeDrive))
     {
         return "";
     }
-    if (!env.GetValue("HOMEPATH", homePath))
+    if (!BEnvironment::GetValue("HOMEPATH", homePath))
     {
         return "";
     }

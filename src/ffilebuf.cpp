@@ -526,7 +526,8 @@ void FlexFileBuffer::ConvertToDumpFile(DWord bytesPerLine)
 }
 
 // Estimate if the given file is a FLEX executable file.
-// Not implemented yet.
+// Implementation may change in future (unfinished).
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static).
 bool FlexFileBuffer::IsFlexExecutableFile() const
 {
     return false;

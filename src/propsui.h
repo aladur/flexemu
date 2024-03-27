@@ -168,7 +168,7 @@ public:
         dialog->setMinimumSize(QSize(width, height));
     }
 
-    void retranslateUi(QDialog *dialog)
+    static void retranslateUi(QDialog *dialog)
     {
         dialog->setWindowTitle(
                 QApplication::translate("PropertiesDialog", "Dialog", nullptr));

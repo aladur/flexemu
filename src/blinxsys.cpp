@@ -36,7 +36,7 @@ BLinuxSysInfo::~BLinuxSysInfo()
 {
 }
 
-std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type) const
+std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type)
 {
     switch (type)
     {

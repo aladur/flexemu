@@ -32,7 +32,6 @@
 #include <condition_variable>
 #include "cpustate.h"
 #include "schedcpu.h"
-#include "breltime.h"
 #include "bcommand.h"
 
 
@@ -96,7 +95,6 @@ protected:
     CpuState user_state;
     QWord       total_cycles;
     QWord       time0sec;
-    BRelativeTime systemTime;
 
     // CPU status
 public:

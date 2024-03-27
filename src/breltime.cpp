@@ -28,14 +28,6 @@
 // This class could also be realized as a envelope/letter pattern
 // but this is still the most efficient C++ implementation
 
-BRelativeTime::BRelativeTime()
-{
-}
-
-BRelativeTime::~BRelativeTime()
-{
-}
-
 #ifdef UNIX
 // return time in us as a unsigned int 64 Bit value
 QWord BRelativeTime::GetTimeUsll()
@@ -43,7 +35,7 @@ QWord BRelativeTime::GetTimeUsll()
     struct timeval tv;
 
     gettimeofday(&tv, nullptr);
-    return ((QWord)tv.tv_sec * 1000000 + tv.tv_usec);
+    return (static_cast<QWord>(tv.tv_sec) * 1000000U + tv.tv_usec);
 }
 #endif
 
@@ -56,7 +48,8 @@ QWord BRelativeTime::GetTimeUsll()
     if (QueryPerformanceCounter(&count))
     {
         QueryPerformanceFrequency(&freq);
-        return (QWord)count.QuadPart * 1000000 / (QWord)freq.QuadPart;
+        return static_cast<QWord>(count.QuadPart) * 1000000U /
+               static_cast<QWord>(freq.QuadPart);
     }
     else
     {

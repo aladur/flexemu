@@ -144,7 +144,7 @@ public:
         }
     }
 
-    QString GetObjectName(QString text)
+    static QString GetObjectName(QString text)
     {
         return text.remove(' ').remove('&').prepend("c_");
     }

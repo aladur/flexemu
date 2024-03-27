@@ -137,7 +137,7 @@ private:
     bool isSeekError(Byte new_track) const override;
     Word getBytesPerSector() const override;
     Byte getSizeCode() const;
-    const char       *open_mode(char *path);
+    static const char *open_mode(char *path);
 };
 
 #endif /* #ifndef __fromflex__ */

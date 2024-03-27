@@ -264,7 +264,7 @@ void QtGui::SetPreferencesStatusText(bool x_isRestartNeeded) const
     preferencesAction->setStatusTip(statusText);
 }
 
-QIcon QtGui::GetPreferencesIcon(bool x_isRestartNeeded) const
+QIcon QtGui::GetPreferencesIcon(bool x_isRestartNeeded)
 {
     return x_isRestartNeeded ?
         QIcon(":/resource/preferences-needs-restart.png") :
@@ -791,7 +791,7 @@ void QtGui::OnTimer()
     }
 }
 
-QString QtGui::GetScreenSizeStatusTip(int index) const
+QString QtGui::GetScreenSizeStatusTip(int index)
 {
     switch (index)
     {
@@ -2181,6 +2181,8 @@ void QtGui::closeEvent(QCloseEvent *event)
     }
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
 {
     p_options.readOnlyOptionIds = allFlexemuOptionIds;

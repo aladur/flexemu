@@ -167,7 +167,7 @@ private:
     void CreateViewActions(QLayout &layout);
     void CreateCpuActions(QLayout &layout);
     void CreateHelpActions(QLayout &layout);
-    void CreateHorizontalSpacer(QLayout &layout);
+    static void CreateHorizontalSpacer(QLayout &layout);
     QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
                                     uint16_t index);
     QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
@@ -179,7 +179,7 @@ private:
     bool IsClosingConfirmed();
     void SetCursor(int type = FLX_DEFAULT_CURSOR);
     void PopupMessage(const QString &message);
-    void SetBell(int percent);
+    static void SetBell(int percent);
     void update_block(int blockNumber);
     void UpdateDiskStatus(int floppyIndex, DiskStatus status);
     void UpdateInterruptStatus(tIrqType irqType, bool status);
@@ -200,17 +200,18 @@ private:
     void UpdateScreenSizeCheck(int index) const;
     void UpdateScreenSizeValue(int index) const;
     void SetIconSize(const QSize &size);
-    QUrl CreateDocumentationUrl(const QString &docDir, const QString &htmlFile);
+    static QUrl CreateDocumentationUrl(const QString &docDir,
+                                       const QString &htmlFile);
     ColorTable CreateColorTable();
     void CopyToBMPArray(Word height, QByteArray& dest,
                         Byte const *videoRam, const ColorTable& colorTable);
     int TranslateToAscii(QKeyEvent *event);
-    QFont GetMonospaceFont(int pointSize = -1);
+    static QFont GetMonospaceFont(int pointSize = -1);
     void SetCpuDialogMonospaceFont(int pointSize);
     void ConnectScreenSizeComboBoxSignalSlots() const;
-    QString GetScreenSizeStatusTip(int index) const;
+    static QString GetScreenSizeStatusTip(int index);
     static QString AsString(Word driveNumber, const FlexContainerInfo &info);
-    QIcon GetPreferencesIcon(bool isRestartNeeded) const;
+    static QIcon GetPreferencesIcon(bool isRestartNeeded);
     void SetPreferencesStatusText(bool isRestartNeeded) const;
     void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;
 

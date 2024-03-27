@@ -28,14 +28,6 @@
 #include "cvtwchar.h"
 
 
-BEnvironment::BEnvironment()
-{
-}
-
-BEnvironment::~BEnvironment()
-{
-}
-
 bool BEnvironment::RemoveKey(const char *key)
 {
     std::string upperKey(key);

@@ -276,7 +276,7 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected,
 bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
         std::string &ret_name,
         std::string &ret_extension,
-        bool with_extension) const
+        bool with_extension)
 {
     int result;
     char dot;
@@ -381,7 +381,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
 // pfn is a pointer to the filename property in a FLEX directory entry
 // of type s_dir_entry.
 std::string NafsDirectoryContainer::get_unix_filename(
-        const s_dir_entry &dir_entry) const
+        const s_dir_entry &dir_entry)
 {
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)

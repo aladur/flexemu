@@ -52,10 +52,10 @@ private:
     inline Byte     D_Register1(const char *, Word, Byte, const Byte *);
     inline Byte     D_Register2(const char *, Word, Byte, const Byte *);
 
-    const char  *IndexedRegister(Byte which);
-    const char      *InterRegister(Byte which);
-    const char  *StackRegister(Byte which, const char *not_stack);
-    const char  *FlexLabel(Word);
+    static const char *IndexedRegister(Byte which);
+    static const char *InterRegister(Byte which);
+    static const char *StackRegister(Byte which, const char *not_stack);
+    static const char *FlexLabel(Word);
 };  // class Da6809
 
 #endif // DA6809_INCLUDED

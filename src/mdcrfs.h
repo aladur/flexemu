@@ -65,7 +65,7 @@ class MdcrFileSystem
         static std::string CreateMdcrFilename(const char *string,
                                               bool toUppercase);
 
-        MdcrStatus ReadFile(
+        static MdcrStatus ReadFile(
                       std::string &filename,
                       BMemoryBuffer &memory,
                       MiniDcrTape &mdcr);

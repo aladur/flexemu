@@ -323,6 +323,8 @@ MdcrStatus MdcrFileSystem::WriteFile(
 }
 
 // Call the iterateFunction for each successfully read file on MDCR tape.
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 MdcrStatus MdcrFileSystem::ForEachFile(MiniDcrTape &mdcr,
                   const std::function<MdcrStatus
                             (const std::string&, BMemoryBuffer &memory)>&

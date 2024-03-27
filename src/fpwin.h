@@ -80,7 +80,7 @@ private slots:
     void OpenRecentDirectory();
     void ClearAllRecentDiskEntries();
     void ClearAllRecentDirectoryEntries();
-    void Exit();
+    static void Exit();
 #ifndef QT_NO_CLIPBOARD
     void Copy();
     void Paste();

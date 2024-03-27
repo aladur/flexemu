@@ -83,7 +83,7 @@ private:
     };
 
     void ConnectSignalsWithSlots();
-    void AddFrequencyValidator(QLineEdit &lineEdit);
+    static void AddFrequencyValidator(QLineEdit &lineEdit);
     void InitializeHardwareHyperlink(const char *doc_dir);
     bool Validate();
     bool IsReadOnly(FlexemuOptionId optionId);

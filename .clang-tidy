@@ -48,6 +48,7 @@ Checks: '
   readability-function-size,
   readability-duplicate-include,
   readability-else-after-return,
+  readability-convert-member-functions-to-static,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'

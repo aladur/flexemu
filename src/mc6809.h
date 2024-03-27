@@ -251,7 +251,7 @@ private:
     void            init_psh_pul_cycles();
     void            illegal();
     void            log_current_instruction();
-    std::string     asCCString(Byte reg);
+    static std::string asCCString(Byte reg);
 
 #ifndef FASTFLEX
     //***********************************
@@ -850,7 +850,7 @@ private:
         cc.bit.z = !reg;
     }
 
-    inline void lea_nocc(Word &reg, Word addr)
+    static inline void lea_nocc(Word &reg, Word addr)
     {
         reg = addr;
     }

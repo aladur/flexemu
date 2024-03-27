@@ -31,6 +31,7 @@
 #include "schedule.h"
 #include "mc6809.h"
 #include "inout.h"
+#include "breltime.h"
 
 
 Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
@@ -72,7 +73,7 @@ void Scheduler::process_events()
             irq_status_mutex.lock();
             cpu.get_interrupt_status(interrupt_status);
             irq_status_mutex.unlock();
-            QWord time1sec = systemTime.GetTimeUsll();
+            auto time1sec = BRelativeTime::GetTimeUsll();
             total_cycles = cpu.get_cycles(true);
 
             if (target_frequency > 0.0)
@@ -258,7 +259,7 @@ void Scheduler::run()
     SetThreadPriority(hThread, GetThreadPriority(hThread) - 1);
 #endif
 
-    time0sec = systemTime.GetTimeUsll();
+    time0sec = BRelativeTime::GetTimeUsll();
     statemachine(CpuState::Run);
 }
 

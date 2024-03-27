@@ -542,7 +542,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 
 // check if pfilename contains a valid FLEX filename
 // on Unix only lowercase filenames are allowed
-bool DirectoryContainer::IsFlexFilename(const std::string &filename) const
+bool DirectoryContainer::IsFlexFilename(const std::string &filename)
 {
     int     result; // result from sscanf should be int
     char    dot;

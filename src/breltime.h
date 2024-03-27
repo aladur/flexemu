@@ -23,7 +23,7 @@
 #ifndef BRELTIME_INCLUDED
 #define BRELTIME_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 
 // Get relative time values with us resolution with unknown reference.
 // Interface can be used to calculate precise time differences between
@@ -32,9 +32,9 @@
 class BRelativeTime
 {
 public:
-    BRelativeTime();
-    ~BRelativeTime();
-    QWord GetTimeUsll();
+    BRelativeTime() = delete;
+    ~BRelativeTime() = delete;
+    static QWord GetTimeUsll();
 };
 
 #endif

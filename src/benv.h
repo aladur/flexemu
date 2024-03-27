@@ -28,15 +28,14 @@
 class BEnvironment
 {
 public:
-    BEnvironment();
-    ~BEnvironment();
+    BEnvironment() = delete;
+    ~BEnvironment() = delete;
 
-    bool RemoveKey(const char *key);
-    bool SetValue(const char *key, const char *value);
-    bool SetValue(const char *key, int value);
-    //  bool GetValue(const char *key, char **pValue);
-    bool GetValue(const char *key, std::string &value);
-    bool GetValue(const char *key, int *pValue);
+    static bool RemoveKey(const char *key);
+    static bool SetValue(const char *key, const char *value);
+    static bool SetValue(const char *key, int value);
+    static bool GetValue(const char *key, std::string &value);
+    static bool GetValue(const char *key, int *pValue);
 };
 
 #endif

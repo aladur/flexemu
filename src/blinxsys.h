@@ -40,7 +40,7 @@ public:
     BLinuxSysInfo();
     ~BLinuxSysInfo();
 
-    std::string ToString(BLinuxSysInfoType type) const;
+    static std::string ToString(BLinuxSysInfoType type);
     std::string Read(BLinuxSysInfoType type, const std::string &subtype) const;
 
 private:

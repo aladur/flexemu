@@ -59,8 +59,8 @@ protected:
 
     // private interface:
 private:
-    void        skip_token(char **);
-    const char  *next_token(char **, int *);
+    static void skip_token(char **);
+    static const char *next_token(char **, int *);
 
     // public interface
 public:
