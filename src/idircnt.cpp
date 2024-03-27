@@ -85,12 +85,12 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) != 0 ||
+            !base->IsFlexFilename(fileName) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !stricmp(fileName.c_str(), RANDOM_FILE_LIST) ||
             !multimatches(fileName.c_str(), filePattern, ';', true)))
     {
         isValid = false;
