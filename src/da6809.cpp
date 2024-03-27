@@ -19,6 +19,8 @@
 
 #include "misc1.h"
 #include <stdio.h>
+#include <array>
+#include <map>
 #include "da6809.h"
 
 
@@ -40,301 +42,117 @@ void Da6809::set_use_undocumented(bool value)
 const char *Da6809::FlexLabel(Word addr)
 {
 #ifdef FLEX_LABEL
-
-    switch (addr)
-    {
+    static const std::map<Word, const char *> label_for_address{
         // FLEX DOS entries:
-        case 0xCD00:
-            return "COLDS";
-
-        case 0xCD03:
-            return "WARMS";
-
-        case 0xCD06:
-            return "RENTER";
-
-        case 0xCD09:
-            return "INCH";
-
-        case 0xCD0C:
-            return "INCH2";
-
-        case 0xCD0F:
-            return "OUTCH";
-
-        case 0xCD12:
-            return "OUTCH2";
-
-        case 0xCD15:
-            return "GETCHR";
-
-        case 0xCD18:
-            return "PUTCHR";
-
-        case 0xCD1B:
-            return "INBUFF";
-
-        case 0xCD1E:
-            return "PSTRNG";
-
-        case 0xCD21:
-            return "CLASS";
-
-        case 0xCD24:
-            return "PCRLF";
-
-        case 0xCD27:
-            return "NXTCH";
-
-        case 0xCD2A:
-            return "RSTRIO";
-
-        case 0xCD2D:
-            return "GETFIL";
-
-        case 0xCD30:
-            return "LOAD";
-
-        case 0xCD33:
-            return "SETEXT";
-
-        case 0xCD36:
-            return "ADDBX";
-
-        case 0xCD39:
-            return "OUTDEC";
-
-        case 0xCD3C:
-            return "OUTHEX";
-
-        case 0xCD3F:
-            return "RPTERR";
-
-        case 0xCD42:
-            return "GETHEX";
-
-        case 0xCD45:
-            return "OUTADR";
-
-        case 0xCD48:
-            return "INDEC";
-
-        case 0xCD4B:
-            return "DOCMND";
-
-        case 0xCD4E:
-            return "STAT";
-
+        { 0xCD00, "COLDS" },
+        { 0xCD03, "WARMS" },
+        { 0xCD06, "RENTER" },
+        { 0xCD09, "INCH" },
+        { 0xCD0C, "INCH2" },
+        { 0xCD0F, "OUTCH" },
+        { 0xCD12, "OUTCH2" },
+        { 0xCD15, "GETCHR" },
+        { 0xCD18, "PUTCHR" },
+        { 0xCD1B, "INBUFF" },
+        { 0xCD1E, "PSTRNG" },
+        { 0xCD21, "CLASS" },
+        { 0xCD24, "PCRLF" },
+        { 0xCD27, "NXTCH" },
+        { 0xCD2A, "RSTRIO" },
+        { 0xCD2D, "GETFIL" },
+        { 0xCD30, "LOAD" },
+        { 0xCD33, "SETEXT" },
+        { 0xCD36, "ADDBX" },
+        { 0xCD39, "OUTDEC" },
+        { 0xCD3C, "OUTHEX" },
+        { 0xCD3F, "RPTERR" },
+        { 0xCD42, "GETHEX" },
+        { 0xCD45, "OUTADR" },
+        { 0xCD48,  "INDEC" },
+        { 0xCD4B, "DOCMND" },
+        { 0xCD4E, "STAT" },
         // FLEX FMS entries:
-        case 0xD400:
-            return "FMSINI";   // FMS init
-
-        case 0xD403:
-            return "FMSCLS";   // FMS close
-
-        case 0xD406:
-            return "FMS";
-
-        case 0xC840:
-            return "FCB";  // standard system FCB
-
+        { 0xD400, "FMSINI" }, // FMS init
+        { 0xD403, "FMSCLS" }, // FMS close
+        { 0xD406, "FMS" },
+        { 0xC840, "FCB" }, // standard system FCB
         // miscellenious:
-        case 0xD435:
-            return "VFYFLG";   // FMS verify flag
-
-        case 0xC080:
-            return "LINBUF";   // line buffer
-
-        case 0xCC00:
-            return "TTYBS";
-
-        case 0xCC01:
-            return "TTYDEL";
-
-        case 0xCC02:
-            return "TTYEOL";
-
-        case 0xCC03:
-            return "TTYDPT";
-
-        case 0xCC04:
-            return "TTYWDT";
-
-        case 0xCC11:
-            return "TTYTRM";
-
-        case 0xCC12:
-            return "COMTBL"; // user command table
-
-        case 0xCC14:
-            return "LINBFP"; // line buffer pointer
-
-        case 0xCC16:
-            return "ESCRET"; // escape return register
-
-        case 0xCC18:
-            return "LINCHR"; // current char in linebuffer
-
-        case 0xCC19:
-            return "LINPCH"; // previous char in linebuffer
-
-        case 0xCC1A:
-            return "LINENR"; //line nr of current page
-
-        case 0xCC1B:
-            return "LODOFS"; // loader address offset
-
-        case 0xCC1D:
-            return "TFRFLG"; // loader  transfer flag
-
-        case 0xCC1E:
-            return "TFRADR"; // transfer address
-
-        case 0xCC20:
-            return "FMSERR"; // FMS error type
-
-        case 0xCC21:
-            return "IOFLG"; // special I/O flag
-
-        case 0xCC22:
-            return "OUTSWT"; // output switch
-
-        case 0xCC23:
-            return "INSWT"; // input switch
-
-        case 0xCC24:
-            return "OUTADR"; // file output address
-
-        case 0xCC26:
-            return "INADR"; // file input address
-
-        case 0xCC28:
-            return "COMFLG"; // command flag
-
-        case 0xCC29:
-            return "OUTCOL"; // current output column
-
-        case 0xCC2A:
-            return "SCRATC"; // system scratch
-
-        case 0xCC2B:
-            return "MEMEND"; // memory end
-
-        case 0xCC2D:
-            return "ERRVEC"; // error name vector
-
-        case 0xCC2F:
-            return "INECHO"; // file input echo flag
-
+        { 0xD435, "VFYFLG" }, // FMS verify flag
+        { 0xC080, "LINBUF" }, // line buffer
+        { 0xCC00, "TTYBS" },
+        { 0xCC01, "TTYDEL" },
+        { 0xCC02, "TTYEOL" },
+        { 0xCC03, "TTYDPT" },
+        { 0xCC04, "TTYWDT" },
+        { 0xCC11, "TTYTRM" },
+        { 0xCC12, "COMTBL" }, // user command table
+        { 0xCC14, "LINBFP" }, // line buffer pointer
+        { 0xCC16, "ESCRET" }, // escape return register
+        { 0xCC18, "LINCHR" }, // current char in linebuffer
+        { 0xCC19, "LINPCH" }, // previous char in linebuffer
+        { 0xCC1A, "LINENR" }, //line nr of current page
+        { 0xCC1B, "LODOFS" }, // loader address offset
+        { 0xCC1D, "TFRFLG" }, // loader  transfer flag
+        { 0xCC1E, "TFRADR" }, // transfer address
+        { 0xCC20, "FMSERR" }, // FMS error type
+        { 0xCC21, "IOFLG" }, // special I/O flag
+        { 0xCC22, "OUTSWT" }, // output switch
+        { 0xCC23, "INSWT" }, // input switch
+        { 0xCC24, "OUTADR" }, // file output address
+        { 0xCC26, "INADR" }, // file input address
+        { 0xCC28, "COMFLG" }, // command flag
+        { 0xCC29, "OUTCOL" }, // current output column
+        { 0xCC2A, "SCRATC" }, // system scratch
+        { 0xCC2B, "MEMEND" }, // memory end
+        { 0xCC2D, "ERRVEC" }, // error name vector
+        { 0xCC2F, "INECHO" }, // file input echo flag
         // printer support
-        case 0xCCC0:
-            return "PRTINI"; // printer initialize
+        { 0xCCC0, "PRTINI" }, // printer initialize
+        { 0xCCD8, "PRTCHK" }, // printer check
+        { 0xCCE4, "PRTOUT" }, // printer output
+    };
 
-        case 0xCCD8:
-            return "PRTCHK"; // printer check
+    const auto iter = label_for_address.find(addr);
 
-        case 0xCCE4:
-            return "PRTOUT"; // printer output
-
-        default:
-            return nullptr;
+    if (iter != label_for_address.end())
+    {
+        return iter->second;
     }
-#else
-    return nullptr;
 #endif // #ifdef FLEX_LABEL
+
+    return nullptr;
 }
 
 const char *Da6809::IndexedRegister(Byte which)
 {
-    switch (which & 0x03)
-    {
-        case 0:
-            return "X";
+    static const std::array<const char *, 4> reg_names{ "X", "Y", "U", "S" };
 
-        case 1:
-            return "Y";
-
-        case 2:
-            return "U";
-
-        case 3:
-            return "S";
-    } // switch
-
-    return "?"; // should never happen
+    return reg_names[which & 0x03];
 }
 
 const char *Da6809::InterRegister(Byte which)
 {
-    switch (which & 0x0f)
-    {
-        case 0x0:
-            return "D";
+    static const std::array<const char *, 16> reg_names{
+        "D", "X", "Y", "U", "S", "PC", "??", "??",
+        "A", "B", "CC", "DP", "??", "??", "??", "??"
+    };
 
-        case 0x1:
-            return "X";
-
-        case 0x2:
-            return "Y";
-
-        case 0x3:
-            return "U";
-
-        case 0x4:
-            return "S";
-
-        case 0x5:
-            return "PC";
-
-        case 0x8:
-            return "A";
-
-        case 0x9:
-            return "B";
-
-        case 0xa:
-            return "CC";
-
-        case 0xb:
-            return "DP";
-
-        default:
-            return "??";
-    } // switch
+    return reg_names[which & 0x0f];
 }
 
 
 const char *Da6809::StackRegister(Byte which, const char *not_stack)
 {
-    switch (which & 0x07)
+    static const std::array<const char *, 8> reg_names{
+        "CC", "A", "B", "DP", "X", "Y", "??", "PC"
+    };
+
+    if ((which & 0x07) == 6)
     {
-        case 0x0:
-            return "CC";
+        return not_stack;
+    }
 
-        case 0x1:
-            return "A";
-
-        case 0x2:
-            return "B";
-
-        case 0x3:
-            return "DP";
-
-        case 0x4:
-            return "X";
-
-        case 0x5:
-            return "Y";
-
-        case 0x6:
-            return not_stack;
-
-        case 0x7:
-            return "PC";
-
-        default:
-            return "??"; // this case should never happen
-    } // switch
+    return reg_names[which & 0x07];
 }
 
 
