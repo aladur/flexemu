@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     fpattrui.h
 
 
@@ -36,8 +36,8 @@
 #include <QLabel>
 #include <QString>
 #include <QVector>
+#include <QVarLengthArray>
 #include <cassert>
-#include <array>
 
 
 class FileAttributesUi
@@ -47,7 +47,7 @@ private:
     QLabel *l_filename;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout_2;
-    std::array<QCheckBox *, 4> c_protect;
+    QVarLengthArray<QCheckBox *, 4> c_protect;
     QDialogButtonBox *buttonBox;
     QVector<Qt::CheckState> initialState;
     Byte clearMask;
@@ -60,11 +60,13 @@ private:
 public:
     FileAttributesUi() :
         verticalLayout_1(nullptr), l_filename(nullptr), groupBox(nullptr),
-        verticalLayout_2(nullptr), c_protect{ },
+        verticalLayout_2(nullptr),
+        c_protect{nullptr, nullptr, nullptr, nullptr},
         buttonBox(nullptr), clearMask(0), setMask(0)
     {
         assert(c_protect.size() == flags.size());
         assert(protectText.size() == flags.size());
+        assert(protectChars.size() == flags.size());
     }
 
     void TransferDataToDialog(const QVector<QString> &filenames,
@@ -106,7 +108,7 @@ public:
         {
             bool isEnabled = !isWriteProtected && i < protectChars.size() &&
                              supportedAttributes.contains(protectChars[i]);
-                             
+
             auto isTristate =
                      isMultiFile && initialState.at(i) == Qt::PartiallyChecked;
             c_protect[i]->setTristate(isTristate);
