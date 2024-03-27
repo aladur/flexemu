@@ -65,7 +65,6 @@ CC_CHECK_FLAGS_APPEND([CXXFLAGS],[CXXFLAGS],[\
         -Wextra \
         -Wshadow \
         -Wswitch-enum \
-        -Wuseless-cast \
         -Wfloat-conversion \
         -Wundef \
 ])
