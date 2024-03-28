@@ -868,7 +868,7 @@ bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
 
     file += PATHSEPARATORSTRING RANDOM_FILE_LIST;
 
-    BFilePtr fp(file.c_str(), "r");
+    BFilePtr fp(file, "r");
 
     if (fp != nullptr)
     {

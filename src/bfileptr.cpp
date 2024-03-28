@@ -31,35 +31,24 @@ BFilePtr::BFilePtr() : fp(nullptr)
 {
 }
 
-BFilePtr::BFilePtr(const char *x_path, const char *x_mode /* = nullptr */) :
-    mode("r"), fp(nullptr)
+BFilePtr::BFilePtr(const std::string &p_path, const std::string &p_mode)
+    : mode(p_mode)
+    , fp(nullptr)
 {
     struct stat sbuf;
 
-    if (x_path != nullptr)
+    if (isAbsolutePath(p_path))
     {
-        if (isAbsolutePath(x_path))
-        {
-            path = x_path;
-        }
-        else
-        {
-            path = getCurrentPath();
-            if (!endsWithPathSeparator(path))
-            {
-                path += PATHSEPARATORSTRING;
-            }
-            path += x_path;
-        }
+        path = p_path;
     }
     else
     {
-        return;
-    }
-
-    if (x_mode != nullptr)
-    {
-        mode = x_mode;
+        path = getCurrentPath();
+        if (!path.empty() && !endsWithPathSeparator(path))
+        {
+            path += PATHSEPARATORSTRING;
+        }
+        path += p_path;
     }
 
     if (!stat(path.c_str(), &sbuf) && !S_ISREG(sbuf.st_mode))
@@ -76,8 +65,6 @@ BFilePtr::BFilePtr(BFilePtr &&src) noexcept
     , fp(src.fp)
 {
     src.fp = nullptr;
-    src.path.clear();
-    src.mode.clear();
 }
 
 BFilePtr &BFilePtr::operator=(BFilePtr &&src) noexcept

@@ -99,7 +99,7 @@ FlexFileContainer::FlexFileContainer(
         const std::string &path,
         const std::string &mode,
         const FileTimeAccess &fileTimeAccess)
-    : fp(path.c_str(), mode.c_str())
+    : fp(path, mode)
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
@@ -110,7 +110,7 @@ FlexFileContainer::FlexFileContainer(
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
 
-    if (stat(fp.GetPath(), &sbuf) != 0 || !S_ISREG(sbuf.st_mode))
+    if (stat(fp.GetPath().c_str(), &sbuf) != 0 || !S_ISREG(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fp.GetPath());
     }
@@ -138,7 +138,7 @@ FlexFileContainer::FlexFileContainer(
         attributes |= FLX_READONLY;
     }
 
-    if (stat(fp.GetPath(), &sbuf) == 0)
+    if (stat(fp.GetPath().c_str(), &sbuf) == 0)
     {
         bool write_protected = ((attributes & FLX_READONLY) != 0);
 
@@ -1433,7 +1433,7 @@ void FlexFileContainer::Format_disk(
 
     path += name;
 
-    BFilePtr fp(path.c_str(), "wb");
+    BFilePtr fp(path, "wb");
 
     if (fp != nullptr)
     {
@@ -1539,7 +1539,7 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
     Word tracks = 35;
     Word sectors = 10;
 
-    if (stat(fp.GetPath(), &sbuf) != 0)
+    if (stat(fp.GetPath().c_str(), &sbuf) != 0)
     {
         return false;
     }

@@ -47,7 +47,7 @@ void BRcFile::SetFileName(const char *aFileName)
 
 int BRcFile::SetValue(const char *key, const char *value)
 {
-    BFilePtr fp(fileName.c_str(), "a");
+    BFilePtr fp(fileName, "a");
 
     if (fp == nullptr)
     {
@@ -67,7 +67,7 @@ int BRcFile::SetValue(const char *key, const char *value)
 int BRcFile::SetValue(const char *key, int value)
 {
     std::string str;
-    BFilePtr fp(fileName.c_str(), "a");
+    BFilePtr fp(fileName, "a");
 
     if (fp == nullptr)
     {
@@ -89,7 +89,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
     char def[256];
     char strparm[PATH_MAX];
     auto keyLength = strlen(key);
-    BFilePtr fp(fileName.c_str(), "r");
+    BFilePtr fp(fileName, "r");
 
     if (isInteger)
     {
@@ -151,7 +151,7 @@ int BRcFile::GetValue(const char *key, int &value)
 
 int BRcFile::Initialize()
 {
-    BFilePtr fp(fileName.c_str(), "w");
+    BFilePtr fp(fileName, "w");
 
     if (fp == nullptr)
     {

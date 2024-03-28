@@ -29,7 +29,7 @@ class BFilePtr
 {
 public:
     BFilePtr();
-    BFilePtr(const char *path, const char *mode = nullptr);
+    BFilePtr(const std::string &p_path, const std::string &p_mode);
     BFilePtr(const BFilePtr &) = delete;
     BFilePtr(BFilePtr &&) noexcept;
     ~BFilePtr();
@@ -37,14 +37,14 @@ public:
     BFilePtr &operator= (BFilePtr &&) noexcept;
 
     bool Close();
-    const char *GetPath() const
+    std::string GetPath() const
     {
-        return path.c_str();
+        return path;
     }
 
-    const char *GetMode() const
+    std::string GetMode() const
     {
-        return mode.c_str();
+        return mode;
     }
 
     operator FILE *() const
