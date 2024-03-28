@@ -57,15 +57,13 @@
 /****************************************/
 
 DirectoryContainer::DirectoryContainer(const std::string &aPath,
-                                       const FileTimeAccess &fileTimeAccess) :
-    attributes(0),
-    disk_number(0),
-    ft_access(fileTimeAccess)
+                                       const FileTimeAccess &fileTimeAccess)
+    : ft_access(fileTimeAccess)
 {
     struct stat sbuf;
     static Word number = 0;
 
-    if (stat(aPath.c_str(), &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(aPath.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
     }
@@ -77,7 +75,7 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
     else
     {
         directory = getCurrentPath();
-        if (!endsWithPathSeparator(aPath))
+        if (!directory.empty() && !endsWithPathSeparator(aPath))
         {
             directory += PATHSEPARATORSTRING;
         }
@@ -111,37 +109,42 @@ bool DirectoryContainer::IsWriteProtected() const
 }
 
 // type, track and sectors parameter will be ignored
-DirectoryContainer *DirectoryContainer::Create(const char *dir,
-        const char *name, int, int, const FileTimeAccess &fileTimeAccess, int)
+DirectoryContainer *DirectoryContainer::Create(
+        const std::string &directory,
+        const std::string &name,
+        int /* tracks */,
+        int /* sectors */,
+        const FileTimeAccess &fileTimeAccess,
+        int /* fmt = TYPE_DISK_CONTAINER */)
 {
     struct stat sbuf;
-    std::string aPath;
+    std::string path;
 
-    aPath = dir;
+    path = directory;
 
-    if (aPath[aPath.length()-1] != PATHSEPARATOR)
+    if (!path.empty() && !endsWithPathSeparator(path))
     {
-        aPath += PATHSEPARATORSTRING;
+        path += PATHSEPARATORSTRING;
     }
 
-    aPath += name;
+    path += name;
 
-    if (!stat(aPath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
+    if (stat(path.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
     {
         // if a file exists with this name delete it
-        remove(aPath.c_str());
+        remove(path.c_str());
     }
 
-    if (stat(aPath.c_str(), &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
         // directory does not exist
-        if (!BDirectory::Create(aPath, 0755))
+        if (!BDirectory::Create(path, 0755))
         {
-            throw FlexException(FERR_UNABLE_TO_CREATE, aPath);
+            throw FlexException(FERR_UNABLE_TO_CREATE, path);
         }
     }
 
-    return new DirectoryContainer(aPath, fileTimeAccess);
+    return new DirectoryContainer(path, fileTimeAccess);
 }
 
 std::string DirectoryContainer::GetPath() const
@@ -269,7 +272,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 #ifdef UNIX
     struct statvfs fsbuf;
 
-    if (statvfs(directory.c_str(), &fsbuf))
+    if (statvfs(directory.c_str(), &fsbuf) != 0)
     {
         throw FlexException(FERR_READING_DISKSPACE, directory);
     }
@@ -278,7 +281,7 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks);
 #endif
 
-    if (stat(directory.c_str(), &sbuf) >= 0)
+    if (stat(directory.c_str(), &sbuf) == 0)
     {
         struct tm *timeStruct = localtime(&sbuf.st_mtime);
         info.SetDate(BDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
@@ -312,47 +315,6 @@ bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 int DirectoryContainer::GetContainerType() const
 {
     return TYPE_DIRECTORY;
-}
-
-bool DirectoryContainer::CheckFilename(const char *fileName) const
-{
-    int     result; // result from sscanf should be int
-    char    dot;
-    char    name[9];
-    char    ext[4];
-    const char    *format;
-
-    dot    = '\0';
-    format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-    result = sscanf(fileName, format, name, &name[1]);
-
-    if (!result || result == EOF)
-    {
-        return false;
-    }
-
-    if (result == 1)
-    {
-        format = "%*1[A-Za-z]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
-    }
-    else
-    {
-        format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
-    }
-
-    result = sscanf(fileName, format, &dot, ext, &ext[1]);
-
-    if (!result || result == 1 || result == EOF)
-    {
-        return false;
-    }
-
-    if (strlen(name) + strlen(ext) + (dot == '.' ? 1 : 0) != strlen(fileName))
-    {
-        return false;
-    }
-
-    return true;
 }
 
 FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
@@ -391,7 +353,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     // prevent to overwrite an existing file
-    if (!stat(filePath.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
+    if (stat(filePath.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
@@ -446,7 +408,7 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
-    if (stat(filePath.c_str(), &sbuf) >= 0)
+    if (stat(filePath.c_str(), &sbuf) == 0)
     {
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec   = 0;
@@ -495,7 +457,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
         strlower(lowerFileName);
         auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
-        if (!stat(filePath.c_str(), &sbuf))
+        if (stat(filePath.c_str(), &sbuf) == 0)
         {
             if (clearMask & WRITE_PROTECT)
             {
@@ -531,7 +493,7 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
     strlower(lowerFileName);
     auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
-    if (!stat(filePath.c_str(), &sbuf))
+    if (stat(filePath.c_str(), &sbuf) == 0)
     {
         chmod(filePath.c_str(), sbuf.st_mode | S_IXUSR);
     }

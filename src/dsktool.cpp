@@ -120,9 +120,11 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexFileContainer::Create(
-                        getParentPath(dsk_file).c_str(),
-                        getFileName(dsk_file).c_str(),
-                        tracks, sectors, fileTimeAccess, disk_format,
+                        getParentPath(dsk_file),
+                        getFileName(dsk_file),
+                        fileTimeAccess,
+                        tracks, sectors,
+                        disk_format,
                         bsFile));
 
         if (container && verbose)

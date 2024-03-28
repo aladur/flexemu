@@ -97,7 +97,7 @@ public:
     NafsDirectoryContainer() = delete;
     NafsDirectoryContainer(const NafsDirectoryContainer &) = delete;
     NafsDirectoryContainer(NafsDirectoryContainer &&) = delete;
-    NafsDirectoryContainer(const char *path,
+    NafsDirectoryContainer(const std::string &path,
                            const FileTimeAccess &fileTimeAccess,
                            int tracks, int sectors);
     ~NafsDirectoryContainer() override;
@@ -107,10 +107,9 @@ public:
 
 private:
     std::string directory;
-    Byte attributes;
-    bool isOpen;
-    const FileTimeAccess &ft_access;
-    s_floppy param;
+    Byte attributes{};
+    const FileTimeAccess &ft_access{};
+    s_floppy param{};
 
     // Some structures needed for a FLEX file system
     // link table: Each sector has an entry in the link table.
@@ -118,31 +117,37 @@ private:
     std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SDWord, s_new_file> new_files; // new file table
-    st_t dir_extend;         // track and sector of directory extend sector
-    Word init_dir_sectors; // initial number of directory sectors
-                           // without directory extension.
-    SDWord next_dir_idx; // Next directory index used when filling up
-                         // directory with file entries.
+    st_t dir_extend{0U, 0U}; // track and sector of directory extend sector
+    Word init_dir_sectors{}; // initial number of directory sectors
+                             // without directory extension.
+    SDWord next_dir_idx{-1}; // Next directory index used when filling up
+                             // directory with file entries.
 
 public:
-    static NafsDirectoryContainer *Create(const char *dir,
-                                          const char *name,
+    static NafsDirectoryContainer *Create(const std::string &directory,
+                                          const std::string &name,
                                           const FileTimeAccess &fileTimeAccess,
-                                          int tracks, int sectors,
+                                          int tracks,
+                                          int sectors,
                                           int fmt = TYPE_DSK_CONTAINER);
-    bool CheckFilename(const char *fileName) const;
-    bool ReadSector(Byte *buffer, int trk, int sec, int side = -1) const override;
-    bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1) override;
-    bool FormatSector(const Byte *buffer, int trk, int sec, int side,
-                      int sizecode) override;
-    bool IsFlexFormat() const override;
+
+    // FileContainerIfBase interface declaration.
     bool IsWriteProtected() const override;
-    bool IsTrackValid(int track) const override;
-    bool IsSectorValid(int track, int sector) const override;
-    int GetBytesPerSector() const override;
     bool GetInfo(FlexContainerInfo &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
+
+    // FileContainerIfSector interface declaration.
+    bool ReadSector(Byte *buffer, int trk, int sec,
+                    int side = -1) const override;
+    bool WriteSector(const Byte *buffer, int trk, int sec,
+                     int side = -1) override;
+    bool FormatSector(const Byte *buffer, int trk, int sec, int side,
+                      int sizecode) override;
+    bool IsFlexFormat() const override;
+    bool IsTrackValid(int track) const override;
+    bool IsSectorValid(int track, int sector) const override;
+    int GetBytesPerSector() const override;
 
 private:
     void fill_flex_directory(bool is_write_protected);

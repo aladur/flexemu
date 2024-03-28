@@ -252,7 +252,7 @@ int ApplicationRunner::startup(QApplication &app)
     }
     else
     {
-        fdc.disk_directory(options.disk_dir.c_str());
+        fdc.disk_directory(options.disk_dir);
         fdc.mount_all_drives(options.drive);
     }
 

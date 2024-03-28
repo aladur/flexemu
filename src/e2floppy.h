@@ -105,15 +105,15 @@ public:
     };
 
     virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
-    virtual void         disk_directory(const char *x_disk_dir);
+    virtual void         disk_directory(const std::string &x_disk_dir);
     virtual void         mount_all_drives(std::string drive[]);
     virtual bool         sync_all_drives(
                                     tMountOption option = MOUNT_DEFAULT);
     virtual bool         umount_all_drives();
-    virtual bool         mount_drive(const char *path, Word drive_nr,
+    virtual bool         mount_drive(const std::string &path, Word drive_nr,
                                      tMountOption option = MOUNT_DEFAULT);
     virtual bool         format_disk(SWord trk, SWord sec,
-                                     const char *name, int type);
+                                     const std::string &name, int fmt);
     virtual bool         sync_drive(Word drive_nr,
                                     tMountOption option = MOUNT_DEFAULT);
     virtual bool         umount_drive(Word drive_nr);
@@ -137,7 +137,6 @@ private:
     bool isSeekError(Byte new_track) const override;
     Word getBytesPerSector() const override;
     Byte getSizeCode() const;
-    static const char *open_mode(char *path);
 };
 
 #endif /* #ifndef __fromflex__ */

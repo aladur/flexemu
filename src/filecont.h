@@ -38,22 +38,22 @@ class FlexFileBuffer;
 
 class FileContainerIf : public FileContainerIfBase
 {
-    /* File oriented interface (to be used within flexdisk) */
+    /* File oriented interface (to be used within flexplorer). */
 public:
     virtual FileContainerIf *begin() = 0;
     virtual FileContainerIf *end() const = 0;
-    virtual bool  CheckFilename(const char *fileName) const = 0;
-    virtual bool  FindFile(const char *fileName, FlexDirEntry &entry) = 0;
-    virtual bool  DeleteFile(const char *fileName) = 0;
-    virtual bool  RenameFile(const char *oldName, const char *newName) = 0;
-    virtual bool  SetAttributes(const char *fileName, Byte setMask = 0,
-                                Byte clearMask = ~0) = 0;
+    virtual bool FindFile(const char *fileName, FlexDirEntry &entry) = 0;
+    virtual bool DeleteFile(const char *fileName) = 0;
+    virtual bool RenameFile(const char *oldName, const char *newName) = 0;
+    virtual bool SetAttributes(const char *fileName, Byte setMask = 0,
+                               Byte clearMask = ~0) = 0;
     virtual FlexFileBuffer ReadToBuffer(const char *fileName) = 0;
-    virtual bool  WriteFromBuffer(const FlexFileBuffer &buffer,
-                                  const char *fileName = nullptr) = 0;
-    virtual bool  FileCopy(const char *sourceName, const char *destName,
+    virtual bool WriteFromBuffer(const FlexFileBuffer &buffer,
+                                 const char *fileName = nullptr) = 0;
+    virtual bool FileCopy(const char *sourceName, const char *destName,
                            FileContainerIf &destination) = 0;
     virtual std::string GetSupportedAttributes() const = 0;
+
     ~FileContainerIf() override { };
 
 private:

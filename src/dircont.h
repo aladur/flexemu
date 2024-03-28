@@ -45,9 +45,9 @@ class DirectoryContainer : public FileContainerIf
 
 private:
     std::string directory;
-    Byte attributes;
-    Word disk_number;
-    const FileTimeAccess &ft_access;
+    Byte attributes{};
+    Word disk_number{};
+    const FileTimeAccess &ft_access{};
 
 public:
     DirectoryContainer() = delete;
@@ -60,20 +60,20 @@ public:
     DirectoryContainer &operator= (const DirectoryContainer &) = delete;
     DirectoryContainer &operator= (DirectoryContainer &&) = delete;
 
-    // basic interface
-public:
-    static DirectoryContainer *Create(const char *dir, const char *name,
-                                      int t, int s,
+    static DirectoryContainer *Create(const std::string &directory,
+                                      const std::string &name,
+                                      int tracks,
+                                      int sectors,
                                       const FileTimeAccess &fileTimeAccess,
                                       int fmt = TYPE_DSK_CONTAINER);
+
+    // FileContainerIfBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetInfo(FlexContainerInfo &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
-    bool CheckFilename(const char *) const override;
 
-    // file oriented interface (to be used within flexdisk)
-public:
+    // FileContainerIf interface declaration (to be used within flexplorer).
     FileContainerIf *begin() override
     {
         return this;
@@ -82,7 +82,6 @@ public:
     {
         return nullptr;
     };
-    FileContainerIteratorImpPtr IteratorFactory() override;
     bool FindFile(const char *fileName, FlexDirEntry &entry) override;
     bool DeleteFile(const char *fileName) override;
     bool RenameFile(const char *oldName, const char *newName) override;
@@ -95,14 +94,14 @@ public:
                   FileContainerIf &destination) override;
     std::string GetSupportedAttributes() const override;
 
-    // private interface
 private:
+    FileContainerIteratorImpPtr IteratorFactory() override;
     static bool IsFlexFilename(const std::string &filename) ;
     bool SetDateTime(const char *fileName, const BDate &date,
                      const BTime &time);
     bool    SetRandom(const char *fileName);
     void Initialize_header(Byte wp);
 
-};  // class DirectoryContainer
+};
 
 #endif // DIRCONT_INCLUDED

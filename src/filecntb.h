@@ -83,11 +83,12 @@ class FileContainerIfBase
 {
 public:
     virtual bool IsWriteProtected() const = 0;
-    virtual bool  GetInfo(FlexContainerInfo &info) const = 0;
-    virtual int  GetContainerType() const = 0;
+    virtual bool GetInfo(FlexContainerInfo &info) const = 0;
+    virtual int GetContainerType() const = 0;
     virtual std::string GetPath() const = 0;
+
     virtual ~FileContainerIfBase() { };
-};  /* class FileContainerIfBase */
+};
 
 #endif /* FILECNTB_INCLUDED */
 

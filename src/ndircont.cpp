@@ -75,32 +75,29 @@
 // But writing sectors which are part of the free chain or a directory sector
 // can corrupt the emulation.
 
-NafsDirectoryContainer::NafsDirectoryContainer(const char *path,
-        const FileTimeAccess &fileTimeAccess, int tracks, int sectors)
-    : attributes(0)
-    , ft_access(fileTimeAccess)
-    , dir_extend{0, 0}
-    , next_dir_idx(-1)
+NafsDirectoryContainer::NafsDirectoryContainer(
+        const std::string &path,
+        const FileTimeAccess &fileTimeAccess,
+        int tracks,
+        int sectors)
+    : ft_access(fileTimeAccess)
 {
     struct stat sbuf;
-    static Word number = 0;
+    static Word number = 0U;
 
-    if (path == nullptr || stat(path, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
-        std::string spath(path == nullptr ? "<nullptr>" : path);
-
-        throw FlexException(FERR_UNABLE_TO_OPEN, spath);
+        throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
     directory = path;
-    if (directory.size() > 1 &&
-        directory[directory.size() - 1] == PATHSEPARATOR)
+    if (directory.size() > 1 && endsWithPathSeparator(directory))
     {
         // Remove trailing PATHSEPARATOR character.
         directory.resize(directory.size() - 1);
     }
 
-    if (access(path, W_OK))
+    if (access(directory.c_str(), W_OK) != 0)
     {
         attributes |= WRITE_PROTECT;
     }
@@ -139,34 +136,33 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
     }
 }
 
-// Create a new nafs directory container in path pdir.
+// Create a new directory disk in path directory.
 // format parameter is ignored.
-NafsDirectoryContainer *NafsDirectoryContainer::Create(const char *pdir,
-        const char *name,
+NafsDirectoryContainer *NafsDirectoryContainer::Create(
+        const std::string &directory,
+        const std::string &name,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
         int /* fmt = TYPE_DSK_CONTAINER */)
 {
     struct stat sbuf;
-    std::string totalPath;
 
-    if (pdir == nullptr || stat(pdir, &sbuf) || !S_ISDIR(sbuf.st_mode))
+    if (stat(directory.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
-    totalPath = pdir;
-    totalPath += PATHSEPARATORSTRING;
-    totalPath += name;
+    auto path = directory;
+    path += PATHSEPARATORSTRING;
+    path += name;
 
-    if (!BDirectory::Create(totalPath, 0755))
+    if (!BDirectory::Create(path, 0755))
     {
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
-    return new NafsDirectoryContainer(totalPath.c_str(), fileTimeAccess,
-                                      tracks, sectors);
+    return new NafsDirectoryContainer(path, fileTimeAccess, tracks, sectors);
 }
 
 std::string NafsDirectoryContainer::GetPath() const

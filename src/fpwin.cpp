@@ -151,10 +151,11 @@ void FLEXplorer::NewContainer()
             const char *bsFile = !options.bootSectorFile.empty() ?
                                  options.bootSectorFile.c_str() : nullptr;
             auto *container = FlexFileContainer::Create(
-                                  directory.c_str(),
-                                  filename.c_str(),
-                                  ui.GetTracks(), ui.GetSectors(),
+                                  directory,
+                                  filename,
                                   options.ft_access,
+                                  ui.GetTracks(),
+                                  ui.GetSectors(),
                                   ui.GetFormat(),
                                   bsFile);
             delete container;

@@ -54,60 +54,60 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
     friend class FlexFileContainerIteratorImp; // corresponding iterator class
 
 protected:
-    BFilePtr    fp;
-    s_floppy    param;
-    DWord       file_size;
-    const FileTimeAccess &ft_access;
+    BFilePtr    fp{};
+    s_floppy    param{};
+    DWord       file_size{};
+    const FileTimeAccess &ft_access{};
 
     // Variables only used for FLX format when formatting a disk
-    bool        is_flex_format; // true when this is a FLEX compatible format.
-    int         sectors0_side0_max; // Max. sector number on side0 for track 0
-    int         sectors_side0_max; // Max. sector number on side0 for track != 0
-    s_flex_header flx_header;
+    bool is_flex_format{false}; // true when this is a FLEX compatible format.
+    int sectors0_side0_max{}; // Max. sector number on side0 for track 0
+    int sectors_side0_max{}; // Max. sector number on side0 for track != 0
+    s_flex_header flx_header{};
 
 private:
-    Byte attributes;
+    Byte attributes{};
 
 public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
     FlexFileContainer(FlexFileContainer &&) noexcept;
-    FlexFileContainer(const char *path, const char *mode,
+    FlexFileContainer(const std::string &path, const std::string &mode,
                       const FileTimeAccess &fileTimeAccess);
     ~FlexFileContainer() override;
 
     FlexFileContainer &operator= (const FlexFileContainer &) = delete;
     FlexFileContainer &operator= (FlexFileContainer &&) noexcept;
 
-    // basic interface (to be used within flexemu)
-public:
     static std::string bootSectorFile;
     static bool onTrack0OnlyDirSectors;
-    static FlexFileContainer *Create(const char *dir, const char *name,
-                                     int t, int s,
+
+    static FlexFileContainer *Create(const std::string &directory,
+                                     const std::string &name,
                                      const FileTimeAccess &fileTimeAccess,
+                                     int tracks, int sectors,
                                      int fmt = TYPE_DSK_CONTAINER,
                                      const char *bsFile = nullptr);
-    bool CheckFilename(const char *fileName) const override;
+
+    // FileContainerIfBase interface declaration (to be used in flexemu).
+    bool IsWriteProtected() const override;
+    bool GetInfo(FlexContainerInfo &info) const override;
+    int  GetContainerType() const override;
+    std::string GetPath() const override;
+
+    // FileContainerIf interface declaration (to be used in flexemu).
     bool ReadSector(Byte *buffer, int trk, int sec, int side = -1)
         const override;
     bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1)
         override;
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
                       int sizecode) override;
-    // Return true if file container is identified as a FLEX compatible
-    // file container.
     bool IsFlexFormat() const override;
-    bool IsWriteProtected() const override;
     bool IsTrackValid(int track) const override;
     bool IsSectorValid(int track, int sector) const override;
     int  GetBytesPerSector() const override;
-    bool GetInfo(FlexContainerInfo &info) const override;
-    int  GetContainerType() const override;
 
-    // enhanced interface (to be used within flexdisk)
-public:
-    std::string GetPath() const override;
+    // FileContainerIf interface declaration (to be used within flexplorer).
     FileContainerIf *begin() override
     {
         return this;
@@ -128,7 +128,6 @@ public:
                   FileContainerIf &destination) override;
     std::string GetSupportedAttributes() const override;
 
-    // internal interface
 protected:
     int ByteOffset(int trk, int sec, int side) const;
     void EvaluateTrack0SectorCount();
@@ -146,10 +145,10 @@ protected:
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
     std::vector<Byte> GetJvcFileHeader() const;
 
-    static void     Create_sys_info_sector(
-        Byte    sec_buf[],
-        const char  *name,
-        struct  s_formats &format);
+    static void Create_sys_info_sector(
+        Byte sec_buf[],
+        const std::string &name,
+        struct s_formats &format);
     static bool         Write_dir_sectors(
         FILE *fp,
         struct  s_formats &format);
@@ -162,12 +161,12 @@ protected:
         int sec,
         struct s_formats &format);
     static void Format_disk(
-        int trk,
-        int sec,
-        const char *disk_dir,
-        const char *name,
-        int type,
-        const char *bsFile);
+        const std::string &directory,
+        const std::string &name,
+        int tracks,
+        int sectors,
+        int fmt = TYPE_DSK_CONTAINER,
+        const char *bsFile = nullptr);
 private:
     FileContainerIteratorImpPtr IteratorFactory() override;
 
