@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     poverhlp.cpp
 
 
@@ -263,7 +263,7 @@ bool PrintOverlayHelper::AddCharacter(char character)
                 }
                 break;
         }
-    } 
+    }
     else if (ignoredCtrlChars.find(character) == ignoredCtrlChars.end())
     {
         switch (character)

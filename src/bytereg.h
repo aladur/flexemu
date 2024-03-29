@@ -31,7 +31,7 @@
 
 // ByteRegister is a single byte general purpose
 // I/O mapped read/write register.
-// It can be specialized by a sub class overwriting 
+// It can be specialized by a sub class overwriting
 // requestReadValue() and requestWriteValue() methods.
 
 class ByteRegister : public IoDevice

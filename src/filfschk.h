@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     dskfschk.cpp
 
     flexemu, an MC6809 emulator running FLEX
@@ -152,7 +152,7 @@ private:
     static bool CheckTime(Byte hour, Byte minute);
     void DumpItemChains(std::ostream &os) const;
 
-    void AddItem(const std::string &name, SectorType type,      
+    void AddItem(const std::string &name, SectorType type,
                  const st_t &start,
                  const st_t &end = st_t{0, 0},
                  Word records = 0,

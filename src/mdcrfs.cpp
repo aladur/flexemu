@@ -131,7 +131,7 @@ MdcrStatus MdcrFileSystem::ReadFile(
 
     while (true)
     {
-        // Read the file header 
+        // Read the file header
         if (!mdcr.ReadRecord(ibuffer) ||
             ibuffer.size() != 13 || ibuffer[0] != 0x55 || ibuffer[12] != 0)
         {
@@ -143,7 +143,7 @@ MdcrStatus MdcrFileSystem::ReadFile(
         {
             return MdcrStatus::WrongChecksum;
         }
-      
+
         startAddress = getValueBigEndian<Word>(&ibuffer[7]);
         endAddress = getValueBigEndian<Word>(&ibuffer[9]);
         if (startAddress > endAddress)
@@ -162,7 +162,7 @@ MdcrStatus MdcrFileSystem::ReadFile(
 
         while (count < size)
         {
-            if (!mdcr.ReadRecord(ibuffer) || 
+            if (!mdcr.ReadRecord(ibuffer) ||
                 ibuffer[0] != 0x55 || ibuffer[ibuffer.size() - 1] != 0)
             {
                 return MdcrStatus::ReadError;
@@ -277,8 +277,8 @@ MdcrStatus MdcrFileSystem::WriteFile(
     *(iter++) = addressRange.upper() & 0xFF;
     *(iter++) = CalculateChecksum(checksumIter, 10);
     *(iter++) = 0;
-  
-    // Write the file header 
+
+    // Write the file header
     if (!mdcr.WriteRecord(obuffer))
     {
         return MdcrStatus::WriteError;
@@ -304,7 +304,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
         // - size: One record has a maximum size of 1024 Bytes.
         //         Each file has one header and one or mutiple data records.
         // - Checksum: Sum of byte 1 ... size.
- 
+
         obuffer[0] = 0x55;
 
         std::copy_n(ibuffer.cbegin() + index, size, obuffer.begin() + 1);

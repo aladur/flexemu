@@ -51,7 +51,7 @@ FlexemuConfigFile::FlexemuConfigFile(FlexemuConfigFile &&src) noexcept :
 {
 }
 
-FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src) 
+FlexemuConfigFile &FlexemuConfigFile::operator=(FlexemuConfigFile &&src)
 noexcept
 {
     iniFileName = std::move(src.iniFileName);

@@ -550,7 +550,7 @@ int FlexplorerMdiChild::SetSelectedAttributes(Byte setMask, Byte clearMask)
     {
         Byte oldAttributes;
         auto filename = model->GetFilename(index);
-        
+
         if (model->GetAttributes(index, oldAttributes))
         {
             FlexDirEntry dirEntry;
@@ -563,7 +563,7 @@ int FlexplorerMdiChild::SetSelectedAttributes(Byte setMask, Byte clearMask)
                 continue;
             }
 
-            QString attributesString = 
+            QString attributesString =
                 dirEntry.GetAttributesString().c_str();
             auto attribIndex = model->index(index.row(),
                                       FlexplorerTableModel::COL_ATTRIBUTES);
@@ -895,7 +895,7 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
 {
     int count = 0;
     FlexDnDFiles files;
-    
+
     if (!mimeData.hasFormat(mimeTypeFlexDiskImageFile))
     {
         return count;

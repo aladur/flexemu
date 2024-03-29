@@ -246,12 +246,12 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
     emit dataChanged(index(0, column), index(rowCount(), column), roles);
 }
 
-int FlexplorerTableModel::GetContainerType() const                                
+int FlexplorerTableModel::GetContainerType() const
 {
     return container->GetContainerType();
 }
 
-const FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const                                
+const FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const
 {
     FlexContainerInfo info;
 
@@ -943,7 +943,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
     for (column = 1; column < COLUMNS; ++column)
     {
         fieldWidthFct(column);
-        stream << 
+        stream <<
             headerData(column, Qt::Horizontal, Qt::DisplayRole).toString();
         separatorFct(column);
     }
@@ -970,7 +970,7 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
                                          const FileTimeAccess &fileTimeAccess)
 {
     struct stat sbuf;
-    
+
     // path can either be a directory or a file container.
     if (p_path == nullptr)
     {
@@ -978,34 +978,34 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
     }
 
     if (stat(p_path, &sbuf))
-    {   
+    {
         throw FlexException(FERR_UNABLE_TO_OPEN, p_path);
     }
-    
+
     path = p_path;
-    
+
     if (S_ISDIR(sbuf.st_mode))
     {
         std::string directory(p_path);
-        
+
         if (endsWithPathSeparator(directory))
-        {   
+        {
             directory = directory.substr(0, directory.size()-1);
         }
-        
+
         container.reset(
             new DirectoryContainer(directory, fileTimeAccess));
     }
     else
-    {   
-        try 
-        {   
+    {
+        try
+        {
             // 1st try opening read-write.
             container.reset(new FlexFileContainer(p_path, "rb+",
                             fileTimeAccess));
         }
         catch (FlexException &)
-        {   
+        {
             // 2nd try opening read-only.
             container.reset(new FlexFileContainer(p_path, "rb",
                             fileTimeAccess));

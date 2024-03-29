@@ -223,7 +223,7 @@ void FlexplorerNewUi::OnFormatChanged(int index)
 
     if (!isFreeDiskFormat)
     {
-        auto trk_sec = flex_formats[index - 1];                             
+        auto trk_sec = flex_formats[index - 1];
         e_tracks->setValue(trk_sec.trk + 1);
         e_sectors->setValue(trk_sec.sec);
     }
@@ -296,7 +296,7 @@ bool FlexplorerNewUi::Validate()
     if (e_path->text().isEmpty())
     {
         e_path->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), 
+        QMessageBox::critical(dialog, tr("Flexplorer Error"),
                 tr("File path is invalid"));
 
         return false;

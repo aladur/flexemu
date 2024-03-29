@@ -1,5 +1,5 @@
 /*
-    drawnwid.h  A QWidget subclass implementing a drawn widget. 
+    drawnwid.h  A QWidget subclass implementing a drawn widget.
 
 
     flexemu, an MC6809 emulator running FLEX

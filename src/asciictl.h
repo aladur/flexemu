@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     asciictl.h
 
 

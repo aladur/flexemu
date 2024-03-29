@@ -26,7 +26,7 @@
 
 void BObserved::Attach(BObserver &x_observer)
 {
-    if (std::find_if(observers.cbegin(), observers.cend(), 
+    if (std::find_if(observers.cbegin(), observers.cend(),
         [&x_observer](std::reference_wrapper<BObserver> observerRef)
         {
             return &observerRef.get() == &x_observer;
@@ -39,7 +39,7 @@ void BObserved::Attach(BObserver &x_observer)
 void BObserved::Detach(BObserver &x_observer)
 {
     const auto iter =
-        std::find_if(observers.cbegin(), observers.cend(), 
+        std::find_if(observers.cbegin(), observers.cend(),
             [&x_observer](std::reference_wrapper<BObserver> observerRef)
             {
                 return &observerRef.get() == &x_observer;

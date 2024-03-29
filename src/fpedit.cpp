@@ -233,7 +233,7 @@ void FlexFilenameDelegate::setModelData(QWidget *editor,
 }
 
 void FlexFilenameDelegate::updateEditorGeometry(QWidget *editor,
-                                                const QStyleOptionViewItem 
+                                                const QStyleOptionViewItem
                                                           &option,
                                                 const QModelIndex &) const
 {
@@ -329,7 +329,7 @@ void FlexAttributesDelegate::setModelData(QWidget *editor,
 }
 
 void FlexAttributesDelegate::updateEditorGeometry(QWidget *editor,
-                                                  const QStyleOptionViewItem 
+                                                  const QStyleOptionViewItem
                                                           &option,
                                                   const QModelIndex &) const
 {

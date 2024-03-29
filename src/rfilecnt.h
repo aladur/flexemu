@@ -56,5 +56,5 @@ private:
     bool close();
 };
 
-#endif // RFILECNT_INCLUDED 
+#endif // RFILECNT_INCLUDED
 

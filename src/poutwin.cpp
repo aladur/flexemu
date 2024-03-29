@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     poutwin.cpp
 
 
@@ -964,7 +964,7 @@ void PrintOutputWindow::InitializeSizeAdjustmentWidget()
 void PrintOutputWindow::InitializeUnitWidget()
 {
     if (ui != nullptr)
-    { 
+    {
         ui->cb_unit->addItems(unitStrings);
 
         auto index = unitValues.indexOf(unit);

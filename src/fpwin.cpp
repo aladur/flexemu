@@ -69,7 +69,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
     fileToolBar(nullptr), editToolBar(nullptr),
     containerToolBar(nullptr),
     newContainerAction(nullptr), openContainerAction(nullptr),
-    openDirectoryAction(nullptr), 
+    openDirectoryAction(nullptr),
     injectAction(nullptr), extractAction(nullptr),
     selectAllAction(nullptr), deselectAllAction(nullptr),
     findFilesAction(nullptr),
@@ -1145,7 +1145,7 @@ void FLEXplorer::dragLeaveEvent(QDragLeaveEvent *event)
     event->accept();
 }
 
-void FLEXplorer::dropEvent(QDropEvent *event)                           
+void FLEXplorer::dropEvent(QDropEvent *event)
 {
     const auto supportedFiles = GetSupportedFiles(event->mimeData());
     if (!supportedFiles.isEmpty())

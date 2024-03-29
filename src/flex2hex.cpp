@@ -147,8 +147,8 @@ int main(int argc, char *argv[])
             case 'o': ofilePrefered = optarg;
                       break;
 
-            case 'i': 
-            case 'm': 
+            case 'i':
+            case 'm':
             case 'b':
                       if (ofiletype != FileType::Unknown &&
                           ofiletype != fileTypes.at(result))
@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
                 std::string input;
 
                 // User confirmation to overwrite file.
-                while (input.empty() || 
+                while (input.empty() ||
                        (tolower(input[0]) != 'y' && tolower(input[0]) != 'n'))
                 {
                     std::cout << "File " << ofile

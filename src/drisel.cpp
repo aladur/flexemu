@@ -37,22 +37,22 @@ DriveSelect::~DriveSelect()
 Byte DriveSelect::requestReadValue()
 {
     Byte status = 0xff; // Unused bits have logical high
-        
+
     if (!fdc.getSide())
-    {   
+    {
         status &= ~READ_SIDE_MASK;
     }
-            
+
     if (!fdc.isIrq())
-    {   
+    {
         status &= ~READ_IRQ_MASK;
     }
-               
+
     if (!fdc.isDrq())
-    {   
+    {
         status &= ~READ_DRQ_MASK;
     }
-                    
+
     return status;
 }
 

@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     filfschk.cpp
 
     flexemu, an MC6809 emulator running FLEX
@@ -585,11 +585,11 @@ void FileContainerCheck::InitializeFileSectors()
 
             if (dir_entry.filename[0] == DE_DELETED)
             {
-                continue; 
+                continue;
             }
             if (dir_entry.filename[0] == DE_EMPTY)
             {
-                return; 
+                return;
             }
 
             auto name = GetUnixFilename(dir_entry);
@@ -705,8 +705,8 @@ void FileContainerCheck::DumpItemChains(std::ostream &os) const
 
 std::ostream &FileContainerCheck::DebugDump(std::ostream &os) const
 {
-    os << "********  I T E M S  ********\n"; 
-    os << "count=" << items.size() << "\n"; 
+    os << "********  I T E M S  ********\n";
+    os << "count=" << items.size() << "\n";
     int index = 0;
     for (const auto &item : items)
     {
@@ -714,14 +714,14 @@ std::ostream &FileContainerCheck::DebugDump(std::ostream &os) const
               " " << std::right << item << "\n";
     }
 
-    os << "********  L I N K S  ********\n"; 
-    os << "count=" << links.size() << "\n"; 
+    os << "********  L I N K S  ********\n";
+    os << "count=" << links.size() << "\n";
     for (const auto &iter : links)
     {
         os << " " << iter.second << "\n";
     }
 
-    os << "********  I T E M   C H A I N S  ********\n"; 
+    os << "********  I T E M   C H A I N S  ********\n";
     DumpItemChains(os);
 
     return os;
@@ -775,7 +775,7 @@ std::ostream& operator<<(std::ostream &os,
     }
 
     os << " i_idx=" << link.item_index;
-   
+
     if (link.type == FileContainerCheck::SectorType::File)
     {
         os << " rnr=" << link.record_nr;
@@ -998,7 +998,7 @@ std::ostream& operator<<(std::ostream &os, const BadTime &item)
           "BADTIM: " << item.name << " has a bad time. HH-MM is " <<
           std::setw(2) << (Word)item.hour << "-" <<
           std::setw(2) << (Word)item.minute;
-                 
+
     os.fill(previous_fill);
     os.flags(previous_flags);
 

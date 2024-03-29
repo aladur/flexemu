@@ -81,7 +81,7 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
         int x = 16;
         int y = 27;
 
-        driveInfo.GetTrackSector(tracks, sectors); 
+        driveInfo.GetTrackSector(tracks, sectors);
         QString trkSec = tr("%1/%2 trk/sec").arg(tracks).arg(sectors);
         auto name = QString(driveInfo.GetName().c_str());
         QString numberString = tr("#%1").arg(driveInfo.GetNumber());

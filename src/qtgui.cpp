@@ -1395,7 +1395,7 @@ void QtGui::ConnectScreenSizeComboBoxSignalSlots() const
             static_cast<void (QComboBox::*)(int)>(
                 &QComboBox::currentIndexChanged),
 #else
-            QOverload<int>::of(&QComboBox::currentIndexChanged),       
+            QOverload<int>::of(&QComboBox::currentIndexChanged),
 #endif
             this, &QtGui::OnScreenSize);
     connect(screenSizeComboBox,
@@ -1403,7 +1403,7 @@ void QtGui::ConnectScreenSizeComboBoxSignalSlots() const
             static_cast<void (QComboBox::*)(int)>(
                 &QComboBox::highlighted),
 #else
-            QOverload<int>::of(&QComboBox::highlighted),       
+            QOverload<int>::of(&QComboBox::highlighted),
 #endif
             this, &QtGui::OnScreenSizeHighlighted);
 }

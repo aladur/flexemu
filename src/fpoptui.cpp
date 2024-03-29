@@ -130,7 +130,7 @@ bool FlexplorerOptionsUi::Validate()
     if (!info.exists())
     {
         e_bootSectorFile->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), 
+        QMessageBox::critical(dialog, tr("Flexplorer Error"),
                 tr("Boot Sector File does not exist"));
 
         return false;
@@ -139,7 +139,7 @@ bool FlexplorerOptionsUi::Validate()
     if (!info.isFile() || (info.size() != 256 && info.size() != 512))
     {
         e_bootSectorFile->setFocus(Qt::OtherFocusReason);
-        QMessageBox::critical(dialog, tr("Flexplorer Error"), 
+        QMessageBox::critical(dialog, tr("Flexplorer Error"),
                 tr("Invalid Boot Sector File"));
 
         return false;

@@ -115,7 +115,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
         std::stringstream key;
-       
+
         key << FLEXPLORERRECENTDISKPATH << i;
         rcFile.SetValue(key.str().c_str(), options.recentDiskPaths[i].c_str());
     }

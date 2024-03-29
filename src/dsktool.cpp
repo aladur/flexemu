@@ -241,7 +241,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             std::cout << errors << " errors, ";
         }
         auto kbyte_size = byte_size / 1024;
-        std::cout << "total size: " << kbyte_size << " KByte." << std::endl; 
+        std::cout << "total size: " << kbyte_size << " KByte." << std::endl;
     }
 
     return 0;
@@ -982,7 +982,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
     std::string extension;
 
     if (!dsk_file.empty())
-    { 
+    {
         extension = getFileExtension(dsk_file);
         if (!extension.empty())
         {

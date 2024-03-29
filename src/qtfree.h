@@ -1,7 +1,7 @@
-/*                                                                              
+/*
     qtfree.h
 
- 
+
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 2023-2024  W. Schwotzer
 
@@ -9,7 +9,7 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

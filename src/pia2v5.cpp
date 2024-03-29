@@ -72,7 +72,7 @@ void Pia2V5::writeOutputA(Byte value)
     write_count = (ora == 0xE8 || ora == 0xF8) ? write_count + 1 : 0;
 
     if (debug && write_count <= 6)
-    { 
+    {
         cdbg << "delta_time=" << GET_DELTA_TIME <<
                 "us PC=" << std::uppercase << std::hex << cpu.get_pc() <<
                 " MDCR command=";
@@ -119,7 +119,7 @@ void Pia2V5::writeOutputA(Byte value)
         case 0x68: // Write end-of-data gap
             if (debug && write_bit_mask != 0x80)
             {
-                cdbg << "Warning: write buffer not byte-aligned (0x" << 
+                cdbg << "Warning: write buffer not byte-aligned (0x" <<
                         std::hex << (unsigned int)write_bit_mask << ")" <<
                         std::endl;
             }
@@ -391,7 +391,7 @@ void Pia2V5::requestInputA()
     }
 }
 
-void Pia2V5::disk_directory(const char *x_disk_dir)                           
+void Pia2V5::disk_directory(const char *x_disk_dir)
 {
         disk_dir = x_disk_dir;
 }

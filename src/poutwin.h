@@ -1,4 +1,4 @@
-/*                                                                              
+/*
     poutwin.h
 
 
@@ -178,7 +178,7 @@ private:
     mutable int lineCount;
     mutable std::mutex serial_mutex;
     std::deque<Byte> serial_buffer;
-    sOptions &options; 
+    sOptions &options;
     bool isDeferPreviewUpdate;
 };
 
