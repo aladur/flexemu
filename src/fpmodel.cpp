@@ -486,7 +486,8 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
 
         if (oldAttribString != newAttribString)
         {
-            Byte setMask, clearMask;
+            Byte setMask;
+            Byte clearMask;
 
             CreateAttributesBitmasks(newAttribString, setMask, clearMask);
             auto attribIndex =

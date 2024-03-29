@@ -37,10 +37,20 @@ class Mc146818 : public IoDevice, public BObserved
     // Internal registers:
 
 protected:
-    Byte                second, minute, hour;
-    Byte                al_second, al_minute, al_hour;
-    Byte                weekday, day, month, year;
-    Byte                A, B, C, D;
+    Byte                second;
+    Byte                minute;
+    Byte                hour;
+    Byte                al_second;
+    Byte                al_minute;
+    Byte                al_hour;
+    Byte                weekday;
+    Byte                day;
+    Byte                month;
+    Byte                year;
+    Byte                A;
+    Byte                B;
+    Byte                C;
+    Byte                D;
     Byte                ram[50]; // 50 bytes of internal RAM
 
 public:

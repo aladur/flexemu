@@ -479,7 +479,8 @@ void QtGui::OnCpuDialogToggle()
         // Choose the right position for the CPU Dialog
         // either above or below the main window.
         auto position = pos();
-        int x, y;
+        int x;
+        int y;
 
         x = frameGeometry().x() +
             (frameGeometry().width() / 2) -

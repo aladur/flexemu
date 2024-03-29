@@ -132,8 +132,12 @@ void Command::writeIo(Word /*offset*/, Byte val)
     if (val == '\0')
     {
         char       *p;
-        const char *arg1, *arg2, *arg3, *arg4;
-        int         count, number;
+        const char *arg1;
+        const char *arg2;
+        const char *arg3;
+        const char *arg4;
+        int         count;
+        int         number;
         std::stringstream answer_stream;
 
         command_index = 0;
@@ -345,7 +349,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
             case 4:
                 if (stricmp(arg1, "format") == 0)
                 {
-                    int trk, sec;
+                    int trk;
+                    int sec;
                     int type = 0;
                     auto extension = getFileExtension(arg2);
 

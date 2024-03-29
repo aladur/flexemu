@@ -171,7 +171,8 @@ inline Byte Da6809::D_Illegal(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Direct(const char *mnemo, Word pc, Byte bytes,
                              const Byte *pMemory)
 {
-    Byte code, offset;
+    Byte code;
+    Byte offset;
 
     code = *pMemory;
     offset = *(pMemory + 1);
@@ -184,7 +185,8 @@ inline Byte Da6809::D_Direct(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Immediat(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory)
 {
-    Byte code, offset;
+    Byte code;
+    Byte offset;
 
     code = *pMemory;
     offset = *(pMemory + 1);
@@ -236,9 +238,13 @@ inline Byte Da6809::D_Inherent(const char *mnemo, Word pc, Byte bytes,
 Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                        const Byte *pMemory)
 {
-    Byte code, postbyte;
-    const char *s, *br1, *br2;
-    Byte extrabytes, disp;
+    Byte code;
+    Byte postbyte;
+    const char *s;
+    const char *br1;
+    const char *br2;
+    Byte extrabytes;
+    Byte disp;
     Word offset;
 
     extrabytes = 0;
@@ -478,7 +484,8 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory, DWord * /*pAddr*/)
 {
     Byte code;
-    Word offset, disp;
+    Word offset;
+    Word disp;
     const char *label;
 
     code = *pMemory;
@@ -547,7 +554,8 @@ inline Byte Da6809::D_RelativeL(
 inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code, postbyte;
+    Byte code;
+    Byte postbyte;
     code = *pMemory;
     postbyte = *(pMemory + 1);
 
@@ -562,8 +570,10 @@ inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code, postbyte;
-    Byte i, comma;
+    Byte code;
+    Byte postbyte;
+    Byte i;
+    Byte comma;
     size_t index;
 
     code      = *pMemory;
@@ -592,8 +602,10 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code, postbyte;
-    Byte i, comma;
+    Byte code;
+    Byte postbyte;
+    Byte i;
+    Byte comma;
     size_t index;
 
     code      = *pMemory;

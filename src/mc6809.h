@@ -216,8 +216,14 @@ protected:
     tInterruptStatus    interrupt_status;
 #ifdef FASTFLEX
     std::atomic<Word> ipcreg;
-    Word            iureg, isreg, ixreg, iyreg;
-    Byte            iareg, ibreg, iccreg, idpreg;
+    Word            iureg;
+    Word            isreg;
+    Word            ixreg;
+    Word            iyreg;
+    Byte            iareg;
+    Byte            ibreg;
+    Byte            iccreg;
+    Byte            idpreg;
     Word            eaddr;
     Byte            ireg;
     Byte            iflag;
@@ -227,8 +233,10 @@ protected:
     Byte            *pMem;      // needed for memory access
 #else
     std::atomic<Word> pc;
-    Word            u, s;       // Stack pointers
-    Word            x, y;       // Index registers
+    Word            s;          // Stack pointer
+    Word            u;          // Alternative Stack pointer
+    Word            x;          // Index Register
+    Word            y;          // Index register
     union uacc acc;
     union udpreg dpreg;
     Byte           &a;
@@ -1183,7 +1191,8 @@ inline void Mc6809::sbc(Byte &reg, Byte operand)
 
 inline void Mc6809::daa()
 {
-    Word    t, c = 0;
+    Word    t;
+    Word    c = 0;
     Byte    lsn = a & 0x0f;
     Byte    msn = a & 0xf0;
 

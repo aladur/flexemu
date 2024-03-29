@@ -50,8 +50,12 @@ protected:
     // ddra, ddrb   data direction register A, B
     // ora, orb output register A, B
 
-    Byte cra, ora, ddra;
-    Byte crb, orb, ddrb;
+    Byte cra;
+    Byte ora;
+    Byte ddra;
+    Byte crb;
+    Byte orb;
+    Byte ddrb;
     Mc6821::ControlLine cls;
 
 public:

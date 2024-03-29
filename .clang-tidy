@@ -43,6 +43,7 @@ Checks: '
   modernize-use-override,
   performance-*,
   portability-*,
+  readability-isolate-declaration,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
   readability-redundant-control-flow,

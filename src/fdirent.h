@@ -49,8 +49,10 @@ private:
     int     size;
     Byte attributes;
     int     sectorMap;
-    int     startTrk, startSec;
-    int     endTrk, endSec;
+    int     startTrk;
+    int     startSec;
+    int     endTrk;
+    int     endSec;
     int     status;
     BDate   date;
     BTime time;

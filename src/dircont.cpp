@@ -336,7 +336,8 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
 bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = nullptr */)
 {
-    std::string lowerFileName, filePath;
+    std::string lowerFileName;
+    std::string filePath;
     struct stat sbuf;
 
     if (fileName == nullptr)

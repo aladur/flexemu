@@ -46,9 +46,10 @@ public:
     void    put_value(unsigned int buttonMask);
 
 private:
-    int deltaX, deltaY;
+    int deltaX;
+    int deltaY;
     unsigned int buttonMask;
-    bool    newValues;
+    bool newValues;
     std::mutex joystick_mutex;
 };
 

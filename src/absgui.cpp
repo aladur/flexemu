@@ -72,7 +72,8 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
 
 void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 {
-    int i, j;
+    int i;
+    int j;
 
     int mem_addr = ((stat.s >> 3) << 3) - 16;
     text(6, 2, hexstr(stat.pc));

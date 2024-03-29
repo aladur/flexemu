@@ -605,7 +605,8 @@ bool test_gccasm_fctByteByte(const std::string& mnemonic,
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
-    Word op1, op2;
+    Word op1;
+    Word op2;
     Byte rega;
     Byte regcc;
     bool success = true;
@@ -656,7 +657,8 @@ bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
-    Word op1, op2;
+    Word op1;
+    Word op2;
     Byte rega;
     Byte regcc;
     bool success = true;
@@ -714,7 +716,8 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
-    DWord op1, op2;
+    DWord op1;
+    DWord op2;
     Word regd;
     Word addr;
     Byte regcc;
@@ -771,7 +774,8 @@ bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
     Memory memory(options);
     Mc6809 cpu(memory);
     Mc6809CpuStatus status;
-    DWord op1, op2;
+    DWord op1;
+    DWord op2;
     Word regd;
     Word cpuregd;
     Byte regcc;

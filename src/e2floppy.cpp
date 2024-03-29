@@ -294,7 +294,8 @@ std::string E2floppy::drive_info_string(Word drive_nr)
     }
     else
     {
-        int trk, sec;
+        int trk;
+        int sec;
         bool is_write_protected = info.GetIsWriteProtected();
 
         info.GetTrackSector(trk, sec);

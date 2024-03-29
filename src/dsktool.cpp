@@ -341,8 +341,10 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     for (const auto &filename : matchedFilenames)
     {
         FlexDirEntry dir_entry;
-        int startTrack, startSector;
-        int endTrack, endSector;
+        int startTrack;
+        int startSector;
+        int endTrack;
+        int endSector;
 
         if (!src.FindFile(filename.c_str(), dir_entry))
         {

@@ -93,11 +93,17 @@ public:
 
 private:
 
-    Byte                dr, tr, sr, cr, str;
+    Byte                dr;
+    Byte                tr;
+    Byte                sr;
+    Byte                cr;
+    Byte                str;
     Byte                stepOffset;
-    bool                isDataRequest, isInterrupt;
+    bool                isDataRequest;
+    bool                isInterrupt;
     bool                side;
-    Word                byteCount, strRead;
+    Word                byteCount;
+    Word                strRead;
     Byte                indexPulse; // emulate index hole of floppy disc.
 
     // Internal functions

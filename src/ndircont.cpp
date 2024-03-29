@@ -897,7 +897,8 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 {
     Byte file_sector_map[DBPS * 2];
     DWord data_size;
-    Word i, n;
+    Word i;
+    Word n;
 
     data_size = stat.st_size - (DBPS * 2);
 
@@ -1058,7 +1059,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         const auto dir_idx = next_free_dir_entry();
         if (dir_idx >= 0)
         {
-            st_t begin, end;
+            st_t begin;
+            st_t end;
             auto path = directory + PATHSEPARATORSTRING + filename;
             bool is_random = (random_filenames.find(filename) !=
                               random_filenames.end());
@@ -1223,7 +1225,8 @@ void NafsDirectoryContainer::check_for_delete(Word ds_idx,
 void NafsDirectoryContainer::check_for_rename(Word ds_idx,
         const s_dir_sector &dir_sector) const
 {
-    std::string old_filename, new_filename;
+    std::string old_filename;
+    std::string new_filename;
 
     const auto dir_idx0 = static_cast<SDWord>(ds_idx * DIRENTRIES);
     for (Word i = 0; i < DIRENTRIES; i++)

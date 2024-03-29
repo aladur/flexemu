@@ -508,7 +508,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         return false;
     }
 
-    Byte trk = 0, sec = 0;
+    Byte trk = 0;
+    Byte sec = 0;
     st_t start;
     st_t next;
     Word recordNr = 0; // Current record number. For random files
@@ -729,7 +730,8 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 {
     FlexFileBuffer  buffer;
     FlexDirEntry    de;
-    int             trk, sec;
+    int             trk;
+    int             sec;
     int             recordNr;
     Byte            sectorBuffer[SECTOR_SIZE];
     int             size;
@@ -839,7 +841,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     s_dir_sector    ds;
     s_dir_entry *pde;
     st_t next(first_dir_trk_sec);
-    int     tmp1, tmp2;
+    int     tmp1;
+    int     tmp2;
     BDate       date;
 
     // loop until all directory sectors read
@@ -1263,7 +1266,8 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
         const std::string &name,
         struct s_formats &format)
 {
-    int start, free;
+    int start;
+    int free;
     time_t      time_now;
     struct tm   *lt;
 

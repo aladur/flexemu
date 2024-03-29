@@ -103,8 +103,10 @@ void Mc6809::get_status(CpuStatus *cpu_status)
 {
 
     InstFlg flags = InstFlg::NONE;
-    char *pmnem_buf, *pbuffer;
-    Word i, mem_addr;
+    char *pmnem_buf;
+    char *pbuffer;
+    Word i;
+    Word mem_addr;
     auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
     assert(stat != nullptr);
 
@@ -197,7 +199,8 @@ CpuState Mc6809::run(RunMode mode)
 
         case RunMode::SingleStepOver:
         {
-            char *pCode, *pMnemonic;
+            char *pCode;
+            char *pMnemonic;
             InstFlg flags = InstFlg::NONE;
 
             // Only if disassembler available and

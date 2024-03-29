@@ -554,7 +554,8 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 
 void Mc6809::exg()
 {
-    Word    t1, t2;
+    Word    t1;
+    Word    t2;
     Byte    w = memory.read_byte(pc++);
     bool    r1_is_byte = false;
     bool    r2_is_byte = false;

@@ -44,7 +44,8 @@ FlexDnDFiles::FlexDnDFiles(
 void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
     const Byte *ptr = buffer;
-    DWord count, index;
+    DWord count;
+    DWord index;
     DWord size;
 
     fileBuffers.clear();
@@ -123,7 +124,8 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 {
     Byte *ptr = buffer;
     DWord count;
-    DWord size, reversed;
+    DWord size;
+    DWord reversed;
     BDate date;
 
     if (buffer == nullptr)

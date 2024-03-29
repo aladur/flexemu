@@ -118,7 +118,8 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
 // Only valid if the iterator has a valid directory entry
 bool FlexFileContainerIteratorImp::DeleteCurrent()
 {
-    st_t start, end;
+    st_t start;
+    st_t end;
     st_t fc_end;
     Byte buffer[SECTOR_SIZE];
     s_dir_entry *pd;
@@ -257,7 +258,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
 bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
 {
     s_dir_entry *pd;
-    std::string name, ext;
+    std::string name;
+    std::string ext;
 
     if (base == nullptr)
     {

@@ -60,7 +60,8 @@ Byte Pia2::readInputB()
 {
     unsigned int buttonMask;
     unsigned int keyMask;
-    int deltaX, deltaY;
+    int deltaX;
+    int deltaY;
     bool newValues;
 
     newValues = joystickIO.get_values(&deltaX, &deltaY, &buttonMask);
@@ -175,7 +176,8 @@ Byte Pia2::readInputB()
     static int Ty = tab_period_from_mouse[TAB_OFFSET];
     static int tx = 0;
     static int ty = 0;
-    int dX, dY;
+    int dX;
+    int dY;
     cycles_t cyclediff;
 
     count++;
