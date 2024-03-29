@@ -72,9 +72,6 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
 
 void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 {
-    int i;
-    int j;
-
     int mem_addr = ((stat.s >> 3) << 3) - 16;
     text(6, 2, hexstr(stat.pc));
     text(6, 3, hexstr(stat.s));
@@ -106,7 +103,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
         text(6, 1, "sorry, no disassembler installed");
     }
 
-    for (i = 0; i < 2; i++)
+    for (int i = 0; i < 2; i++)
     {
         if (!cpu.is_bp_set(i))
         {
@@ -121,20 +118,20 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
     int stk = 0;
     Byte ch;
 
-    for (i = 0; i < 6; ++i)
+    for (int i = 0; i < 6; ++i)
     {
         text(0, i + 8, hexstr(static_cast<Word>(stk + mem_addr)));
 
         std::string tmp(" ");
 
-        for (j = 0; j < 8; ++j)
+        for (int j = 0; j < 8; ++j)
         {
             ch = stat.memory[stk + j];
             tmp.append(hexstr(ch));
             tmp.append(" ");
         }
 
-        for (j = 0; j < 8; ++j)
+        for (int j = 0; j < 8; ++j)
         {
             ch = stat.memory[stk + j];
             tmp.append(ascchr(ch));

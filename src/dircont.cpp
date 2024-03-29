@@ -337,7 +337,6 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = nullptr */)
 {
     std::string lowerFileName;
-    std::string filePath;
     struct stat sbuf;
 
     if (fileName == nullptr)
@@ -351,7 +350,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 #ifdef UNIX
     strlower(lowerFileName);
 #endif
-    filePath = directory + PATHSEPARATORSTRING + lowerFileName;
+    const auto filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
     // prevent to overwrite an existing file
     if (stat(filePath.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))

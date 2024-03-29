@@ -61,11 +61,8 @@ const char *BDate::monthName[] =
 const std::string BDate::GetDateString(Format format) const
 {
     char dateString[32];
-    int m;
-    int y;
-
-    m = GetMonth();
-    y = GetYear();
+    auto m = GetMonth();
+    auto y = GetYear();
 
     if (m < 1 || m > 12)
     {

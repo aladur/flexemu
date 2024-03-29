@@ -131,19 +131,17 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
     if (val == '\0')
     {
-        char       *p;
+        char *p;
         const char *arg1;
         const char *arg2;
         const char *arg3;
         const char *arg4;
-        int count;
-        int number;
         std::stringstream answer_stream;
 
         command_index = 0;
         answer_index = 0;
-        number = INVALID_DRIVE;
-        count = 0;
+        auto number = static_cast<int>(INVALID_DRIVE);
+        auto count = 0;
         p = command;
         arg1 = next_token(&p, &count); // get arg1
         skip_token(&p);

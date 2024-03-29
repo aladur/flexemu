@@ -44,9 +44,6 @@ FlexDnDFiles::FlexDnDFiles(
 void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
 {
     const Byte *ptr = buffer;
-    DWord count;
-    DWord index;
-    DWord size;
 
     fileBuffers.clear();
 
@@ -55,7 +52,7 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
         return;
     }
 
-    size = *reinterpret_cast<const DWord *>(ptr);
+    auto size = *reinterpret_cast<const DWord *>(ptr);
     // Independent of the cpu architecture the
     // clipboard format uses big endian.
     size = fromBigEndian<DWord>(size);
@@ -69,11 +66,11 @@ void FlexDnDFiles::ReadDataFrom(const Byte *buffer)
     path = reinterpret_cast<const char *>(ptr);
     ptr += size;
 
-    count = *reinterpret_cast<const DWord *>(ptr);
+    auto count = *reinterpret_cast<const DWord *>(ptr);
     count = fromBigEndian<DWord>(count);
     ptr += sizeof(count);
 
-    for (index = 0; index < count; ++index)
+    for (DWord index = 0; index < count; ++index)
     {
         FlexFileBuffer fileBuffer;
         const auto &fileHeader =
@@ -123,20 +120,16 @@ DWord FlexDnDFiles::GetFileSize() const
 void FlexDnDFiles::WriteDataTo(Byte *buffer) const
 {
     Byte *ptr = buffer;
-    DWord count;
-    DWord size;
-    DWord reversed;
-    BDate date;
 
     if (buffer == nullptr)
     {
         return;
     }
 
-    size = static_cast<DWord>(dnsHostName.size() + 1);
+    auto size = static_cast<DWord>(dnsHostName.size() + 1);
     // Independent of the cpu architecture the
     // clipboard format uses big endian byte order.
-    reversed = toBigEndian<DWord>(size);
+    auto reversed = toBigEndian<DWord>(size);
     memcpy(ptr, &reversed, sizeof(reversed));
     ptr += sizeof(reversed);
     memcpy(ptr, dnsHostName.c_str(), size);
@@ -149,7 +142,7 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
     memcpy(ptr, path.c_str(), size);
     ptr += size;
 
-    count = static_cast<DWord>(fileBuffers.size());
+    auto count = static_cast<DWord>(fileBuffers.size());
     count = toBigEndian<DWord>(count);
     memcpy(ptr, &count, sizeof(count));
     ptr += sizeof(count);

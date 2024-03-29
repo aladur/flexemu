@@ -159,11 +159,11 @@ const char *Da6809::StackRegister(Byte which, const char *not_stack)
 inline Byte Da6809::D_Illegal(const char *mnemo, Word pc, Byte bytes,
                               const Byte *pMemory)
 {
-    Byte code;
+    const auto code = *pMemory;
 
-    code = *pMemory;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X", pc, code);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s ?????", mnemo);
+
     return bytes;
 }
 
@@ -171,13 +171,12 @@ inline Byte Da6809::D_Illegal(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Direct(const char *mnemo, Word pc, Byte bytes,
                              const Byte *pMemory)
 {
-    Byte code;
-    Byte offset;
+    const auto code = *pMemory;
+    const auto offset = *(pMemory + 1);
 
-    code = *pMemory;
-    offset = *(pMemory + 1);
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s $%02X", mnemo, offset);
+
     return bytes;
 }
 
@@ -185,11 +184,9 @@ inline Byte Da6809::D_Direct(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Immediat(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory)
 {
-    Byte code;
-    Byte offset;
+    const auto code = *pMemory;
+    const auto offset = *(pMemory + 1);
 
-    code = *pMemory;
-    offset = *(pMemory + 1);
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%02X", mnemo, offset);
     return bytes;
@@ -199,15 +196,13 @@ inline Byte Da6809::D_Immediat(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory, DWord * /*pAddr*/)
 {
-    Byte code;
-    const char *label;
+    const auto code = *pMemory;
+    const auto offset = getValueBigEndian<Word>(&pMemory[1]);
 
-    code = *pMemory;
-    auto offset = getValueBigEndian<Word>(&pMemory[1]);
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
                             *(pMemory + 1),
             *(pMemory + 2));
-    label = FlexLabel(offset);
+    const auto *label = FlexLabel(offset);
 
     if (label == nullptr)
     {
@@ -226,33 +221,26 @@ inline Byte Da6809::D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Inherent(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory)
 {
-    int code;
+    const auto code = *pMemory;
 
-    code = *pMemory;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X", pc, code);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s", mnemo);
+
     return bytes;
-}  // D_Inherent
+}
 
 
 Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                        const Byte *pMemory)
 {
-    Byte code;
-    Byte postbyte;
-    const char *s;
-    const char *br1;
-    const char *br2;
-    Byte extrabytes;
     Byte disp;
     Word offset;
-
-    extrabytes = 0;
-    code = *pMemory;
-    postbyte = *(pMemory + 1);
-    br1        = ""; // bracket on for indirect addressing
-    br2        = ""; // bracket off for indirect addressing
-    s          = ""; // minus sign for offset
+    Byte extrabytes = 0U;
+    const auto code = *pMemory;
+    const auto postbyte = *(pMemory + 1);
+    const char *br1 = ""; // bracket on for indirect addressing
+    const char *br2 = ""; // bracket off for indirect addressing
+    const char *s = ""; // minus sign for offset
 
     if ((postbyte & 0x80) == 0x00)
     {
@@ -452,20 +440,18 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
     }
 
     return bytes + extrabytes;
-} // D_Indexed
+}
 
 
 inline Byte Da6809::D_Extended(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory, DWord * /*pAddr*/)
 {
-    Byte code;
-    const char *label;
+    const auto code = *pMemory;
+    const auto offset = getValueBigEndian<Word>(&pMemory[1]);
 
-    code = *pMemory;
-    auto offset = getValueBigEndian<Word>(&pMemory[1]);
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
-    label = FlexLabel(offset);
+    const auto *label = FlexLabel(offset);
 
     if (label == nullptr)
     {
@@ -483,13 +469,9 @@ inline Byte Da6809::D_Extended(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
                                const Byte *pMemory, DWord * /*pAddr*/)
 {
-    Byte code;
-    Word offset;
     Word disp;
-    const char *label;
-
-    code = *pMemory;
-    offset = *(pMemory + 1);
+    const auto code = *pMemory;
+    const Word offset = *(pMemory + 1);
 
     if (offset < 127)
     {
@@ -501,7 +483,7 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
     }
 
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
-    label = FlexLabel(disp);
+    const auto *label = FlexLabel(disp);
 
     if (label == nullptr)
     {
@@ -519,11 +501,8 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_RelativeL(
     const char *mnemo, Word pc, Byte bytes, const Byte *pMemory, DWord *pAddr)
 {
-    Byte code;
-    const char *label;
-
-    code = *pMemory;
-    auto offset = getValueBigEndian<Word>(&pMemory[1]);
+    const auto code = *pMemory;
+    const auto offset = getValueBigEndian<Word>(&pMemory[1]);
 
     if (offset < 32767)
     {
@@ -536,7 +515,7 @@ inline Byte Da6809::D_RelativeL(
 
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
-    label = FlexLabel(static_cast<Word>(*pAddr));
+    const auto *label = FlexLabel(static_cast<Word>(*pAddr));
 
     if (label == nullptr)
     {
@@ -554,10 +533,8 @@ inline Byte Da6809::D_RelativeL(
 inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code;
-    Byte postbyte;
-    code = *pMemory;
-    postbyte = *(pMemory + 1);
+    const auto code = *pMemory;
+    const auto postbyte = *(pMemory + 1);
 
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s", mnemo,
@@ -570,73 +547,59 @@ inline Byte Da6809::D_Register0(const char *mnemo, Word pc, Byte bytes,
 inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code;
-    Byte postbyte;
-    Byte i;
-    Byte comma;
-    size_t index;
+    const auto code = *pMemory;
+    const auto postbyte = *(pMemory + 1);
+    bool withComma = false;
 
-    code = *pMemory;
-    postbyte = *(pMemory + 1);
-
-    comma = 0;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
-    index = strlen(mnemo);
+    auto index = strlen(mnemo);
 
-    for (i = 0; i < 8; i++)
+    for (Byte i = 0; i < 8; i++)
     {
         if (postbyte & (1 << i))
         {
             snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "%s%s",
-                    comma ? "," : "", StackRegister(i, "U"));
-            index += strlen(StackRegister(i, "U")) + (comma ? 1 : 0);
-            comma = 1;
-        } // if
-    } // for
+                    withComma ? "," : "", StackRegister(i, "U"));
+            index += strlen(StackRegister(i, "U")) + (withComma ? 1 : 0);
+            withComma = true;
+        }
+    }
 
     return bytes;
-} // D_Register1
+}
 
 
 inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
                                 const Byte *pMemory)
 {
-    Byte code;
-    Byte postbyte;
-    Byte i;
-    Byte comma;
-    size_t index;
+    const auto code = *pMemory;
+    const auto postbyte = *(pMemory + 1);
+    bool withComma = false;
 
-    code = *pMemory;
-    postbyte = *(pMemory + 1);
-
-    comma = 0;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
-    index = strlen(mnemo);
+    auto index = strlen(mnemo);
 
-    for (i = 0; i < 8; i++)
+    for (Byte i = 0; i < 8; i++)
     {
         if (postbyte & (1 << i))
         {
             snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "%s%s",
-                    comma ? "," : "", StackRegister(i, "S"));
-            index += strlen(StackRegister(i, "S")) + (comma ? 1 : 0);
-            comma = 1;
-        } // if
-    } // for
+                    withComma ? "," : "", StackRegister(i, "S"));
+            index += strlen(StackRegister(i, "S")) + (withComma ? 1 : 0);
+            withComma = true;
+        }
+    }
 
     return bytes;
-} // D_Register2
+}
 
 
 inline Byte Da6809::D_Page10(InstFlg *pFlags, Word pc, const Byte *pMemory,
                              DWord *pAddr)
 {
-    Byte code;
-
-    code = *(pMemory + 1);
+    const auto code = *(pMemory + 1);
 
     switch (code)
     {
@@ -783,16 +746,14 @@ inline Byte Da6809::D_Page10(InstFlg *pFlags, Word pc, const Byte *pMemory,
         default:
             *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory + 1);
-    } // switch
-} // D_Page10
+    }
+}
 
 
 inline Byte Da6809::D_Page11(InstFlg *pFlags, Word pc, const Byte *pMemory,
                              DWord *pAddr)
 {
-    Byte code;
-
-    code = *(pMemory + 1);
+    const auto code = *(pMemory + 1);
 
     switch (code)
     {
@@ -829,9 +790,8 @@ inline Byte Da6809::D_Page11(InstFlg *pFlags, Word pc, const Byte *pMemory,
         default:
             *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc, 1, pMemory + 1);
-    }  // switch
-} // D_Page11
-
+    }
+}
 
 int Da6809::Disassemble(
         const Byte * const pMemory,
@@ -841,13 +801,11 @@ int Da6809::Disassemble(
         char **pCode,
         char **pMnemonic)
 {
-    Byte code;
     Word pc16 = static_cast<Word>(pc);
-
     *pCode = code_buf;
     *pMnemonic = mnem_buf;
     *pFlags = InstFlg::NONE;
-    code = *pMemory;
+    const auto code = *pMemory;
 
     switch (code)
     {
@@ -1787,6 +1745,6 @@ int Da6809::Disassemble(
         default:
             *pFlags |= InstFlg::Illegal;
             return D_Illegal("", pc16, 1, pMemory);
-    }  // switch
-} // disassemble
+    }
+}
 

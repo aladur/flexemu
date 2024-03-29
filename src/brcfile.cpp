@@ -165,8 +165,6 @@ int BRcFile::GetValues(const char *keyPrefix,
         std::map<std::string, std::string> &values)
 {
     std::ifstream fs(fileName.c_str());
-    std::string key;
-    std::string value;
 
     values.clear();
     if (!fs.is_open())
@@ -177,10 +175,11 @@ int BRcFile::GetValues(const char *keyPrefix,
     while (!fs.eof())
     {
         std::stringbuf strbuf;
+        std::string key;
 
         fs >> key;
         fs.get(strbuf);
-        value = strbuf.str();
+        auto value = strbuf.str();
         ltrim(value);
         if (key.size() > strlen(keyPrefix))
         {
