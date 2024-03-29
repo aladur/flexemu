@@ -33,11 +33,11 @@ class BProcess
 public:
     BProcess(const std::string &executable,
              const std::string &directory = "",
-             const std::string &argument  = "");
+             const std::string &argument = "");
     ~BProcess();
     void AddArgument(const std::string &argument);
     void SetDirectory(const std::string &directory);
-    bool Start();     // Start the Process if not started yet
+    bool Start(); // Start the Process if not started yet
     bool IsRunning(); // Check if Process is running
     const char *GetArguments()  const
     {
@@ -61,7 +61,7 @@ protected:
     HANDLE hProcess;
 #endif
 #ifdef UNIX
-    pid_t   pid;
+    pid_t pid;
 #endif
 };
 

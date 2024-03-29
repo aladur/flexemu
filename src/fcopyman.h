@@ -35,7 +35,7 @@ public:
     static bool FileCopy(const char *srcName, const char *destName,
                          FileContainerIf &source, FileContainerIf &dest);
     static bool autoTextConversion;
-};  // class FlexCopyManager
+}; // class FlexCopyManager
 
 #endif // FCOPYMAN_INCLUDED
 

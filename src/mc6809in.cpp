@@ -30,28 +30,28 @@ static const Mc6809::Event AnyInterrupt =
 void Mc6809::reset()
 {
     ++interrupt_status.count[INT_RESET];
-    cycles          = 0;
-    total_cycles    = 0;
-    nmi_armed       = 0;
+    cycles = 0;
+    total_cycles = 0;
+    nmi_armed = 0;
     /* no interrupts yet */
     events = events & Event::FrequencyControl;
-    reset_bp(2);    // remove next-breakpoint
+    reset_bp(2); // remove next-breakpoint
 
 #ifdef FASTFLEX
-    ipcreg          = memory.read_word(0xfffe);
-    idpreg          = 0x00;         /* Direct page register = 0x00 */
-    iccreg          = 0x50;         /* set i and f bit              */
-    eaddr           = 0;
-    iflag           = 0;
-    tb              = 0;
-    tw              = 0;
-    k               = 0;
+    ipcreg = memory.read_word(0xfffe);
+    idpreg = 0x00; /* Direct page register = 0x00 */
+    iccreg = 0x50; /* set i and f bit */
+    eaddr = 0;
+    iflag = 0;
+    tb = 0;
+    tw = 0;
+    k = 0;
 #else
-    pc              = memory.read_word(0xfffe);
-    dp              = 0x00;         /* Direct page register = 0x00 */
-    cc.all          = 0x00;         /* Clear all flags */
-    cc.bit.i        = true;         /* IRQ disabled */
-    cc.bit.f        = true;         /* FIRQ disabled */
+    pc = memory.read_word(0xfffe);
+    dp = 0x00; /* Direct page register = 0x00 */
+    cc.all = 0x00; /* Clear all flags */
+    cc.bit.i = true; /* IRQ disabled */
+    cc.bit.f = true; /* FIRQ disabled */
 #endif
 }
 
@@ -111,25 +111,25 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     assert(stat != nullptr);
 
 #ifdef FASTFLEX
-    stat->a        = iareg;
-    stat->b        = ibreg;
-    stat->cc       = iccreg;
-    stat->dp       = idpreg;
-    stat->pc       = ipcreg;
-    stat->x        = ixreg;
-    stat->y        = iyreg;
-    stat->u        = iureg;
-    stat->s        = isreg;
+    stat->a = iareg;
+    stat->b = ibreg;
+    stat->cc = iccreg;
+    stat->dp = idpreg;
+    stat->pc = ipcreg;
+    stat->x = ixreg;
+    stat->y = iyreg;
+    stat->u = iureg;
+    stat->s = isreg;
 #else
-    stat->a        = a;
-    stat->b        = b;
-    stat->cc       = cc.all;
-    stat->dp       = dp;
-    stat->pc       = pc;
-    stat->x        = x;
-    stat->y        = y;
-    stat->u        = u;
-    stat->s        = s;
+    stat->a = a;
+    stat->b = b;
+    stat->cc = cc.all;
+    stat->dp = dp;
+    stat->pc = pc;
+    stat->x = x;
+    stat->y = y;
+    stat->u = u;
+    stat->s = s;
 #endif
     mem_addr = ((stat->s >> 3) << 3) - 16;
 

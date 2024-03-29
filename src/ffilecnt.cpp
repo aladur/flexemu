@@ -75,19 +75,19 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
         }
     }
 
-    magic_number    = toBigEndian(MAGIC_NUMBER);
-    write_protect   = 0;
-    sizecode        = p_sizecode;
-    sides0          = static_cast<Byte>(p_sides0);
-    sectors0        = static_cast<Byte>(p_sectors0 / p_sides0);
-    sides           = static_cast<Byte>(p_sides);
-    sectors         = static_cast<Byte>(p_sectors / p_sides);
-    tracks          = static_cast<Byte>(p_tracks);
-    dummy1          = 0;
-    dummy2          = 0;
-    dummy3          = 0;
-    dummy4          = 0;
-    dummy5          = 0;
+    magic_number = toBigEndian(MAGIC_NUMBER);
+    write_protect = 0;
+    sizecode = p_sizecode;
+    sides0 = static_cast<Byte>(p_sides0);
+    sectors0 = static_cast<Byte>(p_sectors0 / p_sides0);
+    sides = static_cast<Byte>(p_sides);
+    sectors = static_cast<Byte>(p_sectors / p_sides);
+    tracks = static_cast<Byte>(p_tracks);
+    dummy1 = 0;
+    dummy2 = 0;
+    dummy3 = 0;
+    dummy4 = 0;
+    dummy5 = 0;
 }
 
 
@@ -103,7 +103,7 @@ FlexFileContainer::FlexFileContainer(
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
-    struct  stat sbuf;
+    struct stat sbuf;
 
     if (fp == nullptr)
     {
@@ -340,7 +340,7 @@ bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
     return false;
 }
 
-bool    FlexFileContainer::DeleteFile(const char *filePattern)
+bool FlexFileContainer::DeleteFile(const char *filePattern)
 {
     if (!is_flex_format)
     {
@@ -359,7 +359,7 @@ bool    FlexFileContainer::DeleteFile(const char *filePattern)
     return true;
 }
 
-bool    FlexFileContainer::RenameFile(const char *oldName, const char *newName)
+bool FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 {
     if (!is_flex_format || (strcmp(oldName, newName) == 0))
     {
@@ -404,7 +404,7 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
     return copyMan.FileCopy(sourceName, destName, *this, destination);
 }
 
-bool    FlexFileContainer::GetInfo(FlexContainerInfo &info) const
+bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
     if (is_flex_format)
     {
@@ -515,7 +515,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     Word recordNr = 0; // Current record number. For random files
                        // the two sector map sectors are counted too.
     int count;
-    FlexDirEntry    de;
+    FlexDirEntry de;
     s_sys_info_sector sis;
     const char      *pFileName = fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
@@ -728,13 +728,13 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
 FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 {
-    FlexFileBuffer  buffer;
-    FlexDirEntry    de;
-    int             trk;
-    int             sec;
-    int             recordNr;
-    Byte            sectorBuffer[SECTOR_SIZE];
-    int             size;
+    FlexFileBuffer buffer;
+    FlexDirEntry de;
+    int trk;
+    int sec;
+    int recordNr;
+    Byte sectorBuffer[SECTOR_SIZE];
+    int size;
 
     if (!is_flex_format)
     {
@@ -807,7 +807,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
 
 // set the file attributes of one or multiple files
-bool    FlexFileContainer::SetAttributes(const char *filePattern,
+bool FlexFileContainer::SetAttributes(const char *filePattern,
         Byte setMask, Byte clearMask)
 {
     if (!is_flex_format)
@@ -837,13 +837,13 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         return false;
     }
 
-    int     i;
-    s_dir_sector    ds;
+    int i;
+    s_dir_sector ds;
     s_dir_entry *pde;
     st_t next(first_dir_trk_sec);
-    int     tmp1;
-    int     tmp2;
-    BDate       date;
+    int tmp1;
+    int tmp2;
+    BDate date;
 
     // loop until all directory sectors read
     while (next.sec != 0 || next.trk != 0)
@@ -1268,7 +1268,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
 {
     int start;
     int free;
-    time_t      time_now;
+    time_t time_now;
     struct tm   *lt;
 
     memset(sec_buf, 0, SECTOR_SIZE);
@@ -1287,10 +1287,10 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
         ++i;
     }
 
-    start           = format.sectors;
-    free            = (format.sectors * format.tracks) - start;
-    time_now        = time(nullptr);
-    lt          = localtime(&time_now);
+    start = format.sectors;
+    free = (format.sectors * format.tracks) - start;
+    time_now = time(nullptr);
+    lt = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
     setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
@@ -1308,8 +1308,8 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
 // on success return true
 bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 {
-    Byte    sec_buf[SECTOR_SIZE];
-    int     i;
+    Byte sec_buf[SECTOR_SIZE];
+    int i;
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
@@ -1337,8 +1337,8 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 // on success return true
 bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
 {
-    Byte    sec_buf[SECTOR_SIZE];
-    int     i;
+    Byte sec_buf[SECTOR_SIZE];
+    int i;
 
     memset(sec_buf, 0, sizeof(sec_buf));
 
@@ -1418,7 +1418,7 @@ void FlexFileContainer::Format_disk(
 {
     std::string path;
     struct s_formats format;
-    int     err = 0;
+    int err = 0;
 
     if (name.empty() ||
         tracks < 2 || sectors < 6 || tracks > 256 || sectors > 255)

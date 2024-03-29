@@ -29,9 +29,9 @@ class BDate
 
 private:
 
-    int     day;
-    int     month;
-    int     year;
+    int day;
+    int month;
+    int year;
 
 public:
 
@@ -43,32 +43,32 @@ public:
         Iso, // YYYYMMDD
     };
 
-    BDate(int d = 0, int m = 0, int year = 0);  // public constructor
-    BDate(const BDate &d);              // public constructor
-    ~BDate();                   // public destructor
+    BDate(int d = 0, int m = 0, int year = 0); // public constructor
+    BDate(const BDate &d); // public constructor
+    ~BDate(); // public destructor
 
 
     static const BDate Now();
     const std::string GetDateString(Format format = Format::D2MS3Y4) const;
-    void    Assign(int day, int month, int year);
-    void    GetDate(int *day, int *month, int *year);
-    void    SetDate(int day, int month, int year);
-    void    SetDate(const BDate &date);
-    int     GetDay() const ;
-    int     GetMonth() const ;
-    int     GetMonthBounded() const;
-    int     GetYear() const;
+    void Assign(int day, int month, int year);
+    void GetDate(int *day, int *month, int *year);
+    void SetDate(int day, int month, int year);
+    void SetDate(const BDate &date);
+    int GetDay() const ;
+    int GetMonth() const ;
+    int GetMonthBounded() const;
+    int GetYear() const;
     BDate &operator = (const BDate &d);
-    bool    operator < (const BDate &d) const;
-    bool    operator == (const BDate &d) const;
-    bool    operator > (const BDate &d) const;
-    bool    operator >= (const BDate &d) const;
-    bool    operator <= (const BDate &d) const;
+    bool operator < (const BDate &d) const;
+    bool operator == (const BDate &d) const;
+    bool operator > (const BDate &d) const;
+    bool operator >= (const BDate &d) const;
+    bool operator <= (const BDate &d) const;
 private:
     static const char *monthName[];
-    int     MakeComparable() const;
+    int MakeComparable() const;
 
-    //static int        year2000; // if !0 0 and if year < 70 add 1900 to it
+    //static int year2000; // if !0 0 and if year < 70 add 1900 to it
 }; // class BDate
 
 inline void BDate::Assign(int d, int m, int y)

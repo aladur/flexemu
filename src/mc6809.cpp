@@ -523,7 +523,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0xd0:
             x = memory.read_word(stack);
             stack += 2;
-            reg_s_or_u  = memory.read_word(stack);
+            reg_s_or_u = memory.read_word(stack);
             stack += 2;
             pc = memory.read_word(stack);
             stack += 2;
@@ -539,7 +539,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0x50:
             x = memory.read_word(stack);
             stack += 2;
-            reg_s_or_u  = memory.read_word(stack);
+            reg_s_or_u = memory.read_word(stack);
             stack += 2;
             break;
 
@@ -554,11 +554,11 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 
 void Mc6809::exg()
 {
-    Word    t1;
-    Word    t2;
-    Byte    w = memory.read_byte(pc++);
-    bool    r1_is_byte = false;
-    bool    r2_is_byte = false;
+    Word t1;
+    Word t2;
+    Byte w = memory.read_byte(pc++);
+    bool r1_is_byte = false;
+    bool r2_is_byte = false;
 
     // decode source
     switch (w >> 4)
@@ -685,35 +685,35 @@ void Mc6809::exg()
     switch (w >> 4)
     {
         case 0x00:
-            d      = t2;
+            d = t2;
             break;
 
         case 0x01:
-            x      = t2;
+            x = t2;
             break;
 
         case 0x02:
-            y      = t2;
+            y = t2;
             break;
 
         case 0x03:
-            u      = t2;
+            u = t2;
             break;
 
         case 0x04:
-            s      = t2;
+            s = t2;
             break;
 
         case 0x05:
-            pc     = t2;
+            pc = t2;
             break;
 
         case 0x08:
-            a      = (Byte)t2;
+            a = (Byte)t2;
             break;
 
         case 0x09:
-            b      = (Byte)t2;
+            b = (Byte)t2;
             break;
 
         case 0x0a:
@@ -721,42 +721,42 @@ void Mc6809::exg()
             break;
 
         case 0x0b:
-            dp     = (Byte)t2;
+            dp = (Byte)t2;
             break;
     }
 
     switch (w & 0x0F)
     {
         case 0x00:
-            d      = t1;
+            d = t1;
             break;
 
         case 0x01:
-            x      = t1;
+            x = t1;
             break;
 
         case 0x02:
-            y      = t1;
+            y = t1;
             break;
 
         case 0x03:
-            u      = t1;
+            u = t1;
             break;
 
         case 0x04:
-            s      = t1;
+            s = t1;
             break;
 
         case 0x05:
-            pc     = t1;
+            pc = t1;
             break;
 
         case 0x08:
-            a      = (Byte)t1;
+            a = (Byte)t1;
             break;
 
         case 0x09:
-            b      = (Byte)t1;
+            b = (Byte)t1;
             break;
 
         case 0x0a:
@@ -764,16 +764,16 @@ void Mc6809::exg()
             break;
 
         case 0x0b:
-            dp     = (Byte)t1;
+            dp = (Byte)t1;
             break;
     }
 }
 
 void Mc6809::tfr()
 {
-    Word    t;
-    Byte    w = memory.read_byte(pc++);
-    bool    is_byte = false;
+    Word t;
+    Byte w = memory.read_byte(pc++);
+    bool is_byte = false;
 
     // decode source
     switch (w >> 4)
@@ -842,7 +842,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            d      = t;
+            d = t;
             return;
 
         case 0x01:
@@ -851,7 +851,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            x      = t;
+            x = t;
             return;
 
         case 0x02:
@@ -860,7 +860,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            y      = t;
+            y = t;
             return;
 
         case 0x03:
@@ -869,7 +869,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            u      = t;
+            u = t;
             return;
 
         case 0x04:
@@ -878,7 +878,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            s      = t;
+            s = t;
             return;
 
         case 0x05:
@@ -887,7 +887,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            pc     = t;
+            pc = t;
             return;
 
         case 0x08:
@@ -896,7 +896,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            a      = (Byte)t;
+            a = (Byte)t;
             return;
 
         case 0x09:
@@ -905,7 +905,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            b      = (Byte)t;
+            b = (Byte)t;
             return;
 
         case 0x0a:
@@ -923,7 +923,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            dp     = (Byte)t;
+            dp = (Byte)t;
             return;
     }
 
@@ -1399,7 +1399,7 @@ void Mc6809::irq(bool save_state)
         psh(0xff, s, u);
     }
 
-    cc.bit.i = 1;           // Sw: don't set flag f !!
+    cc.bit.i = 1; // Sw: don't set flag f !!
     pc = memory.read_word(0xfff8);
 }
 #endif

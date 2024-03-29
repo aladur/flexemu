@@ -35,7 +35,7 @@ public:
                   char **pCode,
                   char **pMnemonic) = 0;
     virtual void set_use_undocumented(bool value) = 0;
-};  // class AbstractDisassembler
+}; // class AbstractDisassembler
 
 inline InstFlg operator| (InstFlg lhs, InstFlg rhs)
 {

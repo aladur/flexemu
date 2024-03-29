@@ -43,7 +43,7 @@ E2floppy::E2floppy(const struct sOptions &x_options)
 {
     for (auto i = 0U; i <= MAX_DRIVES; i++)
     {
-        track[i] = 1; // position all drives to track != 0  !!!
+        track[i] = 1; // position all drives to track != 0 !!!
         drive_status[i] = DiskStatus::EMPTY;
     }
 
@@ -109,7 +109,7 @@ bool E2floppy::mount_drive(const std::string &path,
         return false;
     }
 
-    track[drive_nr] = 1;    // position to a track != 0  !!!
+    track[drive_nr] = 1; // position to a track != 0 !!!
 
     // Intentionally use value argument, it may be changed on Windows.
     // NOLINTNEXTLINE(performance-unnecessary-value-param)

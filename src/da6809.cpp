@@ -92,7 +92,7 @@ const char *Da6809::FlexLabel(Word addr)
         { 0xCC19, "LINPCH" }, // previous char in linebuffer
         { 0xCC1A, "LINENR" }, //line nr of current page
         { 0xCC1B, "LODOFS" }, // loader address offset
-        { 0xCC1D, "TFRFLG" }, // loader  transfer flag
+        { 0xCC1D, "TFRFLG" }, // loader transfer flag
         { 0xCC1E, "TFRADR" }, // transfer address
         { 0xCC20, "FMSERR" }, // FMS error type
         { 0xCC21, "IOFLG" }, // special I/O flag
@@ -250,9 +250,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
     extrabytes = 0;
     code = *pMemory;
     postbyte = *(pMemory + 1);
-    br1        = "";        // bracket on for indirect addressing
-    br2        = "";        // bracket off for indirect addressing
-    s          = "";        // minus sign for offset
+    br1        = ""; // bracket on for indirect addressing
+    br2        = ""; // bracket off for indirect addressing
+    s          = ""; // minus sign for offset
 
     if ((postbyte & 0x80) == 0x00)
     {
@@ -493,11 +493,11 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
 
     if (offset < 127)
     {
-        disp   = pc + 2 + offset;
+        disp = pc + 2 + offset;
     }
     else
     {
-        disp   = pc + 2 - (256 - offset);
+        disp = pc + 2 - (256 - offset);
     }
 
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
@@ -576,8 +576,8 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
     Byte comma;
     size_t index;
 
-    code      = *pMemory;
-    postbyte  = *(pMemory + 1);
+    code = *pMemory;
+    postbyte = *(pMemory + 1);
 
     comma = 0;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
@@ -608,8 +608,8 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
     Byte comma;
     size_t index;
 
-    code      = *pMemory;
-    postbyte  = *(pMemory + 1);
+    code = *pMemory;
+    postbyte = *(pMemory + 1);
 
     comma = 0;
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);

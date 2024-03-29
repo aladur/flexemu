@@ -28,7 +28,7 @@
 #define JOYSTICK_DEVICE_0   "/dev/js0"
 #define JOYSTICK_DEVICE_1   "/dev/js1"
 
-class  BJoystick
+class BJoystick
 {
 
 public:
@@ -41,7 +41,7 @@ public:
     int32_t Buttons();
     bool IsButtonSet(int which);
 private:
-    BJoystick(const BJoystick &d);  // private, should not be used
+    BJoystick(const BJoystick &d); // private, should not be used
     int js; // input stream from joystick
     int32_t buttons;
     int32_t axis[2];

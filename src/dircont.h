@@ -41,7 +41,7 @@ class DirectoryContainerIteratorImp;
 
 class DirectoryContainer : public FileContainerIf
 {
-    friend class DirectoryContainerIteratorImp;  // corresponding iterator class
+    friend class DirectoryContainerIteratorImp; // corresponding iterator class
 
 private:
     std::string directory;
@@ -99,7 +99,7 @@ private:
     static bool IsFlexFilename(const std::string &filename) ;
     bool SetDateTime(const char *fileName, const BDate &date,
                      const BTime &time);
-    bool    SetRandom(const char *fileName);
+    bool SetRandom(const char *fileName);
     void Initialize_header(Byte wp);
 
 };

@@ -50,7 +50,7 @@ protected:
     static constexpr int CPU_LINE_WIDTH{39};
     static constexpr int CPU_LINES{14};
 
-    Mc6809 &cpu;    // Reference to cpu to send interrupts
+    Mc6809 &cpu; // Reference to cpu to send interrupts
     Memory &memory; // Reference to memory (incl. video memory access)
     Inout &inout; // Reference to IO-class handling input/output
     TerminalIO &terminalIO; // Reference to terminal data provider.

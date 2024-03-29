@@ -165,7 +165,7 @@ static int load_motorola_srec(std::istream &istream,
             break;
         }
 
-        type = static_cast<char>(istream.get());   /* read type of line */
+        type = static_cast<char>(istream.get()); /* read type of line */
         count = read_hex_byte(istream, &checksum);
         address = read_hex_word(istream, checksum);
 

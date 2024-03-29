@@ -37,23 +37,23 @@
 #endif
 
 #ifdef BITFIELDS_LSB_FIRST
-    #define CC_BIT_C      0x01
-    #define CC_BIT_V      0x02
-    #define CC_BIT_Z      0x04
-    #define CC_BIT_N      0x08
-    #define CC_BIT_I      0x10
-    #define CC_BIT_H      0x20
-    #define CC_BIT_F      0x40
-    #define CC_BIT_E      0x80
+    #define CC_BIT_C 0x01
+    #define CC_BIT_V 0x02
+    #define CC_BIT_Z 0x04
+    #define CC_BIT_N 0x08
+    #define CC_BIT_I 0x10
+    #define CC_BIT_H 0x20
+    #define CC_BIT_F 0x40
+    #define CC_BIT_E 0x80
 #else
-    #define CC_BIT_C      0x80
-    #define CC_BIT_V      0x40
-    #define CC_BIT_Z      0x20
-    #define CC_BIT_N      0x10
-    #define CC_BIT_I      0x08
-    #define CC_BIT_H      0x04
-    #define CC_BIT_F      0x02
-    #define CC_BIT_E      0x01
+    #define CC_BIT_C 0x80
+    #define CC_BIT_V 0x40
+    #define CC_BIT_Z 0x20
+    #define CC_BIT_N 0x10
+    #define CC_BIT_I 0x08
+    #define CC_BIT_H 0x04
+    #define CC_BIT_F 0x02
+    #define CC_BIT_E 0x01
 #endif
 #define CC_BITS_HNZVC (CC_BIT_H | CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C)
 #define CC_BITS_NZVC  (CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C)
@@ -80,57 +80,57 @@
 
 union uacc
 {
-    Word            d;  // Combined accumulator
+    Word d; // Combined accumulator
     struct
     {
 #ifdef WORDS_BIGENDIAN
-        Byte        a;  // Accumulator a
-        Byte        b;  // Accumulator b
+        Byte a; // Accumulator a
+        Byte b; // Accumulator b
 #else
-        Byte        b;  // Accumulator b
-        Byte        a;  // Accumulator a
+        Byte b; // Accumulator b
+        Byte a; // Accumulator a
 #endif
     } byte;
 };
 
 union udpreg
 {
-    Word            dp16;
+    Word dp16;
     struct
     {
 #ifdef WORDS_BIGENDIAN
-        Byte        h;
-        Byte        l;
+        Byte h;
+        Byte l;
 #else
-        Byte        l;
-        Byte        h;
+        Byte l;
+        Byte h;
 #endif
     } byte;
 };
 
 union ucc
 {
-    Byte            all;    // Condition code register
+    Byte all; // Condition code register
     struct
     {
 #ifdef BITFIELDS_LSB_FIRST
-        bool        c : 1;  // Carry
-        bool        v : 1;  // Overflow
-        bool        z : 1;  // Zero
-        bool        n : 1;  // Negative
-        bool        i : 1;  // IRQ disable
-        bool        h : 1;  // Half carry
-        bool        f : 1;  // FIRQ disable
-        bool        e : 1;  // Entire
+        bool c : 1; // Carry
+        bool v : 1; // Overflow
+        bool z : 1; // Zero
+        bool n : 1; // Negative
+        bool i : 1; // IRQ disable
+        bool h : 1; // Half carry
+        bool f : 1; // FIRQ disable
+        bool e : 1; // Entire
 #else
-        bool        e : 1;  // Entire
-        bool        f : 1;  // FIRQ disable
-        bool        h : 1;  // Half carry
-        bool        i : 1;  // IRQ disable
-        bool        n : 1;  // Negative
-        bool        z : 1;  // Zero
-        bool        v : 1;  // Overflow
-        bool        c : 1;  // Carry
+        bool e : 1; // Entire
+        bool f : 1; // FIRQ disable
+        bool h : 1; // Half carry
+        bool i : 1; // IRQ disable
+        bool n : 1; // Negative
+        bool z : 1; // Zero
+        bool v : 1; // Overflow
+        bool c : 1; // Carry
 #endif
     } bit;
 };
@@ -206,59 +206,59 @@ protected:
     // Processor registers
 protected:
 
-    Byte            indexed_cycles[256];    // add. cycles for
+    Byte indexed_cycles[256]; // add. cycles for
     // indexed addr.
-    Byte            psh_pul_cycles[256];    // add. cycles for psh
+    Byte psh_pul_cycles[256]; // add. cycles for psh
     // and pull-instr.
-    Byte            nmi_armed;      // for handling
+    Byte nmi_armed; // for handling
     // interrupts
     atomic_event events; // event status flags (atomic access)
-    tInterruptStatus    interrupt_status;
+    tInterruptStatus interrupt_status;
 #ifdef FASTFLEX
     std::atomic<Word> ipcreg;
-    Word            iureg;
-    Word            isreg;
-    Word            ixreg;
-    Word            iyreg;
-    Byte            iareg;
-    Byte            ibreg;
-    Byte            iccreg;
-    Byte            idpreg;
-    Word            eaddr;
-    Byte            ireg;
-    Byte            iflag;
-    Byte            tb;
-    Word            tw;
-    Byte            k;
-    Byte            *pMem;      // needed for memory access
+    Word iureg;
+    Word isreg;
+    Word ixreg;
+    Word iyreg;
+    Byte iareg;
+    Byte ibreg;
+    Byte iccreg;
+    Byte idpreg;
+    Word eaddr;
+    Byte ireg;
+    Byte iflag;
+    Byte tb;
+    Word tw;
+    Byte k;
+    Byte *pMem; // needed for memory access
 #else
     std::atomic<Word> pc;
-    Word            s;          // Stack pointer
-    Word            u;          // Alternative Stack pointer
-    Word            x;          // Index Register
-    Word            y;          // Index register
+    Word s; // Stack pointer
+    Word u; // Alternative Stack pointer
+    Word x; // Index Register
+    Word y; // Index register
     union uacc acc;
     union udpreg dpreg;
-    Byte           &a;
-    Byte           &b;
-    Word           &d;
-    Byte           &dp;
+    Byte &a;
+    Byte &b;
+    Word &d;
+    Byte &dp;
     union ucc cc;
 #endif // #ifndef FASTFLEX
 
 protected:
 
-    Da6809     *disassembler;
+    Da6809 *disassembler;
 
     // funcitons for instruction execution:
 
 private:
 
-    void            init();
-    void            init_indexed_cycles();
-    void            init_psh_pul_cycles();
-    void            illegal();
-    void            log_current_instruction();
+    void init();
+    void init_indexed_cycles();
+    void init_psh_pul_cycles();
+    void illegal();
+    void log_current_instruction();
     static std::string asCCString(Byte reg);
 
 #ifndef FASTFLEX
@@ -863,38 +863,38 @@ private:
         reg = addr;
     }
 
-    inline void     daa();
-    inline void     dec(Byte &reg);
-    inline void     inc(Byte &reg);
-    inline void     lsl(Byte &reg);
-    inline void     neg(Byte &reg);
-    inline void     tst(Byte reg);
-    inline void     cmp(Byte reg, Byte operand);
-    inline void     cmp(Word reg, Word operand);
-    inline void     adc(Byte &reg, Byte operand);
-    inline void     add(Byte &reg, Byte operand);
-    inline void     add(Word &reg, Word operand);
-    inline void     sbc(Byte &reg, Byte operand);
-    inline void     sub(Byte &reg, Byte operand);
-    inline void     sub(Word &reg, Word operand);
-    inline void     swi(), swi2(), swi3();
-    inline void     cwai(), sync();
+    inline void daa();
+    inline void dec(Byte &reg);
+    inline void inc(Byte &reg);
+    inline void lsl(Byte &reg);
+    inline void neg(Byte &reg);
+    inline void tst(Byte reg);
+    inline void cmp(Byte reg, Byte operand);
+    inline void cmp(Word reg, Word operand);
+    inline void adc(Byte &reg, Byte operand);
+    inline void add(Byte &reg, Byte operand);
+    inline void add(Word &reg, Word operand);
+    inline void sbc(Byte &reg, Byte operand);
+    inline void sub(Byte &reg, Byte operand);
+    inline void sub(Word &reg, Word operand);
+    inline void swi(), swi2(), swi3();
+    inline void cwai(), sync();
     inline cycles_t rti();
-    inline void     asr(Byte &reg);
-    void     tfr();
-    void     exg();
+    inline void asr(Byte &reg);
+    void tfr();
+    void exg();
     cycles_t psh(Byte what, Word &s, Word &u);
     cycles_t pul(Byte what, Word &s, Word &u);
-    Word     do_effective_address(Byte);
+    Word do_effective_address(Byte);
 #endif
-    void     nmi(bool save_state);
-    void     firq(bool save_state);
-    void     irq(bool save_state);
-    void     invalid(const char *pmessage);
-    bool     use_undocumented;
+    void nmi(bool save_state);
+    void firq(bool save_state);
+    void irq(bool save_state);
+    void invalid(const char *pmessage);
+    bool use_undocumented;
 public:
-    void            set_use_undocumented(bool b);
-    bool            is_use_undocumented()
+    void set_use_undocumented(bool b);
+    bool is_use_undocumented()
     {
         return use_undocumented;
     };
@@ -917,31 +917,31 @@ protected:
 
     // interrupt handling:
 public:
-    void            reset();        // CPU reset
-    inline cycles_t        exec_irqs(bool save_state = true);
-    void            set_nmi();
-    void            set_firq();
-    void            set_irq();
+    void reset(); // CPU reset
+    inline cycles_t exec_irqs(bool save_state = true);
+    void set_nmi();
+    void set_firq();
+    void set_irq();
 
 protected:
     std::atomic<QWord> total_cycles; // total cycle count with 64 Bit resolution
-    cycles_t        cycles;     // cycle cnt for one timer tick
+    cycles_t cycles; // cycle cnt for one timer tick
     std::atomic<cycles_t> required_cyclecount;//cycle count for freq ctrl
 
     // breakpoint support
 protected:
-    unsigned int    bp[3];
+    unsigned int bp[3];
 public:
-    void        set_bp(int which, Word address);
-    unsigned int    get_bp(int which);
-    int     is_bp_set(int which);
-    void        reset_bp(int which);
+    void set_bp(int which, Word address);
+    unsigned int get_bp(int which);
+    int is_bp_set(int which);
+    void reset_bp(int which);
 
     // interface to other classes
 public:
-    void        set_disassembler(Da6809 *x_da);
-    bool        set_logfile(const struct s_cpu_logfile &x_lfs);
-    Word        get_pc()
+    void set_disassembler(Da6809 *x_da);
+    bool set_logfile(const struct s_cpu_logfile &x_lfs);
+    Word get_pc()
     {
         return PC;
     }
@@ -955,7 +955,7 @@ protected:
                     char **pCode, char **pMnemonic);
     FILE        *log_fp;
     s_cpu_logfile lfs;
-    bool        do_logging;
+    bool do_logging;
 
     Memory &memory;
 
@@ -1191,10 +1191,10 @@ inline void Mc6809::sbc(Byte &reg, Byte operand)
 
 inline void Mc6809::daa()
 {
-    Word    t;
-    Word    c = 0;
-    Byte    lsn = a & 0x0f;
-    Byte    msn = a & 0xf0;
+    Word t;
+    Word c = 0;
+    Byte lsn = a & 0x0f;
+    Byte msn = a & 0xf0;
 
     if (cc.bit.h || (lsn > 9))
     {

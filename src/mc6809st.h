@@ -30,12 +30,12 @@
 class Mc6809CpuStatus : public CpuStatus
 {
 public:
-    QWord           total_cycles;
-    Byte            a, b, cc, dp;
-    Word            pc, s, u, x, y;
-    Byte            instruction[4];
-    char            mnemonic[28];
-    Byte            memory[48];
+    QWord total_cycles;
+    Byte a, b, cc, dp;
+    Word pc, s, u, x, y;
+    Byte instruction[4];
+    char mnemonic[28];
+    Byte memory[48];
     Mc6809CpuStatus();
     ~Mc6809CpuStatus() override { };
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);

@@ -169,7 +169,7 @@ bool matches(const char *text, const char *pattern,
 {
     const char *p_pat = pattern;
     const char *p_src = text;
-    char char_pat     = '*'; // prepare for first while loop
+    char char_pat = '*'; // prepare for first while loop
     int min = 0;
     int max = 0;
     int notmatched =  0;

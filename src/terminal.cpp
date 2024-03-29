@@ -30,7 +30,7 @@
 TerminalIO *TerminalIO::instance = nullptr;
 #ifdef HAVE_TERMIOS_H
     struct termios TerminalIO::save_termios;
-    bool   TerminalIO::used_serial_io = false;
+    bool TerminalIO::used_serial_io = false;
     bool TerminalIO::is_termios_saved = false;
 #endif
 
@@ -80,8 +80,8 @@ void TerminalIO::reset_terminal_io()
 #ifdef HAVE_TERMIOS_H
 void TerminalIO::init_terminal_io(Word reset_key)
 {
-    struct termios  buf;
-    tcflag_t    mask;
+    struct termios buf;
+    tcflag_t mask;
     struct sigaction sig_action;
     struct sigaction old_action;
 
@@ -144,7 +144,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
 #endif
             //          ;
             //          buf.c_oflag |= mask;
-            buf.c_cc[VMIN]  = 0;
+            buf.c_cc[VMIN] = 0;
             buf.c_cc[VTIME] = 0;
             long disable = fpathconf(fileno(stdin), _PC_VDISABLE);
 
@@ -212,7 +212,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
     }
 }
 #else
-void TerminalIO::init_terminal_io(Word /* [[maybe_unused]]  Word reset_key */)
+void TerminalIO::init_terminal_io(Word /* [[maybe_unused]] Word reset_key */)
 {
 #if defined(_WIN32) && defined(SIGTERM)
     signal(SIGTERM, s_exec_signal);

@@ -37,16 +37,16 @@ public:
     virtual               ~FileContainerIterator();
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
-    bool                   operator==(const FileContainerIf *) const;
-    bool                   operator!=(const FileContainerIf *) const;
+    bool operator==(const FileContainerIf *) const;
+    bool operator!=(const FileContainerIf *) const;
     FileContainerIterator &operator=(FileContainerIf *);
     FileContainerIterator &operator++();
-    bool                   DeleteCurrent();
-    bool                   RenameCurrent(const char *);
-    bool                   SetDateCurrent(const BDate &date);
-    bool                   SetAttributesCurrent(Byte attributes);
+    bool DeleteCurrent();
+    bool RenameCurrent(const char *);
+    bool SetDateCurrent(const BDate &date);
+    bool SetAttributesCurrent(Byte attributes);
 private:
-    std::string            filePattern;
+    std::string filePattern;
     FileContainerIteratorImpPtr imp;
     FileContainerIterator(const FileContainerIterator &); // should not be used
     FileContainerIterator &operator=(const FileContainerIterator

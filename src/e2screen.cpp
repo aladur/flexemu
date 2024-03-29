@@ -379,8 +379,8 @@ void E2Screen::RepaintScreen()
 
 void E2Screen::UpdateMouse()
 {
-    int dx  = 0;
-    int dy  = 0;
+    int dx = 0;
+    int dy = 0;
 
     if ((previousMouseX != -1) && (mouseX != -1) &&
         (previousMouseY != -1) && (mouseY != -1))

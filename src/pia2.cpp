@@ -122,27 +122,27 @@ Byte Pia2::readInputB()
 
         if (joystick.XAxis() < -8)
         {
-            orb |= 0x02;    // joystick to left side
+            orb |= 0x02; // joystick to left side
         }
 
         if (joystick.XAxis() > 8)
         {
-            orb |= 0x04;    // joystick to left side
+            orb |= 0x04; // joystick to left side
         }
 
         if (joystick.YAxis() < -8)
         {
-            orb |= 0x10;    // joystick up
+            orb |= 0x10; // joystick up
         }
 
         if (joystick.YAxis() > 8)
         {
-            orb |= 0x08;    // joystick down
+            orb |= 0x08; // joystick down
         }
 
         if (joystick.IsButtonSet(0))
         {
-            orb |= 0x20;    // joystick "shoot"
+            orb |= 0x20; // joystick "shoot"
         }
     }
 
@@ -171,7 +171,7 @@ Byte Pia2::readInputB()
         208
     };
 
-    static int count     = 0;
+    static int count = 0;
     static int Tx = tab_period_from_mouse[TAB_OFFSET];
     static int Ty = tab_period_from_mouse[TAB_OFFSET];
     static int tx = 0;

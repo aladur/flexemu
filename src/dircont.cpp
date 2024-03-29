@@ -158,7 +158,7 @@ std::string DirectoryContainer::GetSupportedAttributes() const
 }
 
 /*
-bool    DirectoryContainer::OpenDirectory(const char *pattern)
+bool DirectoryContainer::OpenDirectory(const char *pattern)
 {
     CHECK_DDIRECTORY_ALREADY_OPENED;
     filePattern = pattern;
@@ -187,7 +187,7 @@ bool DirectoryContainer::FindFile(const char *fileName, FlexDirEntry &entry)
     return true;
 }
 
-bool    DirectoryContainer::DeleteFile(const char *fileName)
+bool DirectoryContainer::DeleteFile(const char *fileName)
 {
     FileContainerIterator it(fileName);
 
@@ -199,7 +199,7 @@ bool    DirectoryContainer::DeleteFile(const char *fileName)
     return true;
 }
 
-bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
+bool DirectoryContainer::RenameFile(const char *oldName, const char *newName)
 {
     FlexDirEntry de;
 
@@ -229,7 +229,7 @@ bool    DirectoryContainer::RenameFile(const char *oldName, const char *newName)
     return true;
 }
 
-bool    DirectoryContainer::FileCopy(
+bool DirectoryContainer::FileCopy(
     const char *sourceName, const char *destName,
     FileContainerIf &destination)
 {
@@ -239,7 +239,7 @@ bool    DirectoryContainer::FileCopy(
                             (FileContainerIf &) * this, destination);
 }
 
-bool    DirectoryContainer::GetInfo(FlexContainerInfo &info) const
+bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
     std::string rootPath;
     struct stat sbuf;
@@ -382,15 +382,15 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 void DirectoryContainer::Initialize_header(Byte)
 {
     /*
-        param.offset        = 0;
+        param.offset = 0;
         param.write_protect = wp;
-        param.max_sector    = 0;
-        param.max_sector0   = 0;
-        param.max_track     = 0;
+        param.max_sector = 0;
+        param.max_sector0 = 0;
+        param.max_track = 0;
         param.byte_p_sector = SECTOR_SIZE;
         param.byte_p_track0 = 0;
-        param.byte_p_track  = 0;
-        param.type          = TYPE_DIRECTORY;
+        param.byte_p_track = 0;
+        param.type = TYPE_DIRECTORY;
     */
 }
 
@@ -398,9 +398,9 @@ void DirectoryContainer::Initialize_header(Byte)
 bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
                                      const BTime &time)
 {
-    struct stat    sbuf;
+    struct stat sbuf;
     struct utimbuf timebuf;
-    struct tm      file_time;
+    struct tm file_time;
     std::string filePath;
     std::string lowerFileName(fileName);
 
@@ -412,14 +412,14 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
     if (stat(filePath.c_str(), &sbuf) == 0)
     {
         timebuf.actime = sbuf.st_atime;
-        file_time.tm_sec   = 0;
-        file_time.tm_min   = setFileTime ? time.GetMinute() : 0;
-        file_time.tm_hour  = setFileTime ? time.GetHour() : 12;
-        file_time.tm_mon   = date.GetMonth() - 1;
-        file_time.tm_mday  = date.GetDay();
-        file_time.tm_year  = date.GetYear() - 1900;
+        file_time.tm_sec = 0;
+        file_time.tm_min = setFileTime ? time.GetMinute() : 0;
+        file_time.tm_hour = setFileTime ? time.GetHour() : 12;
+        file_time.tm_mon = date.GetMonth() - 1;
+        file_time.tm_mday = date.GetDay();
+        file_time.tm_year = date.GetYear() - 1900;
         file_time.tm_isdst = 0;
-        timebuf.modtime    = mktime(&file_time);
+        timebuf.modtime = mktime(&file_time);
 
         return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);
     }
@@ -479,7 +479,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 
 // on WIN32 a random file will be represented by a hidden flag
 // on UNIX a random file will be represented by a user execute flag
-bool    DirectoryContainer::SetRandom(const char *fileName)
+bool DirectoryContainer::SetRandom(const char *fileName)
 {
 #ifdef _WIN32
     const auto wFilePath(
@@ -507,12 +507,12 @@ bool    DirectoryContainer::SetRandom(const char *fileName)
 // on Unix only lowercase filenames are allowed
 bool DirectoryContainer::IsFlexFilename(const std::string &filename)
 {
-    int     result; // result from sscanf should be int
-    char    dot;
-    char    name[9];
-    char    ext[4];
+    int result; // result from sscanf should be int
+    char dot;
+    char name[9];
+    char ext[4];
 
-    dot    = '\0';
+    dot = '\0';
     result = sscanf(filename.c_str(), "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
 
     if (!result || result == EOF)

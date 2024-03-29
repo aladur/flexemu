@@ -246,7 +246,7 @@ void Scheduler::do_reset()
 {
     cpu.do_reset();
     total_cycles = 0;
-    cycles0      = 0;
+    cycles0 = 0;
 }
 
 // thread support: Start Running CPU Thread

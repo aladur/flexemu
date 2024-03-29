@@ -60,6 +60,6 @@ private:
     virtual FileContainerIteratorImpPtr IteratorFactory() = 0;
     friend class FileContainerIterator;
     friend class FlexCopyManager;
-};  /* class FileContainerIf */
+}; /* class FileContainerIf */
 
 #endif /* FILECONT_INCLUDED */

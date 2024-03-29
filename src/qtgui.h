@@ -96,7 +96,7 @@ protected:
     enum
     {
         FLX_INVISIBLE_CURSOR = 10,
-        FLX_DEFAULT_CURSOR   = 11
+        FLX_DEFAULT_CURSOR = 11
     };
 
 public:

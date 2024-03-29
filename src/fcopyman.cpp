@@ -32,8 +32,8 @@ bool FlexCopyManager::autoTextConversion = false;
 
 // Return true if the copied file has been detected as text file.
 // If false the file has been treated as binary file.
-bool    FlexCopyManager::FileCopy(const char *srcName, const char *destName,
-                                  FileContainerIf &src, FileContainerIf &dst)
+bool FlexCopyManager::FileCopy(const char *srcName, const char *destName,
+                               FileContainerIf &src, FileContainerIf &dst)
 {
     bool isTextFile = false;
 

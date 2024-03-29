@@ -41,18 +41,18 @@ Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
         return *this;
     }
 
-    freq         = lhs.freq,
+    freq = lhs.freq,
     total_cycles = lhs.total_cycles;
-    a            = lhs.a;
-    b            = lhs.b;
-    cc           = lhs.cc;
-    dp           = lhs.dp;
-    pc           = lhs.pc;
-    s            = lhs.s;
-    u            = lhs.u;
-    x            = lhs.x;
-    y            = lhs.y;
-    state        = lhs.state;
+    a = lhs.a;
+    b = lhs.b;
+    cc = lhs.cc;
+    dp = lhs.dp;
+    pc = lhs.pc;
+    s = lhs.s;
+    u = lhs.u;
+    x = lhs.x;
+    y = lhs.y;
+    state = lhs.state;
     memcpy(instruction, lhs.instruction, 4);
     memcpy(mnemonic,    lhs.mnemonic,    28);
     memcpy(memory,      lhs.memory,      48);

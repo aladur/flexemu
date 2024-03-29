@@ -54,9 +54,9 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
     friend class FlexFileContainerIteratorImp; // corresponding iterator class
 
 protected:
-    BFilePtr    fp{};
-    s_floppy    param{};
-    DWord       file_size{};
+    BFilePtr fp{};
+    s_floppy param{};
+    DWord file_size{};
     const FileTimeAccess &ft_access{};
 
     // Variables only used for FLX format when formatting a disk
@@ -92,7 +92,7 @@ public:
     // FileContainerIfBase interface declaration (to be used in flexemu).
     bool IsWriteProtected() const override;
     bool GetInfo(FlexContainerInfo &info) const override;
-    int  GetContainerType() const override;
+    int GetContainerType() const override;
     std::string GetPath() const override;
 
     // FileContainerIf interface declaration (to be used in flexemu).
@@ -105,7 +105,7 @@ public:
     bool IsFlexFormat() const override;
     bool IsTrackValid(int track) const override;
     bool IsSectorValid(int track, int sector) const override;
-    int  GetBytesPerSector() const override;
+    int GetBytesPerSector() const override;
 
     // FileContainerIf interface declaration (to be used within flexplorer).
     FileContainerIf *begin() override
@@ -149,13 +149,9 @@ protected:
         Byte sec_buf[],
         const std::string &name,
         struct s_formats &format);
-    static bool         Write_dir_sectors(
-        FILE *fp,
-        struct  s_formats &format);
-    static bool         Write_sectors(
-        FILE *fp,
-        struct  s_formats &format);
-    static void     Create_format_table(
+    static bool Write_dir_sectors(FILE *fp, struct s_formats &format);
+    static bool Write_sectors(FILE *fp, struct s_formats &format);
+    static void Create_format_table(
         int type,
         int trk,
         int sec,
@@ -170,6 +166,6 @@ protected:
 private:
     FileContainerIteratorImpPtr IteratorFactory() override;
 
-};  // class FlexFileContainer
+}; // class FlexFileContainer
 
 #endif // FFILECNT_INCLUDED

@@ -70,8 +70,8 @@ BProcess::~BProcess()
 
 bool BProcess::Start()
 {
-    STARTUPINFO             si;
-    PROCESS_INFORMATION     pi;
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
 
     const auto wExecutable(ConvertToUtf16String(executable));
     auto wArguments(ConvertToUtf16String(arguments));
@@ -138,7 +138,7 @@ bool BProcess::Start()
     args[1] = arguments.c_str();
     args[2] = nullptr;
     default_action.sa_handler = SIG_DFL;
-    default_action.sa_flags   = 0;
+    default_action.sa_flags = 0;
     sigemptyset(&default_action.sa_mask);
 
     pid = fork();

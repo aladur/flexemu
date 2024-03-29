@@ -47,7 +47,7 @@ protected:
     // Internal registers:
     //
     // cra, crb control register A, B
-    // ddra, ddrb   data direction register A, B
+    // ddra, ddrb data direction register A, B
     // ora, orb output register A, B
 
     Byte cra;

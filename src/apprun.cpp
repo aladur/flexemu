@@ -299,7 +299,7 @@ void ApplicationRunner::cleanup()
         // Make sure that the CPU thread leaves the suspended state
         // otherwise join will end up in an endless state.
         scheduler.request_new_state(CpuState::Exit);
-        cpuThread->join();  // wait for termination of CPU thread
+        cpuThread->join(); // wait for termination of CPU thread
         cpuThread.reset();
     }
 }

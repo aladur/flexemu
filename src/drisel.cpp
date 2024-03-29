@@ -36,7 +36,7 @@ DriveSelect::~DriveSelect()
 
 Byte DriveSelect::requestReadValue()
 {
-    Byte status = 0xff;  // Unused bits have logical high
+    Byte status = 0xff; // Unused bits have logical high
         
     if (!fdc.getSide())
     {   

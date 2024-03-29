@@ -57,7 +57,7 @@ Command::~Command()
 void Command::resetIo()
 {
     command_index = 0;
-    answer_index  = 0;
+    answer_index = 0;
     answer.clear();
 }
 
@@ -136,22 +136,22 @@ void Command::writeIo(Word /*offset*/, Byte val)
         const char *arg2;
         const char *arg3;
         const char *arg4;
-        int         count;
-        int         number;
+        int count;
+        int number;
         std::stringstream answer_stream;
 
         command_index = 0;
-        answer_index  = 0;
-        number        = INVALID_DRIVE;
-        count         = 0;
-        p             = command;
-        arg1 = next_token(&p, &count);  // get arg1
+        answer_index = 0;
+        number = INVALID_DRIVE;
+        count = 0;
+        p = command;
+        arg1 = next_token(&p, &count); // get arg1
         skip_token(&p);
-        arg2 = next_token(&p, &count);  // get arg2
+        arg2 = next_token(&p, &count); // get arg2
         skip_token(&p);
-        arg3 = next_token(&p, &count);  // get arg3
+        arg3 = next_token(&p, &count); // get arg3
         skip_token(&p);
-        arg4 = next_token(&p, &count);  // get arg4
+        arg4 = next_token(&p, &count); // get arg4
         skip_token(&p);
         next_token(&p, &count);
 

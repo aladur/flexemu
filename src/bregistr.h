@@ -34,8 +34,8 @@ class BRegistry
 
 private:
 
-    LONG    lastError;
-    HKEY    hKey;
+    LONG lastError;
+    HKEY hKey;
 
     BRegistry();
 

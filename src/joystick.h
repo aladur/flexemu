@@ -40,10 +40,10 @@ class JoystickIO
 public:
     JoystickIO();
 
-    void    reset();
-    bool    get_values(int *deltaX, int *deltaY, unsigned int *buttonMask);
-    void    put_values(int deltaX, int deltaY);
-    void    put_value(unsigned int buttonMask);
+    void reset();
+    bool get_values(int *deltaX, int *deltaY, unsigned int *buttonMask);
+    void put_values(int deltaX, int deltaY);
+    void put_value(unsigned int buttonMask);
 
 private:
     int deltaX;

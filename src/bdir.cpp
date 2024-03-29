@@ -178,7 +178,7 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
 tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 {
     std::vector<std::string> subDirList;
-    std::string     basePath(aPath);
+    std::string basePath(aPath);
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
@@ -205,8 +205,8 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
     }
 
 #else
-    std::string     dirEntry;
-    struct stat     sbuf;
+    std::string dirEntry;
+    struct stat sbuf;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
@@ -242,7 +242,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 tPathList BDirectory::GetFiles(const std::string &aPath)
 {
     std::vector<std::string> fileList;
-    std::string     basePath(aPath);
+    std::string basePath(aPath);
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
@@ -270,8 +270,8 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
     }
 
 #else
-    std::string     dirEntry;
-    struct stat     sbuf;
+    std::string dirEntry;
+    struct stat sbuf;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {

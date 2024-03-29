@@ -37,21 +37,21 @@ class Mc146818 : public IoDevice, public BObserved
     // Internal registers:
 
 protected:
-    Byte                second;
-    Byte                minute;
-    Byte                hour;
-    Byte                al_second;
-    Byte                al_minute;
-    Byte                al_hour;
-    Byte                weekday;
-    Byte                day;
-    Byte                month;
-    Byte                year;
-    Byte                A;
-    Byte                B;
-    Byte                C;
-    Byte                D;
-    Byte                ram[50]; // 50 bytes of internal RAM
+    Byte second;
+    Byte minute;
+    Byte hour;
+    Byte al_second;
+    Byte al_minute;
+    Byte al_hour;
+    Byte weekday;
+    Byte day;
+    Byte month;
+    Byte year;
+    Byte A;
+    Byte B;
+    Byte C;
+    Byte D;
+    Byte ram[50]; // 50 bytes of internal RAM
 
 public:
 
@@ -66,18 +66,18 @@ public:
     {
         return 64;
     };
-    virtual void             update_1_second();
+    virtual void update_1_second();
 
 private:
 
-    Byte                convert(Byte val);
-    Byte                convert_hour(Byte val);
-    Byte                convert_bin(Byte val);
-    bool                increment(Byte &, Byte, Byte);
-    bool                increment_hour(Byte &);
-    bool                increment_day(Byte &, Byte, Byte);
+    Byte convert(Byte val);
+    Byte convert_hour(Byte val);
+    Byte convert_bin(Byte val);
+    bool increment(Byte &, Byte, Byte);
+    bool increment_hour(Byte &);
+    bool increment_day(Byte &, Byte, Byte);
     const char          *getFileName();
-    char                path[PATH_MAX];
+    char path[PATH_MAX];
 
     // Public constructor and destructor
 

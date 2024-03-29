@@ -31,29 +31,29 @@
 #include <array>
 
 /* number of Kilo Byte at least available for each directory sector */
-const int DIRSECTOR_PER_KB  = 12800;
+const int DIRSECTOR_PER_KB = 12800;
 /* magic number for FLX container format.    */
 /* It has to be stored in big endian format. */
-const DWord MAGIC_NUMBER    = 0x339a5c48;
+const DWord MAGIC_NUMBER = 0x339a5c48;
 
 /* Max. size of a JVC file header */
 const Word MAX_JVC_HEADERSIZE = 5U;
 
 enum tMountOption
 {
-    MOUNT_DEFAULT   = 0,
-    MOUNT_RAM       = 1
+    MOUNT_DEFAULT = 0,
+    MOUNT_RAM = 1
 };
 
 struct s_formats
 {
-    SDWord      size;       /* byte size of disk           */
-    Word        tracks;     /* number of tracks            */
-    Word        sectors;    /* number of sectors           */
-    Word        sectors0;   /* number of sectors on track 0*/
-    Word        dir_sectors;    /* number of directory sectors */
-    Word        sides;      /* 1 or 2 sides. If 0 estimate no. of sides */
-    Word        offset;     /* offset for fileheader */
+    SDWord size; /* byte size of disk */
+    Word tracks; /* number of tracks */
+    Word sectors; /* number of sectors */
+    Word sectors0; /* number of sectors on track 0*/
+    Word dir_sectors; /* number of directory sectors */
+    Word sides; /* 1 or 2 sides. If 0 estimate no. of sides */
+    Word offset; /* offset for fileheader */
 };
 
 typedef struct s_st
@@ -78,16 +78,16 @@ typedef struct s_st
 /* structure of FLEX system information record (SIR) */
 struct s_sys_info_record
 {
-    char    disk_name[FLEX_DISKNAME_LENGTH]; // Name of this disk image
-    char    disk_ext[FLEX_DISKEXT_LENGTH]; // Extension of this disk image
-    Byte    disk_number[2]; // Number of this disk image
-    st_t    fc_start; // Start track/sector of free chain
-    st_t    fc_end; // End track/sector of free chain
-    Byte    free[2]; // Number of sectors in free chain
-    Byte    month; // Month when the disk was created, range 1 - 12
-    Byte    day; // Day when the disk was created, range 1 - 31
-    Byte    year; // Year when the disk was created, range 0 - 99
-    st_t    last; // Maximum track/sector number this disk image supports
+    char disk_name[FLEX_DISKNAME_LENGTH]; // Name of this disk image
+    char disk_ext[FLEX_DISKEXT_LENGTH]; // Extension of this disk image
+    Byte disk_number[2]; // Number of this disk image
+    st_t fc_start; // Start track/sector of free chain
+    st_t fc_end; // End track/sector of free chain
+    Byte free[2]; // Number of sectors in free chain
+    Byte month; // Month when the disk was created, range 1 - 12
+    Byte day; // Day when the disk was created, range 1 - 31
+    Byte year; // Year when the disk was created, range 0 - 99
+    st_t last; // Maximum track/sector number this disk image supports
 };
 
 /* structure of FLEX system information sector (SIS) */
@@ -117,18 +117,18 @@ const int MAX_FILE_SECTORS = 65275;
 /* structure of one FLEX directory entry */
 struct s_dir_entry
 {
-    char    filename[FLEX_BASEFILENAME_LENGTH]; // Name of file
-    char    file_ext[FLEX_FILEEXT_LENGTH]; // Extension of file
-    Byte    file_attr; // File attributes, see flexFileAttributes
-    Byte    hour; // FLEX extension: hour of creation. Default: 0
-    st_t    start; // Track/secor of first sector of the file
-    st_t    end; // Track/sector of last sector of the file
-    Byte    records[2]; // Number of records (= sectors) the file has
-    Byte    sector_map; // Indicates a random access file, see IS_RANDOM_FILE
-    Byte    minute; // FLEX extension: minute of creation. Default: 0
-    Byte    month; // Month when the file was created, range 1 - 12
-    Byte    day; // Day when the file was created, range 1 - 31
-    Byte    year; // Year when the file was created, range 0 - 99
+    char filename[FLEX_BASEFILENAME_LENGTH]; // Name of file
+    char file_ext[FLEX_FILEEXT_LENGTH]; // Extension of file
+    Byte file_attr; // File attributes, see flexFileAttributes
+    Byte hour; // FLEX extension: hour of creation. Default: 0
+    st_t start; // Track/secor of first sector of the file
+    st_t end; // Track/sector of last sector of the file
+    Byte records[2]; // Number of records (= sectors) the file has
+    Byte sector_map; // Indicates a random access file, see IS_RANDOM_FILE
+    Byte minute; // FLEX extension: minute of creation. Default: 0
+    Byte month; // Month when the file was created, range 1 - 12
+    Byte day; // Day when the file was created, range 1 - 31
+    Byte year; // Year when the file was created, range 0 - 99
 };
 
 /* filename[0] within s_dir_entry has two magic numbers: */
@@ -143,27 +143,27 @@ struct s_dir_entry
 /* structure of one FLEX directory sector */
 struct s_dir_sector
 {
-    st_t    next; // Link to next track/sector in the chain
-    Byte    record_nr[2]; // Logical record number of sector in file, zero based
-    Byte    unused[12]; // To be initialized with 0
+    st_t next; // Link to next track/sector in the chain
+    Byte record_nr[2]; // Logical record number of sector in file, zero based
+    Byte unused[12]; // To be initialized with 0
     struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector
 };
 
 
 struct s_floppy
 {
-    Byte        write_protect;  /* write protect flag of disk */
-    Word        offset;     /* offset for fileheader */
-    DWord       byte_p_track;   /* total bytes per track */
-    DWord       byte_p_track0;  /* total bytes on track 0 */
-    Word        byte_p_sector;  /* bytes per sector */
-    Word        max_sector; /* max. nr of sectors (all sides) */
-    Word        max_sector0;    /* max. nr of sectors (all sides) track 0*/
-    Word        max_track;  /* max. tracknumber of disk */
-    Word        track;      /* actual tracknumber */
-    Word        type;       /* type of container */
-    Word        sides;      /* number of sides on track 0 */
-    Word        sides0;     /* number of sides */
+    Byte        write_protect; /* write protect flag of disk */
+    Word        offset; /* offset for fileheader */
+    DWord       byte_p_track; /* total bytes per track */
+    DWord       byte_p_track0; /* total bytes on track 0 */
+    Word        byte_p_sector; /* bytes per sector */
+    Word max_sector; /* max. nr of sectors (all sides) */
+    Word        max_sector0; /* max. nr of sectors (all sides) track 0*/
+    Word        max_track; /* max. tracknumber of disk */
+    Word        track; /* actual tracknumber */
+    Word        type; /* type of container */
+    Word        sides; /* number of sides on track 0 */
+    Word        sides0; /* number of sides */
 
 };
 
@@ -183,7 +183,7 @@ public:
     virtual bool IsFlexFormat() const = 0;
     virtual bool IsTrackValid(int track) const = 0;
     virtual bool IsSectorValid(int track, int sector) const = 0;
-    virtual int  GetBytesPerSector() const = 0;
+    virtual int GetBytesPerSector() const = 0;
 
     ~FileContainerIfSector() override { };
 };
@@ -267,13 +267,13 @@ struct s_flex_header
 {
     DWord magic_number; /* to identify right format, big endian format */
     Byte write_protect; /* if != 0 disk image is write-prot*/
-    Byte sizecode;      /* 128 * 2 ^ n Bytes per Sector  */
-    Byte sides0;        /* nr. of sides on track 0   */
-    Byte sectors0;      /* nr. of sect. on track 0 (one side)*/
-    Byte sides;     /* nr. of sides on track != 0    */
-    Byte sectors;       /* nr. of sectors on track != 0  */
-    Byte tracks;        /* nr. of tracks total       */
-    Byte dummy1;        /* for future extension      */
+    Byte sizecode; /* 128 * 2 ^ n Bytes per Sector */
+    Byte sides0; /* nr. of sides on track 0 */
+    Byte sectors0; /* nr. of sect. on track 0 (one side)*/
+    Byte sides; /* nr. of sides on track != 0 */
+    Byte sectors; /* nr. of sectors on track != 0 */
+    Byte tracks; /* nr. of tracks total */
+    Byte dummy1; /* for future extension */
     Byte dummy2, dummy3, dummy4, dummy5; /* and for alignment 4*/
 #ifndef __fromflex__
     void initialize(int sector_size, int tracks, int sectors0,
@@ -282,7 +282,7 @@ struct s_flex_header
 };
 
 #ifndef __fromflex__
-extern std::ostream& operator<<(std::ostream& os, const  st_t &st);
+extern std::ostream& operator<<(std::ostream& os, const st_t &st);
 
 extern Word getTrack0SectorCount(int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);

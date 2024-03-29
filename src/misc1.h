@@ -68,7 +68,7 @@
 // Don't use PACKAGE. It has been changed by automake to be all lowercase.
 // For compatibility the program name should begin with a capital F.
 // Use PACKAGE_NAME instead.
-#define PROGRAMNAME     PACKAGE_NAME
+#define PROGRAMNAME PACKAGE_NAME
 #define PROGRAM_VERSION VERSION
 #define COPYRIGHT_MESSAGE \
     "comes with ABSOLUTELY NO WARRANTY. This is free software,\n" \
@@ -380,9 +380,9 @@ extern "C" struct sRGBDef
 #endif
 
 #ifdef __cplusplus
-    extern int      copyFile(const char *srcPath, const char *destPath);
-    extern void     strlower(std::string& str);
-    extern void     strupper(std::string& str);
+    extern int copyFile(const char *srcPath, const char *destPath);
+    extern void strlower(std::string& str);
+    extern void strupper(std::string& str);
     extern std::string binstr(Byte x);
     extern std::string hexstr(Byte x);
     extern std::string hexstr(Word x);
@@ -390,9 +390,9 @@ extern "C" struct sRGBDef
 
     #ifdef _WIN32
         extern int getopt(int argc, char *const argv[], const char *optstr);
-        extern int  optind;
-        extern int  opterr;
-        extern int  optopt;
+        extern int optind;
+        extern int opterr;
+        extern int optopt;
         extern const char *optarg;
     #endif
 #endif /* ifdef __cplusplus */

@@ -52,10 +52,10 @@ protected:
     Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    &fdc;
-    char         command[MAX_COMMAND];
-    Word         command_index;
-    Word         answer_index;
-    std::string  answer;
+    char command[MAX_COMMAND];
+    Word command_index;
+    Word answer_index;
+    std::string answer;
 
     // private interface:
 private:

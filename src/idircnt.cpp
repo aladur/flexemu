@@ -385,14 +385,14 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
     if (stat(filePath.c_str(), &sbuf) == 0)
     {
         timebuf.actime = sbuf.st_atime;
-        file_time.tm_sec   = 0;
-        file_time.tm_min   = 0;
-        file_time.tm_hour  = 12;
-        file_time.tm_mon   = date.GetMonth() - 1;
-        file_time.tm_mday  = date.GetDay();
-        file_time.tm_year  = date.GetYear() - 1900;
+        file_time.tm_sec = 0;
+        file_time.tm_min = 0;
+        file_time.tm_hour = 12;
+        file_time.tm_mon = date.GetMonth() - 1;
+        file_time.tm_mday = date.GetDay();
+        file_time.tm_year = date.GetYear() - 1900;
         file_time.tm_isdst = 0;
-        timebuf.modtime    = mktime(&file_time);
+        timebuf.modtime = mktime(&file_time);
 
         return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);
     }

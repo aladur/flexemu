@@ -93,23 +93,23 @@ public:
 
 private:
 
-    Byte                dr;
-    Byte                tr;
-    Byte                sr;
-    Byte                cr;
-    Byte                str;
-    Byte                stepOffset;
-    bool                isDataRequest;
-    bool                isInterrupt;
-    bool                side;
-    Word                byteCount;
-    Word                strRead;
-    Byte                indexPulse; // emulate index hole of floppy disc.
+    Byte dr;
+    Byte tr;
+    Byte sr;
+    Byte cr;
+    Byte str;
+    Byte stepOffset;
+    bool isDataRequest;
+    bool isInterrupt;
+    bool side;
+    Word byteCount;
+    Word strRead;
+    Byte indexPulse; // emulate index hole of floppy disc.
 
     // Internal functions
 private:
 
-    void                 do_seek(Byte new_track);
+    void do_seek(Byte new_track);
 
 public:
 

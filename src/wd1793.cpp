@@ -38,13 +38,13 @@ Wd1793::~Wd1793()
 void Wd1793::resetIo()
 {
     resetIrq();
-    stepOffset  = 1;
+    stepOffset = 1;
     isDataRequest = false;
-    side      = false;
+    side = false;
     byteCount = 0;
-    strRead   = 0;
-    str       = 0;
-    cr        = 0;  // clear previous command
+    strRead = 0;
+    str = 0;
+    cr = 0; // clear previous command
     indexPulse= 0;
     command(0); //execute RESTORE after a reset
 }
@@ -125,7 +125,7 @@ Byte Wd1793::readIo(Word offset)
             return dr;
     }
 
-    return 0;   // default, should never be used!
+    return 0; // default, should never be used!
 }   // readIo
 
 
@@ -139,15 +139,15 @@ void Wd1793::writeIo(Word offset, Byte val)
             break;
 
         case 1:
-            tr  = val;
+            tr = val;
             break;
 
         case 2:
-            sr  = val;
+            sr = val;
             break;
 
         case 3:
-            dr  = val;
+            dr = val;
 
             if (byteCount)
             {
@@ -186,7 +186,7 @@ void Wd1793::writeIo(Word offset, Byte val)
 
 void Wd1793::do_seek(Byte new_track)
 {
-    str = STR_HEADLOADED;     // SEEK
+    str = STR_HEADLOADED; // SEEK
 
     if (isSeekError(new_track))
     {
@@ -368,7 +368,7 @@ void Wd1793::command(Byte command)
             }
             else
             {
-                tr  = 1; // ALWAYS SET TRACK TO 1
+                tr = 1; // ALWAYS SET TRACK TO 1
                 // so system info sector never will be found
                 str = STR_NOTREADY;
             }

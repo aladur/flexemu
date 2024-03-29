@@ -22,7 +22,7 @@
    This program simulates a 6809 processor.
 
    System dependencies: short must be 16 bits.
-                        char  must be 8 bits.
+                        char must be 8 bits.
                         long must be more than 16 bits.
                         arrays up to 65536 bytes must be supported.
                         machine must be twos complement.
@@ -151,7 +151,7 @@
 #define LOADREGS
 #define SAVEREGS
 
-#define PUSH_ENTIRE  PUSHWORD(ipcreg);\
+#define PUSH_ENTIRE PUSHWORD(ipcreg);\
     PUSHWORD(iureg);\
     PUSHWORD(iyreg);\
     PUSHWORD(ixreg);\

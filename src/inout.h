@@ -48,16 +48,16 @@ private:
     int local_serpar_address;
 
 public:
-    void    update_1_second();
-    void    set_rtc(Mc146818 *x_rtc);
-    void    set_gui(AbstractGui *x_gui);
+    void update_1_second();
+    void set_rtc(Mc146818 *x_rtc);
+    void set_gui(AbstractGui *x_gui);
 
     // Communication with GUI
 public:
-    bool    output_to_terminal();
-    bool    output_to_graphic();
-    bool    is_gui_present();
-    void    write_char_serial(Byte value);
+    bool output_to_terminal();
+    bool output_to_graphic();
+    bool is_gui_present();
+    void write_char_serial(Byte value);
 
     // local interface
 public:

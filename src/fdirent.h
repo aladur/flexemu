@@ -32,29 +32,29 @@
 
 enum flexFileAttributes
 {
-    FLX_READONLY    = 0x80,
-    FLX_NODELETE    = 0x40,
-    FLX_NOREAD  = 0x20,
-    FLX_NOCAT   = 0x10,
+    FLX_READONLY = 0x80,
+    FLX_NODELETE = 0x40,
+    FLX_NOREAD = 0x20,
+    FLX_NOCAT = 0x10,
 };
 
 enum flexFileStatus
 {
-    FLX_EMPTY   = 0x1
+    FLX_EMPTY = 0x1
 };
 
 class FlexDirEntry
 {
 private:
-    int     size;
+    int size;
     Byte attributes;
-    int     sectorMap;
-    int     startTrk;
-    int     startSec;
-    int     endTrk;
-    int     endSec;
-    int     status;
-    BDate   date;
+    int sectorMap;
+    int startTrk;
+    int startSec;
+    int endTrk;
+    int endSec;
+    int status;
+    BDate date;
     BTime time;
     std::string fileName;
 
@@ -68,33 +68,33 @@ public:
     FlexDirEntry &operator= (FlexDirEntry &&src) noexcept;
 
     const BDate &GetDate() const;
-    void    SetDate(const BDate &date);
+    void SetDate(const BDate &date);
     const BTime &GetTime() const;
-    void    SetTime(const BTime &time);
-    void    SetStartTrkSec(int t, int s);
-    void    GetStartTrkSec(int &t, int &s) const;
-    void    SetEndTrkSec(int t, int s);
-    void    GetEndTrkSec(int &t, int &s) const;
-    void    SetTotalFileName(const char *fileName);
+    void SetTime(const BTime &time);
+    void SetStartTrkSec(int t, int s);
+    void GetStartTrkSec(int &t, int &s) const;
+    void SetEndTrkSec(int t, int s);
+    void GetEndTrkSec(int &t, int &s) const;
+    void SetTotalFileName(const char *fileName);
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;
     std::string GetFileExt() const;
-    void    SetFileSize(int size);
-    int     GetFileSize() const;
+    void SetFileSize(int size);
+    int GetFileSize() const;
     void SetAttributes(Byte attributes);
     void SetAttributes(Byte setMask, Byte clearMask);
     Byte GetAttributes() const;
     const std::string GetAttributesString() const;
-    int     GetSectorMap() const;
-    int     IsRandom() const;
-    void    SetSectorMap(int aSectorMap);
-    int     IsEmpty() const;
-    void    SetEmpty();
-    void    ClearEmpty();
+    int GetSectorMap() const;
+    int IsRandom() const;
+    void SetSectorMap(int aSectorMap);
+    int IsEmpty() const;
+    void SetEmpty();
+    void ClearEmpty();
 
 private:
     void CopyFrom(const FlexDirEntry &src);
-};  // class FlexDirEntry
+}; // class FlexDirEntry
 
 inline void FlexDirEntry::SetFileSize(int s)
 {

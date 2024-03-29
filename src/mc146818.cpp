@@ -36,7 +36,7 @@ Mc146818::Mc146818() :
     path("")
 {
     struct tm   *lt;
-    time_t       time_now;
+    time_t time_now;
     const char* home = getFileName();
 
     if (home[0] != '\0')
@@ -182,7 +182,7 @@ void Mc146818::writeIo(Word offset, Byte val)
     switch (offset & 0x3f)
     {
         case 0x00:
-            second    = val;
+            second = val;
             break;
 
         case 0x01:
@@ -190,7 +190,7 @@ void Mc146818::writeIo(Word offset, Byte val)
             break;
 
         case 0x02:
-            minute    = val;
+            minute = val;
             break;
 
         case 0x03:
@@ -198,42 +198,42 @@ void Mc146818::writeIo(Word offset, Byte val)
             break;
 
         case 0x04:
-            hour      = val;
+            hour = val;
             break;
 
         case 0x05:
-            al_hour   = val;
+            al_hour = val;
             break;
 
         case 0x06:
-            weekday   = val;
+            weekday = val;
             break;
 
         case 0x07:
-            day       = val;
+            day = val;
             break;
 
         case 0x08:
-            month     = val;
+            month = val;
             break;
 
         case 0x09:
-            year      = val;
+            year = val;
             break;
 
         case 0x0a:
-            A         = val & 0x7f;
+            A = val & 0x7f;
             break;
 
         case 0x0b:
-            B         = val;
+            B = val;
 
         // a SET bit going 1 clears the UIE bit
         //if (BSET7(B))
         //   B = val & 0xef;
         case 0x0c:
         case 0x0d:
-            break;   // Reg. C and D is read only
+            break; // Reg. C and D is read only
 
         default:
             ram[offset - 0x0e] = val;
@@ -256,9 +256,9 @@ void Mc146818::update_1_second()
             weekday == 1 &&
             convert_bin(day) >= 24)
         {
-            hour    = 3;
-            minute  = 0;
-            second  = 0;
+            hour = 3;
+            minute = 0;
+            second = 0;
             // check for last sunday in october 1:59:59
         }
         else if (BTST0(B) && hour == 1 &&
@@ -270,9 +270,9 @@ void Mc146818::update_1_second()
                  !dse_october)
         {
             dse_october = 1;
-            hour    = 1;
-            minute  = 0;
-            second  = 0;
+            hour = 1;
+            minute = 0;
+            second = 0;
         }
         else
         {
@@ -339,8 +339,7 @@ Byte Mc146818::convert_hour(Byte val)
         case 0x00:      //12 hour, BCD
             if (val >= 12)
             {
-                return  0x80 |
-                        (((val - 12) / 10) << 4) | ((val - 12) % 10);
+                return 0x80 | (((val - 12) / 10) << 4) | ((val - 12) % 10);
             }
             else
             {
@@ -364,7 +363,7 @@ Byte Mc146818::convert_hour(Byte val)
             return val;
     }  // switch
 
-    return 1;  // this should NEVER happen
+    return 1; // this should NEVER happen
 }
 
 // convert from bcd or binary to binary

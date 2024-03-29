@@ -38,10 +38,10 @@ Mc6850::~Mc6850()
 
 void Mc6850::resetIo()
 {
-    cr  = 0;    // control register
-    sr  = 0;    // status register
-    tdr = 0;    // transmit data register
-    rdr = 0;    // receive data register
+    cr  = 0; // control register
+    sr  = 0; // status register
+    tdr = 0; // transmit data register
+    rdr = 0; // receive data register
 }
 
 Byte Mc6850::readIo(Word offset)
@@ -49,19 +49,19 @@ Byte Mc6850::readIo(Word offset)
     switch (offset & 0x01)
     {
         case 0:
-            sr &= 0x80;     // only receive data register full
+            sr &= 0x80; // only receive data register full
             BSET1(sr);
-            requestInput();     // and interrupt request is set
+            requestInput(); // and interrupt request is set
             // the other status bits are always 0
-            return sr;      // return status register
+            return sr; // return status register
 
         case 1:
-            rdr = readInput();  // read character
-            BCLR7(cr);      // reset interrupt flag
-            return rdr;     // return receive data register
+            rdr = readInput(); // read character
+            BCLR7(cr); // reset interrupt flag
+            return rdr; // return receive data register
     }
 
-    return 0;       // should never happen
+    return 0; // should never happen
 }
 
 // read data from serial line (should be overwritten by subclass)
@@ -91,12 +91,12 @@ void Mc6850::writeIo(Word offset, Byte val)
 
         case 1:
             tdr = val;
-            BCLR7(cr);      // reset interrupt flag
-            writeOutput(tdr);   // write output to serial line
+            BCLR7(cr); // reset interrupt flag
+            writeOutput(tdr); // write output to serial line
 
             if ((cr & 0x60) == 0x20)// if enabled
             {
-                set_irq();    // set transmitting interrupt
+                set_irq(); // set transmitting interrupt
             }
 
             break;

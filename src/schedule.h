@@ -55,31 +55,31 @@ public:
     ~Scheduler();
 
     CpuState statemachine(CpuState initial_state);
-    bool        is_finished();
-    void        request_new_state(CpuState x_user_state);
-    void        process_events();
+    bool is_finished();
+    void request_new_state(CpuState x_user_state);
+    void process_events();
     CpuState idleloop();
     CpuState runloop(RunMode mode);
 
     // Thread support
 public:
-    void        sync_exec(BCommandPtr new_command);
-    void    run();
+    void sync_exec(BCommandPtr new_command);
+    void run();
 
 protected:
-    void        execute_commands();
+    void execute_commands();
     void suspend();
     void resume();
     std::mutex condition_mutex;
     std::condition_variable condition;
-    std::mutex      command_mutex;
-    std::mutex      status_mutex;
-    std::mutex      irq_status_mutex;
+    std::mutex command_mutex;
+    std::mutex status_mutex;
+    std::mutex irq_status_mutex;
     std::vector<BCommandPtr> commands;
 
     // Timer interface:
 public:
-    QWord       get_total_cycles()
+    QWord get_total_cycles()
     {
         return total_cycles;
     }
@@ -91,40 +91,40 @@ protected:
     ScheduledCpu &cpu;
     Inout &inout;
     CpuState state;
-    Event       events;
+    Event events;
     CpuState user_state;
-    QWord       total_cycles;
-    QWord       time0sec;
+    QWord total_cycles;
+    QWord time0sec;
 
     // CPU status
 public:
-    void        get_interrupt_status(tInterruptStatus &s);
+    void get_interrupt_status(tInterruptStatus &s);
     CpuStatus  *get_status();
 protected:
     tInterruptStatus interrupt_status;
-    void        do_reset();
+    void do_reset();
     CpuStatusPtr cpu_status;
-    bool        is_status_valid;
-    bool        is_resume;
+    bool is_status_valid;
+    bool is_resume;
 
     // CPU frequency
 public:
-    void        set_frequency(float target_freq);
-    float       get_frequency()
+    void set_frequency(float target_freq);
+    float get_frequency()
     {
         return frequency;
     }
-    float       get_target_frequency()
+    float get_target_frequency()
     {
         return target_frequency;
     }
 protected:
-    void        update_frequency();
-    void        frequency_control(QWord time1);
-    float       target_frequency;
-    float       frequency;      // current frequency
-    QWord       time0;          // time for freq control
-    QWord       cycles0;        // cycle count for freq calc
+    void update_frequency();
+    void frequency_control(QWord time1);
+    float target_frequency;
+    float frequency; // current frequency
+    QWord time0; // time for freq control
+    QWord cycles0; // cycle count for freq calc
 };
 
 inline Scheduler::Event operator| (Scheduler::Event lhs, Scheduler::Event rhs)

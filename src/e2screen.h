@@ -1,5 +1,5 @@
 /*
-    e2screen.h  A QWidget subclass implementing the Eurocom II screen. 
+    e2screen.h  A QWidget subclass implementing the Eurocom II screen.
 
 
     flexemu, an MC6809 emulator running FLEX
@@ -59,7 +59,7 @@ public:
     enum
     {
         FLX_INVISIBLE_CURSOR = 10,
-        FLX_DEFAULT_CURSOR   = 11
+        FLX_DEFAULT_CURSOR = 11
     };
 
     E2Screen() = delete;

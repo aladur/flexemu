@@ -47,7 +47,7 @@ private:
     JoystickIO &joystickIO;
     cycles_t cycles;
 
-#ifdef  LINUX_JOYSTICK_IS_PRESENT
+#ifdef LINUX_JOYSTICK_IS_PRESENT
     BJoystick joystick;
 #endif
 

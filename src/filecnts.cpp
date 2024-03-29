@@ -25,7 +25,7 @@
 #include <string>
 #include <sstream>
 
-std::ostream& operator<<(std::ostream& os, const  st_t &st)
+std::ostream& operator<<(std::ostream& os, const st_t &st)
 {
     auto previous_flags = os.flags();
     auto previous_fill = os.fill('0');

@@ -50,13 +50,13 @@ struct tFlexFileHeader
 {
     char magicNumber[4];
     DWord fileSize;
-    Word  attributes;
-    Word  sectorMap;
-    Word  day;
-    Word  month;
-    Word  year;
-    Word  hour;
-    Word  minute;
+    Word attributes;
+    Word sectorMap;
+    Word day;
+    Word month;
+    Word year;
+    Word hour;
+    Word minute;
     FlexFileName fileName;
 };
 

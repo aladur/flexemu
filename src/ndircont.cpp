@@ -240,14 +240,14 @@ int NafsDirectoryContainer::GetContainerType() const
 void NafsDirectoryContainer::initialize_header(bool is_write_protected,
                                                int tracks, int sectors)
 {
-    param.offset        = 0;
+    param.offset = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
-    param.max_sector    = static_cast<Word>(sectors);
-    param.max_sector0   = getTrack0SectorCount(tracks, sectors);
-    param.max_track     = static_cast<Word>(tracks - 1);
+    param.max_sector = static_cast<Word>(sectors);
+    param.max_sector0 = getTrack0SectorCount(tracks, sectors);
+    param.max_track = static_cast<Word>(tracks - 1);
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
-    param.byte_p_track  = param.max_sector * SECTOR_SIZE;
+    param.byte_p_track = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
 }
 
@@ -281,7 +281,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
     const char *format;
 
     extension[0] = '\0';
-    dot    = '\0';
+    dot = '\0';
 #ifdef _WIN32
     format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
 #endif
@@ -1355,9 +1355,9 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
 bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
         Byte day, Byte year, Byte hour, Byte minute) const
 {
-    struct stat    statbuf;
+    struct stat statbuf;
     struct utimbuf timebuf;
-    struct tm      file_time;
+    struct tm file_time;
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 

@@ -90,6 +90,6 @@ public:
 private:
     bool VerifyTape();
 
-};  // class MiniDcrTape
+}; // class MiniDcrTape
 
 #endif // MDCRTAPE_INCLUDED

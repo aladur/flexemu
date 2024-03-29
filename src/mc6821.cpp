@@ -37,12 +37,12 @@ Mc6821::~Mc6821()
 
 void Mc6821::resetIo()
 {
-    cra = 0;    // control register A
-    ora = 0;    // output register A
-    ddra = 0;   // data direction register A
-    crb = 0;    // control register B
-    orb = 0;    // output register B
-    ddrb = 0;   // data direction register B
+    cra = 0; // control register A
+    ora = 0; // output register A
+    ddra = 0; // data direction register A
+    crb = 0; // control register B
+    orb = 0; // output register B
+    ddrb = 0; // data direction register B
 
     cls = ControlLine::NONE; // control lines CA1, CA2, CB1, CB2
 
@@ -56,8 +56,8 @@ Byte Mc6821::readIo(Word offset)
             if (cra & 0x04)         // check data direction bit
             {
                 Byte result = readInputA(); // get data from HW-input
-                cra &= 0xbf;    // clear IRQA2 flag
-                cra &= 0x7f;    // clear IRQA1 flag
+                cra &= 0xbf; // clear IRQA2 flag
+                cra &= 0x7f; // clear IRQA1 flag
 
                 if ((cra & 0x38) == 0x20)
                 {
@@ -72,15 +72,15 @@ Byte Mc6821::readIo(Word offset)
             }
 
         case 1:
-            requestInputA();        // request for input
+            requestInputA(); // request for input
             return cra;
 
         case 2:
             if (crb & 0x04)         // check data direction bit
             {
                 Byte result = readInputB(); // get data from HW-input
-                crb &= 0xbf;    // clear IRQB2 flag
-                crb &= 0x7f;    // clear IRQB1 flag
+                crb &= 0xbf; // clear IRQB2 flag
+                crb &= 0x7f; // clear IRQB1 flag
                 return result; // read output register B
             }
             else
@@ -89,7 +89,7 @@ Byte Mc6821::readIo(Word offset)
             }
 
         case 3:
-            requestInputB();        // request for input
+            requestInputB(); // request for input
             return crb;
     }
 
@@ -218,11 +218,11 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
     switch (control_line)
     {
         case ControlLine::CA1:
-            BSET7(cra);     // set IRQA1 flag
+            BSET7(cra); // set IRQA1 flag
 
             if (BTST0(cra))
             {
-                set_irq_A();    // send an interrupt to CPU
+                set_irq_A(); // send an interrupt to CPU
             }
 
             if ((cra & 0x38) == 0x20)
@@ -253,11 +253,11 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
             break;
 
         case ControlLine::CB1:
-            BSET7(crb);     // set IRQB1 flag
+            BSET7(crb); // set IRQB1 flag
 
             if (BTST0(crb))
             {
-                set_irq_B();    // send an interrupt to CPU
+                set_irq_B(); // send an interrupt to CPU
             }
 
             if ((crb & 0x38) == 0x20)

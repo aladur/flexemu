@@ -1,9 +1,9 @@
 /*
-    bjoystck.h: a basic class for reading from standard analog joystick
-
+    bjoystck.cpp  A basic class for reading from standard analog joystick
 
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 1997-2024  W. Schwotzer
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -99,8 +99,8 @@ bool BJoystick::Actualize()
             y = 255;
         }
 
-        axis[0]   = x - 128;
-        axis[1]   = y - 128;
+        axis[0] = x - 128;
+        axis[1] = y - 128;
         buttons = raw_js_data.buttons ;
 
         return true;
@@ -120,4 +120,4 @@ bool BJoystick::IsButtonSet(int which)
     return (buttons & (1 << which)) != 0;
 }
 
-#endif  //#ifdef LINUX_JOYSTICK_IS_PRESENT
+#endif //#ifdef LINUX_JOYSTICK_IS_PRESENT

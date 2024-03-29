@@ -219,7 +219,7 @@ Byte Pia2V5::readInputA()
     result |= 0x02; // Cassette in position (CIP)
     if (!drive[drive_idx]->IsWriteProtected())
     {
-        result |= 0x04;  // No write protection (WPRT)
+        result |= 0x04; // No write protection (WPRT)
     }
 
     if (cpu.get_cycles() - cycles_RDC > delay_RDC &&

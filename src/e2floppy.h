@@ -80,14 +80,14 @@ private:
 
     FileContainerIfSectorPtr floppy[MAX_DRIVES + 1U];
     FileContainerIfSector *pfs;
-    Byte            track[MAX_DRIVES + 1U];
-    DiskStatus      drive_status[MAX_DRIVES + 1U];
-    Byte            sector_buffer[1024];
-    std::string     disk_dir;
+    Byte track[MAX_DRIVES + 1U];
+    DiskStatus drive_status[MAX_DRIVES + 1U];
+    Byte sector_buffer[1024];
+    std::string disk_dir;
     mutable std::mutex status_mutex;
     // data for CMD_WRITETRACK
     WriteTrackState writeTrackState; // Write track state
-    Word            offset; // offset when reading a track
+    Word offset; // offset when reading a track
     Byte idAddressMark[4]; // Contains track, side, sector, sizecode
     const struct sOptions &options;
 
@@ -105,21 +105,20 @@ public:
     };
 
     virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
-    virtual void         disk_directory(const std::string &x_disk_dir);
-    virtual void         mount_all_drives(std::string drive[]);
-    virtual bool         sync_all_drives(
-                                    tMountOption option = MOUNT_DEFAULT);
-    virtual bool         umount_all_drives();
-    virtual bool         mount_drive(const std::string &path, Word drive_nr,
-                                     tMountOption option = MOUNT_DEFAULT);
-    virtual bool         format_disk(SWord trk, SWord sec,
-                                     const std::string &name, int fmt);
-    virtual bool         sync_drive(Word drive_nr,
-                                    tMountOption option = MOUNT_DEFAULT);
-    virtual bool         umount_drive(Word drive_nr);
+    virtual void disk_directory(const std::string &x_disk_dir);
+    virtual void mount_all_drives(std::string drive[]);
+    virtual bool sync_all_drives(tMountOption option = MOUNT_DEFAULT);
+    virtual bool umount_all_drives();
+    virtual bool mount_drive(const std::string &path, Word drive_nr,
+                             tMountOption option = MOUNT_DEFAULT);
+    virtual bool format_disk(SWord trk, SWord sec,
+                             const std::string &name, int fmt);
+    virtual bool sync_drive(Word drive_nr,
+                            tMountOption option = MOUNT_DEFAULT);
+    virtual bool umount_drive(Word drive_nr);
     virtual FlexContainerInfo drive_info(Word drive_nr);
-    virtual std::string  drive_info_string(Word drive_nr);
-    virtual void         select_drive(Byte new_selected);
+    virtual std::string drive_info_string(Word drive_nr);
+    virtual void select_drive(Byte new_selected);
 
 private:
 

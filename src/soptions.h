@@ -127,10 +127,10 @@ struct sOptions
     std::string hex_file;
     std::string disk_dir;
     std::string startup_command;
-    bool isRamExtension;  // Use RAM extension cards/No RAM extension
-    bool isHiMem;         // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
-    bool isFlexibleMmu;   // Use flexible MMU/Normal MMU
-    bool isEurocom2V5;    // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
+    bool isRamExtension; // Use RAM extension cards/No RAM extension
+    bool isHiMem; // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
+    bool isFlexibleMmu; // Use flexible MMU/Normal MMU
+    bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
     bool use_undocumented;
     bool useRtc;
     bool term_mode;

@@ -35,38 +35,38 @@ class FlexContainerInfo
 
 private:
 
-    BDate   date;
-    std::string path;   // path of container file
-    int     sectors;    // Number of sectors per track
-    int     tracks;     // Number of tracks
-    std::string name;   // name of disk
+    BDate date;
+    std::string path; // path of container file
+    int sectors; // Number of sectors per track
+    int tracks; // Number of tracks
+    std::string name; // name of disk
     unsigned int number;// disk number
-    int     type;       // container type
+    int type; // container type
     uint64_t free; // Number of bytes free
     uint64_t totalSize; // Number of total bytes writable
     Byte attributes; // Disk attributes
-    bool    is_flex_format;// This container contains a FLEX file system.
-    bool    is_write_protected;// This container is write protected.
-    bool    is_valid;   // This container info is valid.
+    bool is_flex_format;// This container contains a FLEX file system.
+    bool is_write_protected;// This container is write protected.
+    bool is_valid; // This container info is valid.
     std::vector<Byte> jvc_header; // JVC header Bytes, size==0 if not present.
 
 public:
-    FlexContainerInfo();        // public constructor
-    virtual ~FlexContainerInfo();   // public destructor
+    FlexContainerInfo(); // public constructor
+    virtual ~FlexContainerInfo(); // public destructor
 
-    void                SetName(const std::string &n)
+    void SetName(const std::string &n)
     {
         name = n;
         is_valid = true;
     }
-    void                SetNumber(unsigned int n)
+    void SetNumber(unsigned int n)
     {
         number = n;
         is_valid = true;
     }
-    const std::string   GetTypeString() const;
+    const std::string GetTypeString() const;
 
-    inline void         SetPath(const std::string &p)
+    inline void SetPath(const std::string &p)
     {
         path = p;
         is_valid = true;
@@ -99,22 +99,22 @@ public:
         return attributes;
     };
     /* Property only valid if GetIsFlexFormat() == true */
-    inline const        BDate &GetDate() const
+    inline const BDate &GetDate() const
     {
         return date;
     };
-    inline void         SetDate(const BDate &d)
+    inline void SetDate(const BDate &d)
     {
         date = d;
         is_valid = true;
     };
-    inline void         SetTrackSector(int t, int s)
+    inline void SetTrackSector(int t, int s)
     {
         tracks = t;
         sectors = s;
         is_valid = true;
     };
-    inline void         GetTrackSector(int &t, int &s) const
+    inline void GetTrackSector(int &t, int &s) const
     {
         t = tracks;
         s = sectors;
@@ -133,12 +133,12 @@ public:
     {
         return path;
     };
-    inline void         SetType(int t)
+    inline void SetType(int t)
     {
         type = t;
         is_valid = true;
     };
-    inline int          GetType() const
+    inline int GetType() const
     {
         return type;
     };
@@ -174,7 +174,7 @@ public:
     {
         return is_valid;
     };
-};  // class FlexContainerInfo
+}; // class FlexContainerInfo
 
 #endif // FCINFO_INCLUDED
 

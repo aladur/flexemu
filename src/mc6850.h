@@ -35,8 +35,8 @@ class Mc6850 : public IoDevice
 
     // Internal registers:
     //
-    // cr       control register (write only)
-    // sr       status register  (read only)
+    // cr control register (write only)
+    // sr status register  (read only)
     // rdr, tdr receive/transmit data register (read only/write only)
 
 protected:
@@ -61,17 +61,17 @@ public:
     }
 
     // actions to be done when a character is ready to be received
-    virtual void            activeTransition();
+    virtual void activeTransition();
 
 protected:
     // read data from serial line
-    virtual Byte            readInput();
+    virtual Byte readInput();
     // write data to serial line
-    virtual void            writeOutput(Byte val);
+    virtual void writeOutput(Byte val);
     // set an interrupt
-    virtual void            set_irq();
+    virtual void set_irq();
     // request if character is ready to be read, update status register
-    virtual void            requestInput();
+    virtual void requestInput();
 
     // Public constructor and destructor
 

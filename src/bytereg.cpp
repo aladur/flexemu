@@ -56,7 +56,7 @@ Byte ByteRegister::readIo(Word offset)
         return requestReadValue();
     }
 
-    return 0;   // default, should never be used!
+    return 0; // default, should never be used!
 }
 
 

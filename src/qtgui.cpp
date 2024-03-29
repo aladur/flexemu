@@ -1933,46 +1933,46 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
 
                 if (pixels[0] & pixelBitMask)
                 {
-                    colorIndex += GREEN_HIGH;    // 0x0C, green high
+                    colorIndex += GREEN_HIGH; // 0x0C, green high
                 }
 
                 if (options.nColors > 8)
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        colorIndex += RED_HIGH;    // 0x0D, red high
+                        colorIndex += RED_HIGH; // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        colorIndex += BLUE_HIGH;    // 0x0E, blue high
+                        colorIndex += BLUE_HIGH; // 0x0E, blue high
                     }
 
                     if (pixels[1] & pixelBitMask)
                     {
-                        colorIndex += GREEN_LOW;    // 0x04, green low
+                        colorIndex += GREEN_LOW; // 0x04, green low
                     }
 
                     if (pixels[3] & pixelBitMask)
                     {
-                        colorIndex += RED_LOW;    // 0x05, red low
+                        colorIndex += RED_LOW; // 0x05, red low
                     }
 
                     if (pixels[5] & pixelBitMask)
                     {
-                        colorIndex += BLUE_LOW;    // 0x06, blue low
+                        colorIndex += BLUE_LOW; // 0x06, blue low
                     }
                 }
                 else
                 {
                     if (pixels[2] & pixelBitMask)
                     {
-                        colorIndex += RED_HIGH;    // 0x0D, red high
+                        colorIndex += RED_HIGH; // 0x0D, red high
                     }
 
                     if (pixels[4] & pixelBitMask)
                     {
-                        colorIndex += BLUE_HIGH;    // 0x0E, blue high
+                        colorIndex += BLUE_HIGH; // 0x0E, blue high
                     }
                 }
                 *(pData)++ = colorIndex;
