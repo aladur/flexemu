@@ -33,7 +33,7 @@
 #include "warnon.h"
 
 FlexplorerNewUi::FlexplorerNewUi() :
-    Ui_FlexplorerNew(), dialog(nullptr), format(TYPE_DSK_CONTAINER)
+    Ui_FlexplorerNew()
 {
 }
 

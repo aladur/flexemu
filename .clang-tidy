@@ -40,6 +40,7 @@ Checks: '
   -misc-non-private-member-variables-in-classes,
   -misc-const-correctness,
   -misc-use-anonymous-namespace,
+  modernize-use-default-member-init,
   modernize-use-override,
   performance-*,
   portability-*,

@@ -16,7 +16,7 @@ protected:
 
     char        code_buf[28]; // buffer for machinecode
     char        mnem_buf[28]; // buffer for mnemonic
-    bool use_undocumented;
+    bool use_undocumented{false};
 
 public:
     Da6809();

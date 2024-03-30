@@ -34,12 +34,6 @@ BProcess::BProcess(const std::string &x_exec,
                    const std::string &x_dir /* = "" */,
                    const std::string &x_arg /* = "" */) :
     executable(x_exec), arguments(x_arg), directory(x_dir)
-#ifdef _WIN32
-    , hProcess(nullptr)
-#endif
-#ifdef UNIX
-    , pid(-1)
-#endif
 {
 }
 

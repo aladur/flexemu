@@ -46,14 +46,14 @@ enum flexFileStatus
 class FlexDirEntry
 {
 private:
-    int size;
-    Byte attributes;
-    int sectorMap;
-    int startTrk;
-    int startSec;
-    int endTrk;
-    int endSec;
-    int status;
+    int size{0};
+    Byte attributes{0};
+    int sectorMap{0};
+    int startTrk{-1};
+    int startSec{0};
+    int endTrk{0};
+    int endSec{0};
+    int status{0};
     BDate date;
     BTime time;
     std::string fileName;

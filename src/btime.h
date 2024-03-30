@@ -29,9 +29,9 @@ class BTime
 {
 private:
 
-    int hour; // range 0..23
-    int minute; // range 0..59
-    int second; // range 0..59
+    int hour{0}; // range 0..23
+    int minute{0}; // range 0..59
+    int second{0}; // range 0..59
 
 public:
 

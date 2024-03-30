@@ -24,7 +24,7 @@
 #include "joystick.h"
 
 
-JoystickIO::JoystickIO() : deltaX(0), deltaY(0), buttonMask(0), newValues(false)
+JoystickIO::JoystickIO()
 {
     reset();
 }

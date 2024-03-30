@@ -44,8 +44,8 @@ class KeyboardIO
 {
     std::mutex parallel_mutex;
     std::deque<Byte> key_buffer_parallel;
-    unsigned int keyMask;
-    Word init_delay;
+    unsigned int keyMask{0};
+    Word init_delay{500};
 
 public:
     static void set_bell(Word x_percent);

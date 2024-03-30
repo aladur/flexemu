@@ -65,58 +65,48 @@ class FileContainerCheck
 
     typedef struct s_link
     {
-        SectorType type;
-        st_t trk_sec; // track-sector of this sector.
-        st_t to; // track-sector to next linked sector or 00-00.
+        SectorType type{SectorType::NotAssigned};
+        st_t trk_sec{}; // track-sector of this sector.
+        st_t to{}; // track-sector to next linked sector or 00-00.
         std::set<st_t> from; // track-sector from previous linked sector(s)
-        SDWord item_index; // index of according item
-        Word record_nr; // record number
-        Word expected_record_nr; // expected record number (only valid if
-                                 // type == SectorType::File)
-        bool is_bad; // flag if trk_sec is a bad track-sector (not usable as
-                     // link.
-        bool has_cycle; // flag if this link has a cycle
+        SDWord item_index{-1}; // index of according item
+        Word record_nr{0}; // record number
+        Word expected_record_nr{0}; // expected record number (only valid if
+                                    // type == SectorType::File)
+        bool is_bad{false}; // flag if trk_sec is a bad track-sector
+                            // (not usable as link).
+        bool has_cycle{false}; // flag if this link has a cycle
 
-        s_link() :
-            type(SectorType::NotAssigned), trk_sec{0, 0}, to{0, 0},
-            item_index(-1), record_nr(0), expected_record_nr(0),
-            is_bad(false), has_cycle(false)
-        {
-        }
+        s_link() { }
 
         s_link(st_t ts, st_t p_to = st_t{0, 0}, Word p_record_nr = 0) :
-              type(SectorType::NotAssigned), trk_sec(ts), to(p_to),
-              item_index(-1), record_nr(p_record_nr),
-              expected_record_nr(0),
-              is_bad(false), has_cycle(false)
+              trk_sec(ts), to(p_to), record_nr(p_record_nr)
         {
         }
     } link_t;
 
     typedef struct s_item
     {
-        SectorType type;
+        SectorType type{SectorType::NotAssigned};
         std::string name;
-        st_t start; // Start track-sector (For Files part of directory entry)
-        st_t end; // End track-sector (For Files part of directory entry)
-        st_t unexpected_end; // For Files: End track-sector (different from end)
-        Word records;
-        Word sectors;
-        bool is_random;
-        Byte month;
-        Byte day;
-        Byte year;
-        Byte hour;
-        Byte minute;
+        st_t start{}; // Start track-sector (For Files part of directory entry)
+        st_t end{}; // End track-sector (For Files part of directory entry)
+        st_t unexpected_end{}; // For Files: End track-sector (different from end)
+        Word records{0};
+        Word sectors{0};
+        bool is_random{false};
+        Byte month{0};
+        Byte day{0};
+        Byte year{0};
+        Byte hour{0};
+        Byte minute{0};
 
         s_item(SectorType p_type, st_t p_start, st_t p_end,
                const std::string &p_name) :
             type(p_type),
             name(p_name),
-            start(p_start), end(p_end),
-            unexpected_end{0,0},
-            records(0), sectors(0),
-            is_random(false)
+            start(p_start),
+            end(p_end)
         {
         };
     } item_t;
@@ -175,10 +165,10 @@ private:
     std::map<st_t, link_t> links;
     std::vector<item_t> items;
     ContainerCheckResultItems results;
-    Byte disk_month;
-    Byte disk_day;
-    Byte disk_year;
-    FileTimeAccess fileTimeAccess;
+    Byte disk_month{0};
+    Byte disk_day{0};
+    Byte disk_year{0};
+    FileTimeAccess fileTimeAccess{FileTimeAccess::NONE};
 };
 
 // The following objects represent and discribe the check results.
@@ -186,16 +176,16 @@ private:
 struct MultipleLinkInputs : public ContainerCheckResultItem
 {
     std::string name;
-    st_t current; // Current track-sector with multiple inputs.
+    st_t current{}; // Current track-sector with multiple inputs.
     std::vector<st_t> inputs; // Input Track-sector's having a link to current.
 };
 
 struct LinkAndFileInput : public ContainerCheckResultItem
 {
     std::string name;
-    st_t current;
+    st_t current{};
     std::string inputName; // Item name with start track-sector to current
-    st_t input; // Track-sector with link to current.
+    st_t input{}; // Track-sector with link to current.
 };
 
 struct NullFile : ContainerCheckResultItem
@@ -206,27 +196,27 @@ struct NullFile : ContainerCheckResultItem
 struct BadStart : ContainerCheckResultItem
 {
     std::string name;
-    st_t start;
+    st_t start{};
 };
 
 struct BadEnd : ContainerCheckResultItem
 {
     std::string name;
-    st_t end;
+    st_t end{};
 };
 
 struct LinkAfterEnd : ContainerCheckResultItem
 {
     std::string name;
-    st_t end; // Track-Sector marked as end
-    st_t to; // Track-Sector to which end sector links to.
+    st_t end{}; // Track-Sector marked as end
+    st_t to{}; // Track-Sector to which end sector links to.
 };
 
 struct InconsistentRecordSize : ContainerCheckResultItem
 {
     std::string name;
-    Word records; // Number of records in directory entry.
-    Word sectors; // Number of sectors according to sector chain.
+    Word records{0}; // Number of records in directory entry.
+    Word sectors{0}; // Number of sectors according to sector chain.
 };
 
 struct DiscontiguousRecordNr : ContainerCheckResultItem

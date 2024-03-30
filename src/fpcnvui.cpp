@@ -29,7 +29,7 @@
 #include "warnon.h"
 
 FlexplorerConvertUi::FlexplorerConvertUi() :
-    Ui_FlexplorerConvert(), dialog(nullptr)
+    Ui_FlexplorerConvert()
 {
 }
 

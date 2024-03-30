@@ -35,7 +35,7 @@
 #include "warnon.h"
 
 LogfileSettingsUi::LogfileSettingsUi() :
-    Ui_LogfileSettings(), dialog(nullptr)
+    Ui_LogfileSettings()
 {
 }
 

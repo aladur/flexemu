@@ -30,9 +30,16 @@
 class Mc6809CpuStatus : public CpuStatus
 {
 public:
-    QWord total_cycles;
-    Byte a, b, cc, dp;
-    Word pc, s, u, x, y;
+    QWord total_cycles{0};
+    Byte a{0};
+    Byte b{0};
+    Byte cc{0};
+    Byte dp{0};
+    Word pc{0};
+    Word s{0};
+    Word u{0};
+    Word x{0};
+    Word y{0};
     Byte instruction[4];
     char mnemonic[28];
     Byte memory[48];

@@ -55,8 +55,8 @@ class VideoControl1 : public ByteRegister, public BObserved
 {
 private:
 
-    Byte value;
-    bool isFirstWrite;
+    Byte value{0};
+    bool isFirstWrite{true};
 
     void requestWriteValue(Byte value) override;
 

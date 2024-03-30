@@ -61,10 +61,7 @@ void RichLineAppend(RichLine &richLine, size_t count, const RichCharacter &rc)
     }
 }
 
-PrintOverlayHelper::PrintOverlayHelper() :
-      currentProps(CharProperty::Normal)
-    , isEscapeSequence(false)
-    , backspaceCount(0)
+PrintOverlayHelper::PrintOverlayHelper()
 
 {
     currentOverlay.reserve(80);

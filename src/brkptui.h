@@ -56,7 +56,7 @@ private slots:
     void OnRejected();
 
 private:
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
 };
 
 #endif

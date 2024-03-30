@@ -54,11 +54,11 @@ TIME_BASE = 10000,
 class CpuStatus
 {
 public:
-    CpuStatus() : freq(0.0), state(CpuState::NONE) { };
+    CpuStatus()  { };
     virtual ~CpuStatus() { };
 
-    float freq;
-    CpuState state;
+    float freq{0.0};
+    CpuState state{CpuState::NONE};
 };
 
 using CpuStatusPtr = std::unique_ptr<CpuStatus>;

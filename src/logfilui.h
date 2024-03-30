@@ -58,7 +58,7 @@ private slots:
     void OnRejected();
 
 private:
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
     std::array<QCheckBox *, 8> regCheckBoxes;
 };
 

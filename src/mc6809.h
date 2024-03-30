@@ -206,49 +206,49 @@ protected:
     // Processor registers
 protected:
 
-    Byte indexed_cycles[256]; // add. cycles for
+    Byte indexed_cycles[256]{}; // add. cycles for
     // indexed addr.
-    Byte psh_pul_cycles[256]; // add. cycles for psh
+    Byte psh_pul_cycles[256]{}; // add. cycles for psh
     // and pull-instr.
-    Byte nmi_armed; // for handling
+    Byte nmi_armed{0}; // for handling
     // interrupts
-    atomic_event events; // event status flags (atomic access)
-    tInterruptStatus interrupt_status;
+    atomic_event events{Event::NONE}; // event status flags (atomic access)
+    tInterruptStatus interrupt_status{};
 #ifdef FASTFLEX
-    std::atomic<Word> ipcreg;
-    Word iureg;
-    Word isreg;
-    Word ixreg;
-    Word iyreg;
-    Byte iareg;
-    Byte ibreg;
-    Byte iccreg;
-    Byte idpreg;
-    Word eaddr;
-    Byte ireg;
-    Byte iflag;
-    Byte tb;
-    Word tw;
-    Byte k;
-    Byte *pMem; // needed for memory access
+    std::atomic<Word> ipcreg{0};
+    Word iureg{0};
+    Word isreg{0};
+    Word ixreg{0};
+    Word iyreg{0};
+    Byte iareg{0};
+    Byte ibreg{0};
+    Byte iccreg{0};
+    Byte idpreg{0};
+    Word eaddr{0};
+    Byte ireg{0};
+    Byte iflag{0};
+    Byte tb{0};
+    Word tw{0};
+    Byte k{0};
+    Byte *pMem{nullptr}; // needed for memory access
 #else
-    std::atomic<Word> pc;
-    Word s; // Stack pointer
-    Word u; // Alternative Stack pointer
-    Word x; // Index Register
-    Word y; // Index register
-    union uacc acc;
-    union udpreg dpreg;
+    std::atomic<Word> pc{0};
+    Word s{0}; // Stack pointer
+    Word u{0}; // Alternative Stack pointer
+    Word x{0}; // Index Register
+    Word y{0}; // Index register
+    union uacc acc{0};
+    union udpreg dpreg{0};
     Byte &a;
     Byte &b;
     Word &d;
     Byte &dp;
-    union ucc cc;
+    union ucc cc{0};
 #endif // #ifndef FASTFLEX
 
 protected:
 
-    Da6809 *disassembler;
+    Da6809 *disassembler{nullptr};
 
     // funcitons for instruction execution:
 
@@ -891,7 +891,7 @@ private:
     void firq(bool save_state);
     void irq(bool save_state);
     void invalid(const char *pmessage);
-    bool use_undocumented;
+    bool use_undocumented{false};
 public:
     void set_use_undocumented(bool b);
     bool is_use_undocumented()
@@ -953,9 +953,9 @@ public:
 protected:
     int Disassemble(Word address, InstFlg *pFlags,
                     char **pCode, char **pMnemonic);
-    FILE        *log_fp;
+    FILE        *log_fp{nullptr};
     s_cpu_logfile lfs;
-    bool do_logging;
+    bool do_logging{false};
 
     Memory &memory;
 

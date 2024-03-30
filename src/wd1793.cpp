@@ -25,9 +25,7 @@
 
 #include "wd1793.h"
 
-Wd1793::Wd1793() : dr(0), tr(0), sr(0), cr(0), str(0), stepOffset(1),
-    isDataRequest(false), isInterrupt(false), side(false), byteCount(0),
-    strRead(0), indexPulse(0)
+Wd1793::Wd1793()
 {
 }
 

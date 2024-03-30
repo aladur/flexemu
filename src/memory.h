@@ -48,8 +48,8 @@ struct sOptions;
 
 struct ioDeviceAccess
 {
-    Byte deviceIndex;
-    Byte addressOffset;
+    Byte deviceIndex{0};
+    Byte addressOffset{0};
 };
 
 class Memory : public MemoryTarget<size_t>, public BObserver
@@ -59,14 +59,15 @@ public:
     ~Memory() override;
 
 private:
-    Byte *ppage[16];
-    bool isRamExtension;
-    bool isHiMem;
-    bool isFlexibleMmu;
-    bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
-    DWord memory_size;
-    DWord video_ram_size;
-    Byte ramBank;
+    Byte *ppage[16]{};
+    bool isRamExtension{false};
+    bool isHiMem{false};
+    bool isFlexibleMmu{false};
+    bool isEurocom2V5{false}; // Emulate an Eurocom II/V5
+                              // (instead of Eurocom II/V7)
+    DWord memory_size{0x10000};
+    DWord video_ram_size{0};
+    Byte ramBank{0};
     std::unique_ptr<Byte[]> memory;
     std::unique_ptr<Byte[]> video_ram;
 
@@ -77,7 +78,7 @@ private:
 
     // interface to video display
     Byte *vram_ptrs[MAX_VRAM];
-    Word video_ram_active_bits; // 16-bit, one for each video memory page
+    Word video_ram_active_bits{0}; // 16-bit, one for each video memory page
     bool changed[YBLOCKS];
 
 private:

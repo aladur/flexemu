@@ -151,8 +151,8 @@ private:
     DWord SizeOfConvertedFlexTextFile() const;
     DWord SizeOfConvertedDumpFile(DWord bytesPerLine) const;
 
-    tFlexFileHeader fileHeader;
-    DWord capacity;
+    tFlexFileHeader fileHeader{};
+    DWord capacity{0};
     std::unique_ptr<Byte[]> buffer;
 };
 

@@ -29,7 +29,7 @@
 
 
 Pia2::Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
-    cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO), cycles(0)
+    cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO)
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     , joystick(0)
 #endif

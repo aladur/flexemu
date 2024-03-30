@@ -75,9 +75,9 @@ private:
     bool Validate();
     QString GetCurrentFileExtension() const;
 
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
     QString defaultPath;
-    int format;
+    int format{TYPE_DSK_CONTAINER};
 };
 
 #endif

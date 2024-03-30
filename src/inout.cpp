@@ -34,9 +34,7 @@
 Inout::Inout(const struct sOptions &x_options, Memory &x_memory) :
      memory(x_memory)
      , options(x_options)
-     , rtc(nullptr)
-     , gui(nullptr)
-     , local_serpar_address(-1)
+
 {
 }
 

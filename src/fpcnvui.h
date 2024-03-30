@@ -49,7 +49,7 @@ public:
     bool GetConvert() const;
     bool GetAskUser() const;
 
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
 };
 
 #endif

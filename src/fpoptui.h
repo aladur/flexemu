@@ -58,7 +58,7 @@ private:
     void ConnectSignalsWithSlots();
     bool Validate();
 
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
 };
 
 #endif

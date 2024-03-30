@@ -27,8 +27,7 @@ Mc6809::Mc6809(Memory &x_memory) : events(Event::NONE),
 #else
     a(acc.byte.a), b(acc.byte.b), d(acc.d), dp(dpreg.byte.h),
 #endif
-    disassembler(nullptr), use_undocumented(false),
-    log_fp(nullptr), do_logging(false), memory(x_memory)
+     memory(x_memory)
 {
 #ifndef FASTFLEX
     dpreg.byte.l = 0;

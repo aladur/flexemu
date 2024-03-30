@@ -32,7 +32,7 @@
 Pia1::Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
            const struct sOptions &x_options) :
     scheduler(x_scheduler), keyboardIO(x_keyboardIO),
-    options(x_options), request_a_updated(false)
+    options(x_options)
 {
 }
 

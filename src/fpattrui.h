@@ -43,26 +43,23 @@
 class FileAttributesUi
 {
 private:
-    QVBoxLayout *verticalLayout_1;
-    QLabel *l_filename;
-    QGroupBox *groupBox;
-    QVBoxLayout *verticalLayout_2;
-    QVarLengthArray<QCheckBox *, 4> c_protect;
-    QDialogButtonBox *buttonBox;
+    QVBoxLayout *verticalLayout_1{nullptr};
+    QLabel *l_filename{nullptr};
+    QGroupBox *groupBox{nullptr};
+    QVBoxLayout *verticalLayout_2{nullptr};
+    QVarLengthArray<QCheckBox *, 4> c_protect{nullptr, nullptr,
+                                              nullptr, nullptr};
+    QDialogButtonBox *buttonBox{nullptr};
     QVector<Qt::CheckState> initialState;
-    Byte clearMask;
-    Byte setMask;
+    Byte clearMask{0};
+    Byte setMask{0};
 
     static QString protectChars;
     static QVector<const char *> protectText;
     static const QVector<Byte> flags;
 
 public:
-    FileAttributesUi() :
-        verticalLayout_1(nullptr), l_filename(nullptr), groupBox(nullptr),
-        verticalLayout_2(nullptr),
-        c_protect{nullptr, nullptr, nullptr, nullptr},
-        buttonBox(nullptr), clearMask(0), setMask(0)
+    FileAttributesUi()
     {
         assert(c_protect.size() == flags.size());
         assert(protectText.size() == flags.size());

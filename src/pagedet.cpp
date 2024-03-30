@@ -28,10 +28,7 @@
 #include "pagedet.h"
 
 
-PageDetector::PageDetector(const RichLines &p_lines) :
-      hasLinesPerPageDetected(false)
-    , linesPerPage(0U)
-    , verbose(0)
+PageDetector::PageDetector(const RichLines &p_lines)
 {
     PageDetectorData data(p_lines);
 

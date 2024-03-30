@@ -24,7 +24,7 @@
 #include "da6809.h"
 
 
-Da6809::Da6809() : use_undocumented(false)
+Da6809::Da6809()
 {
     memset(code_buf, 0, sizeof(code_buf));
     memset(mnem_buf, 0, sizeof(mnem_buf));

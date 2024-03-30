@@ -53,8 +53,8 @@ protected:
     Scheduler   &scheduler;
     E2floppy    &fdc;
     char command[MAX_COMMAND];
-    Word command_index;
-    Word answer_index;
+    Word command_index{0};
+    Word answer_index{0};
     std::string answer;
 
     // private interface:

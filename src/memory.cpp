@@ -37,11 +37,9 @@ Memory::Memory(const struct sOptions &options) :
     isHiMem(options.isHiMem),
     isFlexibleMmu(options.isFlexibleMmu),
     isEurocom2V5(options.isEurocom2V5),
-    memory_size(0x10000),
-    video_ram_size(0),
-    ramBank(0),
-    deviceAccess(0x10000 - GENIO_BASE, ioDeviceAccess{NO_DEVICE, 0U}),
-    video_ram_active_bits(0)
+
+    deviceAccess(0x10000 - GENIO_BASE, ioDeviceAccess{NO_DEVICE, 0U})
+
 {
     memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
     if (isRamExtension)

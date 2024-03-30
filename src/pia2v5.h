@@ -59,27 +59,27 @@ private:
 
     Mc6809 &cpu;
 
-    Byte write_bit_mask;
-    Byte write_byte;
-    Byte last_ora;
-    Byte read_bit_mask;
-    Word read_index;
+    Byte write_bit_mask{0x80};
+    Byte write_byte{0};
+    Byte last_ora{0};
+    Byte read_bit_mask{0x80};
+    Word read_index{0};
     std::vector<Byte> read_buffer;
     std::vector<Byte> write_buffer;
     MiniDcrTapePtr drive[2];
-    int drive_idx;
-    ReadMode read_mode;
-    TapeDirection direction;
-    Word debug;
+    int drive_idx{-1};
+    ReadMode read_mode{ReadMode::Off};
+    TapeDirection direction{TapeDirection::NONE};
+    Word debug{0};
     std::string disk_dir;
     std::fstream cdbg;
     // following delay/cycle variables/constants are multiples of cpu cycles
-    QWord delay_RDC; // Delay until a read clock is present
+    QWord delay_RDC{0}; // Delay until a read clock is present
     // Delay until a begin/end of tape is detected
     static const QWord delay_BET = (QWord)(2000.f / ORIGINAL_PERIOD);
-    QWord cycles_RDC;
-    QWord cycles_BET;
-    QWord cycles_cdbg;
+    QWord cycles_RDC{0};
+    QWord cycles_BET{0};
+    QWord cycles_cdbg{0};
 
 protected:
     void writeOutputA(Byte value) override;

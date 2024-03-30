@@ -58,10 +58,10 @@ protected:
     std::string directory;
 
 #ifdef _WIN32
-    HANDLE hProcess;
+    HANDLE hProcess{INVALID_HANDLE_VALUE};
 #endif
 #ifdef UNIX
-    pid_t pid;
+    pid_t pid{-1};
 #endif
 };
 

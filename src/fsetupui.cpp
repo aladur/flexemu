@@ -130,7 +130,7 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
 
 FlexemuOptionsUi::FlexemuOptionsUi()
     : Ui_FlexemuSetup()
-    , dialog(nullptr)
+
 {
 }
 

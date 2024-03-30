@@ -34,7 +34,7 @@
 #include "warnon.h"
 
 FlexplorerOptionsUi::FlexplorerOptionsUi() :
-    Ui_FlexplorerOptions(), dialog(nullptr)
+    Ui_FlexplorerOptions()
 {
 }
 

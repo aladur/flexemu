@@ -53,9 +53,9 @@ private:
 
     static void DebugPrint(PageDetectorData &data);
 
-    bool hasLinesPerPageDetected;
-    int16_t linesPerPage;
-    int verbose;
+    bool hasLinesPerPageDetected{false};
+    int16_t linesPerPage{0U};
+    int verbose{0};
 };
 
 #endif

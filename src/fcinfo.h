@@ -37,17 +37,17 @@ private:
 
     BDate date;
     std::string path; // path of container file
-    int sectors; // Number of sectors per track
-    int tracks; // Number of tracks
+    int sectors{0}; // Number of sectors per track
+    int tracks{0}; // Number of tracks
     std::string name; // name of disk
-    unsigned int number;// disk number
-    int type; // container type
-    uint64_t free; // Number of bytes free
-    uint64_t totalSize; // Number of total bytes writable
-    Byte attributes; // Disk attributes
-    bool is_flex_format;// This container contains a FLEX file system.
-    bool is_write_protected;// This container is write protected.
-    bool is_valid; // This container info is valid.
+    unsigned int number{0U};// disk number
+    int type{0}; // container type
+    uint64_t free{0}; // Number of bytes free
+    uint64_t totalSize{0}; // Number of total bytes writable
+    Byte attributes{0}; // Disk attributes
+    bool is_flex_format{false};// This container contains a FLEX file system.
+    bool is_write_protected{false};// This container is write protected.
+    bool is_valid{false}; // This container info is valid.
     std::vector<Byte> jvc_header; // JVC header Bytes, size==0 if not present.
 
 public:

@@ -26,8 +26,8 @@
 
 #include "mc6821.h"
 
-Mc6821::Mc6821() : cra(0), ora(0), ddra(0), crb(0), orb(0), ddrb(0),
-                   cls(ControlLine::NONE)
+Mc6821::Mc6821()
+
 {
 }
 

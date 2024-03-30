@@ -34,14 +34,7 @@
                                           ORIGINAL_PERIOD)
 
 Pia2V5::Pia2V5(Mc6809 &x_cpu) : cpu(x_cpu)
-    , write_bit_mask(0x80), write_byte(0)
-    , last_ora(0)
-    , read_bit_mask(0x80), read_index(0)
-    , drive_idx(-1)
-    , read_mode(ReadMode::Off)
-    , direction(TapeDirection::NONE), debug(0)
-    , delay_RDC(0)
-    , cycles_RDC(0), cycles_BET(0), cycles_cdbg(0)
+
 {
     write_buffer.reserve(256);
     read_buffer.reserve(256);

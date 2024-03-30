@@ -44,8 +44,7 @@ Command::Command(
         Inout &x_inout,
         Scheduler &x_scheduler,
         E2floppy &x_fdc) :
-    inout(x_inout), scheduler(x_scheduler), fdc(x_fdc),
-    command_index(0), answer_index(0)
+    inout(x_inout), scheduler(x_scheduler), fdc(x_fdc)
 {
     memset(command, 0, sizeof(command));
 }

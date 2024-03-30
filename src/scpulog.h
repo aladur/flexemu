@@ -83,10 +83,8 @@ inline LogRegister operator<<= (LogRegister &lhs, int shift_count)
 struct s_cpu_logfile
 {
 public:
-    s_cpu_logfile() : minAddr(0x0000), maxAddr(0xFFFF),
-                      startAddr(0x10000), stopAddr(0x10000),
-                      logCycleCount(false),
-                      logRegisters(LogRegister::NONE)
+    s_cpu_logfile()
+
     {
         logFileName.reserve(PATH_MAX);
     }
@@ -146,12 +144,12 @@ public:
         return *this;
     }
 
-    unsigned int minAddr;
-    unsigned int maxAddr;
-    unsigned int startAddr;
-    unsigned int stopAddr;
-    bool logCycleCount;
-    LogRegister logRegisters;
+    unsigned int minAddr{0x0000};
+    unsigned int maxAddr{0xFFFF};
+    unsigned int startAddr{0x10000};
+    unsigned int stopAddr{0x10000};
+    bool logCycleCount{false};
+    LogRegister logRegisters{LogRegister::NONE};
     std::string logFileName;
 };
 

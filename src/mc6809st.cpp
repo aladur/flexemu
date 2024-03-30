@@ -24,10 +24,7 @@
 #include "misc1.h"
 #include "mc6809st.h"
 
-Mc6809CpuStatus::Mc6809CpuStatus() :
-    total_cycles(0),
-    a(0), b(0), cc(0), dp(0),
-    pc(0), s(0), u(0), x(0), y(0)
+Mc6809CpuStatus::Mc6809CpuStatus()
 {
     memset(instruction, 0, 4);
     memset(mnemonic,    0, 28);

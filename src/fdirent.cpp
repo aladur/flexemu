@@ -30,15 +30,8 @@
 #include <stdio.h>
 
 
-FlexDirEntry::FlexDirEntry() :
-    size(0),
-    attributes(0),
-    sectorMap(0),
-    startTrk(-1),
-    startSec(0),
-    endTrk(0),
-    endSec(0),
-    status(0)
+FlexDirEntry::FlexDirEntry()
+
 {
 } // FlexDirEntry
 

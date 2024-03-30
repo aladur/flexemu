@@ -44,7 +44,7 @@ protected:
     Scheduler &scheduler;
     KeyboardIO &keyboardIO;
     const struct sOptions &options;
-    bool request_a_updated;
+    bool request_a_updated{false};
 
 protected:
 

@@ -32,7 +32,7 @@
 #include "warnon.h"
 
 BreakpointSettingsUi::BreakpointSettingsUi() :
-    Ui_BreakpointSettings(), dialog(nullptr)
+    Ui_BreakpointSettings()
 {
 }
 

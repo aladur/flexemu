@@ -30,10 +30,8 @@
 
 Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-Mc146818::Mc146818() :
-    al_second(0), al_minute(0), al_hour(0),
-    A(0), B(0), C(0), D(0),
-    path("")
+Mc146818::Mc146818()
+
 {
     struct tm   *lt;
     time_t time_now;

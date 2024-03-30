@@ -44,8 +44,8 @@ enum class CharProperty
 
 struct RichCharacter
 {
-    char character;
-    CharProperty properties;
+    char character{'\0'};
+    CharProperty properties{CharProperty::Normal};
 };
 
 using RichLine = std::vector<RichCharacter>;
@@ -76,10 +76,10 @@ private:
     std::string currentOverlay;
     RichLine richLine;
     RichLine currentRichLine;
-    CharProperty currentProps;
-    bool isEscapeSequence;
+    CharProperty currentProps{CharProperty::Normal};
+    bool isEscapeSequence{false};
     std::string escapeSequence;
-    unsigned int backspaceCount;
+    unsigned int backspaceCount{0};
 };
 
 inline CharProperty operator| (CharProperty lhs, CharProperty rhs)

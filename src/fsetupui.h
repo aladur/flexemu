@@ -101,7 +101,7 @@ private:
             const QString &diskDir,
             const QString &filePath);
 
-    QDialog *dialog;
+    QDialog *dialog{nullptr};
     std::vector<FlexemuOptionId> readOnlyOptions;
 };
 

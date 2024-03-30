@@ -38,7 +38,7 @@
 // FLEX Advanced Programmer's Guide in Chapter
 // DESCRIPTION OF A TEXT FILE.
 
-FlexFileBuffer::FlexFileBuffer() : capacity(0)
+FlexFileBuffer::FlexFileBuffer()
 {
     memset(&fileHeader, 0, sizeof(fileHeader));
     memcpy(fileHeader.magicNumber,

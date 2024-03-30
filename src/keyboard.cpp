@@ -26,7 +26,7 @@
 #include <iterator>
 
 
-KeyboardIO::KeyboardIO() : init_delay(500)
+KeyboardIO::KeyboardIO()
 {
     reset_parallel();
 }

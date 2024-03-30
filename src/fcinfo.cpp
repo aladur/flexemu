@@ -27,17 +27,8 @@
 #include "filecntb.h"   // needed for containertypes
 
 
-FlexContainerInfo::FlexContainerInfo() :
-    sectors(0),
-    tracks(0),
-    number(0U),
-    type(0),
-    free(0),
-    totalSize(0),
-    attributes(0),
-    is_flex_format(false),
-    is_write_protected(false),
-    is_valid(false)
+FlexContainerInfo::FlexContainerInfo()
+
 {
 } // FlexContainerInfo
 

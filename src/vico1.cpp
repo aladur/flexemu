@@ -25,9 +25,8 @@
 #include "vico1.h"
 
 
-VideoControl1::VideoControl1() :
-    value(0),
-    isFirstWrite(true)
+VideoControl1::VideoControl1()
+
 {
 }
 
