@@ -29,10 +29,12 @@ unittests_SOURCES = \
 	test_main.cpp \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
+	test_fdirent.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
 	../src/btime.cpp \
+	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
 	../src/flexerr.cpp \
 	../src/misc1.cpp \
@@ -40,6 +42,7 @@ unittests_SOURCES = \
 	../src/benv.h \
 	../src/bfileptr.h \
 	../src/btime.h \
+	../src/fdirent.h \
 	../src/ffilebuf.h \
 	../src/flexerr.h
 	../src/misc1.h
