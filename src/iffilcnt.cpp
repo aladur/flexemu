@@ -33,10 +33,6 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     dirSector.next = first_dir_trk_sec;
 }
 
-FlexFileContainerIteratorImp::~FlexFileContainerIteratorImp()
-{
-}
-
 bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *src) const
 {
     return (base == nullptr && src == nullptr) ||

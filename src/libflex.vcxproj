@@ -201,7 +201,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bcommand.cpp" />
     <ClCompile Include="bdate.cpp" />
     <ClCompile Include="bdir.cpp" />
     <ClCompile Include="benv.cpp" />

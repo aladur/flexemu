@@ -87,7 +87,7 @@ public:
     virtual int GetContainerType() const = 0;
     virtual std::string GetPath() const = 0;
 
-    virtual ~FileContainerIfBase() { };
+    virtual ~FileContainerIfBase() = default;
 };
 
 #endif /* FILECNTB_INCLUDED */

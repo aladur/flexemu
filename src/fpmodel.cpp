@@ -103,10 +103,6 @@ FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
 
 }
 
-FlexplorerTableModel::~FlexplorerTableModel()
-{
-}
-
 QString FlexplorerTableModel::GetFileType(const FlexDirEntry &dirEntry)
 {
     QString fileExtension(dirEntry.GetFileExt().c_str());

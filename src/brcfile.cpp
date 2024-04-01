@@ -28,15 +28,8 @@
 #include "brcfile.h"
 #include "bfileptr.h"
 
-BRcFile::BRcFile()
-{
-}
 
 BRcFile::BRcFile(const char *aFileName) : fileName(aFileName)
-{
-}
-
-BRcFile::~BRcFile()
 {
 }
 

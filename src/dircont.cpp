@@ -92,14 +92,6 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
 }
 
 /****************************************/
-/* Destructor                           */
-/****************************************/
-
-DirectoryContainer::~DirectoryContainer()
-{
-}
-
-/****************************************/
 /* Public interface                     */
 /****************************************/
 

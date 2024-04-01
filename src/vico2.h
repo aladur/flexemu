@@ -45,8 +45,8 @@ private:
 
 public:
 
-    VideoControl2();
-    ~VideoControl2() override;
+    VideoControl2() = default;
+    ~VideoControl2() override = default;
 
     const char *getName() override
     {

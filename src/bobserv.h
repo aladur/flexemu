@@ -35,7 +35,7 @@ class BObserver
 {
 public:
     virtual void UpdateFrom(NotifyId id, void *param = nullptr) = 0;
-    virtual ~BObserver() { };
+    virtual ~BObserver() = default;
 };
 
 #endif // #ifndef BOBSERVER_INCLUDED

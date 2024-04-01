@@ -116,10 +116,6 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1) th
 }
 #endif
 
-FlexException::~FlexException()
-{
-}
-
 const char *FlexException::errString[] =
 {
     "No Error",

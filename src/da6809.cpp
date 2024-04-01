@@ -30,10 +30,6 @@ Da6809::Da6809()
     memset(mnem_buf, 0, sizeof(mnem_buf));
 }
 
-Da6809::~Da6809()
-{
-}
-
 void Da6809::set_use_undocumented(bool value)
 {
     use_undocumented = value;

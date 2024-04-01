@@ -24,14 +24,6 @@
 #include "misc1.h"
 #include "bytereg.h"
 
-ByteRegister::ByteRegister()
-{
-}
-
-ByteRegister::~ByteRegister()
-{
-}
-
 Byte ByteRegister::requestReadValue()
 {
     // If data bus for read is not addressed typically

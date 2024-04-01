@@ -26,7 +26,7 @@ class AbstractDisassembler
 {
 
 public:
-    virtual ~AbstractDisassembler() { };
+    virtual ~AbstractDisassembler() = default;
     virtual int Disassemble(
                   const Byte * const pMemory,
                   DWord pc,

@@ -82,7 +82,7 @@ public:
             Inout &x_inout,
             Scheduler &x_scheduler,
             E2floppy &x_fdc);
-    ~Command() override;
+    ~Command() override = default;
 };
 
 #endif // COMMAND_INCLUDED

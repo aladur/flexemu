@@ -103,10 +103,6 @@ void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
     }
 }
 
-FlexFileBuffer::~FlexFileBuffer()
-{
-}
-
 const Byte *FlexFileBuffer::GetBuffer(DWord offset /* = 0*/,
                                       DWord bytes /* = 1 */) const
 {

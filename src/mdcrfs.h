@@ -80,6 +80,6 @@ class MdcrFileSystem
                                                     BMemoryBuffer &memory)>&);
 
     public:
-        MdcrFileSystem();
+        MdcrFileSystem() = default;
 };
 

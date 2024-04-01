@@ -36,9 +36,9 @@ enum
 class BRcFile
 {
 public:
-    BRcFile();
+    BRcFile() = default;
     BRcFile(const char *aFileName);
-    ~BRcFile();
+    ~BRcFile() = default;
 
     void SetFileName(const char *aFileName);
     int SetValue(const char *key, const char *value);

@@ -35,7 +35,7 @@ class FileContainerIteratorImp
 {
     friend class FileContainerIterator;
 public:
-    virtual ~FileContainerIteratorImp() { };
+    virtual ~FileContainerIteratorImp() = default;
     virtual bool operator==(const FileContainerIf *aBase) const = 0;
     virtual bool NextDirEntry(const char *filePattern) = 0;
     virtual void AtEnd() = 0;

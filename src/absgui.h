@@ -75,7 +75,7 @@ public:
         Memory &x_memory,
         Inout &x_inout,
         TerminalIO &x_terminalIO);
-    virtual ~AbstractGui();
+    virtual ~AbstractGui() = default;
 };
 
 #endif // ABSGUI_INCLUDED

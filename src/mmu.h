@@ -58,7 +58,7 @@ public:
 
 public:
     Mmu(Memory &x_memory);
-    ~Mmu() override;
+    ~Mmu() override = default;
 };
 
 #endif // MMU_INCLUDED

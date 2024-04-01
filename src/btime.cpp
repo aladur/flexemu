@@ -33,17 +33,6 @@ BTime::BTime(int h, int m, int s)
 {
 }
 
-BTime::BTime(const BTime &src)
-    : hour(src.hour)
-    , minute(src.minute)
-    , second(src.second)
-{
-}
-
-BTime::~BTime()
-{
-}
-
 BTime BTime::Now()
 {
     auto time_now = time((time_t *)nullptr);
@@ -114,14 +103,6 @@ int BTime::GetSecond() const
 size_t BTime::ToSeconds() const
 {
     return static_cast<size_t>(hour) * 3600U + minute * 60U + second;
-}
-
-BTime &BTime::operator = (const BTime &src)
-{
-    hour = src.hour;
-    minute = src.minute;
-    second = src.second;
-    return *this;
 }
 
 bool operator == (const BTime &rhs, const BTime &lhs)

@@ -52,10 +52,6 @@ FileContainerIterator::FileContainerIterator(const char
 {
 }
 
-FileContainerIterator::~FileContainerIterator()
-{
-}
-
 FlexDirEntry &FileContainerIterator::operator*()
 {
     if (imp != nullptr)

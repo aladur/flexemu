@@ -103,7 +103,7 @@ public:
 #ifdef _WIN32
     FlexException(unsigned long lastError, const std::string &sp1) throw();
 #endif
-    ~FlexException() override;
+    ~FlexException() override = default;
 
     const char *what() const noexcept override;
     int GetErrorCode() const

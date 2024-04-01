@@ -25,15 +25,6 @@
 #include "vico1.h"
 
 
-VideoControl1::VideoControl1()
-
-{
-}
-
-VideoControl1::~VideoControl1()
-{
-}
-
 void VideoControl1::requestWriteValue(Byte new_value)
 {
     bool isUpdate = isFirstWrite || (value != new_value);

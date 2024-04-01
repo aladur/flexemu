@@ -44,10 +44,6 @@ TerminalIO::TerminalIO(Scheduler &x_scheduler,
     reset_serial();
 }
 
-TerminalIO::~TerminalIO()
-{
-}
-
 void TerminalIO::init(Word reset_key)
 {
     init_terminal_io(reset_key);

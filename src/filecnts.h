@@ -185,7 +185,7 @@ public:
     virtual bool IsSectorValid(int track, int sector) const = 0;
     virtual int GetBytesPerSector() const = 0;
 
-    ~FileContainerIfSector() override { };
+    ~FileContainerIfSector() override = default;
 };
 
 using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;

@@ -25,13 +25,6 @@
 
 #include "wd1793.h"
 
-Wd1793::Wd1793()
-{
-}
-
-Wd1793::~Wd1793()
-{
-}
 
 void Wd1793::resetIo()
 {

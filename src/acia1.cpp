@@ -34,10 +34,6 @@ Acia1::Acia1(TerminalIO &x_terminalIO, Inout &x_inout) :
 {
 }
 
-Acia1::~Acia1()
-{
-}
-
 void Acia1::resetIo()
 {
     Mc6850::resetIo();

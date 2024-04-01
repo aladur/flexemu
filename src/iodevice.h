@@ -36,7 +36,7 @@ public:
     virtual void resetIo() = 0;
     virtual const char *getName() = 0;
     virtual Word sizeOfIo() = 0;
-    virtual ~IoDevice() { };
+    virtual ~IoDevice() = default;
 };
 
 #endif // IODEVICE_INCLUDED

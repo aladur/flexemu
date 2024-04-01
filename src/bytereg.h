@@ -58,8 +58,8 @@ public:
 
 public:
 
-    ByteRegister();
-    ~ByteRegister() override;
+    ByteRegister() = default;
+    ~ByteRegister() override = default;
 };
 
 #endif

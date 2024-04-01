@@ -53,19 +53,19 @@ private:
     int startSec{0};
     int endTrk{0};
     int endSec{0};
-    int status{0};
+    int status{FLX_EMPTY};
     BDate date;
     BTime time;
     std::string fileName;
 
 public:
-    FlexDirEntry();
-    ~FlexDirEntry();
-    FlexDirEntry(const FlexDirEntry &src);
+    FlexDirEntry() = default;
+    ~FlexDirEntry() = default;
+    FlexDirEntry(const FlexDirEntry &src) = default;
     FlexDirEntry(FlexDirEntry &&src) noexcept;
 
-    FlexDirEntry &operator= (const FlexDirEntry &src);
-    FlexDirEntry &operator= (FlexDirEntry &&src) noexcept;
+    FlexDirEntry &operator= (const FlexDirEntry &src) = default;
+    FlexDirEntry &operator= (FlexDirEntry &&src) noexcept = default;
 
     const BDate &GetDate() const;
     void SetDate(const BDate &date);
@@ -94,7 +94,7 @@ public:
 
 private:
     void CopyFrom(const FlexDirEntry &src);
-}; // class FlexDirEntry
+};
 
 inline void FlexDirEntry::SetFileSize(int s)
 {
@@ -124,7 +124,7 @@ inline void FlexDirEntry::ClearEmpty()
 }
 inline int FlexDirEntry::IsEmpty() const
 {
-    return status & FLX_EMPTY;
+    return (status & FLX_EMPTY) != 0;
 }
 
 inline int FlexDirEntry::IsRandom() const

@@ -77,8 +77,8 @@ protected:
 
 public:
 
-    Mc6850();
-    ~Mc6850() override;
+    Mc6850() = default;
+    ~Mc6850() override = default;
 };
 
 #endif // MC6850_INCLUDED

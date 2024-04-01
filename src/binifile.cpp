@@ -44,10 +44,6 @@ BIniFile &BIniFile::operator=(BIniFile &&src) noexcept
     return *this;
 }
 
-BIniFile::~BIniFile()
-{
-}
-
 bool BIniFile::IsValid() const
 {
     std::ifstream istream(fileName);

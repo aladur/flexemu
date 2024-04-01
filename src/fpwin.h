@@ -211,11 +211,7 @@ public:
             args.push_back(p_argv[i]);
         }
     }
-    ProcessArgumentsFtor(const ProcessArgumentsFtor &f)
-      : window(f.window)
-      , args(f.args)
-    {
-    }
+    ProcessArgumentsFtor(const ProcessArgumentsFtor &f) = default;
 
     void operator() ()
     {

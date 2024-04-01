@@ -95,10 +95,6 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
     model->UpdateFileSizeHeaderName();
 }
 
-FlexplorerMdiChild::~FlexplorerMdiChild()
-{
-}
-
 QString FlexplorerMdiChild::GetPath() const
 {
     assert(model);

@@ -37,7 +37,7 @@ public:
     BMemoryBuffer(size_t aSize);
     BMemoryBuffer(const BMemoryBuffer &src);
     BMemoryBuffer(BMemoryBuffer &&src) noexcept;
-    ~BMemoryBuffer() override;
+    ~BMemoryBuffer() override = default;
 
     BMemoryBuffer &operator=(const BMemoryBuffer &src);
     BMemoryBuffer &operator=(BMemoryBuffer &&src) noexcept;

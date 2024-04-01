@@ -66,7 +66,7 @@ public:
     FlexFileBuffer();
     FlexFileBuffer(const FlexFileBuffer &src);
     FlexFileBuffer(FlexFileBuffer &&src) noexcept;
-    virtual ~FlexFileBuffer();
+    virtual ~FlexFileBuffer() = default;
 
     FlexFileBuffer &operator=(const FlexFileBuffer &src);
     FlexFileBuffer &operator=(FlexFileBuffer &&src) noexcept;

@@ -51,8 +51,8 @@ private:
     std::vector<Byte> jvc_header; // JVC header Bytes, size==0 if not present.
 
 public:
-    FlexContainerInfo(); // public constructor
-    virtual ~FlexContainerInfo(); // public destructor
+    FlexContainerInfo() = default;
+    virtual ~FlexContainerInfo() = default;
 
     void SetName(const std::string &n)
     {

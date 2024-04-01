@@ -28,6 +28,7 @@
 #include "efiletim.h"
 #include "ffilebuf.h"
 #include "sfpopts.h"
+#include "filecont.h"
 #include "warnoff.h"
 #include <QPair>
 #include <QString>
@@ -42,11 +43,10 @@
 #include <array>
 #include <string>
 
+
 class FlexDirEntry;
 class FlexFileBuffer;
-class FileContainerIf;
 class FlexDirEntry;
-
 
 class FlexplorerTableModel : public QAbstractTableModel
 {
@@ -60,7 +60,7 @@ public:
     FlexplorerTableModel() = delete;
     FlexplorerTableModel(const char *path, struct sFPOptions &options,
                          QObject *parent = Q_NULLPTR);
-    ~FlexplorerTableModel() override;
+    ~FlexplorerTableModel() override = default;
 
     // To correctly initialize the model Initialize() has to be called
     // right after object construction.

@@ -49,10 +49,6 @@ Command::Command(
     memset(command, 0, sizeof(command));
 }
 
-Command::~Command()
-{
-}
-
 void Command::resetIo()
 {
     command_index = 0;

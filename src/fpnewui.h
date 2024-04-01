@@ -42,7 +42,7 @@ class FlexplorerNewUi : public QObject, protected Ui_FlexplorerNew
 public:
 
     FlexplorerNewUi();
-    ~FlexplorerNewUi() override;
+    ~FlexplorerNewUi() override = default;
     void setupUi(QDialog &dialog);
     void TransferDataToDialog(int format = TYPE_DSK_CONTAINER,
                               int tracks = 80, int sectors = 36,

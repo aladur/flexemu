@@ -40,7 +40,7 @@ class FlexDiskListCtrl;
 class FlexDnDFiles
 {
 public:
-    FlexDnDFiles();
+    FlexDnDFiles() = default;
     FlexDnDFiles(const std::string &path, const std::string &dnsHostName);
     virtual ~FlexDnDFiles();
 

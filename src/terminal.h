@@ -84,7 +84,7 @@ private:
 public:
     TerminalIO() = delete;
     TerminalIO(Scheduler &x_scheduler, const struct sOptions &x_options);
-    ~TerminalIO() override;
+    ~TerminalIO() override = default;
 };
 
 #endif // TERMINAL_INCLUDED

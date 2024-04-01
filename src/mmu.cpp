@@ -30,11 +30,6 @@ Mmu::Mmu(Memory &x_memory) : memory(x_memory)
 {
 }
 
-
-Mmu::~Mmu()
-{
-}
-
 void Mmu::resetIo()
 {
 }

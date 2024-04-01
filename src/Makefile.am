@@ -498,7 +498,6 @@ test_SOURCES = \
 	warnon.h
 
 libflex_a_SOURCES = \
-	bcommand.cpp \
 	bdate.cpp \
 	bdir.cpp \
 	benv.cpp \

@@ -54,7 +54,7 @@ public:
                            FileContainerIf &destination) = 0;
     virtual std::string GetSupportedAttributes() const = 0;
 
-    ~FileContainerIf() override { };
+    ~FileContainerIf() override = default;
 
 private:
     virtual FileContainerIteratorImpPtr IteratorFactory() = 0;

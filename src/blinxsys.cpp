@@ -28,14 +28,6 @@
 #include <fstream>
 
 #ifdef __LINUX
-BLinuxSysInfo::BLinuxSysInfo()
-{
-}
-
-BLinuxSysInfo::~BLinuxSysInfo()
-{
-}
-
 std::string BLinuxSysInfo::ToString(BLinuxSysInfoType type)
 {
     switch (type)

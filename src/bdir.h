@@ -46,9 +46,9 @@ public:
     static tPathList GetSubDirectories(const std::string &aPath);
     static tPathList GetFiles(const std::string &aPath);
 
-    BDirectory();
+    BDirectory() = default;
     BDirectory(std::string &path) : m_path(path) { };
-    ~BDirectory();
+    ~BDirectory() = default;
 
     inline void SetPath(std::string &path)
     {

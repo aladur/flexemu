@@ -54,8 +54,8 @@ TIME_BASE = 10000,
 class CpuStatus
 {
 public:
-    CpuStatus()  { };
-    virtual ~CpuStatus() { };
+    CpuStatus()  = default;
+    virtual ~CpuStatus() = default;
 
     float freq{0.0};
     CpuState state{CpuState::NONE};

@@ -38,10 +38,6 @@ Inout::Inout(const struct sOptions &x_options, Memory &x_memory) :
 {
 }
 
-Inout::~Inout()
-{
-}
-
 void Inout::set_gui(AbstractGui *x_gui)
 {
     gui = x_gui;

@@ -43,10 +43,9 @@ public:
         Iso, // YYYYMMDD
     };
 
-    BDate(int d = 0, int m = 0, int year = 0); // public constructor
-    BDate(const BDate &d); // public constructor
-    ~BDate(); // public destructor
-
+    BDate(int d = 0, int m = 0, int year = 0);
+    BDate(const BDate &src) = default;
+    ~BDate() = default;
 
     static const BDate Now();
     const std::string GetDateString(Format format = Format::D2MS3Y4) const;
@@ -58,12 +57,13 @@ public:
     int GetMonth() const ;
     int GetMonthBounded() const;
     int GetYear() const;
-    BDate &operator = (const BDate &d);
+    BDate &operator = (const BDate &src) = default;
     bool operator < (const BDate &d) const;
     bool operator == (const BDate &d) const;
     bool operator > (const BDate &d) const;
     bool operator >= (const BDate &d) const;
     bool operator <= (const BDate &d) const;
+
 private:
     static const char *monthName[];
     int MakeComparable() const;
@@ -76,11 +76,6 @@ inline void BDate::Assign(int d, int m, int y)
     day = d;
     month = m;
     year = y;
-}
-inline BDate &BDate::operator = (const BDate &d)
-{
-    Assign(d.day, d.month, d.year);
-    return *this;
 }
 inline int BDate::GetDay() const
 {

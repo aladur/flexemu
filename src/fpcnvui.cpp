@@ -33,10 +33,6 @@ FlexplorerConvertUi::FlexplorerConvertUi() :
 {
 }
 
-FlexplorerConvertUi::~FlexplorerConvertUi()
-{
-}
-
 void FlexplorerConvertUi::setupUi(QDialog &p_dialog)
 {
     dialog = &p_dialog;

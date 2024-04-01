@@ -139,9 +139,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bcommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="bdate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -39,8 +39,7 @@ FileContainerCheck::FileContainerCheck(
 }
 
 FileContainerCheck::~FileContainerCheck()
-{
-}
+= default;
 
 std::string FileContainerCheck::GetItemName(const item_t &item)
 {

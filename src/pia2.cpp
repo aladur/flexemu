@@ -36,10 +36,6 @@ Pia2::Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
 {
 }
 
-Pia2::~Pia2()
-{
-}
-
 void Pia2::resetIo()
 {
     Mc6821::resetIo();

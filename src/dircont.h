@@ -55,7 +55,7 @@ public:
     DirectoryContainer(DirectoryContainer &&) = delete;
     DirectoryContainer(const std::string &path,
                        const FileTimeAccess &fileTimeAccess);
-    ~DirectoryContainer() override;
+    ~DirectoryContainer() override = default;
 
     DirectoryContainer &operator= (const DirectoryContainer &) = delete;
     DirectoryContainer &operator= (DirectoryContainer &&) = delete;

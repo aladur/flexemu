@@ -77,7 +77,7 @@ class FileContainerCheck
                             // (not usable as link).
         bool has_cycle{false}; // flag if this link has a cycle
 
-        s_link() { }
+        s_link() = default;
 
         s_link(st_t ts, st_t p_to = st_t{0, 0}, Word p_record_nr = 0) :
               trk_sec(ts), to(p_to), record_nr(p_record_nr)

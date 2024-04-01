@@ -37,8 +37,8 @@ enum class BLinuxSysInfoType
 class BLinuxSysInfo
 {
 public:
-    BLinuxSysInfo();
-    ~BLinuxSysInfo();
+    BLinuxSysInfo() = default;
+    ~BLinuxSysInfo() = default;
 
     static std::string ToString(BLinuxSysInfoType type);
     std::string Read(BLinuxSysInfoType type, const std::string &subtype) const;

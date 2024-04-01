@@ -206,14 +206,6 @@ FlexFileContainer::FlexFileContainer(
     throw FlexException(FERR_IS_NO_FILECONTAINER, fp.GetPath());
 }
 
-/****************************************/
-/* Destructor                           */
-/****************************************/
-
-FlexFileContainer::~FlexFileContainer()
-{
-}
-
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
     fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
     ft_access(src.ft_access),

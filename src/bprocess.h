@@ -34,7 +34,12 @@ public:
     BProcess(const std::string &executable,
              const std::string &directory = "",
              const std::string &argument = "");
+#ifdef _WIN32
     ~BProcess();
+#endif
+#ifdef UNIX
+    ~BProcess() = default;
+#endif
     void AddArgument(const std::string &argument);
     void SetDirectory(const std::string &directory);
     bool Start(); // Start the Process if not started yet

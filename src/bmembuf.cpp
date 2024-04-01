@@ -45,10 +45,6 @@ BMemoryBuffer::BMemoryBuffer(BMemoryBuffer &&src) noexcept
 {
 }
 
-BMemoryBuffer::~BMemoryBuffer()
-{
-}
-
 BMemoryBuffer &BMemoryBuffer::operator= (const BMemoryBuffer &src)
 {
     if (this != &src)

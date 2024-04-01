@@ -203,7 +203,3 @@ AbstractGui::AbstractGui(
 {
 }
 
-AbstractGui::~AbstractGui()
-{
-}
-

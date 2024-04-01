@@ -74,7 +74,7 @@ public:
     FlexFileContainer(FlexFileContainer &&) noexcept;
     FlexFileContainer(const std::string &path, const std::string &mode,
                       const FileTimeAccess &fileTimeAccess);
-    ~FlexFileContainer() override;
+    ~FlexFileContainer() override = default;
 
     FlexFileContainer &operator= (const FlexFileContainer &) = delete;
     FlexFileContainer &operator= (FlexFileContainer &&) noexcept;

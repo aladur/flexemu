@@ -31,11 +31,11 @@ class BCommand
 {
 
 public:
-    virtual ~BCommand();
+    virtual ~BCommand() = default;
     virtual void Execute() = 0;
 
 protected:
-    BCommand();
+    BCommand() = default;
 };
 
 using BCommandPtr = std::unique_ptr<BCommand>;

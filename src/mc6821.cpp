@@ -26,14 +26,6 @@
 
 #include "mc6821.h"
 
-Mc6821::Mc6821()
-
-{
-}
-
-Mc6821::~Mc6821()
-{
-}
 
 void Mc6821::resetIo()
 {

@@ -28,13 +28,6 @@
 #include "iodevice.h"
 #include "mc6850.h"
 
-Mc6850::Mc6850()
-{
-}
-
-Mc6850::~Mc6850()
-{
-}
 
 void Mc6850::resetIo()
 {

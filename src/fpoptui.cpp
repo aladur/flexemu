@@ -38,10 +38,6 @@ FlexplorerOptionsUi::FlexplorerOptionsUi() :
 {
 }
 
-FlexplorerOptionsUi::~FlexplorerOptionsUi()
-{
-}
-
 void FlexplorerOptionsUi::setupUi(QDialog &p_dialog)
 {
     dialog = &p_dialog;

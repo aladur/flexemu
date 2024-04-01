@@ -32,13 +32,10 @@
 #include <QString>
 #include <QTableView>
 #include "warnon.h"
+#include "fpmodel.h"
+#include "fpedit.h"
 #include <memory>
 
-class FlexDateDelegate;
-class FlexDateTimeDelegate;
-class FlexFilenameDelegate;
-class FlexAttributesDelegate;
-class FlexplorerTableModel;
 class FlexDnDFiles;
 class FlexDirEntry;
 class QItemSelection;
@@ -57,7 +54,7 @@ class FlexplorerMdiChild : public QTableView
 public:
     FlexplorerMdiChild(const QString &path, struct sFPOptions &options);
     FlexplorerMdiChild() = delete;
-    ~FlexplorerMdiChild() override;
+    ~FlexplorerMdiChild() override = default;
 
     QString GetPath() const;
     QString GetUserFriendlyPath() const;

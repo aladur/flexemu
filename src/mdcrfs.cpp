@@ -39,10 +39,6 @@ const std::vector<std::string> mdcrErrors
     "Error writing a record",
 };
 
-MdcrFileSystem::MdcrFileSystem()
-{
-}
-
 // Create a filename which conforms to the MDCR file system:
 // - Up to 6 ASCII characters
 // - Unused characters filled up with space, ' '

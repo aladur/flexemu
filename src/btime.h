@@ -42,8 +42,8 @@ public:
     };
 
     BTime(int h = 0U, int m = 0U, int s = 0U);
-    BTime(const BTime &src);
-    ~BTime();
+    BTime(const BTime &src) = default;
+    ~BTime() = default;
 
     static BTime Now();
     const std::string AsString(Format = Format::HHMMSS) const;
@@ -54,7 +54,7 @@ public:
     int GetMinute() const;
     int GetSecond() const;
     size_t ToSeconds() const;
-    BTime &operator = (const BTime &src);
+    BTime &operator = (const BTime &src) = default;
 };
 
 bool operator == (const BTime &rhs, const BTime &lhs);

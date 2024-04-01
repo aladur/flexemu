@@ -117,10 +117,6 @@ bool BProcess::IsRunning()
 // UNIX specific implementation
 //***********************************************
 #ifdef UNIX
-BProcess::~BProcess()
-{
-    // nothing to clean up
-}
 
 // ATTENTION: multiple arguments are not supported yet!
 bool BProcess::Start()

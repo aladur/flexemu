@@ -30,11 +30,6 @@ BDate::BDate(int d, int m, int y) : day(d), month(m), year(y)
 {
 }
 
-BDate::BDate(const BDate &d)  : day(d.GetDay()), month(d.GetMonth()),
-    year(d.GetYear())
-{
-}
-
 const BDate BDate::Now()
 {
     time_t      time_now;
@@ -46,10 +41,6 @@ const BDate BDate::Now()
 
     aTime =  BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
     return aTime;
-}
-
-BDate::~BDate()
-{
 }
 
 const char *BDate::monthName[] =

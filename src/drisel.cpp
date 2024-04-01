@@ -30,10 +30,6 @@ DriveSelect::DriveSelect(E2floppy &x_fdc) : fdc(x_fdc)
 {
 }
 
-DriveSelect::~DriveSelect()
-{
-}
-
 Byte DriveSelect::requestReadValue()
 {
     Byte status = 0xff; // Unused bits have logical high

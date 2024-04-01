@@ -34,7 +34,7 @@ class FileContainerIterator
 {
 public:
     FileContainerIterator(const char *aFilePattern = "*.*");
-    virtual               ~FileContainerIterator();
+    virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
     bool operator==(const FileContainerIf *) const;

@@ -27,15 +27,6 @@
 #include "filecntb.h"   // needed for containertypes
 
 
-FlexContainerInfo::FlexContainerInfo()
-
-{
-} // FlexContainerInfo
-
-FlexContainerInfo::~FlexContainerInfo()
-{
-}
-
 const std::string FlexContainerInfo::GetTypeString() const
 {
     std::string str;

@@ -29,10 +29,6 @@
 #include "ffilebuf.h"
 
 
-FlexDnDFiles::FlexDnDFiles()
-{
-}
-
 FlexDnDFiles::FlexDnDFiles(
         const std::string &pPath,
         const std::string &pDnsHostName) :

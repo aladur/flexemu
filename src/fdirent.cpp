@@ -28,25 +28,8 @@
 #include "bdate.h"
 #include "fdirent.h"
 #include <stdio.h>
+#include <iostream>
 
-
-FlexDirEntry::FlexDirEntry()
-
-{
-} // FlexDirEntry
-
-FlexDirEntry::~FlexDirEntry()
-{
-}
-
-FlexDirEntry::FlexDirEntry(const FlexDirEntry &src)
-{
-    if (&src != this)
-    {
-        fileName = src.fileName;
-        CopyFrom(src);
-    }
-}
 
 FlexDirEntry::FlexDirEntry(FlexDirEntry &&src) noexcept
 {
@@ -55,28 +38,6 @@ FlexDirEntry::FlexDirEntry(FlexDirEntry &&src) noexcept
         fileName = std::move(src.fileName);
         CopyFrom(src);
     }
-}
-
-FlexDirEntry &FlexDirEntry::operator=(const FlexDirEntry &src)
-{
-    if (&src != this)
-    {
-        fileName = src.fileName;
-        CopyFrom(src);
-    }
-
-    return *this;
-}
-
-FlexDirEntry &FlexDirEntry::operator=(FlexDirEntry &&src) noexcept
-{
-    if (&src != this)
-    {
-        fileName = std::move(src.fileName);
-        CopyFrom(src);
-    }
-
-    return *this;
 }
 
 void FlexDirEntry::CopyFrom(const FlexDirEntry &src)

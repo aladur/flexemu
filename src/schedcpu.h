@@ -55,7 +55,7 @@ typedef struct sInterruptStatus tInterruptStatus;
 class ScheduledCpu
 {
 public:
-    virtual ~ScheduledCpu() { };
+    virtual ~ScheduledCpu() = default;
     virtual void do_reset() = 0;
     virtual CpuState run(RunMode mode) = 0;
     virtual void exit_run() = 0;

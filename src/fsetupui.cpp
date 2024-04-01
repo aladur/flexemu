@@ -134,10 +134,6 @@ FlexemuOptionsUi::FlexemuOptionsUi()
 {
 }
 
-FlexemuOptionsUi::~FlexemuOptionsUi()
-{
-}
-
 void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 {
     int index = -1;

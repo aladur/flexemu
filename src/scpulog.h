@@ -84,31 +84,12 @@ struct s_cpu_logfile
 {
 public:
     s_cpu_logfile()
-
     {
         logFileName.reserve(PATH_MAX);
     }
 
-    s_cpu_logfile(const s_cpu_logfile &src) :
-        minAddr(src.minAddr), maxAddr(src.maxAddr),
-        startAddr(src.startAddr), stopAddr(src.stopAddr),
-        logCycleCount(src.logCycleCount),
-        logRegisters(src.logRegisters),
-        logFileName(src.logFileName)
-    {
-    }
-
-    s_cpu_logfile &operator=(const s_cpu_logfile &src)
-    {
-        minAddr = src.minAddr;
-        maxAddr = src.maxAddr;
-        startAddr = src.startAddr;
-        stopAddr = src.stopAddr;
-        logCycleCount = src.logCycleCount;
-        logRegisters = src.logRegisters;
-        logFileName = src.logFileName;
-        return *this;
-    }
+    s_cpu_logfile(const s_cpu_logfile &src) = default;
+    s_cpu_logfile &operator=(const s_cpu_logfile &src) = default;
 
     void reset()
     {

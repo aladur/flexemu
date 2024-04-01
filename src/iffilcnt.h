@@ -32,7 +32,7 @@ class FlexFileContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
     FlexFileContainerIteratorImp(FlexFileContainer *);
-    ~FlexFileContainerIteratorImp() override;
+    ~FlexFileContainerIteratorImp() override = default;
     bool operator==(const FileContainerIf *aBase) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
