@@ -146,7 +146,7 @@ void FlexDirEntry::GetEndTrkSec(int &track, int &sector) const
     sector = endSec;
 }
 
-const std::string FlexDirEntry::GetAttributesString() const
+std::string FlexDirEntry::GetAttributesString() const
 {
     std::string str;
 

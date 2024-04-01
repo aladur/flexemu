@@ -40,7 +40,7 @@ enum flexFileAttributes
 
 enum flexFileStatus
 {
-    FLX_EMPTY = 0x1
+    FLX_NOT_EMPTY = 0x1
 };
 
 class FlexDirEntry
@@ -53,7 +53,7 @@ private:
     int startSec{0};
     int endTrk{0};
     int endSec{0};
-    int status{FLX_EMPTY};
+    int status{0};
     BDate date;
     BTime time;
     std::string fileName;
@@ -84,11 +84,11 @@ public:
     void SetAttributes(Byte attributes);
     void SetAttributes(Byte setMask, Byte clearMask);
     Byte GetAttributes() const;
-    const std::string GetAttributesString() const;
+    std::string GetAttributesString() const;
     int GetSectorMap() const;
-    int IsRandom() const;
+    bool IsRandom() const;
     void SetSectorMap(int aSectorMap);
-    int IsEmpty() const;
+    bool IsEmpty() const;
     void SetEmpty();
     void ClearEmpty();
 
@@ -116,18 +116,18 @@ inline Byte FlexDirEntry::GetAttributes() const
 
 inline void FlexDirEntry::SetEmpty()
 {
-    status |= FLX_EMPTY;
+    status &= ~FLX_NOT_EMPTY;
 }
 inline void FlexDirEntry::ClearEmpty()
 {
-    status &= ~FLX_EMPTY;
+    status |= FLX_NOT_EMPTY;
 }
-inline int FlexDirEntry::IsEmpty() const
+inline bool FlexDirEntry::IsEmpty() const
 {
-    return (status & FLX_EMPTY) != 0;
+    return (status & FLX_NOT_EMPTY) == 0;
 }
 
-inline int FlexDirEntry::IsRandom() const
+inline bool FlexDirEntry::IsRandom() const
 {
     return (sectorMap != 0);
 }
