@@ -431,7 +431,7 @@ void FlexplorerTableModel::RenameFile(const QModelIndex &index,
     {
         FlexDirEntry dirEntry;
         auto oldFilename = GetFilename(index);
-        dirEntry.SetTotalFileName(oldFilename.toUtf8().data());
+        dirEntry.SetTotalFileName(oldFilename.toStdString());
         auto oldFileType = GetFileType(dirEntry);
 
         try
@@ -450,7 +450,7 @@ void FlexplorerTableModel::RenameFile(const QModelIndex &index,
         // 1. Update file name column.
         setData(index, newFilename);
         // 2. Update the file type column if changed.
-        dirEntry.SetTotalFileName(newFilename.toUtf8().data());
+        dirEntry.SetTotalFileName(newFilename.toStdString());
         auto newFileType = GetFileType(dirEntry);
         if (newFileType != oldFileType)
         {

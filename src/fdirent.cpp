@@ -74,9 +74,9 @@ void FlexDirEntry::SetTime(const BTime &t)
     time = t;
 }
 
-void FlexDirEntry::SetTotalFileName(const char *s)
+void FlexDirEntry::SetTotalFileName(const std::string &p_fileName)
 {
-    fileName = s;
+    fileName = p_fileName;
 }
 
 std::string FlexDirEntry::GetFileName() const

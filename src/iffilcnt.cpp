@@ -93,7 +93,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             {
                 dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
                 dirEntry.SetTime(BTime(pd->hour & 0x7F, pd->minute, 0U));
-                dirEntry.SetTotalFileName(fileName.c_str());
+                dirEntry.SetTotalFileName(fileName);
                 dirEntry.SetAttributes(pd->file_attr);
                 dirEntry.SetSectorMap(pd->sector_map);
                 dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);

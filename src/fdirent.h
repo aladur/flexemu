@@ -75,7 +75,7 @@ public:
     void GetStartTrkSec(int &t, int &s) const;
     void SetEndTrkSec(int t, int s);
     void GetEndTrkSec(int &t, int &s) const;
-    void SetTotalFileName(const char *fileName);
+    void SetTotalFileName(const std::string &p_fileName);
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;
     std::string GetFileExt() const;
