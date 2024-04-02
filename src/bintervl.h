@@ -44,7 +44,7 @@ public:
     };
     BInterval(const BInterval &src) = default;
     ~BInterval() = default;
-	
+
     T const &lower() const { return lower_; };
     T const &upper() const { return upper_; };
     void assign(T lower, T upper)
@@ -60,8 +60,8 @@ public:
     }
 
 private:
-	T lower_;
-	T upper_;
+    T lower_;
+    T upper_;
 };
 
 template <typename T>

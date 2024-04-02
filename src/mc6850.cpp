@@ -31,8 +31,8 @@
 
 void Mc6850::resetIo()
 {
-    cr  = 0; // control register
-    sr  = 0; // status register
+    cr = 0; // control register
+    sr = 0; // status register
     tdr = 0; // transmit data register
     rdr = 0; // receive data register
 }

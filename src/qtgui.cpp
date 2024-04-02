@@ -93,7 +93,7 @@ QtGui::QtGui(
     Mc6809 &x_cpu,
     Memory &x_memory,
     Scheduler &x_scheduler,
-    Inout  &x_inout,
+    Inout &x_inout,
     VideoControl1 &x_vico1,
     VideoControl2 &x_vico2,
     JoystickIO &x_joystickIO,

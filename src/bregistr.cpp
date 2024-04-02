@@ -28,10 +28,10 @@
 #include <memory>
 
 
-BRegistry BRegistry::classesRoot    = HKEY_CLASSES_ROOT;
-BRegistry BRegistry::currentUser    = HKEY_CURRENT_USER;
-BRegistry BRegistry::localMachine   = HKEY_LOCAL_MACHINE;
-BRegistry BRegistry::users          = HKEY_USERS;
+BRegistry BRegistry::classesRoot = HKEY_CLASSES_ROOT;
+BRegistry BRegistry::currentUser = HKEY_CURRENT_USER;
+BRegistry BRegistry::localMachine = HKEY_LOCAL_MACHINE;
+BRegistry BRegistry::users = HKEY_USERS;
 
 BRegistry::BRegistry() : lastError(0), hKey(nullptr)
 {

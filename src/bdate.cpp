@@ -32,12 +32,12 @@ BDate::BDate(int d, int m, int y) : day(d), month(m), year(y)
 
 const BDate BDate::Now()
 {
-    time_t      time_now;
-    struct tm   *lt;
-    BDate   aTime;
+    time_t time_now;
+    struct tm *lt;
+    BDate aTime;
 
-    time_now    = time((time_t *)nullptr);
-    lt      = localtime(&time_now);
+    time_now = time((time_t *)nullptr);
+    lt = localtime(&time_now);
 
     aTime =  BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
     return aTime;
@@ -115,7 +115,7 @@ int BDate::GetYear() const
     }
     if (year < 256)
     {
-        return year + 1900;    // flexemu: fix bug for year >= 100
+        return year + 1900; // flexemu: fix bug for year >= 100
     }
     return year;
 }

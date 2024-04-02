@@ -33,7 +33,7 @@ Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 Mc146818::Mc146818()
 
 {
-    struct tm   *lt;
+    struct tm *lt;
     time_t time_now;
     const char* home = getFileName();
 

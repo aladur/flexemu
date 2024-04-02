@@ -509,7 +509,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     int count;
     FlexDirEntry de;
     s_sys_info_sector sis;
-    const char      *pFileName = fileName;
+    const char *pFileName = fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
 
@@ -1261,7 +1261,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
     int start;
     int free;
     time_t time_now;
-    struct tm   *lt;
+    struct tm *lt;
 
     memset(sec_buf, 0, SECTOR_SIZE);
 

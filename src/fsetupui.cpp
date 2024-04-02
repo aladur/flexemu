@@ -205,7 +205,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     cb_color->setCurrentIndex(std::max(index, 0));
 
     bool isMultiColorSchemeChecked =
-	    (0 == stricmp(options.color.c_str(), "default"));
+        (0 == stricmp(options.color.c_str(), "default"));
 
     c_multiColorScheme->setChecked(isMultiColorSchemeChecked);
 
