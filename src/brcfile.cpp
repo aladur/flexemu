@@ -94,7 +94,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
         return errno;
     }
 
-    while (!feof((FILE *)fp))
+    while (!feof(fp))
     {
         if (fscanf(fp, "%79s %[^\n]\n", def, strparm) == 2 &&
             strlen(def) == keyLength && stricmp(def, key) == 0)

@@ -26,7 +26,7 @@ void addx(Byte &reg, Byte operand)
     cc.bit.v = BTST7(reg ^ operand ^ sum ^ (sum >> 1));
     cc.bit.c = BTST8(sum);
     cc.bit.h = BTST4(reg ^ operand ^ sum);
-    reg = (Byte)sum;
+    reg = static_cast<Byte>(sum);
     cc.bit.z = !reg;
 }
 
@@ -477,7 +477,7 @@ void err(const std::string& mnemonic, Word op, Byte m6809_cc,
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << op << ")"
-              << ", CC=0x" << (Word)m6809_cc
+              << ", CC=0x" << static_cast<Word>(m6809_cc)
               << ", " << regname
               << " expected 0x" << cpureg
               << " but is 0x" << x86reg
@@ -489,7 +489,7 @@ void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
 {
     std::cout << std::setw(2) << std::setfill('0') << std::hex
               << mnemonic << "(0x" << op1 << ", 0x" << op2 << ")"
-              << ", CC=0x" << (Word)m6809_cc
+              << ", CC=0x" << static_cast<Word>(m6809_cc)
               << ", " << regname
               << " expected 0x" << cpureg
               << " but is 0x" << x86reg
@@ -520,7 +520,7 @@ bool test_gccasm_fctByte(const std::string& mnemonic,
         for (op = 0; op < 256; ++op)
         {
             cpu.get_status(&status);
-            status.a = (Byte)op;
+            status.a = static_cast<Byte>(op);
             status.pc = 0x0000;
             status.cc = regcc;
             cpu.set_status(&status);
@@ -528,7 +528,7 @@ bool test_gccasm_fctByte(const std::string& mnemonic,
             cpu.run(RunMode::SingleStepInto);
             cpu.get_status(&status);
 
-            rega = (Byte)op;
+            rega = static_cast<Byte>(op);
             cc.all = regcc;
             test_function(rega);
 
@@ -567,7 +567,7 @@ bool test_gccasm_fctRefByte(const std::string& mnemonic,
         for (op = 0; op < 256; ++op)
         {
             cpu.get_status(&status);
-            status.a = (Byte)op;
+            status.a = static_cast<Byte>(op);
             status.pc = 0x0000;
             status.cc = regcc;
             cpu.set_status(&status);
@@ -575,7 +575,7 @@ bool test_gccasm_fctRefByte(const std::string& mnemonic,
             cpu.run(RunMode::SingleStepInto);
             cpu.get_status(&status);
 
-            rega = (Byte)op;
+            rega = static_cast<Byte>(op);
             cc.all = regcc;
             test_function(rega);
 
@@ -623,18 +623,19 @@ bool test_gccasm_fctByteByte(const std::string& mnemonic,
             for (op2 = 0; op2 < 256; ++op2)
             {
                 cpu.get_status(&status);
-                status.a = (Byte)op1;
+                status.a = static_cast<Byte>(op1);
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
-                memory.write_byte(0x0001, (Byte)op2); // immediate value
+                // write immediate value
+                memory.write_byte(0x0001, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
-                rega = (Byte)op1;
+                rega = static_cast<Byte>(op1);
                 cc.all = regcc;
-                test_function(rega, (Byte)op2);
+                test_function(rega, static_cast<Byte>(op2));
 
                 if (status.cc != cc.all)
                 {
@@ -675,18 +676,19 @@ bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
             for (op2 = 0; op2 < 256; ++op2)
             {
                 cpu.get_status(&status);
-                status.a = (Byte)op1;
+                status.a = static_cast<Byte>(op1);
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
-                memory.write_byte(0x0001, (Byte)op2); // immediate value
+                // Write immediate value.
+                memory.write_byte(0x0001, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
-                rega = (Byte)op1;
+                rega = static_cast<Byte>(op1);
                 cc.all = regcc;
-                test_function(rega, (Byte)op2);
+                test_function(rega, static_cast<Byte>(op2));
 
                 if (status.a != rega)
                 {
@@ -736,22 +738,24 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
                 cpu.get_status(&status);
-                status.a = (Byte)(op1 >> 8);
-                status.b = (Byte)(op1);
+                status.a = static_cast<Byte>(op1 >> 8);
+                status.b = static_cast<Byte>(op1);
                 addr = 0x0000;
                 status.pc = addr;
                 status.cc = regcc;
                 cpu.set_status(&status);
                 memory.write_byte(addr++, opcode1);
                 memory.write_byte(addr++, opcode2);
-                memory.write_byte(addr++, (Byte)(op2 >> 8)); // immediate value hi
-                memory.write_byte(addr++, (Byte)(op2)); // immediate value lo
+                // Write immediate value high.
+                memory.write_byte(addr++, static_cast<Byte>(op2 >> 8));
+                // Write immediate value low.
+                memory.write_byte(addr++, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
 
-                regd = (Word)op1;
+                regd = static_cast<Word>(op1);
                 cc.all = regcc;
-                test_function(regd, (Word)op2);
+                test_function(regd, static_cast<Word>(op2));
 
                 if (status.cc != cc.all)
                 {
@@ -794,21 +798,23 @@ bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
             for (op2 = 0; op2 < 65536; op2 += 30)
             {
                 cpu.get_status(&status);
-                status.a = (Byte)(op1 >> 8);
-                status.b = (Byte)(op1);
+                status.a = static_cast<Byte>(op1 >> 8);
+                status.b = static_cast<Byte>(op1);
                 status.pc = 0x0000;
                 status.cc = regcc;
                 cpu.set_status(&status);
                 memory.write_byte(0x0000, opcode);
-                memory.write_byte(0x0001, (Byte)(op2 >> 8)); // immediate value hi
-                memory.write_byte(0x0002, (Byte)(op2)); // immediate value lo
+                // Write immediate value high.
+                memory.write_byte(0x0001, static_cast<Byte>(op2 >> 8));
+                // Write immediate value low.
+                memory.write_byte(0x0002, static_cast<Byte>(op2));
                 cpu.run(RunMode::SingleStepInto);
                 cpu.get_status(&status);
-                cpuregd = ((Word)status.a << 8) | status.b;
+                cpuregd = (static_cast<Word>(status.a) << 8) | status.b;
 
-                regd = (Word)op1;
+                regd = static_cast<Word>(op1);
                 cc.all = regcc;
-                test_function(regd, (Word)op2);
+                test_function(regd, static_cast<Word>(op2));
 
                 if (cpuregd != regd)
                 {

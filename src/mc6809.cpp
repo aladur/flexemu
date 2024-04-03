@@ -93,7 +93,7 @@ void Mc6809::init_indexed_cycles()
 
     for (i = 128; i < 256; i++)
     {
-        switch ((Byte)(i & 0x1f))
+        switch (static_cast<Byte>(i & 0x1f))
         {
             case 0x05:
             case 0x06:
@@ -219,7 +219,7 @@ void Mc6809::set_irq()
 #ifndef FASTFLEX
 cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 {
-    switch ((Byte)(what & 0xf0))
+    switch (static_cast<Byte>(what & 0xf0))
     {
         case 0xf0:
             stack -= 2;
@@ -310,7 +310,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
             break;
     } // switch
 
-    switch ((Byte)(what & 0x0f))
+    switch (static_cast<Byte>(what & 0x0f))
     {
         case 0x0f:
             memory.write_byte(--stack, dp);
@@ -386,7 +386,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 
 cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 {
-    switch ((Byte)(what & 0x0f))
+    switch (static_cast<Byte>(what & 0x0f))
     {
         case 0x0f:
             cc.all = memory.read_byte(stack++);
@@ -457,7 +457,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
             break;
     } // switch
 
-    switch ((Byte)(what & 0xf0))
+    switch (static_cast<Byte>(what & 0xf0))
     {
         case 0xf0:
             x = memory.read_word(stack);
@@ -708,19 +708,19 @@ void Mc6809::exg()
             break;
 
         case 0x08:
-            a = (Byte)t2;
+            a = static_cast<Byte>(t2);
             break;
 
         case 0x09:
-            b = (Byte)t2;
+            b = static_cast<Byte>(t2);
             break;
 
         case 0x0a:
-            cc.all = (Byte)t2;
+            cc.all = static_cast<Byte>(t2);
             break;
 
         case 0x0b:
-            dp = (Byte)t2;
+            dp = static_cast<Byte>(t2);
             break;
     }
 
@@ -751,19 +751,19 @@ void Mc6809::exg()
             break;
 
         case 0x08:
-            a = (Byte)t1;
+            a = static_cast<Byte>(t1);
             break;
 
         case 0x09:
-            b = (Byte)t1;
+            b = static_cast<Byte>(t1);
             break;
 
         case 0x0a:
-            cc.all = (Byte)t1;
+            cc.all = static_cast<Byte>(t1);
             break;
 
         case 0x0b:
-            dp = (Byte)t1;
+            dp = static_cast<Byte>(t1);
             break;
     }
 }
@@ -895,7 +895,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            a = (Byte)t;
+            a = static_cast<Byte>(t);
             return;
 
         case 0x09:
@@ -904,7 +904,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            b = (Byte)t;
+            b = static_cast<Byte>(t);
             return;
 
         case 0x0a:
@@ -913,7 +913,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            cc.all = (Byte)t;
+            cc.all = static_cast<Byte>(t);
             return;
 
         case 0x0b:
@@ -922,7 +922,7 @@ void Mc6809::tfr()
                 break;
             }
 
-            dp = (Byte)t;
+            dp = static_cast<Byte>(t);
             return;
     }
 

@@ -56,7 +56,7 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
 bool DirectoryContainerIteratorImp::operator==(const FileContainerIf *src) const
 {
     return (base == nullptr && src == nullptr) ||
-           (((FileContainerIf *)base == src) && (dirHdl == nullptr));
+           ((base == src) && (dirHdl == nullptr));
 }
 
 void DirectoryContainerIteratorImp::AtEnd()

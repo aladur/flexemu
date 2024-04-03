@@ -375,7 +375,7 @@ bool Wd1793::startCommand(Byte)
 
 Byte Wd1793::readByte(Word index, Byte)
 {
-    return (Byte) index;
+    return static_cast<Byte>(index);
 }
 
 // should be reimplemented by subclass.

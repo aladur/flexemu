@@ -511,16 +511,17 @@ inline Byte Da6809::D_RelativeL(
 
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
             *(pMemory + 1), *(pMemory + 2));
-    const auto *label = FlexLabel(static_cast<Word>(*pAddr));
+    const auto address = static_cast<Word>(*pAddr);
+    const auto *label = FlexLabel(address);
 
     if (label == nullptr)
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, (Word)*pAddr);
+        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, address);
     }
     else
     {
         snprintf(mnem_buf, sizeof(mnem_buf), "%s %s ; $%04X", mnemo, label,
-                 (Word)*pAddr);
+                 address);
     }
 
     return bytes;

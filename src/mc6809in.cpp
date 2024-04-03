@@ -209,8 +209,7 @@ CpuState Mc6809::run(RunMode mode)
             if (disassembler != nullptr)
             {
                 bp[2] =
-                    PC + Disassemble((unsigned int)PC,
-                                     &flags, &pCode, &pMnemonic);
+                    PC + Disassemble(PC, &flags, &pCode, &pMnemonic);
             }
 
             if (disassembler == nullptr ||
@@ -445,15 +444,15 @@ void Mc6809::log_current_instruction()
         }
         if ((lfs.logRegisters & LogRegister::A) != LogRegister::NONE)
         {
-           fprintf(log_fp, " A=%02X", (Word)cpu_status.a);
+           fprintf(log_fp, " A=%02X", static_cast<Word>(cpu_status.a));
         }
         if ((lfs.logRegisters & LogRegister::B) != LogRegister::NONE)
         {
-           fprintf(log_fp, " B=%02X", (Word)cpu_status.b);
+           fprintf(log_fp, " B=%02X", static_cast<Word>(cpu_status.b));
         }
         if ((lfs.logRegisters & LogRegister::DP) != LogRegister::NONE)
         {
-           fprintf(log_fp, " DP=%02X", (Word)cpu_status.dp);
+           fprintf(log_fp, " DP=%02X", static_cast<Word>(cpu_status.dp));
         }
         if ((lfs.logRegisters & LogRegister::X) != LogRegister::NONE)
         {

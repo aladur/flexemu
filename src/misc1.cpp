@@ -117,13 +117,13 @@ std::string hexstr(Word x)
 {
     std::string result("    ");
 
-    result[3] = hex_digit((Byte)x);
+    result[3] = hex_digit(static_cast<Byte>(x));
     x >>= 4;
-    result[2] = hex_digit((Byte)x);
+    result[2] = hex_digit(static_cast<Byte>(x));
     x >>= 4;
-    result[1] = hex_digit((Byte)x);
+    result[1] = hex_digit(static_cast<Byte>(x));
     x >>= 4;
-    result[0] = hex_digit((Byte)x);
+    result[0] = hex_digit(static_cast<Byte>(x));
 
     return result;
 }
@@ -825,7 +825,7 @@ bool isListedInFileRandom(const char *directory, const char *filename)
 
     if (fp != nullptr)
     {
-        while (!feof((FILE *)fp) && fgets(str, PATH_MAX, fp) != nullptr)
+        while (!feof(fp) && fgets(str, PATH_MAX, fp) != nullptr)
         {
             if (strchr(str, '\n'))
             {

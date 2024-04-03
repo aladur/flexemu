@@ -33,6 +33,7 @@ Checks: '
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-avoid-c-arrays,
   -cppcoreguidelines-explicit-virtual-functions,
+  google-readability-casting,
   misc-*,
   -misc-unconventional-assign-operator,
   -misc-no-recursion,

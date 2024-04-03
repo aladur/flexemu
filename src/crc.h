@@ -39,7 +39,7 @@ class Crc
              dividend < static_cast<Word>(crc_table.size());
              ++dividend)
         {
-            T current = (T)dividend << ((sizeof(T) * 8U) - 8U);
+            T current = static_cast<T>(dividend) << ((sizeof(T) * 8U) - 8U);
             for (Byte bit = 0U; bit < 8U; ++bit)
             {
                 if ((current & (1U << ((sizeof(T) * 8U) - 1U))) != 0U)
@@ -72,7 +72,8 @@ public:
     void Add(Byte value)
     {
         static const Byte shift = (sizeof(T) - 1U) * 8;
-        Byte pos = (Byte)((crc ^ ((T)value << shift)) >> shift);
+        auto pos = static_cast<Byte>(
+                (crc ^ (static_cast<T>(value) << shift)) >> shift);
         crc = (crc << 8) ^ crc_table[pos];
     }
 

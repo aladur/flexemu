@@ -36,7 +36,7 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
 bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *src) const
 {
     return (base == nullptr && src == nullptr) ||
-           (((const FileContainerIf *)base == src) && (dirIndex == -1));
+           ((base == src) && (dirIndex == -1));
 }
 
 void FlexFileContainerIteratorImp::AtEnd()

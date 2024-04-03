@@ -32,8 +32,8 @@ std::ostream& operator<<(std::ostream& os, const st_t &st)
 
     os <<
         std::hex << std::uppercase <<
-        std::setw(2) << (Word)st.trk << "-" <<
-        std::setw(2) << (Word)st.sec;
+        std::setw(2) << static_cast<Word>(st.trk) << "-" <<
+        std::setw(2) << static_cast<Word>(st.sec);
     os.fill(previous_fill);
     os.flags(previous_flags);
 

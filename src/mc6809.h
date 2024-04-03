@@ -1211,7 +1211,7 @@ inline void Mc6809::daa()
     }
 
     t = c + a;
-    a = (Byte)t;
+    a = static_cast<Byte>(t);
 
     if (BTST8(t))
     {

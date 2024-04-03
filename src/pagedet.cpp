@@ -105,7 +105,8 @@ void PageDetector::CollectData(PageDetectorData &data)
             auto iter = data.topFirstNonEmptyLines.find(line);
             if (iter == data.topFirstNonEmptyLines.end())
             {
-                data.topFirstNonEmptyLines.emplace(line, int16_t(1));
+                data.topFirstNonEmptyLines.emplace(line,
+                        static_cast<int16_t>(1));
             }
             else
             {
@@ -147,7 +148,8 @@ void PageDetector::CollectData(PageDetectorData &data)
                 auto iter = data.bottomFirstNonEmptyLines.find(line);
                 if (iter == data.bottomFirstNonEmptyLines.end())
                 {
-                    data.bottomFirstNonEmptyLines.emplace(line, int16_t(1));
+                    data.bottomFirstNonEmptyLines.emplace(line,
+                            static_cast<int16_t>(1));
                 }
                 else
                 {
@@ -319,7 +321,8 @@ void PageDetector::DebugPrint(PageDetectorData &data)
 template<typename T>
 double PageDetector::MeanValue(const std::vector<T> &values)
 {
-    int64_t sum = std::accumulate(values.begin(), values.end(), int64_t(0));
+    int64_t sum = std::accumulate(values.begin(), values.end(),
+            static_cast<int64_t>(0));
     return static_cast<double>(sum) / static_cast<double>(values.size());
 }
 

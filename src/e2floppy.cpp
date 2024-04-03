@@ -328,7 +328,8 @@ std::string E2floppy::drive_info_string(Word drive_nr)
                 bool isAppend = false;
                 for (const auto value : header)
                 {
-                    stream << ((isAppend) ? "," : "") << (Word)value;
+                    stream << ((isAppend) ? "," : "") <<
+                              static_cast<Word>(value);
                     isAppend = true;
                 }
             }

@@ -152,7 +152,7 @@ void E2Screen::keyPressEvent(QKeyEvent *event)
     {
         bool do_notify = false;
 
-        keyboardIO.put_char_parallel((Byte)key, do_notify);
+        keyboardIO.put_char_parallel(static_cast<Byte>(key), do_notify);
         if (do_notify)
         {
             auto command = BCommandPtr(

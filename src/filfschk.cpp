@@ -57,7 +57,7 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
 
             stream << "\\x" << std::setfill('0') << std::setw(2) <<
                       std::uppercase << std::hex <<
-                      (Word)static_cast<Byte>(*iter);
+                      static_cast<Word>(static_cast<Byte>(*iter));
             name += stream.str();
         }
     }
@@ -978,9 +978,9 @@ std::ostream& operator<<(std::ostream &os, const BadDate &item)
 
     os << std::hex << std::uppercase << item.type <<
           "BADDAT: " << item.name << " has a bad date. MM-DD-YY is " <<
-          std::setw(2) << (Word)item.month << "-" <<
-          std::setw(2) << (Word)item.day << "-" <<
-          std::setw(2) << (Word)item.year;
+          std::setw(2) << static_cast<Word>(item.month) << "-" <<
+          std::setw(2) << static_cast<Word>(item.day) << "-" <<
+          std::setw(2) << static_cast<Word>(item.year);
 
     os.fill(previous_fill);
     os.flags(previous_flags);
@@ -995,8 +995,8 @@ std::ostream& operator<<(std::ostream &os, const BadTime &item)
 
     os << std::hex << std::uppercase << item.type <<
           "BADTIM: " << item.name << " has a bad time. HH-MM is " <<
-          std::setw(2) << (Word)item.hour << "-" <<
-          std::setw(2) << (Word)item.minute;
+          std::setw(2) << static_cast<Word>(item.hour) << "-" <<
+          std::setw(2) << static_cast<Word>(item.minute);
 
     os.fill(previous_fill);
     os.flags(previous_flags);

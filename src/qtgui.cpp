@@ -680,7 +680,7 @@ void QtGui::OnTimer()
             {
                 lastState[t] = false;
                 irqStat.count[t] = 0;
-                UpdateInterruptStatus((tIrqType)t, false);
+                UpdateInterruptStatus(static_cast<tIrqType>(t), false);
             }
 
             UpdateCpuUndocumentedCheck();
@@ -695,7 +695,7 @@ void QtGui::OnTimer()
 
                 if (bState != lastState[t])
                 {
-                    UpdateInterruptStatus((tIrqType)t, bState);
+                    UpdateInterruptStatus(static_cast<tIrqType>(t), bState);
                     lastState[t] = bState;
                 }
             }
@@ -1343,7 +1343,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
                     for (const auto value : header)
                     {
                         text += (isAppend ? "," : "");
-                        text += QString::number((Word)value);
+                        text += QString::number(static_cast<Word>(value));
                         isAppend = true;
                     }
                 }
@@ -1791,11 +1791,11 @@ ColorTable QtGui::CreateColorTable()
 
     fn GetColorShade = [&](int index) -> QRgb
     {
-        auto red = static_cast<Byte>(redBase * sqrt((double)index /
+        auto dIndex = static_cast<double>(index);
+        auto red = static_cast<Byte>(redBase * sqrt(dIndex / (MAX_COLORS - 1)));
+        auto green = static_cast<Byte>(greenBase * sqrt(dIndex /
                 (MAX_COLORS - 1)));
-        auto green = static_cast<Byte>(greenBase * sqrt((double)index /
-                (MAX_COLORS - 1)));
-        auto blue = static_cast<Byte>(blueBase * sqrt((double)index /
+        auto blue = static_cast<Byte>(blueBase * sqrt(dIndex /
                 (MAX_COLORS - 1)));
 
         return qRgb(red, green, blue);

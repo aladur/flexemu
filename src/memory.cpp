@@ -221,7 +221,8 @@ bool Memory::add_io_device(
         size = sizeOfIo;
     }
 
-    if (base_address < GENIO_BASE || ((int)base_address + size > 0xffff))
+    if (base_address < GENIO_BASE ||
+        (static_cast<int>(base_address) + size > 0xffff))
     {
         return false;
     }

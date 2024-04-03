@@ -35,7 +35,7 @@ BTime::BTime(int h, int m, int s)
 
 BTime BTime::Now()
 {
-    auto time_now = time((time_t *)nullptr);
+    auto time_now = time(static_cast<time_t *>(nullptr));
     auto *lt = localtime(&time_now);
 
     return BTime(lt->tm_hour, lt->tm_min, lt->tm_sec);

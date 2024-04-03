@@ -65,7 +65,7 @@ static Word read_hex_word(std::istream &istream, Byte &checksum)
 
     value = read_hex_byte(istream);
     checksum += value;
-    ret = (Word)value << 8;
+    ret = static_cast<Word>(value) << 8;
     value = read_hex_byte(istream);
     checksum += value;
     ret |= value;
@@ -428,7 +428,8 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
         << ":"
         << std::hex << std::setw(2) << std::setfill('0') << (size & 0xFF)
         << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF)
-        << std::hex << std::setw(2) << std::setfill('0') << (unsigned int)type;
+        << std::hex << std::setw(2) << std::setfill('0')
+        << static_cast<Word>(type);
 
     checksum += size & 0xFF;
     checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
@@ -437,13 +438,13 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
     for (index = 0; index < size; ++index)
     {
         ostream << std::hex << std::setw(2) << std::setfill('0')
-                << (unsigned int)buffer[index];
+                << static_cast<Word>(buffer[index]);
         checksum += buffer[index];
     }
 
     checksum = ~checksum + 1;
     ostream << std::hex << std::setw(2) << std::setfill('0')
-            << (unsigned int)checksum << std::endl;
+            << static_cast<Word>(checksum) << std::endl;
 
     if (ostream.fail())
     {
@@ -458,7 +459,7 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
                                       size_t address, size_t size)
 {
     Byte checksum = 0;
-    Byte type = 1;
+    Word type = 1;
     size_t index;
 
     switch (wbType)
@@ -476,7 +477,7 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
     }
 
     ostream
-        << "S" << (unsigned int)type
+        << "S" << type
         << std::hex << std::setw(2) << std::setfill('0') << ((size + 3) & 0xFF)
         << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF);
 
@@ -486,13 +487,13 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
     for (index = 0; index < size; ++index)
     {
         ostream << std::hex << std::setw(2) << std::setfill('0')
-                << (unsigned int)buffer[index];
+                << static_cast<Word>(buffer[index]);
         checksum += buffer[index];
     }
 
     checksum = ~checksum;
     ostream << std::hex << std::setw(2) << std::setfill('0')
-            << (unsigned int)checksum << std::endl;
+            << static_cast<Word>(checksum) << std::endl;
 
     if (ostream.fail())
     {

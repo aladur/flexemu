@@ -651,7 +651,7 @@ void FlexplorerMdiChild::Info()
             for (const auto value : header)
             {
                 str += (isAppend ? "," : "");
-                str += QString::number((Word)value);
+                str += QString::number(static_cast<Word>(value));
                 isAppend = true;
             }
         }

@@ -176,7 +176,7 @@ void AbstractGui::output_to_terminal()
 {
     if (terminalIO.is_terminal_supported() && inout.is_serpar_address_valid())
     {
-        memory.write_byte(inout.serpar_address(), Byte(0xFF));
+        memory.write_byte(inout.serpar_address(), '\xFF');
     }
 }
 

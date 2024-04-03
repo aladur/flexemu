@@ -228,7 +228,7 @@ bool DirectoryContainer::FileCopy(
     FlexCopyManager copyMan;
 
     return copyMan.FileCopy(sourceName, destName,
-                            (FileContainerIf &) * this, destination);
+                            static_cast<FileContainerIf &>(*this), destination);
 }
 
 bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
