@@ -164,5 +164,6 @@ const char *FlexException::errString[] =
     "Empty files can not be copied. File {0}",
     "Error {0} on system call '{1}'",
     "Disk image {0} has invalid or unsupported JVC header",
+    "Bad optional access",
 };
 
