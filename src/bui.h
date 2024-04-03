@@ -35,11 +35,12 @@
 extern void InstallSelectionEventFilter(QLineEdit &lineEdit, QObject *parent);
 
 template<class T1, class T2>
-void SetData(T1 value, T2 &widget)
+void SetData(T1 opt_value, T2 &widget)
 {
-    if (value <= 0xFFFF)
+    if (opt_value.has_value())
     {
-        widget.setText(QString("%1").arg(value, 4, 16, QLatin1Char('0')));
+        widget.setText(QString("%1").arg(opt_value.value(), 4, 16,
+                       QLatin1Char('0')));
     }
     else
     {
@@ -50,16 +51,16 @@ void SetData(T1 value, T2 &widget)
 template<class T1, class T2>
 T1 GetData(T2 &widget)
 {
-    T1 value;
+    T1 opt_value;
     bool isSuccess;
 
-    value = widget.text().toUInt(&isSuccess, 16);
-    if (!isSuccess)
+    auto value = widget.text().toUInt(&isSuccess, 16);
+    if (isSuccess)
     {
-        value = 0x10000;
+        opt_value = value;
     }
 
-    return value;
+    return opt_value;
 }
 
 #endif

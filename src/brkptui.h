@@ -28,12 +28,13 @@
 #include "brkpt_ui.h"
 #include <QObject>
 #include "warnon.h"
+#include "boption.h"
 
 class QDialog;
 class QLineEdit;
 class QAbstractButton;
 
-using BPArray = std::array<unsigned int, 2>;
+using BPArray = std::array<BOptionalWord, 2>;
 
 class BreakpointSettingsUi : public QObject, protected Ui_BreakpointSettings
 {

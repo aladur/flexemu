@@ -24,6 +24,7 @@
 #define SCPULOG_INCLUDED
 
 #include "misc1.h"
+#include "boption.h"
 #include <string>
 
 enum class LogRegister : Byte
@@ -95,8 +96,8 @@ public:
     {
         minAddr = 0x0000;
         maxAddr = 0xFFFF;
-        startAddr = 0x10000;
-        stopAddr = 0x10000;
+        startAddr.reset();
+        stopAddr.reset();
         logCycleCount = false;
         logRegisters = LogRegister::NONE;
         logFileName.clear();
@@ -125,10 +126,10 @@ public:
         return *this;
     }
 
-    unsigned int minAddr{0x0000};
-    unsigned int maxAddr{0xFFFF};
-    unsigned int startAddr{0x10000};
-    unsigned int stopAddr{0x10000};
+    BOptionalWord minAddr{0x0000};
+    BOptionalWord maxAddr{0xFFFF};
+    BOptionalWord startAddr;
+    BOptionalWord stopAddr;
     bool logCycleCount{false};
     LogRegister logRegisters{LogRegister::NONE};
     std::string logFileName;

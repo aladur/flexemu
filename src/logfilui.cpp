@@ -109,10 +109,10 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
 {
     s_cpu_logfile settings;
 
-    settings.minAddr = ::GetData<uint>(*e_minAddress);
-    settings.maxAddr = ::GetData<uint>(*e_maxAddress);
-    settings.startAddr = ::GetData<uint>(*e_startAddress);
-    settings.stopAddr = ::GetData<uint>(*e_stopAddress);
+    settings.minAddr = ::GetData<BOptionalWord>(*e_minAddress);
+    settings.maxAddr = ::GetData<BOptionalWord>(*e_maxAddress);
+    settings.startAddr = ::GetData<BOptionalWord>(*e_startAddress);
+    settings.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
 
     settings.logCycleCount = c_logCycleCount->isChecked();
     settings.logFileName = e_logFilename->text().toUtf8().data();

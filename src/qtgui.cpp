@@ -539,12 +539,10 @@ void QtGui::ConnectCpuUiSignalsWithSlots()
 
 void QtGui::OnCpuBreakpoints()
 {
-    BPArray breakpoints = {};
+    BPArray breakpoints = { cpu.get_bp(0), cpu.get_bp(1) };
     auto *dialog = new QDialog;
     BreakpointSettingsUi ui;
 
-    breakpoints[0] = cpu.get_bp(0);
-    breakpoints[1] = cpu.get_bp(1);
     ui.setupUi(*dialog);
     ui.SetData(breakpoints);
 
@@ -553,11 +551,13 @@ void QtGui::OnCpuBreakpoints()
     if (result == QDialog::Accepted)
     {
         breakpoints = ui.GetData();
-        for (int index = 0; index < 2; ++index)
+        for (int index = 0;
+             index < static_cast<int>(breakpoints.size());
+             ++index)
         {
-            if (breakpoints[index] <= 0xFFFF)
+            if (breakpoints[index].has_value())
             {
-                cpu.set_bp(index, static_cast<Word>(breakpoints[index]));
+                cpu.set_bp(index, breakpoints[index].value());
             }
             else
             {

@@ -73,9 +73,9 @@ void Mc6809::init()
     events = Event::NONE;
 
     // all breakpoints are reset
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < static_cast<int>(bp.size()); ++i)
     {
-        bp[i] = 0x10000;
+        bp[i].reset();
     }
 
     init_indexed_cycles();
@@ -1405,31 +1405,51 @@ void Mc6809::irq(bool save_state)
 
 void Mc6809::set_bp(int which, Word address)
 {
+    if (which < 0 || which > static_cast<int>(bp.size()))
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     bp[which] = address;
     events |= Event::BreakPoint;
 }
 
-unsigned int Mc6809::get_bp(int which)
+BOptionalWord Mc6809::get_bp(int which)
 {
+    if (which < 0 || which > static_cast<int>(bp.size()))
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     return bp[which];
 }
 
-int Mc6809::is_bp_set(int which)
+bool Mc6809::is_bp_set(int which)
 {
-    return bp[which] < 0x10000;
+    if (which < 0 || which > static_cast<int>(bp.size()))
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
+    return bp[which].has_value();
 }
 
 void Mc6809::reset_bp(int which)
 {
-    bp[which] = 0x10000;
+    if (which < 0 || which > static_cast<int>(bp.size()))
+    {
+        throw FlexException(FERR_WRONG_PARAMETER);
+    }
 
-    if (bp[0] >  0xffff && bp[1] >  0xffff && bp[2] >  0xffff)
+    bp[which].reset();
+
+    if (!bp[0].has_value() && !bp[1].has_value() && !bp[2].has_value())
     {
         events &= ~Event::BreakPoint;
     }
 
     // if a bp has been set in another thread check again
-    if (bp[0] <= 0xffff || bp[1] <= 0xffff || bp[2] <= 0xffff)
+    if (bp[0].has_value() || bp[1].has_value() || bp[2].has_value())
     {
         events |= Event::BreakPoint;
     }

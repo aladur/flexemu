@@ -105,13 +105,14 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
 
     for (int i = 0; i < 2; i++)
     {
-        if (!cpu.is_bp_set(i))
+        const auto bp = cpu.get_bp(i);
+        if (!bp.has_value())
         {
             text(25, 5 + i, "    ");
         }
         else
         {
-            text(25, 5 + i, hexstr((Word)cpu.get_bp(i)));
+            text(25, 5 + i, hexstr(bp.value()));
         }
     }
 

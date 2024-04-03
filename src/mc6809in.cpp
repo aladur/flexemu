@@ -285,10 +285,12 @@ CpuState Mc6809::runloop()
                 if (((events & Event::BreakPoint) != Event::NONE) &&
                     ((events & Event::IgnoreBP) == Event::NONE))
                 {
-                    if (PC == bp[0] || PC == bp[1] || PC == bp[2])
+                    if ((bp[0].has_value() && PC == bp[0].value()) ||
+                        (bp[1].has_value() && PC == bp[1].value()) ||
+                        (bp[2].has_value() && PC == bp[2].value()))
                     {
                         // breakpoint encountered
-                        if (PC == bp[2])
+                        if (bp[2].has_value() && PC == bp[2].value())
                         {
                             reset_bp(2);
                         }
@@ -388,18 +390,19 @@ CpuState Mc6809::runloop()
 
         if (log_fp != nullptr)
         {
-            if (lfs.startAddr >= 0x10000 || PC == lfs.startAddr)
+            if (!lfs.startAddr.has_value() || PC == lfs.startAddr.value())
             {
                 do_logging = true;
             }
 
-            if (lfs.stopAddr < 0x10000 && PC == lfs.stopAddr)
+            if (lfs.stopAddr.has_value() && PC == lfs.stopAddr.value())
             {
                 do_logging = false;
             }
 
             if (do_logging && disassembler != nullptr &&
-                PC >= lfs.minAddr && PC <= lfs.maxAddr)
+                (lfs.minAddr.has_value() && PC >= lfs.minAddr.value()) &&
+                (lfs.maxAddr.has_value() && PC <= lfs.maxAddr.value()))
             {
                 log_current_instruction();
             }

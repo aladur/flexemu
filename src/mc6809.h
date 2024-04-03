@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <atomic>
+#include <array>
 #include "misc1.h"
 #include "typedefs.h"
 #include "memory.h"
@@ -24,6 +25,7 @@
 #include "flexemu.h"
 #include "absdisas.h"
 #include "bobserv.h"
+#include "boption.h"
 
 #define USE_ASM 1
 
@@ -930,11 +932,11 @@ protected:
 
     // breakpoint support
 protected:
-    unsigned int bp[3];
+    std::array<BOptionalWord, 3> bp;
 public:
     void set_bp(int which, Word address);
-    unsigned int get_bp(int which);
-    int is_bp_set(int which);
+    BOptionalWord get_bp(int which);
+    bool is_bp_set(int which);
     void reset_bp(int which);
 
     // interface to other classes
