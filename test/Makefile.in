@@ -143,6 +143,7 @@ am_unittests_OBJECTS = unittests-test_main.$(OBJEXT) \
 	../src/unittests-benv.$(OBJEXT) \
 	../src/unittests-bfileptr.$(OBJEXT) \
 	../src/unittests-btime.$(OBJEXT) \
+	../src/unittests-fattrib.$(OBJEXT) \
 	../src/unittests-fdirent.$(OBJEXT) \
 	../src/unittests-ffilebuf.$(OBJEXT) \
 	../src/unittests-flexerr.$(OBJEXT) \
@@ -173,6 +174,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/unittests-benv.Po \
 	../src/$(DEPDIR)/unittests-bfileptr.Po \
 	../src/$(DEPDIR)/unittests-btime.Po \
+	../src/$(DEPDIR)/unittests-fattrib.Po \
 	../src/$(DEPDIR)/unittests-fdirent.Po \
 	../src/$(DEPDIR)/unittests-ffilebuf.Po \
 	../src/$(DEPDIR)/unittests-flexerr.Po \
@@ -643,6 +645,7 @@ unittests_SOURCES = \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
 	../src/btime.cpp \
+	../src/fattrib.cpp \
 	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
 	../src/flexerr.cpp \
@@ -652,6 +655,7 @@ unittests_SOURCES = \
 	../src/bfileptr.h \
 	../src/boption.h \
 	../src/btime.h \
+	../src/fattrib.h \
 	../src/fdirent.h \
 	../src/ffilebuf.h \
 	../src/flexerr.h
@@ -829,6 +833,8 @@ libgtest.la: $(libgtest_la_OBJECTS) $(libgtest_la_DEPENDENCIES) $(EXTRA_libgtest
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-btime.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-fattrib.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-fdirent.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-ffilebuf.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -859,6 +865,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bfileptr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-btime.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fattrib.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fdirent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ffilebuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-flexerr.Po@am__quote@ # am--include-marker
@@ -1038,6 +1045,20 @@ unittests-test_boption.obj: test_boption.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/btime.cpp' object='../src/unittests-btime.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-btime.obj `if test -f '../src/btime.cpp'; then $(CYGPATH_W) '../src/btime.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/btime.cpp'; fi`
+
+../src/unittests-fattrib.o: ../src/fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fattrib.o -MD -MP -MF ../src/$(DEPDIR)/unittests-fattrib.Tpo -c -o ../src/unittests-fattrib.o `test -f '../src/fattrib.cpp' || echo '$(srcdir)/'`../src/fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-fattrib.Tpo ../src/$(DEPDIR)/unittests-fattrib.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/fattrib.cpp' object='../src/unittests-fattrib.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-fattrib.o `test -f '../src/fattrib.cpp' || echo '$(srcdir)/'`../src/fattrib.cpp
+
+../src/unittests-fattrib.obj: ../src/fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fattrib.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-fattrib.Tpo -c -o ../src/unittests-fattrib.obj `if test -f '../src/fattrib.cpp'; then $(CYGPATH_W) '../src/fattrib.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/fattrib.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-fattrib.Tpo ../src/$(DEPDIR)/unittests-fattrib.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/fattrib.cpp' object='../src/unittests-fattrib.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-fattrib.obj `if test -f '../src/fattrib.cpp'; then $(CYGPATH_W) '../src/fattrib.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/fattrib.cpp'; fi`
 
 ../src/unittests-fdirent.o: ../src/fdirent.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fdirent.o -MD -MP -MF ../src/$(DEPDIR)/unittests-fdirent.Tpo -c -o ../src/unittests-fdirent.o `test -f '../src/fdirent.cpp' || echo '$(srcdir)/'`../src/fdirent.cpp
@@ -1431,6 +1452,7 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bfileptr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-btime.Po
+	-rm -f ../src/$(DEPDIR)/unittests-fattrib.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fdirent.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilebuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
@@ -1491,6 +1513,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bfileptr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-btime.Po
+	-rm -f ../src/$(DEPDIR)/unittests-fattrib.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fdirent.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilebuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po

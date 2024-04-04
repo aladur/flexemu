@@ -24,6 +24,7 @@
 #include "misc1.h"
 #include "fdirent.h"
 #include "flexerr.h"
+#include "fattrib.h"
 #include "ffilecnt.h"
 #include "dircont.h"
 #include "fcopyman.h"
@@ -63,14 +64,6 @@ std::array<QString, FlexplorerTableModel::COLUMNS>
 {
     tr("Id"), tr("Filename"), tr("Filetype"), tr("Random"), tr("Filesize"),
     tr("Date"), tr("Attributes"),
-};
-
-QVector<QPair<char, Byte> > FlexplorerTableModel::attributeCharToFlag
-{
-    { 'W', WRITE_PROTECT },
-    { 'D', DELETE_PROTECT },
-    { 'R', READ_PROTECT },
-    { 'C', CATALOG_PROTECT },
 };
 
 const QVector<FlexplorerTableModel::sFileTypes>

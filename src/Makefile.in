@@ -137,15 +137,16 @@ am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-bprocess.$(OBJEXT) libflex_a-brcfile.$(OBJEXT) \
 	libflex_a-bregistr.$(OBJEXT) libflex_a-breltime.$(OBJEXT) \
 	libflex_a-btime.$(OBJEXT) libflex_a-cvtwchar.$(OBJEXT) \
-	libflex_a-dircont.$(OBJEXT) libflex_a-fcinfo.$(OBJEXT) \
-	libflex_a-fcnffile.$(OBJEXT) libflex_a-fcopyman.$(OBJEXT) \
-	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
-	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
-	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
-	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
-	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
-	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
-	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT)
+	libflex_a-dircont.$(OBJEXT) libflex_a-fattrib.$(OBJEXT) \
+	libflex_a-fcinfo.$(OBJEXT) libflex_a-fcnffile.$(OBJEXT) \
+	libflex_a-fcopyman.$(OBJEXT) libflex_a-fdirent.$(OBJEXT) \
+	libflex_a-ffilebuf.$(OBJEXT) libflex_a-ffilecnt.$(OBJEXT) \
+	libflex_a-filecnts.$(OBJEXT) libflex_a-fileread.$(OBJEXT) \
+	libflex_a-filfschk.$(OBJEXT) libflex_a-flexerr.$(OBJEXT) \
+	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
+	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
+	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
+	libflex_a-rfilecnt.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT)
 am__objects_1 =
@@ -206,12 +207,13 @@ flexemu_OBJECTS = $(am_flexemu_OBJECTS) $(nodist_flexemu_OBJECTS)
 flexemu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flexemu_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_flexplorer_OBJECTS = flexplorer-fpcnvui.$(OBJEXT) \
-	flexplorer-fpdnd.$(OBJEXT) flexplorer-fpedit.$(OBJEXT) \
-	flexplorer-fpmain.$(OBJEXT) flexplorer-fpmdich.$(OBJEXT) \
-	flexplorer-fpmodel.$(OBJEXT) flexplorer-fpnewui.$(OBJEXT) \
-	flexplorer-fpoptman.$(OBJEXT) flexplorer-fpoptui.$(OBJEXT) \
-	flexplorer-fpwin.$(OBJEXT) flexplorer-qtfree.$(OBJEXT)
+am_flexplorer_OBJECTS = flexplorer-fpattrui.$(OBJEXT) \
+	flexplorer-fpcnvui.$(OBJEXT) flexplorer-fpdnd.$(OBJEXT) \
+	flexplorer-fpedit.$(OBJEXT) flexplorer-fpmain.$(OBJEXT) \
+	flexplorer-fpmdich.$(OBJEXT) flexplorer-fpmodel.$(OBJEXT) \
+	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptman.$(OBJEXT) \
+	flexplorer-fpoptui.$(OBJEXT) flexplorer-fpwin.$(OBJEXT) \
+	flexplorer-qtfree.$(OBJEXT)
 am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
 am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
@@ -301,6 +303,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
 	./$(DEPDIR)/flexemu-winmain.Po \
+	./$(DEPDIR)/flexplorer-fpattrui.Po \
 	./$(DEPDIR)/flexplorer-fpcnvui.Po \
 	./$(DEPDIR)/flexplorer-fpcnvui_moc.Po \
 	./$(DEPDIR)/flexplorer-fpdnd.Po \
@@ -332,6 +335,7 @@ am__depfiles_remade = ./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/libflex_a-btime.Po \
 	./$(DEPDIR)/libflex_a-cvtwchar.Po \
 	./$(DEPDIR)/libflex_a-dircont.Po \
+	./$(DEPDIR)/libflex_a-fattrib.Po \
 	./$(DEPDIR)/libflex_a-fcinfo.Po \
 	./$(DEPDIR)/libflex_a-fcnffile.Po \
 	./$(DEPDIR)/libflex_a-fcopyman.Po \
@@ -906,6 +910,7 @@ flexemu_SOURCES = \
 	efiletim.h \
 	efslctle.h \
 	engine.h \
+	fattrib.h \
 	fcinfo.h \
 	fcnffile.h \
 	fcopyman.h \
@@ -969,6 +974,7 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
+	fpattrui.cpp \
 	fpcnvui.cpp \
 	fpdnd.cpp \
 	fpedit.cpp \
@@ -995,6 +1001,7 @@ flexplorer_SOURCES = \
 	dircont.h \
 	efilesiz.h \
 	efiletim.h \
+	fattrib.h \
 	fcinfo.h \
 	fcopyman.h \
 	fdirent.h \
@@ -1150,6 +1157,7 @@ libflex_a_SOURCES = \
 	btime.cpp \
 	cvtwchar.cpp \
 	dircont.cpp \
+	fattrib.cpp \
 	fcinfo.cpp \
 	fcnffile.cpp \
 	fcopyman.cpp \
@@ -1185,6 +1193,7 @@ libflex_a_SOURCES = \
 	cvtwchar.h \
 	dircont.h \
 	efiletim.h \
+	fattrib.h \
 	fcinfo.h \
 	fcnffile.h \
 	fcopyman.h \
@@ -1424,6 +1433,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-wd1793.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-winmain.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpattrui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpcnvui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpcnvui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpdnd.Po@am__quote@ # am--include-marker
@@ -1456,6 +1466,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-btime.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-cvtwchar.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-dircont.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fattrib.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fcinfo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fcnffile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fcopyman.Po@am__quote@ # am--include-marker
@@ -1713,6 +1724,20 @@ libflex_a-dircont.obj: dircont.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dircont.cpp' object='libflex_a-dircont.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-dircont.obj `if test -f 'dircont.cpp'; then $(CYGPATH_W) 'dircont.cpp'; else $(CYGPATH_W) '$(srcdir)/dircont.cpp'; fi`
+
+libflex_a-fattrib.o: fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fattrib.o -MD -MP -MF $(DEPDIR)/libflex_a-fattrib.Tpo -c -o libflex_a-fattrib.o `test -f 'fattrib.cpp' || echo '$(srcdir)/'`fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fattrib.Tpo $(DEPDIR)/libflex_a-fattrib.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fattrib.cpp' object='libflex_a-fattrib.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fattrib.o `test -f 'fattrib.cpp' || echo '$(srcdir)/'`fattrib.cpp
+
+libflex_a-fattrib.obj: fattrib.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fattrib.obj -MD -MP -MF $(DEPDIR)/libflex_a-fattrib.Tpo -c -o libflex_a-fattrib.obj `if test -f 'fattrib.cpp'; then $(CYGPATH_W) 'fattrib.cpp'; else $(CYGPATH_W) '$(srcdir)/fattrib.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fattrib.Tpo $(DEPDIR)/libflex_a-fattrib.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fattrib.cpp' object='libflex_a-fattrib.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fattrib.obj `if test -f 'fattrib.cpp'; then $(CYGPATH_W) 'fattrib.cpp'; else $(CYGPATH_W) '$(srcdir)/fattrib.cpp'; fi`
 
 libflex_a-fcinfo.o: fcinfo.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fcinfo.o -MD -MP -MF $(DEPDIR)/libflex_a-fcinfo.Tpo -c -o libflex_a-fcinfo.o `test -f 'fcinfo.cpp' || echo '$(srcdir)/'`fcinfo.cpp
@@ -2834,6 +2859,20 @@ flexemu-poutwin_moc.obj: poutwin_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin_moc.obj `if test -f 'poutwin_moc.cpp'; then $(CYGPATH_W) 'poutwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin_moc.cpp'; fi`
 
+flexplorer-fpattrui.o: fpattrui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpattrui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpattrui.Tpo -c -o flexplorer-fpattrui.o `test -f 'fpattrui.cpp' || echo '$(srcdir)/'`fpattrui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpattrui.Tpo $(DEPDIR)/flexplorer-fpattrui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpattrui.cpp' object='flexplorer-fpattrui.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpattrui.o `test -f 'fpattrui.cpp' || echo '$(srcdir)/'`fpattrui.cpp
+
+flexplorer-fpattrui.obj: fpattrui.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpattrui.obj -MD -MP -MF $(DEPDIR)/flexplorer-fpattrui.Tpo -c -o flexplorer-fpattrui.obj `if test -f 'fpattrui.cpp'; then $(CYGPATH_W) 'fpattrui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpattrui.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpattrui.Tpo $(DEPDIR)/flexplorer-fpattrui.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpattrui.cpp' object='flexplorer-fpattrui.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpattrui.obj `if test -f 'fpattrui.cpp'; then $(CYGPATH_W) 'fpattrui.cpp'; else $(CYGPATH_W) '$(srcdir)/fpattrui.cpp'; fi`
+
 flexplorer-fpcnvui.o: fpcnvui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpcnvui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpcnvui.Tpo -c -o flexplorer-fpcnvui.o `test -f 'fpcnvui.cpp' || echo '$(srcdir)/'`fpcnvui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpcnvui.Tpo $(DEPDIR)/flexplorer-fpcnvui.Po
@@ -3640,6 +3679,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po
 	-rm -f ./$(DEPDIR)/flexemu-winmain.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fpattrui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpdnd.Po
@@ -3672,6 +3712,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-btime.Po
 	-rm -f ./$(DEPDIR)/libflex_a-cvtwchar.Po
 	-rm -f ./$(DEPDIR)/libflex_a-dircont.Po
+	-rm -f ./$(DEPDIR)/libflex_a-fattrib.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcinfo.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcnffile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcopyman.Po
@@ -3813,6 +3854,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po
 	-rm -f ./$(DEPDIR)/flexemu-winmain.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fpattrui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpdnd.Po
@@ -3845,6 +3887,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-btime.Po
 	-rm -f ./$(DEPDIR)/libflex_a-cvtwchar.Po
 	-rm -f ./$(DEPDIR)/libflex_a-dircont.Po
+	-rm -f ./$(DEPDIR)/libflex_a-fattrib.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcinfo.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcnffile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-fcopyman.Po

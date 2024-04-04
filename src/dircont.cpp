@@ -42,6 +42,7 @@
 #include "bdir.h"
 #include "bdate.h"
 #include "bfileptr.h"
+#include "fattrib.h"
 #include "fcinfo.h"
 #include "flexerr.h"
 #include "dircont.h"

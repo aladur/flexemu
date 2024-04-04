@@ -269,6 +269,7 @@ flexemu_SOURCES = \
 	efiletim.h \
 	efslctle.h \
 	engine.h \
+	fattrib.h \
 	fcinfo.h \
 	fcnffile.h \
 	fcopyman.h \
@@ -332,6 +333,7 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
+	fpattrui.cpp \
 	fpcnvui.cpp \
 	fpdnd.cpp \
 	fpedit.cpp \
@@ -358,6 +360,7 @@ flexplorer_SOURCES = \
 	dircont.h \
 	efilesiz.h \
 	efiletim.h \
+	fattrib.h \
 	fcinfo.h \
 	fcopyman.h \
 	fdirent.h \
@@ -513,6 +516,7 @@ libflex_a_SOURCES = \
 	btime.cpp \
 	cvtwchar.cpp \
 	dircont.cpp \
+	fattrib.cpp \
 	fcinfo.cpp \
 	fcnffile.cpp \
 	fcopyman.cpp \
@@ -548,6 +552,7 @@ libflex_a_SOURCES = \
 	cvtwchar.h \
 	dircont.h \
 	efiletim.h \
+	fattrib.h \
 	fcinfo.h \
 	fcnffile.h \
 	fcopyman.h \

@@ -422,6 +422,7 @@
     <ClInclude Include="e2floppy.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="efiletim.h" />
+    <ClInclude Include="fattrib.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcnffile.h" />
     <ClInclude Include="fcopyman.h" />

@@ -208,6 +208,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="fpattrui.cpp" />
     <ClCompile Include="fpcnvui.cpp" />
     <ClCompile Include="fpdnd.cpp" />
     <ClCompile Include="fpedit.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="dircont.h" />
     <ClInclude Include="efilesiz.h" />
     <ClInclude Include="efiletim.h" />
+    <ClInclude Include="fattrib.h" />
     <ClInclude Include="fcinfo.h" />
     <ClInclude Include="fcopyman.h" />
     <ClInclude Include="fdirent.h" />

@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "fattrib.h"
 #include "filecont.h"
 #include "dircont.h"
 #include "idircnt.h"

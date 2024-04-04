@@ -38,6 +38,7 @@
 #include <ctype.h>
 #include "bdir.h"
 #include "bfileptr.h"
+#include "fattrib.h"
 #include "ndircont.h"
 #include "fdirent.h"
 #include "fcinfo.h"

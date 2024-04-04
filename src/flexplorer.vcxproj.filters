@@ -18,6 +18,9 @@
     <ClCompile Include="ndircont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="fpattrui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fpcnvui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="efiletim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fattrib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="fcinfo.h">

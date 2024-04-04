@@ -215,6 +215,7 @@
     <ClCompile Include="btime.cpp" />
     <ClCompile Include="cvtwchar.cpp" />
     <ClCompile Include="dircont.cpp" />
+    <ClCompile Include="fattrib.cpp" />
     <ClCompile Include="fcinfo.cpp" />
     <ClCompile Include="fcnffile.cpp" />
     <ClCompile Include="fcopyman.cpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="rfilecnt.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="fattrib.h" />
     <ClInclude Include="bcommand.h" />
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />

@@ -146,7 +146,6 @@ private:
     static std::array<QString, COLUMNS> headerNames;
     static const QString headerNameFileSize;
     static const QString headerNameDataSize;
-    static QVector<QPair<char, Byte> > attributeCharToFlag;
     static const QVector<sFileTypes> fileTypes;
 };
 
