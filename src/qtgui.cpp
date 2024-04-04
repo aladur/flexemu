@@ -81,6 +81,7 @@
 #include <QResizeEvent>
 #include <QCloseEvent>
 #include <QThread>
+#include <QTimer>
 #include <QHash>
 #include <QFont>
 #include <QFontDatabase>
