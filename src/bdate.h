@@ -50,7 +50,7 @@ public:
     static const BDate Now();
     const std::string GetDateString(Format format = Format::D2MS3Y4) const;
     void Assign(int day, int month, int year);
-    void GetDate(int *day, int *month, int *year);
+    void GetDate(int &day, int &month, int &year);
     void SetDate(int day, int month, int year);
     void SetDate(const BDate &date);
     int GetDay() const ;
@@ -85,11 +85,11 @@ inline int BDate::GetMonth() const
 {
     return month;
 }
-inline void BDate::GetDate(int *d, int *m, int *y)
+inline void BDate::GetDate(int &d, int &m, int &y)
 {
-    *d = day;
-    *m = month;
-    *y = year;
+    d = day;
+    m = month;
+    y = year;
 }
 inline void BDate::SetDate(int d, int m, int y)
 {
