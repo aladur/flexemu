@@ -226,7 +226,7 @@ void QtGui::output_to_graphic()
 QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
                                const QString &objectName)
 {
-    QToolBar *toolBar = new QToolBar(title, parent);
+    auto *toolBar = new QToolBar(title, parent);
     toolBar->setObjectName(objectName);
     toolBar->setFloatable(false);
     toolBar->setMovable(false);

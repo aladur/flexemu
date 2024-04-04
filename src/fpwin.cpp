@@ -691,7 +691,7 @@ QToolBar *FLEXplorer::CreateToolBar(QWidget *parent,
                                     const QString &title,
                                     const QString &objectName)
 {
-    QToolBar *toolBar = new QToolBar(title, parent);
+    auto *toolBar = new QToolBar(title, parent);
     toolBar->setObjectName(objectName);
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
@@ -971,7 +971,7 @@ void FLEXplorer::ContextMenuRequested(QPoint pos)
 
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
-        QMenu *contextMenu = new QMenu(this);
+        auto *contextMenu = new QMenu(this);
 
         contextMenu->addAction(viewAction);
         contextMenu->addAction(deleteAction);

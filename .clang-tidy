@@ -44,6 +44,7 @@ Checks: '
   modernize-use-default-member-init,
   modernize-use-equals-default,
   modernize-use-override,
+  modernize-use-auto,
   performance-*,
   portability-*,
   readability-isolate-declaration,

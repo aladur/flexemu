@@ -830,7 +830,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
         }
     }
 
-    QMimeData *mimeData = new QMimeData;
+    auto *mimeData = new QMimeData;
 
     if (files.GetFileCount() != 0)
     {
