@@ -400,6 +400,7 @@
     <ClInclude Include="bobserv.h" />
     <ClInclude Include="bobservd.h" />
     <ClInclude Include="bobshelp.h" />
+    <ClInclude Include="boption.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="bscopeex.h" />

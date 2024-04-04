@@ -242,6 +242,7 @@ flexemu_SOURCES = \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
+	boption.h \
 	brcfile.h \
 	bregistr.h \
 	brkptui.h \
