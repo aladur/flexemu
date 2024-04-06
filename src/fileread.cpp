@@ -530,7 +530,7 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
         }
     }
 
-    const char *pBuffer = reinterpret_cast<char *>(const_cast<Byte *>(buffer));
+    const auto *pBuffer = reinterpret_cast<const char *>(buffer);
     ostream.write(pBuffer, size);
 
     previous_address = address + size;

@@ -25,10 +25,11 @@
     #include <signal.h>
     #include <sys/types.h>
     #include <sys/wait.h>
+    #include <vector>
+    #include <array>
 #endif
 #include "bprocess.h"
 #include "cvtwchar.h"
-#include <memory>
 
 BProcess::BProcess(const std::string &x_exec,
                    const std::string &x_dir /* = "" */,
@@ -121,12 +122,18 @@ bool BProcess::IsRunning()
 // ATTENTION: multiple arguments are not supported yet!
 bool BProcess::Start()
 {
-    const char *args[3];
+    std::vector<std::string> args{ executable, arguments };
+    std::array<char *, 3> argv{};
     struct sigaction default_action;
+    int i = 0;
 
-    args[0] = executable.c_str();
-    args[1] = arguments.c_str();
-    args[2] = nullptr;
+    for (auto &arg : args)
+    {
+        // Compiles without warning with gcc, clang and MSVC.
+        // NOLINTNEXTLINE(clang-diagnostic-error)
+        argv[i++] = arg.data();
+    }
+
     default_action.sa_handler = SIG_DFL;
     default_action.sa_flags = 0;
     sigemptyset(&default_action.sa_mask);
@@ -144,7 +151,7 @@ bool BProcess::Start()
                 }
         }
 
-        execvp(args[0], const_cast<char *const *>(args));
+        execvp(argv[0], argv.data());
         // if we come here an error has occured
         _exit(1);
     }

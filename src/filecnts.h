@@ -76,7 +76,7 @@ typedef struct s_st
 } st_t;
 
 /* structure of FLEX system information record (SIR) */
-struct s_sys_info_record
+struct alignas(1) s_sys_info_record
 {
     char disk_name[FLEX_DISKNAME_LENGTH]; // Name of this disk image
     char disk_ext[FLEX_DISKEXT_LENGTH]; // Extension of this disk image
@@ -91,16 +91,26 @@ struct s_sys_info_record
 };
 
 /* structure of FLEX system information sector (SIS) */
-struct s_sys_info_sector
+struct alignas(1) s_sys_info_sector
 {
     Byte unused1[16]; // To be initialized with 0
     s_sys_info_record sir; // System information record
     Byte unused2[216]; // To be initialized with 0
 };
 
+/* Union of FLEX system information sector (SIS) */
+// The union gives the possibility to choose between two types of access:
+// 1. A structured data access, represented by the member s.
+// 2. A byte oriented data access, represented by the member raw.
+union alignas(1) u_sys_info_sector
+{
+    s_sys_info_sector s; // FLEX system information sector.
+    Byte raw[SECTOR_SIZE]; // Raw data access.
+};
+
 // (M)eta (D)ata (P)er (S)ector in Byte. It consists of the:
-// - link to the next sector
-// - 16-bit record number
+// - link to the next sector or 00-00.
+// - 16-bit record number, zero based.
 #define MDPS (static_cast<int>(sizeof(s_st)) + 2)
 
 // Number of (D)ata (B)ytes (P)er (S)ector.
@@ -115,7 +125,7 @@ struct s_sys_info_sector
 const int MAX_FILE_SECTORS = 65275;
 
 /* structure of one FLEX directory entry */
-struct s_dir_entry
+struct alignas(1) s_dir_entry
 {
     char filename[FLEX_BASEFILENAME_LENGTH]; // Name of file
     char file_ext[FLEX_FILEEXT_LENGTH]; // Extension of file
@@ -140,8 +150,8 @@ struct s_dir_entry
 // the utility DELETE.CMD the first byte is set to 0xFF.
 #define DE_DELETED  '\xFF'
 
-/* structure of one FLEX directory sector */
-struct s_dir_sector
+/* structure of a FLEX directory sector */
+struct alignas(1) s_dir_sector
 {
     st_t next; // Link to next track/sector in the chain
     Byte record_nr[2]; // Logical record number of sector in file, zero based
@@ -149,6 +159,15 @@ struct s_dir_sector
     struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector
 };
 
+/* Union of a FLEX directory sector */
+// The union gives the possibility to choose between two types of access:
+// 1. A structured data access, represented by the member s.
+// 2. A byte oriented data access, represented by the member raw.
+union alignas(1) u_dir_sector
+{
+    s_dir_sector s; // FLEX directory sector.
+    Byte raw[SECTOR_SIZE]; // Raw data access.
+};
 
 struct s_floppy
 {

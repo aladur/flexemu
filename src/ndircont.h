@@ -82,7 +82,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     };
 
     // A new file is a newly created file which not yet has an entry in
-    // a directory sector (s_dir_sector), so the name of this file is unknown.
+    // a directory sector (u_dir_sector), so the name of this file is unknown.
     // As soon as a new directory entry (s_dir_entry) is created for it, it is
     // removed from the list of new files (new_files) and the file is renamed
     // on the host file system.
@@ -114,8 +114,8 @@ private:
     // Some structures needed for a FLEX file system
     // link table: Each sector has an entry in the link table.
     std::vector<s_link_table> flex_links;
-    std::array<s_sys_info_sector, 2> flex_sys_info; // system info sectors
-    std::vector<s_dir_sector> flex_directory; // directory sectors
+    std::array<u_sys_info_sector, 2> flex_sys_info; // system info sectors
+    std::vector<u_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SDWord, s_new_file> new_files; // new file table
     st_t dir_extend{0U, 0U}; // track and sector of directory extend sector
     Word init_dir_sectors{}; // initial number of directory sectors
@@ -188,7 +188,7 @@ private:
     void check_for_rename(Word ds_idx, const s_dir_sector &d) const;
     void check_for_new_file(Word ds_idx, const s_dir_sector &d);
     void check_for_changed_file_attr(Word ds_idx, s_dir_sector &d);
-    bool extend_directory(SDWord sec_idx, const s_dir_sector &d);
+    bool extend_directory(SDWord sec_idx, const u_dir_sector &d);
     bool set_file_time(
         const char *ppath,
         Byte month,
