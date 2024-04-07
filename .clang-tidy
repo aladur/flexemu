@@ -8,7 +8,6 @@ Checks: '
   -bugprone-easily-swappable-parameters,
   -bugprone-empty-catch,
   -bugprone-use-after-move,
-  -bugprone-unused-local-non-trivial-variable,
   -bugprone-switch-missing-default-case,
   -bugprone-unused-return-value,
   clang-analyzer-optin.cplusplus.VirtualCall,

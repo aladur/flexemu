@@ -59,7 +59,6 @@ int BRcFile::SetValue(const char *key, const char *value)
 
 int BRcFile::SetValue(const char *key, int value)
 {
-    std::string str;
     BFilePtr fp(fileName, "a");
 
     if (fp == nullptr)

@@ -1187,7 +1187,6 @@ int main(int argc, char *argv[])
     std::vector<std::regex> regexs;
     std::string dsk_file;
     std::string dst_dsk_file;
-    std::string size;
     const char *bsFile = nullptr;
     int disk_format = 0;
     int tracks = 0;
