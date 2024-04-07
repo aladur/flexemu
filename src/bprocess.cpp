@@ -129,8 +129,6 @@ bool BProcess::Start()
 
     for (auto &arg : args)
     {
-        // Compiles without warning with gcc, clang and MSVC.
-        // NOLINTNEXTLINE(clang-diagnostic-error)
         argv[i++] = arg.data();
     }
 
