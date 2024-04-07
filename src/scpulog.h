@@ -27,7 +27,7 @@
 #include "boption.h"
 #include <string>
 
-enum class LogRegister : Byte
+enum class LogRegister : uint8_t
 {
     NONE = 0,
     CC = (1 << 0),

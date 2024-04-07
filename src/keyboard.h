@@ -35,7 +35,7 @@
 #include <memory>
 
 // key mask for shift, control key
-enum {
+enum : uint8_t {
 SHIFT_KEY = 8,
 CONTROL_KEY = 16,
 };

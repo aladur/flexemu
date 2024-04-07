@@ -10,7 +10,7 @@
 
 
 // Instruction flags as scoped enum.
-enum class InstFlg : Byte
+enum class InstFlg : uint8_t
 {
     NONE = 0,
     Jump = (1 << 0),         // next instruction will not be processed

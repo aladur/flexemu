@@ -46,7 +46,7 @@ public:
                                                                           const;
 
 private:
-    enum class Type
+    enum class Type : uint8_t
     {
         Comment,
         Section,

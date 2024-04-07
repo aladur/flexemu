@@ -32,35 +32,35 @@
 #ifndef E2_INCLUDED
 #define E2_INCLUDED
 
-enum {
+enum : uint16_t {
 VIDEORAM_SIZE = 0x4000,
 };
 
-enum {
+enum : uint8_t {
 RASTERLINE_SIZE = 64, /* byte size of one raster-line */
 };
 
-enum {
+enum : uint8_t {
 YBLOCK_BASE = 4, /* number of yblocks as a power of 2 */
 };
 
-enum {
+enum : uint8_t {
 COLOR_PLANES = 6,   /* maximum number of color planes */
 };
 
-enum {
+enum : uint8_t {
 MAX_COLORS = (1U << COLOR_PLANES),   /* maximum number of color values */
 };
 
-enum {
+enum : uint8_t {
 SCREEN_SIZES = 5, /* maximum screen size factor */
 };
 
-enum {
+enum : uint8_t {
 ICON_SIZES = 3, /* maximum icon size factor */
 };
 
-enum {
+enum : uint8_t {
 RED_HIGH = 0x10, /* Color bitmask for green high */
 RED_LOW = 0x02, /* Color bitmask for red low */
 GREEN_HIGH = 0x20, /* Color bitmask for green high */
@@ -69,29 +69,29 @@ BLUE_HIGH = 0x08, /* Color bitmask for blue low */
 BLUE_LOW = 0x01, /* Color bitmask for blue low */
 };
 
-enum {
+enum : uint8_t {
 MAXVIDEORAM_BANKS = 48U, /* max number of ram banks of size 16K */
 };
 
 /* possible values: 12, 48 */
 /* number of yblocks */
-enum {
+enum : uint8_t {
 YBLOCKS = (1 << YBLOCK_BASE), /* Nr. of blocks vertically */
 };
 
 /* bytesize of one yblock */
-enum {
+enum : uint16_t {
 YBLOCK_SIZE = (VIDEORAM_SIZE / YBLOCKS),
 };
 
 /* pixelsize of one block */
-enum {
+enum : uint16_t {
 BLOCKWIDTH = (RASTERLINE_SIZE << 3),
 BLOCKHEIGHT = (YBLOCK_SIZE / RASTERLINE_SIZE),
 };
 
 /* pixelsize of whole video display represented by a window */
-enum {
+enum : uint16_t {
 WINDOWWIDTH = (RASTERLINE_SIZE << 3),
 WINDOWHEIGHT = (VIDEORAM_SIZE / RASTERLINE_SIZE),
 };
@@ -102,12 +102,12 @@ WINDOWHEIGHT = (VIDEORAM_SIZE / RASTERLINE_SIZE),
 /* It has to be a multiple of 1024              */
 /* ROM_BASE defines the base address where ROM  */
 /* memory is locatad (read-only memory).        */
-enum {
+enum : uint16_t {
 GENIO_BASE = 0xfc00, /* Start addr. of mm-I/O up to 0xffff */
 ROM_BASE = 0xf000, /* Start addr. of ROM up to 0xffff */
 };
 
-enum {
+enum : uint8_t {
 MAX_DRIVES = 4, /* Max. number of supported disk drives */
 };
 

@@ -39,7 +39,7 @@
 #endif
 
 
-enum class FileType
+enum class FileType : uint8_t
 {
     Unknown,
     IntelHex,

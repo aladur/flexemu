@@ -24,7 +24,10 @@
 #ifndef ASCIICTL_INCLUDED
 #define ASCIICTL_INCLUDED
 
-enum {
+#include <cstdint>
+
+
+enum : uint8_t {
 NUL = '\x00',
 BEL = '\x07',
 BS = '\x08',

@@ -29,7 +29,7 @@
 #include <mutex>
 
 // Button mask for left, middle and right button
-enum {
+enum : uint8_t {
 L_MB = 4,
 M_MB = 2,
 R_MB = 1,

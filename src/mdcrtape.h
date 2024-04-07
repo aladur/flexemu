@@ -36,7 +36,7 @@ class MiniDcrTape;
 
 using MiniDcrTapePtr = std::unique_ptr<MiniDcrTape>;
 
-enum class RecordType : Byte
+enum class RecordType : uint8_t
 {
     NONE,      // There is no (more) record
     Header,    // Record containing a file header
@@ -46,7 +46,7 @@ enum class RecordType : Byte
 
 class MiniDcrTape
 {
-    enum class Mode : Byte
+    enum class Mode : uint8_t
     {
         Create, // Create a new file
         Open,   // Open an existing file

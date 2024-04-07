@@ -26,9 +26,10 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <cstdint>
 
 
-enum class CharProperty
+enum class CharProperty : uint16_t
 {
     Normal = 0,
     Underlined = 1, // Print text underline.

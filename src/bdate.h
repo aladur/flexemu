@@ -23,6 +23,7 @@
 #define BDATE_INCLUDED
 
 #include <string>
+#include <cstdint>
 
 class BDate
 {
@@ -35,7 +36,7 @@ private:
 
 public:
 
-    enum class Format
+    enum class Format : uint8_t
     {
         D2MS3Y4, // DD-MMM-YYYY, MMM are the first three char. of month name
         D2MSU3Y4,// DD-MMM-YYYY, MMM are the first three char. of month name

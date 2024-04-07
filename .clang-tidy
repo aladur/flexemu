@@ -51,7 +51,7 @@ Checks: '
   modernize-use-override,
   modernize-use-auto,
   performance-*,
-  -performance-enum-size,
+  performance-enum-size,
   -performance-avoid-endl,
   portability-*,
   readability-isolate-declaration,

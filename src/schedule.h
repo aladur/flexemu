@@ -42,7 +42,7 @@ class Scheduler
 {
 public:
 
-    enum class Event
+    enum class Event : uint8_t
     {
         NONE = 0,
         SyncExec = (1 << 0),  // synchronous execute commands

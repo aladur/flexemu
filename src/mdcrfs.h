@@ -30,14 +30,14 @@ class BMemoryBuffer;
 class MiniDcrTape;
 
 
-enum class MdcrWriteMode
+enum class MdcrWriteMode : uint8_t
 {
     Truncate, // Write the file at the beginning of the tape.
               // Any existing file is overwritten.
     Append,   // Append the file at the end of the tape.
 };
 
-enum class MdcrStatus
+enum class MdcrStatus : uint8_t
 {
     Success,       // The function call was successfull.
     InvalidData,   // The input data is empty, invalid or could not be evaluated.

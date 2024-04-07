@@ -39,7 +39,7 @@ const DWord MAGIC_NUMBER = 0x339a5c48;
 /* Max. size of a JVC file header */
 const Word MAX_JVC_HEADERSIZE = 5U;
 
-enum tMountOption
+enum tMountOption : uint8_t
 {
     MOUNT_DEFAULT = 0,
     MOUNT_RAM = 1

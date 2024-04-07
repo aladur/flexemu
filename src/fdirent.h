@@ -30,7 +30,7 @@
 #include "btime.h"
 #include "filecntb.h"
 
-enum flexFileAttributes
+enum flexFileAttributes : uint8_t
 {
     FLX_READONLY = 0x80,
     FLX_NODELETE = 0x40,
@@ -38,7 +38,7 @@ enum flexFileAttributes
     FLX_NOCAT = 0x10,
 };
 
-enum flexFileStatus
+enum flexFileStatus : uint8_t
 {
     FLX_NOT_EMPTY = 0x1
 };

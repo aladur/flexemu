@@ -26,7 +26,7 @@
 #include <string>
 #include <map>
 
-enum
+enum : uint8_t
 {
     BRC_NO_ERROR = 0,
     BRC_NOT_FOUND = 99,

@@ -93,7 +93,7 @@ class QtGui : public QWidget, public AbstractGui
     Q_OBJECT
 
 protected:
-    enum
+    enum : uint8_t
     {
         FLX_INVISIBLE_CURSOR = 10,
         FLX_DEFAULT_CURSOR = 11

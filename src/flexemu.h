@@ -35,7 +35,7 @@
 #include "typedefs.h"
 
 
-enum class DiskStatus
+enum class DiskStatus : uint8_t
 {
     EMPTY,
     INACTIVE,

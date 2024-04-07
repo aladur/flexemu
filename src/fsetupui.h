@@ -75,7 +75,7 @@ private slots:
     void OnDirectoryDiskActiveChanged(bool isActive);
 
 private:
-    enum class FileType
+    enum class FileType : uint8_t
     {
         DiskContainerFile,
         CassetteFile,

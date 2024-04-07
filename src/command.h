@@ -30,11 +30,11 @@
 #include "asciictl.h"
 #include <string>
 
-enum {
+enum : uint8_t {
 MAX_COMMAND = 128,
 };
 
-enum {
+enum : uint8_t {
 INVALID_DRIVE = 4, /* Identifier for an invalid drive */
 };
 

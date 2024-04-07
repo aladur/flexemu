@@ -40,7 +40,7 @@
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
 
-enum {
+enum : uint8_t {
 MAX_VRAM = (4 * 16),
 };
 

@@ -28,8 +28,9 @@
 
 #include <string>
 #include <map>
+#include <cstdint>
 
-enum class BLinuxSysInfoType
+enum class BLinuxSysInfoType : uint8_t
 {
     LED,
 };

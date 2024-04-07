@@ -25,9 +25,10 @@
 
 #include <string>
 #include <exception>
+#include <cstdint>
 
 
-enum {
+enum : uint8_t {
 FERR_NOERROR = 0,
 FERR_UNABLE_TO_OPEN = 1,
 FERR_IS_NO_FILECONTAINER = 2,

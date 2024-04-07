@@ -33,7 +33,7 @@
 class Mc6821 : public IoDevice
 {
 public:
-    enum class ControlLine : Byte
+    enum class ControlLine : uint8_t
     {
         NONE = 0,
         CA1 = 1,

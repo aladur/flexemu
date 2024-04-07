@@ -343,7 +343,7 @@ int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
     return load_flex_binary(istream, memtgt, startAddress);
 }
 
-enum class WBType
+enum class WBType : uint8_t
 {
     Header,
     Data,

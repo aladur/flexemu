@@ -49,7 +49,7 @@ class NafsDirectoryContainer : public FileContainerIfSector
     // SDWord new_file_id Id of a new file. always < 0. Used as key in
     //                    new_files.
 
-    enum class SectorType : Byte
+    enum class SectorType : uint8_t
     {
         Unknown, // Unknown sector type.
         Boot, // Boot sectors.

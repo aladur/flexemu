@@ -29,7 +29,7 @@
 #include "cpustate.h"
 
 
-enum tIrqType
+enum tIrqType : uint8_t
 {
     INT_IRQ = 0,
     INT_FIRQ,
@@ -37,7 +37,7 @@ enum tIrqType
     INT_RESET
 };
 
-enum class RunMode : Byte
+enum class RunMode : uint8_t
 {
     SingleStepOver,
     SingleStepInto,

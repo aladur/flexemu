@@ -56,7 +56,7 @@ class E2Screen : public QWidget
     Q_OBJECT
 
 public:
-    enum
+    enum : uint8_t
     {
         FLX_INVISIBLE_CURSOR = 10,
         FLX_DEFAULT_CURSOR = 11

@@ -28,7 +28,7 @@
 #include <memory>
 #include "typedefs.h"
 
-enum class CpuState : Byte
+enum class CpuState : uint8_t
 {
     NONE,
     Run,
@@ -46,7 +46,7 @@ enum class CpuState : Byte
 
 // The time in micro-seconds on which a timer get's a timeout
 // to execute updates.
-enum {
+enum : uint16_t {
 TIME_BASE = 10000,
 };
 

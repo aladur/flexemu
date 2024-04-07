@@ -51,7 +51,7 @@ class E2floppy : public Wd1793
 private:
 
     // States for writing a track (formatting a disk).
-    enum class WriteTrackState
+    enum class WriteTrackState : uint8_t
     {
         Inactive,
         WaitForIdAddressMark,

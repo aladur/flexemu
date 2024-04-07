@@ -43,14 +43,14 @@ class Pia2V5 : public Mc6821
     // Philips MDCR digital cassette recorder connected to Port A and B
 
 private:
-    enum class TapeDirection : Byte
+    enum class TapeDirection : uint8_t
     {
         Forward,
         Rewind,
         NONE,
     };
 
-    enum class ReadMode : Byte
+    enum class ReadMode : uint8_t
     {
         Init, // Delay until ready for read next record
         Read, // Reading a record
