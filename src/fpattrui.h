@@ -27,6 +27,7 @@
 #include "misc1.h"
 #include "fattrib.h"
 #include "filecntb.h"
+#include "warnoff.h"
 #include <QApplication>
 #include <QCheckBox>
 #include <QDialog>
@@ -38,6 +39,7 @@
 #include <QString>
 #include <QVector>
 #include <QVarLengthArray>
+#include "warnon.h"
 #include <cassert>
 
 
