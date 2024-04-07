@@ -28,7 +28,6 @@ Checks: '
   -cppcoreguidelines-non-private-member-variables-in-classes,
   -cppcoreguidelines-avoid-const-or-ref-data-members,
   -cppcoreguidelines-macro-usage,
-  -cppcoreguidelines-macro-to-enum,
   -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,

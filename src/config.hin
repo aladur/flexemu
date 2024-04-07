@@ -1,5 +1,9 @@
 /* src/config.hin.  Generated from configure.ac by autoheader.  */
 
+/* config.h is generated file as part of autoconf. */
+/* Some LINT checks have to be disabled. */
+/* NOLINTBEGIN(cppcoreguidelines-macro-to-enum) */
+
 /* Define if building universal (internal helper macro) */
 #undef AC_APPLE_UNIVERSAL_BUILD
 
@@ -180,3 +184,5 @@
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
+
+/* NOLINTEND(cppcoreguidelines-macro-to-enum) */
