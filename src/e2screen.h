@@ -56,10 +56,10 @@ class E2Screen : public QWidget
     Q_OBJECT
 
 public:
-    enum : uint8_t
+    enum class CursorType : uint8_t
     {
-        FLX_INVISIBLE_CURSOR = 10,
-        FLX_DEFAULT_CURSOR = 11
+        Invisible,
+        Default,
     };
 
     E2Screen() = delete;
@@ -110,7 +110,7 @@ private:
     int TranslateToPAT09Key(QKeyEvent *event);
     void MouseWarp(int dx, int dy);
     void SetMouseCoordinatesAndButtons(QMouseEvent *event);
-    void SetCursorType(int type = FLX_DEFAULT_CURSOR);
+    void SetCursorType(CursorType p_cursorType);
     void SetCursorPosition(int x, int y);
     void InitializeNumLockIndicatorMask();
     bool IsNumLockOn() const;
@@ -134,7 +134,7 @@ private:
     int warpHomeY;
     int mouseButtonState;
     int pixelSize;
-    int cursorType;
+    CursorType cursorType;
     bool doScaledScreenUpdate;
     QSize preferredScreenSize;
     QSize scaledScreenSize;

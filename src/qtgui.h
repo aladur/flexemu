@@ -92,13 +92,6 @@ class QtGui : public QWidget, public AbstractGui
 {
     Q_OBJECT
 
-protected:
-    enum : uint8_t
-    {
-        FLX_INVISIBLE_CURSOR = 10,
-        FLX_DEFAULT_CURSOR = 11
-    };
-
 public:
     QtGui() = delete;
     QtGui(
@@ -177,7 +170,6 @@ private:
     void ConnectCpuUiSignalsWithSlots();
     void SetStatusMessage(const QString &message) const;
     bool IsClosingConfirmed();
-    void SetCursor(int type = FLX_DEFAULT_CURSOR);
     void PopupMessage(const QString &message);
     static void SetBell(int percent);
     void update_block(int blockNumber);

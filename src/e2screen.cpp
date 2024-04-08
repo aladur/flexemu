@@ -72,7 +72,7 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     , warpHomeY(0)
     , mouseButtonState(-1)
     , pixelSize(x_options.pixelSize)
-    , cursorType(FLX_DEFAULT_CURSOR)
+    , cursorType(CursorType::Default)
     , doScaledScreenUpdate(true)
     , preferredScreenSize(WINDOWWIDTH * x_options.pixelSize,
                           WINDOWHEIGHT * x_options.pixelSize)
@@ -281,7 +281,7 @@ void E2Screen::SetMouseCoordinatesAndButtons(QMouseEvent *event)
 
 void E2Screen::ReleaseMouseCapture()
 {
-    if (cursorType == FLX_INVISIBLE_CURSOR)
+    if (cursorType == CursorType::Invisible)
     {
         ToggleMouseCapture();
     }
@@ -289,12 +289,12 @@ void E2Screen::ReleaseMouseCapture()
 
 void E2Screen::ToggleMouseCapture()
 {
-    cursorType = (cursorType == FLX_DEFAULT_CURSOR) ?
-                 FLX_INVISIBLE_CURSOR : FLX_DEFAULT_CURSOR;
+    cursorType = (cursorType == CursorType::Default) ?
+                 CursorType::Invisible : CursorType::Default;
 
     window()->setWindowTitle(GetTitle());
 
-    if (cursorType == FLX_DEFAULT_CURSOR)
+    if (cursorType == CursorType::Default)
     {
         releaseMouse();
     }
@@ -306,15 +306,17 @@ void E2Screen::ToggleMouseCapture()
     SetCursorType(cursorType);
 }
 
-void E2Screen::SetCursorType(int type /* = FLX_DEFAULT_CURSOR */)
+void E2Screen::SetCursorType(CursorType p_cursorType)
 {
-    if(type == FLX_DEFAULT_CURSOR)
+    switch (p_cursorType)
     {
-        unsetCursor();
-    }
-    else if(type == FLX_INVISIBLE_CURSOR)
-    {
-        setCursor(Qt::BlankCursor);
+        case CursorType::Default:
+            unsetCursor();
+            break;
+
+        case CursorType::Invisible:
+            setCursor(Qt::BlankCursor);
+            break;
     }
 }
 
@@ -348,7 +350,7 @@ bool E2Screen::IsSmoothDisplay() const
 
 QString E2Screen::GetTitle()
 {
-    if (cursorType == FLX_DEFAULT_CURSOR)
+    if (cursorType == CursorType::Default)
     {
         return QString(PROGRAMNAME " V" PROGRAM_VERSION " - ") +
                tr("Press CTRL F10 to capture mouse");
@@ -385,7 +387,7 @@ void E2Screen::UpdateMouse()
     if ((previousMouseX != -1) && (mouseX != -1) &&
         (previousMouseY != -1) && (mouseY != -1))
     {
-        if (cursorType == FLX_INVISIBLE_CURSOR)
+        if (cursorType == CursorType::Invisible)
         {
             dx = mouseX - previousMouseX - warpDx;
             dy = mouseY - previousMouseY - warpDy;
