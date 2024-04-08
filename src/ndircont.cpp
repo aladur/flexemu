@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 
+#include <iterator>
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
@@ -39,6 +40,7 @@
 #include <ctype.h>
 #include "bdir.h"
 #include "bfileptr.h"
+#include "filecntb.h"
 #include "fattrib.h"
 #include "ndircont.h"
 #include "fdirent.h"
@@ -823,8 +825,8 @@ bool NafsDirectoryContainer::add_to_link_table(
 
 // Add file properties to directory entry with index 'dir_idx'.
 void NafsDirectoryContainer::add_to_directory(
-    const char *name,
-    const char *extension,
+    std::string name,
+    std::string extension,
     SDWord dir_idx,
     bool is_random,
     const struct stat &stat,
@@ -847,12 +849,12 @@ void NafsDirectoryContainer::add_to_directory(
     auto records = static_cast<Word>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
       flex_directory[dir_idx / DIRENTRIES].s.dir_entry[dir_idx % DIRENTRIES];
-    std::fill(std::begin(dir_entry.filename), std::end(dir_entry.filename),
-        '\0');
-    strncpy(dir_entry.filename, name, FLEX_BASEFILENAME_LENGTH);
-    std::fill(std::begin(dir_entry.file_ext), std::end(dir_entry.file_ext),
-        '\0');
-    strncpy(dir_entry.file_ext, extension, FLEX_FILEEXT_LENGTH);
+    name.resize(FLEX_BASEFILENAME_LENGTH);
+    std::copy_n(name.cbegin(), FLEX_BASEFILENAME_LENGTH,
+                std::begin(dir_entry.filename));
+    extension.resize(FLEX_FILEEXT_LENGTH);
+    std::copy_n(extension.cbegin(), FLEX_FILEEXT_LENGTH,
+                std::begin(dir_entry.file_ext));
     // A write protected file is automatically also delete protected.
     dir_entry.file_attr = is_write_protected ? WRITE_PROTECT : 0;
     dir_entry.start = begin;
@@ -1079,7 +1081,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
                 strupper(name);
                 strupper(extension);
-                add_to_directory(name.c_str(), extension.c_str(),
+                add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
                                  end, (access(path.c_str(), W_OK) != 0));
 
@@ -1124,9 +1126,9 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
         }
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
-        std::fill(std::begin(sis.sir.disk_name),
-                std::end(sis.sir.disk_name), '\0');
-        strncpy(sis.sir.disk_name, name.c_str(), FLEX_DISKNAME_LENGTH);
+        name.resize(FLEX_DISKNAME_LENGTH);
+        std::copy_n(name.cbegin(), FLEX_DISKNAME_LENGTH,
+                    std::begin(sis.sir.disk_name));
         std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
                   '\0');
         setValueBigEndian<Word>(&sis.sir.disk_number[0], number);

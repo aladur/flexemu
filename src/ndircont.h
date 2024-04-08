@@ -167,8 +167,8 @@ private:
         st_t &begin,
         st_t &end);
     void add_to_directory(
-        const char *name,
-        const char *ext,
+        std::string name,
+        std::string ext,
         SDWord dir_idx,
         bool is_random,
         const struct stat &stat,
