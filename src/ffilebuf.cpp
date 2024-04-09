@@ -624,8 +624,9 @@ void FlexFileBuffer::SetAdjustedFilename(const std::string &fileName)
         }
     }
     strupper(adjustedFileName);
-    memset(fileHeader.fileName, '\0', sizeof(fileHeader.fileName));
-    strcpy(fileHeader.fileName, adjustedFileName.c_str());
+    strncpy(fileHeader.fileName, adjustedFileName.c_str(),
+            sizeof(fileHeader.fileName) - 1U);
+    fileHeader.fileName[sizeof(fileHeader.fileName) - 1U] = '\0';
 }
 
 void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)

@@ -20,26 +20,22 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#include <stdio.h>
-
 #include "misc1.h"
 #include "mc146818.h"
-#include "mc6809.h"
 #include "bfileptr.h"
+
 
 Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 Mc146818::Mc146818()
-
 {
     struct tm *lt;
     time_t time_now;
-    const char* home = getFileName();
+    const auto path = getConfigFilePath();
 
-    if (home[0] != '\0')
+    if (!path.empty())
     {
-        BFilePtr fp(home, "rb");
+        BFilePtr fp(path, "rb");
 
         if (fp != nullptr)
         {
@@ -69,27 +65,18 @@ Mc146818::Mc146818()
     year = convert(static_cast<Byte>(lt->tm_year % 100));
 }
 
-const char *Mc146818::getFileName()
+std::string Mc146818::getConfigFilePath()
 {
-    if (path[0] == '\0')
+    auto path = getHomeDirectory();
+
+    if (!path.empty())
     {
-#ifdef UNIX
-        char *home = getenv("HOME");
-#endif
-#ifdef _WIN32
-        char* home = getenv("USERPROFILE");
-#endif
-
-        if (home != nullptr)
+        if (!endsWithPathSeparator(path))
         {
-            strcpy(path, home);
-            strcat(path, PATHSEPARATORSTRING);
+            path.append(PATHSEPARATORSTRING);
         }
 
-        if (path[0] != '\0')
-        {
-            strcat(path, ".mc146818");
-        }
+        path.append(".mc146818");
     }
 
     return path;
@@ -97,11 +84,11 @@ const char *Mc146818::getFileName()
 
 Mc146818::~Mc146818()
 {
-    const char* home = getFileName();
+    const auto path = getConfigFilePath();
 
-    if (home[0] != '\0')
+    if (!path.empty())
     {
-        BFilePtr fp(home, "wb");
+        BFilePtr fp(path, "wb");
 
         if (fp != nullptr)
         {

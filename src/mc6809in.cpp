@@ -101,7 +101,6 @@ QWord Mc6809::get_cycles(bool reset /* = false */)
 
 void Mc6809::get_status(CpuStatus *cpu_status)
 {
-
     InstFlg flags = InstFlg::NONE;
     char *pmnem_buf;
     char *pbuffer;
@@ -149,11 +148,12 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     }
     else
     {
-        strcpy(stat->mnemonic, pmnem_buf);
+        strncpy(stat->mnemonic, pmnem_buf, sizeof(stat->mnemonic) - 1);
+        stat->mnemonic[sizeof(stat->mnemonic) - 1] = '\0';
     }
 
     stat->total_cycles = get_cycles();
-}  // get_status
+}
 
 void Mc6809::set_status(CpuStatus *cpu_status)
 {

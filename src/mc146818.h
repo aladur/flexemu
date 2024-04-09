@@ -28,6 +28,7 @@
 #include "misc1.h"
 #include "iodevice.h"
 #include "bobservd.h"
+#include <string>
 
 
 class Mc6809;
@@ -76,10 +77,8 @@ private:
     bool increment(Byte &, Byte, Byte);
     bool increment_hour(Byte &);
     bool increment_day(Byte &, Byte, Byte);
-    const char          *getFileName();
-    char path[PATH_MAX]{""};
 
-    // Public constructor and destructor
+    static std::string getConfigFilePath();
 
 public:
 

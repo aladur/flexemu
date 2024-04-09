@@ -815,13 +815,17 @@ bool AskForInput(const std::string &question, const std::string &answers,
 bool isListedInFileRandom(const char *directory, const char *filename)
 {
     char str[PATH_MAX + 1];
+    std::string path(directory);
     std::string lowFilename(filename);
 
-    strcpy(str, directory);
-    strcat(str, PATHSEPARATORSTRING RANDOM_FILE_LIST);
+    if (!endsWithPathSeparator(path))
+    {
+        path.append(PATHSEPARATORSTRING);
+    }
+    path.append(RANDOM_FILE_LIST);
     strlower(lowFilename);
 
-    BFilePtr fp(str, "r");
+    BFilePtr fp(path, "r");
 
     if (fp != nullptr)
     {

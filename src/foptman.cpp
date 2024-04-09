@@ -119,17 +119,16 @@ void FlexemuOptions::GetCommandlineOptions(
     int argc,
     char *const argv[])
 {
-    char optstr[64];
     int i;
     float f;
     optind = 1;
     opterr = 1;
-    strcpy(optstr, "mup:f:0:1:2:3:j:F:C:O:");
+    std::string optstr("mup:f:0:1:2:3:j:F:C:O:");
 #ifdef HAVE_TERMIOS_H
-    strcat(optstr, "tr:"); // terminal mode and reset key
+    optstr.append("tr:"); // terminal mode and reset key
 #endif
-    strcat(optstr, "ic:n:"); // color, inverse video, # of colors
-    strcat(optstr, "vh"); // version and help
+    optstr.append("ic:n:"); // color, inverse video, # of colors
+    optstr.append("vh"); // version and help
 
     auto setReadOnly =
         [&roOptions = options.readOnlyOptionIds](FlexemuOptionId enumValue)
@@ -143,7 +142,7 @@ void FlexemuOptions::GetCommandlineOptions(
 
     while (1)
     {
-        int result = getopt(argc, argv, optstr);
+        int result = getopt(argc, argv, optstr.c_str());
 
         if (result == -1)
         {
