@@ -58,8 +58,7 @@ Byte IoDeviceDebug::readIo(Word offset)
         fstream << "mode=read"
                 << "  offset=" << std::setw(2) << offset
                 << " result=" << hexstr(result)
-                << " device=" << std::string(device.getName())
-                << std::endl;
+                << " device=" << std::string(device.getName()) << '\n';
 
         fstream.close();
     }
@@ -78,8 +77,7 @@ void IoDeviceDebug::writeIo(Word offset, Byte value)
         fstream << "mode=write"
                 << " offset=" << std::setw(2) << offset
                 << " value=" << hexstr(value)
-                << "  device=" << std::string(device.getName())
-                << std::endl;
+                << "  device=" << std::string(device.getName()) << '\n';
 
         fstream.close();
     }
@@ -95,7 +93,7 @@ void IoDeviceDebug::resetIo()
     {
 
         fstream << "mode=reset device=" << std::string(device.getName())
-                << std::endl;
+                << '\n';
 
         fstream.close();
     }

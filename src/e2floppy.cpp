@@ -290,7 +290,7 @@ std::string E2floppy::drive_info_string(Word drive_nr)
 
     if (!info.IsValid())
     {
-        stream << "drive #" << drive_nr << " not ready" << std::endl;
+        stream << "drive #" << drive_nr << " not ready\n";
     }
     else
     {
@@ -299,21 +299,20 @@ std::string E2floppy::drive_info_string(Word drive_nr)
         bool is_write_protected = info.GetIsWriteProtected();
 
         info.GetTrackSector(trk, sec);
-        stream << "drive       #" << drive_nr << std::endl
-            << "type:       " << info.GetTypeString().c_str() << std::endl;
+        stream << "drive       #" << drive_nr << '\n'
+            << "type:       " << info.GetTypeString().c_str() << '\n';
 
         if (info.GetIsFlexFormat())
         {
             stream << "name:       " << info.GetName() << " #" <<
-                                        info.GetNumber() << std::endl;
+                                        info.GetNumber() << '\n';
         }
-        stream << "path:       " << info.GetPath().c_str() << std::endl
-               << "tracks:     " << trk << std::endl
-               << "sectors:    " << sec << std::endl
-               << "write-prot: " << (is_write_protected ? "yes" : "no")
-               << std::endl
+        stream << "path:       " << info.GetPath().c_str() << '\n'
+               << "tracks:     " << trk << '\n'
+               << "sectors:    " << sec << '\n'
+               << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
                << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
-               << std::endl;
+               << '\n';
         if (info.GetType() & TYPE_DSK_CONTAINER)
         {
             auto header = info.GetJvcFileHeader();
@@ -333,7 +332,7 @@ std::string E2floppy::drive_info_string(Word drive_nr)
                     isAppend = true;
                 }
             }
-            stream << std::endl;
+            stream << '\n';
         }
     }
 

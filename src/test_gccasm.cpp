@@ -481,7 +481,7 @@ void err(const std::string& mnemonic, Word op, Byte m6809_cc,
               << ", " << regname
               << " expected 0x" << cpureg
               << " but is 0x" << x86reg
-              << std::endl;
+              << '\n';
 }
 
 void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
@@ -493,7 +493,7 @@ void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
               << ", " << regname
               << " expected 0x" << cpureg
               << " but is 0x" << x86reg
-              << std::endl;
+              << '\n';
 }
 
 bool test_gccasm_fctByte(const std::string& mnemonic,

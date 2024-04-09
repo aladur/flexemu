@@ -220,10 +220,9 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
         {
             std::stringstream pmsg;
 
-            pmsg << "*** Error in \"" << hexFilePath
-                 << "\":" << std::endl << "    ";
+            pmsg << "*** Error in \"" << hexFilePath << "\":\n    ";
             print_hexfile_error(pmsg, error);
-            pmsg << std::endl;
+            pmsg << '\n';
 #ifdef _WIN32
             MessageBox(
                 nullptr,

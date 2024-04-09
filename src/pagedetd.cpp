@@ -71,7 +71,7 @@ void PageDetectorData::AddToScore(int32_t scoreOffset, int verbose)
 {
     if (verbose > 0)
     {
-        std::cout << "AddToScore(" << scoreOffset << ")" << std::endl;
+        std::cout << "AddToScore(" << scoreOffset << ")\n";
     }
     score += scoreOffset;
 }

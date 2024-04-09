@@ -58,7 +58,7 @@ void Pia2V5::writeOutputA(Byte value)
     if (debug && !cycles_cdbg)
     {
         cdbg.precision(2);
-        cdbg << "time=" << std::fixed << 0.0 << "us" << std::endl;
+        cdbg << "time=" << std::fixed << 0.0 << "us\n";
         cycles_cdbg = cpu.get_cycles();
     }
 
@@ -71,11 +71,11 @@ void Pia2V5::writeOutputA(Byte value)
                 " MDCR command=";
         if (write_count < 6)
         {
-            cdbg << std::hex << static_cast<Word>(ora) << std::endl;
+            cdbg << std::hex << static_cast<Word>(ora) << '\n';
         }
         else if (write_count == 6)
         {
-            cdbg << "..." << std::endl;
+            cdbg << "...\n";
         }
         cycles_cdbg = cpu.get_cycles();
     }
@@ -95,7 +95,7 @@ void Pia2V5::writeOutputA(Byte value)
                 // Tape Rewind
                 if (debug)
                 {
-                    cdbg << "Rewind Tape" << std::endl;
+                    cdbg << "Rewind Tape\n";
                 }
                 direction = TapeDirection::Rewind;
                 cycles_BET = cpu.get_cycles();
@@ -113,8 +113,7 @@ void Pia2V5::writeOutputA(Byte value)
             if (debug && write_bit_mask != 0x80)
             {
                 cdbg << "Warning: write buffer not byte-aligned (0x" <<
-                        std::hex << static_cast<Word>(write_bit_mask) << ")" <<
-                        std::endl;
+                        std::hex << static_cast<Word>(write_bit_mask) << ")\n";
             }
             if (!write_buffer.empty())
             {
@@ -123,8 +122,7 @@ void Pia2V5::writeOutputA(Byte value)
                 {
                     cdbg << "delta_time=" << GET_DELTA_TIME <<
                             "us Write Record size=" <<
-                            std::dec << write_buffer.size() <<
-                            std::endl;
+                            std::dec << write_buffer.size() << '\n';
                     cycles_cdbg = cpu.get_cycles();
                 }
                 log_buffer(write_buffer);
@@ -176,7 +174,7 @@ void Pia2V5::writeOutputA(Byte value)
                 if (debug)
                 {
                     cdbg << "delta_time=" << GET_DELTA_TIME <<
-                            "us Enter read mode" << std::endl;
+                            "us Enter read mode\n";
                     cycles_cdbg = cpu.get_cycles();
                 }
 
@@ -248,7 +246,7 @@ Byte Pia2V5::readInputA()
                         "us Read record " <<
                      (success ? "size=" : "failed") << std::dec <<
                      (success ? std::to_string(read_buffer.size()) : "")
-                     << std::endl;
+                     << '\n';
                 cycles_cdbg = cpu.get_cycles();
             }
 
@@ -289,7 +287,7 @@ Byte Pia2V5::readInputA()
         {
             cdbg << "cycles_delta=" << std::dec <<
                     cpu.get_cycles() - cycles_cdbg <<
-                    " Finish read mode" << std::endl;
+                    " Finish read mode\n";
             cycles_cdbg = cpu.get_cycles();
         }
     }
@@ -327,11 +325,11 @@ void Pia2V5::writeOutputB(Byte value)
         {
             case 0:
             case 1:
-                cdbg << " Select drive #" << drive_idx << std::endl;
+                cdbg << " Select drive #" << drive_idx << '\n';
                 break;
 
             default:
-                cdbg << " Deselect all drives" << std::endl;
+                cdbg << " Deselect all drives\n";
                 break;
         }
 
@@ -361,8 +359,7 @@ void Pia2V5::requestInputA()
                 {
                     cdbg << "delta_time=" << GET_DELTA_TIME <<
                             "us PC=" << std::uppercase << std::hex <<
-                            cpu.get_pc() << " Detected Begin-End-of-Tape" <<
-                            std::endl;
+                            cpu.get_pc() << " Detected Begin-End-of-Tape\n";
                     cycles_cdbg = cpu.get_cycles();
                     cdbg << std::dec;
                 }
@@ -447,7 +444,7 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
             if (debug)
             {
                 cdbg << "drive_nr=" << drive_nr <<
-                        " path=" << containerPath << std::endl;
+                        " path=" << containerPath << '\n';
             }
             return true;
         }
@@ -456,7 +453,7 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
             if (debug)
             {
                 cdbg << "drive_nr=" << drive_nr <<
-                        " exception.what=" << exception.what() << std::endl;
+                        " exception.what=" << exception.what() << '\n';
             }
         }
 
@@ -508,7 +505,7 @@ void Pia2V5::log_buffer(const std::vector<Byte> &buffer)
             if (((index % 16 == 15) && index < (buffer.size() - 1)) ||
                (index == (buffer.size() - 1)))
             {
-                cdbg << std::endl;
+                cdbg << '\n';
             }
         }
     }

@@ -83,9 +83,9 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
     auto result = load_flex_binary(ifile, memory, startAddress);
     if (result < 0)
     {
-        std::cerr << "*** Error in \"" << ifile << "\":" << std::endl << "    ";
+        std::cerr << "*** Error in \"" << ifile << "\":\n    ";
         print_hexfile_error(std::cerr, result);
-        std::cerr << std::endl;
+        std::cerr << '\n';
         return 1;
     }
 
@@ -104,15 +104,15 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
                   break;
 
         case FileType::Unknown:
-                  std::cerr << "*** No file format specified" << std::endl;
+                  std::cerr << "*** No file format specified\n";
                   return 1;
     }
 
     if (result < 0)
     {
-        std::cerr << "*** Error in \"" << ofile << "\":" << std::endl << "    ";
+        std::cerr << "*** Error in \"" << ofile << "\":\n    ";
         print_hexfile_error(std::cerr, result);
-        std::cerr << std::endl;
+        std::cerr << '\n';
         return 1;
     }
 
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
                           ofiletype != fileTypes.at(result))
                       {
                           std::cerr << "*** Error: Only one of -m or -i can "
-                                       "be used at a time." << std::endl;
+                                       "be used at a time.\n";
                           syntax();
                           return 1;
                       }
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
 
     if (ifiles.empty())
     {
-        std::cerr << "*** Error: No FLEX binary file specified" << std::endl;
+        std::cerr << "*** Error: No FLEX binary file specified\n";
         syntax();
         return 1;
     }
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
     if ((ifiles.size() > 1 && !ofilePrefered.empty()))
     {
         std::cerr << "*** Error: Option -o only supported for one "
-                     "FLEX binary file" << std::endl;
+                     "FLEX binary file\n";
         syntax();
         return 1;
     }
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
 
                 case FileType::Unknown:
                     std::cerr << "*** No file format specified. "
-                                 "Conversion skipped" << std::endl;
+                                 "Conversion skipped\n";
                     continue;
             }
         }
@@ -248,8 +248,7 @@ int main(int argc, char *argv[])
             if (!S_ISREG(status.st_mode))
             {
                 std::cerr << "*** File " << ofile
-                          << " exists but is no file. Conversion skipped."
-                          << std::endl;
+                          << " exists but is no file. Conversion skipped.\n";
                 continue;
             }
 
@@ -272,7 +271,7 @@ int main(int argc, char *argv[])
                     if (verbose > 0)
                     {
                         std::cout << " Conversion to " << ofile << " skipped."
-                                  << std::endl;
+                                  << '\n';
                     }
 
                     continue;

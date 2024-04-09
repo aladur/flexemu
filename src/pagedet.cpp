@@ -49,7 +49,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
 {
     if (verbose > 0)
     {
-        std::cout << "number of lines=" << data.lines.size() << std::endl;
+        std::cout << "number of lines=" << data.lines.size() << '\n';
     }
     for (int16_t tryLinesPerPage = 30; tryLinesPerPage < 90; ++tryLinesPerPage)
     {
@@ -60,7 +60,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
         if (verbose > 0)
         {
             std::cout << "*** tried linesPerPage=" << tryLinesPerPage <<
-            " has a result score=" << data.score << std::endl;
+            " has a result score=" << data.score << '\n';
         }
     }
 
@@ -72,7 +72,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
         if (verbose > 0)
         {
             std::cout << "*** linesPerPage=" << linesPerPage <<
-                " scoreVariance=" << Variance(data.scores) << std::endl;
+                " scoreVariance=" << Variance(data.scores) << '\n';
         }
     }
     else
@@ -81,8 +81,7 @@ void PageDetector::EstimateLinesPerPage(PageDetectorData &data)
         {
             std::cout << "*** linesPerPage not detected!" <<
                          " (linesPerPage=" << linesPerPage <<
-                         " scoreVariance=" << Variance(data.scores) << ")" <<
-                         std::endl;
+                         " scoreVariance=" << Variance(data.scores) << ")\n";
         }
     }
 }
@@ -139,7 +138,7 @@ void PageDetector::CollectData(PageDetectorData &data)
             {
                 if (verbose > 0)
                 {
-                    std::cout << "   number line=" << line << std::endl;
+                    std::cout << "   number line=" << line << '\n';
                 }
                 ++data.sumBottomLinesWithNumberOnly;
             }
@@ -197,7 +196,7 @@ int16_t PageDetector::GetBottomEmptyLines(PageDetectorData &data, uint32_t page)
                 if (verbose > 0)
                 {
                     std::cout << "   bottom pageOffset=" << pageOffset <<
-                                 " lineOffset=" << lineOffset << std::endl;
+                                 " lineOffset=" << lineOffset << '\n';
                 }
                 return static_cast<int16_t>(data.linesPerPage - lineOffset - 1);
             }
@@ -273,13 +272,13 @@ void PageDetector::NumberOnlyLinesScore(PageDetectorData &data)
 
 void PageDetector::DebugPrint(PageDetectorData &data)
 {
-    std::cout << "   fPages=" << data.fPages << std::endl;
-    std::cout << "   pages=" << data.pages << std::endl;
+    std::cout << "   fPages=" << data.fPages << '\n';
+    std::cout << "   pages=" << data.pages << '\n';
 
     if (data.sumBottomLinesWithNumberOnly)
     {
         std::cout << "   sumBottomLinesWithNumberOnly=" <<
-            data.sumBottomLinesWithNumberOnly << std::endl;
+            data.sumBottomLinesWithNumberOnly << '\n';
     }
 
     std::cout << "   topEmptyLines";
@@ -288,7 +287,7 @@ void PageDetector::DebugPrint(PageDetectorData &data)
             {
                 std::cout << " " << v;
             });
-    std::cout << std::endl;
+    std::cout << '\n';
 
     std::cout << "   bottomEmptyLines";
     std::for_each(std::begin(data.bottomEmptyLines),
@@ -296,25 +295,23 @@ void PageDetector::DebugPrint(PageDetectorData &data)
             {
                 std::cout << " " << v;
             });
-    std::cout << std::endl;
+    std::cout << '\n';
 
-    std::cout << "   topFirstNonEmptyLines" << std::endl;
+    std::cout << "   topFirstNonEmptyLines\n";
     std::for_each(std::begin(data.topFirstNonEmptyLines),
                   std::end(data.topFirstNonEmptyLines),
             [](std::pair<const std::string, int16_t> &p)
             {
-                std::cout << "    " << p.first << " " << p.second <<
-                std::endl;
+                std::cout << "    " << p.first << " " << p.second << '\n';
             });
-    std::cout << std::endl;
+    std::cout << '\n';
 
-    std::cout << "   bottomFirstNonEmptyLines" << std::endl;
+    std::cout << "   bottomFirstNonEmptyLines\n";
     std::for_each(std::begin(data.bottomFirstNonEmptyLines),
                   std::end(data.bottomFirstNonEmptyLines),
             [](std::pair<const std::string, int16_t> &p)
             {
-                std::cout << "    " << p.first << " " << p.second <<
-                std::endl;
+                std::cout << "    " << p.first << " " << p.second << '\n';
             });
 }
 

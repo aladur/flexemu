@@ -110,10 +110,9 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
         auto result = load_hexfile(ifile, memory, startAddress);
         if (result < 0)
         {
-            std::cerr << "*** Error in \"" << ifile << "\":"
-                      << std::endl << "    ";
+            std::cerr << "*** Error in \"" << ifile << "\":\n    ";
             print_hexfile_error(std::cerr, result);
-            std::cerr << " Ignored." << std::endl;
+            std::cerr << " Ignored.\n";
             continue; // ignore reading input file. Continue with next one.
         }
 
@@ -212,10 +211,9 @@ int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
         auto result = write_flex_binary(outFilename.c_str(), memory);
         if (result < 0)
         {
-            std::cerr << "*** Error in \"" << outFilename << "\":"
-                      << std::endl << "    ";
+            std::cerr << "*** Error in \"" << outFilename << "\":\n    ";
             print_hexfile_error(std::cerr, result);
-            std::cerr << " Ignored." << std::endl;
+            std::cerr << " Ignored.\n";
         }
 
         return MdcrStatus::Success;

@@ -153,7 +153,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     if (verbose)
     {
         std::cout << "Extracting from '" << dsk_file << "' into '" <<
-                     target_dir << "' ... " << std::endl;
+                     target_dir << "' ... \n";
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
@@ -224,11 +224,11 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             }
 
             std::cout << " extracting " << fileType << " " << filename <<
-                         " ... " << result << std::endl;
+                         " ... " << result << '\n';
         }
         if (!what.empty())
         {
-            std::cerr << "   *** Error: " << what << std::endl;
+            std::cerr << "   *** Error: " << what << '\n';
         }
     }
 
@@ -241,7 +241,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             std::cout << errors << " errors, ";
         }
         auto kbyte_size = byte_size / 1024;
-        std::cout << "total size: " << kbyte_size << " KByte." << std::endl;
+        std::cout << "total size: " << kbyte_size << " KByte.\n";
     }
 
     return 0;
@@ -284,7 +284,7 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
         {
             if (verbose)
             {
-                std::cout << " failed." << std::endl;
+                std::cout << " failed.\n";
             }
             std::cerr <<
                 "   *** Error: " << ex.what() << ".\n" <<
@@ -334,7 +334,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     {
         std::cout << " TIME ";
     }
-    std::cout << " PRT   RND" << std::endl << std::endl;
+    std::cout << " PRT   RND\n\n";
 
     auto matchedFilenames = GetMatchingFilenames(src, regexs);
 
@@ -381,17 +381,17 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
         std::cout <<
             std::left << std::setw(4) <<
             dir_entry.GetAttributesString() << " " <<
-            (dir_entry.IsRandom() ? "R" : "") << std::endl;
+            (dir_entry.IsRandom() ? "R" : "") << '\n';
     }
 
     if (hasInfo)
     {
-        std::cout << std::endl << "    " <<
+        std::cout << "\n    " <<
                      "FILES=" << number <<
                      ", SECTORS=" << sumSectors <<
                      ", LARGEST=" << largest <<
                      ", FREE=" << (info.GetFree() / SECTOR_SIZE) <<
-                     std::endl << std::endl;
+                     "\n\n";
     }
 
     return 0;
@@ -674,7 +674,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
     std::cout << "Check " << dsk_file << " ...";
     if (check.CheckFileSystem())
     {
-        std::cout << " Ok" << std::endl;
+        std::cout << " Ok\n";
     }
     else
     {
@@ -714,13 +714,13 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
         {
             std::cout << separator << " " << infos << " info(s)";
         }
-        std::cout << std::endl;
+        std::cout << '\n';
 
         if (verbose)
         {
             for (const auto &result : results)
             {
-                std::cout << "  " << result << std::endl;
+                std::cout << "  " << result << '\n';
             }
         }
     }
@@ -844,7 +844,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
             std::cout << errors << " errors, ";
         }
         auto kbyte_size = byte_size / 1024;
-        std::cout << "total size: " << kbyte_size << " KByte." << std::endl;
+        std::cout << "total size: " << kbyte_size << " KByte.\n";
     }
 
     return 0;
@@ -1169,7 +1169,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
         {
             std::cerr <<
                 "    *** Error in regex \"" << regex << "\": " << ex.what() <<
-                std::endl;
+                '\n';
             result = false;
         }
     }
