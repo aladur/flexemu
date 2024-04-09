@@ -13,7 +13,6 @@ Checks: '
   clang-analyzer-optin.cplusplus.VirtualCall,
   clang-analyzer-cplusplus.StringChecker,
   -clang-analyzer-optin.core.EnumCastOutOfRange,
-  -clang-analyzer-cplusplus.NewDeleteLeaks,
   -clang-diagnostic-sign-compare,
   cppcoreguidelines-*,
   -cppcoreguidelines-special-member-functions,
