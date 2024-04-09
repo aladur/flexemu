@@ -59,6 +59,7 @@ Checks: '
   readability-duplicate-include,
   readability-else-after-return,
   readability-convert-member-functions-to-static,
+  readability-qualified-auto,
   readability-redundant-string-cstr'
 
 WarningsAsErrors: '*'
