@@ -1431,13 +1431,9 @@ bool QtGui::IsClosingConfirmed()
     return true;
 }
 
-void QtGui::redraw_cpuview_impl(const Mc6809CpuStatus &status)
+void QtGui::redraw_cpuview_impl(const Mc6809CpuStatus &/*status*/)
 {
     assert(cpuDialog != nullptr);
-
-    int i = status.s & 7;
-    text(5 + 3 * i, 10, "[");
-    text(8 + 3 * i, 10, "]");
 
     cpuUi.e_status->setText(cpustring.c_str());
 }

@@ -27,6 +27,15 @@
 
 #include "cpustate.h"
 
+
+enum : uint8_t
+{
+    CPU_STACK_LINES = 6,
+    CPU_STACK_BYTES = 8,
+    CPU_LINES = 14,
+    CPU_LINE_WIDTH = 39,
+};
+
 class Mc6809CpuStatus : public CpuStatus
 {
 public:
@@ -40,13 +49,13 @@ public:
     Word u{0};
     Word x{0};
     Word y{0};
-    Byte instruction[4];
-    char mnemonic[28];
-    Byte memory[48];
-    Mc6809CpuStatus();
+    Byte instruction[4]{};
+    char mnemonic[28]{};
+    Byte memory[CPU_STACK_LINES * CPU_STACK_BYTES]{};
+    Mc6809CpuStatus() = default;
     ~Mc6809CpuStatus() override = default;
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
 };
 
-#endif // MC6809ST_INCLUDED
+#endif
 

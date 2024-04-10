@@ -105,7 +105,6 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     char *pmnem_buf;
     char *pbuffer;
     Word i;
-    Word mem_addr;
     auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
     assert(stat != nullptr);
 
@@ -130,16 +129,16 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     stat->u = u;
     stat->s = s;
 #endif
-    mem_addr = ((stat->s >> 3) << 3) - 16;
+    Word stack_base = ((stat->s / CPU_STACK_BYTES) * CPU_STACK_BYTES) - 16;
 
-    for (i = 0; i < 4; i++)
+    for (i = 0U; i < static_cast<Word>(sizeof(stat->instruction)); ++i)
     {
         stat->instruction[i] = memory.read_byte(stat->pc + i);
     }
 
-    for (i = 0; i < 48; i++)
+    for (i = 0; i < static_cast<Word>(sizeof(stat->memory)); ++i)
     {
-        stat->memory[i] = memory.read_byte(mem_addr + i);
+        stat->memory[i] = memory.read_byte(stack_base + i);
     }
 
     if (!Disassemble(stat->pc, &flags, &pbuffer, &pmnem_buf))
@@ -181,7 +180,7 @@ void Mc6809::set_status(CpuStatus *cpu_status)
     u = stat->u;
     s = stat->s;
 #endif
-}  // set_status
+}
 
 CpuStatusPtr Mc6809::create_status_object()
 {

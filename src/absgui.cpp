@@ -34,15 +34,13 @@
 #include "terminal.h"
 
 
-void AbstractGui::update_cpuview(const Mc6809CpuStatus &stat)
+void AbstractGui::update_cpuview(const Mc6809CpuStatus &status)
 {
-    redraw_cpuview(stat);
+    redraw_cpuview(status);
 }
 
-void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
+void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &status)
 {
-    int i;
-
     clear_cpuview();
     text(0, 0, "Cycl:");
     text(0, 1, "Inst:");
@@ -62,45 +60,46 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &stat)
     text(22, 0, "Freq:");
     text(35, 0, "MHz");
 
-    for (i = 0; i < 6; ++i)
+    for (Word i = 0U; i < CPU_STACK_LINES; ++i)
     {
         text(4, i + 8, ":");
     }
 
-    redraw_cpuview_contents(stat);
+    redraw_cpuview_contents(status);
 }
 
-void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
+void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
 {
-    int mem_addr = ((stat.s >> 3) << 3) - 16;
-    text(6, 2, hexstr(stat.pc));
-    text(6, 3, hexstr(stat.s));
-    text(6, 4, hexstr(stat.u));
-    text(6, 5, hexstr(stat.x));
-    text(6, 6, hexstr(stat.y));
-    text(15, 3, binstr(stat.cc));
-    text(15, 4, hexstr(stat.dp));
-    text(15, 5, hexstr(stat.a));
-    text(15, 6, hexstr(stat.b));
+    int stack_base = ((status.s / CPU_STACK_BYTES) * CPU_STACK_BYTES) - 16;
+    text(6, 2, hexstr(status.pc));
+    text(6, 3, hexstr(status.s));
+    text(6, 4, hexstr(status.u));
+    text(6, 5, hexstr(status.x));
+    text(6, 6, hexstr(status.y));
+    text(15, 3, binstr(status.cc));
+    text(15, 4, hexstr(status.dp));
+    text(15, 5, hexstr(status.a));
+    text(15, 6, hexstr(status.b));
 
     std::stringstream cycles_str;
-    cycles_str << std::setw(16) << stat.total_cycles;
+    cycles_str << std::setw(16) << status.total_cycles;
     text(5, 0, cycles_str.str());
 
     std::stringstream freq_str;
-    freq_str << std::fixed << std::setprecision(2) << std::setw(6) << stat.freq;
+    freq_str << std::fixed << std::setprecision(2) << std::setw(6) <<
+        status.freq;
     text(28, 0, freq_str.str());
 
     static const std::string spaces(24, ' ');
-    text(6, 1, spaces); // first clear area
+    text(6, 1, spaces); // Clear previous mnemonic.
 
-    if (stat.mnemonic[0] != '\0')
+    if (status.mnemonic[0] != '\0')
     {
-        text(6, 1, stat.mnemonic);
+        text(6, 1, status.mnemonic);
     }
     else
     {
-        text(6, 1, "sorry, no disassembler installed");
+        text(6, 1, "<No disassembler installed>");
     }
 
     for (int i = 0; i < 2; i++)
@@ -116,36 +115,38 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &stat)
         }
     }
 
-    int stk = 0;
-    Byte ch;
+    Word stack_offset = 0U;
 
-    for (int i = 0; i < 6; ++i)
+    for (Word line = 0U; line < CPU_STACK_LINES; ++line)
     {
-        text(0, i + 8, hexstr(static_cast<Word>(stk + mem_addr)));
+        text(0, line + 8, hexstr(static_cast<Word>(stack_base + stack_offset)));
 
-        std::string tmp(" ");
+        std::string hex_dump;
+        std::string ascii_dump;
 
-        for (int j = 0; j < 8; ++j)
+        for (Word x = 0U; x < CPU_STACK_BYTES; ++x)
         {
-            ch = stat.memory[stk + j];
-            tmp.append(hexstr(ch));
-            tmp.append(" ");
+            auto byte = status.memory[stack_offset + x];
+            hex_dump.append(hexstr(byte)).append(" ");
+            auto ch = static_cast<char>(byte);
+            ascii_dump.append(ascchr(ch));
         }
 
-        for (int j = 0; j < 8; ++j)
-        {
-            ch = stat.memory[stk + j];
-            tmp.append(ascchr(ch));
-        }
-
-        text(5, i + 8, tmp);
-        stk += 8;
+        text(6, line + 8, hex_dump);
+        text(6 + 3 * CPU_STACK_BYTES, line + 8, ascii_dump);
+        stack_offset += CPU_STACK_BYTES;
     }
+    assert(stack_offset == sizeof(status.memory));
 
-    redraw_cpuview_impl(stat);
+    // Mark the current stack position in the hex dump.
+    Word base = status.s & 7U;
+    text(5 + 3 * base, 10, "[");
+    text(8 + 3 * base, 10, "]");
+
+    redraw_cpuview_impl(status);
 }
 
-void AbstractGui::redraw_cpuview_impl(const Mc6809CpuStatus &)
+void AbstractGui::redraw_cpuview_impl(const Mc6809CpuStatus &/*status*/)
 {
 }
 

@@ -24,12 +24,6 @@
 #include "misc1.h"
 #include "mc6809st.h"
 
-Mc6809CpuStatus::Mc6809CpuStatus()
-{
-    memset(instruction, 0, 4);
-    memset(mnemonic,    0, 28);
-    memset(memory,      0, 48);
-}
 
 Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
 {
@@ -50,9 +44,9 @@ Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
     x = lhs.x;
     y = lhs.y;
     state = lhs.state;
-    memcpy(instruction, lhs.instruction, 4);
-    memcpy(mnemonic,    lhs.mnemonic,    28);
-    memcpy(memory,      lhs.memory,      48);
+    memcpy(instruction, lhs.instruction, sizeof(instruction));
+    memcpy(mnemonic, lhs.mnemonic, sizeof(mnemonic));
+    memcpy(memory, lhs.memory, sizeof(memory));
     return *this;
 }
 

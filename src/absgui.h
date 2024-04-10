@@ -43,13 +43,7 @@ class TerminalIO;
 
 class AbstractGui
 {
-
-    // private instance variables:
-
 protected:
-    static constexpr int CPU_LINE_WIDTH{39};
-    static constexpr int CPU_LINES{14};
-
     Mc6809 &cpu; // Reference to cpu to send interrupts
     Memory &memory; // Reference to memory (incl. video memory access)
     Inout &inout; // Reference to IO-class handling input/output
@@ -57,14 +51,14 @@ protected:
     std::string cpustring;
 
 protected:
-    virtual void redraw_cpuview_impl(const Mc6809CpuStatus &stat);
+    virtual void redraw_cpuview_impl(const Mc6809CpuStatus &status);
     void clear_cpuview();
-    void redraw_cpuview(const Mc6809CpuStatus &stat);
-    void redraw_cpuview_contents(const Mc6809CpuStatus &stat);
+    void redraw_cpuview(const Mc6809CpuStatus &status);
+    void redraw_cpuview_contents(const Mc6809CpuStatus &status);
     void text(int x, int y, const std::string &str);
 
 public:
-    virtual void update_cpuview(const Mc6809CpuStatus &stat);
+    virtual void update_cpuview(const Mc6809CpuStatus &status);
     virtual void output_to_terminal(); // set output to terminal
     virtual void output_to_graphic(); // set output to GUI
     virtual void write_char_serial(Byte value); // write character to printer
@@ -78,5 +72,5 @@ public:
     virtual ~AbstractGui() = default;
 };
 
-#endif // ABSGUI_INCLUDED
+#endif
 
