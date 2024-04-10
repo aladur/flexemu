@@ -179,10 +179,10 @@ protected:
         ~atomic_event() = default;
         atomic_event(const atomic_event&) = delete;
         atomic_event& operator= (const atomic_event&) = delete;
-        Event operator= (Event x_event)
+        atomic_event &operator= (Event x_event)
         {
             event = static_cast<T>(x_event);
-            return static_cast<Event>(static_cast<T>(event));
+            return *this;
         }
         Event operator& (Event x_event)
         {
