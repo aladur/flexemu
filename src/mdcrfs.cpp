@@ -79,7 +79,7 @@ void MdcrFileSystem::SetFilename(std::vector<Byte>::iterator &iter,
 
     std::copy(mdcrFilename.cbegin(), mdcrFilename.cend(), iter);
 
-    iter += mdcrFilename.size();
+    iter += static_cast<uint32_t>(mdcrFilename.size());
 }
 
 // Copy the MDCR file name from the record (up to 6 characters).
@@ -197,7 +197,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
         MdcrWriteMode mode,
         bool toUppercase /* = true */)
 {
-    size_t index;
+    int32_t index = 0;
     std::vector<Byte> ibuffer;
     std::vector<Byte> obuffer;
     std::string filename = getFileName(filepath);
@@ -214,7 +214,8 @@ MdcrStatus MdcrFileSystem::WriteFile(
     }
 
     const auto addressRange = memory.GetAddressRanges()[0];
-    if (!memory.CopyTo(ibuffer, addressRange) || ibuffer.empty())
+    if (!memory.CopyTo(ibuffer, addressRange) || ibuffer.empty() ||
+            ibuffer.size() > std::numeric_limits<int>::max())
     {
         return MdcrStatus::InvalidData;
     }
@@ -281,7 +282,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     }
 
     for (index = 0;
-         index < ibuffer.size();
+         index < static_cast<int>(ibuffer.size());
          index += MaxRecordSize)
     {
         size_t size =

@@ -973,7 +973,7 @@ void QtGui::CreateViewActions(QLayout& layout)
     auto *screenSizeMenu = viewMenu->addMenu(tr("&Screen Size"));
     screenSizeComboBox = new QComboBox();
 
-    for (uint16_t index = 0U; index < SCREEN_SIZES; ++index)
+    for (uint16_t index = 0; index < SCREEN_SIZES; ++index)
     {
         const auto iconPath = QString(":/resource/screen%1.png").arg(index + 1);
         const auto screenSizeIcon = QIcon(iconPath);
@@ -1163,6 +1163,7 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
 
     assert(menuText.size() == ICON_SIZES);
     assert(toolTipText.size() == ICON_SIZES);
+    assert(index >= 0);
     assert(index < ICON_SIZES);
 
     auto *action = menu.addAction(menuText[index]);
@@ -1185,13 +1186,11 @@ QAction *QtGui::CreateScreenSizeAction(
         tr("Qu&intuple")
     };
 
-    assert (index <= 4);
+    assert(menuText.size() == SCREEN_SIZES);
+    assert(index >= 0);
+    assert (index < SCREEN_SIZES);
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-    auto keySequence = QKeySequence(Qt::CTRL | (Qt::Key_1 + index));
-#else
-    auto keySequence = QKeySequence(Qt::CTRL + (Qt::Key_1 + index));
-#endif
+    auto keySequence = QKeySequence(tr("Ctrl+%1").arg(index + 1));
     auto *action = menu.addAction(icon, menuText[index]);
     connect(action, &QAction::triggered,
         this, [&,index](){ OnScreenSize(index); });
@@ -1972,14 +1971,14 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
                         colorIndex += BLUE_HIGH; // 0x0E, blue high
                     }
                 }
-                *(pData)++ = colorIndex;
+                *(pData)++ = static_cast<char>(colorIndex);
             }
         }
         else
         {
             for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1)
             {
-                *(pData)++ = colorIndex;
+                *(pData)++ = static_cast<char>(colorIndex);
             }
         }
         if (count % RASTERLINE_SIZE == (RASTERLINE_SIZE - 1))

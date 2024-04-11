@@ -29,26 +29,26 @@
 #include "memsrc.h"
 #include "memtgt.h"
 
-extern int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
-                        size_t &startAddress);
-extern int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
-                            size_t &startAddress);
+extern int load_hexfile(const char *filename, MemoryTarget<DWord> &memtgt,
+                        DWord &startAddress);
+extern int load_flex_binary(const char *filename, MemoryTarget<DWord> &memtgt,
+                            DWord &startAddress);
 extern int write_flex_binary(const char *filename,
-                             const MemorySource<size_t> &memsrc,
-                             size_t startAddress =
-                                 std::numeric_limits<size_t>::max());
+                             const MemorySource<DWord> &memsrc,
+                             DWord startAddress =
+                                 std::numeric_limits<DWord>::max());
 extern int write_intelhex(const char *filename,
-                          const MemorySource<size_t> &memsrc,
-                          size_t startAddress =
-                              std::numeric_limits<size_t>::max());
+                          const MemorySource<DWord> &memsrc,
+                          DWord startAddress =
+                              std::numeric_limits<DWord>::max());
 extern int write_motorola_srec(const char *filename,
-                               const MemorySource<size_t> &memsrc,
-                               size_t startAddress =
-                                   std::numeric_limits<size_t>::max());
+                               const MemorySource<DWord> &memsrc,
+                               DWord startAddress =
+                                   std::numeric_limits<DWord>::max());
 extern int write_raw_binary(const char *filename,
-                            const MemorySource<size_t> &memsrc,
-                            size_t startAddress =
-                                std::numeric_limits<size_t>::max());
+                            const MemorySource<DWord> &memsrc,
+                            DWord startAddress =
+                                std::numeric_limits<DWord>::max());
 extern void print_hexfile_error(std::ostream &ostream, int error_id);
 
 #endif // FILREAD_INCLUDED

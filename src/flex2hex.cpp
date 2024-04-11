@@ -78,7 +78,7 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
                      FileType ofiletype, int verbose)
 {
     BMemoryBuffer memory(65536);
-    size_t startAddress = std::numeric_limits<size_t>::max();
+    DWord startAddress = std::numeric_limits<DWord>::max();
 
     auto result = load_flex_binary(ifile, memory, startAddress);
     if (result < 0)

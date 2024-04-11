@@ -205,7 +205,7 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
-    size_t startAddress = 0;
+    DWord startAddress = 0;
 
     int error = load_hexfile(options.hex_file.c_str(), memory, startAddress);
     if (error < 0)

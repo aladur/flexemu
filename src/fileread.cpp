@@ -73,8 +73,8 @@ static Word read_hex_word(std::istream &istream, Byte &checksum)
     return ret;
 }
 
-static int load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
-                         size_t &startAddress)
+static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
+                         DWord &startAddress)
 {
     bool done = false;
     std::istream::int_type value;
@@ -139,8 +139,8 @@ static int load_intelhex(std::istream &istream, MemoryTarget<size_t> &memtgt,
 }
 
 static int load_motorola_srec(std::istream &istream,
-                              MemoryTarget<size_t> &memtgt,
-                              size_t &startAddress)
+                              MemoryTarget<DWord> &memtgt,
+                              DWord &startAddress)
 {
     bool done = false;
     std::istream::int_type value;
@@ -227,8 +227,8 @@ static int load_motorola_srec(std::istream &istream,
     return 0;
 }
 
-static int load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
-                            size_t &startAddress)
+static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
+                            DWord &startAddress)
 {
     Byte value;
     DWord address = 0;
@@ -288,8 +288,8 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<size_t> &memtgt,
     return 0;
 }
 
-int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
-                 size_t &startAddress)
+int load_hexfile(const char *filename, MemoryTarget<DWord> &memtgt,
+                 DWord &startAddress)
 {
     Word ch;
     std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
@@ -330,8 +330,8 @@ int load_hexfile(const char *filename, MemoryTarget<size_t> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
-int load_flex_binary(const char *filename, MemoryTarget<size_t> &memtgt,
-                     size_t &startAddress)
+int load_flex_binary(const char *filename, MemoryTarget<DWord> &memtgt,
+                     DWord &startAddress)
 {
     std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
 
@@ -352,7 +352,7 @@ enum class WBType : uint8_t
 
 static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
                                     const Byte *buffer,
-                                    size_t address, size_t size)
+                                    DWord address, DWord size)
 {
     Byte header[4];
 
@@ -383,7 +383,7 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
             break;
 
         case WBType::StartAddress:
-            if (address != std::numeric_limits<size_t>::max())
+            if (address != std::numeric_limits<DWord>::max())
             {
                 // Write start address if available
                 header[0] = 0x16;
@@ -403,11 +403,11 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
 
 static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
                                  const Byte *buffer,
-                                 size_t address, size_t size)
+                                 DWord address, DWord size)
 {
     Byte checksum = 0;
     Byte type = 0;
-    size_t index;
+    DWord index;
 
     if (wbType == WBType::Header)
     {
@@ -418,7 +418,7 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
     {
         // Write the end-of-file record with start address
         type = 1;
-        if (address == std::numeric_limits<size_t>::max())
+        if (address == std::numeric_limits<DWord>::max())
         {
             address = 0;
         }
@@ -456,11 +456,11 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
 
 static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
                                       const Byte *buffer,
-                                      size_t address, size_t size)
+                                      DWord address, DWord size)
 {
     Byte checksum = 0;
     Word type = 1;
-    size_t index;
+    DWord index;
 
     switch (wbType)
     {
@@ -470,7 +470,7 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
     }
 
     if (wbType == WBType::StartAddress &&
-        address == std::numeric_limits<size_t>::max())
+        address == std::numeric_limits<DWord>::max())
     {
         // Write the end-of-file record with start address
         address = 0;
@@ -505,9 +505,9 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
 
 static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
                                    const Byte *buffer,
-                                   size_t address, size_t size)
+                                   DWord address, DWord size)
 {
-    static size_t previous_address = std::numeric_limits<size_t>::max();
+    static DWord previous_address = std::numeric_limits<DWord>::max();
 
     switch (wbType)
     {
@@ -519,12 +519,12 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
             break;
     }
 
-    if (previous_address != std::numeric_limits<size_t>::max() &&
+    if (previous_address != std::numeric_limits<DWord>::max() &&
         previous_address < address &&
         previous_address != address)
     {
         // Fill address gap with 0.
-        for (size_t i = 0; i < (address - previous_address); ++i)
+        for (DWord i = 0; i < (address - previous_address); ++i)
         {
             ostream.put('\0');
         }
@@ -545,10 +545,10 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
 
 static int write_hexfile(
     const char *filename,
-    const MemorySource<size_t> &memsrc,
-    const std::function<int(WBType, std::ostream&, const Byte *, size_t,
-        size_t)>& write_buffer,
-    Byte buffer_size, size_t startAddress,
+    const MemorySource<DWord> &memsrc,
+    const std::function<int(WBType, std::ostream&, const Byte *, DWord,
+        DWord)>& write_buffer,
+    Byte buffer_size, DWord startAddress,
     bool isBinary)
 {
     int result;
@@ -571,7 +571,7 @@ static int write_hexfile(
 
     result = write_buffer(WBType::Header, ostream,
                           reinterpret_cast<const Byte *>(header.c_str()), 0,
-                          header.size() + 1);
+                          static_cast<DWord>(header.size() + 1));
     if (result != 0)
     {
         return result;
@@ -579,8 +579,8 @@ static int write_hexfile(
 
     for (const auto& addressRange : addressRanges)
     {
-        size_t address;
-        size_t remainder = (1 + width(addressRange)) % buffer_size;
+        DWord address;
+        DWord remainder = (1 + width(addressRange)) % buffer_size;
 
         for (address = addressRange.lower();
                 address <= addressRange.upper() - buffer_size + 1;
@@ -613,31 +613,31 @@ static int write_hexfile(
     return result;
 }
 
-int write_intelhex(const char *filename, const MemorySource<size_t> &memsrc,
-                   size_t startAddress)
+int write_intelhex(const char *filename, const MemorySource<DWord> &memsrc,
+                   DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
                          startAddress, false);
 }
 
 int write_motorola_srec(const char *filename,
-                        const MemorySource<size_t> &memsrc,
-                        size_t startAddress)
+                        const MemorySource<DWord> &memsrc,
+                        DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
                          startAddress, false);
 }
 
 int write_raw_binary(const char *filename,
-                     const MemorySource<size_t> &memsrc,
-                     size_t startAddress)
+                     const MemorySource<DWord> &memsrc,
+                     DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_raw_binary, 32,
                          startAddress, true);
 }
 
-int write_flex_binary(const char *filename, const MemorySource<size_t> &memsrc,
-                      size_t startAddress)
+int write_flex_binary(const char *filename, const MemorySource<DWord> &memsrc,
+                      DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255,
                          startAddress, true);

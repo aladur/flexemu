@@ -104,7 +104,7 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
 
     for (const char *ifile : ifiles)
     {
-        size_t startAddress = 0;
+        DWord startAddress = 0;
 
         memory.Reset();
         auto result = load_hexfile(ifile, memory, startAddress);

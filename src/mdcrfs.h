@@ -59,7 +59,7 @@ class MdcrFileSystem
         static Byte CalculateChecksum(std::vector<Byte>::const_iterator &iter,
                                size_t size);
 
-        const size_t MaxRecordSize = 1024;
+        const int MaxRecordSize = 1024;
 
     public:
         static std::string CreateMdcrFilename(const char *string,

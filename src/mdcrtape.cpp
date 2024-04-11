@@ -182,7 +182,7 @@ bool MiniDcrTape::ReadRecord(std::vector<Byte> &buffer)
         buffer.resize(size, 0);
         auto *pbuffer = reinterpret_cast<char *>(buffer.data());
         // Read the buffer contents
-        stream.read(pbuffer, buffer.size());
+        stream.read(pbuffer, static_cast<uint32_t>(buffer.size()));
         record_index++;
 
         return stream.good();
@@ -203,7 +203,7 @@ bool MiniDcrTape::WriteRecord(const std::vector<Byte> &buffer)
         stream.put(static_cast<char>(size & 0xFF));
         const auto *pbuffer = reinterpret_cast<const char *>(buffer.data());
         // Write the buffer contents
-        stream.write(pbuffer, buffer.size());
+        stream.write(pbuffer, static_cast<uint32_t>(buffer.size()));
         std::ios::pos_type record_position = stream.tellp();
         stream.put(0);
         stream.put(0);

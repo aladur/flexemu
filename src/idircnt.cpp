@@ -225,7 +225,8 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         strupper(fileName);
         dirEntry.SetTotalFileName(fileName);
-        dirEntry.SetFileSize((sbuf.st_size + 251) / 252 * SECTOR_SIZE);
+        auto fileSize = (sbuf.st_size + 251) / 252 * SECTOR_SIZE;
+        dirEntry.SetFileSize(static_cast<int>(fileSize));
         lt = localtime(&(sbuf.st_mtime));
         dirEntry.SetDate(BDate(lt->tm_mday, lt->tm_mon + 1,
                     lt->tm_year + 1900));

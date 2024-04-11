@@ -25,7 +25,7 @@
 #include <algorithm>
 
 
-BMemoryBuffer::BMemoryBuffer(size_t aSize)
+BMemoryBuffer::BMemoryBuffer(DWord aSize)
 {
     buffer.resize(aSize, 0);
 }
@@ -67,9 +67,9 @@ BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src) noexcept
     return *this;
 }
 
-void BMemoryBuffer::CopyTo(Byte *target, size_t address, size_t aSize) const
+void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord aSize) const
 {
-    size_t secureSize = aSize;
+    auto secureSize = aSize;
 
     if (address >= buffer.size())
     {
@@ -89,9 +89,9 @@ void BMemoryBuffer::CopyTo(Byte *target, size_t address, size_t aSize) const
     }
 }
 
-void BMemoryBuffer::CopyFrom(const Byte *src, size_t address, size_t aSize)
+void BMemoryBuffer::CopyFrom(const Byte *src, DWord address, DWord aSize)
 {
-    size_t secureSize = aSize;
+    auto secureSize = aSize;
 
     if (address >= buffer.size())
     {
@@ -105,14 +105,14 @@ void BMemoryBuffer::CopyFrom(const Byte *src, size_t address, size_t aSize)
 
     memcpy(buffer.data() + address, src, secureSize);
 
-    size_t endAddress = address + secureSize - 1;
+    DWord endAddress = address + secureSize - 1;
     addressRanges.emplace_back(
-            MemorySource<size_t>::AddressRange(address, endAddress));
+            MemorySource<DWord>::AddressRange(address, endAddress));
     join(addressRanges);
 }
 
 bool BMemoryBuffer::CopyTo(std::vector<Byte> &targetBuffer,
-           const MemorySource<size_t>::AddressRange &addressRange) const
+           const MemorySource<DWord>::AddressRange &addressRange) const
 {
     auto startIter = buffer.cbegin() + addressRange.lower();
     auto endIter = buffer.cbegin() + addressRange.upper() + 1;
@@ -128,7 +128,7 @@ void BMemoryBuffer::Reset()
     addressRanges.clear();
 }
 
-const MemorySource<size_t>::AddressRanges& BMemoryBuffer::GetAddressRanges() const
+const MemorySource<DWord>::AddressRanges& BMemoryBuffer::GetAddressRanges() const
 {
     return addressRanges;
 }

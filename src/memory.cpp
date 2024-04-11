@@ -337,9 +337,9 @@ void Memory::UpdateFrom(NotifyId id, void *param)
     }
 }
 
-void Memory::CopyFrom(const Byte *buffer, size_t address, size_t aSize)
+void Memory::CopyFrom(const Byte *buffer, DWord address, DWord aSize)
 {
-    size_t secureSize = aSize;
+    DWord secureSize = aSize;
 
     if (address >= memory_size)
     {

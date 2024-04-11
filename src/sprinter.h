@@ -52,7 +52,7 @@ private:
            std::copy(result.begin(), it, std::back_inserter(temp));
            stream << temp << replacement;
            temp.clear();
-           it += formatItem.size();
+           it += static_cast<uint32_t>(formatItem.size());
            copy(it, result.end(), std::back_inserter(temp));
            stream << temp;
            result = stream.str();

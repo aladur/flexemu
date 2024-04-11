@@ -45,7 +45,7 @@ const int TYPE_JVC_HEADER =
 // It is used in directory containers to be able to boot from them.
 #define BOOT_FILE "boot"
 
-const unsigned int SECTOR_SIZE = 256;
+const int SECTOR_SIZE = 256;
 
 class FlexContainerInfo;
 

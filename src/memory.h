@@ -52,7 +52,7 @@ struct ioDeviceAccess
     Byte addressOffset{0};
 };
 
-class Memory : public MemoryTarget<size_t>, public BObserver
+class Memory : public MemoryTarget<DWord>, public BObserver
 {
 public:
     Memory(const struct sOptions &options);
@@ -104,7 +104,7 @@ public:
 
     // memory target interface
 public:
-    void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
+    void CopyFrom(const Byte *buffer, DWord address, DWord aSize) override;
 
 public:
     void write_ram_rom(Word address, Byte value);

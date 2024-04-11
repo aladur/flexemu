@@ -46,6 +46,7 @@
 #include "warnon.h"
 #include <cassert>
 #include <string>
+#include <limits>
 #include "fcopyman.h"
 #include "fpdnd.h"
 #include "fpmodel.h"
@@ -835,7 +836,17 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
     if (files.GetFileCount() != 0)
     {
         QByteArray itemData;
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+        static const int int_max = std::numeric_limits<int>::max();
+        if (files.GetFileSize() > static_cast<size_t>(int_max))
+        {
+            delete mimeData;
+            return nullptr;
+        }
+        itemData.resize(static_cast<int>(files.GetFileSize()));
+#else
         itemData.resize(files.GetFileSize());
+#endif
         files.WriteDataTo(reinterpret_cast<Byte *>(itemData.data()));
         mimeData->setData(mimeTypeFlexDiskImageFile, itemData);
     }

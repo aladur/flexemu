@@ -30,11 +30,11 @@
 #include <utility>
 
 
-class BMemoryBuffer : public MemorySource<size_t>, public MemoryTarget<size_t>
+class BMemoryBuffer : public MemorySource<DWord>, public MemoryTarget<DWord>
 {
 public:
     BMemoryBuffer() = delete;
-    BMemoryBuffer(size_t aSize);
+    BMemoryBuffer(DWord aSize);
     BMemoryBuffer(const BMemoryBuffer &src);
     BMemoryBuffer(BMemoryBuffer &&src) noexcept;
     ~BMemoryBuffer() override = default;
@@ -42,26 +42,26 @@ public:
     BMemoryBuffer &operator=(const BMemoryBuffer &src);
     BMemoryBuffer &operator=(BMemoryBuffer &&src) noexcept;
 
-    inline size_t GetSize() const
+    inline DWord GetSize() const
     {
-        return buffer.size();
+        return static_cast<DWord>(buffer.size());
     };
 
     // MemorySource interface
-    const MemorySource<size_t>::AddressRanges& GetAddressRanges() const override;
-    void CopyTo(Byte *buffer, size_t address, size_t aSize) const override;
+    const MemorySource<DWord>::AddressRanges& GetAddressRanges() const override;
+    void CopyTo(Byte *buffer, DWord address, DWord aSize) const override;
 
     // MemoryTarget interface
-    void CopyFrom(const Byte *buffer, size_t address, size_t aSize) override;
+    void CopyFrom(const Byte *buffer, DWord address, DWord aSize) override;
 
 public:
     bool CopyTo(std::vector<Byte> &buffer,
-                const MemorySource<size_t>::AddressRange &addressRange) const;
+                const MemorySource<DWord>::AddressRange &addressRange) const;
     void Reset();
 
 private:
     std::vector<Byte> buffer;
-    MemorySource<size_t>::AddressRanges addressRanges;
+    MemorySource<DWord>::AddressRanges addressRanges;
 };
 
 #endif // BMEMBUF_INCLUDED

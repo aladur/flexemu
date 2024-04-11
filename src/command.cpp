@@ -117,11 +117,11 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
     if (command_index < MAX_COMMAND - 1)
     {
-        command[command_index++] = val;
+        command[command_index++] = static_cast<char>(val);
     }
     else
     {
-        command[command_index] = val;
+        command[command_index] = static_cast<char>(val);
     }
 
     if (val == '\0')

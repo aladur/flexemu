@@ -1231,14 +1231,14 @@ bool PrintOutputWindow::HasSerialInput() const
 
 void PrintOutputWindow::ProcessSerialInput()
 {
-    Byte value = '\0';
+    char value = '\0';
 
     while (HasSerialInput())
     {
         {
             std::lock_guard<std::mutex> guard(serial_mutex);
 
-            value = serial_buffer.front();
+            value = static_cast<char>(serial_buffer.front());
             serial_buffer.pop_front();
         }
 
