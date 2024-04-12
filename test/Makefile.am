@@ -31,6 +31,7 @@ unittests_SOURCES = \
 	test_ffilebuf.cpp \
 	test_fdirent.cpp \
 	test_boption.cpp \
+	test_bintervl.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
@@ -43,6 +44,7 @@ unittests_SOURCES = \
 	../src/bdate.h \
 	../src/benv.h \
 	../src/bfileptr.h \
+	../src/bintervl.h \
 	../src/boption.h \
 	../src/btime.h \
 	../src/fattrib.h \

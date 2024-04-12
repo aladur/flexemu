@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <utility>
 #include <ostream>
 
 
@@ -33,7 +34,7 @@ class BInterval
 {
 public:
 
-    BInterval() : lower_(0), upper_(0) { };
+    BInterval() = default;
     BInterval(T lower, T upper) : lower_(lower), upper_(upper)
     {
         if (lower_ > upper_)
@@ -47,21 +48,22 @@ public:
 
     T const &lower() const { return lower_; };
     T const &upper() const { return upper_; };
+    std::pair<T, T> get() const { return std::pair<T, T>{ lower_, upper_ };};
     void assign(T lower, T upper)
     {
+        if (lower > upper)
+        {
+            throw std::invalid_argument(
+                    "lower has to be lower or equal to upper");
+        }
         lower_ = lower;
         upper_ = upper;
     }
-    BInterval& operator= (const BInterval& src)
-    {
-        lower_ = src.lower_;
-        upper_ = src.upper_;
-        return *this;
-    }
+    BInterval& operator= (const BInterval& src) = default;
 
 private:
-    T lower_;
-    T upper_;
+    T lower_{};
+    T upper_{};
 };
 
 template <typename T>
@@ -194,5 +196,5 @@ void join(std::vector<BInterval<T> > &bintervals)
         }
     }
 }
-#endif // #ifndef BINTERVAL_INCLUDED
+#endif
 
