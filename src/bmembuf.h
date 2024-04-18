@@ -23,11 +23,10 @@
 #ifndef BMEMBUF_INCLUDED
 #define BMEMBUF_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "memsrc.h"
 #include "memtgt.h"
 #include <vector>
-#include <utility>
 
 
 class BMemoryBuffer : public MemorySource<DWord>, public MemoryTarget<DWord>
@@ -64,4 +63,4 @@ private:
     MemorySource<DWord>::AddressRanges addressRanges;
 };
 
-#endif // BMEMBUF_INCLUDED
+#endif

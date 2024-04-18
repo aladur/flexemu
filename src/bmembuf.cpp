@@ -20,9 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "misc1.h"
 #include "bmembuf.h"
+#include <string.h>
+#include <utility>
 #include <algorithm>
+#include <stdexcept>
 
 
 BMemoryBuffer::BMemoryBuffer(DWord aSize)

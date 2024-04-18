@@ -32,9 +32,11 @@ unittests_SOURCES = \
 	test_fdirent.cpp \
 	test_boption.cpp \
 	test_bintervl.cpp \
+	test_bmembuf.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
+	../src/bmembuf.cpp \
 	../src/btime.cpp \
 	../src/fattrib.cpp \
 	../src/fdirent.cpp \
