@@ -20584,6 +20584,9 @@ fi
 
 
 
+
+
+
 ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile python/Makefile test/Makefile .circleci/Makefile .github/Makefile .github/workflows/Makefile"
 
 cat >confcache <<\_ACEOF
