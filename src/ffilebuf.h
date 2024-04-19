@@ -83,7 +83,7 @@ public:
     bool CopyFrom(const Byte *from, DWord aSize, DWord offset = 0);
     bool CopyTo(Byte *to, DWord aSize,
                 DWord offset = 0, int stuffByte = -1) const;
-    void FillWith(const Byte pattern = 0);
+    void FillWith(Byte pattern = 0);
     void Realloc(DWord newSize, bool restoreContents = false);
     const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
     const tFlexFileHeader &GetHeader() const

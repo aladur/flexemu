@@ -23,7 +23,7 @@ public:
     ~Da6809() override = default;
 
     int Disassemble(
-            const Byte * const pMemory,
+            const Byte *pMemory,
             DWord pc,
             InstFlg *pFlags,
             DWord *pAddr,

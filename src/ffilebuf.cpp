@@ -710,7 +710,7 @@ bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
     return true;
 }
 
-void FlexFileBuffer::FillWith(const Byte pattern /* = 0 */)
+void FlexFileBuffer::FillWith(Byte pattern /* = 0 */)
 {
     for (DWord i = 0; i < GetFileSize(); i++)
     {

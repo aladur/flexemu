@@ -279,7 +279,7 @@ bool matches(const std::string &text, const std::string &pattern,
 }
 
 bool multimatches(const char *text, const char *multipattern,
-                  const char delimiter /* = ';'*/,
+                  char delimiter /* = ';'*/,
                   bool ignorecase /* = false */)
 
 {

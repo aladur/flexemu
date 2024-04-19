@@ -400,7 +400,7 @@ extern "C" struct sRGBDef
 extern bool matches(const std::string &text, const std::string &pattern,
              bool ignorecase);
 extern bool multimatches(const char *text, const char *multipattern,
-                  const char delimiter /* = ';'*/,
+                  char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);
 #ifdef _WIN32
 extern std::string getExecutablePath();

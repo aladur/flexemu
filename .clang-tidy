@@ -49,6 +49,7 @@ Checks: '
   performance-*,
   performance-enum-size,
   portability-*,
+  readability-avoid-const-params-in-decls,
   readability-isolate-declaration,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
