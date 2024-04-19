@@ -397,8 +397,8 @@ extern "C" struct sRGBDef
     #endif
 #endif /* ifdef __cplusplus */
 
-extern bool matches(const char *text, const char *pattern,
-             bool ignorecase /* = false */);
+extern bool matches(const std::string &text, const std::string &pattern,
+             bool ignorecase);
 extern bool multimatches(const char *text, const char *multipattern,
                   const char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);

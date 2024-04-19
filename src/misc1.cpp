@@ -27,6 +27,7 @@
 #include <iostream>
 #include <sstream>
 #include <functional>
+#include <limits>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef UNIX
@@ -164,97 +165,117 @@ int stricmp(const char *string1, const char *string2)
 } // stricmp
 #endif
 
-bool matches(const char *text, const char *pattern,
-             bool ignorecase /* = false */)
+// Check if 'text' matches the wildcard 'pattern'.
+// Supported wildcard characters:
+// *  matches 0 up to any number of arbitrary wildcard characters
+// ?  matches exactly 1 arbitrary character
+bool matches(const std::string &text, const std::string &pattern,
+             bool ignorecase)
 {
-    const char *p_pat = pattern;
-    const char *p_src = text;
-    char char_pat = '*'; // prepare for first while loop
+    static const int MAX = std::numeric_limits<int>::max();
+    auto ipattern = pattern.cbegin();
+    auto ilaststar = pattern.cend();
+    auto itext = text.cbegin();
+    char char_pat{};
     int min = 0;
     int max = 0;
-    int notmatched =  0;
+    int minlaststar = 0;
+    int any_char_count =  0;
 
-    if (pattern == nullptr)
+    if (ipattern == pattern.cend() || itext == text.cend())
     {
         return false;
     }
 
-    while (*p_src != '\0')
+    while (itext != text.cend())
     {
-        char char_src = *p_src;
+        char char_txt = *itext;
 
         if (ignorecase)
         {
-            char_src = static_cast<char>(tolower(char_src));
+            char_txt = static_cast<char>(tolower(char_txt));
         }
 
-        while (notmatched == 0 && char_pat != '\0')
+        while (any_char_count == 0 && ipattern != pattern.cend())
         {
-            char_pat = *p_pat;
-            p_pat++;
+            char_pat = *(ipattern++);
 
             if (char_pat == '*')
             {
-                // wildchard for any char
-                max = INT_MAX;
+                ilaststar = ipattern;
+                minlaststar = min;
+                max = MAX;
                 continue;
             }
 
             if (char_pat == '?')
             {
-                // wildchard for exactly one char
-                min++;
+                ++min;
 
-                if (max < INT_MAX)
+                if (max < MAX)
                 {
-                    max++;
+                    ++max;
                 }
 
                 continue;
             }
 
-            if (char_pat != '\0')
+            if (ignorecase)
             {
-                // any other character
-                if (ignorecase)
-                {
-                    char_pat = static_cast<char>(tolower(char_pat));
-                }
-
-                break;
+                char_pat = static_cast<char>(tolower(char_pat));
             }
+
+            break;
         }
 
-        if (char_src == char_pat)
+        if (char_txt == char_pat)
         {
-            if (notmatched < min || notmatched > max)
+            if (any_char_count < min || any_char_count > max)
             {
-                return false;
+                if (ilaststar == pattern.cend())
+                {
+                    return false;
+                }
+
+                ipattern = ilaststar;
+                min = minlaststar;
+                max = MAX;
+                any_char_count = 0;
+                continue;
             }
 
-            notmatched = 0;
+            any_char_count = 0;
             min = max = 0;
         }
         else
         {
-            notmatched++;
+            ++any_char_count;
 
-            if (notmatched > max)
+            if (any_char_count > max)
             {
-                return false;
+                if (ilaststar == pattern.cend())
+                {
+                    return false;
+                }
+
+                ipattern = ilaststar;
+                min = minlaststar;
+                max = MAX;
+                any_char_count = 0;
+                continue;
             }
         }
-
-        p_src++;
+        ++itext;
     }
 
-    if (notmatched < min || notmatched > max)
+    if (any_char_count < min || any_char_count > max)
     {
         return false;
     }
 
-    return (char_pat == '\0' && notmatched > 0) || //pattern ends with ? or *
-           (*p_pat == '\0' && notmatched == 0); // pattern end with any char
+    bool only_stars =
+        std::all_of(ipattern, pattern.cend(), [](char ch){ return ch == '*'; });
+    return ipattern == pattern.cend() || only_stars;
 }
 
 bool multimatches(const char *text, const char *multipattern,
@@ -282,7 +303,7 @@ bool multimatches(const char *text, const char *multipattern,
 
         std::string pattern = std::string(&multipattern[begin], pos - begin);
 
-        if (matches(text, pattern.c_str(), ignorecase))
+        if (matches(text, pattern, ignorecase))
         {
             return true;
         }

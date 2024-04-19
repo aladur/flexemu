@@ -119,18 +119,66 @@ TEST(test_misc1, fct_stricmp)
 
 TEST(test_misc1, fct_matches)
 {
-    auto result = matches("abcdef", "abc*", false);
+    auto result = matches("", "", false);
+    EXPECT_FALSE(result);
+    result = matches("", "*.*", false);
+    EXPECT_FALSE(result);
+    result = matches("xx", "*?", false);
+    EXPECT_TRUE(result);
+    result = matches("xx", "*??", false);
+    EXPECT_TRUE(result);
+    result = matches("xx", "*???", false);
+    EXPECT_FALSE(result);
+    result = matches("abcdef", "", false);
+    EXPECT_FALSE(result);
+    result = matches("abcdef", "abc*", false);
+    EXPECT_TRUE(result);
+    result = matches("abcdef", "ABC*", true);
+    EXPECT_TRUE(result);
+    result = matches("file.ext", "*.*", false);
+    EXPECT_TRUE(result);
+    result = matches("file.ext", "*?", false);
+    EXPECT_TRUE(result);
+    result = matches("file.ext", "?*", false);
     EXPECT_TRUE(result);
     result = matches("file.ext", "f*.?xt", false);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*.???", false);
+    result = matches("file.ext", "f*.?xtx", false);
     EXPECT_FALSE(result);
-    result = matches("abcdef", "ABC*", true);
+    result = matches("file.a", "f*.??", false);
+    EXPECT_FALSE(result);
+    result = matches("file.a", "f*.?*", false);
+    EXPECT_TRUE(result);
+    result = matches("file.a", "f*.*?", false);
     EXPECT_TRUE(result);
     result = matches("file.ext", "F*.?xt", true);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*L*.???", true);
+    result = matches("file.a", "f*L*.a", false);
     EXPECT_FALSE(result);
+    result = matches("file.a", "f*l*.a", false);
+    EXPECT_TRUE(result);
+    result = matches("file.a", "f*L*.a", true);
+    EXPECT_TRUE(result);
+    result = matches("file.a", "f*l*.a", true);
+    EXPECT_TRUE(result);
+    result = matches("file.ext", "?le.ext*", true);
+    EXPECT_FALSE(result);
+    result = matches("file.ext", "???le.ext*", true);
+    EXPECT_FALSE(result);
+    result = matches("file.ext", "file.ext*", true);
+    EXPECT_TRUE(result);
+    result = matches("mississippi", "*sip*", false);
+    EXPECT_TRUE(result);
+    result = matches("eee.ext", "*eee.ext", false);
+    EXPECT_TRUE(result);
+// The following test would need a more sophisticated algorithm.
+// Such a pattern is currently not used.
+//  result = matches("eee.ext", "*ee.ext", false);
+//  EXPECT_TRUE(result);
+    result = matches("eee.ext", "*e.ext", false);
+    EXPECT_TRUE(result);
+    result = matches("daadabdmada", "da*da*da*", false);
+    EXPECT_TRUE(result);
 }
 
 #ifdef _WIN32
