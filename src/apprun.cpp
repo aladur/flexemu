@@ -50,7 +50,6 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     options(x_options),
     memory(options),
     cpu(memory),
-    rtc(),
     fdc(options),
     inout(x_options, memory),
     scheduler(cpu, inout),
@@ -62,8 +61,6 @@ ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
     pia2v5(cpu),
     drisel(fdc),
     command(inout, scheduler, fdc),
-    vico1(),
-    vico2(),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
         joystickIO, keyboardIO, terminalIO, pia1, x_options)
 {

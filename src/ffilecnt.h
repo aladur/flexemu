@@ -54,7 +54,7 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
     friend class FlexFileContainerIteratorImp; // corresponding iterator class
 
 protected:
-    BFilePtr fp{};
+    BFilePtr fp;
     s_floppy param{};
     DWord file_size{};
     const FileTimeAccess &ft_access{};

@@ -55,6 +55,7 @@ Checks: '
   readability-redundant-casting,
   readability-redundant-control-flow,
   readability-redundant-declaration,
+  readability-redundant-member-init,
   readability-redundant-smartptr-get,
   readability-function-size,
   readability-duplicate-include,
