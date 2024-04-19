@@ -68,7 +68,7 @@ void DirectoryContainerIteratorImp::AtEnd()
 bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 {
     // Initialize following variable to a filename which never exists.
-    std::string fileName = ".\\/\\/\\/.\\/\\";
+    std::string fileName(R"(.\/\/\/.\/\)");
     bool isValid = true;
 #ifdef _WIN32
     WIN32_FIND_DATA findData{};
