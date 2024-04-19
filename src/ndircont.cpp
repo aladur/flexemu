@@ -803,7 +803,7 @@ bool NafsDirectoryContainer::add_to_link_table(
     end.sec = static_cast<Byte>((sec_idx_end % param.max_sector) + 1);
     end.trk = static_cast<Byte>(sec_idx_end / param.max_sector);
     // update sys info sector
-    free -= static_cast<Word>(records);
+    free -= records;
     setValueBigEndian<Word>(&sis.sir.free[0], free);
     if (free > 0U)
     {
