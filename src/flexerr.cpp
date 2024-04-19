@@ -41,8 +41,11 @@ FlexException::FlexException(const FlexException &src) noexcept:
 
 FlexException &FlexException::operator= (const FlexException &src) noexcept
 {
-    errorCode = src.errorCode;
-    errorString = src.errorString;
+    if (this != &src)
+    {
+        errorCode = src.errorCode;
+        errorString = src.errorString;
+    }
 
     return *this;
 }

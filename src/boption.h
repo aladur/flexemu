@@ -131,8 +131,11 @@ public:
     };
     BOptional& operator=(const BOptional &src)
     {
-        opt_value = src.opt_value;
-        is_valid = src.is_valid;
+        if (this != &src)
+        {
+            opt_value = src.opt_value;
+            is_valid = src.is_valid;
+        }
 
         return *this;
     };
