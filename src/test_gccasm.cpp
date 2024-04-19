@@ -9,6 +9,8 @@
 #include "test_gccasm.h"
 
 
+// LINT suppression for global variable.
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 union ucc cc;
 
 typedef void (*tFctRefByteByte)(Byte &, Byte);

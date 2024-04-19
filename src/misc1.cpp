@@ -40,12 +40,12 @@
 #include "benv.h"
 
 #ifdef _WIN32
-    static const char *pathSeparators = "\\/";
+    static const char * const pathSeparators = "\\/";
 #else
-    static const char *pathSeparators = "/";
+    static const char * const pathSeparators = "/";
 #endif
 
-const char* white_space = " \t\n\r\f\v";
+const char * const white_space = " \t\n\r\f\v";
 
 int copyFile(const char *srcPath, const char *destPath)
 {

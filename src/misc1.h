@@ -426,7 +426,7 @@ extern "C" int getColorForName(const char *colorName, DWord *color);
 extern "C" struct sRGBDef colors[];
 extern "C" const size_t color_count;
 
-extern const char* white_space;
+extern const char * const white_space;
 
 extern bool isListedInFileRandom(const char *directory, const char *filename);
 extern bool hasRandomFileAttribute(const char *directory, const char *filename);

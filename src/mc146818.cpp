@@ -23,9 +23,12 @@
 #include "misc1.h"
 #include "mc146818.h"
 #include "bfileptr.h"
+#include <array>
 
 
-Byte last_day[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+const std::array<Byte, 12> days_per_month{
+    31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+};
 
 Mc146818::Mc146818()
 {
@@ -502,7 +505,7 @@ bool Mc146818::increment_day(Byte &x_day, Byte x_month, Byte x_year)
             return true;
         }
     }
-    else if (convert_bin(x_day) == last_day[binmonth - 1])
+    else if (convert_bin(x_day) == days_per_month[binmonth - 1])
     {
         x_day = 1;
         return true;
