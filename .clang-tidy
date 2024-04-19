@@ -9,6 +9,7 @@ Checks: '
   -bugprone-use-after-move,
   -bugprone-switch-missing-default-case,
   -bugprone-unused-return-value,
+  cert-err60-cpp,
   clang-analyzer-optin.cplusplus.VirtualCall,
   clang-analyzer-cplusplus.StringChecker,
   -clang-analyzer-optin.core.EnumCastOutOfRange,

@@ -34,7 +34,7 @@ const char *FlexException::what() const noexcept
     return errorString.c_str();
 }
 
-FlexException::FlexException(const FlexException &src) :
+FlexException::FlexException(const FlexException &src) noexcept:
     errorCode(src.errorCode), errorString(src.errorString)
 {
 }

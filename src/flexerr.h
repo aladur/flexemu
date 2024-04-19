@@ -90,7 +90,7 @@ protected:
 public:
 
     FlexException() noexcept;
-    FlexException(const FlexException &src);
+    FlexException(const FlexException &src) noexcept;
     FlexException& operator= (const FlexException &rhs) noexcept;
 
     FlexException(int ec) throw();
