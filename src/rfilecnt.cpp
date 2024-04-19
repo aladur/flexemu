@@ -95,7 +95,7 @@ bool FlexRamFileContainer::close()
     {
         // Only if the buffer contents has been changed it
         // will be written to file.
-        if (is_dirty && (file_buffer.get() != nullptr))
+        if (is_dirty && (file_buffer != nullptr))
         {
             unsigned int sectors;
 
@@ -129,7 +129,7 @@ bool FlexRamFileContainer::close()
 bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
                                       int side /* = -1 */) const
 {
-    if (file_buffer.get() == nullptr)
+    if (file_buffer == nullptr)
     {
         return false;
     }
@@ -153,7 +153,7 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
 bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
                                        int side /* = -1 */)
 {
-    if (file_buffer.get() == nullptr)
+    if (file_buffer == nullptr)
     {
         return false;
     }
