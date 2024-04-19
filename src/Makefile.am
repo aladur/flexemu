@@ -604,9 +604,9 @@ pch.h.gcp: pch.h misc1.h
 
 # Static code analysis using clang-tidy. By default it reads the configuration
 # from the file .clang-tidy in the current directory or nearest parent dir.
-# Generated *_moc.cpp files are excluded from the check.
+# Generated *_moc.cpp and *_qrc.cpp files are excluded from the check.
 clang-tidy-check:
-	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_moc.cpp/d"` \
+	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_\(moc\|qrc\).cpp/d"` \
 	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@
 
 ################################################################################
