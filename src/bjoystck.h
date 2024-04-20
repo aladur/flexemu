@@ -33,6 +33,7 @@ class BJoystick
 
 public:
     BJoystick(int which = 0);
+    BJoystick(const BJoystick &src) = delete;
     ~BJoystick();
     bool IsOpened();
     bool Actualize();
@@ -41,7 +42,6 @@ public:
     int32_t Buttons();
     bool IsButtonSet(int which);
 private:
-    BJoystick(const BJoystick &d); // private, should not be used
     int js; // input stream from joystick
     int32_t buttons;
     int32_t axis[2];

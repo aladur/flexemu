@@ -34,6 +34,7 @@ class FileContainerIterator
 {
 public:
     FileContainerIterator(const char *aFilePattern = "*.*");
+    FileContainerIterator(const FileContainerIterator &src) = delete;
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
@@ -41,6 +42,8 @@ public:
     bool operator!=(const FileContainerIf *) const;
     FileContainerIterator &operator=(FileContainerIf *);
     FileContainerIterator &operator++();
+    FileContainerIterator &operator=(const FileContainerIterator &src) =
+        delete;
     bool DeleteCurrent();
     bool RenameCurrent(const char *);
     bool SetDateCurrent(const BDate &date);
@@ -48,9 +51,6 @@ public:
 private:
     std::string filePattern;
     FileContainerIteratorImpPtr imp;
-    FileContainerIterator(const FileContainerIterator &); // should not be used
-    FileContainerIterator &operator=(const FileContainerIterator
-                                     &); // should not be used
 };
 
 #endif // IFILECNT_INCLUDED
