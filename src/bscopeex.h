@@ -31,7 +31,8 @@ class BScopeExit
 
 public:
     explicit BScopeExit(const T &x_function) : function{ x_function } { }
-    BScopeExit(const T &&x_function) : function{ std::move(x_function) } { }
+    explicit BScopeExit(const T &&x_function)
+        : function{ std::move(x_function) } { }
 
     ~BScopeExit()
     {

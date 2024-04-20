@@ -34,7 +34,7 @@ public:
     BIniFile() = delete;
     BIniFile(const BIniFile &) = delete;
     BIniFile(BIniFile &&) noexcept;
-    BIniFile(const char *aFileName);
+    explicit BIniFile(const char *aFileName);
     ~BIniFile() = default;
 
     BIniFile &operator=(const BIniFile &) = delete;

@@ -31,7 +31,7 @@
 class BProcess
 {
 public:
-    BProcess(const std::string &executable,
+    explicit BProcess(const std::string &executable,
              const std::string &directory = "",
              const std::string &argument = "");
 #ifdef _WIN32

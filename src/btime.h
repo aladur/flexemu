@@ -41,7 +41,8 @@ public:
         HHMM, // HH:MM hour:minute
     };
 
-    BTime(int h = 0U, int m = 0U, int s = 0U);
+    explicit BTime() = default;
+    BTime(int h, int m, int s = 0);
     BTime(const BTime &src) = default;
     ~BTime() = default;
 

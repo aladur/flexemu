@@ -101,7 +101,7 @@ public:
         return "pia2";
     };
 
-    Pia2V5(Mc6809 &x_cpu);
+    explicit Pia2V5(Mc6809 &x_cpu);
     ~Pia2V5() override;
 
 private:

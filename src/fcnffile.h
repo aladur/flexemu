@@ -42,7 +42,7 @@ public:
     FlexemuConfigFile() = delete;
     FlexemuConfigFile(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile(FlexemuConfigFile &&) noexcept;
-    FlexemuConfigFile(const char *aFileName);
+    explicit FlexemuConfigFile(const char *aFileName);
     ~FlexemuConfigFile() = default;
 
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;

@@ -38,7 +38,8 @@ class SelectAllOnFocusInLE : public QObject
 
 public:
     SelectAllOnFocusInLE() = delete;
-    SelectAllOnFocusInLE(QLineEdit &p_widget, QObject *parent = Q_NULLPTR);
+    explicit SelectAllOnFocusInLE(QLineEdit &p_widget,
+            QObject *parent = Q_NULLPTR);
 
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;

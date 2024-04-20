@@ -33,7 +33,7 @@ class FileContainerIteratorImp;
 class FileContainerIterator
 {
 public:
-    FileContainerIterator(const char *aFilePattern = "*.*");
+    explicit FileContainerIterator(const char *aFilePattern = "*.*");
     FileContainerIterator(const FileContainerIterator &src) = delete;
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();

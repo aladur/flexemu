@@ -93,7 +93,7 @@ public:
     FlexException(const FlexException &src) noexcept;
     FlexException& operator= (const FlexException &rhs) noexcept;
 
-    FlexException(int ec) noexcept;
+    explicit FlexException(int ec) noexcept;
     FlexException(int ec, int ip1) noexcept;
     FlexException(int ec, const std::string &sp1) noexcept;
     FlexException(int ec, const std::string &sp1,

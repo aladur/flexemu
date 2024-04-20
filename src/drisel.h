@@ -69,7 +69,7 @@ private:
 public:
 
     DriveSelect() = delete;
-    DriveSelect(E2floppy &fdc);
+    explicit DriveSelect(E2floppy &fdc);
     ~DriveSelect() override = default;
 
     void resetIo() override;

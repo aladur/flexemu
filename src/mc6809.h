@@ -172,7 +172,7 @@ protected:
 
     public:
         atomic_event() = delete;
-        atomic_event(Event x_event)
+        explicit atomic_event(Event x_event)
             : event(static_cast<T>(x_event))
         {
         }
@@ -963,7 +963,7 @@ protected:
 
     // Public constructor and destructor
 public:
-    Mc6809(Memory &x_memory);
+    explicit Mc6809(Memory &x_memory);
     ~Mc6809() override;
 };
 

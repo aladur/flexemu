@@ -47,7 +47,7 @@ public:
     static tPathList GetFiles(const std::string &aPath);
 
     BDirectory() = default;
-    BDirectory(std::string &path) : m_path(path) { };
+    explicit BDirectory(std::string &path) : m_path(path) { };
     ~BDirectory() = default;
 
     inline void SetPath(std::string &path)

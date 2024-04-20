@@ -55,7 +55,7 @@ struct ioDeviceAccess
 class Memory : public MemoryTarget<DWord>, public BObserver
 {
 public:
-    Memory(const struct sOptions &options);
+    explicit Memory(const struct sOptions &options);
     ~Memory() override;
 
 private:

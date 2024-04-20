@@ -30,7 +30,7 @@
 class PageDetector
 {
 public:
-    PageDetector(const RichLines &lines);
+    explicit PageDetector(const RichLines &lines);
 
     bool HasLinesPerPageDetected() const;
     int16_t GetLinesPerPage() const;

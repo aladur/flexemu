@@ -63,7 +63,7 @@ class FLEXplorer : public QMainWindow
 
 public:
     FLEXplorer() = delete;
-    FLEXplorer(struct sFPOptions &options);
+    explicit FLEXplorer(struct sFPOptions &options);
     ~FLEXplorer() override;
 
     void ProcessArguments(const QStringList &args);

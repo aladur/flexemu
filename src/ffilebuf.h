@@ -105,7 +105,7 @@ public:
     {
         return !buffer || fileHeader.fileSize == 0;
     };
-    inline operator const Byte *() const
+    inline explicit operator const Byte *() const
     {
         if (IsEmpty())
         {

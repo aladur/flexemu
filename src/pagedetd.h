@@ -33,7 +33,7 @@
 struct PageDetectorData
 {
     PageDetectorData() = delete;
-    PageDetectorData(const RichLines &p_lines);
+    explicit PageDetectorData(const RichLines &p_lines);
 
     void SetLinesPerPage(int16_t p_linesPerPage);
     bool IsLineValid(uint32_t page, int16_t lineOffset) const;

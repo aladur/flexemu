@@ -40,7 +40,7 @@ public:
     constexpr BOptional(const BOptional &src)
         : opt_value{src.opt_value}
         , is_valid{src.is_valid} { };
-    constexpr BOptional(const T &val)
+    constexpr explicit BOptional(const T &val)
         : opt_value{val}
         , is_valid{true} { };
     ~BOptional() = default;

@@ -33,6 +33,8 @@ Checks: '
   -cppcoreguidelines-avoid-c-arrays,
   -cppcoreguidelines-explicit-virtual-functions,
   google-readability-casting,
+  google-explicit-constructor,
+  hicpp-explicit-conversions,
   misc-*,
   -misc-no-recursion,
   -misc-definitions-in-headers,

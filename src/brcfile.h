@@ -37,7 +37,7 @@ class BRcFile
 {
 public:
     BRcFile() = default;
-    BRcFile(const char *aFileName);
+    explicit BRcFile(const char *aFileName);
     ~BRcFile() = default;
 
     void SetFileName(const char *aFileName);

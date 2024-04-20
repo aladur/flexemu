@@ -60,7 +60,7 @@ class ApplicationRunner
 public:
     ApplicationRunner() = delete;
     ~ApplicationRunner();
-    ApplicationRunner(struct sOptions &x_options);
+    explicit ApplicationRunner(struct sOptions &x_options);
 
     int startup(QApplication &app);
     void cleanup();

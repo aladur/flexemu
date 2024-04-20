@@ -44,7 +44,8 @@ public:
         Iso, // YYYYMMDD
     };
 
-    BDate(int d = 0, int m = 0, int year = 0);
+    BDate() = default;
+    BDate(int d, int m, int y);
     BDate(const BDate &src) = default;
     ~BDate() = default;
 

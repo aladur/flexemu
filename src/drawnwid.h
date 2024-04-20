@@ -42,7 +42,7 @@ class DrawnWidget : public QWidget
 
 public:
     DrawnWidget() = delete;
-    DrawnWidget(QWidget *parent = nullptr);
+    explicit DrawnWidget(QWidget *parent);
     ~DrawnWidget() override = default;
 
     void SetPixmap(const QPixmap &p_pixmap);

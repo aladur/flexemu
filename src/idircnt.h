@@ -37,7 +37,7 @@ class DirectoryContainer;
 class DirectoryContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-    DirectoryContainerIteratorImp(DirectoryContainer *);
+    explicit DirectoryContainerIteratorImp(DirectoryContainer *);
     DirectoryContainerIteratorImp() = delete;
     DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &src) =
         delete;

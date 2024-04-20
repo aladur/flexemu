@@ -31,7 +31,7 @@ class FlexFileContainer;
 class FlexFileContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-    FlexFileContainerIteratorImp(FlexFileContainer *);
+    explicit FlexFileContainerIteratorImp(FlexFileContainer *);
     FlexFileContainerIteratorImp() = delete;
     FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &src) =
         delete;

@@ -64,7 +64,7 @@ public:
     Crc &operator=(const Crc&) = delete;
     ~Crc() = default;
 
-    Crc(T p_polynomial) : crc(0U)
+    explicit Crc(T p_polynomial) : crc(0U)
     {
         Initialize(p_polynomial);
     }

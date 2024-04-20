@@ -47,6 +47,9 @@ public:
         return mode;
     }
 
+    // Suppress LINT check. This class is a thin wrapper for FILE *
+    // with resource management.
+    // NOLINTNEXTLINE(hicpp-explicit-conversions, google-explicit-constructor)
     operator FILE *() const
     {
         return fp;

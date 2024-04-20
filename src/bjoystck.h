@@ -32,7 +32,7 @@ class BJoystick
 {
 
 public:
-    BJoystick(int which = 0);
+    explicit BJoystick(int which = 0);
     BJoystick(const BJoystick &src) = delete;
     ~BJoystick();
     bool IsOpened() const;

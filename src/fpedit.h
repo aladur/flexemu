@@ -40,7 +40,7 @@ class FlexRegularExpressionValidator : public QRegularExpressionValidator
 {
 public:
     FlexRegularExpressionValidator() = delete;
-    FlexRegularExpressionValidator(const QRegularExpression &regex,
+    explicit FlexRegularExpressionValidator(const QRegularExpression &regex,
                                    QObject *parent = Q_NULLPTR,
                                    const QVector<QString> &filenames = { });
     QValidator::State validate(QString &input, int &pos) const override;
