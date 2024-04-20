@@ -125,7 +125,7 @@ int FlexplorerMdiChild::GetContainerType() const
 QString FlexplorerMdiChild::GetSupportedAttributes() const
 {
     assert(model);
-    return QString(model->GetSupportedAttributes().c_str());
+    return {model->GetSupportedAttributes().c_str()};
 }
 
 int FlexplorerMdiChild::GetSelectedFilesCount() const

@@ -201,7 +201,7 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
         }
     }
 
-    return std::string();
+    return {};
 }
 
 std::pair<std::string, std::set<std::string> >

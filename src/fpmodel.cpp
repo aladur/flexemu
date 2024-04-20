@@ -405,7 +405,7 @@ QModelIndex FlexplorerTableModel::AddFile(const FlexFileBuffer &buffer)
         return SetRow(dirEntry, rowCount() - 1, Qt::DisplayRole);
     }
 
-    return QModelIndex();
+    return {};
 }
 
 void FlexplorerTableModel::DeleteFile(const QModelIndex &index)
@@ -463,7 +463,7 @@ FlexFileBuffer FlexplorerTableModel::CopyFile(const QModelIndex &index) const
         return container->ReadToBuffer(filename.toUtf8().data());
     }
 
-    return FlexFileBuffer();
+    return {};
 }
 
 void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
@@ -522,7 +522,7 @@ QVariant FlexplorerTableModel::data(const QModelIndex &index, int role) const
         }
     }
 
-    return QVariant();
+    return {};
 }
 
 bool FlexplorerTableModel::setData(
@@ -568,7 +568,7 @@ QVariant FlexplorerTableModel::headerData(
         }
     }
 
-    return QVariant();
+    return {};
 }
 
 bool FlexplorerTableModel::setHeaderData(

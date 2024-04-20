@@ -38,7 +38,7 @@ BTime BTime::Now()
     auto time_now = time(static_cast<time_t *>(nullptr));
     auto *lt = localtime(&time_now);
 
-    return BTime(lt->tm_hour, lt->tm_min, lt->tm_sec);
+    return {lt->tm_hour, lt->tm_min, lt->tm_sec};
 }
 
 std::string BTime::AsString(Format format) const

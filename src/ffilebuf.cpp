@@ -744,11 +744,11 @@ void FlexFileBuffer::SetDateTime(const BDate &new_date, const BTime &new_time)
 
 BDate FlexFileBuffer::GetDate() const
 {
-    return BDate(fileHeader.day, fileHeader.month, fileHeader.year);
+    return {fileHeader.day, fileHeader.month, fileHeader.year};
 }
 
 BTime FlexFileBuffer::GetTime() const
 {
-    return BTime(fileHeader.hour, fileHeader.minute, 0U);
+    return {fileHeader.hour, fileHeader.minute, 0U};
 }
 

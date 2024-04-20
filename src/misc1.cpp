@@ -489,7 +489,7 @@ std::string getCurrentPath()
     }
 #endif
 
-    return std::string();
+    return {};
 }
 
 bool isAbsolutePath(const std::string &path)

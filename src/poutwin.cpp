@@ -262,7 +262,7 @@ int PrintOutputWindow::GetPercentFromSizeFactor(float sizeFactor)
 
 QMarginsF PrintOutputWindow::GetDefaultMarginsFor(QPageSize::PageSizeId)
 {
-    return QMarginsF(10.0, 10.0, 10.0, 10.0); // In Millimeter
+    return {10.0, 10.0, 10.0, 10.0}; // In Millimeter
 }
 
 // Convert a displayed value into millimeter.

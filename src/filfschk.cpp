@@ -559,7 +559,7 @@ std::string FileContainerCheck::GetUnixFilename(
         return basename + '.' + extension;
     }
 
-    return std::string();
+    return {};
 }
 
 void FileContainerCheck::InitializeFileSectors()

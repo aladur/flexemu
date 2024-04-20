@@ -49,7 +49,7 @@ QFont GetFont(const QString &fontName)
         }
     }
 
-    return QFont();
+    return {};
 }
 
 QString GetWindowGeometry(const QWidget &w)

@@ -398,7 +398,7 @@ std::string NafsDirectoryContainer::get_unix_filename(
         return basename + '.' + extension;
     }
 
-    return std::string();
+    return {};
 }
 
 // Return unix filename for a given file_id.
@@ -518,7 +518,7 @@ std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
         }
     }
 
-    return std::string();
+    return {};
 }
 
 
@@ -1919,7 +1919,7 @@ std::string NafsDirectoryContainer::to_string(SectorType type)
             return "sector of new file";
     }
 
-    return std::string();
+    return {};
 }
 
 // Return a unique filename for this directory container.
