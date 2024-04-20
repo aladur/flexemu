@@ -41,6 +41,7 @@ Checks: '
   -misc-const-correctness,
   -misc-use-anonymous-namespace,
   modernize-use-default-member-init,
+  modernize-use-emplace,
   modernize-use-equals-default,
   modernize-use-equals-delete,
   modernize-use-override,

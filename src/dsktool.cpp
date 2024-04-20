@@ -1163,7 +1163,7 @@ bool addToRegexList(const std::vector<std::string> &regexLines,
     {
         try
         {
-            regexs.push_back(std::regex(regex, flags));
+            regexs.emplace_back(regex, flags);
         }
         catch(const std::regex_error &ex)
         {
@@ -1210,7 +1210,7 @@ int main(int argc, char *argv[])
             case 'l':
             case 's':
             case 'c':
-                      dsk_files.push_back(optarg);
+                      dsk_files.emplace_back(optarg);
                       command = checkCommand(command, result);
                       if (command == '\0')
                       {
@@ -1241,7 +1241,7 @@ int main(int argc, char *argv[])
             case 'R': has_regex_file = true;
                       if (command == 'C' || command == 'x')
                       {
-                          regexFiles.push_back(optarg);
+                          regexFiles.emplace_back(optarg);
                       }
                       break;
 
@@ -1338,7 +1338,7 @@ int main(int argc, char *argv[])
     {
         for (index = optind; index < argc; index++)
         {
-            files.push_back(argv[index]);
+            files.emplace_back(argv[index]);
         }
     }
     else if (command == 'c' || command == 'l' ||
@@ -1346,7 +1346,7 @@ int main(int argc, char *argv[])
     {
         for (index = optind; index < argc; index++)
         {
-            dsk_files.push_back(argv[index]);
+            dsk_files.emplace_back(argv[index]);
         }
     }
     else if (isRegexCommand)
@@ -1355,7 +1355,7 @@ int main(int argc, char *argv[])
 
         for (index = optind; index < argc; index++)
         {
-            regexLines.push_back(argv[index]);
+            regexLines.emplace_back(argv[index]);
         }
 
         if (!addToRegexList(regexLines, regexs, regexCaseSense))

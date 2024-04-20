@@ -216,7 +216,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
                 S_ISDIR(sbuf.st_mode)   &&
                 pentry->d_name[0] != '.')
             {
-                subDirList.push_back(pentry->d_name);
+                subDirList.emplace_back(pentry->d_name);
             }
         } // while
 
@@ -279,7 +279,7 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
 
             if (stat(dirEntry.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
             {
-                fileList.push_back(pentry->d_name);
+                fileList.emplace_back(pentry->d_name);
             }
         } // while
 

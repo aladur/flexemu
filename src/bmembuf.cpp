@@ -108,8 +108,7 @@ void BMemoryBuffer::CopyFrom(const Byte *src, DWord address, DWord aSize)
     memcpy(buffer.data() + address, src, secureSize);
 
     DWord endAddress = address + secureSize - 1;
-    addressRanges.emplace_back(
-            MemorySource<DWord>::AddressRange(address, endAddress));
+    addressRanges.emplace_back(address, endAddress);
     join(addressRanges);
 }
 
