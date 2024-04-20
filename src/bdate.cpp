@@ -30,7 +30,7 @@ BDate::BDate(int d, int m, int y) : day(d), month(m), year(y)
 {
 }
 
-const BDate BDate::Now()
+BDate BDate::Now()
 {
     time_t time_now;
     struct tm *lt;
@@ -49,7 +49,7 @@ const char *BDate::monthName[] =
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "???"
 };
 
-const std::string BDate::GetDateString(Format format) const
+std::string BDate::GetDateString(Format format) const
 {
     char dateString[32];
     auto m = GetMonth();

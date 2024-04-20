@@ -41,7 +41,7 @@ BTime BTime::Now()
     return BTime(lt->tm_hour, lt->tm_min, lt->tm_sec);
 }
 
-const std::string BTime::AsString(Format format) const
+std::string BTime::AsString(Format format) const
 {
     std::stringstream stream;
 

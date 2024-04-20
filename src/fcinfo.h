@@ -64,7 +64,7 @@ public:
         number = n;
         is_valid = true;
     }
-    const std::string GetTypeString() const;
+    std::string GetTypeString() const;
 
     inline void SetPath(const std::string &p)
     {
@@ -120,7 +120,7 @@ public:
         s = sectors;
     };
     /* Property only valid if GetIsFlexFormat() == true */
-    inline const std::string GetName() const
+    inline std::string GetName() const
     {
         return name;
     };
@@ -129,7 +129,7 @@ public:
     {
         return number;
     };
-    inline const std::string GetPath() const
+    inline std::string GetPath() const
     {
         return path;
     };

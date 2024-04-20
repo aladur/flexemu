@@ -71,7 +71,7 @@ public:
     QString GetUserFriendlyPath() const;
     bool IsWriteProtected() const;
     int GetContainerType() const;
-    const FlexContainerInfo GetContainerInfo() const;
+    FlexContainerInfo GetContainerInfo() const;
 
     QVector<QString> GetFilenames(const QModelIndexList &indexList) const;
     QVector<QString> GetFilenames() const;

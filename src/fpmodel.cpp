@@ -240,7 +240,7 @@ int FlexplorerTableModel::GetContainerType() const
     return container->GetContainerType();
 }
 
-const FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const
+FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const
 {
     FlexContainerInfo info;
 

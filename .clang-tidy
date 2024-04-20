@@ -50,6 +50,7 @@ Checks: '
   performance-enum-size,
   portability-*,
   readability-avoid-const-params-in-decls,
+  readability-const-return-type,
   readability-isolate-declaration,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
