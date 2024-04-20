@@ -48,7 +48,7 @@ public:
     BDate(const BDate &src) = default;
     ~BDate() = default;
 
-    BDate Now();
+    static BDate Now();
     std::string GetDateString(Format format = Format::D2MS3Y4) const;
     void Assign(int day, int month, int year);
     void GetDate(int &day, int &month, int &year);
