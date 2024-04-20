@@ -208,7 +208,7 @@ int NafsDirectoryContainer::GetBytesPerSector() const
 
 bool NafsDirectoryContainer::IsWriteProtected() const
 {
-    return (param.write_protect) ? true : false;
+    return param.write_protect != 0;
 }
 
 bool NafsDirectoryContainer::IsTrackValid(int track) const
@@ -1050,7 +1050,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            bool is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
+            bool is_random = ((sbuf.st_mode & S_IXUSR) != 0);
 
             add_file(filename, is_random);
         }

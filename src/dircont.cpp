@@ -98,7 +98,7 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
 
 bool DirectoryContainer::IsWriteProtected() const
 {
-    return (attributes & FLX_READONLY) ? true : false;
+    return (attributes & FLX_READONLY) != 0;
 }
 
 // type, track and sectors parameter will be ignored

@@ -880,18 +880,14 @@ bool hasRandomFileAttribute(const char *directory, const char *filename)
     DWord fileAttrib =
         GetFileAttributes(ConvertToUtf16String(filePath).c_str());
 
-    if (fileAttrib != 0xFFFFFFFF && (fileAttrib & FILE_ATTRIBUTE_HIDDEN))
-    {
-        return true;
-    }
+    return (fileAttrib != 0xFFFFFFFF &&
+            (fileAttrib & FILE_ATTRIBUTE_HIDDEN) != 0U);
 #endif
 #ifdef UNIX
         struct stat sbuf;
 
-        if (!stat(filePath.c_str(), &sbuf) && (sbuf.st_mode & S_IXUSR))
-        {
-            return true;
-        }
+        return (stat(filePath.c_str(), &sbuf) == 0 &&
+                (sbuf.st_mode & S_IXUSR) != 0U);
 #endif
 
     return false;

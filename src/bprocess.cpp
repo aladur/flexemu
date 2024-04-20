@@ -166,12 +166,7 @@ bool BProcess::IsRunning()
 
     int status = 0;
 
-    if (waitpid(pid, &status, WNOHANG) == 0)
-    {
-        return true;
-    }
-
-    return false;
+    return waitpid(pid, &status, WNOHANG) == 0;
 }
 #endif
 

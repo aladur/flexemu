@@ -246,7 +246,7 @@ int FlexFileContainer::GetBytesPerSector() const
 
 bool FlexFileContainer::IsWriteProtected() const
 {
-    return (param.write_protect ? true : false);
+    return param.write_protect != 0;
 }
 
 bool FlexFileContainer::IsTrackValid(int track) const
@@ -921,7 +921,7 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
     st_t link;
     Word i;
 
-    if (onTrack0OnlyDirSectors == false)
+    if (!onTrack0OnlyDirSectors)
     {
         param.max_sector0 = param.max_sector;
         return;

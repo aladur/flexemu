@@ -131,7 +131,7 @@ void PageDetector::CollectData(PageDetectorData &data)
                 // A number-only line may contain numbers, spaces or minus.
                 // For example the page number may be printed as:
                 // - 5- or -22- which is also detected as number-only line.
-                return !((ch >= '0' && ch <= '9') || ch == '-' || ch == ' ');
+                return ((ch < '0' || ch > '9') && ch != '-' && ch != ' ');
             };
             auto tIter = std::find_if(begin(tLine), end(tLine), isNoDigit);
             if (!tLine.empty() && tIter == std::end(tLine))
