@@ -73,7 +73,8 @@ Checks: '
   readability-convert-member-functions-to-static,
   readability-qualified-auto,
   readability-redundant-string-cstr,
-  readability-simplify-boolean-expr'
+  readability-simplify-boolean-expr,
+  readability-uppercase-literal-suffix'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

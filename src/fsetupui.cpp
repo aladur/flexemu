@@ -258,11 +258,11 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     r_eurocom2v7->setChecked(!options.isEurocom2V5);
 
     r_frequencySet->setChecked(true);
-    if (options.frequency < 0.0f)
+    if (options.frequency < 0.0F)
     {
         r_frequencyOriginal->setChecked(true);
     }
-    else if (options.frequency == 0.0f)
+    else if (options.frequency == 0.0F)
     {
         r_frequencyFast->setChecked(true);
     }
@@ -768,18 +768,18 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
     {
         if (r_frequencyOriginal->isChecked())
         {
-                options.frequency = -1.0f;
+                options.frequency = -1.0F;
         }
         else if (r_frequencyFast->isChecked())
         {
-                options.frequency = 0.0f;
+                options.frequency = 0.0F;
         }
         else if (r_frequencySet->isChecked())
         {
             // success == false should be prevented by Validate().
             auto frequency =
                 QLocale::c().toFloat(e_frequency->text(), &success);
-            options.frequency = (success ? frequency : -1.0f);
+            options.frequency = (success ? frequency : -1.0F);
         }
     }
 

@@ -667,8 +667,8 @@ void QtGui::OnTimer()
         scheduler.get_interrupt_status(newIrqStat);
 
         auto target_frequency = scheduler.get_target_frequency();
-        bool newIsOriginalFrequency = (target_frequency > 0.0f) &&
-            std::fabs(target_frequency - ORIGINAL_FREQUENCY) < 0.01f;
+        bool newIsOriginalFrequency = (target_frequency > 0.0F) &&
+            std::fabs(target_frequency - ORIGINAL_FREQUENCY) < 0.01F;
         if (newIsOriginalFrequency != isOriginalFrequency)
         {
             isOriginalFrequency = newIsOriginalFrequency;
@@ -1520,7 +1520,7 @@ void QtGui::UpdateInterruptStatus(tIrqType irqType, bool status)
 void QtGui::ToggleCpuFrequency()
 {
     isOriginalFrequency = !isOriginalFrequency;
-    auto frequency = isOriginalFrequency ? ORIGINAL_FREQUENCY : 0.0f;
+    auto frequency = isOriginalFrequency ? ORIGINAL_FREQUENCY : 0.0F;
     options.frequency = frequency;
     oldOptions.frequency = frequency;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));

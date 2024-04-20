@@ -100,7 +100,7 @@ void Pia2V5::writeOutputA(Byte value)
                 direction = TapeDirection::Rewind;
                 cycles_BET = cpu.get_cycles();
                 cycles_RDC = cpu.get_cycles();
-                delay_RDC = static_cast<QWord>(166.f / ORIGINAL_PERIOD);
+                delay_RDC = static_cast<QWord>(166.F / ORIGINAL_PERIOD);
                 // Prepare for write
                 write_buffer.clear();
                 write_bit_mask = 0x80;
@@ -222,18 +222,18 @@ Byte Pia2V5::readInputA()
 
         if (drive[drive_idx]->GetRecordIndex() > 0)
         {
-            delay_RDC = static_cast<QWord>(600000.f / ORIGINAL_PERIOD);
+            delay_RDC = static_cast<QWord>(600000.F / ORIGINAL_PERIOD);
         }
         else
         {
-            delay_RDC = static_cast<QWord>(166.f / ORIGINAL_PERIOD);
+            delay_RDC = static_cast<QWord>(166.F / ORIGINAL_PERIOD);
         }
     }
     else if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
              (read_mode == ReadMode::Read && BTST7(cra)))
     {
         cycles_RDC = cpu.get_cycles();
-        delay_RDC = static_cast<QWord>(166.f / ORIGINAL_PERIOD);
+        delay_RDC = static_cast<QWord>(166.F / ORIGINAL_PERIOD);
 
         // Only read a bit if Read Clock (RDC) has been signaled.
         if (read_buffer.empty())
@@ -399,11 +399,11 @@ void Pia2V5::SetReadModeToInit()
     {
         // When reading the header of the next file
         // there is an extra long delay
-        delay_RDC = static_cast<QWord>(900000.f / ORIGINAL_PERIOD);
+        delay_RDC = static_cast<QWord>(900000.F / ORIGINAL_PERIOD);
     }
     else
     {
-        delay_RDC = static_cast<QWord>(120000.f / ORIGINAL_PERIOD);
+        delay_RDC = static_cast<QWord>(120000.F / ORIGINAL_PERIOD);
     }
 }
 

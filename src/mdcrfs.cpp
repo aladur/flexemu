@@ -174,8 +174,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
             if (hasFoundFile)
             {
                 // Copy file contents into memory.
-                memory.CopyFrom(&ibuffer[1], startAddress, ibuffer.size() - 3u);
-                startAddress += static_cast<Word>(ibuffer.size() - 3u);
+                memory.CopyFrom(&ibuffer[1], startAddress, ibuffer.size() - 3U);
+                startAddress += static_cast<Word>(ibuffer.size() - 3U);
             }
             count += ibuffer.size() - 3;
         }

@@ -357,14 +357,14 @@ void Scheduler::set_frequency(float x_target_frequency)
 {
     cycles_t cycles;
 
-    if (x_target_frequency == 0.0f)
+    if (x_target_frequency == 0.0F)
     {
         target_frequency = x_target_frequency;
         cycles = std::numeric_limits<decltype(cycles)>::max();
     }
     else
     {
-        if (x_target_frequency < 0.0f)
+        if (x_target_frequency < 0.0F)
         {
             x_target_frequency = ORIGINAL_FREQUENCY;
         }

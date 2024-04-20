@@ -76,7 +76,7 @@ private:
     // following delay/cycle variables/constants are multiples of cpu cycles
     QWord delay_RDC{0}; // Delay until a read clock is present
     // Delay until a begin/end of tape is detected
-    static const QWord delay_BET = static_cast<QWord>(2000.f / ORIGINAL_PERIOD);
+    static const QWord delay_BET = static_cast<QWord>(2000.F / ORIGINAL_PERIOD);
     QWord cycles_RDC{0};
     QWord cycles_BET{0};
     QWord cycles_cdbg{0};

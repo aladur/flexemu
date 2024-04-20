@@ -160,7 +160,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options)
     , linesPerPage(0U)
     , hasPageStructure(false)
     , isPageBreakDetectionFinished(false)
-    , sizeFactor(1.4f)
+    , sizeFactor(1.4F)
     , unit(QPrinter::Millimeter)
     , orientation(QPageLayout::Portrait)
     , pageSizeId(QPageSize::A4)
@@ -236,7 +236,7 @@ PrintOutputWindow::~PrintOutputWindow()
 */
 float PrintOutputWindow::GetSizeFactorFromPercent(int percent)
 {
-    return 0.8f + static_cast<float>(100 - percent) * 1.2f / 100.0f;
+    return 0.8F + static_cast<float>(100 - percent) * 1.2F / 100.0F;
 }
 
 /*
@@ -246,7 +246,7 @@ float PrintOutputWindow::GetSizeFactorFromPercent(int percent)
 */
 float PrintOutputWindow::GetDisplayedSizeFactorFromPercent(int percent)
 {
-    return 40.0f + static_cast<float>(percent) * 120.0f / 100.0f;
+    return 40.0F + static_cast<float>(percent) * 120.0F / 100.0F;
 }
 
 /*
@@ -256,7 +256,7 @@ float PrintOutputWindow::GetDisplayedSizeFactorFromPercent(int percent)
 */
 int PrintOutputWindow::GetPercentFromSizeFactor(float sizeFactor)
 {
-    auto temp = std::round((sizeFactor - 0.8) * 100.0f / 1.2f);
+    auto temp = std::round((sizeFactor - 0.8) * 100.0F / 1.2F);
     return 100 - static_cast<int>(temp);
 }
 
