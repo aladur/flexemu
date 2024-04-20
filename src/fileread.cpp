@@ -196,7 +196,7 @@ static int load_motorola_srec(std::istream &istream,
 
             case '9': // End of file / start address
                 startAddress = address;
-                done = 1;
+                done = true;
                 break;
 
             case '5': // Record count

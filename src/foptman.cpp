@@ -140,7 +140,7 @@ void FlexemuOptions::GetCommandlineOptions(
         }
     };
 
-    while (1)
+    while (true)
     {
         int result = getopt(argc, argv, optstr.c_str());
 

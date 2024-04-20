@@ -1370,11 +1370,11 @@ void Mc6809::nmi(bool save_state)
 {
     if (save_state)
     {
-        cc.bit.e = 1;
+        cc.bit.e = true;
         psh(0xff, s, u);
     }
 
-    cc.bit.f = cc.bit.i = 1;
+    cc.bit.f = cc.bit.i = true;
     pc = memory.read_word(0xfffc);
 }
 
@@ -1382,11 +1382,11 @@ void Mc6809::firq(bool save_state)
 {
     if (save_state)
     {
-        cc.bit.e = 0;
+        cc.bit.e = false;
         psh(0x81, s, u);
     }
 
-    cc.bit.f = cc.bit.i = 1;
+    cc.bit.f = cc.bit.i = true;
     pc = memory.read_word(0xfff6);
 }
 
@@ -1394,11 +1394,11 @@ void Mc6809::irq(bool save_state)
 {
     if (save_state)
     {
-        cc.bit.e = 1;
+        cc.bit.e = true;
         psh(0xff, s, u);
     }
 
-    cc.bit.i = 1; // Sw: don't set flag f !!
+    cc.bit.i = true; // Don't set flag f!
     pc = memory.read_word(0xfff8);
 }
 #endif

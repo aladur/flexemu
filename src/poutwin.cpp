@@ -1121,7 +1121,7 @@ void PrintOutputWindow::PrintLine(const RichLine &richLine,
             auto charFormat = cursor.charFormat();
             if ((richChar.properties & CharProperty::PageBreak) != 0)
             {
-                isPageBreak = 1;
+                isPageBreak = true;
             }
             auto isUnderlined =
                 ((richChar.properties & CharProperty::Underlined) != 0);

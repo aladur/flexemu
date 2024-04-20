@@ -262,7 +262,7 @@ CpuState Mc6809::runloop()
     CpuState new_state = CpuState::NONE;
     bool first_time = true;
 
-    while (1)
+    while (true)
     {
         if (events != Event::NONE)
         {

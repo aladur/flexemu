@@ -703,7 +703,7 @@ private:
     inline void com(Byte &reg)
     {
         reg = ~reg;
-        cc.bit.c = 1;
+        cc.bit.c = true;
         tst(reg);
     }
 
@@ -774,7 +774,7 @@ private:
     {
         cc.bit.c = BTST0(reg);
         reg >>= 1;
-        cc.bit.n = 0;
+        cc.bit.n = false;
         cc.bit.z = !reg;
     }
 
@@ -836,7 +836,7 @@ private:
     {
         reg = operand;
         cc.bit.n = BTST15(d);
-        cc.bit.v = 0;
+        cc.bit.v = false;
         cc.bit.z = !reg;
     }
 
@@ -850,7 +850,7 @@ private:
     {
         memory.write_word(addr, reg);
         cc.bit.n = BTST15(reg);
-        cc.bit.v = 0;
+        cc.bit.v = false;
         cc.bit.z = !reg;
     }
 
@@ -1521,7 +1521,7 @@ inline void Mc6809::sync()
 inline void Mc6809::cwai()
 {
     cc.all &= memory.read_byte(pc++);
-    cc.bit.e = 1;
+    cc.bit.e = true;
     psh(0xff, s, u);
     events |= Event::Cwai;
     pc -= 2; // processor loops in cwai instruction until interrupt
@@ -1529,22 +1529,22 @@ inline void Mc6809::cwai()
 
 inline void Mc6809::swi()
 {
-    cc.bit.e = 1;
+    cc.bit.e = true;
     psh(0xff, s, u);
-    cc.bit.f = cc.bit.i = 1;
+    cc.bit.f = cc.bit.i = true;
     pc = memory.read_word(0xfffa);
 }
 
 inline void Mc6809::swi2()
 {
-    cc.bit.e = 1;
+    cc.bit.e = true;
     psh(0xff, s, u);
     pc = memory.read_word(0xfff4);
 }
 
 inline void Mc6809::swi3()
 {
-    cc.bit.e = 1;
+    cc.bit.e = true;
     psh(0xff, s, u);
     pc = memory.read_word(0xfff2);
 }
