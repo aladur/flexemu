@@ -54,6 +54,7 @@
 #include "fpmodel.h"
 #include <unordered_map>
 #include <utility>
+#include <memory>
 
 
 const QString FlexplorerTableModel::headerNameFileSize(tr("Filesize"));
@@ -982,22 +983,22 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
             directory = directory.substr(0, directory.size()-1);
         }
 
-        container.reset(
-            new DirectoryContainer(directory, fileTimeAccess));
+        container =
+            std::make_unique<DirectoryContainer>(directory, fileTimeAccess);
     }
     else
     {
         try
         {
             // 1st try opening read-write.
-            container.reset(new FlexFileContainer(p_path, "rb+",
-                            fileTimeAccess));
+            container = std::make_unique<FlexFileContainer>(
+                            p_path, "rb+", fileTimeAccess);
         }
         catch (FlexException &)
         {
             // 2nd try opening read-only.
-            container.reset(new FlexFileContainer(p_path, "rb",
-                            fileTimeAccess));
+            container = std::make_unique<FlexFileContainer>(
+                            p_path, "rb", fileTimeAccess);
         }
     }
     auto *container_s =

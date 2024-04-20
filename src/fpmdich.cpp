@@ -47,6 +47,7 @@
 #include <cassert>
 #include <string>
 #include <limits>
+#include <memory>
 #include "fcopyman.h"
 #include "fpdnd.h"
 #include "fpmodel.h"
@@ -75,14 +76,15 @@ FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
     // Set column for unique Id hidden.
     setColumnHidden(FlexplorerTableModel::COL_ID, true);
 
-    dateDelegate.reset(new FlexDateDelegate(options.ft_access, this));
-    dateTimeDelegate.reset(new FlexDateTimeDelegate(options.ft_access, this));
+    dateDelegate = std::make_unique<FlexDateDelegate>(options.ft_access, this);
+    dateTimeDelegate =
+        std::make_unique<FlexDateTimeDelegate>(options.ft_access, this);
     UpdateDateDelegate();
-    filenameDelegate.reset(new FlexFilenameDelegate(this));
+    filenameDelegate = std::make_unique<FlexFilenameDelegate>(this);
     setItemDelegateForColumn(FlexplorerTableModel::COL_FILENAME,
                              filenameDelegate.get());
-    attributesDelegate.reset(
-            new FlexAttributesDelegate(GetSupportedAttributes(), this));
+    attributesDelegate = std::make_unique<FlexAttributesDelegate>(
+                             GetSupportedAttributes(), this);
     setItemDelegateForColumn(FlexplorerTableModel::COL_ATTRIBUTES,
                              attributesDelegate.get());
     setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -663,8 +665,8 @@ void FlexplorerMdiChild::Info()
 
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
-    model.reset(
-        new FlexplorerTableModel(path.toUtf8().data(), options, this));
+    model = std::make_unique<FlexplorerTableModel>(
+                path.toUtf8().data(), options, this);
     model->Initialize();
     setModel(model.get());
 }

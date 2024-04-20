@@ -27,6 +27,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <memory>
 
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
@@ -113,12 +114,12 @@ MiniDcrTape::MiniDcrTape::~MiniDcrTape()
 
 MiniDcrTapePtr MiniDcrTape::Create(const char *path)
 {
-    return MiniDcrTapePtr(new MiniDcrTape(path, Mode::Create));
+    return std::make_unique<MiniDcrTape>(path, Mode::Create);
 }
 
 MiniDcrTapePtr MiniDcrTape::Open(const char *path)
 {
-    return MiniDcrTapePtr(new MiniDcrTape(path, Mode::Open));
+    return std::make_unique<MiniDcrTape>(path, Mode::Open);
 }
 
 bool MiniDcrTape::Close()
