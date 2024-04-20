@@ -56,9 +56,9 @@ void LogfileSettingsUi::setupUi(QDialog &p_dialog)
     assert(c_logCycleCount != nullptr);
     assert(e_logFilename != nullptr);
 
-    for (auto i = 0U; i < regCheckBoxes.size(); ++i)
+    for (const auto &regCheckBox : regCheckBoxes)
     {
-        assert(regCheckBoxes[i] != nullptr);
+        assert(regCheckBox != nullptr);
     }
 
     InitializeWidgets();

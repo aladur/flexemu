@@ -68,17 +68,17 @@ int copyFile(const char *srcPath, const char *destPath)
 
 void strlower(std::string& str)
 {
-    for (auto iter = str.begin(); iter != str.end(); ++iter)
+    for (auto &ch : str)
     {
-        *iter = static_cast<char>(tolower(*iter));
+        ch = static_cast<char>(tolower(ch));
     }
 }
 
 void strupper(std::string& str)
 {
-    for (auto iter = str.begin(); iter != str.end(); ++iter)
+    for (auto &ch : str)
     {
-        *iter = static_cast<char>(toupper(*iter));
+        ch = static_cast<char>(toupper(ch));
     }
 }
 

@@ -101,9 +101,9 @@ DWord FlexDnDFiles::GetFileSize() const
     fileSize += static_cast<DWord>(path.size()) + 1U;
     fileSize += static_cast<DWord>(dnsHostName.size()) + 1U;
 
-    for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
+    for (const auto &fileBuffer : fileBuffers)
     {
-        fileSize += iter->GetFileSize(); // Add byte size of each file
+        fileSize += fileBuffer.GetFileSize(); // Add byte size of each file
     }
 
     // Add size of header of each file
@@ -143,14 +143,14 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
     memcpy(ptr, &count, sizeof(count));
     ptr += sizeof(count);
 
-    for (auto iter = fileBuffers.cbegin(); iter != fileBuffers.cend(); ++iter)
+    for (const auto &fileBuffer : fileBuffers)
     {
-        auto header = iter->GetHeaderBigEndian();
+        auto header = fileBuffer.GetHeaderBigEndian();
 
         memcpy(ptr, &header, sizeof(tFlexFileHeader));
         ptr += sizeof(tFlexFileHeader);
-        iter->CopyTo(ptr, iter->GetFileSize());
-        ptr += iter->GetFileSize();
+        fileBuffer.CopyTo(ptr, fileBuffer.GetFileSize());
+        ptr += fileBuffer.GetFileSize();
     }
 }
 

@@ -371,9 +371,9 @@ void NafsDirectoryContainer::initialize_flex_directory()
         std::fill(std::begin(dir_sector.s.unused),
                   std::end(dir_sector.s.unused), '\0');
 
-        for (Word j = 0; j < DIRENTRIES; ++j)
+        for (auto &dir_entry : dir_sector.s.dir_entry)
         {
-            dir_sector.s.dir_entry[j].filename[0] = DE_EMPTY;
+            dir_entry.filename[0] = DE_EMPTY;
         }
 
         ++i;
@@ -552,10 +552,8 @@ st_t NafsDirectoryContainer::link_address() const
 
     for (const auto &dir_sector : flex_directory)
     {
-        for (Word i = 0; i < DIRENTRIES; ++i)
+        for (const auto &dir_entry : dir_sector.s.dir_entry)
         {
-            const auto &dir_entry = dir_sector.s.dir_entry[i];
-
             if (!strncmp(dir_entry.filename, "FLEX\0\0\0\0",
                          FLEX_BASEFILENAME_LENGTH) &&
                 !strncmp(dir_entry.file_ext, "SYS", FLEX_FILEEXT_LENGTH))

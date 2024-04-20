@@ -733,10 +733,9 @@ void QtGui::OnTimer()
                 auto pc = QString("%1")
                     .arg(status->pc, 4, 16, QChar('0')).toUpper();
                 QStringList hexBytes;
-                for (unsigned i = 0; i < sizeof(status->instruction); ++i)
+                for (Byte byte : status->instruction)
                 {
-                    auto hexString = QString("%1")
-                        .arg(status->instruction[i], 2, 16, QChar('0'));
+                    auto hexString = QString("%1").arg(byte, 2, 16, QChar('0'));
                     hexBytes.append(hexString.toUpper());
                 }
                 auto message = tr(

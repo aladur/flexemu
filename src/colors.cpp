@@ -681,13 +681,13 @@ yellowgreen", 154 205 50
 
 int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue)
 {
-    for (size_t i = 0; i < (sizeof(colors) / sizeof(colors[0])); ++i)
+    for (const auto &color : colors)
     {
-        if (strcmp(colorName, colors[i].colorName) == 0)
+        if (strcmp(colorName, color.colorName) == 0)
         {
-            *red = colors[i].red;
-            *green = colors[i].green;
-            *blue = colors[i].blue;
+            *red = color.red;
+            *green = color.green;
+            *blue = color.blue;
             return 1;
         }
     }

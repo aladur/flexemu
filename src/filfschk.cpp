@@ -45,11 +45,11 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
 {
     std::string name;
 
-    for (auto iter = item.name.begin(); iter != item.name.end(); iter++)
+    for (auto ch : item.name)
     {
-        if (*iter >= ' ' && *iter <= '~')
+        if (ch >= ' ' && ch <= '~')
         {
-            name += *iter;
+            name += ch;
         }
         else
         {
@@ -57,7 +57,7 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
 
             stream << "\\x" << std::setfill('0') << std::setw(2) <<
                       std::uppercase << std::hex <<
-                      static_cast<Word>(static_cast<Byte>(*iter));
+                      static_cast<Word>(static_cast<Byte>(ch));
             name += stream.str();
         }
     }
@@ -578,10 +578,8 @@ void FileContainerCheck::InitializeFileSectors()
             break;
         }
 
-        for (int index = 0; index < DIRENTRIES; ++index)
+        for (const auto &dir_entry : dir_sector.dir_entry)
         {
-            const auto &dir_entry = dir_sector.dir_entry[index];
-
             if (dir_entry.filename[0] == DE_DELETED)
             {
                 continue;

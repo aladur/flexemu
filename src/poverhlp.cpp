@@ -355,10 +355,8 @@ void PrintOverlayHelper::EvaluateOverlays()
         auto character = ' ';
         auto properties = CharProperty::Normal;
 
-        for (size_t oi = 0U; oi < overlays.size(); ++oi)
+        for (const auto &overlay : overlays)
         {
-            const auto &overlay = overlays[oi];
-
             if (overlay.size() > index)
             {
                 if (overlay[index] == '_')

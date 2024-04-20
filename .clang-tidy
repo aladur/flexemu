@@ -40,6 +40,7 @@ Checks: '
   -misc-non-private-member-variables-in-classes,
   -misc-const-correctness,
   -misc-use-anonymous-namespace,
+  modernize-loop-convert,
   modernize-make-unique,
   modernize-use-default-member-init,
   modernize-use-emplace,

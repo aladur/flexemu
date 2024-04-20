@@ -217,9 +217,9 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
     static const int column = COL_SIZE;
     static const int ssm4 = SECTOR_SIZE - 4;
 
-    for (int row = 0; row < rows.size(); ++row)
+    for (auto &row : rows)
     {
-        auto value = rows[row].at(column).toInt();
+        auto value = row.at(column).toInt();
         if (options.fileSizeType == FileSizeType::FileSize)
         {
             value = value / ssm4 * SECTOR_SIZE;
@@ -229,7 +229,7 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
             value = value / SECTOR_SIZE * ssm4;
         }
         QVariant variant(value);
-        rows[row].at(column) = variant;
+        row.at(column) = variant;
     }
     QVector<int> roles { Qt::DisplayRole };
 
