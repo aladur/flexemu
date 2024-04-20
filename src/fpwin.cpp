@@ -1177,7 +1177,7 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
 {
     QAction *action = nullptr;
 
-    for (auto i = 0; i < options.maxRecentFiles; ++i)
+    for (auto i = 0; i < sFPOptions::maxRecentFiles; ++i)
     {
         // Create all actions, de/activate them by setVisible() false/true.
         action = new QAction(this);
@@ -1215,7 +1215,7 @@ void FLEXplorer::UpdateRecentDiskActions() const
         ++idx;
     }
 
-    for (idx = recentDiskPaths.size(); idx < options.maxRecentFiles; ++idx)
+    for (idx = recentDiskPaths.size(); idx < sFPOptions::maxRecentFiles; ++idx)
     {
         recentDiskActions.at(idx)->setVisible(false);
     }
@@ -1244,7 +1244,7 @@ void FLEXplorer::UpdateForRecentDisk(const QString &path)
 {
     recentDiskPaths.removeAll(path);
     recentDiskPaths.prepend(path);
-    while (recentDiskPaths.size() > options.maxRecentFiles)
+    while (recentDiskPaths.size() > sFPOptions::maxRecentFiles)
     {
         recentDiskPaths.removeLast();
     }
@@ -1277,7 +1277,7 @@ void FLEXplorer::CreateRecentDirectoryActionsFor(QMenu *menu)
 {
     QAction *action = nullptr;
 
-    for (auto i = 0; i < options.maxRecentDirectories; ++i)
+    for (auto i = 0; i < sFPOptions::maxRecentDirectories; ++i)
     {
         // Create all actions, de/activate them by setVisible() false/true.
         action = new QAction(this);
@@ -1316,7 +1316,8 @@ void FLEXplorer::UpdateRecentDirectoryActions() const
         ++idx;
     }
 
-    for (idx = recentDirectoryPaths.size(); idx < options.maxRecentDirectories;
+    for (idx = recentDirectoryPaths.size();
+            idx < sFPOptions::maxRecentDirectories;
             ++idx)
     {
         recentDirectoryActions.at(idx)->setVisible(false);
@@ -1347,7 +1348,7 @@ void FLEXplorer::UpdateForRecentDirectory(const QString &path)
 {
     recentDirectoryPaths.removeAll(path);
     recentDirectoryPaths.prepend(path);
-    while (recentDirectoryPaths.size() > options.maxRecentDirectories)
+    while (recentDirectoryPaths.size() > sFPOptions::maxRecentDirectories)
     {
         recentDirectoryPaths.removeLast();
     }

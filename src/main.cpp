@@ -98,11 +98,11 @@ int main(int argc, char *argv[])
 
             ApplicationRunner runner(options);
 
-            app.setQuitOnLastWindowClosed(false);
+            QApplication::setQuitOnLastWindowClosed(false);
             return_code = runner.startup(app);
             if (!return_code)
             {
-                return_code = app.exec();
+                return_code = QApplication::exec();
             }
 
             isRestarted = true;

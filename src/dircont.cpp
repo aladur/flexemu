@@ -226,10 +226,9 @@ bool DirectoryContainer::FileCopy(
     const char *sourceName, const char *destName,
     FileContainerIf &destination)
 {
-    FlexCopyManager copyMan;
-
-    return copyMan.FileCopy(sourceName, destName,
-                            static_cast<FileContainerIf &>(*this), destination);
+    return FlexCopyManager::FileCopy(sourceName, destName,
+                                     static_cast<FileContainerIf &>(*this),
+                                     destination);
 }
 
 bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const

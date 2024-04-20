@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     int return_code = EXIT_FAILURE;
 
     const auto icon = QIcon(":/resource/flexplorer.png");
-    app.setWindowIcon(icon);
+    QApplication::setWindowIcon(icon);
 
     try
     {
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 
         QTimer::singleShot(10, functor);
 
-        return_code = app.exec();
+        return_code = QApplication::exec();
     }
     catch (std::exception &ex)
     {

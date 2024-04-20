@@ -48,7 +48,7 @@ void Pia2::writeOutputB(Byte val)
 {
     if (val & 0x40)
     {
-        keyboardIO.set_bell(0);
+        KeyboardIO::set_bell(0);
     }
 }
 

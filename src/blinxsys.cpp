@@ -44,7 +44,6 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
 {
     std::string path;
     std::vector<std::string> subdirs;
-    BDirectory bdir;
     bool isPathAvailable = true;
     const auto id = ToString(type).append(" ").append(subtype);
 
@@ -55,7 +54,7 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
         {
             case BLinuxSysInfoType::LED:
                 path = "/sys/class/leds";
-                subdirs = bdir.GetSubDirectories(path);
+                subdirs = BDirectory::GetSubDirectories(path);
                 for (const std::string &subdir : subdirs)
                 {
                     auto pos = subdir.find(subtype);

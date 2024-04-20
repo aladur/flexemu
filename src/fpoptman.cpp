@@ -250,7 +250,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     options.fileSizeType = static_cast<FileSizeType>(int_result);
     rcFile.GetValue(FLEXPLOREROPENINJECTFILEPATH, options.openInjectFilePath);
 
-    for (auto i = 0; i < options.maxRecentFiles; ++i)
+    for (auto i = 0; i < sFPOptions::maxRecentFiles; ++i)
     {
         std::stringstream key;
 
@@ -260,7 +260,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             options.recentDiskPaths.push_back(string_result);
         }
     }
-    for (auto i = 0; i < options.maxRecentDirectories; ++i)
+    for (auto i = 0; i < sFPOptions::maxRecentDirectories; ++i)
     {
         std::stringstream key;
 

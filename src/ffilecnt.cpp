@@ -391,9 +391,7 @@ bool FlexFileContainer::FileCopy(const char *sourceName, const char *destName,
         return false;
     }
 
-    FlexCopyManager copyMan;
-
-    return copyMan.FileCopy(sourceName, destName, *this, destination);
+    return FlexCopyManager::FileCopy(sourceName, destName, *this, destination);
 }
 
 bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
