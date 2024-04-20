@@ -93,17 +93,17 @@ public:
     FlexException(const FlexException &src) noexcept;
     FlexException& operator= (const FlexException &rhs) noexcept;
 
-    FlexException(int ec) throw();
-    FlexException(int ec, int ip1) throw();
-    FlexException(int ec, const std::string &sp1) throw();
+    FlexException(int ec) noexcept;
+    FlexException(int ec, int ip1) noexcept;
+    FlexException(int ec, const std::string &sp1) noexcept;
     FlexException(int ec, const std::string &sp1,
-        const std::string &sp2) throw();
-    FlexException(int ec, int ip1, const std::string &sp1) throw();
-    FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw();
+        const std::string &sp2) noexcept;
+    FlexException(int ec, int ip1, const std::string &sp1) noexcept;
+    FlexException(int ec, int ip1, int ip2, const std::string &sp1) noexcept;
     FlexException(int ec, const std::string &sp1, const std::string &sp2,
-                  const std::string &sp3) throw();
+                  const std::string &sp3) noexcept;
 #ifdef _WIN32
-    FlexException(unsigned long lastError, const std::string &sp1) throw();
+    FlexException(unsigned long lastError, const std::string &sp1) noexcept;
 #endif
     ~FlexException() override = default;
 

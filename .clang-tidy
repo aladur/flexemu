@@ -46,6 +46,7 @@ Checks: '
   modernize-use-emplace,
   modernize-use-equals-default,
   modernize-use-equals-delete,
+  modernize-use-noexcept,
   modernize-use-override,
   modernize-use-auto,
   modernize-raw-string-literal,

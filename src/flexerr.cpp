@@ -54,50 +54,54 @@ FlexException::FlexException() noexcept : errorCode(FERR_FLEX_EXCEPTION)
 {
 }
 
-FlexException::FlexException(int ec) throw()
+FlexException::FlexException(int ec) noexcept
     : errorCode(ec)
     , errorString(errString[ec])
 {
 }
 
-FlexException::FlexException(int ec, int ip1) throw() : errorCode(ec)
+FlexException::FlexException(int ec, int ip1) noexcept
+    : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], ip1);
 }
 
-FlexException::FlexException(int ec, const std::string &sp1) throw()
+FlexException::FlexException(int ec, const std::string &sp1) noexcept
     : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], sp1);
 }
 
-FlexException::FlexException(int ec, const std::string &sp1, const std::string &sp2) throw()
+FlexException::FlexException(int ec, const std::string &sp1,
+                             const std::string &sp2) noexcept
     : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], sp1, sp2);
 }
 
-FlexException::FlexException(int ec, int ip1, const std::string &sp1) throw()
+FlexException::FlexException(int ec, int ip1, const std::string &sp1) noexcept
     : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], ip1, sp1);
 }
 
-FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1) throw()
+FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1)
+    noexcept
     : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], ip1, ip2, sp1);
 }
 
 FlexException::FlexException(int ec, const std::string &sp1,
-        const std::string &sp2, const std::string &sp3) throw()
+        const std::string &sp2, const std::string &sp3) noexcept
     : errorCode(ec)
 {
     errorString = sprinter::print(errString[ec], sp1, sp2, sp3);
 }
 
 #ifdef _WIN32
-FlexException::FlexException(unsigned long lastError, const std::string &sp1) throw()
+FlexException::FlexException(unsigned long lastError, const std::string &sp1)
+    noexcept
 {
     LPWSTR lpMsgBuf = nullptr;
 
