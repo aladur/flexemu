@@ -130,7 +130,7 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
 
         if (status != MdcrStatus::Success)
         {
-            using T = std::underlying_type<MdcrStatus>::type;
+            using T = std::underlying_type_t<MdcrStatus>;
 
             if (status == MdcrStatus::DoubleName)
             {
@@ -221,7 +221,7 @@ int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
 
     if (status != MdcrStatus::Success)
     {
-        using T = std::underlying_type<MdcrStatus>::type;
+        using T = std::underlying_type_t<MdcrStatus>;
 
         std::cerr << "*** Error: "
                   << mdcrErrors[static_cast<T>(status)]
@@ -270,7 +270,7 @@ int ListContentOfMdcrFile(const char *ifile)
 
     if (status != MdcrStatus::Success)
     {
-        using T = std::underlying_type<MdcrStatus>::type;
+        using T = std::underlying_type_t<MdcrStatus>;
 
         std::cerr << "*** Error: "
                   << mdcrErrors[static_cast<T>(status)]

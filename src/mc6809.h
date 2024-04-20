@@ -167,7 +167,7 @@ public:
 protected:
     class atomic_event
     {
-        using T = std::underlying_type<Mc6809::Event>::type;
+        using T = std::underlying_type_t<Mc6809::Event>;
         std::atomic<T> event;
 
     public:
@@ -1554,7 +1554,7 @@ inline void Mc6809::swi3()
 
 inline Mc6809::Event operator| (Mc6809::Event lhs, Mc6809::Event rhs)
 {
-    using T1 = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type_t<Mc6809::Event>;
 
     return static_cast<Mc6809::Event>(static_cast<T1>(lhs) |
                                       static_cast<T1>(rhs));
@@ -1562,7 +1562,7 @@ inline Mc6809::Event operator| (Mc6809::Event lhs, Mc6809::Event rhs)
 
 inline Mc6809::Event operator& (Mc6809::Event lhs, Mc6809::Event rhs)
 {
-    using T1 = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type_t<Mc6809::Event>;
 
     return static_cast<Mc6809::Event>(static_cast<T1>(lhs) &
                                       static_cast<T1>(rhs));
@@ -1570,14 +1570,14 @@ inline Mc6809::Event operator& (Mc6809::Event lhs, Mc6809::Event rhs)
 
 inline Mc6809::Event operator~ (Mc6809::Event rhs)
 {
-    using T1 = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type_t<Mc6809::Event>;
 
     return static_cast<Mc6809::Event>(~static_cast<T1>(rhs));
 }
 
 inline bool operator! (Mc6809::Event rhs)
 {
-    using T1 = std::underlying_type<Mc6809::Event>::type;
+    using T1 = std::underlying_type_t<Mc6809::Event>;
 
     return static_cast<T1>(rhs) == 0;
 }

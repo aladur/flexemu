@@ -42,7 +42,7 @@ enum class LogRegister : uint8_t
 
 inline LogRegister operator| (LogRegister lhs, LogRegister rhs)
 {
-    using TYPE = std::underlying_type<LogRegister>::type;
+    using TYPE = std::underlying_type_t<LogRegister>;
 
     return static_cast<LogRegister>(static_cast<TYPE>(lhs) |
                                     static_cast<TYPE>(rhs));
@@ -50,7 +50,7 @@ inline LogRegister operator| (LogRegister lhs, LogRegister rhs)
 
 inline LogRegister operator& (LogRegister lhs, LogRegister rhs)
 {
-    using TYPE = std::underlying_type<LogRegister>::type;
+    using TYPE = std::underlying_type_t<LogRegister>;
 
     return static_cast<LogRegister>(static_cast<TYPE>(lhs) &
                                     static_cast<TYPE>(rhs));
@@ -58,7 +58,7 @@ inline LogRegister operator& (LogRegister lhs, LogRegister rhs)
 
 inline LogRegister operator<< (LogRegister lhs, int shift_count)
 {
-    using TYPE = std::underlying_type<LogRegister>::type;
+    using TYPE = std::underlying_type_t<LogRegister>;
 
     return static_cast<LogRegister>(static_cast<TYPE>(lhs) << shift_count);
 }

@@ -129,7 +129,7 @@ protected:
 
 inline Scheduler::Event operator| (Scheduler::Event lhs, Scheduler::Event rhs)
 {
-    using T1 = std::underlying_type<Scheduler::Event>::type;
+    using T1 = std::underlying_type_t<Scheduler::Event>;
 
     return static_cast<Scheduler::Event>(static_cast<T1>(lhs) |
                                          static_cast<T1>(rhs));
@@ -137,7 +137,7 @@ inline Scheduler::Event operator| (Scheduler::Event lhs, Scheduler::Event rhs)
 
 inline Scheduler::Event operator& (Scheduler::Event lhs, Scheduler::Event rhs)
 {
-    using T1 = std::underlying_type<Scheduler::Event>::type;
+    using T1 = std::underlying_type_t<Scheduler::Event>;
 
     return static_cast<Scheduler::Event>(static_cast<T1>(lhs) &
                                          static_cast<T1>(rhs));
@@ -155,14 +155,14 @@ inline Scheduler::Event operator&= (Scheduler::Event &lhs, Scheduler::Event rhs)
 
 inline Scheduler::Event operator~ (Scheduler::Event rhs)
 {
-    using T1 = std::underlying_type<Scheduler::Event>::type;
+    using T1 = std::underlying_type_t<Scheduler::Event>;
 
     return static_cast<Scheduler::Event>(~static_cast<T1>(rhs));
 }
 
 inline bool operator! (Scheduler::Event rhs)
 {
-    using T1 = std::underlying_type<Scheduler::Event>::type;
+    using T1 = std::underlying_type_t<Scheduler::Event>;
 
     return static_cast<T1>(rhs) == 0;
 }

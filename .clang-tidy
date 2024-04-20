@@ -52,6 +52,7 @@ Checks: '
   modernize-use-override,
   modernize-use-auto,
   modernize-raw-string-literal,
+  modernize-type-traits,
   performance-*,
   performance-enum-size,
   portability-*,

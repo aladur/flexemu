@@ -37,7 +37,7 @@ enum class FileTimeAccess : uint8_t
 
 inline FileTimeAccess operator& (FileTimeAccess lhs, FileTimeAccess rhs)
 {
-    using T1 = std::underlying_type<FileTimeAccess>::type;
+    using T1 = std::underlying_type_t<FileTimeAccess>;
 
     return static_cast<FileTimeAccess>(static_cast<T1>(lhs) &
                                        static_cast<T1>(rhs));
@@ -45,7 +45,7 @@ inline FileTimeAccess operator& (FileTimeAccess lhs, FileTimeAccess rhs)
 
 inline FileTimeAccess operator| (FileTimeAccess lhs, FileTimeAccess rhs)
 {
-    using T1 = std::underlying_type<FileTimeAccess>::type;
+    using T1 = std::underlying_type_t<FileTimeAccess>;
 
     return static_cast<FileTimeAccess>(static_cast<T1>(lhs) |
                                        static_cast<T1>(rhs));

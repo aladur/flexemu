@@ -85,7 +85,7 @@ private:
 
 inline CharProperty operator| (CharProperty lhs, CharProperty rhs)
 {
-    using T1 = std::underlying_type<CharProperty>::type;
+    using T1 = std::underlying_type_t<CharProperty>;
 
     return static_cast<CharProperty>(static_cast<T1>(lhs) |
                                      static_cast<T1>(rhs));
@@ -93,7 +93,7 @@ inline CharProperty operator| (CharProperty lhs, CharProperty rhs)
 
 inline CharProperty operator& (CharProperty lhs, CharProperty rhs)
 {
-    using T1 = std::underlying_type<CharProperty>::type;
+    using T1 = std::underlying_type_t<CharProperty>;
 
     return static_cast<CharProperty>(static_cast<T1>(lhs) &
                                      static_cast<T1>(rhs));
@@ -111,14 +111,14 @@ inline CharProperty &operator&= (CharProperty &lhs, CharProperty rhs)
 
 inline CharProperty operator~ (CharProperty rhs)
 {
-    using T1 = std::underlying_type<CharProperty>::type;
+    using T1 = std::underlying_type_t<CharProperty>;
 
     return static_cast<CharProperty>(~static_cast<T1>(rhs));
 }
 
 inline bool operator== (CharProperty lhs, CharProperty rhs)
 {
-    using T1 = std::underlying_type<CharProperty>::type;
+    using T1 = std::underlying_type_t<CharProperty>;
 
     return static_cast<T1>(lhs) == static_cast<T1>(rhs);
 }
@@ -130,7 +130,7 @@ inline bool operator!= (CharProperty lhs, CharProperty rhs)
 
 inline bool operator== (CharProperty lhs, int rhs)
 {
-    using T1 = std::underlying_type<CharProperty>::type;
+    using T1 = std::underlying_type_t<CharProperty>;
 
     return static_cast<T1>(lhs) == rhs;
 }
