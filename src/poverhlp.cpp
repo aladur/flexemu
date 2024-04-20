@@ -98,7 +98,7 @@ bool PrintOverlayHelper::AddCharacter(char character)
 
     if (isEscapeSequence)
     {
-        if (escapeSequence.size() == 0)
+        if (escapeSequence.empty())
         {
             if ((twoCharEscSeq.find(character) != twoCharEscSeq.end()) ||
                 (multiCharEscSeq.find(character) != multiCharEscSeq.end()))
@@ -302,7 +302,7 @@ bool PrintOverlayHelper::IsRichLineEmpty() const
 
 void PrintOverlayHelper::AddOverlay()
 {
-    if (currentOverlay.size() > 0)
+    if (!currentOverlay.empty())
     {
         overlays.push_back(currentOverlay);
     }

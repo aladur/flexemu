@@ -1816,7 +1816,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
     sBITMAPINFOHEADER infoHeader;
 
     assert(height >= 1);
-    assert(colTable.size() >= 1);
+    assert(!colTable.empty());
 
     // Size of BMP stream:
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data

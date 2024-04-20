@@ -217,7 +217,7 @@ void FLEXplorer::OpenDirectory()
             QDir::toNativeSeparators(dialog.directory().absolutePath());
         options.openDirectoryPath = path.toStdString();
 
-        if (directories.size() >= 1)
+        if (!directories.empty())
         {
             path = QDir::toNativeSeparators(directories[0]);
             OpenContainerForPath(path);

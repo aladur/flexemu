@@ -500,7 +500,7 @@ bool isAbsolutePath(const std::string &path)
          (path[0] == '\\' && path[1] == '\\') ||
          (path[0] == '/' && path[1] == '/'));
 #else
-    return path.size() >= 1 && path[0] == '/';
+    return !path.empty() && path[0] == '/';
 #endif
 }
 
@@ -523,7 +523,7 @@ std::string getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
-    if (path.size() > 0)
+    if (!path.empty())
     {
         auto ch = path.at(path.size() - 1);
 

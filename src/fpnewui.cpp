@@ -280,7 +280,7 @@ void FlexplorerNewUi::OnSelectPath()
         defaultPath =
             QDir::toNativeSeparators(fileDialog.directory().absolutePath());
         auto files = fileDialog.selectedFiles();
-        if (files.size() > 0)
+        if (!files.empty())
         {
             e_path->setText(QDir::toNativeSeparators(files[0]));
         }

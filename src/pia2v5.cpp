@@ -459,7 +459,7 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
 
         containerPath = disk_dir;
 
-        if (containerPath.length() > 0 &&
+        if (!containerPath.empty() &&
         containerPath[containerPath.length()-1] != PATHSEPARATOR)
         {
             containerPath += PATHSEPARATORSTRING;

@@ -243,7 +243,7 @@ bool E2floppy::mount_drive(const std::string &path,
     // If path is relative, second try with full path in disk_dir directory
     auto fullPath = disk_dir;
 
-    if (fullPath.length() > 0 && fullPath[fullPath.length()-1] != PATHSEPARATOR)
+    if (!fullPath.empty() && fullPath[fullPath.length()-1] != PATHSEPARATOR)
     {
         fullPath += PATHSEPARATORSTRING;
     }

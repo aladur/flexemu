@@ -69,7 +69,7 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
     {
         std::stringstream stream(line);
 
-        if (line.size() > 0 && line[0] == '[')
+        if (!line.empty() && line[0] == '[')
         {
             stream.get();
 
@@ -87,7 +87,7 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
                 return Type::Unknown;
             }
 
-            if (line.size() > 0 && line[0] != ';' && line[0] != '#')
+            if (!line.empty() && line[0] != ';' && line[0] != '#')
             {
                 if (std::getline(stream, key, '=') &&
                     std::getline(stream, value))
