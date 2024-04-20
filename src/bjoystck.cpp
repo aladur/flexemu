@@ -60,7 +60,7 @@ BJoystick::~BJoystick()
     js = -1;
 }
 
-bool BJoystick::IsOpened()
+bool BJoystick::IsOpened() const
 {
     return js >= 0;
 }
@@ -110,7 +110,7 @@ bool BJoystick::Actualize()
 }
 
 // check for button "which" is set. Which is in the range of 0 .. 31
-bool BJoystick::IsButtonSet(int which)
+bool BJoystick::IsButtonSet(int which) const
 {
     if (which < 0 || which > 31)
     {

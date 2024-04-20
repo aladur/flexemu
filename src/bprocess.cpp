@@ -96,7 +96,7 @@ bool BProcess::Start()
     return result != 0;
 }
 
-bool BProcess::IsRunning()
+bool BProcess::IsRunning() const
 {
     if (hProcess == nullptr)
     {
@@ -157,7 +157,7 @@ bool BProcess::Start()
     return IsRunning();
 }
 
-bool BProcess::IsRunning()
+bool BProcess::IsRunning() const
 {
     if (pid == -1)
     {

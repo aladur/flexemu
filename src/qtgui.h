@@ -140,7 +140,7 @@ private slots:
     void OnCpuOriginalFrequency();
     void OnCpuUndocumentedInstructions();
     void OnCpuInterruptStatus();
-    void OnIntroduction();
+    void OnIntroduction() const;
     void OnDiskStatus(Word diskNumber);
     void OnAbout();
     void OnTimer();

@@ -79,7 +79,7 @@ protected:
 
     // Timer interface:
 public:
-    QWord get_total_cycles()
+    QWord get_total_cycles() const
     {
         return total_cycles;
     }
@@ -110,11 +110,11 @@ protected:
     // CPU frequency
 public:
     void set_frequency(float target_freq);
-    float get_frequency()
+    float get_frequency() const
     {
         return frequency;
     }
-    float get_target_frequency()
+    float get_target_frequency() const
     {
         return target_frequency;
     }

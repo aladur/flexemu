@@ -55,7 +55,7 @@ public:
     Byte peek_char_parallel();
     void put_char_parallel(Byte key, bool &do_notify);
     void put_value(unsigned int keyMask);
-    void get_value(unsigned int *keyMask);
+    void get_value(unsigned int *keyMask) const;
     void set_startup_command(const char *x_startup_command);
 
     KeyboardIO();

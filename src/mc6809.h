@@ -896,7 +896,7 @@ private:
     bool use_undocumented{false};
 public:
     void set_use_undocumented(bool b);
-    bool is_use_undocumented()
+    bool is_use_undocumented() const
     {
         return use_undocumented;
     };

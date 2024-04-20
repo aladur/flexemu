@@ -71,11 +71,11 @@ public:
 
 private:
 
-    Byte convert(Byte val);
-    Byte convert_hour(Byte val);
-    Byte convert_bin(Byte val);
+    Byte convert(Byte val) const;
+    Byte convert_hour(Byte val) const;
+    Byte convert_bin(Byte val) const;
     bool increment(Byte &, Byte, Byte);
-    bool increment_hour(Byte &);
+    bool increment_hour(Byte &) const;
     bool increment_day(Byte &, Byte, Byte);
 
     static std::string getConfigFilePath();

@@ -593,7 +593,7 @@ void QtGui::OnCpuUndocumentedInstructions()
     ToggleCpuUndocumented();
 }
 
-void QtGui::OnIntroduction()
+void QtGui::OnIntroduction() const
 {
     QString documentationDir = options.doc_dir.c_str();
     auto url = CreateDocumentationUrl(documentationDir, "flexemu.htm");

@@ -35,12 +35,12 @@ public:
     BJoystick(int which = 0);
     BJoystick(const BJoystick &src) = delete;
     ~BJoystick();
-    bool IsOpened();
+    bool IsOpened() const;
     bool Actualize();
     int32_t XAxis();
     int32_t YAxis();
-    int32_t Buttons();
-    bool IsButtonSet(int which);
+    int32_t Buttons() const;
+    bool IsButtonSet(int which) const;
 private:
     int js; // input stream from joystick
     int32_t buttons;
@@ -55,7 +55,7 @@ inline int32_t BJoystick::YAxis()
 {
     return axis[1];
 }
-inline int32_t BJoystick::Buttons()
+inline int32_t BJoystick::Buttons() const
 {
     return buttons;
 }

@@ -124,7 +124,7 @@ void KeyboardIO::put_value(unsigned int x_keyMask)
     keyMask = x_keyMask;
 }
 
-void KeyboardIO::get_value(unsigned int *x_keyMask)
+void KeyboardIO::get_value(unsigned int *x_keyMask) const
 {
     if (x_keyMask != nullptr)
     {

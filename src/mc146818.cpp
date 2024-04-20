@@ -310,7 +310,7 @@ void Mc146818::update_1_second()
 } // update
 
 // convert from binary to binary or bcd
-Byte Mc146818::convert(Byte val)
+Byte Mc146818::convert(Byte val) const
 {
     if (B & 0x04)
     {
@@ -320,7 +320,7 @@ Byte Mc146818::convert(Byte val)
     return ((val / 10) << 4)  | (val % 10);
 }
 
-Byte Mc146818::convert_hour(Byte val)
+Byte Mc146818::convert_hour(Byte val) const
 {
     switch (B & 0x06)
     {
@@ -355,7 +355,7 @@ Byte Mc146818::convert_hour(Byte val)
 }
 
 // convert from bcd or binary to binary
-Byte Mc146818::convert_bin(Byte val)
+Byte Mc146818::convert_bin(Byte val) const
 {
     if (B & 0x04)
     {
@@ -402,7 +402,7 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 }
 
 
-bool Mc146818::increment_hour(Byte &x_hour)
+bool Mc146818::increment_hour(Byte &x_hour) const
 {
     switch (B & 0x06)
     {

@@ -43,7 +43,7 @@ public:
     void AddArgument(const std::string &argument);
     void SetDirectory(const std::string &directory);
     bool Start(); // Start the Process if not started yet
-    bool IsRunning(); // Check if Process is running
+    bool IsRunning() const; // Check if Process is running
     const char *GetArguments()  const
     {
         return arguments.c_str();

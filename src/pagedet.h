@@ -40,12 +40,12 @@ private:
     void CollectData(PageDetectorData &data);
     void EstimateScore(PageDetectorData &data);
     void EmptyLinesScore(PageDetectorData &data,
-                         const std::vector<int16_t> &emptyLines);
+                         const std::vector<int16_t> &emptyLines) const;
     void FirstNonEmptyLinesScore(PageDetectorData &data,
-                          const std::map<std::string, int16_t> &nonEmptyLines);
-    void NumberOnlyLinesScore(PageDetectorData &data);
+            const std::map<std::string, int16_t> &nonEmptyLines) const;
+    void NumberOnlyLinesScore(PageDetectorData &data) const;
     static int16_t GetTopEmptyLines(PageDetectorData &data, uint32_t page);
-    int16_t GetBottomEmptyLines(PageDetectorData &data, uint32_t page);
+    int16_t GetBottomEmptyLines(PageDetectorData &data, uint32_t page) const;
     template<typename T>
     static double MeanValue(const std::vector<T> &values);
     template<typename T>

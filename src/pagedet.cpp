@@ -183,7 +183,8 @@ int16_t PageDetector::GetTopEmptyLines(PageDetectorData &data, uint32_t page)
     return 0;
 }
 
-int16_t PageDetector::GetBottomEmptyLines(PageDetectorData &data, uint32_t page)
+int16_t PageDetector::GetBottomEmptyLines(PageDetectorData &data,
+                                          uint32_t page) const
 {
     auto pageOffset = page * data.linesPerPage;
     for (auto lineOffset = static_cast<int16_t>(data.linesPerPage - 1);
@@ -225,7 +226,7 @@ void PageDetector::EstimateScore(PageDetectorData &data)
 }
 
 void PageDetector::EmptyLinesScore(PageDetectorData &data,
-                                   const std::vector<int16_t> &emptyLines)
+                                   const std::vector<int16_t> &emptyLines) const
 {
     auto variance = Variance<int16_t>(emptyLines);
     int32_t score = 200;
@@ -242,7 +243,7 @@ void PageDetector::EmptyLinesScore(PageDetectorData &data,
 }
 
 void PageDetector::FirstNonEmptyLinesScore(PageDetectorData &data,
-                           const std::map<std::string, int16_t> &nonEmptyLines)
+        const std::map<std::string, int16_t> &nonEmptyLines) const
 {
     for (const auto &iter : nonEmptyLines)
     {
@@ -258,7 +259,7 @@ void PageDetector::FirstNonEmptyLinesScore(PageDetectorData &data,
     }
 }
 
-void PageDetector::NumberOnlyLinesScore(PageDetectorData &data)
+void PageDetector::NumberOnlyLinesScore(PageDetectorData &data) const
 {
     if (data.sumBottomLinesWithNumberOnly >= data.GetHalfPageCount())
     {
