@@ -90,10 +90,10 @@ public slots:
     void OnInitializePrintPreview();
     void OnPageBreakDetectionToggled(bool checked) const;
     void OnLandscapeClicked(bool checked);
-    void OnMarginBottomChanged(double newValue);
-    void OnMarginLeftChanged(double newValue);
-    void OnMarginRightChanged(double newValue);
-    void OnMarginTopChanged(double newValue);
+    void OnMarginBottomChanged(double displayValue);
+    void OnMarginLeftChanged(double displayValue);
+    void OnMarginRightChanged(double displayValue);
+    void OnMarginTopChanged(double displayValue);
     void OnOpenPrintPreview();
     void OnPageSizeChanged(int index);
     void OnPaintRequested(QPrinter *printer) const;

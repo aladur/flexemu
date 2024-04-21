@@ -150,7 +150,7 @@ private:
 
     static std::string GetItemName(const item_t &item);
     std::string GetItemName(SDWord item_index) const;
-    bool IsTrackSectorValid(st_t sec_trk) const;
+    bool IsTrackSectorValid(st_t trk_sec) const;
     static std::string GetUnixFilename(const s_dir_entry &dir_entry);
 
     friend std::ostream& operator<<(std::ostream &os,

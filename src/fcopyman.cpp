@@ -32,7 +32,7 @@ bool FlexCopyManager::autoTextConversion = false;
 
 // Return true if the copied file has been detected as text file.
 // If false the file has been treated as binary file.
-bool FlexCopyManager::FileCopy(const char *srcName, const char *destName,
+bool FlexCopyManager::FileCopy(const char *srcName, const char *dstName,
                                FileContainerIf &src, FileContainerIf &dst)
 {
     bool isTextFile = false;
@@ -68,12 +68,12 @@ bool FlexCopyManager::FileCopy(const char *srcName, const char *destName,
         isTextFile = true;
     }
 
-    if (!dst.WriteFromBuffer(fileBuffer, destName))
+    if (!dst.WriteFromBuffer(fileBuffer, dstName))
     {
         FlexContainerInfo info;
 
         dst.GetInfo(info);
-        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
+        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), dstName);
     }
 
     return isTextFile;

@@ -100,7 +100,7 @@ public:
         const override;
     bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1)
         override;
-    bool FormatSector(const Byte *buffer, int trk, int sec, int side,
+    bool FormatSector(const Byte *target, int track, int sector, int side,
                       int sizecode) override;
     bool IsFlexFormat() const override;
     bool IsTrackValid(int track) const override;
@@ -117,9 +117,9 @@ public:
         return nullptr;
     };
     bool FindFile(const char *fileName, FlexDirEntry &entry) override;
-    bool DeleteFile(const char *fileName) override;
+    bool DeleteFile(const char *wildcard) override;
     bool RenameFile(const char *oldName, const char *newName) override;
-    bool SetAttributes(const char *fileName, Byte setMask, Byte clearMask)
+    bool SetAttributes(const char *wildcard, Byte setMask, Byte clearMask)
         override;
     FlexFileBuffer ReadToBuffer(const char *fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,

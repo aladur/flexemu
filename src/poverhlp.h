@@ -55,7 +55,8 @@ using RichLines = std::vector<RichLine>;
 std::string toString(const RichLine &richLine);
 
 RichLine CreateRichLine(size_t count, const RichCharacter &richChar);
-void RichLineAppend(RichLine &rl, size_t count, const RichCharacter &rc);
+void RichLineAppend(RichLine &richLine, size_t count,
+                    const RichCharacter &richChar);
 
 class PrintOverlayHelper
 {

@@ -260,9 +260,9 @@ static QString GetAttributesRegularExpression(const QStringList &items)
 }
 
 FlexAttributesDelegate::FlexAttributesDelegate(
-        const QString &p_supportedAttributes, QWidget *p_parentWidget) :
+        const QString &p_supportedAttributes, QWidget *parent) :
     supportedAttributes(p_supportedAttributes.toUpper()),
-    parentWidget(p_parentWidget)
+    parentWidget(parent)
 {
 }
 
@@ -354,15 +354,16 @@ void FlexAttributesDelegate::GetCombinations(const QString &chars, int length,
     }
 }
 
-QStringList FlexAttributesDelegate::GetAllCombinations(const QString &chars)
+QStringList FlexAttributesDelegate::GetAllCombinations(
+        const QString &attributes)
 {
     QStringList result;
 
-    for (int length = 0; length <= chars.size(); ++length)
+    for (int length = 0; length <= attributes.size(); ++length)
     {
         QString current(length, ' ');
 
-        GetCombinations(chars, length, 0, current, result);
+        GetCombinations(attributes, length, 0, current, result);
     }
     result.sort();
 

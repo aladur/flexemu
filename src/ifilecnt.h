@@ -33,7 +33,7 @@ class FileContainerIteratorImp;
 class FileContainerIterator
 {
 public:
-    explicit FileContainerIterator(const char *aFilePattern = "*.*");
+    explicit FileContainerIterator(const char *p_wildcard = "*.*");
     FileContainerIterator(const FileContainerIterator &src) = delete;
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();
@@ -49,7 +49,7 @@ public:
     bool SetDateCurrent(const BDate &date);
     bool SetAttributesCurrent(Byte attributes);
 private:
-    std::string filePattern;
+    std::string wildcard;
     FileContainerIteratorImpPtr imp;
 };
 

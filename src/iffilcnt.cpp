@@ -33,10 +33,10 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     dirSector.next = first_dir_trk_sec;
 }
 
-bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *src) const
+bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *rhs) const
 {
-    return (base == nullptr && src == nullptr) ||
-           ((base == src) && (dirIndex == -1));
+    return (base == nullptr && rhs == nullptr) ||
+           ((base == rhs) && (dirIndex == -1));
 }
 
 void FlexFileContainerIteratorImp::AtEnd()
@@ -44,7 +44,7 @@ void FlexFileContainerIteratorImp::AtEnd()
     base = nullptr;
 }
 
-bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
+bool FlexFileContainerIteratorImp::NextDirEntry(const char *wildcard)
 {
     dirEntry.SetEmpty();
 
@@ -89,7 +89,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *filePattern)
             std::string fileExtension(getstr<>(pd->file_ext));
             fileName += '.' + fileExtension;
 
-            if (multimatches(fileName.c_str(), filePattern, ';', true))
+            if (multimatches(fileName.c_str(), wildcard, ';', true))
             {
                 dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
                 dirEntry.SetTime(BTime(pd->hour & 0x7F, pd->minute, 0U));

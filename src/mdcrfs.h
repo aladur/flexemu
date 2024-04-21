@@ -62,7 +62,7 @@ class MdcrFileSystem
         const int MaxRecordSize = 1024;
 
     public:
-        static std::string CreateMdcrFilename(const char *string,
+        static std::string CreateMdcrFilename(const char *name,
                                               bool toUppercase);
 
         static MdcrStatus ReadFile(
@@ -70,7 +70,7 @@ class MdcrFileSystem
                       BMemoryBuffer &memory,
                       MiniDcrTape &mdcr);
         MdcrStatus WriteFile(
-                       const char *filename,
+                       const char *filepath,
                        const BMemoryBuffer &memory,
                        MiniDcrTape &mdcr,
                        MdcrWriteMode mode,

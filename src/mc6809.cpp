@@ -46,9 +46,9 @@ Mc6809::~Mc6809()
     log_fp = nullptr;
 }
 
-void Mc6809::set_disassembler(Da6809 *x_disassembler)
+void Mc6809::set_disassembler(Da6809 *p_disassembler)
 {
-    disassembler = x_disassembler;
+    disassembler = p_disassembler;
 
     if (disassembler != nullptr)
     {

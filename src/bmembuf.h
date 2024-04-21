@@ -48,10 +48,10 @@ public:
 
     // MemorySource interface
     const MemorySource<DWord>::AddressRanges& GetAddressRanges() const override;
-    void CopyTo(Byte *buffer, DWord address, DWord aSize) const override;
+    void CopyTo(Byte *target, DWord address, DWord size) const override;
 
     // MemoryTarget interface
-    void CopyFrom(const Byte *buffer, DWord address, DWord aSize) override;
+    void CopyFrom(const Byte *source, DWord address, DWord size) override;
 
 public:
     bool CopyTo(std::vector<Byte> &buffer,

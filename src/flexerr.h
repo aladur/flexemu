@@ -91,7 +91,7 @@ public:
 
     FlexException() noexcept;
     FlexException(const FlexException &src) noexcept;
-    FlexException& operator= (const FlexException &rhs) noexcept;
+    FlexException& operator= (const FlexException &src) noexcept;
 
     explicit FlexException(int ec) noexcept;
     FlexException(int ec, int ip1) noexcept;

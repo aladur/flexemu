@@ -332,7 +332,7 @@ bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
     return false;
 }
 
-bool FlexFileContainer::DeleteFile(const char *filePattern)
+bool FlexFileContainer::DeleteFile(const char *wildcard)
 {
     if (!is_flex_format)
     {
@@ -341,7 +341,7 @@ bool FlexFileContainer::DeleteFile(const char *filePattern)
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(filePattern);
+    FileContainerIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {
@@ -797,7 +797,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
 
 // set the file attributes of one or multiple files
-bool FlexFileContainer::SetAttributes(const char *filePattern,
+bool FlexFileContainer::SetAttributes(const char *wildcard,
         Byte setMask, Byte clearMask)
 {
     if (!is_flex_format)
@@ -809,7 +809,7 @@ bool FlexFileContainer::SetAttributes(const char *filePattern,
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(filePattern);
+    FileContainerIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {
@@ -1068,7 +1068,7 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
     return true;
 }
 
-bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
+bool FlexFileContainer::FormatSector(const Byte *target, int track, int sector,
                                      int side, int sizecode)
 {
     if (is_flex_format ||
@@ -1165,7 +1165,7 @@ bool FlexFileContainer::FormatSector(const Byte *pbuffer, int track, int sector,
         result = false;
     }
 
-    result &= WriteSector(pbuffer, track, sector, side);
+    result &= WriteSector(target, track, sector, side);
 
     if (!is_flex_format && (file_size == getFileSize(flx_header)) &&
         IsFlexFileFormat(TYPE_FLX_CONTAINER))

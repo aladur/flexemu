@@ -1809,18 +1809,19 @@ ColorTable QtGui::CreateColorTable()
 }
 
 void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
-                           Byte const *videoRam, const ColorTable& colTable)
+                           Byte const *videoRam,
+                           const ColorTable& p_colorTable)
 {
     sBITMAPFILEHEADER fileHeader;
     sBITMAPINFOHEADER infoHeader;
 
     assert(height >= 1);
-    assert(!colTable.empty());
+    assert(!p_colorTable.empty());
 
     // Size of BMP stream:
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data
     DWord dataOffset = sizeof(sBITMAPFILEHEADER) + sizeof(sBITMAPINFOHEADER) +
-                     (static_cast<DWord>(colTable.size()) * sizeof(sRGBQUAD));
+                     (static_cast<DWord>(p_colorTable.size()) * sizeof(sRGBQUAD));
     auto destSize = static_cast<SDWord>(dataOffset + (height * WINDOWWIDTH));
 
     dest.clear();
@@ -1847,17 +1848,18 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
     infoHeader.xPixelsPerMeter = 0;
     infoHeader.yPixelsPerMeter = 0;
     infoHeader.colorsUsed =
-        toLittleEndian<DWord>(static_cast<DWord>(colTable.size()));
+        toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
     infoHeader.colorsImportant =
-        toLittleEndian<DWord>(static_cast<DWord>(colTable.size()));
+        toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
     memcpy(pData, &infoHeader, sizeof(infoHeader));
     pData += sizeof(infoHeader);
 
-    assert(colTable.size() <= static_cast<ColorTable::size_type>(MAX_COLORS));
+    assert(p_colorTable.size() <=
+           static_cast<ColorTable::size_type>(MAX_COLORS));
 
     const auto size = static_cast<int>(sizeof(sRGBQUAD)) *
-                      colTable.size();
-    const auto hash = qHashRange(colTable.begin(), colTable.end());
+                      p_colorTable.size();
+    const auto hash = qHashRange(p_colorTable.begin(), p_colorTable.end());
     if (colorTablesCache.contains(hash))
     {
         memcpy(pData, colorTablesCache.value(hash).data(), size);
@@ -1868,7 +1870,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
         QByteArray colorTableCache(size, '\0');
         const auto *pDataOrigin = pData;
 
-        for (const auto rgbColor : colTable)
+        for (const auto rgbColor : p_colorTable)
         {
             sRGBQUAD colorEntry;
 

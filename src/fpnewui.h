@@ -61,8 +61,8 @@ private slots:
     void OnMdcrFileFormat(bool value);
     void OnFormatChanged(int index);
     void OnTrkSecChanged(int tracks, int sectors);
-    void OnTrackChanged(int value);
-    void OnSectorChanged(int value);
+    void OnTrackChanged(int tracks);
+    void OnSectorChanged(int sectors);
     void OnSelectPath();
     void OnAccepted();
     void OnRejected();

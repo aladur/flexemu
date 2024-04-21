@@ -895,7 +895,7 @@ private:
     void invalid(const char *pmessage);
     bool use_undocumented{false};
 public:
-    void set_use_undocumented(bool b);
+    void set_use_undocumented(bool value);
     bool is_use_undocumented() const
     {
         return use_undocumented;
@@ -941,7 +941,7 @@ public:
 
     // interface to other classes
 public:
-    void set_disassembler(Da6809 *x_da);
+    void set_disassembler(Da6809 *p_disassembler);
     bool set_logfile(const struct s_cpu_logfile &x_lfs);
     Word get_pc()
     {

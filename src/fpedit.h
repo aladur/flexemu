@@ -144,7 +144,7 @@ public:
                               const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
 
-    static QStringList GetAllCombinations(const QString &supportedAttributes);
+    static QStringList GetAllCombinations(const QString &attributes);
 
 private:
     static void GetCombinations(const QString &chars, int length, int start,

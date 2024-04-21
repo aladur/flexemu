@@ -46,9 +46,9 @@
    }
 */
 
-FileContainerIterator::FileContainerIterator(const char
-        *aFilePattern/* = "*.*" */) :
-    filePattern(aFilePattern)
+FileContainerIterator::FileContainerIterator(
+        const char *p_wildcard/* = "*.*" */)
+    : wildcard(p_wildcard)
 {
 }
 
@@ -99,7 +99,7 @@ FileContainerIterator &FileContainerIterator::operator++()
 {
     if (imp != nullptr)
     {
-        if (!imp->NextDirEntry(filePattern.c_str()))
+        if (!imp->NextDirEntry(wildcard.c_str()))
         {
             imp->AtEnd();
         }
@@ -122,7 +122,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 
     imp = aBase->IteratorFactory();
 
-    if (!imp->NextDirEntry(filePattern.c_str()))
+    if (!imp->NextDirEntry(wildcard.c_str()))
     {
         imp->AtEnd();
     }

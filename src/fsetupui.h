@@ -98,7 +98,7 @@ private:
     static std::string CreateHref(const char *encoded_url,
                                   const char *description);
     static QString GetRelativePath(
-            const QString &diskDir,
+            const QString &directory,
             const QString &filePath);
 
     QDialog *dialog{nullptr};

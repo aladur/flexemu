@@ -32,7 +32,7 @@ template<class T>
 class MemoryTarget
 {
 public:
-    virtual void CopyFrom(const Byte *buffer, T address, T aSize) = 0;
+    virtual void CopyFrom(const Byte *source, T address, T size) = 0;
     virtual ~MemoryTarget() = default;
 };
 #endif

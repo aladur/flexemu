@@ -198,8 +198,8 @@ private:
         Byte minute) const;
     bool update_file_time(const char *path, SDWord file_id) const;
     st_t link_address() const;
-    bool is_last_of_free_chain(const st_t &st) const;
-    SDWord id_of_new_file(const st_t &st);
+    bool is_last_of_free_chain(const st_t &track_sector) const;
+    SDWord id_of_new_file(const st_t &track_sector);
     std::string get_path_of_file(SDWord file_id) const;
     Word record_nr_of_new_file(SDWord new_file_id, SDWord sec_idx) const;
     void change_file_id_and_type(
@@ -213,7 +213,7 @@ private:
                                                const Byte *buffer);
     static std::string to_string(SectorType type);
     std::string get_unique_filename(const char *extension) const;
-    SDWord get_sector_index(const st_t &sector_track) const;
+    SDWord get_sector_index(const st_t &track_sector) const;
 };
 
 #endif // NDIRCONT_INCLUDED

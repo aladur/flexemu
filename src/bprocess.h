@@ -31,9 +31,9 @@
 class BProcess
 {
 public:
-    explicit BProcess(const std::string &executable,
-             const std::string &directory = "",
-             const std::string &argument = "");
+    explicit BProcess(const std::string &p_executable,
+             const std::string &p_directory = "",
+             const std::string &p_arguments = "");
 #ifdef _WIN32
     ~BProcess();
 #endif
@@ -41,7 +41,7 @@ public:
     ~BProcess() = default;
 #endif
     void AddArgument(const std::string &argument);
-    void SetDirectory(const std::string &directory);
+    void SetDirectory(const std::string &p_directory);
     bool Start(); // Start the Process if not started yet
     bool IsRunning() const; // Check if Process is running
     const char *GetArguments()  const

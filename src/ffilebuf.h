@@ -79,9 +79,9 @@ public:
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
     bool IsFlexExecutableFile() const;
-    void CopyHeaderBigEndianFrom(const tFlexFileHeader &from);
-    bool CopyFrom(const Byte *from, DWord aSize, DWord offset = 0);
-    bool CopyTo(Byte *to, DWord aSize,
+    void CopyHeaderBigEndianFrom(const tFlexFileHeader &src);
+    bool CopyFrom(const Byte *source, DWord size, DWord offset = 0);
+    bool CopyTo(Byte *target, DWord size,
                 DWord offset = 0, int stuffByte = -1) const;
     void FillWith(Byte pattern = 0);
     void Realloc(DWord newSize, bool restoreContents = false);

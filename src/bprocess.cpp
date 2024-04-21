@@ -31,26 +31,26 @@
 #include "bprocess.h"
 #include "cvtwchar.h"
 
-BProcess::BProcess(const std::string &x_exec,
-                   const std::string &x_dir /* = "" */,
-                   const std::string &x_arg /* = "" */) :
-    executable(x_exec), arguments(x_arg), directory(x_dir)
+BProcess::BProcess(const std::string &p_executable,
+                   const std::string &p_directory /* = "" */,
+                   const std::string &p_arguments /* = "" */) :
+    executable(p_executable), arguments(p_arguments), directory(p_directory)
 {
 }
 
-void BProcess::AddArgument(const std::string &x_arg)
+void BProcess::AddArgument(const std::string &argument)
 {
     if (!arguments.empty())
     {
         arguments += " ";
     }
 
-    arguments += x_arg;
+    arguments += argument;
 }
 
-void BProcess::SetDirectory(const std::string &x_dir)
+void BProcess::SetDirectory(const std::string &p_directory)
 {
-    directory = x_dir;
+    directory = p_directory;
 }
 
 //***********************************************

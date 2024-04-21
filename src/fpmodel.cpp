@@ -467,19 +467,19 @@ FlexFileBuffer FlexplorerTableModel::CopyFile(const QModelIndex &index) const
 }
 
 void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
-                                               const QString &newAttribString)
+                                               const QString &attributes)
 {
     if (index.isValid())
     {
-        auto oldAttribString = rows[index.row()][COL_ATTRIBUTES].toString();
+        auto oldAttributes = rows[index.row()][COL_ATTRIBUTES].toString();
         auto filename = GetFilename(index);
 
-        if (oldAttribString != newAttribString)
+        if (oldAttributes != attributes)
         {
             Byte setMask;
             Byte clearMask;
 
-            CreateAttributesBitmasks(newAttribString, setMask, clearMask);
+            CreateAttributesBitmasks(attributes, setMask, clearMask);
             auto attribIndex =
                 QAbstractTableModel::index(index.row(), COL_ATTRIBUTES);
 
@@ -491,11 +491,11 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
             catch (FlexException &ex)
             {
                 // Set attributes failed: Restore the old file attributes.
-                setData(attribIndex, oldAttribString);
+                setData(attribIndex, oldAttributes);
                 throw ex;
             }
 
-            setData(attribIndex, newAttribString);
+            setData(attribIndex, attributes);
         }
     }
 }

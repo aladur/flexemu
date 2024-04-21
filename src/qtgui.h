@@ -141,7 +141,7 @@ private slots:
     void OnCpuUndocumentedInstructions();
     void OnCpuInterruptStatus();
     void OnIntroduction() const;
-    void OnDiskStatus(Word diskNumber);
+    void OnDiskStatus(Word driveNumber);
     void OnAbout();
     void OnTimer();
     void OnIconSize(int index);

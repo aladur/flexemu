@@ -83,9 +83,9 @@ public:
         return nullptr;
     };
     bool FindFile(const char *fileName, FlexDirEntry &entry) override;
-    bool DeleteFile(const char *fileName) override;
+    bool DeleteFile(const char *wildcard) override;
     bool RenameFile(const char *oldName, const char *newName) override;
-    bool SetAttributes(const char *fileName, Byte setMask,
+    bool SetAttributes(const char *wildcard, Byte setMask,
                        Byte clearMask = ~0) override;
     FlexFileBuffer ReadToBuffer(const char *fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,

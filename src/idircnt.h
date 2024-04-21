@@ -42,13 +42,13 @@ public:
     DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &src) =
         delete;
     ~DirectoryContainerIteratorImp() override;
-    bool operator==(const FileContainerIf *aBase) const override;
+    bool operator==(const FileContainerIf *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
     {
         return dirEntry;
     };
-    bool NextDirEntry(const char *filePattern) override;
+    bool NextDirEntry(const char *wildcar) override;
 private:
     bool DeleteCurrent() override;
     bool RenameCurrent(const char *) override;

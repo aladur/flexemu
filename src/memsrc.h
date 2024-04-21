@@ -39,7 +39,7 @@ public:
     using AddressRanges = std::vector<AddressRange>;
 
     virtual const AddressRanges& GetAddressRanges() const = 0;
-    virtual void CopyTo(Byte *buffer, T address, T aSize) const = 0;
+    virtual void CopyTo(Byte *target, T address, T size) const = 0;
     virtual ~MemorySource() = default;
 };
 #endif

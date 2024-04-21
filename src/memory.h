@@ -83,7 +83,7 @@ private:
 
 private:
     void init_memory();
-    void init_vram_ptr(Byte vram_ptr_index, Byte *ram_address);
+    void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
     static Byte initial_content[8];
 
     // Initialisation functions
@@ -104,7 +104,7 @@ public:
 
     // memory target interface
 public:
-    void CopyFrom(const Byte *buffer, DWord address, DWord aSize) override;
+    void CopyFrom(const Byte *source, DWord address, DWord size) override;
 
 public:
     void write_ram_rom(Word address, Byte value);

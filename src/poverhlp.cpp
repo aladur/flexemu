@@ -40,24 +40,25 @@ std::string toString(const RichLine &richLine)
     return result;
 }
 
-RichLine CreateRichLine(size_t count, const RichCharacter &rc)
+RichLine CreateRichLine(size_t count, const RichCharacter &richChar)
 {
     RichLine richLine;
 
     richLine.reserve(count);
     for (auto i = 0U; i < count; ++i)
     {
-        richLine.push_back(rc);
+        richLine.push_back(richChar);
     }
 
     return richLine;
 }
 
-void RichLineAppend(RichLine &richLine, size_t count, const RichCharacter &rc)
+void RichLineAppend(RichLine &richLine, size_t count,
+                    const RichCharacter &richChar)
 {
     for (auto i = 0U; i < count; ++i)
     {
-        richLine.push_back(rc);
+        richLine.push_back(richChar);
     }
 }
 

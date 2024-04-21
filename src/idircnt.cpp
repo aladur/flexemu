@@ -54,10 +54,10 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
     base = nullptr;
 }
 
-bool DirectoryContainerIteratorImp::operator==(const FileContainerIf *src) const
+bool DirectoryContainerIteratorImp::operator==(const FileContainerIf *rhs) const
 {
-    return (base == nullptr && src == nullptr) ||
-           ((base == src) && (dirHdl == nullptr));
+    return (base == nullptr && rhs == nullptr) ||
+           ((base == rhs) && (dirHdl == nullptr));
 }
 
 void DirectoryContainerIteratorImp::AtEnd()
@@ -65,7 +65,7 @@ void DirectoryContainerIteratorImp::AtEnd()
     base = nullptr;
 }
 
-bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
+bool DirectoryContainerIteratorImp::NextDirEntry(const char *wildcard)
 {
     // Initialize following variable to a filename which never exists.
     std::string fileName(R"(.\/\/\/.\/\)");
@@ -92,7 +92,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName.c_str(), filePattern, ';', true)))
+            !multimatches(fileName.c_str(), wildcard, ';', true)))
     {
         isValid = false;
 
@@ -170,7 +170,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             !DirectoryContainer::IsFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName.c_str(), filePattern, ';', true)))
+            !multimatches(fileName.c_str(), wildcard, ';', true)))
     {
         isValid = false;
 

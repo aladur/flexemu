@@ -123,30 +123,30 @@ void FlexFileBuffer::SetFilename(const char *name)
 // Reallocate the buffer with a different size.
 // Buffer will be initialized to zero or
 // optionally with a copy of the contents of the old buffer.
-void FlexFileBuffer::Realloc(DWord new_size,
+void FlexFileBuffer::Realloc(DWord newSize,
                              bool restoreContents /* = false*/)
 {
     Byte *new_buffer;
 
-    if (new_size == 0)
+    if (newSize == 0)
     {
         return;
     }
 
-    if (new_size <= capacity)
+    if (newSize <= capacity)
     {
         // Don't allocate memory if buffer capacity decreases.
-        if (new_size > fileHeader.fileSize)
+        if (newSize > fileHeader.fileSize)
         {
             memset(&buffer[fileHeader.fileSize], 0,
-                   new_size - fileHeader.fileSize);
+                   newSize - fileHeader.fileSize);
         }
-        fileHeader.fileSize = new_size;
+        fileHeader.fileSize = newSize;
         return;
     }
 
-    new_buffer = new Byte[new_size];
-    memset(new_buffer, 0, new_size);
+    new_buffer = new Byte[newSize];
+    memset(new_buffer, 0, newSize);
 
     if (buffer != nullptr && restoreContents)
     {
@@ -154,8 +154,8 @@ void FlexFileBuffer::Realloc(DWord new_size,
     }
 
     buffer.reset(new_buffer);
-    fileHeader.fileSize = new_size;
-    capacity = new_size;
+    fileHeader.fileSize = newSize;
+    capacity = newSize;
 }
 
 // Traverse through a given FLEX text file and call a function for each
@@ -664,48 +664,48 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
     Realloc(newSize);
 }
 
-bool FlexFileBuffer::CopyFrom(const Byte *from, DWord aSize,
+bool FlexFileBuffer::CopyFrom(const Byte *source, DWord size,
                               DWord offset /* = 0 */)
 {
-    if (offset + aSize > fileHeader.fileSize)
+    if (offset + size > fileHeader.fileSize)
     {
         return false;
     }
 
     if (buffer != nullptr)
     {
-        memcpy(&buffer[offset], from, aSize);
+        memcpy(&buffer[offset], source, size);
     }
     return true;
 }
 
-bool FlexFileBuffer::CopyTo(Byte *to, DWord aSize,
+bool FlexFileBuffer::CopyTo(Byte *target, DWord size,
                             DWord offset /* = 0 */,
                             int stuffByte /* = -1 */) const
 {
-    if (to == nullptr)
+    if (target == nullptr)
     {
             throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    if (offset + aSize > fileHeader.fileSize)
+    if (offset + size > fileHeader.fileSize)
     {
         if (stuffByte < 0 || offset >= fileHeader.fileSize)
         {
             return false;
         }
 
-        memset(to, stuffByte, aSize);
+        memset(target, stuffByte, size);
         if (buffer != nullptr)
         {
-            memcpy(to, &buffer[offset], fileHeader.fileSize - offset);
+            memcpy(target, &buffer[offset], fileHeader.fileSize - offset);
         }
 
         return true;
     }
     if (buffer != nullptr)
     {
-        memcpy(to, &buffer[offset], aSize);
+        memcpy(target, &buffer[offset], size);
     }
     return true;
 }

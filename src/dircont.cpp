@@ -180,9 +180,9 @@ bool DirectoryContainer::FindFile(const char *fileName, FlexDirEntry &entry)
     return true;
 }
 
-bool DirectoryContainer::DeleteFile(const char *fileName)
+bool DirectoryContainer::DeleteFile(const char *wildcard)
 {
-    FileContainerIterator it(fileName);
+    FileContainerIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {
@@ -419,7 +419,7 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
 }
 
 // set the file attributes of a file
-bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
+bool DirectoryContainer::SetAttributes(const char *wildcard, Byte setMask,
                                        Byte clearMask /* = ~0 */)
 {
     // only WRITE_PROTECT flag is supported
@@ -427,7 +427,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
     {
 #ifdef _WIN32
         const auto wFilePath(
-            ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
+            ConvertToUtf16String(directory + PATHSEPARATORSTRING + wildcard));
         DWORD attrs = GetFileAttributes(wFilePath.c_str());
 
         if (clearMask & WRITE_PROTECT)
@@ -444,7 +444,7 @@ bool DirectoryContainer::SetAttributes(const char *fileName, Byte setMask,
 #endif
 #ifdef UNIX
         struct stat sbuf;
-        std::string lowerFileName(fileName);
+        std::string lowerFileName(wildcard);
 
         strlower(lowerFileName);
         auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);

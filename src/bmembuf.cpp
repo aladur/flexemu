@@ -69,9 +69,9 @@ BMemoryBuffer &BMemoryBuffer::operator= (BMemoryBuffer &&src) noexcept
     return *this;
 }
 
-void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord aSize) const
+void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord size) const
 {
-    auto secureSize = aSize;
+    auto secureSize = size;
 
     if (address >= buffer.size())
     {
@@ -80,20 +80,20 @@ void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord aSize) const
 
     if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + aSize - buffer.size();
+        secureSize -= address + size - buffer.size();
     }
 
     memcpy(target, buffer.data() + address, secureSize);
-    if (secureSize < aSize)
+    if (secureSize < size)
     {
         // Fill up buffer not represented in BMemoryBuffer by 0.
-        memset(target + secureSize, 0, aSize - secureSize);
+        memset(target + secureSize, 0, size - secureSize);
     }
 }
 
-void BMemoryBuffer::CopyFrom(const Byte *src, DWord address, DWord aSize)
+void BMemoryBuffer::CopyFrom(const Byte *source, DWord address, DWord size)
 {
-    auto secureSize = aSize;
+    auto secureSize = size;
 
     if (address >= buffer.size())
     {
@@ -102,10 +102,10 @@ void BMemoryBuffer::CopyFrom(const Byte *src, DWord address, DWord aSize)
 
     if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + aSize - buffer.size();
+        secureSize -= address + size - buffer.size();
     }
 
-    memcpy(buffer.data() + address, src, secureSize);
+    memcpy(buffer.data() + address, source, secureSize);
 
     DWord endAddress = address + secureSize - 1;
     addressRanges.emplace_back(address, endAddress);

@@ -109,7 +109,7 @@ protected:
 
     // CPU frequency
 public:
-    void set_frequency(float target_freq);
+    void set_frequency(float p_target_frequency);
     float get_frequency() const
     {
         return frequency;

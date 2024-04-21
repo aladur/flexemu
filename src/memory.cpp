@@ -258,15 +258,15 @@ void Memory::reset_io()
 }
 
 // Write Byte into RAM or ROM independent of MMU.
-void Memory::write_ram_rom(Word offset, Byte value)
+void Memory::write_ram_rom(Word address, Byte value)
 {
-    memory[offset] = value;
+    memory[address] = value;
 } // write_ram_rom
 
 // Read Byte from RAM or ROM independent of MMU.
-Byte Memory::read_ram_rom(Word offset)
+Byte Memory::read_ram_rom(Word address)
 {
-    return memory[offset];
+    return memory[address];
 } // read_ram_rom
 
 void Memory::switch_mmu(Word offset, Byte val)
@@ -337,9 +337,9 @@ void Memory::UpdateFrom(NotifyId id, void *param)
     }
 }
 
-void Memory::CopyFrom(const Byte *buffer, DWord address, DWord aSize)
+void Memory::CopyFrom(const Byte *source, DWord address, DWord size)
 {
-    DWord secureSize = aSize;
+    DWord secureSize = size;
 
     if (address >= memory_size)
     {
@@ -348,9 +348,9 @@ void Memory::CopyFrom(const Byte *buffer, DWord address, DWord aSize)
 
     if (address + secureSize >= memory_size)
     {
-        secureSize -= address + aSize - memory_size;
+        secureSize -= address + size - memory_size;
     }
 
-    memcpy(memory.get() + address, buffer, secureSize);
+    memcpy(memory.get() + address, source, secureSize);
 }
 
