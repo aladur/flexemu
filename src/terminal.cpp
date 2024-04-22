@@ -76,10 +76,10 @@ void TerminalIO::reset_terminal_io()
 #ifdef HAVE_TERMIOS_H
 void TerminalIO::init_terminal_io(Word reset_key)
 {
-    struct termios buf;
+    struct termios buf{};
     tcflag_t mask;
-    struct sigaction sig_action;
-    struct sigaction old_action;
+    struct sigaction sig_action{};
+    struct sigaction old_action{};
 
     memset(&sig_action, 0, sizeof(sig_action));
 

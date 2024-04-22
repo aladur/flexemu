@@ -548,7 +548,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
 
 bool FlexFileBuffer::ReadFromFile(const char *path)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size >= 0)
     {
@@ -720,7 +720,7 @@ void FlexFileBuffer::FillWith(Byte pattern /* = 0 */)
 
 tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
 {
-    tFlexFileHeader result;
+    tFlexFileHeader result{};
 
     memcpy(&result, &fileHeader, sizeof(result));
     result.fileSize = toBigEndian<DWord>(fileHeader.fileSize);

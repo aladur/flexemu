@@ -77,9 +77,9 @@ private:
     static const Byte NO_DEVICE = 0xFF;
 
     // interface to video display
-    Byte *vram_ptrs[MAX_VRAM];
+    Byte *vram_ptrs[MAX_VRAM]{};
     Word video_ram_active_bits{0}; // 16-bit, one for each video memory page
-    bool changed[YBLOCKS];
+    bool changed[YBLOCKS]{};
 
 private:
     void init_memory();

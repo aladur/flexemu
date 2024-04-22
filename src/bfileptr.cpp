@@ -35,7 +35,7 @@ BFilePtr::BFilePtr(const std::string &p_path, const std::string &p_mode)
     : mode(p_mode)
     , fp(nullptr)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (isAbsolutePath(p_path))
     {

@@ -67,7 +67,7 @@ bool BJoystick::IsOpened() const
 
 bool BJoystick::Actualize()
 {
-    struct JS_DATA_TYPE raw_js_data;
+    struct JS_DATA_TYPE raw_js_data{};
 
     if (js < 0)
     {

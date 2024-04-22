@@ -959,7 +959,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
 void FlexplorerTableModel::OpenContainer(const char *p_path,
                                          const FileTimeAccess &fileTimeAccess)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     // path can either be a directory or a file container.
     if (p_path == nullptr)

@@ -52,7 +52,7 @@ private:
     FlexFileContainer *base;
     int dirIndex;
     st_t dirTrackSector;
-    struct s_dir_sector dirSector;
+    struct s_dir_sector dirSector{};
     FlexDirEntry dirEntry;
 };
 

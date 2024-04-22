@@ -52,7 +52,7 @@ protected:
     Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    &fdc;
-    char command[MAX_COMMAND];
+    char command[MAX_COMMAND]{};
     Word command_index{0};
     Word answer_index{0};
     std::string answer;

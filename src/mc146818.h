@@ -52,7 +52,7 @@ protected:
     Byte B{0};
     Byte C{0};
     Byte D{0};
-    Byte ram[50]; // 50 bytes of internal RAM
+    Byte ram[50]{}; // 50 bytes of internal RAM
 
 public:
 

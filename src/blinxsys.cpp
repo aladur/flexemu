@@ -83,7 +83,7 @@ std::string BLinuxSysInfo::Read(BLinuxSysInfoType type,
         std::ifstream fs(path);
         if (fs.is_open())
         {
-            std::array<char, 2048U> content_array;
+            std::array<char, 2048U> content_array{};
 
             fs.getline(content_array.data(), content_array.size() - 1U, '\n');
             fs.close();

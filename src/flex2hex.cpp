@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
 
     for (const auto &ifile : ifiles)
     {
-        struct stat status;
+        struct stat status{};
         auto ofile(ofilePrefered);
 
         if (ofile.empty())

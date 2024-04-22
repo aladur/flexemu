@@ -127,31 +127,31 @@ struct sOptions
     std::string hex_file;
     std::string disk_dir;
     std::string startup_command;
-    bool isRamExtension; // Use RAM extension cards/No RAM extension
-    bool isHiMem; // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
-    bool isFlexibleMmu; // Use flexible MMU/Normal MMU
-    bool isEurocom2V5; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
-    bool use_undocumented;
-    bool useRtc;
-    bool term_mode;
-    bool canFormatDrive[4];
-    bool isTerminalIgnoreESC; // Terminal mode: Ignore ESC (0x1B) characters
-    bool isTerminalIgnoreNUL; // Terminal mode: Ignore NUL (0x00) characters
-    FileTimeAccess fileTimeAccess;
-    short int reset_key;
-    float frequency;
+    bool isRamExtension{}; // Use RAM extension cards/No RAM extension
+    bool isHiMem{}; // Use 2 x 288K RAM extension/2 x 96 K RAM ext.
+    bool isFlexibleMmu{}; // Use flexible MMU/Normal MMU
+    bool isEurocom2V5{}; // Emulate an Eurocom II/V5 (instead of Eurocom II/V7)
+    bool use_undocumented{};
+    bool useRtc{};
+    bool term_mode{};
+    bool canFormatDrive[4]{};
+    bool isTerminalIgnoreESC{}; // Terminal mode: Ignore ESC (0x1B) characters
+    bool isTerminalIgnoreNUL{}; // Terminal mode: Ignore NUL (0x00) characters
+    FileTimeAccess fileTimeAccess{};
+    short int reset_key{};
+    float frequency{};
 
     // User interface options
     std::string color; // color name or "default" for multi color palette.
     std::string doc_dir; // Directory containing html documenation.
-    int nColors; // Number of colors or gray scale values { 2, 8, 64 }.
-    bool isInverse; // Display inverse colors or gray scale values.
-    bool isSmooth; // Display mode is smooth display.
-    int pixelSize; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
+    int nColors{}; // Number of colors or gray scale values { 2, 8, 64 }.
+    bool isInverse{}; // Display inverse colors or gray scale values.
+    bool isSmooth{}; // Display mode is smooth display.
+    int pixelSize{}; // Size of one pixel on the screen { 1, 2, 3, 4, 5 }.
                    // It depends on the screen dimensions on which flexemu
                    // is executed.
     std::string printFont; // Font used for printing documents (monospace)
-    bool isPrintPageBreakDetected; // Print preview: Automatic page break det.
+    bool isPrintPageBreakDetected{}; // Print preview: Automatic page break det.
     std::string printOrientation; // Print preview: Page orientation (Port/Land)
     std::string printPageSize; // Print preview: Page size
     std::string printUnit; // Print preview: Unit (mm/inch)
@@ -160,9 +160,9 @@ struct sOptions
     std::map<std::string, std::string> printConfigs;
     std::string printOutputWindowGeometry; // Geometry of print output window
     std::string printPreviewDialogGeometry; // Geometry of print preview dialog
-    int directoryDiskTracks; // Default number of track for a directory disk
-    int directoryDiskSectors; // Default number of sectors for a directory disk
-    bool isDirectoryDiskActive; // true if directory disk is active.
+    int directoryDiskTracks{}; // Default number of track for a directory disk
+    int directoryDiskSectors{}; // Default number of sectors for a directory disk
+    bool isDirectoryDiskActive{}; // true if directory disk is active.
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.

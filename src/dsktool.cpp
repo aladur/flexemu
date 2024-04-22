@@ -86,7 +86,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
                        int tracks, int sectors, char default_answer,
                        bool verbose, const char *bsFile)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (!stat(dsk_file.c_str(), &sbuf))
     {
@@ -1051,7 +1051,7 @@ int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
 
 bool checkBootSectorFile(const char *opt, const char **bsFile)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (*bsFile != nullptr)
     {

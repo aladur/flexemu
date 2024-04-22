@@ -114,7 +114,7 @@ private:
     // Some structures needed for a FLEX file system
     // link table: Each sector has an entry in the link table.
     std::vector<s_link_table> flex_links;
-    std::array<u_sys_info_sector, 2> flex_sys_info; // system info sectors
+    std::array<u_sys_info_sector, 2> flex_sys_info{}; // system info sectors
     std::vector<u_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SDWord, s_new_file> new_files; // new file table
     st_t dir_extend{0U, 0U}; // track and sector of directory extend sector

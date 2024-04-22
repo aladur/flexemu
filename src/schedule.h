@@ -101,7 +101,7 @@ public:
     void get_interrupt_status(tInterruptStatus &s);
     CpuStatus  *get_status();
 protected:
-    tInterruptStatus interrupt_status;
+    tInterruptStatus interrupt_status{};
     void do_reset();
     CpuStatusPtr cpu_status;
     bool is_status_valid;

@@ -109,25 +109,17 @@ QtGui::QtGui(
              , p_terminalIO)
         , mainLayout(new QVBoxLayout(this))
         , toolBarLayout(new QHBoxLayout)
-        , e2screen(nullptr)
         , menuBar(new QMenuBar)
         , cpuDialog(new QDialog(this))
-        , preferencesAction(nullptr)
-        , printOutputWindow(nullptr)
-        , isOriginalFrequency(false)
         , isStatusBarVisible(true)
         , isRunning(true)
         , isConfirmClose(true)
         , isForceScreenUpdate(true)
-        , isRestartNeeded(false)
-        , timerTicks(0)
-        , oldFirstRasterLine(0)
         , scheduler(p_scheduler)
         , vico1(p_vico1)
         , vico2(p_vico2)
         , joystickIO(p_joystickIO)
         , keyboardIO(p_keyboardIO)
-        , fdc(nullptr)
         , options(p_options)
         , oldOptions(p_options)
 {
@@ -1812,8 +1804,8 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
                            Byte const *videoRam,
                            const ColorTable& p_colorTable)
 {
-    sBITMAPFILEHEADER fileHeader;
-    sBITMAPINFOHEADER infoHeader;
+    sBITMAPFILEHEADER fileHeader{};
+    sBITMAPINFOHEADER infoHeader{};
 
     assert(height >= 1);
     assert(!p_colorTable.empty());
@@ -1872,7 +1864,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
 
         for (const auto rgbColor : p_colorTable)
         {
-            sRGBQUAD colorEntry;
+            sRGBQUAD colorEntry{};
 
             colorEntry.red = static_cast<Byte>(qRed(rgbColor));
             colorEntry.green = static_cast<Byte>(qGreen(rgbColor));

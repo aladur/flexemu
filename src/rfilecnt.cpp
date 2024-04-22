@@ -27,8 +27,8 @@
 
 FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
                                            const FileTimeAccess
-                                           &p_fileTimeAccess) :
-    FlexFileContainer(path, mode, p_fileTimeAccess), is_dirty(false)
+                                           &p_fileTimeAccess)
+    : FlexFileContainer(path, mode, p_fileTimeAccess)
 {
     unsigned int sectors;
 

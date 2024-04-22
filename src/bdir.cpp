@@ -51,7 +51,7 @@
 
 bool BDirectory::Exists(const std::string &aPath)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     return !stat(aPath.c_str(), &sbuf) && (S_ISDIR(sbuf.st_mode));
 }
@@ -124,7 +124,7 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
 {
     std::string basePath;
     std::string dirEntry;
-    struct stat sbuf;
+    struct stat sbuf{};
 
     basePath = aPath;
 
@@ -194,7 +194,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
 
 #else
     std::string dirEntry;
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
@@ -259,7 +259,7 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
 
 #else
     std::string dirEntry;
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {

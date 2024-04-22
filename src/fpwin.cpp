@@ -63,33 +63,9 @@
 #include "warnon.h"
 
 
-FLEXplorer::FLEXplorer(sFPOptions &p_options) : mdiArea(new QMdiArea),
-    windowMenu(nullptr),
-    l_selectedFilesCount(nullptr), l_selectedFilesByteSize(nullptr),
-    fileToolBar(nullptr), editToolBar(nullptr),
-    containerToolBar(nullptr),
-    newContainerAction(nullptr), openContainerAction(nullptr),
-    openDirectoryAction(nullptr),
-    injectAction(nullptr), extractAction(nullptr),
-    selectAllAction(nullptr), deselectAllAction(nullptr),
-    findFilesAction(nullptr),
-#ifndef QT_NO_CLIPBOARD
-    copyAction(nullptr), pasteAction(nullptr),
-#endif
-    deleteAction(nullptr), viewAction(nullptr),
-    attributesAction(nullptr),
-    infoAction(nullptr),
-    optionsAction(nullptr),
-    closeAction(nullptr), closeAllAction(nullptr),
-    tileAction(nullptr), cascadeAction(nullptr),
-    nextAction(nullptr), previousAction(nullptr),
-    windowMenuSeparatorAction(nullptr),
-    aboutAction(nullptr),
-    aboutQtAction(nullptr),
-    newDialogSize{0, 0}, optionsDialogSize{0, 0},
-    attributesDialogSize{0, 0},
-    findPattern("*.*"),
-    options(p_options)
+FLEXplorer::FLEXplorer(sFPOptions &p_options)
+    : mdiArea(new QMdiArea)
+    , options(p_options)
 {
     injectDirectory = getHomeDirectory().c_str();
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);

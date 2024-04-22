@@ -531,7 +531,7 @@ void FileContainerCheck::InitializeFreeChainSectors()
 {
     const int track = 0;
     const int sector = 3;
-    s_sys_info_sector sis;
+    s_sys_info_sector sis{};
 
     if (fc.ReadSector(reinterpret_cast<Byte *>(&sis), track, sector))
     {
@@ -565,7 +565,7 @@ std::string FileContainerCheck::GetUnixFilename(
 void FileContainerCheck::InitializeFileSectors()
 {
     st_t current{0, static_cast<Byte>(first_dir_trk_sec.sec)};
-    s_dir_sector dir_sector;
+    s_dir_sector dir_sector{};
 
     while (current != st_t{0, 0})
     {

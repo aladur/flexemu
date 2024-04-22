@@ -43,7 +43,7 @@ FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
 
 bool FlexDirectoryDiskOptions::Read()
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)))
     {
@@ -61,7 +61,7 @@ bool FlexDirectoryDiskOptions::Read()
 
 bool FlexDirectoryDiskOptions::Write(bool onlyIfNotExists)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (onlyIfNotExists && !stat(path.c_str(), &sbuf))
     {

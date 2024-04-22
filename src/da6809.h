@@ -14,8 +14,8 @@ class Da6809 : public AbstractDisassembler
 
 protected:
 
-    char        code_buf[28]; // buffer for machinecode
-    char        mnem_buf[28]; // buffer for mnemonic
+    char        code_buf[28]{}; // buffer for machinecode
+    char        mnem_buf[28]{}; // buffer for mnemonic
     bool use_undocumented{false};
 
 public:

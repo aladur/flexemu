@@ -35,7 +35,7 @@ const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 MiniDcrTape::MiniDcrTape(const char *path, Mode mode) :
     is_write_protected(false)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (path == nullptr)
     {

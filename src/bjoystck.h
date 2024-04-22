@@ -44,7 +44,7 @@ public:
 private:
     int js; // input stream from joystick
     int32_t buttons;
-    int32_t axis[2];
+    int32_t axis[2]{};
 };
 
 inline int32_t BJoystick::XAxis()

@@ -42,10 +42,10 @@
 class Ui_Properties
 {
 private:
-    QHBoxLayout *mainLayout;
-    DrawnWidget *w_drawn;
-    QTableWidget *w_table;
-    QDialogButtonBox *g_buttons;
+    QHBoxLayout *mainLayout{};
+    DrawnWidget *w_drawn{};
+    QTableWidget *w_table{};
+    QDialogButtonBox *g_buttons{};
     const int space = 2;
     int tableWidth = 80;
 

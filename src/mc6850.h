@@ -41,10 +41,10 @@ class Mc6850 : public IoDevice
 
 protected:
 
-    Byte cr;
-    Byte sr;
-    Byte rdr;
-    Byte tdr;
+    Byte cr{};
+    Byte sr{};
+    Byte rdr{};
+    Byte tdr{};
 
 public:
 

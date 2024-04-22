@@ -103,7 +103,7 @@ FlexFileContainer::FlexFileContainer(
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (fp == nullptr)
     {
@@ -398,7 +398,7 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
     if (is_flex_format)
     {
-        s_sys_info_sector sis;
+        s_sys_info_sector sis{};
         int year;
 
         if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
@@ -506,7 +506,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                        // the two sector map sectors are counted too.
     int count;
     FlexDirEntry de;
-    s_sys_info_sector sis;
+    s_sys_info_sector sis{};
     const char *pFileName = fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
@@ -828,7 +828,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     }
 
     int i;
-    s_dir_sector ds;
+    s_dir_sector ds{};
     s_dir_entry *pde;
     st_t next(first_dir_trk_sec);
     int tmp1;
@@ -1407,7 +1407,7 @@ void FlexFileContainer::Format_disk(
     const char *bsFile /* = nullptr */)
 {
     std::string path;
-    struct s_formats format;
+    struct s_formats format{};
     int err = 0;
 
     if (name.empty() ||
@@ -1436,7 +1436,7 @@ void FlexFileContainer::Format_disk(
         if (fmt == TYPE_FLX_CONTAINER)
         {
             int sides = getSides(format.tracks, format.sectors);
-            struct s_flex_header header;
+            struct s_flex_header header{};
 
             header.initialize(SECTOR_SIZE, format.tracks, format.sectors0,
                               format.sectors, sides, sides);
@@ -1502,7 +1502,7 @@ void FlexFileContainer::Format_disk(
 bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
                                              Word header_offset) const
 {
-    s_sys_info_sector sis;
+    s_sys_info_sector sis{};
 
     // Read system info sector.
     long file_offset = header_offset + (sis_trk_sec.sec - 1) * SECTOR_SIZE;
@@ -1529,7 +1529,7 @@ bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
 // Check if the file container contains a FLEX compatible file system.
 bool FlexFileContainer::IsFlexFileFormat(int type) const
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     Word tracks = 35;
     Word sectors = 10;
 
@@ -1592,7 +1592,7 @@ st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
                                         const st_t &st_last)
 {
     std::stringstream stream;
-    s_sys_info_sector sis;
+    s_sys_info_sector sis{};
 
     if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
                     sis_trk_sec.sec))
@@ -1615,7 +1615,7 @@ st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    s_dir_sector dir_sector;
+    s_dir_sector dir_sector{};
     if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
     {
         stream << next;

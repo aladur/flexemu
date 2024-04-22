@@ -31,8 +31,8 @@
 struct sIoDeviceMapping
 {
     std::string name;
-    Word baseAddress;
-    int byteSize;
+    Word baseAddress{};
+    int byteSize{};
 };
 
 

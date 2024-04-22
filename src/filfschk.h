@@ -40,7 +40,7 @@ struct ContainerCheckResultItem
         Error,
     };
 
-    Type type;
+    Type type{};
 
     virtual ~ContainerCheckResultItem() = default;
 
@@ -222,46 +222,46 @@ struct InconsistentRecordSize : ContainerCheckResultItem
 struct DiscontiguousRecordNr : ContainerCheckResultItem
 {
     std::string name; // Item name
-    st_t current; // current track-sector
-    Word record_nr; // actual record number
-    Word expected_record_nr; // expected record number
+    st_t current{}; // current track-sector
+    Word record_nr{}; // actual record number
+    Word expected_record_nr{}; // expected record number
 };
 
 struct LostSectors : ContainerCheckResultItem
 {
     std::string name;
-    st_t start;
-    st_t end;
-    Word sectors; // Number of sectors.
+    st_t start{};
+    st_t end{};
+    Word sectors{}; // Number of sectors.
 };
 
 struct HasCycle : ContainerCheckResultItem
 {
     std::string name;
-    st_t from; // Track-sector which has a link back to back_to.
-    st_t back_to;
+    st_t from{}; // Track-sector which has a link back to back_to.
+    st_t back_to{};
 };
 
 struct BadLink : ContainerCheckResultItem
 {
     std::string name;
-    st_t bad; // Bad track-sector.
-    st_t current; // Track-sector with the bad link.
+    st_t bad{}; // Bad track-sector.
+    st_t current{}; // Track-sector with the bad link.
 };
 
 struct BadDate : ContainerCheckResultItem
 {
     std::string name;
-    Byte day;
-    Byte month;
-    Byte year;
+    Byte day{};
+    Byte month{};
+    Byte year{};
 };
 
 struct BadTime : ContainerCheckResultItem
 {
     std::string name;
-    Byte hour;
-    Byte minute;
+    Byte hour{};
+    Byte minute{};
 };
 
 extern std::ostream &operator<<(std::ostream &os,

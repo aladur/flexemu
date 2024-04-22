@@ -80,15 +80,15 @@ private:
 
     FileContainerIfSectorPtr floppy[MAX_DRIVES + 1U];
     FileContainerIfSector *pfs;
-    Byte track[MAX_DRIVES + 1U];
-    DiskStatus drive_status[MAX_DRIVES + 1U];
-    Byte sector_buffer[1024];
+    Byte track[MAX_DRIVES + 1U]{};
+    DiskStatus drive_status[MAX_DRIVES + 1U]{};
+    Byte sector_buffer[1024]{};
     std::string disk_dir;
     mutable std::mutex status_mutex;
     // data for CMD_WRITETRACK
     WriteTrackState writeTrackState; // Write track state
-    Word offset; // offset when reading a track
-    Byte idAddressMark[4]; // Contains track, side, sector, sizecode
+    Word offset{}; // offset when reading a track
+    Byte idAddressMark[4]{}; // Contains track, side, sector, sizecode
     const struct sOptions &options;
 
 public:

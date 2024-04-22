@@ -884,7 +884,7 @@ bool hasRandomFileAttribute(const char *directory, const char *filename)
             (fileAttrib & FILE_ATTRIBUTE_HIDDEN) != 0U);
 #endif
 #ifdef UNIX
-        struct stat sbuf;
+        struct stat sbuf{};
 
         return (stat(filePath.c_str(), &sbuf) == 0 &&
                 (sbuf.st_mode & S_IXUSR) != 0U);

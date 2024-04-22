@@ -36,14 +36,14 @@ struct sFPOptions
     sFPOptions(const sFPOptions &src) = default;
     sFPOptions& operator=(const sFPOptions &src) = default;
 
-    FileTimeAccess ft_access;
-    FileSizeType fileSizeType;
+    FileTimeAccess ft_access{};
+    FileSizeType fileSizeType{};
     std::string bootSectorFile;
-    bool injectTextFileConvert;
-    bool injectTextFileAskUser;
-    bool extractTextFileConvert;
-    bool extractTextFileAskUser;
-    bool onTrack0OnlyDirSectors;
+    bool injectTextFileConvert{};
+    bool injectTextFileAskUser{};
+    bool extractTextFileConvert{};
+    bool extractTextFileAskUser{};
+    bool onTrack0OnlyDirSectors{};
     std::string openDiskPath;
     std::string openDirectoryPath;
     std::string openInjectFilePath;

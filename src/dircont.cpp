@@ -61,7 +61,7 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
                                        const FileTimeAccess &fileTimeAccess)
     : ft_access(fileTimeAccess)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     static Word number = 0;
 
     if (stat(aPath.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
@@ -110,7 +110,7 @@ DirectoryContainer *DirectoryContainer::Create(
         const FileTimeAccess &fileTimeAccess,
         int /* fmt = TYPE_DISK_CONTAINER */)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     std::string path;
 
     path = directory;
@@ -234,7 +234,7 @@ bool DirectoryContainer::FileCopy(
 bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
 {
     std::string rootPath;
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (directory.length() > 3)
     {
@@ -262,7 +262,7 @@ bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
                       sectorsPerCluster * bytesPerSector);
 #endif
 #ifdef UNIX
-    struct statvfs fsbuf;
+    struct statvfs fsbuf{};
 
     if (statvfs(directory.c_str(), &fsbuf) != 0)
     {
@@ -329,7 +329,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = nullptr */)
 {
     std::string lowerFileName;
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (fileName == nullptr)
     {
@@ -389,9 +389,9 @@ void DirectoryContainer::Initialize_header(bool /*isWriteProtect*/)
 bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
                                      const BTime &time)
 {
-    struct stat sbuf;
-    struct utimbuf timebuf;
-    struct tm file_time;
+    struct stat sbuf{};
+    struct utimbuf timebuf{};
+    struct tm file_time{};
     std::string filePath;
     std::string lowerFileName(fileName);
 
@@ -443,7 +443,7 @@ bool DirectoryContainer::SetAttributes(const char *wildcard, Byte setMask,
         SetFileAttributes(wFilePath.c_str(), attrs);
 #endif
 #ifdef UNIX
-        struct stat sbuf;
+        struct stat sbuf{};
         std::string lowerFileName(wildcard);
 
         strlower(lowerFileName);
@@ -479,7 +479,7 @@ bool DirectoryContainer::SetRandom(const char *fileName)
     SetFileAttributes(wFilePath.c_str(), attrs | FILE_ATTRIBUTE_HIDDEN);
 #endif
 #ifdef UNIX
-    struct stat sbuf;
+    struct stat sbuf{};
     std::string lowerFileName(fileName);
 
     strlower(lowerFileName);

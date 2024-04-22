@@ -59,7 +59,7 @@ private slots:
 
 private:
     QDialog *dialog{nullptr};
-    std::array<QCheckBox *, 8> regCheckBoxes;
+    std::array<QCheckBox *, 8> regCheckBoxes{};
 };
 
 #endif

@@ -124,7 +124,7 @@ bool BProcess::Start()
 {
     std::vector<std::string> args{ executable, arguments };
     std::array<char *, 3> argv{};
-    struct sigaction default_action;
+    struct sigaction default_action{};
     int i = 0;
 
     for (auto &arg : args)

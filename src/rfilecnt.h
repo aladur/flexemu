@@ -33,7 +33,7 @@ class FlexRamFileContainer : public FlexFileContainer
 private:
 
     std::unique_ptr<Byte[]> file_buffer;
-    bool is_dirty;
+    bool is_dirty{};
 
 public:
 

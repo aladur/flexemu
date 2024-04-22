@@ -151,7 +151,7 @@ bool E2floppy::mount_drive(const std::string &path,
         }
         else
         {
-            struct stat sbuf;
+            struct stat sbuf{};
             bool fileExists = !stat(containerPath.c_str(), &sbuf);
 
             // Empty or non existing files are only mounted if

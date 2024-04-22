@@ -370,9 +370,9 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
 // Only valid if the iterator has a valid directory entry
 bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
 {
-    struct stat sbuf;
-    struct utimbuf timebuf;
-    struct tm file_time;
+    struct stat sbuf{};
+    struct utimbuf timebuf{};
+    struct tm file_time{};
     std::string filePath;
 
     if (dirEntry.IsEmpty())
@@ -432,7 +432,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     SetFileAttributes(wFilePath.c_str(), attrs);
 #endif
 #ifdef UNIX
-    struct stat sbuf;
+    struct stat sbuf{};
 
     filePath = dirEntry.GetTotalFileName();
     strlower(filePath);

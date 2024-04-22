@@ -86,7 +86,7 @@ NafsDirectoryContainer::NafsDirectoryContainer(
         int sectors)
     : ft_access(fileTimeAccess)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
     static Word number = 0U;
 
     static_assert(sizeof(s_sys_info_sector) == SECTOR_SIZE, "Wrong alignment");
@@ -155,7 +155,7 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(
         int sectors,
         int /* fmt = TYPE_DSK_CONTAINER */)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (stat(directory.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
@@ -964,7 +964,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
     std::unordered_set<std::string> random_filenames; // random files.
-    struct stat sbuf;
+    struct stat sbuf{};
 
     auto add_file = [&](const std::string &filename, bool is_random)
     {
@@ -1102,7 +1102,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 // Initialize the FLEX system info sector.
 void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 {
-    struct stat sbuf;
+    struct stat sbuf{};
 
     if (!stat(directory.c_str(), &sbuf))
     {
@@ -1330,7 +1330,7 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
 #endif
 #ifdef UNIX
             const auto path = directory + PATHSEPARATORSTRING + filename;
-            struct stat sbuf;
+            struct stat sbuf{};
             if (!stat(path.c_str(), &sbuf))
             {
                 if (file_attr & WRITE_PROTECT)
@@ -1361,9 +1361,9 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
 bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
         Byte day, Byte year, Byte hour, Byte minute) const
 {
-    struct stat statbuf;
-    struct utimbuf timebuf;
-    struct tm file_time;
+    struct stat statbuf{};
+    struct utimbuf timebuf{};
+    struct tm file_time{};
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
@@ -1434,7 +1434,7 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
             for (const auto &iter : new_files)
             {
 #ifdef UNIX
-                struct stat sbuf;
+                struct stat sbuf{};
 #endif
 
                 if (iter.second.first != dir_sector.dir_entry[i].start)
@@ -1701,9 +1701,9 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
             {
                 // Write boot sector 0/1 or 0/2
                 // into a file which name is defined in BOOT_FILE.
-                std::array<Byte, 2 * SECTOR_SIZE> boot_buffer;
+                std::array<Byte, 2 * SECTOR_SIZE> boot_buffer{};
                 FILE *fp;
-                struct stat sbuf;
+                struct stat sbuf{};
 
                 auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
                 std::fill(boot_buffer.begin(), boot_buffer.end(), '\0');
@@ -1751,7 +1751,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
         case SectorType::Directory:
             {
                 const auto ds_idx = link.f_record;
-                u_dir_sector dir_sector;
+                u_dir_sector dir_sector{};
 
                 // Temporarily copy new directory sector.
                 memcpy(dir_sector.raw, buffer, SECTOR_SIZE);
@@ -1768,7 +1768,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 
             if (dir_extend == track_sector)
             {
-                u_dir_sector dir_sector;
+                u_dir_sector dir_sector{};
 
                 memcpy(dir_sector.raw, buffer, SECTOR_SIZE);
                 extend_directory(sec_idx, dir_sector);

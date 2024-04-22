@@ -457,7 +457,7 @@ template<typename T> T reverseBytes(const T& value)
     {
         std::array<char, sizeof(T)> bytes;
         T value;
-    } temp;
+    } temp{};
 
     temp.value = value;
 

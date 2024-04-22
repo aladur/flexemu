@@ -128,8 +128,8 @@ private:
     int mouseY;
     int previousMouseX;
     int previousMouseY;
-    int warpDx;
-    int warpDy;
+    int warpDx{};
+    int warpDy{};
     int warpHomeX;
     int warpHomeY;
     int mouseButtonState;

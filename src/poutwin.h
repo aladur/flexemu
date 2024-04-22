@@ -159,7 +159,7 @@ private:
     QFontComboBox *fontComboBox;
     QTextEdit *textBrowser;
     QPrinter *printer;
-    QPrinter *previewPrinter;
+    QPrinter *previewPrinter{};
     Ui::PrintPreview *ui;
 
     bool hasFixedFont;
