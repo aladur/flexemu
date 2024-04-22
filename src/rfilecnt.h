@@ -38,14 +38,14 @@ private:
 public:
 
     FlexRamFileContainer() = delete;
-    FlexRamFileContainer(const FlexRamFileContainer &) = delete;
-    FlexRamFileContainer(FlexRamFileContainer &&) noexcept;
+    FlexRamFileContainer(const FlexRamFileContainer &src) = delete;
+    FlexRamFileContainer(FlexRamFileContainer &&src) noexcept;
     FlexRamFileContainer(const char *path, const char *mode,
                          const FileTimeAccess &fileTimeAccess);
     ~FlexRamFileContainer() override;
 
-    FlexRamFileContainer &operator= (const FlexRamFileContainer &) = delete;
-    FlexRamFileContainer &operator= (FlexRamFileContainer &&) noexcept;
+    FlexRamFileContainer &operator= (const FlexRamFileContainer &src) = delete;
+    FlexRamFileContainer &operator= (FlexRamFileContainer &&src) noexcept;
 
     bool ReadSector(Byte *buffer, int trk, int sec,
                     int side = -1) const override;

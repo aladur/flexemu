@@ -33,29 +33,39 @@ public:
 
 private:
 
-    inline Byte D_Page10(InstFlg *, Word, const Byte *pMemory, DWord *pAddr);
-    inline Byte D_Page11(InstFlg *, Word, const Byte *pMemory, DWord *pAddr);
-    inline Byte D_Illegal(const char *, Word, Byte, const Byte *);
-    inline Byte D_Direct(const char *, Word, Byte, const Byte *);
-    inline Byte D_Immediat(const char *, Word, Byte, const Byte *);
-    inline Byte D_ImmediatL(const char *, Word, Byte, const Byte *,
-                            DWord *pAddr);
-    inline Byte D_Inherent(const char *, Word, Byte, const Byte *);
-    Byte D_Indexed(const char *, Word, Byte, const Byte *);
-    inline Byte D_Extended(const char *, Word, Byte, const Byte *,
-                           DWord *pAddr);
-    inline Byte D_Relative(const char *, Word, Byte, const Byte *,
-                           DWord *pAddr);
-    inline Byte D_RelativeL(const char *, Word, Byte, const Byte *,
-                            DWord *pAddr);
-    inline Byte D_Register0(const char *, Word, Byte, const Byte *);
-    inline Byte D_Register1(const char *, Word, Byte, const Byte *);
-    inline Byte D_Register2(const char *, Word, Byte, const Byte *);
+    inline Byte D_Page10(InstFlg *pFlags, Word pc, const Byte *pMemory,
+            DWord *pAddr);
+    inline Byte D_Page11(InstFlg *pFlags, Word pc, const Byte *pMemory,
+            DWord *pAddr);
+    inline Byte D_Illegal(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory);
+    inline Byte D_Direct(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory);
+    inline Byte D_Immediat(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory);
+    inline Byte D_ImmediatL(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory, DWord *pAddr);
+    inline Byte D_Inherent(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory);
+    Byte D_Indexed(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory);
+    inline Byte D_Extended(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory, DWord *pAddr);
+    inline Byte D_Relative(const char *mnemo, Word pc, Byte bytes,
+            const Byte *pMemory, DWord *pAddr);
+    inline Byte D_RelativeL(const char *mnemo, Word pc, Byte bytes,
+            const Byte * pMemory, DWord *pAddr);
+    inline Byte D_Register0(const char *mnemo, Word pc, Byte bytes,
+            const Byte * pMemory);
+    inline Byte D_Register1(const char *mnemo, Word pc, Byte bytes,
+            const Byte * pMemory);
+    inline Byte D_Register2(const char *mnemo, Word pc, Byte bytes,
+            const Byte * pMemory);
 
     static const char *IndexedRegister(Byte which);
     static const char *InterRegister(Byte which);
     static const char *StackRegister(Byte which, const char *not_stack);
-    static const char *FlexLabel(Word);
+    static const char *FlexLabel(Word addr);
 }; // class Da6809
 
 #endif // DA6809_INCLUDED

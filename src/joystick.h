@@ -41,9 +41,9 @@ public:
     JoystickIO();
 
     void reset();
-    bool get_values(int *deltaX, int *deltaY, unsigned int *buttonMask);
-    void put_values(int deltaX, int deltaY);
-    void put_value(unsigned int buttonMask);
+    bool get_values(int *p_deltaX, int *p_deltaY, unsigned int *p_buttonMask);
+    void put_values(int p_deltaX, int p_deltaY);
+    void put_value(unsigned int p_buttonMask);
 
 private:
     int deltaX{0};

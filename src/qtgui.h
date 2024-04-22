@@ -95,17 +95,17 @@ class QtGui : public QWidget, public AbstractGui
 public:
     QtGui() = delete;
     QtGui(
-        Mc6809 &,
-        Memory &,
-        Scheduler &,
-        Inout &,
-        VideoControl1 &,
-        VideoControl2 &,
-        JoystickIO &,
-        KeyboardIO &,
-        TerminalIO &,
-        Pia1 &,
-        struct sOptions &);
+        Mc6809 & p_cpu,
+        Memory & p_memory,
+        Scheduler & p_scheduler,
+        Inout & p_inout,
+        VideoControl1 & p_vico1,
+        VideoControl2 & p_vico2,
+        JoystickIO & p_joystickIO,
+        KeyboardIO & p_keyboardIO,
+        TerminalIO & p_terminalIO,
+        Pia1 & p_pia1,
+        struct sOptions & p_options);
     ~QtGui() override;
 
     void SetFloppy(E2floppy *fdc);

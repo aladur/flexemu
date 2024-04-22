@@ -31,7 +31,7 @@ Byte ByteRegister::requestReadValue()
     return 0xff;
 }
 
-void ByteRegister::requestWriteValue(Byte)
+void ByteRegister::requestWriteValue(Byte /*value*/)
 {
 }
 

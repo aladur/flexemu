@@ -47,7 +47,7 @@ public:
     ~BTime() = default;
 
     static BTime Now();
-    std::string AsString(Format = Format::HHMMSS) const;
+    std::string AsString(Format format = Format::HHMMSS) const;
     void Get(int &hour, int &minute, int &second) const;
     void Set(int hour, int minute, int second);
     void Set(const BTime &src);

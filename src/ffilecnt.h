@@ -71,13 +71,13 @@ private:
 public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
-    FlexFileContainer(FlexFileContainer &&) noexcept;
+    FlexFileContainer(FlexFileContainer &&src) noexcept;
     FlexFileContainer(const std::string &path, const std::string &mode,
                       const FileTimeAccess &fileTimeAccess);
     ~FlexFileContainer() override = default;
 
-    FlexFileContainer &operator= (const FlexFileContainer &) = delete;
-    FlexFileContainer &operator= (FlexFileContainer &&) noexcept;
+    FlexFileContainer &operator= (const FlexFileContainer &src) = delete;
+    FlexFileContainer &operator= (FlexFileContainer &&src) noexcept;
 
     static std::string bootSectorFile;
     static bool onTrack0OnlyDirSectors;

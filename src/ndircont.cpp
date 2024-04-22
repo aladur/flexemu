@@ -1884,7 +1884,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 }
 
 
-bool NafsDirectoryContainer::FormatSector(const Byte *, int, int, int, int)
+bool NafsDirectoryContainer::FormatSector(
+        const Byte * /*buffer*/,
+        int /*trk*/,
+        int /*sec*/,
+        int /*side*/,
+        int /*sizecode*/)
 {
     // Handling unformated disks is not supported by this container.
     return false;

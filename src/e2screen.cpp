@@ -50,17 +50,17 @@
 class JoystickIO;
 
 
-E2Screen::E2Screen(Scheduler &x_scheduler,
-                   JoystickIO &x_joystickIO, KeyboardIO &x_keyboardIO,
-                   Pia1 &x_pia1, sOptions &x_options,
-                   const QColor &x_backgroundColor,
+E2Screen::E2Screen(Scheduler &p_scheduler,
+                   JoystickIO &p_joystickIO, KeyboardIO &p_keyboardIO,
+                   Pia1 &p_pia1, sOptions &p_options,
+                   const QColor &p_backgroundColor,
                    QWidget *parent)
     : QWidget(parent)
-    , scheduler(x_scheduler)
-    , joystickIO(x_joystickIO)
-    , keyboardIO(x_keyboardIO)
-    , pia1(x_pia1)
-    , backgroundColor(x_backgroundColor)
+    , scheduler(p_scheduler)
+    , joystickIO(p_joystickIO)
+    , keyboardIO(p_keyboardIO)
+    , pia1(p_pia1)
+    , backgroundColor(p_backgroundColor)
     , screen(QPixmap(WINDOWWIDTH, WINDOWHEIGHT))
     , transformationMode(Qt::FastTransformation)
     , firstRasterLine(0)
@@ -71,11 +71,11 @@ E2Screen::E2Screen(Scheduler &x_scheduler,
     , warpHomeX(0)
     , warpHomeY(0)
     , mouseButtonState(-1)
-    , pixelSize(x_options.pixelSize)
+    , pixelSize(p_options.pixelSize)
     , cursorType(CursorType::Default)
     , doScaledScreenUpdate(true)
-    , preferredScreenSize(WINDOWWIDTH * x_options.pixelSize,
-                          WINDOWHEIGHT * x_options.pixelSize)
+    , preferredScreenSize(WINDOWWIDTH * p_options.pixelSize,
+                          WINDOWHEIGHT * p_options.pixelSize)
     , numLockIndicatorMask(0U)
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
@@ -125,7 +125,7 @@ void E2Screen::mouseReleaseEvent(QMouseEvent *event)
     event->accept();
 }
 
-void E2Screen::leaveEvent(QEvent *)
+void E2Screen::leaveEvent(QEvent * /* event */)
 {
     mouseX = previousMouseX = -1;
     mouseY = previousMouseY = -1;
@@ -133,9 +133,9 @@ void E2Screen::leaveEvent(QEvent *)
 }
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-void E2Screen::enterEvent(QEnterEvent *)
+void E2Screen::enterEvent(QEnterEvent * /* event */)
 #else
-void E2Screen::enterEvent(QEvent *)
+void E2Screen::enterEvent(QEvent * /*event*/)
 #endif
 {
     mouseX = previousMouseX = -1;
@@ -219,7 +219,7 @@ int E2Screen::heightForWidth(int width) const
     return width / 2;
 }
 
-void E2Screen::paintEvent(QPaintEvent *)
+void E2Screen::paintEvent(QPaintEvent * /*event*/)
 {
     QPainter painter(this);
 

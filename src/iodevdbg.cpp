@@ -26,10 +26,10 @@
 #include <iomanip>
 
 
-IoDeviceDebug::IoDeviceDebug(IoDevice &x_device,
-                             const std::string &x_logFilePath) :
-      device(x_device)
-    , logFilePath(x_logFilePath)
+IoDeviceDebug::IoDeviceDebug(IoDevice &p_device,
+                             const std::string &p_logFilePath) :
+      device(p_device)
+    , logFilePath(p_logFilePath)
 {
     std::ofstream fstream(logFilePath,
                           std::ios_base::out | std::ios_base::trunc);

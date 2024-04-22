@@ -72,9 +72,10 @@ QString FlexDateDelegate::displayText(const QVariant &value,
     return locale.toString(value.toDate(), QLocale::ShortFormat);
 }
 
-QWidget *FlexDateDelegate::createEditor(QWidget *parent,
-                                        const QStyleOptionViewItem &,
-                                        const QModelIndex &) const
+QWidget *FlexDateDelegate::createEditor(
+        QWidget *parent,
+        const QStyleOptionViewItem & /*option*/,
+        const QModelIndex & /*index*/) const
 {
     auto *editor = new QDateEdit(parent);
 
@@ -109,9 +110,10 @@ void FlexDateDelegate::setModelData(QWidget *editor,
         "Changing date not implemented yet", QMessageBox::Ok);
 }
 
-void FlexDateDelegate::updateEditorGeometry(QWidget *editor,
-                                            const QStyleOptionViewItem &option,
-                                            const QModelIndex &) const
+void FlexDateDelegate::updateEditorGeometry(
+        QWidget *editor,
+        const QStyleOptionViewItem &option,
+        const QModelIndex & /*index*/) const
 {
     editor->setGeometry(option.rect);
 }
@@ -130,9 +132,10 @@ QString FlexDateTimeDelegate::displayText(const QVariant &value,
     return locale.toString(value.toDateTime(), QLocale::ShortFormat);
 }
 
-QWidget *FlexDateTimeDelegate::createEditor(QWidget *parent,
-                                            const QStyleOptionViewItem &,
-                                            const QModelIndex &) const
+QWidget *FlexDateTimeDelegate::createEditor(
+        QWidget *parent,
+        const QStyleOptionViewItem & /*option*/,
+        const QModelIndex & /*index*/) const
 {
     auto *editor = new QDateTimeEdit(parent);
 
@@ -166,9 +169,10 @@ void FlexDateTimeDelegate::setModelData(QWidget *editor,
         "Changing date and time not implemented yet", QMessageBox::Ok);
 }
 
-void FlexDateTimeDelegate::updateEditorGeometry(QWidget *editor,
-                                            const QStyleOptionViewItem &option,
-                                            const QModelIndex &) const
+void FlexDateTimeDelegate::updateEditorGeometry(
+        QWidget *editor,
+        const QStyleOptionViewItem &option,
+        const QModelIndex & /*index*/) const
 {
     editor->setGeometry(option.rect);
 }
@@ -178,9 +182,10 @@ FlexFilenameDelegate::FlexFilenameDelegate(QWidget *p_parentWidget) :
 {
 }
 
-QWidget *FlexFilenameDelegate::createEditor(QWidget *parent,
-                                            const QStyleOptionViewItem &,
-                                            const QModelIndex &index) const
+QWidget *FlexFilenameDelegate::createEditor(
+        QWidget *parent,
+        const QStyleOptionViewItem & /*option*/,
+        const QModelIndex &index) const
 {
     // The editor is a QLineEdit. It uses a special Validator checking
     // for the FLEX filename syntax and also rejects duplicate filenames.
@@ -211,9 +216,10 @@ void FlexFilenameDelegate::setEditorData(QWidget *editor,
     filenameEditor->setText(value);
 }
 
-void FlexFilenameDelegate::setModelData(QWidget *editor,
-                                        QAbstractItemModel *abstractModel,
-                                        const QModelIndex &index) const
+void FlexFilenameDelegate::setModelData(
+        QWidget *editor,
+        QAbstractItemModel *abstractModel,
+        const QModelIndex &index) const
 {
     auto *model = dynamic_cast<FlexplorerTableModel *>(abstractModel);
     assert(model != nullptr);
@@ -232,10 +238,10 @@ void FlexFilenameDelegate::setModelData(QWidget *editor,
     }
 }
 
-void FlexFilenameDelegate::updateEditorGeometry(QWidget *editor,
-                                                const QStyleOptionViewItem
-                                                          &option,
-                                                const QModelIndex &) const
+void FlexFilenameDelegate::updateEditorGeometry(
+        QWidget *editor,
+        const QStyleOptionViewItem &option,
+        const QModelIndex & /*index*/) const
 {
     editor->setGeometry(option.rect);
 }
@@ -266,9 +272,10 @@ FlexAttributesDelegate::FlexAttributesDelegate(
 {
 }
 
-QWidget *FlexAttributesDelegate::createEditor(QWidget *parent,
-                                              const QStyleOptionViewItem &,
-                                              const QModelIndex &) const
+QWidget *FlexAttributesDelegate::createEditor(
+        QWidget *parent,
+        const QStyleOptionViewItem & /*option*/,
+        const QModelIndex & /*index*/) const
 {
     // The inplace editor is a QLineEdit. An attribute is a bitfield of
     // each of the following four properties:
@@ -328,10 +335,10 @@ void FlexAttributesDelegate::setModelData(QWidget *editor,
     }
 }
 
-void FlexAttributesDelegate::updateEditorGeometry(QWidget *editor,
-                                                  const QStyleOptionViewItem
-                                                          &option,
-                                                  const QModelIndex &) const
+void FlexAttributesDelegate::updateEditorGeometry(
+        QWidget *editor,
+        const QStyleOptionViewItem &option,
+        const QModelIndex & /*index*/) const
 {
     editor->setGeometry(option.rect);
 }

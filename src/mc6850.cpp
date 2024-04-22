@@ -98,7 +98,7 @@ void Mc6850::writeIo(Word offset, Byte val)
 
 // write output to port-Pins (should be overwritten by subclass)
 
-void Mc6850::writeOutput(Byte)
+void Mc6850::writeOutput(Byte /*value*/)
 {
 }
 

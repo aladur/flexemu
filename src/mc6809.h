@@ -172,36 +172,36 @@ protected:
 
     public:
         atomic_event() = delete;
-        explicit atomic_event(Event x_event)
-            : event(static_cast<T>(x_event))
+        explicit atomic_event(Event p_event)
+            : event(static_cast<T>(p_event))
         {
         }
         ~atomic_event() = default;
         atomic_event(const atomic_event&) = delete;
         atomic_event& operator= (const atomic_event&) = delete;
-        atomic_event &operator= (Event x_event)
+        atomic_event &operator= (Event p_event)
         {
-            event = static_cast<T>(x_event);
+            event = static_cast<T>(p_event);
             return *this;
         }
-        Event operator& (Event x_event)
+        Event operator& (Event p_event)
         {
             return static_cast<Event>(static_cast<T>(event) &
-                                      static_cast<T>(x_event));
+                                      static_cast<T>(p_event));
         }
-        Event operator|= (Event x_event)
+        Event operator|= (Event p_event)
         {
-            event |= static_cast<T>(x_event);
+            event |= static_cast<T>(p_event);
             return static_cast<Event>(static_cast<T>(event));
         }
-        Event operator&= (Event x_event)
+        Event operator&= (Event p_event)
         {
-            event &= static_cast<T>(x_event);
+            event &= static_cast<T>(p_event);
             return static_cast<Event>(static_cast<T>(event));
         }
-        bool operator!= (Event x_event)
+        bool operator!= (Event p_event)
         {
-            return static_cast<T>(event) != static_cast<T>(x_event);
+            return static_cast<T>(event) != static_cast<T>(p_event);
         }
     };
 
@@ -887,7 +887,7 @@ private:
     void exg();
     cycles_t psh(Byte what, Word &s, Word &u);
     cycles_t pul(Byte what, Word &s, Word &u);
-    Word do_effective_address(Byte);
+    Word do_effective_address(Byte post);
 #endif
     void nmi(bool save_state);
     void firq(bool save_state);
@@ -907,13 +907,13 @@ public:
     CpuState run(RunMode mode) override;
     void exit_run() override;
     QWord get_cycles(bool reset = false) override;
-    void get_status(CpuStatus *x_cpu_status) override;
+    void get_status(CpuStatus *p_cpu_status) override;
     CpuStatusPtr create_status_object() override;
     void get_interrupt_status(tInterruptStatus &s) override;
-    void set_required_cyclecount(cycles_t x_cycles) override;
+    void set_required_cyclecount(cycles_t p_cycles) override;
 
     // test support
-    void set_status(CpuStatus *x_cpu_status);
+    void set_status(CpuStatus *p_cpu_status);
 protected:
     CpuState runloop();
 
@@ -942,7 +942,7 @@ public:
     // interface to other classes
 public:
     void set_disassembler(Da6809 *p_disassembler);
-    bool set_logfile(const struct s_cpu_logfile &x_lfs);
+    bool set_logfile(const struct s_cpu_logfile &p_lfs);
     Word get_pc()
     {
         return PC;
@@ -963,7 +963,7 @@ protected:
 
     // Public constructor and destructor
 public:
-    explicit Mc6809(Memory &x_memory);
+    explicit Mc6809(Memory &p_memory);
     ~Mc6809() override;
 };
 

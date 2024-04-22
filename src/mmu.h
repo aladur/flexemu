@@ -57,7 +57,7 @@ public:
     };
 
 public:
-    explicit Mmu(Memory &x_memory);
+    explicit Mmu(Memory &p_memory);
     ~Mmu() override = default;
 };
 

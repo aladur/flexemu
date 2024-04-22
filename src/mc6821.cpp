@@ -186,7 +186,7 @@ void Mc6821::writeIo(Word offset, Byte val)
 
 // write output to port-Pins (should be overwritten by subclass)
 
-void Mc6821::writeOutputA(Byte)
+void Mc6821::writeOutputA(Byte /*value*/)
 {
 }
 
@@ -199,7 +199,7 @@ void Mc6821::set_irq_B()
 }
 
 
-void Mc6821::writeOutputB(Byte)
+void Mc6821::writeOutputB(Byte /*value*/)
 {
 }
 

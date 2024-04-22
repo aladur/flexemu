@@ -34,10 +34,10 @@ TerminalIO *TerminalIO::instance = nullptr;
     bool TerminalIO::is_termios_saved = false;
 #endif
 
-TerminalIO::TerminalIO(Scheduler &x_scheduler,
-                       const struct sOptions &x_options) :
-                       scheduler(x_scheduler),
-                       options(x_options),
+TerminalIO::TerminalIO(Scheduler &p_scheduler,
+                       const struct sOptions &p_options) :
+                       scheduler(p_scheduler),
+                       options(p_options),
                        init_delay(500)
 {
     instance = this;
@@ -369,7 +369,7 @@ void TerminalIO::s_exec_signal(int sig_no)
     }
 }
 #else
-void TerminalIO::s_exec_signal(int sig_no, siginfo_t *, void *)
+void TerminalIO::s_exec_signal(int sig_no, siginfo_t * /*unused*/, void * /*unused*/)
 {
     if (TerminalIO::instance != nullptr)
     {
@@ -419,9 +419,9 @@ void TerminalIO::exec_signal(int sig_no)
     }
 }
 
-void TerminalIO::set_startup_command(const char *x_startup_command)
+void TerminalIO::set_startup_command(const char *p_startup_command)
 {
-    std::string startup_command(x_startup_command);
+    std::string startup_command(p_startup_command);
 
     if (!startup_command.empty())
     {

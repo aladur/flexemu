@@ -91,22 +91,22 @@
 int QtGui::preferencesTabIndex = 0;
 
 QtGui::QtGui(
-    Mc6809 &x_cpu,
-    Memory &x_memory,
-    Scheduler &x_scheduler,
-    Inout &x_inout,
-    VideoControl1 &x_vico1,
-    VideoControl2 &x_vico2,
-    JoystickIO &x_joystickIO,
-    KeyboardIO &x_keyboardIO,
-    TerminalIO &x_terminalIO,
-    Pia1 &x_pia1,
-    struct sOptions &x_options)
+    Mc6809 &p_cpu,
+    Memory &p_memory,
+    Scheduler &p_scheduler,
+    Inout &p_inout,
+    VideoControl1 &p_vico1,
+    VideoControl2 &p_vico2,
+    JoystickIO &p_joystickIO,
+    KeyboardIO &p_keyboardIO,
+    TerminalIO &p_terminalIO,
+    Pia1 &p_pia1,
+    struct sOptions &p_options)
         : AbstractGui(
-               x_cpu
-             , x_memory
-             , x_inout
-             , x_terminalIO)
+               p_cpu
+             , p_memory
+             , p_inout
+             , p_terminalIO)
         , mainLayout(new QVBoxLayout(this))
         , toolBarLayout(new QHBoxLayout)
         , e2screen(nullptr)
@@ -122,14 +122,14 @@ QtGui::QtGui(
         , isRestartNeeded(false)
         , timerTicks(0)
         , oldFirstRasterLine(0)
-        , scheduler(x_scheduler)
-        , vico1(x_vico1)
-        , vico2(x_vico2)
-        , joystickIO(x_joystickIO)
-        , keyboardIO(x_keyboardIO)
+        , scheduler(p_scheduler)
+        , vico1(p_vico1)
+        , vico2(p_vico2)
+        , joystickIO(p_joystickIO)
+        , keyboardIO(p_keyboardIO)
         , fdc(nullptr)
-        , options(x_options)
-        , oldOptions(x_options)
+        , options(p_options)
+        , oldOptions(p_options)
 {
     logfileSettings.reset();
 
@@ -145,8 +145,8 @@ QtGui::QtGui(
     toolBarLayout->setObjectName(QString::fromUtf8("toolBarLayout"));
     toolBarLayout->setSpacing(0);
     mainLayout->addLayout(toolBarLayout);
-    e2screen = new E2Screen(x_scheduler, x_joystickIO, x_keyboardIO,
-                            x_pia1, x_options, colorTable.first(), this);
+    e2screen = new E2Screen(p_scheduler, p_joystickIO, p_keyboardIO,
+                            p_pia1, p_options, colorTable.first(), this);
     mainLayout->addWidget(e2screen, 1); //, Qt::AlignCenter);
     QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     e2screen->setSizePolicy(sizePolicy);
@@ -200,11 +200,11 @@ QtGui::~QtGui()
     delete cpuDialog;
 }
 
-void QtGui::SetFloppy(E2floppy *x_fdc)
+void QtGui::SetFloppy(E2floppy *p_fdc)
 {
-    if (fdc == nullptr && x_fdc != nullptr)
+    if (fdc == nullptr && p_fdc != nullptr)
     {
-        fdc = x_fdc; // Only Eurocom II/V7 has a floppy controller.
+        fdc = p_fdc; // Only Eurocom II/V7 has a floppy controller.
 
         AddDiskStatusButtons();
     }
@@ -254,20 +254,20 @@ void QtGui::OnExit()
     isRestartNeeded = safeFlag;
 }
 
-void QtGui::SetPreferencesStatusText(bool x_isRestartNeeded) const
+void QtGui::SetPreferencesStatusText(bool p_isRestartNeeded) const
 {
     assert(preferencesAction != nullptr);
 
-    const auto statusText = x_isRestartNeeded ?
+    const auto statusText = p_isRestartNeeded ?
         tr("Edit application preferences - Needs restart") :
         tr("Edit application preferences");
 
     preferencesAction->setStatusTip(statusText);
 }
 
-QIcon QtGui::GetPreferencesIcon(bool x_isRestartNeeded)
+QIcon QtGui::GetPreferencesIcon(bool p_isRestartNeeded)
 {
-    return x_isRestartNeeded ?
+    return p_isRestartNeeded ?
         QIcon(":/resource/preferences-needs-restart.png") :
         QIcon(":/resource/preferences.png");
 }
@@ -2032,7 +2032,7 @@ void QtGui::changeEvent(QEvent *event)
     }
 }
 
-void QtGui::showEvent(QShowEvent *)
+void QtGui::showEvent(QShowEvent * /*event*/)
 {
     int index = (e2screen->GetScaledSize().width() / WINDOWWIDTH) - 1;
 

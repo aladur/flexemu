@@ -61,7 +61,8 @@ public:
 #ifdef _WIN32
     static void s_exec_signal(int sig_no);
 #else
-    static void s_exec_signal(int sig_no, siginfo_t *, void *);
+    static void s_exec_signal(
+            int sig_no, siginfo_t * /*info*/, void * /*ucontext*/);
 #endif
     void init(Word reset_key);
 
@@ -72,7 +73,7 @@ public:
     void write_char_serial(Byte val);
     bool is_terminal_supported();
     void signal_reset(int sig_no);
-    void set_startup_command(const char *x_startup_command);
+    void set_startup_command(const char *p_startup_command);
 
 private:
     static void reset_terminal_io();
@@ -83,7 +84,7 @@ private:
 
 public:
     TerminalIO() = delete;
-    TerminalIO(Scheduler &x_scheduler, const struct sOptions &x_options);
+    TerminalIO(Scheduler &p_scheduler, const struct sOptions &p_options);
     ~TerminalIO() override = default;
 };
 

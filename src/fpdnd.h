@@ -51,7 +51,7 @@ public:
     void SetDnsHostName(const std::string &dnsHostName);
     std::string GetDnsHostName() const;
     void Add(FlexFileBuffer &&fileBuffer);
-    FlexFileBuffer &GetBufferAt(unsigned int);
+    FlexFileBuffer &GetBufferAt(unsigned int index);
     DWord GetFileSize() const;
     unsigned int GetFileCount() const
     {

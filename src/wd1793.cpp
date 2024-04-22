@@ -368,18 +368,18 @@ void Wd1793::command(Byte command)
 }// command
 
 // should be reimplemented by subclass.
-bool Wd1793::startCommand(Byte)
+bool Wd1793::startCommand(Byte /*command_un*/)
 {
     return true;
 }
 
-Byte Wd1793::readByte(Word index, Byte)
+Byte Wd1793::readByte(Word index, Byte /*command_un*/)
 {
     return static_cast<Byte>(index);
 }
 
 // should be reimplemented by subclass.
-void Wd1793::writeByte(Word &, Byte)
+void Wd1793::writeByte(Word & /*index*/, Byte /*command_un*/)
 {
 }
 
@@ -389,7 +389,7 @@ bool Wd1793::isDriveReady() const
 }
 
 
-bool Wd1793::isSeekError(Byte) const
+bool Wd1793::isSeekError(Byte /*new_track*/) const
 {
     return false;
 }

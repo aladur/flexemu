@@ -37,7 +37,7 @@ class DirectoryContainer;
 class DirectoryContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-    explicit DirectoryContainerIteratorImp(DirectoryContainer *);
+    explicit DirectoryContainerIteratorImp(DirectoryContainer *aBase);
     DirectoryContainerIteratorImp() = delete;
     DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &src) =
         delete;
@@ -51,7 +51,7 @@ public:
     bool NextDirEntry(const char *wildcar) override;
 private:
     bool DeleteCurrent() override;
-    bool RenameCurrent(const char *) override;
+    bool RenameCurrent(const char *newName) override;
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 

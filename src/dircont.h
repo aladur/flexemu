@@ -100,7 +100,7 @@ private:
     bool SetDateTime(const char *fileName, const BDate &date,
                      const BTime &time);
     bool SetRandom(const char *fileName);
-    void Initialize_header(Byte wp);
+    void Initialize_header(bool isWriteProtect);
 
 };
 

@@ -105,7 +105,7 @@ public:
     };
 
     virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
-    virtual void disk_directory(const std::string &x_disk_dir);
+    virtual void disk_directory(const std::string &p_disk_dir);
     virtual void mount_all_drives(std::string drive[]);
     virtual bool sync_all_drives(tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_all_drives();

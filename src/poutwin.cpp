@@ -140,7 +140,7 @@ const char PrintOutputWindow::separator = ',';
 ** Constructor, Destructor **
 ****************************/
 
-PrintOutputWindow::PrintOutputWindow(sOptions &x_options)
+PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     : mainLayout(new QVBoxLayout(this))
     , toolBarLayout(new QHBoxLayout)
     , statusBarFrame(nullptr)
@@ -166,7 +166,7 @@ PrintOutputWindow::PrintOutputWindow(sOptions &x_options)
     , pageSizeId(QPageSize::A4)
     , characterCount(0)
     , lineCount(0)
-    , options(x_options)
+    , options(p_options)
     , isDeferPreviewUpdate(false)
 {
     setObjectName("PrintOutputWindow");
@@ -260,7 +260,7 @@ int PrintOutputWindow::GetPercentFromSizeFactor(float sizeFactor)
     return 100 - static_cast<int>(temp);
 }
 
-QMarginsF PrintOutputWindow::GetDefaultMarginsFor(QPageSize::PageSizeId)
+QMarginsF PrintOutputWindow::GetDefaultMarginsFor(QPageSize::PageSizeId /*id*/)
 {
     return {10.0, 10.0, 10.0, 10.0}; // In Millimeter
 }
@@ -558,7 +558,7 @@ void PrintOutputWindow::OnPreviewChanged()
     }
 }
 
-void PrintOutputWindow::OnPrint(bool)
+void PrintOutputWindow::OnPrint(bool /*checked*/)
 {
     printer = new QPrinter(QPrinter::HighResolution);
 

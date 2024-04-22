@@ -63,9 +63,9 @@ public:
     };
 
     E2Screen() = delete;
-    E2Screen(Scheduler &x_scheduler, JoystickIO &x_joystickIO,
-             KeyboardIO &x_keyboardIO, Pia1 &x_pia1,
-             sOptions &x_options,
+    E2Screen(Scheduler &p_scheduler, JoystickIO &p_joystickIO,
+             KeyboardIO &p_keyboardIO, Pia1 &p_pia1,
+             sOptions &p_options,
              const QColor &backgroundColor, QWidget *parent = nullptr);
     ~E2Screen() override = default;
 

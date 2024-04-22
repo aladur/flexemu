@@ -59,8 +59,8 @@ protected:
 
     // private interface:
 private:
-    static void skip_token(char **);
-    static const char *next_token(char **, int *);
+    static void skip_token(char **pp);
+    static const char *next_token(char **pp, int *pcount);
 
     // public interface
 public:
@@ -79,9 +79,9 @@ public:
 
 public:
     Command(
-            Inout &x_inout,
-            Scheduler &x_scheduler,
-            E2floppy &x_fdc);
+            Inout &p_inout,
+            Scheduler &p_scheduler,
+            E2floppy &p_fdc);
     ~Command() override = default;
 };
 

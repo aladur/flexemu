@@ -31,7 +31,7 @@ class FlexFileContainer;
 class FlexFileContainerIteratorImp : public FileContainerIteratorImp
 {
 public:
-    explicit FlexFileContainerIteratorImp(FlexFileContainer *);
+    explicit FlexFileContainerIteratorImp(FlexFileContainer *aBase);
     FlexFileContainerIteratorImp() = delete;
     FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &src) =
         delete;
@@ -45,7 +45,7 @@ public:
     bool NextDirEntry(const char *wildcard) override;
 private:
     bool DeleteCurrent() override;
-    bool RenameCurrent(const char *) override;
+    bool RenameCurrent(const char *newName) override;
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 

@@ -35,11 +35,11 @@
 #include "soptions.h"
 
 
-E2floppy::E2floppy(const struct sOptions &x_options)
+E2floppy::E2floppy(const struct sOptions &p_options)
     : selected(MAX_DRIVES)
     , pfs(nullptr)
     , writeTrackState(WriteTrackState::Inactive)
-    , options(x_options)
+    , options(p_options)
 {
     for (auto i = 0U; i <= MAX_DRIVES; i++)
     {
@@ -252,9 +252,9 @@ bool E2floppy::mount_drive(const std::string &path,
     return TryMount(fullPath);
 } // mount_drive
 
-void E2floppy::disk_directory(const std::string &x_disk_dir)
+void E2floppy::disk_directory(const std::string &p_disk_dir)
 {
-    disk_dir = x_disk_dir;
+    disk_dir = p_disk_dir;
 }
 
 void E2floppy::mount_all_drives(std::string drive[])
@@ -469,7 +469,7 @@ Byte E2floppy::readByteInSector(Word index)
 
 // Unfinished feature.
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-Byte E2floppy::readByteInTrack(Word)
+Byte E2floppy::readByteInTrack(Word /*index*/)
 {
     // TODO unfinished
     return 0U;

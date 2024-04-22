@@ -26,7 +26,7 @@
 #include "mmu.h"
 #include "memory.h"
 
-Mmu::Mmu(Memory &x_memory) : memory(x_memory)
+Mmu::Mmu(Memory &p_memory) : memory(p_memory)
 {
 }
 
@@ -36,7 +36,7 @@ void Mmu::resetIo()
 
 
 
-Byte Mmu::readIo(Word)
+Byte Mmu::readIo(Word /*offset*/)
 {
     return 0xff;
 }

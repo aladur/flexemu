@@ -402,88 +402,88 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 }
 
 
-bool Mc146818::increment_hour(Byte &x_hour) const
+bool Mc146818::increment_hour(Byte &p_hour) const
 {
     switch (B & 0x06)
     {
         case 0x00:      //12 hour, BCD
-            if (x_hour == 0x12)
+            if (p_hour == 0x12)
             {
-                x_hour = 0x81;
+                p_hour = 0x81;
             }
-            else if (x_hour == 0x92)
+            else if (p_hour == 0x92)
             {
-                x_hour = 0x01;
+                p_hour = 0x01;
                 return true;
             }
-            else if ((x_hour & 0x0f) == 9)
+            else if ((p_hour & 0x0f) == 9)
             {
-                x_hour = (x_hour & 0xf0) + 0x10;
+                p_hour = (p_hour & 0xf0) + 0x10;
             }
             else
             {
-                x_hour++;
+                p_hour++;
             }
 
             break;
 
         case 0x02:      //24 hour, BCD
-            if ((x_hour & 0x0f) == 9)
+            if ((p_hour & 0x0f) == 9)
             {
-                x_hour = (x_hour & 0xf0) + 0x10;
+                p_hour = (p_hour & 0xf0) + 0x10;
             }
-            else if (x_hour == 0x23)
+            else if (p_hour == 0x23)
             {
-                x_hour = 0x00;
+                p_hour = 0x00;
                 return true;
             }
             else
             {
-                x_hour++;
+                p_hour++;
             }
 
             break;
 
         case 0x04:      //12 hour, binary
-            if (x_hour == 0x0C)
+            if (p_hour == 0x0C)
             {
-                x_hour = 0x81;
+                p_hour = 0x81;
             }
-            else if (x_hour == 0x8C)
+            else if (p_hour == 0x8C)
             {
-                x_hour = 0x01;
+                p_hour = 0x01;
                 return true;
             }
             else
             {
-                x_hour++;
+                p_hour++;
             }
 
             break;
 
         case 0x06:      //24 hour, binary
-            if (x_hour == 0x17)
+            if (p_hour == 0x17)
             {
-                x_hour = 0x00;
+                p_hour = 0x00;
                 return true;
             }
             else
             {
-                x_hour++;
+                p_hour++;
             }
 
             break;
-    }  // switch
+    }
 
     return false;
 }
 
 
-bool Mc146818::increment_day(Byte &x_day, Byte x_month, Byte x_year)
+bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
 {
     Byte binmonth;
 
-    binmonth = convert_bin(x_month);
+    binmonth = convert_bin(p_month);
 
     if (binmonth < 1)
     {
@@ -496,36 +496,36 @@ bool Mc146818::increment_day(Byte &x_day, Byte x_month, Byte x_year)
     }
 
     // if February leap year
-    if (binmonth == 2 && (convert_bin(x_year) % 4 == 0))
+    if (binmonth == 2 && (convert_bin(p_year) % 4 == 0))
     {
-        if (convert_bin(x_day) == 29)
+        if (convert_bin(p_day) == 29)
         {
             // switch to next month on 29. Febr.
-            x_day = 1;
+            p_day = 1;
             return true;
         }
     }
-    else if (convert_bin(x_day) == days_per_month[binmonth - 1])
+    else if (convert_bin(p_day) == days_per_month[binmonth - 1])
     {
-        x_day = 1;
+        p_day = 1;
         return true;
     }
 
     if (B & 0x04)
     {
         // binary calculation
-        x_day++;
+        p_day++;
     }
     else
     {
         // bcd calculation
-        if ((x_day & 0x0f) == 9)
+        if ((p_day & 0x0f) == 9)
         {
-            x_day = (x_day & 0xf0) + 0x10;
+            p_day = (p_day & 0xf0) + 0x10;
         }
         else
         {
-            x_day++;
+            p_day++;
         }
     }
 

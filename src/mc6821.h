@@ -96,8 +96,8 @@ protected:
     virtual void requestInputB();
 
     // write data to port-pins
-    virtual void writeOutputA(Byte val);
-    virtual void writeOutputB(Byte val);
+    virtual void writeOutputA(Byte value);
+    virtual void writeOutputB(Byte value);
 
 public:
 

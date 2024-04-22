@@ -370,7 +370,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 /* private interface          */
 /******************************/
 
-void DirectoryContainer::Initialize_header(Byte)
+void DirectoryContainer::Initialize_header(bool /*isWriteProtect*/)
 {
     /*
         param.offset = 0;

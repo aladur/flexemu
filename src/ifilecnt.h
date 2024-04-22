@@ -38,14 +38,14 @@ public:
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
-    bool operator==(const FileContainerIf *) const;
-    bool operator!=(const FileContainerIf *) const;
-    FileContainerIterator &operator=(FileContainerIf *);
+    bool operator==(const FileContainerIf *aBase) const;
+    bool operator!=(const FileContainerIf *aBase) const;
+    FileContainerIterator &operator=(FileContainerIf *aBase);
     FileContainerIterator &operator++();
     FileContainerIterator &operator=(const FileContainerIterator &src) =
         delete;
     bool DeleteCurrent();
-    bool RenameCurrent(const char *);
+    bool RenameCurrent(const char *newName);
     bool SetDateCurrent(const BDate &date);
     bool SetAttributesCurrent(Byte attributes);
 private:

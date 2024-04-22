@@ -21,13 +21,13 @@
     #define PC pc
 #endif
 
-Mc6809::Mc6809(Memory &x_memory) : events(Event::NONE),
+Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
 #ifdef FASTFLEX
     pMem(nullptr),
 #else
     a(acc.byte.a), b(acc.byte.b), d(acc.d), dp(dpreg.byte.h),
 #endif
-     memory(x_memory)
+     memory(p_memory)
 {
 #ifndef FASTFLEX
     dpreg.byte.l = 0;
@@ -1456,7 +1456,7 @@ void Mc6809::reset_bp(int which)
 }
 
 // If logFileName is empty the current log file is closed.
-bool Mc6809::set_logfile(const struct s_cpu_logfile &x_lfs)
+bool Mc6809::set_logfile(const struct s_cpu_logfile &p_lfs)
 {
     if (log_fp != nullptr)
     {
@@ -1464,11 +1464,11 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile &x_lfs)
         log_fp = nullptr;
     }
 
-    lfs = x_lfs;
+    lfs = p_lfs;
 
     if (!lfs.logFileName.empty())
     {
-        log_fp = fopen(x_lfs.logFileName.c_str(), "w");
+        log_fp = fopen(p_lfs.logFileName.c_str(), "w");
         if (log_fp == nullptr)
         {
             // Error when trying to open log file.
@@ -1486,7 +1486,7 @@ void Mc6809::get_interrupt_status(tInterruptStatus &stat)
     memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
 }
 
-void Mc6809::UpdateFrom(NotifyId id, void *)
+void Mc6809::UpdateFrom(NotifyId id, void * /*param*/)
 {
     if (id == NotifyId::SetIrq)
     {

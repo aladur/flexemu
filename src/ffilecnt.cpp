@@ -813,8 +813,8 @@ bool FlexFileContainer::SetAttributes(const char *wildcard,
 
     for (it = this->begin(); it != this->end(); ++it)
     {
-        Byte x_attributes = (it->GetAttributes() & ~clearMask) | setMask;
-        it.SetAttributesCurrent(x_attributes);
+        Byte p_attributes = (it->GetAttributes() & ~clearMask) | setMask;
+        it.SetAttributesCurrent(p_attributes);
     }
 
     return true;

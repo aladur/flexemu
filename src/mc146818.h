@@ -74,9 +74,9 @@ private:
     Byte convert(Byte val) const;
     Byte convert_hour(Byte val) const;
     Byte convert_bin(Byte val) const;
-    bool increment(Byte &, Byte, Byte);
-    bool increment_hour(Byte &) const;
-    bool increment_day(Byte &, Byte, Byte);
+    bool increment(Byte &reg, Byte min, Byte max);
+    bool increment_hour(Byte &p_hour) const;
+    bool increment_day(Byte &p_day, Byte p_month, Byte p_year);
 
     static std::string getConfigFilePath();
 

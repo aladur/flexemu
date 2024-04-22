@@ -30,11 +30,11 @@ class BFilePtr
 public:
     BFilePtr();
     BFilePtr(const std::string &p_path, const std::string &p_mode);
-    BFilePtr(const BFilePtr &) = delete;
-    BFilePtr(BFilePtr &&) noexcept;
+    BFilePtr(const BFilePtr &src) = delete;
+    BFilePtr(BFilePtr &&src) noexcept;
     ~BFilePtr();
-    BFilePtr &operator= (const BFilePtr &) = delete;
-    BFilePtr &operator= (BFilePtr &&) noexcept;
+    BFilePtr &operator= (const BFilePtr &src) = delete;
+    BFilePtr &operator= (BFilePtr &&src) noexcept;
 
     bool Close();
     std::string GetPath() const

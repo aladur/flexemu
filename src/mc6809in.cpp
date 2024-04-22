@@ -494,15 +494,15 @@ void Mc6809::exit_run()
 // reached the runloop exits automatically with
 // the state CpuState::Suspend.
 
-void Mc6809::set_required_cyclecount(cycles_t x_cycles)
+void Mc6809::set_required_cyclecount(cycles_t p_cycles)
 {
 #ifdef FASTFLEX
-    required_cyclecount = x_cycles * 10;
+    required_cyclecount = p_cycles * 10;
 #else
-    required_cyclecount = x_cycles;
+    required_cyclecount = p_cycles;
 #endif
 
-    if (x_cycles == std::numeric_limits<decltype(cycles)>::max())
+    if (p_cycles == std::numeric_limits<decltype(cycles)>::max())
     {
         events &= ~Event::FrequencyControl;
     }

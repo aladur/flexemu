@@ -76,8 +76,8 @@ class MdcrFileSystem
                        MdcrWriteMode mode,
                        bool toUppercase = true);
         MdcrStatus ForEachFile(MiniDcrTape &mdcr,
-                          const std::function<MdcrStatus (const std::string&,
-                                                    BMemoryBuffer &memory)>&);
+                const std::function<MdcrStatus (const std::string&,
+                BMemoryBuffer &memory)>& iterateFunction);
 
     public:
         MdcrFileSystem() = default;

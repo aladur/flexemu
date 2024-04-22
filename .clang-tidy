@@ -62,6 +62,7 @@ Checks: '
   readability-const-return-type,
   readability-inconsistent-declaration-parameter-name,
   readability-isolate-declaration,
+  readability-named-parameter,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
   readability-container-size-empty,

@@ -49,8 +49,8 @@ private:
 
 public:
     void update_1_second();
-    void set_rtc(Mc146818 *x_rtc);
-    void set_gui(AbstractGui *x_gui);
+    void set_rtc(Mc146818 *p_rtc);
+    void set_gui(AbstractGui *p_gui);
 
     // Communication with GUI
 public:
@@ -71,7 +71,7 @@ public:
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 public:
-    Inout(const struct sOptions &x_options, Memory &x_memory);
+    Inout(const struct sOptions &p_options, Memory &p_memory);
     ~Inout() override = default;
 };
 

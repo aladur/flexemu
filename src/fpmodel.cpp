@@ -500,13 +500,13 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
     }
 }
 
-int FlexplorerTableModel::rowCount(const QModelIndex &) const
+int FlexplorerTableModel::rowCount(const QModelIndex & /*parent*/) const
 {
     // This is an override method with a defined return type.
     return cast_from_qsizetype(rows.size());
 }
 
-int FlexplorerTableModel::columnCount(const QModelIndex &) const
+int FlexplorerTableModel::columnCount(const QModelIndex & /*parent*/) const
 {
     return COLUMNS;
 }
@@ -618,7 +618,7 @@ Qt::ItemFlags FlexplorerTableModel::flags(const QModelIndex &index) const
 bool FlexplorerTableModel::insertRows(
         int row,
         int count,
-        const QModelIndex &)
+        const QModelIndex & /*parent*/)
 {
     if (count >= 0 && row == rows.size())
     {
@@ -643,7 +643,7 @@ bool FlexplorerTableModel::insertRows(
 bool FlexplorerTableModel::removeRows(
         int row,
         int count,
-        const QModelIndex &)
+        const QModelIndex & /*parent*/)
 {
     if (count >= 0 && row + count <= rows.size())
     {
