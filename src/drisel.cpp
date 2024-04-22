@@ -26,7 +26,7 @@
 #include "e2floppy.h"
 
 
-DriveSelect::DriveSelect(E2floppy &x_fdc) : fdc(x_fdc)
+DriveSelect::DriveSelect(E2floppy &p_fdc) : fdc(p_fdc)
 {
 }
 

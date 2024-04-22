@@ -105,9 +105,9 @@ inline int FlexDirEntry::GetFileSize() const
     return size;
 }
 
-inline void FlexDirEntry::SetAttributes(Byte x_attributes)
+inline void FlexDirEntry::SetAttributes(Byte p_attributes)
 {
-    attributes = x_attributes;
+    attributes = p_attributes;
 }
 inline Byte FlexDirEntry::GetAttributes() const
 {

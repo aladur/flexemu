@@ -54,8 +54,8 @@ protected:
     void set_irq_B() override;
 
 public:
-    Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
-         const struct sOptions &x_options);
+    Pia1(Scheduler &p_scheduler, KeyboardIO &p_keyboardIO,
+         const struct sOptions &p_options);
     void resetIo() override;
     const char *getName() override
     {

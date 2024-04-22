@@ -48,7 +48,7 @@ class KeyboardIO
     Word init_delay{500};
 
 public:
-    static void set_bell(Word x_percent);
+    static void set_bell(Word p_percent);
     void reset_parallel();
     bool has_key_parallel(bool &do_notify);
     Byte read_char_parallel(bool &do_notify);
@@ -56,7 +56,7 @@ public:
     void put_char_parallel(Byte key, bool &do_notify);
     void put_value(unsigned int keyMask);
     void get_value(unsigned int *keyMask) const;
-    void set_startup_command(const char *x_startup_command);
+    void set_startup_command(const char *p_startup_command);
 
     KeyboardIO();
 };

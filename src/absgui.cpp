@@ -194,14 +194,14 @@ void AbstractGui::write_char_serial(Byte /*value*/)
 }
 
 AbstractGui::AbstractGui(
-    Mc6809 &x_cpu,
-    Memory &x_memory,
-    Inout &x_inout,
-    TerminalIO &x_terminalIO)
-        : cpu(x_cpu)
-        , memory(x_memory)
-        , inout(x_inout)
-        , terminalIO(x_terminalIO)
+    Mc6809 &p_cpu,
+    Memory &p_memory,
+    Inout &p_inout,
+    TerminalIO &p_terminalIO)
+        : cpu(p_cpu)
+        , memory(p_memory)
+        , inout(p_inout)
+        , terminalIO(p_terminalIO)
 {
 }
 

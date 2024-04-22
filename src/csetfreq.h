@@ -31,7 +31,7 @@ class CSetFrequency : public BCommand
 {
 
 public:
-    CSetFrequency(Scheduler &x_sched, float x_frequency);
+    CSetFrequency(Scheduler &p_sched, float p_frequency);
     void Execute() override;
 
 protected:

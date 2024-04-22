@@ -90,7 +90,7 @@ protected:
 
 public:
     void set_debug(const std::string &debugLevel, std::string logFilePath);
-    void disk_directory(const char *x_disk_dir);
+    void disk_directory(const char *p_disk_dir);
     void mount_all_drives(const std::array<std::string, 2> &paths);
     bool mount_drive(const char *path, Word drive_nr);
 
@@ -101,7 +101,7 @@ public:
         return "pia2";
     };
 
-    explicit Pia2V5(Mc6809 &x_cpu);
+    explicit Pia2V5(Mc6809 &p_cpu);
     ~Pia2V5() override;
 
 private:

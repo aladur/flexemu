@@ -29,10 +29,10 @@
 #include "bobserv.h"
 
 
-Pia1::Pia1(Scheduler &x_scheduler, KeyboardIO &x_keyboardIO,
-           const struct sOptions &x_options) :
-    scheduler(x_scheduler), keyboardIO(x_keyboardIO),
-    options(x_options)
+Pia1::Pia1(Scheduler &p_scheduler, KeyboardIO &p_keyboardIO,
+           const struct sOptions &p_options) :
+    scheduler(p_scheduler), keyboardIO(p_keyboardIO),
+    options(p_options)
 {
 }
 

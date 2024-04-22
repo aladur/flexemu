@@ -33,7 +33,7 @@
 #define GET_DELTA_TIME static_cast<float>((cpu.get_cycles() - cycles_cdbg) * \
                                           ORIGINAL_PERIOD)
 
-Pia2V5::Pia2V5(Mc6809 &x_cpu) : cpu(x_cpu)
+Pia2V5::Pia2V5(Mc6809 &p_cpu) : cpu(p_cpu)
 
 {
     write_buffer.reserve(256);
@@ -381,9 +381,9 @@ void Pia2V5::requestInputA()
     }
 }
 
-void Pia2V5::disk_directory(const char *x_disk_dir)
+void Pia2V5::disk_directory(const char *p_disk_dir)
 {
-        disk_dir = x_disk_dir;
+        disk_dir = p_disk_dir;
 }
 
 void Pia2V5::SetReadModeToInit()

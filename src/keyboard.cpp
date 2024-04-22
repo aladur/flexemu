@@ -106,7 +106,7 @@ Byte KeyboardIO::peek_char_parallel()
     return result;
 }
 
-void KeyboardIO::set_bell(Word /*x_percent*/)
+void KeyboardIO::set_bell(Word /*p_percent*/)
 {
 #ifdef _WIN32
     Beep(400, 100);
@@ -119,22 +119,22 @@ void KeyboardIO::set_bell(Word /*x_percent*/)
 #endif
 }
 
-void KeyboardIO::put_value(unsigned int x_keyMask)
+void KeyboardIO::put_value(unsigned int p_keyMask)
 {
-    keyMask = x_keyMask;
+    keyMask = p_keyMask;
 }
 
-void KeyboardIO::get_value(unsigned int *x_keyMask) const
+void KeyboardIO::get_value(unsigned int *p_keyMask) const
 {
-    if (x_keyMask != nullptr)
+    if (p_keyMask != nullptr)
     {
-        *x_keyMask = keyMask;
+        *p_keyMask = keyMask;
     }
 }
 
-void KeyboardIO::set_startup_command(const char *x_startup_command)
+void KeyboardIO::set_startup_command(const char *p_startup_command)
 {
-    std::string startup_command(x_startup_command);
+    std::string startup_command(p_startup_command);
 
     if (!startup_command.empty())
     {

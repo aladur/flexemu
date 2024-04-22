@@ -25,8 +25,8 @@
 #include "schedule.h"
 
 
-CSetFrequency::CSetFrequency(Scheduler &x_sched, float x_frequency) :
-    scheduler(x_sched), frequency(x_frequency)
+CSetFrequency::CSetFrequency(Scheduler &p_sched, float p_frequency) :
+    scheduler(p_sched), frequency(p_frequency)
 {
 }
 

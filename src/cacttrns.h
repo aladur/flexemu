@@ -32,7 +32,7 @@ class CActiveTransition : public BCommand
 {
 
 public:
-    CActiveTransition(Mc6821 &x_mc6821, Mc6821::ControlLine control_line);
+    CActiveTransition(Mc6821 &p_mc6821, Mc6821::ControlLine control_line);
     void Execute() override;
 
 protected:

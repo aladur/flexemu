@@ -25,9 +25,9 @@
 #include "mc6821.h"
 
 
-CActiveTransition::CActiveTransition(Mc6821 &x_mc6821,
-                                     Mc6821::ControlLine x_control_line) :
-    mc6821(x_mc6821), control_line(x_control_line)
+CActiveTransition::CActiveTransition(Mc6821 &p_mc6821,
+                                     Mc6821::ControlLine p_control_line) :
+    mc6821(p_mc6821), control_line(p_control_line)
 {
 }
 

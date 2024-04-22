@@ -33,7 +33,7 @@ class CSetLogFile : public BCommand
 
 public:
     CSetLogFile() = delete;
-    CSetLogFile(Mc6809 &x_cpu, const s_cpu_logfile &x_log_file);
+    CSetLogFile(Mc6809 &p_cpu, const s_cpu_logfile &p_log_file);
     CSetLogFile(const CSetLogFile &src) = delete;
     CSetLogFile &operator=(const CSetLogFile &src) = delete;
 

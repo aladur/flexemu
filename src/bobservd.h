@@ -40,8 +40,8 @@ public:
     BObserved() = default;
     virtual ~BObserved() = default;
 
-    void Attach(BObserver &x_observer);
-    void Detach(BObserver &x_observer);
+    void Attach(BObserver &p_observer);
+    void Detach(BObserver &p_observer);
 
 protected:
     void Notify(NotifyId id, void *param = nullptr);

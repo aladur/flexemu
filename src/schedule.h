@@ -51,12 +51,12 @@ public:
     };
 
     Scheduler() = delete;
-    Scheduler(ScheduledCpu &x_cpu, Inout &x_inout);
+    Scheduler(ScheduledCpu &p_cpu, Inout &p_inout);
     ~Scheduler();
 
     CpuState statemachine(CpuState initial_state);
     bool is_finished();
-    void request_new_state(CpuState x_user_state);
+    void request_new_state(CpuState p_user_state);
     void process_events();
     CpuState idleloop();
     CpuState runloop(RunMode mode);

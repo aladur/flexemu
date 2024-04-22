@@ -28,8 +28,8 @@
 #include "keyboard.h"
 
 
-Pia2::Pia2(Mc6809 &x_cpu, KeyboardIO &x_keyboardIO, JoystickIO &x_joystickIO) :
-    cpu(x_cpu), keyboardIO(x_keyboardIO), joystickIO(x_joystickIO)
+Pia2::Pia2(Mc6809 &p_cpu, KeyboardIO &p_keyboardIO, JoystickIO &p_joystickIO) :
+    cpu(p_cpu), keyboardIO(p_keyboardIO), joystickIO(p_joystickIO)
 #ifdef LINUX_JOYSTICK_IS_PRESENT
     , joystick(0)
 #endif
@@ -44,9 +44,9 @@ void Pia2::resetIo()
     cycles = 0;
 }
 
-void Pia2::writeOutputB(Byte val)
+void Pia2::writeOutputB(Byte value)
 {
-    if (val & 0x40)
+    if (value & 0x40)
     {
         KeyboardIO::set_bell(0);
     }

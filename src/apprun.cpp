@@ -46,23 +46,23 @@
 #include "cvtwchar.h"
 
 
-ApplicationRunner::ApplicationRunner(struct sOptions &x_options) :
-    options(x_options),
+ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
+    options(p_options),
     memory(options),
     cpu(memory),
     fdc(options),
-    inout(x_options, memory),
+    inout(p_options, memory),
     scheduler(cpu, inout),
-    terminalIO(scheduler, x_options),
+    terminalIO(scheduler, p_options),
     mmu(memory),
     acia1(terminalIO, inout),
-    pia1(scheduler, keyboardIO, x_options),
+    pia1(scheduler, keyboardIO, p_options),
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
     drisel(fdc),
     command(inout, scheduler, fdc),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
-        joystickIO, keyboardIO, terminalIO, pia1, x_options)
+        joystickIO, keyboardIO, terminalIO, pia1, p_options)
 {
     if (options.startup_command.size() > MAX_COMMAND)
     {

@@ -34,8 +34,8 @@
 #include "breltime.h"
 
 
-Scheduler::Scheduler(ScheduledCpu &x_cpu, Inout &x_inout) :
-    cpu(x_cpu), inout(x_inout),
+Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
+    cpu(p_cpu), inout(p_inout),
     state(CpuState::Run), events(Event::NONE), user_state(CpuState::NONE),
     total_cycles(0), time0sec(0),
     is_status_valid(false), is_resume(false),
@@ -49,11 +49,11 @@ Scheduler::~Scheduler()
     commands.clear();
 }
 
-void Scheduler::request_new_state(CpuState x_user_state)
+void Scheduler::request_new_state(CpuState p_user_state)
 {
-    if (x_user_state != CpuState::NONE)
+    if (p_user_state != CpuState::NONE)
     {
-        user_state = x_user_state;
+        user_state = p_user_state;
         cpu.exit_run();
     }
 }

@@ -65,10 +65,10 @@ public:
 
 public:
     AbstractGui(
-        Mc6809 &x_cpu,
-        Memory &x_memory,
-        Inout &x_inout,
-        TerminalIO &x_terminalIO);
+        Mc6809 &p_cpu,
+        Memory &p_memory,
+        Inout &p_inout,
+        TerminalIO &p_terminalIO);
     virtual ~AbstractGui() = default;
 };
 

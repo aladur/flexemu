@@ -28,9 +28,9 @@
 #include "inout.h"
 #include "mc6809.h"
 
-Acia1::Acia1(TerminalIO &x_terminalIO, Inout &x_inout) :
-             terminalIO(x_terminalIO)
-             , inout(x_inout)
+Acia1::Acia1(TerminalIO &p_terminalIO, Inout &p_inout) :
+             terminalIO(p_terminalIO)
+             , inout(p_inout)
 {
 }
 

@@ -64,7 +64,7 @@ public:
 public:
 
     Acia1() = delete;
-    Acia1(TerminalIO &x_terminalIO, Inout &x_inout);
+    Acia1(TerminalIO &p_terminalIO, Inout &p_inout);
     ~Acia1() override = default;
 
 };
