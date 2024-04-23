@@ -30,6 +30,7 @@ unittests_SOURCES = \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
 	test_fdirent.cpp \
+	test_bdate.cpp \
 	test_boption.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \

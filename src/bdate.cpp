@@ -136,6 +136,11 @@ bool BDate::operator == (const BDate &d) const
     return MakeComparable() == d.MakeComparable();
 }
 
+bool BDate::operator != (const BDate &d) const
+{
+    return MakeComparable() != d.MakeComparable();
+}
+
 bool BDate::operator > (const BDate &d) const
 {
     return MakeComparable() > d.MakeComparable();

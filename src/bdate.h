@@ -63,6 +63,7 @@ public:
     BDate &operator = (const BDate &src) = default;
     bool operator < (const BDate &d) const;
     bool operator == (const BDate &d) const;
+    bool operator != (const BDate &d) const;
     bool operator > (const BDate &d) const;
     bool operator >= (const BDate &d) const;
     bool operator <= (const BDate &d) const;
