@@ -224,40 +224,15 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 };
 
 #if defined(WIN32) && !defined(NO_DEBUGPRINT)
-#define DEBUGPRINT(fmt)   OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " fmt))
-#define DEBUGPRINT1(fmt,p1)                        \
-    {                                                \
-        char str[255];                                 \
-        sprintf(str, "[" PROGRAMNAME "] " fmt,p1); \
-        OutputDebugString((LPCTSTR)str);                        \
-    }
-#define DEBUGPRINT2(fmt,p1,p2)                        \
-    {                                                   \
-        char str[255];                                    \
-        sprintf(str, "[" PROGRAMNAME "] " fmt,p1,p2); \
-        OutputDebugString((LPCTSTR)str);                           \
-    }
-#define DEBUGPRINT3(fmt,p1,p2,p3)                        \
-    {                                                      \
-        char str[255];                                       \
-        sprintf(str, "[" PROGRAMNAME "] " fmt,p1,p2,p3); \
-        OutputDebugString((LPCTSTR)str);                              \
-    }
+#define DEBUGPRINT(fmt) OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " fmt))
 #endif
 
 #if defined(UNIX) && !defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(fmt)           ::printf("[" PROGRAMNAME "] " fmt)
-    #define DEBUGPRINT1(fmt,p1)       ::printf("[" PROGRAMNAME "] " fmt,p1)
-    #define DEBUGPRINT2(fmt,p1,p2)    ::printf("[" PROGRAMNAME "] " fmt,p1,p2)
-    #define DEBUGPRINT3(fmt,p1,p2,p3) ::printf("[" PROGRAMNAME "] " \
-                fmt,p1,p2,p3)
+    #define DEBUGPRINT(fmt) ::printf("[" PROGRAMNAME "] " fmt)
 #endif
 
 #if defined(NO_DEBUGPRINT)
     #define DEBUGPRINT(fmt)
-    #define DEBUGPRINT1(fmt,p1)
-    #define DEBUGPRINT2(fmt,p1,p2)
-    #define DEBUGPRINT2(fmt,p1,p2,p3)
 #endif
 
 typedef QWord cycles_t;
