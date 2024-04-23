@@ -156,7 +156,7 @@ struct alignas(1) s_dir_sector
     st_t next; // Link to next track/sector in the chain
     Byte record_nr[2]; // Logical record number of sector in file, zero based
     Byte unused[12]; // To be initialized with 0
-    struct s_dir_entry dir_entry[DIRENTRIES]; // directory entries in one sector
+    struct s_dir_entry dir_entries[DIRENTRIES]; // Dir. entries in one sector
 };
 
 /* Union of a FLEX directory sector */

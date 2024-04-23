@@ -73,7 +73,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *wildcard)
             }
         }
 
-        s_dir_entry *pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
+        s_dir_entry *pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
 
         // an empty entry aborts the search
         if (pd->filename[0] == DE_EMPTY)
@@ -137,7 +137,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     start = pd->start;
     end = pd->end;
     auto records = getValueBigEndian<Word>(&pd->records[0]);
@@ -274,7 +274,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
 
     std::string totalName(newName);
 
@@ -351,7 +351,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     pd->day = static_cast<Byte>(date.GetDay());
     pd->month = static_cast<Byte>(date.GetMonth());
     pd->year = static_cast<Byte>(date.GetYear() % 100);
@@ -394,7 +394,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entry[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     pd->file_attr = attributes;
 
     if (!base->WriteSector(reinterpret_cast<Byte *>(&dirSector),

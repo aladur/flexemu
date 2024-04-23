@@ -851,7 +851,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         for (i = 0; i < 10; i++)
         {
             // look for the next free directory entry
-            pde = &ds.dir_entry[i];
+            pde = &ds.dir_entries[i];
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {

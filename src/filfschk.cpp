@@ -578,7 +578,7 @@ void FileContainerCheck::InitializeFileSectors()
             break;
         }
 
-        for (const auto &dir_entry : dir_sector.dir_entry)
+        for (const auto &dir_entry : dir_sector.dir_entries)
         {
             if (dir_entry.filename[0] == DE_DELETED)
             {

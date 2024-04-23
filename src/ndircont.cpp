@@ -371,7 +371,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
         std::fill(std::begin(dir_sector.s.unused),
                   std::end(dir_sector.s.unused), '\0');
 
-        for (auto &dir_entry : dir_sector.s.dir_entry)
+        for (auto &dir_entry : dir_sector.s.dir_entries)
         {
             dir_entry.filename[0] = DE_EMPTY;
         }
@@ -422,7 +422,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
     if (ds_idx < flex_directory.size())
     {
         const auto &directory_entry =
-            flex_directory[ds_idx].s.dir_entry[file_id % DIRENTRIES];
+            flex_directory[ds_idx].s.dir_entries[file_id % DIRENTRIES];
         return get_unix_filename(directory_entry);
     }
 
@@ -512,7 +512,7 @@ std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
         if (ds_idx < flex_directory.size())
         {
             const auto &directory_entry =
-                flex_directory[ds_idx].s.dir_entry[file_id % DIRENTRIES];
+                flex_directory[ds_idx].s.dir_entries[file_id % DIRENTRIES];
             return directory + PATHSEPARATORSTRING +
                    get_unix_filename(directory_entry);
         }
@@ -552,7 +552,7 @@ st_t NafsDirectoryContainer::link_address() const
 
     for (const auto &dir_sector : flex_directory)
     {
-        for (const auto &dir_entry : dir_sector.s.dir_entry)
+        for (const auto &dir_entry : dir_sector.s.dir_entries)
         {
             if (!strncmp(dir_entry.filename, "FLEX\0\0\0\0",
                          FLEX_BASEFILENAME_LENGTH) &&
@@ -846,7 +846,7 @@ void NafsDirectoryContainer::add_to_directory(
     auto year = lt->tm_year > 100 ? lt->tm_year - 100 : lt->tm_year;
     auto records = static_cast<Word>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
-      flex_directory[dir_idx / DIRENTRIES].s.dir_entry[dir_idx % DIRENTRIES];
+      flex_directory[dir_idx / DIRENTRIES].s.dir_entries[dir_idx % DIRENTRIES];
     name.resize(FLEX_BASEFILENAME_LENGTH);
     std::copy_n(name.cbegin(), FLEX_BASEFILENAME_LENGTH,
                 std::begin(dir_entry.filename));
@@ -1205,12 +1205,12 @@ void NafsDirectoryContainer::check_for_delete(Word ds_idx,
     const auto dir_idx0 = static_cast<SDWord>(ds_idx * DIRENTRIES);
     for (Word i = 0; i < DIRENTRIES; i++)
     {
-        if (dir_sector.dir_entry[i].filename[0] == DE_DELETED &&
-            old_dir_sector.dir_entry[i].filename[0] != DE_DELETED)
+        if (dir_sector.dir_entries[i].filename[0] == DE_DELETED &&
+            old_dir_sector.dir_entries[i].filename[0] != DE_DELETED)
         {
             const auto dir_idx = dir_idx0 + i;
             auto filename = get_unix_filename(dir_idx);
-            auto track_sector = old_dir_sector.dir_entry[i].start;
+            auto track_sector = old_dir_sector.dir_entries[i].start;
             auto sec_idx = get_sector_index(track_sector);
             auto path = directory + PATHSEPARATORSTRING + filename;
             unlink(path.c_str());
@@ -1239,7 +1239,7 @@ void NafsDirectoryContainer::check_for_rename(Word ds_idx,
     {
         const auto dir_idx = dir_idx0 + i;
         old_filename = get_unix_filename(dir_idx);
-        new_filename = get_unix_filename(dir_sector.dir_entry[i]);
+        new_filename = get_unix_filename(dir_sector.dir_entries[i]);
 
         if (!old_filename.empty() && !new_filename.empty() &&
             strcmp(old_filename.c_str(), new_filename.c_str()) != 0)
@@ -1289,26 +1289,26 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
     const auto dir_idx0 = static_cast<SDWord>(ds_idx * DIRENTRIES);
     for (Word i = 0; i < DIRENTRIES; i++)
     {
-        if ((dir_sector.dir_entry[i].file_attr & unsupported_attr) != 0)
+        if ((dir_sector.dir_entries[i].file_attr & unsupported_attr) != 0)
         {
             // Remove all unsupported file attributes.
-            dir_sector.dir_entry[i].file_attr &= ~unsupported_attr;
+            dir_sector.dir_entries[i].file_attr &= ~unsupported_attr;
         }
 
         if (attributes & WRITE_PROTECT)
         {
             // If disk is write protected the file write protection can not
             // be removed.
-            dir_sector.dir_entry[i].file_attr |= WRITE_PROTECT;
+            dir_sector.dir_entries[i].file_attr |= WRITE_PROTECT;
             continue;
         }
 
-        if ((dir_sector.dir_entry[i].file_attr & WRITE_PROTECT) !=
-            (old_dir_sector.dir_entry[i].file_attr & WRITE_PROTECT))
+        if ((dir_sector.dir_entries[i].file_attr & WRITE_PROTECT) !=
+            (old_dir_sector.dir_entries[i].file_attr & WRITE_PROTECT))
         {
             const auto dir_idx = dir_idx0 + i;
             auto filename = get_unix_filename(dir_idx);
-            auto file_attr = dir_sector.dir_entry[i].file_attr;
+            auto file_attr = dir_sector.dir_entries[i].file_attr;
             const char *set_clear = nullptr;
 #ifdef _WIN32
             const auto wFilePath(ConvertToUtf16String(directory +
@@ -1399,7 +1399,7 @@ bool NafsDirectoryContainer::update_file_time(const char *path,
         if (ds_idx < flex_directory.size())
         {
             const auto &directory_entry =
-                flex_directory[ds_idx].s.dir_entry[file_id % DIRENTRIES];
+                flex_directory[ds_idx].s.dir_entries[file_id % DIRENTRIES];
             return set_file_time(path,
                 directory_entry.month,
                 directory_entry.day,
@@ -1427,9 +1427,9 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
     for (Word i = 0; i < DIRENTRIES; i++)
     {
         if (
-           dir_sector.dir_entry[i].filename[0] != DE_EMPTY &&
-           dir_sector.dir_entry[i].filename[0] != DE_DELETED &&
-           (dir_sector.dir_entry[i].start != st_t{0, 0}))
+           dir_sector.dir_entries[i].filename[0] != DE_EMPTY &&
+           dir_sector.dir_entries[i].filename[0] != DE_DELETED &&
+           (dir_sector.dir_entries[i].start != st_t{0, 0}))
         {
             for (const auto &iter : new_files)
             {
@@ -1437,7 +1437,7 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
                 struct stat sbuf{};
 #endif
 
-                if (iter.second.first != dir_sector.dir_entry[i].start)
+                if (iter.second.first != dir_sector.dir_entries[i].start)
                 {
                     continue;
                 }
@@ -1452,7 +1452,7 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
                     directory + PATHSEPARATORSTRING + iter.second.filename;
 
                 // check for random file, if true set user execute bit
-                if (dir_sector.dir_entry[i].sector_map & IS_RANDOM_FILE)
+                if (dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
                 {
 #ifdef _WIN32
                     SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
@@ -1474,11 +1474,11 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
                         iter.second.filename.c_str());
 #endif
                 set_file_time(new_path.c_str(),
-                    dir_sector.dir_entry[i].month,
-                    dir_sector.dir_entry[i].day,
-                    dir_sector.dir_entry[i].year,
-                    dir_sector.dir_entry[i].hour,
-                    dir_sector.dir_entry[i].minute);
+                    dir_sector.dir_entries[i].month,
+                    dir_sector.dir_entries[i].day,
+                    dir_sector.dir_entries[i].year,
+                    dir_sector.dir_entries[i].hour,
+                    dir_sector.dir_entries[i].minute);
             }
         }
     }
