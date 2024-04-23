@@ -59,6 +59,7 @@ public:
 };
 
 bool operator == (const BTime &rhs, const BTime &lhs);
+bool operator != (const BTime &rhs, const BTime &lhs);
 bool operator < (const BTime &rhs, const BTime &lhs);
 bool operator > (const BTime &rhs, const BTime &lhs);
 bool operator <= (const BTime &rhs, const BTime &lhs);

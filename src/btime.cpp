@@ -110,6 +110,11 @@ bool operator == (const BTime &rhs, const BTime &lhs)
     return rhs.ToSeconds() == lhs.ToSeconds();
 }
 
+bool operator != (const BTime &rhs, const BTime &lhs)
+{
+    return rhs.ToSeconds() != lhs.ToSeconds();
+}
+
 bool operator < (const BTime &rhs, const BTime &lhs)
 {
     return rhs.ToSeconds() < lhs.ToSeconds();

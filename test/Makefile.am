@@ -34,6 +34,7 @@ unittests_SOURCES = \
 	test_boption.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
+	test_btime.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \

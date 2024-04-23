@@ -142,6 +142,7 @@ am_unittests_OBJECTS = unittests-test_main.$(OBJEXT) \
 	unittests-test_boption.$(OBJEXT) \
 	unittests-test_bintervl.$(OBJEXT) \
 	unittests-test_bmembuf.$(OBJEXT) \
+	unittests-test_btime.$(OBJEXT) \
 	../src/unittests-bdate.$(OBJEXT) \
 	../src/unittests-benv.$(OBJEXT) \
 	../src/unittests-bfileptr.$(OBJEXT) \
@@ -188,6 +189,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_bintervl.Po \
 	./$(DEPDIR)/unittests-test_bmembuf.Po \
 	./$(DEPDIR)/unittests-test_boption.Po \
+	./$(DEPDIR)/unittests-test_btime.Po \
 	./$(DEPDIR)/unittests-test_fdirent.Po \
 	./$(DEPDIR)/unittests-test_ffilebuf.Po \
 	./$(DEPDIR)/unittests-test_main.Po \
@@ -652,6 +654,7 @@ unittests_SOURCES = \
 	test_boption.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
+	test_btime.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
@@ -890,6 +893,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bintervl.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_boption.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_btime.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fdirent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_ffilebuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_main.Po@am__quote@ # am--include-marker
@@ -1050,6 +1054,20 @@ unittests-test_bmembuf.obj: test_bmembuf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_bmembuf.cpp' object='unittests-test_bmembuf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_bmembuf.obj `if test -f 'test_bmembuf.cpp'; then $(CYGPATH_W) 'test_bmembuf.cpp'; else $(CYGPATH_W) '$(srcdir)/test_bmembuf.cpp'; fi`
+
+unittests-test_btime.o: test_btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_btime.o -MD -MP -MF $(DEPDIR)/unittests-test_btime.Tpo -c -o unittests-test_btime.o `test -f 'test_btime.cpp' || echo '$(srcdir)/'`test_btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_btime.Tpo $(DEPDIR)/unittests-test_btime.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_btime.cpp' object='unittests-test_btime.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_btime.o `test -f 'test_btime.cpp' || echo '$(srcdir)/'`test_btime.cpp
+
+unittests-test_btime.obj: test_btime.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_btime.obj -MD -MP -MF $(DEPDIR)/unittests-test_btime.Tpo -c -o unittests-test_btime.obj `if test -f 'test_btime.cpp'; then $(CYGPATH_W) 'test_btime.cpp'; else $(CYGPATH_W) '$(srcdir)/test_btime.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_btime.Tpo $(DEPDIR)/unittests-test_btime.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_btime.cpp' object='unittests-test_btime.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_btime.obj `if test -f 'test_btime.cpp'; then $(CYGPATH_W) 'test_btime.cpp'; else $(CYGPATH_W) '$(srcdir)/test_btime.cpp'; fi`
 
 ../src/unittests-bdate.o: ../src/bdate.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-bdate.o -MD -MP -MF ../src/$(DEPDIR)/unittests-bdate.Tpo -c -o ../src/unittests-bdate.o `test -f '../src/bdate.cpp' || echo '$(srcdir)/'`../src/bdate.cpp
@@ -1537,6 +1555,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
+	-rm -f ./$(DEPDIR)/unittests-test_btime.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
@@ -1602,6 +1621,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
+	-rm -f ./$(DEPDIR)/unittests-test_btime.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
