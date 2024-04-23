@@ -44,7 +44,7 @@ BDate BDate::Now()
     return aTime;
 }
 
-const std::array<const char *, 13> BDate::monthName
+const std::array<const char *, 13> BDate::monthNames
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "???"
@@ -70,11 +70,11 @@ std::string BDate::GetDateString(Format format) const
 
         case Format::D2MS3Y4:
             snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
-                     monthName[m - 1], y);
+                     monthNames[m - 1], y);
             break;
 
         case Format::D2MSU3Y4:
-            std::string monthString(monthName[m - 1]);
+            std::string monthString(monthNames[m - 1]);
             strupper(monthString);
             snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
                      monthString.c_str(), y);

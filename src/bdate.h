@@ -69,7 +69,7 @@ public:
     bool operator <= (const BDate &d) const;
 
 private:
-    static const std::array<const char *, 13> monthName;
+    static const std::array<const char *, 13> monthNames;
     int MakeComparable() const;
 
     //static int year2000; // if !0 0 and if year < 70 add 1900 to it
