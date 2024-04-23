@@ -250,10 +250,10 @@ private:
     QAction *introductionAction{};
     QAction *aboutAction{};
     QAction *aboutQtAction{};
-    QAction *diskStatusAction[MAX_DRIVES]{};
+    std::array<QAction *, MAX_DRIVES> diskStatusAction{};
+    std::array<QAction *, ICON_SIZES> iconSizeAction{};
+    std::array<QAction *, SCREEN_SIZES> screenSizeAction{};
     QAction *interruptStatusAction{};
-    QAction *iconSizeAction[ICON_SIZES]{};
-    QAction *screenSizeAction[SCREEN_SIZES]{};
     PrintOutputWindow *printOutputWindow{};
     QIcon iconNoFloppy;
     QIcon iconInactiveFloppy;
@@ -273,8 +273,8 @@ private:
     bool isConfirmClose{};
     bool isForceScreenUpdate{};
     bool isRestartNeeded{};
-    int timerTicks{};
-    Byte oldFirstRasterLine{};
+    int timerTicks{0};
+    Byte oldFirstRasterLine{0U};
     s_cpu_logfile logfileSettings;
 
     Scheduler &scheduler;

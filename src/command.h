@@ -29,6 +29,7 @@
 #include "bobservd.h"
 #include "asciictl.h"
 #include <string>
+#include <array>
 
 enum : uint8_t {
 MAX_COMMAND = 128,
@@ -52,7 +53,7 @@ protected:
     Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    &fdc;
-    char command[MAX_COMMAND]{};
+    std::array<char, MAX_COMMAND> command{};
     Word command_index{0};
     Word answer_index{0};
     std::string answer;

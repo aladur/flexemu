@@ -33,23 +33,22 @@
 #include "bdir.h"
 #include "crc.h"
 #include "soptions.h"
+#include <cassert>
+#include <array>
 
 
 E2floppy::E2floppy(const struct sOptions &p_options)
-    : selected(MAX_DRIVES)
-    , pfs(nullptr)
-    , writeTrackState(WriteTrackState::Inactive)
-    , options(p_options)
+    : options(p_options)
 {
-    for (auto i = 0U; i <= MAX_DRIVES; i++)
+    assert(track.size() == drive_status.size());
+    assert(track.size() == floppy.size());
+
+    for (auto i = 0U; i <= MAX_DRIVES; ++i)
     {
         track[i] = 1; // position all drives to track != 0 !!!
         drive_status[i] = DiskStatus::EMPTY;
     }
-
-    memset(sector_buffer, 0, sizeof(sector_buffer));
 } // E2floppy
-
 
 E2floppy::~E2floppy()
 {
@@ -257,11 +256,14 @@ void E2floppy::disk_directory(const std::string &p_disk_dir)
     disk_dir = p_disk_dir;
 }
 
-void E2floppy::mount_all_drives(std::string drive[])
+void E2floppy::mount_all_drives(
+        const std::array<std::string, MAX_DRIVES> &drives)
 {
-    for (Word drive_nr = 0U; drive_nr < MAX_DRIVES; drive_nr++)
+    Word drive_nr = 0U;
+
+    for (const auto &drive : drives)
     {
-        mount_drive(drive[drive_nr], drive_nr);
+        mount_drive(drive, drive_nr++);
     }
 
     selected = MAX_DRIVES; // deselect all drives
@@ -414,10 +416,7 @@ void E2floppy::resetIo()
 
 void E2floppy::select_drive(Byte new_selected)
 {
-    if (new_selected > MAX_DRIVES)
-    {
-        new_selected = MAX_DRIVES;
-    }
+    new_selected = std::min(new_selected, MAX_DRIVES);
 
     if (new_selected != selected)
     {
@@ -457,7 +456,7 @@ Byte E2floppy::readByteInSector(Word index)
     {
         drive_status[selected] = DiskStatus::ACTIVE;
 
-        if (!pfs->ReadSector(&sector_buffer[0], getTrack(), getSector(),
+        if (!pfs->ReadSector(sector_buffer.data(), getTrack(), getSector(),
                              getSide() ? 1 : 0))
         {
             setStatusReadError();
@@ -486,7 +485,8 @@ Byte E2floppy::readByteInAddress(Word index)
         sector_buffer[2] = 1; // sector address
         sector_buffer[3] = getSizeCode(); // sector sizecode
 
-        auto crc = crc16.GetResult(&sector_buffer[0], &sector_buffer[4]);
+        auto crc =
+            crc16.GetResult(sector_buffer.data(), sector_buffer.data() + 4U);
 
         sector_buffer[4] = static_cast<Byte>(crc >> 8);
         sector_buffer[5] = static_cast<Byte>(crc & 0xFF);
@@ -554,12 +554,12 @@ void E2floppy::writeByteInTrack(Word &index)
             if (getDataRegister() == ID_ADDRESS_MARK)
             {
                 writeTrackState = WriteTrackState::IdAddressMark;
-                offset = sizeof(idAddressMark);
+                offset = idAddressMark.size();
             }
             break;
 
         case WriteTrackState::IdAddressMark:
-            idAddressMark[sizeof(idAddressMark) - offset] = getDataRegister();
+            idAddressMark[idAddressMark.size() - offset] = getDataRegister();
             if (--offset == 0)
             {
                 writeTrackState = WriteTrackState::WaitForDataAddressMark;
@@ -583,7 +583,7 @@ void E2floppy::writeByteInTrack(Word &index)
             sector_buffer[i] = getDataRegister();
             if (--offset == 0U)
             {
-                pfs->FormatSector(&sector_buffer[0],
+                pfs->FormatSector(sector_buffer.data(),
                         idAddressMark[0], idAddressMark[2],
                         idAddressMark[1], idAddressMark[3] & 0x03);
 
@@ -611,7 +611,7 @@ void E2floppy::writeByteInSector(Word index)
     {
         drive_status[selected] = DiskStatus::ACTIVE;
 
-        if (!pfs->WriteSector(&sector_buffer[0], getTrack(), getSector(),
+        if (!pfs->WriteSector(sector_buffer.data(), getTrack(), getSector(),
                               getSide() ? 1 : 0))
         {
             setStatusWriteError();
@@ -655,7 +655,7 @@ bool E2floppy::isWriteProtect() const
     return pfs->IsWriteProtected();
 }  // isWriteProtect
 
-void E2floppy::get_drive_status(DiskStatus stat[MAX_DRIVES])
+void E2floppy::get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat)
 {
     std::lock_guard<std::mutex> guard(status_mutex);
 

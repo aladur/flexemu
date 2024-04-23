@@ -23,6 +23,7 @@
 #include "bdate.h"
 #include "misc1.h"
 #include <stdio.h>
+#include <array>
 
 //BDate::year2000 = 1;
 
@@ -43,7 +44,7 @@ BDate BDate::Now()
     return aTime;
 }
 
-const char *BDate::monthName[] =
+const std::array<const char *, 13> BDate::monthName
 {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "???"

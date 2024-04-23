@@ -66,7 +66,7 @@ private:
     Word read_index{0};
     std::vector<Byte> read_buffer;
     std::vector<Byte> write_buffer;
-    MiniDcrTapePtr drive[2];
+    std::array<MiniDcrTapePtr, 2> drive;
     int drive_idx{-1};
     ReadMode read_mode{ReadMode::Off};
     TapeDirection direction{TapeDirection::NONE};

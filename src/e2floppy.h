@@ -25,6 +25,7 @@
 #define E2FLOPPY_INCLUDED
 
 #include "misc1.h"
+#include <array>
 
 #ifndef __fromflex__
 
@@ -66,7 +67,7 @@ private:
     //
     //  selected        Selected drive as index into floppy array
 
-    Byte selected;
+    Byte selected{MAX_DRIVES};
 
     // Interface to operating system:
     //
@@ -78,17 +79,20 @@ private:
     //  disk_dir        Disk directory
     // Drive nr. 4 means no drive selected
 
-    FileContainerIfSectorPtr floppy[MAX_DRIVES + 1U];
-    FileContainerIfSector *pfs;
-    Byte track[MAX_DRIVES + 1U]{};
-    DiskStatus drive_status[MAX_DRIVES + 1U]{};
-    Byte sector_buffer[1024]{};
+    std::array<FileContainerIfSectorPtr, MAX_DRIVES + 1U> floppy{};
+    FileContainerIfSector *pfs{};
+    std::array<Byte, MAX_DRIVES + 1U> track{};
+    std::array<DiskStatus, MAX_DRIVES + 1U> drive_status{};
+    std::array<Byte, 1024>sector_buffer{};
     std::string disk_dir;
     mutable std::mutex status_mutex;
     // data for CMD_WRITETRACK
-    WriteTrackState writeTrackState; // Write track state
-    Word offset{}; // offset when reading a track
-    Byte idAddressMark[4]{}; // Contains track, side, sector, sizecode
+    WriteTrackState writeTrackState{WriteTrackState::Inactive};
+    Word offset{}; // offset when reading or writing a track
+    // idAddressMark contains track, side, sector, sizecode.
+    // It is used when formatting a track.
+    std::array<Byte, 4> idAddressMark{};
+
     const struct sOptions &options;
 
 public:
@@ -104,9 +108,10 @@ public:
         return "fdc";
     };
 
-    virtual void get_drive_status(DiskStatus status[MAX_DRIVES]);
+    virtual void get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat);
     virtual void disk_directory(const std::string &p_disk_dir);
-    virtual void mount_all_drives(std::string drive[]);
+    virtual void mount_all_drives(
+            const std::array<std::string, MAX_DRIVES> &drives);
     virtual bool sync_all_drives(tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_all_drives();
     virtual bool mount_drive(const std::string &path, Word drive_nr,

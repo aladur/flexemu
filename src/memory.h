@@ -36,6 +36,7 @@
 #include "memtgt.h"
 #include "e2.h"
 #include "bobserv.h"
+#include <array>
 
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
@@ -59,7 +60,7 @@ public:
     ~Memory() override;
 
 private:
-    Byte *ppage[16]{};
+    std::array<Byte *, 16> ppage{};
     bool isRamExtension{false};
     bool isHiMem{false};
     bool isFlexibleMmu{false};
@@ -77,14 +78,14 @@ private:
     static const Byte NO_DEVICE = 0xFF;
 
     // interface to video display
-    Byte *vram_ptrs[MAX_VRAM]{};
+    std::array<Byte *, MAX_VRAM> vram_ptrs{};
     Word video_ram_active_bits{0}; // 16-bit, one for each video memory page
-    bool changed[YBLOCKS]{};
+    std::array<bool, YBLOCKS> changed{};
+    static std::array<Byte, 8> initial_content;
 
 private:
     void init_memory();
     void init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr);
-    static Byte initial_content[8];
 
     // Initialisation functions
 

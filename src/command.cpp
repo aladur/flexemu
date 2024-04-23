@@ -46,7 +46,6 @@ Command::Command(
         E2floppy &p_fdc) :
     inout(p_inout), scheduler(p_scheduler), fdc(p_fdc)
 {
-    memset(command, 0, sizeof(command));
 }
 
 void Command::resetIo()
@@ -137,7 +136,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
         answer_index = 0;
         auto number = static_cast<int>(INVALID_DRIVE);
         auto count = 0;
-        p = command;
+        p = command.data();
         arg1 = next_token(&p, &count); // get arg1
         skip_token(&p);
         arg2 = next_token(&p, &count); // get arg2
@@ -401,7 +400,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 break;
         } // switch
-        answer_stream << "Unknown command: " << command << ".";
+        answer_stream << "Unknown command: " << command.data() << ".";
         answer = answer_stream.str();
     } // if
 }

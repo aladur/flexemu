@@ -25,6 +25,9 @@
 
 #ifdef LINUX_JOYSTICK_IS_PRESENT
 
+#include <cstdint>
+#include <array>
+
 #define JOYSTICK_DEVICE_0   "/dev/js0"
 #define JOYSTICK_DEVICE_1   "/dev/js1"
 
@@ -42,9 +45,9 @@ public:
     int32_t Buttons() const;
     bool IsButtonSet(int which) const;
 private:
-    int js; // input stream from joystick
-    int32_t buttons;
-    int32_t axis[2]{};
+    int js{}; // input stream from joystick
+    int32_t buttons{};
+    std::array<int32_t, 2> axis{};
 };
 
 inline int32_t BJoystick::XAxis()

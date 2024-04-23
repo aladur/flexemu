@@ -87,6 +87,7 @@
 #include <QFontDatabase>
 #include "warnon.h"
 #include <cmath>
+#include <array>
 
 int QtGui::preferencesTabIndex = 0;
 
@@ -641,12 +642,12 @@ void QtGui::OnTimer()
 
         if (HasFloppy())
         {
-            static DiskStatus status[4];
-            DiskStatus newStatus[4];
+            static std::array<DiskStatus, MAX_DRIVES> status{};
+            std::array<DiskStatus, MAX_DRIVES> newStatus{};
 
             fdc->get_drive_status(newStatus);
 
-            for (t = 0; t < 4; ++t)
+            for (t = 0; t < MAX_DRIVES; ++t)
             {
                 if (isFirstTime || (newStatus[t] != status[t]))
                 {
@@ -1460,8 +1461,7 @@ void QtGui::UpdateDiskStatus(int floppyIndex, DiskStatus status)
 {
     if (HasFloppy())
     {
-        assert(static_cast<size_t>(floppyIndex) <
-                (sizeof(diskStatusAction) / sizeof(diskStatusAction[0])));
+        assert(static_cast<size_t>(floppyIndex) < diskStatusAction.size());
 
         switch (status)
         {
@@ -1812,8 +1812,9 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
 
     // Size of BMP stream:
     // BITMAPFILEHEADER + BITMAPINFOHEADER + color table size + pixel data
-    DWord dataOffset = sizeof(sBITMAPFILEHEADER) + sizeof(sBITMAPINFOHEADER) +
-                     (static_cast<DWord>(p_colorTable.size()) * sizeof(sRGBQUAD));
+    DWord dataOffset = sizeof(fileHeader) + sizeof(infoHeader) +
+                     (static_cast<DWord>(p_colorTable.size()) *
+                      sizeof(sRGBQUAD));
     auto destSize = static_cast<SDWord>(dataOffset + (height * WINDOWWIDTH));
 
     dest.clear();
@@ -1860,12 +1861,11 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
     else
     {
         QByteArray colorTableCache(size, '\0');
+        sRGBQUAD colorEntry{};
         const auto *pDataOrigin = pData;
 
         for (const auto rgbColor : p_colorTable)
         {
-            sRGBQUAD colorEntry{};
-
             colorEntry.red = static_cast<Byte>(qRed(rgbColor));
             colorEntry.green = static_cast<Byte>(qGreen(rgbColor));
             colorEntry.blue = static_cast<Byte>(qBlue(rgbColor));

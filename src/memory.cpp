@@ -29,7 +29,7 @@
 #include "fcnffile.h"
 #include "soptions.h"
 
-Byte Memory::initial_content[8] =
+std::array<Byte, 8> Memory::initial_content =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
 
 Memory::Memory(const struct sOptions &options) :
@@ -65,25 +65,25 @@ void Memory::init_memory()
     Byte j;
     Byte *p;
 
-    p = initial_content;
+    p = initial_content.data();
 
     for (i = 0; i < video_ram_size; i++)
     {
         if (*p == 0x00)
         {
-            p = initial_content;
+            p = initial_content.data();
         }
 
         video_ram[i] = *(p++);
     }
 
-    p = initial_content;
+    p = initial_content.data();
 
     for (i = 0; i < memory_size; i++)
     {
         if (*p == 0x00)
         {
-            p = initial_content;
+            p = initial_content.data();
         }
 
         memory[i] = *(p++);

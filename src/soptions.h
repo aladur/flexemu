@@ -122,7 +122,7 @@ struct sOptions
     // NOLINTNEXTLINE(bugprone-reserved-identifier)
     sOptions& operator=(const sOptions &src) = default;
 
-    std::string drive[4];
+    std::array<std::string, MAX_DRIVES> drive;
     std::array<std::string, 2> mdcrDrives;
     std::string hex_file;
     std::string disk_dir;
@@ -134,7 +134,7 @@ struct sOptions
     bool use_undocumented{};
     bool useRtc{};
     bool term_mode{};
-    bool canFormatDrive[4]{};
+    std::array<bool, MAX_DRIVES> canFormatDrive{};
     bool isTerminalIgnoreESC{}; // Terminal mode: Ignore ESC (0x1B) characters
     bool isTerminalIgnoreNUL{}; // Terminal mode: Ignore NUL (0x00) characters
     FileTimeAccess fileTimeAccess{};

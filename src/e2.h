@@ -32,6 +32,9 @@
 #ifndef E2_INCLUDED
 #define E2_INCLUDED
 
+#include <cstdint>
+
+
 enum : uint16_t {
 VIDEORAM_SIZE = 0x4000,
 };
@@ -107,9 +110,7 @@ GENIO_BASE = 0xfc00, /* Start addr. of mm-I/O up to 0xffff */
 ROM_BASE = 0xf000, /* Start addr. of ROM up to 0xffff */
 };
 
-enum : uint8_t {
-MAX_DRIVES = 4, /* Max. number of supported disk drives */
-};
+const uint8_t MAX_DRIVES = 4; /* Max. number of supported disk drives */
 
 /* The default CPU frequncy [MHz] and time period [micro-seconds] */
 constexpr float ORIGINAL_FREQUENCY = 1.3396F;

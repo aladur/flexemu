@@ -42,15 +42,15 @@ Mc146818::Mc146818()
 
         if (fp != nullptr)
         {
-            if (fread(ram, 1, sizeof(ram), fp) != sizeof(ram))
+            if (fread(ram.data(), 1, ram.size(), fp) != ram.size())
             {
-                memset(ram, 0, sizeof(ram));
+                memset(ram.data(), '\0', ram.size());
             }
         }
     }
     else
     {
-        memset(ram, 0, sizeof(ram));
+        memset(ram.data(), '\0', ram.size());
     }
 
     A = 0;
@@ -95,7 +95,7 @@ Mc146818::~Mc146818()
 
         if (fp != nullptr)
         {
-            fwrite(ram, 1, sizeof(ram), fp);
+            fwrite(ram.data(), 1, ram.size(), fp);
         }
     }
 }
