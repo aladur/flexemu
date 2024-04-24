@@ -866,38 +866,6 @@ void NafsDirectoryContainer::add_to_directory(
     dir_entry.minute = setFileTime ? static_cast<Byte>(lt->tm_min) : 0U;
 }
 
-// Check if file 'pfilename' is available in file which contains a list
-// of all random files. This file is defined as RANDOM_FILE_LIST.
-bool NafsDirectoryContainer::is_in_file_random(const char *ppath,
-        const char *pfilename)
-{
-    std::string file(ppath);
-
-    file += PATHSEPARATORSTRING RANDOM_FILE_LIST;
-
-    BFilePtr fp(file, "r");
-
-    if (fp != nullptr)
-    {
-        char str[PATH_MAX + 1];
-
-        while (!feof(fp) && fgets(str, PATH_MAX, fp) != nullptr)
-        {
-            if (strchr(str, '\n'))
-            {
-                *strchr(str, '\n') = '\0';
-            }
-
-            if (strcmp(pfilename, str) == 0)
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
 // Update random file sector map.
 void NafsDirectoryContainer::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
@@ -977,8 +945,8 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
         {
-            is_random = is_in_file_random(directory.c_str(),
-                                          filename.c_str());
+            is_random = isListedInFileRandom(directory.c_str(),
+                                             filename.c_str());
         }
 
         if (IsFlexFilename(filename.c_str(), name, extension, true) &&

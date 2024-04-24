@@ -38,6 +38,7 @@
 #include "cvtwchar.h"
 #include "flexerr.h"
 #include "benv.h"
+#include <fstream>
 
 #ifdef _WIN32
     static const char * const pathSeparators = "\\/";
@@ -835,7 +836,6 @@ bool AskForInput(const std::string &question, const std::string &answers,
 
 bool isListedInFileRandom(const char *directory, const char *filename)
 {
-    char str[PATH_MAX + 1];
     std::string path(directory);
     std::string lowFilename(filename);
 
@@ -846,21 +846,15 @@ bool isListedInFileRandom(const char *directory, const char *filename)
     path.append(RANDOM_FILE_LIST);
     strlower(lowFilename);
 
-    BFilePtr fp(path, "r");
+    std::ifstream ifs(path);
+    std::string line;
 
-    if (fp != nullptr)
+    while (std::getline(ifs, line))
     {
-        while (!feof(fp) && fgets(str, PATH_MAX, fp) != nullptr)
+        line = trim(line);
+        if (line.compare(lowFilename) == 0)
         {
-            if (strchr(str, '\n'))
-            {
-                *strchr(str, '\n') = '\0';
-            }
-
-            if (strcmp(lowFilename.c_str(), str) == 0)
-            {
-                return true;
-            }
+            return true;
         }
     } // if
 

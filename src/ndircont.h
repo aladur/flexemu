@@ -182,7 +182,6 @@ private:
         std::string &name,
         std::string &extension,
         bool with_extension);
-    static bool is_in_file_random(const char *ppath, const char *pfilename);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);
     void check_for_rename(Word ds_idx, const s_dir_sector &d) const;
