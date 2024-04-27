@@ -32,6 +32,7 @@
 #include "fdirent.h"
 #include "filecntb.h"
 #include <algorithm>
+#include <vector>
 
 
 // The format of a FLEX text file is described in the
@@ -53,11 +54,9 @@ FlexFileBuffer::FlexFileBuffer(const FlexFileBuffer &src)
 
 FlexFileBuffer::FlexFileBuffer(FlexFileBuffer &&src) noexcept
     : fileHeader(src.fileHeader)
-    , capacity(src.capacity)
     , buffer(std::move(src.buffer))
 {
     memset(&src.fileHeader, 0, sizeof(src.fileHeader));
-    src.capacity = 0;
 }
 
 FlexFileBuffer &FlexFileBuffer::operator=(const FlexFileBuffer &src)
@@ -75,10 +74,8 @@ FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src) noexcept
     if (&src != this)
     {
         buffer = std::move(src.buffer);
-        capacity = src.capacity;
         memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
         memset(&src.fileHeader, 0, sizeof(src.fileHeader));
-        src.capacity = 0;
     }
 
     return *this;
@@ -86,21 +83,14 @@ FlexFileBuffer &FlexFileBuffer::operator=(FlexFileBuffer &&src) noexcept
 
 void FlexFileBuffer::copyFrom(const FlexFileBuffer &src)
 {
-    if (src.buffer != nullptr)
+    if (!src.buffer.empty())
     {
-        auto new_buffer = std::unique_ptr<Byte[]>(
-                              new Byte[src.fileHeader.fileSize]);
-        capacity = src.fileHeader.fileSize;
-        memcpy(new_buffer.get(), src.buffer.get(), src.fileHeader.fileSize);
-        buffer = std::move(new_buffer);
-        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
+        buffer.resize(src.fileHeader.fileSize);
+        std::copy(src.buffer.cbegin(),
+                  src.buffer.cbegin() + src.fileHeader.fileSize,
+                  buffer.begin());
     }
-    else
-    {
-        buffer.reset(nullptr);
-        memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
-        capacity = 0;
-    }
+    memcpy(&fileHeader, &src.fileHeader, sizeof(fileHeader));
 }
 
 const Byte *FlexFileBuffer::GetBuffer(DWord offset /* = 0*/,
@@ -111,7 +101,7 @@ const Byte *FlexFileBuffer::GetBuffer(DWord offset /* = 0*/,
         return nullptr;
     }
 
-    return buffer.get() + offset;
+    return buffer.data() + offset;
 }
 
 void FlexFileBuffer::SetFilename(const char *name)
@@ -126,36 +116,21 @@ void FlexFileBuffer::SetFilename(const char *name)
 void FlexFileBuffer::Realloc(DWord newSize,
                              bool restoreContents /* = false*/)
 {
-    Byte *new_buffer;
-
-    if (newSize == 0)
+    if (newSize == 0U)
     {
         return;
     }
 
-    if (newSize <= capacity)
+    if (buffer.size() > fileHeader.fileSize)
     {
-        // Don't allocate memory if buffer capacity decreases.
-        if (newSize > fileHeader.fileSize)
-        {
-            memset(&buffer[fileHeader.fileSize], 0,
-                   newSize - fileHeader.fileSize);
-        }
-        fileHeader.fileSize = newSize;
-        return;
+        std::fill(buffer.begin() + fileHeader.fileSize, buffer.end(), '\0');
     }
-
-    new_buffer = new Byte[newSize];
-    memset(new_buffer, 0, newSize);
-
-    if (buffer != nullptr && restoreContents)
+    buffer.resize(newSize, '\0');
+    if (!restoreContents)
     {
-        memcpy(new_buffer, buffer.get(), fileHeader.fileSize);
+        std::fill(buffer.begin(), buffer.begin() + fileHeader.fileSize, '\0');
     }
-
-    buffer.reset(new_buffer);
     fileHeader.fileSize = newSize;
-    capacity = newSize;
 }
 
 // Traverse through a given FLEX text file and call a function for each
@@ -217,7 +192,7 @@ DWord FlexFileBuffer::SizeOfConvertedTextFile() const
 {
     DWord count = 0;
 
-    if (!buffer)
+    if (buffer.empty())
     {
         return count;
     }
@@ -235,13 +210,13 @@ DWord FlexFileBuffer::SizeOfConvertedTextFile() const
 // Replace the buffer contents by the converted file contents.
 void FlexFileBuffer::ConvertToTextFile()
 {
-    if (!buffer || fileHeader.fileSize == 0)
+    if (buffer.empty() || fileHeader.fileSize == 0)
     {
         return;
     }
 
     DWord new_size = SizeOfConvertedTextFile();
-    Byte *new_buffer = new Byte[new_size];
+    std::vector<Byte> new_buffer(new_size);
     DWord new_index = 0;
 
     TraverseForTextFileConversion([&new_buffer, &new_index](Byte c)
@@ -249,9 +224,8 @@ void FlexFileBuffer::ConvertToTextFile()
             new_buffer[new_index++] = c;
         });
 
-    buffer.reset(new_buffer);
+    buffer = std::move(new_buffer);
     fileHeader.fileSize = new_size;
-    capacity = new_size;
 }
 
 // Traverse through a given host operating system text file and call a function
@@ -260,6 +234,22 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
         const std::function<void(Byte c)>& fct) const
 {
     Byte spaces = 0;
+    auto process_spaces = [&](){
+        if (spaces)
+        {
+            if (spaces == 1)
+            {
+                fct(' ');
+            }
+            else
+            {
+                // Do space compression.
+                fct(0x09);
+                fct(spaces);
+            }
+            spaces = 0;
+        }
+    };
 
     for (DWord index = 0; index < fileHeader.fileSize; index++)
     {
@@ -269,29 +259,13 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
         {
             if (++spaces == 127)
             {
-                // Expand space compression for a maximum of 127 characters.
-                fct(0x09);
-                fct(spaces);
-                spaces = 0;
+                // Do space compression for a maximum of 127 characters.
+                process_spaces();
             }
         }
         else
         {
-            if (spaces)
-            {
-                if (spaces == 1)
-                {
-                    fct(' ');
-                }
-                else
-                {
-                    // Expand space compression.
-                    fct(0x09);
-                    fct(spaces);
-                }
-                spaces = 0;
-            }
-
+            process_spaces();
             if (c > ' ')
             {
                 fct(c);
@@ -315,19 +289,22 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
             // ignored.
         }
     } // for
+
+    // Process remaining spaces if file does not end with new line.
+    process_spaces();
 }
 
 // Convert a host operating system text file into a FLEX test file.
 // Replace the buffer contents by the converted file contents.
 void FlexFileBuffer::ConvertToFlexTextFile()
 {
-    if (!buffer)
+    if (buffer.empty())
     {
         return;
     }
 
     DWord new_size = SizeOfConvertedFlexTextFile();
-    Byte *new_buffer = new Byte[new_size];
+    std::vector<Byte> new_buffer(new_size);
     DWord new_index = 0;
 
     TraverseForFlexTextFileConversion([&new_buffer, &new_index](Byte c)
@@ -335,9 +312,8 @@ void FlexFileBuffer::ConvertToFlexTextFile()
             new_buffer[new_index++] = c;
         });
 
-    buffer.reset(new_buffer);
+    buffer = std::move(new_buffer);
     fileHeader.fileSize = new_size;
-    capacity = new_size;
 }
 
 // Estimate the needed buffer size after converting
@@ -347,7 +323,7 @@ DWord FlexFileBuffer::SizeOfConvertedFlexTextFile() const
 {
     DWord count = 0;
 
-    if (!buffer)
+    if (buffer.empty())
     {
         return count;
     }
@@ -486,7 +462,7 @@ DWord FlexFileBuffer::SizeOfConvertedDumpFile(DWord bytesPerLine) const
 {
     DWord count = 0;
 
-    if (!buffer)
+    if (buffer.empty())
     {
         return count;
     }
@@ -501,13 +477,13 @@ DWord FlexFileBuffer::SizeOfConvertedDumpFile(DWord bytesPerLine) const
 
 void FlexFileBuffer::ConvertToDumpFile(DWord bytesPerLine)
 {
-    if (!buffer)
+    if (buffer.empty())
     {
         return;
     }
 
     DWord new_size = SizeOfConvertedDumpFile(bytesPerLine);
-    Byte *new_buffer = new Byte[new_size];
+    std::vector<Byte> new_buffer(new_size);
     DWord new_index = 0;
 
     TraverseForDumpFileConversion(bytesPerLine,
@@ -516,17 +492,67 @@ void FlexFileBuffer::ConvertToDumpFile(DWord bytesPerLine)
             new_buffer[new_index++] = c;
         });
 
-    buffer.reset(new_buffer);
+    buffer = std::move(new_buffer);
     fileHeader.fileSize = new_size;
-    capacity = new_size;
 }
 
 // Estimate if the given file is a FLEX executable file.
-// Implementation may change in future (unfinished).
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static).
 bool FlexFileBuffer::IsFlexExecutableFile() const
 {
-    return false;
+    ReadCmdState state = ReadCmdState::GetType;
+    int count = 0;
+
+    for (DWord i = 0; i < fileHeader.fileSize; ++i)
+    {
+        Byte byte = buffer[i];
+
+        switch (state)
+        {
+            case ReadCmdState::GetType:
+                switch (byte)
+                {
+                    case '\x02':
+                        count = 2;
+                        state = ReadCmdState::GetDataAddress;
+                        continue;
+
+                    case '\x16':
+                        count = 2;
+                        state = ReadCmdState::GetStartAddress;
+                        continue;
+
+                    case '\x00':
+                        state = ReadCmdState::GetNUL;
+                        continue;
+
+                    default:
+                        return false;
+                }
+
+            case ReadCmdState::GetDataAddress:
+                state = (--count == 0) ? ReadCmdState::GetCount : state;
+                continue;
+
+            case ReadCmdState::GetCount:
+                count = byte;
+                state = ReadCmdState::GetData;
+                continue;
+
+            case ReadCmdState::GetData:
+            case ReadCmdState::GetStartAddress:
+                state = (--count == 0) ? ReadCmdState::GetType : state;
+                continue;
+
+            case ReadCmdState::GetNUL:
+                if (byte != '\0')
+                {
+                    return false;
+                }
+                continue;
+        }
+    }
+
+    return true;
 }
 
 bool FlexFileBuffer::WriteToFile(const char *path) const
@@ -537,7 +563,7 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
     {
         if (GetFileSize() != 0)
         {
-            size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
+            size_t blocks = fwrite(buffer.data(), GetFileSize(), 1, fp);
             return (blocks == 1);
         }
         return true;
@@ -562,7 +588,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
             if (GetFileSize() > 0)
             {
-                blocks = fread(buffer.get(), GetFileSize(), 1, fp);
+                blocks = fread(buffer.data(), GetFileSize(), 1, fp);
             }
 
             if (blocks == 1 || GetFileSize() == 0)
@@ -667,12 +693,17 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
 bool FlexFileBuffer::CopyFrom(const Byte *source, DWord size,
                               DWord offset /* = 0 */)
 {
+    if (source == nullptr)
+    {
+            throw FlexException(FERR_WRONG_PARAMETER);
+    }
+
     if (offset + size > fileHeader.fileSize)
     {
         return false;
     }
 
-    if (buffer != nullptr)
+    if (!buffer.empty())
     {
         memcpy(&buffer[offset], source, size);
     }
@@ -696,14 +727,14 @@ bool FlexFileBuffer::CopyTo(Byte *target, DWord size,
         }
 
         memset(target, stuffByte, size);
-        if (buffer != nullptr)
+        if (!buffer.empty())
         {
             memcpy(target, &buffer[offset], fileHeader.fileSize - offset);
         }
 
         return true;
     }
-    if (buffer != nullptr)
+    if (!buffer.empty())
     {
         memcpy(target, &buffer[offset], size);
     }

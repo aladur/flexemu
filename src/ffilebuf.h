@@ -32,14 +32,18 @@
 #include <sstream>
 #include <iomanip>
 #include <array>
+#include <vector>
 #include <string>
 
 
-typedef char FlexFileName[FLEX_FILENAME_LENGTH];
 const std::array<char,4> flexFileHeaderMagicNumber = {
     // '\xde', '\xad', '\xbe', '\xaf' old magic number without hour, minute.
     '\xde', '\xad', '\xbe', '\xae'
 };
+
+/* POD are needed here for memcpy() to/from clipboard. */
+/* NOLINTBEGIN(modernize-avoid-c-arrays) */
+typedef char FlexFileName[FLEX_FILENAME_LENGTH];
 
 // This is a POD data structure. It can be used to
 // read or write FLEX files to and from the clipboard.
@@ -59,9 +63,20 @@ struct tFlexFileHeader
     Word minute;
     FlexFileName fileName;
 };
+/* NOLINTEND(modernize-avoid-c-arrays) */
 
 class FlexFileBuffer
 {
+    enum class ReadCmdState : uint8_t
+    {
+        GetType,
+        GetDataAddress,
+        GetCount,
+        GetData,
+        GetStartAddress,
+        GetNUL,
+    };
+
 public:
     FlexFileBuffer();
     FlexFileBuffer(const FlexFileBuffer &src);
@@ -82,14 +97,11 @@ public:
     void CopyHeaderBigEndianFrom(const tFlexFileHeader &src);
     bool CopyFrom(const Byte *source, DWord size, DWord offset = 0);
     bool CopyTo(Byte *target, DWord size,
-                DWord offset = 0, int stuffByte = -1) const;
+                DWord offset = 0,
+                int stuffByte = -1) const;
     void FillWith(Byte pattern = 0);
     void Realloc(DWord newSize, bool restoreContents = false);
     const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
-    const tFlexFileHeader &GetHeader() const
-    {
-        return fileHeader;
-    }
     tFlexFileHeader GetHeaderBigEndian() const;
     void SetDateTime(const BDate &date, const BTime &time);
     void SetFilename(const char *name);
@@ -103,7 +115,7 @@ public:
     };
     inline bool IsEmpty() const
     {
-        return !buffer || fileHeader.fileSize == 0;
+        return buffer.empty() || fileHeader.fileSize == 0;
     };
     inline explicit operator const Byte *() const
     {
@@ -152,8 +164,7 @@ private:
     DWord SizeOfConvertedDumpFile(DWord bytesPerLine) const;
 
     tFlexFileHeader fileHeader{};
-    DWord capacity{0};
-    std::unique_ptr<Byte[]> buffer;
+    std::vector<Byte> buffer;
 };
 
 #endif

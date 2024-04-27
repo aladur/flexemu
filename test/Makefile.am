@@ -72,6 +72,9 @@ TESTS = unittests
 
 TESTS_ENVIRONMENT = export GTEST_OUTPUT="xml";
 
+SUBDIRS = \
+	data
+
 # To support 'make distcheck' the following googletest files have to be added
 # to the distribution.
 EXTRA_DIST = \

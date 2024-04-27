@@ -20587,7 +20587,10 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile python/Makefile test/Makefile .circleci/Makefile .github/Makefile .github/workflows/Makefile"
+ac_config_links="$ac_config_links test/data/cat.cmd:test/data/cat.cmd"
+
+
+ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile python/Makefile test/Makefile test/data/Makefile .circleci/Makefile .github/Makefile .github/workflows/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -21148,6 +21151,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
 # Files that config.status was made for.
 config_files="$ac_config_files"
 config_headers="$ac_config_headers"
+config_links="$ac_config_links"
 config_commands="$ac_config_commands"
 
 _ACEOF
@@ -21177,6 +21181,9 @@ $config_files
 
 Configuration headers:
 $config_headers
+
+Configuration links:
+$config_links
 
 Configuration commands:
 $config_commands
@@ -21704,6 +21711,7 @@ do
     "src/config.h") CONFIG_HEADERS="$CONFIG_HEADERS src/config.h:src/config.hin" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
+    "test/data/cat.cmd") CONFIG_LINKS="$CONFIG_LINKS test/data/cat.cmd:test/data/cat.cmd" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/bitmaps/Makefile") CONFIG_FILES="$CONFIG_FILES src/bitmaps/Makefile" ;;
@@ -21726,6 +21734,7 @@ do
     "doc/images/Makefile") CONFIG_FILES="$CONFIG_FILES doc/images/Makefile" ;;
     "python/Makefile") CONFIG_FILES="$CONFIG_FILES python/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+    "test/data/Makefile") CONFIG_FILES="$CONFIG_FILES test/data/Makefile" ;;
     ".circleci/Makefile") CONFIG_FILES="$CONFIG_FILES .circleci/Makefile" ;;
     ".github/Makefile") CONFIG_FILES="$CONFIG_FILES .github/Makefile" ;;
     ".github/workflows/Makefile") CONFIG_FILES="$CONFIG_FILES .github/workflows/Makefile" ;;
@@ -21742,6 +21751,7 @@ done
 if $ac_need_defaults; then
   test ${CONFIG_FILES+y} || CONFIG_FILES=$config_files
   test ${CONFIG_HEADERS+y} || CONFIG_HEADERS=$config_headers
+  test ${CONFIG_LINKS+y} || CONFIG_LINKS=$config_links
   test ${CONFIG_COMMANDS+y} || CONFIG_COMMANDS=$config_commands
 fi
 
@@ -22039,7 +22049,7 @@ cat >>$CONFIG_STATUS <<\_ACEOF || ac_write_fail=1
 fi # test -n "$CONFIG_HEADERS"
 
 
-eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS    :C $CONFIG_COMMANDS"
+eval set X "  :F $CONFIG_FILES  :H $CONFIG_HEADERS  :L $CONFIG_LINKS  :C $CONFIG_COMMANDS"
 shift
 for ac_tag
 do
@@ -22316,7 +22326,38 @@ printf "%s\n" X"$_am_arg" |
 	  }
 	  s/.*/./; q'`/stamp-h$_am_stamp_count
  ;;
+  :L)
+  #
+  # CONFIG_LINK
+  #
 
+  if test "$ac_source" = "$ac_file" && test "$srcdir" = '.'; then
+    :
+  else
+    # Prefer the file from the source tree if names are identical.
+    if test "$ac_source" = "$ac_file" || test ! -r "$ac_source"; then
+      ac_source=$srcdir/$ac_source
+    fi
+
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: linking $ac_source to $ac_file" >&5
+printf "%s\n" "$as_me: linking $ac_source to $ac_file" >&6;}
+
+    if test ! -r "$ac_source"; then
+      as_fn_error $? "$ac_source: file not found" "$LINENO" 5
+    fi
+    rm -f "$ac_file"
+
+    # Try a relative symlink, then a hard link, then a copy.
+    case $ac_source in
+    [\\/$]* | ?:[\\/]* ) ac_rel_source=$ac_source ;;
+	*) ac_rel_source=$ac_top_build_prefix$ac_source ;;
+    esac
+    ln -s "$ac_rel_source" "$ac_file" 2>/dev/null ||
+      ln "$ac_source" "$ac_file" 2>/dev/null ||
+      cp -p "$ac_source" "$ac_file" ||
+      as_fn_error $? "cannot link or copy $ac_source to $ac_file" "$LINENO" 5
+  fi
+ ;;
   :C)  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: executing $ac_file commands" >&5
 printf "%s\n" "$as_me: executing $ac_file commands" >&6;}
  ;;
