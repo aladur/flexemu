@@ -35,6 +35,7 @@ TEST(test_ffilebuf, fct_default_ctor)
     EXPECT_EQ(*ffb.GetFilename(), '\0');
     const auto *p = static_cast<const Byte *>(ffb);
     EXPECT_EQ(p, nullptr);
+    EXPECT_NO_THROW({ ffb.FillWith(); });
 }
 
 TEST(test_ffilebuf, fct_move_ctor)

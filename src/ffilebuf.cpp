@@ -741,12 +741,9 @@ bool FlexFileBuffer::CopyTo(Byte *target, DWord size,
     return true;
 }
 
-void FlexFileBuffer::FillWith(Byte pattern /* = 0 */)
+void FlexFileBuffer::FillWith(Byte pattern /* = '\0' */)
 {
-    for (DWord i = 0; i < GetFileSize(); i++)
-    {
-        buffer[i] = pattern;
-    }
+    std::fill(buffer.begin(), buffer.begin() + GetFileSize(), pattern);
 }
 
 tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
