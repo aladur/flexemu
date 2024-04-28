@@ -50,7 +50,6 @@ TEST(test_brcfile, fct_GetValue)
 {
     std::string svalue;
     int ivalue;
-    int isInt = 0;
     std::string test_file("test.rc");
     auto path = fs::temp_directory_path() / test_file;
     std::fstream ofs(path, std::ios::out | std::ios::trunc);
@@ -67,31 +66,23 @@ TEST(test_brcfile, fct_GetValue)
     ofs.close();
 
     BRcFile rcf(path.c_str());
-    EXPECT_EQ(rcf.GetValue("Key", svalue, nullptr), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("Key", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value1");
-    EXPECT_EQ(rcf.GetValue("Key", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
-    EXPECT_EQ(svalue, "Value1");
-    EXPECT_EQ(rcf.GetValue("Key.postfix", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("Key.postfix", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value2");
-    EXPECT_EQ(rcf.GetValue("Key_has_underscore", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("Key_has_underscore", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value3");
-    EXPECT_EQ(rcf.GetValue("KeyWithIndex01", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("KeyWithIndex01", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value4");
-    EXPECT_EQ(rcf.GetValue("key-with-dash", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("key-with-dash", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "Value5");
-    EXPECT_EQ(rcf.GetValue("KeyWithEmptyValue", svalue, &isInt), BRC_NO_ERROR);
-    EXPECT_EQ(isInt, 0);
+    EXPECT_EQ(rcf.GetValue("KeyWithEmptyValue", svalue), BRC_NO_ERROR);
     EXPECT_EQ(svalue, "");
     EXPECT_EQ(rcf.GetValue("KeyForNegIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, -22);
     EXPECT_EQ(rcf.GetValue("KeyForPosIntValue", ivalue), BRC_NO_ERROR);
     EXPECT_EQ(ivalue, 577901267);
+    EXPECT_EQ(rcf.GetValue("Key", ivalue), BRC_NO_INTEGER);
     fs::remove(path);
 }
 
@@ -153,7 +144,6 @@ TEST(test_brcfile, fct_SetValue)
         if (!key.empty())
         {
             result_map.emplace(key, value);
-            std::cout << key << " " << value << "\n";
         }
     }
     ifs.close();

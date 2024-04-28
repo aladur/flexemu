@@ -27,13 +27,14 @@
 #include "misc1.h"
 #include "brcfile.h"
 #include "bfileptr.h"
+#include "boption.h"
 
 
-BRcFile::BRcFile(const char *aFileName) : fileName(aFileName)
+BRcFile::BRcFile(const std::string &p_fileName) : fileName(p_fileName)
 {
 }
 
-int BRcFile::SetValue(const char *key, const char *value)
+int BRcFile::SetValue(const char *key, const std::string &value)
 {
     BFilePtr fp(fileName, "a");
 
@@ -42,7 +43,7 @@ int BRcFile::SetValue(const char *key, const char *value)
         return errno;
     }
 
-    auto res = fprintf(fp, "%s\t\t\"%s\"\n", key, value);
+    auto res = fprintf(fp, "%s\t\t\"%s\"\n", key, value.c_str());
 
     if (res < 0)
     {
@@ -71,17 +72,22 @@ int BRcFile::SetValue(const char *key, int value)
     return BRC_NO_ERROR;
 }
 
-int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
+int BRcFile::GetValue(const char *key, std::string &value)
+{
+    BOptional<bool> isInteger;
+
+    return GetValue(key, value, isInteger);
+}
+
+int BRcFile::GetValue(const char *key, std::string &value,
+        BOptional<bool> &isInteger)
 {
     char def[256];
     char strparm[PATH_MAX];
     auto keyLength = strlen(key);
     BFilePtr fp(fileName, "r");
 
-    if (isInteger)
-    {
-        *isInteger = 1;
-    }
+    isInteger = true;
 
     if (fp == nullptr)
     {
@@ -97,12 +103,7 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
 
             if (value[0] == '"')
             {
-
-                if (isInteger)
-                {
-                    *isInteger = 0;
-                }
-
+                isInteger = false;
                 value = value.substr(1, value.length() - 2);
             }
 
@@ -116,14 +117,14 @@ int BRcFile::GetValue(const char *key, std::string &value, int *isInteger)
 int BRcFile::GetValue(const char *key, int &value)
 {
     std::string str;
-    int isInt;
+    BOptional<bool> isInt;
 
-    if (int res = GetValue(key, str, &isInt))
+    if (int res = GetValue(key, str, isInt))
     {
         return res;
     }
 
-    if (!isInt)
+    if (isInt.has_value() && !isInt.value())
     {
         return BRC_NO_INTEGER;
     }

@@ -768,23 +768,23 @@ void FlexemuOptions::WriteOptionsToFile(
         optionsToWrite.version = VERSION;
     }
 
-    BRcFile rcFile(fileName.c_str());
+    BRcFile rcFile(fileName);
     bool ok;
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXVERSION, VERSION);
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
-    rcFile.SetValue(FLEXCOLOR, optionsToWrite.color.c_str());
+    rcFile.SetValue(FLEXCOLOR, optionsToWrite.color);
     rcFile.SetValue(FLEXNCOLORS, optionsToWrite.nColors);
     rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
-    rcFile.SetValue(FLEXMONITOR, optionsToWrite.hex_file.c_str());
-    rcFile.SetValue(FLEXDISKDIR, optionsToWrite.disk_dir.c_str());
-    rcFile.SetValue(FLEXDISK0, optionsToWrite.drive[0].c_str());
-    rcFile.SetValue(FLEXDISK1, optionsToWrite.drive[1].c_str());
-    rcFile.SetValue(FLEXDISK2, optionsToWrite.drive[2].c_str());
-    rcFile.SetValue(FLEXDISK3, optionsToWrite.drive[3].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE0, optionsToWrite.mdcrDrives[0].c_str());
-    rcFile.SetValue(FLEXMDCRDRIVE1, optionsToWrite.mdcrDrives[1].c_str());
+    rcFile.SetValue(FLEXMONITOR, optionsToWrite.hex_file);
+    rcFile.SetValue(FLEXDISKDIR, optionsToWrite.disk_dir);
+    rcFile.SetValue(FLEXDISK0, optionsToWrite.drive[0]);
+    rcFile.SetValue(FLEXDISK1, optionsToWrite.drive[1]);
+    rcFile.SetValue(FLEXDISK2, optionsToWrite.drive[2]);
+    rcFile.SetValue(FLEXDISK3, optionsToWrite.drive[3]);
+    rcFile.SetValue(FLEXMDCRDRIVE0, optionsToWrite.mdcrDrives[0]);
+    rcFile.SetValue(FLEXMDCRDRIVE1, optionsToWrite.mdcrDrives[1]);
     rcFile.SetValue(FLEXRAMEXTENSION, optionsToWrite.isRamExtension ? 1 : 0);
     rcFile.SetValue(FLEXHIMEM, optionsToWrite.isHiMem ? 1 : 0);
     rcFile.SetValue(FLEXFLEXIBLEMMU, optionsToWrite.isFlexibleMmu ? 1 : 0);
@@ -794,7 +794,7 @@ void FlexemuOptions::WriteOptionsToFile(
     auto str = toString<decltype(options.frequency)>(options.frequency, ok);
     if (ok)
     {
-        rcFile.SetValue(FLEXFREQUENCY, str.c_str());
+        rcFile.SetValue(FLEXFREQUENCY, str);
     }
     rcFile.SetValue(FLEXFORMATDRIVE0, optionsToWrite.canFormatDrive[0] ? 1 : 0);
     rcFile.SetValue(FLEXFORMATDRIVE1, optionsToWrite.canFormatDrive[1] ? 1 : 0);
@@ -812,22 +812,21 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.directoryDiskSectors);
     rcFile.SetValue(FLEXISDIRECTORYDISKACTIVE,
             optionsToWrite.isDirectoryDiskActive ? 1 : 0);
-    rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont.c_str());
+    rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
-    rcFile.SetValue(FLEXPRINTORIENTATION,
-            optionsToWrite.printOrientation.c_str());
-    rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize.c_str());
-    rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit.c_str());
+    rcFile.SetValue(FLEXPRINTORIENTATION, optionsToWrite.printOrientation);
+    rcFile.SetValue(FLEXPRINTPAGESIZE, optionsToWrite.printPageSize);
+    rcFile.SetValue(FLEXPRINTUNIT, optionsToWrite.printUnit);
     rcFile.SetValue(FLEXPRINTOUTPUTWINDOWGEOMETRY,
-            optionsToWrite.printOutputWindowGeometry.c_str());
+            optionsToWrite.printOutputWindowGeometry);
     rcFile.SetValue(FLEXPRINTPREVIEWDIALOGGEOMETRY,
-            optionsToWrite.printPreviewDialogGeometry.c_str());
+            optionsToWrite.printPreviewDialogGeometry);
 
     for (const auto &iter : optionsToWrite.printConfigs)
     {
         const auto key = std::string(FLEXPRINTCONFIG) + iter.first;
-        rcFile.SetValue(key.c_str(), iter.second.c_str());
+        rcFile.SetValue(key.c_str(), iter.second);
     }
 }
 #endif
@@ -999,7 +998,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 #ifdef UNIX
     const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
         FLEXEMURC;
-    BRcFile rcFile(rcFileName.c_str());
+    BRcFile rcFile(rcFileName);
     rcFile.GetValue(FLEXVERSION, options.version);
     rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
     rcFile.GetValue(FLEXDISK0, options.drive[0]);

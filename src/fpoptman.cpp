@@ -112,10 +112,10 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
         FLEXPLORERRC;
 
-    BRcFile rcFile(rcFileName.c_str());
+    BRcFile rcFile(rcFileName);
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERVERSION, VERSION);
-    rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.c_str());
+    rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     rcFile.SetValue(FLEXPLORERFILETIMEACCESS,
                     static_cast<int>(options.ft_access));
     rcFile.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
@@ -126,28 +126,27 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
                     options.extractTextFileAskUser ? 1 : 0);
     rcFile.SetValue(FLEXPLORERTRACK0ONLYDIRSEC,
                     options.onTrack0OnlyDirSectors ? 1 : 0);
-    rcFile.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath.c_str());
+    rcFile.SetValue(FLEXPLOREROPENDISKPATH, options.openDiskPath);
     rcFile.SetValue(FLEXPLOREROPENDIRECTORYPATH,
-                    options.openDirectoryPath.c_str());
+                    options.openDirectoryPath);
     rcFile.SetValue(FLEXPLORERFILESIZETYPE,
                     static_cast<int>(options.fileSizeType));
     rcFile.SetValue(FLEXPLOREROPENINJECTFILEPATH,
-                    options.openInjectFilePath.c_str());
+                    options.openInjectFilePath);
 
     for (auto i = 0U; i < options.recentDiskPaths.size(); ++i)
     {
         std::stringstream key;
 
         key << FLEXPLORERRECENTDISKPATH << i;
-        rcFile.SetValue(key.str().c_str(), options.recentDiskPaths[i].c_str());
+        rcFile.SetValue(key.str().c_str(), options.recentDiskPaths[i]);
     }
     for (auto i = 0U; i < options.recentDirectoryPaths.size(); ++i)
     {
         std::stringstream key;
 
         key << FLEXPLORERRECENTDIRECTORY << i;
-        rcFile.SetValue(key.str().c_str(),
-                        options.recentDirectoryPaths[i].c_str());
+        rcFile.SetValue(key.str().c_str(), options.recentDirectoryPaths[i]);
     }
 #endif
 }
@@ -229,7 +228,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 #ifdef UNIX
     const auto rcFileName =
         (getHomeDirectory() += PATHSEPARATORSTRING) += FLEXPLORERRC;
-    BRcFile rcFile(rcFileName.c_str());
+    BRcFile rcFile(rcFileName);
 
     rcFile.GetValue(FLEXPLORERVERSION, options.version);
 

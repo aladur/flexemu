@@ -50,7 +50,7 @@ bool FlexDirectoryDiskOptions::Read()
 
     if (!stat(path.c_str(), &sbuf) && (S_ISREG(sbuf.st_mode)))
     {
-        BRcFile rcFile(path.c_str());
+        BRcFile rcFile(path);
 
         if (!rcFile.GetValue(FLEXDIRECTORYDISKTRACKS, tracks) &&
             !rcFile.GetValue(FLEXDIRECTORYDISKSECTORS, sectors))
@@ -71,7 +71,7 @@ bool FlexDirectoryDiskOptions::Write(bool onlyIfNotExists)
         return true;
     }
 
-    BRcFile rcFile(path.c_str());
+    BRcFile rcFile(path);
 
     return !rcFile.SetValue(FLEXDIRECTORYDISKTRACKS, tracks) &&
            !rcFile.SetValue(FLEXDIRECTORYDISKSECTORS, sectors);

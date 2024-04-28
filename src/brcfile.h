@@ -23,6 +23,7 @@
 #ifndef BRCFILE_INCLUDED
 #define BRCFILE_INCLUDED
 
+#include "boption.h"
 #include <string>
 #include <map>
 
@@ -37,18 +38,21 @@ class BRcFile
 {
 public:
     BRcFile() = default;
-    explicit BRcFile(const char *aFileName);
+    explicit BRcFile(const std::string &p_fileName);
     ~BRcFile() = default;
 
-    int SetValue(const char *key, const char *value);
+    int SetValue(const char *key, const std::string &value);
     int SetValue(const char *key, int value);
-    int GetValue(const char *key, std::string &value, int *isInteger = nullptr);
+    int GetValue(const char *key, std::string &value);
     int GetValue(const char *key, int &value);
     int GetValues(const char *keyPrefix,
             std::map<std::string, std::string> &values);
     int Initialize();
 
 private:
+    int GetValue(const char *key, std::string &value,
+            BOptional<bool> &isInteger);
+
     std::string fileName;
 };
 
