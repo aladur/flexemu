@@ -45,6 +45,8 @@ public:
     static void GetCommandlineOptions(
         struct sOptions &options,
         int argc,
+        /* Parameter comes from main(). */
+        /* NOLINTNEXTLINE(modernize-avoid-c-arrays) */
         char *const argv[]);
     static void WriteOptions(
         const struct sOptions &options,

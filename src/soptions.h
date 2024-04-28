@@ -122,6 +122,7 @@ struct sOptions
     // NOLINTNEXTLINE(bugprone-reserved-identifier)
     sOptions& operator=(const sOptions &src) = default;
 
+    std::string version;
     std::array<std::string, MAX_DRIVES> drive;
     std::array<std::string, 2> mdcrDrives;
     std::string hex_file;

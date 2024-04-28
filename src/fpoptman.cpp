@@ -30,8 +30,26 @@
 #include "brcfile.h"
 
 
+const char * const FLEXPLORERRC = ".flexplorerrc";
+
+const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
+const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
+const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
+const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
+const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
+const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
+const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
+const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
+const char * const FLEXPLOREROPENDISKPATH = "OpenDiskPath";
+const char * const FLEXPLOREROPENINJECTFILEPATH = "OpenInjectFilePath";
+const char * const FLEXPLORERRECENTDIRECTORY = "RecentDirectoryPath";
+const char * const FLEXPLORERRECENTDISKPATH = "RecentDiskPath";
+const char * const FLEXPLORERTRACK0ONLYDIRSEC = "OnTrack0OnlyDirSectors";
+const char * const FLEXPLORERVERSION = "Version";
+
 void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 {
+    options.version = VERSION;
     options.ft_access = FileTimeAccess::NONE;
 #ifdef UNIX
     options.bootSectorFile = F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
@@ -60,8 +78,10 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 {
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
+    reg.SetValue(FLEXPLORERVERSION, VERSION);
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
-    reg.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    reg.SetValue(FLEXPLORERFILETIMEACCESS,
+                 static_cast<int>(options.ft_access));
     reg.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
@@ -89,13 +109,15 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     }
 #endif
 #ifdef UNIX
-    const auto rcFileName = getHomeDirectory() +
-                            PATHSEPARATORSTRING FLEXPLORERRC;
+    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+        FLEXPLORERRC;
 
     BRcFile rcFile(rcFileName.c_str());
     rcFile.Initialize(); // truncate file
+    rcFile.SetValue(FLEXPLORERVERSION, VERSION);
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile.c_str());
-    rcFile.SetValue(FLEXFILETIMEACCESS, static_cast<int>(options.ft_access));
+    rcFile.SetValue(FLEXPLORERFILETIMEACCESS,
+                    static_cast<int>(options.ft_access));
     rcFile.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTCNV,
@@ -138,13 +160,15 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXPLOREREG);
 
+    reg.GetValue(FLEXPLORERVERSION, options.version);
+
     if (!reg.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
         !string_result.empty())
     {
         options.bootSectorFile = string_result;
     }
 
-    if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
+    if (!reg.GetValue(FLEXPLORERFILETIMEACCESS, int_result))
     {
         int_result = std::max(int_result, 0);
         if (int_result == 2 || int_result > 3)
@@ -204,8 +228,10 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 #endif
 #ifdef UNIX
     const auto rcFileName =
-        getHomeDirectory() + PATHSEPARATORSTRING FLEXPLORERRC;
+        (getHomeDirectory() += PATHSEPARATORSTRING) += FLEXPLORERRC;
     BRcFile rcFile(rcFileName.c_str());
+
+    rcFile.GetValue(FLEXPLORERVERSION, options.version);
 
     if (!rcFile.GetValue(FLEXPLORERBOOTSECTORFILE, string_result) &&
         !string_result.empty())
@@ -213,7 +239,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
         options.bootSectorFile = string_result;
     }
 
-    if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))
+    if (!rcFile.GetValue(FLEXPLORERFILETIMEACCESS, int_result))
     {
         int_result = std::max(int_result, 0);
          if (int_result == 2 || int_result > 3)

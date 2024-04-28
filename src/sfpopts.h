@@ -38,6 +38,7 @@ struct sFPOptions
 
     FileTimeAccess ft_access{};
     FileSizeType fileSizeType{};
+    std::string version;
     std::string bootSectorFile;
     bool injectTextFileConvert{};
     bool injectTextFileAskUser{};

@@ -34,6 +34,52 @@
 #include "brcfile.h"
 
 
+const char * const FLEXEMURC = ".flexemurc";
+
+const char * const FLEXDISKDIR = "DiskDirectory";
+const char * const FLEXDISK0 = "Disk0Path";
+const char * const FLEXDISK1 = "Disk1Path";
+const char * const FLEXDISK2 = "Disk2Path";
+const char * const FLEXDISK3 = "Disk3Path";
+const char * const FLEXMDCRDRIVE0 = "MdcrDrive0Path";
+const char * const FLEXMDCRDRIVE1 = "MdcrDrive1Path";
+const char * const FLEXCOLOR = "DisplayColor";
+const char * const FLEXNCOLORS = "NoOfColors";
+const char * const FLEXINVERSE = "DisplayInverse";
+const char * const FLEXHIMEM = "HighMemory";
+const char * const FLEXFLEXIBLEMMU = "UseFlexibleMmu";
+const char * const FLEXRAMEXTENSION = "UseRamExtension";
+const char * const FLEXEUROCOM2V5 = "UseEurocom2V5";
+const char * const FLEXUNDOCUMENTED = "UndocumentedMc6809";
+const char * const FLEXRTC = "UseRTC";
+const char * const FLEXFORMATDRIVE0 = "CanFormatDrive0";
+const char * const FLEXFORMATDRIVE1 = "CanFormatDrive1";
+const char * const FLEXFORMATDRIVE2 = "CanFormatDrive2";
+const char * const FLEXFORMATDRIVE3 = "CanFormatDrive3";
+// variable used on WIN32 only.
+// NOLINTNEXTLINE(clang-diagnostic-unused-const-variable)
+const char * const FLEXDOCDIR = "DocDirectory";
+const char * const FLEXMONITOR = "MonitorPath";
+const char * const FLEXVERSION = "Version";
+const char * const FLEXSCREENFACTOR = "ScreenFactor";
+const char * const FLEXFREQUENCY = "Frequency";
+const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
+const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
+const char * const FLEXTERMINALIGNOREESC = "TerminalIgnoreESC";
+const char * const FLEXTERMINALIGNORENUL = "TerminalIgnoreNUL";
+const char * const FLEXPRINTFONT = "PrintFont";
+const char * const FLEXPRINTPAGEBREAKDETECTED = "PrintPageBreakDetected";
+const char * const FLEXPRINTORIENTATION = "PrintOrientation";
+const char * const FLEXPRINTPAGESIZE = "PrintPageSize";
+const char * const FLEXPRINTUNIT = "PrintUnit";
+const char * const FLEXPRINTOUTPUTWINDOWGEOMETRY = "PrintOutputWindowGeometry";
+const char * const FLEXPRINTPREVIEWDIALOGGEOMETRY =
+                    "PrintPreviewDialogGeometry";
+const char * const FLEXPRINTCONFIG = "PrintConfig";
+const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
+const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
+const char * const FLEXISDIRECTORYDISKACTIVE = "IsDirectoryDiskActive";
+
 void FlexemuOptions::PrintHelp(std::ostream &os)
 {
     os << "usage: flexemu <options>\n"
@@ -336,7 +382,8 @@ void FlexemuOptions::WriteOptions(
     WriteOptionsToRegistry(options, optionIds, ifNotExists);
 #endif
 #ifdef UNIX
-    const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
+    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+        FLEXEMURC;
 
     WriteOptionsToFile(options, optionIds, rcFileName, ifNotExists);
 #endif
@@ -718,11 +765,13 @@ void FlexemuOptions::WriteOptionsToFile(
 
         optionsToWrite.isDirectoryDiskActive =
             previousOptions.isDirectoryDiskActive;
+        optionsToWrite.version = VERSION;
     }
 
     BRcFile rcFile(fileName.c_str());
     bool ok;
     rcFile.Initialize(); // truncate file
+    rcFile.SetValue(FLEXVERSION, VERSION);
     rcFile.SetValue(FLEXINVERSE, optionsToWrite.isInverse ? 1 : 0);
     rcFile.SetValue(FLEXDISPLAYSMOOTH, optionsToWrite.isSmooth ? 1 : 0);
     rcFile.SetValue(FLEXCOLOR, optionsToWrite.color.c_str());
@@ -791,6 +840,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 #ifdef _WIN32
     BRegistry reg(BRegistry::currentUser, FLEXEMUREG);
 
+    reg.GetValue(FLEXVERSION, options.version);
     reg.GetValue(FLEXDISKDIR, options.disk_dir);
     reg.GetValue(FLEXDISK0, options.drive[0]);
     reg.GetValue(FLEXDISK1, options.drive[1]);
@@ -947,8 +997,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
-    const auto rcFileName = getHomeDirectory() + PATHSEPARATORSTRING FLEXEMURC;
+    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+        FLEXEMURC;
     BRcFile rcFile(rcFileName.c_str());
+    rcFile.GetValue(FLEXVERSION, options.version);
     rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
     rcFile.GetValue(FLEXDISK0, options.drive[0]);
     rcFile.GetValue(FLEXDISK1, options.drive[1]);

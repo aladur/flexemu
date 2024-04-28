@@ -46,6 +46,8 @@
     static const char * const pathSeparators = "/";
 #endif
 
+const char * const RANDOM_FILE_LIST = "random";
+
 const char * const white_space = " \t\n\r\f\v";
 
 int copyFile(const char *srcPath, const char *destPath)

@@ -26,6 +26,9 @@
 #include <sys/stat.h>
 
 
+const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
+const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
+
 const std::string FlexDirectoryDiskOptions::filename{".flexdiskrc"};
 
 FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
