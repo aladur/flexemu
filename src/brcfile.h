@@ -40,7 +40,6 @@ public:
     explicit BRcFile(const char *aFileName);
     ~BRcFile() = default;
 
-    void SetFileName(const char *aFileName);
     int SetValue(const char *key, const char *value);
     int SetValue(const char *key, int value);
     int GetValue(const char *key, std::string &value, int *isInteger = nullptr);

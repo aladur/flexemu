@@ -33,11 +33,6 @@ BRcFile::BRcFile(const char *aFileName) : fileName(aFileName)
 {
 }
 
-void BRcFile::SetFileName(const char *aFileName)
-{
-    fileName = aFileName;
-}
-
 int BRcFile::SetValue(const char *key, const char *value)
 {
     BFilePtr fp(fileName, "a");

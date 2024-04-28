@@ -26,6 +26,7 @@ check_PROGRAMS = unittests
 noinst_PROGRAMS = unittests
 
 unittests_SOURCES = \
+	test_brcfile.cpp \
 	test_main.cpp \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
@@ -39,6 +40,7 @@ unittests_SOURCES = \
 	../src/benv.cpp \
 	../src/bfileptr.cpp \
 	../src/bmembuf.cpp \
+	../src/brcfile.cpp \
 	../src/btime.cpp \
 	../src/fattrib.cpp \
 	../src/fdirent.cpp \
