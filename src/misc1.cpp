@@ -38,7 +38,10 @@
 #include "cvtwchar.h"
 #include "flexerr.h"
 #include "benv.h"
+#include <array>
+#include <string>
 #include <fstream>
+
 
 #ifdef _WIN32
     static const char * const pathSeparators = "\\/";
@@ -47,7 +50,6 @@
 #endif
 
 const char * const RANDOM_FILE_LIST = "random";
-
 const char * const white_space = " \t\n\r\f\v";
 
 int copyFile(const char *srcPath, const char *destPath)
@@ -484,11 +486,11 @@ std::string getCurrentPath()
         return ConvertToUtf8String(buffer.get());
     }
 #else
-    char buffer[PATH_MAX];
+    std::array<char, PATH_MAX> buffer{};
 
-    if (getcwd(buffer, sizeof(buffer)))
+    if (getcwd(buffer.data(), buffer.size()))
     {
-        return buffer;
+        return {buffer.data()};
     }
 #endif
 
@@ -594,17 +596,17 @@ std::string getHostName()
         dnsHostName = ConvertToUtf8String(hostname);
     }
 #else
-    char hostname[_POSIX_HOST_NAME_MAX];
-    if (gethostname(hostname, sizeof(hostname)) == 0)
+    std::array<char, _POSIX_HOST_NAME_MAX> hostname{};
+    if (gethostname(hostname.data(), hostname.size()) == 0)
     {
-        struct hostent *host_entry = gethostbyname(hostname);
+        struct hostent *host_entry = gethostbyname(hostname.data());
         if (host_entry != nullptr)
         {
             dnsHostName = host_entry->h_name;
         }
         else
         {
-            dnsHostName = hostname;
+            dnsHostName = std::string(hostname.data());
         }
     }
 #endif

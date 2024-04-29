@@ -478,8 +478,9 @@ bool fromString(const std::string &str, T &value)
 // template to create a string from a cstyle character array with given length.
 // The cstyle array not necessarily has a terminating NUL, std::string
 // constructors do not support this.
-template<size_t N>
-std::string getstr(const char (&array)[N])
+/* Template function needed to read from POD data types into a string. */
+/* NOLINTNEXTLINE(modernize-avoid-c-arrays) */
+template<size_t N> std::string getstr(const char (&array)[N])
 {
     std::string result;
     result.reserve(N);

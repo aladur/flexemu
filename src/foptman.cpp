@@ -163,6 +163,8 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
 void FlexemuOptions::GetCommandlineOptions(
     struct sOptions &options,
     int argc,
+// Parameter comes from main().
+// NOLINTNEXTLINE(modernize-avoid-c-arrays)
     char *const argv[])
 {
     int i;
