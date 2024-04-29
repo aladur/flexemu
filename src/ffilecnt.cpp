@@ -398,11 +398,10 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
 {
     if (is_flex_format)
     {
-        s_sys_info_sector sis{};
+        u_sys_info_sector sis{};
         int year;
 
-        if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                        sis_trk_sec.sec))
+        if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
         {
             std::stringstream stream;
 
@@ -411,27 +410,28 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
                                 fp.GetPath());
         }
 
-        if (sis.sir.year < 75)
+        if (sis.s.sir.year < 75)
         {
-            year = sis.sir.year + 2000;
+            year = sis.s.sir.year + 2000;
         }
         else
         {
-            year = sis.sir.year + 1900;
+            year = sis.s.sir.year + 1900;
         }
 
         auto size = 0U;
-        while (size < sizeof(sis.sir.disk_name) && sis.sir.disk_name[size])
+        while (size < sizeof(sis.s.sir.disk_name) && sis.s.sir.disk_name[size])
         {
             ++size;
         }
-        std::string disk_name(sis.sir.disk_name, size);
+        std::string disk_name(sis.s.sir.disk_name, size);
         disk_name.append("");
         bool is_valid = true;
         size = 0U;
-        while (size < sizeof(sis.sir.disk_ext) && sis.sir.disk_ext[size])
+        while (size < sizeof(sis.s.sir.disk_ext) && sis.s.sir.disk_ext[size])
         {
-            if (sis.sir.disk_ext[size] < ' ' || sis.sir.disk_ext[size] > '~')
+            if (sis.s.sir.disk_ext[size] < ' ' ||
+                sis.s.sir.disk_ext[size] > '~')
             {
                 is_valid = false;
                 break;
@@ -440,18 +440,18 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
         }
         if (size > 0U && is_valid)
         {
-            std::string disk_ext(sis.sir.disk_ext, size);
+            std::string disk_ext(sis.s.sir.disk_ext, size);
             disk_ext.append("");
             disk_name.append(".");
             disk_name.append(disk_ext);
         }
-        info.SetDate(BDate(sis.sir.day, sis.sir.month, year));
-        info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+        info.SetDate(BDate(sis.s.sir.day, sis.s.sir.month, year));
+        info.SetFree(getValueBigEndian<Word>(&sis.s.sir.free[0]) *
                      param.byte_p_sector);
-        info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
+        info.SetTotalSize((sis.s.sir.last.sec * (sis.s.sir.last.trk + 1)) *
                            param.byte_p_sector);
         info.SetName(disk_name);
-        info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+        info.SetNumber(getValueBigEndian<Word>(&sis.s.sir.disk_number[0]));
     }
 
     info.SetTrackSector(
@@ -506,7 +506,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                        // the two sector map sectors are counted too.
     int count;
     FlexDirEntry de;
-    s_sys_info_sector sis{};
+    u_sys_info_sector sis{};
     const char *pFileName = fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
@@ -527,8 +527,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // read sys info sector
-    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                    sis_trk_sec.sec))
+    if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -536,7 +535,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
     } // get start trk/sec of free chain
 
-    next = start = sis.sir.fc_start;
+    next = start = sis.s.sir.fc_start;
 
     // write each sector to buffer
     Byte repeat = 0;
@@ -656,12 +655,12 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         }
     }
 
-    sis.sir.fc_start = next;
+    sis.s.sir.fc_start = next;
 
     // if free chain full, set end trk/sec of free chain also to 0
     if (!next.sec && !next.trk)
     {
-        sis.sir.fc_end = next;
+        sis.s.sir.fc_end = next;
     }
 
     // if random file, write the sector map buffers back
@@ -686,12 +685,11 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // Update the system info sector.
-    auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
+    auto free = getValueBigEndian<Word>(&sis.s.sir.free[0]);
     free -= recordNr;
-    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    setValueBigEndian<Word>(&sis.s.sir.free[0], free);
 
-    if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                     sis_trk_sec.sec))
+    if (!WriteSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -723,7 +721,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
     int trk;
     int sec;
     int recordNr;
-    Byte sectorBuffer[SECTOR_SIZE];
+    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int size;
 
     if (!is_flex_format)
@@ -767,7 +765,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
             {
                 return buffer;
             }
-            if (!ReadSector(&sectorBuffer[0], trk, sec))
+            if (!ReadSector(sectorBuffer.data(), trk, sec))
             {
                 st_t st{static_cast<Byte>(trk), static_cast<Byte>(sec)};
                 std::stringstream stream;
@@ -780,7 +778,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
             trk = sectorBuffer[0];
             sec = sectorBuffer[1];
 
-            if (!buffer.CopyFrom(&sectorBuffer[4], SECTOR_SIZE - 4,
+            if (!buffer.CopyFrom(sectorBuffer.data() + 4, SECTOR_SIZE - 4,
                                  recordNr * (SECTOR_SIZE - 4)))
             {
                 size = recordNr + 1;
@@ -828,7 +826,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     }
 
     int i;
-    s_dir_sector ds{};
+    u_dir_sector dir_sector{};
     s_dir_entry *pde;
     st_t next(first_dir_trk_sec);
     int tmp1;
@@ -839,7 +837,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     while (next.sec != 0 || next.trk != 0)
     {
         // read next directory sector
-        if (!ReadSector(reinterpret_cast<Byte *>(&ds), next.trk, next.sec))
+        if (!ReadSector(dir_sector.raw, next.trk, next.sec))
         {
             std::stringstream stream;
 
@@ -851,7 +849,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
         for (i = 0; i < 10; i++)
         {
             // look for the next free directory entry
-            pde = &ds.dir_entries[i];
+            pde = &dir_sector.s.dir_entries[i];
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {
@@ -884,8 +882,7 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->month = static_cast<Byte>(date.GetMonth());
                 pde->year = static_cast<Byte>(date.GetYear() % 100);
 
-                if (!WriteSector(reinterpret_cast<Byte *>(&ds), next.trk,
-                    next.sec))
+                if (!WriteSector(dir_sector.raw, next.trk, next.sec))
                 {
                     std::stringstream stream;
 
@@ -898,7 +895,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
             }
         }
 
-        next = (ds.next == st_t{}) ? ExtendDirectory(ds, next) : ds.next;
+        next = (dir_sector.s.next == st_t{}) ?
+            ExtendDirectory(dir_sector, next) : dir_sector.s.next;
     }
 
     throw FlexException(FERR_DIRECTORY_FULL);
@@ -1226,7 +1224,8 @@ void FlexFileContainer::Initialize_unformatted_disk()
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 }
 
-void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[],
+void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
+                                            Byte sectorBuffer2[],
                                             const char *bsFile)
 {
     // Read boot sector(s) if present from file.
@@ -1236,23 +1235,23 @@ void FlexFileContainer::Create_boot_sectors(Byte sec_buf[], Byte sec_buf2[],
     }
     BFilePtr boot(bsFile, "rb");
 
-    if (boot == nullptr || fread(sec_buf, SECTOR_SIZE, 1, boot) != 1)
+    if (boot == nullptr || fread(sectorBuffer1, SECTOR_SIZE, 1, boot) != 1)
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
-        memset(sec_buf, 0, SECTOR_SIZE);
-        sec_buf[0] = 0x7E; // JMP $F02D
-        sec_buf[1] = 0xF0;
-        sec_buf[2] = 0x2D;
-        memset(sec_buf2, 0, SECTOR_SIZE);
+        memset(sectorBuffer1, 0, SECTOR_SIZE);
+        sectorBuffer1[0] = 0x7E; // JMP $F02D
+        sectorBuffer1[1] = 0xF0;
+        sectorBuffer1[2] = 0x2D;
+        memset(sectorBuffer2, 0, SECTOR_SIZE);
     }
-    if (boot != nullptr && fread(sec_buf2, SECTOR_SIZE, 1, boot) != 1)
+    if (boot != nullptr && fread(sectorBuffer2, SECTOR_SIZE, 1, boot) != 1)
     {
-        memset(sec_buf2, 0, SECTOR_SIZE);
+        memset(sectorBuffer2, 0, SECTOR_SIZE);
     }
 } // Create_boot_sectors
 
-void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
+void FlexFileContainer::Create_sys_info_sector(u_sys_info_sector &sis,
         const std::string &name,
         struct s_formats &format)
 {
@@ -1261,9 +1260,8 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
     time_t time_now;
     struct tm *lt;
 
-    memset(sec_buf, 0, SECTOR_SIZE);
+    memset(sis.raw, 0, SECTOR_SIZE);
 
-    auto &sis = *reinterpret_cast<s_sys_info_sector *>(sec_buf);
     int i = 0;
 
     for (const char ch : name)
@@ -1273,7 +1271,7 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
             break;
         }
 
-        sis.sir.disk_name[i] = static_cast<char>(std::toupper(ch));
+        sis.s.sir.disk_name[i] = static_cast<char>(std::toupper(ch));
         ++i;
     }
 
@@ -1282,40 +1280,38 @@ void FlexFileContainer::Create_sys_info_sector(Byte sec_buf[],
     time_now = time(nullptr);
     lt = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
-    setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
-    sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
-    sis.sir.fc_start.sec = static_cast<Byte>((start % format.sectors) + 1);
-    sis.sir.fc_end.trk = static_cast<Byte>(format.tracks - 1);
-    sis.sir.fc_end.sec = static_cast<Byte>(format.sectors);
-    setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free));
-    sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
-    sis.sir.day = static_cast<Byte>(lt->tm_mday);
-    sis.sir.year = static_cast<Byte>(year);
-    sis.sir.last.trk = static_cast<Byte>(format.tracks - 1);
-    sis.sir.last.sec = static_cast<Byte>(format.sectors);
+    setValueBigEndian<Word>(&sis.s.sir.disk_number[0], 1U);
+    sis.s.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
+    sis.s.sir.fc_start.sec = static_cast<Byte>((start % format.sectors) + 1);
+    sis.s.sir.fc_end.trk = static_cast<Byte>(format.tracks - 1);
+    sis.s.sir.fc_end.sec = static_cast<Byte>(format.sectors);
+    setValueBigEndian<Word>(&sis.s.sir.free[0], static_cast<Word>(free));
+    sis.s.sir.month = static_cast<Byte>(lt->tm_mon + 1);
+    sis.s.sir.day = static_cast<Byte>(lt->tm_mday);
+    sis.s.sir.year = static_cast<Byte>(year);
+    sis.s.sir.last.trk = static_cast<Byte>(format.tracks - 1);
+    sis.s.sir.last.sec = static_cast<Byte>(format.sectors);
 } // create_sys_info_sector
 
 // on success return true
 bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 {
-    Byte sec_buf[SECTOR_SIZE];
+    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
-
-    memset(sec_buf, 0, sizeof(sec_buf));
 
     for (i = 0; i < format.sectors0 - first_dir_trk_sec.sec + 1; i++)
     {
-        sec_buf[0] = 0;
-        sec_buf[1] = 0;
+        sectorBuffer[0] = 0;
+        sectorBuffer[1] = 0;
 
         if (i < format.dir_sectors - 1)
         {
             auto sector = i + first_dir_trk_sec.sec;
-            sec_buf[0] = static_cast<Byte>(sector / format.sectors);
-            sec_buf[1] = static_cast<Byte>((sector % format.sectors) + 1);
+            sectorBuffer[0] = static_cast<Byte>(sector / format.sectors);
+            sectorBuffer[1] = static_cast<Byte>((sector % format.sectors) + 1);
         }
 
-        if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
+        if (fwrite(sectorBuffer.data(), sectorBuffer.size(), 1, fp) != 1)
         {
             return false;
         }
@@ -1327,26 +1323,24 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 // on success return true
 bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
 {
-    Byte sec_buf[SECTOR_SIZE];
+    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
-
-    memset(sec_buf, 0, sizeof(sec_buf));
 
     for (i = format.sectors + 1; i <= format.sectors * format.tracks; ++i)
     {
-        sec_buf[0] = static_cast<Byte>(i / format.sectors);
-        sec_buf[1] = static_cast<Byte>((i % format.sectors) + 1);
+        sectorBuffer[0] = static_cast<Byte>(i / format.sectors);
+        sectorBuffer[1] = static_cast<Byte>((i % format.sectors) + 1);
 
         // use for tests to correctly save random files:
         // (the link always jumps over one sector)
-        //      sec_buf[0] = (i+1) / format.sectors;
-        //      sec_buf[1] = ((i+1) % format.sectors) + 1;
+        //      sectorBuffer[0] = (i+1) / format.sectors;
+        //      sectorBuffer[1] = ((i+1) % format.sectors) + 1;
         if (i == format.sectors * format.tracks)
         {
-            sec_buf[0] = sec_buf[1] = 0;
+            sectorBuffer[0] = sectorBuffer[1] = 0;
         }
 
-        if (fwrite(sec_buf, sizeof(sec_buf), 1, fp) != 1)
+        if (fwrite(sectorBuffer.data(), sectorBuffer.size(), 1, fp) != 1)
         {
             return false;
         }
@@ -1463,9 +1457,10 @@ void FlexFileContainer::Format_disk(
             }
         }
 
-        Create_sys_info_sector(sector_buffer, name, format);
+        u_sys_info_sector sis{};
+        Create_sys_info_sector(sis, name, format);
 
-        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
+        if (fwrite(sis.raw, sizeof(sis), 1, fp) != 1)
         {
             err = 1;
         }
@@ -1588,65 +1583,62 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
 // parameters:
 //    last_dir_sector    sector buffer of last directory sector
 //    st_last            trk-sec of last directory sector
-st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
+st_t FlexFileContainer::ExtendDirectory(u_dir_sector last_dir_sector,
                                         const st_t &st_last)
 {
     std::stringstream stream;
-    s_sys_info_sector sis{};
+    u_sys_info_sector sis{};
 
-    if (!ReadSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                    sis_trk_sec.sec))
+    if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
         throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    auto next = sis.sir.fc_start; // Get next trk-sec from start of free chain
+    auto next = sis.s.sir.fc_start; // Get next trk-sec from start of free chain
     if (next == st_t{})
     {
         return next; // Free chain is empty, directory extend failed.
     }
-    last_dir_sector.next = next;
+    last_dir_sector.s.next = next;
 
-    if (!WriteSector(reinterpret_cast<Byte *>(&last_dir_sector), st_last.trk,
-        st_last.sec))
+    if (!WriteSector(last_dir_sector.raw, st_last.trk, st_last.sec))
     {
         stream << st_last;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    s_dir_sector dir_sector{};
-    if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
+    u_dir_sector dir_sector{};
+    if (!ReadSector(dir_sector.raw, next.trk, next.sec))
     {
         stream << next;
         throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    auto new_fc_start = dir_sector.next;
-    memset(reinterpret_cast<Byte *>(&dir_sector), '\0', sizeof(dir_sector));
-    dir_sector.record_nr[0] = 0x00;
-    dir_sector.record_nr[1] = 0x01;
+    auto new_fc_start = dir_sector.s.next;
+    memset(dir_sector.raw, '\0', sizeof(dir_sector));
+    dir_sector.s.record_nr[0] = 0x00;
+    dir_sector.s.record_nr[1] = 0x01;
 
-    if (!WriteSector(reinterpret_cast<Byte *>(&dir_sector), next.trk, next.sec))
+    if (!WriteSector(dir_sector.raw, next.trk, next.sec))
     {
         stream << next;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
     }
 
-    sis.sir.fc_start = new_fc_start;
-    if (--sis.sir.free[1] == 0xff)
+    sis.s.sir.fc_start = new_fc_start;
+    if (--sis.s.sir.free[1] == 0xff)
     {
-        --sis.sir.free[0];
+        --sis.s.sir.free[0];
     }
     // Check if free chain is at the end. If so update sir.
     if (new_fc_start == st_t{})
     {
-        sis.sir.fc_end = st_t{};
-        sis.sir.free[0] = sis.sir.free[1] = 0x00;
+        sis.s.sir.fc_end = st_t{};
+        sis.s.sir.free[0] = sis.s.sir.free[1] = 0x00;
     }
 
-    if (!WriteSector(reinterpret_cast<Byte *>(&sis), sis_trk_sec.trk,
-                     sis_trk_sec.sec))
+    if (!WriteSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), fp.GetPath());
