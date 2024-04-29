@@ -26,13 +26,14 @@
 #include "efiletim.h"
 #include "ffilecnt.h"
 #include <memory>
+#include <vector>
 
 class FlexRamFileContainer : public FlexFileContainer
 {
 
 private:
 
-    std::unique_ptr<Byte[]> file_buffer;
+    std::vector<Byte> file_buffer;
     bool is_dirty{};
 
 public:

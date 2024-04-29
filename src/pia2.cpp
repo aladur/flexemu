@@ -26,6 +26,7 @@
 #include "bjoystck.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include <array>
 
 
 Pia2::Pia2(Mc6809 &p_cpu, KeyboardIO &p_keyboardIO, JoystickIO &p_joystickIO) :
@@ -159,7 +160,8 @@ Byte Pia2::readInputB()
     // is limited to +/- TAB_OFFSET
 
 #define TAB_OFFSET   (15)
-    static short tab_period_from_mouse[(TAB_OFFSET << 1) + 1] =
+    constexpr static
+        std::array<short, (TAB_OFFSET << 1) + 1> tab_period_from_mouse
     {
         8000, 7084, 6272, 5554, 4918, 4354, 3856, 3414, 3023, 2677,
         2370, 2099, 1858, 1645, 1457, 1290, 1142, 1011,  896,  793,

@@ -39,6 +39,9 @@
  * Hint for static_assert inspired by Dan Saks
  */
 
+/* The following structs follow the Windows Bitmap file format */
+/* specification and can not be replaced by std::array(). */
+/* NOLINTBEGIN(modernize-avoid-c-arrays) */
 #pragma pack(push, 1)
 struct sBITMAPFILEHEADER
 {
@@ -74,6 +77,7 @@ struct sRGBQUAD
 };
 static_assert(sizeof(sRGBQUAD) == 4, "sRGBQUAD is padded");
 #pragma pack(pop)
+/* NOLINTEND(modernize-avoid-c-arrays) */
 
 /* supported compression values */
 #ifndef BI_RGB

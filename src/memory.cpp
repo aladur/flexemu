@@ -41,12 +41,12 @@ Memory::Memory(const struct sOptions &options) :
     deviceAccess(0x10000 - GENIO_BASE, ioDeviceAccess{NO_DEVICE, 0U})
 
 {
-    memory = std::unique_ptr<Byte[]>(new Byte[memory_size]);
+    memory.resize(memory_size);
     if (isRamExtension)
     {
         video_ram_size = VIDEORAM_SIZE *
                      (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2));
-        video_ram = std::unique_ptr<Byte[]>(new Byte[video_ram_size]);
+        video_ram.resize(video_ram_size);
     }
 
     init_memory();
@@ -351,6 +351,6 @@ void Memory::CopyFrom(const Byte *source, DWord address, DWord size)
         secureSize -= address + size - memory_size;
     }
 
-    memcpy(memory.get() + address, source, secureSize);
+    memcpy(memory.data() + address, source, secureSize);
 }
 

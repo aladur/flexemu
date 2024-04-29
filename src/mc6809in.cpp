@@ -16,6 +16,7 @@
 #include "mc6809.h"
 #include "mc6809st.h"
 #include "da6809.h"
+#include <array>
 
 
 #ifdef _MSC_VER
@@ -58,7 +59,7 @@ void Mc6809::reset()
 int Mc6809::Disassemble(Word address, InstFlg *pFlags,
                         char **pCode, char **pMnemonic)
 {
-    Byte buffer[6];
+    std::array<Byte, 6> buffer{};
     DWord jumpAddress = 0;
 
     if (disassembler == nullptr)
@@ -71,8 +72,8 @@ int Mc6809::Disassemble(Word address, InstFlg *pFlags,
         buffer[i] = memory.read_byte(address + i);
     }
 
-    return disassembler->Disassemble(buffer, address, pFlags, &jumpAddress,
-                                     pCode, pMnemonic);
+    return disassembler->Disassemble(buffer.data(), address, pFlags,
+                                     &jumpAddress, pCode, pMnemonic);
 }
 
 //*******************************************************************
@@ -546,7 +547,7 @@ cycles_t Mc6809::exec_irqs(bool save_state)
 
 std::string Mc6809::asCCString(Byte reg)
 {
-    const static Byte cc_bitmask[8] = {
+    constexpr static std::array<Byte, 8> cc_bitmask = {
         CC_BIT_E, CC_BIT_F, CC_BIT_H, CC_BIT_I,
         CC_BIT_N, CC_BIT_Z, CC_BIT_V, CC_BIT_C,
     };

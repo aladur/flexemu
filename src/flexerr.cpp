@@ -27,6 +27,7 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 #include "sprinter.h"
+#include <array>
 
 
 const char *FlexException::what() const noexcept
@@ -123,7 +124,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1)
 }
 #endif
 
-const char *FlexException::errString[] =
+std::array<const char *, 47> FlexException::errString
 {
     "No Error",
     "Unable to open {0}",

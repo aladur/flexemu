@@ -637,7 +637,7 @@ void QtGui::OnTimer()
         static tInterruptStatus irqStat;
         tInterruptStatus newIrqStat;
         static bool isFirstTime = true;
-        static bool lastState[INT_RESET + 1];
+        static std::array<bool, INT_RESET + 1> lastState{};
         bool bState;
 
         if (HasFloppy())
@@ -1757,7 +1757,9 @@ ColorTable QtGui::CreateColorTable()
         // For details see:
         // https://en.wikipedia.org/wiki/Enhanced_Graphics_Adapter
         // https://exstructus.com/tags/coco/australia-colour-palette/
-        static constexpr Byte colorValues[4] { 0x00, 0x55, 0xAA, 0xFF };
+        constexpr static std::array<Byte, 4> colorValues{
+            0x00, 0x55, 0xAA, 0xFF
+        };
         int scale;
 
         // Create a color scale in the range of 0 - 3 based two color bits
@@ -1878,7 +1880,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
     }
     assert(pData == dest.data() + dataOffset);
 
-    Byte pixels[6]; /* One byte of video RAM for each plane */
+    std::array<Byte, 6> pixels{}; /* One byte of video RAM for each plane */
     // Default color index: If no video source is available use highest
     // available color
     Byte colorIndex = options.isInverse ? 0x00U : 0x3FU;
@@ -1887,8 +1889,6 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
     {
         colorIndexOffset = static_cast<Byte>((64U / options.nColors) - 1U);
     }
-
-    memset(pixels, '\0', sizeof(pixels));
 
     // The raster lines have to be filled from bottom to top.
     pData += WINDOWWIDTH * (height - 1);

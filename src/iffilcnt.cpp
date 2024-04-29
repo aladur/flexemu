@@ -25,6 +25,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <array>
 
 FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     FlexFileContainer *aBase)
@@ -117,7 +118,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     st_t start;
     st_t end;
     st_t fc_end;
-    Byte buffer[SECTOR_SIZE];
+    std::array<Byte, SECTOR_SIZE> buffer{};
     s_dir_entry *pd;
 
     if (base == nullptr)
@@ -141,7 +142,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     start = pd->start;
     end = pd->end;
     auto records = getValueBigEndian<Word>(&pd->records[0]);
-    auto &sis = *reinterpret_cast<s_sys_info_sector *>(buffer);
+    auto &sis = *reinterpret_cast<s_sys_info_sector *>(buffer.data());
 
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
@@ -157,8 +158,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    /* read sysstem info sector (SIS) */
-    if (!base->ReadSector(&buffer[0], sis_trk_sec.trk, sis_trk_sec.sec))
+    /* read system info sector (SIS) */
+    if (!base->ReadSector(buffer.data(), sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -173,7 +174,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     if (fc_end.sec != 0 || fc_end.trk != 0)
     {
         // add deleted file to free chain if free chain not empty
-        if (!base->ReadSector(&buffer[0], fc_end.trk, fc_end.sec))
+        if (!base->ReadSector(buffer.data(), fc_end.trk, fc_end.sec))
         {
             std::stringstream stream;
 
@@ -186,7 +187,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
         buffer[0] = start.trk;
         buffer[1] = start.sec;
 
-        if (!base->WriteSector(&buffer[0], fc_end.trk, fc_end.sec))
+        if (!base->WriteSector(buffer.data(), fc_end.trk, fc_end.sec))
         {
             std::stringstream stream;
 
@@ -196,8 +197,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath());
         }
 
-        if (!base->ReadSector(&buffer[0], sis_trk_sec.trk,
-                              sis_trk_sec.sec))
+        if (!base->ReadSector(buffer.data(), sis_trk_sec.trk, sis_trk_sec.sec))
         {
             std::stringstream stream;
 
@@ -212,8 +212,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     else
     {
         // create a new free chain if free chain is empty
-        if (!base->ReadSector(&buffer[0], sis_trk_sec.trk,
-                              sis_trk_sec.sec))
+        if (!base->ReadSector(buffer.data(), sis_trk_sec.trk, sis_trk_sec.sec))
         {
             std::stringstream stream;
 
@@ -234,8 +233,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     free += records;
     setValueBigEndian<Word>(&sis.sir.free[0], free);
 
-    if (!base->WriteSector(&buffer[0], sis_trk_sec.trk,
-                          sis_trk_sec.sec))
+    if (!base->WriteSector(buffer.data(), sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 

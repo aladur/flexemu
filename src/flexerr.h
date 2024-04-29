@@ -26,6 +26,7 @@
 #include <string>
 #include <exception>
 #include <cstdint>
+#include <array>
 
 
 enum : uint8_t {
@@ -85,7 +86,7 @@ protected:
 
     int errorCode;
     std::string errorString;
-    static const char *errString[];
+    static std::array<const char *, 47> errString;
 
 public:
 

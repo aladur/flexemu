@@ -45,6 +45,8 @@ enum tMountOption : uint8_t
     MOUNT_RAM = 1
 };
 
+/* POD structs are needed to read/write from disk image files */
+/* NOLINTBEGIN(modernize-avoid-c-arrays) */
 struct s_formats
 {
     SDWord size; /* byte size of disk */
@@ -301,6 +303,8 @@ struct s_flex_header
 };
 
 #ifndef __fromflex__
+/* NOLINTEND(modernize-avoid-c-arrays) */
+
 extern std::ostream& operator<<(std::ostream& os, const st_t &st);
 
 extern Word getTrack0SectorCount(int tracks, int sectors);

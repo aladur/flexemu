@@ -21,11 +21,11 @@
 */
 
 #include "misc1.h"
-#include <stdio.h>
-#include <locale>
-#include <algorithm>
 #include "benv.h"
+#ifdef _WIN32
 #include "cvtwchar.h"
+#endif
+#include <sstream>
 
 
 bool BEnvironment::RemoveKey(const char *key)
@@ -65,41 +65,24 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 
 bool BEnvironment::SetValue(const char *key, int value)
 {
-    char str[32];
+    std::stringstream stream;
     std::string upperKey(key);
 
     strupper(upperKey);
-    snprintf(str, sizeof(str), "%i", value);
+    stream << value;
 #ifdef _WIN32
     return (SetEnvironmentVariable(
         ConvertToUtf16String(upperKey).c_str(),
-        ConvertToUtf16String(str).c_str()) != 0);
+        ConvertToUtf16String(stream.str()).c_str()) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(upperKey.c_str(), str, 1) == 0);
+    return (setenv(upperKey.c_str(), stream.str().c_str(), 1) == 0);
 #else
     return false;
 #endif
 #endif
 }
-
-/*
-bool BEnvironment::GetValue(const char *key, char **pValue)
-{
-    std::string upperKey(key);
-
-    strupper(upperKey);
-#ifdef _WIN32
-    return (SetEnvironmentVariable(
-        ConvertToUtf16String(upperKey).c_str(),
-        ConvertToUtf16String(str).c_str()) != 0);
-#endif
-#ifdef UNIX
-    return (*pValue = getenv(upperKey));
-#endif
-}
-*/
 
 bool BEnvironment::GetValue(const char *key, std::string &value)
 {

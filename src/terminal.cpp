@@ -252,13 +252,13 @@ bool TerminalIO::has_key_serial()
 
     if (++count >= 100)
     {
-        char buffer[1] = { '\0' };
+        Byte buffer{};
         count = 0;
         fflush(stdout);
 
         if (read(fileno(stdin), &buffer, 1) > 0)
         {
-            put_char_serial(buffer[0]);
+            put_char_serial(buffer);
         }
     }
 #endif // #ifdef HAVE_TERMIOS_H

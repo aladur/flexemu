@@ -69,8 +69,8 @@ private:
     DWord memory_size{0x10000};
     DWord video_ram_size{0};
     Byte ramBank{0};
-    std::unique_ptr<Byte[]> memory;
-    std::unique_ptr<Byte[]> video_ram;
+    std::vector<Byte> memory;
+    std::vector<Byte> video_ram;
 
     // I/O device access
     std::vector<std::reference_wrapper<IoDevice> > ioDevices;

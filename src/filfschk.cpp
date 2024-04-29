@@ -22,13 +22,11 @@
 #include "misc1.h"
 #include "filfschk.h"
 #include "flexerr.h"
-#include "ifilecnt.h"
 #include <set>
-#include <math.h>
 #include <string>
 #include <sstream>
-#include <numeric>
 #include <iomanip>
+#include <array>
 
 
 FileContainerCheck::FileContainerCheck(
@@ -79,7 +77,7 @@ std::string FileContainerCheck::GetItemName(SDWord item_index) const
 
 bool FileContainerCheck::CheckDate(Byte p_day, Byte p_month, Byte p_year)
 {
-    constexpr std::array<Byte, 12> max_days{
+    constexpr static std::array<Byte, 12> max_days{
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     };
 
@@ -365,7 +363,7 @@ void FileContainerCheck::InitializeLinks()
     {
         for (int sector = 1; sector <= sectors; ++sector)
         {
-            Byte buffer[SECTOR_SIZE];
+            std::array<Byte, SECTOR_SIZE> buffer{};
             st_t current{static_cast<Byte>(track), static_cast<Byte>(sector)};
 
             if (!IsTrackSectorValid(current) &&
@@ -381,7 +379,7 @@ void FileContainerCheck::InitializeLinks()
                 continue;
             }
 
-            if (!fc.ReadSector(&buffer[0], track, sector) &&
+            if (!fc.ReadSector(buffer.data(), track, sector) &&
                 links.find(current) == links.end())
             {
                 links.emplace(current, link_t{current});

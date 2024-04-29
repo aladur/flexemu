@@ -507,6 +507,8 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
 {
     static const auto modifiers =
         Qt::ControlModifier | Qt::ShiftModifier | Qt::AltModifier;
+    static constexpr int NR = 11; // Number of rows in following table.
+    static constexpr int NC = 4; // Number of columns in following table.
     // On Eurocom II PAT09 keyboard the following keys are mapped:
     //
     // keyboard input           | Eurocom II mapped key
@@ -549,22 +551,26 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
     //     |     |     +--------- Ctrl+key
     //     |     |     |     +--- Shift+Ctrl+key
     //     |     |     |     |
-    static int cursorCtrlCode[11][4] = {
-        { 0xFA, 0xEA, 0xFA, 0xEA }, // Key_Insert
-        { 0xF9, 0xE9, 0xB9, 0xA9 }, // Key_End
-        { 0xF2, 0xE2, 0xB2, 0xA2 }, // Key_Down
-        { 0xF3, 0xE3, 0xB3, 0xA3 }, // Key_PageDown
-        { 0xF4, 0xE4, 0xB4, 0xA4 }, // Key_Left
-        { 0xF5, 0xE5, 0xB5, 0xA5 }, // Key_Clear
-        { 0xF6, 0xE6, 0xB6, 0xA6 }, // Key_Right
-        { 0xF1, 0xE1, 0xB1, 0xA1 }, // Key_Home
-        { 0xF8, 0xE8, 0xB8, 0xA8 }, // Key_Up
-        { 0xF7, 0xE7, 0xB7, 0xA7 }, // Key_PageUp
-        { 0x91, 0x81, 0x91, 0x81 }, // Key_Delete
+    static constexpr std::array <int, NR * NC> cursorCtrlCode = {
+        0xFA, 0xEA, 0xFA, 0xEA, // Key_Insert
+        0xF9, 0xE9, 0xB9, 0xA9, // Key_End
+        0xF2, 0xE2, 0xB2, 0xA2, // Key_Down
+        0xF3, 0xE3, 0xB3, 0xA3, // Key_PageDown
+        0xF4, 0xE4, 0xB4, 0xA4, // Key_Left
+        0xF5, 0xE5, 0xB5, 0xA5, // Key_Clear
+        0xF6, 0xE6, 0xB6, 0xA6, // Key_Right
+        0xF1, 0xE1, 0xB1, 0xA1, // Key_Home
+        0xF8, 0xE8, 0xB8, 0xA8, // Key_Up
+        0xF7, 0xE7, 0xB7, 0xA7, // Key_PageUp
+        0x91, 0x81, 0x91, 0x81, // Key_Delete
     };
-    static int deleteKeyCode[4] = { 0x7F, 0x7F, 0x1F, 0x7F }; // Key_Delete
+    // Define key_code for Delete
+    static constexpr std::array<int, 4> deleteKeyCode{
+        0x7F, 0x7F, 0x1F, 0x7F
+    };
     Word index = event->modifiers() & Qt::ShiftModifier ? 1U : 0U;
     index |= event->modifiers() & Qt::ControlModifier ? 2U : 0U;
+    assert(index < NC);
 
     // Process keys which behave the same for any modifier set.
     switch (event->key())
@@ -580,49 +586,49 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
         {
             case Qt::Key_0:
             case Qt::Key_Insert:
-                return IsNumLockOn() ? 0x30 : cursorCtrlCode[0][index];
+                return IsNumLockOn() ? 0x30 : cursorCtrlCode[0 * NC + index];
 
             case Qt::Key_1:
             case Qt::Key_End:
-                return IsNumLockOn() ? 0x31 : cursorCtrlCode[1][index];
+                return IsNumLockOn() ? 0x31 : cursorCtrlCode[1 * NC + index];
 
             case Qt::Key_2:
             case Qt::Key_Down:
-                return IsNumLockOn() ? 0x32 : cursorCtrlCode[2][index];
+                return IsNumLockOn() ? 0x32 : cursorCtrlCode[2 * NC + index];
 
             case Qt::Key_3:
             case Qt::Key_PageDown:
-                return IsNumLockOn() ? 0x33 : cursorCtrlCode[3][index];
+                return IsNumLockOn() ? 0x33 : cursorCtrlCode[3 * NC + index];
 
             case Qt::Key_4:
             case Qt::Key_Left:
-                return IsNumLockOn() ? 0x34 : cursorCtrlCode[4][index];
+                return IsNumLockOn() ? 0x34 : cursorCtrlCode[4 * NC + index];
 
             case Qt::Key_5:
             case Qt::Key_Clear:
-                return IsNumLockOn() ? 0x35 : cursorCtrlCode[5][index];
+                return IsNumLockOn() ? 0x35 : cursorCtrlCode[5 * NC + index];
 
             case Qt::Key_6:
             case Qt::Key_Right:
-                return IsNumLockOn() ? 0x36 : cursorCtrlCode[6][index];
+                return IsNumLockOn() ? 0x36 : cursorCtrlCode[6 * NC + index];
 
             case Qt::Key_7:
             case Qt::Key_Home:
-                return IsNumLockOn() ? 0x37 : cursorCtrlCode[7][index];
+                return IsNumLockOn() ? 0x37 : cursorCtrlCode[7 * NC + index];
 
             case Qt::Key_8:
             case Qt::Key_Up:
-                return IsNumLockOn() ? 0x38 : cursorCtrlCode[8][index];
+                return IsNumLockOn() ? 0x38 : cursorCtrlCode[8 * NC + index];
 
             case Qt::Key_9:
             case Qt::Key_PageUp:
-                return IsNumLockOn() ? 0x39 : cursorCtrlCode[9][index];
+                return IsNumLockOn() ? 0x39 : cursorCtrlCode[9 * NC + index];
 
             case Qt::Key_Comma:
             case Qt::Key_Period:
             case Qt::Key_Delete:
                 return
-                    IsNumLockOn() ? 0x2E : cursorCtrlCode[10][index];
+                    IsNumLockOn() ? 0x2E : cursorCtrlCode[10 * NC + index];
         }
     }
 
@@ -697,31 +703,31 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
             return 0x09;
 
         case Qt::Key_End:
-            return cursorCtrlCode[1][index];
+            return cursorCtrlCode[1 * NC + index];
 
         case Qt::Key_Down:
-            return cursorCtrlCode[2][index];
+            return cursorCtrlCode[2 * NC + index];
 
         case Qt::Key_PageDown:
-            return cursorCtrlCode[3][index];
+            return cursorCtrlCode[3 * NC + index];
 
         case Qt::Key_Left:
-            return cursorCtrlCode[4][index];
+            return cursorCtrlCode[4 * NC + index];
 
         case Qt::Key_Clear:
-            return cursorCtrlCode[5][index];
+            return cursorCtrlCode[5 * NC + index];
 
         case Qt::Key_Right:
-            return cursorCtrlCode[6][index];
+            return cursorCtrlCode[6 * NC + index];
 
         case Qt::Key_Home:
-            return cursorCtrlCode[7][index];
+            return cursorCtrlCode[7 * NC + index];
 
         case Qt::Key_Up:
-            return cursorCtrlCode[8][index];
+            return cursorCtrlCode[8 * NC + index];
 
         case Qt::Key_PageUp:
-            return cursorCtrlCode[9][index];
+            return cursorCtrlCode[9 * NC + index];
 
         case Qt::Key_Delete:
             return deleteKeyCode[index];

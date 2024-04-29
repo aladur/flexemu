@@ -20,10 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "bdate.h"
 #include "misc1.h"
-#include <stdio.h>
+#include "bdate.h"
 #include <array>
+#include <sstream>
+#include <iomanip>
 
 //BDate::year2000 = 1;
 
@@ -52,7 +53,7 @@ const std::array<const char *, 13> BDate::monthNames
 
 std::string BDate::GetDateString(Format format) const
 {
-    char dateString[32];
+    std::stringstream stream;
     auto m = GetMonth();
     auto y = GetYear();
 
@@ -64,24 +65,27 @@ std::string BDate::GetDateString(Format format) const
     switch (format)
     {
         case Format::Iso:
-            snprintf(dateString, sizeof(dateString), "%04d%02d%02d", y,
-                     GetMonth(), GetDay());
+            stream << std::setw(4) << std::setfill('0') << y <<
+                      std::setw(2) << std::setfill('0') << GetMonth() <<
+                      std::setw(2) << std::setfill('0') << GetDay();
             break;
 
         case Format::D2MS3Y4:
-            snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
-                     monthNames[m - 1], y);
+            stream << std::setw(2) << std::setfill('0') << GetDay() << '-' <<
+                      std::setfill('0') << monthNames[m - 1] << '-' <<
+                      std::setw(4) << std::setfill('0') << y;
             break;
 
         case Format::D2MSU3Y4:
             std::string monthString(monthNames[m - 1]);
             strupper(monthString);
-            snprintf(dateString, sizeof(dateString), "%02d-%s-%04d", GetDay(),
-                     monthString.c_str(), y);
+            stream << std::setw(2) << std::setfill('0') << GetDay() << '-' <<
+                      std::setfill('0') << monthString << '-' <<
+                      std::setw(4) << std::setfill('0') << y;
             break;
     } // switch
 
-    return dateString;
+    return stream.str();
 }
 
 int BDate::GetMonthBounded() const

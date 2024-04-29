@@ -208,9 +208,9 @@ protected:
     // Processor registers
 protected:
 
-    Byte indexed_cycles[256]{}; // add. cycles for
+    std::array<Byte, 256> indexed_cycles{}; // add. cycles for
     // indexed addr.
-    Byte psh_pul_cycles[256]{}; // add. cycles for psh
+    std::array<Byte, 256> psh_pul_cycles{}; // add. cycles for psh
     // and pull-instr.
     Byte nmi_armed{0}; // for handling
     // interrupts

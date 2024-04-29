@@ -21,14 +21,15 @@
 */
 
 
+#include "fileread.h"
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
 #include <limits>
-#include <memory>
+#include <array>
+#include <vector>
 #include <functional>
-#include "fileread.h"
 
 
 static Word read_word(std::istream &istream)
@@ -42,14 +43,13 @@ static Word read_word(std::istream &istream)
 static Byte read_hex_byte(std::istream &istream, Byte *checksum = nullptr)
 {
     std::stringstream stream;
-    char str[3];
+    std::string hex_str;
     unsigned int value;
 
-    str[0] = static_cast<char>(istream.get());
-    str[1] = static_cast<char>(istream.get());
-    str[2] = '\0';
+    hex_str.append(1, static_cast<char>(istream.get()));
+    hex_str.append(1, static_cast<char>(istream.get()));
 
-    stream << std::hex << str;
+    stream << std::hex << hex_str;
     stream >> value;
     if (checksum != nullptr)
     {
@@ -83,7 +83,10 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
     DWord index;
     DWord count;
     DWord address;
-    Byte buffer[256];
+    std::array<Byte, 255> buffer{};
+    // MSVC does not allow auto *ibuffer.
+    // NOLINTNEXTLINE(readability-qualified-auto).
+    auto ibuffer = buffer.begin();
 
     while (!done)
     {
@@ -99,14 +102,16 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
 
         if (type == 0x00) // Data
         {
+            // Read a maximum of 255 hex-byte per line.
             for (index = 0; index < count; ++index)
             {
                 if (address + index <= std::numeric_limits<Word>::max())
                 {
-                    *(buffer + index) = read_hex_byte(istream, &checksum);
+                    *(ibuffer++) = read_hex_byte(istream, &checksum);
                 }
             }
-            memtgt.CopyFrom(buffer, address, count);
+            memtgt.CopyFrom(buffer.data(), address, count);
+            ibuffer = buffer.begin();
         }
         else if (type == 0x01) // End of file / start address
         {
@@ -149,7 +154,10 @@ static int load_motorola_srec(std::istream &istream,
     DWord index;
     DWord count;
     DWord address;
-    Byte buffer[256];
+    std::array<Byte, 255> buffer{};
+    // MSVC does not allow auto *ibuffer.
+    // NOLINTNEXTLINE(readability-qualified-auto).
+    auto ibuffer = buffer.begin();
 
     while (!done)
     {
@@ -183,14 +191,16 @@ static int load_motorola_srec(std::istream &istream,
             case '1': // Data
                 count -= 3;
 
+                // Read a maximum of 252 hex-byte per line.
                 for (index = 0; index < count; ++index)
                 {
                     if (address + index <= std::numeric_limits<Word>::max())
                     {
-                        *(buffer + index) = read_hex_byte(istream, &checksum);
+                        *(ibuffer++) = read_hex_byte(istream, &checksum);
                     }
                 }
-                memtgt.CopyFrom(buffer, address, count);
+                memtgt.CopyFrom(buffer.data(), address, count);
+                ibuffer = buffer.begin();
 
                 break;
 
@@ -234,7 +244,10 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
     DWord address = 0;
     DWord count = 0;
     DWord index = 0;
-    Byte buffer[256];
+    std::array<Byte, 256> buffer{};
+    // MSVC does not allow auto *ibuffer.
+    // NOLINTNEXTLINE(readability-qualified-auto).
+    auto ibuffer = buffer.begin();
     bool isFirst = true;
 
     while (true)
@@ -277,11 +290,12 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
         }
         if (address + index <= std::numeric_limits<Word>::max())
         {
-            *(buffer + index) = value;
+            *(ibuffer++) = value;
         }
         if (++index == count)
         {
-            memtgt.CopyFrom(buffer, address, count);
+            memtgt.CopyFrom(buffer.data(), address, count);
+            ibuffer = buffer.begin();
         }
     }
 
@@ -354,10 +368,10 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
                                     const Byte *buffer,
                                     DWord address, DWord size)
 {
-    Byte header[4];
+    std::array<char, 4> header{};
 
-    header[1] = (address >> 8) & 0xff;
-    header[2] = address & 0xff;
+    header[1] = static_cast<char>((address >> 8) & 0xff);
+    header[2] = static_cast<char>(address & 0xff);
 
     switch (wbType)
     {
@@ -365,17 +379,16 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
             break;
 
         case WBType::Data:
-            header[0] = 0x02;
-            header[3] = static_cast<Byte>(size);
+            header[0] = '\x2';
+            header[3] = static_cast<char>(size & 0xff);
 
-            ostream.write(
-                    reinterpret_cast<const char *>(&header[0]), sizeof(header));
+            ostream.write(header.data(), header.size());
             if (ostream.fail())
             {
                 return -5; // write error
             }
 
-            ostream.write(reinterpret_cast<const char *>(&buffer[0]), size);
+            ostream.write(reinterpret_cast<const char *>(buffer), size);
             if (ostream.fail())
             {
                 return -5; // write error
@@ -388,8 +401,7 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
                 // Write start address if available
                 header[0] = 0x16;
 
-                ostream.write(
-                        reinterpret_cast<const char *>(&header[0]), sizeof(header) - 1);
+                ostream.write(header.data(), header.size() - 1);
                 if (ostream.fail())
                 {
                     return -5; // write error
@@ -565,18 +577,18 @@ static int write_hexfile(
         return -6; // Could not open file for writing
     }
 
-    auto buffer = std::unique_ptr<Byte []>(new Byte[buffer_size]);
+    std::vector<Byte> buffer;
     const auto& addressRanges = memsrc.GetAddressRanges();
-    const std::string header{"Created with flex2hex"};
+    const std::array<Byte, 22> header{"Created with flex2hex"};
 
-    result = write_buffer(WBType::Header, ostream,
-                          reinterpret_cast<const Byte *>(header.c_str()), 0,
-                          static_cast<DWord>(header.size() + 1));
+    result = write_buffer(WBType::Header, ostream, header.data(), 0,
+                          static_cast<DWord>(header.size() - 1));
     if (result != 0)
     {
         return result;
     }
 
+    buffer.resize(buffer_size);
     for (const auto& addressRange : addressRanges)
     {
         DWord address;
@@ -586,9 +598,9 @@ static int write_hexfile(
                 address <= addressRange.upper() - buffer_size + 1;
                 address += buffer_size)
         {
-            memsrc.CopyTo(buffer.get(), address, buffer_size);
-            result = write_buffer(WBType::Data, ostream, buffer.get(), address,
-                                  buffer_size);
+            memsrc.CopyTo(buffer.data(), address, buffer_size);
+            result = write_buffer(WBType::Data, ostream, buffer.data(),
+                                  address, buffer_size);
             if (result != 0)
             {
                 return result;
@@ -597,9 +609,9 @@ static int write_hexfile(
 
         if (remainder)
         {
-            memsrc.CopyTo(buffer.get(), address, remainder);
-            result = write_buffer(WBType::Data, ostream, buffer.get(), address,
-                                  remainder);
+            memsrc.CopyTo(buffer.data(), address, remainder);
+            result = write_buffer(WBType::Data, ostream, buffer.data(),
+                                  address, remainder);
             if (result != 0)
             {
                 return result;
@@ -607,7 +619,7 @@ static int write_hexfile(
         }
     }
 
-    result = write_buffer(WBType::StartAddress, ostream, buffer.get(),
+    result = write_buffer(WBType::StartAddress, ostream, buffer.data(),
                           startAddress, 0);
 
     return result;

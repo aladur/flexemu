@@ -40,8 +40,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
 
     param.type |= TYPE_RAM_CONTAINER;
     sectors = (file_size - param.offset) / param.byte_p_sector;
-    file_buffer =
-        std::unique_ptr<Byte[]>(new Byte[sectors * param.byte_p_sector]);
+    file_buffer.resize(sectors * param.byte_p_sector);
 
     // For FLX file format skip the header, it will never be changed.
     if (fseek(fp, param.offset, SEEK_SET))
@@ -50,7 +49,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
     }
 
     // read total disk into memory
-    if (fread(file_buffer.get(), param.byte_p_sector, sectors, fp) != sectors)
+    if (fread(file_buffer.data(), param.byte_p_sector, sectors, fp) != sectors)
     {
         throw FlexException(FERR_READING_FROM, fp.GetPath());
     }
@@ -95,7 +94,7 @@ bool FlexRamFileContainer::close()
     {
         // Only if the buffer contents has been changed it
         // will be written to file.
-        if (is_dirty && (file_buffer != nullptr))
+        if (is_dirty && !file_buffer.empty())
         {
             unsigned int sectors;
 
@@ -106,7 +105,7 @@ bool FlexRamFileContainer::close()
                 throwException = true;
             }
 
-            if (fwrite(file_buffer.get(), param.byte_p_sector, sectors, fp)
+            if (fwrite(file_buffer.data(), param.byte_p_sector, sectors, fp)
                     != sectors)
             {
                 throwException = true;
@@ -116,7 +115,7 @@ bool FlexRamFileContainer::close()
         fp.Close();
     }
 
-    file_buffer.reset(nullptr);
+    file_buffer.clear();
 
     if (throwException)
     {
@@ -129,7 +128,7 @@ bool FlexRamFileContainer::close()
 bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
                                       int side /* = -1 */) const
 {
-    if (file_buffer == nullptr)
+    if (file_buffer.empty())
     {
         return false;
     }
@@ -146,14 +145,14 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    memcpy(pbuffer, &file_buffer[pos], param.byte_p_sector);
+    memcpy(pbuffer, file_buffer.data() + pos, param.byte_p_sector);
     return true;
 }
 
 bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
                                        int side /* = -1 */)
 {
-    if (file_buffer == nullptr)
+    if (file_buffer.empty())
     {
         return false;
     }

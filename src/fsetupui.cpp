@@ -36,6 +36,7 @@
 #include <QDir>
 #include "warnon.h"
 #include <cassert>
+#include <array>
 
 #ifdef _MSC_VER
     #include <direct.h>
@@ -169,7 +170,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
 
     index = -1;
     int n = 0;
-    static int ncolor_count[] = { 2, 8, 64 };
+    constexpr static std::array<int, 3> ncolor_count{ 2, 8, 64 };
     for (auto nColors : ncolor_count)
     {
         auto text = QString("%1").arg(nColors);

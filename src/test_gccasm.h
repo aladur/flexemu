@@ -4,6 +4,8 @@
 #include "misc1.h"
 
 
+/* Parameter comes from main(). */
+/* NOLINTNEXTLINE(modernize-avoid-c-arrays) */
 extern void init_test_gccasm(int argc, char *argv[]);
 
 extern bool test_gccasm_add8();
