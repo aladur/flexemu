@@ -20,14 +20,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <stdio.h>
-#include <errno.h>
-#include <sstream>
-#include <fstream>
 #include "misc1.h"
 #include "brcfile.h"
-#include "bfileptr.h"
 #include "boption.h"
+#include <sstream>
+#include <fstream>
 
 
 BRcFile::BRcFile(const std::string &p_fileName) : fileName(p_fileName)
@@ -36,18 +33,18 @@ BRcFile::BRcFile(const std::string &p_fileName) : fileName(p_fileName)
 
 int BRcFile::SetValue(const char *key, const std::string &value)
 {
-    BFilePtr fp(fileName, "a");
+    std::ofstream fs(fileName, std::ios::out | std::ios::app);
 
-    if (fp == nullptr)
+    if (!fs.is_open())
     {
-        return errno;
+        return 1;
     }
 
-    auto res = fprintf(fp, "%s\t\t\"%s\"\n", key, value.c_str());
+    fs << key << "\t\t" << "\"" << value << "\"\n";
 
-    if (res < 0)
+    if (fs.fail())
     {
-        return errno;
+        return 1;
     }
 
     return BRC_NO_ERROR;
@@ -55,18 +52,18 @@ int BRcFile::SetValue(const char *key, const std::string &value)
 
 int BRcFile::SetValue(const char *key, int value)
 {
-    BFilePtr fp(fileName, "a");
+    std::ofstream fs(fileName, std::ios::out | std::ios::app);
 
-    if (fp == nullptr)
+    if (!fs.is_open())
     {
-        return errno;
+        return 1;
     }
 
-    auto res = fprintf(fp, "%s\t\t%i\n", key, value);
+    fs << key << "\t\t" << value << "\n";
 
-    if (res < 0)
+    if (fs.fail())
     {
-        return errno;
+        return 1;
     }
 
     return BRC_NO_ERROR;
@@ -82,32 +79,38 @@ int BRcFile::GetValue(const char *key, std::string &value)
 int BRcFile::GetValue(const char *key, std::string &value,
         BOptional<bool> &isInteger)
 {
-    char def[256];
-    char strparm[PATH_MAX];
+    std::ifstream fs(fileName, std::ios::in);
     auto keyLength = strlen(key);
-    BFilePtr fp(fileName, "r");
 
     isInteger = true;
 
-    if (fp == nullptr)
+    if (!fs.is_open())
     {
-        return errno;
+        return 1;
     }
 
-    while (!feof(fp))
+    while (!fs.eof())
     {
-        if (fscanf(fp, "%79s %[^\n]\n", def, strparm) == 2 &&
-            strlen(def) == keyLength && stricmp(def, key) == 0)
+        std::stringbuf strbuf;
+        std::string skey;
+
+        fs >> skey;
+        if (!skey.empty())
         {
-            value = strparm;
-
-            if (value[0] == '"')
+            fs.get(strbuf);
+            fs.get(); // skip delimiter char.
+            if (skey.size() == keyLength && skey.compare(key) == 0)
             {
-                isInteger = false;
-                value = value.substr(1, value.length() - 2);
-            }
+                value = strbuf.str();
+                trim(value);
+                if (!value.empty() && value[0] == '"')
+                {
+                    isInteger = false;
+                    value = value.substr(1, value.length() - 2);
+                }
 
-            return BRC_NO_ERROR;
+                return BRC_NO_ERROR;
+            }
         }
     }
 
@@ -139,11 +142,11 @@ int BRcFile::GetValue(const char *key, int &value)
 
 int BRcFile::Initialize()
 {
-    BFilePtr fp(fileName, "w");
+    std::ofstream fs(fileName, std::ios::out | std::ios::trunc);
 
-    if (fp == nullptr)
+    if (!fs.is_open())
     {
-        return errno;
+        return 1;
     }
 
     return BRC_NO_ERROR;
