@@ -76,11 +76,16 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
     else
     {
         directory = getCurrentPath();
-        if (!directory.empty() && !endsWithPathSeparator(aPath))
+        if (!directory.empty() && !endsWithPathSeparator(directory))
         {
             directory += PATHSEPARATORSTRING;
         }
         directory += aPath;
+    }
+
+    if (endsWithPathSeparator(directory))
+    {
+        directory.resize(directory.size() - 1);
     }
 
     if (access(aPath.c_str(), W_OK))
