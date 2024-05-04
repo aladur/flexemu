@@ -349,7 +349,6 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                     s = "-";
                     offset = 0x0100 - offset;
                 }
-
                 snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc,
                          code, postbyte,
                         *(pMemory + 2));
@@ -418,15 +417,19 @@ Byte Da6809::D_Indexed(const char *mnemo, Word pc, Byte bytes,
                 break;
 
             case 0x1f : // [n]
-                br1 = "[";
-                br2 = "]";
-                offset = getValueBigEndian<Word>(&pMemory[2]);
-                snprintf(code_buf, sizeof(code_buf),
-                         "%04X: %02X %02X %02X %02X", pc, code, postbyte,
-                         *(pMemory + 2), *(pMemory + 2));
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%04X%s", mnemo, br1,
-                         offset, br2); extrabytes = 2;
-                break;
+                if (postbyte == 0x9f)
+                {
+                    br1 = "[";
+                    br2 = "]";
+                    offset = getValueBigEndian<Word>(&pMemory[2]);
+                    snprintf(code_buf, sizeof(code_buf),
+                             "%04X: %02X %02X %02X %02X", pc, code, postbyte,
+                             *(pMemory + 2), *(pMemory + 3));
+                    snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%04X%s", mnemo, br1,
+                             offset, br2); extrabytes = 2;
+                    break;
+                }
+                FALLTHROUGH;
 
             default:
                 snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc,
@@ -552,6 +555,12 @@ inline Byte Da6809::D_Register1(const char *mnemo, Word pc, Byte bytes,
     snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
     auto index = strlen(mnemo);
 
+    if (postbyte == 0)
+    {
+        snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "??");
+        return bytes;
+    }
+
     for (Byte i = 0; i < 8; i++)
     {
         if (postbyte & (1 << i))
@@ -577,6 +586,12 @@ inline Byte Da6809::D_Register2(const char *mnemo, Word pc, Byte bytes,
     snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, postbyte);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
     auto index = strlen(mnemo);
+
+    if (postbyte == 0)
+    {
+        snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "??");
+        return bytes;
+    }
 
     for (Byte i = 0; i < 8; i++)
     {
@@ -779,10 +794,10 @@ inline Byte Da6809::D_Page11(InstFlg *pFlags, Word pc, const Byte *pMemory,
             return D_Indexed("CMPS ", pc, 3, pMemory + 1);
 
         case 0xb3:
-            return D_Indexed("CMPU ", pc, 4, pMemory + 1);
+            return D_Extended("CMPU ", pc, 4, pMemory + 1, pAddr);
 
         case 0xbc:
-            return D_Indexed("CMPS ", pc, 4, pMemory + 1);
+            return D_Extended("CMPS ", pc, 4, pMemory + 1, pAddr);
 
         default:
             *pFlags |= InstFlg::Illegal;
@@ -849,10 +864,10 @@ int Da6809::Disassemble(
             return D_Direct("ASR  ", pc16, 2, pMemory);
 
         case 0x08:
-            return D_Direct("LSR  ", pc16, 2, pMemory);
+            return D_Direct("LSL  ", pc16, 2, pMemory);
 
         case 0x09:
-            return D_Direct("ROR  ", pc16, 2, pMemory);
+            return D_Direct("ROL  ", pc16, 2, pMemory);
 
         case 0x0a:
             return D_Direct("DEC  ", pc16, 2, pMemory);
@@ -1039,8 +1054,8 @@ int Da6809::Disassemble(
             return D_Illegal("", pc16, 1, pMemory);
 
         case 0x3f:
-            *pFlags |= InstFlg::Illegal;
-            return D_Illegal("SWI  ", pc16, 1, pMemory);
+            *pFlags |= InstFlg::Sub;
+            return D_Inherent("SWI  ", pc16, 1, pMemory);
 
         case 0x40:
             return D_Inherent("NEGA ", pc16, 1, pMemory);
@@ -1367,7 +1382,7 @@ int Da6809::Disassemble(
             return D_Relative("BSR  ", pc16, 2, pMemory, pAddr);
 
         case 0x8e:
-            return D_ImmediatL("LDX  ", pc16, 2, pMemory, pAddr);
+            return D_ImmediatL("LDX  ", pc16, 3, pMemory, pAddr);
 
         // 0x8f is illegal
 
@@ -1685,7 +1700,7 @@ int Da6809::Disassemble(
 
         case 0xf2:
             *pFlags |= InstFlg::LabelAddr;
-            return D_Extended("SBCA ", pc16, 3, pMemory, pAddr);
+            return D_Extended("SBCB ", pc16, 3, pMemory, pAddr);
 
         case 0xf3:
             *pFlags |= InstFlg::LabelAddr;
