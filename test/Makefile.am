@@ -26,6 +26,7 @@ check_PROGRAMS = unittests
 noinst_PROGRAMS = unittests
 
 unittests_SOURCES = \
+	test_benv.cpp \
 	test_brcfile.cpp \
 	test_da6809.cpp \
 	test_main.cpp \

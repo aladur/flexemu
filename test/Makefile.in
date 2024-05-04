@@ -134,7 +134,8 @@ libgtest_la_OBJECTS = $(am_libgtest_la_OBJECTS)
 libgtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(libgtest_la_LDFLAGS) $(LDFLAGS) -o $@
-am_unittests_OBJECTS = unittests-test_brcfile.$(OBJEXT) \
+am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
+	unittests-test_brcfile.$(OBJEXT) \
 	unittests-test_da6809.$(OBJEXT) unittests-test_main.$(OBJEXT) \
 	unittests-test_misc1.$(OBJEXT) \
 	unittests-test_ffilebuf.$(OBJEXT) \
@@ -191,6 +192,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/unittests-flexerr.Po \
 	../src/$(DEPDIR)/unittests-misc1.Po \
 	./$(DEPDIR)/unittests-test_bdate.Po \
+	./$(DEPDIR)/unittests-test_benv.Po \
 	./$(DEPDIR)/unittests-test_bintervl.Po \
 	./$(DEPDIR)/unittests-test_bmembuf.Po \
 	./$(DEPDIR)/unittests-test_boption.Po \
@@ -694,6 +696,7 @@ libgmock_la_CPPFLAGS = \
 
 libgmock_la_LDFLAGS = -pthread
 unittests_SOURCES = \
+	test_benv.cpp \
 	test_brcfile.cpp \
 	test_da6809.cpp \
 	test_main.cpp \
@@ -953,6 +956,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-flexerr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-misc1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdate.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bintervl.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_boption.Po@am__quote@ # am--include-marker
@@ -1007,6 +1011,20 @@ $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo: $(top_builddir)/$(gte
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(gtest_top)/src/gtest-all.cc' object='$(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libgtest_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo `test -f '$(top_builddir)/$(gtest_top)/src/gtest-all.cc' || echo '$(srcdir)/'`$(top_builddir)/$(gtest_top)/src/gtest-all.cc
+
+unittests-test_benv.o: test_benv.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_benv.o -MD -MP -MF $(DEPDIR)/unittests-test_benv.Tpo -c -o unittests-test_benv.o `test -f 'test_benv.cpp' || echo '$(srcdir)/'`test_benv.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_benv.Tpo $(DEPDIR)/unittests-test_benv.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_benv.cpp' object='unittests-test_benv.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_benv.o `test -f 'test_benv.cpp' || echo '$(srcdir)/'`test_benv.cpp
+
+unittests-test_benv.obj: test_benv.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_benv.obj -MD -MP -MF $(DEPDIR)/unittests-test_benv.Tpo -c -o unittests-test_benv.obj `if test -f 'test_benv.cpp'; then $(CYGPATH_W) 'test_benv.cpp'; else $(CYGPATH_W) '$(srcdir)/test_benv.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_benv.Tpo $(DEPDIR)/unittests-test_benv.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_benv.cpp' object='unittests-test_benv.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_benv.obj `if test -f 'test_benv.cpp'; then $(CYGPATH_W) 'test_benv.cpp'; else $(CYGPATH_W) '$(srcdir)/test_benv.cpp'; fi`
 
 unittests-test_brcfile.o: test_brcfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_brcfile.o -MD -MP -MF $(DEPDIR)/unittests-test_brcfile.Tpo -c -o unittests-test_brcfile.o `test -f 'test_brcfile.cpp' || echo '$(srcdir)/'`test_brcfile.cpp
@@ -1748,6 +1766,7 @@ distclean: distclean-recursive
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-misc1.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
+	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
@@ -1818,6 +1837,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
 	-rm -f ../src/$(DEPDIR)/unittests-misc1.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
+	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
