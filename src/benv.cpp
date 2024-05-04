@@ -41,7 +41,7 @@ bool BEnvironment::RemoveKey(const char *key)
     return true;
 }
 
-bool BEnvironment::SetValue(const char *key, const char *value)
+bool BEnvironment::SetValue(const char *key, const std::string &value)
 {
 #ifdef _WIN32
     return (SetEnvironmentVariable(
@@ -50,7 +50,7 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(key, value, 1) == 0);
+    return (setenv(key, value.c_str(), 1) == 0);
 #else
     return false;
 #endif
@@ -108,7 +108,7 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
     return ret;
 }
 
-bool BEnvironment::GetValue(const char *key, int *pValue)
+bool BEnvironment::GetValue(const char *key, int &value)
 {
     std::string str;
 
@@ -117,6 +117,6 @@ bool BEnvironment::GetValue(const char *key, int *pValue)
         return false;
     }
 
-    return (sscanf(str.c_str(), "%i", pValue) == 1);
+    return (sscanf(str.c_str(), "%i", &value) == 1);
 }
 

@@ -32,10 +32,10 @@ public:
     ~BEnvironment() = delete;
 
     static bool RemoveKey(const char *key);
-    static bool SetValue(const char *key, const char *value);
+    static bool SetValue(const char *key, const std::string &value);
     static bool SetValue(const char *key, int value);
     static bool GetValue(const char *key, std::string &value);
-    static bool GetValue(const char *key, int *pValue);
+    static bool GetValue(const char *key, int &value);
 };
 
 #endif
