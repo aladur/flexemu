@@ -30,15 +30,12 @@
 
 bool BEnvironment::RemoveKey(const char *key)
 {
-    std::string upperKey(key);
-
-    strupper(upperKey);
 #ifdef _WIN32
-    SetEnvironmentVariable(ConvertToUtf16String(upperKey).c_str(), nullptr);
+    SetEnvironmentVariable(ConvertToUtf16String(key).c_str(), nullptr);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_UNSETENV==1)
-    unsetenv(upperKey.c_str());
+    unsetenv(key);
 #endif
 #endif
     return true;
@@ -46,17 +43,14 @@ bool BEnvironment::RemoveKey(const char *key)
 
 bool BEnvironment::SetValue(const char *key, const char *value)
 {
-    std::string upperKey(key);
-
-    strupper(upperKey);
 #ifdef _WIN32
     return (SetEnvironmentVariable(
-        ConvertToUtf16String(upperKey).c_str(),
+        ConvertToUtf16String(key).c_str(),
         ConvertToUtf16String(value).c_str()) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(upperKey.c_str(), value, 1) == 0);
+    return (setenv(key, value, 1) == 0);
 #else
     return false;
 #endif
@@ -66,18 +60,16 @@ bool BEnvironment::SetValue(const char *key, const char *value)
 bool BEnvironment::SetValue(const char *key, int value)
 {
     std::stringstream stream;
-    std::string upperKey(key);
 
-    strupper(upperKey);
     stream << value;
 #ifdef _WIN32
     return (SetEnvironmentVariable(
-        ConvertToUtf16String(upperKey).c_str(),
+        ConvertToUtf16String(key).c_str(),
         ConvertToUtf16String(stream.str()).c_str()) != 0);
 #endif
 #ifdef UNIX
 #if (HAVE_DECL_SETENV==1)
-    return (setenv(upperKey.c_str(), stream.str().c_str(), 1) == 0);
+    return (setenv(key, stream.str().c_str(), 1) == 0);
 #else
     return false;
 #endif
@@ -86,18 +78,16 @@ bool BEnvironment::SetValue(const char *key, int value)
 
 bool BEnvironment::GetValue(const char *key, std::string &value)
 {
-    std::string upperKey(key);
     bool ret = false;
 
-    strupper(upperKey);
 #ifdef _WIN32
-    const auto wUpperKey(ConvertToUtf16String(upperKey));
-    auto size = GetEnvironmentVariable(wUpperKey.c_str(), nullptr, 0);
+    const auto wKey(ConvertToUtf16String(key));
+    auto size = GetEnvironmentVariable(wKey.c_str(), nullptr, 0);
     if (size)
     {
         auto p = new wchar_t[size + 1U];
 
-        if (GetEnvironmentVariable(wUpperKey.c_str(), p, size + 1U))
+        if (GetEnvironmentVariable(wKey.c_str(), p, size + 1U))
         {
             value = ConvertToUtf8String(p);
             ret = true;
@@ -107,7 +97,7 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
     }
 #endif
 #ifdef UNIX
-    const auto *envValue = getenv(upperKey.c_str());
+    const auto *envValue = getenv(key);
     if (envValue != nullptr)
     {
         value = envValue;
@@ -121,11 +111,8 @@ bool BEnvironment::GetValue(const char *key, std::string &value)
 bool BEnvironment::GetValue(const char *key, int *pValue)
 {
     std::string str;
-    std::string upperKey(key);
 
-    strupper(upperKey);
-
-    if (!GetValue(upperKey.c_str(), str))
+    if (!GetValue(key, str))
     {
         return false;
     }
