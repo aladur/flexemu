@@ -27,6 +27,7 @@ noinst_PROGRAMS = unittests
 
 unittests_SOURCES = \
 	test_brcfile.cpp \
+	test_da6809.cpp \
 	test_main.cpp \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
@@ -42,6 +43,7 @@ unittests_SOURCES = \
 	../src/bmembuf.cpp \
 	../src/brcfile.cpp \
 	../src/btime.cpp \
+	../src/da6809.cpp \
 	../src/fattrib.cpp \
 	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
@@ -53,10 +55,11 @@ unittests_SOURCES = \
 	../src/bintervl.h \
 	../src/boption.h \
 	../src/btime.h \
+	../src/da6809.h \
 	../src/fattrib.h \
 	../src/fdirent.h \
 	../src/ffilebuf.h \
-	../src/flexerr.h
+	../src/flexerr.h \
 	../src/misc1.h
 
 unittests_LDADD = libgtest.la libgmock.la
