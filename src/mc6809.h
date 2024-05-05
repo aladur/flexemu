@@ -953,8 +953,8 @@ public:
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 protected:
-    int Disassemble(Word address, InstFlg *pFlags,
-                    char **pCode, char **pMnemonic);
+    int Disassemble(Word address, InstFlg &p_flags,
+                    std::string &code, std::string &mnemonic);
     FILE        *log_fp{nullptr};
     s_cpu_logfile lfs;
     bool do_logging{false};

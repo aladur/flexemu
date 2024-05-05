@@ -5,8 +5,9 @@
 #ifndef ABSDISAS_INCLUDED
 #define ABSDISAS_INCLUDED
 
-#include "misc1.h"
+#include <typedefs.h>
 #include <type_traits>
+#include <string>
 
 
 // Instruction flags as scoped enum.
@@ -28,12 +29,12 @@ class AbstractDisassembler
 public:
     virtual ~AbstractDisassembler() = default;
     virtual int Disassemble(
-                  const Byte *pMemory,
-                  DWord pc,
-                  InstFlg *pFlags,
-                  DWord *pJumpAddr,
-                  char **pCode,
-                  char **pMnemonic) = 0;
+                  const Byte *p_memory,
+                  DWord p_pc,
+                  InstFlg &p_flags,
+                  DWord &p_jumpaddr,
+                  std::string &p_code,
+                  std::string &p_mnemonic) = 0;
     virtual void set_use_undocumented(bool value) = 0;
 }; // class AbstractDisassembler
 

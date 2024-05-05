@@ -11,10 +11,10 @@ TEST(test_da6809, dis_illegal)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     std::vector<Byte> memory{
         0x01, 0x02, 0x05, 0x0B, 0x14, 0x15, 0x18, 0x1B, 0x38,
         0x3E, 0x41, 0x42, 0x45, 0x4B, 0x4E, 0x51, 0x52, 0x5E,
@@ -24,12 +24,12 @@ TEST(test_da6809, dis_illegal)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         EXPECT_EQ(bytes, 1);
         EXPECT_EQ(flags, InstFlg::Illegal);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected;
         expected << std::uppercase <<
@@ -49,10 +49,10 @@ TEST(test_da6809, dis_inherent)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x12, 0x13, 0x19, 0x1D, 0x39, 0x3A, 0x3B, 0x3D, 0x3F,
         0x40, 0x43, 0x44, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4C, 0x4D, 0x4F,
@@ -74,8 +74,8 @@ TEST(test_da6809, dis_inherent)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const bool is_page1x = (memory[offset] & 0xFE) == 0x10;
         EXPECT_EQ(bytes, is_page1x ? 2 : 1);
@@ -99,7 +99,7 @@ TEST(test_da6809, dis_inherent)
                  break;
         }
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -131,10 +131,10 @@ TEST(test_da6809, dis_immediate)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x1A, 0x55, 0x1C, 0xAA, // 1X
         0x3C, 0x55, // 3X
@@ -169,8 +169,8 @@ TEST(test_da6809, dis_immediate)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const bool is_page1x = (memory[offset] & 0xFE) == 0x10;
         auto size = is_page1x ? 3 : 2;
@@ -200,7 +200,7 @@ TEST(test_da6809, dis_immediate)
                  break;
         }
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -245,10 +245,10 @@ TEST(test_da6809, dis_direct)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x00, 0x00, 0x03, 0x03, 0x04, 0x04, 0x06, 0x06, 0x07, 0x07, 0x08, 0x08,
         0x09, 0x09, 0x0A, 0x0A, 0x0C, 0x0C, 0x0D, 0x0D, 0x0E, 0x0E, 0x0F, 0x0F,
@@ -280,8 +280,8 @@ TEST(test_da6809, dis_direct)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const bool is_page1x = (memory[offset] & 0xFE) == 0x10;
         const auto size = is_page1x ? 3 : 2;
@@ -299,7 +299,7 @@ TEST(test_da6809, dis_direct)
                  break;
         }
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -333,28 +333,33 @@ TEST(test_da6809, dis_branch_relative)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
-        0x20, 0x00, 0x21, 0x01, 0x22, 0xF2, 0x23, 0x03, 0x24, 0x04, 0x25, 0x05,
-        0x26, 0x06, 0x27, 0x07, 0x28, 0x08, 0x29, 0x09, 0x2A, 0x0A, 0x2B, 0x0B,
-        0x2C, 0x0C, 0x2D, 0x0D, 0x2E, 0x0E, 0x2F, 0x0F,
-        0x8D, 0x10,
+        0x20, 0x00, 0x21, 0x00, 0x22, 0x00, 0x23, 0x00, 0x24, 0x00,
+        0x25, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00,
+        0x2A, 0x00, 0x2B, 0x00, 0x2C, 0x00, 0x2D, 0x00, 0x2E, 0x00,
+        0x2F, 0x00,
+        0x8D, 0x00,
+        0x20, 0x7F, 0x20, 0x80,
     };
     static const std::vector<const char *> expected_mnemonics{
-        "BRA", "BRN", "BHI", "BLS", "BCC", "BCS",
-        "BNE", "BEQ", "BVC", "BVS", "BPL", "BMI",
-        "BGE", "BLT", "BGT", "BLE",
+        "BRA", "BRN", "BHI", "BLS", "BCC",
+        "BCS", "BNE", "BEQ", "BVC", "BVS",
+        "BPL", "BMI", "BGE", "BLT", "BGT",
+        "BLE",
         "BSR",
+        "BRA", "BRA",
+
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         EXPECT_EQ(bytes, 2);
         auto expected_flags = InstFlg::JumpAddr;
@@ -368,7 +373,10 @@ TEST(test_da6809, dis_branch_relative)
                 break;
         }
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        const auto expected_jumpaddr = pc + 2 +
+            (static_cast<int16_t>(static_cast<int8_t>(memory[offset + 1])) &
+             0xFFFF);
+        EXPECT_EQ(jumpaddr, expected_jumpaddr);
         const std::string scode(code);
         std::stringstream expected;
         expected << std::uppercase <<
@@ -382,10 +390,8 @@ TEST(test_da6809, dis_branch_relative)
         std::stringstream expected_mnemonic;
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        const auto jmpaddr = pc + 2 +
-            static_cast<uint16_t>(static_cast<int8_t>(memory[offset + 1]));
         expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(4) << std::setfill('0') << jmpaddr;
+            std::hex << std::setw(4) << std::setfill('0') << expected_jumpaddr;
         EXPECT_EQ(smnemonic, expected_mnemonic.str());
         offset += bytes;
         pc += bytes;
@@ -397,18 +403,20 @@ TEST(test_da6809, dis_long_branch_relative)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x16, 0x00, 0x00, 0x17, 0x00, 0x00,
-        0x10, 0x21, 0x00, 0x01, 0x10, 0x22, 0x00, 0xF2,
-        0x10, 0x23, 0x00, 0x03, 0x10, 0x24, 0x00, 0x04, 0x10, 0x25, 0x00, 0x05,
-        0x10, 0x26, 0x00, 0x06, 0x10, 0x27, 0x00, 0x07, 0x10, 0x28, 0x00, 0x08,
-        0x10, 0x29, 0x00, 0x09, 0x10, 0x2A, 0x00, 0x0A, 0x10, 0x2B, 0x00, 0x0B,
-        0x10, 0x2C, 0x00, 0x0C, 0x10, 0x2D, 0x00, 0x0D, 0x10, 0x2E, 0x00, 0x0E,
-        0x10, 0x2F, 0x00, 0x0F,
+        0x10, 0x21, 0x00, 0x00, 0x10, 0x22, 0x00, 0x00,
+        0x10, 0x23, 0x00, 0x00, 0x10, 0x24, 0x00, 0x00,
+        0x10, 0x25, 0x00, 0x00, 0x10, 0x26, 0x00, 0x00,
+        0x10, 0x27, 0x00, 0x00, 0x10, 0x28, 0x00, 0x00,
+        0x10, 0x29, 0x00, 0x00, 0x10, 0x2A, 0x00, 0x00,
+        0x10, 0x2B, 0x00, 0x00, 0x10, 0x2C, 0x00, 0x00,
+        0x10, 0x2D, 0x00, 0x00, 0x10, 0x2E, 0x00, 0x00,
+        0x10, 0x2F, 0x00, 0x00,
     };
     static const std::vector<const char *> expected_mnemonics{
         "LBRA", "LBSR",
@@ -420,8 +428,8 @@ TEST(test_da6809, dis_long_branch_relative)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const auto size = (memory[offset] == 0x10) ? 4 : 3;
         EXPECT_EQ(bytes, size);
@@ -437,10 +445,9 @@ TEST(test_da6809, dis_long_branch_relative)
         }
 
         EXPECT_EQ(flags, expected_flags);
-        const auto jmpaddr = pc + 3 +
-            (static_cast<Word>(memory[offset + size - 2]) << 8) +
-            static_cast<Word>(memory[offset + size - 1]);
-        EXPECT_EQ(addr, jmpaddr);
+        const auto expected_jumpaddr = pc + size +
+            getValueBigEndian<Word>(&memory[offset + size - 2]);
+        EXPECT_EQ(jumpaddr, expected_jumpaddr);
         const std::string scode(code);
         std::stringstream expected;
         expected << std::uppercase <<
@@ -458,7 +465,7 @@ TEST(test_da6809, dis_long_branch_relative)
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
         expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(4) << std::setfill('0') << jmpaddr;
+            std::hex << std::setw(4) << std::setfill('0') << jumpaddr;
         EXPECT_EQ(smnemonic, expected_mnemonic.str());
         offset += bytes;
         pc += bytes;
@@ -470,10 +477,10 @@ TEST(test_da6809, dis_extended)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x70, 0x01, 0x70, 0x73, 0x01, 0x73, 0x74, 0x01, 0x74, 0x76, 0x01, 0x76,
         0x77, 0x01, 0x77, 0x78, 0x01, 0x78, 0x79, 0x01, 0x79, 0x7A, 0x01, 0x7A,
@@ -507,8 +514,8 @@ TEST(test_da6809, dis_extended)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const bool is_page1x = (memory[offset] & 0xFE) == 0x10;
         const auto size = is_page1x ? 4 : 3;
@@ -532,7 +539,7 @@ TEST(test_da6809, dis_extended)
         EXPECT_EQ(flags, expected_flags);
         auto tgtaddr = (static_cast<Word>(memory[offset + size - 2] << 8) |
                        static_cast<Word>(memory[offset + size - 1]));
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected;
         expected << std::uppercase <<
@@ -565,10 +572,10 @@ TEST(test_da6809, dis_indexed)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, // 3X
         0x60, 0x00, 0x63, 0x00, 0x64, 0x00, 0x66, 0x00, 0x67, 0x00,
@@ -606,8 +613,8 @@ TEST(test_da6809, dis_indexed)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const bool is_page1x = (memory[offset] & 0xFE) == 0x10;
         const auto size = is_page1x ? 3 : 2;
@@ -625,7 +632,7 @@ TEST(test_da6809, dis_indexed)
                  break;
         }
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -657,10 +664,10 @@ TEST(test_da6809, dis_indexed_modes)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x84, 0x60, 0xA4, 0x60, 0xC4, 0x60, 0xE4, // No offset
@@ -705,8 +712,8 @@ TEST(test_da6809, dis_indexed_modes)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const auto mask = memory[offset + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
@@ -717,7 +724,7 @@ TEST(test_da6809, dis_indexed_modes)
         EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -744,10 +751,10 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x8000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x8C, 0x80, 0x60, 0xAC, 0x80, // PC relative 8-bit offset
@@ -792,8 +799,8 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const auto mask = memory[offset + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
@@ -803,7 +810,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -835,10 +842,10 @@ TEST(test_da6809, dis_indexed_modes_illegal)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
+    DWord jumpaddr = 4711U;
     DWord offset = 0;
-    char *code;
-    char *mnemonic;
+    std::string code;
+    std::string mnemonic;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x8F, 0x60, 0xAF,
@@ -857,14 +864,14 @@ TEST(test_da6809, dis_indexed_modes_illegal)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, &flags,
-                                          &addr, &code, &mnemonic);
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
 
         const auto size = 2;
         EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
-        EXPECT_EQ(addr, 4711U); // unchanged value
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         const std::string scode(code);
         std::stringstream expected_code;
         expected_code << std::uppercase <<
@@ -907,9 +914,9 @@ TEST(test_da6809, dis_exg_tfr)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
-    char *code;
-    char *mnemonic;
+    DWord jumpaddr = 4711U;
+    std::string code;
+    std::string mnemonic;
     std::array<Byte, 2> memory{};
 
     for (Byte opcode = 0x1E; opcode <= 0x1F; ++opcode)
@@ -920,14 +927,14 @@ TEST(test_da6809, dis_exg_tfr)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
-            const auto bytes = da.Disassemble(memory.data(), pc, &flags,
-                                              &addr, &code, &mnemonic);
+            const auto bytes = da.Disassemble(memory.data(), pc, flags,
+                                              jumpaddr, code, mnemonic);
 
             const auto size = 2;
             EXPECT_EQ(bytes, size);
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
-            EXPECT_EQ(addr, 4711U); // unchanged value
+            EXPECT_EQ(jumpaddr, 4711U); // unchanged value
             const std::string scode(code);
             std::stringstream expected_code;
             expected_code << std::uppercase <<
@@ -988,9 +995,9 @@ TEST(test_da6809, dis_psh_pul)
     Da6809 da;
     InstFlg flags;
     DWord pc = 0x0000;
-    DWord addr = 4711U;
-    char *code;
-    char *mnemonic;
+    DWord jumpaddr = 4711U;
+    std::string code;
+    std::string mnemonic;
     std::array<Byte, 2> memory{};
     std::array<const char *, 4> expected_mnemonics{
         "PSHS", "PULS", "PSHU", "PULU",
@@ -1004,14 +1011,14 @@ TEST(test_da6809, dis_psh_pul)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
-            const auto bytes = da.Disassemble(memory.data(), pc, &flags,
-                                              &addr, &code, &mnemonic);
+            const auto bytes = da.Disassemble(memory.data(), pc, flags,
+                                              jumpaddr, code, mnemonic);
 
             auto size = 2;
             EXPECT_EQ(bytes, size);
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
-            EXPECT_EQ(addr, 4711U); // unchanged value
+            EXPECT_EQ(jumpaddr, 4711U); // unchanged value
             std::string scode(code);
             std::stringstream expected_code;
             expected_code << std::uppercase <<
