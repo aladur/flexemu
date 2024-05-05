@@ -472,7 +472,7 @@ inline Byte Da6809::D_Relative(const char *mnemo, Word pc, Byte bytes,
     const auto code = *pMemory;
     const Word offset = *(pMemory + 1);
 
-    if (offset < 127)
+    if (offset <= 127)
     {
         disp = pc + 2 + offset;
     }
@@ -503,7 +503,7 @@ inline Byte Da6809::D_RelativeL(
     const auto code = *pMemory;
     const auto offset = getValueBigEndian<Word>(&pMemory[1]);
 
-    if (offset < 32767)
+    if (offset <= 32767)
     {
         *pAddr = pc + 3 + offset;
     }
