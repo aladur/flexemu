@@ -1015,7 +1015,7 @@ int Da6809::Disassemble(
         case 0x3e:
             if (use_undocumented)
             {
-                return D_Direct("reset", 1, p_code, p_mnemonic);
+                return D_Inherent("reset", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1031,7 +1031,7 @@ int Da6809::Disassemble(
         case 0x41:
             if (use_undocumented)
             {
-                return D_Direct("nega ", 1, p_code, p_mnemonic);
+                return D_Inherent("nega", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1046,7 +1046,7 @@ int Da6809::Disassemble(
         case 0x45:
             if (use_undocumented)
             {
-                return D_Direct("lsra ", 1, p_code, p_mnemonic);
+                return D_Inherent("lsra", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1070,7 +1070,7 @@ int Da6809::Disassemble(
         case 0x4b:
             if (use_undocumented)
             {
-                return D_Direct("deca ", 1, p_code, p_mnemonic);
+                return D_Inherent("deca", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1085,7 +1085,7 @@ int Da6809::Disassemble(
         case 0x4e:
             if (use_undocumented)
             {
-                return D_Direct("clra ", 1, p_code, p_mnemonic);
+                return D_Inherent("clra", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1100,7 +1100,7 @@ int Da6809::Disassemble(
         case 0x51:
             if (use_undocumented)
             {
-                return D_Direct("negb ", 1, p_code, p_mnemonic);
+                return D_Inherent("negb", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1115,7 +1115,7 @@ int Da6809::Disassemble(
         case 0x55:
             if (use_undocumented)
             {
-                return D_Direct("lsrb ", 1, p_code, p_mnemonic);
+                return D_Inherent("lsrb", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1139,7 +1139,7 @@ int Da6809::Disassemble(
         case 0x5b:
             if (use_undocumented)
             {
-                return D_Direct("decb ", 1, p_code, p_mnemonic);
+                return D_Inherent("decb", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1154,7 +1154,7 @@ int Da6809::Disassemble(
         case 0x5e:
             if (use_undocumented)
             {
-                return D_Direct("clrb ", 1, p_code, p_mnemonic);
+                return D_Inherent("clrb", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;

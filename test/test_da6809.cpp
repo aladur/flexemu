@@ -999,3 +999,72 @@ TEST(test_da6809, dis_psh_pul)
     }
 }
 
+TEST(test_da6809, dis_undocumented)
+{
+    Da6809 da;
+    InstFlg flags;
+    DWord pc = 0x0000;
+    DWord jumpaddr = 4711U;
+    DWord offset = 0;
+    std::string code;
+    std::string mnemonic;
+    static const std::vector<Byte> memory{
+        0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x0B, 0x00,
+        0x3E,
+        0x41, 0x45, 0x4B, 0x4E,
+        0x51, 0x55, 0x5B, 0x5E,
+        0x61, 0x00, 0x65, 0x00, 0x6B, 0x00,
+        0x71, 0x71, 0x00, 0x75, 0x75, 0x00, 0x7B, 0x7B, 0x00,
+    };
+    static const std::vector<const char *> expected_mnemonics{
+        "neg $00", "negcom $00", "lsr   $00", "dec   $00", "reset",
+        "nega", "lsra", "deca", "clra",
+        "negb", "lsrb", "decb", "clrb",
+        "neg   $00,X", "lsr   $00,X", "dec   $00,X",
+        "neg   $7100", "lsr   $7500", "dec   $7B00",
+    };
+    auto iexpected_mnemonic = expected_mnemonics.cbegin();
+
+    da.set_use_undocumented(true);
+    while (offset < static_cast<DWord>(memory.size()))
+    {
+        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
+                                          jumpaddr, code, mnemonic);
+
+        Word opcode = memory[offset];
+        int size{};
+        auto expected_flags = InstFlg::NONE;
+        switch(opcode & 0xF0)
+        {
+            case 0x00:
+            case 0x60:
+                size = 2;
+                break;
+            case 0x70:
+                expected_flags = InstFlg::LabelAddr;
+                size = 3;
+                break;
+            default:
+                size = 1;
+        }
+        EXPECT_EQ(bytes, size);
+        EXPECT_EQ(flags, expected_flags);
+        EXPECT_EQ(jumpaddr, 4711U); // unchanged value
+        std::stringstream expected_code;
+        expected_code << std::uppercase <<
+            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        for (int i = 0; i < size; ++i)
+        {
+            expected_code << std::uppercase << " " <<
+                std::hex << std::setw(2) << std::setfill('0') <<
+                static_cast<Word>(memory[offset + i]);
+        }
+        EXPECT_EQ(code, expected_code.str());
+        const std::string expected_mnemonic{*(iexpected_mnemonic++)};
+        std::cout << "mnemo=" << expected_mnemonic << "\n";
+        EXPECT_EQ(mnemonic, expected_mnemonic);
+        offset += bytes;
+        pc += bytes;
+    }
+}
+
