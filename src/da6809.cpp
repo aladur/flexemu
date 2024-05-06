@@ -169,10 +169,9 @@ inline Byte Da6809::D_Illegal(const char *mnemo, Byte bytes,
 inline Byte Da6809::D_Direct(const char *mnemo, Byte bytes, std::string &p_code,
                              std::string &p_mnemonic)
 {
-    const auto code = *memory;
-    const auto offset = *(memory + 1);
+    const auto offset = *(memory + bytes - 1);
 
-    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
+    PrintCode(bytes);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s $%02X", mnemo, offset);
     p_code = code_buf;
     p_mnemonic = mnem_buf;
@@ -184,10 +183,9 @@ inline Byte Da6809::D_Direct(const char *mnemo, Byte bytes, std::string &p_code,
 inline Byte Da6809::D_Immediat(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
-    const auto code = *memory;
-    const auto offset = *(memory + 1);
+    const auto offset = *(memory + bytes - 1);
 
-    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X", pc, code, offset);
+    PrintCode(bytes);
     snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%02X", mnemo, offset);
     p_code = code_buf;
     p_mnemonic = mnem_buf;
@@ -199,11 +197,9 @@ inline Byte Da6809::D_Immediat(const char *mnemo, Byte bytes,
 inline Byte Da6809::D_ImmediatL(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
-    const auto code = *memory;
-    const auto offset = getValueBigEndian<Word>(&memory[1]);
+    const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
 
-    snprintf(code_buf, sizeof(code_buf), "%04X: %02X %02X %02X", pc, code,
-             *(memory + 1), *(memory + 2));
+    PrintCode(bytes);
     p_code = code_buf;
 
     const auto *label = FlexLabel(offset);
