@@ -581,6 +581,18 @@ case 0x40:
     cycles +=  2;
     break;
 
+case 0x42:
+    if (!use_undocumented)
+    {
+        pc--;
+        invalid("instruction");
+        break;
+    }
+
+    negcom(a);
+    cycles +=  2;
+    break;
+
 case 0x43:
     com(a);
     cycles +=  2;
@@ -672,6 +684,18 @@ case 0x51:
 
 case 0x50:
     neg(b);
+    cycles +=  2;
+    break;
+
+case 0x52:
+    if (!use_undocumented)
+    {
+        pc--;
+        invalid("instruction");
+        break;
+    }
+
+    negcom(b);
     cycles +=  2;
     break;
 
@@ -769,6 +793,18 @@ case 0x60:
     cycles +=  6;
     break;
 
+case 0x62:
+    if (!use_undocumented)
+    {
+        pc--;
+        invalid("instruction");
+        break;
+    }
+
+    negcom(fetch_ea_idx(cycles));
+    cycles +=  6;
+    break;
+
 case 0x63:
     com(fetch_ea_idx(cycles));
     cycles +=  6;
@@ -853,6 +889,18 @@ case 0x71:
 
 case 0x70:
     neg(fetch_ea_ext());
+    cycles +=  7;
+    break;
+
+case 0x72:
+    if (!use_undocumented)
+    {
+        pc--;
+        invalid("instruction");
+        break;
+    }
+
+    negcom(fetch_ea_ext());
     cycles +=  7;
     break;
 

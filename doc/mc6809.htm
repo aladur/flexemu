@@ -31,7 +31,9 @@ are not available with Fastflex.
 <p>
 They have been found empirically so they may not be reliable, incomplete or may
 work on some MC6809 chips but not on others. Motorola never published any
-information about undefined opcodes.
+information about undefined opcodes. Undocumented 6809 opcodes are also well
+documented
+ <a href="http://dragon32.info/info/undocops.html" target="_blank">here</a>.
 <p>
 The following undocumented instructions are supported by flexemu:
 </div>
@@ -79,10 +81,10 @@ The following undocumented instructions are supported by flexemu:
   <td>Same Op 40 (NEGA)</td>
  </tr>
  <tr>
-  <td>coma</td>
+  <td>negcoma</td>
   <td>42</td>
   <td>Inherent</td>
-  <td>Same Op 43 (COMA)</td>
+  <td>If cc.c = 0 then NEGA else COMA</td>
  </tr>
  <tr>
   <td>lsra</td>
@@ -109,10 +111,10 @@ The following undocumented instructions are supported by flexemu:
   <td>Same Op 50 (NEGB)</td>
  </tr>
  <tr>
-  <td>comb</td>
+  <td>negcomb</td>
   <td>52</td>
   <td>Inherent</td>
-  <td>Same Op 53 (COMB)</td>
+  <td>If cc.c = 0 then NEGB else COMB</td>
  </tr>
  <tr>
   <td>lsrb</td>
@@ -139,10 +141,10 @@ The following undocumented instructions are supported by flexemu:
   <td>Same Op 60 (NEG)</td>
  </tr>
  <tr>
-  <td>com</td>
+  <td>negcom</td>
   <td>62</td>
   <td>Indexed</td>
-  <td>Same Op 63 (COM)</td>
+  <td>If cc.c = 0 then NEG else COM</td>
  </tr>
  <tr>
   <td>lsr</td>
@@ -153,7 +155,7 @@ The following undocumented instructions are supported by flexemu:
  <tr>
   <td>dec</td>
   <td>6B</td>
-  <td>Indexed</td>                                                              
+  <td>Indexed</td>
   <td>Same Op 6A (DEC)</td>
  </tr>
  <tr>
@@ -163,10 +165,10 @@ The following undocumented instructions are supported by flexemu:
   <td>Same Op 70 (NEG)</td>
  </tr>
  <tr>
-  <td>com</td>
+  <td>negcom</td>
   <td>72</td>
   <td>Extended</td>
-  <td>Same Op 73 (COM)</td>
+  <td>If cc.c = 0 then NEG else COM</td>
  </tr>
  <tr>
   <td>lsr</td>

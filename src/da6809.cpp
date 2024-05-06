@@ -1037,6 +1037,15 @@ int Da6809::Disassemble(
             p_flags |= InstFlg::Illegal;
             return D_Illegal("", 1, p_code, p_mnemonic);
 
+        case 0x42:
+            if (use_undocumented)
+            {
+                return D_Inherent("negcoma", 1, p_code, p_mnemonic);
+            }
+
+            p_flags |= InstFlg::Illegal;
+            return D_Illegal("", 1, p_code, p_mnemonic);
+
         case 0x43:
             return D_Inherent("COMA ", 1, p_code, p_mnemonic);
 
@@ -1101,6 +1110,15 @@ int Da6809::Disassemble(
             if (use_undocumented)
             {
                 return D_Inherent("negb", 1, p_code, p_mnemonic);
+            }
+
+            p_flags |= InstFlg::Illegal;
+            return D_Illegal("", 1, p_code, p_mnemonic);
+
+        case 0x52:
+            if (use_undocumented)
+            {
+                return D_Inherent("negcomb", 1, p_code, p_mnemonic);
             }
 
             p_flags |= InstFlg::Illegal;
@@ -1175,6 +1193,15 @@ int Da6809::Disassemble(
             p_flags |= InstFlg::Illegal;
             return D_Illegal("", 1, p_code, p_mnemonic);
 
+        case 0x62:
+            if (use_undocumented)
+            {
+                return D_Indexed("negcom  ", 2, p_code, p_mnemonic);
+            }
+
+            p_flags |= InstFlg::Illegal;
+            return D_Illegal("", 1, p_code, p_mnemonic);
+
         case 0x63:
             return D_Indexed("COM  ", 2, p_code, p_mnemonic);
 
@@ -1236,6 +1263,17 @@ int Da6809::Disassemble(
             {
                 p_flags |= InstFlg::LabelAddr;
                 return D_Extended("neg  ", 3, p_code, p_mnemonic);
+            };
+
+            p_flags |= InstFlg::Illegal;
+
+            return D_Illegal("", 1, p_code, p_mnemonic);
+
+        case 0x72:
+            if (use_undocumented)
+            {
+                p_flags |= InstFlg::LabelAddr;
+                return D_Extended("negcom  ", 3, p_code, p_mnemonic);
             };
 
             p_flags |= InstFlg::Illegal;
