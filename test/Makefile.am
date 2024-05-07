@@ -8,16 +8,16 @@ check_LTLIBRARIES = libgtest.la libgmock.la
 libgtest_la_SOURCES = $(top_srcdir)/$(gtest_top)/src/gtest-all.cc
 libgtest_la_CPPFLAGS = \
 	-std=c++14 \
-	-I$(top_srcdir)/$(gtest_top)/include \
-	-I$(top_srcdir)/$(gtest_top)
+	-isystem$(top_srcdir)/$(gtest_top)/include \
+	-isystem$(top_srcdir)/$(gtest_top)
 libgtest_la_LDFLAGS = -pthread
 
 libgmock_la_SOURCES = $(top_srcdir)/$(gmock_top)/src/gmock-all.cc
 libgmock_la_CPPFLAGS = \
 	-std=c++14 \
-	-I$(top_srcdir)/$(gtest_top)/include \
-	-I$(top_srcdir)/$(gmock_top)/include \
-	-I$(top_srcdir)/$(gmock_top)
+	-isystem$(top_srcdir)/$(gtest_top)/include \
+	-isystem$(top_srcdir)/$(gmock_top)/include \
+	-isystem$(top_srcdir)/$(gmock_top)
 libgmock_la_LDFLAGS = -pthread
 
 # Instructions to make test executable.
@@ -63,15 +63,16 @@ unittests_SOURCES = \
 	../src/flexerr.h \
 	../src/misc1.h
 
-unittests_LDADD = libgtest.la libgmock.la
+unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
 	-std=c++17 \
 	-DF_DATADIR=\"$(pkgdatadir)\" \
 	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
 	$(OS_TYPE) \
-	-I$(top_srcdir)/$(gtest_top)/include \
-	-I$(top_srcdir)/$(gmock_top)/include \
+	-isystem$(top_srcdir)/$(gtest_top)/include \
+	-isystem$(top_srcdir)/$(gmock_top)/include \
+	-isystem$(top_srcdir)/fmt/include \
 	-I$(top_srcdir)/src
 
 TESTS = unittests
@@ -143,6 +144,26 @@ EXTRA_DIST += \
 	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-generated-actions.h \
 	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-matchers.h \
 	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-port.h
+
+# Same for fmt files.
+EXTRA_DIST += \
+	$(top_srcdir)/fmt/src/fmt.cc \
+	$(top_srcdir)/fmt/src/format.cc \
+	$(top_srcdir)/fmt/src/os.cc \
+	$(top_srcdir)/fmt/include/fmt/args.h \
+	$(top_srcdir)/fmt/include/fmt/base.h \
+	$(top_srcdir)/fmt/include/fmt/chrono.h \
+	$(top_srcdir)/fmt/include/fmt/color.h \
+	$(top_srcdir)/fmt/include/fmt/compile.h \
+	$(top_srcdir)/fmt/include/fmt/core.h \
+	$(top_srcdir)/fmt/include/fmt/format.h \
+	$(top_srcdir)/fmt/include/fmt/format-inl.h \
+	$(top_srcdir)/fmt/include/fmt/os.h \
+	$(top_srcdir)/fmt/include/fmt/ostream.h \
+	$(top_srcdir)/fmt/include/fmt/printf.h \
+	$(top_srcdir)/fmt/include/fmt/ranges.h \
+	$(top_srcdir)/fmt/include/fmt/std.h \
+	$(top_srcdir)/fmt/include/fmt/xchar.h
 
 clean-local:
 	rm -rf test_detail.xml

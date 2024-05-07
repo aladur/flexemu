@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ndircont.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="fpattrui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -159,9 +156,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="misc1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ndircont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rfilecnt.h">

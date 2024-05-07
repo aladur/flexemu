@@ -47,7 +47,7 @@ desktopdir = $(datadir)/applications
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 
-noinst_LIBRARIES = libflex.a
+noinst_LIBRARIES = libflex.a libfmt.a
 
 bin_PROGRAMS = \
 	$(FLEXPLORER) \
@@ -68,13 +68,15 @@ DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 AM_CXXFLAGS = \
 	--std=c++17 \
-	$(DIRFLAGS)
+	$(DIRFLAGS) \
+	-isystem $(top_srcdir)/fmt/include
 
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
 
+libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -85,22 +87,23 @@ test_CXXFLAGS       = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 
 libflex_a_LIBADD = $(LIBOBJS)
 
-flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a
-mdcrtool_LDADD   = $(PTHREAD_LD) libflex.a
-flex2hex_LDADD   = $(PTHREAD_LD) libflex.a
-dsktool_LDADD    = $(PTHREAD_LD) libflex.a
+flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a libfmt.a
+mdcrtool_LDADD   = $(PTHREAD_LD) libflex.a libfmt.a
+flex2hex_LDADD   = $(PTHREAD_LD) libflex.a libfmt.a
+dsktool_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a
 flexemu_LDADD    = \
 	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
-	libflex.a
-test_LDADD       = $(PTHREAD_LD) libflex.a
+	libflex.a libfmt.a
+test_LDADD       = $(PTHREAD_LD) libflex.a libfmt.a
 
-flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a
-flexplorer_DEPENDENCIES = libflex.a
-flex2hex_DEPENDENCIES   = libflex.a
-dsktool_DEPENDENCIES    = libflex.a
-mdcrtool_DEPENDENCIES   = libflex.a
-test_DEPENDENCIES       = libflex.a
+libflex_a_DEPENDENCIES  = libfmt.a
+flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a libfmt.a
+flexplorer_DEPENDENCIES = libflex.a libfmt.a
+flex2hex_DEPENDENCIES   = libflex.a libfmt.a
+dsktool_DEPENDENCIES    = libflex.a libfmt.a
+mdcrtool_DEPENDENCIES   = libflex.a libfmt.a
+test_DEPENDENCIES       = libflex.a libfmt.a
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h
@@ -575,6 +578,10 @@ libflex_a_SOURCES = \
 	misc1.h \
 	rfilecnt.h \
 	typedefs.h
+
+libfmt_a_SOURCES = \
+	../fmt/src/format.cc \
+	../fmt/src/os.cc
 
 ################################################################################
 # Use traditional-style suffix rules for precompiled header support.

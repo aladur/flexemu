@@ -4,16 +4,36 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flexemu", "src\flexemu.vcxproj", "{0D8A2B58-3226-4B7F-A0F5-799A024CF92F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flexplorer", "src\flexplorer.vcxproj", "{F25D3632-E44A-4251-8D56-05A2862D756D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mdcrtool", "src\mdcrtool.vcxproj", "{F88CDD6D-884A-44C5-96CC-3D6611F7EFC7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "flex2hex", "src\flex2hex.vcxproj", "{7A5D7EF0-6DEC-11E9-98A8-74D435819D39}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsktool", "src\dsktool.vcxproj", "{0CBBB9FE-8279-433B-B4E6-35D33A842FB4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libflex", "src\libflex.vcxproj", "{87BF512F-3F2D-4FFD-A848-3B967BA54EDA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8} = {7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libfmt", "src\libfmt.vcxproj", "{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +91,14 @@ Global
 		{87BF512F-3F2D-4FFD-A848-3B967BA54EDA}.Release|Win32.Build.0 = Release|Win32
 		{87BF512F-3F2D-4FFD-A848-3B967BA54EDA}.Release|x64.ActiveCfg = Release|x64
 		{87BF512F-3F2D-4FFD-A848-3B967BA54EDA}.Release|x64.Build.0 = Release|x64
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Debug|Win32.Build.0 = Debug|Win32
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Debug|x64.ActiveCfg = Debug|x64
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Debug|x64.Build.0 = Debug|x64
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Release|Win32.ActiveCfg = Release|Win32
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Release|Win32.Build.0 = Release|Win32
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Release|x64.ActiveCfg = Release|x64
+		{7BFFAB44-07C1-4241-BD01-3080DFBC5BA8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

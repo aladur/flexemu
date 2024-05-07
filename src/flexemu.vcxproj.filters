@@ -363,9 +363,6 @@
     <ClInclude Include="inout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ioaccess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="iodevdbg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -486,10 +483,10 @@
     <ClInclude Include="pagedetd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="poutwin.h">
+    <ClInclude Include="poverhlp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="poverhlp.h">
+    <ClInclude Include="qtfree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -507,9 +504,6 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="logfilui.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="qtfree.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="qtgui.h">
@@ -534,6 +528,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="fsetupui.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="poutwin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
