@@ -336,6 +336,18 @@ TEST(test_misc1, fct_getFileExtension)
 #endif
 }
 
+TEST(test_misc1, macro_EXTEND8)
+{
+    Byte src1{0x55};
+    auto tgt1 = EXTEND8(src1);
+    EXPECT_EQ(tgt1, 0x0055);
+    EXPECT_EQ(sizeof(tgt1), 2U);
+    Byte src2{0xAA};
+    auto tgt2 = EXTEND8(src2);
+    EXPECT_EQ(tgt2, 0xFFAA);
+    EXPECT_EQ(sizeof(tgt2), 2U);
+}
+
 TEST(test_misc1, fct_getFileStem)
 {
     auto result = getFileStem("");

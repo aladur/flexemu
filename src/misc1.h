@@ -280,7 +280,7 @@ extern const char * const RANDOM_FILE_LIST;
 
 #define BCLR7(x) ((x) &= 0x7f)
 
-#define EXTEND8(x) (Word)(SWord)(SByte)(x)
+#define EXTEND8(x) static_cast<Word>(static_cast<SWord>(static_cast<SByte>(x)))
 
 #if __GNUC__ >= 5 || __clang__ >= 4 || (__clang__ == 3 && __clang_minor__ >= 6)
 #if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
