@@ -4,6 +4,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include "fmt/format.h"
 
 
 TEST(test_da6809, dis_illegal)
@@ -29,12 +30,9 @@ TEST(test_da6809, dis_illegal)
         EXPECT_EQ(bytes, 1);
         EXPECT_EQ(flags, InstFlg::Illegal);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ": " <<
-            std::hex << std::setw(2) << std::setfill('0') <<
-            static_cast<Word>(memory[pc]);
-        EXPECT_EQ(code, expected_code.str());
+        const auto expected_code = fmt::format("{:04X}: {:02X}", pc,
+                                               memory[pc]);
+        EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, " ?????");
         pc += bytes;
     }
@@ -73,7 +71,8 @@ TEST(test_da6809, dis_inherent)
                                           jumpaddr, code, mnemonic);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
-        EXPECT_EQ(bytes, is_page23 ? 2 : 1);
+        auto size = is_page23 ? 2 : 1;
+        EXPECT_EQ(bytes, size);
         Word opcode = memory[pc];
         opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
         auto expected_flags = InstFlg::NONE;
@@ -95,18 +94,12 @@ TEST(test_da6809, dis_inherent)
         }
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ": " <<
-            std::hex << std::setw(2) << std::setfill('0') <<
-            static_cast<Word>(memory[pc]);
-        if (is_page23)
+        auto expected_code = fmt::format("{:04X}:", pc);
+        for (int i = 0; i < size; ++i)
         {
-            expected_code << " " << std::uppercase <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + 1]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
+        EXPECT_EQ(code, expected_code);
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
         rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
@@ -189,35 +182,27 @@ TEST(test_da6809, dis_immediate)
         }
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
         Word tgtaddr = memory[pc + size - 1];
         tgtaddr = is_16bit ? (memory[pc + size - 2] << 8 | tgtaddr) : tgtaddr;
-        expected_mnemonic
-            << std::uppercase << mnemo << spaces << "#$";
+        auto expected_mnemonic = fmt::format("{}{}#$", mnemo, spaces);
         if (is_16bit)
         {
-            expected_mnemonic << std::uppercase <<
-                std::hex << std::setw(4) << std::setfill('0') << tgtaddr;
+            expected_mnemonic += fmt::format("{:04X}", tgtaddr);
         }
         else
         {
-            expected_mnemonic << std::uppercase <<
-                std::hex << std::setw(2) << std::setfill('0') << tgtaddr;
+            expected_mnemonic += fmt::format("{:02X}", tgtaddr);
         }
         rtrim(mnemonic);
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -281,23 +266,17 @@ TEST(test_da6809, dis_direct)
         }
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(2) << std::setfill('0') <<
-            static_cast<Word>(memory[pc + 1]);
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        const auto expected_mnemonic =
+            fmt::format("{}{}${:02X}", mnemo, spaces, memory[pc + 1]);
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -334,7 +313,8 @@ TEST(test_da6809, dis_branch_relative)
         const auto bytes = da.Disassemble(&memory[pc], pc, flags,
                                           jumpaddr, code, mnemonic);
 
-        EXPECT_EQ(bytes, 2);
+        const auto size = 2;
+        EXPECT_EQ(bytes, size);
         auto expected_flags = InstFlg::JumpAddr;
         auto opcode = memory[pc];
         switch (opcode)
@@ -351,20 +331,17 @@ TEST(test_da6809, dis_branch_relative)
             (static_cast<int16_t>(static_cast<int8_t>(memory[pc + 1])) &
              0xFFFF);
         EXPECT_EQ(jumpaddr, expected_jumpaddr);
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ": " <<
-            std::hex << std::setw(2) << std::setfill('0') <<
-            static_cast<Word>(opcode) << " " <<
-            std::hex << std::setw(2) << std::setfill('0') <<
-            static_cast<Word>(memory[pc + 1]);
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        auto expected_code = fmt::format("{:04X}:", pc);
+        for (int i = 0; i < size; ++i)
+        {
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
+        }
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(4) << std::setfill('0') << expected_jumpaddr;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        const auto expected_mnemonic =
+            fmt::format("{}{}${:04X}", mnemo, spaces, expected_jumpaddr);
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -418,22 +395,17 @@ TEST(test_da6809, dis_long_branch_relative)
         const auto expected_jumpaddr = pc + size +
             getValueBigEndian<Word>(&memory[pc + size - 2]);
         EXPECT_EQ(jumpaddr, expected_jumpaddr);
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(4) << std::setfill('0') << jumpaddr;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        const auto expected_mnemonic =
+            fmt::format("{}{}${:04X}", mnemo, spaces, jumpaddr);
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -505,22 +477,17 @@ TEST(test_da6809, dis_extended)
         auto tgtaddr = (static_cast<Word>(memory[pc + size - 2] << 8) |
                        static_cast<Word>(memory[pc + size - 1]));
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        expected_mnemonic << std::uppercase << mnemo << spaces << "$" <<
-            std::hex << std::setw(4) << std::setfill('0') << tgtaddr;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        const auto expected_mnemonic =
+            fmt::format("{}{}${:04X}", mnemo, spaces, tgtaddr);
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -590,21 +557,17 @@ TEST(test_da6809, dis_indexed)
         }
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
+        EXPECT_EQ(code, expected_code);
         const std::string mnemo{*(iexpected_mnemonic++)};
         const std::string spaces(6U - mnemo.size(), ' ');
-        expected_mnemonic << std::uppercase << mnemo << spaces << "$00,X";
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        const auto expected_mnemonic =
+            fmt::format("{}{}$00,X", mnemo, spaces);
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -674,20 +637,15 @@ TEST(test_da6809, dis_indexed_modes)
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        expected_mnemonic << std::uppercase << "NEG   " << mnemo;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        EXPECT_EQ(code, expected_code);
+        const auto expected_mnemonic =
+            fmt::format("NEG   {}", *(iexpected_mnemonic++));;
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -757,20 +715,15 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[offset + i]);
+            expected_code += fmt::format(" {:02X}", memory[offset + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        expected_mnemonic << std::uppercase << "NEG   " << mnemo;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        EXPECT_EQ(code, expected_code);
+        const auto expected_mnemonic =
+            fmt::format("NEG   {}", *(iexpected_mnemonic++));;
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         offset += bytes;
         pc += bytes;
         if (pc >= 0x8000 + 56)
@@ -815,20 +768,14 @@ TEST(test_da6809, dis_indexed_modes_illegal)
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
-        std::stringstream expected_mnemonic;
-        const std::string mnemo{R"(NEG   ????)"};
-        expected_mnemonic << std::uppercase << mnemo;
-        EXPECT_EQ(mnemonic, expected_mnemonic.str());
+        EXPECT_EQ(code, expected_code);
+        const auto expected_mnemonic{R"(NEG   ????)"};
+        EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -875,25 +822,18 @@ TEST(test_da6809, dis_exg_tfr)
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
             EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-            const std::string scode(code);
-            std::stringstream expected_code;
-            expected_code << std::uppercase <<
-                std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+            auto expected_code = fmt::format("{:04X}:", pc);
             for (int i = 0; i < size; ++i)
             {
-                expected_code << std::uppercase << " " <<
-                    std::hex << std::setw(2) << std::setfill('0') <<
-                    static_cast<Word>(memory[i]);
+                expected_code += fmt::format(" {:02X}", memory[pc + i]);
             }
-            EXPECT_EQ(scode, expected_code.str());
-            std::stringstream expected_mnemonic;
+            EXPECT_EQ(code, expected_code);
             const std::string mnemo = (opcode == 0x1E) ? "EXG" : "TFR";
             const auto r0 = GetRegisterName(postbyte >> 4);
             const auto r1 = GetRegisterName(postbyte & 0x0F);
-            expected_mnemonic << std::uppercase << mnemo << "   " << r0 <<
-                "," << r1;
-            EXPECT_EQ(mnemonic, expected_mnemonic.str());
-            pc += bytes;
+            const auto expected_mnemonic =
+                fmt::format("{}   {},{}", mnemo, r0, r1);
+            EXPECT_EQ(mnemonic, expected_mnemonic);
         }
     }
 }
@@ -958,24 +898,18 @@ TEST(test_da6809, dis_psh_pul)
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
             EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-            std::string scode(code);
-            std::stringstream expected_code;
-            expected_code << std::uppercase <<
-                std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+            auto expected_code = fmt::format("{:04X}:", pc);
             for (int i = 0; i < size; ++i)
             {
-                expected_code << std::uppercase << " " <<
-                    std::hex << std::setw(2) << std::setfill('0') <<
-                    static_cast<Word>(memory[i]);
+                expected_code += fmt::format(" {:02X}", memory[pc + i]);
             }
-            EXPECT_EQ(scode, expected_code.str());
-            std::stringstream expected_mnemonic;
+            EXPECT_EQ(code, expected_code);
             std::string mnemo = expected_mnemonics[opcode - 0x34];
             const std::string nonstack_reg = (opcode & 0x02) ? "S" : "U";
             std::string reg_list = GetRegisterList(postbyte, nonstack_reg);
-            expected_mnemonic << std::uppercase << mnemo << " " << reg_list;
-            EXPECT_EQ(mnemonic, expected_mnemonic.str());
-            pc += bytes;
+            const auto expected_mnemonic =
+                fmt::format("{} {}", mnemo, reg_list);
+            EXPECT_EQ(mnemonic, expected_mnemonic);
         }
     }
 }
@@ -1031,16 +965,12 @@ TEST(test_da6809, dis_undocumented)
         EXPECT_EQ(bytes, size);
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        std::stringstream expected_code;
-        expected_code << std::uppercase <<
-            std::hex << std::setw(4) << std::setfill('0') << pc << ":";
+        auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)
         {
-            expected_code << std::uppercase << " " <<
-                std::hex << std::setw(2) << std::setfill('0') <<
-                static_cast<Word>(memory[pc + i]);
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
-        EXPECT_EQ(code, expected_code.str());
+        EXPECT_EQ(code, expected_code);
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;

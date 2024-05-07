@@ -5,7 +5,6 @@
 #ifndef DA6809_INCLUDED
 #define DA6809_INCLUDED
 
-#include "misc1.h"
 #include "absdisas.h"
 
 
@@ -14,14 +13,12 @@ class Da6809 : public AbstractDisassembler
 
 protected:
 
-    char code_buf[28]{}; // buffer for machinecode
-    char mnem_buf[28]{}; // buffer for mnemonic
     Word pc{};
     const Byte *memory{};
     bool use_undocumented{false};
 
 public:
-    Da6809();
+    Da6809() = default;
     ~Da6809() override = default;
 
     int Disassemble(

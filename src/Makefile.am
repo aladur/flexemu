@@ -614,7 +614,7 @@ pch.h.gcp: pch.h misc1.h
 # Generated *_moc.cpp and *_qrc.cpp files are excluded from the check.
 clang-tidy-check:
 	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_\(moc\|qrc\).cpp/d"` \
-	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@
+	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@ -isystem$(top_srcdir)/fmt/include
 
 ################################################################################
 # Post (un)installation hook:

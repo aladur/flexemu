@@ -22,13 +22,8 @@
 #include <array>
 #include <map>
 #include "da6809.h"
+#include <fmt/format.h>
 
-
-Da6809::Da6809()
-{
-    memset(code_buf, 0, sizeof(code_buf));
-    memset(mnem_buf, 0, sizeof(mnem_buf));
-}
 
 void Da6809::set_use_undocumented(bool value)
 {
@@ -155,12 +150,8 @@ const char *Da6809::StackRegister(Byte which, const char *not_stack)
 inline Byte Da6809::D_Illegal(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
-    const auto code = *memory;
-
-    snprintf(code_buf, sizeof(code_buf), "%04X: %02X", pc, code);
-    snprintf(mnem_buf, sizeof(mnem_buf), "%s ?????", mnemo);
-    p_code = code_buf;
-    p_mnemonic = mnem_buf;
+    p_code = fmt::format("{:04X}: {:02X}", pc, *memory);
+    p_mnemonic = fmt::format("{} ?????", mnemo);
 
     return bytes;
 }
@@ -171,10 +162,8 @@ inline Byte Da6809::D_Direct(const char *mnemo, Byte bytes, std::string &p_code,
 {
     const auto offset = *(memory + bytes - 1);
 
-    PrintCode(bytes);
-    snprintf(mnem_buf, sizeof(mnem_buf), "%s $%02X", mnemo, offset);
-    p_code = code_buf;
-    p_mnemonic = mnem_buf;
+    p_code = PrintCode(bytes);
+    p_mnemonic = fmt::format("{} ${:02X}", mnemo, offset);
 
     return bytes;
 }
@@ -185,10 +174,8 @@ inline Byte Da6809::D_Immediat(const char *mnemo, Byte bytes,
 {
     const auto offset = *(memory + bytes - 1);
 
-    PrintCode(bytes);
-    snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%02X", mnemo, offset);
-    p_code = code_buf;
-    p_mnemonic = mnem_buf;
+    p_code = PrintCode(bytes);
+    p_mnemonic = fmt::format("{} #${:02X}", mnemo, offset);
 
     return bytes;
 }
@@ -199,36 +186,31 @@ inline Byte Da6809::D_ImmediatL(const char *mnemo, Byte bytes,
 {
     const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
 
-    PrintCode(bytes);
-    p_code = code_buf;
-
+    p_code = PrintCode(bytes);
     const auto *label = FlexLabel(offset);
 
     if (label == nullptr)
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s #$%04X", mnemo, offset);
+        p_mnemonic = fmt::format("{} #${:04X}", mnemo, offset);
     }
     else
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s #%s ; $%04X", mnemo, label,
-                 offset);
+        p_mnemonic = fmt::format("{} #{} ; ${:04X}", mnemo, label, offset);
     }
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
 
 inline std::string Da6809::PrintCode(int bytes)
 {
-    auto index = snprintf(code_buf, sizeof(code_buf), "%04X:", pc);
+    std::string result = fmt::format("{:04X}:", pc);
 
     for (int i = 0; i < bytes; ++i)
     {
-        index += snprintf(code_buf + index, sizeof(code_buf) - index, " %02X",
-                          memory[i]);
+        result += fmt::format(" {:02X}", memory[i]);
     }
 
-    return {code_buf};
+    return result;
 }
 
 inline Byte Da6809::D_Inherent(const char *mnemo, Byte bytes,
@@ -264,7 +246,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
         }
 
         p_code = PrintCode(bytes);
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%02X,%s", mnemo, s, disp,
+        p_mnemonic = fmt::format("{} {}${:02X},{}", mnemo, s, disp,
                  IndexedRegister(postbyte >> 5));
     }
     else
@@ -272,8 +254,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
         switch (postbyte & 0x1f)
         {
             case 0x00 : // ,R+
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s ,%s+", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} ,{}+", mnemo,
                          IndexedRegister(postbyte >> 5));
                 break;
 
@@ -283,14 +265,14 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x01 : // ,R++
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s++%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {},{}++{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
             case 0x02 : // ,-R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s ,-%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} ,-{}", mnemo,
                         IndexedRegister(postbyte >> 5));
                 break;
 
@@ -300,8 +282,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x03 : // ,--R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,--%s%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {},--{}{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -311,8 +293,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x04 : // ,R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {},{}{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -322,8 +304,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x05 : // B,R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sB,%s%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {}B,{}{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -333,8 +315,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x06 : // A,R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sA,%s%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {}A,{}{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -356,9 +338,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                     offset = 0x0100 - offset;
                 }
                 extrabytes = 1;
-                PrintCode(bytes + extrabytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%02X,%s%s",
-                         mnemo, br1, s, offset,
+                p_code = PrintCode(bytes + extrabytes);
+                p_mnemonic = fmt::format("{} {}{}${:02X},{}{}", mnemo,
+                         br1, s, offset,
                          IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -369,11 +351,11 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 
             case 0x09 : // ,R + 16 Bit Offset
                 extrabytes = 2;
-                PrintCode(bytes + extrabytes);
+                p_code = PrintCode(bytes + extrabytes);
                 offset = getValueBigEndian<Word>(&memory[2]);
                 s = "";
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%04X,%s%s",
-                         mnemo, br1, s, offset,
+                p_mnemonic = fmt::format("{} {}{}${:04X},{}{}", mnemo,
+                         br1, s, offset,
                          IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -383,8 +365,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x0b : // D,R
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %sD,%s%s", mnemo,
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} {}D,{}{}", mnemo,
                         br1, IndexedRegister(postbyte >> 5), br2);
                 break;
 
@@ -397,9 +379,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 offset = (EXTEND8(*(memory + 2)) + pc + 3) & 0xFFFF;
                 s = "<";
                 extrabytes = 1;
-                PrintCode(bytes + extrabytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%02X,PCR%s",
-                         mnemo, br1, s, offset, br2);
+                p_code = PrintCode(bytes + extrabytes);
+                p_mnemonic = fmt::format("{} {}{}${:02X},PCR{}", mnemo,
+                         br1, s, offset, br2);
                 break;
 
             case 0x1d : // [,PC + 16 Bit Offset]
@@ -411,9 +393,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 offset = (getValueBigEndian<Word>(&memory[2]) + pc + 4) & 0xFFFF;
                 s = ">";
                 extrabytes = 2;
-                PrintCode(bytes + extrabytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s %s%s$%04X,PCR%s",
-                         mnemo, br1, s, offset, br2);
+                p_code = PrintCode(bytes + extrabytes);
+                p_mnemonic = fmt::format("{} {}{}${:04X},PCR{}", mnemo,
+                         br1, s, offset, br2);
                 break;
 
             case 0x1f : // [n]
@@ -423,21 +405,18 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                     br2 = "]";
                     offset = getValueBigEndian<Word>(&memory[2]);
                     extrabytes = 2;
-                    PrintCode(bytes + extrabytes);
-                    snprintf(mnem_buf, sizeof(mnem_buf), "%s %s$%04X%s", mnemo, br1,
-                             offset, br2);
+                    p_code = PrintCode(bytes + extrabytes);
+                    p_mnemonic = fmt::format("{} {}${:04X}{}", mnemo,
+                             br1, offset, br2);
                     break;
                 }
                 FALLTHROUGH;
 
             default:
-                PrintCode(bytes);
-                snprintf(mnem_buf, sizeof(mnem_buf), "%s ????", mnemo);
+                p_code = PrintCode(bytes);
+                p_mnemonic = fmt::format("{} ????", mnemo);
         }
     }
-
-    p_code = code_buf;
-    p_mnemonic = mnem_buf;
 
     return bytes + extrabytes;
 }
@@ -453,14 +432,12 @@ inline Byte Da6809::D_Extended(const char *mnemo, Byte bytes,
 
     if (label == nullptr)
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s $%04X", mnemo, offset);
+        p_mnemonic = fmt::format("{} ${:04X}", mnemo, offset);
     }
     else
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s %s ; $%04X", mnemo, label,
-                 offset);
+        p_mnemonic = fmt::format("{} {} ; ${:04X}", mnemo, label, offset);
     }
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
@@ -486,14 +463,12 @@ inline Byte Da6809::D_Relative(const char *mnemo, Byte bytes,
 
     if (label == nullptr)
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s   $%04X", mnemo, disp);
+        p_mnemonic = fmt::format("{}   ${:04X}", mnemo, disp);
     }
     else
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s   %s ; $%04X", mnemo, label,
-                 disp);
+        p_mnemonic = fmt::format("{}   {} ; ${:04X}", mnemo, label, disp);
     }
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
@@ -518,14 +493,12 @@ inline Byte Da6809::D_RelativeL(const char *mnemo, Byte bytes,
 
     if (label == nullptr)
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s  $%04X", mnemo, address);
+        p_mnemonic = fmt::format("{}  ${:04X}", mnemo, address);
     }
     else
     {
-        snprintf(mnem_buf, sizeof(mnem_buf), "%s  %s ; $%04X", mnemo, label,
-                 address);
+        p_mnemonic = fmt::format("{}  {} ; ${:04X}", mnemo, label, address);
     }
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
@@ -536,10 +509,9 @@ inline Byte Da6809::D_Register0(const char *mnemo, Byte bytes,
     const auto postbyte = *(memory + 1);
 
     p_code = PrintCode(bytes);
-    snprintf(mnem_buf, sizeof(mnem_buf), "%s %s,%s", mnemo,
+    p_mnemonic = fmt::format("{} {},{}", mnemo,
              InterRegister(postbyte >> 4),
              InterRegister(postbyte & 0x0f));
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
@@ -548,28 +520,29 @@ inline Byte Da6809::D_Register1(const char *mnemo, const char *ns_reg,
         Byte bytes, std::string &p_code, std::string &p_mnemonic)
 {
     const auto postbyte = *(memory + 1);
-    bool withComma = false;
 
     p_code = PrintCode(bytes);
-    auto index = snprintf(mnem_buf, sizeof(mnem_buf), "%s ", mnemo);
+    p_mnemonic = mnemo;
+    p_mnemonic.append(" ");
 
     if (postbyte == 0)
     {
-        snprintf(&mnem_buf[index], sizeof(mnem_buf) - index, "??");
+        p_mnemonic.append("??");
     }
     else
     {
+        bool withComma = false;
+
         for (Byte i = 0; i < 8; i++)
         {
             if (postbyte & (1 << i))
             {
-                index += snprintf(&mnem_buf[index], sizeof(mnem_buf) - index,
-                        "%s%s", withComma ? "," : "", StackRegister(i, ns_reg));
+                p_mnemonic.append(withComma ? "," : "");
+                p_mnemonic.append(StackRegister(i, ns_reg));
                 withComma = true;
             }
         }
     }
-    p_mnemonic = mnem_buf;
 
     return bytes;
 }
