@@ -1042,7 +1042,6 @@ TEST(test_da6809, dis_undocumented)
         }
         EXPECT_EQ(code, expected_code.str());
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
-        std::cout << "mnemo=" << expected_mnemonic << "\n";
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
