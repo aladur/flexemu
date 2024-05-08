@@ -117,6 +117,8 @@ bool BEnvironment::GetValue(const char *key, int &value)
         return false;
     }
 
-    return (sscanf(str.c_str(), "%i", &value) == 1);
+    std::stringstream stream{str};
+
+    return static_cast<bool>(stream >> value);
 }
 
