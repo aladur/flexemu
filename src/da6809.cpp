@@ -114,7 +114,7 @@ const char *Da6809::FlexLabel(Word addr)
     return nullptr;
 }
 
-const char *Da6809::IndexedRegister(Byte which)
+const char *Da6809::IndexRegister(Byte which)
 {
     static const std::array<const char *, 4> reg_names{ "X", "Y", "U", "S" };
 
@@ -169,7 +169,7 @@ inline Byte Da6809::D_Direct(const char *mnemo, Byte bytes, std::string &p_code,
 }
 
 
-inline Byte Da6809::D_Immediat(const char *mnemo, Byte bytes,
+inline Byte Da6809::D_Immediate8(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
     const auto offset = *(memory + bytes - 1);
@@ -181,7 +181,7 @@ inline Byte Da6809::D_Immediat(const char *mnemo, Byte bytes,
 }
 
 
-inline Byte Da6809::D_ImmediatL(const char *mnemo, Byte bytes,
+inline Byte Da6809::D_Immediate16(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
     const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
@@ -247,7 +247,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 
         p_code = PrintCode(bytes);
         p_mnemonic = fmt::format("{} {}${:02X},{}", mnemo, s, disp,
-                 IndexedRegister(postbyte >> 5));
+                 IndexRegister(postbyte >> 5));
     }
     else
     {
@@ -256,7 +256,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x00 : // ,R+
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} ,{}+", mnemo,
-                         IndexedRegister(postbyte >> 5));
+                         IndexRegister(postbyte >> 5));
                 break;
 
             case 0x11 : // [,R++]
@@ -267,13 +267,13 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x01 : // ,R++
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {},{}++{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x02 : // ,-R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} ,-{}", mnemo,
-                        IndexedRegister(postbyte >> 5));
+                        IndexRegister(postbyte >> 5));
                 break;
 
             case 0x13 : // [,R--]
@@ -284,7 +284,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x03 : // ,--R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {},--{}{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x14 : // [,R--]
@@ -295,7 +295,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x04 : // ,R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {},{}{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x15 : // [B,R]
@@ -306,7 +306,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x05 : // B,R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {}B,{}{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x16 : // [A,R]
@@ -317,7 +317,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x06 : // A,R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {}A,{}{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x18 : // [,R + 8 Bit Offset]
@@ -341,7 +341,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 p_code = PrintCode(bytes + extrabytes);
                 p_mnemonic = fmt::format("{} {}{}${:02X},{}{}", mnemo,
                          br1, s, offset,
-                         IndexedRegister(postbyte >> 5), br2);
+                         IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x19 : // [,R + 16 Bit Offset]
@@ -356,7 +356,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 s = "";
                 p_mnemonic = fmt::format("{} {}{}${:04X},{}{}", mnemo,
                          br1, s, offset,
-                         IndexedRegister(postbyte >> 5), br2);
+                         IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x1b : // [D,R]
@@ -367,7 +367,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x0b : // D,R
                 p_code = PrintCode(bytes);
                 p_mnemonic = fmt::format("{} {}D,{}{}", mnemo,
-                        br1, IndexedRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x1c : // [,PC + 8 Bit Offset]
@@ -442,7 +442,7 @@ inline Byte Da6809::D_Extended(const char *mnemo, Byte bytes,
     return bytes;
 }
 
-inline Byte Da6809::D_Relative(const char *mnemo, Byte bytes,
+inline Byte Da6809::D_Relative8(const char *mnemo, Byte bytes,
         DWord &p_jumpaddr, std::string &p_code, std::string &p_mnemonic)
 {
     Word disp{};
@@ -473,7 +473,7 @@ inline Byte Da6809::D_Relative(const char *mnemo, Byte bytes,
     return bytes;
 }
 
-inline Byte Da6809::D_RelativeL(const char *mnemo, Byte bytes,
+inline Byte Da6809::D_Relative16(const char *mnemo, Byte bytes,
         DWord &p_jumpaddr, std::string &p_code, std::string &p_mnemonic)
 {
     const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
@@ -503,7 +503,7 @@ inline Byte Da6809::D_RelativeL(const char *mnemo, Byte bytes,
     return bytes;
 }
 
-inline Byte Da6809::D_Register0(const char *mnemo, Byte bytes,
+inline Byte Da6809::D_RegisterRegister(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
     const auto postbyte = *(memory + 1);
@@ -516,7 +516,7 @@ inline Byte Da6809::D_Register0(const char *mnemo, Byte bytes,
     return bytes;
 }
 
-inline Byte Da6809::D_Register1(const char *mnemo, const char *ns_reg,
+inline Byte Da6809::D_RegisterList(const char *mnemo, const char *ns_reg,
         Byte bytes, std::string &p_code, std::string &p_mnemonic)
 {
     const auto postbyte = *(memory + 1);
@@ -547,7 +547,7 @@ inline Byte Da6809::D_Register1(const char *mnemo, const char *ns_reg,
     return bytes;
 }
 
-inline Byte Da6809::D_Page10(InstFlg &p_flags, DWord &p_jumpaddr,
+inline Byte Da6809::D_Page2(InstFlg &p_flags, DWord &p_jumpaddr,
         std::string &p_code, std::string &p_mnemonic)
 {
     const auto code = *(memory + 1);
@@ -556,63 +556,63 @@ inline Byte Da6809::D_Page10(InstFlg &p_flags, DWord &p_jumpaddr,
     {
         case 0x21:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBRN", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBRN", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x22:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBHI", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBHI", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x23:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBLS", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBLS", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x24:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBCC", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBCC", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x25:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBCS", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBCS", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x26:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBNE", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBNE", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x27:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBEQ", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBEQ", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x28:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBVC", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBVC", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x29:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBVS", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBVS", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2a:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBPL", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBPL", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2b:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBMI", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBMI", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2c:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBGE", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBGE", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2d:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBLT", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBLT", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2e:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBGT", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBGT", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2f:
             p_flags |= InstFlg::JumpAddr;
-            return D_RelativeL("LBLE", 4, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBLE", 4, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x3f:
             p_flags |= InstFlg::Sub;
@@ -620,15 +620,15 @@ inline Byte Da6809::D_Page10(InstFlg &p_flags, DWord &p_jumpaddr,
 
         case 0x83:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("CMPD ", 4, p_code, p_mnemonic);
+            return D_Immediate16("CMPD ", 4, p_code, p_mnemonic);
 
         case 0x8c:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("CMPY ", 4, p_code, p_mnemonic);
+            return D_Immediate16("CMPY ", 4, p_code, p_mnemonic);
 
         case 0x8e:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDY  ", 4, p_code, p_mnemonic);
+            return D_Immediate16("LDY  ", 4, p_code, p_mnemonic);
 
         case 0x93:
             return D_Direct("CMPD ", 3, p_code, p_mnemonic);
@@ -672,7 +672,7 @@ inline Byte Da6809::D_Page10(InstFlg &p_flags, DWord &p_jumpaddr,
 
         case 0xce:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDS  ", 4, p_code, p_mnemonic);
+            return D_Immediate16("LDS  ", 4, p_code, p_mnemonic);
 
         case 0xde:
             return D_Direct("LDS  ", 3, p_code, p_mnemonic);
@@ -701,7 +701,7 @@ inline Byte Da6809::D_Page10(InstFlg &p_flags, DWord &p_jumpaddr,
 }
 
 
-inline Byte Da6809::D_Page11(InstFlg &p_flags, std::string &p_code,
+inline Byte Da6809::D_Page3(InstFlg &p_flags, std::string &p_code,
         std::string &p_mnemonic)
 {
     const auto code = *(memory + 1);
@@ -714,12 +714,12 @@ inline Byte Da6809::D_Page11(InstFlg &p_flags, std::string &p_code,
 
         case 0x83:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("CMPU ", 4, p_code,
+            return D_Immediate16("CMPU ", 4, p_code,
                                p_mnemonic);
 
         case 0x8c:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("CMPS ", 4, p_code,
+            return D_Immediate16("CMPS ", 4, p_code,
                                p_mnemonic);
 
         case 0x93:
@@ -836,10 +836,10 @@ int Da6809::Disassemble(
             return D_Direct("CLR  ", 2, p_code, p_mnemonic);
 
         case 0x10:
-            return D_Page10(p_flags, p_jumpaddr, p_code, p_mnemonic);
+            return D_Page2(p_flags, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x11:
-            return D_Page11(p_flags, p_code, p_mnemonic);
+            return D_Page3(p_flags, p_code, p_mnemonic);
 
         case 0x12:
             p_flags |= InstFlg::Noop;
@@ -852,95 +852,95 @@ int Da6809::Disassemble(
         // 0x14, 0x15 is illegal
         case 0x16:
             p_flags |= InstFlg::Jump | InstFlg::JumpAddr;
-            return D_RelativeL("LBRA", 3, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBRA", 3, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x17:
             p_flags |= InstFlg::Sub | InstFlg::LabelAddr;
-            return D_RelativeL("LBSR", 3, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative16("LBSR", 3, p_jumpaddr, p_code, p_mnemonic);
 
         // 0x18 is illegal
         case 0x19:
             return D_Inherent("DAA  ", 1, p_code, p_mnemonic);
 
         case 0x1a:
-            return D_Immediat("ORCC ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ORCC ", 2, p_code, p_mnemonic);
 
         // 0x1b is illegal
         case 0x1c:
-            return D_Immediat("ANDCC", 2, p_code, p_mnemonic);
+            return D_Immediate8("ANDCC", 2, p_code, p_mnemonic);
 
         case 0x1d:
             return D_Inherent("SEX  ", 1, p_code, p_mnemonic);
 
         case 0x1e:
-            return D_Register0("EXG  ", 2, p_code, p_mnemonic);
+            return D_RegisterRegister("EXG  ", 2, p_code, p_mnemonic);
 
         case 0x1f:
-            return D_Register0("TFR  ", 2, p_code, p_mnemonic);
+            return D_RegisterRegister("TFR  ", 2, p_code, p_mnemonic);
 
         case 0x20:
             p_flags |= InstFlg::Jump | InstFlg::JumpAddr;
-            return D_Relative("BRA", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BRA", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x21:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BRN", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BRN", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x22:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BHI", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BHI", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x23:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BLS", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BLS", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x24:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BCC", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BCC", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x25:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BCS", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BCS", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x26:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BNE", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BNE", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x27:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BEQ", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BEQ", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x28:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BVC", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BVC", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x29:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BVS", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BVS", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2a:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BPL", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BPL", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2b:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BMI", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BMI", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2c:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BGE", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BGE", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2d:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BLT", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BLT", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2e:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BGT", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BGT", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x2f:
             p_flags |= InstFlg::JumpAddr;
-            return D_Relative("BLE", 2, p_jumpaddr, p_code, p_mnemonic);
+            return D_Relative8("BLE", 2, p_jumpaddr, p_code, p_mnemonic);
 
         case 0x30:
             return D_Indexed("LEAX ", 2, p_code, p_mnemonic);
@@ -955,16 +955,16 @@ int Da6809::Disassemble(
             return D_Indexed("LEAU ", 2, p_code, p_mnemonic);
 
         case 0x34:
-            return D_Register1("PSHS", "U", 2, p_code, p_mnemonic);
+            return D_RegisterList("PSHS", "U", 2, p_code, p_mnemonic);
 
         case 0x35:
-            return D_Register1("PULS", "U", 2, p_code, p_mnemonic);
+            return D_RegisterList("PULS", "U", 2, p_code, p_mnemonic);
 
         case 0x36:
-            return D_Register1("PSHU", "S", 2, p_code, p_mnemonic);
+            return D_RegisterList("PSHU", "S", 2, p_code, p_mnemonic);
 
         case 0x37:
-            return D_Register1("PULU", "S", 2, p_code, p_mnemonic);
+            return D_RegisterList("PULU", "S", 2, p_code, p_mnemonic);
 
         // 0x38 is illegal
         case 0x39:
@@ -980,7 +980,7 @@ int Da6809::Disassemble(
 
         case 0x3c:
             p_flags |= InstFlg::Jump;
-            return D_Immediat("CWAI ", 2, p_code, p_mnemonic);
+            return D_Immediate8("CWAI ", 2, p_code, p_mnemonic);
 
         case 0x3d:
             return D_Inherent("MUL  ", 1, p_code, p_mnemonic);
@@ -1320,49 +1320,49 @@ int Da6809::Disassemble(
             return D_Extended("CLR  ", 3, p_code, p_mnemonic);
 
         case 0x80:
-            return D_Immediat("SUBA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("SUBA ", 2, p_code, p_mnemonic);
 
         case 0x81:
-            return D_Immediat("CMPA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("CMPA ", 2, p_code, p_mnemonic);
 
         case 0x82:
-            return D_Immediat("SBCA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("SBCA ", 2, p_code, p_mnemonic);
 
         case 0x83:
-            return D_ImmediatL("SUBD ", 3, p_code, p_mnemonic);
+            return D_Immediate16("SUBD ", 3, p_code, p_mnemonic);
 
         case 0x84:
-            return D_Immediat("ANDA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ANDA ", 2, p_code, p_mnemonic);
 
         case 0x85:
-            return D_Immediat("BITA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("BITA ", 2, p_code, p_mnemonic);
 
         case 0x86:
-            return D_Immediat("LDA  ", 2, p_code, p_mnemonic);
+            return D_Immediate8("LDA  ", 2, p_code, p_mnemonic);
 
         // 0x87 is illegal
         case 0x88:
-            return D_Immediat("EORA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("EORA ", 2, p_code, p_mnemonic);
 
         case 0x89:
-            return D_Immediat("ADCA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ADCA ", 2, p_code, p_mnemonic);
 
         case 0x8a:
-            return D_Immediat("ORA  ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ORA  ", 2, p_code, p_mnemonic);
 
         case 0x8b:
-            return D_Immediat("ADDA ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ADDA ", 2, p_code, p_mnemonic);
 
         case 0x8c:
-            return D_ImmediatL("CMPX ", 3, p_code, p_mnemonic);
+            return D_Immediate16("CMPX ", 3, p_code, p_mnemonic);
 
         case 0x8d:
             p_flags |= InstFlg::Sub;
-            return D_Relative("BSR", 2, p_jumpaddr, p_code,
+            return D_Relative8("BSR", 2, p_jumpaddr, p_code,
                                p_mnemonic);
 
         case 0x8e:
-            return D_ImmediatL("LDX  ", 3, p_code, p_mnemonic);
+            return D_Immediate16("LDX  ", 3, p_code, p_mnemonic);
 
         // 0x8f is illegal
 
@@ -1529,48 +1529,48 @@ int Da6809::Disassemble(
             return D_Extended("STX  ", 3, p_code, p_mnemonic);
 
         case 0xc0:
-            return D_Immediat("SUBB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("SUBB ", 2, p_code, p_mnemonic);
 
         case 0xc1:
-            return D_Immediat("CMPB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("CMPB ", 2, p_code, p_mnemonic);
 
         case 0xc2:
-            return D_Immediat("SBCB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("SBCB ", 2, p_code, p_mnemonic);
 
         case 0xc3:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("ADDD ", 3, p_code, p_mnemonic);
+            return D_Immediate16("ADDD ", 3, p_code, p_mnemonic);
 
         case 0xc4:
-            return D_Immediat("ANDB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ANDB ", 2, p_code, p_mnemonic);
 
         case 0xc5:
-            return D_Immediat("BITB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("BITB ", 2, p_code, p_mnemonic);
 
         case 0xc6:
-            return D_Immediat("LDB  ", 2, p_code, p_mnemonic);
+            return D_Immediate8("LDB  ", 2, p_code, p_mnemonic);
 
         // 0xc7 is illegal
         case 0xc8:
-            return D_Immediat("EORB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("EORB ", 2, p_code, p_mnemonic);
 
         case 0xc9:
-            return D_Immediat("ADCB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ADCB ", 2, p_code, p_mnemonic);
 
         case 0xca:
-            return D_Immediat("ORB  ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ORB  ", 2, p_code, p_mnemonic);
 
         case 0xcb:
-            return D_Immediat("ADDB ", 2, p_code, p_mnemonic);
+            return D_Immediate8("ADDB ", 2, p_code, p_mnemonic);
 
         case 0xcc:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDD  ", 3, p_code, p_mnemonic);
+            return D_Immediate16("LDD  ", 3, p_code, p_mnemonic);
 
         // 0xcd is illegal
         case 0xce:
             p_flags |= InstFlg::LabelAddr;
-            return D_ImmediatL("LDU  ", 3, p_code, p_mnemonic);
+            return D_Immediate16("LDU  ", 3, p_code, p_mnemonic);
 
         // 0xcf is illegal
 
