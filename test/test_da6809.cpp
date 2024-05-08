@@ -977,3 +977,34 @@ TEST(test_da6809, dis_undocumented)
     }
 }
 
+TEST(test_da6809, dis_flex_labels)
+{
+    Da6809 da;
+    InstFlg flags{};
+    DWord pc = 0x0000;
+    DWord jumpaddr = 4711U;
+    std::string code;
+    std::string mnemonic;
+    static const std::vector<Byte> memory{
+        0x7E, 0xCD, 0x03, 0xB6, 0xCC, 0x00,
+        0xF7, 0xCC, 0x02, 0xBD, 0xD4, 0x06,
+        0x8E, 0xC8, 0x40,
+    };
+    static const std::vector<const char *> expected_mnemonics{
+        "JMP   WARMS ; $CD03", "LDA   TTYBS ; $CC00",
+        "STB   TTYEOL ; $CC02", "JSR   FMS ; $D406",
+        "LDX   #FCB ; $C840",
+    };
+    auto iexpected_mnemonic = expected_mnemonics.cbegin();
+
+    while (pc < static_cast<Word>(memory.size()))
+    {
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
+                                          jumpaddr, code, mnemonic);
+
+        const std::string expected_mnemonic{*(iexpected_mnemonic++)};
+        EXPECT_EQ(mnemonic, expected_mnemonic);
+        pc += bytes;
+    }
+}
+
