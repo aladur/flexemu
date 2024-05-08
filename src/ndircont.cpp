@@ -391,10 +391,8 @@ std::string NafsDirectoryContainer::get_unix_filename(
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)
     {
-        std::string basename(getstr<>(dir_entry.filename));
-        std::string extension(getstr<>(dir_entry.file_ext));
-        strlower(basename);
-        strlower(extension);
+        auto basename(tolower(getstr<>(dir_entry.filename)));
+        auto extension(tolower(getstr<>(dir_entry.file_ext)));
         return basename + '.' + extension;
     }
 
@@ -936,11 +934,9 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
     auto add_file = [&](const std::string &filename, bool is_random)
     {
-        std::string lc_filename = filename; // lower case filename
+        auto lc_filename(tolower(filename));
         std::string name;
         std::string extension;
-
-        strlower(lc_filename);
 
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
@@ -980,15 +976,12 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
     {
         do
         {
-            std::string filename;
-            std::string path;
-            filename = ConvertToUtf8String(pentry.cFileName);
-            path = directory + PATHSEPARATORSTRING + filename.c_str();
+            auto filename(tolower(ConvertToUtf8String(pentry.cFileName)));
+            auto path = directory + PATHSEPARATORSTRING + filename.c_str();
             if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
             {
                 continue;
             }
-            strlower(filename);
             bool is_random = (pentry.dwFileAttributes &
                               FILE_ATTRIBUTE_HIDDEN) ? true : false;
 

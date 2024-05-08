@@ -26,6 +26,30 @@ TEST(test_misc1, fct_strupper)
     EXPECT_EQ(str, "ABC012");
 }
 
+TEST(test_misc1, fct_tolower)
+{
+    std::string str("abC012");
+    EXPECT_EQ(tolower(str), "abc012");
+    str = "aBC012";
+    EXPECT_EQ(tolower(str), "abc012");
+    EXPECT_EQ(tolower("ABCDe"), "abcde");
+    EXPECT_EQ(tolower("XYz"), "xyz");
+    str = "MNOpqr123";
+    EXPECT_EQ(tolower(std::move(str)), "mnopqr123");
+}
+
+TEST(test_misc1, fct_toupper)
+{
+    std::string str("abC012");
+    EXPECT_EQ(toupper(str), "ABC012");
+    str = "aBC012";
+    EXPECT_EQ(toupper(str), "ABC012");
+    EXPECT_EQ(toupper("ABCDe"), "ABCDE");
+    EXPECT_EQ(toupper("XYz"), "XYZ");
+    str = "MNOpqr123";
+    EXPECT_EQ(toupper(std::move(str)), "MNOPQR123");
+}
+
 TEST(test_misc1, fct_getstr)
 {
     // Array NUL terminated.

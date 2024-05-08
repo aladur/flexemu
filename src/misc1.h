@@ -297,8 +297,14 @@ extern const char * const RANDOM_FILE_LIST;
 
 #ifdef __cplusplus
     extern int copyFile(const char *srcPath, const char *destPath);
+    extern char tolower_value(char ch);
+    extern char &tolower_ref(char &ch);
     extern void strlower(std::string& str);
     extern void strupper(std::string& str);
+    extern std::string tolower(const std::string& src);
+    extern std::string tolower(std::string&& src);
+    extern std::string toupper(const std::string& src);
+    extern std::string toupper(std::string&& src);
     extern std::string binstr(Byte x);
     extern std::string hexstr(Byte x);
     extern std::string hexstr(Word x);

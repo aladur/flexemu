@@ -41,6 +41,8 @@
 #include <array>
 #include <string>
 #include <fstream>
+#include <algorithm>
+#include <utility>
 
 
 #ifdef _WIN32
@@ -71,11 +73,47 @@ int copyFile(const char *srcPath, const char *destPath)
     return 1;
 }
 
+char tolower_value(char ch)
+ {
+     if (ch >= 'A' && ch <= 'Z')
+     {
+         return static_cast<char>(ch + ('z' - 'Z'));
+     }
+     return ch;
+ }
+
+ char &tolower_ref(char &ch)
+ {
+     if (ch >= 'A' && ch <= 'Z')
+     {
+         ch = static_cast<char>(ch + ('z' - 'Z'));
+     }
+     return ch;
+ }
+
+char toupper_value(char ch)
+ {
+     if (ch >= 'a' && ch <= 'z')
+     {
+         return static_cast<char>(ch - ('z' - 'Z'));
+     }
+     return ch;
+ }
+
+ char &toupper_ref(char &ch)
+ {
+     if (ch >= 'a' && ch <= 'z')
+     {
+         ch = static_cast<char>(ch - ('z' - 'Z'));
+     }
+     return ch;
+ }
+
 void strlower(std::string& str)
 {
     for (auto &ch : str)
     {
-        ch = static_cast<char>(tolower(ch));
+        tolower_ref(ch);
     }
 }
 
@@ -83,8 +121,44 @@ void strupper(std::string& str)
 {
     for (auto &ch : str)
     {
-        ch = static_cast<char>(toupper(ch));
+        toupper_ref(ch);
     }
+}
+
+std::string tolower(const std::string& src)
+{
+    std::string result;
+    std::transform(src.cbegin(), src.cend(), std::back_inserter(result),
+            tolower_value);
+
+    return result;
+}
+
+std::string tolower(std::string&& src)
+{
+    std::string result = std::move(src);
+
+    std::for_each(result.begin(), result.end(), tolower_ref);
+
+    return result;
+}
+
+std::string toupper(const std::string& src)
+{
+    std::string result;
+    std::transform(src.cbegin(), src.cend(), std::back_inserter(result),
+            toupper_value);
+
+    return result;
+}
+
+std::string toupper(std::string&& src)
+{
+    std::string result = std::move(src);
+
+    std::for_each(result.begin(), result.end(), toupper_ref);
+
+    return result;
 }
 
 // Base 2 and Base 16 conversion functions

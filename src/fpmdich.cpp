@@ -429,8 +429,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
 
     for (auto &index : selectedRows)
     {
-        auto filename = model->GetFilename(index).toStdString();
-        strlower(filename);
+        auto filename(tolower(model->GetFilename(index).toStdString()));
 
         try
         {

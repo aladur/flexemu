@@ -317,9 +317,8 @@ int DirectoryContainer::GetContainerType() const
 FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
 {
     FlexFileBuffer buffer;
-    std::string filePath(fileName);
+    auto filePath(tolower(std::string(fileName)));
 
-    strlower(filePath);
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
     if (!buffer.ReadFromFile(filePath.c_str()))
@@ -398,9 +397,8 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
     struct utimbuf timebuf{};
     struct tm file_time{};
     std::string filePath;
-    std::string lowerFileName(fileName);
+    auto lowerFileName(tolower(std::string(fileName)));
 
-    strlower(lowerFileName);
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
@@ -449,9 +447,8 @@ bool DirectoryContainer::SetAttributes(const char *wildcard, Byte setMask,
 #endif
 #ifdef UNIX
         struct stat sbuf{};
-        std::string lowerFileName(wildcard);
+        auto lowerFileName(tolower(std::string(wildcard)));
 
-        strlower(lowerFileName);
         auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
         if (stat(filePath.c_str(), &sbuf) == 0)
@@ -485,9 +482,8 @@ bool DirectoryContainer::SetRandom(const char *fileName)
 #endif
 #ifdef UNIX
     struct stat sbuf{};
-    std::string lowerFileName(fileName);
+    auto lowerFileName(tolower(std::string(fileName)));
 
-    strlower(lowerFileName);
     auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
     if (stat(filePath.c_str(), &sbuf) == 0)

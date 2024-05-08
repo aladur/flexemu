@@ -254,8 +254,7 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
         return false;
     }
 
-    filePath = dirEntry.GetTotalFileName();
-    strlower(filePath);
+    filePath = tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
 
@@ -317,13 +316,12 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
     }
 
     std::string src(dirEntry.GetTotalFileName());
-    std::string dst(newName);
+    // When renaming always prefer lowercase filenames
+    auto dst(tolower(newName));
     FlexDirEntry de;
 #ifdef UNIX
     strlower(src);
 #endif
-    // When renaming always prefer lowercase filenames
-    strlower(dst);
 
     // prevent overwriting of an existing file
     if (base->FindFile(dst.c_str(), de))
@@ -380,8 +378,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
         return false;
     }
 
-    filePath = dirEntry.GetTotalFileName();
-    strlower(filePath);
+    filePath = tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (stat(filePath.c_str(), &sbuf) == 0)
@@ -434,8 +431,7 @@ bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
 #ifdef UNIX
     struct stat sbuf{};
 
-    filePath = dirEntry.GetTotalFileName();
-    strlower(filePath);
+    filePath = tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (!stat(filePath.c_str(), &sbuf))
