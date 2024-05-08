@@ -22,6 +22,7 @@
 #ifndef EFILESIZE_INCLUDED
 #define EFILESIZE_INCLUDED
 
+#include <cstdint>
 
 // There are differnt choices to handle the file size
 enum class FileSizeType : uint8_t
