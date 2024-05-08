@@ -62,6 +62,14 @@ private:
         WaitForCrc,
     };
 
+    // Indices for idAddressMark
+    enum Id : uint8_t
+    {
+        Track,
+        Side,
+        Sector,
+        SizeCode,
+    };
 
     // Internal registers:
     //
@@ -91,7 +99,7 @@ private:
     Word offset{}; // offset when reading or writing a track
     // idAddressMark contains track, side, sector, sizecode.
     // It is used when formatting a track.
-    std::array<Byte, 4> idAddressMark{};
+    std::array<Byte, sizeof(Id)> idAddressMark{};
 
     const struct sOptions &options;
 

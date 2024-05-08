@@ -571,21 +571,23 @@ void E2floppy::writeByteInTrack(Word &index)
             if (getDataRegister() == DATA_ADDRESS_MARK)
             {
                 writeTrackState = WriteTrackState::WriteData;
-                sizecode = idAddressMark[3] & 0x03;
+                sizecode = idAddressMark[Id::SizeCode] & 0x03;
                 offset = ::getBytesPerSector(sizecode);
                 index = offset + 2;
             }
             break;
 
         case WriteTrackState::WriteData:
-            sizecode = idAddressMark[3] & 0x03;
+            sizecode = idAddressMark[Id::SizeCode] & 0x03;
             i = ::getBytesPerSector(sizecode) - offset;
             sector_buffer[i] = getDataRegister();
             if (--offset == 0U)
             {
                 pfs->FormatSector(sector_buffer.data(),
-                        idAddressMark[0], idAddressMark[2],
-                        idAddressMark[1], idAddressMark[3] & 0x03);
+                        idAddressMark[Id::Track],
+                        idAddressMark[Id::Side],
+                        idAddressMark[Id::Sector],
+                        idAddressMark[Id::SizeCode] & 0x03);
 
                 writeTrackState = WriteTrackState::WaitForCrc;
                 index = 2U;
