@@ -45,7 +45,7 @@ jobs:
       - name: Configure
         run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
       - name: Make
-        run: make -j3
+        run: make -j4
 
       - name: Install
         run: make install
@@ -54,7 +54,7 @@ jobs:
         run: |
           otool -L src/flexemu
           otool -L src/flexplorer
-          make check && cat test/unittests.log
+          make -j4 check && cat test/unittests.log
           src/test
           src/dsktool -l disks/games.dsk
           src/dsktool -f new.dsk -S 80dsdd

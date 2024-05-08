@@ -23,6 +23,8 @@ jobs:
           VER=`$CXX --version | sed -nE $CCVER`
           echo "C++ compiler version:" $VER
           echo "Number of cores: " `grep -c processor /proc/cpuinfo`
+          echo `lscpu | grep "^CPU(s):"`
+          echo `lscpu | grep "Thread(s)"`
           echo "Qt version:" $QT_SELECT
 
       - name: Checkout
@@ -39,7 +41,7 @@ jobs:
         run: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc || cat config.log
 
       - name: Test distribution
-        run: make distcheck >distcheck.log 2>distcheck_err.log
+        run: make -j8 distcheck >distcheck.log 2>distcheck_err.log
 
       - name: Create artifacts
         if: always()

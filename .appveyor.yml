@@ -30,7 +30,7 @@ configuration:
 install:
   # Create links to build all platform/configuration combinations with the
   # same *.vcxproj project(s).
-  - cmd: if %QTMAJOR%==6 set QTVERSION=6.5.3
+  - cmd: if %QTMAJOR%==6 set QTVERSION=6.7.0
   - cmd: if %QTMAJOR%==5 set QTVERSION=5.15.2
   - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
   - cmd: mkdir "%QTDIR%"
@@ -46,14 +46,14 @@ install:
       CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
       QTVER='s|([A-Za-z0-9.>/_[:space:]:-]+)([0-9]+\.[0-9]+\.[0-9]+).*|\2|p'
       if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
-          CC=gcc-5
-          CXX=g++-5
           # Install Qt5 from apt packages.
           sudo apt-get update
           sudo apt-get install qt5-default libqt5x11extras5-dev -y
           VER=`ls -l /usr/lib/x86_64-linux-gnu/libQt5Core.so | sed -nE $QTVER`
       fi
       echo ==================== Build on $APPVEYOR_BUILD_WORKER_IMAGE ====================
+      echo `lscpu | grep "^CPU(s):"`
+      echo `lscpu | grep "Thread(s)"`
       echo "Qt version:" $VER
       VER=`$CC --version | sed -nE $CCVER`
       echo "C compiler version:" $VER
@@ -84,13 +84,13 @@ for:
     before_build:
       - sh: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
     build_script:
-      - make -j4
+      - make -j5
     after_build:
       - make install
     test_script:
       - $LDD src/flexemu
       - $LDD src/flexplorer
-      - make check
+      - make -j5 check && cat test/unittests.log
       - src/test
       - src/dsktool -l disks/games.dsk
       - src/dsktool -f new.dsk -S 80dsdd
