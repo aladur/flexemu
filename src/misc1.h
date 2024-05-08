@@ -145,7 +145,6 @@
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
-    #define vsnprintf _vsnprintf
     #define stricmp _stricmp
     #define access _access
     #define unlink _unlink
