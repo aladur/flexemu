@@ -115,7 +115,7 @@ s_cpu_logfile LogfileSettingsUi::GetData() const
     settings.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
 
     settings.logCycleCount = c_logCycleCount->isChecked();
-    settings.logFileName = e_logFilename->text().toUtf8().data();
+    settings.logFileName = e_logFilename->text().toStdString();
 
     settings.logRegisters = LogRegister::NONE;
     auto logRegister = LogRegister::CC;

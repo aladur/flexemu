@@ -105,7 +105,7 @@ QString FlexplorerTableModel::GetFileType(const FlexDirEntry &dirEntry)
     {
         if (fileType.fileExt == fileExtension)
         {
-            return tr(fileType.fileType.toUtf8().data());
+            return fileType.fileType;
         }
     }
 
@@ -189,7 +189,7 @@ QString FlexplorerTableModel::GetPath() const
 
 QString FlexplorerTableModel::GetUserFriendlyPath() const
 {
-    return getFileName(path.toUtf8().data()).c_str();
+    return getFileName(path.toStdString()).c_str();
 }
 
 bool FlexplorerTableModel::IsWriteProtected() const
@@ -325,7 +325,7 @@ bool FlexplorerTableModel::GetAttributesString(const QModelIndex &index,
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toUtf8().data());
+        FileContainerIterator iter(filename.toStdString().c_str());
 
         iter = container->begin();
         if (iter != container->end())
@@ -344,7 +344,7 @@ bool FlexplorerTableModel::GetAttributes(const QModelIndex &index,
     if (index.isValid())
     {
         const auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toUtf8().data());
+        FileContainerIterator iter(filename.toStdString().c_str());
 
         iter = container->begin();
         if (iter != container->end())
@@ -413,7 +413,7 @@ void FlexplorerTableModel::DeleteFile(const QModelIndex &index)
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        container->DeleteFile(filename.toUtf8().data());
+        container->DeleteFile(filename.toStdString().c_str());
         removeRows(index.row(), 1);
     }
 }
@@ -430,8 +430,8 @@ void FlexplorerTableModel::RenameFile(const QModelIndex &index,
 
         try
         {
-            container->RenameFile(oldFilename.toUtf8().data(),
-                                  newFilename.toUtf8().data());
+            container->RenameFile(oldFilename.toStdString().c_str(),
+                                  newFilename.toStdString().c_str());
         }
         catch (FlexException &ex)
         {
@@ -460,7 +460,7 @@ FlexFileBuffer FlexplorerTableModel::CopyFile(const QModelIndex &index) const
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        return container->ReadToBuffer(filename.toUtf8().data());
+        return container->ReadToBuffer(filename.toStdString().c_str());
     }
 
     return {};
@@ -485,7 +485,7 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
 
             try
             {
-                container->SetAttributes(filename.toUtf8().data(),
+                container->SetAttributes(filename.toStdString().c_str(),
                                          setMask, clearMask);
             }
             catch (FlexException &ex)

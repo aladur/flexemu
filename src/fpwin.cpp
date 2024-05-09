@@ -116,7 +116,7 @@ void FLEXplorer::NewContainer()
             if (ui.GetFormat() == TYPE_MDCR_CONTAINER)
             {
                 MiniDcrTapePtr mdcr = MiniDcrTape::Create(
-                                      ui.GetPath().toUtf8().data());
+                                      ui.GetPath().toStdString().c_str());
                 // DCR containers can be created but not displayed in
                 // FLEXplorer, so immediately return.
                 return;
@@ -1130,7 +1130,7 @@ void FLEXplorer::dropEvent(QDropEvent *event)
         {
             bool isLast = (i + 1 == supportedFiles.size());
             const auto &path = supportedFiles.at(i);
-            if (!OpenContainerForPath(path.toUtf8().data(), isLast))
+            if (!OpenContainerForPath(path, isLast))
             {
                 break;
             }

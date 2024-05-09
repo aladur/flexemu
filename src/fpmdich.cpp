@@ -225,7 +225,7 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
         }
 
         const auto filePath = QDir::toNativeSeparators(path);
-        if (!buffer.ReadFromFile(filePath.toUtf8().data()))
+        if (!buffer.ReadFromFile(filePath.toStdString().c_str()))
         {
             auto msg = tr("Error reading from\n%1\nInjection aborted.");
             msg = msg.arg(filePath);
@@ -394,10 +394,10 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            if (!buffer.WriteToFile(targetPath.toUtf8().data()))
+            if (!buffer.WriteToFile(targetPath.toStdString().c_str()))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
-                                    targetFilename.toUtf8().data());
+                                    targetFilename.toStdString());
             }
 
             ++count;
@@ -464,7 +464,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             }
 
             tempPath += PATHSEPARATORSTRING +
-                        getFileName(GetPath().toUtf8().data());
+                        getFileName(GetPath().toStdString());
             if (!BDirectory::Exists(tempPath))
             {
                 if (!BDirectory::Create(tempPath))
@@ -665,7 +665,7 @@ void FlexplorerMdiChild::Info()
 void FlexplorerMdiChild::SetupModel(const QString &path)
 {
     model = std::make_unique<FlexplorerTableModel>(
-                path.toUtf8().data(), options, this);
+                path.toStdString().c_str(), options, this);
     model->Initialize();
     setModel(model.get());
 }
@@ -805,7 +805,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
         return nullptr;
     }
 
-    FlexDnDFiles files(GetPath().toUtf8().data(), getHostName());
+    FlexDnDFiles files(GetPath().toStdString(), getHostName());
 
     for (const auto &index : selectedRows)
     {
@@ -914,7 +914,7 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
     files.ReadDataFrom(reinterpret_cast<Byte *>(itemData.data()));
 
     if (getHostName() == files.GetDnsHostName() &&
-            isPathsEqual(GetPath().toUtf8().data(), files.GetPath()))
+            isPathsEqual(GetPath().toStdString(), files.GetPath()))
     {
         return count;
     }

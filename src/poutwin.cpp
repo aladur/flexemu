@@ -298,7 +298,7 @@ void PrintOutputWindow::OnFontChanged(const QFont &newFont) const
 {
     auto font = fontComboBox->currentFont();
 
-    options.printFont = std::string(font.toString().toUtf8().data());
+    options.printFont = font.toString().toStdString();
     SetTextBrowserFont(newFont);
 }
 
@@ -306,7 +306,7 @@ void PrintOutputWindow::OnHideWindow()
 {
     auto geometry = ::GetWindowGeometry(*this);
 
-    options.printOutputWindowGeometry = std::string(geometry.toUtf8().data());
+    options.printOutputWindowGeometry = geometry.toStdString();
 
     hide();
 }
@@ -324,8 +324,7 @@ void PrintOutputWindow::OnLandscapeClicked(bool checked)
         orientation = QPageLayout::Landscape;
         previewPrinter->setPageOrientation(orientation);
         auto index = orientationValues.indexOf(orientation);
-        options.printOrientation =
-            std::string(orientationKeys[index].toUtf8().data());
+        options.printOrientation = orientationKeys[index].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -461,8 +460,7 @@ void PrintOutputWindow::OnOpenPrintPreview()
     {
         auto geometry = ::GetWindowGeometry(*printPreviewDialog);
 
-        options.printPreviewDialogGeometry =
-            std::string(geometry.toUtf8().data());
+        options.printPreviewDialogGeometry = geometry.toStdString();
         SavePrintConfig();
     }
 
@@ -490,7 +488,7 @@ void PrintOutputWindow::OnPageSizeChanged(int index)
         pageSizeId = pageSizeValues[index];
         previewPrinter->setPageSize(QPageSize(pageSizeId));
         auto idx = pageSizeValues.indexOf(pageSizeId);
-        options.printPageSize = std::string(pageSizeKeys[idx].toUtf8().data());
+        options.printPageSize = pageSizeKeys[idx].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -507,8 +505,7 @@ void PrintOutputWindow::OnPortraitClicked(bool checked)
         orientation = QPageLayout::Portrait;
         previewPrinter->setPageOrientation(orientation);
         auto index = orientationValues.indexOf(orientation);
-        options.printOrientation =
-            std::string(orientationKeys[index].toUtf8().data());
+        options.printOrientation = orientationKeys[index].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -587,7 +584,7 @@ void PrintOutputWindow::OnSaveAsHtml()
         if (!file.open(mode))
         {
             auto message = QString("Error opening file ") +
-                file.fileName().toUtf8().data() + " for writing";
+                file.fileName() + " for writing";
             QMessageBox::warning(this, "Warning", message);
             return;
         }
@@ -618,7 +615,7 @@ void PrintOutputWindow::OnSaveAsMarkdown()
         if (!file.open(mode))
         {
             auto message = QString("Error opening file ") +
-                file.fileName().toUtf8().data() + " for writing";
+                file.fileName() + " for writing";
             QMessageBox::warning(this, "Warning", message);
             return;
         }
@@ -649,7 +646,7 @@ void PrintOutputWindow::OnSaveAsPlainText()
         if (!file.open(mode))
         {
             auto message = QString("Error opening file ") +
-                file.fileName().toUtf8().data() + " for writing";
+                file.fileName() + " for writing";
             QMessageBox::warning(this, "Warning", message);
             return;
         }
@@ -710,7 +707,7 @@ void PrintOutputWindow::OnUnitChanged(int index)
         unit = unitValues[index];
         UpdateMarginWidgets();
         UpdateSpinBoxUnit(unitSuffix[index]);
-        options.printUnit = std::string(unitKeys[index].toUtf8().data());
+        options.printUnit = unitKeys[index].toStdString();
         UpdatePageWidthAndHeightWidgets();
     }
 }
@@ -1207,7 +1204,7 @@ void PrintOutputWindow::write_char_serial(Byte value)
 std::string PrintOutputWindow::CreatePrintConfigKey() const
 {
     auto font = fontComboBox->currentFont();
-    auto fontKey = std::string(font.toString().toUtf8().data());
+    auto fontKey = font.toString().toStdString();
     fontKey.erase(fontKey.find_first_of(','));
     auto end = fontKey.end();
     fontKey.erase(std::remove(fontKey.begin(), end, ' '), end);
@@ -1218,8 +1215,7 @@ std::string PrintOutputWindow::CreatePrintConfigKey() const
     index = orientationValues.indexOf(orientation);
     const auto& orientationKey = orientationKeys[index];
 
-    return std::string((orientationKey + pageSizeKey).toUtf8().data()) +
-        fontKey;
+    return (orientationKey + pageSizeKey).toStdString() + fontKey;
 }
 
 bool PrintOutputWindow::HasSerialInput() const
