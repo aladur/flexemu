@@ -10,6 +10,7 @@ TEST(test_benv, get_set_int)
     EXPECT_TRUE(BEnvironment::SetValue("FLEXEMU_TEST_VALUE", 4711));
     EXPECT_TRUE(BEnvironment::SetValue("flexemu_test_value", 3722));
     EXPECT_TRUE(BEnvironment::SetValue("FlexemuTestValue", 5522));
+    EXPECT_TRUE(BEnvironment::SetValue("FlexemuNoIntValue", "TEST"));
     EXPECT_FALSE(BEnvironment::SetValue("FLEXEMU_=_NOT_ALLOWED", 0));
 
     EXPECT_TRUE(BEnvironment::GetValue("FLEXEMU_TEST_VALUE", value));
@@ -18,10 +19,12 @@ TEST(test_benv, get_set_int)
     EXPECT_EQ(value, 3722);
     EXPECT_TRUE(BEnvironment::GetValue("FlexemuTestValue", value));
     EXPECT_EQ(value, 5522);
+    EXPECT_FALSE(BEnvironment::GetValue("FlexemuNoIntValue", value));
 
     BEnvironment::RemoveKey("FLEXEMU_TEST_VALUE");
     BEnvironment::RemoveKey("flexemu_test_value");
     BEnvironment::RemoveKey("FlexemuTestValue");
+    BEnvironment::RemoveKey("FlexemuNoIntValue");
 
     EXPECT_FALSE(BEnvironment::GetValue("FLEXEMU_TEST_VALUE", value));
     EXPECT_FALSE(BEnvironment::GetValue("flexemu_test_value", value));
