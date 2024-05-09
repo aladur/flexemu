@@ -1704,28 +1704,32 @@ std::vector<Byte> FlexFileContainer::GetJvcFileHeader() const
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
             }
-            // fall through
+            FALLTHROUGH;
+
         case 4:
             temp = header[3]; // first sector ID
             if (temp != 1U)
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
             }
-            // fall through
+            FALLTHROUGH;
+
         case 3:
             temp = header[2]; // sector size count
             if (temp != 1U)
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
             }
-            // fall through
+            FALLTHROUGH;
+
         case 2:
             temp = header[1]; // side count
             if (temp < 1U || temp > 2U)
             {
                 throw FlexException(FERR_INVALID_JVC_HEADER, fp.GetPath());
             }
-            // fall through
+            FALLTHROUGH;
+
         case 1:
             temp = header[0]; // sectors per track
             if (temp < 5U)

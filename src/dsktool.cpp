@@ -1425,7 +1425,8 @@ int main(int argc, char *argv[])
 
             case 'L':
                 dsk_files.push_back(dsk_file);
-                // fall through
+                FALLTHROUGH;
+
             case 'l':
                 return ListDirectoryOfDskFiles(dsk_files, regexs,
                                                fileTimeAccess);
@@ -1439,7 +1440,8 @@ int main(int argc, char *argv[])
 
             case 'x':
                 dsk_files.push_back(dsk_file);
-                // fall through
+                FALLTHROUGH;
+
             case 'X':
                 return ExtractDskFiles(target_dir, verbose, convert_text,
                                        default_answer, dsk_files, regexs,

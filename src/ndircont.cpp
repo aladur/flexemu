@@ -1774,7 +1774,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                     fclose(fp);
                 }
             }
-            // intentionally fall through.
+            FALLTHROUGH;
 
         case SectorType::NewFile:
         case SectorType::File:
