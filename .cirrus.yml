@@ -6,7 +6,13 @@ build_task:
   env:
     CIRRUS_CLONE_SUBMODULES: true
 
-  install_pkg_script: pkg install -y libtool qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
+  context_script:
+    - sysctl -a | egrep -i 'hw.machine|hw.model|hw.ncpu|threads_per_core'
+    - clang --version
+    - clang++ --version
+  install_pkg_script:
+    - pkg install -y libtool qt5-qmake qt5-buildtools qt5-core qt5-gui qt5-widgets qt5-x11extras qt5-printsupport
+    - ls -l /usr/local/lib/qt5/libQt5Core.so*
 
   configure_script: ./configure --prefix=$HOME/usr --sysconfdir=$HOME/etc
 
@@ -17,7 +23,7 @@ build_task:
   test_script:
     - ldd src/flexemu
     - ldd src/flexplorer
-    - make check
+    - make check && cat test/unittests.log
     - src/test
     - src/dsktool -l disks/games.dsk
     - src/dsktool -f new.dsk -S 80dsdd
