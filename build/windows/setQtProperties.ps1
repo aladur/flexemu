@@ -21,5 +21,5 @@ $major, $null, $null = $version -split "\."
 Foreach-Object {$_ -replace 'QTDIRPLACEHOLDER',$Env:QTDIR}  |
 Foreach-Object {$_ -replace 'QTVERSIONPLACEHOLDER',$version}  |
 Foreach-Object {$_ -replace 'QTMAJORPLACEHOLDER',$major}  |
-Out-File $outFile
+Out-File -Encoding "UTF8" $outFile
 

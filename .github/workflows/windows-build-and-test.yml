@@ -1,0 +1,154 @@
+name: flexemu-windows-build-and-test
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        os: [ windows-2019 ]
+        qt-version: [ 5, 6 ]
+      fail-fast: false
+    env:
+      QTDIR: ${{ github.workspace }}\Qt
+
+    runs-on: ${{ matrix.os }}
+    environment: development
+    steps:
+
+      - name: Set Qt5 Version
+        if: ${{ matrix.qt-version == '5' }}
+        shell: cmd
+        run: printf "QT_VERSION=${{ vars.QT5_VERSION }}\n" >> %GITHUB_ENV%
+
+      - name: Set Qt6 Version
+        if: ${{ matrix.qt-version == '6' }}
+        shell: cmd
+        run: printf "QT_VERSION=${{ vars.QT6_VERSION }}\n" >> %GITHUB_ENV%
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+
+      - name: Install Qt5 Win32
+        if: ${{ matrix.qt-version == 5 }}
+        uses: jurplel/install-qt-action@v3
+        with:
+          version:      '${{ vars.QT5_VERSION }}'
+          host:         'windows'
+          target:       'desktop'
+          arch:         'win32_msvc2019'
+          dir:          '${{ github.workspace }}'
+          archives:     'qtbase qtwinextras'
+          setup-python: 'false'
+
+      - name: Install Qt5 x64
+        if: ${{ matrix.qt-version == 5 }}
+        uses: jurplel/install-qt-action@v3
+        with:
+          version:      '${{ vars.QT5_VERSION }}'
+          host:         'windows'
+          target:       'desktop'
+          arch:         'win64_msvc2019_64'
+          dir:          '${{ github.workspace }}'
+          archives:     'qtbase qtwinextras'
+          setup-python: 'false'
+
+      - name: Install Qt6 x64
+        if: ${{ matrix.qt-version == 6 }}
+        uses: jurplel/install-qt-action@v3
+        with:
+          version:      '${{ vars.QT6_VERSION }}'
+          host:         'windows'
+          target:       'desktop'
+          arch:         'win64_msvc2019_64'
+          dir:          '${{ github.workspace }}'
+          archives:     'qtbase'
+          setup-python: 'false'
+
+      - name: Context
+        shell: cmd
+        run: |
+          echo OS         ${{ matrix.os }}
+          echo Qt major   ${{ matrix.qt-version }}
+          echo Qt version ${{ env.QT_VERSION }}
+          echo Qt dir     %QTDIR%
+
+      - name: Configure project for Visual Studio
+        shell: bash
+        run: |
+          cd build/windows
+          echo VS_VERSION=2019 > vsversion.ini
+          echo VS_TYPE=Enterprise >> vsversion.ini
+
+      - name: Configure Qt
+        shell: cmd
+        run: |
+          IF "${{ matrix.qt-version }}"=="5" (
+           mklink /d "%QTDIR%\Win32" %QTDIR%\${{ env.QT_VERSION }}\msvc2019
+          )
+          mklink /d "%QTDIR%\x64" %QTDIR%\${{ env.QT_VERSION }}\msvc2019_64
+          powershell.exe .\build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version ${{ env.QT_VERSION }}
+
+      - name: Build
+        shell: bash
+        run: |
+          cd build/windows
+          ./rebuild_flexemu_all_and_copy_libs.sh
+
+      - name: Qt x64 Directory Artifact
+        shell: cmd
+        run: |
+          mkdir result
+          dir /s %QTDIR%\x64 >result/qt${{ env.QT_VERSION }}-x64-dirlist.log
+
+      - name: Qt5 Win32 Directory Artifact
+        if: ${{ matrix.qt-version == 5 }}
+        shell: cmd
+        run: |
+          dir /s %QTDIR%\Win32 >result/qt${{ env.QT_VERSION }}-win32-dirlist.log
+
+      - name: Test Win32
+        if: ${{ matrix.qt-version == 5 }}
+        shell: cmd
+        run: |
+          echo ===== Release =====
+          set BINPATH=bin\Qt${{ env.QT_VERSION }}\Win32\Release
+          %BINPATH%\dsktool.exe -l disks\games.dsk
+          %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk
+          %BINPATH%\dsktool.exe -l new_r.dsk
+          echo ===== Debug =====
+          set BINPATH=bin\Qt${{ env.QT_VERSION }}\Win32\Debug
+          %BINPATH%\dsktool.exe -l disks\games.dsk
+          %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk
+          %BINPATH%\dsktool.exe -l new_d.dsk
+
+      - name: Test x64 Release
+        shell: cmd
+        run: |
+          echo ===== Release =====
+          set BINPATH=bin\Qt${{ env.QT_VERSION }}\x64\Release
+          %BINPATH%\dsktool.exe -l disks\games.dsk
+          %BINPATH%\dsktool.exe -f new_r.dsk -S 80dsdd -y
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_r.dsk
+          %BINPATH%\dsktool.exe -l new_r.dsk
+          echo ===== Debug =====
+          set BINPATH=bin\Qt${{ env.QT_VERSION }}\x64\Debug
+          %BINPATH%\dsktool.exe -l disks\games.dsk
+          %BINPATH%\dsktool.exe -f new_d.dsk -S 80dsdd -y
+          %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk
+          %BINPATH%\dsktool.exe -l new_d.dsk
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flexemu-windows-build-result-${{ matrix.qt-version }}
+          path: result
+          if-no-files-found: error

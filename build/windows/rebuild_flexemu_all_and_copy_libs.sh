@@ -70,7 +70,7 @@ if [ ! -f $propsfile ]; then
 fi
 QTDIR=`sed -ne "s/<QTDIR>\(.*\)<\/QTDIR>/\1/p" $propsfile`
 QTDIR=$( as_mingw_path "$QTDIR")
-qtversion=`echo $QTDIR | sed -e "s/.*\([56]\.[0-9]\+\.[0-9]\+\)$/\1/"`
+qtversion=`sed -ne "s/ *<QTVERSION>\(.*\)<\/QTVERSION>/\1/p" $propsfile`
 qtmaversion=`echo $qtversion | sed -e "s/\([56]\).*/\1/"`
 
 temp=$QTDIR/x64/bin
