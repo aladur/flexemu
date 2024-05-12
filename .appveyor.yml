@@ -1,44 +1,17 @@
 # Appveyor build script for flexemu.
 #
 # Supported builds:
-# - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-5/g++-5)
-# - Visual Studio 2019 Win32 Debug with Qt5
-# - Visual Studio 2019 Win32 Release with Qt5
-# - Visual Studio 2019 x64 Debug with Qt5
-# - Visual Studio 2019 x64 Release with Qt5
-# - Visual Studio 2019 x64 Debug with Qt6
-# - Visual Studio 2019 x64 Release with Qt6
+# - Ubuntu1604 x64 Release with Qt5 (Qt apt package and gcc-7/g++-7)
 
 image:
   - Ubuntu1604
-  - Visual Studio 2019
 
 environment:
   APPVEYOR_YML_DISABLE_PS_LINUX: true
   matrix:
     - QTMAJOR: 5
-    - QTMAJOR: 6
-
-platform:
-  - Win32
-  - x64
-
-configuration:
-  - Debug
-  - Release
 
 install:
-  # Create links to build all platform/configuration combinations with the
-  # same *.vcxproj project(s).
-  - cmd: if %QTMAJOR%==6 set QTVERSION=6.7.0
-  - cmd: if %QTMAJOR%==5 set QTVERSION=5.15.2
-  - cmd: set QTDIR=%TEMP%\Qt%QTMAJOR%
-  - cmd: mkdir "%QTDIR%"
-  - cmd: mklink /d "%QTDIR%\Win32" C:\Qt\%QTVERSION%\msvc2019
-  - cmd: mklink /d "%QTDIR%\x64" C:\Qt\%QTVERSION%\msvc2019_64
-  # Create properties file defining the Qt dependencies.
-  - cmd: powershell.exe build\windows\setQtProperties.ps1 -inFile src\msvcQtPath.props.in -version %QTVERSION%
-  - cmd: git submodule update --init --recursive
   - sh: |
       CC=gcc
       CXX=g++
@@ -46,6 +19,8 @@ install:
       CCVER='/[^0-9]([0-9]+\.[0-9]+\.[0-9]+)/p;q'
       QTVER='s|([A-Za-z0-9.>/_[:space:]:-]+)([0-9]+\.[0-9]+\.[0-9]+).*|\2|p'
       if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu1604" ]; then
+          CC=gcc-7
+          CXX=g++7
           # Install Qt5 from apt packages.
           sudo apt-get update
           sudo apt-get install qt5-default libqt5x11extras5-dev -y
@@ -60,21 +35,6 @@ install:
       VER=`$CXX --version | sed -nE $CCVER`
       echo "C++ compiler version:" $VER
       git submodule update --init --recursive
-
-matrix:
-  exclude:
-    # Qt6 only supports x64 builds.
-    - platform: Win32
-      QTMAJOR: 6
-    # On Linux only do a release build.
-    - configuration: Debug
-      image: Ubuntu1604
-    # On Linux only do a x64 build.
-    - platform: Win32
-      image: Ubuntu1604
-    - QTMAJOR: 6
-      image: Ubuntu1604
-  fast_finish: true
 
 for:
   -
