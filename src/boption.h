@@ -37,9 +37,7 @@ private:
 
 public:
     constexpr BOptional() : opt_value{}, is_valid{false} { };
-    constexpr BOptional(const BOptional &src)
-        : opt_value{src.opt_value}
-        , is_valid{src.is_valid} { };
+    constexpr BOptional(const BOptional &src) = default;
     constexpr explicit BOptional(const T &val)
         : opt_value{val}
         , is_valid{true} { };
@@ -75,7 +73,7 @@ public:
         return default_value;
 
     };
-    const T& value_or(const T &default_value) const
+    T value_or(const T &default_value) const
     {
         if (is_valid)
         {
