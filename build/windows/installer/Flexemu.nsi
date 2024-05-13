@@ -24,7 +24,16 @@
 ; The variables QTVERSION and QTMAVERSION have to be set as command line parameters
 ; !define QTVERSION "0.0.0"   ; Qt version
 ; !define QTMAVERSION "0"     ; Qt Major version
+; !define QTMIVERSION "0"     ; Qt Minor version
 !define QTBASEDIR "Qt${QTVERSION}"
+
+; The variable QT_GE_670 is != 0 if QTVERSION is >= 6.7.0
+!define QT_GE_670 0
+!if ${QTMAVERSION} == 6
+!if ${QTMIVERSION} >= 7
+!define /redef QT_GE_670 1
+!endif
+!endif
 
 CRCCheck on
 SetDateSave on
@@ -205,7 +214,11 @@ ${Else}
 ${EndIf}
   SetOutPath $INSTDIR\styles
 ${If} $Arch == "x64"
+!if ${QT_GE_670} != 0
+  File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\styles\qmodernwindowsstyle.dll"
+!else
   File /a "${BASEDIR}\bin\${QTBASEDIR}\x64\Release\styles\qwindowsvistastyle.dll"
+!endif
 ${Else}
 !if ${QTMAVERSION} == 5
   File /a "${BASEDIR}\bin\${QTBASEDIR}\Win32\Release\styles\qwindowsvistastyle.dll"

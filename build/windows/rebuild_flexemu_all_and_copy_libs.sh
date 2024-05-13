@@ -72,6 +72,7 @@ QTDIR=`sed -ne "s/<QTDIR>\(.*\)<\/QTDIR>/\1/p" $propsfile`
 QTDIR=$( as_mingw_path "$QTDIR")
 qtversion=`sed -ne "s/ *<QTVERSION>\(.*\)<\/QTVERSION>/\1/p" $propsfile`
 qtmaversion=`echo $qtversion | sed -e "s/\([56]\).*/\1/"`
+qtmiversion=`echo $qtversion | sed -e "s/[0-9]\+.\([0-9]\+\).*/\1/"`
 
 temp=$QTDIR/x64/bin
 if [ ! -d $temp ]; then
@@ -139,7 +140,12 @@ do
             if [ ! -d $targetdir/styles ]; then
                 mkdir $targetdir/styles
             fi
-            for file in qwindowsvistastyle
+            if [[ "$qtmaversion" = "6" && "$qtmiversion" -ge 7 ]]; then
+                qtstyles="qmodernwindowsstyle"
+            else
+                qtstyles="qwindowsvistastyle"
+            fi
+            for file in $qtstyles
             do
                 cp -f ${QTDIR}/${platform}/plugins/styles/${file}${postfix}.dll $targetdir/styles
             done
