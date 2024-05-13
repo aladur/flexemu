@@ -12,7 +12,11 @@
 !include FileFunc.nsh
 !include SplitFirstStrPart.nsh
 !include "MUI2.nsh"
-  
+
+!addplugindir /x86-ansi "Plugins\x86-ansi"
+!addplugindir /x86-unicode "Plugins\x86-unicode"
+!addplugindir /amd64-unicode "Plugins\amd64-unicode"
+
 !define APPNAME    "Flexemu"
 !define APPVERSION "3.20"
 ; Refreshing Windows Defines

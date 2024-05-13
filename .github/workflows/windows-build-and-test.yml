@@ -145,6 +145,16 @@ jobs:
           %BINPATH%\dsktool.exe -C disks\system.dsk -T new_d.dsk
           %BINPATH%\dsktool.exe -l new_d.dsk
 
+      - name: Create Windows installer
+        shell: bash
+        run: |
+          cd build/windows
+          # NSIS EnVar plugin has to be installed.
+          ./download_and_install_envar_plugin.sh -d installer -s
+          ls -l installer
+          # Create the Windows Installer using NSIS.
+          ./create_installer.sh
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         if: always()

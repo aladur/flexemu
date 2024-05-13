@@ -71,6 +71,10 @@ build/windows/*.tar.gz
 build/windows/*.tgz
 build/windows/*.zip
 build/windows/Qt
+build/windows/installer/Contrib
+build/windows/installer/Docs
+build/windows/installer/Examples
+build/windows/installer/Plugins
 src/msvcQtPath.props
 src/*.vcxproj.user
 bin
