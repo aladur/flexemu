@@ -900,7 +900,6 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     }
 
     throw FlexException(FERR_DIRECTORY_FULL);
-    return true; // satisfy compiler
 }
 
 // Evaluate the sector count on track 0.

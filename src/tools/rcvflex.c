@@ -8,7 +8,8 @@ FLEX to UNIX
 
 #include <stdio.h>
 
-#ifdef linux
+#if defined(__linux__) || \
+    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 
 #include <ctype.h>
 #include <sys/ioctl.h>
@@ -47,7 +48,7 @@ void do_exit(int exit_code)
 	void sigint(int param)
 #endif
 {
-        (void)param; /* satisfy compiler */
+        (void)param;
 	do_exit(0);
 } /* sigint */
 
@@ -249,7 +250,7 @@ int main(int argc, char *argv[])
 		} /* for si */
 	} /* for tr */
 	fprintf(stdout, "finished\n");		
-        (void)count; /* satisfy compiler */
+        (void)count;
 	do_exit(0);
 	return 0;
 
@@ -264,5 +265,5 @@ int main(int argc, char *argv[])
 	return 1;
 } /* main */
 
-#endif /* ifdef linux */
+#endif
 

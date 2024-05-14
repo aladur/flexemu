@@ -25,9 +25,9 @@
 #define TYPEDEFS_INCLUDED
 
 #ifdef _MSC_VER
-    #include "confignt.h"
+    #include "../confignt.h"
 #else
-    #include "config.h"
+    #include "../config.h"
 #endif
 
 #if HAVE_INTTYPES_H

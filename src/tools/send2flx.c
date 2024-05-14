@@ -11,14 +11,15 @@ Copyright (C) W. Schwotzer 2003
 
 #include <stdio.h>
 
-#if defined (__LINUX) || defined (__BSD)
+#if defined(__linux__) || \
+    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
 
 #include <ctype.h>
 #include <sys/ioctl.h>
-#ifdef __LINUX
+#ifdef __linux__
   #include <termio.h>
 #endif
-#ifdef __BSD
+#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
   #include <termios.h>
 #endif
 #include <fcntl.h>
@@ -26,7 +27,6 @@ Copyright (C) W. Schwotzer 2003
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -111,7 +111,7 @@ void do_exit(struct termios *pOldtty, int exit_code)
 	void sigint(int param)
 #endif
 {
-        (void)param; /* satisfy compiler */
+        (void)param;
 	do_exit(&oldtty, 2);
 } /* sigint */
 
@@ -173,7 +173,7 @@ void read_file(unsigned char *buffer, eFileType *filetype, int *filesize)
 	{
 		int i, controlchars = 0;
 		size_t count = fread(buffer, 1, *filesize, fp);
-                (void)count; /* satisfy compiler */
+                (void)count;
 		for (i = 0; i < *filesize; i++)
 			if (buffer[i] < ' ' || buffer[i] > 0x7F)
 				controlchars++;
@@ -255,7 +255,7 @@ void write_serial(int fd_out, const unsigned char *buffer, int size)
 		checksum += buffer[i];
 	ssize_t count = write(fd_out, buffer, size);
 	count = write(fd_out, &checksum, 1);
-        (void)count; /* satisfy compiler */
+        (void)count;
 }
 
 void print_help(const char *device)
@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
 	}
 	/* tcflush(fd, TCIOFLUSH); flush input/output */
         ssize_t count = write(fd, sync, 4);
-        (void)count; /* satisfy compiler */
+        (void)count;
 	init_header(&header, filename, filesize, filetype, overwrite);
 	write_serial(fd, (unsigned char *)&header, sizeof(struct f_header)); 
 	sleep(1);
@@ -357,5 +357,5 @@ int main(int argc, char *argv[])
 	(void)argv;
 	return 1;
 }
-#endif /* ifdef linux */
+#endif
 

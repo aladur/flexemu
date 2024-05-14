@@ -37,12 +37,12 @@ int main(int argc, char **argv)
 	int c;
 
 	if (argc > 1) {
+		fprintf(stderr, "*** Error: Superfluous parameter: %s\n", argv[1]);
 		fprintf(stderr, "syntax: fromflex\n");
 		fprintf(stderr, " read from stdin\n");
 		fprintf(stderr, " write to stdout\n");
 		exit(1);
 	}
-        (void)argv; /* satisfy compiler */
 	while ((c = getchar()) != EOF) {
 		if (c == 0x0d)
 			putchar('\n');
