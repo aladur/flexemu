@@ -932,11 +932,11 @@ TEST(test_da6809, dis_undocumented)
         0x7B, 0x7B, 0x00,
     };
     static const std::vector<const char *> expected_mnemonics{
-        "neg $00", "negcom $00", "lsr   $00", "dec   $00", "reset",
+        "neg   $00", "negcom $00", "lsr   $00", "dec   $00", "reset",
         "nega", "negcoma", "lsra", "deca", "clra",
         "negb", "negcomb", "lsrb", "decb", "clrb",
-        "neg   $00,X", "negcom   $00,X", "lsr   $00,X", "dec   $00,X",
-        "neg   $7100", "negcom   $7200", "lsr   $7500", "dec   $7B00",
+        "neg   $00,X", "negcom $00,X", "lsr   $00,X", "dec   $00,X",
+        "neg   $7100", "negcom $7200", "lsr   $7500", "dec   $7B00",
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
 
