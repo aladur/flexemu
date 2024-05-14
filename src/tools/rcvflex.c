@@ -8,8 +8,7 @@ FLEX to UNIX
 
 #include <stdio.h>
 
-#if defined(__linux__) || \
-    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#if defined(__linux__)
 
 #include <ctype.h>
 #include <sys/ioctl.h>
