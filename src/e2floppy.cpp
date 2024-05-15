@@ -48,7 +48,7 @@ E2floppy::E2floppy(const struct sOptions &p_options)
         track[i] = 1; // position all drives to track != 0 !!!
         drive_status[i] = DiskStatus::EMPTY;
     }
-} // E2floppy
+}
 
 E2floppy::~E2floppy()
 {
@@ -69,7 +69,7 @@ E2floppy::~E2floppy()
             }
         }
     }
-} // ~E2floppy
+}
 
 bool E2floppy::umount_drive(Word drive_nr)
 {
@@ -91,7 +91,7 @@ bool E2floppy::umount_drive(Word drive_nr)
     }
 
     return true;
-} // umount_drive
+}
 
 bool E2floppy::mount_drive(const std::string &path,
                            Word drive_nr,
@@ -249,7 +249,7 @@ bool E2floppy::mount_drive(const std::string &path,
     fullPath += path;
 
     return TryMount(fullPath);
-} // mount_drive
+}
 
 void E2floppy::disk_directory(const std::string &p_disk_dir)
 {
@@ -268,7 +268,7 @@ void E2floppy::mount_all_drives(
 
     selected = MAX_DRIVES; // deselect all drives
     pfs = nullptr;
-}  // mount_all_drives
+}
 
 bool E2floppy::umount_all_drives()
 {
@@ -283,7 +283,7 @@ bool E2floppy::umount_all_drives()
     }
 
     return result;
-}  // umount_all_drives
+}
 
 std::string E2floppy::drive_info_string(Word drive_nr)
 {
@@ -387,7 +387,7 @@ bool E2floppy::sync_all_drives(tMountOption option)
     }
 
     return result;
-} // sync_all_drives
+}
 
 bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
 {
@@ -407,7 +407,7 @@ bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
     }
 
     return result;
-} // sync_drive
+}
 
 void E2floppy::resetIo()
 {
@@ -630,7 +630,7 @@ bool E2floppy::isRecordNotFound() const
     }
 
     return !pfs->IsSectorValid(getTrack(), getSector());
-} // isRecordNotFound
+}
 
 bool E2floppy::isSeekError(Byte new_track) const
 {
@@ -640,12 +640,12 @@ bool E2floppy::isSeekError(Byte new_track) const
     }
 
     return !pfs->IsTrackValid(new_track);
-} // isSeekError
+}
 
 bool E2floppy::isDriveReady() const
 {
     return pfs != nullptr;
-}  // isDriveReady
+}
 
 bool E2floppy::isWriteProtect() const
 {
@@ -655,7 +655,7 @@ bool E2floppy::isWriteProtect() const
     }
 
     return pfs->IsWriteProtected();
-}  // isWriteProtect
+}
 
 void E2floppy::get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat)
 {

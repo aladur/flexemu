@@ -83,7 +83,7 @@ std::string BDate::GetDateString(Format format) const
                       std::setfill('0') << monthString << '-' <<
                       std::setw(4) << std::setfill('0') << y;
             break;
-    } // switch
+    }
 
     return stream.str();
 }

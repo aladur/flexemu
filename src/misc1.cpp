@@ -241,7 +241,7 @@ int stricmp(const char *string1, const char *string2)
     }
 
     return 0;
-} // stricmp
+}
 #endif
 
 // Check if 'text' matches the wildcard 'pattern'.
@@ -934,7 +934,7 @@ bool isListedInFileRandom(const char *directory, const char *filename)
         {
             return true;
         }
-    } // if
+    }
 
     return false;
 }

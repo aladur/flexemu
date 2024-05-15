@@ -153,7 +153,7 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
             {
                 RemoveRecursive(dirEntry);
             }
-        } // while
+        }
 
         closedir(pd);
     }
@@ -218,7 +218,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
             {
                 subDirList.emplace_back(pentry->d_name);
             }
-        } // while
+        }
 
         closedir(pd);
     }
@@ -281,7 +281,7 @@ tPathList BDirectory::GetFiles(const std::string &aPath)
             {
                 fileList.emplace_back(pentry->d_name);
             }
-        } // while
+        }
 
         closedir(pd);
     }

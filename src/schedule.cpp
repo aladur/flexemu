@@ -224,16 +224,16 @@ CpuState Scheduler::statemachine(CpuState initial_state)
                 state = CpuState::Run;
                 break;
 
-        } // switch
+        }
 
         if (inout.is_gui_present())
         {
             events |= Event::SetStatus;
         }
-    } // while
+    }
 
     return state;
-} // statemachine
+}
 
 void Scheduler::timer_elapsed()
 {
@@ -374,7 +374,7 @@ void Scheduler::set_frequency(float p_target_frequency)
     }
 
     cpu.set_required_cyclecount(cycles);
-} // set_frequency
+}
 
 void Scheduler::suspend()
 {

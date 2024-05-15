@@ -212,7 +212,7 @@ public:
         }
 
         QMetaObject::connectSlotsByName(&dialog);
-    } // setupUi
+    }
 
     void retranslateUi(QDialog &dialog)
     {
@@ -225,7 +225,7 @@ public:
             c_protect[i]->setText(
                     QApplication::translate("Dialog", attributeLabel[i]));
         }
-    } // retranslateUi
+    }
 };
 
 #endif

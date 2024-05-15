@@ -117,7 +117,7 @@ Byte Wd1793::readIo(Word offset)
     }
 
     return 0; // default, should never be used!
-}   // readIo
+}
 
 
 void Wd1793::writeIo(Word offset, Byte val)
@@ -173,7 +173,7 @@ void Wd1793::writeIo(Word offset, Byte val)
 
             break;
     }
-}   // writeIo
+}
 
 void Wd1793::do_seek(Byte new_track)
 {
@@ -194,7 +194,7 @@ void Wd1793::do_seek(Byte new_track)
     }
 
     setIrq();
-} // do_seek
+}
 
 
 void Wd1793::command(Byte command)
@@ -339,7 +339,7 @@ void Wd1793::command(Byte command)
                 byteCount = 0;
                 setIrq();
                 break;
-        } // switch
+        }
 
         if (isType1Command)
         {
@@ -363,8 +363,8 @@ void Wd1793::command(Byte command)
                 // so system info sector never will be found
                 str = STR_NOTREADY;
             }
-        } // if
-    } // if
+        }
+    }
 }// command
 
 // should be reimplemented by subclass.

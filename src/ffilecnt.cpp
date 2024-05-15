@@ -533,7 +533,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
         stream << sis_trk_sec;
         throw FlexException(FERR_READING_TRKSEC, stream.str(), fp.GetPath());
-    } // get start trk/sec of free chain
+    }
 
     next = start = sis.s.sir.fc_start;
 
@@ -1248,7 +1248,7 @@ void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
     {
         memset(sectorBuffer2, 0, SECTOR_SIZE);
     }
-} // Create_boot_sectors
+}
 
 void FlexFileContainer::Create_sys_info_sector(u_sys_info_sector &sis,
         const std::string &name,
@@ -1290,7 +1290,7 @@ void FlexFileContainer::Create_sys_info_sector(u_sys_info_sector &sis,
     sis.s.sir.year = static_cast<Byte>(year);
     sis.s.sir.last.trk = static_cast<Byte>(format.tracks - 1);
     sis.s.sir.last.sec = static_cast<Byte>(format.sectors);
-} // create_sys_info_sector
+}
 
 // on success return true
 bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
@@ -1317,7 +1317,7 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
     }
 
     return true;
-} // write_dir_sectors
+}
 
 // on success return true
 bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
@@ -1346,7 +1346,7 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
     }
 
     return true;
-} // write_sectors
+}
 
 void FlexFileContainer::Create_format_table(int type, int trk, int sec,
         struct s_formats &format)
@@ -1381,7 +1381,7 @@ void FlexFileContainer::Create_format_table(int type, int trk, int sec,
     // track 0 only contains directory sectors.
     format.dir_sectors = getTrack0SectorCount(trk, sec) -
                           first_dir_trk_sec.sec + 1;
-} // create_format_table
+}
 
 // return != 0 on success
 // format FLX or DSK format. FLX format always with sector_size 256
@@ -1490,7 +1490,7 @@ void FlexFileContainer::Format_disk(
     {
         throw FlexException(FERR_UNABLE_TO_FORMAT, name);
     }
-} // format_disk
+}
 
 // Read the number of tracks and sectors for a FLEX file container.
 bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,

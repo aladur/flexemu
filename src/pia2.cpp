@@ -251,5 +251,5 @@ Byte Pia2::readInputB()
     }
 
     return orb;
-} // readInputB
+}
 

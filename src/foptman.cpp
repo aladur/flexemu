@@ -111,7 +111,7 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
           "  -h (display this)\n"
           "  -? (display this)\n"
           "  -v (print version number)\n";
-} // PrintHelp
+}
 
 void FlexemuOptions::InitOptions(struct sOptions &options)
 {
@@ -158,7 +158,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.directoryDiskTracks = 80;
     options.directoryDiskSectors = 36;
     options.isDirectoryDiskActive = true;
-} // InitOptions
+}
 
 void FlexemuOptions::GetCommandlineOptions(
     struct sOptions &options,
@@ -358,9 +358,9 @@ void FlexemuOptions::GetCommandlineOptions(
             case 'h':
                 PrintHelp(std::cerr);
                 exit(EXIT_SUCCESS);
-        }  // switch
-    } // while
-} // GetCommandlineOptions
+        }
+    }
+}
 
 
 void FlexemuOptions::WriteOptions(
@@ -1161,5 +1161,5 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
             options.printPreviewDialogGeometry);
     rcFile.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
-} // GetOptions
+}
 

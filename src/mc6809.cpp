@@ -80,7 +80,7 @@ void Mc6809::init()
 
     init_indexed_cycles();
     init_psh_pul_cycles();
-} // init
+}
 
 void Mc6809::init_indexed_cycles()
 {
@@ -144,7 +144,7 @@ void Mc6809::init_indexed_cycles()
             default:
                 indexed_cycles[i] = 0;
                 break;
-        } // switch
+        }
     }
 }
 
@@ -198,23 +198,23 @@ void Mc6809::init_psh_pul_cycles()
         }
 
         psh_pul_cycles[i] = cycle_count;
-    } // for
+    }
 }
 
 void Mc6809::set_nmi()
 {
     events |= Event::Nmi;
-} // set_nmi
+}
 
 void Mc6809::set_firq()
 {
     events |= Event::Firq;
-} // set_firq
+}
 
 void Mc6809::set_irq()
 {
     events |= Event::Irq;
-} // set_irq
+}
 
 #ifndef FASTFLEX
 cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
@@ -308,7 +308,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
             stack -= 2;
             memory.write_word(stack, pc);
             break;
-    } // switch
+    }
 
     switch (static_cast<Byte>(what & 0x0f))
     {
@@ -379,7 +379,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
         case 0x08:
             memory.write_byte(--stack, dp);
             break;
-    } // switch
+    }
 
     return psh_pul_cycles[what];
 }
@@ -455,7 +455,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
         case 0x01:
             cc.all = memory.read_byte(stack++);
             break;
-    } // switch
+    }
 
     switch (static_cast<Byte>(what & 0xf0))
     {
@@ -546,7 +546,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
             x = memory.read_word(stack);
             stack += 2;
             break;
-    } // switch
+    }
 
     return psh_pul_cycles[what];
 }

@@ -535,7 +535,7 @@ bool DirectoryContainer::IsFlexFilename(const std::string &filename)
     }
 
     return true;
-} // IsFlexFilename
+}
 
 /*****************************************************************
 Iterator implemenation

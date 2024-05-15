@@ -167,7 +167,7 @@ public:
         }
 
         return *(ppage[address >> 12] + (address & 0x3fff));
-    } // read_byte
+    }
 
     inline void write_word(Word address, Word value)
     {

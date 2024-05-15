@@ -307,7 +307,7 @@ void Mc146818::update_1_second()
             }
         }
     }
-} // update
+}
 
 // convert from binary to binary or bcd
 Byte Mc146818::convert(Byte val) const
@@ -349,7 +349,7 @@ Byte Mc146818::convert_hour(Byte val) const
 
         case 0x06:      //24 hour, binary
             return val;
-    }  // switch
+    }
 
     return 1; // this should NEVER happen
 }

@@ -295,7 +295,7 @@ CpuState Mc6809::runloop()
 
                         new_state = CpuState::Stop;
                         break;
-                    } // if
+                    }
                 }
 
                 events &= ~Event::IgnoreBP;
@@ -384,7 +384,7 @@ CpuState Mc6809::runloop()
                 new_state = CpuState::Schedule;
                 break;
             }
-        } // if
+        }
 
         if (log_fp != nullptr)
         {
@@ -413,10 +413,10 @@ CpuState Mc6809::runloop()
 #include "mc6809ex.cpi"
 #endif
         first_time = false;
-    } // while
+    }
 
     return new_state;
-} // runloop
+}
 
 void Mc6809::log_current_instruction()
 {

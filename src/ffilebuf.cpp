@@ -181,7 +181,7 @@ void FlexFileBuffer::TraverseForTextFileConversion(
 
         // Other control characters than ASCII TAB, ASCII CR, ASCII SUB
         // are ignored.
-    } // for
+    }
 }
 
 // Estimate the needed buffer size after converting
@@ -288,7 +288,7 @@ void FlexFileBuffer::TraverseForFlexTextFileConversion(
             // Other control characters than ASCII TAB or ASCII CR will be
             // ignored.
         }
-    } // for
+    }
 
     // Process remaining spaces if file does not end with new line.
     process_spaces();

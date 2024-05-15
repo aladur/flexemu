@@ -399,9 +399,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 }
 
                 break;
-        } // switch
+        }
         answer_stream << "Unknown command: " << command.data() << ".";
         answer = answer_stream.str();
-    } // if
+    }
 }
 

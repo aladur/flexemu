@@ -160,7 +160,7 @@ void Memory::init_memory()
     }
 
     video_ram_active_bits = 0;
-} // init_memory
+}
 
 void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
 {
@@ -261,13 +261,13 @@ void Memory::reset_io()
 void Memory::write_ram_rom(Word address, Byte value)
 {
     memory[address] = value;
-} // write_ram_rom
+}
 
 // Read Byte from RAM or ROM independent of MMU.
 Byte Memory::read_ram_rom(Word address)
 {
     return memory[address];
-} // read_ram_rom
+}
 
 void Memory::switch_mmu(Word offset, Byte val)
 {
@@ -292,7 +292,7 @@ void Memory::switch_mmu(Word offset, Byte val)
     }
 
     ppage[offset] = vram_ptrs[ppage_index];
-} // switch_mmu
+}
 
 void Memory::dump_ram_rom(Word min, Word max)
 {
