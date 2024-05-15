@@ -59,6 +59,7 @@ config.log
 autom4te.cache
 libtool
 .deps
+src/.dirstamp
 
 # Visual Studio files
 .vs/
