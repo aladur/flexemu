@@ -1,0 +1,434 @@
+#include "gtest/gtest.h"
+#include "gmock/gmock.h"
+#include <filesystem>
+#include <array>
+#include <vector>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <cassert>
+#include "fileread.h"
+#include "memsrc.h"
+#include "memtgt.h"
+
+
+using ::testing::StartsWith;
+namespace fs = std::filesystem;
+
+struct TestMemory : public MemoryTarget<DWord>, public MemorySource<DWord>
+{
+    TestMemory() = default;
+    ~TestMemory() override = default;
+    void CopyFrom(const Byte *source, DWord address, DWord size) override
+    {
+        auto secureSize = size;
+        if (address >= buffer.size())
+        {
+            throw std::out_of_range("address is out of valid range");
+        }
+        if (address + secureSize >= buffer.size())
+        {
+            secureSize -= address + size - buffer.size();
+        }
+        memcpy(buffer.data() + address, source, secureSize);
+
+        if (secureSize > 0U)
+        {
+            DWord endAddress = address + secureSize - 1;
+            addressRanges.emplace_back(address, endAddress);
+            join(addressRanges);
+        }
+    }
+    void CopyTo(Byte *target, DWord address, DWord size) const override
+    {
+        auto secureSize = size;
+
+        if (address >= buffer.size())
+        {
+            throw std::out_of_range("address is out of valid range");
+        }
+
+        if (address + secureSize >= buffer.size())
+        {
+            secureSize -= address + size - buffer.size();
+        }
+
+        memcpy(target, buffer.data() + address, secureSize);
+    }
+    const AddressRanges& GetAddressRanges() const override
+    {
+        return addressRanges;
+    }
+    AddressRanges addressRanges;
+    std::array<Byte, 65536> buffer{};
+};
+
+TEST(test_fileread, fct_load_hexfile)
+{
+    std::vector<std::string> test_files{
+        "data/cat.cmd", "data/cat.hex", "data/cat.s19",
+    };
+    for (const auto &test_file : test_files)
+    {
+        TestMemory memory{};
+        DWord start_addr = 0U;
+        auto result = load_hexfile(test_file.c_str(), memory, start_addr);
+        ASSERT_EQ(result, 0);
+        if (test_file.find("hex") == std::string::npos)
+        {
+            // Intel-hex does not support start address.
+            EXPECT_EQ(start_addr, 0xC100);
+        }
+        EXPECT_EQ(memory.buffer[0xC0FF], 0x00);
+        EXPECT_EQ(memory.buffer[0xC100], 0x20);
+        EXPECT_EQ(memory.buffer[0xC1C4], 0xCD);
+        EXPECT_EQ(memory.buffer[0xC288], 0xCC);
+        EXPECT_EQ(memory.buffer[0xC34C], 0x45);
+        EXPECT_EQ(memory.buffer[0xC39E], 0x23);
+        EXPECT_EQ(memory.buffer[0xC39F], 0x00);
+    }
+}
+
+TEST(test_fileread, fct_load_hexfile__non_exists)
+{
+    TestMemory memory{};
+    DWord start_addr = 0U;
+    auto result = load_hexfile("non_existend_file", memory, start_addr);
+    ASSERT_EQ(result, -1);
+}
+
+TEST(test_fileread, fct_load_hexfile__intel)
+{
+    std::vector<std::string> file_contents{
+       "blabla", // Wrong record type.
+       ":20010002", // Not 32 data bytes.
+       ":Z0010002", // Wrong char 'Z' in size.
+       ":2Z010002", // Wrong char 'Z' in size.
+       ":20010Z02", // Wrong char 'Z' in address.
+       ":2001000Z", // Wrong char 'Z' in type.
+       ":08010000010203090A0B0C0FFF", // Wrong checksum.
+       ":08010000010203090A0B0C0FB8", // Missing End of File (01).
+       ":08010000010203090A0B0C0FB8\n", // Missing End of File (01).
+       ":080100000Z0203090A0B0C0FB8\n:00000001FF\n", // Wrong char 'Z'.
+       ":08010000010203090A0B0C0FB8\n:00000001FF\n",
+       ":08010000010203090A0B0C0FB8\r\n:00000001FF\r\n",
+       ":08010000010203090A0B0C0FB8\n:0000000000\n",
+       ":08010000010203090A0B0C0FB8\r\n:0000000000\r\n",
+
+    };
+    std::vector<int> expected_results{
+        -3, -3, -3, -3, -3, -3, -4, -2, -3, -3,
+        0, 0, 0, 0,
+    };
+    assert(file_contents.size() == expected_results.size());
+
+    int index = 0;
+    for (const auto &file_content : file_contents)
+    {
+        std::string test_file{"test_intel_hex_file.hex"};
+        auto path = fs::temp_directory_path() / test_file;
+        std::fstream ofs(path, std::ios::out | std::ios::trunc);
+        ASSERT_TRUE(ofs.is_open());
+        ofs << file_content;
+        ofs.close();
+        TestMemory memory{};
+        DWord start_addr = 0U;
+        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        ASSERT_EQ(result, expected_results[index++]);
+        if (result == 0)
+        {
+            EXPECT_EQ(start_addr, 0x0000);
+            EXPECT_EQ(memory.buffer[0x00FF], 0x00);
+            EXPECT_EQ(memory.buffer[0x0100], 0x01);
+            EXPECT_EQ(memory.buffer[0x0103], 0x09);
+            EXPECT_EQ(memory.buffer[0x0104], 0x0A);
+            EXPECT_EQ(memory.buffer[0x0107], 0x0F);
+            EXPECT_EQ(memory.buffer[0x0108], 0x00);
+        }
+        fs::remove(path);
+    }
+}
+
+TEST(test_fileread, fct_load_hexfile__motorola)
+{
+    std::array<std::string, 13> file_contents{
+       "blabla", // Wrong record field.
+       "S1ZB0100010203090A", // Wrong char 'Z' in size.
+       "S10Z0100010203090A", // Wrong char 'Z' in size.
+       "S10Z010Z010203090A", // Wrong char 'Z' in address.
+       "S10B0100010203090A", // Not 11 data bytes.
+       "S10B0100010203090A0B0C0FFF", // Wrong checksum.
+       "S10B0100010203090A0B0C0FB4", // Missing S9
+       "S30B00000100010203090A0B0C0FB4\nS9030100FB\n", // S3 not supported.
+       "S10B0100Z00203090A0B0C0FB4\nS9030100FB\n", // Wrong char 'Z'.
+       "S10B0100010203090A0B0C0FB4\nS9030100FB\n",
+       "S10B0100010203090A0B0C0FB4\r\nS9030100FB\r\n",
+       "S10B0100010203090A0B0C0FB4\nS5030100FB\nS9030100FB\n",
+       "S10B0100010203090A0B0C0FB4\r\nS5030100FB\r\nS9030100FB\r\n",
+
+    };
+    std::array<int, 13> expected_results{
+        -3, -3, -3, -3, -3, -4, -2, -3, -3,
+        0, 0, 0, 0,
+    };
+
+    assert(file_contents.size() == expected_results.size());
+    int index = 0;
+    for (const auto &file_content : file_contents)
+    {
+        std::string test_file{"test_motorola_s-rec_file.hex"};
+        auto path = fs::temp_directory_path() / test_file;
+        std::fstream ofs(path, std::ios::out | std::ios::trunc);
+        ASSERT_TRUE(ofs.is_open());
+        ofs << file_content;
+        ofs.close();
+        TestMemory memory{};
+        DWord start_addr = 0U;
+        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        ASSERT_EQ(result, expected_results[index++]);
+        if (result == 0)
+        {
+            EXPECT_EQ(start_addr, 0x0100);
+            EXPECT_EQ(memory.buffer[0x00FF], 0x00);
+            EXPECT_EQ(memory.buffer[0x0100], 0x01);
+            EXPECT_EQ(memory.buffer[0x0103], 0x09);
+            EXPECT_EQ(memory.buffer[0x0104], 0x0A);
+            EXPECT_EQ(memory.buffer[0x0107], 0x0F);
+            EXPECT_EQ(memory.buffer[0x0108], 0x00);
+        }
+        fs::remove(path);
+    }
+}
+
+TEST(test_fileread, fct_load_hexfile__flex_binary)
+{
+    std::array<std::array<char, 20>, 5> file_contents{{
+        { 0x03, 0x01, 0x00, 0x10 }, // Wrong record type (0x03).
+        { 0x02, 0x01, 0x00, 0x01, 0x55, 0x17, 0x01, 0x00 }, // Wrong rec.type.
+        { 0x02, 0x01, 0x00, 0x07, 0x01, 0x02, 0x03, 0x09, 0x0A, 0x0B, '\xFF' },
+        { 0x02, 0x01, 0x00, 0x07, 0x01, 0x02, 0x03, 0x09, 0x0A, 0x0B, '\xFF',
+          0x16, 0x01, 0x00 },
+        { 0x02, 0x01, 0x00, 0x00, 0x16, 0x01, 0x00 },
+    }};
+    std::array<int, 5> expected_results{
+        -3, -3, 0, 0, 0,
+    };
+
+    assert(file_contents.size() == expected_results.size());
+    int index = 0;
+    for (const auto &file_content : file_contents)
+    {
+        std::string test_file{"test_flex_binary_file.cmd"};
+        auto path = fs::temp_directory_path() / test_file;
+        std::fstream ofs(path, std::ios::out | std::ios::trunc);
+        ASSERT_TRUE(ofs.is_open());
+        ofs.write(file_content.data(),
+                static_cast<std::streamsize>(file_content.size()));
+        ofs.close();
+        TestMemory memory{};
+        DWord start_addr = 0U;
+        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        ASSERT_EQ(result, expected_results[index]);
+        if (result == 0)
+        {
+            if (index >= 3)
+            {
+                EXPECT_EQ(start_addr, 0x0100);
+            }
+            if (index != 4)
+            {
+                EXPECT_EQ(memory.buffer[0x00FF], 0x00);
+                EXPECT_EQ(memory.buffer[0x0100], 0x01);
+                EXPECT_EQ(memory.buffer[0x0101], 0x02);
+                EXPECT_EQ(memory.buffer[0x0102], 0x03);
+                EXPECT_EQ(memory.buffer[0x0103], 0x09);
+                EXPECT_EQ(memory.buffer[0x0104], 0x0A);
+                EXPECT_EQ(memory.buffer[0x0105], 0x0B);
+                EXPECT_EQ(memory.buffer[0x0106], 0xFF);
+            }
+        }
+        fs::remove(path);
+        ++index;
+    }
+}
+
+TEST(test_fileread, fct_write_flex_binary)
+{
+    std::array<std::array<Byte, 3>, 3> file_contents{{
+        { 0x7E, 0xF0, 0x2D },
+        { 0x7E, 0xCD, 0x03 },
+        { 0x01, 0x02, 0x03 }
+    }};
+    std::array<char, 24> expected_buffer{
+        '\x02', '\xC1', '\x00', '\x03', '\x7E', '\xF0', '\x2D',
+        '\x02', '\xC2', '\x00', '\x03', '\x7E', '\xCD', '\x03',
+        '\x02', '\xC3', '\x00', '\x03', '\x01', '\x02', '\x03',
+        '\x16', '\xC1', '\x00',
+    };
+
+    TestMemory memory{};
+    DWord start_addr = 0xC100U;
+    for (const auto &file_content : file_contents)
+    {
+        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
+        start_addr += 0x100;
+    }
+    std::string test_file{"test_flex_binary_file.cmd"};
+    auto path = fs::temp_directory_path() / test_file;
+    auto result = write_flex_binary(path.c_str(), memory, 0xC100);
+    ASSERT_EQ(result, 0);
+    EXPECT_EQ(fs::file_size(path), 24);
+    std::fstream ifs(path, std::ios::in | std::ios::binary);
+    ASSERT_TRUE(ifs.is_open());
+    std::array<char, 24> buffer{};
+    ifs.read(buffer.data(), buffer.size());
+    EXPECT_EQ(buffer, expected_buffer);
+    ifs.close();
+    fs::remove(path);
+
+}
+
+TEST(test_fileread, fct_write_intelhex)
+{
+    std::array<std::array<Byte, 3>, 3> file_contents{{
+        { 0x7E, 0xF0, 0x2D },
+        { 0x7E, 0xCD, 0x03 },
+        { 0x01, 0x02, 0x03 }
+    }};
+    std::array<std::string, 4> expected_lines{
+        ":03c100007ef02da1",
+        ":03c200007ecd03ed",
+        ":03c3000001020334",
+        ":00c100013e",
+    };
+
+    TestMemory memory{};
+    DWord start_addr = 0xC100U;
+    for (const auto &file_content : file_contents)
+    {
+        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
+        start_addr += 0x100;
+    }
+    std::string test_file{"test_intel_hex_file.hex"};
+    auto path = fs::temp_directory_path() / test_file;
+    auto result = write_intelhex(path.c_str(), memory, 0xC100);
+    ASSERT_EQ(result, 0);
+    std::fstream ifs(path, std::ios::in | std::ios::binary);
+    ASSERT_TRUE(ifs.is_open());
+    std::string linebuffer;
+    for (const auto &expected_line : expected_lines)
+    {
+        std::getline(ifs, linebuffer);
+        EXPECT_EQ(linebuffer, expected_line);
+        EXPECT_EQ(ifs.good(), true);
+    }
+    ifs.close();
+    fs::remove(path);
+}
+
+TEST(test_fileread, fct_write_motorola_srec)
+{
+    std::array<std::array<Byte, 3>, 3> file_contents{{
+        { 0x7E, 0xF0, 0x2D },
+        { 0x7E, 0xCD, 0x03 },
+        { 0x01, 0x02, 0x03 }
+    }};
+    std::array<std::string, 5> expected_lines{
+        "S018000043726561746564207769746820666c6578326865780d",
+        "S106c1007ef02d9d",
+        "S106c2007ecd03e9",
+        "S106c30001020330",
+        "S903c1003b",
+    };
+
+    TestMemory memory{};
+    DWord start_addr = 0xC100U;
+    for (const auto &file_content : file_contents)
+    {
+        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
+        start_addr += 0x100;
+    }
+    std::string test_file{"test_motorola_srec_file.hex"};
+    auto path = fs::temp_directory_path() / test_file;
+    auto result = write_motorola_srec(path.c_str(), memory, 0xC100);
+    ASSERT_EQ(result, 0);
+    std::fstream ifs(path, std::ios::in | std::ios::binary);
+    ASSERT_TRUE(ifs.is_open());
+    std::string linebuffer;
+    for (const auto &expected_line : expected_lines)
+    {
+        std::getline(ifs, linebuffer);
+        EXPECT_EQ(linebuffer, expected_line);
+        EXPECT_EQ(ifs.eof() || ifs.good(), true);
+    }
+    ifs.close();
+    fs::remove(path);
+}
+
+TEST(test_fileread, fct_write_raw_binary)
+{
+    // Define 3 memory ranges + start address.
+    std::array<std::array<Byte, 3>, 3> file_contents{{
+        { 0x7E, 0xF0, 0x2D },
+        { 0x7E, 0xCD, 0x03 },
+        { 0x01, 0x02, 0x03 }
+    }};
+
+    TestMemory memory{};
+    DWord start_addr = 0xC100U;
+    for (const auto &file_content : file_contents)
+    {
+        memory.CopyFrom(file_content.data(), start_addr, file_content.size());
+        start_addr += 0x100;
+    }
+    std::string test_file{"test_raw_binary_file.dmp"};
+    auto path = fs::temp_directory_path() / test_file;
+    auto result = write_raw_binary(path.c_str(), memory, 0xC100);
+    ASSERT_EQ(result, 0);
+    EXPECT_EQ(fs::file_size(path), 515);
+    std::fstream ifs(path, std::ios::in | std::ios::binary);
+    ASSERT_TRUE(ifs.is_open());
+    std::array<char, 515> buffer{};
+    ifs.read(buffer.data(), buffer.size());
+    EXPECT_EQ(buffer[0x0000], '\x7E');
+    EXPECT_EQ(buffer[0x0001], '\xF0');
+    EXPECT_EQ(buffer[0x0002], '\x2D');
+    EXPECT_EQ(buffer[0x0003], '\x00');
+    EXPECT_EQ(buffer[0x0100], '\x7E');
+    EXPECT_EQ(buffer[0x0101], '\xCD');
+    EXPECT_EQ(buffer[0x0102], '\x03');
+    EXPECT_EQ(buffer[0x0103], '\x00');
+    EXPECT_EQ(buffer[0x0200], '\x01');
+    EXPECT_EQ(buffer[0x0201], '\x02');
+    EXPECT_EQ(buffer[0x0202], '\x03');
+    fs::remove(path);
+}
+
+TEST(test_fileread, fct_print_hexfile_error)
+{
+    std::stringstream stream1;
+    print_hexfile_error(stream1, -1);
+    EXPECT_THAT(stream1.str(), StartsWith("File does not exist or"));
+    std::stringstream stream2;
+    print_hexfile_error(stream2, -2);
+    EXPECT_EQ(stream2.str(), "Error reading from file.");
+    std::stringstream stream3;
+    print_hexfile_error(stream3, -3);
+    EXPECT_EQ(stream3.str(), "Unknown or invalid file format.");
+    std::stringstream stream4;
+    print_hexfile_error(stream4, -4);
+    EXPECT_EQ(stream4.str(), "Wrong checksum.");
+    std::stringstream stream5;
+    print_hexfile_error(stream5, -5);
+    EXPECT_EQ(stream5.str(), "Error writing to file.");
+    std::stringstream stream6;
+    print_hexfile_error(stream6, -6);
+    EXPECT_EQ(stream6.str(), "File can not be opened for writing.");
+    std::stringstream stream7;
+    print_hexfile_error(stream7, -100);
+    EXPECT_EQ(stream7.str(), "Unspecified error.");
+    std::stringstream stream8;
+    print_hexfile_error(stream8, 100);
+    EXPECT_TRUE(stream8.str().empty());
+}
+

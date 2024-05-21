@@ -109,7 +109,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
-CONFIG_CLEAN_VPATH_FILES = cat.cmd
+CONFIG_CLEAN_VPATH_FILES = cat.cmd cat.hex cat.s19
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -130,7 +130,8 @@ am__can_run_installinfo = \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/cat.cmd
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/cat.cmd \
+	$(srcdir)/cat.hex $(srcdir)/cat.s19
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -292,7 +293,9 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 EXTRA_DIST = \
-	cat.cmd
+	cat.cmd \
+	cat.hex \
+	cat.s19
 
 all: all-am
 

@@ -26,6 +26,7 @@ jobs:
           uname -a
           sysctl hw.physicalcpu
           sysctl hw.logicalcpu
+          echo "SHELL:" $SHELL
           VER=`$CC --version | sed -nE $CCVER`
           echo "C compiler version:" $VER
           VER=`$CXX --version | sed -nE $CCVER`
@@ -54,7 +55,7 @@ jobs:
         run: |
           otool -L src/flexemu
           otool -L src/flexplorer
-          make -j4 check && cat test/unittests.log
+          make -j4 check
           src/test
           src/dsktool -l disks/games.dsk
           src/dsktool -f new.dsk -S 80dsdd
@@ -65,17 +66,22 @@ jobs:
         if: always()
         run: |
           mkdir -p result/test
-          ls config.log
-          if [ $? == 0 ]; then
+          if [ -f config.log ]; then
             cp config.log result
           fi
           cd test
-          ls *.log *.trs *.xml
-          if [ $? == 0 ]; then
-            cp *.log *.trs *.xml ../result/test
+          if compgen -G *.log > /dev/null; then
+            cp *.log ../result/test
+          fi
+          if compgen -G *.xml > /dev/null; then
+            cp *.xml ../result/test
+          fi
+          if compgen -G *.trs > /dev/null; then
+            cp *.trs ../result/test
           fi
           cd ..
           echo "OS:          " `uname -a` > result/context.txt
+          echo "SHELL:       " echo $SHELL >> result/context.txt
           echo "Qt-version:  " $QT_SELECT >> result/context.txt
           echo "C-compiler:  " `$CC --version` >> result/context.txt
           echo "C++-compiler:" `$CXX --version` >> result/context.txt

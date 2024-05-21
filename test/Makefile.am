@@ -32,6 +32,7 @@ unittests_SOURCES = \
 	test_main.cpp \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
+	test_fileread.cpp \
 	test_fdirent.cpp \
 	test_bdate.cpp \
 	test_boption.cpp \
@@ -48,6 +49,7 @@ unittests_SOURCES = \
 	../src/fattrib.cpp \
 	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
+	../src/fileread.cpp \
 	../src/flexerr.cpp \
 	../src/misc1.cpp \
 	../src/bdate.h \
@@ -60,6 +62,7 @@ unittests_SOURCES = \
 	../src/fattrib.h \
 	../src/fdirent.h \
 	../src/ffilebuf.h \
+	../src/fileread.h \
 	../src/flexerr.h \
 	../src/misc1.h
 

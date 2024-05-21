@@ -183,6 +183,8 @@ AH_BOTTOM([/* NOLINTEND(cppcoreguidelines-macro-to-enum) */])
 dnl Link files to be available in an out-of-source build.
 dnl (e.g. with make distcheck).
 AC_CONFIG_LINKS([test/data/cat.cmd:test/data/cat.cmd])
+AC_CONFIG_LINKS([test/data/cat.hex:test/data/cat.hex])
+AC_CONFIG_LINKS([test/data/cat.s19:test/data/cat.s19])
 
 AC_CONFIG_FILES([Makefile \
 	src/Makefile \

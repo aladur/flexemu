@@ -1,2 +1,4 @@
 EXTRA_DIST = \
-	cat.cmd
+	cat.cmd \
+	cat.hex \
+	cat.s19
