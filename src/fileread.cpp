@@ -40,37 +40,58 @@ static Word read_word(std::istream &istream)
     return result;
 }
 
-static Byte read_hex_byte(std::istream &istream, Byte *checksum = nullptr)
+static bool read_hex_byte(std::istream &istream, Byte &value, Byte &checksum)
 {
-    std::stringstream stream;
-    std::string hex_str;
-    unsigned int value;
+    char byte;
 
-    hex_str.append(1, static_cast<char>(istream.get()));
-    hex_str.append(1, static_cast<char>(istream.get()));
-
-    stream << std::hex << hex_str;
-    stream >> value;
-    if (checksum != nullptr)
+    value = 0U;
+    for (int i = 0; i < 2; ++i)
     {
-        *checksum += static_cast<Byte>(value);
+        if (istream.eof())
+        {
+            return false;
+        }
+
+        istream.get(byte);
+        byte = static_cast<char>(toupper(static_cast<Byte>(byte)));
+        if (byte >= '0' && byte <= '9')
+        {
+            value <<= 4;
+            value |= (byte - '0');
+        }
+        else if (byte >= 'A' && byte <= 'F')
+        {
+            value <<= 4;
+            value |= (byte - 'A' + 10);
+        }
+        else
+        {
+            return false;
+        }
     }
-    return static_cast<Byte>(value & 0xff);
+
+    checksum += value;
+
+    return true;
 }
 
-static Word read_hex_word(std::istream &istream, Byte &checksum)
+static bool read_hex_word(std::istream &istream, Word &value, Byte &checksum)
 {
-    Byte value;
-    Word ret;
+    Byte byte;
 
-    value = read_hex_byte(istream);
-    checksum += value;
-    ret = static_cast<Word>(value) << 8;
-    value = read_hex_byte(istream);
-    checksum += value;
-    ret |= value;
+    value = 0U;
+    for (int i = 0; i < 2; ++i)
+    {
+        auto ok = read_hex_byte(istream, byte, checksum);
+        if (!ok)
+        {
+            return false;
+        }
+        value <<= 8;
+        value |= byte;
+    }
 
-    return ret;
+    return true;
 }
 
 static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
@@ -80,9 +101,11 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
     std::istream::int_type value;
     Byte type;
     Byte checksum;
-    DWord index;
-    DWord count;
-    DWord address;
+    Byte expected_checksum;
+    Byte dummy;
+    Byte index;
+    Byte count;
+    Word address;
     std::array<Byte, 255> buffer{};
     // MSVC does not allow auto *ibuffer.
     // NOLINTNEXTLINE(readability-qualified-auto).
@@ -96,9 +119,13 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
         {
             return -3; // format error
         }
-        count = read_hex_byte(istream, &checksum);
-        address = read_hex_word(istream, checksum);
-        type = read_hex_byte(istream, &checksum);
+        auto ok = read_hex_byte(istream, count, checksum);
+        ok &= read_hex_word(istream, address, checksum);
+        ok &= read_hex_byte(istream, type, checksum);
+        if (!ok)
+        {
+            return -3;
+        }
 
         if (type == 0x00) // Data
         {
@@ -107,11 +134,21 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
             {
                 if (address + index <= std::numeric_limits<Word>::max())
                 {
-                    *(ibuffer++) = read_hex_byte(istream, &checksum);
+                    Byte bval;
+                    ok = read_hex_byte(istream, bval, checksum);
+                    if (!ok)
+                    {
+                        return -3;
+                    }
+                    *(ibuffer++) = bval;
                 }
             }
             memtgt.CopyFrom(buffer.data(), address, count);
             ibuffer = buffer.begin();
+            if (count == 0)
+            {
+                done = true;
+            }
         }
         else if (type == 0x01) // End of file / start address
         {
@@ -123,8 +160,12 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
         }
 
         checksum = ~checksum + 1;
-
-        if (checksum != read_hex_byte(istream))
+        ok = read_hex_byte(istream, expected_checksum, dummy);
+        if (!ok)
+        {
+            return -3;
+        }
+        if (checksum != expected_checksum)
         {
             return -4; // checksum error
         }
@@ -151,9 +192,11 @@ static int load_motorola_srec(std::istream &istream,
     std::istream::int_type value;
     Byte type;
     Byte checksum;
+    Byte expected_checksum;
+    Byte dummy;
     DWord index;
-    DWord count;
-    DWord address;
+    Byte count;
+    Word address;
     std::array<Byte, 255> buffer{};
     // MSVC does not allow auto *ibuffer.
     // NOLINTNEXTLINE(readability-qualified-auto).
@@ -174,8 +217,12 @@ static int load_motorola_srec(std::istream &istream,
         }
 
         type = static_cast<char>(istream.get()); /* read type of line */
-        count = read_hex_byte(istream, &checksum);
-        address = read_hex_word(istream, checksum);
+        auto ok = read_hex_byte(istream, count, checksum);
+        ok &= read_hex_word(istream, address, checksum);
+        if (!ok)
+        {
+            return -3;
+        }
 
         switch (type)
         {
@@ -184,7 +231,7 @@ static int load_motorola_srec(std::istream &istream,
 
                 for (index = 0; index < count; ++index)
                 {
-                    (void)read_hex_byte(istream, &checksum);
+                    read_hex_byte(istream, dummy, checksum);
                 }
                 break;
 
@@ -196,8 +243,18 @@ static int load_motorola_srec(std::istream &istream,
                 {
                     if (address + index <= std::numeric_limits<Word>::max())
                     {
-                        *(ibuffer++) = read_hex_byte(istream, &checksum);
+                        Byte bval;
+                        ok = read_hex_byte(istream, bval, checksum);
+                        if (!ok)
+                        {
+                            return -3;
+                        }
+                        *(ibuffer++) = bval;
                     }
+                }
+                if (!ok)
+                {
+                    return -3;
                 }
                 memtgt.CopyFrom(buffer.data(), address, count);
                 ibuffer = buffer.begin();
@@ -217,8 +274,12 @@ static int load_motorola_srec(std::istream &istream,
         }
 
         checksum = ~checksum;
-
-        if (checksum != read_hex_byte(istream))
+        ok = read_hex_byte(istream, expected_checksum, dummy);
+        if (!ok)
+        {
+            return -3;
+        }
+        if (checksum != expected_checksum)
         {
             return -4; // checksum error
         }
@@ -285,14 +346,17 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
                 return -3;
             }
 
-            // Read next byte.
-            value = static_cast<char>(istream.get());
+            if (count != 0U)
+            {
+                // Read next byte.
+                value = static_cast<char>(istream.get());
+            }
         }
-        if (address + index <= std::numeric_limits<Word>::max())
+        if (count != 0U && address + index <= std::numeric_limits<Word>::max())
         {
             *(ibuffer++) = value;
         }
-        if (++index == count)
+        if (count == 0 || ++index == count)
         {
             memtgt.CopyFrom(buffer.data(), address, count);
             ibuffer = buffer.begin();
