@@ -296,11 +296,11 @@ TEST(test_fileread, fct_write_intel_hex)
         { 0x01, 0x02, 0x03 }
     }};
     std::array<std::string, 5> expected_lines{
-        ":03c100007ef02da1",
-        ":03c200007ecd03ed",
-        ":03c3000001020334",
-        ":040000050000c10036",
-        ":00000001ff",
+        ":03C100007EF02DA1",
+        ":03C200007ECD03ED",
+        ":03C3000001020334",
+        ":040000050000C10036",
+        ":00000001FF",
     };
 
     TestMemory memory{};
@@ -335,11 +335,11 @@ TEST(test_fileread, fct_write_motorola_srecord)
         { 0x01, 0x02, 0x03 }
     }};
     std::array<std::string, 5> expected_lines{
-        "S018000043726561746564207769746820666c6578326865780d",
-        "S106c1007ef02d9d",
-        "S106c2007ecd03e9",
-        "S106c30001020330",
-        "S903c1003b",
+        "S018000043726561746564207769746820666C6578326865780D",
+        "S106C1007EF02D9D",
+        "S106C2007ECD03E9",
+        "S106C30001020330",
+        "S903C1003B",
     };
 
     TestMemory memory{};

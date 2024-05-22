@@ -31,6 +31,7 @@
 #include <array>
 #include <vector>
 #include <functional>
+#include <fmt/format.h>
 
 
 static Word read_word(std::istream &istream)
@@ -530,12 +531,8 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
         address = 0;
     }
 
-    ostream
-        << ":"
-        << std::hex << std::setw(2) << std::setfill('0') << (size & 0xFF)
-        << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF)
-        << std::hex << std::setw(2) << std::setfill('0')
-        << static_cast<Word>(type);
+    ostream << fmt::format(":{:02X}{:04X}{:02X}", size & 0xFF,
+               address & 0xFFFF, static_cast<Word>(type));
 
     checksum += size & 0xFF;
     checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
@@ -543,14 +540,12 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
 
     for (index = 0; index < size; ++index)
     {
-        ostream << std::hex << std::setw(2) << std::setfill('0')
-                << static_cast<Word>(buffer[index]);
+        ostream << fmt::format("{:02X}", static_cast<Word>(buffer[index]));
         checksum += buffer[index];
     }
 
     checksum = ~checksum + 1;
-    ostream << std::hex << std::setw(2) << std::setfill('0')
-            << static_cast<Word>(checksum) << '\n';
+    ostream << fmt::format("{:02X}\n", static_cast<Word>(checksum));
 
     if (ostream.fail())
     {
@@ -583,24 +578,19 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
         address = 0;
     }
 
-    ostream
-        << "S" << type
-        << std::hex << std::setw(2) << std::setfill('0') << ((size + 3) & 0xFF)
-        << std::hex << std::setw(4) << std::setfill('0') << (address & 0xFFFF);
-
+    ostream << fmt::format("S{}{:02X}{:04X}", type, (size + 3) & 0xFF,
+               address & 0xFFFF);
     checksum += (size + 3) & 0xFF;
     checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
 
     for (index = 0; index < size; ++index)
     {
-        ostream << std::hex << std::setw(2) << std::setfill('0')
-                << static_cast<Word>(buffer[index]);
+        ostream << fmt::format("{:02X}", static_cast<Word>(buffer[index]));
         checksum += buffer[index];
     }
 
     checksum = ~checksum;
-    ostream << std::hex << std::setw(2) << std::setfill('0')
-            << static_cast<Word>(checksum) << '\n';
+    ostream << fmt::format("{:02X}\n", static_cast<Word>(checksum));
 
     if (ostream.fail())
     {
