@@ -47,7 +47,13 @@ jobs:
         if: always()
         run: |
           mkdir -p result/test
-          cp config.log distcheck*.log result
+          if [ -f config.log ]; then
+            cp config.log result
+          fi
+          if compgen -G distcheck*.log > /dev/null; then
+            cp distcheck*.log result
+          fi
+          echo "SHELL:        $SHELL" > result/context.txt
           echo "Qt-version:   ${QT_SELECT}" > result/context.txt
 
       - name: Upload artifacts

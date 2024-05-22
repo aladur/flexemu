@@ -92,9 +92,22 @@ jobs:
         if: always()
         run: |
           mkdir -p result/test
-          cd test; cp *.log *.trs *.xml ../result/test; cd ..
-          cp config.log result
+          if [ -f config.log ]; then
+            cp config.log result
+          fi
+          cd test
+          if compgen -G *.log > /dev/null; then
+            cp *.log ../result/test
+          fi
+          if compgen -G *.trs > /dev/null; then
+            cp *.trs ../result/test
+          fi
+          if compgen -G *.xml > /dev/null; then
+            cp *.xml ../result/test
+          fi
+          cd ..
           echo "OS:           ${{matrix.os}}" > result/context.txt
+          echo "SHELL:        $SHELL" > result/context.txt
           echo "Qt-version:   Qt${{matrix.qt-version}}" > result/context.txt
           echo "C-compiler:   ${{matrix.compiler[0]}}" > result/context.txt
           echo "C++-compiler: ${{matrix.compiler[1]}}" > result/context.txt
