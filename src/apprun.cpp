@@ -204,7 +204,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
     DWord startAddress = 0;
 
-    int error = load_hexfile(options.hex_file.c_str(), memory, startAddress);
+    int error = load_hexfile(options.hex_file, memory, startAddress);
     if (error < 0)
     {
         std::string hexFilePath;
@@ -212,7 +212,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
         hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
                       options.hex_file;
 
-        error = load_hexfile(hexFilePath.c_str(), memory, startAddress);
+        error = load_hexfile(hexFilePath, memory, startAddress);
         if (error < 0)
         {
             std::stringstream pmsg;

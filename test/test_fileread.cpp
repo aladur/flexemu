@@ -72,7 +72,7 @@ TEST(test_fileread, fct_load_hexfile)
     {
         TestMemory memory{};
         DWord start_addr = 0U;
-        auto result = load_hexfile(test_file.c_str(), memory, start_addr);
+        auto result = load_hexfile(test_file, memory, start_addr);
         ASSERT_EQ(result, 0);
         if (test_file.find("hex") == std::string::npos)
         {
@@ -133,7 +133,7 @@ TEST(test_fileread, fct_load_hexfile__intel)
         ofs.close();
         TestMemory memory{};
         DWord start_addr = 0U;
-        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        auto result = load_hexfile(path, memory, start_addr);
         ASSERT_EQ(result, expected_results[index++]);
         if (result == 0)
         {
@@ -184,7 +184,7 @@ TEST(test_fileread, fct_load_hexfile__motorola)
         ofs.close();
         TestMemory memory{};
         DWord start_addr = 0U;
-        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        auto result = load_hexfile(path, memory, start_addr);
         ASSERT_EQ(result, expected_results[index++]);
         if (result == 0)
         {
@@ -227,7 +227,7 @@ TEST(test_fileread, fct_load_hexfile__flex_binary)
         ofs.close();
         TestMemory memory{};
         DWord start_addr = 0U;
-        auto result = load_hexfile(path.c_str(), memory, start_addr);
+        auto result = load_hexfile(path, memory, start_addr);
         ASSERT_EQ(result, expected_results[index]);
         if (result == 0)
         {
@@ -275,7 +275,7 @@ TEST(test_fileread, fct_write_flex_binary)
     }
     std::string test_file{"test_flex_binary_file.cmd"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_flex_binary(path.c_str(), memory, 0xC100);
+    auto result = write_flex_binary(path, memory, 0xC100);
     ASSERT_EQ(result, 0);
     EXPECT_EQ(fs::file_size(path), 24);
     std::fstream ifs(path, std::ios::in | std::ios::binary);
@@ -311,7 +311,7 @@ TEST(test_fileread, fct_write_intel_hex)
     }
     std::string test_file{"test_intel_hex_file.hex"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_intel_hex(path.c_str(), memory, 0xC100);
+    auto result = write_intel_hex(path, memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::fstream ifs(path, std::ios::in | std::ios::binary);
     ASSERT_TRUE(ifs.is_open());
@@ -350,7 +350,7 @@ TEST(test_fileread, fct_write_motorola_srecord)
     }
     std::string test_file{"test_motorola_srecord_file.hex"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_motorola_srecord(path.c_str(), memory, 0xC100);
+    auto result = write_motorola_srecord(path, memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::fstream ifs(path, std::ios::in | std::ios::binary);
     ASSERT_TRUE(ifs.is_open());
@@ -383,7 +383,7 @@ TEST(test_fileread, fct_write_raw_binary)
     }
     std::string test_file{"test_raw_binary_file.dmp"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_raw_binary(path.c_str(), memory, 0xC100);
+    auto result = write_raw_binary(path, memory, 0xC100);
     ASSERT_EQ(result, 0);
     EXPECT_EQ(fs::file_size(path), 515);
     std::fstream ifs(path, std::ios::in | std::ios::binary);

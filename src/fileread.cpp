@@ -366,7 +366,7 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
     return 0;
 }
 
-int load_hexfile(const char *filename, MemoryTarget<DWord> &memtgt,
+int load_hexfile(const std::string &filename, MemoryTarget<DWord> &memtgt,
                  DWord &startAddress)
 {
     Word ch;
@@ -408,7 +408,7 @@ int load_hexfile(const char *filename, MemoryTarget<DWord> &memtgt,
     return -3; // Unknown or invalid file format
 }
 
-int load_flex_binary(const char *filename, MemoryTarget<DWord> &memtgt,
+int load_flex_binary(const std::string &filename, MemoryTarget<DWord> &memtgt,
                      DWord &startAddress)
 {
     std::ifstream istream(filename, std::ios_base::in | std::ios_base::binary);
@@ -620,7 +620,7 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
 }
 
 static int write_hexfile(
-    const char *filename,
+    const std::string &filename,
     const MemorySource<DWord> &memsrc,
     const std::function<int(WBType, std::ostream&, const Byte *, DWord,
         DWord)>& write_buffer,
@@ -689,14 +689,15 @@ static int write_hexfile(
     return result;
 }
 
-int write_intel_hex(const char *filename, const MemorySource<DWord> &memsrc,
+int write_intel_hex(const std::string &filename,
+                    const MemorySource<DWord> &memsrc,
                     DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
                          startAddress, false);
 }
 
-int write_motorola_srecord(const char *filename,
+int write_motorola_srecord(const std::string &filename,
                            const MemorySource<DWord> &memsrc,
                            DWord startAddress)
 {
@@ -704,7 +705,7 @@ int write_motorola_srecord(const char *filename,
                          startAddress, false);
 }
 
-int write_raw_binary(const char *filename,
+int write_raw_binary(const std::string &filename,
                      const MemorySource<DWord> &memsrc,
                      DWord startAddress)
 {
@@ -712,7 +713,8 @@ int write_raw_binary(const char *filename,
                          startAddress, true);
 }
 
-int write_flex_binary(const char *filename, const MemorySource<DWord> &memsrc,
+int write_flex_binary(const std::string &filename,
+                      const MemorySource<DWord> &memsrc,
                       DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_flex_binary, 255,

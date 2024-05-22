@@ -208,7 +208,7 @@ int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
         std::string outFilename(filename.c_str(), pos+1);
         outFilename = sTargetDir + outFilename;
 
-        auto result = write_flex_binary(outFilename.c_str(), memory);
+        auto result = write_flex_binary(outFilename, memory);
         if (result < 0)
         {
             std::cerr << "*** Error in \"" << outFilename << "\":\n    ";
