@@ -288,7 +288,7 @@ TEST(test_fileread, fct_write_flex_binary)
 
 }
 
-TEST(test_fileread, fct_write_intelhex)
+TEST(test_fileread, fct_write_intel_hex)
 {
     std::array<std::array<Byte, 3>, 3> file_contents{{
         { 0x7E, 0xF0, 0x2D },
@@ -311,7 +311,7 @@ TEST(test_fileread, fct_write_intelhex)
     }
     std::string test_file{"test_intel_hex_file.hex"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_intelhex(path.c_str(), memory, 0xC100);
+    auto result = write_intel_hex(path.c_str(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::fstream ifs(path, std::ios::in | std::ios::binary);
     ASSERT_TRUE(ifs.is_open());
@@ -326,7 +326,7 @@ TEST(test_fileread, fct_write_intelhex)
     fs::remove(path);
 }
 
-TEST(test_fileread, fct_write_motorola_srec)
+TEST(test_fileread, fct_write_motorola_srecord)
 {
     std::array<std::array<Byte, 3>, 3> file_contents{{
         { 0x7E, 0xF0, 0x2D },
@@ -348,9 +348,9 @@ TEST(test_fileread, fct_write_motorola_srec)
         memory.CopyFrom(file_content.data(), start_addr, file_content.size());
         start_addr += 0x100;
     }
-    std::string test_file{"test_motorola_srec_file.hex"};
+    std::string test_file{"test_motorola_srecord_file.hex"};
     auto path = fs::temp_directory_path() / test_file;
-    auto result = write_motorola_srec(path.c_str(), memory, 0xC100);
+    auto result = write_motorola_srecord(path.c_str(), memory, 0xC100);
     ASSERT_EQ(result, 0);
     std::fstream ifs(path, std::ios::in | std::ios::binary);
     ASSERT_TRUE(ifs.is_open());

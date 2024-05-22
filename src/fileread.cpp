@@ -94,8 +94,8 @@ static bool read_hex_word(std::istream &istream, Word &value, Byte &checksum)
     return true;
 }
 
-static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
-                         DWord &startAddress)
+static int load_intel_hex(std::istream &istream, MemoryTarget<DWord> &memtgt,
+                          DWord &startAddress)
 {
     bool done = false;
     std::istream::int_type value;
@@ -184,9 +184,9 @@ static int load_intelhex(std::istream &istream, MemoryTarget<DWord> &memtgt,
     return 0;
 }
 
-static int load_motorola_srec(std::istream &istream,
-                              MemoryTarget<DWord> &memtgt,
-                              DWord &startAddress)
+static int load_motorola_srecord(std::istream &istream,
+                                 MemoryTarget<DWord> &memtgt,
+                                 DWord &startAddress)
 {
     bool done = false;
     std::istream::int_type value;
@@ -392,12 +392,12 @@ int load_hexfile(const char *filename, MemoryTarget<DWord> &memtgt,
 
     if (ch == ':')
     {
-        return load_intelhex(istream, memtgt, startAddress);
+        return load_intel_hex(istream, memtgt, startAddress);
     }
 
     if (toupper(ch) == 'S')
     {
-        return load_motorola_srec(istream, memtgt, startAddress);
+        return load_motorola_srecord(istream, memtgt, startAddress);
     }
 
     if (ch == 0x02)
@@ -689,16 +689,16 @@ static int write_hexfile(
     return result;
 }
 
-int write_intelhex(const char *filename, const MemorySource<DWord> &memsrc,
-                   DWord startAddress)
+int write_intel_hex(const char *filename, const MemorySource<DWord> &memsrc,
+                    DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_intelhex, 32,
                          startAddress, false);
 }
 
-int write_motorola_srec(const char *filename,
-                        const MemorySource<DWord> &memsrc,
-                        DWord startAddress)
+int write_motorola_srecord(const char *filename,
+                           const MemorySource<DWord> &memsrc,
+                           DWord startAddress)
 {
     return write_hexfile(filename, memsrc, write_buffer_motorola_srec, 32,
                          startAddress, false);

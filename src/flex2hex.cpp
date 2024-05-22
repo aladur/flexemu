@@ -92,11 +92,11 @@ int ConvertFlexToHex(const char *ifile, const char *ofile,
     switch(ofiletype)
     {
         case FileType::IntelHex:
-                  result = write_intelhex(ofile, memory, startAddress);
+                  result = write_intel_hex(ofile, memory, startAddress);
                   break;
 
         case FileType::MotorolaSRec:
-                  result = write_motorola_srec(ofile, memory, startAddress);
+                  result = write_motorola_srecord(ofile, memory, startAddress);
                   break;
 
         case FileType::RawBinary:

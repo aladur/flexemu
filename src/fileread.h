@@ -37,13 +37,13 @@ extern int write_flex_binary(const char *filename,
                              const MemorySource<DWord> &memsrc,
                              DWord startAddress =
                                  std::numeric_limits<DWord>::max());
-extern int write_intelhex(const char *filename,
-                          const MemorySource<DWord> &memsrc,
-                          DWord startAddress =
+extern int write_intel_hex(const char *filename,
+                           const MemorySource<DWord> &memsrc,
+                           DWord startAddress =
                               std::numeric_limits<DWord>::max());
-extern int write_motorola_srec(const char *filename,
-                               const MemorySource<DWord> &memsrc,
-                               DWord startAddress =
+extern int write_motorola_srecord(const char *filename,
+                                  const MemorySource<DWord> &memsrc,
+                                  DWord startAddress =
                                    std::numeric_limits<DWord>::max());
 extern int write_raw_binary(const char *filename,
                             const MemorySource<DWord> &memsrc,
