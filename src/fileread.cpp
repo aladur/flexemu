@@ -21,6 +21,7 @@
 */
 
 
+#include "misc1.h"
 #include "fileread.h"
 #include <sstream>
 #include <iostream>
@@ -150,11 +151,29 @@ static int load_intel_hex(std::istream &istream, MemoryTarget<DWord> &memtgt,
                 done = true;
             }
         }
-        else if (type == 0x01) // End of file / start address
+        else if (type == 0x01) // End of file
         {
-            startAddress = address;
             done = true;
-        } else
+        }
+        else if (type == 0x05) // Start linear address
+        {
+            if (count != 4)
+            {
+                return -3; // Start address has 4 byte.
+            }
+            startAddress = 0U;
+            for (index = 0; index < count; ++index)
+            {
+                Byte bval;
+                ok = read_hex_byte(istream, bval, checksum);
+                if (!ok)
+                {
+                    return -3;
+                }
+                startAddress = (startAddress << 8) | bval;
+            }
+        }
+        else
         {
             return -3; // format error
         }
@@ -426,6 +445,7 @@ enum class WBType : uint8_t
     Header,
     Data,
     StartAddress,
+    EndOfFile,
 };
 
 static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
@@ -440,6 +460,7 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
     switch (wbType)
     {
         case WBType::Header:
+        case WBType::EndOfFile:
             break;
 
         case WBType::Data:
@@ -492,12 +513,21 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
 
     if (wbType == WBType::StartAddress)
     {
-        // Write the end-of-file record with start address
-        type = 1;
+        // Write the start-linear-address record.
+        type = 5;
+        size = 4;
         if (address == std::numeric_limits<DWord>::max())
         {
-            address = 0;
+            return 0;
         }
+        address = toBigEndian(address);
+        buffer = reinterpret_cast<Byte *>(&address);
+    }
+    else if (wbType == WBType::EndOfFile)
+    {
+        // Write the end-of-file record
+        type = 1;
+        address = 0;
     }
 
     ostream
@@ -543,6 +573,7 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
         case WBType::Header: type = 0; break;
         case WBType::Data: type = 1; break;
         case WBType::StartAddress: type = 9; break;
+        case WBType::EndOfFile: return 0;
     }
 
     if (wbType == WBType::StartAddress &&
@@ -589,6 +620,7 @@ static int write_buffer_raw_binary(WBType wbType, std::ostream &ostream,
     {
         case WBType::Header:
         case WBType::StartAddress:
+        case WBType::EndOfFile:
             return 0;
 
         case WBType::Data:
@@ -685,6 +717,16 @@ static int write_hexfile(
 
     result = write_buffer(WBType::StartAddress, ostream, buffer.data(),
                           startAddress, 0);
+    if (result != 0)
+    {
+        return result;
+    }
+    result = write_buffer(WBType::EndOfFile, ostream, buffer.data(),
+                          startAddress, 0);
+    if (result != 0)
+    {
+        return result;
+    }
 
     return result;
 }

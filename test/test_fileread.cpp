@@ -295,11 +295,12 @@ TEST(test_fileread, fct_write_intel_hex)
         { 0x7E, 0xCD, 0x03 },
         { 0x01, 0x02, 0x03 }
     }};
-    std::array<std::string, 4> expected_lines{
+    std::array<std::string, 5> expected_lines{
         ":03c100007ef02da1",
         ":03c200007ecd03ed",
         ":03c3000001020334",
-        ":00c100013e",
+        ":040000050000c10036",
+        ":00000001ff",
     };
 
     TestMemory memory{};
