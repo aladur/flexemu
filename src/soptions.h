@@ -123,7 +123,7 @@ struct sOptions
     sOptions& operator=(const sOptions &src) = default;
 
     std::string version;
-    std::array<std::string, MAX_DRIVES> drive;
+    std::array<std::string, MAX_DRIVES> drives;
     std::array<std::string, 2> mdcrDrives;
     std::string hex_file;
     std::string disk_dir;
@@ -135,7 +135,7 @@ struct sOptions
     bool use_undocumented{};
     bool useRtc{};
     bool term_mode{};
-    std::array<bool, MAX_DRIVES> canFormatDrive{};
+    std::array<bool, MAX_DRIVES> canFormatDrives{};
     bool isTerminalIgnoreESC{}; // Terminal mode: Ignore ESC (0x1B) characters
     bool isTerminalIgnoreNUL{}; // Terminal mode: Ignore NUL (0x00) characters
     FileTimeAccess fileTimeAccess{};

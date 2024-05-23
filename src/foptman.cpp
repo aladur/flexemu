@@ -115,10 +115,10 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
 
 void FlexemuOptions::InitOptions(struct sOptions &options)
 {
-    options.drive[0] = "system.dsk";
-    options.drive[1] = "";
-    options.drive[2] = "";
-    options.drive[3] = "";
+    options.drives[0] = "system.dsk";
+    options.drives[1] = "";
+    options.drives[2] = "";
+    options.drives[3] = "";
     options.mdcrDrives[0] = "system.mdcr";
     options.mdcrDrives[1] = "";
     options.hex_file = "neumon54.hex";
@@ -130,10 +130,10 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.isEurocom2V5 = false;
     options.use_undocumented = false;
     options.useRtc = true;
-    options.canFormatDrive[0] = false;
-    options.canFormatDrive[1] = false;
-    options.canFormatDrive[2] = false;
-    options.canFormatDrive[3] = false;
+    options.canFormatDrives[0] = false;
+    options.canFormatDrives[1] = false;
+    options.canFormatDrives[2] = false;
+    options.canFormatDrives[3] = false;
     options.fileTimeAccess = FileTimeAccess::NONE;
     options.reset_key = 0x1e; // is Ctrl-^ for reset or Sig. INT
     options.frequency = -1.0; // default: ignore
@@ -205,22 +205,22 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case '0':
-                options.drive[0] = optarg;
+                options.drives[0] = optarg;
                 setReadOnly(FlexemuOptionId::Drive0);
                 break;
 
             case '1':
-                options.drive[1] = optarg;
+                options.drives[1] = optarg;
                 setReadOnly(FlexemuOptionId::Drive1);
                 break;
 
             case '2':
-                options.drive[2] = optarg;
+                options.drives[2] = optarg;
                 setReadOnly(FlexemuOptionId::Drive2);
                 break;
 
             case '3':
-                options.drive[3] = optarg;
+                options.drives[3] = optarg;
                 setReadOnly(FlexemuOptionId::Drive3);
                 break;
 
@@ -343,7 +343,7 @@ void FlexemuOptions::GetCommandlineOptions(
                     }
                     if (ch != '-')
                     {
-                        options.canFormatDrive[i] = (ch == '1');
+                        options.canFormatDrives[i] = (ch == '1');
                         setReadOnly(canFormatDriveOptionId[i]);
                     }
                     ++i;
@@ -462,19 +462,19 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::Drive0:
-            reg.SetValue(FLEXDISK0, options.drive[0].c_str());
+            reg.SetValue(FLEXDISK0, options.drives[0].c_str());
             break;
 
         case FlexemuOptionId::Drive1:
-            reg.SetValue(FLEXDISK1, options.drive[1].c_str());
+            reg.SetValue(FLEXDISK1, options.drives[1].c_str());
             break;
 
         case FlexemuOptionId::Drive2:
-            reg.SetValue(FLEXDISK2, options.drive[2].c_str());
+            reg.SetValue(FLEXDISK2, options.drives[2].c_str());
             break;
 
         case FlexemuOptionId::Drive3:
-            reg.SetValue(FLEXDISK3, options.drive[3].c_str());
+            reg.SetValue(FLEXDISK3, options.drives[3].c_str());
             break;
 
         case FlexemuOptionId::MdcrDrive0:
@@ -486,19 +486,19 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::CanFormatDrive0:
-            reg.SetValue(FLEXFORMATDRIVE0, options.canFormatDrive[0] ? 1 : 0);
+            reg.SetValue(FLEXFORMATDRIVE0, options.canFormatDrives[0] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive1:
-            reg.SetValue(FLEXFORMATDRIVE1, options.canFormatDrive[1] ? 1 : 0);
+            reg.SetValue(FLEXFORMATDRIVE1, options.canFormatDrives[1] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive2:
-            reg.SetValue(FLEXFORMATDRIVE2, options.canFormatDrive[2] ? 1 : 0);
+            reg.SetValue(FLEXFORMATDRIVE2, options.canFormatDrives[2] ? 1 : 0);
             break;
 
         case FlexemuOptionId::CanFormatDrive3:
-            reg.SetValue(FLEXFORMATDRIVE3, options.canFormatDrive[3] ? 1 : 0);
+            reg.SetValue(FLEXFORMATDRIVE3, options.canFormatDrives[3] ? 1 : 0);
             break;
 
         case FlexemuOptionId::Frequency:
@@ -657,39 +657,39 @@ void FlexemuOptions::WriteOptionsToFile(
             break;
 
         case FlexemuOptionId::Drive0:
-            optionsToWrite.drive[0] = previousOptions.drive[0];
+            optionsToWrite.drives[0] = previousOptions.drives[0];
             break;
 
         case FlexemuOptionId::Drive1:
-            optionsToWrite.drive[1] = previousOptions.drive[1];
+            optionsToWrite.drives[1] = previousOptions.drives[1];
             break;
 
         case FlexemuOptionId::Drive2:
-            optionsToWrite.drive[2] = previousOptions.drive[2];
+            optionsToWrite.drives[2] = previousOptions.drives[2];
             break;
 
         case FlexemuOptionId::Drive3:
-            optionsToWrite.drive[3] = previousOptions.drive[3];
+            optionsToWrite.drives[3] = previousOptions.drives[3];
             break;
 
         case FlexemuOptionId::CanFormatDrive0:
-            optionsToWrite.canFormatDrive[0] =
-                previousOptions.canFormatDrive[0];
+            optionsToWrite.canFormatDrives[0] =
+                previousOptions.canFormatDrives[0];
             break;
 
         case FlexemuOptionId::CanFormatDrive1:
-            optionsToWrite.canFormatDrive[1] =
-                previousOptions.canFormatDrive[1];
+            optionsToWrite.canFormatDrives[1] =
+                previousOptions.canFormatDrives[1];
             break;
 
         case FlexemuOptionId::CanFormatDrive2:
-            optionsToWrite.canFormatDrive[2] =
-                previousOptions.canFormatDrive[2];
+            optionsToWrite.canFormatDrives[2] =
+                previousOptions.canFormatDrives[2];
             break;
 
         case FlexemuOptionId::CanFormatDrive3:
-            optionsToWrite.canFormatDrive[3] =
-                previousOptions.canFormatDrive[3];
+            optionsToWrite.canFormatDrives[3] =
+                previousOptions.canFormatDrives[3];
             break;
 
         case FlexemuOptionId::MdcrDrive0:
@@ -781,10 +781,10 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
     rcFile.SetValue(FLEXMONITOR, optionsToWrite.hex_file);
     rcFile.SetValue(FLEXDISKDIR, optionsToWrite.disk_dir);
-    rcFile.SetValue(FLEXDISK0, optionsToWrite.drive[0]);
-    rcFile.SetValue(FLEXDISK1, optionsToWrite.drive[1]);
-    rcFile.SetValue(FLEXDISK2, optionsToWrite.drive[2]);
-    rcFile.SetValue(FLEXDISK3, optionsToWrite.drive[3]);
+    rcFile.SetValue(FLEXDISK0, optionsToWrite.drives[0]);
+    rcFile.SetValue(FLEXDISK1, optionsToWrite.drives[1]);
+    rcFile.SetValue(FLEXDISK2, optionsToWrite.drives[2]);
+    rcFile.SetValue(FLEXDISK3, optionsToWrite.drives[3]);
     rcFile.SetValue(FLEXMDCRDRIVE0, optionsToWrite.mdcrDrives[0]);
     rcFile.SetValue(FLEXMDCRDRIVE1, optionsToWrite.mdcrDrives[1]);
     rcFile.SetValue(FLEXRAMEXTENSION, optionsToWrite.isRamExtension ? 1 : 0);
@@ -798,10 +798,14 @@ void FlexemuOptions::WriteOptionsToFile(
     {
         rcFile.SetValue(FLEXFREQUENCY, str);
     }
-    rcFile.SetValue(FLEXFORMATDRIVE0, optionsToWrite.canFormatDrive[0] ? 1 : 0);
-    rcFile.SetValue(FLEXFORMATDRIVE1, optionsToWrite.canFormatDrive[1] ? 1 : 0);
-    rcFile.SetValue(FLEXFORMATDRIVE2, optionsToWrite.canFormatDrive[2] ? 1 : 0);
-    rcFile.SetValue(FLEXFORMATDRIVE3, optionsToWrite.canFormatDrive[3] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE0,
+            optionsToWrite.canFormatDrives[0] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE1,
+            optionsToWrite.canFormatDrives[1] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE2,
+            optionsToWrite.canFormatDrives[2] ? 1 : 0);
+    rcFile.SetValue(FLEXFORMATDRIVE3,
+            optionsToWrite.canFormatDrives[3] ? 1 : 0);
     rcFile.SetValue(FLEXFILETIMEACCESS,
                     static_cast<int>(optionsToWrite.fileTimeAccess));
     rcFile.SetValue(FLEXTERMINALIGNOREESC,
@@ -843,10 +847,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     reg.GetValue(FLEXVERSION, options.version);
     reg.GetValue(FLEXDISKDIR, options.disk_dir);
-    reg.GetValue(FLEXDISK0, options.drive[0]);
-    reg.GetValue(FLEXDISK1, options.drive[1]);
-    reg.GetValue(FLEXDISK2, options.drive[2]);
-    reg.GetValue(FLEXDISK3, options.drive[3]);
+    reg.GetValue(FLEXDISK0, options.drives[0]);
+    reg.GetValue(FLEXDISK1, options.drives[1]);
+    reg.GetValue(FLEXDISK2, options.drives[2]);
+    reg.GetValue(FLEXDISK3, options.drives[3]);
     reg.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
     reg.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
     reg.GetValue(FLEXMONITOR, options.hex_file);
@@ -928,22 +932,22 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!reg.GetValue(FLEXFORMATDRIVE0, int_result))
     {
-        options.canFormatDrive[0] = (int_result != 0);
+        options.canFormatDrives[0] = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFORMATDRIVE1, int_result))
     {
-        options.canFormatDrive[1] = (int_result != 0);
+        options.canFormatDrives[1] = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFORMATDRIVE2, int_result))
     {
-        options.canFormatDrive[2] = (int_result != 0);
+        options.canFormatDrives[2] = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFORMATDRIVE3, int_result))
     {
-        options.canFormatDrive[3] = (int_result != 0);
+        options.canFormatDrives[3] = (int_result != 0);
     }
 
     if (!reg.GetValue(FLEXFILETIMEACCESS, int_result))
@@ -1003,10 +1007,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     BRcFile rcFile(rcFileName);
     rcFile.GetValue(FLEXVERSION, options.version);
     rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
-    rcFile.GetValue(FLEXDISK0, options.drive[0]);
-    rcFile.GetValue(FLEXDISK1, options.drive[1]);
-    rcFile.GetValue(FLEXDISK2, options.drive[2]);
-    rcFile.GetValue(FLEXDISK3, options.drive[3]);
+    rcFile.GetValue(FLEXDISK0, options.drives[0]);
+    rcFile.GetValue(FLEXDISK1, options.drives[1]);
+    rcFile.GetValue(FLEXDISK2, options.drives[2]);
+    rcFile.GetValue(FLEXDISK3, options.drives[3]);
     rcFile.GetValue(FLEXMDCRDRIVE0, options.mdcrDrives[0]);
     rcFile.GetValue(FLEXMDCRDRIVE1, options.mdcrDrives[1]);
     rcFile.GetValue(FLEXMONITOR, options.hex_file);
@@ -1082,22 +1086,22 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!rcFile.GetValue(FLEXFORMATDRIVE0, int_result))
     {
-        options.canFormatDrive[0] = (int_result != 0);
+        options.canFormatDrives[0] = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFORMATDRIVE1, int_result))
     {
-        options.canFormatDrive[1] = (int_result != 0);
+        options.canFormatDrives[1] = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFORMATDRIVE2, int_result))
     {
-        options.canFormatDrive[2] = (int_result != 0);
+        options.canFormatDrives[2] = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFORMATDRIVE3, int_result))
     {
-        options.canFormatDrive[3] = (int_result != 0);
+        options.canFormatDrives[3] = (int_result != 0);
     }
 
     if (!rcFile.GetValue(FLEXFILETIMEACCESS, int_result))

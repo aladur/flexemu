@@ -155,7 +155,7 @@ bool E2floppy::mount_drive(const std::string &path,
 
             // Empty or non existing files are only mounted if
             // option canFormatDrive is set.
-            if (!options.canFormatDrive[drive_nr] &&
+            if (!options.canFormatDrives[drive_nr] &&
                 (!fileExists ||
                 (fileExists && S_ISREG(sbuf.st_mode) && sbuf.st_size == 0)))
             {
@@ -505,7 +505,7 @@ bool E2floppy::startCommand(Byte command_un)
         // within the emulation.
         // Only unformatted file containers, if IsFlexFormat()
         // returns false, can be formatted.
-        if (pfs->IsFlexFormat() || !options.canFormatDrive[selected])
+        if (pfs->IsFlexFormat() || !options.canFormatDrives[selected])
         {
             return false;
         }

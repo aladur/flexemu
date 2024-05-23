@@ -217,18 +217,18 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     e_monitorPgm->setText(QString(options.hex_file.c_str()));
     e_diskMonitorDir->setText(QString(options.disk_dir.c_str()));
 
-    e_drive0->setText(QString(options.drive[0].c_str()));
-    e_drive1->setText(QString(options.drive[1].c_str()));
-    e_drive2->setText(QString(options.drive[2].c_str()));
-    e_drive3->setText(QString(options.drive[3].c_str()));
+    e_drive0->setText(QString(options.drives[0].c_str()));
+    e_drive1->setText(QString(options.drives[1].c_str()));
+    e_drive2->setText(QString(options.drives[2].c_str()));
+    e_drive3->setText(QString(options.drives[3].c_str()));
 
     e_mdcrDrive0->setText(QString(options.mdcrDrives[0].c_str()));
     e_mdcrDrive1->setText(QString(options.mdcrDrives[1].c_str()));
 
-    c_canFormatDrive0->setChecked(options.canFormatDrive[0]);
-    c_canFormatDrive1->setChecked(options.canFormatDrive[1]);
-    c_canFormatDrive2->setChecked(options.canFormatDrive[2]);
-    c_canFormatDrive3->setChecked(options.canFormatDrive[3]);
+    c_canFormatDrive0->setChecked(options.canFormatDrives[0]);
+    c_canFormatDrive1->setChecked(options.canFormatDrives[1]);
+    c_canFormatDrive2->setChecked(options.canFormatDrives[2]);
+    c_canFormatDrive3->setChecked(options.canFormatDrives[3]);
 
     if (options.isRamExtension)
     {
@@ -690,40 +690,40 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
 
     if (!IsReadOnly(FlexemuOptionId::Drive0))
     {
-        options.drive[0] =
+        options.drives[0] =
             QDir::toNativeSeparators(e_drive0->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive1))
     {
-        options.drive[1] =
+        options.drives[1] =
             QDir::toNativeSeparators(e_drive1->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive2))
     {
-        options.drive[2] =
+        options.drives[2] =
             QDir::toNativeSeparators(e_drive2->text()).toStdString();
     }
     if (!IsReadOnly(FlexemuOptionId::Drive3))
     {
-        options.drive[3] =
+        options.drives[3] =
             QDir::toNativeSeparators(e_drive3->text()).toStdString();
     }
 
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive0))
     {
-        options.canFormatDrive[0] = c_canFormatDrive0->isChecked();
+        options.canFormatDrives[0] = c_canFormatDrive0->isChecked();
     }
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive1))
     {
-        options.canFormatDrive[1] = c_canFormatDrive1->isChecked();
+        options.canFormatDrives[1] = c_canFormatDrive1->isChecked();
     }
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive2))
     {
-        options.canFormatDrive[2] = c_canFormatDrive2->isChecked();
+        options.canFormatDrives[2] = c_canFormatDrive2->isChecked();
     }
     if (!IsReadOnly(FlexemuOptionId::CanFormatDrive3))
     {
-        options.canFormatDrive[3] = c_canFormatDrive3->isChecked();
+        options.canFormatDrives[3] = c_canFormatDrive3->isChecked();
     }
 
     if (!IsReadOnly(FlexemuOptionId::MdcrDrive0))

@@ -26,42 +26,42 @@
 FlexemuOptionsDifference::FlexemuOptionsDifference(
         const sOptions &opt1, const sOptions &opt2)
 {
-    if (opt1.drive[0] != opt2.drive[0])
+    if (opt1.drives[0] != opt2.drives[0])
     {
         notEquals.push_back(FlexemuOptionId::Drive0);
     }
 
-    if (opt1.drive[1] != opt2.drive[1])
+    if (opt1.drives[1] != opt2.drives[1])
     {
         notEquals.push_back(FlexemuOptionId::Drive1);
     }
 
-    if (opt1.drive[2] != opt2.drive[2])
+    if (opt1.drives[2] != opt2.drives[2])
     {
         notEquals.push_back(FlexemuOptionId::Drive2);
     }
 
-    if (opt1.drive[3] != opt2.drive[3])
+    if (opt1.drives[3] != opt2.drives[3])
     {
         notEquals.push_back(FlexemuOptionId::Drive3);
     }
 
-    if (opt1.canFormatDrive[0] != opt2.canFormatDrive[0])
+    if (opt1.canFormatDrives[0] != opt2.canFormatDrives[0])
     {
         notEquals.push_back(FlexemuOptionId::CanFormatDrive0);
     }
 
-    if (opt1.canFormatDrive[1] != opt2.canFormatDrive[1])
+    if (opt1.canFormatDrives[1] != opt2.canFormatDrives[1])
     {
         notEquals.push_back(FlexemuOptionId::CanFormatDrive1);
     }
 
-    if (opt1.canFormatDrive[2] != opt2.canFormatDrive[2])
+    if (opt1.canFormatDrives[2] != opt2.canFormatDrives[2])
     {
         notEquals.push_back(FlexemuOptionId::CanFormatDrive2);
     }
 
-    if (opt1.canFormatDrive[3] != opt2.canFormatDrive[3])
+    if (opt1.canFormatDrives[3] != opt2.canFormatDrives[3])
     {
         notEquals.push_back(FlexemuOptionId::CanFormatDrive3);
     }
