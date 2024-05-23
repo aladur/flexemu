@@ -25,8 +25,8 @@
 #include <set>
 #include <string>
 #include <sstream>
-#include <iomanip>
 #include <array>
+#include <fmt/format.h>
 
 
 FileContainerCheck::FileContainerCheck(
@@ -53,9 +53,8 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
         {
             std::stringstream stream;
 
-            stream << "\\x" << std::setfill('0') << std::setw(2) <<
-                      std::uppercase << std::hex <<
-                      static_cast<Word>(static_cast<Byte>(ch));
+            stream << "\\x" << fmt::format("{:02X}",
+                      static_cast<Word>(static_cast<Byte>(ch)));
             name += stream.str();
         }
     }
@@ -700,8 +699,8 @@ std::ostream &FileContainerCheck::DebugDump(std::ostream &os) const
     int index = 0;
     for (const auto &item : items)
     {
-        os << " " << std::left << std::setw(3) << index++ <<
-              " " << std::right << item << "\n";
+        os << fmt::format(" {:<3} ", index) << item << "\n";
+        ++index;
     }
 
     os << "********  L I N K S  ********\n";
@@ -964,33 +963,21 @@ std::ostream& operator<<(std::ostream &os, const BadLink &item)
 
 std::ostream& operator<<(std::ostream &os, const BadDate &item)
 {
-    auto previous_flags = os.flags();
-    auto previous_fill = os.fill('0');
-
-    os << std::hex << std::uppercase << item.type <<
+    os << item.type <<
           "BADDAT: " << item.name << " has a bad date. MM-DD-YY is " <<
-          std::setw(2) << static_cast<Word>(item.month) << "-" <<
-          std::setw(2) << static_cast<Word>(item.day) << "-" <<
-          std::setw(2) << static_cast<Word>(item.year);
-
-    os.fill(previous_fill);
-    os.flags(previous_flags);
+          fmt::format("{:02X}-{:02X}-{:02X}", static_cast<Word>(item.month),
+                      static_cast<Word>(item.day),
+                      static_cast<Word>(item.year));
 
     return os;
 }
 
 std::ostream& operator<<(std::ostream &os, const BadTime &item)
 {
-    auto previous_flags = os.flags();
-    auto previous_fill = os.fill('0');
-
-    os << std::hex << std::uppercase << item.type <<
+    os << item.type <<
           "BADTIM: " << item.name << " has a bad time. HH-MM is " <<
-          std::setw(2) << static_cast<Word>(item.hour) << "-" <<
-          std::setw(2) << static_cast<Word>(item.minute);
-
-    os.fill(previous_fill);
-    os.flags(previous_flags);
+          fmt::format("{:02X}-{:02X}", static_cast<Word>(item.hour),
+                      static_cast<Word>(item.minute));
 
     return os;
 }

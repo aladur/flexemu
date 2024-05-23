@@ -23,7 +23,7 @@
 #include "iodevdbg.h"
 #include "misc1.h"
 #include <fstream>
-#include <iomanip>
+#include <fmt/format.h>
 
 
 IoDeviceDebug::IoDeviceDebug(IoDevice &p_device,
@@ -55,11 +55,9 @@ Byte IoDeviceDebug::readIo(Word offset)
 
     if (fstream.is_open())
     {
-        fstream << "mode=read"
-                << "  offset=" << std::setw(2) << offset
-                << " result=" << hexstr(result)
-                << " device=" << std::string(device.getName()) << '\n';
-
+        fstream << fmt::format(
+                "mode=read  offset={:2} result={:02X} device={}\n",
+                offset, static_cast<Word>(result), device.getName());
         fstream.close();
     }
 
@@ -74,11 +72,9 @@ void IoDeviceDebug::writeIo(Word offset, Byte value)
 
     if (fstream.is_open())
     {
-        fstream << "mode=write"
-                << " offset=" << std::setw(2) << offset
-                << " value=" << hexstr(value)
-                << "  device=" << std::string(device.getName()) << '\n';
-
+        fstream << fmt::format(
+                "mode=write offset={:2} value={:02X}  device={}\n",
+                offset, static_cast<Word>(value), device.getName());
         fstream.close();
     }
 }
