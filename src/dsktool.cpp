@@ -42,6 +42,7 @@
 #include "filfschk.h"
 #include "ffilebuf.h"
 #include "filecnts.h"
+#include <fmt/format.h>
 
 
 std::vector<std::string> GetMatchingFilenames(
@@ -361,27 +362,19 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
             largest = sectors;
         }
 
-        std::cout <<
-            std::right << std::setw(5) << number << "  " <<
-            std::left << std::setw(8) << dir_entry.GetFileName() << "." <<
-            std::left << std::setw(3) << dir_entry.GetFileExt() << "  " <<
-            std::right << std::uppercase << std::hex << std::setfill('0') <<
-            std::setw(2) << startTrack << "-" <<
-            std::setw(2) << startSector << "  " <<
-            std::setw(2) << endTrack << "-" <<
-            std::setw(2) << endSector << " " <<
-            std::dec << std::setfill(' ') <<
-            std::setw(5) << sectors << "  " <<
-            std::setw(11) << dir_entry.GetDate().GetDateString(format) << " ";
+        std::cout << fmt::format(
+                  "{:5}  {:<8}.{:<3}  {:02X}-{:02X}  {:02X}-{:02X} {:5}  {:11} ",
+                    number, dir_entry.GetFileName(),
+                    dir_entry.GetFileExt(), startTrack, startSector,
+                    endTrack, endSector, sectors,
+                    dir_entry.GetDate().GetDateString(format));
         if ((fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get)
         {
             std::cout <<
                 dir_entry.GetTime().AsString(BTime::Format::HHMM) << " ";
         }
-        std::cout <<
-            std::left << std::setw(4) <<
-            dir_entry.GetAttributesString() << " " <<
-            (dir_entry.IsRandom() ? "R" : "") << '\n';
+        std::cout << fmt::format("{:<4} {}\n", dir_entry.GetAttributesString(),
+                     (dir_entry.IsRandom() ? "R" : ""));
     }
 
     if (hasInfo)
@@ -455,16 +448,11 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
         std::string file = verbose ? dsk_file : getFileName(dsk_file);
 
-        std::cout <<
-            std::left <<
-            info.GetDate().GetDateString(format) << " " <<
-            std::setw(12) << name << " " <<
-            std::setw(5) << info.GetNumber() << " " <<
-            std::setw(2) << tracks << "-" << std::setw(2) << sectors << " " <<
-            std::setw(5) << file_count << " " <<
-            std::setw(5) << (info.GetTotalSize() / SECTOR_SIZE) << " " <<
-            std::setw(5) << (info.GetFree() / SECTOR_SIZE) << " " <<
-            file << "\n";
+        std::cout << fmt::format(
+            "{} {:<12} {:<5} {:<2}-{:<2} {:<5} {:<5} {:<5} {}\n",
+            info.GetDate().GetDateString(format), name, info.GetNumber(),
+            tracks, sectors, file_count, info.GetTotalSize() / SECTOR_SIZE,
+            info.GetFree() / SECTOR_SIZE, file);
         sum_size += (info.GetTotalSize() / SECTOR_SIZE);
         sum_free += (info.GetFree() / SECTOR_SIZE);
     }

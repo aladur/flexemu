@@ -24,7 +24,7 @@
 #include "bdate.h"
 #include <array>
 #include <sstream>
-#include <iomanip>
+#include <fmt/format.h>
 
 //BDate::year2000 = 1;
 
@@ -65,23 +65,18 @@ std::string BDate::GetDateString(Format format) const
     switch (format)
     {
         case Format::Iso:
-            stream << std::setw(4) << std::setfill('0') << y <<
-                      std::setw(2) << std::setfill('0') << GetMonth() <<
-                      std::setw(2) << std::setfill('0') << GetDay();
+            stream << fmt::format("{:04}{:02}{:02}", y, GetMonth(), GetDay());
             break;
 
         case Format::D2MS3Y4:
-            stream << std::setw(2) << std::setfill('0') << GetDay() << '-' <<
-                      std::setfill('0') << monthNames[m - 1] << '-' <<
-                      std::setw(4) << std::setfill('0') << y;
+            stream << fmt::format("{:02}-{}-{:04}", GetDay(),
+                      monthNames[m - 1], y);
             break;
 
         case Format::D2MSU3Y4:
             std::string monthString(monthNames[m - 1]);
             strupper(monthString);
-            stream << std::setw(2) << std::setfill('0') << GetDay() << '-' <<
-                      std::setfill('0') << monthString << '-' <<
-                      std::setw(4) << std::setfill('0') << y;
+            stream << fmt::format("{:02}-{}-{:04}", GetDay(), monthString, y);
             break;
     }
 

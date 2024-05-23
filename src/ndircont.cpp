@@ -48,6 +48,7 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 #include "fdoptman.h"
+#include <fmt/format.h>
 
 
 // A debug log can be written to a file
@@ -410,8 +411,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
     {
         std::stringstream filename;
 
-        filename << "tmp" << std::setw(2) << std::setfill('0')
-                 << -1 - file_id;
+        filename << fmt::format("tmp{:02}", -1 - file_id);
         return filename.str();
     }
 

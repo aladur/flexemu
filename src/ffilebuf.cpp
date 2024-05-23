@@ -33,6 +33,7 @@
 #include "filecntb.h"
 #include <algorithm>
 #include <vector>
+#include <fmt/format.h>
 
 
 // The format of a FLEX text file is described in the
@@ -401,13 +402,11 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
     for (offset = 0; offset < fileHeader.fileSize; offset += bytesPerLine)
     {
         // File offset.
-        std::stringstream offsetstream;
 
-        offsetstream << std::setw(width) << std::setfill('0') <<
-                        std::hex << offset;
+        const auto offset_str = fmt::format("{0:0{1}X}", offset, width);
         for (int i = 0; i < width; i++)
         {
-            fct(offsetstream.str()[i]);
+            fct(offset_str[i]);
         }
         fct(' ');
 
@@ -416,13 +415,10 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
              index < bytesPerLine && (offset + index < fileHeader.fileSize);
              index++)
         {
-            std::stringstream bytestream;
-
             auto c = buffer[offset + index] & 0xFF;
-            bytestream << std::setw(2) << std::setfill('0') <<
-                      std::hex << static_cast<Word>(c);
-            fct(bytestream.str()[0]);
-            fct(bytestream.str()[1]);
+            const auto byte_str = fmt::format("{:02X}", static_cast<Word>(c));
+            fct(byte_str[0]);
+            fct(byte_str[1]);
             fct(' ');
         }
 

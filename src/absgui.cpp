@@ -32,6 +32,7 @@
 #include "schedule.h"
 #include "mc6809st.h"
 #include "terminal.h"
+#include <fmt/format.h>
 
 
 void AbstractGui::update_cpuview(const Mc6809CpuStatus &status)
@@ -81,9 +82,8 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
     text(15, 5, hexstr(status.a));
     text(15, 6, hexstr(status.b));
 
-    std::stringstream cycles_str;
-    cycles_str << std::setw(16) << status.total_cycles;
-    text(5, 0, cycles_str.str());
+    std::string cycles_str = fmt::format("{:16}", status.total_cycles);
+    text(5, 0, cycles_str);
 
     std::stringstream freq_str;
     freq_str << std::fixed << std::setprecision(2) << std::setw(6) <<

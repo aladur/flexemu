@@ -27,7 +27,7 @@
 #include "flexerr.h"
 #include <sstream>
 #include <iostream>
-#include <iomanip>
+#include <fmt/format.h>
 
 
 #define GET_DELTA_TIME static_cast<float>((cpu.get_cycles() - cycles_cdbg) * \
@@ -500,8 +500,7 @@ void Pia2V5::log_buffer(const std::vector<Byte> &buffer)
 
         for(index = 0; index < buffer.size(); ++index)
         {
-            cdbg << " " << std::hex << std::uppercase << std::setw(2) <<
-                    std::setfill('0') << static_cast<Word>(buffer[index]);
+            cdbg << fmt::format(" {:02X}", static_cast<Word>(buffer[index]));
             if (((index % 16 == 15) && index < (buffer.size() - 1)) ||
                (index == (buffer.size() - 1)))
             {

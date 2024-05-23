@@ -22,8 +22,7 @@
 
 #include "btime.h"
 #include <sstream>
-#include <iostream>
-#include <iomanip>
+#include <fmt/format.h>
 
 
 BTime::BTime(int h, int m, int s)
@@ -48,16 +47,11 @@ std::string BTime::AsString(Format format) const
     switch (format)
     {
         case Format::HHMMSS:
-            stream << std::setfill('0') <<
-                std::setw(2) << hour << ':' <<
-                std::setw(2) << minute << ':' <<
-                std::setw(2) << second;
+            stream << fmt::format("{:02}:{:02}:{:02}", hour, minute, second);
             break;
 
         case Format::HHMM:
-            stream << std::setfill('0') <<
-                std::setw(2) << hour << ':' <<
-                std::setw(2) << minute;
+            stream << fmt::format("{:02}:{:02}", hour, minute);
             break;
     }
 

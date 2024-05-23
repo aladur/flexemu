@@ -29,12 +29,9 @@
 #include "flexerr.h"
 #include "bdir.h"
 #include <ctype.h>
-#include <limits>
 #include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <algorithm>
 #include <vector>
+#include <fmt/format.h>
 
 void version()
 {
@@ -259,11 +256,8 @@ int ListContentOfMdcrFile(const char *ifile)
         else
         {
             const auto addrRange = memory.GetAddressRanges()[0];
-            std::cout
-                << filename << std::hex << std::uppercase
-                << " " << std::setw(4) << std::setfill('0') << addrRange.lower()
-                << " " << std::setw(4) << std::setfill('0') << addrRange.upper()
-                << "\n";
+            std::cout << fmt::format("{} {:04X} {:04X}\n", filename,
+                addrRange.lower(), addrRange.upper());
         }
         return MdcrStatus::Success;
     });

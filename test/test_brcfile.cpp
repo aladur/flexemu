@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include "misc1.h"
 #include "brcfile.h"
 #include <string>
@@ -7,21 +6,13 @@
 #include <sstream>
 #include <fstream>
 #include <filesystem>
-/*
-#include "flexerr.h"
-#include <iostream>
-#include <iomanip>
-#include <numeric>
-#include <algorithm>
-*/
+//#include <fmt/format.h>
 
-using ::testing::Throws;
 namespace fs = std::filesystem;
 
 /*
 auto print_fct = [](const Byte b){
-    std::cout << std::hex << std::setw(2) << std::setfill('0') <<
-                 static_cast<Word>(b) << " ";
+    std::cout << fmt::format("{:02X} ", static_cast<Word>(b));
 };
 */
 

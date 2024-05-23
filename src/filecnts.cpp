@@ -21,21 +21,12 @@
 
 #include "filecnts.h"
 #include <ostream>
-#include <iomanip>
-#include <string>
-#include <sstream>
+#include <fmt/format.h>
 
 std::ostream& operator<<(std::ostream& os, const st_t &st)
 {
-    auto previous_flags = os.flags();
-    auto previous_fill = os.fill('0');
-
-    os <<
-        std::hex << std::uppercase <<
-        std::setw(2) << static_cast<Word>(st.trk) << "-" <<
-        std::setw(2) << static_cast<Word>(st.sec);
-    os.fill(previous_fill);
-    os.flags(previous_flags);
+    os << fmt::format("{:02X}-{:02X}", static_cast<Word>(st.trk),
+            static_cast<Word>(st.sec));
 
     return os;
 }
