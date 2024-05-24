@@ -21,11 +21,8 @@
 */
 
 #include "misc1.h"
-
 #include "fpdnd.h"
-#include "ffilecnt.h"
-#include "fdirent.h"
-#include "fcinfo.h"
+#include "flexerr.h"
 #include "ffilebuf.h"
 
 

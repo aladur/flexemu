@@ -30,7 +30,6 @@
 #include "filecnts.h"
 #include "fdirent.h"
 #include "bfileptr.h"
-#include "flexerr.h"
 #include <string>
 #include <vector>
 

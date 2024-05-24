@@ -21,6 +21,7 @@
 
 #include "iffilcnt.h"
 #include "ffilecnt.h"
+#include "flexerr.h"
 #include <string>
 #include <sstream>
 #include <algorithm>

@@ -24,7 +24,6 @@
 #define FDDND_INCLUDED
 
 #include <vector>
-#include "flexemu.h"
 #include "ffilebuf.h"
 
 class FileContainerIf;
