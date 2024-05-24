@@ -296,7 +296,6 @@ extern const char * const RANDOM_FILE_LIST;
 #endif
 
 #ifdef __cplusplus
-    extern int copyFile(const char *srcPath, const char *destPath);
     extern char tolower_value(char ch);
     extern char &tolower_ref(char &ch);
     extern void strlower(std::string& str);

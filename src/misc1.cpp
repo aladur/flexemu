@@ -54,25 +54,6 @@
 const char * const RANDOM_FILE_LIST = "random";
 const char * const white_space = " \t\n\r\f\v";
 
-int copyFile(const char *srcPath, const char *destPath)
-{
-    BFilePtr sFp(srcPath,  "rb");
-    BFilePtr dFp(destPath, "wb");
-    int c;
-
-    if (sFp == nullptr || dFp == nullptr)
-    {
-        return 0;
-    }
-
-    while ((c = fgetc(sFp)) != EOF)
-    {
-        fputc(c, dFp);
-    }
-
-    return 1;
-}
-
 char tolower_value(char ch)
  {
      if (ch >= 'A' && ch <= 'Z')
