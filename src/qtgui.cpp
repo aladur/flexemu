@@ -50,7 +50,6 @@
 #include "poutwin.h"
 #include <QString>
 #include <QStringList>
-#include <QVector>
 #include <QPixmap>
 #include <QPainter>
 #include <QIODevice>
@@ -1135,12 +1134,12 @@ void QtGui::AddDiskStatusButtons()
 
 QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
 {
-    static const QVector<QString> menuText{
+    static const QStringList menuText{
         tr("&Small"),
         tr("&Medium"),
         tr("&Large"),
     };
-    static const QVector<QString> toolTipText{
+    static const QStringList toolTipText{
         tr("Show small size Icons"),
         tr("Show medium size Icons"),
         tr("Show large size Icons"),
@@ -1163,7 +1162,7 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
 QAction *QtGui::CreateScreenSizeAction(
         const QIcon &icon, QMenu &menu, uint16_t index)
 {
-    static const QVector<QString> menuText{
+    static const QStringList menuText{
         tr("&Default"),
         tr("D&ouble"),
         tr("Tr&iple"),

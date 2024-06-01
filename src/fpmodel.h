@@ -39,7 +39,6 @@
 #include <QStringList>
 #include "warnon.h"
 #include <memory>
-#include <vector>
 #include <array>
 #include <string>
 
@@ -73,8 +72,8 @@ public:
     int GetContainerType() const;
     FlexContainerInfo GetContainerInfo() const;
 
-    QVector<QString> GetFilenames(const QModelIndexList &indexList) const;
-    QVector<QString> GetFilenames() const;
+    QStringList GetFilenames(const QModelIndexList &indexList) const;
+    QStringList GetFilenames() const;
     QVector<Byte> GetAttributes(const QModelIndexList &indexList) const;
     bool GetAttributes(const QModelIndex &index, Byte &attributes) const;
     bool GetAttributesString(const QModelIndex &index,

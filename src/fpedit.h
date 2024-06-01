@@ -25,6 +25,7 @@
 
 #include "efiletim.h"
 #include "warnoff.h"
+#include <QString>
 #include <QStringList>
 #include <QStyledItemDelegate>
 #include <QRegularExpressionValidator>
@@ -42,11 +43,11 @@ public:
     FlexRegularExpressionValidator() = delete;
     explicit FlexRegularExpressionValidator(const QRegularExpression &regex,
                                    QObject *parent = Q_NULLPTR,
-                                   const QVector<QString> &filenames = { });
+                                   const QStringList &filenames = { });
     QValidator::State validate(QString &input, int &pos) const override;
 
 private:
-    QVector<QString> filenames;
+    QStringList filenames;
 };
 
 // Delegate to edit date and time.

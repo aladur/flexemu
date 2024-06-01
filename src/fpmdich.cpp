@@ -535,7 +535,7 @@ QVector<Byte> FlexplorerMdiChild::GetSelectedAttributes() const
     return model->GetAttributes(selectionModel()->selectedRows());
 }
 
-QVector<QString> FlexplorerMdiChild::GetSelectedFilenames() const
+QStringList FlexplorerMdiChild::GetSelectedFilenames() const
 {
     return model->GetFilenames(selectionModel()->selectedRows());
 }

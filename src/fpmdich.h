@@ -30,6 +30,7 @@
 #include <QPoint>
 #include <QVector>
 #include <QString>
+#include <QStringList>
 #include <QTableView>
 #include "warnon.h"
 #include "fpmodel.h"
@@ -69,7 +70,7 @@ public:
     QVector<int>::size_type InjectFiles(const QStringList &filePaths);
     QVector<int>::size_type ExtractSelected(const QString &targetDirectory);
     QVector<int>::size_type ViewSelected();
-    QVector<QString> GetSelectedFilenames() const;
+    QStringList GetSelectedFilenames() const;
     QString GetSupportedAttributes() const;
     QVector<Byte> GetSelectedAttributes() const;
     int SetSelectedAttributes(Byte setMask, Byte clearMask);

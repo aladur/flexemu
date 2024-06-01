@@ -37,6 +37,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QVarLengthArray>
 #include "warnon.h"
@@ -67,7 +68,7 @@ public:
         assert(c_protect.size() == attributeLabel.size());
     }
 
-    void TransferDataToDialog(const QVector<QString> &filenames,
+    void TransferDataToDialog(const QStringList &filenames,
                               const QVector<Byte> &attributes,
                               const QString &supportedAttributes,
                               bool isWriteProtected)

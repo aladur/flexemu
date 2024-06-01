@@ -250,10 +250,10 @@ FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const
     return info;
 }
 
-QVector<QString> FlexplorerTableModel::GetFilenames(
+QStringList FlexplorerTableModel::GetFilenames(
         const QModelIndexList &indexList) const
 {
-    QVector<QString> filenames;
+    QStringList filenames;
 
     filenames.reserve(indexList.size());
     for (const auto &index : indexList)
@@ -267,9 +267,9 @@ QVector<QString> FlexplorerTableModel::GetFilenames(
     return filenames;
 }
 
-QVector<QString> FlexplorerTableModel::GetFilenames() const
+QStringList FlexplorerTableModel::GetFilenames() const
 {
-    QVector<QString> filenames;
+    QStringList filenames;
 
     for (int row = 0; row < rowCount(); ++row)
     {
