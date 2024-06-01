@@ -49,6 +49,7 @@
 #include "warnoff.h"
 #include "poutwin.h"
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QPixmap>
 #include <QPainter>
@@ -787,29 +788,21 @@ void QtGui::OnTimer()
 
 QString QtGui::GetScreenSizeStatusTip(int index)
 {
-    switch (index)
+    static const QStringList statusTips{
+        tr("Resize Screen to default size (512 x 256)"),
+        tr("Resize Screen to double size (1024 x 512)"),
+        tr("Resize Screen to triple size (1536 x 768)"),
+        tr("Resize Screen to quadruple size (2048 x 1024)"),
+        tr("Resize Screen to quintuple size (2560 x 1280)"),
+        tr("Enter Fullscreen Mode"),
+    };
+
+    if (index >= 0 && index < statusTips.size())
     {
-        case 0:
-            return tr("Resize Screen to default size (512 x 256)");
-
-        case 1:
-            return tr("Resize Screen to double size (1024 x 512)");
-
-        case 2:
-            return tr("Resize Screen to triple size (1536 x 768)");
-
-        case 3:
-            return tr("Resize Screen to quadruple size (2048 x 1024)");
-
-        case 4:
-            return tr("Resize Screen to quintuple size (2560 x 1280)");
-
-        case 6:
-            return tr("Enter Fullscreen Mode");
-
-        default:
-            return "";
+        return statusTips[index];
     }
+
+    return "";
 }
 
 void QtGui::OnScreenSizeHighlighted(int index) const
