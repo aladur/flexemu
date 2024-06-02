@@ -53,6 +53,7 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
     friend class FlexFileContainerIteratorImp; // corresponding iterator class
 
 protected:
+    std::string path;
     BFilePtr fp;
     s_floppy param{};
     DWord file_size{};
@@ -71,7 +72,7 @@ public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
     FlexFileContainer(FlexFileContainer &&src) noexcept;
-    FlexFileContainer(const std::string &path, const std::string &mode,
+    FlexFileContainer(const std::string &p_path, const std::string &mode,
                       const FileTimeAccess &fileTimeAccess);
     ~FlexFileContainer() override = default;
 

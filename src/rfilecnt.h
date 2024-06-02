@@ -25,7 +25,6 @@
 
 #include "efiletim.h"
 #include "ffilecnt.h"
-#include <memory>
 #include <vector>
 
 class FlexRamFileContainer : public FlexFileContainer
@@ -41,7 +40,7 @@ public:
     FlexRamFileContainer() = delete;
     FlexRamFileContainer(const FlexRamFileContainer &src) = delete;
     FlexRamFileContainer(FlexRamFileContainer &&src) noexcept;
-    FlexRamFileContainer(const char *path, const char *mode,
+    FlexRamFileContainer(const char *p_path, const char *mode,
                          const FileTimeAccess &fileTimeAccess);
     ~FlexRamFileContainer() override;
 

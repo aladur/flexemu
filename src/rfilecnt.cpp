@@ -25,17 +25,17 @@
 #include "flexerr.h"
 
 
-FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
+FlexRamFileContainer::FlexRamFileContainer(const char *p_path, const char *mode,
                                            const FileTimeAccess
                                            &p_fileTimeAccess)
-    : FlexFileContainer(path, mode, p_fileTimeAccess)
+    : FlexFileContainer(p_path, mode, p_fileTimeAccess)
 {
     unsigned int sectors;
 
     if (!is_flex_format)
     {
         // This file container only supports compatible FLEX file formats.
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, fp.GetPath());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
     }
 
     param.type |= TYPE_RAM_CONTAINER;
@@ -45,13 +45,13 @@ FlexRamFileContainer::FlexRamFileContainer(const char *path, const char *mode,
     // For FLX file format skip the header, it will never be changed.
     if (fseek(fp, param.offset, SEEK_SET))
     {
-        throw FlexException(FERR_READING_FROM, fp.GetPath());
+        throw FlexException(FERR_READING_FROM, path);
     }
 
     // read total disk into memory
     if (fread(file_buffer.data(), param.byte_p_sector, sectors, fp) != sectors)
     {
-        throw FlexException(FERR_READING_FROM, fp.GetPath());
+        throw FlexException(FERR_READING_FROM, path);
     }
 }
 
@@ -88,7 +88,6 @@ FlexRamFileContainer &FlexRamFileContainer::operator=
 bool FlexRamFileContainer::close()
 {
     bool throwException = false;
-    std::string path = fp.GetPath();
 
     if (fp != nullptr)
     {
