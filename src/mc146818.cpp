@@ -22,8 +22,8 @@
 
 #include "misc1.h"
 #include "mc146818.h"
-#include "bfileptr.h"
 #include <array>
+#include <fstream>
 
 
 const std::array<Byte, 12> days_per_month{
@@ -38,11 +38,13 @@ Mc146818::Mc146818()
 
     if (!path.empty())
     {
-        BFilePtr fp(path, "rb");
+        std::ifstream istream(path, std::ios::in | std::ios::binary);
 
-        if (fp != nullptr)
+        if (istream.is_open())
         {
-            if (fread(ram.data(), 1, ram.size(), fp) != ram.size())
+            istream.read(reinterpret_cast<char *>(ram.data()),
+                         static_cast<int>(ram.size()));
+            if (istream.fail())
             {
                 memset(ram.data(), '\0', ram.size());
             }
@@ -91,12 +93,15 @@ Mc146818::~Mc146818()
 
     if (!path.empty())
     {
-        BFilePtr fp(path, "wb");
+        return;
+    }
 
-        if (fp != nullptr)
-        {
-            fwrite(ram.data(), 1, ram.size(), fp);
-        }
+    std::ofstream ostream(path, std::ios::out | std::ios::binary);
+
+    if (ostream.is_open())
+    {
+        ostream.write(reinterpret_cast<char *>(ram.data()),
+                     static_cast<int>(ram.size()));
     }
 }
 
