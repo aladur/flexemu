@@ -21,18 +21,16 @@
 */
 
 #include "misc1.h"
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include "bdate.h"
 #include "ffilebuf.h"
-#include "bfileptr.h"
 #include "flexerr.h"
 #include "fdirent.h"
 #include "filecntb.h"
 #include <algorithm>
 #include <vector>
+#include <fstream>
 #include <fmt/format.h>
 
 
@@ -553,14 +551,16 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
 
 bool FlexFileBuffer::WriteToFile(const char *path) const
 {
-    BFilePtr fp(path, "wb");
+    auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
+    std::ofstream ostream(path, mode);
 
-    if (fp != nullptr)
+    if (ostream.is_open())
     {
         if (GetFileSize() != 0)
         {
-            size_t blocks = fwrite(buffer.data(), GetFileSize(), 1, fp);
-            return (blocks == 1);
+            ostream.write(reinterpret_cast<const char *>(buffer.data()),
+                          GetFileSize());
+            return ostream.good();
         }
         return true;
     }
@@ -574,20 +574,19 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
 
     if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size >= 0)
     {
-        BFilePtr fp(path, "rb");
+        std::ifstream istream(path, std::ios::in | std::ios::binary);
 
         Realloc(sbuf.st_size);
 
-        if (fp != nullptr)
+        if (istream.is_open())
         {
-            size_t blocks = 0;
-
             if (GetFileSize() > 0)
             {
-                blocks = fread(buffer.data(), GetFileSize(), 1, fp);
+                istream.read(reinterpret_cast<char *>(buffer.data()),
+                             GetFileSize());
             }
 
-            if (blocks == 1 || GetFileSize() == 0)
+            if (GetFileSize() == 0 || istream.good())
             {
                 auto fullPath = toAbsolutePath(path);
                 auto directory = getParentPath(fullPath);
