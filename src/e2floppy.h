@@ -99,7 +99,7 @@ private:
     Word offset{}; // offset when reading or writing a track
     // idAddressMark contains track, side, sector, sizecode.
     // It is used when formatting a track.
-    std::array<Byte, sizeof(Id)> idAddressMark{};
+    std::array<Byte, 4> idAddressMark{};
 
     const struct sOptions &options;
 

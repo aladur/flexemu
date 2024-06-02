@@ -585,8 +585,8 @@ void E2floppy::writeByteInTrack(Word &index)
             {
                 pfs->FormatSector(sector_buffer.data(),
                         idAddressMark[Id::Track],
-                        idAddressMark[Id::Side],
                         idAddressMark[Id::Sector],
+                        idAddressMark[Id::Side],
                         idAddressMark[Id::SizeCode] & 0x03);
 
                 writeTrackState = WriteTrackState::WaitForCrc;
