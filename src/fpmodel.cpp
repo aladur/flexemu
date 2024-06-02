@@ -988,17 +988,19 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
     }
     else
     {
+        auto mode = std::ios::in | std::ios::out | std::ios::binary;
         try
         {
             // 1st try opening read-write.
             container = std::make_unique<FlexFileContainer>(
-                            p_path, "rb+", fileTimeAccess);
+                            p_path, mode, fileTimeAccess);
         }
         catch (FlexException &)
         {
             // 2nd try opening read-only.
+            mode &= ~std::ios::out;
             container = std::make_unique<FlexFileContainer>(
-                            p_path, "rb", fileTimeAccess);
+                            p_path, mode, fileTimeAccess);
         }
     }
     auto *container_s =

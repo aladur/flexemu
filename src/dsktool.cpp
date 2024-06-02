@@ -158,7 +158,8 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     }
 
     FlexCopyManager::autoTextConversion = convert_text;
-    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::binary;
+    FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
     DirectoryContainer dest{target_dir, fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
@@ -300,7 +301,8 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
                            const std::vector<std::regex> &regexs,
                            FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::binary;
+    FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
     FileContainerIterator iter;
     FlexContainerInfo info;
     unsigned int number = 0;
@@ -416,7 +418,8 @@ int SummaryOfDskFile(const std::string &dsk_file,
                      bool verbose)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
-    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::binary;
+    FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
     FileContainerIterator iter;
     FlexContainerInfo info;
     const auto format = BDate::Format::D2MSU3Y4;
@@ -508,7 +511,8 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                     FileTimeAccess fileTimeAccess)
 {
     FlexCopyManager::autoTextConversion = isConvertText;
-    FlexRamFileContainer dst{dsk_file.c_str(), "rb+", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::out | std::ios::binary;
+    FlexRamFileContainer dst{dsk_file.c_str(), mode, fileTimeAccess};
 
     if (!dst.IsFlexFormat())
     {
@@ -584,7 +588,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
                       char default_answer)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
-    FlexRamFileContainer src{dsk_file.c_str(), "rb+", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::out | std::ios::binary;
+    FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -650,7 +655,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
                               bool debug_output, FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer src{dsk_file.c_str(), "rb", fileTimeAccess};
+    const auto mode = std::ios::in | std::ios::binary;
+    FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -748,8 +754,10 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
         const std::vector<std::regex> &regexs, char default_answer,
         FileTimeAccess fileTimeAccess)
 {
-    FlexRamFileContainer src{src_dsk_file.c_str(), "rb", fileTimeAccess};
-    FlexRamFileContainer dst{dst_dsk_file.c_str(), "rb+", fileTimeAccess};
+    auto mode = std::ios::in | std::ios::binary;
+    FlexRamFileContainer src{src_dsk_file.c_str(), mode, fileTimeAccess};
+    mode |= std::ios::out;
+    FlexRamFileContainer dst{dst_dsk_file.c_str(), mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {

@@ -165,21 +165,23 @@ bool E2floppy::mount_drive(const std::string &path,
             // is marked as unformatted.
             bool is_formatted = !stat(containerPath.c_str(), &sbuf) &&
                                 (S_ISREG(sbuf.st_mode) && sbuf.st_size);
+            auto mode = std::ios::in | std::ios::out | std::ios::binary;
 
             if (is_formatted && option == MOUNT_RAM)
             {
                 try
                 {
                     pfloppy = FileContainerIfSectorPtr(
-                     new FlexRamFileContainer(containerPath.c_str(), "rb+",
+                     new FlexRamFileContainer(containerPath.c_str(), mode,
                                               options.fileTimeAccess));
                 }
                 catch (FlexException &)
                 {
                     try
                     {
+                        mode &= ~std::ios::out;
                         pfloppy = FileContainerIfSectorPtr(
-                         new FlexRamFileContainer(containerPath.c_str(), "rb",
+                         new FlexRamFileContainer(containerPath.c_str(), mode,
                                                   options.fileTimeAccess));
                     }
                     catch (FlexException &)
@@ -190,7 +192,10 @@ bool E2floppy::mount_drive(const std::string &path,
             }
             else
             {
-                const char *mode = is_formatted ? "rb+" : "wb+";
+                if (!is_formatted)
+                {
+                    mode |= std::ios::trunc;
+                }
                 try
                 {
                     pfloppy = FileContainerIfSectorPtr(
@@ -203,8 +208,9 @@ bool E2floppy::mount_drive(const std::string &path,
                     {
                         try
                         {
+                            mode &= ~std::ios::out;
                             pfloppy = FileContainerIfSectorPtr(
-                             new FlexFileContainer(containerPath, "rb",
+                             new FlexFileContainer(containerPath, mode,
                                                    options.fileTimeAccess));
                         }
                         catch (FlexException &)

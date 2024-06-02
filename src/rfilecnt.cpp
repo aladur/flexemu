@@ -25,7 +25,8 @@
 #include "flexerr.h"
 
 
-FlexRamFileContainer::FlexRamFileContainer(const char *p_path, const char *mode,
+FlexRamFileContainer::FlexRamFileContainer(const char *p_path,
+                                           std::ios::openmode mode,
                                            const FileTimeAccess
                                            &p_fileTimeAccess)
     : FlexFileContainer(p_path, mode, p_fileTimeAccess)
@@ -43,13 +44,16 @@ FlexRamFileContainer::FlexRamFileContainer(const char *p_path, const char *mode,
     file_buffer.resize(sectors * param.byte_p_sector);
 
     // For FLX file format skip the header, it will never be changed.
-    if (fseek(fp, param.offset, SEEK_SET))
+    fstream.seekg(param.offset);
+    if (fstream.fail())
     {
         throw FlexException(FERR_READING_FROM, path);
     }
 
-    // read total disk into memory
-    if (fread(file_buffer.data(), param.byte_p_sector, sectors, fp) != sectors)
+    // read whole disk content into memory.
+    fstream.read(reinterpret_cast<char *>(file_buffer.data()),
+                 param.byte_p_sector * sectors);
+    if (fstream.fail())
     {
         throw FlexException(FERR_READING_FROM, path);
     }
@@ -89,7 +93,7 @@ bool FlexRamFileContainer::close()
 {
     bool throwException = false;
 
-    if (fp != nullptr)
+    if (fstream.is_open())
     {
         // Only if the buffer contents has been changed it
         // will be written to file.
@@ -99,19 +103,21 @@ bool FlexRamFileContainer::close()
 
             sectors = (file_size - param.offset) / param.byte_p_sector;
 
-            if (fseek(fp, param.offset, SEEK_SET))
+            fstream.seekg(param.offset);
+            if (fstream.fail())
             {
                 throwException = true;
             }
 
-            if (fwrite(file_buffer.data(), param.byte_p_sector, sectors, fp)
-                    != sectors)
+            fstream.write(reinterpret_cast<const char *>(file_buffer.data()),
+                          param.byte_p_sector * sectors);
+            if (fstream.fail())
             {
                 throwException = true;
             }
         }
 
-        fp.Close();
+        fstream.close();
     }
 
     file_buffer.clear();

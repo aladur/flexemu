@@ -40,7 +40,7 @@ public:
     FlexRamFileContainer() = delete;
     FlexRamFileContainer(const FlexRamFileContainer &src) = delete;
     FlexRamFileContainer(FlexRamFileContainer &&src) noexcept;
-    FlexRamFileContainer(const char *p_path, const char *mode,
+    FlexRamFileContainer(const char *p_path, std::ios::openmode mode,
                          const FileTimeAccess &fileTimeAccess);
     ~FlexRamFileContainer() override;
 

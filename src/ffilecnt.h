@@ -23,15 +23,13 @@
 #ifndef FFILECNT_INCLUDED
 #define FFILECNT_INCLUDED
 
-#include "misc1.h"
-#include <stdio.h>
 #include "efiletim.h"
 #include "filecont.h"
 #include "filecnts.h"
 #include "fdirent.h"
-#include "bfileptr.h"
 #include <string>
 #include <vector>
+#include <fstream>
 
 class FlexContainerInfo;
 class BDate;
@@ -54,7 +52,7 @@ class FlexFileContainer : public FileContainerIfSector, public FileContainerIf
 
 protected:
     std::string path;
-    BFilePtr fp;
+    mutable std::fstream fstream;
     s_floppy param{};
     DWord file_size{};
     const FileTimeAccess &ft_access{};
@@ -72,7 +70,7 @@ public:
     FlexFileContainer() = delete;
     FlexFileContainer(const FlexFileContainer &) = delete;
     FlexFileContainer(FlexFileContainer &&src) noexcept;
-    FlexFileContainer(const std::string &p_path, const std::string &mode,
+    FlexFileContainer(const std::string &p_path, std::ios::openmode mode,
                       const FileTimeAccess &fileTimeAccess);
     ~FlexFileContainer() override = default;
 
@@ -149,8 +147,8 @@ protected:
         u_sys_info_sector &sis,
         const std::string &name,
         struct s_formats &format);
-    static bool Write_dir_sectors(FILE *fp, struct s_formats &format);
-    static bool Write_sectors(FILE *fp, struct s_formats &format);
+    static bool Write_dir_sectors(std::fstream &fs, struct s_formats &format);
+    static bool Write_sectors(std::fstream &fs, struct s_formats &format);
     static void Create_format_table(
         int type,
         int trk,

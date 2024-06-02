@@ -26,6 +26,7 @@
 #include <string>
 #include <sstream>
 #include <cctype>
+#include <cassert>
 
 #include "fcinfo.h"
 #include "flexerr.h"
@@ -37,6 +38,9 @@
 #include "ifilecnt.h"
 #include "ifilcnti.h"
 #include "iffilcnt.h"
+
+
+static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
 #ifdef UNIX
     std::string FlexFileContainer::bootSectorFile =
@@ -97,16 +101,16 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 
 FlexFileContainer::FlexFileContainer(
         const std::string &p_path,
-        const std::string &mode,
+        std::ios::openmode mode,
         const FileTimeAccess &fileTimeAccess)
     : path(p_path)
-    , fp(p_path, mode)
+    , fstream(p_path, mode)
     , ft_access(fileTimeAccess)
     , is_flex_format(true)
 {
     struct stat sbuf{};
 
-    if (fp == nullptr)
+    if (!fstream.is_open())
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -128,13 +132,14 @@ FlexFileContainer::FlexFileContainer(
         return;
     }
 
-    if (fseek(fp, 0, SEEK_SET))
+    fstream.seekg(0);
+    if (fstream.fail())
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
     file_size = static_cast<DWord>(sbuf.st_size);
 
-    if (mode.find_first_of('+') == std::string::npos)
+    if ((mode & std::ios::out) == 0)
     {
         attributes |= FLX_READONLY;
     }
@@ -145,7 +150,8 @@ FlexFileContainer::FlexFileContainer(
 
         // Try to read the FLX header and check the magic number
         // to identify a FLX formatted disk.
-        if (fread(&flx_header, sizeof(flx_header), 1, fp) == 1 &&
+        fstream.read(reinterpret_cast<char *>(&flx_header), sizeof(flx_header));
+        if (!fstream.fail() &&
             fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
         {
             // File is identified as a FLX container format.
@@ -207,7 +213,10 @@ FlexFileContainer::FlexFileContainer(
 }
 
 FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
-    fp(std::move(src.fp)), param(src.param), file_size(src.file_size),
+    path(std::move(src.path)),
+    fstream(std::move(src.fstream)),
+    param(src.param),
+    file_size(src.file_size),
     ft_access(src.ft_access),
     is_flex_format(src.is_flex_format),
     sectors0_side0_max(src.sectors0_side0_max),
@@ -219,7 +228,8 @@ FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
 FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
 noexcept
 {
-    fp = std::move(src.fp);
+    path = src.path;
+    fstream = std::move(src.fstream);
     param = src.param;
     file_size = src.file_size;
     is_flex_format = src.is_flex_format;
@@ -307,7 +317,8 @@ FlexFileContainer *FlexFileContainer::Create(
 
     path += name;
 
-    return new FlexFileContainer(path, "rb+", fileTimeAccess);
+    auto mode = std::ios::in | std::ios::out | std::ios::binary;
+    return new FlexFileContainer(path, mode, fileTimeAccess);
 }
 
 // return true if file found
@@ -401,7 +412,8 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
         u_sys_info_sector sis{};
         int year;
 
-        if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+        if (!ReadSector(reinterpret_cast<Byte *>(&sis.raw), sis_trk_sec.trk,
+                        sis_trk_sec.sec))
         {
             std::stringstream stream;
 
@@ -526,7 +538,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // read sys info sector
-    if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (!ReadSector(reinterpret_cast<Byte *>(&sis.raw), sis_trk_sec.trk,
+                    sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -683,7 +696,8 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     free -= recordNr;
     setValueBigEndian<Word>(&sis.s.sir.free[0], free);
 
-    if (!WriteSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (!WriteSector(reinterpret_cast<const Byte *>(&sis.raw), sis_trk_sec.trk,
+                     sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -720,7 +734,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
     if (!is_flex_format)
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, GetPath());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
     }
 
     if (!FindFile(fileName, de))
@@ -831,7 +845,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
     while (next.sec != 0 || next.trk != 0)
     {
         // read next directory sector
-        if (!ReadSector(dir_sector.raw, next.trk, next.sec))
+        if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector.raw), next.trk,
+                        next.sec))
         {
             std::stringstream stream;
 
@@ -875,7 +890,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
                 pde->month = static_cast<Byte>(date.GetMonth());
                 pde->year = static_cast<Byte>(date.GetYear() % 100);
 
-                if (!WriteSector(dir_sector.raw, next.trk, next.sec))
+                if (!WriteSector(reinterpret_cast<const Byte *>(&dir_sector.raw),
+                                 next.trk, next.sec))
                 {
                     std::stringstream stream;
 
@@ -917,21 +933,21 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
 
     for (i = first_dir_trk_sec.sec - 1; i < param.max_sector; ++i)
     {
-        if (fseek(fp, param.offset + (i * param.byte_p_sector), SEEK_SET))
+        fstream.seekg(param.offset + (i * param.byte_p_sector));
+        if (fstream.fail())
         {
             throw FlexException(FERR_UNABLE_TO_OPEN, path);
         }
 
-        if (fread(&link, sizeof(link), 1, fp) == 1)
-        {
-            if (link == st_t{0, 0} || link.trk != 0)
-            {
-                break;
-            }
-        }
-        else
+        fstream.read(reinterpret_cast<char *>(&link), sizeof(link));
+        if (fstream.fail())
         {
             throw FlexException(FERR_UNABLE_TO_OPEN, path);
+        }
+
+        if (link == st_t{0, 0} || link.trk != 0)
+        {
+            break;
         }
     }
 
@@ -985,7 +1001,7 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
 bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
                                    int side /* = -1 */) const
 {
-    if (fp == nullptr)
+    if (!fstream.is_open())
     {
         return false;
     }
@@ -1002,17 +1018,14 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    if (fseek(fp, pos, SEEK_SET))
+    fstream.seekg(pos);
+    if (fstream.fail())
     {
         return false;
     }
 
-    if (fread(pbuffer, param.byte_p_sector, 1, fp) != 1)
-    {
-        return false;
-    }
-
-    return true;
+    fstream.read(reinterpret_cast<char *>(pbuffer), param.byte_p_sector);
+    return !fstream.fail();
 }
 
 // low level routine to write a single sector
@@ -1022,7 +1035,7 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
 bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
                                     int side /* = -1 */)
 {
-    if (fp == nullptr)
+    if (!fstream.is_open())
     {
         return false;
     }
@@ -1039,12 +1052,14 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    if (fseek(fp, pos, SEEK_SET))
+    fstream.seekg(pos);
+    if (fstream.fail())
     {
         return false;
     }
 
-    if (fwrite(pbuffer, param.byte_p_sector, 1, fp) != 1)
+    fstream.write(reinterpret_cast<const char *>(pbuffer), param.byte_p_sector);
+    if (fstream.fail())
     {
         return false;
     }
@@ -1145,19 +1160,22 @@ bool FlexFileContainer::FormatSector(const Byte *target, int track, int sector,
                           param.max_sector0, param.max_sector, param.sides0,
                           param.sides);
 
-    if (fseek(fp, 0, SEEK_SET))
+    fstream.seekg(0);
+    if (fstream.fail())
     {
         result = false;
     }
 
-    if (fwrite(&flx_header, sizeof(flx_header), 1, fp) != 1)
+    fstream.write(reinterpret_cast<const char *>(&flx_header),
+                  sizeof(flx_header));
+    if (fstream.fail())
     {
         result = false;
     }
 
     result &= WriteSector(target, track, sector, side);
 
-    if (!is_flex_format && (file_size == getFileSize(flx_header)) &&
+    if (result && !is_flex_format && (file_size == getFileSize(flx_header)) &&
         IsFlexFileFormat(TYPE_FLX_CONTAINER))
     {
         is_flex_format = true;
@@ -1225,9 +1243,14 @@ void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
     {
         bsFile = bootSectorFile.c_str();
     }
-    BFilePtr boot(bsFile, "rb");
+    std::fstream boot(bsFile, std::ios::in | std::ios::binary);
 
-    if (boot == nullptr || fread(sectorBuffer1, SECTOR_SIZE, 1, boot) != 1)
+    if (boot.is_open())
+    {
+        boot.read(reinterpret_cast<char *>(sectorBuffer1), SECTOR_SIZE);
+    }
+
+    if (!boot.is_open() || boot.fail())
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
@@ -1236,8 +1259,14 @@ void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
         sectorBuffer1[1] = 0xF0;
         sectorBuffer1[2] = 0x2D;
         memset(sectorBuffer2, 0, SECTOR_SIZE);
+        return;
     }
-    if (boot != nullptr && fread(sectorBuffer2, SECTOR_SIZE, 1, boot) != 1)
+
+    if (boot.is_open())
+    {
+        boot.read(reinterpret_cast<char *>(sectorBuffer2), SECTOR_SIZE);
+    }
+    if (boot.is_open() && boot.fail())
     {
         memset(sectorBuffer2, 0, SECTOR_SIZE);
     }
@@ -1252,7 +1281,7 @@ void FlexFileContainer::Create_sys_info_sector(u_sys_info_sector &sis,
     time_t time_now;
     struct tm *lt;
 
-    memset(sis.raw, 0, SECTOR_SIZE);
+    memset(&sis.raw, 0, sizeof(sis));
 
     int i = 0;
 
@@ -1286,7 +1315,8 @@ void FlexFileContainer::Create_sys_info_sector(u_sys_info_sector &sis,
 }
 
 // on success return true
-bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
+bool FlexFileContainer::Write_dir_sectors(std::fstream &ofs,
+                                          struct s_formats &format)
 {
     std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
@@ -1303,7 +1333,9 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
             sectorBuffer[1] = static_cast<Byte>((sector % format.sectors) + 1);
         }
 
-        if (fwrite(sectorBuffer.data(), sectorBuffer.size(), 1, fp) != 1)
+        ofs.write(reinterpret_cast<const char *>(sectorBuffer.data()),
+                  sectorBuffer.size());
+        if (ofs.fail())
         {
             return false;
         }
@@ -1313,7 +1345,8 @@ bool FlexFileContainer::Write_dir_sectors(FILE *fp, struct s_formats &format)
 }
 
 // on success return true
-bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
+bool FlexFileContainer::Write_sectors(std::fstream &ofs,
+                                      struct s_formats &format)
 {
     std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
@@ -1332,7 +1365,9 @@ bool FlexFileContainer::Write_sectors(FILE *fp, struct s_formats &format)
             sectorBuffer[0] = sectorBuffer[1] = 0;
         }
 
-        if (fwrite(sectorBuffer.data(), sectorBuffer.size(), 1, fp) != 1)
+        ofs.write(reinterpret_cast<const char *>(sectorBuffer.data()),
+                  sectorBuffer.size());
+        if (ofs.fail())
         {
             return false;
         }
@@ -1413,9 +1448,10 @@ void FlexFileContainer::Format_disk(
 
     path += name;
 
-    BFilePtr fp(path, "wb");
+    std::fstream fstream(path, std::ios::out | std::ios::binary |
+                         std::ios::trunc);
 
-    if (fp != nullptr)
+    if (fstream.is_open())
     {
         Byte sector_buffer[SECTOR_SIZE];
 
@@ -1427,7 +1463,9 @@ void FlexFileContainer::Format_disk(
             header.initialize(SECTOR_SIZE, format.tracks, format.sectors0,
                               format.sectors, sides, sides);
 
-            if (fwrite(&header, sizeof(header), 1, fp) != 1)
+            fstream.write(reinterpret_cast<const char *>(&header),
+                          sizeof(header));
+            if (fstream.fail())
             {
                 err = 1;
             }
@@ -1438,12 +1476,16 @@ void FlexFileContainer::Format_disk(
 
             Create_boot_sectors(sector_buffer, sector_buffer2, bsFile);
 
-            if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
+            fstream.write(reinterpret_cast<const char *>(sector_buffer),
+                          sizeof(sector_buffer));
+            if (fstream.fail())
             {
                 err = 1;
             }
 
-            if (fwrite(sector_buffer2, sizeof(sector_buffer2), 1, fp) != 1)
+            fstream.write(reinterpret_cast<const char *>(sector_buffer2),
+                          sizeof(sector_buffer2));
+            if (fstream.fail())
             {
                 err = 1;
             }
@@ -1452,24 +1494,27 @@ void FlexFileContainer::Format_disk(
         u_sys_info_sector sis{};
         Create_sys_info_sector(sis, name, format);
 
-        if (fwrite(sis.raw, sizeof(sis), 1, fp) != 1)
+        fstream.write(reinterpret_cast<const char *>(&sis.raw), sizeof(sis));
+        if (fstream.fail())
         {
             err = 1;
         }
 
         // Sector 00-04 seems to be unused. Write all zeros.
         memset(sector_buffer, 0, sizeof(sector_buffer));
-        if (fwrite(sector_buffer, sizeof(sector_buffer), 1, fp) != 1)
+        fstream.write(reinterpret_cast<const char *>(sector_buffer),
+                      sizeof(sector_buffer));
+        if (fstream.fail())
         {
             err = 1;
         }
 
-        if (!Write_dir_sectors(fp, format))
+        if (!Write_dir_sectors(fstream, format))
         {
             err = 1;
         }
 
-        if (!Write_sectors(fp, format))
+        if (!Write_sectors(fstream, format))
         {
             err = 1;
         }
@@ -1493,13 +1538,17 @@ bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
 
     // Read system info sector.
     long file_offset = header_offset + (sis_trk_sec.sec - 1) * SECTOR_SIZE;
-    if (fseek(fp, file_offset, SEEK_SET))
+    fstream.seekg(file_offset);
+    if (fstream.fail())
     {
+        fstream.clear();
         return false;
     }
 
-    if (fread(&sis, sizeof(sis), 1, fp) != 1)
+    fstream.read(reinterpret_cast<char *>(&sis), sizeof(sis));
+    if (fstream.fail())
     {
+        fstream.clear();
         return false;
     }
 
@@ -1581,7 +1630,8 @@ st_t FlexFileContainer::ExtendDirectory(u_dir_sector last_dir_sector,
     std::stringstream stream;
     u_sys_info_sector sis{};
 
-    if (!ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (!ReadSector(reinterpret_cast<Byte *>(&sis.raw), sis_trk_sec.trk,
+                    sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
         throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
@@ -1594,25 +1644,27 @@ st_t FlexFileContainer::ExtendDirectory(u_dir_sector last_dir_sector,
     }
     last_dir_sector.s.next = next;
 
-    if (!WriteSector(last_dir_sector.raw, st_last.trk, st_last.sec))
+    if (!WriteSector(reinterpret_cast<const Byte *>(&last_dir_sector.raw),
+                     st_last.trk, st_last.sec))
     {
         stream << st_last;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
     }
 
     u_dir_sector dir_sector{};
-    if (!ReadSector(dir_sector.raw, next.trk, next.sec))
+    if (!ReadSector(reinterpret_cast<Byte *>(&dir_sector.raw), next.trk, next.sec))
     {
         stream << next;
         throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
     }
 
     auto new_fc_start = dir_sector.s.next;
-    memset(dir_sector.raw, '\0', sizeof(dir_sector));
+    memset(&dir_sector.raw, '\0', sizeof(dir_sector));
     dir_sector.s.record_nr[0] = 0x00;
     dir_sector.s.record_nr[1] = 0x01;
 
-    if (!WriteSector(dir_sector.raw, next.trk, next.sec))
+    if (!WriteSector(reinterpret_cast<const Byte *>(&dir_sector.raw), next.trk,
+                     next.sec))
     {
         stream << next;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
@@ -1630,7 +1682,8 @@ st_t FlexFileContainer::ExtendDirectory(u_dir_sector last_dir_sector,
         sis.s.sir.free[0] = sis.s.sir.free[1] = 0x00;
     }
 
-    if (!WriteSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (!WriteSector(reinterpret_cast<const Byte *>(&sis.raw), sis_trk_sec.trk,
+                     sis_trk_sec.sec))
     {
         stream << sis_trk_sec;
         throw FlexException(FERR_WRITING_TRKSEC, stream.str(), path);
@@ -1677,13 +1730,15 @@ std::vector<Byte> FlexFileContainer::GetJvcFileHeader() const
         return {};
     }
 
-    if (fseek(fp, 0, SEEK_SET))
+    fstream.seekg(0);
+    if (fstream.fail())
     {
         throw FlexException(FERR_READING_FROM, path);
     }
 
     header.resize(headerSize);
-    if (fread(header.data(), headerSize, 1, fp) != 1)
+    fstream.read(reinterpret_cast<char *>(header.data()), headerSize);
+    if (fstream.fail())
     {
         throw FlexException(FERR_READING_FROM, path);
     }
