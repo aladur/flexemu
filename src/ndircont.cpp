@@ -52,11 +52,11 @@
 
 
 // A debug log can be written to a file
-// by uncommenting the following line.
+// by uncommenting the DEBUG_FILE macro definition.
 // DEBUG_VERBOSE defines the verbosity:
 // 1: Log any read/write access to a sector.
 // 2: Same as 1, additionally log sector dump.
-//#define DEBUG_FILE get_unique_filename("log").c_str()
+#define DEBUG_FILE get_unique_filename("log").c_str()
 #ifdef DEBUG_FILE
     #define DEBUG_VERBOSE 2
     #include "debug.h"
@@ -1177,7 +1177,7 @@ void NafsDirectoryContainer::check_for_delete(Word ds_idx,
             unlink(path.c_str());
             change_file_id_and_type(sec_idx, dir_idx, 0, SectorType::FreeChain);
 #ifdef DEBUG_FILE
-            LOG_X("      delete %s\n", filename.c_str());
+            LOG_X("      delete {}\n", filename);
 #endif
             break;
         }
@@ -1209,8 +1209,7 @@ void NafsDirectoryContainer::check_for_rename(Word ds_idx,
             auto new_path = directory + PATHSEPARATORSTRING + new_filename;
             rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
-            LOG_XX("      rename %s to %s\n",
-                   old_filename.c_str(), new_filename.c_str());
+            LOG_XX("      rename {} to {}\n", old_filename, new_filename);
 #endif
             break;
         }
@@ -1307,7 +1306,7 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
             }
 #endif
 #ifdef DEBUG_FILE
-            LOG_XX("      %s write_protect %s\n", set_clear, filename.c_str());
+            LOG_XX("      {} write_protect {}\n", set_clear, filename);
 #else
             (void)set_clear;
 #endif
@@ -1430,9 +1429,9 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
                                 get_unix_filename(flex_links[sec_idx].file_id);
                 rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
-                LOG_XX("      new file %s, was %s\n",
-                        get_unix_filename(flex_links[sec_idx].file_id).c_str(),
-                        iter.second.filename.c_str());
+                LOG_XX("      new file {}, was {}\n",
+                       get_unix_filename(flex_links[sec_idx].file_id),
+                       iter.second.filename);
 #endif
                 set_file_time(new_path.c_str(),
                     dir_sector.dir_entries[i].month,
@@ -1476,10 +1475,10 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("read: %02X-%02X %s", trk, sec, to_string(link.type).c_str());
+    LOG_XXX("read: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
-        LOG_X(" %s", get_unix_filename(link.file_id).c_str());
+        LOG_X(" {}", get_unix_filename(link.file_id));
     }
     if (!result)
     {
@@ -1603,11 +1602,11 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
     }
 
 #if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
-    FILE *log_fp = fopen(DEBUG_FILE, "a");
-    if (log_fp != nullptr)
+    std::ofstream log_ofs(DEBUG_FILE, std::ios::out | std::ios::app);
+    if (log_ofs.is_open())
     {
-        dumpSector(log_fp, "      ", buffer, SECTOR_SIZE);
-        fclose(log_fp);
+        dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
+        log_ofs.close();
     }
 #endif
 
@@ -1630,10 +1629,10 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("write: %02X-%02X %s", trk, sec, to_string(link.type).c_str());
+    LOG_XXX("write: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
     if (link.type == SectorType::File || link.type == SectorType::NewFile)
     {
-        LOG_X(" %s", get_unix_filename(link.file_id).c_str());
+        LOG_X(" {}", get_unix_filename(link.file_id));
     }
     if (!result)
     {
@@ -1762,8 +1761,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 }
 
 #ifdef DEBUG_FILE
-                LOG_X("      file %s\n",
-                      new_files.at(new_file_id).filename.c_str());
+                LOG_X("      file {}\n", new_files.at(new_file_id).filename);
 #endif
                 link.file_id = new_file_id;
                 auto path = get_path_of_file(link.file_id);
@@ -1833,11 +1831,11 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
     }
 
 #if (defined DEBUG_FILE && defined DEBUG_VERBOSE && DEBUG_VERBOSE >= 2)
-    FILE *log_fp = fopen(DEBUG_FILE, "a");
-    if (log_fp != nullptr)
+    std::ofstream log_ofs(DEBUG_FILE, std::ios::out | std::ios::app);
+    if (log_ofs.is_open())
     {
-        dumpSector(log_fp, "      ", buffer, SECTOR_SIZE);
-        fclose(log_fp);
+        dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
+        log_ofs.close();
     }
 #endif
 

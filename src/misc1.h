@@ -327,7 +327,7 @@ extern bool multimatches(const char *text, const char *multipattern,
 extern std::string getExecutablePath();
 #endif
 extern std::string getHomeDirectory();
-extern void dumpSector(FILE *fp, const char *indent,
+extern void dumpSector(std::ostream &os, uint32_t indent_count,
                        const Byte *buffer, uint32_t size);
 extern void hex_dump(const char *buffer, int count);
 extern std::string getTempPath();

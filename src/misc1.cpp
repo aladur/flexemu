@@ -23,7 +23,6 @@
 
 #include "misc1.h"
 #include <ctype.h>
-#include <stdio.h>
 #include <iostream>
 #include <sstream>
 #include <functional>
@@ -43,6 +42,7 @@
 #include <fstream>
 #include <algorithm>
 #include <utility>
+#include <fmt/format.h>
 
 
 #ifdef _WIN32
@@ -732,9 +732,8 @@ int getopt(int argc, char *const argv[], const char *optstr)
                             // missing argument
                             if (opterr)
                             {
-                                fprintf(stderr, "%s: option requires an "
-                                        "argument -- '%c'\n",
-                                        argv[0], opt);
+                                std::cerr << argv[0] << ": option requires "
+                                    "an argument -- '" << opt << "'\n";
                             }
                             optopt = opt;
                             return '?';
@@ -758,8 +757,8 @@ int getopt(int argc, char *const argv[], const char *optstr)
         // Unknown option
         if (opterr)
         {
-            fprintf(stderr, "%s: illegal option -- '%c'\n",
-                    argv[0], argv[optind][argvind]);
+            std::cerr << argv[0] << ": illegal option -- '" <<
+                    argv[optind][argvind] << "'\n";
         }
         optopt = argv[optind][argvind];
         next_opt(argv);
@@ -783,38 +782,40 @@ void next_opt(char *const argv[])
 
 #endif
 
-void dumpSector(FILE *fp, const char *indent, const Byte *buffer, uint32_t size)
+void dumpSector(std::ostream &os, uint32_t indent_count, const Byte *buffer,
+                uint32_t size)
 {
     uint32_t i;
 
-    fprintf(fp, "%s  ", indent);
+    std::string indent(indent_count, ' ');
+    os << indent << "  ";
     for (i = 0; i < 16; ++i)
     {
-        fprintf(fp, " -%X", i);
+        os << fmt::format(" -{:X}", i);
     }
-    fprintf(fp, "\n");
+    os << "\n";
 
     for (i = 0; i < size; i += 16)
     {
         uint32_t j;
 
-        fprintf(fp, "%s%X-", indent, i >> 4);
+        os << fmt::format("{}{:X}-", indent, i >> 4);
         for (j = 0; j < 16; ++j)
         {
-            fprintf(fp, " %02X", buffer[i + j]);
+            os << fmt::format(" {:02X}", static_cast<Word>(buffer[i + j]));
         }
-        fprintf(fp, " ");
+        os << " ";
         for (j = 0; j < 16; ++j)
         {
-            const Byte ch = buffer[i + j] & 0x7F;
+            const char ch = static_cast<char>(buffer[i + j] & 0x7F);
 
-            fprintf(fp, "%c", (ch >= ' ' && ch <= '~') ? ch : '_');
+            os << ((ch >= ' ' && ch <= '~') ? ch : '_');
         }
-        fprintf(fp, "\n");
+        os << "\n";
     }
 }
 
-void hex_dump(const char *buffer, int count)
+void hex_dump(std::ostream &os, const char *buffer, int count)
 {
     const char *p = &buffer[0];
     int i = 0;
@@ -822,15 +823,15 @@ void hex_dump(const char *buffer, int count)
     for (; i < count; ++i)
     {
         char ch = *(p++);
-        printf("%02X ", ch);
+        os << fmt::format("{:02X} ", ch);
         if ((i & 0x0F) == 0x0F)
         {
-            printf("\n");
+            os << "\n";
         }
     }
     if ((i & 0x0F) != 0)
     {
-        printf("\n");
+        os << "\n";
     }
 }
 
