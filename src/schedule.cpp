@@ -20,6 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+// Uncomment the following line for cycle count debugging.
+//#define DEBUG_FILE "cycle_time.txt"
 
 #include <limits>
 #include <cinttypes>
@@ -32,6 +34,10 @@
 #include "mc6809.h"
 #include "inout.h"
 #include "breltime.h"
+#ifdef DEBUG_FILE
+#include <fstream>
+#include <fmt/format.h>
+#endif
 
 
 Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
@@ -304,12 +310,8 @@ void Scheduler::get_interrupt_status(tInterruptStatus &stat)
     memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
 }
 
-//#define DEBUG_FILE "time.txt"
 void Scheduler::frequency_control(QWord time1)
 {
-#ifdef DEBUG_FILE
-    FILE *fp;
-#endif
     cycles_t required_cyclecount;
 
     if (time0 == 0)
@@ -327,13 +329,15 @@ void Scheduler::frequency_control(QWord time1)
         required_cyclecount = static_cast<cycles_t>(fCyclecount);
         cpu.set_required_cyclecount(required_cyclecount);
         time0 = time1;
+
 #ifdef DEBUG_FILE
 
-        if ((fp = fopen(DEBUG_FILE, "a")) != nullptr)
+        std::ofstream ofs(DEBUG_FILE, std::ios::out | std::ios::app);
+        if (ofs.is_open())
         {
-            fprintf(fp, "timediff: %" PRId64 " required_cyclecount: %" PRIu64
-                    "\n", timediff, required_cyclecount);
-            fclose(fp);
+            ofs << fmt::format("timediff: {:5} us, required_cyclecount: {:6}\n",
+                               timediff, required_cyclecount);
+            ofs.close();
         }
 
 #endif
