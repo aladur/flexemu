@@ -903,11 +903,10 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
                 static_cast<Byte>((i + (DBPS - 1)) / DBPS);
         }
 
-        BFilePtr fp(path, "rb+");
-
-        if (fp != nullptr)
+        std::fstream fs(path, std::ios::in | std::ios::out | std::ios::binary);
+        if (fs.is_open())
         {
-            fwrite(file_sector_map, DBPS, 2, fp);
+            fs.write(reinterpret_cast<const char *>(file_sector_map), 2 * DBPS);
         }
     }
 }
@@ -1509,38 +1508,41 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
                 // According to the FLEX Advanced Programmer's Guide
                 // chapter "Diskette Initialization" the first two
                 // sectors contain a boot program.
-                // Reading the boot sector 0/1 or 0/2
+                // Reading the boot sector 00-01 or 00-02
                 // from a file which name is defined in BOOT_FILE.
-                // If sector 0/2 contains all zeros this file has
-                // a size of SECTOR_SIZE otherwise it has a size of
-                // 2 * SECTOR_SIZE.
-                // The boot code is contained in sector 0/1 and 0/2.
-                // The emulated Eurocom II usually only uses sector 0/1.
-                size_t count = 0;
-
-                std::memset(buffer, 0, SECTOR_SIZE);
+                // If this file has a size of SECTOR_SIZE reading
+                // sector 00-02 contains all zeros.
+                // The boot code is contained in sector 00-01 and
+                // optionally in sector 00-02.
+                // The emulated Eurocom II usually only uses sector 00-01.
+                // If a boot file is not present or a failure occurs
+                // when reading it a default boot code is set which
+                // savely jumps back into the monitor program.
 
                 auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
+                bool set_default_boot_code = true;
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
 
-                FILE *fp = fopen(path.c_str(), "rb");
-                if (fp != nullptr)
+                std::memset(buffer, 0, SECTOR_SIZE);
+                if (ifs.is_open())
                 {
-                    if (sec == 2)
-                    {
-                        fseek(fp, SECTOR_SIZE, SEEK_SET);
-                    }
-
-                    count = fread(buffer, 1, SECTOR_SIZE, fp);
-                    if (sec == 1 && count == SECTOR_SIZE)
+                    set_default_boot_code = false;
+                    ifs.seekg(SECTOR_SIZE * (sec - 1));
+                    ifs.read(reinterpret_cast<char *>(buffer), SECTOR_SIZE);
+                    if (!ifs.fail() && sec == 1)
                     {
                         st_t boot_link = link_address();
 
                         buffer[3] = boot_link.trk;
                         buffer[4] = boot_link.sec;
                     }
-                    fclose(fp);
+                    if (ifs.fail() && sec == 1)
+                    {
+                        set_default_boot_code = true;
+                    }
+                    ifs.close();
                 }
-                if (sec == 1 && count != SECTOR_SIZE)
+                if (set_default_boot_code)
                 {
                     // Default buffer content if no boot sector present.
                     // Jump to monitor program warm start entry point.
@@ -1572,21 +1574,25 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
                 auto path = get_path_of_file(link.file_id);
 
                 result = false;
-                FILE *fp = fopen(path.c_str(), "rb");
-                if (fp != nullptr)
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                if (ifs.is_open())
                 {
-                    if (!fseek(fp, link.f_record * DBPS, SEEK_SET))
+                    ifs.seekg(link.f_record * DBPS);
+                    if (!ifs.fail())
                     {
-                        size_t bytes = fread(buffer + MDPS, 1, DBPS, fp);
+                        auto *p = reinterpret_cast<char *>(buffer + MDPS);
+                        ifs.read(p, DBPS);
+                        auto bytes = ifs.gcount();
 
-                        // stuff last sector of file with 0
+                        // Pad remaining bytes of sector of a file with 0.
+                        // A number of bytes read of 0 is also valid.
                         if (bytes < DBPS)
                         {
                             std::memset(buffer + MDPS + bytes, 0, DBPS - bytes);
                         }
                         result = true;
                     }
-                    fclose(fp);
+                    ifs.close();
 
                     if (link.type == SectorType::File)
                     {
@@ -1659,10 +1665,9 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 
         case SectorType::Boot:
             {
-                // Write boot sector 0/1 or 0/2
+                // Write boot sector 00-01 or 00-02.
                 // into a file which name is defined in BOOT_FILE.
                 std::array<Byte, 2 * SECTOR_SIZE> boot_buffer{};
-                FILE *fp;
                 struct stat sbuf{};
 
                 auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
@@ -1670,13 +1675,12 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 
                 if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
                 {
-                    fp = fopen(path.c_str(), "rb");
-                    if (fp != nullptr)
+                    std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                    if (ifs.is_open())
                     {
-                        size_t old_size =
-                            fread(boot_buffer.data(), 1, SECTOR_SIZE * 2, fp);
-                        (void)old_size;
-                        fclose(fp);
+                        auto *p = reinterpret_cast<char *>(boot_buffer.data());
+                        ifs.read(p, SECTOR_SIZE * 2);
+                        ifs.close();
                     }
                 }
 
@@ -1692,18 +1696,21 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 // If sector 2 contains all zero bytes only write
                 // the first sector otherwise write first and second
                 // sector to file.
-                size_t count = !is_all_zero ? 2 : 1;
+                auto count = !is_all_zero ? 2 : 1;
 
-                fp = fopen(path.c_str(), "wb+");
-                if (fp != nullptr)
+                std::ofstream ofs(path, std::ios::out | std::ios::binary);
+                if (ofs.is_open())
                 {
-                    size_t size =
-                        fwrite(boot_buffer.data(), 1, SECTOR_SIZE * count, fp);
-                    if (size != SECTOR_SIZE * count)
+                    const auto pos = ofs.tellp();
+                    const auto *p_out =
+                        reinterpret_cast<const char *>(boot_buffer.data());
+                    ofs.write(p_out, SECTOR_SIZE * count);
+                    auto size = ofs.tellp() - pos;
+                    if (ofs.fail() || size != SECTOR_SIZE * count)
                     {
                         result = false;
                     }
-                    fclose(fp);
+                    ofs.close();
                 }
             }
             break;
@@ -1766,10 +1773,10 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 link.file_id = new_file_id;
                 auto path = get_path_of_file(link.file_id);
                 // Create an empty new file.
-                FILE *fp = fopen(path.c_str(), "wb");
-                if (fp != nullptr)
+                std::ofstream ofs(path, std::ios::out | std::ios::binary);
+                if (ofs.is_open())
                 {
-                    fclose(fp);
+                    ofs.close();
                 }
             }
             FALLTHROUGH;
@@ -1805,19 +1812,27 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
                 }
 
                 result = false;
-                FILE *fp = fopen(path.c_str(), "rb+");
-                if (fp != nullptr)
+                // Even if the file is only written to it has to be opened
+                // for read/write otherwise random files do not work as
+                // expected.
+                std::fstream fs(path, std::ios::in | std::ios::out |
+                                std::ios::binary);
+                if (fs.is_open())
                 {
-                    if (ftell(fp) == link.f_record ||
-                        fseek(fp, link.f_record * DBPS, SEEK_SET) == 0)
+                    fs.seekp(link.f_record * DBPS);
+                    if (!fs.fail())
                     {
-                        if (fwrite(buffer + MDPS, 1, DBPS, fp) == DBPS)
+                        auto pos = fs.tellp();
+                        const auto *p =
+                            reinterpret_cast<const char *>(buffer + MDPS);
+                        fs.write(p, DBPS);
+                        if (!fs.fail() && fs.tellp() - pos == DBPS)
                         {
                             result = true;
                         }
                     }
 
-                    fclose(fp);
+                    fs.close();
 
                     if (link.type == SectorType::File)
                     {
