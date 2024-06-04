@@ -22,9 +22,6 @@
     <ClInclude Include="bdir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bfileptr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="confignt.h">
       <Filter>Header Files</Filter>
     </ClInclude>

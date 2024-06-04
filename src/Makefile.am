@@ -235,7 +235,6 @@ flexemu_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	binifile.h \
 	bintervl.h \
 	blinxsys.h \
@@ -351,7 +350,6 @@ flexplorer_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	bprocess.h \
@@ -403,7 +401,6 @@ mdcrtool_SOURCES = \
 	mdcrfs.cpp \
 	mdcrtool.cpp \
 	bdir.h \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -418,7 +415,6 @@ mdcrtool_SOURCES = \
 
 flex2hex_SOURCES = \
 	flex2hex.cpp \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -434,7 +430,6 @@ dsktool_SOURCES = \
 	dsktool.cpp \
 	bdate.h \
 	bdir.h \
-	bfileptr.h \
 	btime.h \
 	config.h \
 	cvtwchar.h \
@@ -473,7 +468,6 @@ test_SOURCES = \
 	test_gccasm.cpp \
 	testmain.cpp \
 	bdate.h \
-	bfileptr.h \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
@@ -508,7 +502,6 @@ libflex_a_SOURCES = \
 	bdate.cpp \
 	bdir.cpp \
 	benv.cpp \
-	bfileptr.cpp \
 	binifile.cpp \
 	bmembuf.cpp \
 	bobservd.cpp \
@@ -541,7 +534,6 @@ libflex_a_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	binifile.h \
 	bmembuf.h \
 	bobserv.h \

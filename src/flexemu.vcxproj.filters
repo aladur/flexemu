@@ -210,9 +210,6 @@
     <ClInclude Include="benv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bfileptr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="binifile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -33,7 +33,6 @@
 #include <netdb.h>
 #include <pwd.h>
 #endif
-#include "bfileptr.h"
 #include "cvtwchar.h"
 #include "flexerr.h"
 #include "benv.h"

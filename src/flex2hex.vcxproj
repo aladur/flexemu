@@ -27,7 +27,6 @@
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />
     <ClInclude Include="bintervl.h" />
-    <ClInclude Include="bfileptr.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="misc1.h" />

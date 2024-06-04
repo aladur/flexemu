@@ -49,9 +49,6 @@
     <ClInclude Include="typedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bfileptr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bmembuf.h">
       <Filter>Header Files</Filter>
     </ClInclude>

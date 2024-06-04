@@ -131,21 +131,20 @@ am__v_AR_1 =
 libflex_a_AR = $(AR) $(ARFLAGS)
 am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-bdir.$(OBJEXT) libflex_a-benv.$(OBJEXT) \
-	libflex_a-bfileptr.$(OBJEXT) libflex_a-binifile.$(OBJEXT) \
-	libflex_a-bmembuf.$(OBJEXT) libflex_a-bobservd.$(OBJEXT) \
-	libflex_a-bprocess.$(OBJEXT) libflex_a-brcfile.$(OBJEXT) \
-	libflex_a-bregistr.$(OBJEXT) libflex_a-breltime.$(OBJEXT) \
-	libflex_a-btime.$(OBJEXT) libflex_a-cvtwchar.$(OBJEXT) \
-	libflex_a-dircont.$(OBJEXT) libflex_a-fattrib.$(OBJEXT) \
-	libflex_a-fcinfo.$(OBJEXT) libflex_a-fcnffile.$(OBJEXT) \
-	libflex_a-fcopyman.$(OBJEXT) libflex_a-fdirent.$(OBJEXT) \
-	libflex_a-ffilebuf.$(OBJEXT) libflex_a-ffilecnt.$(OBJEXT) \
-	libflex_a-filecnts.$(OBJEXT) libflex_a-fileread.$(OBJEXT) \
-	libflex_a-filfschk.$(OBJEXT) libflex_a-flexerr.$(OBJEXT) \
-	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
-	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
-	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
-	libflex_a-rfilecnt.$(OBJEXT)
+	libflex_a-binifile.$(OBJEXT) libflex_a-bmembuf.$(OBJEXT) \
+	libflex_a-bobservd.$(OBJEXT) libflex_a-bprocess.$(OBJEXT) \
+	libflex_a-brcfile.$(OBJEXT) libflex_a-bregistr.$(OBJEXT) \
+	libflex_a-breltime.$(OBJEXT) libflex_a-btime.$(OBJEXT) \
+	libflex_a-cvtwchar.$(OBJEXT) libflex_a-dircont.$(OBJEXT) \
+	libflex_a-fattrib.$(OBJEXT) libflex_a-fcinfo.$(OBJEXT) \
+	libflex_a-fcnffile.$(OBJEXT) libflex_a-fcopyman.$(OBJEXT) \
+	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
+	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
+	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
+	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
+	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
+	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
+	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 libfmt_a_AR = $(AR) $(ARFLAGS)
 libfmt_a_LIBADD =
@@ -331,7 +330,6 @@ am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	./$(DEPDIR)/flexplorer-qtfree.Po \
 	./$(DEPDIR)/libflex_a-bdate.Po ./$(DEPDIR)/libflex_a-bdir.Po \
 	./$(DEPDIR)/libflex_a-benv.Po \
-	./$(DEPDIR)/libflex_a-bfileptr.Po \
 	./$(DEPDIR)/libflex_a-binifile.Po \
 	./$(DEPDIR)/libflex_a-bmembuf.Po \
 	./$(DEPDIR)/libflex_a-bobservd.Po \
@@ -883,7 +881,6 @@ flexemu_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	binifile.h \
 	bintervl.h \
 	blinxsys.h \
@@ -999,7 +996,6 @@ flexplorer_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	bprocess.h \
@@ -1051,7 +1047,6 @@ mdcrtool_SOURCES = \
 	mdcrfs.cpp \
 	mdcrtool.cpp \
 	bdir.h \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -1066,7 +1061,6 @@ mdcrtool_SOURCES = \
 
 flex2hex_SOURCES = \
 	flex2hex.cpp \
-	bfileptr.h \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
@@ -1082,7 +1076,6 @@ dsktool_SOURCES = \
 	dsktool.cpp \
 	bdate.h \
 	bdir.h \
-	bfileptr.h \
 	btime.h \
 	config.h \
 	cvtwchar.h \
@@ -1121,7 +1114,6 @@ test_SOURCES = \
 	test_gccasm.cpp \
 	testmain.cpp \
 	bdate.h \
-	bfileptr.h \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
@@ -1156,7 +1148,6 @@ libflex_a_SOURCES = \
 	bdate.cpp \
 	bdir.cpp \
 	benv.cpp \
-	bfileptr.cpp \
 	binifile.cpp \
 	bmembuf.cpp \
 	bobservd.cpp \
@@ -1189,7 +1180,6 @@ libflex_a_SOURCES = \
 	bdate.h \
 	bdir.h \
 	benv.h \
-	bfileptr.h \
 	binifile.h \
 	bmembuf.h \
 	bobserv.h \
@@ -1487,7 +1477,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdir.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-benv.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bfileptr.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-binifile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bobservd.Po@am__quote@ # am--include-marker
@@ -1602,20 +1591,6 @@ libflex_a-benv.obj: benv.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='benv.cpp' object='libflex_a-benv.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-benv.obj `if test -f 'benv.cpp'; then $(CYGPATH_W) 'benv.cpp'; else $(CYGPATH_W) '$(srcdir)/benv.cpp'; fi`
-
-libflex_a-bfileptr.o: bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-bfileptr.o -MD -MP -MF $(DEPDIR)/libflex_a-bfileptr.Tpo -c -o libflex_a-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-bfileptr.Tpo $(DEPDIR)/libflex_a-bfileptr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='libflex_a-bfileptr.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-bfileptr.o `test -f 'bfileptr.cpp' || echo '$(srcdir)/'`bfileptr.cpp
-
-libflex_a-bfileptr.obj: bfileptr.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-bfileptr.obj -MD -MP -MF $(DEPDIR)/libflex_a-bfileptr.Tpo -c -o libflex_a-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-bfileptr.Tpo $(DEPDIR)/libflex_a-bfileptr.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='bfileptr.cpp' object='libflex_a-bfileptr.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-bfileptr.obj `if test -f 'bfileptr.cpp'; then $(CYGPATH_W) 'bfileptr.cpp'; else $(CYGPATH_W) '$(srcdir)/bfileptr.cpp'; fi`
 
 libflex_a-binifile.o: binifile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-binifile.o -MD -MP -MF $(DEPDIR)/libflex_a-binifile.Tpo -c -o libflex_a-binifile.o `test -f 'binifile.cpp' || echo '$(srcdir)/'`binifile.cpp
@@ -3789,7 +3764,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po
 	-rm -f ./$(DEPDIR)/libflex_a-benv.Po
-	-rm -f ./$(DEPDIR)/libflex_a-bfileptr.Po
 	-rm -f ./$(DEPDIR)/libflex_a-binifile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bmembuf.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bobservd.Po
@@ -3966,7 +3940,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po
 	-rm -f ./$(DEPDIR)/libflex_a-benv.Po
-	-rm -f ./$(DEPDIR)/libflex_a-bfileptr.Po
 	-rm -f ./$(DEPDIR)/libflex_a-binifile.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bmembuf.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bobservd.Po

@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "memory.h"
-#include "bfileptr.h"
 #include "fcnffile.h"
 #include "soptions.h"
 

@@ -212,7 +212,6 @@
     <ClCompile Include="bdate.cpp" />
     <ClCompile Include="bdir.cpp" />
     <ClCompile Include="benv.cpp" />
-    <ClCompile Include="bfileptr.cpp" />
     <ClCompile Include="binifile.cpp" />
     <ClCompile Include="bmembuf.cpp" />
     <ClCompile Include="bobservd.cpp" />
@@ -254,7 +253,6 @@
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
     <ClInclude Include="benv.h" />
-    <ClInclude Include="bfileptr.h" />
     <ClInclude Include="binifile.h" />
     <ClInclude Include="bmembuf.h" />
     <ClInclude Include="bobserv.h" />

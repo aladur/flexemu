@@ -39,7 +39,6 @@
 #include <sys/stat.h>
 #include <ctype.h>
 #include "bdir.h"
-#include "bfileptr.h"
 #include "filecntb.h"
 #include "fattrib.h"
 #include "ndircont.h"

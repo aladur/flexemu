@@ -23,9 +23,6 @@
     <ClInclude Include="benv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bfileptr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="binifile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -149,9 +146,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="benv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="bfileptr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="binifile.cpp">
