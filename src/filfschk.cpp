@@ -526,16 +526,17 @@ void FileContainerCheck::InitializeDirectorySectors()
 
 void FileContainerCheck::InitializeFreeChainSectors()
 {
-    u_sys_info_sector sis{};
+    s_sys_info_sector sis{};
 
-    if (fc.ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (fc.ReadSector(reinterpret_cast<Byte *>(&sis),
+                      sis_trk_sec.trk, sis_trk_sec.sec))
     {
-        auto fc_start = sis.s.sir.fc_start;
-        auto fc_end = sis.s.sir.fc_end;
-        auto free = getValueBigEndian<Word>(&sis.s.sir.free[0]);
-        disk_day = sis.s.sir.day;
-        disk_month = sis.s.sir.month;
-        disk_year = sis.s.sir.year;
+        auto fc_start = sis.sir.fc_start;
+        auto fc_end = sis.sir.fc_end;
+        auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
+        disk_day = sis.sir.day;
+        disk_month = sis.sir.month;
+        disk_year = sis.sir.year;
 
         AddItem("Free Chain", SectorType::Free, fc_start, fc_end, free);
     }
@@ -558,11 +559,12 @@ std::string FileContainerCheck::GetUnixFilename(
 void FileContainerCheck::InitializeFileSectors()
 {
     st_t current{0, static_cast<Byte>(first_dir_trk_sec.sec)};
-    u_dir_sector dir_sector{};
+    s_dir_sector dir_sector{};
 
     while (current != st_t{0, 0})
     {
-        if (!fc.ReadSector(dir_sector.raw, current.trk, current.sec))
+        if (!fc.ReadSector(reinterpret_cast<Byte *>(&dir_sector),
+                           current.trk, current.sec))
         {
             // Directory sector not readable, abort while loop.
             links.emplace(current, link_t{current});
@@ -570,7 +572,7 @@ void FileContainerCheck::InitializeFileSectors()
             break;
         }
 
-        for (const auto &dir_entry : dir_sector.s.dir_entries)
+        for (const auto &dir_entry : dir_sector.dir_entries)
         {
             if (dir_entry.filename[0] == DE_DELETED)
             {
@@ -601,7 +603,7 @@ void FileContainerCheck::InitializeFileSectors()
             item.minute = minute;
         }
 
-        current = dir_sector.s.next;
+        current = dir_sector.next;
     }
 }
 

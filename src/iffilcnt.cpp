@@ -32,7 +32,7 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     FlexFileContainer *aBase)
     : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
 {
-    dirSector.s.next = first_dir_trk_sec;
+    dirSector.next = first_dir_trk_sec;
 }
 
 bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *rhs) const
@@ -56,14 +56,14 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *wildcard)
 
         if ((dirIndex % DIRENTRIES) == 0)
         {
-            if (!dirSector.s.next.sec && !dirSector.s.next.trk)
+            if (!dirSector.next.sec && !dirSector.next.trk)
             {
                 return false;
             }
 
-            dirTrackSector = dirSector.s.next;
+            dirTrackSector = dirSector.next;
 
-            if (!base->ReadSector(dirSector.raw,
+            if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                                   dirTrackSector.trk, dirTrackSector.sec))
             {
                 std::stringstream stream;
@@ -75,7 +75,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const char *wildcard)
             }
         }
 
-        s_dir_entry *pd = &dirSector.s.dir_entries[dirIndex % DIRENTRIES];
+        s_dir_entry *pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
 
         // an empty entry aborts the search
         if (pd->filename[0] == DE_EMPTY)
@@ -128,7 +128,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector(dirSector.raw,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -139,7 +139,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    pd = &dirSector.s.dir_entries[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     start = pd->start;
     end = pd->end;
     auto records = getValueBigEndian<Word>(&pd->records[0]);
@@ -147,7 +147,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
 
-    if (!base->WriteSector(dirSector.raw,
+    if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -159,8 +159,9 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
     }
 
     /* read system info sector (SIS) */
-    u_sys_info_sector sis{};
-    if (!base->ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    s_sys_info_sector sis{};
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&sis),
+                          sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -170,7 +171,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    fc_end = sis.s.sir.fc_end;
+    fc_end = sis.sir.fc_end;
 
     if (fc_end.sec != 0 || fc_end.trk != 0)
     {
@@ -199,7 +200,8 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath());
         }
 
-        if (!base->ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+        if (!base->ReadSector(reinterpret_cast<Byte *>(&sis),
+                              sis_trk_sec.trk, sis_trk_sec.sec))
         {
             std::stringstream stream;
 
@@ -209,12 +211,13 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath());
         }
 
-        sis.s.sir.fc_end = end;
+        sis.sir.fc_end = end;
     }
     else
     {
         // create a new free chain if free chain is empty
-        if (!base->ReadSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+        if (!base->ReadSector(reinterpret_cast<Byte *>(&sis),
+                              sis_trk_sec.trk, sis_trk_sec.sec))
          {
             std::stringstream stream;
 
@@ -224,18 +227,19 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
                                 base->GetPath());
         }
 
-        sis.s.sir.fc_start = start;
-        sis.s.sir.fc_end = end;
+        sis.sir.fc_start = start;
+        sis.sir.fc_end = end;
     }
 
     // update sys info sector
     // update number of free sectors
     // and end of free chain trk/sec
-    Word free = getValueBigEndian<Word>(&sis.s.sir.free[0]);
+    Word free = getValueBigEndian<Word>(&sis.sir.free[0]);
     free += records;
-    setValueBigEndian<Word>(&sis.s.sir.free[0], free);
+    setValueBigEndian<Word>(&sis.sir.free[0], free);
 
-    if (!base->WriteSector(sis.raw, sis_trk_sec.trk, sis_trk_sec.sec))
+    if (!base->WriteSector(reinterpret_cast<const Byte *>(&sis),
+                           sis_trk_sec.trk, sis_trk_sec.sec))
     {
         std::stringstream stream;
 
@@ -263,7 +267,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector(dirSector.raw,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -274,7 +278,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
                             base->GetPath());
     }
 
-    pd = &dirSector.s.dir_entries[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
 
     std::string totalName(newName);
 
@@ -313,7 +317,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
     memset(&pd->file_ext[0], 0, FLEX_FILEEXT_LENGTH);
     strncpy(&pd->file_ext[0], ext.c_str(), FLEX_FILEEXT_LENGTH);
 
-    if (!base->WriteSector(dirSector.raw,
+    if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -340,7 +344,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector(dirSector.raw,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -351,12 +355,12 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
                             base->GetPath());
     }
 
-    pd = &dirSector.s.dir_entries[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     pd->day = static_cast<Byte>(date.GetDay());
     pd->month = static_cast<Byte>(date.GetMonth());
     pd->year = static_cast<Byte>(date.GetYear() % 100);
 
-    if (!base->WriteSector(dirSector.raw,
+    if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -383,7 +387,7 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
     }
 
     // reread directory sector to get current content
-    if (!base->ReadSector(dirSector.raw,
+    if (!base->ReadSector(reinterpret_cast<Byte *>(&dirSector),
                           dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;
@@ -394,10 +398,10 @@ bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
                             base->GetPath());
     }
 
-    pd = &dirSector.s.dir_entries[dirIndex % DIRENTRIES];
+    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     pd->file_attr = attributes;
 
-    if (!base->WriteSector(dirSector.raw,
+    if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
     {
         std::stringstream stream;

@@ -100,16 +100,6 @@ struct alignas(1) s_sys_info_sector
     Byte unused2[216]; // To be initialized with 0
 };
 
-/* Union of FLEX system information sector (SIS) */
-// The union gives the possibility to choose between two types of access:
-// 1. A structured data access, represented by the member s.
-// 2. A byte oriented data access, represented by the member raw.
-union alignas(1) u_sys_info_sector
-{
-    s_sys_info_sector s; // FLEX system information sector.
-    Byte raw[SECTOR_SIZE]; // Raw data access.
-};
-
 // (M)eta (D)ata (P)er (S)ector in Byte. It consists of the:
 // - link to the next sector or 00-00.
 // - 16-bit record number, zero based.
@@ -159,16 +149,6 @@ struct alignas(1) s_dir_sector
     Byte record_nr[2]; // Logical record number of sector in file, zero based
     Byte unused[12]; // To be initialized with 0
     struct s_dir_entry dir_entries[DIRENTRIES]; // Dir. entries in one sector
-};
-
-/* Union of a FLEX directory sector */
-// The union gives the possibility to choose between two types of access:
-// 1. A structured data access, represented by the member s.
-// 2. A byte oriented data access, represented by the member raw.
-union alignas(1) u_dir_sector
-{
-    s_dir_sector s; // FLEX directory sector.
-    Byte raw[SECTOR_SIZE]; // Raw data access.
 };
 
 struct s_floppy

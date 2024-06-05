@@ -140,11 +140,11 @@ protected:
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;
-    st_t ExtendDirectory(u_dir_sector last_dir_sector, const st_t &st_last);
+    st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
     std::vector<Byte> GetJvcFileHeader() const;
 
     static void Create_sys_info_sector(
-        u_sys_info_sector &sis,
+        s_sys_info_sector &sis,
         const std::string &name,
         struct s_formats &format);
     static bool Write_dir_sectors(std::fstream &fs, struct s_formats &format);
