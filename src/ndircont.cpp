@@ -937,8 +937,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
         {
-            is_random = isListedInFileRandom(directory.c_str(),
-                                             filename.c_str());
+            is_random = isListedInFileRandom(directory, filename);
         }
 
         if (IsFlexFilename(filename.c_str(), name, extension, true) &&

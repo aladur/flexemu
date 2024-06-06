@@ -136,7 +136,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *wildcard)
         }
 
         // CDFS support:
-        if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
+        if (isListedInFileRandom(base->GetPath(), fileName))
         {
             sectorMap = 2;
         }
@@ -205,7 +205,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *wildcard)
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
-            if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
+            if (isListedInFileRandom(base->GetPath(), fileName))
             {
                 sectorMap = 2;
             }

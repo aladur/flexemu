@@ -598,8 +598,7 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                 if(access(directory.c_str(), W_OK))
                 {
                     // CDFS-Support: look for file name in file 'random'
-                    if (isListedInFileRandom(directory.c_str(),
-                                             getFileName(path).c_str()))
+                    if (isListedInFileRandom(directory, getFileName(path)))
                     {
                         SetSectorMap(IS_RANDOM_FILE);
                     }

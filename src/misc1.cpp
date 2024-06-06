@@ -893,7 +893,8 @@ bool AskForInput(const std::string &question, const std::string &answers,
     return input == '\n' || ::tolower(input) == answers.at(0);
 }
 
-bool isListedInFileRandom(const char *directory, const char *filename)
+bool isListedInFileRandom(const std::string &directory,
+                          const std::string &filename)
 {
     std::string path(directory);
     std::string lowFilename(filename);

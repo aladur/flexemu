@@ -349,7 +349,8 @@ extern "C" const size_t color_count;
 
 extern const char * const white_space;
 
-extern bool isListedInFileRandom(const char *directory, const char *filename);
+extern bool isListedInFileRandom(const std::string &directory,
+                                 const std::string &filename);
 extern bool hasRandomFileAttribute(const char *directory, const char *filename);
 
 // trim from end of string (right)
