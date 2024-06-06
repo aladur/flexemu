@@ -89,8 +89,8 @@ public:
     void ConvertToTextFile();
     void ConvertToFlexTextFile();
     void ConvertToDumpFile(DWord bytesPerLine);
-    bool WriteToFile(const char *path) const;
-    bool ReadFromFile(const char *path);
+    bool WriteToFile(const std::string &path) const;
+    bool ReadFromFile(const std::string &path);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
     bool IsFlexExecutableFile() const;
@@ -104,8 +104,8 @@ public:
     const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
     tFlexFileHeader GetHeaderBigEndian() const;
     void SetDateTime(const BDate &date, const BTime &time);
-    void SetFilename(const char *name);
-    inline const char *GetFilename() const
+    void SetFilename(const std::string &name);
+    inline std::string GetFilename() const
     {
         return fileHeader.fileName;
     };

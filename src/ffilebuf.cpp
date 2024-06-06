@@ -103,9 +103,9 @@ const Byte *FlexFileBuffer::GetBuffer(DWord offset /* = 0*/,
     return buffer.data() + offset;
 }
 
-void FlexFileBuffer::SetFilename(const char *name)
+void FlexFileBuffer::SetFilename(const std::string &fileName)
 {
-    strncpy(fileHeader.fileName, name, FLEX_FILENAME_LENGTH - 1);
+    strncpy(fileHeader.fileName, fileName.c_str(), FLEX_FILENAME_LENGTH - 1);
     fileHeader.fileName[sizeof(fileHeader.fileName) - 1] = '\0';
 }
 
@@ -549,7 +549,7 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
     return true;
 }
 
-bool FlexFileBuffer::WriteToFile(const char *path) const
+bool FlexFileBuffer::WriteToFile(const std::string &path) const
 {
     auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
     std::ofstream ostream(path, mode);
@@ -568,11 +568,12 @@ bool FlexFileBuffer::WriteToFile(const char *path) const
     return false;
 }
 
-bool FlexFileBuffer::ReadFromFile(const char *path)
+bool FlexFileBuffer::ReadFromFile(const std::string &path)
 {
     struct stat sbuf{};
 
-    if (!stat(path, &sbuf) && S_ISREG(sbuf.st_mode) && sbuf.st_size >= 0)
+    if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode) &&
+         sbuf.st_size >= 0)
     {
         std::ifstream istream(path, std::ios::in | std::ios::binary);
 
@@ -609,7 +610,7 @@ bool FlexFileBuffer::ReadFromFile(const char *path)
                     SetSectorMap(IS_RANDOM_FILE);
                 }
 
-                if(access(path, W_OK))
+                if(access(path.c_str(), W_OK))
                 {
                     SetAttributes(FLX_READONLY);
                 }

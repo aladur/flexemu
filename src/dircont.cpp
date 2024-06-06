@@ -320,7 +320,7 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
-    if (!buffer.ReadFromFile(filePath.c_str()))
+    if (!buffer.ReadFromFile(filePath))
     {
         throw FlexException(FERR_READING_FROM, std::string(fileName));
     }
@@ -353,7 +353,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
 
-    if (!buffer.WriteToFile(filePath.c_str()))
+    if (!buffer.WriteToFile(filePath))
     {
         throw FlexException(FERR_WRITING_TO, filePath);
     }

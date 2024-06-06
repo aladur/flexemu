@@ -501,7 +501,7 @@ FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
 
 // if successfull return true. If error return false
 bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
-                                        const char *fileName /* = nullptr */)
+                                        const char *p_fileName /* = nullptr */)
 {
     if (!is_flex_format)
     {
@@ -517,23 +517,23 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     int count;
     FlexDirEntry de;
     s_sys_info_sector sis{};
-    const char *pFileName = fileName;
+    std::string fileName{p_fileName};
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
 
-    if (fileName == nullptr)
+    if (p_fileName == nullptr)
     {
-        pFileName = buffer.GetFilename();
+        fileName = buffer.GetFilename();
     }
 
-    if (FindFile(pFileName, de))
+    if (FindFile(fileName.c_str(), de))
     {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, pFileName);
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, fileName);
     }
 
     if (buffer.GetFileSize() == 0U)
     {
-        throw FlexException(FERR_COPY_EMPTY_FILE, pFileName);
+        throw FlexException(FERR_COPY_EMPTY_FILE, fileName);
     }
 
     // read sys info sector
@@ -570,7 +570,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 
             if (trk == 0 && sec == 0)
             {
-                throw FlexException(FERR_DISK_FULL_WRITING, path, pFileName);
+                throw FlexException(FERR_DISK_FULL_WRITING, path, fileName);
             }
 
             if (!ReadSector(&sectorBuffer[count][0], trk, sec))
@@ -622,7 +622,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
                     if (--smSector == 0U)
                     {
                         throw FlexException(FERR_RECORDMAP_FULL,
-                                            pFileName, path);
+                                            fileName, path);
                     }
                     smIndex = 4U;
                 }
@@ -712,7 +712,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
     de.SetStartTrkSec(start.trk, start.sec);
     de.SetEndTrkSec(trk, sec);
-    de.SetTotalFileName(pFileName);
+    de.SetTotalFileName(fileName);
     de.SetFileSize(recordNr * static_cast<int>(SECTOR_SIZE));
     de.SetAttributes(buffer.GetAttributes());
     de.SetSectorMap(buffer.GetSectorMap());

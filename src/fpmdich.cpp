@@ -225,7 +225,7 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
         }
 
         const auto filePath = QDir::toNativeSeparators(path);
-        if (!buffer.ReadFromFile(filePath.toStdString().c_str()))
+        if (!buffer.ReadFromFile(filePath.toStdString()))
         {
             auto msg = tr("Error reading from\n%1\nInjection aborted.");
             msg = msg.arg(filePath);
@@ -268,12 +268,13 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
 
         try
         {
-            auto rowIndicesFound = model->FindFiles(buffer.GetFilename());
+            auto rowIndicesFound =
+                model->FindFiles(buffer.GetFilename().c_str());
             if (!rowIndicesFound.isEmpty())
             {
                 auto msg = tr("%1\nalready exists. Overwrite?");
 
-                msg = msg.arg(buffer.GetFilename());
+                msg = msg.arg(buffer.GetFilename().c_str());
                 auto answer = QMessageBox::question(this, "FLEXplorer", msg,
                               QMessageBox::Yes | QMessageBox::No,
                               QMessageBox::Yes);
@@ -394,7 +395,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            if (!buffer.WriteToFile(targetPath.toStdString().c_str()))
+            if (!buffer.WriteToFile(targetPath.toStdString()))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
                                     targetFilename.toStdString());
@@ -476,7 +477,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             std::string tempFile(tempPath);
             tempFile.append(PATHSEPARATORSTRING).append(filename);
 
-            if (buffer.WriteToFile(tempFile.c_str()))
+            if (buffer.WriteToFile(tempFile))
             {
 #ifdef _WIN32
                 SHELLEXECUTEINFO execInfo;

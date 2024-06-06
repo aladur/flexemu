@@ -525,7 +525,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
         bool isText = false;
         FlexFileBuffer fileBuffer;
 
-        if (!fileBuffer.ReadFromFile(file.c_str()))
+        if (!fileBuffer.ReadFromFile(file))
         {
             std::cerr <<
                 "   *** Error: Reading from " << file << ". Aborted.\n";
@@ -542,7 +542,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
         {
             FlexDirEntry dir_entry;
 
-            if (dst.FindFile(fileBuffer.GetFilename(), dir_entry))
+            if (dst.FindFile(fileBuffer.GetFilename().c_str(), dir_entry))
             {
                 std::string question(fileBuffer.GetFilename());
 

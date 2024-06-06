@@ -31,7 +31,7 @@ TEST(test_ffilebuf, fct_default_ctor)
     EXPECT_FALSE(ffb.IsRandom());
     EXPECT_EQ(ffb.GetDate(), BDate{});
     EXPECT_EQ(ffb.GetTime(), BTime());
-    EXPECT_EQ(*ffb.GetFilename(), '\0');
+    EXPECT_EQ(ffb.GetFilename().empty(), true);
     const auto *p = static_cast<const Byte *>(ffb);
     EXPECT_EQ(p, nullptr);
     EXPECT_NO_THROW({ ffb.FillWith(); });
@@ -188,7 +188,7 @@ TEST(test_ffilebuf, fct_get_set)
     EXPECT_EQ(ffb.GetAttributes(), 0U);
     EXPECT_EQ(ffb.GetDate(), BDate{});
     EXPECT_EQ(ffb.GetTime(), BTime());
-    EXPECT_EQ(*ffb.GetFilename(), '\0');
+    EXPECT_EQ(ffb.GetFilename().empty(), true);
 
     ffb.Realloc(33U);
     ffb.SetFilename(test_file.c_str());
