@@ -485,7 +485,7 @@ void FlexplorerTableModel::SetAttributesString(const QModelIndex &index,
 
             try
             {
-                container->SetAttributes(filename.toStdString().c_str(),
+                container->SetAttributes(filename.toStdString(),
                                          setMask, clearMask);
             }
             catch (FlexException &ex)

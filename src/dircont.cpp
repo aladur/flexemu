@@ -360,7 +360,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     SetDateTime(lowerFileName.c_str(), buffer.GetDate(), buffer.GetTime());
-    SetAttributes(lowerFileName.c_str(), buffer.GetAttributes());
+    SetAttributes(lowerFileName, buffer.GetAttributes());
 
     if (buffer.IsRandom())
     {
@@ -422,7 +422,8 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
 }
 
 // set the file attributes of a file
-bool DirectoryContainer::SetAttributes(const char *wildcard, Byte setMask,
+bool DirectoryContainer::SetAttributes(const std::string &wildcard,
+                                       Byte setMask,
                                        Byte clearMask /* = ~0 */)
 {
     // only WRITE_PROTECT flag is supported
@@ -447,7 +448,7 @@ bool DirectoryContainer::SetAttributes(const char *wildcard, Byte setMask,
 #endif
 #ifdef UNIX
         struct stat sbuf{};
-        auto lowerFileName(tolower(std::string(wildcard)));
+        auto lowerFileName(tolower(wildcard));
 
         auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 

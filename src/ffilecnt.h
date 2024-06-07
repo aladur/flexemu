@@ -118,8 +118,8 @@ public:
     bool DeleteFile(const std::string &wildcard) override;
     bool RenameFile(const std::string &oldName,
                     const std::string &newName) override;
-    bool SetAttributes(const char *wildcard, Byte setMask, Byte clearMask)
-        override;
+    bool SetAttributes(const std::string &wildcard, Byte setMask,
+                       Byte clearMask = ~0) override;
     FlexFileBuffer ReadToBuffer(const char *fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;

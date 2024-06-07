@@ -46,7 +46,7 @@ public:
     virtual bool DeleteFile(const std::string &wildcard) = 0;
     virtual bool RenameFile(const std::string &oldName,
                             const std::string &newName) = 0;
-    virtual bool SetAttributes(const char *wildcard, Byte setMask = 0,
+    virtual bool SetAttributes(const std::string &wildcard, Byte setMask,
                                Byte clearMask = ~0) = 0;
     virtual FlexFileBuffer ReadToBuffer(const char *fileName) = 0;
     virtual bool WriteFromBuffer(const FlexFileBuffer &buffer,

@@ -804,8 +804,8 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
 
 
 // set the file attributes of one or multiple files
-bool FlexFileContainer::SetAttributes(const char *wildcard,
-        Byte setMask, Byte clearMask)
+bool FlexFileContainer::SetAttributes(const std::string &wildcard,
+        Byte setMask, Byte clearMask /* = ~0 */)
 {
     if (!is_flex_format)
     {
@@ -816,7 +816,7 @@ bool FlexFileContainer::SetAttributes(const char *wildcard,
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(wildcard);
+    FileContainerIterator it(wildcard.c_str());
 
     for (it = this->begin(); it != this->end(); ++it)
     {
