@@ -188,7 +188,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
                 auto question = filename + " already exists. Overwrite?";
                 if (AskForInput(question, "yn", default_answer))
                 {
-                    dest.DeleteFile(dir_entry.GetTotalFileName().c_str());
+                    dest.DeleteFile(dir_entry.GetTotalFileName());
                 }
                 else
                 {
@@ -549,7 +549,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                 question += " already exists. Overwrite?";
                 if (AskForInput(question, "yn", default_answer))
                 {
-                    dst.DeleteFile(dir_entry.GetTotalFileName().c_str());
+                    dst.DeleteFile(dir_entry.GetTotalFileName());
                 }
                 else
                 {
@@ -618,7 +618,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
                 question << "Delete " << flex_file << "?";
                 if (AskForInput(question.str(), "yn", default_answer))
                 {
-                    src.DeleteFile(flex_file.c_str());
+                    src.DeleteFile(flex_file);
                 }
                 else
                 {
@@ -790,7 +790,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 question += " already exists. Overwrite?";
                 if (AskForInput(question, "yn", default_answer))
                 {
-                    dst.DeleteFile(filename.c_str());
+                    dst.DeleteFile(filename);
                 }
                 else
                 {

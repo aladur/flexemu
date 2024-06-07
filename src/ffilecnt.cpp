@@ -344,7 +344,7 @@ bool FlexFileContainer::FindFile(const std::string &fileName,
     return false;
 }
 
-bool FlexFileContainer::DeleteFile(const char *wildcard)
+bool FlexFileContainer::DeleteFile(const std::string &wildcard)
 {
     if (!is_flex_format)
     {
@@ -353,7 +353,7 @@ bool FlexFileContainer::DeleteFile(const char *wildcard)
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(wildcard);
+    FileContainerIterator it(wildcard.c_str());
 
     for (it = this->begin(); it != this->end(); ++it)
     {

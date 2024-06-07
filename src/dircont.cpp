@@ -185,9 +185,9 @@ bool DirectoryContainer::FindFile(const std::string &fileName,
     return true;
 }
 
-bool DirectoryContainer::DeleteFile(const char *wildcard)
+bool DirectoryContainer::DeleteFile(const std::string &wildcard)
 {
-    FileContainerIterator it(wildcard);
+    FileContainerIterator it(wildcard.c_str());
 
     for (it = this->begin(); it != this->end(); ++it)
     {

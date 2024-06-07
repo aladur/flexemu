@@ -413,7 +413,7 @@ void FlexplorerTableModel::DeleteFile(const QModelIndex &index)
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        container->DeleteFile(filename.toStdString().c_str());
+        container->DeleteFile(filename.toStdString());
         removeRows(index.row(), 1);
     }
 }
