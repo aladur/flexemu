@@ -42,7 +42,7 @@ class FileContainerIf : public FileContainerIfBase
 public:
     virtual FileContainerIf *begin() = 0;
     virtual FileContainerIf *end() const = 0;
-    virtual bool FindFile(const char *fileName, FlexDirEntry &entry) = 0;
+    virtual bool FindFile(const std::string &fileName, FlexDirEntry &entry) = 0;
     virtual bool DeleteFile(const char *wildcard) = 0;
     virtual bool RenameFile(const char *oldName, const char *newName) = 0;
     virtual bool SetAttributes(const char *wildcard, Byte setMask = 0,

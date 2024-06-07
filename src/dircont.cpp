@@ -169,9 +169,10 @@ bool DirectoryContainer::OpenDirectory(const char *pattern)
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool DirectoryContainer::FindFile(const char *fileName, FlexDirEntry &entry)
+bool DirectoryContainer::FindFile(const std::string &fileName,
+                                  FlexDirEntry &entry)
 {
-    FileContainerIterator it(fileName);
+    FileContainerIterator it(fileName.c_str());
 
     it = this->begin();
 

@@ -82,7 +82,7 @@ public:
     {
         return nullptr;
     };
-    bool FindFile(const char *fileName, FlexDirEntry &entry) override;
+    bool FindFile(const std::string &fileName, FlexDirEntry &entry) override;
     bool DeleteFile(const char *wildcard) override;
     bool RenameFile(const char *oldName, const char *newName) override;
     bool SetAttributes(const char *wildcard, Byte setMask,

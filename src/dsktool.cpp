@@ -183,7 +183,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
         {
             FlexDirEntry dir_entry;
 
-            if (dest.FindFile(filename.c_str(), dir_entry))
+            if (dest.FindFile(filename, dir_entry))
             {
                 auto question = filename + " already exists. Overwrite?";
                 if (AskForInput(question, "yn", default_answer))
@@ -203,7 +203,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             isText = src.FileCopy(filename.c_str(), filename.c_str(), dest);
 
             ++count;
-            if (src.FindFile(filename.c_str(), dir_entry))
+            if (src.FindFile(filename, dir_entry))
             {
                 byte_size += dir_entry.GetFileSize();
                 random_count += dir_entry.IsRandom() ? 1 : 0;
@@ -349,7 +349,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
         int endTrack;
         int endSector;
 
-        if (!src.FindFile(filename.c_str(), dir_entry))
+        if (!src.FindFile(filename, dir_entry))
         {
             continue;
         }
@@ -542,7 +542,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
         {
             FlexDirEntry dir_entry;
 
-            if (dst.FindFile(fileBuffer.GetFilename().c_str(), dir_entry))
+            if (dst.FindFile(fileBuffer.GetFilename(), dir_entry))
             {
                 std::string question(fileBuffer.GetFilename());
 
@@ -611,7 +611,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
         {
             FlexDirEntry dir_entry;
 
-            if (src.FindFile(flex_file.c_str(), dir_entry))
+            if (src.FindFile(flex_file, dir_entry))
             {
                 std::stringstream question;
 
@@ -783,7 +783,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
         {
             FlexDirEntry dir_entry;
 
-            if (dst.FindFile(filename.c_str(), dir_entry))
+            if (dst.FindFile(filename, dir_entry))
             {
                 std::string question(filename);
 
@@ -805,7 +805,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
             src.FileCopy(filename.c_str(), filename.c_str(), dst);
 
             ++count;
-            if (src.FindFile(filename.c_str(), dir_entry))
+            if (src.FindFile(filename, dir_entry))
             {
                 byte_size += dir_entry.GetFileSize();
                 random_count += dir_entry.IsRandom() ? 1 : 0;

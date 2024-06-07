@@ -399,7 +399,7 @@ QModelIndex FlexplorerTableModel::AddFile(const FlexFileBuffer &buffer)
     const auto filename = buffer.GetFilename();
 
     container->WriteFromBuffer(buffer);
-    if (container->FindFile(filename.c_str(), dirEntry))
+    if (container->FindFile(filename, dirEntry))
     {
         insertRows(rowCount(), 1);
         return SetRow(dirEntry, rowCount() - 1, Qt::DisplayRole);

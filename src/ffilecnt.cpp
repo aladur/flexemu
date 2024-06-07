@@ -324,11 +324,12 @@ FlexFileContainer *FlexFileContainer::Create(
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool FlexFileContainer::FindFile(const char *fileName, FlexDirEntry &entry)
+bool FlexFileContainer::FindFile(const std::string &fileName,
+                                 FlexDirEntry &entry)
 {
     if (is_flex_format)
     {
-        FileContainerIterator it(fileName);
+        FileContainerIterator it(fileName.c_str());
 
         it = this->begin();
 
@@ -526,7 +527,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
         fileName = buffer.GetFilename();
     }
 
-    if (FindFile(fileName.c_str(), de))
+    if (FindFile(fileName, de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, fileName);
     }

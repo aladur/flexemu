@@ -324,7 +324,7 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
 #endif
 
     // prevent overwriting of an existing file
-    if (base->FindFile(dst.c_str(), de))
+    if (base->FindFile(dst, de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
