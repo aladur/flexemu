@@ -460,7 +460,7 @@ FlexFileBuffer FlexplorerTableModel::CopyFile(const QModelIndex &index) const
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        return container->ReadToBuffer(filename.toStdString().c_str());
+        return container->ReadToBuffer(filename.toStdString());
     }
 
     return {};

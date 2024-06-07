@@ -88,7 +88,7 @@ public:
                     const std::string &newName) override;
     bool SetAttributes(const std::string &wildcard, Byte setMask,
                        Byte clearMask = ~0) override;
-    FlexFileBuffer ReadToBuffer(const char *fileName) override;
+    FlexFileBuffer ReadToBuffer(const std::string &fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;
     bool FileCopy(const char *sourceName, const char *destName,

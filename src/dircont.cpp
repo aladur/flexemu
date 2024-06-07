@@ -314,16 +314,16 @@ int DirectoryContainer::GetContainerType() const
     return TYPE_DIRECTORY;
 }
 
-FlexFileBuffer DirectoryContainer::ReadToBuffer(const char *fileName)
+FlexFileBuffer DirectoryContainer::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
-    auto filePath(tolower(std::string(fileName)));
+    auto filePath(tolower(fileName));
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
     if (!buffer.ReadFromFile(filePath))
     {
-        throw FlexException(FERR_READING_FROM, std::string(fileName));
+        throw FlexException(FERR_READING_FROM, fileName);
     }
 
     return buffer;

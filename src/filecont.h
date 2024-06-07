@@ -48,7 +48,7 @@ public:
                             const std::string &newName) = 0;
     virtual bool SetAttributes(const std::string &wildcard, Byte setMask,
                                Byte clearMask = ~0) = 0;
-    virtual FlexFileBuffer ReadToBuffer(const char *fileName) = 0;
+    virtual FlexFileBuffer ReadToBuffer(const std::string &fileName) = 0;
     virtual bool WriteFromBuffer(const FlexFileBuffer &buffer,
                                  const char *fileName = nullptr) = 0;
     virtual bool FileCopy(const char *sourceName, const char *destName,

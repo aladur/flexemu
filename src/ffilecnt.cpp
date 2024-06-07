@@ -723,7 +723,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     return true;
 }
 
-FlexFileBuffer FlexFileContainer::ReadToBuffer(const char *fileName)
+FlexFileBuffer FlexFileContainer::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
     FlexDirEntry de;
