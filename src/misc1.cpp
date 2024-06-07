@@ -921,7 +921,8 @@ bool isListedInFileRandom(const std::string &directory,
     return false;
 }
 
-bool hasRandomFileAttribute(const char *directory, const char *filename)
+bool hasRandomFileAttribute(const std::string &directory,
+                            const std::string &filename)
 {
     std::string sFilename(filename);
 

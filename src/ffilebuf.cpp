@@ -603,8 +603,7 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                         SetSectorMap(IS_RANDOM_FILE);
                     }
                 }
-                else if (hasRandomFileAttribute(directory.c_str(),
-                                                getFileName(path).c_str()))
+                else if (hasRandomFileAttribute(directory, getFileName(path)))
                 {
                     SetSectorMap(IS_RANDOM_FILE);
                 }
