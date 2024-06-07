@@ -99,7 +99,7 @@ FileContainerIterator &FileContainerIterator::operator++()
 {
     if (imp != nullptr)
     {
-        if (!imp->NextDirEntry(wildcard.c_str()))
+        if (!imp->NextDirEntry(wildcard))
         {
             imp->AtEnd();
         }
@@ -122,7 +122,7 @@ FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
 
     imp = aBase->IteratorFactory();
 
-    if (!imp->NextDirEntry(wildcard.c_str()))
+    if (!imp->NextDirEntry(wildcard))
     {
         imp->AtEnd();
     }

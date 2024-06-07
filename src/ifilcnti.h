@@ -37,7 +37,7 @@ class FileContainerIteratorImp
 public:
     virtual ~FileContainerIteratorImp() = default;
     virtual bool operator==(const FileContainerIf *aBase) const = 0;
-    virtual bool NextDirEntry(const char *filePattern) = 0;
+    virtual bool NextDirEntry(const std::string &wildcard) = 0;
     virtual void AtEnd() = 0;
     virtual FlexDirEntry &GetDirEntry() = 0;
 private:

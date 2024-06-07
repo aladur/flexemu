@@ -42,7 +42,7 @@ public:
     {
         return dirEntry;
     };
-    bool NextDirEntry(const char *wildcard) override;
+    bool NextDirEntry(const std::string &wildcard) override;
 private:
     bool DeleteCurrent() override;
     bool RenameCurrent(const std::string &newName) override;
