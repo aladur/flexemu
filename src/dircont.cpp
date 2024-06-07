@@ -197,11 +197,12 @@ bool DirectoryContainer::DeleteFile(const std::string &wildcard)
     return true;
 }
 
-bool DirectoryContainer::RenameFile(const char *oldName, const char *newName)
+bool DirectoryContainer::RenameFile(const std::string &oldName,
+                                    const std::string &newName)
 {
     FlexDirEntry de;
 
-    if (strcmp(oldName, newName) == 0)
+    if (oldName.compare(newName) == 0)
     {
         return false;
     }
@@ -209,20 +210,19 @@ bool DirectoryContainer::RenameFile(const char *oldName, const char *newName)
     // prevent conflict with an existing file
     if (FindFile(newName, de))
     {
-        throw FlexException(FERR_FILE_ALREADY_EXISTS, std::string(newName));
+        throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
-    FileContainerIterator it(oldName);
+    FileContainerIterator it(oldName.c_str());
 
     it = this->begin();
 
     if (it == this->end())
     {
-        throw FlexException(FERR_NO_FILE_IN_CONTAINER, std::string(oldName),
-                            GetPath());
+        throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, GetPath());
     }
 
-    it.RenameCurrent(newName);
+    it.RenameCurrent(newName.c_str());
 
     return true;
 }

@@ -363,9 +363,10 @@ bool FlexFileContainer::DeleteFile(const std::string &wildcard)
     return true;
 }
 
-bool FlexFileContainer::RenameFile(const char *oldName, const char *newName)
+bool FlexFileContainer::RenameFile(const std::string &oldName,
+                                   const std::string &newName)
 {
-    if (!is_flex_format || (strcmp(oldName, newName) == 0))
+    if (!is_flex_format || (oldName.compare(newName) == 0))
     {
         return false;
     }
@@ -376,12 +377,12 @@ bool FlexFileContainer::RenameFile(const char *oldName, const char *newName)
 
     // prevent overwriting of an existing file
     // except for changing lower to uppercase.
-    if (stricmp(oldName, newName) != 0 && FindFile(newName, de))
+    if (stricmp(oldName.c_str(), newName.c_str()) != 0 && FindFile(newName, de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
-    FileContainerIterator it(oldName);
+    FileContainerIterator it(oldName.c_str());
 
     it = this->begin();
 
@@ -390,7 +391,7 @@ bool FlexFileContainer::RenameFile(const char *oldName, const char *newName)
         throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, path);
     }
 
-    it.RenameCurrent(newName);
+    it.RenameCurrent(newName.c_str());
 
     return true;
 }

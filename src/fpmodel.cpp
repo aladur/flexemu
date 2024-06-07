@@ -430,8 +430,8 @@ void FlexplorerTableModel::RenameFile(const QModelIndex &index,
 
         try
         {
-            container->RenameFile(oldFilename.toStdString().c_str(),
-                                  newFilename.toStdString().c_str());
+            container->RenameFile(oldFilename.toStdString(),
+                                  newFilename.toStdString());
         }
         catch (FlexException &ex)
         {
