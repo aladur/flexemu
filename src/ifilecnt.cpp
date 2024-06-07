@@ -140,7 +140,7 @@ bool FileContainerIterator::DeleteCurrent()
     return imp->DeleteCurrent();
 }
 
-bool FileContainerIterator::RenameCurrent(const char *newName)
+bool FileContainerIterator::RenameCurrent(const std::string &newName)
 {
     if (imp == nullptr)
     {

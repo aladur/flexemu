@@ -45,7 +45,7 @@ public:
     bool NextDirEntry(const char *wildcard) override;
 private:
     bool DeleteCurrent() override;
-    bool RenameCurrent(const char *newName) override;
+    bool RenameCurrent(const std::string &newName) override;
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 

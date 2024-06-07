@@ -308,7 +308,7 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
 // Renames the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool DirectoryContainerIteratorImp::RenameCurrent(const char *newName)
+bool DirectoryContainerIteratorImp::RenameCurrent(const std::string &newName)
 {
     if (dirEntry.IsEmpty())
     {

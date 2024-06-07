@@ -45,7 +45,7 @@ public:
     FileContainerIterator &operator=(const FileContainerIterator &src) =
         delete;
     bool DeleteCurrent();
-    bool RenameCurrent(const char *newName);
+    bool RenameCurrent(const std::string &newName);
     bool SetDateCurrent(const BDate &date);
     bool SetAttributesCurrent(Byte attributes);
 private:

@@ -391,7 +391,7 @@ bool FlexFileContainer::RenameFile(const std::string &oldName,
         throw FlexException(FERR_NO_FILE_IN_CONTAINER, oldName, path);
     }
 
-    it.RenameCurrent(newName.c_str());
+    it.RenameCurrent(newName);
 
     return true;
 }

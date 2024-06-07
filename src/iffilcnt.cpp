@@ -255,7 +255,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
 // Renames the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::RenameCurrent(const char *newName)
+bool FlexFileContainerIteratorImp::RenameCurrent(const std::string &newName)
 {
     s_dir_entry *pd;
     std::string name;

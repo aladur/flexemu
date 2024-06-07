@@ -42,7 +42,7 @@ public:
     virtual FlexDirEntry &GetDirEntry() = 0;
 private:
     virtual bool DeleteCurrent() = 0;
-    virtual bool RenameCurrent(const char *) = 0;
+    virtual bool RenameCurrent(const std::string &newName) = 0;
     virtual bool SetDateCurrent(const BDate &date) = 0;
     virtual bool SetAttributesCurrent(Byte attributes) = 0;
 };
