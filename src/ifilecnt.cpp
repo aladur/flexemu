@@ -47,7 +47,7 @@
 */
 
 FileContainerIterator::FileContainerIterator(
-        const char *p_wildcard/* = "*.*" */)
+        const std::string &p_wildcard /* = "*.*" */)
     : wildcard(p_wildcard)
 {
 }

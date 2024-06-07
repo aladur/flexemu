@@ -33,7 +33,7 @@ class FileContainerIteratorImp;
 class FileContainerIterator
 {
 public:
-    explicit FileContainerIterator(const char *p_wildcard = "*.*");
+    explicit FileContainerIterator(const std::string &p_wildcard = "*.*");
     FileContainerIterator(const FileContainerIterator &src) = delete;
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();

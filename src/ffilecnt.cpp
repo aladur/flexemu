@@ -329,7 +329,7 @@ bool FlexFileContainer::FindFile(const std::string &fileName,
 {
     if (is_flex_format)
     {
-        FileContainerIterator it(fileName.c_str());
+        FileContainerIterator it(fileName);
 
         it = this->begin();
 
@@ -353,7 +353,7 @@ bool FlexFileContainer::DeleteFile(const std::string &wildcard)
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(wildcard.c_str());
+    FileContainerIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {
@@ -382,7 +382,7 @@ bool FlexFileContainer::RenameFile(const std::string &oldName,
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
-    FileContainerIterator it(oldName.c_str());
+    FileContainerIterator it(oldName);
 
     it = this->begin();
 
@@ -817,7 +817,7 @@ bool FlexFileContainer::SetAttributes(const std::string &wildcard,
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
-    FileContainerIterator it(wildcard.c_str());
+    FileContainerIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {

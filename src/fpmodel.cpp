@@ -325,7 +325,7 @@ bool FlexplorerTableModel::GetAttributesString(const QModelIndex &index,
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toStdString().c_str());
+        FileContainerIterator iter(filename.toStdString());
 
         iter = container->begin();
         if (iter != container->end())
@@ -344,7 +344,7 @@ bool FlexplorerTableModel::GetAttributes(const QModelIndex &index,
     if (index.isValid())
     {
         const auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toStdString().c_str());
+        FileContainerIterator iter(filename.toStdString());
 
         iter = container->begin();
         if (iter != container->end())
