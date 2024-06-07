@@ -200,7 +200,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
                 }
             }
 
-            isText = src.FileCopy(filename.c_str(), filename.c_str(), dest);
+            isText = src.FileCopy(filename, filename, dest);
 
             ++count;
             if (src.FindFile(filename, dir_entry))
@@ -802,7 +802,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 }
             }
 
-            src.FileCopy(filename.c_str(), filename.c_str(), dst);
+            src.FileCopy(filename, filename, dst);
 
             ++count;
             if (src.FindFile(filename, dir_entry))

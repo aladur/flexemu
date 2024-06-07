@@ -51,8 +51,9 @@ public:
     virtual FlexFileBuffer ReadToBuffer(const std::string &fileName) = 0;
     virtual bool WriteFromBuffer(const FlexFileBuffer &buffer,
                                  const char *fileName = nullptr) = 0;
-    virtual bool FileCopy(const char *sourceName, const char *destName,
-                           FileContainerIf &destination) = 0;
+    virtual bool FileCopy(const std::string &sourceName,
+                          const std::string &destName,
+                          FileContainerIf &destination) = 0;
     virtual std::string GetSupportedAttributes() const = 0;
 
     ~FileContainerIf() override = default;

@@ -228,7 +228,7 @@ bool DirectoryContainer::RenameFile(const std::string &oldName,
 }
 
 bool DirectoryContainer::FileCopy(
-    const char *sourceName, const char *destName,
+    const std::string &sourceName, const std::string &destName,
     FileContainerIf &destination)
 {
     return FlexCopyManager::FileCopy(sourceName, destName,

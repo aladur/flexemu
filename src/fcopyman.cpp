@@ -32,14 +32,15 @@ bool FlexCopyManager::autoTextConversion = false;
 
 // Return true if the copied file has been detected as text file.
 // If false the file has been treated as binary file.
-bool FlexCopyManager::FileCopy(const char *srcName, const char *dstName,
+bool FlexCopyManager::FileCopy(const std::string &sourcName,
+                               const std::string &destName,
                                FileContainerIf &src, FileContainerIf &dst)
 {
     bool isTextFile = false;
 
     if (&src == &dst)
     {
-        throw FlexException(FERR_COPY_ON_ITSELF, std::string(srcName));
+        throw FlexException(FERR_COPY_ON_ITSELF, sourcName);
     }
 
     if (dst.IsWriteProtected())
@@ -50,7 +51,7 @@ bool FlexCopyManager::FileCopy(const char *srcName, const char *dstName,
         throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetPath());
     }
 
-    auto fileBuffer = src.ReadToBuffer(srcName);
+    auto fileBuffer = src.ReadToBuffer(sourcName);
 
     if ((src.GetContainerType() & TYPE_CONTAINER) &&
         (dst.GetContainerType() & TYPE_DIRECTORY) &&
@@ -68,12 +69,12 @@ bool FlexCopyManager::FileCopy(const char *srcName, const char *dstName,
         isTextFile = true;
     }
 
-    if (!dst.WriteFromBuffer(fileBuffer, dstName))
+    if (!dst.WriteFromBuffer(fileBuffer, destName.c_str()))
     {
         FlexContainerInfo info;
 
         dst.GetInfo(info);
-        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), dstName);
+        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
     }
 
     return isTextFile;

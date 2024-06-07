@@ -91,7 +91,7 @@ public:
     FlexFileBuffer ReadToBuffer(const std::string &fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;
-    bool FileCopy(const char *sourceName, const char *destName,
+    bool FileCopy(const std::string &sourceName, const std::string &destName,
                   FileContainerIf &destination) override;
     std::string GetSupportedAttributes() const override;
 

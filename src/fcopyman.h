@@ -32,7 +32,8 @@ class FileContainerIf;
 class FlexCopyManager
 {
 public:
-    static bool FileCopy(const char *srcName, const char *dstName,
+    static bool FileCopy(const std::string &sourcName,
+                         const std::string &destName,
                          FileContainerIf &src, FileContainerIf &dst);
     static bool autoTextConversion;
 }; // class FlexCopyManager
