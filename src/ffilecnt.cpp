@@ -497,9 +497,9 @@ std::string FlexFileContainer::GetSupportedAttributes() const
 /* Nonpublic interface        */
 /******************************/
 
-FileContainerIteratorImpPtr FlexFileContainer::IteratorFactory()
+IFlexDiskIteratorImpPtr FlexFileContainer::IteratorFactory()
 {
-    return FileContainerIteratorImpPtr(new FlexFileContainerIteratorImp(this));
+    return IFlexDiskIteratorImpPtr(new FlexFileContainerIteratorImp(this));
 }
 
 // if successfull return true. If error return false

@@ -34,7 +34,7 @@
 
 class DirectoryContainer;
 
-class DirectoryContainerIteratorImp : public FileContainerIteratorImp
+class DirectoryContainerIteratorImp : public IFlexDiskIteratorImp
 {
 public:
     explicit DirectoryContainerIteratorImp(DirectoryContainer *aBase);

@@ -96,7 +96,7 @@ public:
     std::string GetSupportedAttributes() const override;
 
 private:
-    FileContainerIteratorImpPtr IteratorFactory() override;
+    IFlexDiskIteratorImpPtr IteratorFactory() override;
     static bool IsFlexFilename(const std::string &filename) ;
     bool SetDateTime(const char *fileName, const BDate &date,
                      const BTime &time);

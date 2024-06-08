@@ -30,12 +30,13 @@ class FileContainerIterator;
 class IFlexDiskByFile;
 class FlexDirEntry;
 
-
-class FileContainerIteratorImp
+// This interface defines a FLEX disk iterator implementation.
+// Rename: FileContainerIteratorImp => IFlexDiskIteratorImp
+class IFlexDiskIteratorImp
 {
     friend class FileContainerIterator;
 public:
-    virtual ~FileContainerIteratorImp() = default;
+    virtual ~IFlexDiskIteratorImp() = default;
     virtual bool operator==(const IFlexDiskByFile *aBase) const = 0;
     virtual bool NextDirEntry(const std::string &wildcard) = 0;
     virtual void AtEnd() = 0;
@@ -47,7 +48,7 @@ private:
     virtual bool SetAttributesCurrent(Byte attributes) = 0;
 };
 
-using FileContainerIteratorImpPtr = std::unique_ptr<FileContainerIteratorImp>;
+using IFlexDiskIteratorImpPtr = std::unique_ptr<IFlexDiskIteratorImp>;
 
 #endif // IFILCNTI_INCLUDED
 

@@ -163,7 +163,7 @@ protected:
         int fmt = TYPE_DSK_CONTAINER,
         const char *bsFile = nullptr);
 private:
-    FileContainerIteratorImpPtr IteratorFactory() override;
+    IFlexDiskIteratorImpPtr IteratorFactory() override;
 
 }; // class FlexFileContainer
 

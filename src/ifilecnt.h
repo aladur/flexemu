@@ -28,7 +28,7 @@
 
 
 class IFlexDiskByFile;
-class FileContainerIteratorImp;
+class IFlexDiskIteratorImp;
 
 class FileContainerIterator
 {
@@ -50,7 +50,7 @@ public:
     bool SetAttributesCurrent(Byte attributes);
 private:
     std::string wildcard;
-    FileContainerIteratorImpPtr imp;
+    IFlexDiskIteratorImpPtr imp;
 };
 
 #endif // IFILECNT_INCLUDED

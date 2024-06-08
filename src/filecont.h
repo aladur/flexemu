@@ -60,7 +60,7 @@ public:
     ~IFlexDiskByFile() override = default;
 
 private:
-    virtual FileContainerIteratorImpPtr IteratorFactory() = 0;
+    virtual IFlexDiskIteratorImpPtr IteratorFactory() = 0;
     friend class FileContainerIterator;
     friend class FlexCopyManager;
 };

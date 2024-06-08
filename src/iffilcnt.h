@@ -28,7 +28,7 @@
 
 class FlexFileContainer;
 
-class FlexFileContainerIteratorImp : public FileContainerIteratorImp
+class FlexFileContainerIteratorImp : public IFlexDiskIteratorImp
 {
 public:
     explicit FlexFileContainerIteratorImp(FlexFileContainer *aBase);
