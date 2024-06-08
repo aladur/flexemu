@@ -948,3 +948,33 @@ bool hasRandomFileAttribute(const std::string &directory,
     return false;
 }
 
+std::vector<std::string> split(const std::string &str, char delimiter)
+{
+    std::vector<std::string> result;
+    std::string::size_type start_pos = 0;
+    std::string::size_type next_pos = 0;
+
+    while (next_pos != std::string::npos)
+    {
+      next_pos = str.find(delimiter, start_pos);
+      if (next_pos != std::string::npos)
+      {
+          if (start_pos != next_pos)
+          {
+              result.emplace_back(
+                      str.substr(start_pos, next_pos - start_pos));
+          }
+          start_pos = next_pos + 1;
+      }
+      else
+      {
+          if (start_pos != str.size())
+          {
+              result.emplace_back(str.substr(start_pos));
+          }
+      }
+    }
+
+    return result;
+}
+

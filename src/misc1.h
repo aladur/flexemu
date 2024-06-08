@@ -48,6 +48,7 @@
 #include "typedefs.h"
 #include <string>
 #include <array>
+#include <vector>
 #include <algorithm>
 #include <sstream>
 #include <tuple>
@@ -318,6 +319,7 @@ extern const char * const RANDOM_FILE_LIST;
     #endif
 #endif /* ifdef __cplusplus */
 
+extern std::vector<std::string> split(const std::string &str, char delimiter);
 extern bool matches(const std::string &text, const std::string &pattern,
              bool ignorecase);
 extern bool multimatches(const char *text, const char *multipattern,

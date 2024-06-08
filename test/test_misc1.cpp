@@ -528,3 +528,19 @@ TEST(test_misc1, fct_isPathsEqual)
 #endif
 }
 
+TEST(test_misc1, fct_split)
+{
+    const auto strings1 = split("abc;xyz;klm", ';');
+    ASSERT_EQ(strings1.size(), 3);
+    EXPECT_EQ(strings1[0], "abc");
+    EXPECT_EQ(strings1[1], "xyz");
+    EXPECT_EQ(strings1[2], "klm");
+    const auto strings2 = split("**klm**", '*');
+    ASSERT_EQ(strings2.size(), 1);
+    EXPECT_EQ(strings2[0], "klm");
+    const auto strings3 = split("", ';');
+    ASSERT_TRUE(strings3.empty());
+    const auto strings4 = split("|||", '|');
+    ASSERT_TRUE(strings4.empty());
+}
+
