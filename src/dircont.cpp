@@ -229,10 +229,10 @@ bool DirectoryContainer::RenameFile(const std::string &oldName,
 
 bool DirectoryContainer::FileCopy(
     const std::string &sourceName, const std::string &destName,
-    FileContainerIf &destination)
+    IFlexDiskByFile &destination)
 {
     return FlexCopyManager::FileCopy(sourceName, destName,
-                                     static_cast<FileContainerIf &>(*this),
+                                     static_cast<IFlexDiskByFile &>(*this),
                                      destination);
 }
 

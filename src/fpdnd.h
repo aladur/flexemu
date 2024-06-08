@@ -26,7 +26,7 @@
 #include <vector>
 #include "ffilebuf.h"
 
-class FileContainerIf;
+class IFlexDiskByFile;
 class FlexDiskListCtrl;
 
 /*------------------------------------------------------

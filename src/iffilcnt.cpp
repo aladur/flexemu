@@ -35,7 +35,7 @@ FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
     dirSector.next = first_dir_trk_sec;
 }
 
-bool FlexFileContainerIteratorImp::operator==(const FileContainerIf *rhs) const
+bool FlexFileContainerIteratorImp::operator==(const IFlexDiskByFile *rhs) const
 {
     return (base == nullptr && rhs == nullptr) ||
            ((base == rhs) && (dirIndex == -1));

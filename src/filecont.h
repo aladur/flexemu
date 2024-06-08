@@ -35,13 +35,14 @@ class FlexFileBuffer;
 
 //typedef int FileHdl;
 
-
-class FileContainerIf : public FileContainerIfBase
+// This interface describes a file oriented access to a FLEX disk image.
+// Rename: FileContainerIf => IFlexDiskByFile
+class IFlexDiskByFile : public IFlexDiskBase
 {
     /* File oriented interface (to be used within flexplorer). */
 public:
-    virtual FileContainerIf *begin() = 0;
-    virtual FileContainerIf *end() const = 0;
+    virtual IFlexDiskByFile *begin() = 0;
+    virtual IFlexDiskByFile *end() const = 0;
     virtual bool FindFile(const std::string &fileName, FlexDirEntry &entry) = 0;
     virtual bool DeleteFile(const std::string &wildcard) = 0;
     virtual bool RenameFile(const std::string &oldName,
@@ -53,15 +54,15 @@ public:
                                  const char *fileName = nullptr) = 0;
     virtual bool FileCopy(const std::string &sourceName,
                           const std::string &destName,
-                          FileContainerIf &destination) = 0;
+                          IFlexDiskByFile &destination) = 0;
     virtual std::string GetSupportedAttributes() const = 0;
 
-    ~FileContainerIf() override = default;
+    ~IFlexDiskByFile() override = default;
 
 private:
     virtual FileContainerIteratorImpPtr IteratorFactory() = 0;
     friend class FileContainerIterator;
     friend class FlexCopyManager;
-}; /* class FileContainerIf */
+};
 
 #endif /* FILECONT_INCLUDED */

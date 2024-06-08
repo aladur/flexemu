@@ -113,7 +113,7 @@ class FileContainerCheck
 
 public:
     FileContainerCheck() = delete;
-    FileContainerCheck(FileContainerIfSector &fc,
+    FileContainerCheck(IFlexDiskBySector &fc,
                        FileTimeAccess fileTimeAccess);
     FileContainerCheck(const FileContainerCheck &src) = delete;
     FileContainerCheck(FileContainerCheck &&src) = delete;
@@ -160,7 +160,7 @@ private:
     friend std::ostream& operator<<(std::ostream &os,
                        const struct FileContainerCheck::s_item &item);
 
-    const FileContainerIfSector &fc;
+    const IFlexDiskBySector &fc;
     FlexContainerInfo fc_info;
     std::map<st_t, link_t> links;
     std::vector<item_t> items;

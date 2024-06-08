@@ -168,9 +168,9 @@ struct s_floppy
 
 };
 
-
-
-class FileContainerIfSector : public FileContainerIfBase
+// This interface describes a sector oriented interface to a FLEX disk image.
+// Rename: FileContainerIfSector => IFlexDiskBySector
+class IFlexDiskBySector : public IFlexDiskBase
 {
     /* Track/Sector oriented File container interface
        (to be used within flexemu) */
@@ -186,10 +186,10 @@ public:
     virtual bool IsSectorValid(int track, int sector) const = 0;
     virtual int GetBytesPerSector() const = 0;
 
-    ~FileContainerIfSector() override = default;
+    ~IFlexDiskBySector() override = default;
 };
 
-using FileContainerIfSectorPtr = std::unique_ptr<FileContainerIfSector>;
+using IFlexDiskBySectorPtr = std::unique_ptr<IFlexDiskBySector>;
 
 /* Track/sector of system info sector */
 constexpr st_t sis_trk_sec{0, 3};

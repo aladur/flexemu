@@ -39,7 +39,7 @@ class BDate;
 class DirectoryContainerIteratorImp;
 
 
-class DirectoryContainer : public FileContainerIf
+class DirectoryContainer : public IFlexDiskByFile
 {
     friend class DirectoryContainerIteratorImp; // corresponding iterator class
 
@@ -67,18 +67,18 @@ public:
                                       const FileTimeAccess &fileTimeAccess,
                                       int fmt = TYPE_DSK_CONTAINER);
 
-    // FileContainerIfBase interface declaration.
+    // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetInfo(FlexContainerInfo &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
 
-    // FileContainerIf interface declaration (to be used within flexplorer).
-    FileContainerIf *begin() override
+    // IFlexDiskByFile interface declaration (to be used within flexplorer).
+    IFlexDiskByFile *begin() override
     {
         return this;
     };
-    FileContainerIf *end() const override
+    IFlexDiskByFile *end() const override
     {
         return nullptr;
     };
@@ -92,7 +92,7 @@ public:
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;
     bool FileCopy(const std::string &sourceName, const std::string &destName,
-                  FileContainerIf &destination) override;
+                  IFlexDiskByFile &destination) override;
     std::string GetSupportedAttributes() const override;
 
 private:

@@ -34,7 +34,7 @@ bool FlexCopyManager::autoTextConversion = false;
 // If false the file has been treated as binary file.
 bool FlexCopyManager::FileCopy(const std::string &sourcName,
                                const std::string &destName,
-                               FileContainerIf &src, FileContainerIf &dst)
+                               IFlexDiskByFile &src, IFlexDiskByFile &dst)
 {
     bool isTextFile = false;
 

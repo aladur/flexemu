@@ -87,8 +87,8 @@ private:
     //  disk_dir        Disk directory
     // Drive nr. 4 means no drive selected
 
-    std::array<FileContainerIfSectorPtr, MAX_DRIVES + 1U> floppy{};
-    FileContainerIfSector *pfs{};
+    std::array<IFlexDiskBySectorPtr, MAX_DRIVES + 1U> floppy{};
+    IFlexDiskBySector *pfs{};
     std::array<Byte, MAX_DRIVES + 1U> track{};
     std::array<DiskStatus, MAX_DRIVES + 1U> drive_status{};
     std::array<Byte, 1024>sector_buffer{};

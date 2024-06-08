@@ -136,7 +136,7 @@ private:
     QString AsHtml(const QModelIndexList &indexList) const;
     static QString GetFileType(const FlexDirEntry &dirEntry);
 
-    std::unique_ptr<FileContainerIf> container;
+    std::unique_ptr<IFlexDiskByFile> container;
     QVector<RowType> rows;
     QString path;
     struct sFPOptions &options;

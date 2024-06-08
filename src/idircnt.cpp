@@ -54,7 +54,7 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
     base = nullptr;
 }
 
-bool DirectoryContainerIteratorImp::operator==(const FileContainerIf *rhs) const
+bool DirectoryContainerIteratorImp::operator==(const IFlexDiskByFile *rhs) const
 {
     return (base == nullptr && rhs == nullptr) ||
            ((base == rhs) && (dirHdl == nullptr));

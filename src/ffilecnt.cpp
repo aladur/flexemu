@@ -398,7 +398,7 @@ bool FlexFileContainer::RenameFile(const std::string &oldName,
 
 bool FlexFileContainer::FileCopy(const std::string &sourceName,
                                  const std::string &destName,
-                                 FileContainerIf &destination)
+                                 IFlexDiskByFile &destination)
 {
     if (!is_flex_format)
     {

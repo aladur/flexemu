@@ -26,7 +26,7 @@
 #include "misc1.h"
 #include "flexerr.h"
 
-class FileContainerIf;
+class IFlexDiskByFile;
 
 
 class FlexCopyManager
@@ -34,7 +34,7 @@ class FlexCopyManager
 public:
     static bool FileCopy(const std::string &sourcName,
                          const std::string &destName,
-                         FileContainerIf &src, FileContainerIf &dst);
+                         IFlexDiskByFile &src, IFlexDiskByFile &dst);
     static bool autoTextConversion;
 }; // class FlexCopyManager
 

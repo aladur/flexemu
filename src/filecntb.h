@@ -67,7 +67,9 @@ const size_t FLEX_FILEEXT_LENGTH = 3U;
 const size_t FLEX_FILENAME_LENGTH =
                  FLEX_BASEFILENAME_LENGTH + FLEX_FILEEXT_LENGTH + 2U;
 
-class FileContainerIfBase
+// This interface gives basic properties access to a FLEX disk image.
+// Rename: FileContainerIfBase => IFlexDiskBase
+class IFlexDiskBase
 {
 public:
     virtual bool IsWriteProtected() const = 0;
@@ -75,7 +77,7 @@ public:
     virtual int GetContainerType() const = 0;
     virtual std::string GetPath() const = 0;
 
-    virtual ~FileContainerIfBase() = default;
+    virtual ~IFlexDiskBase() = default;
 };
 
 #endif /* FILECNTB_INCLUDED */

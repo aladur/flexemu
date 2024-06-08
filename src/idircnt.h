@@ -42,7 +42,7 @@ public:
     DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &src) =
         delete;
     ~DirectoryContainerIteratorImp() override;
-    bool operator==(const FileContainerIf *rhs) const override;
+    bool operator==(const IFlexDiskByFile *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
     {

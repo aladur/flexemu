@@ -114,7 +114,7 @@ bool E2floppy::mount_drive(const std::string &path,
     // NOLINTNEXTLINE(performance-unnecessary-value-param)
     auto TryMount = [&](std::string containerPath) -> bool
     {
-        FileContainerIfSectorPtr pfloppy;
+        IFlexDiskBySectorPtr pfloppy;
 
 #ifdef _WIN32
         for (auto it = containerPath.begin(); it != containerPath.end(); ++it)
@@ -135,7 +135,7 @@ bool E2floppy::mount_drive(const std::string &path,
             {
                 try
                 {
-                    pfloppy = FileContainerIfSectorPtr(
+                    pfloppy = IFlexDiskBySectorPtr(
                      new NafsDirectoryContainer(
                          containerPath,
                          options.fileTimeAccess,
@@ -171,7 +171,7 @@ bool E2floppy::mount_drive(const std::string &path,
             {
                 try
                 {
-                    pfloppy = FileContainerIfSectorPtr(
+                    pfloppy = IFlexDiskBySectorPtr(
                      new FlexRamFileContainer(containerPath.c_str(), mode,
                                               options.fileTimeAccess));
                 }
@@ -180,7 +180,7 @@ bool E2floppy::mount_drive(const std::string &path,
                     try
                     {
                         mode &= ~std::ios::out;
-                        pfloppy = FileContainerIfSectorPtr(
+                        pfloppy = IFlexDiskBySectorPtr(
                          new FlexRamFileContainer(containerPath.c_str(), mode,
                                                   options.fileTimeAccess));
                     }
@@ -198,7 +198,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 }
                 try
                 {
-                    pfloppy = FileContainerIfSectorPtr(
+                    pfloppy = IFlexDiskBySectorPtr(
                       new FlexFileContainer(containerPath, mode,
                                             options.fileTimeAccess));
                 }
@@ -209,7 +209,7 @@ bool E2floppy::mount_drive(const std::string &path,
                         try
                         {
                             mode &= ~std::ios::out;
-                            pfloppy = FileContainerIfSectorPtr(
+                            pfloppy = IFlexDiskBySectorPtr(
                              new FlexFileContainer(containerPath, mode,
                                                    options.fileTimeAccess));
                         }
@@ -682,7 +682,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                            const std::string &name,
                            int fmt)
 {
-    FileContainerIfSectorPtr pfloppy;
+    IFlexDiskBySectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
 
     try
@@ -692,7 +692,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
             case TYPE_NAFS_DIRECTORY:
                 if (options.isDirectoryDiskActive)
                 {
-                    pfloppy = FileContainerIfSectorPtr(
+                    pfloppy = IFlexDiskBySectorPtr(
                         NafsDirectoryContainer::Create(
                             disk_dir, name, options.fileTimeAccess, trk, sec,
                             fmt));
@@ -701,7 +701,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
 
             case TYPE_DSK_CONTAINER:
             case TYPE_FLX_CONTAINER:
-                pfloppy = FileContainerIfSectorPtr(
+                pfloppy = IFlexDiskBySectorPtr(
                 FlexFileContainer::Create(
                     disk_dir, name, fileTimeAccess, trk, sec, fmt));
                 break;

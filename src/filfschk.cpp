@@ -30,7 +30,7 @@
 
 
 FileContainerCheck::FileContainerCheck(
-        FileContainerIfSector &p_fc, FileTimeAccess p_fileTimeAccess) :
+        IFlexDiskBySector &p_fc, FileTimeAccess p_fileTimeAccess) :
     fc(p_fc), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();

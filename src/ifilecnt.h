@@ -27,7 +27,7 @@
 #include <string>
 
 
-class FileContainerIf;
+class IFlexDiskByFile;
 class FileContainerIteratorImp;
 
 class FileContainerIterator
@@ -38,9 +38,9 @@ public:
     virtual               ~FileContainerIterator() = default;
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
-    bool operator==(const FileContainerIf *aBase) const;
-    bool operator!=(const FileContainerIf *aBase) const;
-    FileContainerIterator &operator=(FileContainerIf *aBase);
+    bool operator==(const IFlexDiskByFile *aBase) const;
+    bool operator!=(const IFlexDiskByFile *aBase) const;
+    FileContainerIterator &operator=(IFlexDiskByFile *aBase);
     FileContainerIterator &operator++();
     FileContainerIterator &operator=(const FileContainerIterator &src) =
         delete;

@@ -1004,7 +1004,7 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
         }
     }
     auto *container_s =
-        dynamic_cast<FileContainerIfSector *>(container.get());
+        dynamic_cast<IFlexDiskBySector *>(container.get());
     if (container_s != nullptr && !container_s->IsFlexFormat())
     {
         container.reset();

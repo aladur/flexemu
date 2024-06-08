@@ -36,7 +36,7 @@ public:
     FlexFileContainerIteratorImp(const FlexFileContainerIteratorImp &src) =
         delete;
     ~FlexFileContainerIteratorImp() override = default;
-    bool operator==(const FileContainerIf *rhs) const override;
+    bool operator==(const IFlexDiskByFile *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override
     {

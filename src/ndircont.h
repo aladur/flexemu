@@ -34,7 +34,7 @@
 #include <unordered_map>
 
 
-class NafsDirectoryContainer : public FileContainerIfSector
+class NafsDirectoryContainer : public IFlexDiskBySector
 {
     // Common used parameter names and types:
     //
@@ -131,13 +131,13 @@ public:
                                           int sectors,
                                           int fmt = TYPE_DSK_CONTAINER);
 
-    // FileContainerIfBase interface declaration.
+    // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetInfo(FlexContainerInfo &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
 
-    // FileContainerIfSector interface declaration.
+    // IFlexDiskBySector interface declaration.
     bool ReadSector(Byte *buffer, int trk, int sec,
                     int side = -1) const override;
     bool WriteSector(const Byte *buffer, int trk, int sec,

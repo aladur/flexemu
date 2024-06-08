@@ -34,7 +34,7 @@
 
    Example:
 
-   FileContainerIf *m_container = new FlexFileContainer(...);
+   IFlexDiskByFile *m_container = new FlexFileContainer(...);
    FileContainerIterator it("*.*");
    std::string fileName;
    int i = 0;
@@ -75,7 +75,7 @@ FlexDirEntry *FileContainerIterator::operator->()
 
 }
 
-bool FileContainerIterator::operator==(const FileContainerIf *aBase) const
+bool FileContainerIterator::operator==(const IFlexDiskByFile *aBase) const
 {
     if (imp == nullptr)
     {
@@ -85,7 +85,7 @@ bool FileContainerIterator::operator==(const FileContainerIf *aBase) const
     return imp->operator==(aBase);
 }
 
-bool FileContainerIterator::operator!=(const FileContainerIf *aBase) const
+bool FileContainerIterator::operator!=(const IFlexDiskByFile *aBase) const
 {
     if (imp == nullptr)
     {
@@ -108,7 +108,7 @@ FileContainerIterator &FileContainerIterator::operator++()
     return *this;
 }
 
-FileContainerIterator &FileContainerIterator::operator=(FileContainerIf *aBase)
+FileContainerIterator &FileContainerIterator::operator=(IFlexDiskByFile *aBase)
 {
     if (aBase == nullptr)
     {
