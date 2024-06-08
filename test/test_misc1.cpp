@@ -205,6 +205,20 @@ TEST(test_misc1, fct_matches)
     EXPECT_TRUE(result);
 }
 
+TEST(test_misc1, fct_multimatches)
+{
+    auto result = multimatches("", "abc;xyz;kjl", ';', false);
+    EXPECT_FALSE(result);
+    result = multimatches("", ";;*.*;", ';', false);
+    EXPECT_FALSE(result);
+    result = multimatches("ab.c", "c;d;e;f;g;ab.*", ';', false);
+    EXPECT_TRUE(result);
+    result = multimatches("xx", "abc;*?", ';', false);
+    EXPECT_TRUE(result);
+    result = multimatches("daadabdmada", "x*;*DA*;da*da*da*", ';', false);
+    EXPECT_TRUE(result);
+}
+
 #ifdef _WIN32
 TEST(test_misc1, fct_getExecutablePath)
 {
