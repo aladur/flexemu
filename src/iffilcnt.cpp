@@ -91,7 +91,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const std::string &wildcard)
             std::string fileExtension(getstr<>(pd->file_ext));
             fileName += '.' + fileExtension;
 
-            if (multimatches(fileName.c_str(), wildcard.c_str(), ';', true))
+            if (multimatches(fileName, wildcard, ';', true))
             {
                 dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
                 dirEntry.SetTime(BTime(pd->hour & 0x7F, pd->minute, 0U));

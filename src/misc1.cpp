@@ -337,18 +337,17 @@ bool matches(const std::string &text, const std::string &pattern,
     return ipattern == pattern.cend() || only_stars;
 }
 
-bool multimatches(const char *text, const char *multipattern,
-                  char delimiter /* = ';'*/,
-                  bool ignorecase /* = false */)
+bool multimatches(const std::string &text, const std::string &multipattern,
+                  char delimiter /* = ';'*/, bool ignorecase /* = false */)
 {
     auto patterns = split(multipattern, delimiter);
 
     for (const auto &pattern : patterns)
     {
-      if (matches(text, pattern, ignorecase))
-      {
-          return true;
-      }
+        if (matches(text, pattern, ignorecase))
+        {
+            return true;
+        }
     }
 
     return false;
@@ -934,23 +933,23 @@ std::vector<std::string> split(const std::string &str, char delimiter)
 
     while (next_pos != std::string::npos)
     {
-      next_pos = str.find(delimiter, start_pos);
-      if (next_pos != std::string::npos)
-      {
-          if (start_pos != next_pos)
-          {
-              result.emplace_back(
-                      str.substr(start_pos, next_pos - start_pos));
-          }
-          start_pos = next_pos + 1;
-      }
-      else
-      {
-          if (start_pos != str.size())
-          {
-              result.emplace_back(str.substr(start_pos));
-          }
-      }
+        next_pos = str.find(delimiter, start_pos);
+        if (next_pos != std::string::npos)
+        {
+            if (start_pos != next_pos)
+            {
+                result.emplace_back(
+                        str.substr(start_pos, next_pos - start_pos));
+            }
+            start_pos = next_pos + 1;
+        }
+        else
+        {
+            if (start_pos != str.size())
+            {
+                result.emplace_back(str.substr(start_pos));
+            }
+        }
     }
 
     return result;

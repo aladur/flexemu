@@ -92,7 +92,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const std::string &wildcard)
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName.c_str(), wildcard.c_str(), ';', true)))
+            !multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
 
@@ -170,7 +170,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const std::string &wildcard)
             !DirectoryContainer::IsFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName.c_str(), wildcard.c_str(), ';', true)))
+            !multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
 

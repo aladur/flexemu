@@ -322,7 +322,8 @@ extern const char * const RANDOM_FILE_LIST;
 extern std::vector<std::string> split(const std::string &str, char delimiter);
 extern bool matches(const std::string &text, const std::string &pattern,
              bool ignorecase);
-extern bool multimatches(const char *text, const char *multipattern,
+extern bool multimatches(const std::string &text,
+                  const std::string &multipattern,
                   char delimiter /* = ';'*/,
                   bool ignorecase /* = false */);
 #ifdef _WIN32
