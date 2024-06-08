@@ -340,37 +340,15 @@ bool matches(const std::string &text, const std::string &pattern,
 bool multimatches(const char *text, const char *multipattern,
                   char delimiter /* = ';'*/,
                   bool ignorecase /* = false */)
-
 {
-    int pos;
+    auto patterns = split(multipattern, delimiter);
 
-    if (multipattern == nullptr)
+    for (const auto &pattern : patterns)
     {
-        return false;
-    }
-
-    pos = 0;
-
-    while (multipattern[pos] != '\0')
-    {
-        int begin = pos;
-
-        while (multipattern[pos] != '\0' && (multipattern[pos] != delimiter))
-        {
-            pos++;
-        }
-
-        std::string pattern = std::string(&multipattern[begin], pos - begin);
-
-        if (matches(text, pattern, ignorecase))
-        {
-            return true;
-        }
-
-        if (multipattern[pos] == delimiter)
-        {
-            pos++;
-        }
+      if (matches(text, pattern, ignorecase))
+      {
+          return true;
+      }
     }
 
     return false;
