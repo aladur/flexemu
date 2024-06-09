@@ -31,7 +31,7 @@
 
 
 
-struct ContainerCheckResultItem
+struct FlexDiskCheckResultItem
 {
     enum class Type : uint8_t
     {
@@ -42,16 +42,16 @@ struct ContainerCheckResultItem
 
     Type type{};
 
-    virtual ~ContainerCheckResultItem() = default;
+    virtual ~FlexDiskCheckResultItem() = default;
 
     friend std::ostream& operator<<(std::ostream &os,
-                                    ContainerCheckResultItem::Type type);
+                                    FlexDiskCheckResultItem::Type type);
 };
 
-using ContainerCheckResultItemPtr = std::unique_ptr<ContainerCheckResultItem>;
-using ContainerCheckResultItems = std::vector<ContainerCheckResultItemPtr>;
+using FlexDiskCheckResultItemPtr = std::unique_ptr<FlexDiskCheckResultItem>;
+using FlexDiskCheckResultItems = std::vector<FlexDiskCheckResultItemPtr>;
 
-class FileContainerCheck
+class FlexDiskCheck
 {
     enum class SectorType : uint8_t
     {
@@ -112,19 +112,19 @@ class FileContainerCheck
     } item_t;
 
 public:
-    FileContainerCheck() = delete;
-    FileContainerCheck(IFlexDiskBySector &fc,
+    FlexDiskCheck() = delete;
+    FlexDiskCheck(IFlexDiskBySector &fc,
                        FileTimeAccess fileTimeAccess);
-    FileContainerCheck(const FileContainerCheck &src) = delete;
-    FileContainerCheck(FileContainerCheck &&src) = delete;
-    ~FileContainerCheck();
+    FlexDiskCheck(const FlexDiskCheck &src) = delete;
+    FlexDiskCheck(FlexDiskCheck &&src) = delete;
+    ~FlexDiskCheck();
 
-    FileContainerCheck &operator= (const FileContainerCheck &src) = delete;
-    FileContainerCheck &operator= (FileContainerCheck &&src) = delete;
+    FlexDiskCheck &operator= (const FlexDiskCheck &src) = delete;
+    FlexDiskCheck &operator= (FlexDiskCheck &&src) = delete;
 
     bool CheckFileSystem();
     bool IsValid() const;
-    const ContainerCheckResultItems &GetResult() const;
+    const FlexDiskCheckResultItems &GetResult() const;
     std::ostream &DebugDump(std::ostream &os) const;
 
 private:
@@ -154,17 +154,17 @@ private:
     static std::string GetUnixFilename(const s_dir_entry &dir_entry);
 
     friend std::ostream& operator<<(std::ostream &os,
-                                    FileContainerCheck::SectorType type);
+                                    FlexDiskCheck::SectorType type);
     friend std::ostream& operator<<(std::ostream &os,
-                       const struct FileContainerCheck::s_link &link);
+                       const struct FlexDiskCheck::s_link &link);
     friend std::ostream& operator<<(std::ostream &os,
-                       const struct FileContainerCheck::s_item &item);
+                       const struct FlexDiskCheck::s_item &item);
 
     const IFlexDiskBySector &fc;
     FlexDiskAttributes fc_info;
     std::map<st_t, link_t> links;
     std::vector<item_t> items;
-    ContainerCheckResultItems results;
+    FlexDiskCheckResultItems results;
     Byte disk_month{0};
     Byte disk_day{0};
     Byte disk_year{0};
@@ -173,14 +173,14 @@ private:
 
 // The following objects represent and discribe the check results.
 
-struct MultipleLinkInputs : public ContainerCheckResultItem
+struct MultipleLinkInputs : public FlexDiskCheckResultItem
 {
     std::string name;
     st_t current{}; // Current track-sector with multiple inputs.
     std::vector<st_t> inputs; // Input Track-sector's having a link to current.
 };
 
-struct LinkAndFileInput : public ContainerCheckResultItem
+struct LinkAndFileInput : public FlexDiskCheckResultItem
 {
     std::string name;
     st_t current{};
@@ -188,38 +188,38 @@ struct LinkAndFileInput : public ContainerCheckResultItem
     st_t input{}; // Track-sector with link to current.
 };
 
-struct NullFile : ContainerCheckResultItem
+struct NullFile : FlexDiskCheckResultItem
 {
     std::string name;
 };
 
-struct BadStart : ContainerCheckResultItem
+struct BadStart : FlexDiskCheckResultItem
 {
     std::string name;
     st_t start{};
 };
 
-struct BadEnd : ContainerCheckResultItem
+struct BadEnd : FlexDiskCheckResultItem
 {
     std::string name;
     st_t end{};
 };
 
-struct LinkAfterEnd : ContainerCheckResultItem
+struct LinkAfterEnd : FlexDiskCheckResultItem
 {
     std::string name;
     st_t end{}; // Track-Sector marked as end
     st_t to{}; // Track-Sector to which end sector links to.
 };
 
-struct InconsistentRecordSize : ContainerCheckResultItem
+struct InconsistentRecordSize : FlexDiskCheckResultItem
 {
     std::string name;
     Word records{0}; // Number of records in directory entry.
     Word sectors{0}; // Number of sectors according to sector chain.
 };
 
-struct DiscontiguousRecordNr : ContainerCheckResultItem
+struct DiscontiguousRecordNr : FlexDiskCheckResultItem
 {
     std::string name; // Item name
     st_t current{}; // current track-sector
@@ -227,7 +227,7 @@ struct DiscontiguousRecordNr : ContainerCheckResultItem
     Word expected_record_nr{}; // expected record number
 };
 
-struct LostSectors : ContainerCheckResultItem
+struct LostSectors : FlexDiskCheckResultItem
 {
     std::string name;
     st_t start{};
@@ -235,21 +235,21 @@ struct LostSectors : ContainerCheckResultItem
     Word sectors{}; // Number of sectors.
 };
 
-struct HasCycle : ContainerCheckResultItem
+struct HasCycle : FlexDiskCheckResultItem
 {
     std::string name;
     st_t from{}; // Track-sector which has a link back to back_to.
     st_t back_to{};
 };
 
-struct BadLink : ContainerCheckResultItem
+struct BadLink : FlexDiskCheckResultItem
 {
     std::string name;
     st_t bad{}; // Bad track-sector.
     st_t current{}; // Track-sector with the bad link.
 };
 
-struct BadDate : ContainerCheckResultItem
+struct BadDate : FlexDiskCheckResultItem
 {
     std::string name;
     Byte day{};
@@ -257,7 +257,7 @@ struct BadDate : ContainerCheckResultItem
     Byte year{};
 };
 
-struct BadTime : ContainerCheckResultItem
+struct BadTime : FlexDiskCheckResultItem
 {
     std::string name;
     Byte hour{};
@@ -265,7 +265,7 @@ struct BadTime : ContainerCheckResultItem
 };
 
 extern std::ostream &operator<<(std::ostream &os,
-                                const ContainerCheckResultItemPtr &result);
+                                const FlexDiskCheckResultItemPtr &result);
 
 extern std::ostream& operator<<(std::ostream &os,
                                 const MultipleLinkInputs &item);

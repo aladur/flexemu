@@ -29,17 +29,17 @@
 #include <fmt/format.h>
 
 
-FileContainerCheck::FileContainerCheck(
+FlexDiskCheck::FlexDiskCheck(
         IFlexDiskBySector &p_fc, FileTimeAccess p_fileTimeAccess) :
     fc(p_fc), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();
 }
 
-FileContainerCheck::~FileContainerCheck()
+FlexDiskCheck::~FlexDiskCheck()
 = default;
 
-std::string FileContainerCheck::GetItemName(const item_t &item)
+std::string FlexDiskCheck::GetItemName(const item_t &item)
 {
     std::string name;
 
@@ -62,7 +62,7 @@ std::string FileContainerCheck::GetItemName(const item_t &item)
     return name;
 }
 
-std::string FileContainerCheck::GetItemName(SDWord item_index) const
+std::string FlexDiskCheck::GetItemName(SDWord item_index) const
 {
     std::string name = "<unknown>";
 
@@ -74,7 +74,7 @@ std::string FileContainerCheck::GetItemName(SDWord item_index) const
     return name;
 }
 
-bool FileContainerCheck::CheckDate(Byte p_day, Byte p_month, Byte p_year)
+bool FlexDiskCheck::CheckDate(Byte p_day, Byte p_month, Byte p_year)
 {
     constexpr static std::array<Byte, 12> max_days{
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
@@ -97,18 +97,18 @@ bool FileContainerCheck::CheckDate(Byte p_day, Byte p_month, Byte p_year)
     return p_day <= max_day;
 }
 
-bool FileContainerCheck::CheckTime(Byte p_hour, Byte p_minute)
+bool FlexDiskCheck::CheckTime(Byte p_hour, Byte p_minute)
 {
     return p_hour < 24 && p_minute < 60;
 }
 
-void FileContainerCheck::CheckDisk()
+void FlexDiskCheck::CheckDisk()
 {
     if (!CheckDate(disk_day, disk_month, disk_year))
     {
         auto *result = new BadDate;
 
-        result->type = ContainerCheckResultItem::Type::Info;
+        result->type = FlexDiskCheckResultItem::Type::Info;
         result->name = "The disk";
         result->day = disk_day;
         result->month = disk_month;
@@ -117,7 +117,7 @@ void FileContainerCheck::CheckDisk()
     }
 }
 
-void FileContainerCheck::CheckLinks()
+void FlexDiskCheck::CheckLinks()
 {
     for (auto &iter : links)
     {
@@ -134,8 +134,8 @@ void FileContainerCheck::CheckLinks()
                 result->type =
                     (previous_link.type == SectorType::Free ||
                      previous_link.type == SectorType::Lost) ?
-                    ContainerCheckResultItem::Type::Warning :
-                    ContainerCheckResultItem::Type::Error;
+                    FlexDiskCheckResultItem::Type::Warning :
+                    FlexDiskCheckResultItem::Type::Error;
                 result->name = name;
                 result->bad = iter.first;
                 result->current = previous;
@@ -148,7 +148,7 @@ void FileContainerCheck::CheckLinks()
             auto name = GetItemName(link.item_index);
             auto *result = new MultipleLinkInputs;
 
-            result->type = ContainerCheckResultItem::Type::Error;
+            result->type = FlexDiskCheckResultItem::Type::Error;
             result->name = name;
             result->current = iter.first;
             std::copy(link.from.cbegin(), link.from.cend(),
@@ -160,7 +160,7 @@ void FileContainerCheck::CheckLinks()
         {
             auto *result = new HasCycle;
 
-            result->type = ContainerCheckResultItem::Type::Error;
+            result->type = FlexDiskCheckResultItem::Type::Error;
             result->name = GetItemName(link.item_index);
             result->from = iter.first;
             result->back_to = link.to;
@@ -173,7 +173,7 @@ void FileContainerCheck::CheckLinks()
             auto name = GetItemName(link.item_index);
             auto *result = new DiscontiguousRecordNr;
 
-            result->type = ContainerCheckResultItem::Type::Warning;
+            result->type = FlexDiskCheckResultItem::Type::Warning;
             result->name = name;
             result->current = iter.first;
             result->record_nr = link.record_nr;
@@ -183,7 +183,7 @@ void FileContainerCheck::CheckLinks()
     }
 }
 
-void FileContainerCheck::CheckItems()
+void FlexDiskCheck::CheckItems()
 {
     for (auto &item : items)
     {
@@ -192,7 +192,7 @@ void FileContainerCheck::CheckItems()
         {
             auto *result = new BadDate;
 
-            result->type = ContainerCheckResultItem::Type::Info;
+            result->type = FlexDiskCheckResultItem::Type::Info;
             result->name = GetItemName(item);
             result->day = item.day;
             result->month = item.month;
@@ -206,7 +206,7 @@ void FileContainerCheck::CheckItems()
         {
             auto *result = new BadTime;
 
-            result->type = ContainerCheckResultItem::Type::Info;
+            result->type = FlexDiskCheckResultItem::Type::Info;
             result->name = GetItemName(item);
             result->hour = item.hour;
             result->minute = item.minute;
@@ -218,7 +218,7 @@ void FileContainerCheck::CheckItems()
         {
             auto *result = new NullFile;
 
-            result->type = ContainerCheckResultItem::Type::Info;
+            result->type = FlexDiskCheckResultItem::Type::Info;
             result->name = GetItemName(item);
             results.emplace_back(result);
 
@@ -229,7 +229,7 @@ void FileContainerCheck::CheckItems()
         {
             auto *result = new InconsistentRecordSize;
 
-            result->type = ContainerCheckResultItem::Type::Warning;
+            result->type = FlexDiskCheckResultItem::Type::Warning;
             result->name = GetItemName(item);
             result->records = item.records;
             result->sectors = item.sectors;
@@ -246,7 +246,7 @@ void FileContainerCheck::CheckItems()
                 auto inputName = GetItemName(inputLink.item_index);
                 auto *result = new LinkAndFileInput;
 
-                result->type = ContainerCheckResultItem::Type::Error;
+                result->type = FlexDiskCheckResultItem::Type::Error;
                 result->inputName = inputName;
                 result->input = inputLink.trk_sec;
                 result->name = GetItemName(item);
@@ -260,7 +260,7 @@ void FileContainerCheck::CheckItems()
             {
                 auto *result = new BadStart;
 
-                result->type = ContainerCheckResultItem::Type::Error;
+                result->type = FlexDiskCheckResultItem::Type::Error;
                 result->name = GetItemName(item);
                 result->start = item.start;
                 results.emplace_back(result);
@@ -277,8 +277,8 @@ void FileContainerCheck::CheckItems()
                 result->type =
                     (link.type == SectorType::Free ||
                      link.type == SectorType::Lost) ?
-                    ContainerCheckResultItem::Type::Warning :
-                    ContainerCheckResultItem::Type::Error;
+                    FlexDiskCheckResultItem::Type::Warning :
+                    FlexDiskCheckResultItem::Type::Error;
                 result->name = GetItemName(item);
                 result->end = item.end;
                 result->to = link.to;
@@ -291,7 +291,7 @@ void FileContainerCheck::CheckItems()
             {
                 auto *result = new BadEnd;
 
-                result->type = ContainerCheckResultItem::Type::Error;
+                result->type = FlexDiskCheckResultItem::Type::Error;
                 result->name = GetItemName(item);
                 result->end = item.end;
                 results.emplace_back(result);
@@ -305,7 +305,7 @@ void FileContainerCheck::CheckItems()
         {
             auto *result = new LostSectors;
 
-            result->type = ContainerCheckResultItem::Type::Info;
+            result->type = FlexDiskCheckResultItem::Type::Info;
             result->name = GetItemName(item);
             result->start = item.start;
             result->end = item.end;
@@ -315,7 +315,7 @@ void FileContainerCheck::CheckItems()
     }
 }
 
-bool FileContainerCheck::CheckFileSystem()
+bool FlexDiskCheck::CheckFileSystem()
 {
     CheckDisk();
     CheckLinks();
@@ -324,17 +324,17 @@ bool FileContainerCheck::CheckFileSystem()
     return IsValid();
 }
 
-bool FileContainerCheck::IsValid() const
+bool FlexDiskCheck::IsValid() const
 {
     return results.empty();
 }
 
-const ContainerCheckResultItems &FileContainerCheck::GetResult() const
+const FlexDiskCheckResultItems &FlexDiskCheck::GetResult() const
 {
     return results;
 }
 
-bool FileContainerCheck::IsTrackSectorValid(st_t trk_sec) const
+bool FlexDiskCheck::IsTrackSectorValid(st_t trk_sec) const
 {
     // The sectors 00-01, 00-02, 00-03 and 00-04 are rated as invalid
     // because they can not be used as link target.
@@ -344,7 +344,7 @@ bool FileContainerCheck::IsTrackSectorValid(st_t trk_sec) const
             (trk_sec.trk == 0 && trk_sec.sec >= first_dir_trk_sec.sec));
 }
 
-void FileContainerCheck::InitializeLinks()
+void FlexDiskCheck::InitializeLinks()
 {
     int tracks = 0;
     int sectors = 0;
@@ -394,7 +394,7 @@ void FileContainerCheck::InitializeLinks()
     }
 }
 
-void FileContainerCheck::AddItem(const std::string &name, SectorType type,
+void FlexDiskCheck::AddItem(const std::string &name, SectorType type,
                                  const st_t &start,
                                  const st_t &end /*= st_t{0, 0}*/,
                                  Word records /* = 0 */,
@@ -517,14 +517,14 @@ void FileContainerCheck::AddItem(const std::string &name, SectorType type,
     }
 }
 
-void FileContainerCheck::InitializeDirectorySectors()
+void FlexDiskCheck::InitializeDirectorySectors()
 {
     st_t dir_start{0, static_cast<Byte>(first_dir_trk_sec.sec)};
 
     AddItem("Directory", SectorType::Directory, dir_start);
 }
 
-void FileContainerCheck::InitializeFreeChainSectors()
+void FlexDiskCheck::InitializeFreeChainSectors()
 {
     s_sys_info_sector sis{};
 
@@ -542,7 +542,7 @@ void FileContainerCheck::InitializeFreeChainSectors()
     }
 }
 
-std::string FileContainerCheck::GetUnixFilename(
+std::string FlexDiskCheck::GetUnixFilename(
         const s_dir_entry &dir_entry)
 {
     if (dir_entry.filename[0] != DE_EMPTY &&
@@ -556,7 +556,7 @@ std::string FileContainerCheck::GetUnixFilename(
     return {};
 }
 
-void FileContainerCheck::InitializeFileSectors()
+void FlexDiskCheck::InitializeFileSectors()
 {
     st_t current{0, static_cast<Byte>(first_dir_trk_sec.sec)};
     s_dir_sector dir_sector{};
@@ -607,7 +607,7 @@ void FileContainerCheck::InitializeFileSectors()
     }
 }
 
-void FileContainerCheck::InitializeLostSectors()
+void FlexDiskCheck::InitializeLostSectors()
 {
     std::vector<st_t> not_assigned;
 
@@ -642,7 +642,7 @@ void FileContainerCheck::InitializeLostSectors()
     }
 }
 
-void FileContainerCheck::Initialize()
+void FlexDiskCheck::Initialize()
 {
     results.clear();
     InitializeLinks();
@@ -652,7 +652,7 @@ void FileContainerCheck::Initialize()
     InitializeLostSectors();
 }
 
-void FileContainerCheck::DumpItemChains(std::ostream &os) const
+void FlexDiskCheck::DumpItemChains(std::ostream &os) const
 {
     for (const auto &item : items)
     {
@@ -694,7 +694,7 @@ void FileContainerCheck::DumpItemChains(std::ostream &os) const
     }
 }
 
-std::ostream &FileContainerCheck::DebugDump(std::ostream &os) const
+std::ostream &FlexDiskCheck::DebugDump(std::ostream &os) const
 {
     os << "********  I T E M S  ********\n";
     os << "count=" << items.size() << "\n";
@@ -719,21 +719,21 @@ std::ostream &FileContainerCheck::DebugDump(std::ostream &os) const
 }
 
 std::ostream& operator<<(std::ostream &os,
-                         FileContainerCheck::SectorType type)
+                         FlexDiskCheck::SectorType type)
 {
     switch (type)
     {
-        case FileContainerCheck::SectorType::NotAssigned:
+        case FlexDiskCheck::SectorType::NotAssigned:
             return os << "NotAssigned";
-        case FileContainerCheck::SectorType::System:
+        case FlexDiskCheck::SectorType::System:
             return os << "System";
-        case FileContainerCheck::SectorType::Directory:
+        case FlexDiskCheck::SectorType::Directory:
             return os << "Directory";
-        case FileContainerCheck::SectorType::Free:
+        case FlexDiskCheck::SectorType::Free:
             return os << "Free";
-        case FileContainerCheck::SectorType::File:
+        case FlexDiskCheck::SectorType::File:
             return os << "File";
-        case FileContainerCheck::SectorType::Lost:
+        case FlexDiskCheck::SectorType::Lost:
             return os << "Lost";
     }
 
@@ -741,7 +741,7 @@ std::ostream& operator<<(std::ostream &os,
 }
 
 std::ostream& operator<<(std::ostream &os,
-                         const struct FileContainerCheck::s_link &link)
+                         const struct FlexDiskCheck::s_link &link)
 {
     os << link.trk_sec << " (" << link.type;
 
@@ -760,14 +760,14 @@ std::ostream& operator<<(std::ostream &os,
         }
     }
 
-    if (link.type != FileContainerCheck::SectorType::System)
+    if (link.type != FlexDiskCheck::SectorType::System)
     {
         os << " to=" << link.to;
     }
 
     os << " i_idx=" << link.item_index;
 
-    if (link.type == FileContainerCheck::SectorType::File)
+    if (link.type == FlexDiskCheck::SectorType::File)
     {
         os << " rnr=" << link.record_nr;
 
@@ -791,7 +791,7 @@ std::ostream& operator<<(std::ostream &os,
 }
 
 std::ostream &operator<<(std::ostream &os,
-                         const ContainerCheckResultItemPtr &result)
+                         const FlexDiskCheckResultItemPtr &result)
 {
     if (const auto *mli = dynamic_cast<MultipleLinkInputs *>(result.get()))
     {
@@ -850,9 +850,9 @@ std::ostream &operator<<(std::ostream &os,
 }
 
 std::ostream& operator<<(std::ostream &os,
-                         const struct FileContainerCheck::s_item &item)
+                         const struct FlexDiskCheck::s_item &item)
 {
-    os << FileContainerCheck::GetItemName(item) << " (" << item.type << " " <<
+    os << FlexDiskCheck::GetItemName(item) << " (" << item.type << " " <<
           item.start << " " << item.end;
     if (item.unexpected_end != st_t{0, 0})
     {
@@ -984,15 +984,15 @@ std::ostream& operator<<(std::ostream &os, const BadTime &item)
     return os;
 }
 
-std::ostream& operator<<(std::ostream &os, ContainerCheckResultItem::Type type)
+std::ostream& operator<<(std::ostream &os, FlexDiskCheckResultItem::Type type)
 {
     switch (type)
     {
-        case ContainerCheckResultItem::Type::Info:
+        case FlexDiskCheckResultItem::Type::Info:
             return os << "I";
-        case ContainerCheckResultItem::Type::Warning:
+        case FlexDiskCheckResultItem::Type::Warning:
             return os << "W";
-        case ContainerCheckResultItem::Type::Error:
+        case FlexDiskCheckResultItem::Type::Error:
             return os << "E";
     }
 

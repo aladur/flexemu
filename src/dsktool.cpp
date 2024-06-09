@@ -663,7 +663,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
-    FileContainerCheck check(src, fileTimeAccess);
+    FlexDiskCheck check(src, fileTimeAccess);
 
     std::cout << "Check " << dsk_file << " ...";
     if (check.CheckFileSystem())
@@ -682,13 +682,13 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
         {
             switch (result->type)
             {
-                case ContainerCheckResultItem::Type::Info:
+                case FlexDiskCheckResultItem::Type::Info:
                     ++infos;
                     break;
-                case ContainerCheckResultItem::Type::Warning:
+                case FlexDiskCheckResultItem::Type::Warning:
                     ++warnings;
                     break;
-                case ContainerCheckResultItem::Type::Error:
+                case FlexDiskCheckResultItem::Type::Error:
                     ++errors;
                     break;
             }
