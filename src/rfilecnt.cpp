@@ -25,10 +25,8 @@
 #include "flexerr.h"
 
 
-FlexRamFileContainer::FlexRamFileContainer(const char *p_path,
-                                           std::ios::openmode mode,
-                                           const FileTimeAccess
-                                           &p_fileTimeAccess)
+FlexRamDisk::FlexRamDisk(const char *p_path, std::ios::openmode mode,
+                         const FileTimeAccess &p_fileTimeAccess)
     : FlexDisk(p_path, mode, p_fileTimeAccess)
 {
     unsigned int sectors;
@@ -59,7 +57,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *p_path,
     }
 }
 
-FlexRamFileContainer::~FlexRamFileContainer()
+FlexRamDisk::~FlexRamDisk()
 {
     // final cleanup: close if not already done
     try
@@ -73,14 +71,13 @@ FlexRamFileContainer::~FlexRamFileContainer()
     }
 }
 
-FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) noexcept
+FlexRamDisk::FlexRamDisk(FlexRamDisk &&src) noexcept
     : FlexDisk(std::move(src))
     , file_buffer(std::move(src.file_buffer))
 {
 }
 
-FlexRamFileContainer &FlexRamFileContainer::operator=
-                                         (FlexRamFileContainer &&src) noexcept
+FlexRamDisk &FlexRamDisk::operator= (FlexRamDisk &&src) noexcept
 {
     file_buffer = std::move(src.file_buffer);
 
@@ -89,7 +86,7 @@ FlexRamFileContainer &FlexRamFileContainer::operator=
     return *this;
 }
 
-bool FlexRamFileContainer::close()
+bool FlexRamDisk::close()
 {
     bool throwException = false;
 
@@ -130,8 +127,8 @@ bool FlexRamFileContainer::close()
     return true;
 }
 
-bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
-                                      int side /* = -1 */) const
+bool FlexRamDisk::ReadSector(Byte *pbuffer, int trk, int sec,
+                             int side /* = -1 */) const
 {
     if (file_buffer.empty())
     {
@@ -154,8 +151,8 @@ bool FlexRamFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
     return true;
 }
 
-bool FlexRamFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
-                                       int side /* = -1 */)
+bool FlexRamDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
+                              int side /* = -1 */)
 {
     if (file_buffer.empty())
     {

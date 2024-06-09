@@ -27,7 +27,10 @@
 #include "ffilecnt.h"
 #include <vector>
 
-class FlexRamFileContainer : public FlexDisk
+// class FlexRamDisk is a specialization of FlexDisk where the whole disk
+// image is stored in RAM for improved performance. The disk image is only
+// written back to disk if there are changes (see is_dirty flag).
+class FlexRamDisk : public FlexDisk
 {
 
 private:
@@ -37,15 +40,15 @@ private:
 
 public:
 
-    FlexRamFileContainer() = delete;
-    FlexRamFileContainer(const FlexRamFileContainer &src) = delete;
-    FlexRamFileContainer(FlexRamFileContainer &&src) noexcept;
-    FlexRamFileContainer(const char *p_path, std::ios::openmode mode,
-                         const FileTimeAccess &fileTimeAccess);
-    ~FlexRamFileContainer() override;
+    FlexRamDisk() = delete;
+    FlexRamDisk(const FlexRamDisk &src) = delete;
+    FlexRamDisk(FlexRamDisk &&src) noexcept;
+    FlexRamDisk(const char *p_path, std::ios::openmode mode,
+                const FileTimeAccess &fileTimeAccess);
+    ~FlexRamDisk() override;
 
-    FlexRamFileContainer &operator= (const FlexRamFileContainer &src) = delete;
-    FlexRamFileContainer &operator= (FlexRamFileContainer &&src) noexcept;
+    FlexRamDisk &operator= (const FlexRamDisk &src) = delete;
+    FlexRamDisk &operator= (FlexRamDisk &&src) noexcept;
 
     bool ReadSector(Byte *buffer, int trk, int sec,
                     int side = -1) const override;
