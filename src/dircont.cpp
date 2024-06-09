@@ -544,6 +544,6 @@ Iterator implemenation
 
 IFlexDiskIteratorImpPtr DirectoryContainer::IteratorFactory()
 {
-    return IFlexDiskIteratorImpPtr(new DirectoryContainerIteratorImp(this));
+    return IFlexDiskIteratorImpPtr(new FlexDirectoryDiskIteratorImp(this));
 }
 

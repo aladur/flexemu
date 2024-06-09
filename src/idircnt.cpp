@@ -32,13 +32,13 @@
 #include "cvtwchar.h"
 
 
-DirectoryContainerIteratorImp::DirectoryContainerIteratorImp(
+FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
     DirectoryContainer *aBase)
     : base(aBase), dirHdl(nullptr)
 {
 }
 
-DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
+FlexDirectoryDiskIteratorImp::~FlexDirectoryDiskIteratorImp()
 {
     if (dirHdl != nullptr)
     {
@@ -54,18 +54,18 @@ DirectoryContainerIteratorImp::~DirectoryContainerIteratorImp()
     base = nullptr;
 }
 
-bool DirectoryContainerIteratorImp::operator==(const IFlexDiskByFile *rhs) const
+bool FlexDirectoryDiskIteratorImp::operator==(const IFlexDiskByFile *rhs) const
 {
     return (base == nullptr && rhs == nullptr) ||
            ((base == rhs) && (dirHdl == nullptr));
 }
 
-void DirectoryContainerIteratorImp::AtEnd()
+void FlexDirectoryDiskIteratorImp::AtEnd()
 {
     base = nullptr;
 }
 
-bool DirectoryContainerIteratorImp::NextDirEntry(const std::string &wildcard)
+bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 {
     // Initialize following variable to a filename which never exists.
     std::string fileName(R"(.\/\/\/.\/\)");
@@ -245,7 +245,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const std::string &wildcard)
 // deletes the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool DirectoryContainerIteratorImp::DeleteCurrent()
+bool FlexDirectoryDiskIteratorImp::DeleteCurrent()
 {
     std::string filePath;
 
@@ -308,7 +308,7 @@ bool DirectoryContainerIteratorImp::DeleteCurrent()
 // Renames the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool DirectoryContainerIteratorImp::RenameCurrent(const std::string &newName)
+bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
 {
     if (dirEntry.IsEmpty())
     {
@@ -366,7 +366,7 @@ bool DirectoryContainerIteratorImp::RenameCurrent(const std::string &newName)
 // Set date for the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
+bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
 {
     struct stat sbuf{};
     struct utimbuf timebuf{};
@@ -402,7 +402,7 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
 // set the date in the actual selected directory entry
 // Only valid if the iterator has a valid directory entry
 // Only the WRITE_PROTECT flag is supported
-bool DirectoryContainerIteratorImp::SetAttributesCurrent(Byte attributes)
+bool FlexDirectoryDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 {
     std::string filePath;
 

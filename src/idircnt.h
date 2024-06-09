@@ -34,14 +34,16 @@
 
 class DirectoryContainer;
 
-class DirectoryContainerIteratorImp : public IFlexDiskIteratorImp
+// Implementation of IFlexDiskIteratorImp interface for DirectoryContainer.
+// Rename: DirectoryContainerIteratorImp => FlexDirectoryDiskIteratorImp
+class FlexDirectoryDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:
-    explicit DirectoryContainerIteratorImp(DirectoryContainer *aBase);
-    DirectoryContainerIteratorImp() = delete;
-    DirectoryContainerIteratorImp(const DirectoryContainerIteratorImp &src) =
+    explicit FlexDirectoryDiskIteratorImp(DirectoryContainer *aBase);
+    FlexDirectoryDiskIteratorImp() = delete;
+    FlexDirectoryDiskIteratorImp(const FlexDirectoryDiskIteratorImp &src) =
         delete;
-    ~DirectoryContainerIteratorImp() override;
+    ~FlexDirectoryDiskIteratorImp() override;
     bool operator==(const IFlexDiskByFile *rhs) const override;
     void AtEnd() override;
     FlexDirEntry &GetDirEntry() override

@@ -36,12 +36,12 @@
 class FlexContainerInfo;
 class FlexDirEntry;
 class BDate;
-class DirectoryContainerIteratorImp;
+class FlexDirectoryDiskIteratorImp;
 
 
 class DirectoryContainer : public IFlexDiskByFile
 {
-    friend class DirectoryContainerIteratorImp; // corresponding iterator class
+    friend class FlexDirectoryDiskIteratorImp; // corresponding iterator class
 
 private:
     std::string directory;
