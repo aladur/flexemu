@@ -33,7 +33,6 @@ class FlexDirEntry;
 class FlexDiskAttributes;
 class FlexFileBuffer;
 
-//typedef int FileHdl;
 
 // This interface describes a file oriented access to a FLEX disk image.
 // Rename: FileContainerIf => IFlexDiskByFile
