@@ -348,16 +348,16 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     if (extension.empty())
                     {
-                        type = TYPE_NAFS_DIRECTORY;
+                        type = TYPE_DIRECTORY_BY_SECTOR;
                     }
                     else if ((stricmp(extension.c_str(), ".dsk") == 0) ||
                         (stricmp(extension.c_str(), ".wta") == 0))
                     {
-                        type = TYPE_DSK_CONTAINER;
+                        type = TYPE_DSK_DISKFILE;
                     }
                     else if (stricmp(extension.c_str(), ".flx") == 0)
                     {
-                        type = TYPE_FLX_CONTAINER;
+                        type = TYPE_FLX_DISKFILE;
                     }
                     else
                     {

@@ -66,7 +66,7 @@ public:
     static FlexDirectoryDiskByFile *Create(const std::string &directory,
             const std::string &name, int tracks, int sectors,
             const FileTimeAccess &fileTimeAccess,
-            int fmt = TYPE_DSK_CONTAINER);
+            int fmt = TYPE_DSK_DISKFILE);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;

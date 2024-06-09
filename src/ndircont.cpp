@@ -151,7 +151,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        int /* fmt = TYPE_DSK_CONTAINER */)
+        int /* fmt = TYPE_DSK_DISKFILE */)
 {
     struct stat sbuf{};
 
@@ -257,7 +257,7 @@ void FlexDirectoryDiskBySector::initialize_header(bool is_write_protected,
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
-    param.type = TYPE_DIRECTORY | TYPE_NAFS_DIRECTORY;
+    param.type = TYPE_DIRECTORY | TYPE_DIRECTORY_BY_SECTOR;
 }
 
 // Check for a valid FLEX filename.

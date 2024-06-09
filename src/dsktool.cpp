@@ -961,13 +961,13 @@ bool estimateDiskFormat(const char *format, int &disk_format)
     {
         if (strcmp(format, "dsk") == 0)
         {
-            disk_format = TYPE_DSK_CONTAINER;
+            disk_format = TYPE_DSK_DISKFILE;
             return true;
         }
 
         if (strcmp(format, "flx") == 0)
         {
-            disk_format = TYPE_FLX_CONTAINER;
+            disk_format = TYPE_FLX_DISKFILE;
             return true;
         }
     }
@@ -990,7 +990,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
 
     if (!estimateDiskFormat(extension.c_str(), disk_format))
     {
-        disk_format = TYPE_DSK_CONTAINER;
+        disk_format = TYPE_DSK_DISKFILE;
     }
 }
 

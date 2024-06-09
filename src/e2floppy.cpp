@@ -323,7 +323,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
                << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
                << "FLEX format:" << (is_flex_format ? "yes" : "no")
                << '\n';
-        if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
+        if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
         {
             auto header = diskAttributes.GetJvcFileHeader();
 
@@ -692,7 +692,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
     {
         switch (fmt)
         {
-            case TYPE_NAFS_DIRECTORY:
+            case TYPE_DIRECTORY_BY_SECTOR:
                 if (options.isDirectoryDiskActive)
                 {
                     pfloppy = IFlexDiskBySectorPtr(
@@ -702,8 +702,8 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                 }
                 break;
 
-            case TYPE_DSK_CONTAINER:
-            case TYPE_FLX_CONTAINER:
+            case TYPE_DSK_DISKFILE:
+            case TYPE_FLX_DISKFILE:
                 pfloppy = IFlexDiskBySectorPtr(
                 FlexDisk::Create(
                     disk_dir, name, fileTimeAccess, trk, sec, fmt));

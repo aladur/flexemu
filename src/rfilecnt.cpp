@@ -37,7 +37,7 @@ FlexRamDisk::FlexRamDisk(const char *p_path, std::ios::openmode mode,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
     }
 
-    param.type |= TYPE_RAM_CONTAINER;
+    param.type |= TYPE_RAM_DISKFILE;
     sectors = (file_size - param.offset) / param.byte_p_sector;
     file_buffer.resize(sectors * param.byte_p_sector);
 

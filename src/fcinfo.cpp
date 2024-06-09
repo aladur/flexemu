@@ -31,13 +31,13 @@ std::string FlexDiskAttributes::GetTypeString() const
 {
     std::string str;
 
-    if (type & TYPE_CONTAINER)
+    if (type & TYPE_DISKFILE)
     {
-        if (type & TYPE_DSK_CONTAINER)
+        if (type & TYPE_DSK_DISKFILE)
         {
             str = "Disk image file, DSK format";
         }
-        else if (type & TYPE_FLX_CONTAINER)
+        else if (type & TYPE_FLX_DISKFILE)
         {
             str = "Disk image file, FLX format";
         }

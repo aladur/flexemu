@@ -90,7 +90,7 @@ public:
                             const std::string &name,
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
-                            int fmt = TYPE_DSK_CONTAINER,
+                            int fmt = TYPE_DSK_DISKFILE,
                             const char *bsFile = nullptr);
 
     // IFlexDiskBase interface declaration
@@ -166,7 +166,7 @@ protected:
         const std::string &name,
         int tracks,
         int sectors,
-        int fmt = TYPE_DSK_CONTAINER,
+        int fmt = TYPE_DSK_DISKFILE,
         const char *bsFile = nullptr);
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;

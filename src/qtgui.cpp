@@ -1265,7 +1265,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
         if (diskAttributes.IsValid())
         {
             auto rowCount = diskAttributes.GetIsFlexFormat() ? 9 : 6;
-            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
+            if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
             {
                 ++rowCount;
             }
@@ -1284,7 +1284,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 0, new QStandardItem(tr("Sectors")));
             model.setItem(row++, 0, new QStandardItem(tr("Write-protect")));
             model.setItem(row++, 0, new QStandardItem(tr("FLEX format")));
-            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
+            if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
             {
                 model.setItem(row++, 0, new QStandardItem(tr("JVC header")));
             }
@@ -1313,7 +1313,7 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 1, new QStandardItem(text));
             text = diskAttributes.GetIsFlexFormat() ? tr("yes") : tr("no");
             model.setItem(row++, 1, new QStandardItem(text));
-            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
+            if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
             {
                 auto header = diskAttributes.GetJvcFileHeader();
 

@@ -103,7 +103,7 @@ void FLEXplorer::NewFlexDisk()
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
     ui.SetDefaultPath(QString(options.openDiskPath.c_str()));
-    ui.TransferDataToDialog(TYPE_DSK_CONTAINER, 80, 36);
+    ui.TransferDataToDialog(TYPE_DSK_DISKFILE, 80, 36);
     dialog.resize(newDialogSize);
     auto result = dialog.exec();
     newDialogSize = dialog.size();

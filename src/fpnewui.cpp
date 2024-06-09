@@ -72,14 +72,14 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
     format = p_format;
     switch (format)
     {
-        case TYPE_FLX_CONTAINER:
+        case TYPE_FLX_DISKFILE:
             r_flxFile->setChecked(true);
             break;
         case TYPE_MDCR_CONTAINER:
             r_mdcrFile->setChecked(true);
             break;
         default:
-            format = TYPE_DSK_CONTAINER;
+            format = TYPE_DSK_DISKFILE;
             r_dskFile->setChecked(true);
             break;
     }
@@ -176,7 +176,7 @@ void FlexplorerNewUi::OnDskFileFormat(bool value)
 {
     if (value)
     {
-        format = TYPE_DSK_CONTAINER;
+        format = TYPE_DSK_DISKFILE;
         UpdateFormatTrkSecEnable(false);
         UpdateFilename();
     }
@@ -186,7 +186,7 @@ void FlexplorerNewUi::OnFlxFileFormat(bool value)
 {
     if (value)
     {
-        format = TYPE_FLX_CONTAINER;
+        format = TYPE_FLX_DISKFILE;
         UpdateFormatTrkSecEnable(false);
         UpdateFilename();
     }
@@ -370,9 +370,9 @@ QString FlexplorerNewUi::GetCurrentFileExtension() const
 {
     switch (format)
     {
-    case TYPE_DSK_CONTAINER:
+    case TYPE_DSK_DISKFILE:
         return "dsk";
-    case TYPE_FLX_CONTAINER:
+    case TYPE_FLX_DISKFILE:
         return "flx";
     case TYPE_MDCR_CONTAINER:
         return "mdcr";

@@ -639,7 +639,7 @@ void FlexplorerMdiChild::Info()
     {
         str += tr("Attributes: read-only").append("\n");
     }
-    if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
+    if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
     {
         auto header = diskAttributes.GetJvcFileHeader();
 

@@ -28,15 +28,15 @@
 
 /* possible constants for container type */
 
-const int TYPE_CONTAINER = 0x01; /* type: file container */
+const int TYPE_DISKFILE = 0x01; /* type: file container */
 const int TYPE_DIRECTORY = 0x02; /* type: directory */
-const int TYPE_DSK_CONTAINER =
+const int TYPE_DSK_DISKFILE =
     0x10; /* subtype: a file container with DSK format */
-const int TYPE_FLX_CONTAINER =
+const int TYPE_FLX_DISKFILE =
     0x20; /* subtype: a file container with FLX format */
-const int TYPE_NAFS_DIRECTORY = 0x40; /* subtype: NAFS directory */
+const int TYPE_DIRECTORY_BY_SECTOR = 0x40; /* subtype: NAFS directory */
 /* (means: without text conversion) */
-const int TYPE_RAM_CONTAINER =
+const int TYPE_RAM_DISKFILE =
     0x80; /* subtype: filecontainer loaded in RAM */
 const int TYPE_JVC_HEADER =
     0x100; /* subtype: DSK filecontainer with JVC header */
