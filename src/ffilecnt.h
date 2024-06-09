@@ -34,7 +34,7 @@
 class FlexContainerInfo;
 class BDate;
 class FlexCopyManager;
-class FlexFileContainerIteratorImp;
+class FlexDiskIteratorImp;
 
 #define CHECK_CONTAINER_WRITEPROTECTED              \
     if (IsWriteProtected())                 \
@@ -48,7 +48,7 @@ class FlexFileContainerIteratorImp;
 
 class FlexFileContainer : public IFlexDiskBySector, public IFlexDiskByFile
 {
-    friend class FlexFileContainerIteratorImp; // corresponding iterator class
+    friend class FlexDiskIteratorImp; // corresponding iterator class
 
 protected:
     std::string path;

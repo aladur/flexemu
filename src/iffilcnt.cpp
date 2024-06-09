@@ -28,25 +28,25 @@
 #include <iterator>
 #include <array>
 
-FlexFileContainerIteratorImp::FlexFileContainerIteratorImp(
+FlexDiskIteratorImp::FlexDiskIteratorImp(
     FlexFileContainer *aBase)
     : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
 {
     dirSector.next = first_dir_trk_sec;
 }
 
-bool FlexFileContainerIteratorImp::operator==(const IFlexDiskByFile *rhs) const
+bool FlexDiskIteratorImp::operator==(const IFlexDiskByFile *rhs) const
 {
     return (base == nullptr && rhs == nullptr) ||
            ((base == rhs) && (dirIndex == -1));
 }
 
-void FlexFileContainerIteratorImp::AtEnd()
+void FlexDiskIteratorImp::AtEnd()
 {
     base = nullptr;
 }
 
-bool FlexFileContainerIteratorImp::NextDirEntry(const std::string &wildcard)
+bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 {
     dirEntry.SetEmpty();
 
@@ -115,7 +115,7 @@ bool FlexFileContainerIteratorImp::NextDirEntry(const std::string &wildcard)
 // deletes the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::DeleteCurrent()
+bool FlexDiskIteratorImp::DeleteCurrent()
 {
     st_t start;
     st_t end;
@@ -255,7 +255,7 @@ bool FlexFileContainerIteratorImp::DeleteCurrent()
 // Renames the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::RenameCurrent(const std::string &newName)
+bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
 {
     s_dir_entry *pd;
     std::string name;
@@ -334,7 +334,7 @@ bool FlexFileContainerIteratorImp::RenameCurrent(const std::string &newName)
 // Set date for the file on which the iterator currently
 // is pointing on
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
+bool FlexDiskIteratorImp::SetDateCurrent(const BDate &date)
 {
     s_dir_entry *pd;
 
@@ -377,7 +377,7 @@ bool FlexFileContainerIteratorImp::SetDateCurrent(const BDate &date)
 // set the date in the actual selected directory entry
 // should only be used after an successful
 // Only valid if the iterator has a valid directory entry
-bool FlexFileContainerIteratorImp::SetAttributesCurrent(Byte attributes)
+bool FlexDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 {
     s_dir_entry *pd;
 

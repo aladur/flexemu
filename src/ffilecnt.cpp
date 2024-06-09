@@ -499,7 +499,7 @@ std::string FlexFileContainer::GetSupportedAttributes() const
 
 IFlexDiskIteratorImpPtr FlexFileContainer::IteratorFactory()
 {
-    return IFlexDiskIteratorImpPtr(new FlexFileContainerIteratorImp(this));
+    return IFlexDiskIteratorImpPtr(new FlexDiskIteratorImp(this));
 }
 
 // if successfull return true. If error return false
