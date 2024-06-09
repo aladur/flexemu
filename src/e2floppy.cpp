@@ -199,8 +199,8 @@ bool E2floppy::mount_drive(const std::string &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                      new FlexFileContainer(containerPath, mode,
-                                            options.fileTimeAccess));
+                      new FlexDisk(containerPath, mode,
+                                   options.fileTimeAccess));
                 }
                 catch (FlexException &)
                 {
@@ -210,8 +210,8 @@ bool E2floppy::mount_drive(const std::string &path,
                         {
                             mode &= ~std::ios::out;
                             pfloppy = IFlexDiskBySectorPtr(
-                             new FlexFileContainer(containerPath, mode,
-                                                   options.fileTimeAccess));
+                             new FlexDisk(containerPath, mode,
+                                          options.fileTimeAccess));
                         }
                         catch (FlexException &)
                         {
@@ -702,7 +702,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
             case TYPE_DSK_CONTAINER:
             case TYPE_FLX_CONTAINER:
                 pfloppy = IFlexDiskBySectorPtr(
-                FlexFileContainer::Create(
+                FlexDisk::Create(
                     disk_dir, name, fileTimeAccess, trk, sec, fmt));
                 break;
         }

@@ -29,7 +29,7 @@ FlexRamFileContainer::FlexRamFileContainer(const char *p_path,
                                            std::ios::openmode mode,
                                            const FileTimeAccess
                                            &p_fileTimeAccess)
-    : FlexFileContainer(p_path, mode, p_fileTimeAccess)
+    : FlexDisk(p_path, mode, p_fileTimeAccess)
 {
     unsigned int sectors;
 
@@ -74,7 +74,7 @@ FlexRamFileContainer::~FlexRamFileContainer()
 }
 
 FlexRamFileContainer::FlexRamFileContainer(FlexRamFileContainer &&src) noexcept
-    : FlexFileContainer(std::move(src))
+    : FlexDisk(std::move(src))
     , file_buffer(std::move(src.file_buffer))
 {
 }
@@ -84,7 +84,7 @@ FlexRamFileContainer &FlexRamFileContainer::operator=
 {
     file_buffer = std::move(src.file_buffer);
 
-    FlexFileContainer::operator=(std::move(src));
+    FlexDisk::operator=(std::move(src));
 
     return *this;
 }

@@ -27,7 +27,7 @@
 #include "ffilecnt.h"
 #include <vector>
 
-class FlexRamFileContainer : public FlexFileContainer
+class FlexRamFileContainer : public FlexDisk
 {
 
 private:

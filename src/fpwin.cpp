@@ -86,7 +86,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
 
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
-    FlexFileContainer::onTrack0OnlyDirSectors = options.onTrack0OnlyDirSectors;
+    FlexDisk::onTrack0OnlyDirSectors = options.onTrack0OnlyDirSectors;
 
     resize(860, 720);
 }
@@ -126,7 +126,7 @@ void FLEXplorer::NewContainer()
             auto directory = getParentPath(ui.GetPath().toStdString());
             const char *bsFile = !options.bootSectorFile.empty() ?
                                  options.bootSectorFile.c_str() : nullptr;
-            auto *container = FlexFileContainer::Create(
+            auto *container = FlexDisk::Create(
                                   directory,
                                   filename,
                                   options.ft_access,
@@ -499,8 +499,8 @@ void FLEXplorer::Options()
         auto oldFileSizeType = options.fileSizeType;
 
         ui.TransferDataFromDialog(options);
-        FlexFileContainer::bootSectorFile = options.bootSectorFile;
-        FlexFileContainer::onTrack0OnlyDirSectors =
+        FlexDisk::bootSectorFile = options.bootSectorFile;
+        FlexDisk::onTrack0OnlyDirSectors =
             options.onTrack0OnlyDirSectors;
         if (oldFileTimeAccess != options.ft_access)
         {

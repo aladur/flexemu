@@ -992,14 +992,14 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
         try
         {
             // 1st try opening read-write.
-            container = std::make_unique<FlexFileContainer>(
+            container = std::make_unique<FlexDisk>(
                             p_path, mode, fileTimeAccess);
         }
         catch (FlexException &)
         {
             // 2nd try opening read-only.
             mode &= ~std::ios::out;
-            container = std::make_unique<FlexFileContainer>(
+            container = std::make_unique<FlexDisk>(
                             p_path, mode, fileTimeAccess);
         }
     }

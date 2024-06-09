@@ -43,14 +43,14 @@
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
 #ifdef UNIX
-    std::string FlexFileContainer::bootSectorFile =
+    std::string FlexDisk::bootSectorFile =
         F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
 #endif
 #ifdef _WIN32
-    std::string FlexFileContainer::bootSectorFile =
+    std::string FlexDisk::bootSectorFile =
         getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
-    bool FlexFileContainer::onTrack0OnlyDirSectors = true;
+    bool FlexDisk::onTrack0OnlyDirSectors = true;
 
 /***********************************************/
 /* Initialization of a s_flex_header structure */
@@ -99,7 +99,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 /* Constructor                          */
 /****************************************/
 
-FlexFileContainer::FlexFileContainer(
+FlexDisk::FlexDisk(
         const std::string &p_path,
         std::ios::openmode mode,
         const FileTimeAccess &fileTimeAccess)
@@ -212,7 +212,7 @@ FlexFileContainer::FlexFileContainer(
     throw FlexException(FERR_IS_NO_FILECONTAINER, path);
 }
 
-FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
+FlexDisk::FlexDisk(FlexDisk &&src) noexcept :
     path(std::move(src.path)),
     fstream(std::move(src.fstream)),
     param(src.param),
@@ -225,7 +225,7 @@ FlexFileContainer::FlexFileContainer(FlexFileContainer &&src) noexcept :
 {
 }
 
-FlexFileContainer &FlexFileContainer::operator= (FlexFileContainer &&src)
+FlexDisk &FlexDisk::operator= (FlexDisk &&src)
 noexcept
 {
     path = src.path;
@@ -244,22 +244,22 @@ noexcept
 /* Public interface                     */
 /****************************************/
 
-std::string FlexFileContainer::GetPath() const
+std::string FlexDisk::GetPath() const
 {
     return path;
 }
 
-int FlexFileContainer::GetBytesPerSector() const
+int FlexDisk::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
 
-bool FlexFileContainer::IsWriteProtected() const
+bool FlexDisk::IsWriteProtected() const
 {
     return param.write_protect != 0;
 }
 
-bool FlexFileContainer::IsTrackValid(int track) const
+bool FlexDisk::IsTrackValid(int track) const
 {
     if (!is_flex_format)
     {
@@ -272,7 +272,7 @@ bool FlexFileContainer::IsTrackValid(int track) const
     return (track >= 0 && track <= param.max_track);
 }
 
-bool FlexFileContainer::IsSectorValid(int track, int sector) const
+bool FlexDisk::IsSectorValid(int track, int sector) const
 {
     if (track)
     {
@@ -285,12 +285,12 @@ bool FlexFileContainer::IsSectorValid(int track, int sector) const
     return (sector > 0 && sector <= param.max_sector0);
 }
 
-bool FlexFileContainer::IsFlexFormat() const
+bool FlexDisk::IsFlexFormat() const
 {
     return is_flex_format;
 }
 
-FlexFileContainer *FlexFileContainer::Create(
+FlexDisk *FlexDisk::Create(
         const std::string &directory,
         const std::string &name,
         const FileTimeAccess &fileTimeAccess,
@@ -318,14 +318,13 @@ FlexFileContainer *FlexFileContainer::Create(
     path += name;
 
     auto mode = std::ios::in | std::ios::out | std::ios::binary;
-    return new FlexFileContainer(path, mode, fileTimeAccess);
+    return new FlexDisk(path, mode, fileTimeAccess);
 }
 
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool FlexFileContainer::FindFile(const std::string &fileName,
-                                 FlexDirEntry &entry)
+bool FlexDisk::FindFile(const std::string &fileName, FlexDirEntry &entry)
 {
     if (is_flex_format)
     {
@@ -344,7 +343,7 @@ bool FlexFileContainer::FindFile(const std::string &fileName,
     return false;
 }
 
-bool FlexFileContainer::DeleteFile(const std::string &wildcard)
+bool FlexDisk::DeleteFile(const std::string &wildcard)
 {
     if (!is_flex_format)
     {
@@ -363,8 +362,8 @@ bool FlexFileContainer::DeleteFile(const std::string &wildcard)
     return true;
 }
 
-bool FlexFileContainer::RenameFile(const std::string &oldName,
-                                   const std::string &newName)
+bool FlexDisk::RenameFile(const std::string &oldName,
+                          const std::string &newName)
 {
     if (!is_flex_format || (oldName.compare(newName) == 0))
     {
@@ -396,7 +395,7 @@ bool FlexFileContainer::RenameFile(const std::string &oldName,
     return true;
 }
 
-bool FlexFileContainer::FileCopy(const std::string &sourceName,
+bool FlexDisk::FileCopy(const std::string &sourceName,
                                  const std::string &destName,
                                  IFlexDiskByFile &destination)
 {
@@ -408,7 +407,7 @@ bool FlexFileContainer::FileCopy(const std::string &sourceName,
     return FlexCopyManager::FileCopy(sourceName, destName, *this, destination);
 }
 
-bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
+bool FlexDisk::GetInfo(FlexContainerInfo &info) const
 {
     if (is_flex_format)
     {
@@ -483,12 +482,12 @@ bool FlexFileContainer::GetInfo(FlexContainerInfo &info) const
     return true;
 }
 
-int FlexFileContainer::GetContainerType() const
+int FlexDisk::GetContainerType() const
 {
     return param.type;
 }
 
-std::string FlexFileContainer::GetSupportedAttributes() const
+std::string FlexDisk::GetSupportedAttributes() const
 {
     return "WDRC";
 }
@@ -497,14 +496,14 @@ std::string FlexFileContainer::GetSupportedAttributes() const
 /* Nonpublic interface        */
 /******************************/
 
-IFlexDiskIteratorImpPtr FlexFileContainer::IteratorFactory()
+IFlexDiskIteratorImpPtr FlexDisk::IteratorFactory()
 {
     return IFlexDiskIteratorImpPtr(new FlexDiskIteratorImp(this));
 }
 
 // if successfull return true. If error return false
-bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
-                                        const char *p_fileName /* = nullptr */)
+bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
+                               const char *p_fileName /* = nullptr */)
 {
     if (!is_flex_format)
     {
@@ -724,7 +723,7 @@ bool FlexFileContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
     return true;
 }
 
-FlexFileBuffer FlexFileContainer::ReadToBuffer(const std::string &fileName)
+FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
     FlexDirEntry de;
@@ -805,7 +804,7 @@ FlexFileBuffer FlexFileContainer::ReadToBuffer(const std::string &fileName)
 
 
 // set the file attributes of one or multiple files
-bool FlexFileContainer::SetAttributes(const std::string &wildcard,
+bool FlexDisk::SetAttributes(const std::string &wildcard,
         Byte setMask, Byte clearMask /* = ~0 */)
 {
     if (!is_flex_format)
@@ -828,7 +827,7 @@ bool FlexFileContainer::SetAttributes(const std::string &wildcard,
     return true;
 }
 
-bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
+bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
 {
     if (!is_flex_format)
     {
@@ -921,8 +920,8 @@ bool FlexFileContainer::CreateDirEntry(FlexDirEntry &entry)
 //   35-18: Has 10 or 18 sectors on track 0.
 //   40-18: Has 10 or 18 sectors on track 0.
 // This default behaviour can be overwritten by the global flag:
-//   FlexFileContainer::onTrack0OnlyDirSectors = false;
-void FlexFileContainer::EvaluateTrack0SectorCount()
+//   FlexDisk::onTrack0OnlyDirSectors = false;
+void FlexDisk::EvaluateTrack0SectorCount()
 {
     st_t link;
     Word i;
@@ -961,7 +960,7 @@ void FlexFileContainer::EvaluateTrack0SectorCount()
 /* low level routines                   */
 /****************************************/
 
-int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
+int FlexDisk::ByteOffset(int trk, int sec, int side) const
 {
     int byteOffs = param.offset;
     Word side0_offset = 0;
@@ -1000,8 +999,8 @@ int FlexFileContainer::ByteOffset(int trk, int sec, int side) const
 // should be used with care
 // Does not throw any exception !
 // returns false on failure
-bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
-                                   int side /* = -1 */) const
+bool FlexDisk::ReadSector(Byte *pbuffer, int trk, int sec,
+                          int side /* = -1 */) const
 {
     if (!fstream.is_open())
     {
@@ -1034,8 +1033,8 @@ bool FlexFileContainer::ReadSector(Byte *pbuffer, int trk, int sec,
 // should be used with care
 // Does not throw any exception !
 // returns false on failure
-bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
-                                    int side /* = -1 */)
+bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
+                           int side /* = -1 */)
 {
     if (!fstream.is_open())
     {
@@ -1075,8 +1074,8 @@ bool FlexFileContainer::WriteSector(const Byte *pbuffer, int trk, int sec,
     return true;
 }
 
-bool FlexFileContainer::FormatSector(const Byte *target, int track, int sector,
-                                     int side, int sizecode)
+bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
+                            int side, int sizecode)
 {
     if (is_flex_format ||
         track < 0 || track > 255 ||
@@ -1186,8 +1185,8 @@ bool FlexFileContainer::FormatSector(const Byte *target, int track, int sector,
     return result;
 }
 
-void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
-                                                  bool write_protected)
+void FlexDisk::Initialize_for_flx_format(const s_flex_header &header,
+                                         bool write_protected)
 {
     param.offset = sizeof(struct s_flex_header);
     param.write_protect = (write_protected || header.write_protect) ? 0x40 : 0;
@@ -1202,8 +1201,8 @@ void FlexFileContainer::Initialize_for_flx_format(const s_flex_header &header,
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 }
 
-void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
-                                                  bool write_protected)
+void FlexDisk::Initialize_for_dsk_format(const s_formats &format,
+                                         bool write_protected)
 {
     auto sides = format.sides ? format.sides :
                      getSides(format.tracks, format.sectors);
@@ -1228,7 +1227,7 @@ void FlexFileContainer::Initialize_for_dsk_format(const s_formats &format,
     }
 }
 
-void FlexFileContainer::Initialize_unformatted_disk()
+void FlexDisk::Initialize_unformatted_disk()
 {
     file_size = sizeof(struct s_flex_header);
     param = { };
@@ -1236,9 +1235,8 @@ void FlexFileContainer::Initialize_unformatted_disk()
     param.type = TYPE_CONTAINER | TYPE_FLX_CONTAINER;
 }
 
-void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
-                                            Byte sectorBuffer2[],
-                                            const char *bsFile)
+void FlexDisk::Create_boot_sectors(Byte sectorBuffer1[], Byte sectorBuffer2[],
+                                   const char *bsFile)
 {
     // Read boot sector(s) if present from file.
     if (bsFile == nullptr)
@@ -1274,7 +1272,7 @@ void FlexFileContainer::Create_boot_sectors(Byte sectorBuffer1[],
     }
 }
 
-void FlexFileContainer::Create_sys_info_sector(s_sys_info_sector &sis,
+void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
         const std::string &name,
         struct s_formats &format)
 {
@@ -1317,8 +1315,7 @@ void FlexFileContainer::Create_sys_info_sector(s_sys_info_sector &sis,
 }
 
 // on success return true
-bool FlexFileContainer::Write_dir_sectors(std::fstream &ofs,
-                                          struct s_formats &format)
+bool FlexDisk::Write_dir_sectors(std::fstream &ofs, struct s_formats &format)
 {
     std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
@@ -1347,8 +1344,7 @@ bool FlexFileContainer::Write_dir_sectors(std::fstream &ofs,
 }
 
 // on success return true
-bool FlexFileContainer::Write_sectors(std::fstream &ofs,
-                                      struct s_formats &format)
+bool FlexDisk::Write_sectors(std::fstream &ofs, struct s_formats &format)
 {
     std::array<Byte, SECTOR_SIZE> sectorBuffer{};
     int i;
@@ -1378,7 +1374,7 @@ bool FlexFileContainer::Write_sectors(std::fstream &ofs,
     return true;
 }
 
-void FlexFileContainer::Create_format_table(int type, int trk, int sec,
+void FlexDisk::Create_format_table(int type, int trk, int sec,
         struct s_formats &format)
 {
     if (trk < 2)
@@ -1421,7 +1417,7 @@ void FlexFileContainer::Create_format_table(int type, int trk, int sec,
 //  use TYPE_DSK_CONTAINER for DSK format
 //  use TYPE_FLX_CONTAINER for FLX format
 
-void FlexFileContainer::Format_disk(
+void FlexDisk::Format_disk(
     const std::string &directory,
     const std::string &name,
     int tracks,
@@ -1533,8 +1529,8 @@ void FlexFileContainer::Format_disk(
 }
 
 // Read the number of tracks and sectors for a FLEX file container.
-bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
-                                             Word header_offset) const
+bool FlexDisk::GetFlexTracksSectors(Word &tracks, Word &sectors,
+                                    Word header_offset) const
 {
     s_sys_info_sector sis{};
 
@@ -1565,7 +1561,7 @@ bool FlexFileContainer::GetFlexTracksSectors(Word &tracks, Word &sectors,
 }
 
 // Check if the file container contains a FLEX compatible file system.
-bool FlexFileContainer::IsFlexFileFormat(int type) const
+bool FlexDisk::IsFlexFileFormat(int type) const
 {
     struct stat sbuf{};
     Word tracks = 35;
@@ -1626,8 +1622,8 @@ bool FlexFileContainer::IsFlexFileFormat(int type) const
 // parameters:
 //    last_dir_sector    sector buffer of last directory sector
 //    st_last            trk-sec of last directory sector
-st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
-                                        const st_t &st_last)
+st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
+                               const st_t &st_last)
 {
     std::stringstream stream;
     s_sys_info_sector sis{};
@@ -1716,7 +1712,7 @@ st_t FlexFileContainer::ExtendDirectory(s_dir_sector last_dir_sector,
 // 4) Sector attribute flag should be 0, an additional sector attribute byte
 //    is not supported by flexemu
 
-std::vector<Byte> FlexFileContainer::GetJvcFileHeader() const
+std::vector<Byte> FlexDisk::GetJvcFileHeader() const
 {
     std::vector<Byte> header;
     Word headerSize = file_size % SECTOR_SIZE;

@@ -46,7 +46,13 @@ class FlexDiskIteratorImp;
                             info.GetName());            \
     }
 
-class FlexFileContainer : public IFlexDiskBySector, public IFlexDiskByFile
+// class FlexDisk implements both the sector and file oriented interface
+// for FLEX disk image files (*.dsk).
+// Optionally a *.dsk file may have a JVC header.
+// In addition to that it also supports FLX disk image files (*.flx).
+//
+// Rename: FlexFileContainer => FlexDisk
+class FlexDisk : public IFlexDiskBySector, public IFlexDiskByFile
 {
     friend class FlexDiskIteratorImp; // corresponding iterator class
 
@@ -67,25 +73,25 @@ private:
     Byte attributes{};
 
 public:
-    FlexFileContainer() = delete;
-    FlexFileContainer(const FlexFileContainer &) = delete;
-    FlexFileContainer(FlexFileContainer &&src) noexcept;
-    FlexFileContainer(const std::string &p_path, std::ios::openmode mode,
-                      const FileTimeAccess &fileTimeAccess);
-    ~FlexFileContainer() override = default;
+    FlexDisk() = delete;
+    FlexDisk(const FlexDisk &) = delete;
+    FlexDisk(FlexDisk &&src) noexcept;
+    FlexDisk(const std::string &p_path, std::ios::openmode mode,
+             const FileTimeAccess &fileTimeAccess);
+    ~FlexDisk() override = default;
 
-    FlexFileContainer &operator= (const FlexFileContainer &src) = delete;
-    FlexFileContainer &operator= (FlexFileContainer &&src) noexcept;
+    FlexDisk &operator= (const FlexDisk &src) = delete;
+    FlexDisk &operator= (FlexDisk &&src) noexcept;
 
     static std::string bootSectorFile;
     static bool onTrack0OnlyDirSectors;
 
-    static FlexFileContainer *Create(const std::string &directory,
-                                     const std::string &name,
-                                     const FileTimeAccess &fileTimeAccess,
-                                     int tracks, int sectors,
-                                     int fmt = TYPE_DSK_CONTAINER,
-                                     const char *bsFile = nullptr);
+    static FlexDisk *Create(const std::string &directory,
+                            const std::string &name,
+                            const FileTimeAccess &fileTimeAccess,
+                            int tracks, int sectors,
+                            int fmt = TYPE_DSK_CONTAINER,
+                            const char *bsFile = nullptr);
 
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
@@ -165,6 +171,6 @@ protected:
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
 
-}; // class FlexFileContainer
+}; // class FlexDisk
 
 #endif // FFILECNT_INCLUDED

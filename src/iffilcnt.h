@@ -26,14 +26,14 @@
 #include "filecont.h"
 #include "filecnts.h"
 
-class FlexFileContainer;
+class FlexDisk;
 
-// Implementation of IFlexDiskIteratorImp interface for FlexFileContainer.
+// Implementation of IFlexDiskIteratorImp interface for FlexDisk.
 // Rename: FlexFlexDiskIteratorImp => FlexDiskIteratorImp.
 class FlexDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:
-    explicit FlexDiskIteratorImp(FlexFileContainer *aBase);
+    explicit FlexDiskIteratorImp(FlexDisk *aBase);
     FlexDiskIteratorImp() = delete;
     FlexDiskIteratorImp(const FlexDiskIteratorImp &src) =
         delete;
@@ -51,7 +51,7 @@ private:
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 
-    FlexFileContainer *base;
+    FlexDisk *base;
     int dirIndex;
     st_t dirTrackSector;
     s_dir_sector dirSector{};

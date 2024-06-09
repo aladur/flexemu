@@ -34,7 +34,7 @@
 
    Example:
 
-   IFlexDiskByFile *m_container = new FlexFileContainer(...);
+   IFlexDiskByFile *m_container = new FlexDisk(...);
    FlexDiskIterator it("*.*");
    std::string fileName;
    int i = 0;

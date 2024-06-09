@@ -46,7 +46,7 @@
 
 
 std::vector<std::string> GetMatchingFilenames(
-    FlexFileContainer &container,
+    FlexDisk &container,
     const std::vector<std::regex> &regexs)
 {
     FlexDiskIterator iter;
@@ -117,10 +117,10 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
 
     try
     {
-        std::unique_ptr<FlexFileContainer> container;
+        std::unique_ptr<FlexDisk> container;
         auto fileTimeAccess = FileTimeAccess::NONE;
 
-        container.reset(FlexFileContainer::Create(
+        container.reset(FlexDisk::Create(
                         getParentPath(dsk_file),
                         getFileName(dsk_file),
                         fileTimeAccess,
@@ -1104,11 +1104,11 @@ int checkTrack0Access()
     {
         if (strcmp(track0Access, "DIRECTORY") == 0)
         {
-            FlexFileContainer::onTrack0OnlyDirSectors = true;
+            FlexDisk::onTrack0OnlyDirSectors = true;
         }
         else if (strcmp(track0Access, "FULL") == 0)
         {
-            FlexFileContainer::onTrack0OnlyDirSectors = false;
+            FlexDisk::onTrack0OnlyDirSectors = false;
         }
         else
         {
