@@ -2,7 +2,7 @@
     fpmodel.cpp
 
 
-    FLEXplorer, An explorer for any FLEX file or disk container
+    FLEXplorer, An explorer for FLEX disk image files and directory disks.
     Copyright (C) 2020-2024  W. Schwotzer
 
     This program is free software; you can redistribute it and/or modify
