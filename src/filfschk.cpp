@@ -349,14 +349,14 @@ void FlexDiskCheck::InitializeLinks()
     int tracks = 0;
     int sectors = 0;
 
-    fc.GetInfo(fc_info);
+    fc.GetAttributes(diskAttributes);
 
-    if (!fc_info.IsValid())
+    if (!diskAttributes.IsValid())
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, fc.GetPath());
     }
 
-    fc_info.GetTrackSector(tracks, sectors);
+    diskAttributes.GetTrackSector(tracks, sectors);
 
     for (int track = 0; track < tracks; ++track)
     {

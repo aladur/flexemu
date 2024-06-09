@@ -116,10 +116,10 @@ bool FlexplorerMdiChild::IsWriteProtected() const
     return model->IsWriteProtected();
 }
 
-int FlexplorerMdiChild::GetContainerType() const
+int FlexplorerMdiChild::GetFlexDiskType() const
 {
     assert(model);
-    return model->GetContainerType();
+    return model->GetFlexDiskType();
 }
 
 QString FlexplorerMdiChild::GetSupportedAttributes() const
@@ -593,11 +593,11 @@ int FlexplorerMdiChild::SetSelectedAttributes(Byte setMask, Byte clearMask)
 
 void FlexplorerMdiChild::Info()
 {
-    FlexDiskAttributes info;
+    FlexDiskAttributes diskAttributes;
 
     try
     {
-        info = model->GetContainerInfo();
+        diskAttributes = model->GetFlexDiskAttributes();
     }
     catch (FlexException &ex)
     {
@@ -607,18 +607,18 @@ void FlexplorerMdiChild::Info()
 
     int tracks;
     int sectors;
-    info.GetTrackSector(tracks, sectors);
+    diskAttributes.GetTrackSector(tracks, sectors);
 
     auto title = tr("Disk image %1 #%2")
-        .arg(info.GetName().c_str())
-        .arg(info.GetNumber());
+        .arg(diskAttributes.GetName().c_str())
+        .arg(diskAttributes.GetNumber());
 
     QString str = tr("Path: ");
-    str += QString(info.GetPath().c_str()).append("\n");
+    str += QString(diskAttributes.GetPath().c_str()).append("\n");
     str += tr("Type: ");
-    str += QString(info.GetTypeString().c_str()).append("\n");
+    str += QString(diskAttributes.GetTypeString().c_str()).append("\n");
     str += tr("Date: ");
-    const auto &date = info.GetDate();
+    const auto &date = diskAttributes.GetDate();
     QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
     str += qdate.toString().append("\n");
     if (tracks != 0 && sectors != 0)
@@ -629,19 +629,19 @@ void FlexplorerMdiChild::Info()
         str += QString::number(sectors).append("\n");
     }
     str += tr("Size: ");
-    str += QString::number(info.GetTotalSize() / 1024);
+    str += QString::number(diskAttributes.GetTotalSize() / 1024);
     str += tr(" KByte").append("\n");
     str += tr("Free: ");
-    str += QString::number(info.GetFree() / 1024);
+    str += QString::number(diskAttributes.GetFree() / 1024);
     str += tr(" KByte").append("\n");
 
-    if (info.GetAttributes() & FLX_READONLY)
+    if (diskAttributes.GetAttributes() & FLX_READONLY)
     {
         str += tr("Attributes: read-only").append("\n");
     }
-    if (info.GetType() & TYPE_DSK_CONTAINER)
+    if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
     {
-        auto header = info.GetJvcFileHeader();
+        auto header = diskAttributes.GetJvcFileHeader();
 
         str += tr("JVC header: ");
         if (header.empty())

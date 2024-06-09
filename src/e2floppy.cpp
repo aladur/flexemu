@@ -291,12 +291,12 @@ bool E2floppy::umount_all_drives()
     return result;
 }
 
-std::string E2floppy::drive_info_string(Word drive_nr)
+std::string E2floppy::drive_attributes_string(Word drive_nr)
 {
-    FlexDiskAttributes info = drive_info(drive_nr);
+    auto diskAttributes = drive_attributes(drive_nr);
     std::stringstream stream;
 
-    if (!info.IsValid())
+    if (!diskAttributes.IsValid())
     {
         stream << "drive #" << drive_nr << " not ready\n";
     }
@@ -304,26 +304,28 @@ std::string E2floppy::drive_info_string(Word drive_nr)
     {
         int trk;
         int sec;
-        bool is_write_protected = info.GetIsWriteProtected();
+        bool is_write_protected = diskAttributes.GetIsWriteProtected();
+        bool is_flex_format = diskAttributes.GetIsFlexFormat();
 
-        info.GetTrackSector(trk, sec);
+        diskAttributes.GetTrackSector(trk, sec);
         stream << "drive       #" << drive_nr << '\n'
-            << "type:       " << info.GetTypeString().c_str() << '\n';
+            << "type:       " << diskAttributes.GetTypeString().c_str()
+            << '\n';
 
-        if (info.GetIsFlexFormat())
+        if (diskAttributes.GetIsFlexFormat())
         {
-            stream << "name:       " << info.GetName() << " #" <<
-                                        info.GetNumber() << '\n';
+            stream << "name:       " << diskAttributes.GetName() << " #" <<
+                                        diskAttributes.GetNumber() << '\n';
         }
-        stream << "path:       " << info.GetPath().c_str() << '\n'
+        stream << "path:       " << diskAttributes.GetPath().c_str() << '\n'
                << "tracks:     " << trk << '\n'
                << "sectors:    " << sec << '\n'
                << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
-               << "FLEX format:" << (info.GetIsFlexFormat() ? "yes" : "no")
+               << "FLEX format:" << (is_flex_format ? "yes" : "no")
                << '\n';
-        if (info.GetType() & TYPE_DSK_CONTAINER)
+        if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
         {
-            auto header = info.GetJvcFileHeader();
+            auto header = diskAttributes.GetJvcFileHeader();
 
             stream << "JVC header: ";
             if (header.empty())
@@ -347,10 +349,11 @@ std::string E2floppy::drive_info_string(Word drive_nr)
     return stream.str();
 }
 
-// get info for corresponding drive. If drive is not ready the result is empty.
-FlexDiskAttributes E2floppy::drive_info(Word drive_nr)
+// get attributes for corresponding drive. If drive is not ready the result
+// is empty.
+FlexDiskAttributes E2floppy::drive_attributes(Word drive_nr)
 {
-    FlexDiskAttributes info;
+    FlexDiskAttributes diskAttributes;
 
     if (drive_nr < MAX_DRIVES)
     {
@@ -358,12 +361,12 @@ FlexDiskAttributes E2floppy::drive_info(Word drive_nr)
 
         if (floppy[drive_nr].get() == nullptr)
         {
-            return info;
+            return diskAttributes;
         }
 
         try
         {
-            floppy[drive_nr]->GetInfo(info);
+            floppy[drive_nr]->GetAttributes(diskAttributes);
         }
         catch (FlexException &)
         {
@@ -371,7 +374,7 @@ FlexDiskAttributes E2floppy::drive_info(Word drive_nr)
         }
     }
 
-    return info;
+    return diskAttributes;
 }
 
 bool E2floppy::sync_all_drives(tMountOption option)
@@ -405,7 +408,7 @@ bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
         return false;
     }
 
-    if (floppy[drive_nr]->GetContainerType() & TYPE_DIRECTORY)
+    if (floppy[drive_nr]->GetFlexDiskType() & TYPE_DIRECTORY)
     {
         auto path = floppy[drive_nr]->GetPath();
         result = umount_drive(drive_nr);

@@ -161,7 +161,7 @@ private:
                        const struct FlexDiskCheck::s_item &item);
 
     const IFlexDiskBySector &fc;
-    FlexDiskAttributes fc_info;
+    FlexDiskAttributes diskAttributes;
     std::map<st_t, link_t> links;
     std::vector<item_t> items;
     FlexDiskCheckResultItems results;

@@ -407,7 +407,7 @@ bool FlexDisk::FileCopy(const std::string &sourceName,
     return FlexCopyManager::FileCopy(sourceName, destName, *this, destination);
 }
 
-bool FlexDisk::GetInfo(FlexDiskAttributes &info) const
+bool FlexDisk::GetAttributes(FlexDiskAttributes &diskAttributes) const
 {
     if (is_flex_format)
     {
@@ -457,32 +457,34 @@ bool FlexDisk::GetInfo(FlexDiskAttributes &info) const
             disk_name.append(".");
             disk_name.append(disk_ext);
         }
-        info.SetDate(BDate(sis.sir.day, sis.sir.month, year));
-        info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
-                     param.byte_p_sector);
-        info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
-                           param.byte_p_sector);
-        info.SetName(disk_name);
-        info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+        diskAttributes.SetDate(BDate(sis.sir.day, sis.sir.month, year));
+        diskAttributes.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+                               param.byte_p_sector);
+        diskAttributes.SetTotalSize((sis.sir.last.sec *
+                                    (sis.sir.last.trk + 1)) *
+                                    param.byte_p_sector);
+        diskAttributes.SetName(disk_name);
+        diskAttributes.SetNumber(
+                getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
 
-    info.SetTrackSector(
+    diskAttributes.SetTrackSector(
             param.max_track ? param.max_track + 1 : 0,
             param.max_sector);
-    info.SetIsFlexFormat(is_flex_format);
-    info.SetPath(path);
-    info.SetType(param.type);
-    info.SetAttributes(attributes);
-    info.SetIsWriteProtected(IsWriteProtected());
+    diskAttributes.SetIsFlexFormat(is_flex_format);
+    diskAttributes.SetPath(path);
+    diskAttributes.SetType(param.type);
+    diskAttributes.SetAttributes(attributes);
+    diskAttributes.SetIsWriteProtected(IsWriteProtected());
     if (param.type & TYPE_DSK_CONTAINER)
     {
-        info.SetJvcFileHeader(GetJvcFileHeader());
+        diskAttributes.SetJvcFileHeader(GetJvcFileHeader());
     }
 
     return true;
 }
 
-int FlexDisk::GetContainerType() const
+int FlexDisk::GetFlexDiskType() const
 {
     return param.type;
 }

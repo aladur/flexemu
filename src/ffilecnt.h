@@ -36,14 +36,14 @@ class BDate;
 class FlexCopyManager;
 class FlexDiskIteratorImp;
 
-#define CHECK_CONTAINER_WRITEPROTECTED              \
-    if (IsWriteProtected())                 \
-    {                           \
-        FlexDiskAttributes info;             \
+#define CHECK_CONTAINER_WRITEPROTECTED     \
+    if (IsWriteProtected())                \
+    {                                      \
+        FlexDiskAttributes diskAttributes; \
         \
-        GetInfo(info);                  \
+        GetAttributes(diskAttributes);                  \
         throw FlexException(FERR_CONTAINER_IS_READONLY, \
-                            info.GetName());            \
+                            diskAttributes.GetName());  \
     }
 
 // class FlexDisk implements both the sector and file oriented interface
@@ -95,8 +95,8 @@ public:
 
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
-    bool GetInfo(FlexDiskAttributes &info) const override;
-    int GetContainerType() const override;
+    bool GetAttributes(FlexDiskAttributes &diskAttributes) const override;
+    int GetFlexDiskType() const override;
     std::string GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used in flexemu).

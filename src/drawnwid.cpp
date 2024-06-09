@@ -60,11 +60,11 @@ void DrawnWidget::SetPixmap(const QPixmap &p_pixmap)
     updateGeometry();
 }
 
-void DrawnWidget::SetDriveInfo(Word p_driveNumber,
-                               const FlexDiskAttributes &p_driveInfo)
+void DrawnWidget::SetDriveAttributes(Word p_driveNumber,
+                                     const FlexDiskAttributes &p_diskAttributes)
 {
     driveNumber = p_driveNumber;
-    driveInfo = p_driveInfo;
+    driveAttributes = p_diskAttributes;
 }
 
 void DrawnWidget::paintEvent(QPaintEvent *event)
@@ -74,18 +74,18 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.drawPixmap(0, 0, pixmap);
 
-    if (driveInfo.GetIsFlexFormat() && pixmap.size() == QSize(256, 256))
+    if (driveAttributes.GetIsFlexFormat() && pixmap.size() == QSize(256, 256))
     {
         int tracks;
         int sectors;
         int x = 16;
         int y = 27;
 
-        driveInfo.GetTrackSector(tracks, sectors);
+        driveAttributes.GetTrackSector(tracks, sectors);
         QString trkSec = tr("%1/%2 trk/sec").arg(tracks).arg(sectors);
-        auto name = QString(driveInfo.GetName().c_str());
-        QString numberString = tr("#%1").arg(driveInfo.GetNumber());
-        auto date = driveInfo.GetDate();
+        auto name = QString(driveAttributes.GetName().c_str());
+        QString numberString = tr("#%1").arg(driveAttributes.GetNumber());
+        auto date = driveAttributes.GetDate();
         auto qdate = QDate(date.GetYear(), date.GetMonth(), date.GetDay());
         auto locale = QLocale::system();
         auto dateString = locale.toString(qdate, QLocale::ShortFormat);
@@ -94,7 +94,7 @@ void DrawnWidget::paintEvent(QPaintEvent *event)
         painter.drawText(x, y+30, dateString);
         painter.drawText(x, y+45, trkSec);
 
-        if (!driveInfo.GetIsWriteProtected())
+        if (!driveAttributes.GetIsWriteProtected())
         {
             // Paint the write enable notch.
             auto backgroundColor = palette().color(QPalette::Window);

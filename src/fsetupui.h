@@ -77,7 +77,7 @@ private slots:
 private:
     enum class FileType : uint8_t
     {
-        DiskContainerFile,
+        FlexDiskFile,
         CassetteFile,
         HexBinaryFile,
     };

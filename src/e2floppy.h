@@ -129,8 +129,8 @@ public:
     virtual bool sync_drive(Word drive_nr,
                             tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_drive(Word drive_nr);
-    virtual FlexDiskAttributes drive_info(Word drive_nr);
-    virtual std::string drive_info_string(Word drive_nr);
+    virtual FlexDiskAttributes drive_attributes(Word drive_nr);
+    virtual std::string drive_attributes_string(Word drive_nr);
     virtual void select_drive(Byte new_selected);
 
 private:

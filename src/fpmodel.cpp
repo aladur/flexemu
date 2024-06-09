@@ -236,18 +236,18 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
     emit dataChanged(index(0, column), index(rowCount(), column), roles);
 }
 
-int FlexplorerTableModel::GetContainerType() const
+int FlexplorerTableModel::GetFlexDiskType() const
 {
-    return container->GetContainerType();
+    return container->GetFlexDiskType();
 }
 
-FlexDiskAttributes FlexplorerTableModel::GetContainerInfo() const
+FlexDiskAttributes FlexplorerTableModel::GetFlexDiskAttributes() const
 {
-    FlexDiskAttributes info;
+    FlexDiskAttributes diskAttributes;
 
-    container->GetInfo(info);
+    container->GetAttributes(diskAttributes);
 
-    return info;
+    return diskAttributes;
 }
 
 QStringList FlexplorerTableModel::GetFilenames(

@@ -236,7 +236,8 @@ bool FlexDirectoryDiskByFile::FileCopy(
                                      destination);
 }
 
-bool FlexDirectoryDiskByFile::GetInfo(FlexDiskAttributes &info) const
+bool FlexDirectoryDiskByFile::GetAttributes(
+        FlexDiskAttributes &diskAttributes) const
 {
     std::string rootPath;
     struct stat sbuf{};
@@ -261,10 +262,10 @@ bool FlexDirectoryDiskByFile::GetInfo(FlexDiskAttributes &info) const
         throw FlexException(FERR_READING_DISKSPACE, directory.c_str());
     }
 
-    info.SetFree(static_cast<uint64_t>(numberOfFreeClusters) *
-                 sectorsPerCluster * bytesPerSector);
-    info.SetTotalSize(static_cast<uint64_t>(totalNumberOfClusters) *
-                      sectorsPerCluster * bytesPerSector);
+    diskAttributes.SetFree(static_cast<uint64_t>(numberOfFreeClusters) *
+                           sectorsPerCluster * bytesPerSector);
+    diskAttributes.SetTotalSize(static_cast<uint64_t>(totalNumberOfClusters) *
+                                sectorsPerCluster * bytesPerSector);
 #endif
 #ifdef UNIX
     struct statvfs fsbuf{};
@@ -274,42 +275,44 @@ bool FlexDirectoryDiskByFile::GetInfo(FlexDiskAttributes &info) const
         throw FlexException(FERR_READING_DISKSPACE, directory);
     }
 
-    info.SetFree(fsbuf.f_bsize * fsbuf.f_bavail);
-    info.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks);
+    diskAttributes.SetFree(fsbuf.f_bsize * fsbuf.f_bavail);
+    diskAttributes.SetTotalSize(fsbuf.f_bsize * fsbuf.f_blocks);
 #endif
 
     if (stat(directory.c_str(), &sbuf) == 0)
     {
         struct tm *timeStruct = localtime(&sbuf.st_mtime);
-        info.SetDate(BDate(timeStruct->tm_mday, timeStruct->tm_mon + 1,
+        diskAttributes.SetDate(BDate(timeStruct->tm_mday,
+                     timeStruct->tm_mon + 1,
                      timeStruct->tm_year + 1900));
     }
     else
     {
-        info.SetDate(BDate());
+        diskAttributes.SetDate(BDate());
     }
 
-    info.SetTrackSector(0, 0);
+    diskAttributes.SetTrackSector(0, 0);
 
     const auto *p = strrchr(directory.c_str(), PATHSEPARATOR);
     if (p != nullptr)
     {
-        info.SetName(p + 1);
+        diskAttributes.SetName(p + 1);
     }
     else
     {
-        info.SetName(directory);
+        diskAttributes.SetName(directory);
     }
-    info.SetNumber(disk_number);
+    diskAttributes.SetNumber(disk_number);
 
-    info.SetPath(directory);
+    diskAttributes.SetPath(directory);
     //info.SetType(param.type);
-    info.SetType(TYPE_DIRECTORY);
-    info.SetAttributes(attributes);
+    diskAttributes.SetType(TYPE_DIRECTORY);
+    diskAttributes.SetAttributes(attributes);
+
     return true;
 }
 
-int FlexDirectoryDiskByFile::GetContainerType() const
+int FlexDirectoryDiskByFile::GetFlexDiskType() const
 {
     return TYPE_DIRECTORY;
 }

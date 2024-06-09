@@ -1252,29 +1252,29 @@ void QtGui::OnDiskStatus(Word driveNumber)
         QString text;
         int tracks;
         int sectors;
-        auto info = fdc->drive_info(driveNumber);
+        auto diskAttributes = fdc->drive_attributes(driveNumber);
         QStandardItemModel model;
         auto *dialog = new QDialog(this);
         Ui::Properties ui;
         int row = 0;
 
         ui.setupUi(dialog);
-        ui.SetDriveInfo(driveNumber, info);
+        ui.SetDriveAttributes(driveNumber, diskAttributes);
 
         model.setColumnCount(2);
-        if (info.IsValid())
+        if (diskAttributes.IsValid())
         {
-            auto rowCount = info.GetIsFlexFormat() ? 9 : 6;
-            if (info.GetType() & TYPE_DSK_CONTAINER)
+            auto rowCount = diskAttributes.GetIsFlexFormat() ? 9 : 6;
+            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
             {
                 ++rowCount;
             }
             model.setRowCount(rowCount);
-            info.GetTrackSector(tracks, sectors);
+            diskAttributes.GetTrackSector(tracks, sectors);
             model.setItem(row++, 0, new QStandardItem(tr("Drive")));
             model.setItem(row++, 0, new QStandardItem(tr("Type")));
             model.setItem(row++, 0, new QStandardItem(tr("Path")));
-            if (info.GetIsFlexFormat())
+            if (diskAttributes.GetIsFlexFormat())
             {
                 model.setItem(row++, 0, new QStandardItem(tr("Name")));
                 model.setItem(row++, 0, new QStandardItem(tr("Number")));
@@ -1284,23 +1284,24 @@ void QtGui::OnDiskStatus(Word driveNumber)
             model.setItem(row++, 0, new QStandardItem(tr("Sectors")));
             model.setItem(row++, 0, new QStandardItem(tr("Write-protect")));
             model.setItem(row++, 0, new QStandardItem(tr("FLEX format")));
-            if (info.GetType() & TYPE_DSK_CONTAINER)
+            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
             {
                 model.setItem(row++, 0, new QStandardItem(tr("JVC header")));
             }
             row = 0;
             text = QString("#%1").arg(driveNumber);
             model.setItem(row++, 1, new QStandardItem(text));
-            text = info.GetTypeString().c_str();
+            text = diskAttributes.GetTypeString().c_str();
             model.setItem(row++, 1, new QStandardItem(text));
-            model.setItem(row++, 1, new QStandardItem(info.GetPath().c_str()));
-            if (info.GetIsFlexFormat())
+            model.setItem(row++, 1,
+                    new QStandardItem(diskAttributes.GetPath().c_str()));
+            if (diskAttributes.GetIsFlexFormat())
             {
-                text = info.GetName().c_str();
+                text = diskAttributes.GetName().c_str();
                 model.setItem(row++, 1, new QStandardItem(text));
-                text = QString::number(info.GetNumber());
+                text = QString::number(diskAttributes.GetNumber());
                 model.setItem(row++, 1, new QStandardItem(text));
-                const auto& date = info.GetDate();
+                const auto& date = diskAttributes.GetDate();
                 auto qdate = QDate(
                     date.GetYear(), date.GetMonth(), date.GetDay());
                 text = QLocale::system().toString(qdate, QLocale::ShortFormat);
@@ -1308,13 +1309,13 @@ void QtGui::OnDiskStatus(Word driveNumber)
             }
             model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
             model.setItem(row++, 1, new QStandardItem(QString::number(sectors)));
-            text = info.GetIsWriteProtected() ? tr("yes") : tr("no");
+            text = diskAttributes.GetIsWriteProtected() ? tr("yes") : tr("no");
             model.setItem(row++, 1, new QStandardItem(text));
-            text = info.GetIsFlexFormat() ? tr("yes") : tr("no");
+            text = diskAttributes.GetIsFlexFormat() ? tr("yes") : tr("no");
             model.setItem(row++, 1, new QStandardItem(text));
-            if (info.GetType() & TYPE_DSK_CONTAINER)
+            if (diskAttributes.GetType() & TYPE_DSK_CONTAINER)
             {
-                auto header = info.GetJvcFileHeader();
+                auto header = diskAttributes.GetJvcFileHeader();
 
                 if (header.empty())
                 {

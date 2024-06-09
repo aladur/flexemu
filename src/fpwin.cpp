@@ -641,7 +641,7 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
 
     auto *subWindow = mdiArea->addSubWindow(child);
     QString iconResource =
-        (child->GetContainerType() & TYPE_DIRECTORY) ?
+        (child->GetFlexDiskType() & TYPE_DIRECTORY) ?
             ":resource/dir.png" :
             ":resource/flexplorer.png";
     subWindow->setWindowIcon(QIcon(iconResource));

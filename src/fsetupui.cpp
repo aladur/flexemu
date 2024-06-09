@@ -53,13 +53,13 @@ void FlexemuOptionsUi::ConnectSignalsWithSlots()
             [&](){ OnSelectFile(*e_monitorPgm, FileType::HexBinaryFile); });
 
     connect(b_drive0, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive0, FileType::DiskContainerFile); });
+            [&](){ OnSelectFile(*e_drive0, FileType::FlexDiskFile); });
     connect(b_drive1, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive1, FileType::DiskContainerFile); });
+            [&](){ OnSelectFile(*e_drive1, FileType::FlexDiskFile); });
     connect(b_drive2, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive2, FileType::DiskContainerFile); });
+            [&](){ OnSelectFile(*e_drive2, FileType::FlexDiskFile); });
     connect(b_drive3, &QAbstractButton::clicked,
-            [&](){ OnSelectFile(*e_drive3, FileType::DiskContainerFile); });
+            [&](){ OnSelectFile(*e_drive3, FileType::FlexDiskFile); });
 
     connect(b_mdcrDrive0, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_mdcrDrive0, FileType::CassetteFile); });
@@ -852,7 +852,7 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
 
     switch (type)
     {
-        case FileType::DiskContainerFile:
+        case FileType::FlexDiskFile:
             filter = "*.dsk";
             path = QFileDialog::getOpenFileName(
                 dialog, tr("Select a Disk image file"), path,

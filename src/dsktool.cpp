@@ -304,9 +304,9 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
     FlexDiskIterator iter;
-    FlexDiskAttributes info;
+    FlexDiskAttributes diskAttributes;
     unsigned int number = 0;
-    bool hasInfo = false;
+    bool hasAttributes = false;
     int sumSectors = 0;
     int largest = 0;
     const auto format = BDate::Format::D2MSU3Y4;
@@ -316,19 +316,19 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
-    if (src.GetInfo(info))
+    if (src.GetAttributes(diskAttributes))
     {
-        hasInfo = true;
+        hasAttributes = true;
         std::cout <<
             "FILE: " << getFileName(dsk_file) << "  " <<
-            "DISK: " << info.GetName() <<
-            " #" << info.GetNumber() <<
-            "  CREATED: " << info.GetDate().GetDateString(format) <<
+            "DISK: " << diskAttributes.GetName() <<
+            " #" << diskAttributes.GetNumber() <<
+            "  CREATED: " << diskAttributes.GetDate().GetDateString(format) <<
             "\n";
     }
     else
     {
-        std::cerr << "Error reading disk image info from " <<
+        std::cerr << "Error reading disk image attributes from " <<
                      getFileName(dsk_file) << "\n";
     }
 
@@ -379,13 +379,13 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
                      (dir_entry.IsRandom() ? "R" : ""));
     }
 
-    if (hasInfo)
+    if (hasAttributes)
     {
         std::cout << "\n    " <<
                      "FILES=" << number <<
                      ", SECTORS=" << sumSectors <<
                      ", LARGEST=" << largest <<
-                     ", FREE=" << (info.GetFree() / SECTOR_SIZE) <<
+                     ", FREE=" << (diskAttributes.GetFree() / SECTOR_SIZE) <<
                      "\n\n";
     }
 
@@ -421,7 +421,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
     FlexDiskIterator iter;
-    FlexDiskAttributes info;
+    FlexDiskAttributes diskAttributes;
     const auto format = BDate::Format::D2MSU3Y4;
 
     if (!src.IsFlexFormat())
@@ -429,13 +429,13 @@ int SummaryOfDskFile(const std::string &dsk_file,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
-    if (src.GetInfo(info))
+    if (src.GetAttributes(diskAttributes))
     {
         uint64_t file_count = 0;
         int tracks;
         int sectors;
 
-        info.GetTrackSector(tracks, sectors);
+        diskAttributes.GetTrackSector(tracks, sectors);
 
         for (iter = src.begin(); iter != src.end(); ++iter)
         {
@@ -443,7 +443,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
         }
         sum_files += file_count;
 
-        auto name = info.GetName();
+        auto name = diskAttributes.GetName();
         if (name.empty())
         {
             name = "\"\"";
@@ -453,15 +453,17 @@ int SummaryOfDskFile(const std::string &dsk_file,
 
         std::cout << fmt::format(
             "{} {:<12} {:<5} {:<2}-{:<2} {:<5} {:<5} {:<5} {}\n",
-            info.GetDate().GetDateString(format), name, info.GetNumber(),
-            tracks, sectors, file_count, info.GetTotalSize() / SECTOR_SIZE,
-            info.GetFree() / SECTOR_SIZE, file);
-        sum_size += (info.GetTotalSize() / SECTOR_SIZE);
-        sum_free += (info.GetFree() / SECTOR_SIZE);
+            diskAttributes.GetDate().GetDateString(format), name,
+            diskAttributes.GetNumber(),
+            tracks, sectors, file_count,
+            diskAttributes.GetTotalSize() / SECTOR_SIZE,
+            diskAttributes.GetFree() / SECTOR_SIZE, file);
+        sum_size += (diskAttributes.GetTotalSize() / SECTOR_SIZE);
+        sum_free += (diskAttributes.GetFree() / SECTOR_SIZE);
     }
     else
     {
-        std::cerr << "Error reading disk image info for " <<
+        std::cerr << "Error reading disk image attributes for " <<
                      getFileName(dsk_file) << "\n";
     }
 

@@ -211,7 +211,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 {
                     for (Word drive_nr = 0; drive_nr <= 3; drive_nr++)
                     {
-                        answer_stream << fdc.drive_info_string(drive_nr);
+                        answer_stream << fdc.drive_attributes_string(drive_nr);
                     }
 
                     answer = answer_stream.str();
@@ -271,7 +271,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 if (stricmp(arg1, "info") == 0)
                 {
                     answer =
-                        fdc.drive_info_string(static_cast<Word>(number));
+                        fdc.drive_attributes_string(static_cast<Word>(number));
                     return;
                 }
 

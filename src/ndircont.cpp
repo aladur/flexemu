@@ -177,25 +177,27 @@ std::string FlexDirectoryDiskBySector::GetPath() const
     return directory;
 }
 
-bool FlexDirectoryDiskBySector::GetInfo(FlexDiskAttributes &info) const
+bool FlexDirectoryDiskBySector::GetAttributes(
+        FlexDiskAttributes &diskAttributes) const
 {
 
     const auto &sis = flex_sys_info[0];
     std::string disk_name(getstr<>(sis.sir.disk_name));
 
-    info.SetDate(BDate(sis.sir.day, sis.sir.month, sis.sir.year));
-    info.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    info.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
-                 param.byte_p_sector);
-    info.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
-                       param.byte_p_sector);
-    info.SetName(disk_name);
-    info.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
-    info.SetPath(directory);
-    info.SetType(param.type);
-    info.SetAttributes(attributes);
-    info.SetIsWriteProtected(IsWriteProtected());
-    info.SetIsFlexFormat(true);
+    diskAttributes.SetDate(BDate(sis.sir.day, sis.sir.month, sis.sir.year));
+    diskAttributes.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
+    diskAttributes.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+                           param.byte_p_sector);
+    diskAttributes.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
+                                param.byte_p_sector);
+    diskAttributes.SetName(disk_name);
+    diskAttributes.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+    diskAttributes.SetPath(directory);
+    diskAttributes.SetType(param.type);
+    diskAttributes.SetAttributes(attributes);
+    diskAttributes.SetIsWriteProtected(IsWriteProtected());
+    diskAttributes.SetIsFlexFormat(true);
+
     return true;
 }
 
@@ -234,7 +236,7 @@ bool FlexDirectoryDiskBySector::IsFlexFormat() const
     return true;
 }
 
-int FlexDirectoryDiskBySector::GetContainerType() const
+int FlexDirectoryDiskBySector::GetFlexDiskType() const
 {
     return param.type;
 }

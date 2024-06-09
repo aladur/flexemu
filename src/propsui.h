@@ -95,11 +95,12 @@ public:
         w_drawn->SetPixmap(pixmap);
     }
 
-    void SetDriveInfo(Word driveNumber, const FlexDiskAttributes &info) const
+    void SetDriveAttributes(Word driveNumber,
+                            const FlexDiskAttributes &diskAttributes) const
     {
         assert(w_drawn != nullptr);
 
-        w_drawn->SetDriveInfo(driveNumber, info);
+        w_drawn->SetDriveAttributes(driveNumber, diskAttributes);
     }
 
     void SetModel(const QStandardItemModel &model,

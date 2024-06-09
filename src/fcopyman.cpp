@@ -45,24 +45,25 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
 
     if (dst.IsWriteProtected())
     {
-        FlexDiskAttributes info;
+        FlexDiskAttributes diskAttributes;
 
-        dst.GetInfo(info);
-        throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetPath());
+        dst.GetAttributes(diskAttributes);
+        throw FlexException(FERR_CONTAINER_IS_READONLY,
+                            diskAttributes.GetPath());
     }
 
     auto fileBuffer = src.ReadToBuffer(sourcName);
 
-    if ((src.GetContainerType() & TYPE_CONTAINER) &&
-        (dst.GetContainerType() & TYPE_DIRECTORY) &&
+    if ((src.GetFlexDiskType() & TYPE_CONTAINER) &&
+        (dst.GetFlexDiskType() & TYPE_DIRECTORY) &&
         fileBuffer.IsFlexTextFile() && autoTextConversion)
     {
         fileBuffer.ConvertToTextFile();
         isTextFile = true;
     }
 
-    if ((src.GetContainerType() & TYPE_DIRECTORY) &&
-        (dst.GetContainerType() & TYPE_CONTAINER) &&
+    if ((src.GetFlexDiskType() & TYPE_DIRECTORY) &&
+        (dst.GetFlexDiskType() & TYPE_CONTAINER) &&
         fileBuffer.IsTextFile() && autoTextConversion)
     {
         fileBuffer.ConvertToFlexTextFile();
@@ -71,10 +72,11 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
 
     if (!dst.WriteFromBuffer(fileBuffer, destName.c_str()))
     {
-        FlexDiskAttributes info;
+        FlexDiskAttributes diskAttributes;
 
-        dst.GetInfo(info);
-        throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), destName);
+        dst.GetAttributes(diskAttributes);
+        throw FlexException(FERR_DISK_FULL_WRITING, diskAttributes.GetPath(),
+                            destName);
     }
 
     return isTextFile;
