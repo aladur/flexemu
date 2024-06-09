@@ -30,7 +30,7 @@
 
 class FlexCopyManager;
 class FlexDirEntry;
-class FlexContainerInfo;
+class FlexDiskAttributes;
 class FlexFileBuffer;
 
 //typedef int FileHdl;

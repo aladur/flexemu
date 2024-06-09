@@ -133,7 +133,7 @@ public:
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
-    bool GetInfo(FlexContainerInfo &info) const override;
+    bool GetInfo(FlexDiskAttributes &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
 

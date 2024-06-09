@@ -177,7 +177,7 @@ std::string FlexDirectoryDiskBySector::GetPath() const
     return directory;
 }
 
-bool FlexDirectoryDiskBySector::GetInfo(FlexContainerInfo &info) const
+bool FlexDirectoryDiskBySector::GetInfo(FlexDiskAttributes &info) const
 {
 
     const auto &sis = flex_sys_info[0];

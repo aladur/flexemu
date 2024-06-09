@@ -29,8 +29,11 @@
 #include <vector>
 #include "bdate.h"
 
-
-class FlexContainerInfo
+// class FlexDiskAttributes is a data class to set and get a number of
+// attributes of a FLEX disk image.
+//
+// Rename: FlexContainerInfo => FlexDiskAttributes.
+class FlexDiskAttributes
 {
 
 private:
@@ -51,8 +54,8 @@ private:
     std::vector<Byte> jvc_header; // JVC header Bytes, size==0 if not present.
 
 public:
-    FlexContainerInfo() = default;
-    virtual ~FlexContainerInfo() = default;
+    FlexDiskAttributes() = default;
+    virtual ~FlexDiskAttributes() = default;
 
     void SetName(const std::string &n)
     {
@@ -174,7 +177,7 @@ public:
     {
         return is_valid;
     };
-}; // class FlexContainerInfo
+};
 
 #endif // FCINFO_INCLUDED
 

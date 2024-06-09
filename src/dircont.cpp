@@ -236,7 +236,7 @@ bool FlexDirectoryDiskByFile::FileCopy(
                                      destination);
 }
 
-bool FlexDirectoryDiskByFile::GetInfo(FlexContainerInfo &info) const
+bool FlexDirectoryDiskByFile::GetInfo(FlexDiskAttributes &info) const
 {
     std::string rootPath;
     struct stat sbuf{};

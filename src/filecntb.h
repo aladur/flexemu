@@ -47,7 +47,7 @@ const int TYPE_JVC_HEADER =
 
 const int SECTOR_SIZE = 256;
 
-class FlexContainerInfo;
+class FlexDiskAttributes;
 
 // Magic number to mark a file as random access file. This byte is stored
 // in s_dir_entry in field sector_map.
@@ -73,7 +73,7 @@ class IFlexDiskBase
 {
 public:
     virtual bool IsWriteProtected() const = 0;
-    virtual bool GetInfo(FlexContainerInfo &info) const = 0;
+    virtual bool GetInfo(FlexDiskAttributes &info) const = 0;
     virtual int GetContainerType() const = 0;
     virtual std::string GetPath() const = 0;
 

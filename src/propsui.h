@@ -95,7 +95,7 @@ public:
         w_drawn->SetPixmap(pixmap);
     }
 
-    void SetDriveInfo(Word driveNumber, const FlexContainerInfo &info) const
+    void SetDriveInfo(Word driveNumber, const FlexDiskAttributes &info) const
     {
         assert(w_drawn != nullptr);
 

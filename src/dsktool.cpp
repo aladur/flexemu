@@ -304,7 +304,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
     FlexDiskIterator iter;
-    FlexContainerInfo info;
+    FlexDiskAttributes info;
     unsigned int number = 0;
     bool hasInfo = false;
     int sumSectors = 0;
@@ -421,7 +421,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
     FlexDiskIterator iter;
-    FlexContainerInfo info;
+    FlexDiskAttributes info;
     const auto format = BDate::Format::D2MSU3Y4;
 
     if (!src.IsFlexFormat())

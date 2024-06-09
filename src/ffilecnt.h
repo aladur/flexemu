@@ -31,7 +31,7 @@
 #include <vector>
 #include <fstream>
 
-class FlexContainerInfo;
+class FlexDiskAttributes;
 class BDate;
 class FlexCopyManager;
 class FlexDiskIteratorImp;
@@ -39,7 +39,7 @@ class FlexDiskIteratorImp;
 #define CHECK_CONTAINER_WRITEPROTECTED              \
     if (IsWriteProtected())                 \
     {                           \
-        FlexContainerInfo info;             \
+        FlexDiskAttributes info;             \
         \
         GetInfo(info);                  \
         throw FlexException(FERR_CONTAINER_IS_READONLY, \
@@ -95,7 +95,7 @@ public:
 
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
-    bool GetInfo(FlexContainerInfo &info) const override;
+    bool GetInfo(FlexDiskAttributes &info) const override;
     int GetContainerType() const override;
     std::string GetPath() const override;
 

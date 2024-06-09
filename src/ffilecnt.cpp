@@ -407,7 +407,7 @@ bool FlexDisk::FileCopy(const std::string &sourceName,
     return FlexCopyManager::FileCopy(sourceName, destName, *this, destination);
 }
 
-bool FlexDisk::GetInfo(FlexContainerInfo &info) const
+bool FlexDisk::GetInfo(FlexDiskAttributes &info) const
 {
     if (is_flex_format)
     {

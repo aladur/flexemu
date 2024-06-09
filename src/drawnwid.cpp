@@ -61,7 +61,7 @@ void DrawnWidget::SetPixmap(const QPixmap &p_pixmap)
 }
 
 void DrawnWidget::SetDriveInfo(Word p_driveNumber,
-                               const FlexContainerInfo &p_driveInfo)
+                               const FlexDiskAttributes &p_driveInfo)
 {
     driveNumber = p_driveNumber;
     driveInfo = p_driveInfo;

@@ -56,7 +56,7 @@ class TerminalIO;
 class Pia1;
 class E2floppy;
 class E2Screen;
-class FlexContainerInfo;
+class FlexDiskAttributes;
 class FlexemuOptionsDifference;
 class PrintOutputWindow;
 class QAction;
@@ -202,7 +202,7 @@ private:
     void SetCpuDialogMonospaceFont(int pointSize);
     void ConnectScreenSizeComboBoxSignalSlots() const;
     static QString GetScreenSizeStatusTip(int index);
-    static QString AsString(Word driveNumber, const FlexContainerInfo &info);
+    static QString AsString(Word driveNumber, const FlexDiskAttributes &info);
     static QIcon GetPreferencesIcon(bool isRestartNeeded);
     void SetPreferencesStatusText(bool isRestartNeeded) const;
     void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;

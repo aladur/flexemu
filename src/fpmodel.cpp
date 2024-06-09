@@ -241,9 +241,9 @@ int FlexplorerTableModel::GetContainerType() const
     return container->GetContainerType();
 }
 
-FlexContainerInfo FlexplorerTableModel::GetContainerInfo() const
+FlexDiskAttributes FlexplorerTableModel::GetContainerInfo() const
 {
-    FlexContainerInfo info;
+    FlexDiskAttributes info;
 
     container->GetInfo(info);
 

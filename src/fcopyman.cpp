@@ -45,7 +45,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
 
     if (dst.IsWriteProtected())
     {
-        FlexContainerInfo info;
+        FlexDiskAttributes info;
 
         dst.GetInfo(info);
         throw FlexException(FERR_CONTAINER_IS_READONLY, info.GetPath());
@@ -71,7 +71,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
 
     if (!dst.WriteFromBuffer(fileBuffer, destName.c_str()))
     {
-        FlexContainerInfo info;
+        FlexDiskAttributes info;
 
         dst.GetInfo(info);
         throw FlexException(FERR_DISK_FULL_WRITING, info.GetPath(), destName);

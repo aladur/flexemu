@@ -27,7 +27,7 @@
 #include "filecntb.h"   // needed for containertypes
 
 
-std::string FlexContainerInfo::GetTypeString() const
+std::string FlexDiskAttributes::GetTypeString() const
 {
     std::string str;
 

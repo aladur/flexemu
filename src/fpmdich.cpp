@@ -593,7 +593,7 @@ int FlexplorerMdiChild::SetSelectedAttributes(Byte setMask, Byte clearMask)
 
 void FlexplorerMdiChild::Info()
 {
-    FlexContainerInfo info;
+    FlexDiskAttributes info;
 
     try
     {

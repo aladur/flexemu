@@ -46,7 +46,7 @@ public:
     ~DrawnWidget() override = default;
 
     void SetPixmap(const QPixmap &p_pixmap);
-    void SetDriveInfo(Word number, const FlexContainerInfo &info);
+    void SetDriveInfo(Word number, const FlexDiskAttributes &info);
 
     // QWidget Overrides
     QSize minimumSizeHint() const override;
@@ -59,7 +59,7 @@ private:
     QPixmap pixmap;
     QSize preferredSize;
     Word driveNumber;
-    FlexContainerInfo driveInfo;
+    FlexDiskAttributes driveInfo;
 };
 #endif
 

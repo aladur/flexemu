@@ -293,7 +293,7 @@ bool E2floppy::umount_all_drives()
 
 std::string E2floppy::drive_info_string(Word drive_nr)
 {
-    FlexContainerInfo info = drive_info(drive_nr);
+    FlexDiskAttributes info = drive_info(drive_nr);
     std::stringstream stream;
 
     if (!info.IsValid())
@@ -348,9 +348,9 @@ std::string E2floppy::drive_info_string(Word drive_nr)
 }
 
 // get info for corresponding drive. If drive is not ready the result is empty.
-FlexContainerInfo E2floppy::drive_info(Word drive_nr)
+FlexDiskAttributes E2floppy::drive_info(Word drive_nr)
 {
-    FlexContainerInfo info;
+    FlexDiskAttributes info;
 
     if (drive_nr < MAX_DRIVES)
     {
