@@ -86,7 +86,7 @@ FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
     : QAbstractTableModel(parent)
     , options(p_options)
 {
-    OpenContainer(p_path, options.ft_access);
+    OpenFlexDisk(p_path, options.ft_access);
     // For each column set a string with aproximate maximum size.
     // Date column width depends on options. See GetColumnMaxStrings()
     // for details.
@@ -956,7 +956,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
     return textString;
 }
 
-void FlexplorerTableModel::OpenContainer(const char *p_path,
+void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
                                          const FileTimeAccess &fileTimeAccess)
 {
     struct stat sbuf{};

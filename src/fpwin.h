@@ -73,8 +73,8 @@ signals:
     void FileSizeTypeHasChanged();
 
 private slots:
-    void NewContainer();
-    void OpenContainer();
+    void NewFlexDisk();
+    void OpenFlexDisk();
     void OpenDirectory();
     void OpenRecentDisk();
     void OpenRecentDirectory();
@@ -114,7 +114,7 @@ private:
     void CreateActions();
     void CreateFileActions();
     void CreateEditActions();
-    void CreateContainerActions();
+    void CreateFlexDiskActions();
     void CreateExtrasActions();
     void CreateWindowsActions();
     void CreateHelpActions();
@@ -138,7 +138,7 @@ private:
     void DeleteRecentDirectoryActions();
     void UpdateForRecentDirectory(const QString &path);
     void RestoreRecentDirectories();
-    bool OpenContainerForPath(QString path, bool isLast = true);
+    bool OpenFlexDiskForPath(QString path, bool isLast = true);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -160,8 +160,8 @@ protected:
     QToolBar *fileToolBar{};
     QToolBar *editToolBar{};
     QToolBar *containerToolBar{};
-    QAction *newContainerAction{};
-    QAction *openContainerAction{};
+    QAction *newFlexDiskAction{};
+    QAction *openFlexDiskAction{};
     QAction *openDirectoryAction{};
     QAction *injectAction{};
     QAction *extractAction{};

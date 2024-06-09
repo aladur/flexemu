@@ -129,7 +129,7 @@ private:
     using RowType = std::array<QVariant, COLUMNS>;
     using IdsType = QVector<int>;
 
-    void OpenContainer(const char *path, const FileTimeAccess &fileTimeAccess);
+    void OpenFlexDisk(const char *path, const FileTimeAccess &fileTimeAccess);
     QModelIndex SetRow(const FlexDirEntry &dirEntry, int row, int role);
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);

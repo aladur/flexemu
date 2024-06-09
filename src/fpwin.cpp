@@ -97,7 +97,7 @@ FLEXplorer::~FLEXplorer()
     DeleteRecentDiskActions();
 }
 
-void FLEXplorer::NewContainer()
+void FLEXplorer::NewFlexDisk()
 {
     QDialog dialog;
     FlexplorerNewUi ui;
@@ -136,7 +136,7 @@ void FLEXplorer::NewContainer()
                                   bsFile);
             delete container;
 
-            OpenContainerForPath(ui.GetPath());
+            OpenFlexDiskForPath(ui.GetPath());
         }
         catch (FlexException &ex)
         {
@@ -145,7 +145,7 @@ void FLEXplorer::NewContainer()
     }
 }
 
-void FLEXplorer::OpenContainer()
+void FLEXplorer::OpenFlexDisk()
 {
     const auto defaultDir = QString(options.openDiskPath.c_str());
     QStringList filePaths;
@@ -169,7 +169,7 @@ void FLEXplorer::OpenContainer()
         bool isLast = (!QString::compare(filePath, filePaths.back()));
         const auto path = QDir::toNativeSeparators(filePath);
 
-        if (!OpenContainerForPath(path, isLast))
+        if (!OpenFlexDiskForPath(path, isLast))
         {
             break;
         }
@@ -196,7 +196,7 @@ void FLEXplorer::OpenDirectory()
         if (!directories.empty())
         {
             path = QDir::toNativeSeparators(directories[0]);
-            OpenContainerForPath(path);
+            OpenFlexDiskForPath(path);
         }
     }
 }
@@ -207,7 +207,7 @@ void FLEXplorer::OpenRecentDisk()
 
     if (action != nullptr)
     {
-        OpenContainerForPath(action->data().toString());
+        OpenFlexDiskForPath(action->data().toString());
     }
 }
 
@@ -217,7 +217,7 @@ void FLEXplorer::OpenRecentDirectory()
 
     if (action != nullptr)
     {
-        OpenContainerForPath(action->data().toString());
+        OpenFlexDiskForPath(action->data().toString());
     }
 }
 
@@ -234,7 +234,7 @@ void FLEXplorer::ProcessArguments(const QStringList &args)
         if (i > 0)
         {
             arg = QDir::toNativeSeparators(arg);
-            if (!OpenContainerForPath(arg, isLast))
+            if (!OpenFlexDiskForPath(arg, isLast))
             {
                 break;
             }
@@ -246,7 +246,7 @@ void FLEXplorer::ProcessArguments(const QStringList &args)
     QApplication::restoreOverrideCursor();
 }
 
-bool FLEXplorer::OpenContainerForPath(QString path, bool isLast)
+bool FLEXplorer::OpenFlexDiskForPath(QString path, bool isLast)
 {
     // If path ends with a path separator character it will be cut off.
     // This can happen when calling FLEXplorer on the command line with
@@ -681,7 +681,7 @@ void FLEXplorer::CreateActions()
 {
     CreateFileActions();
     CreateEditActions();
-    CreateContainerActions();
+    CreateFlexDiskActions();
     CreateExtrasActions();
     CreateWindowsActions();
     CreateHelpActions();
@@ -702,23 +702,23 @@ void FLEXplorer::CreateFileActions()
     fileToolBar->addSeparator();
 
     const auto newIcon = QIcon(":/resource/new.png");
-    newContainerAction = new QAction(newIcon, tr("&New Disk image..."), this);
-    newContainerAction->setShortcuts(QKeySequence::New);
-    newContainerAction->setStatusTip(tr("Create a new FLEX disk image file"));
-    connect(newContainerAction, &QAction::triggered,
-            this, &FLEXplorer::NewContainer);
-    fileMenu->addAction(newContainerAction);
-    fileToolBar->addAction(newContainerAction);
+    newFlexDiskAction = new QAction(newIcon, tr("&New Disk image..."), this);
+    newFlexDiskAction->setShortcuts(QKeySequence::New);
+    newFlexDiskAction->setStatusTip(tr("Create a new FLEX disk image file"));
+    connect(newFlexDiskAction, &QAction::triggered,
+            this, &FLEXplorer::NewFlexDisk);
+    fileMenu->addAction(newFlexDiskAction);
+    fileToolBar->addAction(newFlexDiskAction);
 
     const auto openIcon = QIcon(":/resource/open_con.png");
-    openContainerAction = new QAction(openIcon, tr("&Open Disk image..."),
+    openFlexDiskAction = new QAction(openIcon, tr("&Open Disk image..."),
             this);
-    openContainerAction->setShortcuts(QKeySequence::Open);
-    openContainerAction->setStatusTip(tr("Open a FLEX disk image file"));
-    connect(openContainerAction, &QAction::triggered,
-            this, &FLEXplorer::OpenContainer);
-    fileMenu->addAction(openContainerAction);
-    fileToolBar->addAction(openContainerAction);
+    openFlexDiskAction->setShortcuts(QKeySequence::Open);
+    openFlexDiskAction->setStatusTip(tr("Open a FLEX disk image file"));
+    connect(openFlexDiskAction, &QAction::triggered,
+            this, &FLEXplorer::OpenFlexDisk);
+    fileMenu->addAction(openFlexDiskAction);
+    fileToolBar->addAction(openFlexDiskAction);
 
     const auto openDirIcon = QIcon(":/resource/open_dir.png");
     openDirectoryAction = new QAction(openDirIcon, tr("Open &Directory..."),
@@ -844,7 +844,7 @@ void FLEXplorer::CreateEditActions()
 #endif
 }
 
-void FLEXplorer::CreateContainerActions()
+void FLEXplorer::CreateFlexDiskActions()
 {
     QMenu *containerMenu = menuBar()->addMenu(tr("&Disk"));
     containerToolBar = CreateToolBar(this, tr("Edit"),
@@ -1130,7 +1130,7 @@ void FLEXplorer::dropEvent(QDropEvent *event)
         {
             bool isLast = (i + 1 == supportedFiles.size());
             const auto &path = supportedFiles.at(i);
-            if (!OpenContainerForPath(path, isLast))
+            if (!OpenFlexDiskForPath(path, isLast))
             {
                 break;
             }
