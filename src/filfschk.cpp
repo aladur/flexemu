@@ -30,8 +30,8 @@
 
 
 FlexDiskCheck::FlexDiskCheck(
-        IFlexDiskBySector &p_fc, FileTimeAccess p_fileTimeAccess) :
-    fc(p_fc), fileTimeAccess(p_fileTimeAccess)
+        IFlexDiskBySector &p_flexDisk, FileTimeAccess p_fileTimeAccess) :
+    flexDisk(p_flexDisk), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();
 }
@@ -338,8 +338,8 @@ bool FlexDiskCheck::IsTrackSectorValid(st_t trk_sec) const
 {
     // The sectors 00-01, 00-02, 00-03 and 00-04 are rated as invalid
     // because they can not be used as link target.
-    return fc.IsTrackValid(trk_sec.trk) &&
-           fc.IsSectorValid(trk_sec.trk, trk_sec.sec) &&
+    return flexDisk.IsTrackValid(trk_sec.trk) &&
+           flexDisk.IsSectorValid(trk_sec.trk, trk_sec.sec) &&
            (trk_sec.trk != 0 ||
             (trk_sec.trk == 0 && trk_sec.sec >= first_dir_trk_sec.sec));
 }
@@ -349,11 +349,11 @@ void FlexDiskCheck::InitializeLinks()
     int tracks = 0;
     int sectors = 0;
 
-    fc.GetAttributes(diskAttributes);
+    flexDisk.GetAttributes(diskAttributes);
 
     if (!diskAttributes.IsValid())
     {
-        throw FlexException(FERR_CONTAINER_UNFORMATTED, fc.GetPath());
+        throw FlexException(FERR_CONTAINER_UNFORMATTED, flexDisk.GetPath());
     }
 
     diskAttributes.GetTrackSector(tracks, sectors);
@@ -378,7 +378,7 @@ void FlexDiskCheck::InitializeLinks()
                 continue;
             }
 
-            if (!fc.ReadSector(buffer.data(), track, sector) &&
+            if (!flexDisk.ReadSector(buffer.data(), track, sector) &&
                 links.find(current) == links.end())
             {
                 links.emplace(current, link_t{current});
@@ -528,8 +528,8 @@ void FlexDiskCheck::InitializeFreeChainSectors()
 {
     s_sys_info_sector sis{};
 
-    if (fc.ReadSector(reinterpret_cast<Byte *>(&sis),
-                      sis_trk_sec.trk, sis_trk_sec.sec))
+    if (flexDisk.ReadSector(reinterpret_cast<Byte *>(&sis),
+                            sis_trk_sec.trk, sis_trk_sec.sec))
     {
         auto fc_start = sis.sir.fc_start;
         auto fc_end = sis.sir.fc_end;
@@ -563,8 +563,8 @@ void FlexDiskCheck::InitializeFileSectors()
 
     while (current != st_t{0, 0})
     {
-        if (!fc.ReadSector(reinterpret_cast<Byte *>(&dir_sector),
-                           current.trk, current.sec))
+        if (!flexDisk.ReadSector(reinterpret_cast<Byte *>(&dir_sector),
+                                 current.trk, current.sec))
         {
             // Directory sector not readable, abort while loop.
             links.emplace(current, link_t{current});

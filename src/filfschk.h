@@ -30,7 +30,6 @@
 #include "fcinfo.h"
 
 
-
 struct FlexDiskCheckResultItem
 {
     enum class Type : uint8_t
@@ -113,7 +112,7 @@ class FlexDiskCheck
 
 public:
     FlexDiskCheck() = delete;
-    FlexDiskCheck(IFlexDiskBySector &fc,
+    FlexDiskCheck(IFlexDiskBySector &p_flexDisk,
                        FileTimeAccess fileTimeAccess);
     FlexDiskCheck(const FlexDiskCheck &src) = delete;
     FlexDiskCheck(FlexDiskCheck &&src) = delete;
@@ -160,7 +159,7 @@ private:
     friend std::ostream& operator<<(std::ostream &os,
                        const struct FlexDiskCheck::s_item &item);
 
-    const IFlexDiskBySector &fc;
+    const IFlexDiskBySector &flexDisk;
     FlexDiskAttributes diskAttributes;
     std::map<st_t, link_t> links;
     std::vector<item_t> items;
