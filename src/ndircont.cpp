@@ -79,7 +79,7 @@
 // But writing sectors which are part of the free chain or a directory sector
 // can corrupt the emulation.
 
-NafsDirectoryContainer::NafsDirectoryContainer(
+FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         const std::string &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
@@ -127,7 +127,7 @@ NafsDirectoryContainer::NafsDirectoryContainer(
     number++;
 }
 
-NafsDirectoryContainer::~NafsDirectoryContainer()
+FlexDirectoryDiskBySector::~FlexDirectoryDiskBySector()
 {
     // final cleanup: close if not already done
     try
@@ -145,7 +145,7 @@ NafsDirectoryContainer::~NafsDirectoryContainer()
 
 // Create a new directory disk in path directory.
 // format parameter is ignored.
-NafsDirectoryContainer *NafsDirectoryContainer::Create(
+FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const std::string &directory,
         const std::string &name,
         const FileTimeAccess &fileTimeAccess,
@@ -169,15 +169,15 @@ NafsDirectoryContainer *NafsDirectoryContainer::Create(
         throw FlexException(FERR_UNABLE_TO_CREATE, name);
     }
 
-    return new NafsDirectoryContainer(path, fileTimeAccess, tracks, sectors);
+    return new FlexDirectoryDiskBySector(path, fileTimeAccess, tracks, sectors);
 }
 
-std::string NafsDirectoryContainer::GetPath() const
+std::string FlexDirectoryDiskBySector::GetPath() const
 {
     return directory;
 }
 
-bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
+bool FlexDirectoryDiskBySector::GetInfo(FlexContainerInfo &info) const
 {
 
     const auto &sis = flex_sys_info[0];
@@ -199,22 +199,22 @@ bool NafsDirectoryContainer::GetInfo(FlexContainerInfo &info) const
     return true;
 }
 
-int NafsDirectoryContainer::GetBytesPerSector() const
+int FlexDirectoryDiskBySector::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
 
-bool NafsDirectoryContainer::IsWriteProtected() const
+bool FlexDirectoryDiskBySector::IsWriteProtected() const
 {
     return param.write_protect != 0;
 }
 
-bool NafsDirectoryContainer::IsTrackValid(int track) const
+bool FlexDirectoryDiskBySector::IsTrackValid(int track) const
 {
     return (track >= 0 && track <= param.max_track);
 }
 
-bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
+bool FlexDirectoryDiskBySector::IsSectorValid(int track, int sector) const
 {
     if (track > 0)
     {
@@ -229,12 +229,12 @@ bool NafsDirectoryContainer::IsSectorValid(int track, int sector) const
     return false;
 }
 
-bool NafsDirectoryContainer::IsFlexFormat() const
+bool FlexDirectoryDiskBySector::IsFlexFormat() const
 {
     return true;
 }
 
-int NafsDirectoryContainer::GetContainerType() const
+int FlexDirectoryDiskBySector::GetContainerType() const
 {
     return param.type;
 }
@@ -244,8 +244,8 @@ int NafsDirectoryContainer::GetContainerType() const
 ///////////////////////////////////////////////////////
 
 // Initialize the internal data structures.
-void NafsDirectoryContainer::initialize_header(bool is_write_protected,
-                                               int tracks, int sectors)
+void FlexDirectoryDiskBySector::initialize_header(bool is_write_protected,
+                                                  int tracks, int sectors)
 {
     param.offset = 0;
     param.write_protect = is_write_protected ? 1U : 0U;
@@ -276,7 +276,7 @@ void NafsDirectoryContainer::initialize_header(bool is_write_protected,
     allowed:        x.a xx.a xxxxxxxx.a x xx xxxxxxxx
     not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
 */
-bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
+bool FlexDirectoryDiskBySector::IsFlexFilename(const char *pfilename,
         std::string &ret_name,
         std::string &ret_extension,
         bool with_extension)
@@ -343,7 +343,7 @@ bool NafsDirectoryContainer::IsFlexFilename(const char *pfilename,
 
 
 // Initialize the FLEX directory sectors.
-void NafsDirectoryContainer::initialize_flex_directory()
+void FlexDirectoryDiskBySector::initialize_flex_directory()
 {
     init_dir_sectors = static_cast<Word>(
                            param.max_sector0 + 1 - first_dir_trk_sec.sec);
@@ -383,7 +383,7 @@ void NafsDirectoryContainer::initialize_flex_directory()
 // If directory entry is empty or deleted return an empty string.
 // pfn is a pointer to the filename property in a FLEX directory entry
 // of type s_dir_entry.
-std::string NafsDirectoryContainer::get_unix_filename(
+std::string FlexDirectoryDiskBySector::get_unix_filename(
         const s_dir_entry &dir_entry)
 {
     if (dir_entry.filename[0] != DE_EMPTY &&
@@ -402,7 +402,7 @@ std::string NafsDirectoryContainer::get_unix_filename(
 //   is related to the file_id.
 // - Existing files: The file_id is >= 0. It is used as an index into
 //   the FLEX directory entries of type s_dir_entry.
-std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
+std::string FlexDirectoryDiskBySector::get_unix_filename(SDWord file_id) const
 {
     if (file_id < 0)
     {
@@ -427,7 +427,7 @@ std::string NafsDirectoryContainer::get_unix_filename(SDWord file_id) const
 
 // Return the record number (zero based) of a new file which first
 // sector has index 'sec_idx' into FLEX link table.
-Word NafsDirectoryContainer::record_nr_of_new_file(SDWord new_file_id,
+Word FlexDirectoryDiskBySector::record_nr_of_new_file(SDWord new_file_id,
         SDWord sec_idx) const
 {
     Word record_nr = 0;
@@ -447,7 +447,7 @@ Word NafsDirectoryContainer::record_nr_of_new_file(SDWord new_file_id,
 // and sector. If not found create another new file and return its new_file_id.
 // A new_file_id is always < 0.
 // Return 0 if the new file can not be opened.
-SDWord NafsDirectoryContainer::id_of_new_file(const st_t &track_sector)
+SDWord FlexDirectoryDiskBySector::id_of_new_file(const st_t &track_sector)
 {
     for (const auto &iter : new_files)
     {
@@ -490,7 +490,7 @@ SDWord NafsDirectoryContainer::id_of_new_file(const st_t &track_sector)
     return new_file_id;
 }
 
-std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
+std::string FlexDirectoryDiskBySector::get_path_of_file(SDWord file_id) const
 {
     if (file_id < 0)
     {
@@ -519,7 +519,7 @@ std::string NafsDirectoryContainer::get_path_of_file(SDWord file_id) const
 
 // Extend the FLEX directory by one directory sector.
 // If it fails return false.
-bool NafsDirectoryContainer::extend_directory(SDWord sec_idx,
+bool FlexDirectoryDiskBySector::extend_directory(SDWord sec_idx,
     const s_dir_sector &dir_sector)
 {
     if (sec_idx < 0)
@@ -541,7 +541,7 @@ bool NafsDirectoryContainer::extend_directory(SDWord sec_idx,
 // In FLEX this is called to LINK the disk. It is needed
 // to be able to boot from it.
 // If not found return 0/0.
-st_t NafsDirectoryContainer::link_address() const
+st_t FlexDirectoryDiskBySector::link_address() const
 {
     st_t link { };
 
@@ -566,7 +566,7 @@ st_t NafsDirectoryContainer::link_address() const
 // Return the index (zero based) of the first free directory entry.
 // If directory is full extend it by one directory sector.
 // If directory can't be extended return -1.
-SDWord NafsDirectoryContainer::next_free_dir_entry()
+SDWord FlexDirectoryDiskBySector::next_free_dir_entry()
 {
     ++next_dir_idx;
 
@@ -626,7 +626,7 @@ SDWord NafsDirectoryContainer::next_free_dir_entry()
 
 
 // Initialize the FLEX link table
-void NafsDirectoryContainer::initialize_flex_link_table()
+void FlexDirectoryDiskBySector::initialize_flex_link_table()
 {
     Word i;
     Word fc_start = param.max_sector; // Start index of free chain.
@@ -697,7 +697,7 @@ void NafsDirectoryContainer::initialize_flex_link_table()
 
 // Check for any open new files.
 // If so print a message or open a message dialog.
-void NafsDirectoryContainer::close_new_files()
+void FlexDirectoryDiskBySector::close_new_files()
 {
     bool is_first = true;
     std::string msg;
@@ -734,7 +734,7 @@ void NafsDirectoryContainer::close_new_files()
 // Add a file with directory index dir_idx to the link table.
 // If file won't fit return false otherwise return true.
 // On success return its first and last track/sector.
-bool NafsDirectoryContainer::add_to_link_table(
+bool FlexDirectoryDiskBySector::add_to_link_table(
     SDWord dir_idx,
     off_t size,
     bool is_random,
@@ -817,7 +817,7 @@ bool NafsDirectoryContainer::add_to_link_table(
 
 
 // Add file properties to directory entry with index 'dir_idx'.
-void NafsDirectoryContainer::add_to_directory(
+void FlexDirectoryDiskBySector::add_to_directory(
     std::string name,
     std::string extension,
     SDWord dir_idx,
@@ -862,7 +862,7 @@ void NafsDirectoryContainer::add_to_directory(
 }
 
 // Update random file sector map.
-void NafsDirectoryContainer::modify_random_file(const char *path,
+void FlexDirectoryDiskBySector::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
 {
     Byte file_sector_map[DBPS * 2];
@@ -921,7 +921,7 @@ void NafsDirectoryContainer::modify_random_file(const char *path,
 // - It's name is neither "random" nor "boot".
 // Any other files are just ignored. The files "random" and "boot" have
 // a special meaning in a directory container.
-void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
+void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
 {
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
@@ -1056,7 +1056,7 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
 
 
 // Initialize the FLEX system info sector.
-void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
+void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
 {
     struct stat sbuf{};
 
@@ -1107,7 +1107,7 @@ void NafsDirectoryContainer::initialize_flex_sys_info_sectors(Word number)
 // SectorType::NewFile   -> SectorType::File      A directory entry for a new
 //                                                file has been created.
 // SectorType::File      -> SectorType::FreeChain A file has been deleted.
-void NafsDirectoryContainer::change_file_id_and_type(SDWord sec_idx,
+void FlexDirectoryDiskBySector::change_file_id_and_type(SDWord sec_idx,
         SDWord old_file_id, SDWord new_file_id, SectorType new_type)
 {
     std::set<decltype(sec_idx)> usedIndices;
@@ -1129,7 +1129,7 @@ void NafsDirectoryContainer::change_file_id_and_type(SDWord sec_idx,
 }
 
 
-void NafsDirectoryContainer::update_sector_buffer_from_link(Byte *buffer,
+void FlexDirectoryDiskBySector::update_sector_buffer_from_link(Byte *buffer,
         const s_link_table &link)
 {
     buffer[0] = link.next.trk;
@@ -1139,7 +1139,7 @@ void NafsDirectoryContainer::update_sector_buffer_from_link(Byte *buffer,
 }
 
 
-void NafsDirectoryContainer::update_link_from_sector_buffer(s_link_table &link,
+void FlexDirectoryDiskBySector::update_link_from_sector_buffer(s_link_table &link,
         const Byte *buffer)
 {
      link.next.trk = buffer[0];
@@ -1153,7 +1153,7 @@ void NafsDirectoryContainer::update_link_from_sector_buffer(s_link_table &link,
 // if the first byte of the file name is set to DE_DELETED.
 // For this compare the old directory sector (old_dir_sector) with the new
 // directory sector (dir_sector).
-void NafsDirectoryContainer::check_for_delete(Word ds_idx,
+void FlexDirectoryDiskBySector::check_for_delete(Word ds_idx,
         const s_dir_sector &dir_sector)
 {
     const auto &old_dir_sector = flex_directory[ds_idx];
@@ -1184,7 +1184,7 @@ void NafsDirectoryContainer::check_for_delete(Word ds_idx,
 // For this compare the filename of the old directory sector (old_filename)
 // with the corresponding filename in new directory sector (new_filename).
 // If a file has been renamed then rename it on the host file system too.
-void NafsDirectoryContainer::check_for_rename(Word ds_idx,
+void FlexDirectoryDiskBySector::check_for_rename(Word ds_idx,
         const s_dir_sector &dir_sector) const
 {
     std::string old_filename;
@@ -1219,7 +1219,7 @@ void NafsDirectoryContainer::check_for_rename(Word ds_idx,
 // link to a next directory sector (next_trk == next_sec == 0) AND the
 // new directory sector has a link to the next directory sector. If so
 // save track and sector in dir_extend.
-void NafsDirectoryContainer::check_for_extend(Word ds_idx,
+void FlexDirectoryDiskBySector::check_for_extend(Word ds_idx,
         const s_dir_sector &dir_sector)
 {
     const auto &old_dir_sector = flex_directory[ds_idx];
@@ -1234,7 +1234,7 @@ void NafsDirectoryContainer::check_for_extend(Word ds_idx,
 // Check if file attributes have been changed. Only write protection is
 // supported.
 // File attributes is located in struct s_dir_entry in byte file_attr.
-void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
+void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
         s_dir_sector &dir_sector)
 {
     static const auto unsupported_attr =
@@ -1313,7 +1313,7 @@ void NafsDirectoryContainer::check_for_changed_file_attr(Word ds_idx,
 
 // Return false if not successful otherwise return true.
 // years < 75 will be represented as >= 2000
-bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
+bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
         Byte day, Byte year, Byte hour, Byte minute) const
 {
     struct stat statbuf{};
@@ -1344,8 +1344,8 @@ bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
 }
 
 // Set back the file time to the date in the emulated file system.
-bool NafsDirectoryContainer::update_file_time(const char *path,
-                                              SDWord file_id) const
+bool FlexDirectoryDiskBySector::update_file_time(const char *path,
+                                                 SDWord file_id) const
 {
     if (file_id >= 0)
     {
@@ -1373,7 +1373,7 @@ bool NafsDirectoryContainer::update_file_time(const char *path,
 // For this compare the old (pd) with the new directory sector (dir_sector).
 // If found remove the file from the list of new files and rename the
 // file to its new file name.
-void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
+void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
         const s_dir_sector &dir_sector)
 {
     std::vector<SDWord> keys;
@@ -1446,7 +1446,7 @@ void NafsDirectoryContainer::check_for_new_file(Word ds_idx,
 }
 
 // Check if track and sector is the last sector in the free chain.
-bool NafsDirectoryContainer::is_last_of_free_chain(
+bool FlexDirectoryDiskBySector::is_last_of_free_chain(
                              const st_t &track_sector) const
 {
     return flex_sys_info[0].sir.fc_end == track_sector;
@@ -1456,8 +1456,8 @@ bool NafsDirectoryContainer::is_last_of_free_chain(
 // Public interface to read one sector contained in byte stream 'buffer'
 // from given track and sector.
 // Return true on success.
-bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
-                                        int /* side = -1 */) const
+bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
+        int /* side = -1 */) const
 {
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
     auto sec_idx = get_sector_index(track_sector);
@@ -1617,8 +1617,8 @@ bool NafsDirectoryContainer::ReadSector(Byte * buffer, int trk, int sec,
 
 // Public interface to write one sector contained in byte stream 'buffer'
 // to given track and sector.
-bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
-                                         int /* side = -1 */)
+bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
+        int sec, int /* side = -1 */)
 {
     bool result = true;
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
@@ -1854,7 +1854,7 @@ bool NafsDirectoryContainer::WriteSector(const Byte * buffer, int trk, int sec,
 }
 
 
-bool NafsDirectoryContainer::FormatSector(
+bool FlexDirectoryDiskBySector::FormatSector(
         const Byte * /*buffer*/,
         int /*trk*/,
         int /*sec*/,
@@ -1866,7 +1866,7 @@ bool NafsDirectoryContainer::FormatSector(
 }
 
 // Mount the directory container. number is the disk number.
-void NafsDirectoryContainer::mount(Word number, int tracks, int sectors)
+void FlexDirectoryDiskBySector::mount(Word number, int tracks, int sectors)
 {
     bool is_write_protected = (access(directory.c_str(), W_OK) != 0);
     initialize_header(is_write_protected, tracks, sectors);
@@ -1874,7 +1874,7 @@ void NafsDirectoryContainer::mount(Word number, int tracks, int sectors)
     fill_flex_directory(is_write_protected);
 }
 
-std::string NafsDirectoryContainer::to_string(SectorType type)
+std::string FlexDirectoryDiskBySector::to_string(SectorType type)
 {
     switch (type)
     {
@@ -1899,7 +1899,7 @@ std::string NafsDirectoryContainer::to_string(SectorType type)
 
 // Return a unique filename for this directory container.
 // The file extension is specified as parameter.
-std::string NafsDirectoryContainer::get_unique_filename(
+std::string FlexDirectoryDiskBySector::get_unique_filename(
                                     const char *extension) const
 {
     auto number = getValueBigEndian<Word>(flex_sys_info[0].sir.disk_number);
@@ -1915,7 +1915,7 @@ std::string NafsDirectoryContainer::get_unique_filename(
 
 // Return the sector index of the given track/sector.
 // For 00-00 return -1.
-SDWord NafsDirectoryContainer::get_sector_index(const st_t &track_sector) const
+SDWord FlexDirectoryDiskBySector::get_sector_index(const st_t &track_sector) const
 {
     return track_sector.trk * param.max_sector + track_sector.sec - 1;
 }

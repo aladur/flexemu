@@ -33,8 +33,11 @@
 #include <vector>
 #include <unordered_map>
 
-
-class NafsDirectoryContainer : public IFlexDiskBySector
+// class FlexDirectoryDiskBySector implements a sector oriented access
+// to a FLEX disk by mapping a host directory emulating a FLEX disk.
+//
+// Rename: NafsDirectoryContainer => FlexDirectoryDiskBySector.
+class FlexDirectoryDiskBySector : public IFlexDiskBySector
 {
     // Common used parameter names and types:
     //
@@ -94,16 +97,16 @@ class NafsDirectoryContainer : public IFlexDiskBySector
     };
 
 public:
-    NafsDirectoryContainer() = delete;
-    NafsDirectoryContainer(const NafsDirectoryContainer &) = delete;
-    NafsDirectoryContainer(NafsDirectoryContainer &&) = delete;
-    NafsDirectoryContainer(const std::string &path,
+    FlexDirectoryDiskBySector() = delete;
+    FlexDirectoryDiskBySector(const FlexDirectoryDiskBySector &) = delete;
+    FlexDirectoryDiskBySector(FlexDirectoryDiskBySector &&) = delete;
+    FlexDirectoryDiskBySector(const std::string &path,
                            const FileTimeAccess &fileTimeAccess,
                            int tracks, int sectors);
-    ~NafsDirectoryContainer() override;
+    ~FlexDirectoryDiskBySector() override;
 
-    NafsDirectoryContainer &operator=(const NafsDirectoryContainer &) = delete;
-    NafsDirectoryContainer &operator=(NafsDirectoryContainer &&) = delete;
+    FlexDirectoryDiskBySector &operator=(const FlexDirectoryDiskBySector &) = delete;
+    FlexDirectoryDiskBySector &operator=(FlexDirectoryDiskBySector &&) = delete;
 
 private:
     std::string directory;
@@ -124,12 +127,9 @@ private:
                              // directory with file entries.
 
 public:
-    static NafsDirectoryContainer *Create(const std::string &directory,
-                                          const std::string &name,
-                                          const FileTimeAccess &fileTimeAccess,
-                                          int tracks,
-                                          int sectors,
-                                          int fmt = TYPE_DSK_CONTAINER);
+    static FlexDirectoryDiskBySector *Create(const std::string &directory,
+            const std::string &name, const FileTimeAccess &fileTimeAccess,
+            int tracks, int sectors, int fmt = TYPE_DSK_CONTAINER);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;

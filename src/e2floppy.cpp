@@ -136,7 +136,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                     new NafsDirectoryContainer(
+                     new FlexDirectoryDiskBySector(
                          containerPath,
                          options.fileTimeAccess,
                          options.directoryDiskTracks,
@@ -693,7 +693,7 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                 if (options.isDirectoryDiskActive)
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                        NafsDirectoryContainer::Create(
+                        FlexDirectoryDiskBySector::Create(
                             disk_dir, name, options.fileTimeAccess, trk, sec,
                             fmt));
                 }
