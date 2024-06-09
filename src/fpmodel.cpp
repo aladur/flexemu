@@ -984,7 +984,7 @@ void FlexplorerTableModel::OpenContainer(const char *p_path,
         }
 
         container =
-            std::make_unique<DirectoryContainer>(directory, fileTimeAccess);
+            std::make_unique<FlexDirectoryDiskByFile>(directory, fileTimeAccess);
     }
     else
     {

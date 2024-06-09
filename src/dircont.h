@@ -38,8 +38,11 @@ class FlexDirEntry;
 class BDate;
 class FlexDirectoryDiskIteratorImp;
 
-
-class DirectoryContainer : public IFlexDiskByFile
+// class FlexDirectoryDiskByFile implements a file oriented access
+// to a FLEX disk by mapping a host directory emulating a FLEX disk.
+//
+// Rename: DirectoryContainer => FlexDirectoryDiskByFile.
+class FlexDirectoryDiskByFile : public IFlexDiskByFile
 {
     friend class FlexDirectoryDiskIteratorImp; // corresponding iterator class
 
@@ -50,22 +53,20 @@ private:
     const FileTimeAccess &ft_access{};
 
 public:
-    DirectoryContainer() = delete;
-    DirectoryContainer(const DirectoryContainer &) = delete;
-    DirectoryContainer(DirectoryContainer &&) = delete;
-    DirectoryContainer(const std::string &path,
+    FlexDirectoryDiskByFile() = delete;
+    FlexDirectoryDiskByFile(const FlexDirectoryDiskByFile &) = delete;
+    FlexDirectoryDiskByFile(FlexDirectoryDiskByFile &&) = delete;
+    FlexDirectoryDiskByFile(const std::string &path,
                        const FileTimeAccess &fileTimeAccess);
-    ~DirectoryContainer() override = default;
+    ~FlexDirectoryDiskByFile() override = default;
 
-    DirectoryContainer &operator= (const DirectoryContainer &) = delete;
-    DirectoryContainer &operator= (DirectoryContainer &&) = delete;
+    FlexDirectoryDiskByFile &operator= (const FlexDirectoryDiskByFile &) = delete;
+    FlexDirectoryDiskByFile &operator= (FlexDirectoryDiskByFile &&) = delete;
 
-    static DirectoryContainer *Create(const std::string &directory,
-                                      const std::string &name,
-                                      int tracks,
-                                      int sectors,
-                                      const FileTimeAccess &fileTimeAccess,
-                                      int fmt = TYPE_DSK_CONTAINER);
+    static FlexDirectoryDiskByFile *Create(const std::string &directory,
+            const std::string &name, int tracks, int sectors,
+            const FileTimeAccess &fileTimeAccess,
+            int fmt = TYPE_DSK_CONTAINER);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;

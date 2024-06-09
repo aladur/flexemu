@@ -56,8 +56,8 @@
 /* Constructor                          */
 /****************************************/
 
-DirectoryContainer::DirectoryContainer(const std::string &aPath,
-                                       const FileTimeAccess &fileTimeAccess)
+FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
+        const std::string &aPath, const FileTimeAccess &fileTimeAccess)
     : ft_access(fileTimeAccess)
 {
     struct stat sbuf{};
@@ -100,13 +100,13 @@ DirectoryContainer::DirectoryContainer(const std::string &aPath,
 /* Public interface                     */
 /****************************************/
 
-bool DirectoryContainer::IsWriteProtected() const
+bool FlexDirectoryDiskByFile::IsWriteProtected() const
 {
     return (attributes & FLX_READONLY) != 0;
 }
 
 // type, track and sectors parameter will be ignored
-DirectoryContainer *DirectoryContainer::Create(
+FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         const std::string &directory,
         const std::string &name,
         int /* tracks */,
@@ -141,21 +141,21 @@ DirectoryContainer *DirectoryContainer::Create(
         }
     }
 
-    return new DirectoryContainer(path, fileTimeAccess);
+    return new FlexDirectoryDiskByFile(path, fileTimeAccess);
 }
 
-std::string DirectoryContainer::GetPath() const
+std::string FlexDirectoryDiskByFile::GetPath() const
 {
     return directory;
 }
 
-std::string DirectoryContainer::GetSupportedAttributes() const
+std::string FlexDirectoryDiskByFile::GetSupportedAttributes() const
 {
     return "W";
 }
 
 /*
-bool DirectoryContainer::OpenDirectory(const char *pattern)
+bool FlexDirectoryDiskByFile::OpenDirectory(const char *pattern)
 {
     CHECK_DDIRECTORY_ALREADY_OPENED;
     filePattern = pattern;
@@ -169,8 +169,8 @@ bool DirectoryContainer::OpenDirectory(const char *pattern)
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool DirectoryContainer::FindFile(const std::string &fileName,
-                                  FlexDirEntry &entry)
+bool FlexDirectoryDiskByFile::FindFile(const std::string &fileName,
+        FlexDirEntry &entry)
 {
     FlexDiskIterator it(fileName);
 
@@ -185,7 +185,7 @@ bool DirectoryContainer::FindFile(const std::string &fileName,
     return true;
 }
 
-bool DirectoryContainer::DeleteFile(const std::string &wildcard)
+bool FlexDirectoryDiskByFile::DeleteFile(const std::string &wildcard)
 {
     FlexDiskIterator it(wildcard);
 
@@ -197,8 +197,8 @@ bool DirectoryContainer::DeleteFile(const std::string &wildcard)
     return true;
 }
 
-bool DirectoryContainer::RenameFile(const std::string &oldName,
-                                    const std::string &newName)
+bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
+        const std::string &newName)
 {
     FlexDirEntry de;
 
@@ -227,7 +227,7 @@ bool DirectoryContainer::RenameFile(const std::string &oldName,
     return true;
 }
 
-bool DirectoryContainer::FileCopy(
+bool FlexDirectoryDiskByFile::FileCopy(
     const std::string &sourceName, const std::string &destName,
     IFlexDiskByFile &destination)
 {
@@ -236,7 +236,7 @@ bool DirectoryContainer::FileCopy(
                                      destination);
 }
 
-bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
+bool FlexDirectoryDiskByFile::GetInfo(FlexContainerInfo &info) const
 {
     std::string rootPath;
     struct stat sbuf{};
@@ -309,12 +309,12 @@ bool DirectoryContainer::GetInfo(FlexContainerInfo &info) const
     return true;
 }
 
-int DirectoryContainer::GetContainerType() const
+int FlexDirectoryDiskByFile::GetContainerType() const
 {
     return TYPE_DIRECTORY;
 }
 
-FlexFileBuffer DirectoryContainer::ReadToBuffer(const std::string &fileName)
+FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
     auto filePath(tolower(fileName));
@@ -329,7 +329,7 @@ FlexFileBuffer DirectoryContainer::ReadToBuffer(const std::string &fileName)
     return buffer;
 }
 
-bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
+bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         const char *fileName /* = nullptr */)
 {
     std::string lowerFileName;
@@ -374,7 +374,7 @@ bool DirectoryContainer::WriteFromBuffer(const FlexFileBuffer &buffer,
 /* private interface          */
 /******************************/
 
-void DirectoryContainer::Initialize_header(bool /*isWriteProtect*/)
+void FlexDirectoryDiskByFile::Initialize_header(bool /*isWriteProtect*/)
 {
     /*
         param.offset = 0;
@@ -390,8 +390,8 @@ void DirectoryContainer::Initialize_header(bool /*isWriteProtect*/)
 }
 
 // set the date and time of a file
-bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
-                                     const BTime &time)
+bool FlexDirectoryDiskByFile::SetDateTime(
+        const char *fileName, const BDate &date, const BTime &time)
 {
     struct stat sbuf{};
     struct utimbuf timebuf{};
@@ -422,7 +422,7 @@ bool DirectoryContainer::SetDateTime(const char *fileName, const BDate &date,
 }
 
 // set the file attributes of a file
-bool DirectoryContainer::SetAttributes(const std::string &wildcard,
+bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
                                        Byte setMask,
                                        Byte clearMask /* = ~0 */)
 {
@@ -473,7 +473,7 @@ bool DirectoryContainer::SetAttributes(const std::string &wildcard,
 
 // on WIN32 a random file will be represented by a hidden flag
 // on UNIX a random file will be represented by a user execute flag
-bool DirectoryContainer::SetRandom(const char *fileName)
+bool FlexDirectoryDiskByFile::SetRandom(const char *fileName)
 {
 #ifdef _WIN32
     const auto wFilePath(
@@ -498,7 +498,7 @@ bool DirectoryContainer::SetRandom(const char *fileName)
 
 // check if pfilename contains a valid FLEX filename
 // on Unix only lowercase filenames are allowed
-bool DirectoryContainer::IsFlexFilename(const std::string &filename)
+bool FlexDirectoryDiskByFile::IsFlexFilename(const std::string &filename)
 {
     int result; // result from sscanf should be int
     char dot;
@@ -542,7 +542,7 @@ bool DirectoryContainer::IsFlexFilename(const std::string &filename)
 Iterator implemenation
 *****************************************************************/
 
-IFlexDiskIteratorImpPtr DirectoryContainer::IteratorFactory()
+IFlexDiskIteratorImpPtr FlexDirectoryDiskByFile::IteratorFactory()
 {
     return IFlexDiskIteratorImpPtr(new FlexDirectoryDiskIteratorImp(this));
 }

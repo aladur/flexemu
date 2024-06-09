@@ -32,14 +32,14 @@
     typedef DIR *DIRHANDLE;
 #endif
 
-class DirectoryContainer;
+class FlexDirectoryDiskByFile;
 
-// Implementation of IFlexDiskIteratorImp interface for DirectoryContainer.
-// Rename: DirectoryContainerIteratorImp => FlexDirectoryDiskIteratorImp
+// Implementation of IFlexDiskIteratorImp interface for FlexDirectoryDiskByFile.
+// Rename: FlexDirectoryDiskByFileIteratorImp => FlexDirectoryDiskIteratorImp
 class FlexDirectoryDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:
-    explicit FlexDirectoryDiskIteratorImp(DirectoryContainer *aBase);
+    explicit FlexDirectoryDiskIteratorImp(FlexDirectoryDiskByFile *aBase);
     FlexDirectoryDiskIteratorImp() = delete;
     FlexDirectoryDiskIteratorImp(const FlexDirectoryDiskIteratorImp &src) =
         delete;
@@ -57,7 +57,7 @@ private:
     bool SetDateCurrent(const BDate &date) override;
     bool SetAttributesCurrent(Byte attributes) override;
 
-    DirectoryContainer *base;
+    FlexDirectoryDiskByFile *base;
     FlexDirEntry dirEntry;
     DIRHANDLE dirHdl;
 };

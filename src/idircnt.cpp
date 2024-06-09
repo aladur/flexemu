@@ -33,7 +33,7 @@
 
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
-    DirectoryContainer *aBase)
+    FlexDirectoryDiskByFile *aBase)
     : base(aBase), dirHdl(nullptr)
 {
 }
@@ -167,7 +167,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) ||
-            !DirectoryContainer::IsFlexFilename(fileName) ||
+            !FlexDirectoryDiskByFile::IsFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !multimatches(fileName, wildcard, ';', true)))
