@@ -112,8 +112,7 @@ class FlexDiskCheck
 
 public:
     FlexDiskCheck() = delete;
-    FlexDiskCheck(IFlexDiskBySector &p_flexDisk,
-                       FileTimeAccess fileTimeAccess);
+    FlexDiskCheck(IFlexDiskBySector &p_flexDisk, FileTimeAccess fileTimeAccess);
     FlexDiskCheck(const FlexDiskCheck &src) = delete;
     FlexDiskCheck(FlexDiskCheck &&src) = delete;
     ~FlexDiskCheck();

@@ -40,15 +40,14 @@ class FlexDiskIterator
 public:
     explicit FlexDiskIterator(const std::string &p_wildcard = "*.*");
     FlexDiskIterator(const FlexDiskIterator &src) = delete;
-    virtual               ~FlexDiskIterator() = default;
-    FlexDirEntry          &operator*();
-    FlexDirEntry          *operator->();
+    virtual ~FlexDiskIterator() = default;
+    FlexDirEntry &operator*();
+    FlexDirEntry *operator->();
     bool operator==(const IFlexDiskByFile *aBase) const;
     bool operator!=(const IFlexDiskByFile *aBase) const;
     FlexDiskIterator &operator=(IFlexDiskByFile *aBase);
     FlexDiskIterator &operator++();
-    FlexDiskIterator &operator=(const FlexDiskIterator &src) =
-        delete;
+    FlexDiskIterator &operator=(const FlexDiskIterator &src) = delete;
     bool DeleteCurrent();
     bool RenameCurrent(const std::string &newName);
     bool SetDateCurrent(const BDate &date);

@@ -57,10 +57,11 @@ public:
     FlexDirectoryDiskByFile(const FlexDirectoryDiskByFile &) = delete;
     FlexDirectoryDiskByFile(FlexDirectoryDiskByFile &&) = delete;
     FlexDirectoryDiskByFile(const std::string &path,
-                       const FileTimeAccess &fileTimeAccess);
+                            const FileTimeAccess &fileTimeAccess);
     ~FlexDirectoryDiskByFile() override = default;
 
-    FlexDirectoryDiskByFile &operator= (const FlexDirectoryDiskByFile &) = delete;
+    FlexDirectoryDiskByFile &operator= (
+            const FlexDirectoryDiskByFile &) = delete;
     FlexDirectoryDiskByFile &operator= (FlexDirectoryDiskByFile &&) = delete;
 
     static FlexDirectoryDiskByFile *Create(const std::string &directory,
