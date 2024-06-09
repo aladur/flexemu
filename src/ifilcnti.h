@@ -26,15 +26,15 @@
 #include <memory>
 
 
-class FileContainerIterator;
+class FlexDiskIterator;
 class IFlexDiskByFile;
 class FlexDirEntry;
 
 // This interface defines a FLEX disk iterator implementation.
-// Rename: FileContainerIteratorImp => IFlexDiskIteratorImp
+// Rename: FlexDiskIteratorImp => IFlexDiskIteratorImp
 class IFlexDiskIteratorImp
 {
-    friend class FileContainerIterator;
+    friend class FlexDiskIterator;
 public:
     virtual ~IFlexDiskIteratorImp() = default;
     virtual bool operator==(const IFlexDiskByFile *aBase) const = 0;

@@ -29,7 +29,7 @@
 class FlexFileContainer;
 
 // Implementation of IFlexDiskIteratorImp interface for FlexFileContainer.
-// Rename: FlexFileContainerIteratorImp => FlexDiskIteratorImp.
+// Rename: FlexFlexDiskIteratorImp => FlexDiskIteratorImp.
 class FlexDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:

@@ -172,7 +172,7 @@ bool DirectoryContainer::OpenDirectory(const char *pattern)
 bool DirectoryContainer::FindFile(const std::string &fileName,
                                   FlexDirEntry &entry)
 {
-    FileContainerIterator it(fileName);
+    FlexDiskIterator it(fileName);
 
     it = this->begin();
 
@@ -187,7 +187,7 @@ bool DirectoryContainer::FindFile(const std::string &fileName,
 
 bool DirectoryContainer::DeleteFile(const std::string &wildcard)
 {
-    FileContainerIterator it(wildcard);
+    FlexDiskIterator it(wildcard);
 
     for (it = this->begin(); it != this->end(); ++it)
     {
@@ -213,7 +213,7 @@ bool DirectoryContainer::RenameFile(const std::string &oldName,
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
 
-    FileContainerIterator it(oldName);
+    FlexDiskIterator it(oldName);
 
     it = this->begin();
 

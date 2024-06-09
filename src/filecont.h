@@ -61,7 +61,7 @@ public:
 
 private:
     virtual IFlexDiskIteratorImpPtr IteratorFactory() = 0;
-    friend class FileContainerIterator;
+    friend class FlexDiskIterator;
     friend class FlexCopyManager;
 };
 

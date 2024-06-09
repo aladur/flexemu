@@ -49,7 +49,7 @@ std::vector<std::string> GetMatchingFilenames(
     FlexFileContainer &container,
     const std::vector<std::regex> &regexs)
 {
-    FileContainerIterator iter;
+    FlexDiskIterator iter;
     std::vector<std::string> allFilenames;
 
     for (iter = container.begin(); iter != container.end(); ++iter)
@@ -303,7 +303,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
 {
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
-    FileContainerIterator iter;
+    FlexDiskIterator iter;
     FlexContainerInfo info;
     unsigned int number = 0;
     bool hasInfo = false;
@@ -420,7 +420,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     auto fileTimeAccess = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamFileContainer src{dsk_file.c_str(), mode, fileTimeAccess};
-    FileContainerIterator iter;
+    FlexDiskIterator iter;
     FlexContainerInfo info;
     const auto format = BDate::Format::D2MSU3Y4;
 

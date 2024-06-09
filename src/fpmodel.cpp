@@ -165,7 +165,7 @@ QModelIndex FlexplorerTableModel::SetRow(const FlexDirEntry &dirEntry, int row,
 
 void FlexplorerTableModel::Initialize()
 {
-    FileContainerIterator iter;
+    FlexDiskIterator iter;
     int columnIndex = 0;
 
     for (iter = container->begin(); iter != container->end(); ++iter)
@@ -303,7 +303,7 @@ QVector<Byte> FlexplorerTableModel::GetAttributes(
         filenames.insert(*(srcIter++));
     }
 
-    FileContainerIterator iter;
+    FlexDiskIterator iter;
     QVector<Byte> attributes;
     attributes.reserve(filenames.size());
     for (iter = container->begin(); iter != container->end(); ++iter)
@@ -325,7 +325,7 @@ bool FlexplorerTableModel::GetAttributesString(const QModelIndex &index,
     if (index.isValid())
     {
         auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toStdString());
+        FlexDiskIterator iter(filename.toStdString());
 
         iter = container->begin();
         if (iter != container->end())
@@ -344,7 +344,7 @@ bool FlexplorerTableModel::GetAttributes(const QModelIndex &index,
     if (index.isValid())
     {
         const auto filename = GetFilename(index);
-        FileContainerIterator iter(filename.toStdString());
+        FlexDiskIterator iter(filename.toStdString());
 
         iter = container->begin();
         if (iter != container->end())

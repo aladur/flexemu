@@ -30,19 +30,24 @@
 class IFlexDiskByFile;
 class IFlexDiskIteratorImp;
 
-class FileContainerIterator
+// class FlexDiskIterator allows to iterate over directory entries
+// of a FLEX disk. Depending on the Flex disk type it uses a different
+// implementation (see private member imp).
+//
+// Rename: FileContainerIterator => FlexDiskIterator
+class FlexDiskIterator
 {
 public:
-    explicit FileContainerIterator(const std::string &p_wildcard = "*.*");
-    FileContainerIterator(const FileContainerIterator &src) = delete;
-    virtual               ~FileContainerIterator() = default;
+    explicit FlexDiskIterator(const std::string &p_wildcard = "*.*");
+    FlexDiskIterator(const FlexDiskIterator &src) = delete;
+    virtual               ~FlexDiskIterator() = default;
     FlexDirEntry          &operator*();
     FlexDirEntry          *operator->();
     bool operator==(const IFlexDiskByFile *aBase) const;
     bool operator!=(const IFlexDiskByFile *aBase) const;
-    FileContainerIterator &operator=(IFlexDiskByFile *aBase);
-    FileContainerIterator &operator++();
-    FileContainerIterator &operator=(const FileContainerIterator &src) =
+    FlexDiskIterator &operator=(IFlexDiskByFile *aBase);
+    FlexDiskIterator &operator++();
+    FlexDiskIterator &operator=(const FlexDiskIterator &src) =
         delete;
     bool DeleteCurrent();
     bool RenameCurrent(const std::string &newName);
