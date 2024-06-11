@@ -29,6 +29,7 @@
 #include "fdirent.h"
 #include <string>
 #include <vector>
+#include <array>
 #include <fstream>
 
 class FlexDiskAttributes;
@@ -143,7 +144,8 @@ protected:
     void Initialize_for_dsk_format(const s_formats &format,
                                    bool write_protected);
     void Initialize_unformatted_disk();
-    static void Create_boot_sectors(Byte sectorBuffer1[], Byte sectorBuffer2[],
+    static void Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
+                                    &boot_sectors,
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(int type) const;

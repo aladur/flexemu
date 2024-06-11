@@ -25,6 +25,8 @@
 #include <sys/stat.h>
 #include <string>
 #include <sstream>
+#include <array>
+#include <vector>
 #include <cctype>
 #include <cassert>
 
@@ -1237,7 +1239,8 @@ void FlexDisk::Initialize_unformatted_disk()
     param.type = TYPE_DISKFILE | TYPE_FLX_DISKFILE;
 }
 
-void FlexDisk::Create_boot_sectors(Byte sectorBuffer1[], Byte sectorBuffer2[],
+void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
+                                   &boot_sectors,
                                    const char *bsFile)
 {
     // Read boot sector(s) if present from file.
@@ -1245,32 +1248,26 @@ void FlexDisk::Create_boot_sectors(Byte sectorBuffer1[], Byte sectorBuffer2[],
     {
         bsFile = bootSectorFile.c_str();
     }
+    memset(boot_sectors.data(), '\0', boot_sectors.size());
     std::fstream boot(bsFile, std::ios::in | std::ios::binary);
 
     if (boot.is_open())
     {
-        boot.read(reinterpret_cast<char *>(sectorBuffer1), SECTOR_SIZE);
+        boot.read(reinterpret_cast<char *>(boot_sectors.data()),
+                  static_cast<std::streamsize>(boot_sectors.size()));
     }
 
-    if (!boot.is_open() || boot.fail())
+    if (!boot.is_open() || (boot.fail() &&
+        (boot.gcount() != SECTOR_SIZE && boot.gcount() != 2 * SECTOR_SIZE)))
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
-        memset(sectorBuffer1, 0, SECTOR_SIZE);
-        sectorBuffer1[0] = 0x7E; // JMP $F02D
-        sectorBuffer1[1] = 0xF0;
-        sectorBuffer1[2] = 0x2D;
-        memset(sectorBuffer2, 0, SECTOR_SIZE);
-        return;
-    }
+        memset(boot_sectors.data(), '\0', boot_sectors.size());
+        boot_sectors.data()[0] = 0x7E; // JMP $F02D
+        boot_sectors.data()[1] = 0xF0;
+        boot_sectors.data()[2] = 0x2D;
 
-    if (boot.is_open())
-    {
-        boot.read(reinterpret_cast<char *>(sectorBuffer2), SECTOR_SIZE);
-    }
-    if (boot.is_open() && boot.fail())
-    {
-        memset(sectorBuffer2, 0, SECTOR_SIZE);
+        return;
     }
 }
 
@@ -1453,8 +1450,6 @@ void FlexDisk::Format_disk(
 
     if (fstream.is_open())
     {
-        Byte sector_buffer[SECTOR_SIZE];
-
         if (fmt == TYPE_FLX_DISKFILE)
         {
             int sides = getSides(format.tracks, format.sectors);
@@ -1472,19 +1467,12 @@ void FlexDisk::Format_disk(
         }
 
         {
-            Byte sector_buffer2[SECTOR_SIZE];
+            std::array<Byte, 2 * SECTOR_SIZE> boot_sectors;
 
-            Create_boot_sectors(sector_buffer, sector_buffer2, bsFile);
+            Create_boot_sectors(boot_sectors, bsFile);
 
-            fstream.write(reinterpret_cast<const char *>(sector_buffer),
-                          sizeof(sector_buffer));
-            if (fstream.fail())
-            {
-                err = 1;
-            }
-
-            fstream.write(reinterpret_cast<const char *>(sector_buffer2),
-                          sizeof(sector_buffer2));
+            fstream.write(reinterpret_cast<const char *>(boot_sectors.data()),
+                          boot_sectors.size());
             if (fstream.fail())
             {
                 err = 1;
@@ -1500,13 +1488,17 @@ void FlexDisk::Format_disk(
             err = 1;
         }
 
-        // Sector 00-04 seems to be unused. Write all zeros.
-        memset(sector_buffer, 0, sizeof(sector_buffer));
-        fstream.write(reinterpret_cast<const char *>(sector_buffer),
-                      sizeof(sector_buffer));
-        if (fstream.fail())
         {
-            err = 1;
+            std::array<Byte, SECTOR_SIZE> sector_buffer;
+
+            // Sector 00-04 seems to be unused. Format with all zeros.
+            memset(sector_buffer.data(), '\0', sector_buffer.size());
+            fstream.write(reinterpret_cast<const char *>(sector_buffer.data()),
+                          sector_buffer.size());
+            if (fstream.fail())
+            {
+                err = 1;
+            }
         }
 
         if (!Write_dir_sectors(fstream, format))
