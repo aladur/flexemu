@@ -490,7 +490,8 @@ void QtGui::OnCpuDialogToggle()
 
             if (!QGuiApplication::screens().isEmpty())
             {
-                screenHeight = QGuiApplication::screens().first()->geometry().height();
+                screenHeight =
+                    QGuiApplication::screens().first()->geometry().height();
             }
 
             y = frameGeometry().y() + frameGeometry().height() + 1;
@@ -1308,7 +1309,8 @@ void QtGui::OnDiskStatus(Word driveNumber)
                 model.setItem(row++, 1, new QStandardItem(text));
             }
             model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
-            model.setItem(row++, 1, new QStandardItem(QString::number(sectors)));
+            model.setItem(row++, 1,
+                    new QStandardItem(QString::number(sectors)));
             text = diskAttributes.GetIsWriteProtected() ? tr("yes") : tr("no");
             model.setItem(row++, 1, new QStandardItem(text));
             text = diskAttributes.GetIsFlexFormat() ? tr("yes") : tr("no");
