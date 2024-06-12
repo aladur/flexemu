@@ -544,3 +544,62 @@ TEST(test_misc1, fct_split)
     ASSERT_TRUE(strings4.empty());
 }
 
+TEST(test_misc1, fct_isFlexFilename)
+{
+    auto result = isFlexFilename("");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("aaa");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("a1234567");
+    EXPECT_FALSE(result);
+    result = isFlexFilename(".cmd");
+    EXPECT_FALSE(result);
+    result = isFlexFilename(".");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("..");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("1.cmd");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("1..cmd");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("a12345678.cmd");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("a1234567.1234");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("a.s");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("a1234567.a12");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("zzzzzzzz.zzz");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("a_______.a__");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("z-------.z--");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("a.a");
+    EXPECT_TRUE(result);
+#ifdef UNIX
+    result = isFlexFilename("A.s");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("a.S");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("abcdefgH.abc");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("abcde123.abC");
+    EXPECT_FALSE(result);
+    result = isFlexFilename("AbcDefG.AbC");
+    EXPECT_FALSE(result);
+#else
+    result = isFlexFilename("A.s");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("a.S");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("abcdefgH.abc");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("abcde123.abC");
+    EXPECT_TRUE(result);
+    result = isFlexFilename("AbcDefG.AbC");
+    EXPECT_TRUE(result);
+#endif
+}
+

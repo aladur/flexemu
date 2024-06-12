@@ -41,6 +41,7 @@
 #include <fstream>
 #include <algorithm>
 #include <utility>
+#include <regex>
 #include <fmt/format.h>
 
 
@@ -953,5 +954,34 @@ std::vector<std::string> split(const std::string &str, char delimiter)
     }
 
     return result;
+}
+
+// Check if filename contains a valid FLEX filename.
+// On Unix only lowercase filenames are allowed.
+// On success return true otherwise false.
+// The rules to be checked:
+// - filename and extension are separated by a dot.
+// filename:
+// - First character is a-z or A-Z
+// - Next up to 7 characters are a-z, A-Z, 0-9, _ or -
+// extension:
+// - First character is a-z or A-Z
+// - Next up to 2 characters are a-z, A-Z, 0-9, _ or -
+/*
+    Some examples:
+
+    allowed:        x.a xx.a xxxxxxxx.a x xx xxxxxxxx
+    not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
+*/
+
+bool isFlexFilename(const std::string &filename)
+{
+#ifdef UNIX
+    static std::regex re("[a-z][a-z0-9_-]{0,7}\\.[a-z][a-z0-9_-]{0,2}");
+#else
+    static const std::regex re("[a-zA-Z][a-zA-Z0-9_-]{0,7}\\.[a-z][a-zA-Z0-9_-]{0,2}");
+#endif
+
+    return std::regex_match(filename, re);
 }
 

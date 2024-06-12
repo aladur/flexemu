@@ -66,7 +66,7 @@
 // The emulation fully supports read, modify, write, delete access for normal
 // and random files. Only files, which are identified as FLEX compatible file
 // names are emulated. All other files in the directory are ignored.
-// See IsFlexFilename for details. If the files in the emulated directory
+// See isFlexFilename for details. If the files in the emulated directory
 // exceed the size of the emulated disk only part of the files are emulated.
 // The size of the emulated disk is read from a file .flexdiskrc. If it does
 // not exist the parameters tracks and sectors are used.
@@ -259,90 +259,6 @@ void FlexDirectoryDiskBySector::initialize_header(bool is_write_protected,
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
     param.type = TYPE_DIRECTORY | TYPE_DIRECTORY_BY_SECTOR;
 }
-
-// Check for a valid FLEX filename.
-// On success return true otherwise false.
-// If true ret_name and ret_extension contains the upper case
-// file basename and extension.
-// The rules to be checked:
-// - filename and extension are separated by a dot.
-// filename:
-// - First character is a-z or A-Z
-// - Next up to 7 characters are a-z, A-Z, 0-9, _ or -
-// extension:
-// - First character is a-z or A-Z
-// - Next up to 2 characters are a-z, A-Z, 0-9, _ or -
-/*
-    Some examples:
-
-    allowed:        x.a xx.a xxxxxxxx.a x xx xxxxxxxx
-    not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
-*/
-bool FlexDirectoryDiskBySector::IsFlexFilename(const char *pfilename,
-        std::string &ret_name,
-        std::string &ret_extension,
-        bool with_extension)
-{
-    int result;
-    char dot;
-    char name[9];
-    char extension[4];
-    const char *format;
-
-    extension[0] = '\0';
-    dot = '\0';
-#ifdef _WIN32
-    format = "%1[A-Za-z]%7[A-Za-z0-9_-]";
-#endif
-#ifdef UNIX
-    format = "%1[a-z]%7[a-z0-9_-]";
-#endif
-    result = sscanf(pfilename, format, &name[0], &name[1]);
-
-    if (!result || result == EOF)
-    {
-        return false;
-    }
-
-    if (result == 1)
-    {
-#ifdef _WIN32
-        format = "%*1[A-Za-z]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
-#endif
-#ifdef UNIX
-        format = "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]";
-#endif
-    }
-    else
-    {
-#ifdef _WIN32
-        format = "%*1[A-Za-z]%*7[A-Za-z0-9_-]%c%1[A-Za-z]%2[A-Za-z0-9_-]";
-#endif
-#ifdef UNIX
-        format = "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]";
-#endif
-    }
-
-    result = sscanf(pfilename, format, &dot, &extension[0], &extension[1]);
-
-    if ((with_extension && (!result || result == 1 || result == EOF)))
-    {
-        return false;
-    }
-    if (strlen(name) + strlen(extension) + (dot == '.' ? 1 : 0) !=
-            strlen(pfilename))
-    {
-        return false;
-    }
-
-    ret_name = name;
-    ret_extension = extension;
-    strupper(ret_name);
-    strupper(ret_extension);
-
-    return true;
-}
-
 
 // Initialize the FLEX directory sectors.
 void FlexDirectoryDiskBySector::initialize_flex_directory()
@@ -912,7 +828,7 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
 
 
 // Create a directory entry for each file for which the file name
-// is identified as a FLEX file name. See IsFlexFilename for details.
+// is identified as a FLEX file name. See isFlexFilename for details.
 // If is_write_protected is true the drive is write protected.
 // The following criterion have to be met to add a file to the FLEX directory:
 // - It is identified as a FLEX file name.
@@ -933,8 +849,6 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
     auto add_file = [&](const std::string &filename, bool is_random)
     {
         auto lc_filename(tolower(filename));
-        std::string name;
-        std::string extension;
 
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
@@ -942,7 +856,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             is_random = isListedInFileRandom(directory, filename);
         }
 
-        if (IsFlexFilename(filename.c_str(), name, extension, true) &&
+        if (isFlexFilename(filename) &&
             strcmp(filename.c_str(), RANDOM_FILE_LIST) != 0 &&
             strcmp(filename.c_str(), BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
@@ -1064,9 +978,6 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
 
     if (!stat(directory.c_str(), &sbuf))
     {
-        std::string name;
-        std::string extension;
-
         auto &sis = flex_sys_info[0];
         struct tm *lt = localtime(&(sbuf.st_mtime));
 
@@ -1076,9 +987,12 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         {
             diskname.resize(FLEX_DISKNAME_LENGTH);
         }
-        if (!IsFlexFilename(diskname.c_str(), name, extension, false))
+        auto pos = diskname.find('.');
+        std::string name{"FLEXDISK"};
+        if (pos != std::string::npos && pos > 0)
         {
-            name = "FLEXDISK";
+            name = diskname.substr(0, std::min(pos, FLEX_DISKNAME_LENGTH));
+            strupper(name);
         }
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');

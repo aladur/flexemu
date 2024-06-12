@@ -177,11 +177,6 @@ private:
         bool is_write_protected);
     void modify_random_file(const char *path, const struct stat &stat,
                             const st_t &pbegin);
-    static bool IsFlexFilename(
-        const char *filename,
-        std::string &name,
-        std::string &extension,
-        bool with_extension);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);
     void check_for_rename(Word ds_idx, const s_dir_sector &d) const;

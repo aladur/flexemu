@@ -1467,7 +1467,7 @@ void FlexDisk::Format_disk(
         }
 
         {
-            std::array<Byte, 2 * SECTOR_SIZE> boot_sectors;
+            std::array<Byte, 2 * SECTOR_SIZE> boot_sectors{};
 
             Create_boot_sectors(boot_sectors, bsFile);
 
@@ -1489,7 +1489,7 @@ void FlexDisk::Format_disk(
         }
 
         {
-            std::array<Byte, SECTOR_SIZE> sector_buffer;
+            std::array<Byte, SECTOR_SIZE> sector_buffer{};
 
             // Sector 00-04 seems to be unused. Format with all zeros.
             memset(sector_buffer.data(), '\0', sector_buffer.size());

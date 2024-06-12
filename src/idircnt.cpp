@@ -86,7 +86,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) != 0 ||
-            !base->IsFlexFilename(fileName) ||
+            !isFlexFilename(fileName) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
@@ -167,7 +167,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) ||
-            !FlexDirectoryDiskByFile::IsFlexFilename(fileName) ||
+            !isFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !multimatches(fileName, wildcard, ';', true)))

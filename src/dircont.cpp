@@ -499,48 +499,6 @@ bool FlexDirectoryDiskByFile::SetRandom(const char *fileName)
     return true;
 }
 
-// check if pfilename contains a valid FLEX filename
-// on Unix only lowercase filenames are allowed
-bool FlexDirectoryDiskByFile::IsFlexFilename(const std::string &filename)
-{
-    int result; // result from sscanf should be int
-    char dot;
-    char name[9];
-    char ext[4];
-
-    dot = '\0';
-    result = sscanf(filename.c_str(), "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
-
-    if (!result || result == EOF)
-    {
-        return false;
-    }
-
-    if (result == 1)
-    {
-        result = sscanf(filename.c_str(), "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]",
-                        &dot, ext, &ext[1]);
-    }
-    else
-    {
-        result = sscanf(filename.c_str(),
-                        "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]",
-                        &dot, ext, &ext[1]);
-    }
-
-    if (!result || result == 1 || result == EOF)
-    {
-        return false;
-    }
-
-    if (strlen(name) + strlen(ext) + (dot == '.' ? 1 : 0) != filename.size())
-    {
-        return false;
-    }
-
-    return true;
-}
-
 /*****************************************************************
 Iterator implemenation
 *****************************************************************/
