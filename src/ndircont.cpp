@@ -783,7 +783,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
 void FlexDirectoryDiskBySector::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
 {
-    Byte file_sector_map[DBPS * 2];
+    std::array<Byte, DBPS * 2> file_sector_map{};
     DWord data_size;
     Word i;
     Word n;
@@ -821,7 +821,8 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
         std::fstream fs(path, std::ios::in | std::ios::out | std::ios::binary);
         if (fs.is_open())
         {
-            fs.write(reinterpret_cast<const char *>(file_sector_map), 2 * DBPS);
+            fs.write(reinterpret_cast<const char *>(&file_sector_map),
+                     file_sector_map.size());
         }
     }
 }
