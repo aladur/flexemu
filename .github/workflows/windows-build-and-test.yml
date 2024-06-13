@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Qt5 Win32
         if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@v3
         with:
           version:      '${{ vars.QT5_VERSION }}'
           host:         'windows'
@@ -45,10 +45,11 @@ jobs:
           dir:          '${{ github.workspace }}'
           archives:     'qtbase qtwinextras'
           setup-python: 'false'
+          extra:        '--base ${{ vars.QT_DOWNLOAD_MIRROR }}'
 
       - name: Install Qt5 x64
         if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@v3
         with:
           version:      '${{ vars.QT5_VERSION }}'
           host:         'windows'
@@ -57,6 +58,7 @@ jobs:
           dir:          '${{ github.workspace }}'
           archives:     'qtbase qtwinextras'
           setup-python: 'false'
+          extra:        '--base ${{ vars.QT_DOWNLOAD_MIRROR }}'
 
       - name: Install Qt6 x64
         if: ${{ matrix.qt-version == 6 }}
@@ -69,6 +71,7 @@ jobs:
           dir:          '${{ github.workspace }}'
           archives:     'qtbase'
           setup-python: 'false'
+          extra:        '--base ${{ vars.QT_DOWNLOAD_MIRROR }}'
 
       - name: Context
         shell: cmd
