@@ -25,7 +25,7 @@
 #ifndef SCHEDCPU_INCLUDED
 #define SCHEDCPU_INCLUDED
 
-#include "typedefs.h"
+#include "misc1.h"
 #include "cpustate.h"
 
 
