@@ -861,16 +861,22 @@ void E2Screen::InitializeNumLockIndicatorMask()
 
         for (index = 0; index < XkbNumIndicators; ++index)
         {
-            if (kbDesc->names->indicators[index])
+            static const std::string strNumLock{"Num Lock"};
+
+            if (!kbDesc->names->indicators[index])
             {
-               char *name = XGetAtomName(display, kbDesc->names->indicators[index]);
-               if (0 == strcmp(name, "Num Lock"))
-               {
-                   numLockIndicatorMask = 1 << index;
-                   break;
-               }
-               XFree(name);
+                continue;
             }
+
+            char *atomName =
+                XGetAtomName(display, kbDesc->names->indicators[index]);
+
+            if (0 == strNumLock.compare(atomName))
+            {
+                numLockIndicatorMask = 1 << index;
+                break;
+            }
+            XFree(atomName);
         }
 
         XkbFreeKeyboard(kbDesc, 0, True);

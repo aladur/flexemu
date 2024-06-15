@@ -681,9 +681,11 @@ yellowgreen", 154 205 50
 
 int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue)
 {
+    const std::string strColorName{colorName};
+
     for (const auto &color : colors)
     {
-        if (strcmp(colorName, color.colorName) == 0)
+        if (strColorName.compare(color.colorName) == 0)
         {
             *red = color.red;
             *green = color.green;

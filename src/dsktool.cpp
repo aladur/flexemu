@@ -959,13 +959,16 @@ bool estimateDiskFormat(const char *format, int &disk_format)
 {
     if (format != nullptr)
     {
-        if (strcmp(format, "dsk") == 0)
+        static const std::string strDsk{"dsk"};
+        static const std::string strFlx{"flx"};
+
+        if (strDsk.compare(format) == 0)
         {
             disk_format = TYPE_DSK_DISKFILE;
             return true;
         }
 
-        if (strcmp(format, "flx") == 0)
+        if (strFlx.compare(format) == 0)
         {
             disk_format = TYPE_FLX_DISKFILE;
             return true;
@@ -1013,9 +1016,11 @@ bool checkDiskFormat(const char *format, int &disk_format)
 
 int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
 {
+    static const std::string strHelp{"help"};
+
     if (disk_size != nullptr)
     {
-        if (strcmp(disk_size, "help") == 0)
+        if (strHelp.compare(disk_size) == 0)
         {
             helpOnDiskSize();
             return 0;
@@ -1031,9 +1036,11 @@ int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
                       "flex_formats and flex_format_shortcuts have different "
                       "size");
 
+        std::string s_disk_size{disk_size};
+
         for (size_t i = 0; i < flex_format_shortcuts.size(); ++i)
         {
-            if (strcmp(disk_size, flex_format_shortcuts[i]) == 0)
+            if (s_disk_size.compare(flex_format_shortcuts[i]) == 0)
             {
                 tracks = flex_formats[i].trk + 1;
                 sectors = flex_formats[i].sec;
@@ -1104,11 +1111,14 @@ int checkTrack0Access()
 
     if (track0Access != nullptr)
     {
-        if (strcmp(track0Access, "DIRECTORY") == 0)
+        static const std::string strDirectory{"DIRECTORY"};
+        static const std::string strFull{"FULL"};
+
+        if (strDirectory.compare(track0Access) == 0)
         {
             FlexDisk::onTrack0OnlyDirSectors = true;
         }
-        else if (strcmp(track0Access, "FULL") == 0)
+        else if (strFull.compare(track0Access) == 0)
         {
             FlexDisk::onTrack0OnlyDirSectors = false;
         }

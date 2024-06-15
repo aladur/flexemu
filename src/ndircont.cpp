@@ -858,8 +858,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
         }
 
         if (isFlexFilename(filename) &&
-            strcmp(filename.c_str(), RANDOM_FILE_LIST) != 0 &&
-            strcmp(filename.c_str(), BOOT_FILE) != 0 &&
+            filename.compare(RANDOM_FILE_LIST) != 0 &&
+            filename.compare(BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
         {
 
@@ -1115,7 +1115,7 @@ void FlexDirectoryDiskBySector::check_for_rename(Word ds_idx,
         new_filename = get_unix_filename(dir_sector.dir_entries[i]);
 
         if (!old_filename.empty() && !new_filename.empty() &&
-            strcmp(old_filename.c_str(), new_filename.c_str()) != 0)
+            old_filename.compare(new_filename) != 0)
         {
             auto old_path = directory + PATHSEPARATORSTRING + old_filename;
             auto new_path = directory + PATHSEPARATORSTRING + new_filename;

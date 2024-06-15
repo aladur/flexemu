@@ -552,7 +552,7 @@ bool isPathsEqual(const std::string &path1, const std::string &path2)
     // TODO: utf-8 case insensitive compare
     return stricmp(path1.c_str(), path2.c_str()) == 0;
 #else
-    return strcmp(path1.c_str(), path2.c_str()) == 0;
+    return path1.compare(path2) == 0;
 #endif
 }
 
