@@ -31,6 +31,7 @@
 #include "flexemu.h"
 #include <string>
 #include <vector>
+#include <array>
 #include <unordered_map>
 
 // class FlexDirectoryDiskBySector implements a sector oriented access
@@ -78,7 +79,7 @@ class FlexDirectoryDiskBySector : public IFlexDiskBySector
     struct s_link_table
     {
         st_t next; // Track and sector number of next sector
-        Byte record_nr[2]; // FLEX logical record number
+        std::array<Byte, 2> record_nr; // FLEX logical record number
         Word f_record; // Relative position in file / 252
         SDWord file_id;
         SectorType type; // The sector type.

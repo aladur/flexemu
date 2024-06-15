@@ -592,7 +592,7 @@ void FlexDirectoryDiskBySector::initialize_flex_link_table()
             link.next.sec = static_cast<Byte>(((i + 1) % param.max_sector) + 1);
         }
 
-        setValueBigEndian(&link.record_nr[0], 0U);
+        setValueBigEndian(link.record_nr.data(), 0U);
         link.f_record = 0;
         link.file_id = std::numeric_limits<SDWord>::max();
         link.type = SectorType::FreeChain;
@@ -697,12 +697,12 @@ bool FlexDirectoryDiskBySector::add_to_link_table(
         if (is_random)
         {
             Word record_nr = i > 2 ? static_cast<Word>(i - 2) : 0U;
-            setValueBigEndian<Word>(&link.record_nr[0], record_nr);
+            setValueBigEndian<Word>(link.record_nr.data(), record_nr);
         }
         else
         {
             Word record_nr = i;
-            setValueBigEndian<Word>(&link.record_nr[0], record_nr);
+            setValueBigEndian<Word>(link.record_nr.data(), record_nr);
         }
 
         link.f_record = static_cast<Word>(i - 1);
