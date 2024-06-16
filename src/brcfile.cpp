@@ -25,6 +25,7 @@
 #include "boption.h"
 #include <sstream>
 #include <fstream>
+#include <cstring>
 
 
 BRcFile::BRcFile(const std::string &p_fileName) : fileName(p_fileName)
@@ -80,7 +81,7 @@ int BRcFile::GetValue(const char *key, std::string &value,
         BOptional<bool> &isInteger)
 {
     std::ifstream fs(fileName, std::ios::in);
-    auto keyLength = strlen(key);
+    auto keyLength = std::strlen(key);
 
     isInteger = true;
 
@@ -173,7 +174,7 @@ int BRcFile::GetValues(const char *keyPrefix,
         fs.get(strbuf);
         auto value = strbuf.str();
         ltrim(value);
-        if (key.size() > strlen(keyPrefix))
+        if (key.size() > std::strlen(keyPrefix))
         {
             const auto lcPrefixOfKey =
                 tolower(key.substr(0, lcKeyPrefix.size()));

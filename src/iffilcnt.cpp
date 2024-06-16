@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <iterator>
 #include <array>
+#include <cstring>
 
 FlexDiskIteratorImp::FlexDiskIteratorImp(FlexDisk *aBase)
     : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
@@ -311,9 +312,9 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
     }
 
     /* update directory entry */
-    memset(&pd->filename[0], 0, FLEX_BASEFILENAME_LENGTH);
+    std::memset(&pd->filename[0], 0, FLEX_BASEFILENAME_LENGTH);
     strncpy(&pd->filename[0], name.c_str(), FLEX_BASEFILENAME_LENGTH);
-    memset(&pd->file_ext[0], 0, FLEX_FILEEXT_LENGTH);
+    std::memset(&pd->file_ext[0], 0, FLEX_FILEEXT_LENGTH);
     strncpy(&pd->file_ext[0], ext.c_str(), FLEX_FILEEXT_LENGTH);
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),

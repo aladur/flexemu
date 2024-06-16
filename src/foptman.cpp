@@ -32,6 +32,7 @@
 #include "foptman.h"
 #include "bregistr.h"
 #include "brcfile.h"
+#include <cstring>
 
 
 const char * const FLEXEMURC = ".flexemurc";
@@ -288,7 +289,7 @@ void FlexemuOptions::GetCommandlineOptions(
                 {
                     std::stringstream str(optarg);
 
-                    if (strlen(optarg) != 2 ||
+                    if (std::strlen(optarg) != 2 ||
                         !(str >> std::hex >> options.reset_key))
                     {
                         std::cerr << "Invalid -r value: '" << optarg << "'.\n"

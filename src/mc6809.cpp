@@ -14,6 +14,7 @@
 #include "mc6809.h"
 #include "da6809.h"
 #include "inout.h"
+#include <cstring>
 
 #ifdef FASTFLEX
     #define PC ipcreg
@@ -32,7 +33,7 @@ Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
 #ifndef FASTFLEX
     dpreg.byte.l = 0;
 #endif
-    memset(&interrupt_status, 0, sizeof(interrupt_status));
+    std::memset(&interrupt_status, 0, sizeof(interrupt_status));
     init();
 }
 
@@ -1483,7 +1484,7 @@ bool Mc6809::set_logfile(const struct s_cpu_logfile &p_lfs)
 
 void Mc6809::get_interrupt_status(tInterruptStatus &stat)
 {
-    memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
+    std::memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
 }
 
 void Mc6809::UpdateFrom(NotifyId id, void * /*param*/)

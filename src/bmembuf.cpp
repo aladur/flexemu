@@ -21,10 +21,10 @@
 */
 
 #include "bmembuf.h"
-#include <string.h>
 #include <utility>
 #include <algorithm>
 #include <stdexcept>
+#include <cstring>
 
 
 BMemoryBuffer::BMemoryBuffer(DWord aSize)
@@ -83,11 +83,11 @@ void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord size) const
         secureSize -= address + size - buffer.size();
     }
 
-    memcpy(target, buffer.data() + address, secureSize);
+    std::memcpy(target, buffer.data() + address, secureSize);
     if (secureSize < size)
     {
         // Fill up buffer not represented in BMemoryBuffer by 0.
-        memset(target + secureSize, 0, size - secureSize);
+        std::memset(target + secureSize, 0, size - secureSize);
     }
 }
 
@@ -105,7 +105,7 @@ void BMemoryBuffer::CopyFrom(const Byte *source, DWord address, DWord size)
         secureSize -= address + size - buffer.size();
     }
 
-    memcpy(buffer.data() + address, source, secureSize);
+    std::memcpy(buffer.data() + address, source, secureSize);
 
     DWord endAddress = address + secureSize - 1;
     addressRanges.emplace_back(address, endAddress);
@@ -125,7 +125,7 @@ bool BMemoryBuffer::CopyTo(std::vector<Byte> &targetBuffer,
 
 void BMemoryBuffer::Reset()
 {
-    memset(buffer.data(), 0, buffer.size());
+    std::memset(buffer.data(), 0, buffer.size());
     addressRanges.clear();
 }
 

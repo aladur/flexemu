@@ -17,6 +17,7 @@
 #include "mc6809st.h"
 #include "da6809.h"
 #include <array>
+#include <cstring>
 
 
 #ifdef _MSC_VER
@@ -148,7 +149,8 @@ void Mc6809::get_status(CpuStatus *cpu_status)
     }
     else
     {
-        strncpy(stat->mnemonic, mnemonic.c_str(), sizeof(stat->mnemonic) - 1);
+        std::strncpy(stat->mnemonic, mnemonic.c_str(),
+                sizeof(stat->mnemonic) - 1);
         stat->mnemonic[sizeof(stat->mnemonic) - 1] = '\0';
     }
 

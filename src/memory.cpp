@@ -27,6 +27,7 @@
 #include "memory.h"
 #include "fcnffile.h"
 #include "soptions.h"
+#include <cstring>
 
 std::array<Byte, 8> Memory::initial_content =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
@@ -181,7 +182,7 @@ void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
 
     if (do_preset_ram == 1)
     {
-        memset(ram_ptr, vram_ptr_index, VIDEORAM_SIZE);
+        std::memset(ram_ptr, vram_ptr_index, VIDEORAM_SIZE);
     }
 }
 
@@ -350,6 +351,6 @@ void Memory::CopyFrom(const Byte *source, DWord address, DWord size)
         secureSize -= address + size - memory_size;
     }
 
-    memcpy(memory.data() + address, source, secureSize);
+    std::memcpy(memory.data() + address, source, secureSize);
 }
 

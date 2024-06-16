@@ -24,6 +24,7 @@
 #include "mc146818.h"
 #include <array>
 #include <fstream>
+#include <cstring>
 
 
 const std::array<Byte, 12> days_per_month{
@@ -46,13 +47,13 @@ Mc146818::Mc146818()
                          static_cast<int>(ram.size()));
             if (istream.fail())
             {
-                memset(ram.data(), '\0', ram.size());
+                std::memset(ram.data(), '\0', ram.size());
             }
         }
     }
     else
     {
-        memset(ram.data(), '\0', ram.size());
+        std::memset(ram.data(), '\0', ram.size());
     }
 
     A = 0;

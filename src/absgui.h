@@ -26,7 +26,6 @@
 
 #include "misc1.h"
 #include <stdio.h>
-#include <string.h>
 
 #include "e2.h"
 #include "flexemu.h"

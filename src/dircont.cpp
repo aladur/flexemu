@@ -51,6 +51,7 @@
 #include "ifilecnt.h"
 #include "idircnt.h"
 #include "cvtwchar.h"
+#include <cstring>
 
 /****************************************/
 /* Constructor                          */
@@ -293,7 +294,7 @@ bool FlexDirectoryDiskByFile::GetAttributes(
 
     diskAttributes.SetTrackSector(0, 0);
 
-    const auto *p = strrchr(directory.c_str(), PATHSEPARATOR);
+    const auto *p = std::strrchr(directory.c_str(), PATHSEPARATOR);
     if (p != nullptr)
     {
         diskAttributes.SetName(p + 1);

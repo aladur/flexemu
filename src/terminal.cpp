@@ -25,6 +25,7 @@
 #include "terminal.h"
 #include "mc6809.h"
 #include "schedule.h"
+#include <cstring>
 
 // pointer to this instance for signal handling
 TerminalIO *TerminalIO::instance = nullptr;
@@ -81,7 +82,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
     struct sigaction sig_action{};
     struct sigaction old_action{};
 
-    memset(&sig_action, 0, sizeof(sig_action));
+    std::memset(&sig_action, 0, sizeof(sig_action));
 
     if (isatty(fileno(stdin)))
     {

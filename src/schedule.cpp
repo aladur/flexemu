@@ -38,6 +38,7 @@
 #include <fstream>
 #include <fmt/format.h>
 #endif
+#include <cstring>
 
 
 Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
@@ -47,7 +48,7 @@ Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :
     is_status_valid(false), is_resume(false),
     target_frequency(ORIGINAL_FREQUENCY), frequency(0.0), time0(0), cycles0(0)
 {
-    memset(&interrupt_status, 0, sizeof(tInterruptStatus));
+    std::memset(&interrupt_status, 0, sizeof(tInterruptStatus));
 }
 
 Scheduler::~Scheduler()
@@ -307,7 +308,7 @@ CpuStatus *Scheduler::get_status()
 void Scheduler::get_interrupt_status(tInterruptStatus &stat)
 {
     std::lock_guard<std::mutex> guard(irq_status_mutex);
-    memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
+    std::memcpy(&stat, &interrupt_status, sizeof(tInterruptStatus));
 }
 
 void Scheduler::frequency_control(QWord time1)

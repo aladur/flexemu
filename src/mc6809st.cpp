@@ -23,6 +23,7 @@
 
 #include "misc1.h"
 #include "mc6809st.h"
+#include <cstring>
 
 
 Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
@@ -44,9 +45,9 @@ Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
     x = lhs.x;
     y = lhs.y;
     state = lhs.state;
-    memcpy(instruction, lhs.instruction, sizeof(instruction));
-    memcpy(mnemonic, lhs.mnemonic, sizeof(mnemonic));
-    memcpy(memory, lhs.memory, sizeof(memory));
+    std::memcpy(instruction, lhs.instruction, sizeof(instruction));
+    std::memcpy(mnemonic, lhs.mnemonic, sizeof(mnemonic));
+    std::memcpy(memory, lhs.memory, sizeof(memory));
     return *this;
 }
 

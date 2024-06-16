@@ -20,9 +20,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <string.h>     // needed for memcpy
 #include "rfilecnt.h"
 #include "flexerr.h"
+#include <cstring>
 
 
 FlexRamDisk::FlexRamDisk(const char *p_path, std::ios::openmode mode,
@@ -147,7 +147,7 @@ bool FlexRamDisk::ReadSector(Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    memcpy(pbuffer, file_buffer.data() + pos, param.byte_p_sector);
+    std::memcpy(pbuffer, file_buffer.data() + pos, param.byte_p_sector);
     return true;
 }
 
@@ -177,7 +177,7 @@ bool FlexRamDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
     }
 
     is_dirty = true;
-    memcpy(&file_buffer[pos], pbuffer, param.byte_p_sector);
+    std::memcpy(&file_buffer[pos], pbuffer, param.byte_p_sector);
 
     return true;
 }

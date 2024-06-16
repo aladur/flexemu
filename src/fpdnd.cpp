@@ -24,6 +24,7 @@
 #include "fpdnd.h"
 #include "flexerr.h"
 #include "ffilebuf.h"
+#include <cstring>
 
 
 FlexDnDFiles::FlexDnDFiles(
@@ -123,28 +124,28 @@ void FlexDnDFiles::WriteDataTo(Byte *buffer) const
     // Independent of the cpu architecture the
     // clipboard format uses big endian byte order.
     auto reversed = toBigEndian<DWord>(size);
-    memcpy(ptr, &reversed, sizeof(reversed));
+    std::memcpy(ptr, &reversed, sizeof(reversed));
     ptr += sizeof(reversed);
-    memcpy(ptr, dnsHostName.c_str(), size);
+    std::memcpy(ptr, dnsHostName.c_str(), size);
     ptr += size;
 
     size = static_cast<DWord>(path.size() + 1);
     reversed = toBigEndian<DWord>(size);
-    memcpy(ptr, &reversed, sizeof(reversed));
+    std::memcpy(ptr, &reversed, sizeof(reversed));
     ptr += sizeof(reversed);
-    memcpy(ptr, path.c_str(), size);
+    std::memcpy(ptr, path.c_str(), size);
     ptr += size;
 
     auto count = static_cast<DWord>(fileBuffers.size());
     count = toBigEndian<DWord>(count);
-    memcpy(ptr, &count, sizeof(count));
+    std::memcpy(ptr, &count, sizeof(count));
     ptr += sizeof(count);
 
     for (const auto &fileBuffer : fileBuffers)
     {
         auto header = fileBuffer.GetHeaderBigEndian();
 
-        memcpy(ptr, &header, sizeof(tFlexFileHeader));
+        std::memcpy(ptr, &header, sizeof(tFlexFileHeader));
         ptr += sizeof(tFlexFileHeader);
         fileBuffer.CopyTo(ptr, fileBuffer.GetFileSize());
         ptr += fileBuffer.GetFileSize();

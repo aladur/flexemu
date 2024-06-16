@@ -29,7 +29,6 @@
 #include <vector>
 #include <cctype>
 #include <cassert>
-
 #include "fcinfo.h"
 #include "flexerr.h"
 #include "ffilecnt.h"
@@ -40,6 +39,7 @@
 #include "ifilecnt.h"
 #include "ifilcnti.h"
 #include "iffilcnt.h"
+#include <cstring>
 
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
@@ -598,7 +598,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
                 // skipped. They are newly generated in sectorBuffer[2]
                 // and sectorBuffer[1].
                 // Here the buffer is initialized to zero.
-                memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
+                std::memset(&sectorBuffer[count][2], 0, SECTOR_SIZE - 2);
                 ++recordNr;
             }
 
@@ -878,11 +878,11 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                    time = entry.GetTime();
                 }
                 int records = entry.GetFileSize() / param.byte_p_sector;
-                memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
-                strncpy(pde->filename, entry.GetFileName().c_str(),
+                std::memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
+                std::strncpy(pde->filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
-                memset(pde->file_ext, 0, FLEX_FILEEXT_LENGTH);
-                strncpy(pde->file_ext, entry.GetFileExt().c_str(),
+                std::memset(pde->file_ext, 0, FLEX_FILEEXT_LENGTH);
+                std::strncpy(pde->file_ext, entry.GetFileExt().c_str(),
                         FLEX_FILEEXT_LENGTH);
                 pde->file_attr = entry.GetAttributes();
                 pde->hour = static_cast<Byte>(time.GetHour());
@@ -1253,7 +1253,7 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
     {
         bsFile = bootSectorFile.c_str();
     }
-    memset(boot_sectors.data(), '\0', boot_sectors.size());
+    std::memset(boot_sectors.data(), '\0', boot_sectors.size());
     std::fstream boot(bsFile, std::ios::in | std::ios::binary);
 
     if (boot.is_open())
@@ -1267,7 +1267,7 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
-        memset(boot_sectors.data(), '\0', boot_sectors.size());
+        std::memset(boot_sectors.data(), '\0', boot_sectors.size());
         boot_sectors.data()[0] = 0x7E; // JMP $F02D
         boot_sectors.data()[1] = 0xF0;
         boot_sectors.data()[2] = 0x2D;
@@ -1497,7 +1497,7 @@ void FlexDisk::Format_disk(
             std::array<Byte, SECTOR_SIZE> sector_buffer{};
 
             // Sector 00-04 seems to be unused. Format with all zeros.
-            memset(sector_buffer.data(), '\0', sector_buffer.size());
+            std::memset(sector_buffer.data(), '\0', sector_buffer.size());
             fstream.write(reinterpret_cast<const char *>(sector_buffer.data()),
                           sector_buffer.size());
             if (fstream.fail())
@@ -1656,7 +1656,7 @@ st_t FlexDisk::ExtendDirectory(s_dir_sector last_dir_sector,
     }
 
     auto new_fc_start = dir_sector.next;
-    memset(&dir_sector, '\0', sizeof(dir_sector));
+    std::memset(&dir_sector, '\0', sizeof(dir_sector));
     dir_sector.record_nr[0] = 0x00;
     dir_sector.record_nr[1] = 0x01;
 

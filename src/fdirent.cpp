@@ -29,6 +29,7 @@
 #include "fdirent.h"
 #include <stdio.h>
 #include <iostream>
+#include <cstring>
 
 
 FlexDirEntry::FlexDirEntry(FlexDirEntry &&src) noexcept
@@ -107,7 +108,7 @@ std::string FlexDirEntry::GetFileExt() const
     const char *p;
     std::string ext;
 
-    p = strchr(fileName.c_str(), '.');
+    p = std::strchr(fileName.c_str(), '.');
 
     if (p != nullptr)
     {
