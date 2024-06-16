@@ -190,14 +190,14 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
         DWord colorRGBValue;
 
         const auto *colorName = colors[i].colorName;
-        getColorForName(colors[i].colorName, &colorRGBValue);
+        getColorForName(colorName, &colorRGBValue);
         cb_color->addItem(tr(colorName));
         QPixmap pixmap(16,16);
-        pixmap.fill(QColor(colors[i].colorName));
+        pixmap.fill(QColor(colorName));
         QIcon colorIcon(pixmap);
         cb_color->setItemIcon(i, colorIcon);
 
-        if (!stricmp(options.color.c_str(), colors[i].colorName))
+        if (!stricmp(options.color.c_str(), colorName))
         {
             index = i;
         }
