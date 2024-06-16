@@ -18686,12 +18686,6 @@ then :
   printf "%s\n" "#define HAVE_SYS_STATVFS_H 1" >>confdefs.h
 
 fi
-ac_fn_c_check_header_compile "$LINENO" "sys/mount.h" "ac_cv_header_sys_mount_h" "$ac_includes_default"
-if test "x$ac_cv_header_sys_mount_h" = xyes
-then :
-  printf "%s\n" "#define HAVE_SYS_MOUNT_H 1" >>confdefs.h
-
-fi
 
 ac_fn_c_check_header_compile "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default"
 if test "x$ac_cv_header_windows_h" = xyes

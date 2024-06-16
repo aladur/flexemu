@@ -25,7 +25,6 @@
 #define ABSGUI_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
 
 #include "e2.h"
 #include "flexemu.h"

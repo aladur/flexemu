@@ -26,7 +26,6 @@
 #define KEYBOARD_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
 #include "flexemu.h"
 #include "asciictl.h"
 #include <string>

@@ -35,7 +35,6 @@
 #include <fstream>
 #include <limits>
 #include <cassert>
-#include <stdio.h>
 #include <sys/stat.h>
 #include <ctype.h>
 #include "bdir.h"

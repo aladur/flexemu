@@ -18,7 +18,6 @@
 
 
 #include "misc1.h"
-#include <stdio.h>
 #include <array>
 #include <map>
 #include "da6809.h"

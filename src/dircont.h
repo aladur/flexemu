@@ -24,8 +24,6 @@
 #define DIRCONT_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
-
 #include "efiletim.h"
 #include "filecont.h"
 #include "fdirent.h"

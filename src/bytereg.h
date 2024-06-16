@@ -25,8 +25,6 @@
 #define BYTEREG_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
-
 #include "iodevice.h"
 
 // ByteRegister is a single byte general purpose

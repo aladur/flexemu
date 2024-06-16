@@ -87,25 +87,12 @@
     #endif
 #endif
 
-#ifdef HAVE_STRINGS_H
-    #include <strings.h>
-#endif
-
-#ifdef HAVE_STDLIB_H
-    #include <stdlib.h>
-#endif
-
 /* adaptions for autoconf for POSIX.1 compatibility */
 #if HAVE_UNISTD_H
     #include <sys/types.h>
     #ifdef __GNUC__
         #include <unistd.h>
     #endif
-#endif
-
-#ifdef _POSIX_VERSION
-    /* Code for POSIX.1 systems.  */
-    #include <limits.h>
 #endif
 
 /* dirent structure: */
@@ -172,12 +159,6 @@
         #ifdef _MSC_VER
             #define PATH_MAX _MAX_PATH
         #endif
-        #if defined(__MINGW32__) || defined (__CYGWIN32__)
-            #include <limits.h>
-        #endif
-    #endif
-    #ifdef __LINUX
-        #include <sys/param.h>
     #endif
 #endif
 

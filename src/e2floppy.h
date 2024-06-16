@@ -29,7 +29,6 @@
 
 #ifndef __fromflex__
 
-    #include <stdio.h>
     #include <sys/stat.h>
     #include "flexemu.h"
     #include "wd1793.h"

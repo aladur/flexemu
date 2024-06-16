@@ -25,10 +25,7 @@
 #define PCH_INCLUDED
 
 #include "misc1.h"
-
 #include <ctype.h>
-#include <stdio.h>
-
 #include <limits>
 #include <memory>
 #include <mutex>

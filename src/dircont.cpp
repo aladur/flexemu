@@ -26,17 +26,9 @@
 #include <string>
 #include <algorithm>
 #include <locale>
-
 #ifdef HAVE_SYS_STATVFS_H
     #include <sys/statvfs.h>
 #endif
-#ifdef HAVE_SYS_MOUNT_H
-    #include <sys/param.h>
-    #include <sys/mount.h>
-#endif
-
-#include <stdio.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "bdir.h"

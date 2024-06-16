@@ -23,7 +23,6 @@
 #include "misc1.h"
 #include <exception>
 #include <sstream>
-#include <stdio.h>
 #include "flexerr.h"
 #include "cvtwchar.h"
 #include "sprinter.h"

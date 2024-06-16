@@ -22,9 +22,6 @@
 
 
 #include "misc1.h"
-#ifdef ultrix
-    #include <strings.h>
-#endif
 #include <ctype.h>
 #include <new>
 

@@ -21,7 +21,6 @@
 */
 
 #include "misc1.h"
-#include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #ifdef HAVE_UNISTD_H

@@ -23,8 +23,6 @@
 
 
 #include "misc1.h"
-#include <stdio.h>
-
 #include "iodevice.h"
 #include "mc6850.h"
 

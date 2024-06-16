@@ -27,7 +27,6 @@
 #include <locale>
 #include "bdate.h"
 #include "fdirent.h"
-#include <stdio.h>
 #include <iostream>
 #include <cstring>
 

@@ -13,7 +13,6 @@
 #ifndef MC6809_INCLUDED
 #define MC6809_INCLUDED
 
-#include <stdio.h>
 #include <atomic>
 #include <array>
 #include "misc1.h"

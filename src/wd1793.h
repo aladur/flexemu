@@ -25,8 +25,6 @@
 #define WD1793_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
-
 #include "iodevice.h"
 #include "filecntb.h"   // needed only for SECTOR_SIZE
 

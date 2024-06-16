@@ -26,8 +26,6 @@
 #define MC6850_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
-
 #include "iodevice.h"
 
 class Mc6850 : public IoDevice

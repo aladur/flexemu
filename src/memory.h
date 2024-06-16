@@ -26,7 +26,6 @@
 #define MEMORY_INCLUDED
 
 #include "misc1.h"
-#include <stdio.h>
 #include "warnoff.h"
 #include "warnon.h"
 #include <functional>
