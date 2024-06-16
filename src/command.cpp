@@ -136,7 +136,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
         auto number = static_cast<int>(INVALID_DRIVE);
         auto count = 0;
         p = command.data();
-        const std::string arg1 = tolower(next_token(&p, &count));
+        std::string arg1 = tolower(next_token(&p, &count));
+        rtrim(arg1);
         skip_token(&p);
         arg2 = next_token(&p, &count);
         skip_token(&p);
