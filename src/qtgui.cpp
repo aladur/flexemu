@@ -1734,7 +1734,8 @@ ColorTable QtGui::CreateColorTable()
 {
     using fn = std::function<QRgb(int)>;
 
-    bool isWithColorScale = !stricmp(options.color.c_str(), "default");
+    const auto optionsColor = tolower(options.color);
+    bool isWithColorScale = !optionsColor.compare("default");
     Word redBase = 255;
     Word greenBase = 255;
     Word blueBase = 255;

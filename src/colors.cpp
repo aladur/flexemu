@@ -9,6 +9,8 @@
 extern "C" {
 #endif
 
+// List of supported colors with their RGB values.
+// All color names are specified in lowercase.
 struct sRGBDef colors[] =
 {
     {"white", 255, 255, 255},

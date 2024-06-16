@@ -198,33 +198,6 @@ std::string ascchr(char x)
     return result;
 }
 
-#if defined(__GNUC__) && !(defined(__MINGW32) || defined (__CYGWIN32) )
-int stricmp(const char *string1, const char *string2)
-{
-    unsigned int i;
-
-    for (i = 0; i < strlen(string1); i++)
-    {
-        if (tolower(*(string1 + i)) < tolower(*(string2 + i)))
-        {
-            return -1;
-        }
-
-        if (tolower(*(string1 + i)) > tolower(*(string2 + i)))
-        {
-            return 1;
-        }
-
-        if (!*string1)
-        {
-            return 0;
-        }
-    }
-
-    return 0;
-}
-#endif
-
 // Check if 'text' matches the wildcard 'pattern'.
 // Supported wildcard characters:
 // *  matches 0 up to any number of arbitrary wildcard characters
@@ -550,7 +523,11 @@ bool isPathsEqual(const std::string &path1, const std::string &path2)
 
 #ifdef _WIN32
     // TODO: utf-8 case insensitive compare
-    return stricmp(path1.c_str(), path2.c_str()) == 0;
+    // std::string with different type traits can not be copy-constructed.
+    // A conversion to const char * is needed. False-positive to be ignored.
+    // NOLINTNEXTLINE(readability-redundant-string-cstr)
+    ci_string ci_path1(path1.c_str());
+    return ci_path1.compare(path2.c_str()) == 0;
 #else
     return path1.compare(path2) == 0;
 #endif

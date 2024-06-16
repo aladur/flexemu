@@ -146,16 +146,11 @@
 /* adapt platform specifics: */
 
 #ifdef _MSC_VER
-    #define stricmp _stricmp
     #define access _access
     #define unlink _unlink
     #define getcwd _getcwd
     #define chdir _chdir
     #include <io.h>
-#endif
-
-#if defined(__GNUC__) && !(defined(__MINGW32) || defined (__CYGWIN32) )
-    extern int stricmp(const char *string1, const char *string2);
 #endif
 
 #ifdef _MSC_VER

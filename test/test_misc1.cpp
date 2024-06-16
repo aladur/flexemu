@@ -131,16 +131,6 @@ TEST(test_misc1, fct_ascchr)
     EXPECT_EQ(result, ".");
 }
 
-TEST(test_misc1, fct_stricmp)
-{
-    auto result = stricmp("AbCDeF", "abcdef");
-    EXPECT_EQ(result, 0);
-    result = stricmp("0AcdX", "0aCDx");
-    EXPECT_EQ(result, 0);
-    result = stricmp("abc", "acd");
-    EXPECT_NE(result, 0);
-}
-
 TEST(test_misc1, fct_matches)
 {
     auto result = matches("", "", false);

@@ -185,6 +185,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     cb_nColors->setCurrentIndex(std::max(index, 0));
 
     index = -1;
+    const auto lcOptionColor = tolower(options.color);
     for (int i = 0; i < static_cast<int>(color_count); i++)
     {
         DWord colorRGBValue;
@@ -197,7 +198,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
         QIcon colorIcon(pixmap);
         cb_color->setItemIcon(i, colorIcon);
 
-        if (!stricmp(options.color.c_str(), colorName))
+        if (!lcOptionColor.compare(colorName))
         {
             index = i;
         }
@@ -206,7 +207,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     cb_color->setCurrentIndex(std::max(index, 0));
 
     bool isMultiColorSchemeChecked =
-        (0 == stricmp(options.color.c_str(), "default"));
+        (0 == lcOptionColor.compare("default"));
 
     c_multiColorScheme->setChecked(isMultiColorSchemeChecked);
 

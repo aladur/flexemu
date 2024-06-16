@@ -126,7 +126,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
     if (val == '\0')
     {
         char *p;
-        const char *arg1;
         const char *arg2;
         const char *arg3;
         const char *arg4;
@@ -137,50 +136,50 @@ void Command::writeIo(Word /*offset*/, Byte val)
         auto number = static_cast<int>(INVALID_DRIVE);
         auto count = 0;
         p = command.data();
-        arg1 = next_token(&p, &count); // get arg1
+        const std::string arg1 = tolower(next_token(&p, &count));
         skip_token(&p);
-        arg2 = next_token(&p, &count); // get arg2
+        arg2 = next_token(&p, &count);
         skip_token(&p);
-        arg3 = next_token(&p, &count); // get arg3
+        arg3 = next_token(&p, &count);
         skip_token(&p);
-        arg4 = next_token(&p, &count); // get arg4
+        arg4 = next_token(&p, &count);
         skip_token(&p);
         next_token(&p, &count);
 
         switch (count)
         {
             case 1:
-                if (stricmp(arg1, "exit") == 0)
+                if (arg1.compare("exit") == 0)
                 {
                     scheduler.request_new_state(CpuState::Exit);
                     return;
                 }
 
-                if (stricmp(arg1, "irq")  == 0)
+                if (arg1.compare("irq") == 0)
                 {
                     Notify(NotifyId::SetIrq);
                     return;
                 }
 
-                if (stricmp(arg1, "firq")  == 0)
+                if (arg1.compare("firq") == 0)
                 {
                     Notify(NotifyId::SetFirq);
                     return;
                 }
 
-                if (stricmp(arg1, "nmi")  == 0)
+                if (arg1.compare("nmi") == 0)
                 {
                     Notify(NotifyId::SetNmi);
                     return;
                 }
 
-                if (stricmp(arg1, "terminal") == 0)
+                if (arg1.compare("terminal") == 0)
                 {
                     inout.output_to_terminal();
                     return;
                 }
 
-                if (stricmp(arg1, "graphic") == 0)
+                if (arg1.compare("graphic") == 0)
                 {
                     if (!inout.output_to_graphic())
                     {
@@ -191,7 +190,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "freq") == 0)
+                if (arg1.compare("freq") == 0)
                 {
                     answer_stream << std::fixed << std::setprecision(2)
                                   << scheduler.get_frequency() << " MHz";
@@ -199,7 +198,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "cycles") == 0)
+                if (arg1.compare("cycles") == 0)
                 {
                     answer_stream << scheduler.get_total_cycles()
                                   << " cycles";
@@ -207,7 +206,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "info") == 0)
+                if (arg1.compare("info") == 0)
                 {
                     for (Word drive_nr = 0; drive_nr <= 3; drive_nr++)
                     {
@@ -218,7 +217,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "sync") == 0)
+                if (arg1.compare("sync") == 0)
                 {
                     if (!fdc.sync_all_drives())
                     {
@@ -233,7 +232,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 break;
 
             case 2:
-                if (stricmp(arg1, "freq") == 0)
+                if (arg1.compare("freq") == 0)
                 {
                     float freq;
 
@@ -255,7 +254,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "umount") == 0)
+                if (arg1.compare("umount") == 0)
                 {
                     if (!fdc.umount_drive(static_cast<Word>(number)))
                     {
@@ -268,14 +267,14 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "info") == 0)
+                if (arg1.compare("info") == 0)
                 {
                     answer =
                         fdc.drive_attributes_string(static_cast<Word>(number));
                     return;
                 }
 
-                if (stricmp(arg1, "sync") == 0)
+                if (arg1.compare("sync") == 0)
                 {
                     if (!fdc.sync_drive(static_cast<Word>(number)))
                     {
@@ -291,7 +290,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 break;
 
             case 3:
-                if (stricmp(arg1, "mount") == 0)
+                if (arg1.compare("mount") == 0)
                 {
                     if ((sscanf(arg3, "%d", &number) != 1) ||
                         number < 0 || number > 3)
@@ -313,7 +312,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if (stricmp(arg1, "rmount") == 0)
+                if (arg1.compare("rmount") == 0)
                 {
                     if ((sscanf(arg3, "%d", &number) != 1) ||
                         number < 0 || number > 3)
@@ -339,23 +338,23 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 break;
 
             case 4:
-                if (stricmp(arg1, "format") == 0)
+                if (arg1.compare("format") == 0)
                 {
                     int trk;
                     int sec;
                     int type = 0;
-                    auto extension = getFileExtension(arg2);
+                    const auto extension = tolower(getFileExtension(arg2));
 
                     if (extension.empty())
                     {
                         type = TYPE_DIRECTORY_BY_SECTOR;
                     }
-                    else if ((stricmp(extension.c_str(), ".dsk") == 0) ||
-                        (stricmp(extension.c_str(), ".wta") == 0))
+                    else if ((extension.compare(".dsk") == 0) ||
+                        (extension.compare(".wta") == 0))
                     {
                         type = TYPE_DSK_DISKFILE;
                     }
-                    else if (stricmp(extension.c_str(), ".flx") == 0)
+                    else if (extension.compare(".flx") == 0)
                     {
                         type = TYPE_FLX_DISKFILE;
                     }

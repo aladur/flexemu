@@ -378,7 +378,12 @@ bool FlexDisk::RenameFile(const std::string &oldName,
 
     // prevent overwriting of an existing file
     // except for changing lower to uppercase.
-    if (stricmp(oldName.c_str(), newName.c_str()) != 0 && FindFile(newName, de))
+    // std::string with different type traits can not be copy-constructed.
+    // A conversion to const char * is needed. False-positive to be ignored.
+    // NOLINTBEGIN(readability-redundant-string-cstr)
+    ci_string ci_oldName(oldName.c_str());
+    if (ci_oldName.compare(newName.c_str()) != 0 && FindFile(newName, de))
+    // NOLINTEND(readability-redundant-string-cstr)
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }

@@ -156,6 +156,7 @@ int BRcFile::GetValues(const char *keyPrefix,
         std::map<std::string, std::string> &values)
 {
     std::ifstream fs(fileName.c_str());
+    const auto lcKeyPrefix = tolower(keyPrefix);
 
     values.clear();
     if (!fs.is_open())
@@ -174,10 +175,11 @@ int BRcFile::GetValues(const char *keyPrefix,
         ltrim(value);
         if (key.size() > strlen(keyPrefix))
         {
-            auto prefixOfKey = key.substr(0, strlen(keyPrefix));
-            auto subKey = key.substr(strlen(keyPrefix));
+            const auto lcPrefixOfKey =
+                tolower(key.substr(0, lcKeyPrefix.size()));
+            auto subKey = key.substr(lcKeyPrefix.size());
 
-            if (fs.good() && stricmp(keyPrefix, prefixOfKey.c_str()) == 0)
+            if (fs.good() && lcKeyPrefix.compare(lcPrefixOfKey) == 0)
             {
                 if (value[0] == '"')
                 {
