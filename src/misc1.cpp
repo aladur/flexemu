@@ -866,7 +866,7 @@ bool isListedInFileRandom(const std::string &directory,
 
     while (std::getline(ifs, line))
     {
-        line = trim(line);
+        line = trim(std::move(line));
         if (line.compare(lowFilename) == 0)
         {
             return true;

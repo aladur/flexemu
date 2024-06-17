@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
                     std::cout << "File " << ofile
                               << " already exists. Overwrite [Y,n]: ";
                     std::getline(std::cin, input);
-                    input = ltrim(input);
+                    input = ltrim(std::move(input));
                 }
 
                 if (!input.empty() && tolower(input[0]) == 'n')
