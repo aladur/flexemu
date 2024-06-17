@@ -589,8 +589,9 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
 
             if (GetFileSize() == 0 || istream.good())
             {
-                auto fullPath = toAbsolutePath(path);
-                auto directory = getParentPath(fullPath);
+                auto fullPath = flx::toAbsolutePath(path);
+                auto directory = flx::getParentPath(fullPath);
+                const auto filename = flx::getFileName(path);
 
                 SetAttributes(0);
                 SetSectorMap(0);
@@ -598,12 +599,12 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                 if(access(directory.c_str(), W_OK))
                 {
                     // CDFS-Support: look for file name in file 'random'
-                    if (isListedInFileRandom(directory, getFileName(path)))
+                    if (flx::isListedInFileRandom(directory, filename))
                     {
                         SetSectorMap(IS_RANDOM_FILE);
                     }
                 }
-                else if (hasRandomFileAttribute(directory, getFileName(path)))
+                else if (flx::hasRandomFileAttribute(directory, filename))
                 {
                     SetSectorMap(IS_RANDOM_FILE);
                 }
@@ -613,7 +614,7 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                     SetAttributes(FLX_READONLY);
                 }
 
-                SetAdjustedFilename(getFileName(path));
+                SetAdjustedFilename(filename);
                 struct tm *lt = localtime(&(sbuf.st_mtime));
                 SetDateTime(
                         BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900),
@@ -643,7 +644,7 @@ void FlexFileBuffer::SetAdjustedFilename(const std::string &fileName)
             adjustedFileName.append(".").append(extension);
         }
     }
-    strupper(adjustedFileName);
+    flx::strupper(adjustedFileName);
     strncpy(fileHeader.fileName, adjustedFileName.c_str(),
             sizeof(fileHeader.fileName) - 1U);
     fileHeader.fileName[sizeof(fileHeader.fileName) - 1U] = '\0';
@@ -656,12 +657,12 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
     DWord oldSize = fileHeader.fileSize;
 
     memcpy(&fileHeader, &src, sizeof(tFlexFileHeader));
-    fileHeader.fileSize = fromBigEndian<DWord>(src.fileSize);
-    fileHeader.attributes = fromBigEndian<Word>(src.attributes);
-    fileHeader.sectorMap = fromBigEndian<Word>(src.sectorMap);
-    fileHeader.day = fromBigEndian<Word>(src.day);
-    fileHeader.month = fromBigEndian<Word>(src.month);
-    fileHeader.year = fromBigEndian<Word>(src.year);
+    fileHeader.fileSize = flx::fromBigEndian<DWord>(src.fileSize);
+    fileHeader.attributes = flx::fromBigEndian<Word>(src.attributes);
+    fileHeader.sectorMap = flx::fromBigEndian<Word>(src.sectorMap);
+    fileHeader.day = flx::fromBigEndian<Word>(src.day);
+    fileHeader.month = flx::fromBigEndian<Word>(src.month);
+    fileHeader.year = flx::fromBigEndian<Word>(src.year);
 
     for (unsigned index = 0; index < sizeof(fileHeader.magicNumber); ++index)
     {
@@ -745,12 +746,12 @@ tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
     tFlexFileHeader result{};
 
     memcpy(&result, &fileHeader, sizeof(result));
-    result.fileSize = toBigEndian<DWord>(fileHeader.fileSize);
-    result.attributes = toBigEndian<Word>(fileHeader.attributes);
-    result.sectorMap = toBigEndian<Word>(fileHeader.sectorMap);
-    result.day = toBigEndian<Word>(fileHeader.day);
-    result.month = toBigEndian<Word>(fileHeader.month);
-    result.year = toBigEndian<Word>(fileHeader.year);
+    result.fileSize = flx::toBigEndian<DWord>(fileHeader.fileSize);
+    result.attributes = flx::toBigEndian<Word>(fileHeader.attributes);
+    result.sectorMap = flx::toBigEndian<Word>(fileHeader.sectorMap);
+    result.day = flx::toBigEndian<Word>(fileHeader.day);
+    result.month = flx::toBigEndian<Word>(fileHeader.month);
+    result.year = flx::toBigEndian<Word>(fileHeader.year);
 
     return result;
 }

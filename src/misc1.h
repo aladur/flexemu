@@ -52,6 +52,7 @@
 #include <algorithm>
 #include <sstream>
 #include <tuple>
+#include <ostream>
 
 
 /* uncomment the following if the Disassembler should display FLEX entry
@@ -271,28 +272,30 @@ extern const char * const RANDOM_FILE_LIST;
 #define FALLTHROUGH
 #endif
 
-#ifdef __cplusplus
-    extern char tolower_value(char ch);
-    extern char &tolower_ref(char &ch);
-    extern void strlower(std::string& str);
-    extern void strupper(std::string& str);
-    extern std::string tolower(const std::string& src);
-    extern std::string tolower(std::string&& src);
-    extern std::string toupper(const std::string& src);
-    extern std::string toupper(std::string&& src);
-    extern std::string binstr(Byte x);
-    extern std::string hexstr(Byte x);
-    extern std::string hexstr(Word x);
-    extern std::string ascchr(char x);
+#ifdef _WIN32
+    extern int getopt(int argc, char *const argv[], const char *optstr);
+    extern int optind;
+    extern int opterr;
+    extern int optopt;
+    extern const char *optarg;
+#endif
 
-    #ifdef _WIN32
-        extern int getopt(int argc, char *const argv[], const char *optstr);
-        extern int optind;
-        extern int opterr;
-        extern int optopt;
-        extern const char *optarg;
-    #endif
-#endif /* ifdef __cplusplus */
+#ifdef __cplusplus
+namespace flx
+{
+extern char tolower_value(char ch);
+extern char &tolower_ref(char &ch);
+extern void strlower(std::string& str);
+extern void strupper(std::string& str);
+extern std::string tolower(const std::string& src);
+extern std::string tolower(std::string&& src);
+extern std::string toupper(const std::string& src);
+extern std::string toupper(std::string&& src);
+extern std::string binstr(Byte x);
+extern std::string hexstr(Byte x);
+extern std::string hexstr(Word x);
+extern std::string ascchr(char x);
+extern char hex_digit(Byte x);
 
 extern std::vector<std::string> split(const std::string &str, char delimiter);
 extern bool matches(const std::string &text, const std::string &pattern,
@@ -307,7 +310,7 @@ extern std::string getExecutablePath();
 extern std::string getHomeDirectory();
 extern void dumpSector(std::ostream &os, uint32_t indent_count,
                        const Byte *buffer, uint32_t size);
-extern void hex_dump(const char *buffer, int count);
+extern void hex_dump(std::ostream &os, const char *buffer, int count);
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
@@ -323,7 +326,7 @@ extern bool isPathsEqual(const std::string &path1, const std::string &path2);
 extern bool isFlexFilename(const std::string &filename);
 extern "C" int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue);
 extern "C" int getColorForName(const char *colorName, DWord *color);
-extern "C" struct sRGBDef colors[];
+extern "C" const struct sRGBDef colors[];
 extern "C" const size_t color_count;
 
 extern const char * const white_space;
@@ -511,6 +514,7 @@ template<size_t N> std::string getstr(const char (&array)[N])
 
     return result;
 }
+}
 
 // Define a case insensitive char trait.
 // Together with a ci_string type definition it allows a
@@ -520,28 +524,28 @@ struct ci_char_traits : public std::char_traits<char>
 {
     static bool eq(char c1, char c2)
     {
-        return tolower(c1) == tolower(c2);
+        return ::tolower(c1) == ::tolower(c2);
     }
 
     static bool ne(char c1, char c2)
     {
-        return tolower(c1) != tolower(c2);
+        return ::tolower(c1) != ::tolower(c2);
     }
 
     static bool lt(char c1, char c2)
     {
-        return tolower(c1) < tolower(c2);
+        return ::tolower(c1) < ::tolower(c2);
     }
 
     static int compare(const char* c1, const char* c2, size_t n)
     {
         while (n-- != 0)
         {
-            if (tolower(*c1) < tolower(*c2))
+            if (::tolower(*c1) < ::tolower(*c2))
             {
                 return -1;
             }
-            if (tolower(*c1) > tolower(*c2))
+            if (::tolower(*c1) > ::tolower(*c2))
             {
                 return 1;
             }
@@ -553,9 +557,9 @@ struct ci_char_traits : public std::char_traits<char>
 
     static const char* find(const char* s, int n, char a)
     {
-        const auto lc_a = tolower(a);
+        const auto lc_a = ::tolower(a);
 
-        while (n-- > 0 && tolower(*s) != lc_a)
+        while (n-- > 0 && ::tolower(*s) != lc_a)
         {
             ++s;
         }
@@ -564,6 +568,6 @@ struct ci_char_traits : public std::char_traits<char>
 };
 
 typedef std::basic_string<char, ci_char_traits> ci_string;
-
+#endif /* ifdef __cplusplus */
 #endif /* __misc1.h__ */
 

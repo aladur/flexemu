@@ -75,7 +75,7 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
 
             if (std::getline(stream, section, ']'))
             {
-                section = trim(std::move(section));
+                section = flx::trim(std::move(section));
 
                 return Type::Section;
             }
@@ -92,8 +92,8 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
                 if (std::getline(stream, key, '=') &&
                     std::getline(stream, value))
                 {
-                    key = trim(std::move(key));
-                    value = trim(std::move(value));
+                    key = flx::trim(std::move(key));
+                    value = flx::trim(std::move(value));
 
                     return Type::KeyValue;
                 }

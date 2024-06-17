@@ -1734,7 +1734,7 @@ ColorTable QtGui::CreateColorTable()
 {
     using fn = std::function<QRgb(int)>;
 
-    const auto optionsColor = tolower(options.color);
+    const auto optionsColor = flx::tolower(options.color);
     bool isWithColorScale = !optionsColor.compare("default");
     Word redBase = 255;
     Word greenBase = 255;
@@ -1743,7 +1743,8 @@ ColorTable QtGui::CreateColorTable()
 
     if (!isWithColorScale)
     {
-        getRGBForName(options.color.c_str(), &redBase, &greenBase, &blueBase);
+        flx::getRGBForName(options.color.c_str(), &redBase, &greenBase,
+                &blueBase);
     }
 
     fn GetColor = [&](int index) -> QRgb
@@ -1822,26 +1823,26 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
 
     fileHeader.type[0] = 'B';
     fileHeader.type[1] = 'M';
-    fileHeader.fileSize = toLittleEndian<DWord>(destSize);
+    fileHeader.fileSize = flx::toLittleEndian<DWord>(destSize);
     fileHeader.reserved[0] = 0U;
     fileHeader.reserved[1] = 0U;
-    fileHeader.dataOffset = toLittleEndian<DWord>(dataOffset);
+    fileHeader.dataOffset = flx::toLittleEndian<DWord>(dataOffset);
     memcpy(pData, &fileHeader, sizeof(fileHeader));
     pData += sizeof(fileHeader);
 
-    infoHeader.size = toLittleEndian<DWord>(sizeof(infoHeader));
-    infoHeader.width = toLittleEndian<SDWord>(WINDOWWIDTH);
-    infoHeader.height = toLittleEndian<SDWord>(height);
-    infoHeader.planes = toLittleEndian<Word>(1U);
-    infoHeader.bitCount = toLittleEndian<Word>(8U);
-    infoHeader.compression = toLittleEndian<DWord>(BI_RGB);
-    infoHeader.imageSize = toLittleEndian<DWord>(height * WINDOWWIDTH);
+    infoHeader.size = flx::toLittleEndian<DWord>(sizeof(infoHeader));
+    infoHeader.width = flx::toLittleEndian<SDWord>(WINDOWWIDTH);
+    infoHeader.height = flx::toLittleEndian<SDWord>(height);
+    infoHeader.planes = flx::toLittleEndian<Word>(1U);
+    infoHeader.bitCount = flx::toLittleEndian<Word>(8U);
+    infoHeader.compression = flx::toLittleEndian<DWord>(BI_RGB);
+    infoHeader.imageSize = flx::toLittleEndian<DWord>(height * WINDOWWIDTH);
     infoHeader.xPixelsPerMeter = 0;
     infoHeader.yPixelsPerMeter = 0;
     infoHeader.colorsUsed =
-        toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
+        flx::toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
     infoHeader.colorsImportant =
-        toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
+        flx::toLittleEndian<DWord>(static_cast<DWord>(p_colorTable.size()));
     memcpy(pData, &infoHeader, sizeof(infoHeader));
     pData += sizeof(infoHeader);
 

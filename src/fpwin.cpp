@@ -67,7 +67,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     : mdiArea(new QMdiArea)
     , options(p_options)
 {
-    injectDirectory = getHomeDirectory().c_str();
+    injectDirectory = flx::getHomeDirectory().c_str();
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     QImage image(":resource/background.png");
@@ -122,8 +122,8 @@ void FLEXplorer::NewFlexDisk()
                 return;
             }
 
-            auto filename = getFileName(ui.GetPath().toStdString());
-            auto directory = getParentPath(ui.GetPath().toStdString());
+            auto filename = flx::getFileName(ui.GetPath().toStdString());
+            auto directory = flx::getParentPath(ui.GetPath().toStdString());
             const char *bsFile = !options.bootSectorFile.empty() ?
                                  options.bootSectorFile.c_str() : nullptr;
             auto *container = FlexDisk::Create(
@@ -1080,8 +1080,8 @@ QStringList FLEXplorer::GetSupportedFiles(const QMimeData *mimeData)
     for (const auto &url : mimeData->urls())
     {
         const auto path = QDir::toNativeSeparators(url.toLocalFile());
-        const auto fileExtension =
-            QString(getFileExtension(path.toStdString()).c_str()).toLower();
+        const auto fileExtension = QString(flx::getFileExtension(
+                        path.toStdString()).c_str()).toLower();
 
         if (supportedExtensions.contains(fileExtension))
         {

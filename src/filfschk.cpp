@@ -387,7 +387,7 @@ void FlexDiskCheck::InitializeLinks()
             }
 
             st_t next{buffer[0], buffer[1]};
-            auto record_nr = getValueBigEndian<Word>(&buffer[2]);
+            auto record_nr = flx::getValueBigEndian<Word>(&buffer[2]);
 
             links.emplace(current, link_t{current, next, record_nr});
         }
@@ -533,7 +533,7 @@ void FlexDiskCheck::InitializeFreeChainSectors()
     {
         auto fc_start = sis.sir.fc_start;
         auto fc_end = sis.sir.fc_end;
-        auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
+        auto free = flx::getValueBigEndian<Word>(&sis.sir.free[0]);
         disk_day = sis.sir.day;
         disk_month = sis.sir.month;
         disk_year = sis.sir.year;
@@ -548,8 +548,8 @@ std::string FlexDiskCheck::GetUnixFilename(
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)
     {
-        auto basename(tolower(getstr<>(dir_entry.filename)));
-        auto extension((tolower(getstr<>(dir_entry.file_ext))));
+        auto basename(flx::tolower(flx::getstr<>(dir_entry.filename)));
+        auto extension((flx::tolower(flx::getstr<>(dir_entry.file_ext))));
         return basename + '.' + extension;
     }
 
@@ -586,7 +586,7 @@ void FlexDiskCheck::InitializeFileSectors()
             auto name = GetUnixFilename(dir_entry);
             auto start = dir_entry.start;
             auto end = dir_entry.end;
-            auto records = getValueBigEndian<Word>(&dir_entry.records[0]);
+            auto records = flx::getValueBigEndian<Word>(&dir_entry.records[0]);
             bool is_random = (dir_entry.sector_map == IS_RANDOM_FILE);
             auto day = dir_entry.day;
             auto month = dir_entry.month;

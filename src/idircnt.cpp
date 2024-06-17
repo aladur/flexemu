@@ -86,13 +86,13 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) != 0 ||
-            !isFlexFilename(fileName) ||
+            !flx::isFlexFilename(fileName) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName, wildcard, ';', true)))
+            !flx::multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
 
@@ -136,7 +136,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         }
 
         // CDFS support:
-        if (isListedInFileRandom(base->GetPath(), fileName))
+        if (flx::isListedInFileRandom(base->GetPath(), fileName))
         {
             sectorMap = 2;
         }
@@ -146,7 +146,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
             attributes |= WRITE_PROTECT;
         }
 
-        strupper(fileName);
+        flx::strupper(fileName);
         dirEntry.SetTotalFileName(fileName);
         auto fileSize = (findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE;
         dirEntry.SetFileSize(fileSize);
@@ -167,10 +167,10 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) ||
-            !isFlexFilename(fileName) ||
+            !flx::isFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
-            !multimatches(fileName, wildcard, ';', true)))
+            !flx::multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
 
@@ -205,7 +205,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
-            if (isListedInFileRandom(base->GetPath(), fileName))
+            if (flx::isListedInFileRandom(base->GetPath(), fileName))
             {
                 sectorMap = 2;
             }
@@ -223,7 +223,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
             attributes |= WRITE_PROTECT;
         }
 
-        strupper(fileName);
+        flx::strupper(fileName);
         dirEntry.SetTotalFileName(fileName);
         auto fileSize = (sbuf.st_size + 251) / 252 * SECTOR_SIZE;
         dirEntry.SetFileSize(static_cast<int>(fileSize));
@@ -254,7 +254,7 @@ bool FlexDirectoryDiskIteratorImp::DeleteCurrent()
         return false;
     }
 
-    filePath = tolower(dirEntry.GetTotalFileName());
+    filePath = flx::tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATOR + filePath;
 #ifdef UNIX
 
@@ -317,10 +317,10 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
 
     std::string src(dirEntry.GetTotalFileName());
     // When renaming always prefer lowercase filenames
-    auto dst(tolower(newName));
+    auto dst(flx::tolower(newName));
     FlexDirEntry de;
 #ifdef UNIX
-    strlower(src);
+    flx::strlower(src);
 #endif
 
     // prevent overwriting of an existing file
@@ -378,7 +378,7 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
         return false;
     }
 
-    filePath = tolower(dirEntry.GetTotalFileName());
+    filePath = flx::tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (stat(filePath.c_str(), &sbuf) == 0)
@@ -431,7 +431,7 @@ bool FlexDirectoryDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 #ifdef UNIX
     struct stat sbuf{};
 
-    filePath = tolower(dirEntry.GetTotalFileName());
+    filePath = flx::tolower(dirEntry.GetTotalFileName());
     filePath = base->GetPath() + PATHSEPARATORSTRING + filePath;
 
     if (!stat(filePath.c_str(), &sbuf))

@@ -50,7 +50,7 @@ static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 #endif
 #ifdef _WIN32
     std::string FlexDisk::bootSectorFile =
-        getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
+        flx::getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
     bool FlexDisk::onTrack0OnlyDirSectors = true;
 
@@ -81,7 +81,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
         }
     }
 
-    magic_number = toBigEndian(MAGIC_NUMBER);
+    magic_number = flx::toBigEndian(MAGIC_NUMBER);
     write_protect = 0;
     sizecode = p_sizecode;
     sides0 = static_cast<Byte>(p_sides0);
@@ -154,7 +154,7 @@ FlexDisk::FlexDisk(
         // to identify a FLX formatted disk.
         fstream.read(reinterpret_cast<char *>(&flx_header), sizeof(flx_header));
         if (!fstream.fail() &&
-            fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
+            flx::fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
         {
             // File is identified as a FLX container format.
             Initialize_for_flx_format(flx_header, write_protected);
@@ -312,7 +312,7 @@ FlexDisk *FlexDisk::Create(
 
     path = directory;
 
-    if (!path.empty() && !endsWithPathSeparator(path))
+    if (!path.empty() && !flx::endsWithPathSeparator(path))
     {
         path += PATHSEPARATORSTRING;
     }
@@ -465,14 +465,14 @@ bool FlexDisk::GetAttributes(FlexDiskAttributes &diskAttributes) const
             disk_name.append(disk_ext);
         }
         diskAttributes.SetDate(BDate(sis.sir.day, sis.sir.month, year));
-        diskAttributes.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+        diskAttributes.SetFree(flx::getValueBigEndian<Word>(&sis.sir.free[0]) *
                                param.byte_p_sector);
         diskAttributes.SetTotalSize((sis.sir.last.sec *
                                     (sis.sir.last.trk + 1)) *
                                     param.byte_p_sector);
         diskAttributes.SetName(disk_name);
         diskAttributes.SetNumber(
-                getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+                flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
 
     diskAttributes.SetTrackSector(
@@ -656,7 +656,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
 
         // Set record number. If last sector of file set link to 0.
         // Write the sector to disk.
-        setValueBigEndian<Word>(&sectorBuffer[0][2],
+        flx::setValueBigEndian<Word>(&sectorBuffer[0][2],
                                 recordNr - (buffer.IsRandom() ? 2U : 0U));
 
         if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
@@ -702,9 +702,9 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // Update the system info sector.
-    auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
+    auto free = flx::getValueBigEndian<Word>(&sis.sir.free[0]);
     free -= recordNr;
-    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    flx::setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!WriteSector(reinterpret_cast<const Byte *>(&sis), sis_trk_sec.trk,
                      sis_trk_sec.sec))
@@ -892,7 +892,8 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                 entry.GetEndTrkSec(tmp1, tmp2);
                 pde->end.trk = static_cast<Byte>(tmp1);
                 pde->end.sec = static_cast<Byte>(tmp2);
-                setValueBigEndian<Word>(&pde->records[0], static_cast<Word>(records));
+                flx::setValueBigEndian<Word>(&pde->records[0],
+                        static_cast<Word>(records));
                 pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
                 pde->minute = static_cast<Byte>(time.GetMinute());
                 date = entry.GetDate();
@@ -1305,12 +1306,12 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
     time_now = time(nullptr);
     lt = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
-    setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
+    flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
     sis.sir.fc_start.sec = static_cast<Byte>((start % format.sectors) + 1);
     sis.sir.fc_end.trk = static_cast<Byte>(format.tracks - 1);
     sis.sir.fc_end.sec = static_cast<Byte>(format.sectors);
-    setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free));
+    flx::setValueBigEndian<Word>(&sis.sir.free[0], static_cast<Word>(free));
     sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
     sis.sir.day = static_cast<Byte>(lt->tm_mday);
     sis.sir.year = static_cast<Byte>(year);
@@ -1443,7 +1444,7 @@ void FlexDisk::Format_disk(
 
     path = directory;
 
-    if (!path.empty() && !endsWithPathSeparator(path))
+    if (!path.empty() && !flx::endsWithPathSeparator(path))
     {
         path +=PATHSEPARATORSTRING;
     }

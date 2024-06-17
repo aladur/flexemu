@@ -73,11 +73,11 @@ Mc146818::Mc146818()
 
 std::string Mc146818::getConfigFilePath()
 {
-    auto path = getHomeDirectory();
+    auto path = flx::getHomeDirectory();
 
     if (!path.empty())
     {
-        if (!endsWithPathSeparator(path))
+        if (!flx::endsWithPathSeparator(path))
         {
             path.append(PATHSEPARATORSTRING);
         }

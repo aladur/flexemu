@@ -240,7 +240,7 @@ bool E2floppy::mount_drive(const std::string &path,
         return true;
     }
 
-    if (isAbsolutePath(path))
+    if (flx::isAbsolutePath(path))
     {
         return false;
     }

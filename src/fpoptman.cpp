@@ -56,7 +56,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 #endif
 #ifdef _WIN32
     options.bootSectorFile =
-        getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
+        flx::getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
 #endif
     options.injectTextFileConvert = true;
     options.injectTextFileAskUser = true;
@@ -64,14 +64,15 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.extractTextFileAskUser = true;
     options.onTrack0OnlyDirSectors = true;
     options.fileSizeType = FileSizeType::FileSize;
-    options.openInjectFilePath = getHomeDirectory();
+    options.openInjectFilePath = flx::getHomeDirectory();
 #ifdef UNIX
     options.openDiskPath = F_DATADIR;
 #endif
 #ifdef _WIN32
-    options.openDiskPath = getExecutablePath() + PATHSEPARATORSTRING "Data";
+    options.openDiskPath = flx::getExecutablePath() + PATHSEPARATORSTRING
+                           "Data";
 #endif
-    options.openDirectoryPath = getHomeDirectory();
+    options.openDirectoryPath = flx::getHomeDirectory();
 }
 
 void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
@@ -109,7 +110,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     }
 #endif
 #ifdef UNIX
-    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
         FLEXPLORERRC;
 
     BRcFile rcFile(rcFileName);
@@ -227,7 +228,7 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
 #endif
 #ifdef UNIX
     const auto rcFileName =
-        (getHomeDirectory() += PATHSEPARATORSTRING) += FLEXPLORERRC;
+        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += FLEXPLORERRC;
     BRcFile rcFile(rcFileName);
 
     rcFile.GetValue(FLEXPLORERVERSION, options.version);

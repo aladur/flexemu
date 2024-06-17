@@ -75,7 +75,7 @@ std::string BDate::GetDateString(Format format) const
 
         case Format::D2MSU3Y4:
             std::string monthString(monthNames[m - 1]);
-            strupper(monthString);
+            flx::strupper(monthString);
             stream << fmt::format("{:02}-{}-{:04}", GetDay(), monthString, y);
             break;
     }

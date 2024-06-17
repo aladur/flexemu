@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
 
         if (ofile.empty())
         {
-            ofile = getFileStem(ifile);
+            ofile = flx::getFileStem(ifile);
             switch (ofiletype)
             {
                 case FileType::IntelHex:
@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
                     std::cout << "File " << ofile
                               << " already exists. Overwrite [Y,n]: ";
                     std::getline(std::cin, input);
-                    input = ltrim(std::move(input));
+                    input = flx::ltrim(std::move(input));
                 }
 
                 if (!input.empty() && tolower(input[0]) == 'n')

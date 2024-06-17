@@ -189,7 +189,7 @@ QString FlexplorerTableModel::GetPath() const
 
 QString FlexplorerTableModel::GetUserFriendlyPath() const
 {
-    return getFileName(path.toStdString()).c_str();
+    return flx::getFileName(path.toStdString()).c_str();
 }
 
 bool FlexplorerTableModel::IsWriteProtected() const
@@ -978,7 +978,7 @@ void FlexplorerTableModel::OpenFlexDisk(const char *p_path,
     {
         std::string directory(p_path);
 
-        if (endsWithPathSeparator(directory))
+        if (flx::endsWithPathSeparator(directory))
         {
             directory = directory.substr(0, directory.size()-1);
         }

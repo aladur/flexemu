@@ -183,7 +183,7 @@ inline Byte Da6809::D_Immediate8(const char *mnemo, Byte bytes,
 inline Byte Da6809::D_Immediate16(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
-    const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
+    const auto offset = flx::getValueBigEndian<Word>(&memory[bytes - 2]);
 
     p_code = PrintCode(bytes);
     const auto *label = FlexLabel(offset);
@@ -351,7 +351,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x09 : // ,R + 16 Bit Offset
                 extrabytes = 2;
                 p_code = PrintCode(bytes + extrabytes);
-                offset = getValueBigEndian<Word>(&memory[2]);
+                offset = flx::getValueBigEndian<Word>(&memory[2]);
                 s = "";
                 p_mnemonic = fmt::format("{:<5s} {}{}${:04X},{}{}", mnemo,
                          br1, s, offset,
@@ -389,7 +389,8 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x0d :  // ,PC + 16 Bit Offset
-                offset = (getValueBigEndian<Word>(&memory[2]) + pc + 4) & 0xFFFF;
+                offset = (flx::getValueBigEndian<Word>(&memory[2]) + pc + 4)
+                         & 0xFFFF;
                 s = ">";
                 extrabytes = 2;
                 p_code = PrintCode(bytes + extrabytes);
@@ -402,7 +403,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 {
                     br1 = "[";
                     br2 = "]";
-                    offset = getValueBigEndian<Word>(&memory[2]);
+                    offset = flx::getValueBigEndian<Word>(&memory[2]);
                     extrabytes = 2;
                     p_code = PrintCode(bytes + extrabytes);
                     p_mnemonic = fmt::format("{:<5s} {}${:04X}{}", mnemo,
@@ -424,7 +425,7 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 inline Byte Da6809::D_Extended(const char *mnemo, Byte bytes,
         std::string &p_code, std::string &p_mnemonic)
 {
-    const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
+    const auto offset = flx::getValueBigEndian<Word>(&memory[bytes - 2]);
 
     p_code = PrintCode(bytes);
     const auto *label = FlexLabel(offset);
@@ -475,7 +476,7 @@ inline Byte Da6809::D_Relative8(const char *mnemo, Byte bytes,
 inline Byte Da6809::D_Relative16(const char *mnemo, Byte bytes,
         DWord &p_jumpaddr, std::string &p_code, std::string &p_mnemonic)
 {
-    const auto offset = getValueBigEndian<Word>(&memory[bytes - 2]);
+    const auto offset = flx::getValueBigEndian<Word>(&memory[bytes - 2]);
 
     if (offset <= 32767)
     {

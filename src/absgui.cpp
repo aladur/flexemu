@@ -72,15 +72,15 @@ void AbstractGui::redraw_cpuview(const Mc6809CpuStatus &status)
 void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
 {
     int stack_base = ((status.s / CPU_STACK_BYTES) * CPU_STACK_BYTES) - 16;
-    text(6, 2, hexstr(status.pc));
-    text(6, 3, hexstr(status.s));
-    text(6, 4, hexstr(status.u));
-    text(6, 5, hexstr(status.x));
-    text(6, 6, hexstr(status.y));
-    text(15, 3, binstr(status.cc));
-    text(15, 4, hexstr(status.dp));
-    text(15, 5, hexstr(status.a));
-    text(15, 6, hexstr(status.b));
+    text(6, 2, flx::hexstr(status.pc));
+    text(6, 3, flx::hexstr(status.s));
+    text(6, 4, flx::hexstr(status.u));
+    text(6, 5, flx::hexstr(status.x));
+    text(6, 6, flx::hexstr(status.y));
+    text(15, 3, flx::binstr(status.cc));
+    text(15, 4, flx::hexstr(status.dp));
+    text(15, 5, flx::hexstr(status.a));
+    text(15, 6, flx::hexstr(status.b));
 
     std::string cycles_str = fmt::format("{:16}", status.total_cycles);
     text(5, 0, cycles_str);
@@ -111,7 +111,7 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
         }
         else
         {
-            text(25, 5 + i, hexstr(bp.value()));
+            text(25, 5 + i, flx::hexstr(bp.value()));
         }
     }
 
@@ -119,7 +119,8 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
 
     for (Word line = 0U; line < CPU_STACK_LINES; ++line)
     {
-        text(0, line + 8, hexstr(static_cast<Word>(stack_base + stack_offset)));
+        const auto stack_line = static_cast<Word>(stack_base + stack_offset);
+        text(0, line + 8, flx::hexstr(stack_line));
 
         std::string hex_dump;
         std::string ascii_dump;
@@ -127,9 +128,9 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
         for (Word x = 0U; x < CPU_STACK_BYTES; ++x)
         {
             auto byte = status.memory[stack_offset + x];
-            hex_dump.append(hexstr(byte)).append(" ");
+            hex_dump.append(flx::hexstr(byte)).append(" ");
             auto ch = static_cast<char>(byte);
-            ascii_dump.append(ascchr(ch));
+            ascii_dump.append(flx::ascchr(ch));
         }
 
         text(6, line + 8, hex_dump);

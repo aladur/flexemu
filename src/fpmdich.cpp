@@ -430,7 +430,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
 
     for (auto &index : selectedRows)
     {
-        auto filename(tolower(model->GetFilename(index).toStdString()));
+        auto filename(flx::tolower(model->GetFilename(index).toStdString()));
 
         try
         {
@@ -448,13 +448,14 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
 #ifdef _WIN32
             // Windows ShellExtensions works best with a
             // well known file extension.
-            if (getFileExtension(filename.c_str()) != ".txt")
+            if (flx::getFileExtension(filename.c_str()) != ".txt")
             {
                 filename += ".txt";
             }
 #endif
 
-            auto tempPath = getTempPath() + PATHSEPARATORSTRING "flexplorer";
+            auto tempPath = flx::getTempPath() + PATHSEPARATORSTRING
+                "flexplorer";
 
             if (!BDirectory::Exists(tempPath))
             {
@@ -465,7 +466,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             }
 
             tempPath += PATHSEPARATORSTRING +
-                        getFileName(GetPath().toStdString());
+                        flx::getFileName(GetPath().toStdString());
             if (!BDirectory::Exists(tempPath))
             {
                 if (!BDirectory::Create(tempPath))
@@ -806,7 +807,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
         return nullptr;
     }
 
-    FlexDnDFiles files(GetPath().toStdString(), getHostName());
+    FlexDnDFiles files(GetPath().toStdString(), flx::getHostName());
 
     for (const auto &index : selectedRows)
     {
@@ -914,8 +915,8 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
 
     files.ReadDataFrom(reinterpret_cast<Byte *>(itemData.data()));
 
-    if (getHostName() == files.GetDnsHostName() &&
-            isPathsEqual(GetPath().toStdString(), files.GetPath()))
+    if (flx::getHostName() == files.GetDnsHostName() &&
+            flx::isPathsEqual(GetPath().toStdString(), files.GetPath()))
     {
         return count;
     }

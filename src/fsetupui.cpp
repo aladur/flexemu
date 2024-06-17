@@ -185,13 +185,13 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
     cb_nColors->setCurrentIndex(std::max(index, 0));
 
     index = -1;
-    const auto lcOptionColor = tolower(options.color);
-    for (int i = 0; i < static_cast<int>(color_count); i++)
+    const auto lcOptionColor = flx::tolower(options.color);
+    for (int i = 0; i < static_cast<int>(flx::color_count); i++)
     {
         DWord colorRGBValue;
 
-        const auto *colorName = colors[i].colorName;
-        getColorForName(colorName, &colorRGBValue);
+        const auto *colorName = flx::colors[i].colorName;
+        flx::getColorForName(colorName, &colorRGBValue);
         cb_color->addItem(tr(colorName));
         QPixmap pixmap(16,16);
         pixmap.fill(QColor(colorName));
@@ -655,13 +655,13 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         {
             options.color = cb_color->currentText().toStdString();
 
-            for (size_t i = 0; i < color_count; i++)
+            for (size_t i = 0; i < flx::color_count; i++)
             {
-                auto colorName = tr(colors[i].colorName);
+                auto colorName = tr(flx::colors[i].colorName);
 
                 if (colorName == cb_color->currentText())
                 {
-                    options.color = colors[i].colorName;
+                    options.color = flx::colors[i].colorName;
                 }
             }
         }
@@ -969,8 +969,8 @@ void FlexemuOptionsUi::OnFrequencyOriginal(bool value)
     if (value)
     {
         bool ok;
-        auto text =
-            QString::fromStdString(toString<float>(ORIGINAL_FREQUENCY, ok));
+        auto text = QString::fromStdString(
+                    flx::toString<float>(ORIGINAL_FREQUENCY, ok));
 
         e_frequency->setText(text);
     }

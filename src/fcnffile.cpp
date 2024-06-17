@@ -127,10 +127,10 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 
 int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 {
-    std::string fileName = getFileName(monitorFilePath);
+    std::string fileName = flx::getFileName(monitorFilePath);
 
 #ifdef _WIN32
-    strlower(fileName);
+    flx::strlower(fileName);
 #endif
 
     BIniFile iniFile(iniFileName.c_str());
@@ -142,7 +142,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
         std::string key = iter.first;
 
 #ifdef _WIN32
-        strlower(key);
+        flx::strlower(key);
 #endif
         if (fileName == key)
         {
@@ -234,7 +234,7 @@ std::pair<std::string, std::set<std::string> >
 
             while (std::getline(stream, device, ','))
             {
-                device = trim(std::move(device));
+                device = flx::trim(std::move(device));
 
                 if (validDevices.find(device) == validDevices.end())
                 {
@@ -257,7 +257,7 @@ std::pair<std::string, std::set<std::string> >
     {
         if (logFilePath.empty())
         {
-            logFilePath = getTempPath() + "/flexemu_device.log";
+            logFilePath = flx::getTempPath() + "/flexemu_device.log";
         }
 
         result.first = logFilePath;

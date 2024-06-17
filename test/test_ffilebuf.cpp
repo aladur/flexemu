@@ -67,7 +67,7 @@ TEST(test_ffilebuf, fct_move_ctor)
     const auto *p_tgt = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_tgt, nullptr);
     auto uc(test_file);
-    strupper(uc);
+    flx::strupper(uc);
     EXPECT_EQ(uc.compare(ffb_tgt.GetFilename()), 0);
 
     // Check source (should be all empty).
@@ -114,7 +114,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     const auto *p_tgt = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_tgt, nullptr);
     auto uc_tgt(test_file);
-    strupper(uc_tgt);
+    flx::strupper(uc_tgt);
     EXPECT_EQ(uc_tgt.compare(ffb_tgt.GetFilename()), 0);
 
     // Check source (same as target).
@@ -128,7 +128,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     const auto *p_src = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_src, nullptr);
     auto uc_src(test_file);
-    strupper(uc_src);
+    flx::strupper(uc_src);
     EXPECT_EQ(uc_src.compare(ffb_src.GetFilename()), 0);
 
     fs::remove(path);
@@ -151,7 +151,7 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     EXPECT_EQ(ffb.GetFileSize(), 29U);
     EXPECT_FALSE(ffb.IsEmpty());
     auto uc(test_file);
-    strupper(uc);
+    flx::strupper(uc);
     EXPECT_EQ(uc.compare(ffb.GetFilename()), 0);
 
     fs::remove(path);

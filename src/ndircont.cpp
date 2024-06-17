@@ -97,7 +97,7 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
     }
 
     directory = path;
-    if (directory.size() > 1 && endsWithPathSeparator(directory))
+    if (directory.size() > 1 && flx::endsWithPathSeparator(directory))
     {
         // Remove trailing PATHSEPARATOR character.
         directory.resize(directory.size() - 1);
@@ -181,16 +181,17 @@ bool FlexDirectoryDiskBySector::GetAttributes(
 {
 
     const auto &sis = flex_sys_info[0];
-    std::string disk_name(getstr<>(sis.sir.disk_name));
+    std::string disk_name(flx::getstr<>(sis.sir.disk_name));
 
     diskAttributes.SetDate(BDate(sis.sir.day, sis.sir.month, sis.sir.year));
     diskAttributes.SetTrackSector(sis.sir.last.trk + 1, sis.sir.last.sec);
-    diskAttributes.SetFree(getValueBigEndian<Word>(&sis.sir.free[0]) *
+    diskAttributes.SetFree(flx::getValueBigEndian<Word>(&sis.sir.free[0]) *
                            param.byte_p_sector);
     diskAttributes.SetTotalSize((sis.sir.last.sec * (sis.sir.last.trk + 1)) *
                                 param.byte_p_sector);
     diskAttributes.SetName(disk_name);
-    diskAttributes.SetNumber(getValueBigEndian<Word>(&sis.sir.disk_number[0]));
+    diskAttributes.SetNumber(
+            flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     diskAttributes.SetPath(directory);
     diskAttributes.SetType(param.type);
     diskAttributes.SetAttributes(attributes);
@@ -281,7 +282,7 @@ void FlexDirectoryDiskBySector::initialize_flex_directory()
 
         dir_sector.next.trk = '\0';
         dir_sector.next.sec = is_last ? '\0' : static_cast<Byte>(i + 1);
-        setValueBigEndian<Word>(dir_sector.record_nr, 0U);
+        flx::setValueBigEndian<Word>(dir_sector.record_nr, 0U);
 
         std::fill(std::begin(dir_sector.unused),
                   std::end(dir_sector.unused), '\0');
@@ -306,8 +307,8 @@ std::string FlexDirectoryDiskBySector::get_unix_filename(
     if (dir_entry.filename[0] != DE_EMPTY &&
         dir_entry.filename[0] != DE_DELETED)
     {
-        auto basename(tolower(getstr<>(dir_entry.filename)));
-        auto extension(tolower(getstr<>(dir_entry.file_ext)));
+        auto basename(flx::tolower(flx::getstr<>(dir_entry.filename)));
+        auto extension(flx::tolower(flx::getstr<>(dir_entry.file_ext)));
         return basename + '.' + extension;
     }
 
@@ -500,7 +501,7 @@ SDWord FlexDirectoryDiskBySector::next_free_dir_entry()
 
     Word record_nr = static_cast<Word>(flex_directory.size()) -
                      init_dir_sectors + 1;
-    setValueBigEndian<Word>(dir_sector.record_nr, record_nr);
+    flx::setValueBigEndian<Word>(dir_sector.record_nr, record_nr);
 
     const auto track_sector = sis.sir.fc_start;
     const auto sec_idx = get_sector_index(track_sector);
@@ -591,7 +592,7 @@ void FlexDirectoryDiskBySector::initialize_flex_link_table()
             link.next.sec = static_cast<Byte>(((i + 1) % param.max_sector) + 1);
         }
 
-        setValueBigEndian(link.record_nr.data(), 0U);
+        flx::setValueBigEndian(link.record_nr.data(), 0U);
         link.f_record = 0;
         link.file_id = std::numeric_limits<SDWord>::max();
         link.type = SectorType::FreeChain;
@@ -607,7 +608,7 @@ void FlexDirectoryDiskBySector::initialize_flex_link_table()
             static_cast<Byte>((fc_start % param.max_sector) + 1);
         sis.sir.fc_end.trk = static_cast<Byte>(param.max_track);
         sis.sir.fc_end.sec = static_cast<Byte>(param.max_sector);
-        setValueBigEndian<Word>(sis.sir.free, free);
+        flx::setValueBigEndian<Word>(sis.sir.free, free);
     }
 }
 
@@ -666,7 +667,7 @@ bool FlexDirectoryDiskBySector::add_to_link_table(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    auto free = getValueBigEndian<Word>(&sis.sir.free[0]);
+    auto free = flx::getValueBigEndian<Word>(&sis.sir.free[0]);
 
     if (size == 0U)
     {
@@ -696,12 +697,12 @@ bool FlexDirectoryDiskBySector::add_to_link_table(
         if (is_random)
         {
             Word record_nr = i > 2 ? static_cast<Word>(i - 2) : 0U;
-            setValueBigEndian<Word>(link.record_nr.data(), record_nr);
+            flx::setValueBigEndian<Word>(link.record_nr.data(), record_nr);
         }
         else
         {
             Word record_nr = i;
-            setValueBigEndian<Word>(link.record_nr.data(), record_nr);
+            flx::setValueBigEndian<Word>(link.record_nr.data(), record_nr);
         }
 
         link.f_record = static_cast<Word>(i - 1);
@@ -714,7 +715,7 @@ bool FlexDirectoryDiskBySector::add_to_link_table(
     end.trk = static_cast<Byte>(sec_idx_end / param.max_sector);
     // update sys info sector
     free -= records;
-    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    flx::setValueBigEndian<Word>(&sis.sir.free[0], free);
     if (free > 0U)
     {
         sis.sir.fc_start.sec =
@@ -769,7 +770,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
     dir_entry.file_attr = is_write_protected ? WRITE_PROTECT : 0;
     dir_entry.start = begin;
     dir_entry.end = end;
-    setValueBigEndian<Word>(&dir_entry.records[0], records);
+    flx::setValueBigEndian<Word>(&dir_entry.records[0], records);
     dir_entry.sector_map = is_random ? IS_RANDOM_FILE : 0;
     dir_entry.month = static_cast<Byte>(lt->tm_mon + 1);
     dir_entry.day = static_cast<Byte>(lt->tm_mday);
@@ -848,15 +849,15 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
 
     auto add_file = [&](const std::string &filename, bool is_random)
     {
-        auto lc_filename(tolower(filename));
+        auto lc_filename(flx::tolower(filename));
 
         // CDFS-Support: look for file name in file 'random'
         if (is_write_protected)
         {
-            is_random = isListedInFileRandom(directory, filename);
+            is_random = flx::isListedInFileRandom(directory, filename);
         }
 
-        if (isFlexFilename(filename) &&
+        if (flx::isFlexFilename(filename) &&
             filename.compare(RANDOM_FILE_LIST) != 0 &&
             filename.compare(BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
@@ -887,7 +888,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
     {
         do
         {
-            auto filename(tolower(ConvertToUtf8String(pentry.cFileName)));
+            auto filename(flx::tolower(ConvertToUtf8String(pentry.cFileName)));
             auto path = directory + PATHSEPARATORSTRING + filename.c_str();
             if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
             {
@@ -946,11 +947,12 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             if (!stat(path.c_str(), &sbuf) &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
-                std::string name(getFileStem(filename));
-                std::string extension(getFileExtension(filename).c_str() + 1);
+                std::string name(flx::getFileStem(filename));
+                std::string extension(
+                        flx::getFileExtension(filename).c_str() + 1);
 
-                strupper(name);
-                strupper(extension);
+                flx::strupper(name);
+                flx::strupper(extension);
                 add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
                                  end, (access(path.c_str(), W_OK) != 0));
@@ -981,7 +983,7 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         auto &sis = flex_sys_info[0];
         struct tm *lt = localtime(&(sbuf.st_mtime));
 
-        std::string diskname = getFileName(directory);
+        std::string diskname = flx::getFileName(directory);
 
         if (diskname.size() > FLEX_DISKNAME_LENGTH)
         {
@@ -992,7 +994,7 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         if (pos != std::string::npos && pos > 0)
         {
             name = diskname.substr(0, std::min(pos, FLEX_DISKNAME_LENGTH));
-            strupper(name);
+            flx::strupper(name);
         }
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
@@ -1001,10 +1003,10 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
                     std::begin(sis.sir.disk_name));
         std::fill(std::begin(sis.sir.disk_ext), std::end(sis.sir.disk_ext),
                   '\0');
-        setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
+        flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], number);
         sis.sir.fc_start = st_t{0, 0};
         sis.sir.fc_end = st_t{0, 0};
-        setValueBigEndian<Word>(&sis.sir.free[0], 0U);
+        flx::setValueBigEndian<Word>(&sis.sir.free[0], 0U);
         sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
         sis.sir.day = static_cast<Byte>(lt->tm_mday);
         sis.sir.year = static_cast<Byte>(lt->tm_year);
@@ -1604,7 +1606,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                         boot_buffer.cend(),
                         [](Byte b){ return b == 0; });
                 // Remove link address.
-                setValueBigEndian<Word>(&boot_buffer[3], 0U);
+                flx::setValueBigEndian<Word>(&boot_buffer[3], 0U);
                 // If sector 2 contains all zero bytes only write
                 // the first sector otherwise write first and second
                 // sector to file.
@@ -1818,8 +1820,9 @@ std::string FlexDirectoryDiskBySector::to_string(SectorType type)
 std::string FlexDirectoryDiskBySector::get_unique_filename(
                                     const char *extension) const
 {
-    auto number = getValueBigEndian<Word>(flex_sys_info[0].sir.disk_number);
-    std::string diskname = getFileName(directory);
+    auto number = flx::getValueBigEndian<Word>(
+            flex_sys_info[0].sir.disk_number);
+    std::string diskname = flx::getFileName(directory);
     if (diskname[0] == '.')
     {
         diskname = "flexdisk";

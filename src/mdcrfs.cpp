@@ -63,7 +63,7 @@ std::string MdcrFileSystem::CreateMdcrFilename(const char *name,
 
     if (toUppercase)
     {
-        strupper(result);
+        flx::strupper(result);
     }
 
     return result;
@@ -140,8 +140,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
             return MdcrStatus::WrongChecksum;
         }
 
-        startAddress = getValueBigEndian<Word>(&ibuffer[7]);
-        endAddress = getValueBigEndian<Word>(&ibuffer[9]);
+        startAddress = flx::getValueBigEndian<Word>(&ibuffer[7]);
+        endAddress = flx::getValueBigEndian<Word>(&ibuffer[9]);
         if (startAddress > endAddress)
         {
             return MdcrStatus::ReadError;
@@ -200,7 +200,7 @@ MdcrStatus MdcrFileSystem::WriteFile(
     int32_t index = 0;
     std::vector<Byte> ibuffer;
     std::vector<Byte> obuffer;
-    std::string filename = getFileName(filepath);
+    std::string filename = flx::getFileName(filepath);
     std::string mdcrFilename = CreateMdcrFilename(filename.c_str(), toUppercase);
 
     if (mdcr.IsWriteProtected())

@@ -61,21 +61,21 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
     }
 
-    if (isAbsolutePath(aPath))
+    if (flx::isAbsolutePath(aPath))
     {
         directory = aPath;
     }
     else
     {
-        directory = getCurrentPath();
-        if (!directory.empty() && !endsWithPathSeparator(directory))
+        directory = flx::getCurrentPath();
+        if (!directory.empty() && !flx::endsWithPathSeparator(directory))
         {
             directory += PATHSEPARATORSTRING;
         }
         directory += aPath;
     }
 
-    if (endsWithPathSeparator(directory))
+    if (flx::endsWithPathSeparator(directory))
     {
         directory.resize(directory.size() - 1);
     }
@@ -112,7 +112,7 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
 
     path = directory;
 
-    if (!path.empty() && !endsWithPathSeparator(path))
+    if (!path.empty() && !flx::endsWithPathSeparator(path))
     {
         path += PATHSEPARATORSTRING;
     }
@@ -313,7 +313,7 @@ int FlexDirectoryDiskByFile::GetFlexDiskType() const
 FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
-    auto filePath(tolower(fileName));
+    auto filePath(flx::tolower(fileName));
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
@@ -340,7 +340,7 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
 #ifdef UNIX
-    strlower(lowerFileName);
+    flx::strlower(lowerFileName);
 #endif
     const auto filePath = directory + PATHSEPARATORSTRING + lowerFileName;
 
@@ -393,7 +393,7 @@ bool FlexDirectoryDiskByFile::SetDateTime(
     struct utimbuf timebuf{};
     struct tm file_time{};
     std::string filePath;
-    auto lowerFileName(tolower(std::string(fileName)));
+    auto lowerFileName(flx::tolower(std::string(fileName)));
 
     filePath = directory + PATHSEPARATORSTRING + lowerFileName;
     const bool setFileTime =
@@ -444,7 +444,7 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
 #endif
 #ifdef UNIX
         struct stat sbuf{};
-        auto lowerFileName(tolower(wildcard));
+        auto lowerFileName(flx::tolower(wildcard));
 
         auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 
@@ -479,7 +479,7 @@ bool FlexDirectoryDiskByFile::SetRandom(const char *fileName)
 #endif
 #ifdef UNIX
     struct stat sbuf{};
-    auto lowerFileName(tolower(std::string(fileName)));
+    auto lowerFileName(flx::tolower(std::string(fileName)));
 
     auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 

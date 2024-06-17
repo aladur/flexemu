@@ -87,11 +87,11 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         if (pd->filename[0] != DE_DELETED)
         {
             // ok, found a valid directory entry
-            std::string fileName(getstr<>(pd->filename));
-            std::string fileExtension(getstr<>(pd->file_ext));
+            std::string fileName(flx::getstr<>(pd->filename));
+            std::string fileExtension(flx::getstr<>(pd->file_ext));
             fileName += '.' + fileExtension;
 
-            if (multimatches(fileName, wildcard, ';', true))
+            if (flx::multimatches(fileName, wildcard, ';', true))
             {
                 dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
                 dirEntry.SetTime(BTime(pd->hour & 0x7F, pd->minute, 0U));
@@ -101,7 +101,7 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
                 dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);
                 dirEntry.SetEndTrkSec(pd->end.trk, pd->end.sec);
                 dirEntry.SetFileSize(
-                    getValueBigEndian<Word>(&pd->records[0]) *
+                    flx::getValueBigEndian<Word>(&pd->records[0]) *
                                             base->GetBytesPerSector());
                 dirEntry.SetSectorMap(pd->sector_map);
                 dirEntry.ClearEmpty();
@@ -142,7 +142,7 @@ bool FlexDiskIteratorImp::DeleteCurrent()
     pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
     start = pd->start;
     end = pd->end;
-    auto records = getValueBigEndian<Word>(&pd->records[0]);
+    auto records = flx::getValueBigEndian<Word>(&pd->records[0]);
 
     // deleted file is signed by 0xFF as first byte of filename
     pd->filename[0] = DE_DELETED;
@@ -234,9 +234,9 @@ bool FlexDiskIteratorImp::DeleteCurrent()
     // update sys info sector
     // update number of free sectors
     // and end of free chain trk/sec
-    Word free = getValueBigEndian<Word>(&sis.sir.free[0]);
+    Word free = flx::getValueBigEndian<Word>(&sis.sir.free[0]);
     free += records;
-    setValueBigEndian<Word>(&sis.sir.free[0], free);
+    flx::setValueBigEndian<Word>(&sis.sir.free[0], free);
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&sis),
                            sis_trk_sec.trk, sis_trk_sec.sec))

@@ -11,7 +11,7 @@ extern "C" {
 
 // List of supported colors with their RGB values.
 // All color names are specified in lowercase.
-struct sRGBDef colors[] =
+const struct sRGBDef flx::colors[] =
 {
     {"white", 255, 255, 255},
     {"red", 255, 0, 0},
@@ -27,7 +27,7 @@ struct sRGBDef colors[] =
     {"brown", 165, 42, 42},
 };
 
-const size_t color_count = sizeof(colors) / sizeof(colors[0]);
+const size_t flx::color_count = sizeof(flx::colors) / sizeof(flx::colors[0]);
 
 /*
 {"gray", 192, 192, 192},
@@ -681,7 +681,8 @@ yellowgreen", 154 205 50
 
 */
 
-int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue)
+int flx::getRGBForName(const char *colorName, Word *red, Word *green,
+                       Word *blue)
 {
     const std::string strColorName{colorName};
 
@@ -699,7 +700,7 @@ int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue)
     return 0;
 }
 
-int getColorForName(const char *colorName, DWord *rgbColor)
+int flx::getColorForName(const char *colorName, DWord *rgbColor)
 {
     Word red;
     Word green;

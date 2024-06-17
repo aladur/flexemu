@@ -101,7 +101,7 @@ TEST(test_da6809, dis_inherent)
         }
         EXPECT_EQ(code, expected_code);
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
-        mnemonic = rtrim(mnemonic);
+        mnemonic = flx::rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
@@ -201,7 +201,7 @@ TEST(test_da6809, dis_immediate)
         {
             expected_mnemonic += fmt::format("{:02X}", tgtaddr);
         }
-        mnemonic = rtrim(mnemonic);
+        mnemonic = flx::rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
@@ -393,7 +393,7 @@ TEST(test_da6809, dis_long_branch_relative)
 
         EXPECT_EQ(flags, expected_flags);
         const auto expected_jumpaddr = pc + size +
-            getValueBigEndian<Word>(&memory[pc + size - 2]);
+            flx::getValueBigEndian<Word>(&memory[pc + size - 2]);
         EXPECT_EQ(jumpaddr, expected_jumpaddr);
         auto expected_code = fmt::format("{:04X}:", pc);
         for (int i = 0; i < size; ++i)

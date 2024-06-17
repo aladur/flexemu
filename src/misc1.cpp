@@ -52,9 +52,9 @@
 #endif
 
 const char * const RANDOM_FILE_LIST = "random";
-const char * const white_space = " \t\n\r\f\v";
+const char * const flx::white_space = " \t\n\r\f\v";
 
-char tolower_value(char ch)
+char flx::tolower_value(char ch)
  {
      if (ch >= 'A' && ch <= 'Z')
      {
@@ -63,7 +63,7 @@ char tolower_value(char ch)
      return ch;
  }
 
- char &tolower_ref(char &ch)
+ char &flx::tolower_ref(char &ch)
  {
      if (ch >= 'A' && ch <= 'Z')
      {
@@ -90,7 +90,7 @@ char toupper_value(char ch)
      return ch;
  }
 
-void strlower(std::string& str)
+void flx::strlower(std::string& str)
 {
     for (auto &ch : str)
     {
@@ -98,7 +98,7 @@ void strlower(std::string& str)
     }
 }
 
-void strupper(std::string& str)
+void flx::strupper(std::string& str)
 {
     for (auto &ch : str)
     {
@@ -106,7 +106,7 @@ void strupper(std::string& str)
     }
 }
 
-std::string tolower(const std::string& src)
+std::string flx::tolower(const std::string& src)
 {
     std::string result;
     std::transform(src.cbegin(), src.cend(), std::back_inserter(result),
@@ -115,7 +115,7 @@ std::string tolower(const std::string& src)
     return result;
 }
 
-std::string tolower(std::string&& src)
+std::string flx::tolower(std::string&& src)
 {
     std::string result = std::move(src);
 
@@ -124,7 +124,7 @@ std::string tolower(std::string&& src)
     return result;
 }
 
-std::string toupper(const std::string& src)
+std::string flx::toupper(const std::string& src)
 {
     std::string result;
     std::transform(src.cbegin(), src.cend(), std::back_inserter(result),
@@ -133,7 +133,7 @@ std::string toupper(const std::string& src)
     return result;
 }
 
-std::string toupper(std::string&& src)
+std::string flx::toupper(std::string&& src)
 {
     std::string result = std::move(src);
 
@@ -143,7 +143,7 @@ std::string toupper(std::string&& src)
 }
 
 // Base 2 and Base 16 conversion functions
-std::string binstr(Byte x)
+std::string flx::binstr(Byte x)
 {
     std::string result("        ");
 
@@ -156,14 +156,14 @@ std::string binstr(Byte x)
     return result;
 }
 
-inline char hex_digit(Byte x)
+inline char flx::hex_digit(Byte x)
 {
     static const char *digits = "0123456789abcdef";
 
     return digits[x & 0x0F];
 }
 
-std::string hexstr(Byte x)
+std::string flx::hexstr(Byte x)
 {
     std::string result("  ");
 
@@ -174,7 +174,7 @@ std::string hexstr(Byte x)
     return result;
 }
 
-std::string hexstr(Word x)
+std::string flx::hexstr(Word x)
 {
     std::string result("    ");
 
@@ -189,7 +189,7 @@ std::string hexstr(Word x)
     return result;
 }
 
-std::string ascchr(char x)
+std::string flx::ascchr(char x)
 {
     std::string result(" ");
 
@@ -202,8 +202,8 @@ std::string ascchr(char x)
 // Supported wildcard characters:
 // *  matches 0 up to any number of arbitrary wildcard characters
 // ?  matches exactly 1 arbitrary character
-bool matches(const std::string &text, const std::string &pattern,
-             bool ignorecase)
+bool flx::matches(const std::string &text, const std::string &pattern,
+                  bool ignorecase)
 {
     static const int MAX = std::numeric_limits<int>::max();
     auto ipattern = pattern.cbegin();
@@ -226,7 +226,7 @@ bool matches(const std::string &text, const std::string &pattern,
 
         if (ignorecase)
         {
-            char_txt = static_cast<char>(tolower(char_txt));
+            char_txt = static_cast<char>(::tolower(char_txt));
         }
 
         while (any_char_count == 0 && ipattern != pattern.cend())
@@ -255,7 +255,7 @@ bool matches(const std::string &text, const std::string &pattern,
 
             if (ignorecase)
             {
-                char_pat = static_cast<char>(tolower(char_pat));
+                char_pat = static_cast<char>(::tolower(char_pat));
             }
 
             break;
@@ -311,14 +311,14 @@ bool matches(const std::string &text, const std::string &pattern,
     return ipattern == pattern.cend() || only_stars;
 }
 
-bool multimatches(const std::string &text, const std::string &multipattern,
-                  char delimiter /* = ';'*/, bool ignorecase /* = false */)
+bool flx::multimatches(const std::string &text, const std::string &multipattern,
+                       char delimiter /* = ';'*/, bool ignorecase /* = false */)
 {
-    auto patterns = split(multipattern, delimiter);
+    auto patterns = flx::split(multipattern, delimiter);
 
     for (const auto &pattern : patterns)
     {
-        if (matches(text, pattern, ignorecase))
+        if (flx::matches(text, pattern, ignorecase))
         {
             return true;
         }
@@ -328,7 +328,7 @@ bool multimatches(const std::string &text, const std::string &multipattern,
 }
 
 #ifdef _WIN32
-std::string getExecutablePath()
+std::string flx::getExecutablePath()
 {
     wchar_t path[MAX_PATH];
 
@@ -358,7 +358,7 @@ std::string getExecutablePath()
 #endif
 
 #ifdef UNIX
-std::string getHomeDirectory()
+std::string flx::getHomeDirectory()
 {
     std::string result;
 
@@ -377,7 +377,7 @@ std::string getHomeDirectory()
 }
 #endif
 #ifdef _WIN32
-std::string getHomeDirectory()
+std::string flx::getHomeDirectory()
 {
     std::string homeDrive;
     std::string homePath;
@@ -395,7 +395,7 @@ std::string getHomeDirectory()
 }
 #endif
 
-std::string getTempPath()
+std::string flx::getTempPath()
 {
 #ifdef _WIN32
     wchar_t tempPath[MAX_PATH];
@@ -413,7 +413,7 @@ std::string getTempPath()
 #endif
 }
 
-std::string getFileName(const std::string &path)
+std::string flx::getFileName(const std::string &path)
 {
     auto pos = path.find_last_of(pathSeparators);
 
@@ -437,7 +437,7 @@ std::string getFileName(const std::string &path)
     return path;
 }
 
-std::string getParentPath(const std::string &path)
+std::string flx::getParentPath(const std::string &path)
 {
     auto pos = path.find_last_of(pathSeparators);
 
@@ -464,15 +464,15 @@ std::string getParentPath(const std::string &path)
     return "";
 }
 
-std::string toAbsolutePath(const std::string &path)
+std::string flx::toAbsolutePath(const std::string &path)
 {
-    if (isAbsolutePath(path))
+    if (flx::isAbsolutePath(path))
     {
         return path;
     }
 
-    auto directory = getCurrentPath();
-    if (!endsWithPathSeparator(path))
+    auto directory = flx::getCurrentPath();
+    if (!flx::endsWithPathSeparator(path))
     {
         directory += PATHSEPARATORSTRING;
     }
@@ -480,7 +480,7 @@ std::string toAbsolutePath(const std::string &path)
     return directory + path;
 }
 
-std::string getCurrentPath()
+std::string flx::getCurrentPath()
 {
 #ifdef _WIN32
     DWORD size = GetCurrentDirectory(0, nullptr);
@@ -502,7 +502,7 @@ std::string getCurrentPath()
     return {};
 }
 
-bool isAbsolutePath(const std::string &path)
+bool flx::isAbsolutePath(const std::string &path)
 {
 #ifdef _WIN32
     return path.size() >= 2 &&
@@ -514,7 +514,7 @@ bool isAbsolutePath(const std::string &path)
 #endif
 }
 
-bool isPathsEqual(const std::string &path1, const std::string &path2)
+bool flx::isPathsEqual(const std::string &path1, const std::string &path2)
 {
     if (path1.size() != path2.size())
     {
@@ -533,7 +533,7 @@ bool isPathsEqual(const std::string &path1, const std::string &path2)
 #endif
 }
 
-std::string getFileExtension(const std::string &path)
+std::string flx::getFileExtension(const std::string &path)
 {
     std::string fileName = getFileName(path);
 
@@ -565,9 +565,9 @@ std::string getFileExtension(const std::string &path)
     return "";
 }
 
-std::string getFileStem(const std::string &path)
+std::string flx::getFileStem(const std::string &path)
 {
-    std::string fileName = getFileName(path);
+    std::string fileName = flx::getFileName(path);
 
     if (fileName == "." || fileName == "..")
     {
@@ -592,7 +592,7 @@ std::string getFileStem(const std::string &path)
     return fileName;
 }
 
-std::string getHostName()
+std::string flx::getHostName()
 {
     std::string dnsHostName;
 
@@ -623,14 +623,14 @@ std::string getHostName()
     return dnsHostName;
 }
 
-bool endsWithPathSeparator(const std::string &path)
+bool flx::endsWithPathSeparator(const std::string &path)
 {
     auto pos = path.find_last_of(pathSeparators);
 
     return (pos != std::string::npos && (pos == (path.size() - 1)));
 }
 
-std::string getFlexemuSystemConfigFile()
+std::string flx::getFlexemuSystemConfigFile()
 {
     static const auto flexemuConfigFile = std::string("flexemu.conf");
 
@@ -736,8 +736,8 @@ void next_opt(char *const argv[])
 
 #endif
 
-void dumpSector(std::ostream &os, uint32_t indent_count, const Byte *buffer,
-                uint32_t size)
+void flx::dumpSector(std::ostream &os, uint32_t indent_count,
+                const Byte *buffer, uint32_t size)
 {
     uint32_t i;
 
@@ -769,7 +769,7 @@ void dumpSector(std::ostream &os, uint32_t indent_count, const Byte *buffer,
     }
 }
 
-void hex_dump(std::ostream &os, const char *buffer, int count)
+void flx::hex_dump(std::ostream &os, const char *buffer, int count)
 {
     const char *p = &buffer[0];
     int i = 0;
@@ -789,8 +789,8 @@ void hex_dump(std::ostream &os, const char *buffer, int count)
     }
 }
 
-bool AskForInput(const std::string &question, const std::string &answers,
-                 char default_answer)
+bool flx::AskForInput(const std::string &question, const std::string &answers,
+                      char default_answer)
 {
     char input = ' ';
     char dummy;
@@ -848,8 +848,8 @@ bool AskForInput(const std::string &question, const std::string &answers,
     return input == '\n' || ::tolower(input) == answers.at(0);
 }
 
-bool isListedInFileRandom(const std::string &directory,
-                          const std::string &filename)
+bool flx::isListedInFileRandom(const std::string &directory,
+                               const std::string &filename)
 {
     std::string path(directory);
     std::string lowFilename(filename);
@@ -876,12 +876,12 @@ bool isListedInFileRandom(const std::string &directory,
     return false;
 }
 
-bool hasRandomFileAttribute(const std::string &directory,
-                            const std::string &filename)
+bool flx::hasRandomFileAttribute(const std::string &directory,
+                                 const std::string &filename)
 {
     std::string sFilename(filename);
 
-    strlower(sFilename);
+    flx::strlower(sFilename);
     std::string filePath(directory);
     filePath += PATHSEPARATORSTRING;
     filePath += sFilename;
@@ -903,7 +903,7 @@ bool hasRandomFileAttribute(const std::string &directory,
     return false;
 }
 
-std::vector<std::string> split(const std::string &str, char delimiter)
+std::vector<std::string> flx::split(const std::string &str, char delimiter)
 {
     std::vector<std::string> result;
     std::string::size_type start_pos = 0;
@@ -951,7 +951,7 @@ std::vector<std::string> split(const std::string &str, char delimiter)
     not allowed:    x. .a xx. xxxxxxxxx.a X.a xxxxxxxxX.a
 */
 
-bool isFlexFilename(const std::string &filename)
+bool flx::isFlexFilename(const std::string &filename)
 {
 #ifdef UNIX
     static std::regex re("[a-z][a-z0-9_-]{0,7}\\.[a-z][a-z0-9_-]{0,2}");

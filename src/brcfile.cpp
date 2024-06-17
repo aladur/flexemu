@@ -103,7 +103,7 @@ int BRcFile::GetValue(const char *key, std::string &value,
             if (skey.size() == keyLength && skey.compare(key) == 0)
             {
                 value = strbuf.str();
-                value = trim(std::move(value));
+                value = flx::trim(std::move(value));
                 if (!value.empty() && value[0] == '"')
                 {
                     isInteger = false;
@@ -157,7 +157,7 @@ int BRcFile::GetValues(const char *keyPrefix,
         std::map<std::string, std::string> &values)
 {
     std::ifstream fs(fileName.c_str());
-    const auto lcKeyPrefix = tolower(keyPrefix);
+    const auto lcKeyPrefix = flx::tolower(keyPrefix);
 
     values.clear();
     if (!fs.is_open())
@@ -173,11 +173,11 @@ int BRcFile::GetValues(const char *keyPrefix,
         fs >> key;
         fs.get(strbuf);
         auto value = strbuf.str();
-        value = ltrim(std::move(value));
+        value = flx::ltrim(std::move(value));
         if (key.size() > std::strlen(keyPrefix))
         {
             const auto lcPrefixOfKey =
-                tolower(key.substr(0, lcKeyPrefix.size()));
+                flx::tolower(key.substr(0, lcKeyPrefix.size()));
             auto subKey = key.substr(lcKeyPrefix.size());
 
             if (fs.good() && lcKeyPrefix.compare(lcPrefixOfKey) == 0)

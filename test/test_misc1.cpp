@@ -9,45 +9,45 @@ using ::testing::EndsWith;
 TEST(test_misc1, fct_strlower)
 {
     std::string str("abC012");
-    strlower(str);
+    flx::strlower(str);
     EXPECT_EQ(str, "abc012");
     str = "ABC012";
-    strlower(str);
+    flx::strlower(str);
     EXPECT_EQ(str, "abc012");
 }
 
 TEST(test_misc1, fct_strupper)
 {
     std::string str("abC012");
-    strupper(str);
+    flx::strupper(str);
     EXPECT_EQ(str, "ABC012");
     str = "ABC012";
-    strupper(str);
+    flx::strupper(str);
     EXPECT_EQ(str, "ABC012");
 }
 
 TEST(test_misc1, fct_tolower)
 {
     std::string str("abC012");
-    EXPECT_EQ(tolower(str), "abc012");
+    EXPECT_EQ(flx::tolower(str), "abc012");
     str = "aBC012";
-    EXPECT_EQ(tolower(str), "abc012");
-    EXPECT_EQ(tolower("ABCDe"), "abcde");
-    EXPECT_EQ(tolower("XYz"), "xyz");
+    EXPECT_EQ(flx::tolower(str), "abc012");
+    EXPECT_EQ(flx::tolower("ABCDe"), "abcde");
+    EXPECT_EQ(flx::tolower("XYz"), "xyz");
     str = "MNOpqr123";
-    EXPECT_EQ(tolower(std::move(str)), "mnopqr123");
+    EXPECT_EQ(flx::tolower(std::move(str)), "mnopqr123");
 }
 
 TEST(test_misc1, fct_toupper)
 {
     std::string str("abC012");
-    EXPECT_EQ(toupper(str), "ABC012");
+    EXPECT_EQ(flx::toupper(str), "ABC012");
     str = "aBC012";
-    EXPECT_EQ(toupper(str), "ABC012");
-    EXPECT_EQ(toupper("ABCDe"), "ABCDE");
-    EXPECT_EQ(toupper("XYz"), "XYZ");
+    EXPECT_EQ(flx::toupper(str), "ABC012");
+    EXPECT_EQ(flx::toupper("ABCDe"), "ABCDE");
+    EXPECT_EQ(flx::toupper("XYz"), "XYZ");
     str = "MNOpqr123";
-    EXPECT_EQ(toupper(std::move(str)), "MNOPQR123");
+    EXPECT_EQ(flx::toupper(std::move(str)), "MNOPQR123");
 }
 
 TEST(test_misc1, fct_getstr)
@@ -55,7 +55,7 @@ TEST(test_misc1, fct_getstr)
     // Array NUL terminated.
     char arr1[]{"abcd"};
     EXPECT_EQ(sizeof(arr1), 5U);
-    auto str1 = getstr<>(arr1);
+    auto str1 = flx::getstr<>(arr1);
     EXPECT_EQ(str1, "abcd");
     EXPECT_EQ(str1.size(), 4U);
     EXPECT_EQ(str1.c_str()[str1.size()], '\0');
@@ -63,7 +63,7 @@ TEST(test_misc1, fct_getstr)
     // Array not NUL terminated.
     char arr2[]{'a', 'b', 'c', 'd', 'e'};
     EXPECT_EQ(sizeof(arr2), 5U);
-    auto str2 = getstr<>(arr2);
+    auto str2 = flx::getstr<>(arr2);
     EXPECT_EQ(str2, "abcde");
     EXPECT_EQ(str2.size(), 5U);
     EXPECT_EQ(str2.c_str()[str2.size()], '\0');
@@ -71,7 +71,7 @@ TEST(test_misc1, fct_getstr)
     // Array NUL terminated early.
     char arr3[]{"abc\0\0\0\0"};
     EXPECT_EQ(sizeof(arr3), 8U);
-    auto str3 = getstr<>(arr3);
+    auto str3 = flx::getstr<>(arr3);
     EXPECT_EQ(str3, "abc");
     EXPECT_EQ(str3.size(), 3U);
     EXPECT_EQ(str3.c_str()[str3.size()], '\0');
@@ -79,7 +79,7 @@ TEST(test_misc1, fct_getstr)
     // Array with "empty string".
     char arr4[]{""};
     EXPECT_EQ(sizeof(arr4), 1U);
-    auto str4 = getstr<>(arr4);
+    auto str4 = flx::getstr<>(arr4);
     EXPECT_EQ(str4, "");
     EXPECT_EQ(str4.size(), 0U);
     EXPECT_EQ(str4.c_str()[str4.size()], '\0');
@@ -87,125 +87,125 @@ TEST(test_misc1, fct_getstr)
 
 TEST(test_misc1, fct_binstr)
 {
-    auto result = binstr(0x55);
+    auto result = flx::binstr(0x55);
     EXPECT_EQ(result, "01010101");
-    result = binstr(0x00);
+    result = flx::binstr(0x00);
     EXPECT_EQ(result, "00000000");
-    result = binstr(0x01);
+    result = flx::binstr(0x01);
     EXPECT_EQ(result, "00000001");
-    result = binstr(0xFF);
+    result = flx::binstr(0xFF);
     EXPECT_EQ(result, "11111111");
 }
 
 TEST(test_misc1, fct_hexstr_byte)
 {
-    auto result = hexstr(static_cast<Byte>(0x55));
+    auto result = flx::hexstr(static_cast<Byte>(0x55));
     EXPECT_EQ(result, "55");
-    result = hexstr(static_cast<Byte>(0x00));
+    result = flx::hexstr(static_cast<Byte>(0x00));
     EXPECT_EQ(result, "00");
-    result = hexstr(static_cast<Byte>(0x01));
+    result = flx::hexstr(static_cast<Byte>(0x01));
     EXPECT_EQ(result, "01");
-    result = hexstr(static_cast<Byte>(0xFF));
+    result = flx::hexstr(static_cast<Byte>(0xFF));
     EXPECT_EQ(result, "ff");
 }
 
 TEST(test_misc1, fct_hexstr_word)
 {
-    auto result = hexstr(static_cast<Word>(0x55AA));
+    auto result = flx::hexstr(static_cast<Word>(0x55AA));
     EXPECT_EQ(result, "55aa");
-    result = hexstr(static_cast<Word>(0x0000));
+    result = flx::hexstr(static_cast<Word>(0x0000));
     EXPECT_EQ(result, "0000");
-    result = hexstr(static_cast<Word>(0x0001));
+    result = flx::hexstr(static_cast<Word>(0x0001));
     EXPECT_EQ(result, "0001");
-    result = hexstr(static_cast<Word>(0xFFFF));
+    result = flx::hexstr(static_cast<Word>(0xFFFF));
     EXPECT_EQ(result, "ffff");
 }
 
 TEST(test_misc1, fct_ascchr)
 {
-    auto result = ascchr('a');
+    auto result = flx::ascchr('a');
     EXPECT_EQ(result, "a");
-    result = ascchr('3');
+    result = flx::ascchr('3');
     EXPECT_EQ(result, "3");
-    result = ascchr('\xa1');
+    result = flx::ascchr('\xa1');
     EXPECT_EQ(result, ".");
 }
 
 TEST(test_misc1, fct_matches)
 {
-    auto result = matches("", "", false);
+    auto result = flx::matches("", "", false);
     EXPECT_FALSE(result);
-    result = matches("", "*.*", false);
+    result = flx::matches("", "*.*", false);
     EXPECT_FALSE(result);
-    result = matches("xx", "*?", false);
+    result = flx::matches("xx", "*?", false);
     EXPECT_TRUE(result);
-    result = matches("xx", "*??", false);
+    result = flx::matches("xx", "*??", false);
     EXPECT_TRUE(result);
-    result = matches("xx", "*???", false);
+    result = flx::matches("xx", "*???", false);
     EXPECT_FALSE(result);
-    result = matches("abcdef", "", false);
+    result = flx::matches("abcdef", "", false);
     EXPECT_FALSE(result);
-    result = matches("abcdef", "abc*", false);
+    result = flx::matches("abcdef", "abc*", false);
     EXPECT_TRUE(result);
-    result = matches("abcdef", "ABC*", true);
+    result = flx::matches("abcdef", "ABC*", true);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "*.*", false);
+    result = flx::matches("file.ext", "*.*", false);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "*?", false);
+    result = flx::matches("file.ext", "*?", false);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "?*", false);
+    result = flx::matches("file.ext", "?*", false);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "f*.?xt", false);
+    result = flx::matches("file.ext", "f*.?xt", false);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "f*.?xtx", false);
+    result = flx::matches("file.ext", "f*.?xtx", false);
     EXPECT_FALSE(result);
-    result = matches("file.a", "f*.??", false);
+    result = flx::matches("file.a", "f*.??", false);
     EXPECT_FALSE(result);
-    result = matches("file.a", "f*.?*", false);
+    result = flx::matches("file.a", "f*.?*", false);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*.*?", false);
+    result = flx::matches("file.a", "f*.*?", false);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "F*.?xt", true);
+    result = flx::matches("file.ext", "F*.?xt", true);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*L*.a", false);
+    result = flx::matches("file.a", "f*L*.a", false);
     EXPECT_FALSE(result);
-    result = matches("file.a", "f*l*.a", false);
+    result = flx::matches("file.a", "f*l*.a", false);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*L*.a", true);
+    result = flx::matches("file.a", "f*L*.a", true);
     EXPECT_TRUE(result);
-    result = matches("file.a", "f*l*.a", true);
+    result = flx::matches("file.a", "f*l*.a", true);
     EXPECT_TRUE(result);
-    result = matches("file.ext", "?le.ext*", true);
+    result = flx::matches("file.ext", "?le.ext*", true);
     EXPECT_FALSE(result);
-    result = matches("file.ext", "???le.ext*", true);
+    result = flx::matches("file.ext", "???le.ext*", true);
     EXPECT_FALSE(result);
-    result = matches("file.ext", "file.ext*", true);
+    result = flx::matches("file.ext", "file.ext*", true);
     EXPECT_TRUE(result);
-    result = matches("mississippi", "*sip*", false);
+    result = flx::matches("mississippi", "*sip*", false);
     EXPECT_TRUE(result);
-    result = matches("eee.ext", "*eee.ext", false);
+    result = flx::matches("eee.ext", "*eee.ext", false);
     EXPECT_TRUE(result);
 // The following test would need a more sophisticated algorithm.
 // Such a pattern is currently not used.
 //  result = matches("eee.ext", "*ee.ext", false);
 //  EXPECT_TRUE(result);
-    result = matches("eee.ext", "*e.ext", false);
+    result = flx::matches("eee.ext", "*e.ext", false);
     EXPECT_TRUE(result);
-    result = matches("daadabdmada", "da*da*da*", false);
+    result = flx::matches("daadabdmada", "da*da*da*", false);
     EXPECT_TRUE(result);
 }
 
 TEST(test_misc1, fct_multimatches)
 {
-    auto result = multimatches("", "abc;xyz;kjl", ';', false);
+    auto result = flx::multimatches("", "abc;xyz;kjl", ';', false);
     EXPECT_FALSE(result);
-    result = multimatches("", ";;*.*;", ';', false);
+    result = flx::multimatches("", ";;*.*;", ';', false);
     EXPECT_FALSE(result);
-    result = multimatches("ab.c", "c;d;e;f;g;ab.*", ';', false);
+    result = flx::multimatches("ab.c", "c;d;e;f;g;ab.*", ';', false);
     EXPECT_TRUE(result);
-    result = multimatches("xx", "abc;*?", ';', false);
+    result = flx::multimatches("xx", "abc;*?", ';', false);
     EXPECT_TRUE(result);
-    result = multimatches("daadabdmada", "x*;*DA*;da*da*da*", ';', false);
+    result = flx::multimatches("daadabdmada", "x*;*DA*;da*da*da*", ';', false);
     EXPECT_TRUE(result);
 }
 
@@ -213,7 +213,7 @@ TEST(test_misc1, fct_multimatches)
 TEST(test_misc1, fct_getExecutablePath)
 {
     struct stat sbuf;
-    auto path = getExecutablePath();
+    auto path = flx::getExecutablePath();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);
@@ -223,7 +223,7 @@ TEST(test_misc1, fct_getExecutablePath)
 TEST(test_misc1, fct_getHomeDirectory)
 {
     struct stat sbuf;
-    auto path = getHomeDirectory();
+    auto path = flx::getHomeDirectory();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);
@@ -233,7 +233,7 @@ TEST(test_misc1, fct_getHomeDirectory)
 TEST(test_misc1, fct_getExecutablePath)
 {
     struct stat sbuf;
-    auto path = getExecutablePath();
+    auto path = flx::getExecutablePath();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);
@@ -243,7 +243,7 @@ TEST(test_misc1, fct_getExecutablePath)
 TEST(test_misc1, fct_getTempPath)
 {
     struct stat sbuf;
-    auto path = getTempPath();
+    auto path = flx::getTempPath();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);
@@ -252,7 +252,7 @@ TEST(test_misc1, fct_getTempPath)
 TEST(test_misc1, fct_getCurrentPath)
 {
     struct stat sbuf;
-    auto path = getCurrentPath();
+    auto path = flx::getCurrentPath();
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);
@@ -261,105 +261,105 @@ TEST(test_misc1, fct_getCurrentPath)
 TEST(test_misc1, fct_toAbsolutePath)
 {
 #ifdef _WIN32
-    auto result = toAbsolutePath("C:\\Temp");
+    auto result = flx::toAbsolutePath("C:\\Temp");
     EXPECT_EQ(result, "C:\\Temp");
-    result = toAbsolutePath("tmp");
+    result = flx::toAbsolutePath("tmp");
     EXPECT_THAT(result, EndsWith("\\tmp"));
 #endif
 #ifdef UNIX
-    auto result = toAbsolutePath("/tmp");
+    auto result = flx::toAbsolutePath("/tmp");
     EXPECT_EQ(result, "/tmp");
-    result = toAbsolutePath("tmp");
+    result = flx::toAbsolutePath("tmp");
     EXPECT_THAT(result, EndsWith("/tmp"));
 #endif
 }
 
 TEST(test_misc1, fct_getHostName)
 {
-    auto result = getHostName();
+    auto result = flx::getHostName();
     EXPECT_FALSE(result.empty());
 }
 
 TEST(test_misc1, fct_getFileName)
 {
-    auto result = getFileName("");
+    auto result = flx::getFileName("");
     EXPECT_EQ(result, "");
-    result = getFileName("filename.ext");
+    result = flx::getFileName("filename.ext");
     EXPECT_EQ(result, "filename.ext");
-    result = getFileName("filename.ext");
+    result = flx::getFileName("filename.ext");
     EXPECT_EQ(result, "filename.ext");
-    result = getFileName("filename");
+    result = flx::getFileName("filename");
     EXPECT_EQ(result, "filename");
-    result = getFileName(".ext");
+    result = flx::getFileName(".ext");
     EXPECT_EQ(result, ".ext");
 #ifdef _WIN32
-    result = getFileName("C:\\");
+    result = flx::getFileName("C:\\");
     EXPECT_EQ(result, "\\");
-    result = getFileName("C:\\dir1\\dir2\\.");
+    result = flx::getFileName("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, ".");
-    result = getFileName("C:\\dir1\\dir2\\..");
+    result = flx::getFileName("C:\\dir1\\dir2\\..");
     EXPECT_EQ(result, "..");
-    result = getFileName("C:\\dir1\\dir2\\");
+    result = flx::getFileName("C:\\dir1\\dir2\\");
     EXPECT_EQ(result, ".");
-    result = getFileName("C:\\dir1\\dir2");
+    result = flx::getFileName("C:\\dir1\\dir2");
     EXPECT_EQ(result, "dir2");
-    result = getFileName("C:\\dir\\filename.ext");
+    result = flx::getFileName("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "filename.ext");
 #endif
 #ifdef UNIX
-    result = getFileName("/");
+    result = flx::getFileName("/");
     EXPECT_EQ(result, "/");
-    result = getFileName("/dir1/dir2/.");
+    result = flx::getFileName("/dir1/dir2/.");
     EXPECT_EQ(result, ".");
-    result = getFileName("/dir1/dir2/..");
+    result = flx::getFileName("/dir1/dir2/..");
     EXPECT_EQ(result, "..");
-    result = getFileName("/dir1/dir2/");
+    result = flx::getFileName("/dir1/dir2/");
     EXPECT_EQ(result, ".");
-    result = getFileName("/dir1/dir2");
+    result = flx::getFileName("/dir1/dir2");
     EXPECT_EQ(result, "dir2");
-    result = getFileName("/dir/filename.ext");
+    result = flx::getFileName("/dir/filename.ext");
     EXPECT_EQ(result, "filename.ext");
 #endif
 }
 
 TEST(test_misc1, fct_getFileExtension)
 {
-    auto result = getFileExtension("");
+    auto result = flx::getFileExtension("");
     EXPECT_EQ(result, "");
-    result = getFileExtension("filename.ext");
+    result = flx::getFileExtension("filename.ext");
     EXPECT_EQ(result, ".ext");
-    result = getFileExtension("filename.tar.gz");
+    result = flx::getFileExtension("filename.tar.gz");
     EXPECT_EQ(result, ".gz");
-    result = getFileExtension("filename");
+    result = flx::getFileExtension("filename");
     EXPECT_EQ(result, "");
-    result = getFileExtension("filename...ext");
+    result = flx::getFileExtension("filename...ext");
     EXPECT_EQ(result, ".ext");
 #ifdef _WIN32
-    result = getFileExtension("\\");
+    result = flx::getFileExtension("\\");
     EXPECT_EQ(result, "");
-    result = getFileExtension("C:\\dir1\\dir2\\.");
+    result = flx::getFileExtension("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, "");
-    result = getFileExtension("C:\\dir1\\dir2\\..");
+    result = flx::getFileExtension("C:\\dir1\\dir2\\..");
     EXPECT_EQ(result, "");
-    result = getFileExtension("C:\\dir1\\dir2\\");
+    result = flx::getFileExtension("C:\\dir1\\dir2\\");
     EXPECT_EQ(result, "");
-    result = getFileExtension("C:\\dir1\\dir2");
+    result = flx::getFileExtension("C:\\dir1\\dir2");
     EXPECT_EQ(result, "");
-    result = getFileExtension("C:\\dir\\filename.ext");
+    result = flx::getFileExtension("C:\\dir\\filename.ext");
     EXPECT_EQ(result, ".ext");
 #endif
 #ifdef UNIX
-    result = getFileExtension("/");
+    result = flx::getFileExtension("/");
     EXPECT_EQ(result, "");
-    result = getFileExtension("/dir1/dir2/.");
+    result = flx::getFileExtension("/dir1/dir2/.");
     EXPECT_EQ(result, "");
-    result = getFileExtension("/dir1/dir2/..");
+    result = flx::getFileExtension("/dir1/dir2/..");
     EXPECT_EQ(result, "");
-    result = getFileExtension("/dir1/dir2/");
+    result = flx::getFileExtension("/dir1/dir2/");
     EXPECT_EQ(result, "");
-    result = getFileExtension("/dir1/dir2");
+    result = flx::getFileExtension("/dir1/dir2");
     EXPECT_EQ(result, "");
-    result = getFileExtension("/dir/filename.ext");
+    result = flx::getFileExtension("/dir/filename.ext");
     EXPECT_EQ(result, ".ext");
 #endif
 }
@@ -378,80 +378,80 @@ TEST(test_misc1, macro_EXTEND8)
 
 TEST(test_misc1, fct_getFileStem)
 {
-    auto result = getFileStem("");
+    auto result = flx::getFileStem("");
     EXPECT_EQ(result, "");
-    result = getFileStem("filename.ext");
+    result = flx::getFileStem("filename.ext");
     EXPECT_EQ(result, "filename");
-    result = getFileStem("filename.tar.gz");
+    result = flx::getFileStem("filename.tar.gz");
     EXPECT_EQ(result, "filename.tar");
-    result = getFileStem("filename");
+    result = flx::getFileStem("filename");
     EXPECT_EQ(result, "filename");
-    result = getFileStem("filename...ext");
+    result = flx::getFileStem("filename...ext");
     EXPECT_EQ(result, "filename..");
 #ifdef _WIN32
-    result = getFileStem("C:\\");
+    result = flx::getFileStem("C:\\");
     EXPECT_EQ(result, "\\");
-    result = getFileStem("C:\\dir1\\dir2\\.");
+    result = flx::getFileStem("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, ".");
-    result = getFileStem("C:\\dir1\\dir2\..");
+    result = flx::getFileStem("C:\\dir1\\dir2\..");
     EXPECT_EQ(result, "..");
-    result = getFileStem("C:\\dir1\\dir2\\");
+    result = flx::getFileStem("C:\\dir1\\dir2\\");
     EXPECT_EQ(result, ".");
-    result = getFileStem("C:\\dir1\dir2");
+    result = flx::getFileStem("C:\\dir1\dir2");
     EXPECT_EQ(result, "dir2");
-    result = getFileStem("C:\\dir\\filename.ext");
+    result = flx::getFileStem("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "filename");
 #endif
 #ifdef UNIX
-    result = getFileStem("/");
+    result = flx::getFileStem("/");
     EXPECT_EQ(result, "/");
-    result = getFileStem("/dir1/dir2/.");
+    result = flx::getFileStem("/dir1/dir2/.");
     EXPECT_EQ(result, ".");
-    result = getFileStem("/dir1/dir2/..");
+    result = flx::getFileStem("/dir1/dir2/..");
     EXPECT_EQ(result, "..");
-    result = getFileStem("/dir1/dir2/");
+    result = flx::getFileStem("/dir1/dir2/");
     EXPECT_EQ(result, ".");
-    result = getFileStem("/dir1/dir2");
+    result = flx::getFileStem("/dir1/dir2");
     EXPECT_EQ(result, "dir2");
-    result = getFileStem("/dir/filename.ext");
+    result = flx::getFileStem("/dir/filename.ext");
     EXPECT_EQ(result, "filename");
 #endif
 }
 
 TEST(test_misc1, fct_getParentPath)
 {
-    auto result = getParentPath("");
+    auto result = flx::getParentPath("");
     EXPECT_EQ(result, "");
-    result = getParentPath("filename.ext");
+    result = flx::getParentPath("filename.ext");
     EXPECT_EQ(result, "");
-    result = getParentPath("filename");
+    result = flx::getParentPath("filename");
     EXPECT_EQ(result, "");
 #ifdef _WIN32
-    result = getParentPath("C:\\");
+    result = flx::getParentPath("C:\\");
     EXPECT_EQ(result, "");
-    result = getParentPath("C:\\dir1\\dir2\\.");
+    result = flx::getParentPath("C:\\dir1\\dir2\\.");
     EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = getParentPath("C:\\dir1\\dir2\\..");
+    result = flx::getParentPath("C:\\dir1\\dir2\\..");
     EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = getParentPath("C:\\dir1\\dir2\\");
+    result = flx::getParentPath("C:\\dir1\\dir2\\");
     EXPECT_EQ(result, "C:\\dir1\\dir2");
-    result = getParentPath("C:\\dir1\\dir2");
+    result = flx::getParentPath("C:\\dir1\\dir2");
     EXPECT_EQ(result, "C:\\dir1");
-    result = getParentPath("C:\\dir\\filename.ext");
+    result = flx::getParentPath("C:\\dir\\filename.ext");
     EXPECT_EQ(result, "C:\\dir");
 #endif
 #ifdef UNIX
-    result = getParentPath("/");
+    result = flx::getParentPath("/");
     EXPECT_EQ(result, "");
-    result = getParentPath("/dir1/dir2/.");
+    result = flx::getParentPath("/dir1/dir2/.");
     EXPECT_EQ(result, "/dir1/dir2");
-    result = getParentPath("/dir1/dir2/..");
+    result = flx::getParentPath("/dir1/dir2/..");
     EXPECT_EQ(result, "/dir1/dir2");
-    result = getParentPath("/dir1/dir2/");
+    result = flx::getParentPath("/dir1/dir2/");
     EXPECT_EQ(result, "/dir1/dir2");
-    result = getParentPath("/dir1/dir2");
+    result = flx::getParentPath("/dir1/dir2");
     EXPECT_EQ(result, "/dir1");
-    result = getParentPath("/dir/filename.ext");
+    result = flx::getParentPath("/dir/filename.ext");
     EXPECT_EQ(result, "/dir");
 #endif
 }
@@ -459,29 +459,29 @@ TEST(test_misc1, fct_getParentPath)
 TEST(test_misc1, fct_isAbsolutePath)
 {
 #ifdef UNIX
-    auto result = isAbsolutePath("");
+    auto result = flx::isAbsolutePath("");
     EXPECT_FALSE(result);
-    result = isAbsolutePath("/usr");
+    result = flx::isAbsolutePath("/usr");
     EXPECT_TRUE(result);
-    result = isAbsolutePath("//SERVER/SHARE/rootdir");
+    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
     EXPECT_TRUE(result);
-    result = isAbsolutePath("dir1/dir2");
+    result = flx::isAbsolutePath("dir1/dir2");
     EXPECT_FALSE(result);
-    result = isAbsolutePath(".");
+    result = flx::isAbsolutePath(".");
     EXPECT_FALSE(result);
 #endif
 #ifdef _WIN32
-    auto result = isAbsolutePath("");
+    auto result = flx::isAbsolutePath("");
     EXPECT_FALSE(result);
-    result = isAbsolutePath("C:\\Temp");
+    result = flx::isAbsolutePath("C:\\Temp");
     EXPECT_TRUE(result);
-    result = isAbsolutePath("//SERVER/SHARE/rootdir");
+    result = flx::isAbsolutePath("//SERVER/SHARE/rootdir");
     EXPECT_TRUE(result);
-    result = isAbsolutePath("dir1\\dir2");
+    result = flx::isAbsolutePath("dir1\\dir2");
     EXPECT_FALSE(result);
-    result = isAbsolutePath("\\dir1\\dir2");
+    result = flx::isAbsolutePath("\\dir1\\dir2");
     EXPECT_FALSE(result);
-    result = isAbsolutePath(".");
+    result = flx::isAbsolutePath(".");
     EXPECT_FALSE(result);
 #endif
 }
@@ -489,15 +489,15 @@ TEST(test_misc1, fct_isAbsolutePath)
 TEST(test_misc1, fct_endsWithPathSeparator)
 {
 #ifdef _WIN32
-    auto result = endsWithPathSeparator("C:\\abc\\");
+    auto result = flx::endsWithPathSeparator("C:\\abc\\");
     EXPECT_TRUE(result);
-    result = endsWithPathSeparator("C:\\abc");
+    result = flx::endsWithPathSeparator("C:\\abc");
     EXPECT_FALSE(result);
 #endif
 #ifdef UNIX
-    auto result = endsWithPathSeparator("/abc/");
+    auto result = flx::endsWithPathSeparator("/abc/");
     EXPECT_TRUE(result);
-    result = endsWithPathSeparator("/abc");
+    result = flx::endsWithPathSeparator("/abc");
     EXPECT_FALSE(result);
 #endif
 }
@@ -505,90 +505,90 @@ TEST(test_misc1, fct_endsWithPathSeparator)
 TEST(test_misc1, fct_isPathsEqual)
 {
 #ifdef _WIN32
-    auto result = isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test.txt");
+    auto result = flx::isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test.txt");
     EXPECT_TRUE(result);
-    result = isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test1.txt");
+    result = flx::isPathsEqual("C:\\Temp\\test.txt", "C:\\Temp\\Test1.txt");
     EXPECT_FALSE(result);
 #endif
 #ifdef UNIX
-    auto result = isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libtest.so");
+    auto result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libtest.so");
     EXPECT_TRUE(result);
-    result = isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libTest.so");
+    result = flx::isPathsEqual("/usr/lib/libtest.so", "/usr/lib/libTest.so");
     EXPECT_FALSE(result);
 #endif
 }
 
 TEST(test_misc1, fct_split)
 {
-    const auto strings1 = split("abc;xyz;klm", ';');
+    const auto strings1 = flx::split("abc;xyz;klm", ';');
     ASSERT_EQ(strings1.size(), 3);
     EXPECT_EQ(strings1[0], "abc");
     EXPECT_EQ(strings1[1], "xyz");
     EXPECT_EQ(strings1[2], "klm");
-    const auto strings2 = split("**klm**", '*');
+    const auto strings2 = flx::split("**klm**", '*');
     ASSERT_EQ(strings2.size(), 1);
     EXPECT_EQ(strings2[0], "klm");
-    const auto strings3 = split("", ';');
+    const auto strings3 = flx::split("", ';');
     ASSERT_TRUE(strings3.empty());
-    const auto strings4 = split("|||", '|');
+    const auto strings4 = flx::split("|||", '|');
     ASSERT_TRUE(strings4.empty());
 }
 
 TEST(test_misc1, fct_isFlexFilename)
 {
-    auto result = isFlexFilename("");
+    auto result = flx::isFlexFilename("");
     EXPECT_FALSE(result);
-    result = isFlexFilename("aaa");
+    result = flx::isFlexFilename("aaa");
     EXPECT_FALSE(result);
-    result = isFlexFilename("a1234567");
+    result = flx::isFlexFilename("a1234567");
     EXPECT_FALSE(result);
-    result = isFlexFilename(".cmd");
+    result = flx::isFlexFilename(".cmd");
     EXPECT_FALSE(result);
-    result = isFlexFilename(".");
+    result = flx::isFlexFilename(".");
     EXPECT_FALSE(result);
-    result = isFlexFilename("..");
+    result = flx::isFlexFilename("..");
     EXPECT_FALSE(result);
-    result = isFlexFilename("1.cmd");
+    result = flx::isFlexFilename("1.cmd");
     EXPECT_FALSE(result);
-    result = isFlexFilename("1..cmd");
+    result = flx::isFlexFilename("1..cmd");
     EXPECT_FALSE(result);
-    result = isFlexFilename("a12345678.cmd");
+    result = flx::isFlexFilename("a12345678.cmd");
     EXPECT_FALSE(result);
-    result = isFlexFilename("a1234567.1234");
+    result = flx::isFlexFilename("a1234567.1234");
     EXPECT_FALSE(result);
-    result = isFlexFilename("a.s");
+    result = flx::isFlexFilename("a.s");
     EXPECT_TRUE(result);
-    result = isFlexFilename("a1234567.a12");
+    result = flx::isFlexFilename("a1234567.a12");
     EXPECT_TRUE(result);
-    result = isFlexFilename("zzzzzzzz.zzz");
+    result = flx::isFlexFilename("zzzzzzzz.zzz");
     EXPECT_TRUE(result);
-    result = isFlexFilename("a_______.a__");
+    result = flx::isFlexFilename("a_______.a__");
     EXPECT_TRUE(result);
-    result = isFlexFilename("z-------.z--");
+    result = flx::isFlexFilename("z-------.z--");
     EXPECT_TRUE(result);
-    result = isFlexFilename("a.a");
+    result = flx::isFlexFilename("a.a");
     EXPECT_TRUE(result);
 #ifdef UNIX
-    result = isFlexFilename("A.s");
+    result = flx::isFlexFilename("A.s");
     EXPECT_FALSE(result);
-    result = isFlexFilename("a.S");
+    result = flx::isFlexFilename("a.S");
     EXPECT_FALSE(result);
-    result = isFlexFilename("abcdefgH.abc");
+    result = flx::isFlexFilename("abcdefgH.abc");
     EXPECT_FALSE(result);
-    result = isFlexFilename("abcde123.abC");
+    result = flx::isFlexFilename("abcde123.abC");
     EXPECT_FALSE(result);
-    result = isFlexFilename("AbcDefG.AbC");
+    result = flx::isFlexFilename("AbcDefG.AbC");
     EXPECT_FALSE(result);
 #else
-    result = isFlexFilename("A.s");
+    result = flx::isFlexFilename("A.s");
     EXPECT_TRUE(result);
-    result = isFlexFilename("a.S");
+    result = flx::isFlexFilename("a.S");
     EXPECT_TRUE(result);
-    result = isFlexFilename("abcdefgH.abc");
+    result = flx::isFlexFilename("abcdefgH.abc");
     EXPECT_TRUE(result);
-    result = isFlexFilename("abcde123.abC");
+    result = flx::isFlexFilename("abcde123.abC");
     EXPECT_TRUE(result);
-    result = isFlexFilename("AbcDefG.AbC");
+    result = flx::isFlexFilename("AbcDefG.AbC");
     EXPECT_TRUE(result);
 #endif
 }
@@ -625,48 +625,48 @@ TEST(test_misc1, class_ci_string)
 TEST(test_misc1, fct_ltrim)
 {
     std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(ltrim(str1c), "abc   \n\t\r\f\v");
+    EXPECT_EQ(flx::ltrim(str1c), "abc   \n\t\r\f\v");
     std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(ltrim(std::move(str1m)), "abc   \n\t\r\f\v");
+    EXPECT_EQ(flx::ltrim(std::move(str1m)), "abc   \n\t\r\f\v");
     std::string str2c("   a b c   ");
-    EXPECT_EQ(ltrim(str2c), "a b c   ");
+    EXPECT_EQ(flx::ltrim(str2c), "a b c   ");
     std::string str2m("   a b c   ");
-    EXPECT_EQ(ltrim(std::move(str2m)), "a b c   ");
+    EXPECT_EQ(flx::ltrim(std::move(str2m)), "a b c   ");
     std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(ltrim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(flx::ltrim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
     std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(ltrim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(flx::ltrim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
 }
 
 TEST(test_misc1, fct_rtrim)
 {
     std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(rtrim(str1c), "\n\t\r\f\v   abc");
+    EXPECT_EQ(flx::rtrim(str1c), "\n\t\r\f\v   abc");
     std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(rtrim(std::move(str1m)), "\n\t\r\f\v   abc");
+    EXPECT_EQ(flx::rtrim(std::move(str1m)), "\n\t\r\f\v   abc");
     std::string str2c("   a b c   ");
-    EXPECT_EQ(rtrim(str2c), "   a b c");
+    EXPECT_EQ(flx::rtrim(str2c), "   a b c");
     std::string str2m("   a b c   ");
-    EXPECT_EQ(rtrim(std::move(str2m)), "   a b c");
+    EXPECT_EQ(flx::rtrim(std::move(str2m)), "   a b c");
     std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(rtrim(str3c), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
+    EXPECT_EQ(flx::rtrim(str3c), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
     std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(rtrim(std::move(str3m)), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
+    EXPECT_EQ(flx::rtrim(std::move(str3m)), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
 }
 
 TEST(test_misc1, fct_trim)
 {
     std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(trim(str1c), "abc");
+    EXPECT_EQ(flx::trim(str1c), "abc");
     std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
-    EXPECT_EQ(trim(std::move(str1m)), "abc");
+    EXPECT_EQ(flx::trim(std::move(str1m)), "abc");
     std::string str2c("   a b c   ");
-    EXPECT_EQ(trim(str2c), "a b c");
+    EXPECT_EQ(flx::trim(str2c), "a b c");
     std::string str2m("   a b c   ");
-    EXPECT_EQ(trim(std::move(str2m)), "a b c");
+    EXPECT_EQ(flx::trim(std::move(str2m)), "a b c");
     std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(trim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c");
+    EXPECT_EQ(flx::trim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c");
     std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
-    EXPECT_EQ(trim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c");
+    EXPECT_EQ(flx::trim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c");
 }
 

@@ -521,7 +521,7 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
         {
             return 0;
         }
-        address = toBigEndian(address);
+        address = flx::toBigEndian(address);
         buffer = reinterpret_cast<Byte *>(&address);
     }
     else if (wbType == WBType::EndOfFile)

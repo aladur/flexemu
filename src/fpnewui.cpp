@@ -302,7 +302,7 @@ bool FlexplorerNewUi::Validate()
     {
         e_path->setFocus(Qt::OtherFocusReason);
         auto path = QDir::toNativeSeparators(e_path->text());
-        auto fileName = getFileName(path.toStdString());
+        auto fileName = flx::getFileName(path.toStdString());
         auto result = QMessageBox::question(dialog, tr("Confirm Save"),
             QString(fileName.c_str()) +
             tr(" already exists.\nDo You want to replace it?"));

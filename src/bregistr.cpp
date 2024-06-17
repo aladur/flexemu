@@ -147,7 +147,7 @@ LONG BRegistry::GetValues(const std::string &keyPrefix,
     DWORD index = 0U;
     DWORD type;
     bool isFinished = false;
-    const auto lcKeyPrefix = tolower(keyPrefix);
+    const auto lcKeyPrefix = flx::tolower(keyPrefix);
     auto keyBuf =
         std::unique_ptr<wchar_t>(new wchar_t[size * sizeof(wchar_t)]);
 
@@ -163,7 +163,7 @@ LONG BRegistry::GetValues(const std::string &keyPrefix,
             {
                 std::string value;
                 const auto lcPrefixOfKey =
-                    tolower(key.substr(0, keyPrefix.size()));
+                    flx::tolower(key.substr(0, keyPrefix.size()));
                 if (lcKeyPrefix.compare(lcPrefixOfKey) == 0 &&
                     GetValue(key, value) == ERROR_SUCCESS)
                 {

@@ -131,7 +131,7 @@ TEST(test_brcfile, fct_SetValue)
         ifs.get(strbuf);
         ifs.get(); // skip delimiter char.
         auto value = strbuf.str();
-        value = trim(value);
+        value = flx::trim(value);
         if (!key.empty())
         {
             result_map.emplace(key, value);

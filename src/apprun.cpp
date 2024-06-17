@@ -75,7 +75,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
     // neumnt54.hex is obsolete now.
     // neumon54.hex can be used for both terminal and GUI mode.
     // SERPAR flag is switched dynamically during emulation.
-    if (getFileName(options.hex_file) == std::string("neumnt54.hex"))
+    if (flx::getFileName(options.hex_file) == std::string("neumnt54.hex"))
     {
         std::stringstream message;
 
@@ -127,7 +127,8 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
 
     scheduler.set_frequency(options.frequency);
 
-    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    const auto path(flx::getFlexemuSystemConfigFile());
+    FlexemuConfigFile configFile(path.c_str());
     auto address = configFile.GetSerparAddress(options.hex_file);
     if (address < 0 || !terminalIO.is_terminal_supported())
     {
@@ -166,7 +167,8 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    FlexemuConfigFile configFile(getFlexemuSystemConfigFile().c_str());
+    const auto path(flx::getFlexemuSystemConfigFile());
+    FlexemuConfigFile configFile(path.c_str());
     const auto deviceParams = configFile.ReadIoDevices();
     const auto pairOfParams = configFile.GetIoDeviceLogging();
     const auto logFilePath = std::get<0>(pairOfParams);

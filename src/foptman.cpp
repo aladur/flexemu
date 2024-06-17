@@ -150,8 +150,9 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.disk_dir = F_DATADIR;
 #endif
 #ifdef _WIN32
-    options.doc_dir = getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
-    options.disk_dir = getExecutablePath() + PATHSEPARATORSTRING + "Data";
+    options.doc_dir =
+        flx::getExecutablePath() + PATHSEPARATORSTRING + "Documentation";
+    options.disk_dir = flx::getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     options.pixelSize = 2;
     options.readOnlyOptionIds.clear();
@@ -385,7 +386,7 @@ void FlexemuOptions::WriteOptions(
     WriteOptionsToRegistry(options, optionIds, ifNotExists);
 #endif
 #ifdef UNIX
-    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
         FLEXEMURC;
 
     WriteOptionsToFile(options, optionIds, rcFileName, ifNotExists);
@@ -503,7 +504,8 @@ void FlexemuOptions::WriteOptionsToRegistry(
             break;
 
         case FlexemuOptionId::Frequency:
-            str = toString<decltype(options.frequency)>(options.frequency, ok);
+            str =
+              flx::toString<decltype(options.frequency)>(options.frequency, ok);
             if (ok)
             {
                 reg.SetValue(FLEXFREQUENCY, str);
@@ -794,7 +796,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXEUROCOM2V5, optionsToWrite.isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, optionsToWrite.use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
-    auto str = toString<decltype(options.frequency)>(options.frequency, ok);
+    auto str =
+        flx::toString<decltype(options.frequency)>(options.frequency, ok);
     if (ok)
     {
         rcFile.SetValue(FLEXFREQUENCY, str);
@@ -925,7 +928,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         using T = decltype(options.frequency);
         T value{};
 
-        if (fromString<T>(string_result, value))
+        if (flx::fromString<T>(string_result, value))
         {
             options.frequency = value;
         }
@@ -1003,7 +1006,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
-    const auto rcFileName = (getHomeDirectory() += PATHSEPARATORSTRING) +=
+    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
         FLEXEMURC;
     BRcFile rcFile(rcFileName);
     rcFile.GetValue(FLEXVERSION, options.version);
@@ -1079,7 +1082,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     {
         using T = decltype(options.frequency);
         T value{};
-        if (fromString<T>(string_result, value))
+        if (flx::fromString<T>(string_result, value))
         {
             options.frequency = value;
         }

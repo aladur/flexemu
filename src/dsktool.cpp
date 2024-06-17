@@ -101,7 +101,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         std::string question(dsk_file);
 
         question += " already exists. Overwrite?";
-        if (AskForInput(question, "yn", default_answer))
+        if (flx::AskForInput(question, "yn", default_answer))
         {
             unlink(dsk_file.c_str());
         }
@@ -121,8 +121,8 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexDisk::Create(
-                        getParentPath(dsk_file),
-                        getFileName(dsk_file),
+                        flx::getParentPath(dsk_file),
+                        flx::getFileName(dsk_file),
                         fileTimeAccess,
                         tracks, sectors,
                         disk_format,
@@ -131,7 +131,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         if (container && verbose)
         {
             std::cout << "Successfully created " <<
-                getFileName(dsk_file) << " with " <<
+                flx::getFileName(dsk_file) << " with " <<
                 tracks << "-" << sectors << " tracks-sectors.\n";
         }
     }
@@ -186,7 +186,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             if (dest.FindFile(filename, dir_entry))
             {
                 auto question = filename + " already exists. Overwrite?";
-                if (AskForInput(question, "yn", default_answer))
+                if (flx::AskForInput(question, "yn", default_answer))
                 {
                     dest.DeleteFile(dir_entry.GetTotalFileName());
                 }
@@ -320,7 +320,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     {
         hasAttributes = true;
         std::cout <<
-            "FILE: " << getFileName(dsk_file) << "  " <<
+            "FILE: " << flx::getFileName(dsk_file) << "  " <<
             "DISK: " << diskAttributes.GetName() <<
             " #" << diskAttributes.GetNumber() <<
             "  CREATED: " << diskAttributes.GetDate().GetDateString(format) <<
@@ -329,7 +329,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     else
     {
         std::cerr << "Error reading disk image attributes from " <<
-                     getFileName(dsk_file) << "\n";
+                     flx::getFileName(dsk_file) << "\n";
     }
 
     std::cout << "FILE#   NAME   TYPE  BEGIN   END   SIZE    DATE      ";
@@ -449,7 +449,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
             name = "\"\"";
         }
 
-        std::string file = verbose ? dsk_file : getFileName(dsk_file);
+        std::string file = verbose ? dsk_file : flx::getFileName(dsk_file);
 
         std::cout << fmt::format(
             "{} {:<12} {:<5} {:<2}-{:<2} {:<5} {:<5} {:<5} {}\n",
@@ -464,7 +464,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
     else
     {
         std::cerr << "Error reading disk image attributes for " <<
-                     getFileName(dsk_file) << "\n";
+                     flx::getFileName(dsk_file) << "\n";
     }
 
     return 0;
@@ -549,7 +549,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                 std::string question(fileBuffer.GetFilename());
 
                 question += " already exists. Overwrite?";
-                if (AskForInput(question, "yn", default_answer))
+                if (flx::AskForInput(question, "yn", default_answer))
                 {
                     dst.DeleteFile(dir_entry.GetTotalFileName());
                 }
@@ -618,7 +618,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
                 std::stringstream question;
 
                 question << "Delete " << flex_file << "?";
-                if (AskForInput(question.str(), "yn", default_answer))
+                if (flx::AskForInput(question.str(), "yn", default_answer))
                 {
                     src.DeleteFile(flex_file);
                 }
@@ -790,7 +790,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 std::string question(filename);
 
                 question += " already exists. Overwrite?";
-                if (AskForInput(question, "yn", default_answer))
+                if (flx::AskForInput(question, "yn", default_answer))
                 {
                     dst.DeleteFile(filename);
                 }
@@ -984,7 +984,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
 
     if (!dsk_file.empty())
     {
-        extension = tolower(getFileExtension(dsk_file));
+        extension = flx::tolower(flx::getFileExtension(dsk_file));
         if (!extension.empty())
         {
             extension = extension.substr(1);
