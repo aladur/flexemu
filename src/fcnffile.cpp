@@ -234,7 +234,7 @@ std::pair<std::string, std::set<std::string> >
 
             while (std::getline(stream, device, ','))
             {
-                trim(device);
+                device = trim(device);
 
                 if (validDevices.find(device) == validDevices.end())
                 {

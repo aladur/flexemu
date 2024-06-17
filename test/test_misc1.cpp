@@ -622,3 +622,51 @@ TEST(test_misc1, class_ci_string)
     EXPECT_EQ(result, 0);
 }
 
+TEST(test_misc1, fct_ltrim)
+{
+    std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(ltrim(str1c), "abc   \n\t\r\f\v");
+    std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(ltrim(std::move(str1m)), "abc   \n\t\r\f\v");
+    std::string str2c("   a b c   ");
+    EXPECT_EQ(ltrim(str2c), "a b c   ");
+    std::string str2m("   a b c   ");
+    EXPECT_EQ(ltrim(std::move(str2m)), "a b c   ");
+    std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(ltrim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(ltrim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+}
+
+TEST(test_misc1, fct_rtrim)
+{
+    std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(rtrim(str1c), "\n\t\r\f\v   abc");
+    std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(rtrim(std::move(str1m)), "\n\t\r\f\v   abc");
+    std::string str2c("   a b c   ");
+    EXPECT_EQ(rtrim(str2c), "   a b c");
+    std::string str2m("   a b c   ");
+    EXPECT_EQ(rtrim(std::move(str2m)), "   a b c");
+    std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(rtrim(str3c), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
+    std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(rtrim(std::move(str3m)), " \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c");
+}
+
+TEST(test_misc1, fct_trim)
+{
+    std::string str1c("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(trim(str1c), "abc");
+    std::string str1m("\n\t\r\f\v   abc   \n\t\r\f\v");
+    EXPECT_EQ(trim(std::move(str1m)), "abc");
+    std::string str2c("   a b c   ");
+    EXPECT_EQ(trim(str2c), "a b c");
+    std::string str2m("   a b c   ");
+    EXPECT_EQ(trim(std::move(str2m)), "a b c");
+    std::string str3c(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(trim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c");
+    std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
+    EXPECT_EQ(trim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c");
+}
+

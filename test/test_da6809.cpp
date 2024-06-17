@@ -101,7 +101,7 @@ TEST(test_da6809, dis_inherent)
         }
         EXPECT_EQ(code, expected_code);
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
-        rtrim(mnemonic);
+        mnemonic = rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }
@@ -201,7 +201,7 @@ TEST(test_da6809, dis_immediate)
         {
             expected_mnemonic += fmt::format("{:02X}", tgtaddr);
         }
-        rtrim(mnemonic);
+        mnemonic = rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
         pc += bytes;
     }

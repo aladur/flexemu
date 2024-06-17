@@ -333,24 +333,51 @@ extern bool isListedInFileRandom(const std::string &directory,
 extern bool hasRandomFileAttribute(const std::string &directory,
                                    const std::string &filename);
 
-// trim from end of string (right)
-inline std::string& rtrim(std::string& str, const char* t = white_space)
+// trim white spaces from end of string (right)
+inline std::string rtrim(const std::string &str, const char* t = white_space)
 {
-    str.erase(str.find_last_not_of(t) + 1);
-    return str;
+    auto result(str);
+    result.erase(result.find_last_not_of(t) + 1);
+    return result;
 }
 
-// trim from beginning of string (left)
-inline std::string& ltrim(std::string& str, const char* t = white_space)
+inline std::string rtrim(std::string &&str, const char* t = white_space)
 {
-    str.erase(0, str.find_first_not_of(t));
-    return str;
+    auto result(std::move(str));
+    result.erase(result.find_last_not_of(t) + 1);
+    return result;
 }
 
-// trim from both ends of string (left & right)
-inline std::string& trim(std::string& str, const char* t = white_space)
+// trim white spaces from beginning of string (left)
+inline std::string ltrim(const std::string &str, const char* t = white_space)
 {
-    return ltrim(rtrim(str, t), t);
+    auto result(str);
+    result.erase(0, result.find_first_not_of(t));
+    return result;
+}
+
+inline std::string ltrim(std::string &&str, const char* t = white_space)
+{
+    auto result(std::move(str));
+    result.erase(0, result.find_first_not_of(t));
+    return result;
+}
+
+// trim white spaces from both ends of string (left & right)
+inline std::string trim(const std::string &str, const char* t = white_space)
+{
+    auto result(str);
+    result.erase(result.find_last_not_of(t) + 1);
+    result.erase(0, result.find_first_not_of(t));
+    return result;
+}
+
+inline std::string trim(std::string &&str, const char* t = white_space)
+{
+    auto result(std::move(str));
+    result.erase(result.find_last_not_of(t) + 1);
+    result.erase(0, result.find_first_not_of(t));
+    return result;
 }
 
 template<typename T> T reverseBytes(const T& value)
