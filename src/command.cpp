@@ -133,8 +133,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
         auto number = static_cast<int>(INVALID_DRIVE);
         auto count = 0;
         p = command.data();
-        std::string arg1 = flx::tolower(next_token(&p, &count));
-        arg1 = flx::rtrim(std::move(arg1));
+        const auto arg1 = flx::rtrim(flx::tolower(next_token(&p, &count)));
         skip_token(&p);
         arg2 = next_token(&p, &count);
         skip_token(&p);
