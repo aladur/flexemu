@@ -66,9 +66,8 @@ TEST(test_ffilebuf, fct_move_ctor)
     EXPECT_EQ(ffb_tgt.GetTime(), BTime(18, 26));
     const auto *p_tgt = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_tgt, nullptr);
-    auto uc(test_file);
-    flx::strupper(uc);
-    EXPECT_EQ(uc.compare(ffb_tgt.GetFilename()), 0);
+    const auto uc_test_file(flx::toupper(test_file));
+    EXPECT_EQ(uc_test_file.compare(ffb_tgt.GetFilename()), 0);
 
     // Check source (should be all empty).
     EXPECT_TRUE(ffb_src.IsEmpty());
@@ -113,8 +112,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     EXPECT_EQ(ffb_tgt.GetTime(), BTime(9, 28));
     const auto *p_tgt = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_tgt, nullptr);
-    auto uc_tgt(test_file);
-    flx::strupper(uc_tgt);
+    auto uc_tgt(flx::toupper(test_file));
     EXPECT_EQ(uc_tgt.compare(ffb_tgt.GetFilename()), 0);
 
     // Check source (same as target).
@@ -127,8 +125,7 @@ TEST(test_ffilebuf, fct_copy_ctor)
     EXPECT_EQ(ffb_src.GetTime(), BTime(9, 28));
     const auto *p_src = static_cast<const Byte *>(ffb_tgt);
     EXPECT_NE(p_src, nullptr);
-    auto uc_src(test_file);
-    flx::strupper(uc_src);
+    auto uc_src(flx::toupper(test_file));
     EXPECT_EQ(uc_src.compare(ffb_src.GetFilename()), 0);
 
     fs::remove(path);
@@ -150,9 +147,8 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     // Check properties.
     EXPECT_EQ(ffb.GetFileSize(), 29U);
     EXPECT_FALSE(ffb.IsEmpty());
-    auto uc(test_file);
-    flx::strupper(uc);
-    EXPECT_EQ(uc.compare(ffb.GetFilename()), 0);
+    auto uc_test_file(flx::toupper(test_file));
+    EXPECT_EQ(uc_test_file.compare(ffb.GetFilename()), 0);
 
     fs::remove(path);
 }

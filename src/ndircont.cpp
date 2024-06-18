@@ -947,12 +947,10 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             if (!stat(path.c_str(), &sbuf) &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
-                std::string name(flx::getFileStem(filename));
-                std::string extension(
-                        flx::getFileExtension(filename).c_str() + 1);
+                std::string name(flx::toupper(flx::getFileStem(filename)));
+                std::string extension(flx::toupper(flx::getFileExtension(
+                                filename).c_str() + 1));
 
-                flx::strupper(name);
-                flx::strupper(extension);
                 add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
                                  end, (access(path.c_str(), W_OK) != 0));
@@ -993,8 +991,8 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         std::string name{"FLEXDISK"};
         if (pos != std::string::npos && pos > 0)
         {
-            name = diskname.substr(0, std::min(pos, FLEX_DISKNAME_LENGTH));
-            flx::strupper(name);
+            name = flx::toupper(diskname.substr(0, std::min(
+                            pos, FLEX_DISKNAME_LENGTH)));
         }
 
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
