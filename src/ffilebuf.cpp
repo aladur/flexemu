@@ -589,8 +589,8 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
 
             if (GetFileSize() == 0 || istream.good())
             {
-                auto fullPath = flx::toAbsolutePath(path);
-                auto directory = flx::getParentPath(fullPath);
+                const auto fullPath = flx::toAbsolutePath(path);
+                const auto directory = flx::getParentPath(fullPath);
                 const auto filename = flx::getFileName(path);
 
                 SetAttributes(0);
