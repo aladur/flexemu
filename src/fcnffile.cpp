@@ -38,7 +38,7 @@ const std::set<std::string> FlexemuConfigFile::validDevices =
 FlexemuConfigFile::FlexemuConfigFile(const std::string &fileName) :
      iniFileName(fileName)
 {
-    BIniFile iniFile(iniFileName.c_str());
+    BIniFile iniFile(iniFileName);
 
     if (!iniFile.IsValid())
     {
@@ -62,7 +62,7 @@ noexcept
 std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 {
     std::vector<sIoDeviceMapping> deviceMappings;
-    BIniFile iniFile(iniFileName.c_str());
+    BIniFile iniFile(iniFileName);
 
     auto valueForKey = iniFile.ReadSection("IoDevices");
 
@@ -133,7 +133,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
     flx::strlower(fileName);
 #endif
 
-    BIniFile iniFile(iniFileName.c_str());
+    BIniFile iniFile(iniFileName);
 
     auto valueForKey = iniFile.ReadSection("SERPARAddress");
 
@@ -182,7 +182,7 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
         "presetRAM", "logMdcr", "logMdcrFilePath"
     };
 
-    BIniFile iniFile(iniFileName.c_str());
+    BIniFile iniFile(iniFileName);
 
     auto valueForKey = iniFile.ReadSection("DebugSupport");
 
@@ -214,7 +214,7 @@ std::pair<std::string, std::set<std::string> >
     std::string logFilePath;
     std::set<std::string> devices;
     std::pair<std::string, std::set<std::string> > result;
-    BIniFile iniFile(iniFileName.c_str());
+    BIniFile iniFile(iniFileName);
 
     auto valueForKey = iniFile.ReadSection("IoDeviceLogging");
 

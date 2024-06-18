@@ -27,8 +27,8 @@
 #include <set>
 
 
-BIniFile::BIniFile(const char *aFileName) :
-    fileName(aFileName)
+BIniFile::BIniFile(const std::string &p_fileName) :
+    fileName(p_fileName)
 {
 }
 
