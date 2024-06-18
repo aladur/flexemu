@@ -1744,8 +1744,7 @@ ColorTable QtGui::CreateColorTable()
 
     if (!isWithColorScale)
     {
-        flx::getRGBForName(options.color.c_str(), &redBase, &greenBase,
-                &blueBase);
+        flx::getRGBForName(options.color, redBase, greenBase, blueBase);
     }
 
     fn GetColor = [&](int index) -> QRgb

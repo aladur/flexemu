@@ -192,7 +192,7 @@ void FlexemuOptionsUi::TransferDataToDialog(const struct sOptions &options)
         DWord colorRGBValue;
 
         const auto *colorName = flx::colors[i].colorName;
-        flx::getColorForName(colorName, &colorRGBValue);
+        flx::getColorForName(colorName, colorRGBValue);
         cb_color->addItem(tr(colorName));
         QPixmap pixmap(16,16);
         pixmap.fill(QColor(colorName));

@@ -24,6 +24,7 @@
 #define COLORS_INCLUDED
 
 #include "typedefs.h"
+#include <string>
 
 
 extern "C" struct sRGBDef
@@ -37,9 +38,9 @@ extern "C" struct sRGBDef
 namespace flx
 {
 
-extern "C" int getRGBForName(const char *colorName, Word *red, Word *green,
-        Word *blue);
-extern "C" int getColorForName(const char *colorName, DWord *color);
+extern "C" bool getRGBForName(const std::string &colorName, Word &red,
+           Word &green, Word &blue);
+extern "C" bool getColorForName(const std::string &colorName, DWord &color);
 extern "C" const struct sRGBDef colors[];
 extern "C" const std::size_t color_count;
 

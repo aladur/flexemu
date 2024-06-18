@@ -702,40 +702,38 @@ yellowgreen", 154 205 50
 
 */
 
-int flx::getRGBForName(const char *colorName, Word *red, Word *green,
-                       Word *blue)
+bool flx::getRGBForName(const std::string &colorName, Word &red, Word &green,
+                        Word &blue)
 {
-    const std::string strColorName{colorName};
-
     for (const auto &color : colors)
     {
-        if (strColorName.compare(color.colorName) == 0)
+        if (colorName.compare(color.colorName) == 0)
         {
-            *red = color.red;
-            *green = color.green;
-            *blue = color.blue;
-            return 1;
+            red = color.red;
+            green = color.green;
+            blue = color.blue;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
-int flx::getColorForName(const char *colorName, DWord *rgbColor)
+bool flx::getColorForName(const std::string &colorName, DWord &rgbColor)
 {
     Word red;
     Word green;
     Word blue;
 
-    if (getRGBForName(colorName, &red, &green, &blue))
+    if (getRGBForName(colorName, red, green, blue))
     {
-        *rgbColor = red & 0xff;
-        *rgbColor |= (green & 0xff) << 8;
-        *rgbColor |= (DWord)(blue & 0xff) << 16;
-        return 1;
+        rgbColor = red & 0xff;
+        rgbColor |= (green & 0xff) << 8;
+        rgbColor |= (DWord)(blue & 0xff) << 16;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
 #ifdef __cplusplus
