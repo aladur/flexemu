@@ -23,6 +23,7 @@
 #ifndef FCNFFILE_INCLUDED
 #define FCNFFILE_INCLUDED
 
+#include "typedefs.h"
 #include <vector>
 #include <string>
 #include <set>
@@ -42,7 +43,7 @@ public:
     FlexemuConfigFile() = delete;
     FlexemuConfigFile(const FlexemuConfigFile &src) = delete;
     FlexemuConfigFile(FlexemuConfigFile &&src) noexcept;
-    explicit FlexemuConfigFile(const char *aFileName);
+    explicit FlexemuConfigFile(const std::string &fileName);
     ~FlexemuConfigFile() = default;
 
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;

@@ -35,14 +35,14 @@ const std::set<std::string> FlexemuConfigFile::validDevices =
         "drisel", "command", "vico1", "vico2", "rtc"
     };
 
-FlexemuConfigFile::FlexemuConfigFile(const char *aFileName) :
-     iniFileName(aFileName)
+FlexemuConfigFile::FlexemuConfigFile(const std::string &fileName) :
+     iniFileName(fileName)
 {
     BIniFile iniFile(iniFileName.c_str());
 
     if (!iniFile.IsValid())
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, aFileName);
+        throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
     }
 }
 

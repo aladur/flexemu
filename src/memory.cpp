@@ -174,7 +174,7 @@ void Memory::init_vram_ptr(Byte vram_ptr_index, Byte *ram_ptr)
     if (do_preset_ram < 0)
     {
         const auto path(flx::getFlexemuSystemConfigFile());
-        FlexemuConfigFile configFile(path.c_str());
+        FlexemuConfigFile configFile(path);
         const auto value = configFile.GetDebugSupportOption("presetRAM");
 
         do_preset_ram = (value == "1") ? 1 : 0;
