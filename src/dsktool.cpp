@@ -101,7 +101,7 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         std::string question(dsk_file);
 
         question += " already exists. Overwrite?";
-        if (flx::AskForInput(question, "yn", default_answer))
+        if (flx::askForInput(question, "yn", default_answer))
         {
             unlink(dsk_file.c_str());
         }
@@ -186,7 +186,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
             if (dest.FindFile(filename, dir_entry))
             {
                 auto question = filename + " already exists. Overwrite?";
-                if (flx::AskForInput(question, "yn", default_answer))
+                if (flx::askForInput(question, "yn", default_answer))
                 {
                     dest.DeleteFile(dir_entry.GetTotalFileName());
                 }
@@ -549,7 +549,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
                 std::string question(fileBuffer.GetFilename());
 
                 question += " already exists. Overwrite?";
-                if (flx::AskForInput(question, "yn", default_answer))
+                if (flx::askForInput(question, "yn", default_answer))
                 {
                     dst.DeleteFile(dir_entry.GetTotalFileName());
                 }
@@ -618,7 +618,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
                 std::stringstream question;
 
                 question << "Delete " << flex_file << "?";
-                if (flx::AskForInput(question.str(), "yn", default_answer))
+                if (flx::askForInput(question.str(), "yn", default_answer))
                 {
                     src.DeleteFile(flex_file);
                 }
@@ -790,7 +790,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
                 std::string question(filename);
 
                 question += " already exists. Overwrite?";
-                if (flx::AskForInput(question, "yn", default_answer))
+                if (flx::askForInput(question, "yn", default_answer))
                 {
                     dst.DeleteFile(filename);
                 }

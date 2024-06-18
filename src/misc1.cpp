@@ -789,7 +789,7 @@ void flx::hex_dump(std::ostream &os, const char *buffer, int count)
     }
 }
 
-bool flx::AskForInput(const std::string &question, const std::string &answers,
+bool flx::askForInput(const std::string &question, const std::string &answers,
                       char default_answer)
 {
     char input = ' ';
