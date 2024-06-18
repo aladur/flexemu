@@ -136,6 +136,7 @@ libgtest_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(CXXFLAGS) $(libgtest_la_LDFLAGS) $(LDFLAGS) -o $@
 am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_brcfile.$(OBJEXT) \
+	unittests-test_cistring.$(OBJEXT) \
 	unittests-test_da6809.$(OBJEXT) unittests-test_main.$(OBJEXT) \
 	unittests-test_misc1.$(OBJEXT) \
 	unittests-test_ffilebuf.$(OBJEXT) \
@@ -199,6 +200,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_boption.Po \
 	./$(DEPDIR)/unittests-test_brcfile.Po \
 	./$(DEPDIR)/unittests-test_btime.Po \
+	./$(DEPDIR)/unittests-test_cistring.Po \
 	./$(DEPDIR)/unittests-test_da6809.Po \
 	./$(DEPDIR)/unittests-test_fdirent.Po \
 	./$(DEPDIR)/unittests-test_ffilebuf.Po \
@@ -700,6 +702,7 @@ libgmock_la_LDFLAGS = -pthread
 unittests_SOURCES = \
 	test_benv.cpp \
 	test_brcfile.cpp \
+	test_cistring.cpp \
 	test_da6809.cpp \
 	test_main.cpp \
 	test_misc1.cpp \
@@ -728,6 +731,7 @@ unittests_SOURCES = \
 	../src/bintervl.h \
 	../src/boption.h \
 	../src/btime.h \
+	../src/cistring.h \
 	../src/da6809.h \
 	../src/fattrib.h \
 	../src/fdirent.h \
@@ -984,6 +988,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_boption.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_brcfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_btime.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_cistring.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_da6809.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fdirent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_ffilebuf.Po@am__quote@ # am--include-marker
@@ -1062,6 +1067,20 @@ unittests-test_brcfile.obj: test_brcfile.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_brcfile.cpp' object='unittests-test_brcfile.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_brcfile.obj `if test -f 'test_brcfile.cpp'; then $(CYGPATH_W) 'test_brcfile.cpp'; else $(CYGPATH_W) '$(srcdir)/test_brcfile.cpp'; fi`
+
+unittests-test_cistring.o: test_cistring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_cistring.o -MD -MP -MF $(DEPDIR)/unittests-test_cistring.Tpo -c -o unittests-test_cistring.o `test -f 'test_cistring.cpp' || echo '$(srcdir)/'`test_cistring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_cistring.Tpo $(DEPDIR)/unittests-test_cistring.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_cistring.cpp' object='unittests-test_cistring.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_cistring.o `test -f 'test_cistring.cpp' || echo '$(srcdir)/'`test_cistring.cpp
+
+unittests-test_cistring.obj: test_cistring.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_cistring.obj -MD -MP -MF $(DEPDIR)/unittests-test_cistring.Tpo -c -o unittests-test_cistring.obj `if test -f 'test_cistring.cpp'; then $(CYGPATH_W) 'test_cistring.cpp'; else $(CYGPATH_W) '$(srcdir)/test_cistring.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_cistring.Tpo $(DEPDIR)/unittests-test_cistring.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_cistring.cpp' object='unittests-test_cistring.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_cistring.obj `if test -f 'test_cistring.cpp'; then $(CYGPATH_W) 'test_cistring.cpp'; else $(CYGPATH_W) '$(srcdir)/test_cistring.cpp'; fi`
 
 unittests-test_da6809.o: test_da6809.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_da6809.o -MD -MP -MF $(DEPDIR)/unittests-test_da6809.Tpo -c -o unittests-test_da6809.o `test -f 'test_da6809.cpp' || echo '$(srcdir)/'`test_da6809.cpp
@@ -1809,6 +1828,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
 	-rm -f ./$(DEPDIR)/unittests-test_brcfile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_btime.Po
+	-rm -f ./$(DEPDIR)/unittests-test_cistring.Po
 	-rm -f ./$(DEPDIR)/unittests-test_da6809.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
@@ -1881,6 +1901,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
 	-rm -f ./$(DEPDIR)/unittests-test_brcfile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_btime.Po
+	-rm -f ./$(DEPDIR)/unittests-test_cistring.Po
 	-rm -f ./$(DEPDIR)/unittests-test_da6809.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po

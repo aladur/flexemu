@@ -263,6 +263,7 @@
     <ClInclude Include="bregistr.h" />
     <ClInclude Include="breltime.h" />
     <ClInclude Include="btime.h" />
+    <ClInclude Include="cistring.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />

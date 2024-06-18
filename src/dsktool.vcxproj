@@ -24,6 +24,7 @@
   <ItemGroup>
     <ClInclude Include="bdate.h" />
     <ClInclude Include="bdir.h" />
+    <ClInclude Include="cistring.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />

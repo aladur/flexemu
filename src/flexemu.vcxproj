@@ -407,6 +407,7 @@
     <ClInclude Include="bui.h" />
     <ClInclude Include="bytereg.h" />
     <ClInclude Include="cacttrns.h" />
+    <ClInclude Include="cistring.h" />
     <ClInclude Include="clogfile.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="command.h" />

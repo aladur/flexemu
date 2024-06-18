@@ -28,6 +28,7 @@ noinst_PROGRAMS = unittests
 unittests_SOURCES = \
 	test_benv.cpp \
 	test_brcfile.cpp \
+	test_cistring.cpp \
 	test_da6809.cpp \
 	test_main.cpp \
 	test_misc1.cpp \
@@ -56,6 +57,7 @@ unittests_SOURCES = \
 	../src/bintervl.h \
 	../src/boption.h \
 	../src/btime.h \
+	../src/cistring.h \
 	../src/da6809.h \
 	../src/fattrib.h \
 	../src/fdirent.h \

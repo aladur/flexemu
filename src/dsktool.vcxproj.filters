@@ -22,6 +22,9 @@
     <ClInclude Include="bdir.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cistring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="confignt.h">
       <Filter>Header Files</Filter>
     </ClInclude>

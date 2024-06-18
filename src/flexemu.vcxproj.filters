@@ -258,6 +258,9 @@
     <ClInclude Include="cacttrns.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cistring.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="clogfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -274,6 +274,7 @@
     <ClInclude Include="bprocess.h" />
     <ClInclude Include="brcfile.h" />
     <ClInclude Include="bregistr.h" />
+    <ClInclude Include="cistring.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cvtwchar.h" />
     <ClInclude Include="dircont.h" />

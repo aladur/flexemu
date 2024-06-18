@@ -254,6 +254,7 @@ flexemu_SOURCES = \
 	bui.h \
 	bytereg.h \
 	cacttrns.h \
+	cistring.h \
 	clogfile.h \
 	colors.h \
 	command.h \
@@ -357,6 +358,7 @@ flexplorer_SOURCES = \
 	brcfile.h \
 	bregistr.h \
 	btime.h \
+	cistring.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -432,6 +434,7 @@ dsktool_SOURCES = \
 	bdate.h \
 	bdir.h \
 	btime.h \
+	cistring.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
@@ -544,6 +547,7 @@ libflex_a_SOURCES = \
 	bregistr.h \
 	breltime.h \
 	btime.h \
+	cistring.h \
 	config.h \
 	cvtwchar.h \
 	dircont.h \

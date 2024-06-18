@@ -31,6 +31,7 @@
 #include <cassert>
 #include "fcinfo.h"
 #include "flexerr.h"
+#include "cistring.h"
 #include "ffilecnt.h"
 #include "fdirent.h"
 #include "bdate.h"
