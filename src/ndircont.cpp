@@ -948,8 +948,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
             {
                 std::string name(flx::toupper(flx::getFileStem(filename)));
-                std::string extension(flx::toupper(flx::getFileExtension(
-                                filename).c_str() + 1));
+                std::string extension(flx::toupper(
+                            flx::getFileExtension(filename).substr(1)));
 
                 add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
