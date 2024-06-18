@@ -213,14 +213,6 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 
 typedef QWord cycles_t;
 
-extern "C" struct sRGBDef
-{
-    const char *colorName;
-    Byte red;
-    Byte green;
-    Byte blue;
-};
-
 /* Names of Environment or Registry variables */
 
 #ifdef _WIN32
@@ -324,10 +316,6 @@ extern bool endsWithPathSeparator(const std::string &path);
 extern bool isAbsolutePath(const std::string &path);
 extern bool isPathsEqual(const std::string &path1, const std::string &path2);
 extern bool isFlexFilename(const std::string &filename);
-extern "C" int getRGBForName(const char *colorName, Word *red, Word *green, Word *blue);
-extern "C" int getColorForName(const char *colorName, DWord *color);
-extern "C" const struct sRGBDef colors[];
-extern "C" const size_t color_count;
 
 extern const char * const white_space;
 

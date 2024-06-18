@@ -46,6 +46,7 @@
 #include "foptman.h"
 #include "fsetupui.h"
 #include "qtfree.h"
+#include "colors.h"
 #include "warnoff.h"
 #include "poutwin.h"
 #include <QString>

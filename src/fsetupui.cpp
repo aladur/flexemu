@@ -25,6 +25,7 @@
 #include "e2.h"
 #include "soptions.h"
 #include "filecnts.h"
+#include "colors.h"
 #include <string>
 #include <memory>
 #include <stdexcept>

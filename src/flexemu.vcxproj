@@ -408,6 +408,7 @@
     <ClInclude Include="bytereg.h" />
     <ClInclude Include="cacttrns.h" />
     <ClInclude Include="clogfile.h" />
+    <ClInclude Include="colors.h" />
     <ClInclude Include="command.h" />
     <ClInclude Include="confignt.h" />
     <ClInclude Include="cpustate.h" />

@@ -901,6 +901,7 @@ flexemu_SOURCES = \
 	bytereg.h \
 	cacttrns.h \
 	clogfile.h \
+	colors.h \
 	command.h \
 	config.h \
 	cpustate.h \
