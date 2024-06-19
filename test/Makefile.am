@@ -23,7 +23,7 @@ libgmock_la_LDFLAGS = -pthread
 # Instructions to make test executable.
 #
 check_PROGRAMS = unittests
-noinst_PROGRAMS = unittests
+noinst_PROGRAMS = unittests test_gccasm
 
 unittests_SOURCES = \
 	test_benv.cpp \
@@ -84,6 +84,63 @@ TESTS_ENVIRONMENT = export GTEST_OUTPUT="xml";
 
 SUBDIRS = \
 	data
+
+test_gccasm_SOURCES = \
+	../src/clogfile.cpp  \
+	../src/colors.cpp \
+	../src/command.cpp \
+	../src/da6809.cpp \
+	../src/foptman.cpp \
+	../src/inout.cpp \
+	../src/mc6809.cpp \
+	../src/mc6809in.cpp \
+	../src/mc6809st.cpp \
+	../src/schedule.cpp \
+	test_gccasm.cpp \
+	testmain.cpp \
+	../src/bdate.h \
+	../src/bobserv.h \
+	../src/bobservd.h \
+	../src/bobshelp.h \
+	../src/breltime.h \
+	../src/btime.h \
+	../src/clogfile.h \
+	../src/command.h \
+	../src/config.h \
+	../src/cpustate.h \
+	../src/csetfreq.h \
+	../src/da6809.h \
+	../src/debug.h \
+	../src/e2.h \
+	../src/engine.h \
+	../src/fcinfo.h \
+	../src/flexerr.h \
+	../src/foptman.h \
+	../src/inout.h \
+	../src/mc6809.h \
+	../src/mc6809st.h \
+	../src/memory.h \
+	../src/misc1.h \
+	../src/schedcpu.h \
+	../src/schedule.h \
+	../src/sprinter.h \
+	test_gccasm.h \
+	../src/typedefs.h \
+	../src/warnoff.h \
+	../src/warnon.h
+
+test_gccasm_LDADD = $(PTHREAD_LD) ../src/libflex.a ../src/libfmt.a
+test_gccasm_LDFLAGS = -pthread
+test_gccasm_CXXFLAGS = \
+	-std=c++17 \
+	-DF_DATADIR=\"$(pkgdatadir)\" \
+	-DF_SYSCONFDIR=\"$(sysconfdir)\" \
+	$(OS_TYPE) \
+	-isystem$(top_srcdir)/$(gtest_top)/include \
+	-isystem$(top_srcdir)/$(gmock_top)/include \
+	-isystem$(top_srcdir)/fmt/include \
+	-I$(top_srcdir)/src
+	-include ../src/pch.h
 
 # To support 'make distcheck' the following googletest files have to be added
 # to the distribution.

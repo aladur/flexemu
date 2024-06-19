@@ -56,7 +56,7 @@ jobs:
           otool -L src/flexemu
           otool -L src/flexplorer
           make -j4 check
-          src/test
+          test/test_gccasm
           src/dsktool -l disks/games.dsk
           src/dsktool -f new.dsk -S 80dsdd
           src/dsktool -C disks/system.dsk -T new.dsk

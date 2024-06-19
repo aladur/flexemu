@@ -62,8 +62,6 @@ EXTRA_PROGRAMS = \
 	flexplorer \
 	mdcrtool
 
-noinst_PROGRAMS = test
-
 DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 
 AM_CXXFLAGS = \
@@ -83,7 +81,6 @@ flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-test_CXXFLAGS       = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 
 libflex_a_LIBADD = $(LIBOBJS)
 
@@ -95,7 +92,6 @@ flexemu_LDADD    = \
 	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a libfmt.a
-test_LDADD       = $(PTHREAD_LD) libflex.a libfmt.a
 
 libflex_a_DEPENDENCIES  = libfmt.a
 flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a libfmt.a
@@ -103,7 +99,6 @@ flexplorer_DEPENDENCIES = libflex.a libfmt.a
 flex2hex_DEPENDENCIES   = libflex.a libfmt.a
 dsktool_DEPENDENCIES    = libflex.a libfmt.a
 mdcrtool_DEPENDENCIES   = libflex.a libfmt.a
-test_DEPENDENCIES       = libflex.a libfmt.a
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h
@@ -163,7 +158,6 @@ nodist_flexplorer_SOURCES = \
 nodist_flex2hex_SOURCES = $(pch_h_gch)
 nodist_dsktool_SOURCES = $(pch_h_gch)
 nodist_mdcrtool_SOURCES = $(pch_h_gch)
-nodist_test_SOURCES = $(pch_h_gch)
 
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
@@ -457,50 +451,6 @@ dsktool_SOURCES = \
 	misc1.h \
 	rfilecnt.h \
 	typedefs.h
-
-test_SOURCES = \
-	clogfile.cpp  \
-	colors.cpp \
-	command.cpp \
-	da6809.cpp \
-	foptman.cpp \
-	inout.cpp \
-	mc6809.cpp \
-	mc6809in.cpp \
-	mc6809st.cpp \
-	schedule.cpp \
-	test_gccasm.cpp \
-	testmain.cpp \
-	bdate.h \
-	bobserv.h \
-	bobservd.h \
-	bobshelp.h \
-	breltime.h \
-	btime.h \
-	clogfile.h \
-	command.h \
-	config.h \
-	cpustate.h \
-	csetfreq.h \
-	da6809.h \
-	debug.h \
-	e2.h \
-	engine.h \
-	fcinfo.h \
-	flexerr.h \
-	foptman.h \
-	inout.h \
-	mc6809.h \
-	mc6809st.h \
-	memory.h \
-	misc1.h \
-	schedcpu.h \
-	schedule.h \
-	sprinter.h \
-	test_gccasm.h \
-	typedefs.h \
-	warnoff.h \
-	warnon.h
 
 libflex_a_SOURCES = \
 	bdate.cpp \

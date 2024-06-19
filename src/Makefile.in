@@ -95,7 +95,6 @@ bin_PROGRAMS = $(FLEXPLORER) dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexemu$(EXEEXT) mdcrtool$(EXEEXT)
 EXTRA_PROGRAMS = dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexplorer$(EXEEXT) mdcrtool$(EXEEXT)
-noinst_PROGRAMS = test$(EXEEXT)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
@@ -121,7 +120,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
 	"$(DESTDIR)$(mimetypedir)" "$(DESTDIR)$(pkgdatadir)" \
 	"$(DESTDIR)$(sysconfdir)"
-PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS)
 LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 AM_V_AR = $(am__v_AR_@AM_V@)
@@ -241,17 +240,6 @@ mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS) $(nodist_mdcrtool_OBJECTS)
 mdcrtool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(mdcrtool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_test_OBJECTS = test-clogfile.$(OBJEXT) test-colors.$(OBJEXT) \
-	test-command.$(OBJEXT) test-da6809.$(OBJEXT) \
-	test-foptman.$(OBJEXT) test-inout.$(OBJEXT) \
-	test-mc6809.$(OBJEXT) test-mc6809in.$(OBJEXT) \
-	test-mc6809st.$(OBJEXT) test-schedule.$(OBJEXT) \
-	test-test_gccasm.$(OBJEXT) test-testmain.$(OBJEXT)
-nodist_test_OBJECTS = $(am__objects_2)
-test_OBJECTS = $(am_test_OBJECTS) $(nodist_test_OBJECTS)
-test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_CXXFLAGS) \
-	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -358,13 +346,7 @@ am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	./$(DEPDIR)/libflex_a-memory.Po ./$(DEPDIR)/libflex_a-misc1.Po \
 	./$(DEPDIR)/libflex_a-rfilecnt.Po \
 	./$(DEPDIR)/mdcrtool-mdcrfs.Po \
-	./$(DEPDIR)/mdcrtool-mdcrtool.Po ./$(DEPDIR)/test-clogfile.Po \
-	./$(DEPDIR)/test-colors.Po ./$(DEPDIR)/test-command.Po \
-	./$(DEPDIR)/test-da6809.Po ./$(DEPDIR)/test-foptman.Po \
-	./$(DEPDIR)/test-inout.Po ./$(DEPDIR)/test-mc6809.Po \
-	./$(DEPDIR)/test-mc6809in.Po ./$(DEPDIR)/test-mc6809st.Po \
-	./$(DEPDIR)/test-schedule.Po ./$(DEPDIR)/test-test_gccasm.Po \
-	./$(DEPDIR)/test-testmain.Po
+	./$(DEPDIR)/mdcrtool-mdcrtool.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -407,11 +389,10 @@ SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) $(dsktool_SOURCES) \
 	$(nodist_flex2hex_SOURCES) $(flexemu_SOURCES) \
 	$(nodist_flexemu_SOURCES) $(flexplorer_SOURCES) \
 	$(nodist_flexplorer_SOURCES) $(mdcrtool_SOURCES) \
-	$(nodist_mdcrtool_SOURCES) $(test_SOURCES) \
-	$(nodist_test_SOURCES)
+	$(nodist_mdcrtool_SOURCES)
 DIST_SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) \
 	$(dsktool_SOURCES) $(flex2hex_SOURCES) $(flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(mdcrtool_SOURCES) $(test_SOURCES)
+	$(flexplorer_SOURCES) $(mdcrtool_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -729,7 +710,6 @@ flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-test_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 libflex_a_LIBADD = $(LIBOBJS)
 flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a libfmt.a
 mdcrtool_LDADD = $(PTHREAD_LD) libflex.a libfmt.a
@@ -740,14 +720,12 @@ flexemu_LDADD = \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a libfmt.a
 
-test_LDADD = $(PTHREAD_LD) libflex.a libfmt.a
 libflex_a_DEPENDENCIES = libfmt.a
 flexemu_DEPENDENCIES = $(FLEX_RC) libflex.a libfmt.a
 flexplorer_DEPENDENCIES = libflex.a libfmt.a
 flex2hex_DEPENDENCIES = libflex.a libfmt.a
 dsktool_DEPENDENCIES = libflex.a libfmt.a
 mdcrtool_DEPENDENCIES = libflex.a libfmt.a
-test_DEPENDENCIES = libflex.a libfmt.a
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h
@@ -810,7 +788,6 @@ nodist_flexplorer_SOURCES = \
 nodist_flex2hex_SOURCES = $(pch_h_gch)
 nodist_dsktool_SOURCES = $(pch_h_gch)
 nodist_mdcrtool_SOURCES = $(pch_h_gch)
-nodist_test_SOURCES = $(pch_h_gch)
 BUILT_SOURCES = \
 	$(nodist_flexemu_SOURCES) \
 	$(nodist_flexplorer_SOURCES)
@@ -1104,50 +1081,6 @@ dsktool_SOURCES = \
 	rfilecnt.h \
 	typedefs.h
 
-test_SOURCES = \
-	clogfile.cpp  \
-	colors.cpp \
-	command.cpp \
-	da6809.cpp \
-	foptman.cpp \
-	inout.cpp \
-	mc6809.cpp \
-	mc6809in.cpp \
-	mc6809st.cpp \
-	schedule.cpp \
-	test_gccasm.cpp \
-	testmain.cpp \
-	bdate.h \
-	bobserv.h \
-	bobservd.h \
-	bobshelp.h \
-	breltime.h \
-	btime.h \
-	clogfile.h \
-	command.h \
-	config.h \
-	cpustate.h \
-	csetfreq.h \
-	da6809.h \
-	debug.h \
-	e2.h \
-	engine.h \
-	fcinfo.h \
-	flexerr.h \
-	foptman.h \
-	inout.h \
-	mc6809.h \
-	mc6809st.h \
-	memory.h \
-	misc1.h \
-	schedcpu.h \
-	schedule.h \
-	sprinter.h \
-	test_gccasm.h \
-	typedefs.h \
-	warnoff.h \
-	warnon.h
-
 libflex_a_SOURCES = \
 	bdate.cpp \
 	bdir.cpp \
@@ -1332,15 +1265,6 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-clean-noinstPROGRAMS:
-	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
-	echo " rm -f" $$list; \
-	rm -f $$list || exit $$?; \
-	test -n "$(EXEEXT)" || exit 0; \
-	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
-	echo " rm -f" $$list; \
-	rm -f $$list
-
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
@@ -1383,10 +1307,6 @@ flexplorer$(EXEEXT): $(flexplorer_OBJECTS) $(flexplorer_DEPENDENCIES) $(EXTRA_fl
 mdcrtool$(EXEEXT): $(mdcrtool_OBJECTS) $(mdcrtool_DEPENDENCIES) $(EXTRA_mdcrtool_DEPENDENCIES) 
 	@rm -f mdcrtool$(EXEEXT)
 	$(AM_V_CXXLD)$(mdcrtool_LINK) $(mdcrtool_OBJECTS) $(mdcrtool_LDADD) $(LIBS)
-
-test$(EXEEXT): $(test_OBJECTS) $(test_DEPENDENCIES) $(EXTRA_test_DEPENDENCIES) 
-	@rm -f test$(EXEEXT)
-	$(AM_V_CXXLD)$(test_LINK) $(test_OBJECTS) $(test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -1512,18 +1432,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-rfilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrfs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrtool.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-clogfile.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-colors.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-command.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-da6809.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-foptman.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-inout.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-mc6809.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-mc6809in.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-mc6809st.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-schedule.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-test_gccasm.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-testmain.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -3193,174 +3101,6 @@ mdcrtool-mdcrtool.obj: mdcrtool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-mdcrtool.obj `if test -f 'mdcrtool.cpp'; then $(CYGPATH_W) 'mdcrtool.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtool.cpp'; fi`
 
-test-clogfile.o: clogfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-clogfile.o -MD -MP -MF $(DEPDIR)/test-clogfile.Tpo -c -o test-clogfile.o `test -f 'clogfile.cpp' || echo '$(srcdir)/'`clogfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-clogfile.Tpo $(DEPDIR)/test-clogfile.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='clogfile.cpp' object='test-clogfile.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-clogfile.o `test -f 'clogfile.cpp' || echo '$(srcdir)/'`clogfile.cpp
-
-test-clogfile.obj: clogfile.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-clogfile.obj -MD -MP -MF $(DEPDIR)/test-clogfile.Tpo -c -o test-clogfile.obj `if test -f 'clogfile.cpp'; then $(CYGPATH_W) 'clogfile.cpp'; else $(CYGPATH_W) '$(srcdir)/clogfile.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-clogfile.Tpo $(DEPDIR)/test-clogfile.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='clogfile.cpp' object='test-clogfile.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-clogfile.obj `if test -f 'clogfile.cpp'; then $(CYGPATH_W) 'clogfile.cpp'; else $(CYGPATH_W) '$(srcdir)/clogfile.cpp'; fi`
-
-test-colors.o: colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-colors.o -MD -MP -MF $(DEPDIR)/test-colors.Tpo -c -o test-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-colors.Tpo $(DEPDIR)/test-colors.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='test-colors.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-colors.o `test -f 'colors.cpp' || echo '$(srcdir)/'`colors.cpp
-
-test-colors.obj: colors.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-colors.obj -MD -MP -MF $(DEPDIR)/test-colors.Tpo -c -o test-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-colors.Tpo $(DEPDIR)/test-colors.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='colors.cpp' object='test-colors.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-colors.obj `if test -f 'colors.cpp'; then $(CYGPATH_W) 'colors.cpp'; else $(CYGPATH_W) '$(srcdir)/colors.cpp'; fi`
-
-test-command.o: command.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-command.o -MD -MP -MF $(DEPDIR)/test-command.Tpo -c -o test-command.o `test -f 'command.cpp' || echo '$(srcdir)/'`command.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-command.Tpo $(DEPDIR)/test-command.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='command.cpp' object='test-command.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-command.o `test -f 'command.cpp' || echo '$(srcdir)/'`command.cpp
-
-test-command.obj: command.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-command.obj -MD -MP -MF $(DEPDIR)/test-command.Tpo -c -o test-command.obj `if test -f 'command.cpp'; then $(CYGPATH_W) 'command.cpp'; else $(CYGPATH_W) '$(srcdir)/command.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-command.Tpo $(DEPDIR)/test-command.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='command.cpp' object='test-command.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-command.obj `if test -f 'command.cpp'; then $(CYGPATH_W) 'command.cpp'; else $(CYGPATH_W) '$(srcdir)/command.cpp'; fi`
-
-test-da6809.o: da6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-da6809.o -MD -MP -MF $(DEPDIR)/test-da6809.Tpo -c -o test-da6809.o `test -f 'da6809.cpp' || echo '$(srcdir)/'`da6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-da6809.Tpo $(DEPDIR)/test-da6809.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='da6809.cpp' object='test-da6809.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-da6809.o `test -f 'da6809.cpp' || echo '$(srcdir)/'`da6809.cpp
-
-test-da6809.obj: da6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-da6809.obj -MD -MP -MF $(DEPDIR)/test-da6809.Tpo -c -o test-da6809.obj `if test -f 'da6809.cpp'; then $(CYGPATH_W) 'da6809.cpp'; else $(CYGPATH_W) '$(srcdir)/da6809.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-da6809.Tpo $(DEPDIR)/test-da6809.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='da6809.cpp' object='test-da6809.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-da6809.obj `if test -f 'da6809.cpp'; then $(CYGPATH_W) 'da6809.cpp'; else $(CYGPATH_W) '$(srcdir)/da6809.cpp'; fi`
-
-test-foptman.o: foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-foptman.o -MD -MP -MF $(DEPDIR)/test-foptman.Tpo -c -o test-foptman.o `test -f 'foptman.cpp' || echo '$(srcdir)/'`foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-foptman.Tpo $(DEPDIR)/test-foptman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='foptman.cpp' object='test-foptman.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-foptman.o `test -f 'foptman.cpp' || echo '$(srcdir)/'`foptman.cpp
-
-test-foptman.obj: foptman.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-foptman.obj -MD -MP -MF $(DEPDIR)/test-foptman.Tpo -c -o test-foptman.obj `if test -f 'foptman.cpp'; then $(CYGPATH_W) 'foptman.cpp'; else $(CYGPATH_W) '$(srcdir)/foptman.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-foptman.Tpo $(DEPDIR)/test-foptman.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='foptman.cpp' object='test-foptman.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-foptman.obj `if test -f 'foptman.cpp'; then $(CYGPATH_W) 'foptman.cpp'; else $(CYGPATH_W) '$(srcdir)/foptman.cpp'; fi`
-
-test-inout.o: inout.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-inout.o -MD -MP -MF $(DEPDIR)/test-inout.Tpo -c -o test-inout.o `test -f 'inout.cpp' || echo '$(srcdir)/'`inout.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-inout.Tpo $(DEPDIR)/test-inout.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='inout.cpp' object='test-inout.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-inout.o `test -f 'inout.cpp' || echo '$(srcdir)/'`inout.cpp
-
-test-inout.obj: inout.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-inout.obj -MD -MP -MF $(DEPDIR)/test-inout.Tpo -c -o test-inout.obj `if test -f 'inout.cpp'; then $(CYGPATH_W) 'inout.cpp'; else $(CYGPATH_W) '$(srcdir)/inout.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-inout.Tpo $(DEPDIR)/test-inout.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='inout.cpp' object='test-inout.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-inout.obj `if test -f 'inout.cpp'; then $(CYGPATH_W) 'inout.cpp'; else $(CYGPATH_W) '$(srcdir)/inout.cpp'; fi`
-
-test-mc6809.o: mc6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809.o -MD -MP -MF $(DEPDIR)/test-mc6809.Tpo -c -o test-mc6809.o `test -f 'mc6809.cpp' || echo '$(srcdir)/'`mc6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809.Tpo $(DEPDIR)/test-mc6809.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809.cpp' object='test-mc6809.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809.o `test -f 'mc6809.cpp' || echo '$(srcdir)/'`mc6809.cpp
-
-test-mc6809.obj: mc6809.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809.obj -MD -MP -MF $(DEPDIR)/test-mc6809.Tpo -c -o test-mc6809.obj `if test -f 'mc6809.cpp'; then $(CYGPATH_W) 'mc6809.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809.Tpo $(DEPDIR)/test-mc6809.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809.cpp' object='test-mc6809.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809.obj `if test -f 'mc6809.cpp'; then $(CYGPATH_W) 'mc6809.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809.cpp'; fi`
-
-test-mc6809in.o: mc6809in.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809in.o -MD -MP -MF $(DEPDIR)/test-mc6809in.Tpo -c -o test-mc6809in.o `test -f 'mc6809in.cpp' || echo '$(srcdir)/'`mc6809in.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809in.Tpo $(DEPDIR)/test-mc6809in.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809in.cpp' object='test-mc6809in.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809in.o `test -f 'mc6809in.cpp' || echo '$(srcdir)/'`mc6809in.cpp
-
-test-mc6809in.obj: mc6809in.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809in.obj -MD -MP -MF $(DEPDIR)/test-mc6809in.Tpo -c -o test-mc6809in.obj `if test -f 'mc6809in.cpp'; then $(CYGPATH_W) 'mc6809in.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809in.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809in.Tpo $(DEPDIR)/test-mc6809in.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809in.cpp' object='test-mc6809in.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809in.obj `if test -f 'mc6809in.cpp'; then $(CYGPATH_W) 'mc6809in.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809in.cpp'; fi`
-
-test-mc6809st.o: mc6809st.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809st.o -MD -MP -MF $(DEPDIR)/test-mc6809st.Tpo -c -o test-mc6809st.o `test -f 'mc6809st.cpp' || echo '$(srcdir)/'`mc6809st.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809st.Tpo $(DEPDIR)/test-mc6809st.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809st.cpp' object='test-mc6809st.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809st.o `test -f 'mc6809st.cpp' || echo '$(srcdir)/'`mc6809st.cpp
-
-test-mc6809st.obj: mc6809st.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-mc6809st.obj -MD -MP -MF $(DEPDIR)/test-mc6809st.Tpo -c -o test-mc6809st.obj `if test -f 'mc6809st.cpp'; then $(CYGPATH_W) 'mc6809st.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809st.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-mc6809st.Tpo $(DEPDIR)/test-mc6809st.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809st.cpp' object='test-mc6809st.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-mc6809st.obj `if test -f 'mc6809st.cpp'; then $(CYGPATH_W) 'mc6809st.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809st.cpp'; fi`
-
-test-schedule.o: schedule.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-schedule.o -MD -MP -MF $(DEPDIR)/test-schedule.Tpo -c -o test-schedule.o `test -f 'schedule.cpp' || echo '$(srcdir)/'`schedule.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-schedule.Tpo $(DEPDIR)/test-schedule.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='schedule.cpp' object='test-schedule.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-schedule.o `test -f 'schedule.cpp' || echo '$(srcdir)/'`schedule.cpp
-
-test-schedule.obj: schedule.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-schedule.obj -MD -MP -MF $(DEPDIR)/test-schedule.Tpo -c -o test-schedule.obj `if test -f 'schedule.cpp'; then $(CYGPATH_W) 'schedule.cpp'; else $(CYGPATH_W) '$(srcdir)/schedule.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-schedule.Tpo $(DEPDIR)/test-schedule.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='schedule.cpp' object='test-schedule.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-schedule.obj `if test -f 'schedule.cpp'; then $(CYGPATH_W) 'schedule.cpp'; else $(CYGPATH_W) '$(srcdir)/schedule.cpp'; fi`
-
-test-test_gccasm.o: test_gccasm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-test_gccasm.o -MD -MP -MF $(DEPDIR)/test-test_gccasm.Tpo -c -o test-test_gccasm.o `test -f 'test_gccasm.cpp' || echo '$(srcdir)/'`test_gccasm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-test_gccasm.Tpo $(DEPDIR)/test-test_gccasm.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_gccasm.cpp' object='test-test_gccasm.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-test_gccasm.o `test -f 'test_gccasm.cpp' || echo '$(srcdir)/'`test_gccasm.cpp
-
-test-test_gccasm.obj: test_gccasm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-test_gccasm.obj -MD -MP -MF $(DEPDIR)/test-test_gccasm.Tpo -c -o test-test_gccasm.obj `if test -f 'test_gccasm.cpp'; then $(CYGPATH_W) 'test_gccasm.cpp'; else $(CYGPATH_W) '$(srcdir)/test_gccasm.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-test_gccasm.Tpo $(DEPDIR)/test-test_gccasm.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_gccasm.cpp' object='test-test_gccasm.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-test_gccasm.obj `if test -f 'test_gccasm.cpp'; then $(CYGPATH_W) 'test_gccasm.cpp'; else $(CYGPATH_W) '$(srcdir)/test_gccasm.cpp'; fi`
-
-test-testmain.o: testmain.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-testmain.o -MD -MP -MF $(DEPDIR)/test-testmain.Tpo -c -o test-testmain.o `test -f 'testmain.cpp' || echo '$(srcdir)/'`testmain.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-testmain.Tpo $(DEPDIR)/test-testmain.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='testmain.cpp' object='test-testmain.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-testmain.o `test -f 'testmain.cpp' || echo '$(srcdir)/'`testmain.cpp
-
-test-testmain.obj: testmain.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -MT test-testmain.obj -MD -MP -MF $(DEPDIR)/test-testmain.Tpo -c -o test-testmain.obj `if test -f 'testmain.cpp'; then $(CYGPATH_W) 'testmain.cpp'; else $(CYGPATH_W) '$(srcdir)/testmain.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-testmain.Tpo $(DEPDIR)/test-testmain.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='testmain.cpp' object='test-testmain.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_CXXFLAGS) $(CXXFLAGS) -c -o test-testmain.obj `if test -f 'testmain.cpp'; then $(CYGPATH_W) 'testmain.cpp'; else $(CYGPATH_W) '$(srcdir)/testmain.cpp'; fi`
-
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
@@ -3679,7 +3419,7 @@ maintainer-clean-generic:
 clean: clean-recursive
 
 clean-am: clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLIBRARIES clean-noinstPROGRAMS mostlyclean-am
+	clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-recursive
 		-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-format.Po
@@ -3799,18 +3539,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
-	-rm -f ./$(DEPDIR)/test-clogfile.Po
-	-rm -f ./$(DEPDIR)/test-colors.Po
-	-rm -f ./$(DEPDIR)/test-command.Po
-	-rm -f ./$(DEPDIR)/test-da6809.Po
-	-rm -f ./$(DEPDIR)/test-foptman.Po
-	-rm -f ./$(DEPDIR)/test-inout.Po
-	-rm -f ./$(DEPDIR)/test-mc6809.Po
-	-rm -f ./$(DEPDIR)/test-mc6809in.Po
-	-rm -f ./$(DEPDIR)/test-mc6809st.Po
-	-rm -f ./$(DEPDIR)/test-schedule.Po
-	-rm -f ./$(DEPDIR)/test-test_gccasm.Po
-	-rm -f ./$(DEPDIR)/test-testmain.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -3975,18 +3703,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
-	-rm -f ./$(DEPDIR)/test-clogfile.Po
-	-rm -f ./$(DEPDIR)/test-colors.Po
-	-rm -f ./$(DEPDIR)/test-command.Po
-	-rm -f ./$(DEPDIR)/test-da6809.Po
-	-rm -f ./$(DEPDIR)/test-foptman.Po
-	-rm -f ./$(DEPDIR)/test-inout.Po
-	-rm -f ./$(DEPDIR)/test-mc6809.Po
-	-rm -f ./$(DEPDIR)/test-mc6809in.Po
-	-rm -f ./$(DEPDIR)/test-mc6809st.Po
-	-rm -f ./$(DEPDIR)/test-schedule.Po
-	-rm -f ./$(DEPDIR)/test-test_gccasm.Po
-	-rm -f ./$(DEPDIR)/test-testmain.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -4014,22 +3730,22 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--depfiles check check-am clean clean-binPROGRAMS \
 	clean-generic clean-libtool clean-noinstLIBRARIES \
-	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
-	distclean-compile distclean-generic distclean-hdr \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-binPROGRAMS \
-	install-data install-data-am install-data-hook \
-	install-desktopDATA install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-mimetypeDATA install-pdf \
-	install-pdf-am install-pkgdataDATA install-ps install-ps-am \
-	install-strip install-sysconfDATA installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
-	uninstall-desktopDATA uninstall-hook uninstall-mimetypeDATA \
-	uninstall-pkgdataDATA uninstall-sysconfDATA
+	cscopelist-am ctags ctags-am distclean distclean-compile \
+	distclean-generic distclean-hdr distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-binPROGRAMS install-data \
+	install-data-am install-data-hook install-desktopDATA \
+	install-dvi install-dvi-am install-exec install-exec-am \
+	install-html install-html-am install-info install-info-am \
+	install-man install-mimetypeDATA install-pdf install-pdf-am \
+	install-pkgdataDATA install-ps install-ps-am install-strip \
+	install-sysconfDATA installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-binPROGRAMS uninstall-desktopDATA \
+	uninstall-hook uninstall-mimetypeDATA uninstall-pkgdataDATA \
+	uninstall-sysconfDATA
 
 .PRECIOUS: Makefile
 
