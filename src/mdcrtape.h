@@ -67,14 +67,14 @@ public:
     MiniDcrTape() = delete;
     MiniDcrTape(const MiniDcrTape &) = delete;
     MiniDcrTape(MiniDcrTape &&) = delete;
-    MiniDcrTape(const char *path, Mode mode);
+    MiniDcrTape(const std::string &path, Mode mode);
     virtual ~MiniDcrTape();
 
     MiniDcrTape &operator= (const MiniDcrTape &) = delete;
     MiniDcrTape &operator= (MiniDcrTape &&) = delete;
 
-    static MiniDcrTapePtr Create(const char *path);
-    static MiniDcrTapePtr Open(const char *path);
+    static MiniDcrTapePtr Create(const std::string &path);
+    static MiniDcrTapePtr Open(const std::string &path);
     bool Close();
     bool IsOpen() const;
     bool HasRecord() const;

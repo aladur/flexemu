@@ -74,7 +74,7 @@ void syntax()
         "   -h:              Print this help and exit.\n";
 }
 
-int ConvertFlexToHex(const char *ifile, const char *ofile,
+int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
                      FileType ofiletype, int verbose)
 {
     BMemoryBuffer memory(65536);
@@ -279,8 +279,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        result |= ConvertFlexToHex(ifile.c_str(), ofile.c_str(),
-                                   ofiletype, verbose);
+        result |= ConvertFlexToHex(ifile, ofile, ofiletype, verbose);
     }
 
     return result;

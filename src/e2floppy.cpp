@@ -172,7 +172,7 @@ bool E2floppy::mount_drive(const std::string &path,
                 try
                 {
                     pfloppy = IFlexDiskBySectorPtr(
-                     new FlexRamDisk(containerPath.c_str(), mode,
+                     new FlexRamDisk(containerPath, mode,
                                      options.fileTimeAccess));
                 }
                 catch (FlexException &)
@@ -181,7 +181,7 @@ bool E2floppy::mount_drive(const std::string &path,
                     {
                         mode &= ~std::ios::out;
                         pfloppy = IFlexDiskBySectorPtr(
-                         new FlexRamDisk(containerPath.c_str(), mode,
+                         new FlexRamDisk(containerPath, mode,
                                          options.fileTimeAccess));
                     }
                     catch (FlexException &)

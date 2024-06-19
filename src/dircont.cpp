@@ -355,12 +355,12 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_WRITING_TO, filePath);
     }
 
-    SetDateTime(lowerFileName.c_str(), buffer.GetDate(), buffer.GetTime());
+    SetDateTime(lowerFileName, buffer.GetDate(), buffer.GetTime());
     SetAttributes(lowerFileName, buffer.GetAttributes());
 
     if (buffer.IsRandom())
     {
-        SetRandom(lowerFileName.c_str());
+        SetRandom(lowerFileName);
     }
 
     return true;
@@ -387,7 +387,7 @@ void FlexDirectoryDiskByFile::Initialize_header(bool /*isWriteProtect*/)
 
 // set the date and time of a file
 bool FlexDirectoryDiskByFile::SetDateTime(
-        const char *fileName, const BDate &date, const BTime &time)
+        const std::string &fileName, const BDate &date, const BTime &time)
 {
     struct stat sbuf{};
     struct utimbuf timebuf{};
@@ -469,7 +469,7 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
 
 // on WIN32 a random file will be represented by a hidden flag
 // on UNIX a random file will be represented by a user execute flag
-bool FlexDirectoryDiskByFile::SetRandom(const char *fileName)
+bool FlexDirectoryDiskByFile::SetRandom(const std::string &fileName)
 {
 #ifdef _WIN32
     const auto wFilePath(
@@ -479,7 +479,7 @@ bool FlexDirectoryDiskByFile::SetRandom(const char *fileName)
 #endif
 #ifdef UNIX
     struct stat sbuf{};
-    auto lowerFileName(flx::tolower(std::string(fileName)));
+    auto lowerFileName(flx::tolower(fileName));
 
     auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
 

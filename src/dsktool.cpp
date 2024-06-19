@@ -159,7 +159,7 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
 
     FlexCopyManager::autoTextConversion = convert_text;
     const auto mode = std::ios::in | std::ios::binary;
-    FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{dsk_file, mode, fileTimeAccess};
     FlexDirectoryDiskByFile dest{target_dir, fileTimeAccess};
     size_t count = 0;
     size_t random_count = 0;
@@ -302,7 +302,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
                            FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
-    FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{dsk_file, mode, fileTimeAccess};
     FlexDiskIterator iter;
     FlexDiskAttributes diskAttributes;
     unsigned int number = 0;
@@ -419,7 +419,7 @@ int SummaryOfDskFile(const std::string &dsk_file,
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::binary;
-    FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{dsk_file, mode, fileTimeAccess};
     FlexDiskIterator iter;
     FlexDiskAttributes diskAttributes;
     const auto format = BDate::Format::D2MSU3Y4;
@@ -514,7 +514,7 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
 {
     FlexCopyManager::autoTextConversion = isConvertText;
     const auto mode = std::ios::in | std::ios::out | std::ios::binary;
-    FlexRamDisk dst{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk dst{dsk_file, mode, fileTimeAccess};
 
     if (!dst.IsFlexFormat())
     {
@@ -591,7 +591,7 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::out | std::ios::binary;
-    FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{dsk_file, mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -658,7 +658,7 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
                               bool debug_output, FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
-    FlexRamDisk src{dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{dsk_file, mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -757,9 +757,9 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
         FileTimeAccess fileTimeAccess)
 {
     auto mode = std::ios::in | std::ios::binary;
-    FlexRamDisk src{src_dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk src{src_dsk_file, mode, fileTimeAccess};
     mode |= std::ios::out;
-    FlexRamDisk dst{dst_dsk_file.c_str(), mode, fileTimeAccess};
+    FlexRamDisk dst{dst_dsk_file, mode, fileTimeAccess};
 
     if (!src.IsFlexFormat())
     {
@@ -955,24 +955,21 @@ void usage()
         "                accessible.\n";
 }
 
-bool estimateDiskFormat(const char *format, int &disk_format)
+bool getDiskFormatFromExtension(const std::string &ext, int &disk_format)
 {
-    if (format != nullptr)
+    static const std::string strDsk{"dsk"};
+    static const std::string strFlx{"flx"};
+
+    if (strDsk.compare(ext) == 0)
     {
-        static const std::string strDsk{"dsk"};
-        static const std::string strFlx{"flx"};
+        disk_format = TYPE_DSK_DISKFILE;
+        return true;
+    }
 
-        if (strDsk.compare(format) == 0)
-        {
-            disk_format = TYPE_DSK_DISKFILE;
-            return true;
-        }
-
-        if (strFlx.compare(format) == 0)
-        {
-            disk_format = TYPE_FLX_DISKFILE;
-            return true;
-        }
+    if (strFlx.compare(ext) == 0)
+    {
+        disk_format = TYPE_FLX_DISKFILE;
+        return true;
     }
 
     return false;
@@ -991,13 +988,13 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
         }
     }
 
-    if (!estimateDiskFormat(extension.c_str(), disk_format))
+    if (!getDiskFormatFromExtension(extension, disk_format))
     {
         disk_format = TYPE_DSK_DISKFILE;
     }
 }
 
-bool checkDiskFormat(const char *format, int &disk_format)
+bool checkDiskFormat(const std::string &format, int &disk_format)
 {
     if (disk_format != 0)
     {
@@ -1005,7 +1002,7 @@ bool checkDiskFormat(const char *format, int &disk_format)
         return false;
     }
 
-    if (format != nullptr && estimateDiskFormat(format, disk_format))
+    if (getDiskFormatFromExtension(format, disk_format))
     {
         return true;
     }
@@ -1014,38 +1011,33 @@ bool checkDiskFormat(const char *format, int &disk_format)
     return false;
 }
 
-int checkDiskSize(const char *disk_size, int &tracks, int &sectors)
+int checkDiskSize(const std::string &disk_size, int &tracks, int &sectors)
 {
     static const std::string strHelp{"help"};
 
-    if (disk_size != nullptr)
+    if (strHelp.compare(disk_size) == 0)
     {
-        if (strHelp.compare(disk_size) == 0)
+        helpOnDiskSize();
+        return 0;
+    }
+
+    if (tracks != 0)
+    {
+        std::cerr << "*** Error: -S can be specified only once\n";
+        return 1;
+    }
+
+    static_assert(flex_formats.size() == flex_format_shortcuts.size(),
+                  "flex_formats and flex_format_shortcuts have different "
+                  "size");
+
+    for (size_t i = 0; i < flex_format_shortcuts.size(); ++i)
+    {
+        if (disk_size.compare(flex_format_shortcuts[i]) == 0)
         {
-            helpOnDiskSize();
-            return 0;
-        }
-
-        if (tracks != 0)
-        {
-            std::cerr << "*** Error: -S can be specified only once\n";
-            return 1;
-        }
-
-        static_assert(flex_formats.size() == flex_format_shortcuts.size(),
-                      "flex_formats and flex_format_shortcuts have different "
-                      "size");
-
-        std::string s_disk_size{disk_size};
-
-        for (size_t i = 0; i < flex_format_shortcuts.size(); ++i)
-        {
-            if (s_disk_size.compare(flex_format_shortcuts[i]) == 0)
-            {
-                tracks = flex_formats[i].trk + 1;
-                sectors = flex_formats[i].sec;
-                return 2;
-            }
+            tracks = flex_formats[i].trk + 1;
+            sectors = flex_formats[i].sec;
+            return 2;
         }
     }
 

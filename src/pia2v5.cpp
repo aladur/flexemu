@@ -440,7 +440,7 @@ bool Pia2V5::mount_drive(const char *path, Word drive_nr)
     {
         try
         {
-            drive[drive_nr] = MiniDcrTape::Open(containerPath.c_str());
+            drive[drive_nr] = MiniDcrTape::Open(containerPath);
             if (debug)
             {
                 cdbg << "drive_nr=" << drive_nr <<

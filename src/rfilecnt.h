@@ -43,7 +43,7 @@ public:
     FlexRamDisk() = delete;
     FlexRamDisk(const FlexRamDisk &src) = delete;
     FlexRamDisk(FlexRamDisk &&src) noexcept;
-    FlexRamDisk(const char *p_path, std::ios::openmode mode,
+    FlexRamDisk(const std::string &p_path, std::ios::openmode mode,
                 const FileTimeAccess &fileTimeAccess);
     ~FlexRamDisk() override;
 

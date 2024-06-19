@@ -25,7 +25,7 @@
 #include <cstring>
 
 
-FlexRamDisk::FlexRamDisk(const char *p_path, std::ios::openmode mode,
+FlexRamDisk::FlexRamDisk(const std::string &p_path, std::ios::openmode mode,
                          const FileTimeAccess &p_fileTimeAccess)
     : FlexDisk(p_path, mode, p_fileTimeAccess)
 {

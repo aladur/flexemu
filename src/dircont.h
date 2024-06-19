@@ -97,9 +97,9 @@ public:
 
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
-    bool SetDateTime(const char *fileName, const BDate &date,
+    bool SetDateTime(const std::string &fileName, const BDate &date,
                      const BTime &time);
-    bool SetRandom(const char *fileName);
+    bool SetRandom(const std::string &fileName);
     void Initialize_header(bool isWriteProtect);
 
 };

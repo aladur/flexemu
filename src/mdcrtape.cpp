@@ -32,20 +32,15 @@
 
 const std::array<char, 4> MiniDcrTape::magic_bytes { 'M', 'D', 'C', 'R' };
 
-MiniDcrTape::MiniDcrTape(const char *path, Mode mode) :
+MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
     is_write_protected(false)
 {
     struct stat sbuf{};
 
-    if (path == nullptr)
-    {
-        throw FlexException(FERR_WRONG_PARAMETER);
-    }
-
     switch (mode)
     {
         case Mode::Open:
-            if (stat(path, &sbuf) || !S_ISREG(sbuf.st_mode))
+            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
             {
                 throw FlexException(FERR_UNABLE_TO_OPEN, path);
             }
@@ -72,7 +67,7 @@ MiniDcrTape::MiniDcrTape(const char *path, Mode mode) :
             break;
 
         case Mode::Create:
-            if (!stat(path, &sbuf))
+            if (!stat(path.c_str(), &sbuf))
             {
                 throw FlexException(FERR_FILE_ALREADY_EXISTS, path);
             }
@@ -112,12 +107,12 @@ MiniDcrTape::MiniDcrTape::~MiniDcrTape()
     }
 }
 
-MiniDcrTapePtr MiniDcrTape::Create(const char *path)
+MiniDcrTapePtr MiniDcrTape::Create(const std::string &path)
 {
     return std::make_unique<MiniDcrTape>(path, Mode::Create);
 }
 
-MiniDcrTapePtr MiniDcrTape::Open(const char *path)
+MiniDcrTapePtr MiniDcrTape::Open(const std::string &path)
 {
     return std::make_unique<MiniDcrTape>(path, Mode::Open);
 }

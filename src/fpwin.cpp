@@ -116,7 +116,7 @@ void FLEXplorer::NewFlexDisk()
             if (ui.GetFormat() == TYPE_MDCR_CONTAINER)
             {
                 MiniDcrTapePtr mdcr = MiniDcrTape::Create(
-                                      ui.GetPath().toStdString().c_str());
+                                      ui.GetPath().toStdString());
                 // DCR containers can be created but not displayed in
                 // FLEXplorer, so immediately return.
                 return;
