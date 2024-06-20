@@ -429,10 +429,15 @@ void Mc6809::log_current_instruction()
     {
         fprintf(log_fp, "%20" PRIu64 " ", cpu_status.total_cycles);
     }
-    fprintf(log_fp, "%04X %-23s", PC.load(), cpu_status.mnemonic);
 
-    if (lfs.logRegisters != LogRegister::NONE)
+    if (lfs.logRegisters == LogRegister::NONE)
     {
+        fprintf(log_fp, "%04X %s", PC.load(), cpu_status.mnemonic);
+    }
+    else
+    {
+        fprintf(log_fp, "%04X %-23s", PC.load(), cpu_status.mnemonic);
+
         LogRegister registerBit = LogRegister::CC;
         while (registerBit != LogRegister::NONE)
         {
