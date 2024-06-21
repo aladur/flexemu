@@ -35,6 +35,7 @@
 #include <fstream>
 #include <limits>
 #include <cassert>
+#include <iostream>
 #include <sys/stat.h>
 #include <ctype.h>
 #include "bdir.h"
@@ -643,7 +644,7 @@ void FlexDirectoryDiskBySector::close_new_files()
             MB_OK | MB_ICONEXCLAMATION);
 #endif
 #ifdef UNIX
-        fprintf(stderr, "%s", msg.c_str());
+        std::cerr << msg;
 #endif
     }
 }

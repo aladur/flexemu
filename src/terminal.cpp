@@ -26,6 +26,7 @@
 #include "mc6809.h"
 #include "schedule.h"
 #include <cstring>
+#include <iostream>
 
 // pointer to this instance for signal handling
 TerminalIO *TerminalIO::instance = nullptr;
@@ -88,7 +89,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
     {
         if (tcgetattr(fileno(stdin), &buf) < 0)
         {
-            fprintf(stderr, "unable to initialize terminal\n");
+            std::cerr << "unable to initialize terminal\n";
 
             scheduler.request_new_state(CpuState::Exit);
         }
@@ -190,7 +191,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
             // on error try to switch back,
             // otherwise terminal is damaged
             tcsetattr(fileno(stdin), TCSAFLUSH, &save_termios);
-            fprintf(stderr, "unable to initialize terminal\n");
+            std::cerr << "unable to initialize terminal\n";
 
             scheduler.request_new_state(CpuState::Exit);
 

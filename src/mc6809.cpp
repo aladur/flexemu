@@ -39,12 +39,10 @@ Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
 
 Mc6809::~Mc6809()
 {
-    if (log_fp != nullptr)
+    if (log_fs.is_open())
     {
-        fclose(log_fp);
+        log_fs.close();
     }
-
-    log_fp = nullptr;
 }
 
 void Mc6809::set_disassembler(Da6809 *p_disassembler)
@@ -1459,24 +1457,23 @@ void Mc6809::reset_bp(int which)
 // If logFileName is empty the current log file is closed.
 bool Mc6809::set_logfile(const struct s_cpu_logfile &p_lfs)
 {
-    if (log_fp != nullptr)
+    if (log_fs.is_open())
     {
-        fclose(log_fp);
-        log_fp = nullptr;
+        log_fs.close();
     }
 
     lfs = p_lfs;
 
     if (!lfs.logFileName.empty())
     {
-        log_fp = fopen(p_lfs.logFileName.c_str(), "w");
-        if (log_fp == nullptr)
+        log_fs.open(p_lfs.logFileName, std::ios::out | std::ios::trunc);
+        if (!log_fs.is_open())
         {
             // Error when trying to open log file.
             lfs.logFileName.clear();
         }
 
-        return log_fp != nullptr;
+        return log_fs.is_open();
     }
 
     return false;

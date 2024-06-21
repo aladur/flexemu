@@ -18,6 +18,7 @@
 #include "da6809.h"
 #include <array>
 #include <cstring>
+#include <fmt/format.h>
 
 
 #ifdef _MSC_VER
@@ -388,7 +389,7 @@ CpuState Mc6809::runloop()
             }
         }
 
-        if (log_fp != nullptr)
+        if (log_fs.is_open())
         {
             if (!lfs.startAddr.has_value() || PC == lfs.startAddr.value())
             {
@@ -427,16 +428,16 @@ void Mc6809::log_current_instruction()
     get_status(&cpu_status);
     if (lfs.logCycleCount)
     {
-        fprintf(log_fp, "%20" PRIu64 " ", cpu_status.total_cycles);
+        log_fs << fmt::format("{:20} ", cpu_status.total_cycles);
     }
 
     if (lfs.logRegisters == LogRegister::NONE)
     {
-        fprintf(log_fp, "%04X %s", PC.load(), cpu_status.mnemonic);
+        log_fs << fmt::format("{:04X} {}", PC.load(), cpu_status.mnemonic);
     }
     else
     {
-        fprintf(log_fp, "%04X %-23s", PC.load(), cpu_status.mnemonic);
+        log_fs << fmt::format("{:04X} {: <23}", PC.load(), cpu_status.mnemonic);
 
         LogRegister registerBit = LogRegister::CC;
         while (registerBit != LogRegister::NONE)
@@ -446,39 +447,40 @@ void Mc6809::log_current_instruction()
 
         if ((lfs.logRegisters & LogRegister::CC) != LogRegister::NONE)
         {
-           fprintf(log_fp, " CC=%s", asCCString(cpu_status.cc).c_str());
+           log_fs << fmt::format(" CC={}", asCCString(cpu_status.cc));
         }
         if ((lfs.logRegisters & LogRegister::A) != LogRegister::NONE)
         {
-           fprintf(log_fp, " A=%02X", static_cast<Word>(cpu_status.a));
+           log_fs << fmt::format(" A={:02X}", static_cast<Word>(cpu_status.a));
         }
         if ((lfs.logRegisters & LogRegister::B) != LogRegister::NONE)
         {
-           fprintf(log_fp, " B=%02X", static_cast<Word>(cpu_status.b));
+           log_fs << fmt::format(" B={:02X}", static_cast<Word>(cpu_status.b));
         }
         if ((lfs.logRegisters & LogRegister::DP) != LogRegister::NONE)
         {
-           fprintf(log_fp, " DP=%02X", static_cast<Word>(cpu_status.dp));
+           log_fs << fmt::format(" DP={:02X}",
+                   static_cast<Word>(cpu_status.dp));
         }
         if ((lfs.logRegisters & LogRegister::X) != LogRegister::NONE)
         {
-           fprintf(log_fp, " X=%04X", cpu_status.x);
+           log_fs << fmt::format(" X={:04X}", cpu_status.x);
         }
         if ((lfs.logRegisters & LogRegister::Y) != LogRegister::NONE)
         {
-           fprintf(log_fp, " Y=%04X", cpu_status.y);
+           log_fs << fmt::format(" Y={:04X}", cpu_status.y);
         }
         if ((lfs.logRegisters & LogRegister::U) != LogRegister::NONE)
         {
-           fprintf(log_fp, " U=%04X", cpu_status.u);
+           log_fs << fmt::format(" U={:04X}", cpu_status.u);
         }
         if ((lfs.logRegisters & LogRegister::S) != LogRegister::NONE)
         {
-           fprintf(log_fp, " S=%04X", cpu_status.s);
+           log_fs << fmt::format(" S={:04X}", cpu_status.s);
         }
     }
-    fprintf(log_fp, "\n");
-    fflush(log_fp);
+    log_fs << "\n";
+    log_fs.flush();
 }
 
 void Mc6809::do_reset()

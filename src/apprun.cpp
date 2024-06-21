@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include <new>
 #include <sstream>
+#include <iostream>
 #ifdef _MSC_VER
     #include <new.h>
 #endif
@@ -230,7 +231,7 @@ bool ApplicationRunner::LoadMonitorFileIntoRom()
                 MB_OK | MB_ICONERROR);
 #endif
 #ifdef UNIX
-            fprintf(stderr, "%s", pmsg.str().c_str());
+            std::cerr << pmsg.str();
 #endif
             return false;
         }

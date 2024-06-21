@@ -15,6 +15,7 @@
 
 #include <atomic>
 #include <array>
+#include <fstream>
 #include "misc1.h"
 #include "typedefs.h"
 #include "memory.h"
@@ -954,7 +955,7 @@ public:
 protected:
     int Disassemble(Word address, InstFlg &p_flags,
                     std::string &code, std::string &mnemonic);
-    FILE        *log_fp{nullptr};
+    std::ofstream log_fs;
     s_cpu_logfile lfs;
     bool do_logging{false};
 
