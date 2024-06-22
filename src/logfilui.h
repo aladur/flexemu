@@ -35,14 +35,14 @@ class QAbstractButton;
 class QLineEdit;
 struct Mc6809LoggerConfig;
 
-class LogfileSettingsUi : public QObject, protected Ui_LogfileSettings
+class Mc6809LoggerConfigUi : public QObject, protected Ui_LogfileSettings
 {
     Q_OBJECT
 
 public:
 
-    LogfileSettingsUi();
-    ~LogfileSettingsUi() override = default;
+    Mc6809LoggerConfigUi();
+    ~Mc6809LoggerConfigUi() override = default;
     void setupUi(QDialog &dialog);
     void SetData(const Mc6809LoggerConfig &settings);
     Mc6809LoggerConfig GetData() const;

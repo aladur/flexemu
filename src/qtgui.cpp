@@ -566,7 +566,7 @@ void QtGui::OnCpuBreakpoints()
 void QtGui::OnCpuLogging()
 {
     auto *dialog = new QDialog;
-    LogfileSettingsUi ui;
+    Mc6809LoggerConfigUi ui;
     ui.setupUi(*dialog);
     ui.SetData(logfileSettings);
 
@@ -574,7 +574,8 @@ void QtGui::OnCpuLogging()
     if (result == QDialog::Accepted)
     {
         logfileSettings = ui.GetData();
-        scheduler.sync_exec(BCommandPtr(new CSetLogFile(cpu, logfileSettings)));
+        scheduler.sync_exec(BCommandPtr(new CmdSetMc6809LoggerConfig(
+                        cpu, logfileSettings)));
     }
 }
 

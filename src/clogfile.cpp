@@ -23,13 +23,14 @@
 
 #include "clogfile.h"
 
-
-CSetLogFile::CSetLogFile(Mc6809 &p_cpu, const Mc6809LoggerConfig &p_log_file)
+// Command pattern to set CPU logger config.
+CmdSetMc6809LoggerConfig::CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,
+        const Mc6809LoggerConfig &p_log_file)
     : cpu(p_cpu), s_log_file(p_log_file)
 {
 }
 
-void CSetLogFile::Execute()
+void CmdSetMc6809LoggerConfig::Execute()
 {
     cpu.set_logfile(s_log_file);
 }

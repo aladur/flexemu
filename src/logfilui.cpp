@@ -34,12 +34,12 @@
 #include <QFileDialog>
 #include "warnon.h"
 
-LogfileSettingsUi::LogfileSettingsUi() :
+Mc6809LoggerConfigUi::Mc6809LoggerConfigUi() :
     Ui_LogfileSettings()
 {
 }
 
-void LogfileSettingsUi::setupUi(QDialog &p_dialog)
+void Mc6809LoggerConfigUi::setupUi(QDialog &p_dialog)
 {
     dialog = &p_dialog;
     Ui_LogfileSettings::setupUi(dialog);
@@ -65,7 +65,7 @@ void LogfileSettingsUi::setupUi(QDialog &p_dialog)
     ConnectSignalsWithSlots();
 }
 
-void LogfileSettingsUi::InitializeWidgets()
+void Mc6809LoggerConfigUi::InitializeWidgets()
 {
     ::InstallSelectionEventFilter(*e_minAddress, this);
     ::InstallSelectionEventFilter(*e_maxAddress, this);
@@ -80,7 +80,7 @@ void LogfileSettingsUi::InitializeWidgets()
     e_stopAddress->setInputMask(inputMask);
 }
 
-void LogfileSettingsUi::SetData(const Mc6809LoggerConfig &settings)
+void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &settings)
 {
     if (dialog == nullptr)
     {
@@ -105,7 +105,7 @@ void LogfileSettingsUi::SetData(const Mc6809LoggerConfig &settings)
     }
 }
 
-Mc6809LoggerConfig LogfileSettingsUi::GetData() const
+Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
 {
     Mc6809LoggerConfig settings;
 
@@ -131,29 +131,29 @@ Mc6809LoggerConfig LogfileSettingsUi::GetData() const
     return settings;
 }
 
-void LogfileSettingsUi::ConnectSignalsWithSlots()
+void Mc6809LoggerConfigUi::ConnectSignalsWithSlots()
 {
     connect(c_buttonBox, &QDialogButtonBox::accepted,
-            this, &LogfileSettingsUi::OnAccepted);
+            this, &Mc6809LoggerConfigUi::OnAccepted);
     connect(c_buttonBox, &QDialogButtonBox::rejected,
-            this, &LogfileSettingsUi::OnRejected);
+            this, &Mc6809LoggerConfigUi::OnRejected);
     connect(c_buttonBox, &QDialogButtonBox::clicked,
-            this, &LogfileSettingsUi::OnClicked);
+            this, &Mc6809LoggerConfigUi::OnClicked);
     connect(b_logFilename, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_logFilename); });
 }
 
-void LogfileSettingsUi::OnAccepted()
+void Mc6809LoggerConfigUi::OnAccepted()
 {
     dialog->done(QDialog::Accepted);
 }
 
-void LogfileSettingsUi::OnRejected()
+void Mc6809LoggerConfigUi::OnRejected()
 {
     dialog->done(QDialog::Rejected);
 }
 
-void LogfileSettingsUi::OnClicked(QAbstractButton *button)
+void Mc6809LoggerConfigUi::OnClicked(QAbstractButton *button)
 {
     assert(button != nullptr);
 
@@ -173,7 +173,7 @@ void LogfileSettingsUi::OnClicked(QAbstractButton *button)
     }
 }
 
-void LogfileSettingsUi::OnSelectFile(QLineEdit &lineEdit)
+void Mc6809LoggerConfigUi::OnSelectFile(QLineEdit &lineEdit)
 {
     auto path = QDir::currentPath();
     auto fileInfo = QFileInfo(lineEdit.text());
