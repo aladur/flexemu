@@ -125,7 +125,7 @@ QtGui::QtGui(
         , options(p_options)
         , oldOptions(p_options)
 {
-    logfileSettings.reset();
+    cpuLoggerConfig.reset();
 
     setObjectName("flexemuMainWindow");
 
@@ -568,14 +568,14 @@ void QtGui::OnCpuLogging()
     auto *dialog = new QDialog;
     Mc6809LoggerConfigUi ui;
     ui.setupUi(*dialog);
-    ui.SetData(logfileSettings);
+    ui.SetData(cpuLoggerConfig);
 
     auto result = dialog->exec();
     if (result == QDialog::Accepted)
     {
-        logfileSettings = ui.GetData();
+        cpuLoggerConfig = ui.GetData();
         scheduler.sync_exec(BCommandPtr(new CmdSetMc6809LoggerConfig(
-                        cpu, logfileSettings)));
+                        cpu, cpuLoggerConfig)));
     }
 }
 

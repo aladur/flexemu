@@ -43,7 +43,7 @@ public:
 
 protected:
     Mc6809 &cpu;
-    Mc6809LoggerConfig s_log_file;
+    Mc6809LoggerConfig cpuLoggerConfig;
 };
 
 #endif

@@ -275,7 +275,7 @@ private:
     bool isRestartNeeded{};
     int timerTicks{0};
     Byte oldFirstRasterLine{0U};
-    Mc6809LoggerConfig logfileSettings;
+    Mc6809LoggerConfig cpuLoggerConfig;
 
     Scheduler &scheduler;
     VideoControl1 &vico1;
