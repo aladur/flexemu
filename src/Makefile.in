@@ -185,17 +185,18 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
 	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
 	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
-	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
-	flexemu-pagedet.$(OBJEXT) flexemu-pagedetd.$(OBJEXT) \
-	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
-	flexemu-pia2v5.$(OBJEXT) flexemu-poutwin.$(OBJEXT) \
-	flexemu-poverhlp.$(OBJEXT) flexemu-qtfree.$(OBJEXT) \
-	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
-	flexemu-sodiff.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
-	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
-	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
+	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809lg.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
+	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
+	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
+	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
+	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
+	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
+	flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -284,6 +285,7 @@ am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	./$(DEPDIR)/flexemu-logfilui_moc.Po \
 	./$(DEPDIR)/flexemu-main.Po ./$(DEPDIR)/flexemu-mc146818.Po \
 	./$(DEPDIR)/flexemu-mc6809.Po ./$(DEPDIR)/flexemu-mc6809in.Po \
+	./$(DEPDIR)/flexemu-mc6809lg.Po \
 	./$(DEPDIR)/flexemu-mc6809st.Po ./$(DEPDIR)/flexemu-mc6821.Po \
 	./$(DEPDIR)/flexemu-mc6850.Po ./$(DEPDIR)/flexemu-mmu.Po \
 	./$(DEPDIR)/flexemu-ndircont.Po ./$(DEPDIR)/flexemu-pagedet.Po \
@@ -828,6 +830,7 @@ flexemu_SOURCES = \
 	mc146818.cpp \
 	mc6809.cpp \
 	mc6809in.cpp \
+	mc6809lg.cpp \
 	mc6809st.cpp \
 	mc6821.cpp \
 	mc6850.cpp \
@@ -922,6 +925,7 @@ flexemu_SOURCES = \
 	logfilui.h \
 	mc146818.h \
 	mc6809.h \
+	mc6809lg.h \
 	mc6809st.h \
 	mc6821.h \
 	mc6850.h \
@@ -1357,6 +1361,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc146818.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6809.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6809in.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6809lg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6809st.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6821.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-mc6850.Po@am__quote@ # am--include-marker
@@ -2386,6 +2391,20 @@ flexemu-mc6809in.obj: mc6809in.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809in.cpp' object='flexemu-mc6809in.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mc6809in.obj `if test -f 'mc6809in.cpp'; then $(CYGPATH_W) 'mc6809in.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809in.cpp'; fi`
+
+flexemu-mc6809lg.o: mc6809lg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mc6809lg.o -MD -MP -MF $(DEPDIR)/flexemu-mc6809lg.Tpo -c -o flexemu-mc6809lg.o `test -f 'mc6809lg.cpp' || echo '$(srcdir)/'`mc6809lg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mc6809lg.Tpo $(DEPDIR)/flexemu-mc6809lg.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809lg.cpp' object='flexemu-mc6809lg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mc6809lg.o `test -f 'mc6809lg.cpp' || echo '$(srcdir)/'`mc6809lg.cpp
+
+flexemu-mc6809lg.obj: mc6809lg.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mc6809lg.obj -MD -MP -MF $(DEPDIR)/flexemu-mc6809lg.Tpo -c -o flexemu-mc6809lg.obj `if test -f 'mc6809lg.cpp'; then $(CYGPATH_W) 'mc6809lg.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809lg.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-mc6809lg.Tpo $(DEPDIR)/flexemu-mc6809lg.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mc6809lg.cpp' object='flexemu-mc6809lg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-mc6809lg.obj `if test -f 'mc6809lg.cpp'; then $(CYGPATH_W) 'mc6809lg.cpp'; else $(CYGPATH_W) '$(srcdir)/mc6809lg.cpp'; fi`
 
 flexemu-mc6809st.o: mc6809st.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-mc6809st.o -MD -MP -MF $(DEPDIR)/flexemu-mc6809st.Tpo -c -o flexemu-mc6809st.o `test -f 'mc6809st.cpp' || echo '$(srcdir)/'`mc6809st.cpp
@@ -3464,6 +3483,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-mc146818.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809in.Po
+	-rm -f ./$(DEPDIR)/flexemu-mc6809lg.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809st.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6821.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6850.Po
@@ -3628,6 +3648,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-mc146818.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809in.Po
+	-rm -f ./$(DEPDIR)/flexemu-mc6809lg.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6809st.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6821.Po
 	-rm -f ./$(DEPDIR)/flexemu-mc6850.Po

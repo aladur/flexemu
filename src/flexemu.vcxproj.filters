@@ -99,6 +99,9 @@
     <ClCompile Include="mc6809in.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mc6809lg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="mc6809st.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -382,6 +385,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mc6809.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mc6809lg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mc6809st.h">

@@ -37,14 +37,6 @@ Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
     init();
 }
 
-Mc6809::~Mc6809()
-{
-    if (log_fs.is_open())
-    {
-        log_fs.close();
-    }
-}
-
 void Mc6809::set_disassembler(Da6809 *p_disassembler)
 {
     disassembler = p_disassembler;
@@ -1457,26 +1449,7 @@ void Mc6809::reset_bp(int which)
 // If logFileName is empty the current log file is closed.
 bool Mc6809::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
 {
-    if (log_fs.is_open())
-    {
-        log_fs.close();
-    }
-
-    lfs = loggerConfig;
-
-    if (!lfs.logFileName.empty())
-    {
-        log_fs.open(lfs.logFileName, std::ios::out | std::ios::trunc);
-        if (!log_fs.is_open())
-        {
-            // Error when trying to open log file.
-            lfs.logFileName.clear();
-        }
-
-        return log_fs.is_open();
-    }
-
-    return false;
+    return logger.setLoggerConfig(loggerConfig);
 }
 
 void Mc6809::get_interrupt_status(tInterruptStatus &stat)

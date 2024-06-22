@@ -237,6 +237,7 @@
     <ClCompile Include="mc146818.cpp" />
     <ClCompile Include="mc6809.cpp" />
     <ClCompile Include="mc6809in.cpp" />
+    <ClCompile Include="mc6809lg.cpp" />
     <ClCompile Include="mc6809st.cpp" />
     <ClCompile Include="mc6821.cpp" />
     <ClCompile Include="mc6850.cpp" />
@@ -449,6 +450,7 @@
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="mc146818.h" />
     <ClInclude Include="mc6809.h" />
+    <ClInclude Include="mc6809lg.h" />
     <ClInclude Include="mc6809st.h" />
     <ClInclude Include="mc6821.h" />
     <ClInclude Include="mc6850.h" />

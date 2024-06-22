@@ -389,24 +389,12 @@ CpuState Mc6809::runloop()
             }
         }
 
-        if (log_fs.is_open())
+        if (logger.doLogging(PC) && disassembler != nullptr)
         {
-            if (!lfs.startAddr.has_value() || PC == lfs.startAddr.value())
-            {
-                do_logging = true;
-            }
+            Mc6809CpuStatus cpuState;
 
-            if (lfs.stopAddr.has_value() && PC == lfs.stopAddr.value())
-            {
-                do_logging = false;
-            }
-
-            if (do_logging && disassembler != nullptr &&
-                (lfs.minAddr.has_value() && PC >= lfs.minAddr.value()) &&
-                (lfs.maxAddr.has_value() && PC <= lfs.maxAddr.value()))
-            {
-                log_current_instruction();
-            }
+            get_status(&cpuState);
+            logger.logCurrentState(cpuState);
         }
 
         // execute one CPU instruction
@@ -419,68 +407,6 @@ CpuState Mc6809::runloop()
     }
 
     return new_state;
-}
-
-void Mc6809::log_current_instruction()
-{
-    Mc6809CpuStatus cpu_status;
-
-    get_status(&cpu_status);
-    if (lfs.logCycleCount)
-    {
-        log_fs << fmt::format("{:20} ", cpu_status.total_cycles);
-    }
-
-    if (lfs.logRegisters == LogRegister::NONE)
-    {
-        log_fs << fmt::format("{:04X} {}", PC.load(), cpu_status.mnemonic);
-    }
-    else
-    {
-        log_fs << fmt::format("{:04X} {: <23}", PC.load(), cpu_status.mnemonic);
-
-        LogRegister registerBit = LogRegister::CC;
-        while (registerBit != LogRegister::NONE)
-        {
-            registerBit <<= 1;
-        }
-
-        if ((lfs.logRegisters & LogRegister::CC) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" CC={}", asCCString(cpu_status.cc));
-        }
-        if ((lfs.logRegisters & LogRegister::A) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" A={:02X}", static_cast<Word>(cpu_status.a));
-        }
-        if ((lfs.logRegisters & LogRegister::B) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" B={:02X}", static_cast<Word>(cpu_status.b));
-        }
-        if ((lfs.logRegisters & LogRegister::DP) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" DP={:02X}",
-                   static_cast<Word>(cpu_status.dp));
-        }
-        if ((lfs.logRegisters & LogRegister::X) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" X={:04X}", cpu_status.x);
-        }
-        if ((lfs.logRegisters & LogRegister::Y) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" Y={:04X}", cpu_status.y);
-        }
-        if ((lfs.logRegisters & LogRegister::U) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" U={:04X}", cpu_status.u);
-        }
-        if ((lfs.logRegisters & LogRegister::S) != LogRegister::NONE)
-        {
-           log_fs << fmt::format(" S={:04X}", cpu_status.s);
-        }
-    }
-    log_fs << "\n";
-    log_fs.flush();
 }
 
 void Mc6809::do_reset()
@@ -551,25 +477,5 @@ cycles_t Mc6809::exec_irqs(bool save_state)
     }
 
     return 0;
-}
-
-std::string Mc6809::asCCString(Byte reg)
-{
-    constexpr static std::array<Byte, 8> cc_bitmask = {
-        CC_BIT_E, CC_BIT_F, CC_BIT_H, CC_BIT_I,
-        CC_BIT_N, CC_BIT_Z, CC_BIT_V, CC_BIT_C,
-    };
-    const static std::string cc_bitnames = "EFHINZVC";
-    std::string result = "--------";
-
-    for (int i = 0; i < 8; ++i)
-    {
-        if (reg & cc_bitmask[i])
-        {
-            result[i] = cc_bitnames[i];
-        }
-    }
-
-    return result;
 }
 

@@ -199,6 +199,7 @@ flexemu_SOURCES = \
 	mc146818.cpp \
 	mc6809.cpp \
 	mc6809in.cpp \
+	mc6809lg.cpp \
 	mc6809st.cpp \
 	mc6821.cpp \
 	mc6850.cpp \
@@ -293,6 +294,7 @@ flexemu_SOURCES = \
 	logfilui.h \
 	mc146818.h \
 	mc6809.h \
+	mc6809lg.h \
 	mc6809st.h \
 	mc6821.h \
 	mc6850.h \

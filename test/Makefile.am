@@ -94,6 +94,7 @@ test_gccasm_SOURCES = \
 	../src/inout.cpp \
 	../src/mc6809.cpp \
 	../src/mc6809in.cpp \
+	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/schedule.cpp \
 	test_gccasm.cpp \
@@ -118,6 +119,7 @@ test_gccasm_SOURCES = \
 	../src/foptman.h \
 	../src/inout.h \
 	../src/mc6809.h \
+	../src/mc6809lg.h \
 	../src/mc6809st.h \
 	../src/memory.h \
 	../src/misc1.h \

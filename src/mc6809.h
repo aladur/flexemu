@@ -15,7 +15,6 @@
 
 #include <atomic>
 #include <array>
-#include <fstream>
 #include "misc1.h"
 #include "typedefs.h"
 #include "memory.h"
@@ -26,6 +25,7 @@
 #include "absdisas.h"
 #include "bobserv.h"
 #include "boption.h"
+#include "mc6809lg.h"
 
 #define USE_ASM 1
 
@@ -260,8 +260,6 @@ private:
     void init_indexed_cycles();
     void init_psh_pul_cycles();
     void illegal();
-    void log_current_instruction();
-    static std::string asCCString(Byte reg);
 
 #ifndef FASTFLEX
     //***********************************
@@ -955,16 +953,13 @@ public:
 protected:
     int Disassemble(Word address, InstFlg &p_flags,
                     std::string &code, std::string &mnemonic);
-    std::ofstream log_fs;
-    Mc6809LoggerConfig lfs;
-    bool do_logging{false};
-
+    Mc6809Logger logger;
     Memory &memory;
 
     // Public constructor and destructor
 public:
     explicit Mc6809(Memory &p_memory);
-    ~Mc6809() override;
+    ~Mc6809() override = default;
 };
 
 //*******************************************************************
