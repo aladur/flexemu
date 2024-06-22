@@ -33,7 +33,7 @@
 class QDialog;
 class QAbstractButton;
 class QLineEdit;
-struct s_cpu_logfile;
+struct Mc6809LoggerConfig;
 
 class LogfileSettingsUi : public QObject, protected Ui_LogfileSettings
 {
@@ -44,8 +44,8 @@ public:
     LogfileSettingsUi();
     ~LogfileSettingsUi() override = default;
     void setupUi(QDialog &dialog);
-    void SetData(const s_cpu_logfile &settings);
-    s_cpu_logfile GetData() const;
+    void SetData(const Mc6809LoggerConfig &settings);
+    Mc6809LoggerConfig GetData() const;
 
 protected:
     void OnClicked(QAbstractButton *button);

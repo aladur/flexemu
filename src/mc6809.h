@@ -942,7 +942,7 @@ public:
     // interface to other classes
 public:
     void set_disassembler(Da6809 *p_disassembler);
-    bool set_logfile(const struct s_cpu_logfile &p_lfs);
+    bool set_logfile(const Mc6809LoggerConfig &p_lfs);
     Word get_pc()
     {
         return PC;
@@ -956,7 +956,7 @@ protected:
     int Disassemble(Word address, InstFlg &p_flags,
                     std::string &code, std::string &mnemonic);
     std::ofstream log_fs;
-    s_cpu_logfile lfs;
+    Mc6809LoggerConfig lfs;
     bool do_logging{false};
 
     Memory &memory;

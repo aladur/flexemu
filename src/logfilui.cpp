@@ -80,7 +80,7 @@ void LogfileSettingsUi::InitializeWidgets()
     e_stopAddress->setInputMask(inputMask);
 }
 
-void LogfileSettingsUi::SetData(const s_cpu_logfile &settings)
+void LogfileSettingsUi::SetData(const Mc6809LoggerConfig &settings)
 {
     if (dialog == nullptr)
     {
@@ -105,9 +105,9 @@ void LogfileSettingsUi::SetData(const s_cpu_logfile &settings)
     }
 }
 
-s_cpu_logfile LogfileSettingsUi::GetData() const
+Mc6809LoggerConfig LogfileSettingsUi::GetData() const
 {
-    s_cpu_logfile settings;
+    Mc6809LoggerConfig settings;
 
     settings.minAddr = ::GetData<BOptionalWord>(*e_minAddress);
     settings.maxAddr = ::GetData<BOptionalWord>(*e_maxAddress);

@@ -23,7 +23,6 @@
 #ifndef SCPULOG_INCLUDED
 #define SCPULOG_INCLUDED
 
-#include "misc1.h"
 #include "boption.h"
 #include <string>
 
@@ -81,16 +80,16 @@ inline LogRegister operator<<= (LogRegister &lhs, int shift_count)
     return lhs;
 }
 
-struct s_cpu_logfile
+struct Mc6809LoggerConfig
 {
 public:
-    s_cpu_logfile()
+    Mc6809LoggerConfig()
     {
         logFileName.reserve(PATH_MAX);
     }
 
-    s_cpu_logfile(const s_cpu_logfile &src) = default;
-    s_cpu_logfile &operator=(const s_cpu_logfile &src) = default;
+    Mc6809LoggerConfig(const Mc6809LoggerConfig &src) = default;
+    Mc6809LoggerConfig &operator=(const Mc6809LoggerConfig &src) = default;
 
     void reset()
     {
@@ -103,7 +102,7 @@ public:
         logFileName.clear();
     }
 
-    s_cpu_logfile(s_cpu_logfile &&src) noexcept
+    Mc6809LoggerConfig(Mc6809LoggerConfig &&src) noexcept
         : minAddr(src.minAddr)
         , maxAddr(src.maxAddr)
         , startAddr(src.startAddr)
@@ -114,7 +113,7 @@ public:
     {
     }
 
-    s_cpu_logfile &operator=(s_cpu_logfile &&src) noexcept
+    Mc6809LoggerConfig &operator=(Mc6809LoggerConfig &&src) noexcept
     {
         minAddr = src.minAddr;
         maxAddr = src.maxAddr;
