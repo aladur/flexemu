@@ -1455,18 +1455,18 @@ void Mc6809::reset_bp(int which)
 }
 
 // If logFileName is empty the current log file is closed.
-bool Mc6809::set_logfile(const Mc6809LoggerConfig &p_lfs)
+bool Mc6809::set_logfile(const Mc6809LoggerConfig &loggerConfig)
 {
     if (log_fs.is_open())
     {
         log_fs.close();
     }
 
-    lfs = p_lfs;
+    lfs = loggerConfig;
 
     if (!lfs.logFileName.empty())
     {
-        log_fs.open(p_lfs.logFileName, std::ios::out | std::ios::trunc);
+        log_fs.open(lfs.logFileName, std::ios::out | std::ios::trunc);
         if (!log_fs.is_open())
         {
             // Error when trying to open log file.

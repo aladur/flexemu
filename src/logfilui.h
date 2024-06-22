@@ -44,7 +44,7 @@ public:
     Mc6809LoggerConfigUi();
     ~Mc6809LoggerConfigUi() override = default;
     void setupUi(QDialog &dialog);
-    void SetData(const Mc6809LoggerConfig &settings);
+    void SetData(const Mc6809LoggerConfig &loggerConfig);
     Mc6809LoggerConfig GetData() const;
 
 protected:

@@ -80,26 +80,26 @@ void Mc6809LoggerConfigUi::InitializeWidgets()
     e_stopAddress->setInputMask(inputMask);
 }
 
-void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &settings)
+void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &loggerConfig)
 {
     if (dialog == nullptr)
     {
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    ::SetData(settings.minAddr, *e_minAddress);
-    ::SetData(settings.maxAddr, *e_maxAddress);
-    ::SetData(settings.startAddr, *e_startAddress);
-    ::SetData(settings.stopAddr, *e_stopAddress);
+    ::SetData(loggerConfig.minAddr, *e_minAddress);
+    ::SetData(loggerConfig.maxAddr, *e_maxAddress);
+    ::SetData(loggerConfig.startAddr, *e_startAddress);
+    ::SetData(loggerConfig.stopAddr, *e_stopAddress);
 
-    c_logCycleCount->setChecked(settings.logCycleCount);
-    e_logFilename->setText(settings.logFileName.c_str());
+    c_logCycleCount->setChecked(loggerConfig.logCycleCount);
+    e_logFilename->setText(loggerConfig.logFileName.c_str());
 
     auto logRegister = LogRegister::CC;
     for (auto *regCheckBox : regCheckBoxes)
     {
         bool isChecked =
-            (settings.logRegisters & logRegister) != LogRegister::NONE;
+            (loggerConfig.logRegisters & logRegister) != LogRegister::NONE;
         regCheckBox->setChecked(isChecked);
         logRegister <<= 1;
     }
@@ -107,28 +107,28 @@ void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &settings)
 
 Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
 {
-    Mc6809LoggerConfig settings;
+    Mc6809LoggerConfig loggerConfig;
 
-    settings.minAddr = ::GetData<BOptionalWord>(*e_minAddress);
-    settings.maxAddr = ::GetData<BOptionalWord>(*e_maxAddress);
-    settings.startAddr = ::GetData<BOptionalWord>(*e_startAddress);
-    settings.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
+    loggerConfig.minAddr = ::GetData<BOptionalWord>(*e_minAddress);
+    loggerConfig.maxAddr = ::GetData<BOptionalWord>(*e_maxAddress);
+    loggerConfig.startAddr = ::GetData<BOptionalWord>(*e_startAddress);
+    loggerConfig.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
 
-    settings.logCycleCount = c_logCycleCount->isChecked();
-    settings.logFileName = e_logFilename->text().toStdString();
+    loggerConfig.logCycleCount = c_logCycleCount->isChecked();
+    loggerConfig.logFileName = e_logFilename->text().toStdString();
 
-    settings.logRegisters = LogRegister::NONE;
+    loggerConfig.logRegisters = LogRegister::NONE;
     auto logRegister = LogRegister::CC;
     for (auto *regCheckBox : regCheckBoxes)
     {
         if (regCheckBox->isChecked())
         {
-            settings.logRegisters |= logRegister;
+            loggerConfig.logRegisters |= logRegister;
         }
         logRegister <<= 1;
     }
 
-    return settings;
+    return loggerConfig;
 }
 
 void Mc6809LoggerConfigUi::ConnectSignalsWithSlots()

@@ -942,7 +942,7 @@ public:
     // interface to other classes
 public:
     void set_disassembler(Da6809 *p_disassembler);
-    bool set_logfile(const Mc6809LoggerConfig &p_lfs);
+    bool set_logfile(const Mc6809LoggerConfig &loggerConfig);
     Word get_pc()
     {
         return PC;
