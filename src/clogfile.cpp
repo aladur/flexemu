@@ -32,6 +32,6 @@ CmdSetMc6809LoggerConfig::CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,
 
 void CmdSetMc6809LoggerConfig::Execute()
 {
-    cpu.set_logfile(cpuLoggerConfig);
+    cpu.setLoggerConfig(cpuLoggerConfig);
 }
 
