@@ -82,6 +82,12 @@ inline LogRegister operator<<= (LogRegister &lhs, int shift_count)
 
 struct Mc6809LoggerConfig
 {
+    enum class Format : uint8_t
+    {
+        Csv,
+        Text,
+    };
+
 public:
     Mc6809LoggerConfig()
     {
@@ -100,6 +106,8 @@ public:
         logCycleCount = false;
         logRegisters = LogRegister::NONE;
         logFileName.clear();
+        format = Format::Text;
+        csvSeparator = ';';
     }
 
     Mc6809LoggerConfig(Mc6809LoggerConfig &&src) noexcept
@@ -110,6 +118,8 @@ public:
         , logCycleCount(src.logCycleCount)
         , logRegisters(src.logRegisters)
         , logFileName(std::move(src.logFileName))
+        , format(src.format)
+        , csvSeparator(src.csvSeparator)
     {
     }
 
@@ -122,6 +132,8 @@ public:
         logCycleCount = src.logCycleCount;
         logRegisters = src.logRegisters;
         logFileName = std::move(src.logFileName);
+        format = src.format;
+        csvSeparator = src.csvSeparator;
         return *this;
     }
 
@@ -132,6 +144,8 @@ public:
     bool logCycleCount{false};
     LogRegister logRegisters{LogRegister::NONE};
     std::string logFileName;
+    Format format{Format::Text};
+    char csvSeparator{';'};
 };
 
 #endif

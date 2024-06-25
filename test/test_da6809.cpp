@@ -1004,9 +1004,9 @@ TEST(test_da6809, dis_flex_labels)
         0x8E, 0xC8, 0x40,
     };
     static const std::vector<const char *> expected_operands{
-        "WARMS ($CD03)", "TTYBS ($CC00)",
-        "TTYEOL ($CC02)", "FMS ($D406)",
-        "#FCB ($C840)",
+        "WARMS", "TTYBS",
+        "TTYEOL", "FMS",
+        "#FCB",
     };
     auto iexpected_operand = expected_operands.cbegin();
 

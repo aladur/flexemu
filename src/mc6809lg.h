@@ -31,6 +31,7 @@
 
 
 class CpuStatus;
+class Mc6809CpuStatus;
 
 class Mc6809Logger
 {
@@ -39,16 +40,20 @@ public:
     virtual ~Mc6809Logger() = default;
 
     bool doLogging(Word pc) const;
-    void logCurrentState(const CpuStatus &cpuState);
+    void logCurrentState(const CpuStatus &state);
     bool setLoggerConfig(const Mc6809LoggerConfig &loggerConfig);
 
     static std::string asCCString(Byte reg);
 
 private:
 
+    void logCurrentStateToText(const Mc6809CpuStatus *state);
+    void logCurrentStateToCsv(const Mc6809CpuStatus *state);
+
     Mc6809LoggerConfig config;
     std::ofstream logOfs;
     mutable bool isLoggingActive{};
+    bool doPrintCsvHeader{};
 };
 
 #endif // CPULOGGER_INCLUDED

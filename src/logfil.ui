@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>660</width>
-    <height>230</height>
+    <height>370</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>425</width>
-    <height>230</height>
+    <height>370</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -53,6 +53,12 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
+      <number>2</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
@@ -262,6 +268,59 @@
       </widget>
      </item>
      <item>
+      <widget class="QGroupBox" name="g_format">
+       <property name="title">
+        <string>Format</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+        <item>
+         <widget class="QRadioButton" name="r_text">
+          <property name="text">
+           <string>Text</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="r_csv">
+          <property name="text">
+           <string>CSV Text</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="g_csvSeparator">
+       <property name="title">
+        <string>CSV Separator</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,1">
+        <item>
+         <widget class="QRadioButton" name="r_semicolon">
+          <property name="text">
+           <string>Semicolon</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="r_space">
+          <property name="text">
+           <string>Space</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="r_tab">
+          <property name="text">
+           <string>Tab</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1,0">
        <property name="spacing">
         <number>6</number>
@@ -275,6 +334,12 @@
        </item>
        <item>
         <widget class="QLineEdit" name="e_logFilename">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="clearButtonEnabled">
           <bool>true</bool>
          </property>

@@ -199,7 +199,8 @@ inline Byte Da6809::D_Immediate16(const char *mnemo, Byte bytes,
     }
     else
     {
-        p_operands = fmt::format("#{} (${:04X})", label, offset);
+        p_operands = "#";
+        p_operands += label;
     }
 
     return bytes;
@@ -438,7 +439,7 @@ inline Byte Da6809::D_Extended(const char *mnemo, Byte bytes,
     }
     else
     {
-        p_operands = fmt::format("{} (${:04X})", label, offset);
+        p_operands = label;
     }
 
     return bytes;
@@ -471,7 +472,7 @@ inline Byte Da6809::D_Relative8(const char *mnemo, Byte bytes,
     }
     else
     {
-        p_operands = fmt::format("{} (${:04X})", label, disp);
+        p_operands = label;
     }
 
     return bytes;
@@ -503,7 +504,7 @@ inline Byte Da6809::D_Relative16(const char *mnemo, Byte bytes,
     }
     else
     {
-        p_operands = fmt::format("{} (${:04X})", label, address);
+        p_operands = label;
     }
 
     return bytes;

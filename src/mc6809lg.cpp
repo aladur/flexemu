@@ -24,6 +24,7 @@
 #include "mc6809lg.h"
 #include "mc6809st.h"
 #include "mc6809.h"
+#include "scpulog.h"
 #include <fmt/format.h>
 #include <cassert>
 
@@ -50,16 +51,32 @@ bool Mc6809Logger::doLogging(Word pc) const
     return false;
 }
 
-void Mc6809Logger::logCurrentState(const CpuStatus &cpuState)
+void Mc6809Logger::logCurrentState(const CpuStatus &state)
 {
     if (!logOfs.is_open() || !isLoggingActive)
     {
         return;
     }
 
-    const auto *state = dynamic_cast<const Mc6809CpuStatus *>(&cpuState);
+    const auto *p_state = dynamic_cast<const Mc6809CpuStatus *>(&state);
+    assert(p_state != nullptr);
 
+    switch (config.format)
+    {
+        case Mc6809LoggerConfig::Format::Text:
+            logCurrentStateToText(p_state);
+            break;
+
+        case Mc6809LoggerConfig::Format::Csv:
+            logCurrentStateToCsv(p_state);
+            break;
+    }
+}
+
+void Mc6809Logger::logCurrentStateToText(const Mc6809CpuStatus *state)
+{
     assert(state != nullptr);
+
     if (config.logCycleCount)
     {
         logOfs << fmt::format("{:20} ", state->total_cycles);
@@ -127,6 +144,91 @@ void Mc6809Logger::logCurrentState(const CpuStatus &cpuState)
     logOfs.flush();
 }
 
+void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
+{
+    assert(state != nullptr);
+    const char sep = config.csvSeparator;
+
+    if (doPrintCsvHeader)
+    {
+        const std::vector<const char *> registerNames{
+            "CC", "A", "B", "DP", "X", "Y", "U", "S"
+        };
+
+        if (config.logCycleCount)
+        {
+            logOfs << "cycles" << sep;
+        }
+        logOfs << "PC" << sep << "mnemonic" << sep << "operands";
+
+        LogRegister registerBit = LogRegister::CC;
+
+        for(const char *registerName : registerNames)
+        {
+            if ((registerBit & config.logRegisters) != LogRegister::NONE)
+            {
+                logOfs << sep << registerName;
+            }
+            registerBit <<= 1;
+        }
+        logOfs << "\n";
+
+        doPrintCsvHeader = false;
+    }
+
+    if (config.logCycleCount)
+    {
+        logOfs << fmt::format("{}{}", state->total_cycles, sep);
+    }
+
+    if (config.logRegisters == LogRegister::NONE)
+    {
+        logOfs << fmt::format("{:04X}{}{}{}{}\n", state->pc, sep,
+                state->mnemonic, sep, state->operands);
+        logOfs.flush();
+        return;
+    }
+
+    logOfs << fmt::format("{:04X}{}{}{}{}", state->pc, sep, state->mnemonic,
+                sep, state->operands);
+
+    if ((config.logRegisters & LogRegister::CC) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{}", sep, asCCString(state->cc));
+    }
+    if ((config.logRegisters & LogRegister::A) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->a));
+    }
+    if ((config.logRegisters & LogRegister::B) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->b));
+    }
+    if ((config.logRegisters & LogRegister::DP) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->dp));
+    }
+    if ((config.logRegisters & LogRegister::X) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:04X}", sep, state->x);
+    }
+    if ((config.logRegisters & LogRegister::Y) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:04X}", sep, state->y);
+    }
+    if ((config.logRegisters & LogRegister::U) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:04X}", sep, state->u);
+    }
+    if ((config.logRegisters & LogRegister::S) != LogRegister::NONE)
+    {
+        logOfs << fmt::format("{}{:04X}", sep, state->s);
+    }
+
+    logOfs << "\n";
+    logOfs.flush();
+}
+
 bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
 {
     if (logOfs.is_open())
@@ -135,6 +237,10 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
     }
 
     config = loggerConfig;
+    if (config.format == Mc6809LoggerConfig::Format::Csv)
+    {
+        doPrintCsvHeader = true;
+    }
 
     if (!config.logFileName.empty())
     {

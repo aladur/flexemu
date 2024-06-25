@@ -55,6 +55,11 @@ void Mc6809LoggerConfigUi::setupUi(QDialog &p_dialog)
     assert(e_stopAddress != nullptr);
     assert(c_logCycleCount != nullptr);
     assert(e_logFilename != nullptr);
+    assert(r_semicolon != nullptr);
+    assert(r_space != nullptr);
+    assert(r_tab != nullptr);
+    assert(r_csv != nullptr);
+    assert(r_text != nullptr);
 
     for (const auto &regCheckBox : regCheckBoxes)
     {
@@ -93,6 +98,36 @@ void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &loggerConfig)
     ::SetData(loggerConfig.stopAddr, *e_stopAddress);
 
     c_logCycleCount->setChecked(loggerConfig.logCycleCount);
+
+    switch (loggerConfig.format)
+    {
+        case Mc6809LoggerConfig::Format::Text:
+            r_text->setChecked(true);
+            g_csvSeparator->setEnabled(false);
+            break;
+
+        case Mc6809LoggerConfig::Format::Csv:
+            r_csv->setChecked(true);
+            g_csvSeparator->setEnabled(true);
+            break;
+    }
+
+    switch (loggerConfig.csvSeparator)
+    {
+        case ' ':
+            r_space->setChecked(true);
+            break;
+
+        case '\t':
+            r_tab->setChecked(true);
+            break;
+
+        default:
+        case ';':
+            r_semicolon->setChecked(true);
+            break;
+    }
+
     e_logFilename->setText(loggerConfig.logFileName.c_str());
 
     auto logRegister = LogRegister::CC;
@@ -128,6 +163,28 @@ Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
         logRegister <<= 1;
     }
 
+    if (r_csv->isChecked())
+    {
+        loggerConfig.format = Mc6809LoggerConfig::Format::Csv;
+    }
+    else if (r_text->isChecked())
+    {
+        loggerConfig.format = Mc6809LoggerConfig::Format::Text;
+    }
+
+    if (r_space->isChecked())
+    {
+        loggerConfig.csvSeparator = ' ';
+    }
+    else if (r_tab->isChecked())
+    {
+        loggerConfig.csvSeparator = '\t';
+    }
+    else if (r_semicolon->isChecked())
+    {
+        loggerConfig.csvSeparator = ';';
+    }
+
     return loggerConfig;
 }
 
@@ -141,6 +198,10 @@ void Mc6809LoggerConfigUi::ConnectSignalsWithSlots()
             this, &Mc6809LoggerConfigUi::OnClicked);
     connect(b_logFilename, &QAbstractButton::clicked,
             [&](){ OnSelectFile(*e_logFilename); });
+    connect(r_text, &QRadioButton::clicked,
+            this, &Mc6809LoggerConfigUi::OnTextFormat);
+    connect(r_csv, &QRadioButton::clicked,
+            this, &Mc6809LoggerConfigUi::OnCsvFormat);
 }
 
 void Mc6809LoggerConfigUi::OnAccepted()
@@ -165,12 +226,63 @@ void Mc6809LoggerConfigUi::OnClicked(QAbstractButton *button)
         e_stopAddress->clear();
         c_logCycleCount->setChecked(false);
         e_logFilename->clear();
+        r_text->setChecked(true);
+        r_semicolon->setChecked(true);
+        g_csvSeparator->setEnabled(false);
 
         for (auto *regCheckBox : regCheckBoxes)
         {
             regCheckBox->setChecked(false);
         }
     }
+}
+
+QString Mc6809LoggerConfigUi::GetCurrentFileExtension() const
+{
+     if (r_csv->isChecked())
+     {
+         return "csv";
+     }
+
+     return "log";
+}
+
+void Mc6809LoggerConfigUi::OnTextFormat() const
+{
+    UpdateFilename();
+    g_csvSeparator->setEnabled(false);
+}
+
+void Mc6809LoggerConfigUi::OnCsvFormat() const
+{
+    UpdateFilename();
+    g_csvSeparator->setEnabled(true);
+}
+
+void Mc6809LoggerConfigUi::UpdateFilename() const
+{
+    auto fileExtension = QString(".") + GetCurrentFileExtension();
+
+    auto path = QDir::toNativeSeparators(e_logFilename->text());
+    if (path.isEmpty())
+    {
+        return;
+    }
+    auto pIdx = path.lastIndexOf(PATHSEPARATOR);
+    auto index = path.lastIndexOf('.');
+    if (index >= 0 && index > pIdx)
+    {
+        path = path.left(index) + fileExtension;
+    }
+    else if (pIdx >= 0 && pIdx < path.size() - 1)
+    {
+        path = path + fileExtension;
+    }
+    else if (pIdx >= 0 && pIdx == path.size() - 1)
+    {
+        path = path + "mc6809" + fileExtension;
+    }
+    e_logFilename->setText(path);
 }
 
 void Mc6809LoggerConfigUi::OnSelectFile(QLineEdit &lineEdit)
