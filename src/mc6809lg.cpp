@@ -67,12 +67,22 @@ void Mc6809Logger::logCurrentState(const CpuStatus &cpuState)
 
     if (config.logRegisters == LogRegister::NONE)
     {
-        logOfs << fmt::format("{:04X} {}\n", state->pc, state->mnemonic);
+        if (state->operands[0] == '\0')
+        {
+            logOfs << fmt::format("{:04X} {}\n", state->pc, state->mnemonic);
+        }
+        else
+        {
+            logOfs << fmt::format("{:04X} {:<5} {}\n", state->pc,
+                    state->mnemonic, state->operands);
+        }
         logOfs.flush();
         return;
     }
 
-    logOfs << fmt::format("{:04X} {: <23}", state->pc, state->mnemonic);
+    auto mnemonic_str = fmt::format("{:<5} {}", state->mnemonic,
+            state->operands);
+    logOfs << fmt::format("{:04X} {:<24}", state->pc, mnemonic_str);
 
     LogRegister registerBit = LogRegister::CC;
     while (registerBit != LogRegister::NONE)

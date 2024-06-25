@@ -27,37 +27,44 @@ public:
             InstFlg &p_flags,
             DWord &p_jumpaddr,
             std::string &p_code,
-            std::string &p_mnemonic) override;
+            std::string &p_mnemonic,
+            std::string &p_operands) override;
     void set_use_undocumented(bool value) override;
 
 private:
 
     inline Byte D_Page2(InstFlg &p_flags, DWord &p_jumpaddr,
-            std::string &p_code, std::string &p_mnemonic);
+            std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
     inline Byte D_Page3(InstFlg &p_flags, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Illegal(const char *mnemo, Byte bytes, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Direct(const char *mnemo, Byte bytes, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Immediate8(const char *mnemo, Byte bytes, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Immediate16(const char *mnemo, Byte bytes,
-            std::string &p_code, std::string &p_mnemonic);
+            std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
     inline Byte D_Inherent(const char *mnemo, Byte bytes, std::string &p_code,
             std::string &p_mnemonic);
     Byte D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Extended(const char *mnemo, Byte bytes, std::string &p_code,
-            std::string &p_mnemonic);
+            std::string &p_mnemonic, std::string &p_operands);
     inline Byte D_Relative8(const char *mnemo, Byte bytes, DWord &p_jumpaddr,
-            std::string &p_code, std::string &p_mnemonic);
+            std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
     inline Byte D_Relative16(const char *mnemo, Byte bytes, DWord &p_jumpaddr,
-            std::string &p_code, std::string &p_mnemonic);
+            std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
     inline Byte D_RegisterRegister(const char *mnemo, Byte bytes,
-            std::string &p_code, std::string &p_mnemonic);
+            std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
     inline Byte D_RegisterList(const char *mnemo, const char *ns_reg,
-            Byte bytes, std::string &p_code, std::string &p_mnemonic);
+            Byte bytes, std::string &p_code, std::string &p_mnemonic,
+            std::string &p_operands);
 
     std::string PrintCode(int bytes);
     static const char *IndexRegister(Byte which);

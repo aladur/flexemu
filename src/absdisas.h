@@ -34,7 +34,8 @@ public:
                   InstFlg &p_flags,
                   DWord &p_jumpaddr,
                   std::string &p_code,
-                  std::string &p_mnemonic) = 0;
+                  std::string &p_mnemonic,
+                  std::string &p_operands) = 0;
     virtual void set_use_undocumented(bool value) = 0;
 }; // class AbstractDisassembler
 

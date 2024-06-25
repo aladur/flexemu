@@ -952,7 +952,8 @@ public:
 
 protected:
     int Disassemble(Word address, InstFlg &p_flags,
-                    std::string &code, std::string &mnemonic);
+                    std::string &code, std::string &mnemonic,
+                    std::string &operands);
     Mc6809Logger logger;
     Memory &memory;
 

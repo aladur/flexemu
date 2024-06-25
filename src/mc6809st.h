@@ -50,7 +50,8 @@ public:
     Word x{0};
     Word y{0};
     Byte instruction[4]{};
-    char mnemonic[28]{};
+    char mnemonic[8]{};
+    char operands[20]{};
     Byte memory[CPU_STACK_LINES * CPU_STACK_BYTES]{};
     Mc6809CpuStatus() = default;
     ~Mc6809CpuStatus() override = default;

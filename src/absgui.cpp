@@ -95,7 +95,9 @@ void AbstractGui::redraw_cpuview_contents(const Mc6809CpuStatus &status)
 
     if (status.mnemonic[0] != '\0')
     {
-        text(6, 1, status.mnemonic);
+        auto mnemonic_str = fmt::format("{:<5} {}", status.mnemonic,
+                                        status.operands);
+        text(6, 1, mnemonic_str);
     }
     else
     {

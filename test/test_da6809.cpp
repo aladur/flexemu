@@ -15,6 +15,7 @@ TEST(test_da6809, dis_illegal)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     std::vector<Byte> memory{
         0x01, 0x02, 0x05, 0x0B, 0x14, 0x15, 0x18, 0x1B, 0x38,
         0x3E, 0x41, 0x42, 0x45, 0x4B, 0x4E, 0x51, 0x52, 0x5E,
@@ -24,8 +25,8 @@ TEST(test_da6809, dis_illegal)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         EXPECT_EQ(bytes, 1);
         EXPECT_EQ(flags, InstFlg::Illegal);
@@ -33,7 +34,8 @@ TEST(test_da6809, dis_illegal)
         const auto expected_code = fmt::format("{:04X}: {:02X}", pc,
                                                memory[pc]);
         EXPECT_EQ(code, expected_code);
-        EXPECT_EQ(mnemonic, " ?????");
+        EXPECT_TRUE(mnemonic.empty());
+        EXPECT_EQ(operands, "?????");
         pc += bytes;
     }
 }
@@ -46,6 +48,7 @@ TEST(test_da6809, dis_inherent)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x12, 0x13, 0x19, 0x1D, 0x39, 0x3A, 0x3B, 0x3D, 0x3F,
         0x40, 0x43, 0x44, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4C, 0x4D, 0x4F,
@@ -67,8 +70,8 @@ TEST(test_da6809, dis_inherent)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         auto size = is_page23 ? 2 : 1;
@@ -103,6 +106,7 @@ TEST(test_da6809, dis_inherent)
         const std::string expected_mnemonic{*(iexpected_mnemonic++)};
         mnemonic = flx::rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_TRUE(operands.empty());
         pc += bytes;
     }
 }
@@ -115,6 +119,7 @@ TEST(test_da6809, dis_immediate)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     // Remark: Instead of $CC00 use $CC10, $CC00 would print label TTYBS.
     static const std::vector<Byte> memory{
         0x1A, 0x55, 0x1C, 0xAA, // 1X
@@ -150,8 +155,8 @@ TEST(test_da6809, dis_immediate)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         auto size = is_page23 ? 3 : 2;
@@ -188,21 +193,19 @@ TEST(test_da6809, dis_immediate)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
         Word tgtaddr = memory[pc + size - 1];
+        std::string expected_operands;
         tgtaddr = is_16bit ? (memory[pc + size - 2] << 8 | tgtaddr) : tgtaddr;
-        auto expected_mnemonic = fmt::format("{}{}#$", mnemo, spaces);
         if (is_16bit)
         {
-            expected_mnemonic += fmt::format("{:04X}", tgtaddr);
+            expected_operands = fmt::format("#${:04X}", tgtaddr);
         }
         else
         {
-            expected_mnemonic += fmt::format("{:02X}", tgtaddr);
+            expected_operands = fmt::format("#${:02X}", tgtaddr);
         }
-        mnemonic = flx::rtrim(mnemonic);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, expected_operands);
         pc += bytes;
     }
 }
@@ -215,6 +218,7 @@ TEST(test_da6809, dis_direct)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x00, 0x00, 0x03, 0x03, 0x04, 0x04, 0x06, 0x06, 0x07, 0x07, 0x08, 0x08,
         0x09, 0x09, 0x0A, 0x0A, 0x0C, 0x0C, 0x0D, 0x0D, 0x0E, 0x0E, 0x0F, 0x0F,
@@ -246,8 +250,8 @@ TEST(test_da6809, dis_direct)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 3 : 2;
@@ -272,11 +276,9 @@ TEST(test_da6809, dis_direct)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
-        const auto expected_mnemonic =
-            fmt::format("{}{}${:02X}", mnemo, spaces, memory[pc + 1]);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        const auto expected_mnemonic = fmt::format("${:02X}", memory[pc + 1]);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, expected_mnemonic);
         pc += bytes;
     }
 }
@@ -289,6 +291,7 @@ TEST(test_da6809, dis_branch_relative)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x20, 0x00, 0x21, 0x00, 0x22, 0x00, 0x23, 0x00, 0x24, 0x00,
         0x25, 0x00, 0x26, 0x00, 0x27, 0x00, 0x28, 0x00, 0x29, 0x00,
@@ -310,8 +313,8 @@ TEST(test_da6809, dis_branch_relative)
 
     while (pc < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const auto size = 2;
         EXPECT_EQ(bytes, size);
@@ -337,11 +340,10 @@ TEST(test_da6809, dis_branch_relative)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
-        const auto expected_mnemonic =
-            fmt::format("{}{}${:04X}", mnemo, spaces, expected_jumpaddr);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        const auto expected_operands =
+            fmt::format("${:04X}", expected_jumpaddr);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, expected_operands);
         pc += bytes;
     }
 }
@@ -354,6 +356,7 @@ TEST(test_da6809, dis_long_branch_relative)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x16, 0x00, 0x00, 0x17, 0x00, 0x00,
         0x10, 0x21, 0x00, 0x00, 0x10, 0x22, 0x00, 0x00,
@@ -375,8 +378,8 @@ TEST(test_da6809, dis_long_branch_relative)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const auto size = (memory[pc] == 0x10) ? 4 : 3;
         EXPECT_EQ(bytes, size);
@@ -401,11 +404,10 @@ TEST(test_da6809, dis_long_branch_relative)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
-        const auto expected_mnemonic =
-            fmt::format("{}{}${:04X}", mnemo, spaces, jumpaddr);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        const auto expected_operands =
+            fmt::format("${:04X}", expected_jumpaddr);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, expected_operands);
         pc += bytes;
     }
 }
@@ -418,6 +420,7 @@ TEST(test_da6809, dis_extended)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x70, 0x01, 0x70, 0x73, 0x01, 0x73, 0x74, 0x01, 0x74, 0x76, 0x01, 0x76,
         0x77, 0x01, 0x77, 0x78, 0x01, 0x78, 0x79, 0x01, 0x79, 0x7A, 0x01, 0x7A,
@@ -451,8 +454,8 @@ TEST(test_da6809, dis_extended)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 4 : 3;
@@ -483,11 +486,9 @@ TEST(test_da6809, dis_extended)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
-        const auto expected_mnemonic =
-            fmt::format("{}{}${:04X}", mnemo, spaces, tgtaddr);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        const auto expected_operands = fmt::format("${:04X}", tgtaddr);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, expected_operands);
         pc += bytes;
     }
 }
@@ -500,6 +501,7 @@ TEST(test_da6809, dis_indexed)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x30, 0x00, 0x31, 0x00, 0x32, 0x00, 0x33, 0x00, // 3X
         0x60, 0x00, 0x63, 0x00, 0x64, 0x00, 0x66, 0x00, 0x67, 0x00,
@@ -537,8 +539,8 @@ TEST(test_da6809, dis_indexed)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 3 : 2;
@@ -563,11 +565,8 @@ TEST(test_da6809, dis_indexed)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string mnemo{*(iexpected_mnemonic++)};
-        const std::string spaces(6U - mnemo.size(), ' ');
-        const auto expected_mnemonic =
-            fmt::format("{}{}$00,X", mnemo, spaces);
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, "$00,X");
         pc += bytes;
     }
 }
@@ -580,6 +579,7 @@ TEST(test_da6809, dis_indexed_modes)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x84, 0x60, 0xA4, 0x60, 0xC4, 0x60, 0xE4, // No offset
@@ -602,7 +602,7 @@ TEST(test_da6809, dis_indexed_modes)
         0x60, 0x93, // pre decrement by 2
         0x60, 0x9F, 0x55, 0xAA, // extended indirect
     };
-    static const std::vector<const char *> expected_mnemonics{
+    static const std::vector<const char *> expected_operands{
         // Non indirect.
         ",X", ",Y", ",U", ",S", // No offset
         "-$10,X", "$0F,Y", "-$10,U", "$0F,S", // 5-bit offset
@@ -620,12 +620,12 @@ TEST(test_da6809, dis_indexed_modes)
         "[,--X]", // pre decrement by 2
         "[$55AA]", // extended indirect
     };
-    auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    auto iexpected_operand = expected_operands.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const auto mask = memory[pc + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
@@ -643,9 +643,8 @@ TEST(test_da6809, dis_indexed_modes)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const auto expected_mnemonic =
-            fmt::format("NEG   {}", *(iexpected_mnemonic++));;
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, "NEG");
+        EXPECT_EQ(operands, *(iexpected_operand++));
         pc += bytes;
     }
 }
@@ -659,6 +658,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
     DWord offset = 0;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x8C, 0x80, 0x60, 0xAC, 0x80, // PC relative 8-bit offset
@@ -679,7 +679,7 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         0x60, 0x9D, 0x3F, 0xFF, 0x60, 0xBD, 0x3F, 0xFF, // PC rel. 16-bit offs.
         0x60, 0xDD, 0x3F, 0xFF, 0x60, 0xFD, 0x3F, 0xFF, // PC rel. 16-bit offs.
     };
-    static const std::vector<const char *> expected_mnemonics{
+    static const std::vector<const char *> expected_operands{
         // Non indirect.
         "<$7F83,PCR", "<$7F86,PCR", // PC relative 8-bit offset
         "<$7F89,PCR", "<$7F8C,PCR",
@@ -699,12 +699,12 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         "[>$C02B,PCR]", "[>$C02F,PCR]",
         "[>$C033,PCR]", "[>$C037,PCR]",
     };
-    auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    auto iexpected_operand = expected_operands.cbegin();
 
     while (offset < static_cast<DWord>(memory.size()))
     {
         const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
-                                          jumpaddr, code, mnemonic);
+                jumpaddr, code, mnemonic, operands);
 
         const auto mask = memory[offset + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
@@ -721,9 +721,8 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
             expected_code += fmt::format(" {:02X}", memory[offset + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const auto expected_mnemonic =
-            fmt::format("NEG   {}", *(iexpected_mnemonic++));;
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, "NEG");
+        EXPECT_EQ(operands, *(iexpected_operand++));
         offset += bytes;
         pc += bytes;
         if (pc >= 0x8000 + 56)
@@ -742,6 +741,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         // Non indirect.
         0x60, 0x8F, 0x60, 0xAF,
@@ -760,8 +760,8 @@ TEST(test_da6809, dis_indexed_modes_illegal)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         const auto size = 2;
         EXPECT_EQ(bytes, size);
@@ -774,8 +774,8 @@ TEST(test_da6809, dis_indexed_modes_illegal)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const auto expected_mnemonic{R"(NEG   ????)"};
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, "NEG");
+        EXPECT_EQ(operands, "????");
         pc += bytes;
     }
 }
@@ -804,6 +804,7 @@ TEST(test_da6809, dis_exg_tfr)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     std::array<Byte, 2> memory{};
 
     for (Byte opcode = 0x1E; opcode <= 0x1F; ++opcode)
@@ -814,8 +815,8 @@ TEST(test_da6809, dis_exg_tfr)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
-            const auto bytes = da.Disassemble(memory.data(), pc, flags,
-                                              jumpaddr, code, mnemonic);
+            const auto bytes = da.Disassemble(&memory[pc], pc, flags,
+                    jumpaddr, code, mnemonic, operands);
 
             const auto size = 2;
             EXPECT_EQ(bytes, size);
@@ -828,12 +829,13 @@ TEST(test_da6809, dis_exg_tfr)
                 expected_code += fmt::format(" {:02X}", memory[pc + i]);
             }
             EXPECT_EQ(code, expected_code);
-            const std::string mnemo = (opcode == 0x1E) ? "EXG" : "TFR";
+            const std::string expected_mnemonic =
+                (opcode == 0x1E) ? "EXG" : "TFR";
             const auto r0 = GetRegisterName(postbyte >> 4);
             const auto r1 = GetRegisterName(postbyte & 0x0F);
-            const auto expected_mnemonic =
-                fmt::format("{}   {},{}", mnemo, r0, r1);
+            const auto expected_operands = fmt::format("{},{}", r0, r1);
             EXPECT_EQ(mnemonic, expected_mnemonic);
+            EXPECT_EQ(operands, expected_operands);
         }
     }
 }
@@ -877,6 +879,7 @@ TEST(test_da6809, dis_psh_pul)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     std::array<Byte, 2> memory{};
     std::array<const char *, 4> expected_mnemonics{
         "PSHS", "PULS", "PSHU", "PULU",
@@ -891,7 +894,7 @@ TEST(test_da6809, dis_psh_pul)
             memory[1] = static_cast<Byte>(postbyte);
 
             const auto bytes = da.Disassemble(memory.data(), pc, flags,
-                                              jumpaddr, code, mnemonic);
+                    jumpaddr, code, mnemonic, operands);
 
             auto size = 2;
             EXPECT_EQ(bytes, size);
@@ -904,12 +907,12 @@ TEST(test_da6809, dis_psh_pul)
                 expected_code += fmt::format(" {:02X}", memory[pc + i]);
             }
             EXPECT_EQ(code, expected_code);
-            std::string mnemo = expected_mnemonics[opcode - 0x34];
+            std::string expected_mnemonic = expected_mnemonics[opcode - 0x34];
             const std::string nonstack_reg = (opcode & 0x02) ? "S" : "U";
-            std::string reg_list = GetRegisterList(postbyte, nonstack_reg);
-            const auto expected_mnemonic =
-                fmt::format("{} {}", mnemo, reg_list);
+            std::string expected_operands =
+                GetRegisterList(postbyte, nonstack_reg);
             EXPECT_EQ(mnemonic, expected_mnemonic);
+            EXPECT_EQ(operands, expected_operands);
         }
     }
 }
@@ -922,6 +925,7 @@ TEST(test_da6809, dis_undocumented)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x0B, 0x00,
         0x3E,
@@ -932,19 +936,27 @@ TEST(test_da6809, dis_undocumented)
         0x7B, 0x7B, 0x00,
     };
     static const std::vector<const char *> expected_mnemonics{
-        "neg   $00", "negcom $00", "lsr   $00", "dec   $00", "reset",
+        "neg", "negcom", "lsr", "dec", "reset",
         "nega", "negcoma", "lsra", "deca", "clra",
         "negb", "negcomb", "lsrb", "decb", "clrb",
-        "neg   $00,X", "negcom $00,X", "lsr   $00,X", "dec   $00,X",
-        "neg   $7100", "negcom $7200", "lsr   $7500", "dec   $7B00",
+        "neg", "negcom", "lsr", "dec",
+        "neg", "negcom", "lsr", "dec",
+    };
+    static const std::vector<const char *> expected_operands{
+        "$00", "$00", "$00", "$00", "",
+        "", "", "", "", "",
+        "", "", "", "", "",
+        "$00,X", "$00,X", "$00,X", "$00,X",
+        "$7100", "$7200", "$7500", "$7B00",
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    auto iexpected_operand = expected_operands.cbegin();
 
     da.set_use_undocumented(true);
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
         auto opcode = memory[pc];
         int size{};
@@ -971,8 +983,8 @@ TEST(test_da6809, dis_undocumented)
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }
         EXPECT_EQ(code, expected_code);
-        const std::string expected_mnemonic{*(iexpected_mnemonic++)};
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
+        EXPECT_EQ(operands, *(iexpected_operand++));
         pc += bytes;
     }
 }
@@ -985,25 +997,25 @@ TEST(test_da6809, dis_flex_labels)
     DWord jumpaddr = 4711U;
     std::string code;
     std::string mnemonic;
+    std::string operands;
     static const std::vector<Byte> memory{
         0x7E, 0xCD, 0x03, 0xB6, 0xCC, 0x00,
         0xF7, 0xCC, 0x02, 0xBD, 0xD4, 0x06,
         0x8E, 0xC8, 0x40,
     };
-    static const std::vector<const char *> expected_mnemonics{
-        "JMP   WARMS ; $CD03", "LDA   TTYBS ; $CC00",
-        "STB   TTYEOL ; $CC02", "JSR   FMS ; $D406",
-        "LDX   #FCB ; $C840",
+    static const std::vector<const char *> expected_operands{
+        "WARMS ($CD03)", "TTYBS ($CC00)",
+        "TTYEOL ($CC02)", "FMS ($D406)",
+        "#FCB ($C840)",
     };
-    auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    auto iexpected_operand = expected_operands.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                                          jumpaddr, code, mnemonic);
+        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
+                                          code, mnemonic, operands);
 
-        const std::string expected_mnemonic{*(iexpected_mnemonic++)};
-        EXPECT_EQ(mnemonic, expected_mnemonic);
+        EXPECT_EQ(operands, *(iexpected_operand++));
         pc += bytes;
     }
 }

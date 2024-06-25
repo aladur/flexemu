@@ -59,7 +59,8 @@ void Mc6809::reset()
 }
 
 int Mc6809::Disassemble(Word address, InstFlg &p_flags,
-                        std::string &code, std::string &mnemonic)
+                        std::string &code, std::string &mnemonic,
+                        std::string &operands)
 {
     std::array<Byte, 6> buffer{};
     DWord jumpAddress = 0;
@@ -75,7 +76,7 @@ int Mc6809::Disassemble(Word address, InstFlg &p_flags,
     }
 
     return disassembler->Disassemble(buffer.data(), address, p_flags,
-                                     jumpAddress, code, mnemonic);
+                                     jumpAddress, code, mnemonic, operands);
 }
 
 //*******************************************************************
@@ -106,6 +107,7 @@ void Mc6809::get_status(CpuStatus *cpu_status)
 {
     InstFlg flags = InstFlg::NONE;
     std::string mnemonic;
+    std::string operands;
     std::string code;
     Word i;
     auto *stat = dynamic_cast<Mc6809CpuStatus *>(cpu_status);
@@ -144,15 +146,21 @@ void Mc6809::get_status(CpuStatus *cpu_status)
         stat->memory[i] = memory.read_byte(stack_base + i);
     }
 
-    if (!Disassemble(stat->pc, flags, code, mnemonic))
+    if (!Disassemble(stat->pc, flags, code, mnemonic, operands))
     {
         stat->mnemonic[0] = '\0';
+        stat->operands[0] = '\0';
     }
     else
     {
+        assert(mnemonic.size() < sizeof(stat->mnemonic));
         std::strncpy(stat->mnemonic, mnemonic.c_str(),
                 sizeof(stat->mnemonic) - 1);
         stat->mnemonic[sizeof(stat->mnemonic) - 1] = '\0';
+        assert(operands.size() < sizeof(stat->operands));
+        std::strncpy(stat->operands, operands.c_str(),
+                sizeof(stat->operands) - 1);
+        stat->operands[sizeof(stat->operands) - 1] = '\0';
     }
 
     stat->total_cycles = get_cycles();
@@ -204,6 +212,7 @@ CpuState Mc6809::run(RunMode mode)
         {
             std::string code;
             std::string mnemonic;
+            std::string operands;
             InstFlg flags = InstFlg::NONE;
 
             // Only if disassembler available and
@@ -211,7 +220,7 @@ CpuState Mc6809::run(RunMode mode)
             // set a breakpoint after this instruction
             if (disassembler != nullptr)
             {
-                bp[2] = PC + Disassemble(PC, flags, code, mnemonic);
+                bp[2] = PC + Disassemble(PC, flags, code, mnemonic, operands);
             }
 
             if (disassembler == nullptr ||
