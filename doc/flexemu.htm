@@ -611,6 +611,29 @@ four digit hexadecimal address:
   </td>
  </tr>
  <tr>
+  <td>Format</td>
+  <td>Text</td>
+  <td>
+    The format of the logging file can be selected.
+    <ul>
+     <li>Text: Logs into a text based format. The data is arranged in columns separated by one or multiple spaces.</li>
+     <li>CSV Text: Logs into a text based format. The first line is a column header. The data is arranged in columns separated by a selectable separater character.</li>
+    </ul>
+  </td>
+ </tr>
+ <tr>
+  <td>CSV Separator</td>
+  <td>Semicolon</td>
+  <td>
+   Only enabled if log format is CSV Text. The separator character can be selected. [1]
+    <ul>
+     <li>Semicolon (hex <code>3B</code>)</li>
+     <li>Space (hex <code>20</code>)</li>
+     <li><code>TAB</code> (hex <code>09</code>)</li>
+    </ul>
+  </td>
+ </tr>
+ <tr>
   <td>Filename</td>
   <td>&lt;not set&gt;</td>
   <td>
@@ -621,6 +644,8 @@ four digit hexadecimal address:
   </td>
  </tr>
 </table>
+<p>
+[1] Comma can not be selected as separator character because it is used to separate operands.
 
 <h3 id="frequency_control">CPU Frequency control</h3>
 <div class="justify">
