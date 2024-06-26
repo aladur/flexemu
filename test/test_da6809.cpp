@@ -587,7 +587,7 @@ TEST(test_da6809, dis_indexed_modes)
         0x60, 0x88, 0x80, 0x60, 0xA8, 0x7F, // 8-bit offset
         0x60, 0xC8, 0x80, 0x60, 0xE8, 0x7F,
         0x60, 0x89, 0x80, 0x00, 0x60, 0xA9, 0x7F, 0xFF, // 16-bit offset
-        0x60, 0xC9, 0x80, 0x00, 0x60, 0xE9, 0x7F, 0xFF,
+        0x60, 0xC9, 0xC0, 0x00, 0x60, 0xE9, 0x3F, 0xFF,
         0x60, 0x86, 0x60, 0xA5, 0x60, 0xCB, // accumulator offset
         0x60, 0xE0, 0x60, 0xE1, // post increment by 1/2
         0x60, 0x82, 0x60, 0x83, // pre decrement by 1/2
@@ -596,7 +596,7 @@ TEST(test_da6809, dis_indexed_modes)
         0x60, 0x98, 0x80, 0x60, 0xB8, 0x7F, // 8-bit offset
         0x60, 0xD8, 0x80, 0x60, 0xF8, 0x7F,
         0x60, 0x99, 0x80, 0x00, 0x60, 0xB9, 0x7F, 0xFF, // 16-bit offset
-        0x60, 0xD9, 0x80, 0x00, 0x60, 0xF9, 0x7F, 0xFF,
+        0x60, 0xD9, 0xC0, 0x00, 0x60, 0xF9, 0x3F, 0xFF,
         0x60, 0x96, 0x60, 0xB5, 0x60, 0xDB, // accumulator offset
         0x60, 0xF1, // post increment by 2
         0x60, 0x93, // pre decrement by 2
@@ -607,14 +607,14 @@ TEST(test_da6809, dis_indexed_modes)
         ",X", ",Y", ",U", ",S", // No offset
         "-$10,X", "$0F,Y", "-$10,U", "$0F,S", // 5-bit offset
         "-$80,X", "$7F,Y", "-$80,U", "$7F,S", // 8-bit offset
-        "$8000,X", "$7FFF,Y", "$8000,U", "$7FFF,S", // 8-bit offset
+        "-$8000,X", "$7FFF,Y", "-$4000,U", "$3FFF,S", // 16-bit offset
         "A,X", "B,Y", "D,U", // accumulator offset
         ",S+", ",S++", // post increment by 1/2
         ",-X", ",--X", // pre decrement by 1/2
         // Indirect.
         "[,X]", "[,Y]", "[,U]", "[,S]", // No offset
         "[-$80,X]", "[$7F,Y]", "[-$80,U]", "[$7F,S]", // 8-bit offset
-        "[$8000,X]", "[$7FFF,Y]", "[$8000,U]", "[$7FFF,S]", // 8-bit offset
+        "[-$8000,X]", "[$7FFF,Y]", "[-$4000,U]", "[$3FFF,S]", // 16-bit offset
         "[A,X]", "[B,Y]", "[D,U]", // accumulator offset
         "[,S++]", // post increment by 2
         "[,--X]", // pre decrement by 2

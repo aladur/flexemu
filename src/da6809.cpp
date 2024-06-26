@@ -237,7 +237,9 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
     const auto postbyte = *(memory + bytes - 1);
     const char *br1 = ""; // opening bracket if indirect addressing
     const char *br2 = ""; // closing bracket if indirect addressing
-    const char *s = ""; // minus sign for offset
+    const char *sign = ""; // minus sign for offset
+    const char *addr_mode = "<"; // addressing mode, "<" for direct, ">" for
+                                 // extended addressing.
 
     p_mnemonic = mnemo;
     if ((postbyte & 0x80) == 0x00)
@@ -247,12 +249,12 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 
         if ((postbyte & 0x10) == 0x10)
         {
-            s = "-";
+            sign = "-";
             disp = 0x20 - disp;
         }
 
         p_code = PrintCode(bytes);
-        p_operands = fmt::format("{}${:02X},{}", s, disp,
+        p_operands = fmt::format("{}${:02X},{}", sign, disp,
                  IndexRegister(postbyte >> 5));
     }
     else
@@ -332,19 +334,15 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x08 : // ,R + 8 Bit Offset
                 offset = *(memory + 2);
 
-                if (offset < 128)
+                if (offset >= 128)
                 {
-                    s = "";
-                }
-                else
-                {
-                    s = "-";
+                    sign = "-";
                     offset = 0x0100 - offset;
                 }
                 extrabytes = 1;
                 p_code = PrintCode(bytes + extrabytes);
                 p_operands = fmt::format("{}{}${:02X},{}{}",
-                         br1, s, offset, IndexRegister(postbyte >> 5), br2);
+                         br1, sign, offset, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x19 : // [,R + 16 Bit Offset]
@@ -356,9 +354,13 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 extrabytes = 2;
                 p_code = PrintCode(bytes + extrabytes);
                 offset = flx::getValueBigEndian<Word>(&memory[2]);
-                s = "";
+                if (offset >= 32768)
+                {
+                    sign = "-";
+                    offset = 0xFFFF - offset + 1;
+                }
                 p_operands = fmt::format("{}{}${:04X},{}{}",
-                         br1, s, offset, IndexRegister(postbyte >> 5), br2);
+                         br1, sign, offset, IndexRegister(postbyte >> 5), br2);
                 break;
 
             case 0x1b : // [D,R]
@@ -379,11 +381,10 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 
             case 0x0c : // ,PC + 8 Bit Offset
                 offset = (EXTEND8(*(memory + 2)) + pc + 3) & 0xFFFF;
-                s = "<";
                 extrabytes = 1;
                 p_code = PrintCode(bytes + extrabytes);
                 p_operands = fmt::format("{}{}${:02X},PCR{}",
-                         br1, s, offset, br2);
+                         br1, addr_mode, offset, br2);
                 break;
 
             case 0x1d : // [,PC + 16 Bit Offset]
@@ -394,11 +395,11 @@ Byte Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x0d :  // ,PC + 16 Bit Offset
                 offset = (flx::getValueBigEndian<Word>(&memory[2]) + pc + 4)
                          & 0xFFFF;
-                s = ">";
+                addr_mode = ">";
                 extrabytes = 2;
                 p_code = PrintCode(bytes + extrabytes);
                 p_operands = fmt::format("{}{}${:04X},PCR{}",
-                         br1, s, offset, br2);
+                         br1, addr_mode, offset, br2);
                 break;
 
             case 0x1f : // [n]
