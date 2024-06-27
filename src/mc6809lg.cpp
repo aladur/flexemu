@@ -101,12 +101,6 @@ void Mc6809Logger::logCurrentStateToText(const Mc6809CpuStatus *state)
             state->operands);
     logOfs << fmt::format("{:04X} {:<24}", state->pc, mnemonic_str);
 
-    LogRegister registerBit = LogRegister::CC;
-    while (registerBit != LogRegister::NONE)
-    {
-      registerBit <<= 1;
-    }
-
     if ((config.logRegisters & LogRegister::CC) != LogRegister::NONE)
     {
         logOfs << fmt::format(" CC={}", asCCString(state->cc));
@@ -151,10 +145,6 @@ void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
 
     if (doPrintCsvHeader)
     {
-        const std::vector<const char *> registerNames{
-            "CC", "A", "B", "DP", "X", "Y", "U", "S"
-        };
-
         if (config.logCycleCount)
         {
             logOfs << "cycles" << sep;

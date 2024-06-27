@@ -28,6 +28,7 @@
 #include "scpulog.h"
 #include <fstream>
 #include <string>
+#include <array>
 
 
 class CpuStatus;
@@ -46,6 +47,11 @@ public:
     static std::string asCCString(Byte reg);
 
 private:
+
+    static constexpr std::array<const char *, 8> registerNames
+    {
+        "CC", "A", "B", "DP", "X", "Y", "U", "S"
+    };
 
     void logCurrentStateToText(const Mc6809CpuStatus *state);
     void logCurrentStateToCsv(const Mc6809CpuStatus *state);
