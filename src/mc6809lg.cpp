@@ -232,7 +232,7 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
         doPrintCsvHeader = true;
     }
 
-    if (!config.logFileName.empty())
+    if (config.isEnabled)
     {
         logOfs.open(config.logFileName, std::ios::out | std::ios::trunc);
         if (!logOfs.is_open())
@@ -256,7 +256,7 @@ std::string Mc6809Logger::asCCString(Byte reg)
     const static std::string cc_bitnames = "EFHINZVC";
     std::string result = "--------";
 
-    for (int i = 0; i < 8; ++i)
+    for (size_t i = 0; i < cc_bitmask.size(); ++i)
     {
         if (reg & cc_bitmask[i])
         {

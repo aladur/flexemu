@@ -49,6 +49,7 @@ void Mc6809LoggerConfigUi::setupUi(QDialog &p_dialog)
         c_reg_x, c_reg_y, c_reg_u, c_reg_s
     };
 
+    assert(g_enable != nullptr);
     assert(e_minAddress != nullptr);
     assert(e_maxAddress != nullptr);
     assert(e_startAddress != nullptr);
@@ -92,6 +93,7 @@ void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &loggerConfig)
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
+    g_enable->setChecked(loggerConfig.isEnabled);
     ::SetData(loggerConfig.minAddr, *e_minAddress);
     ::SetData(loggerConfig.maxAddr, *e_maxAddress);
     ::SetData(loggerConfig.startAddr, *e_startAddress);
@@ -185,6 +187,8 @@ Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
         loggerConfig.csvSeparator = ';';
     }
 
+    loggerConfig.isEnabled = g_enable->isChecked();
+
     return loggerConfig;
 }
 
@@ -234,70 +238,54 @@ void Mc6809LoggerConfigUi::OnClicked(QAbstractButton *button)
         {
             regCheckBox->setChecked(false);
         }
+
+        g_enable->setChecked(false);
     }
-}
-
-QString Mc6809LoggerConfigUi::GetCurrentFileExtension() const
-{
-     if (r_csv->isChecked())
-     {
-         return "csv";
-     }
-
-     return "log";
 }
 
 void Mc6809LoggerConfigUi::OnTextFormat() const
 {
-    UpdateFilename();
-    g_csvSeparator->setEnabled(false);
+    if (g_enable->isChecked())
+    {
+        const auto qPath = QDir::toNativeSeparators(e_logFilename->text());
+        auto path = qPath.toStdString();
+        path = flx::updateFilename(path, "mc6809", ".log");
+        e_logFilename->setText(path.c_str());
+        g_csvSeparator->setEnabled(false);
+    }
 }
 
 void Mc6809LoggerConfigUi::OnCsvFormat() const
 {
-    UpdateFilename();
-    g_csvSeparator->setEnabled(true);
-}
-
-void Mc6809LoggerConfigUi::UpdateFilename() const
-{
-    auto fileExtension = QString(".") + GetCurrentFileExtension();
-
-    auto path = QDir::toNativeSeparators(e_logFilename->text());
-    if (path.isEmpty())
+    if (g_enable->isChecked())
     {
-        return;
+        const auto qPath = QDir::toNativeSeparators(e_logFilename->text());
+        auto path = qPath.toStdString();
+        path = flx::updateFilename(path, "mc6809", ".csv");
+        e_logFilename->setText(path.c_str());
+        g_csvSeparator->setEnabled(true);
     }
-    auto pIdx = path.lastIndexOf(PATHSEPARATOR);
-    auto index = path.lastIndexOf('.');
-    if (index >= 0 && index > pIdx)
-    {
-        path = path.left(index) + fileExtension;
-    }
-    else if (pIdx >= 0 && pIdx < path.size() - 1)
-    {
-        path = path + fileExtension;
-    }
-    else if (pIdx >= 0 && pIdx == path.size() - 1)
-    {
-        path = path + "mc6809" + fileExtension;
-    }
-    e_logFilename->setText(path);
 }
 
 void Mc6809LoggerConfigUi::OnSelectFile(QLineEdit &lineEdit)
 {
     auto path = QDir::currentPath();
     auto fileInfo = QFileInfo(lineEdit.text());
+    QString filter;
 
-    if (fileInfo.isAbsolute() && QFile::exists(lineEdit.text()))
+    path = lineEdit.text();
+
+    if (r_csv->isChecked())
     {
-        path = lineEdit.text();
+        filter = tr("CSV Logfiles (*.csv);;All files (*.*)");
+    }
+    else
+    {
+        filter = tr("Logfiles (*.log);;All files (*.*)");
     }
 
-    path = QFileDialog::getSaveFileName(
-           dialog, tr("Select a Logfile"), path,
-           tr("Logfiles (*.log);;All files (*.*)"));
+    const auto caption = tr("Set Logfile");
+    path = QFileDialog::getSaveFileName(dialog, caption, path, filter);
 
     if  (!path.isEmpty())
     {

@@ -54,9 +54,6 @@ protected:
     void OnSelectFile(QLineEdit &lineEdit);
     void OnTextFormat() const;
     void OnCsvFormat() const;
-    void UpdateFilename() const;
-    QString GetCurrentFileExtension() const;
-
 
 private slots:
     void OnAccepted();

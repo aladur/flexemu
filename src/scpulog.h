@@ -108,6 +108,7 @@ public:
         logFileName.clear();
         format = Format::Text;
         csvSeparator = ';';
+        isEnabled = false;
     }
 
     Mc6809LoggerConfig(Mc6809LoggerConfig &&src) noexcept
@@ -120,6 +121,7 @@ public:
         , logFileName(std::move(src.logFileName))
         , format(src.format)
         , csvSeparator(src.csvSeparator)
+        , isEnabled(src.isEnabled)
     {
     }
 
@@ -134,6 +136,7 @@ public:
         logFileName = std::move(src.logFileName);
         format = src.format;
         csvSeparator = src.csvSeparator;
+        isEnabled = src.isEnabled;
         return *this;
     }
 
@@ -146,6 +149,7 @@ public:
     std::string logFileName;
     Format format{Format::Text};
     char csvSeparator{';'};
+    bool isEnabled{false};
 };
 
 #endif
