@@ -173,8 +173,13 @@ void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
 
     if (config.logRegisters == LogRegister::NONE)
     {
-        logOfs << fmt::format("{:04X}{}{}{}{}\n", state->pc, sep,
-                state->mnemonic, sep, state->operands);
+        logOfs << fmt::format("{:04X}{}{}", state->pc, sep,
+                state->mnemonic);
+        if (state->operands[0] != '\0')
+        {
+            logOfs << sep << state->operands;
+        }
+        logOfs << "\n";
         logOfs.flush();
         return;
     }
