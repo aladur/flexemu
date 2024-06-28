@@ -963,3 +963,68 @@ bool flx::isFlexFilename(const std::string &filename)
     return std::regex_match(filename, re);
 }
 
+// For a given path replace or append fileExtension.
+// prepend filestem with defaultFilestem if it begins with a dot.
+// insert filestem if it is empty.
+// . and .. are treated as empty filestem.
+std::string flx::updateFilename(std::string path,
+        const std::string &defaultFilestem, const std::string &fileExtension)
+{
+    auto pIdx = path.find_last_of(PATHSEPARATOR);
+    auto index = path.find_last_of('.');
+    auto stem = flx::getFileStem(path);
+
+    if (stem == "." || stem == "..")
+    {
+        if (pIdx != std::string::npos)
+        {
+            path = path.substr(0U, pIdx + 1);
+        }
+        else
+        {
+            path.clear();
+        }
+        index = std::string::npos;
+        pIdx = path.find_last_of(PATHSEPARATOR);
+        stem.clear();
+    }
+
+    if (index != std::string::npos &&
+            (pIdx == std::string::npos || index > pIdx))
+    {
+        if (stem.empty())
+        {
+            path = path.substr(0U, index) + defaultFilestem + fileExtension;
+        }
+        else
+        {
+            path = path.substr(0U, index) + fileExtension;
+            const auto newStem = flx::getFileStem(path);
+            if (!newStem.empty() && newStem[0] == '.')
+            {
+                auto newIdx = path.find_last_of(PATHSEPARATOR);
+                if (newIdx != std::string::npos)
+                {
+                    path.insert(newIdx + 1, defaultFilestem, 0U);
+                }
+                else
+                {
+                    path.insert(0U, defaultFilestem, 0U);
+                }
+            }
+        }
+    }
+    else if (path.empty() ||
+            (pIdx != std::string::npos && pIdx == path.size() - 1))
+    {
+        path = path + defaultFilestem + fileExtension;
+    }
+    else if (pIdx == std::string::npos ||
+            (pIdx != std::string::npos && pIdx < path.size() - 1))
+    {
+        path = path + fileExtension;
+    }
+
+    return path;
+}
+

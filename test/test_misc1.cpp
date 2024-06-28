@@ -380,6 +380,14 @@ TEST(test_misc1, fct_getFileStem)
 {
     auto result = flx::getFileStem("");
     EXPECT_EQ(result, "");
+    result = flx::getFileStem(".");
+    EXPECT_EQ(result, ".");
+    result = flx::getFileStem("..");
+    EXPECT_EQ(result, "..");
+    result = flx::getFileStem(".ext");
+    EXPECT_EQ(result, "");
+    result = flx::getFileStem(".tar.xz");
+    EXPECT_EQ(result, ".tar");
     result = flx::getFileStem("filename.ext");
     EXPECT_EQ(result, "filename");
     result = flx::getFileStem("filename.tar.gz");
@@ -639,5 +647,49 @@ TEST(test_misc1, fct_trim)
     EXPECT_EQ(flx::trim(str3c), "a\n\t\r\f\v b\n\t\r\f\v c");
     std::string str3m(" \n\t\r\f\v a\n\t\r\f\v b\n\t\r\f\v c\n\t\r\f\v ");
     EXPECT_EQ(flx::trim(std::move(str3m)), "a\n\t\r\f\v b\n\t\r\f\v c");
+}
+
+TEST(test_misc1, fct_updateFilename)
+{
+    auto result = flx::updateFilename("abc", "stem", ".ext");
+    EXPECT_EQ(result, "abc.ext");
+    result = flx::updateFilename("abc.tar", "stem", ".ext");
+    EXPECT_EQ(result, "abc.ext");
+    result = flx::updateFilename("abc.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "abc.tar.xz");
+    result = flx::updateFilename(".", "stem", ".ext");
+    EXPECT_EQ(result, "stem.ext");
+    result = flx::updateFilename("..", "stem", ".ext");
+    EXPECT_EQ(result, "stem.ext");
+    result = flx::updateFilename(".x", "stem", ".ext");
+    EXPECT_EQ(result, "stem.ext");
+    result = flx::updateFilename(".tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "stem.tar.xz");
+    result = flx::updateFilename("file.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "file.tar.xz");
+    result = flx::updateFilename("/tmp/sub.dir/test", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/test.ext");
+    result = flx::updateFilename("/tmp/sub.dir/test.", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/test.ext");
+    result = flx::updateFilename("/tmp/sub.dir/test.tar", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/test.ext");
+    result = flx::updateFilename("/tmp/sub.dir/.", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/stem.ext");
+    result = flx::updateFilename("/tmp/sub.dir/..", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/stem.ext");
+    result = flx::updateFilename("/tmp/sub.dir/.x", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/sub.dir/stem.ext");
+    result = flx::updateFilename("/tmp/sub.dir/.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "/tmp/sub.dir/stem.tar.xz");
+    result = flx::updateFilename("/tmp/", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/stem.ext");
+    result = flx::updateFilename("/tmp/.", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/stem.ext");
+    result = flx::updateFilename("/tmp/..", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/stem.ext");
+    result = flx::updateFilename("/tmp/.x", "stem", ".ext");
+    EXPECT_EQ(result, "/tmp/stem.ext");
+    result = flx::updateFilename("/tmp/.tar.gz", "stem", ".xz");
+    EXPECT_EQ(result, "/tmp/stem.tar.xz");
 }
 
