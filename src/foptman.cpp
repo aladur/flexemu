@@ -109,6 +109,9 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
           "     Example: -O 001- Drive 2 allows format, drive 0,1 not, "
           "drive 3 unchanged.\n"
           "  -n <# of colors>\n"
+          "  -L <file_path> Enable CPU instruction logging.\n"
+          "     File extension: *.log or *.txt logs to a text file; "
+          "*.csv logs to a csv file.\n"
           "  -h (display this)\n"
           "  -? (display this)\n"
           "  -v (print version number)\n";
@@ -173,7 +176,7 @@ void FlexemuOptions::GetCommandlineOptions(
     float f;
     optind = 1;
     opterr = 1;
-    std::string optstr("mup:f:0:1:2:3:j:F:C:O:");
+    std::string optstr("mup:f:0:1:2:3:j:F:C:O:L:");
 #ifdef HAVE_TERMIOS_H
     optstr.append("tr:"); // terminal mode and reset key
 #endif
@@ -350,6 +353,20 @@ void FlexemuOptions::GetCommandlineOptions(
                     }
                     ++i;
                 }
+                break;
+
+            case 'L':
+                {
+                    const std::string tmp = optarg;
+                    const auto ext = flx::tolower(flx::getFileExtension(tmp));
+                    if (ext != ".log" && ext != ".txt" && ext != ".csv")
+                    {
+                        std::cerr << "logging path '" <<
+                            tmp << "' has an unsupported file extension.\n";
+                        exit(EXIT_FAILURE);
+                    }
+                }
+                options.cpuLogPath = optarg;
                 break;
 
             case 'v':

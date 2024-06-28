@@ -44,6 +44,7 @@
 #include "iodevdbg.h"
 #include "soptions.h"
 #include "qtgui.h"
+#include "scpulog.h"
 #include "cvtwchar.h"
 
 
@@ -102,6 +103,28 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
         options.nColors = 2;
         // Switch of High memory option.
         options.isHiMem = false;
+    }
+
+    if (!options.cpuLogPath.empty())
+    {
+        Mc6809LoggerConfig loggerConfig;
+
+        loggerConfig.logFileName = options.cpuLogPath;
+        loggerConfig.isEnabled = true;
+        loggerConfig.logCycleCount = true;
+        const auto extension = flx::tolower(
+                flx::getFileExtension(options.cpuLogPath));
+        if (extension == ".csv")
+        {
+            loggerConfig.format = Mc6809LoggerConfig::Format::Csv;
+            loggerConfig.csvSeparator = ';';
+        }
+        else
+        {
+            loggerConfig.format = Mc6809LoggerConfig::Format::Text;
+        }
+
+        cpu.setLoggerConfig(loggerConfig);
     }
 
     ioDevices.insert({ acia1.getName(), acia1 });

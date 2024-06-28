@@ -164,6 +164,7 @@ struct sOptions
     int directoryDiskTracks{}; // Default number of track for a directory disk
     int directoryDiskSectors{}; // Default number of sectors for a directory disk
     bool isDirectoryDiskActive{}; // true if directory disk is active.
+    std::string cpuLogPath; // Path used for CPU instruction logging
 
     FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
                                        // read-only.
