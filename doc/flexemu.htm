@@ -17,9 +17,9 @@
 <hr>
 <h2 id="synopsis">SYNOPSIS</h2>
 <h3 id="synopsis_linux">On Linux</h3>
-<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc]</p>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
 <h3 id="synopsis_windows">On Windows</h3>
-<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc]</p>
+<p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-v] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
 
 <h2 id="description">DESCRIPTION</h2>
 <div class="justify">
@@ -204,6 +204,10 @@ Supported values:
 Only disk image files which do not have a valid file format are allowed to be formatted this way.<BR>
 Example: <b>-O&nbsp;001-</b><BR>
 Drive 2 allows format, drive 0 and 1 not, drive 3 is kept unchanged.
+</dd>
+<dt>-L &lt;path&gt;</dt>
+<dd>
+Enable CPU instruction logging. File extension: *.log or *.txt logs to a text file; *.csv logs to a csv file.
 </dd>
 <dt>-h</dt>
 <dd>
