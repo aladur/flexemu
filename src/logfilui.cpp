@@ -55,6 +55,7 @@ void Mc6809LoggerConfigUi::setupUi(QDialog &p_dialog)
     assert(e_startAddress != nullptr);
     assert(e_stopAddress != nullptr);
     assert(c_logCycleCount != nullptr);
+    assert(c_loopOptimization != nullptr);
     assert(e_logFilename != nullptr);
     assert(r_semicolon != nullptr);
     assert(r_space != nullptr);
@@ -100,6 +101,7 @@ void Mc6809LoggerConfigUi::SetData(const Mc6809LoggerConfig &loggerConfig)
     ::SetData(loggerConfig.stopAddr, *e_stopAddress);
 
     c_logCycleCount->setChecked(loggerConfig.logCycleCount);
+    c_loopOptimization->setChecked(loggerConfig.isLoopOptimization);
 
     switch (loggerConfig.format)
     {
@@ -152,6 +154,7 @@ Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
     loggerConfig.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
 
     loggerConfig.logCycleCount = c_logCycleCount->isChecked();
+    loggerConfig.isLoopOptimization = c_loopOptimization->isChecked();
     loggerConfig.logFileName = e_logFilename->text().toStdString();
 
     loggerConfig.logRegisters = LogRegister::NONE;

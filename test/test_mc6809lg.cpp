@@ -1,0 +1,273 @@
+#include "gtest/gtest.h"
+#include "mc6809lg.h"
+#include "scpulog.h"
+#include <string.h>
+#include <vector>
+#include <map>
+#include <filesystem>
+
+
+namespace fs = std::filesystem;
+
+struct ParseResult
+{
+    bool isValid{};
+    int lineCount{};
+    int doCount{};
+    int repeatCount{};
+    std::vector<int> repeatValues;
+    std::map<std::string, int> countForMnemonic;
+};
+
+ParseResult parseFile(std::string &fileName)
+{
+    ParseResult result;
+    std::string line;
+    std::ifstream ifs(fileName, std::ios::in);
+    result.isValid = ifs.is_open();
+    while (std::getline(ifs, line))
+    {
+        ++result.lineCount;
+        if (line.find("DO") != std::string::npos)
+        {
+            ++result.doCount;
+        }
+        else if (line.find("REPEAT") != std::string::npos)
+        {
+            std::stringstream stream{line};
+            std::string mnemonic;
+            char ch;
+            int value;
+            ++result.repeatCount;
+            result.isValid &= !(stream >> mnemonic >> ch >> value).fail();
+            result.repeatValues.push_back(value);
+        }
+        else
+        {
+            std::stringstream stream{line};
+            std::string hex_addr;
+            std::string mnemonic;
+            result.isValid &= !(stream >> hex_addr >> mnemonic).fail();
+            if (result.countForMnemonic.find(mnemonic) !=
+                result.countForMnemonic.end())
+            {
+                ++result.countForMnemonic[mnemonic];
+            }
+            else
+            {
+                result.countForMnemonic[mnemonic] = 1;
+            }
+
+        }
+    }
+    ifs.close();
+
+    return result;
+}
+
+Mc6809CpuStatus setState(Word pc, const char *mnemonic,
+        const char *operands = "")
+{
+    Mc6809CpuStatus state;
+    state.pc = pc;
+    strcpy(state.mnemonic, mnemonic);
+    strcpy(state.operands, operands);
+    return state;
+}
+
+TEST(test_mc6809logger, fct_doLogging)
+{
+    Mc6809Logger logger;
+    EXPECT_FALSE(logger.doLogging(0x0000));
+    EXPECT_FALSE(logger.doLogging(0x4000));
+    EXPECT_FALSE(logger.doLogging(0x8000));
+    EXPECT_FALSE(logger.doLogging(0xFFFF));
+    Mc6809LoggerConfig config;
+    config.logFileName = "test.log";
+    config.isEnabled = true;
+    logger.setLoggerConfig(config);
+    EXPECT_TRUE(logger.doLogging(0x0000));
+    EXPECT_TRUE(logger.doLogging(0x4000));
+    EXPECT_TRUE(logger.doLogging(0x8000));
+    EXPECT_TRUE(logger.doLogging(0xFFFF));
+    config.minAddr = 0x4000;
+    config.maxAddr = 0x8000;
+    logger.setLoggerConfig(config);
+    EXPECT_FALSE(logger.doLogging(0x3FFF));
+    EXPECT_TRUE(logger.doLogging(0x4000));
+    EXPECT_TRUE(logger.doLogging(0x8000));
+    EXPECT_FALSE(logger.doLogging(0x8001));
+    config.startAddr = 0x5000;
+    config.stopAddr = 0x7000;
+    logger.setLoggerConfig(config);
+    EXPECT_FALSE(logger.doLogging(0x4000));
+    EXPECT_FALSE(logger.doLogging(0x4100));
+    EXPECT_TRUE(logger.doLogging(0x5000));
+    EXPECT_FALSE(logger.doLogging(0x3FFF));
+    EXPECT_TRUE(logger.doLogging(0x4000));
+    EXPECT_TRUE(logger.doLogging(0x8000));
+    EXPECT_FALSE(logger.doLogging(0x8001));
+    EXPECT_FALSE(logger.doLogging(0x7000));
+    EXPECT_FALSE(logger.doLogging(0x3FFF));
+    EXPECT_FALSE(logger.doLogging(0x4000));
+    EXPECT_FALSE(logger.doLogging(0x8000));
+    EXPECT_FALSE(logger.doLogging(0x8001));
+
+    fs::remove(config.logFileName);
+}
+
+TEST(test_mc6809logger, fct_logCpuState_loopOptimized)
+{
+    Mc6809LoggerConfig config;
+    config.logFileName = "test1.log";
+    config.isEnabled = true;
+    config.isLoopOptimization = true;
+    {
+        // Testcase:
+        // 0100 BSR $0102
+        // 0102 BSR $0104
+        // 0104 RTS
+        // 0105 CLRB
+        // Expectation: no DO - REPEAT, loop only executed once
+        Mc6809Logger logger;
+        logger.setLoggerConfig(config);
+        logger.logCpuState(setState(0x0100, "BSR", "$0102"));
+        logger.logCpuState(setState(0x0102, "BSR", "$0104"));
+        logger.logCpuState(setState(0x0104, "RTS"));
+        logger.logCpuState(setState(0x0104, "RTS"));
+        logger.logCpuState(setState(0x0102, "BSR", "$0104"));
+        logger.logCpuState(setState(0x0104, "RTS"));
+        logger.logCpuState(setState(0x0104, "RTS"));
+        logger.logCpuState(setState(0x0105, "CLRB"));
+    }
+    auto result = parseFile(config.logFileName);
+    ASSERT_TRUE(result.isValid);
+    EXPECT_EQ(result.doCount, 0);
+    EXPECT_EQ(result.repeatCount, 0);
+    EXPECT_EQ(result.lineCount, 8);
+    EXPECT_EQ(result.countForMnemonic["BSR"], 3);
+    EXPECT_EQ(result.countForMnemonic["RTS"], 4);
+    EXPECT_EQ(result.countForMnemonic["CLRB"], 1);
+    fs::remove(config.logFileName);
+
+    {
+        config.logFileName = "test2.log";
+        // Testcase:
+        // 0100 LDA #6
+        // 0102 DECA
+        // 0103 BNE $0102
+        // 0105 CLRB
+        // Expectation: one DO - REPEAT, 5 full loop repetitions
+        Mc6809Logger logger;
+        logger.setLoggerConfig(config);
+        logger.logCpuState(setState(0x0100, "LDA", "#6"));
+        for (int i = 0; i < 6; ++i)
+        {
+            logger.logCpuState(setState(0x0102, "DECA"));
+            logger.logCpuState(setState(0x0103, "BNE", "$0102"));
+        }
+        logger.logCpuState(setState(0x0105, "CLRB"));
+    }
+    result = parseFile(config.logFileName);
+    ASSERT_TRUE(result.isValid);
+    EXPECT_EQ(result.doCount, 1);
+    EXPECT_EQ(result.repeatCount, 1);
+    EXPECT_EQ(result.lineCount, 8);
+    EXPECT_EQ(result.repeatValues.size(), 1);
+    EXPECT_EQ(result.repeatValues[0], 5);
+    EXPECT_EQ(result.countForMnemonic["LDA"], 1);
+    EXPECT_EQ(result.countForMnemonic["DECA"], 2);
+    EXPECT_EQ(result.countForMnemonic["BNE"], 2);
+    EXPECT_EQ(result.countForMnemonic["CLRB"], 1);
+    fs::remove(config.logFileName);
+
+    {
+        config.logFileName = "test3.log";
+        // Testcase:
+        // 0100 LDA #2
+        // 0102 DECA
+        // 0104 BNE $102
+        // 0106 CLRB
+        // Expectation: no DO - REPEAT, loop only executed once
+        Mc6809Logger logger;
+        logger.setLoggerConfig(config);
+        logger.logCpuState(setState(0x0100, "LDA", "#2"));
+        for (int i = 0; i < 2; ++i)
+        {
+            logger.logCpuState(setState(0x0102, "DECA"));
+            logger.logCpuState(setState(0x0104, "BNE", "$0102"));
+        }
+        logger.logCpuState(setState(0x0106, "CLRB"));
+    }
+    result = parseFile(config.logFileName);
+    ASSERT_TRUE(result.isValid);
+    EXPECT_EQ(result.doCount, 0);
+    EXPECT_EQ(result.repeatCount, 0);
+    EXPECT_EQ(result.lineCount, 6);
+    EXPECT_TRUE(result.repeatValues.empty());
+    EXPECT_EQ(result.countForMnemonic["LDA"], 1);
+    EXPECT_EQ(result.countForMnemonic["DECA"], 2);
+    EXPECT_EQ(result.countForMnemonic["BNE"], 2);
+    EXPECT_EQ(result.countForMnemonic["CLRB"], 1);
+    fs::remove(config.logFileName);
+
+    {
+        config.logFileName = "test4.log";
+        // Testcase:
+        // 0100 LDA #8
+        // 0102 LDX #$FFFC
+        // 0105 LEAX A,X
+        // 0107 BEQ $010C
+        // 0109 DECA
+        // 010A BNE $0102
+        // 010C CLRB
+        // Expectation: DO - REPEAT, 3 full loop repetitions,
+        //                           jump out from midth of loop.
+        Mc6809Logger logger;
+        logger.setLoggerConfig(config);
+        logger.logCpuState(setState(0x0100, "LDA", "#8"));
+        for (int i = 0; i < 4; ++i)
+        {
+            logger.logCpuState(setState(0x0102, "LDX", "#$FFFC"));
+            logger.logCpuState(setState(0x0105, "LEAX", "A,X"));
+            logger.logCpuState(setState(0x0107, "BEQ", "$010C"));
+            logger.logCpuState(setState(0x0109, "DECA"));
+            logger.logCpuState(setState(0x010A, "BNE", "$0102"));
+        }
+        logger.logCpuState(setState(0x0102, "LDX", "#$FFFC"));
+        logger.logCpuState(setState(0x0105, "LEAX", "A,X"));
+        logger.logCpuState(setState(0x0107, "BEQ", "$010C"));
+        logger.logCpuState(setState(0x010C, "CLRB"));
+    }
+
+    result = parseFile(config.logFileName);
+    ASSERT_TRUE(result.isValid);
+    EXPECT_EQ(result.doCount, 1);
+    EXPECT_EQ(result.repeatCount, 1);
+    EXPECT_EQ(result.lineCount, 17);
+    ASSERT_FALSE(result.repeatValues.empty());
+    EXPECT_EQ(result.repeatValues[0], 3);
+    EXPECT_EQ(result.countForMnemonic["LDA"], 1);
+    EXPECT_EQ(result.countForMnemonic["DECA"], 2);
+    EXPECT_EQ(result.countForMnemonic["LDX"], 3);
+    EXPECT_EQ(result.countForMnemonic["LEAX"], 3);
+    EXPECT_EQ(result.countForMnemonic["BEQ"], 3);
+    EXPECT_EQ(result.countForMnemonic["BNE"], 2);
+    EXPECT_EQ(result.countForMnemonic["CLRB"], 1);
+    fs::remove(config.logFileName);
+}
+
+TEST(test_mc6809logger, fct_asCCString)
+{
+    EXPECT_EQ(Mc6809Logger::asCCString(0x01), "-------C");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x02), "------V-");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x04), "-----Z--");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x08), "----N---");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x10), "---I----");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x20), "--H-----");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x40), "-F------");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x80), "E-------");
+    EXPECT_EQ(Mc6809Logger::asCCString(0x55), "-F-I-Z-C");
+    EXPECT_EQ(Mc6809Logger::asCCString(0xAA), "E-H-N-V-");
+}
+

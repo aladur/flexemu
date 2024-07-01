@@ -38,6 +38,12 @@ table.compact td {
     padding-bottom: 0px;
 }
 
+table.indent,
+table.indent th,
+table.indent td {
+    margin-left: 25px;
+}
+
 .left {
     float: left;
 }

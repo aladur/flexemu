@@ -31,6 +31,7 @@ unittests_SOURCES = \
 	test_cistring.cpp \
 	test_da6809.cpp \
 	test_main.cpp \
+	test_mc6809lg.cpp \
 	test_misc1.cpp \
 	test_ffilebuf.cpp \
 	test_fileread.cpp \
@@ -51,6 +52,8 @@ unittests_SOURCES = \
 	../src/ffilebuf.cpp \
 	../src/fileread.cpp \
 	../src/flexerr.cpp \
+	../src/mc6809lg.cpp \
+	../src/mc6809st.cpp \
 	../src/misc1.cpp \
 	../src/bdate.h \
 	../src/benv.h \
@@ -64,7 +67,10 @@ unittests_SOURCES = \
 	../src/ffilebuf.h \
 	../src/fileread.h \
 	../src/flexerr.h \
-	../src/misc1.h
+	../src/mc6809lg.h \
+	../src/mc6809st.h \
+	../src/misc1.h \
+	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a
 unittests_LDFLAGS = -pthread

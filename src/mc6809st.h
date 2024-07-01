@@ -55,6 +55,7 @@ public:
     Byte memory[CPU_STACK_LINES * CPU_STACK_BYTES]{};
     Mc6809CpuStatus() = default;
     ~Mc6809CpuStatus() override = default;
+    Mc6809CpuStatus(const Mc6809CpuStatus &src) = default;
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
 };
 

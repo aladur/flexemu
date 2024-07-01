@@ -26,9 +26,11 @@
 #define CPULOGGER_INCLUDED
 
 #include "scpulog.h"
+#include "mc6809st.h"
 #include <fstream>
 #include <string>
 #include <array>
+#include <deque>
 
 
 class CpuStatus;
@@ -38,10 +40,10 @@ class Mc6809Logger
 {
 public:
     Mc6809Logger() = default;
-    virtual ~Mc6809Logger() = default;
+    virtual ~Mc6809Logger();
 
     bool doLogging(Word pc) const;
-    void logCurrentState(const CpuStatus &state);
+    void logCpuState(const CpuStatus &state);
     bool setLoggerConfig(const Mc6809LoggerConfig &loggerConfig);
 
     static std::string asCCString(Byte reg);
@@ -53,13 +55,25 @@ private:
         "CC", "A", "B", "DP", "X", "Y", "U", "S"
     };
 
-    void logCurrentStateToText(const Mc6809CpuStatus *state);
-    void logCurrentStateToCsv(const Mc6809CpuStatus *state);
+    void checkForActivatingLoopMode(const Mc6809CpuStatus &state);
+    void finishLoopMode();
+    void logLoopContent();
+    void logCpuStatePrivate(const Mc6809CpuStatus &state);
+    void logCpuStateToText(const Mc6809CpuStatus &state);
+    void logCpuStateToCsv(const Mc6809CpuStatus &state);
+    void logQueuedStatesUpTo(
+            std::deque<Mc6809CpuStatus>::reverse_iterator &iter);
+    void doLoopOptimization(const Mc6809CpuStatus &state);
+    size_t getLogRegisterCount();
 
     Mc6809LoggerConfig config;
     std::ofstream logOfs;
     mutable bool isLoggingActive{};
     bool doPrintCsvHeader{};
+    std::deque<Mc6809CpuStatus> cpuStates;
+    std::deque<Mc6809CpuStatus>::reverse_iterator cpuStatesIter;
+    bool isLoopModeActive{};
+    uint64_t loopRepeatCount{};
 };
 
 #endif // CPULOGGER_INCLUDED

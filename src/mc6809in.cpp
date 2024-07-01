@@ -403,7 +403,7 @@ CpuState Mc6809::runloop()
             Mc6809CpuStatus cpuState;
 
             get_status(&cpuState);
-            logger.logCurrentState(cpuState);
+            logger.logCpuState(cpuState);
         }
 
         // execute one CPU instruction

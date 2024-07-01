@@ -109,6 +109,7 @@ public:
         format = Format::Text;
         csvSeparator = ';';
         isEnabled = false;
+        isLoopOptimization = false;
     }
 
     Mc6809LoggerConfig(Mc6809LoggerConfig &&src) noexcept
@@ -122,6 +123,7 @@ public:
         , format(src.format)
         , csvSeparator(src.csvSeparator)
         , isEnabled(src.isEnabled)
+        , isLoopOptimization(src.isLoopOptimization)
     {
     }
 
@@ -137,6 +139,7 @@ public:
         format = src.format;
         csvSeparator = src.csvSeparator;
         isEnabled = src.isEnabled;
+        isLoopOptimization = src.isLoopOptimization;
         return *this;
     }
 
@@ -150,6 +153,7 @@ public:
     Format format{Format::Text};
     char csvSeparator{';'};
     bool isEnabled{false};
+    bool isLoopOptimization{true};
 };
 
 #endif

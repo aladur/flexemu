@@ -573,6 +573,11 @@ four digit hexadecimal address:
   <th>Description</th>
  </tr>
  <tr>
+  <td>Enable logging</td>
+  <td>off</td>
+  <td>Enable or disable logging.</td>
+ </tr>
+ <tr>
   <td>Min Address</td>
   <td>0000</td>
   <td>Only log instructions on an address higher or equal to this address.</td>
@@ -615,6 +620,21 @@ four digit hexadecimal address:
   </td>
  </tr>
  <tr>
+  <td>Loop optimization</td>
+  <td>off</td>
+  <td>
+   Loop optimization detects repeated instruction sequences and prints them
+   using an optimized syntax. Within a loop no cycle count or register
+   contents are logged. The first loop execution is always logged outside
+   the loop to still see the cycle count and register contents when entering
+   the loop. All following loop executions are surrounded by a "DO" and
+   "REPEAT" pseudo instruction. "REPEAT" is followed by the number of
+   repetitions. Source code analysis has shown that this saves a tremendous
+   amount of logging file capacity while providing the exact same information.
+   [2]
+  </td>
+ </tr>
+ <tr>
   <td>Format</td>
   <td>Text</td>
   <td>
@@ -643,13 +663,65 @@ four digit hexadecimal address:
   <td>
     Filename to be used for the instruction logging. Independant of the Start
     and Stop Address this file remains open as long as Flexemu keeps running
-    until another Filename is set. An empty filename finishes Instruction
-    logging.
+    until another Filename is set or logging is disabled.
   </td>
  </tr>
 </table>
 <p>
-[1] Comma can not be selected as separator character because it is used to separate operands.
+ [1] Comma is not available as separator character because it is used to separate operands in the MC6809 assembler syntax.<br>
+ [2] Loop optimization example with displaying loop register A contents:
+<div class="options-list">
+<table class="invisible compact indent">
+ <tr>
+  <td>0100</td>
+  <td>LDA</td>
+  <td>#6</td>
+  <td>A=XX</td>
+ </tr>
+ <tr>
+  <td>0102</td>
+  <td>DECA</td>
+  <td></td>
+  <td>A=06</td>
+ </tr>
+ <tr>
+  <td>0103</td>
+  <td>BNE</td>
+  <td>$0102</td>
+  <td>A=05</td>
+ </tr>
+ <tr>
+  <td></td>
+  <td>DO</td>
+  <td></td>
+  <td></td>
+ </tr>
+ <tr>
+  <td>0102</td>
+  <td>DECA</td>
+  <td></td>
+  <td></td>
+ </tr>
+ <tr>
+  <td>0103</td>
+  <td>BNE</td>
+  <td>$0102</td>
+  <td></td>
+ </tr>
+ <tr>
+  <td></td>
+  <td>REPEAT</td>
+  <td>#5</td>
+  <td></td>
+ </tr>
+ <tr>
+  <td>0105</td>
+  <td>CLRB</td>
+  <td></td>
+  <td>A=00</td>
+ </tr>
+</table>
+</div>
 
 <h3 id="frequency_control">CPU Frequency control</h3>
 <div class="justify">

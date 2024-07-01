@@ -27,7 +27,13 @@
 #include "scpulog.h"
 #include <fmt/format.h>
 #include <cassert>
+#include <iostream>
 
+
+Mc6809Logger::~Mc6809Logger()
+{
+    finishLoopMode();
+}
 
 bool Mc6809Logger::doLogging(Word pc) const
 {
@@ -51,9 +57,97 @@ bool Mc6809Logger::doLogging(Word pc) const
     return false;
 }
 
-void Mc6809Logger::logCurrentState(const CpuStatus &state)
+void Mc6809Logger::checkForActivatingLoopMode(const Mc6809CpuStatus &state)
 {
-    if (!logOfs.is_open() || !isLoggingActive)
+    if (!isLoopModeActive)
+    {
+        const auto iter = std::find_if(cpuStates.cbegin(), cpuStates.cend(),
+                [&](const Mc6809CpuStatus &cpuState){
+                    return cpuState.pc == state.pc;
+                });
+        if (iter != cpuStates.cend())
+        {
+            std::cerr << fmt::format("I* Found addr {:04X}. Enter loop mode\n", state.pc);
+            std::cerr << state.total_cycles << "\n";
+            if (cpuStates.size() > 1024)
+            {
+                std::cerr << "E* Queue size=" << cpuStates.size() << "\n";
+            }
+            cpuStates.erase(iter + 1, cpuStates.cend());
+            isLoopModeActive = true;
+            loopRepeatCount = 0U;
+            cpuStatesIter = cpuStates.rbegin();
+            std::cerr << "I* Remaining PC in queue:\n";
+            for_each(cpuStates.crbegin(), cpuStates.crend(),
+                [&](const Mc6809CpuStatus &cpuState){
+                std::cerr << fmt::format("   PC={:04X}\n", cpuState.pc);
+                });
+        }
+    }
+}
+
+void Mc6809Logger::finishLoopMode()
+{
+    if (!isLoopModeActive)
+    {
+        return;
+    }
+
+    std::cerr << "I* Finish loop mode, repeatCount=" << loopRepeatCount << "\n";
+    logLoopContent();
+
+    isLoopModeActive = false;
+
+    if (loopRepeatCount == 1 && cpuStatesIter == cpuStates.rbegin())
+    {
+        // If only repeated once and loop has finished at the end
+        // do a normal logging.
+        auto iter = cpuStates.rend();
+        logQueuedStatesUpTo(iter);
+    }
+
+    if (cpuStatesIter != cpuStates.rbegin())
+    {
+        // If loop has been quit in the middle do a normal logging.
+        logQueuedStatesUpTo(cpuStatesIter);
+    }
+
+    loopRepeatCount = 0U;
+    cpuStates.clear();
+    cpuStatesIter = cpuStates.rend();
+}
+
+void Mc6809Logger::doLoopOptimization(const Mc6809CpuStatus &state)
+{
+    checkForActivatingLoopMode(state);
+
+    if (isLoopModeActive)
+    {
+        if (cpuStatesIter->pc == state.pc)
+        {
+            // Identical PC values, continue loop.
+            *(cpuStatesIter++) = state;
+            if (cpuStatesIter == cpuStates.rend())
+            {
+                cpuStatesIter = cpuStates.rbegin();
+                ++loopRepeatCount;
+            }
+        }
+        else
+        {
+            // Different PC values, finish loop mode.
+            finishLoopMode();
+        }
+    }
+    else
+    {
+        cpuStates.emplace_front(state);
+    }
+}
+
+void Mc6809Logger::logCpuState(const CpuStatus &state)
+{
+    if (!isLoggingActive || !logOfs.is_open())
     {
         return;
     }
@@ -61,86 +155,178 @@ void Mc6809Logger::logCurrentState(const CpuStatus &state)
     const auto *p_state = dynamic_cast<const Mc6809CpuStatus *>(&state);
     assert(p_state != nullptr);
 
+    if (config.isLoopOptimization)
+    {
+        doLoopOptimization(*p_state);
+    }
+
+    if (!isLoopModeActive)
+    {
+        logCpuStatePrivate(*p_state);
+    }
+}
+
+void Mc6809Logger::logLoopContent()
+{
+    if (loopRepeatCount == 0 ||
+        (loopRepeatCount == 1 && cpuStatesIter == cpuStates.rbegin()))
+    {
+        return;
+    }
+
+    char sep = ' ';
+    std::string do_str;
+    std::string repeat_str;
+    auto fctLogCycleCount = [&](){
+        if (config.logCycleCount)
+        {
+            switch (config.format)
+            {
+                case Mc6809LoggerConfig::Format::Text:
+                    logOfs << fmt::format("{:21}", "");
+                    break;
+
+                case Mc6809LoggerConfig::Format::Csv:
+                    logOfs << config.csvSeparator;
+                    break;
+            }
+        }
+    };
+    auto fctLogRegisters = [&](){
+        if (config.format == Mc6809LoggerConfig::Format::Csv)
+        {
+            for(size_t i = 0; i < getLogRegisterCount(); ++i)
+            {
+                logOfs << sep;
+            }
+        }
+    };
+
     switch (config.format)
     {
         case Mc6809LoggerConfig::Format::Text:
-            logCurrentStateToText(p_state);
+            do_str = "     DO";
+            repeat_str = fmt::format("     REPEAT{}#{}", sep, loopRepeatCount);
             break;
 
         case Mc6809LoggerConfig::Format::Csv:
-            logCurrentStateToCsv(p_state);
+            sep = config.csvSeparator;
+            do_str = fmt::format("{0}DO{0}", sep);
+            repeat_str = fmt::format("{0}REPEAT{0}#{1}", sep, loopRepeatCount);
+            break;
+    }
+
+    fctLogCycleCount();
+    logOfs << do_str;
+    fctLogRegisters();
+    logOfs << "\n";
+
+    auto iter = cpuStates.rend();
+    logQueuedStatesUpTo(iter);
+
+    fctLogCycleCount();
+    logOfs << repeat_str;
+    fctLogRegisters();
+    logOfs << "\n";
+    logOfs.flush();
+}
+
+void Mc6809Logger::logQueuedStatesUpTo(
+        std::deque<Mc6809CpuStatus>::reverse_iterator &iter)
+{
+    for_each(cpuStates.rbegin(), iter,
+        [&](const Mc6809CpuStatus &cpuState){
+            logCpuStatePrivate(cpuState);
+        });
+}
+
+void Mc6809Logger::logCpuStatePrivate(const Mc6809CpuStatus &state)
+{
+    switch (config.format)
+    {
+        case Mc6809LoggerConfig::Format::Text:
+            logCpuStateToText(state);
+            break;
+
+        case Mc6809LoggerConfig::Format::Csv:
+            logCpuStateToCsv(state);
             break;
     }
 }
 
-void Mc6809Logger::logCurrentStateToText(const Mc6809CpuStatus *state)
+void Mc6809Logger::logCpuStateToText(const Mc6809CpuStatus &state)
 {
-    assert(state != nullptr);
-
     if (config.logCycleCount)
     {
-        logOfs << fmt::format("{:20} ", state->total_cycles);
+        logOfs << (isLoopModeActive ?
+            fmt::format("{:21}", "") :
+            fmt::format("{:20} ", state.total_cycles));
     }
 
     if (config.logRegisters == LogRegister::NONE)
     {
-        if (state->operands[0] == '\0')
+        logOfs << fmt::format("{:04X} ", state.pc) << state.mnemonic;
+        if (state.operands[0] != '\0')
         {
-            logOfs << fmt::format("{:04X} {}\n", state->pc, state->mnemonic);
+            logOfs << " " << state.operands;
         }
-        else
-        {
-            logOfs << fmt::format("{:04X} {:<5} {}\n", state->pc,
-                    state->mnemonic, state->operands);
-        }
+        logOfs << "\n";
         logOfs.flush();
         return;
     }
 
-    auto mnemonic_str = fmt::format("{:<5} {}", state->mnemonic,
-            state->operands);
-    logOfs << fmt::format("{:04X} {:<24}", state->pc, mnemonic_str);
+    const auto mnemo_oper = (state.operands[0] != '\0') ?
+        fmt::format("{:<5} {}", state.mnemonic, state.operands) :
+        state.mnemonic;
+
+    if (isLoopModeActive)
+    {
+        logOfs << fmt::format("{:04X} {}\n", state.pc, mnemo_oper);
+        logOfs.flush();
+        return;
+    }
+
+    logOfs << fmt::format("{:04X} {:<24}", state.pc, mnemo_oper);
 
     if ((config.logRegisters & LogRegister::CC) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" CC={}", asCCString(state->cc));
+        logOfs << fmt::format(" CC={}", asCCString(state.cc));
     }
     if ((config.logRegisters & LogRegister::A) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" A={:02X}", static_cast<Word>(state->a));
+        logOfs << fmt::format(" A={:02X}", static_cast<Word>(state.a));
     }
     if ((config.logRegisters & LogRegister::B) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" B={:02X}", static_cast<Word>(state->b));
+        logOfs << fmt::format(" B={:02X}", static_cast<Word>(state.b));
     }
     if ((config.logRegisters & LogRegister::DP) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" DP={:02X}", static_cast<Word>(state->dp));
+        logOfs << fmt::format(" DP={:02X}", static_cast<Word>(state.dp));
     }
     if ((config.logRegisters & LogRegister::X) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" X={:04X}", state->x);
+        logOfs << fmt::format(" X={:04X}", state.x);
     }
     if ((config.logRegisters & LogRegister::Y) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" Y={:04X}", state->y);
+        logOfs << fmt::format(" Y={:04X}", state.y);
     }
     if ((config.logRegisters & LogRegister::U) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" U={:04X}", state->u);
+        logOfs << fmt::format(" U={:04X}", state.u);
     }
     if ((config.logRegisters & LogRegister::S) != LogRegister::NONE)
     {
-        logOfs << fmt::format(" S={:04X}", state->s);
+        logOfs << fmt::format(" S={:04X}", state.s);
     }
 
     logOfs << "\n";
     logOfs.flush();
 }
 
-void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
+void Mc6809Logger::logCpuStateToCsv(const Mc6809CpuStatus &state)
 {
-    assert(state != nullptr);
     const char sep = config.csvSeparator;
 
     if (doPrintCsvHeader)
@@ -168,56 +354,70 @@ void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
 
     if (config.logCycleCount)
     {
-        logOfs << fmt::format("{}{}", state->total_cycles, sep);
+        if (!isLoopModeActive)
+        {
+            logOfs << state.total_cycles;
+        }
+        logOfs << sep;
     }
 
     if (config.logRegisters == LogRegister::NONE)
     {
-        logOfs << fmt::format("{:04X}{}{}", state->pc, sep,
-                state->mnemonic);
-        if (state->operands[0] != '\0')
+        logOfs << fmt::format("{:04X}", state.pc) << sep << state.mnemonic;
+        if (state.operands[0] != '\0')
         {
-            logOfs << sep << state->operands;
+            logOfs << sep << state.operands;
         }
         logOfs << "\n";
         logOfs.flush();
         return;
     }
 
-    logOfs << fmt::format("{:04X}{}{}{}{}", state->pc, sep, state->mnemonic,
-                sep, state->operands);
+    logOfs << fmt::format("{:04X}", state.pc) << sep << state.mnemonic <<
+                sep << state.operands;
+
+    if (isLoopModeActive)
+    {
+        for (size_t i = 0; i < getLogRegisterCount(); ++i)
+        {
+            logOfs << sep;
+        }
+        logOfs << "\n";
+        logOfs.flush();
+        return;
+    }
 
     if ((config.logRegisters & LogRegister::CC) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{}", sep, asCCString(state->cc));
+        logOfs << fmt::format("{}{}", sep, asCCString(state.cc));
     }
     if ((config.logRegisters & LogRegister::A) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->a));
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state.a));
     }
     if ((config.logRegisters & LogRegister::B) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->b));
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state.b));
     }
     if ((config.logRegisters & LogRegister::DP) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state->dp));
+        logOfs << fmt::format("{}{:02X}", sep, static_cast<Word>(state.dp));
     }
     if ((config.logRegisters & LogRegister::X) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:04X}", sep, state->x);
+        logOfs << fmt::format("{}{:04X}", sep, state.x);
     }
     if ((config.logRegisters & LogRegister::Y) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:04X}", sep, state->y);
+        logOfs << fmt::format("{}{:04X}", sep, state.y);
     }
     if ((config.logRegisters & LogRegister::U) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:04X}", sep, state->u);
+        logOfs << fmt::format("{}{:04X}", sep, state.u);
     }
     if ((config.logRegisters & LogRegister::S) != LogRegister::NONE)
     {
-        logOfs << fmt::format("{}{:04X}", sep, state->s);
+        logOfs << fmt::format("{}{:04X}", sep, state.s);
     }
 
     logOfs << "\n";
@@ -226,12 +426,15 @@ void Mc6809Logger::logCurrentStateToCsv(const Mc6809CpuStatus *state)
 
 bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
 {
+    finishLoopMode();
+
     if (logOfs.is_open())
     {
         logOfs.close();
     }
 
     config = loggerConfig;
+    isLoggingActive = !config.startAddr.has_value();
     if (config.format == Mc6809LoggerConfig::Format::Csv)
     {
         doPrintCsvHeader = true;
@@ -250,6 +453,23 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
     }
 
     return false;
+}
+
+size_t Mc6809Logger::getLogRegisterCount()
+{
+    size_t count = 0;
+
+    auto registerBit = LogRegister::CC;
+    for(size_t i = 0; i < registerNames.size(); ++i)
+    {
+        if ((registerBit & config.logRegisters) != LogRegister::NONE)
+        {
+            ++count;
+        }
+        registerBit <<= 1;
+    }
+
+    return count;
 }
 
 std::string Mc6809Logger::asCCString(Byte reg)
