@@ -146,10 +146,12 @@ void Mc6809::get_status(CpuStatus *cpu_status)
         stat->memory[i] = memory.read_byte(stack_base + i);
     }
 
-    if (!Disassemble(stat->pc, flags, code, mnemonic, operands))
+    auto byte_size = Disassemble(stat->pc, flags, code, mnemonic, operands);
+    if (byte_size == 0)
     {
         stat->mnemonic[0] = '\0';
         stat->operands[0] = '\0';
+        stat->insn_size = 0U;
     }
     else
     {
@@ -161,6 +163,7 @@ void Mc6809::get_status(CpuStatus *cpu_status)
         std::strncpy(stat->operands, operands.c_str(),
                 sizeof(stat->operands) - 1);
         stat->operands[sizeof(stat->operands) - 1] = '\0';
+        stat->insn_size = byte_size;
     }
 
     stat->total_cycles = get_cycles();

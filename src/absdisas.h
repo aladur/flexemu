@@ -37,6 +37,7 @@ public:
                   std::string &p_mnemonic,
                   std::string &p_operands) = 0;
     virtual void set_use_undocumented(bool value) = 0;
+    virtual int getByteSize(const Byte *p_memory) = 0;
 }; // class AbstractDisassembler
 
 inline InstFlg operator| (InstFlg lhs, InstFlg rhs)

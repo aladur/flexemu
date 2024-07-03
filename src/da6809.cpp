@@ -20,6 +20,7 @@
 #include "misc1.h"
 #include <array>
 #include <map>
+#include <cassert>
 #include "da6809.h"
 #include <fmt/format.h>
 
@@ -1763,5 +1764,123 @@ int Da6809::Disassemble(
             p_flags |= InstFlg::Illegal;
             return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
     }
+}
+
+int Da6809::getByteSize(const Byte *p_memory)
+{
+    static const Byte X = 1;
+    static const Byte Y = 2;
+    // Bit 0-3: byte size.
+    // Bit 4: Flag, if set, add additional bytes for index mode.
+    // Bit 5-7: reserved, should be 0.
+    // Table includes byte sizes of undocumented instructions.
+    static const std::array<Byte, 256> byteSizesPage1
+    {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 0-
+        X, X, 1, 1, X, X, 3, 3, X, 1, 2, X, 2, 1, 2, 2, // 1-
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 2-
+       18,18,18,18, 2, 2, 2, 2, X, 1, 1, 1, 2, 1, 1, 1, // 3-
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 4-
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // 5-
+       18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18, // 6-
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // 7-
+        2, 2, 2, 3, 2, 2, 2, X, 2, 2, 2, 2, 3, 2, 3, X, // 8-
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // 9-
+       18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18, // A-
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // B-
+        2, 2, 2, 3, 2, 2, 2, X, 2, 2, 2, 2, 3, X, 3, X, // C-
+        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, // D-
+       18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18, // E-
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, // F-
+    };
+
+    static const std::array<Byte, 256> byteSizesPage2
+    {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 0-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 1-
+        Y, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, // 2-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 2, // 3-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 4-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 5-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 6-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 7-
+        Y, Y, Y, 4, Y, Y, Y, Y, Y, Y, Y, Y, 4, Y, 4, Y, // 8-
+        Y, Y, Y, 3, Y, Y, Y, Y, Y, Y, Y, Y, 3, Y, 3, 3, // 9-
+        Y, Y, Y,19, Y, Y, Y, Y, Y, Y, Y, Y,19, Y,19,19, // A-
+        Y, Y, Y, 4, Y, Y, Y, Y, Y, Y, Y, Y, 4, Y, 4, 4, // B-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 4, Y, // C-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 3, 3, // D-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y,19,19, // E-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 4, 4, // F-
+    };
+
+    static const std::array<Byte, 256> byteSizesPage3
+    {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 0-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 1-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 2-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, 2, // 3-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 4-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 5-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 6-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // 7-
+        Y, Y, Y, 4, Y, Y, Y, Y, Y, Y, Y, Y, 4, Y, Y, Y, // 8-
+        Y, Y, Y, 3, Y, Y, Y, Y, Y, Y, Y, Y, 3, Y, Y, Y, // 9-
+        Y, Y, Y,19, Y, Y, Y, Y, Y, Y, Y, Y,19, Y, Y, Y, // A-
+        Y, Y, Y, 4, Y, Y, Y, Y, Y, Y, Y, Y, 4, Y, Y, Y, // B-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // C-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // D-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // E-
+        Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, Y, // F-
+    };
+
+    // Contains the additional bytes using postbyte as index.
+    static const std::array<Byte, 256> additionalIndexedByteSize
+    {//-0 -1 -2 -3 -4 -5 -6 -7 -8 -9 -A -B -C -D -E -F
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 1-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 2-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 3-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 4-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 5-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 6-
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 7-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // 8-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 2, // 9-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 2, // A-
+        2, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // B-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // C-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // D-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // E-
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, // F-
+    };
+
+    assert(p_memory != nullptr);
+
+    Byte byteSize = 0U;
+    Byte opcode = *(p_memory++);
+    switch (opcode)
+    {
+        case 0x10:
+        opcode = *(p_memory++);
+        byteSize = byteSizesPage2[opcode];
+        break;
+
+        case 0x11:
+        opcode = *(p_memory++);
+        byteSize = byteSizesPage3[opcode];
+        break;
+
+        default:
+        byteSize = byteSizesPage1[opcode];
+        break;
+    }
+
+    if ((byteSize & 0x10) != 0)
+    {
+        return (byteSize & 0x0F) + additionalIndexedByteSize[*p_memory];
+    }
+
+    return byteSize;
 }
 

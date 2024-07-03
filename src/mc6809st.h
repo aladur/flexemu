@@ -49,7 +49,8 @@ public:
     Word u{0};
     Word x{0};
     Word y{0};
-    Byte instruction[4]{};
+    Word insn_size{0};
+    Byte instruction[8]{};
     char mnemonic[8]{};
     char operands[20]{};
     Byte memory[CPU_STACK_LINES * CPU_STACK_BYTES]{};

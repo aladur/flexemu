@@ -30,6 +30,7 @@ public:
             std::string &p_mnemonic,
             std::string &p_operands) override;
     void set_use_undocumented(bool value) override;
+    int getByteSize(const Byte *p_memory) override;
 
 private:
 
