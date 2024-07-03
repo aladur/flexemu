@@ -721,7 +721,7 @@ inline Byte Da6809::D_Page2(InstFlg &p_flags, DWord &p_jumpaddr,
 
         default:
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
     }
 }
 
@@ -765,7 +765,7 @@ inline Byte Da6809::D_Page3(InstFlg &p_flags, std::string &p_code,
 
         default:
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
     }
 }
@@ -794,7 +794,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x00:
             return D_Direct("NEG", 2, p_code, p_mnemonic, p_operands);
@@ -806,7 +806,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x03:
             return D_Direct("COM", 2, p_code, p_mnemonic, p_operands);
@@ -821,7 +821,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x06:
             return D_Direct("ROR", 2, p_code, p_mnemonic, p_operands);
@@ -845,7 +845,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x0c:
             return D_Direct("INC", 2, p_code, p_mnemonic, p_operands);
@@ -1189,7 +1189,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x62:
             if (use_undocumented)
@@ -1198,7 +1198,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x63:
             return D_Indexed("COM", 2, p_code, p_mnemonic, p_operands);
@@ -1213,7 +1213,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x66:
             return D_Indexed("ROR", 2, p_code, p_mnemonic, p_operands);
@@ -1237,7 +1237,7 @@ int Da6809::Disassemble(
             }
 
             p_flags |= InstFlg::Illegal;
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 2, p_code, p_mnemonic, p_operands);
 
         case 0x6c:
             return D_Indexed("INC", 2, p_code, p_mnemonic, p_operands);
@@ -1265,7 +1265,7 @@ int Da6809::Disassemble(
 
             p_flags |= InstFlg::Illegal;
 
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 3, p_code, p_mnemonic, p_operands);
 
         case 0x72:
             if (use_undocumented)
@@ -1276,7 +1276,7 @@ int Da6809::Disassemble(
 
             p_flags |= InstFlg::Illegal;
 
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 3, p_code, p_mnemonic, p_operands);
 
         case 0x73:
             p_flags |= InstFlg::LabelAddr;
@@ -1295,7 +1295,7 @@ int Da6809::Disassemble(
 
             p_flags |= InstFlg::Illegal;
 
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 3, p_code, p_mnemonic, p_operands);
 
         case 0x76:
             p_flags |= InstFlg::LabelAddr;
@@ -1326,7 +1326,7 @@ int Da6809::Disassemble(
 
             p_flags |= InstFlg::Illegal;
 
-            return D_Illegal("", 1, p_code, p_mnemonic, p_operands);
+            return D_Illegal("", 3, p_code, p_mnemonic, p_operands);
 
         case 0x7c:
             p_flags |= InstFlg::LabelAddr;
