@@ -27,7 +27,6 @@
 #include "scpulog.h"
 #include <fmt/format.h>
 #include <cassert>
-#include <iostream>
 
 
 Mc6809Logger::~Mc6809Logger()
@@ -67,20 +66,13 @@ void Mc6809Logger::checkForActivatingLoopMode(const Mc6809CpuStatus &state)
                 });
         if (iter != cpuStates.cend())
         {
-            std::cerr << fmt::format("I* Found addr {:04X}. Enter loop mode\n", state.pc);
-            std::cerr << state.total_cycles << "\n";
-            if (cpuStates.size() > 1024)
-            {
-                std::cerr << "E* Queue size=" << cpuStates.size() << "\n";
-            }
             cpuStates.erase(iter + 1, cpuStates.cend());
             isLoopModeActive = true;
             loopRepeatCount = 0U;
             cpuStatesIter = cpuStates.rbegin();
-            std::cerr << "I* Remaining PC in queue:\n";
+
             for_each(cpuStates.crbegin(), cpuStates.crend(),
-                [&](const Mc6809CpuStatus &cpuState){
-                std::cerr << fmt::format("   PC={:04X}\n", cpuState.pc);
+                [&](const Mc6809CpuStatus &/* cpuState */){
                 });
         }
     }
@@ -93,7 +85,6 @@ void Mc6809Logger::finishLoopMode()
         return;
     }
 
-    std::cerr << "I* Finish loop mode, repeatCount=" << loopRepeatCount << "\n";
     logLoopContent();
 
     isLoopModeActive = false;
