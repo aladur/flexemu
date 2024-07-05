@@ -53,8 +53,14 @@ jobs:
           if compgen -G distcheck*.log > /dev/null; then
             cp distcheck*.log result
           fi
+          version=`sed -n "s/#define VERSION \"\([0-9.]\+\)\"/\1/p" src/config.h`
+          path=flexemu-${version}/_build/sub/test/unittests.log
+          if compgen -G $path > /dev/null; then
+            cp $path result/test
+          fi
+
           echo "SHELL:        $SHELL" > result/context.txt
-          echo "Qt-version:   ${QT_SELECT}" > result/context.txt
+          echo "Qt-version:   ${QT_SELECT}" >> result/context.txt
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

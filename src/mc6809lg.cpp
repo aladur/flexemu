@@ -26,6 +26,7 @@
 #include "mc6809.h"
 #include "scpulog.h"
 #include <fmt/format.h>
+#include <algorithm>
 #include <cassert>
 
 
@@ -114,9 +115,16 @@ void Mc6809Logger::doLoopOptimization(const Mc6809CpuStatus &state)
 
     if (isLoopModeActive)
     {
-        if (cpuStatesIter->pc == state.pc)
+        if (cpuStatesIter->pc == state.pc &&
+            cpuStatesIter->insn_size == state.insn_size &&
+                std::equal(
+                    std::begin(cpuStatesIter->instruction),
+                    std::begin(cpuStatesIter->instruction) + state.insn_size,
+                    std::begin(state.instruction)))
         {
-            // Identical PC values, continue loop.
+            // Identical PC values and instruction size + bytes, continue loop.
+            // The instruction size + bytes have to be checked to
+            // detect self modifying code which also has to finish loop mode.
             *(cpuStatesIter++) = state;
             if (cpuStatesIter == cpuStates.rend())
             {

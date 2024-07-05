@@ -45,8 +45,10 @@ Mc6809CpuStatus &Mc6809CpuStatus::operator=(const Mc6809CpuStatus &lhs)
     x = lhs.x;
     y = lhs.y;
     state = lhs.state;
+    insn_size = lhs.insn_size;
     std::memcpy(instruction, lhs.instruction, sizeof(instruction));
     std::memcpy(mnemonic, lhs.mnemonic, sizeof(mnemonic));
+    std::memcpy(operands, lhs.operands, sizeof(operands));
     std::memcpy(memory, lhs.memory, sizeof(memory));
     return *this;
 }
