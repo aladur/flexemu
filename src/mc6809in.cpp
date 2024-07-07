@@ -75,8 +75,9 @@ int Mc6809::Disassemble(Word address, InstFlg &p_flags,
         buffer[i] = memory.read_byte(address + i);
     }
 
-    return disassembler->Disassemble(buffer.data(), address, p_flags,
-                                     jumpAddress, code, mnemonic, operands);
+    p_flags = disassembler->Disassemble(buffer.data(), address, jumpAddress,
+            code, mnemonic, operands);
+    return disassembler->getByteSize(buffer.data());
 }
 
 //*******************************************************************

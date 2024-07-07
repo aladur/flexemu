@@ -31,10 +31,9 @@ class AbstractDisassembler
 
 public:
     virtual ~AbstractDisassembler() = default;
-    virtual int Disassemble(
+    virtual InstFlg Disassemble(
                   const Byte *p_memory,
                   DWord p_pc,
-                  InstFlg &p_flags,
                   DWord &p_jumpaddr,
                   std::string &p_code,
                   std::string &p_mnemonic,

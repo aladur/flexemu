@@ -27,30 +27,20 @@ TEST(test_da6809, dis_illegal)
         0x87, 0x8F,
         0xC7, 0xCD, 0xCF,
     };
-    std::vector<Byte> expected_sizes{
-        2, 2, 2, 2,
-        1, 1, 1, 1, 1,
-        1,
-        1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1,
-        2, 2, 2, 2,
-        3, 3, 3, 3,
-        1, 1,
-        1, 1, 1,
-
-    };
-    auto iexpected_sizes = expected_sizes.cbegin();
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
+        const auto bytes = da.getByteSize(&memory[pc]);
 
-        EXPECT_EQ(bytes, *(iexpected_sizes++));
         EXPECT_EQ(flags, InstFlg::Illegal);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
-        const auto expected_code = fmt::format("{:04X}: {:02X}", pc,
-                                               memory[pc]);
+        auto expected_code = fmt::format("{:04X}:", pc);
+        for (int i = 0; i < bytes; ++i)
+        {
+            expected_code += fmt::format(" {:02X}", memory[pc + i]);
+        }
         EXPECT_EQ(code, expected_code);
         EXPECT_TRUE(mnemonic.empty());
         EXPECT_EQ(operands, "?????");
@@ -88,12 +78,11 @@ TEST(test_da6809, dis_inherent)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         auto size = is_page23 ? 2 : 1;
-        EXPECT_EQ(bytes, size);
         Word opcode = memory[pc];
         opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
         auto expected_flags = InstFlg::NONE;
@@ -125,7 +114,7 @@ TEST(test_da6809, dis_inherent)
         mnemonic = flx::rtrim(mnemonic);
         EXPECT_EQ(mnemonic, expected_mnemonic);
         EXPECT_TRUE(operands.empty());
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -173,8 +162,8 @@ TEST(test_da6809, dis_immediate)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         auto size = is_page23 ? 3 : 2;
@@ -184,7 +173,6 @@ TEST(test_da6809, dis_immediate)
                                opcode_16bit.cend(),
                                 opcode) != opcode_16bit.cend());
         size = is_16bit ? size + 1 : size;
-        EXPECT_EQ(bytes, size);
         auto expected_flags = InstFlg::NONE;
         switch (opcode)
         {
@@ -224,7 +212,7 @@ TEST(test_da6809, dis_immediate)
         }
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, expected_operands);
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -268,12 +256,11 @@ TEST(test_da6809, dis_direct)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 3 : 2;
-        EXPECT_EQ(bytes, size);
         Word opcode = memory[pc];
         opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
         auto expected_flags = InstFlg::NONE;
@@ -297,7 +284,7 @@ TEST(test_da6809, dis_direct)
         const auto expected_mnemonic = fmt::format("${:02X}", memory[pc + 1]);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, expected_mnemonic);
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -331,11 +318,10 @@ TEST(test_da6809, dis_branch_relative)
 
     while (pc < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const auto size = 2;
-        EXPECT_EQ(bytes, size);
         auto expected_flags = InstFlg::JumpAddr;
         auto opcode = memory[pc];
         switch (opcode)
@@ -362,7 +348,7 @@ TEST(test_da6809, dis_branch_relative)
             fmt::format("${:04X}", expected_jumpaddr);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, expected_operands);
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -396,11 +382,10 @@ TEST(test_da6809, dis_long_branch_relative)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const auto size = (memory[pc] == 0x10) ? 4 : 3;
-        EXPECT_EQ(bytes, size);
         auto expected_flags = InstFlg::JumpAddr;
         switch (memory[pc])
         {
@@ -426,7 +411,7 @@ TEST(test_da6809, dis_long_branch_relative)
             fmt::format("${:04X}", expected_jumpaddr);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, expected_operands);
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -472,12 +457,11 @@ TEST(test_da6809, dis_extended)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 4 : 3;
-        EXPECT_EQ(bytes, size);
         Word opcode = memory[pc];
         opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
         auto expected_flags = InstFlg::LabelAddr;
@@ -507,7 +491,7 @@ TEST(test_da6809, dis_extended)
         const auto expected_operands = fmt::format("${:04X}", tgtaddr);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, expected_operands);
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -557,12 +541,11 @@ TEST(test_da6809, dis_indexed)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const bool is_page23 = (memory[pc] & 0xFE) == 0x10;
         const auto size = is_page23 ? 3 : 2;
-        EXPECT_EQ(bytes, size);
         Word opcode = memory[pc];
         opcode = is_page23 ? ((opcode << 8) | memory[pc + 1]) : opcode;
         InstFlg expected_flags = InstFlg::NONE;
@@ -585,7 +568,7 @@ TEST(test_da6809, dis_indexed)
         EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, "$00,X");
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -642,8 +625,8 @@ TEST(test_da6809, dis_indexed_modes)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const auto mask = memory[pc + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
@@ -651,7 +634,6 @@ TEST(test_da6809, dis_indexed_modes)
             (memory[pc + 1] == 0x9F);
         auto size = is_8bit_offset ? 3 : 2;
         size = is_16bit_offset ? size + 2 : size;
-        EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
@@ -663,7 +645,7 @@ TEST(test_da6809, dis_indexed_modes)
         EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, "NEG");
         EXPECT_EQ(operands, *(iexpected_operand++));
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -721,15 +703,14 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
 
     while (offset < static_cast<DWord>(memory.size()))
     {
-        const auto bytes = da.Disassemble(memory.data() + offset, pc, flags,
-                jumpaddr, code, mnemonic, operands);
+        flags = da.Disassemble(memory.data() + offset, pc, jumpaddr, code,
+                mnemonic, operands);
 
         const auto mask = memory[offset + 1] & 0x8B;
         const auto is_8bit_offset =(mask == 0x88);
         const bool is_16bit_offset = (mask == 0x89);
         auto size = is_8bit_offset ? 3 : 2;
         size = is_16bit_offset ? size + 2 : size;
-        EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
@@ -741,8 +722,8 @@ TEST(test_da6809, dis_indexed_modes_pc_rel)
         EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, "NEG");
         EXPECT_EQ(operands, *(iexpected_operand++));
-        offset += bytes;
-        pc += bytes;
+        offset += size;
+        pc += size;
         if (pc >= 0x8000 + 56)
         {
             // start indirect addressing with same PC value.
@@ -778,11 +759,10 @@ TEST(test_da6809, dis_indexed_modes_illegal)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         const auto size = 2;
-        EXPECT_EQ(bytes, size);
         const InstFlg expected_flags = InstFlg::NONE;
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
@@ -794,7 +774,7 @@ TEST(test_da6809, dis_indexed_modes_illegal)
         EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, "NEG");
         EXPECT_EQ(operands, "????");
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -833,11 +813,10 @@ TEST(test_da6809, dis_exg_tfr)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
-            const auto bytes = da.Disassemble(&memory[pc], pc, flags,
-                    jumpaddr, code, mnemonic, operands);
+            flags = da.Disassemble(&memory[pc], pc, jumpaddr, code,
+                    mnemonic, operands);
 
             const auto size = 2;
-            EXPECT_EQ(bytes, size);
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
             EXPECT_EQ(jumpaddr, 4711U); // unchanged value
@@ -911,11 +890,10 @@ TEST(test_da6809, dis_psh_pul)
         {
             memory[1] = static_cast<Byte>(postbyte);
 
-            const auto bytes = da.Disassemble(memory.data(), pc, flags,
-                    jumpaddr, code, mnemonic, operands);
+            flags = da.Disassemble(memory.data(), pc, jumpaddr, code,
+                    mnemonic, operands);
 
             auto size = 2;
-            EXPECT_EQ(bytes, size);
             InstFlg expected_flags = InstFlg::NONE;
             EXPECT_EQ(flags, expected_flags);
             EXPECT_EQ(jumpaddr, 4711U); // unchanged value
@@ -973,8 +951,8 @@ TEST(test_da6809, dis_undocumented)
     da.set_use_undocumented(true);
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        flags = da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic,
+                operands);
 
         auto opcode = memory[pc];
         int size{};
@@ -992,7 +970,6 @@ TEST(test_da6809, dis_undocumented)
             default:
                 size = 1;
         }
-        EXPECT_EQ(bytes, size);
         EXPECT_EQ(flags, expected_flags);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         auto expected_code = fmt::format("{:04X}:", pc);
@@ -1003,14 +980,13 @@ TEST(test_da6809, dis_undocumented)
         EXPECT_EQ(code, expected_code);
         EXPECT_EQ(mnemonic, *(iexpected_mnemonic++));
         EXPECT_EQ(operands, *(iexpected_operand++));
-        pc += bytes;
+        pc += size;
     }
 }
 
 TEST(test_da6809, dis_flex_labels)
 {
     Da6809 da;
-    InstFlg flags{};
     DWord pc = 0x0000;
     DWord jumpaddr = 4711U;
     std::string code;
@@ -1027,14 +1003,14 @@ TEST(test_da6809, dis_flex_labels)
         "#FCB",
     };
     auto iexpected_operand = expected_operands.cbegin();
+    Word size = 3U;
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        const auto bytes = da.Disassemble(&memory[pc], pc, flags, jumpaddr,
-                                          code, mnemonic, operands);
+        da.Disassemble(&memory[pc], pc, jumpaddr, code, mnemonic, operands);
 
         EXPECT_EQ(operands, *(iexpected_operand++));
-        pc += bytes;
+        pc += size;
     }
 }
 
@@ -1136,15 +1112,7 @@ TEST(test_da6809, fct_getByteSize_page1)
     while (pc < static_cast<Word>(memory.size()))
     {
         const auto bytes = da.getByteSize(&memory[pc]);
-        InstFlg flags;
-        DWord jumpaddr = 4711U;
-        std::string code;
-        std::string mnemonic;
-        std::string operands;
 
-        const auto disasmBytes = da.Disassemble(&memory[pc], pc, flags,
-                jumpaddr, code, mnemonic, operands);
-        EXPECT_EQ(bytes, disasmBytes);
         EXPECT_EQ(bytes, *(iexpected_bytes++));
         pc += bytes;
     }
@@ -1214,16 +1182,7 @@ TEST(test_da6809, fct_getByteSize_page2)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        InstFlg flags;
-        DWord jumpaddr = 4711U;
-        std::string code;
-        std::string mnemonic;
-        std::string operands;
-
-        const auto disasmBytes = da.Disassemble(&memory[pc], pc, flags,
-                jumpaddr, code, mnemonic, operands);
         const auto bytes = da.getByteSize(&memory[pc]);
-        EXPECT_EQ(bytes, disasmBytes);
         EXPECT_EQ(bytes, *(iexpected_bytes++));
         pc += bytes;
     }
@@ -1277,16 +1236,7 @@ TEST(test_da6809, fct_getByteSize_page3)
 
     while (pc < static_cast<Word>(memory.size()))
     {
-        InstFlg flags;
-        DWord jumpaddr = 4711U;
-        std::string code;
-        std::string mnemonic;
-        std::string operands;
-
-        const auto disasmBytes = da.Disassemble(&memory[pc], pc, flags,
-                jumpaddr, code, mnemonic, operands);
         const auto bytes = da.getByteSize(&memory[pc]);
-        EXPECT_EQ(bytes, disasmBytes);
         EXPECT_EQ(bytes, *(iexpected_bytes++));
         pc += bytes;
     }
