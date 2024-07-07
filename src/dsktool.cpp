@@ -957,11 +957,12 @@ void usage()
         "                accessible.\n";
 }
 
-bool getDiskFormatFromExtension(const std::string &ext, int &disk_format)
+bool getDiskFormatFromExtension(std::string ext, int &disk_format)
 {
     static const std::string strDsk{"dsk"};
     static const std::string strWta{"wta"};
     static const std::string strFlx{"flx"};
+    ext = flx::tolower(ext);
 
     if (strDsk.compare(ext) == 0 || strWta.compare(ext) == 0)
     {
@@ -984,7 +985,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
 
     if (!dsk_file.empty())
     {
-        extension = flx::tolower(flx::getFileExtension(dsk_file));
+        extension = flx::getFileExtension(dsk_file);
         if (!extension.empty())
         {
             extension = extension.substr(1);
