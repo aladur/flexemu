@@ -55,7 +55,7 @@ static bool read_hex_byte(std::istream &istream, Byte &value, Byte &checksum)
         }
 
         istream.get(byte);
-        byte = static_cast<char>(toupper(static_cast<Byte>(byte)));
+        byte = static_cast<char>(toupper(byte));
         if (byte >= '0' && byte <= '9')
         {
             value <<= 4;
