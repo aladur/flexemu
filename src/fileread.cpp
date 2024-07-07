@@ -44,7 +44,7 @@ static Word read_word(std::istream &istream)
 
 static bool read_hex_byte(std::istream &istream, Byte &value, Byte &checksum)
 {
-    char byte;
+    char byte = '\0';
 
     value = 0U;
     for (int i = 0; i < 2; ++i)
