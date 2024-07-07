@@ -147,18 +147,6 @@ std::string FlexDirectoryDiskByFile::GetSupportedAttributes() const
     return "W";
 }
 
-/*
-bool FlexDirectoryDiskByFile::OpenDirectory(const char *pattern)
-{
-    CHECK_DDIRECTORY_ALREADY_OPENED;
-    filePattern = pattern;
-    dirHdl = nullptr;
-    return true;
-}
-
-}
-*/
-
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
