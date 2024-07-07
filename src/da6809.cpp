@@ -861,10 +861,10 @@ int Da6809::Disassemble(
         case 0x0f:
             return D_Direct("CLR", 2, p_code, p_mnemonic, p_operands);
 
-        case 0x10:
+        case PAGE2:
             return D_Page2(p_flags, p_jumpaddr, p_code, p_mnemonic, p_operands);
 
-        case 0x11:
+        case PAGE3:
             return D_Page3(p_flags, p_code, p_mnemonic, p_operands);
 
         case 0x12:
@@ -1861,12 +1861,12 @@ int Da6809::getByteSize(const Byte *p_memory)
     Byte opcode = *(p_memory++);
     switch (opcode)
     {
-        case 0x10:
+        case PAGE2:
         opcode = *(p_memory++);
         byteSize = byteSizesPage2[opcode];
         break;
 
-        case 0x11:
+        case PAGE3:
         opcode = *(p_memory++);
         byteSize = byteSizesPage3[opcode];
         break;

@@ -1350,11 +1350,11 @@ flaginstr:  /* $10 and $11 instructions return here */
                 CLC;
                 break;
 
-            case 0x10: /* flag10 */
+            case PAGE2: /* flag10 */
                 iflag = 1;
                 goto flaginstr;
 
-            case 0x11: /* flag11 */
+            case PAGE3: /* flag11 */
                 iflag = 2;
                 goto flaginstr;
 

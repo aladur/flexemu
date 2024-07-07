@@ -10,6 +10,9 @@
 #include <string>
 
 
+static constexpr Byte PAGE2{0x10};
+static constexpr Byte PAGE3{0x11};
+
 // Instruction flags as scoped enum.
 enum class InstFlg : uint8_t
 {
