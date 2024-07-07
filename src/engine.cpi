@@ -1230,10 +1230,32 @@ flaginstr:  /* $10 and $11 instructions return here */
                 break;
 
             case 0x01:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
             case 0x02:
+            case 0x05:
+            case 0x0B:
+            case 0x14:
+            case 0x15:
+            case 0x18:
+            case 0x1B:
+            case 0x3E:
+            case 0x41:
+            case 0x42:
+            case 0x45:
+            case 0x4B:
+            case 0x4E:
+            case 0x51:
+            case 0x52:
+            case 0x55:
+            case 0x5B:
+            case 0x5E:
+            case 0x61:
+            case 0x62:
+            case 0x65:
+            case 0x6B:
+            case 0x71:
+            case 0x72:
+            case 0x75:
+            case 0x7B:
                 INVALID_INSTR;
                 break;/*ILLEGAL*/
 
@@ -1257,10 +1279,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
-
-            case 0x05:
-                INVALID_INSTR;
-                break;/* ILLEGAL*/
 
             case 0x06: /*ROR direct*/
                 DIRECT;
@@ -1317,10 +1335,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETBYTE(eaddr, tb)
                 break;
 
-            case 0x0B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x0C: /*INC direct*/
                 DIRECT;
                 tb = GETBYTE(eaddr) + 1;
@@ -1352,10 +1366,14 @@ flaginstr:  /* $10 and $11 instructions return here */
 
             case PAGE2: /* flag10 */
                 iflag = 1;
+                // Keep goto for performance reasons (fast CPU emulation).
+                // NOLINTNEXTLINE(cppcoreguidelines-avoid-goto)
                 goto flaginstr;
 
             case PAGE3: /* flag11 */
                 iflag = 2;
+                // Keep goto for performance reasons (fast CPU emulation).
+                // NOLINTNEXTLINE(cppcoreguidelines-avoid-goto)
                 goto flaginstr;
 
             case 0x12: /* NOP */
@@ -1365,14 +1383,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 ipcreg--;
                 events |= Event::Sync;
                 break;
-
-            case 0x14:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
-            case 0x15:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
 
             case 0x16: /*LBRA*/
                 IMMWORD(eaddr);
@@ -1385,10 +1395,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 ipcreg += eaddr;
                 break;
 
-            case 0x18:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x19: /* DAA*/
                 tw = iareg;
                 if (iccreg & 0x20 || (iareg & 0x0f) > 9)
@@ -1399,7 +1405,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 if (tw & 0x100) SEC;
                 if (tw & 0x80) SEN;
                 else CLN;
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 if (iareg) CLZ;
                 else SEZ;
                 break;
@@ -1408,10 +1414,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 IMMBYTE(tb);
                 iccreg |= tb;
                 break;
-
-            case 0x1B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
 
             case 0x1C: /* ANDCC*/
                 IMMBYTE(tb);
@@ -1626,10 +1628,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETDREG(tw)
                 break;
 
-            case 0x3E:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x3F: /* SWI (SWI2 SWI3)*/
             {
                 PUSHWORD(ipcreg);
@@ -1667,16 +1665,8 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x40: /*NEGA*/
                 tw = -iareg;
                 SETSTATUS(0, iareg, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
-
-            case 0x41:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
-            case 0x42:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
 
             case 0x43: /*COMA*/
                 tb = ~iareg;
@@ -1696,10 +1686,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(tb);
                 iareg = tb;
                 break;
-
-            case 0x45:
-                INVALID_INSTR;
-                break;/* ILLEGAL*/
 
             case 0x46: /*RORA*/
                 tb = (iccreg & 0x01) << 7;
@@ -1725,7 +1711,7 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x48: /*ASLA*/
                 tw = iareg << 1;
                 SETSTATUS(iareg, iareg, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x49: /*ROLA*/
@@ -1748,10 +1734,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 iareg = tb;
                 break;
 
-            case 0x4B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x4C: /*INCA*/
                 tb = iareg + 1;
                 if (tb == 0x80) SEV;
@@ -1764,10 +1746,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(iareg);
                 break;
 
-            case 0x4E:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x4F: /*CLRA*/
                 iareg = 0;
                 CLN;
@@ -1779,16 +1757,8 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x50: /*NEGB*/
                 tw = -ibreg;
                 SETSTATUS(0, ibreg, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
-
-            case 0x51:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
-            case 0x52:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
 
             case 0x53: /*COMB*/
                 tb = ~ibreg;
@@ -1808,10 +1778,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(tb);
                 ibreg = tb;
                 break;
-
-            case 0x55:
-                INVALID_INSTR;
-                break;/* ILLEGAL*/
 
             case 0x56: /*RORB*/
                 tb = (iccreg & 0x01) << 7;
@@ -1837,7 +1803,7 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x58: /*ASLB*/
                 tw = ibreg << 1;
                 SETSTATUS(ibreg, ibreg, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0x59: /*ROLB*/
@@ -1860,10 +1826,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 ibreg = tb;
                 break;
 
-            case 0x5B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x5C: /*INCB*/
                 tb = ibreg + 1;
                 if (tb == 0x80) SEV;
@@ -1875,10 +1837,6 @@ flaginstr:  /* $10 and $11 instructions return here */
             case 0x5D: /*TSTB*/
                 SETNZ8(ibreg);
                 break;
-
-            case 0x5E:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
 
             case 0x5F: /*CLRB*/
                 ibreg = 0;
@@ -1894,14 +1852,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETSTATUS(0, k, tw);
                 SETBYTE(eaddr, tw)
                 break;
-
-            case 0x61:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
-            case 0x62:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
 
             case 0x63: /*COM indexed*/
                 tb = ~GETBYTE(eaddr);
@@ -1921,10 +1871,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
-
-            case 0x65:
-                INVALID_INSTR;
-                break;/* ILLEGAL*/
 
             case 0x66: /*ROR indexed*/
                 tb = (iccreg & 0x01) << 7;
@@ -1976,10 +1922,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETBYTE(eaddr, tb)
                 break;
 
-            case 0x6B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x6C: /*INC indexed*/
                 tb = GETBYTE(eaddr) + 1;
                 if (tb == 0x80) SEV;
@@ -2013,14 +1955,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETBYTE(eaddr, tw)
                 break;
 
-            case 0x71:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
-            case 0x72:
-                INVALID_INSTR;
-                break;/*ILLEGAL*/
-
             case 0x73: /*COM ext*/
                 EXTENDED;
                 tb = ~GETBYTE(eaddr);
@@ -2041,10 +1975,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETNZ8(tb);
                 SETBYTE(eaddr, tb)
                 break;
-
-            case 0x75:
-                INVALID_INSTR;
-                break;/* ILLEGAL*/
 
             case 0x76: /*ROR ext*/
                 EXTENDED;
@@ -2101,10 +2031,6 @@ flaginstr:  /* $10 and $11 instructions return here */
                 SETBYTE(eaddr, tb)
                 break;
 
-            case 0x7B:
-                INVALID_INSTR;
-                break; /*ILLEGAL*/
-
             case 0x7C: /*INC ext*/
                 EXTENDED;
                 tb = GETBYTE(eaddr) + 1;
@@ -2139,7 +2065,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x81: /*CMPA immediate*/
@@ -2154,13 +2080,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x83: /*SUBD (CMPD CMPU) immediate*/
                 IMM16
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
 
                     dreg = (iflag == 2) ? iureg : GETDREG;
                     breg = GETWORD(eaddr);
@@ -2210,7 +2138,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x8A: /*ORA immediate*/
@@ -2225,13 +2153,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x8C: /*CMPX (CMPY CMPS) immediate */
                 IMM16
                 {
-                    unsigned long dreg, breg, res;
+                    unsigned long dreg;
+                    unsigned long breg;
+                    unsigned long res;
 
                     if (iflag == 0)
                         dreg = ixreg;
@@ -2277,7 +2207,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x91: /*CMPA direct*/
@@ -2292,13 +2222,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x93: /*SUBD (CMPD CMPU) direct*/
                 DIRECT;
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
 
                     if (iflag == 2)
                         dreg = iureg;
@@ -2351,7 +2283,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x9A: /*ORA direct*/
@@ -2366,13 +2298,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0x9C: /*CMPX (CMPY CMPS) direct */
                 DIRECT;
                 {
-                    unsigned long dreg, breg, res;
+                    unsigned long dreg;
+                    unsigned long breg;
+                    unsigned long res;
 
                     if (iflag == 0)
                         dreg = ixreg;
@@ -2415,7 +2349,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xA1: /*CMPA indexed*/
@@ -2428,12 +2362,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xA3: /*SUBD (CMPD CMPU) indexed*/
             {
-                unsigned long res, dreg, breg;
+                unsigned long res;
+                unsigned long dreg;
+                unsigned long breg;
+
                 dreg = (iflag == 2) ? iureg : GETDREG;
                 breg = GETWORD(eaddr);
                 res = dreg - breg;
@@ -2477,7 +2414,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xAA: /*ORA indexed*/
@@ -2490,12 +2427,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xAC: /*CMPX (CMPY CMPS) indexed */
             {
-                unsigned long dreg, breg, res;
+                unsigned long dreg;
+                unsigned long breg;
+                unsigned long res;
+
                 if (iflag == 0)
                     dreg = ixreg;
                 else if (iflag == 1)
@@ -2535,7 +2475,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xB1: /*CMPA ext*/
@@ -2550,13 +2490,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg - k - (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xB3: /*SUBD (CMPD CMPU) ext*/
                 EXTENDED;
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
 
                     dreg = (iflag == 2) ? iureg : GETDREG;
                     breg = GETWORD(eaddr);
@@ -2607,7 +2549,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k + (iccreg & 0x01);
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xBA: /*ORA ext*/
@@ -2622,13 +2564,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = iareg + k;
                 SETSTATUS(iareg, k, tw);
-                iareg = (Byte)tw;
+                iareg = static_cast<Byte>(tw);
                 break;
 
             case 0xBC: /*CMPX (CMPY CMPS) ext */
                 EXTENDED;
                 {
-                    unsigned long dreg, breg, res;
+                    unsigned long dreg;
+                    unsigned long breg;
+                    unsigned long res;
 
                     if (iflag == 0)
                         dreg = ixreg;
@@ -2672,7 +2616,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xC1: /*CMPB immediate*/
@@ -2687,13 +2631,16 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xC3: /*ADDD immediate*/
                 IMM16
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
+
                     dreg = GETDREG;
                     breg = GETWORD(eaddr);
                     res = dreg + breg;
@@ -2742,7 +2689,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xCA: /*ORB immediate*/
@@ -2757,7 +2704,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xCC: /*LDD immediate */
@@ -2798,7 +2745,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xD1: /*CMPB direct*/
@@ -2813,13 +2760,16 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xD3: /*ADDD direct*/
                 DIRECT;
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
+
                     dreg = GETDREG;
                     breg = GETWORD(eaddr);
                     res = dreg + breg;
@@ -2868,7 +2818,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xDA: /*ORB direct*/
@@ -2883,7 +2833,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xDC: /*LDD direct */
@@ -2925,7 +2875,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xE1: /*CMPB indexed*/
@@ -2938,12 +2888,15 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xE3: /*ADDD indexed*/
             {
-                unsigned long res, dreg, breg;
+                unsigned long res;
+                unsigned long dreg;
+                unsigned long breg;
+
                 dreg = GETDREG;
                 breg = GETWORD(eaddr);
                 res = dreg + breg;
@@ -2986,7 +2939,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xEA: /*ORB indexed*/
@@ -2999,7 +2952,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xEC: /*LDD indexed */
@@ -3038,7 +2991,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xF1: /*CMPB ext*/
@@ -3053,13 +3006,16 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg - k - (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xF3: /*ADDD ext*/
                 EXTENDED;
                 {
-                    unsigned long res, dreg, breg;
+                    unsigned long res;
+                    unsigned long dreg;
+                    unsigned long breg;
+
                     dreg = GETDREG;
                     breg = GETWORD(eaddr);
                     res = dreg + breg;
@@ -3108,7 +3064,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k + (iccreg & 0x01);
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xFA: /*ORB ext*/
@@ -3123,7 +3079,7 @@ flaginstr:  /* $10 and $11 instructions return here */
                 k = GETBYTE(eaddr);
                 tw = ibreg + k;
                 SETSTATUS(ibreg, k, tw);
-                ibreg = (Byte)tw;
+                ibreg = static_cast<Byte>(tw);
                 break;
 
             case 0xFC: /*LDD ext */

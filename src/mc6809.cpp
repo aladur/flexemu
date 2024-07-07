@@ -23,9 +23,7 @@
 #endif
 
 Mc6809::Mc6809(Memory &p_memory) : events(Event::NONE),
-#ifdef FASTFLEX
-    pMem(nullptr),
-#else
+#ifndef FASTFLEX
     a(acc.byte.a), b(acc.byte.b), d(acc.d), dp(dpreg.byte.h),
 #endif
      memory(p_memory)
