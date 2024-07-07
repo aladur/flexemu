@@ -69,6 +69,11 @@ Mc6809CpuStatus setState(const std::vector<Byte> &instruction, Word pc,
         const char *mnemonic, const char *operands = "")
 {
     Mc6809CpuStatus state{};
+
+    assert(instruction.size() <= sizeof(state.instruction));
+    assert(strlen(mnemonic) < sizeof(state.mnemonic));
+    assert(strlen(operands) < sizeof(state.operands));
+
     state.pc = pc;
     std::copy(instruction.cbegin(),
             instruction.cbegin() + static_cast<Word>(instruction.size()),
