@@ -877,83 +877,83 @@ void version()
 void usage()
 {
     std::cout <<
-        "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n" <<
+        "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n"
         "Usage: dsktool -C <dsk-file> -T<tgt-dsk-file> [-v][-z][-y|-n][-m]"
-        "[-R<file>...][<regex>...]\n" <<
-        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>"
-        " -B<boot-sector-file>\n" <<
-        "Usage: dsktool -h\n" <<
-        "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n" <<
-        "Usage: dsktool -l <dsk-file> [-z][<dsk-file>...]\n" <<
-        "Usage: dsktool -L <dsk-file> [-z][-m][-R<file>...][<regex>...]\n" <<
+        "[-R<file>...]\n"
+        "                  [<regex>...]\n"
+        "Usage: dsktool -f <dsk-file> [-v][-F(dsk|flx)][-y|-n] -S<size>\n"
+        "                  -B<boot-sector-file>\n"
+        "Usage: dsktool -h\n"
+        "Usage: dsktool -i <dsk-file> [-v][-t][-z][-y|-n] <file> [<file>...]\n"
+        "Usage: dsktool -l <dsk-file> [-z][<dsk-file>...]\n"
+        "Usage: dsktool -L <dsk-file> [-z][-m][-R<file>...][<regex>...]\n"
         "Usage: dsktool -r <dsk-file> [-v][-y|-n][-m][-R<file>...][<regex>...]"
-        "\n" <<
-        "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n" <<
-        "Usage: dsktool -S help\n" <<
-        "Usage: dsktool -V\n" <<
-        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-m]"  <<
-        "[-y|-n][-R<file>...][<regex>...]\n" <<
+        "\n"
+        "Usage: dsktool -s <dsk-file> [-v] [<dsk-file>...]\n"
+        "Usage: dsktool -S help\n"
+        "Usage: dsktool -V\n"
+        "Usage: dsktool -x <dsk-file> [-d<directory>][-t][-v][-z][-m]"
+        "[-y|-n][-R<file>...]\n"
+        "                  [<regex>...]\n"
         "Usage: dsktool -X <dsk-file> [-d<directory>][-t][-v][-z] "
-        "[-y|-n][<dsk-file>...]\n\n" <<
-        "Commands:\n" <<
-        "  -c: Check consistency of FLEX disk image file.\n" <<
-        "  -C: Copy files from a FLEX disk image file into another one.\n" <<
-        "      If no regex is specified, all files are copied.\n" <<
-        "  -f: Create a new FLEX disk image file.\n" <<
-        "  -h: Print this help.\n" <<
-        "  -i: Inject FLEX-files to a FLEX disk image file.\n" <<
-        "  -l: List directory contents of FLEX disk image file(s).\n" <<
+        "[-y|-n][<dsk-file>...]\n\n"
+        "Commands:\n"
+        "  -c: Check consistency of FLEX disk image file.\n"
+        "  -C: Copy files from a FLEX disk image file into another one.\n"
+        "      If no regex is specified, all files are copied.\n"
+        "  -f: Create a new FLEX disk image file.\n"
+        "  -h: Print this help.\n"
+        "  -i: Inject FLEX-files to a FLEX disk image file.\n"
+        "  -l: List directory contents of FLEX disk image file(s).\n"
         "  -L: List directory contents of a FLEX disk image file using regex."
-        "\n" <<
-        "      If no regex is specified, all files are listed.\n" <<
-        "  -r: Delete files from a FLEX disk image file using regex.\n" <<
-        "  -s: One line summary of a FLEX disk image file.\n" <<
-        "  -V: Print version number and exit.\n" <<
-        "  -x: Extract files from a FLEX disk image file using regex.\n" <<
-        "      If no regex is specified, all files are extracted.\n" <<
-        "  -X: Extract all files from FLEX disk image file(s).\n\n" <<
-        "Parameters:\n" <<
-        "  -d<directory> The target directory.\n" <<
-        "                Default: current directory.\n" <<
-        "  -D            Additional debug output.\n" <<
-        "  -F(dsk|flx)   Use *.dsk or *.flx disk image file format.\n" <<
-        "                *.wta extension is handled as *.dsk format.\n" <<
-        "                If not set it is determined from the file extension"
-        "\n" <<
-        "                or finally the default is *.dsk\n" <<
-        "  -m            Regex is case sensitive (case has meaning).\n" <<
-        "  -n            Answer no to all questions.\n" <<
-        "  -t            Automatic detection and conversion of text files.\n" <<
-        "  -v            More verbose output.\n" <<
-        "  -y            Answer yes to all questions.\n" <<
-        "  -z            Use file time (FLEX extension).\n" <<
-        "  -R<file>      A file containing regular expressions, one per line."
-        "\n" <<
-        "  -S<size>      Size of FLEX disk image file. Use -S help for help."
-        "\n" <<
+        "\n"
+        "      If no regex is specified, all files are listed.\n"
+        "  -r: Delete files from a FLEX disk image file using regex.\n"
+        "  -s: One line summary of a FLEX disk image file.\n"
+        "  -V: Print version number and exit.\n"
+        "  -x: Extract files from a FLEX disk image file using regex.\n"
+        "      If no regex is specified, all files are extracted.\n"
+        "  -X: Extract all files from FLEX disk image file(s).\n\n"
+        "Parameters:\n"
+        "  -d<directory> The target directory.\n"
+        "                Default: current directory.\n"
+        "  -D            Additional debug output.\n"
+        "  -F(dsk|flx)   Use *.dsk or *.flx disk image file format.\n"
+        "                *.wta extension is handled as *.dsk format.\n"
+        "                If not set it is determined from the file extension\n"
+        "                or finally the default is *.dsk\n"
+        "  -m            Regex is case sensitive (case has meaning).\n"
+        "  -n            Answer no to all questions.\n"
+        "  -t            Automatic detection and conversion of text files.\n"
+        "  -v            More verbose output.\n"
+        "  -y            Answer yes to all questions.\n"
+        "  -z            Use file time (FLEX extension).\n"
+        "  -R<file>      A file containing regular expressions, one per line.\n"
+        "  -S<size>      Size of FLEX disk image file. Use -S help for help.\n"
         "  -B<boot-sector-file> Read contents of boot sector(s) from file.\n" <<
-        "                It has a size of one or two sectors" <<
-        " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n" <<
+        "                It has a size of one or two sectors"
+        " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n"
         "  -T<dsk-file>  A target FLEX disk image file with *.dsk or *.flx "
-        "format. *.wta extension is handled as *.dsk format.\n" <<
+        "format.\n"
+        "                *.wta extension is handled as *.dsk format.\n"
         "  <dsk-file>    A FLEX disk image file with *.dsk or *.flx "
-        "format.\n" <<
-        "                *.wta extension is handled as *.dsk format.\n" <<
-        "  <FLEX-file>   A FLEX text or binary file.\n" <<
-        "  <file>        A text file or FLEX text or binary file.\n" <<
-        "  <regex>       A regular expression specifying FLEX file(s).\n" <<
-        "                Extended POSIX regular expression grammar is\n" <<
-        "                supported. <regex> parameters are processed after\n" <<
-        "                all -R<file> parameters. By default it is case\n" <<
-        "                insensitive. See also -m.\n\n" <<
-        "Environment Variables:\n\n" <<
-        "  DSKTOOL_USE_FILETIME\n" <<
-        "                Same a option -z.\n" <<
-        "  DSKTOOL_TRACK0_ACCESS\n" <<
-        "                Defines which sectors on track 0 are accessible.\n" <<
-        "                If set to DIRECTORY (=default) only directory\n" <<
-        "                sectors (within the directory sector chain) are\n" <<
-        "                accessible. If set to FULL all sectors are\n" <<
+        "format.\n"
+        "                *.wta extension is handled as *.dsk format.\n"
+        "  <FLEX-file>   A FLEX text or binary file.\n"
+        "  <file>        A text file or FLEX text or binary file.\n"
+        "  <regex>       A regular expression specifying FLEX file(s).\n"
+        "                Extended POSIX regular expression grammar is\n"
+        "                supported. <regex> parameters are processed after\n"
+        "                all -R<file> parameters. By default it is case\n"
+        "                insensitive. See also -m.\n\n"
+        "Environment Variables:\n\n"
+        "  DSKTOOL_USE_FILETIME\n"
+        "                Same a option -z.\n"
+        "  DSKTOOL_TRACK0_ACCESS\n"
+        "                Defines which sectors on track 0 are accessible.\n"
+        "                If set to DIRECTORY (=default) only directory\n"
+        "                sectors (within the directory sector chain) are\n"
+        "                accessible. If set to FULL all sectors are\n"
         "                accessible.\n";
 }
 
