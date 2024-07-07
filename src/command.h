@@ -43,6 +43,7 @@ class Inout;
 class E2floppy;
 class Scheduler;
 
+using command_t = std::array<char, MAX_COMMAND>;
 
 class Command : public IoDevice, public BObserved
 {
@@ -53,15 +54,14 @@ protected:
     Inout       &inout;
     Scheduler   &scheduler;
     E2floppy    &fdc;
-    std::array<char, MAX_COMMAND> command{};
+    command_t command{};
     Word command_index{0};
     Word answer_index{0};
     std::string answer;
 
     // private interface:
 private:
-    static void skip_token(char **pp);
-    static const char *next_token(char **pp, int *pcount);
+    std::string next_token(command_t::iterator &iter, int &count);
 
     // public interface
 public:

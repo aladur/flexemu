@@ -35,6 +35,7 @@
 #include "schedule.h"
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 
 Command::Command(
@@ -77,34 +78,26 @@ Byte Command::readIo(Word /*offset*/)
     return 0x00;
 }
 
-const char *Command::next_token(char **pp, int *pcount)
+std::string Command::next_token(command_t::iterator &iter, int &count)
 {
-    while (*pp != nullptr && **pp != '\0' && **pp == ' ')
+    std::string token;
+
+    while (iter != std::end(command) && *iter == ' ')
     {
-        (*pp)++;
+        iter++;
     }
 
-    if (*pp != nullptr && **pp != '\0')
+    if (iter != std::end(command) && *iter != '\0')
     {
-        (*pcount)++;
+        ++count;
     }
 
-    return *pp;
-}
-
-
-void Command::skip_token(char **pp)
-{
-    while (*pp != nullptr && **pp != '\0' && **pp != ' ')
+    while (*iter != '\0' && *iter != ' ')
     {
-        (*pp)++;
+        token.append(1, *(iter++));
     }
 
-    if (*pp != nullptr && **pp == ' ')
-    {
-        **pp = '\0';
-        (*pp)++;
-    }
+    return token;
 }
 
 void Command::writeIo(Word /*offset*/, Byte val)
@@ -122,26 +115,21 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
     if (val == '\0')
     {
-        char *p;
-        const char *arg2;
-        const char *arg3;
-        const char *arg4;
+        // MSVC does not support auto *commandIter.
+        // NOLINTNEXTLINE(readability-qualified-auto)
+        auto commandIter = std::begin(command);
         std::stringstream answer_stream;
 
         command_index = 0;
         answer_index = 0;
         auto number = static_cast<int>(INVALID_DRIVE);
         auto count = 0;
-        p = command.data();
-        const auto arg1 = flx::rtrim(flx::tolower(next_token(&p, &count)));
-        skip_token(&p);
-        arg2 = next_token(&p, &count);
-        skip_token(&p);
-        arg3 = next_token(&p, &count);
-        skip_token(&p);
-        arg4 = next_token(&p, &count);
-        skip_token(&p);
-        next_token(&p, &count);
+        const auto arg1 = flx::rtrim(flx::tolower(
+                    next_token(commandIter, count)));
+        const auto arg2 = next_token(commandIter, count);
+        const auto arg3 = next_token(commandIter, count);
+        const auto arg4 = next_token(commandIter, count);
+        next_token(commandIter, count);
 
         switch (count)
         {
@@ -232,9 +220,9 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 if (arg1.compare("freq") == 0)
                 {
                     float freq;
+                    std::stringstream stream(arg2);
 
-                    if ((sscanf(arg2, "%f", &freq) == 1) &&
-                        freq >= 0.0)
+                    if (!(stream >> freq).fail() && freq >= 0.0)
                     {
                         scheduler.set_frequency(freq);
                     }
@@ -242,13 +230,16 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
-                if ((sscanf(arg2, "%d", &number) != 1) ||
-                    number < 0 || number > 3)
                 {
-                    answer_stream << "EMU parameter error: " << arg2 <<
-                                     " is not a valid drive number.";
-                    answer = answer_stream.str();
-                    return;
+                    std::stringstream stream(arg2);
+
+                    if ((stream >> number).fail() || number < 0 || number >3)
+                    {
+                        answer_stream << "EMU parameter error: " << arg2 <<
+                                         " is not a valid drive number.";
+                        answer = answer_stream.str();
+                        return;
+                    }
                 }
 
                 if (arg1.compare("umount") == 0)
@@ -287,17 +278,20 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 break;
 
             case 3:
-                if (arg1.compare("mount") == 0)
                 {
-                    if ((sscanf(arg3, "%d", &number) != 1) ||
-                        number < 0 || number > 3)
+                    std::stringstream stream(arg3);
+
+                    if ((stream >> number).fail() || number < 0 || number >3)
                     {
                         answer_stream << "EMU parameter error: " << arg3 <<
                                          " is not a valid drive number.";
                         answer = answer_stream.str();
                         return;
                     }
+                }
 
+                if (arg1.compare("mount") == 0)
+                {
                     if (!fdc.mount_drive(arg2, static_cast<Byte>(number)))
                     {
                         answer_stream << "EMU error: "
@@ -311,15 +305,6 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("rmount") == 0)
                 {
-                    if ((sscanf(arg3, "%d", &number) != 1) ||
-                        number < 0 || number > 3)
-                    {
-                        answer_stream << "EMU parameter error: " << arg3 <<
-                                         " is not a valid drive number.";
-                        answer = answer_stream.str();
-                        return;
-                    }
-
                     if (!fdc.mount_drive(arg2, static_cast<Byte>(number),
                                          MOUNT_RAM))
                     {
@@ -364,8 +349,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
 
-                    if ((sscanf(arg3, "%d", &trk) != 1) ||
-                        trk < 2 || trk > 255)
+                    std::stringstream tstream{arg3};
+                    if ((tstream >> trk).fail() || trk < 2 || trk > 255)
                     {
                         answer_stream << "EMU parameter error: " << arg3 <<
                                          " is not a valid track count.";
@@ -373,8 +358,8 @@ void Command::writeIo(Word /*offset*/, Byte val)
                         return;
                     }
 
-                    if ((sscanf(arg4, "%d", &sec) != 1) ||
-                        sec < 6 || sec > 255)
+                    std::stringstream sstream{arg4};
+                    if ((sstream >> sec).fail() || sec < 6 || sec > 255)
                     {
                         answer_stream << "EMU parameter error: " << arg4 <<
                                          " is not a valid sector count.";
