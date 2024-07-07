@@ -277,6 +277,8 @@ namespace flx
 {
 extern char tolower_value(char ch);
 extern char &tolower_ref(char &ch);
+extern char toupper_value(char ch);
+extern char &toupper_ref(char &ch);
 extern void strlower(std::string& str);
 extern void strupper(std::string& str);
 extern std::string tolower(const std::string& src);

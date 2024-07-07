@@ -73,7 +73,7 @@ char flx::tolower_value(char ch)
      return ch;
  }
 
-char toupper_value(char ch)
+char flx::toupper_value(char ch)
  {
      if (ch >= 'a' && ch <= 'z')
      {
@@ -82,7 +82,7 @@ char toupper_value(char ch)
      return ch;
  }
 
- char &toupper_ref(char &ch)
+ char &flx::toupper_ref(char &ch)
  {
      if (ch >= 'a' && ch <= 'z')
      {
