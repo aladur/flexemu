@@ -917,6 +917,7 @@ void usage()
         "                Default: current directory.\n" <<
         "  -D            Additional debug output.\n" <<
         "  -F(dsk|flx)   Use *.dsk or *.flx disk image file format.\n" <<
+        "                *.wta extension is handled as *.dsk format.\n" <<
         "                If not set it is determined from the file extension"
         "\n" <<
         "                or finally the default is *.dsk\n" <<
@@ -934,9 +935,10 @@ void usage()
         "                It has a size of one or two sectors" <<
         " (" << SECTOR_SIZE << " or " << 2*SECTOR_SIZE << " Byte).\n" <<
         "  -T<dsk-file>  A target FLEX disk image file with *.dsk or *.flx "
+        "format. *.wta extension is handled as *.dsk format.\n" <<
+        "  <dsk-file>    A FLEX disk image file with *.dsk or *.flx "
         "format.\n" <<
-        "  <dsk-file>    A FLEX disk image file with *.dsk or *.flx format."
-        "\n" <<
+        "                *.wta extension is handled as *.dsk format.\n" <<
         "  <FLEX-file>   A FLEX text or binary file.\n" <<
         "  <file>        A text file or FLEX text or binary file.\n" <<
         "  <regex>       A regular expression specifying FLEX file(s).\n" <<
@@ -958,9 +960,10 @@ void usage()
 bool getDiskFormatFromExtension(const std::string &ext, int &disk_format)
 {
     static const std::string strDsk{"dsk"};
+    static const std::string strWta{"wta"};
     static const std::string strFlx{"flx"};
 
-    if (strDsk.compare(ext) == 0)
+    if (strDsk.compare(ext) == 0 || strWta.compare(ext) == 0)
     {
         disk_format = TYPE_DSK_DISKFILE;
         return true;
