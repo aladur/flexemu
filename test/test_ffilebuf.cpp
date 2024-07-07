@@ -212,28 +212,30 @@ TEST(test_ffilebuf, fct_header_get_set)
     memcpy(header_src.magicNumber,
            flexFileHeaderMagicNumber.data(),
            flexFileHeaderMagicNumber.size());
-    header_src.fileSize = 44;
-    header_src.attributes = FLX_READONLY;
-    header_src.sectorMap = IS_RANDOM_FILE;
-    header_src.day = 28;
-    header_src.month = 5;
-    header_src.year = 1999;
-    header_src.hour = 19;
-    header_src.minute = 27;
+    header_src.fileSize = flx::toBigEndian(static_cast<DWord>(44U));
+    header_src.attributes = flx::toBigEndian(static_cast<Word>(FLX_READONLY));
+    header_src.sectorMap = flx::toBigEndian(static_cast<Word>(IS_RANDOM_FILE));
+    header_src.day = flx::toBigEndian(static_cast<Word>(28U));
+    header_src.month = flx::toBigEndian(static_cast<Word>(5U));
+    header_src.year = flx::toBigEndian(static_cast<Word>(1999U));
+    header_src.hour = flx::toBigEndian(static_cast<Word>(19U));
+    header_src.minute = flx::toBigEndian(static_cast<Word>(27U));
     std::string test_file("test.txt");
     std::copy(test_file.cbegin(), test_file.cend(),
               std::begin(header_src.fileName));
 
     ffb.CopyHeaderBigEndianFrom(header_src);
     auto header_tgt = ffb.GetHeaderBigEndian();
-    EXPECT_EQ(header_tgt.fileSize, 44U);
-    EXPECT_EQ(header_tgt.attributes, FLX_READONLY);
-    EXPECT_EQ(header_tgt.sectorMap, IS_RANDOM_FILE);
-    EXPECT_EQ(header_tgt.day, 28);
-    EXPECT_EQ(header_tgt.month, 5);
-    EXPECT_EQ(header_tgt.year, 1999);
-    EXPECT_EQ(header_tgt.hour, 19);
-    EXPECT_EQ(header_tgt.minute, 27);
+    EXPECT_EQ(header_tgt.fileSize, flx::toBigEndian(static_cast<DWord>(44U)));
+    EXPECT_EQ(header_tgt.attributes,
+            flx::toBigEndian(static_cast<Word>(FLX_READONLY)));
+    EXPECT_EQ(header_tgt.sectorMap,
+            flx::toBigEndian(static_cast<Word>(IS_RANDOM_FILE)));
+    EXPECT_EQ(header_tgt.day, flx::toBigEndian(static_cast<Word>(28U)));
+    EXPECT_EQ(header_tgt.month, flx::toBigEndian(static_cast<Word>(5U)));
+    EXPECT_EQ(header_tgt.year, flx::toBigEndian(static_cast<Word>(1999U)));
+    EXPECT_EQ(header_tgt.hour, flx::toBigEndian(static_cast<Word>(19U)));
+    EXPECT_EQ(header_tgt.minute, flx::toBigEndian(static_cast<Word>(27U)));
     EXPECT_EQ(test_file.compare(header_tgt.fileName), 0);
 
     header_src.magicNumber[0] = '\x44';
