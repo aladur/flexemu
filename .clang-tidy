@@ -35,6 +35,8 @@ Checks: '
   google-readability-casting,
   google-explicit-constructor,
   hicpp-explicit-conversions,
+  -hicpp-vararg,
+  -llvm-qualified-auto,
   misc-*,
   -misc-no-recursion,
   -misc-definitions-in-headers,

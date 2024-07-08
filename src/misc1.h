@@ -200,11 +200,11 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
 };
 
 #if defined(WIN32) && !defined(NO_DEBUGPRINT)
-#define DEBUGPRINT(fmt) OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " fmt))
+#define DEBUGPRINT(msg) OutputDebugString((LPCTSTR)("[" PROGRAMNAME "] " msg))
 #endif
 
 #if defined(UNIX) && !defined(NO_DEBUGPRINT)
-    #define DEBUGPRINT(fmt) ::printf("[" PROGRAMNAME "] " fmt)
+    #define DEBUGPRINT(msg) std::cout << "[" PROGRAMNAME "] " msg
 #endif
 
 #if defined(NO_DEBUGPRINT)

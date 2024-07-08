@@ -36,6 +36,7 @@
 #include "e2.h"
 #include "bobserv.h"
 #include <array>
+#include <iostream>
 
 // Maximum number of video RAM pointers supported.
 // Each video RAM page has as size of 16KByte.
@@ -109,7 +110,7 @@ public:
 public:
     void write_ram_rom(Word address, Byte value);
     Byte read_ram_rom(Word address);
-    void dump_ram_rom(Word min = 0, Word max = 0xffff);
+    void dump_ram_rom(std::ostream &os, Word min, Word max);
 
     // The following memory Byte/Word access methods are
     // inlined for optimized performance.

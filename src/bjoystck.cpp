@@ -38,10 +38,14 @@ BJoystick::BJoystick(int which)
 
     if (which == 0)
     {
+        // There is no alternative to this system call.
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
         js = open(JOYSTICK_DEVICE_0, O_RDONLY);
     }
     else if (which == 1)
     {
+        // There is no alternative to this system call.
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-vararg)
         js = open(JOYSTICK_DEVICE_1, O_RDONLY);
     }
     else

@@ -68,7 +68,7 @@ void TerminalIO::reset_terminal_io()
 
         if (used_serial_io)
         {
-            fprintf(stdout, "\n");
+            std::cout << "\n";
         }
     }
 

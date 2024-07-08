@@ -28,6 +28,7 @@
 #include "soptions.h"
 #include <cstring>
 #include <iostream>
+#include <fmt/format.h>
 
 std::array<Byte, 8> Memory::initial_content =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };
@@ -295,31 +296,31 @@ void Memory::switch_mmu(Word offset, Byte val)
     ppage[offset] = vram_ptrs[ppage_index];
 }
 
-void Memory::dump_ram_rom(Word min, Word max)
+void Memory::dump_ram_rom(std::ostream &os, Word min, Word max)
 {
     Word address = min;
     Byte value;
     Byte padding;
 
     padding = 3 * (address % 16);
-    printf("%04X ", address);
+    os << fmt::format("{:04X} ", address);
     if (padding)
     {
-        printf("%*c", padding, ' ');
+        os << fmt::format("{0:{1}}", ' ', padding);
     }
 
     while (true)
     {
         value = read_ram_rom(address);
-        printf(" %02X", value);
+        os << fmt::format(" {:02X}", value);
         if (address == max)
         {
-            printf("\n");
+            os << "\n";
             return;
         }
         if (address % 16 == 15)
         {
-            printf("\n%04X ", address + 1);
+            os << fmt::format("\n{:04X} ", address + 1);
         }
         ++address;
     }
