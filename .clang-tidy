@@ -81,6 +81,7 @@ Checks: '
   readability-qualified-auto,
   readability-redundant-string-cstr,
   readability-simplify-boolean-expr,
+  readability-simplify-subscript-expr,
   readability-uppercase-literal-suffix,
   readability-use-anyofallof'
 

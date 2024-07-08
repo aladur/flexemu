@@ -1270,9 +1270,9 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
         std::memset(boot_sectors.data(), '\0', boot_sectors.size());
-        boot_sectors.data()[0] = 0x7E; // JMP $F02D
-        boot_sectors.data()[1] = 0xF0;
-        boot_sectors.data()[2] = 0x2D;
+        boot_sectors[0] = 0x7E; // JMP $F02D
+        boot_sectors[1] = 0xF0;
+        boot_sectors[2] = 0x2D;
 
         return;
     }
