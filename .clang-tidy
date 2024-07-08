@@ -73,6 +73,7 @@ Checks: '
   readability-redundant-member-init,
   readability-redundant-smartptr-get,
   readability-static-accessed-through-instance,
+  readability-suspicious-call-argument,
   readability-function-size,
   readability-duplicate-include,
   readability-else-after-return,

@@ -180,6 +180,8 @@ static int load_intel_hex(std::istream &istream, MemoryTarget<DWord> &memtgt,
         }
 
         checksum = ~checksum + 1;
+        // Parameter names are concously chosen.
+        // NOLINTNEXTLINE(readability-suspicious-call-argument)
         ok = read_hex_byte(istream, expected_checksum, dummy);
         if (!ok)
         {
@@ -294,6 +296,8 @@ static int load_motorola_srecord(std::istream &istream,
         }
 
         checksum = ~checksum;
+        // Parameter names are concously chosen.
+        // NOLINTNEXTLINE(readability-suspicious-call-argument)
         ok = read_hex_byte(istream, expected_checksum, dummy);
         if (!ok)
         {
