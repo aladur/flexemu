@@ -132,7 +132,8 @@ int BRcFile::GetValue(const char *key, int &value)
         return BRC_NO_INTEGER;
     }
 
-    if (sscanf(str.c_str(), "%i", &value) != 1)
+    std::stringstream stream(str);
+    if ((stream >> value).fail())
     {
         return BRC_NO_INTEGER; // returned value is no integer
     }
