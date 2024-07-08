@@ -315,17 +315,13 @@ bool flx::matches(const std::string &text, const std::string &pattern,
 bool flx::multimatches(const std::string &text, const std::string &multipattern,
                        char delimiter /* = ';'*/, bool ignorecase /* = false */)
 {
-    auto patterns = flx::split(multipattern, delimiter);
+    const auto patterns = flx::split(multipattern, delimiter);
 
-    for (const auto &pattern : patterns)
-    {
-        if (flx::matches(text, pattern, ignorecase))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(patterns.cbegin(), patterns.cend(),
+            [&](const std::string &pattern)
+            {
+                return flx::matches(text, pattern, ignorecase);
+            });
 }
 
 #ifdef _WIN32

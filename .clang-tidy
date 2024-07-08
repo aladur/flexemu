@@ -81,7 +81,8 @@ Checks: '
   readability-qualified-auto,
   readability-redundant-string-cstr,
   readability-simplify-boolean-expr,
-  readability-uppercase-literal-suffix'
+  readability-uppercase-literal-suffix,
+  readability-use-anyofallof'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
