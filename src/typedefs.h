@@ -26,14 +26,14 @@
 
 #include <cstdint>
 
-typedef uint8_t Byte;
-typedef int8_t SByte;
-typedef uint16_t Word;
-typedef int16_t SWord;
-typedef uint32_t DWord;
-typedef int32_t SDWord;
-typedef uint64_t QWord;
-typedef int64_t SQWord;
+using Byte = uint8_t;
+using SByte = int8_t;
+using Word = uint16_t;
+using SWord = int16_t;
+using DWord = uint32_t;
+using SDWord = int32_t;
+using QWord = uint64_t;
+using SQWord = int64_t;
 
 #endif /* TYPEDEFS_INCLUDED */
 

@@ -62,7 +62,7 @@ class FlexDiskCheck
         Lost,
     };
 
-    typedef struct s_link
+    struct s_link
     {
         SectorType type{SectorType::NotAssigned};
         st_t trk_sec{}; // track-sector of this sector.
@@ -82,9 +82,10 @@ class FlexDiskCheck
               trk_sec(ts), to(p_to), record_nr(p_record_nr)
         {
         }
-    } link_t;
+    };
+    using link_t = struct s_link;
 
-    typedef struct s_item
+    struct s_item
     {
         SectorType type{SectorType::NotAssigned};
         std::string name;
@@ -108,7 +109,8 @@ class FlexDiskCheck
             end(p_end)
         {
         };
-    } item_t;
+    };
+    using item_t = struct s_item;
 
 public:
     FlexDiskCheck() = delete;

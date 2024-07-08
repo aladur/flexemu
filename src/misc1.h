@@ -211,7 +211,7 @@ EXIT_RESTART = 25262728 // (pseudo) Exit code to restart flexemu
     #define DEBUGPRINT(fmt)
 #endif
 
-typedef QWord cycles_t;
+using cycles_t = QWord;
 
 /* Names of Environment or Registry variables */
 

@@ -31,7 +31,7 @@
 #include <string>
 
 
-typedef std::vector<std::string> tPathList;
+using tPathList = std::vector<std::string>;
 
 class BDirectory
 {

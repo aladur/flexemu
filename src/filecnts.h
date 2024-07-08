@@ -58,7 +58,7 @@ struct s_formats
     Word offset; /* offset for fileheader */
 };
 
-typedef struct s_st
+struct s_st
 {
     Byte trk;
     Byte sec;
@@ -75,7 +75,8 @@ typedef struct s_st
     {
         return !operator==(src);
     }
-} st_t;
+};
+using st_t = struct s_st;
 
 /* structure of FLEX system information record (SIR) */
 struct alignas(1) s_sys_info_record

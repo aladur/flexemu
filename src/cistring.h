@@ -73,5 +73,5 @@ struct ci_char_traits : public std::char_traits<char>
     }
 };
 
-typedef std::basic_string<char, ci_char_traits> ci_string;
+using ci_string = std::basic_string<char, ci_char_traits>;
 

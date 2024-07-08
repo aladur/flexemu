@@ -43,7 +43,7 @@ const std::array<char,4> flexFileHeaderMagicNumber = {
 
 /* POD are needed here for memcpy() to/from clipboard. */
 /* NOLINTBEGIN(modernize-avoid-c-arrays) */
-typedef char FlexFileName[FLEX_FILENAME_LENGTH];
+using FlexFileName = char[FLEX_FILENAME_LENGTH];
 
 // This is a POD data structure. It can be used to
 // read or write FLEX files to and from the clipboard.

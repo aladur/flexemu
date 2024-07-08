@@ -26,10 +26,10 @@
 #include "filecont.h"
 
 #ifdef _WIN32
-    typedef HANDLE DIRHANDLE;
+    using DIRHANDLE = HANDLE;
 #endif
 #ifdef UNIX
-    typedef DIR *DIRHANDLE;
+    using DIRHANDLE = DIR *;
 #endif
 
 class FlexDirectoryDiskByFile;

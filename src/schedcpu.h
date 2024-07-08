@@ -50,7 +50,7 @@ struct sInterruptStatus
     DWord count[INT_RESET + 1];
 };
 
-typedef struct sInterruptStatus tInterruptStatus;
+using tInterruptStatus = struct sInterruptStatus;
 
 class ScheduledCpu
 {
