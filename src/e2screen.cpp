@@ -874,6 +874,7 @@ void E2Screen::InitializeNumLockIndicatorMask()
             if (0 == strNumLock.compare(atomName))
             {
                 numLockIndicatorMask = 1 << index;
+                XFree(atomName);
                 break;
             }
             XFree(atomName);
