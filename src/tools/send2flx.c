@@ -16,10 +16,8 @@ Copyright (C) W. Schwotzer 2003
 
 #include <ctype.h>
 #include <sys/ioctl.h>
-#ifdef __linux__
-  #include <termio.h>
-#endif
-#if defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#if defined(__linux__) || \
+    defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
   #include <termios.h>
 #endif
 #include <fcntl.h>
