@@ -89,11 +89,7 @@ struct Mc6809LoggerConfig
     };
 
 public:
-    Mc6809LoggerConfig()
-    {
-        logFileName.reserve(PATH_MAX);
-    }
-
+    Mc6809LoggerConfig() = default;
     Mc6809LoggerConfig(const Mc6809LoggerConfig &src) = default;
     Mc6809LoggerConfig &operator=(const Mc6809LoggerConfig &src) = default;
 
