@@ -65,6 +65,7 @@ private:
             std::deque<Mc6809CpuStatus>::reverse_iterator &iter);
     void doLoopOptimization(const Mc6809CpuStatus &state);
     size_t getLogRegisterCount();
+    static Byte swapBits(Byte reg);
 
     Mc6809LoggerConfig config;
     std::ofstream logOfs;

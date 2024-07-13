@@ -471,6 +471,23 @@ size_t Mc6809Logger::getLogRegisterCount()
     return count;
 }
 
+Byte Mc6809Logger::swapBits(Byte reg)
+{
+    Byte newBitPos = 0x80;
+    Byte result = 0x00;
+
+    for (Byte oldBitPos = 0x01; oldBitPos != 0x00; oldBitPos <<= 1U)
+    {
+        if ((reg & oldBitPos) != 0U)
+        {
+            result |= newBitPos;
+        }
+        newBitPos >>= 1U;
+    }
+
+    return result;
+}
+
 std::string Mc6809Logger::asCCString(Byte reg)
 {
     constexpr static std::array<Byte, 8> cc_bitmask = {
@@ -479,6 +496,10 @@ std::string Mc6809Logger::asCCString(Byte reg)
     };
     const static std::string cc_bitnames = "EFHINZVC";
     std::string result = "--------";
+
+#ifndef BITFIELDS_LSB_FIRST
+    reg = swapBits(reg);
+#endif
 
     for (size_t i = 0; i < cc_bitmask.size(); ++i)
     {
