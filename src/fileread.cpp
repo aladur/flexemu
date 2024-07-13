@@ -510,6 +510,7 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
     Byte checksum = 0;
     Byte type = 0;
     DWord index;
+    DWord address_be;
 
     if (wbType == WBType::Header)
     {
@@ -525,8 +526,9 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
         {
             return 0;
         }
-        address = flx::toBigEndian(address);
-        buffer = reinterpret_cast<Byte *>(&address);
+        address_be = flx::toBigEndian(address);
+        buffer = reinterpret_cast<Byte *>(&address_be);
+        address = 0;
     }
     else if (wbType == WBType::EndOfFile)
     {
