@@ -529,14 +529,11 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     int count;
     FlexDirEntry de;
     s_sys_info_sector sis{};
-    std::string fileName{p_fileName};
+    std::string fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map
     Byte sectorBuffer[3][SECTOR_SIZE];
 
-    if (p_fileName == nullptr)
-    {
-        fileName = buffer.GetFilename();
-    }
+    fileName = (p_fileName == nullptr) ? buffer.GetFilename() : p_fileName;
 
     if (FindFile(fileName, de))
     {
