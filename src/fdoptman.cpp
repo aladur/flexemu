@@ -29,8 +29,6 @@
 const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
 const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 
-const std::string FlexDirectoryDiskOptions::filename{".flexdiskrc"};
-
 FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
         const std::string &directory)
     : path(directory)
@@ -41,7 +39,7 @@ FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
     {
         path += PATHSEPARATOR;
     }
-    path += filename;
+    path += GetRcFilename();
 }
 
 bool FlexDirectoryDiskOptions::Read()
@@ -95,5 +93,12 @@ void FlexDirectoryDiskOptions::SetTracks(int p_tracks)
 void FlexDirectoryDiskOptions::SetSectors(int p_sectors)
 {
     sectors = p_sectors;
+}
+
+const std::string &FlexDirectoryDiskOptions::GetRcFilename()
+{
+    static const std::string rcFilename{".flexdiskrc"};
+
+    return rcFilename;
 }
 

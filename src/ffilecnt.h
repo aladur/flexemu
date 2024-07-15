@@ -84,7 +84,6 @@ public:
     FlexDisk &operator= (const FlexDisk &src) = delete;
     FlexDisk &operator= (FlexDisk &&src) noexcept;
 
-    static std::string bootSectorFile;
     static bool onTrack0OnlyDirSectors;
 
     static FlexDisk *Create(const std::string &directory,
@@ -93,6 +92,9 @@ public:
                             int tracks, int sectors,
                             int fmt = TYPE_DSK_DISKFILE,
                             const char *bsFile = nullptr);
+    static void SetBootSectorFile(const std::string &p_bootSectorFile);
+    static std::string &GetBootSectorFile();
+    static void InitializeClass();
 
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;

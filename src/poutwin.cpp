@@ -92,47 +92,110 @@
 #include "soptions.h"
 
 // The orientation keys should not be translated (Unique key).
-const QStringList orientationKeys{ "Portrait", "Landscape" };
-const QList<enum QPageLayout::Orientation> orientationValues{
-    QPageLayout::Portrait, QPageLayout::Landscape
-};
+const QStringList &GetOrientationKeys()
+{
+    static const QStringList orientationKeys{ "Portrait", "Landscape" };
+
+    return orientationKeys;
+}
+
+using OrientationValues_t = QList<enum QPageLayout::Orientation>;
+
+const OrientationValues_t &GetOrientationValues()
+{
+    static const OrientationValues_t orientationValues
+    {
+        QPageLayout::Portrait, QPageLayout::Landscape
+    };
+
+    return orientationValues;
+}
+
 // The pages size keys should not be translated (Unique key).
-const QStringList pageSizeKeys{
-    "DINA3", "DINA4", "DINA5", "DINA6",
-    "DINB3", "DINB4", "DINB5", "DINB6",
-    "EnvC3", "EnvC4", "EnvC5", "EnvC6",
-    "Env10", "EnvDL", "EnvMonarch",
-    "JISB4", "JISB5", "JISB6",
-    "Tabloid", "Legal", "Letter", "Executive", "HalfLetter"
-};
-const QStringList pageSizeStrings{
-    "DIN A3", "DIN A4", "DIN A5", "DIN A6",
-    "DIN B3", "DIN B4", "DIN B5", "DIN B6",
-    "Envelope C3", "Envelope C4", "Envelope C5", "Envelope C6",
-    "#10 Envelope", "Envelope DL", "Envelope Monarch",
-    "JIS B4", "JIS B5", "JIS B6",
-    "Tabloid", "Legal", "Letter", "Executive", "Half Letter"
-};
-const QList<enum QPageSize::PageSizeId> pageSizeValues{
-    QPageSize::A3, QPageSize::A4, QPageSize::A5, QPageSize::A6,
-    QPageSize::B3, QPageSize::B4, QPageSize::B5, QPageSize::B6,
-    QPageSize::EnvelopeC3, QPageSize::EnvelopeC4, QPageSize::EnvelopeC5,
-    QPageSize::EnvelopeC6,
-    QPageSize::Envelope10, QPageSize::EnvelopeDL, QPageSize::EnvelopeMonarch,
-    QPageSize::JisB4, QPageSize::JisB5, QPageSize::JisB6,
-    QPageSize::Tabloid, QPageSize::Legal, QPageSize::Letter,
-    QPageSize::ExecutiveStandard, QPageSize::Statement
-};
+const QStringList &GetPageSizeKeys()
+{
+    static const QStringList pageSizeKeys
+    {
+        "DINA3", "DINA4", "DINA5", "DINA6",
+        "DINB3", "DINB4", "DINB5", "DINB6",
+        "EnvC3", "EnvC4", "EnvC5", "EnvC6",
+        "Env10", "EnvDL", "EnvMonarch",
+        "JISB4", "JISB5", "JISB6",
+        "Tabloid", "Legal", "Letter", "Executive", "HalfLetter"
+    };
+
+    return pageSizeKeys;
+}
+
+const QStringList &GetPageSizeStrings()
+{
+    static const QStringList pageSizeStrings
+    {
+        "DIN A3", "DIN A4", "DIN A5", "DIN A6",
+        "DIN B3", "DIN B4", "DIN B5", "DIN B6",
+        "Envelope C3", "Envelope C4", "Envelope C5", "Envelope C6",
+        "#10 Envelope", "Envelope DL", "Envelope Monarch",
+        "JIS B4", "JIS B5", "JIS B6",
+        "Tabloid", "Legal", "Letter", "Executive", "Half Letter"
+    };
+
+    return pageSizeStrings;
+}
+
+using PageSizeValues_t = QList<enum QPageSize::PageSizeId>;
+static const PageSizeValues_t &GetPageSizeValues()
+{
+    static const PageSizeValues_t pageSizeValues
+    {
+        QPageSize::A3, QPageSize::A4, QPageSize::A5, QPageSize::A6,
+        QPageSize::B3, QPageSize::B4, QPageSize::B5, QPageSize::B6,
+        QPageSize::EnvelopeC3, QPageSize::EnvelopeC4, QPageSize::EnvelopeC5,
+        QPageSize::EnvelopeC6,
+        QPageSize::Envelope10, QPageSize::EnvelopeDL,
+        QPageSize::EnvelopeMonarch,
+        QPageSize::JisB4, QPageSize::JisB5, QPageSize::JisB6,
+        QPageSize::Tabloid, QPageSize::Legal, QPageSize::Letter,
+        QPageSize::ExecutiveStandard, QPageSize::Statement
+    };
+
+    return pageSizeValues;
+}
+
 // The units Millimeter and Inch are supported.
 // Millimeter is used for internal calculations.
 // Centimeter is used in the user interface.
 // The unit keys should not be translated (Unique key).
-const QStringList unitKeys{ "Millimeter", "Inches" };
-const QStringList unitSuffix{ "cm", "in" };
-const QStringList unitStrings{ "Centimeter (cm)", "Inches (in)" };
-const QList<enum QPrinter::Unit> unitValues{
-    QPrinter::Millimeter, QPrinter::Inch
-};
+static const QStringList &GetUnitKeys()
+{
+    static const QStringList unitKeys{ "Millimeter", "Inches" };
+
+    return unitKeys;
+}
+
+static const QStringList &GetUnitSuffix()
+{
+    static const QStringList unitSuffix{ "cm", "in" };
+
+    return unitSuffix;
+}
+
+static const QStringList &GetUnitStrings()
+{
+    static const QStringList unitStrings{ "Centimeter (cm)", "Inches (in)" };
+
+    return unitStrings;
+}
+
+using UnitValues_t = QList<enum QPrinter::Unit>;
+static const UnitValues_t &GetUnitValues()
+{
+    static const UnitValues_t unitValues
+    {
+        QPrinter::Millimeter, QPrinter::Inch
+    };
+
+    return unitValues;
+}
 
 const char PrintOutputWindow::separator = ',';
 
@@ -198,12 +261,12 @@ PrintOutputWindow::PrintOutputWindow(sOptions &p_options)
     auto font = GetFont(options.printFont.c_str());
     fontComboBox->setCurrentFont(font);
 
-    auto index = orientationKeys.indexOf(options.printOrientation.c_str());
-    orientation = (index >= 0) ? orientationValues[index] : orientation;
-    index = pageSizeKeys.indexOf(options.printPageSize.c_str());
-    pageSizeId = (index >= 0) ? pageSizeValues[index] : pageSizeId;
-    index = unitKeys.indexOf(options.printUnit.c_str());
-    unit = (index >= 0) ? unitValues[index] : unit;
+    auto index = GetOrientationKeys().indexOf(options.printOrientation.c_str());
+    orientation = (index >= 0) ? GetOrientationValues()[index] : orientation;
+    index = GetPageSizeKeys().indexOf(options.printPageSize.c_str());
+    pageSizeId = (index >= 0) ? GetPageSizeValues()[index] : pageSizeId;
+    index = GetUnitKeys().indexOf(options.printUnit.c_str());
+    unit = (index >= 0) ? GetUnitValues()[index] : unit;
 
     const auto printOutputIcon = QIcon(":/resource/print-output.png");
     setWindowIcon(printOutputIcon);
@@ -323,8 +386,8 @@ void PrintOutputWindow::OnLandscapeClicked(bool checked)
         SavePrintConfig();
         orientation = QPageLayout::Landscape;
         previewPrinter->setPageOrientation(orientation);
-        auto index = orientationValues.indexOf(orientation);
-        options.printOrientation = orientationKeys[index].toStdString();
+        auto index = GetOrientationValues().indexOf(orientation);
+        options.printOrientation = GetOrientationKeys()[index].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -485,10 +548,10 @@ void PrintOutputWindow::OnPageSizeChanged(int index)
     if (ui != nullptr && index >= 0)
     {
         SavePrintConfig();
-        pageSizeId = pageSizeValues[index];
+        pageSizeId = GetPageSizeValues()[index];
         previewPrinter->setPageSize(QPageSize(pageSizeId));
-        auto idx = pageSizeValues.indexOf(pageSizeId);
-        options.printPageSize = pageSizeKeys[idx].toStdString();
+        auto idx = GetPageSizeValues().indexOf(pageSizeId);
+        options.printPageSize = GetPageSizeKeys()[idx].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -504,8 +567,8 @@ void PrintOutputWindow::OnPortraitClicked(bool checked)
         SavePrintConfig();
         orientation = QPageLayout::Portrait;
         previewPrinter->setPageOrientation(orientation);
-        auto index = orientationValues.indexOf(orientation);
-        options.printOrientation = orientationKeys[index].toStdString();
+        auto index = GetOrientationValues().indexOf(orientation);
+        options.printOrientation = GetOrientationKeys()[index].toStdString();
         isDeferPreviewUpdate = true;
         RestorePrintConfig();
         UpdatePageWidthAndHeightWidgets();
@@ -704,10 +767,10 @@ void PrintOutputWindow::OnUnitChanged(int index)
 {
     if (ui != nullptr && index >= 0)
     {
-        unit = unitValues[index];
+        unit = GetUnitValues()[index];
         UpdateMarginWidgets();
-        UpdateSpinBoxUnit(unitSuffix[index]);
-        options.printUnit = unitKeys[index].toStdString();
+        UpdateSpinBoxUnit(GetUnitSuffix()[index]);
+        options.printUnit = GetUnitKeys()[index].toStdString();
         UpdatePageWidthAndHeightWidgets();
     }
 }
@@ -924,13 +987,13 @@ void PrintOutputWindow::InitializePageSizeWidget()
 {
     if (ui != nullptr)
     {
-        ui->cb_pageSize->addItems(pageSizeStrings);
+        ui->cb_pageSize->addItems(GetPageSizeStrings());
 
-        auto index = pageSizeValues.indexOf(pageSizeId);
+        auto index = GetPageSizeValues().indexOf(pageSizeId);
 
         if (index >= 0)
         {
-            ui->cb_pageSize->setCurrentText(pageSizeStrings[index]);
+            ui->cb_pageSize->setCurrentText(GetPageSizeStrings()[index]);
         }
     }
 }
@@ -962,14 +1025,14 @@ void PrintOutputWindow::InitializeUnitWidget()
 {
     if (ui != nullptr)
     {
-        ui->cb_unit->addItems(unitStrings);
+        ui->cb_unit->addItems(GetUnitStrings());
 
-        auto index = unitValues.indexOf(unit);
+        auto index = GetUnitValues().indexOf(unit);
 
         if (index >= 0)
         {
-            ui->cb_unit->setCurrentText(unitStrings[index]);
-            UpdateSpinBoxUnit(unitSuffix[index]);
+            ui->cb_unit->setCurrentText(GetUnitStrings()[index]);
+            UpdateSpinBoxUnit(GetUnitSuffix()[index]);
         }
     }
 }
@@ -1209,11 +1272,11 @@ std::string PrintOutputWindow::CreatePrintConfigKey() const
     auto end = fontKey.end();
     fontKey.erase(std::remove(fontKey.begin(), end, ' '), end);
 
-    auto index = pageSizeValues.indexOf(pageSizeId);
-    const auto& pageSizeKey = pageSizeKeys[index];
+    auto index = GetPageSizeValues().indexOf(pageSizeId);
+    const auto& pageSizeKey = GetPageSizeKeys()[index];
 
-    index = orientationValues.indexOf(orientation);
-    const auto& orientationKey = orientationKeys[index];
+    index = GetOrientationValues().indexOf(orientation);
+    const auto& orientationKey = GetOrientationKeys()[index];
 
     return (orientationKey + pageSizeKey).toStdString() + fontKey;
 }

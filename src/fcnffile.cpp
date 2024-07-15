@@ -29,11 +29,16 @@
 #include <algorithm>
 
 
-const std::set<std::string> FlexemuConfigFile::validDevices =
-    std::set<std::string>{
-        "mmu", "acia1", "pia1", "pia2", "fdc",
-        "drisel", "command", "vico1", "vico2", "rtc"
+const std::set<std::string> &GetValidDevices()
+{
+    static const std::set<std::string> validDevices
+    {
+         "mmu", "acia1", "pia1", "pia2", "fdc",
+         "drisel", "command", "vico1", "vico2", "rtc"
     };
+
+    return validDevices;
+}
 
 FlexemuConfigFile::FlexemuConfigFile(const std::string &fileName) :
      iniFileName(fileName)
@@ -68,6 +73,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 
     for (const auto &iter : valueForKey)
     {
+        const auto &validDevices = GetValidDevices();
         if (validDevices.find(iter.first) == validDevices.end())
         {
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
@@ -236,6 +242,7 @@ std::pair<std::string, std::set<std::string> >
             {
                 device = flx::trim(std::move(device));
 
+                const auto &validDevices = GetValidDevices();
                 if (validDevices.find(device) == validDevices.end())
                 {
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,

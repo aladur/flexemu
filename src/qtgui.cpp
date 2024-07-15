@@ -2173,7 +2173,7 @@ void QtGui::closeEvent(QCloseEvent *event)
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
 {
-    p_options.readOnlyOptionIds = allFlexemuOptionIds;
+    p_options.readOnlyOptionIds = GetAllFlexemuOptionIds();
     p_options.readOnlyOptionIds.erase(
         std::remove(p_options.readOnlyOptionIds.begin(),
                     p_options.readOnlyOptionIds.end(),

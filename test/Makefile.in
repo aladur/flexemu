@@ -145,6 +145,7 @@ am_test_gccasm_OBJECTS = ../src/test_gccasm-clogfile.$(OBJEXT) \
 	../src/test_gccasm-mc6809lg.$(OBJEXT) \
 	../src/test_gccasm-mc6809st.$(OBJEXT) \
 	../src/test_gccasm-schedule.$(OBJEXT) \
+	../src/test_gccasm-soptions.$(OBJEXT) \
 	test_gccasm-test_gccasm.$(OBJEXT) \
 	test_gccasm-testmain.$(OBJEXT)
 test_gccasm_OBJECTS = $(am_test_gccasm_OBJECTS)
@@ -215,6 +216,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/test_gccasm-mc6809lg.Po \
 	../src/$(DEPDIR)/test_gccasm-mc6809st.Po \
 	../src/$(DEPDIR)/test_gccasm-schedule.Po \
+	../src/$(DEPDIR)/test_gccasm-soptions.Po \
 	../src/$(DEPDIR)/unittests-bdate.Po \
 	../src/$(DEPDIR)/unittests-benv.Po \
 	../src/$(DEPDIR)/unittests-bmembuf.Po \
@@ -813,6 +815,7 @@ test_gccasm_SOURCES = \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/schedule.cpp \
+	../src/soptions.cpp \
 	test_gccasm.cpp \
 	testmain.cpp \
 	../src/bdate.h \
@@ -841,6 +844,7 @@ test_gccasm_SOURCES = \
 	../src/misc1.h \
 	../src/schedcpu.h \
 	../src/schedule.h \
+	../src/soptions.h \
 	../src/sprinter.h \
 	test_gccasm.h \
 	../src/typedefs.h \
@@ -1052,6 +1056,8 @@ libgtest.la: $(libgtest_la_OBJECTS) $(libgtest_la_DEPENDENCIES) $(EXTRA_libgtest
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/test_gccasm-schedule.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/test_gccasm-soptions.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 
 test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA_test_gccasm_DEPENDENCIES) 
 	@rm -f test_gccasm$(EXEEXT)
@@ -1113,6 +1119,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/test_gccasm-mc6809lg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/test_gccasm-mc6809st.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/test_gccasm-schedule.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/test_gccasm-soptions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-benv.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bmembuf.Po@am__quote@ # am--include-marker
@@ -1342,6 +1349,20 @@ $(top_builddir)/$(gtest_top)/src/libgtest_la-gtest-all.lo: $(top_builddir)/$(gte
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/schedule.cpp' object='../src/test_gccasm-schedule.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -c -o ../src/test_gccasm-schedule.obj `if test -f '../src/schedule.cpp'; then $(CYGPATH_W) '../src/schedule.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/schedule.cpp'; fi`
+
+../src/test_gccasm-soptions.o: ../src/soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -MT ../src/test_gccasm-soptions.o -MD -MP -MF ../src/$(DEPDIR)/test_gccasm-soptions.Tpo -c -o ../src/test_gccasm-soptions.o `test -f '../src/soptions.cpp' || echo '$(srcdir)/'`../src/soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/test_gccasm-soptions.Tpo ../src/$(DEPDIR)/test_gccasm-soptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/soptions.cpp' object='../src/test_gccasm-soptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -c -o ../src/test_gccasm-soptions.o `test -f '../src/soptions.cpp' || echo '$(srcdir)/'`../src/soptions.cpp
+
+../src/test_gccasm-soptions.obj: ../src/soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -MT ../src/test_gccasm-soptions.obj -MD -MP -MF ../src/$(DEPDIR)/test_gccasm-soptions.Tpo -c -o ../src/test_gccasm-soptions.obj `if test -f '../src/soptions.cpp'; then $(CYGPATH_W) '../src/soptions.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/soptions.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/test_gccasm-soptions.Tpo ../src/$(DEPDIR)/test_gccasm-soptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/soptions.cpp' object='../src/test_gccasm-soptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -c -o ../src/test_gccasm-soptions.obj `if test -f '../src/soptions.cpp'; then $(CYGPATH_W) '../src/soptions.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/soptions.cpp'; fi`
 
 test_gccasm-test_gccasm.o: test_gccasm.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_gccasm_CXXFLAGS) $(CXXFLAGS) -MT test_gccasm-test_gccasm.o -MD -MP -MF $(DEPDIR)/test_gccasm-test_gccasm.Tpo -c -o test_gccasm-test_gccasm.o `test -f 'test_gccasm.cpp' || echo '$(srcdir)/'`test_gccasm.cpp
@@ -2193,6 +2214,7 @@ distclean: distclean-recursive
 	-rm -f ../src/$(DEPDIR)/test_gccasm-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/test_gccasm-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/test_gccasm-schedule.Po
+	-rm -f ../src/$(DEPDIR)/test_gccasm-soptions.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bdate.Po
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bmembuf.Po
@@ -2282,6 +2304,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ../src/$(DEPDIR)/test_gccasm-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/test_gccasm-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/test_gccasm-schedule.Po
+	-rm -f ../src/$(DEPDIR)/test_gccasm-soptions.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bdate.Po
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bmembuf.Po

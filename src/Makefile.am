@@ -216,6 +216,7 @@ flexemu_SOURCES = \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
+	soptions.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \

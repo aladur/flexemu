@@ -132,6 +132,9 @@
     <ClCompile Include="sodiff.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="soptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="terminal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

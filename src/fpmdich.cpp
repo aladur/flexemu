@@ -57,8 +57,13 @@
 #include "fpcnvui.h"
 #include "qtfree.h"
 
-const QString FlexplorerMdiChild::mimeTypeFlexDiskImageFile =
-                                      "application/x-flexdiskimagefile";
+const QString &FlexplorerMdiChild::GetMimeTypeFlexDiskImageFile()
+{
+    static const QString mimeTypeFlexDiskImageFile
+        {"application/x-flexdiskimagefile"};
+
+    return mimeTypeFlexDiskImageFile;
+}
 
 FlexplorerMdiChild::FlexplorerMdiChild(const QString &path,
                                        struct sFPOptions &p_options) :
@@ -750,7 +755,7 @@ void FlexplorerMdiChild::mouseMoveEvent(QMouseEvent *event)
 
 void FlexplorerMdiChild::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat(mimeTypeFlexDiskImageFile) &&
+    if (event->mimeData()->hasFormat(GetMimeTypeFlexDiskImageFile()) &&
        !IsWriteProtected())
     {
         if (event->source() != this)
@@ -765,7 +770,7 @@ void FlexplorerMdiChild::dragEnterEvent(QDragEnterEvent *event)
 
 void FlexplorerMdiChild::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (event->mimeData()->hasFormat(mimeTypeFlexDiskImageFile) &&
+    if (event->mimeData()->hasFormat(GetMimeTypeFlexDiskImageFile()) &&
        !IsWriteProtected())
     {
         if (event->source() != this)
@@ -780,7 +785,7 @@ void FlexplorerMdiChild::dragMoveEvent(QDragMoveEvent *event)
 
 void FlexplorerMdiChild::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat(mimeTypeFlexDiskImageFile) &&
+    if (event->mimeData()->hasFormat(GetMimeTypeFlexDiskImageFile()) &&
        !IsWriteProtected())
     {
         if (event->source() != this)
@@ -851,7 +856,7 @@ QMimeData *FlexplorerMdiChild::GetMimeDataForSelected(int *count)
         itemData.resize(files.GetFileSize());
 #endif
         files.WriteDataTo(reinterpret_cast<Byte *>(itemData.data()));
-        mimeData->setData(mimeTypeFlexDiskImageFile, itemData);
+        mimeData->setData(GetMimeTypeFlexDiskImageFile(), itemData);
     }
 
     QStringList mimeTypes { "text/plain", "text/csv", "text/html" };
@@ -906,12 +911,12 @@ int FlexplorerMdiChild::PasteFrom(const QMimeData &mimeData)
     int count = 0;
     FlexDnDFiles files;
 
-    if (!mimeData.hasFormat(mimeTypeFlexDiskImageFile))
+    if (!mimeData.hasFormat(GetMimeTypeFlexDiskImageFile()))
     {
         return count;
     }
 
-    QByteArray itemData = mimeData.data(mimeTypeFlexDiskImageFile);
+    QByteArray itemData = mimeData.data(GetMimeTypeFlexDiskImageFile());
 
     files.ReadDataFrom(reinterpret_cast<Byte *>(itemData.data()));
 
@@ -964,7 +969,7 @@ int FlexplorerMdiChild::PasteFromClipboard()
         const auto *mimeData = clipboard->mimeData();
 
         if (mimeData != nullptr &&
-            mimeData->hasFormat(mimeTypeFlexDiskImageFile))
+            mimeData->hasFormat(GetMimeTypeFlexDiskImageFile()))
         {
             return PasteFrom(*mimeData);
         }

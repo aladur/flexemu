@@ -32,6 +32,7 @@
 #include "winctxt.h"
 #include "sfpopts.h"
 #include "fpoptman.h"
+#include "ffilecnt.h"
 
 
 #ifdef _WIN32
@@ -43,6 +44,7 @@ int main(int argc, char *argv[])
     Q_INIT_RESOURCE(fpmain_qrc_cpp);
     sFPOptions options;
 
+    FlexDisk::InitializeClass();
     QApplication app(argc, argv);
     FlexplorerOptions::InitOptions(options);
     FlexplorerOptions::ReadOptions(options);

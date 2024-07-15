@@ -194,9 +194,9 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
 	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
 	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
-	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
-	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-winmain.$(OBJEXT)
+	flexemu-soptions.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -296,6 +296,7 @@ am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	./$(DEPDIR)/flexemu-poverhlp.Po ./$(DEPDIR)/flexemu-qtfree.Po \
 	./$(DEPDIR)/flexemu-qtgui.Po ./$(DEPDIR)/flexemu-qtgui_moc.Po \
 	./$(DEPDIR)/flexemu-schedule.Po ./$(DEPDIR)/flexemu-sodiff.Po \
+	./$(DEPDIR)/flexemu-soptions.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
 	./$(DEPDIR)/flexemu-winmain.Po \
@@ -847,6 +848,7 @@ flexemu_SOURCES = \
 	qtgui.cpp \
 	schedule.cpp \
 	sodiff.cpp \
+	soptions.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -1380,6 +1382,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-qtgui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-sodiff.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-soptions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
@@ -2630,6 +2633,20 @@ flexemu-sodiff.obj: sodiff.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-sodiff.obj `if test -f 'sodiff.cpp'; then $(CYGPATH_W) 'sodiff.cpp'; else $(CYGPATH_W) '$(srcdir)/sodiff.cpp'; fi`
 
+flexemu-soptions.o: soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-soptions.o -MD -MP -MF $(DEPDIR)/flexemu-soptions.Tpo -c -o flexemu-soptions.o `test -f 'soptions.cpp' || echo '$(srcdir)/'`soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-soptions.Tpo $(DEPDIR)/flexemu-soptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='soptions.cpp' object='flexemu-soptions.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-soptions.o `test -f 'soptions.cpp' || echo '$(srcdir)/'`soptions.cpp
+
+flexemu-soptions.obj: soptions.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-soptions.obj -MD -MP -MF $(DEPDIR)/flexemu-soptions.Tpo -c -o flexemu-soptions.obj `if test -f 'soptions.cpp'; then $(CYGPATH_W) 'soptions.cpp'; else $(CYGPATH_W) '$(srcdir)/soptions.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-soptions.Tpo $(DEPDIR)/flexemu-soptions.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='soptions.cpp' object='flexemu-soptions.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-soptions.obj `if test -f 'soptions.cpp'; then $(CYGPATH_W) 'soptions.cpp'; else $(CYGPATH_W) '$(srcdir)/soptions.cpp'; fi`
+
 flexemu-terminal.o: terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-terminal.o -MD -MP -MF $(DEPDIR)/flexemu-terminal.Tpo -c -o flexemu-terminal.o `test -f 'terminal.cpp' || echo '$(srcdir)/'`terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-terminal.Tpo $(DEPDIR)/flexemu-terminal.Po
@@ -3502,6 +3519,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
 	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
+	-rm -f ./$(DEPDIR)/flexemu-soptions.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
@@ -3667,6 +3685,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-qtgui_moc.Po
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
 	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
+	-rm -f ./$(DEPDIR)/flexemu-soptions.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po

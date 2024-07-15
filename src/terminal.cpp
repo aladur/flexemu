@@ -31,7 +31,7 @@
 // pointer to this instance for signal handling
 TerminalIO *TerminalIO::instance = nullptr;
 #ifdef HAVE_TERMIOS_H
-    struct termios TerminalIO::save_termios;
+    struct termios TerminalIO::save_termios{};
     bool TerminalIO::used_serial_io = false;
     bool TerminalIO::is_termios_saved = false;
 #endif

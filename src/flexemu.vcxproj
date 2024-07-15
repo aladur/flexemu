@@ -260,6 +260,7 @@
     <ClCompile Include="qtgui.cpp" />
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
+    <ClCompile Include="soptions.cpp" />
     <ClCompile Include="terminal.cpp" />
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />

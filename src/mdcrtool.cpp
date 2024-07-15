@@ -132,13 +132,13 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
             if (status == MdcrStatus::DoubleName)
             {
                 std::cerr << "*** Warning: "
-                          << mdcrErrors[static_cast<T>(status)]
+                          << GetMdcrError(static_cast<T>(status))
                           << ". Ignored.\n";
                 continue; // Double name error is ignored.
             }
 
             std::cerr << "*** Error: "
-                      << mdcrErrors[static_cast<T>(status)]
+                      << GetMdcrError(static_cast<T>(status))
                       << ". Mdcr file: " << ofile << ".\n";
             return 1;
         }
@@ -221,7 +221,7 @@ int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
         using T = std::underlying_type_t<MdcrStatus>;
 
         std::cerr << "*** Error: "
-                  << mdcrErrors[static_cast<T>(status)]
+                  << GetMdcrError(static_cast<T>(status))
                   << ". Mdcr file: " << ifile << ".\n";
         return 1;
     }
@@ -267,7 +267,7 @@ int ListContentOfMdcrFile(const char *ifile)
         using T = std::underlying_type_t<MdcrStatus>;
 
         std::cerr << "*** Error: "
-                  << mdcrErrors[static_cast<T>(status)]
+                  << GetMdcrError(static_cast<T>(status))
                   << ". Mdcr file: " << ifile << ".\n";
         return 1;
     }

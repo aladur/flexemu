@@ -31,6 +31,7 @@
 #include "soptions.h"
 #include "winctxt.h"
 #include "winmain.h"
+#include "ffilecnt.h"
 #include "warnoff.h"
 #include <QApplication>
 #include <QMessageBox>
@@ -77,6 +78,8 @@ int main(int argc, char *argv[])
 #endif
 
     Q_INIT_RESOURCE(flexemu_qrc_cpp);
+
+    FlexDisk::InitializeClass();
 
     while (return_code == EXIT_RESTART)
     {

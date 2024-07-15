@@ -103,6 +103,7 @@ test_gccasm_SOURCES = \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/schedule.cpp \
+	../src/soptions.cpp \
 	test_gccasm.cpp \
 	testmain.cpp \
 	../src/bdate.h \
@@ -131,6 +132,7 @@ test_gccasm_SOURCES = \
 	../src/misc1.h \
 	../src/schedcpu.h \
 	../src/schedule.h \
+	../src/soptions.h \
 	../src/sprinter.h \
 	test_gccasm.h \
 	../src/typedefs.h \

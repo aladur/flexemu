@@ -28,16 +28,28 @@
 #include <algorithm>
 #include <cctype>
 
-const std::vector<std::string> mdcrErrors
+
+const std::string &GetMdcrError(int index)
 {
-    "Success",
-    "Invalid input data",
-    "Tape is write protected",
-    "Wrong checksum",
-    "Dublicate name",
-    "Error reading a record",
-    "Error writing a record",
-};
+    static const std::vector<std::string> mdcrErrors
+    {
+        "Success",
+        "Invalid input data",
+        "Tape is write protected",
+        "Wrong checksum",
+        "Dublicate name",
+        "Error reading a record",
+        "Error writing a record",
+        "Unknown error",
+    };
+
+    if (index >= static_cast<int>(mdcrErrors.size()) || index < 0)
+    {
+        return mdcrErrors[mdcrErrors.size() - 1U];
+    }
+
+    return mdcrErrors[index];
+}
 
 // Create a filename which conforms to the MDCR file system:
 // - Up to 6 ASCII characters

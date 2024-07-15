@@ -45,15 +45,25 @@
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
+static const std::string &getDefaultBootSectorFile()
+{
+    static std::string defaultBootSectorFile;
+
+    if (defaultBootSectorFile.empty())
+    {
 #ifdef UNIX
-    std::string FlexDisk::bootSectorFile =
-        F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
+        defaultBootSectorFile = F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
 #endif
 #ifdef _WIN32
-    std::string FlexDisk::bootSectorFile =
-        flx::getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
+        defaultBootSectorFile = flx::getExecutablePath() +
+                                PATHSEPARATORSTRING BOOT_FILE;
 #endif
-    bool FlexDisk::onTrack0OnlyDirSectors = true;
+    }
+
+    return defaultBootSectorFile;
+}
+
+bool FlexDisk::onTrack0OnlyDirSectors = true;
 
 /***********************************************/
 /* Initialization of a s_flex_header structure */
@@ -324,6 +334,18 @@ FlexDisk *FlexDisk::Create(
     return new FlexDisk(path, mode, fileTimeAccess);
 }
 
+void FlexDisk::SetBootSectorFile(const std::string &p_bootSectorFile)
+{
+    GetBootSectorFile() = p_bootSectorFile;
+}
+
+std::string &FlexDisk::GetBootSectorFile()
+{
+    static std::string bootSectorFile;
+
+    return bootSectorFile;
+}
+
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
@@ -344,6 +366,11 @@ bool FlexDisk::FindFile(const std::string &fileName, FlexDirEntry &entry)
 
     entry.SetEmpty();
     return false;
+}
+
+void FlexDisk::InitializeClass()
+{
+    SetBootSectorFile(getDefaultBootSectorFile());
 }
 
 bool FlexDisk::DeleteFile(const std::string &wildcard)
@@ -1250,7 +1277,7 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
     // Read boot sector(s) if present from file.
     if (bsFile == nullptr)
     {
-        bsFile = bootSectorFile.c_str();
+        bsFile = getDefaultBootSectorFile().c_str();
     }
     std::memset(boot_sectors.data(), '\0', boot_sectors.size());
     std::fstream boot(bsFile, std::ios::in | std::ios::binary);

@@ -67,18 +67,22 @@ std::array<QString, FlexplorerTableModel::COLUMNS>
     tr("Date"), tr("Attributes"),
 };
 
-const QVector<FlexplorerTableModel::sFileTypes>
-    FlexplorerTableModel::fileTypes
+const FlexplorerTableModel::FileTypes_t &FlexplorerTableModel::GetFileTypes()
 {
-    { "BIN", "Binary file" },
-    { "TXT", "Text file" },
-    { "CMD", "Executable file" },
-    { "BAS", "Basic file" },
-    { "SYS", "System file" },
-    { "BAK", "Backup file" },
-    { "BAC", "Backup file" },
-    { "DAT", "Data file" },
-};
+    static const FileTypes_t fileTypes
+    {
+        { "BIN", "Binary file" },
+        { "TXT", "Text file" },
+        { "CMD", "Executable file" },
+        { "BAS", "Basic file" },
+        { "SYS", "System file" },
+        { "BAK", "Backup file" },
+        { "BAC", "Backup file" },
+        { "DAT", "Data file" },
+    };
+
+    return fileTypes;
+}
 
 FlexplorerTableModel::FlexplorerTableModel(const char *p_path,
                                            struct sFPOptions &p_options,
@@ -101,6 +105,7 @@ QString FlexplorerTableModel::GetFileType(const FlexDirEntry &dirEntry)
 {
     QString fileExtension(dirEntry.GetFileExt().c_str());
 
+    const auto &fileTypes = GetFileTypes();
     for (const auto &fileType : fileTypes)
     {
         if (fileType.fileExt == fileExtension)

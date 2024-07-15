@@ -47,6 +47,8 @@
 class FileAttributesUi
 {
 private:
+    using AttributeLabels_t = QVarLengthArray<const char *, 4>;
+
     QVBoxLayout *verticalLayout_1{nullptr};
     QLabel *l_filename{nullptr};
     QGroupBox *groupBox{nullptr};
@@ -58,14 +60,14 @@ private:
     Byte clearMask{0};
     Byte setMask{0};
 
-    static const QVarLengthArray<const char *, 4> attributeLabel;
+    static const AttributeLabels_t &GetAttributeLabels();
 
 public:
     FileAttributesUi()
     {
         assert(c_protect.size() ==
                 static_cast<int>(attributeCharToFlag.size()));
-        assert(c_protect.size() == attributeLabel.size());
+        assert(c_protect.size() == GetAttributeLabels().size());
     }
 
     void TransferDataToDialog(const QStringList &filenames,
@@ -180,11 +182,12 @@ public:
         verticalLayout_2->setSpacing(0);
         verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(0, 0, 0, 0);
+        const auto &attributeLabels = GetAttributeLabels();
 
         for (Word i = 0; i < static_cast<Word>(c_protect.size()); ++i)
         {
             c_protect[i] = new QCheckBox(&dialog);
-            c_protect[i]->setObjectName(GetObjectName(attributeLabel[i]));
+            c_protect[i]->setObjectName(GetObjectName(attributeLabels[i]));
             verticalLayout_2->addWidget(c_protect[i]);
         }
 
@@ -221,10 +224,11 @@ public:
                 QApplication::translate("Dialog", "File Attributes"));
         l_filename->setText(QString());
         groupBox->setTitle(QString());
-        for (int i = 0; i < attributeLabel.size(); ++i)
+        const auto &attributeLabels = GetAttributeLabels();
+        for (int i = 0; i < attributeLabels.size(); ++i)
         {
             c_protect[i]->setText(
-                    QApplication::translate("Dialog", attributeLabel[i]));
+                    QApplication::translate("Dialog", attributeLabels[i]));
         }
     }
 };

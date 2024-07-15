@@ -113,6 +113,8 @@ private:
     void ResizeColumn(int column, const QString &text) const;
     void ResizeColumns() const;
 
+    static const QString &GetMimeTypeFlexDiskImageFile();
+
     std::unique_ptr<FlexplorerTableModel> model;
     std::unique_ptr<FlexDateDelegate> dateDelegate;
     std::unique_ptr<FlexDateTimeDelegate> dateTimeDelegate;
@@ -122,8 +124,6 @@ private:
     int selectedFilesCount;
     int selectedFilesByteSize;
     struct sFPOptions &options;
-
-    static const QString mimeTypeFlexDiskImageFile;
 };
 
 #endif

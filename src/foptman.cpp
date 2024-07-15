@@ -388,7 +388,7 @@ void FlexemuOptions::WriteOptions(
     bool isReadWriteOptionsOnly /* = false */
 )
 {
-    auto optionIds(allFlexemuOptionIds);
+    auto optionIds(GetAllFlexemuOptionIds());
 
     if (isReadWriteOptionsOnly)
     {
@@ -607,7 +607,7 @@ void FlexemuOptions::WriteOptionsToFile(
         return;
     }
 
-    auto optionIds(allFlexemuOptionIds);
+    auto optionIds(GetAllFlexemuOptionIds());
 
     // Collect all optionIds to overwrite from previous options.
     for (auto optionId : optionIdsToWrite)

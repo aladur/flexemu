@@ -49,11 +49,13 @@ class FlexDirEntry;
 
 class FlexplorerTableModel : public QAbstractTableModel
 {
-    struct sFileTypes
+    struct sFileType
     {
         QString fileExt;
         QString fileType;
     };
+
+    using FileTypes_t = QVector<sFileType>;
 
 public:
     FlexplorerTableModel() = delete;
@@ -134,7 +136,9 @@ private:
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);
     QString AsHtml(const QModelIndexList &indexList) const;
+
     static QString GetFileType(const FlexDirEntry &dirEntry);
+    static const FileTypes_t &GetFileTypes();
 
     std::unique_ptr<IFlexDiskByFile> container;
     QVector<RowType> rows;
@@ -145,7 +149,6 @@ private:
     static std::array<QString, COLUMNS> headerNames;
     static const QString headerNameFileSize;
     static const QString headerNameDataSize;
-    static const QVector<sFileTypes> fileTypes;
 };
 
 #endif

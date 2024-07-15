@@ -23,12 +23,18 @@
 
 #include "fpattrui.h"
 
-
-const QVarLengthArray<const char *, 4> FileAttributesUi::attributeLabel
+const FileAttributesUi::AttributeLabels_t
+    &FileAttributesUi::GetAttributeLabels()
 {
-    "&Write Protect",
-    "&Delete Protect",
-    "&Read Protect",
-    "&Catalog Protect",
+    const static FileAttributesUi::AttributeLabels_t attributeLabels =
+    {
+        "&Write Protect",
+        "&Delete Protect",
+        "&Read Protect",
+        "&Catalog Protect",
+    };
+
+    return attributeLabels;
 };
+
 

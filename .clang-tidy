@@ -32,6 +32,7 @@ Checks: '
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-avoid-c-arrays,
   -cppcoreguidelines-explicit-virtual-functions,
+  fuchsia-statically-constructed-objects,
   google-readability-casting,
   google-explicit-constructor,
   hicpp-explicit-conversions,

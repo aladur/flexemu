@@ -499,7 +499,7 @@ void FLEXplorer::Options()
         auto oldFileSizeType = options.fileSizeType;
 
         ui.TransferDataFromDialog(options);
-        FlexDisk::bootSectorFile = options.bootSectorFile;
+        FlexDisk::SetBootSectorFile(options.bootSectorFile);
         FlexDisk::onTrack0OnlyDirSectors =
             options.onTrack0OnlyDirSectors;
         if (oldFileTimeAccess != options.ft_access)

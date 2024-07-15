@@ -1205,6 +1205,8 @@ int main(int argc, char *argv[])
     char command = '\0';
     int index;
 
+    FlexDisk::InitializeClass();
+
     while ((result = getopt(argc, argv, optstr.c_str())) != -1)
     {
         switch (result)

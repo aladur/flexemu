@@ -73,46 +73,9 @@ enum class FlexemuOptionId : uint8_t
     PrintConfigs,
     DirectoryDiskTrkSec,
 };
-using FlexemuOptionIds = std::vector<FlexemuOptionId>;
+using FlexemuOptionIds_t = std::vector<FlexemuOptionId>;
 
-const FlexemuOptionIds allFlexemuOptionIds {
-    FlexemuOptionId::Drive0,
-    FlexemuOptionId::Drive1,
-    FlexemuOptionId::Drive2,
-    FlexemuOptionId::Drive3,
-    FlexemuOptionId::CanFormatDrive0,
-    FlexemuOptionId::CanFormatDrive1,
-    FlexemuOptionId::CanFormatDrive2,
-    FlexemuOptionId::CanFormatDrive3,
-    FlexemuOptionId::MdcrDrive0,
-    FlexemuOptionId::MdcrDrive1,
-    FlexemuOptionId::HexFile,
-    FlexemuOptionId::DiskDirectory,
-    FlexemuOptionId::IsRamExt2x96,
-    FlexemuOptionId::IsRamExt2x288,
-    FlexemuOptionId::IsFlexibleMmu,
-    FlexemuOptionId::IsEurocom2V5,
-    FlexemuOptionId::IsUseUndocumented,
-    FlexemuOptionId::IsUseRtc,
-    FlexemuOptionId::IsTerminalIgnoreESC,
-    FlexemuOptionId::IsTerminalIgnoreNUL,
-    FlexemuOptionId::Frequency,
-    FlexemuOptionId::Color,
-    FlexemuOptionId::NColors,
-    FlexemuOptionId::IsInverse,
-    FlexemuOptionId::PixelSize,
-    FlexemuOptionId::FileTimeAccess,
-    FlexemuOptionId::IsDisplaySmooth,
-    FlexemuOptionId::PrintFont,
-    FlexemuOptionId::IsPrintPageBreakDetected,
-    FlexemuOptionId::PrintOrientation,
-    FlexemuOptionId::PrintPageSize,
-    FlexemuOptionId::PrintUnit,
-    FlexemuOptionId::PrintOutputWindowGeometry,
-    FlexemuOptionId::PrintPreviewDialogGeometry,
-    FlexemuOptionId::PrintConfigs,
-    FlexemuOptionId::DirectoryDiskTrkSec,
-};
+extern const FlexemuOptionIds_t &GetAllFlexemuOptionIds();
 
 struct sOptions
 {
@@ -166,8 +129,8 @@ struct sOptions
     bool isDirectoryDiskActive{}; // true if directory disk is active.
     std::string cpuLogPath; // Path used for CPU instruction logging
 
-    FlexemuOptionIds readOnlyOptionIds;// List of option ids which are
-                                       // read-only.
+    FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are
+                                         // read-only.
 };
 
 #endif

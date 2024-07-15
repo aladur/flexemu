@@ -40,7 +40,8 @@ public:
     void SetSectors(int sectors);
 
 private:
-    static const std::string filename;
+    static const std::string &GetRcFilename();
+
     std::string path;
     int tracks;
     int sectors;
