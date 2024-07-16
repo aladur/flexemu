@@ -359,10 +359,7 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
 
         int sectors = static_cast<int>(dir_entry.GetFileSize() / SECTOR_SIZE);
         sumSectors += sectors;
-        if (sectors > largest)
-        {
-            largest = sectors;
-        }
+        largest = std::max(sectors, largest);
 
         std::cout << fmt::format(
                   "{:5}  {:<8}.{:<3}  {:02X}-{:02X}  {:02X}-{:02X} {:5}  {:11} ",

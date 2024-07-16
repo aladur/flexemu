@@ -491,15 +491,8 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
 
     binmonth = convert_bin(p_month);
 
-    if (binmonth < 1)
-    {
-        binmonth = 1;
-    }
-
-    if (binmonth > 12)
-    {
-        binmonth = 12;
-    }
+    binmonth = std::max<int>(binmonth, 1);
+    binmonth = std::min<int>(binmonth, 12);
 
     // if February leap year
     if (binmonth == 2 && (convert_bin(p_year) % 4 == 0))

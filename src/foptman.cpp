@@ -1046,15 +1046,8 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
 
     if (!rcFile.GetValue(FLEXSCREENFACTOR, int_result))
     {
-        if (int_result < 1)
-        {
-            int_result = 1;
-        }
-
-        if (int_result > SCREEN_SIZES)
-        {
-            int_result = SCREEN_SIZES;
-        }
+        int_result = std::max(int_result, 1);
+        int_result = std::min<int>(int_result, SCREEN_SIZES);
 
         options.pixelSize = int_result;
     }

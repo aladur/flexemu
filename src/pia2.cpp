@@ -189,17 +189,11 @@ Byte Pia2::readInputB()
     {
         dX = (deltaX > TAB_OFFSET) ? TAB_OFFSET : deltaX;
 
-        if (dX < -TAB_OFFSET)
-        {
-            dX = -TAB_OFFSET;
-        }
+        dX = std::max(dX, -TAB_OFFSET);
 
         dY = (deltaY > TAB_OFFSET) ? TAB_OFFSET : deltaY;
 
-        if (dY < -TAB_OFFSET)
-        {
-            dY = -TAB_OFFSET;
-        }
+        dY = std::max(dY, -TAB_OFFSET);
     }
     else
     {

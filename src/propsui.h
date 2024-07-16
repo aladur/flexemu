@@ -144,10 +144,7 @@ public:
 #else
                 int width = fontMetrics.width(text);
 #endif
-                if (width > columnWidth[column])
-                {
-                    columnWidth[column] = width;
-                }
+                columnWidth[column] = std::max(width, columnWidth[column]);
                 auto *newItem = new QTableWidgetItem(text);
                 newItem->setFlags(newItem->flags() & ~Qt::ItemIsEditable);
                 w_table->setItem(row, column, newItem);

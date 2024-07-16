@@ -87,7 +87,8 @@ Checks: '
   readability-simplify-boolean-expr,
   readability-simplify-subscript-expr,
   readability-uppercase-literal-suffix,
-  readability-use-anyofallof'
+  readability-use-anyofallof,
+  readability-use-std-min-max'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

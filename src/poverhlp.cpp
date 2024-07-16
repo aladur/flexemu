@@ -315,10 +315,7 @@ size_t PrintOverlayHelper::GetMaxOverlaySize() const
     size_t maxSize = 0U;
     for (const auto &overlay : overlays)
     {
-        if (overlay.size() > maxSize)
-        {
-            maxSize = overlay.size();
-        }
+        maxSize = std::max(overlay.size(), maxSize);
     }
 
     return maxSize;
