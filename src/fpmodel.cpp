@@ -57,15 +57,16 @@
 #include <memory>
 
 
-const QString FlexplorerTableModel::headerNameFileSize(tr("Filesize"));
-const QString FlexplorerTableModel::headerNameDataSize(tr("Datasize"));
-
-std::array<QString, FlexplorerTableModel::COLUMNS>
-    FlexplorerTableModel::headerNames =
+HeaderNames_t &FlexplorerTableModel::GetHeaderNames()
 {
-    tr("Id"), tr("Filename"), tr("Filetype"), tr("Random"), tr("Filesize"),
-    tr("Date"), tr("Attributes"),
-};
+    static HeaderNames_t headerNames =
+    {
+        tr("Id"), tr("Filename"), tr("Filetype"), tr("Random"), tr("Filesize"),
+        tr("Date"), tr("Attributes"),
+    };
+
+    return headerNames;
+}
 
 const FlexplorerTableModel::FileTypes_t &FlexplorerTableModel::GetFileTypes()
 {
@@ -124,7 +125,7 @@ void FlexplorerTableModel::CreateAttributesBitmasks(const QString &attributes,
     setMask = 0;
     clearMask = 0;
 
-    for (const auto &item : attributeCharToFlag)
+    for (const auto &item : GetAttributeCharToFlag())
     {
         if (attributes.contains(item.first))
         {
@@ -209,8 +210,7 @@ std::string FlexplorerTableModel::GetSupportedAttributes() const
 
 void FlexplorerTableModel::UpdateFileSizeHeaderName()
 {
-    auto headerText = (options.fileSizeType == FileSizeType::FileSize) ?
-                       headerNameFileSize : headerNameDataSize;
+    const auto &headerText = GetHeaderNameForFileSize(options.fileSizeType);
     auto variant = QVariant(headerText);
 
     setHeaderData(FlexplorerTableModel::COL_SIZE, Qt::Horizontal, variant,
@@ -562,9 +562,9 @@ QVariant FlexplorerTableModel::headerData(
     {
         if (orientation == Qt::Horizontal &&
             section >= 0 &&
-            section < static_cast<int>(headerNames.size()))
+            section < static_cast<int>(GetHeaderNames().size()))
         {
-            return headerNames.at(section);
+            return GetHeaderNames().at(section);
         }
 
         if (orientation == Qt::Vertical)
@@ -582,6 +582,7 @@ bool FlexplorerTableModel::setHeaderData(
         const QVariant &value,
         int role)
 {
+    auto &headerNames = GetHeaderNames();
     if (role == Qt::DisplayRole && orientation == Qt::Horizontal &&
         section >= 0 &&
         section < static_cast<int>(headerNames.size()))
@@ -1029,5 +1030,14 @@ QStringList FlexplorerTableModel::GetColumnMaxStrings()
     }
 
     return maxStrings;
+}
+
+const QString &FlexplorerTableModel::GetHeaderNameForFileSize(FileSizeType type)
+{
+    static const QString headerNameFileSize(tr("Filesize"));
+    static const QString headerNameDataSize(tr("Datasize"));
+
+    return (type == FileSizeType::FileSize) ?
+        headerNameFileSize : headerNameDataSize;
 }
 

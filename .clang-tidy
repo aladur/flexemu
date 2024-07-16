@@ -10,6 +10,7 @@ Checks: '
   -bugprone-switch-missing-default-case,
   -bugprone-unused-return-value,
   cert-err34-cpp,
+  cert-err58-cpp,
   cert-err60-cpp,
   cert-oop54-cpp,
   clang-analyzer-optin.cplusplus.VirtualCall,

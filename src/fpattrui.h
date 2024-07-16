@@ -66,7 +66,7 @@ public:
     FileAttributesUi()
     {
         assert(c_protect.size() ==
-                static_cast<int>(attributeCharToFlag.size()));
+                static_cast<int>(GetAttributeCharToFlag().size()));
         assert(c_protect.size() == GetAttributeLabels().size());
     }
 
@@ -86,6 +86,7 @@ public:
         bool isMultiFile = (filenames.size() > 1);
         l_filename->setText(isMultiFile ? "multiple files" : filenames.first());
 
+        const auto &attributeCharToFlag = GetAttributeCharToFlag();
         for (auto attribute : attributes)
         {
             auto i = 0;
@@ -137,6 +138,7 @@ public:
 
     void CheckBoxStateChanged(int state, int index)
     {
+        const auto &attributeCharToFlag = GetAttributeCharToFlag();
         if (state == Qt::Unchecked)
         {
             clearMask |= attributeCharToFlag.at(index).second;

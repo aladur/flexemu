@@ -25,6 +25,8 @@
     #pragma warning (disable: 4800)
 #endif
 
+// Looks like a false postitive, this should not throw an exception.
+// NOLINTNEXTLINE(cert-err58-cpp)
 static const Mc6809::Event AnyInterrupt =
                  Mc6809::Event::Irq |
                  Mc6809::Event::Firq |

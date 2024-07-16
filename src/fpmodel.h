@@ -47,6 +47,10 @@ class FlexDirEntry;
 class FlexFileBuffer;
 class FlexDirEntry;
 
+static const int COLUMNS{7};
+
+using HeaderNames_t = std::array<QString, COLUMNS>;
+
 class FlexplorerTableModel : public QAbstractTableModel
 {
     struct sFileType
@@ -112,6 +116,7 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex &parent = QModelIndex()) override;
     void sort(int column, Qt::SortOrder order) override;
+    static const QString &GetHeaderNameForFileSize(FileSizeType type);
 
     static const int COL_ID{0};
     static const int COL_FILENAME{1};
@@ -126,8 +131,6 @@ public slots:
     void UpdateFileSizeColumn();
 
 private:
-    static const int COLUMNS{7};
-
     using RowType = std::array<QVariant, COLUMNS>;
     using IdsType = QVector<int>;
 
@@ -139,16 +142,13 @@ private:
 
     static QString GetFileType(const FlexDirEntry &dirEntry);
     static const FileTypes_t &GetFileTypes();
+    static HeaderNames_t &GetHeaderNames();
 
     std::unique_ptr<IFlexDiskByFile> container;
     QVector<RowType> rows;
     QString path;
     struct sFPOptions &options;
     QStringList maxStrings;
-
-    static std::array<QString, COLUMNS> headerNames;
-    static const QString headerNameFileSize;
-    static const QString headerNameDataSize;
 };
 
 #endif

@@ -22,11 +22,16 @@
 #include "fattrib.h"
 
 
-const std::array<std::pair<char, Byte>, 4> attributeCharToFlag
-{{
-    { 'W', WRITE_PROTECT },
-    { 'D', DELETE_PROTECT },
-    { 'R', READ_PROTECT },
-    { 'C', CATALOG_PROTECT },
-}};
+const AttributeCharToFlag_t &GetAttributeCharToFlag()
+{
+    static const AttributeCharToFlag_t attributeCharToFlag
+    {{
+        { 'W', WRITE_PROTECT },
+        { 'D', DELETE_PROTECT },
+        { 'R', READ_PROTECT },
+        { 'C', CATALOG_PROTECT },
+    }};
+
+    return attributeCharToFlag;
+}
 

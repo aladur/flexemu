@@ -39,7 +39,8 @@ const Byte CATALOG_PROTECT = 0x10;
 const Byte ALL_PROTECT = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
                          CATALOG_PROTECT;
 
-extern const std::array<std::pair<char, Byte>, 4> attributeCharToFlag;
+using AttributeCharToFlag_t = std::array<std::pair<char, Byte>, 4>;
+extern const AttributeCharToFlag_t &GetAttributeCharToFlag();
 
 #endif
 
