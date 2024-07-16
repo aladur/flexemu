@@ -28,7 +28,7 @@
 #include "fileread.h"
 #include "flexerr.h"
 #include "bdir.h"
-#include <ctype.h>
+#include <cctype>
 #include <iostream>
 #include <vector>
 #include <fmt/format.h>

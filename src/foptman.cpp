@@ -21,7 +21,6 @@
 */
 
 #include "misc1.h"
-#include <signal.h>
 #include <stdexcept>
 #include <string>
 #include <new>

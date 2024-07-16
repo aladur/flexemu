@@ -22,7 +22,6 @@
 
 
 #include "misc1.h"
-#include <ctype.h>
 #include <new>
 
 #include "e2.h"

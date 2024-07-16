@@ -29,7 +29,6 @@
     #include <sched.h>
 #endif
 #include "misc1.h"
-#include <signal.h>
 #include "schedule.h"
 #include "mc6809.h"
 #include "inout.h"

@@ -26,7 +26,7 @@
 #include "bmembuf.h"
 #include "fileread.h"
 #include "flexerr.h"
-#include <ctype.h>
+#include <cctype>
 #include <limits>
 #include <iostream>
 #include <iomanip>

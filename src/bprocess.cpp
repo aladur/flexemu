@@ -22,7 +22,7 @@
 
 #include "misc1.h"
 #ifdef UNIX
-    #include <signal.h>
+    #include <csignal>
     #include <sys/types.h>
     #include <sys/wait.h>
     #include <vector>

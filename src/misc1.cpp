@@ -23,7 +23,7 @@
 
 #include "misc1.h"
 #include "cistring.h"
-#include <ctype.h>
+#include <cctype>
 #include <iostream>
 #include <sstream>
 #include <functional>

@@ -22,7 +22,6 @@
 
 
 #include <sstream>
-#include <ctype.h>
 #include "memory.h"
 #include "fcnffile.h"
 #include "soptions.h"

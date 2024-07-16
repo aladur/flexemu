@@ -29,7 +29,7 @@
 #ifdef HAVE_TERMIOS_H
     #include <termios.h>
 #endif
-#include <signal.h>
+#include <csignal>
 #include "flexemu.h"
 #include "flexerr.h"
 #include "bobservd.h"

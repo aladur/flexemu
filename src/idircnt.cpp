@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <errno.h>
+#include <cerrno>
 #include "fattrib.h"
 #include "filecont.h"
 #include "dircont.h"

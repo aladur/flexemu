@@ -37,7 +37,6 @@
 #include <cassert>
 #include <iostream>
 #include <sys/stat.h>
-#include <ctype.h>
 #include "bdir.h"
 #include "filecntb.h"
 #include "fattrib.h"
