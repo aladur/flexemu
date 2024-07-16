@@ -29,9 +29,8 @@
 const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
 const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 
-FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(
-        const std::string &directory)
-    : path(directory)
+FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(std::string directory)
+    : path(std::move(directory))
     , tracks(0)
     , sectors(0)
 {

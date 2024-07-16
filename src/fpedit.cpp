@@ -42,8 +42,9 @@
 
 FlexRegularExpressionValidator::FlexRegularExpressionValidator(
         const QRegularExpression &regex, QObject *parent,
-        const QStringList &p_filenames) :
-    QRegularExpressionValidator(regex, parent), filenames(p_filenames)
+        QStringList p_filenames) :
+    QRegularExpressionValidator(regex, parent),
+        filenames(std::move(p_filenames))
 {
 }
 

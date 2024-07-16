@@ -31,7 +31,7 @@ class FlexDirectoryDiskOptions
 {
 public:
     FlexDirectoryDiskOptions() = delete;
-    explicit FlexDirectoryDiskOptions(const std::string &directory);
+    explicit FlexDirectoryDiskOptions(std::string directory);
     bool Read();
     bool Write(bool onlyIfNotExists);
     int GetTracks() const;

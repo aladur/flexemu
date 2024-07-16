@@ -38,7 +38,7 @@ class IFlexDiskIteratorImp;
 class FlexDiskIterator
 {
 public:
-    explicit FlexDiskIterator(const std::string &p_wildcard = "*.*");
+    explicit FlexDiskIterator(std::string p_wildcard = "*.*");
     FlexDiskIterator(const FlexDiskIterator &src) = delete;
     virtual ~FlexDiskIterator() = default;
     FlexDirEntry &operator*();

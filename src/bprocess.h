@@ -31,9 +31,10 @@
 class BProcess
 {
 public:
-    explicit BProcess(const std::string &p_executable,
-             const std::string &p_directory = "",
-             const std::string &p_arguments = "");
+    explicit BProcess(
+             std::string p_executable,
+             std::string p_directory = "",
+             std::string p_arguments = "");
 #ifdef _WIN32
     ~BProcess();
 #endif

@@ -38,7 +38,7 @@ class BRcFile
 {
 public:
     BRcFile() = default;
-    explicit BRcFile(const std::string &p_fileName);
+    explicit BRcFile(std::string p_fileName);
     ~BRcFile() = default;
 
     int SetValue(const char *key, const std::string &value);

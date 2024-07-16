@@ -27,11 +27,9 @@
 #include <cstring>
 
 
-FlexDnDFiles::FlexDnDFiles(
-        const std::string &pPath,
-        const std::string &pDnsHostName) :
-      path(pPath)
-    , dnsHostName(pDnsHostName)
+FlexDnDFiles::FlexDnDFiles(std::string p_Path, std::string p_DnsHostName) :
+      path(std::move(p_Path))
+    , dnsHostName(std::move(p_DnsHostName))
 {
 }
 

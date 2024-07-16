@@ -46,9 +46,8 @@
    }
 */
 
-FlexDiskIterator::FlexDiskIterator(
-        const std::string &p_wildcard /* = "*.*" */)
-    : wildcard(p_wildcard)
+FlexDiskIterator::FlexDiskIterator(std::string p_wildcard /* = "*.*" */)
+    : wildcard(std::move(p_wildcard))
 {
 }
 

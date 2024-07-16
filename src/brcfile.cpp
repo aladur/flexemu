@@ -28,7 +28,7 @@
 #include <cstring>
 
 
-BRcFile::BRcFile(const std::string &p_fileName) : fileName(p_fileName)
+BRcFile::BRcFile(std::string p_fileName) : fileName(std::move(p_fileName))
 {
 }
 

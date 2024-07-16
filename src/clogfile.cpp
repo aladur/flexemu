@@ -25,8 +25,9 @@
 
 // Command pattern to set CPU logger config.
 CmdSetMc6809LoggerConfig::CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,
-        const Mc6809LoggerConfig &p_cpuLoggerConfig)
-    : cpu(p_cpu), cpuLoggerConfig(p_cpuLoggerConfig)
+        Mc6809LoggerConfig p_cpuLoggerConfig)
+    : cpu(p_cpu)
+    , cpuLoggerConfig(std::move(p_cpuLoggerConfig))
 {
 }
 

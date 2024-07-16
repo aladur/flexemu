@@ -34,7 +34,7 @@ class CmdSetMc6809LoggerConfig : public BCommand
 public:
     CmdSetMc6809LoggerConfig() = delete;
     CmdSetMc6809LoggerConfig(Mc6809 &p_cpu,
-            const Mc6809LoggerConfig &p_cpuLoggerConfig);
+            Mc6809LoggerConfig p_cpuLoggerConfig);
     CmdSetMc6809LoggerConfig(const CmdSetMc6809LoggerConfig &src) = delete;
     CmdSetMc6809LoggerConfig &operator=(const CmdSetMc6809LoggerConfig &src)
         = delete;

@@ -66,7 +66,7 @@ public:
     E2Screen(Scheduler &p_scheduler, JoystickIO &p_joystickIO,
              KeyboardIO &p_keyboardIO, Pia1 &p_pia1,
              sOptions &p_options,
-             const QColor &backgroundColor, QWidget *parent = nullptr);
+             QColor backgroundColor, QWidget *parent = nullptr);
     ~E2Screen() override = default;
 
     QSize GetScaledSize() const;

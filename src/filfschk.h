@@ -101,12 +101,11 @@ class FlexDiskCheck
         Byte hour{0};
         Byte minute{0};
 
-        s_item(SectorType p_type, st_t p_start, st_t p_end,
-               const std::string &p_name) :
-            type(p_type),
-            name(p_name),
-            start(p_start),
-            end(p_end)
+        s_item(SectorType p_type, st_t p_start, st_t p_end, std::string p_name)
+            : type(p_type)
+            , name(std::move(p_name))
+            , start(p_start)
+            , end(p_end)
         {
         };
     };

@@ -26,10 +26,9 @@
 #include <fmt/format.h>
 
 
-IoDeviceDebug::IoDeviceDebug(IoDevice &p_device,
-                             const std::string &p_logFilePath) :
-      device(p_device)
-    , logFilePath(p_logFilePath)
+IoDeviceDebug::IoDeviceDebug(IoDevice &p_device, std::string p_logFilePath)
+    : device(p_device)
+    , logFilePath(std::move(p_logFilePath))
 {
     std::ofstream fstream(logFilePath,
                           std::ios_base::out | std::ios_base::trunc);

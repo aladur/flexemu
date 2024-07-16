@@ -43,7 +43,7 @@ public:
     FlexRegularExpressionValidator() = delete;
     explicit FlexRegularExpressionValidator(const QRegularExpression &regex,
                                    QObject *parent = Q_NULLPTR,
-                                   const QStringList &filenames = { });
+                                   QStringList filenames = { });
     QValidator::State validate(QString &input, int &pos) const override;
 
 private:

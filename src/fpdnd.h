@@ -40,7 +40,7 @@ class FlexDnDFiles
 {
 public:
     FlexDnDFiles() = default;
-    FlexDnDFiles(const std::string &path, const std::string &dnsHostName);
+    FlexDnDFiles(std::string p_path, std::string p_dnsHostName);
     virtual ~FlexDnDFiles();
 
     void ReadDataFrom(const Byte *buffer);

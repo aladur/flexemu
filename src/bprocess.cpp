@@ -31,10 +31,12 @@
 #include "bprocess.h"
 #include "cvtwchar.h"
 
-BProcess::BProcess(const std::string &p_executable,
-                   const std::string &p_directory /* = "" */,
-                   const std::string &p_arguments /* = "" */) :
-    executable(p_executable), arguments(p_arguments), directory(p_directory)
+BProcess::BProcess(std::string p_executable,
+                   std::string p_directory /* = "" */,
+                   std::string p_arguments /* = "" */)
+    : executable(std::move(p_executable))
+    , arguments(std::move(p_arguments))
+    , directory(std::move(p_directory))
 {
 }
 

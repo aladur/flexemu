@@ -34,7 +34,7 @@ public:
     BIniFile() = delete;
     BIniFile(const BIniFile &src) = delete;
     BIniFile(BIniFile &&src) noexcept;
-    explicit BIniFile(const std::string &p_fileName);
+    explicit BIniFile(std::string p_fileName);
     ~BIniFile() = default;
 
     BIniFile &operator=(const BIniFile &src) = delete;
