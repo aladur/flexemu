@@ -27,7 +27,7 @@
 #include <cstring>
 
 
-const std::array<Byte, 12> days_per_month{
+static const std::array<Byte, 12> days_per_month{
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 

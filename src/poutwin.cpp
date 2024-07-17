@@ -92,7 +92,7 @@
 #include "soptions.h"
 
 // The orientation keys should not be translated (Unique key).
-const QStringList &GetOrientationKeys()
+static const QStringList &GetOrientationKeys()
 {
     static const QStringList orientationKeys{ "Portrait", "Landscape" };
 
@@ -101,7 +101,7 @@ const QStringList &GetOrientationKeys()
 
 using OrientationValues_t = QList<enum QPageLayout::Orientation>;
 
-const OrientationValues_t &GetOrientationValues()
+static const OrientationValues_t &GetOrientationValues()
 {
     static const OrientationValues_t orientationValues
     {
@@ -112,7 +112,7 @@ const OrientationValues_t &GetOrientationValues()
 }
 
 // The pages size keys should not be translated (Unique key).
-const QStringList &GetPageSizeKeys()
+static const QStringList &GetPageSizeKeys()
 {
     static const QStringList pageSizeKeys
     {
@@ -127,7 +127,7 @@ const QStringList &GetPageSizeKeys()
     return pageSizeKeys;
 }
 
-const QStringList &GetPageSizeStrings()
+static const QStringList &GetPageSizeStrings()
 {
     static const QStringList pageSizeStrings
     {

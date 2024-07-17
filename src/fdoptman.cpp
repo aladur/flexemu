@@ -26,8 +26,8 @@
 #include <sys/stat.h>
 
 
-const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
-const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
+static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
+static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
 
 FlexDirectoryDiskOptions::FlexDirectoryDiskOptions(std::string directory)
     : path(std::move(directory))

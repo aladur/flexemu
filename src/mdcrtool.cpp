@@ -33,14 +33,14 @@
 #include <vector>
 #include <fmt/format.h>
 
-void version()
+static void version()
 {
     std::cout <<
         "mdcrtool " << VERSION << "\n" <<
         "mdcrtool " << COPYRIGHT_MESSAGE;
 }
 
-void syntax()
+static void syntax()
 {
     std::cout << "mdcrtool syntax:\n"
               << " Write/Append files to a MDCR file."
@@ -66,9 +66,8 @@ void syntax()
 
 }
 
-int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
-                      const char *ofile,
-                      bool isTruncate, bool toUppercase)
+static int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
+        const char *ofile, bool isTruncate, bool toUppercase)
 {
     MiniDcrTapePtr mdcr;
     BMemoryBuffer memory(65536);
@@ -147,7 +146,7 @@ int WriteAppendToMdcrFile(const std::vector<const char *> &ifiles,
     return 0;
 }
 
-int CreateMdcrFile(const char *ofile)
+static int CreateMdcrFile(const char *ofile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -164,7 +163,7 @@ int CreateMdcrFile(const char *ofile)
     return 0;
 }
 
-int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
+static int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
 {
     MiniDcrTapePtr mdcr;
 
@@ -229,7 +228,7 @@ int ExtractFromMdcrFile(const char *targetDir, const char *ifile)
     return 0;
 }
 
-int ListContentOfMdcrFile(const char *ifile)
+static int ListContentOfMdcrFile(const char *ifile)
 {
     MiniDcrTapePtr mdcr;
 

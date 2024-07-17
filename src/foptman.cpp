@@ -34,51 +34,51 @@
 #include <cstring>
 
 
-const char * const FLEXEMURC = ".flexemurc";
+static const char * const FLEXEMURC = ".flexemurc";
 
-const char * const FLEXDISKDIR = "DiskDirectory";
-const char * const FLEXDISK0 = "Disk0Path";
-const char * const FLEXDISK1 = "Disk1Path";
-const char * const FLEXDISK2 = "Disk2Path";
-const char * const FLEXDISK3 = "Disk3Path";
-const char * const FLEXMDCRDRIVE0 = "MdcrDrive0Path";
-const char * const FLEXMDCRDRIVE1 = "MdcrDrive1Path";
-const char * const FLEXCOLOR = "DisplayColor";
-const char * const FLEXNCOLORS = "NoOfColors";
-const char * const FLEXINVERSE = "DisplayInverse";
-const char * const FLEXHIMEM = "HighMemory";
-const char * const FLEXFLEXIBLEMMU = "UseFlexibleMmu";
-const char * const FLEXRAMEXTENSION = "UseRamExtension";
-const char * const FLEXEUROCOM2V5 = "UseEurocom2V5";
-const char * const FLEXUNDOCUMENTED = "UndocumentedMc6809";
-const char * const FLEXRTC = "UseRTC";
-const char * const FLEXFORMATDRIVE0 = "CanFormatDrive0";
-const char * const FLEXFORMATDRIVE1 = "CanFormatDrive1";
-const char * const FLEXFORMATDRIVE2 = "CanFormatDrive2";
-const char * const FLEXFORMATDRIVE3 = "CanFormatDrive3";
-// variable used on WIN32 only.
-// NOLINTNEXTLINE(clang-diagnostic-unused-const-variable)
-const char * const FLEXDOCDIR = "DocDirectory";
-const char * const FLEXMONITOR = "MonitorPath";
-const char * const FLEXVERSION = "Version";
-const char * const FLEXSCREENFACTOR = "ScreenFactor";
-const char * const FLEXFREQUENCY = "Frequency";
-const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
-const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
-const char * const FLEXTERMINALIGNOREESC = "TerminalIgnoreESC";
-const char * const FLEXTERMINALIGNORENUL = "TerminalIgnoreNUL";
-const char * const FLEXPRINTFONT = "PrintFont";
-const char * const FLEXPRINTPAGEBREAKDETECTED = "PrintPageBreakDetected";
-const char * const FLEXPRINTORIENTATION = "PrintOrientation";
-const char * const FLEXPRINTPAGESIZE = "PrintPageSize";
-const char * const FLEXPRINTUNIT = "PrintUnit";
-const char * const FLEXPRINTOUTPUTWINDOWGEOMETRY = "PrintOutputWindowGeometry";
-const char * const FLEXPRINTPREVIEWDIALOGGEOMETRY =
+static const char * const FLEXDISKDIR = "DiskDirectory";
+static const char * const FLEXDISK0 = "Disk0Path";
+static const char * const FLEXDISK1 = "Disk1Path";
+static const char * const FLEXDISK2 = "Disk2Path";
+static const char * const FLEXDISK3 = "Disk3Path";
+static const char * const FLEXMDCRDRIVE0 = "MdcrDrive0Path";
+static const char * const FLEXMDCRDRIVE1 = "MdcrDrive1Path";
+static const char * const FLEXCOLOR = "DisplayColor";
+static const char * const FLEXNCOLORS = "NoOfColors";
+static const char * const FLEXINVERSE = "DisplayInverse";
+static const char * const FLEXHIMEM = "HighMemory";
+static const char * const FLEXFLEXIBLEMMU = "UseFlexibleMmu";
+static const char * const FLEXRAMEXTENSION = "UseRamExtension";
+static const char * const FLEXEUROCOM2V5 = "UseEurocom2V5";
+static const char * const FLEXUNDOCUMENTED = "UndocumentedMc6809";
+static const char * const FLEXRTC = "UseRTC";
+static const char * const FLEXFORMATDRIVE0 = "CanFormatDrive0";
+static const char * const FLEXFORMATDRIVE1 = "CanFormatDrive1";
+static const char * const FLEXFORMATDRIVE2 = "CanFormatDrive2";
+static const char * const FLEXFORMATDRIVE3 = "CanFormatDrive3";
+#ifdef _WIN32
+static const char * const FLEXDOCDIR = "DocDirectory";
+#endif
+static const char * const FLEXMONITOR = "MonitorPath";
+static const char * const FLEXVERSION = "Version";
+static const char * const FLEXSCREENFACTOR = "ScreenFactor";
+static const char * const FLEXFREQUENCY = "Frequency";
+static const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
+static const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
+static const char * const FLEXTERMINALIGNOREESC = "TerminalIgnoreESC";
+static const char * const FLEXTERMINALIGNORENUL = "TerminalIgnoreNUL";
+static const char * const FLEXPRINTFONT = "PrintFont";
+static const char * const FLEXPRINTPAGEBREAKDETECTED = "PrintPageBreakDetected";
+static const char * const FLEXPRINTORIENTATION = "PrintOrientation";
+static const char * const FLEXPRINTPAGESIZE = "PrintPageSize";
+static const char * const FLEXPRINTUNIT = "PrintUnit";
+static const char * const FLEXPRINTOUTPUTWINDOWGEOMETRY = "PrintOutputWindowGeometry";
+static const char * const FLEXPRINTPREVIEWDIALOGGEOMETRY =
                     "PrintPreviewDialogGeometry";
-const char * const FLEXPRINTCONFIG = "PrintConfig";
-const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
-const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
-const char * const FLEXISDIRECTORYDISKACTIVE = "IsDirectoryDiskActive";
+static const char * const FLEXPRINTCONFIG = "PrintConfig";
+static const char * const FLEXDIRECTORYDISKTRACKS = "DirectoryDiskTracks";
+static const char * const FLEXDIRECTORYDISKSECTORS = "DirectoryDiskSectors";
+static const char * const FLEXISDIRECTORYDISKACTIVE = "IsDirectoryDiskActive";
 
 void FlexemuOptions::PrintHelp(std::ostream &os)
 {

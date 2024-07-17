@@ -49,7 +49,7 @@ WinApiContext winApiContext;
 int flexemu_new_handler(size_t /* [[maybe_unused]] size_t n */)
 #else
 #define RETURN_VALUE
-void flexemu_new_handler()
+static void flexemu_new_handler()
 #endif
 {
     if (QMessageBox::warning(nullptr, PROGRAMNAME " warning",

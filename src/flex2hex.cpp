@@ -47,14 +47,14 @@ enum class FileType : uint8_t
     RawBinary,
 };
 
-void version()
+static void version()
 {
     std::cout <<
         "flex2hex " << VERSION << "\n" <<
         "flex2hex " << COPYRIGHT_MESSAGE;
 }
 
-void syntax()
+static void syntax()
 {
     std::cout <<
         "flex2hex syntax:\n"
@@ -74,8 +74,8 @@ void syntax()
         "   -h:              Print this help and exit.\n";
 }
 
-int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
-                     FileType ofiletype, int verbose)
+static int ConvertFlexToHex(const std::string &ifile, const std::string &ofile,
+        FileType ofiletype, int verbose)
 {
     BMemoryBuffer memory(65536);
     DWord startAddress = std::numeric_limits<DWord>::max();

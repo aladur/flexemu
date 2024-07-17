@@ -45,9 +45,8 @@
 #include <fmt/format.h>
 
 
-std::vector<std::string> GetMatchingFilenames(
-    FlexDisk &container,
-    const std::vector<std::regex> &regexs)
+static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
+        const std::vector<std::regex> &regexs)
 {
     FlexDiskIterator iter;
     std::vector<std::string> allFilenames;
@@ -83,9 +82,9 @@ std::vector<std::string> GetMatchingFilenames(
     return result;
 }
 
-int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
-                       int tracks, int sectors, char default_answer,
-                       bool verbose, const char *bsFile)
+static int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
+        int tracks, int sectors, char default_answer, bool verbose,
+        const char *bsFile)
 {
     struct stat sbuf{};
 
@@ -145,11 +144,9 @@ int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
     return 0;
 }
 
-int ExtractDskFile(const std::string &target_dir, bool verbose,
-                   bool convert_text, char default_answer,
-                   const std::string &dsk_file,
-                   const std::vector<std::regex> &regexs,
-                   FileTimeAccess fileTimeAccess)
+static int ExtractDskFile(const std::string &target_dir, bool verbose,
+        bool convert_text, char default_answer, const std::string &dsk_file,
+        const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     if (verbose)
     {
@@ -249,11 +246,10 @@ int ExtractDskFile(const std::string &target_dir, bool verbose,
     return 0;
 }
 
-int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
-                    char default_answer,
-                    const std::vector<std::string> &dsk_files,
-                    const std::vector<std::regex> &regexs,
-                    FileTimeAccess fileTimeAccess)
+static int ExtractDskFiles(std::string target_dir, bool verbose,
+        bool convert_text, char default_answer,
+        const std::vector<std::string> &dsk_files,
+        const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     if (target_dir.empty())
     {
@@ -297,9 +293,8 @@ int ExtractDskFiles(std::string target_dir, bool verbose, bool convert_text,
     return 0;
 }
 
-int ListDirectoryOfDskFile(const std::string &dsk_file,
-                           const std::vector<std::regex> &regexs,
-                           FileTimeAccess fileTimeAccess)
+static int ListDirectoryOfDskFile(const std::string &dsk_file,
+        const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file, mode, fileTimeAccess};
@@ -389,9 +384,8 @@ int ListDirectoryOfDskFile(const std::string &dsk_file,
     return 0;
 }
 
-int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
-                            const std::vector<std::regex> &regexs,
-                            FileTimeAccess fileTimeAccess)
+static int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
+        const std::vector<std::regex> &regexs, FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
     {
@@ -410,9 +404,9 @@ int ListDirectoryOfDskFiles(const std::vector<std::string> &dsk_files,
     return 0;
 }
 
-int SummaryOfDskFile(const std::string &dsk_file,
-                     uint64_t &sum_files, uint64_t&sum_size, uint64_t&sum_free,
-                     bool verbose)
+static int SummaryOfDskFile(const std::string &dsk_file,
+        uint64_t &sum_files, uint64_t&sum_size, uint64_t&sum_free,
+        bool verbose)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::binary;
@@ -467,7 +461,8 @@ int SummaryOfDskFile(const std::string &dsk_file,
     return 0;
 }
 
-int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
+static int SummaryOfDskFiles(const std::vector<std::string> &dsk_files,
+        bool verbose)
 {
     uint64_t sum_files = 0U;
     uint64_t sum_size = 0U;
@@ -504,10 +499,9 @@ int SummaryOfDskFiles(const std::vector<std::string> &dsk_files, bool verbose)
     return 0;
 }
 
-int InjectToDskFile(const std::string &dsk_file, bool verbose,
-                    const std::vector<std::string> &files,
-                    char default_answer, bool isConvertText,
-                    FileTimeAccess fileTimeAccess)
+static int InjectToDskFile(const std::string &dsk_file, bool verbose,
+        const std::vector<std::string> &files, char default_answer,
+        bool isConvertText, FileTimeAccess fileTimeAccess)
 {
     FlexCopyManager::autoTextConversion = isConvertText;
     const auto mode = std::ios::in | std::ios::out | std::ios::binary;
@@ -582,9 +576,8 @@ int InjectToDskFile(const std::string &dsk_file, bool verbose,
     return 0;
 }
 
-int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
-                      const std::vector<std::regex> &regexs,
-                      char default_answer)
+static int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
+        const std::vector<std::regex> &regexs, char default_answer)
 {
     auto fileTimeAccess = FileTimeAccess::NONE;
     const auto mode = std::ios::in | std::ios::out | std::ios::binary;
@@ -651,8 +644,8 @@ int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
     return 0;
 }
 
-int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
-                              bool debug_output, FileTimeAccess fileTimeAccess)
+static int CheckConsistencyOfDskFile(const std::string &dsk_file,
+        bool verbose, bool debug_output, FileTimeAccess fileTimeAccess)
 {
     const auto mode = std::ios::in | std::ios::binary;
     FlexRamDisk src{dsk_file, mode, fileTimeAccess};
@@ -726,9 +719,8 @@ int CheckConsistencyOfDskFile(const std::string &dsk_file, bool verbose,
     return 0;
 }
 
-int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
-                               bool verbose, bool debug_output,
-                               FileTimeAccess fileTimeAccess)
+static int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
+        bool verbose, bool debug_output, FileTimeAccess fileTimeAccess)
 {
     for (const auto &dsk_file : dsk_files)
     {
@@ -748,7 +740,7 @@ int CheckConsistencyOfDskFiles(const std::vector<std::string> &dsk_files,
     return 0;
 }
 
-int CopyFromToDskFile(const std::string &src_dsk_file,
+static int CopyFromToDskFile(const std::string &src_dsk_file,
         const std::string &dst_dsk_file, bool verbose,
         const std::vector<std::regex> &regexs, char default_answer,
         FileTimeAccess fileTimeAccess)
@@ -846,7 +838,7 @@ int CopyFromToDskFile(const std::string &src_dsk_file,
 }
 
 
-void helpOnDiskSize()
+static void helpOnDiskSize()
 {
     std::cout <<
         "The following FLEX disk size parameters are supported:\n\n" <<
@@ -864,14 +856,14 @@ void helpOnDiskSize()
     }
 }
 
-void version()
+static void version()
 {
     std::cout <<
         "dsktool " << VERSION << "\n" <<
         "dsktool " << COPYRIGHT_MESSAGE;
 }
 
-void usage()
+static void usage()
 {
     std::cout <<
         "Usage: dsktool -c <dsk-file> [-v][-D] [<dsk-file>...]\n"
@@ -954,7 +946,7 @@ void usage()
         "                accessible.\n";
 }
 
-bool getDiskFormatFromExtension(std::string ext, int &disk_format)
+static bool getDiskFormatFromExtension(std::string ext, int &disk_format)
 {
     static const std::string strDsk{"dsk"};
     static const std::string strWta{"wta"};
@@ -976,7 +968,7 @@ bool getDiskFormatFromExtension(std::string ext, int &disk_format)
     return false;
 }
 
-void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
+static void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
 {
     std::string extension;
 
@@ -995,7 +987,7 @@ void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
     }
 }
 
-bool checkDiskFormat(const std::string &format, int &disk_format)
+static bool checkDiskFormat(const std::string &format, int &disk_format)
 {
     if (disk_format != 0)
     {
@@ -1012,7 +1004,8 @@ bool checkDiskFormat(const std::string &format, int &disk_format)
     return false;
 }
 
-int checkDiskSize(const std::string &disk_size, int &tracks, int &sectors)
+static int checkDiskSize(const std::string &disk_size, int &tracks,
+        int &sectors)
 {
     static const std::string strHelp{"help"};
 
@@ -1046,7 +1039,7 @@ int checkDiskSize(const std::string &disk_size, int &tracks, int &sectors)
     return 1;
 }
 
-bool checkBootSectorFile(const char *opt, const char **bsFile)
+static bool checkBootSectorFile(const char *opt, const char **bsFile)
 {
     struct stat sbuf{};
 
@@ -1085,7 +1078,7 @@ bool checkBootSectorFile(const char *opt, const char **bsFile)
     return false;
 }
 
-char checkCommand(char oldCommand, int result)
+static char checkCommand(char oldCommand, int result)
 {
     if (oldCommand == '\0')
     {
@@ -1097,7 +1090,7 @@ char checkCommand(char oldCommand, int result)
     return 0;
 }
 
-int checkTrack0Access()
+static int checkTrack0Access()
 {
     const std::string key("DSKTOOL_TRACK0_ACCESS");
     auto *track0Access = getenv(key.c_str());
@@ -1127,8 +1120,8 @@ int checkTrack0Access()
     return 0;
 }
 
-std::tuple<bool, std::vector<std::string> >
-readFile(const std::string &fileName)
+static std::tuple<bool, std::vector<std::string> >
+        readFile(const std::string &fileName)
 {
     std::ifstream file(fileName);
     std::vector<std::string> lines;
@@ -1148,8 +1141,8 @@ readFile(const std::string &fileName)
     return std::make_tuple(true, lines);
 }
 
-bool addToRegexList(const std::vector<std::string> &regexLines,
-                    std::vector<std::regex> &regexs, bool isCaseSensitive)
+static bool addToRegexList(const std::vector<std::string> &regexLines,
+        std::vector<std::regex> &regexs, bool isCaseSensitive)
 {
     bool result = true;
 

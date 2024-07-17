@@ -30,22 +30,22 @@
 #include "brcfile.h"
 
 
-const char * const FLEXPLORERRC = ".flexplorerrc";
+static const char * const FLEXPLORERRC = ".flexplorerrc";
 
-const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
-const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
-const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
-const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
-const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
-const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
-const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
-const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
-const char * const FLEXPLOREROPENDISKPATH = "OpenDiskPath";
-const char * const FLEXPLOREROPENINJECTFILEPATH = "OpenInjectFilePath";
-const char * const FLEXPLORERRECENTDIRECTORY = "RecentDirectoryPath";
-const char * const FLEXPLORERRECENTDISKPATH = "RecentDiskPath";
-const char * const FLEXPLORERTRACK0ONLYDIRSEC = "OnTrack0OnlyDirSectors";
-const char * const FLEXPLORERVERSION = "Version";
+static const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
+static const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
+static const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
+static const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
+static const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
+static const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
+static const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
+static const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
+static const char * const FLEXPLOREROPENDISKPATH = "OpenDiskPath";
+static const char * const FLEXPLOREROPENINJECTFILEPATH = "OpenInjectFilePath";
+static const char * const FLEXPLORERRECENTDIRECTORY = "RecentDirectoryPath";
+static const char * const FLEXPLORERRECENTDISKPATH = "RecentDiskPath";
+static const char * const FLEXPLORERTRACK0ONLYDIRSEC = "OnTrack0OnlyDirSectors";
+static const char * const FLEXPLORERVERSION = "Version";
 
 void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 {

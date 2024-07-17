@@ -29,7 +29,7 @@
 #include <algorithm>
 
 
-const std::set<std::string> &GetValidDevices()
+static const std::set<std::string> &GetValidDevices()
 {
     static const std::set<std::string> validDevices
     {

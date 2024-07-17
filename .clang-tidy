@@ -45,7 +45,6 @@ Checks: '
   -misc-non-private-member-variables-in-classes,
   -misc-const-correctness,
   -misc-use-anonymous-namespace,
-  -misc-use-internal-linkage,
   modernize-deprecated-headers,
   modernize-loop-convert,
   modernize-make-unique,
