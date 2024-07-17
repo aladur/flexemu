@@ -33,6 +33,13 @@ class CActiveTransition : public BCommand
 
 public:
     CActiveTransition(Mc6821 &p_mc6821, Mc6821::ControlLine control_line);
+    CActiveTransition() = delete;
+    ~CActiveTransition() override = default;
+    CActiveTransition(const CActiveTransition &src) = delete;
+    CActiveTransition(CActiveTransition &&src) = delete;
+    CActiveTransition &operator=(const CActiveTransition &src) = delete;
+    CActiveTransition &operator=(CActiveTransition &&src) = delete;
+
     void Execute() override;
 
 protected:

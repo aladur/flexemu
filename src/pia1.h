@@ -54,8 +54,15 @@ protected:
     void set_irq_B() override;
 
 public:
+    Pia1() = delete;
+    ~Pia1() override = default;
     Pia1(Scheduler &p_scheduler, KeyboardIO &p_keyboardIO,
          const struct sOptions &p_options);
+    Pia1(const Pia1 &src) = delete;
+    Pia1(Pia1 &&src) = delete;
+    Pia1 &operator=(const Pia1 &src) = delete;
+    Pia1 &operator=(Pia1 &&src) = delete;
+
     void resetIo() override;
     const char *getName() override
     {

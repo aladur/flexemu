@@ -75,14 +75,13 @@ private:
 
 public:
     FlexDisk() = delete;
-    FlexDisk(const FlexDisk &) = delete;
-    FlexDisk(FlexDisk &&src) noexcept;
     FlexDisk(const std::string &p_path, std::ios::openmode mode,
              const FileTimeAccess &fileTimeAccess);
     ~FlexDisk() override = default;
-
+    FlexDisk(const FlexDisk &src) = delete;
+    FlexDisk(FlexDisk &&src) = delete;
     FlexDisk &operator= (const FlexDisk &src) = delete;
-    FlexDisk &operator= (FlexDisk &&src) noexcept;
+    FlexDisk &operator= (FlexDisk &&src) = delete;
 
     static bool onTrack0OnlyDirSectors;
 

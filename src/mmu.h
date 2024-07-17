@@ -57,8 +57,13 @@ public:
     };
 
 public:
+    Mmu() = delete;
     explicit Mmu(Memory &p_memory);
     ~Mmu() override = default;
+    Mmu(const Mmu &src) = delete;
+    Mmu(Mmu &&src) = delete;
+    Mmu &operator=(const Mmu &src) = delete;
+    Mmu &operator=(Mmu &&src) = delete;
 };
 
 #endif // MMU_INCLUDED

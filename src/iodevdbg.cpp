@@ -40,8 +40,8 @@ IoDeviceDebug::IoDeviceDebug(IoDevice &p_device, std::string p_logFilePath)
     }
 }
 
-IoDeviceDebug::IoDeviceDebug(IoDeviceDebug &&src) noexcept :
-      device(src.device)
+IoDeviceDebug::IoDeviceDebug(IoDeviceDebug &&src) noexcept
+    : device(src.device)
     , logFilePath(std::move(src.logFilePath))
 {
 }

@@ -42,13 +42,13 @@ public:
 
     FlexRamDisk() = delete;
     FlexRamDisk(const FlexRamDisk &src) = delete;
-    FlexRamDisk(FlexRamDisk &&src) noexcept;
+    FlexRamDisk(FlexRamDisk &&src) = delete;
     FlexRamDisk(const std::string &p_path, std::ios::openmode mode,
                 const FileTimeAccess &fileTimeAccess);
     ~FlexRamDisk() override;
 
     FlexRamDisk &operator= (const FlexRamDisk &src) = delete;
-    FlexRamDisk &operator= (FlexRamDisk &&src) noexcept;
+    FlexRamDisk &operator= (FlexRamDisk &&src) = delete;
 
     bool ReadSector(Byte *buffer, int trk, int sec,
                     int side = -1) const override;

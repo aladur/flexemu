@@ -65,6 +65,10 @@ public:
     FLEXplorer() = delete;
     explicit FLEXplorer(struct sFPOptions &options);
     ~FLEXplorer() override;
+    FLEXplorer(const FLEXplorer &src) = delete;
+    FLEXplorer(FLEXplorer &&src) = delete;
+    FLEXplorer &operator=(const FLEXplorer &src) = delete;
+    FLEXplorer &operator=(FLEXplorer &&src) = delete;
 
     void ProcessArguments(const QStringList &args);
 
@@ -199,6 +203,8 @@ protected:
 
 class ProcessArgumentsFtor
 {
+    // Intentionally use a reference.
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
     FLEXplorer &window;
     QStringList args;
 
@@ -214,7 +220,14 @@ public:
             args.push_back(p_argv[i]);
         }
     }
-    ProcessArgumentsFtor(const ProcessArgumentsFtor &f) = default;
+    ProcessArgumentsFtor(const ProcessArgumentsFtor &src) = default;
+    ProcessArgumentsFtor(ProcessArgumentsFtor &&src) noexcept
+        : window(src.window)
+        , args(std::move(src.args))
+    {
+    }
+    ProcessArgumentsFtor &operator=(const ProcessArgumentsFtor &src) = delete;
+    ProcessArgumentsFtor &operator=(ProcessArgumentsFtor &&src) = delete;
 
     void operator() ()
     {

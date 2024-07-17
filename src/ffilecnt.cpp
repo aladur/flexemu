@@ -225,34 +225,6 @@ FlexDisk::FlexDisk(
     throw FlexException(FERR_IS_NO_FILECONTAINER, path);
 }
 
-FlexDisk::FlexDisk(FlexDisk &&src) noexcept :
-    path(std::move(src.path)),
-    fstream(std::move(src.fstream)),
-    param(src.param),
-    file_size(src.file_size),
-    ft_access(src.ft_access),
-    is_flex_format(src.is_flex_format),
-    sectors0_side0_max(src.sectors0_side0_max),
-    sectors_side0_max(src.sectors_side0_max),
-    attributes(src.attributes)
-{
-}
-
-FlexDisk &FlexDisk::operator= (FlexDisk &&src)
-noexcept
-{
-    path = src.path;
-    fstream = std::move(src.fstream);
-    param = src.param;
-    file_size = src.file_size;
-    is_flex_format = src.is_flex_format;
-    sectors0_side0_max = src.sectors0_side0_max;
-    sectors_side0_max = src.sectors_side0_max;
-    attributes = src.attributes;
-
-    return *this;
-}
-
 /****************************************/
 /* Public interface                     */
 /****************************************/

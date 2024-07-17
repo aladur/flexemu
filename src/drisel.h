@@ -69,6 +69,10 @@ public:
     DriveSelect() = delete;
     explicit DriveSelect(E2floppy &fdc);
     ~DriveSelect() override = default;
+    DriveSelect(const DriveSelect &src) = delete;
+    DriveSelect(DriveSelect &&src) = delete;
+    DriveSelect &operator=(const DriveSelect &src) = delete;
+    DriveSelect &operator=(DriveSelect &&src) = delete;
 
     void resetIo() override;
     const char *getName() override

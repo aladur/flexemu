@@ -46,7 +46,7 @@ private:
     DrawnWidget *w_drawn{};
     QTableWidget *w_table{};
     QDialogButtonBox *g_buttons{};
-    const int space = 2;
+    static const int space{2};
     int tableWidth = 80;
 
 public:

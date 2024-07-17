@@ -59,13 +59,14 @@ public:
         return "acia1";
     };
 
-    // Public constructor and destructor
 public:
-
     Acia1() = delete;
     Acia1(TerminalIO &p_terminalIO, Inout &p_inout);
     ~Acia1() override = default;
-
+    Acia1(const Acia1 &src) = delete;
+    Acia1(Acia1 &&src) = delete;
+    Acia1 &operator=(const Acia1 &src) = delete;
+    Acia1 &operator=(Acia1 &&src) = delete;
 };
 
 #endif // ACIA1_INCLUDED

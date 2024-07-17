@@ -84,6 +84,10 @@ public:
             Scheduler &p_scheduler,
             E2floppy &p_fdc);
     ~Command() override = default;
+    Command(const Command &src) = delete;
+    Command(Command &&src) = delete;
+    Command &operator=(const Command &src) = delete;
+    Command &operator=(Command &&src) = delete;
 };
 
 #endif // COMMAND_INCLUDED

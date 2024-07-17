@@ -71,21 +71,6 @@ FlexRamDisk::~FlexRamDisk()
     }
 }
 
-FlexRamDisk::FlexRamDisk(FlexRamDisk &&src) noexcept
-    : FlexDisk(std::move(src))
-    , file_buffer(std::move(src.file_buffer))
-{
-}
-
-FlexRamDisk &FlexRamDisk::operator= (FlexRamDisk &&src) noexcept
-{
-    file_buffer = std::move(src.file_buffer);
-
-    FlexDisk::operator=(std::move(src));
-
-    return *this;
-}
-
 bool FlexRamDisk::close()
 {
     bool throwException = false;

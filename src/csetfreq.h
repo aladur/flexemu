@@ -32,6 +32,11 @@ class CSetFrequency : public BCommand
 
 public:
     CSetFrequency(Scheduler &p_sched, float p_frequency);
+    ~CSetFrequency() override = default;
+    CSetFrequency(const CSetFrequency &src) = delete;
+    CSetFrequency(CSetFrequency &&src) = delete;
+    CSetFrequency &operator=(const CSetFrequency &src) = delete;
+    CSetFrequency &operator=(CSetFrequency &&src) = delete;
     void Execute() override;
 
 protected:

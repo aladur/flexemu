@@ -68,6 +68,10 @@ public:
         Inout &p_inout,
         TerminalIO &p_terminalIO);
     virtual ~AbstractGui() = default;
+    AbstractGui(const AbstractGui &src) = delete;
+    AbstractGui(AbstractGui &&src) = delete;
+    AbstractGui &operator=(const AbstractGui &src) = delete;
+    AbstractGui &operator=(AbstractGui &&src) = delete;
 };
 
 #endif

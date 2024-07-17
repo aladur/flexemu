@@ -107,6 +107,10 @@ public:
         Pia1 & p_pia1,
         struct sOptions & p_options);
     ~QtGui() override;
+    QtGui(const QtGui &src) = delete;
+    QtGui(QtGui &&src) = delete;
+    QtGui &operator=(const QtGui &&src) = delete;
+    QtGui &operator=(QtGui &&src) = delete;
 
     void SetFloppy(E2floppy *fdc);
     bool HasFloppy() const;

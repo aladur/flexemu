@@ -73,6 +73,10 @@ public:
 public:
     Inout(const struct sOptions &p_options, Memory &p_memory);
     ~Inout() override = default;
+    Inout(const Inout &src) = delete;
+    Inout(Inout &&src) = delete;
+    Inout &operator=(const Inout &src) = delete;
+    Inout &operator=(Inout &&src) = delete;
 };
 
 #endif // INOUT_INCLUDED

@@ -33,8 +33,9 @@ class IoDeviceDebug : public IoDevice
 public:
 
     IoDeviceDebug() = delete;
-    IoDeviceDebug(const IoDeviceDebug &) = delete;
+    ~IoDeviceDebug() override = default;
     IoDeviceDebug(IoDevice &p_device, std::string p_logFilePath);
+    IoDeviceDebug(const IoDeviceDebug &src) = default;
     IoDeviceDebug(IoDeviceDebug &&src) noexcept;
     // Avoid using copy or move assignment because of device reference
     // which can not be reassigned.
@@ -49,6 +50,8 @@ public:
     Word sizeOfIo() override;
 
 private:
+    // Intentionally use a reference.
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-const-or-ref-data-members)
     IoDevice &device;
     std::string logFilePath;
 };
