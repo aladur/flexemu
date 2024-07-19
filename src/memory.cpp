@@ -45,7 +45,7 @@ Memory::Memory(const struct sOptions &options) :
     if (isRamExtension)
     {
         video_ram_size = VIDEORAM_SIZE *
-                     (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2));
+                     (isHiMem ? MAXVIDEORAM_BANKS : (MAXVIDEORAM_BANKS >> 2U));
         video_ram.resize(video_ram_size);
     }
 
@@ -120,25 +120,25 @@ void Memory::init_memory()
                 i = 0;
             }
 
-            init_vram_ptr(j | 0x0c, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x0d, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x0e, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x0f, &memory[VIDEORAM_SIZE * (j >> 4)]);
-            init_vram_ptr(j | 0x04, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x05, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x06, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x07, &memory[VIDEORAM_SIZE * (j >> 4)]);
-            init_vram_ptr(j | 0x08, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x09, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x0a, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x0b, &memory[VIDEORAM_SIZE * (j >> 4)]);
-            init_vram_ptr(j | 0x00, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x01, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x02, &video_ram[VIDEORAM_SIZE * i++]);
-            init_vram_ptr(j | 0x03, &memory[VIDEORAM_SIZE * (j >> 4)]);
+            init_vram_ptr(j | 0x0CU, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0DU, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0EU, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0FU, &memory[VIDEORAM_SIZE * (j >> 4U)]);
+            init_vram_ptr(j | 0x04U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x05U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x06U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x07U, &memory[VIDEORAM_SIZE * (j >> 4U)]);
+            init_vram_ptr(j | 0x08U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x09U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0AU, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x0BU, &memory[VIDEORAM_SIZE * (j >> 4U)]);
+            init_vram_ptr(j | 0x00U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x01U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x02U, &video_ram[VIDEORAM_SIZE * i++]);
+            init_vram_ptr(j | 0x03U, &memory[VIDEORAM_SIZE * (j >> 4U)]);
         }
 
-        if (i != (isHiMem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2))
+        if (i != (isHiMem ? MAXVIDEORAM_BANKS : MAXVIDEORAM_BANKS >> 2U))
         {
             std::cerr << "Memory management initialization failure (i="
                       << i << ")\n";
@@ -148,14 +148,14 @@ void Memory::init_memory()
     // initialize mmu pointers
     for (i = 0; i < 16; i++)
     {
-        ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2)];
+        ppage[i] = &memory[VIDEORAM_SIZE * (i >> 2U)];
     }
 
     if (isEurocom2V5)
     {
         for (i = 12; i < 15; i++)
         {
-            ppage[i] = &memory[VIDEORAM_SIZE * ((i - 4) >> 2)];
+            ppage[i] = &memory[VIDEORAM_SIZE * ((i - 4U) >> 2U)];
         }
     }
 
@@ -272,24 +272,26 @@ Byte Memory::read_ram_rom(Word address)
 
 void Memory::switch_mmu(Word offset, Byte val)
 {
-    int ppage_index = 0;
+    Word ppage_index = 0U;
 
-    if ((val & 0x03) != 0x03)
+    if ((val & 0x03U) != 0x03U)
     {
         if (isHiMem && isFlexibleMmu)
         {
-            ppage_index = val & 0x3f;
+            ppage_index = val & 0x3FU;
         }
         else
         {
-            ppage_index = ((offset << 2) & 0x30) | (val & 0x0f);
+            ppage_index = (static_cast<DWord>(offset << 2U) & 0x30U) |
+                (val & 0x0FU);
         }
-        video_ram_active_bits |= (1 << offset);
+        video_ram_active_bits |= (1U << offset);
     }
     else
     {
-        ppage_index = ((offset << 2) & 0x30) | (val & 0x0f);
-        video_ram_active_bits &= ~(1 << offset);
+        ppage_index = (static_cast<DWord>(offset << 2U) & 0x30U) |
+            (val & 0x0FU);
+        video_ram_active_bits &= ~(1U << offset);
     }
 
     ppage[offset] = vram_ptrs[ppage_index];

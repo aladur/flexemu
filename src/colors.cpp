@@ -727,9 +727,9 @@ bool flx::getColorForName(const std::string &colorName, DWord &rgbColor)
 
     if (getRGBForName(colorName, red, green, blue))
     {
-        rgbColor = red & 0xff;
-        rgbColor |= (green & 0xff) << 8;
-        rgbColor |= (DWord)(blue & 0xff) << 16;
+        rgbColor = red & 0xFFU;
+        rgbColor |= (green & 0xFFU) << 8U;
+        rgbColor |= (static_cast<DWord>(blue) & 0xFFU) << 16U;
         return true;
     }
 

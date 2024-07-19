@@ -47,7 +47,7 @@ void Pia2::resetIo()
 
 void Pia2::writeOutputB(Byte value)
 {
-    if (value & 0x40)
+    if (value & 0x40U)
     {
         KeyboardIO::set_bell(0);
     }
@@ -64,17 +64,17 @@ Byte Pia2::readInputB()
     newValues = joystickIO.get_values(&deltaX, &deltaY, &buttonMask);
     keyboardIO.get_value(&keyMask);
 
-    orb &= 0xc1;
+    orb &= 0xC1U;
 
     if (buttonMask & L_MB)
     {
         if (keyMask & SHIFT_KEY)   // shift L_MB to emulate M_MB
         {
-            orb |= 0x20;
+            orb |= 0x20U;
         }
         else
         {
-            orb |= 0x02;
+            orb |= 0x02U;
         }
     }
 
@@ -82,17 +82,17 @@ Byte Pia2::readInputB()
     {
         if (keyMask & SHIFT_KEY)
         {
-            orb |= 0x08;
+            orb |= 0x08U;
         }
         else
         {
             if (keyMask & CONTROL_KEY)
             {
-                orb |= 0x10;
+                orb |= 0x10U;
             }
             else
             {
-                orb |= 0x20;
+                orb |= 0x20U;
             }
         }
     }
@@ -101,11 +101,11 @@ Byte Pia2::readInputB()
     {
         if (keyMask & SHIFT_KEY)   // shift R_MB to emulate M_MB
         {
-            orb |= 0x20;
+            orb |= 0x20U;
         }
         else
         {
-            orb |= 0x04;
+            orb |= 0x04U;
         }
     }
 
@@ -119,27 +119,27 @@ Byte Pia2::readInputB()
 
         if (joystick.XAxis() < -8)
         {
-            orb |= 0x02; // joystick to left side
+            orb |= 0x02U; // joystick to left side
         }
 
         if (joystick.XAxis() > 8)
         {
-            orb |= 0x04; // joystick to left side
+            orb |= 0x04U; // joystick to left side
         }
 
         if (joystick.YAxis() < -8)
         {
-            orb |= 0x10; // joystick up
+            orb |= 0x10U; // joystick up
         }
 
         if (joystick.YAxis() > 8)
         {
-            orb |= 0x08; // joystick down
+            orb |= 0x08U; // joystick down
         }
 
         if (joystick.IsButtonSet(0))
         {
-            orb |= 0x20; // joystick "shoot"
+            orb |= 0x20U; // joystick "shoot"
         }
     }
 
@@ -161,7 +161,7 @@ Byte Pia2::readInputB()
 
 #define TAB_OFFSET   (15)
     constexpr static
-        std::array<short, (TAB_OFFSET << 1) + 1> tab_period_from_mouse
+        std::array<short, (TAB_OFFSET * 2U) + 1U> tab_period_from_mouse
     {
         8000, 7084, 6272, 5554, 4918, 4354, 3856, 3414, 3023, 2677,
         2370, 2099, 1858, 1645, 1457, 1290, 1142, 1011,  896,  793,
@@ -225,22 +225,22 @@ Byte Pia2::readInputB()
     }
     else
     {
-        tx += static_cast<int>(cyclediff << 4);
+        tx += static_cast<int>(cyclediff << 4U);
 
         if (tx >= Tx)
         {
             tx -= Tx;
             Tx = tab_period_from_mouse[dX + TAB_OFFSET];
-            orb ^= 0x01;
+            orb ^= 0x01U;
         }
 
-        ty += static_cast<int>(cyclediff << 4);
+        ty += static_cast<int>(cyclediff << 4U);
 
         if (ty >= Ty)
         {
             ty -= Ty;
             Ty = tab_period_from_mouse[dY + TAB_OFFSET];
-            orb ^= 0x80;
+            orb ^= 0x80U;
         }
     }
 

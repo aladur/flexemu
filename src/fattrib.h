@@ -32,11 +32,11 @@
 // File attributes are used in struct s_dir_entry in field file_attr.
 // All other bits of file_attr should remain 0.
 // (WRITE_PROTECT also used for container attribute)
-const Byte WRITE_PROTECT = 0x80;
-const Byte DELETE_PROTECT = 0x40;
-const Byte READ_PROTECT = 0x20;
-const Byte CATALOG_PROTECT = 0x10;
-const Byte ALL_PROTECT = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
+const unsigned WRITE_PROTECT = 0x80;
+const unsigned DELETE_PROTECT = 0x40;
+const unsigned READ_PROTECT = 0x20;
+const unsigned CATALOG_PROTECT = 0x10;
+const unsigned ALL_PROTECT = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
                          CATALOG_PROTECT;
 
 using AttributeCharToFlag_t = std::array<std::pair<char, Byte>, 4>;

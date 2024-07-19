@@ -35,9 +35,7 @@
 #include <cstdint>
 
 
-enum : uint16_t {
-VIDEORAM_SIZE = 0x4000,
-};
+const unsigned VIDEORAM_SIZE{0x4000U};
 
 enum : uint8_t {
 RASTERLINE_SIZE = 64, /* byte size of one raster-line */
@@ -79,7 +77,7 @@ MAXVIDEORAM_BANKS = 48U, /* max number of ram banks of size 16K */
 /* possible values: 12, 48 */
 /* number of yblocks */
 enum : uint8_t {
-YBLOCKS = (1 << YBLOCK_BASE), /* Nr. of blocks vertically */
+YBLOCKS = (1U << YBLOCK_BASE), /* Nr. of blocks vertically */
 };
 
 /* bytesize of one yblock */
@@ -89,13 +87,13 @@ YBLOCK_SIZE = (VIDEORAM_SIZE / YBLOCKS),
 
 /* pixelsize of one block */
 enum : uint16_t {
-BLOCKWIDTH = (RASTERLINE_SIZE << 3),
+BLOCKWIDTH = (RASTERLINE_SIZE << 3U),
 BLOCKHEIGHT = (YBLOCK_SIZE / RASTERLINE_SIZE),
 };
 
 /* pixelsize of whole video display represented by a window */
 enum : uint16_t {
-WINDOWWIDTH = (RASTERLINE_SIZE << 3),
+WINDOWWIDTH = (RASTERLINE_SIZE << 3U),
 WINDOWHEIGHT = (VIDEORAM_SIZE / RASTERLINE_SIZE),
 };
 

@@ -55,9 +55,9 @@ private:
     static const Byte WRITE_SIDE_MASK{0x10};
 
     // Bits when writing register
-    static const Byte READ_SIDE_MASK{0x02};
-    static const Byte READ_IRQ_MASK{0x40};
-    static const Byte READ_DRQ_MASK{0x80};
+    static const unsigned READ_SIDE_MASK{0x02};
+    static const unsigned READ_IRQ_MASK{0x40};
+    static const unsigned READ_DRQ_MASK{0x80};
 
     E2floppy &fdc;
 

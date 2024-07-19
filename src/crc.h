@@ -71,10 +71,10 @@ public:
 
     void Add(Byte value)
     {
-        static const Byte shift = (sizeof(T) - 1U) * 8;
+        static const Byte shift = (sizeof(T) - 1U) * 8U;
         auto pos = static_cast<Byte>(
-                (crc ^ (static_cast<T>(value) << shift)) >> shift);
-        crc = (crc << 8) ^ crc_table[pos];
+                (crc ^ (static_cast<unsigned>(value) << shift)) >> shift);
+        crc = (crc * 256U) ^ crc_table[pos];
     }
 
     T GetResult(const Byte *begin, const Byte *end)

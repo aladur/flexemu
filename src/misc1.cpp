@@ -150,8 +150,8 @@ std::string flx::binstr(Byte x)
 
     for (int i = 7; i >= 0; --i)
     {
-        result[i] = (x & 1) ? '1' : '0';
-        x >>= 1;
+        result[i] = (x & 1U) ? '1' : '0';
+        x >>= 1U;
     }
 
     return result;
@@ -161,7 +161,7 @@ inline char flx::hex_digit(Byte x)
 {
     static const char *digits = "0123456789abcdef";
 
-    return digits[x & 0x0F];
+    return digits[x & 0x0FU];
 }
 
 std::string flx::hexstr(Byte x)
@@ -169,7 +169,7 @@ std::string flx::hexstr(Byte x)
     std::string result("  ");
 
     result[1] = hex_digit(x);
-    x >>= 4;
+    x >>= 4U;
     result[0] = hex_digit(x);
 
     return result;
@@ -180,11 +180,11 @@ std::string flx::hexstr(Word x)
     std::string result("    ");
 
     result[3] = hex_digit(static_cast<Byte>(x));
-    x >>= 4;
+    x >>= 4U;
     result[2] = hex_digit(static_cast<Byte>(x));
-    x >>= 4;
+    x >>= 4U;
     result[1] = hex_digit(static_cast<Byte>(x));
-    x >>= 4;
+    x >>= 4U;
     result[0] = hex_digit(static_cast<Byte>(x));
 
     return result;
@@ -750,7 +750,7 @@ void flx::dumpSector(std::ostream &os, uint32_t indent_count,
     {
         uint32_t j;
 
-        os << fmt::format("{}{:X}-", indent, i >> 4);
+        os << fmt::format("{}{:X}-", indent, i >> 4U);
         for (j = 0; j < 16; ++j)
         {
             os << fmt::format(" {:02X}", static_cast<Word>(buffer[i + j]));
@@ -758,7 +758,7 @@ void flx::dumpSector(std::ostream &os, uint32_t indent_count,
         os << " ";
         for (j = 0; j < 16; ++j)
         {
-            const char ch = static_cast<char>(buffer[i + j] & 0x7F);
+            const char ch = static_cast<char>(buffer[i + j] & 0x7FU);
 
             os << ((ch >= ' ' && ch <= '~') ? ch : '_');
         }
@@ -766,21 +766,21 @@ void flx::dumpSector(std::ostream &os, uint32_t indent_count,
     }
 }
 
-void flx::hex_dump(std::ostream &os, const char *buffer, int count)
+void flx::hex_dump(std::ostream &os, const char *buffer, unsigned count)
 {
     const char *p = &buffer[0];
-    int i = 0;
+    unsigned i = 0;
 
     for (; i < count; ++i)
     {
         char ch = *(p++);
         os << fmt::format("{:02X} ", ch);
-        if ((i & 0x0F) == 0x0F)
+        if ((i & 0x0FU) == 0x0FU)
         {
             os << "\n";
         }
     }
-    if ((i & 0x0F) != 0)
+    if ((i & 0x0FU) != 0U)
     {
         os << "\n";
     }

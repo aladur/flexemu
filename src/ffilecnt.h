@@ -98,7 +98,7 @@ public:
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
     bool GetAttributes(FlexDiskAttributes &diskAttributes) const override;
-    int GetFlexDiskType() const override;
+    unsigned GetFlexDiskType() const override;
     std::string GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used in flexemu).
@@ -107,11 +107,11 @@ public:
     bool WriteSector(const Byte *buffer, int trk, int sec, int side = -1)
         override;
     bool FormatSector(const Byte *target, int track, int sector, int side,
-                      int sizecode) override;
+                      unsigned sizecode) override;
     bool IsFlexFormat() const override;
     bool IsTrackValid(int track) const override;
     bool IsSectorValid(int track, int sector) const override;
-    int GetBytesPerSector() const override;
+    unsigned GetBytesPerSector() const override;
 
     // IFlexDiskByFile interface declaration (to be used within flexplorer).
     IFlexDiskByFile *begin() override
@@ -126,8 +126,8 @@ public:
     bool DeleteFile(const std::string &wildcard) override;
     bool RenameFile(const std::string &oldName,
                     const std::string &newName) override;
-    bool SetAttributes(const std::string &wildcard, Byte setMask,
-                       Byte clearMask = ~0) override;
+    bool SetAttributes(const std::string &wildcard, unsigned setMask,
+                       unsigned clearMask = ~0U) override;
     FlexFileBuffer ReadToBuffer(const std::string &fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;
@@ -149,7 +149,7 @@ protected:
                                     &boot_sectors,
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
-    bool IsFlexFileFormat(int type) const;
+    bool IsFlexFileFormat(unsigned type) const;
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
     std::vector<Byte> GetJvcFileHeader() const;
 

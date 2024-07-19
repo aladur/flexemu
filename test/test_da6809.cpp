@@ -37,7 +37,7 @@ TEST(test_da6809, dis_illegal)
         EXPECT_EQ(flags, InstFlg::Illegal);
         EXPECT_EQ(jumpaddr, 4711U); // unchanged value
         auto expected_code = fmt::format("{:04X}:", pc);
-        for (int i = 0; i < bytes; ++i)
+        for (unsigned i = 0; i < bytes; ++i)
         {
             expected_code += fmt::format(" {:02X}", memory[pc + i]);
         }

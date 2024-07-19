@@ -130,10 +130,11 @@ public:
             }
         }
 
-        if (video_ram_active_bits & (1 << (address >> 12)))
+        if (video_ram_active_bits &
+                (1U << (static_cast<unsigned>(address) >> 12U)))
         {
-            changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
-            *(ppage[address >> 12] + (address & 0x3fff)) = value;
+            changed[(address & 0x3FFFU) / YBLOCK_SIZE] = true;
+            *(ppage[address >> 12U] + (address & 0x3FFFU)) = value;
         }
         else
         {
@@ -141,11 +142,11 @@ public:
             {
                 // Use paged memory access to be able to mirror
                 // RAM banks (e.g. for Eurocom V5).
-                *(ppage[address >> 12] + (address & 0x3fff)) = value;
-                if (!isRamExtension && ((ramBank & 0x03) != 3) &&
-                    (address >> 14 == (ramBank & 0x03)))
+                *(ppage[address >> 12U] + (address & 0x3FFFU)) = value;
+                if (!isRamExtension && ((ramBank & 0x03U) != 3U) &&
+                    (address >> 14U == (ramBank & 0x03U)))
                 {
-                    changed[(address & 0x3fff) / YBLOCK_SIZE] = true;
+                    changed[(address & 0x3FFFU) / YBLOCK_SIZE] = true;
                 }
             }
         }
@@ -166,12 +167,12 @@ public:
             }
         }
 
-        return *(ppage[address >> 12] + (address & 0x3fff));
+        return *(ppage[address >> 12U] + (address & 0x3FFFU));
     }
 
     inline void write_word(Word address, Word value)
     {
-        write_byte(address, static_cast<Byte>(value >> 8));
+        write_byte(address, static_cast<Byte>(value >> 8U));
         write_byte(address + 1, static_cast<Byte>(value));
     }
 
@@ -179,7 +180,7 @@ public:
     {
         Word value;
 
-        value = static_cast<Word>(read_byte(address)) << 8;
+        value = static_cast<Word>(read_byte(address)) << 8U;
         value |= static_cast<Word>(read_byte(address + 1));
 
         return value;
@@ -197,11 +198,11 @@ public:
 
     // Get read-only access to video RAM.
     // This can be used by the GUI to update the video display.
-    inline Byte const *get_video_ram(int bank, int block_number) const
+    inline Byte const *get_video_ram(Byte bank, int block_number) const
     {
         if (isRamExtension)
         {
-            if ((bank & 0x01) == 1)
+            if ((bank & 0x01U) == 1U)
             {
                 return vram_ptrs[0x08] + block_number * YBLOCK_SIZE;
             }
@@ -209,19 +210,19 @@ public:
             return vram_ptrs[0x0C] + block_number * YBLOCK_SIZE;
         }
 
-        int offset = (bank & 0x03) * VIDEORAM_SIZE;
+        auto offset = (bank & 0x03U) * VIDEORAM_SIZE;
 
         return &memory[offset] + block_number * YBLOCK_SIZE;
     }
 
-    inline bool is_video_bank_valid(int bank) const
+    inline bool is_video_bank_valid(Byte bank) const
     {
         if (isRamExtension)
         {
-            return (bank & 0x2) == 0;
+            return (bank & 0x02U) == 0U;
         }
 
-        return (bank & 0x3) != 3;
+        return (bank & 0x3U) != 3U;
     }
 };
 #endif // MEMORY_INCLUDED

@@ -225,28 +225,28 @@ using cycles_t = QWord;
 // to identify random files.
 extern const char * const RANDOM_FILE_LIST;
 
-#define BTST0(x)  (((x) & 0x01) != 0)
-#define BTST1(x)  (((x) & 0x02) != 0)
-#define BTST2(x)  (((x) & 0x04) != 0)
-#define BTST3(x)  (((x) & 0x08) != 0)
-#define BTST4(x)  (((x) & 0x10) != 0)
-#define BTST5(x)  (((x) & 0x20) != 0)
-#define BTST6(x)  (((x) & 0x40) != 0)
-#define BTST7(x)  (((x) & 0x80) != 0)
-#define BTST8(x)  (((x) & 0x100) != 0)
-#define BTST15(x) (((x) & 0x8000) != 0)
-#define BTST16(x) (((x) & 0x10000) != 0)
+#define BTST0(x)  (((x) & 0x01U) != 0)
+#define BTST1(x)  (((x) & 0x02U) != 0)
+#define BTST2(x)  (((x) & 0x04U) != 0)
+#define BTST3(x)  (((x) & 0x08U) != 0)
+#define BTST4(x)  (((x) & 0x10U) != 0)
+#define BTST5(x)  (((x) & 0x20U) != 0)
+#define BTST6(x)  (((x) & 0x40U) != 0)
+#define BTST7(x)  (((x) & 0x80U) != 0)
+#define BTST8(x)  (((x) & 0x100U) != 0)
+#define BTST15(x) (((x) & 0x8000U) != 0)
+#define BTST16(x) (((x) & 0x10000U) != 0)
 
-#define BSET7(x) ((x) |= 0x80)
-#define BSET6(x) ((x) |= 0x40)
-#define BSET5(x) ((x) |= 0x20)
-#define BSET4(x) ((x) |= 0x10)
-#define BSET3(x) ((x) |= 0x08)
-#define BSET2(x) ((x) |= 0x04)
-#define BSET1(x) ((x) |= 0x02)
-#define BSET0(x) ((x) |= 0x01)
+#define BSET7(x) ((x) |= 0x80U)
+#define BSET6(x) ((x) |= 0x40U)
+#define BSET5(x) ((x) |= 0x20U)
+#define BSET4(x) ((x) |= 0x10U)
+#define BSET3(x) ((x) |= 0x08U)
+#define BSET2(x) ((x) |= 0x04U)
+#define BSET1(x) ((x) |= 0x02U)
+#define BSET0(x) ((x) |= 0x01U)
 
-#define BCLR7(x) ((x) &= 0x7f)
+#define BCLR7(x) ((x) &= 0x7FU)
 
 #define EXTEND8(x) static_cast<Word>(static_cast<SWord>(static_cast<SByte>(x)))
 
@@ -304,7 +304,7 @@ extern std::string getExecutablePath();
 extern std::string getHomeDirectory();
 extern void dumpSector(std::ostream &os, uint32_t indent_count,
                        const Byte *buffer, uint32_t size);
-extern void hex_dump(std::ostream &os, const char *buffer, int count);
+extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
 extern std::string getFileName(const std::string &path);
@@ -437,7 +437,7 @@ template<typename T> T getValueBigEndian(const Byte *p)
 
     for (size_t index = 0; index < sizeof(T); ++index)
     {
-        result = (result << 8) | p[index];
+        result = (result * 256U) | p[index];
     }
 
     return result;
@@ -448,8 +448,8 @@ template<typename T> void setValueBigEndian(Byte *p, T value)
 {
     for (size_t index = sizeof(T); index != 0; --index)
     {
-        p[index - 1] = value & 0xFF;
-        value >>= 8;
+        p[index - 1] = value & 0xFFU;
+        value >>= 8U;
     }
 }
 

@@ -101,7 +101,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
             }
 
             // c_lflag:
-            mask = 0
+            mask = 0U
 #ifdef ICANON
                    | ICANON
 #endif
@@ -118,7 +118,7 @@ void TerminalIO::init_terminal_io(Word reset_key)
 #endif
 
             // c_iflag:
-            mask = 0
+            mask = 0U
 #ifdef BRKINT
                    | BRKINT
 #endif

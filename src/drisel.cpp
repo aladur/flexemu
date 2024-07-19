@@ -58,7 +58,7 @@ void DriveSelect::requestWriteValue(Byte value)
 
     fdc.setSide((value & WRITE_SIDE_MASK) != 0);
 
-    switch (value & 0x0f)
+    switch (value & 0x0FU)
     {
         case SELECT_DRIVE0:
             selected = 0;

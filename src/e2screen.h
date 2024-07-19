@@ -105,8 +105,8 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    static int ConvertMouseButtonState(Qt::MouseButtons mouseButtons);
-    static int GetKeyModifiersState();
+    static uint32_t ConvertMouseButtonState(Qt::MouseButtons mouseButtons);
+    static uint32_t GetKeyModifiersState();
     int TranslateToPAT09Key(QKeyEvent *event);
     void MouseWarp(int dx, int dy);
     void SetMouseCoordinatesAndButtons(QMouseEvent *event);
@@ -132,7 +132,7 @@ private:
     int warpDy{};
     int warpHomeX;
     int warpHomeY;
-    int mouseButtonState;
+    unsigned mouseButtonState;
     int pixelSize;
     CursorType cursorType;
     bool doScaledScreenUpdate;

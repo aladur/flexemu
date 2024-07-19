@@ -181,11 +181,11 @@ public:
     virtual bool WriteSector(const Byte *buffer, int trk, int sec,
                              int side = -1) = 0;
     virtual bool FormatSector(const Byte *buffer, int trk, int sec, int side,
-                              int sizecode) = 0;
+                              unsigned sizecode) = 0;
     virtual bool IsFlexFormat() const = 0;
     virtual bool IsTrackValid(int track) const = 0;
     virtual bool IsSectorValid(int track, int sector) const = 0;
-    virtual int GetBytesPerSector() const = 0;
+    virtual unsigned GetBytesPerSector() const = 0;
 
     ~IFlexDiskBySector() override = default;
 };
@@ -278,7 +278,7 @@ struct s_flex_header
     Byte dummy1; /* for future extension */
     Byte dummy2, dummy3, dummy4, dummy5; /* and for alignment 4*/
 #ifndef __fromflex__
-    void initialize(int sector_size, int tracks, int sectors0,
+    void initialize(uint32_t sector_size, int tracks, int sectors0,
                     int sectors, int sides0, int sides);
 #endif /* #ifndef __fromflex__ */
 };
@@ -290,7 +290,7 @@ extern std::ostream& operator<<(std::ostream& os, const st_t &st);
 
 extern Word getTrack0SectorCount(int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);
-extern Word getBytesPerSector(int sizecode);
+extern Word getBytesPerSector(uint32_t sizecode);
 extern size_t getFileSize(const s_flex_header &header);
 #endif /* #ifndef __fromflex__ */
 

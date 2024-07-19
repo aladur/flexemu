@@ -201,7 +201,7 @@ bool FlexDirectoryDiskBySector::GetAttributes(
     return true;
 }
 
-int FlexDirectoryDiskBySector::GetBytesPerSector() const
+unsigned FlexDirectoryDiskBySector::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
@@ -236,7 +236,7 @@ bool FlexDirectoryDiskBySector::IsFlexFormat() const
     return true;
 }
 
-int FlexDirectoryDiskBySector::GetFlexDiskType() const
+unsigned FlexDirectoryDiskBySector::GetFlexDiskType() const
 {
     return param.type;
 }
@@ -1206,7 +1206,8 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
             {
                 if (file_attr & WRITE_PROTECT)
                 {
-                    chmod(path.c_str(), sbuf.st_mode & ~S_IWUSR);
+                    chmod(path.c_str(), sbuf.st_mode &
+                            static_cast<unsigned>(~S_IWUSR));
                     set_clear = "set";
                 }
                 else
@@ -1775,7 +1776,7 @@ bool FlexDirectoryDiskBySector::FormatSector(
         int /*trk*/,
         int /*sec*/,
         int /*side*/,
-        int /*sizecode*/)
+        unsigned /*sizecode*/)
 {
     // Handling unformated disks is not supported by this container.
     return false;

@@ -29,11 +29,9 @@
 #include <mutex>
 
 // Button mask for left, middle and right button
-enum : uint8_t {
-L_MB = 4,
-M_MB = 2,
-R_MB = 1,
-};
+const unsigned L_MB{4U};
+const unsigned M_MB{2U};
+const unsigned R_MB{1U};
 
 class JoystickIO
 {

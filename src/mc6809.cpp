@@ -82,7 +82,7 @@ void Mc6809::init_indexed_cycles()
 
     for (i = 128; i < 256; i++)
     {
-        switch (static_cast<Byte>(i & 0x1f))
+        switch (static_cast<Byte>(i & 0x1FU))
         {
             case 0x05:
             case 0x06:
@@ -146,42 +146,42 @@ void Mc6809::init_psh_pul_cycles()
     {
         cycle_count = 5;
 
-        if (i & 0x01)
+        if (i & 0x01U)
         {
             cycle_count++;
         }
 
-        if (i & 0x02)
+        if (i & 0x02U)
         {
             cycle_count++;
         }
 
-        if (i & 0x04)
+        if (i & 0x04U)
         {
             cycle_count++;
         }
 
-        if (i & 0x08)
+        if (i & 0x08U)
         {
             cycle_count++;
         }
 
-        if (i & 0x10)
+        if (i & 0x10U)
         {
             cycle_count += 2;
         }
 
-        if (i & 0x20)
+        if (i & 0x20U)
         {
             cycle_count += 2;
         }
 
-        if (i & 0x40)
+        if (i & 0x40U)
         {
             cycle_count += 2;
         }
 
-        if (i & 0x80)
+        if (i & 0x80U)
         {
             cycle_count += 2;
         }
@@ -208,7 +208,7 @@ void Mc6809::set_irq()
 #ifndef FASTFLEX
 cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 {
-    switch (static_cast<Byte>(what & 0xf0))
+    switch (static_cast<Byte>(what & 0xF0U))
     {
         case 0xf0:
             stack -= 2;
@@ -299,7 +299,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
             break;
     }
 
-    switch (static_cast<Byte>(what & 0x0f))
+    switch (static_cast<Byte>(what & 0x0FU))
     {
         case 0x0f:
             memory.write_byte(--stack, dp);
@@ -375,7 +375,7 @@ cycles_t Mc6809::psh(Byte what, Word &stack, Word &reg_s_or_u)
 
 cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
 {
-    switch (static_cast<Byte>(what & 0x0f))
+    switch (static_cast<Byte>(what & 0x0FU))
     {
         case 0x0f:
             cc.all = memory.read_byte(stack++);
@@ -446,7 +446,7 @@ cycles_t Mc6809::pul(Byte what, Word &stack, Word &reg_s_or_u)
             break;
     }
 
-    switch (static_cast<Byte>(what & 0xf0))
+    switch (static_cast<Byte>(what & 0xF0U))
     {
         case 0xf0:
             x = memory.read_word(stack);
@@ -549,7 +549,7 @@ void Mc6809::exg()
     bool r2_is_byte = false;
 
     // decode source
-    switch (w >> 4)
+    switch (w >> 4U)
     {
         case 0x00:
             t1 = d;
@@ -576,22 +576,22 @@ void Mc6809::exg()
             break;
 
         case 0x08:
-            t1 = a      | (a << 8);
+            t1 = a | (a * 256U);
             r1_is_byte = true;
             break;
 
         case 0x09:
-            t1 = b      | (b << 8);
+            t1 = b | (b * 256U);
             r1_is_byte = true;
             break;
 
         case 0x0a:
-            t1 = cc.all | (cc.all << 8);
+            t1 = cc.all | (cc.all * 256U);
             r1_is_byte = true;
             break;
 
         case 0x0b:
-            t1 = dp     | (dp << 8);
+            t1 = dp | (dp * 256U);
             r1_is_byte = true;
             break;
 
@@ -606,7 +606,7 @@ void Mc6809::exg()
             t1 = 0xFFFF;
     }
 
-    switch (w & 0x0F)
+    switch (w & 0x0FU)
     {
         case 0x00:
             t2 = d;
@@ -633,22 +633,22 @@ void Mc6809::exg()
             break;
 
         case 0x08:
-            t2 = a      | 0xFF00;
+            t2 = a | 0xFF00U;
             r2_is_byte = true;
             break;
 
         case 0x09:
-            t2 = b      | 0xFF00;
+            t2 = b | 0xFF00U;
             r2_is_byte = true;
             break;
 
         case 0x0a:
-            t2 = cc.all | 0xFF00;
+            t2 = cc.all | 0xFF00U;
             r2_is_byte = true;
             break;
 
         case 0x0b:
-            t2 = dp     | 0xFF00;
+            t2 = dp | 0xFF00U;
             r2_is_byte = true;
             break;
 
@@ -670,7 +670,7 @@ void Mc6809::exg()
         return;
     }
 
-    switch (w >> 4)
+    switch (w >> 4U)
     {
         case 0x00:
             d = t2;
@@ -713,7 +713,7 @@ void Mc6809::exg()
             break;
     }
 
-    switch (w & 0x0F)
+    switch (w & 0x0FU)
     {
         case 0x00:
             d = t1;
@@ -764,7 +764,7 @@ void Mc6809::tfr()
     bool is_byte = false;
 
     // decode source
-    switch (w >> 4)
+    switch (w >> 4U)
     {
         case 0x00:
             t = d;
@@ -791,22 +791,22 @@ void Mc6809::tfr()
             break;
 
         case 0x08:
-            t = a      | 0xFF00;
+            t = a | 0xFF00U;
             is_byte = true;
             break;
 
         case 0x09:
-            t = b      | 0xFF00;
+            t = b | 0xFF00U;
             is_byte = true;
             break;
 
         case 0x0a:
-            t = cc.all | (cc.all << 8);
+            t = cc.all | (cc.all * 256U);
             is_byte = true;
             break;
 
         case 0x0b:
-            t = dp     | (dp << 8);
+            t = dp | (dp * 256U);
             is_byte = true;
             break;
 
@@ -822,7 +822,7 @@ void Mc6809::tfr()
     }
 
     // decode destination
-    switch (w & 0x0F)
+    switch (w & 0x0FU)
     {
         case 0x00:
             if (!use_undocumented && is_byte)
@@ -932,14 +932,14 @@ Word Mc6809::do_effective_address(Byte post)
 
     if (!BTST7(post))
     {
-        Word offset = post & 0x1f;
+        Word offset = post & 0x1FU;
 
-        if (offset & 0x10)
+        if (offset & 0x10U)
         {
-            offset |= 0xffe0;
+            offset |= 0xFFE0U;
         }
 
-        switch (post & 0x60)
+        switch (post & 0x60U)
         {
             case 0x00 :
                 addr = x + offset;

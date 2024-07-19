@@ -44,10 +44,10 @@ public:
 
     enum class Event : uint8_t
     {
-        NONE = 0,
-        SyncExec = (1 << 0),  // synchronous execute commands
-        Timer = (1 << 1),     // execute timer events
-        SetStatus = (1 << 2), // set cpu status
+        NONE = 0U,
+        SyncExec = (1U << 0U),  // synchronous execute commands
+        Timer = (1U << 1U),     // execute timer events
+        SetStatus = (1U << 2U), // set cpu status
     };
 
     Scheduler() = delete;

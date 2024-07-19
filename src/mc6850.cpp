@@ -37,10 +37,10 @@ void Mc6850::resetIo()
 
 Byte Mc6850::readIo(Word offset)
 {
-    switch (offset & 0x01)
+    switch (offset & 0x01U)
     {
         case 0:
-            sr &= 0x80; // only receive data register full
+            sr &= 0x80U; // only receive data register full
             BSET1(sr);
             requestInput(); // and interrupt request is set
             // the other status bits are always 0
@@ -74,7 +74,7 @@ void Mc6850::requestInput()
 
 void Mc6850::writeIo(Word offset, Byte val)
 {
-    switch (offset & 0x01)
+    switch (offset & 0x01U)
     {
         case 0:
             cr = val;
@@ -85,7 +85,7 @@ void Mc6850::writeIo(Word offset, Byte val)
             BCLR7(cr); // reset interrupt flag
             writeOutput(tdr); // write output to serial line
 
-            if ((cr & 0x60) == 0x20)// if enabled
+            if ((cr & 0x60U) == 0x20U)// if enabled
             {
                 set_irq(); // set transmitting interrupt
             }

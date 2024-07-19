@@ -103,9 +103,9 @@ Word getSides(int tracks, int sectors)
     return !(sectors % 2) ? 2U : 1U;
 }
 
-Word getBytesPerSector(int sizecode)
+Word getBytesPerSector(uint32_t sizecode)
 {
-    return 128U << (sizecode & 0x03);
+    return 128U << (sizecode & 0x03U);
 }
 
 size_t getFileSize(const s_flex_header &header)

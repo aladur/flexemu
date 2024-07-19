@@ -279,7 +279,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        result |= ConvertFlexToHex(ifile, ofile, ofiletype, verbose);
+        result = ConvertFlexToHex(ifile, ofile, ofiletype, verbose);
     }
 
     return result;

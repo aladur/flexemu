@@ -34,8 +34,6 @@
 
 BJoystick::BJoystick(int which)
 {
-    axis[0] = axis[1] = buttons = static_cast<decltype(buttons)>(0);
-
     if (which == 0)
     {
         // There is no alternative to this system call.
@@ -114,14 +112,14 @@ bool BJoystick::Actualize()
 }
 
 // check for button "which" is set. Which is in the range of 0 .. 31
-bool BJoystick::IsButtonSet(int which) const
+bool BJoystick::IsButtonSet(uint32_t which) const
 {
-    if (which < 0 || which > 31)
+    if (which > 31U)
     {
         return false;
     }
 
-    return (buttons & (1 << which)) != 0;
+    return (buttons & (1U << which)) != 0U;
 }
 
 #endif //#ifdef LINUX_JOYSTICK_IS_PRESENT

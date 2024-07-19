@@ -40,16 +40,16 @@ void Mc6821::resetIo()
 
 Byte Mc6821::readIo(Word offset)
 {
-    switch (offset & 0x03)
+    switch (offset & 0x03U)
     {
         case 0:
-            if (cra & 0x04)         // check data direction bit
+            if (cra & 0x04U) // check data direction bit
             {
                 Byte result = readInputA(); // get data from HW-input
-                cra &= 0xbf; // clear IRQA2 flag
-                cra &= 0x7f; // clear IRQA1 flag
+                cra &= 0xBFU; // clear IRQA2 flag
+                cra &= 0x7FU; // clear IRQA1 flag
 
-                if ((cra & 0x38) == 0x20)
+                if ((cra & 0x38U) == 0x20U)
                 {
                     cls &= ~ControlLine::CA2;
                 }
@@ -66,11 +66,11 @@ Byte Mc6821::readIo(Word offset)
             return cra;
 
         case 2:
-            if (crb & 0x04)         // check data direction bit
+            if (crb & 0x04U) // check data direction bit
             {
                 Byte result = readInputB(); // get data from HW-input
-                crb &= 0xbf; // clear IRQB2 flag
-                crb &= 0x7f; // clear IRQB1 flag
+                crb &= 0xBFU; // clear IRQB2 flag
+                crb &= 0x7FU; // clear IRQB1 flag
                 return result; // read output register B
             }
             else
@@ -113,7 +113,7 @@ void Mc6821::requestInputB()
 
 void Mc6821::writeIo(Word offset, Byte val)
 {
-    switch (offset & 0x03)
+    switch (offset & 0x03U)
     {
         case 0:
             if (BTST2(cra))     // check data direction bit
@@ -131,7 +131,7 @@ void Mc6821::writeIo(Word offset, Byte val)
         case 1:
             cra = val;
 
-            if ((cra & 0x30) == 0x30)
+            if ((cra & 0x30U) == 0x30U)
             {
                 if (BTST3(cra))
                 {
@@ -151,7 +151,7 @@ void Mc6821::writeIo(Word offset, Byte val)
                 orb = val & ddrb;
                 writeOutputB(orb); // write output to port-Pins
 
-                if ((crb & 0x38) == 0x20)
+                if ((crb & 0x38U) == 0x20U)
                 {
                     cls &= ~ControlLine::CB2;
                 }
@@ -166,7 +166,7 @@ void Mc6821::writeIo(Word offset, Byte val)
         case 3:
             crb = val;
 
-            if ((crb & 0x30) == 0x30)
+            if ((crb & 0x30U) == 0x30U)
             {
                 if (BTST3(crb))
                 {
@@ -215,7 +215,7 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
                 set_irq_A(); // send an interrupt to CPU
             }
 
-            if ((cra & 0x38) == 0x20)
+            if ((cra & 0x38U) == 0x20U)
             {
                 cls |= ControlLine::CA2;
             }
@@ -250,7 +250,7 @@ void Mc6821::activeTransition(Mc6821::ControlLine control_line)
                 set_irq_B(); // send an interrupt to CPU
             }
 
-            if ((crb & 0x38) == 0x20)
+            if ((crb & 0x38U) == 0x20U)
             {
                 cls |= ControlLine::CB2;
             }

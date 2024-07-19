@@ -36,6 +36,7 @@ Checks: '
   google-readability-casting,
   google-explicit-constructor,
   hicpp-explicit-conversions,
+  hicpp-signed-bitwise,
   -hicpp-vararg,
   -llvm-qualified-auto,
   misc-*,

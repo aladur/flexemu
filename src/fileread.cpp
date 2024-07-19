@@ -36,8 +36,8 @@
 
 static Word read_word(std::istream &istream)
 {
-    Word result = (istream.get() & 0xFF) << 8;
-    result |= istream.get() & 0xFF;
+    Word result = (istream.get() * 256U) & 0xFF00U;
+    result |= static_cast<Byte>(istream.get());
 
     return result;
 }
@@ -58,13 +58,13 @@ static bool read_hex_byte(std::istream &istream, Byte &value, Byte &checksum)
         byte = static_cast<char>(toupper(byte));
         if (byte >= '0' && byte <= '9')
         {
-            value <<= 4;
-            value |= (byte - '0');
+            value <<= 4U;
+            value |= static_cast<Byte>(byte - '0');
         }
         else if (byte >= 'A' && byte <= 'F')
         {
-            value <<= 4;
-            value |= (byte - 'A' + 10);
+            value <<= 4U;
+            value |= static_cast<Byte>(byte - 'A' + 10);
         }
         else
         {
@@ -89,7 +89,7 @@ static bool read_hex_word(std::istream &istream, Word &value, Byte &checksum)
         {
             return false;
         }
-        value <<= 8;
+        value <<= 8U;
         value |= byte;
     }
 
@@ -171,7 +171,7 @@ static int load_intel_hex(std::istream &istream, MemoryTarget<DWord> &memtgt,
                 {
                     return -3;
                 }
-                startAddress = (startAddress << 8) | bval;
+                startAddress = (startAddress << 8U) | bval;
             }
         }
         else
@@ -355,7 +355,7 @@ static int load_flex_binary(std::istream &istream, MemoryTarget<DWord> &memtgt,
                 isFirst = false;
                 // Read address and byte count.
                 address = read_word(istream);
-                count = istream.get() & 0xff;
+                count = static_cast<Byte>(istream.get());
             }
             else if (value == 0x16)
             {
@@ -459,8 +459,8 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
 {
     std::array<char, 4> header{};
 
-    header[1] = static_cast<char>((address >> 8) & 0xff);
-    header[2] = static_cast<char>(address & 0xff);
+    header[1] = static_cast<char>((address >> 8U) & 0xFFU);
+    header[2] = static_cast<char>(address & 0xFFU);
 
     switch (wbType)
     {
@@ -470,7 +470,7 @@ static int write_buffer_flex_binary(WBType wbType, std::ostream &ostream,
 
         case WBType::Data:
             header[0] = '\x2';
-            header[3] = static_cast<char>(size & 0xff);
+            header[3] = static_cast<char>(size & 0xFFU);
 
             ostream.write(header.data(), header.size());
             if (ostream.fail())
@@ -537,11 +537,11 @@ static int write_buffer_intelhex(WBType wbType, std::ostream &ostream,
         address = 0;
     }
 
-    ostream << fmt::format(":{:02X}{:04X}{:02X}", size & 0xFF,
-               address & 0xFFFF, static_cast<Word>(type));
+    ostream << fmt::format(":{:02X}{:04X}{:02X}", size & 0xFFU,
+               address & 0xFFFFU, static_cast<Word>(type));
 
-    checksum += size & 0xFF;
-    checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
+    checksum += size & 0xFFU;
+    checksum += ((address >> 8U) & 0xFFU) + (address & 0xFFU);
     checksum += type;
 
     for (index = 0; index < size; ++index)
@@ -584,10 +584,10 @@ static int write_buffer_motorola_srec(WBType wbType, std::ostream &ostream,
         address = 0;
     }
 
-    ostream << fmt::format("S{}{:02X}{:04X}", type, (size + 3) & 0xFF,
-               address & 0xFFFF);
-    checksum += (size + 3) & 0xFF;
-    checksum += ((address >> 8) & 0xFF) + (address & 0xFF);
+    ostream << fmt::format("S{}{:02X}{:04X}", type, (size + 3) & 0xFFU,
+               address & 0xFFFFU);
+    checksum += (size + 3) & 0xFFU;
+    checksum += ((address >> 8U) & 0xFFU) + (address & 0xFFU);
 
     for (index = 0; index < size; ++index)
     {

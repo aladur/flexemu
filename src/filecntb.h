@@ -28,18 +28,18 @@
 
 /* possible constants for container type */
 
-const int TYPE_DISKFILE = 0x01; /* type: file container */
-const int TYPE_DIRECTORY = 0x02; /* type: directory */
-const int TYPE_DSK_DISKFILE =
-    0x10; /* subtype: a file container with DSK format */
-const int TYPE_FLX_DISKFILE =
-    0x20; /* subtype: a file container with FLX format */
-const int TYPE_DIRECTORY_BY_SECTOR = 0x40; /* subtype: NAFS directory */
+const unsigned TYPE_DISKFILE = 0x01U; /* type: file container */
+const unsigned TYPE_DIRECTORY = 0x02U; /* type: directory */
+const unsigned TYPE_DSK_DISKFILE =
+    0x10U; /* subtype: a file container with DSK format */
+const unsigned TYPE_FLX_DISKFILE =
+    0x20U; /* subtype: a file container with FLX format */
+const unsigned TYPE_DIRECTORY_BY_SECTOR = 0x40U; /* subtype: NAFS directory */
 /* (means: without text conversion) */
-const int TYPE_RAM_DISKFILE =
-    0x80; /* subtype: filecontainer loaded in RAM */
-const int TYPE_JVC_HEADER =
-    0x100; /* subtype: DSK filecontainer with JVC header */
+const unsigned TYPE_RAM_DISKFILE =
+    0x80U; /* subtype: filecontainer loaded in RAM */
+const unsigned TYPE_JVC_HEADER =
+    0x100U; /* subtype: DSK filecontainer with JVC header */
 
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
@@ -74,7 +74,7 @@ class IFlexDiskBase
 public:
     virtual bool IsWriteProtected() const = 0;
     virtual bool GetAttributes(FlexDiskAttributes &diskAttributes) const = 0;
-    virtual int GetFlexDiskType() const = 0;
+    virtual unsigned GetFlexDiskType() const = 0;
     virtual std::string GetPath() const = 0;
 
     virtual ~IFlexDiskBase() = default;

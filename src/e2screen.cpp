@@ -70,7 +70,7 @@ E2Screen::E2Screen(Scheduler &p_scheduler,
     , previousMouseY(-1)
     , warpHomeX(0)
     , warpHomeY(0)
-    , mouseButtonState(-1)
+    , mouseButtonState(0)
     , pixelSize(p_options.pixelSize)
     , cursorType(CursorType::Default)
     , doScaledScreenUpdate(true)
@@ -82,8 +82,8 @@ E2Screen::E2Screen(Scheduler &p_scheduler,
     setBaseSize({WINDOWWIDTH, WINDOWHEIGHT});
     setMinimumSize({WINDOWWIDTH, WINDOWHEIGHT});
     setMouseTracking(true);
-    warpHomeX = (pixelSize * WINDOWWIDTH) >> 1;
-    warpHomeY = (pixelSize * WINDOWHEIGHT) >> 1;
+    warpHomeX = static_cast<int>((pixelSize * WINDOWWIDTH) / 2U);
+    warpHomeY = static_cast<int>((pixelSize * WINDOWHEIGHT) / 2U);
     InitializeNumLockIndicatorMask();
 }
 
@@ -414,9 +414,9 @@ void E2Screen::UpdateMouse()
     keyboardIO.put_value(keyModifiers);
 }
 
-int E2Screen::GetKeyModifiersState()
+uint32_t E2Screen::GetKeyModifiersState()
 {
-    int state = 0;
+    uint32_t state = 0;
 
     // Get modifier state of shift and control key.
     if (QApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
@@ -431,19 +431,19 @@ int E2Screen::GetKeyModifiersState()
     return state;
 }
 
-int E2Screen::ConvertMouseButtonState(Qt::MouseButtons mouseButtonState)
+uint32_t E2Screen::ConvertMouseButtonState(Qt::MouseButtons mouseButtons)
 {
-    int state = 0;
+    uint32_t state = 0;
 
-    if (mouseButtonState & Qt::LeftButton)
+    if (mouseButtons & Qt::LeftButton)
     {
         state |= L_MB;
     }
-    if (mouseButtonState & Qt::MiddleButton)
+    if (mouseButtons & Qt::MiddleButton)
     {
         state |= M_MB;
     }
-    if (mouseButtonState & Qt::RightButton)
+    if (mouseButtons & Qt::RightButton)
     {
         state |= R_MB;
     }
@@ -815,7 +815,7 @@ int E2Screen::TranslateToPAT09Key(QKeyEvent *event)
             break;
     }
 
-    if (event->text().size() == 1 && !(event->text()[0].unicode() & 0xFF80))
+    if (event->text().size() == 1 && !(event->text()[0].unicode() & 0xFF80U))
     {
         return event->text()[0].unicode();
     }
@@ -851,7 +851,7 @@ void E2Screen::InitializeNumLockIndicatorMask()
     if (display != nullptr)
     {
         XkbDescRec* kbDesc = XkbAllocKeyboard();
-        int index;
+        uint32_t index;
 
         if (display == nullptr || kbDesc == nullptr ||
             (Success != XkbGetNames(display, XkbIndicatorNamesMask, kbDesc)))
@@ -873,7 +873,7 @@ void E2Screen::InitializeNumLockIndicatorMask()
 
             if (0 == strNumLock.compare(atomName))
             {
-                numLockIndicatorMask = 1 << index;
+                numLockIndicatorMask = 1U << index;
                 XFree(atomName);
                 break;
             }

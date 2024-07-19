@@ -142,17 +142,19 @@ public:
         if (state == Qt::Unchecked)
         {
             clearMask |= attributeCharToFlag.at(index).second;
-            setMask &= ~attributeCharToFlag.at(index).second;
+            setMask &= static_cast<Byte>(~attributeCharToFlag.at(index).second);
         }
         else if (state == Qt::Checked)
         {
             setMask |= attributeCharToFlag.at(index).second;
-            clearMask &= ~attributeCharToFlag.at(index).second;
+            clearMask &=
+                static_cast<Byte>(~attributeCharToFlag.at(index).second);
         }
         else if (state == Qt::PartiallyChecked)
         {
-            setMask &= ~attributeCharToFlag.at(index).second;
-            clearMask &= ~attributeCharToFlag.at(index).second;
+            setMask &= static_cast<Byte>(~attributeCharToFlag.at(index).second);
+            clearMask &=
+                static_cast<Byte>(~attributeCharToFlag.at(index).second);
         }
     }
 

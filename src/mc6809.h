@@ -146,22 +146,22 @@ class Mc6809 : public ScheduledCpu, public BObserver
 public:
     enum class Event : Word
     {
-        NONE = 0,
-        Nmi = (1 << 0),
-        Firq = (1 << 1),
-        Irq = (1 << 2),
-        Invalid = (1 << 3),
-        BreakPoint = (1 << 4),
-        SingleStep = (1 << 5),
-        SingleStepFinished = (1 << 6),
-        SyncExec = (1 << 7),
-        Timer = (1 << 8),
-        SetStatus = (1 << 9),
-        FrequencyControl = (1 << 10),
-        DoSchedule = (1 << 11),
-        Cwai = (1 << 13),
-        Sync = (1 << 14),
-        IgnoreBP = (1 << 15),
+        NONE = 0U,
+        Nmi = (1U << 0U),
+        Firq = (1U << 1U),
+        Irq = (1U << 2U),
+        Invalid = (1U << 3U),
+        BreakPoint = (1U << 4U),
+        SingleStep = (1U << 5U),
+        SingleStepFinished = (1U << 6U),
+        SyncExec = (1U << 7U),
+        Timer = (1U << 8U),
+        SetStatus = (1U << 9U),
+        FrequencyControl = (1U << 10U),
+        DoSchedule = (1U << 11U),
+        Cwai = (1U << 13U),
+        Sync = (1U << 14U),
+        IgnoreBP = (1U << 15U),
     };
 
 protected:
@@ -533,12 +533,12 @@ private:
 
     inline void bgt()
     {
-        do_br(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
+        do_br(!(static_cast<unsigned>(cc.bit.n ^ cc.bit.v) | cc.bit.z));
     }
 
     inline cycles_t lbgt()
     {
-        return do_lbr(!(cc.bit.z | (cc.bit.n ^ cc.bit.v)));
+        return do_lbr(!(static_cast<unsigned>(cc.bit.n ^ cc.bit.v) | cc.bit.z));
     }
 
     inline void bhi()
@@ -553,12 +553,12 @@ private:
 
     inline void ble()
     {
-        do_br(cc.bit.z | (cc.bit.n ^ cc.bit.v));
+        do_br(static_cast<unsigned>(cc.bit.n ^ cc.bit.v) | cc.bit.z);
     }
 
     inline cycles_t lble()
     {
-        return do_lbr(cc.bit.z | (cc.bit.n ^ cc.bit.v));
+        return do_lbr(static_cast<unsigned>(cc.bit.n ^ cc.bit.v) | cc.bit.z);
     }
 
     inline void bls()
@@ -771,7 +771,7 @@ private:
     inline void lsr(Byte &reg)
     {
         cc.bit.c = BTST0(reg);
-        reg >>= 1;
+        reg >>= 1U;
         cc.bit.n = false;
         cc.bit.z = !reg;
     }
@@ -787,7 +787,7 @@ private:
     {
         bool oc = cc.bit.c;
         cc.bit.c = BTST7(reg);
-        reg <<= 1;
+        reg <<= 1U;
 
         if (oc)
         {
@@ -810,7 +810,7 @@ private:
     {
         bool oc = cc.bit.c;
         cc.bit.c = BTST0(reg);
-        reg = reg >> 1;
+        reg = reg >> 1U;
 
         if (oc)
         {
@@ -951,7 +951,7 @@ public:
     void UpdateFrom(NotifyId id, void *param = nullptr) override;
 
 protected:
-    int Disassemble(Word address, InstFlg &p_flags,
+    unsigned Disassemble(Word address, InstFlg &p_flags,
                     std::string &code, std::string &mnemonic,
                     std::string &operands);
     Mc6809Logger logger;
@@ -1191,19 +1191,19 @@ inline void Mc6809::daa()
 {
     Word t;
     Word c = 0;
-    Byte lsn = a & 0x0f;
-    Byte msn = a & 0xf0;
+    Byte lsn = a & 0x0FU;
+    Byte msn = a & 0xF0U;
 
     if (cc.bit.h || (lsn > 9))
     {
-        c |= 0x06;
+        c |= 0x06U;
     }
 
     if (cc.bit.c    ||
         (msn > 0x90) ||
         ((msn > 0x80) && (lsn > 9)))
     {
-        c |= 0x60;
+        c |= 0x60U;
     }
 
     t = c + a;

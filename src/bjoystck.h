@@ -42,11 +42,11 @@ public:
     bool Actualize();
     int32_t XAxis();
     int32_t YAxis();
-    int32_t Buttons() const;
-    bool IsButtonSet(int which) const;
+    uint32_t Buttons() const;
+    bool IsButtonSet(uint32_t which) const;
 private:
     int js{}; // input stream from joystick
-    int32_t buttons{};
+    uint32_t buttons{};
     std::array<int32_t, 2> axis{};
 };
 
@@ -58,7 +58,7 @@ inline int32_t BJoystick::YAxis()
 {
     return axis[1];
 }
-inline int32_t BJoystick::Buttons() const
+inline uint32_t BJoystick::Buttons() const
 {
     return buttons;
 }

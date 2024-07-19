@@ -62,7 +62,7 @@ public:
     bool IsWriteProtected() const;
     int GetSelectedFilesCount() const;
     int GetSelectedFilesByteSize() const;
-    int GetFlexDiskType() const;
+    unsigned GetFlexDiskType() const;
     void SelectAll();
     void DeselectAll();
     QVector<int>::size_type FindFiles(const QString &pattern);

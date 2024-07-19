@@ -137,7 +137,7 @@ void Pia2V5::writeOutputA(Byte value)
             {
                 // high-bit detected
                 write_byte |= write_bit_mask;
-                write_bit_mask >>= 1;
+                write_bit_mask >>= 1U;
                 last_ora = 0;
                 break;
             }
@@ -148,7 +148,7 @@ void Pia2V5::writeOutputA(Byte value)
             if (last_ora == 0xe8)
             {
                 // low-bit detected
-                write_bit_mask >>= 1;
+                write_bit_mask >>= 1U;
                 last_ora = 0;
                 break;
             }
@@ -200,23 +200,23 @@ Byte Pia2V5::readInputA()
 {
     last_ora = 0;
     Byte result = ora;
-    result |= 0x01; // Default: set data bit
+    result |= 0x01U; // Default: set data bit
 
     if (drive_idx < 0)
     {
         return result;
     }
 
-    result |= 0x02; // Cassette in position (CIP)
+    result |= 0x02U; // Cassette in position (CIP)
     if (!drive[drive_idx]->IsWriteProtected())
     {
-        result |= 0x04; // No write protection (WPRT)
+        result |= 0x04U; // No write protection (WPRT)
     }
 
     if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
         (read_mode == ReadMode::Init && BTST7(cra)))
     {
-        result &= ~0x01;
+        result &= ~0x01U;
         read_mode = ReadMode::Read;
         cycles_RDC = cpu.get_cycles();
 
@@ -267,10 +267,10 @@ Byte Pia2V5::readInputA()
             if (read_buffer[read_index] & read_bit_mask)
             {
                 // If bit is set clear Read Data (/RDA) (low-active)
-                result &= ~0x01;
+                result &= ~0x01U;
             }
 
-            read_bit_mask >>= 1;
+            read_bit_mask >>= 1U;
             if (read_bit_mask == 0)
             {
                 read_bit_mask = 0x80;
@@ -301,11 +301,11 @@ void Pia2V5::writeOutputB(Byte value)
 
     drive_idx = -1;
 
-    if ((orb & 0x06) == 0x04) // low-active Drive #0 selected
+    if ((orb & 0x06U) == 0x04U) // low-active Drive #0 selected
     {
         drive_idx = 0;
     }
-    else if ((orb & 0x06) == 0x02) // low-active Drive #1 selected
+    else if ((orb & 0x06U) == 0x02U) // low-active Drive #1 selected
     {
         drive_idx = 1;
     }

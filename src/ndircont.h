@@ -135,7 +135,7 @@ public:
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetAttributes(FlexDiskAttributes &diskAttributes) const override;
-    int GetFlexDiskType() const override;
+    unsigned GetFlexDiskType() const override;
     std::string GetPath() const override;
 
     // IFlexDiskBySector interface declaration.
@@ -144,11 +144,11 @@ public:
     bool WriteSector(const Byte *buffer, int trk, int sec,
                      int side = -1) override;
     bool FormatSector(const Byte *buffer, int trk, int sec, int side,
-                      int sizecode) override;
+                      unsigned sizecode) override;
     bool IsFlexFormat() const override;
     bool IsTrackValid(int track) const override;
     bool IsSectorValid(int track, int sector) const override;
-    int GetBytesPerSector() const override;
+    unsigned GetBytesPerSector() const override;
 
 private:
     void fill_flex_directory(bool is_write_protected);

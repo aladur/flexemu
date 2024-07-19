@@ -60,7 +60,7 @@ void Mc6809::reset()
 #endif
 }
 
-int Mc6809::Disassemble(Word address, InstFlg &p_flags,
+unsigned Mc6809::Disassemble(Word address, InstFlg &p_flags,
                         std::string &code, std::string &mnemonic,
                         std::string &operands)
 {

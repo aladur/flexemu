@@ -25,6 +25,7 @@
 
 
 #include "misc1.h"
+#include <cstdint>
 #include <string>
 #include "bdate.h"
 #include "btime.h"
@@ -38,22 +39,19 @@ enum flexFileAttributes : uint8_t
     FLX_NOCAT = 0x10,
 };
 
-enum flexFileStatus : uint8_t
-{
-    FLX_NOT_EMPTY = 0x1
-};
+const unsigned FLX_NOT_EMPTY{1U};
 
 class FlexDirEntry
 {
 private:
-    int size{0};
+    uint32_t size{0};
     Byte attributes{0};
     int sectorMap{0};
     int startTrk{-1};
     int startSec{0};
     int endTrk{0};
     int endSec{0};
-    int status{0};
+    Byte status{0};
     BDate date;
     BTime time;
     std::string fileName;
@@ -79,8 +77,8 @@ public:
     const std::string &GetTotalFileName() const;
     std::string GetFileName() const;
     std::string GetFileExt() const;
-    void SetFileSize(int size);
-    int GetFileSize() const;
+    void SetFileSize(uint32_t p_size);
+    uint32_t GetFileSize() const;
     void SetAttributes(Byte attributes);
     void SetAttributes(Byte setMask, Byte clearMask);
     Byte GetAttributes() const;
@@ -96,11 +94,11 @@ private:
     void CopyFrom(const FlexDirEntry &src);
 };
 
-inline void FlexDirEntry::SetFileSize(int s)
+inline void FlexDirEntry::SetFileSize(uint32_t p_size)
 {
-    size = s;
+    size = p_size;
 }
-inline int FlexDirEntry::GetFileSize() const
+inline uint32_t FlexDirEntry::GetFileSize() const
 {
     return size;
 }

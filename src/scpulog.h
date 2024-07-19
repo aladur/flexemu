@@ -28,15 +28,15 @@
 
 enum class LogRegister : uint8_t
 {
-    NONE = 0,
-    CC = (1 << 0),
-    A = (1 << 1),
-    B = (1 << 2),
-    DP = (1 << 3),
-    X = (1 << 4),
-    Y = (1 << 5),
-    U = (1 << 6),
-    S = (1 << 7),
+    NONE = 0U,
+    CC = (1U << 0U),
+    A = (1U << 1U),
+    B = (1U << 2U),
+    DP = (1U << 3U),
+    X = (1U << 4U),
+    Y = (1U << 5U),
+    U = (1U << 6U),
+    S = (1U << 7U),
 };
 
 inline LogRegister operator| (LogRegister lhs, LogRegister rhs)
@@ -55,7 +55,7 @@ inline LogRegister operator& (LogRegister lhs, LogRegister rhs)
                                     static_cast<TYPE>(rhs));
 }
 
-inline LogRegister operator<< (LogRegister lhs, int shift_count)
+inline LogRegister operator<< (LogRegister lhs, unsigned shift_count)
 {
     using TYPE = std::underlying_type_t<LogRegister>;
 

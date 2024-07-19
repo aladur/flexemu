@@ -175,5 +175,5 @@ std::string FlexDirEntry::GetAttributesString() const
 
 void FlexDirEntry::SetAttributes(Byte setMask, Byte clearMask)
 {
-    attributes = (attributes & ~clearMask) | setMask;
+    attributes = (static_cast<unsigned>(~clearMask) & attributes) | setMask;
 }

@@ -1748,7 +1748,7 @@ ColorTable QtGui::CreateColorTable()
         flx::getRGBForName(options.color, redBase, greenBase, blueBase);
     }
 
-    fn GetColor = [&](int index) -> QRgb
+    fn GetColor = [&](Byte index) -> QRgb
     {
         // Use same color values as Enhanced Graphics Adapter (EGA)
         // or Tandy Color Computer 3 RGB.
@@ -1758,25 +1758,25 @@ ColorTable QtGui::CreateColorTable()
         constexpr static std::array<Byte, 4> colorValues{
             0x00, 0x55, 0xAA, 0xFF
         };
-        int scale;
+        unsigned scale;
 
         // Create a color scale in the range of 0 - 3 based two color bits
         // <color>_HIGH and <color>_LOW. Convert the color scale into a
         // color value in the range of 0 - 255.
-        scale = index & RED_HIGH ? 2 : 0;
-        scale |= index & RED_LOW ? 1 : 0;
+        scale = index & RED_HIGH ? 2U : 0U;
+        scale |= index & RED_LOW ? 1U : 0U;
         auto red = colorValues[scale];
-        scale = index & GREEN_HIGH ? 2 : 0;
-        scale |= index & GREEN_LOW ? 1 : 0;
+        scale = index & GREEN_HIGH ? 2U : 0U;
+        scale |= index & GREEN_LOW ? 1U : 0U;
         auto green = colorValues[scale];
-        scale = index & BLUE_HIGH ? 2 : 0;
-        scale |= index & BLUE_LOW ? 1 : 0;
+        scale = index & BLUE_HIGH ? 2U : 0U;
+        scale |= index & BLUE_LOW ? 1U : 0U;
         auto blue = colorValues[scale];
 
         return qRgb(red, green, blue);
     };
 
-    fn GetColorShade = [&](int index) -> QRgb
+    fn GetColorShade = [&](Byte index) -> QRgb
     {
         auto dIndex = static_cast<double>(index);
         auto red = static_cast<Byte>(redBase * sqrt(dIndex / (MAX_COLORS - 1)));
@@ -1790,7 +1790,7 @@ ColorTable QtGui::CreateColorTable()
 
     fn GetTheColor = (isWithColorScale ? GetColor : GetColorShade);
 
-    for (int i = 0; i < colorTable.size(); ++i)
+    for (Byte i = 0; i < static_cast<Byte>(colorTable.size()); ++i)
     {
         int idx = options.isInverse ?
                   cast_from_qsizetype(colorTable.size()) - i - 1 : i;
@@ -1914,7 +1914,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
             videoRam++;
 
             /* Loop from MSBit to LSBit */
-            for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1)
+            for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1U)
             {
                 colorIndex = colorIndexOffset; /* calculated color index */
 
@@ -1967,7 +1967,7 @@ void QtGui::CopyToBMPArray(Word height, QByteArray& dest,
         }
         else
         {
-            for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1)
+            for (pixelBitMask = 0x80U; pixelBitMask; pixelBitMask >>= 1U)
             {
                 *(pData)++ = static_cast<char>(colorIndex);
             }

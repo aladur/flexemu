@@ -591,7 +591,7 @@ void FlexDiskCheck::InitializeFileSectors()
             auto day = dir_entry.day;
             auto month = dir_entry.month;
             auto year = dir_entry.year;
-            Byte hour = dir_entry.hour & 0x7F;
+            Byte hour = dir_entry.hour & 0x7FU;
             auto minute = dir_entry.minute;
 
             AddItem(name, SectorType::File, start, end, records, is_random);

@@ -93,7 +93,7 @@ Byte Pia1::readInputA()
     // for video display.
     // If it is 0 RAM Bank 2 ($8000 - $BFFF) will be used for video display
     // which also contains the stack and the direct page registers.
-    return ora | (options.isEurocom2V5 ? 0x80 : 0);
+    return ora | (options.isEurocom2V5 ? 0x80U : 0U);
 }
 
 void Pia1::set_irq_A()

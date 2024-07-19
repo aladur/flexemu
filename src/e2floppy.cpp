@@ -497,8 +497,8 @@ Byte E2floppy::readByteInAddress(Word index)
         auto crc =
             crc16.GetResult(sector_buffer.data(), sector_buffer.data() + 4U);
 
-        sector_buffer[4] = static_cast<Byte>(crc >> 8);
-        sector_buffer[5] = static_cast<Byte>(crc & 0xFF);
+        sector_buffer[4] = static_cast<Byte>(crc >> 8U);
+        sector_buffer[5] = static_cast<Byte>(crc);
     }
 
     return sector_buffer[6 - index];
@@ -548,7 +548,7 @@ void E2floppy::writeByte(Word &index, Byte command_un)
 void E2floppy::writeByteInTrack(Word &index)
 {
     Word i;
-    int sizecode;
+    unsigned sizecode;
 
 
     switch (writeTrackState)
@@ -580,14 +580,14 @@ void E2floppy::writeByteInTrack(Word &index)
             if (getDataRegister() == DATA_ADDRESS_MARK)
             {
                 writeTrackState = WriteTrackState::WriteData;
-                sizecode = idAddressMark[Id::SizeCode] & 0x03;
+                sizecode = idAddressMark[Id::SizeCode] & 0x03U;
                 offset = ::getBytesPerSector(sizecode);
                 index = offset + 2;
             }
             break;
 
         case WriteTrackState::WriteData:
-            sizecode = idAddressMark[Id::SizeCode] & 0x03;
+            sizecode = idAddressMark[Id::SizeCode] & 0x03U;
             i = ::getBytesPerSector(sizecode) - offset;
             sector_buffer[i] = getDataRegister();
             if (--offset == 0U)
@@ -596,7 +596,7 @@ void E2floppy::writeByteInTrack(Word &index)
                         idAddressMark[Id::Track],
                         idAddressMark[Id::Sector],
                         idAddressMark[Id::Side],
-                        idAddressMark[Id::SizeCode] & 0x03);
+                        idAddressMark[Id::SizeCode] & 0x03U);
 
                 writeTrackState = WriteTrackState::WaitForCrc;
                 index = 2U;

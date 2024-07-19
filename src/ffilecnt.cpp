@@ -69,8 +69,8 @@ bool FlexDisk::onTrack0OnlyDirSectors = true;
 /* Initialization of a s_flex_header structure */
 /***********************************************/
 
-void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
-                               int p_sectors, int p_sides0, int p_sides)
+void s_flex_header::initialize(unsigned sector_size, int p_tracks,
+        int p_sectors0, int p_sectors, int p_sides0, int p_sides)
 {
     Byte p_sizecode = 1; /* default */
     Byte i;
@@ -85,7 +85,7 @@ void s_flex_header::initialize(int sector_size, int p_tracks, int p_sectors0,
 
     for (i = 15; i >= 7; i--)
     {
-        if (sector_size & (1 << i))
+        if (sector_size & (1U << i))
         {
             p_sizecode = i - 7;
             break;
@@ -234,7 +234,7 @@ std::string FlexDisk::GetPath() const
     return path;
 }
 
-int FlexDisk::GetBytesPerSector() const
+unsigned FlexDisk::GetBytesPerSector() const
 {
     return param.byte_p_sector;
 }
@@ -491,7 +491,7 @@ bool FlexDisk::GetAttributes(FlexDiskAttributes &diskAttributes) const
     return true;
 }
 
-int FlexDisk::GetFlexDiskType() const
+unsigned FlexDisk::GetFlexDiskType() const
 {
     return param.type;
 }
@@ -737,7 +737,7 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
     int sec;
     int recordNr;
     std::array<Byte, SECTOR_SIZE> sectorBuffer{};
-    int size;
+    uint32_t size;
 
     if (!is_flex_format)
     {
@@ -759,12 +759,6 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
     }
     buffer.SetDateTime(de.GetDate(), time);
     size = de.GetFileSize();
-
-    if (size < 0)
-    {
-        throw FlexException(FERR_FILE_UNEXPECTED_SEC, fileName,
-                            std::to_string(size / SECTOR_SIZE));
-    }
 
     size = size * DBPS / static_cast<int>(SECTOR_SIZE);
     buffer.Realloc(size);
@@ -811,7 +805,7 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
 
 // set the file attributes of one or multiple files
 bool FlexDisk::SetAttributes(const std::string &wildcard,
-        Byte setMask, Byte clearMask /* = ~0 */)
+        unsigned setMask, unsigned clearMask /* = ~0 */)
 {
     if (!is_flex_format)
     {
@@ -874,7 +868,7 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                 {
                    time = entry.GetTime();
                 }
-                int records = entry.GetFileSize() / param.byte_p_sector;
+                auto records = entry.GetFileSize() / param.byte_p_sector;
                 std::memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
                 std::strncpy(pde->filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
@@ -1082,13 +1076,13 @@ bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
 }
 
 bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
-                            int side, int sizecode)
+                            int side, unsigned sizecode)
 {
     if (is_flex_format ||
         track < 0 || track > 255 ||
         sector < 1 || sector > 255 ||
         side < 0 || side > 1 ||
-        sizecode < 0 || sizecode > 3)
+        sizecode < 0U || sizecode > 3U)
     {
         return false;
     }
@@ -1558,7 +1552,7 @@ bool FlexDisk::GetFlexTracksSectors(Word &tracks, Word &sectors,
 }
 
 // Check if the file container contains a FLEX compatible file system.
-bool FlexDisk::IsFlexFileFormat(int type) const
+bool FlexDisk::IsFlexFileFormat(unsigned type) const
 {
     struct stat sbuf{};
     Word tracks = 35;

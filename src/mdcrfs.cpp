@@ -280,10 +280,10 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
     *(iter++) = 0x55;
     SetFilename(iter, mdcrFilename.c_str());
-    *(iter++) = (addressRange.lower() >> 8) & 0xFF;
-    *(iter++) = addressRange.lower() & 0xFF;
-    *(iter++) = (addressRange.upper() >> 8) & 0xFF;
-    *(iter++) = addressRange.upper() & 0xFF;
+    *(iter++) = (addressRange.lower() >> 8U) & 0xFFU;
+    *(iter++) = addressRange.lower() & 0xFFU;
+    *(iter++) = (addressRange.upper() >> 8U) & 0xFFU;
+    *(iter++) = addressRange.upper() & 0xFFU;
     *(iter++) = CalculateChecksum(checksumIter, 10);
     *(iter++) = 0;
 

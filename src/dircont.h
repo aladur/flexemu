@@ -65,12 +65,12 @@ public:
     static FlexDirectoryDiskByFile *Create(const std::string &directory,
             const std::string &name, int tracks, int sectors,
             const FileTimeAccess &fileTimeAccess,
-            int fmt = TYPE_DSK_DISKFILE);
+            unsigned fmt = TYPE_DSK_DISKFILE);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetAttributes(FlexDiskAttributes &diskAttributes) const override;
-    int GetFlexDiskType() const override;
+    unsigned GetFlexDiskType() const override;
     std::string GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used within flexplorer).
@@ -86,8 +86,8 @@ public:
     bool DeleteFile(const std::string &wildcard) override;
     bool RenameFile(const std::string &oldName,
                     const std::string &newName) override;
-    bool SetAttributes(const std::string &wildcard, Byte setMask,
-                       Byte clearMask = ~0) override;
+    bool SetAttributes(const std::string &wildcard, unsigned setMask,
+                       unsigned clearMask = ~0U) override;
     FlexFileBuffer ReadToBuffer(const std::string &fileName) override;
     bool WriteFromBuffer(const FlexFileBuffer &buffer,
                          const char *fileName = nullptr) override;

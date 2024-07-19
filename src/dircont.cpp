@@ -105,7 +105,7 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         int /* tracks */,
         int /* sectors */,
         const FileTimeAccess &fileTimeAccess,
-        int /* fmt = TYPE_DISK_CONTAINER */)
+        unsigned /* fmt = TYPE_DISK_CONTAINER */)
 {
     struct stat sbuf{};
     std::string path;
@@ -293,7 +293,7 @@ bool FlexDirectoryDiskByFile::GetAttributes(
     return true;
 }
 
-int FlexDirectoryDiskByFile::GetFlexDiskType() const
+unsigned FlexDirectoryDiskByFile::GetFlexDiskType() const
 {
     return TYPE_DIRECTORY;
 }
@@ -407,8 +407,8 @@ bool FlexDirectoryDiskByFile::SetDateTime(
 
 // set the file attributes of a file
 bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
-                                       Byte setMask,
-                                       Byte clearMask /* = ~0 */)
+                                       unsigned setMask,
+                                       unsigned clearMask /* = ~0U */)
 {
     // only WRITE_PROTECT flag is supported
     if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))
@@ -445,7 +445,8 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
 
             if (setMask & WRITE_PROTECT)
             {
-                chmod(filePath.c_str(), sbuf.st_mode & ~S_IWUSR);
+                chmod(filePath.c_str(),
+                        sbuf.st_mode & static_cast<unsigned>(~S_IWUSR));
             }
         }
 

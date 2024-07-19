@@ -118,7 +118,7 @@ const char *Da6809::IndexRegister(Byte which)
 {
     static const std::array<const char *, 4> reg_names{ "X", "Y", "U", "S" };
 
-    return reg_names[which & 0x03];
+    return reg_names[which & 0x03U];
 }
 
 const char *Da6809::InterRegister(Byte which)
@@ -128,7 +128,7 @@ const char *Da6809::InterRegister(Byte which)
         "A", "B", "CC", "DP", "??", "??", "??", "??"
     };
 
-    return reg_names[which & 0x0f];
+    return reg_names[which & 0x0FU];
 }
 
 
@@ -138,12 +138,12 @@ const char *Da6809::StackRegister(Byte which, const char *not_stack)
         "CC", "A", "B", "DP", "X", "Y", "??", "PC"
     };
 
-    if ((which & 0x07) == 6)
+    if ((which & 0x07U) == 6U)
     {
         return not_stack;
     }
 
-    return reg_names[which & 0x07];
+    return reg_names[which & 0x07U];
 }
 
 
@@ -235,12 +235,12 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                                  // extended addressing.
 
     p_mnemonic = mnemo;
-    if ((postbyte & 0x80) == 0x00)
+    if ((postbyte & 0x80U) == 0x00U)
     {
         // ,R + 5 Bit Offset
-        disp = postbyte & 0x1f;
+        disp = postbyte & 0x1fU;
 
-        if ((postbyte & 0x10) == 0x10)
+        if ((postbyte & 0x10U) == 0x10U)
         {
             sign = "-";
             disp = 0x20 - disp;
@@ -248,15 +248,15 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
 
         p_code = PrintCode(bytes);
         p_operands = fmt::format("{}${:02X},{}", sign, disp,
-                 IndexRegister(postbyte >> 5));
+                 IndexRegister(postbyte >> 5U));
     }
     else
     {
-        switch (postbyte & 0x1f)
+        switch (postbyte & 0x1FU)
         {
             case 0x00 : // ,R+
                 p_code = PrintCode(bytes);
-                p_operands = fmt::format(",{}+", IndexRegister(postbyte >> 5));
+                p_operands = fmt::format(",{}+", IndexRegister(postbyte >> 5U));
                 break;
 
             case 0x11 : // [,R++]
@@ -267,12 +267,12 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x01 : // ,R++
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{},{}++{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x02 : // ,-R
                 p_code = PrintCode(bytes);
-                p_operands = fmt::format(",-{}", IndexRegister(postbyte >> 5));
+                p_operands = fmt::format(",-{}", IndexRegister(postbyte >> 5U));
                 break;
 
             case 0x13 : // [,R--]
@@ -283,7 +283,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x03 : // ,--R
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{},--{}{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x14 : // [,R--]
@@ -294,7 +294,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x04 : // ,R
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{},{}{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x15 : // [B,R]
@@ -305,7 +305,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x05 : // B,R
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{}B,{}{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x16 : // [A,R]
@@ -316,7 +316,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x06 : // A,R
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{}A,{}{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x18 : // [,R + 8 Bit Offset]
@@ -335,7 +335,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 extrabytes = 1;
                 p_code = PrintCode(bytes + extrabytes);
                 p_operands = fmt::format("{}{}${:02X},{}{}",
-                         br1, sign, offset, IndexRegister(postbyte >> 5), br2);
+                         br1, sign, offset, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x19 : // [,R + 16 Bit Offset]
@@ -353,7 +353,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                     offset = 0xFFFF - offset + 1;
                 }
                 p_operands = fmt::format("{}{}${:04X},{}{}",
-                         br1, sign, offset, IndexRegister(postbyte >> 5), br2);
+                         br1, sign, offset, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x1b : // [D,R]
@@ -364,7 +364,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
             case 0x0b : // D,R
                 p_code = PrintCode(bytes);
                 p_operands = fmt::format("{}D,{}{}",
-                        br1, IndexRegister(postbyte >> 5), br2);
+                        br1, IndexRegister(postbyte >> 5U), br2);
                 break;
 
             case 0x1c : // [,PC + 8 Bit Offset]
@@ -373,7 +373,7 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x0c : // ,PC + 8 Bit Offset
-                offset = (EXTEND8(*(memory + 2)) + pc + 3) & 0xFFFF;
+                offset = (EXTEND8(*(memory + 2)) + pc + 3U) & 0xFFFFU;
                 extrabytes = 1;
                 p_code = PrintCode(bytes + extrabytes);
                 p_operands = fmt::format("{}{}${:02X},PCR{}",
@@ -386,8 +386,8 @@ void Da6809::D_Indexed(const char *mnemo, Byte bytes, std::string &p_code,
                 FALLTHROUGH;
 
             case 0x0d :  // ,PC + 16 Bit Offset
-                offset = (flx::getValueBigEndian<Word>(&memory[2]) + pc + 4)
-                         & 0xFFFF;
+                offset = (flx::getValueBigEndian<Word>(&memory[2]) + pc + 4U)
+                         & 0xFFFFU;
                 addr_mode = ">";
                 extrabytes = 2;
                 p_code = PrintCode(bytes + extrabytes);
@@ -504,8 +504,8 @@ inline void Da6809::D_RegisterRegister(const char *mnemo, Byte bytes,
     p_code = PrintCode(bytes);
     p_mnemonic = mnemo;
     p_operands = fmt::format("{},{}",
-             InterRegister(postbyte >> 4),
-             InterRegister(postbyte & 0x0f));
+             InterRegister(postbyte >> 4U),
+             InterRegister(postbyte & 0x0FU));
 }
 
 inline void Da6809::D_RegisterList(const char *mnemo, const char *ns_reg,
@@ -528,7 +528,7 @@ inline void Da6809::D_RegisterList(const char *mnemo, const char *ns_reg,
         p_operands = "";
         for (Byte i = 0; i < 8; i++)
         {
-            if (postbyte & (1 << i))
+            if (postbyte & (1U << i))
             {
                 p_operands.append(withComma ? "," : "");
                 p_operands.append(StackRegister(i, ns_reg));
@@ -1986,7 +1986,7 @@ InstFlg Da6809::Disassemble(
     return p_flags;
 }
 
-int Da6809::getByteSize(const Byte *p_memory)
+unsigned Da6809::getByteSize(const Byte *p_memory)
 {
     static const Byte X = 1;
     static const Byte Y = 2;
@@ -2077,7 +2077,7 @@ int Da6809::getByteSize(const Byte *p_memory)
 
     assert(p_memory != nullptr);
 
-    Byte byteSize = 0U;
+    unsigned byteSize = 0U;
     Byte opcode = *(p_memory++);
     switch (opcode)
     {
@@ -2096,9 +2096,9 @@ int Da6809::getByteSize(const Byte *p_memory)
         break;
     }
 
-    if ((byteSize & 0x10) != 0)
+    if ((byteSize & 0x10U) != 0U)
     {
-        return (byteSize & 0x0F) + additionalIndexedByteSize[*p_memory];
+        return (byteSize & 0x0FU) + additionalIndexedByteSize[*p_memory];
     }
 
     return byteSize;

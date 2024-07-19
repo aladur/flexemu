@@ -413,7 +413,7 @@ void FlexFileBuffer::TraverseForDumpFileConversion(
              index < bytesPerLine && (offset + index < fileHeader.fileSize);
              index++)
         {
-            auto c = buffer[offset + index] & 0xFF;
+            auto c = buffer[offset + index] & 0xFFU;
             const auto byte_str = fmt::format("{:02X}", static_cast<Word>(c));
             fct(byte_str[0]);
             fct(byte_str[1]);
@@ -670,10 +670,9 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
         {
             std::stringstream stream;
 
-            for (unsigned i = 0; i < sizeof(fileHeader.magicNumber); )
+            for (const auto byte : fileHeader.magicNumber)
             {
-                stream << std::hex <<
-                    (0xff & static_cast<unsigned>(fileHeader.magicNumber[i++]));
+                stream << std::hex << static_cast<Word>(byte);
             }
             throw FlexException(FERR_INVALID_MAGIC_NUMBER,
                                 stream.str());

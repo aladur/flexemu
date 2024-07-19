@@ -34,18 +34,18 @@ class Wd1793 : public IoDevice
 public:
 
     // Bits of status register
-    static const Byte STR_NOTREADY{0x80};
-    static const Byte STR_PROTECTED{0x40};
-    static const Byte STR_HEADLOADED{0x20};
-    static const Byte STR_WRITEFAULT{0x20}; // for type 2 and 3 write commands
-    static const Byte STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
-    static const Byte STR_SEEKERROR{0x10}; // for type 1 commands
-    static const Byte STR_CRCERROR{0x08}; // for type 1, 2 and 3 commands
-    static const Byte STR_TRACK0{0x04};
-    static const Byte STR_LOSTDATA{0x04}; // for type 2 and 3 commands
-    static const Byte STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
-    static const Byte STR_INDEX{0x02}; // for type 1 commands
-    static const Byte STR_BUSY{0x01};
+    static const unsigned STR_NOTREADY{0x80};
+    static const unsigned STR_PROTECTED{0x40};
+    static const unsigned STR_HEADLOADED{0x20};
+    static const unsigned STR_WRITEFAULT{0x20}; // for type 2 and 3 write comds,
+    static const unsigned STR_RECORDNOTFOUND{0x10}; // for type 2 and 3 commands
+    static const unsigned STR_SEEKERROR{0x10}; // for type 1 commands
+    static const unsigned STR_CRCERROR{0x08}; // for type 1, 2 and 3 commands
+    static const unsigned STR_TRACK0{0x04};
+    static const unsigned STR_LOSTDATA{0x04}; // for type 2 and 3 commands
+    static const unsigned STR_DATAREQUEST{0x02}; // for type 2 and 3 commands
+    static const unsigned STR_INDEX{0x02}; // for type 1 commands
+    static const unsigned STR_BUSY{0x01};
 
     // Commands in command register (mask 0xf0)
     // TU:   Track update flag

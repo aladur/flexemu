@@ -75,7 +75,7 @@ public:
     QString GetPath() const;
     QString GetUserFriendlyPath() const;
     bool IsWriteProtected() const;
-    int GetFlexDiskType() const;
+    unsigned GetFlexDiskType() const;
     FlexDiskAttributes GetFlexDiskAttributes() const;
 
     QStringList GetFilenames(const QModelIndexList &indexList) const;

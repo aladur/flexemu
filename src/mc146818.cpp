@@ -108,8 +108,8 @@ Mc146818::~Mc146818()
 
 void Mc146818::resetIo()
 {
-    A &= 0x7f;
-    B &= 0x87;
+    A &= 0x7FU;
+    B &= 0x87U;
     C = 0;
     D = 0x80;
 }
@@ -118,7 +118,7 @@ Byte Mc146818::readIo(Word offset)
 {
     Byte temp;
 
-    switch (offset & 0x3f)
+    switch (offset & 0x3FU)
     {
         case 0x00:
             return second;
@@ -173,7 +173,7 @@ Byte Mc146818::readIo(Word offset)
 
 void Mc146818::writeIo(Word offset, Byte val)
 {
-    switch (offset & 0x3f)
+    switch (offset & 0x3FU)
     {
         case 0x00:
             second = val;
@@ -216,7 +216,7 @@ void Mc146818::writeIo(Word offset, Byte val)
             break;
 
         case 0x0a:
-            A = val & 0x7f;
+            A = val & 0x7FU;
             break;
 
         case 0x0b:
@@ -300,9 +300,9 @@ void Mc146818::update_1_second()
         }
 
         // now check for an alarm
-        if ((((al_second & 0xc0) == 0xc0) || (al_second == second)) &&
-            (((al_minute & 0xc0) == 0xc0) || (al_minute == minute)) &&
-            (((al_hour & 0xc0) == 0xc0) || (al_hour == hour)))
+        if ((((al_second & 0xC0U) == 0xC0U) || (al_second == second)) &&
+            (((al_minute & 0xC0U) == 0xC0U) || (al_minute == minute)) &&
+            (((al_hour & 0xC0U) == 0xC0U) || (al_hour == hour)))
         {
             BSET5(C); // set alarm interrupt flag
 
@@ -318,35 +318,36 @@ void Mc146818::update_1_second()
 // convert from binary to binary or bcd
 Byte Mc146818::convert(Byte val) const
 {
-    if (B & 0x04)
+    if (B & 0x04U)
     {
         return val;
     }
 
-    return ((val / 10) << 4)  | (val % 10);
+    return ((val / 10U) << 4U)  | (val % 10U);
 }
 
 Byte Mc146818::convert_hour(Byte val) const
 {
-    switch (B & 0x06)
+    switch (B & 0x06U)
     {
         case 0x00:      //12 hour, BCD
-            if (val >= 12)
+            if (val >= 12U)
             {
-                return 0x80 | (((val - 12) / 10) << 4) | ((val - 12) % 10);
+                return 0x80U | (((val - 12U) / 10U) << 4U) |
+                    ((val - 12U) % 10U);
             }
             else
             {
-                return ((val / 10) << 4)  | (val % 10);
+                return ((val / 10U) << 4U)  | (val % 10U);
             }
 
         case 0x02:      //24 hour, BCD
-            return ((val / 10) << 4)  | (val % 10);
+            return ((val / 10U) << 4U)  | (val % 10U);
 
         case 0x04:      //12 hour, binary
-            if (val >= 12)
+            if (val >= 12U)
             {
-                return (val - 12) | 0x80;
+                return (val - 12U) | 0x80U;
             }
             else
             {
@@ -363,18 +364,18 @@ Byte Mc146818::convert_hour(Byte val) const
 // convert from bcd or binary to binary
 Byte Mc146818::convert_bin(Byte val) const
 {
-    if (B & 0x04)
+    if (B & 0x04U)
     {
         return val;
     }
 
-    return ((val >> 4) * 10)  | (val & 0x0f);
+    return ((val >> 4U) * 10U)  | (val & 0x0FU);
 }
 
 // return 1 on overflow
 bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 {
-    if (B & 0x04)
+    if (B & 0x04U)
     {
         // binary calculation
         reg++;
@@ -389,9 +390,9 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
     }
 
     // bcd calculation
-    if ((reg & 0x0f) == 9)
+    if ((reg & 0x0FU) == 9U)
     {
-        reg = (reg & 0xf0) + 0x10;
+        reg = (reg & 0xF0U) + 0x10U;
     }
     else
     {
@@ -410,21 +411,21 @@ bool Mc146818::increment(Byte &reg, Byte min, Byte max)
 
 bool Mc146818::increment_hour(Byte &p_hour) const
 {
-    switch (B & 0x06)
+    switch (B & 0x06U)
     {
         case 0x00:      //12 hour, BCD
-            if (p_hour == 0x12)
+            if (p_hour == 0x12U)
             {
-                p_hour = 0x81;
+                p_hour = 0x81U;
             }
-            else if (p_hour == 0x92)
+            else if (p_hour == 0x92U)
             {
-                p_hour = 0x01;
+                p_hour = 0x01U;
                 return true;
             }
-            else if ((p_hour & 0x0f) == 9)
+            else if ((p_hour & 0x0FU) == 9U)
             {
-                p_hour = (p_hour & 0xf0) + 0x10;
+                p_hour = (p_hour & 0xF0U) + 0x10U;
             }
             else
             {
@@ -434,13 +435,13 @@ bool Mc146818::increment_hour(Byte &p_hour) const
             break;
 
         case 0x02:      //24 hour, BCD
-            if ((p_hour & 0x0f) == 9)
+            if ((p_hour & 0x0FU) == 9U)
             {
-                p_hour = (p_hour & 0xf0) + 0x10;
+                p_hour = (p_hour & 0xF0U) + 0x10U;
             }
-            else if (p_hour == 0x23)
+            else if (p_hour == 0x23U)
             {
-                p_hour = 0x00;
+                p_hour = 0x00U;
                 return true;
             }
             else
@@ -451,13 +452,13 @@ bool Mc146818::increment_hour(Byte &p_hour) const
             break;
 
         case 0x04:      //12 hour, binary
-            if (p_hour == 0x0C)
+            if (p_hour == 0x0CU)
             {
-                p_hour = 0x81;
+                p_hour = 0x81U;
             }
-            else if (p_hour == 0x8C)
+            else if (p_hour == 0x8CU)
             {
-                p_hour = 0x01;
+                p_hour = 0x01U;
                 return true;
             }
             else
@@ -468,9 +469,9 @@ bool Mc146818::increment_hour(Byte &p_hour) const
             break;
 
         case 0x06:      //24 hour, binary
-            if (p_hour == 0x17)
+            if (p_hour == 0x17U)
             {
-                p_hour = 0x00;
+                p_hour = 0x00U;
                 return true;
             }
             else
@@ -495,9 +496,9 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
     binmonth = std::min<int>(binmonth, 12);
 
     // if February leap year
-    if (binmonth == 2 && (convert_bin(p_year) % 4 == 0))
+    if (binmonth == 2U && (convert_bin(p_year) % 4U == 0U))
     {
-        if (convert_bin(p_day) == 29)
+        if (convert_bin(p_day) == 29U)
         {
             // switch to next month on 29. Febr.
             p_day = 1;
@@ -506,11 +507,11 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
     }
     else if (convert_bin(p_day) == days_per_month[binmonth - 1])
     {
-        p_day = 1;
+        p_day = 1U;
         return true;
     }
 
-    if (B & 0x04)
+    if (B & 0x04U)
     {
         // binary calculation
         p_day++;
@@ -518,9 +519,9 @@ bool Mc146818::increment_day(Byte &p_day, Byte p_month, Byte p_year)
     else
     {
         // bcd calculation
-        if ((p_day & 0x0f) == 9)
+        if ((p_day & 0x0FU) == 9U)
         {
-            p_day = (p_day & 0xf0) + 0x10;
+            p_day = (p_day & 0xF0U) + 0x10U;
         }
         else
         {

@@ -121,7 +121,7 @@ bool FlexplorerMdiChild::IsWriteProtected() const
     return model->IsWriteProtected();
 }
 
-int FlexplorerMdiChild::GetFlexDiskType() const
+unsigned FlexplorerMdiChild::GetFlexDiskType() const
 {
     assert(model);
     return model->GetFlexDiskType();

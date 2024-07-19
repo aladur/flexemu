@@ -42,12 +42,12 @@ void Wd1793::resetIo()
 
 Byte Wd1793::readIo(Word offset)
 {
-    switch (offset & 0x03)
+    switch (offset & 0x03U)
     {
         case 0:
             resetIrq();
 
-            if (((cr & 0xe0) == CMD_READSECTOR) && (++strRead == 32))
+            if (((cr & 0xE0U) == CMD_READSECTOR) && (++strRead == 32))
             {
                 isDataRequest = false;
                 str &= ~(STR_DATAREQUEST | STR_BUSY); // read finished
@@ -61,12 +61,12 @@ Byte Wd1793::readIo(Word offset)
                 str &= ~STR_NOTREADY;
             }
 
-            if ((str & STR_NOTREADY))
+            if (str & STR_NOTREADY)
             {
                 return str;
             }
 
-            if (!indexPulse && !(cr & 0x80))
+            if (!indexPulse && !(cr & 0x80U))
             {
                 return str | STR_DATAREQUEST;
             }
@@ -84,14 +84,14 @@ Byte Wd1793::readIo(Word offset)
 
             if (byteCount)
             {
-                dr = readByte(byteCount, cr & 0xf0);
+                dr = readByte(byteCount, cr & 0xF0U);
                 if (byteCount != 0)
                 {
                     byteCount--;
                 }
             }
 
-            if (!byteCount && (cr & 0xF0) == CMD_READSECTOR_MULT)
+            if (!byteCount && (cr & 0xF0U) == CMD_READSECTOR_MULT)
             {
                 // When reading multiple sectors read next sector,
                 // until record not found.
@@ -122,7 +122,7 @@ Byte Wd1793::readIo(Word offset)
 
 void Wd1793::writeIo(Word offset, Byte val)
 {
-    switch (offset & 0x03)
+    switch (offset & 0x03U)
     {
         case 0:
             resetIrq();
@@ -142,14 +142,14 @@ void Wd1793::writeIo(Word offset, Byte val)
 
             if (byteCount)
             {
-                writeByte(byteCount, cr & 0xf0);
+                writeByte(byteCount, cr & 0xF0U);
                 if (byteCount != 0)
                 {
                     byteCount--;
                 }
             }
 
-            if (!byteCount && (cr & 0xF0) == CMD_WRITESECTOR_MULT)
+            if (!byteCount && (cr & 0xF0U) == CMD_WRITESECTOR_MULT)
             {
                 // When writing multiple sectors write next sector,
                 // until record not found.
@@ -199,14 +199,14 @@ void Wd1793::do_seek(Byte new_track)
 
 void Wd1793::command(Byte command)
 {
-    bool isType1Command = !(command & 0x80);
+    bool isType1Command = !(command & 0x80U);
 
-    if (!(str & STR_BUSY) || (command & 0xf0) == CMD_FORCEIRQ)
+    if (!(str & STR_BUSY) || (command & 0xF0U) == CMD_FORCEIRQ)
     {
         cr = command;
         byteCount = 0;
 
-        switch (cr & 0xf0)
+        switch (cr & 0xF0U)
         {
             case CMD_RESTORE:
                 do_seek(0);
@@ -304,7 +304,7 @@ void Wd1793::command(Byte command)
                     break;
                 }
 
-                if (startCommand(cr & 0xf0))
+                if (startCommand(cr & 0xF0U))
                 {
                     byteCount = 256;
                     isDataRequest = true;

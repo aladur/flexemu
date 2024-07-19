@@ -43,7 +43,7 @@ private:
     int tracks{0}; // Number of tracks
     std::string name; // name of disk
     unsigned int number{0U};// disk number
-    int type{0}; // container type
+    unsigned type{0}; // container type
     uint64_t free{0}; // Number of bytes free
     uint64_t totalSize{0}; // Number of total bytes writable
     Byte attributes{0}; // Disk attributes
@@ -140,7 +140,7 @@ public:
         type = t;
         is_valid = true;
     };
-    inline int GetType() const
+    inline unsigned GetType() const
     {
         return type;
     };

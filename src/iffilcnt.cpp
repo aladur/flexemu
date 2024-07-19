@@ -94,7 +94,8 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
             if (flx::multimatches(fileName, wildcard, ';', true))
             {
                 dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
-                dirEntry.SetTime(BTime(pd->hour & 0x7F, pd->minute, 0U));
+                auto hour = static_cast<int>(pd->hour & 0x7FU);
+                dirEntry.SetTime(BTime(hour, pd->minute, 0U));
                 dirEntry.SetTotalFileName(fileName);
                 dirEntry.SetAttributes(pd->file_attr);
                 dirEntry.SetSectorMap(pd->sector_map);

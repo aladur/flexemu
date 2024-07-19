@@ -166,8 +166,8 @@ bool MiniDcrTape::ReadRecord(std::vector<Byte> &buffer)
     if (IsOpen())
     {
         stream.seekg(record_positions[record_index]);
-        Word size = (stream.get() & 0xFF) << 8;
-        size |= stream.get() & 0xFF;
+        Word size = (stream.get() * 256U) & 0xFF00U;
+        size |= static_cast<Byte>(stream.get());
 
         if (size == 0)
         {
@@ -195,8 +195,8 @@ bool MiniDcrTape::WriteRecord(const std::vector<Byte> &buffer)
         // Write two bytes containing the buffer size
         // Write most significant byte first
         Word size = static_cast<Word>(buffer.size());
-        stream.put(static_cast<char>(size >> 8));
-        stream.put(static_cast<char>(size & 0xFF));
+        stream.put(static_cast<char>(size >> 8U));
+        stream.put(static_cast<char>(size & 0xFFU));
         const auto *pbuffer = reinterpret_cast<const char *>(buffer.data());
         // Write the buffer contents
         stream.write(pbuffer, static_cast<uint32_t>(buffer.size()));
@@ -265,8 +265,8 @@ bool MiniDcrTape::VerifyTape()
         while (size != 0)
         {
             record_position = stream.tellg();
-            size = (static_cast<Byte>(stream.get()) << 8);
-            size |= (static_cast<Byte>(stream.get()) & 0xFF);
+            size = (static_cast<Byte>(stream.get()) << 8U);
+            size |= (static_cast<Byte>(stream.get()) & 0xFFU);
             if (stream.eof() || stream.fail())
             {
                 size = 0xFFFF;
