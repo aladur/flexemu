@@ -1082,7 +1082,7 @@ bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
         track < 0 || track > 255 ||
         sector < 1 || sector > 255 ||
         side < 0 || side > 1 ||
-        sizecode < 0U || sizecode > 3U)
+        sizecode > 3U)
     {
         return false;
     }
