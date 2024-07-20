@@ -529,8 +529,8 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     FlexDirEntry de;
     s_sys_info_sector sis{};
     std::string fileName;
-    // sectorBuffer[2] and [1] are used for the Sector Map
-    Byte sectorBuffer[3][SECTOR_SIZE];
+    // sectorBuffer[2] and [1] are used for the Sector Map of random files.
+    std::array<SectorBuffer_t, 3> sectorBuffer{};
 
     fileName = (p_fileName == nullptr) ? buffer.GetFilename() : p_fileName;
 
@@ -581,7 +581,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
                 throw FlexException(FERR_DISK_FULL_WRITING, path, fileName);
             }
 
-            if (!ReadSector(&sectorBuffer[count][0], trk, sec))
+            if (!ReadSector(sectorBuffer[count].data(), trk, sec))
             {
                 std::stringstream stream;
 
@@ -661,7 +661,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
             sectorBuffer[0][0] = sectorBuffer[0][1] = 0;
         }
 
-        if (!WriteSector(&sectorBuffer[0][0], trk, sec))
+        if (!WriteSector(sectorBuffer[0].data(), trk, sec))
         {
             std::stringstream stream;
 
@@ -685,7 +685,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     {
         for (count = 2; count >= 1; count--)
         {
-            if (!WriteSector(&sectorBuffer[count][0], next.trk, next.sec))
+            if (!WriteSector(sectorBuffer[count].data(), next.trk, next.sec))
             {
                 std::stringstream stream;
 
