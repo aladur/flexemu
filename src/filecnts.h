@@ -292,6 +292,10 @@ extern Word getTrack0SectorCount(int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);
 extern Word getBytesPerSector(uint32_t sizecode);
 extern size_t getFileSize(const s_flex_header &header);
+
+using SectorBuffer_t = std::array<Byte, SECTOR_SIZE>;
+using BootSectorBuffer_t = std::array<Byte, 2 * SECTOR_SIZE>;
+
 #endif /* #ifndef __fromflex__ */
 
 #endif /* FILECNTS_INCLUDED */

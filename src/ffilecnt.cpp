@@ -736,7 +736,7 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
     int trk;
     int sec;
     int recordNr;
-    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
+    SectorBuffer_t sectorBuffer{};
     uint32_t size;
 
     if (!is_flex_format)
@@ -1236,8 +1236,7 @@ void FlexDisk::Initialize_unformatted_disk()
     param.type = TYPE_DISKFILE | TYPE_FLX_DISKFILE;
 }
 
-void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
-                                   &boot_sectors,
+void FlexDisk::Create_boot_sectors(BootSectorBuffer_t &bootSectors,
                                    const char *bsFile)
 {
     // Read boot sector(s) if present from file.
@@ -1245,13 +1244,13 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
     {
         bsFile = getDefaultBootSectorFile().c_str();
     }
-    std::memset(boot_sectors.data(), '\0', boot_sectors.size());
+    std::memset(bootSectors.data(), '\0', bootSectors.size());
     std::fstream boot(bsFile, std::ios::in | std::ios::binary);
 
     if (boot.is_open())
     {
-        boot.read(reinterpret_cast<char *>(boot_sectors.data()),
-                  static_cast<std::streamsize>(boot_sectors.size()));
+        boot.read(reinterpret_cast<char *>(bootSectors.data()),
+                  static_cast<std::streamsize>(bootSectors.size()));
     }
 
     if (!boot.is_open() || (boot.fail() &&
@@ -1259,10 +1258,10 @@ void FlexDisk::Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
     {
         // No boot sector or read error.
         // Instead jump to monitor program warm start entry point.
-        std::memset(boot_sectors.data(), '\0', boot_sectors.size());
-        boot_sectors[0] = 0x7E; // JMP $F02D
-        boot_sectors[1] = 0xF0;
-        boot_sectors[2] = 0x2D;
+        std::memset(bootSectors.data(), '\0', bootSectors.size());
+        bootSectors[0] = 0x7E; // JMP $F02D
+        bootSectors[1] = 0xF0;
+        bootSectors[2] = 0x2D;
 
         return;
     }
@@ -1313,7 +1312,7 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
 // on success return true
 bool FlexDisk::Write_dir_sectors(std::fstream &ofs, struct s_formats &format)
 {
-    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
+    SectorBuffer_t sectorBuffer{};
     int i;
 
     for (i = 0; i < format.sectors0 - first_dir_trk_sec.sec + 1; i++)
@@ -1342,7 +1341,7 @@ bool FlexDisk::Write_dir_sectors(std::fstream &ofs, struct s_formats &format)
 // on success return true
 bool FlexDisk::Write_sectors(std::fstream &ofs, struct s_formats &format)
 {
-    std::array<Byte, SECTOR_SIZE> sectorBuffer{};
+    SectorBuffer_t sectorBuffer{};
     int i;
 
     for (i = format.sectors + 1; i <= format.sectors * format.tracks; ++i)
@@ -1464,12 +1463,12 @@ void FlexDisk::Format_disk(
         }
 
         {
-            std::array<Byte, 2 * SECTOR_SIZE> boot_sectors{};
+            BootSectorBuffer_t bootSectors{};
 
-            Create_boot_sectors(boot_sectors, bsFile);
+            Create_boot_sectors(bootSectors, bsFile);
 
-            fstream.write(reinterpret_cast<const char *>(boot_sectors.data()),
-                          boot_sectors.size());
+            fstream.write(reinterpret_cast<const char *>(bootSectors.data()),
+                          bootSectors.size());
             if (fstream.fail())
             {
                 err = 1;
@@ -1486,12 +1485,12 @@ void FlexDisk::Format_disk(
         }
 
         {
-            std::array<Byte, SECTOR_SIZE> sector_buffer{};
+            SectorBuffer_t sectorBuffer{};
 
             // Sector 00-04 seems to be unused. Format with all zeros.
-            std::memset(sector_buffer.data(), '\0', sector_buffer.size());
-            fstream.write(reinterpret_cast<const char *>(sector_buffer.data()),
-                          sector_buffer.size());
+            std::memset(sectorBuffer.data(), '\0', sectorBuffer.size());
+            fstream.write(reinterpret_cast<const char *>(sectorBuffer.data()),
+                          sectorBuffer.size());
             if (fstream.fail())
             {
                 err = 1;

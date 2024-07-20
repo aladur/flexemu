@@ -362,7 +362,7 @@ void FlexDiskCheck::InitializeLinks()
     {
         for (int sector = 1; sector <= sectors; ++sector)
         {
-            std::array<Byte, SECTOR_SIZE> buffer{};
+            SectorBuffer_t sectorBuffer{};
             st_t current{static_cast<Byte>(track), static_cast<Byte>(sector)};
 
             if (!IsTrackSectorValid(current) &&
@@ -378,7 +378,7 @@ void FlexDiskCheck::InitializeLinks()
                 continue;
             }
 
-            if (!flexDisk.ReadSector(buffer.data(), track, sector) &&
+            if (!flexDisk.ReadSector(sectorBuffer.data(), track, sector) &&
                 links.find(current) == links.end())
             {
                 links.emplace(current, link_t{current});
@@ -386,8 +386,8 @@ void FlexDiskCheck::InitializeLinks()
                 continue;
             }
 
-            st_t next{buffer[0], buffer[1]};
-            auto record_nr = flx::getValueBigEndian<Word>(&buffer[2]);
+            st_t next{sectorBuffer[0], sectorBuffer[1]};
+            auto record_nr = flx::getValueBigEndian<Word>(&sectorBuffer[2]);
 
             links.emplace(current, link_t{current, next, record_nr});
         }

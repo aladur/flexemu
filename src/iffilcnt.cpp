@@ -177,7 +177,7 @@ bool FlexDiskIteratorImp::DeleteCurrent()
     if (fc_end.sec != 0 || fc_end.trk != 0)
     {
         // add deleted file to free chain if free chain not empty
-        std::array<Byte, SECTOR_SIZE> sectorBuffer{};
+        SectorBuffer_t sectorBuffer{};
         if (!base->ReadSector(sectorBuffer.data(), fc_end.trk, fc_end.sec))
         {
             std::stringstream stream;

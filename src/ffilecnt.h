@@ -145,8 +145,7 @@ protected:
     void Initialize_for_dsk_format(const s_formats &format,
                                    bool write_protected);
     void Initialize_unformatted_disk();
-    static void Create_boot_sectors(std::array<Byte, 2 * SECTOR_SIZE>
-                                    &boot_sectors,
+    static void Create_boot_sectors(BootSectorBuffer_t &bootSectors,
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
     bool IsFlexFileFormat(unsigned type) const;

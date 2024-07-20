@@ -1580,32 +1580,32 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
             {
                 // Write boot sector 00-01 or 00-02.
                 // into a file which name is defined in BOOT_FILE.
-                std::array<Byte, 2 * SECTOR_SIZE> boot_buffer{};
+                BootSectorBuffer_t bootSectors{};
                 struct stat sbuf{};
 
                 auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
-                std::fill(boot_buffer.begin(), boot_buffer.end(), '\0');
+                std::fill(bootSectors.begin(), bootSectors.end(), '\0');
 
                 if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))
                 {
                     std::ifstream ifs(path, std::ios::in | std::ios::binary);
                     if (ifs.is_open())
                     {
-                        auto *p = reinterpret_cast<char *>(boot_buffer.data());
+                        auto *p = reinterpret_cast<char *>(bootSectors.data());
                         ifs.read(p, SECTOR_SIZE * 2);
                         ifs.close();
                     }
                 }
 
-                Byte *p = boot_buffer.data() + (SECTOR_SIZE * (sec - 1));
+                Byte *p = bootSectors.data() + (SECTOR_SIZE * (sec - 1));
                 memcpy(p, buffer, SECTOR_SIZE);
                 // Check if 2nd sector contains all zeros.
                 bool is_all_zero = std::all_of(
-                        boot_buffer.cbegin() + SECTOR_SIZE,
-                        boot_buffer.cend(),
+                        bootSectors.cbegin() + SECTOR_SIZE,
+                        bootSectors.cend(),
                         [](Byte b){ return b == 0; });
                 // Remove link address.
-                flx::setValueBigEndian<Word>(&boot_buffer[3], 0U);
+                flx::setValueBigEndian<Word>(&bootSectors[3], 0U);
                 // If sector 2 contains all zero bytes only write
                 // the first sector otherwise write first and second
                 // sector to file.
@@ -1616,7 +1616,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                 {
                     const auto pos = ofs.tellp();
                     const auto *p_out =
-                        reinterpret_cast<const char *>(boot_buffer.data());
+                        reinterpret_cast<const char *>(bootSectors.data());
                     ofs.write(p_out, SECTOR_SIZE * count);
                     auto size = ofs.tellp() - pos;
                     if (ofs.fail() || size != SECTOR_SIZE * count)
