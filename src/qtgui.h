@@ -49,7 +49,7 @@ class Scheduler;
 class Inout;
 class VideoControl1;
 class VideoControl2;
-class Mc6809CpuStatus;
+struct Mc6809CpuStatus;
 class JoystickIO;
 class KeyboardIO;
 class TerminalIO;

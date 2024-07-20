@@ -45,10 +45,14 @@ enum class RunMode : uint8_t
     RunningContinue,
 };
 
+/* The following struct represents the current Mc6809 CPU interrupt status */
+/* For performance reasons it uses plain C arrays. */
+/* NOLINTBEGIN(modernize-avoid-c-arrays) */
 struct sInterruptStatus
 {
     DWord count[INT_RESET + 1];
 };
+/* NOLINTEND(modernize-avoid-c-arrays) */
 
 using tInterruptStatus = struct sInterruptStatus;
 

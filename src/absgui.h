@@ -36,7 +36,7 @@
 class Mc6809;
 class Inout;
 class Memory;
-class Mc6809CpuStatus;
+struct Mc6809CpuStatus;
 class TerminalIO;
 
 class AbstractGui

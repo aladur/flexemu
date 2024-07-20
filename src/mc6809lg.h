@@ -33,8 +33,8 @@
 #include <deque>
 
 
-class CpuStatus;
-class Mc6809CpuStatus;
+struct CpuStatus;
+struct Mc6809CpuStatus;
 
 class Mc6809Logger
 {

@@ -51,9 +51,8 @@ TIME_BASE = 10000,
 };
 
 
-class CpuStatus
+struct CpuStatus
 {
-public:
     CpuStatus()  = default;
     virtual ~CpuStatus() = default;
 

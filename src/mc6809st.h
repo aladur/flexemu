@@ -36,9 +36,11 @@ enum : uint8_t
     CPU_LINE_WIDTH = 39,
 };
 
-class Mc6809CpuStatus : public CpuStatus
+/* The following struct represents the current Mc6809 CPU status */
+/* For performance reasons it uses plain C arrays. */
+/* NOLINTBEGIN(modernize-avoid-c-arrays) */
+struct Mc6809CpuStatus : public CpuStatus
 {
-public:
     QWord total_cycles{0};
     Byte a{0};
     Byte b{0};
@@ -59,6 +61,7 @@ public:
     Mc6809CpuStatus(const Mc6809CpuStatus &src) = default;
     Mc6809CpuStatus &operator=(const Mc6809CpuStatus &lhs);
 };
+/* NOLINTEND(modernize-avoid-c-arrays) */
 
 #endif
 

@@ -138,7 +138,7 @@ union ucc
 };
 
 class Da6809;
-class Mc6809CpuStatus;
+struct Mc6809CpuStatus;
 
 
 class Mc6809 : public ScheduledCpu, public BObserver
