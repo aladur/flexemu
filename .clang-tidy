@@ -68,6 +68,7 @@ Checks: '
   readability-const-return-type,
   readability-inconsistent-declaration-parameter-name,
   readability-isolate-declaration,
+  readability-make-member-function-const,
   readability-named-parameter,
   readability-redundant-preprocessor,
   readability-container-data-pointer,
@@ -93,6 +94,7 @@ Checks: '
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: '[a-z]+_[a-z]+\.h'
 UseColor: true
 FormatStyle: 'xml'
 CheckOptions:

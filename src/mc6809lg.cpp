@@ -454,7 +454,7 @@ bool Mc6809Logger::setLoggerConfig(const Mc6809LoggerConfig &loggerConfig)
     return false;
 }
 
-size_t Mc6809Logger::getLogRegisterCount()
+size_t Mc6809Logger::getLogRegisterCount() const
 {
     size_t count = 0;
 
