@@ -53,6 +53,7 @@
 #include <sstream>
 #include <tuple>
 #include <ostream>
+#include <cassert>
 
 
 /* uncomment the following if the Disassembler should display FLEX entry
@@ -226,30 +227,28 @@ using cycles_t = QWord;
 // to identify random files.
 extern const char * const RANDOM_FILE_LIST;
 
-#define BTST0(x)  (((x) & 0x01U) != 0)
-#define BTST1(x)  (((x) & 0x02U) != 0)
-#define BTST2(x)  (((x) & 0x04U) != 0)
-#define BTST3(x)  (((x) & 0x08U) != 0)
-#define BTST4(x)  (((x) & 0x10U) != 0)
-#define BTST5(x)  (((x) & 0x20U) != 0)
-#define BTST6(x)  (((x) & 0x40U) != 0)
-#define BTST7(x)  (((x) & 0x80U) != 0)
-#define BTST8(x)  (((x) & 0x100U) != 0)
-#define BTST15(x) (((x) & 0x8000U) != 0)
-#define BTST16(x) (((x) & 0x10000U) != 0)
+template<typename T> bool BTST(T value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    return (value & static_cast<T>(static_cast<T>(1U) << bitpos)) != 0;
+}
 
-#define BSET7(x) ((x) |= 0x80U)
-#define BSET6(x) ((x) |= 0x40U)
-#define BSET5(x) ((x) |= 0x20U)
-#define BSET4(x) ((x) |= 0x10U)
-#define BSET3(x) ((x) |= 0x08U)
-#define BSET2(x) ((x) |= 0x04U)
-#define BSET1(x) ((x) |= 0x02U)
-#define BSET0(x) ((x) |= 0x01U)
+template<typename T> void BSET(T &value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    value |= static_cast<T>(static_cast<T>(1U) << bitpos);
+}
 
-#define BCLR7(x) ((x) &= 0x7FU)
+template<typename T> void BCLR(T &value, unsigned bitpos)
+{
+    assert((bitpos >> 3U) < sizeof(T));
+    value &= static_cast<T>(~static_cast<T>(static_cast<T>(1U) << bitpos));
+}
 
-#define EXTEND8(x) static_cast<Word>(static_cast<SWord>(static_cast<SByte>(x)))
+inline Word EXTEND8(Byte value)
+{
+    return static_cast<Word>(static_cast<SWord>(static_cast<SByte>(value)));
+}
 
 #if __GNUC__ >= 5 || __clang__ >= 4 || (__clang__ == 3 && __clang_minor__ >= 6)
 #if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)

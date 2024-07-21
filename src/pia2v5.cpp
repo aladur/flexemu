@@ -214,7 +214,7 @@ Byte Pia2V5::readInputA()
     }
 
     if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
-        (read_mode == ReadMode::Init && BTST7(cra)))
+        (read_mode == ReadMode::Init && BTST<Byte>(cra, 7U)))
     {
         result &= ~0x01U;
         read_mode = ReadMode::Read;
@@ -230,7 +230,7 @@ Byte Pia2V5::readInputA()
         }
     }
     else if (cpu.get_cycles() - cycles_RDC > delay_RDC &&
-             (read_mode == ReadMode::Read && BTST7(cra)))
+             (read_mode == ReadMode::Read && BTST<Byte>(cra, 7U)))
     {
         cycles_RDC = cpu.get_cycles();
         delay_RDC = static_cast<QWord>(166.F / ORIGINAL_PERIOD);

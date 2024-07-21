@@ -24,10 +24,10 @@ typedef void (*tFctWordWord)(Word, Word);
 void addx(Byte &reg, Byte operand)
 {
     Word sum = reg + operand;
-    cc.bit.n = BTST7(sum);
-    cc.bit.v = BTST7(reg ^ operand ^ sum ^ (sum >> 1));
-    cc.bit.c = BTST8(sum);
-    cc.bit.h = BTST4(reg ^ operand ^ sum);
+    cc.bit.n = BTST<Word>(sum, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ sum ^ (sum >> 1), 7U);
+    cc.bit.c = BTST<Word>(sum, 8U);
+    cc.bit.h = BTST<Word>(reg ^ operand ^ sum, 4U);
     reg = static_cast<Byte>(sum);
     cc.bit.z = !reg;
 }

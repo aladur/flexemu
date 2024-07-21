@@ -223,7 +223,7 @@ void Mc146818::writeIo(Word offset, Byte val)
             B = val;
 
         // a SET bit going 1 clears the UIE bit
-        //if (BSET7(B))
+        //if (BSET<Byte>(B, 7U))
         //   B = val & 0xef;
         case 0x0c:
         case 0x0d:
@@ -238,12 +238,12 @@ void Mc146818::writeIo(Word offset, Byte val)
 void Mc146818::update_1_second()
 {
     // update only if SET bit is 0
-    if (!BTST7(B))
+    if (!BTST<Byte>(B, 7U))
     {
         static Byte dse_october = 0;
 
         // check for last sunday in april 1:59:59
-        if (BTST0(B) && hour == 1 &&
+        if (BTST<Byte>(B, 0U) && hour == 1 &&
             convert_bin(minute) == 59 &&
             convert_bin(second) == 59 &&
             month == 4 &&
@@ -255,7 +255,7 @@ void Mc146818::update_1_second()
             second = 0;
             // check for last sunday in october 1:59:59
         }
-        else if (BTST0(B) && hour == 1 &&
+        else if (BTST<Byte>(B, 0U) && hour == 1 &&
                  convert_bin(minute) == 59 &&
                  convert_bin(second) == 59 &&
                  convert_bin(month) == 10 &&
@@ -291,11 +291,11 @@ void Mc146818::update_1_second()
             }
         }
 
-        BSET4(C); // set update ended interrupt flag
+        BSET<Byte>(C, 4U); // set update ended interrupt flag
 
-        if (BTST4(B))
+        if (BTST<Byte>(B, 4U))
         {
-            BSET7(C);
+            BSET<Byte>(C, 7U);
             Notify(NotifyId::SetFirq);
         }
 
@@ -304,11 +304,11 @@ void Mc146818::update_1_second()
             (((al_minute & 0xC0U) == 0xC0U) || (al_minute == minute)) &&
             (((al_hour & 0xC0U) == 0xC0U) || (al_hour == hour)))
         {
-            BSET5(C); // set alarm interrupt flag
+            BSET<Byte>(C, 5U); // set alarm interrupt flag
 
-            if (BTST5(B))
+            if (BTST<Byte>(B, 5U))
             {
-                BSET7(C);
+                BSET<Byte>(C, 7U);
                 Notify(NotifyId::SetFirq);
             }
         }

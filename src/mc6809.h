@@ -64,6 +64,7 @@
 #define CC_BITS_NZV   (CC_BIT_N | CC_BIT_Z | CC_BIT_V)
 #define CC_BITS_NZC   (CC_BIT_N | CC_BIT_Z | CC_BIT_C)
 
+
 #ifdef FASTFLEX
     #define PC ipcreg
     #define CC_BITI (iccreg & 0x10)
@@ -378,7 +379,7 @@ private:
     inline void mul()
     {
         d = a * b;
-        cc.bit.c = BTST7(b);
+        cc.bit.c = BTST<Byte>(b, 7U);
         cc.bit.z = !d;
     }
 
@@ -389,7 +390,7 @@ private:
 
     inline void sex()
     {
-        cc.bit.n = BTST7(b);
+        cc.bit.n = BTST<Byte>(b, 7U);
         cc.bit.z = !b;
         a = cc.bit.n ? 255 : 0;
     }
@@ -772,7 +773,7 @@ private:
 
     inline void lsr(Byte &reg)
     {
-        cc.bit.c = BTST0(reg);
+        cc.bit.c = BTST<Byte>(reg, 0U);
         reg >>= 1U;
         cc.bit.n = false;
         cc.bit.z = !reg;
@@ -788,15 +789,15 @@ private:
     inline void rol(Byte &reg)
     {
         bool oc = cc.bit.c;
-        cc.bit.c = BTST7(reg);
+        cc.bit.c = BTST<Byte>(reg, 7U);
         reg <<= 1U;
 
         if (oc)
         {
-            BSET0(reg);
+            BSET<Byte>(reg, 0U);
         }
 
-        cc.bit.n = BTST7(reg);
+        cc.bit.n = BTST<Byte>(reg, 7U);
         cc.bit.v = cc.bit.c ^ cc.bit.n;
         cc.bit.z = !reg;
     }
@@ -811,15 +812,15 @@ private:
     inline void ror(Byte &reg)
     {
         bool oc = cc.bit.c;
-        cc.bit.c = BTST0(reg);
+        cc.bit.c = BTST<Byte>(reg, 0U);
         reg = reg >> 1U;
 
         if (oc)
         {
-            BSET7(reg);
+            BSET<Byte>(reg, 7U);
         }
 
-        cc.bit.n = BTST7(reg);
+        cc.bit.n = BTST<Byte>(reg, 7U);
         cc.bit.z = !reg;
     }
 
@@ -835,7 +836,7 @@ private:
     inline void ld(Word &reg, Word operand)
     {
         reg = operand;
-        cc.bit.n = BTST15(d);
+        cc.bit.n = BTST<Word>(d, 15U);
         cc.bit.v = false;
         cc.bit.z = !reg;
     }
@@ -849,7 +850,7 @@ private:
     inline void st(Word &reg, Word addr)
     {
         memory.write_word(addr, reg);
-        cc.bit.n = BTST15(reg);
+        cc.bit.n = BTST<Word>(reg, 15U);
         cc.bit.v = false;
         cc.bit.z = !reg;
     }
@@ -1074,10 +1075,10 @@ inline void Mc6809::sub(Word &reg, Word operand)
 inline void Mc6809::add(Byte &reg, Byte operand)
 {
     Word sum = reg + operand;
-    cc.bit.n = BTST7(sum);
-    cc.bit.v = BTST7(reg ^ operand ^ sum ^ (sum >> 1));
-    cc.bit.c = BTST8(sum);
-    cc.bit.h = BTST4(reg ^ operand ^ sum);
+    cc.bit.n = BTST<Word>(sum, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ sum ^ (sum >> 1), 7U);
+    cc.bit.c = BTST<Word>(sum, 8U);
+    cc.bit.h = BTST<Word>(reg ^ operand ^ sum, 4U);
     reg = (Byte)sum;
     cc.bit.z = !reg;
 }
@@ -1085,9 +1086,9 @@ inline void Mc6809::add(Byte &reg, Byte operand)
 inline void Mc6809::add(Word &reg, Word operand)
 {
     DWord sum = (DWord)reg + operand;
-    cc.bit.n = BTST15(sum);
-    cc.bit.v = BTST15(reg ^ operand ^ sum ^ (sum >> 1));
-    cc.bit.c = BTST16(sum);
+    cc.bit.n = BTST<DWord>(sum, 15U);
+    cc.bit.v = BTST<DWord>(reg ^ operand ^ sum ^ (sum >> 1), 15U);
+    cc.bit.c = BTST<DWord>(sum, 16U);
     reg = (Word)sum;
     cc.bit.z = !reg;
 }
@@ -1095,9 +1096,9 @@ inline void Mc6809::add(Word &reg, Word operand)
 inline void Mc6809::sub(Byte &reg, Byte operand)
 {
     Word diff = reg - operand;
-    cc.bit.n = BTST7(diff);
-    cc.bit.v = BTST7(reg ^ operand ^ diff ^ (diff >> 1));
-    cc.bit.c = BTST8(diff);
+    cc.bit.n = BTST<Word>(diff, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ diff ^ (diff >> 1), 7U);
+    cc.bit.c = BTST<Word>(diff, 8U);
     reg = (Byte)diff;
     cc.bit.z = !reg;
 }
@@ -1105,9 +1106,9 @@ inline void Mc6809::sub(Byte &reg, Byte operand)
 inline void Mc6809::sub(Word &reg, Word operand)
 {
     DWord diff = reg - operand;
-    cc.bit.n = BTST15(diff);
-    cc.bit.v = BTST15(reg ^ operand ^ diff ^ (diff >> 1));
-    cc.bit.c = BTST16(diff);
+    cc.bit.n = BTST<DWord>(diff, 15U);
+    cc.bit.v = BTST<DWord>(reg ^ operand ^ diff ^ (diff >> 1), 15U);
+    cc.bit.c = BTST<DWord>(diff, 16U);
     reg = (Word)diff;
     cc.bit.z = !reg;
 }
@@ -1170,10 +1171,10 @@ inline void Mc6809::sbc(Byte &reg, Byte operand)
 inline void Mc6809::adc(Byte &reg, Byte operand)
 {
     Word sum = reg + operand + cc.bit.c;
-    cc.bit.n = BTST7(sum);
-    cc.bit.v = BTST7(reg ^ operand ^ sum ^ (sum >> 1));
-    cc.bit.c = BTST8(sum);
-    cc.bit.h = BTST4(reg ^ operand ^ sum);
+    cc.bit.n = BTST<Word>(sum, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ sum ^ (sum >> 1), 7U);
+    cc.bit.c = BTST<Word>(sum, 8U);
+    cc.bit.h = BTST<Word>(reg ^ operand ^ sum, 4U);
     reg = (Byte)sum;
     cc.bit.z = !reg;
 }
@@ -1181,9 +1182,9 @@ inline void Mc6809::adc(Byte &reg, Byte operand)
 inline void Mc6809::sbc(Byte &reg, Byte operand)
 {
     Word diff = reg - operand - cc.bit.c;
-    cc.bit.n = BTST7(diff);
-    cc.bit.v = BTST7(reg ^ operand ^ diff ^ (diff >> 1));
-    cc.bit.c = BTST8(diff);
+    cc.bit.n = BTST<Word>(diff, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ diff ^ (diff >> 1), 7U);
+    cc.bit.c = BTST<Word>(diff, 8U);
     reg = (Byte)diff;
     cc.bit.z = !reg;
 }
@@ -1211,12 +1212,12 @@ inline void Mc6809::daa()
     t = c + a;
     a = static_cast<Byte>(t);
 
-    if (BTST8(t))
+    if (BTST<Word>(t, 8U))
     {
         cc.bit.c = true;
     }
 
-    cc.bit.n = BTST7(a);
+    cc.bit.n = BTST<Byte>(a, 7U);
     cc.bit.z = !a;
 }
 
@@ -1294,7 +1295,7 @@ inline void Mc6809::neg(Byte &reg)
 inline void Mc6809::dec(Byte &reg)
 {
     reg--;
-    cc.bit.n = BTST7(reg);
+    cc.bit.n = BTST<Byte>(reg, 7U);
     cc.bit.z = !reg;
     cc.bit.v = (reg == 0x7f);
 }
@@ -1302,7 +1303,7 @@ inline void Mc6809::dec(Byte &reg)
 inline void Mc6809::inc(Byte &reg)
 {
     reg++;
-    cc.bit.n = BTST7(reg);
+    cc.bit.n = BTST<Byte>(reg, 7U);
     cc.bit.z = !reg;
     cc.bit.v = (reg == 0x80);
 }
@@ -1313,7 +1314,7 @@ inline void Mc6809::neg(Byte &reg)
     cc.bit.v = (reg == 0x80);
     cc.bit.c = (reg != 0);
     reg = (~reg) + 1;
-    cc.bit.n = BTST7(reg);
+    cc.bit.n = BTST<Byte>(reg, 7U);
     cc.bit.z = !reg;
 }
 #endif
@@ -1396,24 +1397,24 @@ inline void Mc6809::tst(Byte reg)
 inline void Mc6809::cmp(Byte reg, Byte operand)
 {
     Word diff = reg - operand;
-    cc.bit.n = BTST7(diff);
-    cc.bit.v = BTST7(reg ^ operand ^ diff ^ (diff >> 1));
+    cc.bit.n = BTST<Word>(diff, 7U);
+    cc.bit.v = BTST<Word>(reg ^ operand ^ diff ^ (diff >> 1), 7U);
     cc.bit.z = !(diff & 0xFF);
-    cc.bit.c = BTST8(diff);
+    cc.bit.c = BTST<Word>(diff, 8U);
 }
 
 inline void Mc6809::cmp(Word reg, Word operand)
 {
     DWord diff = reg - operand;
-    cc.bit.n = BTST15(diff);
-    cc.bit.v = BTST15(reg ^ operand ^ diff ^ (diff >> 1));
+    cc.bit.n = BTST<DWord>(diff, 15U);
+    cc.bit.v = BTST<DWord>(reg ^ operand ^ diff ^ (diff >> 1), 15U);
     cc.bit.z = !(diff & 0xFFFF);
-    cc.bit.c = BTST16(diff);
+    cc.bit.c = BTST<DWord>(diff, 16U);
 }
 
 inline void Mc6809::tst(Byte reg)
 {
-    cc.bit.n = BTST7(reg);
+    cc.bit.n = BTST<Byte>(reg, 7U);
     cc.bit.v = 0;
     cc.bit.z = !reg;
 }
@@ -1470,22 +1471,22 @@ inline void Mc6809::asr(Byte &reg)
 #else
 inline void Mc6809::lsl(Byte &reg)
 {
-    cc.bit.c = BTST7(reg);
-    cc.bit.v = BTST7(reg ^ (reg << 1));
+    cc.bit.c = BTST<Byte>(reg, 7U);
+    cc.bit.v = BTST<Byte>(reg ^ (reg << 1), 7U);
     reg <<= 1;
-    cc.bit.n = BTST7(reg);
+    cc.bit.n = BTST<Byte>(reg, 7U);
     cc.bit.z = !reg;
 }
 
 inline void Mc6809::asr(Byte &reg)
 {
-    cc.bit.c = BTST0(reg);
+    cc.bit.c = BTST<Byte>(reg, 0U);
     reg >>= 1;
-    cc.bit.n = BTST6(reg);
+    cc.bit.n = BTST<Byte>(reg, 6U);
 
     if (cc.bit.n)
     {
-        BSET7(reg);
+        BSET<Byte>(reg, 7U);
     }
 
     cc.bit.z = !reg;

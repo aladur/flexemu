@@ -930,7 +930,7 @@ Word Mc6809::do_effective_address(Byte post)
 {
     Word addr = 0;
 
-    if (!BTST7(post))
+    if (!BTST<Byte>(post, 7U))
     {
         Word offset = post & 0x1FU;
 
