@@ -113,7 +113,7 @@ void FlexemuOptions::PrintHelp(std::ostream &os)
           "*.csv logs to a csv file.\n"
           "  -h (display this)\n"
           "  -? (display this)\n"
-          "  -v (print version number)\n";
+          "  -V (print version number)\n";
 }
 
 void FlexemuOptions::InitOptions(struct sOptions &options)
@@ -180,7 +180,7 @@ void FlexemuOptions::GetCommandlineOptions(
     optstr.append("tr:"); // terminal mode and reset key
 #endif
     optstr.append("ic:n:"); // color, inverse video, # of colors
-    optstr.append("vh"); // version and help
+    optstr.append("Vh"); // version and help
 
     auto setReadOnly =
         [&roOptions = options.readOnlyOptionIds](FlexemuOptionId enumValue)
@@ -368,7 +368,7 @@ void FlexemuOptions::GetCommandlineOptions(
                 options.cpuLogPath = optarg;
                 break;
 
-            case 'v':
+            case 'V':
                 std::cout << PROGRAMNAME ": V " PROGRAM_VERSION "\n";
                 exit(EXIT_SUCCESS);
 
