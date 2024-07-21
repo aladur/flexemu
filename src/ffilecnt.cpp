@@ -52,11 +52,12 @@ static const std::string &getDefaultBootSectorFile()
     if (defaultBootSectorFile.empty())
     {
 #ifdef UNIX
-        defaultBootSectorFile = F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
+        defaultBootSectorFile = std::string(F_DATADIR) + PATHSEPARATORSTRING +
+            BOOT_FILE;
 #endif
 #ifdef _WIN32
         defaultBootSectorFile = flx::getExecutablePath() +
-                                PATHSEPARATORSTRING BOOT_FILE;
+                                PATHSEPARATORSTRING + BOOT_FILE;
 #endif
     }
 

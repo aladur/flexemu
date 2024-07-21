@@ -880,7 +880,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
     const auto wWildcard(
-        ConvertToUtf16String(directory + PATHSEPARATORSTRING "*.*"));
+        ConvertToUtf16String(directory + PATHSEPARATORSTRING + "*.*"));
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
@@ -1432,7 +1432,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                 // when reading it a default boot code is set which
                 // savely jumps back into the monitor program.
 
-                auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
+                auto path = directory + PATHSEPARATORSTRING + BOOT_FILE;
                 bool set_default_boot_code = true;
                 std::ifstream ifs(path, std::ios::in | std::ios::binary);
 
@@ -1583,7 +1583,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                 BootSectorBuffer_t bootSectors{};
                 struct stat sbuf{};
 
-                auto path = directory + PATHSEPARATORSTRING BOOT_FILE;
+                auto path = directory + PATHSEPARATORSTRING + BOOT_FILE;
                 std::fill(bootSectors.begin(), bootSectors.end(), '\0');
 
                 if (!stat(path.c_str(), &sbuf) && S_ISREG(sbuf.st_mode))

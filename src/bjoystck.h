@@ -28,8 +28,8 @@
 #include <cstdint>
 #include <array>
 
-#define JOYSTICK_DEVICE_0   "/dev/js0"
-#define JOYSTICK_DEVICE_1   "/dev/js1"
+constexpr const char *JOYSTICK_DEVICE_0 = "/dev/js0";
+constexpr const char *JOYSTICK_DEVICE_1 = "/dev/js1";
 
 class BJoystick
 {

@@ -160,12 +160,12 @@
 /* PATHSEPARATORSTRING shoud be a define to do */
 /* implicit concatenation by the compiler!     */
 #ifdef _WIN32
-    const char PATHSEPARATOR = '\\';
-    #define PATHSEPARATORSTRING  "\\"
+constexpr const char PATHSEPARATOR = '\\';
+constexpr const char *PATHSEPARATORSTRING = "\\";
 #endif
 #ifdef UNIX
-    const char PATHSEPARATOR = '/';
-    #define PATHSEPARATORSTRING "/"
+constexpr const char PATHSEPARATOR = '/';
+constexpr const char *PATHSEPARATORSTRING = "/";
 #endif
 
 /* Keep macro to be used within string literal. */

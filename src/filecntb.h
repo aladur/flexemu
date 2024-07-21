@@ -43,7 +43,7 @@ const unsigned TYPE_JVC_HEADER =
 
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
-#define BOOT_FILE "boot"
+constexpr const char *BOOT_FILE = "boot";
 
 const int SECTOR_SIZE = 256;
 

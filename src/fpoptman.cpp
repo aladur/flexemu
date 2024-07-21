@@ -52,11 +52,12 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.version = VERSION;
     options.ft_access = FileTimeAccess::NONE;
 #ifdef UNIX
-    options.bootSectorFile = F_DATADIR PATHSEPARATORSTRING BOOT_FILE;
+    options.bootSectorFile = std::string(F_DATADIR) + PATHSEPARATORSTRING +
+        BOOT_FILE;
 #endif
 #ifdef _WIN32
     options.bootSectorFile =
-        flx::getExecutablePath() + PATHSEPARATORSTRING BOOT_FILE;
+        flx::getExecutablePath() + PATHSEPARATORSTRING + BOOT_FILE;
 #endif
     options.injectTextFileConvert = true;
     options.injectTextFileAskUser = true;
@@ -69,7 +70,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
     options.openDiskPath = F_DATADIR;
 #endif
 #ifdef _WIN32
-    options.openDiskPath = flx::getExecutablePath() + PATHSEPARATORSTRING
+    options.openDiskPath = flx::getExecutablePath() + PATHSEPARATORSTRING +
                            "Data";
 #endif
     options.openDirectoryPath = flx::getHomeDirectory();
