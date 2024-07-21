@@ -25,6 +25,9 @@ build_task:
     - ldd src/flexplorer
     - make check && cat test/unittests.log
     - test/test_gccasm
+    - src/dsktool -V
+    - src/mdcrtool -V
+    - src/flex2hex -V
     - src/dsktool -l disks/games.dsk
     - src/dsktool -f new.dsk -S 80dsdd
     - src/dsktool -C disks/system.dsk -T new.dsk

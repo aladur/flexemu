@@ -177,7 +177,11 @@
 #ifdef _WIN32
 #define OSTYPE "Windows"
 #else
+#ifdef _MACOS
+#define OSTYPE "MacOS"
+#else
 #define OSTYPE "unknown"
+#endif
 #endif
 #endif
 #endif

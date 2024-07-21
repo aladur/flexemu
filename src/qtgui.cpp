@@ -604,7 +604,7 @@ void QtGui::OnAbout()
     auto title = tr("About %1").arg(PROGRAMNAME);
 
     QMessageBox::about(this, title,
-        tr("<b>%1 V%2</b><p>"
+        tr("<b>%1 V%2</b> (" OSTYPE ")<p>"
            "%1 is an MC6809 emulator running "
            "<a href=\"https://en.wikipedia.org/wiki/FLEX_(operating_system)\">"
            "FLEX operating system</a>.<p>"

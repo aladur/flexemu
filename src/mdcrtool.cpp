@@ -36,7 +36,7 @@
 static void version()
 {
     std::cout <<
-        "mdcrtool " << VERSION << "\n" <<
+        "mdcrtool " << VERSION << " (" OSTYPE ")\n" <<
         "mdcrtool " << COPYRIGHT_MESSAGE;
 }
 

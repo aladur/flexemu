@@ -369,7 +369,9 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'V':
-                std::cout << PROGRAMNAME ": V " PROGRAM_VERSION "\n";
+                std::cout <<
+                    PROGRAMNAME " " PROGRAM_VERSION " (" OSTYPE ")\n" <<
+                    PROGRAMNAME " " << COPYRIGHT_MESSAGE;
                 exit(EXIT_SUCCESS);
 
             case '?':

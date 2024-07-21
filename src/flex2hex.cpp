@@ -50,7 +50,7 @@ enum class FileType : uint8_t
 static void version()
 {
     std::cout <<
-        "flex2hex " << VERSION << "\n" <<
+        "flex2hex " << VERSION << " (" OSTYPE ")\n" <<
         "flex2hex " << COPYRIGHT_MESSAGE;
 }
 

@@ -527,7 +527,7 @@ void FLEXplorer::About()
     auto version = QString(VERSION);
 
     QMessageBox::about(this, tr("About FLEXplorer"),
-        tr("<b>FLEXplorer V%1</b><p>"
+        tr("<b>FLEXplorer V%1</b> (" OSTYPE ")<p>"
            "FLEXplorer is an explorer for FLEX disk images and "
            "directory disks.<p>FLEXplorer comes with "
            "ABSOLUTELY NO WARRANTY. This is free software, and You "

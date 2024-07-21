@@ -33,6 +33,7 @@
 #include "sfpopts.h"
 #include "fpoptman.h"
 #include "ffilecnt.h"
+#include <iostream>
 
 
 #ifdef _WIN32
@@ -50,6 +51,19 @@ int main(int argc, char *argv[])
     FlexplorerOptions::ReadOptions(options);
     FLEXplorer window(options);
     int return_code = EXIT_FAILURE;
+
+    for (int i = 1; i < argc; ++i)
+    {
+        std::string arg{argv[i]};
+
+        if (arg.compare("-V") == 0)
+        {
+            std::cout <<
+                "FLEXplorer " VERSION " (" OSTYPE ")\n" <<
+                "FLEXplorer " << COPYRIGHT_MESSAGE;
+                exit(EXIT_SUCCESS);
+        }
+    }
 
     const auto icon = QIcon(":/resource/flexplorer.png");
     QApplication::setWindowIcon(icon);

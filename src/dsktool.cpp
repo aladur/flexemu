@@ -859,7 +859,7 @@ static void helpOnDiskSize()
 static void version()
 {
     std::cout <<
-        "dsktool " << VERSION << "\n" <<
+        "dsktool " << VERSION << " (" OSTYPE ")\n" <<
         "dsktool " << COPYRIGHT_MESSAGE;
 }
 
