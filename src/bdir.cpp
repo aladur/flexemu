@@ -28,10 +28,8 @@
 #endif
 #ifdef HAVE_DIRENT_H
     #include <dirent.h>
-    #define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
     #define dirent direct
-    #define NAMLEN(dirent) (dirent)->d_namlen
 #endif
 
 #ifdef _WIN32

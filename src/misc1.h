@@ -100,10 +100,8 @@
 #ifdef UNIX
     #ifdef HAVE_DIRENT_H
         #include <dirent.h>
-        #define NAMLEN(dirent) strlen((dirent)->d_name)
     #else
         #define dirent direct
-        #define NAMLEN(dirent) (dirent)->d_namlen
         #ifdef HAVE_SYS_NDIR_H
             #include <sys/ndir.h>
         #endif
@@ -145,10 +143,6 @@
     #define S_ISDIR(x)      (x & S_IFDIR)
     #define S_ISREG(x)      (x & S_IFREG)
     #define set_new_handler _set_new_handler
-    #define UNUSED(param)
-#endif
-#ifdef __GNUC__
-    #define UNUSED(param) param
 #endif
 
 #ifndef _WIN32
