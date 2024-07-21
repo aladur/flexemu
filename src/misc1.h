@@ -168,6 +168,8 @@
     #define PATHSEPARATORSTRING "/"
 #endif
 
+/* Keep macro to be used within string literal. */
+/* NOLINTBEGIN(cppcoreguidelines-macro-usage) */
 #ifdef __LINUX
 #define OSTYPE "Linux"
 #else
@@ -185,6 +187,7 @@
 #endif
 #endif
 #endif
+/* NOLINTEND(cppcoreguidelines-macro-usage) */
 
 #ifndef EXIT_SUCCESS
     #define EXIT_SUCCESS 0

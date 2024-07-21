@@ -27,6 +27,8 @@
 #include "boption.h"
 #include "mc6809lg.h"
 
+/* Keep macro to be controlable from command line */
+/* NOLINTNEXTLINE(cppcoreguidelines-macro-usage) */
 #define USE_ASM 1
 
 // Test if GCC inline assembler can be used
