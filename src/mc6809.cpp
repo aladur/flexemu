@@ -1390,6 +1390,57 @@ void Mc6809::irq(bool save_state)
     cc.bit.i = true; // Don't set flag f!
     pc = memory.read_word(0xfff8);
 }
+
+void Mc6809::EXEC_NMI(bool save_state)
+{
+    nmi(save_state);
+}
+
+void Mc6809::EXEC_IRQ(bool save_state)
+{
+    irq(save_state);
+}
+
+void Mc6809::EXEC_FIRQ(bool save_state)
+{
+    firq(save_state);
+}
+#endif
+#ifdef FASTFLEX
+void Mc6809::EXEC_NMI(bool save_state)
+{
+    if (save_state)
+    {
+        PUSH_ENTIRE;
+    }
+
+    iccreg |= 0xD0U;
+    ipcreg = GETWORD(0xFFFCU);
+}
+
+void Mc6809::EXEC_IRQ(bool save_state)
+{
+    if (save_state)
+    {
+        PUSH_ENTIRE;
+    }
+
+    iccreg |= 0x90U;
+    ipcreg = GETWORD(0xFFF8U);
+}
+
+void Mc6809::EXEC_FIRQ(bool save_state)
+{
+    if (save_state)
+    {
+        PUSHWORD(ipcreg);
+        PUSHBYTE(iccreg);
+        iccreg &= 0x7FU;
+    }
+
+    iccreg |= 0x50U;
+    ipcreg = GETWORD(0xFFF6U);
+}
 #endif
 
 void Mc6809::set_bp(int which, Word address)

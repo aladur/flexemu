@@ -41,29 +41,29 @@
 #endif
 
 #ifdef BITFIELDS_LSB_FIRST
-    #define CC_BIT_C 0x01
-    #define CC_BIT_V 0x02
-    #define CC_BIT_Z 0x04
-    #define CC_BIT_N 0x08
-    #define CC_BIT_I 0x10
-    #define CC_BIT_H 0x20
-    #define CC_BIT_F 0x40
-    #define CC_BIT_E 0x80
+constexpr auto CC_BIT_C{0x01U};
+constexpr auto CC_BIT_V{0x02U};
+constexpr auto CC_BIT_Z{0x04U};
+constexpr auto CC_BIT_N{0x08U};
+constexpr auto CC_BIT_I{0x10U};
+constexpr auto CC_BIT_H{0x20U};
+constexpr auto CC_BIT_F{0x40U};
+constexpr auto CC_BIT_E{0x80U};
 #else
-    #define CC_BIT_C 0x80
-    #define CC_BIT_V 0x40
-    #define CC_BIT_Z 0x20
-    #define CC_BIT_N 0x10
-    #define CC_BIT_I 0x08
-    #define CC_BIT_H 0x04
-    #define CC_BIT_F 0x02
-    #define CC_BIT_E 0x01
+constexpr auto CC_BIT_C{0x80U};
+constexpr auto CC_BIT_V{0x40U};
+constexpr auto CC_BIT_Z{0x20U};
+constexpr auto CC_BIT_N{0x10U};
+constexpr auto CC_BIT_I{0x08U};
+constexpr auto CC_BIT_H{0x04U};
+constexpr auto CC_BIT_F{0x02U};
+constexpr auto CC_BIT_E{0x01U};
 #endif
-#define CC_BITS_HNZVC (CC_BIT_H | CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C)
-#define CC_BITS_NZVC  (CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C)
-#define CC_BITS_NZV   (CC_BIT_N | CC_BIT_Z | CC_BIT_V)
-#define CC_BITS_NZC   (CC_BIT_N | CC_BIT_Z | CC_BIT_C)
-
+constexpr auto CC_BITS_HNZVC{CC_BIT_H | CC_BIT_N | CC_BIT_Z | CC_BIT_V |
+    CC_BIT_C};
+constexpr auto CC_BITS_NZVC{CC_BIT_N | CC_BIT_Z | CC_BIT_V | CC_BIT_C};
+constexpr auto CC_BITS_NZV{CC_BIT_N | CC_BIT_Z | CC_BIT_V};
+constexpr auto CC_BITS_NZC{CC_BIT_N | CC_BIT_Z | CC_BIT_C};
 
 #ifdef FASTFLEX
     #define PC ipcreg
@@ -74,9 +74,6 @@
     #define PC pc
     #define CC_BITI (cc.bit.i)
     #define CC_BITF (cc.bit.f)
-    #define EXEC_NMI(s)  nmi(s)
-    #define EXEC_IRQ(s)  irq(s)
-    #define EXEC_FIRQ(s) firq(s)
 #endif
 
 // uncomment this for debug output of cpu
@@ -890,6 +887,9 @@ private:
     cycles_t pul(Byte what, Word &s, Word &u);
     Word do_effective_address(Byte post);
 #endif
+    void EXEC_NMI(bool save_state);
+    void EXEC_IRQ(bool save_state);
+    void EXEC_FIRQ(bool save_state);
     void nmi(bool save_state);
     void firq(bool save_state);
     void irq(bool save_state);

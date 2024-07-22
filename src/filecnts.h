@@ -136,12 +136,13 @@ struct alignas(1) s_dir_entry
 
 /* filename[0] within s_dir_entry has two magic numbers: */
 // 1. An empty directory entry
-#define DE_EMPTY    '\0'
+constexpr char DE_EMPTY{'\0'};
+
 // 2. A deleted directory entry
 // In the FLEX Advanced Programmer's Guide it is stated that a deleted file
 // has the leftmost bit of the first byte of the filename set. But when using
 // the utility DELETE.CMD the first byte is set to 0xFF.
-#define DE_DELETED  '\xFF'
+constexpr char DE_DELETED{'\xFF'};
 
 /* structure of a FLEX directory sector */
 struct alignas(1) s_dir_sector

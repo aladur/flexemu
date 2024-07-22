@@ -160,25 +160,5 @@
     PUSHBYTE(iareg);\
     PUSHBYTE(iccreg)
 
-#define EXEC_IRQ(save_state)    if (save_state) {\
-        PUSH_ENTIRE;\
-    }\
-    iccreg|=0x90;\
-    ipcreg=GETWORD(0xfff8)
-
-#define EXEC_NMI(save_state)    if (save_state) {\
-        PUSH_ENTIRE;\
-    }\
-    iccreg|=0xD0;\
-    ipcreg=GETWORD(0xfffc)
-
-#define EXEC_FIRQ(save_state)   if (save_state) {\
-        PUSHWORD(ipcreg);\
-        PUSHBYTE(iccreg);\
-        iccreg&=0x7f;\
-    }\
-    iccreg|=0x50;\
-    ipcreg=GETWORD(0xfff6)
-
 #endif
 

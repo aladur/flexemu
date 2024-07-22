@@ -80,6 +80,8 @@ static_assert(sizeof(sRGBQUAD) == 4, "sRGBQUAD is padded");
 /* NOLINTEND(modernize-avoid-c-arrays) */
 
 /* supported compression values */
+/* The following macros have to be compatible to Windows. */
+/* NOLINTBEGIN(cppcoreguidelines-macro-usage) */
 #ifndef BI_RGB
 #define BI_RGB 0U
 #endif
@@ -91,6 +93,7 @@ static_assert(sizeof(sRGBQUAD) == 4, "sRGBQUAD is padded");
 #ifndef BI_RLE4
 #define BI_RLE4 2U
 #endif
+/* NOLINTEND(cppcoreguidelines-macro-usage) */
 
 
 #endif
