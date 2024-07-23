@@ -39,7 +39,7 @@ const unsigned CATALOG_PROTECT = 0x10;
 const unsigned ALL_PROTECT = WRITE_PROTECT | DELETE_PROTECT | READ_PROTECT |
                          CATALOG_PROTECT;
 
-using AttributeCharToFlag_t = std::array<std::pair<char, Byte>, 4>;
+using AttributeCharToFlag_t = std::array<std::pair<char, unsigned>, 4>;
 extern const AttributeCharToFlag_t &GetAttributeCharToFlag();
 
 #endif

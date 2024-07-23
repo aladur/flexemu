@@ -66,15 +66,16 @@ unsigned Mc6809::Disassemble(Word address, InstFlg &p_flags,
 {
     std::array<Byte, 6> buffer{};
     DWord jumpAddress = 0;
+    Word address_inc = address;
 
     if (disassembler == nullptr)
     {
         return 0;
     }
 
-    for (size_t i = 0; i < buffer.size(); i++)
+    for (Byte &value : buffer)
     {
-        buffer[i] = memory.read_byte(address + i);
+        value = memory.read_byte(address_inc++);
     }
 
     p_flags = disassembler->Disassemble(buffer.data(), address, jumpAddress,
@@ -166,7 +167,7 @@ void Mc6809::get_status(CpuStatus *cpu_status)
         std::strncpy(stat->operands, operands.c_str(),
                 sizeof(stat->operands) - 1);
         stat->operands[sizeof(stat->operands) - 1] = '\0';
-        stat->insn_size = byte_size;
+        stat->insn_size = static_cast<Word>(byte_size);
     }
 
     stat->total_cycles = get_cycles();
@@ -226,7 +227,9 @@ CpuState Mc6809::run(RunMode mode)
             // set a breakpoint after this instruction
             if (disassembler != nullptr)
             {
-                bp[2] = PC + Disassemble(PC, flags, code, mnemonic, operands);
+                const auto byteSize =
+                    Disassemble(PC, flags, code, mnemonic, operands);
+                bp[2] = static_cast<Word>(PC + byteSize);
             }
 
             if (disassembler == nullptr ||

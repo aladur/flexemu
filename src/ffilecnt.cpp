@@ -570,7 +570,8 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
         repeat = 2;
     }
 
-    while (recordNr * (SECTOR_SIZE - 4) < buffer.GetFileSize())
+    while (static_cast<DWord>(recordNr * (SECTOR_SIZE - 4)) <
+            buffer.GetFileSize())
     {
         for (count = repeat; count >= 0; count--)
         {
@@ -657,7 +658,8 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
         flx::setValueBigEndian<Word>(&sectorBuffer[0][2],
                                 recordNr - (buffer.IsRandom() ? 2U : 0U));
 
-        if (recordNr * (SECTOR_SIZE - 4) >= buffer.GetFileSize())
+        if (static_cast<DWord>(recordNr * (SECTOR_SIZE - 4)) >=
+                buffer.GetFileSize())
         {
             sectorBuffer[0][0] = sectorBuffer[0][1] = 0;
         }
@@ -821,7 +823,8 @@ bool FlexDisk::SetAttributes(const std::string &wildcard,
 
     for (it = this->begin(); it != this->end(); ++it)
     {
-        Byte p_attributes = (it->GetAttributes() & ~clearMask) | setMask;
+        Byte p_attributes =
+            static_cast<Byte>((it->GetAttributes() & ~clearMask) | setMask);
         it.SetAttributesCurrent(p_attributes);
     }
 

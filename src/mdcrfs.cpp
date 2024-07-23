@@ -186,7 +186,8 @@ MdcrStatus MdcrFileSystem::ReadFile(
             if (hasFoundFile)
             {
                 // Copy file contents into memory.
-                memory.CopyFrom(&ibuffer[1], startAddress, ibuffer.size() - 3U);
+                memory.CopyFrom(&ibuffer[1], startAddress,
+                        static_cast<DWord>(ibuffer.size() - 3U));
                 startAddress += static_cast<Word>(ibuffer.size() - 3U);
             }
             count += ibuffer.size() - 3;
@@ -227,7 +228,8 @@ MdcrStatus MdcrFileSystem::WriteFile(
 
     const auto addressRange = memory.GetAddressRanges()[0];
     if (!memory.CopyTo(ibuffer, addressRange) || ibuffer.empty() ||
-            ibuffer.size() > std::numeric_limits<int>::max())
+            ibuffer.size() >
+            static_cast<size_t>(std::numeric_limits<int>::max()))
     {
         return MdcrStatus::InvalidData;
     }

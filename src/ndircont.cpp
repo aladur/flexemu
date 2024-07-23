@@ -1495,7 +1495,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
                     {
                         auto *p = reinterpret_cast<char *>(buffer + MDPS);
                         ifs.read(p, DBPS);
-                        auto bytes = ifs.gcount();
+                        auto bytes = static_cast<int>(ifs.gcount());
 
                         // Pad remaining bytes of sector of a file with 0.
                         // A number of bytes read of 0 is also valid.

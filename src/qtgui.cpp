@@ -1734,7 +1734,7 @@ void QtGui::SetCpuDialogMonospaceFont(int pointSize)
 
 ColorTable QtGui::CreateColorTable()
 {
-    using fn = std::function<QRgb(int)>;
+    using fn = std::function<QRgb(Byte)>;
 
     const auto optionsColor = flx::tolower(options.color);
     bool isWithColorScale = !optionsColor.compare("default");

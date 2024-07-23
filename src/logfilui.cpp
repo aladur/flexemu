@@ -63,10 +63,12 @@ void Mc6809LoggerConfigUi::setupUi(QDialog &p_dialog)
     assert(r_csv != nullptr);
     assert(r_text != nullptr);
 
+#if defined(_DEBUG) || defined(DEBUG)
     for (const auto &regCheckBox : regCheckBoxes)
     {
         assert(regCheckBox != nullptr);
     }
+#endif
 
     InitializeWidgets();
     ConnectSignalsWithSlots();

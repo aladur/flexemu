@@ -563,7 +563,7 @@ void E2floppy::writeByteInTrack(Word &index)
             if (getDataRegister() == ID_ADDRESS_MARK)
             {
                 writeTrackState = WriteTrackState::IdAddressMark;
-                offset = idAddressMark.size();
+                offset = static_cast<Word>(idAddressMark.size());
             }
             break;
 

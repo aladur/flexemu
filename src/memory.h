@@ -144,7 +144,7 @@ public:
                 // RAM banks (e.g. for Eurocom V5).
                 *(ppage[address >> 12U] + (address & 0x3FFFU)) = value;
                 if (!isRamExtension && ((ramBank & 0x03U) != 3U) &&
-                    (address >> 14U == (ramBank & 0x03U)))
+                    ((address / 16384U) == (ramBank & 0x03U)))
                 {
                     changed[(address & 0x3FFFU) / YBLOCK_SIZE] = true;
                 }

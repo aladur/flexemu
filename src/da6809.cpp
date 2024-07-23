@@ -33,74 +33,74 @@ void Da6809::set_use_undocumented(bool value)
 const char *Da6809::FlexLabel(Word addr)
 {
 #ifdef FLEX_LABEL
-    static const std::map<Word, const char *> label_for_address{
+    static const std::map<unsigned, const char *> label_for_address{
         // FLEX DOS entries:
-        { 0xCD00, "COLDS" },
-        { 0xCD03, "WARMS" },
-        { 0xCD06, "RENTER" },
-        { 0xCD09, "INCH" },
-        { 0xCD0C, "INCH2" },
-        { 0xCD0F, "OUTCH" },
-        { 0xCD12, "OUTCH2" },
-        { 0xCD15, "GETCHR" },
-        { 0xCD18, "PUTCHR" },
-        { 0xCD1B, "INBUFF" },
-        { 0xCD1E, "PSTRNG" },
-        { 0xCD21, "CLASS" },
-        { 0xCD24, "PCRLF" },
-        { 0xCD27, "NXTCH" },
-        { 0xCD2A, "RSTRIO" },
-        { 0xCD2D, "GETFIL" },
-        { 0xCD30, "LOAD" },
-        { 0xCD33, "SETEXT" },
-        { 0xCD36, "ADDBX" },
-        { 0xCD39, "OUTDEC" },
-        { 0xCD3C, "OUTHEX" },
-        { 0xCD3F, "RPTERR" },
-        { 0xCD42, "GETHEX" },
-        { 0xCD45, "OUTADR" },
-        { 0xCD48,  "INDEC" },
-        { 0xCD4B, "DOCMND" },
-        { 0xCD4E, "STAT" },
+        { 0xCD00U, "COLDS" },
+        { 0xCD03U, "WARMS" },
+        { 0xCD06U, "RENTER" },
+        { 0xCD09U, "INCH" },
+        { 0xCD0CU, "INCH2" },
+        { 0xCD0FU, "OUTCH" },
+        { 0xCD12U, "OUTCH2" },
+        { 0xCD15U, "GETCHR" },
+        { 0xCD18U, "PUTCHR" },
+        { 0xCD1BU, "INBUFF" },
+        { 0xCD1EU, "PSTRNG" },
+        { 0xCD21U, "CLASS" },
+        { 0xCD24U, "PCRLF" },
+        { 0xCD27U, "NXTCH" },
+        { 0xCD2AU, "RSTRIO" },
+        { 0xCD2DU, "GETFIL" },
+        { 0xCD30U, "LOAD" },
+        { 0xCD33U, "SETEXT" },
+        { 0xCD36U, "ADDBX" },
+        { 0xCD39U, "OUTDEC" },
+        { 0xCD3CU, "OUTHEX" },
+        { 0xCD3FU, "RPTERR" },
+        { 0xCD42U, "GETHEX" },
+        { 0xCD45U, "OUTADR" },
+        { 0xCD48U,  "INDEC" },
+        { 0xCD4BU, "DOCMND" },
+        { 0xCD4EU, "STAT" },
         // FLEX FMS entries:
-        { 0xD400, "FMSINI" }, // FMS init
-        { 0xD403, "FMSCLS" }, // FMS close
-        { 0xD406, "FMS" },
-        { 0xC840, "FCB" }, // standard system FCB
+        { 0xD400U, "FMSINI" }, // FMS init
+        { 0xD403U, "FMSCLS" }, // FMS close
+        { 0xD406U, "FMS" },
+        { 0xC840U, "FCB" }, // standard system FCB
         // miscellenious:
-        { 0xD435, "VFYFLG" }, // FMS verify flag
-        { 0xC080, "LINBUF" }, // line buffer
-        { 0xCC00, "TTYBS" },
-        { 0xCC01, "TTYDEL" },
-        { 0xCC02, "TTYEOL" },
-        { 0xCC03, "TTYDPT" },
-        { 0xCC04, "TTYWDT" },
-        { 0xCC11, "TTYTRM" },
-        { 0xCC12, "COMTBL" }, // user command table
-        { 0xCC14, "LINBFP" }, // line buffer pointer
-        { 0xCC16, "ESCRET" }, // escape return register
-        { 0xCC18, "LINCHR" }, // current char in linebuffer
-        { 0xCC19, "LINPCH" }, // previous char in linebuffer
-        { 0xCC1A, "LINENR" }, //line nr of current page
-        { 0xCC1B, "LODOFS" }, // loader address offset
-        { 0xCC1D, "TFRFLG" }, // loader transfer flag
-        { 0xCC1E, "TFRADR" }, // transfer address
-        { 0xCC20, "FMSERR" }, // FMS error type
-        { 0xCC21, "IOFLG" }, // special I/O flag
-        { 0xCC22, "OUTSWT" }, // output switch
-        { 0xCC23, "INSWT" }, // input switch
-        { 0xCC24, "OUTADR" }, // file output address
-        { 0xCC26, "INADR" }, // file input address
-        { 0xCC28, "COMFLG" }, // command flag
-        { 0xCC29, "OUTCOL" }, // current output column
-        { 0xCC2A, "SCRATC" }, // system scratch
-        { 0xCC2B, "MEMEND" }, // memory end
-        { 0xCC2D, "ERRVEC" }, // error name vector
-        { 0xCC2F, "INECHO" }, // file input echo flag
+        { 0xD435U, "VFYFLG" }, // FMS verify flag
+        { 0xC080U, "LINBUF" }, // line buffer
+        { 0xCC00U, "TTYBS" },
+        { 0xCC01U, "TTYDEL" },
+        { 0xCC02U, "TTYEOL" },
+        { 0xCC03U, "TTYDPT" },
+        { 0xCC04U, "TTYWDT" },
+        { 0xCC11U, "TTYTRM" },
+        { 0xCC12U, "COMTBL" }, // user command table
+        { 0xCC14U, "LINBFP" }, // line buffer pointer
+        { 0xCC16U, "ESCRET" }, // escape return register
+        { 0xCC18U, "LINCHR" }, // current char in linebuffer
+        { 0xCC19U, "LINPCH" }, // previous char in linebuffer
+        { 0xCC1AU, "LINENR" }, //line nr of current page
+        { 0xCC1BU, "LODOFS" }, // loader address offset
+        { 0xCC1DU, "TFRFLG" }, // loader transfer flag
+        { 0xCC1EU, "TFRADR" }, // transfer address
+        { 0xCC20U, "FMSERR" }, // FMS error type
+        { 0xCC21U, "IOFLG" }, // special I/O flag
+        { 0xCC22U, "OUTSWT" }, // output switch
+        { 0xCC23U, "INSWT" }, // input switch
+        { 0xCC24U, "OUTADR" }, // file output address
+        { 0xCC26U, "INADR" }, // file input address
+        { 0xCC28U, "COMFLG" }, // command flag
+        { 0xCC29U, "OUTCOL" }, // current output column
+        { 0xCC2AU, "SCRATC" }, // system scratch
+        { 0xCC2BU, "MEMEND" }, // memory end
+        { 0xCC2DU, "ERRVEC" }, // error name vector
+        { 0xCC2FU, "INECHO" }, // file input echo flag
         // printer support
-        { 0xCCC0, "PRTINI" }, // printer initialize
-        { 0xCCD8, "PRTCHK" }, // printer check
-        { 0xCCE4, "PRTOUT" }, // printer output
+        { 0xCCC0U, "PRTINI" }, // printer initialize
+        { 0xCCD8U, "PRTCHK" }, // printer check
+        { 0xCCE4U, "PRTOUT" }, // printer output
     };
 
     const auto iter = label_for_address.find(addr);

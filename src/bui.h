@@ -57,7 +57,7 @@ T1 GetData(T2 &widget)
     auto value = widget.text().toUInt(&isSuccess, 16);
     if (isSuccess)
     {
-        opt_value = value;
+        opt_value = static_cast<typename T1::value_type>(value);
     }
 
     return opt_value;

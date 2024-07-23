@@ -42,6 +42,7 @@ public:
         : opt_value{val}
         , is_valid{true} { };
     ~BOptional() = default;
+    using value_type = T;
 
     constexpr bool has_value() const noexcept { return is_valid; };
 

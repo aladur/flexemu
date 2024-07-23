@@ -129,11 +129,11 @@ void FlexplorerTableModel::CreateAttributesBitmasks(const QString &attributes,
     {
         if (attributes.contains(item.first))
         {
-            setMask |= item.second;
+            setMask |= static_cast<Byte>(item.second);
         }
         else
         {
-            clearMask |= item.second;
+            clearMask |= static_cast<Byte>(item.second);
         }
     }
 }

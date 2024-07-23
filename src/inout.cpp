@@ -128,7 +128,7 @@ void Inout::UpdateFrom(NotifyId id, void * /*param*/)
         options.term_mode &&
         is_serpar_address_valid())
     {
-        memory.write_byte(serpar_address(), '\xFF');
+        memory.write_byte(serpar_address(), 0xFFU);
     }
 }
 

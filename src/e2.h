@@ -70,9 +70,7 @@ BLUE_HIGH = 0x08, /* Color bitmask for blue low */
 BLUE_LOW = 0x01, /* Color bitmask for blue low */
 };
 
-enum : uint8_t {
-MAXVIDEORAM_BANKS = 48U, /* max number of ram banks of size 16K */
-};
+const unsigned MAXVIDEORAM_BANKS{48U}; /* max number of ram banks of size 16K */
 
 /* possible values: 12, 48 */
 /* number of yblocks */

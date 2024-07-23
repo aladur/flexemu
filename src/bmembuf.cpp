@@ -80,7 +80,7 @@ void BMemoryBuffer::CopyTo(Byte *target, DWord address, DWord size) const
 
     if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + size - buffer.size();
+        secureSize -= static_cast<DWord>(address + size - buffer.size());
     }
 
     std::memcpy(target, buffer.data() + address, secureSize);
@@ -102,7 +102,7 @@ void BMemoryBuffer::CopyFrom(const Byte *source, DWord address, DWord size)
 
     if (address + secureSize >= buffer.size())
     {
-        secureSize -= address + size - buffer.size();
+        secureSize -= static_cast<DWord>(address + size - buffer.size());
     }
 
     std::memcpy(buffer.data() + address, source, secureSize);
