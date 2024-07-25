@@ -11,7 +11,7 @@ jobs:
       matrix:
         # Ubuntu verion has to be specified, added llvm apt repository depends
         # on it.
-        os: [ ubuntu-22.04 ]
+        os: [ ubuntu-24.04 ]
         qt-version: [ 5 ]
     runs-on: ${{ matrix.os }}
     defaults:
@@ -31,7 +31,7 @@ jobs:
         # Avoid 'apt-get upgrade'. It takes a long time.
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository -y "deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy main"
+          sudo add-apt-repository -y "deb https://apt.llvm.org/noble/ llvm-toolchain-noble main"
           sudo apt-get update
           sudo apt list --upgradable
           sudo apt-get install build-essential qtbase5-dev qtbase5-dev-tools libqt5x11extras5-dev $CLANG_TIDY

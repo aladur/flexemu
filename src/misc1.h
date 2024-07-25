@@ -180,7 +180,7 @@ constexpr const char *PATHSEPARATORSTRING = "/";
 #ifdef _WIN32
 #define OSTYPE "Windows"
 #else
-#ifdef _MACOS
+#ifdef __MACOS
 #define OSTYPE "MacOS"
 #else
 #define OSTYPE "unknown"
