@@ -31,7 +31,7 @@
 #include <string>
 
 
-using tPathList = std::vector<std::string>;
+using PathList_t = std::vector<std::string>;
 
 class BDirectory
 {
@@ -43,8 +43,8 @@ public:
     static bool Remove(const std::string &aPath);
     static bool Create(const std::string &aPath, int mode = 0755);
     static bool RemoveRecursive(const std::string &aPath);
-    static tPathList GetSubDirectories(const std::string &aPath);
-    static tPathList GetFiles(const std::string &aPath);
+    static PathList_t GetSubDirectories(const std::string &aPath);
+    static PathList_t GetFiles(const std::string &aPath);
 
     BDirectory() = default;
     explicit BDirectory(std::string &path) : m_path(path) { };
@@ -62,8 +62,8 @@ public:
     bool Remove() const;
     bool Create(int mode = 0755) const;
     bool RemoveRecursive() const;
-    tPathList GetSubDirectories() const;
-    tPathList GetFiles() const;
+    PathList_t GetSubDirectories() const;
+    PathList_t GetFiles() const;
 };
 
 #endif // BDIR_INCLUDED

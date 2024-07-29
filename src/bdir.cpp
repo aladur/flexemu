@@ -160,7 +160,7 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
 }
 #endif
 
-tPathList BDirectory::GetSubDirectories(const std::string &aPath)
+PathList_t BDirectory::GetSubDirectories(const std::string &aPath)
 {
     std::vector<std::string> subDirList;
     std::string basePath(aPath);
@@ -224,7 +224,7 @@ tPathList BDirectory::GetSubDirectories(const std::string &aPath)
     return subDirList;
 }
 
-tPathList BDirectory::GetFiles(const std::string &aPath)
+PathList_t BDirectory::GetFiles(const std::string &aPath)
 {
     std::vector<std::string> fileList;
     std::string basePath(aPath);
@@ -310,12 +310,12 @@ bool BDirectory::Create(int mode /* = 0755 */) const
     return Create(m_path, mode);
 }
 
-tPathList BDirectory::GetSubDirectories() const
+PathList_t BDirectory::GetSubDirectories() const
 {
     return GetSubDirectories(m_path);
 }
 
-tPathList BDirectory::GetFiles() const
+PathList_t BDirectory::GetFiles() const
 {
     return GetFiles(m_path);
 }
