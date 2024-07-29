@@ -40,11 +40,13 @@ unittests_SOURCES = \
 	test_boption.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
+	test_breltime.cpp \
 	test_btime.cpp \
 	../src/bdate.cpp \
 	../src/benv.cpp \
 	../src/bmembuf.cpp \
 	../src/brcfile.cpp \
+	../src/breltime.cpp \
 	../src/btime.cpp \
 	../src/da6809.cpp \
 	../src/fattrib.cpp \
@@ -59,6 +61,7 @@ unittests_SOURCES = \
 	../src/benv.h \
 	../src/bintervl.h \
 	../src/boption.h \
+	../src/breltime.h \
 	../src/btime.h \
 	../src/cistring.h \
 	../src/da6809.h \

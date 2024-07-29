@@ -20,8 +20,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef _WIN32
-    #include "misc1.h"
+#include "misc1.h"
+#if HAVE_SYS_TIME_H
+#include <sys/time.h>
 #endif
 #include "breltime.h"
 
@@ -32,7 +33,7 @@
 // return time in us as a unsigned int 64 Bit value
 QWord BRelativeTime::GetTimeUsll()
 {
-    struct timeval tv;
+    struct timeval tv{};
 
     gettimeofday(&tv, nullptr);
     return (static_cast<QWord>(tv.tv_sec) * 1000000U + tv.tv_usec);
