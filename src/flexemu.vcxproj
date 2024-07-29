@@ -478,7 +478,6 @@
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sodiff.h" />
     <ClInclude Include="soptions.h" />
-    <ClInclude Include="sprinter.h" />
     <ClInclude Include="terminal.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="vico1.h" />

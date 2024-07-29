@@ -161,9 +161,6 @@
     <ClInclude Include="rfilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sprinter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mdcrtape.h">
       <Filter>Header Files</Filter>
     </ClInclude>

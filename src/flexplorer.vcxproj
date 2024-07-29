@@ -355,7 +355,6 @@
     <ClInclude Include="mdcrtape.h" />
     <ClInclude Include="misc1.h" />
     <ClInclude Include="rfilecnt.h" />
-    <ClInclude Include="sprinter.h" />
     <ClInclude Include="sfpopts.h" />
     <ClInclude Include="warnoff.h" />
     <ClInclude Include="warnon.h" />

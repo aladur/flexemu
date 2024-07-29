@@ -25,8 +25,8 @@
 #include <sstream>
 #include "flexerr.h"
 #include "cvtwchar.h"
-#include "sprinter.h"
 #include <array>
+#include <fmt/format.h>
 
 
 const char *FlexException::what() const noexcept
@@ -63,47 +63,47 @@ FlexException::FlexException(int ec) noexcept
 FlexException::FlexException(int ec, int ip1) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], ip1);
+    errorString = fmt::format(errString[ec], ip1);
 }
 
 FlexException::FlexException(int ec, const std::string &sp1) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], sp1);
+    errorString = fmt::format(errString[ec], sp1);
 }
 
 FlexException::FlexException(int ec, const std::string &sp1,
                              const std::string &sp2) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], sp1, sp2);
+    errorString = fmt::format(errString[ec], sp1, sp2);
 }
 
 FlexException::FlexException(int ec, int ip1, const std::string &sp1) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], ip1, sp1);
+    errorString = fmt::format(errString[ec], ip1, sp1);
 }
 
 FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1)
     noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], ip1, ip2, sp1);
+    errorString = fmt::format(errString[ec], ip1, ip2, sp1);
 }
 
 FlexException::FlexException(int ec, int ip1, const std::string &sp1,
         const std::string &sp2) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], ip1, sp1, sp2);
+    errorString = fmt::format(errString[ec], ip1, sp1, sp2);
 }
 
 FlexException::FlexException(int ec, const std::string &sp1,
         const std::string &sp2, const std::string &sp3) noexcept
     : errorCode(ec)
 {
-    errorString = sprinter::print(errString[ec], sp1, sp2, sp3);
+    errorString = fmt::format(errString[ec], sp1, sp2, sp3);
 }
 
 #ifdef _WIN32
@@ -117,7 +117,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1)
             nullptr, lastError, 0, (LPWSTR)&lpMsgBuf, 0, nullptr))
     {
         errorCode = FERR_UNSPEC_WINDOWS_ERROR;
-        errorString = sprinter::print(errString[errorCode], sp1);
+        errorString = fmt::format(errString[errorCode], sp1);
         return;
     }
 

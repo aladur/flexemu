@@ -456,9 +456,6 @@
     <ClInclude Include="soptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sprinter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="terminal.h">
       <Filter>Header Files</Filter>
     </ClInclude>

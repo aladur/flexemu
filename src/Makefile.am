@@ -322,7 +322,6 @@ flexemu_SOURCES = \
 	scpulog.h \
 	sodiff.h \
 	soptions.h \
-	sprinter.h \
 	terminal.h \
 	typedefs.h \
 	vico1.h \
@@ -393,7 +392,6 @@ flexplorer_SOURCES = \
 	qtfree.h \
 	rfilecnt.h \
 	sfpopts.h \
-	sprinter.h \
 	warnoff.h \
 	warnon.h
 

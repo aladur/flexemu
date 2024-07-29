@@ -139,7 +139,6 @@ test_gccasm_SOURCES = \
 	../src/schedcpu.h \
 	../src/schedule.h \
 	../src/soptions.h \
-	../src/sprinter.h \
 	test_gccasm.h \
 	../src/typedefs.h \
 	../src/warnoff.h \
