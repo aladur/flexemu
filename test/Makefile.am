@@ -27,6 +27,7 @@ noinst_PROGRAMS = unittests test_gccasm
 
 unittests_SOURCES = \
 	test_benv.cpp \
+	test_binifile.cpp \
 	test_brcfile.cpp \
 	test_cistring.cpp \
 	test_da6809.cpp \
@@ -43,6 +44,7 @@ unittests_SOURCES = \
 	test_breltime.cpp \
 	test_btime.cpp \
 	../src/bdate.cpp \
+	../src/binifile.cpp \
 	../src/benv.cpp \
 	../src/bmembuf.cpp \
 	../src/brcfile.cpp \
@@ -59,6 +61,7 @@ unittests_SOURCES = \
 	../src/misc1.cpp \
 	../src/bdate.h \
 	../src/benv.h \
+	../src/binifile.h \
 	../src/bintervl.h \
 	../src/boption.h \
 	../src/breltime.h \

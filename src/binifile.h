@@ -25,7 +25,7 @@
 
 #include <string>
 #include <map>
-#include <fstream>
+#include <cstdint>
 
 
 class BIniFile
@@ -54,8 +54,8 @@ private:
         Unknown,
     };
 
-    Type ReadLine(std::istream &istream, std::string &section,
-                  std::string &key, std::string &value,
+    Type ReadLine(int line_number, std::istream &istream,
+                  std::string &section, std::string &key, std::string &value,
                   bool isSectionOnly) const;
 
     std::string fileName;

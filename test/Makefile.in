@@ -156,6 +156,7 @@ test_gccasm_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(test_gccasm_CXXFLAGS) \
 	$(CXXFLAGS) $(test_gccasm_LDFLAGS) $(LDFLAGS) -o $@
 am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
+	unittests-test_binifile.$(OBJEXT) \
 	unittests-test_brcfile.$(OBJEXT) \
 	unittests-test_cistring.$(OBJEXT) \
 	unittests-test_da6809.$(OBJEXT) unittests-test_main.$(OBJEXT) \
@@ -171,6 +172,7 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_breltime.$(OBJEXT) \
 	unittests-test_btime.$(OBJEXT) \
 	../src/unittests-bdate.$(OBJEXT) \
+	../src/unittests-binifile.$(OBJEXT) \
 	../src/unittests-benv.$(OBJEXT) \
 	../src/unittests-bmembuf.$(OBJEXT) \
 	../src/unittests-brcfile.$(OBJEXT) \
@@ -221,6 +223,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/test_gccasm-soptions.Po \
 	../src/$(DEPDIR)/unittests-bdate.Po \
 	../src/$(DEPDIR)/unittests-benv.Po \
+	../src/$(DEPDIR)/unittests-binifile.Po \
 	../src/$(DEPDIR)/unittests-bmembuf.Po \
 	../src/$(DEPDIR)/unittests-brcfile.Po \
 	../src/$(DEPDIR)/unittests-breltime.Po \
@@ -238,6 +241,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/test_gccasm-testmain.Po \
 	./$(DEPDIR)/unittests-test_bdate.Po \
 	./$(DEPDIR)/unittests-test_benv.Po \
+	./$(DEPDIR)/unittests-test_binifile.Po \
 	./$(DEPDIR)/unittests-test_bintervl.Po \
 	./$(DEPDIR)/unittests-test_bmembuf.Po \
 	./$(DEPDIR)/unittests-test_boption.Po \
@@ -746,6 +750,7 @@ libgmock_la_CPPFLAGS = \
 libgmock_la_LDFLAGS = -pthread
 unittests_SOURCES = \
 	test_benv.cpp \
+	test_binifile.cpp \
 	test_brcfile.cpp \
 	test_cistring.cpp \
 	test_da6809.cpp \
@@ -762,6 +767,7 @@ unittests_SOURCES = \
 	test_breltime.cpp \
 	test_btime.cpp \
 	../src/bdate.cpp \
+	../src/binifile.cpp \
 	../src/benv.cpp \
 	../src/bmembuf.cpp \
 	../src/brcfile.cpp \
@@ -778,6 +784,7 @@ unittests_SOURCES = \
 	../src/misc1.cpp \
 	../src/bdate.h \
 	../src/benv.h \
+	../src/binifile.h \
 	../src/bintervl.h \
 	../src/boption.h \
 	../src/breltime.h \
@@ -1071,6 +1078,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 	$(AM_V_CXXLD)$(test_gccasm_LINK) $(test_gccasm_OBJECTS) $(test_gccasm_LDADD) $(LIBS)
 ../src/unittests-bdate.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-binifile.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-benv.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-bmembuf.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -1131,6 +1140,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/test_gccasm-soptions.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-benv.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-binifile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-brcfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-breltime.Po@am__quote@ # am--include-marker
@@ -1148,6 +1158,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-testmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_benv.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_binifile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bintervl.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bmembuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_boption.Po@am__quote@ # am--include-marker
@@ -1417,6 +1428,20 @@ unittests-test_benv.obj: test_benv.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_benv.obj `if test -f 'test_benv.cpp'; then $(CYGPATH_W) 'test_benv.cpp'; else $(CYGPATH_W) '$(srcdir)/test_benv.cpp'; fi`
 
+unittests-test_binifile.o: test_binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_binifile.o -MD -MP -MF $(DEPDIR)/unittests-test_binifile.Tpo -c -o unittests-test_binifile.o `test -f 'test_binifile.cpp' || echo '$(srcdir)/'`test_binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_binifile.Tpo $(DEPDIR)/unittests-test_binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_binifile.cpp' object='unittests-test_binifile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_binifile.o `test -f 'test_binifile.cpp' || echo '$(srcdir)/'`test_binifile.cpp
+
+unittests-test_binifile.obj: test_binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_binifile.obj -MD -MP -MF $(DEPDIR)/unittests-test_binifile.Tpo -c -o unittests-test_binifile.obj `if test -f 'test_binifile.cpp'; then $(CYGPATH_W) 'test_binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/test_binifile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_binifile.Tpo $(DEPDIR)/unittests-test_binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_binifile.cpp' object='unittests-test_binifile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_binifile.obj `if test -f 'test_binifile.cpp'; then $(CYGPATH_W) 'test_binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/test_binifile.cpp'; fi`
+
 unittests-test_brcfile.o: test_brcfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_brcfile.o -MD -MP -MF $(DEPDIR)/unittests-test_brcfile.Tpo -c -o unittests-test_brcfile.o `test -f 'test_brcfile.cpp' || echo '$(srcdir)/'`test_brcfile.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_brcfile.Tpo $(DEPDIR)/unittests-test_brcfile.Po
@@ -1640,6 +1665,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/bdate.cpp' object='../src/unittests-bdate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-bdate.obj `if test -f '../src/bdate.cpp'; then $(CYGPATH_W) '../src/bdate.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/bdate.cpp'; fi`
+
+../src/unittests-binifile.o: ../src/binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-binifile.o -MD -MP -MF ../src/$(DEPDIR)/unittests-binifile.Tpo -c -o ../src/unittests-binifile.o `test -f '../src/binifile.cpp' || echo '$(srcdir)/'`../src/binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-binifile.Tpo ../src/$(DEPDIR)/unittests-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/binifile.cpp' object='../src/unittests-binifile.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-binifile.o `test -f '../src/binifile.cpp' || echo '$(srcdir)/'`../src/binifile.cpp
+
+../src/unittests-binifile.obj: ../src/binifile.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-binifile.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-binifile.Tpo -c -o ../src/unittests-binifile.obj `if test -f '../src/binifile.cpp'; then $(CYGPATH_W) '../src/binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/binifile.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-binifile.Tpo ../src/$(DEPDIR)/unittests-binifile.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/binifile.cpp' object='../src/unittests-binifile.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-binifile.obj `if test -f '../src/binifile.cpp'; then $(CYGPATH_W) '../src/binifile.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/binifile.cpp'; fi`
 
 ../src/unittests-benv.o: ../src/benv.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-benv.o -MD -MP -MF ../src/$(DEPDIR)/unittests-benv.Tpo -c -o ../src/unittests-benv.o `test -f '../src/benv.cpp' || echo '$(srcdir)/'`../src/benv.cpp
@@ -2256,6 +2295,7 @@ distclean: distclean-recursive
 	-rm -f ../src/$(DEPDIR)/test_gccasm-soptions.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bdate.Po
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
+	-rm -f ../src/$(DEPDIR)/unittests-binifile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bmembuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-brcfile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-breltime.Po
@@ -2273,6 +2313,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
+	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po
@@ -2348,6 +2389,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ../src/$(DEPDIR)/test_gccasm-soptions.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bdate.Po
 	-rm -f ../src/$(DEPDIR)/unittests-benv.Po
+	-rm -f ../src/$(DEPDIR)/unittests-binifile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-bmembuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-brcfile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-breltime.Po
@@ -2365,6 +2407,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
 	-rm -f ./$(DEPDIR)/unittests-test_benv.Po
+	-rm -f ./$(DEPDIR)/unittests-test_binifile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bintervl.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bmembuf.Po
 	-rm -f ./$(DEPDIR)/unittests-test_boption.Po

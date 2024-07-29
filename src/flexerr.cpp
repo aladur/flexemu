@@ -92,6 +92,13 @@ FlexException::FlexException(int ec, int ip1, int ip2, const std::string &sp1)
     errorString = sprinter::print(errString[ec], ip1, ip2, sp1);
 }
 
+FlexException::FlexException(int ec, int ip1, const std::string &sp1,
+        const std::string &sp2) noexcept
+    : errorCode(ec)
+{
+    errorString = sprinter::print(errString[ec], ip1, sp1, sp2);
+}
+
 FlexException::FlexException(int ec, const std::string &sp1,
         const std::string &sp2, const std::string &sp3) noexcept
     : errorCode(ec)
@@ -163,7 +170,7 @@ std::array<const char *, 47> FlexException::errString
     "",
     "Unsupported GUI type (#{0})",
     "Invalid magic number 0x{0}",
-    "Invalid line '{0}' in file {1}",
+    "In file {2} line {0} is invalid: \"{1}\"",
     "Invalid usage of disk image iterator",
     "File {0} has unexpected sector count {1}",
     "Disk image {0} is unformatted or has unknown format",

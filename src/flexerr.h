@@ -101,6 +101,8 @@ public:
         const std::string &sp2) noexcept;
     FlexException(int ec, int ip1, const std::string &sp1) noexcept;
     FlexException(int ec, int ip1, int ip2, const std::string &sp1) noexcept;
+    FlexException(int ec, int ip1, const std::string &sp1,
+                  const std::string &sp2) noexcept;
     FlexException(int ec, const std::string &sp1, const std::string &sp2,
                   const std::string &sp3) noexcept;
 #ifdef _WIN32

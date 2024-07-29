@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include "binifile.h"
 #include "flexerr.h"
+#include <fstream>
 #include <sstream>
 #include <set>
 
@@ -47,7 +48,7 @@ BIniFile &BIniFile::operator=(BIniFile &&src) noexcept
 bool BIniFile::IsValid() const
 {
     std::ifstream istream(fileName);
-    bool isValid = istream.good();
+    bool isValid = istream.is_open();
 
     return isValid;
 }
@@ -57,21 +58,27 @@ std::string BIniFile::GetFileName() const
     return fileName;
 }
 
-BIniFile::Type BIniFile::ReadLine(std::istream &istream,
+BIniFile::Type BIniFile::ReadLine(int line_number,
+                                  std::istream &istream,
                                   std::string &section,
                                   std::string &key,
                                   std::string &value,
                                   bool isSectionOnly = false) const
 {
+    static const std::string whiteSpace{flx::white_space};
     std::string line;
 
     if (std::getline(istream, line))
     {
-        std::stringstream stream(line);
-
-        if (!line.empty() && line[0] == '[')
+        if (line.empty() || whiteSpace.find(line[0]) != std::string::npos)
         {
-            stream.get();
+            throw FlexException(FERR_INVALID_LINE_IN_FILE, line_number,
+                    line, GetFileName());
+        }
+
+        if (line[0] == '[')
+        {
+            std::stringstream stream(line.substr(1));
 
             if (std::getline(stream, section, ']'))
             {
@@ -80,6 +87,10 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
                 return Type::Section;
             }
         }
+        else if (line[0] == ';' || line[0] == '#')
+        {
+            return Type::Comment;
+        }
         else
         {
             if (isSectionOnly)
@@ -87,23 +98,25 @@ BIniFile::Type BIniFile::ReadLine(std::istream &istream,
                 return Type::Unknown;
             }
 
-            if (!line.empty() && line[0] != ';' && line[0] != '#')
-            {
-                if (std::getline(stream, key, '=') &&
-                    std::getline(stream, value))
-                {
-                    key = flx::trim(std::move(key));
-                    value = flx::trim(std::move(value));
+            std::stringstream stream(line);
+            key.clear();
+            value.clear();
 
-                    return Type::KeyValue;
+            if (std::getline(stream, key, '='))
+            {
+                if (!std::getline(stream, value))
+                {
+                    value.clear();
                 }
 
-                throw FlexException(FERR_INVALID_LINE_IN_FILE, line, fileName);
+                key = flx::trim(std::move(key));
+                value = flx::trim(std::move(value));
             }
+            return Type::KeyValue;
         }
     }
 
-    return Type::Comment;
+    return Type::Unknown;
 }
 
 std::map<std::string, std::string> BIniFile::ReadSection(
@@ -112,23 +125,31 @@ std::map<std::string, std::string> BIniFile::ReadSection(
     std::map<std::string, std::string> resultMap;
     std::set<std::string> foundKeys;
     std::ifstream istream(fileName);
+    int line_number = 0;
 
     if (istream.good())
     {
         bool isSectionActive = false;
+        bool isDone = false;
         istream.clear();
         istream.seekg(0);
 
-        while(!istream.eof())
+        isSectionActive = section.empty();
+        while(!isDone && !istream.eof())
         {
             std::string sectionName;
             std::string key;
             std::string value;
 
-            switch (ReadLine(istream, sectionName, key, value,
+            ++line_number;
+            switch (ReadLine(line_number, istream, sectionName, key, value,
                              !isSectionActive))
             {
                 case Type::Section:
+                    if (isSectionActive)
+                    {
+                        isDone = true; // A section can only be specified once.
+                    }
                     isSectionActive = (section == sectionName);
                     break;
 
@@ -138,6 +159,7 @@ std::map<std::string, std::string> BIniFile::ReadSection(
                         if (foundKeys.find(key) != foundKeys.end())
                         {
                             throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                    line_number,
                                     key.append("=").append(value), fileName);
                         }
 
