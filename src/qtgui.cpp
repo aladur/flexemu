@@ -1150,7 +1150,6 @@ QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
 
     assert(menuText.size() == ICON_SIZES);
     assert(toolTipText.size() == ICON_SIZES);
-    assert(index >= 0);
     assert(index < ICON_SIZES);
 
     auto *action = menu.addAction(menuText[index]);
@@ -1174,7 +1173,6 @@ QAction *QtGui::CreateScreenSizeAction(
     };
 
     assert(menuText.size() == SCREEN_SIZES);
-    assert(index >= 0);
     assert (index < SCREEN_SIZES);
 
     auto keySequence = QKeySequence(tr("Ctrl+%1").arg(index + 1));
