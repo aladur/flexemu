@@ -119,7 +119,7 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 #if HAVE_SYS_TIME_H
     #include <sys/time.h>
 #endif
-#include <time.h>
+#include <ctime>
 
 /* utime */
 #ifdef _WIN32
