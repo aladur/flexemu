@@ -23,7 +23,7 @@ build_task:
   test_script:
     - ldd src/flexemu
     - ldd src/flexplorer
-    - make check && cat test/unittests.log
+    - make -j4 check
     - test/test_gccasm
     - src/dsktool -V
     - src/mdcrtool -V
