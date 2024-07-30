@@ -137,6 +137,25 @@ TEST(test_binifile, fct_ReadSection)
     EXPECT_TRUE(map4.empty());
     fs::remove(path);
 }
+TEST(test_binifile, fct_GetLineNumber)
+{
+    const std::string path{"/tmp/ini_file1.ini"};
+    EXPECT_TRUE(createIniFile(path));
+    BIniFile iniFile(path);
+    auto lineNumber = iniFile.GetLineNumber("", "key12");
+    EXPECT_EQ(lineNumber, 2);
+    lineNumber = iniFile.GetLineNumber("SECTION2", "key21");
+    EXPECT_EQ(lineNumber, 6);
+    lineNumber = iniFile.GetLineNumber("Section._-~@ 3", "key31");
+    EXPECT_EQ(lineNumber, 15);
+    lineNumber = iniFile.GetLineNumber("InvalidSection", "key11");
+    EXPECT_EQ(lineNumber, 0);
+    lineNumber = iniFile.GetLineNumber("SECTION2", "invalidKey");
+    EXPECT_EQ(lineNumber, 0);
+    lineNumber = iniFile.GetLineNumber("SECTION2", "key24");
+    EXPECT_EQ(lineNumber, 0);
+    fs::remove(path);
+}
 TEST(test_binifile, fct_ReadSection_exceptions)
 {
     const std::string path1{"/tmp/ini_file2.ini"};

@@ -178,3 +178,49 @@ std::map<std::string, std::string> BIniFile::ReadSection(
     return resultMap;
 }
 
+int BIniFile::GetLineNumber(const std::string &section, const std::string &key)
+    const
+{
+    std::ifstream istream(fileName);
+    int line_number = 0;
+    std::string sectionName;
+    std::string keyName;
+    std::string value;
+    bool isSectionActive = section.empty();
+
+    if (!istream.is_open())
+    {
+        return 0;
+    }
+
+    while (!istream.eof())
+    {
+        ++line_number;
+        switch (BIniFile::ReadLine(line_number, istream, sectionName, keyName,
+                    value, !isSectionActive))
+        {
+            case BIniFile::Type::Section:
+                if (isSectionActive)
+                {
+                    return 0;
+                }
+                isSectionActive = (section == sectionName);
+                break;
+            case BIniFile::Type::KeyValue:
+                if (isSectionActive)
+                {
+                    if (key == keyName)
+                    {
+                        return line_number;
+                    }
+                }
+                break;
+            case BIniFile::Type::Comment:
+            case BIniFile::Type::Unknown:
+                break;
+        }
+    }
+
+    return 0;
+}
+

@@ -44,6 +44,7 @@ public:
     std::string GetFileName() const;
     std::map<std::string, std::string> ReadSection(const std::string &section)
                                                                           const;
+    int GetLineNumber(const std::string &section, const std::string &key) const;
 
 private:
     enum class Type : uint8_t

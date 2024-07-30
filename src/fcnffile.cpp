@@ -68,16 +68,18 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 {
     std::vector<sIoDeviceMapping> deviceMappings;
     BIniFile iniFile(iniFileName);
+    const std::string section{"IoDevices"};
 
-    auto valueForKey = iniFile.ReadSection("IoDevices");
+    auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
         const auto &validDevices = GetValidDevices();
         if (validDevices.find(iter.first) == validDevices.end())
         {
+            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                        iter.first + "=" + iter.second,
+                        lineNumber, iter.first + "=" + iter.second,
                         iniFile.GetFileName());
         }
 
@@ -98,7 +100,9 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
             addressStream >> baseAddress;
             if (baseAddress < GENIO_BASE || baseAddress > 0xffff)
             {
+                auto lineNumber = iniFile.GetLineNumber(section, iter.first);
                 throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                    lineNumber,
                                     iter.first + "=" + iter.second,
                                     iniFile.GetFileName());
             }
@@ -110,7 +114,10 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
                 byteSizeStream >> mapping.byteSize;
                 if (mapping.byteSize <= 0 || mapping.byteSize > 64)
                 {
+                    auto lineNumber =
+                        iniFile.GetLineNumber(section, iter.first);
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                        lineNumber,
                                         iter.first + "=" + iter.second,
                                         iniFile.GetFileName());
                 }
@@ -122,8 +129,9 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
         }
         else
         {
+            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                iter.first + "=" + iter.second,
+                                lineNumber, iter.first + "=" + iter.second,
                                 iniFile.GetFileName());
         }
     }
@@ -140,8 +148,9 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 #endif
 
     BIniFile iniFile(iniFileName);
+    const std::string section{"SERPARAddress"};
 
-    auto valueForKey = iniFile.ReadSection("SERPARAddress");
+    auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
@@ -165,7 +174,10 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
                 addressStream >> address;
                 if (address < 0 || address > 0xffff)
                 {
+                    auto lineNumber =
+                        iniFile.GetLineNumber(section, iter.first);
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                        lineNumber,
                                         iter.first + "=" + iter.second,
                                         iniFile.GetFileName());
                 }
@@ -173,7 +185,9 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
                 return address;
             }
 
+            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                lineNumber,
                                 iter.first + "=" + iter.second,
                                 iniFile.GetFileName());
         }
@@ -189,15 +203,17 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
     };
 
     BIniFile iniFile(iniFileName);
+    const std::string section{"DebugSupport"};
 
-    auto valueForKey = iniFile.ReadSection("DebugSupport");
+    auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
-        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        if (validKeys.find(iter.first) == validKeys.end())
         {
+            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                iter.first + "=" + iter.second,
+                                lineNumber, iter.first + "=" + iter.second,
                                 iniFile.GetFileName());
         }
 
@@ -221,15 +237,17 @@ std::pair<std::string, std::set<std::string> >
     std::set<std::string> devices;
     std::pair<std::string, std::set<std::string> > result;
     BIniFile iniFile(iniFileName);
+    const std::string section{"IoDeviceLogging"};
 
-    auto valueForKey = iniFile.ReadSection("IoDeviceLogging");
+    auto valueForKey = iniFile.ReadSection(section);
 
     for (const auto &iter : valueForKey)
     {
-        if (!validKeys.empty() && validKeys.find(iter.first) == validKeys.end())
+        if (validKeys.find(iter.first) == validKeys.end())
         {
+            auto lineNumber = iniFile.GetLineNumber(section, iter.first);
             throw FlexException(FERR_INVALID_LINE_IN_FILE,
-                                iter.first + "=" + iter.second,
+                                lineNumber, iter.first + "=" + iter.second,
                                 iniFile.GetFileName());
         }
 
@@ -245,7 +263,10 @@ std::pair<std::string, std::set<std::string> >
                 const auto &validDevices = GetValidDevices();
                 if (validDevices.find(device) == validDevices.end())
                 {
+                    auto lineNumber =
+                        iniFile.GetLineNumber(section, iter.first);
                     throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                lineNumber,
                                 iter.first + "=" + iter.second,
                                 iniFile.GetFileName());
                 }
