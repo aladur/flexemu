@@ -37,6 +37,7 @@ unittests_SOURCES = \
 	test_main.cpp \
 	test_mc6809lg.cpp \
 	test_misc1.cpp \
+	test_fcnffile.cpp \
 	test_ffilebuf.cpp \
 	test_fileread.cpp \
 	test_fdirent.cpp \
@@ -59,6 +60,7 @@ unittests_SOURCES = \
 	../src/colors.cpp \
 	../src/da6809.cpp \
 	../src/fattrib.cpp \
+	../src/fcnffile.cpp \
 	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
 	../src/fileread.cpp \
@@ -82,6 +84,7 @@ unittests_SOURCES = \
 	../src/colors.h \
 	../src/da6809.h \
 	../src/fattrib.h \
+	../src/fcnffile.h \
 	../src/fdirent.h \
 	../src/ffilebuf.h \
 	../src/fileread.h \
