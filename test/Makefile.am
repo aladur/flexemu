@@ -32,6 +32,7 @@ unittests_SOURCES = \
 	test_bobserv.cpp \
 	test_brcfile.cpp \
 	test_cistring.cpp \
+	test_colors.cpp \
 	test_da6809.cpp \
 	test_main.cpp \
 	test_mc6809lg.cpp \
@@ -55,6 +56,7 @@ unittests_SOURCES = \
 	../src/brcfile.cpp \
 	../src/breltime.cpp \
 	../src/btime.cpp \
+	../src/colors.cpp \
 	../src/da6809.cpp \
 	../src/fattrib.cpp \
 	../src/fdirent.cpp \
@@ -77,6 +79,7 @@ unittests_SOURCES = \
 	../src/breltime.h \
 	../src/btime.h \
 	../src/cistring.h \
+	../src/colors.h \
 	../src/da6809.h \
 	../src/fattrib.h \
 	../src/fdirent.h \
