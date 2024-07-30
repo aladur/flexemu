@@ -29,6 +29,7 @@ unittests_SOURCES = \
 	test_benv.cpp \
 	test_binifile.cpp \
 	test_blinxsys.cpp \
+	test_bobserv.cpp \
 	test_brcfile.cpp \
 	test_cistring.cpp \
 	test_da6809.cpp \
@@ -50,6 +51,7 @@ unittests_SOURCES = \
 	../src/blinxsys.cpp \
 	../src/benv.cpp \
 	../src/bmembuf.cpp \
+	../src/bobservd.cpp \
 	../src/brcfile.cpp \
 	../src/breltime.cpp \
 	../src/btime.cpp \
@@ -68,6 +70,9 @@ unittests_SOURCES = \
 	../src/binifile.h \
 	../src/blinxsys.h \
 	../src/bintervl.h \
+	../src/bobserv.h \
+	../src/bobservd.h \
+	../src/bobshelp.h \
 	../src/boption.h \
 	../src/breltime.h \
 	../src/btime.h \
