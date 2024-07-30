@@ -49,10 +49,12 @@ public:
     FlexemuConfigFile &operator=(const FlexemuConfigFile &) = delete;
     FlexemuConfigFile &operator=(FlexemuConfigFile &&src) noexcept;
 
-    std::vector<sIoDeviceMapping> ReadIoDevices();
-    std::string GetDebugSupportOption(const std::string &key);
-    std::pair<std::string, std::set<std::string> > GetIoDeviceLogging();
-    int GetSerparAddress(const std::string &monitorFilePath);
+    std::string GetFileName() const;
+    bool IsValid() const;
+    std::vector<sIoDeviceMapping> ReadIoDevices() const;
+    std::string GetDebugSupportOption(const std::string &key) const;
+    std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
+    int GetSerparAddress(const std::string &monitorFilePath) const;
 
 private:
     std::string iniFileName;

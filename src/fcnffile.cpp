@@ -64,7 +64,7 @@ noexcept
     return *this;
 }
 
-std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
+std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices() const
 {
     std::vector<sIoDeviceMapping> deviceMappings;
     BIniFile iniFile(iniFileName);
@@ -140,6 +140,7 @@ std::vector<sIoDeviceMapping> FlexemuConfigFile::ReadIoDevices()
 }
 
 int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
+    const
 {
     std::string fileName = flx::getFileName(monitorFilePath);
 
@@ -197,6 +198,7 @@ int FlexemuConfigFile::GetSerparAddress(const std::string &monitorFilePath)
 }
 
 std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
+    const
 {
     static const auto validKeys = std::set<std::string>{
         "presetRAM", "logMdcr", "logMdcrFilePath"
@@ -227,7 +229,7 @@ std::string FlexemuConfigFile::GetDebugSupportOption(const std::string &key)
 }
 
 std::pair<std::string, std::set<std::string> >
-    FlexemuConfigFile::GetIoDeviceLogging()
+    FlexemuConfigFile::GetIoDeviceLogging() const
 {
     static const auto validKeys = std::set<std::string>{
         "logFilePath", "devices"
@@ -295,3 +297,14 @@ std::pair<std::string, std::set<std::string> >
     return result;
 }
 
+std::string FlexemuConfigFile::GetFileName() const
+{
+    return iniFileName;
+}
+
+bool FlexemuConfigFile::IsValid() const
+{
+    BIniFile iniFile(iniFileName);
+
+    return iniFile.IsValid();
+}
