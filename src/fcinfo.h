@@ -55,6 +55,10 @@ private:
 public:
     FlexDiskAttributes() = default;
     virtual ~FlexDiskAttributes() = default;
+    FlexDiskAttributes(const FlexDiskAttributes &src) = default;
+    FlexDiskAttributes(FlexDiskAttributes &&src) = default;
+    FlexDiskAttributes &operator=(const FlexDiskAttributes &src) = default;
+    FlexDiskAttributes &operator=(FlexDiskAttributes &&src) = default;
 
     void SetName(const std::string &n)
     {
