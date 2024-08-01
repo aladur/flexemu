@@ -41,6 +41,7 @@ unittests_SOURCES = \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
 	test_fileread.cpp \
+	test_filfschk.cpp \
 	test_fdirent.cpp \
 	test_bdate.cpp \
 	test_boption.cpp \
@@ -63,10 +64,16 @@ unittests_SOURCES = \
 	../src/fattrib.cpp \
 	../src/fcinfo.cpp \
 	../src/fcnffile.cpp \
+	../src/fcopyman.cpp \
 	../src/fdirent.cpp \
 	../src/ffilebuf.cpp \
+	../src/ffilecnt.cpp \
+	../src/filecnts.cpp \
 	../src/fileread.cpp \
+	../src/filfschk.cpp \
 	../src/flexerr.cpp \
+	../src/iffilcnt.cpp \
+	../src/ifilecnt.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/misc1.cpp \
@@ -88,10 +95,17 @@ unittests_SOURCES = \
 	../src/fattrib.h \
 	../src/fcinfo.h \
 	../src/fcnffile.h \
+	../src/fcopyman.h \
 	../src/fdirent.h \
 	../src/ffilebuf.h \
+	../src/ffilecnt.h \
+	../src/filecnts.h \
 	../src/fileread.h \
+	../src/filfschk.h \
 	../src/flexerr.h \
+	../src/iffilcnt.h \
+	../src/ifilcnti.h \
+	../src/ifilecnt.h \
 	../src/mc6809lg.h \
 	../src/mc6809st.h \
 	../src/misc1.h \
