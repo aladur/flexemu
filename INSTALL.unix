@@ -23,6 +23,20 @@ prerequisites:
 
 remarks:
 
+        - flexemu project compiles on almost every linux distribution. In
+          subdirectory docker there are some example Dockerfiles how to build
+          and execute all flexemu executables using docker. There are examples
+          using different package managers like:
+             apt (debian)
+             dnf, tdnf (fedora)
+             zypper (opensuse)
+             apk (alpine)
+             pacman (archlinux)
+             slackpkg (slackware)
+             xbps (voidlinux)
+          Most important prerequisite to build flexemu project are the qt5 or
+          qt6 libraries and development files.
+          See file docker/readme.md how these docker images can be build.
         - When using configure with --prefix=/usr flexemu also get's
           integrated into the desktop and appears in the System menu
           category, Emulator sub category. If --prefix is not specified

@@ -1,0 +1,29 @@
+Build time and image size for different linux distributions.
+The build command is:
+
+   docker build --rm --no-cache -t <image-name>:<tag> .
+
+build distribution         image    qt version
+time                       size
+[s]                        [GByte]
+================================================
+ 321 alpine                1.45     5.15.10
+ 990 altlinux              2.06     5.15.13
+ 308 archlinux             3.07     5.15.14
+ 921 debian                1.54     5.15.8
+1557 debian_be             1.46     5.15.8
+1161 debian_qt6            1.56     6.4.2
+1040 debian_testing        1.56     5.15.13
+ 994 debian_testing_qt6    1.57     6.6.2
+1013 debian_unstable       1.59     5.15.13
+ 961 debian_unstable_qt6   1.61     6.6.2
+ 375 manjaro               2.22     5.15.14
+ 354 fedora                1.90     5.15.14
+ 981 kalilinux             1.72     5.15.10
+ 304 linuxmint             2.68     5.15.3
+ 802 opensuse              1.92     5.15.12
+ 339 oraclelinux           1.82     5.15.9
+ 312 rockylinux            1.54     5.15.9
+ 582 slackware             2.45     5.15.3
+ 991 ubuntu                1.59     5.15.13
+ 478 voidlinux             2.63     5.15.11
