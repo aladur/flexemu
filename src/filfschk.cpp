@@ -225,7 +225,9 @@ void FlexDiskCheck::CheckItems()
             continue;
         }
 
-        if (item.records != item.sectors)
+        if (item.records != item.sectors &&
+            IsTrackSectorValid(item.start) &&
+            IsTrackSectorValid(item.end))
         {
             auto *result = new InconsistentRecordSize;
 
