@@ -1,5 +1,5 @@
 /*
-    dskfschk.cpp
+    filfschk.cpp
 
     flexemu, an MC6809 emulator running FLEX
     Copyright (C) 2020-2024  W. Schwotzer
