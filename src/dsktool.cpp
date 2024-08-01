@@ -120,8 +120,7 @@ static int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
         auto fileTimeAccess = FileTimeAccess::NONE;
 
         container.reset(FlexDisk::Create(
-                        flx::getParentPath(dsk_file),
-                        flx::getFileName(dsk_file),
+                        dsk_file,
                         fileTimeAccess,
                         tracks, sectors,
                         disk_format,

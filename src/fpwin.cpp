@@ -122,13 +122,11 @@ void FLEXplorer::NewFlexDisk()
                 return;
             }
 
-            auto filename = flx::getFileName(ui.GetPath().toStdString());
-            auto directory = flx::getParentPath(ui.GetPath().toStdString());
+            auto path = ui.GetPath().toStdString();
             const char *bsFile = !options.bootSectorFile.empty() ?
                                  options.bootSectorFile.c_str() : nullptr;
             auto *container = FlexDisk::Create(
-                                  directory,
-                                  filename,
+                                  path,
                                   options.ft_access,
                                   ui.GetTracks(),
                                   ui.GetSectors(),

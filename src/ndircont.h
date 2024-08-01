@@ -128,8 +128,8 @@ private:
                              // directory with file entries.
 
 public:
-    static FlexDirectoryDiskBySector *Create(const std::string &directory,
-            const std::string &name, const FileTimeAccess &fileTimeAccess,
+    static FlexDirectoryDiskBySector *Create(const std::string &path,
+            const FileTimeAccess &fileTimeAccess,
             int tracks, int sectors, int fmt = TYPE_DSK_DISKFILE);
 
     // IFlexDiskBase interface declaration.

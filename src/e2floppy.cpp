@@ -687,6 +687,12 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
 {
     IFlexDiskBySectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
+    auto path = disk_dir;
+    if (!flx::endsWithPathSeparator(path))
+    {
+        path += PATHSEPARATORSTRING;
+    }
+    path += name;
 
     try
     {
@@ -697,16 +703,14 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                         FlexDirectoryDiskBySector::Create(
-                            disk_dir, name, options.fileTimeAccess, trk, sec,
-                            fmt));
+                            path, options.fileTimeAccess, trk, sec, fmt));
                 }
                 break;
 
             case TYPE_DSK_DISKFILE:
             case TYPE_FLX_DISKFILE:
                 pfloppy = IFlexDiskBySectorPtr(
-                FlexDisk::Create(
-                    disk_dir, name, fileTimeAccess, trk, sec, fmt));
+                    FlexDisk::Create(path, fileTimeAccess, trk, sec, fmt));
                 break;
         }
     }

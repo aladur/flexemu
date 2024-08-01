@@ -85,8 +85,7 @@ public:
 
     static bool onTrack0OnlyDirSectors;
 
-    static FlexDisk *Create(const std::string &directory,
-                            const std::string &name,
+    static FlexDisk *Create(const std::string &path,
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
                             int fmt = TYPE_DSK_DISKFILE,
@@ -164,8 +163,7 @@ protected:
         int sec,
         struct s_formats &format);
     static void Format_disk(
-        const std::string &directory,
-        const std::string &name,
+        const std::string &path,
         int tracks,
         int sectors,
         int fmt = TYPE_DSK_DISKFILE,

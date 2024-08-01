@@ -277,31 +277,19 @@ bool FlexDisk::IsFlexFormat() const
 }
 
 FlexDisk *FlexDisk::Create(
-        const std::string &directory,
-        const std::string &name,
+        const std::string &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
         int fmt /* = TYPE_DSK_DISKFILE */,
         const char *bsFile /* = nullptr */)
 {
-    std::string path;
-
     if (fmt != TYPE_DSK_DISKFILE && fmt != TYPE_FLX_DISKFILE)
     {
         throw FlexException(FERR_INVALID_FORMAT, fmt);
     }
 
-    Format_disk(directory, name, tracks, sectors, fmt, bsFile);
-
-    path = directory;
-
-    if (!path.empty() && !flx::endsWithPathSeparator(path))
-    {
-        path += PATHSEPARATORSTRING;
-    }
-
-    path += name;
+    Format_disk(path, tracks, sectors, fmt, bsFile);
 
     auto mode = std::ios::in | std::ios::out | std::ios::binary;
     return new FlexDisk(path, mode, fileTimeAccess);
@@ -1417,33 +1405,22 @@ void FlexDisk::Create_format_table(int type, int trk, int sec,
 //  use TYPE_FLX_DISKFILE for FLX format
 
 void FlexDisk::Format_disk(
-    const std::string &directory,
-    const std::string &name,
+    const std::string &path,
     int tracks,
     int sectors,
     int fmt /* = TYPE_DSK_DISKFILE */,
     const char *bsFile /* = nullptr */)
 {
-    std::string path;
     struct s_formats format{};
     int err = 0;
 
-    if (name.empty() ||
+    if (path.empty() ||
         tracks < 2 || sectors < 6 || tracks > 256 || sectors > 255)
     {
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
     Create_format_table(fmt, tracks, sectors, format);
-
-    path = directory;
-
-    if (!path.empty() && !flx::endsWithPathSeparator(path))
-    {
-        path +=PATHSEPARATORSTRING;
-    }
-
-    path += name;
 
     std::fstream fstream(path, std::ios::out | std::ios::binary |
                          std::ios::trunc);
@@ -1480,7 +1457,7 @@ void FlexDisk::Format_disk(
         }
 
         s_sys_info_sector sis{};
-        Create_sys_info_sector(sis, name, format);
+        Create_sys_info_sector(sis, flx::getFileName(path), format);
 
         fstream.write(reinterpret_cast<const char *>(&sis), sizeof(sis));
         if (fstream.fail())
@@ -1518,7 +1495,7 @@ void FlexDisk::Format_disk(
 
     if (err)
     {
-        throw FlexException(FERR_UNABLE_TO_FORMAT, name);
+        throw FlexException(FERR_UNABLE_TO_FORMAT, path);
     }
 }
 

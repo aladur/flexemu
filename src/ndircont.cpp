@@ -145,27 +145,23 @@ FlexDirectoryDiskBySector::~FlexDirectoryDiskBySector()
 // Create a new directory disk in path directory.
 // format parameter is ignored.
 FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
-        const std::string &directory,
-        const std::string &name,
+        const std::string &path,
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
         int /* fmt = TYPE_DSK_DISKFILE */)
 {
     struct stat sbuf{};
+    const auto dir = flx::getParentPath(path);
 
-    if (stat(directory.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    if (stat(dir.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
-        throw FlexException(FERR_UNABLE_TO_CREATE, name);
+        throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }
-
-    auto path = directory;
-    path += PATHSEPARATORSTRING;
-    path += name;
 
     if (!BDirectory::Create(path, 0755))
     {
-        throw FlexException(FERR_UNABLE_TO_CREATE, name);
+        throw FlexException(FERR_UNABLE_TO_CREATE, path);
     }
 
     return new FlexDirectoryDiskBySector(path, fileTimeAccess, tracks, sectors);
