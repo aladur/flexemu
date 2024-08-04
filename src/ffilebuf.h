@@ -27,6 +27,7 @@
 #include "filecntb.h"
 #include "bdate.h"
 #include "btime.h"
+#include "efiletim.h"
 #include <memory>
 #include <functional>
 #include <sstream>
@@ -74,7 +75,7 @@ public:
     void ConvertToTextFile();
     void ConvertToFlexTextFile();
     void ConvertToDumpFile(DWord bytesPerLine);
-    bool WriteToFile(const char *path) const;
+    bool WriteToFile(const char *path, FileTimeAccess fileTimeAccess) const;
     bool ReadFromFile(const char *path);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;

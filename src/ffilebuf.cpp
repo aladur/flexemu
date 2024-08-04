@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <ctime>
 #include "bdate.h"
 #include "ffilebuf.h"
 #include "bfileptr.h"
@@ -532,21 +532,45 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
     return false;
 }
 
-bool FlexFileBuffer::WriteToFile(const char *path) const
+bool FlexFileBuffer::WriteToFile(const char *path,
+        FileTimeAccess fileTimeAccess) const
 {
-    BFilePtr fp(path, "wb");
+    struct stat sbuf{};
+    bool result = false;
 
-    if (fp != nullptr)
     {
-        if (GetFileSize() != 0)
+        BFilePtr fp(path, "wb");
+        if (fp != nullptr)
         {
-            size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
-            return (blocks == 1);
+            if (GetFileSize() != 0)
+            {
+                size_t blocks = fwrite(buffer.get(), GetFileSize(), 1, fp);
+                result = (blocks == 1);
+            }
         }
-        return true;
     }
 
-    return false;
+    const bool setFileTime =
+        (fileTimeAccess & FileTimeAccess::Set) == FileTimeAccess::Set;
+
+    if (result && stat(path, &sbuf) == 0)
+    {
+        struct utimbuf timebuf{};
+        struct tm file_time{};
+
+        timebuf.actime = sbuf.st_atime;
+        file_time.tm_sec = 0;
+        file_time.tm_min = setFileTime ? fileHeader.minute : 0;
+        file_time.tm_hour = setFileTime ? fileHeader.hour : 12;
+        file_time.tm_mon = fileHeader.month - 1;
+        file_time.tm_mday = fileHeader.day;
+        file_time.tm_year = fileHeader.year - 1900;
+        file_time.tm_isdst = -1;
+        timebuf.modtime = mktime(&file_time);
+        return (timebuf.modtime >= 0 && utime(path, &timebuf) == 0);
+    }
+
+    return result;
 }
 
 bool FlexFileBuffer::ReadFromFile(const char *path)

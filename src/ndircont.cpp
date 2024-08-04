@@ -1374,7 +1374,7 @@ bool NafsDirectoryContainer::set_file_time(const char *ppath, Byte month,
         file_time.tm_mon = month - 1;
         file_time.tm_mday = day;
         file_time.tm_year = year < 75 ? year + 100 : year;
-        file_time.tm_isdst = 0;
+        file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
 
         if (timebuf.modtime >= 0 && utime(ppath, &timebuf) >= 0)

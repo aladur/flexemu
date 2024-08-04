@@ -390,17 +390,10 @@ bool DirectoryContainerIteratorImp::SetDateCurrent(const BDate &date)
         file_time.tm_mon   = date.GetMonth() - 1;
         file_time.tm_mday  = date.GetDay();
         file_time.tm_year  = date.GetYear() - 1900;
-        file_time.tm_isdst = 0;
+        file_time.tm_isdst = -1;
         timebuf.modtime    = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) == 0);
     } // if
 
     return false;

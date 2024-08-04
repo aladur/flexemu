@@ -395,7 +395,8 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            if (!buffer.WriteToFile(targetPath.toUtf8().data()))
+            if (!buffer.WriteToFile(targetPath.toUtf8().data(),
+                        options.ft_access))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
                                     targetFilename.toUtf8().data());
@@ -478,7 +479,7 @@ QVector<int>::size_type FlexplorerMdiChild::ViewSelected()
             std::string tempFile(tempPath);
             tempFile.append(PATHSEPARATORSTRING).append(filename);
 
-            if (buffer.WriteToFile(tempFile.c_str()))
+            if (buffer.WriteToFile(tempFile.c_str(), options.ft_access))
             {
 #ifdef _WIN32
                 SHELLEXECUTEINFO execInfo;
