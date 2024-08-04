@@ -338,7 +338,7 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
         throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
     }
 
-    if (!buffer.WriteToFile(filePath))
+    if (!buffer.WriteToFile(filePath, ft_access))
     {
         throw FlexException(FERR_WRITING_TO, filePath);
     }
@@ -396,7 +396,7 @@ bool FlexDirectoryDiskByFile::SetDateTime(
         file_time.tm_mon = date.GetMonth() - 1;
         file_time.tm_mday = date.GetDay();
         file_time.tm_year = date.GetYear() - 1900;
-        file_time.tm_isdst = 0;
+        file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
 
         return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);

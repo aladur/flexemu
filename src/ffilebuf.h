@@ -27,6 +27,7 @@
 #include "filecntb.h"
 #include "bdate.h"
 #include "btime.h"
+#include "efiletim.h"
 #include <memory>
 #include <functional>
 #include <sstream>
@@ -89,7 +90,8 @@ public:
     void ConvertToTextFile();
     void ConvertToFlexTextFile();
     void ConvertToDumpFile(DWord bytesPerLine);
-    bool WriteToFile(const std::string &path) const;
+    bool WriteToFile(const std::string &path,
+            FileTimeAccess fileTimeAccess) const;
     bool ReadFromFile(const std::string &path);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;

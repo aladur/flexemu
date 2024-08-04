@@ -23,6 +23,7 @@
 #include "misc1.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <ctime>
 #include "bdate.h"
 #include "ffilebuf.h"
 #include "flexerr.h"
@@ -549,23 +550,45 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
     return true;
 }
 
-bool FlexFileBuffer::WriteToFile(const std::string &path) const
+bool FlexFileBuffer::WriteToFile(const std::string &path,
+        FileTimeAccess fileTimeAccess) const
 {
     auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
     std::ofstream ostream(path, mode);
+    struct stat sbuf{};
+    bool result = false;
 
-    if (ostream.is_open())
+    if (!ostream.is_open() || GetFileSize() == 0)
     {
-        if (GetFileSize() != 0)
-        {
-            ostream.write(reinterpret_cast<const char *>(buffer.data()),
-                          GetFileSize());
-            return ostream.good();
-        }
-        return true;
+        return result;
     }
 
-    return false;
+    ostream.write(reinterpret_cast<const char *>(buffer.data()),
+                  GetFileSize());
+    result = ostream.good();
+    ostream.close();
+
+    const bool setFileTime =
+        (fileTimeAccess & FileTimeAccess::Set) == FileTimeAccess::Set;
+
+    if (result && stat(path.c_str(), &sbuf) == 0)
+    {
+        struct utimbuf timebuf{};
+        struct tm file_time{};
+
+        timebuf.actime = sbuf.st_atime;
+        file_time.tm_sec = 0;
+        file_time.tm_min = setFileTime ? fileHeader.minute : 0;
+        file_time.tm_hour = setFileTime ? fileHeader.hour : 12;
+        file_time.tm_mon = fileHeader.month - 1;
+        file_time.tm_mday = fileHeader.day;
+        file_time.tm_year = fileHeader.year - 1900;
+        file_time.tm_isdst = -1;
+        timebuf.modtime = mktime(&file_time);
+        return (timebuf.modtime >= 0 && utime(path.c_str(), &timebuf) == 0);
+    }
+
+    return result;
 }
 
 bool FlexFileBuffer::ReadFromFile(const std::string &path)

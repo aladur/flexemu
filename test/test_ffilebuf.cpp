@@ -160,8 +160,9 @@ TEST(test_ffilebuf, fct_WriteToFile)
     std::string content("testfile content WriteToFile");
     FlexFileBuffer ffb;
     ffb.Realloc(content.size() + 1);
+    ffb.SetDateTime(BDate(15, 3, 1985), BTime(18, 12));
     ffb.CopyFrom(reinterpret_cast<const Byte *>(content.c_str()), content.size() + 1);
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
 
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
@@ -373,7 +374,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 
     // Check conversion from host to FLEX text file.
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 48U);
     EXPECT_FALSE(ffb.IsTextFile());
@@ -389,7 +390,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
     ofs.close();
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 3U);
     EXPECT_TRUE(ffb.IsTextFile()); // Could also be a host text file.
@@ -403,7 +404,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
     ofs.close();
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     ffb.ConvertToFlexTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 12U);
     EXPECT_TRUE(ffb.IsTextFile()); // Could also be a host text file.
@@ -424,7 +425,7 @@ TEST(test_ffilebuf, fct_ConvertToFlexTextFile)
 
     // Check conversion from FLEX to host text file.
     ffb.ConvertToTextFile();
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 27U);
     EXPECT_TRUE(ffb.IsTextFile());
@@ -454,7 +455,7 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
 
     // Check conversion from FLEX CMD file to dump file.
     ffb.ConvertToDumpFile(16U);
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 66U);
     EXPECT_TRUE(ffb.IsTextFile());
@@ -475,7 +476,7 @@ TEST(test_ffilebuf, fct_ConvertToDumpFile)
     path = fs::temp_directory_path() / test_file;
     // Check conversion of cat.cmd to dump file.
     ffb.ConvertToDumpFile(16U);
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str()));
+    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
     EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
     EXPECT_EQ(ffb.GetFileSize(), 3444U);
     EXPECT_TRUE(ffb.IsTextFile());
