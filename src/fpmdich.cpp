@@ -370,9 +370,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            auto targetFilename = filename.toLower();
-            auto targetPath = targetDirectory + PATHSEPARATORSTRING +
-                              targetFilename;
+            auto targetPath = targetDirectory + PATHSEPARATORSTRING + filename;
 
             if (QFile::exists(targetPath))
             {
@@ -399,7 +397,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                         options.ft_access))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
-                                    targetFilename.toUtf8().data());
+                                    targetPath.toUtf8().data());
             }
 
             ++count;
