@@ -14,7 +14,7 @@
 !include "MUI2.nsh"
   
 !define APPNAME    "Flexemu"
-!define APPVERSION "3.20"
+!define APPVERSION "3.22"
 ; Refreshing Windows Defines
 !define SHCNE_ASSOCCHANGED 0x8000000
 !define SHCNF_IDLIST 0
