@@ -399,7 +399,7 @@ bool FlexDirectoryDiskByFile::SetDateTime(
         file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
 
-        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) >= 0);
+        return (timebuf.modtime >= 0 && utime(filePath.c_str(), &timebuf) == 0);
     }
 
     return false;

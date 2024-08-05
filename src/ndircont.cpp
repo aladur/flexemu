@@ -1247,7 +1247,7 @@ bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
         file_time.tm_isdst = -1;
         timebuf.modtime = mktime(&file_time);
 
-        if (timebuf.modtime >= 0 && utime(ppath, &timebuf) >= 0)
+        if (timebuf.modtime >= 0 && utime(ppath, &timebuf) == 0)
         {
             return true;
         }
