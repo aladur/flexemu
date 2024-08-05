@@ -552,7 +552,12 @@ bool DirectoryContainer::IsFlexFilename(const std::string &filename) const
     char    ext[4];
 
     dot    = '\0';
+#ifdef UNIX
     result = sscanf(filename.c_str(), "%1[a-z]%7[a-z0-9_-]", name, &name[1]);
+#endif
+#ifdef _WIN32
+    result = sscanf(filename.c_str(), "%1[a-zA-Z]%7[a-zA-Z0-9_-]", name, &name[1]);
+#endif
 
     if (!result || result == EOF)
     {
@@ -561,14 +566,27 @@ bool DirectoryContainer::IsFlexFilename(const std::string &filename) const
 
     if (result == 1)
     {
+#ifdef UNIX
         result = sscanf(filename.c_str(), "%*1[a-z]%c%1[a-z]%2[a-z0-9_-]",
+                       &dot, ext, &ext[1]);
+#endif
+#ifdef _WIN32
+        result = sscanf(filename.c_str(), "%*1[a-zA-Z]%c%1[a-zA-Z]%2[a-zA-Z0-9_-]",
                         &dot, ext, &ext[1]);
+#endif
     }
     else
     {
+#ifdef UNIX
         result = sscanf(filename.c_str(),
                         "%*1[a-z]%*7[a-z0-9_-]%c%1[a-z]%2[a-z0-9_-]",
                         &dot, ext, &ext[1]);
+#endif
+#ifdef _WIN32
+        result = sscanf(filename.c_str(),
+                        "%*1[a-zA-Z]%*7[a-zA-Z0-9_-]%c%1[a-zA-Z]%2[a-zA-Z0-9_-]",
+                        &dot, ext, &ext[1]);
+#endif
     }
 
     if (!result || result == 1 || result == EOF)
