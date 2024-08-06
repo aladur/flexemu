@@ -9,6 +9,8 @@
 #include <fstream>
 #include <numeric>
 #include <algorithm>
+#include <ctime>
+#include <sys/stat.h>
 //#include <fmt/format.h>
 
 
@@ -142,14 +144,57 @@ TEST(test_ffilebuf, fct_ReadFromFile)
     ofs.close();
 
     FlexFileBuffer ffb;
-    EXPECT_TRUE(ffb.ReadFromFile(path.c_str()));
-
+    ASSERT_TRUE(ffb.ReadFromFile(path.c_str()));
     // Check properties.
     EXPECT_EQ(ffb.GetFileSize(), 29U);
     EXPECT_FALSE(ffb.IsEmpty());
     auto uc_test_file(flx::toupper(test_file));
     EXPECT_EQ(uc_test_file.compare(ffb.GetFilename()), 0);
+    fs::remove(path);
+    ffb.SetDateTime(BDate{13, 12, 2003}, BTime{10, 34});
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
+    ffb.SetDateTime(BDate{}, BTime{});
+    ASSERT_TRUE(ffb.ReadFromFile(path));
+    struct stat sbuf{};
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    struct tm *time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 2003);
+    EXPECT_EQ(time->tm_mon + 1, 12);
+    EXPECT_EQ(time->tm_mday, 13);
+    // Without time support: default time 12:00 is used.
+    EXPECT_EQ(time->tm_hour, 12);
+    EXPECT_EQ(time->tm_min, 0);
+    fs::remove(path);
 
+    // Read file using time, a date without daylight saving.
+    ffb.SetDateTime(BDate{13, 12, 2003}, BTime{10, 34});
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ffb.SetDateTime(BDate{}, BTime{});
+    ASSERT_TRUE(ffb.ReadFromFile(path));
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 2003);
+    EXPECT_EQ(time->tm_mon + 1, 12);
+    EXPECT_EQ(time->tm_mday, 13);
+    EXPECT_EQ(time->tm_hour, 10);
+    EXPECT_EQ(time->tm_min, 34);
+    fs::remove(path);
+
+    // Read file using time, a date with daylight saving.
+    ffb.SetDateTime(BDate{16, 8, 2008}, BTime{13, 19});
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    ffb.SetDateTime(BDate{}, BTime{});
+    ASSERT_TRUE(ffb.ReadFromFile(path));
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 2008);
+    EXPECT_EQ(time->tm_mon + 1, 8);
+    EXPECT_EQ(time->tm_mday, 16);
+    EXPECT_EQ(time->tm_hour, 13);
+    EXPECT_EQ(time->tm_min, 19);
     fs::remove(path);
 }
 
@@ -160,17 +205,63 @@ TEST(test_ffilebuf, fct_WriteToFile)
     std::string content("testfile content WriteToFile");
     FlexFileBuffer ffb;
     ffb.Realloc(content.size() + 1);
-    ffb.SetDateTime(BDate(15, 3, 1985), BTime(18, 12));
+    ffb.SetDateTime(BDate(15, 2, 1985), BTime(18, 12));
     ffb.CopyFrom(reinterpret_cast<const Byte *>(content.c_str()), content.size() + 1);
-    EXPECT_TRUE(ffb.WriteToFile(path.c_str(), FileTimeAccess::NONE));
 
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
     EXPECT_FALSE(fs::is_empty(path));
     EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
     auto status = fs::status(path);
     EXPECT_TRUE(fs::is_regular_file(status));
+    struct stat sbuf{};
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    struct tm *time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 1985);
+    EXPECT_EQ(time->tm_mon + 1, 2);
+    EXPECT_EQ(time->tm_mday, 15);
+    // Without time support: default time 12:00 is used.
+    EXPECT_EQ(time->tm_hour, 12);
+    EXPECT_EQ(time->tm_min, 0);
+    fs::remove(path);
 
+    // Write to file using time, a date without daylight saving.
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    // Check file on filesystem.
+    EXPECT_TRUE(fs::exists(path));
+    EXPECT_FALSE(fs::is_empty(path));
+    EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
+    status = fs::status(path);
+    EXPECT_TRUE(fs::is_regular_file(status));
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 1985);
+    EXPECT_EQ(time->tm_mon + 1, 2);
+    EXPECT_EQ(time->tm_mday, 15);
+    EXPECT_EQ(time->tm_hour, 18);
+    EXPECT_EQ(time->tm_min, 12);
+    fs::remove(path);
+
+    // Write to file using time, a date with daylight saving.
+    ffb.SetDateTime(BDate(30, 7, 1992), BTime(11, 42));
+    ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::Set));
+    // Check file on filesystem.
+    EXPECT_TRUE(fs::exists(path));
+    EXPECT_FALSE(fs::is_empty(path));
+    EXPECT_EQ(fs::file_size(path), ffb.GetFileSize());
+    status = fs::status(path);
+    EXPECT_TRUE(fs::is_regular_file(status));
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    time = localtime(&sbuf.st_mtime);
+    ASSERT_NE(time, nullptr);
+    EXPECT_EQ(time->tm_year + 1900, 1992);
+    EXPECT_EQ(time->tm_mon + 1, 7);
+    EXPECT_EQ(time->tm_mday, 30);
+    EXPECT_EQ(time->tm_hour, 11);
+    EXPECT_EQ(time->tm_min, 42);
     fs::remove(path);
 }
 
@@ -188,7 +279,7 @@ TEST(test_ffilebuf, fct_get_set)
     EXPECT_EQ(ffb.GetFilename().empty(), true);
 
     ffb.Realloc(33U);
-    ffb.SetFilename(test_file.c_str());
+    ffb.SetFilename(test_file);
     BDate date(15, 12, 1984);
     BTime time(13, 28, 59);
     ffb.SetDateTime(date, time);
