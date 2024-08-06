@@ -71,6 +71,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 #ifdef _WIN32
     WIN32_FIND_DATA findData;
     SYSTEMTIME systemTime;
+    SYSTEMTIME localTime;
 #endif
     struct stat sbuf;
 #ifdef UNIX
@@ -151,9 +152,10 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         auto fileSize = (findData.nFileSizeLow + 251U) / 252U * SECTOR_SIZE;
         dirEntry.SetFileSize(fileSize);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
-        dirEntry.SetDate(BDate(systemTime.wDay, systemTime.wMonth,
-                         systemTime.wYear));
-        dirEntry.SetTime(BTime(systemTime.wHour, systemTime.wMinute, 0U));
+        SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime);
+        dirEntry.SetDate(BDate(localTime.wDay, localTime.wMonth,
+            localTime.wYear));
+        dirEntry.SetTime(BTime(localTime.wHour, localTime.wMinute, 0U));
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
