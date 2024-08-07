@@ -7,6 +7,7 @@ build distribution         image    qt version
 time                       size
 [s]                        [GByte]
 ================================================
+ 235 almalinux             1.52     5.15.9
  321 alpine                1.45     5.15.10
  990 altlinux              2.06     5.15.13
  308 archlinux             3.07     5.15.14
@@ -27,3 +28,14 @@ time                       size
  582 slackware             2.45     5.15.3
  991 ubuntu                1.59     5.15.13
  478 voidlinux             2.63     5.15.11
+
+Sorted by linux family
+======================
+alpine: -
+archlinux: manjaro
+debian: ubuntu, linuxmint, altlinux, kalilinux
+fedora (redhat): almalinux, oraclelinux, photon, rockylinux
+opensuse: -
+slackware: -
+voidlinux: -
+
