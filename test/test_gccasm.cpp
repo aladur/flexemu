@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <functional>
 #include "misc1.h"
 #include "mc6809.h"
 #include "mc6809st.h"
@@ -13,12 +14,12 @@
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 union ucc cc;
 
-typedef void (*tFctRefByteByte)(Byte &, Byte);
-typedef void (*tFctByteByte)(Byte, Byte);
-typedef void (*tFctByte)(Byte);
-typedef void (*tFctRefByte)(Byte &);
-typedef void (*tFctRefWordWord)(Word &, Word);
-typedef void (*tFctWordWord)(Word, Word);
+using FctRefByteByte_t = std::function<void(Byte &, Byte)>;
+using FctByteByte_t = std::function<void(Byte, Byte)>;
+using FctByte_t = std::function<void(Byte)>;
+using FctRefByte_t = std::function<void(Byte &)>;
+using FctRefWordWord_t = std::function<void(Word &, Word)>;
+using FctWordWord_t = std::function<void(Word, Word)>;
 
 #if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 void addx(Byte &reg, Byte operand)
@@ -59,7 +60,7 @@ void add(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void add(Word &reg, Word operand)
+inline void addw(Word &reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -135,7 +136,7 @@ inline void sub(Byte &reg, Byte operand)
                  : "cc");
 }
 
-inline void sub(Word &reg, Word operand)
+inline void subw(Word &reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -300,7 +301,7 @@ inline void cmp(Byte reg, Byte operand)
                  : "cc");
 }
 
-inline void cmp(Word reg, Word operand)
+inline void cmpw(Word reg, Word operand)
 {
     long x86flags = 0;
     Byte mask = 0;
@@ -499,7 +500,7 @@ void err(const std::string& mnemonic, Word op1, Word op2, Byte m6809_cc,
 }
 
 bool test_gccasm_fctByte(const std::string& mnemonic,
-                         tFctByte test_function,
+                         const FctByte_t &test_function,
                          Byte opcode)
 {
     struct sOptions options;
@@ -546,7 +547,7 @@ bool test_gccasm_fctByte(const std::string& mnemonic,
 }
 
 bool test_gccasm_fctRefByte(const std::string& mnemonic,
-                            tFctRefByte test_function,
+                            const FctRefByte_t &test_function,
                             Byte opcode)
 {
     struct sOptions options;
@@ -599,7 +600,7 @@ bool test_gccasm_fctRefByte(const std::string& mnemonic,
 }
 
 bool test_gccasm_fctByteByte(const std::string& mnemonic,
-                             tFctByteByte test_function,
+                             const FctByteByte_t &test_function,
                              Byte opcode)
 {
     struct sOptions options;
@@ -652,7 +653,7 @@ bool test_gccasm_fctByteByte(const std::string& mnemonic,
 }
 
 bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
-                                tFctRefByteByte test_function,
+                                const FctRefByteByte_t &test_function,
                                 Byte opcode)
 {
     struct sOptions options;
@@ -711,7 +712,7 @@ bool test_gccasm_fctRefByteByte(const std::string& mnemonic,
 }
 
 bool test_gccasm_fctWordWord(const std::string& mnemonic,
-                             tFctWordWord test_function,
+                             const FctWordWord_t &test_function,
                              Byte opcode1,
                              Byte opcode2)
 {
@@ -772,7 +773,7 @@ bool test_gccasm_fctWordWord(const std::string& mnemonic,
 }
 
 bool test_gccasm_fctRefWordWord(const std::string& mnemonic,
-                                tFctRefWordWord test_function,
+                                const FctRefWordWord_t &test_function,
                                 Byte opcode)
 {
     struct sOptions options;
@@ -845,7 +846,7 @@ bool test_gccasm_add8()
 bool test_gccasm_add16()
 {
     // Add immediate to D
-    return test_gccasm_fctRefWordWord("addd", add, 0xc3);
+    return test_gccasm_fctRefWordWord("addd", addw, 0xc3);
 }
 
 bool test_gccasm_adc()
@@ -862,7 +863,7 @@ bool test_gccasm_sub8()
 
 bool test_gccasm_sub16()
 {
-    return test_gccasm_fctRefWordWord("subd", sub, 0x83);
+    return test_gccasm_fctRefWordWord("subd", subw, 0x83);
 }
 
 bool test_gccasm_sbc()
@@ -878,7 +879,7 @@ bool test_gccasm_cmp8()
 
 bool test_gccasm_cmp16()
 {
-    return test_gccasm_fctWordWord("cmpd", cmp, 0x10, 0x83);
+    return test_gccasm_fctWordWord("cmpd", cmpw, 0x10, 0x83);
 }
 
 bool test_gccasm_inc()
