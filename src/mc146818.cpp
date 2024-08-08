@@ -24,6 +24,7 @@
 #include "mc146818.h"
 #include <array>
 #include <fstream>
+#include <ctime>
 #include <cstring>
 
 
@@ -33,8 +34,6 @@ static const std::array<Byte, 12> days_per_month{
 
 Mc146818::Mc146818()
 {
-    struct tm *lt;
-    time_t time_now;
     const auto path = getConfigFilePath();
 
     if (!path.empty())
@@ -60,8 +59,8 @@ Mc146818::Mc146818()
     B = 0x06;
 
     // initialize clock registers with system time
-    time_now = time(nullptr);
-    lt = localtime(&time_now);
+    const auto time_now = time(nullptr);
+    const struct tm *lt = localtime(&time_now);
     second = convert(static_cast<Byte>(lt->tm_sec));
     minute = convert(static_cast<Byte>(lt->tm_min));
     hour = convert_hour(static_cast<Byte>(lt->tm_hour));

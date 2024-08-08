@@ -46,6 +46,7 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 #include "fdoptman.h"
+#include <ctime>
 #include <fmt/format.h>
 
 
@@ -741,7 +742,6 @@ void FlexDirectoryDiskBySector::add_to_directory(
     const st_t &end,
     bool is_write_protected)
 {
-    struct tm *lt;
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
 
@@ -751,7 +751,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    lt = localtime(&(stat.st_mtime));
+    const struct tm *lt = localtime(&stat.st_mtime);
     auto year = lt->tm_year > 100 ? lt->tm_year - 100 : lt->tm_year;
     auto records = static_cast<Word>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
@@ -975,7 +975,7 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
     if (!stat(directory.c_str(), &sbuf))
     {
         auto &sis = flex_sys_info[0];
-        struct tm *lt = localtime(&(sbuf.st_mtime));
+        const struct tm *lt = localtime(&sbuf.st_mtime);
 
         std::string diskname = flx::getFileName(directory);
 

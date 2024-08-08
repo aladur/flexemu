@@ -25,6 +25,7 @@
 #include <array>
 #include <sstream>
 #include <fmt/format.h>
+#include <ctime>
 
 //BDate::year2000 = 1;
 
@@ -34,15 +35,10 @@ BDate::BDate(int d, int m, int y) : day(d), month(m), year(y)
 
 BDate BDate::Now()
 {
-    time_t time_now;
-    struct tm *lt;
-    BDate aTime;
+    const auto time_now = time(nullptr);
+    const struct tm *lt = localtime(&time_now);
 
-    time_now = time(static_cast<time_t *>(nullptr));
-    lt = localtime(&time_now);
-
-    aTime =  BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900);
-    return aTime;
+    return {lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900};
 }
 
 const std::array<const char *, 13> BDate::monthNames

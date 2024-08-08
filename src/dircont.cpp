@@ -44,6 +44,7 @@
 #include "idircnt.h"
 #include "cvtwchar.h"
 #include <cstring>
+#include <ctime>
 
 /****************************************/
 /* Constructor                          */
@@ -262,10 +263,10 @@ bool FlexDirectoryDiskByFile::GetAttributes(
 
     if (stat(directory.c_str(), &sbuf) == 0)
     {
-        struct tm *timeStruct = localtime(&sbuf.st_mtime);
-        diskAttributes.SetDate(BDate(timeStruct->tm_mday,
-                     timeStruct->tm_mon + 1,
-                     timeStruct->tm_year + 1900));
+        const struct tm *lt = localtime(&sbuf.st_mtime);
+        diskAttributes.SetDate({lt->tm_mday,
+                     lt->tm_mon + 1,
+                     lt->tm_year + 1900});
     }
     else
     {

@@ -638,10 +638,9 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                 }
 
                 SetAdjustedFilename(filename);
-                struct tm *lt = localtime(&(sbuf.st_mtime));
-                SetDateTime(
-                        BDate(lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900),
-                        BTime(lt->tm_hour, lt->tm_min));
+                const struct tm *lt = localtime(&sbuf.st_mtime);
+                SetDateTime({lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900},
+                            {lt->tm_hour, lt->tm_min});
 
                 return true;
             }

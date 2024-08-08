@@ -115,12 +115,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
     #endif
 #endif
 
-/* time */
-#if HAVE_SYS_TIME_H
-    #include <sys/time.h>
-#endif
-#include <ctime>
-
 /* utime */
 #ifdef _WIN32
     #include <sys/utime.h>

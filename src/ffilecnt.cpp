@@ -28,6 +28,7 @@
 #include <array>
 #include <vector>
 #include <cctype>
+#include <ctime>
 #include <cassert>
 #include "fcinfo.h"
 #include "flexerr.h"
@@ -1265,8 +1266,6 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
 {
     int start;
     int free;
-    time_t time_now;
-    struct tm *lt;
 
     memset(&sis, 0, sizeof(sis));
 
@@ -1285,8 +1284,8 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
 
     start = format.sectors;
     free = (format.sectors * format.tracks) - start;
-    time_now = time(nullptr);
-    lt = localtime(&time_now);
+    const auto time_now = time(nullptr);
+    const struct tm *lt = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
     flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);

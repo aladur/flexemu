@@ -30,6 +30,7 @@
 #include "idircnt.h"
 #include "filecnts.h"
 #include "cvtwchar.h"
+#include <ctime>
 
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
@@ -153,9 +154,8 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         dirEntry.SetFileSize(fileSize);
         FileTimeToSystemTime(&findData.ftLastWriteTime, &systemTime);
         SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localTime);
-        dirEntry.SetDate(BDate(localTime.wDay, localTime.wMonth,
-            localTime.wYear));
-        dirEntry.SetTime(BTime(localTime.wHour, localTime.wMinute, 0U));
+        dirEntry.SetDate({localTime.wDay, localTime.wMonth, localTime.wYear});
+        dirEntry.SetTime({localTime.wHour, localTime.wMinute, 0U});
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
@@ -198,8 +198,6 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     if (isValid)
     {
-        struct tm *lt;
-
         // ok, found a valid directory entry
         Byte attributes = 0;
         int sectorMap = 0;
@@ -229,10 +227,9 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         dirEntry.SetTotalFileName(fileName);
         auto fileSize = (sbuf.st_size + 251) / 252 * SECTOR_SIZE;
         dirEntry.SetFileSize(static_cast<int>(fileSize));
-        lt = localtime(&(sbuf.st_mtime));
-        dirEntry.SetDate(BDate(lt->tm_mday, lt->tm_mon + 1,
-                    lt->tm_year + 1900));
-        dirEntry.SetTime(BTime(lt->tm_hour, lt->tm_min, 0U));
+        const struct tm *lt = localtime(&sbuf.st_mtime);
+        dirEntry.SetDate({lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900});
+        dirEntry.SetTime({lt->tm_hour, lt->tm_min, 0U});
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
@@ -371,8 +368,6 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
 bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
 {
     struct stat sbuf{};
-    struct utimbuf timebuf{};
-    struct tm file_time{};
     std::string filePath;
 
     if (dirEntry.IsEmpty())
@@ -385,6 +380,9 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
 
     if (stat(filePath.c_str(), &sbuf) == 0)
     {
+        struct utimbuf timebuf{};
+        struct tm file_time{};
+
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = 0;
