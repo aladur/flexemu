@@ -47,10 +47,10 @@ Word getTrack0SectorCount(int tracks, int sectors)
         if (sectors <= 26)
         {
             // This is a 8-inch single sided (SS) disk.
-            return 15U;
+            return static_cast<Word>(std::min(sectors, 15));
         }
         // This is a 8-inch double sided (DS) disk.
-        return 30U;
+        return static_cast<Word>(std::min(sectors, 30));
     }
 
     // Assuming 5 1/4-inch or 3 1/2-inch disk. 34, 35, 40 or 80 tracks.
@@ -60,10 +60,10 @@ Word getTrack0SectorCount(int tracks, int sectors)
         // This rule can be applied when creating a DSK container.
         // When reading a DSK container both 10 or 20 sectors
         // has to be supported.
-        return 10U;
+        return static_cast<Word>(std::min(sectors, 10));
     }
     // This is a double sided (DS) disk.
-    return 20U;
+    return static_cast<Word>(std::min(sectors, 20));
 }
 
 // Return the number of sides.
