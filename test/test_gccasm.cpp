@@ -21,7 +21,7 @@ using FctRefByte_t = std::function<void(Byte &)>;
 using FctRefWordWord_t = std::function<void(Word &, Word)>;
 using FctWordWord_t = std::function<void(Word, Word)>;
 
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#if defined(__GNUC__) && defined(__x86_64__)
 void addx(Byte &reg, Byte operand)
 {
     Word sum = reg + operand;

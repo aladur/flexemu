@@ -32,7 +32,7 @@
 #define USE_ASM 1
 
 // Test if GCC inline assembler can be used
-#if defined(__amd64__) || defined(__i386__)
+#if defined(__amd64__)
     #define IX86
 #endif
 #if defined(__GNUC__) && defined (USE_ASM) && defined(IX86) && \

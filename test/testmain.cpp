@@ -2,7 +2,7 @@
 #include "test_gccasm.h"
 
 
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#if defined(__GNUC__) && defined(__x86_64__)
 int main(int argc, char *argv[])
 #else
 int main()
@@ -10,7 +10,7 @@ int main()
 {
     bool failure = false;
 
-#if defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
+#if defined(__GNUC__) && defined(__x86_64__)
     init_test_gccasm(argc, argv);
 
     failure |= !test_gccasm_add8();
