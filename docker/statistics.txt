@@ -22,6 +22,7 @@ time                       size
  354 fedora                1.90     5.15.14
  981 kalilinux             1.72     5.15.10
  304 linuxmint             2.68     5.15.3
+ 406 mageia                2.06     5.15.7
  802 opensuse              1.92     5.15.12
  339 oraclelinux           1.82     5.15.9
  312 rockylinux            1.54     5.15.9
@@ -34,7 +35,7 @@ Sorted by linux family
 alpine: -
 archlinux: manjaro
 debian: ubuntu, linuxmint, altlinux, kalilinux
-fedora (redhat): almalinux, oraclelinux, photon, rockylinux
+fedora (redhat): almalinux, oraclelinux, photon, rockylinux, mageia
 opensuse: -
 slackware: -
 voidlinux: -
