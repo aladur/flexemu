@@ -275,15 +275,22 @@ bool FlexDirectoryDiskByFile::GetAttributes(
 
     diskAttributes.SetTrackSector(0, 0);
 
-    const auto *p = std::strrchr(directory.c_str(), PATHSEPARATOR);
-    if (p != nullptr)
+    auto name = flx::toupper(flx::getFileName(directory));
+    const auto pos = name.find_first_of('.');
+    if (pos != std::string::npos)
     {
-        diskAttributes.SetName(p + 1);
+        name = name.substr(0, pos);
     }
-    else
+    if (name.size() > FLEX_DISKNAME_LENGTH)
     {
-        diskAttributes.SetName(directory);
+
+        name = name.substr(0, FLEX_DISKNAME_LENGTH);
     }
+    if (name.empty())
+    {
+        name = "FLEXDISK";
+    }
+    diskAttributes.SetName(name);
     diskAttributes.SetNumber(disk_number);
 
     diskAttributes.SetPath(directory);

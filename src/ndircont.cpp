@@ -983,14 +983,18 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         {
             diskname.resize(FLEX_DISKNAME_LENGTH);
         }
-        auto pos = diskname.find('.');
-        std::string name{"FLEXDISK"};
-        if (pos != std::string::npos && pos > 0)
+        std::string name = flx::toupper(diskname);
+        auto pos = name.find('.');
+        if (pos == 0)
         {
-            name = flx::toupper(diskname.substr(0, std::min(
-                            pos, FLEX_DISKNAME_LENGTH)));
+            name = "FLEXDISK";
+            pos = FLEX_DISKNAME_LENGTH;
         }
-
+        else if (pos == std::string::npos)
+        {
+            pos = FLEX_DISKNAME_LENGTH;
+        }
+        name = name.substr(0, std::min(pos, FLEX_DISKNAME_LENGTH));
         std::fill(std::begin(sis.unused1), std::end(sis.unused1), '\0');
         name.resize(FLEX_DISKNAME_LENGTH);
         std::copy_n(name.cbegin(), FLEX_DISKNAME_LENGTH,

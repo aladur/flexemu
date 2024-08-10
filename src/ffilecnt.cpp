@@ -1287,7 +1287,7 @@ void FlexDisk::Create_sys_info_sector(s_sys_info_sector &sis,
     const auto time_now = time(nullptr);
     const struct tm *lt = localtime(&time_now);
     auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt-> tm_year;
-    flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], 1U);
+    flx::setValueBigEndian<Word>(&sis.sir.disk_number[0], 0U);
     sis.sir.fc_start.trk = static_cast<Byte>(start / format.sectors);
     sis.sir.fc_start.sec = static_cast<Byte>((start % format.sectors) + 1);
     sis.sir.fc_end.trk = static_cast<Byte>(format.tracks - 1);
