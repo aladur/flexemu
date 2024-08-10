@@ -91,7 +91,7 @@ As a first step the <code>qemu</code> backend has to be initialized once within 
 With the following command line a debian docker image with s390x CPU architecture can be build. To build on a different architecture the Dockerfile contains a parameter <code>--platform=&lt;os/cpu_architecture&gt;</code>, in this case specific for the s390 CPU <code>--platform=linux/s390x</code> in the <code>FROM</code> command. This automatically activates qemu backend. The Dockerfile to build a debian image for the s390x CPU architecture is located in folder <code>debian_be</code>, the <code>_be</code> suffix means *big endian*.
 
         cd debian_be
-        docker build -t debian_flexemu_be:latest .
+        docker build -t debian_be_flexemu:latest .
 
 This build process takes significantly more time due to software emulation of the s390s CPU.
 
