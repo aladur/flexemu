@@ -40,6 +40,7 @@ unittests_SOURCES = \
 	test_fcnffile.cpp \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
+	test_filecntb.cpp \
 	test_fileread.cpp \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
@@ -61,22 +62,26 @@ unittests_SOURCES = \
 	../src/btime.cpp \
 	../src/colors.cpp \
 	../src/da6809.cpp \
+	../src/dircont.cpp \
 	../src/fattrib.cpp \
 	../src/fcinfo.cpp \
 	../src/fcnffile.cpp \
 	../src/fcopyman.cpp \
 	../src/fdirent.cpp \
+	../src/fdoptman.cpp \
 	../src/ffilebuf.cpp \
 	../src/ffilecnt.cpp \
 	../src/filecnts.cpp \
 	../src/fileread.cpp \
 	../src/filfschk.cpp \
 	../src/flexerr.cpp \
+	../src/idircnt.cpp \
 	../src/iffilcnt.cpp \
 	../src/ifilecnt.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/misc1.cpp \
+	../src/ndircont.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -92,23 +97,27 @@ unittests_SOURCES = \
 	../src/cistring.h \
 	../src/colors.h \
 	../src/da6809.h \
+	../src/dircont.h \
 	../src/fattrib.h \
 	../src/fcinfo.h \
 	../src/fcnffile.h \
 	../src/fcopyman.h \
 	../src/fdirent.h \
+	../src/fdoptman.h \
 	../src/ffilebuf.h \
 	../src/ffilecnt.h \
 	../src/filecnts.h \
 	../src/fileread.h \
 	../src/filfschk.h \
 	../src/flexerr.h \
+	../src/idircnt.h \
 	../src/iffilcnt.h \
 	../src/ifilcnti.h \
 	../src/ifilecnt.h \
 	../src/mc6809lg.h \
 	../src/mc6809st.h \
 	../src/misc1.h \
+	../src/ndircont.h \
 	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a

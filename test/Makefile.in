@@ -168,6 +168,7 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_fcnffile.$(OBJEXT) \
 	unittests-test_fcinfo.$(OBJEXT) \
 	unittests-test_ffilebuf.$(OBJEXT) \
+	unittests-test_filecntb.$(OBJEXT) \
 	unittests-test_fileread.$(OBJEXT) \
 	unittests-test_filfschk.$(OBJEXT) \
 	unittests-test_fdirent.$(OBJEXT) \
@@ -189,22 +190,26 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	../src/unittests-btime.$(OBJEXT) \
 	../src/unittests-colors.$(OBJEXT) \
 	../src/unittests-da6809.$(OBJEXT) \
+	../src/unittests-dircont.$(OBJEXT) \
 	../src/unittests-fattrib.$(OBJEXT) \
 	../src/unittests-fcinfo.$(OBJEXT) \
 	../src/unittests-fcnffile.$(OBJEXT) \
 	../src/unittests-fcopyman.$(OBJEXT) \
 	../src/unittests-fdirent.$(OBJEXT) \
+	../src/unittests-fdoptman.$(OBJEXT) \
 	../src/unittests-ffilebuf.$(OBJEXT) \
 	../src/unittests-ffilecnt.$(OBJEXT) \
 	../src/unittests-filecnts.$(OBJEXT) \
 	../src/unittests-fileread.$(OBJEXT) \
 	../src/unittests-filfschk.$(OBJEXT) \
 	../src/unittests-flexerr.$(OBJEXT) \
+	../src/unittests-idircnt.$(OBJEXT) \
 	../src/unittests-iffilcnt.$(OBJEXT) \
 	../src/unittests-ifilecnt.$(OBJEXT) \
 	../src/unittests-mc6809lg.$(OBJEXT) \
 	../src/unittests-mc6809st.$(OBJEXT) \
-	../src/unittests-misc1.$(OBJEXT)
+	../src/unittests-misc1.$(OBJEXT) \
+	../src/unittests-ndircont.$(OBJEXT)
 unittests_OBJECTS = $(am_unittests_OBJECTS)
 unittests_DEPENDENCIES = libgtest.la libgmock.la ../src/libfmt.a
 unittests_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -251,22 +256,26 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/unittests-btime.Po \
 	../src/$(DEPDIR)/unittests-colors.Po \
 	../src/$(DEPDIR)/unittests-da6809.Po \
+	../src/$(DEPDIR)/unittests-dircont.Po \
 	../src/$(DEPDIR)/unittests-fattrib.Po \
 	../src/$(DEPDIR)/unittests-fcinfo.Po \
 	../src/$(DEPDIR)/unittests-fcnffile.Po \
 	../src/$(DEPDIR)/unittests-fcopyman.Po \
 	../src/$(DEPDIR)/unittests-fdirent.Po \
+	../src/$(DEPDIR)/unittests-fdoptman.Po \
 	../src/$(DEPDIR)/unittests-ffilebuf.Po \
 	../src/$(DEPDIR)/unittests-ffilecnt.Po \
 	../src/$(DEPDIR)/unittests-filecnts.Po \
 	../src/$(DEPDIR)/unittests-fileread.Po \
 	../src/$(DEPDIR)/unittests-filfschk.Po \
 	../src/$(DEPDIR)/unittests-flexerr.Po \
+	../src/$(DEPDIR)/unittests-idircnt.Po \
 	../src/$(DEPDIR)/unittests-iffilcnt.Po \
 	../src/$(DEPDIR)/unittests-ifilecnt.Po \
 	../src/$(DEPDIR)/unittests-mc6809lg.Po \
 	../src/$(DEPDIR)/unittests-mc6809st.Po \
 	../src/$(DEPDIR)/unittests-misc1.Po \
+	../src/$(DEPDIR)/unittests-ndircont.Po \
 	./$(DEPDIR)/test_gccasm-test_gccasm.Po \
 	./$(DEPDIR)/test_gccasm-testmain.Po \
 	./$(DEPDIR)/unittests-test_bdate.Po \
@@ -287,6 +296,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_fcnffile.Po \
 	./$(DEPDIR)/unittests-test_fdirent.Po \
 	./$(DEPDIR)/unittests-test_ffilebuf.Po \
+	./$(DEPDIR)/unittests-test_filecntb.Po \
 	./$(DEPDIR)/unittests-test_fileread.Po \
 	./$(DEPDIR)/unittests-test_filfschk.Po \
 	./$(DEPDIR)/unittests-test_main.Po \
@@ -799,6 +809,7 @@ unittests_SOURCES = \
 	test_fcnffile.cpp \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
+	test_filecntb.cpp \
 	test_fileread.cpp \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
@@ -820,22 +831,26 @@ unittests_SOURCES = \
 	../src/btime.cpp \
 	../src/colors.cpp \
 	../src/da6809.cpp \
+	../src/dircont.cpp \
 	../src/fattrib.cpp \
 	../src/fcinfo.cpp \
 	../src/fcnffile.cpp \
 	../src/fcopyman.cpp \
 	../src/fdirent.cpp \
+	../src/fdoptman.cpp \
 	../src/ffilebuf.cpp \
 	../src/ffilecnt.cpp \
 	../src/filecnts.cpp \
 	../src/fileread.cpp \
 	../src/filfschk.cpp \
 	../src/flexerr.cpp \
+	../src/idircnt.cpp \
 	../src/iffilcnt.cpp \
 	../src/ifilecnt.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/misc1.cpp \
+	../src/ndircont.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -851,23 +866,27 @@ unittests_SOURCES = \
 	../src/cistring.h \
 	../src/colors.h \
 	../src/da6809.h \
+	../src/dircont.h \
 	../src/fattrib.h \
 	../src/fcinfo.h \
 	../src/fcnffile.h \
 	../src/fcopyman.h \
 	../src/fdirent.h \
+	../src/fdoptman.h \
 	../src/ffilebuf.h \
 	../src/ffilecnt.h \
 	../src/filecnts.h \
 	../src/fileread.h \
 	../src/filfschk.h \
 	../src/flexerr.h \
+	../src/idircnt.h \
 	../src/iffilcnt.h \
 	../src/ifilcnti.h \
 	../src/ifilecnt.h \
 	../src/mc6809lg.h \
 	../src/mc6809st.h \
 	../src/misc1.h \
+	../src/ndircont.h \
 	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a
@@ -1168,6 +1187,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-da6809.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-dircont.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-fattrib.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-fcinfo.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -1177,6 +1198,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 ../src/unittests-fcopyman.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-fdirent.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-fdoptman.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-ffilebuf.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
@@ -1190,6 +1213,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-flexerr.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-idircnt.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-iffilcnt.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-ifilecnt.$(OBJEXT): ../src/$(am__dirstamp) \
@@ -1199,6 +1224,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 ../src/unittests-mc6809st.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-misc1.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-ndircont.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
 
 unittests$(EXEEXT): $(unittests_OBJECTS) $(unittests_DEPENDENCIES) $(EXTRA_unittests_DEPENDENCIES) 
@@ -1242,22 +1269,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-btime.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-colors.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-da6809.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-dircont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fattrib.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fcinfo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fcnffile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fcopyman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fdirent.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fdoptman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ffilebuf.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ffilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-filecnts.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-fileread.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-flexerr.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-idircnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-iffilcnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ifilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-mc6809lg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-mc6809st.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-misc1.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ndircont.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-test_gccasm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-testmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdate.Po@am__quote@ # am--include-marker
@@ -1278,6 +1309,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fcnffile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fdirent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_ffilebuf.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_filecntb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fileread.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_main.Po@am__quote@ # am--include-marker
@@ -1720,6 +1752,20 @@ unittests-test_ffilebuf.obj: test_ffilebuf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_ffilebuf.obj `if test -f 'test_ffilebuf.cpp'; then $(CYGPATH_W) 'test_ffilebuf.cpp'; else $(CYGPATH_W) '$(srcdir)/test_ffilebuf.cpp'; fi`
 
+unittests-test_filecntb.o: test_filecntb.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_filecntb.o -MD -MP -MF $(DEPDIR)/unittests-test_filecntb.Tpo -c -o unittests-test_filecntb.o `test -f 'test_filecntb.cpp' || echo '$(srcdir)/'`test_filecntb.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_filecntb.Tpo $(DEPDIR)/unittests-test_filecntb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_filecntb.cpp' object='unittests-test_filecntb.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_filecntb.o `test -f 'test_filecntb.cpp' || echo '$(srcdir)/'`test_filecntb.cpp
+
+unittests-test_filecntb.obj: test_filecntb.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_filecntb.obj -MD -MP -MF $(DEPDIR)/unittests-test_filecntb.Tpo -c -o unittests-test_filecntb.obj `if test -f 'test_filecntb.cpp'; then $(CYGPATH_W) 'test_filecntb.cpp'; else $(CYGPATH_W) '$(srcdir)/test_filecntb.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_filecntb.Tpo $(DEPDIR)/unittests-test_filecntb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_filecntb.cpp' object='unittests-test_filecntb.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_filecntb.obj `if test -f 'test_filecntb.cpp'; then $(CYGPATH_W) 'test_filecntb.cpp'; else $(CYGPATH_W) '$(srcdir)/test_filecntb.cpp'; fi`
+
 unittests-test_fileread.o: test_fileread.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_fileread.o -MD -MP -MF $(DEPDIR)/unittests-test_fileread.Tpo -c -o unittests-test_fileread.o `test -f 'test_fileread.cpp' || echo '$(srcdir)/'`test_fileread.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_fileread.Tpo $(DEPDIR)/unittests-test_fileread.Po
@@ -2014,6 +2060,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-da6809.obj `if test -f '../src/da6809.cpp'; then $(CYGPATH_W) '../src/da6809.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/da6809.cpp'; fi`
 
+../src/unittests-dircont.o: ../src/dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-dircont.o -MD -MP -MF ../src/$(DEPDIR)/unittests-dircont.Tpo -c -o ../src/unittests-dircont.o `test -f '../src/dircont.cpp' || echo '$(srcdir)/'`../src/dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-dircont.Tpo ../src/$(DEPDIR)/unittests-dircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/dircont.cpp' object='../src/unittests-dircont.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-dircont.o `test -f '../src/dircont.cpp' || echo '$(srcdir)/'`../src/dircont.cpp
+
+../src/unittests-dircont.obj: ../src/dircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-dircont.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-dircont.Tpo -c -o ../src/unittests-dircont.obj `if test -f '../src/dircont.cpp'; then $(CYGPATH_W) '../src/dircont.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/dircont.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-dircont.Tpo ../src/$(DEPDIR)/unittests-dircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/dircont.cpp' object='../src/unittests-dircont.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-dircont.obj `if test -f '../src/dircont.cpp'; then $(CYGPATH_W) '../src/dircont.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/dircont.cpp'; fi`
+
 ../src/unittests-fattrib.o: ../src/fattrib.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fattrib.o -MD -MP -MF ../src/$(DEPDIR)/unittests-fattrib.Tpo -c -o ../src/unittests-fattrib.o `test -f '../src/fattrib.cpp' || echo '$(srcdir)/'`../src/fattrib.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-fattrib.Tpo ../src/$(DEPDIR)/unittests-fattrib.Po
@@ -2083,6 +2143,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/fdirent.cpp' object='../src/unittests-fdirent.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-fdirent.obj `if test -f '../src/fdirent.cpp'; then $(CYGPATH_W) '../src/fdirent.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/fdirent.cpp'; fi`
+
+../src/unittests-fdoptman.o: ../src/fdoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fdoptman.o -MD -MP -MF ../src/$(DEPDIR)/unittests-fdoptman.Tpo -c -o ../src/unittests-fdoptman.o `test -f '../src/fdoptman.cpp' || echo '$(srcdir)/'`../src/fdoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-fdoptman.Tpo ../src/$(DEPDIR)/unittests-fdoptman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/fdoptman.cpp' object='../src/unittests-fdoptman.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-fdoptman.o `test -f '../src/fdoptman.cpp' || echo '$(srcdir)/'`../src/fdoptman.cpp
+
+../src/unittests-fdoptman.obj: ../src/fdoptman.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-fdoptman.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-fdoptman.Tpo -c -o ../src/unittests-fdoptman.obj `if test -f '../src/fdoptman.cpp'; then $(CYGPATH_W) '../src/fdoptman.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/fdoptman.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-fdoptman.Tpo ../src/$(DEPDIR)/unittests-fdoptman.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/fdoptman.cpp' object='../src/unittests-fdoptman.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-fdoptman.obj `if test -f '../src/fdoptman.cpp'; then $(CYGPATH_W) '../src/fdoptman.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/fdoptman.cpp'; fi`
 
 ../src/unittests-ffilebuf.o: ../src/ffilebuf.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-ffilebuf.o -MD -MP -MF ../src/$(DEPDIR)/unittests-ffilebuf.Tpo -c -o ../src/unittests-ffilebuf.o `test -f '../src/ffilebuf.cpp' || echo '$(srcdir)/'`../src/ffilebuf.cpp
@@ -2168,6 +2242,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-flexerr.obj `if test -f '../src/flexerr.cpp'; then $(CYGPATH_W) '../src/flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/flexerr.cpp'; fi`
 
+../src/unittests-idircnt.o: ../src/idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-idircnt.o -MD -MP -MF ../src/$(DEPDIR)/unittests-idircnt.Tpo -c -o ../src/unittests-idircnt.o `test -f '../src/idircnt.cpp' || echo '$(srcdir)/'`../src/idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-idircnt.Tpo ../src/$(DEPDIR)/unittests-idircnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/idircnt.cpp' object='../src/unittests-idircnt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-idircnt.o `test -f '../src/idircnt.cpp' || echo '$(srcdir)/'`../src/idircnt.cpp
+
+../src/unittests-idircnt.obj: ../src/idircnt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-idircnt.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-idircnt.Tpo -c -o ../src/unittests-idircnt.obj `if test -f '../src/idircnt.cpp'; then $(CYGPATH_W) '../src/idircnt.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/idircnt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-idircnt.Tpo ../src/$(DEPDIR)/unittests-idircnt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/idircnt.cpp' object='../src/unittests-idircnt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-idircnt.obj `if test -f '../src/idircnt.cpp'; then $(CYGPATH_W) '../src/idircnt.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/idircnt.cpp'; fi`
+
 ../src/unittests-iffilcnt.o: ../src/iffilcnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-iffilcnt.o -MD -MP -MF ../src/$(DEPDIR)/unittests-iffilcnt.Tpo -c -o ../src/unittests-iffilcnt.o `test -f '../src/iffilcnt.cpp' || echo '$(srcdir)/'`../src/iffilcnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-iffilcnt.Tpo ../src/$(DEPDIR)/unittests-iffilcnt.Po
@@ -2237,6 +2325,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/misc1.cpp' object='../src/unittests-misc1.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-misc1.obj `if test -f '../src/misc1.cpp'; then $(CYGPATH_W) '../src/misc1.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/misc1.cpp'; fi`
+
+../src/unittests-ndircont.o: ../src/ndircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-ndircont.o -MD -MP -MF ../src/$(DEPDIR)/unittests-ndircont.Tpo -c -o ../src/unittests-ndircont.o `test -f '../src/ndircont.cpp' || echo '$(srcdir)/'`../src/ndircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-ndircont.Tpo ../src/$(DEPDIR)/unittests-ndircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/ndircont.cpp' object='../src/unittests-ndircont.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-ndircont.o `test -f '../src/ndircont.cpp' || echo '$(srcdir)/'`../src/ndircont.cpp
+
+../src/unittests-ndircont.obj: ../src/ndircont.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-ndircont.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-ndircont.Tpo -c -o ../src/unittests-ndircont.obj `if test -f '../src/ndircont.cpp'; then $(CYGPATH_W) '../src/ndircont.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ndircont.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-ndircont.Tpo ../src/$(DEPDIR)/unittests-ndircont.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/ndircont.cpp' object='../src/unittests-ndircont.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-ndircont.obj `if test -f '../src/ndircont.cpp'; then $(CYGPATH_W) '../src/ndircont.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ndircont.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -2667,22 +2769,26 @@ distclean: distclean-recursive
 	-rm -f ../src/$(DEPDIR)/unittests-btime.Po
 	-rm -f ../src/$(DEPDIR)/unittests-colors.Po
 	-rm -f ../src/$(DEPDIR)/unittests-da6809.Po
+	-rm -f ../src/$(DEPDIR)/unittests-dircont.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fattrib.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcinfo.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcnffile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcopyman.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fdirent.Po
+	-rm -f ../src/$(DEPDIR)/unittests-fdoptman.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilebuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilecnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-filecnts.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fileread.Po
 	-rm -f ../src/$(DEPDIR)/unittests-filfschk.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
+	-rm -f ../src/$(DEPDIR)/unittests-idircnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-iffilcnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ifilecnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/unittests-misc1.Po
+	-rm -f ../src/$(DEPDIR)/unittests-ndircont.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
@@ -2703,6 +2809,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/unittests-test_fcnffile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
+	-rm -f ./$(DEPDIR)/unittests-test_filecntb.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fileread.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filfschk.Po
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
@@ -2779,22 +2886,26 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ../src/$(DEPDIR)/unittests-btime.Po
 	-rm -f ../src/$(DEPDIR)/unittests-colors.Po
 	-rm -f ../src/$(DEPDIR)/unittests-da6809.Po
+	-rm -f ../src/$(DEPDIR)/unittests-dircont.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fattrib.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcinfo.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcnffile.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fcopyman.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fdirent.Po
+	-rm -f ../src/$(DEPDIR)/unittests-fdoptman.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilebuf.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ffilecnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-filecnts.Po
 	-rm -f ../src/$(DEPDIR)/unittests-fileread.Po
 	-rm -f ../src/$(DEPDIR)/unittests-filfschk.Po
 	-rm -f ../src/$(DEPDIR)/unittests-flexerr.Po
+	-rm -f ../src/$(DEPDIR)/unittests-idircnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-iffilcnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ifilecnt.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/unittests-misc1.Po
+	-rm -f ../src/$(DEPDIR)/unittests-ndircont.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
@@ -2815,6 +2926,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/unittests-test_fcnffile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
+	-rm -f ./$(DEPDIR)/unittests-test_filecntb.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fileread.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filfschk.Po
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
