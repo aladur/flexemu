@@ -84,6 +84,24 @@ TEST(test_misc1, fct_getstr)
     EXPECT_EQ(str4, "");
     EXPECT_EQ(str4.size(), 0U);
     EXPECT_EQ(str4.c_str()[str4.size()], '\0');
+
+    // Tow consecutive arrays in a struct
+    // NOLINTBEGIN(modernize-avoid-c-arrays)
+    struct
+    {
+        char arr11[8]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+        char arr12[8]{'1', '2', '3', '4', '5', '6', '7', '8'};
+    } s;
+    // NOLINTEND(modernize-avoid-c-arrays)
+    EXPECT_EQ(sizeof(s), 16);
+    EXPECT_EQ(sizeof(s.arr11), 8U);
+    EXPECT_EQ(sizeof(s.arr12), 8U);
+    auto str11 = flx::getstr<>(s.arr11);
+    EXPECT_EQ(str11, "abcdefgh");
+    EXPECT_EQ(str11.size(), 8U);
+    auto str12 = flx::getstr<>(s.arr12);
+    EXPECT_EQ(str12, "12345678");
+    EXPECT_EQ(str12.size(), 8U);
 }
 
 TEST(test_misc1, fct_binstr)
