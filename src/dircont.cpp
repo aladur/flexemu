@@ -156,6 +156,7 @@ bool FlexDirectoryDiskByFile::FindFile(const std::string &wildcard,
 {
     FlexDiskIterator it(wildcard);
 
+    entry.SetEmpty();
     it = this->begin();
 
     if (it == this->end())
