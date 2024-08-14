@@ -77,6 +77,7 @@ FERR_COPY_EMPTY_FILE = 43,
 FERR_ERROR_IN_SYSTEM_CALL = 44,
 FERR_INVALID_JVC_HEADER = 45,
 FERR_BAD_OPTIONAL_ACCESS = 46,
+FERR_WILDCARD_NOT_SUPPORTED = 47,
 };
 
 
@@ -86,7 +87,7 @@ protected:
 
     int errorCode;
     std::string errorString;
-    static std::array<const char *, 47> errString;
+    static std::array<const char *, 48> errString;
 
 public:
 

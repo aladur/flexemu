@@ -311,11 +311,11 @@ std::string &FlexDisk::GetBootSectorFile()
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool FlexDisk::FindFile(const std::string &fileName, FlexDirEntry &entry)
+bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
 {
     if (is_flex_format)
     {
-        FlexDiskIterator it(fileName);
+        FlexDiskIterator it(wildcard);
 
         it = this->begin();
 
@@ -364,6 +364,16 @@ bool FlexDisk::RenameFile(const std::string &oldName,
 
     CHECK_CONTAINER_WRITEPROTECTED;
 
+    if (oldName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, oldName);
+    }
+
+    if (newName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, newName);
+    }
+
     FlexDirEntry de;
 
     // prevent overwriting of an existing file
@@ -399,6 +409,16 @@ bool FlexDisk::FileCopy(const std::string &sourceName,
     if (!is_flex_format)
     {
         return false;
+    }
+
+    if (sourceName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, sourceName);
+    }
+
+    if (destName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, destName);
     }
 
     return FlexCopyManager::FileCopy(sourceName, destName, *this, destination);
@@ -734,6 +754,11 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
     if (!is_flex_format)
     {
         throw FlexException(FERR_CONTAINER_UNFORMATTED, path);
+    }
+
+    if (fileName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, fileName);
     }
 
     if (!FindFile(fileName, de))

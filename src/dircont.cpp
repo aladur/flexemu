@@ -151,10 +151,10 @@ std::string FlexDirectoryDiskByFile::GetSupportedAttributes() const
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool FlexDirectoryDiskByFile::FindFile(const std::string &fileName,
+bool FlexDirectoryDiskByFile::FindFile(const std::string &wildcard,
         FlexDirEntry &entry)
 {
-    FlexDiskIterator it(fileName);
+    FlexDiskIterator it(wildcard);
 
     it = this->begin();
 
@@ -189,6 +189,16 @@ bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
         return false;
     }
 
+    if (oldName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, oldName);
+    }
+
+    if (newName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, newName);
+    }
+
     // prevent conflict with an existing file
     if (FindFile(newName, de))
     {
@@ -213,6 +223,16 @@ bool FlexDirectoryDiskByFile::FileCopy(
     const std::string &sourceName, const std::string &destName,
     IFlexDiskByFile &destination)
 {
+    if (sourceName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, sourceName);
+    }
+
+    if (destName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, destName);
+    }
+
     return FlexCopyManager::FileCopy(sourceName, destName,
                                      static_cast<IFlexDiskByFile &>(*this),
                                      destination);
@@ -310,6 +330,11 @@ FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName
 {
     FlexFileBuffer buffer;
     auto filePath(flx::tolower(fileName));
+
+    if (fileName.find_first_of("*?[]") != std::string::npos)
+    {
+        throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, fileName);
+    }
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
 

@@ -130,7 +130,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1)
 }
 #endif
 
-std::array<const char *, 47> FlexException::errString
+std::array<const char *, 48> FlexException::errString
 {
     "No Error",
     "Unable to open {0}",
@@ -179,5 +179,6 @@ std::array<const char *, 47> FlexException::errString
     "Error {0} on system call '{1}'",
     "Disk image {0} has invalid or unsupported JVC header",
     "Bad optional access",
+    "Wildcard '{0}' not supported",
 };
 
