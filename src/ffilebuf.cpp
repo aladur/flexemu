@@ -579,7 +579,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? fileHeader.minute : 0;
-        file_time.tm_hour = setFileTime ? fileHeader.hour : 12;
+        file_time.tm_hour = setFileTime ? fileHeader.hour : 0;
         file_time.tm_mon = fileHeader.month - 1;
         file_time.tm_mday = fileHeader.day;
         file_time.tm_year = fileHeader.year - 1900;
@@ -591,7 +591,8 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     return result;
 }
 
-bool FlexFileBuffer::ReadFromFile(const std::string &path)
+bool FlexFileBuffer::ReadFromFile(const std::string &path,
+        FileTimeAccess fileTimeAccess)
 {
     struct stat sbuf{};
 
@@ -638,7 +639,14 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path)
                 }
 
                 SetAdjustedFilename(filename);
-                const struct tm *lt = localtime(&sbuf.st_mtime);
+                struct tm *lt = localtime(&sbuf.st_mtime);
+                const bool getFileTime =
+                (fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get;
+                if (!getFileTime)
+                {
+                    lt->tm_hour = 0U;
+                    lt->tm_min = 0U;
+                }
                 SetDateTime({lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900},
                             {lt->tm_hour, lt->tm_min});
 
@@ -685,6 +693,8 @@ void FlexFileBuffer::CopyHeaderBigEndianFrom(const tFlexFileHeader &src)
     fileHeader.day = flx::fromBigEndian<Word>(src.day);
     fileHeader.month = flx::fromBigEndian<Word>(src.month);
     fileHeader.year = flx::fromBigEndian<Word>(src.year);
+    fileHeader.hour = flx::fromBigEndian<Word>(src.hour);
+    fileHeader.minute = flx::fromBigEndian<Word>(src.minute);
 
     for (unsigned index = 0; index < sizeof(fileHeader.magicNumber); ++index)
     {
@@ -773,6 +783,8 @@ tFlexFileHeader FlexFileBuffer::GetHeaderBigEndian() const
     result.day = flx::toBigEndian<Word>(fileHeader.day);
     result.month = flx::toBigEndian<Word>(fileHeader.month);
     result.year = flx::toBigEndian<Word>(fileHeader.year);
+    result.hour = flx::toBigEndian<Word>(fileHeader.hour);
+    result.minute = flx::fromBigEndian<Word>(fileHeader.minute);
 
     return result;
 }

@@ -230,7 +230,7 @@ QVector<int>::size_type FlexplorerMdiChild::InjectFiles(
         }
 
         const auto filePath = QDir::toNativeSeparators(path);
-        if (!buffer.ReadFromFile(filePath.toStdString()))
+        if (!buffer.ReadFromFile(filePath.toStdString(), options.ft_access))
         {
             auto msg = tr("Error reading from\n%1\nInjection aborted.");
             msg = msg.arg(filePath);

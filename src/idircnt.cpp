@@ -229,7 +229,10 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         dirEntry.SetFileSize(static_cast<int>(fileSize));
         const struct tm *lt = localtime(&sbuf.st_mtime);
         dirEntry.SetDate({lt->tm_mday, lt->tm_mon + 1, lt->tm_year + 1900});
-        dirEntry.SetTime({lt->tm_hour, lt->tm_min, 0U});
+        if ((base->ft_access & FileTimeAccess::Get) == FileTimeAccess::Get)
+        {
+            dirEntry.SetTime({lt->tm_hour, lt->tm_min});
+        }
         dirEntry.SetAttributes(attributes);
         dirEntry.SetSectorMap(sectorMap);
         dirEntry.SetStartTrkSec(0, 0);
@@ -386,7 +389,7 @@ bool FlexDirectoryDiskIteratorImp::SetDateCurrent(const BDate &date)
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = 0;
-        file_time.tm_hour = 12;
+        file_time.tm_hour = 0;
         file_time.tm_mon = date.GetMonth() - 1;
         file_time.tm_mday = date.GetDay();
         file_time.tm_year = date.GetYear() - 1900;

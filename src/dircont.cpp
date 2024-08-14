@@ -338,7 +338,7 @@ FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
 
-    if (!buffer.ReadFromFile(filePath))
+    if (!buffer.ReadFromFile(filePath, ft_access))
     {
         throw FlexException(FERR_READING_FROM, fileName);
     }
@@ -425,7 +425,7 @@ bool FlexDirectoryDiskByFile::SetDateTime(
         timebuf.actime = sbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? time.GetMinute() : 0;
-        file_time.tm_hour = setFileTime ? time.GetHour() : 12;
+        file_time.tm_hour = setFileTime ? time.GetHour() : 0;
         file_time.tm_mon = date.GetMonth() - 1;
         file_time.tm_mday = date.GetDay();
         file_time.tm_year = date.GetYear() - 1900;

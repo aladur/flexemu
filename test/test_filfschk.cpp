@@ -25,7 +25,8 @@ protected:
         disk.reset(FlexDisk::Create(diskPath, FileTimeAccess::NONE, 35, 10));
         ASSERT_NE(disk.get(), nullptr);
         FlexFileBuffer buffer;
-        ASSERT_TRUE(buffer.ReadFromFile(subdir + fileNameOnDisk));
+        ASSERT_TRUE(buffer.ReadFromFile(subdir + fileNameOnDisk,
+                    FileTimeAccess::NONE));
         ASSERT_TRUE(disk->WriteFromBuffer(buffer));
     }
 

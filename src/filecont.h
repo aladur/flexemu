@@ -42,7 +42,7 @@ class IFlexDiskByFile : public IFlexDiskBase
 public:
     virtual IFlexDiskByFile *begin() = 0;
     virtual IFlexDiskByFile *end() const = 0;
-    virtual bool FindFile(const std::string &fileName, FlexDirEntry &entry) = 0;
+    virtual bool FindFile(const std::string &wildcard, FlexDirEntry &entry) = 0;
     virtual bool DeleteFile(const std::string &wildcard) = 0;
     virtual bool RenameFile(const std::string &oldName,
                             const std::string &newName) = 0;

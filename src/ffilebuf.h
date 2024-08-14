@@ -92,7 +92,7 @@ public:
     void ConvertToDumpFile(DWord bytesPerLine);
     bool WriteToFile(const std::string &path,
             FileTimeAccess fileTimeAccess) const;
-    bool ReadFromFile(const std::string &path);
+    bool ReadFromFile(const std::string &path, FileTimeAccess fileTimeAccess);
     bool IsTextFile() const;
     bool IsFlexTextFile() const;
     bool IsFlexExecutableFile() const;

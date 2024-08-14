@@ -517,7 +517,7 @@ static int InjectToDskFile(const std::string &dsk_file, bool verbose,
         bool isText = false;
         FlexFileBuffer fileBuffer;
 
-        if (!fileBuffer.ReadFromFile(file))
+        if (!fileBuffer.ReadFromFile(file, fileTimeAccess))
         {
             std::cerr <<
                 "   *** Error: Reading from " << file << ". Aborted.\n";

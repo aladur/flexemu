@@ -1244,7 +1244,7 @@ bool FlexDirectoryDiskBySector::set_file_time(const char *ppath, Byte month,
         timebuf.actime = statbuf.st_atime;
         file_time.tm_sec = 0;
         file_time.tm_min = setFileTime ? minute : 0;
-        file_time.tm_hour = setFileTime ? hour : 12;
+        file_time.tm_hour = setFileTime ? hour : 0;
         file_time.tm_mon = month - 1;
         file_time.tm_mday = day;
         file_time.tm_year = year < 75 ? year + 100 : year;
