@@ -438,12 +438,12 @@ bool FlexDirectoryDiskIteratorImp::SetAttributesCurrent(Byte attributes)
     {
         if (attributes & WRITE_PROTECT)
         {
-            chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
+            chmod(filePath.c_str(), sbuf.st_mode &
+                    static_cast<unsigned>(~S_IWUSR));
         }
         else
         {
-            chmod(filePath.c_str(), sbuf.st_mode &
-                    static_cast<unsigned>(~S_IWUSR));
+            chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
         }
     }
 

@@ -418,47 +418,20 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
                                        unsigned setMask,
                                        unsigned clearMask /* = ~0U */)
 {
-    // only WRITE_PROTECT flag is supported
-    if ((setMask & WRITE_PROTECT) || (clearMask & WRITE_PROTECT))
+    FlexDirEntry de;
+
+    if (IsWriteProtected())
     {
-#ifdef _WIN32
-        const auto wFilePath(
-            ConvertToUtf16String(directory + PATHSEPARATORSTRING + wildcard));
-        DWORD attrs = GetFileAttributes(wFilePath.c_str());
+        throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
+    }
 
-        if (clearMask & WRITE_PROTECT)
-        {
-            attrs &= ~FILE_ATTRIBUTE_READONLY;
-        }
+    FlexDiskIterator it(wildcard);
 
-        if (setMask & WRITE_PROTECT)
-        {
-            attrs |= FILE_ATTRIBUTE_READONLY;
-        }
-
-        SetFileAttributes(wFilePath.c_str(), attrs);
-#endif
-#ifdef UNIX
-        struct stat sbuf{};
-        auto lowerFileName(flx::tolower(wildcard));
-
-        auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
-
-        if (stat(filePath.c_str(), &sbuf) == 0)
-        {
-            if (clearMask & WRITE_PROTECT)
-            {
-                chmod(filePath.c_str(), sbuf.st_mode | S_IWUSR);
-            }
-
-            if (setMask & WRITE_PROTECT)
-            {
-                chmod(filePath.c_str(),
-                        sbuf.st_mode & static_cast<unsigned>(~S_IWUSR));
-            }
-        }
-
-#endif
+    for (it = this->begin(); it != this->end(); ++it)
+    {
+        Byte p_attributes =
+            static_cast<Byte>((it->GetAttributes() & ~clearMask) | setMask);
+        it.SetAttributesCurrent(p_attributes);
     }
 
     return true;
