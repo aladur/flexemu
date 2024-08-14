@@ -11,6 +11,7 @@ time                       size
  321 alpine                1.45     5.15.10
  990 altlinux              2.06     5.15.13
  308 archlinux             3.07     5.15.14
+ 218 centos                1.73     5.15.9
  921 debian                1.54     5.15.8
 1557 debian_be             1.46     5.15.8
 1144 debian_i386           1.46     5.15.8   1)
@@ -38,7 +39,7 @@ Sorted by linux family
 alpine: -
 archlinux: manjaro
 debian: ubuntu, linuxmint, altlinux, kalilinux
-fedora (redhat): almalinux, oraclelinux, photon, rockylinux, mageia
+fedora (redhat): almalinux, oraclelinux, photon, rockylinux, mageia, centos
 opensuse: -
 slackware: -
 voidlinux: -
