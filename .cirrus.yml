@@ -32,3 +32,11 @@ build_task:
     - src/dsktool -f new.dsk -S 80dsdd
     - src/dsktool -C disks/system.dsk -T new.dsk
     - src/dsktool -l new.dsk
+
+  always:
+    config_log_artifacts:
+      path: config.log
+      type: text/plain
+    unittest_log_artifacts:
+      path: test/unittests.log
+      type: text/plain

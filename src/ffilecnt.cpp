@@ -43,7 +43,6 @@
 #include "iffilcnt.h"
 #include <cstring>
 
-
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
 static const std::string &getDefaultBootSectorFile()
@@ -125,12 +124,12 @@ FlexDisk::FlexDisk(
 {
     struct stat sbuf{};
 
-    if (!fstream.is_open())
+    if (stat(path.c_str(), &sbuf) != 0 || !S_ISREG(sbuf.st_mode))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    if (stat(path.c_str(), &sbuf) != 0 || !S_ISREG(sbuf.st_mode))
+    if (!fstream.is_open())
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
@@ -1074,6 +1073,11 @@ bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
 
     fstream.seekg(pos);
     if (fstream.fail())
+    {
+        return false;
+    }
+
+    if (param.write_protect)
     {
         return false;
     }

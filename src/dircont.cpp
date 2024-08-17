@@ -81,7 +81,11 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         directory.resize(directory.size() - 1);
     }
 
+#ifdef __BSD
+    if ((sbuf.st_mode & S_IWUSR) == 0)
+#else
     if (access(aPath.c_str(), W_OK))
+#endif
     {
         attributes |= FLX_READONLY;
     }
@@ -172,6 +176,11 @@ bool FlexDirectoryDiskByFile::DeleteFile(const std::string &wildcard)
 {
     FlexDiskIterator it(wildcard);
 
+    if (IsWriteProtected())
+    {
+        throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
+    }
+
     for (it = this->begin(); it != this->end(); ++it)
     {
         it.DeleteCurrent();
@@ -204,6 +213,11 @@ bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
     if (FindFile(newName, de))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
+    }
+
+    if (IsWriteProtected())
+    {
+        throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
     }
 
     FlexDiskIterator it(oldName);
@@ -376,6 +390,11 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
     if (stat(filePath.c_str(), &sbuf) == 0 && S_ISREG(sbuf.st_mode))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, lowerFileName);
+    }
+
+    if (IsWriteProtected())
+    {
+        throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());
     }
 
     if (!buffer.WriteToFile(filePath, ft_access))

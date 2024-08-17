@@ -1,4 +1,6 @@
 EXTRA_DIST = \
 	cat.cmd \
 	cat.hex \
-	cat.s19
+	cat.s19 \
+	testdisk.dsk \
+	testdisk.flx

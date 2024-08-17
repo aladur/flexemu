@@ -41,6 +41,7 @@ unittests_SOURCES = \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
 	test_filecntb.cpp \
+	test_filecont.cpp \
 	test_fileread.cpp \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
@@ -82,6 +83,7 @@ unittests_SOURCES = \
 	../src/mc6809st.cpp \
 	../src/misc1.cpp \
 	../src/ndircont.cpp \
+	../src/rfilecnt.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -109,6 +111,7 @@ unittests_SOURCES = \
 	../src/filecnts.h \
 	../src/fileread.h \
 	../src/filfschk.h \
+	fixt_filecont.h \
 	../src/flexerr.h \
 	../src/idircnt.h \
 	../src/iffilcnt.h \
@@ -118,6 +121,7 @@ unittests_SOURCES = \
 	../src/mc6809st.h \
 	../src/misc1.h \
 	../src/ndircont.h \
+	../src/rfilecnt.h \
 	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a
@@ -130,6 +134,7 @@ unittests_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gtest_top)/include \
 	-isystem$(top_srcdir)/$(gmock_top)/include \
 	-isystem$(top_srcdir)/fmt/include \
+	-I$(top_srcdir)/test \
 	-I$(top_srcdir)/src
 
 TESTS = unittests
