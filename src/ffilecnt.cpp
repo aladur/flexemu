@@ -158,69 +158,66 @@ FlexDisk::FlexDisk(
         attributes |= FLX_READONLY;
     }
 
-    if (stat(path.c_str(), &sbuf) == 0)
+    bool write_protected = ((attributes & FLX_READONLY) != 0);
+
+    // Try to read the FLX header and check the magic number
+    // to identify a FLX formatted disk.
+    fstream.read(reinterpret_cast<char *>(&flx_header), sizeof(flx_header));
+    if (!fstream.fail() &&
+        flx::fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
     {
-        bool write_protected = ((attributes & FLX_READONLY) != 0);
+        // File is identified as a FLX container format.
+        Initialize_for_flx_format(flx_header, write_protected);
 
-        // Try to read the FLX header and check the magic number
-        // to identify a FLX formatted disk.
-        fstream.read(reinterpret_cast<char *>(&flx_header), sizeof(flx_header));
-        if (!fstream.fail() &&
-            flx::fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
+        if (!IsFlexFileFormat(TYPE_FLX_DISKFILE))
         {
-            // File is identified as a FLX container format.
-            Initialize_for_flx_format(flx_header, write_protected);
-
-            if (!IsFlexFileFormat(TYPE_FLX_DISKFILE))
-            {
-                // This is a FLX file container but it is not compatible
-                // to FLEX.
-                is_flex_format = false;
-            }
-            return;
+            // This is a FLX file container but it is not compatible
+            // to FLEX.
+            is_flex_format = false;
         }
+        return;
+    }
 
-        s_formats format { };
-        auto jvcHeader = GetJvcFileHeader();
-        auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
-        Word tracks;
-        Word sectors;
+    s_formats format { };
+    auto jvcHeader = GetJvcFileHeader();
+    auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());
+    Word tracks;
+    Word sectors;
 
-        // check if it is a DSK formated disk
-        // read system info sector
-        if (IsFlexFileFormat(TYPE_DSK_DISKFILE) &&
-            GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
+    // check if it is a DSK formated disk
+    // read system info sector
+    if (IsFlexFileFormat(TYPE_DSK_DISKFILE) &&
+        GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
+    {
+        // File is identified as a FLEX DSK container format
+        if (jvcHeaderSize == 0U)
         {
-            // File is identified as a FLEX DSK container format
-            if (jvcHeaderSize == 0U)
-            {
-                format.tracks = tracks;
-                format.sectors = sectors;
-                format.sides = 0U;
-            }
-            else
-            {
-                Word jvcSectors = jvcHeader[0];
-                Word jvcSides = (jvcHeaderSize >= 2) ? jvcHeader[1] : 1U;
-
-                // FLEX DSK container with JVC file header
-                format.tracks = static_cast<Word>(
-                                (file_size - jvcHeaderSize) /
-                                (jvcSectors * SECTOR_SIZE) / jvcSides);
-                format.sectors = jvcSectors * jvcSides;
-                format.sides = jvcSides;
-
-                if (tracks != format.tracks || sectors != format.sectors)
-                {
-                    throw FlexException(FERR_INVALID_JVC_HEADER, path);
-                }
-            }
-            format.size = static_cast<SDWord>(file_size);
-            format.offset = jvcHeaderSize;
-            Initialize_for_dsk_format(format, write_protected);
-            EvaluateTrack0SectorCount();
-            return;
+            format.tracks = tracks;
+            format.sectors = sectors;
+            format.sides = 0U;
         }
+        else
+        {
+            Word jvcSectors = jvcHeader[0];
+            Word jvcSides = (jvcHeaderSize >= 2) ? jvcHeader[1] : 1U;
+
+            // FLEX DSK container with JVC file header
+            format.tracks = static_cast<Word>(
+                            (file_size - jvcHeaderSize) /
+                            (jvcSectors * SECTOR_SIZE) / jvcSides);
+            format.sectors = jvcSectors * jvcSides;
+            format.sides = jvcSides;
+
+            if (tracks != format.tracks || sectors != format.sectors)
+            {
+                throw FlexException(FERR_INVALID_JVC_HEADER, path);
+            }
+        }
+        format.size = static_cast<SDWord>(file_size);
+        format.offset = jvcHeaderSize;
+        Initialize_for_dsk_format(format, write_protected);
+        EvaluateTrack0SectorCount();
+        return;
     }
 
     throw FlexException(FERR_IS_NO_FILECONTAINER, path);
