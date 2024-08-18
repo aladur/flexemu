@@ -43,7 +43,7 @@ public:
     ~BRegistry();
 
     BRegistry(const BRegistry &regKey, const std::string &subKey);
-    BRegistry(HKEY aHKey);
+    BRegistry(HKEY p_hKey);
     bool isOpened() const;
     LONG GetLastError() const;
     LONG Delete();

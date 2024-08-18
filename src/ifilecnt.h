@@ -43,9 +43,9 @@ public:
     virtual ~FlexDiskIterator() = default;
     FlexDirEntry &operator*();
     FlexDirEntry *operator->();
-    bool operator==(const IFlexDiskByFile *aBase) const;
-    bool operator!=(const IFlexDiskByFile *aBase) const;
-    FlexDiskIterator &operator=(IFlexDiskByFile *aBase);
+    bool operator==(const IFlexDiskByFile *base) const;
+    bool operator!=(const IFlexDiskByFile *base) const;
+    FlexDiskIterator &operator=(IFlexDiskByFile *base);
     FlexDiskIterator &operator++();
     FlexDiskIterator &operator=(const FlexDiskIterator &src) = delete;
     bool DeleteCurrent();

@@ -74,24 +74,24 @@ FlexDirEntry *FlexDiskIterator::operator->()
 
 }
 
-bool FlexDiskIterator::operator==(const IFlexDiskByFile *aBase) const
+bool FlexDiskIterator::operator==(const IFlexDiskByFile *base) const
 {
     if (imp == nullptr)
     {
-        return aBase == nullptr;
+        return base == nullptr;
     }
 
-    return imp->operator==(aBase);
+    return imp->operator==(base);
 }
 
-bool FlexDiskIterator::operator!=(const IFlexDiskByFile *aBase) const
+bool FlexDiskIterator::operator!=(const IFlexDiskByFile *base) const
 {
     if (imp == nullptr)
     {
-        return aBase != nullptr;
+        return base != nullptr;
     }
 
-    return !(imp->operator==(aBase));
+    return !(imp->operator==(base));
 }
 
 FlexDiskIterator &FlexDiskIterator::operator++()
@@ -107,9 +107,9 @@ FlexDiskIterator &FlexDiskIterator::operator++()
     return *this;
 }
 
-FlexDiskIterator &FlexDiskIterator::operator=(IFlexDiskByFile *aBase)
+FlexDiskIterator &FlexDiskIterator::operator=(IFlexDiskByFile *base)
 {
-    if (aBase == nullptr)
+    if (base == nullptr)
     {
         throw FlexException(FERR_INVALID_ITERATOR_USE);
     }
@@ -119,7 +119,7 @@ FlexDiskIterator &FlexDiskIterator::operator=(IFlexDiskByFile *aBase)
         imp->AtEnd();
     }
 
-    imp = aBase->IteratorFactory();
+    imp = base->IteratorFactory();
 
     if (!imp->NextDirEntry(wildcard))
     {

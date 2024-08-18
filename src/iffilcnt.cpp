@@ -29,8 +29,8 @@
 #include <array>
 #include <cstring>
 
-FlexDiskIteratorImp::FlexDiskIteratorImp(FlexDisk *aBase)
-    : base(aBase), dirIndex(-1), dirTrackSector{0, 0}
+FlexDiskIteratorImp::FlexDiskIteratorImp(FlexDisk *p_base)
+    : base(p_base), dirIndex(-1), dirTrackSector{0, 0}
 {
     dirSector.next = first_dir_trk_sec;
 }

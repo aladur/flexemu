@@ -39,20 +39,20 @@ private:
     std::string m_path;
 
 public:
-    static bool Exists(const std::string &aPath);
-    static bool Remove(const std::string &aPath);
-    static bool Create(const std::string &aPath, int mode = 0755);
-    static bool RemoveRecursive(const std::string &aPath);
-    static PathList_t GetSubDirectories(const std::string &aPath);
-    static PathList_t GetFiles(const std::string &aPath);
+    static bool Exists(const std::string &p_path);
+    static bool Remove(const std::string &p_path);
+    static bool Create(const std::string &p_path, int mode = 0755);
+    static bool RemoveRecursive(const std::string &p_path);
+    static PathList_t GetSubDirectories(const std::string &p_path);
+    static PathList_t GetFiles(const std::string &p_path);
 
     BDirectory() = default;
-    explicit BDirectory(std::string &path) : m_path(path) { };
+    explicit BDirectory(std::string &p_path) : m_path(p_path) { };
     ~BDirectory() = default;
 
-    inline void SetPath(std::string &path)
+    inline void SetPath(std::string &p_path)
     {
-        m_path = path;
+        m_path = p_path;
     };
     inline const std::string &GetPath() const
     {

@@ -140,9 +140,9 @@ public:
     {
         return (fileHeader.sectorMap != 0);
     }
-    inline void SetSectorMap(int aSectorMap)
+    inline void SetSectorMap(int sectorMap)
     {
-        fileHeader.sectorMap = static_cast<Word>(aSectorMap);
+        fileHeader.sectorMap = static_cast<Word>(sectorMap);
     }
     inline int GetSectorMap() const
     {

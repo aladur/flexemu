@@ -37,7 +37,7 @@ class IFlexDiskIteratorImp
     friend class FlexDiskIterator;
 public:
     virtual ~IFlexDiskIteratorImp() = default;
-    virtual bool operator==(const IFlexDiskByFile *aBase) const = 0;
+    virtual bool operator==(const IFlexDiskByFile *base) const = 0;
     virtual bool NextDirEntry(const std::string &wildcard) = 0;
     virtual void AtEnd() = 0;
     virtual FlexDirEntry &GetDirEntry() = 0;

@@ -85,7 +85,7 @@ public:
     std::string GetAttributesString() const;
     int GetSectorMap() const;
     bool IsRandom() const;
-    void SetSectorMap(int aSectorMap);
+    void SetSectorMap(int p_sectorMap);
     bool IsEmpty() const;
     void SetEmpty();
     void ClearEmpty();
@@ -129,9 +129,9 @@ inline bool FlexDirEntry::IsRandom() const
 {
     return (sectorMap != 0);
 }
-inline void FlexDirEntry::SetSectorMap(int aSectorMap)
+inline void FlexDirEntry::SetSectorMap(int p_sectorMap)
 {
-    sectorMap = aSectorMap;
+    sectorMap = p_sectorMap;
 }
 inline int FlexDirEntry::GetSectorMap() const
 {

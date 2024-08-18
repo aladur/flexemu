@@ -34,8 +34,8 @@
 
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
-    FlexDirectoryDiskByFile *aBase)
-    : base(aBase), dirHdl(nullptr)
+    FlexDirectoryDiskByFile *p_base)
+    : base(p_base), dirHdl(nullptr)
 {
 }
 

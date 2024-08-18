@@ -51,20 +51,20 @@
 /****************************************/
 
 FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
-        const std::string &aPath, const FileTimeAccess &fileTimeAccess)
+        const std::string &path, const FileTimeAccess &fileTimeAccess)
     : ft_access(fileTimeAccess)
 {
     struct stat sbuf{};
     static Word number = 0;
 
-    if (stat(aPath.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
+    if (stat(path.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {
-        throw FlexException(FERR_UNABLE_TO_OPEN, aPath);
+        throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    if (flx::isAbsolutePath(aPath))
+    if (flx::isAbsolutePath(path))
     {
-        directory = aPath;
+        directory = path;
     }
     else
     {
@@ -73,7 +73,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         {
             directory += PATHSEPARATORSTRING;
         }
-        directory += aPath;
+        directory += path;
     }
 
     if (flx::endsWithPathSeparator(directory))
@@ -84,7 +84,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
 #ifdef __BSD
     if ((sbuf.st_mode & S_IWUSR) == 0)
 #else
-    if (access(aPath.c_str(), W_OK))
+    if (access(path.c_str(), W_OK))
 #endif
     {
         attributes |= FLX_READONLY;

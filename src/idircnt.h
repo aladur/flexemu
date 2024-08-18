@@ -39,7 +39,7 @@ class FlexDirectoryDiskByFile;
 class FlexDirectoryDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:
-    explicit FlexDirectoryDiskIteratorImp(FlexDirectoryDiskByFile *aBase);
+    explicit FlexDirectoryDiskIteratorImp(FlexDirectoryDiskByFile *p_base);
     FlexDirectoryDiskIteratorImp() = delete;
     FlexDirectoryDiskIteratorImp(const FlexDirectoryDiskIteratorImp &src) =
         delete;

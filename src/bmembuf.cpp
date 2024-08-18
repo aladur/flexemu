@@ -27,9 +27,9 @@
 #include <cstring>
 
 
-BMemoryBuffer::BMemoryBuffer(DWord aSize)
+BMemoryBuffer::BMemoryBuffer(DWord size)
 {
-    buffer.resize(aSize, 0);
+    buffer.resize(size, 0);
 }
 
 BMemoryBuffer::BMemoryBuffer(const BMemoryBuffer &src)

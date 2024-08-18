@@ -33,7 +33,7 @@ class BMemoryBuffer : public MemorySource<DWord>, public MemoryTarget<DWord>
 {
 public:
     BMemoryBuffer() = delete;
-    explicit BMemoryBuffer(DWord aSize);
+    explicit BMemoryBuffer(DWord size);
     BMemoryBuffer(const BMemoryBuffer &src);
     BMemoryBuffer(BMemoryBuffer &&src) noexcept;
     ~BMemoryBuffer() override = default;

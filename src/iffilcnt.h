@@ -33,7 +33,7 @@ class FlexDisk;
 class FlexDiskIteratorImp : public IFlexDiskIteratorImp
 {
 public:
-    explicit FlexDiskIteratorImp(FlexDisk *aBase);
+    explicit FlexDiskIteratorImp(FlexDisk *p_base);
     FlexDiskIteratorImp() = delete;
     FlexDiskIteratorImp(const FlexDiskIteratorImp &src) =
         delete;

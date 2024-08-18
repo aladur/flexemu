@@ -46,40 +46,40 @@
  static functions
 ********************************************/
 
-bool BDirectory::Exists(const std::string &aPath)
+bool BDirectory::Exists(const std::string &p_path)
 {
     struct stat sbuf{};
 
-    return !stat(aPath.c_str(), &sbuf) && (S_ISDIR(sbuf.st_mode));
+    return !stat(p_path.c_str(), &sbuf) && (S_ISDIR(sbuf.st_mode));
 }
 
-bool BDirectory::Remove(const std::string &aPath)
+bool BDirectory::Remove(const std::string &p_path)
 {
 #if defined(_MSC_VER) || defined(__MINGW32)
-    return _rmdir(aPath.c_str()) >= 0;
+    return _rmdir(p_path.c_str()) >= 0;
 #endif
 #if defined(UNIX) || defined(__CYGWIN32)
-    return rmdir(aPath.c_str()) >= 0;
+    return rmdir(p_path.c_str()) >= 0;
 #endif
 }
 
 #if defined(_MSC_VER) || defined(__MINGW32)
-bool BDirectory::Create(const std::string &aPath, int /* [[maybe_unused]] int mode = 0755 */)
+bool BDirectory::Create(const std::string &p_path, int /* [[maybe_unused]] int mode = 0755 */)
 {
-    return _mkdir(aPath.c_str()) >= 0;
+    return _mkdir(p_path.c_str()) >= 0;
 }
 #endif
 #if defined(UNIX) || defined(__CYGWIN32)
-bool BDirectory::Create(const std::string &aPath, int mode /* = 0755 */)
+bool BDirectory::Create(const std::string &p_path, int mode /* = 0755 */)
 {
-    return mkdir(aPath.c_str(), mode) >= 0;
+    return mkdir(p_path.c_str(), mode) >= 0;
 }
 #endif
 
 #ifdef _WIN32
-bool BDirectory::RemoveRecursive(const std::string &aPath)
+bool BDirectory::RemoveRecursive(const std::string &p_path)
 {
-    std::string basePath(aPath);
+    std::string basePath(p_path);
     WIN32_FIND_DATA pentry;
 
     if (basePath[basePath.length()-1] != PATHSEPARATOR)
@@ -117,13 +117,13 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
     return true;
 }
 #else
-bool BDirectory::RemoveRecursive(const std::string &aPath)
+bool BDirectory::RemoveRecursive(const std::string &p_path)
 {
     std::string basePath;
     std::string dirEntry;
     struct stat sbuf{};
 
-    basePath = aPath;
+    basePath = p_path;
 
     if (basePath[basePath.length()-1] == PATHSEPARATOR)
     {
@@ -160,10 +160,10 @@ bool BDirectory::RemoveRecursive(const std::string &aPath)
 }
 #endif
 
-PathList_t BDirectory::GetSubDirectories(const std::string &aPath)
+PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
 {
     std::vector<std::string> subDirList;
-    std::string basePath(aPath);
+    std::string basePath(p_path);
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 
@@ -224,10 +224,10 @@ PathList_t BDirectory::GetSubDirectories(const std::string &aPath)
     return subDirList;
 }
 
-PathList_t BDirectory::GetFiles(const std::string &aPath)
+PathList_t BDirectory::GetFiles(const std::string &p_path)
 {
     std::vector<std::string> fileList;
-    std::string basePath(aPath);
+    std::string basePath(p_path);
 #ifdef _WIN32
     WIN32_FIND_DATA pentry;
 

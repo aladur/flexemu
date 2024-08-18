@@ -37,7 +37,7 @@ BRegistry::BRegistry() : lastError(0), hKey(nullptr)
 {
 }
 
-BRegistry::BRegistry(HKEY aHKey) :  lastError(0), hKey(aHKey)
+BRegistry::BRegistry(HKEY p_hKey) :  lastError(0), hKey(p_hKey)
 {
 }
 
@@ -99,18 +99,18 @@ LONG BRegistry::SetValue(const std::string &name, const BYTE *value, int size)
 
 LONG BRegistry::GetValue(const std::string &name, std::string &value)
 {
-    DWORD aSize;
+    DWORD size;
     DWORD type;
 
     if ((lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(),
-                                     0, &type, nullptr, &aSize))
+                                     0, &type, nullptr, &size))
                      == ERROR_SUCCESS)
     {
         auto buffer =
-            std::unique_ptr<wchar_t>(new wchar_t[aSize / sizeof(wchar_t)]);
+            std::unique_ptr<wchar_t>(new wchar_t[size / sizeof(wchar_t)]);
 
         lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(),
-                                    0, &type, (BYTE *)buffer.get(), &aSize);
+                                    0, &type, (BYTE *)buffer.get(), &size);
 
         if (lastError == ERROR_SUCCESS)
         {
@@ -123,11 +123,11 @@ LONG BRegistry::GetValue(const std::string &name, std::string &value)
 
 LONG BRegistry::GetValue(const std::string &name, int &value)
 {
-    DWORD aSize(sizeof(DWORD));
+    DWORD size(sizeof(DWORD));
     DWORD type;
 
     lastError = RegQueryValueEx(hKey, ConvertToUtf16String(name).c_str(), 0,
-        &type, (BYTE *)&value, &aSize);
+        &type, (BYTE *)&value, &size);
 
     return lastError;
 }
@@ -143,7 +143,7 @@ LONG BRegistry::GetValues(const std::string &keyPrefix,
         std::map<std::string, std::string> &values)
 {
     const DWORD size(16384);
-    DWORD aKeySize;
+    DWORD keySize;
     DWORD index = 0U;
     DWORD type;
     bool isFinished = false;
@@ -153,8 +153,8 @@ LONG BRegistry::GetValues(const std::string &keyPrefix,
 
     while (!isFinished)
     {
-        aKeySize = size;
-        lastError = RegEnumValue(hKey, index, keyBuf.get(), &aKeySize, nullptr,
+        keySize = size;
+        lastError = RegEnumValue(hKey, index, keyBuf.get(), &keySize, nullptr,
                                  &type, nullptr, nullptr);
         if (lastError == ERROR_SUCCESS && type == REG_SZ)
         {
