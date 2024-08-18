@@ -480,9 +480,9 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
 
     for (it = this->begin(); it != this->end(); ++it)
     {
-        Byte p_attributes =
+        Byte fileAttributes =
             static_cast<Byte>((it->GetAttributes() & ~clearMask) | setMask);
-        it.SetAttributesCurrent(p_attributes);
+        it.SetAttributesCurrent(fileAttributes);
     }
 
     return true;
