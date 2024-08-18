@@ -207,7 +207,9 @@ TEST(test_ffilebuf, fct_WriteToFile)
     ffb.Realloc(content.size() + 1);
     ffb.SetDateTime(BDate(15, 2, 1985), BTime(18, 12));
     ffb.CopyFrom(reinterpret_cast<const Byte *>(content.c_str()), content.size() + 1);
+    fs::remove(path);
 
+    // Write file to temp directory.
     ASSERT_TRUE(ffb.WriteToFile(path, FileTimeAccess::NONE));
     // Check file on filesystem.
     EXPECT_TRUE(fs::exists(path));
@@ -263,6 +265,21 @@ TEST(test_ffilebuf, fct_WriteToFile)
     EXPECT_EQ(time->tm_hour, 11);
     EXPECT_EQ(time->tm_min, 42);
     fs::remove(path);
+
+#ifndef __BSD
+    // Try to write file to a directory with read-only access.
+    const std::string directory = "testdir";
+    path = fs::temp_directory_path() / directory;
+    fs::create_directory(path);
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    chmod(path.c_str(), sbuf.st_mode & static_cast<unsigned>(~S_IWUSR));
+    auto test_path = path / test_file;
+    ASSERT_FALSE(ffb.WriteToFile(test_path, FileTimeAccess::NONE));
+    EXPECT_FALSE(fs::exists(test_path));
+    ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
+    chmod(path.c_str(), sbuf.st_mode | S_IWUSR);
+    fs::remove(path);
+#endif
 }
 
 TEST(test_ffilebuf, fct_get_set)
