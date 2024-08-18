@@ -73,7 +73,8 @@ class IFlexDiskBase
 {
 public:
     virtual bool IsWriteProtected() const = 0;
-    virtual bool GetAttributes(FlexDiskAttributes &diskAttributes) const = 0;
+    virtual bool GetDiskAttributes(FlexDiskAttributes
+            &diskAttributes) const = 0;
     virtual unsigned GetFlexDiskType() const = 0;
     virtual std::string GetPath() const = 0;
 

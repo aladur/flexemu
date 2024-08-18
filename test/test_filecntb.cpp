@@ -122,7 +122,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path1);
         FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetAttributes(info));
+        ASSERT_TRUE(disk->GetDiskAttributes(info));
         CheckAttributes(info, path1, 0U, 0U, tracks, sectors, type, isWP);
         disk.reset();
         fs::remove(path1);
@@ -152,7 +152,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path2);
         FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetAttributes(info));
+        ASSERT_TRUE(disk->GetDiskAttributes(info));
         CheckAttributes(info, path2, 0U, 0U, tracks, sectors, type, isWP);
         disk.reset();
         fs::remove(path2);
@@ -209,7 +209,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path_jvc);
         FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetAttributes(info));
+        ASSERT_TRUE(disk->GetDiskAttributes(info));
         CheckAttributes(info, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
                 type, false);
         EXPECT_EQ(info.GetJvcFileHeader(), jvcHeader);
@@ -234,7 +234,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
     EXPECT_EQ(disk->GetFlexDiskType(), type);
     EXPECT_EQ(disk->GetPath(), path);
     FlexDiskAttributes info{};
-    ASSERT_TRUE(disk->GetAttributes(info));
+    ASSERT_TRUE(disk->GetDiskAttributes(info));
     CheckAttributes(info, path, 0U, 0U, 0, 0, type, false);
     disk.reset();
     fs::remove_all(path);
@@ -263,7 +263,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path);
         FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetAttributes(info));
+        ASSERT_TRUE(disk->GetDiskAttributes(info));
         CheckAttributes(info, path, diskNumber, 0U, tracks, sectors, type,
                 false);
         disk.reset();

@@ -47,7 +47,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
     {
         FlexDiskAttributes diskAttributes;
 
-        dst.GetAttributes(diskAttributes);
+        dst.GetDiskAttributes(diskAttributes);
         throw FlexException(FERR_CONTAINER_IS_READONLY,
                             diskAttributes.GetPath());
     }
@@ -74,7 +74,7 @@ bool FlexCopyManager::FileCopy(const std::string &sourcName,
     {
         FlexDiskAttributes diskAttributes;
 
-        dst.GetAttributes(diskAttributes);
+        dst.GetDiskAttributes(diskAttributes);
         throw FlexException(FERR_DISK_FULL_WRITING, diskAttributes.GetPath(),
                             destName);
     }

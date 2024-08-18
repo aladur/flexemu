@@ -253,7 +253,7 @@ bool FlexDirectoryDiskByFile::FileCopy(
                                      destination);
 }
 
-bool FlexDirectoryDiskByFile::GetAttributes(
+bool FlexDirectoryDiskByFile::GetDiskAttributes(
         FlexDiskAttributes &diskAttributes) const
 {
     std::string rootPath;

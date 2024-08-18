@@ -366,7 +366,7 @@ FlexDiskAttributes E2floppy::drive_attributes(Word drive_nr)
 
         try
         {
-            floppy[drive_nr]->GetAttributes(diskAttributes);
+            floppy[drive_nr]->GetDiskAttributes(diskAttributes);
         }
         catch (FlexException &)
         {

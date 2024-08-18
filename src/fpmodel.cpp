@@ -250,7 +250,7 @@ FlexDiskAttributes FlexplorerTableModel::GetFlexDiskAttributes() const
 {
     FlexDiskAttributes diskAttributes;
 
-    container->GetAttributes(diskAttributes);
+    container->GetDiskAttributes(diskAttributes);
 
     return diskAttributes;
 }

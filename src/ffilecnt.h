@@ -42,7 +42,7 @@ class FlexDiskIteratorImp;
     {                                      \
         FlexDiskAttributes diskAttributes; \
         \
-        GetAttributes(diskAttributes);                  \
+        GetDiskAttributes(diskAttributes);              \
         throw FlexException(FERR_CONTAINER_IS_READONLY, \
                             diskAttributes.GetName());  \
     }
@@ -96,7 +96,7 @@ public:
 
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
-    bool GetAttributes(FlexDiskAttributes &diskAttributes) const override;
+    bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
     unsigned GetFlexDiskType() const override;
     std::string GetPath() const override;
 

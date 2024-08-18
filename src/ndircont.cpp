@@ -173,7 +173,7 @@ std::string FlexDirectoryDiskBySector::GetPath() const
     return directory;
 }
 
-bool FlexDirectoryDiskBySector::GetAttributes(
+bool FlexDirectoryDiskBySector::GetDiskAttributes(
         FlexDiskAttributes &diskAttributes) const
 {
 

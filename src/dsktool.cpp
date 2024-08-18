@@ -310,7 +310,7 @@ static int ListDirectoryOfDskFile(const std::string &dsk_file,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
-    if (src.GetAttributes(diskAttributes))
+    if (src.GetDiskAttributes(diskAttributes))
     {
         hasAttributes = true;
         std::cout <<
@@ -419,7 +419,7 @@ static int SummaryOfDskFile(const std::string &dsk_file,
         throw FlexException(FERR_CONTAINER_UNFORMATTED, src.GetPath());
     }
 
-    if (src.GetAttributes(diskAttributes))
+    if (src.GetDiskAttributes(diskAttributes))
     {
         uint64_t file_count = 0;
         int tracks;

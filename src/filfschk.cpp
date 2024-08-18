@@ -351,7 +351,7 @@ void FlexDiskCheck::InitializeLinks()
     int tracks = 0;
     int sectors = 0;
 
-    flexDisk.GetAttributes(diskAttributes);
+    flexDisk.GetDiskAttributes(diskAttributes);
 
     if (!diskAttributes.IsValid())
     {
