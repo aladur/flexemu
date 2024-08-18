@@ -43,7 +43,7 @@ protected:
     }
 
     static void CheckAttributes(
-            const FlexDiskAttributes &info,
+            const FlexDiskAttributes &diskInfo,
             const std::string &path,
             unsigned diskNumber,
             unsigned jvcHeaderSize,
@@ -70,25 +70,25 @@ protected:
         if (((type & TYPE_DISKFILE) != 0) ||
             ((type & TYPE_DIRECTORY_BY_SECTOR) != 0))
         {
-            ASSERT_TRUE(info.GetIsFlexFormat());
-            EXPECT_EQ(info.GetDate(), BDate::Now());
-            EXPECT_EQ(info.GetFree(),
+            ASSERT_TRUE(diskInfo.GetIsFlexFormat());
+            EXPECT_EQ(diskInfo.GetDate(), BDate::Now());
+            EXPECT_EQ(diskInfo.GetFree(),
               (expectedTracks - 1) * expectedSectors * SECTOR_SIZE);
-            EXPECT_EQ(info.GetTotalSize(),
+            EXPECT_EQ(diskInfo.GetTotalSize(),
               expectedTracks * expectedSectors * SECTOR_SIZE);
         }
-        EXPECT_EQ(info.GetPath(), path);
-        EXPECT_EQ(info.GetName(), diskName);
-        EXPECT_EQ(info.GetNumber(), diskNumber);
+        EXPECT_EQ(diskInfo.GetPath(), path);
+        EXPECT_EQ(diskInfo.GetName(), diskName);
+        EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
         int tracks = 0;
         int sectors = 0;
-        info.GetTrackSector(tracks, sectors);
+        diskInfo.GetTrackSector(tracks, sectors);
         EXPECT_EQ(tracks, expectedTracks);
         EXPECT_EQ(sectors, expectedSectors);
-        EXPECT_EQ(info.GetIsWriteProtected(), isWriteProtected);
-        EXPECT_EQ(info.GetJvcFileHeader().size(), jvcHeaderSize);
-        EXPECT_TRUE(info.IsValid());
-        EXPECT_EQ(info.GetType(), type);
+        EXPECT_EQ(diskInfo.GetIsWriteProtected(), isWriteProtected);
+        EXPECT_EQ(diskInfo.GetJvcFileHeader().size(), jvcHeaderSize);
+        EXPECT_TRUE(diskInfo.IsValid());
+        EXPECT_EQ(diskInfo.GetType(), type);
     }
 };
 
@@ -121,9 +121,9 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->IsWriteProtected(), isWP);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path1);
-        FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetDiskAttributes(info));
-        CheckAttributes(info, path1, 0U, 0U, tracks, sectors, type, isWP);
+        FlexDiskAttributes diskInfo{};
+        ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+        CheckAttributes(diskInfo, path1, 0U, 0U, tracks, sectors, type, isWP);
         disk.reset();
         fs::remove(path1);
     }
@@ -151,9 +151,9 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->IsWriteProtected(), tracks == 40);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path2);
-        FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetDiskAttributes(info));
-        CheckAttributes(info, path2, 0U, 0U, tracks, sectors, type, isWP);
+        FlexDiskAttributes diskInfo{};
+        ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+        CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, type, isWP);
         disk.reset();
         fs::remove(path2);
     }
@@ -208,11 +208,11 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path_jvc);
-        FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetDiskAttributes(info));
-        CheckAttributes(info, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
+        FlexDiskAttributes diskInfo{};
+        ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+        CheckAttributes(diskInfo, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
                 type, false);
-        EXPECT_EQ(info.GetJvcFileHeader(), jvcHeader);
+        EXPECT_EQ(diskInfo.GetJvcFileHeader(), jvcHeader);
         disk.reset();
         fs::remove(path_jvc);
     }
@@ -233,9 +233,9 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
     EXPECT_EQ(disk->IsWriteProtected(), false);
     EXPECT_EQ(disk->GetFlexDiskType(), type);
     EXPECT_EQ(disk->GetPath(), path);
-    FlexDiskAttributes info{};
-    ASSERT_TRUE(disk->GetDiskAttributes(info));
-    CheckAttributes(info, path, 0U, 0U, 0, 0, type, false);
+    FlexDiskAttributes diskInfo{};
+    ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+    CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, type, false);
     disk.reset();
     fs::remove_all(path);
 }
@@ -262,9 +262,9 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
         EXPECT_EQ(disk->GetPath(), path);
-        FlexDiskAttributes info{};
-        ASSERT_TRUE(disk->GetDiskAttributes(info));
-        CheckAttributes(info, path, diskNumber, 0U, tracks, sectors, type,
+        FlexDiskAttributes diskInfo{};
+        ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
+        CheckAttributes(diskInfo, path, diskNumber, 0U, tracks, sectors, type,
                 false);
         disk.reset();
         fs::remove_all(path);
