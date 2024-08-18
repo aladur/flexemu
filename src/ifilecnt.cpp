@@ -34,12 +34,12 @@
 
    Example:
 
-   IFlexDiskByFile *m_container = new FlexDisk(...);
+   IFlexDiskByFile *diskImage = new FlexDisk(...);
    FlexDiskIterator it("*.*");
    std::string fileName;
    int i = 0;
 
-   for (it = m_container->begin(); it != m_container->end(); ++it)
+   for (it = diskImage->begin(); it != diskImage->end(); ++it)
    {
       fileName = (*it).GetTotalFileName();
       printf("%d. file: %s\n", ++i, fileName);

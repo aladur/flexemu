@@ -292,30 +292,30 @@ PathList_t BDirectory::GetFiles(const std::string &p_path)
 
 bool BDirectory::Exists() const
 {
-    return Exists(m_path);
+    return Exists(path);
 }
 
 bool BDirectory::Remove() const
 {
-    return Remove(m_path);
+    return Remove(path);
 }
 
 bool BDirectory::RemoveRecursive() const
 {
-    return RemoveRecursive(m_path);
+    return RemoveRecursive(path);
 }
 
 bool BDirectory::Create(int mode /* = 0755 */) const
 {
-    return Create(m_path, mode);
+    return Create(path, mode);
 }
 
 PathList_t BDirectory::GetSubDirectories() const
 {
-    return GetSubDirectories(m_path);
+    return GetSubDirectories(path);
 }
 
 PathList_t BDirectory::GetFiles() const
 {
-    return GetFiles(m_path);
+    return GetFiles(path);
 }

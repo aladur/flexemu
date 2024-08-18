@@ -36,7 +36,7 @@ using PathList_t = std::vector<std::string>;
 class BDirectory
 {
 private:
-    std::string m_path;
+    std::string path;
 
 public:
     static bool Exists(const std::string &p_path);
@@ -47,16 +47,16 @@ public:
     static PathList_t GetFiles(const std::string &p_path);
 
     BDirectory() = default;
-    explicit BDirectory(std::string &p_path) : m_path(p_path) { };
+    explicit BDirectory(std::string &p_path) : path(p_path) { };
     ~BDirectory() = default;
 
     inline void SetPath(std::string &p_path)
     {
-        m_path = p_path;
+        path = p_path;
     };
     inline const std::string &GetPath() const
     {
-        return m_path;
+        return path;
     };
     bool Exists() const;
     bool Remove() const;
