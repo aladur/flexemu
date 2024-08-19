@@ -17,12 +17,12 @@ protected:
     FileTimeAccess with_ft{FileTimeAccess::Get | FileTimeAccess::Set};
 
     // First index of diskPaths or disks:
-    const int RO{0}; // read-only disk image index stored in RAM.
-    const int ROM{1}; // read-only disk image index (DSK only).
-    const int RW{2}; // read-write disk image index.
-    const int RAM{3}; // read-write disk image index stored in RAM (DSK only).
-    const int FT{4}; // read-write disk image index with file time.
-    const int TGT{5};// read-write disk image index used as copy target.
+    const int RO{0}; // read-only disk image index.
+    const int RW{1}; // read-write disk image index.
+    const int FT{2}; // read-write disk image index with file time.
+    const int TGT{3};// read-write disk image index used as copy target.
+    const int ROM{4}; // read-only disk image index stored in RAM (DSK only).
+    const int RAM{5}; // read-write disk image index stored in RAM (DSK only).
     // Second index of diskPaths or disks:
     const int DSK{0};// *.dsk disk image file index.
     const int FLX{1};// *.flx disk image file index.
@@ -30,19 +30,29 @@ protected:
 
     const std::array<std::array<const char *, 3>, 6> diskPaths{{
         {"/tmp/testdisk_ro.dsk", "/tmp/testdisk_ro.flx", "/tmp/testdir_ro"},
-        {"/tmp/testdisk_rom.dsk", "/tmp/testdisk_rom.flx", ""},
         {"/tmp/testdisk_rw.dsk", "/tmp/testdisk_rw.flx", "/tmp/testdir_rw"},
-        {"/tmp/testdisk_ram.dsk", "/tmp/testdisk_ram.flx", ""},
         {"/tmp/testdisk_ft.dsk", "/tmp/testdisk_ft.flx", "/tmp/testdir_ft"},
-        {"/tmp/testdisk_tgt.dsk", "/tmp/testdisk_tgt.flx", "/tmp/testdir_tgt"}
+        {"/tmp/testdisk_tgt.dsk", "/tmp/testdisk_tgt.flx", "/tmp/testdir_tgt"},
+        {"/tmp/testdisk_rom.dsk", "/tmp/testdisk_rom.flx", ""},
+        {"/tmp/testdisk_ram.dsk", "/tmp/testdisk_ram.flx", ""},
     }};
 
     const int tracks = 35;
     const int sectors = 10;
 
+    virtual int GetMaxDiskIndex()
+    {
+        return RAM;
+    }
+
+    virtual int GetMaxDirIndex()
+    {
+        return TGT;
+    }
+
     void SetUp() override
     {
-        for (int idx = RO; idx <= TGT; ++idx)
+        for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
             for (int tidx = DSK; tidx <= FLX; ++tidx)
             {
@@ -67,8 +77,8 @@ protected:
             if (diskPaths[idx][DIR][0] != '\0')
             {
                 ASSERT_TRUE(fs::create_directory(diskPaths[idx][DIR]));
-                    fs::permissions(diskPaths[idx][DIR],
-                            fs::perms::owner_write, fs::perm_options::add);
+                fs::permissions(diskPaths[idx][DIR],
+                        fs::perms::owner_write, fs::perm_options::add);
             }
         }
 
@@ -79,64 +89,61 @@ protected:
             const bool isTxt = val < 10;
             std::string ext = (isTxt ? "txt" : "bin");
             const auto filename = fmt::format("test{:02}.{}", fi, ext);
-            std::vector<int> dirIndices{RO, RW, FT};
-            for (int idx : dirIndices)
+            for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
             {
-                std::string path;
-                const auto &ft = (idx == FT) ? with_ft : no_ft;
-
-                if (diskPaths[idx][DIR][0] != '\0')
+                if (idx != TGT)
                 {
-                    path = createFile(diskPaths[idx][DIR], filename, isTxt,
-                           fi);
+                    const auto &ft = (idx == FT) ? with_ft : no_ft;
+
+                    const auto path = createFile(diskPaths[idx][DIR], filename,
+                            isTxt, fi);
                     setDateTime(path, BDate(11, 8, 2024), BTime(22, 1), ft);
                 }
             }
         });
 
-        std::vector<int> dirIndices{RO, RW, FT, TGT};
-        for (int idx : dirIndices)
+        for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
         {
             auto path = std::string(diskPaths[idx][DIR]) + PATHSEPARATOR;
             path = path += "test01.txt";
             struct stat sbuf{};
+            static const auto perms = fs::perms::owner_write |
+                                      fs::perms::group_write |
+                                      fs::perms::others_write;
 
-            if (!stat(diskPaths[idx][DIR], &sbuf))
+            if (!stat(path.c_str(), &sbuf))
             {
-                chmod(path.c_str(), sbuf.st_mode &
-                        static_cast<unsigned>(~S_IWUSR));
+                fs::permissions(path, perms, fs::perm_options::remove);
             }
-            if (idx == RO)
-            {
 
-                if (!stat(diskPaths[idx][DIR], &sbuf))
-                {
-                    chmod(diskPaths[idx][DIR], sbuf.st_mode &
-                            static_cast<unsigned>(~S_IWUSR));
-                }
+            if (idx == RO && !stat(diskPaths[idx][DIR], &sbuf))
+            {
+                fs::permissions(diskPaths[idx][DIR], perms,
+                        fs::perm_options::remove);
             }
         }
     }
 
     void TearDown() override
     {
-        for (int idx = RO; idx <= TGT; ++idx)
+        for (int idx = RO; idx <= GetMaxDiskIndex(); ++idx)
         {
             fs::remove(diskPaths[idx][DSK]);
             fs::remove(diskPaths[idx][FLX]);
-            if (diskPaths[idx][DIR][0] != '\0')
+        }
+
+        for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
+        {
+            fs::permissions(diskPaths[idx][DIR], fs::perms::owner_write,
+                    fs::perm_options::add);
+            auto path = std::string(diskPaths[idx][DIR]) + PATHSEPARATOR;
+            path += "test01.txt";
+            if (fs::exists(path))
             {
-                fs::permissions(diskPaths[idx][DIR], fs::perms::owner_write,
+                fs::permissions(path, fs::perms::owner_write,
                         fs::perm_options::add);
-                auto path = std::string(diskPaths[idx][DIR]) + PATHSEPARATOR;
-                path += "test01.txt";
-                if (fs::exists(path))
-                {
-                    fs::permissions(path, fs::perms::owner_write,
-                            fs::perm_options::add);
-                }
-                fs::remove_all(diskPaths[idx][DIR]);
             }
+            fs::remove_all(diskPaths[idx][DIR]);
         }
     }
 
