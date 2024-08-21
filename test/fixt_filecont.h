@@ -73,10 +73,14 @@ protected:
                             fs::perms::owner_write, fs::perm_options::add);
                 }
             }
+        }
 
+        for (int idx = RO; idx <= GetMaxDirIndex(); ++idx)
+        {
             if (diskPaths[idx][DIR][0] != '\0')
             {
-                ASSERT_TRUE(fs::create_directory(diskPaths[idx][DIR]));
+                ASSERT_TRUE(fs::create_directory(diskPaths[idx][DIR])) <<
+                    "path=" << diskPaths[idx][DIR];
                 fs::permissions(diskPaths[idx][DIR],
                         fs::perms::owner_write, fs::perm_options::add);
             }

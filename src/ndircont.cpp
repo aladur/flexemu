@@ -104,7 +104,11 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         directory.resize(directory.size() - 1);
     }
 
+#ifdef __BSD
+    if ((sbuf.st_mode & S_IWUSR) == 0)
+#else
     if (access(directory.c_str(), W_OK) != 0)
+#endif
     {
         attributes |= WRITE_PROTECT;
     }
@@ -948,9 +952,15 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
                 std::string extension(flx::toupper(
                             flx::getFileExtension(filename).substr(1)));
 
+#ifdef __BSD
+                bool is_file_wp = (stat(path.c_str(), &sbuf) == 0 &&
+                        (sbuf.st_mode & S_IWUSR) == 0);
+#else
+                bool is_file_wp = (access(path.c_str(), W_OK) != 0);
+#endif
                 add_to_directory(name, extension,
                                  dir_idx, is_random, sbuf, begin,
-                                 end, (access(path.c_str(), W_OK) != 0));
+                                 end, is_file_wp);
 
                 // Unfinished: don't write sector map if write
                 // protected.
@@ -1379,8 +1389,6 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
         int /* side = -1 */) const
 {
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
-    auto sec_idx = get_sector_index(track_sector);
-    const auto &link = flex_links[sec_idx];
     bool result = true;
 
     if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
@@ -1389,22 +1397,28 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("read: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
-    if (link.type == SectorType::File || link.type == SectorType::NewFile)
-    {
-        LOG_X(" {}", get_unix_filename(link.file_id));
-    }
     if (!result)
     {
-        LOG(". *** Invalid track or sector.");
+        LOG_XX("read: trk={} sec={} *** Invalid track or sector.\n", trk, sec);
     }
-    LOG("\n");
 #endif
 
     if (!result)
     {
         return result;
     }
+
+    auto sec_idx = get_sector_index(track_sector);
+    const auto &link = flex_links[sec_idx];
+
+#ifdef DEBUG_FILE
+    LOG_XXX("read: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
+    if (link.type == SectorType::File || link.type == SectorType::NewFile)
+    {
+        LOG_X(" {}", get_unix_filename(link.file_id));
+    }
+    LOG("\n");
+#endif
 
     switch (link.type)
     {
@@ -1541,8 +1555,6 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
 {
     bool result = true;
     st_t track_sector{static_cast<Byte>(trk), static_cast<Byte>(sec)};
-    auto sec_idx = get_sector_index(track_sector);
-    auto &link = flex_links[sec_idx];
 
     if (!IsTrackValid(trk) || !IsSectorValid(trk, sec) || IsWriteProtected())
     {
@@ -1550,22 +1562,28 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
     }
 
 #ifdef DEBUG_FILE
-    LOG_XXX("write: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
-    if (link.type == SectorType::File || link.type == SectorType::NewFile)
-    {
-        LOG_X(" {}", get_unix_filename(link.file_id));
-    }
     if (!result)
     {
-        LOG(". *** Invalid track or sector.");
+        LOG_XX("write: trk={} sec={} *** Invalid track or sector.\n", trk, sec);
     }
-    LOG("\n");
 #endif
 
     if (!result)
     {
         return result;
     }
+
+    auto sec_idx = get_sector_index(track_sector);
+    auto &link = flex_links[sec_idx];
+
+#ifdef DEBUG_FILE
+    LOG_XXX("write: {:02X}-{:02X} {}", trk, sec, to_string(link.type));
+    if (link.type == SectorType::File || link.type == SectorType::NewFile)
+    {
+        LOG_X(" {}", get_unix_filename(link.file_id));
+    }
+    LOG("\n");
+#endif
 
     switch (link.type)
     {
@@ -1787,7 +1805,14 @@ bool FlexDirectoryDiskBySector::FormatSector(
 // Mount the directory container. number is the disk number.
 void FlexDirectoryDiskBySector::mount(Word number, int tracks, int sectors)
 {
+#ifdef __BSD
+    struct stat sbuf{};
+
+    bool is_write_protected = (stat(directory.c_str(), &sbuf) == 0 &&
+            (sbuf.st_mode & S_IWUSR) == 0);
+#else
     bool is_write_protected = (access(directory.c_str(), W_OK) != 0);
+#endif
     initialize_header(is_write_protected, tracks, sectors);
     initialize_flex_sys_info_sectors(number);
     fill_flex_directory(is_write_protected);

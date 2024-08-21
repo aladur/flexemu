@@ -620,7 +620,12 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
                 SetAttributes(0);
                 SetSectorMap(0);
 
+#ifdef __BSD
+                if (stat(directory.c_str(), &sbuf) == 0 &&
+                        (sbuf.st_mode & S_IWUSR) == 0)
+#else
                 if(access(directory.c_str(), W_OK))
+#endif
                 {
                     // CDFS-Support: look for file name in file 'random'
                     if (flx::isListedInFileRandom(directory, filename))
@@ -633,7 +638,12 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
                     SetSectorMap(IS_RANDOM_FILE);
                 }
 
+#ifdef __BSD
+                if (stat(path.c_str(), &sbuf) == 0 &&
+                        (sbuf.st_mode & S_IWUSR) == 0)
+#else
                 if(access(path.c_str(), W_OK))
+#endif
                 {
                     SetAttributes(FLX_READONLY);
                 }

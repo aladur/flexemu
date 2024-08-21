@@ -41,6 +41,7 @@ unittests_SOURCES = \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
 	test_filecntb.cpp \
+	test_filecnts.cpp \
 	test_filecont.cpp \
 	test_fileread.cpp \
 	test_filfschk.cpp \
