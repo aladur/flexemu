@@ -217,7 +217,8 @@ bool FlexDirectoryDiskBySector::IsSectorValid(int track, int sector) const
 {
     if (track > 0)
     {
-        return (sector > 0 && sector <= param.max_sector);
+        return (IsTrackValid(track) &&
+                sector > 0 && sector <= param.max_sector);
     }
 
     if (track == 0)
@@ -752,7 +753,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
     }
 
     const struct tm *lt = localtime(&stat.st_mtime);
-    auto year = lt->tm_year > 100 ? lt->tm_year - 100 : lt->tm_year;
+    auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt->tm_year;
     auto records = static_cast<Word>((stat.st_size + (DBPS - 1)) / DBPS);
     auto &dir_entry =
       flex_directory[dir_idx / DIRENTRIES].dir_entries[dir_idx % DIRENTRIES];
@@ -1007,7 +1008,8 @@ void FlexDirectoryDiskBySector::initialize_flex_sys_info_sectors(Word number)
         flx::setValueBigEndian<Word>(&sis.sir.free[0], 0U);
         sis.sir.month = static_cast<Byte>(lt->tm_mon + 1);
         sis.sir.day = static_cast<Byte>(lt->tm_mday);
-        sis.sir.year = static_cast<Byte>(lt->tm_year);
+        auto year = lt->tm_year >= 100 ? lt->tm_year - 100 : lt->tm_year;
+        sis.sir.year = static_cast<Byte>(year);
         sis.sir.last = st_t{static_cast<Byte>(param.max_track),
                             static_cast<Byte>(param.max_sector)};
         std::fill(std::begin(sis.unused2), std::end(sis.unused2), '\0');
@@ -1542,7 +1544,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
     auto sec_idx = get_sector_index(track_sector);
     auto &link = flex_links[sec_idx];
 
-    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec))
+    if (!IsTrackValid(trk) || !IsSectorValid(trk, sec) || IsWriteProtected())
     {
         result = false;
     }
