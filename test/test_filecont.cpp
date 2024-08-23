@@ -552,6 +552,14 @@ TEST_F(test_IFlexDiskByFile, fcts_begin_end)
                 ++count;
             }
             EXPECT_EQ(count, 2);
+
+            FlexDiskIterator iter4("NOTEXIST.???");
+            count = 0;
+            for (iter4 = disk->begin(); iter4 != disk->end(); ++iter4)
+            {
+                ++count;
+            }
+            EXPECT_EQ(count, 0);
         }
     }
 
