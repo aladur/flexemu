@@ -22,7 +22,6 @@
 
 
 #include "misc1.h"
-
 #include <iterator>
 #include <sstream>
 #include <iomanip>
@@ -1540,7 +1539,7 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
     std::ofstream log_ofs(DEBUG_FILE, std::ios::out | std::ios::app);
     if (log_ofs.is_open())
     {
-        dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
+        flx::dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
         log_ofs.close();
     }
 #endif
@@ -1782,7 +1781,7 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
     std::ofstream log_ofs(DEBUG_FILE, std::ios::out | std::ios::app);
     if (log_ofs.is_open())
     {
-        dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
+        flx::dumpSector(log_ofs, 6U, buffer, SECTOR_SIZE);
         log_ofs.close();
     }
 #endif
