@@ -9,10 +9,12 @@ EXTRA_DIST = \
 bin_PROGRAMS = \
 	bin2s19 \
 	fromflex \
+	toflex
+
+noinst_PROGRAMS = \
 	rcvflex \
 	send2flx \
-	testdaa \
-	toflex
+	testdaa
 
 AM_CFLAGS = @OS_TYPE@
 
