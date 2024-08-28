@@ -25,6 +25,16 @@ fi
 host_arch=amd64
 client_arch=`docker image inspect -f "{{json .Architecture }}" $1 | \
       sed -n "s/\"\([a-z0-9]\+\)\"/\1/p"`
+working_dir=`docker image inspect -f "{{json .Config.WorkingDir }}" $1 | \
+      sed -n "s/\"\([a-z0-9\._/]\+\)\"/\1/p"`
+if [ "x$working_dir" == "x" ]; then
+    working_dir=/home/user
+fi
+username=`docker image inspect -f "{{json .Config.User }}" $1 | \
+      sed -n "s/\"\([a-z0-9\._/]\+\)\"/\1/p"`
+if [ "x$username" == "x" ]; then
+    username=user
+fi
 
 if [ "$client_arch" != "$host_arch" ]; then
 # run docker image with a different CPU architecture.
@@ -42,17 +52,19 @@ if [ "$client_arch" != "$host_arch" ]; then
         -e LIBGL_ALWAYS_SOFTWARE=1 \
         -e QT_XCB_NO_MITSHM=1 \
         -e DISPLAY=${DISPLAY:-:0.0} \
+        -e XDG_RUNTIME_DIR=/tmp/runtime-$username \
         -h $HOSTNAME \
         -v /tmp/.X11-unix/:/tmp/.X11-unix \
-        -v $XAUTHORITY:/root/.Xauthority:rw \
+        -v $XAUTHORITY:$working_dir/.Xauthority:rw \
         $1 $2 $3 $4 $5 $6 $7 $8 $9
 else
     docker run -it --rm \
         --network host \
         -e DISPLAY=${DISPLAY:-:0.0} \
+        -e XDG_RUNTIME_DIR=/tmp/runtime-$username \
         -h $HOSTNAME \
         -v /tmp/.X11-unix/:/tmp/.X11-unix \
-        -v $XAUTHORITY:/root/.Xauthority:rw \
+        -v $XAUTHORITY:$working_dir/.Xauthority:rw \
         -v /dev/dri/:/dev/dri/ \
         $1 $2 $3 $4 $5 $6 $7 $8 $9
 fi
