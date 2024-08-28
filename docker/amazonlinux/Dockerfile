@@ -9,6 +9,7 @@ FROM amazonlinux:2023
 RUN yum update -y && \
     yum upgrade -y && \
     yum install -y \
+     sudo \
      xxd \
      vim \
      git \
@@ -18,15 +19,15 @@ RUN yum update -y && \
      automake \
      autoconf \
      qt5-qtbase-devel \
-     qt5-qtx11extras-devel
-RUN mkdir -p /home/user && \
-    cd /home/user && \
-    curl https://ftp.gnu.org/gnu/make/make-4.4.tar.gz >make-4.4.tar.gz
+     qt5-qtx11extras-devel && \
+     useradd --create-home --shell /bin/bash user && \
+     echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN curl https://ftp.gnu.org/gnu/make/make-4.4.tar.gz >make-4.4.tar.gz
     tar xzf make-4.4.tar.gz
     cd make-4.4
     ./configure
     make -j8
-    make install
+    sudo make install
     export PATH=/usr/local/bin:$PATH
     cd ..
     git clone https://github.com/aladur/flexemu.git && \
@@ -34,6 +35,6 @@ RUN mkdir -p /home/user && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

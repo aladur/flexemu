@@ -8,6 +8,7 @@ FROM mageia:9
 
 RUN dnf upgrade -y && \
     dnf install -y \
+     sudo \
      vim-enhanced \
      git \
      make \
@@ -26,11 +27,14 @@ RUN dnf upgrade -y && \
      libqt5test-devel \
      libqt5sql-devel \
      libqt5xml-devel \
-     fonts-ttf-dejavu
+     fonts-ttf-dejavu && \
+    useradd --create-home --shell /bin/bash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV QT_XCB_GL_INTEGRATION=none
-RUN mkdir -p /home/user && \
-    cd /usr/lib64 && \
-    ln -s libQt5Network.so.5.15.7 libQt5Network.so && \
+USER user
+WORKDIR /home/user
+RUN cd /usr/lib64 && \
+    sudo ln -s libQt5Network.so.5.15.7 libQt5Network.so && \
     export PATH=$PATH:/usr/lib64/qt5/bin && \
     cd /home/user && \
     git clone https://github.com/aladur/flexemu.git && \
@@ -38,6 +42,6 @@ RUN mkdir -p /home/user && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

@@ -5,6 +5,7 @@ FROM archlinux:base-devel
 
 RUN pacman -Syu --noconfirm && \
     pacman -S --noconfirm  -y \
+     sudo \
      xxd \
      vim \
      git \
@@ -16,15 +17,17 @@ RUN pacman -Syu --noconfirm && \
      qt5-base \
      qt5-x11extras \
      ttf-dejavu-nerd \
-     gnu-free-fonts
+     gnu-free-fonts && \
+    useradd --create-home --shell /bin/bash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV QT_XCB_GL_INTEGRATION=none
-RUN mkdir -p /home/user && \
-    cd /home/user && \
-    git clone https://github.com/aladur/flexemu.git && \
+USER user
+WORKDIR /home/user
+RUN git clone https://github.com/aladur/flexemu.git && \
     cd flexemu && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

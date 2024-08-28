@@ -1,19 +1,26 @@
-FROM linuxmintd/mint21.3-amd64
+# As derivative of ubuntu there is already a user "ubuntu" with uid 1000
+# defined. It is used and prepared for full sudo access without password.
 
-WORKDIR /home/user
+FROM linuxmintd/mint22-amd64
+
 RUN apt-get -y update && apt-get install -y \
+    sudo \
     xxd \
     vim \
     git \
     build-essential \
     qtbase5-dev \
     qtbase5-dev-tools \
-    libqt5x11extras5-dev
+    libqt5x11extras5-dev && \
+    echo "ubuntu ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+ENV QT_XCB_GL_INTEGRATION=none
+USER ubuntu
+WORKDIR /home/ubuntu
 RUN git clone https://github.com/aladur/flexemu.git && \
-    cd /home/user/flexemu && \
+    cd flexemu && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

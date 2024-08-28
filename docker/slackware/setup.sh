@@ -4,11 +4,14 @@
 # Good site to look for slackware packages: https://pkgs.org
 # All dependencies have been resolved by hand :-(
 
+useradd --create-home --shell /bin/bash user
+echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 slackpkg -batch=on -default_answer=y update || true
 slackpkg -batch=on -default_answer=y upgrade-all || true
 slackpkg -batch=on -default_answer=y clean-system || true
 slackpkg -batch=on -default_answer=y install \
     kernel-headers \
+    sudo \
     libglvnd \
     libXau \
     libXext \

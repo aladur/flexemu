@@ -3,6 +3,7 @@ FROM oraclelinux:9-slim
 RUN microdnf install -y dnf
 RUN dnf upgrade -y && \
     dnf install -y \
+     sudo \
      vim \
      git \
      make \
@@ -12,14 +13,17 @@ RUN dnf upgrade -y && \
      gcc-g++ \
      qt5-qtbase-devel \
      qt5-qtx11extras-devel \
-     liberation-mono-fonts
-RUN mkdir -p /home/user && \
-    cd /home/user && \
-    git clone https://github.com/aladur/flexemu.git && \
-    cd /home/user/flexemu && \
+     liberation-mono-fonts && \
+    useradd --create-home --shell /bin/bash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+ENV QT_XCB_GL_INTEGRATION=none
+USER user
+WORKDIR /home/user
+RUN git clone https://github.com/aladur/flexemu.git && \
+    cd flexemu && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

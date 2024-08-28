@@ -1,8 +1,8 @@
 FROM alpine:3.20.1
 
-WORKDIR /home/user
 RUN apk update && apk upgrade && \
     apk add \
+     sudo \
      xxd \
      vim \
      git \
@@ -14,12 +14,16 @@ RUN apk update && apk upgrade && \
      qt5-qtbase-dev \
      qt5-qtx11extras-dev \
      mesa-utils \
-     font-freefont
+     font-freefont && \
+    adduser --disabled-password --shell /bin/ash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+USER user
+WORKDIR /home/user
 RUN git clone https://github.com/aladur/flexemu.git && \
-    cd /home/user/flexemu && \
+    cd flexemu && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 

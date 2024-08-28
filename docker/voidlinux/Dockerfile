@@ -25,6 +25,7 @@ RUN xbps-install -Sy && \
      xbps-query -L && \
      xbps-remove -oOy && \
      xbps-install -y \
+     sudo \
      bash \
      xxd \
      vim \
@@ -39,15 +40,17 @@ RUN xbps-install -Sy && \
      qt5-printsupport \
      qt5-devel \
      qt5-x11extras-devel \
-     dejavu-fonts-ttf
+     dejavu-fonts-ttf && \
+    useradd --create-home --shell /bin/bash user && \
+    echo "user ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 ENV QT_XCB_GL_INTEGRATION=none
-RUN mkdir -p /home/user && \
-    cd /home/user && \
-    git clone https://github.com/aladur/flexemu.git && \
+USER user
+WORKDIR /home/user
+RUN git clone https://github.com/aladur/flexemu.git && \
     cd flexemu && \
     git submodule update --init --recursive && \
     ./configure --prefix=/usr --sysconfdir=/etc && \
     make -j8 check && \
-    make install
+    sudo make install
 CMD ["/bin/bash"]
 
