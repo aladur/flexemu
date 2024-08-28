@@ -12,11 +12,13 @@ The subfolders contain a dockerfile which can be used to create a docker image f
 * Install development environment
 * Install Qt libraries and development headers
 * Install some fonts
+* Create a build user (with default access rights and sudo capability)
+* Switch to build user
 * Download flexemu distribution from github
 * Initialize and update git submodules
 * Configure flexemu project
 * Build flexemu and execute unittests
-* Install flexemu
+* Install flexemu (with root access)
 
 The Dockerfile always downloads the current master of flexemu.
 
@@ -86,7 +88,7 @@ The IBM s390x CPU is a big endian CPU architcture. For both byte ordering and bi
 
 As a first step the <code>qemu</code> backend has to be initialized once within a session with the following command line.
 
-        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes --credential yes
 
 With the following command line a debian docker image with s390x CPU architecture can be build. To build on a different architecture the Dockerfile contains a parameter <code>--platform=&lt;os/cpu_architecture&gt;</code>, in this case specific for the s390 CPU <code>--platform=linux/s390x</code> in the <code>FROM</code> command. This automatically activates qemu backend. The Dockerfile to build a debian image for the s390x CPU architecture is located in folder <code>debian_be</code>, the <code>_be</code> suffix means *big endian*.
 
