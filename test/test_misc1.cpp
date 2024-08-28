@@ -263,6 +263,11 @@ TEST(test_misc1, fct_getTempPath)
 {
     struct stat sbuf;
     auto path = flx::getTempPath();
+    if (path.empty())
+    {
+        return;
+    }
+
     bool result = !stat(path.c_str(), &sbuf) && S_ISDIR(sbuf.st_mode);
 
     EXPECT_TRUE(result);

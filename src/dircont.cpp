@@ -81,11 +81,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         directory.resize(directory.size() - 1);
     }
 
-#ifdef __BSD
-    if ((sbuf.st_mode & S_IWUSR) == 0)
-#else
     if (access(path.c_str(), W_OK))
-#endif
     {
         attributes |= FLX_READONLY;
     }

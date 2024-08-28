@@ -266,7 +266,6 @@ TEST(test_ffilebuf, fct_WriteToFile)
     EXPECT_EQ(time->tm_min, 42);
     fs::remove(path);
 
-#ifndef __BSD
     // Try to write file to a directory with read-only access.
     const std::string directory = "testdir";
     path = fs::temp_directory_path() / directory;
@@ -279,7 +278,6 @@ TEST(test_ffilebuf, fct_WriteToFile)
     ASSERT_EQ(stat(path.c_str(), &sbuf), 0);
     chmod(path.c_str(), sbuf.st_mode | S_IWUSR);
     fs::remove(path);
-#endif
 }
 
 TEST(test_ffilebuf, fct_get_set)
