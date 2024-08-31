@@ -1,0 +1,27 @@
+{
+    "project": "flexemu",
+    "versions":
+    {
+        "current": "V3.25"
+    },
+    "clangTidyRules": 209,
+    "linesOfCode":
+    {
+        "src":
+        {
+            "cpp": 44855,
+            "cheader": 10516,
+            "cppsum": 55371
+        },
+        "test":
+        {
+            "cpp": 7308,
+            "cheader": 210,
+            "cppsum": 7518
+        },
+        "cpp": 52163,
+        "cheader": 10726,
+        "cppsum": 62889
+    }
+}
+
