@@ -6,3 +6,7 @@
 	path = fmt
 	url = https://github.com/fmtlib/fmt.git
 	ignore = untracked
+[submodule "jsoncpp"]
+	path = jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+	ignore = untracked
