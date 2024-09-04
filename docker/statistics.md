@@ -14,6 +14,7 @@ The build command is:
 751|altlinux|2.11|5.15.13|user||
 323|archlinux|3.12|5.15.14|user||
 266|biglinux|2.51|5.15.14|builder||
+342|cachyos|2.71|5.15.14|user||
 274|centos|1.65|5.15.9|user||
 985|debian|1.60|5.15.8|user||
 1552|debian_be|1.52|5.15.8|user|1)|
@@ -44,7 +45,8 @@ The build command is:
 ```
 alpine
 altlinux
-archlinux ---> manjaro ---> biglinux
+archlinux -+-> manjaro ---> biglinux
+           +-> cachyos
 debian -+-> ubuntu ---> linuxmint
         +-> kalilinux
         +-> endlessos
