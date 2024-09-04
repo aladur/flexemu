@@ -25,29 +25,24 @@
     #include <csignal>
     #include <sys/types.h>
     #include <sys/wait.h>
+    #include <string>
     #include <vector>
-    #include <array>
 #endif
 #include "bprocess.h"
 #include "cvtwchar.h"
 
 BProcess::BProcess(std::string p_executable,
                    std::string p_directory /* = "" */,
-                   std::string p_arguments /* = "" */)
+                   std::vector<std::string> p_arguments /* = {} */)
     : executable(std::move(p_executable))
-    , arguments(std::move(p_arguments))
     , directory(std::move(p_directory))
+    , arguments(std::move(p_arguments))
 {
 }
 
 void BProcess::AddArgument(const std::string &argument)
 {
-    if (!arguments.empty())
-    {
-        arguments += " ";
-    }
-
-    arguments += argument;
+    arguments.push_back(argument);
 }
 
 void BProcess::SetDirectory(const std::string &p_directory)
@@ -71,15 +66,25 @@ bool BProcess::Start()
     PROCESS_INFORMATION pi;
 
     const auto wExecutable(ConvertToUtf16String(executable));
-    auto wArguments(ConvertToUtf16String(arguments));
     const auto wDirectory(ConvertToUtf16String(directory));
+    std::wstring wArguments;
+
     memset((void *)&si, 0, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
+
+    for (const auto &argument : arguments)
+    {
+        if (!wArguments.empty())
+        {
+            wArguments += L" ";
+        }
+        wArguments += ConvertToUtf16String(argument);
+    }
 
     // For CreateProcessW parameter wArguments must not be const
     auto result = CreateProcess(
         wExecutable.c_str(), // Name/path of executable
-        &wArguments[0], // Command line arguments
+        wArguments.data(), // All command line arguments in one string
         nullptr, // Security attributes, handle can not be inherited
         nullptr, // Thread attributes, handle can not be inherited
         FALSE, // Handles are not inherited
@@ -114,6 +119,26 @@ bool BProcess::IsRunning() const
 
     return (status == STILL_ACTIVE);
 }
+
+int BProcess::Wait()
+{
+    if (hProcess == nullptr)
+    {
+        return 0;
+    }
+
+    DWORD exitCode;
+
+    WaitForSingleObject(hProcess, INFINITE);
+    if (GetExitCodeProcess(hProcess, &exitCode) == 0)
+    {
+        hProcess = nullptr;
+        return 0;
+    }
+
+    hProcess = nullptr;
+    return static_cast<int>(exitCode);
+}
 #endif
 
 //***********************************************
@@ -121,18 +146,17 @@ bool BProcess::IsRunning() const
 //***********************************************
 #ifdef UNIX
 
-// ATTENTION: multiple arguments are not supported yet!
 bool BProcess::Start()
 {
-    std::vector<std::string> args{ executable, arguments };
-    std::array<char *, 3> argv{};
+    std::vector<char *> argv;
     struct sigaction default_action{};
-    int i = 0;
 
-    for (auto &arg : args)
+    argv.push_back(executable.data());
+    for (auto &argument : arguments)
     {
-        argv[i++] = arg.data();
+        argv.push_back(argument.data());
     }
+    argv.push_back(nullptr);
 
     default_action.sa_handler = SIG_DFL;
     default_action.sa_flags = 0;
@@ -169,6 +193,24 @@ bool BProcess::IsRunning() const
     int status = 0;
 
     return waitpid(pid, &status, WNOHANG) == 0;
+}
+
+int BProcess::Wait()
+{
+    if (pid == -1)
+    {
+        return 0;
+    }
+
+    int status = 0;
+
+    if (waitpid(pid, &status, 0) == pid && WIFEXITED(status))
+    {
+        return WEXITSTATUS(status);
+    }
+
+    pid = -1;
+    return 0;
 }
 #endif
 

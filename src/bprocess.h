@@ -24,6 +24,7 @@
 #define BPROCESS_INCLUDED
 
 #include "misc1.h"
+#include <vector>
 #include <string>
 
 // This class describes a platform independant Process interface
@@ -34,7 +35,7 @@ public:
     explicit BProcess(
              std::string p_executable,
              std::string p_directory = "",
-             std::string p_arguments = "");
+             std::vector<std::string> p_arguments = {});
 #ifdef _WIN32
     ~BProcess();
 #endif
@@ -45,9 +46,10 @@ public:
     void SetDirectory(const std::string &p_directory);
     bool Start(); // Start the Process if not started yet
     bool IsRunning() const; // Check if Process is running
-    const char *GetArguments()  const
+    int Wait(); // Wait until process exited and return exit status
+    std::vector<std::string> GetArguments()  const
     {
-        return arguments.c_str();
+        return arguments;
     };
     const char *GetDirectory()  const
     {
@@ -60,8 +62,8 @@ public:
 
 protected:
     std::string executable;
-    std::string arguments;
     std::string directory;
+    std::vector<std::string> arguments;
 
 #ifdef _WIN32
     HANDLE hProcess{INVALID_HANDLE_VALUE};
