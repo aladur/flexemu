@@ -93,6 +93,7 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = $(FLEXPLORER) dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexemu$(EXEEXT) mdcrtool$(EXEEXT)
+noinst_PROGRAMS = updatemd$(EXEEXT)
 EXTRA_PROGRAMS = dsktool$(EXEEXT) flex2hex$(EXEEXT) \
 	flexplorer$(EXEEXT) mdcrtool$(EXEEXT)
 subdir = src
@@ -116,11 +117,11 @@ DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
-CONFIG_CLEAN_VPATH_FILES =
+CONFIG_CLEAN_VPATH_FILES = options.txt
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(desktopdir)" \
 	"$(DESTDIR)$(mimetypedir)" "$(DESTDIR)$(pkgdatadir)" \
 	"$(DESTDIR)$(sysconfdir)"
-PROGRAMS = $(bin_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 AM_V_AR = $(am__v_AR_@AM_V@)
@@ -151,6 +152,12 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_libfmt_a_OBJECTS = ../fmt/src/libfmt_a-format.$(OBJEXT) \
 	../fmt/src/libfmt_a-os.$(OBJEXT)
 libfmt_a_OBJECTS = $(am_libfmt_a_OBJECTS)
+libjsoncpp_a_AR = $(AR) $(ARFLAGS)
+libjsoncpp_a_LIBADD =
+am_libjsoncpp_a_OBJECTS = $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.$(OBJEXT) \
+	$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.$(OBJEXT) \
+	$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.$(OBJEXT)
+libjsoncpp_a_OBJECTS = $(am_libjsoncpp_a_OBJECTS)
 am_dsktool_OBJECTS = dsktool-dsktool.$(OBJEXT)
 am__objects_1 =
 am__objects_2 = $(am__objects_1)
@@ -241,6 +248,11 @@ mdcrtool_OBJECTS = $(am_mdcrtool_OBJECTS) $(nodist_mdcrtool_OBJECTS)
 mdcrtool_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(mdcrtool_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_updatemd_OBJECTS = updatemd-updatemd.$(OBJEXT)
+updatemd_OBJECTS = $(am_updatemd_OBJECTS)
+updatemd_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(updatemd_CXXFLAGS) \
+	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -256,7 +268,10 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
+am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po \
+	$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po \
+	$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po \
+	../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	../fmt/src/$(DEPDIR)/libfmt_a-os.Po \
 	./$(DEPDIR)/dsktool-dsktool.Po \
 	./$(DEPDIR)/flex2hex-flex2hex.Po ./$(DEPDIR)/flexemu-absgui.Po \
@@ -349,7 +364,8 @@ am__depfiles_remade = ../fmt/src/$(DEPDIR)/libfmt_a-format.Po \
 	./$(DEPDIR)/libflex_a-memory.Po ./$(DEPDIR)/libflex_a-misc1.Po \
 	./$(DEPDIR)/libflex_a-rfilecnt.Po \
 	./$(DEPDIR)/mdcrtool-mdcrfs.Po \
-	./$(DEPDIR)/mdcrtool-mdcrtool.Po
+	./$(DEPDIR)/mdcrtool-mdcrtool.Po \
+	./$(DEPDIR)/updatemd-updatemd.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -387,15 +403,17 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) $(dsktool_SOURCES) \
+SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) \
+	$(libjsoncpp_a_SOURCES) $(dsktool_SOURCES) \
 	$(nodist_dsktool_SOURCES) $(flex2hex_SOURCES) \
 	$(nodist_flex2hex_SOURCES) $(flexemu_SOURCES) \
 	$(nodist_flexemu_SOURCES) $(flexplorer_SOURCES) \
 	$(nodist_flexplorer_SOURCES) $(mdcrtool_SOURCES) \
-	$(nodist_mdcrtool_SOURCES)
+	$(nodist_mdcrtool_SOURCES) $(updatemd_SOURCES)
 DIST_SOURCES = $(libflex_a_SOURCES) $(libfmt_a_SOURCES) \
-	$(dsktool_SOURCES) $(flex2hex_SOURCES) $(flexemu_SOURCES) \
-	$(flexplorer_SOURCES) $(mdcrtool_SOURCES)
+	$(libjsoncpp_a_SOURCES) $(dsktool_SOURCES) $(flex2hex_SOURCES) \
+	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(mdcrtool_SOURCES) \
+	$(updatemd_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
 	install-data-recursive install-dvi-recursive \
@@ -436,7 +454,7 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-DATA = $(desktop_DATA) $(mimetype_DATA) $(pkgdata_DATA) \
+DATA = $(desktop_DATA) $(mimetype_DATA) $(noinst_DATA) $(pkgdata_DATA) \
 	$(sysconf_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
@@ -466,7 +484,7 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.hin \
-	$(top_srcdir)/config/depcomp
+	$(srcdir)/options.txt $(top_srcdir)/config/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -659,6 +677,7 @@ desktop_DATA = \
 	flexemu-flexplorer.desktop
 
 mimetype_DATA = flexemu.xml
+libjsoncpp_top = jsoncpp/src/lib_json
 SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .h.gch
 EXTRA_DIST = \
 	$(desktop_DATA) \
@@ -683,7 +702,8 @@ EXTRA_DIST = \
 	mdcrtool.vcxproj \
 	msvcQtPath.props.in \
 	pch.h \
-	pch.cpp
+	pch.cpp \
+	options.txt
 
 SUBDIRS = bitmaps tools
 
@@ -693,7 +713,8 @@ desktopdir = $(datadir)/applications
 # Directory where mimetype *.xml files are located
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
-noinst_LIBRARIES = libflex.a libfmt.a
+noinst_LIBRARIES = libflex.a libfmt.a libjsoncpp.a
+noinst_DATA = metadata.json
 DIRFLAGS = -DF_DATADIR=\"$(pkgdatadir)\" -DF_SYSCONFDIR=\"$(sysconfdir)\"
 AM_CXXFLAGS = \
 	--std=c++17 \
@@ -706,6 +727,7 @@ AM_CXXFLAGS = \
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
 
+libjsoncpp_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -713,6 +735,9 @@ flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+updatemd_CXXFLAGS = --std=c++17 $(OS_TYPE) \
+			-isystem $(top_srcdir)/jsoncpp/include
+
 libflex_a_LIBADD = $(LIBOBJS)
 flexplorer_LDADD = $(QT_LIBS) $(PTHREAD_LD) libflex.a libfmt.a
 mdcrtool_LDADD = $(PTHREAD_LD) libflex.a libfmt.a
@@ -723,12 +748,14 @@ flexemu_LDADD = \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a libfmt.a
 
+updatemd_LDADD = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 libflex_a_DEPENDENCIES = libfmt.a
 flexemu_DEPENDENCIES = $(FLEX_RC) libflex.a libfmt.a
 flexplorer_DEPENDENCIES = libflex.a libfmt.a
 flex2hex_DEPENDENCIES = libflex.a libfmt.a
 dsktool_DEPENDENCIES = libflex.a libfmt.a
 mdcrtool_DEPENDENCIES = libflex.a libfmt.a
+updatemd_DEPENDENCIES = libflex.a libfmt.a libjsoncpp.a
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h
@@ -1126,6 +1153,7 @@ libflex_a_SOURCES = \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
+	bprocess.h \
 	brcfile.h \
 	bregistr.h \
 	breltime.h \
@@ -1162,6 +1190,18 @@ libflex_a_SOURCES = \
 libfmt_a_SOURCES = \
 	../fmt/src/format.cc \
 	../fmt/src/os.cc
+
+libjsoncpp_a_SOURCES = \
+	$(top_srcdir)/$(libjsoncpp_top)/json_reader.cpp \
+	$(top_srcdir)/$(libjsoncpp_top)/json_value.cpp \
+	$(top_srcdir)/$(libjsoncpp_top)/json_writer.cpp
+
+updatemd_SOURCES = \
+	updatemd.cpp \
+	benv.h \
+	boption.h \
+	bprocess.h \
+	misc1.h
 
 
 ################################################################################
@@ -1269,6 +1309,15 @@ clean-binPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
+clean-noinstPROGRAMS:
+	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
+	echo " rm -f" $$list; \
+	rm -f $$list || exit $$?; \
+	test -n "$(EXEEXT)" || exit 0; \
+	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
+	echo " rm -f" $$list; \
+	rm -f $$list
+
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
@@ -1291,6 +1340,26 @@ libfmt.a: $(libfmt_a_OBJECTS) $(libfmt_a_DEPENDENCIES) $(EXTRA_libfmt_a_DEPENDEN
 	$(AM_V_at)-rm -f libfmt.a
 	$(AM_V_AR)$(libfmt_a_AR) libfmt.a $(libfmt_a_OBJECTS) $(libfmt_a_LIBADD)
 	$(AM_V_at)$(RANLIB) libfmt.a
+$(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp):
+	@$(MKDIR_P) $(top_builddir)/$(libjsoncpp_top)
+	@: > $(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp)
+$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)
+	@: > $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.$(OBJEXT):  \
+	$(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp) \
+	$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.$(OBJEXT):  \
+	$(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp) \
+	$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.$(OBJEXT):  \
+	$(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp) \
+	$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)
+
+libjsoncpp.a: $(libjsoncpp_a_OBJECTS) $(libjsoncpp_a_DEPENDENCIES) $(EXTRA_libjsoncpp_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libjsoncpp.a
+	$(AM_V_AR)$(libjsoncpp_a_AR) libjsoncpp.a $(libjsoncpp_a_OBJECTS) $(libjsoncpp_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libjsoncpp.a
 
 dsktool$(EXEEXT): $(dsktool_OBJECTS) $(dsktool_DEPENDENCIES) $(EXTRA_dsktool_DEPENDENCIES) 
 	@rm -f dsktool$(EXEEXT)
@@ -1312,13 +1381,21 @@ mdcrtool$(EXEEXT): $(mdcrtool_OBJECTS) $(mdcrtool_DEPENDENCIES) $(EXTRA_mdcrtool
 	@rm -f mdcrtool$(EXEEXT)
 	$(AM_V_CXXLD)$(mdcrtool_LINK) $(mdcrtool_OBJECTS) $(mdcrtool_LDADD) $(LIBS)
 
+updatemd$(EXEEXT): $(updatemd_OBJECTS) $(updatemd_DEPENDENCIES) $(EXTRA_updatemd_DEPENDENCIES) 
+	@rm -f updatemd$(EXEEXT)
+	$(AM_V_CXXLD)$(updatemd_LINK) $(updatemd_OBJECTS) $(updatemd_LDADD) $(LIBS)
+
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
+	-rm -f $(top_builddir)/$(libjsoncpp_top)/*.$(OBJEXT)
 	-rm -f ../fmt/src/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../fmt/src/$(DEPDIR)/libfmt_a-format.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../fmt/src/$(DEPDIR)/libfmt_a-os.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dsktool-dsktool.Po@am__quote@ # am--include-marker
@@ -1438,6 +1515,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-rfilecnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrfs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrtool.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/updatemd-updatemd.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1930,6 +2008,48 @@ libflex_a-rfilecnt.obj: rfilecnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../fmt/src/os.cc' object='../fmt/src/libfmt_a-os.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfmt_a_CXXFLAGS) $(CXXFLAGS) -c -o ../fmt/src/libfmt_a-os.obj `if test -f '../fmt/src/os.cc'; then $(CYGPATH_W) '../fmt/src/os.cc'; else $(CYGPATH_W) '$(srcdir)/../fmt/src/os.cc'; fi`
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.o: $(top_builddir)/$(libjsoncpp_top)/json_reader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.o -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.obj: $(top_builddir)/$(libjsoncpp_top)/json_reader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.obj -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_reader.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_reader.cpp'; fi`
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.o: $(top_builddir)/$(libjsoncpp_top)/json_value.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.o -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_value.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_value.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_value.cpp
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.obj: $(top_builddir)/$(libjsoncpp_top)/json_value.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.obj -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_value.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_value.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_value.cpp'; fi`
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.o: $(top_builddir)/$(libjsoncpp_top)/json_writer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.o -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.o `test -f '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp' || echo '$(srcdir)/'`$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp
+
+$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.obj: $(top_builddir)/$(libjsoncpp_top)/json_writer.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -MT $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.obj -MD -MP -MF $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Tpo -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Tpo $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp' object='$(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjsoncpp_a_CXXFLAGS) $(CXXFLAGS) -c -o $(top_builddir)/$(libjsoncpp_top)/libjsoncpp_a-json_writer.obj `if test -f '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; then $(CYGPATH_W) '$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; else $(CYGPATH_W) '$(srcdir)/$(top_builddir)/$(libjsoncpp_top)/json_writer.cpp'; fi`
 
 dsktool-dsktool.o: dsktool.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dsktool_CXXFLAGS) $(CXXFLAGS) -MT dsktool-dsktool.o -MD -MP -MF $(DEPDIR)/dsktool-dsktool.Tpo -c -o dsktool-dsktool.o `test -f 'dsktool.cpp' || echo '$(srcdir)/'`dsktool.cpp
@@ -3135,6 +3255,20 @@ mdcrtool-mdcrtool.obj: mdcrtool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(mdcrtool_CXXFLAGS) $(CXXFLAGS) -c -o mdcrtool-mdcrtool.obj `if test -f 'mdcrtool.cpp'; then $(CYGPATH_W) 'mdcrtool.cpp'; else $(CYGPATH_W) '$(srcdir)/mdcrtool.cpp'; fi`
 
+updatemd-updatemd.o: updatemd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(updatemd_CXXFLAGS) $(CXXFLAGS) -MT updatemd-updatemd.o -MD -MP -MF $(DEPDIR)/updatemd-updatemd.Tpo -c -o updatemd-updatemd.o `test -f 'updatemd.cpp' || echo '$(srcdir)/'`updatemd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/updatemd-updatemd.Tpo $(DEPDIR)/updatemd-updatemd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='updatemd.cpp' object='updatemd-updatemd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(updatemd_CXXFLAGS) $(CXXFLAGS) -c -o updatemd-updatemd.o `test -f 'updatemd.cpp' || echo '$(srcdir)/'`updatemd.cpp
+
+updatemd-updatemd.obj: updatemd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(updatemd_CXXFLAGS) $(CXXFLAGS) -MT updatemd-updatemd.obj -MD -MP -MF $(DEPDIR)/updatemd-updatemd.Tpo -c -o updatemd-updatemd.obj `if test -f 'updatemd.cpp'; then $(CYGPATH_W) 'updatemd.cpp'; else $(CYGPATH_W) '$(srcdir)/updatemd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/updatemd-updatemd.Tpo $(DEPDIR)/updatemd-updatemd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='updatemd.cpp' object='updatemd-updatemd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(updatemd_CXXFLAGS) $(CXXFLAGS) -c -o updatemd-updatemd.obj `if test -f 'updatemd.cpp'; then $(CYGPATH_W) 'updatemd.cpp'; else $(CYGPATH_W) '$(srcdir)/updatemd.cpp'; fi`
+
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
@@ -3445,6 +3579,8 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f ../fmt/src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ../fmt/src/$(am__dirstamp)
+	-test -z "$(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)" || rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/$(am__dirstamp)
+	-test -z "$(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp)" || rm -f $(top_builddir)/$(libjsoncpp_top)/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -3453,10 +3589,13 @@ maintainer-clean-generic:
 clean: clean-recursive
 
 clean-am: clean-binPROGRAMS clean-generic clean-libtool \
-	clean-noinstLIBRARIES mostlyclean-am
+	clean-noinstLIBRARIES clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-recursive
-		-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-format.Po
+		-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po
+	-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po
+	-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po
+	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-format.Po
 	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-os.Po
 	-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
@@ -3575,6 +3714,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
+	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -3622,7 +3762,10 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-recursive
-		-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-format.Po
+		-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_reader.Po
+	-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_value.Po
+	-rm -f $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-json_writer.Po
+	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-format.Po
 	-rm -f ../fmt/src/$(DEPDIR)/libfmt_a-os.Po
 	-rm -f ./$(DEPDIR)/dsktool-dsktool.Po
 	-rm -f ./$(DEPDIR)/flex2hex-flex2hex.Po
@@ -3741,6 +3884,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
+	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -3768,28 +3912,36 @@ uninstall-am: uninstall-binPROGRAMS uninstall-desktopDATA \
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
 	am--depfiles check check-am clean clean-binPROGRAMS \
 	clean-generic clean-libtool clean-noinstLIBRARIES \
-	cscopelist-am ctags ctags-am distclean distclean-compile \
-	distclean-generic distclean-hdr distclean-libtool \
-	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
-	install-data-am install-data-hook install-desktopDATA \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-mimetypeDATA install-pdf install-pdf-am \
-	install-pkgdataDATA install-ps install-ps-am install-strip \
-	install-sysconfDATA installcheck installcheck-am installdirs \
-	installdirs-am maintainer-clean maintainer-clean-generic \
-	mostlyclean mostlyclean-compile mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am uninstall-binPROGRAMS uninstall-desktopDATA \
-	uninstall-hook uninstall-mimetypeDATA uninstall-pkgdataDATA \
-	uninstall-sysconfDATA
+	clean-noinstPROGRAMS cscopelist-am ctags ctags-am distclean \
+	distclean-compile distclean-generic distclean-hdr \
+	distclean-libtool distclean-tags distdir dvi dvi-am html \
+	html-am info info-am install install-am install-binPROGRAMS \
+	install-data install-data-am install-data-hook \
+	install-desktopDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-mimetypeDATA install-pdf \
+	install-pdf-am install-pkgdataDATA install-ps install-ps-am \
+	install-strip install-sysconfDATA installcheck installcheck-am \
+	installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags tags-am uninstall uninstall-am uninstall-binPROGRAMS \
+	uninstall-desktopDATA uninstall-hook uninstall-mimetypeDATA \
+	uninstall-pkgdataDATA uninstall-sysconfDATA
 
 .PRECIOUS: Makefile
 
 
 .rc.o:
 	@WINDRES_EXE@ -o $@ -O coff -i $<
+
+# Execute updatemd to update file metadata.json.
+# It has all c++ and c-header files as dependent to be able to update the
+# lines of code for any source code change.
+metadata.json: updatemd $(libflex_a_SOURCES) \
+	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(dsktool_SOURCES) \
+	$(flex2hex_SOURCES) $(mdcrtool_SOURCES) $(updatemd_SOURCES)
+	./updatemd -l -k src -f $(top_srcdir)/src/metadata.json
 
 ################################################################################
 # Use traditional-style suffix rules for precompiled header support.
@@ -3822,7 +3974,9 @@ pch.h.gcp: pch.h misc1.h
 # Generated *_moc.cpp and *_qrc.cpp files are excluded from the check.
 clang-tidy-check:
 	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_\(moc\|qrc\).cpp/d"` \
-	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@ -isystem$(top_srcdir)/fmt/include
+	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@ \
+	-isystem $(top_srcdir)/fmt/include \
+	-isystem $(top_srcdir)/jsoncpp/include
 
 install-data-hook: update-icon-cache update-mime-database update-desktop-database
 

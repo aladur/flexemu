@@ -20,10 +20,15 @@ libgmock_la_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)
 libgmock_la_LDFLAGS = -pthread
 
+EXTRA_DIST = \
+	options.txt
+
 # Instructions to make test executable.
 #
 check_PROGRAMS = unittests
 noinst_PROGRAMS = unittests test_gccasm
+
+noinst_DATA = metadata.json
 
 unittests_SOURCES = \
 	test_benv.cpp \
@@ -207,7 +212,7 @@ test_gccasm_CXXFLAGS = \
 
 # To support 'make distcheck' the following googletest files have to be added
 # to the distribution.
-EXTRA_DIST = \
+EXTRA_DIST += \
 	$(top_srcdir)/$(gtest_top)/src/gtest.cc \
 	$(top_srcdir)/$(gtest_top)/src/gtest-all.cc \
 	$(top_srcdir)/$(gtest_top)/src/gtest-assertion-result.cc \
@@ -287,6 +292,9 @@ EXTRA_DIST += \
 	$(top_srcdir)/fmt/include/fmt/ranges.h \
 	$(top_srcdir)/fmt/include/fmt/std.h \
 	$(top_srcdir)/fmt/include/fmt/xchar.h
+
+metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
+	../src/updatemd -l -k test -f $(top_srcdir)/test/metadata.json
 
 clean-local:
 	rm -rf test_detail.xml

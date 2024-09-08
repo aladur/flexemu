@@ -1,0 +1,3 @@
+# define cloc options for this directory
+# cloc source: https://github.com/AlDanial/cloc.git
+

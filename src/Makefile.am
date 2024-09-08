@@ -8,6 +8,8 @@ desktop_DATA = \
 
 mimetype_DATA = flexemu.xml
 
+libjsoncpp_top = jsoncpp/src/lib_json
+
 SUFFIXES = .rc .o .ui _ui.h .qrc _qrc.cpp .h _moc.cpp .h.gch
 
 .rc.o:
@@ -36,7 +38,8 @@ EXTRA_DIST = \
 	mdcrtool.vcxproj \
 	msvcQtPath.props.in \
 	pch.h \
-	pch.cpp
+	pch.cpp \
+	options.txt
 
 SUBDIRS = bitmaps tools
 
@@ -47,7 +50,7 @@ desktopdir = $(datadir)/applications
 mimetypebasedir = $(datadir)/mime
 mimetypedir = $(mimetypebasedir)/packages
 
-noinst_LIBRARIES = libflex.a libfmt.a
+noinst_LIBRARIES = libflex.a libfmt.a libjsoncpp.a
 
 bin_PROGRAMS = \
 	$(FLEXPLORER) \
@@ -55,6 +58,10 @@ bin_PROGRAMS = \
 	flex2hex \
 	flexemu \
 	mdcrtool
+
+noinst_PROGRAMS = updatemd
+
+noinst_DATA = metadata.json
 
 EXTRA_PROGRAMS = \
 	dsktool \
@@ -74,6 +81,7 @@ AM_CXXFLAGS = \
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
 
+libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -81,6 +89,8 @@ flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+updatemd_CXXFLAGS   = --std=c++17 $(OS_TYPE) \
+			-isystem $(top_srcdir)/jsoncpp/include
 
 libflex_a_LIBADD = $(LIBOBJS)
 
@@ -92,6 +102,7 @@ flexemu_LDADD    = \
 	$(FLEX_RC) $(FLEXEMU_LDADD) \
 	$(WIN32_LIBS) $(PTHREAD_LD) $(QT_LIBS) $(X_LIBS) \
 	libflex.a libfmt.a
+updatemd_LDADD    = $(PTHREAD_LD) libflex.a libfmt.a libjsoncpp.a
 
 libflex_a_DEPENDENCIES  = libfmt.a
 flexemu_DEPENDENCIES    = $(FLEX_RC) libflex.a libfmt.a
@@ -99,6 +110,7 @@ flexplorer_DEPENDENCIES = libflex.a libfmt.a
 flex2hex_DEPENDENCIES   = libflex.a libfmt.a
 dsktool_DEPENDENCIES    = libflex.a libfmt.a
 mdcrtool_DEPENDENCIES   = libflex.a libfmt.a
+updatemd_DEPENDENCIES   = libflex.a libfmt.a libjsoncpp.a
 
 # Rule for precompiled header:
 # Build a pch.h.gch file from pch.h
@@ -494,6 +506,7 @@ libflex_a_SOURCES = \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
+	bprocess.h \
 	brcfile.h \
 	bregistr.h \
 	breltime.h \
@@ -531,6 +544,26 @@ libfmt_a_SOURCES = \
 	../fmt/src/format.cc \
 	../fmt/src/os.cc
 
+libjsoncpp_a_SOURCES = \
+	$(top_srcdir)/$(libjsoncpp_top)/json_reader.cpp \
+	$(top_srcdir)/$(libjsoncpp_top)/json_value.cpp \
+	$(top_srcdir)/$(libjsoncpp_top)/json_writer.cpp
+
+updatemd_SOURCES = \
+	updatemd.cpp \
+	benv.h \
+	boption.h \
+	bprocess.h \
+	misc1.h
+
+# Execute updatemd to update file metadata.json.
+# It has all c++ and c-header files as dependent to be able to update the
+# lines of code for any source code change.
+metadata.json: updatemd $(libflex_a_SOURCES) \
+	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(dsktool_SOURCES) \
+	$(flex2hex_SOURCES) $(mdcrtool_SOURCES) $(updatemd_SOURCES)
+	./updatemd -l -k src -f $(top_srcdir)/src/metadata.json
+
 ################################################################################
 # Use traditional-style suffix rules for precompiled header support.
 # Also define dependencies of precompiled header file.
@@ -562,7 +595,9 @@ pch.h.gcp: pch.h misc1.h
 # Generated *_moc.cpp and *_qrc.cpp files are excluded from the check.
 clang-tidy-check:
 	$(CLANG_TIDY) `ls -1 *.cpp | sed "/.*_\(moc\|qrc\).cpp/d"` \
-	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@ -isystem$(top_srcdir)/fmt/include
+	-- @OS_TYPE@ $(DIRFLAGS) @CLANG_TIDY_OPTS@ \
+	-isystem $(top_srcdir)/fmt/include \
+	-isystem $(top_srcdir)/jsoncpp/include
 
 ################################################################################
 # Post (un)installation hook:

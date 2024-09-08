@@ -13,6 +13,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -112,7 +113,7 @@ am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
-CONFIG_CLEAN_VPATH_FILES =
+CONFIG_CLEAN_VPATH_FILES = options.txt
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -140,6 +141,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(noinst_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -166,8 +168,9 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/ar-lib \
-	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/options.txt \
+	$(top_srcdir)/config/ar-lib $(top_srcdir)/config/compile \
+	$(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
 	$(top_srcdir)/config/missing AUTHORS COPYING ChangeLog INSTALL \
@@ -378,25 +381,26 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-EXTRA_DIST = \
-	AUTHORS \
-	ChangeLog \
-	COPYING \
-	flexemu.sln \
-	INSTALL \
-	INSTALL.Win32 \
-	INSTALL.unix \
-	LICENSE \
-	NEWS \
-	README \
-	README.md \
-	TODO \
-	.appveyor.yml \
-	.cirrus.yml \
-	.gdbinit \
-	.gdbinit-context \
-	.gitignore
-
+noinst_DATA = metadata.json
+EXTRA_DIST = AUTHORS ChangeLog COPYING flexemu.sln INSTALL \
+	INSTALL.Win32 INSTALL.unix LICENSE NEWS README README.md TODO \
+	.appveyor.yml .cirrus.yml .gdbinit .gdbinit-context .gitignore \
+	.clang-tidy options.txt \
+	$(top_srcdir)/jsoncpp/include/json/allocator.h \
+	$(top_srcdir)/jsoncpp/include/json/assertions.h \
+	$(top_srcdir)/jsoncpp/include/json/config.h \
+	$(top_srcdir)/jsoncpp/include/json/forwards.h \
+	$(top_srcdir)/jsoncpp/include/json/json_features.h \
+	$(top_srcdir)/jsoncpp/include/json/json.h \
+	$(top_srcdir)/jsoncpp/include/json/reader.h \
+	$(top_srcdir)/jsoncpp/include/json/value.h \
+	$(top_srcdir)/jsoncpp/include/json/version.h \
+	$(top_srcdir)/jsoncpp/include/json/writer.h \
+	$(top_srcdir)/jsoncpp/src/lib_json/json_reader.cpp \
+	$(top_srcdir)/jsoncpp/src/lib_json/json_tool.h \
+	$(top_srcdir)/jsoncpp/src/lib_json/json_value.cpp \
+	$(top_srcdir)/jsoncpp/src/lib_json/json_valueiterator.inl \
+	$(top_srcdir)/jsoncpp/src/lib_json/json_writer.cpp
 SUBDIRS = \
 	src \
 	disks \
@@ -759,7 +763,7 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-recursive
-all-am: Makefile
+all-am: Makefile $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
 install: install-recursive
@@ -883,6 +887,9 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+metadata.json: src/updatemd .clang-tidy
+	src/updatemd -c $(top_srcdir)/.clang-tidy -f $(top_srcdir)/metadata.json
 
 clang-tidy-check:
 	cd src; $(MAKE) clang-tidy-check

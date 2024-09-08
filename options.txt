@@ -1,0 +1,7 @@
+# define cloc options for this directory
+# cloc source: https://github.com/AlDanial/cloc.git
+# ignore generated files and ignore submodules.
+
+--not-match-f="^[a-z][a-z0-9]*_(moc.cpp|qrc.cpp|ui.h)$"
+--not-match-d=".*/(fmt|googletest|jsoncpp)/"
+--counted=counted.txt

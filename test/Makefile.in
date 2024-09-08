@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -113,7 +114,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
-CONFIG_CLEAN_VPATH_FILES =
+CONFIG_CLEAN_VPATH_FILES = options.txt
 PROGRAMS = $(noinst_PROGRAMS)
 libgmock_la_LIBADD =
 am__dirstamp = $(am__leading_dot)dirstamp
@@ -362,6 +363,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+DATA = $(noinst_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -592,8 +594,8 @@ TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/config/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
 	$(TEST_LOG_FLAGS)
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/depcomp \
-	$(top_srcdir)/config/test-driver
+am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/options.txt \
+	$(top_srcdir)/config/depcomp $(top_srcdir)/config/test-driver
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -800,6 +802,86 @@ libgmock_la_CPPFLAGS = \
 	-isystem$(top_srcdir)/$(gmock_top)
 
 libgmock_la_LDFLAGS = -pthread
+
+# To support 'make distcheck' the following googletest files have to be added
+# to the distribution.
+# Same for googlemock files.
+
+# Same for fmt files.
+EXTRA_DIST = options.txt $(top_srcdir)/$(gtest_top)/src/gtest.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-all.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-assertion-result.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-death-test.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-filepath.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-internal-inl.h \
+	$(top_srcdir)/$(gtest_top)/src/gtest_main.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-matchers.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-port.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-printers.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-test-part.cc \
+	$(top_srcdir)/$(gtest_top)/src/gtest-typed-test.cc \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-assertion-result.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-death-test.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-matchers.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-message.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-param-test.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest_pred_impl.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-printers.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest_prod.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-spi.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-test-part.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-typed-test.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-death-test-internal.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-filepath.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-internal.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-param-util.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-port-arch.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-port.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-string.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-type-util.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-port.h \
+	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-printers.h \
+	$(top_srcdir)/$(gmock_top)/src/gmock.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-all.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-cardinalities.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-internal-utils.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock_main.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-matchers.cc \
+	$(top_srcdir)/$(gmock_top)/src/gmock-spec-builders.cc \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-cardinalities.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-function-mocker.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-nice-strict.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-spec-builders.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-internal-utils.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-port.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-pp.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-generated-actions.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-matchers.h \
+	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-port.h \
+	$(top_srcdir)/fmt/src/fmt.cc $(top_srcdir)/fmt/src/format.cc \
+	$(top_srcdir)/fmt/src/os.cc \
+	$(top_srcdir)/fmt/include/fmt/args.h \
+	$(top_srcdir)/fmt/include/fmt/base.h \
+	$(top_srcdir)/fmt/include/fmt/chrono.h \
+	$(top_srcdir)/fmt/include/fmt/color.h \
+	$(top_srcdir)/fmt/include/fmt/compile.h \
+	$(top_srcdir)/fmt/include/fmt/core.h \
+	$(top_srcdir)/fmt/include/fmt/format.h \
+	$(top_srcdir)/fmt/include/fmt/format-inl.h \
+	$(top_srcdir)/fmt/include/fmt/os.h \
+	$(top_srcdir)/fmt/include/fmt/ostream.h \
+	$(top_srcdir)/fmt/include/fmt/printf.h \
+	$(top_srcdir)/fmt/include/fmt/ranges.h \
+	$(top_srcdir)/fmt/include/fmt/std.h \
+	$(top_srcdir)/fmt/include/fmt/xchar.h
+noinst_DATA = metadata.json
 unittests_SOURCES = \
 	test_benv.cpp \
 	test_binifile.cpp \
@@ -976,85 +1058,6 @@ test_gccasm_CXXFLAGS = \
 	-isystem$(top_srcdir)/fmt/include \
 	-I$(top_srcdir)/src
 
-
-# To support 'make distcheck' the following googletest files have to be added
-# to the distribution.
-# Same for googlemock files.
-
-# Same for fmt files.
-EXTRA_DIST = $(top_srcdir)/$(gtest_top)/src/gtest.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-all.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-assertion-result.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-death-test.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-filepath.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-internal-inl.h \
-	$(top_srcdir)/$(gtest_top)/src/gtest_main.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-matchers.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-port.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-printers.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-test-part.cc \
-	$(top_srcdir)/$(gtest_top)/src/gtest-typed-test.cc \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-assertion-result.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-death-test.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-matchers.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-message.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-param-test.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest_pred_impl.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-printers.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest_prod.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-spi.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-test-part.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/gtest-typed-test.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-death-test-internal.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-filepath.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-internal.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-param-util.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-port-arch.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-port.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-string.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/gtest-type-util.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-port.h \
-	$(top_srcdir)/$(gtest_top)/include/gtest/internal/custom/gtest-printers.h \
-	$(top_srcdir)/$(gmock_top)/src/gmock.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock-all.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock-cardinalities.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock-internal-utils.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock_main.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock-matchers.cc \
-	$(top_srcdir)/$(gmock_top)/src/gmock-spec-builders.cc \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-actions.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-cardinalities.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-function-mocker.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-matchers.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-actions.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-more-matchers.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-nice-strict.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/gmock-spec-builders.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-internal-utils.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-port.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/gmock-pp.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-generated-actions.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-matchers.h \
-	$(top_srcdir)/$(gmock_top)/include/gmock/internal/custom/gmock-port.h \
-	$(top_srcdir)/fmt/src/fmt.cc $(top_srcdir)/fmt/src/format.cc \
-	$(top_srcdir)/fmt/src/os.cc \
-	$(top_srcdir)/fmt/include/fmt/args.h \
-	$(top_srcdir)/fmt/include/fmt/base.h \
-	$(top_srcdir)/fmt/include/fmt/chrono.h \
-	$(top_srcdir)/fmt/include/fmt/color.h \
-	$(top_srcdir)/fmt/include/fmt/compile.h \
-	$(top_srcdir)/fmt/include/fmt/core.h \
-	$(top_srcdir)/fmt/include/fmt/format.h \
-	$(top_srcdir)/fmt/include/fmt/format-inl.h \
-	$(top_srcdir)/fmt/include/fmt/os.h \
-	$(top_srcdir)/fmt/include/fmt/ostream.h \
-	$(top_srcdir)/fmt/include/fmt/printf.h \
-	$(top_srcdir)/fmt/include/fmt/ranges.h \
-	$(top_srcdir)/fmt/include/fmt/std.h \
-	$(top_srcdir)/fmt/include/fmt/xchar.h
 all: all-recursive
 
 .SUFFIXES:
@@ -2754,7 +2757,7 @@ check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS) $(check_LTLIBRARIES)
 	$(MAKE) $(AM_MAKEFLAGS) check-TESTS
 check: check-recursive
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
 install: install-recursive
@@ -3036,6 +3039,9 @@ uninstall-am:
 .PRECIOUS: Makefile
 
 	-include ../src/pch.h
+
+metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
+	../src/updatemd -l -k test -f $(top_srcdir)/test/metadata.json
 
 clean-local:
 	rm -rf test_detail.xml

@@ -20591,6 +20591,12 @@ ac_config_links="$ac_config_links test/data/testdisk.dsk:test/data/testdisk.dsk"
 
 ac_config_links="$ac_config_links test/data/testdisk.flx:test/data/testdisk.flx"
 
+ac_config_links="$ac_config_links options.txt:options.txt"
+
+ac_config_links="$ac_config_links src/options.txt:src/options.txt"
+
+ac_config_links="$ac_config_links test/options.txt:test/options.txt"
+
 
 ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile python/Makefile test/Makefile test/data/Makefile .circleci/Makefile .github/Makefile .github/workflows/Makefile"
 
@@ -21718,6 +21724,9 @@ do
     "test/data/cat.s19") CONFIG_LINKS="$CONFIG_LINKS test/data/cat.s19:test/data/cat.s19" ;;
     "test/data/testdisk.dsk") CONFIG_LINKS="$CONFIG_LINKS test/data/testdisk.dsk:test/data/testdisk.dsk" ;;
     "test/data/testdisk.flx") CONFIG_LINKS="$CONFIG_LINKS test/data/testdisk.flx:test/data/testdisk.flx" ;;
+    "options.txt") CONFIG_LINKS="$CONFIG_LINKS options.txt:options.txt" ;;
+    "src/options.txt") CONFIG_LINKS="$CONFIG_LINKS src/options.txt:src/options.txt" ;;
+    "test/options.txt") CONFIG_LINKS="$CONFIG_LINKS test/options.txt:test/options.txt" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/bitmaps/Makefile") CONFIG_FILES="$CONFIG_FILES src/bitmaps/Makefile" ;;
