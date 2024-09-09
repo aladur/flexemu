@@ -9,6 +9,7 @@ AC_ARG_PROGRAM dnl Perform program name transformation
 AM_INIT_AUTOMAKE([ subdir-objects ])
 AM_MAINTAINER_MODE([disable])
 AC_CONFIG_HEADERS([src/config.h:src/config.hin])
+AM_SILENT_RULES([yes])
 
 dnl Checks for programs.
 case $host_os in
