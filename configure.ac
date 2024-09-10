@@ -208,17 +208,9 @@ AC_CONFIG_FILES([Makefile \
 	monitor/Makefile \
 	monitor/mon24/Makefile \
 	monitor/mon24z/Makefile \
-        build/Makefile \
-        build/windows/Makefile \
-        build/windows/installer/Makefile \
 	doc/Makefile \
-	doc/images/Makefile] \
-	python/Makefile \
-	test/Makefile \
-	test/data/Makefile \
-	.circleci/Makefile \
-	.github/Makefile \
-	.github/workflows/Makefile)
+	doc/images/Makefile \
+	test/Makefile])
 AC_OUTPUT
 
 if test "x$no_x" = "xyes"; then

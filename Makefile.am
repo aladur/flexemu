@@ -28,11 +28,46 @@ SUBDIRS = \
 	disks \
 	doc \
 	monitor \
-	build \
-	python \
-	test \
-	.circleci \
-	.github
+	test
+
+# Alternative handling of subdirectories.
+# This reduces the entering/leaving of subdirectories.
+# For details see:
+# https://www.gnu.org/software/automake/manual/html_node/Alternative.html
+EXTRA_DIST += \
+	.github/workflows/build-and-test.yml \
+	.github/workflows/clang-tidy-check.yml \
+	.github/workflows/distcheck.yml \
+	.github/workflows/macos-build-and-test.yml \
+	.github/workflows/windows-build-and-test.yml \
+	build/download_fug_dsk_files.sh \
+	build/fug.ico \
+	build/windows/change_version.sh \
+	build/windows/create_fug_dsk_files_installer.sh \
+	build/windows/create_installer.sh \
+	build/windows/download_and_install_envar_plugin.sh \
+	build/windows/download_and_rebuild_libs.sh \
+	build/windows/rebuild_flexemu_all_and_copy_libs.sh \
+	build/windows/setQtProperties.ps1 \
+	build/windows/installer/Flexemu.nsi \
+	build/windows/installer/GetParameters.nsh \
+	build/windows/installer/GetParameterValue.nsh \
+	build/windows/installer/HistoricFLEXFiles.nsi \
+	build/windows/installer/SplitFirstStrPart.nsh \
+	build/windows/installer/StrStr.nsh \
+	python/flex.py \
+	python/flexemu_common.py \
+	python/s_dir_entry_Printer.py \
+	python/s_link_table_Printer.py \
+	python/s_new_file_Printer.py \
+	python/s_sys_info_record_Printer.py \
+	python/s_sys_info_sector_Printer.py \
+	python/st_t_Printer.py \
+	test/data/cat.cmd \
+	test/data/cat.hex \
+	test/data/cat.s19 \
+	test/data/testdisk.dsk \
+	test/data/testdisk.flx
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 

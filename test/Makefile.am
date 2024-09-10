@@ -147,9 +147,6 @@ TESTS = unittests
 
 TESTS_ENVIRONMENT = export GTEST_OUTPUT="xml";
 
-SUBDIRS = \
-	data
-
 test_gccasm_SOURCES = \
 	../src/clogfile.cpp  \
 	../src/colors.cpp \

@@ -20641,7 +20641,7 @@ ac_config_links="$ac_config_links src/options.txt:src/options.txt"
 ac_config_links="$ac_config_links test/options.txt:test/options.txt"
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile build/Makefile build/windows/Makefile build/windows/installer/Makefile doc/Makefile doc/images/Makefile python/Makefile test/Makefile test/data/Makefile .circleci/Makefile .github/Makefile .github/workflows/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/bitmaps/Makefile src/bitmaps/16x16/Makefile src/bitmaps/32x32/Makefile src/bitmaps/48x48/Makefile src/bitmaps/64x64/Makefile src/bitmaps/128x128/Makefile src/bitmaps/256x256/Makefile src/bitmaps/scalable/Makefile src/tools/Makefile disks/Makefile monitor/Makefile monitor/mon24/Makefile monitor/mon24z/Makefile doc/Makefile doc/images/Makefile test/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -21785,17 +21785,9 @@ do
     "monitor/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/Makefile" ;;
     "monitor/mon24/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/mon24/Makefile" ;;
     "monitor/mon24z/Makefile") CONFIG_FILES="$CONFIG_FILES monitor/mon24z/Makefile" ;;
-    "build/Makefile") CONFIG_FILES="$CONFIG_FILES build/Makefile" ;;
-    "build/windows/Makefile") CONFIG_FILES="$CONFIG_FILES build/windows/Makefile" ;;
-    "build/windows/installer/Makefile") CONFIG_FILES="$CONFIG_FILES build/windows/installer/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
     "doc/images/Makefile") CONFIG_FILES="$CONFIG_FILES doc/images/Makefile" ;;
-    "python/Makefile") CONFIG_FILES="$CONFIG_FILES python/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
-    "test/data/Makefile") CONFIG_FILES="$CONFIG_FILES test/data/Makefile" ;;
-    ".circleci/Makefile") CONFIG_FILES="$CONFIG_FILES .circleci/Makefile" ;;
-    ".github/Makefile") CONFIG_FILES="$CONFIG_FILES .github/Makefile" ;;
-    ".github/workflows/Makefile") CONFIG_FILES="$CONFIG_FILES .github/workflows/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
