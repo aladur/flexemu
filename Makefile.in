@@ -890,6 +890,8 @@ uninstall-am:
 
 
 metadata.json: src/updatemd .clang-tidy
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	src/updatemd -c $(top_srcdir)/.clang-tidy -f $(top_srcdir)/metadata.json
 
 clang-tidy-check:

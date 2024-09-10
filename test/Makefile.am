@@ -294,6 +294,8 @@ EXTRA_DIST += \
 	$(top_srcdir)/fmt/include/fmt/xchar.h
 
 metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	../src/updatemd -l -k test -f $(top_srcdir)/test/metadata.json
 
 clean-local:

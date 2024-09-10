@@ -39,6 +39,8 @@ AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 AM_DISTCHECK_CONFIGURE_FLAGS = --disable-post-install
 
 metadata.json: src/updatemd .clang-tidy
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	src/updatemd -c $(top_srcdir)/.clang-tidy -f $(top_srcdir)/metadata.json
 
 clang-tidy-check:

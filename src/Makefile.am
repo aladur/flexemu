@@ -563,12 +563,16 @@ updatemd_SOURCES = \
 metadata.json: updatemd $(libflex_a_SOURCES) \
 	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(dsktool_SOURCES) \
 	$(flex2hex_SOURCES) $(mdcrtool_SOURCES) $(updatemd_SOURCES)
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
 	./updatemd -l -k src -f $(top_srcdir)/src/metadata.json
 
 ################################################################################
 # Use traditional-style suffix rules for precompiled header support.
 # Also define dependencies of precompiled header file.
 .h.h.gch:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  CXXPCH   $@"; fi; \
 	$(CXX) $(DEFS) $(ALL_TARGETS_CXXFLAGS) $(CXXFLAGS) \
 	-o $@ -x c++-header -c $<
 
@@ -581,14 +585,20 @@ pch.h.gcp: pch.h misc1.h
 # To see which *.h files are used to create *_moc.cpp files see
 # variables flexemu_moc_hdr and flexplorer_moc_hdr.
 .h_moc.cpp:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  QTMOC    $@"; fi; \
 	${QT_MOC} $< -o $@
 
 # Create a *_qrc.cpp file from a *.qrc file
 .qrc_qrc.cpp:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  QTRCC    $@"; fi; \
 	${QT_RCC} $< --name $(@F) -o $@
 
 # Create a *_ui.h file from a *.ui file
 .ui_ui.h:
+	@set +x; \
+	if $(AM_V_P); then set -x; else echo "  QTUIC    $@"; fi; \
 	${QT_UIC} $< -o $@
 
 # Static code analysis using clang-tidy. By default it reads the configuration
