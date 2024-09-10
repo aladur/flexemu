@@ -79,7 +79,8 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS)
+	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
+	$(CXXWARNINGS)
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include

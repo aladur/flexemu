@@ -662,6 +662,7 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 CXXSPEED
+CXXWARNINGS
 FLEXPLORER
 OS_TYPE
 FLEXEMU_LDADD
@@ -19101,35 +19102,35 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
         -Wundef \
 ; do
 
-  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CXXFLAGS" >&5
-printf %s "checking if $CC supports flag $flag in envvar CXXFLAGS... " >&6; }
-if { as_var=`printf "%s\n" "cc_cv_CXXFLAGS_$flag" | $as_tr_sh`; eval test \${$as_var+y}; }
+  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CXXWARNINGS" >&5
+printf %s "checking if $CC supports flag $flag in envvar CXXWARNINGS... " >&6; }
+if { as_var=`printf "%s\n" "cc_cv_CXXWARNINGS_$flag" | $as_tr_sh`; eval test \${$as_var+y}; }
 then :
   printf %s "(cached) " >&6
 else $as_nop
-  eval "cc_save_CXXFLAGS='${CXXFLAGS}'"
-           eval "CXXFLAGS='${cc_save_CXXFLAGS} -Werror `echo "$flag" | sed 's/^-Wno-/-W/'`'"
+  eval "cc_save_CXXWARNINGS='${CXXWARNINGS}'"
+           eval "CXXWARNINGS='${cc_save_CXXWARNINGS} -Werror `echo "$flag" | sed 's/^-Wno-/-W/'`'"
            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 int main(void) { return 0; }
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"
 then :
-  eval "`printf "%s\n" "cc_cv_CXXFLAGS_$flag" | $as_tr_sh`='yes'"
+  eval "`printf "%s\n" "cc_cv_CXXWARNINGS_$flag" | $as_tr_sh`='yes'"
 else $as_nop
-  eval "`printf "%s\n" "cc_cv_CXXFLAGS_$flag" | $as_tr_sh`='no'"
+  eval "`printf "%s\n" "cc_cv_CXXWARNINGS_$flag" | $as_tr_sh`='no'"
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
-           eval "CXXFLAGS='$cc_save_CXXFLAGS'"
+           eval "CXXWARNINGS='$cc_save_CXXWARNINGS'"
 fi
-eval ac_res=\$`printf "%s\n" "cc_cv_CXXFLAGS_$flag" | $as_tr_sh`
+eval ac_res=\$`printf "%s\n" "cc_cv_CXXWARNINGS_$flag" | $as_tr_sh`
 	       { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 printf "%s\n" "$ac_res" >&6; }
 
-  if eval test x$`printf "%s\n" "cc_cv_CXXFLAGS_$flag" | $as_tr_sh` = xyes
+  if eval test x$`printf "%s\n" "cc_cv_CXXWARNINGS_$flag" | $as_tr_sh` = xyes
 then :
-  eval "CXXFLAGS='${CXXFLAGS} $flag'"
+  eval "CXXWARNINGS='${CXXWARNINGS} $flag'"
 fi
 
   done
@@ -20589,6 +20590,7 @@ fi
 
 
 FLEXPLORER='flexplorer${EXEEXT}'
+
 
 
 CXXSPEED="-D__CPU=$target_cpu"

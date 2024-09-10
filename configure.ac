@@ -62,7 +62,7 @@ CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
         -Wshadow \
 ])
 AC_LANG_PUSH([C++])
-CC_CHECK_FLAGS_APPEND([CXXFLAGS],[CXXFLAGS],[\
+CC_CHECK_FLAGS_APPEND([CXXWARNINGS],[CXXWARNINGS],[\
         -Wextra \
         -Wshadow \
         -Wswitch-enum \
@@ -146,6 +146,7 @@ AC_SUBST([FLEX_RC])
 AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([OS_TYPE])
 AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
+AC_SUBST([CXXWARNINGS])
 
 dnl which optimizations are possible depends on the cpu architecture
 CXXSPEED="-D__CPU=$target_cpu"
