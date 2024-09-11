@@ -57,39 +57,13 @@ unittests_SOURCES = \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
 	test_btime.cpp \
-	../src/bdate.cpp \
-	../src/bdir.cpp \
-	../src/binifile.cpp \
 	../src/blinxsys.cpp \
-	../src/benv.cpp \
-	../src/bmembuf.cpp \
-	../src/bobservd.cpp \
-	../src/brcfile.cpp \
-	../src/breltime.cpp \
-	../src/btime.cpp \
 	../src/colors.cpp \
 	../src/da6809.cpp \
-	../src/dircont.cpp \
-	../src/fattrib.cpp \
-	../src/fcinfo.cpp \
-	../src/fcnffile.cpp \
-	../src/fcopyman.cpp \
-	../src/fdirent.cpp \
 	../src/fdoptman.cpp \
-	../src/ffilebuf.cpp \
-	../src/ffilecnt.cpp \
-	../src/filecnts.cpp \
-	../src/fileread.cpp \
-	../src/filfschk.cpp \
-	../src/flexerr.cpp \
-	../src/idircnt.cpp \
-	../src/iffilcnt.cpp \
-	../src/ifilecnt.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
-	../src/misc1.cpp \
 	../src/ndircont.cpp \
-	../src/rfilecnt.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -130,7 +104,7 @@ unittests_SOURCES = \
 	../src/rfilecnt.h \
 	../src/scpulog.h
 
-unittests_LDADD = libgtest.la libgmock.la ../src/libfmt.a
+unittests_LDADD = libgtest.la libgmock.la ../src/libflex.a ../src/libfmt.a
 unittests_LDFLAGS = -pthread
 unittests_CPPFLAGS = \
 	-std=c++17 \
