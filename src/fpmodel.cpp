@@ -224,7 +224,7 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
 
     for (auto &row : rows)
     {
-        auto value = row.at(column).toInt();
+        auto value = row.at(column).toUInt();
         if (options.fileSizeType == FileSizeType::FileSize)
         {
             value = value / ssm4 * SECTOR_SIZE;
@@ -748,6 +748,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                     case QMetaType::Int:
                         return lhs[column].toInt() < rhs[column].toInt();
 
+                    case QMetaType::UInt:
+                        return lhs[column].toUInt() < rhs[column].toUInt();
+
                     default:
                     {
                         auto msg = std::string(
@@ -769,6 +772,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 
                     case QVariant::Int:
                         return lhs[column].toInt() < rhs[column].toInt();
+
+                    case QVariant::UInt:
+                        return lhs[column].toUInt() < rhs[column].toUInt();
 
                     default:
                     {
@@ -798,6 +804,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
                     case QMetaType::Int:
                         return lhs[column].toInt() > rhs[column].toInt();
 
+                    case QMetaType::UInt:
+                        return lhs[column].toUInt() > rhs[column].toUInt();
+
                     default:
                     {
                         auto msg = std::string(
@@ -819,6 +828,9 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 
                     case QVariant::Int:
                         return lhs[column].toInt() > rhs[column].toInt();
+
+                    case QVariant::UInt:
+                        return lhs[column].toUInt() > rhs[column].toUInt();
 
                     default:
                     {

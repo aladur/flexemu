@@ -138,7 +138,7 @@ int FlexplorerMdiChild::GetSelectedFilesCount() const
     return selectedFilesCount;
 }
 
-int FlexplorerMdiChild::GetSelectedFilesByteSize() const
+unsigned FlexplorerMdiChild::GetSelectedFilesByteSize() const
 {
     return selectedFilesByteSize;
 }
@@ -713,7 +713,7 @@ void FlexplorerMdiChild::SelectionChanged(
         {
             selectedFilesCount += pmOne;
             auto variant = model->data(index, Qt::DisplayRole);
-            selectedFilesByteSize += pmOne * variant.toInt();
+            selectedFilesByteSize += pmOne * static_cast<int>(variant.toUInt());
         }
     };
 

@@ -61,7 +61,7 @@ public:
     QString GetUserFriendlyPath() const;
     bool IsWriteProtected() const;
     int GetSelectedFilesCount() const;
-    int GetSelectedFilesByteSize() const;
+    unsigned GetSelectedFilesByteSize() const;
     unsigned GetFlexDiskType() const;
     void SelectAll();
     void DeselectAll();
