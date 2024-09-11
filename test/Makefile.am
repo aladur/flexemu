@@ -209,8 +209,10 @@ test_gccasm_CXXFLAGS = \
 
 metadata.json: ../src/updatemd $(test_gccasm_SOURCES) $(unittests_SOURCES)
 	@set +x; \
+	cd $(srcdir) > /dev/null; \
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
-	../src/updatemd -l -k test -f $(top_srcdir)/test/metadata.json
+	$(abs_top_builddir)/src/updatemd -l -k test -f $@; \
+	cd - > /dev/null
 
 clean-local:
 	rm -rf test_detail.xml

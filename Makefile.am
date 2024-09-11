@@ -75,8 +75,10 @@ AM_DISTCHECK_CONFIGURE_FLAGS = --disable-post-install
 
 metadata.json: src/updatemd .clang-tidy
 	@set +x; \
+	cd $(srcdir) > /dev/null; \
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
-	src/updatemd -c $(top_srcdir)/.clang-tidy -f $(top_srcdir)/metadata.json
+	$(abs_builddir)/src/updatemd -c .clang-tidy -f $@; \
+	cd - > /dev/null
 
 clang-tidy-check:
 	cd src; $(MAKE) clang-tidy-check

@@ -115,7 +115,7 @@ CONFIG_HEADER = $(top_builddir)/src/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES = test/data/cat.cmd test/data/cat.hex \
 	test/data/cat.s19 test/data/testdisk.dsk \
-	test/data/testdisk.flx options.txt
+	test/data/testdisk.flx
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -170,9 +170,8 @@ am__define_uniq_tagged_files = \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
 DIST_SUBDIRS = $(SUBDIRS)
-am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/options.txt \
-	$(top_srcdir)/config/ar-lib $(top_srcdir)/config/compile \
-	$(top_srcdir)/config/config.guess \
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/config/ar-lib \
+	$(top_srcdir)/config/compile $(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
 	$(top_srcdir)/config/install-sh $(top_srcdir)/config/ltmain.sh \
 	$(top_srcdir)/config/missing $(top_srcdir)/test/data/cat.cmd \
@@ -1006,8 +1005,10 @@ uninstall-am:
 
 metadata.json: src/updatemd .clang-tidy
 	@set +x; \
+	cd $(srcdir) > /dev/null; \
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
-	src/updatemd -c $(top_srcdir)/.clang-tidy -f $(top_srcdir)/metadata.json
+	$(abs_builddir)/src/updatemd -c .clang-tidy -f $@; \
+	cd - > /dev/null
 
 clang-tidy-check:
 	cd src; $(MAKE) clang-tidy-check

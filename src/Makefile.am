@@ -559,13 +559,16 @@ updatemd_SOURCES = \
 
 # Execute updatemd to update file metadata.json.
 # It has all c++ and c-header files as dependent to be able to update the
-# lines of code for any source code change.
+# lines of code for any source code change. Generated files are filtered
+# out. See options.txt
 metadata.json: updatemd $(libflex_a_SOURCES) \
 	$(flexemu_SOURCES) $(flexplorer_SOURCES) $(dsktool_SOURCES) \
 	$(flex2hex_SOURCES) $(mdcrtool_SOURCES) $(updatemd_SOURCES)
 	@set +x; \
+	cd $(srcdir) > /dev/null; \
 	if $(AM_V_P); then set -x; else echo "  GENMD    $@"; fi; \
-	./updatemd -l -k src -f $(top_srcdir)/src/metadata.json
+	$(abs_builddir)/updatemd -l -k src -f $@; \
+	cd - > /dev/null
 
 ################################################################################
 # Use traditional-style suffix rules for precompiled header support.
