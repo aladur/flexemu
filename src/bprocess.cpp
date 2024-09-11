@@ -110,14 +110,14 @@ bool BProcess::IsRunning() const
         return false;
     }
 
-    DWORD status;
+    DWORD exitCode;
 
-    if (GetExitCodeProcess(hProcess, &status) == 0)
+    if (GetExitCodeProcess(hProcess, &exitCode) == 0)
     {
         return false;
     }
 
-    return (status == STILL_ACTIVE);
+    return (exitCode == STILL_ACTIVE);
 }
 
 int BProcess::Wait()
