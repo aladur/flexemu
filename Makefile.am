@@ -39,7 +39,9 @@ EXTRA_DIST += \
 	.github/workflows/clang-tidy-check.yml \
 	.github/workflows/distcheck.yml \
 	.github/workflows/macos-build-and-test.yml \
-	.github/workflows/windows-build-and-test.yml \
+	.github/workflows/windows-build-and-test.yml
+
+EXTRA_DIST += \
 	build/download_fug_dsk_files.sh \
 	build/fug.ico \
 	build/windows/change_version.sh \
@@ -54,7 +56,9 @@ EXTRA_DIST += \
 	build/windows/installer/GetParameterValue.nsh \
 	build/windows/installer/HistoricFLEXFiles.nsi \
 	build/windows/installer/SplitFirstStrPart.nsh \
-	build/windows/installer/StrStr.nsh \
+	build/windows/installer/StrStr.nsh
+
+EXTRA_DIST += \
 	python/flex.py \
 	python/flexemu_common.py \
 	python/s_dir_entry_Printer.py \
@@ -62,7 +66,9 @@ EXTRA_DIST += \
 	python/s_new_file_Printer.py \
 	python/s_sys_info_record_Printer.py \
 	python/s_sys_info_sector_Printer.py \
-	python/st_t_Printer.py \
+	python/st_t_Printer.py
+
+EXTRA_DIST += \
 	test/data/cat.cmd \
 	test/data/cat.hex \
 	test/data/cat.s19 \
