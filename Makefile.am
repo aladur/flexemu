@@ -59,6 +59,41 @@ EXTRA_DIST += \
 	build/windows/installer/StrStr.nsh
 
 EXTRA_DIST += \
+	docker/almalinux/Dockerfile \
+	docker/alpine/Dockerfile \
+	docker/altlinux/Dockerfile \
+	docker/amazonlinux/Dockerfile \
+	docker/archlinux/Dockerfile \
+	docker/biglinux/Dockerfile \
+	docker/cachyos/Dockerfile \
+	docker/centos/Dockerfile \
+	docker/debian_be/Dockerfile \
+	docker/debian/Dockerfile \
+	docker/debian_i386/Dockerfile \
+	docker/debian_qt6/Dockerfile \
+	docker/debian_testing/Dockerfile \
+	docker/debian_testing_qt6/Dockerfile \
+	docker/debian_unstable/Dockerfile \
+	docker/debian_unstable_qt6/Dockerfile \
+	docker/endlessos/Dockerfile \
+	docker/fedora/Dockerfile \
+	docker/kalilinux/Dockerfile \
+	docker/linuxmint/Dockerfile \
+	docker/mageia/Dockerfile \
+	docker/manjaro/Dockerfile \
+	docker/opensuse/Dockerfile \
+	docker/oraclelinux/Dockerfile \
+	docker/photon/Dockerfile \
+	docker/rockylinux/Dockerfile \
+	docker/slackware/Dockerfile \
+	docker/slackware/setup.sh \
+	docker/ubuntu/Dockerfile \
+	docker/voidlinux/Dockerfile \
+	docker/dockerRunForwardX11.sh \
+	docker/readme.md \
+	docker/statistics.md
+
+EXTRA_DIST += \
 	python/flex.py \
 	python/flexemu_common.py \
 	python/s_dir_entry_Printer.py \

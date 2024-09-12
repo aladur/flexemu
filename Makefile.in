@@ -423,9 +423,27 @@ EXTRA_DIST = AUTHORS ChangeLog COPYING flexemu.sln INSTALL \
 	build/windows/installer/GetParameterValue.nsh \
 	build/windows/installer/HistoricFLEXFiles.nsi \
 	build/windows/installer/SplitFirstStrPart.nsh \
-	build/windows/installer/StrStr.nsh python/flex.py \
-	python/flexemu_common.py python/s_dir_entry_Printer.py \
-	python/s_link_table_Printer.py python/s_new_file_Printer.py \
+	build/windows/installer/StrStr.nsh docker/almalinux/Dockerfile \
+	docker/alpine/Dockerfile docker/altlinux/Dockerfile \
+	docker/amazonlinux/Dockerfile docker/archlinux/Dockerfile \
+	docker/biglinux/Dockerfile docker/cachyos/Dockerfile \
+	docker/centos/Dockerfile docker/debian_be/Dockerfile \
+	docker/debian/Dockerfile docker/debian_i386/Dockerfile \
+	docker/debian_qt6/Dockerfile docker/debian_testing/Dockerfile \
+	docker/debian_testing_qt6/Dockerfile \
+	docker/debian_unstable/Dockerfile \
+	docker/debian_unstable_qt6/Dockerfile \
+	docker/endlessos/Dockerfile docker/fedora/Dockerfile \
+	docker/kalilinux/Dockerfile docker/linuxmint/Dockerfile \
+	docker/mageia/Dockerfile docker/manjaro/Dockerfile \
+	docker/opensuse/Dockerfile docker/oraclelinux/Dockerfile \
+	docker/photon/Dockerfile docker/rockylinux/Dockerfile \
+	docker/slackware/Dockerfile docker/slackware/setup.sh \
+	docker/ubuntu/Dockerfile docker/voidlinux/Dockerfile \
+	docker/dockerRunForwardX11.sh docker/readme.md \
+	docker/statistics.md python/flex.py python/flexemu_common.py \
+	python/s_dir_entry_Printer.py python/s_link_table_Printer.py \
+	python/s_new_file_Printer.py \
 	python/s_sys_info_record_Printer.py \
 	python/s_sys_info_sector_Printer.py python/st_t_Printer.py \
 	test/data/cat.cmd test/data/cat.hex test/data/cat.s19 \
