@@ -45,6 +45,7 @@ unittests_SOURCES = \
 	test_fcnffile.cpp \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
+	test_ffilecnts.cpp \
 	test_filecntb.cpp \
 	test_filecnts.cpp \
 	test_filecont.cpp \

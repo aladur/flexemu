@@ -287,15 +287,17 @@ struct s_flex_header
 #ifndef __fromflex__
 /* NOLINTEND(modernize-avoid-c-arrays) */
 
+using SectorBuffer_t = std::array<Byte, SECTOR_SIZE>;
+using BootSectorBuffer_t = std::array<Byte, 2 * SECTOR_SIZE>;
+using SectorMap_t = std::array<Byte, 2 * DBPS>;
+
 extern std::ostream& operator<<(std::ostream& os, const st_t &st);
 
 extern Word getTrack0SectorCount(int tracks, int sectors);
 extern Word getSides(int tracks, int sectors);
 extern Word getBytesPerSector(uint32_t sizecode);
 extern size_t getFileSize(const s_flex_header &header);
-
-using SectorBuffer_t = std::array<Byte, SECTOR_SIZE>;
-using BootSectorBuffer_t = std::array<Byte, 2 * SECTOR_SIZE>;
+extern bool isValidSectorMap(const SectorMap_t &sectorMap, uint32_t fileSize);
 
 #endif /* #ifndef __fromflex__ */
 

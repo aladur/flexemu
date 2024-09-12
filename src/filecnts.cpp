@@ -116,3 +116,42 @@ size_t getFileSize(const s_flex_header &header)
                  getBytesPerSector(header.sizecode);
 }
 
+bool isValidSectorMap(const SectorMap_t &sectorMap, uint32_t fileSize)
+{
+    auto count = sectorMap.size() / 3;
+    st_t trk_sec{};
+    Byte sectorCount = 0U;
+    uint32_t sectorSum = 0U;
+    const uint32_t expectedSectors = (fileSize - (2 * DBPS) + DBPS - 1) / DBPS;
+    bool hasAllSectorsFound = (expectedSectors == 0);
+    // NOLINTNEXTLINE(readability-qualified-auto)
+    auto iter = sectorMap.cbegin();
+
+    while (count != 0U)
+    {
+        trk_sec.trk = *(iter++);
+        trk_sec.sec = *(iter++);
+        sectorCount = *(iter++);
+
+        if (hasAllSectorsFound)
+        {
+            if (trk_sec != st_t{} || sectorCount != 0U)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (trk_sec.sec == 0U || sectorCount == 0U)
+            {
+                return false;
+            }
+            sectorSum += sectorCount;
+            hasAllSectorsFound = (sectorSum >= expectedSectors);
+        }
+
+        --count;
+    }
+
+    return hasAllSectorsFound && (sectorSum == expectedSectors);
+}

@@ -169,6 +169,7 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_fcnffile.$(OBJEXT) \
 	unittests-test_fcinfo.$(OBJEXT) \
 	unittests-test_ffilebuf.$(OBJEXT) \
+	unittests-test_ffilecnts.$(OBJEXT) \
 	unittests-test_filecntb.$(OBJEXT) \
 	unittests-test_filecnts.$(OBJEXT) \
 	unittests-test_filecont.$(OBJEXT) \
@@ -250,6 +251,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_fcnffile.Po \
 	./$(DEPDIR)/unittests-test_fdirent.Po \
 	./$(DEPDIR)/unittests-test_ffilebuf.Po \
+	./$(DEPDIR)/unittests-test_ffilecnts.Po \
 	./$(DEPDIR)/unittests-test_filecntb.Po \
 	./$(DEPDIR)/unittests-test_filecnts.Po \
 	./$(DEPDIR)/unittests-test_filecont.Po \
@@ -730,6 +732,7 @@ unittests_SOURCES = \
 	test_fcnffile.cpp \
 	test_fcinfo.cpp \
 	test_ffilebuf.cpp \
+	test_ffilecnts.cpp \
 	test_filecntb.cpp \
 	test_filecnts.cpp \
 	test_filecont.cpp \
@@ -1053,6 +1056,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fcnffile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_fdirent.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_ffilebuf.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_ffilecnts.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_filecntb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_filecnts.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_filecont.Po@am__quote@ # am--include-marker
@@ -1497,6 +1501,20 @@ unittests-test_ffilebuf.obj: test_ffilebuf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_ffilebuf.cpp' object='unittests-test_ffilebuf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_ffilebuf.obj `if test -f 'test_ffilebuf.cpp'; then $(CYGPATH_W) 'test_ffilebuf.cpp'; else $(CYGPATH_W) '$(srcdir)/test_ffilebuf.cpp'; fi`
+
+unittests-test_ffilecnts.o: test_ffilecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_ffilecnts.o -MD -MP -MF $(DEPDIR)/unittests-test_ffilecnts.Tpo -c -o unittests-test_ffilecnts.o `test -f 'test_ffilecnts.cpp' || echo '$(srcdir)/'`test_ffilecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_ffilecnts.Tpo $(DEPDIR)/unittests-test_ffilecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_ffilecnts.cpp' object='unittests-test_ffilecnts.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_ffilecnts.o `test -f 'test_ffilecnts.cpp' || echo '$(srcdir)/'`test_ffilecnts.cpp
+
+unittests-test_ffilecnts.obj: test_ffilecnts.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_ffilecnts.obj -MD -MP -MF $(DEPDIR)/unittests-test_ffilecnts.Tpo -c -o unittests-test_ffilecnts.obj `if test -f 'test_ffilecnts.cpp'; then $(CYGPATH_W) 'test_ffilecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/test_ffilecnts.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_ffilecnts.Tpo $(DEPDIR)/unittests-test_ffilecnts.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_ffilecnts.cpp' object='unittests-test_ffilecnts.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_ffilecnts.obj `if test -f 'test_ffilecnts.cpp'; then $(CYGPATH_W) 'test_ffilecnts.cpp'; else $(CYGPATH_W) '$(srcdir)/test_ffilecnts.cpp'; fi`
 
 unittests-test_filecntb.o: test_filecntb.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_filecntb.o -MD -MP -MF $(DEPDIR)/unittests-test_filecntb.Tpo -c -o unittests-test_filecntb.o `test -f 'test_filecntb.cpp' || echo '$(srcdir)/'`test_filecntb.cpp
@@ -2135,6 +2153,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/unittests-test_fcnffile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
+	-rm -f ./$(DEPDIR)/unittests-test_ffilecnts.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecntb.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecnts.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecont.Po
@@ -2229,6 +2248,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/unittests-test_fcnffile.Po
 	-rm -f ./$(DEPDIR)/unittests-test_fdirent.Po
 	-rm -f ./$(DEPDIR)/unittests-test_ffilebuf.Po
+	-rm -f ./$(DEPDIR)/unittests-test_ffilecnts.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecntb.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecnts.Po
 	-rm -f ./$(DEPDIR)/unittests-test_filecont.Po

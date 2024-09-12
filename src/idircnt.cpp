@@ -31,6 +31,7 @@
 #include "filecnts.h"
 #include "cvtwchar.h"
 #include <ctime>
+#include <fstream>
 
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
@@ -130,17 +131,31 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     {
         // ok, found a valid directory entry
         Byte attributes = 0;
-        int sectorMap = 0;
+        int sectorMapFlag = 0;
 
-        if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+        if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN &&
+                sbuf.st_size >= 2 * DBPS)
         {
-            sectorMap = 2;
+            // Detailed verification of a random file by checking the
+            // sector map.
+            std::ifstream ifs(path, std::ios::in | std::ios::binary);
+            SectorMap_t sectorMap{};
+
+            if (ifs.is_open())
+            {
+                ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                        sectorMap.size());
+                if (!ifs.fail() && isValidSectorMap(sectorMap, sbuf.st_size))
+                {
+                    sectorMapFlag = 2;
+                }
+            }
         }
 
         // CDFS support:
         if (flx::isListedInFileRandom(base->GetPath(), fileName))
         {
-            sectorMap = 2;
+            sectorMapFlag = 2;
         }
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -157,7 +172,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         dirEntry.SetDate({localTime.wDay, localTime.wMonth, localTime.wYear});
         dirEntry.SetTime({localTime.wHour, localTime.wMinute, 0U});
         dirEntry.SetAttributes(attributes);
-        dirEntry.SetSectorMap(sectorMap);
+        dirEntry.SetSectorMap(sectorMapFlag);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
         dirEntry.ClearEmpty();
@@ -165,7 +180,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
 #endif
 #ifdef UNIX
-    const auto path = base->GetPath() + PATHSEPARATORSTRING;
+    auto path = base->GetPath() + PATHSEPARATORSTRING;
 
     while (isValid &&
            (stat((path + fileName).c_str(), &sbuf) ||
@@ -200,21 +215,36 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     {
         // ok, found a valid directory entry
         Byte attributes = 0;
-        int sectorMap = 0;
+        int sectorMapFlag = 0;
 
+        path += fileName;
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
             if (flx::isListedInFileRandom(base->GetPath(), fileName))
             {
-                sectorMap = 2;
+                sectorMapFlag = 2;
             }
         }
         else
         {
-            if (sbuf.st_mode & S_IXUSR)
+            if (sbuf.st_mode & S_IXUSR && sbuf.st_size >= 2 * DBPS)
             {
-                sectorMap = 2;
+                // Detailed verification of a random file by checking the
+                // sector map.
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                SectorMap_t sectorMap{};
+
+                if (ifs.is_open())
+                {
+                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                            sectorMap.size());
+                    if (!ifs.fail() &&
+                        isValidSectorMap(sectorMap, sbuf.st_size))
+                    {
+                        sectorMapFlag = 2;
+                    }
+                }
             }
         }
 
@@ -234,7 +264,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
             dirEntry.SetTime({lt->tm_hour, lt->tm_min});
         }
         dirEntry.SetAttributes(attributes);
-        dirEntry.SetSectorMap(sectorMap);
+        dirEntry.SetSectorMap(sectorMapFlag);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
         dirEntry.ClearEmpty();
