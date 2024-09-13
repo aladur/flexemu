@@ -1019,9 +1019,28 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            strlower(filename);
-            bool is_random = (pentry.dwFileAttributes &
-                              FILE_ATTRIBUTE_HIDDEN) ? true : false;
+            bool is_random = ((pentry.dwFileAttributes &
+                              FILE_ATTRIBUTE_HIDDEN) != 0 &&
+                              sbuf.st_size > 2 * DBPS);
+
+            if (is_random)
+            {
+                // Detailed verification of a random file by checking the
+                // sector map.
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                SectorMap_t sectorMap{};
+
+                if (ifs.is_open())
+                {
+                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                            sectorMap.size());
+                    if (ifs.fail() || !isValidSectorMap(sectorMap,
+                                sbuf.st_size))
+                    {
+                        is_random = false;
+                    }
+                }
+            }
 
             add_file(filename, is_random);
         }
@@ -1048,7 +1067,26 @@ void NafsDirectoryContainer::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            bool is_random = (sbuf.st_mode & S_IXUSR) ? true : false;
+            bool is_random = ((sbuf.st_mode & S_IXUSR) != 0 &&
+                              sbuf.st_size > 2 * DBPS);
+            if (is_random)
+            {
+                // Detailed verification of a random file by checking the
+                // sector map.
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                SectorMap_t sectorMap{};
+
+                if (ifs.is_open())
+                {
+                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                            sectorMap.size());
+                    if (ifs.fail() || !isValidSectorMap(sectorMap,
+                                sbuf.st_size))
+                    {
+                        is_random = false;
+                    }
+                }
+            }
 
             add_file(filename, is_random);
         }

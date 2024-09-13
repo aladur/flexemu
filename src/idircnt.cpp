@@ -29,6 +29,8 @@
 #include "idircnt.h"
 #include "filecnts.h"
 #include "cvtwchar.h"
+#include <ctime>
+#include <fstream>
 
 
 DirectoryContainerIteratorImp::DirectoryContainerIteratorImp(
@@ -129,17 +131,33 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
     {
         // ok, found a valid directory entry
         Byte attributes = 0;
-        int sectorMap = 0;
+        int sectorMapFlag = 0;
 
-        if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN)
+        str = base->GetPath();
+        str += PATHSEPARATORSTRING + fileName;
+        if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN &&
+                sbuf.st_size > 2 * DBPS)
         {
-            sectorMap = 2;
+            // Detailed verification of a random file by checking the
+            // sector map.
+            std::ifstream ifs(str, std::ios::in | std::ios::binary);
+            SectorMap_t sectorMap{};
+
+            if (ifs.is_open())
+            {
+                ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                        sectorMap.size());
+                if (!ifs.fail() && isValidSectorMap(sectorMap, sbuf.st_size))
+                {
+                    sectorMapFlag = 2;
+                }
+            }
         }
 
         // CDFS support:
         if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
         {
-            sectorMap = 2;
+            sectorMapFlag = 2;
         }
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -157,7 +175,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
             localTime.wYear));
         dirEntry.SetTime(BTime(localTime.wHour, localTime.wMinute, 0U));
         dirEntry.SetAttributes(attributes);
-        dirEntry.SetSectorMap(sectorMap);
+        dirEntry.SetSectorMap(sectorMapFlag);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
         dirEntry.ClearEmpty();
@@ -165,8 +183,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
 #endif
 #ifdef UNIX
-    // unfinished
-    str = base->GetPath();
+    auto path = base->GetPath() + PATHSEPARATORSTRING;
 
     do
     {
@@ -174,7 +191,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         if (dirHdl == nullptr)
         {
-            if ((dirHdl = opendir(str.c_str())) != nullptr)
+            if ((dirHdl = opendir(path.c_str())) != nullptr)
             {
                 isValid = true;
             }
@@ -187,7 +204,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
         }
     }
     while (isValid &&
-           (stat((str + PATHSEPARATORSTRING + fileName).c_str(),
+           (stat((path + fileName).c_str(),
                  &sbuf) ||
             !base->IsFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
@@ -200,21 +217,36 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
 
         // ok, found a valid directory entry
         Byte attributes = 0;
-        int sectorMap = 0;
+        int sectorMapFlag = 0;
 
+        path += fileName;
         if (base->IsWriteProtected())
         {
             // CDFS-Support: look for file name in file 'random'
             if (isListedInFileRandom(base->GetPath().c_str(), fileName.c_str()))
             {
-                sectorMap = 2;
+                sectorMapFlag = 2;
             }
         }
         else
         {
-            if (sbuf.st_mode & S_IXUSR)
+            if (sbuf.st_mode & S_IXUSR && sbuf.st_size > 2 * DBPS)
             {
-                sectorMap = 2;
+                // Detailed verification of a random file by checking the
+                // sector map.
+                std::ifstream ifs(path, std::ios::in | std::ios::binary);
+                SectorMap_t sectorMap{};
+
+                if (ifs.is_open())
+                {
+                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
+                            sectorMap.size());
+                    if (!ifs.fail() &&
+                        isValidSectorMap(sectorMap, sbuf.st_size))
+                    {
+                        sectorMapFlag = 2;
+                    }
+                }
             }
         }
 
@@ -231,7 +263,7 @@ bool DirectoryContainerIteratorImp::NextDirEntry(const char *filePattern)
                     lt->tm_year + 1900));
         dirEntry.SetTime(BTime(lt->tm_hour, lt->tm_min, 0U));
         dirEntry.SetAttributes(attributes);
-        dirEntry.SetSectorMap(sectorMap);
+        dirEntry.SetSectorMap(sectorMapFlag);
         dirEntry.SetStartTrkSec(0, 0);
         dirEntry.SetEndTrkSec(0, 0);
         dirEntry.ClearEmpty();
