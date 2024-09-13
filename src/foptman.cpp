@@ -814,8 +814,8 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXEUROCOM2V5, optionsToWrite.isEurocom2V5 ? 1 : 0);
     rcFile.SetValue(FLEXUNDOCUMENTED, optionsToWrite.use_undocumented ? 1 : 0);
     rcFile.SetValue(FLEXRTC, optionsToWrite.useRtc ? 1 : 0);
-    auto str =
-        flx::toString<decltype(options.frequency)>(options.frequency, ok);
+    auto str = flx::toString<decltype(options.frequency)>(
+                optionsToWrite.frequency, ok);
     if (ok)
     {
         rcFile.SetValue(FLEXFREQUENCY, str);
