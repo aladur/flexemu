@@ -1245,12 +1245,8 @@ AC_SUBST([am__untar])
 ]) # _AM_PROG_TAR
 
 m4_include([m4/attributes.m4])
-m4_include([m4/ax_cflags_warn_all.m4])
 m4_include([m4/ax_clang_tidy_opts.m4])
-m4_include([m4/ax_compiler_vendor.m4])
 m4_include([m4/ax_have_qt.m4])
-m4_include([m4/ax_prepend_flag.m4])
-m4_include([m4/ax_require_defined.m4])
 m4_include([m4/flx_bitfields_lsb_first.m4])
 m4_include([m4/flx_disable_post_install.m4])
 m4_include([m4/libtool.m4])

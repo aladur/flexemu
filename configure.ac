@@ -51,8 +51,6 @@ dnl Check for --enable-speed flag
 FLX_ENABLE_SPEED
 dnl Check for --disable-post-install flag
 FLX_ENABLE_POST_INSTALL
-dnl Check for -pedantic -Wall compiler switch
-AX_CXXFLAGS_WARN_ALL
 dnl Check for specific compiler warning support
 CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
         -std=gnu99 \
@@ -63,6 +61,7 @@ CC_CHECK_FLAGS_APPEND([CFLAGS],[CFLAGS],[\
 ])
 AC_LANG_PUSH([C++])
 CC_CHECK_FLAGS_APPEND([CXXWARNINGS],[CXXWARNINGS],[\
+        -Wall \
         -Wextra \
         -Wshadow \
         -Wswitch-enum \
