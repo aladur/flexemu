@@ -163,6 +163,7 @@ do
             done
         fi
         cp -f src/flexemu.conf $targetdir
+        cp -f src/flexlabl.conf $targetdir
     done
 done
 cd build/windows

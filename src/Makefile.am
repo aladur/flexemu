@@ -1,6 +1,8 @@
 pkgdata_DATA = boot
 
-sysconf_DATA = flexemu.conf
+sysconf_DATA = \
+	flexemu.conf \
+	flexlabl.conf
 
 desktop_DATA = \
 	flexemu.desktop \
@@ -201,6 +203,7 @@ flexemu_SOURCES = \
 	e2screen.cpp \
 	efslctle.cpp \
 	fdoptman.cpp \
+	flblfile.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
 	inout.cpp \
@@ -293,6 +296,7 @@ flexemu_SOURCES = \
 	filecntb.h \
 	filecnts.h \
 	fileread.h \
+	flblfile.h \
 	flexemu.h \
 	flexerr.h \
 	foptman.h \

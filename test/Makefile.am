@@ -62,6 +62,7 @@ unittests_SOURCES = \
 	../src/colors.cpp \
 	../src/da6809.cpp \
 	../src/fdoptman.cpp \
+	../src/flblfile.cpp \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/ndircont.cpp \
@@ -93,6 +94,7 @@ unittests_SOURCES = \
 	../src/fileread.h \
 	../src/filfschk.h \
 	fixt_filecont.h \
+	../src/flblfile.h \
 	../src/flexerr.h \
 	../src/idircnt.h \
 	../src/iffilcnt.h \
@@ -127,6 +129,7 @@ test_gccasm_SOURCES = \
 	../src/colors.cpp \
 	../src/command.cpp \
 	../src/da6809.cpp \
+	../src/flblfile.cpp \
 	../src/foptman.cpp \
 	../src/inout.cpp \
 	../src/mc6809.cpp \
@@ -153,6 +156,7 @@ test_gccasm_SOURCES = \
 	../src/e2.h \
 	../src/engine.h \
 	../src/fcinfo.h \
+	../src/flblfile.h \
 	../src/flexerr.h \
 	../src/foptman.h \
 	../src/inout.h \

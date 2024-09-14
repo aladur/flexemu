@@ -199,6 +199,7 @@ ${Else}
 ${EndIf}
   File /a "${BASEDIR}\src\boot"
   File /a "${BASEDIR}\src\flexemu.conf"
+  File /a "${BASEDIR}\src\flexlabl.conf"
   File /a /oname=Changes.txt "${BASEDIR}\ChangeLog"
   File /a /oname=Copying.txt "${BASEDIR}\COPYING"
   File /a /oname=Readme.txt "${BASEDIR}\README"

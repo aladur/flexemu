@@ -226,6 +226,7 @@
     <ClCompile Include="e2screen.cpp" />
     <ClCompile Include="efslctle.cpp" />
     <ClCompile Include="fdoptman.cpp" />
+    <ClCompile Include="flblfile.cpp" />
     <ClCompile Include="foptman.cpp" />
     <ClCompile Include="fsetupui.cpp" />
     <ClCompile Include="inout.cpp" />
@@ -437,6 +438,7 @@
     <ClInclude Include="filecnts.h" />
     <ClInclude Include="filecont.h" />
     <ClInclude Include="fileread.h" />
+    <ClInclude Include="flblfile.h" />
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="foptman.h" />

@@ -987,6 +987,7 @@ TEST(test_da6809, dis_undocumented)
 TEST(test_da6809, dis_flex_labels)
 {
     Da6809 da;
+    Da6809::SetFlexLabelFile("../src/flexlabl.conf");
     DWord pc = 0x0000;
     DWord jumpaddr = 4711U;
     std::string code;

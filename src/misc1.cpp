@@ -639,6 +639,18 @@ std::string flx::getFlexemuSystemConfigFile()
 #endif
 }
 
+std::string flx::getFlexLabelFile()
+{
+    static const auto flexLabelFile = std::string("flexlabl.conf");
+
+#ifdef _WIN32
+    return getExecutablePath() + PATHSEPARATORSTRING + flexLabelFile;
+#endif
+#ifdef UNIX
+    return std::string(F_SYSCONFDIR) + PATHSEPARATORSTRING + flexLabelFile;
+#endif
+}
+
 #ifdef _WIN32
 // uses its own implementation of getopt
 int optind = 1;

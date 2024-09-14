@@ -189,6 +189,7 @@ AC_CONFIG_LINKS([test/data/cat.hex:test/data/cat.hex])
 AC_CONFIG_LINKS([test/data/cat.s19:test/data/cat.s19])
 AC_CONFIG_LINKS([test/data/testdisk.dsk:test/data/testdisk.dsk])
 AC_CONFIG_LINKS([test/data/testdisk.flx:test/data/testdisk.flx])
+AC_CONFIG_LINKS([src/flexlabl.conf:src/flexlabl.conf])
 
 AC_CONFIG_FILES([Makefile \
 	src/Makefile \

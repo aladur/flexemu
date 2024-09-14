@@ -301,6 +301,7 @@ extern void dumpSector(std::ostream &os, uint32_t indent_count,
 extern void hex_dump(std::ostream &os, const char *buffer, unsigned count);
 extern std::string getTempPath();
 extern std::string getFlexemuSystemConfigFile();
+extern std::string getFlexLabelFile();
 extern std::string getFileName(const std::string &path);
 extern std::string getFileStem(const std::string &path);
 extern std::string getFileExtension(const std::string &path);

@@ -31,6 +31,8 @@ public:
     void set_use_undocumented(bool value) override;
     unsigned getByteSize(const Byte *p_memory) override;
 
+    static void SetFlexLabelFile(const char *path);
+
 private:
 
     inline InstFlg D_Page2(InstFlg p_flags, DWord &p_jumpaddr,
@@ -71,6 +73,7 @@ private:
     static const char *InterRegister(Byte which);
     static const char *StackRegister(Byte which, const char *not_stack);
     static const char *FlexLabel(Word addr);
+    static const char *flexLabelFile;
 };
 
 #endif // DA6809_INCLUDED

@@ -558,6 +558,19 @@ address. Execution automatically stops when the PC register contains one
 of the breakpoint addresses.
 </div>
 
+<h3 id="disassembler">MC6809 Disassembler</h3>
+<div class="justify">
+flexemu has an integrated disassembler. It shows the currently to be executed
+instruction. Configuring the
+<a href="flexemu.htm#logging">CPU Instruction Logging</a>
+allows to log all executed instructions.
+Addresses having a special meaning in the FLEX Operating System can be shown
+as label instead of the hex-address. These labels are defined in the file
+<b>flexlabl.conf</b>. On Linux the file get's installed in path
+<b>/etc/flexlabl.conf</b>. On Windows it is located in the installation
+directory.
+</div>
+
 <h3 id="logging">CPU Instruction Logging</h3>
 <div class="justify">
 With the menu CPU-&gt;Logging the logging of each executed CPU
