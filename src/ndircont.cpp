@@ -786,7 +786,7 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
 
     data_size = stat.st_size - (DBPS * 2);
 
-    if (data_size >= DBPS * 2)
+    if (data_size > 0)
     {
         auto sec_idx = get_sector_index(begin) + 2;
 
