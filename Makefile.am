@@ -30,6 +30,11 @@ SUBDIRS = \
 	monitor \
 	test
 
+nobase_pkgdata_DATA = \
+	imhex/patterns/flex_binary.hexpat \
+	imhex/patterns/flex_dskflx.hexpat \
+	imhex/patterns/flex_random.hexpat
+
 # Alternative handling of subdirectories.
 # This reduces the entering/leaving of subdirectories.
 # For details see:
@@ -109,6 +114,11 @@ EXTRA_DIST += \
 	test/data/cat.s19 \
 	test/data/testdisk.dsk \
 	test/data/testdisk.flx
+
+EXTRA_DIST += \
+	imhex/patterns/flex_binary.hexpat \
+	imhex/patterns/flex_dskflx.hexpat \
+	imhex/patterns/flex_random.hexpat
 
 AUTOMAKE_OPTIONS = dist-bzip2 no-dist-gzip
 

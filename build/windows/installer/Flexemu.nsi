@@ -334,6 +334,17 @@ Section "Documentation" Documentation
 
 SectionEnd   
 
+Section "ImHex Hex Editor support files" ImHexSupportFiles
+
+  SectionIn RO
+  SetOutPath $INSTDIR\ImHex\patterns
+  ; Install ImHex pattern files
+  File /a "${BASEDIR}\imhex\patterns\flex_binary.hexpat"
+  File /a "${BASEDIR}\imhex\patterns\flex_dskflx.hexpat"
+  File /a "${BASEDIR}\imhex\patterns\flex_random.hexpat"
+
+SectionEnd
+
 Section "Start Menu Shortcuts" StartMenu
 
   SectionIn RO
