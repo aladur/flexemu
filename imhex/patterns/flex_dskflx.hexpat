@@ -19,8 +19,6 @@ import std.mem;
 // global variables
 u16 dir_sectors[MAX_DIR_SECTORS]; // Contains hashes for each dir. sector.
 u16 dir_sectors_index = 0; // Next free index into dir_sectors array.
-u8 next_track = 0; // Next track for directory sector chain.
-u8 next_sector = 5; // Next sector for directory sector chain.
 u8 max_track = 0; // Maximum track number. (0 based).
 u8 max_sector0 = 0; // Maximum sector number on track 0 (1 based).
 u8 max_sector = 0; // Maximum sector number on tracks > 0 (1 based).
@@ -219,34 +217,45 @@ fn initialize_dir_sector_hashes()
     // Create a hash list for all sectors which have been identified as
     // a directory sector. This allows to quickly lookup for each sector
     // if it is a data sector or directory sector.
-    st_t current;
+    st_t previous;
+    st_t next;
+
+    next.track = 0; // Next track for directory sector chain.
+    next.sector = 5; // Next sector for directory sector chain.
 
     // Initialize dir_sectors by reading along the directory sector
     // chain.
-    while (next_track != 0 || next_sector != 0)
+    while (next.track != 0 || next.sector != 0)
     {
-        u16 hash = (next_track << 8) + next_sector;
-        insert(lower_bound(hash), hash);
-        current.track = next_track;
-        current.sector = next_sector;
-        u32 offset = disk_offset +
-            ((next_track * max_sector) + next_sector - 1) * SECTOR_SIZE;
-        next_track = $[offset];
-        next_sector = $[offset + 1];
-        if (next_track > max_track || next_sector > max_sector ||
-            (next_track != 0 && next_sector == 0))
+        u16 hash = (next.track << 8) + next.sector;
+        u16 index = lower_bound(hash);
+        if (dir_sectors[index] == hash)
         {
-            st_t next;
-
-            next.track = next_track;
-            next.sector = next_sector;
             str message = std::format(
-                "Directory sector {} links to an invalid sector {}.",
-                format_st(current), format_st(next));
+                "Directory sector {} links back to {}.",
+                format_st(previous), format_st(next));
             std::warning(message);
             // Abort reading directory chain.
-            next_track = 0;
-            next_sector = 0;
+            next.track = 0;
+            next.sector = 0;
+            continue;
+        }
+        insert(index, hash);
+        previous = next;
+        u32 offset = disk_offset +
+            ((next.track * max_sector) + next.sector - 1) * SECTOR_SIZE;
+        next.track = $[offset];
+        next.sector = $[offset + 1];
+        if (next.track > max_track || next.sector > max_sector ||
+            (next.track != 0 && next.sector == 0))
+        {
+            str message = std::format(
+                "Directory sector {} links to an invalid sector {}.",
+                format_st(previous), format_st(next));
+            std::warning(message);
+            // Abort reading directory chain.
+            next.track = 0;
+            next.sector = 0;
         }
     }
 };
