@@ -337,6 +337,50 @@ const FlexDiskCheckResultItems &FlexDiskCheck::GetResult() const
     return results;
 }
 
+FlexDiskCheckStatistics_t FlexDiskCheck::GetStatistics() const
+{
+    FlexDiskCheckStatistics_t statistics;
+
+    statistics[FlexDiskCheckResultItem::Type::Info] = 0;
+    statistics[FlexDiskCheckResultItem::Type::Warning] = 0;
+    statistics[FlexDiskCheckResultItem::Type::Error] = 0;
+
+    for (const auto &result : results)
+    {
+        ++statistics[result->type];
+    }
+
+    return statistics;
+}
+
+std::string FlexDiskCheck::GetStatisticsString() const
+{
+    auto statistics = GetStatistics();
+    std::stringstream stream;
+    std::string separator;
+
+
+    auto value = statistics[FlexDiskCheckResultItem::Type::Error];
+    if (value > 0)
+    {
+        stream << value << " error(s)";
+        separator = ", ";
+    }
+    value = statistics[FlexDiskCheckResultItem::Type::Warning];
+    if (value > 0)
+    {
+        stream << separator << value << " warning(s)";
+        separator = " and ";
+    }
+    value = statistics[FlexDiskCheckResultItem::Type::Info];
+    if (value > 0)
+    {
+        stream << separator << value << " info(s)";
+    }
+
+    return stream.str();
+}
+
 bool FlexDiskCheck::IsTrackSectorValid(st_t trk_sec) const
 {
     // The sectors 00-01, 00-02, 00-03 and 00-04 are rated as invalid

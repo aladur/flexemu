@@ -663,47 +663,11 @@ static int CheckConsistencyOfDskFile(const std::string &dsk_file,
     }
     else
     {
-        std::string separator;
-        size_t infos = 0;
-        size_t warnings = 0;
-        size_t errors = 0;
-        const auto &results = check.GetResult();
-
-        for (const auto &result : results)
-        {
-            switch (result->type)
-            {
-                case FlexDiskCheckResultItem::Type::Info:
-                    ++infos;
-                    break;
-                case FlexDiskCheckResultItem::Type::Warning:
-                    ++warnings;
-                    break;
-                case FlexDiskCheckResultItem::Type::Error:
-                    ++errors;
-                    break;
-            }
-        }
-
-        if (errors != 0)
-        {
-            std::cout << " " << errors << " error(s)";
-            separator = ",";
-        }
-        if (warnings != 0)
-        {
-            std::cout << separator << " " << warnings << " warning(s)";
-            separator = " and";
-        }
-        if (infos != 0)
-        {
-            std::cout << separator << " " << infos << " info(s)";
-        }
-        std::cout << '\n';
+        std::cout << " " << check.GetStatisticsString() << "\n";
 
         if (verbose)
         {
-            for (const auto &result : results)
+            for (const auto &result : check.GetResult())
             {
                 std::cout << "  " << result << '\n';
             }

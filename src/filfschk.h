@@ -49,6 +49,7 @@ struct FlexDiskCheckResultItem
 
 using FlexDiskCheckResultItemPtr = std::unique_ptr<FlexDiskCheckResultItem>;
 using FlexDiskCheckResultItems = std::vector<FlexDiskCheckResultItemPtr>;
+using FlexDiskCheckStatistics_t = std::map<FlexDiskCheckResultItem::Type, int>;
 
 class FlexDiskCheck
 {
@@ -126,6 +127,8 @@ public:
     bool CheckFileSystem();
     bool IsValid() const;
     const FlexDiskCheckResultItems &GetResult() const;
+    FlexDiskCheckStatistics_t GetStatistics() const;
+    std::string GetStatisticsString() const;
     std::ostream &DebugDump(std::ostream &os) const;
 
 private:
