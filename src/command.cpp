@@ -126,7 +126,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
         command_index = 0;
         answer_index = 0;
-        auto number = static_cast<int>(INVALID_DRIVE);
+        auto number = static_cast<Word>(INVALID_DRIVE);
         auto count = 0;
         const auto arg1 = flx::rtrim(flx::tolower(
                     next_token(commandIter, count)));
@@ -237,7 +237,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 {
                     std::stringstream stream(arg2);
 
-                    if ((stream >> number).fail() || number < 0 || number >3)
+                    if ((stream >> number).fail() || number >3)
                     {
                         answer_stream << "EMU parameter error: " << arg2 <<
                                          " is not a valid drive number.";
@@ -248,7 +248,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("umount") == 0)
                 {
-                    if (!fdc.umount_drive(static_cast<Word>(number)))
+                    if (!fdc.umount_drive(number))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to unmount drive #" <<
@@ -261,14 +261,13 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("info") == 0)
                 {
-                    answer =
-                        fdc.drive_attributes_string(static_cast<Word>(number));
+                    answer = fdc.drive_attributes_string(number);
                     return;
                 }
 
                 if (arg1.compare("sync") == 0)
                 {
-                    if (!fdc.sync_drive(static_cast<Word>(number)))
+                    if (!fdc.sync_drive(number))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to sync drive #" <<
@@ -281,8 +280,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("check") == 0)
                 {
-                    const auto *floppy =
-                        fdc.get_drive(static_cast<Word>(number));
+                    const auto *floppy = fdc.get_drive(number);
                     if (floppy == nullptr)
                     {
                         answer_stream << "drive #" << number << " not ready";
@@ -321,7 +319,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 {
                     std::stringstream stream(arg3);
 
-                    if ((stream >> number).fail() || number < 0 || number >3)
+                    if ((stream >> number).fail() || number > 3)
                     {
                         answer_stream << "EMU parameter error: " << arg3 <<
                                          " is not a valid drive number.";
@@ -332,7 +330,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("mount") == 0)
                 {
-                    if (!fdc.mount_drive(arg2, static_cast<Byte>(number)))
+                    if (!fdc.mount_drive(arg2, number))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to mount " << arg2 <<
@@ -345,8 +343,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                 if (arg1.compare("rmount") == 0)
                 {
-                    if (!fdc.mount_drive(arg2, static_cast<Byte>(number),
-                                         MOUNT_RAM))
+                    if (!fdc.mount_drive(arg2, number, MOUNT_RAM))
                     {
                         answer_stream << "EMU error: "
                                          "Unable to mount " << arg2 <<
