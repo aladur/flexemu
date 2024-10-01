@@ -242,10 +242,15 @@ fn initialize_dir_sector_hashes()
         }
         insert(index, hash);
         previous = next;
-        u32 offset = disk_offset +
-            ((next.track * max_sector) + next.sector - 1) * SECTOR_SIZE;
-        next.track = $[offset];
-        next.sector = $[offset + 1];
+        u32 pos;
+        if (next.track == 0)
+            pos = disk_offset + (next.sector - 1) * SECTOR_SIZE;
+        else
+            pos = disk_offset + byte_per_track0 +
+                ((next.track - 1) * byte_per_track) +
+                (next.sector - 1) * SECTOR_SIZE;
+        next.track = $[pos];
+        next.sector = $[pos + 1];
         if (next.track > max_track || next.sector > max_sector ||
             (next.track != 0 && next.sector == 0))
         {
