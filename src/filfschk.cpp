@@ -30,7 +30,8 @@
 
 
 FlexDiskCheck::FlexDiskCheck(
-        IFlexDiskBySector &p_flexDisk, FileTimeAccess p_fileTimeAccess) :
+        const IFlexDiskBySector &p_flexDisk,
+        FileTimeAccess p_fileTimeAccess) :
     flexDisk(p_flexDisk), fileTimeAccess(p_fileTimeAccess)
 {
     Initialize();
