@@ -28,6 +28,7 @@
 #include "iodevice.h"
 #include "bobservd.h"
 #include "asciictl.h"
+#include "soptions.h"
 #include <string>
 #include <array>
 
@@ -58,6 +59,7 @@ protected:
     Word command_index{0};
     Word answer_index{0};
     std::string answer;
+    const sOptions &options;
 
     // private interface:
 private:
@@ -82,7 +84,8 @@ public:
     Command(
             Inout &p_inout,
             Scheduler &p_scheduler,
-            E2floppy &p_fdc);
+            E2floppy &p_fdc,
+            const sOptions &p_options);
     ~Command() override = default;
     Command(const Command &src) = delete;
     Command(Command &&src) = delete;

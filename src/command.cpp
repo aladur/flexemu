@@ -40,8 +40,12 @@
 Command::Command(
         Inout &p_inout,
         Scheduler &p_scheduler,
-        E2floppy &p_fdc) :
-    inout(p_inout), scheduler(p_scheduler), fdc(p_fdc)
+        E2floppy &p_fdc,
+        const sOptions &p_options)
+    : inout(p_inout)
+    , scheduler(p_scheduler)
+    , fdc(p_fdc)
+    , options(p_options)
 {
 }
 

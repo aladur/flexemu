@@ -62,7 +62,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
     pia2(cpu, keyboardIO, joystickIO),
     pia2v5(cpu),
     drisel(fdc),
-    command(inout, scheduler, fdc),
+    command(inout, scheduler, fdc, options),
     gui(cpu, memory, scheduler, inout, vico1, vico2,
         joystickIO, keyboardIO, terminalIO, pia1, p_options)
 {
