@@ -32,6 +32,7 @@
 #include "e2floppy.h"
 #include "inout.h"
 #include "schedule.h"
+#include "filfschk.h"
 #include <sstream>
 #include <iomanip>
 #include <iostream>
@@ -278,6 +279,42 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     return;
                 }
 
+                if (arg1.compare("check") == 0)
+                {
+                    const auto *floppy =
+                        fdc.get_drive(static_cast<Word>(number));
+                    if (floppy == nullptr)
+                    {
+                        answer_stream << "drive #" << number << " not ready";
+                    }
+                    else
+                    {
+                        FlexDiskCheck check(*floppy, options.fileTimeAccess);
+                        answer_stream << "Drive #" << number << " ";
+                        if (check.CheckFileSystem())
+                        {
+                            answer_stream << "is OK.";
+                        }
+                        else
+                        {
+                            bool with_nl = false;
+
+                            answer_stream << "has " <<
+                                check.GetStatisticsString() << '\n';
+                            for (const auto &result : check.GetResult())
+                            {
+                                if (with_nl)
+                                {
+                                    answer_stream << '\n';
+                                }
+                                with_nl = true;
+                                answer_stream << "  " << result;
+                            }
+                        }
+                    }
+                    answer = answer_stream.str();
+                    return;
+                }
                 break;
 
             case 3:

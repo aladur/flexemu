@@ -744,3 +744,13 @@ Byte E2floppy::getSizeCode() const
     }
 }
 
+IFlexDiskBySector const *E2floppy::get_drive(Word drive_nr) const
+{
+    if (drive_nr >= MAX_DRIVES)
+    {
+        return nullptr;
+    }
+
+    return floppy[drive_nr].get();
+}
+

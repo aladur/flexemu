@@ -20,6 +20,8 @@ umount
 <br>
 sync
 <br>
+check
+<br>
 exit
 <br>
 timeset
@@ -91,6 +93,13 @@ drives.
 The execution is aborted and an error message is printed if any file
 is currently opened on the specified drive. Drives mounted with a disk image
 are silently ignored.
+</dd>
+<dt id="check">emu check &lt;drive_nr&gt;</dt>
+<dd>
+Executes a filesystem check on the drive with number <b>&lt;drive_nr&gt;</b>.
+<b>&lt;drive_nr&gt;
+</b>can be 0 - 3.
+This is equivalent to the command line execution of: <b>dsktool -c &lt;dsk-file&gt; -v</b>
 </dd>
 <dt id="umount">emu umount &lt;drive_nr&gt;</dt>
 <dd>

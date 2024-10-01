@@ -131,6 +131,7 @@ public:
     virtual FlexDiskAttributes drive_attributes(Word drive_nr);
     virtual std::string drive_attributes_string(Word drive_nr);
     virtual void select_drive(Byte new_selected);
+    virtual IFlexDiskBySector const *get_drive(Word drive_nr) const;
 
 private:
 
