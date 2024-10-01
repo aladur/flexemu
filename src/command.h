@@ -52,9 +52,9 @@ class Command : public IoDevice, public BObserved
     // Internal registers
 protected:
 
-    Inout       &inout;
-    Scheduler   &scheduler;
-    E2floppy    &fdc;
+    Inout &inout;
+    Scheduler &scheduler;
+    E2floppy &fdc;
     command_t command{};
     Word command_index{0};
     Word answer_index{0};

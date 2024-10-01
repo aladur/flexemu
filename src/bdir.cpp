@@ -210,7 +210,7 @@ PathList_t BDirectory::GetSubDirectories(const std::string &p_path)
             dirEntry = basePath + PATHSEPARATORSTRING + pentry->d_name;
 
             if (stat(dirEntry.c_str(), &sbuf) == 0 &&
-                S_ISDIR(sbuf.st_mode)   &&
+                S_ISDIR(sbuf.st_mode) &&
                 pentry->d_name[0] != '.')
             {
                 subDirList.emplace_back(pentry->d_name);
