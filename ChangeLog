@@ -954,5 +954,6 @@ Bug Fixes:
 	Bugfix flexplorer: Extract files with original letter case.
 	Bugfix flexplorer, dsktool: set right file timestamp.
 	Bugfix flexemu: Avoid crash due to inconsistent random files.
+	Bugfix flexemu: Avoid read/write errors for random files in directory disk.
 Code Maintenance:
 	Update Windows build files.
