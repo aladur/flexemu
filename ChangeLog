@@ -946,3 +946,13 @@ Code Maintenance:
 	o Bugfix free functions in misc1.cpp.
 	o Windows installer: Use newest Qt5 open-source libraries V5.15.13.
 
+V3.22 (20241004)
+New Features:
+Bug Fixes:
+	Bugfix flexplorer on Windows: Don't display non-FLEX files.
+	Bugfix flexplorer: Correctly filter FLEX filenames.
+	Bugfix flexplorer: Extract files with original letter case.
+	Bugfix flexplorer, dsktool: set right file timestamp.
+	Bugfix flexemu: Avoid crash due to inconsistent random files.
+Code Maintenance:
+	Update Windows build files.
