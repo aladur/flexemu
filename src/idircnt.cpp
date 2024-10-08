@@ -53,6 +53,11 @@ FlexDirectoryDiskIteratorImp::~FlexDirectoryDiskIteratorImp()
         dirHdl = nullptr;
     }
 
+    if (base != nullptr)
+    {
+        base->randomFileCheck.UpdateRandomListToFile();
+    }
+
     base = nullptr;
 }
 
@@ -64,6 +69,11 @@ bool FlexDirectoryDiskIteratorImp::operator==(const IFlexDiskByFile *rhs) const
 
 void FlexDirectoryDiskIteratorImp::AtEnd()
 {
+    if (base != nullptr)
+    {
+        base->randomFileCheck.UpdateRandomListToFile();
+    }
+
     base = nullptr;
 }
 
@@ -133,27 +143,8 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         Byte attributes = 0;
         int sectorMapFlag = 0;
 
-        if (findData.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN &&
-                sbuf.st_size >= 2 * DBPS)
-        {
-            // Detailed verification of a random file by checking the
-            // sector map.
-            std::ifstream ifs(path, std::ios::in | std::ios::binary);
-            SectorMap_t sectorMap{};
-
-            if (ifs.is_open())
-            {
-                ifs.read(reinterpret_cast<char *>(sectorMap.data()),
-                        sectorMap.size());
-                if (!ifs.fail() && isValidSectorMap(sectorMap, sbuf.st_size))
-                {
-                    sectorMapFlag = 2;
-                }
-            }
-        }
-
-        // CDFS support:
-        if (flx::isListedInFileRandom(base->GetPath(), fileName))
+        base->randomFileCheck.CheckForFileAttributeAndUpdate(fileName);
+        if (base->randomFileCheck.IsRandomFile(fileName))
         {
             sectorMapFlag = 2;
         }
@@ -217,35 +208,10 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         Byte attributes = 0;
         int sectorMapFlag = 0;
 
-        path += fileName;
-        if (base->IsWriteProtected())
+        base->randomFileCheck.CheckForFileAttributeAndUpdate(fileName);
+        if (base->randomFileCheck.IsRandomFile(fileName))
         {
-            // CDFS-Support: look for file name in file 'random'
-            if (flx::isListedInFileRandom(base->GetPath(), fileName))
-            {
-                sectorMapFlag = 2;
-            }
-        }
-        else
-        {
-            if (sbuf.st_mode & S_IXUSR && sbuf.st_size >= 2 * DBPS)
-            {
-                // Detailed verification of a random file by checking the
-                // sector map.
-                std::ifstream ifs(path, std::ios::in | std::ios::binary);
-                SectorMap_t sectorMap{};
-
-                if (ifs.is_open())
-                {
-                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
-                            sectorMap.size());
-                    if (!ifs.fail() &&
-                        isValidSectorMap(sectorMap, sbuf.st_size))
-                    {
-                        sectorMapFlag = 2;
-                    }
-                }
-            }
+            sectorMapFlag = 2;
         }
 
         if (!(sbuf.st_mode & S_IWUSR))

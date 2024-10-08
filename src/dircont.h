@@ -28,6 +28,7 @@
 #include "filecont.h"
 #include "fdirent.h"
 #include "flexerr.h"
+#include "rndcheck.h"
 #include <string>
 
 
@@ -46,6 +47,7 @@ class FlexDirectoryDiskByFile : public IFlexDiskByFile
 
 private:
     std::string directory;
+    RandomFileCheck randomFileCheck;
     Byte attributes{};
     Word disk_number{};
     const FileTimeAccess &ft_access{};
@@ -99,7 +101,6 @@ private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
     bool SetDateTime(const std::string &fileName, const BDate &date,
                      const BTime &time);
-    bool SetRandom(const std::string &fileName);
     void Initialize_header(bool isWriteProtect);
 
 };

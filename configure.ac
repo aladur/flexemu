@@ -119,8 +119,8 @@ case $host_os in
        *openbsd*) OS_TYPE="-D__OPENBSD" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
-       *darwin*)  OS_TYPE="-D__MACOS" ;;
-       *)         OS_TYPE="" ;;
+       *darwin*)  OS_TYPE="-D__MACOS"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
+       *)         OS_TYPE="";;
 esac
 AC_EXEEXT
 AC_OBJEXT
@@ -144,6 +144,7 @@ AC_SUBST(WNO_VARIADIC_MACROS)
 AC_SUBST([FLEX_RC])
 AC_SUBST([FLEXEMU_LDADD])
 AC_SUBST([OS_TYPE])
+AC_SUBST([MACOSX_VERSION_MIN])
 AC_SUBST([FLEXPLORER], ['flexplorer${EXEEXT}'])
 AC_SUBST([CXXWARNINGS])
 

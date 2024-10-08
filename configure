@@ -664,6 +664,7 @@ LIBOBJS
 CXXSPEED
 CXXWARNINGS
 FLEXPLORER
+MACOSX_VERSION_MIN
 OS_TYPE
 FLEXEMU_LDADD
 FLEX_RC
@@ -20187,8 +20188,8 @@ case $host_os in
        *openbsd*) OS_TYPE="-D__OPENBSD" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
-       *darwin*)  OS_TYPE="-D__MACOS" ;;
-       *)         OS_TYPE="" ;;
+       *darwin*)  OS_TYPE="-D__MACOS"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
+       *)         OS_TYPE="";;
 esac
 
 
@@ -20379,6 +20380,7 @@ if test "x$no_x" != "xyes"; then
 
 
 fi
+
 
 
 

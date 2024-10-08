@@ -82,7 +82,7 @@ AM_CXXFLAGS = \
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
-	$(CXXWARNINGS)
+	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
@@ -334,6 +334,7 @@ flexemu_SOURCES = \
 	qtfree.h \
 	qtgui.h \
 	rfilecnt.h \
+	rndcheck.h \
 	schedcpu.h \
 	schedule.h \
 	scpulog.h \
@@ -407,6 +408,7 @@ flexplorer_SOURCES = \
 	memtgt.h \
 	misc1.h \
 	qtfree.h \
+	rndcheck.h \
 	rfilecnt.h \
 	sfpopts.h \
 	warnoff.h \
@@ -502,6 +504,7 @@ libflex_a_SOURCES = \
 	memory.cpp \
 	misc1.cpp \
 	rfilecnt.cpp \
+	rndcheck.cpp \
 	bcommand.h \
 	bdate.h \
 	bdir.h \
@@ -543,6 +546,7 @@ libflex_a_SOURCES = \
 	memory.h \
 	misc1.h \
 	rfilecnt.h \
+	rndcheck.h \
 	typedefs.h
 
 libfmt_a_SOURCES = \

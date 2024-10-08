@@ -53,6 +53,7 @@
 #endif
 
 const char * const RANDOM_FILE_LIST = "random";
+const char * const RANDOM_FILE_LIST_NEW = ".random";
 const char * const flx::white_space = " \t\n\r\f\v";
 
 char flx::tolower_value(char ch)
@@ -855,61 +856,6 @@ bool flx::askForInput(const std::string &question, const std::string &answers,
 
     // Return true if only Return was entered or the first answer character.
     return input == '\n' || ::tolower(input) == answers.at(0);
-}
-
-bool flx::isListedInFileRandom(const std::string &directory,
-                               const std::string &filename)
-{
-    std::string path(directory);
-    std::string lowFilename(filename);
-
-    if (!endsWithPathSeparator(path))
-    {
-        path.append(PATHSEPARATORSTRING);
-    }
-    path.append(RANDOM_FILE_LIST);
-    strlower(lowFilename);
-
-    std::ifstream ifs(path);
-    std::string line;
-
-    while (std::getline(ifs, line))
-    {
-        line = trim(std::move(line));
-        if (line.compare(lowFilename) == 0)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool flx::hasRandomFileAttribute(const std::string &directory,
-                                 const std::string &filename)
-{
-    std::string sFilename(filename);
-
-    flx::strlower(sFilename);
-    std::string filePath(directory);
-    filePath += PATHSEPARATORSTRING;
-    filePath += sFilename;
-
-#ifdef _WIN32
-    DWord fileAttrib =
-        GetFileAttributes(ConvertToUtf16String(filePath).c_str());
-
-    return (fileAttrib != 0xFFFFFFFF &&
-            (fileAttrib & FILE_ATTRIBUTE_HIDDEN) != 0U);
-#endif
-#ifdef UNIX
-        struct stat sbuf{};
-
-        return (stat(filePath.c_str(), &sbuf) == 0 &&
-                (sbuf.st_mode & S_IXUSR) != 0U);
-#endif
-
-    return false;
 }
 
 std::vector<std::string> flx::split(const std::string &str, char delimiter)

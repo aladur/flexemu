@@ -29,6 +29,7 @@
 #include "flexerr.h"
 #include "fdirent.h"
 #include "filecntb.h"
+#include "rndcheck.h"
 #include <algorithm>
 #include <vector>
 #include <fstream>
@@ -620,15 +621,9 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
                 SetAttributes(0);
                 SetSectorMap(0);
 
-                if(access(directory.c_str(), W_OK))
-                {
-                    // CDFS-Support: look for file name in file 'random'
-                    if (flx::isListedInFileRandom(directory, filename))
-                    {
-                        SetSectorMap(IS_RANDOM_FILE);
-                    }
-                }
-                else if (flx::hasRandomFileAttribute(directory, filename))
+                RandomFileCheck randomFileCheck(directory);
+
+                if (randomFileCheck.CheckForRandom(filename))
                 {
                     SetSectorMap(IS_RANDOM_FILE);
                 }

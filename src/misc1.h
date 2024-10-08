@@ -220,6 +220,7 @@ using cycles_t = QWord;
 // which have to be handled as random files. It is used in directory containers
 // to identify random files.
 extern const char * const RANDOM_FILE_LIST;
+extern const char * const RANDOM_FILE_LIST_NEW;
 
 template<typename T> bool BTST(T value, unsigned bitpos)
 {
@@ -317,11 +318,6 @@ extern bool isPathsEqual(const std::string &path1, const std::string &path2);
 extern bool isFlexFilename(const std::string &filename);
 
 extern const char * const white_space;
-
-extern bool isListedInFileRandom(const std::string &directory,
-                                 const std::string &filename);
-extern bool hasRandomFileAttribute(const std::string &directory,
-                                   const std::string &filename);
 
 // trim white spaces from end of string (right)
 inline std::string rtrim(const std::string &str, const char* t = white_space)

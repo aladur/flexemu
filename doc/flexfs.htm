@@ -105,24 +105,92 @@ The header allows to have a different number of sectors on track 0 as on other
 tracks. For the actual format look at
 <a href="https://github.com/aladur/flexemu/blob/899653f1e8dcfc722a803567fb90828f606a2811/src/filecnts.h#L265">struct s_flex_header</a>.
 </dd>
-<dt id="nafs_format">Virtual disk images
+<dt id="nafs_format">Virtual disk images</dt>
 <dd>
 A vitual disk image is a directory on the host file system which will be
 mapped as a disk drive within the emulation. So it also could be called a
 <i>directory disk</i>.
 Each file in the directory will be visible as a file contained on the disk.
-Random files are identified by the user execute bit (Linux) or the hidden bit
-(Windows) of the corresponding file set.
 <p>
 The boot sector (on track 0, sector 1 and optionally sector 2) is contained in
 the file <b>boot</b>. If there is no such file the disk can't be booted. The
 link to FLEX.SYS will be generated dynamically by flexemu. The user does not
 have to care about it.
 <p>
-</dd>
-</dl>
-</div>
-<div>
+<dl>
+<dt id="nafs_format_random">Random files on virtual disks</dt>
+<dd>
+The detection of random files on a virtual disk depends on the flexemu version.
+The following table gives a detailed description of how random files are
+identified. It is used by flexemu and flexplorer.
+<p>
+<table>
+ <tr><th>Version</th><th>Random file detection</th>
+ <tr><td>&lt; V3.22</td><td>
+On a read-write directory disk random files are identified by the user execute
+attribute set (UNIX) or the hidden attribute set (Windows). On a read-only
+filesystem like a CDFS these attributes may not be available.
+So for any read-only directory disk a file <i>random</i> can be created
+containing the lowercase filenames of all random files.
+  </td>
+ <tr><td>V3.22</td><td>
+The bahaviour is the same as in older versions. Additionaly, to avoid
+crashes in flexemu in addition to the file attributes a file only is
+detected as random file if it has a size of three sectors minimum. FLEX does
+not support random files with one or two sectors. In addition the sector map
+of a random file is verified and has to be valid.
+ </td>
+ <tr><td>&GreaterEqual; V3.25</td><td>
+The detection of random files used in older flexemu versions has some
+downsides. It depends on file system capabilities, is a kind of misuse of
+filesystem attributes and error phrone. For this reason a completly new
+strategy is introduced.<br><br>
+To decide which strategy to use the following checks are done in this order:
+<br><br>
+ <ul>
+  <li>File <i>.random</i> exists =&gt; Use <b>strategy A</b>
+  <li>File <i>random</i> exists =&gt; Use <b>strategy B</b>
+  <li>A file with user execute attribute set (UNIX) or hidden attribute set
+   (Windows) exists =&gt; Use <b>strategy C</b>
+ </ul><br>
+ <dl>
+ <dt>Strategy A</dt>
+ <dd>Files listed in file <i>.random</i> are identified as random files. A
+ check is executed if the file exists and has the minimum size of a random
+ file which is three sectors. This <i>.random</i> file is automatically
+ updated when creating a new, deleting or renaming an existing random file.
+ The files listed in file <i>.random</i> are always sorted alphabetically
+ with lowercase filenames. If it can not be written the whole disk is marked
+ as read-only. This is the preferred strategy.
+ </dd>
+ <dt>Strategy B</dt>
+ <dd>This strategy only exists for downward compatibility.<br>
+ Files listed in file <i>random</i> are identified as random files.
+ A check is executed if the file exists and has the minimum size of a random
+ file which is three sectors. The files listed in file <i>random</i> are
+ unsorted with lowercase filename. When creating a new, deleting or renaming
+ an existing random file the updated random file list is written to the file
+ <i>.random</i> while deleting file <i>random</i>. The files listed in file
+ <i>.random</i> are always sorted alphabetically with lowercase filenames.
+ If either file <i>random</i> or <i>.random</i> can not be written the whole
+ disk is marked as read-only.
+ </dd>
+ <dt>Strategy C</dt>
+ <dd>This strategy only exists for downward compatibility.<br>
+ A file with user execute attribute (UNIX) or the hidden attribute
+ (Windows) set is identified as random file if it has the minimum size of a
+ random file which is three sectors and also has a valid sector map. When
+ creating a new, deleting or renaming an existing random file the updated
+ random file list is written to the file <i>.random</i>. The files listed in
+ file <i>.random</i> are always sorted alphabetically with lowercase
+ filenames. If it can not be written the whole disk is marked as read-only.
+ </dd>
+ </dl>
+ </td>
+</table>
+<p>
+
+<dt id="nafs_format_restrictions">Restrictions</dt>
 There are some restrictions the user should be aware of:
 <p>
 <ul>
@@ -145,6 +213,9 @@ There are some restrictions the user should be aware of:
   result in undefined behaviour.
 </ul>
 <p>
+</dd>
+</dl>
+</dl>
 </div>
 
 <h2>SEE ALSO</h2>

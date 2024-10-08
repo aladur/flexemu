@@ -52,7 +52,8 @@
 
 FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         const std::string &path, const FileTimeAccess &fileTimeAccess)
-    : ft_access(fileTimeAccess)
+    : randomFileCheck(path)
+    , ft_access(fileTimeAccess)
 {
     struct stat sbuf{};
     static Word number = 0;
@@ -81,7 +82,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
         directory.resize(directory.size() - 1);
     }
 
-    if (access(path.c_str(), W_OK))
+    if ((access(path.c_str(), W_OK) != 0) || randomFileCheck.IsWriteProtected())
     {
         attributes |= FLX_READONLY;
     }
@@ -180,7 +181,13 @@ bool FlexDirectoryDiskByFile::DeleteFile(const std::string &wildcard)
     for (it = this->begin(); it != this->end(); ++it)
     {
         it.DeleteCurrent();
+
+        if ((*it).IsRandom())
+        {
+            randomFileCheck.RemoveFromRandomList((*it).GetTotalFileName());
+        }
     }
+    randomFileCheck.UpdateRandomListToFile();
 
     return true;
 }
@@ -226,6 +233,13 @@ bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
     }
 
     it.RenameCurrent(newName);
+
+    if ((*it).IsRandom())
+    {
+        randomFileCheck.RemoveFromRandomList(oldName);
+        randomFileCheck.AddToRandomList(newName);
+        randomFileCheck.UpdateRandomListToFile();
+    }
 
     return true;
 }
@@ -403,7 +417,8 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     if (buffer.IsRandom())
     {
-        SetRandom(lowerFileName);
+        randomFileCheck.AddToRandomList(lowerFileName);
+        randomFileCheck.UpdateRandomListToFile();
     }
 
     return true;
@@ -481,31 +496,6 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
         it.SetAttributesCurrent(fileAttributes);
     }
 
-    return true;
-}
-
-// on WIN32 a random file will be represented by a hidden flag
-// on UNIX a random file will be represented by a user execute flag
-bool FlexDirectoryDiskByFile::SetRandom(const std::string &fileName)
-{
-#ifdef _WIN32
-    const auto wFilePath(
-        ConvertToUtf16String(directory + PATHSEPARATORSTRING + fileName));
-    DWORD attrs = GetFileAttributes(wFilePath.c_str());
-    SetFileAttributes(wFilePath.c_str(), attrs | FILE_ATTRIBUTE_HIDDEN);
-#endif
-#ifdef UNIX
-    struct stat sbuf{};
-    auto lowerFileName(flx::tolower(fileName));
-
-    auto filePath(directory + PATHSEPARATORSTRING + lowerFileName);
-
-    if (stat(filePath.c_str(), &sbuf) == 0)
-    {
-        chmod(filePath.c_str(), sbuf.st_mode | S_IXUSR);
-    }
-
-#endif
     return true;
 }
 

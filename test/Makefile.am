@@ -58,6 +58,7 @@ unittests_SOURCES = \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
 	test_btime.cpp \
+	test_rndcheck.cpp \
 	../src/blinxsys.cpp \
 	../src/colors.cpp \
 	../src/da6809.cpp \
@@ -66,6 +67,7 @@ unittests_SOURCES = \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/ndircont.cpp \
+	../src/rndcheck.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -105,6 +107,7 @@ unittests_SOURCES = \
 	../src/misc1.h \
 	../src/ndircont.h \
 	../src/rfilecnt.h \
+	../src/rndcheck.h \
 	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libflex.a ../src/libfmt.a

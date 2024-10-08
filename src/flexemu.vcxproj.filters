@@ -447,6 +447,9 @@
     <ClInclude Include="rfilecnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rndcheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="schedcpu.h">
       <Filter>Header Files</Filter>
     </ClInclude>

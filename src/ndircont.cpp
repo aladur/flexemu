@@ -83,7 +83,9 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors)
-    : ft_access(fileTimeAccess)
+    : directory(path)
+    , randomFileCheck(path)
+    , ft_access(fileTimeAccess)
 {
     struct stat sbuf{};
     static Word number = 0U;
@@ -96,14 +98,14 @@ FlexDirectoryDiskBySector::FlexDirectoryDiskBySector(
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    directory = path;
     if (directory.size() > 1 && flx::endsWithPathSeparator(directory))
     {
         // Remove trailing PATHSEPARATOR character.
         directory.resize(directory.size() - 1);
     }
 
-    if (access(directory.c_str(), W_OK) != 0)
+    if ((access(directory.c_str(), W_OK) != 0) ||
+            randomFileCheck.IsWriteProtected())
     {
         attributes |= WRITE_PROTECT;
     }
@@ -843,27 +845,15 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
     std::unordered_set<std::string> random_filenames; // random files.
     struct stat sbuf{};
 
-    auto add_file = [&](const std::string &filename, bool is_random)
+    auto add_file = [&](const std::string &filename)
     {
         auto lc_filename(flx::tolower(filename));
-
-        // CDFS-Support: look for file name in file 'random'
-        if (is_write_protected)
-        {
-            is_random = flx::isListedInFileRandom(directory, filename);
-        }
 
         if (flx::isFlexFilename(filename) &&
             filename.compare(RANDOM_FILE_LIST) != 0 &&
             filename.compare(BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
         {
-
-            if (is_random)
-            {
-                random_filenames.emplace(filename);
-            }
-
             filenames.emplace_back(filename);
             lc_filenames.emplace(lc_filename);
         }
@@ -890,29 +880,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            bool is_random = ((pentry.dwFileAttributes &
-                              FILE_ATTRIBUTE_HIDDEN) != 0 &&
-                              sbuf.st_size >= 2 * DBPS);
-            if (is_random)
-            {
-                // Detailed verification of a random file by checking the
-                // sector map.
-                std::ifstream ifs(path, std::ios::in | std::ios::binary);
-                SectorMap_t sectorMap{};
-
-                if (ifs.is_open())
-                {
-                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
-                            sectorMap.size());
-                    if (ifs.fail() || !isValidSectorMap(sectorMap,
-                                sbuf.st_size))
-                    {
-                        is_random = false;
-                    }
-                }
-            }
-
-            add_file(filename, is_random);
+            randomFileCheck.CheckForFileAttributeAndUpdate(filename);
+            add_file(filename);
         }
         while (FindNextFile(hdl, &pentry) != 0);
 
@@ -936,28 +905,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             {
                 continue;
             }
-            bool is_random = ((sbuf.st_mode & S_IXUSR) != 0 &&
-                              sbuf.st_size >= 2 * DBPS);
-            if (is_random)
-            {
-                // Detailed verification of a random file by checking the
-                // sector map.
-                std::ifstream ifs(path, std::ios::in | std::ios::binary);
-                SectorMap_t sectorMap{};
-
-                if (ifs.is_open())
-                {
-                    ifs.read(reinterpret_cast<char *>(sectorMap.data()),
-                            sectorMap.size());
-                    if (ifs.fail() || !isValidSectorMap(sectorMap,
-                                sbuf.st_size))
-                    {
-                        is_random = false;
-                    }
-                }
-            }
-
-            add_file(filename, is_random);
+            randomFileCheck.CheckForFileAttributeAndUpdate(filename);
+            add_file(filename);
         }
 
         closedir(pd);
@@ -975,8 +924,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             st_t begin;
             st_t end;
             auto path = directory + PATHSEPARATORSTRING + filename;
-            bool is_random = (random_filenames.find(filename) !=
-                              random_filenames.end());
+            bool is_random = randomFileCheck.IsRandomFile(filename);
 
             if (!stat(path.c_str(), &sbuf) &&
                 add_to_link_table(dir_idx, sbuf.st_size, is_random, begin, end))
@@ -1003,6 +951,8 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
             break;
         }
     }
+
+    randomFileCheck.UpdateRandomListToFile();
 }
 
 
@@ -1124,6 +1074,11 @@ void FlexDirectoryDiskBySector::check_for_delete(Word ds_idx,
             auto filename = get_unix_filename(dir_idx);
             auto track_sector = old_dir_sector.dir_entries[i].start;
             auto sec_idx = get_sector_index(track_sector);
+            if (old_dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
+            {
+                randomFileCheck.RemoveFromRandomList(filename);
+                randomFileCheck.UpdateRandomListToFile();
+            }
             auto path = directory + PATHSEPARATORSTRING + filename;
             unlink(path.c_str());
             change_file_id_and_type(sec_idx, dir_idx, 0, SectorType::FreeChain);
@@ -1141,7 +1096,7 @@ void FlexDirectoryDiskBySector::check_for_delete(Word ds_idx,
 // with the corresponding filename in new directory sector (new_filename).
 // If a file has been renamed then rename it on the host file system too.
 void FlexDirectoryDiskBySector::check_for_rename(Word ds_idx,
-        const s_dir_sector &dir_sector) const
+        const s_dir_sector &dir_sector)
 {
     std::string old_filename;
     std::string new_filename;
@@ -1159,6 +1114,12 @@ void FlexDirectoryDiskBySector::check_for_rename(Word ds_idx,
             auto old_path = directory + PATHSEPARATORSTRING + old_filename;
             auto new_path = directory + PATHSEPARATORSTRING + new_filename;
             rename(old_path.c_str(), new_path.c_str());
+            if (dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
+            {
+                randomFileCheck.RemoveFromRandomList(old_filename);
+                randomFileCheck.AddToRandomList(new_filename);
+                randomFileCheck.UpdateRandomListToFile();
+            }
 #ifdef DEBUG_FILE
             LOG_XX("      rename {} to {}\n", old_filename, new_filename);
 #endif
@@ -1345,10 +1306,6 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
         {
             for (const auto &iter : new_files)
             {
-#ifdef UNIX
-                struct stat sbuf{};
-#endif
-
                 if (iter.second.first != dir_sector.dir_entries[i].start)
                 {
                     continue;
@@ -1362,28 +1319,21 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
 
                 auto old_path =
                     directory + PATHSEPARATORSTRING + iter.second.filename;
+                auto new_name = get_unix_filename(flex_links[sec_idx].file_id);
 
-                // check for random file, if true set user execute bit
+                auto new_path = directory + PATHSEPARATORSTRING + new_name;
+                rename(old_path.c_str(), new_path.c_str());
+
+                // check for random file, if true add it to the list of
+                // random files.
                 if (dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
                 {
-#ifdef _WIN32
-                    SetFileAttributes(ConvertToUtf16String(old_path).c_str(),
-                        FILE_ATTRIBUTE_HIDDEN);
-#endif
-#ifdef UNIX
-                    if (!stat(old_path.c_str(), &sbuf))
-                    {
-                        chmod(old_path.c_str(), sbuf.st_mode | S_IXUSR);
-                    }
-#endif
+                    randomFileCheck.AddToRandomList(new_name);
+                    randomFileCheck.UpdateRandomListToFile();
                 }
-                auto new_path = directory + PATHSEPARATORSTRING +
-                                get_unix_filename(flex_links[sec_idx].file_id);
-                rename(old_path.c_str(), new_path.c_str());
 #ifdef DEBUG_FILE
                 LOG_XX("      new file {}, was {}\n",
-                       get_unix_filename(flex_links[sec_idx].file_id),
-                       iter.second.filename);
+                        new_name, iter.second.filename);
 #endif
                 set_file_time(new_path.c_str(),
                     dir_sector.dir_entries[i].month,
@@ -1833,7 +1783,8 @@ bool FlexDirectoryDiskBySector::FormatSector(
 // Mount the directory container. number is the disk number.
 void FlexDirectoryDiskBySector::mount(Word number, int tracks, int sectors)
 {
-    bool is_write_protected = (access(directory.c_str(), W_OK) != 0);
+    bool is_write_protected = (access(directory.c_str(), W_OK) != 0) ||
+        randomFileCheck.IsWriteProtected();
 
     initialize_header(is_write_protected, tracks, sectors);
     initialize_flex_sys_info_sectors(number);

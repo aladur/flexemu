@@ -140,7 +140,8 @@ am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
 	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
 	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
-	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT)
+	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT) \
+	libflex_a-rndcheck.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 libfmt_a_AR = $(AR) $(ARFLAGS)
 libfmt_a_LIBADD =
@@ -361,6 +362,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/libflex_a-mdcrtape.Po \
 	./$(DEPDIR)/libflex_a-memory.Po ./$(DEPDIR)/libflex_a-misc1.Po \
 	./$(DEPDIR)/libflex_a-rfilecnt.Po \
+	./$(DEPDIR)/libflex_a-rndcheck.Po \
 	./$(DEPDIR)/mdcrtool-mdcrfs.Po \
 	./$(DEPDIR)/mdcrtool-mdcrtool.Po \
 	./$(DEPDIR)/updatemd-updatemd.Po
@@ -565,6 +567,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
+MACOSX_VERSION_MIN = @MACOSX_VERSION_MIN@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -728,7 +731,7 @@ AM_CXXFLAGS = \
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
-	$(CXXWARNINGS)
+	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
 
 libjsoncpp_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/fmt/include
@@ -981,6 +984,7 @@ flexemu_SOURCES = \
 	qtfree.h \
 	qtgui.h \
 	rfilecnt.h \
+	rndcheck.h \
 	schedcpu.h \
 	schedule.h \
 	scpulog.h \
@@ -1054,6 +1058,7 @@ flexplorer_SOURCES = \
 	memtgt.h \
 	misc1.h \
 	qtfree.h \
+	rndcheck.h \
 	rfilecnt.h \
 	sfpopts.h \
 	warnoff.h \
@@ -1149,6 +1154,7 @@ libflex_a_SOURCES = \
 	memory.cpp \
 	misc1.cpp \
 	rfilecnt.cpp \
+	rndcheck.cpp \
 	bcommand.h \
 	bdate.h \
 	bdir.h \
@@ -1190,6 +1196,7 @@ libflex_a_SOURCES = \
 	memory.h \
 	misc1.h \
 	rfilecnt.h \
+	rndcheck.h \
 	typedefs.h
 
 libfmt_a_SOURCES = \
@@ -1519,6 +1526,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-memory.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-misc1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-rfilecnt.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-rndcheck.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrfs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mdcrtool-mdcrtool.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/updatemd-updatemd.Po@am__quote@ # am--include-marker
@@ -1986,6 +1994,20 @@ libflex_a-rfilecnt.obj: rfilecnt.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rfilecnt.cpp' object='libflex_a-rfilecnt.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-rfilecnt.obj `if test -f 'rfilecnt.cpp'; then $(CYGPATH_W) 'rfilecnt.cpp'; else $(CYGPATH_W) '$(srcdir)/rfilecnt.cpp'; fi`
+
+libflex_a-rndcheck.o: rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-rndcheck.o -MD -MP -MF $(DEPDIR)/libflex_a-rndcheck.Tpo -c -o libflex_a-rndcheck.o `test -f 'rndcheck.cpp' || echo '$(srcdir)/'`rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-rndcheck.Tpo $(DEPDIR)/libflex_a-rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rndcheck.cpp' object='libflex_a-rndcheck.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-rndcheck.o `test -f 'rndcheck.cpp' || echo '$(srcdir)/'`rndcheck.cpp
+
+libflex_a-rndcheck.obj: rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-rndcheck.obj -MD -MP -MF $(DEPDIR)/libflex_a-rndcheck.Tpo -c -o libflex_a-rndcheck.obj `if test -f 'rndcheck.cpp'; then $(CYGPATH_W) 'rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/rndcheck.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-rndcheck.Tpo $(DEPDIR)/libflex_a-rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='rndcheck.cpp' object='libflex_a-rndcheck.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-rndcheck.obj `if test -f 'rndcheck.cpp'; then $(CYGPATH_W) 'rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/rndcheck.cpp'; fi`
 
 ../fmt/src/libfmt_a-format.o: ../fmt/src/format.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libfmt_a_CXXFLAGS) $(CXXFLAGS) -MT ../fmt/src/libfmt_a-format.o -MD -MP -MF ../fmt/src/$(DEPDIR)/libfmt_a-format.Tpo -c -o ../fmt/src/libfmt_a-format.o `test -f '../fmt/src/format.cc' || echo '$(srcdir)/'`../fmt/src/format.cc
@@ -3733,6 +3755,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-memory.Po
 	-rm -f ./$(DEPDIR)/libflex_a-misc1.Po
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
+	-rm -f ./$(DEPDIR)/libflex_a-rndcheck.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
 	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po
@@ -3904,6 +3927,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-memory.Po
 	-rm -f ./$(DEPDIR)/libflex_a-misc1.Po
 	-rm -f ./$(DEPDIR)/libflex_a-rfilecnt.Po
+	-rm -f ./$(DEPDIR)/libflex_a-rndcheck.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrfs.Po
 	-rm -f ./$(DEPDIR)/mdcrtool-mdcrtool.Po
 	-rm -f ./$(DEPDIR)/updatemd-updatemd.Po

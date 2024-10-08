@@ -28,6 +28,7 @@
 
 #include "efiletim.h"
 #include "filecnts.h"
+#include "rndcheck.h"
 #include "flexemu.h"
 #include <string>
 #include <vector>
@@ -111,6 +112,7 @@ public:
 
 private:
     std::string directory;
+    RandomFileCheck randomFileCheck;
     Byte attributes{};
     const FileTimeAccess &ft_access{};
     s_floppy param{};
@@ -180,7 +182,7 @@ private:
                             const st_t &pbegin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);
-    void check_for_rename(Word ds_idx, const s_dir_sector &d) const;
+    void check_for_rename(Word ds_idx, const s_dir_sector &d);
     void check_for_new_file(Word ds_idx, const s_dir_sector &d);
     void check_for_changed_file_attr(Word ds_idx, s_dir_sector &d);
     bool extend_directory(SDWord sec_idx, const s_dir_sector &d);

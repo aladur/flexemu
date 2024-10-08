@@ -475,6 +475,7 @@
     <ClInclude Include="qtfree.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="rfilecnt.h" />
+    <ClInclude Include="rndcheck.h" />
     <ClInclude Include="schedcpu.h" />
     <ClInclude Include="schedule.h" />
     <ClInclude Include="scpulog.h" />

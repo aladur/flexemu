@@ -179,6 +179,7 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	unittests-test_bmembuf.$(OBJEXT) \
 	unittests-test_breltime.$(OBJEXT) \
 	unittests-test_btime.$(OBJEXT) \
+	unittests-test_rndcheck.$(OBJEXT) \
 	../src/unittests-blinxsys.$(OBJEXT) \
 	../src/unittests-colors.$(OBJEXT) \
 	../src/unittests-da6809.$(OBJEXT) \
@@ -186,7 +187,8 @@ am_unittests_OBJECTS = unittests-test_benv.$(OBJEXT) \
 	../src/unittests-flblfile.$(OBJEXT) \
 	../src/unittests-mc6809lg.$(OBJEXT) \
 	../src/unittests-mc6809st.$(OBJEXT) \
-	../src/unittests-ndircont.$(OBJEXT)
+	../src/unittests-ndircont.$(OBJEXT) \
+	../src/unittests-rndcheck.$(OBJEXT)
 unittests_OBJECTS = $(am_unittests_OBJECTS)
 unittests_DEPENDENCIES = libgtest.la libgmock.la ../src/libflex.a \
 	../src/libfmt.a
@@ -231,6 +233,7 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	../src/$(DEPDIR)/unittests-mc6809lg.Po \
 	../src/$(DEPDIR)/unittests-mc6809st.Po \
 	../src/$(DEPDIR)/unittests-ndircont.Po \
+	../src/$(DEPDIR)/unittests-rndcheck.Po \
 	./$(DEPDIR)/test_gccasm-test_gccasm.Po \
 	./$(DEPDIR)/test_gccasm-testmain.Po \
 	./$(DEPDIR)/unittests-test_bdate.Po \
@@ -259,7 +262,8 @@ am__depfiles_remade = $(top_builddir)/$(gmock_top)/src/$(DEPDIR)/libgmock_la-gmo
 	./$(DEPDIR)/unittests-test_filfschk.Po \
 	./$(DEPDIR)/unittests-test_main.Po \
 	./$(DEPDIR)/unittests-test_mc6809lg.Po \
-	./$(DEPDIR)/unittests-test_misc1.Po
+	./$(DEPDIR)/unittests-test_misc1.Po \
+	./$(DEPDIR)/unittests-test_rndcheck.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -588,6 +592,7 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
+MACOSX_VERSION_MIN = @MACOSX_VERSION_MIN@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -745,6 +750,7 @@ unittests_SOURCES = \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
 	test_btime.cpp \
+	test_rndcheck.cpp \
 	../src/blinxsys.cpp \
 	../src/colors.cpp \
 	../src/da6809.cpp \
@@ -753,6 +759,7 @@ unittests_SOURCES = \
 	../src/mc6809lg.cpp \
 	../src/mc6809st.cpp \
 	../src/ndircont.cpp \
+	../src/rndcheck.cpp \
 	../src/bdate.h \
 	../src/bdir.h \
 	../src/benv.h \
@@ -792,6 +799,7 @@ unittests_SOURCES = \
 	../src/misc1.h \
 	../src/ndircont.h \
 	../src/rfilecnt.h \
+	../src/rndcheck.h \
 	../src/scpulog.h
 
 unittests_LDADD = libgtest.la libgmock.la ../src/libflex.a ../src/libfmt.a
@@ -1007,6 +1015,8 @@ test_gccasm$(EXEEXT): $(test_gccasm_OBJECTS) $(test_gccasm_DEPENDENCIES) $(EXTRA
 	../src/$(DEPDIR)/$(am__dirstamp)
 ../src/unittests-ndircont.$(OBJEXT): ../src/$(am__dirstamp) \
 	../src/$(DEPDIR)/$(am__dirstamp)
+../src/unittests-rndcheck.$(OBJEXT): ../src/$(am__dirstamp) \
+	../src/$(DEPDIR)/$(am__dirstamp)
 
 unittests$(EXEEXT): $(unittests_OBJECTS) $(unittests_DEPENDENCIES) $(EXTRA_unittests_DEPENDENCIES) 
 	@rm -f unittests$(EXEEXT)
@@ -1046,6 +1056,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-mc6809lg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-mc6809st.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-ndircont.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@../src/$(DEPDIR)/unittests-rndcheck.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-test_gccasm.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_gccasm-testmain.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_bdate.Po@am__quote@ # am--include-marker
@@ -1075,6 +1086,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_mc6809lg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_misc1.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unittests-test_rndcheck.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -1708,6 +1720,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_btime.obj `if test -f 'test_btime.cpp'; then $(CYGPATH_W) 'test_btime.cpp'; else $(CYGPATH_W) '$(srcdir)/test_btime.cpp'; fi`
 
+unittests-test_rndcheck.o: test_rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_rndcheck.o -MD -MP -MF $(DEPDIR)/unittests-test_rndcheck.Tpo -c -o unittests-test_rndcheck.o `test -f 'test_rndcheck.cpp' || echo '$(srcdir)/'`test_rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_rndcheck.Tpo $(DEPDIR)/unittests-test_rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_rndcheck.cpp' object='unittests-test_rndcheck.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_rndcheck.o `test -f 'test_rndcheck.cpp' || echo '$(srcdir)/'`test_rndcheck.cpp
+
+unittests-test_rndcheck.obj: test_rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unittests-test_rndcheck.obj -MD -MP -MF $(DEPDIR)/unittests-test_rndcheck.Tpo -c -o unittests-test_rndcheck.obj `if test -f 'test_rndcheck.cpp'; then $(CYGPATH_W) 'test_rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/test_rndcheck.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/unittests-test_rndcheck.Tpo $(DEPDIR)/unittests-test_rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='test_rndcheck.cpp' object='unittests-test_rndcheck.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unittests-test_rndcheck.obj `if test -f 'test_rndcheck.cpp'; then $(CYGPATH_W) 'test_rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/test_rndcheck.cpp'; fi`
+
 ../src/unittests-blinxsys.o: ../src/blinxsys.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-blinxsys.o -MD -MP -MF ../src/$(DEPDIR)/unittests-blinxsys.Tpo -c -o ../src/unittests-blinxsys.o `test -f '../src/blinxsys.cpp' || echo '$(srcdir)/'`../src/blinxsys.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-blinxsys.Tpo ../src/$(DEPDIR)/unittests-blinxsys.Po
@@ -1819,6 +1845,20 @@ unittests-test_btime.obj: test_btime.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/ndircont.cpp' object='../src/unittests-ndircont.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-ndircont.obj `if test -f '../src/ndircont.cpp'; then $(CYGPATH_W) '../src/ndircont.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/ndircont.cpp'; fi`
+
+../src/unittests-rndcheck.o: ../src/rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-rndcheck.o -MD -MP -MF ../src/$(DEPDIR)/unittests-rndcheck.Tpo -c -o ../src/unittests-rndcheck.o `test -f '../src/rndcheck.cpp' || echo '$(srcdir)/'`../src/rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-rndcheck.Tpo ../src/$(DEPDIR)/unittests-rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/rndcheck.cpp' object='../src/unittests-rndcheck.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-rndcheck.o `test -f '../src/rndcheck.cpp' || echo '$(srcdir)/'`../src/rndcheck.cpp
+
+../src/unittests-rndcheck.obj: ../src/rndcheck.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ../src/unittests-rndcheck.obj -MD -MP -MF ../src/$(DEPDIR)/unittests-rndcheck.Tpo -c -o ../src/unittests-rndcheck.obj `if test -f '../src/rndcheck.cpp'; then $(CYGPATH_W) '../src/rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/rndcheck.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) ../src/$(DEPDIR)/unittests-rndcheck.Tpo ../src/$(DEPDIR)/unittests-rndcheck.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='../src/rndcheck.cpp' object='../src/unittests-rndcheck.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(unittests_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ../src/unittests-rndcheck.obj `if test -f '../src/rndcheck.cpp'; then $(CYGPATH_W) '../src/rndcheck.cpp'; else $(CYGPATH_W) '$(srcdir)/../src/rndcheck.cpp'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -2173,6 +2213,7 @@ distclean: distclean-am
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ndircont.Po
+	-rm -f ../src/$(DEPDIR)/unittests-rndcheck.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
@@ -2202,6 +2243,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
 	-rm -f ./$(DEPDIR)/unittests-test_mc6809lg.Po
 	-rm -f ./$(DEPDIR)/unittests-test_misc1.Po
+	-rm -f ./$(DEPDIR)/unittests-test_rndcheck.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -2270,6 +2312,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809lg.Po
 	-rm -f ../src/$(DEPDIR)/unittests-mc6809st.Po
 	-rm -f ../src/$(DEPDIR)/unittests-ndircont.Po
+	-rm -f ../src/$(DEPDIR)/unittests-rndcheck.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-test_gccasm.Po
 	-rm -f ./$(DEPDIR)/test_gccasm-testmain.Po
 	-rm -f ./$(DEPDIR)/unittests-test_bdate.Po
@@ -2299,6 +2342,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/unittests-test_main.Po
 	-rm -f ./$(DEPDIR)/unittests-test_mc6809lg.Po
 	-rm -f ./$(DEPDIR)/unittests-test_misc1.Po
+	-rm -f ./$(DEPDIR)/unittests-test_rndcheck.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
