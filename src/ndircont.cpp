@@ -782,9 +782,9 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
 {
     SectorMap_t sectorMap{};
-    Word n;
 
     DWord data_size = stat.st_size - (DBPS * 2);
+    Word remaining_sectors = static_cast<Word>((data_size + DBPS - 1U) / DBPS);
 
     if (data_size == 0)
     {
@@ -792,28 +792,20 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
     }
 
     auto sec_idx = get_sector_index(begin) + 2;
+    Word idx = 0U; // index into sector map.
 
     std::fill(std::begin(sectorMap), std::end(sectorMap), '\0');
 
-    for (n = 0; n < static_cast<Word>(data_size / (DBPS * 255)); ++n)
+    while (remaining_sectors != 0U)
     {
-        auto idx = 3 * n;
+        Byte sectors = (remaining_sectors < 255U) ?
+            static_cast<Byte>(remaining_sectors) : 255U;
 
         sectorMap[idx++] = static_cast<Byte>(sec_idx / param.max_sector);
         sectorMap[idx++] = static_cast<Byte>((sec_idx % param.max_sector) + 1);
-        sectorMap[idx] = 255;
-        sec_idx += 255;
-    }
-
-    auto i = static_cast<Word>(data_size % (DBPS * 255));
-
-    if (i != 0)
-    {
-        auto idx = 3 * n;
-
-        sectorMap[idx++] = static_cast<Byte>(sec_idx / param.max_sector);
-        sectorMap[idx++] = static_cast<Byte>((sec_idx % param.max_sector) + 1);
-        sectorMap[idx] = static_cast<Byte>((i + (DBPS - 1)) / DBPS);
+        sectorMap[idx++] = sectors;
+        sec_idx += sectors;
+        remaining_sectors -= sectors;
     }
 
     std::fstream fs(path, std::ios::in | std::ios::out | std::ios::binary);
