@@ -146,7 +146,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         base->randomFileCheck.CheckForFileAttributeAndUpdate(fileName);
         if (base->randomFileCheck.IsRandomFile(fileName))
         {
-            sectorMapFlag = 2;
+            sectorMapFlag = IS_RANDOM_FILE;
         }
 
         if (findData.dwFileAttributes & FILE_ATTRIBUTE_READONLY)
@@ -211,7 +211,7 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         base->randomFileCheck.CheckForFileAttributeAndUpdate(fileName);
         if (base->randomFileCheck.IsRandomFile(fileName))
         {
-            sectorMapFlag = 2;
+            sectorMapFlag = IS_RANDOM_FILE;
         }
 
         if (!(sbuf.st_mode & S_IWUSR))
