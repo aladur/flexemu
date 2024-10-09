@@ -841,8 +841,6 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
         auto lc_filename(flx::tolower(filename));
 
         if (flx::isFlexFilename(filename) &&
-            filename.compare(RANDOM_FILE_LIST) != 0 &&
-            filename.compare(BOOT_FILE) != 0 &&
             lc_filenames.find(lc_filename) == lc_filenames.end())
         {
             filenames.emplace_back(filename);
