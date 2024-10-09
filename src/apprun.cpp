@@ -228,17 +228,20 @@ void ApplicationRunner::AddIoDevicesToMemory()
 
 bool ApplicationRunner::LoadMonitorFileIntoRom()
 {
+    std::string hexFilePath = options.hex_file;
     DWord startAddress = 0;
 
     int error = load_hexfile(options.hex_file, memory, startAddress);
     if (error < 0)
     {
-        std::string hexFilePath;
+        if (!flx::isAbsolutePath(hexFilePath))
+        {
+            hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
+                          options.hex_file;
 
-        hexFilePath = options.disk_dir + PATHSEPARATORSTRING +
-                      options.hex_file;
+            error = load_hexfile(hexFilePath, memory, startAddress);
+        }
 
-        error = load_hexfile(hexFilePath, memory, startAddress);
         if (error < 0)
         {
             std::stringstream pmsg;
