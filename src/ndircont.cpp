@@ -781,47 +781,46 @@ void FlexDirectoryDiskBySector::add_to_directory(
 void FlexDirectoryDiskBySector::modify_random_file(const char *path,
         const struct stat &stat, const st_t &begin)
 {
-    std::array<Byte, DBPS * 2> file_sector_map{};
-    DWord data_size;
-    Word i;
+    SectorMap_t sectorMap{};
     Word n;
 
-    data_size = stat.st_size - (DBPS * 2);
+    DWord data_size = stat.st_size - (DBPS * 2);
 
-    if (data_size > 0)
+    if (data_size == 0)
     {
-        auto sec_idx = get_sector_index(begin) + 2;
+        return;
+    }
 
-        std::fill(std::begin(file_sector_map), std::end(file_sector_map), '\0');
+    auto sec_idx = get_sector_index(begin) + 2;
 
-        for (n = 0; n < static_cast<Word>(data_size / (DBPS * 255)) ; n++)
-        {
-            file_sector_map[3 * n] =
-                static_cast<Byte>(sec_idx / param.max_sector);
-            file_sector_map[3 * n + 1] =
-                static_cast<Byte>((sec_idx % param.max_sector) + 1);
-            file_sector_map[3 * n + 2] = 255;
-            sec_idx += 255;
-        }
+    std::fill(std::begin(sectorMap), std::end(sectorMap), '\0');
 
-        i = static_cast<Word>(data_size % (DBPS * 255));
+    for (n = 0; n < static_cast<Word>(data_size / (DBPS * 255)); ++n)
+    {
+        auto idx = 3 * n;
 
-        if (i != 0)
-        {
-            file_sector_map[3 * n] =
-                static_cast<Byte>(sec_idx / param.max_sector);
-            file_sector_map[3 * n + 1] =
-                static_cast<Byte>((sec_idx % param.max_sector) + 1);
-            file_sector_map[3 * n + 2] =
-                static_cast<Byte>((i + (DBPS - 1)) / DBPS);
-        }
+        sectorMap[idx++] = static_cast<Byte>(sec_idx / param.max_sector);
+        sectorMap[idx++] = static_cast<Byte>((sec_idx % param.max_sector) + 1);
+        sectorMap[idx] = 255;
+        sec_idx += 255;
+    }
 
-        std::fstream fs(path, std::ios::in | std::ios::out | std::ios::binary);
-        if (fs.is_open())
-        {
-            fs.write(reinterpret_cast<const char *>(&file_sector_map),
-                     file_sector_map.size());
-        }
+    auto i = static_cast<Word>(data_size % (DBPS * 255));
+
+    if (i != 0)
+    {
+        auto idx = 3 * n;
+
+        sectorMap[idx++] = static_cast<Byte>(sec_idx / param.max_sector);
+        sectorMap[idx++] = static_cast<Byte>((sec_idx % param.max_sector) + 1);
+        sectorMap[idx] = static_cast<Byte>((i + (DBPS - 1)) / DBPS);
+    }
+
+    std::fstream fs(path, std::ios::in | std::ios::out | std::ios::binary);
+    if (fs.is_open())
+    {
+        fs.write(reinterpret_cast<const char *>(sectorMap.data()),
+                 sectorMap.size());
     }
 }
 
