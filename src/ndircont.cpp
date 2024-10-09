@@ -833,7 +833,6 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
 {
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
-    std::unordered_set<std::string> random_filenames; // random files.
     struct stat sbuf{};
 
     auto add_file = [&](const std::string &filename)
