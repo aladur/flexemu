@@ -202,7 +202,8 @@ TEST(test_fileread, fct_load_hexfile__motorola)
 
 TEST(test_fileread, fct_load_hexfile__flex_binary)
 {
-    std::array<std::array<char, 20>, 5> file_contents{{
+    std::array<std::array<char, 20>, 6> file_contents{{
+        { }, // Empty file.
         { 0x03, 0x01, 0x00, 0x10 }, // Wrong record type (0x03).
         { 0x02, 0x01, 0x00, 0x01, 0x55, 0x17, 0x01, 0x00 }, // Wrong rec.type.
         { 0x02, 0x01, 0x00, 0x07, 0x01, 0x02, 0x03, 0x09, 0x0A, 0x0B, '\xFF' },
@@ -210,16 +211,16 @@ TEST(test_fileread, fct_load_hexfile__flex_binary)
           0x16, 0x01, 0x00 },
         { 0x02, 0x01, 0x00, 0x00, 0x16, 0x01, 0x00 },
     }};
-    std::array<int, 5> expected_results{
-        -3, -3, 0, 0, 0,
+    std::array<int, 6> expected_results{
+        -3, -3, -3, 0, 0, 0,
     };
 
     assert(file_contents.size() == expected_results.size());
     int index = 0;
+    const std::string test_file{"test_flex_binary_file.cmd"};
+    const auto path = fs::temp_directory_path() / test_file;
     for (const auto &file_content : file_contents)
     {
-        std::string test_file{"test_flex_binary_file.cmd"};
-        auto path = fs::temp_directory_path() / test_file;
         std::fstream ofs(path, std::ios::out | std::ios::trunc);
         ASSERT_TRUE(ofs.is_open());
         ofs.write(file_content.data(),
@@ -228,14 +229,14 @@ TEST(test_fileread, fct_load_hexfile__flex_binary)
         TestMemory memory{};
         DWord start_addr = 0U;
         auto result = load_hexfile(path, memory, start_addr);
-        ASSERT_EQ(result, expected_results[index]);
+        EXPECT_EQ(result, expected_results[index]) << "index=" << index;
         if (result == 0)
         {
-            if (index >= 3)
+            if (index >= 4)
             {
                 EXPECT_EQ(start_addr, 0x0100);
             }
-            if (index != 4)
+            if (index != 5)
             {
                 EXPECT_EQ(memory.buffer[0x00FF], 0x00);
                 EXPECT_EQ(memory.buffer[0x0100], 0x01);
