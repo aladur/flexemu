@@ -155,18 +155,18 @@ struct alignas(1) s_dir_sector
 
 struct s_floppy
 {
-    Byte        write_protect; /* write protect flag of disk */
-    Word        offset; /* offset for fileheader */
-    DWord       byte_p_track; /* total bytes per track */
-    DWord       byte_p_track0; /* total bytes on track 0 */
-    Word        byte_p_sector; /* bytes per sector */
+    Byte write_protect; /* write protect flag of disk */
+    Word offset; /* offset for fileheader */
+    DWord byte_p_track; /* total bytes per track */
+    DWord byte_p_track0; /* total bytes on track 0 */
+    Word byte_p_sector; /* bytes per sector */
     Word max_sector; /* max. nr of sectors (all sides) */
-    Word        max_sector0; /* max. nr of sectors (all sides) track 0*/
-    Word        max_track; /* max. tracknumber of disk */
-    Word        track; /* actual tracknumber */
-    Word        type; /* type of container */
-    Word        sides; /* number of sides on track 0 */
-    Word        sides0; /* number of sides */
+    Word max_sector0; /* max. nr of sectors (all sides) track 0*/
+    Word max_track; /* max. tracknumber of disk */
+    Word track; /* actual tracknumber */
+    Word type; /* type of container */
+    Word sides; /* number of sides on track 0 */
+    Word sides0; /* number of sides */
 
 };
 
