@@ -153,8 +153,8 @@ public:
     unsigned GetBytesPerSector() const override;
 
 private:
-    void fill_flex_directory(bool is_write_protected);
-    void initialize_header(bool is_write_protected, int tracks, int sectors);
+    void fill_flex_directory();
+    void initialize_header(int tracks, int sectors);
     void initialize_flex_sys_info_sectors(Word number);
     void initialize_flex_directory();
     void initialize_flex_link_table();
@@ -177,7 +177,7 @@ private:
         const struct stat &stat,
         const st_t &begin,
         const st_t &end,
-        bool is_write_protected);
+        bool is_file_wp);
     void modify_random_file(const char *path, const struct stat &stat,
                             const st_t &pbegin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);

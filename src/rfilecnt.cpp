@@ -156,7 +156,7 @@ bool FlexRamDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    if (param.write_protect)
+    if (IsWriteProtected())
     {
         return false;
     }

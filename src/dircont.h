@@ -101,8 +101,7 @@ private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
     bool SetDateTime(const std::string &fileName, const BDate &date,
                      const BTime &time);
-    void Initialize_header(bool isWriteProtect);
-
+    void Initialize_header();
 };
 
 #endif // DIRCONT_INCLUDED

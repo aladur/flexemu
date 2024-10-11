@@ -31,7 +31,7 @@
 // They are used as bit masks and can be combined.
 // File attributes are used in struct s_dir_entry in field file_attr.
 // All other bits of file_attr should remain 0.
-// (WRITE_PROTECT also used for container attribute)
+// (WRITE_PROTECT also used as disk attribute)
 const unsigned WRITE_PROTECT = 0x80;
 const unsigned DELETE_PROTECT = 0x40;
 const unsigned READ_PROTECT = 0x20;

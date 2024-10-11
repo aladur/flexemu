@@ -206,7 +206,7 @@ unsigned FlexDirectoryDiskBySector::GetBytesPerSector() const
 
 bool FlexDirectoryDiskBySector::IsWriteProtected() const
 {
-    return param.write_protect != 0;
+    return (attributes & WRITE_PROTECT) != 0;
 }
 
 bool FlexDirectoryDiskBySector::IsTrackValid(int track) const
@@ -245,11 +245,10 @@ unsigned FlexDirectoryDiskBySector::GetFlexDiskType() const
 ///////////////////////////////////////////////////////
 
 // Initialize the internal data structures.
-void FlexDirectoryDiskBySector::initialize_header(bool is_write_protected,
-                                                  int tracks, int sectors)
+void FlexDirectoryDiskBySector::initialize_header(int tracks, int sectors)
 {
     param.offset = 0;
-    param.write_protect = is_write_protected ? 1U : 0U;
+    param.write_protect = ((attributes & WRITE_PROTECT) != 0) ? 1U : 0U;
     param.max_sector = static_cast<Word>(sectors);
     param.max_sector0 = getTrack0SectorCount(tracks, sectors);
     param.max_track = static_cast<Word>(tracks - 1);
@@ -742,7 +741,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
     const struct stat &stat,
     const st_t &begin,
     const st_t &end,
-    bool is_write_protected)
+    bool is_file_wp)
 {
     const bool setFileTime =
         (ft_access & FileTimeAccess::Set) == FileTimeAccess::Set;
@@ -765,7 +764,7 @@ void FlexDirectoryDiskBySector::add_to_directory(
     std::copy_n(extension.cbegin(), FLEX_FILEEXT_LENGTH,
                 std::begin(dir_entry.file_ext));
     // A write protected file is automatically also delete protected.
-    dir_entry.file_attr = is_write_protected ? WRITE_PROTECT : 0;
+    dir_entry.file_attr = is_file_wp ? WRITE_PROTECT : 0;
     dir_entry.start = begin;
     dir_entry.end = end;
     flx::setValueBigEndian<Word>(&dir_entry.records[0], records);
@@ -819,7 +818,7 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
 
 // Create a directory entry for each file for which the file name
 // is identified as a FLEX file name. See isFlexFilename for details.
-// If is_write_protected is true the drive is write protected.
+// If IsWriteProtected() returns true the drive is write protected.
 // The following criterion have to be met to add a file to the FLEX directory:
 // - It is identified as a FLEX file name.
 // - It is not empty.
@@ -829,7 +828,7 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
 // - It's name is neither "random" nor "boot".
 // Any other files are just ignored. The files "random" and "boot" have
 // a special meaning in a directory container.
-void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
+void FlexDirectoryDiskBySector::fill_flex_directory()
 {
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
@@ -928,7 +927,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory(bool is_write_protected)
 
                 // Unfinished: don't write sector map if write
                 // protected.
-                if (is_random && !is_write_protected)
+                if (is_random && !is_file_wp)
                 {
                     modify_random_file(path.c_str(), sbuf, begin);
                 }
@@ -1155,7 +1154,7 @@ void FlexDirectoryDiskBySector::check_for_changed_file_attr(Word ds_idx,
             dir_sector.dir_entries[i].file_attr &= ~unsupported_attr;
         }
 
-        if (attributes & WRITE_PROTECT)
+        if (IsWriteProtected())
         {
             // If disk is write protected the file write protection can not
             // be removed.
@@ -1771,12 +1770,9 @@ bool FlexDirectoryDiskBySector::FormatSector(
 // Mount the directory container. number is the disk number.
 void FlexDirectoryDiskBySector::mount(Word number, int tracks, int sectors)
 {
-    bool is_write_protected = (access(directory.c_str(), W_OK) != 0) ||
-        randomFileCheck.IsWriteProtected();
-
-    initialize_header(is_write_protected, tracks, sectors);
+    initialize_header(tracks, sectors);
     initialize_flex_sys_info_sectors(number);
-    fill_flex_directory(is_write_protected);
+    fill_flex_directory();
 }
 
 std::string FlexDirectoryDiskBySector::to_string(SectorType type)

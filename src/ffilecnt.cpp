@@ -31,6 +31,7 @@
 #include <ctime>
 #include <cassert>
 #include "fcinfo.h"
+#include "fattrib.h"
 #include "flexerr.h"
 #include "cistring.h"
 #include "ffilecnt.h"
@@ -155,10 +156,8 @@ FlexDisk::FlexDisk(
 
     if ((mode & std::ios::out) == 0)
     {
-        attributes |= FLX_READONLY;
+        attributes |= WRITE_PROTECT;
     }
-
-    bool write_protected = ((attributes & FLX_READONLY) != 0);
 
     // Try to read the FLX header and check the magic number
     // to identify a FLX formatted disk.
@@ -167,7 +166,7 @@ FlexDisk::FlexDisk(
         flx::fromBigEndian(flx_header.magic_number) == MAGIC_NUMBER)
     {
         // File is identified as a FLX container format.
-        Initialize_for_flx_format(flx_header, write_protected);
+        Initialize_for_flx_format(flx_header);
 
         if (!IsFlexFileFormat(TYPE_FLX_DISKFILE))
         {
@@ -215,7 +214,7 @@ FlexDisk::FlexDisk(
         }
         format.size = static_cast<SDWord>(file_size);
         format.offset = jvcHeaderSize;
-        Initialize_for_dsk_format(format, write_protected);
+        Initialize_for_dsk_format(format);
         EvaluateTrack0SectorCount();
         return;
     }
@@ -239,7 +238,7 @@ unsigned FlexDisk::GetBytesPerSector() const
 
 bool FlexDisk::IsWriteProtected() const
 {
-    return param.write_protect != 0;
+    return (attributes & WRITE_PROTECT) != 0;
 }
 
 bool FlexDisk::IsTrackValid(int track) const
@@ -1074,7 +1073,7 @@ bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
         return false;
     }
 
-    if (param.write_protect)
+    if (IsWriteProtected())
     {
         return false;
     }
@@ -1205,11 +1204,15 @@ bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
     return result;
 }
 
-void FlexDisk::Initialize_for_flx_format(const s_flex_header &header,
-                                         bool write_protected)
+void FlexDisk::Initialize_for_flx_format(const s_flex_header &header)
 {
+    if (header.write_protect != 0)
+    {
+        attributes |= WRITE_PROTECT;
+    }
+
     param.offset = sizeof(struct s_flex_header);
-    param.write_protect = (write_protected || header.write_protect) ? 0x40 : 0;
+    param.write_protect = ((attributes & WRITE_PROTECT) != 0) ? 1U : 0U;
     param.max_sector = header.sectors * header.sides;
     param.max_sector0 = header.sectors0 * header.sides0;
     param.max_track = header.tracks - 1;
@@ -1221,8 +1224,7 @@ void FlexDisk::Initialize_for_flx_format(const s_flex_header &header,
     param.type = TYPE_DISKFILE | TYPE_FLX_DISKFILE;
 }
 
-void FlexDisk::Initialize_for_dsk_format(const s_formats &format,
-                                         bool write_protected)
+void FlexDisk::Initialize_for_dsk_format(const s_formats &format)
 {
     auto sides = format.sides ? format.sides :
                      getSides(format.tracks, format.sectors);
@@ -1231,7 +1233,7 @@ void FlexDisk::Initialize_for_dsk_format(const s_formats &format,
 
     file_size = format.size;
     param.offset = format.offset;
-    param.write_protect = write_protected ? 1 : 0;
+    param.write_protect = ((attributes & WRITE_PROTECT) != 0) ? 1U : 0U;
     param.max_sector = format.sectors;
     param.max_sector0 = sector0;
     param.max_track = format.tracks - 1;

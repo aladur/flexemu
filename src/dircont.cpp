@@ -84,10 +84,10 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
 
     if ((access(path.c_str(), W_OK) != 0) || randomFileCheck.IsWriteProtected())
     {
-        attributes |= FLX_READONLY;
+        attributes |= WRITE_PROTECT;
     }
 
-    Initialize_header(attributes & FLX_READONLY);
+    Initialize_header();
     disk_number = number++;
 }
 
@@ -97,7 +97,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
 
 bool FlexDirectoryDiskByFile::IsWriteProtected() const
 {
-    return (attributes & FLX_READONLY) != 0;
+    return (attributes & WRITE_PROTECT) != 0;
 }
 
 // type, track and sectors parameter will be ignored
@@ -428,11 +428,11 @@ bool FlexDirectoryDiskByFile::WriteFromBuffer(const FlexFileBuffer &buffer,
 /* private interface          */
 /******************************/
 
-void FlexDirectoryDiskByFile::Initialize_header(bool /*isWriteProtect*/)
+void FlexDirectoryDiskByFile::Initialize_header()
 {
     /*
         param.offset = 0;
-        param.write_protect = wp;
+        param.write_protect = IsWriteProtected() ? 1U : 0U;
         param.max_sector = 0;
         param.max_sector0 = 0;
         param.max_track = 0;
