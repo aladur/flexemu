@@ -820,19 +820,18 @@ void FlexDirectoryDiskBySector::modify_random_file(const char *path,
 // is identified as a FLEX file name. See isFlexFilename for details.
 // If IsWriteProtected() returns true the drive is write protected.
 // The following criterion have to be met to add a file to the FLEX directory:
-// - It is identified as a FLEX file name.
+// - It is identified as a FLEX file name. Any other files are just ignored.
 // - It is not empty.
 // - If files just differ in case sensitivity only the first one is used.
 //   (This can happen for case sensitive file systems only).
 // - There is space left for the file itself and it's directory entry.
-// - It's name is neither "random" nor "boot".
-// Any other files are just ignored. The files "random" and "boot" have
-// a special meaning in a directory container.
 void FlexDirectoryDiskBySector::fill_flex_directory()
 {
     std::vector<std::string> filenames; // List of to be added files
     std::unordered_set<std::string> lc_filenames; // Compare lower case filen.
     struct stat sbuf{};
+    std::string fname;
+    std::string path;
 
     auto add_file = [&](const std::string &filename)
     {
@@ -857,47 +856,49 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
 
     auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
 
-    if (hdl != INVALID_HANDLE_VALUE)
+    if (hdl == INVALID_HANDLE_VALUE)
     {
-        do
-        {
-            auto filename(flx::tolower(ConvertToUtf8String(pentry.cFileName)));
-            auto path = directory + PATHSEPARATORSTRING + filename.c_str();
-            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
-            {
-                continue;
-            }
-            randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-            add_file(filename);
-        }
-        while (FindNextFile(hdl, &pentry) != 0);
-
-        FindClose(hdl);
+        return;
     }
+
+    do
+    {
+        fname = flx::tolower(ConvertToUtf8String(pentry.cFileName));
+        path = directory + PATHSEPARATORSTRING + fname;
+        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        {
+            continue;
+        }
+        randomFileCheck.CheckForFileAttributeAndUpdate(fname);
+        add_file(fname);
+    }
+    while (FindNextFile(hdl, &pentry) != 0);
+
+    FindClose(hdl);
 #endif
 
 #ifdef UNIX
     auto *pd = opendir(directory.c_str());
-    if (pd != nullptr)
+    struct dirent *pentry;
+
+    if (pd == nullptr)
     {
-        struct dirent *pentry;
-
-        while ((pentry = readdir(pd)) != nullptr)
-        {
-            std::string path;
-
-            std::string filename = pentry->d_name;
-            path = directory + PATHSEPARATORSTRING + filename;
-            if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
-            {
-                continue;
-            }
-            randomFileCheck.CheckForFileAttributeAndUpdate(filename);
-            add_file(filename);
-        }
-
-        closedir(pd);
+        return;
     }
+
+    while ((pentry = readdir(pd)) != nullptr)
+    {
+        fname = pentry->d_name;
+        path = directory + PATHSEPARATORSTRING + fname;
+        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        {
+            continue;
+        }
+        randomFileCheck.CheckForFileAttributeAndUpdate(fname);
+        add_file(fname);
+    }
+
+    closedir(pd);
 #endif
 
     // Sort all filenames before adding them to the container.
@@ -910,7 +911,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
         {
             st_t begin;
             st_t end;
-            auto path = directory + PATHSEPARATORSTRING + filename;
+            path = directory + PATHSEPARATORSTRING + filename;
             bool is_random = randomFileCheck.IsRandomFile(filename);
 
             if (!stat(path.c_str(), &sbuf) &&
