@@ -88,7 +88,6 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         });
         randomFiles.erase(iter, randomFiles.end());
 
-        // Write file list to file even if list is empty.
         WriteRandomListToFile();
 
         if (!isDirty && idx == 1 &&
@@ -156,9 +155,15 @@ bool RandomFileCheck::CheckForRandomAndUpdate(const std::string &filename)
 bool RandomFileCheck::CheckForFileAttributeAndUpdate(
         const std::string &filename)
 {
-    if (randomListFile.empty() && HasRandomFileAttribute(filename))
+    if (randomListFile.empty())
     {
-        return CheckForRandomAndUpdate(filename);
+        // Force writing random list file even if it is empty.
+        isDirty = true;
+
+        if (HasRandomFileAttribute(filename))
+        {
+            return CheckForRandomAndUpdate(filename);
+        }
     }
 
     return false;
