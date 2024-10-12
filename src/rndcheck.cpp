@@ -100,6 +100,11 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
     }
 }
 
+RandomFileCheck::~RandomFileCheck()
+{
+    UpdateRandomListToFile();
+}
+
 // Detailed verification of a potential random file by
 // checking for a valid sector map.
 // If file is verified as random file update randomFiles list.
@@ -368,5 +373,77 @@ bool RandomFileCheck::UpdateRandomListToFile()
 bool RandomFileCheck::IsWriteProtected() const
 {
     return isWriteProtected;
+}
+
+
+void RandomFileCheck::CheckAllFilesAttributeAndUpdate()
+{
+    std::string path;
+    struct stat sbuf{};
+
+    if (!randomListFile.empty())
+    {
+        return;
+    }
+
+#ifdef _WIN32
+    WIN32_FIND_DATA pentry;
+    const auto wWildcard(
+        ConvertToUtf16String(directory + PATHSEPARATORSTRING + "*.*"));
+
+    auto hdl = FindFirstFile(wWildcard.c_str(), &pentry);
+
+    if (hdl == INVALID_HANDLE_VALUE)
+    {
+        return;
+    }
+
+    do
+    {
+        auto filename(flx::tolower(ConvertToUtf8String(pentry.cFileName)));
+        if (!flx::isFlexFilename(filename))
+        {
+            continue;
+        }
+
+        path = directory + PATHSEPARATORSTRING + filename;
+        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        {
+            continue;
+        }
+        CheckForFileAttributeAndUpdate(filename);
+    }
+    while (FindNextFile(hdl, &pentry) != 0);
+
+    FindClose(hdl);
+#endif
+
+#ifdef UNIX
+    struct dirent *pentry;
+
+    auto *pd = opendir(directory.c_str());
+    if (pd == nullptr)
+    {
+        return;
+    }
+
+    while ((pentry = readdir(pd)) != nullptr)
+    {
+        std::string filename = pentry->d_name;
+        if (!flx::isFlexFilename(filename))
+        {
+            continue;
+        }
+
+        path = directory + PATHSEPARATORSTRING + filename;
+        if (stat(path.c_str(), &sbuf) || !S_ISREG(sbuf.st_mode))
+        {
+            continue;
+        }
+        CheckForFileAttributeAndUpdate(filename);
+    }
+
+    closedir(pd);
+#endif
 }
 

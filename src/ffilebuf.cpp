@@ -569,6 +569,15 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     result = ostream.good();
     ostream.close();
 
+    const auto directory = flx::getParentPath(path);
+    RandomFileCheck randomFileCheck(directory);
+
+    randomFileCheck.CheckAllFilesAttributeAndUpdate();
+    if (IsRandom())
+    {
+        randomFileCheck.AddToRandomList(GetFilename());
+    }
+
     const bool setFileTime =
         (fileTimeAccess & FileTimeAccess::Set) == FileTimeAccess::Set;
 
@@ -623,6 +632,7 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
 
                 RandomFileCheck randomFileCheck(directory);
 
+                randomFileCheck.CheckAllFilesAttributeAndUpdate();
                 if (randomFileCheck.CheckForRandom(filename))
                 {
                     SetSectorMap(IS_RANDOM_FILE);

@@ -434,3 +434,32 @@ TEST_F(test_FlexRandomFileFixture, fct_IsWriteProtected)
         EXPECT_EQ(randomFileCheck.IsWriteProtected(), expectedWP[idx]);
     }
 }
+
+TEST_F(test_FlexRandomFileFixture, fct_CheckAllFilesAttributeAndUpdate)
+{
+    const std::array<int, 2> indices{ RW, RWA };
+
+    for (int idx : indices)
+    {
+        if (idx == RW)
+        {
+            fs::remove(fs::path(diskPaths[idx]) / "random");
+        }
+        RandomFileCheck randomFileCheck(diskPaths[idx]);
+        randomFileCheck.CheckAllFilesAttributeAndUpdate();
+        std::string filename{"random03.dat"};
+        const bool expected = (idx == RWA);
+        EXPECT_EQ(randomFileCheck.IsRandomFile(filename), expected) <<
+            "path=" << diskPaths[idx];
+        filename = "random04.dat";
+        EXPECT_EQ(randomFileCheck.IsRandomFile(filename), expected) <<
+            "path=" << diskPaths[idx];
+
+        filename = "nornd01.dat";
+        EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
+            "path=" << diskPaths[idx];
+        filename = "nornd03.dat";
+        EXPECT_EQ(randomFileCheck.IsRandomFile(filename), false) <<
+            "path=" << diskPaths[idx];
+    }
+}

@@ -33,6 +33,7 @@ class RandomFileCheck
 {
 public:
     explicit RandomFileCheck(std::string p_directory);
+    virtual ~RandomFileCheck();
 
     bool CheckForRandomAndUpdate(const std::string &filename);
     bool CheckForRandom(const std::string &filename) const;
@@ -40,6 +41,7 @@ public:
     bool AddToRandomList(const std::string &filename);
     bool RemoveFromRandomList(const std::string &filename);
     bool CheckForFileAttributeAndUpdate(const std::string &filename);
+    void CheckAllFilesAttributeAndUpdate();
     bool UpdateRandomListToFile();
     bool IsWriteProtected() const;
 

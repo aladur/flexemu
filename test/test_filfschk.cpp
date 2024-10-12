@@ -33,6 +33,7 @@ protected:
     void TearDown() override
     {
         fs::remove(diskPath);
+        fs::remove(fs::current_path() / subdir / ".random");
     }
 
     using dirfct_t = void (s_dir_sector &);
