@@ -89,6 +89,7 @@ FlexDirectoryDiskByFile::FlexDirectoryDiskByFile(
 
     Initialize_header();
     disk_number = number++;
+    randomFileCheck.CheckAllFilesAttributeAndUpdate();
 }
 
 /****************************************/
