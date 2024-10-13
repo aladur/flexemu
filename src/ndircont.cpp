@@ -776,13 +776,12 @@ void FlexDirectoryDiskBySector::add_to_directory(
     dir_entry.minute = setFileTime ? static_cast<Byte>(lt->tm_min) : 0U;
 }
 
-// Update random file sector map.
-void FlexDirectoryDiskBySector::modify_random_file(const char *path,
-        const struct stat &stat, const st_t &begin)
+void FlexDirectoryDiskBySector::update_sector_map(const std::string &path,
+        const struct stat &sbuf, const st_t &begin)
 {
     SectorMap_t sectorMap{};
 
-    DWord data_size = stat.st_size - (DBPS * 2);
+    DWord data_size = sbuf.st_size - (DBPS * 2);
     Word remaining_sectors = static_cast<Word>((data_size + DBPS - 1U) / DBPS);
 
     if (data_size == 0)
@@ -930,7 +929,7 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
                 // protected.
                 if (is_random && !is_file_wp)
                 {
-                    modify_random_file(path.c_str(), sbuf, begin);
+                    update_sector_map(path, sbuf, begin);
                 }
             }
         }

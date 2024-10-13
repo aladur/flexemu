@@ -178,8 +178,8 @@ private:
         const st_t &begin,
         const st_t &end,
         bool is_file_wp);
-    void modify_random_file(const char *path, const struct stat &stat,
-                            const st_t &pbegin);
+    void update_sector_map(const std::string &path, const struct stat &sbuf,
+                           const st_t &begin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);
     void check_for_rename(Word ds_idx, const s_dir_sector &d);
