@@ -123,6 +123,8 @@ private:
     std::array<s_sys_info_sector, 2> flex_sys_info{}; // system info sectors
     std::vector<s_dir_sector> flex_directory; // directory sectors
     std::unordered_map<SDWord, s_new_file> new_files; // new file table
+    std::unordered_map<SDWord, SectorMap_t> sector_maps; // random file
+                                                         // sector maps
     st_t dir_extend{0U, 0U}; // track and sector of directory extend sector
     Word init_dir_sectors{}; // initial number of directory sectors
                              // without directory extension.
@@ -178,7 +180,9 @@ private:
         const st_t &begin,
         const st_t &end,
         bool is_file_wp);
-    void update_sector_map(const std::string &path, const struct stat &sbuf,
+    SectorMap_t create_sector_map(
+                           const std::string &path,
+                           const struct stat &sbuf,
                            const st_t &begin);
     void check_for_delete(Word ds_idx, const s_dir_sector &d);
     void check_for_extend(Word ds_idx, const s_dir_sector &d);

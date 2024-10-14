@@ -776,8 +776,8 @@ void FlexDirectoryDiskBySector::add_to_directory(
     dir_entry.minute = setFileTime ? static_cast<Byte>(lt->tm_min) : 0U;
 }
 
-void FlexDirectoryDiskBySector::update_sector_map(const std::string &path,
-        const struct stat &sbuf, const st_t &begin)
+SectorMap_t FlexDirectoryDiskBySector::create_sector_map(
+        const std::string &path, const struct stat &sbuf, const st_t &begin)
 {
     SectorMap_t sectorMap{};
 
@@ -786,7 +786,7 @@ void FlexDirectoryDiskBySector::update_sector_map(const std::string &path,
 
     if (data_size == 0)
     {
-        return;
+        return sectorMap;
     }
 
     auto sec_idx = get_sector_index(begin) + 2;
@@ -812,6 +812,8 @@ void FlexDirectoryDiskBySector::update_sector_map(const std::string &path,
         fs.write(reinterpret_cast<const char *>(sectorMap.data()),
                  sectorMap.size());
     }
+
+    return sectorMap;
 }
 
 
@@ -925,11 +927,10 @@ void FlexDirectoryDiskBySector::fill_flex_directory()
                                  dir_idx, is_random, sbuf, begin,
                                  end, is_file_wp);
 
-                // Unfinished: don't write sector map if write
-                // protected.
-                if (is_random && !is_file_wp)
+                if (is_random)
                 {
-                    update_sector_map(path, sbuf, begin);
+                    auto sector_map = create_sector_map(path, sbuf, begin);
+                    sector_maps.emplace(dir_idx, sector_map);
                 }
             }
         }
@@ -1065,6 +1066,7 @@ void FlexDirectoryDiskBySector::check_for_delete(Word ds_idx,
             {
                 randomFileCheck.RemoveFromRandomList(filename);
                 randomFileCheck.UpdateRandomListToFile();
+                sector_maps.erase(flex_links[sec_idx].file_id);
             }
             auto path = directory + PATHSEPARATORSTRING + filename;
             unlink(path.c_str());
@@ -1315,8 +1317,24 @@ void FlexDirectoryDiskBySector::check_for_new_file(Word ds_idx,
                 // random files.
                 if (dir_sector.dir_entries[i].sector_map & IS_RANDOM_FILE)
                 {
+                    const auto mode = std::ios::in | std::ios::binary;
+                    std::ifstream ifs(new_path, mode);
+
                     randomFileCheck.AddToRandomList(new_name);
                     randomFileCheck.UpdateRandomListToFile();
+
+                    if (ifs.is_open())
+                    {
+                        SectorMap_t sector_map{};
+
+                        ifs.read(reinterpret_cast<char *>(sector_map.data()),
+                                sector_map.size());
+                        if (!ifs.fail())
+                        {
+                            const auto file_id = flex_links[sec_idx].file_id;
+                            sector_maps.emplace(file_id, sector_map);
+                        }
+                    }
                 }
 #ifdef DEBUG_FILE
                 LOG_XX("      new file {}, was {}\n",
@@ -1466,6 +1484,19 @@ bool FlexDirectoryDiskBySector::ReadSector(Byte *buffer, int trk, int sec,
         case SectorType::File: // Read from an existing file.
             {
                 auto path = get_path_of_file(link.file_id);
+
+                if (link.f_record <= 1)
+                {
+                    const auto iter = sector_maps.find(link.file_id);
+                    if (iter != sector_maps.end())
+                    {
+                        // Read sector map of random file.
+                        auto offset = link.f_record * DBPS;
+                        memcpy(buffer + MDPS, &iter->second[offset], DBPS);
+                        update_sector_buffer_from_link(buffer, link);
+                        break;
+                    }
+                }
 
                 result = false;
                 std::ifstream ifs(path, std::ios::in | std::ios::binary);
@@ -1685,6 +1716,18 @@ bool FlexDirectoryDiskBySector::WriteSector(const Byte *buffer, int trk,
                 auto path = get_path_of_file(link.file_id);
 
                 update_link_from_sector_buffer(link, buffer);
+                if (link.f_record <= 1)
+                {
+                    const auto iter = sector_maps.find(link.file_id);
+                    if (iter != sector_maps.end())
+                    {
+                        // Write sector map of random file.
+                        auto offset = link.f_record * DBPS;
+                        memcpy(&iter->second[offset], buffer + MDPS, DBPS);
+                        break;
+                    }
+                }
+
                 if (link.file_id < 0)
                 {
                     st_t next;
