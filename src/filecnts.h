@@ -117,6 +117,11 @@ struct alignas(1) s_sys_info_sector
 // This file has (256 * 255) - 5 sectors = 65275 sectors.
 const int MAX_FILE_SECTORS = 65275;
 
+// The maximum file size of random files supported by FLEX:
+// The sector map can reference up to 168 * 255 sectors + 2
+// sectors for the sector map itself.
+const int MAX_RANDOM_FILE_SECTORS = 42842;
+
 /* structure of one FLEX directory entry */
 struct alignas(1) s_dir_entry
 {

@@ -75,8 +75,8 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
         ReadRandomListFromFile(path);
 
         // In general trust the contents of the randomFiles. Just do a quick
-        // check if file exists and it has the mimimum filesize for a random
-        // file.
+        // check if file exists and it is between the mimimum and maximum
+        // filesize of a random file.
         auto iter = std::remove_if(randomFiles.begin(), randomFiles.end(),
                 [&](const auto &filename){
             fs::path file_path(directory);
@@ -84,7 +84,8 @@ RandomFileCheck::RandomFileCheck(std::string p_directory)
             struct stat sbuf{};
 
             return stat(file_path.string().c_str(), &sbuf) != 0 ||
-                sbuf.st_size <= (2 * DBPS);
+                sbuf.st_size <= (2 * DBPS) ||
+                sbuf.st_size > (MAX_RANDOM_FILE_SECTORS * DBPS);
         });
         randomFiles.erase(iter, randomFiles.end());
 
