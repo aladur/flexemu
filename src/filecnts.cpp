@@ -35,7 +35,7 @@ std::ostream& operator<<(std::ostream& os, const st_t &st)
 // except for a harddisk.
 Word getTrack0SectorCount(int tracks, int sectors)
 {
-    if (tracks >= 255)
+    if (tracks >= 254)
     {
         // This is a harddisk. Assuming same density for all tracks.
         return static_cast<Word>(sectors);
@@ -69,7 +69,7 @@ Word getTrack0SectorCount(int tracks, int sectors)
 // Return the number of sides.
 Word getSides(int tracks, int sectors)
 {
-    if (tracks >= 255)
+    if (tracks >= 254)
     {
         // There are no details available about how many sides a hard disk
         // used by FLEX has => Return the default.
