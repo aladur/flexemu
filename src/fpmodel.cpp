@@ -37,6 +37,7 @@
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QObject>
+#include <QLocale>
 #include <QString>
 #include <QDate>
 #include <QVector>
@@ -858,6 +859,30 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
 #endif
 }
 
+QString FlexplorerTableModel::VariantToString(const QVariant &variant) const
+{
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+    if (variant.typeId() == QMetaType::QDateTime)
+#else
+    if (variant.type() == QVariant::DateTime)
+#endif
+    {
+        const auto locale = QLocale::system();
+
+        if (options.ft_access == FileTimeAccess::NONE)
+        {
+            const auto d = variant.toDate();
+            return locale.toString(d, QLocale::ShortFormat);
+        }
+
+        const auto dateTime = variant.toDateTime();
+        return locale.toString(dateTime, QLocale::ShortFormat);
+    }
+
+    return variant.toString();
+}
+
 QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
 {
     int column;
@@ -896,10 +921,11 @@ QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
         stream << "<tr>";
         for (column = 1; column < COLUMNS; ++column)
         {
-            auto modelIndex = index(rowIndex.row(), column);
+            const auto modelIndex = index(rowIndex.row(), column);
+            const auto variant = data(modelIndex, Qt::DisplayRole);
             stream <<
                 "<td>" <<
-                data(modelIndex, Qt::DisplayRole).toString() <<
+                VariantToString(variant) <<
                 "</td>";
         }
         stream << "</tr>\n";
@@ -929,8 +955,10 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
 
     if (mimeType == "text/plain")
     {
+        static QVector<int> widths { 13, 16, 7, 9, 12, 11 };
+        widths[COL_DATE - 1] = (options.ft_access == FileTimeAccess::NONE) ?
+            12 : 17;
         fieldWidthFct = [&](int col){
-            static QVector<int> widths { 13, 17, 7, 7, 12, 11 };
             stream.setFieldWidth(widths[col - 1]);
         };
     }
@@ -964,7 +992,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
         {
             fieldWidthFct(column);
             auto modelIndex = index(rowIndex.row(), column);
-            stream << data(modelIndex, Qt::DisplayRole).toString();
+            stream << VariantToString(data(modelIndex, Qt::DisplayRole));
             separatorFct(column);
         }
         stream.setFieldWidth(0);

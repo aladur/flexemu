@@ -139,6 +139,7 @@ private:
     IdsType GetIds() const;
     void CalculateAndChangePersistentIndexList(const IdsType &oldIds);
     QString AsHtml(const QModelIndexList &indexList) const;
+    QString VariantToString(const QVariant &variant) const;
 
     static QString GetFileType(const FlexDirEntry &dirEntry);
     static const FileTypes_t &GetFileTypes();
