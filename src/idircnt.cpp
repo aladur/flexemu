@@ -80,8 +80,7 @@ void FlexDirectoryDiskIteratorImp::AtEnd()
 
 bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 {
-    // Initialize following variable to a filename which never exists.
-    std::string fileName(R"(.\/\/\/.\/\)");
+    std::string fileName;
     bool isValid = true;
     bool searchOneFile = (wildcard.find_first_of("*?[];") == std::string::npos);
 
@@ -91,31 +90,35 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
         return false;
     }
 
-#ifdef _WIN32
-    WIN32_FIND_DATA findData{};
-    SYSTEMTIME systemTime{};
-    SYSTEMTIME localTime{};
-#endif
-    struct stat sbuf{};
-#ifdef UNIX
-    struct dirent *findData = nullptr;
-#endif
     // repeat until a valid directory entry found
 #ifdef _WIN32
     const auto path = base->GetPath() + PATHSEPARATORSTRING;
     const auto pattern = path + "*.*";
+    WIN32_FIND_DATA findData{};
 
     while (isValid &&
-           (stat((path + fileName).c_str(), &sbuf) != 0 ||
-            !flx::isFlexFilename(fileName) ||
+            (!flx::isFlexFilename(fileName) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_OFFLINE) ||
             (findData.dwFileAttributes & FILE_ATTRIBUTE_TEMPORARY) ||
-            !S_ISREG(sbuf.st_mode) ||
-            sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
+            findData.nFileSizeLow > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
+
+        if (searchOneFile)
+        {
+            fileName = wildcard;
+            const auto filePattern = path + fileName;
+            dirHdl = FindFirstFile(ConvertToUtf16String(filePattern).c_str(),
+                &findData);
+            if (dirHdl != INVALID_HANDLE_VALUE && !searchOneFileAtEnd)
+            {
+                isValid = true;
+            }
+            searchOneFileAtEnd = true;
+            continue;
+        }
 
         if (dirHdl == nullptr)
         {
@@ -147,6 +150,9 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
     if (isValid)
     {
+        SYSTEMTIME systemTime{};
+        SYSTEMTIME localTime{};
+
         // ok, found a valid directory entry
         Byte attributes = 0;
         int sectorMapFlag = 0;
@@ -179,10 +185,12 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 #endif
 #ifdef UNIX
     auto path = base->GetPath() + PATHSEPARATORSTRING;
+    struct stat sbuf {};
+    struct dirent* findData = nullptr;
 
     while (isValid &&
-           (stat((path + fileName).c_str(), &sbuf) != 0 ||
-            !flx::isFlexFilename(fileName) ||
+            (!flx::isFlexFilename(fileName) ||
+            stat((path + fileName).c_str(), &sbuf) != 0 ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)))
