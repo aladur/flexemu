@@ -552,7 +552,7 @@ bool FlexFileBuffer::IsFlexExecutableFile() const
 }
 
 bool FlexFileBuffer::WriteToFile(const std::string &path,
-        FileTimeAccess fileTimeAccess) const
+        FileTimeAccess fileTimeAccess, bool doRandomCheck) const
 {
     auto mode = std::ios::out | std::ios::binary | std::ios::trunc;
     std::ofstream ostream(path, mode);
@@ -570,12 +570,15 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
     ostream.close();
 
     const auto directory = flx::getParentPath(path);
-    RandomFileCheck randomFileCheck(directory);
-
-    randomFileCheck.CheckAllFilesAttributeAndUpdate();
-    if (IsRandom())
+    if (doRandomCheck)
     {
-        randomFileCheck.AddToRandomList(GetFilename());
+        RandomFileCheck randomFileCheck(directory);
+
+        randomFileCheck.CheckAllFilesAttributeAndUpdate();
+        if (IsRandom())
+        {
+            randomFileCheck.AddToRandomList(GetFilename());
+        }
     }
 
     const bool setFileTime =

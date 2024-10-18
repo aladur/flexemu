@@ -401,7 +401,7 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
             }
 
             if (!buffer.WriteToFile(targetPath.toStdString(),
-                        options.ft_access))
+                        options.ft_access, true))
             {
                 throw FlexException(FERR_UNABLE_TO_CREATE,
                                     targetFilename.toStdString());
