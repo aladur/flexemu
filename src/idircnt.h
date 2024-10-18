@@ -60,6 +60,7 @@ private:
     FlexDirectoryDiskByFile *base;
     FlexDirEntry dirEntry;
     DIRHANDLE dirHdl;
+    bool searchOneFileAtEnd;
 };
 
 #endif // IDIRCNT_INCLUDED

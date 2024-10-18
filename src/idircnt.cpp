@@ -36,7 +36,7 @@
 
 FlexDirectoryDiskIteratorImp::FlexDirectoryDiskIteratorImp(
     FlexDirectoryDiskByFile *p_base)
-    : base(p_base), dirHdl(nullptr)
+    : base(p_base), dirHdl(nullptr), searchOneFileAtEnd(false)
 {
 }
 
@@ -73,6 +73,7 @@ void FlexDirectoryDiskIteratorImp::AtEnd()
     {
         base->randomFileCheck.UpdateRandomListToFile();
     }
+    searchOneFileAtEnd = true;
 
     base = nullptr;
 }
@@ -82,6 +83,14 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     // Initialize following variable to a filename which never exists.
     std::string fileName(R"(.\/\/\/.\/\)");
     bool isValid = true;
+    bool searchOneFile = (wildcard.find_first_of("*?[];") == std::string::npos);
+
+    dirEntry.SetEmpty();
+    if (searchOneFile && searchOneFileAtEnd)
+    {
+        return false;
+    }
+
 #ifdef _WIN32
     WIN32_FIND_DATA findData{};
     SYSTEMTIME systemTime{};
@@ -91,7 +100,6 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 #ifdef UNIX
     struct dirent *findData = nullptr;
 #endif
-    dirEntry.SetEmpty();
     // repeat until a valid directory entry found
 #ifdef _WIN32
     const auto path = base->GetPath() + PATHSEPARATORSTRING;
@@ -173,13 +181,25 @@ bool FlexDirectoryDiskIteratorImp::NextDirEntry(const std::string &wildcard)
     auto path = base->GetPath() + PATHSEPARATORSTRING;
 
     while (isValid &&
-           (stat((path + fileName).c_str(), &sbuf) ||
+           (stat((path + fileName).c_str(), &sbuf) != 0 ||
             !flx::isFlexFilename(fileName) ||
             !S_ISREG(sbuf.st_mode) ||
             sbuf.st_size < 0 || sbuf.st_size > (MAX_FILE_SECTORS * DBPS) ||
             !flx::multimatches(fileName, wildcard, ';', true)))
     {
         isValid = false;
+
+        if (searchOneFile)
+        {
+            fileName = flx::tolower(wildcard);
+            if (stat((path + fileName).c_str(), &sbuf) == 0 &&
+                    !searchOneFileAtEnd)
+            {
+                isValid = true;
+            }
+            searchOneFileAtEnd = true;
+            continue;
+        }
 
         if (dirHdl == nullptr)
         {
