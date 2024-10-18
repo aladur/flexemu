@@ -911,7 +911,7 @@ bool flx::isFlexFilename(const std::string &filename)
 #ifdef UNIX
     static std::regex re("[a-z][a-z0-9_-]{0,7}\\.[a-z][a-z0-9_-]{0,2}");
 #else
-    static const std::regex re("[a-zA-Z][a-zA-Z0-9_-]{0,7}\\.[a-z][a-zA-Z0-9_-]{0,2}");
+    static const std::regex re("[a-zA-Z][a-zA-Z0-9_-]{0,7}\\.[a-zA-Z][a-zA-Z0-9_-]{0,2}");
 #endif
 
     return std::regex_match(filename, re);
