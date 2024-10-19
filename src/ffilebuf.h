@@ -28,6 +28,7 @@
 #include "bdate.h"
 #include "btime.h"
 #include "efiletim.h"
+#include "fdirent.h"
 #include <memory>
 #include <functional>
 #include <sstream>
@@ -150,6 +151,7 @@ public:
     }
     BDate GetDate() const;
     BTime GetTime() const;
+    FlexDirEntry GetDirEntry() const;
 
 private:
     void SetAdjustedFilename(const std::string &name);

@@ -816,3 +816,22 @@ BTime FlexFileBuffer::GetTime() const
     return {fileHeader.hour, fileHeader.minute, 0U};
 }
 
+FlexDirEntry FlexFileBuffer::GetDirEntry() const
+{
+    FlexDirEntry dirEntry;
+
+    if (!buffer.empty())
+    {
+        dirEntry.SetTotalFileName(fileHeader.fileName);
+        dirEntry.SetFileSize(fileHeader.fileSize / DBPS * SECTOR_SIZE);
+        dirEntry.SetAttributes(fileHeader.attributes);
+        dirEntry.SetDate(GetDate());
+        dirEntry.SetTime(GetTime());
+        dirEntry.SetSectorMap(fileHeader.sectorMap);
+        // Start and end track/sector is not set in this case.
+        dirEntry.ClearEmpty();
+    }
+
+    return dirEntry;
+}
+
