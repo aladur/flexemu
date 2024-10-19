@@ -401,11 +401,10 @@ QVector<int> FlexplorerTableModel::FindFiles(const QString &pattern) const
 
 QModelIndex FlexplorerTableModel::AddFile(const FlexFileBuffer &buffer)
 {
-    FlexDirEntry dirEntry;
-    const auto filename = buffer.GetFilename();
-
     container->WriteFromBuffer(buffer);
-    if (container->FindFile(filename, dirEntry))
+
+    auto dirEntry = buffer.GetDirEntry();
+    if (!dirEntry.IsEmpty())
     {
         insertRows(rowCount(), 1);
         return SetRow(dirEntry, rowCount() - 1, Qt::DisplayRole);
