@@ -208,6 +208,15 @@ std::string flx::ascchr(char x)
 bool flx::matches(const std::string &text, const std::string &pattern,
                   bool ignorecase)
 {
+    if (pattern.find_first_of("*?[]") == std::string::npos)
+    {
+        if (ignorecase)
+        {
+            return flx::tolower(text) == flx::tolower(pattern);
+        }
+        return text == pattern;
+    }
+
     static const int MAX = std::numeric_limits<int>::max();
     auto ipattern = pattern.cbegin();
     auto ilaststar = pattern.cend();
