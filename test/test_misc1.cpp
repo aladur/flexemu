@@ -153,6 +153,18 @@ TEST(test_misc1, fct_ascchr)
 TEST(test_misc1, fct_matches)
 {
     auto result = flx::matches("", "", false);
+    EXPECT_TRUE(result);
+    result = flx::matches("abcdef", "abcdef", false);
+    EXPECT_TRUE(result);
+    result = flx::matches("abcdef", "abcde", false);
+    EXPECT_FALSE(result);
+    result = flx::matches("abcdef", "AbCdEf", false);
+    EXPECT_FALSE(result);
+    result = flx::matches("abcdef", "AbCdEf", true);
+    EXPECT_TRUE(result);
+    result = flx::matches("abcdef", "ABCDEF", true);
+    EXPECT_TRUE(result);
+    result = flx::matches("abcdef", "ABCDE", true);
     EXPECT_FALSE(result);
     result = flx::matches("", "*.*", false);
     EXPECT_FALSE(result);
@@ -216,10 +228,36 @@ TEST(test_misc1, fct_matches)
 
 TEST(test_misc1, fct_multimatches)
 {
-    auto result = flx::multimatches("", "abc;xyz;kjl", ';', false);
+    auto result = flx::multimatches("", "", ';', false);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "abcdef", ';', false);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "abcde", ';', false);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("abcdef", "AbCdEf", ';', false);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("abcdef", "AbCdEf", ';', true);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "ABCDEF", ';', true);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "ABCDE", ';', true);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("abcdef", "xyz;abcdef", ';', false);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "xyz;abcde", ';', false);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("abcdef", "xyz;AbCdEf", ';', false);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("abcdef", "xyz;AbCdEf", ';', true);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "xyz;ABCDEF", ';', true);
+    EXPECT_TRUE(result);
+    result = flx::multimatches("abcdef", "xyz;ABCDE", ';', true);
+    EXPECT_FALSE(result);
+    result = flx::multimatches("", "abc;xyz;kjl", ';', false);
     EXPECT_FALSE(result);
     result = flx::multimatches("", ";;*.*;", ';', false);
-    EXPECT_FALSE(result);
+    EXPECT_TRUE(result);
     result = flx::multimatches("ab.c", "c;d;e;f;g;ab.*", ';', false);
     EXPECT_TRUE(result);
     result = flx::multimatches("xx", "abc;*?", ';', false);
@@ -552,18 +590,39 @@ TEST(test_misc1, fct_isPathsEqual)
 
 TEST(test_misc1, fct_split)
 {
-    const auto strings1 = flx::split("abc;xyz;klm", ';');
+    const auto strings1 = flx::split("abc;xyz;klm", ';', false);
     ASSERT_EQ(strings1.size(), 3);
     EXPECT_EQ(strings1[0], "abc");
     EXPECT_EQ(strings1[1], "xyz");
     EXPECT_EQ(strings1[2], "klm");
-    const auto strings2 = flx::split("**klm**", '*');
-    ASSERT_EQ(strings2.size(), 1);
-    EXPECT_EQ(strings2[0], "klm");
-    const auto strings3 = flx::split("", ';');
-    ASSERT_TRUE(strings3.empty());
-    const auto strings4 = flx::split("|||", '|');
+    const auto strings2 = flx::split("abc;xyz;", ';', false);
+    ASSERT_EQ(strings2.size(), 2);
+    EXPECT_EQ(strings2[0], "abc");
+    EXPECT_EQ(strings2[1], "xyz");
+    const auto strings3 = flx::split("**klm**", '*', false);
+    ASSERT_EQ(strings3.size(), 1);
+    EXPECT_EQ(strings3[0], "klm");
+    const auto strings4 = flx::split("", ';', false);
     ASSERT_TRUE(strings4.empty());
+    const auto strings5 = flx::split("|||", '|', false);
+    ASSERT_TRUE(strings5.empty());
+    const auto strings6 = flx::split("abc;xyz;", ';', true);
+    ASSERT_EQ(strings6.size(), 3);
+    EXPECT_EQ(strings6[0], "abc");
+    EXPECT_EQ(strings6[1], "xyz");
+    const auto strings7 = flx::split(";xyz;klm", ';', true);
+    ASSERT_EQ(strings7.size(), 3);
+    EXPECT_TRUE(strings7[0].empty());
+    EXPECT_EQ(strings7[1], "xyz");
+    EXPECT_EQ(strings7[2], "klm");
+    const auto strings8 = flx::split("**klm**", '*', true);
+    ASSERT_EQ(strings8.size(), 5);
+    EXPECT_EQ(strings8[2], "klm");
+    const auto strings9 = flx::split("", ';', true);
+    ASSERT_EQ(strings9.size(), 1);
+    EXPECT_TRUE(strings9[0].empty());
+    const auto strings10 = flx::split("|||", '|', true);
+    ASSERT_EQ(strings10.size(), 4);
 }
 
 TEST(test_misc1, fct_isFlexFilename)

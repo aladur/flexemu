@@ -286,7 +286,8 @@ extern std::string hexstr(Word x);
 extern std::string ascchr(char x);
 extern char hex_digit(Byte x);
 
-extern std::vector<std::string> split(const std::string &str, char delimiter);
+extern std::vector<std::string> split(const std::string &str, char delimiter,
+        bool keepEmptyString);
 extern bool matches(const std::string &text, const std::string &pattern,
              bool ignorecase);
 extern bool multimatches(const std::string &text,

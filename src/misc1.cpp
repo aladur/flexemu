@@ -204,6 +204,7 @@ std::string flx::ascchr(char x)
 // Supported wildcard characters:
 // *  matches 0 up to any number of arbitrary wildcard characters
 // ?  matches exactly 1 arbitrary character
+// An empty pattern matches an empty text
 bool flx::matches(const std::string &text, const std::string &pattern,
                   bool ignorecase)
 {
@@ -219,7 +220,7 @@ bool flx::matches(const std::string &text, const std::string &pattern,
 
     if (ipattern == pattern.cend() || itext == text.cend())
     {
-        return false;
+        return ipattern == pattern.cend() && itext == text.cend();
     }
 
     while (itext != text.cend())
@@ -316,7 +317,7 @@ bool flx::matches(const std::string &text, const std::string &pattern,
 bool flx::multimatches(const std::string &text, const std::string &multipattern,
                        char delimiter /* = ';'*/, bool ignorecase /* = false */)
 {
-    const auto patterns = flx::split(multipattern, delimiter);
+    const auto patterns = flx::split(multipattern, delimiter, true);
 
     return std::any_of(patterns.cbegin(), patterns.cend(),
             [&](const std::string &pattern)
@@ -858,7 +859,8 @@ bool flx::askForInput(const std::string &question, const std::string &answers,
     return input == '\n' || ::tolower(input) == answers.at(0);
 }
 
-std::vector<std::string> flx::split(const std::string &str, char delimiter)
+std::vector<std::string> flx::split(const std::string &str, char delimiter,
+        bool keepEmptyString)
 {
     std::vector<std::string> result;
     std::string::size_type start_pos = 0;
@@ -869,7 +871,7 @@ std::vector<std::string> flx::split(const std::string &str, char delimiter)
         next_pos = str.find(delimiter, start_pos);
         if (next_pos != std::string::npos)
         {
-            if (start_pos != next_pos)
+            if (keepEmptyString || (start_pos != next_pos))
             {
                 result.emplace_back(
                         str.substr(start_pos, next_pos - start_pos));
@@ -878,7 +880,7 @@ std::vector<std::string> flx::split(const std::string &str, char delimiter)
         }
         else
         {
-            if (start_pos != str.size())
+            if (keepEmptyString || (start_pos != str.size()))
             {
                 result.emplace_back(str.substr(start_pos));
             }
