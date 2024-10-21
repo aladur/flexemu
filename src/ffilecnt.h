@@ -30,6 +30,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <unordered_map>
 #include <fstream>
 
 class FlexDiskAttributes;
@@ -57,6 +58,14 @@ class FlexDisk : public IFlexDiskBySector, public IFlexDiskByFile
 {
     friend class FlexDiskIteratorImp; // corresponding iterator class
 
+    // Struct defining the directory sector's track/sector and directory index
+    // within this sector referencing a file.
+    struct s_dir_pos
+    {
+        st_t trk_sec; // track/sector of the directory sector.
+        Byte idx; // index within the directory sector.
+    };
+
 protected:
     std::string path;
     mutable std::fstream fstream;
@@ -66,9 +75,14 @@ protected:
 
     // Variables only used for FLX format when formatting a disk
     bool is_flex_format{false}; // true when this is a FLEX compatible format.
+    bool is_filenames_initialized{false}; // Used to lazy init. filenames.
     int sectors0_side0_max{}; // Max. sector number on side0 for track 0
     int sectors_side0_max{}; // Max. sector number on side0 for track != 0
+    st_t next_dir_trk_sec{}; // Next directory track/sector to be used for
+                             // new created files. May be 00-00.
     s_flex_header flx_header{};
+    // All filenames available and their position in the directory.
+    std::unordered_map<std::string, s_dir_pos> filenames;
 
 private:
     Byte attributes{};
@@ -166,6 +180,16 @@ protected:
         int sectors,
         int fmt = TYPE_DSK_DISKFILE,
         const char *bsFile = nullptr);
+    static FlexDirEntry CreateDirEntryFrom(const s_dir_entry &dir_entry,
+            const std::string &filename);
+
+    // IFlexDiskByFile interface performance functions.
+    void InitializeFilenames();
+    void SetNextDirectoryPosition(const st_t &dirTS);
+    void DeleteFromFilenames(const std::string &filename);
+    void AddToFilenames(const std::string &filename, const s_dir_pos &dir_pos);
+    bool FindInFilenames(const std::string &filename);
+
 private:
     IFlexDiskIteratorImpPtr IteratorFactory() override;
 

@@ -43,6 +43,7 @@
 #include "ifilcnti.h"
 #include "iffilcnt.h"
 #include <cstring>
+#include <utility>
 
 static_assert(sizeof(s_flex_header) == 16, "Wrong alignment");
 
@@ -310,6 +311,37 @@ bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
 {
     if (is_flex_format)
     {
+        if (wildcard.find_first_of("*?[]") == std::string::npos)
+        {
+            if (!is_filenames_initialized)
+            {
+                InitializeFilenames();
+            }
+
+            const auto iter = filenames.find(flx::tolower(wildcard));
+            if (iter != filenames.end())
+            {
+                s_dir_sector sectorBuffer{};
+                const auto &dir_pos = iter->second;
+
+                if (!ReadSector(reinterpret_cast<Byte *>(&sectorBuffer),
+                                    dir_pos.trk_sec.trk, dir_pos.trk_sec.sec))
+                {
+                    std::stringstream stream;
+
+                    stream << dir_pos.trk_sec;
+                    throw FlexException(FERR_READING_TRKSEC,
+                                      stream.str(), GetPath());
+                }
+                auto &dir_entry = sectorBuffer.dir_entries[dir_pos.idx];
+                entry = CreateDirEntryFrom(dir_entry, wildcard);
+                return true;
+            }
+
+            entry.SetEmpty();
+            return false;
+        }
+
         FlexDiskIterator it(wildcard);
 
         it = this->begin();
@@ -369,15 +401,13 @@ bool FlexDisk::RenameFile(const std::string &oldName,
         throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, newName);
     }
 
-    FlexDirEntry de;
-
     // prevent overwriting of an existing file
     // except for changing lower to uppercase.
     // std::string with different type traits can not be copy-constructed.
     // A conversion to const char * is needed. False-positive to be ignored.
     // NOLINTBEGIN(readability-redundant-string-cstr)
     ci_string ci_oldName(oldName.c_str());
-    if (ci_oldName.compare(newName.c_str()) != 0 && FindFile(newName, de))
+    if (ci_oldName.compare(newName.c_str()) != 0 && FindInFilenames(newName))
     // NOLINTEND(readability-redundant-string-cstr)
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
@@ -531,7 +561,6 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     Word recordNr = 0; // Current record number. For random files
                        // the two sector map sectors are counted too.
     int count;
-    FlexDirEntry de;
     s_sys_info_sector sis{};
     std::string fileName;
     // sectorBuffer[2] and [1] are used for the Sector Map of random files.
@@ -539,7 +568,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
 
     fileName = (p_fileName == nullptr) ? buffer.GetFilename() : p_fileName;
 
-    if (FindFile(fileName, de))
+    if (FindInFilenames(fileName))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, fileName);
     }
@@ -720,18 +749,15 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
     }
 
     // Create a new directory entry.
-    de.SetDate(buffer.GetDate());
-    if ((ft_access & FileTimeAccess::Set) == FileTimeAccess::Set)
+    auto dirEntry = buffer.GetDirEntry();
+    dirEntry.SetTotalFileName(fileName);
+    if ((ft_access & FileTimeAccess::Set) != FileTimeAccess::Set)
     {
-        de.SetTime(buffer.GetTime());
+        dirEntry.SetTime(BTime());
     }
-    de.SetStartTrkSec(start.trk, start.sec);
-    de.SetEndTrkSec(trk, sec);
-    de.SetTotalFileName(fileName);
-    de.SetFileSize(recordNr * static_cast<int>(SECTOR_SIZE));
-    de.SetAttributes(buffer.GetAttributes());
-    de.SetSectorMap(buffer.GetSectorMap());
-    CreateDirEntry(de);
+    dirEntry.SetStartTrkSec(start.trk, start.sec);
+    dirEntry.SetEndTrkSec(trk, sec);
+    CreateDirEntry(dirEntry);
 
     return true;
 }
@@ -847,13 +873,17 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
         return false;
     }
 
-    int i;
     s_dir_sector dir_sector{};
     s_dir_entry *pde;
-    st_t next(first_dir_trk_sec);
+    st_t next(next_dir_trk_sec);
     int tmp1;
     int tmp2;
     BDate date;
+
+    if (next == st_t())
+    {
+        next = first_dir_trk_sec;
+    }
 
     // loop until all directory sectors read
     while (next.sec != 0 || next.trk != 0)
@@ -868,10 +898,10 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
             throw FlexException(FERR_READING_TRKSEC, stream.str(), path);
         }
 
-        for (i = 0; i < 10; i++)
+        for (Byte idx = 0U; idx < DIRENTRIES; ++idx)
         {
             // look for the next free directory entry
-            pde = &dir_sector.dir_entries[i];
+            pde = &dir_sector.dir_entries[idx];
 
             if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
             {
@@ -914,6 +944,9 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                     throw FlexException(FERR_WRITING_TRKSEC,
                                         stream.str(), path);
                 }
+
+                SetNextDirectoryPosition(next);
+                AddToFilenames(entry.GetTotalFileName(), s_dir_pos{next, idx});
 
                 return true;
             }
@@ -1784,3 +1817,112 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
     return header;
 }
 
+FlexDirEntry FlexDisk::CreateDirEntryFrom(const s_dir_entry &dir_entry,
+        const std::string &filename)
+{
+    FlexDirEntry dirEntry;
+
+    dirEntry.SetDate(BDate(dir_entry.day, dir_entry.month, dir_entry.year));
+    auto hour = static_cast<int>(dir_entry.hour & 0x7FU);
+    dirEntry.SetTime(BTime(hour, dir_entry.minute, 0U));
+    dirEntry.SetTotalFileName(flx::toupper(filename));
+    dirEntry.SetAttributes(dir_entry.file_attr);
+    dirEntry.SetSectorMap(dir_entry.sector_map);
+    dirEntry.SetStartTrkSec(dir_entry.start.trk, dir_entry.start.sec);
+    dirEntry.SetEndTrkSec(dir_entry.end.trk, dir_entry.end.sec);
+    dirEntry.SetFileSize(
+        flx::getValueBigEndian<Word>(&dir_entry.records[0]) *
+                                SECTOR_SIZE);
+    dirEntry.SetSectorMap(dir_entry.sector_map);
+    dirEntry.ClearEmpty();
+
+    return dirEntry;
+}
+
+void FlexDisk::InitializeFilenames()
+{
+    if (!is_filenames_initialized)
+    {
+        s_dir_sector sectorBuffer{};
+        auto trk_sec = first_dir_trk_sec;
+
+        while (trk_sec != st_t{})
+        {
+            Byte idx = 0U;
+
+            if (!ReadSector(reinterpret_cast<Byte *>(&sectorBuffer),
+                        trk_sec.trk, trk_sec.sec))
+            {
+                std::stringstream stream;
+
+                stream << trk_sec;
+                throw FlexException(FERR_READING_TRKSEC, stream.str(),
+                        GetPath());
+            }
+
+            for (const auto &dirEntry : sectorBuffer.dir_entries)
+            {
+                if (dirEntry.filename[0] == DE_EMPTY)
+                {
+                    break;
+                }
+
+                if (dirEntry.filename[0] != DE_DELETED)
+                {
+                    auto filename(flx::getstr<>(dirEntry.filename));
+                    auto fileExtension(flx::getstr<>(dirEntry.file_ext));
+
+                    filenames.emplace(
+                                flx::tolower(filename += '.' + fileExtension),
+                                s_dir_pos{trk_sec, idx});
+                }
+
+                ++idx;
+            }
+
+            trk_sec = sectorBuffer.next;
+        }
+
+        is_filenames_initialized = true;
+    }
+}
+
+void FlexDisk::SetNextDirectoryPosition(const st_t &dirTS)
+{
+    next_dir_trk_sec = dirTS;
+}
+
+void FlexDisk::DeleteFromFilenames(const std::string &filename)
+{
+    if (!is_filenames_initialized)
+    {
+        InitializeFilenames();
+    }
+
+    auto iter = filenames.find(flx::tolower(filename));
+    if (iter != filenames.end())
+    {
+        filenames.erase(iter->first);
+    }
+}
+
+void FlexDisk::AddToFilenames(const std::string &filename,
+        const s_dir_pos &dir_pos)
+{
+    if (!is_filenames_initialized)
+    {
+        InitializeFilenames();
+    }
+
+    filenames.insert(std::make_pair(flx::tolower(filename), dir_pos));
+}
+
+bool FlexDisk::FindInFilenames(const std::string &filename)
+{
+    if (!is_filenames_initialized)
+    {
+        InitializeFilenames();
+    }
+
+    return filenames.find(flx::tolower(filename)) != filenames.end();
+}

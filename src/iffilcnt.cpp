@@ -159,6 +159,9 @@ bool FlexDiskIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
+    base->SetNextDirectoryPosition(st_t{});
+    base->DeleteFromFilenames(dirEntry.GetTotalFileName());
+
     /* read system info sector (SIS) */
     s_sys_info_sector sis{};
     if (!base->ReadSector(reinterpret_cast<Byte *>(&sis),
@@ -328,6 +331,9 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
                             stream.str(),
                             base->GetPath());
     }
+    base->DeleteFromFilenames(dirEntry.GetTotalFileName());
+    const auto idx = static_cast<Byte>(dirIndex % DIRENTRIES);
+    base->AddToFilenames(newName, FlexDisk::s_dir_pos{dirTrackSector, idx});
 
     return true;
 }
