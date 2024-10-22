@@ -93,19 +93,7 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 
             if (flx::multimatches(fileName, wildcard, ';', true))
             {
-                dirEntry.SetDate(BDate(pd->day, pd->month, pd->year));
-                auto hour = static_cast<int>(pd->hour & 0x7FU);
-                dirEntry.SetTime(BTime(hour, pd->minute, 0U));
-                dirEntry.SetTotalFileName(fileName);
-                dirEntry.SetAttributes(pd->file_attr);
-                dirEntry.SetSectorMap(pd->sector_map);
-                dirEntry.SetStartTrkSec(pd->start.trk, pd->start.sec);
-                dirEntry.SetEndTrkSec(pd->end.trk, pd->end.sec);
-                dirEntry.SetFileSize(
-                    flx::getValueBigEndian<Word>(&pd->records[0]) *
-                                            base->GetBytesPerSector());
-                dirEntry.SetSectorMap(pd->sector_map);
-                dirEntry.ClearEmpty();
+                dirEntry = FlexDisk::CreateDirEntryFrom(*pd, fileName);
             }
         }
     }
