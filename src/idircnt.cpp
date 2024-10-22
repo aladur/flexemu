@@ -342,13 +342,13 @@ bool FlexDirectoryDiskIteratorImp::RenameCurrent(const std::string &newName)
     std::string src(dirEntry.GetTotalFileName());
     // When renaming always prefer lowercase filenames
     auto dst(flx::tolower(newName));
-    FlexDirEntry de;
+    FlexDirEntry tempDirEntry;
 #ifdef UNIX
     flx::strlower(src);
 #endif
 
     // prevent overwriting of an existing file
-    if (base->FindFile(dst, de))
+    if (base->FindFile(dst, tempDirEntry))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
