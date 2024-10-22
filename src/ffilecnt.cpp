@@ -1831,8 +1831,7 @@ FlexDirEntry FlexDisk::CreateDirEntryFrom(const s_dir_entry &dir_entry,
     dirEntry.SetStartTrkSec(dir_entry.start.trk, dir_entry.start.sec);
     dirEntry.SetEndTrkSec(dir_entry.end.trk, dir_entry.end.sec);
     dirEntry.SetFileSize(
-        flx::getValueBigEndian<Word>(&dir_entry.records[0]) *
-                                SECTOR_SIZE);
+        flx::getValueBigEndian<Word>(&dir_entry.records[0]) * SECTOR_SIZE);
     dirEntry.SetSectorMap(dir_entry.sector_map);
     dirEntry.ClearEmpty();
 
