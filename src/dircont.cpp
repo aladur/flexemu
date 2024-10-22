@@ -154,11 +154,11 @@ std::string FlexDirectoryDiskByFile::GetSupportedAttributes() const
 // if file found can also be checked by
 // !entry.isEmpty
 bool FlexDirectoryDiskByFile::FindFile(const std::string &wildcard,
-        FlexDirEntry &entry)
+        FlexDirEntry &dirEntry)
 {
     FlexDiskIterator it(wildcard);
 
-    entry.SetEmpty();
+    dirEntry.SetEmpty();
     it = this->begin();
 
     if (it == this->end())
@@ -166,7 +166,7 @@ bool FlexDirectoryDiskByFile::FindFile(const std::string &wildcard,
         return false;
     }
 
-    entry = *it;
+    dirEntry = *it;
     return true;
 }
 
@@ -196,7 +196,7 @@ bool FlexDirectoryDiskByFile::DeleteFile(const std::string &wildcard)
 bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
         const std::string &newName)
 {
-    FlexDirEntry de;
+    FlexDirEntry dirEntry;
 
     if (oldName.compare(newName) == 0)
     {
@@ -214,7 +214,7 @@ bool FlexDirectoryDiskByFile::RenameFile(const std::string &oldName,
     }
 
     // prevent conflict with an existing file
-    if (FindFile(newName, de))
+    if (FindFile(newName, dirEntry))
     {
         throw FlexException(FERR_FILE_ALREADY_EXISTS, newName);
     }
@@ -481,8 +481,6 @@ bool FlexDirectoryDiskByFile::SetAttributes(const std::string &wildcard,
                                        unsigned setMask,
                                        unsigned clearMask /* = ~0U */)
 {
-    FlexDirEntry de;
-
     if (IsWriteProtected())
     {
         throw FlexException(FERR_CONTAINER_IS_READONLY, GetPath());

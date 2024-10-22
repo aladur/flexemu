@@ -307,7 +307,7 @@ std::string &FlexDisk::GetBootSectorFile()
 // return true if file found
 // if file found can also be checked by
 // !entry.isEmpty
-bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
+bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &dirEntry)
 {
     if (is_flex_format)
     {
@@ -334,11 +334,11 @@ bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
                                       stream.str(), GetPath());
                 }
                 const auto &dir_entry = sectorBuffer.dir_entries[dir_pos.idx];
-                entry = CreateDirEntryFrom(dir_entry, wildcard);
+                dirEntry = CreateDirEntryFrom(dir_entry, wildcard);
                 return true;
             }
 
-            entry.SetEmpty();
+            dirEntry.SetEmpty();
             return false;
         }
 
@@ -348,12 +348,12 @@ bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
 
         if (it != this->end())
         {
-            entry = *it;
+            dirEntry = *it;
             return true;
         }
     }
 
-    entry.SetEmpty();
+    dirEntry.SetEmpty();
     return false;
 }
 
@@ -765,7 +765,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
 FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
-    FlexDirEntry de;
+    FlexDirEntry dirEntry;
     int trk;
     int sec;
     int recordNr;
@@ -782,21 +782,21 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
         throw FlexException(FERR_WILDCARD_NOT_SUPPORTED, fileName);
     }
 
-    if (!FindFile(fileName, de))
+    if (!FindFile(fileName, dirEntry))
     {
         throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
     }
 
-    buffer.SetAttributes(de.GetAttributes());
-    buffer.SetSectorMap(de.GetSectorMap());
+    buffer.SetAttributes(dirEntry.GetAttributes());
+    buffer.SetSectorMap(dirEntry.GetSectorMap());
     buffer.SetFilename(fileName);
     BTime time;
     if ((ft_access & FileTimeAccess::Get) == FileTimeAccess::Get)
     {
-        time = de.GetTime();
+        time = dirEntry.GetTime();
     }
-    buffer.SetDateTime(de.GetDate(), time);
-    size = de.GetFileSize();
+    buffer.SetDateTime(dirEntry.GetDate(), time);
+    size = dirEntry.GetFileSize();
 
     size = size * DBPS / static_cast<int>(SECTOR_SIZE);
     buffer.Realloc(size);
@@ -804,7 +804,7 @@ FlexFileBuffer FlexDisk::ReadToBuffer(const std::string &fileName)
 
     if (size > 0)
     {
-        de.GetStartTrkSec(trk, sec);
+        dirEntry.GetStartTrkSec(trk, sec);
 
         while (true)
         {
@@ -850,8 +850,6 @@ bool FlexDisk::SetAttributes(const std::string &wildcard,
         return false;
     }
 
-    FlexDirEntry de;
-
     CHECK_CONTAINER_WRITEPROTECTED;
 
     FlexDiskIterator it(wildcard);
@@ -866,7 +864,7 @@ bool FlexDisk::SetAttributes(const std::string &wildcard,
     return true;
 }
 
-bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
+bool FlexDisk::CreateDirEntry(FlexDirEntry &dirEntry)
 {
     if (!is_flex_format)
     {
@@ -909,28 +907,29 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
 
                 if ((ft_access & FileTimeAccess::Set) == FileTimeAccess::Set)
                 {
-                   time = entry.GetTime();
+                   time = dirEntry.GetTime();
                 }
-                auto records = entry.GetFileSize() / param.byte_p_sector;
+                auto records = dirEntry.GetFileSize() / param.byte_p_sector;
                 std::memset(dir_entry.filename, 0, FLEX_BASEFILENAME_LENGTH);
-                std::strncpy(dir_entry.filename, entry.GetFileName().c_str(),
+                std::strncpy(dir_entry.filename, dirEntry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
                 std::memset(dir_entry.file_ext, 0, FLEX_FILEEXT_LENGTH);
-                std::strncpy(dir_entry.file_ext, entry.GetFileExt().c_str(),
+                std::strncpy(dir_entry.file_ext, dirEntry.GetFileExt().c_str(),
                         FLEX_FILEEXT_LENGTH);
-                dir_entry.file_attr = entry.GetAttributes();
+                dir_entry.file_attr = dirEntry.GetAttributes();
                 dir_entry.hour = static_cast<Byte>(time.GetHour());
-                entry.GetStartTrkSec(tmp1, tmp2);
+                dirEntry.GetStartTrkSec(tmp1, tmp2);
                 dir_entry.start.trk = static_cast<Byte>(tmp1);
                 dir_entry.start.sec = static_cast<Byte>(tmp2);
-                entry.GetEndTrkSec(tmp1, tmp2);
+                dirEntry.GetEndTrkSec(tmp1, tmp2);
                 dir_entry.end.trk = static_cast<Byte>(tmp1);
                 dir_entry.end.sec = static_cast<Byte>(tmp2);
                 flx::setValueBigEndian<Word>(&dir_entry.records[0],
                         static_cast<Word>(records));
-                dir_entry.sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
+                dir_entry.sector_map =
+                    (dirEntry.IsRandom() ? IS_RANDOM_FILE : 0x00);
                 dir_entry.minute = static_cast<Byte>(time.GetMinute());
-                date = entry.GetDate();
+                date = dirEntry.GetDate();
                 dir_entry.day = static_cast<Byte>(date.GetDay());
                 dir_entry.month = static_cast<Byte>(date.GetMonth());
                 dir_entry.year = static_cast<Byte>(date.GetYear() % 100);
@@ -946,7 +945,8 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                 }
 
                 SetNextDirectoryPosition(next);
-                AddToFilenames(entry.GetTotalFileName(), s_dir_pos{next, idx});
+                AddToFilenames(
+                        dirEntry.GetTotalFileName(), s_dir_pos{next, idx});
 
                 return true;
             }

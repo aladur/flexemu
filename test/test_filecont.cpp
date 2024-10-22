@@ -95,66 +95,66 @@ TEST_F(test_IFlexDiskByFile, fct_FindFile)
     {
         for (auto &disk : disks[idx])
         {
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
                 continue;
             }
             std::string wildcard = "TEST01.TXT";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_EQ(entry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE);
-            EXPECT_EQ(entry.GetAttributes(), FLX_READONLY);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE);
+            EXPECT_EQ(dirEntry.GetAttributes(), FLX_READONLY);
             wildcard = "TEST10.TXT";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_EQ(entry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 10);
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 10);
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "TEST02.BIN";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_EQ(entry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 2);
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 2);
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "TEST09.BIN";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_EQ(entry.GetTotalFileName(), wildcard);
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 9);
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), wildcard);
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 9);
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "test05.bin";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_EQ(entry.GetTotalFileName(), flx::toupper(wildcard));
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 5);
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), flx::toupper(wildcard));
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 5);
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             wildcard = "";
-            EXPECT_FALSE(disk->FindFile(wildcard, entry));
-            EXPECT_TRUE(entry.IsEmpty());
+            EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_TRUE(dirEntry.IsEmpty());
             wildcard = "TEST01.BI";
-            EXPECT_FALSE(disk->FindFile(wildcard, entry));
-            EXPECT_TRUE(entry.IsEmpty());
+            EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_TRUE(dirEntry.IsEmpty());
             wildcard = "TEST*.BIN";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_THAT(entry.GetTotalFileName(), StartsWith("TEST"));
-            EXPECT_THAT(entry.GetTotalFileName(), EndsWith("BIN"));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_THAT(dirEntry.GetTotalFileName(), StartsWith("TEST"));
+            EXPECT_THAT(dirEntry.GetTotalFileName(), EndsWith("BIN"));
             wildcard = "TEST?0.BIN";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_THAT(entry.GetTotalFileName(), StartsWith("TEST"));
-            EXPECT_THAT(entry.GetTotalFileName(), EndsWith("BIN"));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_THAT(dirEntry.GetTotalFileName(), StartsWith("TEST"));
+            EXPECT_THAT(dirEntry.GetTotalFileName(), EndsWith("BIN"));
             wildcard = "*.*";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_THAT(entry.GetTotalFileName(), StartsWith("TEST"));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_THAT(dirEntry.GetTotalFileName(), StartsWith("TEST"));
             wildcard = "*";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(entry.IsEmpty());
-            EXPECT_THAT(entry.GetTotalFileName(), StartsWith("TEST"));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
+            EXPECT_THAT(dirEntry.GetTotalFileName(), StartsWith("TEST"));
         }
     }
 }
@@ -166,7 +166,7 @@ TEST_F(test_IFlexDiskByFile, fct_DeleteFile)
     {
         for (auto &disk : disks[idx])
         {
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -174,20 +174,20 @@ TEST_F(test_IFlexDiskByFile, fct_DeleteFile)
             }
 
             std::string wildcard = "TEST02.TXT";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_TRUE(disk->DeleteFile(wildcard));
-            EXPECT_FALSE(disk->FindFile(wildcard, entry));
-            EXPECT_TRUE(disk->FindFile("TEST*.TXT", entry));
+            EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_TRUE(disk->FindFile("TEST*.TXT", dirEntry));
             wildcard = "TEST?0.*";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_TRUE(disk->DeleteFile(wildcard));
-            EXPECT_FALSE(disk->FindFile(wildcard, entry));
-            EXPECT_TRUE(disk->FindFile("TEST*.*", entry));
+            EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_TRUE(disk->FindFile("TEST*.*", dirEntry));
             wildcard = "*";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_TRUE(disk->DeleteFile(wildcard));
-            EXPECT_FALSE(disk->FindFile(wildcard, entry));
-            EXPECT_FALSE(disk->FindFile("TEST*.*", entry));
+            EXPECT_FALSE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_FALSE(disk->FindFile("TEST*.*", dirEntry));
         }
     }
 }
@@ -199,7 +199,7 @@ TEST_F(test_IFlexDiskByFile, fct_RenameFile)
     {
         for (auto &disk : disks[idx])
         {
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -207,19 +207,19 @@ TEST_F(test_IFlexDiskByFile, fct_RenameFile)
             }
 
             std::string filename = "TEST01.TXT";
-            EXPECT_TRUE(disk->FindFile(filename, entry));
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             EXPECT_TRUE(disk->RenameFile(filename, "TEST99.TXT"));
-            EXPECT_FALSE(disk->FindFile(filename, entry));
-            EXPECT_TRUE(disk->FindFile("TEST99.TXT", entry));
+            EXPECT_FALSE(disk->FindFile(filename, dirEntry));
+            EXPECT_TRUE(disk->FindFile("TEST99.TXT", dirEntry));
             filename = "test10.txt";
             std::string newname = "test90.txt";
-            EXPECT_TRUE(disk->FindFile(filename, entry));
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             EXPECT_TRUE(disk->RenameFile(filename, newname));
-            EXPECT_FALSE(disk->FindFile(filename, entry));
-            EXPECT_TRUE(disk->FindFile(newname, entry));
+            EXPECT_FALSE(disk->FindFile(filename, dirEntry));
+            EXPECT_TRUE(disk->FindFile(newname, dirEntry));
             filename = "TEST05.BIN";
             EXPECT_FALSE(disk->RenameFile(filename, filename));
-            EXPECT_TRUE(disk->FindFile(filename, entry));
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             newname = flx::toupper(newname);
             EXPECT_THAT([&](){ disk->RenameFile("TEST02.TXT", newname); },
                     testing::Throws<FlexException>());
@@ -250,7 +250,7 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
     {
         for (auto &disk : disks[idx])
         {
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -258,14 +258,14 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
             }
 
             std::string filename = "TEST02.TXT";
-            EXPECT_TRUE(disk->FindFile(filename, entry));
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             EXPECT_TRUE(disk->SetAttributes(filename, FLX_READONLY, 0));
-            EXPECT_TRUE(disk->FindFile(filename, entry));
-            EXPECT_EQ(entry.GetAttributes(), FLX_READONLY);
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
+            EXPECT_EQ(dirEntry.GetAttributes(), FLX_READONLY);
             EXPECT_TRUE(disk->SetAttributes(filename, 0, FLX_READONLY));
-            EXPECT_TRUE(disk->FindFile(filename, entry));
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
 
             filename = "*.BIN";
             const std::vector<const char *> filenames{
@@ -275,20 +275,20 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
             };
             for (const auto &testfile : filenames)
             {
-                EXPECT_TRUE(disk->FindFile(testfile, entry));
-                EXPECT_EQ(entry.GetAttributes(), 0);
+                EXPECT_TRUE(disk->FindFile(testfile, dirEntry));
+                EXPECT_EQ(dirEntry.GetAttributes(), 0);
             }
             EXPECT_TRUE(disk->SetAttributes(filename, FLX_READONLY, 0));
             for (const auto &testfile : filenames)
             {
-                EXPECT_TRUE(disk->FindFile(testfile, entry));
-                EXPECT_EQ(entry.GetAttributes(), FLX_READONLY);
+                EXPECT_TRUE(disk->FindFile(testfile, dirEntry));
+                EXPECT_EQ(dirEntry.GetAttributes(), FLX_READONLY);
             }
             EXPECT_TRUE(disk->SetAttributes(filename, 0, FLX_READONLY));
             for (const auto &testfile : filenames)
             {
-                EXPECT_TRUE(disk->FindFile(testfile, entry));
-                EXPECT_EQ(entry.GetAttributes(), 0);
+                EXPECT_TRUE(disk->FindFile(testfile, dirEntry));
+                EXPECT_EQ(dirEntry.GetAttributes(), 0);
             }
 
             if (disk->GetPath() == diskPaths[RW][DSK])
@@ -297,12 +297,12 @@ TEST_F(test_IFlexDiskByFile, fct_SetAttributes)
                 // with FlexDiskByFile (but not FlexDirectoryByFile).
                 EXPECT_TRUE(disk->SetAttributes(filename,
                             FLX_NODELETE | FLX_NOCAT, FLX_READONLY));
-                EXPECT_TRUE(disk->FindFile(filename, entry));
-                EXPECT_EQ(entry.GetAttributes(), FLX_NODELETE | FLX_NOCAT);
+                EXPECT_TRUE(disk->FindFile(filename, dirEntry));
+                EXPECT_EQ(dirEntry.GetAttributes(), FLX_NODELETE | FLX_NOCAT);
                 EXPECT_TRUE(disk->SetAttributes(filename, FLX_NOREAD,
                             FLX_NODELETE | FLX_NOCAT));
-                EXPECT_TRUE(disk->FindFile(filename, entry));
-                EXPECT_EQ(entry.GetAttributes(), FLX_NOREAD);
+                EXPECT_TRUE(disk->FindFile(filename, dirEntry));
+                EXPECT_EQ(dirEntry.GetAttributes(), FLX_NOREAD);
             }
         }
     }
@@ -382,17 +382,17 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
     for (auto &disk : disks[FT])
     {
         FlexFileBuffer buffer;
-        FlexDirEntry entry;
+        FlexDirEntry dirEntry;
 
         ASSERT_TRUE(buffer.ReadFromFile(path, ft));
         ASSERT_TRUE(disk->WriteFromBuffer(buffer));
-        ASSERT_TRUE(disk->FindFile(filename, entry));
-        EXPECT_FALSE(entry.IsEmpty());
+        ASSERT_TRUE(disk->FindFile(filename, dirEntry));
+        EXPECT_FALSE(dirEntry.IsEmpty());
         filename = flx::toupper(filename);
-        EXPECT_EQ(entry.GetTotalFileName(), filename);
-        EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 22);
-        EXPECT_EQ(entry.GetDate(), BDate(11, 8, 2024));
-        EXPECT_EQ(entry.GetTime(), BTime(22, 1));
+        EXPECT_EQ(dirEntry.GetTotalFileName(), filename);
+        EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 22);
+        EXPECT_EQ(dirEntry.GetDate(), BDate(11, 8, 2024));
+        EXPECT_EQ(dirEntry.GetTime(), BTime(22, 1));
     }
 
     const std::vector<int> indices{RW, RAM};
@@ -401,7 +401,7 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
         for (auto &disk : disks[idx])
         {
             FlexFileBuffer buffer;
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -410,13 +410,13 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
 
             ASSERT_TRUE(buffer.ReadFromFile(path, ft));
             ASSERT_TRUE(disk->WriteFromBuffer(buffer));
-            ASSERT_TRUE(disk->FindFile(filename, entry));
-            EXPECT_FALSE(entry.IsEmpty());
+            ASSERT_TRUE(disk->FindFile(filename, dirEntry));
+            EXPECT_FALSE(dirEntry.IsEmpty());
             filename = flx::toupper(filename);
-            EXPECT_EQ(entry.GetTotalFileName(), filename);
-            EXPECT_EQ(entry.GetFileSize(), SECTOR_SIZE * 22);
-            EXPECT_EQ(entry.GetDate(), BDate(11, 8, 2024));
-            EXPECT_EQ(entry.GetTime(), BTime());
+            EXPECT_EQ(dirEntry.GetTotalFileName(), filename);
+            EXPECT_EQ(dirEntry.GetFileSize(), SECTOR_SIZE * 22);
+            EXPECT_EQ(dirEntry.GetDate(), BDate(11, 8, 2024));
+            EXPECT_EQ(dirEntry.GetTime(), BTime());
         }
     }
 
@@ -426,7 +426,7 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
         for (auto &disk : disks[idx])
         {
             FlexFileBuffer buffer;
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -436,8 +436,8 @@ TEST_F(test_IFlexDiskByFile, fct_WriteFromBuffer)
             ASSERT_TRUE(buffer.ReadFromFile(path, ft));
             EXPECT_THAT([&](){ disk->WriteFromBuffer(buffer); },
                     testing::Throws<FlexException>());
-            ASSERT_FALSE(disk->FindFile(filename, entry));
-            EXPECT_TRUE(entry.IsEmpty());
+            ASSERT_FALSE(disk->FindFile(filename, dirEntry));
+            EXPECT_TRUE(dirEntry.IsEmpty());
         }
     }
 
@@ -579,7 +579,7 @@ TEST_F(test_IFlexDiskByFile, fcts_ReadOnly)
     {
         for (auto &disk : disks[idx])
         {
-            FlexDirEntry entry;
+            FlexDirEntry dirEntry;
 
             if (!disk)
             {
@@ -587,23 +587,23 @@ TEST_F(test_IFlexDiskByFile, fcts_ReadOnly)
             }
 
             std::string wildcard = "TEST*.BIN";
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             EXPECT_THAT([&](){ disk->DeleteFile(wildcard); },
                     testing::Throws<FlexException>());
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
             std::string filename = "TEST02.TXT";
-            EXPECT_TRUE(disk->FindFile(filename, entry));
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             EXPECT_THAT([&](){ disk->RenameFile(filename, "TEST90.BIN"); },
                     testing::Throws<FlexException>());
-            EXPECT_TRUE(disk->FindFile(filename, entry));
+            EXPECT_TRUE(disk->FindFile(filename, dirEntry));
             filename = "TEST03.TXT";
             auto attr = FLX_READONLY;
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
             EXPECT_THAT([&](){ disk->SetAttributes(filename, attr, 0); },
                     testing::Throws<FlexException>());
-            EXPECT_TRUE(disk->FindFile(wildcard, entry));
-            EXPECT_EQ(entry.GetAttributes(), 0);
+            EXPECT_TRUE(disk->FindFile(wildcard, dirEntry));
+            EXPECT_EQ(dirEntry.GetAttributes(), 0);
         }
     }
 }

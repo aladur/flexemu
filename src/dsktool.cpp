@@ -177,14 +177,14 @@ static int ExtractDskFile(const std::string &target_dir, bool verbose,
 
         try
         {
-            FlexDirEntry dir_entry;
+            FlexDirEntry dirEntry;
 
-            if (dest.FindFile(filename, dir_entry))
+            if (dest.FindFile(filename, dirEntry))
             {
                 auto question = filename + " already exists. Overwrite?";
                 if (flx::askForInput(question, "yn", default_answer))
                 {
-                    dest.DeleteFile(dir_entry.GetTotalFileName());
+                    dest.DeleteFile(dirEntry.GetTotalFileName());
                 }
                 else
                 {
@@ -199,10 +199,10 @@ static int ExtractDskFile(const std::string &target_dir, bool verbose,
             isText = src.FileCopy(filename, filename, dest);
 
             ++count;
-            if (src.FindFile(filename, dir_entry))
+            if (src.FindFile(filename, dirEntry))
             {
-                byte_size += dir_entry.GetFileSize();
-                random_count += dir_entry.IsRandom() ? 1 : 0;
+                byte_size += dirEntry.GetFileSize();
+                random_count += dirEntry.IsRandom() ? 1 : 0;
             }
         }
         catch (FlexException &ex)
@@ -337,37 +337,37 @@ static int ListDirectoryOfDskFile(const std::string &dsk_file,
 
     for (const auto &filename : matchedFilenames)
     {
-        FlexDirEntry dir_entry;
+        FlexDirEntry dirEntry;
         int startTrack;
         int startSector;
         int endTrack;
         int endSector;
 
-        if (!src.FindFile(filename, dir_entry))
+        if (!src.FindFile(filename, dirEntry))
         {
             continue;
         }
         ++number;
-        dir_entry.GetStartTrkSec(startTrack, startSector);
-        dir_entry.GetEndTrkSec(endTrack, endSector);
+        dirEntry.GetStartTrkSec(startTrack, startSector);
+        dirEntry.GetEndTrkSec(endTrack, endSector);
 
-        int sectors = static_cast<int>(dir_entry.GetFileSize() / SECTOR_SIZE);
+        int sectors = static_cast<int>(dirEntry.GetFileSize() / SECTOR_SIZE);
         sumSectors += sectors;
         largest = std::max(sectors, largest);
 
         std::cout << fmt::format(
                   "{:5}  {:<8}.{:<3}  {:02X}-{:02X}  {:02X}-{:02X} {:5}  {:11} ",
-                    number, dir_entry.GetFileName(),
-                    dir_entry.GetFileExt(), startTrack, startSector,
+                    number, dirEntry.GetFileName(),
+                    dirEntry.GetFileExt(), startTrack, startSector,
                     endTrack, endSector, sectors,
-                    dir_entry.GetDate().GetDateString(format));
+                    dirEntry.GetDate().GetDateString(format));
         if ((fileTimeAccess & FileTimeAccess::Get) == FileTimeAccess::Get)
         {
             std::cout <<
-                dir_entry.GetTime().AsString(BTime::Format::HHMM) << " ";
+                dirEntry.GetTime().AsString(BTime::Format::HHMM) << " ";
         }
-        std::cout << fmt::format("{:<4} {}\n", dir_entry.GetAttributesString(),
-                     (dir_entry.IsRandom() ? "R" : ""));
+        std::cout << fmt::format("{:<4} {}\n", dirEntry.GetAttributesString(),
+                     (dirEntry.IsRandom() ? "R" : ""));
     }
 
     if (hasAttributes)
@@ -532,16 +532,16 @@ static int InjectToDskFile(const std::string &dsk_file, bool verbose,
 
         try
         {
-            FlexDirEntry dir_entry;
+            FlexDirEntry dirEntry;
 
-            if (dst.FindFile(fileBuffer.GetFilename(), dir_entry))
+            if (dst.FindFile(fileBuffer.GetFilename(), dirEntry))
             {
                 std::string question(fileBuffer.GetFilename());
 
                 question += " already exists. Overwrite?";
                 if (flx::askForInput(question, "yn", default_answer))
                 {
-                    dst.DeleteFile(dir_entry.GetTotalFileName());
+                    dst.DeleteFile(dirEntry.GetTotalFileName());
                 }
                 else
                 {
@@ -600,9 +600,9 @@ static int DeleteFromDskFile(const std::string &dsk_file, bool verbose,
 
         try
         {
-            FlexDirEntry dir_entry;
+            FlexDirEntry dirEntry;
 
-            if (src.FindFile(flex_file, dir_entry))
+            if (src.FindFile(flex_file, dirEntry))
             {
                 std::stringstream question;
 
@@ -735,9 +735,9 @@ static int CopyFromToDskFile(const std::string &src_dsk_file,
 
         try
         {
-            FlexDirEntry dir_entry;
+            FlexDirEntry dirEntry;
 
-            if (dst.FindFile(filename, dir_entry))
+            if (dst.FindFile(filename, dirEntry))
             {
                 std::string question(filename);
 
@@ -759,10 +759,10 @@ static int CopyFromToDskFile(const std::string &src_dsk_file,
             src.FileCopy(filename, filename, dst);
 
             ++count;
-            if (src.FindFile(filename, dir_entry))
+            if (src.FindFile(filename, dirEntry))
             {
-                byte_size += dir_entry.GetFileSize();
-                random_count += dir_entry.IsRandom() ? 1 : 0;
+                byte_size += dirEntry.GetFileSize();
+                random_count += dirEntry.IsRandom() ? 1 : 0;
             }
         }
         catch (FlexException &ex)

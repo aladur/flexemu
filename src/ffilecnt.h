@@ -135,7 +135,7 @@ public:
     {
         return nullptr;
     };
-    bool FindFile(const std::string &wildcard, FlexDirEntry &entry) override;
+    bool FindFile(const std::string &wildcard, FlexDirEntry &dirEntry) override;
     bool DeleteFile(const std::string &wildcard) override;
     bool RenameFile(const std::string &oldName,
                     const std::string &newName) override;
@@ -151,7 +151,7 @@ public:
 protected:
     int ByteOffset(int trk, int sec, int side) const;
     void EvaluateTrack0SectorCount();
-    bool CreateDirEntry(FlexDirEntry &entry);
+    bool CreateDirEntry(FlexDirEntry &dirEntry);
 
     void Initialize_for_flx_format(const s_flex_header &header);
     void Initialize_for_dsk_format(const s_formats &format);
