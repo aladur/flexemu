@@ -333,7 +333,7 @@ bool FlexDisk::FindFile(const std::string &wildcard, FlexDirEntry &entry)
                     throw FlexException(FERR_READING_TRKSEC,
                                       stream.str(), GetPath());
                 }
-                auto &dir_entry = sectorBuffer.dir_entries[dir_pos.idx];
+                const auto &dir_entry = sectorBuffer.dir_entries[dir_pos.idx];
                 entry = CreateDirEntryFrom(dir_entry, wildcard);
                 return true;
             }
@@ -874,7 +874,6 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
     }
 
     s_dir_sector dir_sector{};
-    s_dir_entry *pde;
     st_t next(next_dir_trk_sec);
     int tmp1;
     int tmp2;
@@ -901,9 +900,10 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
         for (Byte idx = 0U; idx < DIRENTRIES; ++idx)
         {
             // look for the next free directory entry
-            pde = &dir_sector.dir_entries[idx];
+            auto &dir_entry = dir_sector.dir_entries[idx];
 
-            if (pde->filename[0] == DE_EMPTY || pde->filename[0] == DE_DELETED)
+            if (dir_entry.filename[0] == DE_EMPTY ||
+                dir_entry.filename[0] == DE_DELETED)
             {
                 BTime time;
 
@@ -912,28 +912,28 @@ bool FlexDisk::CreateDirEntry(FlexDirEntry &entry)
                    time = entry.GetTime();
                 }
                 auto records = entry.GetFileSize() / param.byte_p_sector;
-                std::memset(pde->filename, 0, FLEX_BASEFILENAME_LENGTH);
-                std::strncpy(pde->filename, entry.GetFileName().c_str(),
+                std::memset(dir_entry.filename, 0, FLEX_BASEFILENAME_LENGTH);
+                std::strncpy(dir_entry.filename, entry.GetFileName().c_str(),
                         FLEX_BASEFILENAME_LENGTH);
-                std::memset(pde->file_ext, 0, FLEX_FILEEXT_LENGTH);
-                std::strncpy(pde->file_ext, entry.GetFileExt().c_str(),
+                std::memset(dir_entry.file_ext, 0, FLEX_FILEEXT_LENGTH);
+                std::strncpy(dir_entry.file_ext, entry.GetFileExt().c_str(),
                         FLEX_FILEEXT_LENGTH);
-                pde->file_attr = entry.GetAttributes();
-                pde->hour = static_cast<Byte>(time.GetHour());
+                dir_entry.file_attr = entry.GetAttributes();
+                dir_entry.hour = static_cast<Byte>(time.GetHour());
                 entry.GetStartTrkSec(tmp1, tmp2);
-                pde->start.trk = static_cast<Byte>(tmp1);
-                pde->start.sec = static_cast<Byte>(tmp2);
+                dir_entry.start.trk = static_cast<Byte>(tmp1);
+                dir_entry.start.sec = static_cast<Byte>(tmp2);
                 entry.GetEndTrkSec(tmp1, tmp2);
-                pde->end.trk = static_cast<Byte>(tmp1);
-                pde->end.sec = static_cast<Byte>(tmp2);
-                flx::setValueBigEndian<Word>(&pde->records[0],
+                dir_entry.end.trk = static_cast<Byte>(tmp1);
+                dir_entry.end.sec = static_cast<Byte>(tmp2);
+                flx::setValueBigEndian<Word>(&dir_entry.records[0],
                         static_cast<Word>(records));
-                pde->sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
-                pde->minute = static_cast<Byte>(time.GetMinute());
+                dir_entry.sector_map = (entry.IsRandom() ? IS_RANDOM_FILE : 0x00);
+                dir_entry.minute = static_cast<Byte>(time.GetMinute());
                 date = entry.GetDate();
-                pde->day = static_cast<Byte>(date.GetDay());
-                pde->month = static_cast<Byte>(date.GetMonth());
-                pde->year = static_cast<Byte>(date.GetYear() % 100);
+                dir_entry.day = static_cast<Byte>(date.GetDay());
+                dir_entry.month = static_cast<Byte>(date.GetMonth());
+                dir_entry.year = static_cast<Byte>(date.GetYear() % 100);
 
                 if (!WriteSector(reinterpret_cast<const Byte *>(&dir_sector),
                                  next.trk, next.sec))
@@ -1859,17 +1859,17 @@ void FlexDisk::InitializeFilenames()
                         GetPath());
             }
 
-            for (const auto &dirEntry : sectorBuffer.dir_entries)
+            for (const auto &dir_entry : sectorBuffer.dir_entries)
             {
-                if (dirEntry.filename[0] == DE_EMPTY)
+                if (dir_entry.filename[0] == DE_EMPTY)
                 {
                     break;
                 }
 
-                if (dirEntry.filename[0] != DE_DELETED)
+                if (dir_entry.filename[0] != DE_DELETED)
                 {
-                    auto filename(flx::getstr<>(dirEntry.filename));
-                    auto fileExtension(flx::getstr<>(dirEntry.file_ext));
+                    auto filename(flx::getstr<>(dir_entry.filename));
+                    auto fileExtension(flx::getstr<>(dir_entry.file_ext));
 
                     filenames.emplace(
                                 flx::tolower(filename += '.' + fileExtension),

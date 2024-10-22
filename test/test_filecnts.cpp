@@ -162,12 +162,12 @@ TEST_F(test_IFlexDiskBySector, fct_ReadSector_content)
                 EXPECT_TRUE(disk->ReadSector(
                             reinterpret_cast<Byte *>(&dirSector), 0, didx))
                         << "path=" << disk->GetPath();
-                for (const auto &de : dirSector.dir_entries)
+                for (const auto &dir_entry : dirSector.dir_entries)
                 {
-                    auto filestem = flx::getstr<>(de.filename);
+                    auto filestem = flx::getstr<>(dir_entry.filename);
                     EXPECT_THAT(filestem, StartsWith("TEST"))
                         << "path=" << disk->GetPath();
-                    auto fileext = flx::getstr<>(de.file_ext);
+                    auto fileext = flx::getstr<>(dir_entry.file_ext);
                     EXPECT_TRUE(fileext == "BIN" || fileext == "TXT");
                 }
             }

@@ -75,25 +75,25 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
             }
         }
 
-        s_dir_entry *pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
+        const auto &dir_entry = dirSector.dir_entries[dirIndex % DIRENTRIES];
 
         // an empty entry aborts the search
-        if (pd->filename[0] == DE_EMPTY)
+        if (dir_entry.filename[0] == DE_EMPTY)
         {
             return false;
         }
 
         // look for the next used directory entry
-        if (pd->filename[0] != DE_DELETED)
+        if (dir_entry.filename[0] != DE_DELETED)
         {
             // ok, found a valid directory entry
-            std::string fileName(flx::getstr<>(pd->filename));
-            std::string fileExtension(flx::getstr<>(pd->file_ext));
+            std::string fileName(flx::getstr<>(dir_entry.filename));
+            std::string fileExtension(flx::getstr<>(dir_entry.file_ext));
             fileName += '.' + fileExtension;
 
             if (flx::multimatches(fileName, wildcard, ';', true))
             {
-                dirEntry = FlexDisk::CreateDirEntryFrom(*pd, fileName);
+                dirEntry = FlexDisk::CreateDirEntryFrom(dir_entry, fileName);
             }
         }
     }
@@ -106,11 +106,6 @@ bool FlexDiskIteratorImp::NextDirEntry(const std::string &wildcard)
 // Only valid if the iterator has a valid directory entry
 bool FlexDiskIteratorImp::DeleteCurrent()
 {
-    st_t start;
-    st_t end;
-    st_t fc_end;
-    s_dir_entry *pd;
-
     if (base == nullptr)
     {
         return false;
@@ -128,13 +123,13 @@ bool FlexDiskIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
-    start = pd->start;
-    end = pd->end;
-    auto records = flx::getValueBigEndian<Word>(&pd->records[0]);
+    auto &dir_entry = dirSector.dir_entries[dirIndex % DIRENTRIES];
+    auto start = dir_entry.start;
+    auto end = dir_entry.end;
+    auto records = flx::getValueBigEndian<Word>(&dir_entry.records[0]);
 
     // deleted file is signed by 0xFF as first byte of filename
-    pd->filename[0] = DE_DELETED;
+    dir_entry.filename[0] = DE_DELETED;
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
@@ -163,7 +158,7 @@ bool FlexDiskIteratorImp::DeleteCurrent()
                             base->GetPath());
     }
 
-    fc_end = sis.sir.fc_end;
+    auto fc_end = sis.sir.fc_end;
 
     if (fc_end.sec != 0 || fc_end.trk != 0)
     {
@@ -249,7 +244,6 @@ bool FlexDiskIteratorImp::DeleteCurrent()
 // Only valid if the iterator has a valid directory entry
 bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
 {
-    s_dir_entry *pd;
     std::string name;
     std::string ext;
 
@@ -270,7 +264,8 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
+    const auto idx = static_cast<Byte>(dirIndex % DIRENTRIES);
+    auto &dir_entry = dirSector.dir_entries[idx];
 
     std::string totalName(newName);
 
@@ -304,10 +299,10 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
     }
 
     /* update directory entry */
-    std::memset(&pd->filename[0], 0, FLEX_BASEFILENAME_LENGTH);
-    strncpy(&pd->filename[0], name.c_str(), FLEX_BASEFILENAME_LENGTH);
-    std::memset(&pd->file_ext[0], 0, FLEX_FILEEXT_LENGTH);
-    strncpy(&pd->file_ext[0], ext.c_str(), FLEX_FILEEXT_LENGTH);
+    std::memset(dir_entry.filename, 0, FLEX_BASEFILENAME_LENGTH);
+    strncpy(dir_entry.filename, name.c_str(), FLEX_BASEFILENAME_LENGTH);
+    std::memset(dir_entry.file_ext, 0, FLEX_FILEEXT_LENGTH);
+    strncpy(dir_entry.file_ext, ext.c_str(), FLEX_FILEEXT_LENGTH);
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
@@ -320,7 +315,6 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
                             base->GetPath());
     }
     base->DeleteFromFilenames(dirEntry.GetTotalFileName());
-    const auto idx = static_cast<Byte>(dirIndex % DIRENTRIES);
     base->AddToFilenames(newName, FlexDisk::s_dir_pos{dirTrackSector, idx});
 
     return true;
@@ -331,8 +325,6 @@ bool FlexDiskIteratorImp::RenameCurrent(const std::string &newName)
 // Only valid if the iterator has a valid directory entry
 bool FlexDiskIteratorImp::SetDateCurrent(const BDate &date)
 {
-    s_dir_entry *pd;
-
     if (base == nullptr)
     {
         return false;
@@ -350,10 +342,10 @@ bool FlexDiskIteratorImp::SetDateCurrent(const BDate &date)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
-    pd->day = static_cast<Byte>(date.GetDay());
-    pd->month = static_cast<Byte>(date.GetMonth());
-    pd->year = static_cast<Byte>(date.GetYear() % 100);
+    auto &dir_entry = dirSector.dir_entries[dirIndex % DIRENTRIES];
+    dir_entry.day = static_cast<Byte>(date.GetDay());
+    dir_entry.month = static_cast<Byte>(date.GetMonth());
+    dir_entry.year = static_cast<Byte>(date.GetYear() % 100);
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))
@@ -374,8 +366,6 @@ bool FlexDiskIteratorImp::SetDateCurrent(const BDate &date)
 // Only valid if the iterator has a valid directory entry
 bool FlexDiskIteratorImp::SetAttributesCurrent(Byte attributes)
 {
-    s_dir_entry *pd;
-
     if (base == nullptr)
     {
         return false;
@@ -393,8 +383,7 @@ bool FlexDiskIteratorImp::SetAttributesCurrent(Byte attributes)
                             base->GetPath());
     }
 
-    pd = &dirSector.dir_entries[dirIndex % DIRENTRIES];
-    pd->file_attr = attributes;
+    dirSector.dir_entries[dirIndex % DIRENTRIES].file_attr = attributes;
 
     if (!base->WriteSector(reinterpret_cast<const Byte *>(&dirSector),
                            dirTrackSector.trk, dirTrackSector.sec))

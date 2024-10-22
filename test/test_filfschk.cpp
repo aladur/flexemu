@@ -110,14 +110,14 @@ TEST_F(test_filfschk, check_ValidDisk)
 TEST_F(test_filfschk, check_NullFile)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[1];
+        auto &dir_entry = dirSector.dir_entries[1];
         // Manipulate directory by adding a null file entry without 00-00
         // start/end track/sector.
-        dirEntry->filename[0] = 'F';
-        dirEntry->file_ext[0] = 'E';
-        dirEntry->month = 11;
-        dirEntry->day = 5;
-        dirEntry->year = 80;
+        dir_entry.filename[0] = 'F';
+        dir_entry.file_ext[0] = 'E';
+        dir_entry.month = 11;
+        dir_entry.day = 5;
+        dir_entry.year = 80;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -133,17 +133,17 @@ TEST_F(test_filfschk, check_NullFile)
 TEST_F(test_filfschk, check_BadStart1)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[1];
+        auto &dir_entry = dirSector.dir_entries[1];
         // Manipulate directory by adding a second directory entry which
         // end link points to a sector of the first directory entry.
         // Set a valid date to avoid more findings.
-        dirEntry->start = st_t{0, 1};
-        dirEntry->end = st_t{1, 3};
-        dirEntry->filename[0] = 'F';
-        dirEntry->file_ext[0] = 'E';
-        dirEntry->month = 11;
-        dirEntry->day = 5;
-        dirEntry->year = 80;
+        dir_entry.start = st_t{0, 1};
+        dir_entry.end = st_t{1, 3};
+        dir_entry.filename[0] = 'F';
+        dir_entry.file_ext[0] = 'E';
+        dir_entry.month = 11;
+        dir_entry.day = 5;
+        dir_entry.year = 80;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -160,9 +160,9 @@ TEST_F(test_filfschk, check_BadStart1)
 TEST_F(test_filfschk, check_BadStart2)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[0];
+        auto &dir_entry = dirSector.dir_entries[0];
         // Manipulate start link of first file to 00-00.
-        dirEntry->start = st_t{};
+        dir_entry.start = st_t{};
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -179,16 +179,16 @@ TEST_F(test_filfschk, check_BadStart2)
 TEST_F(test_filfschk, check_BadEnd1)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[1];
+        auto &dir_entry = dirSector.dir_entries[1];
         // Manipulate directory to add a second file which end link points to
         // an invalid sector. Set a valid date to avoid more findings.
-        dirEntry->start = st_t{1, 1};
-        dirEntry->end = st_t{0, 1};
-        dirEntry->filename[0] = 'F';
-        dirEntry->file_ext[0] = 'E';
-        dirEntry->month = 11;
-        dirEntry->day = 5;
-        dirEntry->year = 80;
+        dir_entry.start = st_t{1, 1};
+        dir_entry.end = st_t{0, 1};
+        dir_entry.filename[0] = 'F';
+        dir_entry.file_ext[0] = 'E';
+        dir_entry.month = 11;
+        dir_entry.day = 5;
+        dir_entry.year = 80;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -277,9 +277,9 @@ TEST_F(test_filfschk, check_LinkAfterEnd)
 TEST_F(test_filfschk, check_InconsistentRecordSize)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[0];
+        auto &dir_entry = dirSector.dir_entries[0];
         // Manipulate file size.
-        dirEntry->records[1] = 4;
+        dir_entry.records[1] = 4;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -352,9 +352,9 @@ TEST_F(test_filfschk, check_HasCycles)
         sectorBuffer[1] = 1;
     });
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[0];
+        auto &dir_entry = dirSector.dir_entries[0];
         // Manipulate file size to avoid more findings.
-        dirEntry->records[1] = 2;
+        dir_entry.records[1] = 2;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -394,11 +394,11 @@ TEST_F(test_filfschk, check_BadLink)
 TEST_F(test_filfschk, check_BadFileDate)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[0];
+        auto &dir_entry = dirSector.dir_entries[0];
         // Manipulate directory by setting a bad date for the first file.
-        dirEntry->month = 13;
-        dirEntry->day = 5;
-        dirEntry->year = 80;
+        dir_entry.month = 13;
+        dir_entry.day = 5;
+        dir_entry.year = 80;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::NONE);
     EXPECT_FALSE(checker.CheckFileSystem());
@@ -437,10 +437,10 @@ TEST_F(test_filfschk, check_BadDiskDate)
 TEST_F(test_filfschk, check_BadFileTime)
 {
     ModifyDirSector([](s_dir_sector &dirSector){
-        auto *dirEntry = &dirSector.dir_entries[0];
+        auto &dir_entry = dirSector.dir_entries[0];
         // Manipulate directory by setting a bad time for the first file.
-        dirEntry->hour = 14;
-        dirEntry->minute = 60;
+        dir_entry.hour = 14;
+        dir_entry.minute = 60;
     });
     auto checker = FlexDiskCheck(*disk, FileTimeAccess::Set);
     EXPECT_FALSE(checker.CheckFileSystem());
