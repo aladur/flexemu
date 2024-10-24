@@ -376,7 +376,10 @@ QVector<int>::size_type FlexplorerMdiChild::ExtractSelected(
                 }
             }
 
-            auto targetFilename = filename.toLower();
+            auto targetFilename = filename;
+#ifdef UNIX
+            targetFilename = targetFilename.toLower();
+#endif
             auto targetPath = targetDirectory + PATHSEPARATORSTRING +
                               targetFilename;
 
