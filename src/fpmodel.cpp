@@ -888,6 +888,7 @@ QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
     QString htmlString;
     QTextStream stream(&htmlString, QIODevice::ReadOnly);
 
+    htmlString.reserve(400 + (100 * indexList.size()));
     stream <<
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n" <<
         "<html>\n" <<
@@ -960,6 +961,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
         fieldWidthFct = [&](int col){
             stream.setFieldWidth(widths[col - 1]);
         };
+        textString.reserve(74 * indexList.size());
     }
     else if (mimeType == "text/csv")
     {
@@ -969,6 +971,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
                 stream << ",";
             }
         };
+        textString.reserve(50 * indexList.size());
     }
     else
     {
