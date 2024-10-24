@@ -605,7 +605,7 @@ bool FlexFileBuffer::WriteToFile(const std::string &path,
 }
 
 bool FlexFileBuffer::ReadFromFile(const std::string &path,
-        FileTimeAccess fileTimeAccess)
+        FileTimeAccess fileTimeAccess, bool doRandomCheck)
 {
     struct stat sbuf{};
 
@@ -633,12 +633,15 @@ bool FlexFileBuffer::ReadFromFile(const std::string &path,
                 SetAttributes(0);
                 SetSectorMap(0);
 
-                RandomFileCheck randomFileCheck(directory);
-
-                randomFileCheck.CheckAllFilesAttributeAndUpdate();
-                if (randomFileCheck.CheckForRandom(filename))
+                if (doRandomCheck)
                 {
-                    SetSectorMap(IS_RANDOM_FILE);
+                    RandomFileCheck randomFileCheck(directory);
+
+                    randomFileCheck.CheckAllFilesAttributeAndUpdate();
+                    if (randomFileCheck.CheckForRandom(filename))
+                    {
+                        SetSectorMap(IS_RANDOM_FILE);
+                    }
                 }
 
                 if(access(path.c_str(), W_OK))

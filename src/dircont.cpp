@@ -355,7 +355,6 @@ unsigned FlexDirectoryDiskByFile::GetFlexDiskType() const
 FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName)
 {
     FlexFileBuffer buffer;
-    struct stat sbuf{};
     auto filePath(flx::tolower(fileName));
 
     if (fileName.find_first_of("*?[]") != std::string::npos)
@@ -364,15 +363,14 @@ FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName
     }
 
     filePath = directory + PATHSEPARATORSTRING + filePath;
-
-    if (stat(filePath.c_str(), &sbuf) != 0)
-    {
-        throw FlexException(FERR_UNABLE_TO_OPEN, fileName);
-    }
-
-    if (!buffer.ReadFromFile(filePath, ft_access))
+    if (!buffer.ReadFromFile(filePath, ft_access, false))
     {
         throw FlexException(FERR_READING_FROM, fileName);
+    }
+
+    if (randomFileCheck.IsRandomFile(fileName))
+    {
+        buffer.SetSectorMap(IS_RANDOM_FILE);
     }
 
     return buffer;
