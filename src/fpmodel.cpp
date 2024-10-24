@@ -886,7 +886,7 @@ QString FlexplorerTableModel::AsHtml(const QModelIndexList &indexList) const
 {
     int column;
     QString htmlString;
-    QTextStream stream(&htmlString, QIODevice::ReadOnly);
+    QTextStream stream(&htmlString, QIODevice::WriteOnly | QIODevice::Text);
 
     htmlString.reserve(400 + (100 * indexList.size()));
     stream <<
@@ -949,7 +949,7 @@ QString FlexplorerTableModel::AsText(const QModelIndexList &indexList,
 
     int column;
     QString textString;
-    QTextStream stream(&textString, QIODevice::ReadOnly);
+    QTextStream stream(&textString, QIODevice::WriteOnly | QIODevice::Text);
     std::function<void(int)> fieldWidthFct = [](int){ };
     std::function<void(int)> separatorFct = [](int){ };
 
