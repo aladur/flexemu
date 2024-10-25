@@ -1751,7 +1751,7 @@ std::vector<Byte> FlexDisk::GetJvcFileHeader() const
 
     if (headerSize > MAX_JVC_HEADERSIZE)
     {
-        throw FlexException(FERR_INVALID_FORMAT, path);
+        throw FlexException(FERR_IS_NO_FILECONTAINER, path);
     }
 
     if (!headerSize)

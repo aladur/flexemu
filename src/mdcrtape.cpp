@@ -62,7 +62,7 @@ MiniDcrTape::MiniDcrTape(const std::string &path, Mode mode) :
 
             if (!VerifyTape())
             {
-                throw FlexException(FERR_INVALID_FORMAT, path);
+                throw FlexException(FERR_IS_NO_MDCRFORMAT, path);
             }
             break;
 
