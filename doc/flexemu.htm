@@ -1194,6 +1194,86 @@ any hex code.
 <kbd>Ctrl</kbd>+<kbd>Delete</kbd> key emits key code <code>1F</code>.
 </div>
 
+<h2 id="monitor">MONITOR PROGRAM</h2>
+The monitor program provides basic I/O functions to the operating system.
+It is comparable to the BIOS on a PC.
+<p>
+But in addition it provides a simple user interface to display or change
+memory contents or boot FLEX operating system. From within FLEX the monitor
+program can be entered by entering MON on the FLEX prompt.
+<p>
+flexemu is deployed with the following monitor programs:
+
+<table>
+ <tr>
+  <th rowspan="2">Monitor program file</th>
+  <th colspan="2">Eurocom II</th>
+  <th colspan="3">RAM Extension</th>
+  <th rowspan="2">Comment</th>
+ </tr>
+ <tr>
+  <th>V5</th>
+  <th>V7</th>
+  <th>None</th>
+  <th>2 x 96 KByte</th>
+  <th>2 x 288 KByte</th>
+ </tr>
+ <tr>
+  <td><a href="neumon54.htm">neumon54.hex</a></td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>&check;</td>
+  <td>&check;</td>
+  <td>&check;</td>
+  <td>Boot disk: system.dsk or system54.dsk</td>
+ </tr>
+ <tr>
+  <td>mon53.s19</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>-</td>
+  <td>Boot FLEX does not work, no disk should be inserted in drive #0.</td>
+ </tr>
+ <tr>
+  <td>mon54.s19</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>Boot disk: system54.dsk</td>
+ </tr>
+ <tr>
+  <td>monu54-6.s19</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>&check;</td>
+  <td>Boot disk: system54.dsk. Boot FLEX by entering <b>D</b>.</td>
+ </tr>
+ <tr>
+  <td><a href="mon24.htm">mon24.s19</a></td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>-</td>
+  <td></td>
+ </tr>
+ <tr>
+  <td><a href="mon24.htm">mon24z.s19</a></td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>&check;</td>
+  <td>-</td>
+  <td>-</td>
+  <td></td>
+ </tr>
+<table>
+
 <h2 id="see_also">SEE ALSO</h2>
 <ul>
  <li><a href="flexuser.htm"> FLEX Users Manual</a>
