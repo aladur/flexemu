@@ -151,7 +151,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
 
     scheduler.set_frequency(options.frequency);
 
-    const auto path(flx::getFlexemuSystemConfigFile());
+    const auto path(flx::getFlexemuConfigFile());
     FlexemuConfigFile configFile(path);
     auto address = configFile.GetSerparAddress(options.hex_file);
     if (address < 0 || !terminalIO.is_terminal_supported())
@@ -191,7 +191,7 @@ ApplicationRunner::~ApplicationRunner()
 
 void ApplicationRunner::AddIoDevicesToMemory()
 {
-    const auto path(flx::getFlexemuSystemConfigFile());
+    const auto path(flx::getFlexemuConfigFile());
     FlexemuConfigFile configFile(path);
     const auto deviceParams = configFile.ReadIoDevices();
     const auto pairOfParams = configFile.GetIoDeviceLogging();

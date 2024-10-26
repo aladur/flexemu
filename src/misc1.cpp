@@ -638,9 +638,18 @@ bool flx::endsWithPathSeparator(const std::string &path)
     return (pos != std::string::npos && (pos == (path.size() - 1)));
 }
 
-std::string flx::getFlexemuSystemConfigFile()
+std::string flx::getFlexemuConfigFile()
 {
     static const auto flexemuConfigFile = std::string("flexemu.conf");
+    static const auto userPath = getHomeDirectory() + PATHSEPARATORSTRING +
+        ".config" + PATHSEPARATORSTRING +
+        "flexemu" + PATHSEPARATORSTRING + flexemuConfigFile;
+    struct stat sbuf{};
+
+    if (stat(userPath.c_str(), &sbuf) == 0)
+    {
+        return userPath;
+    }
 
 #ifdef _WIN32
     return getExecutablePath() + PATHSEPARATORSTRING + flexemuConfigFile;
