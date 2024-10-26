@@ -60,7 +60,11 @@ bool KeyboardIO::has_key_parallel(bool &do_notify)
         --init_delay;
         if (!init_delay)
         {
-            do_notify = true;
+            std::lock_guard<std::mutex> guard(parallel_mutex);
+            if (!key_buffer_parallel.empty())
+            {
+                do_notify = true;
+            }
         }
         return false;
     }
