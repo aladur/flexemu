@@ -341,6 +341,14 @@ The following preferences can be modified.
   <td>off</td>
  </tr>
  <tr>
+  <td>Display Smooth</td>
+  <td>When enabled the video screen is display with a smooth effect. When
+   disabled the video screen displays pixels.</td>
+  <td><b>&check;</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
   <th colspan="5">Memory</td>
  </tr>
  <tr>
@@ -415,6 +423,40 @@ The following preferences can be modified.
   <td><b>&check;</b></td>
   <td><b>-</b></td>
   <td>Not set</td>
+ </tr>
+ <tr>
+  <th colspan="5">Virtual Disk</td>
+ </tr>
+ <tr>
+  <td>Active</td>
+  <td>Enable or disable support of
+   <a href="flexfs.htm#nafs_format">directory disks</a>, also called virtual
+   disks.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>on</td>
+ </tr>
+ <tr>
+  <td>Default Format</td>
+  <td>Choose the default format used when first time using a directory disk.
+   It is stored in the directory in the file .flexdiskrc</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>80 tracks, 36 sectors</td>
+ </tr>
+ <tr>
+  <td>Tracks</td>
+  <td>When choosing "[Set Tracks and Sectors]" as default format the number of tracks can be set individually.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>80</td>
+ </tr>
+ <tr>
+  <td>Sectors</td>
+  <td>When choosing "[Set Tracks and Sectors]" as default format the number of sectors can be set individually.</td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>36</td>
  </tr>
  <tr>
   <th colspan="5">Terminal (Linux only)</td>
@@ -536,6 +578,16 @@ The following preferences can be modified.
      <td>[1]</td>
     </tr>
    </table>
+  </td>
+  <td><b>-</b></td>
+  <td><b>&check;</b></td>
+  <td>off</td>
+ </tr>
+ <tr>
+  <td>Use file time</td>
+  <td>This is a flexemu extension to the FLEX filesystem. If enabled a
+   directory entry also contains the hour and minute of the file creation.
+   This feature is only partially implemented. FLEX does not yet support it.
   </td>
   <td><b>-</b></td>
   <td><b>&check;</b></td>
