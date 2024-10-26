@@ -875,7 +875,8 @@ void FlexemuOptionsUi::OnSelectFile(QLineEdit &lineEdit, FileType type)
             filter = "*.hex";
             path = QFileDialog::getOpenFileName(
                 dialog, tr("Select a monitor program"), path,
-                tr("Intel HEX files (*.hex);;"
+                tr("All monitor files (*.hex *.s19 *.srec *.mot *.cmd *.bin);;"
+                    "Intel HEX files (*.hex);;"
                     "Motorola S-Record files (*.s19 *.srec *.mot);;"
                     "FLEX binary files (*.cmd *.bin);;"
                     "All files (*.*)"),
