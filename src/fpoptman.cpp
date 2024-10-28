@@ -28,9 +28,14 @@
 #include "fpoptman.h"
 #include "bregistr.h"
 #include "brcfile.h"
+#include <sys/stat.h>
+#include <filesystem>
 
 
-static const char * const FLEXPLORERRC = ".flexplorerrc";
+namespace fs = std::filesystem;
+
+static const char * const OLDFLEXPLORERRC = ".flexplorerrc";
+static const char * const FLEXPLORERRC = "flexplorerrc";
 
 static const char * const FLEXPLORERBOOTSECTORFILE = "BootSectorFile";
 static const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
@@ -111,10 +116,13 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     }
 #endif
 #ifdef UNIX
-    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
+    struct stat sbuf{};
+    auto rcFilePath =
+        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) +=
         FLEXPLORERRC;
+    fs::create_directories(flx::getFlexemuUserConfigPath());
 
-    BRcFile rcFile(rcFileName);
+    BRcFile rcFile(rcFilePath);
     rcFile.Initialize(); // truncate file
     rcFile.SetValue(FLEXPLORERVERSION, VERSION);
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
@@ -149,6 +157,13 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
 
         key << FLEXPLORERRECENTDIRECTORY << i;
         rcFile.SetValue(key.str().c_str(), options.recentDirectoryPaths[i]);
+    }
+
+    const auto oldRcFilePath =
+        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += OLDFLEXPLORERRC;
+    if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
+    {
+        fs::remove(oldRcFilePath);
     }
 #endif
 }
@@ -228,9 +243,16 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
     }
 #endif
 #ifdef UNIX
-    const auto rcFileName =
-        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += FLEXPLORERRC;
-    BRcFile rcFile(rcFileName);
+    struct stat sbuf{};
+    auto rcFilePath =
+        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) +=
+        FLEXPLORERRC;
+    if (stat(rcFilePath.c_str(), &sbuf) != 0)
+    {
+        rcFilePath = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
+            OLDFLEXPLORERRC;
+    }
+    BRcFile rcFile(rcFilePath);
 
     rcFile.GetValue(FLEXPLORERVERSION, options.version);
 
