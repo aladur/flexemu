@@ -640,8 +640,14 @@ bool flx::endsWithPathSeparator(const std::string &path)
 
 std::string flx::getFlexemuUserConfigPath()
 {
-    static const auto configPath = getHomeDirectory() + PATHSEPARATORSTRING +
-        ".config" + PATHSEPARATORSTRING + "flexemu";
+    std::string configPath;
+
+    if (!BEnvironment::GetValue("XDG_CONFIG_HOME", configPath) ||
+            configPath.empty())
+    {
+        configPath = getHomeDirectory() + PATHSEPARATORSTRING + ".config";
+    }
+    configPath += std::string(PATHSEPARATORSTRING) + "flexemu";
 
     return configPath;
 }

@@ -32,9 +32,14 @@
 #include "bregistr.h"
 #include "brcfile.h"
 #include <cstring>
+#include <filesystem>
+#include <sys/stat.h>
 
 
-static const char * const FLEXEMURC = ".flexemurc";
+namespace fs = std::filesystem;
+
+static const char * const OLDFLEXEMURC = ".flexemurc";
+static const char * const FLEXEMURC = "flexemurc";
 
 static const char * const FLEXDISKDIR = "DiskDirectory";
 static const char * const FLEXDISK0 = "Disk0Path";
@@ -404,10 +409,19 @@ void FlexemuOptions::WriteOptions(
     WriteOptionsToRegistry(options, optionIds, ifNotExists);
 #endif
 #ifdef UNIX
-    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
-        FLEXEMURC;
+    struct stat sbuf{};
+    const auto rcFilePath =
+        (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING) += FLEXEMURC;
+    fs::create_directories(flx::getFlexemuUserConfigPath());
 
-    WriteOptionsToFile(options, optionIds, rcFileName, ifNotExists);
+    WriteOptionsToFile(options, optionIds, rcFilePath, ifNotExists);
+
+    const auto oldRcFilePath =
+        (flx::getHomeDirectory() += PATHSEPARATORSTRING) += OLDFLEXEMURC;
+    if (stat(oldRcFilePath.c_str(), &sbuf) == 0)
+    {
+        fs::remove(oldRcFilePath);
+    }
 #endif
 
 } /* WriteOptions */
@@ -1024,9 +1038,16 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     reg.GetValues(FLEXPRINTCONFIG, options.printConfigs);
 #endif
 #ifdef UNIX
-    const auto rcFileName = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
-        FLEXEMURC;
-    BRcFile rcFile(rcFileName);
+    struct stat sbuf{};
+    auto rcFilePath = (flx::getFlexemuUserConfigPath() += PATHSEPARATORSTRING)
+        += FLEXEMURC;
+    if (stat(rcFilePath.c_str(), &sbuf) != 0)
+    {
+        rcFilePath = (flx::getHomeDirectory() += PATHSEPARATORSTRING) +=
+            OLDFLEXEMURC;
+    }
+
+    BRcFile rcFile(rcFilePath);
     rcFile.GetValue(FLEXVERSION, options.version);
     rcFile.GetValue(FLEXDISKDIR, options.disk_dir);
     rcFile.GetValue(FLEXDISK0, options.drives[0]);
