@@ -72,6 +72,13 @@ public:
 
 private:
 
+    enum class Config : std::uint8_t
+    {
+        NewOrOld, // Use new config path if exists, otherwise old path.
+        Old, // Always use new config path.
+        New, // Always use new config path.
+    };
+
     Byte convert(Byte val) const;
     Byte convert_hour(Byte val) const;
     Byte convert_bin(Byte val) const;
@@ -79,7 +86,7 @@ private:
     bool increment_hour(Byte &p_hour) const;
     bool increment_day(Byte &p_day, Byte p_month, Byte p_year);
 
-    static std::string getConfigFilePath();
+    static std::string getConfigFilePath(Config type);
 
 public:
 

@@ -26,15 +26,22 @@
 #include <fstream>
 #include <ctime>
 #include <cstring>
+#include <filesystem>
+#include <sys/stat.h>
 
+
+namespace fs = std::filesystem;
 
 static const std::array<Byte, 12> days_per_month{
     31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
 
+static const char * const OLDCONFIGBIN = ".mc146818";
+static const char * const CONFIGBIN = "mc146818.bin";
+
 Mc146818::Mc146818()
 {
-    const auto path = getConfigFilePath();
+    const auto path = getConfigFilePath(Config::NewOrOld);
 
     if (!path.empty())
     {
@@ -70,8 +77,19 @@ Mc146818::Mc146818()
     year = convert(static_cast<Byte>(lt->tm_year % 100));
 }
 
-std::string Mc146818::getConfigFilePath()
+std::string Mc146818::getConfigFilePath(Mc146818::Config type)
 {
+    auto newPath = flx::getFlexemuUserConfigPath() + PATHSEPARATORSTRING +
+        CONFIGBIN;
+    struct stat sbuf{};
+
+    if ((type == Config::New) ||
+        (type == Config::NewOrOld && stat(newPath.c_str(), &sbuf) == 0))
+    {
+        fs::create_directories(flx::getFlexemuUserConfigPath());
+        return newPath;
+    }
+
     auto path = flx::getHomeDirectory();
 
     if (!path.empty())
@@ -81,7 +99,7 @@ std::string Mc146818::getConfigFilePath()
             path.append(PATHSEPARATORSTRING);
         }
 
-        path.append(".mc146818");
+        path.append(OLDCONFIGBIN);
     }
 
     return path;
@@ -89,7 +107,7 @@ std::string Mc146818::getConfigFilePath()
 
 Mc146818::~Mc146818()
 {
-    const auto path = getConfigFilePath();
+    const auto path = getConfigFilePath(Config::New);
 
     if (path.empty())
     {
@@ -102,6 +120,14 @@ Mc146818::~Mc146818()
     {
         ostream.write(reinterpret_cast<char *>(ram.data()),
                      static_cast<int>(ram.size()));
+    }
+
+    const auto oldPath = getConfigFilePath(Config::Old);
+    struct stat sbuf{};
+
+    if (stat(oldPath.c_str(), &sbuf) == 0)
+    {
+        fs::remove(oldPath);
     }
 }
 
