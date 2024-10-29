@@ -91,7 +91,7 @@ Mc146818::~Mc146818()
 {
     const auto path = getConfigFilePath();
 
-    if (!path.empty())
+    if (path.empty())
     {
         return;
     }
