@@ -40,10 +40,9 @@ Byte Mc6850::readIo(Word offset)
     switch (offset & 0x01U)
     {
         case 0:
-            sr &= 0x80U; // only receive data register full
-            BSET<Byte>(sr, 1U);
-            requestInput(); // and interrupt request is set
-            // the other status bits are always 0
+            sr &= 0x80U; // reset all bits except interrupt request
+            BSET<Byte>(sr, 1U); // Transmit data register empty is always 1
+            requestInput(); // On input data set receive data register bit
             return sr; // return status register
 
         case 1:
