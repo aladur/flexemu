@@ -73,7 +73,7 @@ public:
     void write_char_serial(Byte val);
     bool is_terminal_supported();
     void signal_reset(int sig_no);
-    void set_startup_command(const char *p_startup_command);
+    void set_startup_command(const std::string &startup_command);
 
 private:
     static void reset_terminal_io();

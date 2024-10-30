@@ -135,10 +135,8 @@ void KeyboardIO::get_value(unsigned int *p_keyMask) const
     }
 }
 
-void KeyboardIO::set_startup_command(const char *p_startup_command)
+void KeyboardIO::set_startup_command(const std::string &startup_command)
 {
-    std::string startup_command(p_startup_command);
-
     if (!startup_command.empty())
     {
         std::lock_guard<std::mutex> guard(parallel_mutex);

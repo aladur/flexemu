@@ -55,7 +55,7 @@ public:
     void put_char_parallel(Byte key, bool &do_notify);
     void put_value(unsigned int keyMask);
     void get_value(unsigned int *keyMask) const;
-    void set_startup_command(const char *p_startup_command);
+    void set_startup_command(const std::string &startup_command);
 
     KeyboardIO();
 };

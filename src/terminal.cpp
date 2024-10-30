@@ -421,10 +421,8 @@ void TerminalIO::exec_signal(int sig_no)
     }
 }
 
-void TerminalIO::set_startup_command(const char *p_startup_command)
+void TerminalIO::set_startup_command(const std::string &startup_command)
 {
-    std::string startup_command(p_startup_command);
-
     if (!startup_command.empty())
     {
         std::lock_guard<std::mutex> guard(serial_mutex);

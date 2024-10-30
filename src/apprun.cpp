@@ -301,11 +301,11 @@ int ApplicationRunner::startup(QApplication &app)
 
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
-        terminalIO.set_startup_command(options.startup_command.c_str());
+        terminalIO.set_startup_command(options.startup_command);
     }
     else
     {
-        keyboardIO.set_startup_command(options.startup_command.c_str());
+        keyboardIO.set_startup_command(options.startup_command);
     }
 
     // start CPU thread
