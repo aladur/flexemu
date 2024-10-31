@@ -299,13 +299,18 @@ int ApplicationRunner::startup(QApplication &app)
     memory.reset_io();
     cpu.reset();
 
+    const auto path(flx::getFlexemuConfigFile());
+    FlexemuConfigFile configFile(path);
+    auto boot_char = configFile.GetBootCharacter(options.hex_file);
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);
+        terminalIO.set_boot_char(boot_char);
     }
     else
     {
         keyboardIO.set_startup_command(options.startup_command);
+        keyboardIO.set_boot_char(boot_char);
     }
 
     // start CPU thread

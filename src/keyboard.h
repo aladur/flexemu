@@ -45,6 +45,7 @@ class KeyboardIO
     std::deque<Byte> key_buffer_parallel;
     unsigned int keyMask{0};
     Word init_delay{500};
+    Byte boot_char{};
 
 public:
     static void set_bell(Word p_percent);
@@ -56,6 +57,7 @@ public:
     void put_value(unsigned int keyMask);
     void get_value(unsigned int *keyMask) const;
     void set_startup_command(const std::string &startup_command);
+    void set_boot_char(Byte p_boot_char);
 
     KeyboardIO();
 };

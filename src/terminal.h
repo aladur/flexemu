@@ -55,6 +55,7 @@ private:
 #endif
     Word init_delay;
     Byte input_delay;
+    Byte boot_char;
 
 public:
     static TerminalIO *instance;
@@ -75,6 +76,7 @@ public:
     bool is_terminal_supported();
     void signal_reset(int sig_no);
     void set_startup_command(const std::string &startup_command);
+    void set_boot_char(Byte p_boot_char);
 
 private:
     static void reset_terminal_io();

@@ -308,3 +308,43 @@ bool FlexemuConfigFile::IsValid() const
 
     return iniFile.IsValid();
 }
+
+Byte FlexemuConfigFile::GetBootCharacter(const std::string &monitorFilePath)
+    const
+{
+    std::string fileName = flx::getFileName(monitorFilePath);
+    Byte result{};
+
+#ifdef _WIN32
+    flx::strlower(fileName);
+#endif
+
+    BIniFile iniFile(iniFileName);
+    const std::string section{"BootCharacter"};
+
+    auto valueForKey = iniFile.ReadSection(section);
+
+    for (const auto &iter : valueForKey)
+    {
+        std::string key = iter.first;
+
+#ifdef _WIN32
+        flx::strlower(key);
+#endif
+        if (fileName == key)
+        {
+            if (iter.second.size() != 1)
+            {
+                    auto lineNumber =
+                        iniFile.GetLineNumber(section, iter.first);
+                    throw FlexException(FERR_INVALID_LINE_IN_FILE,
+                                        lineNumber,
+                                        iter.first + "=" + iter.second,
+                                        iniFile.GetFileName());
+            }
+            result = static_cast<Byte>(iter.second[0]);
+        }
+    }
+
+    return result;
+}

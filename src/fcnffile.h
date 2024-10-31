@@ -55,6 +55,7 @@ public:
     std::string GetDebugSupportOption(const std::string &key) const;
     std::pair<std::string, std::set<std::string> > GetIoDeviceLogging() const;
     int GetSerparAddress(const std::string &monitorFilePath) const;
+    Byte GetBootCharacter(const std::string &monitorFilePath) const;
 
 private:
     std::string iniFileName;
