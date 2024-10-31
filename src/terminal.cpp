@@ -37,10 +37,11 @@ TerminalIO *TerminalIO::instance = nullptr;
 #endif
 
 TerminalIO::TerminalIO(Scheduler &p_scheduler,
-                       const struct sOptions &p_options) :
-                       scheduler(p_scheduler),
-                       options(p_options),
-                       init_delay(500)
+                       const struct sOptions &p_options)
+                       : scheduler(p_scheduler)
+                       , options(p_options)
+                       , init_delay(500)
+                       , input_delay(0)
 {
     instance = this;
     reset_serial();
@@ -263,6 +264,13 @@ bool TerminalIO::has_key_serial()
             put_char_serial(buffer);
         }
     }
+
+    if (input_delay != 0)
+    {
+        --input_delay;
+        return false;
+    }
+
 #endif // #ifdef HAVE_TERMIOS_H
 
     std::lock_guard<std::mutex> guard(serial_mutex);
@@ -280,6 +288,12 @@ Byte TerminalIO::read_char_serial()
     {
         result = key_buffer_serial.front();
         key_buffer_serial.pop_front();
+        // After successfully receiving a character from terminal delay
+        // signalling the next character being receivable.
+        // Reason: Immediately receiving a second character may get lost,
+        // resulting in receiving only every second character of the
+        // startup command (-C).
+        input_delay = 2;
     }
 
     return result;

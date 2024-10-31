@@ -54,6 +54,7 @@ private:
     static bool is_termios_saved;
 #endif
     Word init_delay;
+    Byte input_delay;
 
 public:
     static TerminalIO *instance;
