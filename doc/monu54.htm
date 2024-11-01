@@ -4,31 +4,35 @@
 <meta charset="UTF-8">
 <link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
-<title>Flexemu Monitor program V5.4 spec</title>
+<title>Flexemu Monitor program U5.4</title>
 </head>
 <body>
-<h1 id="neumon54">Flexemu Monitor program V5.4 spec</h1>
-<hr>
 
+<h1 id="Mon54">Flexemu Monitor program U5.4</h1>
+<hr>
 <div class="justify">
  The monitor program provides basic I/O
  functions to the operating system. It is comparable to the BIOS on a PC.
 <p>
 But in addition it provides a simple command line interface to display or
-change memory contents, or set, display or clear breakpoints.
+change memory contents or set, display or clear breakpoints.
 From within FLEX the monitor program can be entered by entering MON on the
-FLEX prompt. From the monitor program FLEX can be reentered with X or G CD03.
+FLEX prompt. From the monitor program FLEX can be reentered with G CD03.
 <p>
-This documentation describes the monitor programs V5.4 spec, also called
-neumon54 as deployed with flexemu as file neumon54.hex. It is designed to
-support Eurocom II/V7 with or without memory extension board. It has a FLEX
-boot loader and automatically boots FLEX if a disk is inserted in drive #0.
-The command input is case insensitive.
+This documentation describes the monitor programs U5.4 as deployed with flexemu
+as file monu54-6.s19. It is designed to support Eurocom II/V7 with a memory
+extension board. It has a FLEX boot loader and automatically boots FLEX if a
+disk is inserted in drive #0. It needs and only works with a RAM extension.
+The command input is case insensitive, and automatically converted to
+uppercase characters.
 <p>
 This <a href="flexemu.htm#monitor">monitor program overview</a> shows
 which monitor program is best suited for which hardware configuration.
 <p>
 The following table gives an overview of the available commands:
+<!-- The jump table for all commands is located at address F119 up to F14E.
+ The format is 1-byte character, 2-byte jump-address -->
+</div>
 <p>
 <table>
  <tr>
@@ -36,20 +40,58 @@ The following table gives an overview of the available commands:
   <th>Description</th>
  </tr>
  <tr>
-  <td>D</td>
-  <td>Switch to german character set</td>
+  <td>A</td>
+  <td>Display and optionally modify CPU registers. Can be aborted by entering
+   ESC. Register modification is only supported after a breakpoint has been hit.
+   See also command B, C, K or S.</td>
  </tr>
  <tr>
-  <td>I</td>
-  <td>Switch to ASCII character set</td>
+  <td>B XXXX</td>
+  <td>Set breakpoint at address XXXX. Up to eight breakpoints can be defined.
+   Only supported for an address located in RAM, so it does not work for
+   address range F000 up to FFFF. At address 0000 no breakpoint can be set.
+   See also command A, C, K or S.</td>
+ </tr>
+ <tr>
+  <td>B ENTER</td>
+  <td>Display address of all eight breakpoints.</td>
+ </tr>
+ <tr>
+  <td>C</td>
+  <td>Continue programm execution at current PC location. Any CPU register,
+   incl. This command is only supported after a breakpoint has been hit.
+   PC can be changed with command A in between.
+   See also command A, B, K or S.
+  </td>
+ </tr>
+ <tr>
+  <td>D</td>
+  <td>Boot from disk in drive #0.</td>
+ </tr>
+ <tr>
+  <td>E</td>
+  <td>Boot from disk in drive #0.</td>
  </tr>
  <tr>
   <td>G XXXX</td>
-  <td>Jump to address XXXX</td>
+  <td>Jump to address XXXX.</td>
  </tr>
  <tr>
-  <td>K</td>
-  <td>Boot from disk in drive #0</td>
+  <td>K XXXX</td>
+  <td>Remove breakpoint at address XXXX. If there is no breakpoint set at this
+   address BRP is printed.
+  See also command A, B, C or S.</td>
+ </tr>
+ <tr>
+  <td>L</td>
+  <td>Load a file in Motorola S-Record format from serial port. This can be
+   used with flexemu on Unix like operating systems by redirecting stdin
+   to a S-Record file when starting flexemu on the command line.
+   See also command R.</td>
+ </tr>
+ <tr>
+  <td>CTRL-L</td>
+  <td>Clear screen.</td>
  </tr>
  <tr>
   <td>M XXXX</td>
@@ -79,25 +121,43 @@ The following table gives an overview of the available commands:
   </td>
  </tr>
  <tr>
-  <td style="min-width: 9em">P XXXX YYYY ZZ</td>
-  <td>Fill memory locations XXXX up to including YYYY with byte ZZ</td>
+  <td style="min-width: 8em">R XXXX YYYY</td>
+  <td>Write a file in Motorola S-Record format to serial port for the given
+   address range incl. address YYYY. This can be used with flexemu on Unix
+   like operating systems by redirecting stdout into a S-Record file when
+   staring flexemu on the command line.
+   See also command L.
+</td>
+ </tr>
+ <tr>
+  <td>S</td>
+  <td>Command S: Step over a breakpoint. This command is only supported
+   after a breakpoint has been hit.
+   See also command A, B, C or K.</td>
  </tr>
  <tr>
   <td>T XXXX YYYY</td>
-  <td>Dump memory from address XXXX up to including YYYY</td>
+  <td>Memory dump from XXXX to including YYYY.</td>
  </tr>
  <tr>
   <td>V</td>
-  <td>Terminal mode: Any input and output is sent or received from or to
-   serial port.</td>
+  <td>Terminal mode: Any input and output is sent or received from or to serial
+      port.</td>
  </tr>
  <tr>
-  <td>X</td>
-  <td>Jump back to FLEX (Warm start)</td>
+  <td>.</td>
+  <td>Continue displaying memory content of current address based on a
+   previous M command or address 0000.</td>
  </tr>
  <tr>
-  <td>Z</td>
-  <td>Exit the emulator</td>
+  <td>CTRL-J or /</td>
+  <td>Continue displaying memory content of next address based on a previous M
+      command or address 0000.</td>
+ </tr>
+ <tr>
+  <td>^</td>
+  <td>Continue displaying memory content of previous address based on a
+   previous M command or address 0000.</td>
  </tr>
 </table>
 <p>
@@ -111,159 +171,6 @@ The following table gives an overview of the available commands:
   <td>A four digit hex address.</td>
  </tr>
 </table>
-<p>
-Neumon54 also contains a terminal emulator which can be controlled with
-the following Control- and Escape-sequences:
-<p>
-<table>
- <tr>
-  <th>Input</th>
-  <th>Description</th>
- </tr>
- <tr>
-  <td>CTRL-E</td>
-  <td>Switch cursor off</td>
- </tr>
- <tr>
-  <td>CTRL-G</td>
-  <td>give a short terminal bell</td>
- </tr>
- <tr>
-  <td>CTRL-H</td>
-  <td>Backspace</td>
- </tr>
- <tr>
-  <td>CTRL-J</td>
-  <td>Linefeed</td>
- </tr>
- <tr>
-  <td>CTRL-L</td>
-  <td>Form feed, clear screen, cursor home</td>
- </tr>
- <tr>
-  <td>CTRL-M</td>
-  <td>Carriage return</td>
- </tr>
- <tr>
-  <td>CTRL-N</td>
-  <td>Scroll up one line</td>
- </tr>
- <tr>
-  <td>CTRL-O</td>
-  <td>Scroll down one line</td>
- </tr>
- <tr>
-  <td>CTRL-O</td>
-  <td>Scroll down one line</td>
- </tr>
- <tr>
-  <td>CTRL-Q</td>
-  <td>Cursor up one line</td>
- </tr>
- <tr>
-  <td>CTRL-R</td>
-  <td>Cursor down one line</td>
- </tr>
- <tr>
-  <td>CTRL-S</td>
-  <td>Cursor right one character</td>
- </tr>
- <tr>
-  <td>CTRL-T</td>
-  <td>Cursor left one character</td>
- </tr>
- <tr>
-  <td>CTRL-U</td>
-  <td>Switch cursor on</td>
- </tr>
- <tr>
-  <td>CTRL-S</td>
-  <td>Cursor right one character</td>
- </tr>
- <tr>
-  <td>ESC or CTRL-[</td>
-  <td>Start ESCAPE sequence</td>
- </tr>
- <tr>
-  <td>CTRL-\</td>
-  <td>Cursor home</td>
- </tr>
- <tr>
-  <td>CTRL-]</td>
-  <td>Toggle between soft- and hard scroll</td>
- </tr>
-</table>
-<p>
-The following Escape sequences are available:
-<p>
-<table>
- <tr>
-  <th>Input</th>
-  <th>Description</th>
- </tr>
- <tr>
-  <td>ESC A XX YY</td>
-  <td>Plot a Dot</td>
- </tr>
- <tr>
-  <td>ESC B</td>
-  <td>Delete line</td>
- </tr>
- <tr>
-  <td>ESC C</td>
-  <td>Insert line</td>
- </tr>
- <tr>
-  <td>ESC D</td>
-  <td>Switch to german character set</td>
- </tr>
- <tr>
-  <td>ESC E YY XX</td>
-  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
- </tr>
- <tr>
-  <td>ESC F</td>
-  <td>Switch to insert cursor</td>
- </tr>
- <tr>
-  <td>ESC G</td>
-  <td>Switch to overwrite cursor</td>
- </tr>
- <tr>
-  <td>ESC I</td>
-  <td>Switch to ASCII character set</td>
- </tr>
- <tr>
-  <td>ESC = XX YY</td>
-  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
- </tr>
- <tr>
-  <td>ESC P or ESC p</td>
-  <td>Switch inverse video on</td>
- </tr>
- <tr>
-  <td>ESC Q or ESC q</td>
-  <td>Switch inverse video off</td>
- </tr>
- <tr>
-  <td>ESC K or ESC L</td>
-  <td>Erase to end of line</td>
- </tr>
- <tr>
-  <td>ESC Z or ESC k or ESC S</td>
-  <td>Erase to end of screen</td>
- </tr>
-</table>
-<p>
-On Linux there is a mode to use flexemu in terminal only mode. No special
-version of Monitor program is needed any more. It simply can be started by:
-<b>flexemu -t</b>.
-<p>
-Flexemu can also be used with other monitor programs as long as they support
-the special hardware needs of the Eurocom II/V7.
-<p>
-Flexemu ships with complete source code of neumon54.
-</div>
 
 <h2>SEE ALSO</h2>
 <ul>
@@ -276,8 +183,8 @@ Flexemu ships with complete source code of neumon54.
  <li><a href="flexerr.htm"> FLEX Error Messages</a>
  <li><a href="flexfcb.htm"> FLEX File Control Block (FCB)</a>
  <li><a href="flexmem.htm"> FLEX Memory Map</a>
+ <li><a href="neumon54.htm"> Monitor program neumon54.hex</a>
  <li><a href="mon53_54.htm"> Monitor program mon53.s19 and mon54.s19</a>
- <li><a href="monu54.htm"> Monitor program monu54-6.s19</a>
  <li><a href="mon24.htm"> Monitor program mon24.s19</a>
  <li><a href="e2hwdesc.htm"> Eurocom II hardware description</a>
  <li><a href="mc6809.htm"> Motorola MC6809</a>
