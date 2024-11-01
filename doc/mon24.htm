@@ -4,21 +4,28 @@
 <meta charset="UTF-8">
 <link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
-<title>Flexemu Monitor program mon24.hex</title>
+<title>Flexemu Monitor program V2.4</title>
 </head>
 <body>
 
-<h1 id="Mon24">Flexemu Monitor program mon24.s19</h1>
+<h1 id="Mon24">Flexemu Monitor program V2.4</h1>
 <hr>
 <div class="justify">
-The monitor program provides basic I/O functions to the operating system. It
-is comparable to the BIOS on a PC.
+ The monitor program provides basic I/O
+ functions to the operating system. It is comparable to the BIOS on a PC.
 <p>
-But in addition it provides a simple user
-interface to display or change memory contents or set or clear breakpoints. 
-mon24.s19 is designed to support Eurocom II/V5. It does not have a FLEX boot
-loader. Instead files can be loaded from a Philips Mini Digital Cassette
-Recorder (Philips MDCR). See command D for details.
+But in addition it provides a simple command line interface to display or
+change memory contents or set, display or clear breakpoints.
+<p>
+This documentation describes the monitor programs V2.4 as deployed with flexemu
+as files mon24.s19 and mon24z.s19. It is designed to support the Eurocom II/V5.
+It does not have a FLEX boot loader. Instead files can be loaded from a
+Philips Mini Digital Cassette Recorder (Philips MDCR).
+See command D for details.
+Any command has to be entered in uppercase characters.
+<p>
+This <a href="flexemu.htm#monitor">monitor program overview</a> shows
+which monitor program is best suited for which hardware configuration.
 <p>
 The following table gives an overview of the available commands:
 </div>
@@ -30,16 +37,26 @@ The following table gives an overview of the available commands:
  </tr>
  <tr>
   <td>A</td>
-  <td>Read and modify CPU registers</td>
+  <td>Read and optionally modify CPU registers. Can be aborted by entering
+   ESC.
+   See also command B, C, K or S.</td>
  </tr>
  <tr>
   <td>B XXXX</td>
-  <td>Set breakpoint at address XXXX. Only supported for an address located in
-  RAM.</td>
+  <td>Set breakpoint at address XXXX. Up to eight breakpoints can be defined.
+   Only supported for an address located in RAM, so it does not work for
+   address range F000 up to FFFF. At address 0000 no breakpoint can be set.
+   See also command A, C, K or S.</td>
+ </tr>
+ <tr>
+  <td>B ENTER</td>
+  <td>Display address of all eight breakpoints.</td>
  </tr>
  <tr>
   <td>C</td>
-  <td>Continue programm exection e.g. after a breakpoint.</td>
+  <td>Continue program execution at current PC location. Any CPU register,
+   incl. PC can be changed with command A in between.
+   See also command A, B, K or S.</td>
  </tr>
  <tr>
   <td>D</td>
@@ -96,8 +113,12 @@ The following table gives an overview of the available commands:
  </tr>
  <tr>
   <td>L NAME06</td>
-  <td>Load a file in Motorola S-Record format from serial port. Not
-  supported on flexemu.</td>
+  <td>Load a file in Motorola S-Record format from serial port. This can be
+   used with flexemu on Unix like operating systems by redirecting stdin to
+   a S-Record file when starting flexemu on the command line. The name has to
+   have exactly six characters.
+   See also command R.
+  </td>
  </tr>
  <tr>
   <td>CTRL-L</td>
@@ -121,36 +142,42 @@ The following table gives an overview of the available commands:
  </tr>
  <tr>
   <td style="min-width: 12em">R XXXX YYYY NAME06</td>
-  <td>Write a file in Motorola S-Record format to serial port. In flexemu
-  the serial port is the connected terminal (Linux only).</td>
+  <td>Write a file in Motorola S-Record format to serial port for the given
+   address range incl. address YYYY. This can be used with flexemu on Unix
+   like operating systems by redirecting stdout into a S-Record file when
+   staring flexemu on the command line. The name has to have exactly six
+   characters. It is stored in an S0 line.
+   See also command L.
+  </td>
  </tr>
  <tr>
   <td>S</td>
-  <td>Command S: Step over a breakpoint.</td>
+  <td>Command S: Step over a breakpoint.
+  See also command A, B, C or K.</td>
  </tr>
  <tr>
   <td>T XXXX YYYY</td>
-  <td>Memory dump from XXXX to YYYY.</td>
+  <td>Memory dump from XXXX to inclusive YYYY.</td>
  </tr>
  <tr>
   <td>V</td>
-  <td>Terminal mode: Any input and output is sent or received from or to serial
-      port.</td>
+  <td>Terminal mode: Any input and output is sent or received from or to
+   serial port.</td>
  </tr>
  <tr>
   <td>/</td>
-  <td>Continue displaying memory content of next address based on a previous M
-      command.</td>
+  <td>Continue displaying memory content of next address based on a previous
+   M command or address 0000.</td>
  </tr>
  <tr>
   <td>.</td>
-  <td>Continue displaying memory content of same address based on a previous M
-      command.</td>
+  <td>Continue displaying memory content of same address based on a previous
+   M command or address 0000.</td>
  </tr>
  <tr>
   <td>^</td>
   <td>Continue displaying memory content of previous address based on a
-      previous M command.</td>
+      previous M command or address 0000.</td>
  </tr>
 </table>
 <p>
@@ -169,7 +196,7 @@ The following table gives an overview of the available commands:
  </tr>
 </table>
 
-<h2 id="Mon24z">Flexemu Monitor program mon24z.s19</h2>
+<h2 id="Mon24z">Flexemu Monitor program file mon24z.s19</h2>
 <div class="justify">
 Monitor program mon24z.s19 has the same commands as mon24.s19. There is one
 additional command available in context of the emulation:

@@ -4,20 +4,29 @@
 <meta charset="UTF-8">
 <link href='https://fonts.googleapis.com/css?family=Courier%20Prime' rel='stylesheet'>
 <link rel="stylesheet" href="flexemu.css">
-<title>Flexemu Monitor program neumon54.hex</title>
+<title>Flexemu Monitor program V5.4 spec</title>
 </head>
 <body>
-<h1 id="neumon54">Flexemu Monitor program neumon54.hex</h1>
+<h1 id="neumon54">Flexemu Monitor program V5.4 spec</h1>
 <hr>
 
 <div class="justify">
-The monitor program provides basic I/O functions to the operating system. It
-is comparable to the BIOS on a PC.
+ The monitor program provides basic I/O
+ functions to the operating system. It is comparable to the BIOS on a PC.
 <p>
-But in addition it provides a simple user
-interface to display or change memory contents or boot FLEX operating system.
+But in addition it provides a simple command line interface to display or
+change memory contents, or set, display or clear breakpoints.
 From within FLEX the monitor program can be entered by entering MON on the
-FLEX prompt.
+FLEX prompt. From the monitor program FLEX can be reentered with X or G CD03.
+<p>
+This documentation describes the monitor programs V5.4 spec, also called
+neumon54 as deployed with flexemu as file neumon54.hex. It is designed to
+support Eurocom II/V7 with or without memory extension board. It has a FLEX
+boot loader and automatically boots FLEX if a disk is inserted in drive #0.
+The command input is case insensitive.
+<p>
+This <a href="flexemu.htm#monitor">monitor program overview</a> shows
+which monitor program is best suited for which hardware configuration.
 <p>
 The following table gives an overview of the available commands:
 <p>
@@ -36,20 +45,38 @@ The following table gives an overview of the available commands:
  </tr>
  <tr>
   <td>G XXXX</td>
-  <td>Start a user program located at address XXXX</td>
+  <td>Jump to address XXXX</td>
  </tr>
  <tr>
   <td>K</td>
-  <td>Boot from disk #0</td>
+  <td>Boot from disk in drive #0</td>
  </tr>
  <tr>
   <td>M XXXX</td>
-  <td>Display or modify memory beginning from address XXXX. Additional keys
-  can be entered: . redisplay same address (try with address FD00, it
-  displays the actual seconds of the real time clock). CTRL-J or / displays
-  the next memory location. ^ displays the previous memory location. Entering
-  a two digit hex number changes the memory. Pressing Enter leaves the M
-  command.</td>
+  <td>Display and modify memory at address XXXX.
+  <BR><BR>
+  .
+  <BR>
+  Redisplay contents of current address (Try with address FD00, it displays
+  the actual seconds of the real time clock).
+  <BR><BR>
+  CTRL-J or /
+  <BR>
+  Display contents of next address.
+  <BR><BR>
+  ^
+  <BR>
+  Display contents of previous address.
+  <BR><BR>
+  ZZ
+  <BR>
+  Entering a two digit hex number changes the memory at current address.
+  <BR><BR>
+  ENTER or CTRL-X
+  <BR>
+  Leaving M command.
+  <BR>
+  </td>
  </tr>
  <tr>
   <td style="min-width: 9em">P XXXX YYYY ZZ</td>
@@ -61,11 +88,12 @@ The following table gives an overview of the available commands:
  </tr>
  <tr>
   <td>V</td>
-  <td>Switch to video terminal mode (not supported on the emulator)</td>
+  <td>Terminal mode: Any input and output is sent or received from or to
+   serial port.</td>
  </tr>
  <tr>
   <td>X</td>
-  <td>Go back to FLEX (Warm start)</td>
+  <td>Jump back to FLEX (Warm start)</td>
  </tr>
  <tr>
   <td>Z</td>

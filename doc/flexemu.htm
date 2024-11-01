@@ -612,12 +612,13 @@ of the breakpoint addresses.
 
 <h3 id="disassembler">MC6809 Disassembler</h3>
 <div class="justify">
-flexemu has an integrated disassembler. It shows the currently to be executed
-instruction. Configuring the
+flexemu has an integrated disassembler. It displays the currently to be
+executed instruction. Configuring the
 <a href="flexemu.htm#logging">CPU Instruction Logging</a>
 allows to log all executed instructions.
-Addresses having a special meaning in the FLEX Operating System can be shown
-as label instead of the hex-address. These labels are defined in the file
+Addresses having a special meaning in the FLEX Operating System can be
+displayed as label instead of the hex-address. These labels are defined in
+the file
 <b>flexlabl.conf</b>. On Linux the file get's installed in path
 <b>/etc/flexlabl.conf</b>. On Windows it is located in the installation
 directory.
@@ -818,7 +819,7 @@ supporting the ASCII character set.
 
 <h3 id="hotkeys">Hotkeys</h3>
 <div class="justify">
-The following table shows the hotkeys available in flexemu.
+The following table summarizes the hotkeys available in flexemu.
 </div>
 <p>
 <table>
@@ -1250,63 +1251,76 @@ any hex code.
 The monitor program provides basic I/O functions to the operating system.
 It is comparable to the BIOS on a PC.
 <p>
-But in addition it provides a simple user interface to display or change
-memory contents or boot FLEX operating system. From within FLEX the monitor
-program can be entered by entering MON on the FLEX prompt.
+But in addition it provides a simple command line interface to display or
+change memory contents or display, set or clear breakpoints. or boot FLEX
+operating system. From within FLEX the monitor program can be entered by
+entering MON on the FLEX prompt.
 <p>
 flexemu is deployed with the following monitor programs:
 
 <table>
  <tr>
-  <th rowspan="2">Monitor program file</th>
+  <th colspan="2">Monitor program</th>
   <th colspan="2">Eurocom II</th>
   <th colspan="3">RAM Extension</th>
+  <th rowspan="2">Boot disk</th>
   <th rowspan="2">Comment</th>
  </tr>
  <tr>
+  <th>Version</th>
+  <th>File</th>
   <th>V5</th>
   <th>V7</th>
   <th>None</th>
-  <th>2 x 96 KByte</th>
-  <th>2 x 288 KByte</th>
+  <th>2 x 96<br>KByte</th>
+  <th>2 x 288<br>KByte</th>
  </tr>
  <tr>
+  <td>V5.4 spec</td>
   <td><a href="neumon54.htm">neumon54.hex</a></td>
   <td>-</td>
   <td>&check;</td>
   <td>&check;</td>
   <td>&check;</td>
   <td>&check;</td>
-  <td>Boot disk: system.dsk or system54.dsk</td>
+  <td>system.dsk, system54.dsk</td>
+  <td></td>
  </tr>
  <tr>
+  <td>V5.3</td>
   <td>mon53.s19</td>
   <td>-</td>
   <td>&check;</td>
   <td>&check;</td>
   <td>-</td>
   <td>-</td>
-  <td>Boot disk: system54.dsk</td>
+  <td>system54.dsk</td>
+  <td></td>
  </tr>
  <tr>
+  <td>V5.4</td>
   <td>mon54.s19</td>
   <td>-</td>
   <td>&check;</td>
   <td>-</td>
   <td>&check;</td>
   <td>-</td>
-  <td>Boot disk: system54.dsk</td>
+  <td>system54.dsk</td>
+  <td></td>
  </tr>
  <tr>
+  <td>U5.4</td>
   <td>monu54-6.s19</td>
   <td>-</td>
   <td>&check;</td>
   <td>-</td>
   <td>&check;</td>
   <td>&check;</td>
-  <td>Boot disk: system54.dsk. Boot FLEX by entering <b>D</b>.</td>
+  <td>system54.dsk</td>
+  <td>Boot FLEX by entering <b>D</b></td>
  </tr>
  <tr>
+  <td>V2.4</td>
   <td><a href="mon24.htm">mon24.s19</a></td>
   <td>&check;</td>
   <td>-</td>
@@ -1314,14 +1328,17 @@ flexemu is deployed with the following monitor programs:
   <td>-</td>
   <td>-</td>
   <td></td>
+  <td></td>
  </tr>
  <tr>
+  <td>V2.4</td>
   <td><a href="mon24.htm#Mon24z">mon24z.s19</a></td>
   <td>&check;</td>
   <td>-</td>
   <td>&check;</td>
   <td>-</td>
   <td>-</td>
+  <td></td>
   <td></td>
  </tr>
 <table>
