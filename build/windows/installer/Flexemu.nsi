@@ -285,6 +285,8 @@ Section "Documentation" Documentation
   File /a "${BASEDIR}\doc\flexuser.htm"
   File /a "${BASEDIR}\doc\flexutil.htm"
   File /a "${BASEDIR}\doc\neumon54.htm"
+  File /a "${BASEDIR}\doc\mon53_54.htm"
+  File /a "${BASEDIR}\doc\monu54.htm"
   File /a "${BASEDIR}\doc\mon24.htm"
   File /a "${BASEDIR}\doc\e2hwdesc.htm"
   File /a "${BASEDIR}\doc\mc6809.htm"

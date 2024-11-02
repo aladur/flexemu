@@ -99,6 +99,8 @@ flexfs.htm      'filesystems' supported by flexemu
 flexerr.htm     description of the FLEX error messages
 flexfcb.htm     description of a FLEX file control block
 flexmem.htm     the FLEX memory map
-neumon54.htm    Flexemu monitor program for Eurocom II/V7
+neumon54.htm    Flexemu monitor program V5.4 spec for Eurocom II/V7
+mon53_54.htm    Flexemu monitor program V5.3 and V5.4 for Eurocom II/V7
+monu54.htm      Flexemu monitor program U5.4 for Eurocom II/V7
 mon24.htm       Flexemu monitor program for Eurocom II/V5
 

@@ -28,6 +28,8 @@ pkgdata_DATA = \
 	linkload.pdf \
 	mc6809.htm \
 	mon24.htm \
+	mon53_54.htm \
+	monu54.htm \
 	neumon54.htm \
 	relasmb.pdf \
 	swflexum.pdf\
