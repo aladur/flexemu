@@ -42,7 +42,6 @@ TerminalIO::TerminalIO(Scheduler &p_scheduler,
                        , options(p_options)
                        , init_delay(500)
                        , input_delay(0)
-                       , boot_char('\0')
 {
     instance = this;
     reset_serial();
@@ -56,7 +55,6 @@ void TerminalIO::init(Word reset_key)
 void TerminalIO::reset_serial()
 {
     init_delay = 500;
-    boot_char = '\0';
     std::lock_guard<std::mutex> guard(serial_mutex);
     key_buffer_serial.clear();
 }
@@ -242,11 +240,6 @@ void TerminalIO::put_char_serial(Byte key)
 // poll serial port for input character.
 bool TerminalIO::has_key_serial()
 {
-    if (boot_char != '\0')
-    {
-        return true;
-    }
-
     // After a reset and booting FLEX delay the serial key input request.
     // Reason: After output one line FLEX requests for keyboard input.
     // If startup command is present any keyboard input has to be
@@ -291,13 +284,6 @@ bool TerminalIO::has_key_serial()
 Byte TerminalIO::read_char_serial()
 {
     Byte result = 0x00;
-
-    if (boot_char != '\0')
-    {
-        result = boot_char;
-        boot_char = '\0';
-        return result;
-    }
 
     std::lock_guard<std::mutex> guard(serial_mutex);
     if (!key_buffer_serial.empty())
@@ -460,9 +446,4 @@ void TerminalIO::set_startup_command(const std::string &startup_command)
                   std::back_inserter(key_buffer_serial));
         key_buffer_serial.push_back('\r');
     }
-}
-
-void TerminalIO::set_boot_char(Byte p_boot_char)
-{
-    boot_char = p_boot_char;
 }
