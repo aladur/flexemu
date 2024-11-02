@@ -305,13 +305,12 @@ int ApplicationRunner::startup(QApplication &app)
     if (options.term_mode && terminalIO.is_terminal_supported())
     {
         terminalIO.set_startup_command(options.startup_command);
-        terminalIO.set_boot_char(boot_char);
     }
     else
     {
         keyboardIO.set_startup_command(options.startup_command);
-        keyboardIO.set_boot_char(boot_char);
     }
+    keyboardIO.set_boot_char(boot_char);
 
     // start CPU thread
     cpuThread = std::make_unique<std::thread>(&Scheduler::run, &scheduler);
