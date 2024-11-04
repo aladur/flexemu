@@ -26,14 +26,13 @@
 #include "flblfile.h"
 #include <fmt/format.h>
 
-const char *Da6809::flexLabelFile = nullptr;
 
 void Da6809::set_use_undocumented(bool value)
 {
     use_undocumented = value;
 }
 
-void Da6809::SetFlexLabelFile(const char *path)
+void Da6809::SetFlexLabelFile(const std::string &path)
 {
     flexLabelFile = path;
 }
@@ -41,12 +40,10 @@ void Da6809::SetFlexLabelFile(const char *path)
 const char *Da6809::FlexLabel(Word addr)
 {
 #ifdef FLEX_LABEL
-    static std::map<unsigned, std::string> label_for_address;
-
     if (label_for_address.empty())
     {
         const auto path =
-            flexLabelFile == nullptr ? flx::getFlexLabelFile() : flexLabelFile;
+            flexLabelFile.empty() ? flx::getFlexLabelFile() : flexLabelFile;
         label_for_address = FlexLabelFile::ReadFile(std::cerr, path, "LABELS");
     }
 

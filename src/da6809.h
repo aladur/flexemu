@@ -6,6 +6,8 @@
 #define DA6809_INCLUDED
 
 #include "absdisas.h"
+#include <map>
+#include <string>
 
 
 class Da6809 : public AbstractDisassembler
@@ -30,8 +32,7 @@ public:
             std::string &p_operands) override;
     void set_use_undocumented(bool value) override;
     unsigned getByteSize(const Byte *p_memory) override;
-
-    static void SetFlexLabelFile(const char *path);
+    void SetFlexLabelFile(const std::string &path);
 
 private:
 
@@ -67,13 +68,14 @@ private:
     inline void D_RegisterList(const char *mnemo, const char *ns_reg,
             Byte bytes, std::string &p_code, std::string &p_mnemonic,
             std::string &p_operands);
-
     std::string PrintCode(int bytes);
+    const char *FlexLabel(Word addr);
+
+    std::string flexLabelFile;
+    std::map<unsigned, std::string> label_for_address;
     static const char *IndexRegister(Byte which);
     static const char *InterRegister(Byte which);
     static const char *StackRegister(Byte which, const char *not_stack);
-    static const char *FlexLabel(Word addr);
-    static const char *flexLabelFile;
 };
 
 #endif // DA6809_INCLUDED

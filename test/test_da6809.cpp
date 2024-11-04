@@ -159,6 +159,7 @@ TEST(test_da6809, dis_immediate)
         0x10CE, 0x1183, 0x118C,
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -315,6 +316,7 @@ TEST(test_da6809, dis_branch_relative)
 
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
 
     while (pc < static_cast<DWord>(memory.size()))
     {
@@ -379,6 +381,7 @@ TEST(test_da6809, dis_long_branch_relative)
         "LBGE", "LBLT", "LBGT", "LBLE",
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -454,6 +457,7 @@ TEST(test_da6809, dis_extended)
         "CMPU", "CMPS", // 11 BX
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
 
     while (pc < static_cast<Word>(memory.size()))
     {
@@ -947,6 +951,7 @@ TEST(test_da6809, dis_undocumented)
     };
     auto iexpected_mnemonic = expected_mnemonics.cbegin();
     auto iexpected_operand = expected_operands.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
 
     da.set_use_undocumented(true);
     while (pc < static_cast<Word>(memory.size()))
@@ -987,7 +992,6 @@ TEST(test_da6809, dis_undocumented)
 TEST(test_da6809, dis_flex_labels)
 {
     Da6809 da;
-    Da6809::SetFlexLabelFile("../src/flexlabl.conf");
     DWord pc = 0x0000;
     DWord jumpaddr = 4711U;
     std::string code;
@@ -1004,6 +1008,7 @@ TEST(test_da6809, dis_flex_labels)
         "#FCB",
     };
     auto iexpected_operand = expected_operands.cbegin();
+    da.SetFlexLabelFile("../src/flexlabl.conf");
     Word size = 3U;
 
     while (pc < static_cast<Word>(memory.size()))

@@ -675,6 +675,14 @@ std::string flx::getFlexemuConfigFile()
 std::string flx::getFlexLabelFile()
 {
     static const auto flexLabelFile = std::string("flexlabl.conf");
+    static const auto userPath = getFlexemuUserConfigPath() +
+        PATHSEPARATORSTRING + flexLabelFile;
+    struct stat sbuf{};
+
+    if (stat(userPath.c_str(), &sbuf) == 0)
+    {
+        return userPath;
+    }
 
 #ifdef _WIN32
     return getExecutablePath() + PATHSEPARATORSTRING + flexLabelFile;
