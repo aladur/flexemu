@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<h1 id="Mon54">Flexemu Monitor program U5.4</h1>
+<h1 id="Monu54">Flexemu Monitor program U5.4</h1>
 <hr>
 <div class="justify">
  The monitor program provides basic I/O
@@ -171,7 +171,105 @@ The following table gives an overview of the available commands:
   <td>A four digit hex address.</td>
  </tr>
 </table>
-
+<p>
+Monitor program U5.4 also contains a terminal emulator. The following control
+characters are available:
+<p>
+<table>
+ <tr>
+  <th>Control<br>character</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>CTRL-A</td>
+  <td>Cursor home</td>
+ </tr>
+ <tr>
+  <td>CTRL-G</td>
+  <td>give a short terminal bell</td>
+ </tr>
+ <tr>
+  <td>CTRL-H</td>
+  <td>Backspace</td>
+ </tr>
+ <tr>
+  <td>CTRL-J</td>
+  <td>Linefeed</td>
+ </tr>
+ <tr>
+  <td>CTRL-L</td>
+  <td>Form feed, clear screen, cursor home</td>
+ </tr>
+ <tr>
+  <td>CTRL-M</td>
+  <td>Carriage return</td>
+ </tr>
+ <tr>
+  <td>CTRL-N</td>
+  <td>Switch cursor on</td>
+ </tr>
+ <tr>
+  <td>CTRL-O</td>
+  <td>Switch cursor off</td>
+ </tr>
+ <tr>
+  <td>CTRL-Q</td>
+  <td>Cursor up one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-R</td>
+  <td>Cursor down one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-S</td>
+  <td>Cursor right one character</td>
+ </tr>
+ <tr>
+  <td>CTRL-T</td>
+  <td>Cursor left one character</td>
+ </tr>
+ <tr>
+  <td>ESC or CTRL-[</td>
+  <td>Start ESCAPE sequence</td>
+ </tr>
+ <tr>
+  <td>CTRL-]</td>
+  <td>Toggle between soft- and hard scroll</td>
+ </tr>
+</table>
+<p>
+The following ESC sequences are available:
+<p>
+<table>
+ <tr>
+  <th>ESC sequence</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>ESC E Y X</td>
+  <td>Set cursor to line Y and column X. X and Y have an offset of $20</td>
+ </tr>
+ <tr>
+  <td>ESC F</td>
+  <td>TODO</td>
+ </tr>
+ <tr>
+  <td>ESC R</td>
+  <td>Switch inverse character output on</td>
+ </tr>
+ <tr>
+  <td>ESC r</td>
+  <td>Switch inverse character output off</td>
+ </tr>
+</table>
+<p>
+<table class="invisible compact">
+ <tr>
+  <td>X or Y:</td>
+  <td>Any charcter.</td>
+ </tr>
+</table>
+<p>
 <h2>SEE ALSO</h2>
 <ul>
  <li><a href="flexemu.htm"> flexemu Main</a>
