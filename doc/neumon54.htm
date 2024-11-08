@@ -117,7 +117,7 @@ the following Control- and Escape-sequences:
 <p>
 <table>
  <tr>
-  <th>Input</th>
+  <th>Control<br>character</th>
   <th>Description</th>
  </tr>
  <tr>
@@ -146,15 +146,11 @@ the following Control- and Escape-sequences:
  </tr>
  <tr>
   <td>CTRL-N</td>
-  <td>Scroll up one line</td>
+  <td>Scroll up one line, keep cursor position</td>
  </tr>
  <tr>
   <td>CTRL-O</td>
-  <td>Scroll down one line</td>
- </tr>
- <tr>
-  <td>CTRL-O</td>
-  <td>Scroll down one line</td>
+  <td>Scroll down one line, keep cursor position</td>
  </tr>
  <tr>
   <td>CTRL-Q</td>
@@ -177,10 +173,6 @@ the following Control- and Escape-sequences:
   <td>Switch cursor on</td>
  </tr>
  <tr>
-  <td>CTRL-S</td>
-  <td>Cursor right one character</td>
- </tr>
- <tr>
   <td>ESC or CTRL-[</td>
   <td>Start ESCAPE sequence</td>
  </tr>
@@ -198,28 +190,32 @@ The following Escape sequences are available:
 <p>
 <table>
  <tr>
-  <th>Input</th>
+  <th>ESC sequence</th>
   <th>Description</th>
  </tr>
  <tr>
+  <td>ESC = X Y</td>
+  <td>Set cursor to line Y and column X. X and Y have an offset of $20</td>
+ </tr>
+ <tr>
   <td>ESC A XX YY</td>
-  <td>Plot a Dot</td>
+  <td>Plot a dot</td>
  </tr>
  <tr>
   <td>ESC B</td>
-  <td>Delete line</td>
+  <td>Delete line, scroll lines beyond the cursor line one line up</td>
  </tr>
  <tr>
   <td>ESC C</td>
-  <td>Insert line</td>
+  <td>Insert line, scroll lines on and beyond the cursor line one line down</td>
  </tr>
  <tr>
   <td>ESC D</td>
   <td>Switch to german character set</td>
  </tr>
  <tr>
-  <td>ESC E YY XX</td>
-  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
+  <td>ESC E Y X</td>
+  <td>Set cursor to line Y and column X. X and Y have an offset of $20</td>
  </tr>
  <tr>
   <td>ESC F</td>
@@ -234,26 +230,34 @@ The following Escape sequences are available:
   <td>Switch to ASCII character set</td>
  </tr>
  <tr>
-  <td>ESC = XX YY</td>
-  <td>Set Cursor to line YY and Column XX. XX, YY have an offset of $20</td>
- </tr>
- <tr>
-  <td>ESC P or ESC p</td>
-  <td>Switch inverse video on</td>
- </tr>
- <tr>
-  <td>ESC Q or ESC q</td>
-  <td>Switch inverse video off</td>
- </tr>
- <tr>
   <td>ESC K or ESC L</td>
   <td>Erase to end of line</td>
  </tr>
  <tr>
-  <td>ESC Z or ESC k or ESC S</td>
+  <td>ESC P or ESC p</td>
+  <td>Switch inverse character output on</td>
+ </tr>
+ <tr>
+  <td>ESC Q or ESC q</td>
+  <td>Switch inverse character output off</td>
+ </tr>
+ <tr>
+  <td style="min-width: 14em">ESC Z, ESC k or ESC S</td>
   <td>Erase to end of screen</td>
  </tr>
 </table>
+<p>
+<table class="invisible compact">
+ <tr>
+  <td>X or Y:</td>
+  <td>Any charcter.</td>
+ </tr>
+ <tr>
+  <td>XX or YY:</td>
+  <td>Any two characters.</td>
+ </tr>
+</table>
+<p>
 <p>
 On Linux there is a mode to use flexemu in terminal only mode. No special
 version of Monitor program is needed any more. It simply can be started by:
@@ -262,7 +266,8 @@ version of Monitor program is needed any more. It simply can be started by:
 Flexemu can also be used with other monitor programs as long as they support
 the special hardware needs of the Eurocom II/V7.
 <p>
-Flexemu ships with complete source code of neumon54.
+The source code of neumon54 is part of flexemu deployment, see file
+neumon54.asm or neumon54.lst.
 </div>
 
 <h2>SEE ALSO</h2>
