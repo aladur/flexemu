@@ -177,6 +177,89 @@ The following table gives an overview of the available commands:
   <td>A four digit hex address.</td>
  </tr>
 </table>
+<p>
+Monitor program V5.3 and V5.4 also contain a terminal emulator which can be
+controlled with the following Control- and Escape-sequences:
+<p>
+<table>
+ <tr>
+  <th>Control<br>character</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td>CTRL-B or CTRL-L</td>
+  <td>Form feed, clear screen, cursor home</td>
+ </tr>
+ <tr>
+  <td>CTRL-G</td>
+  <td>give a short terminal bell</td>
+ </tr>
+ <tr>
+  <td>CTRL-H</td>
+  <td>Backspace</td>
+ </tr>
+ <tr>
+  <td>CTRL-J</td>
+  <td>Linefeed</td>
+ </tr>
+ <tr>
+  <td>CTRL-M</td>
+  <td>Carriage return</td>
+ </tr>
+ <tr>
+  <td>CTRL-Q</td>
+  <td>Cursor up one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-R</td>
+  <td>Cursor down one line</td>
+ </tr>
+ <tr>
+  <td>CTRL-S</td>
+  <td>Cursor right one character</td>
+ </tr>
+ <tr>
+  <td>CTRL-T</td>
+  <td>Cursor left one character</td>
+ </tr>
+ <tr>
+  <td>ESC or CTRL-[</td>
+  <td>Start ESCAPE sequence</td>
+ </tr>
+ <tr>
+  <td>CTRL-]</td>
+  <td>Toggle between soft- and hard scroll</td>
+ </tr>
+</table>
+<p>
+The following Escape sequences are available:
+<p>
+<table>
+ <tr>
+  <th>ESC sequence</th>
+  <th>Description</th>
+ </tr>
+ <tr>
+  <td style="min-width: 8em">ESC A XX YY</td>
+  <td>Plot a dot</td>
+ </tr>
+ <tr>
+  <td>ESC E Y X</td>
+  <td>Set cursor to line Y and column X. X and Y have an offset of $20</td>
+ </tr>
+</table>
+<p>
+<table class="invisible compact">
+ <tr>
+  <td>X or Y:</td>
+  <td>Any charcter.</td>
+ </tr>
+ <tr>
+  <td>XX or YY:</td>
+  <td>Any two characters.</td>
+ </tr>
+</table>
+<p>
 
 <h2>SEE ALSO</h2>
 <ul>
