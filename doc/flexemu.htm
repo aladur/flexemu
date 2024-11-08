@@ -16,7 +16,7 @@
 <h1>flexemu - an MC6809 emulator running FLEX</h1>
 <hr>
 <h2 id="synopsis">SYNOPSIS</h2>
-<h3 id="synopsis_linux">On Linux</h3>
+<h3 id="synopsis_unix">On Unix like OS</h3>
 <p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-t] [-r&nbsp;&lt;two_hex_digits&gt;] [-V] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
 <h3 id="synopsis_windows">On Windows</h3>
 <p class="justify">flexemu [-i] [-h] [-f&nbsp;path] [-p&nbsp;path] [-c&nbsp;color] [-0&nbsp;path] [-1&nbsp;path] [-2&nbsp;path] [-3&nbsp;path] [-V] [-u] [-j&nbsp;screen_factor] [-C&nbsp;startup_command] [-O&nbsp;cccc] [-L&nbsp;path]</p>
@@ -39,7 +39,7 @@ in Germany in the 1980ies.
 <b>flexemu</b> supports the following features:
 <p>
 <ul>
- <li>running on Linux and Windows.
+ <li>running on Unix like OS and Windows.
  <li>using Qt framework as platform independent user interface
  <li>Emulate
 <a href="e2hwdesc.htm#E2V5">Eurocom II/V5</a> with digital cassette drives or
@@ -64,7 +64,7 @@ or original frequency
 <a href="e2hwdesc.htm#96KbRamExt">2 x 96 KByte RAM extension</a> or
 <a href="e2hwdesc.htm#384KbRamExt">2 x 288 KByte RAM extension</a>
  <li>MC6850 serial line used for terminal I/O
- <li>terminal only mode without graphical user interface (Linux only)
+ <li>terminal only mode without graphical user interface (Unix like OS only)
  <li>WD1793 floppy disk controller support with up to 4 disk drives
  <li>support of DSK or FLX disk image files
  <li>support of virtual disks based on a host directory
@@ -73,7 +73,7 @@ or original frequency
  <li>0% host CPU load during MC6809 CPU emulation is stopped
  <li>0% host CPU load during CWAI and SYNC Instruction
  <li>minimum host CPU load if emulated CPU is running with original frequency
- <li>On Linux Signal SIGINT, SIGUSR1 and SIGUSR2 generate NMI,
+ <li>On Unix like OS Signal SIGINT, SIGUSR1 and SIGUSR2 generate NMI,
      IRQ or FIRQ
  <li>Configurable CPU Instruction logging within address range
      and/or Start/Stop trigger address
@@ -96,7 +96,7 @@ preferences dialog. Command line options supersede preferences and makes the
 corresponding preferences together with its dependent preferences read-only.
 </div>
 
-<h3 id="options_linux_windows">Command line options on Linux and Windows</h3>
+<h3 id="options_linux_windows">Command line options on Unix like OS and Windows</h3>
 <div class="options-list">
 <dl>
 <dt>-f &lt;hexfile&gt;</dt>
@@ -130,7 +130,7 @@ for.<BR>Defaults:
   <td>&lt;INSTDIR&gt;\data</td>
  </tr>
  <tr>
-  <td>Linux:</td>
+  <td>Unix like OS:</td>
   <td>/usr/share/flexemu</td>
  </tr>
 </table>
@@ -220,7 +220,7 @@ Print version number and exit.
 </dl>
 </div>
 
-<p><h3 id="options_linux">Command line options only on Linux</h3>
+<p><h3 id="options_linux">Command line options only on Unix like OS</h3>
 <div class="options-list">
 <dl>
 <dt>-t</dt>
@@ -373,7 +373,7 @@ The following preferences can be modified.
   <td><b>&check;</b></td>
   <td><b>&check;</b></td>
   <td>Windows: &lt;INSTDIR&gt;\data<BR>
-  Linux: /usr/share/flexemu</td>
+  Unix like OS: /usr/share/flexemu</td>
  </tr>
  <tr>
   <td>Monitor program</td>
@@ -459,7 +459,7 @@ The following preferences can be modified.
   <td>36</td>
  </tr>
  <tr>
-  <th colspan="5">Terminal (Linux only)</td>
+  <th colspan="5">Terminal (Unix like OS only)</td>
  </tr>
  <tr>
   <td>Ignore output of NUL (0x00) characters</td>
@@ -619,7 +619,7 @@ allows to log all executed instructions.
 Addresses having a special meaning in the FLEX Operating System can be
 displayed as label instead of the hex-address. These labels are defined in
 the file
-<b>flexlabl.conf</b>. On Linux the file get's installed in path
+<b>flexlabl.conf</b>. On Unix like OS the file get's installed in path
 <b>/etc/flexlabl.conf</b>. On Windows it is located in the installation
 directory.
 </div>
