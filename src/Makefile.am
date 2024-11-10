@@ -256,7 +256,6 @@ flexemu_SOURCES = \
 	bobserv.h \
 	bobservd.h \
 	bobshelp.h \
-	boption.h \
 	brcfile.h \
 	bregistr.h \
 	brkptui.h \
@@ -561,7 +560,6 @@ libjsoncpp_a_SOURCES = \
 updatemd_SOURCES = \
 	updatemd.cpp \
 	benv.h \
-	boption.h \
 	bprocess.h \
 	misc1.h
 

@@ -15,6 +15,7 @@
 
 #include <atomic>
 #include <array>
+#include <optional>
 #include "misc1.h"
 #include "typedefs.h"
 #include "memory.h"
@@ -24,8 +25,9 @@
 #include "flexemu.h"
 #include "absdisas.h"
 #include "bobserv.h"
-#include "boption.h"
 #include "mc6809lg.h"
+
+using OptionalWord = std::optional<Word>;
 
 /* Keep macro to be controlable from command line */
 /* NOLINTNEXTLINE(cppcoreguidelines-macro-usage) */
@@ -933,10 +935,10 @@ protected:
 
     // breakpoint support
 protected:
-    std::array<BOptionalWord, 3> bp;
+    std::array<OptionalWord, 3> bp;
 public:
     void set_bp(int which, Word address);
-    BOptionalWord get_bp(int which);
+    OptionalWord get_bp(int which);
     bool is_bp_set(int which);
     void reset_bp(int which);
 

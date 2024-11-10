@@ -243,9 +243,6 @@
     <ClInclude Include="bobshelp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="boption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="brcfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

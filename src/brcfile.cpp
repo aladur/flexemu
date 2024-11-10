@@ -22,7 +22,7 @@
 
 #include "misc1.h"
 #include "brcfile.h"
-#include "boption.h"
+#include <optional>
 #include <sstream>
 #include <fstream>
 #include <cstring>
@@ -72,13 +72,13 @@ int BRcFile::SetValue(const char *key, int value)
 
 int BRcFile::GetValue(const char *key, std::string &value)
 {
-    BOptional<bool> isInteger;
+    std::optional<bool> isInteger;
 
     return GetValue(key, value, isInteger);
 }
 
 int BRcFile::GetValue(const char *key, std::string &value,
-        BOptional<bool> &isInteger)
+        std::optional<bool> &isInteger)
 {
     std::ifstream fs(fileName, std::ios::in);
     auto keyLength = std::strlen(key);
@@ -120,7 +120,7 @@ int BRcFile::GetValue(const char *key, std::string &value,
 int BRcFile::GetValue(const char *key, int &value)
 {
     std::string str;
-    BOptional<bool> isInt;
+    std::optional<bool> isInt;
 
     if (int res = GetValue(key, str, isInt))
     {

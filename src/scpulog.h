@@ -23,9 +23,11 @@
 #ifndef SCPULOG_INCLUDED
 #define SCPULOG_INCLUDED
 
-#include "boption.h"
+#include "typedefs.h"
+#include <optional>
 #include <string>
 
+using OptionalWord = std::optional<Word>;
 enum class LogRegister : uint8_t
 {
     NONE = 0U,
@@ -139,10 +141,10 @@ public:
         return *this;
     }
 
-    BOptionalWord minAddr{0x0000};
-    BOptionalWord maxAddr{0xFFFF};
-    BOptionalWord startAddr;
-    BOptionalWord stopAddr;
+    OptionalWord minAddr{0x0000};
+    OptionalWord maxAddr{0xFFFF};
+    OptionalWord startAddr;
+    OptionalWord stopAddr;
     bool logCycleCount{false};
     LogRegister logRegisters{LogRegister::NONE};
     std::string logFileName;

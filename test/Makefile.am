@@ -53,7 +53,6 @@ unittests_SOURCES = \
 	test_filfschk.cpp \
 	test_fdirent.cpp \
 	test_bdate.cpp \
-	test_boption.cpp \
 	test_bintervl.cpp \
 	test_bmembuf.cpp \
 	test_breltime.cpp \
@@ -77,7 +76,6 @@ unittests_SOURCES = \
 	../src/bobserv.h \
 	../src/bobservd.h \
 	../src/bobshelp.h \
-	../src/boption.h \
 	../src/breltime.h \
 	../src/btime.h \
 	../src/cistring.h \

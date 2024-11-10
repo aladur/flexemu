@@ -23,7 +23,7 @@
 #ifndef BRCFILE_INCLUDED
 #define BRCFILE_INCLUDED
 
-#include "boption.h"
+#include <optional>
 #include <string>
 #include <map>
 
@@ -51,7 +51,7 @@ public:
 
 private:
     int GetValue(const char *key, std::string &value,
-            BOptional<bool> &isInteger);
+            std::optional<bool> &isInteger);
 
     std::string fileName;
 };

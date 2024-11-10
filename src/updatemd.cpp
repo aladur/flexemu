@@ -24,7 +24,6 @@
 #include <json/writer.h>
 #include <json/value.h>
 #include "misc1.h"
-#include "boption.h"
 #include "bprocess.h"
 #include "benv.h"
 #include <unistd.h>
@@ -34,6 +33,7 @@
 #include <regex>
 #include <cstdio>
 #include <filesystem>
+#include <optional>
 
 
 namespace fs = std::filesystem;
@@ -266,7 +266,7 @@ static ClocMap_t cloc(const ClocKeysMap_t &keysMap,
 }
 
 static Json::Value createMetaData(
-        const BOptional<int> &optClangTidyRules,
+        const std::optional<int> &optClangTidyRules,
         const std::string &jsonKey,
         ClocMap_t &resultMap)
 {
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
     Json::Value metaDataIn;
     std::map<std::string, ClocMap_t> resultMap;
     MetaDataUpdateConfig cfg;
-    BOptional<int> optClangTidyRules;
+    std::optional<int> optClangTidyRules;
     ClocMap_t clocResultMap;
 
     try

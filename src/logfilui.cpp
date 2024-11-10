@@ -21,18 +21,22 @@
 */
 
 
+#include "misc1.h"
 #include "logfilui.h"
 #include "efslctle.h"
 #include "scpulog.h"
 #include "bui.h"
 #include <stdexcept>
 #include <cassert>
+#include <optional>
 #include "warnoff.h"
 #include <QAbstractButton>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
 #include "warnon.h"
+
+using OptionalWord = std::optional<Word>;
 
 Mc6809LoggerConfigUi::Mc6809LoggerConfigUi() :
     Ui_LogfileSettings()
@@ -150,10 +154,10 @@ Mc6809LoggerConfig Mc6809LoggerConfigUi::GetData() const
 {
     Mc6809LoggerConfig loggerConfig;
 
-    loggerConfig.minAddr = ::GetData<BOptionalWord>(*e_minAddress);
-    loggerConfig.maxAddr = ::GetData<BOptionalWord>(*e_maxAddress);
-    loggerConfig.startAddr = ::GetData<BOptionalWord>(*e_startAddress);
-    loggerConfig.stopAddr = ::GetData<BOptionalWord>(*e_stopAddress);
+    loggerConfig.minAddr = ::GetData<OptionalWord>(*e_minAddress);
+    loggerConfig.maxAddr = ::GetData<OptionalWord>(*e_maxAddress);
+    loggerConfig.startAddr = ::GetData<OptionalWord>(*e_startAddress);
+    loggerConfig.stopAddr = ::GetData<OptionalWord>(*e_stopAddress);
 
     loggerConfig.logCycleCount = c_logCycleCount->isChecked();
     loggerConfig.isLoopOptimization = c_loopOptimization->isChecked();

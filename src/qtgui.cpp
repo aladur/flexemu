@@ -546,19 +546,20 @@ void QtGui::OnCpuBreakpoints()
 
     if (result == QDialog::Accepted)
     {
+        int index = 0;
+
         breakpoints = ui.GetData();
-        for (int index = 0;
-             index < static_cast<int>(breakpoints.size());
-             ++index)
+        for (const auto &breakpoint : breakpoints)
         {
-            if (breakpoints[index].has_value())
+            if (breakpoint.has_value())
             {
-                cpu.set_bp(index, breakpoints[index].value());
+                cpu.set_bp(index, breakpoint.value());
             }
             else
             {
                 cpu.reset_bp(index);
             }
+            ++index;
         }
     }
 }

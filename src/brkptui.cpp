@@ -31,6 +31,8 @@
 #include <QAbstractButton>
 #include "warnon.h"
 
+using OptionalWord = std::optional<Word>;
+
 BreakpointSettingsUi::BreakpointSettingsUi() :
     Ui_BreakpointSettings()
 {
@@ -65,16 +67,16 @@ void BreakpointSettingsUi::SetData(const BPArray &breakpoints)
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    ::SetData<BOptionalWord>(breakpoints[0], *e_breakpoint1);
-    ::SetData<BOptionalWord>(breakpoints[1], *e_breakpoint2);
+    ::SetData<OptionalWord>(breakpoints[0], *e_breakpoint1);
+    ::SetData<OptionalWord>(breakpoints[1], *e_breakpoint2);
 }
 
 BPArray BreakpointSettingsUi::GetData() const
 {
     BPArray breakpoints;
 
-    breakpoints[0] = ::GetData<BOptionalWord>(*e_breakpoint1);
-    breakpoints[1] = ::GetData<BOptionalWord>(*e_breakpoint2);
+    breakpoints[0] = ::GetData<OptionalWord>(*e_breakpoint1);
+    breakpoints[1] = ::GetData<OptionalWord>(*e_breakpoint2);
 
     return breakpoints;
 }

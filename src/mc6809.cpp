@@ -1454,7 +1454,7 @@ void Mc6809::set_bp(int which, Word address)
     events |= Event::BreakPoint;
 }
 
-BOptionalWord Mc6809::get_bp(int which)
+OptionalWord Mc6809::get_bp(int which)
 {
     if (which < 0 || which > static_cast<int>(bp.size()))
     {

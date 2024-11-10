@@ -24,17 +24,19 @@
 #ifndef BRKPTUI_INCLUDE
 #define BRKPTUI_INCLUDE
 
+#include "typedefs.h"
 #include "warnoff.h"
 #include "brkpt_ui.h"
 #include <QObject>
 #include "warnon.h"
-#include "boption.h"
+#include <optional>
 
 class QDialog;
 class QLineEdit;
 class QAbstractButton;
 
-using BPArray = std::array<BOptionalWord, 2>;
+using OptionalWord = std::optional<Word>;
+using BPArray = std::array<OptionalWord, 2>;
 
 class BreakpointSettingsUi : public QObject, protected Ui_BreakpointSettings
 {
