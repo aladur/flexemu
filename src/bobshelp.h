@@ -34,6 +34,7 @@ enum class NotifyId : uint8_t
     FirstKeyboardRequest,
     RequestScreenUpdate,
     VideoRamBankChanged,
+    SetFrequency,
 };
 
 #endif // #ifndef BOBSHELP_INCLUDED

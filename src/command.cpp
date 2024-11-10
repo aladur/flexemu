@@ -228,7 +228,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
 
                     if (!(stream >> freq).fail() && freq >= 0.0)
                     {
-                        scheduler.set_frequency(freq);
+                        Notify(NotifyId::SetFrequency, &freq);
                     }
 
                     return;

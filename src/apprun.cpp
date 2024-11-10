@@ -176,6 +176,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
     acia1.Attach(cpu);
     terminalIO.Attach(cpu);
     command.Attach(cpu);
+    command.Attach(gui);
     vico1.Attach(memory);
     vico2.Attach(memory);
     if (options.useRtc)

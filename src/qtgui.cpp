@@ -632,6 +632,7 @@ void QtGui::OnTimer()
     // - CPU view update
     // - Disk status update
     // - interrupt info update
+    // - CPU frequency update (if newFrequency has value)
     if (++timerTicks % (100000 / TIME_BASE) == 0)
     {
         timerTicks = 0;
@@ -669,6 +670,14 @@ void QtGui::OnTimer()
         {
             isOriginalFrequency = newIsOriginalFrequency;
             UpdateCpuFrequencyCheck();
+        }
+        {
+            std::lock_guard<std::mutex> guard(newFrequencyMutex);
+            if (newFrequency.has_value())
+            {
+                SetCpuFrequency(*newFrequency);
+                newFrequency.reset();
+            }
         }
 
         if (isFirstTime)
@@ -1508,6 +1517,11 @@ void QtGui::ToggleCpuFrequency()
 {
     isOriginalFrequency = !isOriginalFrequency;
     auto frequency = isOriginalFrequency ? ORIGINAL_FREQUENCY : 0.0F;
+    SetCpuFrequency(frequency);
+}
+
+void QtGui::SetCpuFrequency(float frequency)
+{
     options.frequency = frequency;
     oldOptions.frequency = frequency;
     scheduler.sync_exec(BCommandPtr(new CSetFrequency(scheduler, frequency)));
@@ -2183,5 +2197,14 @@ void QtGui::WriteOneOption(sOptions p_options, FlexemuOptionId optionId) const
 void QtGui::write_char_serial(Byte value)
 {
     printOutputWindow->write_char_serial(value);
+}
+
+void QtGui::UpdateFrom(NotifyId id, void *param)
+{
+    if (id == NotifyId::SetFrequency && param != nullptr)
+    {
+        std::lock_guard<std::mutex> guard(newFrequencyMutex);
+        newFrequency = *static_cast<float *>(param);
+    }
 }
 

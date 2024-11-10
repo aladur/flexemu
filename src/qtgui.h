@@ -30,9 +30,12 @@
 #include "scpulog.h"
 #include "soptions.h"
 #include "e2.h"
+#include "bobserv.h"
 #include <vector>
 #include <string>
 #include <memory>
+#include <mutex>
+#include <optional>
 #include "warnoff.h"
 #include "cpustat_ui.h"
 #include <QWidget>
@@ -88,7 +91,7 @@ using ColorTablesCache = QHash<std::size_t, QByteArray>;
 using ColorTablesCache = QHash<uint, QByteArray>;
 #endif
 
-class QtGui : public QWidget, public AbstractGui
+class QtGui : public QWidget, public AbstractGui, public BObserver
 {
     Q_OBJECT
 
@@ -116,6 +119,8 @@ public:
     bool HasFloppy() const;
     void output_to_graphic() override;
     void write_char_serial(Byte value) override;
+    // BObserver interface
+    void UpdateFrom(NotifyId id, void *param) override;
 
 signals:
     void CloseApplication();
@@ -210,6 +215,7 @@ private:
     static QIcon GetPreferencesIcon(bool isRestartNeeded);
     void SetPreferencesStatusText(bool isRestartNeeded) const;
     void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;
+    void SetCpuFrequency(float frequency);
 
     // QWidget Overrides
     bool event(QEvent *event) override;
@@ -279,6 +285,8 @@ private:
     bool isRestartNeeded{};
     int timerTicks{0};
     Byte oldFirstRasterLine{0U};
+    std::optional<float> newFrequency;
+    std::mutex newFrequencyMutex;
     Mc6809LoggerConfig cpuLoggerConfig;
 
     Scheduler &scheduler;
