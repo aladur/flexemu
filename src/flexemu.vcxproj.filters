@@ -524,6 +524,9 @@
     <CustomBuild Include="qtgui.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="about.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="brkpt.ui">
       <Filter>Resource Files</Filter>
     </CustomBuild>

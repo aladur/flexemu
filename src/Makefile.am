@@ -135,7 +135,8 @@ flexemu_ui = \
 	cpustat.ui \
 	logfil.ui \
 	fsetup.ui \
-	pprev.ui
+	pprev.ui \
+	about.ui
 flexemu_ui_hdr = $(flexemu_ui:.ui=_ui.h)
 flexplorer_ui = \
 	fpnew.ui \

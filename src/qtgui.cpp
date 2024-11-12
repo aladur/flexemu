@@ -45,10 +45,12 @@
 #include "sodiff.h"
 #include "foptman.h"
 #include "fsetupui.h"
+#include "about_ui.h"
 #include "qtfree.h"
 #include "colors.h"
 #include "warnoff.h"
 #include "poutwin.h"
+#include "fversion.h"
 #include <QString>
 #include <QStringList>
 #include <QPixmap>
@@ -86,6 +88,9 @@
 #include <QHash>
 #include <QFont>
 #include <QFontDatabase>
+#include <QTextBrowser>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include "warnon.h"
 #include <cmath>
 #include <array>
@@ -598,14 +603,27 @@ void QtGui::OnIntroduction() const
     QDesktopServices::openUrl(url);
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void QtGui::OnAbout()
 {
-    auto version = QString(VERSION);
+    QDialog dialog;
+    Ui_AboutDialog ui{};
 
+    ui.setupUi(&dialog);
+    const auto aboutIcon = QIcon(":/resource/about.png");
+    dialog.setWindowIcon(aboutIcon);
+    dialog.resize({0, 0});
+    dialog.setModal(true);
+    dialog.setSizeGripEnabled(true);
     auto title = tr("About %1").arg(PROGRAMNAME);
+    dialog.setWindowTitle(title);
+    auto *scene = new QGraphicsScene(ui.w_icon);
+    scene->setSceneRect(0, 0, 32, 32);
+    ui.w_icon->setScene(scene);
+    scene->addPixmap(QPixmap(":/resource/flexemu.png"))->setPos(0, 0);
 
-    QMessageBox::about(this, title,
-        tr("<b>%1 V%2</b> (" OSTYPE ")<p>"
+    auto aboutText = tr("<b>%1 V%2</b><p>"
            "%1 is an MC6809 emulator running "
            "<a href=\"https://en.wikipedia.org/wiki/FLEX_(operating_system)\">"
            "FLEX operating system</a>.<p>"
@@ -622,7 +640,26 @@ void QtGui::OnAbout()
            "Wolfgang Schwotzer</a><p>"
            "<a href=\"http://flexemu.neocities.org\">"
            "http://flexemu.neocities.org</a>")
-        .arg(PROGRAMNAME).arg(version));
+        .arg(PROGRAMNAME).arg(VERSION);
+    ui.e_about->setOpenExternalLinks(true);
+    ui.e_about->setHtml(aboutText);
+
+    auto versionsText = tr("<b>%1 V%2</b><p>compiled for " OSTYPE)
+        .arg(PROGRAMNAME).arg(VERSION);
+    versionsText.append("<table>");
+    for (const auto &version : FlexemuVersions::GetVersions())
+    {
+        std::stringstream stream;
+
+        stream << "<tr><td>" << version.first <<
+            "</td><td>" << version.second + "</td></tr>";
+        versionsText.append(stream.str().c_str());
+    }
+    versionsText.append("</table>");
+    ui.e_versions->setOpenExternalLinks(true);
+    ui.e_versions->insertHtml(versionsText);
+
+    dialog.exec();
 }
 
 void QtGui::OnTimer()
