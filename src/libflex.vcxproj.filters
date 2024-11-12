@@ -107,6 +107,9 @@
     <ClInclude Include="flexerr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="fversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="idircnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -212,6 +215,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="flexerr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="idircnt.cpp">

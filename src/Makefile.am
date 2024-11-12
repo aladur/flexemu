@@ -82,7 +82,8 @@ AM_CXXFLAGS = \
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
-	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
+	$(CXXWARNINGS) $(MACOSX_VERSION_MIN) \
+		-isystem $(top_srcdir)/jsoncpp/include
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
@@ -496,6 +497,7 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
+	fversion.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
@@ -537,6 +539,7 @@ libflex_a_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
 	ifilcnti.h \

@@ -137,11 +137,11 @@ am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
 	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
 	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
-	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
-	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
-	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
-	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT) \
-	libflex_a-rndcheck.$(OBJEXT)
+	libflex_a-flexerr.$(OBJEXT) libflex_a-fversion.$(OBJEXT) \
+	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
+	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
+	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
+	libflex_a-rfilecnt.$(OBJEXT) libflex_a-rndcheck.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 libfmt_a_AR = $(AR) $(ARFLAGS)
 libfmt_a_LIBADD =
@@ -356,6 +356,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/libflex_a-fileread.Po \
 	./$(DEPDIR)/libflex_a-filfschk.Po \
 	./$(DEPDIR)/libflex_a-flexerr.Po \
+	./$(DEPDIR)/libflex_a-fversion.Po \
 	./$(DEPDIR)/libflex_a-idircnt.Po \
 	./$(DEPDIR)/libflex_a-iffilcnt.Po \
 	./$(DEPDIR)/libflex_a-ifilecnt.Po \
@@ -731,7 +732,8 @@ AM_CXXFLAGS = \
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
-	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
+	$(CXXWARNINGS) $(MACOSX_VERSION_MIN) \
+		-isystem $(top_srcdir)/jsoncpp/include
 
 libjsoncpp_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/fmt/include
@@ -1146,6 +1148,7 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
+	fversion.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
@@ -1187,6 +1190,7 @@ libflex_a_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -1517,6 +1521,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fileread.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-flexerr.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-idircnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-iffilcnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-ifilecnt.Po@am__quote@ # am--include-marker
@@ -1894,6 +1899,20 @@ libflex_a-flexerr.obj: flexerr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='libflex_a-flexerr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
+
+libflex_a-fversion.o: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fversion.o -MD -MP -MF $(DEPDIR)/libflex_a-fversion.Tpo -c -o libflex_a-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fversion.Tpo $(DEPDIR)/libflex_a-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='libflex_a-fversion.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+
+libflex_a-fversion.obj: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fversion.obj -MD -MP -MF $(DEPDIR)/libflex_a-fversion.Tpo -c -o libflex_a-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fversion.Tpo $(DEPDIR)/libflex_a-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='libflex_a-fversion.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
 
 libflex_a-idircnt.o: idircnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-idircnt.o -MD -MP -MF $(DEPDIR)/libflex_a-idircnt.Tpo -c -o libflex_a-idircnt.o `test -f 'idircnt.cpp' || echo '$(srcdir)/'`idircnt.cpp
@@ -3746,6 +3765,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
+	-rm -f ./$(DEPDIR)/libflex_a-fversion.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po
@@ -3918,6 +3938,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
+	-rm -f ./$(DEPDIR)/libflex_a-fversion.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po
