@@ -217,6 +217,9 @@
     <CustomBuild Include="fpnew.ui">
       <Filter>Resource Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="about.ui">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="fpopt.ui">
       <Filter>Resource Files</Filter>
     </CustomBuild>

@@ -36,6 +36,8 @@
 #include "ffilecnt.h"
 #include "fcopyman.h"
 #include "qtfree.h"
+#include "about_ui.h"
+#include "fversion.h"
 #include "warnoff.h"
 #include <QApplication>
 #include <QCoreApplication>
@@ -60,6 +62,9 @@
 #include <QDragLeaveEvent>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QTextBrowser>
+#include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 #include "warnon.h"
 
 
@@ -520,12 +525,27 @@ void FLEXplorer::Info()
     });
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void FLEXplorer::About()
 {
-    auto version = QString(VERSION);
+    QDialog dialog;
+    Ui_AboutDialog ui{};
 
-    QMessageBox::about(this, tr("About FLEXplorer"),
-        tr("<b>FLEXplorer V%1</b> (" OSTYPE ")<p>"
+    ui.setupUi(&dialog);
+    const auto aboutIcon = QIcon(":/resource/about.png");
+    dialog.setWindowIcon(aboutIcon);
+    dialog.resize({0, 0});
+    dialog.setModal(true);
+    dialog.setSizeGripEnabled(true);
+    auto title = tr("About FLEXplorer");
+    dialog.setWindowTitle(title);
+    auto *scene = new QGraphicsScene(ui.w_icon);
+    scene->setSceneRect(0, 0, 32, 32);
+    ui.w_icon->setScene(scene);
+    scene->addPixmap(QPixmap(":/resource/flexplorer.png"))->setPos(0, 0);
+
+    auto aboutText = tr("<b>FLEXplorer V%1</b><p>"
            "FLEXplorer is an explorer for FLEX disk images and "
            "directory disks.<p>FLEXplorer comes with "
            "ABSOLUTELY NO WARRANTY. This is free software, and You "
@@ -540,7 +560,26 @@ void FLEXplorer::About()
            "Wolfgang Schwotzer</a><p>"
            "<a href=\"http://flexemu.neocities.org\">"
            "http://flexemu.neocities.org</a>")
-        .arg(version));
+        .arg(VERSION);
+    ui.e_about->setOpenExternalLinks(true);
+    ui.e_about->setHtml(aboutText);
+
+    auto versionsText = tr("<b>FLEXplorer V%2</b><p>compiled for " OSTYPE)
+        .arg(VERSION);
+    versionsText.append("<table>");
+    for (const auto &version : FlexemuVersions::GetVersions())
+    {
+        std::stringstream stream;
+
+        stream << "<tr><td>" << version.first <<
+            "</td><td>" << version.second + "</td></tr>";
+        versionsText.append(stream.str().c_str());
+    }
+    versionsText.append("</table>");
+    ui.e_versions->setOpenExternalLinks(true);
+    ui.e_versions->setHtml(versionsText);
+
+    dialog.exec();
 }
 
 void FLEXplorer::UpdateMenus()
