@@ -137,11 +137,11 @@ am_libflex_a_OBJECTS = libflex_a-bdate.$(OBJEXT) \
 	libflex_a-fdirent.$(OBJEXT) libflex_a-ffilebuf.$(OBJEXT) \
 	libflex_a-ffilecnt.$(OBJEXT) libflex_a-filecnts.$(OBJEXT) \
 	libflex_a-fileread.$(OBJEXT) libflex_a-filfschk.$(OBJEXT) \
-	libflex_a-flexerr.$(OBJEXT) libflex_a-fversion.$(OBJEXT) \
-	libflex_a-idircnt.$(OBJEXT) libflex_a-iffilcnt.$(OBJEXT) \
-	libflex_a-ifilecnt.$(OBJEXT) libflex_a-mdcrtape.$(OBJEXT) \
-	libflex_a-memory.$(OBJEXT) libflex_a-misc1.$(OBJEXT) \
-	libflex_a-rfilecnt.$(OBJEXT) libflex_a-rndcheck.$(OBJEXT)
+	libflex_a-flexerr.$(OBJEXT) libflex_a-idircnt.$(OBJEXT) \
+	libflex_a-iffilcnt.$(OBJEXT) libflex_a-ifilecnt.$(OBJEXT) \
+	libflex_a-mdcrtape.$(OBJEXT) libflex_a-memory.$(OBJEXT) \
+	libflex_a-misc1.$(OBJEXT) libflex_a-rfilecnt.$(OBJEXT) \
+	libflex_a-rndcheck.$(OBJEXT)
 libflex_a_OBJECTS = $(am_libflex_a_OBJECTS)
 libfmt_a_AR = $(AR) $(ARFLAGS)
 libfmt_a_LIBADD =
@@ -185,23 +185,23 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-e2floppy.$(OBJEXT) flexemu-e2screen.$(OBJEXT) \
 	flexemu-efslctle.$(OBJEXT) flexemu-fdoptman.$(OBJEXT) \
 	flexemu-flblfile.$(OBJEXT) flexemu-foptman.$(OBJEXT) \
-	flexemu-fsetupui.$(OBJEXT) flexemu-inout.$(OBJEXT) \
-	flexemu-iodevdbg.$(OBJEXT) flexemu-joystick.$(OBJEXT) \
-	flexemu-keyboard.$(OBJEXT) flexemu-logfilui.$(OBJEXT) \
-	flexemu-main.$(OBJEXT) flexemu-mc146818.$(OBJEXT) \
-	flexemu-mc6809.$(OBJEXT) flexemu-mc6809in.$(OBJEXT) \
-	flexemu-mc6809lg.$(OBJEXT) flexemu-mc6809st.$(OBJEXT) \
-	flexemu-mc6821.$(OBJEXT) flexemu-mc6850.$(OBJEXT) \
-	flexemu-mmu.$(OBJEXT) flexemu-ndircont.$(OBJEXT) \
-	flexemu-pagedet.$(OBJEXT) flexemu-pagedetd.$(OBJEXT) \
-	flexemu-pia1.$(OBJEXT) flexemu-pia2.$(OBJEXT) \
-	flexemu-pia2v5.$(OBJEXT) flexemu-poutwin.$(OBJEXT) \
-	flexemu-poverhlp.$(OBJEXT) flexemu-qtfree.$(OBJEXT) \
-	flexemu-qtgui.$(OBJEXT) flexemu-schedule.$(OBJEXT) \
-	flexemu-sodiff.$(OBJEXT) flexemu-soptions.$(OBJEXT) \
-	flexemu-terminal.$(OBJEXT) flexemu-vico1.$(OBJEXT) \
-	flexemu-vico2.$(OBJEXT) flexemu-wd1793.$(OBJEXT) \
-	flexemu-winmain.$(OBJEXT)
+	flexemu-fsetupui.$(OBJEXT) flexemu-fversion.$(OBJEXT) \
+	flexemu-inout.$(OBJEXT) flexemu-iodevdbg.$(OBJEXT) \
+	flexemu-joystick.$(OBJEXT) flexemu-keyboard.$(OBJEXT) \
+	flexemu-logfilui.$(OBJEXT) flexemu-main.$(OBJEXT) \
+	flexemu-mc146818.$(OBJEXT) flexemu-mc6809.$(OBJEXT) \
+	flexemu-mc6809in.$(OBJEXT) flexemu-mc6809lg.$(OBJEXT) \
+	flexemu-mc6809st.$(OBJEXT) flexemu-mc6821.$(OBJEXT) \
+	flexemu-mc6850.$(OBJEXT) flexemu-mmu.$(OBJEXT) \
+	flexemu-ndircont.$(OBJEXT) flexemu-pagedet.$(OBJEXT) \
+	flexemu-pagedetd.$(OBJEXT) flexemu-pia1.$(OBJEXT) \
+	flexemu-pia2.$(OBJEXT) flexemu-pia2v5.$(OBJEXT) \
+	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
+	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
+	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
+	flexemu-soptions.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
+	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
 am__objects_4 = $(am__objects_3)
 am__objects_5 = flexemu-brkptui_moc.$(OBJEXT) \
@@ -222,7 +222,7 @@ am_flexplorer_OBJECTS = flexplorer-fpattrui.$(OBJEXT) \
 	flexplorer-fpmdich.$(OBJEXT) flexplorer-fpmodel.$(OBJEXT) \
 	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptman.$(OBJEXT) \
 	flexplorer-fpoptui.$(OBJEXT) flexplorer-fpwin.$(OBJEXT) \
-	flexplorer-qtfree.$(OBJEXT)
+	flexplorer-fversion.$(OBJEXT) flexplorer-qtfree.$(OBJEXT)
 am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
 am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
@@ -292,7 +292,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-flexemu_qrc.Po \
 	./$(DEPDIR)/flexemu-foptman.Po ./$(DEPDIR)/flexemu-fsetupui.Po \
 	./$(DEPDIR)/flexemu-fsetupui_moc.Po \
-	./$(DEPDIR)/flexemu-inout.Po ./$(DEPDIR)/flexemu-iodevdbg.Po \
+	./$(DEPDIR)/flexemu-fversion.Po ./$(DEPDIR)/flexemu-inout.Po \
+	./$(DEPDIR)/flexemu-iodevdbg.Po \
 	./$(DEPDIR)/flexemu-joystick.Po \
 	./$(DEPDIR)/flexemu-keyboard.Po \
 	./$(DEPDIR)/flexemu-logfilui.Po \
@@ -332,6 +333,7 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexplorer-fpoptui_moc.Po \
 	./$(DEPDIR)/flexplorer-fpwin.Po \
 	./$(DEPDIR)/flexplorer-fpwin_moc.Po \
+	./$(DEPDIR)/flexplorer-fversion.Po \
 	./$(DEPDIR)/flexplorer-qtfree.Po \
 	./$(DEPDIR)/libflex_a-bdate.Po ./$(DEPDIR)/libflex_a-bdir.Po \
 	./$(DEPDIR)/libflex_a-benv.Po \
@@ -356,7 +358,6 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/libflex_a-fileread.Po \
 	./$(DEPDIR)/libflex_a-filfschk.Po \
 	./$(DEPDIR)/libflex_a-flexerr.Po \
-	./$(DEPDIR)/libflex_a-fversion.Po \
 	./$(DEPDIR)/libflex_a-idircnt.Po \
 	./$(DEPDIR)/libflex_a-iffilcnt.Po \
 	./$(DEPDIR)/libflex_a-ifilecnt.Po \
@@ -731,15 +732,16 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
+	-pipe -D_REENTRANT -pthread -fPIC \
+	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(AM_CXXFLAGS) \
 	$(CXXWARNINGS) $(MACOSX_VERSION_MIN) \
 		-isystem $(top_srcdir)/jsoncpp/include
 
 libjsoncpp_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexemu_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexemu_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -859,6 +861,7 @@ flexemu_SOURCES = \
 	flblfile.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
+	fversion.cpp \
 	inout.cpp \
 	iodevdbg.cpp \
 	joystick.cpp \
@@ -953,6 +956,7 @@ flexemu_SOURCES = \
 	flexerr.h \
 	foptman.h \
 	fsetupui.h \
+	fversion.h \
 	iffilcnt.h \
 	ifilcnti.h \
 	ifilecnt.h \
@@ -1014,6 +1018,7 @@ flexplorer_SOURCES = \
 	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
+	fversion.cpp \
 	qtfree.cpp \
 	bdate.h \
 	bdir.h \
@@ -1051,6 +1056,7 @@ flexplorer_SOURCES = \
 	fpoptman.h \
 	fpoptui.h \
 	fpwin.h \
+	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -1149,7 +1155,6 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
-	fversion.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
@@ -1444,6 +1449,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-foptman.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fsetupui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fsetupui_moc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-inout.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-iodevdbg.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-joystick.Po@am__quote@ # am--include-marker
@@ -1497,6 +1503,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpoptui_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpwin_moc.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-qtfree.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdate.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-bdir.Po@am__quote@ # am--include-marker
@@ -1522,7 +1529,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fileread.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-filfschk.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-flexerr.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-fversion.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-idircnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-iffilcnt.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libflex_a-ifilecnt.Po@am__quote@ # am--include-marker
@@ -1900,20 +1906,6 @@ libflex_a-flexerr.obj: flexerr.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='flexerr.cpp' object='libflex_a-flexerr.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-flexerr.obj `if test -f 'flexerr.cpp'; then $(CYGPATH_W) 'flexerr.cpp'; else $(CYGPATH_W) '$(srcdir)/flexerr.cpp'; fi`
-
-libflex_a-fversion.o: fversion.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fversion.o -MD -MP -MF $(DEPDIR)/libflex_a-fversion.Tpo -c -o libflex_a-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fversion.Tpo $(DEPDIR)/libflex_a-fversion.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='libflex_a-fversion.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
-
-libflex_a-fversion.obj: fversion.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-fversion.obj -MD -MP -MF $(DEPDIR)/libflex_a-fversion.Tpo -c -o libflex_a-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libflex_a-fversion.Tpo $(DEPDIR)/libflex_a-fversion.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='libflex_a-fversion.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -c -o libflex_a-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
 
 libflex_a-idircnt.o: idircnt.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libflex_a_CXXFLAGS) $(CXXFLAGS) -MT libflex_a-idircnt.o -MD -MP -MF $(DEPDIR)/libflex_a-idircnt.Tpo -c -o libflex_a-idircnt.o `test -f 'idircnt.cpp' || echo '$(srcdir)/'`idircnt.cpp
@@ -2446,6 +2438,20 @@ flexemu-fsetupui.obj: fsetupui.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fsetupui.cpp' object='flexemu-fsetupui.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fsetupui.obj `if test -f 'fsetupui.cpp'; then $(CYGPATH_W) 'fsetupui.cpp'; else $(CYGPATH_W) '$(srcdir)/fsetupui.cpp'; fi`
+
+flexemu-fversion.o: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fversion.o -MD -MP -MF $(DEPDIR)/flexemu-fversion.Tpo -c -o flexemu-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fversion.Tpo $(DEPDIR)/flexemu-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='flexemu-fversion.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+
+flexemu-fversion.obj: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-fversion.obj -MD -MP -MF $(DEPDIR)/flexemu-fversion.Tpo -c -o flexemu-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-fversion.Tpo $(DEPDIR)/flexemu-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='flexemu-fversion.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
 
 flexemu-inout.o: inout.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-inout.o -MD -MP -MF $(DEPDIR)/flexemu-inout.Tpo -c -o flexemu-inout.o `test -f 'inout.cpp' || echo '$(srcdir)/'`inout.cpp
@@ -3175,6 +3181,20 @@ flexplorer-fpwin.obj: fpwin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpwin.obj `if test -f 'fpwin.cpp'; then $(CYGPATH_W) 'fpwin.cpp'; else $(CYGPATH_W) '$(srcdir)/fpwin.cpp'; fi`
 
+flexplorer-fversion.o: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fversion.o -MD -MP -MF $(DEPDIR)/flexplorer-fversion.Tpo -c -o flexplorer-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fversion.Tpo $(DEPDIR)/flexplorer-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='flexplorer-fversion.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fversion.o `test -f 'fversion.cpp' || echo '$(srcdir)/'`fversion.cpp
+
+flexplorer-fversion.obj: fversion.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fversion.obj -MD -MP -MF $(DEPDIR)/flexplorer-fversion.Tpo -c -o flexplorer-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fversion.Tpo $(DEPDIR)/flexplorer-fversion.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fversion.cpp' object='flexplorer-fversion.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fversion.obj `if test -f 'fversion.cpp'; then $(CYGPATH_W) 'fversion.cpp'; else $(CYGPATH_W) '$(srcdir)/fversion.cpp'; fi`
+
 flexplorer-qtfree.o: qtfree.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-qtfree.o -MD -MP -MF $(DEPDIR)/flexplorer-qtfree.Tpo -c -o flexplorer-qtfree.o `test -f 'qtfree.cpp' || echo '$(srcdir)/'`qtfree.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-qtfree.Tpo $(DEPDIR)/flexplorer-qtfree.Po
@@ -3688,6 +3708,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po
 	-rm -f ./$(DEPDIR)/flexemu-fsetupui.Po
 	-rm -f ./$(DEPDIR)/flexemu-fsetupui_moc.Po
+	-rm -f ./$(DEPDIR)/flexemu-fversion.Po
 	-rm -f ./$(DEPDIR)/flexemu-inout.Po
 	-rm -f ./$(DEPDIR)/flexemu-iodevdbg.Po
 	-rm -f ./$(DEPDIR)/flexemu-joystick.Po
@@ -3741,6 +3762,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fversion.Po
 	-rm -f ./$(DEPDIR)/flexplorer-qtfree.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po
@@ -3766,7 +3788,6 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
-	-rm -f ./$(DEPDIR)/libflex_a-fversion.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po
@@ -3861,6 +3882,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-foptman.Po
 	-rm -f ./$(DEPDIR)/flexemu-fsetupui.Po
 	-rm -f ./$(DEPDIR)/flexemu-fsetupui_moc.Po
+	-rm -f ./$(DEPDIR)/flexemu-fversion.Po
 	-rm -f ./$(DEPDIR)/flexemu-inout.Po
 	-rm -f ./$(DEPDIR)/flexemu-iodevdbg.Po
 	-rm -f ./$(DEPDIR)/flexemu-joystick.Po
@@ -3914,6 +3936,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexplorer-fpoptui_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpwin_moc.Po
+	-rm -f ./$(DEPDIR)/flexplorer-fversion.Po
 	-rm -f ./$(DEPDIR)/flexplorer-qtfree.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdate.Po
 	-rm -f ./$(DEPDIR)/libflex_a-bdir.Po
@@ -3939,7 +3962,6 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/libflex_a-fileread.Po
 	-rm -f ./$(DEPDIR)/libflex_a-filfschk.Po
 	-rm -f ./$(DEPDIR)/libflex_a-flexerr.Po
-	-rm -f ./$(DEPDIR)/libflex_a-fversion.Po
 	-rm -f ./$(DEPDIR)/libflex_a-idircnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-iffilcnt.Po
 	-rm -f ./$(DEPDIR)/libflex_a-ifilecnt.Po

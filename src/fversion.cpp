@@ -24,7 +24,9 @@
 #include "misc1.h"
 #include "fversion.h"
 #include <string>
+#ifdef QT_CORE_LIB
 #include <QObject>
+#endif
 #include <fmt/format.h>
 #ifdef UNIX
 #include <json/version.h>
@@ -58,9 +60,11 @@ Versions_t FlexemuVersions::CreateVersions()
 #endif
 #endif
 
+#ifdef QT_CORE_LIB
     version = fmt::format("{}.{}.{}",
             QT_VERSION_MAJOR, QT_VERSION_MINOR, QT_VERSION_PATCH);
     versions.emplace("Qt", version);
+#endif
 
     version = fmt::format("{}.{}.{}",
             FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);

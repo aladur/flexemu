@@ -81,15 +81,16 @@ AM_CXXFLAGS = \
 # To use precompiled headers all targets have to use the same CXXFLAGS
 # (especially preprocessor directives).
 ALL_TARGETS_CXXFLAGS = \
-	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(QT_CXXFLAGS) $(AM_CXXFLAGS) \
+	-pipe -D_REENTRANT -pthread -fPIC \
+	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(AM_CXXFLAGS) \
 	$(CXXWARNINGS) $(MACOSX_VERSION_MIN) \
 		-isystem $(top_srcdir)/jsoncpp/include
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
 libflex_a_CXXFLAGS  = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexemu_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-flexplorer_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexemu_CXXFLAGS    = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
+flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
@@ -208,6 +209,7 @@ flexemu_SOURCES = \
 	flblfile.cpp \
 	foptman.cpp \
 	fsetupui.cpp \
+	fversion.cpp \
 	inout.cpp \
 	iodevdbg.cpp \
 	joystick.cpp \
@@ -302,6 +304,7 @@ flexemu_SOURCES = \
 	flexerr.h \
 	foptman.h \
 	fsetupui.h \
+	fversion.h \
 	iffilcnt.h \
 	ifilcnti.h \
 	ifilecnt.h \
@@ -363,6 +366,7 @@ flexplorer_SOURCES = \
 	fpoptman.cpp \
 	fpoptui.cpp \
 	fpwin.cpp \
+	fversion.cpp \
 	qtfree.cpp \
 	bdate.h \
 	bdir.h \
@@ -400,6 +404,7 @@ flexplorer_SOURCES = \
 	fpoptman.h \
 	fpoptui.h \
 	fpwin.h \
+	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -498,7 +503,6 @@ libflex_a_SOURCES = \
 	fileread.cpp \
 	filfschk.cpp \
 	flexerr.cpp \
-	fversion.cpp \
 	idircnt.cpp \
 	iffilcnt.cpp \
 	ifilecnt.cpp \
