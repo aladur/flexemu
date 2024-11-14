@@ -21,6 +21,7 @@
 */
 
 
+#include "misc1.h"
 #include "fpwin.h"
 #include "warnoff.h"
 #include <QApplication>
@@ -58,10 +59,8 @@ int main(int argc, char *argv[])
 
         if (arg.compare("-V") == 0)
         {
-            std::cout <<
-                "FLEXplorer " VERSION " (" OSTYPE ")\n" <<
-                "FLEXplorer " << COPYRIGHT_MESSAGE;
-                exit(EXIT_SUCCESS);
+            flx::print_versions(std::cout, "FLEXplorer");
+            exit(EXIT_SUCCESS);
         }
     }
 

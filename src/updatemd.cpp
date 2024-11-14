@@ -297,9 +297,7 @@ static Json::Value createMetaData(
 
 static void version()
 {
-    std::cout <<
-        "updatemd " << VERSION << " (" OSTYPE ")\n" <<
-        "updatemd " << COPYRIGHT_MESSAGE;
+    flx::print_versions(std::cout, "updatemd");
 }
 
 static void usage()

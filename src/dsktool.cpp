@@ -821,9 +821,7 @@ static void helpOnDiskSize()
 
 static void version()
 {
-    std::cout <<
-        "dsktool " << VERSION << " (" OSTYPE ")\n" <<
-        "dsktool " << COPYRIGHT_MESSAGE;
+    flx::print_versions(std::cout, "dsktool");
 }
 
 static void usage()

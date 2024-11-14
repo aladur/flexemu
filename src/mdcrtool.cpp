@@ -35,9 +35,7 @@
 
 static void version()
 {
-    std::cout <<
-        "mdcrtool " << VERSION << " (" OSTYPE ")\n" <<
-        "mdcrtool " << COPYRIGHT_MESSAGE;
+    flx::print_versions(std::cout, "mdcrtool");
 }
 
 static void syntax()

@@ -28,7 +28,7 @@
 #include <QObject>
 #endif
 #include <fmt/format.h>
-#ifdef UNIX
+#if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
 #include <json/version.h>
 #endif
 
@@ -70,7 +70,7 @@ Versions_t FlexemuVersions::CreateVersions()
             FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
     versions.emplace("fmtlib", version);
 
-#ifdef UNIX
+#if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
     versions.emplace("jsoncpp", JSONCPP_VERSION_STRING);
 #endif
 

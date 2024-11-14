@@ -374,9 +374,7 @@ void FlexemuOptions::GetCommandlineOptions(
                 break;
 
             case 'V':
-                std::cout <<
-                    PROGRAMNAME " " PROGRAM_VERSION " (" OSTYPE ")\n" <<
-                    PROGRAMNAME " " << COPYRIGHT_MESSAGE;
+                flx::print_versions(std::cout, PROGRAMNAME);
                 exit(EXIT_SUCCESS);
 
             case '?':

@@ -83,8 +83,7 @@ AM_CXXFLAGS = \
 ALL_TARGETS_CXXFLAGS = \
 	-pipe -D_REENTRANT -pthread -fPIC \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(AM_CXXFLAGS) \
-	$(CXXWARNINGS) $(MACOSX_VERSION_MIN) \
-		-isystem $(top_srcdir)/jsoncpp/include
+	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
 
 libjsoncpp_a_CXXFLAGS= --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
 libfmt_a_CXXFLAGS   = --std=c++11 -isystem $(top_srcdir)/fmt/include
@@ -94,8 +93,9 @@ flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 mdcrtool_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flex2hex_CXXFLAGS   = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 dsktool_CXXFLAGS    = $(ALL_TARGETS_CXXFLAGS) -include pch.h
-updatemd_CXXFLAGS   = --std=c++17 $(OS_TYPE) \
-			-isystem $(top_srcdir)/jsoncpp/include
+updatemd_CXXFLAGS   = --std=c++17 $(OS_TYPE) -DADD_JSONCPP_VERSION \
+			-isystem $(top_srcdir)/jsoncpp/include \
+			-isystem $(top_srcdir)/fmt/include
 
 libflex_a_LIBADD = $(LIBOBJS)
 
@@ -421,6 +421,7 @@ flexplorer_SOURCES = \
 	warnon.h
 
 mdcrtool_SOURCES = \
+	fversion.cpp \
 	mdcrfs.cpp \
 	mdcrtool.cpp \
 	bdir.h \
@@ -429,6 +430,7 @@ mdcrtool_SOURCES = \
 	config.h \
 	fileread.h \
 	flexerr.h \
+	fversion.h \
 	mdcrfs.h \
 	mdcrtape.h \
 	memsrc.h \
@@ -438,12 +440,14 @@ mdcrtool_SOURCES = \
 
 flex2hex_SOURCES = \
 	flex2hex.cpp \
+	fversion.cpp \
 	bintervl.h \
 	bmembuf.h \
 	config.h \
 	cvtwchar.h \
 	fileread.h \
 	flexerr.h \
+	fversion.h \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
@@ -451,6 +455,7 @@ flex2hex_SOURCES = \
 
 dsktool_SOURCES = \
 	dsktool.cpp \
+	fversion.cpp \
 	bdate.h \
 	bdir.h \
 	btime.h \
@@ -470,6 +475,7 @@ dsktool_SOURCES = \
 	filfschk.h \
 	flexemu.h \
 	flexerr.h \
+	fversion.h \
 	idircnt.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -566,9 +572,11 @@ libjsoncpp_a_SOURCES = \
 	$(top_srcdir)/$(libjsoncpp_top)/json_writer.cpp
 
 updatemd_SOURCES = \
+	fversion.cpp \
 	updatemd.cpp \
 	benv.h \
 	bprocess.h \
+	fversion.h \
 	misc1.h
 
 # Execute updatemd to update file metadata.json.
