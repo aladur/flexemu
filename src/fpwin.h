@@ -77,38 +77,36 @@ signals:
     void FileSizeTypeHasChanged();
 
 private slots:
-    void NewFlexDisk();
-    void OpenFlexDisk();
-    void OpenDirectory();
-    void OpenRecentDisk();
-    void OpenRecentDirectory();
-    void ClearAllRecentDiskEntries();
-    void ClearAllRecentDirectoryEntries();
-    static void Exit();
+    void OnNewFlexDisk();
+    void OnOpenFlexDisk();
+    void OnOpenDirectory();
+    void OnOpenRecentDisk();
+    void OnOpenRecentDirectory();
+    void OnClearAllRecentDiskEntries();
+    void OnClearAllRecentDirectoryEntries();
 #ifndef QT_NO_CLIPBOARD
-    void Copy();
-    void Paste();
+    void OnCopy();
+    void OnPaste();
 #endif
-    void SelectAll();
-    void DeselectAll();
-    void FindFiles();
-    void DeleteSelected();
-    void InjectFiles();
-    void ExtractSelected();
-    void ViewSelected();
-    void AttributesSelected();
-    void Info();
-    void Options();
-    void SubWindowActivated(QMdiSubWindow *window);
-    void ContextMenuRequested(QPoint pos);
-    void UpdateWindowMenu();
-    void CloseActiveSubWindow();
-    void CloseAllSubWindows();
-    void About();
+    void OnSelectAll();
+    void OnDeselectAll();
+    void OnFindFiles();
+    void OnDeleteSelected();
+    void OnInjectFiles();
+    void OnExtractSelected();
+    void OnViewSelected();
+    void OnAttributesSelected();
+    void OnInfo();
+    void OnOptions();
+    void OnSubWindowActivated(QMdiSubWindow *window);
+    void OnContextMenuRequested(QPoint pos);
+    void OnUpdateWindowMenu();
+    void OnCloseActiveSubWindow();
+    void OnCloseAllSubWindows();
+    void OnAbout();
+    void OnSelectionHasChanged();
 
-public slots:
-    void SelectionHasChanged();
-    void SetStatusMessage(const QString &message);
+    static void OnExit();
 
 private:
     void ExecuteInChild(
@@ -143,6 +141,7 @@ private:
     void UpdateForRecentDirectory(const QString &path);
     void RestoreRecentDirectories();
     bool OpenFlexDiskForPath(QString path, bool isLast = true);
+    void SetStatusMessage(const QString &message);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

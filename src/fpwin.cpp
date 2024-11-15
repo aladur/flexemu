@@ -81,7 +81,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     setAcceptDrops(true);
     mdiArea->setAcceptDrops(false);
     connect(mdiArea, &QMdiArea::subWindowActivated,
-            this, &FLEXplorer::SubWindowActivated);
+            this, &FLEXplorer::OnSubWindowActivated);
 
     CreateActions();
     CreateStatusBar();
@@ -102,7 +102,7 @@ FLEXplorer::~FLEXplorer()
     DeleteRecentDiskActions();
 }
 
-void FLEXplorer::NewFlexDisk()
+void FLEXplorer::OnNewFlexDisk()
 {
     QDialog dialog;
     FlexplorerNewUi ui;
@@ -148,7 +148,7 @@ void FLEXplorer::NewFlexDisk()
     }
 }
 
-void FLEXplorer::OpenFlexDisk()
+void FLEXplorer::OnOpenFlexDisk()
 {
     const auto defaultDir = QString(options.openDiskPath.c_str());
     QStringList filePaths;
@@ -179,7 +179,7 @@ void FLEXplorer::OpenFlexDisk()
     }
 }
 
-void FLEXplorer::OpenDirectory()
+void FLEXplorer::OnOpenDirectory()
 {
     const auto defaultDir = QString(options.openDirectoryPath.c_str());
     QFileDialog dialog(this, tr("Open a FLEX directory disk"),
@@ -204,7 +204,7 @@ void FLEXplorer::OpenDirectory()
     }
 }
 
-void FLEXplorer::OpenRecentDisk()
+void FLEXplorer::OnOpenRecentDisk()
 {
     auto *action = qobject_cast<QAction *>(sender());
 
@@ -214,7 +214,7 @@ void FLEXplorer::OpenRecentDisk()
     }
 }
 
-void FLEXplorer::OpenRecentDirectory()
+void FLEXplorer::OnOpenRecentDirectory()
 {
     auto *action = qobject_cast<QAction *>(sender());
 
@@ -308,7 +308,7 @@ void FLEXplorer::ExecuteInChild(
 }
 
 #ifndef QT_NO_CLIPBOARD
-void FLEXplorer::Copy()
+void FLEXplorer::OnCopy()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -317,7 +317,7 @@ void FLEXplorer::Copy()
     });
 }
 
-void FLEXplorer::Paste()
+void FLEXplorer::OnPaste()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -327,7 +327,7 @@ void FLEXplorer::Paste()
 }
 #endif
 
-void FLEXplorer::SelectAll()
+void FLEXplorer::OnSelectAll()
 {
     ExecuteInChild([](FlexplorerMdiChild &child)
     {
@@ -335,7 +335,7 @@ void FLEXplorer::SelectAll()
     });
 }
 
-void FLEXplorer::DeselectAll()
+void FLEXplorer::OnDeselectAll()
 {
     ExecuteInChild([](FlexplorerMdiChild &child)
     {
@@ -343,7 +343,7 @@ void FLEXplorer::DeselectAll()
     });
 }
 
-void FLEXplorer::FindFiles()
+void FLEXplorer::OnFindFiles()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -365,7 +365,7 @@ void FLEXplorer::FindFiles()
     });
 }
 
-void FLEXplorer::DeleteSelected()
+void FLEXplorer::OnDeleteSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -387,7 +387,7 @@ void FLEXplorer::DeleteSelected()
     });
 }
 
-void FLEXplorer::InjectFiles()
+void FLEXplorer::OnInjectFiles()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -409,7 +409,7 @@ void FLEXplorer::InjectFiles()
     });
 }
 
-void FLEXplorer::ExtractSelected()
+void FLEXplorer::OnExtractSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -445,7 +445,7 @@ void FLEXplorer::ExtractSelected()
     });
 }
 
-void FLEXplorer::ViewSelected()
+void FLEXplorer::OnViewSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -454,7 +454,7 @@ void FLEXplorer::ViewSelected()
     });
 }
 
-void FLEXplorer::AttributesSelected()
+void FLEXplorer::OnAttributesSelected()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -486,7 +486,7 @@ void FLEXplorer::AttributesSelected()
     });
 }
 
-void FLEXplorer::Options()
+void FLEXplorer::OnOptions()
 {
     QDialog dialog;
     FlexplorerOptionsUi ui;
@@ -517,7 +517,7 @@ void FLEXplorer::Options()
     }
 }
 
-void FLEXplorer::Info()
+void FLEXplorer::OnInfo()
 {
     ExecuteInChild([](FlexplorerMdiChild &child)
     {
@@ -527,7 +527,7 @@ void FLEXplorer::Info()
 
 // Implementation may change in future.
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-void FLEXplorer::About()
+void FLEXplorer::OnAbout()
 {
     QDialog dialog;
     Ui_AboutDialog ui{};
@@ -614,7 +614,7 @@ void FLEXplorer::UpdateMenus()
     windowMenuSeparatorAction->setVisible(hasMdiChild);
 }
 
-void FLEXplorer::UpdateWindowMenu()
+void FLEXplorer::OnUpdateWindowMenu()
 {
     assert(windowMenu);
 
@@ -655,7 +655,7 @@ void FLEXplorer::UpdateWindowMenu()
     }
 }
 
-void FLEXplorer::CloseActiveSubWindow()
+void FLEXplorer::OnCloseActiveSubWindow()
 {
     ExecuteInChild([&](FlexplorerMdiChild &child)
     {
@@ -665,7 +665,7 @@ void FLEXplorer::CloseActiveSubWindow()
     });
 }
 
-void FLEXplorer::CloseAllSubWindows()
+void FLEXplorer::OnCloseAllSubWindows()
 {
     mdiArea->closeAllSubWindows();
     SetStatusMessage(tr("Closed all windows"));
@@ -688,11 +688,11 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
 
     child->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(child, &FlexplorerMdiChild::customContextMenuRequested,
-            this, &FLEXplorer::ContextMenuRequested);
+            this, &FLEXplorer::OnContextMenuRequested);
     connect(this, &FLEXplorer::FileTimeAccessHasChanged,
             child, &FlexplorerMdiChild::OnFileTimeAccessChanged);
     connect(child, &FlexplorerMdiChild::SelectionHasChanged,
-            this, &FLEXplorer::SelectionHasChanged);
+            this, &FLEXplorer::OnSelectionHasChanged);
     connect(this, &FLEXplorer::FileSizeTypeHasChanged,
             child, &FlexplorerMdiChild::OnFileSizeTypeHasChanged);
     connect(this, &FLEXplorer::FileSizeTypeHasChanged,
@@ -733,7 +733,7 @@ void FLEXplorer::CreateFileActions()
 
     const auto exitIcon = QIcon(":/resource/exit.png");
     QAction *exitAction = fileMenu->addAction(exitIcon, tr("E&xit"),
-                          this, SLOT(Exit()));
+                          this, SLOT(OnExit()));
     exitAction->setShortcuts(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
     fileToolBar->addAction(exitAction);
@@ -744,7 +744,7 @@ void FLEXplorer::CreateFileActions()
     newFlexDiskAction->setShortcuts(QKeySequence::New);
     newFlexDiskAction->setStatusTip(tr("Create a new FLEX disk image file"));
     connect(newFlexDiskAction, &QAction::triggered,
-            this, &FLEXplorer::NewFlexDisk);
+            this, &FLEXplorer::OnNewFlexDisk);
     fileMenu->addAction(newFlexDiskAction);
     fileToolBar->addAction(newFlexDiskAction);
 
@@ -754,7 +754,7 @@ void FLEXplorer::CreateFileActions()
     openFlexDiskAction->setShortcuts(QKeySequence::Open);
     openFlexDiskAction->setStatusTip(tr("Open a FLEX disk image file"));
     connect(openFlexDiskAction, &QAction::triggered,
-            this, &FLEXplorer::OpenFlexDisk);
+            this, &FLEXplorer::OnOpenFlexDisk);
     fileMenu->addAction(openFlexDiskAction);
     fileToolBar->addAction(openFlexDiskAction);
 
@@ -765,7 +765,7 @@ void FLEXplorer::CreateFileActions()
     openDirectoryAction->setStatusTip(
             tr("Open a directory as FLEX disk image"));
     connect(openDirectoryAction, &QAction::triggered,
-            this, &FLEXplorer::OpenDirectory);
+            this, &FLEXplorer::OnOpenDirectory);
     fileMenu->addAction(openDirectoryAction);
     fileToolBar->addAction(openDirectoryAction);
 
@@ -791,7 +791,7 @@ void FLEXplorer::CreateEditActions()
     auto font = viewAction->font();
     font.setBold(true);
     viewAction->setFont(font);
-    connect(viewAction, &QAction::triggered, this, &FLEXplorer::ViewSelected);
+    connect(viewAction, &QAction::triggered, this, &FLEXplorer::OnViewSelected);
     editMenu->addAction(viewAction);
     editToolBar->addAction(viewAction);
 
@@ -800,7 +800,7 @@ void FLEXplorer::CreateEditActions()
     deleteAction->setStatusTip(tr("Delete selected files"));
     deleteAction->setShortcut(QKeySequence::Delete);
     connect(deleteAction, &QAction::triggered,
-            this, &FLEXplorer::DeleteSelected);
+            this, &FLEXplorer::OnDeleteSelected);
     editMenu->addAction(deleteAction);
     editToolBar->addAction(deleteAction);
 
@@ -809,7 +809,7 @@ void FLEXplorer::CreateEditActions()
     attributesAction->setStatusTip(tr("Display and modify attributes of "
                                       "selected files"));
     connect(attributesAction, &QAction::triggered,
-            this, &FLEXplorer::AttributesSelected);
+            this, &FLEXplorer::OnAttributesSelected);
     editMenu->addAction(attributesAction);
     editMenu->addSeparator();
     editToolBar->addAction(attributesAction);
@@ -820,7 +820,7 @@ void FLEXplorer::CreateEditActions()
     injectAction->setStatusTip(tr("Inject selected files"));
     injectAction->setShortcut(QKeySequence(tr("Ctrl+I")));
     connect(injectAction, &QAction::triggered, this,
-            &FLEXplorer::InjectFiles);
+            &FLEXplorer::OnInjectFiles);
     editMenu->addAction(injectAction);
     editToolBar->addAction(injectAction);
 
@@ -829,7 +829,7 @@ void FLEXplorer::CreateEditActions()
     extractAction->setStatusTip(tr("Extract selected files"));
     extractAction->setShortcut(QKeySequence(tr("Ctrl+X")));
     connect(extractAction, &QAction::triggered, this,
-            &FLEXplorer::ExtractSelected);
+            &FLEXplorer::OnExtractSelected);
     editMenu->addAction(extractAction);
     editMenu->addSeparator();
     editToolBar->addAction(extractAction);
@@ -839,7 +839,8 @@ void FLEXplorer::CreateEditActions()
     selectAllAction = new QAction(selectAllIcon, tr("Select &All"), this);
     selectAllAction->setStatusTip(tr("Select all files"));
     selectAllAction->setShortcuts(QKeySequence::SelectAll);
-    connect(selectAllAction, &QAction::triggered, this, &FLEXplorer::SelectAll);
+    connect(selectAllAction, &QAction::triggered, this,
+            &FLEXplorer::OnSelectAll);
     editMenu->addAction(selectAllAction);
     editToolBar->addAction(selectAllAction);
 
@@ -848,7 +849,7 @@ void FLEXplorer::CreateEditActions()
     deselectAllAction->setStatusTip(tr("Deselect all files"));
     deselectAllAction->setShortcut(QKeySequence(tr("Ctrl+E")));
     connect(deselectAllAction, &QAction::triggered, this,
-            &FLEXplorer::DeselectAll);
+            &FLEXplorer::OnDeselectAll);
     editMenu->addAction(deselectAllAction);
     editToolBar->addAction(deselectAllAction);
 
@@ -856,7 +857,8 @@ void FLEXplorer::CreateEditActions()
     findFilesAction = new QAction(findFilesIcon, tr("&Find Files..."), this);
     findFilesAction->setShortcut(QKeySequence::Find);
     findFilesAction->setStatusTip(tr("Find files by filename pattern"));
-    connect(findFilesAction, &QAction::triggered, this, &FLEXplorer::FindFiles);
+    connect(findFilesAction, &QAction::triggered, this,
+            &FLEXplorer::OnFindFiles);
     editMenu->addAction(findFilesAction);
     editToolBar->addAction(findFilesAction);
     editToolBar->addSeparator();
@@ -867,7 +869,7 @@ void FLEXplorer::CreateEditActions()
     copyAction = new QAction(copyIcon, tr("&Copy"), this);
     copyAction->setShortcuts(QKeySequence::Copy);
     copyAction->setStatusTip(tr("Copy selected files to the clipboard"));
-    connect(copyAction, &QAction::triggered, this, &FLEXplorer::Copy);
+    connect(copyAction, &QAction::triggered, this, &FLEXplorer::OnCopy);
     editMenu->addAction(copyAction);
     editToolBar->addAction(copyAction);
 
@@ -875,7 +877,7 @@ void FLEXplorer::CreateEditActions()
     pasteAction = new QAction(pasteIcon, tr("&Paste"), this);
     pasteAction->setShortcuts(QKeySequence::Paste);
     pasteAction->setStatusTip(tr("Paste files from the clipboard"));
-    connect(pasteAction, &QAction::triggered, this, &FLEXplorer::Paste);
+    connect(pasteAction, &QAction::triggered, this, &FLEXplorer::OnPaste);
     editMenu->addAction(pasteAction);
     editToolBar->addAction(pasteAction);
     editToolBar->addSeparator();
@@ -892,7 +894,7 @@ void FLEXplorer::CreateFlexDiskActions()
     infoAction = new QAction(infoIcon, tr("&Info..."), this);
     infoAction->setShortcut(QKeySequence(tr("Ctrl+I")));
     infoAction->setStatusTip(tr("Show disk image properties"));
-    connect(infoAction, &QAction::triggered, this, &FLEXplorer::Info);
+    connect(infoAction, &QAction::triggered, this, &FLEXplorer::OnInfo);
     containerMenu->addAction(infoAction);
     containerToolBar->addAction(infoAction);
 }
@@ -906,7 +908,7 @@ void FLEXplorer::CreateExtrasActions()
     const auto optionsIcon = QIcon(":/resource/options.png");
     optionsAction = new QAction(optionsIcon, tr("&Options..."), this);
     optionsAction->setStatusTip(tr("Display and modify application's options"));
-    connect(optionsAction, &QAction::triggered, this, &FLEXplorer::Options);
+    connect(optionsAction, &QAction::triggered, this, &FLEXplorer::OnOptions);
     extrasMenu->addAction(optionsAction);
     extrasToolBar->addAction(optionsAction);
 }
@@ -917,19 +919,19 @@ void FLEXplorer::CreateWindowsActions()
     auto *windowToolBar = CreateToolBar(this, tr("Window"),
                                         QStringLiteral("windowToolBar"));
     connect(windowMenu, &QMenu::aboutToShow,
-            this, &FLEXplorer::UpdateWindowMenu);
+            this, &FLEXplorer::OnUpdateWindowMenu);
 
     const auto closeIcon = QIcon(":/resource/window-close.png");
     closeAction = new QAction(closeIcon, tr("Cl&ose"), this);
     closeAction->setStatusTip(tr("Close the active window"));
     connect(closeAction, &QAction::triggered,
-            this, &FLEXplorer::CloseActiveSubWindow);
+            this, &FLEXplorer::OnCloseActiveSubWindow);
     windowToolBar->addAction(closeAction);
 
     closeAllAction = new QAction(tr("Close &All"), this);
     closeAllAction->setStatusTip(tr("Close all the windows"));
     connect(closeAllAction, &QAction::triggered,
-            this, &FLEXplorer::CloseAllSubWindows);
+            this, &FLEXplorer::OnCloseAllSubWindows);
 
     tileAction = new QAction(tr("&Tile"), this);
     tileAction->setStatusTip(tr("Tile the windows"));
@@ -957,7 +959,7 @@ void FLEXplorer::CreateWindowsActions()
     windowMenuSeparatorAction->setSeparator(true);
     menuBar()->addSeparator();
 
-    UpdateWindowMenu();
+    OnUpdateWindowMenu();
 }
 
 void FLEXplorer::CreateHelpActions()
@@ -968,7 +970,7 @@ void FLEXplorer::CreateHelpActions()
 
     const auto aboutIcon = QIcon(":/resource/about.png");
     aboutAction = helpMenu->addAction(aboutIcon, tr("&About"),
-                                      this, SLOT(About()));
+                                      this, SLOT(OnAbout()));
     aboutAction->setStatusTip(tr("Show the application's About box"));
     helpToolBar->addAction(aboutAction);
 
@@ -979,7 +981,7 @@ void FLEXplorer::CreateHelpActions()
     helpToolBar->addAction(aboutQtAction);
 }
 
-void FLEXplorer::ContextMenuRequested(QPoint pos)
+void FLEXplorer::OnContextMenuRequested(QPoint pos)
 {
     assert(selectAllAction);
 
@@ -1048,7 +1050,7 @@ QMdiSubWindow *FLEXplorer::FindMdiChild(const QString &path) const
     return nullptr;
 }
 
-void FLEXplorer::Exit()
+void FLEXplorer::OnExit()
 {
     qApp->closeAllWindows();
     QCoreApplication::quit();
@@ -1068,7 +1070,7 @@ void FLEXplorer::changeEvent(QEvent *event)
     }
 }
 
-void FLEXplorer::SubWindowActivated(QMdiSubWindow *window)
+void FLEXplorer::OnSubWindowActivated(QMdiSubWindow *window)
 {
     UpdateMenus();
 
@@ -1099,7 +1101,7 @@ void FLEXplorer::UpdateSelectedFiles()
     });
 }
 
-void FLEXplorer::SelectionHasChanged()
+void FLEXplorer::OnSelectionHasChanged()
 {
     UpdateMenus();
     UpdateSelectedFiles();
@@ -1196,7 +1198,8 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
         // Create all actions, de/activate them by setVisible() false/true.
         action = new QAction(this);
         action->setVisible(false);
-        connect(action, &QAction::triggered, this, &FLEXplorer::OpenRecentDisk);
+        connect(action, &QAction::triggered, this,
+                &FLEXplorer::OnOpenRecentDisk);
         recentDiskActions.append(action);
         menu->addAction(action);
     }
@@ -1204,7 +1207,7 @@ void FLEXplorer::CreateRecentDiskActionsFor(QMenu *menu)
     recentDisksClearAllAction = new QAction(tr("Clear List"), this);
     recentDisksClearAllAction->setVisible(false);
     connect(recentDisksClearAllAction, &QAction::triggered, this,
-            &FLEXplorer::ClearAllRecentDiskEntries);
+            &FLEXplorer::OnClearAllRecentDiskEntries);
     menu->addSeparator();
     menu->addAction(recentDisksClearAllAction);
 
@@ -1237,7 +1240,7 @@ void FLEXplorer::UpdateRecentDiskActions() const
     recentDisksClearAllAction->setVisible(!recentDiskPaths.isEmpty());
 }
 
-void FLEXplorer::ClearAllRecentDiskEntries()
+void FLEXplorer::OnClearAllRecentDiskEntries()
 {
     recentDiskPaths.clear();
     options.recentDiskPaths.clear();
@@ -1297,7 +1300,7 @@ void FLEXplorer::CreateRecentDirectoryActionsFor(QMenu *menu)
         action = new QAction(this);
         action->setVisible(false);
         connect(action, &QAction::triggered, this,
-                &FLEXplorer::OpenRecentDirectory);
+                &FLEXplorer::OnOpenRecentDirectory);
         recentDirectoryActions.append(action);
         menu->addAction(action);
     }
@@ -1305,7 +1308,7 @@ void FLEXplorer::CreateRecentDirectoryActionsFor(QMenu *menu)
     recentDirectoriesClearAllAction = new QAction(tr("Clear List"), this);
     recentDirectoriesClearAllAction->setVisible(false);
     connect(recentDirectoriesClearAllAction, &QAction::triggered, this,
-            &FLEXplorer::ClearAllRecentDirectoryEntries);
+            &FLEXplorer::OnClearAllRecentDirectoryEntries);
     menu->addSeparator();
     menu->addAction(recentDirectoriesClearAllAction);
 
@@ -1341,7 +1344,7 @@ void FLEXplorer::UpdateRecentDirectoryActions() const
     recentDirectoriesClearAllAction->setVisible(!isEmpty);
 }
 
-void FLEXplorer::ClearAllRecentDirectoryEntries()
+void FLEXplorer::OnClearAllRecentDirectoryEntries()
 {
     recentDirectoryPaths.clear();
     options.recentDirectoryPaths.clear();
