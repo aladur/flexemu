@@ -564,14 +564,15 @@ void FLEXplorer::About()
     ui.e_about->setOpenExternalLinks(true);
     ui.e_about->setHtml(aboutText);
 
-    auto versionsText = tr("<b>FLEXplorer V%2</b><p>compiled for " OSTYPE)
+    auto versionsText = tr("<b>FLEXplorer V%2</b><p>compiled for " OSTYPE
+            ", uses:")
         .arg(VERSION);
     versionsText.append("<table>");
     for (const auto &version : FlexemuVersions::GetVersions())
     {
         std::stringstream stream;
 
-        stream << "<tr><td>" << version.first <<
+        stream << "<tr><td>&#x2022;</td><td>" << version.first <<
             "</td><td>" << version.second + "</td></tr>";
         versionsText.append(stream.str().c_str());
     }
