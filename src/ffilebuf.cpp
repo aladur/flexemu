@@ -749,7 +749,8 @@ bool FlexFileBuffer::CopyFrom(const Byte *source, DWord size,
 
 bool FlexFileBuffer::CopyTo(Byte *target, DWord size,
                             DWord offset /* = 0 */,
-                            int stuffByte /* = -1 */) const
+                            std::optional<Byte> stuffByte
+                            /* = std::nullopt */) const
 {
     if (target == nullptr)
     {
@@ -758,12 +759,12 @@ bool FlexFileBuffer::CopyTo(Byte *target, DWord size,
 
     if (offset + size > fileHeader.fileSize)
     {
-        if (stuffByte < 0 || offset >= fileHeader.fileSize)
+        if (!stuffByte.has_value() || offset >= fileHeader.fileSize)
         {
             return false;
         }
 
-        memset(target, stuffByte, size);
+        memset(target, stuffByte.value(), size);
         if (!buffer.empty())
         {
             memcpy(target, &buffer[offset], fileHeader.fileSize - offset);

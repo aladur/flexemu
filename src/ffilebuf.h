@@ -36,6 +36,7 @@
 #include <array>
 #include <vector>
 #include <string>
+#include <optional>
 
 
 const std::array<char,4> flexFileHeaderMagicNumber = {
@@ -102,7 +103,7 @@ public:
     bool CopyFrom(const Byte *source, DWord size, DWord offset = 0);
     bool CopyTo(Byte *target, DWord size,
                 DWord offset = 0,
-                int stuffByte = -1) const;
+                std::optional<Byte> stuffByte = std::nullopt) const;
     void FillWith(Byte pattern = '\0');
     void Realloc(DWord newSize, bool restoreContents = false);
     const Byte *GetBuffer(DWord offset = 0, DWord bytes = 1) const;
