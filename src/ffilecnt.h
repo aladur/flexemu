@@ -102,7 +102,7 @@ public:
     static FlexDisk *Create(const std::string &path,
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
-                            int fmt = TYPE_DSK_DISKFILE,
+                            int fmt,
                             const char *bsFile = nullptr);
     static void SetBootSectorFile(const std::string &p_bootSectorFile);
     static std::string &GetBootSectorFile();
@@ -178,7 +178,7 @@ protected:
         const std::string &path,
         int tracks,
         int sectors,
-        int fmt = TYPE_DSK_DISKFILE,
+        int fmt,
         const char *bsFile = nullptr);
     static FlexDirEntry CreateDirEntryFrom(const s_dir_entry &dir_entry,
             const std::string &filename);

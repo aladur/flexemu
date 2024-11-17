@@ -151,7 +151,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        int /* fmt = TYPE_DSK_DISKFILE */)
+        int /* fmt */)
 {
     struct stat sbuf{};
     const auto dir = flx::getParentPath(path);

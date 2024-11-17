@@ -278,7 +278,7 @@ FlexDisk *FlexDisk::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        int fmt /* = TYPE_DSK_DISKFILE */,
+        int fmt,
         const char *bsFile /* = nullptr */)
 {
     if (fmt != TYPE_DSK_DISKFILE && fmt != TYPE_FLX_DISKFILE)

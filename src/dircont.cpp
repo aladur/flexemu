@@ -108,7 +108,7 @@ FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         int /* tracks */,
         int /* sectors */,
         const FileTimeAccess &fileTimeAccess,
-        unsigned /* fmt = TYPE_DISK_CONTAINER */)
+        unsigned /* fmt */)
 {
     struct stat sbuf{};
     std::string path;
