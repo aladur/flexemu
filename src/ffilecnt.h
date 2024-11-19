@@ -25,6 +25,7 @@
 
 #include "efiletim.h"
 #include "filecont.h"
+#include "filecntb.h"
 #include "filecnts.h"
 #include "fdirent.h"
 #include <string>
@@ -72,6 +73,7 @@ protected:
     s_floppy param{};
     DWord file_size{};
     const FileTimeAccess &ft_access{};
+    DiskType disk_type{};
 
     // Variables only used for FLX format when formatting a disk
     bool is_flex_format{false}; // true when this is a FLEX compatible format.
@@ -102,7 +104,7 @@ public:
     static FlexDisk *Create(const std::string &path,
                             const FileTimeAccess &fileTimeAccess,
                             int tracks, int sectors,
-                            int fmt,
+                            DiskType type,
                             const char *bsFile = nullptr);
     static void SetBootSectorFile(const std::string &p_bootSectorFile);
     static std::string &GetBootSectorFile();
@@ -111,7 +113,8 @@ public:
     // IFlexDiskBase interface declaration
     bool IsWriteProtected() const override;
     bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
-    unsigned GetFlexDiskType() const override;
+    DiskType GetFlexDiskType() const override;
+    DiskOptions GetFlexDiskOptions() const override;
     std::string GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used in flexemu).
@@ -159,7 +162,7 @@ protected:
     static void Create_boot_sectors(BootSectorBuffer_t &bootSectors,
                                     const char *bsFile);
     bool GetFlexTracksSectors(Word &tracks, Word &sectors, Word offset) const;
-    bool IsFlexFileFormat(unsigned type) const;
+    bool IsFlexFileFormat(DiskType disk_type) const;
     st_t ExtendDirectory(s_dir_sector last_dir_sector, const st_t &st_last);
     std::vector<Byte> GetJvcFileHeader() const;
 
@@ -170,7 +173,7 @@ protected:
     static bool Write_dir_sectors(std::fstream &fs, struct s_formats &format);
     static bool Write_sectors(std::fstream &fs, struct s_formats &format);
     static void Create_format_table(
-        int type,
+        DiskType p_disk_type,
         int trk,
         int sec,
         struct s_formats &format);
@@ -178,7 +181,7 @@ protected:
         const std::string &path,
         int tracks,
         int sectors,
-        int fmt,
+        DiskType p_disk_type,
         const char *bsFile = nullptr);
     static FlexDirEntry CreateDirEntryFrom(const s_dir_entry &dir_entry,
             const std::string &filename);

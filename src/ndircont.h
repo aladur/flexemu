@@ -27,6 +27,7 @@
 #include "misc1.h"
 
 #include "efiletim.h"
+#include "filecntb.h"
 #include "filecnts.h"
 #include "rndcheck.h"
 #include "flexemu.h"
@@ -134,12 +135,13 @@ private:
 public:
     static FlexDirectoryDiskBySector *Create(const std::string &path,
             const FileTimeAccess &fileTimeAccess,
-            int tracks, int sectors, int fmt);
+            int tracks, int sectors, DiskType disk_type);
 
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
-    unsigned GetFlexDiskType() const override;
+    DiskType GetFlexDiskType() const override;
+    DiskOptions GetFlexDiskOptions() const override;
     std::string GetPath() const override;
 
     // IFlexDiskBySector interface declaration.

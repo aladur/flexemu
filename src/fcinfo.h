@@ -24,6 +24,7 @@
 #define FCINFO_INCLUDED
 
 #include "misc1.h"
+#include "filecntb.h"
 #include <string>
 #include <vector>
 #include "bdate.h"
@@ -43,7 +44,8 @@ private:
     int tracks{0}; // Number of tracks
     std::string name; // name of disk
     unsigned int number{0U};// disk number
-    unsigned type{0}; // container type
+    DiskType type{}; // disk type
+    DiskOptions options{}; // disk options
     uint64_t free{0}; // Number of bytes free
     uint64_t totalSize{0}; // Number of total bytes writable
     Byte attributes{0}; // Disk attributes
@@ -139,14 +141,23 @@ public:
     {
         return path;
     };
-    inline void SetType(int t)
+    inline void SetType(DiskType p_type)
     {
-        type = t;
+        type = p_type;
         is_valid = true;
     };
-    inline unsigned GetType() const
+    inline DiskType GetType() const
     {
         return type;
+    };
+    inline void SetOptions(DiskOptions p_options)
+    {
+        options = p_options;
+        is_valid = true;
+    };
+    inline DiskOptions GetOptions() const
+    {
+        return options;
     };
     inline void SetIsFlexFormat(bool f)
     {

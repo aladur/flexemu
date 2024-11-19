@@ -22,35 +22,30 @@
 
 
 #include "fcinfo.h"
-#include "filecntb.h"   // needed for containertypes
+#include "filecntb.h"
 
 
 std::string FlexDiskAttributes::GetTypeString() const
 {
     std::string str;
 
-    if (type & TYPE_DISKFILE)
+    switch (type)
     {
-        if (type & TYPE_DSK_DISKFILE)
-        {
+        case DiskType::DSK:
             str = "Disk image file, DSK format";
-        }
-        else if (type & TYPE_FLX_DISKFILE)
-        {
+            break;
+
+        case DiskType::FLX:
             str = "Disk image file, FLX format";
-        }
-        else
-        {
-            str = "Disk image file";
-        }
-    }
-    else if (type & TYPE_DIRECTORY)
-    {
-        str = "directory";
-    }
-    else
-    {
-        str = "Unknown type";
+            break;
+
+        case DiskType::Directory:
+            str = "directory";
+            break;
+
+        default:
+            str = "Unknown type";
+            break;
     }
 
     return str;

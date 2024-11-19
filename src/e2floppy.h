@@ -124,7 +124,7 @@ public:
     virtual bool mount_drive(const std::string &path, Word drive_nr,
                              tMountOption option = MOUNT_DEFAULT);
     virtual bool format_disk(SWord trk, SWord sec,
-                             const std::string &name, int fmt);
+                             const std::string &name, DiskType type);
     virtual bool sync_drive(Word drive_nr,
                             tMountOption option = MOUNT_DEFAULT);
     virtual bool umount_drive(Word drive_nr);

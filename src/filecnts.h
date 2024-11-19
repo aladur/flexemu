@@ -169,7 +169,8 @@ struct s_floppy
     Word max_sector0; /* max. nr of sectors (all sides) track 0*/
     Word max_track; /* max. tracknumber of disk */
     Word track; /* actual tracknumber */
-    Word type; /* type of container */
+    DiskType type; /* type of disk */
+    DiskOptions options; /* disk options */
     Word sides; /* number of sides on track 0 */
     Word sides0; /* number of sides */
 

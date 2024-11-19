@@ -24,6 +24,7 @@
 #include <string>
 #include <sstream>
 #include <iterator>
+#include "filecntb.h"
 #include "e2floppy.h"
 #include "ffilecnt.h"
 #include "rfilecnt.h"
@@ -323,7 +324,7 @@ std::string E2floppy::drive_attributes_string(Word drive_nr)
                << "write-prot: " << (is_write_protected ? "yes" : "no") << '\n'
                << "FLEX format:" << (is_flex_format ? "yes" : "no")
                << '\n';
-        if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
+        if (diskAttributes.GetType() == DiskType::DSK)
         {
             auto header = diskAttributes.GetJvcFileHeader();
 
@@ -408,7 +409,7 @@ bool E2floppy::sync_drive(Word drive_nr, tMountOption option)
         return false;
     }
 
-    if (floppy[drive_nr]->GetFlexDiskType() & TYPE_DIRECTORY)
+    if (floppy[drive_nr]->GetFlexDiskType() == DiskType::Directory)
     {
         auto path = floppy[drive_nr]->GetPath();
         result = umount_drive(drive_nr);
@@ -683,7 +684,7 @@ void E2floppy::get_drive_status(std::array<DiskStatus, MAX_DRIVES> &stat)
 
 bool E2floppy::format_disk(SWord trk, SWord sec,
                            const std::string &name,
-                           int fmt)
+                           DiskType disk_type)
 {
     IFlexDiskBySectorPtr pfloppy;
     FileTimeAccess fileTimeAccess = FileTimeAccess::NONE;
@@ -696,21 +697,22 @@ bool E2floppy::format_disk(SWord trk, SWord sec,
 
     try
     {
-        switch (fmt)
+        switch (disk_type)
         {
-            case TYPE_DIRECTORY_BY_SECTOR:
+            case DiskType::Directory:
                 if (options.isDirectoryDiskActive)
                 {
                     pfloppy = IFlexDiskBySectorPtr(
                         FlexDirectoryDiskBySector::Create(
-                            path, options.fileTimeAccess, trk, sec, fmt));
+                            path, options.fileTimeAccess, trk, sec, disk_type));
                 }
                 break;
 
-            case TYPE_DSK_DISKFILE:
-            case TYPE_FLX_DISKFILE:
+            case DiskType::DSK:
+            case DiskType::FLX:
                 pfloppy = IFlexDiskBySectorPtr(
-                    FlexDisk::Create(path, fileTimeAccess, trk, sec, fmt));
+                    FlexDisk::Create(path, fileTimeAccess, trk, sec,
+                        disk_type));
                 break;
         }
     }

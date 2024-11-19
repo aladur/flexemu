@@ -44,14 +44,16 @@ public:
     FlexplorerNewUi();
     ~FlexplorerNewUi() override = default;
     void setupUi(QDialog &dialog);
-    void TransferDataToDialog(int format = TYPE_DSK_DISKFILE,
+    void TransferDataToDialog(DiskType p_disk_Type = DiskType::DSK,
                               int tracks = 80, int sectors = 36,
                               const QString &path = "");
 
     int GetTracks() const;
     int GetSectors() const;
     QString GetPath() const;
-    int GetFormat() const;
+    DiskType GetDiskType() const;
+    bool IsDiskTypeValid() const;
+    bool IsMDCRDiskActive() const;
     void SetDefaultPath(const QString &path);
     QString GetDefaultPath() const;
 
@@ -77,7 +79,8 @@ private:
 
     QDialog *dialog{nullptr};
     QString defaultPath;
-    int format{TYPE_DSK_DISKFILE};
+    DiskType disk_type{DiskType::DSK};
+    bool is_disk_type_valid{};
 };
 
 #endif

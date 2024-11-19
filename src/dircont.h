@@ -25,6 +25,7 @@
 
 #include "misc1.h"
 #include "efiletim.h"
+#include "filecntb.h"
 #include "filecont.h"
 #include "fdirent.h"
 #include "flexerr.h"
@@ -72,7 +73,8 @@ public:
     // IFlexDiskBase interface declaration.
     bool IsWriteProtected() const override;
     bool GetDiskAttributes(FlexDiskAttributes &diskAttributes) const override;
-    unsigned GetFlexDiskType() const override;
+    DiskType GetFlexDiskType() const override;
+    DiskOptions GetFlexDiskOptions() const override;
     std::string GetPath() const override;
 
     // IFlexDiskByFile interface declaration (to be used within flexplorer).

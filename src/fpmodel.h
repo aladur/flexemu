@@ -28,6 +28,7 @@
 #include "efiletim.h"
 #include "ffilebuf.h"
 #include "sfpopts.h"
+#include "filecntb.h"
 #include "filecont.h"
 #include "warnoff.h"
 #include <QPair>
@@ -75,7 +76,7 @@ public:
     QString GetPath() const;
     QString GetUserFriendlyPath() const;
     bool IsWriteProtected() const;
-    unsigned GetFlexDiskType() const;
+    DiskType GetFlexDiskType() const;
     FlexDiskAttributes GetFlexDiskAttributes() const;
 
     QStringList GetFilenames(const QModelIndexList &indexList) const;

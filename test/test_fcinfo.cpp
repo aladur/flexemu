@@ -15,8 +15,9 @@ TEST(test_fcinfo, default_ctor)
     EXPECT_EQ(sectors, 0);
     EXPECT_TRUE(info.GetName().empty());
     EXPECT_EQ(info.GetNumber(), 0U);
-    EXPECT_EQ(info.GetType(), 0U);
-    EXPECT_EQ(info.GetTypeString(), "Unknown type");
+    EXPECT_EQ(info.GetType(), DiskType::DSK);
+    EXPECT_EQ(info.GetTypeString(), "Disk image file, DSK format");
+    EXPECT_EQ(info.GetOptions(), DiskOptions::NONE);
     EXPECT_EQ(info.GetFree(), 0U);
     EXPECT_EQ(info.GetTotalSize(), 0U);
     EXPECT_EQ(info.GetAttributes(), 0U);
@@ -113,17 +114,26 @@ TEST(test_fcinfo, get_set)
     EXPECT_EQ(info.GetJvcFileHeader().size(), 3U);
     EXPECT_EQ(info.GetJvcFileHeader(), jvcHeader);
     EXPECT_TRUE(info.IsValid());
-    info.SetType(TYPE_DIRECTORY);
-    EXPECT_EQ(info.GetType(), TYPE_DIRECTORY);
+    auto type = DiskType::Directory;
+    info.SetType(type);
+    EXPECT_EQ(info.GetType(), type);
     EXPECT_EQ(info.GetTypeString(), "directory");
-    info.SetType(TYPE_DISKFILE);
-    EXPECT_EQ(info.GetType(), TYPE_DISKFILE);
-    EXPECT_EQ(info.GetTypeString(), "Disk image file");
-    info.SetType(TYPE_DISKFILE | TYPE_DSK_DISKFILE);
-    EXPECT_EQ(info.GetType(), TYPE_DISKFILE | TYPE_DSK_DISKFILE);
+    type = DiskType::DSK;
+    info.SetType(type);
+    EXPECT_EQ(info.GetType(), type);
     EXPECT_EQ(info.GetTypeString(), "Disk image file, DSK format");
-    info.SetType(TYPE_DISKFILE | TYPE_FLX_DISKFILE);
-    EXPECT_EQ(info.GetType(), TYPE_DISKFILE | TYPE_FLX_DISKFILE);
+    type = DiskType::FLX;
+    info.SetType(type);
+    EXPECT_EQ(info.GetType(), type);
     EXPECT_EQ(info.GetTypeString(), "Disk image file, FLX format");
+    auto options = DiskOptions::NONE;
+    info.SetOptions(options);
+    EXPECT_EQ(info.GetOptions(), options);
+    options |= DiskOptions::JvcHeader;
+    info.SetOptions(options);
+    EXPECT_EQ(info.GetOptions(), options);
+    options |= DiskOptions::HasSectorIF | DiskOptions::RAM;
+    info.SetOptions(options);
+    EXPECT_EQ(info.GetOptions(), options);
 }
 

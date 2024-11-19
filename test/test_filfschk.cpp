@@ -23,7 +23,7 @@ protected:
     void SetUp() override
     {
         disk.reset(FlexDisk::Create(diskPath, FileTimeAccess::NONE, 35, 10,
-                    TYPE_DSK_DISKFILE));
+                    DiskType::DSK));
         ASSERT_NE(disk.get(), nullptr);
         FlexFileBuffer buffer;
         ASSERT_TRUE(buffer.ReadFromFile(subdir + fileNameOnDisk,

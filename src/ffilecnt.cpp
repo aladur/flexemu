@@ -30,6 +30,7 @@
 #include <cctype>
 #include <ctime>
 #include <cassert>
+#include "filecntb.h"
 #include "fcinfo.h"
 #include "fattrib.h"
 #include "flexerr.h"
@@ -136,7 +137,7 @@ FlexDisk::FlexDisk(
         throw FlexException(FERR_UNABLE_TO_OPEN, path);
     }
 
-    param.type = 0U;
+    param.type = DiskType::DSK;
     if (sbuf.st_size == 0)
     {
         // If file has been created or file size 0 then
@@ -169,7 +170,7 @@ FlexDisk::FlexDisk(
         // File is identified as a FLX container format.
         Initialize_for_flx_format(flx_header);
 
-        if (!IsFlexFileFormat(TYPE_FLX_DISKFILE))
+        if (!IsFlexFileFormat(DiskType::FLX))
         {
             // This is a FLX file container but it is not compatible
             // to FLEX.
@@ -186,7 +187,7 @@ FlexDisk::FlexDisk(
 
     // check if it is a DSK formated disk
     // read system info sector
-    if (IsFlexFileFormat(TYPE_DSK_DISKFILE) &&
+    if (IsFlexFileFormat(DiskType::DSK) &&
         GetFlexTracksSectors(tracks, sectors, jvcHeaderSize))
     {
         // File is identified as a FLEX DSK container format
@@ -278,15 +279,18 @@ FlexDisk *FlexDisk::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        int fmt,
+        DiskType disk_type,
         const char *bsFile /* = nullptr */)
 {
-    if (fmt != TYPE_DSK_DISKFILE && fmt != TYPE_FLX_DISKFILE)
+    if (disk_type != DiskType::DSK && disk_type != DiskType::FLX)
     {
-        throw FlexException(FERR_INVALID_FORMAT, fmt);
+        using T = std::underlying_type_t<DiskType>;
+        auto id = static_cast<T>(disk_type);
+
+        throw FlexException(FERR_INVALID_FORMAT, id);
     }
 
-    Format_disk(path, tracks, sectors, fmt, bsFile);
+    Format_disk(path, tracks, sectors, disk_type, bsFile);
 
     auto mode = std::ios::in | std::ios::out | std::ios::binary;
     return new FlexDisk(path, mode, fileTimeAccess);
@@ -516,9 +520,10 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
     diskAttributes.SetIsFlexFormat(is_flex_format);
     diskAttributes.SetPath(path);
     diskAttributes.SetType(param.type);
+    diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
     diskAttributes.SetIsWriteProtected(IsWriteProtected());
-    if (param.type & TYPE_DSK_DISKFILE)
+    if (param.type == DiskType::DSK)
     {
         diskAttributes.SetJvcFileHeader(GetJvcFileHeader());
     }
@@ -526,9 +531,14 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
     return true;
 }
 
-unsigned FlexDisk::GetFlexDiskType() const
+DiskType FlexDisk::GetFlexDiskType() const
 {
     return param.type;
+}
+
+DiskOptions FlexDisk::GetFlexDiskOptions() const
+{
+    return param.options;
 }
 
 std::string FlexDisk::GetSupportedAttributes() const
@@ -1118,7 +1128,7 @@ bool FlexDisk::WriteSector(const Byte *pbuffer, int trk, int sec,
     }
 
     if (!is_flex_format &&
-        trk == 0 && sec == 3 && IsFlexFileFormat(TYPE_FLX_DISKFILE))
+        trk == 0 && sec == 3 && IsFlexFileFormat(DiskType::FLX))
     {
         is_flex_format = true;
     }
@@ -1229,7 +1239,7 @@ bool FlexDisk::FormatSector(const Byte *target, int track, int sector,
     result &= WriteSector(target, track, sector, side);
 
     if (result && !is_flex_format && (file_size == getFileSize(flx_header)) &&
-        IsFlexFileFormat(TYPE_FLX_DISKFILE))
+        IsFlexFileFormat(DiskType::FLX))
     {
         is_flex_format = true;
     }
@@ -1254,7 +1264,8 @@ void FlexDisk::Initialize_for_flx_format(const s_flex_header &header)
     param.byte_p_track = param.max_sector * param.byte_p_sector;
     param.sides0 = header.sides0;
     param.sides = header.sides;
-    param.type = TYPE_DISKFILE | TYPE_FLX_DISKFILE;
+    param.type = DiskType::FLX;
+    param.options = DiskOptions::HasSectorIF;
 }
 
 void FlexDisk::Initialize_for_dsk_format(const s_formats &format)
@@ -1275,10 +1286,11 @@ void FlexDisk::Initialize_for_dsk_format(const s_formats &format)
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
     param.sides0 = sides;
     param.sides = sides;
-    param.type = TYPE_DISKFILE | TYPE_DSK_DISKFILE;
+    param.type = DiskType::DSK;
+    param.options = DiskOptions::HasSectorIF;
     if (format.offset != 0U)
     {
-        param.type |= TYPE_JVC_HEADER;
+        param.options |= DiskOptions::JvcHeader;
     }
 }
 
@@ -1287,7 +1299,8 @@ void FlexDisk::Initialize_unformatted_disk()
     file_size = sizeof(struct s_flex_header);
     param = { };
     param.offset = sizeof(struct s_flex_header);
-    param.type = TYPE_DISKFILE | TYPE_FLX_DISKFILE;
+    param.type = DiskType::FLX;
+    param.options = DiskOptions::NONE;
 }
 
 void FlexDisk::Create_boot_sectors(BootSectorBuffer_t &bootSectors,
@@ -1421,7 +1434,7 @@ bool FlexDisk::Write_sectors(std::fstream &ofs, struct s_formats &format)
     return true;
 }
 
-void FlexDisk::Create_format_table(int type, int trk, int sec,
+void FlexDisk::Create_format_table(DiskType p_disk_type, int trk, int sec,
         struct s_formats &format)
 {
     if (trk < 2)
@@ -1444,7 +1457,7 @@ void FlexDisk::Create_format_table(int type, int trk, int sec,
 
     format.tracks = static_cast<Word>(trk);
     format.sectors = static_cast<Word>(sec);
-    format.sectors0 = (type == TYPE_FLX_DISKFILE) ?
+    format.sectors0 = (p_disk_type == DiskType::FLX) ?
                           getTrack0SectorCount(format.tracks, format.sectors) :
                           format.sectors;
 
@@ -1460,15 +1473,12 @@ void FlexDisk::Create_format_table(int type, int trk, int sec,
 // format FLX or DSK format. FLX format always with sector_size 256
 // number of sectors on track 0 is calculated by method
 // getTrack0SectorCount().
-// type:
-//  use TYPE_DSK_DISKFILE for DSK format
-//  use TYPE_FLX_DISKFILE for FLX format
 
 void FlexDisk::Format_disk(
     const std::string &path,
     int tracks,
     int sectors,
-    int fmt /* = TYPE_DSK_DISKFILE */,
+    DiskType p_disk_type,
     const char *bsFile /* = nullptr */)
 {
     struct s_formats format{};
@@ -1480,14 +1490,14 @@ void FlexDisk::Format_disk(
         throw FlexException(FERR_WRONG_PARAMETER);
     }
 
-    Create_format_table(fmt, tracks, sectors, format);
+    Create_format_table(p_disk_type, tracks, sectors, format);
 
     std::fstream fstream(path, std::ios::out | std::ios::binary |
                          std::ios::trunc);
 
     if (fstream.is_open())
     {
-        if (fmt == TYPE_FLX_DISKFILE)
+        if (p_disk_type == DiskType::FLX)
         {
             int sides = getSides(format.tracks, format.sectors);
             struct s_flex_header header{};
@@ -1592,7 +1602,7 @@ bool FlexDisk::GetFlexTracksSectors(Word &tracks, Word &sectors,
 }
 
 // Check if the file container contains a FLEX compatible file system.
-bool FlexDisk::IsFlexFileFormat(unsigned type) const
+bool FlexDisk::IsFlexFileFormat(DiskType p_disk_type) const
 {
     struct stat sbuf{};
     Word tracks = 35;
@@ -1603,7 +1613,7 @@ bool FlexDisk::IsFlexFileFormat(unsigned type) const
         return false;
     }
 
-    if ((type & TYPE_FLX_DISKFILE) != 0)
+    if (p_disk_type == DiskType::FLX)
     {
         if (GetFlexTracksSectors(tracks, sectors, sizeof(s_flex_header)) &&
             tracks != 0U &&
@@ -1625,7 +1635,7 @@ bool FlexDisk::IsFlexFileFormat(unsigned type) const
         }
     }
 
-    if ((type & TYPE_DSK_DISKFILE) != 0)
+    if (p_disk_type == DiskType::DSK)
     {
         auto jvcHeader = GetJvcFileHeader();
         auto jvcHeaderSize = static_cast<Word>(jvcHeader.size());

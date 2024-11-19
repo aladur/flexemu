@@ -49,7 +49,8 @@ protected:
             unsigned jvcHeaderSize,
             int expectedTracks,
             int expectedSectors,
-            unsigned type,
+            DiskType type,
+            DiskOptions options,
             bool isWriteProtected)
     {
         auto diskName = flx::toupper(flx::getFileName(path));
@@ -67,16 +68,20 @@ protected:
             diskName = "FLEXDISK";
         }
 
-        if (((type & TYPE_DISKFILE) != 0) ||
-            ((type & TYPE_DIRECTORY_BY_SECTOR) != 0))
+        if (type == DiskType::DSK || type == DiskType::FLX ||
+            type == DiskType::Directory)
         {
             ASSERT_TRUE(diskInfo.GetIsFlexFormat());
             EXPECT_EQ(diskInfo.GetDate(), BDate::Now());
-            EXPECT_EQ(diskInfo.GetFree(),
-              (expectedTracks - 1) * expectedSectors * SECTOR_SIZE);
-            EXPECT_EQ(diskInfo.GetTotalSize(),
-              expectedTracks * expectedSectors * SECTOR_SIZE);
+            if ((options & DiskOptions::HasSectorIF) != DiskOptions::NONE)
+            {
+                EXPECT_EQ(diskInfo.GetFree(),
+                  (expectedTracks - 1) * expectedSectors * SECTOR_SIZE);
+                EXPECT_EQ(diskInfo.GetTotalSize(),
+                  expectedTracks * expectedSectors * SECTOR_SIZE);
+            }
         }
+        EXPECT_EQ(diskInfo.GetOptions(), options);
         EXPECT_EQ(diskInfo.GetPath(), path);
         EXPECT_EQ(diskInfo.GetName(), diskName);
         EXPECT_EQ(diskInfo.GetNumber(), diskNumber);
@@ -103,13 +108,13 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
     for (int tracks = 2; tracks <= 255; tracks += 5)
     {
         int sectors = std::max(tracks / 3, 6);
-        auto type = TYPE_DSK_DISKFILE;
+        auto type = DiskType::DSK;
+        auto options = DiskOptions::HasSectorIF;
         bool isWP = (tracks == 40);
 
         auto *pdisk =
             FlexDisk::Create(path1, ft_access, tracks, sectors, type);
         disk.reset(cast(pdisk));
-        type |= TYPE_DISKFILE;
         if (isWP)
         {
             disk.reset();
@@ -123,7 +128,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetPath(), path1);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-        CheckAttributes(diskInfo, path1, 0U, 0U, tracks, sectors, type, isWP);
+        CheckAttributes(diskInfo, path1, 0U, 0U, tracks, sectors, type,
+                options, isWP);
         disk.reset();
         fs::remove(path1);
     }
@@ -133,13 +139,13 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
     for (int tracks = 2; tracks <= 255; tracks += 5)
     {
         int sectors = std::max(tracks / 3, 6);
-        auto type = TYPE_FLX_DISKFILE;
+        auto type = DiskType::FLX;
+        auto options = DiskOptions::HasSectorIF;
         bool isWP = (tracks == 40);
 
         auto *pdisk =
             FlexDisk::Create(path2, ft_access, tracks, sectors, type);
         disk.reset(cast(pdisk));
-        type |= TYPE_DISKFILE;
         if (isWP)
         {
             disk.reset();
@@ -153,7 +159,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetPath(), path2);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-        CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, type, isWP);
+        CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, type,
+                options, isWP);
         disk.reset();
         fs::remove(path2);
     }
@@ -175,7 +182,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
     for (unsigned jvcHeaderSize = 1; jvcHeaderSize <= 5; ++jvcHeaderSize)
     {
         std::vector<Byte> jvcHeader{ '\x0A', '\x01', '\x01', '\x01', '\x00'};
-        auto type = TYPE_DSK_DISKFILE;
+        auto type = DiskType::DSK;
+        auto options = DiskOptions::HasSectorIF | DiskOptions::JvcHeader;
 
         for (unsigned i = jvcHeaderSize; i < 5; ++i)
         {
@@ -202,16 +210,16 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         fs::remove(path);
 
         disk.reset(cast(new FlexDisk(path_jvc, iomode, ft_access)));
-        type |= TYPE_DISKFILE | TYPE_JVC_HEADER;
         ASSERT_NE(disk.get(), nullptr);
         EXPECT_TRUE(static_cast<bool>(disk));
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
+        EXPECT_EQ(disk->GetFlexDiskOptions(), options);
         EXPECT_EQ(disk->GetPath(), path_jvc);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
-                type, false);
+                type, options, false);
         EXPECT_EQ(diskInfo.GetJvcFileHeader(), jvcHeader);
         disk.reset();
         fs::remove(path_jvc);
@@ -223,7 +231,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
 {
     const std::string path{"/tmp/flexdir12345678"};
     const auto ft_access = FileTimeAccess::NONE;
-    auto type = TYPE_DIRECTORY;
+    auto type = DiskType::Directory;
+    auto options = DiskOptions::NONE;
     fs::create_directory(path);
     FlexDiskBasePtr disk{};
 
@@ -232,10 +241,11 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
     EXPECT_TRUE(static_cast<bool>(disk));
     EXPECT_EQ(disk->IsWriteProtected(), false);
     EXPECT_EQ(disk->GetFlexDiskType(), type);
+    EXPECT_EQ(disk->GetFlexDiskOptions(), options);
     EXPECT_EQ(disk->GetPath(), path);
     FlexDiskAttributes diskInfo{};
     ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-    CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, type, false);
+    CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, type, options, false);
     disk.reset();
     fs::remove_all(path);
 }
@@ -251,21 +261,22 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
     for (int tracks = 2; tracks <= 255; tracks += 5)
     {
         int sectors = std::max(tracks / 3, 6);
-        auto type = TYPE_DIRECTORY;
+        auto type = DiskType::Directory;
+        auto options = DiskOptions::HasSectorIF;
         ASSERT_TRUE(fs::create_directory(path));
         auto *pdisk =
             new FlexDirectoryDiskBySector(path, ft_access, tracks, sectors);
         disk.reset(cast(pdisk));
         ASSERT_NE(disk.get(), nullptr);
-        type |= TYPE_DIRECTORY_BY_SECTOR;
         EXPECT_TRUE(static_cast<bool>(disk));
         EXPECT_EQ(disk->IsWriteProtected(), false);
         EXPECT_EQ(disk->GetFlexDiskType(), type);
+        EXPECT_EQ(disk->GetFlexDiskOptions(), options);
         EXPECT_EQ(disk->GetPath(), path);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path, diskNumber, 0U, tracks, sectors, type,
-                false);
+                options, false);
         disk.reset();
         fs::remove_all(path);
         ++diskNumber;

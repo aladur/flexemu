@@ -59,7 +59,7 @@ protected:
                 if (idx == TGT)
                 {
                     auto *pdisk = FlexDisk::Create(diskPaths[idx][tidx],
-                            no_ft, tracks, sectors, TYPE_DSK_DISKFILE);
+                            no_ft, tracks, sectors, DiskType::DSK);
                     ASSERT_NE(pdisk, nullptr);
                     delete pdisk;
                 }

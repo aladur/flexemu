@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QTableView>
 #include "warnon.h"
+#include "filecntb.h"
 #include "fpmodel.h"
 #include "fpedit.h"
 #include <memory>
@@ -62,7 +63,7 @@ public:
     bool IsWriteProtected() const;
     int GetSelectedFilesCount() const;
     unsigned GetSelectedFilesByteSize() const;
-    unsigned GetFlexDiskType() const;
+    DiskType GetFlexDiskType() const;
     void SelectAll();
     void DeselectAll();
     QVector<int>::size_type FindFiles(const QString &pattern);

@@ -60,7 +60,7 @@ void FlexplorerNewUi::InitializeWidgets()
     cb_diskFormat->setCurrentIndex(0);
 }
 
-void FlexplorerNewUi::TransferDataToDialog(int p_format,
+void FlexplorerNewUi::TransferDataToDialog(DiskType p_disk_type,
                                            int tracks, int sectors,
                                            const QString &path)
 {
@@ -69,17 +69,18 @@ void FlexplorerNewUi::TransferDataToDialog(int p_format,
         throw std::logic_error("setupUi(dialog) has to be called before.");
     }
 
-    format = p_format;
-    switch (format)
+    disk_type = p_disk_type;
+    is_disk_type_valid = true;
+
+    switch (disk_type)
     {
-        case TYPE_FLX_DISKFILE:
+        case DiskType::FLX:
             r_flxFile->setChecked(true);
             break;
-        case TYPE_MDCR_CONTAINER:
-            r_mdcrFile->setChecked(true);
-            break;
+        case DiskType::DSK:
+        case DiskType::Directory:
         default:
-            format = TYPE_DSK_DISKFILE;
+            disk_type = DiskType::DSK;
             r_dskFile->setChecked(true);
             break;
     }
@@ -166,17 +167,27 @@ QString FlexplorerNewUi::GetPath() const
     return path;
 }
 
-int FlexplorerNewUi::GetFormat() const
+DiskType FlexplorerNewUi::GetDiskType() const
 {
-    return format;
+    return disk_type;
 }
 
+bool FlexplorerNewUi::IsDiskTypeValid() const
+{
+    return is_disk_type_valid;
+}
+
+bool FlexplorerNewUi::IsMDCRDiskActive() const
+{
+    return !is_disk_type_valid;
+}
 
 void FlexplorerNewUi::OnDskFileFormat(bool value)
 {
     if (value)
     {
-        format = TYPE_DSK_DISKFILE;
+        disk_type = DiskType::DSK;
+        is_disk_type_valid = true;
         UpdateFormatTrkSecEnable(false);
         UpdateFilename();
     }
@@ -186,7 +197,8 @@ void FlexplorerNewUi::OnFlxFileFormat(bool value)
 {
     if (value)
     {
-        format = TYPE_FLX_DISKFILE;
+        disk_type = DiskType::FLX;
+        is_disk_type_valid = true;
         UpdateFormatTrkSecEnable(false);
         UpdateFilename();
     }
@@ -196,7 +208,7 @@ void FlexplorerNewUi::OnMdcrFileFormat(bool value)
 {
     if (value)
     {
-        format = TYPE_MDCR_CONTAINER;
+        is_disk_type_valid = false;
         UpdateFormatTrkSecEnable(true);
         UpdateFilename();
     }
@@ -262,7 +274,7 @@ void FlexplorerNewUi::OnSelectPath()
     QString filter =
                 tr("FLEX disk image files (*.dsk *.flx *.wta);;All files (*.*)");
 
-    if (format == TYPE_MDCR_CONTAINER)
+    if (IsMDCRDiskActive())
     {
         caption = tr("Save MDCR file");
         filter = tr("MDCR containers (*.mdcr);;All files (*.*)");
@@ -368,14 +380,18 @@ void FlexplorerNewUi::UpdateFilename()
 
 QString FlexplorerNewUi::GetCurrentFileExtension() const
 {
-    switch (format)
+    if (IsMDCRDiskActive())
     {
-    case TYPE_DSK_DISKFILE:
-        return "dsk";
-    case TYPE_FLX_DISKFILE:
-        return "flx";
-    case TYPE_MDCR_CONTAINER:
         return "mdcr";
+    }
+
+    switch (disk_type)
+    {
+        case DiskType::DSK:
+        case DiskType::Directory:
+            return "dsk";
+        case DiskType::FLX:
+            return "flx";
     }
 
     return "";

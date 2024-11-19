@@ -341,15 +341,23 @@ bool FlexDirectoryDiskByFile::GetDiskAttributes(
 
     diskAttributes.SetPath(directory);
     //info.SetType(param.type);
-    diskAttributes.SetType(TYPE_DIRECTORY);
+    diskAttributes.SetType(GetFlexDiskType());
+    diskAttributes.SetOptions(GetFlexDiskOptions());
     diskAttributes.SetAttributes(attributes);
+    diskAttributes.SetIsWriteProtected(IsWriteProtected());
+    diskAttributes.SetIsFlexFormat(true);
 
     return true;
 }
 
-unsigned FlexDirectoryDiskByFile::GetFlexDiskType() const
+DiskType FlexDirectoryDiskByFile::GetFlexDiskType() const
 {
-    return TYPE_DIRECTORY;
+    return DiskType::Directory;
+}
+
+DiskOptions FlexDirectoryDiskByFile::GetFlexDiskOptions() const
+{
+    return DiskOptions::NONE;
 }
 
 FlexFileBuffer FlexDirectoryDiskByFile::ReadToBuffer(const std::string &fileName)
@@ -438,7 +446,7 @@ void FlexDirectoryDiskByFile::Initialize_header()
         param.byte_p_sector = SECTOR_SIZE;
         param.byte_p_track0 = 0;
         param.byte_p_track = 0;
-        param.type = TYPE_DIRECTORY;
+        param.type = DiskType::Directory;
     */
 }
 

@@ -242,7 +242,7 @@ void FlexplorerTableModel::UpdateFileSizeColumn()
     emit dataChanged(index(0, column), index(rowCount(), column), roles);
 }
 
-unsigned FlexplorerTableModel::GetFlexDiskType() const
+DiskType FlexplorerTableModel::GetFlexDiskType() const
 {
     return container->GetFlexDiskType();
 }

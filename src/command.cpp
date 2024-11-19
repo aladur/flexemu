@@ -29,6 +29,7 @@
 #include "typedefs.h"
 #include "absgui.h"
 #include "flexerr.h"
+#include "filecntb.h"
 #include "e2floppy.h"
 #include "inout.h"
 #include "schedule.h"
@@ -361,22 +362,22 @@ void Command::writeIo(Word /*offset*/, Byte val)
                 {
                     int trk;
                     int sec;
-                    int type = 0;
+                    DiskType disk_type{};
                     const auto extension =
                         flx::tolower(flx::getFileExtension(arg2));
 
                     if (extension.empty())
                     {
-                        type = TYPE_DIRECTORY_BY_SECTOR;
+                        disk_type = DiskType::Directory;
                     }
                     else if ((extension.compare(".dsk") == 0) ||
                         (extension.compare(".wta") == 0))
                     {
-                        type = TYPE_DSK_DISKFILE;
+                        disk_type = DiskType::DSK;
                     }
                     else if (extension.compare(".flx") == 0)
                     {
-                        type = TYPE_FLX_DISKFILE;
+                        disk_type = DiskType::FLX;
                     }
                     else
                     {
@@ -407,7 +408,7 @@ void Command::writeIo(Word /*offset*/, Byte val)
                     if (!fdc.format_disk(
                         static_cast<SWord>(trk),
                         static_cast<SWord>(sec),
-                        arg2, type))
+                        arg2, disk_type))
                     {
                         answer_stream << "EMU error: Unable to format " <<
                                          arg2 << ".";

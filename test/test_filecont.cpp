@@ -86,6 +86,22 @@ protected:
     {
          return static_cast<IFlexDiskByFile *>(dirDisk);
     }
+
+    static std::string GetDiskTypeString(IFlexDiskByFile *disk)
+    {
+        if(disk->GetFlexDiskType() == DiskType::DSK ||
+           disk->GetFlexDiskType() == DiskType::FLX)
+        {
+            return "file";
+        }
+
+        if(disk->GetFlexDiskType() == DiskType::Directory)
+        {
+            return "dir";
+        }
+
+        return {};
+    }
 };
 
 TEST_F(test_IFlexDiskByFile, fct_FindFile)
@@ -471,9 +487,8 @@ TEST_F(test_IFlexDiskByFile, fct_FileCopy)
                 tgt->DeleteFile(dest);
                 // Result true means that a text file conversion was executed.
                 auto result = disk->FileCopy(src, dest, *tgt.get());
-                const auto compareTypes = TYPE_DISKFILE | TYPE_DIRECTORY;
-                auto srcType = disk->GetFlexDiskType() & compareTypes;
-                auto tgtType = tgt->GetFlexDiskType() & compareTypes;
+                auto srcType = GetDiskTypeString(disk.get());
+                auto tgtType = GetDiskTypeString(tgt.get());
                 EXPECT_EQ(result, srcType != tgtType);
                 src = "NOTEXIST.BIN";
                 dest = "NEW99.BIN";

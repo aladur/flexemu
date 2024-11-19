@@ -26,21 +26,6 @@
 #include <string>
 
 
-/* possible constants for container type */
-
-const unsigned TYPE_DISKFILE = 0x01U; /* type: file container */
-const unsigned TYPE_DIRECTORY = 0x02U; /* type: directory */
-const unsigned TYPE_DSK_DISKFILE =
-    0x10U; /* subtype: a file container with DSK format */
-const unsigned TYPE_FLX_DISKFILE =
-    0x20U; /* subtype: a file container with FLX format */
-const unsigned TYPE_DIRECTORY_BY_SECTOR = 0x40U; /* subtype: NAFS directory */
-/* (means: without text conversion) */
-const unsigned TYPE_RAM_DISKFILE =
-    0x80U; /* subtype: filecontainer loaded in RAM */
-const unsigned TYPE_JVC_HEADER =
-    0x100U; /* subtype: DSK filecontainer with JVC header */
-
 // This macro defines the name of a file. It contains the boot sector.
 // It is used in directory containers to be able to boot from them.
 constexpr const char *BOOT_FILE = "boot";
@@ -67,6 +52,22 @@ const size_t FLEX_FILEEXT_LENGTH = 3U;
 const size_t FLEX_FILENAME_LENGTH =
                  FLEX_BASEFILENAME_LENGTH + FLEX_FILEEXT_LENGTH + 2U;
 
+enum class DiskType : uint8_t
+{
+    DSK, // A *.dsk (or *.wta) disk image file.
+    FLX, // A *.flx disk image file.
+    Directory, // A directory disk.
+};
+
+// The read-only options a disk image or directory disk can have.
+enum class DiskOptions : uint8_t
+{
+    NONE = 0, // No options set.
+    JvcHeader = 1, // A *.dsk (or *.wta) disk image file with a JVC header.
+    HasSectorIF = 2, // Has a sector oriented interface.
+    RAM = 4, // a disk image file fully loaded in RAM.
+};
+
 // This interface gives basic properties access to a FLEX disk image.
 // Rename: FileContainerIfBase => IFlexDiskBase
 class IFlexDiskBase
@@ -75,11 +76,40 @@ public:
     virtual bool IsWriteProtected() const = 0;
     virtual bool GetDiskAttributes(FlexDiskAttributes
             &diskAttributes) const = 0;
-    virtual unsigned GetFlexDiskType() const = 0;
+    virtual DiskType GetFlexDiskType() const = 0;
+    virtual DiskOptions GetFlexDiskOptions() const = 0;
     virtual std::string GetPath() const = 0;
 
     virtual ~IFlexDiskBase() = default;
 };
+
+inline DiskOptions operator| (DiskOptions lhs, DiskOptions rhs)
+{
+    using TYPE = std::underlying_type_t<DiskOptions>;
+
+    return static_cast<DiskOptions>(static_cast<TYPE>(lhs) |
+                                    static_cast<TYPE>(rhs));
+}
+
+inline DiskOptions operator& (DiskOptions lhs, DiskOptions rhs)
+{
+    using TYPE = std::underlying_type_t<DiskOptions>;
+
+    return static_cast<DiskOptions>(static_cast<TYPE>(lhs) &
+                                    static_cast<TYPE>(rhs));
+}
+
+inline DiskOptions operator|= (DiskOptions &lhs, DiskOptions rhs)
+{
+    lhs = lhs | rhs;
+    return lhs;
+}
+
+inline DiskOptions operator&= (DiskOptions &lhs, DiskOptions rhs)
+{
+    lhs = lhs & rhs;
+    return lhs;
+}
 
 #endif /* FILECNTB_INCLUDED */
 

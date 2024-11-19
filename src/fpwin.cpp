@@ -108,7 +108,7 @@ void FLEXplorer::OnNewFlexDisk()
     FlexplorerNewUi ui;
     ui.setupUi(dialog);
     ui.SetDefaultPath(QString(options.openDiskPath.c_str()));
-    ui.TransferDataToDialog(TYPE_DSK_DISKFILE, 80, 36);
+    ui.TransferDataToDialog(DiskType::DSK, 80, 36);
     dialog.resize(newDialogSize);
     auto result = dialog.exec();
     newDialogSize = dialog.size();
@@ -118,12 +118,17 @@ void FLEXplorer::OnNewFlexDisk()
         options.openDiskPath = ui.GetDefaultPath().toStdString();
         try
         {
-            if (ui.GetFormat() == TYPE_MDCR_CONTAINER)
+            if (ui.IsMDCRDiskActive())
             {
                 MiniDcrTapePtr mdcr = MiniDcrTape::Create(
                                       ui.GetPath().toStdString());
                 // DCR containers can be created but not displayed in
                 // FLEXplorer, so immediately return.
+                return;
+            }
+
+            if (!ui.IsDiskTypeValid())
+            {
                 return;
             }
 
@@ -135,7 +140,7 @@ void FLEXplorer::OnNewFlexDisk()
                                   options.ft_access,
                                   ui.GetTracks(),
                                   ui.GetSectors(),
-                                  ui.GetFormat(),
+                                  ui.GetDiskType(),
                                   bsFile);
             delete container;
 
@@ -679,7 +684,7 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
 
     auto *subWindow = mdiArea->addSubWindow(child);
     QString iconResource =
-        (child->GetFlexDiskType() & TYPE_DIRECTORY) ?
+        (child->GetFlexDiskType() == DiskType::Directory) ?
             ":resource/dir.png" :
             ":resource/flexplorer.png";
     subWindow->setWindowIcon(QIcon(iconResource));

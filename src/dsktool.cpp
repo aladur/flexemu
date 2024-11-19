@@ -34,6 +34,7 @@
 #include "flexerr.h"
 #include "efiletim.h"
 #include "fdirent.h"
+#include "filecntb.h"
 #include "rfilecnt.h"
 #include "dircont.h"
 #include "ifilecnt.h"
@@ -82,7 +83,7 @@ static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,
     return result;
 }
 
-static int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
+static int FormatFlexDiskFile(const std::string &dsk_file, DiskType disk_type,
         int tracks, int sectors, char default_answer, bool verbose,
         const char *bsFile)
 {
@@ -123,7 +124,7 @@ static int FormatFlexDiskFile(const std::string &dsk_file, int disk_format,
                         dsk_file,
                         fileTimeAccess,
                         tracks, sectors,
-                        disk_format,
+                        disk_type,
                         bsFile));
 
         if (container && verbose)
@@ -907,7 +908,7 @@ static void usage()
         "                accessible.\n";
 }
 
-static bool getDiskFormatFromExtension(std::string ext, int &disk_format)
+static bool getDiskTypeFromExtension(std::string ext, DiskType &disk_type)
 {
     static const std::string strDsk{"dsk"};
     static const std::string strWta{"wta"};
@@ -916,20 +917,20 @@ static bool getDiskFormatFromExtension(std::string ext, int &disk_format)
 
     if (strDsk.compare(ext) == 0 || strWta.compare(ext) == 0)
     {
-        disk_format = TYPE_DSK_DISKFILE;
+        disk_type = DiskType::DSK;
         return true;
     }
 
     if (strFlx.compare(ext) == 0)
     {
-        disk_format = TYPE_FLX_DISKFILE;
+        disk_type = DiskType::FLX;
         return true;
     }
 
     return false;
 }
 
-static void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
+static void estimateDiskType(const std::string &dsk_file, DiskType &disk_type)
 {
     std::string extension;
 
@@ -942,21 +943,15 @@ static void estimateDiskFormat(const std::string &dsk_file, int &disk_format)
         }
     }
 
-    if (!getDiskFormatFromExtension(extension, disk_format))
+    if (!getDiskTypeFromExtension(extension, disk_type))
     {
-        disk_format = TYPE_DSK_DISKFILE;
+        disk_type = DiskType::DSK;
     }
 }
 
-static bool checkDiskFormat(const std::string &format, int &disk_format)
+static bool checkDiskType(const std::string &format, DiskType &disk_type)
 {
-    if (disk_format != 0)
-    {
-        std::cerr << "*** Error: -F can be specified only once\n";
-        return false;
-    }
-
-    if (getDiskFormatFromExtension(format, disk_format))
+    if (getDiskTypeFromExtension(format, disk_type))
     {
         return true;
     }
@@ -1142,7 +1137,8 @@ int main(int argc, char *argv[])
     std::string dsk_file;
     std::string dst_dsk_file;
     const char *bsFile = nullptr;
-    int disk_format = 0;
+    DiskType disk_type;
+    bool is_disk_type_valid = false;
     int tracks = 0;
     int sectors = 0;
     bool verbose = false;
@@ -1235,10 +1231,17 @@ int main(int argc, char *argv[])
                         break;
                     }
 
-            case 'F': if (!checkDiskFormat(optarg, disk_format))
+            case 'F': if (is_disk_type_valid)
+                      {
+                          std::cerr << "*** Error: -F can be specified only "
+                              "once\n";
+                          return 1;
+                      }
+                      if (!checkDiskType(optarg, disk_type))
                       {
                           return 1;
                       }
+                      is_disk_type_valid = true;
                       break;
 
             case 'B': if (!checkBootSectorFile(optarg, &bsFile))
@@ -1271,9 +1274,10 @@ int main(int argc, char *argv[])
     bool isRegexCommand = (command == 'C' || command == 'x' ||
                            command == 'L' || command == 'r');
 
-    if (disk_format == 0)
+    if (!is_disk_type_valid)
     {
-        estimateDiskFormat(dsk_file, disk_format);
+        estimateDiskType(dsk_file, disk_type);
+        is_disk_type_valid = true;
     }
 
     for (const auto &regexFile : regexFiles)
@@ -1371,7 +1375,7 @@ int main(int argc, char *argv[])
                                                   fileTimeAccess);
 
             case 'f':
-                return FormatFlexDiskFile(dsk_file, disk_format, tracks,
+                return FormatFlexDiskFile(dsk_file, disk_type, tracks,
                                           sectors, default_answer, verbose,
                                           bsFile);
 

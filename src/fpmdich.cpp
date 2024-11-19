@@ -121,7 +121,7 @@ bool FlexplorerMdiChild::IsWriteProtected() const
     return model->IsWriteProtected();
 }
 
-unsigned FlexplorerMdiChild::GetFlexDiskType() const
+DiskType FlexplorerMdiChild::GetFlexDiskType() const
 {
     assert(model);
     return model->GetFlexDiskType();
@@ -650,7 +650,7 @@ void FlexplorerMdiChild::Info()
     {
         str += tr("Attributes: read-only").append("\n");
     }
-    if (diskAttributes.GetType() & TYPE_DSK_DISKFILE)
+    if (diskAttributes.GetType() == DiskType::DSK)
     {
         auto header = diskAttributes.GetJvcFileHeader();
 

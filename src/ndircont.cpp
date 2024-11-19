@@ -151,7 +151,7 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        int /* fmt */)
+        DiskType /* disk_type */)
 {
     struct stat sbuf{};
     const auto dir = flx::getParentPath(path);
@@ -192,6 +192,7 @@ bool FlexDirectoryDiskBySector::GetDiskAttributes(
             flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     diskAttributes.SetPath(directory);
     diskAttributes.SetType(param.type);
+    diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
     diskAttributes.SetIsWriteProtected(IsWriteProtected());
     diskAttributes.SetIsFlexFormat(true);
@@ -235,9 +236,14 @@ bool FlexDirectoryDiskBySector::IsFlexFormat() const
     return true;
 }
 
-unsigned FlexDirectoryDiskBySector::GetFlexDiskType() const
+DiskType FlexDirectoryDiskBySector::GetFlexDiskType() const
 {
     return param.type;
+}
+
+DiskOptions FlexDirectoryDiskBySector::GetFlexDiskOptions() const
+{
+    return param.options;
 }
 
 ///////////////////////////////////////////////////////
@@ -255,7 +261,8 @@ void FlexDirectoryDiskBySector::initialize_header(int tracks, int sectors)
     param.byte_p_sector = SECTOR_SIZE;
     param.byte_p_track0 = param.max_sector0 * SECTOR_SIZE;
     param.byte_p_track = param.max_sector * SECTOR_SIZE;
-    param.type = TYPE_DIRECTORY | TYPE_DIRECTORY_BY_SECTOR;
+    param.type = DiskType::Directory;
+    param.options = DiskOptions::HasSectorIF;
 }
 
 // Initialize the FLEX directory sectors.
