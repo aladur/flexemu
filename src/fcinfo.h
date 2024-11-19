@@ -67,130 +67,155 @@ public:
         name = n;
         is_valid = true;
     }
+
     void SetNumber(unsigned int n)
     {
         number = n;
         is_valid = true;
     }
+
     std::string GetTypeString() const;
 
     inline void SetPath(const std::string &p)
     {
         path = p;
         is_valid = true;
-    };
+    }
+
     inline void SetFree(uint64_t f)
     {
         free = f;
         is_valid = true;
-    };
+    }
+
     inline uint64_t GetFree() const
     {
         return free;
-    };
+    }
+
     inline void SetTotalSize(uint64_t s)
     {
         totalSize = s;
         is_valid = true;
-    };
+    }
+
     inline uint64_t GetTotalSize() const
     {
         return totalSize;
-    };
+    }
+
     inline void SetAttributes(Byte x_attributes)
     {
         attributes = x_attributes;
         is_valid = true;
-    };
+    }
+
     inline Byte GetAttributes() const
     {
         return attributes;
-    };
+    }
+
     /* Property only valid if GetIsFlexFormat() == true */
     inline const BDate &GetDate() const
     {
         return date;
-    };
+    }
+
     inline void SetDate(const BDate &d)
     {
         date = d;
         is_valid = true;
-    };
+    }
+
     inline void SetTrackSector(int t, int s)
     {
         tracks = t;
         sectors = s;
         is_valid = true;
-    };
+    }
+
     inline void GetTrackSector(int &t, int &s) const
     {
         t = tracks;
         s = sectors;
-    };
+    }
+
     /* Property only valid if GetIsFlexFormat() == true */
     inline std::string GetName() const
     {
         return name;
-    };
+    }
+
     /* Property only valid if GetIsFlexFormat() == true */
     inline unsigned int GetNumber() const
     {
         return number;
-    };
+    }
+
     inline std::string GetPath() const
     {
         return path;
-    };
+    }
+
     inline void SetType(DiskType p_type)
     {
         type = p_type;
         is_valid = true;
-    };
+    }
+
     inline DiskType GetType() const
     {
         return type;
-    };
+    }
+
     inline void SetOptions(DiskOptions p_options)
     {
         options = p_options;
         is_valid = true;
-    };
+    }
+
     inline DiskOptions GetOptions() const
     {
         return options;
-    };
+    }
+
     inline void SetIsFlexFormat(bool f)
     {
         is_flex_format = f;
         is_valid = true;
-    };
+    }
+
     inline bool GetIsFlexFormat() const
     {
         return is_flex_format;
-    };
+    }
 
     inline void SetIsWriteProtected(bool f)
     {
         is_write_protected = f;
         is_valid = true;
-    };
+    }
+
     inline bool GetIsWriteProtected() const
     {
         return is_write_protected;
-    };
+    }
+
     inline void SetJvcFileHeader(const std::vector<Byte> &header)
     {
         jvc_header = header;
         is_valid = true;
-    };
+    }
+
     inline std::vector<Byte> GetJvcFileHeader() const
     {
         return jvc_header;
-    };
+    }
+
     inline bool IsValid() const
     {
         return is_valid;
-    };
+    }
 };
 
 #endif // FCINFO_INCLUDED
