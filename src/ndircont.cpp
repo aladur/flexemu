@@ -151,10 +151,18 @@ FlexDirectoryDiskBySector *FlexDirectoryDiskBySector::Create(
         const FileTimeAccess &fileTimeAccess,
         int tracks,
         int sectors,
-        DiskType /* disk_type */)
+        DiskType disk_type)
 {
     struct stat sbuf{};
     const auto dir = flx::getParentPath(path);
+
+    if (disk_type != DiskType::Directory)
+    {
+        using T = std::underlying_type_t<DiskType>;
+        auto id = static_cast<T>(disk_type);
+
+        throw FlexException(FERR_INVALID_FORMAT, id);
+    }
 
     if (stat(dir.c_str(), &sbuf) != 0 || !S_ISDIR(sbuf.st_mode))
     {

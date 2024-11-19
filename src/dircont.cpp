@@ -101,17 +101,25 @@ bool FlexDirectoryDiskByFile::IsWriteProtected() const
     return (attributes & WRITE_PROTECT) != 0;
 }
 
-// type, track and sectors parameter will be ignored
+// track and sectors parameter will be ignored
 FlexDirectoryDiskByFile *FlexDirectoryDiskByFile::Create(
         const std::string &directory,
         const std::string &name,
         int /* tracks */,
         int /* sectors */,
         const FileTimeAccess &fileTimeAccess,
-        unsigned /* fmt */)
+        DiskType disk_type)
 {
     struct stat sbuf{};
     std::string path;
+
+    if (disk_type != DiskType::Directory)
+    {
+        using T = std::underlying_type_t<DiskType>;
+        auto id = static_cast<T>(disk_type);
+
+        throw FlexException(FERR_INVALID_FORMAT, id);
+    }
 
     path = directory;
 
