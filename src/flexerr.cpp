@@ -130,7 +130,7 @@ FlexException::FlexException(unsigned long lastError, const std::string &sp1)
 }
 #endif
 
-std::array<const char *, 49> FlexException::errString
+std::array<const char *, 50> FlexException::errString
 {
     "No Error",
     "Unable to open {0}",
@@ -181,5 +181,6 @@ std::array<const char *, 49> FlexException::errString
     "Bad optional access",
     "Wildcard '{0}' not supported",
     "{0} is no MDCR formatted file",
+    "Unable to remove {0}",
 };
 

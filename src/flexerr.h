@@ -79,6 +79,7 @@ FERR_INVALID_JVC_HEADER = 45,
 FERR_BAD_OPTIONAL_ACCESS = 46,
 FERR_WILDCARD_NOT_SUPPORTED = 47,
 FERR_IS_NO_MDCRFORMAT = 48,
+FERR_REMOVE = 49,
 };
 
 
@@ -88,7 +89,7 @@ protected:
 
     int errorCode;
     std::string errorString;
-    static std::array<const char *, 49> errString;
+    static std::array<const char *, 50> errString;
 
 public:
 

@@ -120,8 +120,18 @@ void FLEXplorer::OnNewFlexDisk()
         {
             if (ui.IsMDCRDiskActive())
             {
-                MiniDcrTapePtr mdcr = MiniDcrTape::Create(
-                                      ui.GetPath().toStdString());
+                QFile file(ui.GetPath());
+                auto path = ui.GetPath().toStdString();
+
+                if (file.exists())
+                {
+                    if (!file.remove())
+                    {
+                        throw FlexException(FERR_REMOVE, path);
+                    }
+                }
+
+                MiniDcrTapePtr mdcr = MiniDcrTape::Create(path);
                 // DCR containers can be created but not displayed in
                 // FLEXplorer, so immediately return.
                 return;
