@@ -44,8 +44,7 @@ public:
     FlexplorerNewUi();
     ~FlexplorerNewUi() override = default;
     void setupUi(QDialog &dialog);
-    void TransferDataToDialog(DiskType p_disk_Type = DiskType::DSK,
-                              int tracks = 80, int sectors = 36,
+    void TransferDataToDialog(DiskType p_disk_Type, int tracks, int sectors,
                               const QString &path = "");
 
     int GetTracks() const;
