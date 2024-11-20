@@ -158,6 +158,7 @@ flexemu_moc_hdr = \
 	poutwin.h
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
+	drawnwid.h \
 	fpedit.h \
 	fpmdich.h \
 	fpnewui.h \
@@ -355,6 +356,7 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
+	drawnwid.cpp \
 	fpattrui.cpp \
 	fpcnvui.cpp \
 	fpdnd.cpp \
@@ -381,6 +383,7 @@ flexplorer_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	drawnwid.h \
 	efilesiz.h \
 	efiletim.h \
 	fattrib.h \
@@ -413,6 +416,7 @@ flexplorer_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	propsui.h \
 	qtfree.h \
 	rndcheck.h \
 	rfilecnt.h \

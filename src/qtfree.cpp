@@ -23,11 +23,22 @@
 
 #include "warnoff.h"
 #include <QLatin1Char>
+#include <QString>
+#include <QLocale>
+#include <QDate>
+#include <QPixmap>
 #include <QFontDatabase>
 #include <QWidget>
+#include <QDialog>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include "warnon.h"
-#include <cmath>
+#include "typedefs.h"
 #include "qtfree.h"
+#include "propsui.h"
+#include "fcinfo.h"
+#include <cmath>
+#include <optional>
 
 QFont GetFont(const QString &fontName)
 {
@@ -109,5 +120,146 @@ int cast_from_qsizetype(long int source)
 int cast_from_qsizetype(long long int source)
 {
     return static_cast<int>(source);
+}
+
+void OpenDiskStatusDialog(QWidget *parent,
+        const QString &title,
+        const FlexDiskAttributes &diskAttributes,
+        std::optional<Word> driveNumber)
+{
+    QString text;
+    int tracks;
+    int sectors;
+    QStandardItemModel model;
+    auto *dialog = new QDialog(parent);
+    Ui::Properties ui;
+    int row = 0;
+
+    ui.setupUi(dialog);
+    ui.SetDriveAttributes(diskAttributes);
+
+    model.setColumnCount(2);
+    if (diskAttributes.IsValid())
+    {
+        const auto tYes = QObject::tr("yes");
+        const auto tNo = QObject::tr("no");
+        auto rowCount = 7;
+
+        rowCount += diskAttributes.GetIsFlexFormat() ? 4 : 0;
+        rowCount += (diskAttributes.GetType() == DiskType::DSK) ? 1 : 0;
+        rowCount += driveNumber.has_value() ? 1 : 0;
+        model.setRowCount(rowCount);
+        diskAttributes.GetTrackSector(tracks, sectors);
+        if (driveNumber.has_value())
+        {
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Drive")));
+        }
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Type")));
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Path")));
+        if (diskAttributes.GetIsFlexFormat())
+        {
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Name")));
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Number")));
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Date")));
+            text = QObject::tr("Free [KByte]");
+            model.setItem(row++, 0, new QStandardItem(text));
+        }
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Size [KByte]")));
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Tracks")));
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Sectors")));
+        text = QObject::tr("Write-protect");
+        model.setItem(row++, 0, new QStandardItem(text));
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("FLEX format")));
+        if (diskAttributes.GetType() == DiskType::DSK)
+        {
+            text = QObject::tr("JVC header");
+            model.setItem(row++, 0, new QStandardItem(text));
+        }
+
+        row = 0;
+        if (driveNumber.has_value())
+        {
+            text = QString("#%1").arg(driveNumber.value());
+            model.setItem(row++, 1, new QStandardItem(text));
+        }
+        text = diskAttributes.GetTypeString().c_str();
+        model.setItem(row++, 1, new QStandardItem(text));
+        text = diskAttributes.GetPath().c_str();
+        model.setItem(row++, 1, new QStandardItem(text));
+        if (diskAttributes.GetIsFlexFormat())
+        {
+            text = diskAttributes.GetName().c_str();
+            model.setItem(row++, 1, new QStandardItem(text));
+            text = QString::number(diskAttributes.GetNumber());
+            model.setItem(row++, 1, new QStandardItem(text));
+            const auto& date = diskAttributes.GetDate();
+            auto qdate = QDate(
+                date.GetYear(), date.GetMonth(), date.GetDay());
+            text = QLocale::system().toString(qdate);
+            model.setItem(row++, 1, new QStandardItem(text));
+            const auto free = static_cast<double>(diskAttributes.GetFree()) /
+                                  1024;
+            model.setItem(row++, 1, new QStandardItem(QString::number(free)));
+        }
+        const auto size = static_cast<double>(diskAttributes.GetTotalSize()) /
+                               1024.0;
+        model.setItem(row++, 1, new QStandardItem(QString::number(size)));
+        model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
+        model.setItem(row++, 1, new QStandardItem(QString::number(sectors)));
+        text = diskAttributes.GetIsWriteProtected() ? tYes : tNo;
+        model.setItem(row++, 1, new QStandardItem(text));
+        text = diskAttributes.GetIsFlexFormat() ? tYes : tNo;
+        model.setItem(row++, 1, new QStandardItem(text));
+        if (diskAttributes.GetType() == DiskType::DSK)
+        {
+            auto header = diskAttributes.GetJvcFileHeader();
+
+            if (header.empty())
+            {
+                text = QObject::tr("none");
+            }
+            else
+            {
+                text = "";
+                bool isAppend = false;
+                for (const auto value : header)
+                {
+                    text += (isAppend ? "," : "");
+                    text += QString::number(static_cast<Word>(value));
+                    isAppend = true;
+                }
+            }
+            model.setItem(row++, 1, new QStandardItem(text));
+        }
+
+        auto floppyPixmap = QPixmap(":/resource/floppy256.png");
+        ui.SetPixmap(floppyPixmap);
+    }
+    else
+    {
+        model.setRowCount(driveNumber.has_value() ? 2 : 1);
+        if (driveNumber.has_value())
+        {
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Drive")));
+        }
+        model.setItem(row++, 0, new QStandardItem(QObject::tr("Status")));
+
+        row = 0;
+        if (driveNumber.has_value())
+        {
+            text = QString("#%1").arg(driveNumber.value());
+            model.setItem(row++, 1, new QStandardItem(text));
+        }
+        model.setItem(row++, 1, new QStandardItem(QObject::tr("Not ready")));
+    }
+
+    dialog->setWindowTitle(title);
+    dialog->setModal(true);
+    dialog->setSizeGripEnabled(true);
+
+    ui.SetModel(model, { "Property", "Value" });
+    ui.SetMinimumSize(dialog);
+
+    dialog->exec();
 }
 

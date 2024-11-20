@@ -218,16 +218,18 @@ flexemu_OBJECTS = $(am_flexemu_OBJECTS) $(nodist_flexemu_OBJECTS)
 flexemu_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(flexemu_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-am_flexplorer_OBJECTS = flexplorer-fpattrui.$(OBJEXT) \
-	flexplorer-fpcnvui.$(OBJEXT) flexplorer-fpdnd.$(OBJEXT) \
-	flexplorer-fpedit.$(OBJEXT) flexplorer-fpmain.$(OBJEXT) \
-	flexplorer-fpmdich.$(OBJEXT) flexplorer-fpmodel.$(OBJEXT) \
-	flexplorer-fpnewui.$(OBJEXT) flexplorer-fpoptman.$(OBJEXT) \
-	flexplorer-fpoptui.$(OBJEXT) flexplorer-fpwin.$(OBJEXT) \
-	flexplorer-fversion.$(OBJEXT) flexplorer-qtfree.$(OBJEXT)
+am_flexplorer_OBJECTS = flexplorer-drawnwid.$(OBJEXT) \
+	flexplorer-fpattrui.$(OBJEXT) flexplorer-fpcnvui.$(OBJEXT) \
+	flexplorer-fpdnd.$(OBJEXT) flexplorer-fpedit.$(OBJEXT) \
+	flexplorer-fpmain.$(OBJEXT) flexplorer-fpmdich.$(OBJEXT) \
+	flexplorer-fpmodel.$(OBJEXT) flexplorer-fpnewui.$(OBJEXT) \
+	flexplorer-fpoptman.$(OBJEXT) flexplorer-fpoptui.$(OBJEXT) \
+	flexplorer-fpwin.$(OBJEXT) flexplorer-fversion.$(OBJEXT) \
+	flexplorer-qtfree.$(OBJEXT)
 am__objects_7 = flexplorer-fpmain_qrc.$(OBJEXT)
 am__objects_8 = $(am__objects_7)
-am__objects_9 = flexplorer-fpedit_moc.$(OBJEXT) \
+am__objects_9 = flexplorer-drawnwid_moc.$(OBJEXT) \
+	flexplorer-fpedit_moc.$(OBJEXT) \
 	flexplorer-fpmdich_moc.$(OBJEXT) \
 	flexplorer-fpnewui_moc.$(OBJEXT) \
 	flexplorer-fpoptui_moc.$(OBJEXT) \
@@ -319,6 +321,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
 	./$(DEPDIR)/flexemu-winmain.Po \
+	./$(DEPDIR)/flexplorer-drawnwid.Po \
+	./$(DEPDIR)/flexplorer-drawnwid_moc.Po \
 	./$(DEPDIR)/flexplorer-fpattrui.Po \
 	./$(DEPDIR)/flexplorer-fpcnvui.Po \
 	./$(DEPDIR)/flexplorer-fpcnvui_moc.Po \
@@ -817,6 +821,7 @@ flexemu_moc_hdr = \
 
 flexemu_moc_src = $(flexemu_moc_hdr:.h=_moc.cpp)
 flexplorer_moc_hdr = \
+	drawnwid.h \
 	fpedit.h \
 	fpmdich.h \
 	fpnewui.h \
@@ -1013,6 +1018,7 @@ flexemu_SOURCES = \
 	winmain.h
 
 flexplorer_SOURCES = \
+	drawnwid.cpp \
 	fpattrui.cpp \
 	fpcnvui.cpp \
 	fpdnd.cpp \
@@ -1039,6 +1045,7 @@ flexplorer_SOURCES = \
 	config.h \
 	cvtwchar.h \
 	dircont.h \
+	drawnwid.h \
 	efilesiz.h \
 	efiletim.h \
 	fattrib.h \
@@ -1071,6 +1078,7 @@ flexplorer_SOURCES = \
 	memsrc.h \
 	memtgt.h \
 	misc1.h \
+	propsui.h \
 	qtfree.h \
 	rndcheck.h \
 	rfilecnt.h \
@@ -1501,6 +1509,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-wd1793.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-winmain.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-drawnwid.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-drawnwid_moc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpattrui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpcnvui.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexplorer-fpcnvui_moc.Po@am__quote@ # am--include-marker
@@ -3073,6 +3083,20 @@ flexemu-poutwin_moc.obj: poutwin_moc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-poutwin_moc.obj `if test -f 'poutwin_moc.cpp'; then $(CYGPATH_W) 'poutwin_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/poutwin_moc.cpp'; fi`
 
+flexplorer-drawnwid.o: drawnwid.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-drawnwid.o -MD -MP -MF $(DEPDIR)/flexplorer-drawnwid.Tpo -c -o flexplorer-drawnwid.o `test -f 'drawnwid.cpp' || echo '$(srcdir)/'`drawnwid.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-drawnwid.Tpo $(DEPDIR)/flexplorer-drawnwid.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='drawnwid.cpp' object='flexplorer-drawnwid.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-drawnwid.o `test -f 'drawnwid.cpp' || echo '$(srcdir)/'`drawnwid.cpp
+
+flexplorer-drawnwid.obj: drawnwid.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-drawnwid.obj -MD -MP -MF $(DEPDIR)/flexplorer-drawnwid.Tpo -c -o flexplorer-drawnwid.obj `if test -f 'drawnwid.cpp'; then $(CYGPATH_W) 'drawnwid.cpp'; else $(CYGPATH_W) '$(srcdir)/drawnwid.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-drawnwid.Tpo $(DEPDIR)/flexplorer-drawnwid.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='drawnwid.cpp' object='flexplorer-drawnwid.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-drawnwid.obj `if test -f 'drawnwid.cpp'; then $(CYGPATH_W) 'drawnwid.cpp'; else $(CYGPATH_W) '$(srcdir)/drawnwid.cpp'; fi`
+
 flexplorer-fpattrui.o: fpattrui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpattrui.o -MD -MP -MF $(DEPDIR)/flexplorer-fpattrui.Tpo -c -o flexplorer-fpattrui.o `test -f 'fpattrui.cpp' || echo '$(srcdir)/'`fpattrui.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-fpattrui.Tpo $(DEPDIR)/flexplorer-fpattrui.Po
@@ -3268,6 +3292,20 @@ flexplorer-fpmain_qrc.obj: fpmain_qrc.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='fpmain_qrc.cpp' object='flexplorer-fpmain_qrc.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-fpmain_qrc.obj `if test -f 'fpmain_qrc.cpp'; then $(CYGPATH_W) 'fpmain_qrc.cpp'; else $(CYGPATH_W) '$(srcdir)/fpmain_qrc.cpp'; fi`
+
+flexplorer-drawnwid_moc.o: drawnwid_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-drawnwid_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-drawnwid_moc.Tpo -c -o flexplorer-drawnwid_moc.o `test -f 'drawnwid_moc.cpp' || echo '$(srcdir)/'`drawnwid_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-drawnwid_moc.Tpo $(DEPDIR)/flexplorer-drawnwid_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='drawnwid_moc.cpp' object='flexplorer-drawnwid_moc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-drawnwid_moc.o `test -f 'drawnwid_moc.cpp' || echo '$(srcdir)/'`drawnwid_moc.cpp
+
+flexplorer-drawnwid_moc.obj: drawnwid_moc.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-drawnwid_moc.obj -MD -MP -MF $(DEPDIR)/flexplorer-drawnwid_moc.Tpo -c -o flexplorer-drawnwid_moc.obj `if test -f 'drawnwid_moc.cpp'; then $(CYGPATH_W) 'drawnwid_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/drawnwid_moc.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexplorer-drawnwid_moc.Tpo $(DEPDIR)/flexplorer-drawnwid_moc.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='drawnwid_moc.cpp' object='flexplorer-drawnwid_moc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -c -o flexplorer-drawnwid_moc.obj `if test -f 'drawnwid_moc.cpp'; then $(CYGPATH_W) 'drawnwid_moc.cpp'; else $(CYGPATH_W) '$(srcdir)/drawnwid_moc.cpp'; fi`
 
 flexplorer-fpedit_moc.o: fpedit_moc.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexplorer_CXXFLAGS) $(CXXFLAGS) -MT flexplorer-fpedit_moc.o -MD -MP -MF $(DEPDIR)/flexplorer-fpedit_moc.Tpo -c -o flexplorer-fpedit_moc.o `test -f 'fpedit_moc.cpp' || echo '$(srcdir)/'`fpedit_moc.cpp
@@ -3820,6 +3858,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po
 	-rm -f ./$(DEPDIR)/flexemu-winmain.Po
+	-rm -f ./$(DEPDIR)/flexplorer-drawnwid.Po
+	-rm -f ./$(DEPDIR)/flexplorer-drawnwid_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpattrui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui_moc.Po
@@ -3998,6 +4038,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
 	-rm -f ./$(DEPDIR)/flexemu-wd1793.Po
 	-rm -f ./$(DEPDIR)/flexemu-winmain.Po
+	-rm -f ./$(DEPDIR)/flexplorer-drawnwid.Po
+	-rm -f ./$(DEPDIR)/flexplorer-drawnwid_moc.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpattrui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui.Po
 	-rm -f ./$(DEPDIR)/flexplorer-fpcnvui_moc.Po

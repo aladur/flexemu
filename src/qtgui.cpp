@@ -1297,114 +1297,11 @@ void QtGui::OnDiskStatus(Word driveNumber)
 {
     if (HasFloppy() && driveNumber < 4)
     {
-        QString text;
-        int tracks;
-        int sectors;
-        auto diskAttributes = fdc->drive_attributes(driveNumber);
-        QStandardItemModel model;
-        auto *dialog = new QDialog(this);
-        Ui::Properties ui;
-        int row = 0;
 
-        ui.setupUi(dialog);
-        ui.SetDriveAttributes(driveNumber, diskAttributes);
+        const auto diskAttributes = fdc->drive_attributes(driveNumber);
+        const auto title = tr("Floppy Disk Status");
 
-        model.setColumnCount(2);
-        if (diskAttributes.IsValid())
-        {
-            auto rowCount = diskAttributes.GetIsFlexFormat() ? 9 : 6;
-            if (diskAttributes.GetType() == DiskType::DSK)
-            {
-                ++rowCount;
-            }
-            model.setRowCount(rowCount);
-            diskAttributes.GetTrackSector(tracks, sectors);
-            model.setItem(row++, 0, new QStandardItem(tr("Drive")));
-            model.setItem(row++, 0, new QStandardItem(tr("Type")));
-            model.setItem(row++, 0, new QStandardItem(tr("Path")));
-            if (diskAttributes.GetIsFlexFormat())
-            {
-                model.setItem(row++, 0, new QStandardItem(tr("Name")));
-                model.setItem(row++, 0, new QStandardItem(tr("Number")));
-                model.setItem(row++, 0, new QStandardItem(tr("Date")));
-            }
-            model.setItem(row++, 0, new QStandardItem(tr("Tracks")));
-            model.setItem(row++, 0, new QStandardItem(tr("Sectors")));
-            model.setItem(row++, 0, new QStandardItem(tr("Write-protect")));
-            model.setItem(row++, 0, new QStandardItem(tr("FLEX format")));
-            if (diskAttributes.GetType() == DiskType::DSK)
-            {
-                model.setItem(row++, 0, new QStandardItem(tr("JVC header")));
-            }
-            row = 0;
-            text = QString("#%1").arg(driveNumber);
-            model.setItem(row++, 1, new QStandardItem(text));
-            text = diskAttributes.GetTypeString().c_str();
-            model.setItem(row++, 1, new QStandardItem(text));
-            model.setItem(row++, 1,
-                    new QStandardItem(diskAttributes.GetPath().c_str()));
-            if (diskAttributes.GetIsFlexFormat())
-            {
-                text = diskAttributes.GetName().c_str();
-                model.setItem(row++, 1, new QStandardItem(text));
-                text = QString::number(diskAttributes.GetNumber());
-                model.setItem(row++, 1, new QStandardItem(text));
-                const auto& date = diskAttributes.GetDate();
-                auto qdate = QDate(
-                    date.GetYear(), date.GetMonth(), date.GetDay());
-                text = QLocale::system().toString(qdate, QLocale::ShortFormat);
-                model.setItem(row++, 1, new QStandardItem(text));
-            }
-            model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
-            model.setItem(row++, 1,
-                    new QStandardItem(QString::number(sectors)));
-            text = diskAttributes.GetIsWriteProtected() ? tr("yes") : tr("no");
-            model.setItem(row++, 1, new QStandardItem(text));
-            text = diskAttributes.GetIsFlexFormat() ? tr("yes") : tr("no");
-            model.setItem(row++, 1, new QStandardItem(text));
-            if (diskAttributes.GetType() == DiskType::DSK)
-            {
-                auto header = diskAttributes.GetJvcFileHeader();
-
-                if (header.empty())
-                {
-                    text = tr("none");
-                }
-                else
-                {
-                    text = "";
-                    bool isAppend = false;
-                    for (const auto value : header)
-                    {
-                        text += (isAppend ? "," : "");
-                        text += QString::number(static_cast<Word>(value));
-                        isAppend = true;
-                    }
-                }
-                model.setItem(row++, 1, new QStandardItem(text));
-            }
-        }
-        else
-        {
-            model.setRowCount(2);
-            model.setItem(row++, 0, new QStandardItem(tr("Drive")));
-            model.setItem(row++, 0, new QStandardItem(tr("Status")));
-            row = 0;
-            text = QString("#%1").arg(driveNumber);
-            model.setItem(row++, 1, new QStandardItem(text));
-            model.setItem(row++, 1, new QStandardItem("Not ready"));
-        }
-
-        dialog->setWindowTitle(tr("Floppy Disk Status"));
-        dialog->setModal(true);
-        dialog->setSizeGripEnabled(true);
-        auto floppyPixmap = QPixmap(":/resource/floppy256.png");
-
-        ui.SetPixmap(floppyPixmap);
-        ui.SetModel(model, { "Property", "Value" });
-        ui.SetMinimumSize(dialog);
-
-        dialog->exec();
+        OpenDiskStatusDialog(this, title, diskAttributes, driveNumber);
     }
 }
 

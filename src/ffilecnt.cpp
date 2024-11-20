@@ -513,6 +513,15 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
         diskAttributes.SetNumber(
                 flx::getValueBigEndian<Word>(&sis.sir.disk_number[0]));
     }
+    else
+    {
+        if (param.type == DiskType::FLX)
+        {
+            const auto size = param.byte_p_track0 +
+                    param.byte_p_track * param.max_track;
+            diskAttributes.SetTotalSize(size);
+        }
+    }
 
     diskAttributes.SetTrackSector(
             param.max_track ? param.max_track + 1 : 0,

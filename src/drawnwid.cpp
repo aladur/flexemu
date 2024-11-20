@@ -39,7 +39,6 @@
 DrawnWidget::DrawnWidget(QWidget *parent)
     : QWidget(parent)
     , preferredSize(16, 16)
-    , driveNumber(0xFFFF)
 {
 }
 
@@ -60,10 +59,8 @@ void DrawnWidget::SetPixmap(const QPixmap &p_pixmap)
     updateGeometry();
 }
 
-void DrawnWidget::SetDriveAttributes(Word p_driveNumber,
-                                     const FlexDiskAttributes &p_diskAttributes)
+void DrawnWidget::SetDriveAttributes(const FlexDiskAttributes &p_diskAttributes)
 {
-    driveNumber = p_driveNumber;
     driveAttributes = p_diskAttributes;
 }
 

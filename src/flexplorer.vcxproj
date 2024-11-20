@@ -208,6 +208,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="drawnwid.cpp" />
     <ClCompile Include="fpattrui.cpp" />
     <ClCompile Include="fpcnvui.cpp" />
     <ClCompile Include="fpdnd.cpp" />
@@ -305,8 +306,17 @@
     <ClInclude Include="memsrc.h" />
     <ClInclude Include="memtgt.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="propsui.h" />
     <ClInclude Include="qtfree.h" />
     <ClInclude Include="winmain.h" />
+    <CustomBuild Include="drawnwid.h">
+      <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
+      <Message>Meta object compile %(Filename).h</Message>
+      <Outputs>$(IntDir)\%(Filename)_moc.cpp</Outputs>
+      <AdditionalInputs>$(QTDIR)\$(Platform)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <OutputItemType>ClCompile</OutputItemType>
+      <BuildInParallel>true</BuildInParallel>
+    </CustomBuild>
     <CustomBuild Include="fpcnvui.h">
       <Command>"$(QTDIR)\$(Platform)\bin\moc.exe" "%(FullPath)" -o "$(IntDir)\%(Filename)_moc.cpp"</Command>
       <Message>Meta object compile %(Filename).h</Message>

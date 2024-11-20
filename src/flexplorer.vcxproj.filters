@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="drawnwid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="fpattrui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -188,6 +191,9 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="propsui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="sfpopts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -196,6 +202,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="drawnwid.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
     <CustomBuild Include="fpmdich.h">
       <Filter>Header Files</Filter>
     </CustomBuild>

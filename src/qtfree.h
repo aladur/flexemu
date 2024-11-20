@@ -27,14 +27,21 @@
 #include <QString>
 #include <QFont>
 #include "warnon.h"
+#include "typedefs.h"
 #include <string>
+#include <optional>
 
 class QWidget;
+class FlexDiskAttributes;
 
 extern QFont GetFont(const QString &fontName);
 extern QString GetWindowGeometry(const QWidget &w);
 extern void UpdateWindowGeometry(QWidget &w, const QString &geometry);
 extern QString StripPath(const QString &path, int maxSize = 64);
+extern void OpenDiskStatusDialog(QWidget *parent,
+        const QString &title,
+        const FlexDiskAttributes &diskAttributes,
+        std::optional<Word> driveNumber = std::nullopt);
 
 class UpdateWindowGeometryFtor
 {
