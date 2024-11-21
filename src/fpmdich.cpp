@@ -624,54 +624,7 @@ void FlexplorerMdiChild::Info()
         .arg(diskAttributes.GetName().c_str())
         .arg(diskAttributes.GetNumber());
 
-    QString str = tr("Path: ");
-    str += QString(diskAttributes.GetPath().c_str()).append("\n");
-    str += tr("Type: ");
-    str += QString(diskAttributes.GetTypeString().c_str()).append("\n");
-    str += tr("Date: ");
-    const auto &date = diskAttributes.GetDate();
-    QDate qdate(date.GetYear(), date.GetMonth(), date.GetDay());
-    str += qdate.toString().append("\n");
-    if (tracks != 0 && sectors != 0)
-    {
-        str += tr("Tracks: ");
-        str += QString::number(tracks).append("\n");
-        str += tr("Sectors: ");
-        str += QString::number(sectors).append("\n");
-    }
-    str += tr("Size: ");
-    str += QString::number(diskAttributes.GetTotalSize() / 1024);
-    str += tr(" KByte").append("\n");
-    str += tr("Free: ");
-    str += QString::number(diskAttributes.GetFree() / 1024);
-    str += tr(" KByte").append("\n");
-
-    if (diskAttributes.GetAttributes() & FLX_READONLY)
-    {
-        str += tr("Attributes: read-only").append("\n");
-    }
-    if (diskAttributes.GetType() == DiskType::DSK)
-    {
-        auto header = diskAttributes.GetJvcFileHeader();
-
-        str += tr("JVC header: ");
-        if (header.empty())
-        {
-            str += tr("none");
-        }
-        else
-        {
-            bool isAppend = false;
-            for (const auto value : header)
-            {
-                str += (isAppend ? "," : "");
-                str += QString::number(static_cast<Word>(value));
-                isAppend = true;
-            }
-        }
-    }
-
-    QMessageBox::information(this, title, str);
+    OpenDiskStatusDialog(this, title, diskAttributes);
 }
 
 void FlexplorerMdiChild::SetupModel(const QString &path)

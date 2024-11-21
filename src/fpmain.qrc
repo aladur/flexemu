@@ -24,5 +24,6 @@
         <file alias="qt.png">bitmaps/32x32/qt_extended_32x32.png</file>
         <file alias="diskimagefiles.png">bitmaps/64x64/flexemu-flexplorer-diskimagefiles.png</file>
         <file alias="background.png">bitmaps/256x256/flexemu-flexplorer-background.png</file>
+        <file alias="floppy256.png">bitmaps/256x256/flexemu-floppy.png</file>
     </qresource>
 </RCC>

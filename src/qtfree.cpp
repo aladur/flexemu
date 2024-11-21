@@ -143,12 +143,18 @@ void OpenDiskStatusDialog(QWidget *parent,
     {
         const auto tYes = QObject::tr("yes");
         const auto tNo = QObject::tr("no");
-        auto rowCount = 7;
+        const auto options = diskAttributes.GetOptions();
+        const bool is_trk_sec_valid =
+            (diskAttributes.GetType() != DiskType::Directory) ||
+            (options & DiskOptions::HasSectorIF) != DiskOptions::NONE;
+        auto rowCount = 5;
 
         rowCount += diskAttributes.GetIsFlexFormat() ? 4 : 0;
+        rowCount += is_trk_sec_valid ? 2 : 0;
         rowCount += (diskAttributes.GetType() == DiskType::DSK) ? 1 : 0;
         rowCount += driveNumber.has_value() ? 1 : 0;
         model.setRowCount(rowCount);
+
         diskAttributes.GetTrackSector(tracks, sectors);
         if (driveNumber.has_value())
         {
@@ -165,8 +171,11 @@ void OpenDiskStatusDialog(QWidget *parent,
             model.setItem(row++, 0, new QStandardItem(text));
         }
         model.setItem(row++, 0, new QStandardItem(QObject::tr("Size [KByte]")));
-        model.setItem(row++, 0, new QStandardItem(QObject::tr("Tracks")));
-        model.setItem(row++, 0, new QStandardItem(QObject::tr("Sectors")));
+        if (is_trk_sec_valid)
+        {
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Tracks")));
+            model.setItem(row++, 0, new QStandardItem(QObject::tr("Sectors")));
+        }
         text = QObject::tr("Write-protect");
         model.setItem(row++, 0, new QStandardItem(text));
         model.setItem(row++, 0, new QStandardItem(QObject::tr("FLEX format")));
@@ -204,8 +213,12 @@ void OpenDiskStatusDialog(QWidget *parent,
         const auto size = static_cast<double>(diskAttributes.GetTotalSize()) /
                                1024.0;
         model.setItem(row++, 1, new QStandardItem(QString::number(size)));
-        model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
-        model.setItem(row++, 1, new QStandardItem(QString::number(sectors)));
+        if (is_trk_sec_valid)
+        {
+            model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
+            text = QString::number(sectors);
+            model.setItem(row++, 1, new QStandardItem(text));
+        }
         text = diskAttributes.GetIsWriteProtected() ? tYes : tNo;
         model.setItem(row++, 1, new QStandardItem(text));
         text = diskAttributes.GetIsFlexFormat() ? tYes : tNo;
