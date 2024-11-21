@@ -48,6 +48,7 @@ private:
     DiskOptions options{}; // disk options
     uint64_t free{0}; // Number of bytes free
     uint64_t totalSize{0}; // Number of total bytes writable
+    Word sectorSize{0}; // Byte size of one sector
     Byte attributes{0}; // Disk attributes
     bool is_flex_format{false};// This container contains a FLEX file system.
     bool is_write_protected{false};// This container is write protected.
@@ -102,6 +103,17 @@ public:
     inline uint64_t GetTotalSize() const
     {
         return totalSize;
+    }
+
+    inline void SetSectorSize(Word s)
+    {
+        sectorSize = s;
+        is_valid = true;
+    }
+
+    inline Word GetSectorSize() const
+    {
+        return sectorSize;
     }
 
     inline void SetAttributes(Byte x_attributes)

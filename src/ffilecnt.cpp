@@ -531,6 +531,7 @@ bool FlexDisk::GetDiskAttributes(FlexDiskAttributes &diskAttributes) const
     diskAttributes.SetType(param.type);
     diskAttributes.SetOptions(param.options);
     diskAttributes.SetAttributes(attributes);
+    diskAttributes.SetSectorSize(param.byte_p_sector);
     diskAttributes.SetIsWriteProtected(IsWriteProtected());
     if (param.type == DiskType::DSK)
     {

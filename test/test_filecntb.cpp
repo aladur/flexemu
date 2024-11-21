@@ -49,6 +49,7 @@ protected:
             unsigned jvcHeaderSize,
             int expectedTracks,
             int expectedSectors,
+            int expectedSectorSize,
             DiskType type,
             DiskOptions options,
             bool isWriteProtected)
@@ -76,9 +77,9 @@ protected:
             if ((options & DiskOptions::HasSectorIF) != DiskOptions::NONE)
             {
                 EXPECT_EQ(diskInfo.GetFree(),
-                  (expectedTracks - 1) * expectedSectors * SECTOR_SIZE);
+                  (expectedTracks - 1) * expectedSectors * expectedSectorSize);
                 EXPECT_EQ(diskInfo.GetTotalSize(),
-                  expectedTracks * expectedSectors * SECTOR_SIZE);
+                  expectedTracks * expectedSectors * expectedSectorSize);
             }
         }
         EXPECT_EQ(diskInfo.GetOptions(), options);
@@ -90,6 +91,7 @@ protected:
         diskInfo.GetTrackSector(tracks, sectors);
         EXPECT_EQ(tracks, expectedTracks);
         EXPECT_EQ(sectors, expectedSectors);
+        EXPECT_EQ(diskInfo.GetSectorSize(), expectedSectorSize);
         EXPECT_EQ(diskInfo.GetIsWriteProtected(), isWriteProtected);
         EXPECT_EQ(diskInfo.GetJvcFileHeader().size(), jvcHeaderSize);
         EXPECT_TRUE(diskInfo.IsValid());
@@ -128,8 +130,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetPath(), path1);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-        CheckAttributes(diskInfo, path1, 0U, 0U, tracks, sectors, type,
-                options, isWP);
+        CheckAttributes(diskInfo, path1, 0U, 0U, tracks, sectors, SECTOR_SIZE,
+                type, options, isWP);
         disk.reset();
         fs::remove(path1);
     }
@@ -159,8 +161,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk)
         EXPECT_EQ(disk->GetPath(), path2);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-        CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, type,
-                options, isWP);
+        CheckAttributes(diskInfo, path2, 0U, 0U, tracks, sectors, SECTOR_SIZE,
+                type, options, isWP);
         disk.reset();
         fs::remove(path2);
     }
@@ -219,7 +221,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDisk_JvcHeader)
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
         CheckAttributes(diskInfo, path_jvc, 0U, jvcHeaderSize, tracks, sectors,
-                type, options, false);
+                SECTOR_SIZE, type, options, false);
         EXPECT_EQ(diskInfo.GetJvcFileHeader(), jvcHeader);
         disk.reset();
         fs::remove(path_jvc);
@@ -245,7 +247,7 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryByFile)
     EXPECT_EQ(disk->GetPath(), path);
     FlexDiskAttributes diskInfo{};
     ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-    CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, type, options, false);
+    CheckAttributes(diskInfo, path, 0U, 0U, 0, 0, 0, type, options, false);
     disk.reset();
     fs::remove_all(path);
 }
@@ -275,8 +277,8 @@ TEST_F(test_IFlexDiskBase, fcts_FlexDirectoryBySector)
         EXPECT_EQ(disk->GetPath(), path);
         FlexDiskAttributes diskInfo{};
         ASSERT_TRUE(disk->GetDiskAttributes(diskInfo));
-        CheckAttributes(diskInfo, path, diskNumber, 0U, tracks, sectors, type,
-                options, false);
+        CheckAttributes(diskInfo, path, diskNumber, 0U, tracks, sectors,
+                SECTOR_SIZE, type, options, false);
         disk.reset();
         fs::remove_all(path);
         ++diskNumber;
