@@ -907,7 +907,7 @@ void FLEXplorer::CreateFlexDiskActions()
 
     const auto infoIcon = QIcon(":/resource/info.png");
     infoAction = new QAction(infoIcon, tr("&Info..."), this);
-    infoAction->setShortcut(QKeySequence(tr("Ctrl+I")));
+    infoAction->setShortcut(QKeySequence(tr("Ctrl+Shift+I")));
     infoAction->setStatusTip(tr("Show disk image properties"));
     connect(infoAction, &QAction::triggered, this, &FLEXplorer::OnInfo);
     containerMenu->addAction(infoAction);
