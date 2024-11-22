@@ -46,7 +46,7 @@ public:
     ~DrawnWidget() override = default;
 
     void SetPixmap(const QPixmap &p_pixmap);
-    void SetDriveAttributes(const FlexDiskAttributes &p_diskAttributes);
+    void SetDiskAttributes(const FlexDiskAttributes &p_diskAttributes);
 
     // QWidget Overrides
     QSize minimumSizeHint() const override;
@@ -58,7 +58,7 @@ protected:
 private:
     QPixmap pixmap;
     QSize preferredSize;
-    FlexDiskAttributes driveAttributes;
+    FlexDiskAttributes diskAttributes;
 };
 #endif
 

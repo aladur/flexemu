@@ -136,7 +136,7 @@ void OpenDiskStatusDialog(QWidget *parent,
     int row = 0;
 
     ui.setupUi(dialog);
-    ui.SetDriveAttributes(diskAttributes);
+    ui.SetDiskAttributes(diskAttributes);
 
     model.setColumnCount(2);
     if (diskAttributes.IsValid())
