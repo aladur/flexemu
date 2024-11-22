@@ -147,10 +147,12 @@ void OpenDiskStatusDialog(QWidget *parent,
         const bool is_trk_sec_valid =
             (diskAttributes.GetType() != DiskType::Directory) ||
             (options & DiskOptions::HasSectorIF) != DiskOptions::NONE;
+        const bool is_sector_size_valid = is_trk_sec_valid;
         auto rowCount = 5;
 
         rowCount += diskAttributes.GetIsFlexFormat() ? 4 : 0;
         rowCount += is_trk_sec_valid ? 2 : 0;
+        rowCount += is_sector_size_valid ? 1 : 0;
         rowCount += (diskAttributes.GetType() == DiskType::DSK) ? 1 : 0;
         rowCount += driveNumber.has_value() ? 1 : 0;
         model.setRowCount(rowCount);
@@ -171,6 +173,11 @@ void OpenDiskStatusDialog(QWidget *parent,
             model.setItem(row++, 0, new QStandardItem(text));
         }
         model.setItem(row++, 0, new QStandardItem(QObject::tr("Size [KByte]")));
+        if (is_sector_size_valid)
+        {
+            text = QObject::tr("Sectorsize [Byte]");
+            model.setItem(row++, 0, new QStandardItem(text));
+        }
         if (is_trk_sec_valid)
         {
             model.setItem(row++, 0, new QStandardItem(QObject::tr("Tracks")));
@@ -213,6 +220,11 @@ void OpenDiskStatusDialog(QWidget *parent,
         const auto size = static_cast<double>(diskAttributes.GetTotalSize()) /
                                1024.0;
         model.setItem(row++, 1, new QStandardItem(QString::number(size)));
+        if (is_sector_size_valid)
+        {
+            text = QString::number(diskAttributes.GetSectorSize());
+            model.setItem(row++, 1, new QStandardItem(text));
+        }
         if (is_trk_sec_valid)
         {
             model.setItem(row++, 1, new QStandardItem(QString::number(tracks)));
