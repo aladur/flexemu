@@ -34,6 +34,7 @@
 #include <QPixmap>
 #include "warnon.h"
 #include "blinxsys.h"
+#include "bobservd.h"
 
 class VideoControl2;
 class QPaintEvent;
@@ -51,7 +52,7 @@ class KeyboardIO;
 class Pia1;
 
 
-class E2Screen : public QWidget
+class E2Screen : public QWidget, public BObserved
 {
     Q_OBJECT
 

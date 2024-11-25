@@ -29,6 +29,7 @@
 #include "keyboard.h"
 #include "pia1.h"
 #include "cacttrns.h"
+#include "bobservd.h"
 #include "warnoff.h"
 #include <QtGlobal>
 #include <QPainter>
@@ -151,14 +152,16 @@ void E2Screen::keyPressEvent(QKeyEvent *event)
     if (key >= 0)
     {
         bool do_notify = false;
+        auto bKey = static_cast<Byte>(key);
 
-        keyboardIO.put_char_parallel(static_cast<Byte>(key), do_notify);
+        keyboardIO.put_char_parallel(bKey, do_notify);
         if (do_notify)
         {
             auto command = BCommandPtr(
                 new CActiveTransition(pia1, Mc6821::ControlLine::CA1));
             scheduler.sync_exec(std::move(command));
         }
+        Notify(NotifyId::KeyPressed, &bKey);
         event->accept();
     }
     else

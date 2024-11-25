@@ -57,6 +57,8 @@
 #include <QPainter>
 #include <QIODevice>
 #include <QTextStream>
+#include <QFrame>
+#include <QLabel>
 #include <QWidget>
 #include <QScreen>
 #include <QToolBar>
@@ -94,6 +96,7 @@
 #include "warnon.h"
 #include <cmath>
 #include <array>
+#include <fmt/format.h>
 
 int QtGui::preferencesTabIndex = 0;
 
@@ -116,6 +119,7 @@ QtGui::QtGui(
              , p_terminalIO)
         , mainLayout(new QVBoxLayout(this))
         , toolBarLayout(new QHBoxLayout)
+        , statusBarLayout(new QHBoxLayout)
         , menuBar(new QMenuBar)
         , cpuDialog(new QDialog(this))
         , isStatusBarVisible(true)
@@ -154,7 +158,12 @@ QtGui::QtGui(
     CreateIcons();
     CreateActions(*toolBarLayout);
     CreateStatusToolBar(*mainLayout);
-    CreateStatusBar(*mainLayout);
+    const auto name = QString::fromUtf8("statusBarLayout");
+    statusBarLayout->setObjectName(name);
+    statusBarLayout->setContentsMargins(0, 0, 0, 0);
+    statusBarLayout->setSpacing(2);
+    mainLayout->addLayout(statusBarLayout);
+    CreateStatusBar(*statusBarLayout);
 
     setWindowState(Qt::WindowActive);
     // Resize needed here to overwrite previous adjustSize()
@@ -171,6 +180,7 @@ QtGui::QtGui(
     setWindowTitle(e2screen->GetTitle());
 
     e2screen->ReleaseMouseCapture();
+    e2screen->Attach(*this);
 
     // Initialize the non-modal CPU Dialog but don't open it.
     cpuUi.setupUi(cpuDialog);
@@ -248,6 +258,7 @@ void QtGui::OnExit()
 {
     bool safeFlag = isRestartNeeded;
 
+    e2screen->Detach(*this);
     isRestartNeeded = false;
     close();
     isRestartNeeded = safeFlag;
@@ -304,6 +315,7 @@ void QtGui::OnPreferences()
 
         if (isRestartNeeded)
         {
+            e2screen->Detach(*this);
             if (close())
             {
                 // Force restart flexemu
@@ -716,6 +728,21 @@ void QtGui::OnTimer()
                 SetCpuFrequency(*newFrequency);
                 newFrequency.reset();
             }
+        }
+
+        std::vector<Byte> newKeysCopy;
+        {
+            std::lock_guard<std::mutex> guard(newKeysMutex);
+            if (!newKeys.empty())
+            {
+                newKeysCopy = std::move(newKeys);
+            }
+        }
+
+        for (auto key : newKeysCopy)
+        {
+            const auto newKeyString = GetKeyString(key);
+            newKeyLabel->setText(QString::fromStdString(newKeyString));
         }
 
         if (isFirstTime)
@@ -1305,16 +1332,33 @@ void QtGui::OnDiskStatus(Word driveNumber)
     }
 }
 
-void QtGui::CreateStatusBar(QLayout &layout)
+void QtGui::CreateStatusBar(QBoxLayout &layout)
 {
     // Use QStackedWidget to be able to set a frame style.
     statusBarFrame = new QStackedWidget();
     statusBar = new QStatusBar();
-    statusBar->setSizeGripEnabled(true);
+    statusBar->setSizeGripEnabled(false);
     statusBarFrame->addWidget(statusBar);
-    layout.addWidget(statusBarFrame);
+    layout.addWidget(statusBarFrame, 1);
     statusBarFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
     statusBarAction->setChecked(true);
+    newKeyFrame = new QStackedWidget();
+    newKeyLabel = new QLabel(this);
+    newKeyLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    newKeyLabel->setToolTip(tr("Last key entered"));
+    const auto defaultFont = QApplication::font();
+    const auto pointSize = defaultFont.pointSize();
+    auto font = GetMonospaceFont(pointSize);
+    font.setWeight(QFont::Bold);
+    newKeyLabel->setFont(font);
+    newKeyLabel->setText("00  ");
+    newKeyFrame->addWidget(newKeyLabel);
+    newKeyFrame->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    layout.addWidget(newKeyFrame);
+    dummyStatusBar = new QStatusBar(this);
+    dummyStatusBar->setMaximumWidth(14);
+    dummyStatusBar->setSizeGripEnabled(true);
+    layout.addWidget(dummyStatusBar);
 
     SetStatusMessage(tr("Ready"));
 }
@@ -1525,13 +1569,11 @@ bool QtGui::IsFullScreenMode() const
 
 void QtGui::ToggleStatusBarVisibility()
 {
-    auto statusBarHeightDiff = statusBarFrame->height();
-    if (statusBarFrame->isVisible())
-    {
-        statusBarHeightDiff = -statusBarHeightDiff;
-    }
     statusBarFrame->setVisible(!statusBarFrame->isVisible());
-    resize(size() + QSize(0, statusBarHeightDiff));
+    newKeyFrame->setVisible(!newKeyFrame->isVisible());
+    dummyStatusBar->setVisible(!dummyStatusBar->isVisible());
+
+    QTimer::singleShot(0, this, &QtGui::OnResize);
 
     UpdateStatusBarCheck();
 }
@@ -1947,8 +1989,8 @@ void QtGui::changeEvent(QEvent *event)
     if (event->type() == QEvent::ApplicationFontChange
         || event->type() == QEvent::FontChange)
     {
-        auto font = QApplication::font();
-        auto newPointSize = font.pointSize();
+        auto defaultFont = QApplication::font();
+        auto newPointSize = defaultFont.pointSize();
 
         QFontInfo fontInfo(cpuUi.e_status->font());
 
@@ -2089,6 +2131,7 @@ void QtGui::closeEvent(QCloseEvent *event)
     if (IsClosingConfirmed())
     {
         e2screen->ReleaseMouseCapture();
+        e2screen->Detach(*this);
         scheduler.request_new_state(CpuState::Exit);
         while (!scheduler.is_finished())
         {
@@ -2134,12 +2177,68 @@ void QtGui::write_char_serial(Byte value)
     printOutputWindow->write_char_serial(value);
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+std::string QtGui::GetKeyString(Byte key)
+{
+    const std::array<const char *, 32> code{
+        "NUL", "SOH", "STX", "ETX", "EOT", "ENQ", "ACK", "BEL", "BS",
+        "HT", "LF", "VT", "FF", "CR", "SO", "SI", "DLE", "DC1", "DC2",
+        "DC3", "DC4", "NAK", "SYN", "ETB", "CAN", "EM", "SUB", "ESC",
+        "FS", "GS", "RS", "US",
+    };
+
+    auto cKey = static_cast<char>(key);
+    auto ctrlCh = "CTRL-" + std::string(1U, static_cast<char>(cKey + '@'));
+    auto ch = (key < ' ') ? ctrlCh : "";
+    ch = (ch.empty() && key <= '~') ? std::string(1U, cKey) : ch;
+    ch = ch.empty() ? std::string(1U, ' ') : ch;
+    std::string sCode = (key < ' ') ? code[key] :
+        ((key == '\x7F') ? "DEL" : "");
+
+    return (!sCode.empty()) ?
+        fmt::format("{:02X} {:6} {:3}", key, ch, sCode) :
+        fmt::format("{:02X} {}", key, ch);
+}
+
 void QtGui::UpdateFrom(NotifyId id, void *param)
 {
-    if (id == NotifyId::SetFrequency && param != nullptr)
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-enum"
+#endif
+    if (param != nullptr)
     {
-        std::lock_guard<std::mutex> guard(newFrequencyMutex);
-        newFrequency = *static_cast<float *>(param);
+        switch (id)
+        {
+            case NotifyId::SetFrequency:
+                {
+                    std::lock_guard<std::mutex> guard(newFrequencyMutex);
+                    newFrequency = *static_cast<float *>(param);
+                }
+                break;
+
+            case NotifyId::KeyPressed:
+                {
+                    const auto bKey = *static_cast<Byte *>(param);
+                    const auto text = GetKeyString(bKey);
+                    newKeyLabel->setText(QString::fromStdString(text));
+                }
+                break;
+
+            case NotifyId::KeyPressedOnCPU:
+                {
+                    std::lock_guard<std::mutex> guard(newKeysMutex);
+                    newKeys.push_back(*static_cast<Byte *>(param));
+                }
+                break;
+
+            default:
+                break;
+        }
     }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 }
 

@@ -175,6 +175,7 @@ ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
     pia1.Attach(cpu);
     acia1.Attach(cpu);
     terminalIO.Attach(cpu);
+    terminalIO.Attach(gui);
     command.Attach(cpu);
     command.Attach(gui);
     vico1.Attach(memory);

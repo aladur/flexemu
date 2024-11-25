@@ -65,6 +65,7 @@ class PrintOutputWindow;
 class QAction;
 class QSize;
 class QString;
+class QLabel;
 class QWidget;
 class QEvent;
 class QKeyEvent;
@@ -174,7 +175,7 @@ private:
                                     uint16_t index);
     QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
     void CreateStatusToolBar(QLayout &layout);
-    void CreateStatusBar(QLayout &layout);
+    void CreateStatusBar(QBoxLayout &layout);
     void AddDiskStatusButtons();
     void ConnectCpuUiSignalsWithSlots();
     void SetStatusMessage(const QString &message) const;
@@ -216,6 +217,7 @@ private:
     void SetPreferencesStatusText(bool isRestartNeeded) const;
     void WriteOneOption(sOptions options, FlexemuOptionId optionId) const;
     void SetCpuFrequency(float frequency);
+    std::string GetKeyString(Byte key);
 
     // QWidget Overrides
     bool event(QEvent *event) override;
@@ -230,7 +232,9 @@ private:
     QVBoxLayout *mainLayout{};
     QHBoxLayout *toolBarLayout{};
     QHBoxLayout *e2screenLayout{};
+    QHBoxLayout *statusBarLayout{};
     QStackedWidget *statusBarFrame{};
+    QStackedWidget *newKeyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
     QToolBar *fileToolBar{};
@@ -239,7 +243,9 @@ private:
     QToolBar *cpuToolBar{};
     QToolBar *helpToolBar{};
     QToolBar *statusToolBar{};
+    QLabel *newKeyLabel{};
     QStatusBar *statusBar{};
+    QStatusBar *dummyStatusBar{};
     QComboBox *screenSizeComboBox{};
     QDialog *cpuDialog{};
     Ui::CpuStatus cpuUi{};
@@ -287,6 +293,8 @@ private:
     Byte oldFirstRasterLine{0U};
     std::optional<float> newFrequency;
     std::mutex newFrequencyMutex;
+    std::vector<Byte> newKeys;
+    std::mutex newKeysMutex;
     Mc6809LoggerConfig cpuLoggerConfig;
 
     Scheduler &scheduler;

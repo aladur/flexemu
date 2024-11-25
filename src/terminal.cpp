@@ -221,20 +221,24 @@ void TerminalIO::init_terminal_io(Word /* [[maybe_unused]] Word reset_key */)
 
 void TerminalIO::put_char_serial(Byte key)
 {
-    std::lock_guard<std::mutex> guard(serial_mutex);
-    // convert back space character
+    {
+        std::lock_guard<std::mutex> guard(serial_mutex);
+        // convert back space character
 #ifdef HAVE_TERMIOS_H
 #ifdef VERASE
 
-    if (key == save_termios.c_cc[VERASE] || key == 0x7f)
-    {
-        key = BS;
-    }
+        if (key == save_termios.c_cc[VERASE] || key == 0x7f)
+        {
+            key = BS;
+        }
 
 #endif
 #endif // #ifdef HAVE_TERMIOS_H
 
-    key_buffer_serial.push_back(key);
+        key_buffer_serial.push_back(key);
+    }
+
+    Notify(NotifyId::KeyPressedOnCPU, &key);
 }
 
 // poll serial port for input character.

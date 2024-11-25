@@ -35,6 +35,8 @@ enum class NotifyId : uint8_t
     RequestScreenUpdate,
     VideoRamBankChanged,
     SetFrequency,
+    KeyPressed, // key pressed in context of UI thread.
+    KeyPressedOnCPU, // key pressed in context of CPU thread.
 };
 
 #endif // #ifndef BOBSHELP_INCLUDED
