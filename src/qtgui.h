@@ -183,7 +183,8 @@ private:
     void PopupMessage(const QString &message);
     static void SetBell(int percent);
     void update_block(int blockNumber);
-    void UpdateDiskStatus(int floppyIndex, DiskStatus status);
+    void UpdateDiskStatus(int floppyIndex, DiskStatus oldStatus,
+                          DiskStatus newStatus);
     void UpdateInterruptStatus(tIrqType irqType, bool status);
     void ToggleSmoothDisplay();
     void ToggleCpuFrequency();

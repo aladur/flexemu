@@ -705,7 +705,7 @@ void QtGui::OnTimer()
             {
                 if (isFirstTime || (newStatus[t] != status[t]))
                 {
-                    UpdateDiskStatus(t, newStatus[t]);
+                    UpdateDiskStatus(t, status[t], newStatus[t]);
                     status[t] = newStatus[t];
                 }
             }
@@ -1199,8 +1199,8 @@ void QtGui::AddDiskStatusButtons()
 
         for (Word i = 0; i < MAX_DRIVES; ++i)
         {
-            diskStatusAction[i] =
-                statusToolBar->addAction(iconNoFloppy, tr("Disk #%1").arg(i));
+            const auto text = tr("Disk #%1 not ready").arg(i);
+            diskStatusAction[i] = statusToolBar->addAction(iconNoFloppy, text);
             connect(diskStatusAction[i], &QAction::triggered,
                 this, [this, i=i]() { OnDiskStatus(i); });
             auto statusTip = tr("Open disk #%1 status").arg(i);
@@ -1440,23 +1440,46 @@ void QtGui::update_block(int blockNumber)
     e2screen->UpdateBlock(vico2.get_value(), blockNumber, dataBuffer);
 }
 
-void QtGui::UpdateDiskStatus(int floppyIndex, DiskStatus status)
+void QtGui::UpdateDiskStatus(int floppyIndex, DiskStatus oldStatus,
+        DiskStatus newStatus)
 {
+    auto fct_getStatusText = [&](int idx){
+        const auto diskAttributes = fdc->drive_attributes(idx);
+        return tr("Disk #%1 %2")
+            .arg(idx)
+            .arg(diskAttributes.GetIsFlexFormat() ?
+                diskAttributes.GetName().c_str() :
+                flx::getFileName(diskAttributes.GetPath()).c_str());
+    };
+
     if (HasFloppy())
     {
+        QString text;
         assert(static_cast<size_t>(floppyIndex) < diskStatusAction.size());
 
-        switch (status)
+        switch (newStatus)
         {
             case DiskStatus::EMPTY:
+                text = tr("Disk #%1 not ready").arg(floppyIndex);
+                diskStatusAction[floppyIndex]->setText(text);
                 diskStatusAction[floppyIndex]->setIcon(iconNoFloppy);
                 break;
 
             case DiskStatus::INACTIVE:
+                if (oldStatus == DiskStatus::EMPTY)
+                {
+                    text = fct_getStatusText(floppyIndex);
+                    diskStatusAction[floppyIndex]->setText(text);
+                }
                 diskStatusAction[floppyIndex]->setIcon(iconInactiveFloppy);
                 break;
 
             case DiskStatus::ACTIVE:
+                if (oldStatus == DiskStatus::EMPTY)
+                {
+                    text = fct_getStatusText(floppyIndex);
+                    diskStatusAction[floppyIndex]->setText(text);
+                }
                 diskStatusAction[floppyIndex]->setIcon(iconActiveFloppy);
                 break;
         }
