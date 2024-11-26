@@ -23,6 +23,7 @@
 
 
 #include "misc1.h"
+#include "e2.h"
 #include "mdcrtape.h"
 #include "fpwin.h"
 #include "fpnewui.h"
@@ -94,6 +95,8 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     FlexDisk::onTrack0OnlyDirSectors = options.onTrack0OnlyDirSectors;
 
     resize(860, 720);
+
+    OnIconSize(2);
 }
 
 FLEXplorer::~FLEXplorer()
@@ -734,6 +737,7 @@ void FLEXplorer::CreateActions()
 {
     CreateFileActions();
     CreateEditActions();
+    CreateViewActions();
     CreateFlexDiskActions();
     CreateExtrasActions();
     CreateWindowsActions();
@@ -899,6 +903,18 @@ void FLEXplorer::CreateEditActions()
 #endif
 }
 
+void FLEXplorer::CreateViewActions()
+{
+    auto *viewMenu = menuBar()->addMenu(tr("&View"));
+
+    auto *iconSizeMenu = viewMenu->addMenu(tr("&Icon Size"));
+
+    for (uint16_t index = 0U; index < ICON_SIZES; ++index)
+    {
+        iconSizeAction[index] = CreateIconSizeAction(*iconSizeMenu, index);
+    }
+}
+
 void FLEXplorer::CreateFlexDiskActions()
 {
     QMenu *containerMenu = menuBar()->addMenu(tr("&Disk"));
@@ -917,8 +933,8 @@ void FLEXplorer::CreateFlexDiskActions()
 void FLEXplorer::CreateExtrasActions()
 {
     QMenu *extrasMenu = menuBar()->addMenu(tr("&Extras"));
-    auto *extrasToolBar = CreateToolBar(this, tr("Extras"),
-                                        QStringLiteral("extrasToolBar"));
+    extrasToolBar = CreateToolBar(this, tr("Extras"),
+                                  QStringLiteral("extrasToolBar"));
 
     const auto optionsIcon = QIcon(":/resource/options.png");
     optionsAction = new QAction(optionsIcon, tr("&Options..."), this);
@@ -931,8 +947,8 @@ void FLEXplorer::CreateExtrasActions()
 void FLEXplorer::CreateWindowsActions()
 {
     windowMenu = menuBar()->addMenu(tr("&Window"));
-    auto *windowToolBar = CreateToolBar(this, tr("Window"),
-                                        QStringLiteral("windowToolBar"));
+    windowToolBar = CreateToolBar(this, tr("Window"),
+                                  QStringLiteral("windowToolBar"));
     connect(windowMenu, &QMenu::aboutToShow,
             this, &FLEXplorer::OnUpdateWindowMenu);
 
@@ -980,8 +996,8 @@ void FLEXplorer::CreateWindowsActions()
 void FLEXplorer::CreateHelpActions()
 {
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
-    auto *helpToolBar = CreateToolBar(this, tr("Help"),
-                                      QStringLiteral("helpToolBar"));
+    helpToolBar = CreateToolBar(this, tr("Help"),
+                                QStringLiteral("helpToolBar"));
 
     const auto aboutIcon = QIcon(":/resource/about.png");
     aboutAction = helpMenu->addAction(aboutIcon, tr("&About"),
@@ -1407,5 +1423,61 @@ void FLEXplorer::RestoreRecentDirectories()
     }
 
     UpdateRecentDirectoryActions();
+}
+
+QAction *FLEXplorer::CreateIconSizeAction(QMenu &menu, uint16_t index)
+{
+    static const QStringList menuText{
+        tr("&Small"),
+        tr("&Medium"),
+        tr("&Large"),
+    };
+    static const QStringList toolTipText{
+        tr("Show small size Icons"),
+        tr("Show medium size Icons"),
+        tr("Show large size Icons"),
+    };
+
+    assert(menuText.size() == ICON_SIZES);
+    assert(toolTipText.size() == ICON_SIZES);
+    assert(index < ICON_SIZES);
+
+    auto *action = menu.addAction(menuText[index]);
+    connect(action, &QAction::triggered,
+        this, [&,index](){ OnIconSize(index); });
+    action->setCheckable(true);
+    action->setStatusTip(toolTipText[index]);
+
+    return action;
+}
+
+void FLEXplorer::OnIconSize(int index)
+{
+    index = std::max(index, 0);
+    index = std::min(index, 2);
+
+    int size = 16 + 8 * index;
+
+    SetIconSize({size, size});
+}
+
+void FLEXplorer::SetIconSize(const QSize &iconSize)
+{
+    fileToolBar->setIconSize(iconSize);
+    editToolBar->setIconSize(iconSize);
+    containerToolBar->setIconSize(iconSize);
+    extrasToolBar->setIconSize(iconSize);
+    windowToolBar->setIconSize(iconSize);
+    helpToolBar->setIconSize(iconSize);
+
+    int sizeIndex = (iconSize.width() >= 24 || iconSize.height() >= 24) ? 1 : 0;
+    sizeIndex = (iconSize.width() >= 32 || iconSize.height() >= 32) ?
+                2 : sizeIndex;
+
+    for (int index = 0; index < ICON_SIZES; ++index)
+    {
+        auto *action = iconSizeAction[index];
+        action->setChecked(index == sizeIndex);
+    }
 }
 

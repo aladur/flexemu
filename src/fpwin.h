@@ -23,6 +23,7 @@
 #ifndef FPWIN_INCLUDED
 #define FPWIN_INCLUDED
 
+#include "e2.h"
 #include "misc1.h"
 #include "efiletim.h"
 #include "warnoff.h"
@@ -105,6 +106,8 @@ private slots:
     void OnCloseAllSubWindows();
     void OnAbout();
     void OnSelectionHasChanged();
+    void OnIconSize(int index);
+    void SetIconSize(const QSize &iconSize);
 
     static void OnExit();
 
@@ -116,6 +119,7 @@ private:
     void CreateActions();
     void CreateFileActions();
     void CreateEditActions();
+    void CreateViewActions();
     void CreateFlexDiskActions();
     void CreateExtrasActions();
     void CreateWindowsActions();
@@ -142,6 +146,7 @@ private:
     void RestoreRecentDirectories();
     bool OpenFlexDiskForPath(QString path, bool isLast = true);
     void SetStatusMessage(const QString &message);
+    QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -163,6 +168,9 @@ protected:
     QToolBar *fileToolBar{};
     QToolBar *editToolBar{};
     QToolBar *containerToolBar{};
+    QToolBar *extrasToolBar{};
+    QToolBar *windowToolBar{};
+    QToolBar *helpToolBar{};
     QAction *newFlexDiskAction{};
     QAction *openFlexDiskAction{};
     QAction *openDirectoryAction{};
@@ -189,6 +197,7 @@ protected:
     QAction *windowMenuSeparatorAction{};
     QAction *aboutAction{};
     QAction *aboutQtAction{};
+    std::array<QAction *, ICON_SIZES> iconSizeAction{};
     QSize newDialogSize;
     QSize optionsDialogSize;
     QSize attributesDialogSize;
