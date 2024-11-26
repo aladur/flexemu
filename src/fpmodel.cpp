@@ -853,7 +853,7 @@ void FlexplorerTableModel::sort(int column, Qt::SortOrder order)
     CalculateAndChangePersistentIndexList(oldIds);
 
     emit layoutChanged();
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
 }
