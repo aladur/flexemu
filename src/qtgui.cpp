@@ -1639,6 +1639,7 @@ void QtGui::SetIconSize(const QSize &iconSize)
     for (int index = 0; index < ICON_SIZES; ++index)
     {
         auto *action = iconSizeAction[index];
+        assert(action != nullptr);
         action->setChecked(index == sizeIndex);
     }
 
