@@ -45,6 +45,7 @@ extern void OpenDiskStatusDialog(QWidget *parent,
         const FlexDiskAttributes &diskAttributes,
         std::optional<Word> driveNumber = std::nullopt);
 extern QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
+extern int IconSizeToIndex(const QSize &iconSize);
 
 class UpdateWindowGeometryFtor
 {

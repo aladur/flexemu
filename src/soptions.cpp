@@ -52,6 +52,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::NColors,
         FlexemuOptionId::IsInverse,
         FlexemuOptionId::PixelSize,
+        FlexemuOptionId::IconSize,
         FlexemuOptionId::FileTimeAccess,
         FlexemuOptionId::IsDisplaySmooth,
         FlexemuOptionId::PrintFont,

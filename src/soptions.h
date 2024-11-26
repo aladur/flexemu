@@ -61,6 +61,7 @@ enum class FlexemuOptionId : uint8_t
     NColors,
     IsInverse,
     PixelSize,
+    IconSize,
     FileTimeAccess,
     IsDisplaySmooth,
     PrintFont,
@@ -103,6 +104,7 @@ struct sOptions
     bool isTerminalIgnoreNUL{}; // Terminal mode: Ignore NUL (0x00) characters
     FileTimeAccess fileTimeAccess{};
     short int reset_key{};
+    int iconSize{}; // Size of icons {16, 24, 32 }.
     float frequency{};
 
     // User interface options

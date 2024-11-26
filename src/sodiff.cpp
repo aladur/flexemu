@@ -141,6 +141,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::PixelSize);
     }
 
+    if (opt1.iconSize != opt2.iconSize)
+    {
+        notEquals.push_back(FlexemuOptionId::IconSize);
+    }
+
     if (opt1.fileTimeAccess != opt2.fileTimeAccess)
     {
         notEquals.push_back(FlexemuOptionId::FileTimeAccess);
@@ -241,6 +246,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::NColors:
             case FlexemuOptionId::IsInverse:
             case FlexemuOptionId::PixelSize:
+            case FlexemuOptionId::IconSize:
             case FlexemuOptionId::CanFormatDrive0:
             case FlexemuOptionId::CanFormatDrive1:
             case FlexemuOptionId::CanFormatDrive2:

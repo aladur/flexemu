@@ -297,3 +297,9 @@ QAction *CreateIconSizeAction(QMenu &menu, uint16_t index)
     return action;
   }
 
+int IconSizeToIndex(const QSize &iconSize)
+{
+   int index = (iconSize.width() >= 24 || iconSize.height() >= 24) ? 1 : 0;
+   return (iconSize.width() >= 32 || iconSize.height() >= 32) ? 2 : index;
+}
+

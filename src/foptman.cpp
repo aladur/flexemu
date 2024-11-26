@@ -67,6 +67,7 @@ static const char * const FLEXDOCDIR = "DocDirectory";
 static const char * const FLEXMONITOR = "MonitorPath";
 static const char * const FLEXVERSION = "Version";
 static const char * const FLEXSCREENFACTOR = "ScreenFactor";
+static const char * const FLEXICONSIZE = "IconSize";
 static const char * const FLEXFREQUENCY = "Frequency";
 static const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 static const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
@@ -162,6 +163,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.disk_dir = flx::getExecutablePath() + PATHSEPARATORSTRING + "Data";
 #endif
     options.pixelSize = 2;
+    options.iconSize = 16;
     options.readOnlyOptionIds.clear();
     options.isPrintPageBreakDetected = false;
     options.directoryDiskTracks = 80;
@@ -485,6 +487,10 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXSCREENFACTOR, options.pixelSize);
             break;
 
+        case FlexemuOptionId::IconSize:
+            reg.SetValue(FLEXICONSIZE, options.iconSize);
+            break;
+
         case FlexemuOptionId::HexFile:
             reg.SetValue(FLEXMONITOR, options.hex_file.c_str());
             break;
@@ -681,6 +687,10 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.pixelSize = previousOptions.pixelSize;
             break;
 
+        case FlexemuOptionId::IconSize:
+            optionsToWrite.iconSize = previousOptions.iconSize;
+            break;
+
         case FlexemuOptionId::HexFile:
             optionsToWrite.hex_file = previousOptions.hex_file;
             break;
@@ -812,6 +822,7 @@ void FlexemuOptions::WriteOptionsToFile(
     rcFile.SetValue(FLEXCOLOR, optionsToWrite.color);
     rcFile.SetValue(FLEXNCOLORS, optionsToWrite.nColors);
     rcFile.SetValue(FLEXSCREENFACTOR, optionsToWrite.pixelSize);
+    rcFile.SetValue(FLEXICONSIZE, optionsToWrite.iconSize);
     rcFile.SetValue(FLEXMONITOR, optionsToWrite.hex_file);
     rcFile.SetValue(FLEXDISKDIR, optionsToWrite.disk_dir);
     rcFile.SetValue(FLEXDISK0, optionsToWrite.drives[0]);
@@ -913,6 +924,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.pixelSize = int_result;
     }
 
+    if (!reg.GetValue(FLEXICONSIZE, int_result))
+    {
+        options.iconSize = (int_result >= 24) ? 24 : 16;
+        options.iconSize = (int_result >= 32) ? 32 : options.iconSize;
+    }
     if (!reg.GetValue(FLEXINVERSE, int_result))
     {
         options.isInverse = (int_result != 0);
@@ -1071,6 +1087,12 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         int_result = std::min<int>(int_result, SCREEN_SIZES);
 
         options.pixelSize = int_result;
+    }
+
+    if (!rcFile.GetValue(FLEXICONSIZE, int_result))
+    {
+        options.iconSize = (int_result >= 24) ? 24 : 16;
+        options.iconSize = (int_result >= 32) ? 32 : options.iconSize;
     }
 
     if (!rcFile.GetValue(FLEXINVERSE, int_result))

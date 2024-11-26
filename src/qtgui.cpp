@@ -201,7 +201,7 @@ QtGui::QtGui(
         ToggleSmoothDisplay();
     }
 
-    OnIconSize(0);
+    SetIconSize({options.iconSize, options.iconSize});
 }
 
 QtGui::~QtGui()
@@ -397,6 +397,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsFlexibleMmu:
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:
+                case FlexemuOptionId::IconSize:
                     break;
             }
         }
@@ -893,6 +894,10 @@ void QtGui::OnIconSize(int index)
     int size = 16 + 8 * index;
 
     SetIconSize({size, size});
+
+    options.iconSize = size;
+    oldOptions.iconSize = options.iconSize;
+    WriteOneOption(options, FlexemuOptionId::IconSize);
 }
 
 void QtGui::OnScreenSize(int index)
@@ -1623,14 +1628,13 @@ void QtGui::SetIconSize(const QSize &iconSize)
         statusToolBar->iconSize().height();
 
     fileToolBar->setIconSize(iconSize);
+    editToolBar->setIconSize(iconSize);
     viewToolBar->setIconSize(iconSize);
     cpuToolBar->setIconSize(iconSize);
     helpToolBar->setIconSize(iconSize);
     statusToolBar->setIconSize(iconSize);
 
-    int sizeIndex = (iconSize.width() >= 24 || iconSize.height() >= 24) ? 1 : 0;
-    sizeIndex = (iconSize.width() >= 32 || iconSize.height() >= 32) ?
-                2 : sizeIndex;
+    const int sizeIndex = IconSizeToIndex(iconSize);
 
     for (int index = 0; index < ICON_SIZES; ++index)
     {
