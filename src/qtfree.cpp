@@ -22,12 +22,15 @@
 
 
 #include "warnoff.h"
+#include <QObject>
 #include <QLatin1Char>
 #include <QString>
+#include <QStringList>
 #include <QLocale>
 #include <QDate>
 #include <QPixmap>
 #include <QFontDatabase>
+#include <QMenu>
 #include <QWidget>
 #include <QDialog>
 #include <QStandardItem>
@@ -37,6 +40,7 @@
 #include "qtfree.h"
 #include "propsui.h"
 #include "fcinfo.h"
+#include "e2.h"
 #include <cmath>
 #include <optional>
 
@@ -268,4 +272,28 @@ void OpenDiskStatusDialog(QWidget *parent,
 
     dialog->exec();
 }
+
+QAction *CreateIconSizeAction(QMenu &menu, uint16_t index)
+{
+    static const QStringList menuText{
+        QObject::tr("&Small"),
+        QObject::tr("&Medium"),
+        QObject::tr("&Large"),
+    };
+    static const QStringList toolTipText{
+        QObject::tr("Show small size Icons"),
+        QObject::tr("Show medium size Icons"),
+        QObject::tr("Show large size Icons"),
+    };
+
+    assert(menuText.size() == ICON_SIZES);
+    assert(toolTipText.size() == ICON_SIZES);
+    assert(index < ICON_SIZES);
+
+    auto *action = menu.addAction(menuText[index]);
+    action->setCheckable(true);
+    action->setStatusTip(toolTipText[index]);
+
+    return action;
+  }
 

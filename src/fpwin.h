@@ -146,7 +146,6 @@ private:
     void RestoreRecentDirectories();
     bool OpenFlexDiskForPath(QString path, bool isLast = true);
     void SetStatusMessage(const QString &message);
-    QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

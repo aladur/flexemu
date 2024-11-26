@@ -173,7 +173,6 @@ private:
     static void CreateHorizontalSpacer(QLayout &layout);
     QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
                                     uint16_t index);
-    QAction *CreateIconSizeAction(QMenu &menu, uint16_t index);
     void CreateStatusToolBar(QLayout &layout);
     void CreateStatusBar(QBoxLayout &layout);
     void AddDiskStatusButtons();

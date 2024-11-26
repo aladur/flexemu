@@ -1029,6 +1029,8 @@ void QtGui::CreateViewActions(QLayout& layout)
     for (uint16_t index = 0U; index < ICON_SIZES; ++index)
     {
         iconSizeAction[index] = CreateIconSizeAction(*iconSizeMenu, index);
+        connect(iconSizeAction[index], &QAction::triggered,
+            this, [&,index](){ OnIconSize(index); });
     }
 
     auto *screenSizeMenu = viewMenu->addMenu(tr("&Screen Size"));
@@ -1207,32 +1209,6 @@ void QtGui::AddDiskStatusButtons()
             diskStatusAction[i]->setStatusTip(statusTip);
         }
     }
-}
-
-QAction *QtGui::CreateIconSizeAction(QMenu &menu, uint16_t index)
-{
-    static const QStringList menuText{
-        tr("&Small"),
-        tr("&Medium"),
-        tr("&Large"),
-    };
-    static const QStringList toolTipText{
-        tr("Show small size Icons"),
-        tr("Show medium size Icons"),
-        tr("Show large size Icons"),
-    };
-
-    assert(menuText.size() == ICON_SIZES);
-    assert(toolTipText.size() == ICON_SIZES);
-    assert(index < ICON_SIZES);
-
-    auto *action = menu.addAction(menuText[index]);
-    connect(action, &QAction::triggered,
-        this, [&,index](){ OnIconSize(index); });
-    action->setCheckable(true);
-    action->setStatusTip(toolTipText[index]);
-
-    return action;
 }
 
 QAction *QtGui::CreateScreenSizeAction(
