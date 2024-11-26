@@ -96,7 +96,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
 
     resize(860, 720);
 
-    OnIconSize(2);
+    SetIconSize({options.iconSize, options.iconSize});
 }
 
 FLEXplorer::~FLEXplorer()
@@ -1435,6 +1435,8 @@ void FLEXplorer::OnIconSize(int index)
     int size = 16 + 8 * index;
 
     SetIconSize({size, size});
+
+    options.iconSize = size;
 }
 
 void FLEXplorer::SetIconSize(const QSize &iconSize)

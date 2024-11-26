@@ -42,6 +42,7 @@ static const char * const FLEXPLOREREXTRACTCNV = "ExtractTextFileConvert";
 static const char * const FLEXPLOREREXTRACTASK = "ExtractTextFileAskUser";
 static const char * const FLEXPLORERFILESIZETYPE = "FileSizeType";
 static const char * const FLEXPLORERFILETIMEACCESS = "FileTimeAccess";
+static const char * const FLEXPLORERICONSIZE = "IconSize";
 static const char * const FLEXPLORERINJECTASK = "InjectTextFileAskUser";
 static const char * const FLEXPLORERINJECTCNV = "InjectTextFileConvert";
 static const char * const FLEXPLOREROPENDIRECTORYPATH = "OpenDirectoryPath";
@@ -56,6 +57,7 @@ void FlexplorerOptions::InitOptions(struct sFPOptions &options)
 {
     options.version = VERSION;
     options.ft_access = FileTimeAccess::NONE;
+    options.iconSize = 32;
 #ifdef UNIX
     options.bootSectorFile = std::string(F_DATADIR) + PATHSEPARATORSTRING +
         BOOT_FILE;
@@ -89,6 +91,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     reg.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     reg.SetValue(FLEXPLORERFILETIMEACCESS,
                  static_cast<int>(options.ft_access));
+    reg.SetValue(FLEXPLORERICONSIZE, options.iconSize);
     reg.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
     reg.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     reg.SetValue(FLEXPLOREREXTRACTCNV, options.extractTextFileConvert ? 1 : 0);
@@ -128,6 +131,7 @@ void FlexplorerOptions::WriteOptions(const struct sFPOptions &options)
     rcFile.SetValue(FLEXPLORERBOOTSECTORFILE, options.bootSectorFile);
     rcFile.SetValue(FLEXPLORERFILETIMEACCESS,
                     static_cast<int>(options.ft_access));
+    rcFile.SetValue(FLEXPLORERICONSIZE, options.iconSize);
     rcFile.SetValue(FLEXPLORERINJECTCNV, options.injectTextFileConvert ? 1 : 0);
     rcFile.SetValue(FLEXPLORERINJECTASK, options.injectTextFileAskUser ? 1 : 0);
     rcFile.SetValue(FLEXPLOREREXTRACTCNV,
@@ -192,6 +196,11 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             int_result = 3;
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
+    }
+    if (!reg.GetValue(FLEXPLORERICONSIZE, int_result))
+    {
+        options.iconSize = (int_result >= 24) ? 24 : 16;
+        options.iconSize = (int_result >= 32) ? 32 : options.iconSize;
     }
     if (!reg.GetValue(FLEXPLORERINJECTCNV, int_result))
     {
@@ -270,6 +279,11 @@ void FlexplorerOptions::ReadOptions(struct sFPOptions &options)
             int_result = 3;
         }
         options.ft_access = static_cast<FileTimeAccess>(int_result);
+    }
+    if (!rcFile.GetValue(FLEXPLORERICONSIZE, int_result))
+    {
+        options.iconSize = (int_result >= 24) ? 24 : 16;
+        options.iconSize = (int_result >= 32) ? 32 : options.iconSize;
     }
     if (!rcFile.GetValue(FLEXPLORERINJECTCNV, int_result))
     {
