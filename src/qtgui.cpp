@@ -151,8 +151,6 @@ QtGui::QtGui(
     e2screen = new E2Screen(p_scheduler, p_joystickIO, p_keyboardIO,
                             p_pia1, p_options, colorTable.first(), this);
     mainLayout->addWidget(e2screen, 1); //, Qt::AlignCenter);
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    e2screen->setSizePolicy(sizePolicy);
     e2screen->setFocusPolicy(Qt::StrongFocus);
 
     CreateIcons();
@@ -241,8 +239,6 @@ QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
     toolBar->setFloatable(false);
     toolBar->setMovable(false);
     toolBar->setIconSize({16, 16});
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    toolBar->setSizePolicy(sizePolicy);
     toolBarLayout->addWidget(toolBar);
 
     return toolBar;
@@ -959,8 +955,6 @@ void QtGui::CreateFileActions(QLayout& layout)
     auto *fileMenu = menuBar->addMenu(tr("&File"));
     fileToolBar =
         CreateToolBar(this, tr("File"), QStringLiteral("fileToolBar"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    fileToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(fileToolBar);
 
     const auto printerIcon = QIcon(":/resource/print-output.png");
@@ -986,8 +980,6 @@ void QtGui::CreateEditActions(QLayout& layout)
     auto *editMenu = menuBar->addMenu(tr("&Edit"));
     editToolBar =
         CreateToolBar(this, tr("Edit"), QStringLiteral("editToolBar"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    editToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(editToolBar);
 
     const auto preferencesIcon = GetPreferencesIcon(isRestartNeeded);
@@ -1006,8 +998,6 @@ void QtGui::CreateViewActions(QLayout& layout)
     auto *viewMenu = menuBar->addMenu(tr("&View"));
     viewToolBar =
         CreateToolBar(this, tr("View"), QStringLiteral("viewToolBar"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    viewToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(viewToolBar);
 
     auto keySequenceFullScreen = QKeySequence(QKeySequence::FullScreen);
@@ -1078,8 +1068,6 @@ void QtGui::CreateCpuActions(QLayout& layout)
     auto *cpuMenu = menuBar->addMenu(tr("&CPU"));
     cpuToolBar =
         CreateToolBar(this, tr("CPU"), QStringLiteral("cpuToolBar"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    cpuToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(cpuToolBar);
 
     const auto runIcon = QIcon(":/resource/run.png");
@@ -1154,8 +1142,6 @@ void QtGui::CreateHelpActions(QLayout& layout)
     auto *helpMenu = menuBar->addMenu(tr("&Help"));
     helpToolBar =
         CreateToolBar(this, tr("Help"), QStringLiteral("helpToolBar"));
-    QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    helpToolBar->setSizePolicy(sizePolicy);
     layout.addWidget(helpToolBar);
 
     const auto introductionIcon = QIcon(":/resource/info.png");
