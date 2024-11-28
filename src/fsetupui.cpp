@@ -466,10 +466,9 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
         }
     };
 
-    // This initialization is needed to always enter the while-loop.
-    dependents.push_back(FlexemuOptionId::IsInverse);
-
-    while (!dependents.empty())
+    // Loop at least has to be executed once.
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while)
+    do
     {
         for (auto readOnlyOptionId : result)
         {
@@ -542,12 +541,13 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::DirectoryDiskTrkSec:
                 case FlexemuOptionId::IconSize:
                     break;
+
             }
         }
 
         std::copy(dependents.begin(), dependents.end(),
                 std::back_inserter(result));
-    }
+    } while (!dependents.empty());
 
     return result;
 }
