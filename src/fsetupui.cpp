@@ -670,7 +670,7 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         }
     }
 
-    if (!IsReadOnly(FlexemuOptionId::PixelSize))
+    if (!IsReadOnly(FlexemuOptionId::IsInverse))
     {
         options.isInverse = c_isInverse->isChecked();
     }
