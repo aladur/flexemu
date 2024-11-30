@@ -198,7 +198,7 @@ QtGui::QtGui(
         ToggleSmoothDisplay();
     }
 
-    SetIconSize({options.iconSize, options.iconSize});
+    SetIconSizeCheck(iconSize);
 }
 
 QtGui::~QtGui()
@@ -889,9 +889,11 @@ void QtGui::OnScreenSizeHighlighted(int index) const
 
 void QtGui::OnIconSize(int index)
 {
-    int size = 16 + 8 * index;
+    const int size = 16 + 8 * index;
+    const QSize iconSize({size, size});
 
-    SetIconSize({size, size});
+    SetIconSize(iconSize);
+    SetIconSizeCheck(iconSize);
 
     options.iconSize = size;
     oldOptions.iconSize = options.iconSize;
@@ -1611,6 +1613,11 @@ void QtGui::SetIconSize(const QSize &iconSize)
     toolBar->setIconSize(iconSize);
     statusToolBar->setIconSize(iconSize);
 
+    resize(size() + QSize(0, heightDiff));
+}
+
+void QtGui::SetIconSizeCheck(const QSize &iconSize)
+{
     const int sizeIndex = IconSizeToIndex(iconSize);
 
     for (int index = 0; index < ICON_SIZES; ++index)
@@ -1620,7 +1627,6 @@ void QtGui::SetIconSize(const QSize &iconSize)
         action->setChecked(index == sizeIndex);
     }
 
-    resize(size() + QSize(0, heightDiff));
 }
 
 void QtGui::AdjustSize()

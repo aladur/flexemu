@@ -202,6 +202,7 @@ private:
     void UpdateScreenSizeCheck(int index) const;
     void UpdateScreenSizeValue(int index) const;
     void SetIconSize(const QSize &size);
+    void SetIconSizeCheck(const QSize &size);
     static QUrl CreateDocumentationUrl(const QString &docDir,
                                        const QString &htmlFile);
     ColorTable CreateColorTable();
