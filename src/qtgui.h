@@ -281,7 +281,6 @@ private:
     QByteArray dataBuffer;
 
     bool isOriginalFrequency{};
-    bool isStatusBarVisible{};
     bool isRunning{};
     bool isConfirmClose{};
     bool isForceScreenUpdate{};

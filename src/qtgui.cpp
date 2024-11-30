@@ -121,7 +121,6 @@ QtGui::QtGui(
         , statusBarLayout(new QHBoxLayout)
         , menuBar(new QMenuBar)
         , cpuDialog(new QDialog(this))
-        , isStatusBarVisible(true)
         , isRunning(true)
         , isConfirmClose(true)
         , isForceScreenUpdate(true)
