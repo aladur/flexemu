@@ -118,7 +118,6 @@ QtGui::QtGui(
              , p_inout
              , p_terminalIO)
         , mainLayout(new QVBoxLayout(this))
-        , toolBarLayout(new QHBoxLayout)
         , statusBarLayout(new QHBoxLayout)
         , menuBar(new QMenuBar)
         , cpuDialog(new QDialog(this))
@@ -134,6 +133,8 @@ QtGui::QtGui(
         , options(p_options)
         , oldOptions(p_options)
 {
+    const QSize iconSize(options.iconSize, options.iconSize);
+
     cpuLoggerConfig.reset();
 
     setObjectName("flexemuMainWindow");
@@ -145,17 +146,15 @@ QtGui::QtGui(
     mainLayout->setSpacing(0);
     mainLayout->addWidget(menuBar);
 
-    toolBarLayout->setObjectName(QString::fromUtf8("toolBarLayout"));
-    toolBarLayout->setSpacing(0);
-    mainLayout->addLayout(toolBarLayout);
+    CreateActions(*mainLayout, iconSize);
+
     e2screen = new E2Screen(p_scheduler, p_joystickIO, p_keyboardIO,
                             p_pia1, p_options, colorTable.first(), this);
     mainLayout->addWidget(e2screen, 1); //, Qt::AlignCenter);
     e2screen->setFocusPolicy(Qt::StrongFocus);
 
     CreateIcons();
-    CreateActions(*toolBarLayout);
-    CreateStatusToolBar(*mainLayout);
+    CreateStatusToolBar(*mainLayout, iconSize);
     const auto name = QString::fromUtf8("statusBarLayout");
     statusBarLayout->setObjectName(name);
     statusBarLayout->setContentsMargins(0, 0, 0, 0);
@@ -231,17 +230,18 @@ void QtGui::output_to_graphic()
     }
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
-                               const QString &objectName)
+                               const QString &objectName, const QSize &iconSize)
 {
-    auto *toolBar = new QToolBar(title, parent);
-    toolBar->setObjectName(objectName);
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize({16, 16});
-    toolBarLayout->addWidget(toolBar);
+    auto *newToolBar = new QToolBar(title, parent);
+    newToolBar->setObjectName(objectName);
+    newToolBar->setFloatable(false);
+    newToolBar->setMovable(false);
+    newToolBar->setIconSize(iconSize);
 
-    return toolBar;
+    return newToolBar;
 }
 
 void QtGui::OnPrinterOutput()
@@ -940,22 +940,23 @@ void QtGui::UpdateScreenSizeValue(int index) const
     }
 }
 
-void QtGui::CreateActions(QLayout &layout)
+void QtGui::CreateActions(QLayout &layout, const QSize &iconSize)
 {
-    CreateFileActions(layout);
-    CreateEditActions(layout);
-    CreateViewActions(layout);
-    CreateCpuActions(layout);
-    CreateHelpActions(layout);
-    CreateHorizontalSpacer(layout);
+    toolBar = CreateToolBar(this, tr("ToolBar"), QStringLiteral("toolBar"),
+            iconSize);
+    assert(toolBar != nullptr);
+    layout.addWidget(toolBar);
+
+    CreateFileActions(*toolBar);
+    CreateEditActions(*toolBar);
+    CreateViewActions(*toolBar);
+    CreateCpuActions(*toolBar);
+    CreateHelpActions(*toolBar);
 }
 
-void QtGui::CreateFileActions(QLayout& layout)
+void QtGui::CreateFileActions(QToolBar &p_toolBar)
 {
     auto *fileMenu = menuBar->addMenu(tr("&File"));
-    fileToolBar =
-        CreateToolBar(this, tr("File"), QStringLiteral("fileToolBar"));
-    layout.addWidget(fileToolBar);
 
     const auto printerIcon = QIcon(":/resource/print-output.png");
     printOutputAction =
@@ -970,18 +971,16 @@ void QtGui::CreateFileActions(QLayout& layout)
     connect(exitAction, &QAction::triggered, this, &QtGui::OnExit);
     exitAction->setShortcut(QKeySequence(tr("Shift+Ctrl+Q")));
     exitAction->setStatusTip(tr("Exit the application"));
-    fileToolBar->addAction(exitAction);
+    p_toolBar.addAction(exitAction);
 
-    fileToolBar->addAction(printOutputAction);
+    p_toolBar.addAction(printOutputAction);
 }
 
-void QtGui::CreateEditActions(QLayout& layout)
+void QtGui::CreateEditActions(QToolBar &p_toolBar)
 {
     auto *editMenu = menuBar->addMenu(tr("&Edit"));
-    editToolBar =
-        CreateToolBar(this, tr("Edit"), QStringLiteral("editToolBar"));
-    layout.addWidget(editToolBar);
 
+    p_toolBar.addSeparator();
     const auto preferencesIcon = GetPreferencesIcon(isRestartNeeded);
     preferencesAction =
         editMenu->addAction(preferencesIcon, tr("&Preferences"));
@@ -990,16 +989,14 @@ void QtGui::CreateEditActions(QLayout& layout)
             this, &QtGui::OnPreferences);
     const auto keySequence = QKeySequence(tr("Shift+Ctrl+P"));
     preferencesAction->setShortcut(keySequence);
-    editToolBar->addAction(preferencesAction);
+    p_toolBar.addAction(preferencesAction);
 }
 
-void QtGui::CreateViewActions(QLayout& layout)
+void QtGui::CreateViewActions(QToolBar &p_toolBar)
 {
     auto *viewMenu = menuBar->addMenu(tr("&View"));
-    viewToolBar =
-        CreateToolBar(this, tr("View"), QStringLiteral("viewToolBar"));
-    layout.addWidget(viewToolBar);
 
+    p_toolBar.addSeparator();
     auto keySequenceFullScreen = QKeySequence(QKeySequence::FullScreen);
     auto sequences = QKeySequence::keyBindings(QKeySequence::FullScreen);
     if (sequences.isEmpty())
@@ -1049,7 +1046,7 @@ void QtGui::CreateViewActions(QLayout& layout)
     screenSizeComboBox->insertSeparator(screenSizeComboBox->count() - 1);
     // E2Screen is the only widget which gets the focus.
     screenSizeComboBox->setFocusPolicy(Qt::NoFocus);
-    viewToolBar->addWidget(screenSizeComboBox);
+    p_toolBar.addWidget(screenSizeComboBox);
     ConnectScreenSizeComboBoxSignalSlots();
 
     viewMenu->addMenu(screenSizeMenu);
@@ -1063,42 +1060,40 @@ void QtGui::CreateViewActions(QLayout& layout)
     viewMenu->addAction(smoothAction);
 }
 
-void QtGui::CreateCpuActions(QLayout& layout)
+void QtGui::CreateCpuActions(QToolBar &p_toolBar)
 {
     auto *cpuMenu = menuBar->addMenu(tr("&CPU"));
-    cpuToolBar =
-        CreateToolBar(this, tr("CPU"), QStringLiteral("cpuToolBar"));
-    layout.addWidget(cpuToolBar);
 
+    p_toolBar.addSeparator();
     const auto runIcon = QIcon(":/resource/run.png");
     cpuRunAction = cpuMenu->addAction(runIcon, tr("&Run"));
     connect(cpuRunAction, &QAction::triggered, this, &QtGui::OnCpuRun);
     cpuRunAction->setCheckable(true);
     cpuRunAction->setStatusTip(tr("Continue CPU execution"));
-    cpuToolBar->addAction(cpuRunAction);
+    p_toolBar.addAction(cpuRunAction);
 
     const auto stopIcon = QIcon(":/resource/stop.png");
     cpuStopAction = cpuMenu->addAction(stopIcon, tr("&Stop"));
     connect(cpuStopAction, &QAction::triggered, this, &QtGui::OnCpuStop);
     cpuStopAction->setCheckable(true);
     cpuStopAction->setStatusTip(tr("Stop CPU execution"));
-    cpuToolBar->addAction(cpuStopAction);
+    p_toolBar.addAction(cpuStopAction);
 
     const auto resetIcon = QIcon(":/resource/reset.png");
     cpuResetAction = cpuMenu->addAction(resetIcon, tr("&Reset"));
     connect(cpuResetAction, &QAction::triggered, this, &QtGui::OnCpuResetRun);
     cpuResetAction->setStatusTip(tr("Reset and continue CPU execution"));
-    cpuToolBar->addAction(cpuResetAction);
+    p_toolBar.addAction(cpuResetAction);
 
     cpuMenu->addSeparator();
-    cpuToolBar->addSeparator();
+    p_toolBar.addSeparator();
     const auto viewIcon = QIcon(":/resource/cpu.png");
     cpuViewAction = cpuMenu->addAction(viewIcon, tr("&View..."));
     connect(cpuViewAction, &QAction::triggered,
         this, &QtGui::OnCpuDialogToggle);
     cpuViewAction->setStatusTip(tr("Open CPU status window"));
     cpuViewAction->setCheckable(true);
-    cpuToolBar->addAction(cpuViewAction);
+    p_toolBar.addAction(cpuViewAction);
 
     const auto breakpointsIcon = QIcon(":/resource/breakpoints.png");
     auto text = tr("&Breakpoints...");
@@ -1106,16 +1101,16 @@ void QtGui::CreateCpuActions(QLayout& layout)
     connect(breakpointsAction, &QAction::triggered,
         this, &QtGui::OnCpuBreakpoints);
     breakpointsAction->setStatusTip(tr("Open breakpoint settings"));
-    cpuToolBar->addAction(breakpointsAction);
+    p_toolBar.addAction(breakpointsAction);
 
     const auto loggingIcon = QIcon(":/resource/logging.png");
     loggingAction = cpuMenu->addAction(loggingIcon, tr("&Logging..."));
     connect(loggingAction, &QAction::triggered, this, &QtGui::OnCpuLogging);
     loggingAction->setStatusTip(tr("Open logging settings"));
-    cpuToolBar->addAction(loggingAction);
+    p_toolBar.addAction(loggingAction);
 
     cpuMenu->addSeparator();
-    cpuToolBar->addSeparator();
+    p_toolBar.addSeparator();
     const auto originalFrequencyIcon =
         QIcon(":/resource/original-frequency.png");
     text = tr("&Original Frequency");
@@ -1125,7 +1120,7 @@ void QtGui::CreateCpuActions(QLayout& layout)
     originalFrequencyAction->setCheckable(true);
     text = tr("Set original or maximum possible CPU frequency");
     originalFrequencyAction->setStatusTip(text);
-    cpuToolBar->addAction(originalFrequencyAction);
+    p_toolBar.addAction(originalFrequencyAction);
 
     const auto undocumentedIcon = QIcon(":/resource/cpu-undocumented.png");
     text = tr("&Undocumented Instructions");
@@ -1137,13 +1132,11 @@ void QtGui::CreateCpuActions(QLayout& layout)
             tr("Toggle support of undocumented CPU instructions"));
 }
 
-void QtGui::CreateHelpActions(QLayout& layout)
+void QtGui::CreateHelpActions(QToolBar &p_toolBar)
 {
     auto *helpMenu = menuBar->addMenu(tr("&Help"));
-    helpToolBar =
-        CreateToolBar(this, tr("Help"), QStringLiteral("helpToolBar"));
-    layout.addWidget(helpToolBar);
 
+    p_toolBar.addSeparator();
     const auto introductionIcon = QIcon(":/resource/info.png");
     auto text = tr("&Introduction");
     introductionAction = helpMenu->addAction(introductionIcon, text);
@@ -1151,7 +1144,7 @@ void QtGui::CreateHelpActions(QLayout& layout)
         this, &QtGui::OnIntroduction);
     introductionAction->setStatusTip(
             tr("Open an introduction to this application"));
-    helpToolBar->addAction(introductionAction);
+    p_toolBar.addAction(introductionAction);
 
     const auto aboutIcon = QIcon(":/resource/about.png");
     aboutAction = helpMenu->addAction(aboutIcon, tr("&About"));
@@ -1164,17 +1157,13 @@ void QtGui::CreateHelpActions(QLayout& layout)
     aboutQtAction->setStatusTip(tr("Show the Qt library's about box"));
 }
 
-void QtGui::CreateHorizontalSpacer(QLayout &layout)
-{
-    auto *horizontalSpacer =
-        new QSpacerItem(1, 10, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    layout.addItem(horizontalSpacer);
-}
-
-void QtGui::CreateStatusToolBar(QLayout &layout)
+void QtGui::CreateStatusToolBar(QLayout &layout, const QSize &iconSize)
 {
     statusToolBar =
-        CreateToolBar(this, tr("Status"), QStringLiteral("statusToolBar"));
+        CreateToolBar(this, tr("Status"), QStringLiteral("statusToolBar"),
+                iconSize);
+    assert(statusToolBar != nullptr);
+    statusToolBar->setIconSize(iconSize);
     layout.addWidget(statusToolBar);
 
     auto text = tr("Interrupts");
@@ -1610,14 +1599,10 @@ void QtGui::UpdateStatusBarCheck() const
 
 void QtGui::SetIconSize(const QSize &iconSize)
 {
-    auto heightDiff = 2 * iconSize.height() - fileToolBar->iconSize().height() -
+    auto heightDiff = 2 * iconSize.height() - toolBar->iconSize().height() -
         statusToolBar->iconSize().height();
 
-    fileToolBar->setIconSize(iconSize);
-    editToolBar->setIconSize(iconSize);
-    viewToolBar->setIconSize(iconSize);
-    cpuToolBar->setIconSize(iconSize);
-    helpToolBar->setIconSize(iconSize);
+    toolBar->setIconSize(iconSize);
     statusToolBar->setIconSize(iconSize);
 
     const int sizeIndex = IconSizeToIndex(iconSize);

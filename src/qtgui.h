@@ -162,18 +162,17 @@ private slots:
 
 private:
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
-                            const QString &objectName);
+                            const QString &objectName, const QSize &iconSize);
     void CreateIcons();
-    void CreateActions(QLayout &layout);
-    void CreateFileActions(QLayout &layout);
-    void CreateEditActions(QLayout &layout);
-    void CreateViewActions(QLayout &layout);
-    void CreateCpuActions(QLayout &layout);
-    void CreateHelpActions(QLayout &layout);
-    static void CreateHorizontalSpacer(QLayout &layout);
+    void CreateActions(QLayout &layout, const QSize &iconSize);
+    void CreateFileActions(QToolBar &p_toolBar);
+    void CreateEditActions(QToolBar &p_toolBar);
+    void CreateViewActions(QToolBar &p_toolBar);
+    void CreateCpuActions(QToolBar &p_toolBar);
+    void CreateHelpActions(QToolBar &p_toolBar);
     QAction *CreateScreenSizeAction(const QIcon &icon, QMenu &menu,
                                     uint16_t index);
-    void CreateStatusToolBar(QLayout &layout);
+    void CreateStatusToolBar(QLayout &layout, const QSize &iconSize);
     void CreateStatusBar(QBoxLayout &layout);
     void AddDiskStatusButtons();
     void ConnectCpuUiSignalsWithSlots();
@@ -230,18 +229,13 @@ private:
     std::vector<QIcon> icons;
     QTimer timer;
     QVBoxLayout *mainLayout{};
-    QHBoxLayout *toolBarLayout{};
     QHBoxLayout *e2screenLayout{};
     QHBoxLayout *statusBarLayout{};
     QStackedWidget *statusBarFrame{};
     QStackedWidget *newKeyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
-    QToolBar *fileToolBar{};
-    QToolBar *editToolBar{};
-    QToolBar *viewToolBar{};
-    QToolBar *cpuToolBar{};
-    QToolBar *helpToolBar{};
+    QToolBar *toolBar{};
     QToolBar *statusToolBar{};
     QLabel *newKeyLabel{};
     QStatusBar *statusBar{};
