@@ -232,14 +232,16 @@ void QtGui::output_to_graphic()
 
 // Implementation may change in future.
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-QToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
-                               const QString &objectName, const QSize &iconSize)
+FlexemuToolBar *QtGui::CreateToolBar(QWidget *parent, const QString &title,
+        const QString &objectName, const QSize &iconSize) const
 {
-    auto *newToolBar = new QToolBar(title, parent);
+    auto *newToolBar = new FlexemuToolBar(title, parent);
+    assert(newToolBar != nullptr);
     newToolBar->setObjectName(objectName);
     newToolBar->setFloatable(false);
     newToolBar->setMovable(false);
     newToolBar->setIconSize(iconSize);
+    newToolBar->SetPixelSize(options.pixelSize);
 
     return newToolBar;
 }
@@ -912,6 +914,10 @@ void QtGui::OnScreenSize(int index)
             SetFullScreenMode(false);
         }
         e2screen->ResizeToFactor(index + 1);
+        toolBar->SetPixelSize(index + 1);
+        toolBar->updateGeometry();
+        statusToolBar->SetPixelSize(index + 1);
+        statusToolBar->updateGeometry();
         AdjustSize();
 
         oldOptions.pixelSize = index + 1;

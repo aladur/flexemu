@@ -61,6 +61,7 @@ class E2floppy;
 class E2Screen;
 class FlexDiskAttributes;
 class FlexemuOptionsDifference;
+class FlexemuToolBar;
 class PrintOutputWindow;
 class QAction;
 class QSize;
@@ -161,8 +162,8 @@ private slots:
     void OnResize();
 
 private:
-    QToolBar *CreateToolBar(QWidget *parent, const QString &title,
-                            const QString &objectName, const QSize &iconSize);
+    FlexemuToolBar *CreateToolBar(QWidget *parent, const QString &title,
+            const QString &objectName, const QSize &iconSize) const;
     void CreateIcons();
     void CreateActions(QLayout &layout, const QSize &iconSize);
     void CreateFileActions(QToolBar &p_toolBar);
@@ -235,8 +236,8 @@ private:
     QStackedWidget *newKeyFrame{};
     E2Screen *e2screen{};
     QMenuBar *menuBar{};
-    QToolBar *toolBar{};
-    QToolBar *statusToolBar{};
+    FlexemuToolBar *toolBar{};
+    FlexemuToolBar *statusToolBar{};
     QLabel *newKeyLabel{};
     QStatusBar *statusBar{};
     QStatusBar *dummyStatusBar{};

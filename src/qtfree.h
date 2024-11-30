@@ -24,16 +24,20 @@
 #define QTFREE_INCLUDED
 
 #include "warnoff.h"
+#include <QSize>
 #include <QString>
 #include <QFont>
+#include <QWidget>
+#include <QToolBar>
 #include "warnon.h"
 #include "typedefs.h"
+#include "e2.h"
 #include <string>
+#include <algorithm>
 #include <optional>
 
 class QAction;
 class QMenu;
-class QWidget;
 class FlexDiskAttributes;
 
 extern QFont GetFont(const QString &fontName);
@@ -61,6 +65,38 @@ public:
     void operator() ()
     {
         ::UpdateWindowGeometry(*widget, geometry);
+    }
+};
+
+class FlexemuToolBar : public QToolBar
+{
+    int pixelSize;
+
+public:
+    FlexemuToolBar() = delete;
+    FlexemuToolBar(const QString &title, QWidget *parent)
+      : QToolBar(title, parent)
+      , pixelSize(1) { }
+
+    void SetPixelSize(int p_pixelSize)
+    {
+        pixelSize = p_pixelSize;
+    }
+
+    QSize sizeHint() const override
+    {
+        auto sizeHint = QToolBar::sizeHint();
+        if (pixelSize <= 1)
+        {
+            // If pixel size is 1 limit it's width to a maximum of
+            // Eurocom II window width. This avoids a streched Eurocom II
+            // window if icon size is >= 32.
+            static const auto maxWidth = static_cast<int>(WINDOWWIDTH);
+
+            sizeHint.setWidth(std::min(maxWidth, sizeHint.width()));
+        }
+
+        return sizeHint;
     }
 };
 
