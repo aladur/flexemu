@@ -696,7 +696,6 @@ void QtGui::OnTimer()
         // Check for disk status update every 200 ms
         static tInterruptStatus irqStat;
         tInterruptStatus newIrqStat;
-        static bool isFirstTime = true;
         static std::array<bool, INT_RESET + 1> lastState{};
         bool bState;
 
@@ -705,11 +704,16 @@ void QtGui::OnTimer()
             static std::array<DiskStatus, MAX_DRIVES> status{};
             std::array<DiskStatus, MAX_DRIVES> newStatus{};
 
+            if (isTimerFirstTime)
+            {
+                status = {};
+            }
+
             fdc->get_drive_status(newStatus);
 
             for (t = 0; t < MAX_DRIVES; ++t)
             {
-                if (isFirstTime || (newStatus[t] != status[t]))
+                if (newStatus[t] != status[t])
                 {
                     UpdateDiskStatus(t, status[t], newStatus[t]);
                     status[t] = newStatus[t];
@@ -751,7 +755,7 @@ void QtGui::OnTimer()
             newKeyLabel->setText(QString::fromStdString(newKeyString));
         }
 
-        if (isFirstTime)
+        if (isTimerFirstTime)
         {
             for (t = INT_IRQ; t <= INT_RESET; ++t)
             {
@@ -762,7 +766,7 @@ void QtGui::OnTimer()
 
             UpdateCpuUndocumentedCheck();
 
-            isFirstTime = false;
+            isTimerFirstTime = false;
         }
         else
         {

@@ -285,6 +285,7 @@ private:
     bool isConfirmClose{};
     bool isForceScreenUpdate{};
     bool isRestartNeeded{};
+    bool isTimerFirstTime{true};
     int timerTicks{0};
     Byte oldFirstRasterLine{0U};
     std::optional<float> newFrequency;
