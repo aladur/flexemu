@@ -117,13 +117,13 @@ private:
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
                             const QString &objectName);
     void CreateActions();
-    void CreateFileActions();
-    void CreateEditActions();
-    void CreateViewActions();
-    void CreateFlexDiskActions();
-    void CreateExtrasActions();
-    void CreateWindowsActions();
-    void CreateHelpActions();
+    void CreateFileActions(QToolBar &p_toolBar);
+    void CreateEditActions(QToolBar &p_toolBar);
+    void CreateViewActions(QToolBar &p_toolBar);
+    void CreateFlexDiskActions(QToolBar &p_toolBar);
+    void CreateExtrasActions(QToolBar &p_toolBar);
+    void CreateWindowsActions(QToolBar &p_toolBar);
+    void CreateHelpActions(QToolBar &p_toolBar);
     void CreateStatusBar();
     FlexplorerMdiChild *CreateMdiChild(const QString &path,
                                        struct sFPOptions &options);
@@ -164,12 +164,7 @@ protected:
     QList<QAction *> recentDirectoryActions;
     QLabel *l_selectedFilesCount{};
     QLabel *l_selectedFilesByteSize{};
-    QToolBar *fileToolBar{};
-    QToolBar *editToolBar{};
-    QToolBar *containerToolBar{};
-    QToolBar *extrasToolBar{};
-    QToolBar *windowToolBar{};
-    QToolBar *helpToolBar{};
+    QToolBar *toolBar{};
     QAction *newFlexDiskAction{};
     QAction *openFlexDiskAction{};
     QAction *openDirectoryAction{};

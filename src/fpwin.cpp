@@ -719,44 +719,47 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
     return child;
 }
 
+// Implementation may change in future.
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QToolBar *FLEXplorer::CreateToolBar(QWidget *parent,
                                     const QString &title,
                                     const QString &objectName)
 {
-    auto *toolBar = new QToolBar(title, parent);
-    toolBar->setObjectName(objectName);
-    toolBar->setFloatable(false);
-    toolBar->setMovable(false);
-    toolBar->setIconSize({32, 32});
-    addToolBar(toolBar);
+    auto *newToolBar = new QToolBar(title, parent);
+    newToolBar->setObjectName(objectName);
+    newToolBar->setFloatable(false);
+    newToolBar->setMovable(false);
+    newToolBar->setIconSize({32, 32});
 
-    return toolBar;
+    return newToolBar;
 }
 
 void FLEXplorer::CreateActions()
 {
-    CreateFileActions();
-    CreateEditActions();
-    CreateViewActions();
-    CreateFlexDiskActions();
-    CreateExtrasActions();
-    CreateWindowsActions();
-    CreateHelpActions();
+    toolBar = CreateToolBar(this, tr("ToolBar"), QStringLiteral("toolBar"));
+    assert(toolBar != nullptr);
+    addToolBar(toolBar);
+
+    CreateFileActions(*toolBar);
+    CreateEditActions(*toolBar);
+    CreateViewActions(*toolBar);
+    CreateFlexDiskActions(*toolBar);
+    CreateExtrasActions(*toolBar);
+    CreateWindowsActions(*toolBar);
+    CreateHelpActions(*toolBar);
 }
 
-void FLEXplorer::CreateFileActions()
+void FLEXplorer::CreateFileActions(QToolBar &p_toolBar)
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    fileToolBar = CreateToolBar(this, tr("File"),
-                                QStringLiteral("fileToolBar"));
 
     const auto exitIcon = QIcon(":/resource/exit.png");
     QAction *exitAction = fileMenu->addAction(exitIcon, tr("E&xit"),
                           this, SLOT(OnExit()));
     exitAction->setShortcuts(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
-    fileToolBar->addAction(exitAction);
-    fileToolBar->addSeparator();
+    p_toolBar.addAction(exitAction);
+    p_toolBar.addSeparator();
 
     const auto newIcon = QIcon(":/resource/new.png");
     newFlexDiskAction = new QAction(newIcon, tr("&New Disk image..."), this);
@@ -765,7 +768,7 @@ void FLEXplorer::CreateFileActions()
     connect(newFlexDiskAction, &QAction::triggered,
             this, &FLEXplorer::OnNewFlexDisk);
     fileMenu->addAction(newFlexDiskAction);
-    fileToolBar->addAction(newFlexDiskAction);
+    p_toolBar.addAction(newFlexDiskAction);
 
     const auto openIcon = QIcon(":/resource/open_con.png");
     openFlexDiskAction = new QAction(openIcon, tr("&Open Disk image..."),
@@ -775,7 +778,7 @@ void FLEXplorer::CreateFileActions()
     connect(openFlexDiskAction, &QAction::triggered,
             this, &FLEXplorer::OnOpenFlexDisk);
     fileMenu->addAction(openFlexDiskAction);
-    fileToolBar->addAction(openFlexDiskAction);
+    p_toolBar.addAction(openFlexDiskAction);
 
     const auto openDirIcon = QIcon(":/resource/open_dir.png");
     openDirectoryAction = new QAction(openDirIcon, tr("Open &Directory..."),
@@ -786,7 +789,7 @@ void FLEXplorer::CreateFileActions()
     connect(openDirectoryAction, &QAction::triggered,
             this, &FLEXplorer::OnOpenDirectory);
     fileMenu->addAction(openDirectoryAction);
-    fileToolBar->addAction(openDirectoryAction);
+    p_toolBar.addAction(openDirectoryAction);
 
     recentDisksMenu = fileMenu->addMenu(tr("&Recent Disks"));
     CreateRecentDiskActionsFor(recentDisksMenu);
@@ -798,11 +801,9 @@ void FLEXplorer::CreateFileActions()
     fileMenu->addAction(exitAction);
 }
 
-void FLEXplorer::CreateEditActions()
+void FLEXplorer::CreateEditActions(QToolBar &p_toolBar)
 {
     QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
-    editToolBar = CreateToolBar(this, tr("Edit"),
-                                QStringLiteral("editToolBar"));
 
     const auto viewIcon = QIcon(":/resource/view.png");
     viewAction = new QAction(viewIcon, tr("&View..."), this);
@@ -812,7 +813,8 @@ void FLEXplorer::CreateEditActions()
     viewAction->setFont(font);
     connect(viewAction, &QAction::triggered, this, &FLEXplorer::OnViewSelected);
     editMenu->addAction(viewAction);
-    editToolBar->addAction(viewAction);
+    p_toolBar.addSeparator();
+    p_toolBar.addAction(viewAction);
 
     const auto deleteIcon = QIcon(":/resource/delete.png");
     deleteAction = new QAction(deleteIcon, tr("&Delete..."), this);
@@ -821,7 +823,7 @@ void FLEXplorer::CreateEditActions()
     connect(deleteAction, &QAction::triggered,
             this, &FLEXplorer::OnDeleteSelected);
     editMenu->addAction(deleteAction);
-    editToolBar->addAction(deleteAction);
+    p_toolBar.addAction(deleteAction);
 
     const auto attributesIcon = QIcon(":/resource/attributes.png");
     attributesAction = new QAction(attributesIcon, tr("&Attributes..."), this);
@@ -831,8 +833,8 @@ void FLEXplorer::CreateEditActions()
             this, &FLEXplorer::OnAttributesSelected);
     editMenu->addAction(attributesAction);
     editMenu->addSeparator();
-    editToolBar->addAction(attributesAction);
-    editToolBar->addSeparator();
+    p_toolBar.addAction(attributesAction);
+    p_toolBar.addSeparator();
 
     const auto injectIcon = QIcon(":/resource/inject.png");
     injectAction = new QAction(injectIcon, tr("&Inject..."), this);
@@ -841,7 +843,7 @@ void FLEXplorer::CreateEditActions()
     connect(injectAction, &QAction::triggered, this,
             &FLEXplorer::OnInjectFiles);
     editMenu->addAction(injectAction);
-    editToolBar->addAction(injectAction);
+    p_toolBar.addAction(injectAction);
 
     const auto extractIcon = QIcon(":/resource/extract.png");
     extractAction = new QAction(extractIcon, tr("E&xtract..."), this);
@@ -851,8 +853,8 @@ void FLEXplorer::CreateEditActions()
             &FLEXplorer::OnExtractSelected);
     editMenu->addAction(extractAction);
     editMenu->addSeparator();
-    editToolBar->addAction(extractAction);
-    editToolBar->addSeparator();
+    p_toolBar.addAction(extractAction);
+    p_toolBar.addSeparator();
 
     const auto selectAllIcon = QIcon(":/resource/selectall.png");
     selectAllAction = new QAction(selectAllIcon, tr("Select &All"), this);
@@ -861,7 +863,7 @@ void FLEXplorer::CreateEditActions()
     connect(selectAllAction, &QAction::triggered, this,
             &FLEXplorer::OnSelectAll);
     editMenu->addAction(selectAllAction);
-    editToolBar->addAction(selectAllAction);
+    p_toolBar.addAction(selectAllAction);
 
     const auto deselectAllIcon = QIcon(":/resource/deselectall.png");
     deselectAllAction = new QAction(deselectAllIcon, tr("D&elect All"), this);
@@ -870,7 +872,7 @@ void FLEXplorer::CreateEditActions()
     connect(deselectAllAction, &QAction::triggered, this,
             &FLEXplorer::OnDeselectAll);
     editMenu->addAction(deselectAllAction);
-    editToolBar->addAction(deselectAllAction);
+    p_toolBar.addAction(deselectAllAction);
 
     const auto findFilesIcon = QIcon(":/resource/find.png");
     findFilesAction = new QAction(findFilesIcon, tr("&Find Files..."), this);
@@ -879,8 +881,8 @@ void FLEXplorer::CreateEditActions()
     connect(findFilesAction, &QAction::triggered, this,
             &FLEXplorer::OnFindFiles);
     editMenu->addAction(findFilesAction);
-    editToolBar->addAction(findFilesAction);
-    editToolBar->addSeparator();
+    p_toolBar.addAction(findFilesAction);
+    p_toolBar.addSeparator();
 
 #ifndef QT_NO_CLIPBOARD
     editMenu->addSeparator();
@@ -890,7 +892,7 @@ void FLEXplorer::CreateEditActions()
     copyAction->setStatusTip(tr("Copy selected files to the clipboard"));
     connect(copyAction, &QAction::triggered, this, &FLEXplorer::OnCopy);
     editMenu->addAction(copyAction);
-    editToolBar->addAction(copyAction);
+    p_toolBar.addAction(copyAction);
 
     const auto pasteIcon = QIcon(":/resource/paste.png");
     pasteAction = new QAction(pasteIcon, tr("&Paste"), this);
@@ -898,12 +900,12 @@ void FLEXplorer::CreateEditActions()
     pasteAction->setStatusTip(tr("Paste files from the clipboard"));
     connect(pasteAction, &QAction::triggered, this, &FLEXplorer::OnPaste);
     editMenu->addAction(pasteAction);
-    editToolBar->addAction(pasteAction);
-    editToolBar->addSeparator();
+    p_toolBar.addAction(pasteAction);
+    p_toolBar.addSeparator();
 #endif
 }
 
-void FLEXplorer::CreateViewActions()
+void FLEXplorer::CreateViewActions(QToolBar &/* p_toolBar */)
 {
     auto *viewMenu = menuBar()->addMenu(tr("&View"));
 
@@ -917,11 +919,9 @@ void FLEXplorer::CreateViewActions()
     }
 }
 
-void FLEXplorer::CreateFlexDiskActions()
+void FLEXplorer::CreateFlexDiskActions(QToolBar &p_toolBar)
 {
     QMenu *containerMenu = menuBar()->addMenu(tr("&Disk"));
-    containerToolBar = CreateToolBar(this, tr("Edit"),
-                                     QStringLiteral("containerToolBar"));
 
     const auto infoIcon = QIcon(":/resource/info.png");
     infoAction = new QAction(infoIcon, tr("&Info..."), this);
@@ -929,28 +929,26 @@ void FLEXplorer::CreateFlexDiskActions()
     infoAction->setStatusTip(tr("Show disk image properties"));
     connect(infoAction, &QAction::triggered, this, &FLEXplorer::OnInfo);
     containerMenu->addAction(infoAction);
-    containerToolBar->addAction(infoAction);
+    p_toolBar.addAction(infoAction);
 }
 
-void FLEXplorer::CreateExtrasActions()
+void FLEXplorer::CreateExtrasActions(QToolBar &p_toolBar)
 {
     QMenu *extrasMenu = menuBar()->addMenu(tr("&Extras"));
-    extrasToolBar = CreateToolBar(this, tr("Extras"),
-                                  QStringLiteral("extrasToolBar"));
 
     const auto optionsIcon = QIcon(":/resource/options.png");
     optionsAction = new QAction(optionsIcon, tr("&Options..."), this);
     optionsAction->setStatusTip(tr("Display and modify application's options"));
     connect(optionsAction, &QAction::triggered, this, &FLEXplorer::OnOptions);
     extrasMenu->addAction(optionsAction);
-    extrasToolBar->addAction(optionsAction);
+    p_toolBar.addSeparator();
+    p_toolBar.addAction(optionsAction);
 }
 
-void FLEXplorer::CreateWindowsActions()
+void FLEXplorer::CreateWindowsActions(QToolBar &p_toolBar)
 {
     windowMenu = menuBar()->addMenu(tr("&Window"));
-    windowToolBar = CreateToolBar(this, tr("Window"),
-                                  QStringLiteral("windowToolBar"));
+
     connect(windowMenu, &QMenu::aboutToShow,
             this, &FLEXplorer::OnUpdateWindowMenu);
 
@@ -959,7 +957,8 @@ void FLEXplorer::CreateWindowsActions()
     closeAction->setStatusTip(tr("Close the active window"));
     connect(closeAction, &QAction::triggered,
             this, &FLEXplorer::OnCloseActiveSubWindow);
-    windowToolBar->addAction(closeAction);
+    p_toolBar.addSeparator();
+    p_toolBar.addAction(closeAction);
 
     closeAllAction = new QAction(tr("Close &All"), this);
     closeAllAction->setStatusTip(tr("Close all the windows"));
@@ -995,23 +994,22 @@ void FLEXplorer::CreateWindowsActions()
     OnUpdateWindowMenu();
 }
 
-void FLEXplorer::CreateHelpActions()
+void FLEXplorer::CreateHelpActions(QToolBar &p_toolBar)
 {
     QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpToolBar = CreateToolBar(this, tr("Help"),
-                                QStringLiteral("helpToolBar"));
 
     const auto aboutIcon = QIcon(":/resource/about.png");
     aboutAction = helpMenu->addAction(aboutIcon, tr("&About"),
                                       this, SLOT(OnAbout()));
     aboutAction->setStatusTip(tr("Show the application's About box"));
-    helpToolBar->addAction(aboutAction);
+    p_toolBar.addSeparator();
+    p_toolBar.addAction(aboutAction);
 
     const auto aboutQtIcon = QIcon(":/resource/qt.png");
     aboutQtAction = helpMenu->addAction(aboutQtIcon, tr("&About Qt"),
                                       qApp, SLOT(aboutQt()));
     aboutQtAction->setStatusTip(tr("Show the Qt library's About box"));
-    helpToolBar->addAction(aboutQtAction);
+    p_toolBar.addAction(aboutQtAction);
 }
 
 void FLEXplorer::OnContextMenuRequested(QPoint pos)
@@ -1441,12 +1439,7 @@ void FLEXplorer::OnIconSize(int index)
 
 void FLEXplorer::SetIconSize(const QSize &iconSize)
 {
-    fileToolBar->setIconSize(iconSize);
-    editToolBar->setIconSize(iconSize);
-    containerToolBar->setIconSize(iconSize);
-    extrasToolBar->setIconSize(iconSize);
-    windowToolBar->setIconSize(iconSize);
-    helpToolBar->setIconSize(iconSize);
+    toolBar->setIconSize(iconSize);
 
     int sizeIndex = (iconSize.width() >= 24 || iconSize.height() >= 24) ? 1 : 0;
     sizeIndex = (iconSize.width() >= 32 || iconSize.height() >= 32) ?
