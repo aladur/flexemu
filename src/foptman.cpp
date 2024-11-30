@@ -605,13 +605,15 @@ void FlexemuOptions::WriteOptionsToRegistry(
                 reg.SetValue(key.c_str(), value.c_str());
             }
             break;
+
+        case FlexemuOptionId::IsStatusBarVisible:
+            reg.SetValue(FLEXISSTATUSBARVISIBLE,
+                options.isStatusBarVisible ? 1 : 0);
+                break;
         }
 
         reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
             options.isDirectoryDiskActive ? 1 : 0);
-
-        reg.SetValue(FLEXISSTATUSBARVISIBLE,
-            options.isStatusBarVisible ? 1 : 0);
 
         reg.SetValue(FLEXVERSION, VERSION);
         reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
