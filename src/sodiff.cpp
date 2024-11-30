@@ -171,6 +171,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsStatusBarVisible);
     }
 
+    if (opt1.isDirectoryDiskActive != opt2.isDirectoryDiskActive)
+    {
+        notEquals.push_back(FlexemuOptionId::IsDirectoryDiskActive);
+    }
+
     if (opt1.directoryDiskTracks != opt2.directoryDiskTracks ||
         opt1.directoryDiskSectors != opt2.directoryDiskSectors)
     {
@@ -243,6 +248,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::IsFlexibleMmu:
             case FlexemuOptionId::IsEurocom2V5:
             case FlexemuOptionId::IsUseRtc:
+            case FlexemuOptionId::IsDirectoryDiskActive:
                 return true;
 
             case FlexemuOptionId::IsUseUndocumented:

@@ -610,10 +610,11 @@ void FlexemuOptions::WriteOptionsToRegistry(
             reg.SetValue(FLEXISSTATUSBARVISIBLE,
                 options.isStatusBarVisible ? 1 : 0);
                 break;
-        }
 
-        reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
-            options.isDirectoryDiskActive ? 1 : 0);
+        case FlexemuOptionId::IsDirectoryDiskActive:
+            reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
+                options.isDirectoryDiskActive ? 1 : 0);
+        }
 
         reg.SetValue(FLEXVERSION, VERSION);
         reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
@@ -772,6 +773,11 @@ void FlexemuOptions::WriteOptionsToFile(
                 previousOptions.isTerminalIgnoreNUL;
             break;
 
+        case FlexemuOptionId::IsDirectoryDiskActive:
+            optionsToWrite.isDirectoryDiskActive =
+                previousOptions.isDirectoryDiskActive;
+            break;
+
         case FlexemuOptionId::DirectoryDiskTrkSec:
             optionsToWrite.directoryDiskTracks =
                 previousOptions.directoryDiskTracks;
@@ -820,8 +826,6 @@ void FlexemuOptions::WriteOptionsToFile(
             break;
         }
 
-        optionsToWrite.isDirectoryDiskActive =
-            previousOptions.isDirectoryDiskActive;
         optionsToWrite.version = VERSION;
     }
 

@@ -73,6 +73,7 @@ enum class FlexemuOptionId : uint8_t
     PrintPreviewDialogGeometry,
     PrintConfigs,
     DirectoryDiskTrkSec,
+    IsDirectoryDiskActive,
     IsStatusBarVisible,
 };
 using FlexemuOptionIds_t = std::vector<FlexemuOptionId>;

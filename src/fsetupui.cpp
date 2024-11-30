@@ -438,6 +438,15 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
                 c_terminalIgnoreNUL->setEnabled(false);
                 break;
 
+            case FlexemuOptionId::IsDirectoryDiskActive:
+                c_isDirectoryDiskActive->setEnabled(false);
+                break;
+
+            case FlexemuOptionId::DirectoryDiskTrkSec:
+                e_tracks->setEnabled(false);
+                e_sectors->setEnabled(false);
+                break;
+
             case FlexemuOptionId::PrintFont:
             case FlexemuOptionId::IsPrintPageBreakDetected:
             case FlexemuOptionId::PrintOrientation:
@@ -446,7 +455,6 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintOutputWindowGeometry:
             case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
-            case FlexemuOptionId::DirectoryDiskTrkSec:
             case FlexemuOptionId::IconSize:
             case FlexemuOptionId::IsStatusBarVisible:
                 break;
@@ -505,6 +513,8 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::MdcrDrive0:
                 case FlexemuOptionId::MdcrDrive1:
                 case FlexemuOptionId::IsUseRtc:
+                case FlexemuOptionId::IsDirectoryDiskActive:
+                case FlexemuOptionId::DirectoryDiskTrkSec:
                     addDependent(FlexemuOptionId::IsEurocom2V5);
                     break;
 
@@ -539,11 +549,9 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PrintOutputWindowGeometry:
                 case FlexemuOptionId::PrintPreviewDialogGeometry:
                 case FlexemuOptionId::PrintConfigs:
-                case FlexemuOptionId::DirectoryDiskTrkSec:
                 case FlexemuOptionId::IconSize:
                 case FlexemuOptionId::IsStatusBarVisible:
                     break;
-
             }
         }
 
@@ -817,7 +825,10 @@ void FlexemuOptionsUi::TransferDataFromDialog(struct sOptions &options)
         options.directoryDiskSectors = e_sectors->value();
     }
 
-    options.isDirectoryDiskActive = c_isDirectoryDiskActive->isChecked();
+    if (!IsReadOnly(FlexemuOptionId::IsDirectoryDiskActive))
+    {
+        options.isDirectoryDiskActive = c_isDirectoryDiskActive->isChecked();
+    }
 }
 
 QString FlexemuOptionsUi::GetRelativePath(
@@ -933,6 +944,9 @@ void FlexemuOptionsUi::UpdateHardwareDependencies()
     c_canFormatDrive1->setEnabled(r_eurocom2v7->isChecked());
     c_canFormatDrive2->setEnabled(r_eurocom2v7->isChecked());
     c_canFormatDrive3->setEnabled(r_eurocom2v7->isChecked());
+
+    c_isDirectoryDiskActive->setEnabled(r_eurocom2v7->isChecked());
+    cb_diskFormat->setEnabled(r_eurocom2v7->isChecked());
 
     UpdateRamDependencies();
 }
