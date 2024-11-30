@@ -43,6 +43,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDir>
+#include <QSize>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QFileDialog>
@@ -73,6 +74,8 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     : mdiArea(new QMdiArea)
     , options(p_options)
 {
+    const QSize iconSize(options.iconSize, options.iconSize);
+
     injectDirectory = flx::getHomeDirectory().c_str();
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -84,7 +87,7 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     connect(mdiArea, &QMdiArea::subWindowActivated,
             this, &FLEXplorer::OnSubWindowActivated);
 
-    CreateActions();
+    CreateActions(iconSize);
     CreateStatusBar();
     UpdateMenus();
     RestoreRecentDisks();
@@ -93,10 +96,9 @@ FLEXplorer::FLEXplorer(sFPOptions &p_options)
     setWindowTitle(tr("FLEXplorer"));
     setUnifiedTitleAndToolBarOnMac(true);
     FlexDisk::onTrack0OnlyDirSectors = options.onTrack0OnlyDirSectors;
+    SetIconSizeCheck(iconSize);
 
     resize(860, 720);
-
-    SetIconSize({options.iconSize, options.iconSize});
 }
 
 FLEXplorer::~FLEXplorer()
@@ -723,20 +725,22 @@ FlexplorerMdiChild *FLEXplorer::CreateMdiChild(const QString &path,
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QToolBar *FLEXplorer::CreateToolBar(QWidget *parent,
                                     const QString &title,
-                                    const QString &objectName)
+                                    const QString &objectName,
+                                    const QSize &iconSize)
 {
     auto *newToolBar = new QToolBar(title, parent);
     newToolBar->setObjectName(objectName);
     newToolBar->setFloatable(false);
     newToolBar->setMovable(false);
-    newToolBar->setIconSize({32, 32});
+    newToolBar->setIconSize(iconSize);
 
     return newToolBar;
 }
 
-void FLEXplorer::CreateActions()
+void FLEXplorer::CreateActions(const QSize &iconSize)
 {
-    toolBar = CreateToolBar(this, tr("ToolBar"), QStringLiteral("toolBar"));
+    toolBar = CreateToolBar(this, tr("ToolBar"), QStringLiteral("toolBar"),
+            iconSize);
     assert(toolBar != nullptr);
     addToolBar(toolBar);
 
@@ -1431,8 +1435,10 @@ void FLEXplorer::OnIconSize(int index)
     index = std::min(index, 2);
 
     int size = 16 + 8 * index;
+    const QSize iconSize({size, size});
 
-    SetIconSize({size, size});
+    SetIconSize(iconSize);
+    SetIconSizeCheck(iconSize);
 
     options.iconSize = size;
 }
@@ -1440,10 +1446,11 @@ void FLEXplorer::OnIconSize(int index)
 void FLEXplorer::SetIconSize(const QSize &iconSize)
 {
     toolBar->setIconSize(iconSize);
+}
 
-    int sizeIndex = (iconSize.width() >= 24 || iconSize.height() >= 24) ? 1 : 0;
-    sizeIndex = (iconSize.width() >= 32 || iconSize.height() >= 32) ?
-                2 : sizeIndex;
+void FLEXplorer::SetIconSizeCheck(const QSize &iconSize)
+{
+    const int sizeIndex = IconSizeToIndex(iconSize);
 
     for (int index = 0; index < ICON_SIZES; ++index)
     {

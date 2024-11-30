@@ -107,7 +107,6 @@ private slots:
     void OnAbout();
     void OnSelectionHasChanged();
     void OnIconSize(int index);
-    void SetIconSize(const QSize &iconSize);
 
     static void OnExit();
 
@@ -115,8 +114,8 @@ private:
     void ExecuteInChild(
             const std::function<void(FlexplorerMdiChild &child)>&action);
     QToolBar *CreateToolBar(QWidget *parent, const QString &title,
-                            const QString &objectName);
-    void CreateActions();
+                            const QString &objectName, const QSize &iconSize);
+    void CreateActions(const QSize &iconSize);
     void CreateFileActions(QToolBar &p_toolBar);
     void CreateEditActions(QToolBar &p_toolBar);
     void CreateViewActions(QToolBar &p_toolBar);
@@ -146,6 +145,8 @@ private:
     void RestoreRecentDirectories();
     bool OpenFlexDiskForPath(QString path, bool isLast = true);
     void SetStatusMessage(const QString &message);
+    void SetIconSize(const QSize &iconSize);
+    void SetIconSizeCheck(const QSize &iconSize);
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
