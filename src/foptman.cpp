@@ -68,6 +68,7 @@ static const char * const FLEXMONITOR = "MonitorPath";
 static const char * const FLEXVERSION = "Version";
 static const char * const FLEXSCREENFACTOR = "ScreenFactor";
 static const char * const FLEXICONSIZE = "IconSize";
+static const char * const FLEXISSTATUSBARVISIBLE = "IsStatusBarVisible";
 static const char * const FLEXFREQUENCY = "Frequency";
 static const char * const FLEXFILETIMEACCESS = "FileTimeAccess";
 static const char * const FLEXDISPLAYSMOOTH = "DisplaySmooth";
@@ -169,6 +170,7 @@ void FlexemuOptions::InitOptions(struct sOptions &options)
     options.directoryDiskTracks = 80;
     options.directoryDiskSectors = 36;
     options.isDirectoryDiskActive = true;
+    options.isStatusBarVisible = true;
 }
 
 void FlexemuOptions::GetCommandlineOptions(
@@ -608,6 +610,9 @@ void FlexemuOptions::WriteOptionsToRegistry(
         reg.SetValue(FLEXISDIRECTORYDISKACTIVE,
             options.isDirectoryDiskActive ? 1 : 0);
 
+        reg.SetValue(FLEXISSTATUSBARVISIBLE,
+            options.isStatusBarVisible ? 1 : 0);
+
         reg.SetValue(FLEXVERSION, VERSION);
         reg.DeleteValue(FLEXDOCDIR); // Deprecated option value
     }
@@ -806,6 +811,11 @@ void FlexemuOptions::WriteOptionsToFile(
         case FlexemuOptionId::PrintConfigs:
             optionsToWrite.printConfigs = previousOptions.printConfigs;
             break;
+
+        case FlexemuOptionId::IsStatusBarVisible:
+            optionsToWrite.isStatusBarVisible =
+                previousOptions.isStatusBarVisible;
+            break;
         }
 
         optionsToWrite.isDirectoryDiskActive =
@@ -863,6 +873,8 @@ void FlexemuOptions::WriteOptionsToFile(
             optionsToWrite.directoryDiskSectors);
     rcFile.SetValue(FLEXISDIRECTORYDISKACTIVE,
             optionsToWrite.isDirectoryDiskActive ? 1 : 0);
+    rcFile.SetValue(FLEXISSTATUSBARVISIBLE,
+            optionsToWrite.isStatusBarVisible ? 1 : 0);
     rcFile.SetValue(FLEXPRINTFONT, optionsToWrite.printFont);
     rcFile.SetValue(FLEXPRINTPAGEBREAKDETECTED,
             optionsToWrite.isPrintPageBreakDetected ? 1 : 0);
@@ -1035,6 +1047,11 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.isDirectoryDiskActive = (int_result != 0);
     }
 
+    if (!reg.GetValue(FLEXISSTATUSBARVISIBLE, int_result))
+    {
+        options.isStatusBarVisible = (int_result != 0);
+    }
+
     reg.GetValue(FLEXPRINTFONT, options.printFont);
 
     if (!reg.GetValue(FLEXPRINTPAGEBREAKDETECTED, int_result))
@@ -1203,6 +1220,10 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
     if (!rcFile.GetValue(FLEXISDIRECTORYDISKACTIVE, int_result))
     {
         options.isDirectoryDiskActive = (int_result != 0);
+    }
+    if (!rcFile.GetValue(FLEXISSTATUSBARVISIBLE, int_result))
+    {
+        options.isStatusBarVisible = (int_result != 0);
     }
 
     rcFile.GetValue(FLEXPRINTFONT, options.printFont);

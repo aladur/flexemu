@@ -166,6 +166,11 @@ FlexemuOptionsDifference::FlexemuOptionsDifference(
         notEquals.push_back(FlexemuOptionId::IsTerminalIgnoreESC);
     }
 
+    if (opt1.isStatusBarVisible != opt2.isStatusBarVisible)
+    {
+        notEquals.push_back(FlexemuOptionId::IsStatusBarVisible);
+    }
+
     if (opt1.directoryDiskTracks != opt2.directoryDiskTracks ||
         opt1.directoryDiskSectors != opt2.directoryDiskSectors)
     {
@@ -264,6 +269,7 @@ bool IsRestartNeeded(const FlexemuOptionsDifference &optionsDiff)
             case FlexemuOptionId::PrintPreviewDialogGeometry:
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::DirectoryDiskTrkSec:
+            case FlexemuOptionId::IsStatusBarVisible:
                 break;
         }
     }

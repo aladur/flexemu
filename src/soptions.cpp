@@ -64,6 +64,7 @@ const FlexemuOptionIds_t &GetAllFlexemuOptionIds()
         FlexemuOptionId::PrintPreviewDialogGeometry,
         FlexemuOptionId::PrintConfigs,
         FlexemuOptionId::DirectoryDiskTrkSec,
+        FlexemuOptionId::IsStatusBarVisible,
     };
 
     return allFlexemuOptionIds;

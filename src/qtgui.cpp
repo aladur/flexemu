@@ -199,6 +199,12 @@ QtGui::QtGui(
     }
 
     SetIconSizeCheck(iconSize);
+
+    if (!options.isStatusBarVisible)
+    {
+        SetStatusBarVisibility(false);
+    }
+    UpdateStatusBarCheck();
 }
 
 QtGui::~QtGui()
@@ -396,6 +402,7 @@ void QtGui::OnPreferences()
                 case FlexemuOptionId::IsEurocom2V5:
                 case FlexemuOptionId::IsUseRtc:
                 case FlexemuOptionId::IconSize:
+                case FlexemuOptionId::IsStatusBarVisible:
                     break;
             }
         }
@@ -1556,13 +1563,21 @@ bool QtGui::IsFullScreenMode() const
 
 void QtGui::ToggleStatusBarVisibility()
 {
-    statusBarFrame->setVisible(!statusBarFrame->isVisible());
-    newKeyFrame->setVisible(!newKeyFrame->isVisible());
-    dummyStatusBar->setVisible(!dummyStatusBar->isVisible());
+    SetStatusBarVisibility(!statusBarFrame->isVisible());
+    UpdateStatusBarCheck();
+
+    oldOptions.isStatusBarVisible = statusBarFrame->isVisible();
+    options.isStatusBarVisible = statusBarFrame->isVisible();
+    WriteOneOption(options, FlexemuOptionId::IsStatusBarVisible);
 
     QTimer::singleShot(0, this, &QtGui::OnResize);
+}
 
-    UpdateStatusBarCheck();
+void QtGui::SetStatusBarVisibility(bool isVisible)
+{
+    statusBarFrame->setVisible(isVisible);
+    newKeyFrame->setVisible(isVisible);
+    dummyStatusBar->setVisible(isVisible);
 }
 
 void QtGui::UpdateSmoothDisplayCheck() const

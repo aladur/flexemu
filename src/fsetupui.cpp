@@ -448,6 +448,7 @@ void FlexemuOptionsUi::SetOptionsReadOnly(const std::vector<FlexemuOptionId>
             case FlexemuOptionId::PrintConfigs:
             case FlexemuOptionId::DirectoryDiskTrkSec:
             case FlexemuOptionId::IconSize:
+            case FlexemuOptionId::IsStatusBarVisible:
                 break;
         }
     }
@@ -540,6 +541,7 @@ std::vector<FlexemuOptionId> FlexemuOptionsUi::AddDependentReadOnlyOptions(
                 case FlexemuOptionId::PrintConfigs:
                 case FlexemuOptionId::DirectoryDiskTrkSec:
                 case FlexemuOptionId::IconSize:
+                case FlexemuOptionId::IsStatusBarVisible:
                     break;
 
             }

@@ -73,6 +73,7 @@ enum class FlexemuOptionId : uint8_t
     PrintPreviewDialogGeometry,
     PrintConfigs,
     DirectoryDiskTrkSec,
+    IsStatusBarVisible,
 };
 using FlexemuOptionIds_t = std::vector<FlexemuOptionId>;
 
@@ -129,6 +130,7 @@ struct sOptions
     int directoryDiskTracks{}; // Default number of track for a directory disk
     int directoryDiskSectors{}; // Default number of sectors for a directory disk
     bool isDirectoryDiskActive{}; // true if directory disk is active.
+    bool isStatusBarVisible{}; // true if status bar is visible.
     std::string cpuLogPath; // Path used for CPU instruction logging
 
     FlexemuOptionIds_t readOnlyOptionIds;// List of option ids which are

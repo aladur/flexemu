@@ -191,6 +191,7 @@ private:
     void ToggleFullScreenMode();
     void ToggleStatusBarVisibility();
     void ToggleCpuRunStop();
+    void SetStatusBarVisibility(bool isVisible);
     void SetFullScreenMode(bool isFullScreen);
     bool IsFullScreenMode() const;
     void UpdateFullScreenCheck() const;
