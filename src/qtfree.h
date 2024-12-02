@@ -29,12 +29,12 @@
 #include <QFont>
 #include <QWidget>
 #include <QToolBar>
+#include <optional>
 #include "warnon.h"
 #include "typedefs.h"
 #include "e2.h"
 #include <string>
 #include <algorithm>
-#include <optional>
 
 class QAction;
 class QMenu;

@@ -22,10 +22,12 @@
 
 #include "misc1.h"
 #include "brcfile.h"
-#include <optional>
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#include "warnoff.h"
+#include <optional>
+#include "warnon.h"
 
 
 BRcFile::BRcFile(std::string p_fileName) : fileName(std::move(p_fileName))

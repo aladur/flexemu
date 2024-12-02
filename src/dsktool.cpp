@@ -43,7 +43,9 @@
 #include "filfschk.h"
 #include "ffilebuf.h"
 #include "filecnts.h"
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 static std::vector<std::string> GetMatchingFilenames(FlexDisk &container,

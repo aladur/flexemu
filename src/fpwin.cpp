@@ -37,9 +37,9 @@
 #include "ffilecnt.h"
 #include "fcopyman.h"
 #include "qtfree.h"
-#include "about_ui.h"
 #include "fversion.h"
 #include "warnoff.h"
+#include "about_ui.h"
 #include <QApplication>
 #include <QCoreApplication>
 #include <QDir>

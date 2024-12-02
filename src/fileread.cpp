@@ -31,7 +31,9 @@
 #include <array>
 #include <vector>
 #include <functional>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 static Word read_word(std::istream &istream)

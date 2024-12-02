@@ -36,7 +36,9 @@
 #include <array>
 #include <vector>
 #include <string>
+#include "warnoff.h"
 #include <optional>
+#include "warnon.h"
 
 
 const std::array<char,4> flexFileHeaderMagicNumber = {

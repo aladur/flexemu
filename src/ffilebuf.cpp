@@ -33,7 +33,9 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 // The format of a FLEX text file is described in the

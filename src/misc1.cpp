@@ -44,7 +44,9 @@
 #include <algorithm>
 #include <utility>
 #include <regex>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 #ifdef _WIN32

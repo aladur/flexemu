@@ -28,12 +28,12 @@
 #include "bui.h"
 #include <stdexcept>
 #include <cassert>
-#include <optional>
 #include "warnoff.h"
 #include <QAbstractButton>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <optional>
 #include "warnon.h"
 
 using OptionalWord = std::optional<Word>;

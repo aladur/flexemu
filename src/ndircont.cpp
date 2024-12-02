@@ -46,7 +46,9 @@
 #include "cvtwchar.h"
 #include "fdoptman.h"
 #include <ctime>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 // A debug log can be written to a file

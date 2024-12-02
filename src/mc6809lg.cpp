@@ -25,9 +25,11 @@
 #include "mc6809st.h"
 #include "mc6809.h"
 #include "scpulog.h"
-#include <fmt/format.h>
 #include <algorithm>
 #include <cassert>
+#include "warnoff.h"
+#include <fmt/format.h>
+#include "warnon.h"
 
 
 Mc6809Logger::~Mc6809Logger()

@@ -21,7 +21,9 @@
 
 #include "filecnts.h"
 #include <ostream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 std::ostream& operator<<(std::ostream& os, const st_t &st)
 {

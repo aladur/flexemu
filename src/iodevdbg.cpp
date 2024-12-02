@@ -23,7 +23,9 @@
 #include "iodevdbg.h"
 #include "misc1.h"
 #include <fstream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 IoDeviceDebug::IoDeviceDebug(IoDevice &p_device, std::string p_logFilePath)

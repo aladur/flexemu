@@ -24,8 +24,10 @@
 #define SCPULOG_INCLUDED
 
 #include "typedefs.h"
-#include <optional>
 #include <string>
+#include "warnoff.h"
+#include <optional>
+#include "warnon.h"
 
 using OptionalWord = std::optional<Word>;
 enum class LogRegister : uint8_t

@@ -35,7 +35,6 @@
 #include <string>
 #include <memory>
 #include <mutex>
-#include <optional>
 #include "warnoff.h"
 #include "cpustat_ui.h"
 #include <QWidget>
@@ -44,6 +43,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QMap>
+#include <optional>
 #include "warnon.h"
 
 class Mc6809;

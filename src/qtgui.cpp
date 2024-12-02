@@ -45,12 +45,12 @@
 #include "sodiff.h"
 #include "foptman.h"
 #include "fsetupui.h"
-#include "about_ui.h"
 #include "qtfree.h"
 #include "colors.h"
-#include "warnoff.h"
 #include "poutwin.h"
 #include "fversion.h"
+#include "warnoff.h"
+#include "about_ui.h"
 #include <QString>
 #include <QStringList>
 #include <QPixmap>
@@ -93,10 +93,10 @@
 #include <QTextBrowser>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <fmt/format.h>
 #include "warnon.h"
 #include <cmath>
 #include <array>
-#include <fmt/format.h>
 
 int QtGui::preferencesTabIndex = 0;
 

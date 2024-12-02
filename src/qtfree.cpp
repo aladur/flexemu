@@ -35,6 +35,7 @@
 #include <QDialog>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <optional>
 #include "warnon.h"
 #include "typedefs.h"
 #include "qtfree.h"
@@ -42,7 +43,6 @@
 #include "fcinfo.h"
 #include "e2.h"
 #include <cmath>
-#include <optional>
 
 QFont GetFont(const QString &fontName)
 {

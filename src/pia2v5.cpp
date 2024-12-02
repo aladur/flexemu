@@ -27,7 +27,9 @@
 #include "flexerr.h"
 #include <sstream>
 #include <iostream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 #define GET_DELTA_TIME static_cast<float>((cpu.get_cycles() - cycles_cdbg) * \

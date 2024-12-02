@@ -27,7 +27,9 @@
 #include "soptions.h"
 #include <cstring>
 #include <iostream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 std::array<Byte, 8> Memory::initial_content =
 { 0x23, 0x54, 0xF1, 0xAA, 0x78, 0xD3, 0xF2, 0x0 };

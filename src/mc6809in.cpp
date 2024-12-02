@@ -18,7 +18,9 @@
 #include "da6809.h"
 #include <array>
 #include <cstring>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 #ifdef _MSC_VER

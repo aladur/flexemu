@@ -55,5 +55,5 @@
 
 #ifdef _MSC_VER
 #pragma warning( push )
-#pragma warning( disable : 4127 4251 )
+#pragma warning( disable : 4127 4244 4251 4267 4702 )
 #endif

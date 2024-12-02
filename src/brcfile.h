@@ -23,9 +23,11 @@
 #ifndef BRCFILE_INCLUDED
 #define BRCFILE_INCLUDED
 
-#include <optional>
 #include <string>
 #include <map>
+#include "warnoff.h"
+#include <optional>
+#include "warnon.h"
 
 enum : uint8_t
 {

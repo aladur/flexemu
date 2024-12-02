@@ -24,7 +24,9 @@
 #include <iostream>
 #include "da6809.h"
 #include "flblfile.h"
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 void Da6809::set_use_undocumented(bool value)

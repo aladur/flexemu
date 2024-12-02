@@ -33,11 +33,13 @@
 #include "mc6809.h"
 #include "inout.h"
 #include "breltime.h"
+#include <cstring>
 #ifdef DEBUG_FILE
 #include <fstream>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 #endif
-#include <cstring>
 
 
 Scheduler::Scheduler(ScheduledCpu &p_cpu, Inout &p_inout) :

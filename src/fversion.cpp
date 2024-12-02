@@ -27,7 +27,9 @@
 #ifdef QT_CORE_LIB
 #include <QObject>
 #endif
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 #if defined(UNIX) && defined(ADD_JSONCPP_VERSION)
 #include <json/version.h>
 #endif

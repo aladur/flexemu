@@ -32,7 +32,9 @@
 #include "schedule.h"
 #include "mc6809st.h"
 #include "terminal.h"
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 void AbstractGui::update_cpuview(const Mc6809CpuStatus &status)

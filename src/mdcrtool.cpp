@@ -31,7 +31,9 @@
 #include <cctype>
 #include <iostream>
 #include <vector>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 static void version()
 {

@@ -26,7 +26,9 @@
 #include "flexerr.h"
 #include "cvtwchar.h"
 #include <array>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 const char *FlexException::what() const noexcept

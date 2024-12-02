@@ -26,7 +26,9 @@
 #include <string>
 #include <sstream>
 #include <array>
+#include "warnoff.h"
 #include <fmt/format.h>
+#include "warnon.h"
 
 
 FlexDiskCheck::FlexDiskCheck(
