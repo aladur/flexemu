@@ -1415,10 +1415,10 @@ void QtGui::update_block(int blockNumber)
     e2screen->UpdateBlock(vico2.get_value(), blockNumber, dataBuffer);
 }
 
-void QtGui::UpdateDiskStatus(int floppyIndex, DiskStatus oldStatus,
+void QtGui::UpdateDiskStatus(Word floppyIndex, DiskStatus oldStatus,
         DiskStatus newStatus)
 {
-    auto fct_getStatusText = [&](int idx){
+    auto fct_getStatusText = [&](Word idx){
         const auto diskAttributes = fdc->drive_attributes(idx);
         return tr("Disk #%1 %2")
             .arg(idx)

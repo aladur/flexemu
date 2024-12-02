@@ -830,7 +830,7 @@ FlexDirEntry FlexFileBuffer::GetDirEntry() const
     {
         dirEntry.SetTotalFileName(fileHeader.fileName);
         dirEntry.SetFileSize(fileHeader.fileSize / DBPS * SECTOR_SIZE);
-        dirEntry.SetAttributes(fileHeader.attributes);
+        dirEntry.SetAttributes(static_cast<Byte>(fileHeader.attributes));
         dirEntry.SetDate(GetDate());
         dirEntry.SetTime(GetTime());
         dirEntry.SetSectorMap(fileHeader.sectorMap);

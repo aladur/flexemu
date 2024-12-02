@@ -660,7 +660,7 @@ bool FlexDisk::WriteFromBuffer(const FlexFileBuffer &buffer,
         repeat = 0; // Finished preparing random file sector map.
 
         if (!buffer.CopyTo(&sectorBuffer[0][4], SECTOR_SIZE - 4,
-                           recordNr * (SECTOR_SIZE - 4), 0x00))
+                           recordNr * (SECTOR_SIZE - 4), '\0'))
         {
             std::stringstream stream;
 
