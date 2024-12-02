@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Qt5 Win32
         if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version:      '${{ vars.QT5_VERSION }}'
           host:         'windows'
@@ -49,7 +49,7 @@ jobs:
 
       - name: Install Qt5 x64
         if: ${{ matrix.qt-version == 5 }}
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version:      '${{ vars.QT5_VERSION }}'
           host:         'windows'
@@ -62,7 +62,7 @@ jobs:
 
       - name: Install Qt6 x64
         if: ${{ matrix.qt-version == 6 }}
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version:      '${{ vars.QT6_VERSION }}'
           host:         'windows'
