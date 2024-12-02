@@ -1139,7 +1139,7 @@ int main(int argc, char *argv[])
     std::string dsk_file;
     std::string dst_dsk_file;
     const char *bsFile = nullptr;
-    DiskType disk_type;
+    DiskType disk_type{};
     bool is_disk_type_valid = false;
     int tracks = 0;
     int sectors = 0;
