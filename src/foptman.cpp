@@ -947,6 +947,7 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         options.iconSize = (int_result >= 24) ? 24 : 16;
         options.iconSize = (int_result >= 32) ? 32 : options.iconSize;
     }
+
     if (!reg.GetValue(FLEXINVERSE, int_result))
     {
         options.isInverse = (int_result != 0);
@@ -1042,12 +1043,14 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         int_result = std::min(int_result, 256);
         options.directoryDiskTracks = int_result;
     }
+
     if (!reg.GetValue(FLEXDIRECTORYDISKSECTORS, int_result))
     {
         int_result = std::max(int_result, 6);
         int_result = std::min(int_result, 255);
         options.directoryDiskSectors = int_result;
     }
+
     if (!reg.GetValue(FLEXISDIRECTORYDISKACTIVE, int_result))
     {
         options.isDirectoryDiskActive = (int_result != 0);
@@ -1217,16 +1220,19 @@ void FlexemuOptions::GetOptions(struct sOptions &options)
         int_result = std::min(int_result, 256);
         options.directoryDiskTracks = int_result;
     }
+
     if (!rcFile.GetValue(FLEXDIRECTORYDISKSECTORS, int_result))
     {
         int_result = std::max(int_result, 6);
         int_result = std::min(int_result, 255);
         options.directoryDiskSectors = int_result;
     }
+
     if (!rcFile.GetValue(FLEXISDIRECTORYDISKACTIVE, int_result))
     {
         options.isDirectoryDiskActive = (int_result != 0);
     }
+
     if (!rcFile.GetValue(FLEXISSTATUSBARVISIBLE, int_result))
     {
         options.isStatusBarVisible = (int_result != 0);
