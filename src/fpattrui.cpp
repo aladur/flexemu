@@ -26,7 +26,7 @@
 const FileAttributesUi::AttributeLabels_t
     &FileAttributesUi::GetAttributeLabels()
 {
-    const static FileAttributesUi::AttributeLabels_t attributeLabels =
+    static const FileAttributesUi::AttributeLabels_t attributeLabels =
     {
         "&Write Protect",
         "&Delete Protect",

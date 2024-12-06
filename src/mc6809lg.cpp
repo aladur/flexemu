@@ -496,7 +496,7 @@ std::string Mc6809Logger::asCCString(Byte reg)
         CC_BIT_E, CC_BIT_F, CC_BIT_H, CC_BIT_I,
         CC_BIT_N, CC_BIT_Z, CC_BIT_V, CC_BIT_C,
     };
-    const static std::string cc_bitnames = "EFHINZVC";
+    static const std::string cc_bitnames = "EFHINZVC";
     std::string result = "--------";
 
 #ifndef BITFIELDS_LSB_FIRST
