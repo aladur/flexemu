@@ -746,8 +746,12 @@ ALL_TARGETS_CXXFLAGS = \
 	$(CXXSPEED) $(OS_TYPE) $(X_CFLAGS) $(AM_CXXFLAGS) \
 	$(CXXWARNINGS) $(MACOSX_VERSION_MIN)
 
-libjsoncpp_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/jsoncpp/include
-libfmt_a_CXXFLAGS = --std=c++11 -isystem $(top_srcdir)/fmt/include
+libjsoncpp_a_CXXFLAGS = --std=c++11 $(MACOSX_VERSION_MIN) \
+			-isystem $(top_srcdir)/jsoncpp/include
+
+libfmt_a_CXXFLAGS = --std=c++11 $(MACOSX_VERSION_MIN) \
+			-isystem $(top_srcdir)/fmt/include
+
 libflex_a_CXXFLAGS = $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexemu_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
 flexplorer_CXXFLAGS = $(QT_CXXFLAGS) $(ALL_TARGETS_CXXFLAGS) -include pch.h
