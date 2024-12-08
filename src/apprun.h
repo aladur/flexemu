@@ -25,7 +25,6 @@
 #ifndef APPRUN_INCLUDED
 #define APPRUN_INCLUDED
 
-#include "misc1.h"
 #include "memory.h"
 #include "mc6809.h"
 #include "da6809.h"
@@ -33,6 +32,7 @@
 #include "schedule.h"
 #include "joystick.h"
 #include "keyboard.h"
+#include "termimpi.h"
 #include "terminal.h"
 #include "mmu.h"
 #include "acia1.h"
@@ -60,7 +60,7 @@ class ApplicationRunner
 public:
     ApplicationRunner() = delete;
     ~ApplicationRunner();
-    explicit ApplicationRunner(struct sOptions &p_options);
+    ApplicationRunner(struct sOptions &p_options, ITerminalImplPtr &&termImpl);
 
     int startup(QApplication &app);
     void cleanup();

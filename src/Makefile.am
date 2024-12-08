@@ -240,6 +240,8 @@ flexemu_SOURCES = \
 	schedule.cpp \
 	sodiff.cpp \
 	soptions.cpp \
+	termimpd.cpp \
+	termimps.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -347,6 +349,10 @@ flexemu_SOURCES = \
 	scpulog.h \
 	sodiff.h \
 	soptions.h \
+	termimpd.h \
+	termimpf.h \
+	termimpi.h \
+	termimps.h \
 	terminal.h \
 	typedefs.h \
 	vico1.h \

@@ -201,7 +201,8 @@ am_flexemu_OBJECTS = flexemu-absgui.$(OBJEXT) flexemu-acia1.$(OBJEXT) \
 	flexemu-poutwin.$(OBJEXT) flexemu-poverhlp.$(OBJEXT) \
 	flexemu-qtfree.$(OBJEXT) flexemu-qtgui.$(OBJEXT) \
 	flexemu-schedule.$(OBJEXT) flexemu-sodiff.$(OBJEXT) \
-	flexemu-soptions.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
+	flexemu-soptions.$(OBJEXT) flexemu-termimpd.$(OBJEXT) \
+	flexemu-termimps.$(OBJEXT) flexemu-terminal.$(OBJEXT) \
 	flexemu-vico1.$(OBJEXT) flexemu-vico2.$(OBJEXT) \
 	flexemu-wd1793.$(OBJEXT) flexemu-winmain.$(OBJEXT)
 am__objects_3 = flexemu-flexemu_qrc.$(OBJEXT)
@@ -318,6 +319,8 @@ am__depfiles_remade = $(top_builddir)/$(libjsoncpp_top)/$(DEPDIR)/libjsoncpp_a-j
 	./$(DEPDIR)/flexemu-qtgui.Po ./$(DEPDIR)/flexemu-qtgui_moc.Po \
 	./$(DEPDIR)/flexemu-schedule.Po ./$(DEPDIR)/flexemu-sodiff.Po \
 	./$(DEPDIR)/flexemu-soptions.Po \
+	./$(DEPDIR)/flexemu-termimpd.Po \
+	./$(DEPDIR)/flexemu-termimps.Po \
 	./$(DEPDIR)/flexemu-terminal.Po ./$(DEPDIR)/flexemu-vico1.Po \
 	./$(DEPDIR)/flexemu-vico2.Po ./$(DEPDIR)/flexemu-wd1793.Po \
 	./$(DEPDIR)/flexemu-winmain.Po \
@@ -904,6 +907,8 @@ flexemu_SOURCES = \
 	schedule.cpp \
 	sodiff.cpp \
 	soptions.cpp \
+	termimpd.cpp \
+	termimps.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -1011,6 +1016,10 @@ flexemu_SOURCES = \
 	scpulog.h \
 	sodiff.h \
 	soptions.h \
+	termimpd.h \
+	termimpf.h \
+	termimpi.h \
+	termimps.h \
 	terminal.h \
 	typedefs.h \
 	vico1.h \
@@ -1508,6 +1517,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-schedule.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-sodiff.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-soptions.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-termimpd.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-termimps.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-terminal.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico1.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flexemu-vico2.Po@am__quote@ # am--include-marker
@@ -2891,6 +2902,34 @@ flexemu-soptions.obj: soptions.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-soptions.obj `if test -f 'soptions.cpp'; then $(CYGPATH_W) 'soptions.cpp'; else $(CYGPATH_W) '$(srcdir)/soptions.cpp'; fi`
 
+flexemu-termimpd.o: termimpd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-termimpd.o -MD -MP -MF $(DEPDIR)/flexemu-termimpd.Tpo -c -o flexemu-termimpd.o `test -f 'termimpd.cpp' || echo '$(srcdir)/'`termimpd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-termimpd.Tpo $(DEPDIR)/flexemu-termimpd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='termimpd.cpp' object='flexemu-termimpd.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-termimpd.o `test -f 'termimpd.cpp' || echo '$(srcdir)/'`termimpd.cpp
+
+flexemu-termimpd.obj: termimpd.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-termimpd.obj -MD -MP -MF $(DEPDIR)/flexemu-termimpd.Tpo -c -o flexemu-termimpd.obj `if test -f 'termimpd.cpp'; then $(CYGPATH_W) 'termimpd.cpp'; else $(CYGPATH_W) '$(srcdir)/termimpd.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-termimpd.Tpo $(DEPDIR)/flexemu-termimpd.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='termimpd.cpp' object='flexemu-termimpd.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-termimpd.obj `if test -f 'termimpd.cpp'; then $(CYGPATH_W) 'termimpd.cpp'; else $(CYGPATH_W) '$(srcdir)/termimpd.cpp'; fi`
+
+flexemu-termimps.o: termimps.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-termimps.o -MD -MP -MF $(DEPDIR)/flexemu-termimps.Tpo -c -o flexemu-termimps.o `test -f 'termimps.cpp' || echo '$(srcdir)/'`termimps.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-termimps.Tpo $(DEPDIR)/flexemu-termimps.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='termimps.cpp' object='flexemu-termimps.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-termimps.o `test -f 'termimps.cpp' || echo '$(srcdir)/'`termimps.cpp
+
+flexemu-termimps.obj: termimps.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-termimps.obj -MD -MP -MF $(DEPDIR)/flexemu-termimps.Tpo -c -o flexemu-termimps.obj `if test -f 'termimps.cpp'; then $(CYGPATH_W) 'termimps.cpp'; else $(CYGPATH_W) '$(srcdir)/termimps.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-termimps.Tpo $(DEPDIR)/flexemu-termimps.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='termimps.cpp' object='flexemu-termimps.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -c -o flexemu-termimps.obj `if test -f 'termimps.cpp'; then $(CYGPATH_W) 'termimps.cpp'; else $(CYGPATH_W) '$(srcdir)/termimps.cpp'; fi`
+
 flexemu-terminal.o: terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(flexemu_CXXFLAGS) $(CXXFLAGS) -MT flexemu-terminal.o -MD -MP -MF $(DEPDIR)/flexemu-terminal.Tpo -c -o flexemu-terminal.o `test -f 'terminal.cpp' || echo '$(srcdir)/'`terminal.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/flexemu-terminal.Tpo $(DEPDIR)/flexemu-terminal.Po
@@ -3857,6 +3896,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
 	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
 	-rm -f ./$(DEPDIR)/flexemu-soptions.Po
+	-rm -f ./$(DEPDIR)/flexemu-termimpd.Po
+	-rm -f ./$(DEPDIR)/flexemu-termimps.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po
@@ -4037,6 +4078,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/flexemu-schedule.Po
 	-rm -f ./$(DEPDIR)/flexemu-sodiff.Po
 	-rm -f ./$(DEPDIR)/flexemu-soptions.Po
+	-rm -f ./$(DEPDIR)/flexemu-termimpd.Po
+	-rm -f ./$(DEPDIR)/flexemu-termimps.Po
 	-rm -f ./$(DEPDIR)/flexemu-terminal.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico1.Po
 	-rm -f ./$(DEPDIR)/flexemu-vico2.Po

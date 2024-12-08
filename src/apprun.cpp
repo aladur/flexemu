@@ -46,16 +46,18 @@
 #include "qtgui.h"
 #include "scpulog.h"
 #include "cvtwchar.h"
+#include "termimpi.h"
 
 
-ApplicationRunner::ApplicationRunner(struct sOptions &p_options) :
+ApplicationRunner::ApplicationRunner(struct sOptions &p_options,
+        ITerminalImplPtr &&termImpl) :
     options(p_options),
     memory(options),
     cpu(memory),
     fdc(options),
     inout(p_options, memory),
     scheduler(cpu, inout),
-    terminalIO(scheduler, p_options),
+    terminalIO(scheduler, std::move(termImpl)),
     mmu(memory),
     acia1(terminalIO, inout),
     pia1(scheduler, keyboardIO, p_options),
@@ -283,7 +285,10 @@ int ApplicationRunner::startup(QApplication &app)
         fdc.mount_all_drives(options.drives);
     }
 
-    terminalIO.init(options.reset_key);
+    if (!terminalIO.init(options.reset_key))
+    {
+        return 1;
+    }
     inout.set_gui(&gui);
 
     if (!(options.term_mode && terminalIO.is_terminal_supported()))

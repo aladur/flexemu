@@ -180,6 +180,12 @@
     <ClCompile Include="poverhlp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="termimpd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="termimps.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexemu.rc">
@@ -460,6 +466,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="soptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termimpd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termimpf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termimpi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="termimps.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="terminal.h">

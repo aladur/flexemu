@@ -28,6 +28,9 @@
 #include <cstdint>
 #include <array>
 
+enum : uint8_t {
+FERR_COUNT = 51,
+};
 
 enum : uint8_t {
 FERR_NOERROR = 0,
@@ -80,6 +83,7 @@ FERR_BAD_OPTIONAL_ACCESS = 46,
 FERR_WILDCARD_NOT_SUPPORTED = 47,
 FERR_IS_NO_MDCRFORMAT = 48,
 FERR_REMOVE = 49,
+FERR_INVALID_TERMINAL_TYPE = 50,
 };
 
 
@@ -89,7 +93,7 @@ protected:
 
     int errorCode;
     std::string errorString;
-    static std::array<const char *, 50> errString;
+    static std::array<const char *, FERR_COUNT> errString;
 
 public:
 
