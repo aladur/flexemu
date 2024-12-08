@@ -240,6 +240,7 @@ flexemu_SOURCES = \
 	schedule.cpp \
 	sodiff.cpp \
 	soptions.cpp \
+	stermimp.cpp \
 	terminal.cpp \
 	vico1.cpp \
 	vico2.cpp \
@@ -307,6 +308,7 @@ flexemu_SOURCES = \
 	flexerr.h \
 	foptman.h \
 	fsetupui.h \
+	ftermimp.h \
 	fversion.h \
 	iffilcnt.h \
 	ifilcnti.h \
@@ -314,6 +316,7 @@ flexemu_SOURCES = \
 	inout.h \
 	iodevdbg.h \
 	iodevice.h \
+	itermimp.h \
 	joystick.h \
 	keyboard.h \
 	logfilui.h \
@@ -347,6 +350,7 @@ flexemu_SOURCES = \
 	scpulog.h \
 	sodiff.h \
 	soptions.h \
+	stermimp.h \
 	terminal.h \
 	typedefs.h \
 	vico1.h \

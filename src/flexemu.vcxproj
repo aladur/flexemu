@@ -262,6 +262,7 @@
     <ClCompile Include="schedule.cpp" />
     <ClCompile Include="sodiff.cpp" />
     <ClCompile Include="soptions.cpp" />
+    <ClCompile Include="stermimp.cpp" />
     <ClCompile Include="terminal.cpp" />
     <ClCompile Include="vico1.cpp" />
     <ClCompile Include="vico2.cpp" />
@@ -449,6 +450,7 @@
     <ClInclude Include="flexemu.h" />
     <ClInclude Include="flexerr.h" />
     <ClInclude Include="foptman.h" />
+    <ClInclude Include="ftermimp.h" />
     <ClInclude Include="idircnt.h" />
     <ClInclude Include="iffilcnt.h" />
     <ClInclude Include="ifilcnti.h" />
@@ -456,6 +458,7 @@
     <ClInclude Include="inout.h" />
     <ClInclude Include="iodevdbg.h" />
     <ClInclude Include="iodevice.h" />
+    <ClInclude Include="itermimp.h" />
     <ClInclude Include="joystick.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="mc146818.h" />
@@ -488,6 +491,7 @@
     <ClInclude Include="scpulog.h" />
     <ClInclude Include="sodiff.h" />
     <ClInclude Include="soptions.h" />
+    <ClInclude Include="stermimp.h" />
     <ClInclude Include="terminal.h" />
     <ClInclude Include="typedefs.h" />
     <ClInclude Include="vico1.h" />

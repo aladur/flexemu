@@ -29,6 +29,7 @@
 #include "foptman.h"
 #include "apprun.h"
 #include "soptions.h"
+#include "ftermimp.h"
 #include "winctxt.h"
 #include "winmain.h"
 #include "ffilecnt.h"
@@ -99,7 +100,10 @@ int main(int argc, char *argv[])
                 options.term_mode = false;
             }
 
-            ApplicationRunner runner(options);
+            const auto termType = TerminalImplFactory::GetType(0);
+            auto termImpl = TerminalImplFactory::Create(termType, options);
+
+            ApplicationRunner runner(options, std::move(termImpl));
 
             QApplication::setQuitOnLastWindowClosed(false);
             return_code = runner.startup(app);

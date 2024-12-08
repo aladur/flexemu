@@ -180,6 +180,9 @@
     <ClCompile Include="poverhlp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stermimp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="flexemu.rc">
@@ -360,6 +363,9 @@
     <ClInclude Include="foptman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ftermimp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="idircnt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -379,6 +385,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="iodevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="itermimp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="joystick.h">
@@ -460,6 +469,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="soptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stermimp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="terminal.h">
