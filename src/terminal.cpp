@@ -103,10 +103,10 @@ void TerminalIO::reset_serial()
     impl->reset_serial();
 }
 
-bool TerminalIO::has_key_serial()
+bool TerminalIO::has_char_serial()
 {
     assert(impl != nullptr);
-    return impl->has_key_serial();
+    return impl->has_char_serial();
 }
 
 Byte TerminalIO::read_char_serial()

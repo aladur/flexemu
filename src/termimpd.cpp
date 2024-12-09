@@ -46,7 +46,7 @@ void DummyTerminalImpl::reset_serial()
 {
 }
 
-bool DummyTerminalImpl::has_key_serial()
+bool DummyTerminalImpl::has_char_serial()
 {
     return false;
 }

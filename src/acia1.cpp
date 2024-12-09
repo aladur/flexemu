@@ -42,7 +42,7 @@ void Acia1::resetIo()
 
 void Acia1::requestInput()
 {
-    if (terminalIO.has_key_serial())
+    if (terminalIO.has_char_serial())
     {
         activeTransition();
     }
@@ -54,7 +54,7 @@ Byte Acia1::readInput()
 
     temp = 0;
 
-    if (terminalIO.has_key_serial())
+    if (terminalIO.has_char_serial())
     {
         temp = terminalIO.read_char_serial();
     }

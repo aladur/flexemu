@@ -41,7 +41,7 @@ public:
     // Interface ITerminalImpl
     bool init(Word reset_key, fct_sigaction fct) override;
     void reset_serial() override;
-    bool has_key_serial() override;
+    bool has_char_serial() override;
     Byte read_char_serial() override;
     Byte peek_char_serial() override;
     void write_char_serial(Byte val) override;

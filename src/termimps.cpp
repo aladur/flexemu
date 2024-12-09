@@ -170,7 +170,7 @@ void ScrollingTerminalImpl::reset_serial()
 }
 
 // poll serial port for input character.
-bool ScrollingTerminalImpl::has_key_serial()
+bool ScrollingTerminalImpl::has_char_serial()
 {
     // After a reset and booting FLEX delay the serial key input request.
     // Reason: After output one line FLEX requests for keyboard input.

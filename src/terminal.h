@@ -45,7 +45,7 @@ class TerminalIO : public BObserved
 public:
     bool init(Word reset_key);
     void reset_serial();
-    bool has_key_serial();
+    bool has_char_serial();
     Byte read_char_serial();
     Byte peek_char_serial();
     void write_char_serial(Byte val);

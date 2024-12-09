@@ -49,7 +49,7 @@ public:
 
     virtual bool init(Word reset_key, fct_sigaction fct) = 0;
     virtual void reset_serial() = 0;
-    virtual bool has_key_serial() = 0;
+    virtual bool has_char_serial() = 0;
     virtual Byte read_char_serial() = 0;
     virtual Byte peek_char_serial() = 0;
     virtual void write_char_serial(Byte val) = 0;
