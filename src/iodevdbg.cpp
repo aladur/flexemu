@@ -20,8 +20,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "typedefs.h"
 #include "iodevdbg.h"
-#include "misc1.h"
 #include <fstream>
 #include "warnoff.h"
 #include <fmt/format.h>

@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "fpoptui.h"
 #include "efilesiz.h"
 #include <stdexcept>

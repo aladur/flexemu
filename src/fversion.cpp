@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "fversion.h"
 #include <string>
 #ifdef QT_CORE_LIB

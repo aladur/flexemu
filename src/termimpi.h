@@ -24,7 +24,7 @@
 #ifndef ITERMINALIMPL_INCLUDED
 #define ITERMINALIMPL_INCLUDED
 
-#include "misc1.h"
+#include "typedefs.h"
 #include <string>
 #include <memory>
 #include <csignal>

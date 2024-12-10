@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "fpcnvui.h"
 #include "qstyle.h"
 #include "warnoff.h"

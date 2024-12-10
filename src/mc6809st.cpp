@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "mc6809st.h"
 #include <cstring>
 

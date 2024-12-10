@@ -21,7 +21,6 @@
 */
 
 
-#include "misc1.h"
 #include "pia1.h"
 #include "schedule.h"
 #include "keyboard.h"

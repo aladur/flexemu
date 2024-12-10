@@ -21,8 +21,7 @@
 */
 
 
-#include "misc1.h"
-
+#include "typedefs.h"
 #include "acia1.h"
 #include "terminal.h"
 #include "inout.h"

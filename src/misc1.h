@@ -83,12 +83,6 @@ constexpr const char *COPYRIGHT_MESSAGE = \
 
 /* adaptions for autoconf to use with/without ANSI C headers */
 
-#ifndef UNIX
-    #if defined(__LINUX) || defined(__BSD) || defined(__MACOS)
-        #define UNIX
-    #endif
-#endif
-
 /* adaptions for autoconf for POSIX.1 compatibility */
 #if HAVE_UNISTD_H
     #include <sys/types.h>

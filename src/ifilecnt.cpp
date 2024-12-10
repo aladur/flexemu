@@ -19,7 +19,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "misc1.h"  // needed for nullptr
 #include "filecont.h"
 #include "ifilecnt.h"
 #include "ifilcnti.h"

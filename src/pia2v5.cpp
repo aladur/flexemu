@@ -20,7 +20,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "misc1.h"
+#include "typedefs.h"
 #include "pia2v5.h"
 #include "mc6809.h"
 #include "mdcrtape.h"

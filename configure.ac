@@ -114,12 +114,12 @@ case $host_os in
        *)         FLEX_RC="" ;;
 esac
 case $host_os in
-       *linux*)   OS_TYPE="-D__LINUX" ;;
-       *freebsd*) OS_TYPE="-D__BSD -D__FREEBSD" ;;
-       *openbsd*) OS_TYPE="-D__OPENBSD" ;;
+       *linux*)   OS_TYPE="-D__LINUX -DUNIX" ;;
+       *freebsd*) OS_TYPE="-D__BSD -D__FREEBSD -DUNIX" ;;
+       *openbsd*) OS_TYPE="-D__OPENBSD -DUNIX" ;;
        *mingw32*) OS_TYPE="-D__MINGW32 -DWIN32" ;;
        *cygwin*)  OS_TYPE="-D__CYGWIN32 -DWIN32" ;;
-       *darwin*)  OS_TYPE="-D__MACOS"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
+       *darwin*)  OS_TYPE="-D__MACOS -DUNIX"; MACOSX_VERSION_MIN="-mmacosx-version-min=10.15" ;;
        *)         OS_TYPE="";;
 esac
 AC_EXEEXT

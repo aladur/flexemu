@@ -21,8 +21,7 @@
 */
 
 
-#include "misc1.h"
-
+#include "typedefs.h"
 #include "mmu.h"
 #include "memory.h"
 
