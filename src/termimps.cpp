@@ -116,28 +116,21 @@ bool ScrollingTerminalImpl::init(Word reset_key, fct_sigaction fct)
         sig_action.sa_flags = SA_RESTART | SA_SIGINFO;
         sigemptyset(&sig_action.sa_mask);
 
-#if defined(SIGUSR1)
         sigaction(SIGUSR1, &sig_action, &old_action);
-#endif
-#if defined(SIGUSR2)
         sigaction(SIGUSR2, &sig_action, &old_action);
-#endif
-#if defined(VINTR) && defined(SIGINT)
+#if defined(VINTR)
         buf.c_cc[VINTR] = reset_key;
         sigaction(SIGINT, &sig_action, &old_action);
 #endif
-#if defined(VQUIT) && defined(SIGQUIT)
+#if defined(VQUIT)
         buf.c_cc[VQUIT] = disable;
         sigaction(SIGQUIT, &sig_action, &old_action);
 #endif
-#if defined(VQUIT) && defined(SIGTERM)
+#if defined(VQUIT)
         buf.c_cc[VQUIT] = disable;
         sigaction(SIGTERM, &sig_action, &old_action);
 #endif
 #ifdef VSUSP
-        buf.c_cc[VSUSP] = disable;
-#endif
-#if defined(VSUSP) && defined(SIGQUIT)
         buf.c_cc[VSUSP] = disable;
 #ifdef VDSUSP
         buf.c_cc[VDSUSP] = disable;

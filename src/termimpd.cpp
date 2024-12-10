@@ -36,7 +36,7 @@ bool DummyTerminalImpl::init(Word /* [[maybe_unused]] Word reset_key */,
         fct_sigaction fct)
 {
     (void)fct;
-#if defined(_WIN32) && defined(SIGTERM)
+#ifdef _WIN32
     signal(SIGTERM, fct);
 #endif
     return true;

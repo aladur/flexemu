@@ -153,35 +153,24 @@ void TerminalIO::exec_signal(int sig_no)
             Notify(NotifyId::SetNmi);
             break;
 
-#if defined(SIGUSR1)
+#ifdef UNIX
         case SIGUSR1:
             Notify(NotifyId::SetIrq);
             break;
-#endif
 
-#if defined(SIGUSR2)
         case SIGUSR2:
             Notify(NotifyId::SetFirq);
             break;
-#endif
 
-#if defined(SIGQUIT)
-        // Due to if conditions for SIGQUIT and SIGTERM keep two cases.
-        // NOLINTNEXTLINE(bugprone-branch-clone)
-        case SIGQUIT:
-            scheduler.request_new_state(CpuState::Exit);
-            break;
-#endif
-#if defined(SIGTERM)
-        case SIGTERM:
-            scheduler.request_new_state(CpuState::Exit);
-            break;
-#endif
-
-#if defined(SIGTSTP)
         case SIGTSTP:
             scheduler.request_new_state(CpuState::ResetRun);
             break;
+
+        case SIGQUIT:
+            FALLTHROUGH;
 #endif
+        case SIGTERM:
+            scheduler.request_new_state(CpuState::Exit);
+            break;
     }
 }
